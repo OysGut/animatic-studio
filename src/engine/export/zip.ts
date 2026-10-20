@@ -6,7 +6,7 @@
  */
 import { Zip, ZipPassThrough } from "fflate";
 import type { ZipEntry } from "@/core";
-import { L } from "@/core";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 export interface ZipSink {

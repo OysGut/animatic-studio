@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download } from "lucide-react";
-import { L, qualityProfileSnapshot, layersOf, layerVersions, sceneNumberOf, type Composition, type ProjectState } from "@/core";
+import { qualityProfileSnapshot, layersOf, layerVersions, sceneNumberOf, type Composition, type ProjectState } from "@/core";
 import { alphaExportError, alphaFileBase, alphaRange, DEFAULT_ALPHA_SETTINGS, isAlphaSettings,
   type AlphaExportSettings } from "@/core/layer-alpha";
 import { exportAlphaLayers, openAlphaSink, supportsVp9Alpha } from "@/engine/export/alpha";

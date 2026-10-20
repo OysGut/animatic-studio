@@ -6,7 +6,8 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant, isScriptOccurrence, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
-import { L } from "../i18n";
+
+import { t } from "@/core/i18n/keyed";
 
 export type NumberingMethod = "continuous" | "production" | "historical";
 
@@ -165,7 +166,7 @@ export function exportPaginationInput(
       return {
         occurrenceId: n.occurrenceId,
         number: n.exportNumber,
-        headingText: opts.omittedText ?? L("UTGÅR", "OMITTED"),
+        headingText: opts.omittedText ?? t("core-screenplay-numbering.heading-text.heading-text.19d4b465cb9f"),
         blocks: [],
       };
     }
@@ -175,10 +176,7 @@ export function exportPaginationInput(
           {
             id: `${n.occurrenceId}:deaktivert`,
             kind: "note" as const,
-            text: L(
-              "[DEAKTIVERT SCENE – IKKE MED I FILMEN]",
-              "[DEACTIVATED SCENE – NOT IN THE FILM]",
-            ),
+            text: t("core-screenplay-numbering.text.text.a4a0b350ede1"),
           },
         ]
       : [];

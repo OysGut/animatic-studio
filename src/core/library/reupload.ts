@@ -13,10 +13,11 @@ import type { AssetVersion, ImageSwap, LanguageImage, ProjectState } from "../mo
 import type { Command } from "../commands/types";
 import { layerFieldsOf } from "../composition";
 import { versionFileBase } from "./file-names";
-import { L } from "../i18n";
+
 
 export { versionFileBase, versionFileName } from "./file-names";
 import { layerVersions } from "../composition/render";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Sammenligningsnøkkel: små bokstaver, NFC (macOS lagrer filnavn som NFD). */
 const key = (t: string) => t.normalize("NFC").toLocaleLowerCase("nb").replace(/\s+/g, " ").trim();
@@ -45,8 +46,8 @@ export function versionFromFileName(s: ProjectState, fileName: string): AssetVer
 /** Merknaden på den nye versjonen. */
 export function reuploadNote(old: AssetVersion, mode: "replace" | "add"): string {
   return mode === "replace"
-    ? L(`Erstatter v${old.number} (lastet opp på nytt)`, `Replaces v${old.number} (uploaded again)`)
-    : L(`Endret fra v${old.number} (lagt til)`, `Changed from v${old.number} (added)`);
+    ? tk("core-library-reupload.reupload-note.message.7884245562fe", { number: String(old.number) })
+    : tk("core-library-reupload.reupload-note.message.d8143e264cee", { number: String(old.number) });
 }
 
 /** Hvor en versjon er i bruk (for spørsmålet til brukeren). */

@@ -7,14 +7,7 @@
  * DEC-0079). Lyd som løper inn fra en annen scene flyttes i scenen den hører til.
  */
 import { useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  groupDialogueTracks,
-  dialogueOverlaps,
-  L,
-  type AudioClipFields,
-  type FilmAudioItem,
-  type ProjectState, clipDrift } from "@/core";
+import { AUDIO_KIND_LABEL, groupDialogueTracks, dialogueOverlaps, type AudioClipFields, type FilmAudioItem, type ProjectState, clipDrift } from "@/core";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { AUDIO_KIND_COLOR, Wave } from "@/app/assembly/AudioTracks";
 import type { TimelineRowGeometry } from "./Timeline";

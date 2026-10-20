@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { Copy, ImagePlus, Pencil, Trash2 } from "lucide-react";
-import { L, layerFieldsOf, insertImageSegment, replaceImageSegment, removeImageSegment, moveImageSegment, trimImageSegment, variantsOf, versionsOf, type Command, type LayerFields, type ProjectState } from "@/core";
+import { layerFieldsOf, insertImageSegment, replaceImageSegment, removeImageSegment, moveImageSegment, trimImageSegment, variantsOf, versionsOf, type Command, type LayerFields, type ProjectState } from "@/core";
 import { animationImageTracks } from "@/core/animation/tracks";
 import { useImageUrls } from "@/app/library/asset-images";
 import { AssetThumb } from "@/app/library/AssetThumb";

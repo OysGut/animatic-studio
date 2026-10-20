@@ -5,18 +5,7 @@
 import { requestAnalysisNow } from "@/app/library/entity-analysis-store";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import {
-  L,
-  canvasNodeToCommands,
-  canvasTransferKinds,
-  formatHeading,
-  mainProduction,
-  orderedOccurrences,
-  parseHeading,
-  type CanvasNode,
-  type CanvasTransfer,
-  type ProjectState,
-} from "@/core";
+import { canvasNodeToCommands, canvasTransferKinds, formatHeading, mainProduction, orderedOccurrences, parseHeading, type CanvasNode, type CanvasTransfer, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";

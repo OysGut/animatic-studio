@@ -11,7 +11,7 @@
 import type { CompositionLayer, Keyframe, LayerTransform, ProjectState } from "../model";
 import { setKeyframe } from "./animate";
 import { renderFrame, valueAt } from "./render";
-import { localized } from "../i18n";
+
 import { tLocalized } from "@/core/i18n/keyed";
 
 /** Skaleringen regnes som skvist når bredde og høyde avviker mer enn dette (0,5 %). */

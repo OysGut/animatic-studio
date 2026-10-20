@@ -2,18 +2,15 @@
  * Arbeidsgrupper (GP1, Fase 3 global pakke, B-044, spes. §15). Ren logikk for roller og rettigheter.
  * Databasen håndhever reglene (migrasjon 0045); dette er speilet som UI-et bruker for å vise riktige valg.
  */
-import { localized } from "./i18n";
+
+import { tLocalized } from "@/core/i18n/keyed";
 
 export type WorkspaceRole = "owner" | "editor" | "member";
 export const WORKSPACE_ROLES: readonly WorkspaceRole[] = ["owner", "editor", "member"];
 /** Roller en invitasjon kan gi (eier gis bare ved rolleendring). */
 export const WORKSPACE_INVITE_ROLES: readonly WorkspaceRole[] = ["editor", "member"];
 
-export const WORKSPACE_ROLE_LABEL: Record<WorkspaceRole, string> = localized({
-  owner: ["Eier", "Owner"],
-  editor: ["Redaktør", "Editor"],
-  member: ["Medlem", "Member"],
-});
+export const WORKSPACE_ROLE_LABEL: Record<WorkspaceRole, string> = tLocalized({ owner: "core-workspaces.workspace-role-label.owner.8c979f17c6d5", editor: "core-workspaces.workspace-role-label.editor.0a3f3f0cc274", member: "core-workspaces.workspace-role-label.member.8a2a74fbf742" });
 
 export function workspaceRoleRank(role: WorkspaceRole | null | undefined): number {
   return role === "owner" ? 3 : role === "editor" ? 2 : role === "member" ? 1 : 0;

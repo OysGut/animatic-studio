@@ -3,7 +3,7 @@
  * «Prosjektet totalt» for eieren, med kostnadsrapport og eksport.
  */
 import { useCallback, useState } from "react";
-import { L, formatHeading, type CostJobRow, type ProjectState } from "@/core";
+import { formatHeading, type CostJobRow, type ProjectState } from "@/core";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { CostReportView } from "./CostReportView";
 import { t } from "@/core/i18n/keyed";

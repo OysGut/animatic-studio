@@ -6,17 +6,10 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  assistRequestError,
-  buildAssistPrompt,
-  isTextModelId,
-  isTextProviderId,
-  isUuid,
-  type AssistRequest,
-} from "@/core";
+import { assistRequestError, buildAssistPrompt, isTextModelId, isTextProviderId, isUuid, type AssistRequest } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import type { GenerateTextResult } from "./text.functions";
+import { t } from "@/core/i18n/keyed";
 
 export interface ScriptAssistInput {
   readonly projectId: string;
@@ -26,17 +19,17 @@ export interface ScriptAssistInput {
 }
 
 export function validateScriptAssistInput(d: unknown): ScriptAssistInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(t("adapters-ai-script-assist-functions.validate-script-assist-input.message.238c61386bc0"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-ai-script-assist-functions.validate-script-assist-input.message.ff2e0e59e595"));
   const e = assistRequestError(x["request"]);
   if (e) throw new Error(e);
   const provider = x["provider"];
   if (provider !== undefined && provider !== "lovable" && !isTextProviderId(provider))
-    throw new Error(L("Ukjent tekstleverandør", "Unknown text provider"));
+    throw new Error(t("adapters-ai-script-assist-functions.validate-script-assist-input.message.5a066fae50bb"));
   const model = x["model"];
-  if (model !== undefined && !isTextModelId(model)) throw new Error(L("Ugyldig modell", "Invalid model"));
+  if (model !== undefined && !isTextModelId(model)) throw new Error(t("adapters-ai-script-assist-functions.validate-script-assist-input.message.791135083add"));
   const r = x["request"] as AssistRequest;
   return {
     projectId: x["projectId"],
@@ -67,7 +60,7 @@ export const scriptAssist = createServerFn({ method: "POST" })
     if ((ROLE_RANK[role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L("Du har ikke tilgang til å bruke AI i dette prosjektet.", "You do not have access to use AI in this project."),
+        message: t("adapters-ai-script-assist-functions.message.message.f174bdae2102"),
       };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { loadProjectState } = await import("@/adapters/storage/project-rows");

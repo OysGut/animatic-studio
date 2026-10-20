@@ -4,7 +4,7 @@
  * Oppbygningen er lik i alle tre: tittel og prosjektnavn øverst, opplysninger om rapporten, sammendrag,
  * fordelinger, linjene og merknadene.
  */
-import { L, locale, type CostReport, type CostReportGroup } from "@/core";
+import { locale, type CostReport, type CostReportGroup } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 export type ExportFormat = "pdf" | "docx" | "xlsx";

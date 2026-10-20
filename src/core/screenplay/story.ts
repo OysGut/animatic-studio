@@ -5,15 +5,10 @@
  * scenene vises i.
  */
 import type { StoryKind, StoryTime } from "../model";
-import { localized } from "../i18n";
 
-export const STORY_KIND_LABEL: Record<StoryKind, string> = localized({
-  linear: ["Følger rekkefølgen", "Follows the order"],
-  flashback: ["Tilbakeblikk", "Flashback"],
-  flashforward: ["Fremblikk", "Flash-forward"],
-  dream: ["Drøm", "Dream"],
-  jump: ["Tidshopp", "Time jump"],
-});
+import { tLocalized } from "@/core/i18n/keyed";
+
+export const STORY_KIND_LABEL: Record<StoryKind, string> = tLocalized({ linear: "core-screenplay-story.story-kind-label.linear.e5f5651347ae", flashback: "core-screenplay-story.story-kind-label.flashback.7cd6453c5ef0", flashforward: "core-screenplay-story.story-kind-label.flashforward.7a1f8eead578", dream: "core-screenplay-story.story-kind-label.dream.97c134d786ce", jump: "core-screenplay-story.story-kind-label.jump.c2f61439fb96" });
 
 /** Plassering i forhold til ankerscenen. Enheten er «scener» i hovedfilmens rekkefølge. */
 export type StoryPlacement = "before" | "same" | "after";
@@ -24,11 +19,7 @@ export const STORY_PLACEMENT_OFFSET: Record<StoryPlacement, number> = {
   after: 0.5,
 };
 
-export const STORY_PLACEMENT_LABEL: Record<StoryPlacement, string> = localized({
-  before: ["før", "before"],
-  same: ["samtidig med", "at the same time as"],
-  after: ["etter", "after"],
-});
+export const STORY_PLACEMENT_LABEL: Record<StoryPlacement, string> = tLocalized({ before: "core-screenplay-story.story-placement-label.before.37e200bfa66e", same: "core-screenplay-story.story-placement-label.same.f9ddbfcdb327", after: "core-screenplay-story.story-placement-label.after.93e3ed5f9972" });
 
 export function storyPlacementOf(offset: number): StoryPlacement {
   return offset < 0 ? "before" : offset > 0 ? "after" : "same";

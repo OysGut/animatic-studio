@@ -5,17 +5,7 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  L,
-  roomToneSceneName,
-  isRoomToneFile,
-  lineInfo,
-  newId,
-  parseUploadContext,
-  targetAssetOf,
-  variantsOf,
-  type ProjectState,
-} from "@/core";
+import { roomToneSceneName, isRoomToneFile, lineInfo, newId, parseUploadContext, targetAssetOf, variantsOf, type ProjectState } from "@/core";
 import {
   claimMobileImport,
   fetchMobileImports,
@@ -31,6 +21,7 @@ import { useCommands, type Commands } from "@/app/project/use-commands";
 import { mediaFromStoredFile } from "@/app/library/asset-images";
 import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
 import { saveRoomTone, saveTake } from "@/app/audio/takes";
+import { t } from "@/core/i18n/keyed";
 
 export const mobileImportsKey = (projectId: string) => ["mobile-imports", projectId] as const;
 export const uploadSessionsKey = (projectId: string) => ["upload-sessions", projectId] as const;
@@ -105,7 +96,7 @@ export async function importImage(
   if (!target || !state.assets[target.assetId] || state.assets[target.assetId]!.removed)
     return null;
   if (!(await claimMobileImport(row.id))) return null;
-  const who = row.contributor_name || L("mobil", "mobile");
+  const who = row.contributor_name || t("app-mobile-use-mobile-imports.who.message.e35c0eb1e51e");
   const group = `mobil-${row.id}`;
   let variantId = pickMobileVariant(state, target.assetId, target.variantId);
   if (!variantId) {
@@ -115,9 +106,9 @@ export async function importImage(
         type: "CreateAssetVariant",
         variantId: variantId as never,
         assetId: target.assetId as never,
-        fields: { name: L("Fra mobil", "From mobile"), style: "animatic", appearance: "" },
+        fields: { name: t("app-mobile-use-mobile-imports.name.name.5a86c1d87d6b"), style: "animatic", appearance: "" },
       },
-      L("Bilde fra mobil", "Image from mobile"),
+      t("app-mobile-use-mobile-imports.r.cmds-run-and-wait.ffd1c10488b3"),
       group,
     );
     if (r.error) return r.error;
@@ -130,9 +121,9 @@ export async function importImage(
       versionId: versionId as never,
       variantId: variantId as never,
       media,
-      note: L(`Fra mobil (${who})`, `From mobile (${who})`),
+      note: t("app-mobile-use-mobile-imports.note.note.fcb453aa7747", { who: String(who) }),
     },
-    L("Bilde fra mobil", "Image from mobile"),
+    t("app-mobile-use-mobile-imports.r.cmds-run-and-wait.ffd1c10488b3.2"),
     group,
   );
   if (r.error) return r.error;
@@ -167,11 +158,11 @@ export async function importAudio(
   if (c.type === "sound" && (!state.assets[c.assetId] || state.assets[c.assetId]!.removed))
     return null;
   if (!(await claimMobileImport(row.id))) return null;
-  const who = row.contributor_name || L("mobil", "mobile");
+  const who = row.contributor_name || t("app-mobile-use-mobile-imports.who.message.e35c0eb1e51e.2");
   const media = await audioMediaFromStoredFile(row.path, row.mime_type);
-  const note = L(`Fra mobil (${who})`, `From mobile (${who})`);
+  const note = t("app-mobile-use-mobile-imports.note.message.fcb453aa7747", { who: String(who) });
   const saved = isRoomToneFile(row.file_name)
-    ? await saveRoomTone(cmds, state, roomToneWhere(state, row) ?? L("Scene", "Scene"), media, note)
+    ? await saveRoomTone(cmds, state, roomToneWhere(state, row) ?? t("app-mobile-use-mobile-imports.saved.save-room-tone.a23826be7c1a"), media, note)
     : await saveTake(
         cmds,
         state,

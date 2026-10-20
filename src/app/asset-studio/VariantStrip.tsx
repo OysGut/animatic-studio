@@ -4,19 +4,13 @@
  * bildesegment, eller klikk for å sette den inn på avspillingshodet (eller erstatte valgt segment).
  */
 import { useMemo, useState } from "react";
-import {
-  L,
-  VERSION_VIEW_LABEL,
-  variantsOf,
-  versionsOf,
-  type ProjectState,
-  type VersionView,
-} from "@/core";
+import { VERSION_VIEW_LABEL, variantsOf, versionsOf, type ProjectState, type VersionView } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
 import type { Commands } from "@/app/project/use-commands";
 import { Thumb } from "@/app/scene-editor/LayerImageDialog";
+import { t } from "@/core/i18n/keyed";
 
 export const STUDIO_VERSION_DRAG_TYPE = "application/x-asset-studio-version";
 
@@ -58,36 +52,30 @@ export function VariantStrip({
   );
   return (
     <section className="flex min-h-0 flex-col" data-testid="asset-studio-variants">
-      <PanelHeader title={L("Varianter og bilder", "Variants and images")} />
+      <PanelHeader title={t("app-asset-studio-variant-strip.variant-strip.title.0720ed99b55b")} />
       {editable && cmds ? (
         <div className="border-b border-border p-2">
           <Button
             size="sm"
             variant="outline"
             data-testid="asset-studio-global-variants"
-            title={L(
-              "Hent en variant fra arbeidsgruppens bibliotek. Filen kopieres inn i prosjektet.",
-              "Get a variant from the workspace library. The file is copied into the project.",
-            )}
+            title={t("app-asset-studio-variant-strip.variant-strip.title.ef636e271095")}
             onClick={() => setGlobalOpen(true)}
           >
-            {L("Fra globalt bibliotek …", "From the global library …")}
+            {t("app-asset-studio-variant-strip.variant-strip.button.760a5dd0ad8e")}
           </Button>
         </div>
       ) : null}
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {groups.length === 0 ? (
           <p className="text-xs text-text-tertiary">
-            {L(
-              "Ressursen har ingen bilder ennå. Last opp eller lag et bilde med verktøyene over.",
-              "The asset has no images yet. Upload or create an image with the tools above.",
-            )}
+            {t("app-asset-studio-variant-strip.variant-strip.p.35591283e820")}
           </p>
         ) : null}
         {groups.map(({ variant, versions }) => (
           <div key={variant.id} className="mb-3">
             <p className="mb-1 truncate text-[11px] font-medium text-text-secondary">
-              {variant.name || L("Uten navn", "Without name")}
+              {variant.name || t("app-asset-studio-variant-strip.variant-strip.p.0bb335bfb8d1")}
             </p>
             <div className="grid grid-cols-2 gap-1.5">
               {versions.map((ver) => {
@@ -108,11 +96,8 @@ export function VariantStrip({
                     onClick={() => onPick(img)}
                     title={
                       replacing
-                        ? L("Erstatt bildet i valgt segment", "Replace the image in the selected segment")
-                        : L(
-                            "Dra til tidslinjen, eller klikk for å sette inn på avspillingshodet",
-                            "Drag to the timeline, or click to insert at the playhead",
-                          )
+                        ? t("app-asset-studio-variant-strip.variant-strip.title.e852896dc5ad")
+                        : t("app-asset-studio-variant-strip.variant-strip.title.7fc0f4e6abe0")
                     }
                     className="flex flex-col overflow-hidden rounded-sm border border-border bg-surface-1 text-left hover:border-accent-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed"
                   >

@@ -3,7 +3,7 @@
  * Loaded only when the user picks ProRes (dynamic import), so startup is unaffected. Frames are drawn with the
  * same drawFilmFrame as playback and streamed to the sink (OPFS when available) – never held in memory.
  */
-import { L, cueAt, type ProjectState } from "@/core";
+import { cueAt, type ProjectState } from "@/core";
 import { PRORES_MEMORY_LIMIT, PRORES_UNSUPPORTED, proresBytesEstimate, proresLimitError, type ProResKind } from "@/core/prores-export";
 import { hasAudioIn, renderAudio } from "../audio/mixer";
 import { drawFilmFrame } from "../compositor/film";

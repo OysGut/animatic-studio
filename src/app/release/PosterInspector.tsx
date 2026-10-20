@@ -6,29 +6,7 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, CheckCircle2, Info, LayoutTemplate, RotateCcw, Trash2 } from "lucide-react";
-import {
-  ASSET_KIND_LABEL,
-  PALETTES,
-  paletteLabel,
-  POSTER_FORMATS,
-  POSTER_KIND_LABEL,
-  POSTER_OPTION_LABEL,
-  ROLE_LABEL,
-  minReadablePt,
-  posterAnalysis,
-  posterChecks,
-  sortedAssets,
-  versionsOf,
-  type LocalizedText,
-  type Poster,
-  type PosterCheck,
-  type PosterDocument,
-  type PosterElement,
-  type PosterKind,
-  type PosterOptions,
-  type ProjectState,
-  L,
-} from "@/core";
+import { ASSET_KIND_LABEL, PALETTES, paletteLabel, POSTER_FORMATS, POSTER_KIND_LABEL, POSTER_OPTION_LABEL, ROLE_LABEL, minReadablePt, posterAnalysis, posterChecks, sortedAssets, versionsOf, type LocalizedText, type Poster, type PosterCheck, type PosterDocument, type PosterElement, type PosterKind, type PosterOptions, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 
@@ -514,10 +492,7 @@ export function PosterSettings({
                         <span className="truncate">{a.name}</span>
                         <span className="ml-auto shrink-0 text-[11px] text-text-tertiary">
                           {rank
-                            ? L(
-                                `${rank.lines === 1 ? "1 replikk" : `${rank.lines} replikker`} · ${rank.scenes === 1 ? "1 scene" : `${rank.scenes} scener`}`,
-                                `${rank.lines === 1 ? "1 line" : `${rank.lines} lines`} · ${rank.scenes === 1 ? "1 scene" : `${rank.scenes} scenes`}`,
-                              )
+                            ? t("app-release-poster-inspector.rank", { lines: t("app-release-poster-inspector.rank-lines", { count: rank.lines }), scenes: t("app-release-poster-inspector.rank-scenes", { count: rank.scenes }) })
                             : ASSET_KIND_LABEL[a.kind]}
                         </span>
                       </label>

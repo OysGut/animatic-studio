@@ -4,34 +4,7 @@
  */
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
-import {
-  FONT_CATALOG,
-  L,
-  MAX_TEXT_CHARS,
-  MOTION_PRESETS,
-  MOTION_PRESET_LABEL,
-  TEMPLATE_CATEGORIES,
-  applyMotionPreset,
-  letterAnimWith,
-  normalizeLetterAnim,
-  presetWindow,
-  fontById,
-  fpsToNumber,
-  layerFieldsOf,
-  newerTemplateVersion,
-  normalizeColor,
-  type Composition,
-  type CompositionLayer,
-  type LayerEffects,
-  type LayerFields,
-  type LetterAnimation,
-  type MotionPreset,
-  type PresetDirection,
-  type ProjectState,
-  type ShapeSpec,
-  type TemplateCategory,
-  type TextSpec,
-} from "@/core";
+import { FONT_CATALOG, MAX_TEXT_CHARS, MOTION_PRESETS, MOTION_PRESET_LABEL, TEMPLATE_CATEGORIES, applyMotionPreset, letterAnimWith, normalizeLetterAnim, presetWindow, fontById, fpsToNumber, layerFieldsOf, newerTemplateVersion, normalizeColor, type Composition, type CompositionLayer, type LayerEffects, type LayerFields, type LetterAnimation, type MotionPreset, type PresetDirection, type ProjectState, type ShapeSpec, type TemplateCategory, type TextSpec } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -703,10 +676,7 @@ function TemplateSection({
       {inst && def ? (
         <div data-testid="mts-template-instance" className="flex flex-col gap-2">
           <Hint>
-            {L(
-              `${state.assets[inst.templateAssetId]?.name ?? "Mal"}, versjon ${ver?.number ?? "?"}. Innholdet her endrer ikke malen.`,
-              `${state.assets[inst.templateAssetId]?.name ?? "Template"}, version ${ver?.number ?? "?"}. The content here does not change the template.`,
-            )}
+            {t("app-scene-editor-text-inspector.template-info", { name: state.assets[inst.templateAssetId]?.name ?? t("app-scene-editor-text-inspector.template-info-template"), version: ver?.number ?? "?" })}
           </Hint>
           {def.slots
             .filter((s) => s.kind === "text")

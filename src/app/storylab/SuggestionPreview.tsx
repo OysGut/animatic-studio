@@ -1,6 +1,6 @@
 /** SL6: production/variant placement and field-by-field explicit transfer preview. */
 import { useEffect, useState } from "react";
-import { L, activeProfileOf, blocksOfVariant, emptyStoryProfile, formatHeading, mainProduction, mergeProfile, orderedOccurrences, suggestionProfilePatch, suggestionText, suggestionToCommands, wordDiff, type ProjectState, type StoryProfile, type SuggestionTarget, type TransferSuggestion } from "@/core";
+import { activeProfileOf, blocksOfVariant, emptyStoryProfile, formatHeading, mainProduction, mergeProfile, orderedOccurrences, suggestionProfilePatch, suggestionText, suggestionToCommands, wordDiff, type ProjectState, type StoryProfile, type SuggestionTarget, type TransferSuggestion } from "@/core";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { fieldDefs, fieldId, fieldText, getField, sectionLabel, setField } from "./profile-fields";

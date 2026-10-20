@@ -16,7 +16,7 @@ import type {
   LayerId,
 } from "../ids";
 import type { CompositionLayer, Keyframe, ProjectState } from "../model";
-import { L } from "../i18n";
+
 import { t as tKey } from "@/core/i18n/keyed";
 
 export type TemplateCategory = "lower_third" | "title" | "text_card" | "text_object" | "credits";

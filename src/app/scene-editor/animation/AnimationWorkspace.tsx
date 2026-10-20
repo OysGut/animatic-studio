@@ -1,6 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Play, Square, Repeat } from "lucide-react";
-import { L, type Composition, type ProjectState } from "@/core";
+import { type Composition, type ProjectState } from "@/core";
 import { clampAnimationWindow, formatAnimationTime } from "@/core/animation/time-format";
 import { Toolbar, ToolbarGroup, IconButton } from "@/app/shell/workspace-chrome";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";

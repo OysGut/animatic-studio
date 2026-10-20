@@ -1,5 +1,4 @@
 /** CA4: compact non-destructive vector parts, independent of any rendering platform. */
-import { L } from "../i18n";
 import { isUuid } from "../ids";
 import type { RelativePoint } from "./rig";
 import { t as tk } from "@/core/i18n/keyed";

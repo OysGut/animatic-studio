@@ -8,28 +8,7 @@
 import { CheckCircle2, Clapperboard, Loader2, TriangleAlert } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L, profileChoice, qualityProfileSnapshot,
-  tm,
-  adaptPromptForModel,
-  assembleSegments,
-  assemblyUsesChosen,
-  chainStartPath,
-  costBreakdown,
-  estimateCostUsd,
-  type FilmClip,
-  formatUsd,
-  latestVideoFor,
-  newId,
-  type ProductionSegment,
-  type ProjectState,
-  providerModel,
-  providersFor,
-  type SegmentPlan,
-  videoAttempts,
-  videoDurationFor,
-  videoStartImages,
-} from "@/core";
+import { profileChoice, qualityProfileSnapshot, tm, adaptPromptForModel, assembleSegments, assemblyUsesChosen, chainStartPath, costBreakdown, estimateCostUsd, type FilmClip, formatUsd, latestVideoFor, newId, type ProductionSegment, type ProjectState, providerModel, providersFor, type SegmentPlan, videoAttempts, videoDurationFor, videoStartImages } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
@@ -265,10 +244,7 @@ export function SceneVideoSection({
         ? { kind: "error", text: errors.join(" · ") }
         : {
             kind: "ok",
-            text: L(
-              `${started} ${started === 1 ? "video er" : "videoer er"} startet hos ${chosen.provider.name}. De legges inn som nye versjoner når de er ferdige (vanligvis 1–6 minutter) – også om du lukker dialogen.`,
-              `${started} ${started === 1 ? "video has" : "videos have"} started with ${chosen.provider.name}. They are added as new versions when finished (usually 1–6 minutes) – even if you close the dialog.`,
-            ),
+            text: tk("app-assembly-scene-video-section.videos-started", { count: started, provider: chosen.provider.name }),
           },
     );
   }
@@ -432,10 +408,7 @@ export function SceneVideoSection({
         </select>
         <span className="text-text-tertiary">
           {candidates > 1
-            ? L(
-                `– ${candidates} videoer per segment (koster ${candidates} ganger så mye); sammenlign og velg etterpå`,
-                `– ${candidates} videos per segment (costs ${candidates} times as much); compare and choose afterwards`,
-              )
+            ? tk("app-assembly-scene-video-section.candidates-per-segment", { count: candidates })
             : ""}
         </span>
       </label>

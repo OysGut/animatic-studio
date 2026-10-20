@@ -4,7 +4,7 @@
  * øverst til høyre fra side 2. Word bryter selv sidene; (MORE)/(CONT'D) settes ikke inn automatisk i Word.
  */
 import { zipSync, strToU8 } from "fflate";
-import { L, type BlockKind } from "@/core";
+import { type BlockKind } from "@/core";
 import type { PaginationScene } from "@/core/screenplay";
 import type { ExportNote } from "@/core/notes";
 import { t as tk } from "@/core/i18n/keyed";

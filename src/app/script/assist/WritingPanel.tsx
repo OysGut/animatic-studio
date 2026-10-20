@@ -8,26 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useBlocker } from "@tanstack/react-router";
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  REWRITE_MODES,
-  buildAssistPrompt,
-  canSaveAsTrial,
-  formatCheck,
-  newId,
-  orderedOccurrences,
-  planApplyProposal,
-  planTrialNotes,
-  proposalConflicts,
-  proposalFromReply,
-  sceneNumberOf,
-  type AssistKind,
-  type AssistPrompt,
-  type AssistRequest,
-  type ProjectState,
-  type Proposal,
-  type RewriteMode,
-} from "@/core";
+import { REWRITE_MODES, buildAssistPrompt, canSaveAsTrial, formatCheck, newId, orderedOccurrences, planApplyProposal, planTrialNotes, proposalConflicts, proposalFromReply, sceneNumberOf, type AssistKind, type AssistPrompt, type AssistRequest, type ProjectState, type Proposal, type RewriteMode } from "@/core";
 import { scriptAssist } from "@/adapters/ai/script-assist.functions";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";

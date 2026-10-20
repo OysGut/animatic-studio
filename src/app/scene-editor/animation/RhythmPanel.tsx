@@ -5,7 +5,7 @@
  */
 import { useMemo, useState } from "react";
 import { Activity } from "lucide-react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import { planRhythm, RHYTHM_TEMPO_MAX, RHYTHM_TEMPO_MIN, type RhythmLine } from "@/core/animation/rhythm";
 import { formatAnimationTime, formatFrameGap } from "@/core/animation/time-format";

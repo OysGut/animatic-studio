@@ -6,18 +6,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Copy, Share2 } from "lucide-react";
-import {
-  DEFAULT_SHARE_DAYS,
-  L,
-  SHARE_DAYS,
-  shareEligibility,
-  shareIneligibleText,
-  shareStatus,
-  shareStatusText,
-  shareUrl,
-  tm,
-  type ShareDays,
-} from "@/core";
+import { DEFAULT_SHARE_DAYS, SHARE_DAYS, shareEligibility, shareIneligibleText, shareStatus, shareStatusText, shareUrl, tm, type ShareDays } from "@/core";
 import {
   createFilmShare,
   filmShareToken,

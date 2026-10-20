@@ -6,15 +6,7 @@
 import { ArchiveRestore, Loader2, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ASSET_KIND_LABEL,
-  assetUsageCounts,
-  coverVersion,
-  trashContents,
-  L,
-  tm,
-  type ProjectState,
-} from "@/core";
+import { ASSET_KIND_LABEL, assetUsageCounts, coverVersion, trashContents, tm, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { projectStateKey } from "@/app/project/use-project";
 import { purgeRemoved } from "@/adapters/storage/trash.functions";
@@ -29,6 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { useImageUrls } from "./asset-images";
 import { AssetSymbolIcon } from "./AssetSymbolIcon";
+import { t } from "@/core/i18n/keyed";
 
 export function TrashDialog({
   open,
@@ -73,14 +66,14 @@ export function TrashDialog({
       kind === "asset"
         ? { type: "SetAssetsRemoved", assetIds: [id as never], removed: false }
         : { type: "SetAssetVersionsRemoved", versionIds: [id as never], removed: false },
-      L(`Hent inn igjen «${label}»`, `Restore “${label}”`),
+      t("app-library-trash-dialog.e.cmds-run.ecee4ab84b21", { label: String(label) }),
     );
     setMsg(
       e
         ? { kind: "error", text: e }
         : {
             kind: "ok",
-            text: L(`«${label}» er hentet inn igjen.`, `“${label}” has been restored.`),
+            text: t("app-library-trash-dialog.text.text.494e31c60b51", { label: String(label) }),
           },
     );
   }
@@ -103,10 +96,7 @@ export function TrashDialog({
       else {
         setMsg({
           kind: "ok",
-          text: L(
-            `Slettet for godt: ${purging.label}.${r.leftoverFiles ? ` ${r.leftoverFiles} filer ble liggende i lagringen.` : ""}`,
-            `Deleted for good: ${purging.label}.${r.leftoverFiles ? ` ${r.leftoverFiles} files were left in storage.` : ""}`,
-          ),
+          text: r.leftoverFiles ? t("app-library-trash-dialog.purged-leftover", { label: purging.label, files: r.leftoverFiles }) : t("app-library-trash-dialog.purged", { label: purging.label }),
         });
         void qc.invalidateQueries({ queryKey: projectStateKey(state.project.id) });
       }
@@ -128,25 +118,22 @@ export function TrashDialog({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
-            <Trash2 className="size-4" aria-hidden /> {L("Slettede objekter", "Deleted items")}
+            <Trash2 className="size-4" aria-hidden /> {t("app-library-trash-dialog.trash-dialog.dialog-title.f2a8a27f41db")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Hent inn igjen det du trenger. Eieren kan slette for godt – det kan ikke angres, og filene forsvinner fra lagringen.",
-              "Restore what you need. The owner can delete for good – this cannot be undone, and the files disappear from storage.",
-            )}
+            {t("app-library-trash-dialog.trash-dialog.dialog-description.b6ba1ef44a5b")}
           </DialogDescription>
         </DialogHeader>
         {empty ? (
           <p className="text-[13px] text-text-secondary">
-            {L("Ingenting er slettet.", "Nothing has been deleted.")}
+            {t("app-library-trash-dialog.trash-dialog.p.31e0dfe9e6ec")}
           </p>
         ) : (
           <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto">
             {trash.assets.length ? (
-              <section aria-label={L("Slettede ressurser", "Deleted assets")}>
+              <section aria-label={t("app-library-trash-dialog.trash-dialog.aria-label.90ec75c45c44")}>
                 <h3 className="pb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-                  {L("Ressurser", "Assets")} ({trash.assets.length})
+                  {t("app-library-trash-dialog.trash-dialog.h3.8648af697b4d")} ({trash.assets.length})
                 </h3>
                 <ul className="border border-border bg-surface-1">
                   {trash.assets.map((a) => {
@@ -172,20 +159,7 @@ export function TrashDialog({
                           <span className="text-text-tertiary">
                             {ASSET_KIND_LABEL[a.kind]}
                             {use.layers || use.audio
-                              ? L(
-                                  ` · brukes fortsatt i ${[
-                                    use.layers ? `${use.layers} lag` : "",
-                                    use.audio ? `${use.audio} lydklipp` : "",
-                                  ]
-                                    .filter(Boolean)
-                                    .join(" og ")}`,
-                                  ` · still used in ${[
-                                    use.layers ? `${use.layers} layers` : "",
-                                    use.audio ? `${use.audio} audio clips` : "",
-                                  ]
-                                    .filter(Boolean)
-                                    .join(" and ")}`,
-                                )
+                              ? t("app-library-trash-dialog.still-used", { uses: [use.layers ? t("app-library-trash-dialog.still-used-layers", { count: use.layers }) : "", use.audio ? t("app-library-trash-dialog.still-used-audio", { count: use.audio }) : ""].filter(Boolean).join(t("app-library-trash-dialog.still-used-and")) })
                               : ""}
                           </span>
                         </span>
@@ -195,7 +169,7 @@ export function TrashDialog({
                           disabled={!editable || busy}
                           onClick={() => restore("asset", a.id, a.name)}
                         >
-                          <ArchiveRestore /> {L("Hent inn igjen", "Restore")}
+                          <ArchiveRestore /> {t("app-library-trash-dialog.trash-dialog.button.9cc51e982309")}
                         </Button>
                         <Button
                           size="sm"
@@ -203,18 +177,15 @@ export function TrashDialog({
                           disabled={!isOwner || busy}
                           title={
                             isOwner
-                              ? L("Slett for godt", "Delete for good")
-                              : L(
-                                  "Bare prosjektets eier kan slette for godt",
-                                  "Only the project's owner can delete for good",
-                                )
+                              ? t("app-library-trash-dialog.trash-dialog.title.4a79b7760cdc")
+                              : t("app-library-trash-dialog.trash-dialog.title.49cc31ccf959")
                           }
                           onClick={() =>
                             setPurging({ assets: [a.id], versions: [], label: a.name })
                           }
                           className="text-status-danger"
                         >
-                          <Trash2 /> {L("For godt …", "For good …")}
+                          <Trash2 /> {t("app-library-trash-dialog.trash-dialog.button.d54d45365f93")}
                         </Button>
                       </li>
                     );
@@ -223,9 +194,9 @@ export function TrashDialog({
               </section>
             ) : null}
             {trash.versions.length ? (
-              <section aria-label={L("Slettede bilder", "Deleted images")}>
+              <section aria-label={t("app-library-trash-dialog.trash-dialog.aria-label.876d5f98d09b")}>
                 <h3 className="pb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-                  {L("Bilder", "Images")} ({trash.versions.length})
+                  {t("app-library-trash-dialog.trash-dialog.h3.a3003608f2f0")} ({trash.versions.length})
                 </h3>
                 <ul className="border border-border bg-surface-1">
                   {trash.versions.map(({ asset, version }) => {
@@ -253,7 +224,7 @@ export function TrashDialog({
                           disabled={!editable || busy}
                           onClick={() => restore("version", version.id, label)}
                         >
-                          <ArchiveRestore /> {L("Hent inn igjen", "Restore")}
+                          <ArchiveRestore /> {t("app-library-trash-dialog.trash-dialog.button.9cc51e982309.2")}
                         </Button>
                         <Button
                           size="sm"
@@ -261,16 +232,13 @@ export function TrashDialog({
                           disabled={!isOwner || busy}
                           title={
                             isOwner
-                              ? L("Slett for godt", "Delete for good")
-                              : L(
-                                  "Bare prosjektets eier kan slette for godt",
-                                  "Only the project's owner can delete for good",
-                                )
+                              ? t("app-library-trash-dialog.trash-dialog.title.4a79b7760cdc.2")
+                              : t("app-library-trash-dialog.trash-dialog.title.49cc31ccf959.2")
                           }
                           onClick={() => setPurging({ assets: [], versions: [version.id], label })}
                           className="text-status-danger"
                         >
-                          <Trash2 /> {L("For godt …", "For good …")}
+                          <Trash2 /> {t("app-library-trash-dialog.trash-dialog.button.d54d45365f93.2")}
                         </Button>
                       </li>
                     );
@@ -283,22 +251,19 @@ export function TrashDialog({
         {purging ? (
           <div
             role="alertdialog"
-            aria-label={L("Bekreft sletting for godt", "Confirm deletion for good")}
+            aria-label={t("app-library-trash-dialog.trash-dialog.aria-label.21ac42b4bc3f")}
             className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
           >
             <p className="text-text-primary">
-              {L(
-                `«${purging.label}» slettes for godt, med alle filene. Det kan ikke angres. AI-jobbloggen beholdes. Vil du slette?`,
-                `“${purging.label}” will be deleted for good, with all its files. This cannot be undone. The AI job log is kept. Do you want to delete it?`,
-              )}
+              {t("app-library-trash-dialog.trash-dialog.p.4218a851f3be", { label: String(purging.label) })}
             </p>
             <div className="flex gap-2">
               <Button size="sm" variant="destructive" onClick={() => void purge()} disabled={busy}>
                 {busy ? <Loader2 className="animate-spin" /> : <Trash2 />}{" "}
-                {L("Slett for godt", "Delete for good")}
+                {t("app-library-trash-dialog.trash-dialog.button.4a79b7760cdc")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setPurging(null)} disabled={busy}>
-                {L("Avbryt", "Cancel")}
+                {t("app-library-trash-dialog.trash-dialog.button.6074ad810e8f")}
               </Button>
             </div>
           </div>
@@ -315,7 +280,7 @@ export function TrashDialog({
         ) : null}
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={busy}>
-            {L("Lukk", "Close")}
+            {t("app-library-trash-dialog.trash-dialog.button.72f631a62c75")}
           </Button>
         </DialogFooter>
       </DialogContent>

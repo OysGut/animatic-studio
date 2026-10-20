@@ -32,7 +32,8 @@ import { cameraText, describeAsset } from "./scene-prompt";
 import { sceneSetting } from "./image-prompt";
 import { keysEvenly } from "../order-key";
 import { framesToSeconds, secondsToFrames } from "../time";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Kilden jobben ble laget fra (`params.source` i generation_jobs). */
 export const SCENE_VIDEO_SOURCE = "scene2d";
@@ -107,19 +108,13 @@ export function planScenePieces(
   if (!range)
     return {
       ok: false,
-      message: L(
-        "Modellen kan ikke lage video fra 2D-scenen.",
-        "The model cannot make video from the 2D scene.",
-      ),
+      message: tk("core-generation-scene-to-video.message.message.2d18d510df3e"),
     };
   const seconds = framesToSeconds(durationFrames, fps);
   if (!(durationFrames > 0) || seconds + 1e-6 < range.min)
     return {
       ok: false,
-      message: L(
-        `Scenen er ${seconds.toFixed(1)} sekunder. Modellen trenger minst ${range.min} sekunder.`,
-        `The scene is ${seconds.toFixed(1)} seconds. The model needs at least ${range.min} seconds.`,
-      ),
+      message: tk("core-generation-scene-to-video.message.message.5a99d53cca31", { value1: String(seconds.toFixed(1)), min: String(range.min) }),
     };
   const count = Math.max(1, Math.ceil(seconds / range.max - 1e-9));
   const maxFrames = Math.max(1, Math.floor(secondsToFrames(range.max, fps)));

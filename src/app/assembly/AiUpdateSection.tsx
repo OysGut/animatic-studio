@@ -9,23 +9,7 @@ import { Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  adaptPromptForModel,
-  aiUpdatePlan,
-  costBreakdown,
-  effortChoice,
-  estimateCostUsd,
-  filmClips,
-  formatUsd,
-  L,
-  providerInfo,
-  providerModel,
-  sceneVideoWork,
-  videoDurationFor,
-  videoStartImages,
-  type ProjectState,
-  type ScriptChange,
-} from "@/core";
+import { adaptPromptForModel, aiUpdatePlan, costBreakdown, effortChoice, estimateCostUsd, filmClips, formatUsd, providerInfo, providerModel, sceneVideoWork, videoDurationFor, videoStartImages, type ProjectState, type ScriptChange } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
@@ -142,10 +126,7 @@ export function AiUpdateSection({
         ? { kind: "error", text: errors.join(" · ") }
         : {
             kind: "ok",
-            text: L(
-              `${started} nye ${started === 1 ? "video er" : "videoer er"} lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.`,
-              `${started} new ${started === 1 ? "video is" : "videos are"} queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.`,
-            ),
+            text: tk("app-assembly-ai-update-section.videos-queued-high-priority", { count: started }),
           },
     );
   }

@@ -3,16 +3,7 @@
  * med Bézier-håndtak. Rene funksjoner (tegning, treffsjekk, dra-utkast) uten React, slik at de kan testes.
  * Alt er redigeringshjelp og tegnes aldri i kameravisningen eller eksporten.
  */
-import {
-  L,
-  cameraCorners,
-  shotPath,
-  type CameraFrame,
-  type CameraShot,
-  type Command,
-  type Composition,
-  type CompositionCamera,
-} from "@/core";
+import { cameraCorners, shotPath, type CameraFrame, type CameraShot, type Command, type Composition, type CompositionCamera } from "@/core";
 import { t as tk } from "@/core/i18n/keyed";
 
 export interface Pt {

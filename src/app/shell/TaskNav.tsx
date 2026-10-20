@@ -8,7 +8,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Check, ChevronLeft, ChevronRight, ListTodo, StickyNote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { assetTasks, L, stepTask, type AssetTask, type ProjectState } from "@/core";
+import { assetTasks, stepTask, type AssetTask, type ProjectState } from "@/core";
 import { projectStateKey } from "@/app/project/use-project";
 import { useActiveProduction } from "@/app/project/use-production";
 import { gotoScene, lastScene } from "./current-scene";

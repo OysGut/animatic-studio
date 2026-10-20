@@ -353,3 +353,77 @@ De tas sammen med flertallstekstene i ML2f, eller tidligere hvis Mars ønsker de
 - ml2-languages: 181/181. Ny del: manus, Story Lab, manusutforskeren og sceneeditorens manus på nb, en og en-XA, uten vannrett rulling, uten pseudo-oversatte språkkoder og uten norske begrunnelser. I dialogen sjekkes at språknavnet er på engelsk med urørt kode.
 - t2-writing-ui 69/69, dv1-script-nav 15/15, dv3-dialogue-editor 48/48, dv6-languages 16/16, dv7-drift 28/28 (med mts-fixture), p5-line-linking 24/24, storylab-ui 32/32.
 - Funn: overløpet på 64 px i sceneeditoren vises fortsatt i ML2a-scenarioet med åpen opptaksdialog, og hører til ML2d. Sceneeditorens manusvisning uten dialog har 0 px.
+
+
+## ML2f – bibliotek, M6, AI/admin, kjerne og server – broen tom (20.10.2026)
+
+### Dekning
+| Mål | Verdi |
+|---|---|
+| Tekstpar i inventaret | 9 964 |
+| Flyttet til `t()`/`tLocalized()` | **9 964 (100 %)** |
+| Gjenstående bro (`L`/`localized`) | **0** |
+| Herav flyttet i ML2f | 4 067 (bibliotek og Asset Studio, M6, AI-innstillinger, personvern, admin, kjerne og server, pluss 86 rester fra ML2c–ML2e) |
+| Herav skrevet om til håndskrevne meldinger (`authored.json`) | 141 tekstpar → 272 meldinger, 71 med flertallsformer |
+| nb og en | 100 % (i18n-sjekken: 0 tekster uten engelsk) |
+| en-XA | generert automatisk fra en for alle nøkler |
+| Tapstest mot ML1-grunnlinjen | 9 963/9 963 nøkler og råtekster bevart |
+
+Fordeling av alle 9 964 par: bibliotek og Asset Studio 1 469, AI/konto/admin 372, kjerne, adaptere og server 2 668, øvrige flater (skall, manus, sceneeditor, montering) 5 455.
+
+### Hvordan restene ble løst
+- **Plassholderkonflikter og dynamiske uttrykk** (133 par: 115 + 18) er skrevet om til hele setninger med navngitte parametere, og flertall med `Intl.PluralRules` (`{count}`). Ingen tekst er limt sammen av biter på bare ett språk.
+- **Faste tabeller** (overgangstyper, rulleteksttyper, plakatvalg, tallord i linjekoblingene, språknavn) bruker `tLocalized` med egne nøkler.
+- **Konstanter som tester og server sjekker** (`PARTIAL_RESTORE`, `CONTENT_SYNC_FLAG`, `ORIGINAL_NOTE_MARK`, `UNDO_PRODUCTION_*`) står uendret; nøklene gir nøyaktig samme tekst (test i `tests/unit/i18n-ml2f.test.ts`).
+- **Gamle nøkler blir ikke borte:** hver håndskrevet melding har `replaces` med ML1-nøklene den avløser, og inventaret merker dem `supersededBy`.
+
+### L, localized og tm
+- `L()` og `localized()` er ikke lenger en skrivevei. `scripts/i18n/check.mjs` stopper hvert nytt kall (også med alias) med beskjed om å legge teksten i katalogen og bruke `t()`. Funksjonene står igjen, merket `@deprecated`, bare fordi eldre tester leser tekstpar med dem.
+- `tm()` brukes bare for gamle, lagrede servermeldinger som ble laget på norsk (f.eks. lagrede begrunnelser og eldre feilmeldinger). Nye servermeldinger bruker stabile feilkoder (`server-errors.ts`) eller `t()`. Regelen står i `src/core/i18n/index.ts` og i AGENTS.md.
+
+### Konfliktene
+Alle 266 konflikter er beholdt etter løsning A. Ingen nøkler er slått sammen. Disse 27 sammenslåingene **venter på Mars**:
+
+| # | Norsk kilde | Engelske varianter (antall steder) |
+|---|---|---|
+| 1 | , anslått {value1} | «, estimated {value1}» (3) |
+| 2 | «{name}» | «“{name}”» (2) |
+| 3 | «{text}» | «“{text}”» (2) |
+| 4 | «{value1}» | «“{value1}”» (2) |
+| 5 | {label} · anslått {value2} | «{label} · estimated {value2}» (2) |
+| 6 | 2D-scenen | «the 2D scene» (2); «The 2D scene» (11) |
+| 7 | Anslått: {value1} · {label} | «Estimated: {value1} · {label}» (2) |
+| 8 | Beskrivelse for segment {value1} | «Description for segment {value1}» (2) |
+| 9 | Bruk mal «{name}» | «Use template “{name}”» (2) |
+| 10 | Bruk v{number} | «Use v{number}» (2) |
+| 11 | Fjern betegnelsen «{name}» | «Remove the term “{name}”» (2) |
+| 12 | Godkjenn v{number} av «{name}» | «Approve v{number} of “{name}”» (2) |
+| 13 | Jobben startet, men kunne ikke registreres: {message} | «The job started, but could not be registered: {message}» (2) |
+| 14 | Laget med profil {name} | «Made with profile {name}» (3) |
+| 15 | Laget med profil {value1} | «Made with profile {value1}» (2) |
+| 16 | Legg «{name}» i «{name2}» | «Put “{name}” in “{name2}”» (3) |
+| 17 | Legg til {size} noder | «Add {size} nodes» (2) |
+| 18 | Legg til {value1} | «Add {value1}» (2) |
+| 19 | Modell for {value1} | «Model for {value1}» (2) |
+| 20 | Ny kvalitetsprofil «{name}» | «New quality profile "{name}"» (2) |
+| 21 | Nytt bilde i «{name}» | «New image in “{name}”» (2) |
+| 22 | Nytt lag «{name}» | «New layer “{name}”» (4) |
+| 23 | Samtale med {name} | «Conversation with {name}» (2) |
+| 24 | Scene {value1} | «Scene {value1}» (2) |
+| 25 | Slett v{number} | «Delete v{number}» (2) |
+| 26 | Ta «{name}» ut av gruppen | «Take “{name}” out of the group» (3) |
+| 27 | Vis {value1} | «Show {value1}» (2) |
+
+### Tester (ML2f)
+- Full vitest: 1 949 bestått, 0 feilet, 10 hoppet over (inkludert ny `i18n-ml2f.test.ts`, 10 tester).
+- DB: 140/140.
+- ml2-languages: 318/318 – alle hovedflater (skall, konto, personvern, invitasjon, manus, Story Lab, manusutforsker, sceneeditor, montering, utgivelse, bibliotek, Asset Studio, admin) på nb, en og en-XA uten vannrett rulling, uten nøkkelfeil og uten vanlige norske grensesnittord på en/en-XA; eksportdialogene på en-XA.
+- nb: p6 18/18, p8 110/110, m6-rest 74/74, ca2 17/17, ca7 26/26, u5 65/65, verifisering4 51/54.
+- `UI_LANG=en`: u5 65/65, t2 69/69, dv5 20/20, p7 45/45.
+
+### Avvik
+- verifisering4: de samme tre kontrollene som før feiler av miljøgrunner (mikrofon i testnettleseren og fontmål for 10 tegn per tomme).
+- Feilsiden («Siden kunne ikke vises») vises på norsk hvis en side krasjer før språket er satt ved første tegning. Teksten er flyttet til nøkler; det er tidspunktet som gjør at norsk vises.
+- p6 og m6-rest/ca2/ca7 trenger `mts-fixture.json`, p8 trenger `visual-fixture.json` (plakatene).
+- t2 har fått valgfritt `UI_LANG` (som harness-suitene fikk i ML2e). Språktesten gir adminsiden en egen oversikt, fordi fellesoppsettet ikke svarer på den.
+- Plattformtesten for kjernen hopper nå over katalognøkler i anførselstegn (f.eks. `"core-presentation-document.…"`), som ellers ble lest som `document.`.

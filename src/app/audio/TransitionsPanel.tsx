@@ -5,19 +5,7 @@
  */
 import { Play } from "lucide-react";
 import { useState } from "react";
-import {
-  L,
-  TRANSITION_MAX_FADE_MS,
-  newId,
-  setTransition,
-  takeJoints,
-  transitionAt,
-  wholeFileCandidate,
-  type AudioComposition,
-  type ProjectState,
-  type TakeJoint,
-  type TransitionSettings,
-} from "@/core";
+import { TRANSITION_MAX_FADE_MS, newId, setTransition, takeJoints, transitionAt, wholeFileCandidate, type AudioComposition, type ProjectState, type TakeJoint, type TransitionSettings } from "@/core";
 import { Button } from "@/components/ui/button";
 import { roomCandidates } from "./room-fill";
 import { t } from "@/core/i18n/keyed";

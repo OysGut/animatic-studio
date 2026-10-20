@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ExternalLink, Undo2, Redo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DriftBadge } from "@/app/dialogue/DriftBadge";
-import { L, lineDrift, blocksOfVariant, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
+import { lineDrift, blocksOfVariant, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
 import { explorerContext, explorerGroups, type ExplorerHit } from "@/core/screenplay/explorer";
 import { ScriptPageView, type Selection } from "@/app/script/ScriptPageView";
 import { NotesPanel } from "@/app/script/NotesPanel";

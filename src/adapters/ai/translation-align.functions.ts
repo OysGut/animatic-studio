@@ -6,7 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, blocksOfVariant, isUuid } from "@/core";
+import { blocksOfVariant, isUuid } from "@/core";
 import {
   ALIGN_EXCERPT_CHARS,
   alignItemsError,
@@ -17,6 +17,7 @@ import {
   type AlignRequestItem,
 } from "@/core/translation/align-prompt";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export interface AlignInput {
   readonly projectId: string;
@@ -31,10 +32,10 @@ export type AlignResult =
 export function validateAlignInput(d: unknown): AlignInput {
   const x = (d ?? {}) as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.0d8b6d131549"));
   if (typeof x["language"] !== "string" || !/^[a-z]{2,3}(-[A-Za-z]{2})?$/u.test(x["language"]))
-    throw new Error(L("Ugyldig språk", "Invalid language"));
-  if (alignItemsError(x["items"])) throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+    throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.9687ea20075b"));
+  if (alignItemsError(x["items"])) throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.c7b43dc8e147"));
   const items = (x["items"] as AlignRequestItem[]).map((it) => ({
     index: it.index,
     heading: it.heading.slice(0, 120),
@@ -51,7 +52,7 @@ export const alignTranslationWithAi = createServerFn({ method: "POST" })
     const { memberRole, ROLE_RANK } = await import("./ai-gate.server");
     const role = await memberRole(context.supabase as unknown as AnyClient, data.projectId, context.userId);
     if ((ROLE_RANK[role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
-      return { ok: false, message: L("Du har ikke tilgang til dette prosjektet.", "You do not have access to this project.") };
+      return { ok: false, message: t("adapters-ai-translation-align-functions.message.message.635196c3c440") };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
     const { loadProjectState } = await import("@/adapters/storage/project-rows");

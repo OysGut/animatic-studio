@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { L, locale, tm } from "@/core";
+import { locale, tm } from "@/core";
 import { changePassword, saveDisplayName } from "@/adapters/browser/account";
 import { signOut } from "@/adapters/browser/auth";
 import { requestMyDeletion } from "@/adapters/account/account.functions";

@@ -4,13 +4,12 @@
  * prosjekt i nettleseren.
  */
 import { useCallback, useEffect, useState } from "react";
-import { FILM_LANGUAGES, L, LANGUAGE_LABEL, MAIN_LANGUAGE } from "@/core";
-import { t } from "@/core/i18n/keyed";
+import { FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE } from "@/core";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const LANGUAGE_NAME_EN: Record<string, string> = { nb: "Norwegian", en: "English" };
-
-/** Språknavn på gjeldende språk (LANGUAGE_LABEL er norsk). */
-const languageName = (l: string) => L(LANGUAGE_LABEL[l] ?? l, LANGUAGE_NAME_EN[l] ?? l);
+/** Språknavn på gjeldende språk (LANGUAGE_LABEL følger visningsspråket). */
+const LANGUAGE_NAME: Record<string, string> = tLocalized({ nb: "app-assembly-use-film-language.language-name-nb", en: "app-assembly-use-film-language.language-name-en" });
+const languageName = (l: string) => LANGUAGE_NAME[l] ?? LANGUAGE_LABEL[l] ?? l;
 
 export interface FilmLanguage {
   /** Dialogspråket (lyd og språkavhengige bilder). */

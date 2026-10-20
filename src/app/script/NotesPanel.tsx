@@ -4,18 +4,7 @@
  */
 import { Check, MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  L,
-  formatEdited,
-  formatStamp,
-  newId,
-  resolveRange,
-  trialEditResult,
-  type Annotation,
-  type Command,
-  type NewAnnotation,
-  type ProjectState,
-} from "@/core";
+import { formatEdited, formatStamp, newId, resolveRange, trialEditResult, type Annotation, type Command, type NewAnnotation, type ProjectState } from "@/core";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -8,34 +8,7 @@ import { useMemo, useState } from "react";
 import { ClipboardList, Loader2, Palette, Plus, ScanSearch, Trash2 } from "lucide-react";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import {
-  STYLE_USES,
-  STYLE_USE_LABEL,
-  type StyleUse,
-  STYLE_FIELD_LIMIT,
-  STYLE_TOTAL_LIMIT,
-  styleGuideLength,
-  buildContextImagePrompt,
-  defaultStyleProfile,
-  emptyStyleGuide,
-  newId,
-  sortedAssets,
-  suggestStyleGuide,
-  versionsOf,
-  type ProjectState,
-  type StyleGuide,
-  type StyleTextField,
-  STYLE_ANALYSIS_KEYS,
-  STYLE_ANALYSIS_LABEL,
-  applyStyleAnalysis,
-  parseStyleAnalysis,
-  styleAnalysisUserText,
-  type StyleAnalysis,
-  type StyleAnalysisKey,
-  L,
-  collation,
-  tm,
-} from "@/core";
+import { STYLE_USES, STYLE_USE_LABEL, type StyleUse, STYLE_FIELD_LIMIT, STYLE_TOTAL_LIMIT, styleGuideLength, buildContextImagePrompt, defaultStyleProfile, emptyStyleGuide, newId, sortedAssets, suggestStyleGuide, versionsOf, type ProjectState, type StyleGuide, type StyleTextField, STYLE_ANALYSIS_KEYS, STYLE_ANALYSIS_LABEL, applyStyleAnalysis, parseStyleAnalysis, styleAnalysisUserText, type StyleAnalysis, type StyleAnalysisKey, collation, tm } from "@/core";
 import { GlobalStyleText } from "./GlobalStyleText";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";

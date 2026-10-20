@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { L, profileAt, type EngineMode, type ProjectState } from "@/core";
+import { profileAt, type EngineMode, type ProjectState } from "@/core";
 import { createStorySession, type JsonValue } from "@/adapters/storylab/sessions.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";

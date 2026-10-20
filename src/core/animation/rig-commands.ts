@@ -1,5 +1,5 @@
 /** All rig writes use the ordinary command/patch transaction, including undo and redo. */
-import { L } from "../i18n";
+
 import { isUuid } from "../ids";
 import type { ProjectState } from "../model";
 import { rigSpecError, breathError, exportFlagsError, type AnimationRig, type AnimationRigVersion, type AnimationUse, type RigSpec, type RigAnchors, type UseBehavior } from "./rig";

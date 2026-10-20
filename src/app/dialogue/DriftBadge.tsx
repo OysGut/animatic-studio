@@ -4,7 +4,7 @@
  */
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, CheckCircle2, HelpCircle } from "lucide-react";
-import { L, DRIFT_LABEL, driftDiff, lineDrift, newId, scriptLanguageOf, type Command, type ProjectState } from "@/core";
+import { DRIFT_LABEL, driftDiff, lineDrift, newId, scriptLanguageOf, type Command, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { t } from "@/core/i18n/keyed";

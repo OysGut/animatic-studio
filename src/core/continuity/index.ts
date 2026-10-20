@@ -29,27 +29,12 @@ import { compareKeys } from "../order-key";
 import { blocksOfVariant, orderedOccurrences, storyTimes } from "../views";
 import { mentions } from "../screenplay/filter";
 import { assetNames, coverVersion, nameKey } from "../library";
-import { localized } from "../i18n";
 
-export const CONTINUITY_KIND_LABEL: Record<ContinuityKind, string> = localized({
-  haircut: ["Hårklipp / frisyre", "Haircut / hairstyle"],
-  hair_color: ["Hårfarge", "Hair colour"],
-  costume: ["Kostyme / klær", "Costume / clothes"],
-  injury: ["Skade / bandasje", "Injury / bandage"],
-  scar: ["Arr", "Scar"],
-  dirt: ["Skitt", "Dirt"],
-  snow_water: ["Snø / vann", "Snow / water"],
-  beard: ["Skjegg", "Beard"],
-  aging: ["Alder", "Age"],
-  carried_object: ["Gjenstand den bærer", "Object it carries"],
-  other: ["Annen forandring", "Other change"],
-});
+import { tLocalized } from "@/core/i18n/keyed";
 
-export const CONTINUITY_DURATION_LABEL: Record<ContinuityDuration, string> = localized({
-  permanent: ["For godt", "For good"],
-  temporary: ["Til en bestemt scene", "Until a certain scene"],
-  scene: ["Bare denne scenen", "Only this scene"],
-});
+export const CONTINUITY_KIND_LABEL: Record<ContinuityKind, string> = tLocalized({ haircut: "core-continuity-index.continuity-kind-label.haircut.ffca5c30ff0a", hair_color: "core-continuity-index.continuity-kind-label.hair-color.0167c648467a", costume: "core-continuity-index.continuity-kind-label.costume.8dc2d1866635", injury: "core-continuity-index.continuity-kind-label.injury.e1a70517a47f", scar: "core-continuity-index.continuity-kind-label.scar.2c6d27bdcdcf", dirt: "core-continuity-index.continuity-kind-label.dirt.94e661124aeb", snow_water: "core-continuity-index.continuity-kind-label.snow-water.35a466e5fa3b", beard: "core-continuity-index.continuity-kind-label.beard.c567ab78dc90", aging: "core-continuity-index.continuity-kind-label.aging.ccb740d17115", carried_object: "core-continuity-index.continuity-kind-label.carried-object.09da72ff688b", other: "core-continuity-index.continuity-kind-label.other.6be9d3bdd065" });
+
+export const CONTINUITY_DURATION_LABEL: Record<ContinuityDuration, string> = tLocalized({ permanent: "core-continuity-index.continuity-duration-label.permanent.3cf57df372ac", temporary: "core-continuity-index.continuity-duration-label.temporary.4bd7a5c288a1", scene: "core-continuity-index.continuity-duration-label.scene.3bdce58f6f13" });
 
 /** Engelsk ord for typen (brukes i beskrivelsen til AI-generering). */
 const KIND_EN: Record<ContinuityKind, string> = {

@@ -3,7 +3,7 @@
  * mellom tale, effekter og låste tidsrom endres; alt som er synkronisert, følger med (samme tidsavbildning).
  * Resultatet er én RetimeScene – én transaksjon og én angring. Ingenting lagres før «Bruk».
  */
-import { L } from "../i18n";
+
 import type { ProjectState } from "../model";
 import { compositionDuration } from "../composition/animate";
 import { compositionForOccurrence, planRetime, type RetimeGap, type RetimePlan } from "../composition/retime";

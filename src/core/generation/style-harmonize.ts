@@ -8,11 +8,12 @@
  * detaljgrad og atmosfære, og har en tydelig instruks om å bevare karakterens identitet (REQ-0139).
  * Ren TypeScript (ADR-0003).
  */
-import { L, localized } from "../i18n";
+
 import type { ProjectState, StyleGuide } from "../model";
 import { styleText } from "./style";
 import { visualBriefFacts, MAX_ATTACHED_IMAGES, type AttachedImage } from "./image-prompt";
 import { qualityProfileError, type QualityProfileSnapshot } from "./quality-profile";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** Hva det harmoniserte bildet brukes til (bruksvalget etter godkjenning). */
 export type HarmonizationUse = "local" | "variant" | "reference" | "published";
@@ -22,12 +23,7 @@ export const HARMONIZATION_USES: readonly HarmonizationUse[] = [
   "reference",
   "published",
 ];
-export const HARMONIZATION_USE_LABEL: Record<HarmonizationUse, string> = localized({
-  local: ["Bare i denne plakaten eller scenen", "Only in this poster or scene"],
-  variant: ["Alternativ variant av ressursen", "Alternative variant of the asset"],
-  reference: ["Foretrukket referanse for en stilprofil", "Preferred reference for a style profile"],
-  published: ["Publisert til det globale biblioteket", "Published to the global library"],
-});
+export const HARMONIZATION_USE_LABEL: Record<HarmonizationUse, string> = tLocalized({ local: "core-generation-style-harmonize.harmonization-use-label.local.0b42b148dc7d", variant: "core-generation-style-harmonize.harmonization-use-label.variant.11ab6e03ef9d", reference: "core-generation-style-harmonize.harmonization-use-label.reference.49b0848a1dfe", published: "core-generation-style-harmonize.harmonization-use-label.published.1eccd5e6edda" });
 
 /** Metadata om en harmonisert versjon (krav 7): kilde, modell, kvalitetsprofil, stilprofil og bruksvalg. */
 export interface StyleHarmonizationFields {
@@ -84,32 +80,29 @@ export function harmonizationError(
   f: StyleHarmonizationFields,
 ): string | null {
   if (!isImageVersion(s, f.versionId))
-    return L("Den harmoniserte versjonen finnes ikke", "The harmonized version was not found");
+    return tk("core-generation-style-harmonize.harmonization-error.message.41f810e87806");
   if (!isImageVersion(s, f.sourceVersionId))
-    return L("Kildeversjonen finnes ikke", "The source version was not found");
+    return tk("core-generation-style-harmonize.harmonization-error.message.7ba328af13fa");
   if (f.versionId === f.sourceVersionId)
-    return L("Resultatet kan ikke være sin egen kilde", "The result cannot be its own source");
+    return tk("core-generation-style-harmonize.harmonization-error.message.5d301e07e1dc");
   if (typeof f.model !== "string" || !f.model.trim() || f.model.length > HARMONIZATION_MAX_MODEL)
-    return L("Ugyldig modell", "Invalid model");
-  if (!HARMONIZATION_USES.includes(f.use)) return L("Ugyldig bruksvalg", "Invalid use");
+    return tk("core-generation-style-harmonize.harmonization-error.message.a7d3a9f0dc59");
+  if (!HARMONIZATION_USES.includes(f.use)) return tk("core-generation-style-harmonize.harmonization-error.message.09d6a6332e49");
   if (typeof f.note !== "string" || f.note.length > HARMONIZATION_MAX_NOTE)
-    return L("Merknaden er for lang", "The annotation is too long");
+    return tk("core-generation-style-harmonize.harmonization-error.message.52a03cca2ecf");
   if (f.styleProfileId !== null) {
     const p = s.styleProfiles[f.styleProfileId];
-    if (!p || p.removed) return L("Stilprofilen finnes ikke", "The style profile was not found");
+    if (!p || p.removed) return tk("core-generation-style-harmonize.harmonization-error.message.2445d3d4fa45");
   }
   if (f.referenceVersionId !== null && !isImageVersion(s, f.referenceVersionId))
-    return L("Referansebildet finnes ikke", "The reference image was not found");
+    return tk("core-generation-style-harmonize.harmonization-error.message.8bef52516e9a");
   if (f.styleProfileId === null && f.referenceVersionId === null)
-    return L(
-      "Velg en stilprofil eller et referansebilde",
-      "Choose a style profile or a reference image",
-    );
+    return tk("core-generation-style-harmonize.harmonization-error.message.5b5f557a034e");
   if (f.qualityProfile !== null) {
     const q = f.qualityProfile;
     if (typeof q !== "object" || typeof q.id !== "string" || typeof q.name !== "string")
-      return L("Ugyldig kvalitetsprofil", "Invalid quality profile");
-    if (qualityProfileError(q.name, q.spec)) return L("Ugyldig kvalitetsprofil", "Invalid quality profile");
+      return tk("core-generation-style-harmonize.harmonization-error.message.d26292f48f35");
+    if (qualityProfileError(q.name, q.spec)) return tk("core-generation-style-harmonize.harmonization-error.message.d26292f48f35.2");
   }
   return null;
 }
@@ -120,12 +113,12 @@ export function preferredReferenceError(
   f: StylePreferredReferenceFields,
 ): string | null {
   const a = s.assets[f.assetId];
-  if (!a || a.removed) return L("Ressursen finnes ikke", "The asset was not found");
+  if (!a || a.removed) return tk("core-generation-style-harmonize.preferred-reference-error.message.f3f5188e8bf4");
   const p = s.styleProfiles[f.styleProfileId];
-  if (!p || p.removed) return L("Stilprofilen finnes ikke", "The style profile was not found");
+  if (!p || p.removed) return tk("core-generation-style-harmonize.preferred-reference-error.message.bf33dd5f8010");
   const va = s.assetVariants[f.variantId];
   if (!va || va.assetId !== a.id)
-    return L("Varianten hører ikke til ressursen", "The variant does not belong to the asset");
+    return tk("core-generation-style-harmonize.preferred-reference-error.message.84f1fa54297b");
   return null;
 }
 
@@ -289,28 +282,22 @@ export function harmonizeAttachments(
 /** Variantnavnet for harmoniserte bilder (REQ-0142): egen variant, aldri i stedet for en eksisterende. */
 export function harmonizedVariantName(profileName: string | null): string {
   return profileName
-    ? L(`Harmonisert – ${profileName}`, `Harmonized – ${profileName}`).slice(0, 80)
-    : L("Harmonisert", "Harmonized").slice(0, 80);
+    ? tk("core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-profile-name-harmonized-profile-name-slice.347756edb42b", { profileName: String(profileName) }).slice(0, 80)
+    : tk("core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-harmonized-slice.5ae754bee023").slice(0, 80);
 }
 
 /** Notatet på den harmoniserte versjonen (krav 7: «Laget med profil X»). */
 export function harmonizeNote(profileName: string | null, model: string): string {
   const m = model.slice(0, 120);
   return (profileName
-    ? L(
-        `Harmonisert med profilen «${profileName}» (${m}).`,
-        `Harmonized with the profile "${profileName}" (${m}).`,
-      )
-    : L(`Harmonisert med et referansebilde (${m}).`, `Harmonized with a reference image (${m}).`)
+    ? tk("core-generation-style-harmonize.harmonize-note.profile-name-l-harmonisert-med-profilen-profile-name-m-harmonized-with-the-profile-profile-name-m-l-harmonisert-med-et-referansebilde-m-harmonized-with-a-reference-image-m-slice.a9dd3b11e482", { profileName: String(profileName), m: String(m) })
+    : tk("core-generation-style-harmonize.harmonize-note.profile-name-l-harmonisert-med-profilen-profile-name-m-harmonized-with-the-profile-profile-name-m-l-harmonisert-med-et-referansebilde-m-harmonized-with-a-reference-image-m-slice.fbb53574b3a2", { m: String(m) })
   ).slice(0, HARMONIZATION_MAX_NOTE);
 }
 
 /** Advarselen som vises før generering (REQ-0139): identiteten kan endre seg. */
 export const HARMONIZE_IDENTITY_WARNING = () =>
-  L(
-    "AI-en kan endre karakterens kjennetegn. Sammenlign alltid med originalen før du godkjenner.",
-    "The AI may change the character's distinguishing features. Always compare with the original before approving.",
-  );
+  tk("core-generation-style-harmonize.harmonize-identity-warning.message.bb379494fc5a");
 
 /** Stilen som sendes, for forhåndsvisning i panelet (samme tekst som stilprofilen viser). */
 export function harmonizeStylePreview(
@@ -345,22 +332,22 @@ export function harmonizeBatchSelectionError(
   styleProfileId: string | null,
   referenceVersionId: string | null,
 ): string | null {
-  if (!items.length) return L("Velg minst ett bilde", "Choose at least one image");
+  if (!items.length) return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.f52bda518c69");
   if (items.length > HARMONIZE_BATCH_MAX)
-    return L(`Høyst ${HARMONIZE_BATCH_MAX} bilder i én jobb`, `At most ${HARMONIZE_BATCH_MAX} images in one job`);
+    return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.d7d726738470", { HARMONIZE_BATCH_MAX: String(HARMONIZE_BATCH_MAX) });
   if (!styleProfileId && !referenceVersionId)
-    return L("Velg en stilprofil eller et referansebilde", "Choose a style profile or a reference image");
+    return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.b8ca6e055253");
   const seen = new Set<string>();
   for (const it of items) {
     const key = `${it.assetId}:${it.sourceVersionId}`;
-    if (seen.has(key)) return L("Samme bilde to ganger", "The same image twice");
+    if (seen.has(key)) return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.d13fdff0b683");
     seen.add(key);
     const a = s.assets[it.assetId];
     const v = s.assetVersions[it.sourceVersionId];
     if (!a || a.removed || !v || !v.mimeType.startsWith("image/") || s.assetVariants[v.variantId]?.assetId !== a.id)
-      return L("Et av bildene finnes ikke lenger", "One of the images no longer exists");
+      return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.e717dc4c2bf8");
     if (!buildHarmonizePrompt(s, { assetId: a.id, versionId: v.id, styleProfileId, referenceVersionId }))
-      return L("Stilprofilen er tom – fyll den ut eller velg et referansebilde", "The style profile is empty – fill it in or choose a reference image");
+      return tk("core-generation-style-harmonize.harmonize-batch-selection-error.message.dd753eabc170");
   }
   return null;
 }

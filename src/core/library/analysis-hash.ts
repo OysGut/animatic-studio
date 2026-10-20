@@ -5,9 +5,10 @@
  */
 import type { ProjectState } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
-import { L } from "../i18n";
+
 import { classificationFromJson, type AIClassification } from "./classification-prompt";
 import type { LibrarySuggestion } from "./suggest";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Tak for den innebygde AI-en (B-047, svar 18.10). */
 export const SERVICE_AI_RUNS_PER_PROJECT_PER_DAY = 20;
@@ -128,10 +129,7 @@ export function dailyQuotaError(
   limit = SERVICE_AI_RUNS_PER_PROJECT_PER_DAY,
 ): string | null {
   return runsToday >= limit
-    ? L(
-        `Den automatiske analysen er kjørt ${limit} ganger i dag for dette prosjektet. Den fortsetter i morgen.`,
-        `The automatic analysis has run ${limit} times today for this project. It will continue tomorrow.`,
-      )
+    ? tk("core-library-analysis-hash.daily-quota-error.message.330b7b020f3f", { limit: String(limit) })
     : null;
 }
 

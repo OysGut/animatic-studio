@@ -3,7 +3,7 @@
  * prosjektdata som skrives med kommandoer (AddCanvasNodes …). Denne modulen er ren: validering, et foreslått
  * førsteoppsett fra manuset (layoutFromStructure) og en kort tekst om canvaset til intervjuprompten.
  */
-import { L } from "../i18n";
+
 import type { CanvasNodeId } from "../ids";
 import {
   mainProduction,
@@ -16,6 +16,7 @@ import {
 import { storyTimesCached } from "../continuity";
 import { formatHeading } from "../screenplay/paginate";
 import { compareKeys } from "../order-key";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const CANVAS_NODE_KINDS: readonly CanvasNodeKind[] = [
   "premise",
@@ -56,33 +57,33 @@ const COLOR_RE = /^[a-z][a-z0-9-]{0,39}$/;
 
 export function canvasNodeKindLabel(k: CanvasNodeKind): string {
   const labels: Record<CanvasNodeKind, string> = {
-    premise: L("Premiss", "Premise"),
-    plot: L("Plot", "Plot"),
-    subplot: L("Sideplot", "Subplot"),
-    plot_point: L("Plotpunkt", "Plot point"),
-    turning_point: L("Vendepunkt", "Turning point"),
-    event: L("Hendelse", "Event"),
-    consequence: L("Konsekvens", "Consequence"),
-    scene: L("Scene", "Scene"),
-    character: L("Karakter", "Character"),
-    location: L("Sted", "Location"),
-    relation: L("Relasjon", "Relation"),
-    note: L("Notat", "Note"),
-    idea: L("Idé", "Idea"),
-    alternative: L("Alternativ", "Alternative"),
-    group: L("Gruppe", "Group"),
+    premise: tk("core-storylab-canvas.premise.premise.9de77c48671c"),
+    plot: tk("core-storylab-canvas.plot.plot.114cb2d727ef"),
+    subplot: tk("core-storylab-canvas.subplot.subplot.36571c5f9b8c"),
+    plot_point: tk("core-storylab-canvas.plot-point.plot-point.e581413c6812"),
+    turning_point: tk("core-storylab-canvas.turning-point.turning-point.aec313970a40"),
+    event: tk("core-storylab-canvas.event.event.bc94a5307323"),
+    consequence: tk("core-storylab-canvas.consequence.consequence.071d5046b0f8"),
+    scene: tk("core-storylab-canvas.scene.scene.6296666a38fc"),
+    character: tk("core-storylab-canvas.character.character.7f4c710fdd24"),
+    location: tk("core-storylab-canvas.location.location.5be3d87e0de8"),
+    relation: tk("core-storylab-canvas.relation.relation.0a6e501cc1c7"),
+    note: tk("core-storylab-canvas.note.note.1ed1091a5b73"),
+    idea: tk("core-storylab-canvas.idea.idea.fd9111ab288c"),
+    alternative: tk("core-storylab-canvas.alternative.alternative.ab9b197fc451"),
+    group: tk("core-storylab-canvas.group.group.8d4eac26b119"),
   };
   return labels[k];
 }
 
 export function canvasEdgeKindLabel(k: CanvasEdgeKind): string {
   const labels: Record<CanvasEdgeKind, string> = {
-    leads_to: L("Fører til", "Leads to"),
-    causes: L("Forårsaker", "Causes"),
-    conflicts: L("Er i konflikt med", "Conflicts with"),
-    relation: L("Relasjon", "Relation"),
-    alternative_of: L("Alternativ til", "Alternative of"),
-    belongs_to: L("Hører til", "Belongs to"),
+    leads_to: tk("core-storylab-canvas.leads-to.leads-to.42ec5cf12796"),
+    causes: tk("core-storylab-canvas.causes.causes.2af860c88540"),
+    conflicts: tk("core-storylab-canvas.conflicts.conflicts.9fd834e4ddae"),
+    relation: tk("core-storylab-canvas.relation.relation.0a6e501cc1c7.2"),
+    alternative_of: tk("core-storylab-canvas.alternative-of.alternative-of.d63a45d859f8"),
+    belongs_to: tk("core-storylab-canvas.belongs-to.belongs-to.8abbcc03cc04"),
   };
   return labels[k];
 }
@@ -91,48 +92,39 @@ const finite = (v: unknown): v is number => typeof v === "number" && Number.isFi
 
 /** Feil i feltene til en node (null = gyldig). Sjekker ikke at koblinger finnes (det gjør kommandoen). */
 export function canvasNodeError(f: unknown): string | null {
-  if (!f || typeof f !== "object") return L("Ugyldig node", "Invalid node");
+  if (!f || typeof f !== "object") return tk("core-storylab-canvas.canvas-node-error.message.4d10d1fbf882");
   const o = f as Record<string, unknown>;
   if (!CANVAS_NODE_KINDS.includes(o["kind"] as CanvasNodeKind))
-    return L("Ukjent nodetype", "Unknown node type");
+    return tk("core-storylab-canvas.canvas-node-error.message.f4702edfa6e3");
   if (typeof o["title"] !== "string" || o["title"].length > CANVAS_TITLE_MAX)
-    return L(
-      `Tittelen kan være høyst ${CANVAS_TITLE_MAX} tegn`,
-      `The title can be at most ${CANVAS_TITLE_MAX} characters`,
-    );
+    return tk("core-storylab-canvas.canvas-node-error.message.876cb4f2f1d3", { CANVAS_TITLE_MAX: String(CANVAS_TITLE_MAX) });
   if (typeof o["body"] !== "string" || o["body"].length > CANVAS_BODY_MAX)
-    return L(
-      `Teksten kan være høyst ${CANVAS_BODY_MAX} tegn`,
-      `The text can be at most ${CANVAS_BODY_MAX} characters`,
-    );
+    return tk("core-storylab-canvas.canvas-node-error.message.431a2384fc72", { CANVAS_BODY_MAX: String(CANVAS_BODY_MAX) });
   for (const k of ["x", "y"] as const)
     if (!finite(o[k]) || Math.abs(o[k]) > CANVAS_COORD_MAX)
-      return L("Ugyldig posisjon", "Invalid position");
+      return tk("core-storylab-canvas.canvas-node-error.message.839ddfe433ba");
   for (const k of ["w", "h"] as const)
     if (!finite(o[k]) || o[k] <= 0 || o[k] > CANVAS_SIZE_MAX)
-      return L("Ugyldig størrelse", "Invalid size");
+      return tk("core-storylab-canvas.canvas-node-error.message.264cfc65ae16");
   if (o["color"] !== null && (typeof o["color"] !== "string" || !COLOR_RE.test(o["color"])))
-    return L("Ugyldig farge", "Invalid colour");
+    return tk("core-storylab-canvas.canvas-node-error.message.98bdc81a7e8f");
   for (const k of ["groupId", "assetId", "sceneId"] as const)
-    if (o[k] !== null && typeof o[k] !== "string") return L("Ugyldig kobling", "Invalid link");
+    if (o[k] !== null && typeof o[k] !== "string") return tk("core-storylab-canvas.canvas-node-error.message.7030a4ec6247");
   return null;
 }
 
 /** Feil i feltene til en kant (null = gyldig). */
 export function canvasEdgeError(f: unknown): string | null {
-  if (!f || typeof f !== "object") return L("Ugyldig kobling", "Invalid connection");
+  if (!f || typeof f !== "object") return tk("core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e");
   const o = f as Record<string, unknown>;
   if (typeof o["fromNodeId"] !== "string" || typeof o["toNodeId"] !== "string")
-    return L("Koblingen mangler en node", "The connection is missing a node");
+    return tk("core-storylab-canvas.canvas-edge-error.message.a13e6154d7cd");
   if (o["fromNodeId"] === o["toNodeId"])
-    return L("En node kan ikke kobles til seg selv", "A node cannot be connected to itself");
+    return tk("core-storylab-canvas.canvas-edge-error.message.79cd4cb252b2");
   if (!CANVAS_EDGE_KINDS.includes(o["kind"] as CanvasEdgeKind))
-    return L("Ukjent koblingstype", "Unknown connection type");
+    return tk("core-storylab-canvas.canvas-edge-error.message.883454015909");
   if (typeof o["label"] !== "string" || o["label"].length > CANVAS_LABEL_MAX)
-    return L(
-      `Etiketten kan være høyst ${CANVAS_LABEL_MAX} tegn`,
-      `The label can be at most ${CANVAS_LABEL_MAX} characters`,
-    );
+    return tk("core-storylab-canvas.canvas-edge-error.message.e911d3a0a98b", { CANVAS_LABEL_MAX: String(CANVAS_LABEL_MAX) });
   return null;
 }
 
@@ -237,7 +229,7 @@ export function layoutFromStructure(
     out.push({
       key: `scene:${s.sceneId}`,
       ...canvasNodeDefaults("scene", {
-        title: (s.heading || L("Scene uten overskrift", "Untitled scene")).slice(
+        title: (s.heading || tk("core-storylab-canvas.title.s-heading-l-scene-uten-overskrift-untitled-scene-slice.5ae82d998c5e")).slice(
           0,
           CANVAS_TITLE_MAX,
         ),

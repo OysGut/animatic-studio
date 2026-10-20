@@ -3,30 +3,14 @@
  * en variant, en komposisjon og en forekomst med `kind`, i én angregruppe. De er aldri manusscener og
  * påvirker ikke nummereringen. Rulleteksten får en standardsekvens, så den virker med en gang.
  */
-import {
-  L,
-  fpsToNumber,
-  keyBetween,
-  newId,
-  orderedOccurrences,
-  type Command,
-  type OccurrenceKind,
-  type ProjectState,
-} from "@/core";
+import { fpsToNumber, keyBetween, newId, orderedOccurrences, type Command, type OccurrenceKind, type ProjectState } from "@/core";
 
+import { tLocalized } from "@/core/i18n/keyed";
 export type Run = (command: Command, label: string, group?: string) => string | null;
 
-const MARKER: Record<Exclude<OccurrenceKind, "scene">, { nb: string; en: string }> = {
-  title: { nb: "FILMTITTEL", en: "FILM TITLE" },
-  text: { nb: "MELLOMTEKST", en: "TEXT CARD" },
-  credits: { nb: "RULLETEKST", en: "CREDITS" },
-};
+const MARKER: Record<Exclude<OccurrenceKind, "scene">, string> = tLocalized({ title: "app-assembly-mts-occurrences.marker-title", text: "app-assembly-mts-occurrences.marker-text", credits: "app-assembly-mts-occurrences.marker-credits" });
 
-const LABEL: Record<Exclude<OccurrenceKind, "scene">, { nb: string; en: string }> = {
-  title: { nb: "Ny filmtittel", en: "New film title" },
-  text: { nb: "Ny tekstscene", en: "New text scene" },
-  credits: { nb: "Ny rulletekst", en: "New credits" },
-};
+const LABEL: Record<Exclude<OccurrenceKind, "scene">, string> = tLocalized({ title: "app-assembly-mts-occurrences.label-title", text: "app-assembly-mts-occurrences.label-text", credits: "app-assembly-mts-occurrences.label-credits" });
 
 /**
  * Lager forekomsten sist i filmen (eller etter `afterOccurrenceId`). Gir forekomst-ID-en, eller feilen.
@@ -46,7 +30,7 @@ export function createKindScene(
   const variantId = newId<"scene_variant">();
   const occurrenceId = newId<"scene_occurrence">();
   const compositionId = newId<"composition">();
-  const label = L(LABEL[kind].nb, LABEL[kind].en);
+  const label = LABEL[kind];
   const fps = fpsToNumber(state.project.fps);
   const group = newId<"command">();
   const error =
@@ -58,7 +42,7 @@ export function createKindScene(
         variantId,
         occurrenceId,
         orderKey,
-        heading: { intExt: "", location: L(MARKER[kind].nb, MARKER[kind].en), time: "" },
+        heading: { intExt: "", location: MARKER[kind], time: "" },
         blocks: [],
         kind,
       },

@@ -1,5 +1,5 @@
 /** Hjelpere for tidslinjen i sceneeditoren (egen fil, så Timeline.tsx bare eksporterer komponenter). */
-import { L, localized, type Composition, type CompositionFields, type ProjectState } from "@/core";
+import { type Composition, type CompositionFields, type ProjectState } from "@/core";
 import { t, tLocalized } from "@/core/i18n/keyed";
 
 export function compositionFieldsOf(c: Composition): CompositionFields {

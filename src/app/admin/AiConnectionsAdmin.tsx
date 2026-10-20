@@ -7,19 +7,7 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, ChevronDown, ChevronRight, Clock, Loader2, Plus } from "lucide-react";
-import {
-  CAPABILITY_LABEL,
-  CUSTOM_MODEL_RULES,
-  L,
-  customKinds,
-  customProviders,
-  locale,
-  priceUnitFor,
-  providerInfo,
-  tm,
-  validateCustomModel,
-  type ModelKind,
-} from "@/core";
+import { CAPABILITY_LABEL, CUSTOM_MODEL_RULES, customKinds, customProviders, locale, priceUnitFor, providerInfo, tm, validateCustomModel, type ModelKind } from "@/core";
 import { adminCatalog, priceText, type CatalogModelRow } from "@/core/generation/ai-catalog";
 import { builtInModel } from "@/core/generation/providers";
 import {

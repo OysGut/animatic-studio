@@ -1,4 +1,4 @@
-import { collation, L } from "@/core";
+import { collation } from "@/core";
 /**
  * Tilstedeværelse (DEC-0010, REQ-0526): hvem som har prosjektet åpent nå, og hvilken scene de står i.
  * Bruker Supabase Realtime Presence – ingenting lagres i databasen.
@@ -9,6 +9,7 @@ import {
   removeStalePresence,
   type PresenceChannel,
 } from "@/adapters/browser/presence";
+import { t } from "@/core/i18n/keyed";
 
 export interface PresentUser {
   readonly userId: string;
@@ -47,7 +48,7 @@ export function usePresence(
             if (!m) continue;
             list.push({
               userId: key,
-              name: m.name || L("Medlem", "Member"),
+              name: m.name || t("app-project-use-presence.name.name.3fbff1dfeba1"),
               occurrenceId: m.occurrenceId ?? null,
             });
           }

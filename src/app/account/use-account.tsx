@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { L, getLanguage, tm } from "@/core";
+import { getLanguage, tm } from "@/core";
 import {
   acceptPrivacy,
   fetchMyAccount,

@@ -8,22 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationWithAi } from "@/adapters/ai/translation-align.functions";
 import { aiAlignRequest } from "@/core/translation/align-prompt";
 import { useMemo, useRef, useState } from "react";
-import {
-  LANGUAGE_LABEL,
-  alignLines,
-  alignTranslation,
-  blocksOfVariant,
-  formatHeading,
-  newId,
-  L,
-  orderedOccurrences,
-  translationItems,
-  unpairedTranslationLines,
-  type Command,
-  type ParsedScreenplay,
-  type ProjectState,
-  type SceneLink,
-} from "@/core";
+import { LANGUAGE_LABEL, languageWord, alignLines, alignTranslation, blocksOfVariant, formatHeading, newId, orderedOccurrences, translationItems, unpairedTranslationLines, type Command, type ParsedScreenplay, type ProjectState, type SceneLink } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { SCREENPLAY_ACCEPT } from "@/engine/import/browser";
 import { Button } from "@/components/ui/button";
@@ -213,7 +198,7 @@ export function TranslationImportDialog({
     for (const c of commands) {
       const e = cmds.run(
         c,
-        L(`Importer ${langName.toLowerCase()} manus`, `Import ${langName} script`),
+        t("app-script-translation-import-dialog.import-script", { language: languageWord(language) }),
         group,
       );
       if (e) {
@@ -246,7 +231,7 @@ export function TranslationImportDialog({
       <DialogContent className="max-h-[90vh] max-w-[820px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {L(`Importer ${langName.toLowerCase()} manus`, `Import ${langName} script`)}
+            {t("app-script-translation-import-dialog.import-script", { language: languageWord(language) })}
           </DialogTitle>
           <DialogDescription>
             {t("app-script-translation-import-dialog.translation-import-dialog.dialog-description.02c0953ca29d")}
@@ -328,16 +313,17 @@ export function TranslationImportDialog({
                           )
                         ) : null}
                         {o
-                          ? L(
-                              `${r.manual ? "Valgt manuelt" : r.link.certainty === "sure" ? "Sikker" : "Usikker"} · ${r.link.lines.length} linjer${r.link.unmatched ? ` · ${r.link.unmatched} uten par` : ""}`,
-                              `${r.manual ? "Chosen manually" : r.link.certainty === "sure" ? "Certain" : "Uncertain"} · ${r.link.lines.length} lines${r.link.unmatched ? ` · ${r.link.unmatched} without a pair` : ""}`,
-                            )
+                          ? t("app-script-translation-import-dialog.link-summary", {
+  certainty: r.manual ? t("app-script-translation-import-dialog.link-summary-manual") : r.link.certainty === "sure" ? t("app-script-translation-import-dialog.link-summary-sure") : t("app-script-translation-import-dialog.link-summary-unsure"),
+  lines: r.link.lines.length,
+  unmatched: r.link.unmatched ? t("app-script-translation-import-dialog.link-summary-unmatched", { count: r.link.unmatched }) : "",
+})
                           : t("app-script-translation-import-dialog.translation-import-dialog.span.b42fadde7f0e")}
                         {o && r.ai && !r.manual
-                          ? L(
-                              ` · Forslag fra AI (${r.ai.confidence === "high" ? "sikker" : r.ai.confidence === "medium" ? "trolig" : "usikker"})${r.ai.reason ? `: ${r.ai.reason}` : ""}`,
-                              ` · AI suggestion (${r.ai.confidence === "high" ? "certain" : r.ai.confidence === "medium" ? "likely" : "uncertain"})${r.ai.reason ? `: ${r.ai.reason}` : ""}`,
-                            )
+                          ? t("app-script-translation-import-dialog.ai-suggestion", {
+  confidence: r.ai.confidence === "high" ? t("app-script-translation-import-dialog.ai-suggestion-high") : r.ai.confidence === "medium" ? t("app-script-translation-import-dialog.ai-suggestion-medium") : t("app-script-translation-import-dialog.ai-suggestion-low"),
+  reason: r.ai.reason ? `: ${r.ai.reason}` : "",
+})
                           : null}
                       </span>
                     </span>

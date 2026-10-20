@@ -4,8 +4,9 @@
  * bildene som allerede finnes, sendes med som referanse, så vinklene henger sammen.
  */
 import type { AssetVersion, ProjectState } from "../model";
-import { localized } from "../i18n";
+
 import { compareVersionCreation } from "./index";
+import { tLocalized } from "@/core/i18n/keyed";
 
 export const VERSION_VIEWS = [
   "front",
@@ -18,15 +19,7 @@ export const VERSION_VIEWS = [
 ] as const;
 export type VersionView = (typeof VERSION_VIEWS)[number];
 
-export const VERSION_VIEW_LABEL: Record<VersionView, string> = localized({
-  front: ["Forfra", "Front"],
-  three_quarter: ["Tre kvart forfra", "Three-quarter front"],
-  side: ["Fra siden (profil)", "Side (profile)"],
-  three_quarter_back: ["Tre kvart bakfra", "Three-quarter back"],
-  back: ["Bakfra", "Back"],
-  portrait: ["Portrett (hode og skuldre)", "Portrait (head and shoulders)"],
-  sheet: ["Karakterark (flere vinkler)", "Character sheet (several angles)"],
-});
+export const VERSION_VIEW_LABEL: Record<VersionView, string> = tLocalized({ front: "core-library-view.version-view-label.front.a850cfb7837c", three_quarter: "core-library-view.version-view-label.three-quarter.26c05825fa40", side: "core-library-view.version-view-label.side.68edfcd4bfb6", three_quarter_back: "core-library-view.version-view-label.three-quarter-back.a8c8fa47fc90", back: "core-library-view.version-view-label.back.b22e35c52b42", portrait: "core-library-view.version-view-label.portrait.0970fe4c1624", sheet: "core-library-view.version-view-label.sheet.cd5a4a9d5231" });
 
 /** Vinklene som kan lages med AI (alle unntatt arket). */
 export const TURNAROUND_VIEWS: readonly VersionView[] = [

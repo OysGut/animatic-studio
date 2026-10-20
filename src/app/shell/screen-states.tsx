@@ -4,7 +4,7 @@
  */
 import type { ReactNode } from "react";
 import { AlertTriangle } from "lucide-react";
-import { L } from "@/core";
+
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";

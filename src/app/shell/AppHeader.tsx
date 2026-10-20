@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { BackButton, useCloseToPrevious } from "./back-navigation";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { LanguageSwitch } from "@/app/i18n/language";
-import { L } from "@/core";
+
 import { GenerationStatus } from "@/app/ai/GenerationStatus";
 import { TaskNav } from "./TaskNav";
 import { BookmarkMenu } from "./BookmarkMenu";

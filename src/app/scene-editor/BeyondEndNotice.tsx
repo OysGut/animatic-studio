@@ -5,16 +5,7 @@
  */
 import { AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  MAX_DURATION_SECONDS,
-  framesToSeconds,
-  locale,
-  secondsToFrames,
-  type Command,
-  type Composition,
-  type ProjectState,
-} from "@/core";
+import { MAX_DURATION_SECONDS, framesToSeconds, locale, secondsToFrames, type Command, type Composition, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { beyondEnd } from "./beyond-end";
 import { compositionFieldsOf } from "./timeline-helpers";

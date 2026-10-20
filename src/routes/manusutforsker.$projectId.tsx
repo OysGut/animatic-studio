@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { L } from "@/core";
+
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { useSession } from "@/app/auth/use-session";
 import { LanguageSwitch, useLanguage } from "@/app/i18n/language";

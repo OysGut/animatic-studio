@@ -3,44 +3,4005 @@
   "note": "ML2: håndskrevne meldinger (flertall, valg og datoer) som erstatter tekstpar broen ikke kunne flytte. Tekstene er ordrett de gamle; `replaces` viser hvilke ML1-nøkler de avløser.",
   "messages": {
     "app-projects-backup-dialogs.missing-files": {
-      "replaces": ["app-projects-backup-dialogs.text.text.1540462f7768"],
-      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "Sikkerhetskopien er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).", "other": "Sikkerhetskopien er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)." } } },
-      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "The backup was made, but {count} file could not be fetched (see MANGLER.txt in the zip file).", "other": "The backup was made, but {count} files could not be fetched (see MANGLER.txt in the zip file)." } } }
+      "replaces": [
+        "app-projects-backup-dialogs.text.text.1540462f7768"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Sikkerhetskopien er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).",
+            "other": "Sikkerhetskopien er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The backup was made, but {count} file could not be fetched (see MANGLER.txt in the zip file).",
+            "other": "The backup was made, but {count} files could not be fetched (see MANGLER.txt in the zip file)."
+          }
+        }
+      }
     },
     "app-projects-duration-overview.forecast-basis": {
-      "replaces": ["app-projects-duration-overview.duration-overview.p.ff0c4803eec4"],
-      "nb": { "text": null, "plural": { "parameter": "scenes", "forms": { "one": ", basert på {scenes} ferdig scene og {lines}", "other": ", basert på {scenes} ferdige scener og {lines}" } } },
-      "en": { "text": null, "plural": { "parameter": "scenes", "forms": { "one": ", based on {scenes} finished scene and {lines}", "other": ", based on {scenes} finished scenes and {lines}" } } }
+      "replaces": [
+        "app-projects-duration-overview.duration-overview.p.ff0c4803eec4"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "scenes",
+          "forms": {
+            "one": ", basert på {scenes} ferdig scene og {lines}",
+            "other": ", basert på {scenes} ferdige scener og {lines}"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "scenes",
+          "forms": {
+            "one": ", based on {scenes} finished scene and {lines}",
+            "other": ", based on {scenes} finished scenes and {lines}"
+          }
+        }
+      }
     },
     "app-projects-duration-overview.forecast-basis-lines": {
-      "replaces": ["app-projects-duration-overview.duration-overview.p.ff0c4803eec4"],
-      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} replikk med lyd", "other": "{count} replikker med lyd" } } },
-      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} line with audio", "other": "{count} lines with audio" } } }
+      "replaces": [
+        "app-projects-duration-overview.duration-overview.p.ff0c4803eec4"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} replikk med lyd",
+            "other": "{count} replikker med lyd"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line with audio",
+            "other": "{count} lines with audio"
+          }
+        }
+      }
     },
     "app-projects-promotion-dialog.changes-carried-over": {
-      "replaces": ["app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550"],
-      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} endring er ført over til hovedfilmen.", "other": "{count} endringer er ført over til hovedfilmen." } } },
-      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} change has been carried over to the main film.", "other": "{count} changes have been carried over to the main film." } } }
+      "replaces": [
+        "app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} endring er ført over til hovedfilmen.",
+            "other": "{count} endringer er ført over til hovedfilmen."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} change has been carried over to the main film.",
+            "other": "{count} changes have been carried over to the main film."
+          }
+        }
+      }
     },
     "app-projects-quality-profiles-section.variants": {
-      "replaces": ["app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094"],
-      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} variant", "other": "{count} varianter" } } },
-      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} variant", "other": "{count} variants" } } }
+      "replaces": [
+        "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} variant",
+            "other": "{count} varianter"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} variant",
+            "other": "{count} variants"
+          }
+        }
+      }
     },
     "app-share-film-share-dialog.expires": {
-      "replaces": ["app-share-film-share-dialog.film-share-dialog.p.830f8eda6754"],
-      "nb": { "text": " til {date}", "formats": { "date": { "type": "date" } } },
-      "en": { "text": " until {date}", "formats": { "date": { "type": "date" } } }
+      "replaces": [
+        "app-share-film-share-dialog.film-share-dialog.p.830f8eda6754"
+      ],
+      "nb": {
+        "text": " til {date}",
+        "formats": {
+          "date": {
+            "type": "date"
+          }
+        }
+      },
+      "en": {
+        "text": " until {date}",
+        "formats": {
+          "date": {
+            "type": "date"
+          }
+        }
+      }
     },
     "routes-prosjekt-project-id.owner-blocked-with-owner": {
-      "replaces": ["routes-prosjekt-project-id.project-layout.p.de039078a0f5"],
-      "nb": { "text": "Eieren av prosjektet er blokkert. Kontakt eieren ({ownerName}) eller administrator på {adminEmail}." },
-      "en": { "text": "The owner of the project is blocked. Contact the owner ({ownerName}) or the administrator at {adminEmail}." }
+      "replaces": [
+        "routes-prosjekt-project-id.project-layout.p.de039078a0f5"
+      ],
+      "nb": {
+        "text": "Eieren av prosjektet er blokkert. Kontakt eieren ({ownerName}) eller administrator på {adminEmail}."
+      },
+      "en": {
+        "text": "The owner of the project is blocked. Contact the owner ({ownerName}) or the administrator at {adminEmail}."
+      }
     },
     "routes-prosjekt-project-id.owner-blocked": {
-      "replaces": ["routes-prosjekt-project-id.project-layout.p.de039078a0f5"],
-      "nb": { "text": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}." },
-      "en": { "text": "The owner of the project is blocked. Contact the administrator at {adminEmail}." }
+      "replaces": [
+        "routes-prosjekt-project-id.project-layout.p.de039078a0f5"
+      ],
+      "nb": {
+        "text": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}."
+      },
+      "en": {
+        "text": "The owner of the project is blocked. Contact the administrator at {adminEmail}."
+      }
+    },
+    "adapters-account-lock-server.owner-blocked-with-owner": {
+      "replaces": [
+        "adapters-account-lock-server.lock-message.message.719814c41621"
+      ],
+      "nb": {
+        "text": "Prosjektet er låst fordi eieren er blokkert. Kontakt eieren ({owner}) eller administrator ({admin})."
+      },
+      "en": {
+        "text": "The project is locked because the owner is blocked. Contact the owner ({owner}) or the administrator ({admin})."
+      }
+    },
+    "adapters-account-lock-server.owner-blocked": {
+      "replaces": [
+        "adapters-account-lock-server.lock-message.message.719814c41621"
+      ],
+      "nb": {
+        "text": "Prosjektet er låst fordi eieren er blokkert. Kontakt administrator ({admin})."
+      },
+      "en": {
+        "text": "The project is locked because the owner is blocked. Contact the administrator ({admin})."
+      }
+    },
+    "adapters-ai-video-functions.database-outdated-queue": {
+      "replaces": [
+        "adapters-ai-video-functions.message.message.b49b7f3f602c"
+      ],
+      "nb": {
+        "text": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+      },
+      "en": {
+        "text": "The database is not up to date for AI video in the queue. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+      }
+    },
+    "adapters-ai-video-functions.database-outdated": {
+      "replaces": [
+        "adapters-ai-video-functions.message.message.b49b7f3f602c"
+      ],
+      "nb": {
+        "text": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+      },
+      "en": {
+        "text": "The database is not up to date for AI video. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+      }
+    },
+    "adapters-storage-commands-functions.undo-production-referenced": {
+      "replaces": [
+        "adapters-storage-commands-functions.message.message.d62f99d8026f"
+      ],
+      "nb": {
+        "text": "Produksjonen har manusversjoner eller importerte manusfiler og kan ikke angres. Den beholdes som den er."
+      },
+      "en": {
+        "text": "The production has script versions or imported script files and cannot be undone. It is kept as it is."
+      }
+    },
+    "adapters-storage-commands-functions.undo-production-history": {
+      "replaces": [
+        "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b"
+      ],
+      "nb": {
+        "text": "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er."
+      },
+      "en": {
+        "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
+      }
+    },
+    "app-ai-ai-panel.usage-estimate-partly-unknown": {
+      "replaces": [
+        "app-ai-ai-panel.ai-panel.p.e43f41cffc8c"
+      ],
+      "nb": {
+        "text": " · anslått {cost} (noen uten anslag)"
+      },
+      "en": {
+        "text": " · estimated {cost} (some without an estimate)"
+      }
+    },
+    "app-ai-ai-panel.usage-estimate": {
+      "replaces": [
+        "app-ai-ai-panel.ai-panel.p.e43f41cffc8c"
+      ],
+      "nb": {
+        "text": " · anslått {cost}"
+      },
+      "en": {
+        "text": " · estimated {cost}"
+      }
+    },
+    "app-ai-providers-dialog.key-handling": {
+      "replaces": [
+        "app-ai-providers-dialog.provider-detail.p.7669dcef5fef"
+      ],
+      "nb": {
+        "text": "Nøkkelen sendes kryptert til serveren, prøves hos {provider} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {provider} hvis du tror den er kommet på avveie."
+      },
+      "en": {
+        "text": "The key is sent encrypted to the server, tested with {provider} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at {provider} if you think it has been compromised."
+      }
+    },
+    "app-ai-providers-dialog.key-saved-encrypted": {
+      "replaces": [
+        "app-ai-providers-dialog.text.text.9f438ecf8438"
+      ],
+      "nb": {
+        "text": "Nøkkelen er lagret kryptert. {message}"
+      },
+      "en": {
+        "text": "The key is saved encrypted. {message}"
+      }
+    },
+    "app-ai-providers-dialog.key-not-tested": {
+      "replaces": [
+        "app-ai-providers-dialog.text.text.9f438ecf8438"
+      ],
+      "nb": {
+        "text": "Den kunne ikke prøves nå."
+      },
+      "en": {
+        "text": "It could not be tested now."
+      }
+    },
+    "app-ai-trace-details.lines-changed-since": {
+      "replaces": [
+        "app-ai-trace-details.trace-details.row.b7ea035ed35f"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje er endret eller fjernet siden",
+            "other": "{count} linjer er endret eller fjernet siden"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line has been changed or removed since",
+            "other": "{count} lines have been changed or removed since"
+          }
+        }
+      }
+    },
+    "app-assembly-ai-dialogue-dialog.play-line-of": {
+      "replaces": [
+        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.34ede965758a"
+      ],
+      "nb": {
+        "text": "Spill av replikken til {speaker}"
+      },
+      "en": {
+        "text": "Play the line of {speaker}"
+      }
+    },
+    "app-assembly-ai-dialogue-dialog.play-line-of-character": {
+      "replaces": [
+        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.34ede965758a"
+      ],
+      "nb": {
+        "text": "Spill av replikken til karakteren"
+      },
+      "en": {
+        "text": "Play the line of the character"
+      }
+    },
+    "app-assembly-ai-dialogue-dialog.lines-read-in": {
+      "replaces": [
+        "app-assembly-ai-dialogue-dialog.text.text.8f60991872b0"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} replikk er lest inn og lagt på dialogsporet. Hver kan angres.",
+            "other": "{count} replikker er lest inn og lagt på dialogsporet. Hver kan angres."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line is read in and added to the dialogue track. Each can be undone.",
+            "other": "{count} lines are read in and added to the dialogue track. Each can be undone."
+          }
+        }
+      }
+    },
+    "app-assembly-ai-update-section.videos-queued-high-priority": {
+      "replaces": [
+        "app-assembly-ai-update-section.text.text.adc5ac2055b4"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} nye video er lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.",
+            "other": "{count} nye videoer er lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} new video is queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.",
+            "other": "{count} new videos are queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again."
+          }
+        }
+      }
+    },
+    "app-assembly-audio-tracks.add-audio-kind": {
+      "replaces": [
+        "app-assembly-audio-tracks.audio-tracks.aria-label.5bc137169d4d"
+      ],
+      "nb": {
+        "text": "Legg til {kind}"
+      },
+      "en": {
+        "text": "Add {kind}"
+      }
+    },
+    "app-assembly-batch-video-dialog.videos-queued-at": {
+      "replaces": [
+        "app-assembly-batch-video-dialog.text.text.fdb3312d0ffb"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} video er lagt i kø hos {provider}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.",
+            "other": "{count} videoer er lagt i kø hos {provider}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} video is queued at {provider}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview.",
+            "other": "{count} videos are queued at {provider}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.export-stopped": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.run.set-error.fc1d2d8af57d"
+      ],
+      "nb": {
+        "text": "Eksporten stoppet: {error}"
+      },
+      "en": {
+        "text": "The export stopped: {error}"
+      }
+    },
+    "app-assembly-export-animatic-dialog.export-stopped-unknown": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.run.set-error.fc1d2d8af57d"
+      ],
+      "nb": {
+        "text": "Eksporten stoppet: ukjent feil"
+      },
+      "en": {
+        "text": "The export stopped: unknown error"
+      }
+    },
+    "app-assembly-export-animatic-dialog.audio-lost": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.run.notes-push.0a14a701c36a"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lydfil kunne ikke leses og mangler",
+            "other": "{count} lydfiler kunne ikke leses og mangler"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} audio file could not be read and are missing",
+            "other": "{count} audio files could not be read and are missing"
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.images-lost": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.run.notes-push.25511cb93f44"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} bilde kunne ikke lastes og mangler i videoen",
+            "other": "{count} bilder kunne ikke lastes og mangler i videoen"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} image could not be loaded and are missing from the video",
+            "other": "{count} images could not be loaded and are missing from the video"
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.done-audio-lost": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.run.set-error.31e01db3dc2c"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Ferdig, men {count} lydfil kunne ikke leses og mangler.",
+            "other": "Ferdig, men {count} lydfiler kunne ikke leses og mangler."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Done, but {count} audio file could not be read and are missing.",
+            "other": "Done, but {count} audio files could not be read and are missing."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.scene-number": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.what.message.3af59fbe53ab"
+      ],
+      "nb": {
+        "text": "scene {number}"
+      },
+      "en": {
+        "text": "scene {number}"
+      }
+    },
+    "app-assembly-export-animatic-dialog.dialogue-track": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.ccabe56aed9b"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Dialogspor ({language}): {count} lydklipp med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.",
+            "other": "Dialogspor ({language}): {count} lydklipp med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Dialogue track ({language}): {count} audio clip with dialogue and narration. Music, effects and the sound in imported film are not included.",
+            "other": "Dialogue track ({language}): {count} audio clips with dialogue and narration. Music, effects and the sound in imported film are not included."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.film-clips-mixed-dialogue": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.d6f2e416a799"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} filmklipp har dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.",
+            "other": "{count} filmklipp har dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} film clip has dialogue in another language mixed into the sound. It cannot be removed, and is played as it is.",
+            "other": "{count} film clips have dialogue in another language mixed into the sound. It cannot be removed, and is played as it is."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.audio-clips-no-file": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.0af1306f023b"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lydklipp mangler lydfil og blir stille.",
+            "other": "{count} lydklipp mangler lydfil og blir stille."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} audio clip is missing an audio file and will be silent.",
+            "other": "{count} audio clips are missing an audio file and will be silent."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.audio-clips-included-muted": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.4bac8570af99"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lydklipp med i videoen ({muted} i dempede spor er ikke med).",
+            "other": "{count} lydklipp med i videoen ({muted} i dempede spor er ikke med)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} audio clip included in the video ({muted} in muted tracks are not included).",
+            "other": "{count} audio clips included in the video ({muted} in muted tracks are not included)."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.audio-clips-included": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.4bac8570af99"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lydklipp med i videoen.",
+            "other": "{count} lydklipp med i videoen."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} audio clip included in the video.",
+            "other": "{count} audio clips included in the video."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.layers-missing-image": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.e579d41eff17"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lag mangler bilde i biblioteket og blir usynlige.",
+            "other": "{count} lag mangler bilde i biblioteket og blir usynlige."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} layer is missing an image in the library and will be invisible.",
+            "other": "{count} layers are missing an image in the library and will be invisible."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.scenes-estimated": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.6dceefb276b4"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene har lengde beregnet fra manuset.",
+            "other": "{count} scener har lengde beregnet fra manuset."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene has a length estimated from the script.",
+            "other": "{count} scenes have a length estimated from the script."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.scenes-use-film": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.e3f97dd2aee4"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene bruker film, AI-video eller stillbilde.",
+            "other": "{count} scener bruker film, AI-video eller stillbilde."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene uses film, AI video or a still image.",
+            "other": "{count} scenes use film, AI video or a still image."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.placeholders-title-cards": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.9332d5270889"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene uten 2D-scene vises som tittelkort ({scenes}).",
+            "other": "{count} scener uten 2D-scene vises som tittelkort ({scenes})."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene without a 2D scene are shown as title cards ({scenes}).",
+            "other": "{count} scenes without a 2D scene are shown as title cards ({scenes})."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.inactive-not-included": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.bef07ee7c439"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} deaktivert scene er ikke med.",
+            "other": "{count} deaktiverte scener er ikke med."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} deactivated scene is not included.",
+            "other": "{count} deactivated scenes are not included."
+          }
+        }
+      }
+    },
+    "app-assembly-export-animatic-dialog.scenes-in-order": {
+      "replaces": [
+        "app-assembly-export-animatic-dialog.text.text.e0e5a4b084d1"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene i manusets rekkefølge, {duration}.",
+            "other": "{count} scener i manusets rekkefølge, {duration}."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene in script order, {duration}.",
+            "other": "{count} scenes in script order, {duration}."
+          }
+        }
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": "{number} {heading}\n{duration}{details}\n{move}Dobbeltklikk for å åpne i sceneeditoren."
+      },
+      "en": {
+        "text": "{number} {heading}\n{duration}{details}\n{move}Double-click to open in the scene editor."
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-estimate": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": " (beregnet fra manus)"
+      },
+      "en": {
+        "text": " (estimated from the script)"
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-planned": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": " (planlagt)"
+      },
+      "en": {
+        "text": " (planned)"
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-no-2d": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": "\nIngen 2D-scene ennå – vises som tittelkort"
+      },
+      "en": {
+        "text": "\nNo 2D scene yet – shown as a title card"
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-edited": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "\nKlippet: {count} del",
+            "other": "\nKlippet: {count} deler"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "\nEdited: {count} part",
+            "other": "\nEdited: {count} parts"
+          }
+        }
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-film": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": "\nFerdig film: {file}"
+      },
+      "en": {
+        "text": "\nFinished film: {file}"
+      }
+    },
+    "app-assembly-film-timeline.clip-tooltip-move": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.title.cb297fbaa38d"
+      ],
+      "nb": {
+        "text": "Dra for å flytte scenen. "
+      },
+      "en": {
+        "text": "Drag to move the scene. "
+      }
+    },
+    "app-assembly-film-timeline.clip-label": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": "Scene {number}: {heading}, {duration}{details}"
+      },
+      "en": {
+        "text": "Scene {number}: {heading}, {duration}{details}"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-no-2d": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", uten 2D-scene"
+      },
+      "en": {
+        "text": ", no 2D scene"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-finished-film": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", ferdig film"
+      },
+      "en": {
+        "text": ", finished film"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-transition": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", {transition} inn"
+      },
+      "en": {
+        "text": ", {transition} in"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-transition-overlap": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", {transition} inn med overlapp"
+      },
+      "en": {
+        "text": ", {transition} in with overlap"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-monochrome": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", svart-hvitt"
+      },
+      "en": {
+        "text": ", black and white"
+      }
+    },
+    "app-assembly-film-timeline.clip-label-script-changed": {
+      "replaces": [
+        "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3"
+      ],
+      "nb": {
+        "text": ", manuset er endret etter materialet"
+      },
+      "en": {
+        "text": ", the script has changed since the material was made"
+      }
+    },
+    "app-assembly-generate-scene-dialog.segments-suggested": {
+      "replaces": [
+        "app-assembly-generate-scene-dialog.body.span.7b0d8c704ae6"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "→ {count} segment (forslag)",
+            "other": "→ {count} segmenter (forslag)"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "→ {count} segment (suggested)",
+            "other": "→ {count} segments (suggested)"
+          }
+        }
+      }
+    },
+    "app-assembly-language-version-dialog.mixed-dialogue": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.span.c525ecf09f07"
+      ],
+      "nb": {
+        "text": "Den importerte filmen har {mixed} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og {language} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
+      },
+      "en": {
+        "text": "The imported film has {mixed} dialogue mixed into the audio. It cannot be swapped out completely: the film audio is played as it is, and {language} dialogue is laid on top. If the audio is only music and effects, you can say so in the scene panel."
+      }
+    },
+    "app-assembly-language-version-dialog.lipsync-scenes": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.text.181ccb1b3d94"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene der munnbevegelser bør sjekkes",
+            "other": "{count} scener der munnbevegelser bør sjekkes"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene where mouth movements should be checked",
+            "other": "{count} scenes where mouth movements should be checked"
+          }
+        }
+      }
+    },
+    "app-assembly-language-version-dialog.mixed-scenes": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.text.adb95ad807c6"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene med blandet filmlyd",
+            "other": "{count} scener med blandet filmlyd"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene with mixed film audio",
+            "other": "{count} scenes with mixed film audio"
+          }
+        }
+      }
+    },
+    "app-assembly-language-version-dialog.timing-conflicts": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.text.5181586e2593"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} timingkonflikt",
+            "other": "{count} timingkonflikter"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} timing conflict",
+            "other": "{count} timing conflicts"
+          }
+        }
+      }
+    },
+    "app-assembly-language-version-dialog.voiced-lines": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.text.eb53e390e8e2"
+      ],
+      "nb": {
+        "text": "{voiced} av {lines} replikker med {language} lyd"
+      },
+      "en": {
+        "text": "{voiced} of {lines} lines with {language} audio"
+      }
+    },
+    "app-assembly-language-version-dialog.intro": {
+      "replaces": [
+        "app-assembly-language-version-dialog.language-version-dialog.dialog-description.9b87f05b421f"
+      ],
+      "nb": {
+        "text": "Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den {language}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
+      },
+      "en": {
+        "text": "The same film, scenes and images as the Norwegian one. Here you can see what is missing or needs checking in the {language} version. Nothing is regenerated automatically, and the timing of the main film is not changed."
+      }
+    },
+    "app-assembly-language-version-dialog.move-line": {
+      "replaces": [
+        "app-assembly-language-version-dialog.apply-earlier.run.87c264b2db4f"
+      ],
+      "nb": {
+        "text": "Flytt {language} replikk"
+      },
+      "en": {
+        "text": "Move {language} line"
+      }
+    },
+    "app-assembly-long-film-import-dialog.import-long-film": {
+      "replaces": [
+        "app-assembly-long-film-import-dialog.label.message.9cc3078bc0db"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Importer lang film ({count} scene)",
+            "other": "Importer lang film ({count} scener)"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Import long film ({count} scene)",
+            "other": "Import long film ({count} scenes)"
+          }
+        }
+      }
+    },
+    "app-assembly-material-update-section.confirm-update": {
+      "replaces": [
+        "app-assembly-material-update-section.material-update-section.p.cd6f3ce801b8"
+      ],
+      "nb": {
+        "text": "{images} og {lines} · {model} · anslått {cost}. Vil du fortsette?"
+      },
+      "en": {
+        "text": "{images} and {lines} · {model} · estimated {cost}. Do you want to continue?"
+      }
+    },
+    "app-assembly-material-update-section.confirm-update-images": {
+      "replaces": [
+        "app-assembly-material-update-section.material-update-section.p.cd6f3ce801b8"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} bilde",
+            "other": "{count} bilder"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} image",
+            "other": "{count} images"
+          }
+        }
+      }
+    },
+    "app-assembly-material-update-section.confirm-update-lines": {
+      "replaces": [
+        "app-assembly-material-update-section.material-update-section.p.cd6f3ce801b8"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje",
+            "other": "{count} linjer"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line",
+            "other": "{count} lines"
+          }
+        }
+      }
+    },
+    "app-assembly-scene-video-section.candidates-per-segment": {
+      "replaces": [
+        "app-assembly-scene-video-section.scene-video-section.span.5a25c8ab687b"
+      ],
+      "nb": {
+        "text": "– {count} videoer per segment (koster {count} ganger så mye); sammenlign og velg etterpå"
+      },
+      "en": {
+        "text": "– {count} videos per segment (costs {count} times as much); compare and choose afterwards"
+      }
+    },
+    "app-assembly-scene-video-section.videos-started": {
+      "replaces": [
+        "app-assembly-scene-video-section.text.text.2974482091f7"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} video er startet hos {provider}. De legges inn som nye versjoner når de er ferdige (vanligvis 1–6 minutter) – også om du lukker dialogen.",
+            "other": "{count} videoer er startet hos {provider}. De legges inn som nye versjoner når de er ferdige (vanligvis 1–6 minutter) – også om du lukker dialogen."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} video has started with {provider}. They are added as new versions when finished (usually 1–6 minutes) – even if you close the dialog.",
+            "other": "{count} videos have started with {provider}. They are added as new versions when finished (usually 1–6 minutes) – even if you close the dialog."
+          }
+        }
+      }
+    },
+    "app-assembly-script-changes.restore-lines": {
+      "replaces": [
+        "app-assembly-script-changes.script-changes.p.bdad7e6b0806"
+      ],
+      "nb": {
+        "text": "Sette {count} linjer i manuset tilbake slik de var da materialet ble laget? Det kan angres."
+      },
+      "en": {
+        "text": "Set {count} lines in the script back to how they were when the material was made? This can be undone."
+      }
+    },
+    "app-audio-audio-composition-editor.overlaps": {
+      "replaces": [
+        "app-audio-audio-composition-editor.audio-composition-editor.span.f35310bfb1df"
+      ],
+      "nb": {
+        "text": "Lyden overlapper {others} i scenen: {list}. Ingenting flyttes – håndter det i scenen når du vil."
+      },
+      "en": {
+        "text": "The audio overlaps {others} in the scene: {list}. Nothing is moved – deal with it in the scene when you want."
+      }
+    },
+    "app-audio-audio-composition-editor.overlaps-one": {
+      "replaces": [
+        "app-audio-audio-composition-editor.audio-composition-editor.span.f35310bfb1df"
+      ],
+      "nb": {
+        "text": "en annen replikk"
+      },
+      "en": {
+        "text": "another line"
+      }
+    },
+    "app-audio-audio-composition-editor.overlaps-many": {
+      "replaces": [
+        "app-audio-audio-composition-editor.audio-composition-editor.span.f35310bfb1df"
+      ],
+      "nb": {
+        "text": "{count} andre replikker"
+      },
+      "en": {
+        "text": "{count} other lines"
+      }
+    },
+    "app-audio-line-words-panel.estimated-cost": {
+      "replaces": [
+        "app-audio-line-words-panel.line-words-panel.span.c0a971092c7b"
+      ],
+      "nb": {
+        "text": "Anslått kostnad {cost} med eiernes ElevenLabs-nøkkel."
+      },
+      "en": {
+        "text": "Estimated cost {cost} with the owners' ElevenLabs key."
+      }
+    },
+    "app-audio-line-words-panel.estimated-cost-unknown": {
+      "replaces": [
+        "app-audio-line-words-panel.line-words-panel.span.c0a971092c7b"
+      ],
+      "nb": {
+        "text": "ukjent"
+      },
+      "en": {
+        "text": "unknown"
+      }
+    },
+    "app-global-save-to-global-button.saved-global": {
+      "replaces": [
+        "app-global-save-to-global-button.text.text.a0064fe44474"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Lagret i det globale biblioteket ({count} fil).",
+            "other": "Lagret i det globale biblioteket ({count} filer)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Saved in the global library ({count} file).",
+            "other": "Saved in the global library ({count} files)."
+          }
+        }
+      }
+    },
+    "app-library-asset-audio.recording-fetch-failed": {
+      "replaces": [
+        "app-library-asset-audio.audio-media-from-stored-file.message.b0f58e68c1c7"
+      ],
+      "nb": {
+        "text": "Opptaket kunne ikke hentes: {error}"
+      },
+      "en": {
+        "text": "The recording could not be fetched: {error}"
+      }
+    },
+    "app-library-asset-audio.recording-fetch-failed-unknown": {
+      "replaces": [
+        "app-library-asset-audio.audio-media-from-stored-file.message.b0f58e68c1c7"
+      ],
+      "nb": {
+        "text": "Opptaket kunne ikke hentes: ukjent feil"
+      },
+      "en": {
+        "text": "The recording could not be fetched: unknown error"
+      }
+    },
+    "app-library-asset-images.image-fetch-failed": {
+      "replaces": [
+        "app-library-asset-images.media-from-stored-file.message.c2b008594093"
+      ],
+      "nb": {
+        "text": "Bildet kunne ikke hentes: {error}"
+      },
+      "en": {
+        "text": "The image could not be fetched: {error}"
+      }
+    },
+    "app-library-asset-images.image-fetch-failed-unknown": {
+      "replaces": [
+        "app-library-asset-images.media-from-stored-file.message.c2b008594093"
+      ],
+      "nb": {
+        "text": "Bildet kunne ikke hentes: ukjent feil"
+      },
+      "en": {
+        "text": "The image could not be fetched: unknown error"
+      }
+    },
+    "app-library-asset-detail.in-use": {
+      "replaces": [
+        "app-library-asset-detail.delete-asset-confirm.p.528e9861e981"
+      ],
+      "nb": {
+        "text": "Den brukes i {uses}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet."
+      },
+      "en": {
+        "text": "It is used in {uses}; they keep the image and sound of the asset until it is deleted for good, and it cannot be deleted for good until they are removed."
+      }
+    },
+    "app-library-asset-detail.in-use-layers": {
+      "replaces": [
+        "app-library-asset-detail.delete-asset-confirm.p.528e9861e981"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lag i {scenes}",
+            "other": "{count} lag i {scenes}"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} layer in {scenes}",
+            "other": "{count} layers in {scenes}"
+          }
+        }
+      }
+    },
+    "app-library-asset-detail.in-use-scenes": {
+      "replaces": [
+        "app-library-asset-detail.delete-asset-confirm.p.528e9861e981"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scener"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scenes"
+          }
+        }
+      }
+    },
+    "app-library-asset-detail.in-use-audio": {
+      "replaces": [
+        "app-library-asset-detail.delete-asset-confirm.p.528e9861e981"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lydklipp",
+            "other": "{count} lydklipp"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} audio clip",
+            "other": "{count} audio clips"
+          }
+        }
+      }
+    },
+    "app-library-asset-detail.in-use-and": {
+      "replaces": [
+        "app-library-asset-detail.delete-asset-confirm.p.528e9861e981"
+      ],
+      "nb": {
+        "text": " og "
+      },
+      "en": {
+        "text": " and "
+      }
+    },
+    "app-library-asset-worklist-dialog.use-version-in": {
+      "replaces": [
+        "app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.f28662943fa9"
+      ],
+      "nb": {
+        "text": "Bruk {asset} v{version} i {scene}"
+      },
+      "en": {
+        "text": "Use {asset} v{version} in {scene}"
+      }
+    },
+    "app-library-asset-worklist-dialog.use-version-in-asset": {
+      "replaces": [
+        "app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.f28662943fa9"
+      ],
+      "nb": {
+        "text": "ressursen"
+      },
+      "en": {
+        "text": "the asset"
+      }
+    },
+    "app-library-asset-zip.zip-made": {
+      "replaces": [
+        "app-library-asset-zip.text.text.940064c39189"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Zip-filen «{name}» er laget ({count} fil).",
+            "other": "Zip-filen «{name}» er laget ({count} filer)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The zip file “{name}” has been created ({count} file).",
+            "other": "The zip file “{name}” has been created ({count} files)."
+          }
+        }
+      }
+    },
+    "app-library-asset-zip.zip-missing": {
+      "replaces": [
+        "app-library-asset-zip.text.text.9b9dda910ea0"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Zip-filen er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).",
+            "other": "Zip-filen er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The zip file has been created, but {count} file could not be fetched (see MANGLER.txt in the zip file).",
+            "other": "The zip file has been created, but {count} files could not be fetched (see MANGLER.txt in the zip file)."
+          }
+        }
+      }
+    },
+    "app-library-context-link-suggestions.confirm-uncertain": {
+      "replaces": [
+        "app-library-context-link-suggestions.context-link-suggestions.p.14d14e04420a"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} usikre linje · {model} · anslått {cost}. Vil du fortsette?",
+            "other": "{count} usikre linjer · {model} · anslått {cost}. Vil du fortsette?"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} uncertain line · {model} · estimated {cost}. Do you want to continue?",
+            "other": "{count} uncertain lines · {model} · estimated {cost}. Do you want to continue?"
+          }
+        }
+      }
+    },
+    "app-library-context-link-suggestions.approve-links": {
+      "replaces": [
+        "app-library-context-link-suggestions.context-link-suggestions.button.602f67fd9daf"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Godkjenn {count} kobling",
+            "other": "Godkjenn {count} koblinger"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Approve {count} link",
+            "other": "Approve {count} links"
+          }
+        }
+      }
+    },
+    "app-library-context-link-suggestions.lines-linked": {
+      "replaces": [
+        "app-library-context-link-suggestions.approve.set-done.61ccd5e86792"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje er koblet. Kan angres.",
+            "other": "{count} linjer er koblet. Kan angres."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line is linked. Can be undone.",
+            "other": "{count} lines are linked. Can be undone."
+          }
+        }
+      }
+    },
+    "app-library-context-names-section.word-is-asset": {
+      "replaces": [
+        "app-library-context-names-section.context-names-section.button.103ddfcaabdb"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "«{word}» er {asset} i {count} linje",
+            "other": "«{word}» er {asset} i {count} linjer"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "“{word}” is {asset} in {count} line",
+            "other": "“{word}” is {asset} in {count} lines"
+          }
+        }
+      }
+    },
+    "app-library-cutout-dialog.size-kept-scaled": {
+      "replaces": [
+        "app-library-cutout-dialog.editor.p.23b3e277a7aa"
+      ],
+      "nb": {
+        "text": "{w} × {h} px (skalert ned for frilegging) · {percent} % av bildet beholdes. "
+      },
+      "en": {
+        "text": "{w} × {h} px (scaled down for cut-out) · {percent} % of the image is kept. "
+      }
+    },
+    "app-library-cutout-dialog.size-kept": {
+      "replaces": [
+        "app-library-cutout-dialog.editor.p.23b3e277a7aa"
+      ],
+      "nb": {
+        "text": "{w} × {h} px · {percent} % av bildet beholdes. "
+      },
+      "en": {
+        "text": "{w} × {h} px · {percent} % of the image is kept. "
+      }
+    },
+    "app-assembly-mts-occurrences.marker-title": {
+      "replaces": [
+        "app-assembly-mts-occurrences.location.location.77bd3c5d608e"
+      ],
+      "nb": {
+        "text": "FILMTITTEL"
+      },
+      "en": {
+        "text": "FILM TITLE"
+      }
+    },
+    "app-assembly-mts-occurrences.marker-text": {
+      "replaces": [
+        "app-assembly-mts-occurrences.location.location.77bd3c5d608e"
+      ],
+      "nb": {
+        "text": "MELLOMTEKST"
+      },
+      "en": {
+        "text": "TEXT CARD"
+      }
+    },
+    "app-assembly-mts-occurrences.marker-credits": {
+      "replaces": [
+        "app-assembly-mts-occurrences.location.location.77bd3c5d608e"
+      ],
+      "nb": {
+        "text": "RULLETEKST"
+      },
+      "en": {
+        "text": "CREDITS"
+      }
+    },
+    "app-assembly-mts-occurrences.label-title": {
+      "replaces": [
+        "app-assembly-mts-occurrences.label.message.181e9b47f9dc"
+      ],
+      "nb": {
+        "text": "Ny filmtittel"
+      },
+      "en": {
+        "text": "New film title"
+      }
+    },
+    "app-assembly-mts-occurrences.label-text": {
+      "replaces": [
+        "app-assembly-mts-occurrences.label.message.181e9b47f9dc"
+      ],
+      "nb": {
+        "text": "Ny tekstscene"
+      },
+      "en": {
+        "text": "New text scene"
+      }
+    },
+    "app-assembly-mts-occurrences.label-credits": {
+      "replaces": [
+        "app-assembly-mts-occurrences.label.message.181e9b47f9dc"
+      ],
+      "nb": {
+        "text": "Ny rulletekst"
+      },
+      "en": {
+        "text": "New credits"
+      }
+    },
+    "app-assembly-script-changes.restore-line": {
+      "replaces": [
+        "app-assembly-script-changes.script-changes.p.bdad7e6b0806"
+      ],
+      "nb": {
+        "text": "Sette linjen i manuset tilbake slik den var da materialet ble laget? Det kan angres."
+      },
+      "en": {
+        "text": "Set the line in the script back to how it was when the material was made? This can be undone."
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-undo": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.59359009ba13"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} generert replikk angres. Den forrige aktive versjonen blir aktiv igjen. Ingen eldre lyd eller redigering slettes, og ingenting genereres på nytt.",
+            "other": "{count} genererte replikker angres. Den forrige aktive versjonen blir aktiv igjen. Ingen eldre lyd eller redigering slettes, og ingenting genereres på nytt."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} generated line will be undone. The previous active version becomes active again. No older audio or edits are deleted, and nothing is generated again.",
+            "other": "{count} generated lines will be undone. The previous active version becomes active again. No older audio or edits are deleted, and nothing is generated again."
+          }
+        }
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-estimate": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3"
+      ],
+      "nb": {
+        "text": "{lines} · {language} · {voice} · {model} · kostnadsanslag: {cost} · tidsanslag (usikkert): {time}"
+      },
+      "en": {
+        "text": "{lines} · {language} · {voice} · {model} · cost estimate: {cost} · time estimate (uncertain): {time}"
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-estimate-no-voice": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3"
+      ],
+      "nb": {
+        "text": "stemme ikke valgt"
+      },
+      "en": {
+        "text": "voice not chosen"
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-estimate-no-model": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3"
+      ],
+      "nb": {
+        "text": "modell ikke valgt"
+      },
+      "en": {
+        "text": "model not chosen"
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-estimate-unknown": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3"
+      ],
+      "nb": {
+        "text": "ukjent"
+      },
+      "en": {
+        "text": "unknown"
+      }
+    },
+    "app-library-dialogue-batch-panel.batch-estimate-time": {
+      "replaces": [
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3"
+      ],
+      "nb": {
+        "text": "{min}–{max} s, uten køventing"
+      },
+      "en": {
+        "text": "{min}–{max} s, excluding queue wait"
+      }
+    },
+    "app-library-generate-image-panel.candidate-images": {
+      "replaces": [
+        "app-library-generate-image-panel.generate-image-panel.span.e708df37ba3a"
+      ],
+      "nb": {
+        "text": "{count} bilder, hvert som egen versjon – koster {count} ganger så mye"
+      },
+      "en": {
+        "text": "{count} images, each as its own version – costs {count} times as much"
+      }
+    },
+    "app-library-generate-image-panel.send-originals": {
+      "replaces": [
+        "app-library-generate-image-panel.generate-image-panel.label.0a6c94efbc62"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Send forbildene i full størrelse ({count} original) – for karakterkort og detaljer",
+            "other": "Send forbildene i full størrelse ({count} originaler) – for karakterkort og detaljer"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Send the reference images at full size ({count} original) – for character sheets and details",
+            "other": "Send the reference images at full size ({count} originals) – for character sheets and details"
+          }
+        }
+      }
+    },
+    "app-library-generate-image-panel.in-variant": {
+      "replaces": [
+        "app-library-generate-image-panel.generate-image-panel.p.d36b3f69d43f"
+      ],
+      "nb": {
+        "text": " i «{name}»"
+      },
+      "en": {
+        "text": " in “{name}”"
+      }
+    },
+    "app-library-generate-image-panel.in-variant-unnamed": {
+      "replaces": [
+        "app-library-generate-image-panel.generate-image-panel.p.d36b3f69d43f"
+      ],
+      "nb": {
+        "text": "Uten navn"
+      },
+      "en": {
+        "text": "Without name"
+      }
+    },
+    "app-library-generate-sound-panel.confirm-sound": {
+      "replaces": [
+        "app-library-generate-sound-panel.generate-sound-panel.p.8b7aa7e0c916"
+      ],
+      "nb": {
+        "text": "Dette belastes {provider}-kontoen til prosjektets eier (én lyd, anslått høyst {cost}{longest} – et anslag). Vil du lage lyden nå?"
+      },
+      "en": {
+        "text": "This is charged to the {provider} account of the project's owner (one sound, estimated at most {cost}{longest} – an estimate). Do you want to make the sound now?"
+      }
+    },
+    "app-library-generate-sound-panel.confirm-sound-unknown-price": {
+      "replaces": [
+        "app-library-generate-sound-panel.generate-sound-panel.p.8b7aa7e0c916"
+      ],
+      "nb": {
+        "text": "ukjent pris"
+      },
+      "en": {
+        "text": "an unknown price"
+      }
+    },
+    "app-library-generate-sound-panel.confirm-sound-longest": {
+      "replaces": [
+        "app-library-generate-sound-panel.generate-sound-panel.p.8b7aa7e0c916"
+      ],
+      "nb": {
+        "text": " regnet med lengste lengde, {seconds} sekunder"
+      },
+      "en": {
+        "text": " based on the longest length, {seconds} seconds"
+      }
+    },
+    "app-library-harmonize-batch-panel.batch-total": {
+      "replaces": [
+        "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Samlet anslag: {count} generering med {model}{price}{size}{profile}.",
+            "other": "Samlet anslag: {count} genereringer med {model}{price}{size}{profile}."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Total estimate: {count} generation with {model}{price}{size}{profile}.",
+            "other": "Total estimate: {count} generations with {model}{price}{size}{profile}."
+          }
+        }
+      }
+    },
+    "app-library-harmonize-batch-panel.batch-total-price": {
+      "replaces": [
+        "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159"
+      ],
+      "nb": {
+        "text": " · {unit} per bilde · totalt {total}"
+      },
+      "en": {
+        "text": " · {unit} per image · {total} in total"
+      }
+    },
+    "app-library-harmonize-batch-panel.batch-total-unknown-price": {
+      "replaces": [
+        "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159"
+      ],
+      "nb": {
+        "text": " · prisen er ukjent"
+      },
+      "en": {
+        "text": " · the price is unknown"
+      }
+    },
+    "app-library-harmonize-batch-panel.batch-total-profile": {
+      "replaces": [
+        "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159"
+      ],
+      "nb": {
+        "text": " · profil «{name}»"
+      },
+      "en": {
+        "text": " · profile “{name}”"
+      }
+    },
+    "app-library-image-prep.original-note-mark": {
+      "replaces": [
+        "app-library-image-prep.note.note.d21f734c64e4"
+      ],
+      "nb": {
+        "text": "Original i full størrelse"
+      },
+      "en": {
+        "text": "Original at full size"
+      }
+    },
+    "app-library-image-ai-panels.variations-saved": {
+      "replaces": [
+        "app-library-image-ai-panels.text.text.19903587aa9e"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} variasjon er lagret som ny versjon. Originalen er beholdt.",
+            "other": "{count} variasjoner er lagret som nye versjoner. Originalen er beholdt."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} variation has been saved as a new version. The original is kept.",
+            "other": "{count} variations have been saved as new versions. The original is kept."
+          }
+        }
+      }
+    },
+    "app-library-image-ai-panels.images-estimate": {
+      "replaces": [
+        "app-library-image-ai-panels.cost-confirm.p.1c24a389e79e",
+        "app-library-image-ai-panels.turnaround-panel.p.fd6dc2662f2e"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} bilde · anslått {cost}. Teller i prosjektets AI-budsjett.",
+            "other": "{count} bilder · anslått {cost}. Teller i prosjektets AI-budsjett."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} image · estimated {cost}. Counts towards the project's AI budget.",
+            "other": "{count} images · estimated {cost}. Counts towards the project's AI budget."
+          }
+        }
+      }
+    },
+    "app-library-image-ai-panels.images-credits": {
+      "replaces": [
+        "app-library-image-ai-panels.cost-confirm.p.1c24a389e79e",
+        "app-library-image-ai-panels.turnaround-panel.p.fd6dc2662f2e"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} bilde · bruker AI-kreditter. Teller i prosjektets AI-budsjett.",
+            "other": "{count} bilder · bruker AI-kreditter. Teller i prosjektets AI-budsjett."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} image · uses AI credits. Counts towards the project's AI budget.",
+            "other": "{count} images · uses AI credits. Counts towards the project's AI budget."
+          }
+        }
+      }
+    },
+    "app-library-image-lightbox.tiles-saved-skipped": {
+      "replaces": [
+        "app-library-image-lightbox.split.on-job.d36ebeeac755"
+      ],
+      "nb": {
+        "text": "{saved} ruter er lagret som nye bilder ({empty} tomme hoppet over). Sett vinkelen på hvert bilde i stor visning."
+      },
+      "en": {
+        "text": "{saved} tiles are saved as new images ({empty} empty skipped). Set the angle on each image in the large view."
+      }
+    },
+    "app-library-image-lightbox.tiles-saved": {
+      "replaces": [
+        "app-library-image-lightbox.split.on-job.d36ebeeac755"
+      ],
+      "nb": {
+        "text": "{saved} ruter er lagret som nye bilder. Sett vinkelen på hvert bilde i stor visning."
+      },
+      "en": {
+        "text": "{saved} tiles are saved as new images. Set the angle on each image in the large view."
+      }
+    },
+    "app-library-image-parts-panel.parts-saved": {
+      "replaces": [
+        "app-library-image-parts-panel.text.text.9759bbc37633"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} del er lagret som nytt objekt.",
+            "other": "{count} deler er lagret som nye objekter."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} part has been saved as a new object.",
+            "other": "{count} parts have been saved as new objects."
+          }
+        }
+      }
+    },
+    "app-library-reupload-dialog.posters": {
+      "replaces": [
+        "app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.ddfc421528f8"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} plakat",
+            "other": "{count} plakater"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} poster",
+            "other": "{count} posters"
+          }
+        }
+      }
+    },
+    "app-library-style-profiles-panel.reference-label": {
+      "replaces": [
+        "app-library-style-profiles-panel.label.refs-map.f76fc723561d"
+      ],
+      "nb": {
+        "text": "{asset} – {variant} v{version}"
+      },
+      "en": {
+        "text": "{asset} – {variant} v{version}"
+      }
+    },
+    "app-library-style-profiles-panel.reference-label-asset": {
+      "replaces": [
+        "app-library-style-profiles-panel.label.refs-map.f76fc723561d"
+      ],
+      "nb": {
+        "text": "Ressurs"
+      },
+      "en": {
+        "text": "Asset"
+      }
+    },
+    "app-library-trash-dialog.still-used": {
+      "replaces": [
+        "app-library-trash-dialog.trash-dialog.span.876eda49cd2b"
+      ],
+      "nb": {
+        "text": " · brukes fortsatt i {uses}"
+      },
+      "en": {
+        "text": " · still used in {uses}"
+      }
+    },
+    "app-library-trash-dialog.still-used-layers": {
+      "replaces": [
+        "app-library-trash-dialog.trash-dialog.span.876eda49cd2b"
+      ],
+      "nb": {
+        "text": "{count} lag"
+      },
+      "en": {
+        "text": "{count} layers"
+      }
+    },
+    "app-library-trash-dialog.still-used-audio": {
+      "replaces": [
+        "app-library-trash-dialog.trash-dialog.span.876eda49cd2b"
+      ],
+      "nb": {
+        "text": "{count} lydklipp"
+      },
+      "en": {
+        "text": "{count} audio clips"
+      }
+    },
+    "app-library-trash-dialog.still-used-and": {
+      "replaces": [
+        "app-library-trash-dialog.trash-dialog.span.876eda49cd2b"
+      ],
+      "nb": {
+        "text": " og "
+      },
+      "en": {
+        "text": " and "
+      }
+    },
+    "app-library-trash-dialog.purged-leftover": {
+      "replaces": [
+        "app-library-trash-dialog.text.text.dc7d2be28d4c"
+      ],
+      "nb": {
+        "text": "Slettet for godt: {label}. {files} filer ble liggende i lagringen."
+      },
+      "en": {
+        "text": "Deleted for good: {label}. {files} files were left in storage."
+      }
+    },
+    "app-library-trash-dialog.purged": {
+      "replaces": [
+        "app-library-trash-dialog.text.text.dc7d2be28d4c"
+      ],
+      "nb": {
+        "text": "Slettet for godt: {label}."
+      },
+      "en": {
+        "text": "Deleted for good: {label}."
+      }
+    },
+    "app-release-poster-inspector.rank": {
+      "replaces": [
+        "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2"
+      ],
+      "nb": {
+        "text": "{lines} · {scenes}"
+      },
+      "en": {
+        "text": "{lines} · {scenes}"
+      }
+    },
+    "app-release-poster-inspector.rank-lines": {
+      "replaces": [
+        "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} replikk",
+            "other": "{count} replikker"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line",
+            "other": "{count} lines"
+          }
+        }
+      }
+    },
+    "app-release-poster-inspector.rank-scenes": {
+      "replaces": [
+        "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scener"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scenes"
+          }
+        }
+      }
+    },
+    "app-scene-editor-add-element-dialog.should-be-in": {
+      "replaces": [
+        "app-scene-editor-add-element-dialog.label.message.9e2fbf41005d"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "«{name}» skal inn i {count} scene",
+            "other": "«{name}» skal inn i {count} scener"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "“{name}” should be in {count} scene",
+            "other": "“{name}” should be in {count} scenes"
+          }
+        }
+      }
+    },
+    "app-scene-editor-animation-character-panel.setup-used-in-others": {
+      "replaces": [
+        "app-scene-editor-animation-character-panel.character-panel.dialog-description.4aed602ebcd9"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Oppsettet brukes i {count} annen scene. Ingenting oppdateres automatisk.",
+            "other": "Oppsettet brukes i {count} andre scener. Ingenting oppdateres automatisk."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The setup is used in {count} other scene. Nothing updates automatically.",
+            "other": "The setup is used in {count} other scenes. Nothing updates automatically."
+          }
+        }
+      }
+    },
+    "app-scene-editor-animation-character-panel.used-in-others": {
+      "replaces": [
+        "app-scene-editor-animation-character-panel.character-panel.h3.ca0688eafa22"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Brukes i {count} annen scene",
+            "other": "Brukes i {count} andre scener"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Used in {count} other scene",
+            "other": "Used in {count} other scenes"
+          }
+        }
+      }
+    },
+    "app-scene-editor-animation-mouth-shape-editor.right-eye-closed": {
+      "replaces": [
+        "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.da4a34515891"
+      ],
+      "nb": {
+        "text": "Høyre øye lukket"
+      },
+      "en": {
+        "text": "Right eye closed"
+      }
+    },
+    "app-scene-editor-animation-mouth-shape-editor.right-eye-open": {
+      "replaces": [
+        "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.da4a34515891"
+      ],
+      "nb": {
+        "text": "Høyre øye åpent"
+      },
+      "en": {
+        "text": "Right eye open"
+      }
+    },
+    "app-scene-editor-animation-mouth-shape-editor.left-eye-closed": {
+      "replaces": [
+        "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.b1f81e305926"
+      ],
+      "nb": {
+        "text": "Venstre øye lukket"
+      },
+      "en": {
+        "text": "Left eye closed"
+      }
+    },
+    "app-scene-editor-animation-mouth-shape-editor.left-eye-open": {
+      "replaces": [
+        "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.b1f81e305926"
+      ],
+      "nb": {
+        "text": "Venstre øye åpent"
+      },
+      "en": {
+        "text": "Left eye open"
+      }
+    },
+    "app-scene-editor-carry-over-dialog.carried-over-reused": {
+      "replaces": [
+        "app-scene-editor-carry-over-dialog.submit.on-done.363d9984ee39"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "«{name}» er lagt til i {count} scene; den som fantes, brukes i {reused}.",
+            "other": "«{name}» er lagt til i {count} scener; den som fantes, brukes i {reused}."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "“{name}” was added to {count} scene; the existing one is used in {reused}.",
+            "other": "“{name}” was added to {count} scenes; the existing one is used in {reused}."
+          }
+        }
+      }
+    },
+    "app-scene-editor-carry-over-dialog.carried-over": {
+      "replaces": [
+        "app-scene-editor-carry-over-dialog.submit.on-done.363d9984ee39"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "«{name}» er lagt til i {count} scene.",
+            "other": "«{name}» er lagt til i {count} scener."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "“{name}” was added to {count} scene.",
+            "other": "“{name}” was added to {count} scenes."
+          }
+        }
+      }
+    },
+    "app-scene-editor-generate-dialogue.generate-summary": {
+      "replaces": [
+        "app-scene-editor-generate-dialogue.generate-dialogue.div.4f875ff43708"
+      ],
+      "nb": {
+        "text": "ElevenLabs · {model} · {language} · anslått {cost}. En ny aktiv versjon lages. Gamle filer og redigeringer beholdes."
+      },
+      "en": {
+        "text": "ElevenLabs · {model} · {language} · estimated {cost}. A new active version is created. Previous files and edits are preserved."
+      }
+    },
+    "app-scene-editor-generate-dialogue.generate-summary-unknown-price": {
+      "replaces": [
+        "app-scene-editor-generate-dialogue.generate-dialogue.div.4f875ff43708"
+      ],
+      "nb": {
+        "text": "ukjent pris"
+      },
+      "en": {
+        "text": "unknown price"
+      }
+    },
+    "app-scene-editor-layer-image-dialog.locked-layer": {
+      "replaces": [
+        "app-scene-editor-layer-image-dialog.delete-version-confirm.p.17fb8ea99c2d"
+      ],
+      "nb": {
+        "text": " Ett lag bruker akkurat dette bildet og beholder det til det slettes for godt."
+      },
+      "en": {
+        "text": " One layer uses this exact image and keeps it until it is deleted for good."
+      }
+    },
+    "app-scene-editor-layer-image-dialog.locked-layers": {
+      "replaces": [
+        "app-scene-editor-layer-image-dialog.delete-version-confirm.p.17fb8ea99c2d"
+      ],
+      "nb": {
+        "text": " {count} lag bruker akkurat dette bildet og beholder det til det slettes for godt."
+      },
+      "en": {
+        "text": " {count} layers uses this exact image and keeps it until it is deleted for good."
+      }
+    },
+    "app-scene-editor-layer-image-dialog.big-title": {
+      "replaces": [
+        "app-scene-editor-layer-image-dialog.body.title.cd53f6a2bfd7"
+      ],
+      "nb": {
+        "text": "{asset} – {variant} v{version}"
+      },
+      "en": {
+        "text": "{asset} – {variant} v{version}"
+      }
+    },
+    "app-scene-editor-layer-image-dialog.big-title-unnamed": {
+      "replaces": [
+        "app-scene-editor-layer-image-dialog.body.title.cd53f6a2bfd7"
+      ],
+      "nb": {
+        "text": "Uten navn"
+      },
+      "en": {
+        "text": "Without name"
+      }
+    },
+    "app-scene-editor-layer-inspector.continuity-look": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.287b192f1d14"
+      ],
+      "nb": {
+        "text": "Kontinuitet: i denne scenen skal {asset} ha utseendet «{look}»."
+      },
+      "en": {
+        "text": "Continuity: in this scene {asset} should look like “{look}”."
+      }
+    },
+    "app-scene-editor-layer-inspector.continuity-look-asset": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.287b192f1d14"
+      ],
+      "nb": {
+        "text": "ressursen"
+      },
+      "en": {
+        "text": "the asset"
+      }
+    },
+    "app-scene-editor-layer-inspector.swap-outdated": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.98b4f314d66f"
+      ],
+      "nb": {
+        "text": "Et bildeskifte eller språkbilde viser {asset} v{old}, men v{current} er godkjent nå."
+      },
+      "en": {
+        "text": "An image swap or language image shows {asset} v{old}, but v{current} is approved now."
+      }
+    },
+    "app-scene-editor-layer-inspector.swap-outdated-asset": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.98b4f314d66f"
+      ],
+      "nb": {
+        "text": "ressursen"
+      },
+      "en": {
+        "text": "the asset"
+      }
+    },
+    "app-scene-editor-layer-inspector.magnified-frame": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.5d6bf790ea53"
+      ],
+      "nb": {
+        "text": "Bildet vises i {percent} % av sin egen størrelse (bilde {frame}) – større enn pikslene i bildet, så det kan bli uskarpt."
+      },
+      "en": {
+        "text": "The image is shown at {percent} % of its own size (frame {frame}) – larger than the image's pixels, so it may look blurred."
+      }
+    },
+    "app-scene-editor-layer-inspector.magnified": {
+      "replaces": [
+        "app-scene-editor-layer-inspector.layer-inspector.span.5d6bf790ea53"
+      ],
+      "nb": {
+        "text": "Bildet vises i {percent} % av sin egen størrelse – større enn pikslene i bildet, så det kan bli uskarpt."
+      },
+      "en": {
+        "text": "The image is shown at {percent} % of its own size – larger than the image's pixels, so it may look blurred."
+      }
+    },
+    "app-scene-editor-layer-swaps.swap-to": {
+      "replaces": [
+        "app-scene-editor-layer-swaps.add.set-swaps.fec1302071ff"
+      ],
+      "nb": {
+        "text": "Bildeskifte til «{name}»"
+      },
+      "en": {
+        "text": "Image swap to “{name}”"
+      }
+    },
+    "app-scene-editor-layer-swaps.swap-to-image": {
+      "replaces": [
+        "app-scene-editor-layer-swaps.add.set-swaps.fec1302071ff"
+      ],
+      "nb": {
+        "text": "bilde"
+      },
+      "en": {
+        "text": "image"
+      }
+    },
+    "app-scene-editor-nearby-audio-panel.use-in-scene": {
+      "replaces": [
+        "app-scene-editor-nearby-audio-panel.use.run.65d55e0319ac"
+      ],
+      "nb": {
+        "text": "Bruk «{name}» i scenen"
+      },
+      "en": {
+        "text": "Use “{name}” in the scene"
+      }
+    },
+    "app-scene-editor-nearby-audio-panel.use-in-scene-audio": {
+      "replaces": [
+        "app-scene-editor-nearby-audio-panel.use.run.65d55e0319ac"
+      ],
+      "nb": {
+        "text": "lyd"
+      },
+      "en": {
+        "text": "audio"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.suggestion-tooltip": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce"
+      ],
+      "nb": {
+        "text": "{name} – {kind}{uncertainKind}, {reason}{match}{uncertain}"
+      },
+      "en": {
+        "text": "{name} – {kind}{uncertainKind}, {reason}{match}{uncertain}"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain-kind": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce"
+      ],
+      "nb": {
+        "text": " (usikker type)"
+      },
+      "en": {
+        "text": " (uncertain type)"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.suggestion-tooltip-match": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce"
+      ],
+      "nb": {
+        "text": ". Kanskje samme som «{name}»"
+      },
+      "en": {
+        "text": ". Possibly the same as “{name}”"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce"
+      ],
+      "nb": {
+        "text": ". Usikkert forslag"
+      },
+      "en": {
+        "text": ". Uncertain suggestion"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.in-scene-layers": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29"
+      ],
+      "nb": {
+        "text": "I scenen, {count} lag"
+      },
+      "en": {
+        "text": "In the scene, {count} layers"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.in-scene": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29"
+      ],
+      "nb": {
+        "text": "I scenen"
+      },
+      "en": {
+        "text": "In the scene"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": "{name} – {kind}, {usage}{look}{scene}.\nDobbeltklikk: velg eller generer bilde"
+      },
+      "en": {
+        "text": "{name} – {kind}, {usage}{look}{scene}.\nDouble-click: choose or generate an image"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip-planned": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": "planlagt fra en annen scene"
+      },
+      "en": {
+        "text": "planned from another scene"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip-look": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": ". Utseende i denne scenen (kontinuitet): {look}"
+      },
+      "en": {
+        "text": ". Look in this scene (continuity): {look}"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip-in-scene": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": ". Lagt inn i scenen"
+      },
+      "en": {
+        "text": ". In the scene"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip-in-scene-layers": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": ". Lagt inn i scenen ({count} lag)"
+      },
+      "en": {
+        "text": ". In the scene ({count} layers)"
+      }
+    },
+    "app-scene-editor-scene-assets-panel.asset-tooltip-not-in-scene": {
+      "replaces": [
+        "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58"
+      ],
+      "nb": {
+        "text": ". Ikke lagt inn i scenen ennå"
+      },
+      "en": {
+        "text": ". Not yet added to the scene"
+      }
+    },
+    "app-scene-editor-scene-editor-workspace.added-to-scene": {
+      "replaces": [
+        "app-scene-editor-scene-editor-workspace.carry-next.use-callback.b76e19921b89"
+      ],
+      "nb": {
+        "text": "Lagt til i scene {scene}."
+      },
+      "en": {
+        "text": "Added to scene {scene}."
+      }
+    },
+    "app-scene-editor-scene-to-video-dialog.sent-parts": {
+      "replaces": [
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.7acee102a032"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Sendt ({count} del). Videoen lages hos leverandøren og legges inn som ny versjon når den er ferdig – følg med i statusen øverst til høyre. Du kan lukke vinduet og jobbe videre.",
+            "other": "Sendt ({count} deler). Videoen lages hos leverandøren og legges inn som ny versjon når den er ferdig – følg med i statusen øverst til høyre. Du kan lukke vinduet og jobbe videre."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Sent ({count} part). The video is made by the provider and added as a new version when it is finished – follow the status at the top right. You can close the window and keep working.",
+            "other": "Sent ({count} parts). The video is made by the provider and added as a new version when it is finished – follow the status at the top right. You can close the window and keep working."
+          }
+        }
+      }
+    },
+    "app-scene-editor-scene-to-video-dialog.references-sheet": {
+      "replaces": [
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.f7a2daae4f71"
+      ],
+      "nb": {
+        "text": "Modellen tar imot {max} referansebilder; {sent} sendes. {figures} figurer settes sammen i ett samlebilde med navn."
+      },
+      "en": {
+        "text": "The model accepts {max} reference images; {sent} are sent. {figures} figures are put together in one reference sheet with names."
+      }
+    },
+    "app-scene-editor-scene-to-video-dialog.references": {
+      "replaces": [
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.f7a2daae4f71"
+      ],
+      "nb": {
+        "text": "Modellen tar imot {max} referansebilder; {sent} sendes."
+      },
+      "en": {
+        "text": "The model accepts {max} reference images; {sent} are sent."
+      }
+    },
+    "app-scene-editor-stage.stage-label-camera": {
+      "replaces": [
+        "app-scene-editor-stage.label.message.76e4da85b9e3"
+      ],
+      "nb": {
+        "text": "Kameravisning: {name}, {layers} lag"
+      },
+      "en": {
+        "text": "Camera view: {name}, {layers} layers"
+      }
+    },
+    "app-scene-editor-stage.stage-label": {
+      "replaces": [
+        "app-scene-editor-stage.label.message.76e4da85b9e3"
+      ],
+      "nb": {
+        "text": "2D-scene: {name}, {layers} lag"
+      },
+      "en": {
+        "text": "2D scene: {name}, {layers} layers"
+      }
+    },
+    "app-scene-editor-stage.stage-label-unnamed": {
+      "replaces": [
+        "app-scene-editor-stage.label.message.76e4da85b9e3"
+      ],
+      "nb": {
+        "text": "Uten navn"
+      },
+      "en": {
+        "text": "Untitled"
+      }
+    },
+    "app-scene-editor-text-inspector.template-info": {
+      "replaces": [
+        "app-scene-editor-text-inspector.template-section.hint.d5f141b4e14e"
+      ],
+      "nb": {
+        "text": "{name}, versjon {version}. Innholdet her endrer ikke malen."
+      },
+      "en": {
+        "text": "{name}, version {version}. The content here does not change the template."
+      }
+    },
+    "app-scene-editor-text-inspector.template-info-template": {
+      "replaces": [
+        "app-scene-editor-text-inspector.template-section.hint.d5f141b4e14e"
+      ],
+      "nb": {
+        "text": "Mal"
+      },
+      "en": {
+        "text": "Template"
+      }
+    },
+    "app-script-line-link-review.unpaired": {
+      "replaces": [
+        "app-script-line-link-review.line-link-review.p.63fff3b0112f"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} oversatt linje uten par",
+            "other": "{count} oversatte linjer uten par"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} translated line without a pair",
+            "other": "{count} translated lines without a pair"
+          }
+        }
+      }
+    },
+    "app-script-scene-navigator.activate-scene": {
+      "replaces": [
+        "app-script-scene-navigator.scene-navigator.aria-label.4139dfcbe110"
+      ],
+      "nb": {
+        "text": "Aktiver scene {number}"
+      },
+      "en": {
+        "text": "Activate scene {number}"
+      }
+    },
+    "app-script-scene-navigator.scene-without-number": {
+      "replaces": [
+        "app-script-scene-navigator.scene-navigator.aria-label.4139dfcbe110",
+        "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44"
+      ],
+      "nb": {
+        "text": "uten nummer"
+      },
+      "en": {
+        "text": "without number"
+      }
+    },
+    "app-script-scene-navigator.deactivate-scene": {
+      "replaces": [
+        "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44"
+      ],
+      "nb": {
+        "text": "Deaktiver scene {number}"
+      },
+      "en": {
+        "text": "Deactivate scene {number}"
+      }
+    },
+    "app-script-scene-navigator.notes": {
+      "replaces": [
+        "app-script-scene-navigator.scene-navigator.title.5d843ae57d5d"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} notat",
+            "other": "{count} notater"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} note",
+            "other": "{count} notes"
+          }
+        }
+      }
+    },
+    "app-script-script-page-view.uncertain-interpretation": {
+      "replaces": [
+        "app-script-script-page-view.line.title.f26c13209f66"
+      ],
+      "nb": {
+        "text": "Usikker tolkning: {reason}"
+      },
+      "en": {
+        "text": "Uncertain interpretation: {reason}"
+      }
+    },
+    "app-script-translation-import-dialog.ai-suggestion": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c"
+      ],
+      "nb": {
+        "text": " · Forslag fra AI ({confidence}){reason}"
+      },
+      "en": {
+        "text": " · AI suggestion ({confidence}){reason}"
+      }
+    },
+    "app-script-translation-import-dialog.ai-suggestion-high": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c"
+      ],
+      "nb": {
+        "text": "sikker"
+      },
+      "en": {
+        "text": "certain"
+      }
+    },
+    "app-script-translation-import-dialog.ai-suggestion-medium": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c"
+      ],
+      "nb": {
+        "text": "trolig"
+      },
+      "en": {
+        "text": "likely"
+      }
+    },
+    "app-script-translation-import-dialog.ai-suggestion-low": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c"
+      ],
+      "nb": {
+        "text": "usikker"
+      },
+      "en": {
+        "text": "uncertain"
+      }
+    },
+    "app-script-translation-import-dialog.link-summary": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166"
+      ],
+      "nb": {
+        "text": "{certainty} · {lines} linjer{unmatched}"
+      },
+      "en": {
+        "text": "{certainty} · {lines} lines{unmatched}"
+      }
+    },
+    "app-script-translation-import-dialog.link-summary-manual": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166"
+      ],
+      "nb": {
+        "text": "Valgt manuelt"
+      },
+      "en": {
+        "text": "Chosen manually"
+      }
+    },
+    "app-script-translation-import-dialog.link-summary-sure": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166"
+      ],
+      "nb": {
+        "text": "Sikker"
+      },
+      "en": {
+        "text": "Certain"
+      }
+    },
+    "app-script-translation-import-dialog.link-summary-unsure": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166"
+      ],
+      "nb": {
+        "text": "Usikker"
+      },
+      "en": {
+        "text": "Uncertain"
+      }
+    },
+    "app-script-translation-import-dialog.link-summary-unmatched": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166"
+      ],
+      "nb": {
+        "text": " · {count} uten par"
+      },
+      "en": {
+        "text": " · {count} without a pair"
+      }
+    },
+    "app-script-translation-import-dialog.import-script": {
+      "replaces": [
+        "app-script-translation-import-dialog.translation-import-dialog.dialog-title.fb1c52f22990",
+        "app-script-translation-import-dialog.e.cmds-run.96a7ab3c19ed"
+      ],
+      "nb": {
+        "text": "Importer {language} manus"
+      },
+      "en": {
+        "text": "Import {language} script"
+      }
+    },
+    "app-script-versions-dialog.partial-restore": {
+      "replaces": [
+        "app-script-versions-dialog.confirm.set-error.fe27baf66e14"
+      ],
+      "nb": {
+        "text": "Gjenopprettingen ble bare delvis utført – angre med ⌘/Ctrl + Z"
+      },
+      "en": {
+        "text": "The restore was only partly completed – undo with ⌘/Ctrl + Z"
+      }
+    },
+    "core-assembly-compare.edited-version": {
+      "replaces": [
+        "core-assembly-compare.label.label.692a228ae4f0"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Klippet versjon ({count} del)",
+            "other": "Klippet versjon ({count} deler)"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Edited version ({count} part)",
+            "other": "Edited version ({count} parts)"
+          }
+        }
+      }
+    },
+    "core-assembly-discrepancy.film-take": {
+      "replaces": [
+        "core-assembly-discrepancy.label.label.05bb905de0cf"
+      ],
+      "nb": {
+        "text": "Film: {file}"
+      },
+      "en": {
+        "text": "Film: {file}"
+      }
+    },
+    "core-assembly-discrepancy.film-take-imported": {
+      "replaces": [
+        "core-assembly-discrepancy.label.label.05bb905de0cf"
+      ],
+      "nb": {
+        "text": "importert film"
+      },
+      "en": {
+        "text": "imported film"
+      }
+    },
+    "core-assembly-edit.still-image": {
+      "replaces": [
+        "core-assembly-edit.take-label.message.9279a7e64eac"
+      ],
+      "nb": {
+        "text": "Stillbilde: {name}{version}"
+      },
+      "en": {
+        "text": "Still image: {name}{version}"
+      }
+    },
+    "core-assembly-edit.still-image-image": {
+      "replaces": [
+        "core-assembly-edit.take-label.message.9279a7e64eac"
+      ],
+      "nb": {
+        "text": "bilde"
+      },
+      "en": {
+        "text": "image"
+      }
+    },
+    "core-continuity-analysis.missing-change-scene": {
+      "replaces": [
+        "core-continuity-analysis.message.message.4f4edf9e9f50"
+      ],
+      "nb": {
+        "text": "{asset} har «{look}» i {later}, men endringen{desc} skjer i {main} i hovedfilmen, som ikke er med i {production}. Ta med scenen, skriv en sammenbindende scene, eller slå av endringen i {production}."
+      },
+      "en": {
+        "text": "{asset} has “{look}” in {later}, but the change{desc} happens in {main} in the main film, which is not in {production}. Include that scene, write a linking scene, or switch off the change in {production}."
+      }
+    },
+    "core-export-records.scenes": {
+      "replaces": [
+        "core-export-records.describe-export-settings.parts-push.68ed8c598538"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scener"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} scene",
+            "other": "{count} scenes"
+          }
+        }
+      }
+    },
+    "core-generation-brief.reference-images": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.23c5878a89d5"
+      ],
+      "nb": {
+        "text": "Referansebilder: {list}."
+      },
+      "en": {
+        "text": "Reference images: {list}."
+      }
+    },
+    "core-generation-brief.reference-images-subject": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.23c5878a89d5"
+      ],
+      "nb": {
+        "text": "{count} av motivet"
+      },
+      "en": {
+        "text": "{count} of the subject"
+      }
+    },
+    "core-generation-brief.reference-images-style": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.23c5878a89d5"
+      ],
+      "nb": {
+        "text": "{count} for stilen"
+      },
+      "en": {
+        "text": "{count} for the style"
+      }
+    },
+    "core-generation-brief.style-colours": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.561d2279680c"
+      ],
+      "nb": {
+        "text": "Stil fra «Filmens visuelle stil» med {colours} farger."
+      },
+      "en": {
+        "text": "Style from “The film's visual style” with {colours} colours."
+      }
+    },
+    "core-generation-brief.style": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.561d2279680c"
+      ],
+      "nb": {
+        "text": "Stil fra «Filmens visuelle stil»."
+      },
+      "en": {
+        "text": "Style from “The film's visual style”."
+      }
+    },
+    "core-generation-brief.task-subject": {
+      "replaces": [
+        "core-generation-brief.brief-summary-nb.message.acd89004c73e"
+      ],
+      "nb": {
+        "text": "{task} av {subject}{views}."
+      },
+      "en": {
+        "text": "{task}: {subject}{views}."
+      }
+    },
+    "core-generation-providers.generations": {
+      "replaces": [
+        "core-generation-providers.value.value.d1d1e232b849"
+      ],
+      "nb": {
+        "text": "{generations} genereringer{detail}"
+      },
+      "en": {
+        "text": "{generations} generations{detail}"
+      }
+    },
+    "core-generation-providers.generations-candidates": {
+      "replaces": [
+        "core-generation-providers.value.value.d1d1e232b849"
+      ],
+      "nb": {
+        "text": "{times}{count} kandidater)"
+      },
+      "en": {
+        "text": "{times}{count} candidates)"
+      }
+    },
+    "core-generation-providers.lengths": {
+      "replaces": [
+        "core-generation-providers.quality-mechanisms.out-push.2b3eda074604"
+      ],
+      "nb": {
+        "text": "Lengde {list} eller {last} s"
+      },
+      "en": {
+        "text": "Length {list} or {last} s"
+      }
+    },
+    "core-generation-providers.length": {
+      "replaces": [
+        "core-generation-providers.quality-mechanisms.out-push.2b3eda074604"
+      ],
+      "nb": {
+        "text": "Lengde {last} s"
+      },
+      "en": {
+        "text": "Length {last} s"
+      }
+    },
+    "core-generation-quality.lines-not-in-description": {
+      "replaces": [
+        "core-generation-quality.text.text.8794e6693931"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} replikk var ikke med i beskrivelsen.",
+            "other": "{count} replikker var ikke med i beskrivelsen."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line was not included in the description.",
+            "other": "{count} lines were not included in the description."
+          }
+        }
+      }
+    },
+    "core-generation-video.changes-affect-unknown": {
+      "replaces": [
+        "core-generation-video.reason.reason.20613688625a"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Endringene berører segment {segments} (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med).",
+            "other": "Endringene berører segmentene {segments} (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The changes affect segment {segments} (a removed line cannot be placed, so all segments with video are included).",
+            "other": "The changes affect the segments {segments} (a removed line cannot be placed, so all segments with video are included)."
+          }
+        }
+      }
+    },
+    "core-generation-video.changes-affect": {
+      "replaces": [
+        "core-generation-video.reason.reason.20613688625a"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Endringene berører segment {segments}.",
+            "other": "Endringene berører segmentene {segments}."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "The changes affect segment {segments}.",
+            "other": "The changes affect the segments {segments}."
+          }
+        }
+      }
+    },
+    "core-language-index.shorten-by": {
+      "replaces": [
+        "core-language-index.text.text.6cf7b86c882c"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Kort ned oversettelsen med omtrent {count} ord.",
+            "other": "Kort ned oversettelsen med omtrent {count} ord."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "Shorten the translation by about {count} word.",
+            "other": "Shorten the translation by about {count} words."
+          }
+        }
+      }
+    },
+    "core-library-content-sync.content-sync-flag": {
+      "replaces": [
+        "core-library-content-sync.content-sync-flag.message.6d78ae08bb8d"
+      ],
+      "nb": {
+        "text": "Ressursen er oppdatert etter at scenen ble laget"
+      },
+      "en": {
+        "text": "The asset was updated after the scene was made"
+      }
+    },
+    "core-screenplay-restore-version.lines-kept": {
+      "replaces": [
+        "core-screenplay-restore-version.restore-version-plan.issue.66a4bfd9bd72"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment).",
+            "other": "{count} linjer som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment)."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line that has been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+            "other": "{count} lines that have been added are kept (they are used by another scene in the version or as a boundary for a production segment)."
+          }
+        }
+      }
+    },
+    "core-screenplay-restore-version.lines-missing": {
+      "replaces": [
+        "core-screenplay-restore-version.restore-version-plan.issue.74c12409005a"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje finnes ikke lenger.",
+            "other": "{count} linjer finnes ikke lenger."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line no longer exist.",
+            "other": "{count} lines no longer exist."
+          }
+        }
+      }
+    },
+    "core-screenplay-restore-version.lines-moved": {
+      "replaces": [
+        "core-screenplay-restore-version.restore-version-plan.issue.e92817f47614"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} linje er flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her.",
+            "other": "{count} linjer er flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
+            "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+          }
+        }
+      }
+    },
+    "core-screenplay-versions.after-scene": {
+      "replaces": [
+        "core-screenplay-versions.where.message.efb3278a85ff"
+      ],
+      "nb": {
+        "text": "etter scene {number}"
+      },
+      "en": {
+        "text": "after scene {number}"
+      }
+    },
+    "core-screenplay-versions.after-scene-unnumbered": {
+      "replaces": [
+        "core-screenplay-versions.where.message.efb3278a85ff"
+      ],
+      "nb": {
+        "text": "etter scene uten nummer ({heading})"
+      },
+      "en": {
+        "text": "after scene no number ({heading})"
+      }
+    },
+    "core-translation-line-link-labels.pair-summary": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "{sources} mot {targets}"
+      },
+      "en": {
+        "text": "{sources} to {targets}"
+      }
+    },
+    "core-translation-line-link-labels.pair-summary-sources": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{n} norsk linje",
+            "other": "{n} norske linjer"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{n} Norwegian line",
+            "other": "{n} Norwegian lines"
+          }
+        }
+      }
+    },
+    "core-translation-line-link-labels.pair-summary-targets": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{n} oversatt",
+            "other": "{n} oversatte"
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{n} translated",
+            "other": "{n} translated"
+          }
+        }
+      }
+    },
+    "app-scene-editor-credits-panel.presentation-roll": {
+      "replaces": [
+        "app-scene-editor-credits-panel.design-tab.option.c0137faa825d"
+      ],
+      "nb": {
+        "text": "Rullende"
+      },
+      "en": {
+        "text": "Rolling"
+      }
+    },
+    "app-scene-editor-credits-panel.presentation-one-at-a-time": {
+      "replaces": [
+        "app-scene-editor-credits-panel.design-tab.option.c0137faa825d"
+      ],
+      "nb": {
+        "text": "Én om gangen"
+      },
+      "en": {
+        "text": "One at a time"
+      }
+    },
+    "app-scene-editor-credits-panel.presentation-positions": {
+      "replaces": [
+        "app-scene-editor-credits-panel.design-tab.option.c0137faa825d"
+      ],
+      "nb": {
+        "text": "Plassert i bildet"
+      },
+      "en": {
+        "text": "Positioned in the frame"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-cut": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Kutt"
+      },
+      "en": {
+        "text": "Cut"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-dissolve": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Tone"
+      },
+      "en": {
+        "text": "Dissolve"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-dip": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Via svart"
+      },
+      "en": {
+        "text": "Dip to black"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-dipwhite": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Via hvitt"
+      },
+      "en": {
+        "text": "Dip to white"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-wipe": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Visk"
+      },
+      "en": {
+        "text": "Wipe"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-push": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Skyv"
+      },
+      "en": {
+        "text": "Push"
+      }
+    },
+    "app-scene-editor-pages-panel.transition-iris": {
+      "replaces": [
+        "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e"
+      ],
+      "nb": {
+        "text": "Irismaske"
+      },
+      "en": {
+        "text": "Iris"
+      }
+    },
+    "core-presentation-poster.option-images-and-names-only": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Bare bilder og navn"
+      },
+      "en": {
+        "text": "Images and names only"
+      }
+    },
+    "core-presentation-poster.option-short-descriptions": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Korte karakterbeskrivelser"
+      },
+      "en": {
+        "text": "Short character descriptions"
+      }
+    },
+    "core-presentation-poster.option-long-descriptions": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Utfyllende karakterbeskrivelser"
+      },
+      "en": {
+        "text": "Full character descriptions"
+      }
+    },
+    "core-presentation-poster.option-relation-lines": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Relasjonslinjer"
+      },
+      "en": {
+        "text": "Relation lines"
+      }
+    },
+    "core-presentation-poster.option-named-relations": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Navngitte relasjoner"
+      },
+      "en": {
+        "text": "Named relations"
+      }
+    },
+    "core-presentation-poster.option-relation-texts": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Forklarende relasjonstekster"
+      },
+      "en": {
+        "text": "Explanatory relation texts"
+      }
+    },
+    "core-presentation-poster.option-object-images": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Objektbilder"
+      },
+      "en": {
+        "text": "Object images"
+      }
+    },
+    "core-presentation-poster.option-object-descriptions": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Objektbeskrivelser"
+      },
+      "en": {
+        "text": "Object descriptions"
+      }
+    },
+    "core-presentation-poster.option-place-images": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Stedsbilder"
+      },
+      "en": {
+        "text": "Place images"
+      }
+    },
+    "core-presentation-poster.option-place-descriptions": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Stedsbeskrivelser"
+      },
+      "en": {
+        "text": "Place descriptions"
+      }
+    },
+    "core-presentation-poster.option-logline": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Logline"
+      },
+      "en": {
+        "text": "Logline"
+      }
+    },
+    "core-presentation-poster.option-genre-mood": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Sjanger og stemning"
+      },
+      "en": {
+        "text": "Genre and mood"
+      }
+    },
+    "core-presentation-poster.option-project-data": {
+      "replaces": [
+        "core-presentation-poster.get.get.670123440a05"
+      ],
+      "nb": {
+        "text": "Andre prosjektdata (format, lengde, produksjon)"
+      },
+      "en": {
+        "text": "Other project data (format, length, production)"
+      }
+    },
+    "core-translation-line-link-labels.number-word-0": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "null"
+      },
+      "en": {
+        "text": "zero"
+      }
+    },
+    "core-translation-line-link-labels.number-word-1": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "én"
+      },
+      "en": {
+        "text": "one"
+      }
+    },
+    "core-translation-line-link-labels.number-word-2": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "to"
+      },
+      "en": {
+        "text": "two"
+      }
+    },
+    "core-translation-line-link-labels.number-word-3": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "tre"
+      },
+      "en": {
+        "text": "three"
+      }
+    },
+    "core-translation-line-link-labels.number-word-4": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "fire"
+      },
+      "en": {
+        "text": "four"
+      }
+    },
+    "core-translation-line-link-labels.number-word-5": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "fem"
+      },
+      "en": {
+        "text": "five"
+      }
+    },
+    "core-translation-line-link-labels.number-word-6": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "seks"
+      },
+      "en": {
+        "text": "six"
+      }
+    },
+    "core-translation-line-link-labels.number-word-7": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "sju"
+      },
+      "en": {
+        "text": "seven"
+      }
+    },
+    "core-translation-line-link-labels.number-word-8": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "åtte"
+      },
+      "en": {
+        "text": "eight"
+      }
+    },
+    "core-translation-line-link-labels.number-word-9": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "ni"
+      },
+      "en": {
+        "text": "nine"
+      }
+    },
+    "core-translation-line-link-labels.number-word-10": {
+      "replaces": [
+        "core-translation-line-link-labels.ratio-title.message.a1c06218c905"
+      ],
+      "nb": {
+        "text": "ti"
+      },
+      "en": {
+        "text": "ten"
+      }
+    },
+    "app-mobile-mobile-actions.from-mobile-fallback": {
+      "replaces": [
+        "app-mobile-mobile-actions.note.note.e796727a816f",
+        "app-mobile-mobile-actions.note.note.e796727a816f.2"
+      ],
+      "nb": {
+        "text": "mobil"
+      },
+      "en": {
+        "text": "mobile"
+      }
+    },
+    "app-assembly-use-film-language.language-name-nb": {
+      "replaces": [
+        "app-assembly-use-film-language.language-name.message.666421b951b7"
+      ],
+      "nb": {
+        "text": "Norsk"
+      },
+      "en": {
+        "text": "Norwegian"
+      }
+    },
+    "app-assembly-use-film-language.language-name-en": {
+      "replaces": [
+        "app-assembly-use-film-language.language-name.message.666421b951b7"
+      ],
+      "nb": {
+        "text": "Engelsk"
+      },
+      "en": {
+        "text": "English"
+      }
+    },
+    "app-script-remove-translations-dialog.language-word-nb": {
+      "replaces": [
+        "app-script-remove-translations-dialog.name.message.15d1b5cf63e3"
+      ],
+      "nb": {
+        "text": "norsk"
+      },
+      "en": {
+        "text": "Norwegian"
+      }
+    },
+    "app-script-remove-translations-dialog.language-word-en": {
+      "replaces": [
+        "app-script-remove-translations-dialog.name.message.15d1b5cf63e3"
+      ],
+      "nb": {
+        "text": "engelsk"
+      },
+      "en": {
+        "text": "English"
+      }
     }
   }
 }

@@ -5,15 +5,7 @@
  */
 import { Film, Loader2, MapPin, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  cutsToRanges,
-  formatHeading,
-  newId,
-  proposeCuts,
-  type FilmClip,
-  type TakeMedia,
-  L,
-} from "@/core";
+import { cutsToRanges, formatHeading, newId, proposeCuts, type FilmClip, type TakeMedia } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
@@ -161,10 +153,7 @@ export function LongFilmImportDialog({
         prog.up = await uploadFilm(projectId, file, fps);
       }
       const up = prog.up;
-      const label = L(
-        `Importer lang film (${range.length} ${range.length === 1 ? "scene" : "scener"})`,
-        `Import long film (${range.length} ${range.length === 1 ? "scene" : "scenes"})`,
-      );
+      const label = tk("app-assembly-long-film-import-dialog.import-long-film", { count: range.length });
       for (let i = 0; i < range.length; i++) {
         const c = range[i]!;
         const r = ranges[i]!;

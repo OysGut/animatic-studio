@@ -6,7 +6,7 @@
 import { Loader2, Palette } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { L, estimateCostUsd, formatUsd, localized, tm, newId, qualityProfileSnapshot, type ProjectState } from "@/core";
+import { estimateCostUsd, formatUsd, tm, newId, qualityProfileSnapshot, type ProjectState } from "@/core";
 import {
   advanceHarmonizeBatch,
   createHarmonizeBatch,
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { CostConfirm } from "./ImageAiPanels";
 import type { ImageModelPick } from "./image-model";
 import type { LightboxTools } from "./ImageLightbox";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** Bildet som harmoniseres for en ressurs: godkjent versjon i første aktive variant, ellers det nyeste. */
 export function harmonizeSourceOf(s: ProjectState, assetId: string): string | null {
@@ -35,14 +36,7 @@ export function harmonizeSourceOf(s: ProjectState, assetId: string): string | nu
   return latest?.id ?? null;
 }
 
-const STATUS: Record<string, string> = localized({
-  waiting: ["Venter", "Waiting"],
-  generating: ["Lager …", "Making …"],
-  ready: ["Legges inn …", "Saving …"],
-  done: ["Ferdig", "Done"],
-  failed: ["Feilet", "Failed"],
-  skipped: ["Hoppet over", "Skipped"],
-});
+const STATUS: Record<string, string> = tLocalized({ waiting: "app-library-harmonize-batch-panel.status.waiting.041a3867bbb3", generating: "app-library-harmonize-batch-panel.status.generating.10ace14199ac", ready: "app-library-harmonize-batch-panel.status.ready.e735d35f0043", done: "app-library-harmonize-batch-panel.status.done.be723f263b44", failed: "app-library-harmonize-batch-panel.status.failed.949469a06648", skipped: "app-library-harmonize-batch-panel.status.skipped.1353cb3eea00" });
 
 export function HarmonizeBatchPanel({
   tools,
@@ -148,7 +142,7 @@ export function HarmonizeBatchPanel({
   return (
     <div data-testid="harmonize-batch-panel" className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary">
       <h4 className="flex items-center gap-1 font-medium text-text-primary">
-        <Palette className="size-3.5" aria-hidden /> {L("Harmoniser flere karakterer", "Harmonize more characters")}
+        <Palette className="size-3.5" aria-hidden /> {tk("app-library-harmonize-batch-panel.harmonize-batch-panel.h4.86ff98e3854d")}
       </h4>
       {job ? (
         <>
@@ -164,20 +158,20 @@ export function HarmonizeBatchPanel({
             <>
               <p role="alert" className="text-status-danger">{tm(job.pause_reason ?? "")}</p>
               <Button size="sm" variant="secondary" data-testid="harmonize-batch-resume" onClick={() => void resumeHarmonizeBatch({ data: { projectId, batchId: job.id, approved: true } }).then(() => refresh(job.id)).catch((e: unknown) => setError(tm((e as Error).message)))}>
-                {L("Bekreft og fortsett (bare bilder som sikkert ikke er laget)", "Approve and continue (only images certainly not made)")}
+                {tk("app-library-harmonize-batch-panel.harmonize-batch-panel.button.67372ed7aa57")}
               </Button>
             </>
           ) : job.status === "done" ? (
-            <p role="status" className="text-status-success">{L("Ferdig. Hvert resultat er en ny variant; originalene er uendret.", "Done. Each result is a new variant; the originals are unchanged.")}</p>
+            <p role="status" className="text-status-success">{tk("app-library-harmonize-batch-panel.harmonize-batch-panel.p.287a9869be20")}</p>
           ) : (
-            <p role="status" className="flex items-center gap-1.5"><Loader2 className="size-3.5 animate-spin" aria-hidden /> {L("Jobben kjører – den fortsetter selv om du lukker.", "The job is running – it continues even if you close.")}</p>
+            <p role="status" className="flex items-center gap-1.5"><Loader2 className="size-3.5 animate-spin" aria-hidden /> {tk("app-library-harmonize-batch-panel.harmonize-batch-panel.p.76b20646e06c")}</p>
           )}
-          <Button size="sm" variant="ghost" onClick={onClose}>{L("Lukk", "Close")}</Button>
+          <Button size="sm" variant="ghost" onClick={onClose}>{tk("app-library-harmonize-batch-panel.harmonize-batch-panel.button.7509d45b9584")}</Button>
         </>
       ) : (
         <>
           <fieldset className="flex max-h-48 flex-col gap-0.5 overflow-auto" disabled={busy}>
-            <legend className="mb-1">{L("Karakterer med bilde", "Characters with an image")}</legend>
+            <legend className="mb-1">{tk("app-library-harmonize-batch-panel.harmonize-batch-panel.legend.32997592544e")}</legend>
             {candidates.map((c) => (
               <label key={c.asset.id} className="flex items-center gap-1.5">
                 <input
@@ -198,10 +192,13 @@ export function HarmonizeBatchPanel({
           </fieldset>
           {count > 0 && !noStyle ? (
             <p data-testid="harmonize-batch-estimate" className="text-text-primary">
-              {L(
-                `Samlet anslag: ${count} ${count === 1 ? "generering" : "genereringer"} med ${m.choice?.model.label ?? "?"}${unitUsd !== null ? ` · ${formatUsd(unitUsd)} per bilde · totalt ${formatUsd(unitUsd * count)}` : " · prisen er ukjent"}${m.size ? ` · ${m.size}` : ""}${quality.profile ? ` · profil «${quality.profile.name}»` : ""}.`,
-                `Total estimate: ${count} ${count === 1 ? "generation" : "generations"} with ${m.choice?.model.label ?? "?"}${unitUsd !== null ? ` · ${formatUsd(unitUsd)} per image · ${formatUsd(unitUsd * count)} in total` : " · the price is unknown"}${m.size ? ` · ${m.size}` : ""}${quality.profile ? ` · profile “${quality.profile.name}”` : ""}.`,
-              )}
+              {tk("app-library-harmonize-batch-panel.batch-total", {
+  count,
+  model: m.choice?.model.label ?? "?",
+  price: unitUsd !== null ? tk("app-library-harmonize-batch-panel.batch-total-price", { unit: formatUsd(unitUsd), total: formatUsd(unitUsd * count) }) : tk("app-library-harmonize-batch-panel.batch-total-unknown-price"),
+  size: m.size ? ` · ${m.size}` : "",
+  profile: quality.profile ? tk("app-library-harmonize-batch-panel.batch-total-profile", { name: quality.profile.name }) : "",
+})}
             </p>
           ) : null}
           {budgetError ? <p role="alert" data-testid="harmonize-batch-budget" className="text-status-danger">{budgetError}</p> : null}
@@ -214,10 +211,10 @@ export function HarmonizeBatchPanel({
             onClose={onClose}
             disabled={!tools.editable}
             busy={busy}
-            emptyText={noStyle ? L("Velg en stilprofil eller et referansebilde først.", "Choose a style profile or a reference image first.") : L("Velg minst én karakter.", "Choose at least one character.")}
-            confirmLabel={L("Bekreft masseharmonisering", "Confirm batch harmonization")}
+            emptyText={noStyle ? tk("app-library-harmonize-batch-panel.harmonize-batch-panel.empty-text.a9938db38386") : tk("app-library-harmonize-batch-panel.harmonize-batch-panel.empty-text.5dd09e2e4979")}
+            confirmLabel={tk("app-library-harmonize-batch-panel.harmonize-batch-panel.confirm-label.de2cbc6c3e7c")}
             icon={<Palette />}
-            startLabel={L(`Harmoniser ${count} …`, `Harmonize ${count} …`)}
+            startLabel={tk("app-library-harmonize-batch-panel.harmonize-batch-panel.start-label.4d3729c3f904", { count: String(count) })}
           />
         </>
       )}

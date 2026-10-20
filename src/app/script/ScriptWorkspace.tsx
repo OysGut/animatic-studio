@@ -34,41 +34,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import {
-  L,
-  collation,
-  changedBlockIds,
-  discrepancies,
-  filmClips,
-  assetNames,
-  allAssetUsage,
-  charactersInProduction,
-  filterPages,
-  isFilterActive,
-  matchingScenes,
-  productionStatus,
-  estimateProduction,
-  alignBlockLines,
-  annotationsByVariant,
-  movedOccurrences,
-  keysEvenly,
-  LANGUAGE_LABEL,
-  translatedState,
-  translationStatus,
-  newId,
-  pageDecorations,
-  resolveRange,
-  searchHits,
-  type Annotation,
-  nameKey,
-  orderedOccurrences,
-  scriptPages,
-  scriptView,
-  sortedAssets,
-  type ProjectState,
-  type SceneFilter,
-  promotionCandidates,
-} from "@/core";
+import { collation, changedBlockIds, discrepancies, filmClips, assetNames, allAssetUsage, charactersInProduction, filterPages, isFilterActive, matchingScenes, productionStatus, estimateProduction, alignBlockLines, annotationsByVariant, movedOccurrences, keysEvenly, LANGUAGE_LABEL, translatedState, translationStatus, newId, pageDecorations, resolveRange, searchHits, type Annotation, nameKey, orderedOccurrences, scriptPages, scriptView, sortedAssets, type ProjectState, type SceneFilter, promotionCandidates } from "@/core";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { initials, usePresence, type PresentUser } from "@/app/project/use-presence";
 import { useCommands, type Commands } from "@/app/project/use-commands";

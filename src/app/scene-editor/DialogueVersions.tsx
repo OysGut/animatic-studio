@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { L, versionsOfClip, mirroredClip, audioVersion, dialogueOverlaps, editOf, type AudioClip, type ProjectState, type FilmAudioItem } from "@/core";
+import { versionsOfClip, mirroredClip, audioVersion, dialogueOverlaps, editOf, type AudioClip, type ProjectState, type FilmAudioItem } from "@/core";
 import { Button } from "@/components/ui/button";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Wave } from "@/app/assembly/AudioTracks";

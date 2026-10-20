@@ -23,7 +23,7 @@ import type {
   TimeLink,
 } from "../model";
 import { mainProduction } from "../model";
-import { L, localized } from "../i18n";
+
 import type { Command, LayerFields } from "../commands/types";
 import { newId } from "../ids";
 import { compareKeys, keyBetween } from "../order-key";
@@ -33,6 +33,7 @@ import { compositionOfVariant, layersOf } from "../composition/render";
 import { layerFieldsOf } from "../composition";
 import { audioClipFieldsOf } from "../commands/apply";
 import { compositionCopyCommands } from "./index";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 // ---------- Hva kan føres tilbake ----------
 
@@ -196,28 +197,7 @@ const audioSame = (a: AudioClip, b: AudioClip) => {
   return JSON.stringify(x) === JSON.stringify(y);
 };
 
-const LAYER_FIELD_LABEL: Partial<Record<keyof LayerFields, string>> = localized({
-  kind: ["type", "type"],
-  name: ["navn", "name"],
-  assetId: ["bilde", "image"],
-  assetVariantId: ["variant", "variant"],
-  versionId: ["versjon", "version"],
-  fill: ["farge", "colour"],
-  width: ["størrelse", "size"],
-  height: ["størrelse", "size"],
-  parallax: ["parallakse", "parallax"],
-  transform: ["plassering", "position"],
-  keyframes: ["nøkkelbilder", "keyframes"],
-  visible: ["synlighet", "visibility"],
-  locked: ["lås", "lock"],
-  groupId: ["gruppe", "group"],
-  swaps: ["bildeskifter", "image swaps"],
-  path: ["bevegelsesbane", "motion path"],
-  anchor: ["ankerpunkt", "anchor point"],
-  languageImages: ["bilde per språk", "image per language"],
-  mask: ["maske", "mask"],
-  blend: ["blanding", "blend"],
-});
+const LAYER_FIELD_LABEL: Partial<Record<keyof LayerFields, string>> = tLocalized({ kind: "core-production-promote.layer-field-label.kind.daeeaa75cd8f", name: "core-production-promote.layer-field-label.name.d2b5e7b356cc", assetId: "core-production-promote.layer-field-label.asset-id.be280709bf2b", assetVariantId: "core-production-promote.layer-field-label.asset-variant-id.d0452f8fa1c0", versionId: "core-production-promote.layer-field-label.version-id.60993423f4d2", fill: "core-production-promote.layer-field-label.fill.8750e901ad3c", width: "core-production-promote.layer-field-label.width.b416e21946b0", height: "core-production-promote.layer-field-label.height.774cdd28ad64", parallax: "core-production-promote.layer-field-label.parallax.cfb63fc7426e", transform: "core-production-promote.layer-field-label.transform.6ba79cbbf13c", keyframes: "core-production-promote.layer-field-label.keyframes.3d8b8d814676", visible: "core-production-promote.layer-field-label.visible.367dbc801354", locked: "core-production-promote.layer-field-label.locked.ded35026dd82", groupId: "core-production-promote.layer-field-label.group-id.a7f95cc6d45d", swaps: "core-production-promote.layer-field-label.swaps.2d3131617d17", path: "core-production-promote.layer-field-label.path.c634fdaba373", anchor: "core-production-promote.layer-field-label.anchor.5509f59ef3a8", languageImages: "core-production-promote.layer-field-label.language-images.2b6b14acbb84", mask: "core-production-promote.layer-field-label.mask.01faf068dc0a", blend: "core-production-promote.layer-field-label.blend.ac3a5aa47fc2" });
 
 function layerChanges(
   main: CompositionLayer,
@@ -230,7 +210,7 @@ function layerChanges(
   for (const k of new Set([...Object.keys(a), ...Object.keys(b)])) {
     if (k === "groupId") {
       if (groupKey(main.groupId, "main") !== groupKey(spin.groupId, "spin"))
-        out.add(LAYER_FIELD_LABEL.groupId ?? L("gruppe", "group"));
+        out.add(LAYER_FIELD_LABEL.groupId ?? tk("core-production-promote.layer-changes.out-add.7e22961fe7b4"));
       continue;
     }
     if (k === "mask") {
@@ -240,7 +220,7 @@ function layerChanges(
           m?.kind === "layer" ? { ...m, layerId: groupKey(m.layerId, of) } : (m ?? null),
         );
       if (key(main.mask, "main") !== key(spin.mask, "spin"))
-        out.add(LAYER_FIELD_LABEL.mask ?? L("maske", "mask"));
+        out.add(LAYER_FIELD_LABEL.mask ?? tk("core-production-promote.layer-changes.out-add.7d2e69a9ecfd"));
       continue;
     }
     if (JSON.stringify(a[k] ?? null) !== JSON.stringify(b[k] ?? null))
@@ -347,7 +327,7 @@ export function comparePromotion(
       if (spin.removed)
         return { key, status: main.removed ? "same" : "removed", main, spin, what: [] };
       if (main.removed)
-        return { key, status: "changed", main, spin, what: [L("hentet tilbake", "fetched back")] };
+        return { key, status: "changed", main, spin, what: [tk("core-production-promote.what.what.3786b9880677")] };
       const what = layerChanges(main, spin, groupKey);
       return { key, status: what.length ? "changed" : "same", main, spin, what };
     })
@@ -494,23 +474,17 @@ export function promotionCommands(
   const c = comparePromotion(s, spinOccurrenceId);
   const main = mainProduction(s);
   if (!c || !main)
-    return { commands: [], blocked: L("Fant ikke scenen.", "The scene was not found.") };
+    return { commands: [], blocked: tk("core-production-promote.blocked.blocked.2cc0281f2acb") };
   const mo = c.mainOccurrence;
   if (!mo)
     return {
       commands: [],
-      blocked: L(
-        "Scenen finnes ikke i hovedfilmen. Bruk «Overfør scenen til hovedfilmen».",
-        "The scene does not exist in the main film. Use “Transfer the scene to the main film”.",
-      ),
+      blocked: tk("core-production-promote.blocked.blocked.bee2ccdaa0e6"),
     };
   if (choice.film && c.film.changed && c.film.mainApproved && !choice.confirmApproved)
     return {
       commands: [],
-      blocked: L(
-        "Hovedfilmen bruker en godkjent versjon av scenen. Bekreft at den skal byttes, eller la klippingen stå.",
-        "The main film uses an approved version of the scene. Confirm that it should be replaced, or leave the edit as it is.",
-      ),
+      blocked: tk("core-production-promote.blocked.blocked.17e0a71bb0b0"),
     };
   const so = c.spinOccurrence;
   const mv = s.variants[mo.variantId]!;
@@ -739,10 +713,7 @@ export function promotionCommands(
     if (compParts.length && !mc && !compCopied)
       return {
         commands: [],
-        blocked: L(
-          "Spinoffens klipping bruker 2D-scenen, men hovedfilmen har ingen 2D-scene. Velg også lagene (da kopieres 2D-scenen).",
-          "The spin-off's edit uses the 2D scene, but the main film has no 2D scene. Also choose the layers (then the 2D scene is copied).",
-        ),
+        blocked: tk("core-production-promote.blocked.blocked.2c995787c737"),
       };
     const mainFrames = mc
       ? choice.timing && sc
@@ -753,10 +724,7 @@ export function promotionCommands(
     if (mainFrames > 0 && compParts.some((p) => p.outMs > maxMs))
       return {
         commands: [],
-        blocked: L(
-          "Spinoffens klipping går lenger enn hovedfilmens 2D-scene. Velg også «Timing» (lengden på 2D-scenen).",
-          "The spin-off's edit runs longer than the main film's 2D scene. Also choose “Timing” (the length of the 2D scene).",
-        ),
+        blocked: tk("core-production-promote.blocked.blocked.9117f1cb55ff"),
       };
     const usable = parts;
     out.push({
@@ -788,7 +756,7 @@ export function newMainVariantCommands(s: ProjectState, spinOccurrenceId: string
   if (!so || !mo)
     return {
       commands: [],
-      blocked: L("Scenen finnes ikke i hovedfilmen.", "The scene does not exist in the main film."),
+      blocked: tk("core-production-promote.blocked.blocked.c1dad8d47094"),
     };
   const sv = s.variants[so.variantId]!;
   const out: Command[] = [];
@@ -811,10 +779,7 @@ export function newMainVariantCommands(s: ProjectState, spinOccurrenceId: string
   )
     return {
       commands: [],
-      blocked: L(
-        "Hovedfilmens inndeling for generering bruker linjer som ikke finnes i spinoffens versjon. Lag ny inndeling først.",
-        "The main film's split for generation uses lines that do not exist in the spin-off's version. Make a new split first.",
-      ),
+      blocked: tk("core-production-promote.blocked.blocked.9acf7d63bc7e"),
     };
   // Lyd koblet til linjer som forsvinner: koblingen til linjen løses (lyden beholdes)
   const audio = Object.values(s.audioClips).filter(
@@ -877,14 +842,11 @@ export function transferSceneCommands(
   const so = s.occurrences[spinOccurrenceId];
   const main = mainProduction(s);
   if (!so || !main)
-    return { commands: [], blocked: L("Fant ikke scenen.", "The scene was not found.") };
+    return { commands: [], blocked: tk("core-production-promote.blocked.blocked.2cc0281f2acb.2") };
   if (mainOccurrenceOf(s, so.id))
     return {
       commands: [],
-      blocked: L(
-        "Scenen finnes allerede i hovedfilmen.",
-        "The scene already exists in the main film.",
-      ),
+      blocked: tk("core-production-promote.blocked.blocked.a9f97e244594"),
     };
   const sv = s.variants[so.variantId]!;
   const mainOccs = orderedOccurrences(s, main.id);

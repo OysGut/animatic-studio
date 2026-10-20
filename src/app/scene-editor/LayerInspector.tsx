@@ -29,38 +29,7 @@ import {
   TextField,
   inputClass,
 } from "./inspector-fields";
-import {
-  L,
-  COMPOSITION_FORMATS,
-  DEFAULT_PARALLAX,
-  LAYER_KINDS,
-  LAYER_KIND_LABEL,
-  keyBetween,
-  fieldsWithTransformAt,
-  isAnimated,
-  layersOf,
-  newId,
-  removeKeyframesAt,
-  setKeyframe,
-  transformAt,
-  normalizeColor,
-  variantsOf,
-  versionsOf,
-  type Command,
-  type Composition,
-  type CompositionFields,
-  type TransformProperty,
-  type CompositionLayer,
-  type LayerFields,
-  type LayerKind,
-  type LayerTransform,
-  type ProjectState,
-  assetWorklist,
-  layerContinuity,
-  mainProduction,
-  newVersionWorkItemCommands,
-  outdatedLayers,
-} from "@/core";
+import { COMPOSITION_FORMATS, DEFAULT_PARALLAX, LAYER_KINDS, LAYER_KIND_LABEL, keyBetween, fieldsWithTransformAt, isAnimated, layersOf, newId, removeKeyframesAt, setKeyframe, transformAt, normalizeColor, variantsOf, versionsOf, type Command, type Composition, type CompositionFields, type TransformProperty, type CompositionLayer, type LayerFields, type LayerKind, type LayerTransform, type ProjectState, assetWorklist, layerContinuity, mainProduction, newVersionWorkItemCommands, outdatedLayers } from "@/core";
 import {
   FLIP_MODE_LABEL,
   MAGNIFICATION_WARN,
@@ -599,10 +568,7 @@ export function LayerInspector({
             <p className="flex items-start gap-1.5">
               <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-accent-warm" aria-hidden />
               <span>
-                {L(
-                  `Bildet vises i ${Math.round(magnification.value * 100)} % av sin egen størrelse${magnification.frame !== frame ? ` (bilde ${magnification.frame + 1})` : ""} – større enn pikslene i bildet, så det kan bli uskarpt.`,
-                  `The image is shown at ${Math.round(magnification.value * 100)} % of its own size${magnification.frame !== frame ? ` (frame ${magnification.frame + 1})` : ""} – larger than the image's pixels, so it may look blurred.`,
-                )}
+                {magnification.frame !== frame ? tk("app-scene-editor-layer-inspector.magnified-frame", { percent: Math.round(magnification.value * 100), frame: magnification.frame + 1 }) : tk("app-scene-editor-layer-inspector.magnified", { percent: Math.round(magnification.value * 100) })}
               </span>
             </p>
             {onUpscale ? (
@@ -793,10 +759,7 @@ export function LayerInspector({
                     className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-primary"
                   >
                     <span>
-                      {L(
-                        `Et bildeskifte eller språkbilde viser ${a?.name ?? "ressursen"} v${state.assetVersions[x.oldVersionId]?.number}, men v${state.assetVersions[x.newVersionId]?.number} er godkjent nå.`,
-                        `An image swap or language image shows ${a?.name ?? "the asset"} v${state.assetVersions[x.oldVersionId]?.number}, but v${state.assetVersions[x.newVersionId]?.number} is approved now.`,
-                      )}
+                      {tk("app-scene-editor-layer-inspector.swap-outdated", { asset: a?.name ?? tk("app-scene-editor-layer-inspector.swap-outdated-asset"), old: state.assetVersions[x.oldVersionId]?.number ?? "", current: state.assetVersions[x.newVersionId]?.number ?? "" })}
                     </span>
                     {editable ? (
                       <Button
@@ -836,10 +799,7 @@ export function LayerInspector({
                       aria-hidden
                     />
                     <span>
-                      {L(
-                        `Kontinuitet: i denne scenen skal ${asset?.name ?? "ressursen"} ha utseendet «${continuity.expected.name}».`,
-                        `Continuity: in this scene ${asset?.name ?? "the asset"} should look like “${continuity.expected.name}”.`,
-                      )}
+                      {tk("app-scene-editor-layer-inspector.continuity-look", { asset: asset?.name ?? tk("app-scene-editor-layer-inspector.continuity-look-asset"), look: continuity.expected.name })}
                     </span>
                   </span>
                   {editable ? (

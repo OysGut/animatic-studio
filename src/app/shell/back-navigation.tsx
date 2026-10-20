@@ -8,7 +8,7 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useSyncExternalStore } from "react";
 import { Button } from "@/components/ui/button";
-import { L } from "@/core";
+
 import { pageLabel, recordVisit, type Entry } from "./back-stack";
 import { t } from "@/core/i18n/keyed";
 

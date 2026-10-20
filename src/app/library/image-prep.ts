@@ -9,7 +9,8 @@
  *
  * Alt skjer i nettleseren; ingenting sendes før brukeren laster opp.
  */
-import { L, ORIGINAL_NOTE_MARK, ORIGINAL_NOTE_MARK_EN, scaledToFit } from "@/core";
+import { ORIGINAL_NOTE_MARK, ORIGINAL_NOTE_MARK_EN, scaledToFit } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export const TIFF_TYPES = ["image/tiff", "image/tif", "image/x-tiff"];
 
@@ -37,7 +38,7 @@ async function canvasToFile(
             (b) =>
               b
                 ? ok(b)
-                : fail(new Error(L("Bildet kunne ikke lagres.", "The image could not be saved."))),
+                : fail(new Error(t("app-library-image-prep.blob.fail.750a8616edfc"))),
             type,
             quality,
           ),
@@ -61,28 +62,25 @@ export async function tiffToPng(file: File): Promise<File> {
   try {
     ifds = UTIF.decode(buf);
   } catch {
-    throw new Error(L("TIFF-filen kunne ikke leses.", "The TIFF file could not be read."));
+    throw new Error(t("app-library-image-prep.tiff-to-png.message.254068a13e0c"));
   }
   const first = ifds[0];
   if (!first)
-    throw new Error(L("TIFF-filen inneholder ikke noe bilde.", "The TIFF file contains no image."));
+    throw new Error(t("app-library-image-prep.tiff-to-png.message.f824b06d1848"));
   UTIF.decodeImage(buf, first);
   const w = first.width;
   const h = first.height;
-  if (!w || !h) throw new Error(L("TIFF-filen har ingen størrelse.", "The TIFF file has no size."));
+  if (!w || !h) throw new Error(t("app-library-image-prep.tiff-to-png.message.07b6500cee95"));
   if (w * h > 400_000_000)
     throw new Error(
-      L(
-        "TIFF-bildet er for stort til å gjøres om i nettleseren.",
-        "The TIFF image is too large to convert in the browser.",
-      ),
+      t("app-library-image-prep.tiff-to-png.message.8c08b46cc417"),
     );
   const rgba = UTIF.toRGBA8(first);
   const canvas = makeCanvas(w, h);
   const ctx = canvas.getContext("2d") as
     OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D | null;
   if (!ctx)
-    throw new Error(L("Nettleseren kan ikke tegne bildet.", "The browser cannot draw the image."));
+    throw new Error(t("app-library-image-prep.tiff-to-png.message.c6773bf03d48"));
   ctx.putImageData(
     new ImageData(
       new Uint8ClampedArray(rgba.buffer as ArrayBuffer, rgba.byteOffset, w * h * 4),
@@ -123,7 +121,7 @@ export async function downscale(
       OffscreenCanvasRenderingContext2D | CanvasRenderingContext2D | null;
     if (!ctx)
       throw new Error(
-        L("Nettleseren kan ikke tegne bildet.", "The browser cannot draw the image."),
+        t("app-library-image-prep.downscale.message.db490d24b154"),
       );
     ctx.drawImage(bmp, 0, 0);
     const type = file.type === "image/jpeg" || file.type === "image/webp" ? file.type : "image/png";
@@ -149,7 +147,7 @@ export async function prepareImage(file: File, maxSide: number | null): Promise<
   const tiff = isTiff(file);
   const source = tiff ? await tiffToPng(file) : file;
   const fromTiff = tiff
-    ? L(`Gjort om fra TIFF («${file.name}»). `, `Converted from TIFF (“${file.name}”). `)
+    ? t("app-library-image-prep.from-tiff.message.9162b5bb8a60", { name: String(file.name) })
     : "";
   const dims = await imageDims(source);
   const target = dims && maxSide ? scaledToFit(dims.width, dims.height, maxSide) : null;
@@ -159,13 +157,10 @@ export async function prepareImage(file: File, maxSide: number | null): Promise<
   const working = await downscale(source, target);
   return {
     working,
-    workingNote: L(
-      `${fromTiff}Arbeidskopi skalert ned fra ${dims.width} × ${dims.height} til ${target.width} × ${target.height} px for jevn avspilling. Originalen er versjonen før – godkjenn den for å bruke full størrelse.`,
-      `${fromTiff}Working copy scaled down from ${dims.width} × ${dims.height} to ${target.width} × ${target.height} px for smooth playback. The original is the version before – approve it to use full size.`,
-    ),
+    workingNote: t("app-library-image-prep.working-note.working-note.d654a37310bc", { fromTiff: String(fromTiff), width: String(dims.width), height: String(dims.height), width4: String(target.width), height5: String(target.height) }),
     original: {
       file: source,
-      note: `${fromTiff}${L(ORIGINAL_NOTE_MARK, ORIGINAL_NOTE_MARK_EN)} (${dims.width} × ${dims.height} px). ${L("Brukes ikke før den godkjennes.", "Not used until it is approved.")}`,
+      note: `${fromTiff}${t("app-library-image-prep.original-note-mark")} (${dims.width} × ${dims.height} px). ${t("app-library-image-prep.note.note.ed4d908b8b89")}`,
     },
   };
 }

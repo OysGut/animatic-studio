@@ -1,4 +1,5 @@
-import { L } from "@/core";
+
+import { t as tk } from "@/core/i18n/keyed";
 /**
  * Felles for kallene til Lovable AI Gateway (bilder og tekst, DEC-0045/0066). Bare på serveren:
  * nøkkelen (LOVABLE_API_KEY) er en hemmelighet i Lovable Cloud og sendes aldri til nettleseren.
@@ -18,25 +19,13 @@ export function validReferencePath(projectId: string, p: unknown): p is string {
 /** Feilmelding fra tjenesten på norsk, uten hemmeligheter. */
 export function gatewayError(status: number, body: string): string {
   if (status === 402)
-    return L(
-      "AI-kredittene i arbeidsområdet er brukt opp. Fyll på og prøv igjen.",
-      "The workspace's AI credits are used up. Top up and try again.",
-    );
+    return tk("adapters-ai-gateway.gateway-error.message.a8c2618882f0");
   if (status === 429)
-    return L(
-      "For mange forespørsler akkurat nå. Vent et minutt og prøv igjen.",
-      "Too many requests right now. Wait a minute and try again.",
-    );
+    return tk("adapters-ai-gateway.gateway-error.message.a2733082ef14");
   if (status === 401 || status === 403)
-    return L(
-      "Den innebygde AI-en er ikke tilgjengelig. Kontakt administratoren.",
-      "The built-in AI is unavailable. Contact the administrator.",
-    );
+    return tk("adapters-ai-gateway.gateway-error.message.55ea69b40055");
   if (status === 400 && /safety|policy|moderation/i.test(body))
-    return L(
-      "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.",
-      "The AI service rejected the description (content rules). Change the description and try again.",
-    );
+    return tk("adapters-ai-gateway.gateway-error.message.b3ef724feea9");
   // Tjenestens egen forklaring (ingen hemmeligheter), kortet ned, så feilen kan forstås og rettes
   const detail = (() => {
     try {
@@ -52,10 +41,7 @@ export function gatewayError(status: number, body: string): string {
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, 220);
-  return L(
-    `AI-tjenesten svarte med feil ${status}${detail ? `: ${detail}` : "."}`,
-    `The AI service responded with an error ${status}${detail ? `: ${detail}` : "."}`,
-  );
+  return tk("adapters-ai-gateway.gateway-error.message.8927da2af3e3", { status: String(status), value2: String(detail ? `: ${detail}` : ".") });
 }
 
 /** Største bilde som sendes til bildemodellen. */
@@ -95,10 +81,7 @@ export async function referenceImages(
   if (error)
     return {
       ok: false,
-      message: L(
-        `Forbildebildene kunne ikke kontrolleres: ${error.message}`,
-        `The reference images could not be checked: ${error.message}`,
-      ),
+      message: tk("adapters-ai-gateway.message.message.9c6171831bff", { message: String(error.message) }),
     };
   const sizes = new Map<string, number>();
   for (const r of (data ?? []) as { media_path: string; mime_type: string; byte_size: number }[])
@@ -106,18 +89,12 @@ export async function referenceImages(
   if (paths.some((p) => !sizes.has(p)))
     return {
       ok: false,
-      message: L(
-        "Et forbildebilde finnes ikke i prosjektets bibliotek.",
-        "A reference image does not exist in the project's library.",
-      ),
+      message: tk("adapters-ai-gateway.message.message.f070d15c27c0"),
     };
   if ([...sizes.values()].some((b) => b > MAX_REFERENCE_BYTES))
     return {
       ok: false,
-      message: L(
-        "Et forbildebilde er for stort (over 20 MB) til å sendes med.",
-        "A reference image is too large (over 20 MB) to be sent with the request.",
-      ),
+      message: tk("adapters-ai-gateway.message.message.6e1fac914a42"),
     };
   return { ok: true, sizes };
 }

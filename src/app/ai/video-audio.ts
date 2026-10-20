@@ -4,10 +4,11 @@
  * Lyden hentes ut i nettleseren (WAV), legges i biblioteket som lydressurs og inn i scenen som et dempet
  * lydklipp der videoen begynner. Videoen selv spilles uten lyd, så lyden ikke dobles.
  */
-import { L, newId, type ProjectState } from "@/core";
+import { newId, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { createSoundAsset } from "@/app/library/asset-audio";
 import { encodeWav } from "@/engine/export/audio-stem";
+import { t } from "@/core/i18n/keyed";
 
 /** Lyden i videofilen som WAV, eller null når den ikke har lyd (eller nettleseren ikke kan lese den). */
 export async function audioFromVideo(blob: Blob, name: string): Promise<File | null> {
@@ -71,7 +72,7 @@ export async function addVideoAudioTrack(
           },
         ],
       },
-      L(`Lyd fra AI-videoen «${name}»`, `Audio from the AI video “${name}”`),
+      t("app-ai-video-audio.r.cmds-run-and-wait.60aea6cae59a", { name: String(name) }),
     );
     return r.error ?? null;
   } catch (e) {

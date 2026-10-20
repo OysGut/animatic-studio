@@ -6,20 +6,7 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, Check, Layers, Undo2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  applyCommand,
-  discrepancies,
-  isSharedIn,
-  filmClips,
-  newId,
-  scriptRevertCommands,
-  L,
-  localized,
-  type Command,
-  type Discrepancy,
-  type ProjectState,
-  type ScriptChange,
-} from "@/core";
+import { applyCommand, discrepancies, isSharedIn, filmClips, newId, scriptRevertCommands, type Command, type Discrepancy, type ProjectState, type ScriptChange } from "@/core";
 import { Button } from "@/components/ui/button";
 import { AiUpdateSection } from "./AiUpdateSection";
 import { MaterialUpdateSection } from "./MaterialUpdateSection";
@@ -210,10 +197,7 @@ export function ScriptChanges({
             className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
           >
             <p className="text-xs text-text-primary">
-              {L(
-                `Sette ${reversible === 1 ? "linjen" : `${reversible} linjer`} i manuset tilbake slik ${reversible === 1 ? "den" : "de"} var da materialet ble laget? Det kan angres.`,
-                `Set ${reversible === 1 ? "the line" : `${reversible} lines`} in the script back to how ${reversible === 1 ? "it was" : "they were"} when the material was made? This can be undone.`,
-              )}
+              {reversible === 1 ? t("app-assembly-script-changes.restore-line") : t("app-assembly-script-changes.restore-lines", { count: reversible })}
             </p>
             <div className="flex gap-2">
               <Button size="sm" variant="destructive" onClick={() => revert(list)}>

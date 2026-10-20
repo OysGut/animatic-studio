@@ -3,7 +3,7 @@
  * scenen og delene. Slås av og på med «Teknisk» i verktøylinjen, så den vanlige visningen forblir enkel.
  */
 import { PanelHeader } from "@/app/shell/workspace-chrome";
-import { L, playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
+import { playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 export function TechnicalSection({

@@ -4,19 +4,7 @@
  * referanser til samme scene – hovedfilmen endres ikke.
  */
 import { useMemo, useState } from "react";
-import {
-  L,
-  PRODUCTION_KIND_LABEL,
-  addScenesCommands,
-  applyCommand,
-  deriveProductionCommands,
-  formatHeading,
-  newId,
-  orderedOccurrences,
-  sortedProductions,
-  type ProductionKind,
-  type ProjectState,
-} from "@/core";
+import { PRODUCTION_KIND_LABEL, addScenesCommands, applyCommand, deriveProductionCommands, formatHeading, newId, orderedOccurrences, sortedProductions, type ProductionKind, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

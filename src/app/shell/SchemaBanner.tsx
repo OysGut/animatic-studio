@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
 import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { fetchSchemaStatus } from "@/adapters/browser/project-data";
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 /**

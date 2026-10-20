@@ -6,18 +6,7 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  blocksOfVariant,
-  localized,
-  locale,
-  mainProduction,
-  newId,
-  type Command,
-  type Composition,
-  type CompositionLayer,
-  type ProjectState,
-} from "@/core";
+import { blocksOfVariant, locale, mainProduction, newId, type Command, type Composition, type CompositionLayer, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t, tLocalized } from "@/core/i18n/keyed";
 

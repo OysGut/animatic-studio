@@ -3,27 +3,22 @@
  * under «Filmens visuelle stil» på prosjektoversikten; redigeringen bruker samme dialog (StyleGuideDialog).
  */
 import { Palette, Plus } from "lucide-react";
-import {
-  L,
-  STYLE_TEXT_FIELDS,
-  type LibraryStyleProfile,
-  type ProjectState,
-  type StyleTextField,
-} from "@/core";
+import { STYLE_TEXT_FIELDS, type LibraryStyleProfile, type ProjectState, type StyleTextField } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { StyleGuideDialog } from "@/app/projects/StyleGuideSection";
 import { Button } from "@/components/ui/button";
 import { useImageUrls } from "./asset-images";
+import { t } from "@/core/i18n/keyed";
 
 /** Feltene som vises i oversikten (resten ses i dialogen). */
 const shown = (): readonly { key: StyleTextField; label: string }[] => [
-  { key: "visualStyle", label: L("Visuell stil", "Visual style") },
-  { key: "technique", label: L("Teknikk og materialer", "Technique and materials") },
-  { key: "lighting", label: L("Lys", "Lighting") },
-  { key: "mood", label: L("Stemning", "Mood") },
-  { key: "characterDesign", label: L("Figurer", "Characters") },
-  { key: "environmentDesign", label: L("Omgivelser", "Environments") },
-  { key: "avoid", label: L("Unngå", "Avoid") },
+  { key: "visualStyle", label: t("app-library-style-profiles-panel.label.label.f44f2af09965") },
+  { key: "technique", label: t("app-library-style-profiles-panel.label.label.b5563d8b62f8") },
+  { key: "lighting", label: t("app-library-style-profiles-panel.label.label.9b3346a579c0") },
+  { key: "mood", label: t("app-library-style-profiles-panel.label.label.0558d9b49a26") },
+  { key: "characterDesign", label: t("app-library-style-profiles-panel.label.label.b75a6a27ab02") },
+  { key: "environmentDesign", label: t("app-library-style-profiles-panel.label.label.d856fbfbb47b") },
+  { key: "avoid", label: t("app-library-style-profiles-panel.label.label.1457a2a03402") },
 ];
 
 function Swatches({ colors }: { colors: readonly string[] }) {
@@ -61,7 +56,7 @@ export function StyleProfileList({
   const hasDefault = items.some((p) => p.isDefault);
   return (
     <ul
-      aria-label={L("Stilprofiler", "Style profiles")}
+      aria-label={t("app-library-style-profiles-panel.style-profile-list.aria-label.29c07dff0a85")}
       className="min-h-0 flex-1 overflow-y-auto py-1"
     >
       {items.length === 0 ? (
@@ -84,7 +79,7 @@ export function StyleProfileList({
             <span className="min-w-0">
               <span className="block truncate text-[13px] text-text-primary">{p.profile.name}</span>
               <span className="flex items-center gap-1 truncate text-[11px] text-text-tertiary">
-                {p.isDefault ? L("Standard · ", "Default · ") : ""}
+                {p.isDefault ? t("app-library-style-profiles-panel.style-profile-list.span.9673cf13d08d") : ""}
                 {p.usesLabel}
                 {p.profile.guide.palette.colors.length ? (
                   <span className="ml-1 flex items-center gap-0.5">
@@ -101,11 +96,8 @@ export function StyleProfileList({
           <Button size="sm" variant="ghost" onClick={onNew} className="w-full justify-start">
             <Plus />
             {hasDefault
-              ? L(
-                  "Ny stilprofil (plakater, steder, AI-video …)",
-                  "New style profile (posters, places, AI video …)",
-                )
-              : L("Lag filmens visuelle stil", "Create the film's visual style")}
+              ? t("app-library-style-profiles-panel.style-profile-list.button.e51b6f38822f")
+              : t("app-library-style-profiles-panel.style-profile-list.button.52ad89848f13")}
           </Button>
         </li>
       ) : null}
@@ -135,32 +127,29 @@ export function StyleProfileDetail({
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            {L("Visuell stilprofil", "Visual style profile")}
+            {t("app-library-style-profiles-panel.style-profile-detail.p.dd7703121164")}
           </p>
           <h2 className="text-lg font-semibold text-text-primary">{item.profile.name}</h2>
           <p className="text-xs text-text-secondary">
             {item.isDefault
-              ? L(
-                  "Standard – brukes i alle AI-beskrivelser der ingen annen profil er valgt",
-                  "Default – used in all AI descriptions where no other profile is selected",
-                )
-              : L(`Gjelder for: ${item.usesLabel}`, `Applies to: ${item.usesLabel}`)}
+              ? t("app-library-style-profiles-panel.style-profile-detail.p.6fa7e9761168")
+              : t("app-library-style-profiles-panel.style-profile-detail.p.20c2f1c93630", { usesLabel: String(item.usesLabel) })}
             {item.isDefault && item.uses.length
-              ? L(` · også valgt for ${item.usesLabel}`, ` · also selected for ${item.usesLabel}`)
+              ? t("app-library-style-profiles-panel.style-profile-detail.p.a985272b5d55", { usesLabel: String(item.usesLabel) })
               : ""}
           </p>
         </div>
         <Button size="sm" variant="secondary" onClick={onEdit}>
           <Palette />
-          {editable ? L("Rediger …", "Edit …") : L("Vis …", "View …")}
+          {editable ? t("app-library-style-profiles-panel.style-profile-detail.button.00cae1197825") : t("app-library-style-profiles-panel.style-profile-detail.button.d2ab745677b3")}
         </Button>
       </div>
       <section className="border border-border bg-surface-1 px-4 py-3 text-[13px] text-text-secondary">
         {item.summary ? <p className="text-text-primary">{item.summary}</p> : null}
         <p className="mt-1 text-xs text-text-tertiary">
-          {item.filled} {L("av", "of")} {STYLE_TEXT_FIELDS.length}{" "}
-          {L("felt fylt ut", "fields filled in")} · {refs.length}{" "}
-          {L("forbildebilder", "reference images")}
+          {item.filled} {t("app-library-style-profiles-panel.style-profile-detail.p.2ceb29348105")} {STYLE_TEXT_FIELDS.length}{" "}
+          {t("app-library-style-profiles-panel.style-profile-detail.p.27c0847f24a8")} · {refs.length}{" "}
+          {t("app-library-style-profiles-panel.style-profile-detail.p.3fbfc6514119")}
           {g.palette.colors.length ? " · " : ""}
           <Swatches colors={g.palette.colors} />
         </p>
@@ -180,20 +169,17 @@ export function StyleProfileDetail({
       </dl>
       {refs.length ? (
         <section
-          aria-label={L("Forbildebilder", "Reference images")}
+          aria-label={t("app-library-style-profiles-panel.style-profile-detail.aria-label.aaacd0b2b958")}
           className="flex flex-col gap-1"
         >
           <h3 className="text-xs font-medium text-text-tertiary">
-            {L("Forbildebilder", "Reference images")}
+            {t("app-library-style-profiles-panel.style-profile-detail.h3.aaacd0b2b958")}
           </h3>
           <ul className="flex flex-wrap gap-2">
             {refs.map((v) => {
               const va = state.assetVariants[v.variantId];
               const a = va ? state.assets[va.assetId] : undefined;
-              const label = L(
-                `${a?.name ?? "Ressurs"} – ${va?.name ?? ""} v${v.number}`,
-                `${a?.name ?? "Asset"} – ${va?.name ?? ""} v${v.number}`,
-              );
+              const label = t("app-library-style-profiles-panel.reference-label", { asset: a?.name ?? t("app-library-style-profiles-panel.reference-label-asset"), variant: va?.name ?? "", version: v.number });
               return (
                 <li key={v.id} className="flex w-28 flex-col gap-1 text-[11px] text-text-secondary">
                   <span className="flex h-20 items-center justify-center overflow-hidden bg-surface-3">
@@ -214,10 +200,7 @@ export function StyleProfileDetail({
       ) : null}
       {item.filled === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
-            "Not filled in yet. An image model knows nothing about the film – here you describe the style, technique, colours, lighting and mood, so that every image the AI makes fits in.",
-          )}
+          {t("app-library-style-profiles-panel.style-profile-detail.p.804c82d786f5")}
         </p>
       ) : null}
     </div>

@@ -4,31 +4,12 @@
  * dupliseres og fjernes med de vanlige lagkommandoene, så alt kan angres.
  */
 import { useMemo } from "react";
-import {
-  L,
-  TRANSITION_KINDS,
-  compositionDuration,
-  layerFieldsOf,
-  layersOf,
-  newId,
-  type Command,
-  type Composition,
-  type ProjectState,
-  type TransitionKind,
-} from "@/core";
+import { TRANSITION_KINDS, compositionDuration, layerFieldsOf, layersOf, newId, type Command, type Composition, type ProjectState, type TransitionKind } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
-import { t } from "@/core/i18n/keyed";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const TRANSITION_LABEL: Record<TransitionKind, { nb: string; en: string }> = {
-  cut: { nb: "Kutt", en: "Cut" },
-  dissolve: { nb: "Tone", en: "Dissolve" },
-  dip: { nb: "Via svart", en: "Dip to black" },
-  dipWhite: { nb: "Via hvitt", en: "Dip to white" },
-  wipe: { nb: "Visk", en: "Wipe" },
-  push: { nb: "Skyv", en: "Push" },
-  iris: { nb: "Irismaske", en: "Iris" },
-};
+const TRANSITION_LABEL: Record<TransitionKind, string> = tLocalized({ cut: "app-scene-editor-pages-panel.transition-cut", dissolve: "app-scene-editor-pages-panel.transition-dissolve", dip: "app-scene-editor-pages-panel.transition-dip", dipWhite: "app-scene-editor-pages-panel.transition-dipwhite", wipe: "app-scene-editor-pages-panel.transition-wipe", push: "app-scene-editor-pages-panel.transition-push", iris: "app-scene-editor-pages-panel.transition-iris" });
 
 export function PagesPanel({
   state,
@@ -181,7 +162,7 @@ export function PagesPanel({
             >
               {TRANSITION_KINDS.map((k) => (
                 <option key={k} value={k}>
-                  {L(TRANSITION_LABEL[k].nb, TRANSITION_LABEL[k].en)}
+                  {TRANSITION_LABEL[k]}
                 </option>
               ))}
             </select>

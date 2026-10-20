@@ -4,29 +4,22 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  estimateCostUsd,
-  harmonizeBatchSelectionError,
-  isProviderId,
-  isUuid,
-  newId,
-  parseQualityProfileMeta,
-} from "@/core";
+import { estimateCostUsd, harmonizeBatchSelectionError, isProviderId, isUuid, newId, parseQualityProfileMeta } from "@/core";
 import type { AnyClient } from "./project-rows";
+import { t } from "@/core/i18n/keyed";
 
 async function access(supabase: unknown, projectId: string, userId: string) {
   const { memberRole, ROLE_RANK } = await import("../ai/ai-gate.server");
   const role = await memberRole(supabase as AnyClient, projectId, userId);
   if ((ROLE_RANK[role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
-    throw new Error(L("Du har ikke skrivetilgang.", "You do not have editing permission."));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.access.message.2e667333b3c4"));
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin as unknown as AnyClient;
 }
 function projectInput(raw: unknown) {
   const x = (raw ?? {}) as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.project-input.message.ce515fb43d79"));
   return { projectId: x["projectId"], raw: x };
 }
 const uuidOrNull = (v: unknown) => (typeof v === "string" && isUuid(v) ? v : null);
@@ -72,20 +65,20 @@ export interface HarmonizeBatchInput {
 export function validateHarmonizeBatch(raw: unknown): HarmonizeBatchInput {
   const { projectId, raw: x } = projectInput(raw);
   if (x["approved"] !== true)
-    throw new Error(L("Kostnaden må bekreftes", "The cost must be approved"));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.4de06366d018"));
   const requestId = uuidOrNull(x["requestId"]);
-  if (!requestId) throw new Error(L("Ugyldig jobb", "Invalid job"));
+  if (!requestId) throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.6b846cf01151"));
   const provider = x["provider"] ?? "lovable";
-  if (!isProviderId(provider)) throw new Error(L("Ukjent leverandør", "Unknown provider"));
+  if (!isProviderId(provider)) throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.9677e2131a11"));
   const model = x["model"] ?? null;
   if (model !== null && (typeof model !== "string" || model.length > 120))
-    throw new Error(L("Ugyldig modell", "Invalid model"));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.68f00e85e9c5"));
   const size = x["size"] ?? null;
   if (size !== null && size !== "1K" && size !== "2K" && size !== "4K")
-    throw new Error(L("Ugyldig størrelse", "Invalid size"));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.bc1918d87754"));
   const items = x["items"];
   if (!Array.isArray(items) || !items.every((i) => uuidOrNull((i as Record<string, unknown>)?.["assetId"]) && uuidOrNull((i as Record<string, unknown>)?.["sourceVersionId"])))
-    throw new Error(L("Ugyldig bildevalg", "Invalid image selection"));
+    throw new Error(t("adapters-storage-harmonize-batch-functions.validate-harmonize-batch.message.dd18efcfcf69"));
   return {
     projectId,
     requestId,
@@ -124,11 +117,11 @@ export const createHarmonizeBatch = createServerFn({ method: "POST" })
     const { projectKey, overAccountCap, overProjectBudget } = await import("../ai/ai-gate.server");
     const key = own ? await projectKey(db, data.projectId, data.provider, context.userId) : null;
     if (own && !key)
-      throw new Error(L("Ingen prosjekteier har koblet til denne leverandøren.", "No project owner has connected this provider."));
+      throw new Error(t("adapters-storage-harmonize-batch-functions.create-harmonize-batch.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-harmonize-batch-handler.68d688740df5"));
     const unit = own
       ? estimateCostUsd(data.provider, model, { images: 1, ...(data.size ? { size: data.size } : {}) }, gate.settings)
       : 0;
-    if (unit === null) throw new Error(L("Modellprisen er ukjent.", "The model price is unknown."));
+    if (unit === null) throw new Error(t("adapters-storage-harmonize-batch-functions.create-harmonize-batch.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-harmonize-batch-handler.081d18457242"));
     const items = data.items.map((i) => ({
       id: newId<"command">(),
       job_id: newId<"generation_job">(),
@@ -167,7 +160,7 @@ export const createHarmonizeBatch = createServerFn({ method: "POST" })
 function batchInput(raw: unknown) {
   const { projectId, raw: x } = projectInput(raw);
   const batchId = uuidOrNull(x["batchId"]);
-  if (!batchId) throw new Error(L("Ugyldig jobb", "Invalid job"));
+  if (!batchId) throw new Error(t("adapters-storage-harmonize-batch-functions.batch-input.message.24bb0209214f"));
   return { projectId, batchId, approved: x["approved"] === true };
 }
 
@@ -177,7 +170,7 @@ export const advanceHarmonizeBatch = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const db = await access(context.supabase, data.projectId, context.userId);
     const { data: row } = await db.from("harmonize_batches").select("id").eq("id", data.batchId).eq("project_id", data.projectId).maybeSingle();
-    if (!row) throw new Error(L("Jobben finnes ikke", "The job was not found"));
+    if (!row) throw new Error(t("adapters-storage-harmonize-batch-functions.advance-harmonize-batch.create-server-fn-method-post-middleware-require-supabase-auth-validator-batch-input-handler.ddd4ca3df168"));
     const { processHarmonizeBatch } = await import("./harmonize-batch.server");
     return processHarmonizeBatch(db, data.batchId);
   });
@@ -188,7 +181,7 @@ export const resumeHarmonizeBatch = createServerFn({ method: "POST" })
   .validator(batchInput)
   .handler(async ({ data, context }) => {
     if (!data.approved)
-      throw new Error(L("Bekreft kostnaden på nytt før jobben fortsetter.", "Approve the cost again before the job continues."));
+      throw new Error(t("adapters-storage-harmonize-batch-functions.resume-harmonize-batch.create-server-fn-method-post-middleware-require-supabase-auth-validator-batch-input-handler.9c853033d962"));
     const db = await access(context.supabase, data.projectId, context.userId);
     const { error } = await db.rpc("reconfirm_harmonize_batch", { p_project: data.projectId, p_batch: data.batchId, p_actor: context.userId });
     if (error) throw new Error(error.message);

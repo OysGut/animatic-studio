@@ -5,7 +5,7 @@
  */
 import type { ProjectState } from "../model";
 import { formatTimecode, framesToSeconds, type Rational } from "../time";
-import { L, localized, locale } from "../i18n";
+import { locale } from "../i18n";
 import { takeLabel } from "./edit";
 import type { FilmClip } from "./film";
 import { clipTimeLevels } from "./time-levels";

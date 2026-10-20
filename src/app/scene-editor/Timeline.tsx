@@ -29,42 +29,7 @@ import {
   type ComponentProps,
   type ReactNode,
 } from "react";
-import {
-  EASINGS,
-  MAX_DURATION_SECONDS,
-  MIN_DURATION_SECONDS,
-  fpsToNumber,
-  formatTimecode,
-  framesToSeconds,
-  keyAllAt,
-  keyframeFrames,
-  compositionDuration,
-  retimeHasTimedContent,
-  layerFieldsOf,
-  layersOf,
-  moveKeyframes,
-  newShot,
-  removeKeyframesAt,
-  secondsToFrames,
-  setKeyframeEasing,
-  setKeyframeEase,
-  EASE_STRENGTH,
-  withShot,
-  type CameraShot,
-  type Command,
-  type Composition,
-  type CompositionCamera,
-  type CompositionFields,
-  type CompositionLayer,
-  type Easing,
-  type LockedRange,
-  type ProjectState,
-  freeShotSlot,
-  newId,
-  timingOf,
-  L,
-  localized,
-} from "@/core";
+import { EASINGS, MAX_DURATION_SECONDS, MIN_DURATION_SECONDS, fpsToNumber, formatTimecode, framesToSeconds, keyAllAt, keyframeFrames, compositionDuration, retimeHasTimedContent, layerFieldsOf, layersOf, moveKeyframes, newShot, removeKeyframesAt, secondsToFrames, setKeyframeEasing, setKeyframeEase, EASE_STRENGTH, withShot, type CameraShot, type Command, type Composition, type CompositionCamera, type CompositionFields, type CompositionLayer, type Easing, type LockedRange, type ProjectState, freeShotSlot, newId, timingOf } from "@/core";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";

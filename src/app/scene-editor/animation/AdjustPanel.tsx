@@ -1,4 +1,4 @@
-import { L } from "@/core";
+
 import { DEFAULT_ADJUSTMENTS, type RigPart } from "@/core/animation/parts";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";

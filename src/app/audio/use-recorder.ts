@@ -4,7 +4,7 @@
  * opptaket stopper eller komponenten forsvinner.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { L } from "@/core";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 /** Formatet nettleseren kan ta opp i. */

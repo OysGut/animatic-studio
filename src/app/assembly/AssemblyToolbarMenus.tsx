@@ -27,7 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 function ViewToggle({

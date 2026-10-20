@@ -16,6 +16,7 @@ import {
   type Command,
 } from "@/core";
 import { checkSchema, loadProjectState, type AnyClient } from "./project-rows";
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface RunCommandInput {
   readonly projectId: string;
@@ -52,12 +53,12 @@ export function applyChangesErrorMessage(
   if (error.code === "P0001" && /INV-13/.test(error.message ?? ""))
     return {
       code: "referenced",
-      message: L(UNDO_PRODUCTION_HISTORY, UNDO_PRODUCTION_HISTORY_EN),
+      message: tk("adapters-storage-commands-functions.undo-production-history"),
     };
   if (error.code === "23503")
     return {
       code: "referenced",
-      message: L(UNDO_PRODUCTION_REFERENCED, UNDO_PRODUCTION_REFERENCED_EN),
+      message: tk("adapters-storage-commands-functions.undo-production-referenced"),
     };
   return null;
 }
@@ -516,21 +517,21 @@ export function canonicalJson(v: unknown): string {
 }
 
 function validateInput(d: unknown): RunCommandInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(tk("adapters-storage-commands-functions.validate-input.message.a57266b69001"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt-ID", "Invalid project ID"));
+    throw new Error(tk("adapters-storage-commands-functions.validate-input.message.b4a51e050410"));
   const cmd = x["command"] as { type?: unknown } | undefined;
   if (!cmd || typeof cmd.type !== "string")
-    throw new Error(L("Ugyldig kommando", "Invalid command"));
+    throw new Error(tk("adapters-storage-commands-functions.validate-input.message.880d71dcf6ed"));
   const base = x["baseRevisions"];
   if (base !== undefined && (typeof base !== "object" || base === null))
-    throw new Error(L("Ugyldige revisjoner", "Invalid revisions"));
+    throw new Error(tk("adapters-storage-commands-functions.validate-input.message.a5f2dc3fe631"));
   if (JSON.stringify(cmd).length > MAX_COMMAND_CHARS)
-    throw new Error(L("Endringen er for stor", "The change is too large"));
+    throw new Error(tk("adapters-storage-commands-functions.validate-input.message.c634b1d34291"));
   const cid = x["commandId"];
   if (cid !== undefined && (typeof cid !== "string" || !isUuid(cid)))
-    throw new Error(L("Ugyldig kommando-ID", "Invalid command ID"));
+    throw new Error(tk("adapters-storage-commands-functions.validate-input.message.2f8767a2619f"));
   return {
     ...(typeof cid === "string" ? { commandId: cid } : {}),
     projectId: x["projectId"],
@@ -556,10 +557,7 @@ export const runCommand = createServerFn({ method: "POST" })
       return {
         ok: false,
         code: "forbidden",
-        message: L(
-          "Du har ikke tilgang til å endre dette prosjektet",
-          "You do not have access to change this project",
-        ),
+        message: tk("adapters-storage-commands-functions.message.message.1c44d10ba51d"),
       };
     }
 
@@ -568,10 +566,7 @@ export const runCommand = createServerFn({ method: "POST" })
       return {
         ok: false,
         code: "forbidden",
-        message: L(
-          "Bare eieren av prosjektet kan endre AI-budsjettet.",
-          "Only the owner of the project can change the AI budget.",
-        ),
+        message: tk("adapters-storage-commands-functions.message.message.4c1a78e0865c"),
       };
     }
 
@@ -610,10 +605,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "forbidden",
-          message: L(
-            "Bare dine egne siste endringer kan angres på denne måten.",
-            "Only your own latest changes can be undone in this way.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.dcdaebb1e836"),
         };
       }
     }
@@ -630,26 +622,23 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "referenced",
-          message: L(
-            "Bildet har vært godkjent og kan ikke fjernes.",
-            "The image has been approved and cannot be removed.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.3c251d61dcc2"),
         };
     }
     const animationSteps = data.command.type === "UpdateSceneDraft" ? data.command.steps : [data.command];
     if (animationSteps.some(step => ["CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "UndoAnimationChange"].includes(step.type))) {
       const schema = await checkSchema(admin);
-      if (schema.kind === "missing" || schema.version < 54) return { ok: false, code: "schema", message: L("Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.", "The database is missing animation setups. Run migrations 0053 and 0054 first.") };
-      if (schema.version < 55 && animationSteps.some(step => step.type === "SaveRigVersion" && Object.keys(step.spec.parts ?? {}).length > 0)) return { ok: false, code: "schema", message: L("Databasen mangler rigg-deler. Kjør migrasjon 0055 først.", "The database is missing rig parts. Run migration 0055 first.") };
+      if (schema.kind === "missing" || schema.version < 54) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.d351befc7495") };
+      if (schema.version < 55 && animationSteps.some(step => step.type === "SaveRigVersion" && Object.keys(step.spec.parts ?? {}).length > 0)) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.cce83db8d0d4") };
     }
     if (animationSteps.some(step => ["SaveLipsyncResult", "SetLipsyncEnabled", "SetLipsyncOverrides", "SaveAnimationPattern", "RemoveAnimationPattern", "UndoBehaviorChange"].includes(step.type))) {
       const schema = await checkSchema(admin);
-      if (schema.kind === "missing" || schema.version < 56) return { ok: false, code: "schema", message: L("Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først.", "The database is missing lip sync and patterns. Run migration 0056 first.") };
+      if (schema.kind === "missing" || schema.version < 56) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.7fde6dc68084") };
     }
     // DV7/DV8: avviksgjennomganger og huskelapper krever migrasjon 0062
     if (["ReviewDialogueDrift", "UndoReviewDialogueDrift", "AddNoteFlag", "UndoAddNoteFlag", "UpdateNoteFlag", "SetNoteFlagRemoved"].includes(data.command.type)) {
       const schema = await checkSchema(admin);
-      if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: L("Databasen mangler avviksgjennomgang og huskelapper. Kjør migrasjon 0062 først.", "The database is missing drift reviews and note flags. Run migration 0062 first.") };
+      if (schema.kind === "missing" || schema.version < 62) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.b87bdd379b23") };
     }
     // Stempelet på nye notater settes av serveren (navnet i profilen og tidspunktet nå), så ingen kan
     // skrive notater i andres navn. Bare notater fra en importert fil beholder filens navn og tid (DEC-0031).
@@ -692,10 +681,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.04b0cde81aaf"),
         };
     }
     // Prosjektets format krever migrasjon 0008
@@ -705,10 +691,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the project format. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.01438c3c6b49"),
         };
     }
     // Lyd krever migrasjon 0009
@@ -718,10 +701,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing sound. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.115702403951"),
         };
     }
     if (EDIT_COMMANDS.has(data.command.type)) {
@@ -730,10 +710,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing clipping and time links. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.3d6e65936633"),
         };
     }
     if (needsSchema13(data.command as never)) {
@@ -742,10 +719,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.402d2c13486c"),
         };
     }
     // AI-budsjett, egne beskrivelser og inndeling for generering krever migrasjon 0014 (DEC-0053)
@@ -755,10 +729,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.736fdd526c7e"),
         };
     }
     if (SCHEMA15_COMMANDS.has(data.command.type)) {
@@ -767,15 +738,12 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.3cd9842f48f3"),
         };
     }
     if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks","AddTranslationLines","UndoAddTranslationLines"].includes(data.command.type)) {
       const schema=await checkSchema(admin);
-      if (schema.kind === "missing" || schema.version < 64) return {ok:false,code:"schema",message:L("Linjekoblinger krever databaseversjon 64.","Line links require database version 64.")};
+      if (schema.kind === "missing" || schema.version < 64) return {ok:false,code:"schema",message:tk("adapters-storage-commands-functions.message.message.1b1c45bc8516")};
     }
     if (SCHEMA16_COMMANDS.has(data.command.type)) {
       const schema = await checkSchema(admin);
@@ -783,10 +751,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing language versions of the script. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.b305cd2f5e74"),
         };
     }
     if (needsSchema17(data.command as never)) {
@@ -795,10 +760,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.fda297080af9"),
         };
     }
     if (needsSchema18(data.command as never)) {
@@ -807,10 +769,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.f3d36f381f8f"),
         };
     }
     if (needsSchema48(data.command as never) || needsSchema49(data.command as never)) {
@@ -820,10 +779,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            `Databasen mangler tekstlag og maler. Den må oppdateres (migrasjon 00${need}).`,
-            `The database is missing text layers and templates. It must be updated (migration 00${need}).`,
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: String(need) }),
         };
     }
     if (needsSchema40(data.command as never)) {
@@ -832,10 +788,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).",
-            "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.2341b10b6eaf"),
         };
     }
     if (needsSchema39(data.command as never)) {
@@ -844,10 +797,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039).",
-            "The database is missing Story Lab. It must be updated (migration 0039).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.a5075b930191"),
         };
     }
     if (needsSchema37(data.command as never)) {
@@ -856,10 +806,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).",
-            "The database is missing word alignment. It must be updated (migration 0037).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.51efa6f76610"),
         };
     }
     if (needsSchema36(data.command as never)) {
@@ -868,10 +815,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036).",
-            "The database is missing audio compositions. It must be updated (migration 0036).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.f958e3a6e218"),
         };
     }
     if (needsSchema34(data.command as never)) {
@@ -880,10 +824,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).",
-            "The database is missing tasks and system notes. It must be updated (migration 0034).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.c52e168dcd76"),
         };
     }
     if (needsSchema32(data.command as never)) {
@@ -892,10 +833,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032).",
-            "The database is missing instructions for AI video. It must be updated (migration 0032).",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.c77162f93c47"),
         };
     }
     if (needsSchema31(data.command as never)) {
@@ -904,10 +842,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing notes on the productions. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.e1f8960f3a98"),
         };
     }
     if (needsSchema30(data.command as never)) {
@@ -916,10 +851,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.fe59c3be6214"),
         };
     }
     if (needsSchema29(data.command as never)) {
@@ -928,10 +860,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.bd0f5f4a9cf4"),
         };
     }
     if (needsSchema28(data.command as never)) {
@@ -940,10 +869,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.94cbfeb1a92d"),
         };
     }
     if (needsSchema27(data.command as never)) {
@@ -952,10 +878,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.a351f6c20569"),
         };
     }
     if (needsSchema26(data.command as never)) {
@@ -964,10 +887,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.f770da01452c"),
         };
     }
     if (needsSchema25(data.command as never)) {
@@ -976,10 +896,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing sound links. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.16525acc1633"),
         };
     }
     if (needsSchema23(data.command as never)) {
@@ -988,10 +905,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing planned length per scene. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.bb458d81609f"),
         };
     }
     if (needsSchema21(data.command as never)) {
@@ -1000,10 +914,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the film's visual style. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.855135ab45cb"),
         };
     }
     if (needsSchema19(data.command as never)) {
@@ -1012,10 +923,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing posters and relations. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.a70968a5bbb7"),
         };
     }
     if (needsFilmSchema(data.command as never)) {
@@ -1024,10 +932,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.9678261bea35"),
         };
     }
     if (needsAudioFlowSchema(data.command as never)) {
@@ -1036,10 +941,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.c5c2cbda311b"),
         };
     }
     // 2D-sceneeditoren krever migrasjon 0007
@@ -1049,10 +951,7 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "schema",
-          message: L(
-            "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.",
-            "The database is missing the scene editor. Contact the administrator to update Animatic Studio.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.0e67cf134641"),
         };
     }
     const state = await loadProjectState(admin, data.projectId);
@@ -1101,40 +1000,28 @@ export const runCommand = createServerFn({ method: "POST" })
         return {
           ok: false,
           code: "revision_conflict",
-          message: L(
-            "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen.",
-            "Someone else changed the same thing at the same time. Fetch the latest version and try again.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.ef7edfce4adc"),
         };
       }
       if (error.code === "P0409") {
         return {
           ok: false,
           code: "revision_conflict",
-          message: L(
-            "Noen andre har endret dette i mellomtiden. Hent siste versjon og prøv igjen.",
-            "Someone else has changed this in the meantime. Fetch the latest version and try again.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.c94f1751f646"),
         };
       }
       if (error.code === "42501") {
         return {
           ok: false,
           code: "forbidden",
-          message: L(
-            "Prosjektet er slettet, eller du har ikke lenger skriverett i det.",
-            "The project has been deleted, or you no longer have write access to it.",
-          ),
+          message: tk("adapters-storage-commands-functions.message.message.db3043eb5901"),
         };
       }
       console.error("[apply_changes]", error.code, error.message); // ingen hemmeligheter i feilen
       return {
         ok: false,
         code: "storage_error",
-        message: L(
-          "Endringen kunne ikke lagres. Prøv igjen.",
-          "The change could not be saved. Try again.",
-        ),
+        message: tk("adapters-storage-commands-functions.message.message.30fa43b653a4"),
       };
     }
     return {

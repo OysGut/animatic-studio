@@ -5,21 +5,7 @@
 import { MessageSquare, Plus, Trash2, Undo2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  activeProfileOf,
-  emptyStoryProfile,
-  newId,
-  profileAt,
-  profileError,
-  profilePatchError,
-  storyTimes,
-  type Asset,
-  type ProjectState,
-  type StoryProfile,
-  type StoryProfilePatch,
-  type StoryProfileStage,
-} from "@/core";
+import { activeProfileOf, emptyStoryProfile, newId, profileAt, profileError, profilePatchError, storyTimes, type Asset, type ProjectState, type StoryProfile, type StoryProfilePatch, type StoryProfileStage } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, Toolbar, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { ProfileGenerateDialog } from "./ProfileGenerateDialog";

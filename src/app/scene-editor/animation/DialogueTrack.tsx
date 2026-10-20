@@ -1,4 +1,4 @@
-import { L, groupDialogueTracks, dialogueOverlaps, clipDrift, type ProjectState } from "@/core";
+import { groupDialogueTracks, dialogueOverlaps, clipDrift, type ProjectState } from "@/core";
 import { animationDialogueTracks, animationSoundTracks } from "@/core/animation/tracks";
 import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";
 import type { AnimWindow } from "./TimeNavigator";

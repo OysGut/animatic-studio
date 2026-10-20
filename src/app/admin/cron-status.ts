@@ -2,7 +2,7 @@
  * Teksten om bakgrunnsjobben på adminsiden (DEC-0088): når /api/public/cron/ai-jobs sist kjørte og hva den
  * gjorde, og en advarsel når den ikke har kjørt de siste 10 minuttene. Ren funksjon (testes i tests/unit).
  */
-import { L, locale } from "@/core";
+import { locale } from "@/core";
 import type { CronRun } from "@/adapters/account/ai-models.server";
 import { t as tk } from "@/core/i18n/keyed";
 

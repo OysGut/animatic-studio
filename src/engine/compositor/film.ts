@@ -4,20 +4,9 @@
  * (REQ-0239/0240), med overganger mellom scenene. Brukes av monteringen og av eksporten, så det som
  * spilles av er det samme som eksporteres. Bare på klienten.
  */
-import {
-  formatHeading,
-  frameMix,
-  L,
-  partBlendAt,
-  renderFrame,
-  sourceAt,
-  type ClipFrame,
-  type FilmClip,
-  type ProjectState,
-  type SourceFrame,
-  type Take,
-} from "@/core";
+import { formatHeading, frameMix, partBlendAt, renderFrame, sourceAt, type ClipFrame, type FilmClip, type ProjectState, type SourceFrame, type Take } from "@/core";
 import { drawFrame, type ImageSource } from "./canvas";
+import { t } from "@/core/i18n/keyed";
 
 export interface FilmDrawOptions {
   readonly background?: "transparent";
@@ -257,7 +246,7 @@ function drawSource(
         at.clip,
         o.width,
         o.height,
-        src.take.media?.fileName ?? L("Ferdig film", "Finished film"),
+        src.take.media?.fileName ?? t("engine-compositor-film.draw-source.draw-title-card.ddbf843041c0"),
       );
     }
     return;
@@ -294,7 +283,7 @@ export function drawTitleCard(
   clip: FilmClip,
   width: number,
   height: number,
-  note = L("Ingen 2D-scene ennå", "No 2D scene yet"),
+  note = t("engine-compositor-film.draw-title-card.message.b687cba6a4c5"),
 ): void {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -313,7 +302,7 @@ export function drawTitleCard(
   ctx.fillStyle = "rgba(255,255,255,0.92)";
   ctx.font = `600 ${Math.round(6.4 * u)}px "Courier Prime", "Courier New", monospace`;
   ctx.fillText(
-    formatHeading(clip.heading) || L("Uten overskrift", "Without heading"),
+    formatHeading(clip.heading) || t("engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415"),
     width / 2,
     height / 2,
     width * 0.9,

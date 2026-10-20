@@ -3,7 +3,8 @@
  * Egen modul uten tunge importer (brukes av kommandoene).
  */
 import type { StyleUse, ProjectState, StyleGuide, StyleProfile } from "../model";
-import { L, localized } from "../i18n";
+
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export const STYLE_TEXT_FIELDS = [
   "premise",
@@ -58,7 +59,7 @@ const HEX = /^#[0-9a-f]{6}$/i;
 /** Feilmelding eller null. */
 export function styleGuideError(g: StyleGuide): string | null {
   if (!g || typeof g !== "object" || g.version !== 1)
-    return L("Ugyldig stilprofil", "Invalid style profile");
+    return tk("core-generation-style.style-guide-error.message.3cd8c4a78f71");
   const allowed = new Set<string>([
     ...STYLE_TEXT_FIELDS,
     "version",
@@ -68,30 +69,21 @@ export function styleGuideError(g: StyleGuide): string | null {
   ]);
   for (const k of Object.keys(g))
     if (!allowed.has(k))
-      return L("Ukjent felt i stilprofilen", "Unknown field in the style profile");
+      return tk("core-generation-style.style-guide-error.message.28029a7f8ae5");
   for (const k of STYLE_TEXT_FIELDS) {
     const v = g[k];
     if (typeof v !== "string")
-      return L("Ugyldig tekst i stilprofilen", "Invalid text in the style profile");
+      return tk("core-generation-style.style-guide-error.message.b1c87836637f");
     if (v.length > STYLE_FIELD_LIMIT)
-      return L(
-        `Teksten er for lang (maks ${STYLE_FIELD_LIMIT} tegn per felt)`,
-        `The text is too long (maximum ${STYLE_FIELD_LIMIT} characters per field)`,
-      );
+      return tk("core-generation-style.style-guide-error.message.d50a01a2f256", { STYLE_FIELD_LIMIT: String(STYLE_FIELD_LIMIT) });
   }
   if (
     g.prompt !== undefined &&
     (typeof g.prompt !== "string" || g.prompt.length > STYLE_TOTAL_LIMIT)
   )
-    return L(
-      `Den samlede beskrivelsen er for lang (maks ${STYLE_TOTAL_LIMIT} tegn)`,
-      `The combined description is too long (maximum ${STYLE_TOTAL_LIMIT} characters)`,
-    );
+    return tk("core-generation-style.style-guide-error.message.791036e2861e", { STYLE_TOTAL_LIMIT: String(STYLE_TOTAL_LIMIT) });
   if (styleGuideLength(g) > STYLE_TOTAL_LIMIT)
-    return L(
-      `Stilen er for lang til å få plass i beskrivelsen (maks ${STYLE_TOTAL_LIMIT} tegn til sammen)`,
-      `The style is too long to fit in the description (maximum ${STYLE_TOTAL_LIMIT} characters in total)`,
-    );
+    return tk("core-generation-style.style-guide-error.message.7319ad177b9d", { STYLE_TOTAL_LIMIT: String(STYLE_TOTAL_LIMIT) });
   const p = g.palette;
   if (
     !p ||
@@ -103,14 +95,14 @@ export function styleGuideError(g: StyleGuide): string | null {
     typeof p.description !== "string" ||
     p.description.length > STYLE_FIELD_LIMIT
   )
-    return L("Ugyldig fargepalett", "Invalid colour palette");
+    return tk("core-generation-style.style-guide-error.message.316d0fd38e13");
   if (
     !Array.isArray(g.referenceVersionIds) ||
     g.referenceVersionIds.length > 12 ||
     g.referenceVersionIds.some((x) => typeof x !== "string" || x.length > 64) ||
     new Set(g.referenceVersionIds).size !== g.referenceVersionIds.length
   )
-    return L("Ugyldige forbildebilder (høyst 12)", "Invalid reference images (at most 12)");
+    return tk("core-generation-style.style-guide-error.message.de0c2c9941e5");
   return null;
 }
 
@@ -126,17 +118,7 @@ export const STYLE_USES: readonly StyleUse[] = [
   "ai_video",
 ];
 
-export const STYLE_USE_LABEL: Record<StyleUse, string> = localized({
-  character: ["Karakterer", "Characters"],
-  animal: ["Dyr", "Animals"],
-  object: ["Objekter og rekvisitter", "Objects and props"],
-  location: ["Steder", "Locations"],
-  environment: ["Miljøer", "Environments"],
-  other: ["Annet", "Other"],
-  poster: ["Plakater", "Posters"],
-  animatic: ["2D-animatic", "2D animatic"],
-  ai_video: ["AI-video", "AI video"],
-});
+export const STYLE_USE_LABEL: Record<StyleUse, string> = tLocalized({ character: "core-generation-style.style-use-label.character.030566527626", animal: "core-generation-style.style-use-label.animal.4cfbed92fac0", object: "core-generation-style.style-use-label.object.c883fc40d3a8", location: "core-generation-style.style-use-label.location.4ca16ab3d75b", environment: "core-generation-style.style-use-label.environment.33b5012728e5", other: "core-generation-style.style-use-label.other.72e85c6ec273", poster: "core-generation-style.style-use-label.poster.ea3dc875eb1a", animatic: "core-generation-style.style-use-label.animatic.381a11119178", ai_video: "core-generation-style.style-use-label.ai-video.f1ed83f16e48" });
 
 /**
  * Stilprofilen som gjelder for en bruk (REQ-0148, DEC-0071): profilen som er valgt for akkurat dette, ellers

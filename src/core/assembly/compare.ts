@@ -4,7 +4,7 @@
  * Hver versjon får et eget klipp som bare viser den versjonen fra bilde 0, så samme tegning som i monteringen
  * (drawFilmFrame) kan brukes. Bare lesing: aktiv versjon endres ikke.
  */
-import { L, localized } from "../i18n";
+
 import type { ProjectState, Take } from "../model";
 import { msToFramesCeil, type Rational } from "../time";
 import { takeLabel } from "./edit";
@@ -125,10 +125,7 @@ export function comparableVersions(
     out.push({
       key: "edit",
       kind: "edit",
-      label: L(
-        `Klippet versjon (${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"})`,
-        `Edited version (${clip.parts.length} ${clip.parts.length === 1 ? "part" : "parts"})`,
-      ),
+      label: tk("core-assembly-compare.edited-version", { count: clip.parts.length }),
       takeId: null,
       durationFrames: clip.durationFrames,
       createdAt: times.at(-1) ?? null,

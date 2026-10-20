@@ -7,18 +7,7 @@ import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import {
-  L,
-  type Asset,
-  type AssetVariant,
-  costBreakdown, profileChoice, qualityProfileSnapshot,
-  defaultSoundPrompt,
-  estimateCostUsd,
-  formatUsd,
-  providerInfo,
-  providersFor,
-  tm,
-} from "@/core";
+import { type Asset, type AssetVariant, costBreakdown, profileChoice, qualityProfileSnapshot, defaultSoundPrompt, estimateCostUsd, formatUsd, providerInfo, providersFor, tm } from "@/core";
 import { generateSound } from "@/adapters/ai/sound.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
@@ -234,10 +223,11 @@ export function GenerateSoundPanel({
               className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2"
             >
               <p className="text-xs text-text-primary">
-                {L(
-                  `Dette belastes ${providerInfo(chosen.provider.id)?.name}-kontoen til prosjektets eier (én lyd, anslått høyst ${cost !== null ? formatUsd(cost) : "ukjent pris"}${seconds === null ? ` regnet med lengste lengde, ${maxS} sekunder` : ""} – et anslag). Vil du lage lyden nå?`,
-                  `This is charged to the ${providerInfo(chosen.provider.id)?.name} account of the project's owner (one sound, estimated at most ${cost !== null ? formatUsd(cost) : "an unknown price"}${seconds === null ? ` based on the longest length, ${maxS} seconds` : ""} – an estimate). Do you want to make the sound now?`,
-                )}
+                {t("app-library-generate-sound-panel.confirm-sound", {
+  provider: providerInfo(chosen.provider.id)?.name ?? "",
+  cost: cost !== null ? formatUsd(cost) : t("app-library-generate-sound-panel.confirm-sound-unknown-price"),
+  longest: seconds === null ? t("app-library-generate-sound-panel.confirm-sound-longest", { seconds: maxS }) : "",
+})}
               </p>
               <CostLines
                 lines={costBreakdown(chosen.provider, chosen.model, {

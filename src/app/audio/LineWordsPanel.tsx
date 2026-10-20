@@ -10,25 +10,7 @@
  */
 import { Clock, Loader2, Wand2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  compositionToSource,
-  estimateCostUsd,
-  formatUsd,
-  manualAlignment,
-  rangeForWords,
-  setWordTiming,
-  sourceToComposition,
-  suggestPlacement,
-  textChanges,
-  alignmentFromProvider,
-  wordUncertain,
-  wordSpansInComposition,
-  type AlignmentSource,
-  type AudioComposition,
-  type ProjectState,
-  type WordAlignment,
-} from "@/core";
+import { compositionToSource, estimateCostUsd, formatUsd, manualAlignment, rangeForWords, setWordTiming, sourceToComposition, suggestPlacement, textChanges, alignmentFromProvider, wordUncertain, wordSpansInComposition, type AlignmentSource, type AudioComposition, type ProjectState, type WordAlignment } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useUiPref } from "@/app/account/ui-prefs";
 import { alignAudio } from "@/adapters/ai/alignment.functions";
@@ -262,10 +244,7 @@ export function LineWordsPanel({
           confirm ? (
             <>
               <span className="text-xs text-text-secondary" data-testid="line-words-cost">
-                {L(
-                  `Anslått kostnad ${cost === null ? "ukjent" : formatUsd(cost)} med eiernes ElevenLabs-nøkkel.`,
-                  `Estimated cost ${cost === null ? "unknown" : formatUsd(cost)} with the owners' ElevenLabs key.`,
-                )}
+                {t("app-audio-line-words-panel.estimated-cost", { cost: cost === null ? t("app-audio-line-words-panel.estimated-cost-unknown") : formatUsd(cost) })}
               </span>
               <Button
                 size="sm"

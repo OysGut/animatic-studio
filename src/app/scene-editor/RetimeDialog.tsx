@@ -4,29 +4,7 @@
  * en midlertidig tilstand (ingen lagring). «Bruk» kjører én samlet kommando (RetimeScene).
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  applyCommand,
-  alignmentInComposition,
-  framesToSeconds,
-  localized,
-  newId,
-  planRetime,
-  renderFrame,
-  retimeMethodNeedsFill,
-  secondsToFrames,
-  MAX_DURATION_SECONDS,
-  MIN_DURATION_SECONDS,
-  RETIME_METHODS,
-  type Command,
-  type Composition,
-  type FilmAudioItem,
-  type PaddingFill,
-  type ProjectState,
-  type RetimeMethod,
-  type RetimePlan,
-  type RetimeReport,
-} from "@/core";
+import { applyCommand, alignmentInComposition, framesToSeconds, newId, planRetime, renderFrame, retimeMethodNeedsFill, secondsToFrames, MAX_DURATION_SECONDS, MIN_DURATION_SECONDS, RETIME_METHODS, type Command, type Composition, type FilmAudioItem, type PaddingFill, type ProjectState, type RetimeMethod, type RetimePlan, type RetimeReport } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { Button } from "@/components/ui/button";
 import {

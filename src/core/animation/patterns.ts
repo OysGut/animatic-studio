@@ -3,7 +3,7 @@
  * Alt er seed-basert og deterministisk (§63, §66): samme seed og innstillinger gir samme resultat
  * i forhåndsvisning, etter gjenåpning og ved eksport. Algoritmen er versjonert.
  */
-import { L } from "../i18n";
+
 import { isUuid } from "../ids";
 import { t as tk } from "@/core/i18n/keyed";
 

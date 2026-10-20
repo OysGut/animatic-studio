@@ -6,18 +6,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Download, Loader2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  ZIP_CATEGORY_LABEL,
-  collation,
-  locale,
-  tm,
-  zipEntries,
-  zipSafeName,
-  zipSummary,
-  type ProjectState,
-  type ZipCategory,
-} from "@/core";
+import { ZIP_CATEGORY_LABEL, collation, locale, tm, zipEntries, zipSafeName, zipSummary, type ProjectState, type ZipCategory } from "@/core";
 import { fetchProjectState } from "@/adapters/browser/project-data";
 import { openZipSink, writeZip, type ZipProgress } from "@/engine/export/zip";
 import { signedUrls } from "./asset-images";
@@ -29,6 +18,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Største zip-fil (formatet uten ZIP64 tåler 4 GB). */
 export const ZIP_MAX_BYTES = 3.8 * 1024 * 1024 * 1024;
@@ -101,16 +91,13 @@ export function AssetZipPanel({
     if (list.reduce((t, e) => t + e.byteSize, 0) > ZIP_MAX_BYTES) {
       setMessage({
         kind: "error",
-        text: L(
-          `Zip-filen kan være høyst ${formatBytes(ZIP_MAX_BYTES)}. Velg færre kategorier og last ned i flere omganger.`,
-          `The zip file can be at most ${formatBytes(ZIP_MAX_BYTES)}. Choose fewer categories and download in several rounds.`,
-        ),
+        text: tk("app-library-asset-zip.text.text.255bc44c3218", { value1: String(formatBytes(ZIP_MAX_BYTES)) }),
       });
       return;
     }
     const cats =
       all || off.size === 0
-        ? L("alle ressurser", "all assets")
+        ? tk("app-library-asset-zip.cats.message.8e38c648ff24")
         : summary
             .filter((x) => !off.has(x.category))
             .map((x) => ZIP_CATEGORY_LABEL[x.category].toLocaleLowerCase(collation()))
@@ -141,25 +128,16 @@ export function AssetZipPanel({
       setMessage({
         kind: missing.length ? "error" : "ok",
         text: missing.length
-          ? L(
-              `Zip-filen er laget, men ${missing.length} ${missing.length === 1 ? "fil" : "filer"} kunne ikke hentes (se MANGLER.txt i zip-filen).`,
-              `The zip file has been created, but ${missing.length} ${missing.length === 1 ? "file" : "files"} could not be fetched (see MANGLER.txt in the zip file).`,
-            )
-          : L(
-              `Zip-filen «${name}» er laget (${list.length} ${list.length === 1 ? "fil" : "filer"}).`,
-              `The zip file “${name}” has been created (${list.length} ${list.length === 1 ? "file" : "files"}).`,
-            ),
+          ? tk("app-library-asset-zip.zip-missing", { count: missing.length })
+          : tk("app-library-asset-zip.zip-made", { name, count: list.length }),
       });
     } catch (e) {
       setMessage({
         kind: "error",
         text:
           (e as DOMException).name === "AbortError"
-            ? L("Nedlastingen ble avbrutt.", "The download was cancelled.")
-            : L(
-                `Zip-filen kunne ikke lages: ${(e as Error).message}`,
-                `The zip file could not be created: ${(e as Error).message}`,
-              ),
+            ? tk("app-library-asset-zip.text.text.03358cde7e13")
+            : tk("app-library-asset-zip.text.text.abaef2ceff1e", { message: String((e as Error).message) }),
       });
     } finally {
       if (abort.current === ctrl) abort.current = null;
@@ -169,17 +147,17 @@ export function AssetZipPanel({
 
   return (
     <section
-      aria-label={L("Last ned ressurser", "Download assets")}
+      aria-label={tk("app-library-asset-zip.asset-zip-panel.aria-label.89a5418ee6c1")}
       className="flex flex-col gap-2"
     >
       {compact ? null : (
         <h3 className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          {L("Last ned ressurser som zip", "Download assets as zip")}
+          {tk("app-library-asset-zip.asset-zip-panel.h3.f912a09ad9f6")}
         </h3>
       )}
       {summary.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          {L("Prosjektet har ingen ressursfiler.", "The project has no asset files.")}
+          {tk("app-library-asset-zip.asset-zip-panel.p.41efa5af3f76")}
         </p>
       ) : (
         <>
@@ -203,7 +181,7 @@ export function AssetZipPanel({
                   />
                   <span className="flex-1">{ZIP_CATEGORY_LABEL[x.category]}</span>
                   <span className="tabular text-text-tertiary">
-                    {x.files} {x.files === 1 ? L("fil", "file") : L("filer", "files")} ·{" "}
+                    {x.files} {x.files === 1 ? tk("app-library-asset-zip.asset-zip-panel.span.c676a008823f") : tk("app-library-asset-zip.asset-zip-panel.span.2d183e292f07")} ·{" "}
                     {formatBytes(x.bytes)}
                   </span>
                 </label>
@@ -218,24 +196,21 @@ export function AssetZipPanel({
               onClick={() => void download(false)}
             >
               {busy ? <Loader2 className="animate-spin" /> : <Download />}
-              {L("Last ned valgte", "Download selected")} ({formatBytes(bytes)})
+              {tk("app-library-asset-zip.asset-zip-panel.button.bbc765963d84")} ({formatBytes(bytes)})
             </Button>
             {tooBig ? (
               <span className="text-[11px] text-status-danger">
-                {L(
-                  `Over ${formatBytes(ZIP_MAX_BYTES)} – velg færre kategorier`,
-                  `Over ${formatBytes(ZIP_MAX_BYTES)} – choose fewer categories`,
-                )}
+                {tk("app-library-asset-zip.asset-zip-panel.span.2e1414afd07d", { value1: String(formatBytes(ZIP_MAX_BYTES)) })}
               </span>
             ) : null}
             {off.size > 0 ? (
               <Button size="sm" variant="ghost" disabled={busy} onClick={() => void download(true)}>
-                {L("Last ned alt", "Download all")}
+                {tk("app-library-asset-zip.asset-zip-panel.button.c11fd28608b5")}
               </Button>
             ) : null}
             {busy ? (
               <Button size="sm" variant="ghost" onClick={() => abort.current?.abort()}>
-                {L("Avbryt", "Cancel")}
+                {tk("app-library-asset-zip.asset-zip-panel.button.f44bab868f90")}
               </Button>
             ) : null}
           </div>
@@ -254,12 +229,9 @@ export function AssetZipPanel({
                 />
               </div>
               <span className="text-[11px] text-text-tertiary">
-                {progress.files} {L("av", "of")} {progress.totalFiles} {L("filer", "files")}
+                {progress.files} {tk("app-library-asset-zip.asset-zip-panel.span.293ad35aaf6a")} {progress.totalFiles} {tk("app-library-asset-zip.asset-zip-panel.span.2d183e292f07.2")}
                 {progress.totalBytes > 0
-                  ? L(
-                      ` · ${formatBytes(progress.bytes)} av ${formatBytes(progress.totalBytes)}`,
-                      ` · ${formatBytes(progress.bytes)} of ${formatBytes(progress.totalBytes)}`,
-                    )
+                  ? tk("app-library-asset-zip.asset-zip-panel.span.199cb15f5c71", { value1: String(formatBytes(progress.bytes)), value2: String(formatBytes(progress.totalBytes)) })
                   : ""}
               </span>
             </div>
@@ -278,9 +250,9 @@ export function AssetZipPanel({
             <>
               {" "}
               <a href={link.url} download={link.name} className="underline underline-offset-2">
-                {L("Lagre zip-filen", "Save the zip file")}
+                {tk("app-library-asset-zip.asset-zip-panel.a.c3affb8018ae")}
               </a>{" "}
-              {L("(hvis nedlastingen ikke startet).", "(if the download did not start).")}
+              {tk("app-library-asset-zip.asset-zip-panel.p.439f46679cfa")}
             </>
           ) : null}
         </p>
@@ -310,26 +282,23 @@ export function AssetZipDialog({
       <DialogContent className="max-w-[520px] border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {L(`Last ned ressurser fra «${projectName}»`, `Download assets from “${projectName}”`)}
+            {tk("app-library-asset-zip.asset-zip-dialog.dialog-title.37082a1f4d35", { projectName: String(projectName) })}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Én mappe per kategori og ressurs; alle versjoner med originalt filnavn. Velg kategorier, eller last ned alt samlet.",
-              "One folder per category and asset; all versions with their original file name. Choose categories, or download everything together.",
-            )}
+            {tk("app-library-asset-zip.asset-zip-dialog.dialog-description.313624f899ae")}
           </DialogDescription>
         </DialogHeader>
         {s ? (
           <AssetZipPanel state={s} projectName={projectName} compact />
         ) : loaded.isError ? (
           <p role="alert" className="text-xs text-status-danger">
-            {L("Ressursene kunne ikke hentes", "The assets could not be fetched")}:{" "}
+            {tk("app-library-asset-zip.asset-zip-dialog.p.aec9d14a93a7")}:{" "}
             {tm((loaded.error as Error).message)}
           </p>
         ) : (
           <p className="flex items-center gap-2 text-xs text-text-tertiary">
             <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
-            {L("Henter ressursene …", "Fetching the assets …")}
+            {tk("app-library-asset-zip.asset-zip-dialog.p.c8281b2bb1c3")}
           </p>
         )}
       </DialogContent>

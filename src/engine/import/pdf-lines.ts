@@ -4,7 +4,8 @@
  */
 import type { RawLine } from "@/core/screenplay/types";
 import type { ImportedNote } from "@/core/notes";
-import { L } from "@/core";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 interface TextItemLike {
   str: string;
@@ -86,10 +87,7 @@ export async function pdfToLinesAndNotes(
     .promise;
   if (doc.numPages > MAX_PAGES)
     throw new Error(
-      L(
-        `PDF-en har ${doc.numPages} sider – maks ${MAX_PAGES}`,
-        `The PDF has ${doc.numPages} pages – at most ${MAX_PAGES}`,
-      ),
+      tk("engine-import-pdf-lines.pdf-to-lines-and-notes.message.8a29a7d883c8", { numPages: String(doc.numPages), MAX_PAGES: String(MAX_PAGES) }),
     );
   const lines: RawLine[] = [];
   const notes: ImportedNote[] = [];

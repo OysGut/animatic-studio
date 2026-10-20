@@ -12,19 +12,13 @@ import { continuityCutBlocks } from "../continuity";
 import type { GenerationJob } from "./cost";
 import { styleProfileFor } from "./style";
 import { sceneVideoWork } from "./video";
-import { L, localized } from "../i18n";
+
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type QualityCriterion =
   "script" | "characters" | "style" | "continuity" | "camera" | "technical";
 
-export const QUALITY_LABEL: Record<QualityCriterion, string> = localized({
-  script: ["Manus", "Script"],
-  characters: ["Karakterreferanser", "Character references"],
-  style: ["Stil", "Style"],
-  continuity: ["Kontinuitet", "Continuity"],
-  camera: ["Kamera", "Camera"],
-  technical: ["Teknisk", "Technical"],
-});
+export const QUALITY_LABEL: Record<QualityCriterion, string> = tLocalized({ script: "core-generation-quality.quality-label.script.7f82367341a5", characters: "core-generation-quality.quality-label.characters.092d98880025", style: "core-generation-quality.quality-label.style.087d90d2d146", continuity: "core-generation-quality.quality-label.continuity.677e61fefbf1", camera: "core-generation-quality.quality-label.camera.ee064275c9c4", technical: "core-generation-quality.quality-label.technical.55f2fc08d633" });
 
 export interface QualityCheck {
   readonly criterion: QualityCriterion;
@@ -35,10 +29,7 @@ export interface QualityCheck {
 
 /** Fast tekst som alltid vises sammen med sjekklisten (REQ-0288). */
 export const qualityDisclaimer = () =>
-  L(
-    "Rådgivende: sjekklisten bygger på beskrivelsen og filens egenskaper, ikke på hva som faktisk vises. Se på videoen og avgjør selv.",
-    "Advisory: the checklist is based on the description and the file's properties, not on what is actually shown. Watch the video and decide for yourself.",
-  );
+  tk("core-generation-quality.quality-disclaimer.message.87b81bc24bfa");
 /** Norsk versjon av qualityDisclaimer(), for eldre kode. Bruk qualityDisclaimer() i ny kode. */
 export const QUALITY_DISCLAIMER = // i18n-ignore
   "Rådgivende: sjekklisten bygger på beskrivelsen og filens egenskaper, ikke på hva som faktisk vises. Se på videoen og avgjør selv."; // i18n-ignore
@@ -76,41 +67,26 @@ export function videoQualityChecks(
       ? {
           criterion: "script",
           status: "warn",
-          text: L(
-            "Manuset er endret etter at videoen ble laget.",
-            "The script has changed since the video was made.",
-          ),
+          text: tk("core-generation-quality.text.text.7df96843c16b"),
         }
       : !prompt
         ? {
             criterion: "script",
             status: "unknown",
-            text: L(
-              "Beskrivelsen som ble sendt, er ikke kjent.",
-              "The description that was sent is not known.",
-            ),
+            text: tk("core-generation-quality.text.text.8b2d3026ceb6"),
           }
         : missing.length
           ? {
               criterion: "script",
               status: "warn",
-              text: L(
-                `${missing.length} ${missing.length === 1 ? "replikk var" : "replikker var"} ikke med i beskrivelsen.`,
-                `${missing.length} ${missing.length === 1 ? "line was" : "lines were"} not included in the description.`,
-              ),
+              text: tk("core-generation-quality.lines-not-in-description", { count: missing.length }),
             }
           : {
               criterion: "script",
               status: "ok",
               text: dialogue.length
-                ? L(
-                    "Alle replikkene i segmentet var med, ordrett.",
-                    "All the lines in the segment were included, word for word.",
-                  )
-                : L(
-                    "Beskrivelsen bygger på manuset slik det er nå.",
-                    "The description is based on the script as it is now.",
-                  ),
+                ? tk("core-generation-quality.text.text.a8f38437e2a6")
+                : tk("core-generation-quality.text.text.3dcd2ab235a6"),
             },
   );
 
@@ -120,25 +96,19 @@ export function videoQualityChecks(
     out.push({
       criterion: "characters",
       status: "unknown",
-      text: L("Ukjent startbilde.", "Unknown start image."),
+      text: tk("core-generation-quality.text.text.5c1743d47351"),
     });
   else if (!start)
     out.push({
       criterion: "characters",
       status: "warn",
-      text: L(
-        "Videoen ble laget uten startbilde – figurene kan se annerledes ut enn i godkjente bilder.",
-        "The video was made without a start image – the figures may look different from the approved images.",
-      ),
+      text: tk("core-generation-quality.text.text.173d0843aabd"),
     });
   else if (/\/films\/[^/]+\/last-frame\.png$/.test(start))
     out.push({
       criterion: "characters",
       status: "ok",
-      text: L(
-        "Startet fra siste bilde i segmentet før (sammenheng).",
-        "Started from the last frame of the previous segment (continuity).",
-      ),
+      text: tk("core-generation-quality.text.text.daeb3dfe0872"),
     });
   else {
     const v = Object.values(s.assetVersions).find((x) => x.mediaPath === start);
@@ -148,15 +118,12 @@ export function videoQualityChecks(
         ? {
             criterion: "characters",
             status: "ok",
-            text: L("Startbildet var et godkjent bilde.", "The start image was an approved image."),
+            text: tk("core-generation-quality.text.text.511ac5dd5117"),
           }
         : {
             criterion: "characters",
             status: "warn",
-            text: L(
-              "Startbildet var ikke (lenger) den godkjente versjonen.",
-              "The start image was not (any longer) the approved version.",
-            ),
+            text: tk("core-generation-quality.text.text.fb5d9259daa3"),
           },
     );
   }
@@ -168,33 +135,24 @@ export function videoQualityChecks(
       ? {
           criterion: "style",
           status: "unknown",
-          text: L(
-            "Filmens visuelle stil er ikke fylt ut (prosjektoversikten).",
-            "The film's visual style is not filled in (project overview).",
-          ),
+          text: tk("core-generation-quality.text.text.90cf03eb6baa"),
         }
       : !prompt
         ? {
             criterion: "style",
             status: "unknown",
-            text: L("Beskrivelsen er ikke kjent.", "The description is not known."),
+            text: tk("core-generation-quality.text.text.75a8fd313c6b"),
           }
         : prompt.includes("film look:") || prompt.includes("technique:")
           ? {
               criterion: "style",
               status: "ok",
-              text: L(
-                "Filmens visuelle stil var med i beskrivelsen.",
-                "The film's visual style was included in the description.",
-              ),
+              text: tk("core-generation-quality.text.text.f07402db35d5"),
             }
           : {
               criterion: "style",
               status: "warn",
-              text: L(
-                "Filmens visuelle stil var ikke med (tatt bort for lengden eller laget før stilen).",
-                "The film's visual style was not included (removed for length, or made before the style).",
-              ),
+              text: tk("core-generation-quality.text.text.4d9ded05170d"),
             },
   );
 
@@ -206,27 +164,18 @@ export function videoQualityChecks(
       ? {
           criterion: "continuity",
           status: "ok",
-          text: L(
-            "Ingen forandringer i utseendet i segmentet.",
-            "No changes in appearance within the segment.",
-          ),
+          text: tk("core-generation-quality.text.text.e22eed0d12cc"),
         }
       : prompt && prompt.includes("during this shot")
         ? {
             criterion: "continuity",
             status: "ok",
-            text: L(
-              "Forandringen i segmentet var beskrevet – sjekk at den synes.",
-              "The change within the segment was described – check that it shows.",
-            ),
+            text: tk("core-generation-quality.text.text.fed066e25f13"),
           }
         : {
             criterion: "continuity",
             status: "warn",
-            text: L(
-              "En figur forandrer seg i segmentet, men det sto ikke i beskrivelsen.",
-              "A figure changes within the segment, but this was not in the description.",
-            ),
+            text: tk("core-generation-quality.text.text.a0c038390823"),
           },
   );
 
@@ -236,24 +185,18 @@ export function videoQualityChecks(
       ? {
           criterion: "camera",
           status: "unknown",
-          text: L("Beskrivelsen er ikke kjent.", "The description is not known."),
+          text: tk("core-generation-quality.text.text.75a8fd313c6b.2"),
         }
       : prompt.includes("camera (from the animatic)")
         ? {
             criterion: "camera",
             status: "ok",
-            text: L(
-              "Kamerabevegelsen fra animaticen var med.",
-              "The camera movement from the animatic was included.",
-            ),
+            text: tk("core-generation-quality.text.text.06951331981c"),
           }
         : {
             criterion: "camera",
             status: "unknown",
-            text: L(
-              "Ingen kamerabevegelse ble beskrevet (ingen i animaticen, eller tatt bort for lengden).",
-              "No camera movement was described (none in the animatic, or removed for length).",
-            ),
+            text: tk("core-generation-quality.text.text.dfee3b2d484e"),
           },
   );
 
@@ -267,10 +210,7 @@ export function videoQualityChecks(
     if (got + 0.25 < want) {
       warn = true;
       notes.push(
-        L(
-          `kortere enn segmentet (${got.toFixed(1)} av ${want.toFixed(1)} s)`,
-          `shorter than the segment (${got.toFixed(1)} of ${want.toFixed(1)} s)`,
-        ),
+        tk("core-generation-quality.video-quality-checks.notes-push.094725f64a4b", { value1: String(got.toFixed(1)), value2: String(want.toFixed(1)) }),
       );
     }
   }
@@ -280,42 +220,33 @@ export function videoQualityChecks(
     if (Math.abs(pa - va) / pa > 0.03) {
       warn = true;
       notes.push(
-        L(
-          `annet format enn prosjektet (${m.width}×${m.height})`,
-          `different format from the project (${m.width}×${m.height})`,
-        ),
+        tk("core-generation-quality.video-quality-checks.notes-push.a51837cf157a", { width: String(m.width), height: String(m.height) }),
       );
     }
     if (m.height < s.project.frameHeight * 0.66) {
       warn = true;
       notes.push(
-        L(
-          `lavere oppløsning enn prosjektet (${m.height} mot ${s.project.frameHeight} linjer)`,
-          `lower resolution than the project (${m.height} vs ${s.project.frameHeight} lines)`,
-        ),
+        tk("core-generation-quality.video-quality-checks.notes-push.2eda3c2c5f27", { height: String(m.height), frameHeight: String(s.project.frameHeight) }),
       );
     }
   }
   if (m && !m.hasAudio && dialogue.length)
     notes.push(
-      L(
-        "ingen lyd i videoen – dialogen må legges på dialogsporet",
-        "no sound in the video – the dialogue must be added to the dialogue track",
-      ),
+      tk("core-generation-quality.video-quality-checks.notes-push.c57101666488"),
     );
   out.push(
     !m
       ? {
           criterion: "technical",
           status: "unknown",
-          text: L("Filinformasjonen mangler.", "The file information is missing."),
+          text: tk("core-generation-quality.text.text.3cbb9b93bc21"),
         }
       : {
           criterion: "technical",
           status: warn ? "warn" : "ok",
           text: notes.length
             ? `${notes.join("; ")}.`
-            : L("Lengde, format og oppløsning passer.", "Length, format and resolution are fine."),
+            : tk("core-generation-quality.text.text.ff041b8a845c"),
         },
   );
   return out;

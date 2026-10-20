@@ -20,7 +20,7 @@ import {
   type Rational,
 } from "@/core";
 import { Button } from "@/components/ui/button";
-import { L, localized } from "@/core";
+
 import { updateCameraCommand, MAX_CAMERA_ZOOM, MIN_CAMERA_ZOOM } from "./camera-overlay";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 

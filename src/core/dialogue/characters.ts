@@ -1,9 +1,10 @@
 /** DV3: character identity is confirmed; name matches are suggestions only. */
 import { blocksOfVariant } from "../views";
 import { assetNames, nameKey } from "../library";
-import { L } from "../i18n";
+
 import type { AudioClip, ProjectState } from "../model";
 import { speakerKeyOf } from "./versions";
+import { t } from "@/core/i18n/keyed";
 
 export function dialogueSpeaker(s: ProjectState, occurrenceId: string, blockId: string | null): string {
   const occ = s.occurrences[occurrenceId];
@@ -41,7 +42,7 @@ export function dialogueCharacterSuggestions(s: ProjectState, occurrenceId: stri
 
 export function dialogueTrackLabel(s: ProjectState, clip: AudioClip): string {
   return (clip.characterAssetId ? s.assets[clip.characterAssetId]?.name : null) ||
-    dialogueSpeaker(s, clip.occurrenceId, clip.blockId) || L("Ukjent taler", "Unknown speaker");
+    dialogueSpeaker(s, clip.occurrenceId, clip.blockId) || t("core-dialogue-characters.dialogue-track-label.message.bcc249ae679c");
 }
 
 /** One projected row per speaker, never one row per alternative version. */

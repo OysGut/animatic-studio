@@ -8,7 +8,8 @@
 import type { Annotation, Asset, ProjectState, ScenePlan } from "../model";
 import { allAssetUsage } from "./index";
 import { orderedOccurrences, sceneNumberOf } from "../views";
-import { L } from "../i18n";
+
+import { t } from "@/core/i18n/keyed";
 
 /** Ligger ressursen som lag i en 2D-scene for scenen (sceneforekomstens variant)? */
 export function assetPlacedInScene(
@@ -170,7 +171,7 @@ export function sceneChoices(
       if (ids.length)
         out.push({
           key: `with:${a.id}`,
-          label: L(`Alle scener med ${a.name}`, `All scenes with ${a.name}`),
+          label: t("core-library-scene-plans.label.label.924aede2b6a3", { name: String(a.name) }),
           occurrenceIds: ids,
         });
     }
@@ -184,7 +185,7 @@ export function sceneChoices(
       if (ids.length)
         out.push({
           key: `at:${a.id}`,
-          label: L(`Alle scener på ${a.name}`, `All scenes at ${a.name}`),
+          label: t("core-library-scene-plans.label.label.b254548d4356", { name: String(a.name) }),
           occurrenceIds: ids,
         });
     }
@@ -193,7 +194,7 @@ export function sceneChoices(
   if (i >= 0 && i < order.length - 1)
     out.push({
       key: "rest",
-      label: L("Alle scener etter denne", "All scenes after this one"),
+      label: t("core-library-scene-plans.label.label.a3c1fdd07a31"),
       occurrenceIds: order.slice(i + 1).map((o) => o.id),
     });
   return out;
@@ -202,12 +203,6 @@ export function sceneChoices(
 /** Standardteksten i systemmerknaden. */
 export function planNoteText(assetName: string, fromNumber: string | null): string {
   return fromNumber
-    ? L(
-        `«${assetName}» skal inn i scenen (lagt til fra scene ${fromNumber}). Skriv det inn i manuset, og lagre merknaden som ferdig.`,
-        `“${assetName}” should be in the scene (added from scene ${fromNumber}). Write it into the script, and save the note as done.`,
-      )
-    : L(
-        `«${assetName}» skal inn i scenen. Skriv det inn i manuset, og lagre merknaden som ferdig.`,
-        `“${assetName}” should be in the scene. Write it into the script, and save the note as done.`,
-      );
+    ? t("core-library-scene-plans.plan-note-text.message.42b113640dcd", { assetName: String(assetName), fromNumber: String(fromNumber) })
+    : t("core-library-scene-plans.plan-note-text.message.f8e50e923623", { assetName: String(assetName) });
 }

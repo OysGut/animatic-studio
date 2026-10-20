@@ -2,29 +2,7 @@
  * Handlinger for tekst og maler i sceneeditoren (MTS MT2/MT4/MT5). Bygger på kjernens planleggere og
  * vanlige kommandoer; skriving går via runCommand (samme angrestabel).
  */
-import {
-  L,
-  layersOf,
-  lowerThirdStarter,
-  mainProduction,
-  newId,
-  orderedOccurrences,
-  planApplyTemplate,
-  planTemplateVersionUpdate,
-  planUpdateTemplateValues,
-  renderFrame,
-  sceneNumberOf,
-  templateFromLayers,
-  templateError,
-  templateUses,
-  textLayerFields,
-  type Command,
-  type Composition,
-  type ProjectState,
-  type TemplateCategory,
-  type TemplateUse,
-  type TemplateValues,
-} from "@/core";
+import { layersOf, lowerThirdStarter, mainProduction, newId, orderedOccurrences, planApplyTemplate, planTemplateVersionUpdate, planUpdateTemplateValues, renderFrame, sceneNumberOf, templateFromLayers, templateError, templateUses, textLayerFields, type Command, type Composition, type ProjectState, type TemplateCategory, type TemplateUse, type TemplateValues } from "@/core";
 import { drawFrame } from "@/engine/compositor/canvas";
 import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
 import { uploadAssetImage } from "@/app/library/asset-images";

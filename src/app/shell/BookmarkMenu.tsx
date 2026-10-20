@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter, useRouterState } from "@tanstack/react-router";
 import { Bookmark, BookmarkCheck } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { L, bookmarkHref, bookmarkViewOf } from "@/core";
+import { bookmarkHref, bookmarkViewOf } from "@/core";
 import { getMyBookmark, setMyBookmark, consumeMyBookmark } from "@/adapters/browser/bookmarks";
 import { Button } from "@/components/ui/button";
 import { sceneBookmarkContext } from "./bookmark-context";

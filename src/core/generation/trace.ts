@@ -5,7 +5,8 @@
  * `generation_jobs.params.trace` av serveren når jobben registreres.
  */
 import { PROMPT_WRITER_SYSTEM } from "./prompt-writer";
-import { L, localized } from "../i18n";
+
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export interface TraceReference {
   readonly path: string;
@@ -47,7 +48,7 @@ export interface GenerationTrace {
 export const SYSTEM_INSTRUCTIONS: Readonly<Record<string, { label: () => string; text: string }>> =
   {
     "prompt-writer": {
-      label: () => L("Beskrivelsesskriveren (innebygd AI)", "Description writer (built-in AI)"),
+      label: () => tk("core-generation-trace.label.label.0ac98d6ad83c"),
       text: PROMPT_WRITER_SYSTEM,
     },
   };
@@ -95,22 +96,22 @@ export function traceLines(t: GenerationTrace): { label: string; text: string }[
   const out: { label: string; text: string }[] = [];
   const sys = t.systemInstruction ? SYSTEM_INSTRUCTIONS[t.systemInstruction] : undefined;
   out.push({
-    label: L("Systeminstruks", "System instruction"),
+    label: tk("core-generation-trace.label.label.38ef98b84350"),
     text: !t.systemInstruction
-      ? L("Ingen – bare beskrivelsen ble sendt", "None – only the description was sent")
+      ? tk("core-generation-trace.text.text.f30c93ef223a")
       : sys
-        ? `${sys.label()}${t.systemInstructionHash && textHash(sys.text) !== t.systemInstructionHash ? L(" (teksten er endret siden)", " (the text has changed since)") : ""}`
+        ? `${sys.label()}${t.systemInstructionHash && textHash(sys.text) !== t.systemInstructionHash ? tk("core-generation-trace.text.text.16d50bae50d1") : ""}`
         : t.systemInstruction,
   });
   const params = Object.entries(t.modelParams)
     .filter(([, v]) => v !== null && v !== undefined && v !== "")
     .map(([k, v]) => `${PARAM_LABEL[k] ?? k}: ${String(v)}`);
   out.push({
-    label: L("Parametere", "Parameters"),
-    text: params.length ? params.join(" · ") : L("Standard", "Default"),
+    label: tk("core-generation-trace.label.label.0612058bf76e"),
+    text: params.length ? params.join(" · ") : tk("core-generation-trace.text.text.a2626bdecaac"),
   });
   out.push({
-    label: L("Referanser", "References"),
+    label: tk("core-generation-trace.label.label.660398861c5b"),
     text: t.references.length
       ? t.references
           .map((r) =>
@@ -119,41 +120,26 @@ export function traceLines(t: GenerationTrace): { label: string; text: string }[
               : r.path.split("/").pop()!,
           )
           .join(", ")
-      : L("Ingen", "None"),
+      : tk("core-generation-trace.text.text.ad39b8b19a07"),
   });
   out.push({
-    label: L("Manusversjon", "Script version"),
+    label: tk("core-generation-trace.label.label.3d4622c4a0d8"),
     text: t.scriptVersion
       ? `${t.scriptVersion.number}: ${t.scriptVersion.name}`
-      : L("Ingen lagret manusversjon", "No saved script version"),
+      : tk("core-generation-trace.text.text.d75dc2ff1d8b"),
   });
   const n = Object.keys(t.blockRevisions).length;
   if (n)
     out.push({
-      label: L("Manuslinjer", "Script lines"),
-      text: L(
-        `${n} linjer i scenen med revisjon lagret`,
-        `${n} lines in the scene with revision saved`,
-      ),
+      label: tk("core-generation-trace.label.label.b68296b54f10"),
+      text: tk("core-generation-trace.text.text.8b60ce566948", { n: String(n) }),
     });
   else if (t.blockRevisionsOmitted)
     out.push({
-      label: L("Manuslinjer", "Script lines"),
-      text: L(
-        "Scenen var for lang til at revisjonene ble lagret",
-        "The scene was too long for the revisions to be saved",
-      ),
+      label: tk("core-generation-trace.label.label.b68296b54f10.2"),
+      text: tk("core-generation-trace.text.text.055111b41e2d"),
     });
   return out;
 }
 
-const PARAM_LABEL: Record<string, string> = localized({
-  seconds: ["Sekunder", "Seconds"],
-  aspect: ["Format", "Format"],
-  loop: ["Sløyfe", "Loop"],
-  voiceId: ["Stemme", "Voice"],
-  purpose: ["Bruk", "Use"],
-  identityFirst: ["Identitet først", "Identity first"],
-  candidates: ["Kandidater", "Candidates"],
-  images: ["Bilder", "Images"],
-});
+const PARAM_LABEL: Record<string, string> = tLocalized({ seconds: "core-generation-trace.param-label.seconds.830a425a4455", aspect: "core-generation-trace.param-label.aspect.ba45bc892764", loop: "core-generation-trace.param-label.loop.9eb135a61b23", voiceId: "core-generation-trace.param-label.voice-id.4eb3814d0a4c", purpose: "core-generation-trace.param-label.purpose.3c914b290620", identityFirst: "core-generation-trace.param-label.identity-first.c78748961219", candidates: "core-generation-trace.param-label.candidates.b84ffba72c72", images: "core-generation-trace.param-label.images.9ced865b0868" });

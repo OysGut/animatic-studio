@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { L, languageLabel, scriptLanguageOf, speechLanguageOf, languageTagError, type ProjectState } from "@/core";
+import { languageLabel, scriptLanguageOf, speechLanguageOf, languageTagError, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { t as tk } from "@/core/i18n/keyed";

@@ -4,7 +4,7 @@ import { AuthScreen } from "@/app/auth/AuthScreen";
 import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { AccountPage } from "@/app/account/AccountPage";
-import { L } from "@/core";
+
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 

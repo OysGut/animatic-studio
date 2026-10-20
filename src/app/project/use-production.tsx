@@ -3,7 +3,8 @@
  * (DEC-0057). Valget huskes per prosjekt i nettleseren og følger med mellom arbeidsflatene.
  */
 import { useCallback, useEffect, useState } from "react";
-import { L, PRODUCTION_KIND_LABEL, sortedProductions, type ProjectState } from "@/core";
+import { PRODUCTION_KIND_LABEL, sortedProductions, type ProjectState } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const EVENT = "animatic-production-change";
 const storeKey = (projectId: string) => `animatic:production:${projectId}`;
@@ -93,13 +94,10 @@ export function ProductionPicker({
   if (list.length < 2) return null;
   return (
     <select
-      aria-label={L("Produksjon", "Production")}
+      aria-label={t("app-project-use-production.production-picker.aria-label.0d558dc6641a")}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      title={L(
-        "Hvilken produksjon du arbeider med (hovedfilm, spinoff, trailer …)",
-        "Which production you are working on (main film, spin-off, trailer …)",
-      )}
+      title={t("app-project-use-production.production-picker.title.dad57cb9be2e")}
       className="h-7 max-w-[220px] rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
     >
       {list.map((p) => (

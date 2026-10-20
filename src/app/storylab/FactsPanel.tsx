@@ -4,7 +4,7 @@
  */
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { L, factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
+import { factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { Textarea } from "@/components/ui/textarea";

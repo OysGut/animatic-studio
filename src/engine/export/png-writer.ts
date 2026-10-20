@@ -4,7 +4,7 @@
  * slik PNG krever), og bare de komprimerte bytene samles opp som IDAT-biter. Fargetype 6 (RGBA, 8 bit),
  * uten interlacing. Filteret velges per rad (None/Sub/Up) med den vanlige «minste sum av avvik»-regelen.
  */
-import { L } from "@/core";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 export interface PngOptions {

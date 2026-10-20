@@ -8,8 +8,9 @@ import { newId as defaultNewId } from "../ids";
 import { keysEvenly } from "../order-key";
 import type { ProjectState } from "../model";
 import { orderedOccurrences } from "../views";
-import { L } from "../i18n";
+
 import type { ParsedScreenplay } from "./types";
+import { t } from "@/core/i18n/keyed";
 
 export interface PlanOptions {
   readonly productionId: ProductionId;
@@ -44,10 +45,7 @@ export function planImport(
     const headingNotes = [...ps.warnings];
     if (anyNumbered && ps.number === null && !ps.isContinuation)
       headingNotes.push(
-        L(
-          "Scenen har ikke scenenummer i originalen",
-          "The scene has no scene number in the original",
-        ),
+        t("core-screenplay-plan.scenes.heading-notes-push.ef8cd0344f4a"),
       );
     return {
       sceneId: mk<"scene">(),

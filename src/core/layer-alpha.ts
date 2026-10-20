@@ -1,9 +1,10 @@
 /** Pure export choices and scene planning. No media or browser APIs. */
-import { L } from "./i18n";
+
 import { filmClips } from "./assembly/film";
 import { layersOf } from "./composition";
 import type { Composition, ProjectState } from "./model";
 import type { FilmClip } from "./assembly/film";
+import { t } from "@/core/i18n/keyed";
 
 export interface AlphaExportSettings {
   readonly layerIds: readonly string[];
@@ -33,10 +34,10 @@ export function alphaRange(c: Composition, o: AlphaExportSettings) {
 export function alphaExportError(s: ProjectState, c: Composition, o: AlphaExportSettings): string | null {
   const r = alphaRange(c, o);
   if (!Number.isInteger(r.start) || !Number.isInteger(r.end) || r.start < 0 || r.end > c.durationFrames || r.start >= r.end)
-    return L("Velg et gyldig inn/ut-område innenfor scenen.", "Choose a valid in/out range within the scene.");
+    return t("core-layer-alpha.alpha-export-error.message.7b649b406223");
   const layers = layersOf(s, c.id);
   if (!o.layerIds.length || o.layerIds.some(id => !layers.some(l => l.id === id)))
-    return L("Velg minst ett lag fra denne scenen.", "Select at least one layer from this scene.");
+    return t("core-layer-alpha.alpha-export-error.message.43e0de41226e");
   return null;
 }
 /** A composition export intentionally uses the 2D source, not an active imported take. */

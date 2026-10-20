@@ -1,6 +1,6 @@
 import { PinIcon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { L } from "@/core";
+
 import { useSession } from "@/app/auth/use-session";
 import { useStoredNumber } from "@/app/shell/pane-size";
 import { sourceWindowId } from "@/app/shell/current-scene";

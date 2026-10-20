@@ -11,7 +11,7 @@ import {
   Users,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { L, localized } from "@/core";
+
 import { useStoredFlag } from "./pane-size";
 import { t, tLocalized } from "@/core/i18n/keyed";
 

@@ -6,19 +6,7 @@
  */
 import { AlertTriangle, CheckCircle2, Info, Play } from "lucide-react";
 import { useMemo } from "react";
-import {
-  L,
-  LANGUAGE_LABEL,
-  MATERIAL_LABEL,
-  audioClipFieldsOf,
-  formatHeading,
-  languageReport,
-  locale,
-  type Command,
-  type ProjectState,
-  type TimingConflict,
-  languageWord,
-} from "@/core";
+import { LANGUAGE_LABEL, MATERIAL_LABEL, audioClipFieldsOf, formatHeading, languageReport, locale, type Command, type ProjectState, type TimingConflict, languageWord } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -76,7 +64,7 @@ export function LanguageVersionDialog({
         type: "UpdateAudioClips",
         clips: [{ clipId: a.id, fields: { ...audioClipFieldsOf(a), offsetMs } }],
       },
-      L(`Flytt ${name.toLowerCase()} replikk`, `Move ${name} line`),
+      t("app-assembly-language-version-dialog.move-line", { language: languageWord(language) }),
     );
     onSeek(c.occurrenceId, offsetMs);
   }
@@ -89,10 +77,7 @@ export function LanguageVersionDialog({
             {t("app-assembly-language-version-dialog.language-version-dialog.dialog-title.4e5be35f5554")}: {name}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              `Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den ${name.toLowerCase()}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke.`,
-              `The same film, scenes and images as the Norwegian one. Here you can see what is missing or needs checking in the ${name} version. Nothing is regenerated automatically, and the timing of the main film is not changed.`,
-            )}
+            {t("app-assembly-language-version-dialog.intro", { language: languageWord(language) })}
           </DialogDescription>
         </DialogHeader>
         <ul
@@ -106,32 +91,20 @@ export function LanguageVersionDialog({
           <Summary
             ok={voiced === lines}
             neutral={voiced === 0}
-            text={L(
-              `${voiced} av ${lines} replikker med ${name.toLowerCase()} lyd`,
-              `${voiced} of ${lines} lines with ${name} audio`,
-            )}
+            text={t("app-assembly-language-version-dialog.voiced-lines", { voiced, lines, language: languageWord(language) })}
           />
           <Summary
             ok={conflicts === 0}
-            text={L(
-              `${conflicts} ${conflicts === 1 ? "timingkonflikt" : "timingkonflikter"}`,
-              `${conflicts} ${conflicts === 1 ? "timing conflict" : "timing conflicts"}`,
-            )}
+            text={t("app-assembly-language-version-dialog.timing-conflicts", { count: conflicts })}
           />
           <Summary
             ok={mixed === 0}
-            text={L(
-              `${mixed} ${mixed === 1 ? "scene" : "scener"} med blandet filmlyd`,
-              `${mixed} ${mixed === 1 ? "scene" : "scenes"} with mixed film audio`,
-            )}
+            text={t("app-assembly-language-version-dialog.mixed-scenes", { count: mixed })}
           />
           <Summary
             ok={lipsync === 0}
             neutral
-            text={L(
-              `${lipsync} ${lipsync === 1 ? "scene" : "scener"} der munnbevegelser bør sjekkes`,
-              `${lipsync} ${lipsync === 1 ? "scene" : "scenes"} where mouth movements should be checked`,
-            )}
+            text={t("app-assembly-language-version-dialog.lipsync-scenes", { count: lipsync })}
           />
         </ul>
         {shown.length === 0 ? (
@@ -188,10 +161,7 @@ export function LanguageVersionDialog({
                   <p className="flex items-start gap-1.5 text-status-uncertain">
                     <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
                     <span>
-                      {L(
-                        `Den importerte filmen har ${languageWord(r.mixedDialogue)} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og ${name.toLowerCase()} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet.`,
-                        `The imported film has ${languageWord(r.mixedDialogue)} dialogue mixed into the audio. It cannot be swapped out completely: the film audio is played as it is, and ${name} dialogue is laid on top. If the audio is only music and effects, you can say so in the scene panel.`,
-                      )}
+                      {t("app-assembly-language-version-dialog.mixed-dialogue", { mixed: languageWord(r.mixedDialogue), language: languageWord(language) })}
                     </span>
                   </p>
                 ) : null}

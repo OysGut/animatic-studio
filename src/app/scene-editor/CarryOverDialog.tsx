@@ -4,13 +4,7 @@
  * som én angregruppe direkte til målscenene; scenen som er åpen, endres ikke.
  */
 import { useEffect, useMemo, useState } from "react";
-import {
-  L,
-  carryTargets,
-  planCarryOver,
-  type CarryMode,
-  type ProjectState,
-} from "@/core";
+import { carryTargets, planCarryOver, type CarryMode, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { runGroup } from "@/app/storylab/canvas/run-group";
 import { Button } from "@/components/ui/button";
@@ -98,10 +92,7 @@ export function CarryOverDialog({
     if (r.error) return setError(r.error);
     onOpenChange(false);
     onDone?.(
-      L(
-        `«${name}» er lagt til i ${r.created} ${r.created === 1 ? "scene" : "scener"}${r.reused ? `; den som fantes, brukes i ${r.reused}` : ""}.`,
-        `“${name}” was added to ${r.created} ${r.created === 1 ? "scene" : "scenes"}${r.reused ? `; the existing one is used in ${r.reused}` : ""}.`,
-      ),
+      r.reused ? t("app-scene-editor-carry-over-dialog.carried-over-reused", { name, count: r.created, reused: r.reused }) : t("app-scene-editor-carry-over-dialog.carried-over", { name, count: r.created }),
     );
   }
 

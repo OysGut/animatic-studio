@@ -19,27 +19,7 @@ import {
 } from "lucide-react";
 import { ImageLightbox } from "@/app/library/ImageLightbox";
 import { useMemo, useRef, useState } from "react";
-import {
-  ASSET_KIND_LABEL,
-  coverVersion,
-  layerFieldsOf,
-  layerVersion,
-  newId,
-  partLayers,
-  sortedAssets,
-  variantsOf,
-  versionsOf,
-  type AssetMedia,
-  type AssetVariant,
-  type AssetVersion,
-  type CompositionLayer,
-  type LayerFields,
-  type ProjectState,
-  workingImageMaxSide,
-  L,
-  collation,
-  localized,
-} from "@/core";
+import { ASSET_KIND_LABEL, coverVersion, layerFieldsOf, layerVersion, newId, partLayers, sortedAssets, variantsOf, versionsOf, type AssetMedia, type AssetVariant, type AssetVersion, type CompositionLayer, type LayerFields, type ProjectState, workingImageMaxSide, collation } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import {
   IMAGE_ACCEPT,
@@ -676,10 +656,7 @@ function Body({
         url={big ? urls[big.version.mediaPath] : undefined}
         title={
           big && asset
-            ? L(
-                `${asset.name} – ${big.variantName || "Uten navn"} v${big.version.number}`,
-                `${asset.name} – ${big.variantName || "Without name"} v${big.version.number}`,
-              )
+            ? t("app-scene-editor-layer-image-dialog.big-title", { asset: asset.name, variant: big.variantName || t("app-scene-editor-layer-image-dialog.big-title-unnamed"), version: big.version.number })
             : ""
         }
         {...(editable
@@ -906,10 +883,7 @@ function DeleteVersionConfirm({
         <p className="text-text-primary">
           {t("app-scene-editor-layer-image-dialog.delete-version-confirm.p.03cb6e977c56", { number: String(v.number) })}
           {lockedLayers
-            ? L(
-                ` ${lockedLayers === 1 ? "Ett lag" : `${lockedLayers} lag`} bruker akkurat dette bildet og beholder det til det slettes for godt.`,
-                ` ${lockedLayers === 1 ? "One layer" : `${lockedLayers} layers`} uses this exact image and keeps it until it is deleted for good.`,
-              )
+            ? lockedLayers === 1 ? t("app-scene-editor-layer-image-dialog.locked-layer") : t("app-scene-editor-layer-image-dialog.locked-layers", { count: lockedLayers })
             : t("app-scene-editor-layer-image-dialog.delete-version-confirm.p.b9d43c5be592")}
         </p>
       )}

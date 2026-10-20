@@ -5,8 +5,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, L } from "@/core";
+import { isUuid } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const isId = (x: unknown): x is string => typeof x === "string" && isUuid(x);
 
@@ -28,7 +29,7 @@ export const pumpProjectQueue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    if (!isId(x["projectId"])) throw new Error(t("adapters-ai-queue-functions.pump-project-queue.create-server-fn-method-post-middleware-require-supabase-auth-validator.6372a4c86d83"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }): Promise<{ sent: number }> => {
@@ -50,13 +51,13 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (!isId(x["projectId"]) || !isId(x["jobId"]))
-      throw new Error(L("Ugyldig jobb", "Invalid job"));
+      throw new Error(t("adapters-ai-queue-functions.update-queued-job.create-server-fn-method-post-middleware-require-supabase-auth-validator.0cefaab4bcf2"));
     const action = x["action"];
     if (action !== "cancel" && action !== "priority" && action !== "first")
-      throw new Error(L("Ugyldig handling", "Invalid action"));
+      throw new Error(t("adapters-ai-queue-functions.update-queued-job.create-server-fn-method-post-middleware-require-supabase-auth-validator.cfade47340f1"));
     const priority = x["priority"];
     if (action === "priority" && priority !== 1 && priority !== 2 && priority !== 3)
-      throw new Error(L("Ugyldig prioritet", "Invalid priority"));
+      throw new Error(t("adapters-ai-queue-functions.update-queued-job.create-server-fn-method-post-middleware-require-supabase-auth-validator.80ac8784e612"));
     return {
       projectId: x["projectId"],
       jobId: x["jobId"],
@@ -69,19 +70,13 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
     if (!db)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang, eller databasen mangler 0025.",
-          "You do not have access, or the database is missing 0025.",
-        ),
+        message: t("adapters-ai-queue-functions.message.message.162acdc743f0"),
       };
     const patch =
       data.action === "cancel"
         ? {
             status: "failed",
-            error: L(
-              "Avbrutt før den ble sendt (kostet ingenting).",
-              "Cancelled before it was sent (cost nothing).",
-            ),
+            error: t("adapters-ai-queue-functions.error.error.ba9c7dcb3c16"),
             finished_at: new Date().toISOString(),
           }
         : data.action === "priority"
@@ -99,9 +94,6 @@ export const updateQueuedJob = createServerFn({ method: "POST" })
       ? { ok: true }
       : {
           ok: false,
-          message: L(
-            "Jobben er allerede sendt til leverandøren.",
-            "The job has already been sent to the provider.",
-          ),
+          message: t("adapters-ai-queue-functions.message.message.61b1218293ba"),
         };
   });

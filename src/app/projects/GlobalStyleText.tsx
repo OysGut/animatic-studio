@@ -6,19 +6,7 @@
  */
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
-import {
-  L,
-  STYLE_TOTAL_LIMIT,
-  emptyStyleGuide,
-  newId,
-  styleProfileFor,
-  styleText,
-  styleTextEdited,
-  tm,
-  type ProjectState,
-  type StyleProfile,
-  type StyleUse,
-} from "@/core";
+import { STYLE_TOTAL_LIMIT, emptyStyleGuide, newId, styleProfileFor, styleText, styleTextEdited, tm, type ProjectState, type StyleProfile, type StyleUse } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";

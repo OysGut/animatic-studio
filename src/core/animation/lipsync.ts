@@ -4,7 +4,7 @@
  * Manuelle rettelser er overstyringer som overlever ny generering (§32). Ingenting tas i bruk uten
  * brukerens bekreftelse – forslaget lever i minnet til «Bruk» lagrer det via kommandoene.
  */
-import { L } from "../i18n";
+
 import { isUuid } from "../ids";
 import { VISEMES, type Viseme } from "./parts";
 import { t as tk } from "@/core/i18n/keyed";

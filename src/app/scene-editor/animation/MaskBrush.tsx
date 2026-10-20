@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { L } from "@/core";
+
 import type { RigPart, VectorStroke } from "@/core/animation/parts";
 import { renderRigPart } from "@/engine/compositor/rig-parts";
 import { Toolbar, ToolbarGroup, ToolbarButton } from "@/app/shell/workspace-chrome";

@@ -15,15 +15,7 @@
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  L,
-  applyCommand,
-  forkPlan,
-  newId,
-  revisionsOf,
-  type Command,
-  type ProjectState,
-} from "@/core";
+import { applyCommand, forkPlan, newId, revisionsOf, type Command, type ProjectState } from "@/core";
 import { runCommand } from "@/adapters/storage/commands.functions";
 import {
   commandQueue,
@@ -31,6 +23,7 @@ import {
   ownCommandIds,
   projectStateKey,
 } from "./use-project";
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface HistoryEntry {
   readonly id: string;
@@ -129,15 +122,9 @@ export function rejectedEdit(
 }
 
 const conflictUndo = () =>
-  L(
-    "Kan ikke angre: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
-    "Cannot undo: someone else has changed the same thing afterwards. Their change has been kept.",
-  );
+  tk("app-project-use-commands.conflict-undo.message.b15a31c7cd3f");
 const skipped = () =>
-  L(
-    "Ikke lagret fordi en tidligere endring feilet. Siste versjon er hentet.",
-    "Not saved because an earlier change failed. The latest version has been fetched.",
-  );
+  tk("app-project-use-commands.skipped.message.a32bdb4eb7ad");
 
 /**
  * Kjører inversene for et steg (en samlet endring baklengs) med `run`. Gir steget som angrer det igjen
@@ -270,16 +257,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       if (!enabled)
         return {
           ok: false,
-          message: L(
-            "Du har bare lesetilgang i dette prosjektet.",
-            "You have read-only access to this project.",
-          ),
+          message: tk("app-project-use-commands.message.message.7d3a014eec1f"),
         };
       const before = qc.getQueryData<ProjectState>(projectStateKey(projectId));
       if (!before)
         return {
           ok: false,
-          message: L("Prosjektet er ikke lastet ennå.", "The project is not loaded yet."),
+          message: tk("app-project-use-commands.message.message.a0ff717da3c9"),
         };
       const commandId = newId<"command">();
       const local = applyCommand(before, {
@@ -347,10 +331,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
             return fail(
               res.code === "revision_conflict"
                 ? opts.mode === "do"
-                  ? L(
-                      "Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen.",
-                      "Someone else changed this at the same time. The latest version has been fetched – try again.",
-                    )
+                  ? tk("app-project-use-commands.done.fail.4e3270de049f")
                   : conflictUndo()
                 : res.message,
               res.code === "revision_conflict",
@@ -361,10 +342,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
           return null;
         } catch (e) {
           return fail(
-            L(
-              `Endringen ble ikke lagret (${(e as Error).message}). Siste versjon er hentet.`,
-              `The change was not saved (${(e as Error).message}). The latest version has been fetched.`,
-            ),
+            tk("app-project-use-commands.done.fail.767f9794b133", { message: String((e as Error).message) }),
             false,
           );
         } finally {
@@ -411,7 +389,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       const g = group ?? newId();
       for (const c of plan.fork) {
         const f = exec(c, {
-          label: L("Egen versjon av scenen", "Own copy of the scene"),
+          label: tk("app-project-use-commands.label.label.c88f7efd1c3c"),
           mode: "do",
         });
         if (!f.ok) return { error: f.message as string | null, done: null, group: g };
@@ -551,10 +529,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     if (blocked(last)) {
       setStatus({
         kind: "error",
-        message: L(
-          "Kan ikke gjøre om: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
-          "Cannot redo: someone else has changed the same thing afterwards. Their change has been kept.",
-        ),
+        message: tk("app-project-use-commands.message.message.e1ff01811ae3"),
       });
       return;
     }
@@ -626,10 +601,7 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       const now = qc.getQueryData<ProjectState>(projectStateKey(projectId));
       const block = now?.blocks[blockId];
       if (!block) {
-        const message = L(
-          "Linjen finnes ikke lenger i siste versjon. Kopier teksten og lim den inn der den hører hjemme.",
-          "The line no longer exists in the latest version. Copy the text and paste it where it belongs.",
-        );
+        const message = tk("app-project-use-commands.message.use-callback.f1243bbe5a7d");
         setStatus({ kind: "error", message });
         return message;
       }

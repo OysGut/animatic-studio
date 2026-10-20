@@ -10,7 +10,7 @@
 import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { UserRound, History, Globe, RotateCcw, ArrowRight } from "lucide-react";
-import { L, newId, type ProjectState } from "@/core";
+import { newId, type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import type { AnimationUse, CharacterBehavior, ExportFlags } from "@/core/animation/rig";
 import {
@@ -190,7 +190,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
 
         <section aria-label={t("app-scene-editor-animation-character-panel.character-panel.aria-label.dbf6354b6e68")} className="space-y-1">
           <h3 data-testid="ca7-other-count" className="text-[11px] uppercase tracking-wider text-text-tertiary">
-            {L(`Brukes i ${others.length} ${others.length === 1 ? "annen scene" : "andre scener"}`, `Used in ${others.length} other ${others.length === 1 ? "scene" : "scenes"}`)}
+            {t("app-scene-editor-animation-character-panel.used-in-others", { count: others.length })}
           </h3>
           <ul className="max-h-32 space-y-0.5 overflow-auto">
             {others.map((u) => <li key={u.use.id} className="flex items-center gap-2 text-xs text-text-secondary">
@@ -239,7 +239,7 @@ export function CharacterPanel({ state, use, editable, run, runGroup, onJump }: 
         <DialogHeader>
           <DialogTitle>{t("app-scene-editor-animation-character-panel.character-panel.dialog-title.f020d273f6b1")}</DialogTitle>
           <DialogDescription>
-            {L(`Oppsettet brukes i ${others.length} ${others.length === 1 ? "annen scene" : "andre scener"}. Ingenting oppdateres automatisk.`, `The setup is used in ${others.length} other ${others.length === 1 ? "scene" : "scenes"}. Nothing updates automatically.`)}
+            {t("app-scene-editor-animation-character-panel.setup-used-in-others", { count: others.length })}
           </DialogDescription>
         </DialogHeader>
         <ul className="max-h-40 space-y-0.5 overflow-auto text-xs text-text-secondary">

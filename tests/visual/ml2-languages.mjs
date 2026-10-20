@@ -110,8 +110,20 @@ const SHELL = [
   { name: "montering", path: `${h.P}/montering` },
   { name: "utgivelse", path: `${h.P}/utgivelse` },
   { name: "bibliotek", path: `${h.P}/bibliotek` },
+  // ML2f: bibliotek og Asset Studio med valgt ressurs, M6 på prosjektsiden, AI-innstillinger og admin
+  { name: "asset-studio", path: `${h.P}/bibliotek?asset=${h.rows.assets.find((a) => a.kind === "character").id}` },
+  { name: "admin", path: "/admin" },
 ];
 await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
+  // ML2f: adminsiden trenger en oversikt; fellesoppsettet svarer ikke på den, så den gis her (én bruker, ett prosjekt).
+  await page.route("**/_serverFn/**", async (route) => {
+    let name = "?";
+    try { name = JSON.parse(Buffer.from(decodeURIComponent(new URL(route.request().url()).pathname.split("/_serverFn/")[1]), "base64url").toString("utf8")).export; } catch {}
+    if (!/^fetchAdminOverview(?:_|$)/.test(name)) return route.fallback();
+    const user = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", displayName: "Mars", createdAt: "2026-01-01T00:00:00Z", lastSignInAt: null, lastActiveAt: null, status: "active", reason: "", deleteAfter: null, isAdmin: true, permanentAdmin: true, projects: [{ id: h.fx.project.id, name: "Jula på Dovre", role: "owner" }], spendUsd: 1.25, spend30Usd: 0.5, jobs: 3 };
+    const result = { ok: true, users: [user], projects: [{ id: h.fx.project.id, name: "Jula på Dovre", createdAt: "2026-01-01T00:00:00Z", owners: [{ id: user.id, name: "Mars", status: "active" }], lock: null }], purged: 0, permanentEmail: "mars@example.no" };
+    return route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ result, context: {} }) });
+  });
   const errs = [];
   page.on("pageerror", (e) => errs.push(String(e).split("\n")[0].slice(0, 90)));
   for (const tag of ["nb", "en", "en-XA"]) {
@@ -137,6 +149,8 @@ await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
         await page.screenshot({ path: `${h.out}/ml2b-${s.name}-en-XA.png` });
       }
       if (tag === "en") h.check(!/\b(Avbryt|Lagre|Logg ut|Min konto|Prosjekter)\b/.test(r.text), `${s.name} en: ingen norske skallord`);
+      // ML2f: broen er tom – vanlige norske grensesnittord skal ikke stå igjen på engelsk eller en-XA
+      if (tag !== "nb") h.check(!/\b(Avbryt|Lagre|Slett|Velg|Lukk|Legg til|Innstillinger|Ressurser|Godkjenn|Ingen lag|Kostnad|Ukjent)\b/.test(r.text), `${s.name} ${tag}: ingen norske grensesnittord`);
     }
   }
 });

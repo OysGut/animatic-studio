@@ -11,22 +11,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  materialUpdateFromJson,
-  materialUpdatePrompt,
-  materialUpdateTargets,
-  newId,
-  parseJsonLoose,
-  qualityProfileSnapshot,
-  shotSuggestionNote,
-  tm,
-  useVersionOnLayerCommand,
-  type Command,
-  type MaterialUpdateSuggestions,
-  type ProjectState,
-  type ScriptChange,
-} from "@/core";
+import { materialUpdateFromJson, materialUpdatePrompt, materialUpdateTargets, newId, parseJsonLoose, qualityProfileSnapshot, shotSuggestionNote, tm, useVersionOnLayerCommand, type Command, type MaterialUpdateSuggestions, type ProjectState, type ScriptChange } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
@@ -104,10 +89,7 @@ export function MaterialUpdateSection({
         confirm ? (
           <div role="alertdialog" aria-label={tk("app-assembly-material-update-section.material-update-section.aria-label.a252f79e8c42")} className="flex flex-col gap-1.5">
             <p data-testid="material-update-cost" className="text-text-primary">
-              {L(
-                `${targets.images.length} ${targets.images.length === 1 ? "bilde" : "bilder"} og ${targets.shots.length} ${targets.shots.length === 1 ? "linje" : "linjer"} · ${est.label} · anslått ${usd(est.usd)}. Vil du fortsette?`,
-                `${targets.images.length} ${targets.images.length === 1 ? "image" : "images"} and ${targets.shots.length} ${targets.shots.length === 1 ? "line" : "lines"} · ${est.label} · estimated ${usd(est.usd)}. Do you want to continue?`,
-              )}
+              {tk("app-assembly-material-update-section.confirm-update", { images: tk("app-assembly-material-update-section.confirm-update-images", { count: targets.images.length }), lines: tk("app-assembly-material-update-section.confirm-update-lines", { count: targets.shots.length }), model: est.label, cost: usd(est.usd) })}
             </p>
             <div className="flex gap-2">
               <Button size="sm" data-testid="material-update-run" onClick={() => void suggest()} disabled={busy || !!est.error}>

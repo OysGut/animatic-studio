@@ -13,7 +13,8 @@
  */
 import type { StyleGuide } from "../model";
 import { STYLE_FIELD_LIMIT } from "./style";
-import { localized } from "../i18n";
+
+import { tLocalized } from "@/core/i18n/keyed";
 
 // ---------------------------------------------------------------- Stilanalyse
 
@@ -40,18 +41,7 @@ export const STYLE_ANALYSIS_KEYS = [
 ] as const;
 export type StyleAnalysisKey = (typeof STYLE_ANALYSIS_KEYS)[number];
 
-export const STYLE_ANALYSIS_LABEL: Record<StyleAnalysisKey, string> = localized({
-  summary: ["Stilen kort", "The style in brief"],
-  technique: ["Teknikk og medium", "Technique and medium"],
-  line: ["Strek", "Line"],
-  shapes: ["Formspråk og proporsjoner", "Shapes and proportions"],
-  colour: ["Farger", "Colours"],
-  lighting: ["Lys og skygge", "Light and shadow"],
-  texture: ["Tekstur", "Texture"],
-  detail: ["Detaljnivå", "Level of detail"],
-  composition: ["Komposisjon", "Composition"],
-  breaks: ["Dette bryter stilen", "This breaks the style"],
-});
+export const STYLE_ANALYSIS_LABEL: Record<StyleAnalysisKey, string> = tLocalized({ summary: "core-generation-style-analysis.style-analysis-label.summary.52d9188463dd", technique: "core-generation-style-analysis.style-analysis-label.technique.f19d12cdd9a3", line: "core-generation-style-analysis.style-analysis-label.line.8134b5bc494d", shapes: "core-generation-style-analysis.style-analysis-label.shapes.3f5ad68e471c", colour: "core-generation-style-analysis.style-analysis-label.colour.41f9054510b0", lighting: "core-generation-style-analysis.style-analysis-label.lighting.6f87f666ab2b", texture: "core-generation-style-analysis.style-analysis-label.texture.5568c8dc35b7", detail: "core-generation-style-analysis.style-analysis-label.detail.b51752389f1a", composition: "core-generation-style-analysis.style-analysis-label.composition.713a3e1a79ee", breaks: "core-generation-style-analysis.style-analysis-label.breaks.00bcbf43ca75" });
 
 export interface StyleAnalysis {
   readonly en: Readonly<Record<StyleAnalysisKey, string>>;

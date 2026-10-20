@@ -4,8 +4,9 @@
  * Ren TypeScript (ADR-0003).
  */
 import type { ProjectState } from "../model";
-import { L } from "../i18n";
+
 import { orderedOccurrences } from "../views";
+import { t } from "@/core/i18n/keyed";
 
 export type NoteFlagTargetKind = "dialogue_version" | "audio_clip" | "asset_version" | "asset_variant" | "occurrence";
 export const NOTE_FLAG_TARGETS: readonly NoteFlagTargetKind[] = ["dialogue_version", "audio_clip", "asset_version", "asset_variant", "occurrence"];
@@ -26,11 +27,11 @@ export interface NoteFlag {
 }
 
 export const NOTE_FLAG_KIND_LABEL = (k: NoteFlagTargetKind) => ({
-  dialogue_version: L("Lydversjon", "Audio version"),
-  audio_clip: L("Lydsegment", "Audio segment"),
-  asset_version: L("Bilde", "Image"),
-  asset_variant: L("Bildevariant", "Image variant"),
-  occurrence: L("Scene", "Scene"),
+  dialogue_version: t("core-notes-flags.dialogue-version.dialogue-version.df9a620bc024"),
+  audio_clip: t("core-notes-flags.audio-clip.audio-clip.7c0ddf071ac7"),
+  asset_version: t("core-notes-flags.asset-version.asset-version.c5f2c69f2ebc"),
+  asset_variant: t("core-notes-flags.asset-variant.asset-variant.cbd2482bdf3c"),
+  occurrence: t("core-notes-flags.occurrence.occurrence.86a7792d8ec2"),
 })[k];
 
 export function flagsFor(s: ProjectState, kind: NoteFlagTargetKind, id: string): NoteFlag[] {

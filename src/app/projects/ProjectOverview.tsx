@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Camera, FileText, Send } from "lucide-react";
 import { useState, type FormEvent } from "react";
 const PROJECT_CONTEXT = { type: "project" } as const;
-import { L, mainProduction, orderedOccurrences } from "@/core";
+import { mainProduction, orderedOccurrences } from "@/core";
 import { createInvitation } from "@/adapters/browser/members";
 import { DurationOverview } from "./DurationOverview";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";

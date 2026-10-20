@@ -4,7 +4,7 @@
  */
 import { useState } from "react";
 import { StickyNote } from "lucide-react";
-import { L, flagsFor, newId, NOTE_FLAG_MAX_TEXT, type Command, type NoteFlagTargetKind, type ProjectState } from "@/core";
+import { flagsFor, newId, NOTE_FLAG_MAX_TEXT, type Command, type NoteFlagTargetKind, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";

@@ -22,33 +22,7 @@ import {
   Undo2,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  COMPOSITION_TRACKS,
-  L,
-  audioTakeLabel,
-  alignmentInComposition,
-  autoPlayRange,
-  changedSpan,
-  compositionFromTake,
-  compositionLengthMs,
-  formatTakeLength,
-  insertTake,
-  lineConflicts,
-  lineInfo,
-  newId,
-  removeSegment,
-  roomToneAsset,
-  roomToneSceneName,
-  sameComposition,
-  soundTakes,
-  updateSegment,
-  type AlignmentSource,
-  type AudioComposition,
-  type AudioSegment,
-  type InsertMode,
-  type ProjectState,
-  type WordAlignment,
-} from "@/core";
+import { COMPOSITION_TRACKS, audioTakeLabel, alignmentInComposition, autoPlayRange, changedSpan, compositionFromTake, compositionLengthMs, formatTakeLength, insertTake, lineConflicts, lineInfo, newId, removeSegment, roomToneAsset, roomToneSceneName, sameComposition, soundTakes, updateSegment, type AlignmentSource, type AudioComposition, type AudioSegment, type InsertMode, type ProjectState, type WordAlignment } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useUiPref } from "@/app/account/ui-prefs";
 import { Button } from "@/components/ui/button";
@@ -571,10 +545,7 @@ export function AudioCompositionEditor({
         >
           <TriangleAlert className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
-            {L(
-              `Lyden overlapper ${conflicts.length === 1 ? "en annen replikk" : `${conflicts.length} andre replikker`} i scenen: ${conflicts.map((c) => `${c.name} (${sec(c.overlapMs)} s)`).join(", ")}. Ingenting flyttes – håndter det i scenen når du vil.`,
-              `The audio overlaps ${conflicts.length === 1 ? "another line" : `${conflicts.length} other lines`} in the scene: ${conflicts.map((c) => `${c.name} (${sec(c.overlapMs)} s)`).join(", ")}. Nothing is moved – deal with it in the scene when you want.`,
-            )}
+            {tk("app-audio-audio-composition-editor.overlaps", { others: conflicts.length === 1 ? tk("app-audio-audio-composition-editor.overlaps-one") : tk("app-audio-audio-composition-editor.overlaps-many", { count: conflicts.length }), list: conflicts.map((c) => `${c.name} (${sec(c.overlapMs)} s)`).join(", ") })}
           </span>
         </div>
       ) : null}

@@ -3,10 +3,10 @@
  * aktive profil; brukeren kan overstyre per generering eller eksport, eller velge «Ingen profil»
  * (oppførselen er da som før profilene fantes). Viser ingenting når prosjektet ikke har profiler.
  */
-import { L, qualityProfileUsage, qualityProfileBudgetError, qualityProfilesOf, type ProjectState, type QualityProfile } from "@/core";
-
+import { qualityProfileUsage, qualityProfileBudgetError, qualityProfilesOf, type ProjectState, type QualityProfile } from "@/core";
 import { useState } from "react";
 import { useAiJobs } from "./use-ai-jobs";
+import { t } from "@/core/i18n/keyed";
 
 /** «active» = prosjektets aktive profil, «none» = ingen profil, ellers profilens ID. */
 export type QualityProfileChoice = "active" | "none" | string;
@@ -45,10 +45,10 @@ export function QualityProfilePicker({
   const active = activeId ? state.qualityProfiles[activeId] : null;
   return (
     <label className={stacked ? "flex flex-col gap-2 text-xs text-text-secondary" : "flex items-center gap-1.5 text-xs text-text-secondary"}>
-      {L("Kvalitetsprofil", "Quality profile")}
+      {t("app-ai-quality-profile-picker.quality-profile-picker.label.722c4d3ff42e")}
       <select
         data-testid="quality-profile-picker"
-        aria-label={L("Kvalitetsprofil", "Quality profile")}
+        aria-label={t("app-ai-quality-profile-picker.quality-profile-picker.aria-label.722c4d3ff42e")}
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value)}
@@ -56,15 +56,15 @@ export function QualityProfilePicker({
       >
         <option value="active">
           {active && !active.removed
-            ? L(`Prosjektets profil (${active.name})`, `The project's profile (${active.name})`)
-            : L("Prosjektets profil (ingen valgt)", "The project's profile (none chosen)")}
+            ? t("app-ai-quality-profile-picker.quality-profile-picker.option.9f23e80fdb62", { name: String(active.name) })
+            : t("app-ai-quality-profile-picker.quality-profile-picker.option.804b180e1838")}
         </option>
         {profiles.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
           </option>
         ))}
-        <option value="none">{L("Ingen profil", "No profile")}</option>
+        <option value="none">{t("app-ai-quality-profile-picker.quality-profile-picker.option.162993b5715d")}</option>
       </select>
     </label>
   );
@@ -78,7 +78,7 @@ export function useQualityProfile(state: ProjectState | null, requested = 1) {
   const used = profile && jobs.data ? qualityProfileUsage(profile.id, jobs.data.jobs, new Date()) : 0;
   const budgetError = profile?.spec.budgetLimit != null
     ? !jobs.data || jobs.isError || jobs.data.monthCount === null
-      ? L("Profilens forbruk må kontrolleres før generering.", "Profile usage must be checked before generation.")
+      ? t("app-ai-quality-profile-picker.budget-error.message.9c44e228cc9d")
       : qualityProfileBudgetError(profile.spec.budgetLimit, jobs.data.jobs.length >= 300 ? Math.max(used, jobs.data.monthCount) : used, requested)
     : null;
   return { choice, setChoice, profile, budgetError };

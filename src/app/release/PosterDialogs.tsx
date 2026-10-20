@@ -4,21 +4,7 @@
  */
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
-import {
-  POSTER_FORMATS,
-  POSTER_KIND_LABEL,
-  newId,
-  paletteLabel,
-  posterAnalysis,
-  posterDraft,
-  posterFileName,
-  renderPoster,
-  type Poster,
-  type PosterKind,
-  type ProjectState,
-  L,
-  locale,
-} from "@/core";
+import { POSTER_FORMATS, POSTER_KIND_LABEL, newId, paletteLabel, posterAnalysis, posterDraft, posterFileName, renderPoster, type Poster, type PosterKind, type ProjectState, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { signedUrls } from "@/app/library/asset-images";
 import { prepareDownload, type ReadyFile } from "@/app/download";

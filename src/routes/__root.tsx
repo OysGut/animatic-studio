@@ -13,7 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
 import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, useLanguage } from "@/app/i18n/language";
-import { L } from "@/core";
+
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
 import { t } from "@/core/i18n/keyed";

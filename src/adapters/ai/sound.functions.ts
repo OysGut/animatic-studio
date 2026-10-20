@@ -5,19 +5,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  assetFilePath,
-  type AssetMedia,
-  effortOf,
-  estimateCostUsd,
-  isUuid,
-  L,
-  locale,
-  newId,
-  parseQualityProfileMeta,
-  providerModel,
-} from "@/core";
+import { assetFilePath, type AssetMedia, effortOf, estimateCostUsd, isUuid, locale, newId, parseQualityProfileMeta, providerModel } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 const MAX_SOUND_JOBS_PER_USER_PER_HOUR = 60;
@@ -41,20 +31,17 @@ export const generateSound = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+      throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.677b6fd17e19"));
     if (typeof x["assetId"] !== "string" || !isUuid(x["assetId"]))
-      throw new Error(L("Ugyldig ressurs", "Invalid asset"));
+      throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.d27ca144e070"));
     const prompt = x["prompt"];
     if (typeof prompt !== "string" || !prompt.trim() || prompt.length > 1000)
       throw new Error(
-        L(
-          "Beskrivelsen mangler eller er for lang (høyst 1000 tegn)",
-          "The description is missing or too long (1000 characters at most)",
-        ),
+        t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.fb5151321588"),
       );
-    if (x["provider"] !== "elevenlabs") throw new Error(L("Ukjent leverandør", "Unknown provider"));
+    if (x["provider"] !== "elevenlabs") throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.d4fae74b846e"));
     if (typeof x["model"] !== "string" || x["model"].length > 120)
-      throw new Error(L("Ugyldig modell", "Invalid model"));
+      throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.19e21ec70c97"));
     const seconds = x["seconds"];
     // Tidsbegrensningen står i leverandørkatalogen (REQ-0273)
     const lim = providerModel("elevenlabs", x["model"])?.soundSeconds ?? { min: 0.5, max: 30 };
@@ -66,13 +53,10 @@ export const generateSound = createServerFn({ method: "POST" })
         seconds > lim.max)
     )
       throw new Error(
-        L(
-          `Lengden må være ${lim.min.toLocaleString(locale())}–${lim.max.toLocaleString(locale())} sekunder`,
-          `The length must be ${lim.min.toLocaleString(locale())}–${lim.max.toLocaleString(locale())} seconds`,
-        ),
+        t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.c9a3b5dee21e", { value1: String(lim.min.toLocaleString(locale())), value2: String(lim.max.toLocaleString(locale())) }),
       );
     if (x["approved"] !== true)
-      throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
+      throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator.bfe8a6bd0111"));
     return {
       projectId: x["projectId"],
       assetId: x["assetId"],
@@ -95,10 +79,7 @@ export const generateSound = createServerFn({ method: "POST" })
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang til å generere i dette prosjektet.",
-          "You do not have access to generate in this project.",
-        ),
+        message: t("adapters-ai-sound-functions.message.message.57f75abedae7"),
       };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as unknown as AnyClient;
@@ -106,10 +87,7 @@ export const generateSound = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 24)
       return {
         ok: false,
-        message: L(
-          "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-          "The database is not updated for AI sound. Contact the administrator to update Animatic Studio.",
-        ),
+        message: t("adapters-ai-sound-functions.message.message.56b18dcfbf18"),
       };
     const { data: proj } = await db
       .from("projects")
@@ -117,7 +95,7 @@ export const generateSound = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+      return { ok: false, message: t("adapters-ai-sound-functions.message.message.689cdbb252b9") };
     const { data: asset } = await db
       .from("assets")
       .select("id, kind")
@@ -127,10 +105,7 @@ export const generateSound = createServerFn({ method: "POST" })
     if (!asset || (asset as { kind: string }).kind !== "sound")
       return {
         ok: false,
-        message: L(
-          "Lyd kan bare lages for en lydressurs.",
-          "Sound can only be made for a sound asset.",
-        ),
+        message: t("adapters-ai-sound-functions.message.message.c8c639c1adfd"),
       };
     // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034)
     const aiGate = await (
@@ -139,15 +114,12 @@ export const generateSound = createServerFn({ method: "POST" })
     if (aiGate.message) return { ok: false, message: aiGate.message };
     const m = providerModel(data.provider, data.model, aiGate.settings);
     if (!m || m.capability !== "sound")
-      return { ok: false, message: L("Ukjent lydmodell.", "Unknown sound model.") };
+      return { ok: false, message: t("adapters-ai-sound-functions.message.message.4a55af584a5b") };
     const key = await gate.projectKey(db, data.projectId, data.provider, context.userId);
     if (!key)
       return {
         ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører på prosjektlisten).",
-          "None of the project's owners has connected ElevenLabs (AI providers on the project list).",
-        ),
+        message: t("adapters-ai-sound-functions.message.message.c7855965836f"),
       };
     // Ukjent lengde: anslaget regner med det lengste modellen kan lage (katalogen, REQ-0273)
     const longest = m.soundSeconds?.max ?? 30;
@@ -166,10 +138,7 @@ export const generateSound = createServerFn({ method: "POST" })
         .eq("kind", "sound")
         .gte("created_at", hourAgo);
       if ((count ?? 0) - extra >= MAX_SOUND_JOBS_PER_USER_PER_HOUR)
-        return L(
-          `Grensen på ${MAX_SOUND_JOBS_PER_USER_PER_HOUR} lyder i timen er nådd.`,
-          `The limit of ${MAX_SOUND_JOBS_PER_USER_PER_HOUR} sounds per hour has been reached.`,
-        );
+        return t("adapters-ai-sound-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-d-as-record-string-unknown-if-typeof-x-project-id-string-is-uuid-x-project-id-throw-new-error-l-ugyldig-prosjekt-invalid-project-if-typeof-x-asset-id-string-is-uuid-x-asset-id-throw-new-error-l-ugyldig-ressurs-invalid-asset-const-prompt-x-prompt-if-typeof-prompt-string-prompt-trim-prompt-length-1000-throw-new-error-l-beskrivelsen-mangler-eller-er-for-lang-h-yst-1000-tegn-the-description-is-missing-or-too-long-1000-characters-at-most-if-x-provider-elevenlabs-throw-new-error-l-ukjent-leverand-r-unknown-provider-if-typeof-x-model-string-x-model-length-120-throw-new-error-l-ugyldig-modell-invalid-model-const-seconds-x-seconds-tidsbegrensningen-st-r-i-leverand-rkatalogen-req-0273-const-lim-provider-model-elevenlabs-x-model-sound-seconds-min-0-5-max-30-if-seconds-null-typeof-seconds-number-number-is-finite-seconds-seconds-lim-min-seconds-lim-max-throw-new-error-l-lengden-m-v-re-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-sekunder-the-length-must-be-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-seconds-if-x-approved-true-throw-new-error-l-genereringen-m-bekreftes-the-generation-must-be-confirmed-return-project-id-x-project-id-asset-id-x-asset-id-prompt-prompt-trim-provider-elevenlabs-as-const-model-x-model-seconds-seconds-as-number-null-null-loop-x-loop-true-kvalitetsprofilen-lyden-lages-med-m8-req-0859-yeblikksbilde-i-jobbens-metadata-quality-profile-parse-quality-profile-meta-x-quality-profile-handler.67c5c6977365", { MAX_SOUND_JOBS_PER_USER_PER_HOUR: String(MAX_SOUND_JOBS_PER_USER_PER_HOUR) });
       const budget = await gate.overProjectBudget(
         db,
         data.projectId,
@@ -212,10 +181,7 @@ export const generateSound = createServerFn({ method: "POST" })
     if (logErr)
       return {
         ok: false,
-        message: L(
-          `Jobben kunne ikke logges: ${logErr.message}`,
-          `The job could not be logged: ${logErr.message}`,
-        ),
+        message: t("adapters-ai-sound-functions.message.message.918ff4a13809", { message: String(logErr.message) }),
       };
     const after = await limits(1);
     if (after) {
@@ -246,7 +212,7 @@ export const generateSound = createServerFn({ method: "POST" })
       });
       charged = true;
       if (!out.bytes.byteLength)
-        throw new Error(L("Tjenesten svarte uten lyd.", "The service replied without sound."));
+        throw new Error(t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-d-as-record-string-unknown-if-typeof-x-project-id-string-is-uuid-x-project-id-throw-new-error-l-ugyldig-prosjekt-invalid-project-if-typeof-x-asset-id-string-is-uuid-x-asset-id-throw-new-error-l-ugyldig-ressurs-invalid-asset-const-prompt-x-prompt-if-typeof-prompt-string-prompt-trim-prompt-length-1000-throw-new-error-l-beskrivelsen-mangler-eller-er-for-lang-h-yst-1000-tegn-the-description-is-missing-or-too-long-1000-characters-at-most-if-x-provider-elevenlabs-throw-new-error-l-ukjent-leverand-r-unknown-provider-if-typeof-x-model-string-x-model-length-120-throw-new-error-l-ugyldig-modell-invalid-model-const-seconds-x-seconds-tidsbegrensningen-st-r-i-leverand-rkatalogen-req-0273-const-lim-provider-model-elevenlabs-x-model-sound-seconds-min-0-5-max-30-if-seconds-null-typeof-seconds-number-number-is-finite-seconds-seconds-lim-min-seconds-lim-max-throw-new-error-l-lengden-m-v-re-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-sekunder-the-length-must-be-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-seconds-if-x-approved-true-throw-new-error-l-genereringen-m-bekreftes-the-generation-must-be-confirmed-return-project-id-x-project-id-asset-id-x-asset-id-prompt-prompt-trim-provider-elevenlabs-as-const-model-x-model-seconds-seconds-as-number-null-null-loop-x-loop-true-kvalitetsprofilen-lyden-lages-med-m8-req-0859-yeblikksbilde-i-jobbens-metadata-quality-profile-parse-quality-profile-meta-x-quality-profile-handler.a6043a0238b1"));
       const versionId = newId<"asset_version">();
       // i18n-ignore: lagringssti i bøtta, ikke vist
       const path = assetFilePath(
@@ -265,10 +231,7 @@ export const generateSound = createServerFn({ method: "POST" })
         });
       if (upErr)
         throw new Error(
-          L(
-            `Lyden kunne ikke lagres: ${upErr.message}`,
-            `The sound could not be saved: ${upErr.message}`,
-          ),
+          t("adapters-ai-sound-functions.generate-sound.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-d-as-record-string-unknown-if-typeof-x-project-id-string-is-uuid-x-project-id-throw-new-error-l-ugyldig-prosjekt-invalid-project-if-typeof-x-asset-id-string-is-uuid-x-asset-id-throw-new-error-l-ugyldig-ressurs-invalid-asset-const-prompt-x-prompt-if-typeof-prompt-string-prompt-trim-prompt-length-1000-throw-new-error-l-beskrivelsen-mangler-eller-er-for-lang-h-yst-1000-tegn-the-description-is-missing-or-too-long-1000-characters-at-most-if-x-provider-elevenlabs-throw-new-error-l-ukjent-leverand-r-unknown-provider-if-typeof-x-model-string-x-model-length-120-throw-new-error-l-ugyldig-modell-invalid-model-const-seconds-x-seconds-tidsbegrensningen-st-r-i-leverand-rkatalogen-req-0273-const-lim-provider-model-elevenlabs-x-model-sound-seconds-min-0-5-max-30-if-seconds-null-typeof-seconds-number-number-is-finite-seconds-seconds-lim-min-seconds-lim-max-throw-new-error-l-lengden-m-v-re-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-sekunder-the-length-must-be-lim-min-to-locale-string-locale-lim-max-to-locale-string-locale-seconds-if-x-approved-true-throw-new-error-l-genereringen-m-bekreftes-the-generation-must-be-confirmed-return-project-id-x-project-id-asset-id-x-asset-id-prompt-prompt-trim-provider-elevenlabs-as-const-model-x-model-seconds-seconds-as-number-null-null-loop-x-loop-true-kvalitetsprofilen-lyden-lages-med-m8-req-0859-yeblikksbilde-i-jobbens-metadata-quality-profile-parse-quality-profile-meta-x-quality-profile-handler.fc04e6acceee", { message: String(upErr.message) }),
         );
       await finish({ status: "done", result_path: path });
       return {
@@ -286,13 +249,13 @@ export const generateSound = createServerFn({ method: "POST" })
       };
     } catch (e) {
       const message = scrubSecret(
-        (e as Error).message || L("Ukjent feil", "Unknown error"),
+        (e as Error).message || t("adapters-ai-sound-functions.message.scrub-secret.e9bbcae98ca2"),
         secret,
       ).slice(0, 2000);
       await finish({ status: charged ? "lost" : "failed", error: message });
       return {
         ok: false,
-        message: L(`Lyden ble ikke laget: ${message}`, `The sound was not made: ${message}`),
+        message: t("adapters-ai-sound-functions.message.message.5a72168e1838", { message: String(message) }),
       };
     }
   });

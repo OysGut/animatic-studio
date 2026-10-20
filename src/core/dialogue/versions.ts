@@ -15,7 +15,8 @@
  */
 import type { AudioClip, ProjectState, VolumeKey } from "../model";
 import { blocksOfVariant } from "../views";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export type DialogueVersionSource = "record" | "ai" | "upload" | "legacy";
 export const DIALOGUE_VERSION_SOURCES: readonly DialogueVersionSource[] = [
@@ -229,9 +230,9 @@ export function dialogueMirrorViolations(s: ProjectState): string[] {
     if (!a.activeVersionId) continue;
     const v = activeDialogueVersion(s, a);
     if (!v)
-      out.push(`${a.id}: ${L("aktiv versjon mangler eller tilhører et annet klipp", "active version is missing or belongs to another clip")}`);
-    else if (v.removed) out.push(`${a.id}: ${L("aktiv versjon er slettet", "active version is deleted")}`);
-    else if (!clipMatches(a, v)) out.push(`${a.id}: ${L("speilingen avviker fra aktiv versjon", "the mirror differs from the active version")} ${v.id}`);
+      out.push(`${a.id}: ${tk("core-dialogue-versions.dialogue-mirror-violations.out-push.bc58df6dc4c2")}`);
+    else if (v.removed) out.push(`${a.id}: ${tk("core-dialogue-versions.dialogue-mirror-violations.out-push.5c4e099b2df6")}`);
+    else if (!clipMatches(a, v)) out.push(`${a.id}: ${tk("core-dialogue-versions.dialogue-mirror-violations.out-push.6851c70819a8")} ${v.id}`);
   }
   return out;
 }

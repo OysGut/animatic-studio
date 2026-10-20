@@ -26,19 +26,7 @@ import {
 } from "@xyflow/react";
 import { Focus, Group, Hammer, Link2, Maximize, Plus, ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  CANVAS_NODE_KINDS,
-  L,
-  canvasNodeDefaults,
-  canvasNodeKindLabel,
-  newId,
-  type CanvasEdge,
-  type CanvasNode,
-  type CanvasNodeFields,
-  type CanvasNodeKind,
-  type Command,
-  type ProjectState,
-} from "@/core";
+import { CANVAS_NODE_KINDS, canvasNodeDefaults, canvasNodeKindLabel, newId, type CanvasEdge, type CanvasNode, type CanvasNodeFields, type CanvasNodeKind, type Command, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Toolbar, ToolbarButton, ToolbarGroup, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";

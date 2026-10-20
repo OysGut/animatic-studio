@@ -7,31 +7,7 @@ import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { Link } from "@tanstack/react-router";
 import { AudioWaveform, Library, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  FILM_LANGUAGES,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  isVoiceKind,
-  AUDIO_MAX_MS,
-  AUDIO_TRACK_ORDER,
-  audioClipFieldsOf,
-  audioVersion,
-  blocksOfVariant,
-  formatHeading,
-  versionsOf,
-  variantsOf,
-  type AudioClip,
-  type AudioClipFields,
-  type AudioKind,
-  type ProjectState,
-  sceneNumberOf,
-  L,
-  locale,
-  languageWord,
-  lineInfo,
-  lineLabel,
-} from "@/core";
+import { AUDIO_KIND_LABEL, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, isVoiceKind, AUDIO_MAX_MS, AUDIO_TRACK_ORDER, audioClipFieldsOf, audioVersion, blocksOfVariant, formatHeading, versionsOf, variantsOf, type AudioClip, type AudioClipFields, type AudioKind, type ProjectState, sceneNumberOf, locale, languageWord, lineInfo, lineLabel } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 

@@ -6,22 +6,7 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Check, ChevronLeft, ChevronRight, Pause, Play, Plus } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  L,
-  audioClipFieldsOf,
-  audioVersion,
-  formatHeading,
-  neighbourSceneAudio,
-  LANGUAGE_LABEL,
-  newId,
-  type AudioClip,
-  type Command,
-  type FilmClip,
-  type ProjectState,
-  locale,
-  languageWord,
-} from "@/core";
+import { AUDIO_KIND_LABEL, audioClipFieldsOf, audioVersion, formatHeading, neighbourSceneAudio, LANGUAGE_LABEL, newId, type AudioClip, type Command, type FilmClip, type ProjectState, locale, languageWord } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { AUDIO_KIND_COLOR } from "@/app/assembly/AudioTracks";
 import { useLanguage } from "@/app/i18n/language";
@@ -128,7 +113,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
             },
           ],
         },
-        L(`Bruk «${a.name || "lyd"}» i scenen`, `Use “${a.name || "audio"}” in the scene`),
+        t("app-scene-editor-nearby-audio-panel.use-in-scene", { name: a.name || t("app-scene-editor-nearby-audio-panel.use-in-scene-audio") }),
       ),
     );
   }

@@ -1,5 +1,5 @@
 /** CA5/CA6: leppesynk og mønstre skrives som vanlige kommandoer med invers – angre/gjør om virker. */
-import { L } from "../i18n";
+
 import { isUuid } from "../ids";
 import type { ProjectState } from "../model";
 import { lipsyncError, type LipsyncResult } from "./lipsync";

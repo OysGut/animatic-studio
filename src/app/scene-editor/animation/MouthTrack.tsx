@@ -5,7 +5,7 @@
  */
 import { useState } from "react";
 import { Mic, RefreshCw, Check, X } from "lucide-react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import { animationDialogueTracks } from "@/core/animation/tracks";
 import { lipsyncStale, visemeAt, VISEME_ORDER, type LipsyncResult, type VisemeSpan } from "@/core/animation/lipsync";

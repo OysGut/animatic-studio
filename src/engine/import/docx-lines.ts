@@ -6,7 +6,8 @@
 import { strFromU8, unzipSync } from "fflate";
 import type { RawLine } from "@/core/screenplay/types";
 import type { ImportedNote } from "@/core/notes";
-import { L } from "@/core";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 const CHAR_WIDTH = 7.2;
 const LEFT_MARGIN = 72;
@@ -56,7 +57,7 @@ export function docxToLinesAndNotes(data: Uint8Array): { lines: RawLine[]; notes
       total += f.originalSize;
       if (total > MAX_UNZIPPED)
         throw new Error(
-          L("DOCX-filen er for stor eller skadet", "The DOCX file is too large or damaged"),
+          tk("engine-import-docx-lines.filter.filter.f2692ff5617e"),
         );
       return (
         f.name === "word/document.xml" ||
@@ -68,10 +69,7 @@ export function docxToLinesAndNotes(data: Uint8Array): { lines: RawLine[]; notes
   const docBytes = files["word/document.xml"];
   if (!docBytes)
     throw new Error(
-      L(
-        "Filen er ikke et gyldig Word-dokument (mangler word/document.xml)",
-        "The file is not a valid Word document (word/document.xml is missing)",
-      ),
+      tk("engine-import-docx-lines.docx-to-lines-and-notes.message.5a58821c5e2a"),
     );
   const xml = strFromU8(docBytes);
 

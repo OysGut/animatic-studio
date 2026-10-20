@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { L, type Asset, type AssetVoice, type ProjectState } from "@/core";
+import { type Asset, type AssetVoice, type ProjectState } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { Button } from "@/components/ui/button";

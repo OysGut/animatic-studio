@@ -5,30 +5,7 @@
  * nøkkelbilder som lagets egne egenskaper (DEC-0072): tallene viser masken på gjeldende bilde.
  */
 import { Field, Hint, KeyMarker, NumberField, Section, inputClass } from "./inspector-fields";
-import {
-  BLEND_LABEL,
-  BLEND_MODES,
-  MASK_FIELD,
-  MAX_MASK_FEATHER,
-  fieldsWithMaskAt,
-  isAnimated,
-  layerFieldsOf,
-  layerSize,
-  L,
-  layersOf,
-  localized,
-  maskAt,
-  removeKeyframesAt,
-  setKeyframe,
-  type BlendMode,
-  type Composition,
-  type CompositionLayer,
-  type LayerFields,
-  type LayerMask,
-  type MaskProperty,
-  type MaskRect,
-  type ProjectState,
-} from "@/core";
+import { BLEND_LABEL, BLEND_MODES, MASK_FIELD, MAX_MASK_FEATHER, fieldsWithMaskAt, isAnimated, layerFieldsOf, layerSize, layersOf, maskAt, removeKeyframesAt, setKeyframe, type BlendMode, type Composition, type CompositionLayer, type LayerFields, type LayerMask, type MaskProperty, type MaskRect, type ProjectState } from "@/core";
 import { t, tLocalized } from "@/core/i18n/keyed";
 
 type MaskChoice = "none" | "rect" | "ellipse" | "layer";

@@ -7,7 +7,7 @@
 import type { ProjectState } from "../model";
 import { audioVersion } from "./index";
 import type { AudioComposition } from "./composition";
-import { L } from "../i18n";
+
 import { compareVersionCreation } from "../library";
 import { t as tk } from "@/core/i18n/keyed";
 

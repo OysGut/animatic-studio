@@ -3,7 +3,7 @@
  * Samme tegneliste som forhåndsvisningen og PDF-en; teksten plasseres tegn for tegn med standardskriftenes
  * mål når den er sperret, så linjene blir like lange overalt.
  */
-import { CSS_FONT, L, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
+import { CSS_FONT, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
 import { imagePixelNeeds, type PdfImage } from "./poster-pdf";
 import { PNG_MAX_WIDTH, encodePngStrips } from "./png-writer";
 import { t } from "@/core/i18n/keyed";

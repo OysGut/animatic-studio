@@ -45,7 +45,7 @@
 - [x] ML2c: manus (1 444 av 1 457 par flyttet; 13 på broen), seks flertallstekster fra skallet, språkkoder i en-XA
 - [ ] ML2d: sceneeditor (inkl. en-XA-overløp på 64 px, som ligger i sceneeditoren, ikke i skallet)
 - [ ] ML2e: montering og lyd, bibliotek og Asset Studio
-- [ ] ML2f: kjerne og server
+- [x] ML2f: bibliotek, M6, AI/admin, kjerne og server – broen tom (9 964/9 964), L()-kall stoppes, rapport i ML2_REPORT.md
 
 ## B-049 ML2d – sceneeditor (20.10.2026)
 - [x] 1 761 av 1 785 tekstpar flyttet med migrate.mjs; 24 på broen (19 ulik plassholderkontrakt, 5 dynamiske) til ML2f.

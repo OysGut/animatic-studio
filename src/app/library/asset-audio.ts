@@ -2,14 +2,7 @@
  * Lydfiler i ressursbiblioteket (DEC-0044): opplasting til bøtta «assets» og ny ressurs av typen «Lyd».
  * Filen lastes opp først; deretter lagres versjonen som en kommando. Feiler opplastingen, lagres ingenting.
  */
-import {
-  assetFilePath,
-  ASSET_MAX_BYTES,
-  AUDIO_MIME_TYPES,
-  newId,
-  type AssetMedia,
-  L,
-} from "@/core";
+import { assetFilePath, ASSET_MAX_BYTES, AUDIO_MIME_TYPES, newId, type AssetMedia } from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
 import { downloadFile, uploadFile } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
@@ -187,10 +180,7 @@ export async function audioMediaFromStoredFile(path: string, mime: string): Prom
   const { data, error } = await downloadFile(ASSET_BUCKET, path);
   if (error || !data)
     throw new Error(
-      L(
-        `Opptaket kunne ikke hentes: ${error?.message ?? "ukjent feil"}`,
-        `The recording could not be fetched: ${error?.message ?? "unknown error"}`,
-      ),
+      error?.message ? t("app-library-asset-audio.recording-fetch-failed", { error: error.message }) : t("app-library-asset-audio.recording-fetch-failed-unknown"),
     );
   const raw = await data.arrayBuffer();
   const [sha256, durationMs] = await Promise.all([

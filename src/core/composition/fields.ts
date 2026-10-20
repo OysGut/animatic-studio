@@ -20,7 +20,7 @@ import type {
   TransformProperty,
 } from "../model";
 import type { CompositionFields, LayerFields } from "../commands/types";
-import { L, localized } from "../i18n";
+
 import {
   normalizeEffects,
   normalizeShape,

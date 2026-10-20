@@ -1,6 +1,6 @@
 /** Camera preview shares rendering and fonts with the scene/export engines. View transforms are local. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { L, layersOf, renderFrame, type Composition, type ProjectState } from "@/core";
+import { layersOf, renderFrame, type Composition, type ProjectState } from "@/core";
 import { AssetThumb } from "@/app/library/AssetThumb";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";

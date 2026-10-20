@@ -17,20 +17,7 @@ import {
   Type,
   Undo2,
 } from "lucide-react";
-import {
-  L,
-  collation,
-  POSTER_KIND_LABEL,
-  ROLE_LABEL,
-  posterDraft,
-  posterKindBase,
-  renderPoster,
-  sortedAssets,
-  type Poster,
-  type PosterDocument,
-  type PosterElement,
-  type ProjectState,
-} from "@/core";
+import { collation, POSTER_KIND_LABEL, ROLE_LABEL, posterDraft, posterKindBase, renderPoster, sortedAssets, type Poster, type PosterDocument, type PosterElement, type ProjectState } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";

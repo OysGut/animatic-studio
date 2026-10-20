@@ -4,7 +4,7 @@ import { useSession } from "@/app/auth/use-session";
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { acceptInvitation } from "@/adapters/browser/members";
 import { acceptWorkspaceInvitation } from "@/adapters/browser/workspaces";
-import { L } from "@/core";
+
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 

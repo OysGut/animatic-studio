@@ -3,19 +3,10 @@
  * databasefunksjonene (rollen sjekkes der). Filer går gjennom serverfunksjonene i
  * `src/adapters/global/global-library.functions.ts`.
  */
-import {
-  L,
-  isGlobalKind,
-  type GlobalAsset,
-  type GlobalAssetBundle,
-  type GlobalKind,
-  type GlobalVariant,
-  type GlobalVersion,
-  type VisualStyle,
-  type TemplateDefinition,
-} from "@/core";
+import { isGlobalKind, type GlobalAsset, type GlobalAssetBundle, type GlobalKind, type GlobalVariant, type GlobalVersion, type VisualStyle, type TemplateDefinition } from "@/core";
 import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
 import { browserClient, db } from "./client";
+import { t } from "@/core/i18n/keyed";
 
 function fail(e: { message: string } | null): void {
   if (e) throw new Error(e.message);
@@ -160,7 +151,7 @@ export async function uploadToSignedPath(path: string, token: string, file: Blob
     if (error || !data || typeof data.fullPath !== "string" || !data.fullPath)
       throw new Error("Invalid upload response");
   } catch {
-    throw new Error(L("Opplastingen av filen feilet. Prøv igjen.", "The file upload failed. Please try again."));
+    throw new Error(t("adapters-browser-global-library.upload-to-signed-path.message.465d07c915dc"));
   }
 }
 

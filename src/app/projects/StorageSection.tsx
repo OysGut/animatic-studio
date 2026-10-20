@@ -3,7 +3,7 @@
  */
 import { HardDrive } from "lucide-react";
 import { useMemo } from "react";
-import { L, locale, storageOverview, type ProjectState } from "@/core";
+import { locale, storageOverview, type ProjectState } from "@/core";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import { t as tk } from "@/core/i18n/keyed";
 

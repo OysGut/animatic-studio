@@ -2,7 +2,7 @@
  * Katalogen slik administrator og serveren ser den (Mars 15.10.2026, DEC-0088): den innebygde katalogen
  * (PROVIDERS) slått sammen med administratorens innstillinger (ai_model_settings). Ren logikk.
  */
-import { L, locale } from "../i18n";
+import { locale } from "../i18n";
 import {
   PROVIDERS,
   builtInModel,
@@ -23,6 +23,7 @@ import {
   type ModelKind,
   type ModelSetting,
 } from "./model-settings";
+import { t } from "@/core/i18n/keyed";
 
 export interface CatalogModelRow {
   readonly provider: ProviderId;
@@ -133,32 +134,29 @@ export function modelAvailability(
   if (!m || m.retired || (capabilities && !capabilities.includes(m.capability)))
     return {
       ok: false,
-      message: L(
-        "Modellen finnes ikke hos leverandøren.",
-        "The model does not exist at the provider.",
-      ),
+      message: t("core-generation-ai-catalog.message.message.42a139134561"),
     };
   return { ok: true, model: m };
 }
 
 /** «0,04 USD per bilde» (anslag fra katalogen eller administrator). */
 export function priceText(priceUsd: number | null, unit: string | null): string {
-  if (priceUsd === null) return L("pris ikke oppgitt", "price not given");
+  if (priceUsd === null) return t("core-generation-ai-catalog.price-text.message.7dba8050e4fb");
   const n = priceUsd.toLocaleString(locale(), {
     minimumFractionDigits: 2,
     maximumFractionDigits: 4,
   });
   switch (unit) {
     case "image":
-      return L(`${n} USD per bilde`, `${n} USD per image`);
+      return t("core-generation-ai-catalog.price-text.message.b1141b3d3acc", { n: String(n) });
     case "second":
-      return L(`${n} USD per sekund`, `${n} USD per second`);
+      return t("core-generation-ai-catalog.price-text.message.2c98f77be09b", { n: String(n) });
     case "character":
-      return L(`${n} USD per tegn`, `${n} USD per character`);
+      return t("core-generation-ai-catalog.price-text.message.d6d61ea03790", { n: String(n) });
     case "megapixel":
-      return L(`${n} USD per megapiksel`, `${n} USD per megapixel`);
+      return t("core-generation-ai-catalog.price-text.message.cab6a0853671", { n: String(n) });
     case "call":
-      return L(`${n} USD per kall`, `${n} USD per call`);
+      return t("core-generation-ai-catalog.price-text.message.f45ff0f55f46", { n: String(n) });
     default:
       return `${n} USD`;
   }

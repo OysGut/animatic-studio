@@ -6,20 +6,7 @@
  * markering av ord endrer aldri timingen (§33).
  */
 import { useMemo, useRef, useState } from "react";
-import {
-  L,
-  newId,
-  pauseFor,
-  setPause,
-  setPauseFill,
-  spreadPause,
-  wordSpansInComposition,
-  type AlignmentSource,
-  type AudioComposition,
-  type LineToken,
-  type PauseFill,
-  type WordAlignment,
-} from "@/core";
+import { newId, pauseFor, setPause, setPauseFill, spreadPause, wordSpansInComposition, type AlignmentSource, type AudioComposition, type LineToken, type PauseFill, type WordAlignment } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 

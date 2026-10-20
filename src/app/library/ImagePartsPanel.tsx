@@ -17,23 +17,7 @@ import { Layers, Loader2, Plus, Scissors, Trash2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  ASSET_KIND_LABEL,
-  ASSET_KINDS,
-  buildContextImageBrief,
-  buildPartPrompt,
-  mainProduction,
-  newId,
-  polygonBounds,
-  tm,
-  turnaroundAttachments,
-  withAttachedLegend,
-  type AssetKind,
-  type AssetVersion,
-  type PartAnchor,
-  type PixelBox,
-} from "@/core";
+import { ASSET_KIND_LABEL, ASSET_KINDS, buildContextImageBrief, buildPartPrompt, mainProduction, newId, polygonBounds, tm, turnaroundAttachments, withAttachedLegend, type AssetKind, type AssetVersion, type PartAnchor, type PixelBox } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { Button } from "@/components/ui/button";
@@ -52,12 +36,13 @@ import {
   type LoadedImage,
   type Polygon,
 } from "./image-actions";
+import { t as tk } from "@/core/i18n/keyed";
 
 const field =
   "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
 
 const anchorLabel = (a: PartAnchor) =>
-  a === "left" ? L("Venstre", "Left") : a === "center" ? L("Midt", "Centre") : L("Høyre", "Right");
+  a === "left" ? tk("app-library-image-parts-panel.anchor-label.message.8a7e21853cf2") : a === "center" ? tk("app-library-image-parts-panel.anchor-label.message.fbbc8592ccc5") : tk("app-library-image-parts-panel.anchor-label.message.0ede8d3a7e62");
 const ANCHORS: readonly PartAnchor[] = ["left", "center", "right"];
 
 /** En del som er laget i denne økten. */
@@ -83,10 +68,7 @@ function AnchorSelect({
   return (
     <select
       aria-label={label}
-      title={L(
-        "Ankerpunktet delen dreier eller smalner rundt (for et dørblad: hengselsiden)",
-        "The anchor point the part turns or narrows around (for a door leaf: the hinge side)",
-      )}
+      title={tk("app-library-image-parts-panel.anchor-select.title.c3956c0b3923")}
       value={value}
       disabled={disabled}
       onChange={(e) => onChange(e.target.value as PartAnchor)}
@@ -143,7 +125,7 @@ export function PartsPanel({
           disabled={!!busy}
           onClick={() => onTab("cut")}
         >
-          <Scissors /> {L("Klipp ut (gratis)", "Cut out (free)")}
+          <Scissors /> {tk("app-library-image-parts-panel.parts-panel.button.16cebe721831")}
         </Button>
         <Button
           role="tab"
@@ -153,7 +135,7 @@ export function PartsPanel({
           disabled={!!busy}
           onClick={() => onTab("ai")}
         >
-          <AiGlyph aria-hidden /> {L("Lag med AI …", "Make with AI …")}
+          <AiGlyph aria-hidden /> {tk("app-library-image-parts-panel.parts-panel.button.535a214b79b9")}
         </Button>
       </div>
       {tab === "cut" ? (
@@ -188,11 +170,11 @@ export function PartsPanel({
       )}
       {made.length ? (
         <section
-          aria-label={L("Delene som er laget", "The parts that have been made")}
+          aria-label={tk("app-library-image-parts-panel.parts-panel.aria-label.7b6eaa8a888a")}
           className="flex flex-col gap-1 rounded-sm border border-border bg-surface-2 p-2"
         >
           <h4 className="font-medium text-text-primary">
-            {L("Laget i denne økten", "Made in this session")}
+            {tk("app-library-image-parts-panel.parts-panel.h4.8d8db323ee7b")}
           </h4>
           <ul className="flex flex-col gap-1">
             {made.map((p, i) => (
@@ -200,12 +182,12 @@ export function PartsPanel({
                 <span className="min-w-0 flex-1 truncate text-text-primary" title={p.name}>
                   {p.name}
                   {p.rest ? (
-                    <span className="text-text-tertiary"> {L("(resten)", "(the rest)")}</span>
+                    <span className="text-text-tertiary"> {tk("app-library-image-parts-panel.parts-panel.span.fa3dabefba12")}</span>
                   ) : null}
                 </span>
                 <AnchorSelect
                   value={p.anchor}
-                  label={L(`Ankerpunkt for «${p.name}»`, `Anchor point for “${p.name}”`)}
+                  label={tk("app-library-image-parts-panel.parts-panel.label.20eefc113faf", { name: String(p.name) })}
                   onChange={(a) =>
                     setMade((cur) => cur.map((x, j) => (j === i ? { ...x, anchor: a } : x)))
                   }
@@ -214,7 +196,7 @@ export function PartsPanel({
                   <div className="grid grid-cols-4 gap-1" data-testid="part-placement">
                     {(["x", "y", "w", "h"] as const).map((key) => (
                       <input key={key} type="number" className={field} value={p.box[key]} min={key === "w" || key === "h" ? 1 : 0}
-                        aria-label={L(`Plassering ${key} for «${p.name}»`, `Placement ${key} for “${p.name}”`)}
+                        aria-label={tk("app-library-image-parts-panel.parts-panel.aria-label.5b020d9ecb9c", { key: String(key), name: String(p.name) })}
                         onChange={(event) => {
                           const value = Number(event.target.value);
                           if (!Number.isFinite(value) || value < (key === "w" || key === "h" ? 1 : 0)) return;
@@ -244,13 +226,13 @@ export function PartsPanel({
                 )
               }
             >
-              <Layers /> {L("Legg delene i scenen", "Put the parts in the scene")}
+              <Layers /> {tk("app-library-image-parts-panel.parts-panel.button.45e00a7f849e")}
             </Button>
           ) : null}
         </section>
       ) : null}
       <Button size="sm" variant="ghost" className="self-start" disabled={!!busy} onClick={onDone}>
-        {L("Ferdig", "Done")}
+        {tk("app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c")}
       </Button>
     </div>
   );
@@ -298,12 +280,12 @@ function CutPart({
     rest.current = null;
     erased.current = [];
   }, [version.id]);
-  const fallback = L(`${asset.name} – del ${count + 1}`, `${asset.name} – part ${count + 1}`);
+  const fallback = tk("app-library-image-parts-panel.fallback.message.e6e273f59500", { name: String(asset.name), value2: String(count + 1) });
 
   async function save() {
     if (!poly) return;
     const partName = name.trim() || fallback;
-    await onJob(L(`Lager delen «${partName}» …`, `Making the part “${partName}” …`), async () => {
+    await onJob(tk("app-library-image-parts-panel.save.on-job.77ca92e970a8", { partName: String(partName) }), async () => {
       const src = original.current ?? (original.current = await loadImage(url));
       // Markeringen er i bildets visningsmål; filen kan ha andre mål (skaler punktene)
       const k = { x: src.w / (version.width || src.w), y: src.h / (version.height || src.h) };
@@ -311,10 +293,7 @@ function CutPart({
       const b = polygonBounds(pts, src.w, src.h);
       if (!b)
         throw new Error(
-          L(
-            "Markeringen er for liten. Tegn en større ramme.",
-            "The selection is too small. Draw a larger frame.",
-          ),
+          tk("app-library-image-parts-panel.save.on-job.63dd161fea79"),
         );
       const c = cropCanvas(src, b, pts, false);
       let out = c;
@@ -334,11 +313,8 @@ function CutPart({
         projectId,
         { kind: "new", name: partName, assetKind: kind },
         file,
-        L(
-          `Del «${partName}» klippet ut av ${asset.name} v${version.number} (${out.width} × ${out.height} px, ankerpunkt: ${anchorLabel(anchor).toLowerCase()}).`,
-          `Part “${partName}” cut out of ${asset.name} v${version.number} (${out.width} × ${out.height} px, anchor point: ${anchorLabel(anchor).toLowerCase()}).`,
-        ),
-        L(`Del «${partName}»`, `Part “${partName}”`),
+        tk("app-library-image-parts-panel.r.save-image-to.59d8e4d1e8d1", { partName: String(partName), name: String(asset.name), number: String(version.number), width: String(out.width), height: String(out.height), value6: String(anchorLabel(anchor).toLowerCase()) }),
+        tk("app-library-image-parts-panel.r.save-image-to.3e0b9773a0c5", { partName: String(partName) }),
         group,
       );
       if ("error" in r) throw new Error(r.error);
@@ -359,19 +335,13 @@ function CutPart({
           projectId,
           { kind: "existing", assetId: asset.id, variantId: version.variantId },
           f2,
-          L(
-            `Delen «${partName}» er fjernet (gjennomsiktig) fra v${version.number}.`,
-            `The part “${partName}” has been removed (transparent) from v${version.number}.`,
-          ),
-          L(`Fjern «${partName}» fra «${asset.name}»`, `Remove “${partName}” from “${asset.name}”`),
+          tk("app-library-image-parts-panel.r2.save-image-to.0c0b6f932690", { partName: String(partName), number: String(version.number) }),
+          tk("app-library-image-parts-panel.r2.save-image-to.d859ca8ae1e3", { partName: String(partName), name: String(asset.name) }),
           group,
         );
         if ("error" in r2)
           throw new Error(
-            L(
-              `Delen er lagret, men den ble ikke fjernet fra originalen: ${r2.error}`,
-              `The part was saved, but it was not removed from the original: ${r2.error}`,
-            ),
+            tk("app-library-image-parts-panel.save.on-job.17dfc97bc33e", { error: String(r2.error) }),
           );
         rest.current = cleared;
         erased.current = [...erased.current, poly];
@@ -387,17 +357,11 @@ function CutPart({
           },
           sourceSize,
         );
-        removed = L(
-          " Delen er fjernet fra originalen (ny versjon).",
-          " The part has been removed from the original (new version).",
-        );
+        removed = tk("app-library-image-parts-panel.save.on-job.d22ef40b12ca");
       }
       setName("");
       onRedraw();
-      return L(
-        `«${partName}» er lagret som nytt objekt.${removed} Tegn rundt neste del, eller trykk «Ferdig».`,
-        `“${partName}” has been saved as a new object.${removed} Draw around the next part, or press “Done”.`,
-      );
+      return tk("app-library-image-parts-panel.save.on-job.f8a3089c7dd3", { partName: String(partName), removed: String(removed) });
     });
   }
 
@@ -405,14 +369,11 @@ function CutPart({
     <div className="flex flex-col gap-2">
       <p>
         {poly
-          ? L("Gi delen et navn og lagre den.", "Name the part and save it.")
-          : L(
-              "Tegn en fri ramme rundt delen i bildet (f.eks. dørbladet). Hold mellomrom og dra for å flytte bildet.",
-              "Draw a free frame around the part in the image (e.g. the door leaf). Hold space and drag to move the image.",
-            )}
+          ? tk("app-library-image-parts-panel.cut-part.p.db31a6621cea")
+          : tk("app-library-image-parts-panel.cut-part.p.b11dfd8543ff")}
       </p>
       <label className="flex flex-col gap-1">
-        {L("Navn på delen", "Name of the part")}
+        {tk("app-library-image-parts-panel.cut-part.label.6c5cb17f34dd")}
         <input
           value={name}
           maxLength={200}
@@ -423,7 +384,7 @@ function CutPart({
       </label>
       <div className="flex items-end gap-2">
         <label className="flex flex-1 flex-col gap-1">
-          {L("Type", "Type")}
+          {tk("app-library-image-parts-panel.cut-part.label.cf12ea140d4c")}
           <select
             value={kind}
             onChange={(e) => setKind(e.target.value as AssetKind)}
@@ -437,29 +398,29 @@ function CutPart({
           </select>
         </label>
         <label className="flex flex-col gap-1">
-          {L("Ankerpunkt", "Anchor point")}
+          {tk("app-library-image-parts-panel.cut-part.label.aa33dbe6aea3")}
           <AnchorSelect
             value={anchor}
             onChange={setAnchor}
-            label={L("Ankerpunkt for delen", "Anchor point for the part")}
+            label={tk("app-library-image-parts-panel.cut-part.label.1fdc6934bcd5")}
           />
         </label>
       </div>
       <label className="flex items-center gap-1.5">
         <input type="checkbox" checked={remove} onChange={(e) => setRemove(e.target.checked)} />
-        {L("Fjern delen fra originalen", "Remove the part from the original")}
+        {tk("app-library-image-parts-panel.cut-part.label.d9609f6bf5f4")}
       </label>
       <label className="flex items-center gap-1.5">
         <input type="checkbox" checked={trim} onChange={(e) => setTrim(e.target.checked)} />
-        {L("Fjern luften rundt", "Remove the air around")}
+        {tk("app-library-image-parts-panel.cut-part.label.7dfe17c03963")}
       </label>
       <div className="flex flex-wrap gap-1.5">
         <Button size="sm" disabled={!poly || !!busy} onClick={() => void save()}>
-          <Scissors /> {L("Lagre delen", "Save the part")}
+          <Scissors /> {tk("app-library-image-parts-panel.cut-part.button.04c35bc6c729")}
         </Button>
         {poly ? (
           <Button size="sm" variant="ghost" disabled={!!busy} onClick={onRedraw}>
-            {L("Tegn på nytt", "Draw again")}
+            {tk("app-library-image-parts-panel.cut-part.button.b012c4c76e6e")}
           </Button>
         ) : null}
       </div>
@@ -498,7 +459,7 @@ function AiParts({
   const qc = useQueryClient();
   const main = mainProduction(state);
   const names = rows.map((r) => r.name.trim()).filter(Boolean);
-  const examples = [L("f.eks. dørramme", "e.g. door frame"), L("f.eks. dørblad", "e.g. door leaf")];
+  const examples = [tk("app-library-image-parts-panel.examples.message.3a0118fea91a"), tk("app-library-image-parts-panel.examples.message.6ef0e4c072f3")];
 
   function request(part: string) {
     if (!main) return null;
@@ -544,15 +505,12 @@ function AiParts({
       for (const [i, row] of todo.entries()) {
         const partName = row.name.trim();
         setBusy(
-          L(
-            `Lager «${partName}» (${i + 1} av ${todo.length}) … (kan ta et minutt)`,
-            `Making “${partName}” (${i + 1} of ${todo.length}) … (can take a minute)`,
-          ),
+          tk("app-library-image-parts-panel.run.set-busy.7bd5665bbe4c", { partName: String(partName), value2: String(i + 1), length: String(todo.length) }),
         );
         const req = request(partName);
         if (!req)
           throw new Error(
-            L("Beskrivelsen kunne ikke lages.", "The description could not be created."),
+            tk("app-library-image-parts-panel.run.message.7968b741a95e"),
           );
         const group = newId();
         // Det nye objektet lages først (bildet lagres på det)
@@ -560,11 +518,8 @@ function AiParts({
           tools.cmds.runAndWait,
           partName,
           kind,
-          L(
-            `Del av «${asset.name}» (laget med AI fra v${version.number}).`,
-            `Part of “${asset.name}” (made with AI from v${version.number}).`,
-          ),
-          L(`Del «${partName}»`, `Part “${partName}”`),
+          tk("app-library-image-parts-panel.c.create-asset-with-variant.1b90c54c7db1", { name: String(asset.name), number: String(version.number) }),
+          tk("app-library-image-parts-panel.c.create-asset-with-variant.97c70aa1611e", { partName: String(partName) }),
           group,
         );
         if ("error" in c) throw new Error(c.error);
@@ -587,7 +542,7 @@ function AiParts({
         if (!r.ok)
           throw new Error(
             made
-              ? L(`${made} laget. ${tm(r.message)}`, `${made} made. ${tm(r.message)}`)
+              ? tk("app-library-image-parts-panel.run.message.22265bae0d3b", { made: String(made), value2: String(tm(r.message)) })
               : tm(r.message),
           );
         const a = await tools.cmds.runAndWait(
@@ -596,12 +551,9 @@ function AiParts({
             versionId: r.versionId as never,
             variantId: c.variantId as never,
             media: r.media,
-            note: L(
-              `AI-del «${partName}» av ${asset.name} v${version.number} (${r.model}, ankerpunkt: ${anchorLabel(row.anchor).toLowerCase()}).`,
-              `AI part “${partName}” of ${asset.name} v${version.number} (${r.model}, anchor point: ${anchorLabel(row.anchor).toLowerCase()}).`,
-            ).slice(0, 2000),
+            note: tk("app-library-image-parts-panel.note.l-ai-del-part-name-av-asset-name-v-version-number-r-model-ankerpunkt-anchor-label-row-anchor-to-lower-case-ai-part-part-name-of-asset-name-v-version-number-r-model-anchor-point-anchor-label-row-anchor-to-lower-case-slice.8d39fbce4e2d", { partName: String(partName), name: String(asset.name), number: String(version.number), model: String(r.model), value5: String(anchorLabel(row.anchor).toLowerCase()) }).slice(0, 2000),
           },
-          L(`AI-del «${partName}»`, `AI part “${partName}”`),
+          tk("app-library-image-parts-panel.a.tools-cmds-run-and-wait.ffafcea6273f", { partName: String(partName) }),
           group,
         );
         if (a.error) throw new Error(a.error);
@@ -618,10 +570,7 @@ function AiParts({
       }
       setMsg({
         kind: "ok",
-        text: L(
-          `${made} ${made === 1 ? "del er lagret som nytt objekt" : "deler er lagret som nye objekter"}.`,
-          `${made} ${made === 1 ? "part has been saved as a new object" : "parts have been saved as new objects"}.`,
-        ),
+        text: tk("app-library-image-parts-panel.parts-saved", { count: made }),
       });
     } catch (e) {
       setMsg({ kind: "error", text: lostConnection((e as Error).message) });
@@ -634,21 +583,18 @@ function AiParts({
   if (!m.choices.length)
     return (
       <p className="text-text-tertiary">
-        {L("Ingen bildemodeller er tilgjengelige.", "No image models are available.")}
+        {tk("app-library-image-parts-panel.ai-parts.p.7c501efe403a")}
       </p>
     );
   const working = !!busy || !!outerBusy;
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2">
       <p>
-        {L(
-          "Hver del lages som eget objekt med bildet som forbilde, i samme stil.",
-          "Each part is made as its own object with the image as reference, in the same style.",
-        )}
+        {tk("app-library-image-parts-panel.ai-parts.p.3f411614298e")}
       </p>
       <fieldset className="flex flex-col gap-1">
         <legend className="mb-0.5">
-          {L("Delene (navn og ankerpunkt)", "The parts (name and anchor point)")}
+          {tk("app-library-image-parts-panel.ai-parts.legend.f463567ffb54")}
         </legend>
         {rows.map((r, i) => (
           <div key={r.id} className="flex items-center gap-1">
@@ -656,8 +602,8 @@ function AiParts({
               value={r.name}
               maxLength={200}
               disabled={working}
-              aria-label={L(`Navn på del ${i + 1}`, `Name of part ${i + 1}`)}
-              placeholder={examples[i] ?? L("Navn på delen", "Name of the part")}
+              aria-label={tk("app-library-image-parts-panel.ai-parts.aria-label.c55f66613905", { value1: String(i + 1) })}
+              placeholder={examples[i] ?? tk("app-library-image-parts-panel.ai-parts.placeholder.89ae14dddd59")}
               onChange={(e) => {
                 setConfirm(false);
                 setRows((cur) =>
@@ -669,7 +615,7 @@ function AiParts({
             <AnchorSelect
               value={r.anchor}
               disabled={working}
-              label={L(`Ankerpunkt for del ${i + 1}`, `Anchor point for part ${i + 1}`)}
+              label={tk("app-library-image-parts-panel.ai-parts.label.7e8cfcde9cdf", { value1: String(i + 1) })}
               onChange={(a) =>
                 setRows((cur) => cur.map((x) => (x.id === r.id ? { ...x, anchor: a } : x)))
               }
@@ -678,7 +624,7 @@ function AiParts({
               size="sm"
               variant="ghost"
               disabled={working || rows.length <= 1}
-              aria-label={L(`Fjern del ${i + 1}`, `Remove part ${i + 1}`)}
+              aria-label={tk("app-library-image-parts-panel.ai-parts.aria-label.aa76cabca6b5", { value1: String(i + 1) })}
               onClick={() => setRows((cur) => cur.filter((x) => x.id !== r.id))}
             >
               <Trash2 />
@@ -692,11 +638,11 @@ function AiParts({
           disabled={working || rows.length >= 8}
           onClick={() => setRows((cur) => [...cur, { id: newId(), name: "", anchor: "center" }])}
         >
-          <Plus /> {L("Legg til en del", "Add a part")}
+          <Plus /> {tk("app-library-image-parts-panel.ai-parts.button.fdada512d499")}
         </Button>
       </fieldset>
       <label className="flex flex-col gap-1">
-        {L("Type", "Type")}
+        {tk("app-library-image-parts-panel.ai-parts.label.1493c492b2c1")}
         <select
           value={kind}
           onChange={(e) => setKind(e.target.value as AssetKind)}
@@ -716,7 +662,7 @@ function AiParts({
           checked={withStyle}
           onChange={(e) => setWithStyle(e.target.checked)}
         />
-        {L("Send med to stilforbilder fra filmen", "Send along two style references from the film")}
+        {tk("app-library-image-parts-panel.ai-parts.label.b08b4f2da1f3")}
       </label>
       <PromptPreview preview={preview} />
       <CostConfirm
@@ -728,13 +674,13 @@ function AiParts({
         onClose={onClose}
         disabled={!tools.editable}
         busy={working}
-        emptyText={L("Skriv navnet på minst én del.", "Write the name of at least one part.")}
-        confirmLabel={L("Bekreft generering av deler", "Confirm generation of parts")}
+        emptyText={tk("app-library-image-parts-panel.ai-parts.empty-text.e04bb1b9cf8d")}
+        confirmLabel={tk("app-library-image-parts-panel.ai-parts.confirm-label.7b67b91284f5")}
         icon={<AiGlyph aria-hidden />}
         startLabel={
           names.length === 1
-            ? L("Lag delen …", "Make the part …")
-            : L(`Lag ${names.length} deler …`, `Make ${names.length} parts …`)
+            ? tk("app-library-image-parts-panel.ai-parts.start-label.d0a001e58308")
+            : tk("app-library-image-parts-panel.ai-parts.start-label.e9c612ee64ba", { length: String(names.length) })
         }
       />
       {busy ? (

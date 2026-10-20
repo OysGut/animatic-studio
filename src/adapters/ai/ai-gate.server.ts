@@ -9,8 +9,9 @@
  *   igjen etter (samtidige jobber).
  * - Prosjektets eget budsjett (antall genereringer per måned, DEC-0053) gjelder i tillegg.
  */
-import { L, monthStartUtc } from "@/core";
+import { monthStartUtc } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const ROLE_RANK: Record<string, number> = { viewer: 1, commenter: 2, editor: 3, owner: 4 };
 
@@ -23,7 +24,7 @@ export async function userTextJobsInHour(admin: AnyClient, userId: string, hourA
     .eq("kind", "text")
     .or("params->>task.is.null,params->>task.not.in.(entity_analysis,translation_align)")
     .gte("created_at", hourAgo);
-  if (error) throw new Error(L("Tekstgrensen kunne ikke kontrolleres.", "The text limit could not be checked."));
+  if (error) throw new Error(tk("adapters-ai-ai-gate-server.user-text-jobs-in-hour.message.e0f99d10b26a"));
   return count ?? 0;
 }
 
@@ -167,22 +168,13 @@ export async function overAccountCap(
   if (cap === null) return null;
   // Uten et gyldig anslag kan taket ikke kontrolleres: stopp heller enn å slippe gjennom (INV-12)
   if (!Number.isFinite(estimate))
-    return L(
-      "Prisen for jobben kunne ikke anslås, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.",
-      "The price of the job could not be estimated, so the cost cap cannot be checked. The job was not sent.",
-    );
+    return tk("adapters-ai-ai-gate-server.over-account-cap.message.c279a49212be");
   const used = await usedUsd(admin, ownerId);
   if (!Number.isFinite(used))
-    return L(
-      "Forbruket for nøkkelen kunne ikke regnes ut, så kostnadstaket kan ikke kontrolleres. Jobben ble ikke sendt.",
-      "The usage for the key could not be calculated, so the cost cap cannot be checked. The job was not sent.",
-    );
+    return tk("adapters-ai-ai-gate-server.over-account-cap.message.4d0adc86abf5");
   const total = includesThisJob ? used : used + estimate;
   if (total > cap + 1e-9)
-    return L(
-      `Kostnadstaket for nøkkelen (${cap.toFixed(2)} USD per måned) er nådd – brukt ca. ${(includesThisJob ? used - estimate : used).toFixed(2)} USD, denne jobben ca. ${estimate.toFixed(2)} USD. Eieren kan endre taket under «AI-leverandører».`,
-      `The cost cap for the key (${cap.toFixed(2)} USD per month) has been reached – about ${(includesThisJob ? used - estimate : used).toFixed(2)} USD used, this job about ${estimate.toFixed(2)} USD. The owner can change the cap under “AI providers”.`,
-    );
+    return tk("adapters-ai-ai-gate-server.over-account-cap.message.4fe934b43882", { value1: String(cap.toFixed(2)), value2: String((includesThisJob ? used - estimate : used).toFixed(2)), value3: String(estimate.toFixed(2)) });
   return null;
 }
 
@@ -205,9 +197,6 @@ export async function overProjectBudget(
     .gte("created_at", monthStartUtc(new Date()).toISOString());
   const used = count ?? 0;
   if (includesThisJob ? used > limit : used >= limit)
-    return L(
-      `Prosjektets AI-budsjett for denne måneden (${limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
-      `The project's AI budget for this month (${limit} generations) has been used up. The owner can change the budget on the project overview.`,
-    );
+    return tk("adapters-ai-ai-gate-server.over-project-budget.message.d516d5c0ac48", { limit: String(limit) });
   return null;
 }

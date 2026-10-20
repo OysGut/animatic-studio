@@ -3,7 +3,7 @@ import * as React from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { X } from "lucide-react";
 
-import { L } from "@/core";
+
 import { cn } from "@/lib/utils";
 import { t } from "@/core/i18n/keyed";
 

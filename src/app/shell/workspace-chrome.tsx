@@ -20,7 +20,7 @@ import {
 import { createPortal, flushSync } from "react-dom";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { L } from "@/core";
+
 import { cn } from "@/lib/utils";
 import { countPrimary, planToolbarOverflow } from "./toolbar-overflow";
 import { t as tk } from "@/core/i18n/keyed";

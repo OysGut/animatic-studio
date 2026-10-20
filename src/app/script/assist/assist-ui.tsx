@@ -1,6 +1,6 @@
 /** Skrivehjelpen (T2): hurtigtaster, markerte linjer og kontekstmenyen på manussidene. */
 import { useEffect, useRef } from "react";
-import { L, REWRITE_MODES, type RewriteMode } from "@/core";
+import { REWRITE_MODES, type RewriteMode } from "@/core";
 import type { AssistAction } from "./WritingPanel";
 import { t as tk } from "@/core/i18n/keyed";
 

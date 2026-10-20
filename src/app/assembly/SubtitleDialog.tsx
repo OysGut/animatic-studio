@@ -5,7 +5,7 @@
  */
 import { Download } from "lucide-react";
 import { useMemo, useState } from "react";
-import { L, LANGUAGE_LABEL, subtitleCues, toSrt, toVtt, type ProjectState } from "@/core";
+import { LANGUAGE_LABEL, subtitleCues, toSrt, toVtt, type ProjectState } from "@/core";
 import { prepareDownload, type ReadyFile } from "@/app/download";
 import { Button } from "@/components/ui/button";
 import {

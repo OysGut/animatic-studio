@@ -10,7 +10,8 @@ import {
   STYLE_USES,
   defaultStyleProfile,
 } from "../generation/style";
-import { L, collation } from "../i18n";
+import { collation } from "../i18n";
+import { t } from "@/core/i18n/keyed";
 
 export interface LibraryStyleProfile {
   readonly profile: StyleProfile;
@@ -43,8 +44,8 @@ export function libraryStyleProfiles(s: ProjectState): LibraryStyleProfile[] {
         usesLabel: uses.length
           ? uses.map((u) => STYLE_USE_LABEL[u]).join(", ")
           : isDefault
-            ? L("Alt annet", "Everything else")
-            : L("Ikke i bruk", "Not in use"),
+            ? t("core-library-style-profiles.uses-label.uses-label.eebfa2889d6c")
+            : t("core-library-style-profiles.uses-label.uses-label.c5a152b9f3ea"),
         filled: STYLE_TEXT_FIELDS.filter((k) => (g?.[k] ?? "").trim()).length,
         fieldCount: STYLE_TEXT_FIELDS.length,
         summary: (g?.premise || g?.visualStyle || g?.world || "").trim(),

@@ -2,7 +2,7 @@
  * Tidsoppsett for en 2D-scene (SV1, B-041, migrasjon 0042): låste tidsrom og fyll i tid som er lagt til i
  * starten eller slutten av scenen. Rene funksjoner; samme regler i forhåndsvisning og eksport (renderFrame).
  */
-import { L } from "../i18n";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 /** Hva tid som er lagt til i starten eller slutten viser. */

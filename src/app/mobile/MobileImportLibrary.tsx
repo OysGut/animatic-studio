@@ -6,14 +6,7 @@
 import { EyeOff, Eye, Link2Off } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  L,
-  formatDate,
-  formatHeading,
-  parseUploadContext,
-  sceneNumberOf,
-  type ProjectState,
-} from "@/core";
+import { formatDate, formatHeading, parseUploadContext, sceneNumberOf, type ProjectState } from "@/core";
 import {
   dismissMobileImport,
   revokeUploadSession,
@@ -23,6 +16,7 @@ import {
 import { ASSET_BUCKET, createSignedUrls } from "@/adapters/browser/storage-files";
 import { Button } from "@/components/ui/button";
 import { useMobileImports, useUploadSessions } from "./use-mobile-imports";
+import { t } from "@/core/i18n/keyed";
 
 type KindFilter = "all" | "image" | "video" | "audio";
 type DateFilter = "all" | "1" | "7" | "30";
@@ -37,10 +31,10 @@ export function contextLabel(s: ProjectState, row: MobileImportRow): string {
     const o = s.occurrences[c.occurrenceId as never];
     const v = o ? s.variants[o.variantId] : undefined;
     if (o && v)
-      return `${L("Scene", "Scene")} ${sceneNumberOf(s, o) ?? ""} ${formatHeading(v.heading)}`;
+      return `${t("app-mobile-mobile-import-library.context-label.message.dc949fff9beb")} ${sceneNumberOf(s, o) ?? ""} ${formatHeading(v.heading)}`;
   }
-  if (c?.type === "draft") return L("Ny ressurs (ikke lagret)", "New asset (not saved)");
-  return L("Prosjektet", "The project");
+  if (c?.type === "draft") return t("app-mobile-mobile-import-library.context-label.message.7f0c2c4832e7");
+  return t("app-mobile-mobile-import-library.context-label.message.5f17aefb4923");
 }
 
 function isLinked(r: MobileImportRow): boolean {
@@ -102,10 +96,7 @@ export function MobileImportLibrary({
   if (imports.data === null)
     return (
       <p className="p-6 text-[13px] text-text-secondary">
-        {L(
-          "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).",
-          "The database is missing mobile import. It must be updated (migration 0035).",
-        )}
+        {t("app-mobile-mobile-import-library.mobile-import-library.p.4da285fc2cec")}
       </p>
     );
   const select =
@@ -115,71 +106,68 @@ export function MobileImportLibrary({
     <div className="mx-auto flex max-w-[1100px] flex-col gap-4 p-6" data-testid="mobile-library">
       <div>
         <h2 className="text-base font-semibold text-text-primary">
-          {L("Mobilimport", "Mobile import")}
+          {t("app-mobile-mobile-import-library.mobile-import-library.h2.a63b6aa9da9f")}
         </h2>
         <p className="mt-1 text-xs text-text-secondary">
-          {L(
-            "Alt som er tatt eller valgt på mobil – også av andre via delte lenker. Bilder tatt for en ressurs er lagt inn som nye versjoner (ikke godkjent).",
-            "Everything taken or chosen on a phone – also by others through shared links. Pictures taken for an asset have been added as new versions (not approved).",
-          )}
+          {t("app-mobile-mobile-import-library.mobile-import-library.p.4930d9390487")}
         </p>
       </div>
       <div className="flex flex-wrap items-center gap-2" data-testid="mobile-filters">
         <select
-          aria-label={L("Type", "Type")}
+          aria-label={t("app-mobile-mobile-import-library.mobile-import-library.aria-label.02e2aa63a15c")}
           value={kind}
           onChange={(e) => setKind(e.target.value as KindFilter)}
           className={select}
         >
-          <option value="all">{L("Alle typer", "All types")}</option>
-          <option value="image">{L("Bilder", "Images")}</option>
-          <option value="video">{L("Video", "Video")}</option>
-          <option value="audio">{L("Lyd", "Audio")}</option>
+          <option value="all">{t("app-mobile-mobile-import-library.mobile-import-library.option.47d6e256d584")}</option>
+          <option value="image">{t("app-mobile-mobile-import-library.mobile-import-library.option.420e01744edb")}</option>
+          <option value="video">{t("app-mobile-mobile-import-library.mobile-import-library.option.989e3f54b491")}</option>
+          <option value="audio">{t("app-mobile-mobile-import-library.mobile-import-library.option.1380b1d9eb4a")}</option>
         </select>
         <select
-          aria-label={L("Dato", "Date")}
+          aria-label={t("app-mobile-mobile-import-library.mobile-import-library.aria-label.02cdcad9587c")}
           value={days}
           onChange={(e) => setDays(e.target.value as DateFilter)}
           className={select}
         >
-          <option value="all">{L("Alle datoer", "All dates")}</option>
-          <option value="1">{L("Siste døgn", "Last 24 hours")}</option>
-          <option value="7">{L("Siste 7 dager", "Last 7 days")}</option>
-          <option value="30">{L("Siste 30 dager", "Last 30 days")}</option>
+          <option value="all">{t("app-mobile-mobile-import-library.mobile-import-library.option.711df01c1a37")}</option>
+          <option value="1">{t("app-mobile-mobile-import-library.mobile-import-library.option.c9dbc4dcd875")}</option>
+          <option value="7">{t("app-mobile-mobile-import-library.mobile-import-library.option.faadb340a673")}</option>
+          <option value="30">{t("app-mobile-mobile-import-library.mobile-import-library.option.84361d3af8ee")}</option>
         </select>
         <select
-          aria-label={L("Importøkt", "Import session")}
+          aria-label={t("app-mobile-mobile-import-library.mobile-import-library.aria-label.29ba6a60d36b")}
           value={session}
           onChange={(e) => setSession(e.target.value)}
           className={select}
         >
-          <option value="">{L("Alle økter", "All sessions")}</option>
+          <option value="">{t("app-mobile-mobile-import-library.mobile-import-library.option.36920688f5d4")}</option>
           {roots.map((s) => (
             <option key={s.id} value={s.id}>
-              {s.label || L("Prosjektet", "The project")} · {formatDate(s.created_at)}
+              {s.label || t("app-mobile-mobile-import-library.mobile-import-library.option.5d720587ddf1")} · {formatDate(s.created_at)}
             </option>
           ))}
         </select>
         <select
-          aria-label={L("Kobling", "Link")}
+          aria-label={t("app-mobile-mobile-import-library.mobile-import-library.aria-label.7d020634513b")}
           value={link}
           onChange={(e) => setLink(e.target.value as LinkFilter)}
           className={select}
         >
-          <option value="all">{L("Alle koblinger", "All links")}</option>
+          <option value="all">{t("app-mobile-mobile-import-library.mobile-import-library.option.4dbfeca9604e")}</option>
           <option value="linked">
-            {L("Knyttet til ressurs eller scene", "Linked to an asset or scene")}
+            {t("app-mobile-mobile-import-library.mobile-import-library.option.a5e63605fdb4")}
           </option>
-          <option value="unlinked">{L("Ikke knyttet", "Not linked")}</option>
+          <option value="unlinked">{t("app-mobile-mobile-import-library.mobile-import-library.option.9a5d2d7cf450")}</option>
         </select>
         {contributors.length ? (
           <select
-            aria-label={L("Bidragsyter", "Contributor")}
+            aria-label={t("app-mobile-mobile-import-library.mobile-import-library.aria-label.fb770f065a77")}
             value={contributor}
             onChange={(e) => setContributor(e.target.value)}
             className={select}
           >
-            <option value="">{L("Alle bidragsytere", "All contributors")}</option>
+            <option value="">{t("app-mobile-mobile-import-library.mobile-import-library.option.6108fc62ecb8")}</option>
             {contributors.map((c) => (
               <option key={c} value={c}>
                 {c}
@@ -193,17 +181,14 @@ export function MobileImportLibrary({
             checked={showHidden}
             onChange={(e) => setShowHidden(e.target.checked)}
           />
-          {L("Vis skjulte", "Show hidden")}
+          {t("app-mobile-mobile-import-library.mobile-import-library.label.2877be4d417e")}
         </label>
       </div>
       {shown.length === 0 ? (
         <p className="text-[13px] text-text-tertiary">
           {all.length
-            ? L("Ingen filer passer med filteret.", "No files match the filter.")
-            : L(
-                "Ingen filer fra mobil ennå. Bruk «Importer fra mobil» på prosjektsiden eller kameraikonet i en ressurs.",
-                "No files from mobile yet. Use “Import from mobile” on the project page or the camera icon in an asset.",
-              )}
+            ? t("app-mobile-mobile-import-library.mobile-import-library.p.9e7714526f7c")
+            : t("app-mobile-mobile-import-library.mobile-import-library.p.48b9bc9c073e")}
         </p>
       ) : (
         <ul
@@ -240,7 +225,7 @@ export function MobileImportLibrary({
                 <p className="truncate text-xs text-text-primary">{contextLabel(state, r)}</p>
                 <p className="truncate text-[11px] text-text-tertiary">
                   {r.contributor_name || s?.creator_name || ""}
-                  {s?.kind === "shared" ? L(" · delt lenke", " · shared link") : ""} ·{" "}
+                  {s?.kind === "shared" ? t("app-mobile-mobile-import-library.mobile-import-library.p.a227602b2f19") : ""} ·{" "}
                   {formatDate(r.created_at)}
                 </p>
                 <div className="flex items-center gap-1">
@@ -251,12 +236,12 @@ export function MobileImportLibrary({
                       className="text-[11px] text-accent-brand hover:underline"
                     >
                       {r.asset_version_id
-                        ? L("Ny versjon – åpne ressursen", "New version – open the asset")
-                        : L("Åpne ressursen", "Open the asset")}
+                        ? t("app-mobile-mobile-import-library.mobile-import-library.button.2a3748786540")
+                        : t("app-mobile-mobile-import-library.mobile-import-library.button.3d0a98a892a3")}
                     </button>
                   ) : r.take_id ? (
                     <span className="text-[11px] text-status-success">
-                      {L("Film for scenen", "Film for the scene")}
+                      {t("app-mobile-mobile-import-library.mobile-import-library.span.36cd2dc8aaa7")}
                     </span>
                   ) : null}
                   {editable ? (
@@ -264,14 +249,11 @@ export function MobileImportLibrary({
                       type="button"
                       onClick={() => void dismissMobileImport(r.id, !r.dismissed)}
                       className="ml-auto inline-flex size-6 items-center justify-center rounded-sm text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                      aria-label={r.dismissed ? L("Vis igjen", "Show again") : L("Skjul", "Hide")}
+                      aria-label={r.dismissed ? t("app-mobile-mobile-import-library.mobile-import-library.aria-label.feb70fb17044") : t("app-mobile-mobile-import-library.mobile-import-library.aria-label.1f9badcce02d")}
                       title={
                         r.dismissed
-                          ? L("Vis igjen", "Show again")
-                          : L(
-                              "Skjul (filen og koblingene beholdes)",
-                              "Hide (the file and links are kept)",
-                            )
+                          ? t("app-mobile-mobile-import-library.mobile-import-library.title.feb70fb17044")
+                          : t("app-mobile-mobile-import-library.mobile-import-library.title.852693d9a3e1")
                       }
                     >
                       {r.dismissed ? (
@@ -305,22 +287,22 @@ function SessionList({
   const active = sessions.filter((s) => !s.revoked_at && Date.parse(s.expires_at) > now);
   if (!active.length) return null;
   return (
-    <section aria-label={L("Aktive lenker", "Active links")} data-testid="mobile-sessions">
+    <section aria-label={t("app-mobile-mobile-import-library.session-list.aria-label.bacd3536f52d")} data-testid="mobile-sessions">
       <h3 className="mb-1 text-sm font-medium text-text-primary">
-        {L("Aktive lenker", "Active links")}
+        {t("app-mobile-mobile-import-library.session-list.h3.bacd3536f52d")}
       </h3>
       <ul className="flex flex-col divide-y divide-border rounded-sm border border-border">
         {active.map((s) => (
           <li key={s.id} className="flex items-center gap-2 px-2 py-1.5 text-xs">
             <span className="min-w-0 flex-1 truncate text-text-primary">
-              {s.kind === "shared" ? L("Delt lenke", "Shared link") : L("QR-kode", "QR code")} ·{" "}
-              {s.label || L("Prosjektet", "The project")}
+              {s.kind === "shared" ? t("app-mobile-mobile-import-library.session-list.span.5aefceca8d07") : t("app-mobile-mobile-import-library.session-list.span.0cb88709352f")} ·{" "}
+              {s.label || t("app-mobile-mobile-import-library.session-list.span.14006ed8019d")}
             </span>
             <span className="shrink-0 text-text-tertiary">
               {s.files_count === 1
-                ? L("1 fil", "1 file")
-                : L(`${s.files_count} filer`, `${s.files_count} files`)}{" "}
-              · {L(`til ${formatDate(s.expires_at)}`, `until ${formatDate(s.expires_at)}`)}
+                ? t("app-mobile-mobile-import-library.session-list.span.7efacefcf5e0")
+                : t("app-mobile-mobile-import-library.session-list.span.4d5ff15aef41", { files_count: String(s.files_count) })}{" "}
+              · {t("app-mobile-mobile-import-library.session-list.span.c2a19c2744e2", { value1: String(formatDate(s.expires_at)) })}
             </span>
             {editable ? (
               <Button
@@ -331,10 +313,7 @@ function SessionList({
                   void revokeUploadSession(s.id).then((e) =>
                     setErr(
                       e
-                        ? L(
-                            "Du kan bare tilbakekalle dine egne QR-koder (eieren kan alle).",
-                            "You can only revoke your own QR codes (the owner can revoke all).",
-                          )
+                        ? t("app-mobile-mobile-import-library.session-list.set-err.c116e415f3d9")
                         : null,
                     ),
                   )
@@ -342,7 +321,7 @@ function SessionList({
                 data-testid="mobile-revoke"
               >
                 <Link2Off />
-                {L("Tilbakekall", "Revoke")}
+                {t("app-mobile-mobile-import-library.session-list.button.59da93eea68c")}
               </Button>
             ) : null}
           </li>

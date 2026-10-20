@@ -4,22 +4,7 @@
  */
 import { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
-import {
-  CANVAS_BODY_MAX,
-  CANVAS_EDGE_KINDS,
-  CANVAS_LABEL_MAX,
-  CANVAS_NODE_KINDS,
-  CANVAS_TITLE_MAX,
-  L,
-  canvasEdgeKindLabel,
-  canvasNodeKindLabel,
-  canvasTransferKinds,
-  scenesInStoryTime,
-  type CanvasEdgeKind,
-  type CanvasNode,
-  type CanvasNodeKind,
-  type ProjectState,
-} from "@/core";
+import { CANVAS_BODY_MAX, CANVAS_EDGE_KINDS, CANVAS_LABEL_MAX, CANVAS_NODE_KINDS, CANVAS_TITLE_MAX, canvasEdgeKindLabel, canvasNodeKindLabel, canvasTransferKinds, scenesInStoryTime, type CanvasEdgeKind, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { Input } from "@/components/ui/input";

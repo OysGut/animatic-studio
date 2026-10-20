@@ -19,12 +19,10 @@ import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../view
 import { textAtRevision } from "../assembly/discrepancy";
 import { blockSpans, filmClips } from "../assembly/film";
 import { framesToSeconds } from "../time";
-import { getLanguage, localized } from "../i18n";
+import { getLanguage } from "../i18n";
+import { tLocalized } from "@/core/i18n/keyed";
 
-export const LANGUAGE_LABEL: Record<string, string> = localized({
-  nb: ["Norsk", "Norwegian"],
-  en: ["Engelsk", "English"],
-});
+export const LANGUAGE_LABEL: Record<string, string> = tLocalized({ nb: "core-translation-index.language-label.nb.ce9fb99403a7", en: "core-translation-index.language-label.en.6c5aa1625678" });
 
 /** Språknavnet midt i en setning: «norsk» på norsk, «Norwegian» på engelsk. */
 export function languageWord(l: string): string {

@@ -8,22 +8,7 @@ import { analysisScenes, mergeAnalysis } from "@/core/library/analysis-hash";
 import type { AIClassification } from "@/core/library/classification-prompt";
 import { Loader2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  L,
-  collation,
-  ASSET_KIND_LABEL,
-  SOURCE_NOTE_LABEL,
-  displayName,
-  nameKey,
-  mainProduction,
-  newId,
-  suggestionAliases,
-  type Asset,
-  type AssetFields,
-  type AssetKind,
-  type LibrarySuggestion,
-  type ProjectState,
-} from "@/core";
+import { collation, ASSET_KIND_LABEL, SOURCE_NOTE_LABEL, displayName, nameKey, mainProduction, newId, suggestionAliases, type Asset, type AssetFields, type AssetKind, type LibrarySuggestion, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
