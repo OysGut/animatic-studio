@@ -690,6 +690,17 @@ export function GenerateImagePanel({
               </select>
             </label>
           ) : null}
+          {context ? (
+            <QualityProfilePicker
+              state={context.state}
+              value={profileChoice}
+              onChange={(v) => {
+                setProfileChoice(v);
+                setConfirm(false);
+              }}
+              disabled={!editable || running}
+            />
+          ) : null}
           {chosenModel &&
           IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout" &&
           !chosenModel.transparent ? (
