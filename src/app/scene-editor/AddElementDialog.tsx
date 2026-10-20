@@ -166,8 +166,8 @@ export function AddElementDialog({
     const taskId = newId();
     const group = newId();
     const label = L(
-      `«${asset?.name ?? ""}» skal inn i ${ids.length} scener`,
-      `“${asset?.name ?? ""}” should be in ${ids.length} scenes`,
+      `«${asset?.name ?? ""}» skal inn i ${ids.length === 1 ? "1 scene" : `${ids.length} scener`}`,
+      `“${asset?.name ?? ""}” should be in ${ids.length === 1 ? "1 scene" : `${ids.length} scenes`}`,
     );
     let err = cmds.run(
       {

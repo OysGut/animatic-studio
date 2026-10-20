@@ -514,8 +514,8 @@ export function PosterSettings({
                         <span className="ml-auto shrink-0 text-[11px] text-text-tertiary">
                           {rank
                             ? L(
-                                `${rank.lines} replikker · ${rank.scenes} scener`,
-                                `${rank.lines} lines · ${rank.scenes} scenes`,
+                                `${rank.lines === 1 ? "1 replikk" : `${rank.lines} replikker`} · ${rank.scenes === 1 ? "1 scene" : `${rank.scenes} scener`}`,
+                                `${rank.lines === 1 ? "1 line" : `${rank.lines} lines`} · ${rank.scenes === 1 ? "1 scene" : `${rank.scenes} scenes`}`,
                               )
                             : ASSET_KIND_LABEL[a.kind]}
                         </span>
