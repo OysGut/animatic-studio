@@ -98,7 +98,7 @@ export async function writeZip(
     onProgress?: (p: ZipProgress) => void;
     signal?: AbortSignal;
     /** Filer laget i minnet (f.eks. sikkerhetskopiens data), skrives først. */
-    extra?: readonly { readonly path: string; readonly data: Uint8Array }[];
+    extra?: readonly { readonly path: string; readonly data: Uint8Array }[] | AsyncIterable<{ readonly path: string; readonly data: Uint8Array }>;
   } = {},
 ): Promise<{ missing: string[] }> {
   let chain = Promise.resolve();
@@ -127,7 +127,8 @@ export async function writeZip(
   let bytes = 0;
   const missing: string[] = [];
   try {
-    for (const x of o.extra ?? []) {
+    for await (const x of o.extra ?? []) {
+      if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
       const f = new ZipPassThrough(x.path);
       zip.add(f);
       f.push(x.data, true);
@@ -174,6 +175,7 @@ export async function writeZip(
         true,
       );
     }
+    if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
     zip.end();
     await chain;
     if (failure) throw failure;

@@ -20,6 +20,9 @@ import {
 import { drawFrame, type ImageSource } from "./canvas";
 
 export interface FilmDrawOptions {
+  readonly background?: "transparent";
+  readonly layerIds?: ReadonlySet<string>;
+  readonly effects?: boolean;
   /** Lerretets størrelse i piksler. */
   readonly width: number;
   readonly height: number;
@@ -94,7 +97,8 @@ function clipLayer(
   const c = scratchCanvas(i, o.width, o.height);
   const cx = c.getContext("2d") as CanvasRenderingContext2D | null;
   if (!cx) return null;
-  fill(cx, "#000", 1, o.width, o.height);
+  if (o.background === "transparent") cx.clearRect(0, 0, o.width, o.height);
+  else fill(cx, "#000", 1, o.width, o.height);
   drawClipFrame(cx, state, at, o, i);
   if (at.clip.monochrome) desaturate(cx, o.width, o.height);
   return c;
@@ -143,7 +147,12 @@ export function drawFilmFrame(
 ): FilmClip | null {
   const W = o.width;
   const H = o.height;
-  fill(ctx, "#000", 1, W, H);
+  if (o.background === "transparent") {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.restore();
+  } else fill(ctx, "#000", 1, W, H);
   const m = frameMix(clips, frame);
   if (!m) return null;
   if (!m.b) {
@@ -257,6 +266,9 @@ function drawSource(
     drawFrame(ctx, out, {
       view: [k, 0, 0, k, ox, oy],
       images: o.images,
+      ...(o.background ? { background: o.background } : {}),
+      ...(o.layerIds ? { layerIds: o.layerIds } : {}),
+      ...(o.effects !== undefined ? { effects: o.effects } : {}),
       placeholders: o.placeholders ?? false,
       ...(o.characterPass ? { characterPass: o.characterPass } : {}),
     });

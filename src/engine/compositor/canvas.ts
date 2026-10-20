@@ -52,6 +52,10 @@ if (typeof window !== "undefined") registerTextMeasurer((f, t) => canvasMeasureT
 export type ImageSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
 export interface DrawOptions {
+  /** P4: omit only the background paint; all selected items use the usual compositor. */
+  readonly background?: "transparent";
+  readonly layerIds?: ReadonlySet<string>;
+  readonly effects?: boolean;
   /** Ekstra transformasjon fra scenekoordinater til lerretet (zoom og panorering i editoren). */
   readonly view?: Matrix;
   /** Bildene som er lastet, per mediesti (AssetVersion.mediaPath). */
@@ -70,9 +74,16 @@ export function drawFrame(ctx: CanvasRenderingContext2D, frame: Frame, opts: Dra
   const v = opts.view ?? [1, 0, 0, 1, 0, 0];
   ctx.save();
   ctx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
-  ctx.fillStyle = frame.background;
-  ctx.fillRect(0, 0, frame.width, frame.height);
-  for (const it of frame.items) drawItem(ctx, it, v, opts);
+  if (opts.background !== "transparent") {
+    ctx.fillStyle = frame.background;
+    ctx.fillRect(0, 0, frame.width, frame.height);
+  }
+  for (const it of frame.items) {
+    // CA emits derived rig items with the permanent host ID as prefix.
+    if (opts.layerIds && !opts.layerIds.has(it.layerId) &&
+      ![...opts.layerIds].some(id => it.layerId.startsWith(`${id}:rig:`))) continue;
+    drawItem(ctx, opts.effects === false ? { ...it, effects: undefined } : it, v, opts);
+  }
   ctx.restore();
 }
 
