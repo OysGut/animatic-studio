@@ -2,6 +2,7 @@ import { L } from "@/core";
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { LibraryWorkspace } from "@/app/library/LibraryWorkspace";
+import { useLanguage } from "@/app/i18n/language";
 
 export const Route = createFileRoute("/prosjekt/$projectId/bibliotek")({
   head: () => ({ meta: [
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/bibliotek")({
 });
 
 function LibraryRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { asset } = Route.useSearch();
   const session = useSession();

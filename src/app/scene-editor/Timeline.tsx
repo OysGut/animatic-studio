@@ -70,6 +70,7 @@ import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 import { RetimeDialog } from "./RetimeDialog";
+import { useLanguage } from "@/app/i18n/language";
 
 /** Standardbredde for lagnavnene; brukeren kan dra i skillet (Mars 2026-10-13), og bredden huskes. */
 const LABEL_W = 160;
@@ -213,6 +214,7 @@ export const RulerTicks = memo(function RulerTicks({
   durationFrames: number;
   fps: number;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const secPx = ppf * fps;
   const step = TICK_STEPS.find((s) => s * secPx >= 64) ?? 3600;
   const totalSec = durationFrames / fps;
@@ -284,6 +286,7 @@ const CameraRow = memo(function CameraRow({
   onShotPointerMove: (e: ReactPointerEvent<HTMLElement>) => void;
   onShotPointerUp: (e: ReactPointerEvent<HTMLElement>) => void;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   return (
     <>
       {shots.map((sh) => {
@@ -396,6 +399,7 @@ const LayerRow = memo(function LayerRow({
   onKeyPointerMove: (e: ReactPointerEvent<HTMLElement>) => void;
   onKeyPointerUp: (e: ReactPointerEvent<HTMLElement>) => void;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const frames = useMemo(() => keyframeFrames(layer), [layer]);
   return (
     <div

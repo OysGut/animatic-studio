@@ -24,6 +24,7 @@ import {
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { AUDIO_KIND_COLOR } from "@/app/assembly/AudioTracks";
+import { useLanguage } from "@/app/i18n/language";
 
 const fmt = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
@@ -41,6 +42,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
   editable: boolean;
   run: (command: Command, label: string) => string | null;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const index = clips.findIndex((c) => c.occurrenceId === occurrenceId);
   const [step, setStep] = useState(-1);
   // Ny scene: start med forrige scene igjen

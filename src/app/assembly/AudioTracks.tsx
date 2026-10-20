@@ -19,6 +19,7 @@ import {
 import { peaks } from "@/engine/audio/mixer";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { TrackLabel, formatSeconds, type TimelineGeometry } from "./FilmTimeline";
+import { useLanguage } from "@/app/i18n/language";
 
 const LANE_H = 26;
 const DRAG_THRESHOLD = 4;
@@ -356,6 +357,7 @@ const AudioBlock = memo(function AudioBlock({
   onCancel: () => void;
   onOpen: (clipId: string) => void;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const c = item.clip;
   // Lyd som løper videre over flere scener er varmgul (DEC-0045)
   const color = c.continues ? "var(--accent-warm)" : AUDIO_KIND_COLOR[c.kind];

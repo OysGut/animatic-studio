@@ -5,6 +5,7 @@ import { ProjectsScreen } from "@/app/projects/ProjectsScreen";
 import { AppHeader } from "@/app/shell/AppHeader";
 import { SchemaBanner } from "@/app/shell/SchemaBanner";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const session = useSession();
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;

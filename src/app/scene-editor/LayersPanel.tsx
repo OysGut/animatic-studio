@@ -54,6 +54,7 @@ import {
   withCollapsed,
   type CollapsedGroups,
 } from "./layer-groups";
+import { useLanguage } from "@/app/i18n/language";
 
 interface Props {
   readonly state: ProjectState;
@@ -95,6 +96,7 @@ export const LayersPanel = memo(function LayersPanel({
   frame = 0,
   hideHeading = false,
 }: Props) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   // Bakerst først (som i modellen); listen vises med forreste lag øverst
   const back = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
   const front = useMemo(() => [...back].reverse(), [back]);

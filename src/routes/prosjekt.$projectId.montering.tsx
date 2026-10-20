@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { AssemblyWorkspace } from "@/app/assembly/AssemblyWorkspace";
 import { L } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
 
 const UUID = /^[0-9a-f-]{36}$/;
 
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/montering")({
 });
 
 function AssemblyRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { scene, blokk, lastned } = Route.useSearch();
   const session = useSession();

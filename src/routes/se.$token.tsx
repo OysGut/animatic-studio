@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { L } from "@/core/i18n";
 import { FilmPlayerPage } from "@/app/share/FilmPlayerPage";
+import { useLanguage } from "@/app/i18n/language";
 
 /**
  * Offentlig visningsside for en delt filmversjon (GP5). Ingen innlogging; nøkkelen gir bare filmen.
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/se/$token")({
 });
 
 function FilmRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { token } = Route.useParams();
   return <FilmPlayerPage token={token} />;
 }

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { L } from "@/core";
 import { MobilePage } from "@/app/mobile/MobilePage";
+import { useLanguage } from "@/app/i18n/language";
 
 /**
  * Mobilsiden for QR-koder og delte lenker (fase 2, DEC-0090). Ingen innlogging: tokenet i adressen gir bare
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/m/$token")({
 });
 
 function MobileRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { token } = Route.useParams();
   return <MobilePage token={token} />;
 }

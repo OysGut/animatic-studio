@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { L } from "@/core";
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { useSession } from "@/app/auth/use-session";
-import { LanguageSwitch } from "@/app/i18n/language";
+import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { fetchProjectLock } from "@/adapters/browser/account";
 import { ScriptExplorer } from "@/app/script-explorer/ScriptExplorer";
 import { validateExplorerSearch } from "@/app/script-explorer/explorer-state";
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/manusutforsker/$projectId")({
   component: ExplorerRoute,
 });
 function ExplorerRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const search = Route.useSearch();
   const session = useSession();

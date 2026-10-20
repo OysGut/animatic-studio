@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { L } from "@/core";
 import { SceneEditorWorkspace } from "@/app/scene-editor/SceneEditorWorkspace";
+import { useLanguage } from "@/app/i18n/language";
 
 /** ?scene=<forekomst-ID> åpner sceneeditoren med scenen valgt. */
 export const Route = createFileRoute("/prosjekt/$projectId/scene")({
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/scene")({
 });
 
 function SceneEditorRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { scene, line, at, fane } = Route.useSearch();
   const session = useSession();

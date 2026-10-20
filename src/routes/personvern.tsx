@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { AppHeader } from "@/app/shell/AppHeader";
-import { LanguageSwitch } from "@/app/i18n/language";
+import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { PrivacyStatement } from "@/app/account/PrivacyStatement";
 import { usePrivacyPolicy } from "@/app/account/use-account";
 import { L } from "@/core";
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/personvern")({
 });
 
 function PrivacyPage() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const session = useSession();
   const policy = usePrivacyPolicy();
   return (
