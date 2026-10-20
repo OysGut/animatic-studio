@@ -124,6 +124,9 @@ export function Toolbar({
     if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(root);
+    // Groups and fixed items change width without the root resizing (e.g. a language switch without remount),
+    // so they are observed too; otherwise long labels push the toolbar out of the window.
+    for (const el of root.querySelectorAll<HTMLElement>("[data-toolbar-group], [data-toolbar-fixed]")) ro.observe(el);
     return () => ro.disconnect();
   }, [menu, tick]);
 
@@ -145,7 +148,7 @@ export function Toolbar({
           {...rest}
           className={cn(
             "flex min-h-toolbar shrink-0 items-center gap-x-2 border-b border-border bg-surface-2 px-3",
-            menu ? "flex-nowrap overflow-hidden" : "flex-wrap gap-y-0.5",
+            menu ? "relative flex-nowrap overflow-hidden" : "flex-wrap gap-y-0.5",
             className,
           )}
         >
