@@ -3,8 +3,8 @@ import { L, getLanguage, getUiLanguage, localized, locale, pseudoText, setLangua
 import { CodedError, SERVER_ERRORS, decodeServerError, serverError, serverErrorText } from "@/core/i18n/server-errors";
 import { t } from "@/core/i18n/keyed";
 import nbCatalog from "@/core/i18n/locales/nb.json";
-// @ts-expect-error mjs-verktøy uten typer
-import { pseudoText as inventoryPseudo } from "../../scripts/i18n/inventory.mjs";
+import enCatalog from "@/core/i18n/locales/en.json";
+import xaCatalog from "@/core/i18n/locales/en-XA.json";
 
 afterEach(() => setLanguage("nb"));
 
@@ -20,7 +20,11 @@ describe("ML2a testspråk en-XA", () => {
     expect(locale()).toBe("en-GB");
   });
   it("pseudoteksten er lik inventarets og beholder plassholdere", () => {
-    for (const s of ["Save", "Open {count} scenes", "Ä {x} ö"]) expect(pseudoText(s)).toBe(inventoryPseudo(s));
+    const en = enCatalog as Record<string, { text: string | null }>;
+    const xa = xaCatalog as Record<string, { text: string | null }>;
+    const keys = Object.keys(en).filter((k) => en[k]?.text).slice(0, 500);
+    expect(keys.length).toBe(500);
+    for (const k of keys) expect(pseudoText(en[k]!.text!)).toBe(xa[k]!.text);
     expect(pseudoText("Hi {name}")).toContain("{name}");
   });
   it("faste oppslag og serverteksten følger testspråket", () => {
