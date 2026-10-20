@@ -50,6 +50,12 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
             const speech = await pumpDialogueBatches(db);
             run.checked += speech.processed;
           }
+          // P8: masseharmonisering fortsetter selv om fanen lukkes (lease og kvitteringer, 0065)
+          if (schema.version >= 65) {
+            const { pumpHarmonizeBatches } = await import("@/adapters/storage/harmonize-batch.server");
+            const images = await pumpHarmonizeBatches(db);
+            run.checked += images.processed;
+          }
           // Kontoer der de 30 dagene er gått (fra 0033)
           if (schema.version >= 33) {
             const { purgeDueAccounts } = await import("@/adapters/account/admin.functions");

@@ -5024,7 +5024,7 @@ function run(
       if (c.newVariant) {
         assertNewId(s,c.variantId);
         need(s.assets[c.newVariant.assetId],L("Ressursen","The asset"));
-        assetVariants={...assetVariants,[c.variantId]:{id:c.variantId,revision:1,assetId:c.newVariant.assetId,...normalizeVariantFields(c.newVariant.fields),approvedVersionId:null,archived:false}};
+        assetVariants={...assetVariants,[c.variantId]:{id:c.variantId,revision:1,assetId:c.newVariant.assetId,...normalizeVariantFields(c.newVariant.fields),approvedVersionId:null,archived:c.newVariant.archived===true}};
         createdVariant=true;
       }
       const va=need(assetVariants[c.variantId],L("Varianten","The variant"));

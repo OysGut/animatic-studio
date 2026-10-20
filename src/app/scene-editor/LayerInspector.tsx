@@ -17,8 +17,7 @@ import {
   Image as ImageIcon,
   Ratio,
   Trash2,
-  ZoomIn,
-} from "lucide-react";
+  ZoomIn, Palette } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
   ErrorText,
@@ -174,6 +173,7 @@ export function LayerInspector({
   onCarryPick,
   onSeek,
   onUpscale,
+  onHarmonize,
   durationFrames,
   drawingPath = false,
   onDrawingPathChange,
@@ -206,6 +206,8 @@ export function LayerInspector({
   onSeek?: (frame: number) => void;
   /** Oppskaler bildet laget viser (advarselen om forstørrelse over 1:1). Utelatt: ingen knapp. */
   onUpscale?: () => void;
+  /** P8: «Harmoniser stil …» for bildet laget viser. Utelatt: ingen knapp. */
+  onHarmonize?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [carryMsg, setCarryMsg] = useState<string | null>(null);
@@ -678,6 +680,22 @@ export function LayerInspector({
 
       {isGroup ? null : (
         <Section title={L("Bilde", "Image")}>
+          {onHarmonize && layer.assetId ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              disabled={off}
+              onClick={onHarmonize}
+              data-testid="layer-harmonize"
+              title={L(
+                "Tegn om bildet til scenens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
+                "Redraw the image in the scene's shared style with AI (costs, confirmed first). The original does not change.",
+              )}
+            >
+              <Palette /> {L("Harmoniser stil …", "Harmonize style …")}
+            </Button>
+          ) : null}
           {onOpenAssetStudio ? (
             <Button
               size="sm"

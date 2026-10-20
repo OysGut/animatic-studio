@@ -27,8 +27,10 @@ import {
   Rotate3d,
   Shuffle,
   ZoomIn,
+  Palette,
 } from "lucide-react";
 import { TurnaroundPanel, UpscalePanel, VariationPanel, ViewLabel } from "./ImageAiPanels";
+import { HarmonizePanel } from "./HarmonizePanel";
 import { PartsPanel, type PartsTab } from "./ImagePartsPanel";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -116,6 +118,11 @@ export interface LightboxTools {
   /** Et nytt bilde er lagret (f.eks. for å vise det eller ta det i bruk). */
   readonly onSaved?: (r: { versionId: string; variantId: string; assetId: string }) => void;
   /**
+   * P8 «Bruk bare her» (REQ-0141): det harmoniserte bildet brukes bare i plakaten eller scenen som åpnet
+   * visningen. Utelatt: valget vises ikke (biblioteket).
+   */
+  readonly onUseHere?: (versionId: string) => void;
+  /**
    * «Legg delene i scenen» (Mars 15.10.2026, «Deler …»): delene som er laget, med plassen i originalbildet
    * (`box`, i `source`-bildets piksler) og ankerpunktet. Utelatt: knappen vises ikke.
    */
@@ -136,7 +143,7 @@ export interface LightboxPart {
 }
 
 type Mode = "view" | "select" | "grid" | "parts";
-type AiPanel = "views" | "upscale" | "variations";
+export type AiPanel = "views" | "upscale" | "variations" | "harmonize";
 
 /** Rutenettet i «Del opp»: antall og delelinjene (brøkdeler 0–1), Mars 15.10.2026. */
 interface GridState {
@@ -786,6 +793,13 @@ export function ImageLightbox({
                         projectId={projectId}
                         onClose={() => setPanel(null)}
                       />
+                    ) : panel === "harmonize" ? (
+                      <HarmonizePanel
+                        tools={tools}
+                        version={version!}
+                        projectId={projectId}
+                        onClose={() => setPanel(null)}
+                      />
                     ) : (
                       <div className="flex flex-wrap gap-1.5">
                         <Button
@@ -811,6 +825,19 @@ export function ImageLightbox({
                           )}
                         >
                           <Shuffle /> {L("Lag variasjoner …", "Make variations …")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={!!busy}
+                          data-testid="harmonize-open"
+                          onClick={() => setPanel("harmonize")}
+                          title={L(
+                            "Tegn om bildet til filmens felles stil fra en stilprofil eller et referansebilde, med identiteten bevart (koster, bekreftes først)",
+                            "Redraw the image in the film's shared style from a style profile or a reference image, keeping the identity (costs, confirmed first)",
+                          )}
+                        >
+                          <Palette /> {L("Harmoniser stil …", "Harmonize style …")}
                         </Button>
                       </div>
                     )}

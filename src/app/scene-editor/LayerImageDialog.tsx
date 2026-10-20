@@ -82,6 +82,7 @@ export function LayerImageDialog({
   editable,
   cmds,
   openUpscale = false,
+  openHarmonize = false,
   sceneWrite,
 }: {
   /**
@@ -99,6 +100,8 @@ export function LayerImageDialog({
   cmds: Commands;
   /** Vis bildet laget bruker stort, med «Oppskaler» fremme (DEC-0080). */
   openUpscale?: boolean;
+  /** P8: vis bildet laget bruker stort, med «Harmoniser stil» fremme. */
+  openHarmonize?: boolean;
 }) {
   return (
     <Dialog open={open && layer !== null} onOpenChange={onOpenChange}>
@@ -111,7 +114,8 @@ export function LayerImageDialog({
             editable={editable}
             cmds={cmds}
             onClose={() => onOpenChange(false)}
-            openUpscale={openUpscale}
+            openUpscale={openUpscale || openHarmonize}
+            initialPanel={openHarmonize ? "harmonize" : openUpscale ? "upscale" : null}
             sceneWrite={sceneWrite}
           />
         ) : null}
@@ -128,8 +132,10 @@ function Body({
   cmds,
   onClose,
   openUpscale,
+  initialPanel,
   sceneWrite,
 }: {
+  initialPanel: "upscale" | "harmonize" | null;
   sceneWrite?: ((patch: Partial<LayerFields>, label: string) => string | null) | undefined;
   state: ProjectState;
   projectId: string;
@@ -707,7 +713,7 @@ function Body({
       ) : null}
 
       <ImageLightbox
-        initialPanel={openUpscale ? "upscale" : null}
+        initialPanel={initialPanel}
         open={big !== null}
         onOpenChange={(o) => !o && setBig(null)}
         projectId={projectId}
@@ -735,6 +741,20 @@ function Body({
                   setBig(null);
                   setCutout(v);
                 },
+                // P8 «Bruk bare her» (REQ-0141): bare dette laget viser det harmoniserte bildet
+                ...(editable
+                  ? {
+                      onUseHere: (versionId: string) => {
+                        const now = cmds.current() ?? state;
+                        const v = now.assetVersions[versionId];
+                        if (!v) return;
+                        setLayer(L("Harmonisert bilde bare her", "Harmonized image only here"), {
+                          assetVariantId: v.variantId as LayerFields["assetVariantId"],
+                          versionId: versionId as LayerFields["versionId"],
+                        });
+                      },
+                    }
+                  : {}),
                 // «Legg delene i scenen» (DEC-0088): der de lå i bildet; dørblad o.l. i egen gruppe med
                 // ankerpunkt på hengselkanten. Alt i én angring.
                 ...(editable && !sceneWrite

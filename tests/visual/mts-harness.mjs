@@ -111,6 +111,19 @@ export function harness(defaultOut) {
       if (/^undoDialogueBatchJob(?:_|$)/.test(name)) { state.rpcs.push({ name: "undoDialogueBatchJob", body: d }); return json({ undone: 1 }); }
       if (/^reconfirmDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "reconfirmDialogueBatch", body: d }); return json({ ok: true }); }
       if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
+      // P8: stilharmonisering (mock – ingen AI)
+      if (/^generateImage(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateImage", body: d }); const n = state.rpcs.filter(r => r.name === "generateImage").length; return json({ ok: true, versionId: `00000000-0000-7000-8000-${String(800000 + n).padStart(12, "0")}`, model: "google/gemini-3-pro-image", jobId: "00000000-0000-7000-8000-000000080000", media: { path: `${fx.project.id}/assets/generated/${d.assetId}/mock-${n}.png`, mimeType: "image/png", width: 1024, height: 1536, byteSize: 2048, sha256: "c".repeat(64) } }); }
+      if (/^listHarmonizeBatches(?:_|$)/.test(name)) return json(state.batches);
+      if (/^createHarmonizeBatch(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "createHarmonizeBatch", body: d });
+        const existing = state.batches.find(b => b.requestId === d.requestId);
+        if (existing) return json({ id: existing.id });
+        const id = `00000000-0000-7000-8000-${String(650000 + state.batches.length).padStart(12, "0")}`;
+        state.batches.push({ id, requestId: d.requestId, status: "running", pause_reason: null, style_profile_id: d.styleProfileId, reference_version_id: d.referenceVersionId, model: "m", items: d.items.map((i, k) => ({ id: `${id}:${k}`, asset_id: i.assetId, source_version_id: i.sourceVersionId, version_id: `v${k}`, status: "waiting", error: null, retryable: true })) });
+        return json({ id });
+      }
+      if (/^advanceHarmonizeBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "advanceHarmonizeBatch", body: d }); const b = state.batches.find(b => b.id === d.batchId); if (b) { for (const item of b.items.slice(0, 2)) item.status = "done"; b.status = b.items.every(i => i.status === "done") ? "done" : "running"; } return json({ processed: 2 }); }
+      if (/^resumeHarmonizeBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "resumeHarmonizeBatch", body: d }); return json({ ok: true }); }
       if (/^listVoices(?:_|$)/.test(name)) return json({ ok: true, voices: [{ voiceId: "mock_voice", name: "Test voice", description: "Custom voice", previewUrl: null }, { voiceId: "other_voice", name: "Alternative voice", description: "", previewUrl: null }] });
       if (/^listSpeechModels(?:_|$)/.test(name)) return json({ ok: true, models: [{ modelId: "eleven_v3", name: "Eleven v3", languages: [{ code: "no", name: "Norwegian" }, { code: "es", name: "Spanish" }], maxCharacters: 5000, costMultiplier: 1 }] });
       if (/^generateSpeech(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateSpeech", body: d }); return json({ ok: true, assetId: "00000000-0000-7000-8000-00000000d401", versionId: "00000000-0000-7000-8000-00000000d402", text: "Mock dialogue", scriptRevision: d.scriptRevision, costUsd: 0.001, media: { path: `${fx.project.id}/mock-speech.wav`, mimeType: "audio/wav", width: null, height: null, byteSize: 96044, sha256: "a".repeat(64) } }); }

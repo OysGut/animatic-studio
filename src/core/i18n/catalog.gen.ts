@@ -79,6 +79,7 @@ export const CATALOG: Record<string, string> = {
   "{0} linjer endret": "{0} lines changed",
   "{0} linjer i scenen med revisjon lagret": "{0} lines in the scene with revision saved",
   "{0} minutter": "{0} minutes",
+  "{0} norsk{1} {2} mot {3} {4}": "{0} Norwegian {1} to {2} translated",
   "{0} nye": "{0} new",
   "{0} replikker, første i {1}": "{0} lines, first in {1}",
   "{0} s hver": "{0} s each",
@@ -89,6 +90,7 @@ export const CATALOG: Record<string, string> = {
     "{0} texts have no English version and are shown in Norwegian.",
   "{0} tekstfelt er tomme ({1}) og vises ikke.":
     "{0} text fields are empty ({1}) and are not shown.",
+  "{0} ugyldige forslag forkastet.": "{0} invalid suggestions discarded.",
   "{0} USD per bilde": "{0} USD per image",
   "{0} USD per kall": "{0} USD per call",
   "{0} USD per megapiksel": "{0} USD per megapixel",
@@ -106,6 +108,7 @@ export const CATALOG: Record<string, string> = {
   "1 ny": "1 new",
   "1 tekst mangler engelsk versjon og vises på norsk.":
     "1 text has no English version and is shown in Norwegian.",
+  "1 ugyldig forslag forkastet.": "1 invalid suggestion discarded.",
   "2–30 sekunder per bit": "2–30 seconds per piece",
   "2× eller 4×": "2× or 4×",
   "2D-scene {0}: scenen har to 2D-scener": "2D scene {0}: the scene has two 2D scenes",
@@ -130,6 +133,8 @@ export const CATALOG: Record<string, string> = {
     "The administrator has switched off this AI model for all users. Choose another model.",
   "AI er slått av for prosjektet (budsjettet er 0). Eieren kan endre det på prosjektoversikten.":
     "AI is turned off for the project (the budget is 0). The owner can change this on the project overview.",
+  "AI-en kan endre karakterens kjennetegn. Sammenlign alltid med originalen før du godkjenner.":
+    "The AI may change the character's distinguishing features. Always compare with the original before approving.",
   "AI-kredittene i arbeidsområdet er brukt opp. Fyll på og prøv igjen.":
     "The workspace's AI credits are used up. Top up and try again.",
   "AI-tjenesten avviste beskrivelsen (innholdsregler). Endre beskrivelsen og prøv igjen.":
@@ -280,12 +285,16 @@ export const CATALOG: Record<string, string> = {
     "The image is used on a poster or as a reference for the film's style and cannot be removed.",
   "Bildet brukes som stillbilde i filmen og kan ikke fjernes.":
     "The image is used as a still in the film and cannot be removed.",
+  "Bildet eller stilen finnes ikke lenger.": "The image or the style no longer exists.",
   "Bildet er for stort (maks 2 GB)": "The image is too large (max 2 GB)",
   "Bildet er gått gjennom i arbeidslisten og kan ikke fjernes.":
     "The image has been through the worklist and cannot be removed.",
+  "Bildet er i bruk og kan ikke fjernes.": "The image is in use and cannot be removed.",
   "Bildet for et språk må være en variant av samme ressurs som laget":
     "The image for a language must be a variant of the same asset as the layer",
   "Bildet for språket mangler variant": "The image for the language is missing a variant",
+  "Bildet har harmoniseringsmetadata og kan ikke fjernes alene. Angre hele harmoniseringen.":
+    "The image has harmonization metadata and cannot be removed on its own. Undo the whole harmonization.",
   "Bildet har vært godkjent og kan ikke fjernes.":
     "The image has been approved and cannot be removed.",
   "Bildet i bildeskiftet": "The image in the image swap",
@@ -474,6 +483,7 @@ export const CATALOG: Record<string, string> = {
   "Den faste administratorkontoen kan ikke slettes.":
     "The permanent administrator account cannot be deleted.",
   "Den forrige lydversjonen finnes ikke": "The previous audio version was not found",
+  "Den harmoniserte versjonen finnes ikke": "The harmonized version was not found",
   "Den innebygde AI-en er ikke slått på. Kontakt administratoren.":
     "The built-in AI is not enabled. Contact the administrator.",
   "Den innebygde AI-en er ikke tilgjengelig nå. Forslagene bygger på manusreglene.":
@@ -624,6 +634,7 @@ export const CATALOG: Record<string, string> = {
   "Er i konflikt med": "Conflicts with",
   "Erstatter v{0} (lastet opp på nytt)": "Replaces v{0} (uploaded again)",
   "Et alternativt navn er for langt": "An alternative name is too long",
+  "Et av bildene finnes ikke lenger": "One of the images no longer exists",
   "Et av bildene i oppsettet er ikke tatt inn i prosjektet ennå.":
     "One of the setup's images is not in the project yet.",
   "Et forbildebilde er for stort (over 20 MB) til å sendes med.":
@@ -859,6 +870,11 @@ export const CATALOG: Record<string, string> = {
   "Gruppenavnet er for langt": "The group name is too long",
   "halv størrelse": "half size",
   "Har replikk i manuset": "Has dialogue in the script",
+  Harmoniseringen: "The harmonization",
+  Harmonisert: "Harmonized",
+  "Harmonisert – {0}": "Harmonized – {0}",
+  "Harmonisert med et referansebilde ({0}).": "Harmonized with a reference image ({0}).",
+  "Harmonisert med profilen «{0}» ({1}).": 'Harmonized with the profile "{0}" ({1}).',
   "Hastigheten må være mellom 25 og 400 %": "The speed must be between 25 and 400%",
   hendelse: "event",
   Hendelse: "Event",
@@ -885,6 +901,7 @@ export const CATALOG: Record<string, string> = {
   "Høyere innsats koster mer, men er ingen garanti for et bedre resultat. Se på resultatet og velg selv.":
     "Higher effort costs more, but is no guarantee of a better result. Look at the result and choose for yourself.",
   "Høyrestilt tekst tolket som handling": "Right-aligned text interpreted as action",
+  "Høyst {0} bilder i én jobb": "At most {0} images in one job",
   "Høyst {0} koblinger": "At most {0} links",
   "Høyst 200 betegnelser": "At most 200 designations",
   "Høyst 4 figurer med referansebilde": "At most 4 figures with a reference image",
@@ -899,6 +916,7 @@ export const CATALOG: Record<string, string> = {
   "I scenen": "In the scene",
   "ID {0} er allerede i bruk": "ID {0} is already in use",
   "ID {0} er brukt to ganger": "ID {0} is used twice",
+  "ID-en er i bruk.": "The ID is in use.",
   Idé: "Idea",
   "Ikke en scenekommando: {0}": "Not a scene command: {0}",
   "ikke finnes lenger": "no longer exists",
@@ -940,6 +958,8 @@ export const CATALOG: Record<string, string> = {
   "Ingen lyd valgt": "No audio selected",
   "Ingen nøkkel er lagt inn for denne leverandøren.": "No key has been added for this provider.",
   "Ingen notater å legge til": "No notes to add",
+  "Ingen prosjekteier har koblet til denne leverandøren.":
+    "No project owner has connected this provider.",
   "Ingen prosjekteier har koblet til ElevenLabs.": "No project owner has connected ElevenLabs.",
   "Ingen referansebilder.": "No reference images.",
   "Ingen ressurser å legge til": "No assets to add",
@@ -952,6 +972,7 @@ export const CATALOG: Record<string, string> = {
   "Ingen tilgang.": "No access.",
   "Ingen visuell stil fylt ut – bruker en enkel standardstil.":
     "No visual style filled in – using a simple default style.",
+  "Ingenting å gjøre om.": "Nothing to redo.",
   "Ingenting å godkjenne": "Nothing to approve",
   "ingenting eksisterende overskrives.": "nothing existing is overwritten.",
   "Inn (film)": "In (film)",
@@ -1018,6 +1039,7 @@ export const CATALOG: Record<string, string> = {
   "Kildescenen finnes ikke.": "The source scene does not exist.",
   "Kildescenen har produksjonssegmenter": "The source scene has production segments",
   Kildevarianten: "The source variant",
+  "Kildeversjonen finnes ikke": "The source version was not found",
   "Kino 1.85:1 (1998 × 1080)": "Cinema 1.85:1 (1998 × 1080)",
   "Kjøp kreditt under Billing for teamet ditt.": "Buy credit under Billing for your team.",
   "Kjøp kreditt under Settings → Billing (API-et virker ikke uten kreditt).":
@@ -1050,6 +1072,7 @@ export const CATALOG: Record<string, string> = {
     "The account is locked and will be deleted for good in {0} days.",
   "Kort ned oversettelsen med omtrent {0} {1}.": "Shorten the translation by about {0} {1}.",
   "kortere enn segmentet ({0} av {1} s)": "shorter than the segment ({0} of {1} s)",
+  "Kostnaden må bekreftes": "The cost must be approved",
   "Kostnaden må godkjennes først": "The cost must be approved first",
   "Kostnadsoversikt – AI-tjenester": "Cost statement – AI services",
   "Kostnadstaket for nøkkelen ({0} USD per måned) er nådd – brukt ca. {1} USD, denne jobben ca. {2} USD. Eieren kan endre taket under «AI-leverandører».":
@@ -1133,6 +1156,7 @@ export const CATALOG: Record<string, string> = {
   "Lineære scener har ikke anker": "Linear scenes have no anchor",
   Linjekoblingen: "The line link",
   "Linjekoblinger krever databaseversjon 64.": "Line links require database version 64.",
+  Linjen: "The line",
   "Linjen har allerede en oversettelse til dette språket":
     "The line already has a translation into this language",
   "Linjen har fått en annen oversettelse i mellomtiden":
@@ -1248,6 +1272,7 @@ export const CATALOG: Record<string, string> = {
   Merk: "Note",
   "Merknaden er for lang": "The annotation is too long",
   "Merknaden er for lang.": "The note is too long.",
+  "Metadataen peker på en annen versjon": "The metadata points at another version",
   "Midlertidige renderingsfiler": "Temporary render files",
   Modell: "Model",
   "Modell-ID-en kan bare ha små bokstaver, tall og tegnene . _ / - (3–{0} tegn).":
@@ -1289,6 +1314,7 @@ export const CATALOG: Record<string, string> = {
   "Navnet står ved et verb for et levende vesen":
     "The name appears beside a verb for a living being",
   "Navnet stemmer ikke med prosjektnavnet.": "The name does not match the project name.",
+  "nb-NO": "en-GB",
   "Negativ beskrivelse": "Negative description",
   Nei: "No",
   "Nettadressene må begynne med https:// (eller http://).":
@@ -1310,6 +1336,7 @@ export const CATALOG: Record<string, string> = {
     "Someone else changed the text after the suggestion was made. Create the suggestion again.",
   "Noen av de valgte scenene har allerede innspilt eller generert tale. Nye lydfiler blir lagt til som alternative versjoner og settes som aktive for de aktuelle replikkene. Ingen eksisterende lydfiler eller redigeringer blir slettet. Du kan senere velge tilbake en tidligere versjon.":
     "Some of the selected scenes already have recorded or generated speech. New audio files will be added as alternative versions and made active for the selected lines. No existing audio files or edits will be deleted. You can choose a previous version again later.",
+  "Noen bilder feilet. Originalene er uendret.": "Some images failed. The originals are unchanged.",
   "Noen replikker feilet. Tidligere lyd er bevart.":
     "Some lines failed. Previous audio is preserved.",
   "Nøkkelen er fjernet, så videoen kan ikke hentes.":
@@ -1449,6 +1476,13 @@ export const CATALOG: Record<string, string> = {
     "The profile's monthly budget is exhausted or too small for this selection.",
   "Programmet kan ikke bruke denne typen modell hos leverandøren uten ny kode.":
     "The program cannot use this type of model with the provider without new code.",
+  "ProRes kan ikke lages i denne nettleseren (mangler Web Workers). Velg et annet format.":
+    "ProRes cannot be made in this browser (Web Workers are missing). Choose another format.",
+  "ProRes støtter høyst {0} piksler på hver side.": "ProRes supports at most {0} pixels per side.",
+  "ProRes-filen blir omtrent {0} GB, men nettleseren har bare {1} GB ledig til eksport. Velg et kortere utvalg eller frigjør plass.":
+    "The ProRes file will be about {0} GB, but the browser has only {1} GB free for export. Choose a shorter selection or free up space.",
+  "ProRes-filen blir omtrent {0} GB. Uten lagring i nettleseren (OPFS) er grensen {1} GB. Velg et kortere utvalg, halv størrelse, eller bruk Chrome eller Edge.":
+    "The ProRes file will be about {0} GB. Without browser storage (OPFS) the limit is {1} GB. Choose a shorter selection, half size, or use Chrome or Edge.",
   "Prosjektdataene kunne ikke lagres ({0}).": "The project data could not be saved ({0}).",
   "Prosjektet ble ikke slettet: {0}": "The project was not deleted: {0}",
   "Prosjektet er allerede gjenopprettet fra en annen sikkerhetskopi.":
@@ -1499,6 +1533,8 @@ export const CATALOG: Record<string, string> = {
   "Redusert lesbarhet: ": "Reduced legibility: ",
   Referanse: "Reference",
   "Referansebilder: {0}.": "Reference images: {0}.",
+  "Referansebildet finnes ikke": "The reference image was not found",
+  Referansen: "The reference",
   "Referansene kunne ikke kontrolleres sikkert.": "References could not be checked safely.",
   Referanser: "References",
   Relasjon: "Relation",
@@ -1570,6 +1606,7 @@ export const CATALOG: Record<string, string> = {
   "Ressursvariant {0}: ukjent ressurs": "Asset variant {0}: unknown asset",
   "Ressursversjon {0}: samme nummer to ganger": "Asset version {0}: same number twice",
   "Ressursversjon {0}: ukjent variant": "Asset version {0}: unknown variant",
+  "Resultatet kan ikke være sin egen kilde": "The result cannot be its own source",
   "Revisjonen finnes ikke": "The revision does not exist",
   "Rigg-delen tilhører ikke ressursen": "The rig part does not belong to the asset",
   "Rigg-delen tilhører ikke scenen": "The rig part does not belong to the scene",
@@ -1582,11 +1619,14 @@ export const CATALOG: Record<string, string> = {
   "Runway trenger et startbilde.": "Runway needs a start image.",
   "Samlet anslag": "Estimated total",
   "Samme betegnelse to ganger": "The same designation twice",
+  "Samme bilde to ganger": "The same image twice",
   "Samme del to ganger": "The same part twice",
+  "Samme harmonisering to ganger.": "The same harmonization twice.",
   "Samme hendelse to ganger": "The same event twice",
   "Samme karakter står flere ganger": "The same character is listed more than once",
   "Samme kobling to ganger": "The same link twice",
   "Samme lag er med to ganger": "The same layer is included twice",
+  "Samme linje to ganger.": "The same line twice.",
   "Samme lydklipp er med to ganger": "The same audio clip is included twice",
   "Samme node er med flere ganger": "The same node is listed more than once",
   "Samme notat-ID to ganger": "The same note ID twice",
@@ -1788,8 +1828,13 @@ export const CATALOG: Record<string, string> = {
   "Stillbildet må være et PNG-, JPEG- eller WebP-bilde i ressursbiblioteket":
     "The still must be a PNG, JPEG or WebP image in the asset library",
   Stilprofilen: "The style profile",
+  "Stilprofilen brukes i en harmonisering og kan ikke fjernes ved angring.":
+    "The style profile is used in a harmonization and cannot be removed by undoing.",
+  "Stilprofilen er tom – fyll den ut eller velg et referansebilde":
+    "The style profile is empty – fill it in or choose a reference image",
   "Stilprofilen er valgt for bestemte bruk og kan ikke fjernes ved angring. Fjern den i stilguiden i stedet.":
     "The style profile is selected for specific uses and cannot be removed by undoing. Remove it in the style guide instead.",
+  "Stilprofilen finnes ikke": "The style profile was not found",
   "Stilprofilen må ha et navn (maks 120 tegn)":
     "The style profile must have a name (max 120 characters)",
   stk: "pcs",
@@ -1886,6 +1931,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig ankerpunkt": "Invalid anchor point",
   "Ugyldig antall koblinger.": "Invalid number of links.",
   "Ugyldig antall kontinuitetshendelser": "Invalid number of continuity events",
+  "Ugyldig antall linjer.": "Invalid number of lines.",
   "Ugyldig antall noder": "Invalid number of nodes",
   "Ugyldig antall oversettelser": "Invalid number of translations",
   "Ugyldig antall relasjoner": "Invalid number of relations",
@@ -1895,6 +1941,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig bevegelsesbane": "Invalid motion path",
   "Ugyldig bildefrekvens {0}/{1}": "Invalid frame rate {0}/{1}",
   "Ugyldig bildeskifte": "Invalid image swap",
+  "Ugyldig bildevalg": "Invalid image selection",
   "Ugyldig bit av scenen": "Invalid piece of the scene",
   "Ugyldig blandingsmodus": "Invalid blend mode",
   "Ugyldig blink": "Invalid blink",
@@ -1904,6 +1951,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig bruk": "Invalid use",
   "Ugyldig bruk for stilprofilen": "Invalid use for the style profile",
   "Ugyldig bruker": "Invalid user",
+  "Ugyldig bruksvalg": "Invalid use",
   "Ugyldig del": "Invalid part",
   "Ugyldig del av profilen ({0})": "Invalid part of the profile ({0})",
   "Ugyldig deling.": "Invalid share.",
@@ -1937,6 +1985,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig grunnlag": "Invalid basis",
   "Ugyldig gruppe": "Invalid group",
   "Ugyldig handling": "Invalid action",
+  "Ugyldig harmonisering.": "Invalid harmonization.",
   "Ugyldig hastighet": "Invalid speed",
   "Ugyldig hastighetskurve": "Invalid easing curve",
   "Ugyldig høyde": "Invalid height",
@@ -2017,6 +2066,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig ordkobling": "Invalid word alignment",
   "Ugyldig overgang": "Invalid transition",
   "Ugyldig overgang i bildeskiftet": "Invalid transition in the image swap",
+  "Ugyldig oversatt linje.": "Invalid translated line.",
   "Ugyldig oversettelse": "Invalid translation",
   "Ugyldig overstyring": "Invalid override",
   "Ugyldig pause": "Invalid pause",
@@ -2236,9 +2286,12 @@ export const CATALOG: Record<string, string> = {
   "Varianten brukes på en plakat og kan ikke fjernes.":
     "The variant is used on a poster and cannot be removed.",
   "Varianten eies allerede av produksjonen": "The variant is already owned by the production",
+  "Varianten er en foretrukket referanse for en stilprofil og kan ikke fjernes.":
+    "The variant is a preferred reference for a style profile and cannot be removed.",
   "Varianten for språket": "The variant for the language",
   "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.":
     "The variant has images and cannot be removed. Archive it instead.",
+  "Varianten hører ikke til ressursen": "The variant does not belong to the asset",
   "Varianten hører til en annen ressurs": "The variant belongs to another asset",
   "Varianten må ha et navn (maks 200 tegn)": "The variant must have a name (max 200 characters)",
   "Varianten mangler eller har allerede et oppsett":
@@ -2259,6 +2312,7 @@ export const CATALOG: Record<string, string> = {
   "Velg en scene i hovedproduksjonen.": "Choose a scene in the main production.",
   "Velg en scene med høyst 40 usikre linjer.": "Choose a scene with at most 40 uncertain lines.",
   "Velg en scenenode": "Select a scene node",
+  "Velg en stilprofil eller et referansebilde": "Choose a style profile or a reference image",
   "Velg et gyldig inn/ut-område innenfor scenen.": "Choose a valid in/out range within the scene.",
   "Velg ett bilde å oppskalere.": "Choose one image to upscale.",
   "Velg filer før sletting": "Select files before deleting",
@@ -2268,6 +2322,7 @@ export const CATALOG: Record<string, string> = {
   "Velg hva som skal slettes": "Choose what to delete",
   "Velg minst én linje": "Select at least one line",
   "Velg minst én linje i manuset": "Choose at least one line in the script",
+  "Velg minst ett bilde": "Choose at least one image",
   "Velg minst ett lag fra denne scenen.": "Select at least one layer from this scene.",
   "Velg scenen der endringen er over": "Choose the scene where the change ends",
   "Velg type.": "Choose a type.",
