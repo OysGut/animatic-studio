@@ -1,3 +1,4 @@
+import { serverError } from "@/core/i18n/server-errors";
 /**
  * Serverfunksjon som kjører domenekjernen autoritativt (DEC-0022):
  * innlogget bruker → medlemskap og rolle sjekkes → prosjektet lastes → kommandoen valideres i src/core →
@@ -516,21 +517,21 @@ export function canonicalJson(v: unknown): string {
 }
 
 function validateInput(d: unknown): RunCommandInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw serverError("invalid_request");
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt-ID", "Invalid project ID"));
+    throw serverError("invalid_project_id");
   const cmd = x["command"] as { type?: unknown } | undefined;
   if (!cmd || typeof cmd.type !== "string")
-    throw new Error(L("Ugyldig kommando", "Invalid command"));
+    throw serverError("invalid_command");
   const base = x["baseRevisions"];
   if (base !== undefined && (typeof base !== "object" || base === null))
-    throw new Error(L("Ugyldige revisjoner", "Invalid revisions"));
+    throw serverError("invalid_revisions");
   if (JSON.stringify(cmd).length > MAX_COMMAND_CHARS)
-    throw new Error(L("Endringen er for stor", "The change is too large"));
+    throw serverError("change_too_large");
   const cid = x["commandId"];
   if (cid !== undefined && (typeof cid !== "string" || !isUuid(cid)))
-    throw new Error(L("Ugyldig kommando-ID", "Invalid command ID"));
+    throw serverError("invalid_command_id");
   return {
     ...(typeof cid === "string" ? { commandId: cid } : {}),
     projectId: x["projectId"],
