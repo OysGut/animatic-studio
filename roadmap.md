@@ -1,9 +1,9 @@
 # D fullføring (20.10.2026)
-- [ ] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.
-- [ ] Endelig 0063 med minimal create_project fra 0001 og serverhåndhevet profilbudsjett; ingen Cloud-kjøring.
-- [ ] Felles bakgrunnskø og strømmet PNG-ZIP med fremdrift/avbryt.
-- [ ] P6 NO/EN, full Vitest/DB og bestilte visuelle regresjoner.
-- [ ] REQ-0854–0862, Quality & Cost Engine, build_docs/check_kb og sluttrapport.
+- [x] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.
+- [x] Endelig 0063 med minimal create_project fra 0001 og serverhåndhevet profilbudsjett; ingen Cloud-kjøring.
+- [x] Felles bakgrunnskø og OPFS-strømmet PNG-ZIP med fremdrift/avbryt. Uten OPFS brukes eksisterende minnebaserte PNG-reserve.
+- [x] P6 18/18, P4 39/39, Vitest 1861/0 (10 eksisterende hoppet over), DB 135/135; bestilte regresjoner kjørt. Verifisering4 51/54: Courier Prime + to mikrofonkontroller.
+- [x] REQ-0854–0862, Quality & Cost Engine, build_docs/check_kb og sluttrapport.
 
 # P4 B – Lageksport med alfa (20.10.2026)
 - [x] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
@@ -11,7 +11,7 @@
 - [x] Felles dialog fra eksport, lagpanel og Asset Studio, lokale prosjektvalg.
 - [x] Ekte pikseltester og nettlesernedlasting NO/EN (36/36), DV1–DV8, CA1–CA8, MTS, U5, scene- og lydregresjoner, DB 132/132 og krav REQ-0837–0844. Vitest 1841/0; verifisering4 51/54 (kjente mikrofon-/fontavvik).
 - [ ] P5: linjekobling med godkjente 1:n/n:1-forslag, kostnadsport, kommandoer, lagring og tester. Kartlagt, ikke implementert.
-- [ ] P6: prosjektprofiler, genererings-/eksportoverstyring, kostnad og øyeblikksbilder, migrasjon og tester. Kartlagt, ikke implementert.
+- [x] P6: prosjektprofiler, genererings-/eksportoverstyring, kostnad og øyeblikksbilder, migrasjon og tester. 0063 lokalt; Cloud avventer Claude.
 
 # DV7+DV8 – Avvik, bokmerker og huskelapper (20.10.2026)
 - [x] DV7: felles avviksstatus i drift.ts, røde segmenter, statusikon i sceneeditor/manusutforsker/dialogeditor, ordvis Unicode-diff, gjennomgang med historikk, «Generer alle røde».
