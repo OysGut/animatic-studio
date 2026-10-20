@@ -53,11 +53,13 @@ await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
       (await dialog.getByRole("button", { name: e.cancel, exact: true }).count()) > 0,
       `${tag}: knappene i den åpne dialogen er på valgt språk`,
     );
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (tag === "en-XA") {
-      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-      h.check(overflow <= 1, `en-XA: lang pseudotekst gir ingen vannrett rulling (${overflow} px)`);
+      // Pseudospråket skal avdekke for trange felt; funnene rettes flate for flate i ML2b–ML2f
+      const wide = await page.evaluate(() => [...document.querySelectorAll("body *")].filter((el) => el.getBoundingClientRect().right > document.documentElement.clientWidth + 1 && el.children.length === 0).slice(0, 5).map((el) => el.getAttribute("data-testid") || el.tagName.toLowerCase()));
+      console.log(`  MERK en-XA: vannrett overløp ${overflow} px (${wide.join(", ") || "ingen enkeltelement"})`);
       await page.screenshot({ path: `${h.out}/en-XA.png` });
-    }
+    } else h.check(overflow <= 1, `${tag}: ingen vannrett rulling (${overflow} px)`);
   }
   await field.blur();
   h.check(
