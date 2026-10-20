@@ -275,3 +275,39 @@ Teksten bygges av en variabel i stedet for en fast tekst. Beholdes i broen (`L`)
 - **en-XA avdekker 64 px vannrett overløp i sceneeditoren** med åpen opptaksdialog. Overløpet kommer fra ikoner og tekst i toppstripen. Det er nettopp dette pseudospråket skal finne. Suiten logger det som «MERK», og det rettes i sceneeditor-omgangen (ML2d). nb og en har 0 px.
 - Pseudotekst fra `L` med innsatte verdier aksentuerer også innsatt brukerinnhold, for eksempel navn. Det gjelder bare testspråket og forsvinner når stedet flyttes til `t(key, params)`.
 - Felt som regner ut tekst i `useMemo` uten språk i avhengighetene, kan vise forrige språk til de oppdateres. De tas i omgangen for sin arbeidsflate.
+
+## ML2b – skall og konto (20.10.2026)
+
+**Omfang:** toppmeny og navigasjon (`src/app/shell`), innlogging (`src/app/auth`), konto, profil og personvern (`src/app/account`), prosjektliste og prosjektside (`src/app/projects`, `src/app/project/RejectedTextNotice.tsx`), arbeidsgrupper og invitasjoner (`src/app/workspaces`), delte filmer (`src/app/share`), administrasjon og innstillinger (`src/app/admin`), språkvelgeren (`src/app/i18n`), felles dialoger (`src/components`) og alle sidefiler i `src/routes`.
+
+**Verktøy:** `scripts/i18n/migrate.mjs` erstatter `L(...)` med `t("nøkkel", { navn: String(uttrykk) })` og hele `localized({...})` med `tLocalized({...})`. Nøklene hentes fra ML1-inventaret. Like tekster på samme sted, for eksempel `title` og `aria-label`, beholder hver sin nøkkel (løsning A). Bare kjørbare par flyttes. Dynamiske uttrykk og par med ulik plassholderkontrakt blir stående på broen. Inventaret beholder flyttede par med frosne nb/en-tekster så lenge en nøkkel brukes. Appen laster bare de flyttede nøklene (`src/core/i18n/runtime.gen.json`, 0,3 MB) og ikke de fulle katalogene på 8 MB. en-XA lages fra engelsk ved oppstart.
+
+| Mål | Verdi |
+|---|---|
+| Tekstpar i inventaret | 9 964, ingen tapt (grunnlinjetesten 9 963/9 963) |
+| Flyttet totalt | 1 193 av 9 964 (12,0 %) |
+| Flyttet i skall og konto | 1 193 av 1 199 (99,5 %) |
+| Gjenstående bro | 8 771 par (88,0 %), av dem 6 i skall og konto |
+| Konflikter | 266, uendret og ikke slått sammen; de 27 gruppene som venter på Mars, står fortsatt åpne |
+
+**Igjen på broen i skall og konto:** seks tekster der norsk og engelsk har ulik plassholderkontrakt, fordi flertallsformen er bygd inn i teksten:
+- BackupDialogs.tsx:161 (manglende filer)
+- DurationOverview.tsx:360 (antall scener i prognosen)
+- PromotionDialog.tsx:173 (antall endringer)
+- QualityProfilesSection.tsx:118 (antall varianter)
+- FilmShareDialog.tsx:180 (dato, fast `nb-NO`)
+- prosjekt.$projectId.tsx:72 (eieren er blokkert)
+
+De trenger flertallsmeldinger, det vil si nye katalogoppføringer. Derfor tas de i kjerne- og serveromgangen sammen med de andre flertallstekstene, ikke gjennom automatisk omskriving.
+
+**Første tegning (retting):** på `/personvern` med lagret engelsk kom det et hydreringsavvik, og det fantes allerede før ML2b. Rutene ligger i egne kodebiter og hydreres etter roten. Lagret språk settes nå først når siden selv er hydrert og det har vært stille i 150 ms. Et vakthold på 2,8 s sørger for at siden aldri blir stående skjult. Teksten er fortsatt skjult til språket er satt, så norsk vises aldri først.
+
+**Overløpet på 64 px i en-XA:** det ligger i sceneeditorens verktøyrad (ikoner og etiketter), ikke i skallet. Skallsidene har 0 px på en-XA. Rettingen er lagt til ML2d.
+
+### Tester (ML2b)
+- Vitest: 1 937 bestått, 0 feilet, 10 eksisterende hoppet over. Nytt: test av flytteverktøyet og en test som viser at alle 1 193 flyttede par gir nøyaktig sin nb- og en-tekst.
+- Språksjekken: 0 feil. Inventaret er ferskt.
+- ml2-languages: 106/106, kjørt tre ganger på rad. Ny del: prosjektliste, konto, prosjektside, personvern og invitasjon på nb, en og en-XA, uten vannrett rulling, uten nøkkelfeil og uten hydreringsavvik.
+- u5-screens: 65/65.
+- verifisering4: 51/54. De tre feilene er de samme miljøfeilene som før: mikrofon (to kontroller) og fontmålet 6,439 em.
+- DB-tester er ikke kjørt i ML2b fordi ingen databasekode er endret.

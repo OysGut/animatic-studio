@@ -41,8 +41,8 @@
 
 ## B-049 ML2 (20.10.2026)
 - [x] ML2a: språkvelger fra manifestet, en-XA i utvikling, språkbytte uten remontering, ingen lekkasje ved første tegning, stabile serverfeilkoder, ml2-languages-suite
-- [ ] ML2b: skall og konto (venter på neste melding fra Mars)
+- [x] ML2b: skall og konto (1 193 av 1 199 par flyttet; 6 flertallstekster på broen)
 - [ ] ML2c: manus
-- [ ] ML2d: sceneeditor (inkl. en-XA-overløp i toppstripen)
+- [ ] ML2d: sceneeditor (inkl. en-XA-overløp på 64 px, som ligger i sceneeditoren, ikke i skallet)
 - [ ] ML2e: montering og lyd, bibliotek og Asset Studio
 - [ ] ML2f: kjerne og server
