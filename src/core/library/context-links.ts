@@ -16,6 +16,20 @@ import { collation } from "../i18n";
 export type ContextLinkConfidence = "sure" | "uncertain";
 export type ContextLinkRule = "present" | "known_context" | "pronoun";
 
+export interface ContextLinkAssessment {
+  readonly assetId: string | null;
+  readonly confidence: number | null;
+}
+
+/** Bare sikre regler er standardvalg; AI og manuelle mål krever et eget kryss. */
+export function contextLinkDefaultSelected(
+  item: ContextLinkSuggestion,
+  assessed: boolean,
+  changedTarget: boolean,
+): boolean {
+  return item.confidence === "sure" && !assessed && !changedTarget;
+}
+
 export interface ContextLinkSuggestion {
   /** Stabil nøkkel: blokk + ord. */
   readonly key: string;
@@ -196,7 +210,8 @@ export function contextLinkPrompt(
 ): { system: string; user: string } {
   const system =
     "You resolve references in a film screenplay. For each item decide which candidate asset the word refers to, " +
-    "using only the scene text given. Reply with JSON only: {\"links\":[{\"key\":string,\"assetId\":string|null}]}. " +
+    "using only the scene text given. Reply with JSON only: {\"links\":[{\"key\":string,\"assetId\":string|null,\"confidence\":number}]}. " +
+    "Confidence must be a number from 0 to 1 expressing certainty about the selected target. " +
     "Use null when the text does not make it clear. Never invent ids.";
   const parts: string[] = [];
   for (const it of items.slice(0, 40)) {
@@ -223,7 +238,15 @@ export function contextLinksFromJson(
   parsed: unknown,
   items: readonly ContextLinkSuggestion[],
 ): Map<string, string | null> {
-  const out = new Map<string, string | null>();
+  return new Map([...contextLinkAssessmentsFromJson(parsed, items)].map(([key, value]) => [key, value.assetId]));
+}
+
+/** Manglende/ugyldig sikkerhet gir ukjent sikkerhet, aldri et oppdiktet prosenttall. */
+export function contextLinkAssessmentsFromJson(
+  parsed: unknown,
+  items: readonly ContextLinkSuggestion[],
+): Map<string, ContextLinkAssessment> {
+  const out = new Map<string, ContextLinkAssessment>();
   const links = (parsed as { links?: unknown } | null)?.links;
   if (!Array.isArray(links)) return out;
   const byKey = new Map(items.map((i) => [i.key, i]));
@@ -233,8 +256,9 @@ export function contextLinksFromJson(
     const id = (l as Record<string, unknown>)["assetId"];
     const it = typeof key === "string" ? byKey.get(key) : undefined;
     if (!it) continue;
-    if (id === null) out.set(it.key, null);
-    else if (typeof id === "string" && it.candidates.includes(id)) out.set(it.key, id);
+    const score = (l as Record<string, unknown>)["confidence"];
+    const confidence = typeof score === "number" && Number.isFinite(score) && score >= 0 && score <= 1 ? score : null;
+    if (id === null || (typeof id === "string" && it.candidates.includes(id))) out.set(it.key, { assetId: id, confidence });
   }
   return out;
 }
