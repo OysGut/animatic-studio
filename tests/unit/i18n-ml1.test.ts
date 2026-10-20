@@ -181,13 +181,35 @@ describe('ML2b migration tool', () => {
 describe('ML2b runtime catalog', () => {
   it('every migrated text pair renders exactly its frozen nb/en text through t()', () => {
     const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
-    const migrated = mapping.entries.filter((e: { migrated?: boolean }) => e.migrated);
-    expect(migrated.length).toBeGreaterThanOrEqual(1193);
+    const migrated = mapping.entries.filter((e: { migrated?: boolean; supersededBy?: string[] }) => e.migrated && !e.supersededBy);
+    expect(migrated.length).toBeGreaterThanOrEqual(2637);
     for (const e of migrated) {
       const params = Object.fromEntries(e.nb.parameters.map((p: { name: string }) => [p.name, `«${p.name}»`]));
       const fill = (text: string) => text.replace(/\{([A-Za-z_]\w*)\}/g, (_, n: string) => `«${n}»`);
       expect(t(e.key, params, 'nb')).toBe(fill(e.nb.text));
       expect(t(e.key, params, 'en')).toBe(fill(e.en.text));
     }
+  });
+});
+describe('ML2c authored plural, select and date messages', () => {
+  it('reproduce the six former shell texts word for word', () => {
+    for (const lang of ['nb', 'en'] as const) {
+      const old = (n: number, nb: string, en: string) => (lang === 'nb' ? nb : en).replace('#', String(n));
+      expect(t('app-projects-backup-dialogs.missing-files', { count: 1 }, lang)).toBe(old(1, 'Sikkerhetskopien er laget, men # fil kunne ikke hentes (se MANGLER.txt i zip-filen).', 'The backup was made, but # file could not be fetched (see MANGLER.txt in the zip file).'));
+      expect(t('app-projects-backup-dialogs.missing-files', { count: 3 }, lang)).toBe(old(3, 'Sikkerhetskopien er laget, men # filer kunne ikke hentes (se MANGLER.txt i zip-filen).', 'The backup was made, but # files could not be fetched (see MANGLER.txt in the zip file).'));
+      expect(t('app-projects-promotion-dialog.changes-carried-over', { count: 2 }, lang)).toBe(old(2, '# endringer er ført over til hovedfilmen.', '# changes have been carried over to the main film.'));
+      expect(t('app-projects-quality-profiles-section.variants', { count: 1 }, lang)).toBe(old(1, '# variant', '# variant'));
+      expect(t('app-projects-quality-profiles-section.variants', { count: 4 }, lang)).toBe(old(4, '# varianter', '# variants'));
+      const lines = t('app-projects-duration-overview.forecast-basis-lines', { count: 1 }, lang);
+      expect(t('app-projects-duration-overview.forecast-basis', { scenes: 2, lines }, lang)).toBe(lang === 'nb' ? ', basert på 2 ferdige scener og 1 replikk med lyd' : ', based on 2 finished scenes and 1 line with audio');
+      const date = new Date('2026-11-05T12:00:00Z');
+      expect(t('app-share-film-share-dialog.expires', { date }, lang)).toBe(lang === 'nb' ? ` til ${date.toLocaleDateString('nb-NO')}` : ` until ${date.toLocaleDateString('en-GB')}`);
+      expect(t('routes-prosjekt-project-id.owner-blocked', { adminEmail: 'a@b.no' }, lang)).toBe(lang === 'nb' ? 'Eieren av prosjektet er blokkert. Kontakt administrator på a@b.no.' : 'The owner of the project is blocked. Contact the administrator at a@b.no.');
+    }
+  });
+  it('en-XA never pseudo-translates codes, numbers or inserted values', () => {
+    const text = t('app-projects-quality-profiles-section.variants', { count: 12 }, 'en-XA');
+    expect(text).toContain('12');
+    expect(t('routes-prosjekt-project-id.owner-blocked', { adminEmail: 'nb@x.no' }, 'en-XA')).toContain('nb@x.no');
   });
 });

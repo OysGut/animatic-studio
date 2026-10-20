@@ -36,6 +36,7 @@ import {
   type SectionKey,
 } from "./profile-fields";
 import { sceneLabel, scenesByStoryTime, storyCharacters } from "./storylab-data";
+import { t as tk } from "@/core/i18n/keyed";
 
 const SAVE_DELAY_MS = 700;
 
@@ -88,7 +89,7 @@ export function CharacterWorkspace({
     saved.current = p;
     const e = cmds.run(
       { type: "SetStoryProfile", profileId: profileId.current as never, assetId: asset.id, profile: p },
-      L(`Profil for ${asset.name}`, `Profile for ${asset.name}`),
+      tk("app-storylab-character-workspace.e.cmds-run.4e9d9abe57b4", { name: String(asset.name) }),
       `storylab-profile-${asset.id}`,
     );
     setErr(e);
@@ -122,25 +123,25 @@ export function CharacterWorkspace({
         status={
           <span className="text-xs text-text-tertiary" data-testid="storylab-profile-status" role="status">
             {invalid
-              ? L("Ikke lagret: rett feilen i feltet", "Not saved: fix the error in the field")
+              ? tk("app-storylab-character-workspace.character-workspace.span.8f9b3903a3c4")
               : pending
-                ? L("Ulagrede endringer …", "Unsaved changes …")
+                ? tk("app-storylab-character-workspace.character-workspace.span.ab9fed06d72e")
                 : err
                   ? err
                   : draft
-                    ? L("Lagret", "Saved")
+                    ? tk("app-storylab-character-workspace.character-workspace.span.4b264c65ac75")
                     : ""}
           </span>
         }
       >
         <ToolbarButton onClick={onTalk} disabled={!editable} data-testid="storylab-talk">
           <MessageSquare />
-          {L(`Snakk med ${asset.name}`, `Talk to ${asset.name}`)}
+          {tk("app-storylab-character-workspace.character-workspace.toolbar-button.84ae6f9c1029", { name: String(asset.name) })}
         </ToolbarButton>
         {editable ? (
           <ToolbarButton onClick={() => setGenOpen(true)} data-testid="storylab-generate">
             <AiGlyph />
-            {L("Lag profil med AI …", "Create profile with AI …")}
+            {tk("app-storylab-character-workspace.character-workspace.toolbar-button.3ddc3c238116")}
           </ToolbarButton>
         ) : null}
         {editable && active ? (
@@ -149,13 +150,13 @@ export function CharacterWorkspace({
               setErr(
                 cmds.run(
                   { type: "RemoveStoryProfile", profileId: active.id, removed: true },
-                  L(`Fjern profilen til ${asset.name}`, `Remove the profile of ${asset.name}`),
+                  tk("app-storylab-character-workspace.character-workspace.cmds-run.4a6f5e89223c", { name: String(asset.name) }),
                 ),
               )
             }
           >
             <Trash2 />
-            {L("Fjern profil", "Remove profile")}
+            {tk("app-storylab-character-workspace.character-workspace.toolbar-button.f8e5374e5ec2")}
           </ToolbarButton>
         ) : null}
       </Toolbar>
@@ -164,26 +165,26 @@ export function CharacterWorkspace({
           <div className="space-y-3 p-6 text-[13px] text-text-secondary">
             {removed ? (
               <>
-                <p>{L("Profilen er fjernet. Stadier og fakta er beholdt.", "The profile has been removed. Stages and facts are kept.")}</p>
+                <p>{tk("app-storylab-character-workspace.character-workspace.p.9711edf20e27")}</p>
                 {editable ? (
                   <ToolbarButton
                     onClick={() =>
                       setErr(
                         cmds.run(
                           { type: "RemoveStoryProfile", profileId: removed.id, removed: false },
-                          L("Hent tilbake profilen", "Restore the profile"),
+                          tk("app-storylab-character-workspace.character-workspace.cmds-run.0987cdaca7ba"),
                         ),
                       )
                     }
                   >
                     <Undo2 />
-                    {L("Hent tilbake profilen", "Restore the profile")}
+                    {tk("app-storylab-character-workspace.character-workspace.toolbar-button.0987cdaca7ba")}
                   </ToolbarButton>
                 ) : null}
               </>
             ) : (
               <>
-                <p>{L(`${asset.name} har ingen profil ennå.`, `${asset.name} has no profile yet.`)}</p>
+                <p>{tk("app-storylab-character-workspace.character-workspace.p.c3e5f02a0f35", { name: String(asset.name) })}</p>
                 {editable ? (
                   <ToolbarButton
                     data-testid="storylab-create-profile"
@@ -194,7 +195,7 @@ export function CharacterWorkspace({
                     }}
                   >
                     <Plus />
-                    {L("Lag tom profil", "Create empty profile")}
+                    {tk("app-storylab-character-workspace.character-workspace.toolbar-button.5ed1a21a85a3")}
                   </ToolbarButton>
                 ) : null}
               </>
@@ -210,8 +211,8 @@ export function CharacterWorkspace({
                     open: open[sec],
                     onToggle: () => setOpen({ ...open, [sec]: !open[sec] }),
                     label: open[sec]
-                      ? L(`Legg sammen ${sectionLabel(sec)}`, `Collapse ${sectionLabel(sec)}`)
-                      : L(`Vis ${sectionLabel(sec)}`, `Show ${sectionLabel(sec)}`),
+                      ? tk("app-storylab-character-workspace.label.label.715cf003ff70", { value1: String(sectionLabel(sec)) })
+                      : tk("app-storylab-character-workspace.label.label.74bc66d36bba", { value1: String(sectionLabel(sec)) }),
                   }}
                 />
                 {open[sec] ? (
@@ -279,19 +280,19 @@ function ArcSection({
   return (
     <section data-testid="storylab-arc">
       <PanelHeader
-        title={L("Karakterbue", "Character arc")}
+        title={tk("app-storylab-character-workspace.arc-section.title.b8dda9f7085d")}
         count={stages.length}
         collapse={{
           open,
           onToggle: () => setOpen(!open),
-          label: open ? L("Legg sammen karakterbuen", "Collapse the character arc") : L("Vis karakterbuen", "Show the character arc"),
+          label: open ? tk("app-storylab-character-workspace.label.label.892a50b17ca2") : tk("app-storylab-character-workspace.label.label.3f6e9968474f"),
         }}
         actions={
           editable && free ? (
             <IconButton
               data-testid="storylab-stage-add"
-              label={L("Nytt stadium", "New stage")}
-              title={L("Nytt stadium", "New stage")}
+              label={tk("app-storylab-character-workspace.arc-section.label.e4fa46f524b3")}
+              title={tk("app-storylab-character-workspace.arc-section.title.e4fa46f524b3")}
               onClick={() =>
                 setErr(
                   cmds.run(
@@ -302,7 +303,7 @@ function ArcSection({
                       fromSceneId: free.sceneId as never,
                       patch: {},
                     },
-                    L("Nytt stadium i karakterbuen", "New stage in the character arc"),
+                    tk("app-storylab-character-workspace.arc-section.cmds-run.cbffd3d2de88"),
                   ),
                 )
               }
@@ -316,10 +317,7 @@ function ArcSection({
         <div className="space-y-3 p-4">
           {stages.length === 0 ? (
             <p className="text-[13px] text-text-tertiary">
-              {L(
-                "Ingen stadier. Et stadium overstyrer felt i profilen fra en scene og utover i fortellingen.",
-                "No stages. A stage overrides profile fields from a scene onwards in the story.",
-              )}
+              {tk("app-storylab-character-workspace.arc-section.p.1a8352a1b17e")}
             </p>
           ) : null}
           {stages.map((g) => (
@@ -367,7 +365,7 @@ function StageEditor({
     <div className="rounded-sm border border-border bg-surface-2 p-3" data-testid="storylab-stage">
       <div className="flex flex-wrap items-center gap-2">
         <label className="text-[12px] text-text-secondary">
-          {L("Fra scene", "From scene")}{" "}
+          {tk("app-storylab-character-workspace.stage-editor.label.a159496ebbd1")}{" "}
           <select
             value={fromSceneId}
             disabled={!editable}
@@ -384,14 +382,14 @@ function StageEditor({
         {editable ? (
           <select
             value=""
-            aria-label={L("Overstyr et felt", "Override a field")}
+            aria-label={tk("app-storylab-character-workspace.stage-editor.aria-label.9940c56fcaf3")}
             onChange={(e) => {
               const d = defs.find((x) => fieldId(x) === e.target.value);
               if (d) setPatch(setPatchField(patch, d, getField(base, d) ?? emptyValue(d) ?? ""));
             }}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
           >
-            <option value="">{L("Overstyr et felt …", "Override a field …")}</option>
+            <option value="">{tk("app-storylab-character-workspace.stage-editor.option.9fdfc39efa16")}</option>
             {unused.map((d) => (
               <option key={fieldId(d)} value={fieldId(d)}>
                 {sectionLabel(d.section)} · {d.label}
@@ -408,20 +406,20 @@ function StageEditor({
                 onError(
                   cmds.run(
                     { type: "UpdateStoryProfileStage", stageId: stage.id, fromSceneId: fromSceneId as never, patch },
-                    L("Endre stadium", "Change stage"),
+                    tk("app-storylab-character-workspace.stage-editor.cmds-run.b39b3591dd73"),
                   ),
                 )
               }
             >
-              {L("Lagre stadium", "Save stage")}
+              {tk("app-storylab-character-workspace.stage-editor.toolbar-button.a0a0e1681fd1")}
             </ToolbarButton>
           ) : null}
           {editable ? (
             <IconButton
-              label={L("Fjern stadiet", "Remove the stage")}
-              title={L("Fjern stadiet", "Remove the stage")}
+              label={tk("app-storylab-character-workspace.stage-editor.label.ae52fad4a998")}
+              title={tk("app-storylab-character-workspace.stage-editor.title.ae52fad4a998")}
               onClick={() =>
-                onError(cmds.run({ type: "RemoveStoryProfileStage", stageId: stage.id, removed: true }, L("Fjern stadium", "Remove stage")))
+                onError(cmds.run({ type: "RemoveStoryProfileStage", stageId: stage.id, removed: true }, tk("app-storylab-character-workspace.stage-editor.cmds-run.6b781661047c")))
               }
             >
               <Trash2 />
@@ -447,7 +445,7 @@ function StageEditor({
                 onClick={() => setPatch(setPatchField(patch, d, undefined))}
                 className="mt-5 rounded-sm px-1.5 text-[12px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
               >
-                {L("Ikke overstyr", "Don’t override")}
+                {tk("app-storylab-character-workspace.stage-editor.button.1993f484d5d4")}
               </button>
             ) : null}
           </div>

@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Inspector } from "@/app/script/Inspector";
 import { ScriptPageView, type Selection } from "@/app/script/ScriptPageView";
 import type { Commands } from "@/app/project/use-commands";
+import { t } from "@/core/i18n/keyed";
 
 const PAGE_PX = 51 * 16; // sidebredde ved 100 %
 const NOOP = () => undefined;
@@ -123,8 +124,8 @@ function Body({
   const variant = occ ? state.variants[occ.variantId] : undefined;
   const number = occ ? sceneNumberOf(state, occ) : null;
   const title = variant
-    ? `${number ? `${L("Scene", "Scene")} ${number} · ` : ""}${formatHeading(variant.heading)}`
-    : L("Manus", "Script");
+    ? `${number ? `${t("app-scene-editor-scene-script-dialog.title.message.2acb3aba99a1")} ${number} · ` : ""}${formatHeading(variant.heading)}`
+    : t("app-scene-editor-scene-script-dialog.title.message.6534e69fde9a");
 
   function select(s: Selection) {
     // Bare scenen som redigeres (forrige og neste er til lesing); en ny scene fra «Del scenen» følges
@@ -166,15 +167,12 @@ function Body({
           {title}
         </DialogTitle>
         <DialogDescription className="sr-only">
-          {L(
-            "Manuset for scenen. Klikk en linje for å redigere den i panelet til høyre.",
-            "The script for the scene. Click a line to edit it in the panel on the right.",
-          )}
+          {t("app-scene-editor-scene-script-dialog.body.dialog-description.7f3c7b199339")}
         </DialogDescription>
         <div className="ml-auto flex items-center gap-3 text-xs text-text-secondary">
           <label
             className="flex items-center gap-1.5"
-            title={prev ? undefined : L("Ingen scene før", "No scene before")}
+            title={prev ? undefined : t("app-scene-editor-scene-script-dialog.body.title.aad85a7b6781")}
           >
             <input
               type="checkbox"
@@ -183,11 +181,11 @@ function Body({
               onChange={(e) => setShowPrev(e.target.checked)}
               data-testid="scene-script-show-prev"
             />
-            {L("Vis forrige scene", "Show previous scene")}
+            {t("app-scene-editor-scene-script-dialog.body.label.cd50860da352")}
           </label>
           <label
             className="flex items-center gap-1.5"
-            title={next ? undefined : L("Ingen scene etter", "No scene after")}
+            title={next ? undefined : t("app-scene-editor-scene-script-dialog.body.title.f7f143466bb4")}
           >
             <input
               type="checkbox"
@@ -196,7 +194,7 @@ function Body({
               onChange={(e) => setShowNext(e.target.checked)}
               data-testid="scene-script-show-next"
             />
-            {L("Vis neste scene", "Show next scene")}
+            {t("app-scene-editor-scene-script-dialog.body.label.cef106e843f5")}
           </label>
           <span className="h-5 w-px bg-border" aria-hidden />
           <Button
@@ -204,8 +202,8 @@ function Body({
             variant="ghost"
             onClick={cmds.undo}
             disabled={!editable}
-            aria-label={L("Angre", "Undo")}
-            title={L("Angre (⌘/Ctrl + Z)", "Undo (⌘/Ctrl + Z)")}
+            aria-label={t("app-scene-editor-scene-script-dialog.body.aria-label.192f6b987bb4")}
+            title={t("app-scene-editor-scene-script-dialog.body.title.c2f04ca15be5")}
           >
             <Undo2 />
           </Button>
@@ -214,8 +212,8 @@ function Body({
             variant="ghost"
             onClick={cmds.redo}
             disabled={!editable}
-            aria-label={L("Gjør om", "Redo")}
-            title={L("Gjør om (Shift + ⌘/Ctrl + Z)", "Redo (Shift + ⌘/Ctrl + Z)")}
+            aria-label={t("app-scene-editor-scene-script-dialog.body.aria-label.addea2b2679b")}
+            title={t("app-scene-editor-scene-script-dialog.body.title.10d04fcddbe1")}
           >
             <Redo2 />
           </Button>
@@ -226,7 +224,7 @@ function Body({
           {showPrev
             ? neighbour(
                 prev,
-                L("Forrige scene – bare lesing", "Previous scene – read only"),
+                t("app-scene-editor-scene-script-dialog.body.neighbour.872cc0b3779f"),
                 "scene-script-prev",
               )
             : null}
@@ -236,10 +234,7 @@ function Body({
           >
             {at < 0 ? (
               <p className="px-6 pt-6 text-[13px] text-text-secondary">
-                {L(
-                  "Scenen er deaktivert og står ikke på manussidene. Slå den på i manuset for å se teksten her.",
-                  "The scene is deactivated and is not on the script pages. Turn it on in the script to see the text here.",
-                )}
+                {t("app-scene-editor-scene-script-dialog.body.p.5f8fca2e7508")}
               </p>
             ) : (
               <ScriptPageView
@@ -256,7 +251,7 @@ function Body({
           {showNext
             ? neighbour(
                 next,
-                L("Neste scene – bare lesing", "Next scene – read only"),
+                t("app-scene-editor-scene-script-dialog.body.neighbour.0fd535edeed7"),
                 "scene-script-next",
               )
             : null}

@@ -158,10 +158,7 @@ export function BackupDialog({
           : {
               kind: missing.length ? "error" : "ok",
               text: missing.length
-                ? L(
-                    `Sikkerhetskopien er laget, men ${missing.length} ${missing.length === 1 ? "fil" : "filer"} kunne ikke hentes (se MANGLER.txt i zip-filen).`,
-                    `The backup was made, but ${missing.length} ${missing.length === 1 ? "file" : "files"} could not be fetched (see MANGLER.txt in the zip file).`,
-                  )
+                ? t("app-projects-backup-dialogs.missing-files", { count: missing.length })
                 : t("app-projects-backup-dialogs.text.text.2db3611d8b9f", { name: String(name) }),
             },
       );

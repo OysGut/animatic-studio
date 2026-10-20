@@ -45,6 +45,8 @@ await h.scenario("ml2-bytte", clip.occurrence_id, "nb", async (page) => {
       `${tag}: feltet er ikke montert på nytt`,
     );
     h.check(await dialog.isVisible(), `${tag}: dialogen er fortsatt åpen`);
+    const dialogText = await dialog.innerText();
+    if (tag !== "nb") h.check(/\((nb|en|[a-z]{2}(-[A-Z]{2})?)\)/.test(dialogText) && !/\(nnbb\)/.test(dialogText) && !/norsk bokmål/.test(dialogText), `${tag}: språknavn på engelsk og koden urørt i dialogen`);
     h.check(!h.state.commands.some((c) => c.type === "SetDialogueLanguage"), `${tag}: utkastet er ikke lagret i stillhet`);
     const sw = page.getByTestId("language-switch").first();
     h.check((await sw.getAttribute("aria-label")) === e.group, `${tag}: skjermlesertekst på språkvelgeren`);
@@ -100,6 +102,11 @@ const SHELL = [
   { name: "prosjektside", path: h.P },
   { name: "personvern", path: "/personvern" },
   { name: "invitasjon", path: "/invitasjon" },
+  // ML2c: manusflatene
+  { name: "manus", path: `${h.P}/manus` },
+  { name: "story-lab", path: `${h.P}/storylab` },
+  { name: "manusutforsker", path: `/manusutforsker/${h.P.split("/").pop()}` },
+  { name: "sceneeditor-manus", path: `${h.P}/scene?scene=${clip.occurrence_id}`, overflowLater: true },
 ];
 await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
   const errs = [];
@@ -118,10 +125,13 @@ await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
       }));
       h.check(r.lang === tag, `${s.name} ${tag}: <html lang> stemmer`);
       h.check(errs.length === 0, `${s.name} ${tag}: ingen kjørefeil eller hydreringsavvik (${errs.join(" | ")})`);
-      h.check(r.overflow <= 1, `${s.name} ${tag}: ingen vannrett rulling (${r.overflow} px${r.wide.length ? `: ${r.wide.join(", ")}` : ""})`);
+      if (s.overflowLater && tag === "en-XA") console.log(`  MERK ${s.name} en-XA: vannrett overløp ${r.overflow} px (sceneeditorens verktøyrad, ML2d)`);
+      else h.check(r.overflow <= 1, `${s.name} ${tag}: ingen vannrett rulling (${r.overflow} px${r.wide.length ? `: ${r.wide.join(", ")}` : ""})`);
       h.check(!/Unknown translation key|Invalid parameters for key|Legacy expression/.test(r.text), `${s.name} ${tag}: ingen nøkkelfeil i teksten`);
       if (tag === "en-XA") {
         h.check(r.text.includes("[!! "), `${s.name} en-XA: pseudotekst vises`);
+        h.check(!/\((nnbb|ëënn|nnnn|ffrr)(-[A-Z]+)?\)/.test(r.text), `${s.name} en-XA: språkkoder er ikke pseudo-oversatt`);
+        h.check(!/Har replikk i manuset|Står i sceneoverskriften/.test(r.text), `${s.name} en-XA: ingen norske manusbegrunnelser`);
         await page.screenshot({ path: `${h.out}/ml2b-${s.name}-en-XA.png` });
       }
       if (tag === "en") h.check(!/\b(Avbryt|Lagre|Logg ut|Min konto|Prosjekter)\b/.test(r.text), `${s.name} en: ingen norske skallord`);

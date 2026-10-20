@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "note": "ML2: håndskrevne meldinger (flertall, valg og datoer) som erstatter tekstpar broen ikke kunne flytte. Tekstene er ordrett de gamle; `replaces` viser hvilke ML1-nøkler de avløser.",
+  "messages": {
+    "app-projects-backup-dialogs.missing-files": {
+      "replaces": ["app-projects-backup-dialogs.text.text.1540462f7768"],
+      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "Sikkerhetskopien er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).", "other": "Sikkerhetskopien er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)." } } },
+      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "The backup was made, but {count} file could not be fetched (see MANGLER.txt in the zip file).", "other": "The backup was made, but {count} files could not be fetched (see MANGLER.txt in the zip file)." } } }
+    },
+    "app-projects-duration-overview.forecast-basis": {
+      "replaces": ["app-projects-duration-overview.duration-overview.p.ff0c4803eec4"],
+      "nb": { "text": null, "plural": { "parameter": "scenes", "forms": { "one": ", basert på {scenes} ferdig scene og {lines}", "other": ", basert på {scenes} ferdige scener og {lines}" } } },
+      "en": { "text": null, "plural": { "parameter": "scenes", "forms": { "one": ", based on {scenes} finished scene and {lines}", "other": ", based on {scenes} finished scenes and {lines}" } } }
+    },
+    "app-projects-duration-overview.forecast-basis-lines": {
+      "replaces": ["app-projects-duration-overview.duration-overview.p.ff0c4803eec4"],
+      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} replikk med lyd", "other": "{count} replikker med lyd" } } },
+      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} line with audio", "other": "{count} lines with audio" } } }
+    },
+    "app-projects-promotion-dialog.changes-carried-over": {
+      "replaces": ["app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550"],
+      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} endring er ført over til hovedfilmen.", "other": "{count} endringer er ført over til hovedfilmen." } } },
+      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} change has been carried over to the main film.", "other": "{count} changes have been carried over to the main film." } } }
+    },
+    "app-projects-quality-profiles-section.variants": {
+      "replaces": ["app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094"],
+      "nb": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} variant", "other": "{count} varianter" } } },
+      "en": { "text": null, "plural": { "parameter": "count", "forms": { "one": "{count} variant", "other": "{count} variants" } } }
+    },
+    "app-share-film-share-dialog.expires": {
+      "replaces": ["app-share-film-share-dialog.film-share-dialog.p.830f8eda6754"],
+      "nb": { "text": " til {date}", "formats": { "date": { "type": "date" } } },
+      "en": { "text": " until {date}", "formats": { "date": { "type": "date" } } }
+    },
+    "routes-prosjekt-project-id.owner-blocked-with-owner": {
+      "replaces": ["routes-prosjekt-project-id.project-layout.p.de039078a0f5"],
+      "nb": { "text": "Eieren av prosjektet er blokkert. Kontakt eieren ({ownerName}) eller administrator på {adminEmail}." },
+      "en": { "text": "The owner of the project is blocked. Contact the owner ({ownerName}) or the administrator at {adminEmail}." }
+    },
+    "routes-prosjekt-project-id.owner-blocked": {
+      "replaces": ["routes-prosjekt-project-id.project-layout.p.de039078a0f5"],
+      "nb": { "text": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}." },
+      "en": { "text": "The owner of the project is blocked. Contact the administrator at {adminEmail}." }
+    }
+  }
+}

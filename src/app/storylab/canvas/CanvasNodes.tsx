@@ -25,6 +25,7 @@ import { memo, type ComponentType } from "react";
 import { L, canvasNodeKindLabel, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
 import { AssetThumb } from "@/app/library/AssetThumb";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 export const KIND_ICON: Record<CanvasNodeKind, LucideIcon> = {
   premise: BookOpen,
@@ -77,14 +78,14 @@ export const COLOR_TOKENS: Record<string, string> = {
 
 export function colorLabel(token: string): string {
   const labels: Record<string, string> = {
-    "accent-brand": L("Aksent", "Accent"),
-    "accent-warm": L("Varm", "Warm"),
-    "status-success": L("Grønn", "Green"),
-    "status-danger": L("Rød", "Red"),
-    "status-running": L("Blå", "Blue"),
-    "status-uncertain": L("Gul", "Yellow"),
-    "status-discrepancy": L("Oransje", "Orange"),
-    note: L("Notat", "Note"),
+    "accent-brand": t("app-storylab-canvas-canvas-nodes.accent-brand.accent-brand.0b1cc44ff2cf"),
+    "accent-warm": t("app-storylab-canvas-canvas-nodes.accent-warm.accent-warm.79e6a4bde59b"),
+    "status-success": t("app-storylab-canvas-canvas-nodes.status-success.status-success.b1fc5276ed8f"),
+    "status-danger": t("app-storylab-canvas-canvas-nodes.status-danger.status-danger.39de3665e2e0"),
+    "status-running": t("app-storylab-canvas-canvas-nodes.status-running.status-running.3ef4ba5dd95d"),
+    "status-uncertain": t("app-storylab-canvas-canvas-nodes.status-uncertain.status-uncertain.301fff7cbc3e"),
+    "status-discrepancy": t("app-storylab-canvas-canvas-nodes.status-discrepancy.status-discrepancy.9c6225d46104"),
+    note: t("app-storylab-canvas-canvas-nodes.note.note.280ce95b5018"),
   };
   return labels[token] ?? token;
 }
@@ -126,7 +127,7 @@ function NodeBody({ data, selected, kind }: NodeProps<StoryFlowNode> & { kind: C
       data-node-id={n.id}
       className={`flex h-full w-full flex-col overflow-hidden rounded-sm border-l-4 border bg-surface-2 p-2 text-[12px] text-text-primary shadow-sm ${accent} ${selected ? "ring-2 ring-focus-ring" : ""}`}
     >
-      <Handle type="target" position={Position.Left} aria-label={L("Koble hit", "Connect here")} />
+      <Handle type="target" position={Position.Left} aria-label={t("app-storylab-canvas-canvas-nodes.node-body.aria-label.60e39e1fafa3")} />
       <div className="flex min-w-0 items-center gap-1.5">
         {(kind === "character" || kind === "location") && n.assetId ? (
           <AssetThumb state={data.state} assetId={n.assetId} url={data.cover} size="sm" />
@@ -143,20 +144,20 @@ function NodeBody({ data, selected, kind }: NodeProps<StoryFlowNode> & { kind: C
               e.stopPropagation();
               data.onOpen?.(n);
             }}
-            aria-label={n.sceneId ? L("Åpne i Scenelaben", "Open in the Scene Lab") : L("Åpne karakteren", "Open the character")}
+            aria-label={n.sceneId ? t("app-storylab-canvas-canvas-nodes.node-body.aria-label.5bbbbf07456c") : t("app-storylab-canvas-canvas-nodes.node-body.aria-label.406f71ff7ff1")}
           >
-            {L("Åpne", "Open")}
+            {t("app-storylab-canvas-canvas-nodes.node-body.button.73160a1f3319")}
           </button>
         ) : null}
       </div>
-      <strong className="mt-1 line-clamp-2 break-words font-medium">{n.title || L("Uten tittel", "Untitled")}</strong>
+      <strong className="mt-1 line-clamp-2 break-words font-medium">{n.title || t("app-storylab-canvas-canvas-nodes.node-body.strong.53b4cb83313f")}</strong>
       {data.sceneInfo ? (
         <span className="text-[11px] text-text-secondary">
           {data.sceneInfo.heading} · {data.sceneInfo.time}
         </span>
       ) : null}
       {n.body ? <p className="mt-1 line-clamp-3 break-words text-text-secondary">{n.body}</p> : null}
-      <Handle type="source" position={Position.Right} aria-label={L("Koble herfra", "Connect from here")} />
+      <Handle type="source" position={Position.Right} aria-label={t("app-storylab-canvas-canvas-nodes.node-body.aria-label.e00fa4c90f76")} />
     </div>
   );
 }

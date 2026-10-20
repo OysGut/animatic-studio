@@ -24,6 +24,7 @@ import {
   type DialogueVersionMeta,
 } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
+import { t } from "@/core/i18n/keyed";
 
 type Run = Pick<Commands, "runAndWait">;
 
@@ -64,7 +65,7 @@ async function newSoundAsset(
         },
       ],
     },
-    L(`Ny lyd «${name}»`, `New audio “${name}”`),
+    t("app-audio-takes.new-sound-asset.run.cc17ebba9725", { name: String(name) }),
     group,
   );
   await run(
@@ -75,7 +76,7 @@ async function newSoundAsset(
       assetId: assetId as never,
       fields: { name: variantName, style: "other", appearance: "" },
     },
-    L("Ny lydvariant", "New audio variant"),
+    t("app-audio-takes.new-sound-asset.run.25f24158bf25"),
     group,
   );
   return { assetId, variantId };
@@ -105,7 +106,7 @@ async function addVersion(
       media,
       note,
     },
-    L("Nytt lydopptak", "New audio recording"),
+    t("app-audio-takes.add-version.run.152ea4dd0569"),
     group,
   );
   return versionId;
@@ -135,21 +136,21 @@ export async function saveTake(
   if (target.kind === "sound") {
     let variantId = soundVariant(state, target.assetId, target.variantId);
     if (!variantId)
-      variantId = (await newVariant(cmds, target.assetId, L("Opptak", "Recordings"), group))
+      variantId = (await newVariant(cmds, target.assetId, t("app-audio-takes.save-take.new-variant.afe00012969a"), group))
         .variantId;
     const versionId = await addVersion(cmds, variantId, media, note, group);
     return { assetId: target.assetId, variantId, versionId, clipId: null };
   }
   const info = lineInfo(state, target.occurrenceId, target.blockId, target.clipId);
-  if (!info) throw new Error(L("Replikken finnes ikke lenger.", "The line no longer exists."));
+  if (!info) throw new Error(t("app-audio-takes.save-take.message.07d3ed078977"));
   if (info.clip) {
     const generated = dialogueMeta?.source === "ai" && newAssetId
-      ? await newSoundAsset(cmds, lineTitle(info), L("Generert tale", "Generated speech"), group, { assetId: newAssetId, category: L("Dialog (AI)", "Dialogue (AI)") })
+      ? await newSoundAsset(cmds, lineTitle(info), t("app-audio-takes.generated.new-sound-asset.06f621d268ab"), group, { assetId: newAssetId, category: t("app-audio-takes.category.category.39656a5891aa") })
       : null;
     const assetId = generated?.assetId ?? info.clip.assetId;
     let variantId = generated?.variantId ?? soundVariant(state, assetId, info.clip.assetVariantId ?? undefined);
     if (!variantId)
-      variantId = (await newVariant(cmds, assetId, L("Opptak", "Recordings"), group)).variantId;
+      variantId = (await newVariant(cmds, assetId, t("app-audio-takes.save-take.new-variant.afe00012969a.2"), group)).variantId;
     const versionId = await addVersion(cmds, variantId, media, note, group);
     await run(cmds, {
       type: "AddDialogueVersion", dialogueVersionId: newId<"dialogue_version">(), clipId: info.clip.id,
@@ -159,12 +160,12 @@ export async function saveTake(
         source: "record", provider: null, voiceId: null, modelId: null, settings: {},
         scriptRevision: state.blocks[target.blockId]?.currentRev ?? null,
         ...dialogueMeta, parentVersionId: info.clip.activeVersionId ?? null }, activate,
-    }, L("Ny lydversjon for replikken", "New audio version for the line"), group);
+    }, t("app-audio-takes.save-take.run.175dcf9b42af"), group);
     return { assetId, variantId, versionId, clipId: generated ? info.clip.id : null };
   }
   // Første opptak av replikken: ny lydressurs og et lydklipp der replikken begynner
-  const made = await newSoundAsset(cmds, lineTitle(info), L("Opptak", "Recordings"), group, {
-    category: L("Dialog", "Dialogue"),
+  const made = await newSoundAsset(cmds, lineTitle(info), t("app-audio-takes.made.new-sound-asset.4aa46207f4ef"), group, {
+    category: t("app-audio-takes.category.category.0a82e2f5112a"),
     ...(newAssetId ? { assetId: newAssetId } : {}),
   });
   const versionId = await addVersion(cmds, made.variantId, media, note, group);
@@ -198,7 +199,7 @@ export async function saveTake(
         },
       ],
     },
-    L("Replikken lagt i scenen", "Line added to the scene"),
+    t("app-audio-takes.save-take.run.0485f6cde6ad"),
     group,
   );
   return { ...made, versionId, clipId };
@@ -219,7 +220,7 @@ async function newVariant(
       assetId: assetId as never,
       fields: { name, style: "other", appearance: "" },
     },
-    L("Ny lydvariant", "New audio variant"),
+    t("app-audio-takes.new-variant.run.5804becbdc15"),
     group,
   );
   return { variantId };
@@ -242,10 +243,10 @@ export async function saveRoomTone(
     assetId = existing.id;
     variantId = soundVariant(state, assetId);
     if (!variantId)
-      variantId = (await newVariant(cmds, assetId, L("Romlyd", "Room tone"), group)).variantId;
+      variantId = (await newVariant(cmds, assetId, t("app-audio-takes.save-room-tone.new-variant.26f9abeb461a"), group)).variantId;
   } else {
-    const made = await newSoundAsset(cmds, roomToneName(where), L("Romlyd", "Room tone"), group, {
-      category: L("Romlyd", "Room tone"),
+    const made = await newSoundAsset(cmds, roomToneName(where), t("app-audio-takes.made.new-sound-asset.b587bef106d3"), group, {
+      category: t("app-audio-takes.category.category.a6947327116b"),
       tags: [ROOM_TONE_TAG],
       ...(newAssetId ? { assetId: newAssetId } : {}),
     });
@@ -292,7 +293,7 @@ export async function chooseTake(
             },
           ],
         },
-        L("Valgt opptak for replikken", "Chosen recording for the line"),
+        t("app-audio-takes.choose-take.run.14093436a834"),
         group,
       );
     }
@@ -304,7 +305,7 @@ export async function chooseTake(
       variantId: take.variantId as never,
       versionId: take.versionId as never,
     },
-    L("Opptaket godkjent", "Recording approved"),
+    t("app-audio-takes.choose-take.run.808e8391fb65"),
     group,
   );
 }

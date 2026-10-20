@@ -29,6 +29,7 @@ import {
   type ProjectState,
 } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Innrykk og stil per elementtype, omtrent som på manusarket. */
 const KIND_CLASS: Record<BlockKind, string> = {
@@ -174,27 +175,24 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
     else onOpenEditor(blockId);
   };
   const SEEK_LABEL: Record<ScriptSeek["quality"], string> = {
-    exact: L("Tid fra koblingen", "Time from the link"),
-    estimated: L("Tiden er estimert", "The time is estimated"),
-    missing: L("Tiden mangler – avspillingshodet er ikke flyttet", "The time is missing – the playhead was not moved"),
+    exact: tk("app-scene-editor-scene-script-panel.exact.exact.cce8a64495c6"),
+    estimated: tk("app-scene-editor-scene-script-panel.estimated.estimated.336cd8482a62"),
+    missing: tk("app-scene-editor-scene-script-panel.missing.missing.f39b8ad14823"),
   };
   const number = sceneNumberOf(state, occ);
   const open = editable
-    ? L("Rediger manus …", "Edit script …")
-    : L("Vis manuset …", "View the script …");
+    ? tk("app-scene-editor-scene-script-panel.open.memo.181eee19efab")
+    : tk("app-scene-editor-scene-script-panel.open.memo.72a8e5baf403");
   return (
-    <section aria-label={L("Manus", "Script")} className="flex min-h-0 flex-col">
-      <PanelHeader as="h2" title={L("Manus", "Script")} />
+    <section aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.c920515d4016")} className="flex min-h-0 flex-col">
+      <PanelHeader as="h2" title={tk("app-scene-editor-scene-script-panel.scene-script-panel.title.c920515d4016")} />
       <div className={"flex items-center gap-2 px-2 pb-1 pt-1" + (hideEditButton ? " hidden" : "")}>
         <button
           type="button"
           onClick={() => onOpenEditor(null)}
           data-testid="scene-script-edit"
           className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border-control px-2 py-1 text-xs text-text-secondary hover:border-accent-brand hover:text-text-primary"
-          title={L(
-            "Åpne manuset for scenen i et eget vindu med alle redigeringsmulighetene. Dobbeltklikk på en linje for å gå rett til den.",
-            "Open the script for the scene in a separate window with all the editing options. Double-click a line to go straight to it.",
-          )}
+          title={tk("app-scene-editor-scene-script-panel.scene-script-panel.title.6d79c6b3dcae")}
         >
           <FileText className="size-3.5" aria-hidden />
           {open}
@@ -229,7 +227,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
         </p>
         {blocks.length === 0 ? (
           <p className="mt-2 font-sans text-xs text-text-tertiary">
-            {L("Scenen har ingen tekst ennå.", "The scene has no text yet.")}
+            {tk("app-scene-editor-scene-script-panel.scene-script-panel.p.86e4e609c93c")}
           </p>
         ) : null}
         {blocks.map((b, i) => {
@@ -252,8 +250,8 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               onDoubleClick={() => doubleClick(b.id)}
               title={
                 onOpenDialogue && (b.kind === "dialogue" || b.kind === "character")
-                  ? L("Klikk for å gå hit i scenen. Dobbeltklikk for opptak og dialog.", "Click to go here in the scene. Double-click for recording and dialogue.")
-                  : L("Klikk for å gå hit i scenen. Dobbeltklikk for å redigere.", "Click to go here in the scene. Double-click to edit.")
+                  ? tk("app-scene-editor-scene-script-panel.scene-script-panel.title.b4d8bc9bdb42")
+                  : tk("app-scene-editor-scene-script-panel.scene-script-panel.title.5401d3d2e97c")
               }
               className={
                 "relative cursor-default whitespace-pre-wrap rounded-sm " +
@@ -272,7 +270,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
-                  aria-label={L(`${notes} notater`, `${notes} notes`)}
+                  aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.f8c627eda4f7", { notes: String(notes) })}
                 >
                   <MessageSquare className="size-2.5" aria-hidden />
                 </span>
@@ -299,8 +297,8 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
       {noteTarget && run ? (
         <div className="border-t border-border px-3 py-2" data-testid="scene-word-note">
           <NotesPanel state={state} notes={[]} editable={editable} run={run} authorName={authorName}
-            newTarget={noteTarget} newLabel={L("Legg til notat på markeringen", "Add note to selection")} />
-          <Button size="sm" variant="ghost" onClick={() => setNoteTarget(null)}>{L("Lukk", "Close")}</Button>
+            newTarget={noteTarget} newLabel={tk("app-scene-editor-scene-script-panel.scene-script-panel.new-label.52c69bb174ef")} />
+          <Button size="sm" variant="ghost" onClick={() => setNoteTarget(null)}>{tk("app-scene-editor-scene-script-panel.scene-script-panel.button.f40600c92751")}</Button>
         </div>
       ) : null}
     </section>

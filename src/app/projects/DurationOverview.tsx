@@ -357,10 +357,10 @@ export function DurationOverview({
               </span>
               {forecast.fallback
                 ? t("app-projects-duration-overview.duration-overview.p.0e1c518e21c6")
-                : L(
-                    `, basert på ${forecast.basedOnScenes} ${forecast.basedOnScenes === 1 ? "ferdig scene" : "ferdige scener"} og ${forecast.basedOnLines} ${forecast.basedOnLines === 1 ? "replikk" : "replikker"} med lyd`,
-                    `, based on ${forecast.basedOnScenes} finished ${forecast.basedOnScenes === 1 ? "scene" : "scenes"} and ${forecast.basedOnLines} ${forecast.basedOnLines === 1 ? "line" : "lines"} with audio`,
-                  )}
+                : t("app-projects-duration-overview.forecast-basis", {
+                    scenes: forecast.basedOnScenes,
+                    lines: t("app-projects-duration-overview.forecast-basis-lines", { count: forecast.basedOnLines }),
+                  })}
               <span className="text-text-tertiary">
                 {t("app-projects-duration-overview.duration-overview.span.1be46ca01daf")}
               </span>

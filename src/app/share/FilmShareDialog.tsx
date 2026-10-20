@@ -177,10 +177,7 @@ export function FilmShareDialog({
             <p className="text-xs text-text-secondary" data-testid="film-share-status" data-status="available">
               {shareStatusText("available")}
               {active.expiresAt
-                ? L(
-                    ` til ${new Date(active.expiresAt).toLocaleDateString("nb-NO")}`,
-                    ` until ${new Date(active.expiresAt).toLocaleDateString("en-GB")}`,
-                  )
+                ? t("app-share-film-share-dialog.expires", { date: new Date(active.expiresAt) })
                 : ""}
             </p>
             <div className="flex flex-wrap justify-center gap-2">

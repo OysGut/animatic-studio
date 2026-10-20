@@ -12,7 +12,6 @@ import { AiJobsWatcher } from "@/app/ai/video-jobs";
 import { MobileImportWatcher } from "@/app/mobile/use-mobile-imports";
 import { EntityAnalysisWatcher } from "@/app/library/use-entity-analysis";
 import { canEdit, useMembers } from "@/app/project/use-project";
-import { L } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 
@@ -69,10 +68,9 @@ function ProjectLayout() {
               </h1>
               <p className="mt-2 text-[13px] text-text-secondary">
                 {lock.data.lock === "owner_blocked"
-                  ? L(
-                      `Eieren av prosjektet er blokkert. Kontakt ${lock.data.ownerName ? `eieren (${lock.data.ownerName}) eller ` : ""}administrator på ${lock.data.adminEmail ?? ""}.`,
-                      `The owner of the project is blocked. Contact ${lock.data.ownerName ? `the owner (${lock.data.ownerName}) or ` : ""}the administrator at ${lock.data.adminEmail ?? ""}.`,
-                    )
+                  ? lock.data.ownerName
+                    ? t("routes-prosjekt-project-id.owner-blocked-with-owner", { ownerName: lock.data.ownerName, adminEmail: lock.data.adminEmail ?? "" })
+                    : t("routes-prosjekt-project-id.owner-blocked", { adminEmail: lock.data.adminEmail ?? "" })
                   : lock.data.lock === "no_owner"
                     ? t("routes-prosjekt-project-id.project-layout.p.aba08d0d2b17", { value1: String(lock.data.adminEmail ?? "") })
                     : t("routes-prosjekt-project-id.project-layout.p.f6f3bd8e7d04", { value1: String(lock.data.adminEmail ?? "") })}

@@ -52,6 +52,7 @@ import type { Selection } from "./ScriptPageView";
 import type { Commands } from "@/app/project/use-commands";
 import { LineStatusBadge, TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { useStorySuggestions } from "@/app/storylab/suggestions-data";
+import { t } from "@/core/i18n/keyed";
 
 const EDITABLE_KINDS: BlockKind[] = [
   "action",
@@ -95,14 +96,14 @@ export function Inspector(props: Props) {
   const suggestions = useStorySuggestions(props.projectId);
   const openCount = occ ? suggestions.data?.filter((s) => s.status === "open" && s.payload["sceneId"] === occ.sceneId).length ?? 0 : 0;
   return (
-    <aside aria-label={L("Inspektør", "Inspector")} className="flex min-h-0 flex-col">
+    <aside aria-label={t("app-script-inspector.inspector.aria-label.893684118699")} className="flex min-h-0 flex-col">
       <div className="flex h-8 min-w-0 shrink-0 items-center gap-1 overflow-hidden border-b border-border px-3 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
         <span className="shrink-0">
           {block
-            ? L("Manusblokk", "Script block")
+            ? t("app-script-inspector.inspector.span.6430e1c9c262")
             : occ
-              ? L("Scene", "Scene")
-              : L("Manus", "Script")}
+              ? t("app-script-inspector.inspector.span.8fb617b2eb41")
+              : t("app-script-inspector.inspector.span.84ec0326a8c8")}
         </span>
         {occ && occ.active && state.productions[occ.productionId]?.kind === "main" ? (
           <Link
@@ -112,18 +113,12 @@ export function Inspector(props: Props) {
             className="ml-auto flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             title={
               block
-                ? L(
-                    "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen",
-                    "Open the assembly with the playhead where this line or action is in the film",
-                  )
-                : L(
-                    "Åpne monteringen med avspillingshodet ved starten av scenen",
-                    "Open the assembly with the playhead at the start of the scene",
-                  )
+                ? t("app-script-inspector.inspector.title.0d985a195132")
+                : t("app-script-inspector.inspector.title.1582389ef2df")
             }
           >
             <Clapperboard className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">{L("Vis i filmen", "Show in film")}</span>
+            <span className="truncate">{t("app-script-inspector.inspector.span.3681171013f3")}</span>
           </Link>
         ) : null}
         {occ && occ.active ? (
@@ -135,13 +130,10 @@ export function Inspector(props: Props) {
               (state.productions[occ.productionId]?.kind === "main" ? "" : "ml-auto ") +
               "flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
             }
-            title={L(
-              "Åpne denne scenen i sceneeditoren (2D-animatic)",
-              "Open this scene in the scene editor (2D animatic)",
-            )}
+            title={t("app-script-inspector.inspector.title.ea1177837783")}
           >
             <Layers className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">{L("Sceneeditor", "Scene editor")}</span>
+            <span className="truncate">{t("app-script-inspector.inspector.span.85b9015c0bfa")}</span>
           </Link>
         ) : null}
         {occ && !block ? (
@@ -151,13 +143,10 @@ export function Inspector(props: Props) {
             search={{ scene: occ.sceneId }}
             data-testid="inspector-storylab"
             className="flex min-w-0 items-center gap-1 rounded-sm px-1 normal-case tracking-normal text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Undersøk scenen i Story Lab (velges som tidspunkt i fortellingen)",
-              "Explore the scene in Story Lab (chosen as the point in the story)",
-            )}
+            title={t("app-script-inspector.inspector.title.f4833432d85d")}
           >
             <Drama className="size-3.5 shrink-0" aria-hidden />
-            <span className="truncate">{L("Undersøk scene i Story Lab", "Explore scene in Story Lab")}</span>
+            <span className="truncate">{t("app-script-inspector.inspector.span.a9c1c8f137df")}</span>
           </Link>
         ) : null}
         {/* Mikrofonikonet for en replikk (DEC-0093): opptak på datamaskinen og mobilen */}
@@ -173,7 +162,7 @@ export function Inspector(props: Props) {
         ) : null}
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
-        {occ && openCount > 0 ? <Link to="/prosjekt/$projectId/storylab" params={{ projectId: props.projectId }} search={{ scene: occ.sceneId, forslag: "open" }} data-testid="script-storylab-suggestions" className="mb-2 block text-xs text-accent-brand">{L(`${openCount} forslag fra Story Lab`, `${openCount} suggestions from Story Lab`)}</Link> : null}
+        {occ && openCount > 0 ? <Link to="/prosjekt/$projectId/storylab" params={{ projectId: props.projectId }} search={{ scene: occ.sceneId, forslag: "open" }} data-testid="script-storylab-suggestions" className="mb-2 block text-xs text-accent-brand">{t("app-script-inspector.inspector.link.3d53ef93db1d", { openCount: String(openCount) })}</Link> : null}
         {occ ? <SceneChanges {...props} occurrenceId={occ.id} /> : null}
         {/* Tekst mot lyd for replikken (DEC-0095, REQ-0703) – påvirker ikke manuseksporten */}
         {block?.kind === "dialogue" && occ ? (
@@ -257,7 +246,7 @@ function UncertainBox({
         <AlertTriangle className="mt-px size-3.5 shrink-0 text-status-uncertain" aria-hidden />
         <span>
           <span className="font-medium">
-            {L("Usikker tolkning: ", "Uncertain interpretation: ")}
+            {t("app-script-inspector.uncertain-box.span.6c3bf35fcf67")}
           </span>
           {text}
         </span>
@@ -265,7 +254,7 @@ function UncertainBox({
       {editable ? (
         <Button size="sm" variant="secondary" className="mt-2" onClick={onApprove}>
           <Check />
-          {L("Tolkningen er riktig", "The interpretation is correct")}
+          {t("app-script-inspector.uncertain-box.button.80a9025d3328")}
         </Button>
       ) : null}
     </div>
@@ -292,15 +281,9 @@ export function ForkNotice({
   return (
     <div className="mb-4 border border-border bg-surface-2 p-2.5 text-xs text-text-secondary">
       <p>
-        {L(
-          "Denne scenen deles med hovedfilmen. Endrer du den her, får «",
-          "This scene is shared with the main film. If you change it here, “",
-        )}
+        {t("app-script-inspector.fork-notice.p.02ce0d559b19")}
         {prod.name}
-        {L(
-          "» automatisk sin egen versjon av scenen – hovedfilmen endres ikke.",
-          "” automatically gets its own version of the scene – the main film is not changed.",
-        )}
+        {t("app-script-inspector.fork-notice.p.833b4cce76a9")}
       </p>
       <Button
         size="sm"
@@ -313,7 +296,7 @@ export function ForkNotice({
           for (const c of commands) {
             const e = run(
               c,
-              L("Lag egen versjon av scenen", "Make own version of the scene"),
+              t("app-script-inspector.e.run.c2b171c9be97"),
               group,
             );
             if (e) {
@@ -325,7 +308,7 @@ export function ForkNotice({
         }}
       >
         <CopyPlus />
-        {L("Lag egen versjon", "Make own version")}
+        {t("app-script-inspector.fork-notice.button.beae310f4a28")}
       </Button>
       <ErrorText message={err} />
     </div>
@@ -376,7 +359,7 @@ function BlockPanel({
     setErr(
       run(
         { type: "EditBlockText", productionId: pid, blockId: block.id, text },
-        L("Rediger tekst", "Edit text"),
+        t("app-script-inspector.save.run.66c963dd6fcc"),
       ),
     );
   }
@@ -401,7 +384,7 @@ function BlockPanel({
           orderKey: keyBetween(block.orderKey, next?.orderKey ?? null),
         },
       },
-      L("Ny blokk", "New block"),
+      t("app-script-inspector.e.run.b269f88ff57e"),
     );
     setErr(e);
     if (!e) {
@@ -427,7 +410,7 @@ function BlockPanel({
           newOccurrenceIds: map,
           heading: v.heading,
         },
-        L("Del scene", "Split scene"),
+        t("app-script-inspector.split.run.97b4128a914b"),
       ),
     );
   }
@@ -435,12 +418,12 @@ function BlockPanel({
   return (
     <>
       <p className="mb-3 text-xs text-text-tertiary">
-        {L("Scene", "Scene")} {sceneNumberOf(state, occ) ?? L("uten nummer", "unnumbered")} ·{" "}
-        {L("side", "page")} {startPages[occ.id] ?? "–"}
+        {t("app-script-inspector.block-panel.p.876e85475374")} {sceneNumberOf(state, occ) ?? t("app-script-inspector.block-panel.p.1da6ef0d3d9a")} ·{" "}
+        {t("app-script-inspector.block-panel.p.ed3bf51ec389")} {startPages[occ.id] ?? "–"}
         {block.sourceRef ? (
           <>
             {" "}
-            · {L("side", "page")} {block.sourceRef.page} {L("i originalen", "in the original")}
+            · {t("app-script-inspector.block-panel.p.ed3bf51ec389.2")} {block.sourceRef.page} {t("app-script-inspector.block-panel.p.f60cb0db6c7c")}
           </>
         ) : null}
       </p>
@@ -458,15 +441,15 @@ function BlockPanel({
                   targetId: block.id,
                   uncertainty: null,
                 },
-                L("Godkjenn tolkning", "Approve interpretation"),
+                t("app-script-inspector.block-panel.run.a2c780f5e20b"),
               ),
             )
           }
         />
       ) : null}
-      <Section title={L("Elementtype", "Element type")}>
+      <Section title={t("app-script-inspector.block-panel.title.643462bd7347")}>
         <select
-          aria-label={L("Elementtype", "Element type")}
+          aria-label={t("app-script-inspector.block-panel.aria-label.643462bd7347")}
           value={block.kind}
           disabled={!variantEditable}
           onChange={(e) =>
@@ -478,7 +461,7 @@ function BlockPanel({
                   blockId: block.id,
                   kind: e.target.value as BlockKind,
                 },
-                L("Endre elementtype", "Change element type"),
+                t("app-script-inspector.block-panel.run.efa6e11af60a"),
               ),
             )
           }
@@ -491,10 +474,10 @@ function BlockPanel({
           ))}
         </select>
       </Section>
-      <Section title={L("Tekst", "Text")}>
+      <Section title={t("app-script-inspector.block-panel.title.afd57ee1c0d5")}>
         <textarea
           ref={textRef}
-          aria-label={L("Tekst", "Text")}
+          aria-label={t("app-script-inspector.block-panel.aria-label.afd57ee1c0d5")}
           value={text}
           readOnly={!variantEditable}
           onChange={(e) => setText(e.target.value)}
@@ -516,14 +499,11 @@ function BlockPanel({
           }
         />
         <p className="mt-1 text-[11px] text-text-tertiary">
-          {L(
-            "Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.",
-            "Saved when you leave the field (or ⌘/Ctrl + Enter). Esc undoes.",
-          )}
+          {t("app-script-inspector.block-panel.p.878b847ce48d")}
         </p>
       </Section>
       {block.kind === "dialogue" || block.kind === "action" ? (
-        <Section title={L("Koblinger", "Links")}>
+        <Section title={t("app-script-inspector.block-panel.title.98fa6fda1d8b")}>
           <BlockLinksSection
             state={state}
             projectId={projectId}
@@ -533,7 +513,7 @@ function BlockPanel({
           />
         </Section>
       ) : null}
-      <Section title={L("Notater", "Notes")}>
+      <Section title={t("app-script-inspector.block-panel.title.4c90fbe46281")}>
         <NotesPanel
           state={state}
           notes={annotationsOfVariant(state, block.variantId).filter((a) => a.blockId === block.id)}
@@ -542,22 +522,19 @@ function BlockPanel({
           focusId={focusNote}
           authorName={authorName}
           newTarget={{ blockId: block.id, variantId: null, start: 0, end: 0, quote: "" }}
-          newLabel={L("Notat på hele elementet", "Note on the whole element")}
+          newLabel={t("app-script-inspector.block-panel.new-label.48354a6c8f7e")}
           productionId={productionId}
         />
         <p className="mt-1 text-[11px] text-text-tertiary">
-          {L(
-            "Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».",
-            "Note on single words: select the text in the script and choose “Add note”.",
-          )}
+          {t("app-script-inspector.block-panel.p.6824a8bc32e4")}
         </p>
       </Section>
       {variantEditable ? (
-        <Section title={L("Handlinger", "Actions")}>
+        <Section title={t("app-script-inspector.block-panel.title.fc87c095e37f")}>
           <div className="flex flex-col items-stretch gap-1.5">
             <Button size="sm" variant="secondary" onClick={insertAfter} className="justify-start">
               <Plus />
-              {L("Ny blokk etter denne", "New block after this")}
+              {t("app-script-inspector.block-panel.button.dd57511db5e6")}
             </Button>
             <Button
               size="sm"
@@ -567,12 +544,12 @@ function BlockPanel({
               className="justify-start"
               title={
                 idx <= 0
-                  ? L("Kan ikke dele ved første blokk", "Cannot split at the first block")
+                  ? t("app-script-inspector.block-panel.title.f8d206861c09")
                   : undefined
               }
             >
               <Scissors />
-              {L("Del scenen her", "Split the scene here")}
+              {t("app-script-inspector.block-panel.button.d50065a0491a")}
             </Button>
             <Button
               size="sm"
@@ -581,7 +558,7 @@ function BlockPanel({
               onClick={() => {
                 const e = run(
                   { type: "RemoveBlock", productionId: pid, blockId: block.id },
-                  L("Fjern blokk", "Remove block"),
+                  t("app-script-inspector.e.run.c49f542ce812"),
                 );
                 setErr(e);
                 if (!e)
@@ -592,14 +569,11 @@ function BlockPanel({
               }}
             >
               <Trash2 />
-              {L("Fjern blokken", "Remove the block")}
+              {t("app-script-inspector.block-panel.button.9e75dd29b865")}
             </Button>
           </div>
           <p className="mt-1.5 text-[11px] text-text-tertiary">
-            {L(
-              "Fjernet tekst kan hentes tilbake fra scenen. Historikken beholdes.",
-              "Removed text can be restored to the scene. The history is kept.",
-            )}
+            {t("app-script-inspector.block-panel.p.d996f62a2404")}
           </p>
         </Section>
       ) : null}
@@ -660,7 +634,7 @@ function ScenePanel({
         <p className="text-sm font-medium text-text-primary">
           Scene{" "}
           {sceneNumberOf(state, occ) ?? (
-            <span className="text-text-tertiary">{L("uten nummer", "unnumbered")}</span>
+            <span className="text-text-tertiary">{t("app-script-inspector.scene-panel.span.ffd27913a1c8")}</span>
           )}
           {occ.active ? (
             <span className="ml-2 text-xs font-normal text-text-tertiary">
@@ -673,17 +647,14 @@ function ScenePanel({
           title={
             structureEditing || !editable
               ? undefined
-              : L(
-                  "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre",
-                  "Turn on “Change order and visibility” in the scene list to change",
-                )
+              : t("app-script-inspector.scene-panel.title.cca2d0a97d57")
           }
         >
           {occ.active
-            ? L("Aktiv", "Active")
+            ? t("app-script-inspector.scene-panel.label.aa6dd30292dd")
             : merged
-              ? L("Sammenslått", "Merged")
-              : L("Deaktivert", "Inactive")}
+              ? t("app-script-inspector.scene-panel.label.071504247f25")
+              : t("app-script-inspector.scene-panel.label.1d537137116c")}
           {structureEditing ? (
             <Switch
               checked={occ.active}
@@ -693,15 +664,15 @@ function ScenePanel({
                   run(
                     { type: "SetOccurrenceActive", occurrenceId: occ.id, active: on },
                     on
-                      ? L("Aktiver scene", "Activate scene")
-                      : L("Deaktiver scene", "Deactivate scene"),
+                      ? t("app-script-inspector.scene-panel.run.f3c42173f4c8")
+                      : t("app-script-inspector.scene-panel.run.676faa961714"),
                   ),
                 )
               }
               aria-label={
                 occ.active
-                  ? L("Deaktiver scenen", "Deactivate the scene")
-                  : L("Aktiver scenen", "Activate the scene")
+                  ? t("app-script-inspector.scene-panel.aria-label.2d6532875401")
+                  : t("app-script-inspector.scene-panel.aria-label.1772bc9a00a7")
               }
             />
           ) : null}
@@ -709,10 +680,7 @@ function ScenePanel({
       </div>
       {!occ.active && !merged ? (
         <p className="mb-3 text-xs text-text-tertiary">
-          {L(
-            "Deaktiverte scener er utelatt fra manus og film i denne produksjonen. Ingenting er slettet.",
-            "Inactive scenes are left out of the script and film in this production. Nothing is deleted.",
-          )}
+          {t("app-script-inspector.scene-panel.p.2430d544add9")}
         </p>
       ) : null}
       <ForkNotice state={state} productionId={productionId} occurrenceId={occ.id} run={run} />
@@ -724,16 +692,16 @@ function ScenePanel({
             setErr(
               run(
                 { type: "SetUncertainty", productionId: pid, targetId: v.id, uncertainty: null },
-                L("Godkjenn overskrift", "Approve heading"),
+                t("app-script-inspector.scene-panel.run.27a9b167b015"),
               ),
             )
           }
         />
       ) : null}
-      <Section title={L("Sceneoverskrift", "Scene heading")}>
+      <Section title={t("app-script-inspector.scene-panel.title.bcaf9daf330b")}>
         <div className="grid grid-cols-[96px_1fr] gap-1.5">
           <label className="sr-only" htmlFor="h-ie">
-            {L("INT/EXT", "INT/EXT")}
+            {t("app-script-inspector.scene-panel.label.c23814558fc1")}
           </label>
           <Input
             id="h-ie"
@@ -749,24 +717,24 @@ function ScenePanel({
             ))}
           </datalist>
           <label className="sr-only" htmlFor="h-loc">
-            {L("Sted", "Location")}
+            {t("app-script-inspector.scene-panel.label.5d2b2d7b9eda")}
           </label>
           <Input
             id="h-loc"
             value={heading.location}
             disabled={!variantEditable}
-            placeholder={L("Sted", "Location")}
+            placeholder={t("app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda")}
             onChange={(e) => setHeading({ ...heading, location: e.target.value.toUpperCase() })}
             className="h-8 bg-surface-3 font-script text-[13px]"
           />
           <span className="self-center text-right text-xs text-text-tertiary">
-            {L("Tid", "Time")}
+            {t("app-script-inspector.scene-panel.span.3f2936ca36bb")}
           </span>
           <Input
-            aria-label={L("Tid på døgnet", "Time of day")}
+            aria-label={t("app-script-inspector.scene-panel.aria-label.5cc0d19dd240")}
             value={heading.time}
             disabled={!variantEditable}
-            placeholder={L("DAG, KVELD, NATT …", "DAY, EVENING, NIGHT …")}
+            placeholder={t("app-script-inspector.scene-panel.placeholder.66e9681b64e8")}
             onChange={(e) => setHeading({ ...heading, time: e.target.value.toUpperCase() })}
             className="h-8 bg-surface-3 font-script text-[13px]"
           />
@@ -789,29 +757,26 @@ function ScenePanel({
                         time: heading.time.trim(),
                       },
                     },
-                    L("Endre sceneoverskrift", "Change scene heading"),
+                    t("app-script-inspector.scene-panel.run.c4685d90d1e3"),
                   ),
                 )
               }
             >
-              {L("Lagre overskrift", "Save heading")}
+              {t("app-script-inspector.scene-panel.button.604b1a8ae53a")}
             </Button>
             {changed ? (
               <Button size="sm" variant="ghost" onClick={() => setHeading(v.heading)}>
-                {L("Avbryt", "Cancel")}
+                {t("app-script-inspector.scene-panel.button.38c7d0fe76dd")}
               </Button>
             ) : null}
           </div>
         ) : null}
         <p className="mt-1.5 text-[11px] text-text-tertiary">
-          {L("Scenenummeret", "The scene number")} ({occ.productionNumber ?? L("ingen", "none")}){" "}
-          {L(
-            "er produksjonens nummer og endres ikke når scener flyttes. Ny nummerering velges ved eksport.",
-            "is the production's number and does not change when scenes are moved. New numbering is chosen on export.",
-          )}
+          {t("app-script-inspector.scene-panel.p.c322b07e57c7")} ({occ.productionNumber ?? t("app-script-inspector.scene-panel.p.b85dcd51fd9f")}){" "}
+          {t("app-script-inspector.scene-panel.p.6113461a1927")}
         </p>
       </Section>
-      <Section title={L("Fortellingstid", "Story time")}>
+      <Section title={t("app-script-inspector.scene-panel.title.c3bd3f5dd07a")}>
         <StoryTimeSection
           state={state}
           sceneId={occ.sceneId}
@@ -820,7 +785,7 @@ function ScenePanel({
           run={run}
         />
       </Section>
-      <Section title={L("Notater i scenen", "Notes in the scene")}>
+      <Section title={t("app-script-inspector.scene-panel.title.ebc0e759b715")}>
         <NotesPanel
           state={state}
           notes={annotationsOfVariant(state, v.id)}
@@ -829,16 +794,16 @@ function ScenePanel({
           focusId={focusNote}
           authorName={authorName}
           newTarget={{ blockId: null, variantId: v.id, start: 0, end: 0, quote: "" }}
-          newLabel={L("Nål på scenen", "Pin on the scene")}
+          newLabel={t("app-script-inspector.scene-panel.new-label.e5f006023739")}
         />
       </Section>
       {usedIn.length ? (
-        <Section title={L("Brukes også i", "Also used in")}>
+        <Section title={t("app-script-inspector.scene-panel.title.798a00fa8872")}>
           <p className="text-xs text-text-secondary">{usedIn.join(", ")}</p>
         </Section>
       ) : null}
       {editable ? (
-        <Section title={L("Ny scene", "New scene")}>
+        <Section title={t("app-script-inspector.scene-panel.title.0258d8046c5f")}>
           <Button
             size="sm"
             variant="secondary"
@@ -858,14 +823,14 @@ function ScenePanel({
                   blocks: [{ blockId, kind: "action", text: "", orderKey: "i" }],
                   productionNumber: null,
                 },
-                L("Ny scene", "New scene"),
+                t("app-script-inspector.e.run.cd0fd3eabeca"),
               );
               setErr(e);
               if (!e) onSelect({ occurrenceId, blockId: null });
             }}
           >
             <Plus />
-            {L("Ny scene etter denne", "New scene after this")}
+            {t("app-script-inspector.scene-panel.button.0bfe19533b27")}
           </Button>
         </Section>
       ) : null}
@@ -874,7 +839,7 @@ function ScenePanel({
       !merged &&
       !isSharedIn(state, productionId, v.id) &&
       !isSharedIn(state, productionId, state.occurrences[next.id]?.variantId ?? "") ? (
-        <Section title={L("Slå sammen", "Merge")}>
+        <Section title={t("app-script-inspector.scene-panel.title.b3913a5b5eeb")}>
           {!confirmMerge ? (
             <Button
               size="sm"
@@ -883,18 +848,15 @@ function ScenePanel({
               onClick={() => setConfirmMerge(true)}
             >
               <GitMerge />
-              {L("Slå sammen med neste scene", "Merge with the next scene")}
+              {t("app-script-inspector.scene-panel.button.29c015e004aa")}
             </Button>
           ) : (
             <div className="border border-border bg-surface-2 p-2.5 text-xs text-text-secondary">
               <p>
-                {L("Teksten i scene", "The text of scene")}{" "}
-                {next.productionNumber ?? L("uten nummer", "unnumbered")} (
+                {t("app-script-inspector.scene-panel.p.415dad468136")}{" "}
+                {next.productionNumber ?? t("app-script-inspector.scene-panel.p.ffd27913a1c8")} (
                 {nextV ? formatHeading(nextV.heading) : ""}){" "}
-                {L(
-                  "legges sist i denne scenen. Den gamle scenen beholdes som «sammenslått» og kan hentes tilbake med Angre.",
-                  "is added last in this scene. The old scene is kept as “merged” and can be restored with Undo.",
-                )}
+                {t("app-script-inspector.scene-panel.p.dc3999e8bdf6")}
               </p>
               <div className="mt-2 flex gap-2">
                 <Button
@@ -909,15 +871,15 @@ function ScenePanel({
                           targetOccurrenceId: occ.id,
                           sourceOccurrenceId: next.id,
                         },
-                        L("Slå sammen scener", "Merge scenes"),
+                        t("app-script-inspector.scene-panel.run.85ad477dbbd7"),
                       ),
                     );
                   }}
                 >
-                  {L("Slå sammen", "Merge")}
+                  {t("app-script-inspector.scene-panel.button.b3913a5b5eeb")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirmMerge(false)}>
-                  {L("Avbryt", "Cancel")}
+                  {t("app-script-inspector.scene-panel.button.38c7d0fe76dd.2")}
                 </Button>
               </div>
             </div>
@@ -925,7 +887,7 @@ function ScenePanel({
         </Section>
       ) : null}
       {removed.length ? (
-        <Section title={`${L("Fjernet tekst", "Removed text")} (${removed.length})`}>
+        <Section title={`${t("app-script-inspector.scene-panel.title.229acbca1722")} (${removed.length})`}>
           <ul className="flex flex-col gap-1">
             {removed.map((b) => (
               <li
@@ -934,7 +896,7 @@ function ScenePanel({
               >
                 <span className="text-text-tertiary">{KIND_LABEL[b.kind]}</span>
                 <span className="min-w-0 flex-1 truncate font-script text-text-secondary">
-                  {b.text || L("(tom)", "(empty)")}
+                  {b.text || t("app-script-inspector.scene-panel.span.11592f16a888")}
                 </span>
                 {variantEditable ? (
                   <Button
@@ -944,13 +906,13 @@ function ScenePanel({
                       setErr(
                         run(
                           { type: "RestoreBlock", productionId: pid, blockId: b.id },
-                          L("Hent tilbake tekst", "Restore text"),
+                          t("app-script-inspector.scene-panel.run.59f681e3750c"),
                         ),
                       )
                     }
                   >
                     <Undo2 />
-                    {L("Hent tilbake", "Restore")}
+                    {t("app-script-inspector.scene-panel.button.1d27711112fa")}
                   </Button>
                 ) : null}
               </li>
@@ -967,7 +929,7 @@ function ScenePanel({
           }
         >
           <Eye />
-          {L("Gå til første blokk", "Go to first block")}
+          {t("app-script-inspector.scene-panel.button.ac0a939e1835")}
         </Button>
       ) : null}
       <ErrorText message={err} />
@@ -981,28 +943,25 @@ function SummaryPanel({ state, productionId, startPages, uncertainCount, onNextU
   return (
     <div className="text-[13px] text-text-secondary">
       <dl className="grid grid-cols-[1fr_auto] gap-y-1">
-        <dt>{L("Scener", "Scenes")}</dt>
+        <dt>{t("app-script-inspector.summary-panel.dt.0354e7d1c7c9")}</dt>
         <dd className="tabular text-right text-text-primary">{occs.length}</dd>
-        <dt>{L("Aktive", "Active")}</dt>
+        <dt>{t("app-script-inspector.summary-panel.dt.d091852cac74")}</dt>
         <dd className="tabular text-right text-text-primary">
           {occs.filter((o) => o.active).length}
         </dd>
-        <dt>{L("Siste scene starter på side", "Last scene starts on page")}</dt>
+        <dt>{t("app-script-inspector.summary-panel.dt.377a40ba07a7")}</dt>
         <dd className="tabular text-right text-text-primary">{pages || "–"}</dd>
-        <dt>{L("Usikre tolkninger", "Uncertain interpretations")}</dt>
+        <dt>{t("app-script-inspector.summary-panel.dt.2e814d861303")}</dt>
         <dd className="tabular text-right text-text-primary">{uncertainCount}</dd>
       </dl>
       {uncertainCount > 0 ? (
         <Button size="sm" variant="secondary" className="mt-3" onClick={onNextUncertain}>
           <AlertTriangle />
-          {L("Gå til neste usikre tolkning", "Go to next uncertain interpretation")}
+          {t("app-script-inspector.summary-panel.button.bedc3031353c")}
         </Button>
       ) : null}
       <p className="mt-4 text-xs text-text-tertiary">
-        {L(
-          "Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive. Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.",
-          "Click a line in the script to correct its element type or text. Double-click to type. Scenes are moved and switched on and off in the list on the left after you turn on “Change order and visibility” – the script and film always follow the same order.",
-        )}
+        {t("app-script-inspector.summary-panel.p.384a4ad6a9e0")}
       </p>
     </div>
   );

@@ -20,6 +20,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { fieldDefs, fieldId, fieldText, getField, sectionLabel, setField } from "./profile-fields";
 import { characterLines, names, usd, useTextEstimate } from "./storylab-data";
+import { t } from "@/core/i18n/keyed";
 
 const OUT_TOKENS = 3000;
 
@@ -71,7 +72,7 @@ export function ProfileGenerateDialog({
       if (!r.ok) return setErr(r.message);
       const p = profileFromJson(r.text);
       if (!p || profileError(p))
-        return setErr(L("Svaret fra AI kunne ikke tolkes som en profil. Prøv igjen.", "The AI reply could not be read as a profile. Try again."));
+        return setErr(t("app-storylab-profile-generate-dialog.run.set-err.19a7fb7aefc2"));
       setResult({ profile: p, fallback: r.usedFallback });
       setPicked(new Set(defs.filter((d) => JSON.stringify(getField(p, d) ?? null) !== JSON.stringify(getField(current, d) ?? null)).map(fieldId)));
     } catch (e) {
@@ -92,25 +93,25 @@ export function ProfileGenerateDialog({
     <Dialog open onOpenChange={(o) => (o ? null : onClose())}>
       <DialogContent className="max-h-[85vh] max-w-2xl overflow-y-auto" data-testid="storylab-generate-dialog">
         <DialogHeader>
-          <DialogTitle>{L(`Lag profil for ${asset.name} med AI`, `Create a profile for ${asset.name} with AI`)}</DialogTitle>
+          <DialogTitle>{t("app-storylab-profile-generate-dialog.profile-generate-dialog.dialog-title.e1b083b1e142", { name: String(asset.name) })}</DialogTitle>
         </DialogHeader>
         {!result ? (
           <div className="space-y-3 text-[13px]">
             <label className="block space-y-1">
-              <span className="text-text-secondary">{L("Beskrivelse", "Description")}</span>
+              <span className="text-text-secondary">{t("app-storylab-profile-generate-dialog.profile-generate-dialog.span.2dbf8a97656f")}</span>
               <Textarea value={description} rows={4} onChange={(e) => setDescription(e.target.value)} data-testid="storylab-generate-description" />
             </label>
             <label className="flex items-center gap-2 text-text-secondary">
               <input type="checkbox" checked={useLines} onChange={(e) => setUseLines(e.target.checked)} />
-              {L("Bruk replikkene i manuset", "Use the lines in the script")}
+              {t("app-storylab-profile-generate-dialog.profile-generate-dialog.label.c806ceef36b3")}
               <span className="text-text-tertiary">({lines.length})</span>
             </label>
             <p className="text-text-secondary" data-testid="storylab-generate-cost">
               {est.loading
-                ? L("Finner tekst-AI …", "Finding text AI …")
+                ? t("app-storylab-profile-generate-dialog.profile-generate-dialog.p.235555e39a1d")
                 : est.error
                   ? est.error
-                  : L(`${est.label} · anslått ${usd(est.usd)}`, `${est.label} · estimated ${usd(est.usd)}`)}
+                  : t("app-storylab-profile-generate-dialog.profile-generate-dialog.p.57eda6a2a24c", { label: String(est.label), value2: String(usd(est.usd)) })}
             </p>
             {err ? (
               <p role="alert" className="text-status-danger">
@@ -118,10 +119,10 @@ export function ProfileGenerateDialog({
               </p>
             ) : null}
             <div className="flex justify-end gap-2">
-              <ToolbarButton onClick={onClose}>{L("Avbryt", "Cancel")}</ToolbarButton>
+              <ToolbarButton onClick={onClose}>{t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.d0b0d7869cfe")}</ToolbarButton>
               <ToolbarButton variant="primary" disabled={busy || !!est.error} onClick={run} data-testid="storylab-generate-run">
                 {busy ? <Loader2 className="animate-spin" /> : null}
-                {err ? L("Prøv igjen", "Try again") : L("Bekreft og lag profil", "Confirm and create profile")}
+                {err ? t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.76624667f53e") : t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.6ef5205c3c64")}
               </ToolbarButton>
             </div>
           </div>
@@ -129,14 +130,11 @@ export function ProfileGenerateDialog({
           <div className="space-y-3 text-[13px]" data-testid="storylab-generate-preview">
             {result.fallback ? (
               <p className="text-[12px] text-text-tertiary" data-testid="storylab-fallback-note">
-                {L(
-                  "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
-                  "The built-in AI was used because no own text provider could be used.",
-                )}
+                {t("app-storylab-profile-generate-dialog.profile-generate-dialog.p.da99a53ebce0")}
               </p>
             ) : null}
             {diff.length === 0 ? (
-              <p className="text-text-tertiary">{L("Forslaget er likt dagens profil.", "The suggestion equals the current profile.")}</p>
+              <p className="text-text-tertiary">{t("app-storylab-profile-generate-dialog.profile-generate-dialog.p.cdbcddd92bee")}</p>
             ) : null}
             <ul className="space-y-2">
               {diff.map((d) => (
@@ -158,10 +156,10 @@ export function ProfileGenerateDialog({
                         {sectionLabel(d.section)} · {d.label}
                       </span>
                       <span className="block text-[12px] text-text-tertiary">
-                        {L("Nå", "Now")}: {fieldText(getField(current, d), d, nameMap)}
+                        {t("app-storylab-profile-generate-dialog.profile-generate-dialog.span.f72125fb9cce")}: {fieldText(getField(current, d), d, nameMap)}
                       </span>
                       <span className="block text-[12px] text-text-secondary">
-                        {L("Forslag", "Suggestion")}: {fieldText(getField(result.profile, d), d, nameMap)}
+                        {t("app-storylab-profile-generate-dialog.profile-generate-dialog.span.272b10ae4f92")}: {fieldText(getField(result.profile, d), d, nameMap)}
                       </span>
                     </span>
                   </label>
@@ -170,13 +168,13 @@ export function ProfileGenerateDialog({
             </ul>
             <div className="flex flex-wrap justify-end gap-2">
               <ToolbarButton onClick={onClose} data-testid="storylab-discard">
-                {L("Forkast", "Discard")}
+                {t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.96e30b9e19af")}
               </ToolbarButton>
               <ToolbarButton onClick={() => apply(picked)} disabled={!picked.size} data-testid="storylab-apply">
-                {L("Bruk valgte felt", "Use selected fields")}
+                {t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.d78e27530f35")}
               </ToolbarButton>
               <ToolbarButton variant="primary" onClick={() => apply(new Set(diff.map(fieldId)))} data-testid="storylab-apply-all">
-                {L("Bruk alt", "Use all")}
+                {t("app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.174fab255592")}
               </ToolbarButton>
             </div>
           </div>

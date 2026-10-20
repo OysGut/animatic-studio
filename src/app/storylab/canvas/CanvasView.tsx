@@ -49,6 +49,7 @@ import { InterviewView } from "../InterviewView";
 import { sceneLabel } from "../storylab-data";
 import { runGroup } from "./run-group";
 import { nextCanvasPosition } from "./node-placement";
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface CanvasViewProps {
   state: ProjectState;
@@ -132,7 +133,7 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
     selected,
     draggable: editable,
     zIndex: n.kind === "group" ? -1 : 0,
-    ariaLabel: `${canvasNodeKindLabel(n.kind)}: ${n.title || L("Uten tittel", "Untitled")}`,
+    ariaLabel: `${canvasNodeKindLabel(n.kind)}: ${n.title || tk("app-storylab-canvas-canvas-view.aria-label.aria-label.555e042d54cd")}`,
     data: { node: n, state, sceneInfo: sceneInfo(n), cover: n.assetId ? covers[n.assetId] : undefined, onOpen: n.assetId || n.sceneId ? onOpen : null },
   }), [editable, state, sceneInfo, onOpen, covers]);
 
@@ -198,12 +199,12 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
     const moves = [...dragStart.current.keys()].map((id) => ({ nodeId: id as never, x: Math.round(pos.get(id)?.x ?? 0), y: Math.round(pos.get(id)?.y ?? 0) }))
       .filter((m) => { const n = state.canvasNodes[m.nodeId]; return n && (n.x !== m.x || n.y !== m.y); });
     dragStart.current = new Map();
-    if (moves.length) run({ type: "MoveCanvasNodes", moves }, L("Flytt på canvaset", "Move on the canvas"));
+    if (moves.length) run({ type: "MoveCanvasNodes", moves }, tk("app-storylab-canvas-canvas-view.on-node-drag-stop.run.f2e450b7e14e"));
   };
 
   const onConnect = (c: Connection) => {
     if (!editable || !c.source || !c.target || c.source === c.target) return;
-    run({ type: "AddCanvasEdge", edgeId: newId(), fields: { fromNodeId: c.source as never, toNodeId: c.target as never, label: "", kind: "leads_to" } }, L("Koble noder", "Connect nodes"));
+    run({ type: "AddCanvasEdge", edgeId: newId(), fields: { fromNodeId: c.source as never, toNodeId: c.target as never, label: "", kind: "leads_to" } }, tk("app-storylab-canvas-canvas-view.on-connect.run.2d5e3c67666b"));
   };
 
   const center = () => {
@@ -221,7 +222,7 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
     const id = newId<"canvas_node">();
     const pos = nextCanvasPosition(center(), lastAddedPosition.current, [...live, ...addedPositions.current.values()]);
     const f = canvasNodeDefaults(kind, { ...pos, title: canvasNodeKindLabel(kind) });
-    if (!run({ type: "AddCanvasNodes", nodes: [{ id, ...f }] }, L("Ny node", "New node"))) {
+    if (!run({ type: "AddCanvasNodes", nodes: [{ id, ...f }] }, tk("app-storylab-canvas-canvas-view.add-node.run.02796a2af8e5"))) {
       addedPositions.current.set(id, pos);
       lastAddedPosition.current = pos;
       setTimeout(() => { select([id]); setSide("inspector"); setFocusTitle((x) => x + 1); }, 0);
@@ -229,7 +230,7 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
   };
   const connectSelected = () => {
     if (selected.length !== 2) return;
-    run({ type: "AddCanvasEdge", edgeId: newId(), fields: { fromNodeId: selected[0]!.id, toNodeId: selected[1]!.id, label: "", kind: "leads_to" } }, L("Koble noder", "Connect nodes"));
+    run({ type: "AddCanvasEdge", edgeId: newId(), fields: { fromNodeId: selected[0]!.id, toNodeId: selected[1]!.id, label: "", kind: "leads_to" } }, tk("app-storylab-canvas-canvas-view.connect-selected.run.fbcc3eb43678"));
   };
   const group = async () => {
     const members = selected.filter((n) => n.kind !== "group");
@@ -239,9 +240,9 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
     const w = Math.max(...members.map((n) => n.x + n.w)) + pad - x, h = Math.max(...members.map((n) => n.y + n.h)) + pad - y;
     const gid = newId<"canvas_node">();
     const e = await runGroup(cmds, [
-      { type: "AddCanvasNodes", nodes: [{ id: gid, ...canvasNodeDefaults("group", { title: L("Gruppe", "Group"), x, y, w, h }) }] },
+      { type: "AddCanvasNodes", nodes: [{ id: gid, ...canvasNodeDefaults("group", { title: tk("app-storylab-canvas-canvas-view.title.title.04a747dada6b"), x, y, w, h }) }] },
       ...members.map((n): Command => ({ type: "UpdateCanvasNode", nodeId: n.id, patch: { groupId: gid } })),
-    ], L("Grupper", "Group"));
+    ], tk("app-storylab-canvas-canvas-view.e.run-group.44002b698871"));
     setErr(e);
   };
   const duplicate = (list: CanvasNode[]) => {
@@ -251,10 +252,10 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
       const fields: CanvasNodeFields = { ...f, x: n.x + 24, y: n.y + 24, assetId: null, sceneId: null, groupId: n.groupId && list.some((m) => m.id === n.groupId) ? null : n.groupId };
       return { id: newId<"canvas_node">(), ...fields };
     });
-    if (!run({ type: "AddCanvasNodes", nodes: copies }, L("Dupliser", "Duplicate"))) setTimeout(() => select(copies.map((c) => c.id)), 0);
+    if (!run({ type: "AddCanvasNodes", nodes: copies }, tk("app-storylab-canvas-canvas-view.duplicate.run.8b432d431e87"))) setTimeout(() => select(copies.map((c) => c.id)), 0);
   };
   const remove = (list: CanvasNode[]) => {
-    if (list.length) run({ type: "RemoveCanvasNodes", nodeIds: list.map((n) => n.id), removed: true }, L("Fjern fra canvaset", "Remove from the canvas"));
+    if (list.length) run({ type: "RemoveCanvasNodes", nodeIds: list.map((n) => n.id), removed: true }, tk("app-storylab-canvas-canvas-view.remove.run.51405fd6540d"));
   };
 
   const targets = (): CanvasNode[] => {
@@ -274,12 +275,12 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
       const dx = e.key === "ArrowLeft" ? -step : e.key === "ArrowRight" ? step : 0;
       const dy = e.key === "ArrowUp" ? -step : e.key === "ArrowDown" ? step : 0;
       const ids = [...list.map((n) => n.id), ...childrenOf(list.map((n) => n.id))];
-      run({ type: "MoveCanvasNodes", moves: ids.map((id) => ({ nodeId: id as never, x: state.canvasNodes[id]!.x + dx, y: state.canvasNodes[id]!.y + dy })) }, L("Flytt på canvaset", "Move on the canvas"));
+      run({ type: "MoveCanvasNodes", moves: ids.map((id) => ({ nodeId: id as never, x: state.canvasNodes[id]!.x + dx, y: state.canvasNodes[id]!.y + dy })) }, tk("app-storylab-canvas-canvas-view.on-key-down-capture.run.bc9bee59aa21"));
     } else if ((e.key === "Delete" || e.key === "Backspace") && editable) {
       const list = targets();
       e.preventDefault(); e.stopPropagation();
       if (list.length) remove(list);
-      else if (selectedEdge) run({ type: "RemoveCanvasEdge", edgeId: selectedEdge.id as never, removed: true }, L("Fjern kobling", "Remove connection"));
+      else if (selectedEdge) run({ type: "RemoveCanvasEdge", edgeId: selectedEdge.id as never, removed: true }, tk("app-storylab-canvas-canvas-view.on-key-down-capture.run.51d93c055d09"));
     } else if (mod && e.key.toLowerCase() === "d" && editable) {
       e.preventDefault(); e.stopPropagation();
       duplicate(targets());
@@ -294,13 +295,13 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
   return (
     <div className="flex min-h-0 min-w-0 flex-1">
       <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-        <Toolbar title={L("Canvas", "Canvas")} status={<span className="text-xs text-text-tertiary">{L(`${live.length} noder`, `${live.length} nodes`)}</span>}>
+        <Toolbar title={tk("app-storylab-canvas-canvas-view.canvas.title.4f98c3708e68")} status={<span className="text-xs text-text-tertiary">{tk("app-storylab-canvas-canvas-view.canvas.span.8e639ce388b6", { length: String(live.length) })}</span>}>
           <ToolbarSeparator />
           {editable ? (
             <ToolbarGroup>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <ToolbarButton data-testid="canvas-add"><Plus />{L("Ny node", "New node")}</ToolbarButton>
+                  <ToolbarButton data-testid="canvas-add"><Plus />{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.445b269418e0")}</ToolbarButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="max-h-80 overflow-y-auto">
                   {CANVAS_NODE_KINDS.filter((k) => k !== "group").map((k) => {
@@ -309,20 +310,20 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
                   })}
                 </DropdownMenuContent>
               </DropdownMenu>
-              <ToolbarButton data-testid="canvas-connect" disabled={selected.length !== 2} onClick={connectSelected} title={L("Koble to valgte noder", "Connect two selected nodes")}><Link2 />{L("Koble", "Connect")}</ToolbarButton>
-              <ToolbarButton data-testid="canvas-group" disabled={!selected.some((n) => n.kind !== "group")} onClick={() => void group()}><Group />{L("Grupper", "Group")}</ToolbarButton>
-              <ToolbarButton data-testid="canvas-build-from-script" onClick={() => setBuild(true)}><Hammer />{L("Bygg fra manuset …", "Build from the script …")}</ToolbarButton>
+              <ToolbarButton data-testid="canvas-connect" disabled={selected.length !== 2} onClick={connectSelected} title={tk("app-storylab-canvas-canvas-view.canvas.title.815ed7d54d8d")}><Link2 />{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.63854994c934")}</ToolbarButton>
+              <ToolbarButton data-testid="canvas-group" disabled={!selected.some((n) => n.kind !== "group")} onClick={() => void group()}><Group />{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.43cb90c0bda5")}</ToolbarButton>
+              <ToolbarButton data-testid="canvas-build-from-script" onClick={() => setBuild(true)}><Hammer />{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.2612c8d2b4d6")}</ToolbarButton>
             </ToolbarGroup>
           ) : null}
           <ToolbarSeparator />
-          <IconButton label={L("Zoom inn", "Zoom in")} title={L("Zoom inn", "Zoom in")} onClick={() => void flow.zoomIn()}><ZoomIn /></IconButton>
-          <IconButton label={L("Zoom ut", "Zoom out")} title={L("Zoom ut", "Zoom out")} onClick={() => void flow.zoomOut()}><ZoomOut /></IconButton>
-          <IconButton data-testid="canvas-fit" label={L("Tilpass", "Fit")} title={L("Tilpass", "Fit")} onClick={() => void flow.fitView({ padding: 0.1 })}><Maximize /></IconButton>
-          <IconButton disabled={!selected.length} label={L("Fokuser på utvalg", "Focus on selection")} title={L("Fokuser på utvalg", "Focus on selection")} onClick={() => void flow.fitView({ nodes: selected.map((n) => ({ id: n.id })), padding: 0.4 })}><Focus /></IconButton>
+          <IconButton label={tk("app-storylab-canvas-canvas-view.canvas.label.6e25d75b559e")} title={tk("app-storylab-canvas-canvas-view.canvas.title.6e25d75b559e")} onClick={() => void flow.zoomIn()}><ZoomIn /></IconButton>
+          <IconButton label={tk("app-storylab-canvas-canvas-view.canvas.label.7d029ced0ca6")} title={tk("app-storylab-canvas-canvas-view.canvas.title.7d029ced0ca6")} onClick={() => void flow.zoomOut()}><ZoomOut /></IconButton>
+          <IconButton data-testid="canvas-fit" label={tk("app-storylab-canvas-canvas-view.canvas.label.7d9007ca9c1c")} title={tk("app-storylab-canvas-canvas-view.canvas.title.7d9007ca9c1c")} onClick={() => void flow.fitView({ padding: 0.1 })}><Maximize /></IconButton>
+          <IconButton disabled={!selected.length} label={tk("app-storylab-canvas-canvas-view.canvas.label.e17fbdaa8bf5")} title={tk("app-storylab-canvas-canvas-view.canvas.title.e17fbdaa8bf5")} onClick={() => void flow.fitView({ nodes: selected.map((n) => ({ id: n.id })), padding: 0.4 })}><Focus /></IconButton>
         </Toolbar>
         {err ? <p role="alert" className="border-b border-border px-3 py-1 text-xs text-status-danger">{err}</p> : null}
         <div ref={wrap} className="relative min-h-0 flex-1" data-testid="storylab-canvas" onKeyDownCapture={onKeyDownCapture}
-          aria-label={L("Skrivecanvas", "Writing canvas")} role="application">
+          aria-label={tk("app-storylab-canvas-canvas-view.canvas.aria-label.335eee4849d4")} role="application">
           <ReactFlow<StoryFlowNode>
             nodes={nodes}
             edges={edges}
@@ -354,15 +355,15 @@ function Canvas({ state, projectId, cmds, editable, interviewId, startInterview,
           </ReactFlow>
           {!live.length ? (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6 text-center text-[13px] text-text-tertiary">
-              {L("Canvaset er tomt. Lag en node, bygg fra manuset eller start et intervju.", "The canvas is empty. Add a node, build from the script or start an interview.")}
+              {tk("app-storylab-canvas-canvas-view.canvas.div.58823685172f")}
             </div>
           ) : null}
         </div>
       </div>
       <aside className="flex w-80 shrink-0 flex-col border-l border-border bg-surface-1">
         <div role="tablist" className="flex border-b border-border">
-          <ToolbarButton role="tab" aria-selected={side === "inspector"} active={side === "inspector"} onClick={() => setSide("inspector")}>{L("Inspektør", "Inspector")}</ToolbarButton>
-          <ToolbarButton role="tab" data-testid="canvas-tab-interview" aria-selected={side === "interview"} active={side === "interview"} onClick={() => setSide("interview")}>{L("Intervju", "Interview")}</ToolbarButton>
+          <ToolbarButton role="tab" aria-selected={side === "inspector"} active={side === "inspector"} onClick={() => setSide("inspector")}>{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.268a7d51a18f")}</ToolbarButton>
+          <ToolbarButton role="tab" data-testid="canvas-tab-interview" aria-selected={side === "interview"} active={side === "interview"} onClick={() => setSide("interview")}>{tk("app-storylab-canvas-canvas-view.canvas.toolbar-button.6c46ab1b7f71")}</ToolbarButton>
         </div>
         {side === "inspector" ? (
           <CanvasInspector state={state} projectId={projectId} cmds={cmds} editable={editable} selected={selected} edgeId={selectedEdge?.id ?? null} focusTitle={focusTitle} onError={setErr} onOpen={onOpen} />
