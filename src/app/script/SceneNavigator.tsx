@@ -28,14 +28,9 @@ import {
 } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const ASSET_KIND_SHORT: Record<string, string> = localized({
-  animal: ["dyr", "animal"],
-  object: ["objekt", "object"],
-  location: ["sted", "location"],
-  environment: ["miljø", "environment"],
-  other: ["annet", "other"],
-});
+const ASSET_KIND_SHORT: Record<string, string> = tLocalized({ animal: "app-script-scene-navigator.asset-kind-short.animal.91c86fa488be", object: "app-script-scene-navigator.asset-kind-short.object.e3a47268765c", location: "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0", environment: "app-script-scene-navigator.asset-kind-short.environment.e2306110f3a0", other: "app-script-scene-navigator.asset-kind-short.other.6e0a697580d3" });
 
 /** Valg i karakterfilteret: fra biblioteket (alle navn) eller et navn i manuset. */
 export interface CharacterOption {
@@ -147,10 +142,7 @@ export function SceneNavigator({
     onMove(
       id,
       keyBetween(before, after),
-      L(
-        `Flytt scene ${sceneNumberOf(state, o) ?? ""}`,
-        `Move scene ${sceneNumberOf(state, o) ?? ""}`,
-      ).trim(),
+      t("app-script-scene-navigator.move-to.l-flytt-scene-scene-number-of-state-o-move-scene-scene-number-of-state-o-trim.d3f1572c968a", { value1: String(sceneNumberOf(state, o) ?? "") }).trim(),
     );
   }
 
@@ -180,17 +172,11 @@ export function SceneNavigator({
   return (
     <div className="flex min-h-0 flex-col">
       <div className="flex h-8 shrink-0 items-center justify-between border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-        <span>{L("Scener", "Scenes")}</span>
+        <span>{t("app-script-scene-navigator.scene-navigator.span.1c4a03ef3bf2")}</span>
         <span className="font-mono tabular-nums normal-case tracking-normal">
           {visible
-            ? L(
-                `${occs.length} av ${allOccs.length} vises`,
-                `${occs.length} of ${allOccs.length} shown`,
-              )
-            : L(
-                `${allOccs.filter((o) => o.active).length} aktive av ${allOccs.length}`,
-                `${allOccs.filter((o) => o.active).length} active of ${allOccs.length}`,
-              )}
+            ? t("app-script-scene-navigator.scene-navigator.span.f1d240f2f06c", { length: String(occs.length), length2: String(allOccs.length) })
+            : t("app-script-scene-navigator.scene-navigator.span.6742e74d1217", { length: String(allOccs.filter((o) => o.active).length), length2: String(allOccs.length) })}
         </span>
       </div>
       {editable ? (
@@ -201,25 +187,19 @@ export function SceneNavigator({
           }
         >
           <label className="flex items-center justify-between gap-2 text-xs text-text-secondary">
-            <span>{L("Endre rekkefølge og synlighet", "Change order and visibility")}</span>
+            <span>{t("app-script-scene-navigator.scene-navigator.span.4f4be6b70233")}</span>
             <Switch
               checked={structureEditing}
               onCheckedChange={onStructureEditingChange}
-              aria-label={L("Endre rekkefølge og synlighet", "Change order and visibility")}
+              aria-label={t("app-script-scene-navigator.scene-navigator.aria-label.4f4be6b70233")}
               className="scale-75"
             />
           </label>
           {structureEditing ? (
             <p className="text-[11px] text-text-tertiary">
               {visible
-                ? L(
-                    "Fjern filteret for å flytte scener. Synlighet kan endres.",
-                    "Remove the filter to move scenes. Visibility can be changed.",
-                  )
-                : L(
-                    "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på.",
-                    "Drag scenes to move them (or Alt + arrow). The switch on the right turns a scene on and off.",
-                  )}
+                ? t("app-script-scene-navigator.scene-navigator.p.a51d7d2ecc5b")
+                : t("app-script-scene-navigator.scene-navigator.p.daea89179fad")}
             </p>
           ) : null}
         </div>
@@ -228,10 +208,10 @@ export function SceneNavigator({
         <div className="flex shrink-0 items-center gap-1.5 border-b border-border px-3 py-1.5 text-[11px] text-text-secondary">
           <span className="size-2.5 rounded-sm bg-status-moved" aria-hidden />
           {movedCount === 1
-            ? L("1 scene", "1 scene")
-            : L(`${movedCount} scener`, `${movedCount} scenes`)}{" "}
-          {L("flyttet siden", "moved since")}{" "}
-          {movedBaseline ?? L("siste versjon", "the last version")}
+            ? t("app-script-scene-navigator.scene-navigator.div.f18fbfaecf34")
+            : t("app-script-scene-navigator.scene-navigator.div.cb12f5c0de28", { movedCount: String(movedCount) })}{" "}
+          {t("app-script-scene-navigator.scene-navigator.div.3ee8cf607cef")}{" "}
+          {movedBaseline ?? t("app-script-scene-navigator.scene-navigator.div.e44f37ce2d3f")}
         </div>
       ) : null}
       <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
@@ -242,11 +222,8 @@ export function SceneNavigator({
           />
           <input
             type="search"
-            aria-label={L("Søk i manus", "Search the script")}
-            placeholder={L(
-              "Søk i manus (tekst, sted, nummer)",
-              "Search the script (text, location, number)",
-            )}
+            aria-label={t("app-script-scene-navigator.scene-navigator.aria-label.c2459c6ca950")}
+            placeholder={t("app-script-scene-navigator.scene-navigator.placeholder.9607819efbb0")}
             value={filter.text ?? ""}
             onChange={(e) => onFilterChange({ ...filter, text: e.target.value })}
             className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
@@ -254,7 +231,7 @@ export function SceneNavigator({
         </div>
         <div className="flex items-center gap-1.5">
           <select
-            aria-label={L("Vis bare scener med karakter", "Show only scenes with a character")}
+            aria-label={t("app-script-scene-navigator.scene-navigator.aria-label.7655577f6b82")}
             value={filter.character ?? ""}
             onChange={(e) => {
               const { character: _c, characterNames: _n, ...rest } = filter;
@@ -265,9 +242,9 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">{L("Alle karakterer", "All characters")}</option>
+            <option value="">{t("app-script-scene-navigator.scene-navigator.option.df2ed6ac2cba")}</option>
             {characters.some((c) => c.fromLibrary) ? (
-              <optgroup label={L("Fra ressursbiblioteket", "From the asset library")}>
+              <optgroup label={t("app-script-scene-navigator.scene-navigator.label.89cd484d56d0")}>
                 {characters
                   .filter((c) => c.fromLibrary)
                   .map((c) => (
@@ -278,7 +255,7 @@ export function SceneNavigator({
               </optgroup>
             ) : null}
             {characters.some((c) => !c.fromLibrary) ? (
-              <optgroup label={L("Navn i manuset", "Names in the script")}>
+              <optgroup label={t("app-script-scene-navigator.scene-navigator.label.0d7454b78653")}>
                 {characters
                   .filter((c) => !c.fromLibrary)
                   .map((c) => (
@@ -294,16 +271,16 @@ export function SceneNavigator({
               type="button"
               onClick={() => onFilterChange({})}
               className="flex h-7 items-center gap-1 rounded-sm px-1.5 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-              title={L("Fjern filter", "Remove filter")}
+              title={t("app-script-scene-navigator.scene-navigator.title.6b6011b95d15")}
             >
               <X className="size-3.5" aria-hidden />
-              {L("Nullstill", "Reset")}
+              {t("app-script-scene-navigator.scene-navigator.button.95a7e4becdab")}
             </button>
           ) : null}
         </div>
         <div className="flex items-center gap-1.5">
           <select
-            aria-label={L("Vis bare scener med ressurs", "Show only scenes with an asset")}
+            aria-label={t("app-script-scene-navigator.scene-navigator.aria-label.6b4272eb353b")}
             value={filter.assetId ?? ""}
             onChange={(e) => {
               const { assetId: _a, ...rest } = filter;
@@ -311,7 +288,7 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">{L("Alle objekter og steder", "All objects and locations")}</option>
+            <option value="">{t("app-script-scene-navigator.scene-navigator.option.f79271649da5")}</option>
             {filterAssets.map((a) => (
               <option key={a.id} value={a.id}>
                 {a.name} ({ASSET_KIND_SHORT[a.kind] ?? a.kind})
@@ -319,7 +296,7 @@ export function SceneNavigator({
             ))}
           </select>
           <select
-            aria-label={L("Vis bare scener med status", "Show only scenes with a status")}
+            aria-label={t("app-script-scene-navigator.scene-navigator.aria-label.9ebb18e0bf3f")}
             value={filter.status ?? ""}
             onChange={(e) => {
               const { status: _s, ...rest } = filter;
@@ -327,7 +304,7 @@ export function SceneNavigator({
             }}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value="">{L("Alle statuser", "All statuses")}</option>
+            <option value="">{t("app-script-scene-navigator.scene-navigator.option.8d11f53c0e65")}</option>
             {(Object.keys(SCENE_STATUS_LABEL) as SceneStatus[]).map((st) => (
               <option key={st} value={st}>
                 {SCENE_STATUS_LABEL[st]}
@@ -344,17 +321,11 @@ export function SceneNavigator({
               onFilterChange(e.target.checked ? { ...rest, discrepancy: true } : rest);
             }}
           />
-          {L(
-            "Bare scener med manusendringer etter 2D-scene eller film",
-            "Only scenes with script changes after the 2D scene or film",
-          )}
+          {t("app-script-scene-navigator.scene-navigator.label.f1274043f91b")}
         </label>
         {visible ? (
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.",
-              "The filter only applies to the view. The film is unchanged. Moving is off while the filter is on.",
-            )}
+            {t("app-script-scene-navigator.scene-navigator.p.1176f6cf0e8f")}
           </p>
         ) : null}
       </div>
@@ -362,11 +333,8 @@ export function SceneNavigator({
         ref={listRef}
         aria-label={
           canReorder
-            ? L(
-                "Scener i produksjonen. Alt + pil flytter valgt scene.",
-                "Scenes in the production. Alt + arrow moves the selected scene.",
-              )
-            : L("Scener i produksjonen", "Scenes in the production")
+            ? t("app-script-scene-navigator.scene-navigator.aria-label.8bf7f0d66e5b")
+            : t("app-script-scene-navigator.scene-navigator.aria-label.7179b1eb3e93")
         }
         className="min-h-0 flex-1 overflow-y-auto py-1"
         onDragOver={(e) => e.preventDefault()}
@@ -447,11 +415,11 @@ export function SceneNavigator({
                     <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                       {o.active ? (
                         <span className="tabular">
-                          {L("s.", "p.")} {startPages[o.id] ?? "–"}
+                          {t("app-script-scene-navigator.scene-navigator.span.7620d2fe46d5")} {startPages[o.id] ?? "–"}
                         </span>
                       ) : (
                         <span>
-                          {merged ? L("Sammenslått", "Merged") : L("Deaktivert", "Inactive")}
+                          {merged ? t("app-script-scene-navigator.scene-navigator.span.beb3736f0d84") : t("app-script-scene-navigator.scene-navigator.span.bba87363b5e2")}
                         </span>
                       )}
                       {o.active && forecast.get(o.id) ? (
@@ -460,8 +428,8 @@ export function SceneNavigator({
                           className="tabular"
                           title={
                             forecast.get(o.id)!.actual
-                              ? L("Faktisk lengde (ferdig materiale)", "Actual length (finished material)")
-                              : L("Prognose fra prosjektets historikk, med usikkerhet", "Forecast from the project's history, with uncertainty")
+                              ? t("app-script-scene-navigator.scene-navigator.title.952c8d5f06f7")
+                              : t("app-script-scene-navigator.scene-navigator.title.1f6383ec0ba5")
                           }
                         >
                           {forecast.get(o.id)!.actual
@@ -472,11 +440,11 @@ export function SceneNavigator({
                       {uncertainSet.has(o.id) ? (
                         <span className="flex items-center gap-0.5 rounded-sm bg-status-uncertain-bg px-1 text-status-uncertain">
                           <AlertTriangle className="size-3" aria-hidden />
-                          {L("Usikker", "Uncertain")}
+                          {t("app-script-scene-navigator.scene-navigator.span.2cb6f17a3804")}
                         </span>
                       ) : null}
                       {isMoved ? (
-                        <span className="rounded-sm bg-status-moved-bg px-1 text-status-moved">{L("Flyttet", "Moved")}</span>
+                        <span className="rounded-sm bg-status-moved-bg px-1 text-status-moved">{t("app-script-scene-navigator.scene-navigator.span.e4d59213ee1a")}</span>
                       ) : null}
                       {state.scenes[o.sceneId] &&
                       state.scenes[o.sceneId]!.storyTime.kind !== "linear" ? (
@@ -497,12 +465,12 @@ export function SceneNavigator({
                         </span>
                       ) : null}
                       {v && v.ownerProductionId !== null ? (
-                        <span data-testid="nav-variant-badge" className="rounded-sm bg-status-running-bg px-1 text-status-running">{L("Egen versjon", "Own version")}</span>
+                        <span data-testid="nav-variant-badge" className="rounded-sm bg-status-running-bg px-1 text-status-running">{t("app-script-scene-navigator.scene-navigator.span.f5061f26f348")}</span>
                       ) : null}
                       {presence?.get(o.id)?.length ? (
                         <span
                           className="text-accent-brand"
-                          title={L("Står i scenen nå", "In the scene now")}
+                          title={t("app-script-scene-navigator.scene-navigator.title.a3ff285efe82")}
                         >
                           ●{" "}
                           {presence
@@ -515,7 +483,7 @@ export function SceneNavigator({
                     {hit?.length ? (
                       <span className="block truncate text-[11px] text-text-secondary">
                         <span className="mark-search-chip mr-1 rounded-[2px] px-1">
-                          {L("Treff", "Hit")}
+                          {t("app-script-scene-navigator.scene-navigator.span.c5772d68da3f")}
                         </span>
                         {hit.map((h) => HIT_LABEL[h]).join(", ")}
                       </span>

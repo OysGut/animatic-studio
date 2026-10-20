@@ -14,6 +14,7 @@ import {
 } from "@/core";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type SectionKey = "person" | "psychology" | "speech" | "dramatic" | "notes";
 export type FieldType = "text" | "short" | "list" | "level" | "formality" | "number" | "beliefs";
@@ -27,11 +28,11 @@ export interface FieldDef {
 
 export function sectionLabel(s: SectionKey): string {
   return {
-    person: L("Person", "Person"),
-    psychology: L("Psykologi", "Psychology"),
-    speech: L("Talestil", "Speech"),
-    dramatic: L("Dramatikk", "Drama"),
-    notes: L("Notater", "Notes"),
+    person: tk("app-storylab-profile-fields.person.person.3ae395c7d598"),
+    psychology: tk("app-storylab-profile-fields.psychology.psychology.f23337471144"),
+    speech: tk("app-storylab-profile-fields.speech.speech.b712714b4da6"),
+    dramatic: tk("app-storylab-profile-fields.dramatic.dramatic.986cf622453e"),
+    notes: tk("app-storylab-profile-fields.notes.notes.1a9b4524e53b"),
   }[s];
 }
 
@@ -46,33 +47,33 @@ export function fieldDefs(): FieldDef[] {
     label,
   });
   return [
-    f("person", "age", "number", L("Alder", "Age")),
-    f("person", "occupation", "short", L("Yrke", "Occupation")),
-    f("person", "background", "text", L("Bakgrunn", "Background")),
-    f("person", "values", "list", L("Verdier", "Values")),
-    f("person", "dialect", "short", L("Dialekt", "Dialect")),
-    f("person", "formality", "formality", L("Formalitet", "Formality")),
-    f("psychology", "facade", "text", L("Fasade (slik hun/han fremstår)", "Facade (how they appear)")),
-    f("psychology", "reality", "text", L("Virkelighet (det som ligger under)", "Reality (what lies beneath)")),
-    f("psychology", "hiddenMotives", "list", L("Skjulte motiver", "Hidden motives")),
-    f("psychology", "techniques", "list", L("Samtaleteknikker", "Conversational techniques")),
-    f("psychology", "neverSay", "list", L("Ville aldri sagt", "Would never say")),
-    f("psychology", "blindSpots", "list", L("Blindsoner", "Blind spots")),
-    f("psychology", "triggers", "list", L("Triggere", "Triggers")),
-    f("psychology", "demonstrations", "list", L("Slik viser egenskapene seg", "How the traits show")),
-    f("speech", "level", "level", L("Språknivå", "Level")),
-    f("speech", "wordChoice", "text", L("Ordvalg", "Word choice")),
-    f("speech", "mood", "short", L("Stemning", "Mood")),
-    f("speech", "typicalVocabulary", "list", L("Typiske ord", "Typical vocabulary")),
-    f("speech", "forbiddenExpressions", "list", L("Bruker aldri", "Never uses")),
-    f("speech", "examples", "list", L("Eksempelreplikker", "Example lines")),
-    f("speech", "maxWords", "number", L("Høyst antall ord per svar", "Maximum words per reply")),
-    f("dramatic", "goals", "list", L("Mål", "Goals")),
-    f("dramatic", "innerContradictions", "list", L("Indre motsetninger", "Inner contradictions")),
-    f("dramatic", "vulnerabilities", "list", L("Sårbarheter", "Vulnerabilities")),
-    f("dramatic", "hides", "list", L("Skjuler", "Hides")),
-    f("dramatic", "beliefsAboutOthers", "beliefs", L("Hva hun/han tror om andre", "Beliefs about others")),
-    f("notes", null, "text", L("Notater", "Notes")),
+    f("person", "age", "number", tk("app-storylab-profile-fields.field-defs.f.344cb82b6318")),
+    f("person", "occupation", "short", tk("app-storylab-profile-fields.field-defs.f.978b7621fdd5")),
+    f("person", "background", "text", tk("app-storylab-profile-fields.field-defs.f.f7f94ea0be02")),
+    f("person", "values", "list", tk("app-storylab-profile-fields.field-defs.f.fd80b7d29161")),
+    f("person", "dialect", "short", tk("app-storylab-profile-fields.field-defs.f.c69b7e03638b")),
+    f("person", "formality", "formality", tk("app-storylab-profile-fields.field-defs.f.e821b48b3e59")),
+    f("psychology", "facade", "text", tk("app-storylab-profile-fields.field-defs.f.03c4441bcbdd")),
+    f("psychology", "reality", "text", tk("app-storylab-profile-fields.field-defs.f.3a3fbf2fc4c5")),
+    f("psychology", "hiddenMotives", "list", tk("app-storylab-profile-fields.field-defs.f.b20ea957aed1")),
+    f("psychology", "techniques", "list", tk("app-storylab-profile-fields.field-defs.f.f6f430a6ffb2")),
+    f("psychology", "neverSay", "list", tk("app-storylab-profile-fields.field-defs.f.29b41868d5c3")),
+    f("psychology", "blindSpots", "list", tk("app-storylab-profile-fields.field-defs.f.d4daecbf404a")),
+    f("psychology", "triggers", "list", tk("app-storylab-profile-fields.field-defs.f.535c2ad77deb")),
+    f("psychology", "demonstrations", "list", tk("app-storylab-profile-fields.field-defs.f.c997a4e66ebc")),
+    f("speech", "level", "level", tk("app-storylab-profile-fields.field-defs.f.0a24f39a3acb")),
+    f("speech", "wordChoice", "text", tk("app-storylab-profile-fields.field-defs.f.46518bae64ef")),
+    f("speech", "mood", "short", tk("app-storylab-profile-fields.field-defs.f.bb891d65b9bb")),
+    f("speech", "typicalVocabulary", "list", tk("app-storylab-profile-fields.field-defs.f.5cd1821e55ca")),
+    f("speech", "forbiddenExpressions", "list", tk("app-storylab-profile-fields.field-defs.f.9567b8828108")),
+    f("speech", "examples", "list", tk("app-storylab-profile-fields.field-defs.f.eee889134a7b")),
+    f("speech", "maxWords", "number", tk("app-storylab-profile-fields.field-defs.f.f1864242afcd")),
+    f("dramatic", "goals", "list", tk("app-storylab-profile-fields.field-defs.f.121cc52dbf81")),
+    f("dramatic", "innerContradictions", "list", tk("app-storylab-profile-fields.field-defs.f.15203a5c5400")),
+    f("dramatic", "vulnerabilities", "list", tk("app-storylab-profile-fields.field-defs.f.3e3a0d9d0638")),
+    f("dramatic", "hides", "list", tk("app-storylab-profile-fields.field-defs.f.a66b5568062f")),
+    f("dramatic", "beliefsAboutOthers", "beliefs", tk("app-storylab-profile-fields.field-defs.f.d561526ac99a")),
+    f("notes", null, "text", tk("app-storylab-profile-fields.field-defs.f.4e49a6e8af98")),
   ];
 }
 
@@ -81,16 +82,16 @@ export const fieldId = (d: Pick<FieldDef, "section" | "key">) => (d.key ? `${d.s
 export function levelLabel(l: string): string {
   return (
     {
-      child: L("Barn", "Child"),
-      youth: L("Ungdom", "Youth"),
-      adult: L("Voksen", "Adult"),
-      academic: L("Akademisk", "Academic"),
-      street: L("Gate", "Street"),
+      child: tk("app-storylab-profile-fields.child.child.614376080e64"),
+      youth: tk("app-storylab-profile-fields.youth.youth.74637fa80402"),
+      adult: tk("app-storylab-profile-fields.adult.adult.3d685ecddce9"),
+      academic: tk("app-storylab-profile-fields.academic.academic.f60d14a457e8"),
+      street: tk("app-storylab-profile-fields.street.street.7ceb8e8f80b1"),
     } as Record<string, string>
   )[l] ?? l;
 }
 export function formalityLabel(l: string): string {
-  return ({ low: L("Lav", "Low"), medium: L("Middels", "Medium"), high: L("Høy", "High") } as Record<string, string>)[l] ?? l;
+  return ({ low: tk("app-storylab-profile-fields.low.low.6ddaf555a0af"), medium: tk("app-storylab-profile-fields.medium.medium.a56bff4aab48"), high: tk("app-storylab-profile-fields.high.high.74f07152d66f") } as Record<string, string>)[l] ?? l;
 }
 
 type Obj = Record<string, unknown>;
@@ -210,7 +211,7 @@ export function FieldEditor({
           onChange={(e) => onChange(e.target.value || undefined)}
           className={control + " h-8"}
         >
-          <option value="">{L("Ikke angitt", "Not set")}</option>
+          <option value="">{tk("app-storylab-profile-fields.field-editor.option.4a272a1e64c9")}</option>
           {["low", "medium", "high"].map((l) => (
             <option key={l} value={l}>
               {formalityLabel(l)}
@@ -282,7 +283,7 @@ function Chips({
                 <button
                   type="button"
                   onClick={() => onChange(values.filter((_, j) => j !== i))}
-                  aria-label={L(`Fjern «${v}»`, `Remove “${v}”`)}
+                  aria-label={tk("app-storylab-profile-fields.chips.aria-label.b089944ebbad", { v: String(v) })}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-2 hover:text-text-primary"
                 >
                   <X className="size-3" aria-hidden />
@@ -297,8 +298,8 @@ function Chips({
           <Input
             id={id}
             value={text}
-            placeholder={L("Skriv og trykk Enter", "Type and press Enter")}
-            aria-label={L(`Legg til i ${label}`, `Add to ${label}`)}
+            placeholder={tk("app-storylab-profile-fields.chips.placeholder.5bda8469204f")}
+            aria-label={tk("app-storylab-profile-fields.chips.aria-label.0bd808a7ca71", { label: String(label) })}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
@@ -312,7 +313,7 @@ function Chips({
             onClick={add}
             className="h-9 shrink-0 rounded-sm px-2 text-[12px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
           >
-            {L("Legg til", "Add")}
+            {tk("app-storylab-profile-fields.chips.button.49467a69187c")}
           </button>
         </div>
       )}
@@ -340,7 +341,7 @@ function Beliefs({
           <select
             value={b.assetId}
             disabled={disabled}
-            aria-label={L("Hvem", "Who")}
+            aria-label={tk("app-storylab-profile-fields.beliefs.aria-label.ee623d5e5cde")}
             onChange={(e) => set(i, { assetId: e.target.value })}
             className={control + " h-9 w-40 shrink-0"}
           >
@@ -350,12 +351,12 @@ function Beliefs({
               </option>
             ))}
           </select>
-          <Input value={b.belief} disabled={disabled} aria-label={L("Hva hun/han tror", "What they believe")} onChange={(e) => set(i, { belief: e.target.value })} />
+          <Input value={b.belief} disabled={disabled} aria-label={tk("app-storylab-profile-fields.beliefs.aria-label.821d99e55160")} onChange={(e) => set(i, { belief: e.target.value })} />
           {disabled ? null : (
             <button
               type="button"
               onClick={() => onChange(values.filter((_, j) => j !== i))}
-              aria-label={L("Fjern", "Remove")}
+              aria-label={tk("app-storylab-profile-fields.beliefs.aria-label.bbb311e05667")}
               className="rounded-sm px-1.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
             >
               <X className="size-3.5" aria-hidden />
@@ -369,7 +370,7 @@ function Beliefs({
           onClick={() => onChange([...values, { assetId: others[0]!.id, belief: "" }])}
           className="h-7 rounded-sm px-2 text-[12px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
         >
-          {L("Legg til en person", "Add a person")}
+          {tk("app-storylab-profile-fields.beliefs.button.d0c54a173b60")}
         </button>
       )}
     </div>

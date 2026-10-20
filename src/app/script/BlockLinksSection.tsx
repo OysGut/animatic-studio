@@ -7,6 +7,7 @@ import { Link } from "@tanstack/react-router";
 import { Clapperboard, Film, Image as ImageIcon, Layers, Library, Mic, Timer } from "lucide-react";
 import { useMemo } from "react";
 import { blockLinks, takeLabel, type ProjectState, L, locale } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const fmt = (ms: number) =>
   `${(ms / 1000).toLocaleString(locale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
@@ -43,11 +44,11 @@ export function BlockLinksSection({
   return (
     <div
       className="flex flex-col gap-2"
-      aria-label={L("Koblinger for linjen", "Links for the line")}
+      aria-label={t("app-script-block-links-section.block-links-section.aria-label.8929cf28ef38")}
     >
       <Group
         icon={<Mic className="size-3.5" aria-hidden />}
-        title={L("Dialogopptak", "Dialogue recordings")}
+        title={t("app-script-block-links-section.block-links-section.title.d8ec1d2ea925")}
       >
         {links.recordings.length ? (
           links.recordings.map((a) => (
@@ -61,8 +62,8 @@ export function BlockLinksSection({
                 params={{ projectId }}
                 search={{ asset: a.assetId }}
                 className="ml-auto shrink-0 text-text-secondary hover:text-text-primary"
-                title={L("Åpne lydfilen i biblioteket", "Open the audio file in the library")}
-                aria-label={L(`Åpne ${a.name} i biblioteket`, `Open ${a.name} in the library`)}
+                title={t("app-script-block-links-section.block-links-section.title.5758aad81b92")}
+                aria-label={t("app-script-block-links-section.block-links-section.aria-label.4c5b883a7388", { name: String(a.name) })}
               >
                 <Library className="size-3.5" aria-hidden />
               </Link>
@@ -70,16 +71,13 @@ export function BlockLinksSection({
           ))
         ) : (
           <li className={none}>
-            {L(
-              "Ingen – legg lyd på dialogsporet i monteringen",
-              "None – add audio to the dialogue track in the assembly",
-            )}
+            {t("app-script-block-links-section.block-links-section.li.b046aac2ce89")}
           </li>
         )}
       </Group>
       <Group
         icon={<Timer className="size-3.5" aria-hidden />}
-        title={L("Tidspunkt i scenen", "Time in the scene")}
+        title={t("app-script-block-links-section.block-links-section.title.41e9be5b1a0d")}
       >
         {links.times.length ? (
           links.times.map((l) => (
@@ -88,21 +86,18 @@ export function BlockLinksSection({
                 {fmt(l.startMs)}
                 {l.endMs !== null ? ` – ${fmt(l.endMs)}` : ""}
               </span>
-              {montering(L("Vis", "Show"))}
+              {montering(t("app-script-block-links-section.block-links-section.montering.6ab6efa3dbde"))}
             </li>
           ))
         ) : (
           <li className={none}>
-            {L(
-              "Ingen – bruk «Synk replikker» i monteringen",
-              "None – use “Sync lines” in the assembly",
-            )}
+            {t("app-script-block-links-section.block-links-section.li.3d4a6abc5627")}
           </li>
         )}
       </Group>
       <Group
         icon={<Layers className="size-3.5" aria-hidden />}
-        title={L("Hendelser i 2D-scenen", "Events in the 2D scene")}
+        title={t("app-script-block-links-section.block-links-section.title.7b415e4bfd1b")}
       >
         {links.events.length ? (
           links.events.map((e) => (
@@ -117,22 +112,19 @@ export function BlockLinksSection({
                 search={{ scene: occurrenceId }}
                 className="ml-auto shrink-0 text-[11px] text-text-secondary hover:text-text-primary hover:underline"
               >
-                {L("Sceneeditor", "Scene editor")}
+                {t("app-script-block-links-section.block-links-section.link.e3fdf8b65a21")}
               </Link>
             </li>
           ))
         ) : (
           <li className={none}>
-            {L(
-              "Ingen – koble linjen til et lag i sceneeditoren",
-              "None – link the line to a layer in the scene editor",
-            )}
+            {t("app-script-block-links-section.block-links-section.li.f962daff9087")}
           </li>
         )}
       </Group>
       <Group
         icon={<Clapperboard className="size-3.5" aria-hidden />}
-        title={L("Filmklipp", "Film clips")}
+        title={t("app-script-block-links-section.block-links-section.title.09ad98462077")}
       >
         {links.films.length ? (
           links.films.map((f) => (
@@ -145,21 +137,18 @@ export function BlockLinksSection({
               <span className="min-w-0 truncate">{takeLabel(state, f.take)}</span>
               <span className="shrink-0 text-[11px] text-text-tertiary">
                 {f.how === "coverage"
-                  ? L("dekker linjen", "covers the line")
+                  ? t("app-script-block-links-section.block-links-section.span.5ae8c9620429")
                   : f.how === "segment"
-                    ? L("segmentet", "the segment")
-                    : L("hele scenen", "the whole scene")}
-                {f.take.status === "approved" ? L(" · godkjent", " · approved") : ""}
+                    ? t("app-script-block-links-section.block-links-section.span.7607ff032da6")
+                    : t("app-script-block-links-section.block-links-section.span.405cad589ca8")}
+                {f.take.status === "approved" ? t("app-script-block-links-section.block-links-section.span.8a142ce45fd8") : ""}
               </span>
-              {montering(L("Vis", "Show"))}
+              {montering(t("app-script-block-links-section.block-links-section.montering.6ab6efa3dbde.2"))}
             </li>
           ))
         ) : (
           <li className={none}>
-            {L(
-              "Ingen – importer film eller lag AI-video i monteringen",
-              "None – import film or make AI video in the assembly",
-            )}
+            {t("app-script-block-links-section.block-links-section.li.24926cd36829")}
           </li>
         )}
       </Group>

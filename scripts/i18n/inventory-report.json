@@ -1,13 +1,13 @@
 {
   "version": 1,
   "entries": 9964,
-  "migrated": 1193,
+  "migrated": 2643,
   "files": 448,
   "literalPairs": 8674,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 1295,
-  "candidates": 30079,
+  "references": 2745,
+  "candidates": 31547,
   "conflicts": [
     {
       "kind": "parameter-contract",
@@ -295,7 +295,7 @@
       "kind": "parameter-contract",
       "key": "app-audio-line-words-panel.line-words-panel.span.c0a971092c7b",
       "file": "src/app/audio/LineWordsPanel.tsx",
-      "line": 270
+      "line": 265
     },
     {
       "kind": "parameter-contract",
@@ -473,30 +473,6 @@
     },
     {
       "kind": "parameter-contract",
-      "key": "app-projects-backup-dialogs.text.text.1540462f7768",
-      "file": "src/app/projects/BackupDialogs.tsx",
-      "line": 161
-    },
-    {
-      "kind": "parameter-contract",
-      "key": "app-projects-duration-overview.duration-overview.p.ff0c4803eec4",
-      "file": "src/app/projects/DurationOverview.tsx",
-      "line": 360
-    },
-    {
-      "kind": "parameter-contract",
-      "key": "app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550",
-      "file": "src/app/projects/PromotionDialog.tsx",
-      "line": 173
-    },
-    {
-      "kind": "parameter-contract",
-      "key": "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094",
-      "file": "src/app/projects/QualityProfilesSection.tsx",
-      "line": 118
-    },
-    {
-      "kind": "parameter-contract",
       "key": "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2",
       "file": "src/app/release/PosterInspector.tsx",
       "line": 516
@@ -523,7 +499,7 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-generate-dialogue.generate-dialogue.div.4f875ff43708",
       "file": "src/app/scene-editor/GenerateDialogue.tsx",
-      "line": 53
+      "line": 54
     },
     {
       "kind": "parameter-contract",
@@ -577,19 +553,19 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 221
+      "line": 222
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 239
+      "line": 240
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 368
+      "line": 369
     },
     {
       "kind": "dynamic-expression",
@@ -649,73 +625,67 @@
       "kind": "parameter-contract",
       "key": "app-script-line-link-review.line-link-review.p.63fff3b0112f",
       "file": "src/app/script/LineLinkReview.tsx",
-      "line": 50
+      "line": 51
     },
     {
       "kind": "dynamic-expression",
       "key": "app-script-remove-translations-dialog.name.message.15d1b5cf63e3",
       "file": "src/app/script/RemoveTranslationsDialog.tsx",
-      "line": 43
+      "line": 44
     },
     {
       "kind": "dynamic-expression",
       "key": "app-script-scene-navigator.scene-navigator.title.5d843ae57d5d",
       "file": "src/app/script/SceneNavigator.tsx",
-      "line": 490
+      "line": 458
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44",
       "file": "src/app/script/SceneNavigator.tsx",
-      "line": 532
+      "line": 500
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-scene-navigator.scene-navigator.aria-label.4139dfcbe110",
       "file": "src/app/script/SceneNavigator.tsx",
-      "line": 536
+      "line": 504
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-script-page-view.line.title.f26c13209f66",
       "file": "src/app/script/ScriptPageView.tsx",
-      "line": 282
+      "line": 283
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-translation-import-dialog.e.cmds-run.96a7ab3c19ed",
       "file": "src/app/script/TranslationImportDialog.tsx",
-      "line": 218
+      "line": 216
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-translation-import-dialog.translation-import-dialog.dialog-title.fb1c52f22990",
       "file": "src/app/script/TranslationImportDialog.tsx",
-      "line": 251
+      "line": 249
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166",
       "file": "src/app/script/TranslationImportDialog.tsx",
-      "line": 342
+      "line": 331
     },
     {
       "kind": "parameter-contract",
       "key": "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c",
       "file": "src/app/script/TranslationImportDialog.tsx",
-      "line": 348
+      "line": 337
     },
     {
       "kind": "dynamic-expression",
       "key": "app-script-versions-dialog.confirm.set-error.fe27baf66e14",
       "file": "src/app/script/VersionsDialog.tsx",
-      "line": 799
-    },
-    {
-      "kind": "parameter-contract",
-      "key": "app-share-film-share-dialog.film-share-dialog.p.830f8eda6754",
-      "file": "src/app/share/FilmShareDialog.tsx",
-      "line": 180
+      "line": 773
     },
     {
       "kind": "parameter-contract",
@@ -836,6 +806,36 @@
       "key": "core-translation-line-link-labels.ratio-title.message.a1c06218c905",
       "file": "src/core/translation/line-link-labels.ts",
       "line": 24
+    },
+    {
+      "kind": "parameter-contract",
+      "key": "app-projects-backup-dialogs.text.text.1540462f7768",
+      "file": "src/app/projects/BackupDialogs.tsx",
+      "line": 161
+    },
+    {
+      "kind": "parameter-contract",
+      "key": "app-projects-duration-overview.duration-overview.p.ff0c4803eec4",
+      "file": "src/app/projects/DurationOverview.tsx",
+      "line": 360
+    },
+    {
+      "kind": "parameter-contract",
+      "key": "app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550",
+      "file": "src/app/projects/PromotionDialog.tsx",
+      "line": 173
+    },
+    {
+      "kind": "parameter-contract",
+      "key": "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094",
+      "file": "src/app/projects/QualityProfilesSection.tsx",
+      "line": 118
+    },
+    {
+      "kind": "parameter-contract",
+      "key": "app-share-film-share-dialog.film-share-dialog.p.830f8eda6754",
+      "file": "src/app/share/FilmShareDialog.tsx",
+      "line": 180
     },
     {
       "kind": "parameter-contract",
@@ -962,9 +962,9 @@
         "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc",
         "app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563",
         "app-scene-editor-timeline-helpers.event-kind.shot.d254223d6442",
-        "app-script-assist-proposal-diff.shot.shot.48cb12f713f9",
         "core-generation-cost-report.kind-label.message.8444fe29d13e",
         "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc",
+        "app-script-assist-proposal-diff.shot.shot.48cb12f713f9",
         "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d"
       ]
     },
@@ -1009,8 +1009,8 @@
         "app-assembly-add-audio-dialog.add-audio-dialog.span.43833b10a75e",
         "app-assembly-audio-clip-panel.audio-clip-panel.label.817d624f8f4b",
         "app-audio-audio-composition-editor.audio-composition-editor.label.6b547bef3cb4",
-        "app-scene-editor-record-audio-dialog.record-audio-dialog.span.3bb3ee349a15",
-        "app-scene-editor-timeline.timeline.div.8ad8daaac00b"
+        "app-scene-editor-timeline.timeline.div.8ad8daaac00b",
+        "app-scene-editor-record-audio-dialog.record-audio-dialog.span.3bb3ee349a15"
       ]
     },
     {
@@ -1024,11 +1024,11 @@
         "app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c",
         "app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c",
         "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75",
-        "app-script-import-dialog.import-dialog.button.e00e46e21cdd",
-        "app-script-notes-panel.note-card.button.36c18caddaa0",
         "core-assembly-status.scene-status-label.done.bc68a82f9b2f",
         "core-generation-cost-report.status-label.message.04a86e50e1ff",
         "core-generation-cost.job-state-label.done.4455da929a67",
+        "app-script-import-dialog.import-dialog.button.e00e46e21cdd",
+        "app-script-notes-panel.note-card.button.36c18caddaa0",
         "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634",
         "app-shell-task-nav.task-nav-inner.title.c176e9fc35c5"
       ]
@@ -1194,12 +1194,12 @@
         "app-scene-editor-layer-events.kind.dialogue.c95ea972d0f7",
         "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.aria-label.cdf07e33ff38",
         "app-scene-editor-timeline-helpers.event-kind.dialogue.e8af59e63262",
+        "core-audio-takes.scene.message.0103405b4ba8",
         "app-script-assist-proposal-diff.dialogue.dialogue.43c5e9205bfe",
         "app-script-script-helpers.kind-label.dialogue.ea045400b3b6",
         "app-storylab-conversation-view.turn-view.option.b1de0b645cf0",
         "app-storylab-group-conversation-view.group-conversation.option.850b68a70f75",
-        "app-storylab-suggestions-panel.line.line.fa65b7b2e102",
-        "core-audio-takes.scene.message.0103405b4ba8"
+        "app-storylab-suggestions-panel.line.line.fa65b7b2e102"
       ]
     },
     {
@@ -1236,8 +1236,8 @@
         "app-scene-editor-retime-dialog.retime-dialog.button.88f1fa541c29",
         "app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1",
         "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.4bb251b2b72f",
-        "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197",
         "core-generation-trace.param-label.purpose.3c914b290620",
+        "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197",
         "app-projects-project-format.project-format.button.60ca46216cca"
       ]
     },
@@ -1344,11 +1344,11 @@
       "keys": [
         "app-audio-audio-composition-editor.audio-composition-editor.take-label.f173975ae47e",
         "app-audio-audio-composition-editor.audio-composition-editor.label.f173975ae47e",
+        "app-scene-editor-scene-editor-workspace.editor.span.afe8e346b772",
         "app-audio-takes.save-take.new-variant.afe00012969a",
         "app-audio-takes.save-take.new-variant.afe00012969a.2",
         "app-audio-takes.made.new-sound-asset.4aa46207f4ef",
-        "app-scene-editor-dialogue-versions.dialogue-versions.span.742049068b81",
-        "app-scene-editor-scene-editor-workspace.editor.span.afe8e346b772"
+        "app-scene-editor-dialogue-versions.dialogue-versions.span.742049068b81"
       ]
     },
     {
@@ -1625,10 +1625,10 @@
       "text": "Dyr",
       "keys": [
         "app-library-suggestions-dialog.groups.message.155fef7d52d3",
-        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e637c9760c4d",
         "core-generation-style.style-use-label.animal.4cfbed92fac0",
         "core-library-index.asset-kind-label.animal.67ee55073576",
-        "core-library-index.asset-kind-plural.animal.0c120a77f5af"
+        "core-library-index.asset-kind-plural.animal.0c120a77f5af",
+        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e637c9760c4d"
       ]
     },
     {
@@ -1714,8 +1714,8 @@
       "keys": [
         "app-release-poster-workspace.release.span.5380daa70605",
         "app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d",
-        "app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a",
-        "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766"
+        "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766",
+        "app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a"
       ]
     },
     {
@@ -1758,14 +1758,6 @@
       "keys": [
         "app-scene-editor-camera-panel.camera-panel.commit.54213bdbc4e7",
         "app-scene-editor-timeline.timeline.update-keys.41b874724500"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Laget med profil {value1}",
-      "keys": [
-        "app-scene-editor-dialogue-versions.dialogue-versions.p.4f1eb000f244",
-        "core-export-records.describe-export-settings.parts-push.5eb68c2ddf11"
       ]
     },
     {
@@ -1815,10 +1807,10 @@
       "text": "Velg en scene",
       "keys": [
         "app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1",
-        "app-script-assist-writing-panel.message.message.14df613ff48d",
         "core-script-assist-prompts.selected.message.96bcf1358b06",
         "core-script-assist-prompts.next-line-prompt.message.65b837273648",
-        "core-script-assist-prompts.message.message.49241b66fcc9"
+        "core-script-assist-prompts.message.message.49241b66fcc9",
+        "app-script-assist-writing-panel.message.message.14df613ff48d"
       ]
     },
     {
@@ -1872,10 +1864,74 @@
     },
     {
       "kind": "same-source-different-translation",
+      "text": "Replikken finnes ikke",
+      "keys": [
+        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee",
+        "core-commands-apply.run.fail.6fbc54425f99"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
       "text": "Scenenummer",
       "keys": [
-        "app-script-export-dialog.export-dialog.legend.7de83198fb7f",
-        "core-assembly-technical.label.label.e446454b3c63"
+        "core-assembly-technical.label.label.e446454b3c63",
+        "app-script-export-dialog.export-dialog.legend.7de83198fb7f"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Ugyldig kobling",
+      "keys": [
+        "core-commands-apply.run.fail.3bc025bf2c59",
+        "core-commands-apply.run.fail.3bc025bf2c59.2",
+        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
+        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Profilen er fjernet",
+      "keys": [
+        "core-commands-apply.run.fail.7c23382b944a",
+        "app-storylab-story-lab-workspace.text.text.64c415bdd29a"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Laget med profil {value1}",
+      "keys": [
+        "core-export-records.describe-export-settings.parts-push.5eb68c2ddf11",
+        "app-scene-editor-dialogue-versions.dialogue-versions.p.4f1eb000f244"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "sted",
+      "keys": [
+        "core-generation-model-prompt.key-label.setting.9c25472ea6d9",
+        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Sted",
+      "keys": [
+        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
+        "core-storylab-canvas.location.location.5be3d87e0de8",
+        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
+        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
+        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "uten nummer",
+      "keys": [
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2",
+        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
+        "app-script-inspector.scene-panel.span.ffd27913a1c8",
+        "app-script-inspector.scene-panel.p.ffd27913a1c8"
       ]
     },
     {
@@ -1893,36 +1949,6 @@
       "keys": [
         "app-script-export-dialog.export-dialog.p.5bca912aefc4",
         "app-script-versions-dialog.show.p.31cf29d85e49"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "uten nummer",
-      "keys": [
-        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
-        "app-script-inspector.scene-panel.span.ffd27913a1c8",
-        "app-script-inspector.scene-panel.p.ffd27913a1c8",
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Sted",
-      "keys": [
-        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
-        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
-        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089",
-        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
-        "core-storylab-canvas.location.location.5be3d87e0de8"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "sted",
-      "keys": [
-        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0",
-        "core-generation-model-prompt.key-label.setting.9c25472ea6d9"
       ]
     },
     {
@@ -2009,36 +2035,10 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Profilen er fjernet",
-      "keys": [
-        "app-storylab-story-lab-workspace.text.text.64c415bdd29a",
-        "core-commands-apply.run.fail.7c23382b944a"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Vis i manuset",
       "keys": [
         "app-storylab-suggestions-panel.suggestions-panel.link.bd20b2947b2c",
         "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.link.0fae73108cf8"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Replikken finnes ikke",
-      "keys": [
-        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee",
-        "core-commands-apply.run.fail.6fbc54425f99"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Ugyldig kobling",
-      "keys": [
-        "core-commands-apply.run.fail.3bc025bf2c59",
-        "core-commands-apply.run.fail.3bc025bf2c59.2",
-        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
-        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
       ]
     },
     {

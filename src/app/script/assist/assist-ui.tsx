@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { L, REWRITE_MODES, type RewriteMode } from "@/core";
 import type { AssistAction } from "./WritingPanel";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Alt + Shift + R / N / F (kolliderer ikke med nettleserens Ctrl/⌘ + Shift-taster). Ikke mens man skriver. */
 export function assistShortcut(e: {
@@ -36,11 +37,11 @@ export function selectedBlockIdsIn(root: HTMLElement | null): string[] {
 }
 
 const MODE_LABEL: Record<RewriteMode, () => string> = {
-  shorter: () => L("Kortere", "Shorter"),
-  clearer: () => L("Tydeligere", "Clearer"),
-  spoken: () => L("Mer muntlig", "More spoken"),
-  tone: () => L("Annen tone …", "Different tone …"),
-  free: () => L("Fritt ønske …", "Free request …"),
+  shorter: () => tk("app-script-assist-assist-ui.shorter.shorter.4ff41a87ff6e"),
+  clearer: () => tk("app-script-assist-assist-ui.clearer.clearer.7a3e456d3359"),
+  spoken: () => tk("app-script-assist-assist-ui.spoken.spoken.53f731339429"),
+  tone: () => tk("app-script-assist-assist-ui.tone.tone.b1732b720d11"),
+  free: () => tk("app-script-assist-assist-ui.free.free.e989f4e2f5cb"),
 };
 
 export function AssistContextMenu({
@@ -86,18 +87,18 @@ export function AssistContextMenu({
     <div
       ref={ref}
       role="menu"
-      aria-label={L("Skrivehjelp", "Writing assistant")}
+      aria-label={tk("app-script-assist-assist-ui.assist-context-menu.aria-label.f1104b94c15d")}
       data-testid="assist-context-menu"
       className="fixed z-50 min-w-[200px] rounded-md border border-border bg-surface-2 p-1 shadow-lg"
       style={{ left: x, top: y }}
     >
-      <p className="px-2 py-1 text-chrome-label uppercase tracking-label text-text-tertiary">{L("Skriv om …", "Rewrite …")}</p>
+      <p className="px-2 py-1 text-chrome-label uppercase tracking-label text-text-tertiary">{tk("app-script-assist-assist-ui.assist-context-menu.p.43505f55c8da")}</p>
       {REWRITE_MODES.map((m) => item(MODE_LABEL[m](), "rewrite", m, `assist-menu-rewrite-${m}`))}
       <div className="my-1 h-px bg-border" />
-      {item(L("Språkvask", "Language polish"), "polish", undefined, "assist-menu-polish")}
-      {item(L("Foreslå neste replikk", "Suggest next line"), "next_line", undefined, "assist-menu-next-line")}
-      {item(L("Engelsk oversettelsesutkast", "English translation draft"), "translate", undefined, "assist-menu-translate")}
-      {item(L("Formatsjekk", "Format check"), "format", undefined, "assist-menu-format")}
+      {item(tk("app-script-assist-assist-ui.assist-context-menu.item.43229bac23b6"), "polish", undefined, "assist-menu-polish")}
+      {item(tk("app-script-assist-assist-ui.assist-context-menu.item.797f92f07562"), "next_line", undefined, "assist-menu-next-line")}
+      {item(tk("app-script-assist-assist-ui.assist-context-menu.item.490655b4f934"), "translate", undefined, "assist-menu-translate")}
+      {item(tk("app-script-assist-assist-ui.assist-context-menu.item.f9ccf79fc8fb"), "format", undefined, "assist-menu-format")}
     </div>
   );
 }

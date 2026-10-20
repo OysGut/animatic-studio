@@ -35,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 interface Row {
   readonly link: SceneLink;
@@ -117,14 +118,11 @@ export function TranslationImportDialog({
       );
       setAiNote(
         r.links.length
-          ? L(
-              `Den innebygde AI-en foreslo koblinger for ${r.links.length} usikre scener. Kontroller og godkjenn dem.`,
-              `The built-in AI suggested links for ${r.links.length} uncertain scenes. Check and approve them.`,
-            )
+          ? t("app-script-translation-import-dialog.suggest-with-ai.set-ai-note.8b8904dec6de", { length: String(r.links.length) })
           : null,
       );
     } catch {
-      setAiNote(L("Den innebygde AI-en svarte ikke. Koblingene bygger på reglene.", "The built-in AI did not respond. The links are based on rules."));
+      setAiNote(t("app-script-translation-import-dialog.suggest-with-ai.set-ai-note.723ce9f4696e"));
     } finally {
       setAiBusy(false);
     }
@@ -173,7 +171,7 @@ export function TranslationImportDialog({
     if (!parsed) return;
     const items = translationItems(state, language, rows, parsed);
     if (!items.length) {
-      setErr(L("Ingen scener er koblet.", "No scenes are linked."));
+      setErr(t("app-script-translation-import-dialog.save.set-err.d96e6de84f3b"));
       return;
     }
     const fields = (x: (typeof items)[number]) => ({
@@ -251,10 +249,7 @@ export function TranslationImportDialog({
             {L(`Importer ${langName.toLowerCase()} manus`, `Import ${langName} script`)}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.",
-              "A finished translated script (PDF, Word or Fountain) is linked to the Norwegian scenes and lines. The Norwegian script is not changed. Check the links before you save.",
-            )}
+            {t("app-script-translation-import-dialog.translation-import-dialog.dialog-description.02c0953ca29d")}
           </DialogDescription>
         </DialogHeader>
         {!parsed ? (
@@ -273,23 +268,20 @@ export function TranslationImportDialog({
             <Button onClick={() => input.current?.click()} disabled={busy}>
               {busy ? <Loader2 className="animate-spin" /> : <FileUp />}
               {busy
-                ? L("Leser manuset …", "Reading the script …")
-                : L("Velg fil …", "Choose file …")}
+                ? t("app-script-translation-import-dialog.translation-import-dialog.button.06d4f5b6706e")
+                : t("app-script-translation-import-dialog.translation-import-dialog.button.fc25aa9b4407")}
             </Button>
           </div>
         ) : (
           <>
             <p className="text-xs text-text-secondary">
               {fileName}:{" "}
-              {L(
-                `${rows.length} scener, ${linked.length} koblet, ${lines} linjer får oversettelse. Usikre koblinger er ikke krysset av – de lagres som usikre og kan godkjennes senere.`,
-                `${rows.length} scenes, ${linked.length} linked, ${lines} lines get a translation. Uncertain links are not ticked – they are saved as uncertain and can be approved later.`,
-              )}
+              {t("app-script-translation-import-dialog.translation-import-dialog.p.047d1307abf5", { length: String(rows.length), length2: String(linked.length), lines: String(lines) })}
             </p>
             {aiBusy ? (
               <p role="status" data-testid="translation-ai-status" className="flex items-center gap-1 text-xs text-text-secondary">
                 <Loader2 className="size-3.5 animate-spin" aria-hidden />
-                {L("Den innebygde AI-en ser på de usikre koblingene …", "The built-in AI is checking the uncertain links …")}
+                {t("app-script-translation-import-dialog.translation-import-dialog.p.ceba985f4b6a")}
               </p>
             ) : aiNote ? (
               <p role="status" data-testid="translation-ai-status" className="text-xs text-text-secondary">{aiNote}</p>
@@ -297,13 +289,10 @@ export function TranslationImportDialog({
             {dupes ? (
               <p className="flex items-center gap-1 text-xs text-status-uncertain">
                 <AlertTriangle className="size-3.5" aria-hidden />
-                {L(
-                  "Samme norske scene er valgt for flere importerte scener. Bare den første brukes.",
-                  "The same Norwegian scene is chosen for several imported scenes. Only the first is used.",
-                )}
+                {t("app-script-translation-import-dialog.translation-import-dialog.p.f232f65f9647")}
               </p>
             ) : null}
-            <ul aria-label={L("Koblinger", "Links")} className="flex flex-col border border-border">
+            <ul aria-label={t("app-script-translation-import-dialog.translation-import-dialog.aria-label.486814d2b668")} className="flex flex-col border border-border">
               {rows.map((r, i) => {
                 const o = r.link.occurrenceId ? state.occurrences[r.link.occurrenceId] : undefined;
                 return (
@@ -315,7 +304,7 @@ export function TranslationImportDialog({
                   >
                     <input
                       type="checkbox"
-                      aria-label={L("Godkjent kobling", "Approved link")}
+                      aria-label={t("app-script-translation-import-dialog.translation-import-dialog.aria-label.d5f1cb20facd")}
                       disabled={!o}
                       checked={r.approved && !!o}
                       onChange={() =>
@@ -343,7 +332,7 @@ export function TranslationImportDialog({
                               `${r.manual ? "Valgt manuelt" : r.link.certainty === "sure" ? "Sikker" : "Usikker"} · ${r.link.lines.length} linjer${r.link.unmatched ? ` · ${r.link.unmatched} uten par` : ""}`,
                               `${r.manual ? "Chosen manually" : r.link.certainty === "sure" ? "Certain" : "Uncertain"} · ${r.link.lines.length} lines${r.link.unmatched ? ` · ${r.link.unmatched} without a pair` : ""}`,
                             )
-                          : L("Ikke koblet", "Not linked")}
+                          : t("app-script-translation-import-dialog.translation-import-dialog.span.b42fadde7f0e")}
                         {o && r.ai && !r.manual
                           ? L(
                               ` · Forslag fra AI (${r.ai.confidence === "high" ? "sikker" : r.ai.confidence === "medium" ? "trolig" : "usikker"})${r.ai.reason ? `: ${r.ai.reason}` : ""}`,
@@ -353,12 +342,12 @@ export function TranslationImportDialog({
                       </span>
                     </span>
                     <select
-                      aria-label={L("Norsk scene", "Norwegian scene")}
+                      aria-label={t("app-script-translation-import-dialog.translation-import-dialog.aria-label.2aeb56f5c4f7")}
                       value={r.link.occurrenceId ?? ""}
                       onChange={(e) => relink(i, e.target.value || null)}
                       className={control}
                     >
-                      <option value="">{L("— ikke koble —", "— do not link —")}</option>
+                      <option value="">{t("app-script-translation-import-dialog.translation-import-dialog.option.2ea52a3c1b68")}</option>
                       {occs.map((x) => (
                         <option key={x.id} value={x.id}>
                           {x.productionNumber ? `${x.productionNumber}. ` : ""}
@@ -385,11 +374,11 @@ export function TranslationImportDialog({
               onOpenChange(false);
             }}
           >
-            {L("Avbryt", "Cancel")}
+            {t("app-script-translation-import-dialog.translation-import-dialog.button.13370c0a5a87")}
           </Button>
           {parsed ? (
             <Button onClick={save} disabled={!linked.length}>
-              {L(`Lagre ${lines} oversettelser`, `Save ${lines} translations`)}
+              {t("app-script-translation-import-dialog.translation-import-dialog.button.859270a91c19", { lines: String(lines) })}
             </Button>
           ) : null}
         </DialogFooter>

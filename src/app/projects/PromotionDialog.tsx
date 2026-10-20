@@ -170,10 +170,7 @@ export function PromotionDialog({
     if (e) setErr(e);
     else
       finish(
-        L(
-          `${n} ${n === 1 ? "endring er" : "endringer er"} ført over til hovedfilmen.`,
-          `${n} ${n === 1 ? "change has" : "changes have"} been carried over to the main film.`,
-        ),
+        t("app-projects-promotion-dialog.changes-carried-over", { count: n }),
       );
   }
 

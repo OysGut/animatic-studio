@@ -108,6 +108,8 @@ describe("DV5/DV6 rests", () => {
     expect(normalizeLanguageTag("no")).toBe("nb");
     expect(normalizeLanguageTag("EN-us")).toBe("en-US");
     expect(languageLabel("nb", "nb")).toMatch(/bokmål.*\(nb\)/);
+    // ML2c: engelsk flate (en-GB, også testspråket) viser engelske språknavn
+    expect(languageLabel("nb", "en-GB")).toMatch(/Bokmål.*\(nb\)/);
     const { s, clipId } = dvBase(); const clip = s.audioClips[clipId]!;
     expect(speechLanguageOf(s, clip.occurrenceId, clip.blockId!, null)).not.toBe("no");
   });

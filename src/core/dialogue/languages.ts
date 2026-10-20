@@ -19,7 +19,7 @@ export function normalizeLanguageTag(value: string): string {
 export function languageLabel(tag: string, ui: string = locale()): string {
   const code = normalizeLanguageTag(tag);
   try {
-    const name = new Intl.DisplayNames([ui === "en" ? "en" : "nb"], { type: "language" }).of(code);
+    const name = new Intl.DisplayNames([ui.toLowerCase().startsWith("en") ? "en" : "nb"], { type: "language" }).of(code);
     return name && name !== code ? `${name} (${code})` : code;
   } catch { return code; }
 }

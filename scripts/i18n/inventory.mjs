@@ -176,7 +176,11 @@ export function collectInventory(root = ROOT, previous = { entries: [] }) {
   const references = all.flatMap((x) => x.references);
   const referenced = new Set(references.filter((r) => r.kind === 't' && r.key).map((r) => r.key));
   const live = new Set();
-  const migrated = (previous.entries ?? []).filter((old) => referenced.has(old.key)).map((old) => ({ ...old, migrated: true }));
+  // Authored messages (plural/select/date) supersede frozen pairs; the old record is kept while its successor is used.
+  const authored = loadAuthored(root);
+  const superseded = new Map();
+  for (const [key, msg] of Object.entries(authored)) if (referenced.has(key)) for (const old of msg.replaces ?? []) superseded.set(old, [...(superseded.get(old) ?? []), key]);
+  const migrated = (previous.entries ?? []).filter((old) => referenced.has(old.key) || superseded.has(old.key)).map((old) => ({ ...old, migrated: true, ...(superseded.has(old.key) ? { supersededBy: superseded.get(old.key) } : {}) }));
   const used = new Set(migrated.map((m) => m.key));
   const keyConflicts = [];
   const structural = new Map();
@@ -214,7 +218,11 @@ export function collectInventory(root = ROOT, previous = { entries: [] }) {
     if (item.nb.kind === 'missing' || item.en.kind === 'missing') conflicts.push({ kind: 'missing-pair', key: item.key, file: item.file, line: item.line });
   }
   for (const [text, peers] of sameNb) if (new Set(peers.map((x) => x.en.raw)).size > 1) conflicts.push({ kind: 'same-source-different-translation', text, keys: peers.map((x) => x.key) });
-  return { version: 1, entries, references, candidates: all.flatMap((x) => x.candidates), conflicts };
+  return { version: 1, authored, entries, references, candidates: all.flatMap((x) => x.candidates), conflicts };
+}
+export function loadAuthored(root = ROOT) {
+  const path = join(root, 'src/core/i18n/authored.json');
+  return existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')).messages ?? {} : {};
 }
 export function pseudoText(text) {
   const map = { a: 'á', e: 'ë', i: 'ï', o: 'ô', u: 'ü', A: 'Á', E: 'Ë', I: 'Ï', O: 'Ô', U: 'Ü' };
@@ -227,7 +235,11 @@ export function generatedFiles(inventory) {
     const value = item[lang];
     locales[lang][item.key] = { text: value.text, source: value.raw, parameters: value.parameters, executable: value.text !== null && !item.parameterConflict };
   }
-  for (const [key, msg] of Object.entries(locales.en)) locales['en-XA'][key] = { ...msg, text: msg.text === null ? null : pseudoText(msg.text) };
+  for (const [key, msg] of Object.entries(inventory.authored ?? {})) for (const lang of ['nb', 'en']) {
+    if (locales[lang][key]) throw new Error(`Authored key collides with inventory key: ${key}`);
+    locales[lang][key] = msg[lang];
+  }
+  for (const [key, msg] of Object.entries(locales.en)) locales['en-XA'][key] = { ...msg, text: msg.text === null ? null : pseudoText(msg.text), ...(msg.plural ? { plural: { ...msg.plural, forms: Object.fromEntries(Object.entries(msg.plural.forms).map(([c, f]) => [c, pseudoText(f)])) } } : {}) };
   // Runtime ships only keys referenced by t()/tLocalized; the full catalogs stay build-time artifacts.
   const runtimeKeys = [...new Set(inventory.references.filter((r) => r.kind === 't' && r.key).map((r) => r.key))].filter((k) => locales.nb[k]).sort();
   const runtime = { nb: {}, en: {} };

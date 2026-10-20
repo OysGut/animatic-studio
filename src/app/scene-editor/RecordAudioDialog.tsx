@@ -37,6 +37,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Formatet nettleseren kan ta opp i (Chrome/Firefox: WebM, Safari: MP4). */
 function recordingType(): { mime: string; ext: string } | null {
@@ -183,10 +184,7 @@ export function RecordAudioDialog({
     const type = recordingType();
     if (!type) {
       setError(
-        L(
-          "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
-          "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
-        ),
+        tk("app-scene-editor-record-audio-dialog.start.set-error.aff4b707fbc5"),
       );
       return;
     }
@@ -201,14 +199,8 @@ export function RecordAudioDialog({
       setPhase("idle");
       setError(
         (e as Error).name === "NotAllowedError"
-          ? L(
-              "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
-              "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
-            )
-          : L(
-              `Fant ingen mikrofon (${(e as Error).message}).`,
-              `No microphone found (${(e as Error).message}).`,
-            ),
+          ? tk("app-scene-editor-record-audio-dialog.start.set-error.df0e4825b0da")
+          : tk("app-scene-editor-record-audio-dialog.start.set-error.2fe099680aff", { message: String((e as Error).message) }),
       );
       return;
     }
@@ -228,7 +220,7 @@ export function RecordAudioDialog({
       const blob = new Blob(chunks, { type: type.mime.split(";")[0] ?? type.mime });
       if (blob.size === 0) {
         setPhase("idle");
-        setError(L("Opptaket ble tomt.", "The recording is empty."));
+        setError(tk("app-scene-editor-record-audio-dialog.start.set-error.c67a5559ad35"));
         return;
       }
       setTake({ blob, url: URL.createObjectURL(blob), ext: type.ext, atMs });
@@ -267,7 +259,7 @@ export function RecordAudioDialog({
         hour: "2-digit",
         minute: "2-digit",
       });
-      const title = name.trim() || L(`Opptak ${stamp}`, `Recording ${stamp}`);
+      const title = name.trim() || tk("app-scene-editor-record-audio-dialog.title.message.6cb66d126fd2", { stamp: String(stamp) });
       // i18n-ignore – filnavn
       const file = new File([take.blob], `opptak.${take.ext}`, { type: take.blob.type });
       let clipId: string;
@@ -275,17 +267,17 @@ export function RecordAudioDialog({
         const targetAsset = selectedClip?.assetId ?? newId<"asset">();
         const uploaded = await uploadAssetAudio(projectId, targetAsset, file);
         const current = cmds.current();
-        if (!current) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
+        if (!current) throw new Error(tk("app-scene-editor-record-audio-dialog.save.message.342a352bd751"));
         const saved = await saveTake(cmds, current, { kind: "line", occurrenceId, blockId, ...(selectedClip ? { clipId: selectedClip.id } : {}) }, uploaded.media, title, targetAsset, undefined, true);
         const fresh = cmds.current();
-        if (!fresh) throw new Error(L("Prosjektet er lukket.", "The project is closed."));
+        if (!fresh) throw new Error(tk("app-scene-editor-record-audio-dialog.save.message.342a352bd751.2"));
         const clip = saved.clipId ? fresh.audioClips[saved.clipId] : selectedClip;
-        if (!clip) throw new Error(L("Replikken finnes ikke lenger.", "The line no longer exists."));
+        if (!clip) throw new Error(tk("app-scene-editor-record-audio-dialog.save.message.9cb2b7afbb96"));
         clipId = clip.id;
         // A new recording can use the uniquely matched screenplay speaker. Legacy rows need confirmation.
         const speaker = characterId ?? suggestedDialogueCharacter(fresh, occurrenceId, blockId)?.id ?? null;
         if (speaker) {
-          const linked = await cmds.runAndWait({ type: "SetDialogueCharacter", clipIds: [clip.id], characterAssetId: speaker as never }, L("Koble karakter til opptaket", "Link character to recording"));
+          const linked = await cmds.runAndWait({ type: "SetDialogueCharacter", clipIds: [clip.id], characterAssetId: speaker as never }, tk("app-scene-editor-record-audio-dialog.linked.cmds-run-and-wait.95259e018399"));
           if (linked.error) throw new Error(linked.error);
         }
       } else {
@@ -322,7 +314,7 @@ export function RecordAudioDialog({
             },
           ],
         },
-        L(`Lydopptak «${title}»`, `Audio recording “${title}”`),
+        tk("app-scene-editor-record-audio-dialog.r.cmds-run-and-wait.622d0ca8ca57", { title: String(title) }),
       );
       if (r.error) throw new Error(r.error);
         clipId = createdClipId;
@@ -348,29 +340,26 @@ export function RecordAudioDialog({
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2" data-testid="record-audio-dialog">
         <DialogHeader>
-          <DialogTitle>{L("Lydopptak", "Audio recording")}</DialogTitle>
+          <DialogTitle>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-title.98648fefb495")}</DialogTitle>
           <DialogDescription>
-            {L(
-              `Opptaket starter ${at(take?.atMs ?? startMs)} ut i scenen. Bruk hodetelefoner hvis scenen spilles av mens du tar opp.`,
-              `The recording starts ${at(take?.atMs ?? startMs)} into the scene. Use headphones if the scene plays while you record.`,
-            )}
+            {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-description.25f4e227460c", { value1: String(at(take?.atMs ?? startMs)) })}
           </DialogDescription>
         </DialogHeader>
         {kind === "dialogue" && blockId ? <section data-testid="dialogue-context" className="flex flex-col gap-3">
           <div className="flex items-center gap-3">{characterId ? <AssetThumb state={state} assetId={characterId} url={covers[characterId]} /> : null}<strong data-testid="dialogue-character-name" className="text-base text-text-primary">{character?.name ?? dialogueSpeaker(state, occurrenceId, blockId)}</strong></div>
           {contextBefore.map(b => <p key={b.id} data-testid="dialogue-context-before" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
           <p data-testid="dialogue-active-text" className="whitespace-pre-wrap break-words text-xl leading-relaxed text-text-primary">{state.blocks[blockId]?.text}</p>
-          {lineDrift(state, occurrenceId, blockId).status === "drift" ? <div data-testid="dialogue-drift" role="status" className="rounded-sm border border-status-danger/40 bg-status-danger-bg p-2"><div className="mb-1 flex items-center gap-2 text-xs text-status-danger"><DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />{L("Manuset er endret etter at den aktive lyden ble laget. Endringene står i rødt:", "The script changed after the active audio was made. The changes are shown in red:")}</div><DriftDiffView state={state} occurrenceId={occurrenceId} blockId={blockId} /></div> : <DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />}
-          {selectedClip ? <div className="flex items-center gap-2 text-xs text-text-secondary"><NoteFlagControl state={state} kind="audio_clip" targetId={selectedClip.id} run={cmds.run} editable={!busy} />{L("Huskelapp for replikkens lydsegment", "Note flag for the line's audio segment")}</div> : null}
+          {lineDrift(state, occurrenceId, blockId).status === "drift" ? <div data-testid="dialogue-drift" role="status" className="rounded-sm border border-status-danger/40 bg-status-danger-bg p-2"><div className="mb-1 flex items-center gap-2 text-xs text-status-danger"><DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.div.e0e446d3c491")}</div><DriftDiffView state={state} occurrenceId={occurrenceId} blockId={blockId} /></div> : <DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={blockId} run={cmds.run} editable={!busy} onGo={() => onOpenChange(false)} />}
+          {selectedClip ? <div className="flex items-center gap-2 text-xs text-text-secondary"><NoteFlagControl state={state} kind="audio_clip" targetId={selectedClip.id} run={cmds.run} editable={!busy} />{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.div.44f2ab294970")}</div> : null}
           {contextAfter.map(b => <p key={b.id} data-testid="dialogue-context-after" className="text-sm text-text-primary opacity-70">{b.text}</p>)}
-          <label className="flex flex-col gap-1 text-xs text-text-secondary">{L("Karakter", "Character")}<select data-testid="dialogue-character-select" value={characterId ?? ""} disabled={busy} className={select} onChange={e => {
+          <label className="flex flex-col gap-1 text-xs text-text-secondary">{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.label.d7f53f15259f")}<select data-testid="dialogue-character-select" value={characterId ?? ""} disabled={busy} className={select} onChange={e => {
             const id = e.target.value || null; setCharacterPick(id ?? "");
-            if (selectedClip) setError(cmds.run({ type: "SetDialogueCharacter", clipIds: [selectedClip.id], characterAssetId: id as never }, L("Velg karakter for replikken", "Choose character for line")));
-          }}><option value="">{L("Ikke koblet", "Not linked")}</option>{Object.values(state.assets).filter(a => !a.removed && !a.archived && ["character", "animal", "other"].includes(a.kind)).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
+            if (selectedClip) setError(cmds.run({ type: "SetDialogueCharacter", clipIds: [selectedClip.id], characterAssetId: id as never }, tk("app-scene-editor-record-audio-dialog.record-audio-dialog.cmds-run.f875c933b69b")));
+          }}><option value="">{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.option.1e8164ab62e8")}</option>{Object.values(state.assets).filter(a => !a.removed && !a.archived && ["character", "animal", "other"].includes(a.kind)).map(a => <option key={a.id} value={a.id}>{a.name}</option>)}</select></label>
         </section> : null}
         <div className="grid grid-cols-2 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Spor", "Track")}</span>
+            <span className={legend}>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.3bb3ee349a15")}</span>
             <select
               value={kind}
               disabled={busy}
@@ -385,7 +374,7 @@ export function RecordAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Replikk (valgfritt)", "Line (optional)")}</span>
+            <span className={legend}>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.38b3663f6ac7")}</span>
             <select
               data-testid="record-line-select"
               value={blockId}
@@ -395,8 +384,8 @@ export function RecordAudioDialog({
             >
               <option value="">
                 {lines.length
-                  ? L("Ingen", "None")
-                  : L("Ingen replikker i scenen", "No lines in the scene")}
+                  ? tk("app-scene-editor-record-audio-dialog.record-audio-dialog.option.7eec3bb384d7")
+                  : tk("app-scene-editor-record-audio-dialog.record-audio-dialog.option.9cbc47ca923c")}
               </option>
               {lines.map((l) => (
                 <option key={l.id} value={l.id}>
@@ -406,12 +395,12 @@ export function RecordAudioDialog({
             </select>
           </label>
           <label className="col-span-2 flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Navn i biblioteket", "Name in the library")}</span>
+            <span className={legend}>{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.87c6b2c662d6")}</span>
             <input
               value={name}
               disabled={busy}
               maxLength={200}
-              placeholder={L("Opptak (dato og tid)", "Recording (date and time)")}
+              placeholder={tk("app-scene-editor-record-audio-dialog.record-audio-dialog.placeholder.3c6ca787bd88")}
               onChange={(e) => setName(e.target.value)}
               className={select}
             />
@@ -424,21 +413,21 @@ export function RecordAudioDialog({
               onChange={(e) => setPlayAlong(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            {L("Spill av scenen mens du tar opp", "Play the scene while you record")}
+            {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.label.33e3ee40e1da")}
           </label>
         </div>
 
-        {playAlong ? <p role="status" data-testid="dialogue-headphones" className="text-xs text-status-uncertain">{L("Bruk hodetelefoner når scenen spilles under opptak.", "Use headphones when the scene plays during recording.")}</p> : null}
+        {playAlong ? <p role="status" data-testid="dialogue-headphones" className="text-xs text-status-uncertain">{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.p.dadb79d04045")}</p> : null}
         <div className="flex items-center gap-3 rounded-sm border border-border bg-surface-1 p-3">
           {phase === "recording" ? (
             <>
               <Button variant="destructive" onClick={stop}>
                 <Square className="fill-current" />
-                {L("Stopp", "Stop")}
+                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.0105f189ee3b")}
               </Button>
               <span className="flex items-center gap-1.5 text-[13px] tabular-nums text-status-danger">
                 <Circle className="size-3 animate-pulse fill-current" aria-hidden />
-                {L("Tar opp …", "Recording …")} {Math.floor(seconds / 60)}:
+                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.dbfce3788f71")} {Math.floor(seconds / 60)}:
                 {String(seconds % 60).padStart(2, "0")}
               </span>
             </>
@@ -446,13 +435,13 @@ export function RecordAudioDialog({
             <>
               <audio src={take.url} controls className="h-8 min-w-0 flex-1" />
               <Button variant="ghost" size="sm" disabled={busy} onClick={discard}>
-                {L("Forkast", "Discard")}
+                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.459663350e6a")}
               </Button>
             </>
           ) : (
             <Button onClick={() => void start()} disabled={busy}>
               {phase === "starting" ? <Loader2 className="animate-spin" /> : <Mic />}
-              {L("Ta opp", "Record")}
+              {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.ae4c0e1df207")}
             </Button>
           )}
         </div>
@@ -471,11 +460,11 @@ export function RecordAudioDialog({
         </> : null}
         <DialogFooter>
           <Button variant="secondary" disabled={busy} onClick={() => onOpenChange(false)}>
-            {L("Avbryt", "Cancel")}
+            {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.bc281784a1ed")}
           </Button>
           <Button disabled={!take || busy} onClick={() => void save()}>
             {phase === "saving" ? <Loader2 className="animate-spin" /> : null}
-            {L("Legg i scenen", "Add to scene")}
+            {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.a95f00f8e593")}
           </Button>
         </DialogFooter>
       </DialogContent>

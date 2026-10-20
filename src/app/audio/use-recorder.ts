@@ -5,6 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import { L } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Formatet nettleseren kan ta opp i. */
 export function recordingType(): { mime: string; ext: string } | null {
@@ -85,19 +86,13 @@ export function useRecorder() {
       const type = recordingType();
       if (!type) {
         setError(
-          L(
-            "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
-            "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
-          ),
+          tk("app-audio-use-recorder.start.set-error.c60a7cfee07e"),
         );
         return null;
       }
       if (!navigator.mediaDevices?.getUserMedia) {
         setError(
-          L(
-            "Mikrofonen kan bare brukes på en sikker adresse (https).",
-            "The microphone can only be used on a secure address (https).",
-          ),
+          tk("app-audio-use-recorder.start.set-error.be7eb7b9f805"),
         );
         return null;
       }
@@ -112,14 +107,8 @@ export function useRecorder() {
         setPhase("idle");
         setError(
           (e as Error).name === "NotAllowedError"
-            ? L(
-                "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
-                "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
-              )
-            : L(
-                `Fant ingen mikrofon (${(e as Error).message}).`,
-                `No microphone found (${(e as Error).message}).`,
-              ),
+            ? tk("app-audio-use-recorder.start.set-error.844a0a2d1efe")
+            : tk("app-audio-use-recorder.start.set-error.c370a016e8f1", { message: String((e as Error).message) }),
         );
         return null;
       }
@@ -142,7 +131,7 @@ export function useRecorder() {
           const mime = type.mime.split(";")[0] ?? type.mime;
           const blob = new Blob(chunks, { type: mime });
           if (blob.size === 0) {
-            setError(L("Opptaket ble tomt.", "The recording is empty."));
+            setError(tk("app-audio-use-recorder.result.set-error.153e096cf89f"));
             resolve(null);
             return;
           }

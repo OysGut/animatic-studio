@@ -4,6 +4,7 @@ import { L, canvasNodeKindLabel, layoutFromStructure, newId, type ProjectState }
 import type { Commands } from "@/app/project/use-commands";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export function BuildFromScriptDialog({ state, cmds, originY, onClose, onDone }: {
   state: ProjectState; cmds: Commands; originY: number; onClose: () => void; onDone: (ids: string[]) => void;
@@ -14,7 +15,7 @@ export function BuildFromScriptDialog({ state, cmds, originY, onClose, onDone }:
   const confirm = () => {
     const nodes = layout.filter((n) => picked.has(n.key)).map(({ key: _k, ...f }) => ({ id: newId<"canvas_node">(), ...f }));
     if (!nodes.length) return onClose();
-    const e = cmds.run({ type: "AddCanvasNodes", nodes }, L("Bygg fra manuset", "Build from the script"));
+    const e = cmds.run({ type: "AddCanvasNodes", nodes }, t("app-storylab-canvas-build-from-script-dialog.e.cmds-run.891234c2c685"));
     if (e) return setErr(e);
     onDone(nodes.map((n) => n.id));
   };
@@ -22,10 +23,10 @@ export function BuildFromScriptDialog({ state, cmds, originY, onClose, onDone }:
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent data-testid="canvas-build-preview">
         <DialogHeader>
-          <DialogTitle>{L("Bygg fra manuset", "Build from the script")}</DialogTitle>
-          <DialogDescription>{L("En premissnode og én node per scene i fortellingstid. Scener som allerede er på canvaset, hoppes over.", "A premise node and one node per scene in story time. Scenes already on the canvas are skipped.")}</DialogDescription>
+          <DialogTitle>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-title.efa0788452c2")}</DialogTitle>
+          <DialogDescription>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-description.318ac92ee7cc")}</DialogDescription>
         </DialogHeader>
-        {layout.length === 0 ? <p className="text-[13px] text-text-tertiary">{L("Alt fra manuset er allerede på canvaset.", "Everything from the script is already on the canvas.")}</p> : (
+        {layout.length === 0 ? <p className="text-[13px] text-text-tertiary">{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.p.562f98ce63e5")}</p> : (
           <ul className="max-h-72 space-y-1 overflow-y-auto text-[13px]">
             {layout.map((n) => (
               <li key={n.key}><label className="flex items-center gap-2">
@@ -37,8 +38,8 @@ export function BuildFromScriptDialog({ state, cmds, originY, onClose, onDone }:
         )}
         {err ? <p role="alert" className="text-[13px] text-status-danger">{err}</p> : null}
         <DialogFooter>
-          <ToolbarButton onClick={onClose}>{L("Avbryt", "Cancel")}</ToolbarButton>
-          <ToolbarButton variant="primary" disabled={!picked.size} data-testid="canvas-build-confirm" onClick={confirm}>{L(`Legg til ${picked.size} noder`, `Add ${picked.size} nodes`)}</ToolbarButton>
+          <ToolbarButton onClick={onClose}>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.toolbar-button.dda5c0ca6f51")}</ToolbarButton>
+          <ToolbarButton variant="primary" disabled={!picked.size} data-testid="canvas-build-confirm" onClick={confirm}>{t("app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.toolbar-button.cb63358027a1", { size: String(picked.size) })}</ToolbarButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

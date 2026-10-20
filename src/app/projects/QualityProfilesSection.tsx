@@ -115,7 +115,7 @@ export function QualityProfilesSection({
                 {[
                   p.spec.effort ? EFFORT_LABEL[p.spec.effort] : null,
                   p.spec.resolution ? IMAGE_SIZE_LABEL[p.spec.resolution] : null,
-                  p.spec.variants ? L(`${p.spec.variants} ${p.spec.variants === 1 ? "variant" : "varianter"}`, `${p.spec.variants} ${p.spec.variants === 1 ? "variant" : "variants"}`) : null,
+                  p.spec.variants ? t("app-projects-quality-profiles-section.variants", { count: p.spec.variants }) : null,
                   p.spec.budgetLimit != null
                     ? t("app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.c97aefb7ce63", { budgetLimit: String(p.spec.budgetLimit) })
                     : null,

@@ -13,6 +13,7 @@ import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
 import {
   L,
+  tm,
   ASSET_KIND_LABEL,
   REASON_LABEL,
   USAGE_LABEL,
@@ -386,7 +387,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                 <span className="text-[11px] text-text-tertiary">
                   {x.confidence === "high" ? L("Sikker", "Confident") : x.confidence === "medium" ? L("Trolig", "Likely") : L("Usikker", "Uncertain")}
                 </span>
-                {x.evidence ? <p className="break-words text-xs text-text-secondary">{x.evidence}</p> : null}
+                {x.evidence ? <p className="break-words text-xs text-text-secondary">{tm(x.evidence)}</p> : null}
                 {canAdd ? (
                   <button
                     type="button"

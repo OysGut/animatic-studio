@@ -88,6 +88,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { RejectedTextNotice } from "@/app/project/RejectedTextNotice";
 import { titlePageCommand } from "@/core/commands/export-settings";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
+import { t as tk } from "@/core/i18n/keyed";
 
 const ZOOMS = ["fit", "0.75", "1", "1.25", "1.5"] as const;
 type Zoom = (typeof ZOOMS)[number];
@@ -115,16 +116,16 @@ export function ScriptWorkspace({
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter manus …", "Loading script …")}
+        {tk("app-script-script-workspace.script-workspace.p.6c70d6eba610")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Manuset kunne ikke hentes.", "The script could not be loaded.")}
+        {tk("app-script-script-workspace.script-workspace.div.33729a2872d9")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
+            {tk("app-script-script-workspace.script-workspace.p.982d6ef58489")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -271,7 +272,7 @@ function Workspace({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   // Tilstedeværelse: hvem andre er i prosjektet, og hvilken scene de står i
   const me = useProfiles([userId]);
-  const myName = me.data?.[userId]?.display_name || L("Medlem", "Member");
+  const myName = me.data?.[userId]?.display_name || tk("app-script-script-workspace.my-name.message.e0177e934ee9");
   // Skrivehjelpen (T2): egen fane ved inspektøren, hurtigtaster og kontekstmeny
   const [rightTab, setRightTab] = useState<"inspector" | "assist">("inspector");
   const [assistTrigger, setAssistTrigger] = useState<AssistTrigger | null>(null);
@@ -297,7 +298,7 @@ function Workspace({
   const others = usePresence(
     projectId,
     userId,
-    me.data?.[userId]?.display_name || L("Medlem", "Member"),
+    me.data?.[userId]?.display_name || tk("app-script-script-workspace.others.use-presence.dd7c3ee425b2"),
     selection.occurrenceId,
   );
   const presenceByOcc = useMemo(() => {
@@ -665,10 +666,7 @@ function Workspace({
     if (!at.found) {
       setPendingNote({
         ...p,
-        error: L(
-          "Teksten er endret mens du skrev – merk ordene på nytt.",
-          "The text was changed while you were writing – select the words again.",
-        ),
+        error: tk("app-script-script-workspace.error.error.9cbf95fa4a8e"),
       });
       return;
     }
@@ -688,7 +686,7 @@ function Workspace({
           },
         ],
       },
-      L("Nytt notat", "New note"),
+      tk("app-script-script-workspace.err.run.19bffc68c0d6"),
     );
     if (!err) {
       setPendingNote(null);
@@ -708,13 +706,10 @@ function Workspace({
           <span className="text-chrome font-medium text-text-primary">{productions[0]?.name}</span>
         )}
         <select
-          aria-label={L("Manusspråk", "Script language")}
+          aria-label={tk("app-script-script-workspace.workspace.aria-label.ef7efda65221")}
           value={lang}
           onChange={(e) => setLang(e.target.value)}
-          title={L(
-            "Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri.",
-            "The language the script is shown in. Norwegian is the main script; translations never change it.",
-          )}
+          title={tk("app-script-script-workspace.workspace.title.442aea26253d")}
           className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
         >
           {Object.entries(LANGUAGE_LABEL).map(([k, v]) => (
@@ -726,38 +721,29 @@ function Workspace({
         {langStatus ? (
           <span
             className="whitespace-nowrap text-xs text-text-tertiary"
-            title={L(
-              "Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen",
-              "Lines that have been translated, and lines where the Norwegian has changed since translation",
-            )}
+            title={tk("app-script-script-workspace.workspace.title.ecab89434db5")}
           >
-            {L(
-              `${langStatus.translated} av ${langStatus.lines} oversatt`,
-              `${langStatus.translated} of ${langStatus.lines} translated`,
-            )}
+            {tk("app-script-script-workspace.workspace.span.ec47390de436", { translated: String(langStatus.translated), lines: String(langStatus.lines) })}
             {langStatus.review
-              ? L(` · ${langStatus.review} må gjennomgås`, ` · ${langStatus.review} to review`)
+              ? tk("app-script-script-workspace.workspace.span.048b3ab3de10", { review: String(langStatus.review) })
               : ""}
             {langStatus.uncertain
-              ? L(` · ${langStatus.uncertain} usikre`, ` · ${langStatus.uncertain} uncertain`)
+              ? tk("app-script-script-workspace.workspace.span.a4fa89817a89", { uncertain: String(langStatus.uncertain) })
               : ""}
           </span>
         ) : null}
         {langStatus && editable ? (
           <ToolbarButton onClick={() => setImportLangOpen(true)}>
             <Languages />
-            {L("Importer engelsk manus …", "Import English script …")}
+            {tk("app-script-script-workspace.workspace.toolbar-button.87153b7e849d")}
           </ToolbarButton>
         ) : null}
         {langStatus && editable && langStatus.translated > 0 ? (
           <ToolbarButton
             onClick={() => setRemoveLangOpen(true)}
-            title={L(
-              "Fjern alle oversettelser til dette språket i én endring (kan angres)",
-              "Remove all translations into this language in one change (can be undone)",
-            )}
+            title={tk("app-script-script-workspace.workspace.title.67cc04366e0d")}
           >
-            {L("Fjern oversettelsene …", "Remove the translations …")}
+            {tk("app-script-script-workspace.workspace.toolbar-button.48dd6b7fbf04")}
           </ToolbarButton>
         ) : null}
         </ToolbarGroup>
@@ -769,13 +755,13 @@ function Workspace({
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
-              : L("Angre (⌘Z)", "Undo (⌘Z)")
+              ? tk("app-script-script-workspace.workspace.title.9190e6a61a9c", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-script-script-workspace.workspace.title.bd4f0744ad84")
           }
           label={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-              : L("Angre", "Undo")
+              ? tk("app-script-script-workspace.workspace.label.e2cc01325b5b", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-script-script-workspace.workspace.label.3362824102ea")
           }
         >
           <Undo2 />
@@ -786,13 +772,13 @@ function Workspace({
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
-              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+              ? tk("app-script-script-workspace.workspace.title.2c1f264d7e99", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-script-script-workspace.workspace.title.6d4e35b2e0a2")
           }
           label={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-              : L("Gjør om", "Redo")
+              ? tk("app-script-script-workspace.workspace.label.c39571853125", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-script-script-workspace.workspace.label.b6704946a46c")
           }
         >
           <Redo2 />
@@ -802,13 +788,10 @@ function Workspace({
         {editable && state.productions[productionId]?.kind !== "main" ? (
           <ToolbarButton
             onClick={() => setAddScenesOpen(true)}
-            title={L(
-              "Gjenbruk scener fra hovedfilmen eller en annen produksjon",
-              "Reuse scenes from the main film or another production",
-            )}
+            title={tk("app-script-script-workspace.workspace.title.ab59c5d3bc7e")}
           >
             <ListPlus />
-            {L("Legg til scener …", "Add scenes …")}
+            {tk("app-script-script-workspace.workspace.toolbar-button.61cbc7374b1d")}
           </ToolbarButton>
         ) : editable ? (
           <ToolbarButton
@@ -816,32 +799,29 @@ function Workspace({
             onClick={() => setImportOpen(true)}
           >
             <FileUp />
-            {L("Importer manus", "Import script")}
+            {tk("app-script-script-workspace.workspace.toolbar-button.36d735c429be")}
           </ToolbarButton>
         ) : null}
         {state.productions[productionId]?.kind !== "main" &&
         promotionCandidates(state, productionId).length > 0 ? (
           <ToolbarButton
             onClick={() => setPromoteOpen(true)}
-            title={L(
-              "Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen",
-              "Carry changes or new scenes from this production back to the main film",
-            )}
-            aria-label={L("Tilbakefør", "Carry back")}
+            title={tk("app-script-script-workspace.workspace.title.5e6d7daf8488")}
+            aria-label={tk("app-script-script-workspace.workspace.aria-label.476a13ae83e3")}
           >
             <CornerUpLeft />
-            <span className="hidden 2xl:inline">{L("Tilbakefør …", "Carry back …")}</span>
+            <span className="hidden 2xl:inline">{tk("app-script-script-workspace.workspace.span.7e399e2c169f")}</span>
           </ToolbarButton>
         ) : null}
         {hasScenes ? (
           <>
             <ToolbarButton onClick={() => setVersionsOpen(true)}>
               <History />
-              {L("Versjoner", "Versions")}
+              {tk("app-script-script-workspace.workspace.toolbar-button.d987ab9929c2")}
             </ToolbarButton>
             <ToolbarButton onClick={() => setExportOpen(true)}>
               <Download />
-              {L("Eksporter", "Export")}
+              {tk("app-script-script-workspace.workspace.toolbar-button.5e33b57871b7")}
             </ToolbarButton>
           </>
         ) : null}
@@ -850,16 +830,13 @@ function Workspace({
           {others.length ? (
             <div
               className="flex -space-x-1.5"
-              aria-label={L(
-                `Også her nå: ${others.map((o) => o.name).join(", ")}`,
-                `Also here now: ${others.map((o) => o.name).join(", ")}`,
-              )}
+              aria-label={tk("app-script-script-workspace.workspace.aria-label.d76d7968aeca", { value1: String(others.map((o) => o.name).join(", ")) })}
             >
               {others.slice(0, 5).map((o) => (
                 <button
                   key={o.userId}
                   type="button"
-                  title={`${o.name}${o.occurrenceId ? L(" – se hvor", " – see where") : ""}`}
+                  title={`${o.name}${o.occurrenceId ? tk("app-script-script-workspace.workspace.title.181981dbb0d5") : ""}`}
                   onClick={() =>
                     o.occurrenceId && select({ occurrenceId: o.occurrenceId, blockId: null }, true)
                   }
@@ -873,7 +850,7 @@ function Workspace({
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
-              {L("Bare lesetilgang", "Read-only access")}
+              {tk("app-script-script-workspace.workspace.span.7c7941fb9566")}
             </span>
           ) : null}
           {/* Visningsvalg samlet i én meny, så verktøylinjen ikke bryter tekst (UX-gjennomgang DEC-0076) */}
@@ -881,17 +858,14 @@ function Workspace({
             <PopoverTrigger asChild>
               <ToolbarButton
                 className="gap-1 text-xs"
-                title={L(
-                  "Notater, bare valgt scene og låste sider",
-                  "Notes, selected scene only and locked pages",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.e1e017defea2")}
               >
                 <SlidersHorizontal className="size-3.5" aria-hidden />
-                {L("Visning", "View")}
+                {tk("app-script-script-workspace.workspace.toolbar-button.1de494e767b5")}
                 {onlySelected || !showNotes || !showChanged ? (
                   <>
                     <span className="size-1.5 rounded-full bg-accent-brand" aria-hidden />
-                    <span className="sr-only">{L("(endret)", "(changed)")}</span>
+                    <span className="sr-only">{tk("app-script-script-workspace.workspace.span.b6b1aad09348")}</span>
                   </>
                 ) : null}
                 <ChevronDown className="size-3" aria-hidden />
@@ -900,10 +874,7 @@ function Workspace({
             <PopoverContent align="end" className="flex w-60 flex-col gap-2 p-3">
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title={L(
-                  "Vis eller skjul notater i manuset (REQ-0538)",
-                  "Show or hide notes in the script (REQ-0538)",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.1319d610390c")}
               >
                 <input
                   type="checkbox"
@@ -911,14 +882,11 @@ function Workspace({
                   onChange={(e) => setShowNotes(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                {L("Vis notater", "Show notes")}
+                {tk("app-script-script-workspace.workspace.label.ab8687b6461c")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title={L(
-                  "Røde merker i margen der teksten er endret etter at 2D-scenen eller filmen ble laget. Vises bare på skjermen, aldri i utskrift eller eksport.",
-                  "Red marks in the margin where the text was changed after the 2D scene or film was made. Shown on screen only, never in print or export.",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.49da193529f4")}
               >
                 <input
                   type="checkbox"
@@ -927,14 +895,11 @@ function Workspace({
                   className="size-3.5 accent-[var(--accent-brand)]"
                   data-testid="show-changed-marks"
                 />
-                {L("Vis endringsmerker", "Show change marks")}
+                {tk("app-script-script-workspace.workspace.label.27533df79d71")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title={L(
-                  "Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen.",
-                  "Show only the scene selected in the scene list. Does not change the film.",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.dbf1ce70536a")}
               >
                 <input
                   type="checkbox"
@@ -945,17 +910,14 @@ function Workspace({
                   }}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                {L("Vis kun valgt scene", "Show only selected scene")}
+                {tk("app-script-script-workspace.workspace.label.8676b83317ee")}
               </label>
               <label
                 className={
                   "ml-5 flex items-center gap-1.5 text-xs " +
                   (onlySelected ? "text-text-secondary" : "text-text-tertiary")
                 }
-                title={L(
-                  "Lesevisningen for valgt scene: sort tekst på hvit bakgrunn",
-                  "Reading view for the selected scene: black text on a white background",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.f3a9414f12ae")}
               >
                 <input
                   type="checkbox"
@@ -964,28 +926,25 @@ function Workspace({
                   onChange={(e) => setLightReading(e.target.checked)}
                   className="size-3.5 accent-[var(--accent-brand)]"
                 />
-                {L("Sort tekst på hvit bakgrunn", "Black text on white background")}
+                {tk("app-script-script-workspace.workspace.label.68d82f85cc60")}
               </label>
               <label
                 className="flex items-center gap-1.5 text-xs text-text-secondary"
-                title={L(
-                  "Følg originalens sideskift for importert tekst (låste sider)",
-                  "Follow the original page breaks for imported text (locked pages)",
-                )}
+                title={tk("app-script-script-workspace.workspace.title.134afc00c999")}
               >
                 <Lock className="size-3.5" aria-hidden />
-                {L("Låste sider", "Locked pages")}
+                {tk("app-script-script-workspace.workspace.label.2c75b17c31a9")}
                 <Switch
                   checked={lockedPages}
                   onCheckedChange={setLockedPages}
                   className="scale-75"
-                  aria-label={L("Låste sider", "Locked pages")}
+                  aria-label={tk("app-script-script-workspace.workspace.aria-label.2c75b17c31a9")}
                 />
               </label>
             </PopoverContent>
           </Popover>
           <select
-            aria-label={L("Zoom", "Zoom")}
+            aria-label={tk("app-script-script-workspace.workspace.aria-label.dfae56e1d21c")}
             value={zoomChoice}
             onChange={(e) => setZoom(e.target.value as Zoom)}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -993,19 +952,16 @@ function Workspace({
             {ZOOMS.map((z) => (
               <option key={z} value={z}>
                 {z === "fit"
-                  ? L("Tilpass bredde", "Fit width")
+                  ? tk("app-script-script-workspace.workspace.option.f2f185ef5aa4")
                   : `${Math.round(Number(z) * 100)} %`}
               </option>
             ))}
           </select>
           <span className="tabular shrink-0 whitespace-nowrap text-xs text-text-tertiary">
             {visibleOcc
-              ? L(
-                  `${shownPages.length} av ${pagination.pages.length}`,
-                  `${shownPages.length} of ${pagination.pages.length}`,
-                )
+              ? tk("app-script-script-workspace.workspace.span.446c7442419c", { length: String(shownPages.length), length2: String(pagination.pages.length) })
               : pagination.pages.length}{" "}
-            {L("sider", "pages")}
+            {tk("app-script-script-workspace.workspace.span.b997ee84328e")}
           </span>
         </div>
       </Toolbar>
@@ -1024,7 +980,7 @@ function Workspace({
               onSize={setNavWidth}
               min={200}
               max={520}
-              label={L("Bredde på scenelisten", "Width of the scene list")}
+              label={tk("app-script-script-workspace.workspace.label.ba59ddc1d352")}
             />
             <SceneNavigator
               state={state}
@@ -1045,7 +1001,7 @@ function Workspace({
               moved={moved}
               movedBaseline={
                 latestVersion
-                  ? L(`versjon ${latestVersion.number}`, `version ${latestVersion.number}`)
+                  ? tk("app-script-script-workspace.workspace.moved-baseline.081ba12b8257", { number: String(latestVersion.number) })
                   : null
               }
               onSelect={(id) => select({ occurrenceId: id, blockId: null }, true)}
@@ -1056,8 +1012,8 @@ function Workspace({
                 run(
                   { type: "SetOccurrenceActive", occurrenceId: id as never, active },
                   active
-                    ? L("Aktiver scene", "Activate scene")
-                    : L("Deaktiver scene", "Deactivate scene"),
+                    ? tk("app-script-script-workspace.workspace.run.13fb4ec5bff2")
+                    : tk("app-script-script-workspace.workspace.run.785fcc2a05a5"),
                 )
               }
             />
@@ -1065,10 +1021,7 @@ function Workspace({
           <div
             ref={scrollRef}
             tabIndex={0}
-            aria-label={L(
-              "Manussider. Pil opp og ned velger linje, Enter redigerer.",
-              "Script pages. Up and down arrows select a line, Enter edits.",
-            )}
+            aria-label={tk("app-script-script-workspace.workspace.aria-label.1a39ad059236")}
             onKeyDown={onPagesKey}
             onMouseUp={onPagesMouseUp}
             onContextMenu={(e) => {
@@ -1095,23 +1048,14 @@ function Workspace({
           >
             {onlySelected && !selection.occurrenceId ? (
               <p className="px-6 pt-4 text-xs text-text-tertiary">
-                {L(
-                  "«Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises til da.",
-                  "“Show only selected scene” is on – choose a scene in the list on the left. The whole script is shown until then.",
-                )}
+                {tk("app-script-script-workspace.workspace.p.c6a460464bdf")}
               </p>
             ) : null}
             {visibleOcc && shownPages.length === 0 ? (
               <p className="px-6 pt-6 text-[13px] text-text-secondary">
                 {showOnlySelected && !state.occurrences[selection.occurrenceId!]?.active
-                  ? L(
-                      "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den.",
-                      "The selected scene is deactivated, so it is not on the script pages. Turn it on in the list (under “Change order and visibility”) to see it.",
-                    )
-                  : L(
-                      "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene.",
-                      "No active scenes match the filter. Deactivated scenes are not shown on the pages.",
-                    )}
+                  ? tk("app-script-script-workspace.workspace.p.b3243fa495e0")
+                  : tk("app-script-script-workspace.workspace.p.f85765d85227")}
               </p>
             ) : null}
             <ScriptPageView
@@ -1152,7 +1096,7 @@ function Workspace({
                   onClick={() => setPendingNote({ ...pendingNote, open: true })}
                 >
                   <MessageSquarePlus />
-                  {L("Legg til notat", "Add note")}
+                  {tk("app-script-script-workspace.workspace.button.de441996bb2a")}
                 </Button>
               )}
             </div>
@@ -1164,15 +1108,15 @@ function Workspace({
               onSize={setInspWidth}
               min={240}
               max={640}
-              label={L("Bredde på inspektøren", "Width of the inspector")}
+              label={tk("app-script-script-workspace.workspace.label.f65e02e2f309")}
             />
             {assistAvailable ? (
               <div className="flex h-8 shrink-0 items-center gap-1 border-b border-border px-2 text-[12px]" role="tablist">
                 <button type="button" role="tab" aria-selected={rightTab === "inspector"} data-testid="script-tab-inspector" onClick={() => setRightTab("inspector")} className={"rounded-sm px-2 py-0.5 " + (rightTab === "inspector" ? "bg-surface-3 text-text-primary" : "text-text-secondary hover:text-text-primary")}>
-                  {L("Inspektør", "Inspector")}
+                  {tk("app-script-script-workspace.workspace.button.ebd161a4610b")}
                 </button>
                 <button type="button" role="tab" aria-selected={rightTab === "assist"} data-testid="script-tab-assist" onClick={() => setRightTab("assist")} className={"rounded-sm px-2 py-0.5 " + (rightTab === "assist" ? "bg-surface-3 text-text-primary" : "text-text-secondary hover:text-text-primary")}>
-                  {L("Skrivehjelp", "Writing assistant")}
+                  {tk("app-script-script-workspace.workspace.button.083015dbb2e5")}
                 </button>
               </div>
             ) : null}
@@ -1217,24 +1161,18 @@ function Workspace({
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
           <p className="text-base font-medium text-text-primary">
-            {L(
-              `Ingen scener i «${state.productions[productionId]?.name}» ennå`,
-              `No scenes in “${state.productions[productionId]?.name}” yet`,
-            )}
+            {tk("app-script-script-workspace.workspace.p.29928c11a830", { name: String(state.productions[productionId]?.name) })}
           </p>
           {state.productions[productionId]?.kind !== "main" ? (
             <>
               <p className="max-w-[440px] text-[13px] text-text-secondary">
-                {L(
-                  "Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye scener legges aldri inn i hovedfilmen automatisk.",
-                  "Reuse scenes from the main film, or write new scenes that exist only here. New scenes are never added to the main film automatically.",
-                )}
+                {tk("app-script-script-workspace.workspace.p.0d1a72ef9f90")}
               </p>
               {editable ? (
                 <div className="flex gap-2">
                   <Button onClick={() => setAddScenesOpen(true)}>
                     <ListPlus />
-                    {L("Legg til scener …", "Add scenes …")}
+                    {tk("app-script-script-workspace.workspace.button.61cbc7374b1d")}
                   </Button>
                   <Button
                     variant="secondary"
@@ -1252,13 +1190,13 @@ function Workspace({
                           blocks: [{ blockId: newId(), kind: "action", text: "", orderKey: "i" }],
                           productionNumber: null,
                         },
-                        L("Ny scene", "New scene"),
+                        tk("app-script-script-workspace.e.cmds-run.7bf7f54e70ef"),
                       );
                       if (!e) setSelection({ occurrenceId, blockId: null });
                     }}
                   >
                     <Plus />
-                    {L("Skriv ny scene", "Write new scene")}
+                    {tk("app-script-script-workspace.workspace.button.a577d61c554a")}
                   </Button>
                 </div>
               ) : null}
@@ -1266,15 +1204,12 @@ function Workspace({
           ) : (
             <>
               <p className="max-w-[420px] text-[13px] text-text-secondary">
-                {L(
-                  "Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en forhåndsvisning før noe lagres, og importen kan angres.",
-                  "Import the script as PDF (for example from Final Draft) or Word. You see a preview before anything is saved, and the import can be undone.",
-                )}
+                {tk("app-script-script-workspace.workspace.p.17dbe6cfba2b")}
               </p>
               {editable ? (
                 <Button onClick={() => setImportOpen(true)}>
                   <FileUp />
-                  {L("Importer manus", "Import script")}
+                  {tk("app-script-script-workspace.workspace.button.36d735c429be")}
                 </Button>
               ) : null}
             </>
@@ -1323,7 +1258,7 @@ function Workspace({
             ? {
                 onSaveTitlePage: (lines: readonly string[]) => {
                   const tp = titlePageCommand(state, productionId, lines);
-                  if (tp) cmds.runSilent(tp.command, L("Lagre tittelsiden", "Save title page"));
+                  if (tp) cmds.runSilent(tp.command, tk("app-script-script-workspace.on-save-title-page.cmds-run-silent.4b33f3c3cbfc"));
                 },
               }
             : {})}
@@ -1418,7 +1353,7 @@ function PendingNoteForm({
         rows={3}
         maxLength={10000}
         value={text}
-        placeholder={L("Skriv notatet …", "Write the note …")}
+        placeholder={tk("app-script-script-workspace.pending-note-form.placeholder.5a426aacadc4")}
         onChange={(e) => setText(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) onSave(text);
@@ -1428,10 +1363,10 @@ function PendingNoteForm({
       />
       <div className="flex gap-1.5">
         <Button size="sm" onClick={() => onSave(text)} disabled={!text.trim()}>
-          {L("Lagre notat", "Save note")}
+          {tk("app-script-script-workspace.pending-note-form.button.7b89e44e9453")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-script-script-workspace.pending-note-form.button.feb08cc7c905")}
         </Button>
       </div>
       {error ? (
@@ -1449,7 +1384,7 @@ export function SaveIndicator({ cmds }: { cmds: Commands }) {
     return (
       <span className="flex items-center gap-1 text-xs text-text-tertiary" role="status">
         <Loader2 className="size-3 animate-spin" aria-hidden />
-        {L("Lagrer …", "Saving …")}
+        {tk("app-script-script-workspace.save-indicator.span.c775d27e8e0a")}
       </span>
     );
   if (s.kind === "error")
@@ -1464,5 +1399,5 @@ export function SaveIndicator({ cmds }: { cmds: Commands }) {
         {s.message}
       </button>
     );
-  return <span className="text-xs text-text-tertiary">{L("Lagret", "Saved")}</span>;
+  return <span className="text-xs text-text-tertiary">{tk("app-script-script-workspace.save-indicator.span.76d2d5532927")}</span>;
 }

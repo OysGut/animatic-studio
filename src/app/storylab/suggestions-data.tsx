@@ -5,6 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { L } from "@/core";
 import { listStorySuggestions } from "@/adapters/storylab/sessions.functions";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
+import { t } from "@/core/i18n/keyed";
 
 export const suggestionKey = (projectId: string) => ["story-suggestions", projectId] as const;
 export function useStorySuggestions(projectId: string) {
@@ -18,7 +19,7 @@ export function useStorySuggestions(projectId: string) {
 export const SuggestionsNavigation = createContext<(id: string) => void>(() => {});
 export function SavedSuggestion({ id }: { id: string }) {
   const open = useContext(SuggestionsNavigation);
-  return <ToolbarButton className="text-xs" onClick={() => open(id)} data-testid="storylab-suggestion-saved">{L("Lagret – se Forslag", "Saved – see Suggestions")}</ToolbarButton>;
+  return <ToolbarButton className="text-xs" onClick={() => open(id)} data-testid="storylab-suggestion-saved">{t("app-storylab-suggestions-data.saved-suggestion.toolbar-button.b84b802541c7")}</ToolbarButton>;
 }
 export function useSuggestionSaved(projectId: string) {
   const qc = useQueryClient();

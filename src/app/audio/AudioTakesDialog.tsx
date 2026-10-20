@@ -34,6 +34,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/compone
 import { chooseTake, saveRoomTone, saveTake, type TakeTarget } from "./takes";
 import { AudioCompositionEditor } from "./AudioCompositionEditor";
 import { useRecorder, type Recording } from "./use-recorder";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function AudioTakesDialog({
   open,
@@ -90,10 +91,7 @@ export function AudioTakesDialog({
             className="mt-3 flex flex-wrap items-center gap-2 rounded-sm border border-accent-warm/60 p-2 text-xs text-accent-warm"
             data-testid="audio-takes-confirm-close"
           >
-            {L(
-              "Du har opptak som ikke er beholdt. De forsvinner hvis du lukker.",
-              "You have recordings that are not kept. They disappear if you close.",
-            )}
+            {tk("app-audio-audio-takes-dialog.audio-takes-dialog.div.89f25223f753")}
             <Button
               size="sm"
               variant="secondary"
@@ -103,7 +101,7 @@ export function AudioTakesDialog({
                 onOpenChange(false);
               }}
             >
-              {L("Lukk likevel", "Close anyway")}
+              {tk("app-audio-audio-takes-dialog.audio-takes-dialog.button.a42b14711302")}
             </Button>
           </div>
         ) : null}
@@ -193,7 +191,7 @@ function Body({
       const owner = existing ?? newId<"asset">();
       const file = new File([r.blob], `opptak.${r.ext}`, { type: r.mime }); // i18n-ignore – filnavn
       const { media } = await uploadAssetAudio(projectId, owner, file);
-      const note = L("Opptak på datamaskinen", "Recorded on the computer");
+      const note = tk("app-audio-audio-takes-dialog.note.message.a6cfd08e7b89");
       if (r.roomTone) await saveRoomTone(cmds, s, where, media, note, existing ? undefined : owner);
       else await saveTake(cmds, s, target, media, note, existing ? undefined : owner);
       forget(r.id);
@@ -225,7 +223,7 @@ function Body({
         <Mic className="mt-0.5 size-4 shrink-0 text-accent-brand" aria-hidden />
         <div className="min-w-0">
           <DialogTitle className="text-base font-semibold text-text-primary">
-            {L("Lydopptak", "Audio recording")}
+            {tk("app-audio-audio-takes-dialog.body.dialog-title.149fe2de32b4")}
           </DialogTitle>
           <DialogDescription className="mt-0.5 text-[13px] text-text-secondary">
             {label}
@@ -240,8 +238,8 @@ function Body({
         >
           <p className="text-[11px] text-text-tertiary">
             {info.sceneNumber
-              ? L(`Scene ${info.sceneNumber}`, `Scene ${info.sceneNumber}`)
-              : L("Scene", "Scene")}
+              ? tk("app-audio-audio-takes-dialog.body.p.8cb3e1031fad", { sceneNumber: String(info.sceneNumber) })
+              : tk("app-audio-audio-takes-dialog.body.p.aee9f5645a5c")}
             {info.heading ? ` · ${info.heading}` : ""}
           </p>
           <p className="mt-1 font-mono text-[13px] font-semibold uppercase text-text-primary">
@@ -260,13 +258,13 @@ function Body({
       <div className="mt-4 grid gap-4 sm:grid-cols-[1fr_auto]">
         <section aria-labelledby="pc-rec" className="flex flex-col gap-2">
           <h3 id="pc-rec" className="text-[13px] font-semibold text-text-primary">
-            {L("Ta opp på denne datamaskinen", "Record on this computer")}
+            {tk("app-audio-audio-takes-dialog.body.h3.35489746f162")}
           </h3>
           <div className="flex flex-wrap items-center gap-2">
             {recording ? (
               <Button size="sm" variant="destructive" onClick={rec.stop} data-testid="pc-rec-stop">
                 <Square className="size-3.5" aria-hidden />
-                {L(`Stopp (${seconds} s)`, `Stop (${seconds} s)`)}
+                {tk("app-audio-audio-takes-dialog.body.button.493389ebd797", { seconds: String(seconds) })}
               </Button>
             ) : (
               <Button
@@ -281,8 +279,8 @@ function Body({
                   <Circle className="size-3.5 fill-current text-status-danger" aria-hidden />
                 )}
                 {local.length || takes.length
-                  ? L("Ta opp på nytt", "Record again")
-                  : L("Start opptak", "Start recording")}
+                  ? tk("app-audio-audio-takes-dialog.body.button.fb1166288c94")
+                  : tk("app-audio-audio-takes-dialog.body.button.955e02288adc")}
               </Button>
             )}
             <Button
@@ -290,21 +288,18 @@ function Body({
               variant="secondary"
               onClick={() => void record(true)}
               disabled={recording || rec.phase === "starting"}
-              title={L(
-                "Ta opp noen sekunder der ingen snakker – til bruk i dialogredigering",
-                "Record a few seconds where nobody speaks – for use in dialogue editing",
-              )}
+              title={tk("app-audio-audio-takes-dialog.body.title.d8fb18641253")}
               data-testid="pc-rec-roomtone"
             >
               <Waves className="size-3.5" aria-hidden />
-              {L("Ta opp romlyd", "Record room tone")}
+              {tk("app-audio-audio-takes-dialog.body.button.932beed1c2b5")}
             </Button>
             {recording ? (
               <span className="flex items-center gap-1 text-xs text-status-danger" role="status">
                 <Circle className="size-2.5 animate-pulse fill-current" aria-hidden />
                 {rec.roomTone
-                  ? L("Tar opp romlyd …", "Recording room tone …")
-                  : L("Tar opp …", "Recording …")}
+                  ? tk("app-audio-audio-takes-dialog.body.span.815662f39bca")
+                  : tk("app-audio-audio-takes-dialog.body.span.847f7b626dac")}
               </span>
             ) : null}
           </div>
@@ -322,8 +317,8 @@ function Body({
                 >
                   <span className="text-xs font-medium text-text-primary">
                     {r.roomTone
-                      ? L("Romlyd", "Room tone")
-                      : L(`Nytt opptak ${i + 1}`, `New recording ${i + 1}`)}{" "}
+                      ? tk("app-audio-audio-takes-dialog.body.span.78624720bec4")
+                      : tk("app-audio-audio-takes-dialog.body.span.eee2be10267b", { value1: String(i + 1) })}{" "}
                     · {formatTakeLength(r.durationMs)}
                   </span>
                   <audio src={r.url} controls preload="metadata" className="h-8 max-w-[220px]" />
@@ -338,14 +333,14 @@ function Body({
                     ) : (
                       <Check className="size-3.5" aria-hidden />
                     )}
-                    {L("Behold", "Keep")}
+                    {tk("app-audio-audio-takes-dialog.body.button.b44bebe6fca2")}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => forget(r.id)}
                     disabled={busy === r.id}
-                    aria-label={L("Forkast opptaket", "Discard the recording")}
+                    aria-label={tk("app-audio-audio-takes-dialog.body.aria-label.c03934296836")}
                   >
                     <Trash2 className="size-3.5" aria-hidden />
                   </Button>
@@ -354,10 +349,7 @@ function Body({
             </ul>
           ) : null}
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Opptakene blir liggende her til du trykker «Behold». Et nytt take overskriver aldri et tidligere.",
-              "Recordings stay here until you press “Keep”. A new take never overwrites an earlier one.",
-            )}
+            {tk("app-audio-audio-takes-dialog.body.p.fadd539a7584")}
           </p>
         </section>
 
@@ -366,7 +358,7 @@ function Body({
           className="flex flex-col items-center gap-2 sm:border-l sm:border-border sm:pl-4"
         >
           <h3 id="mob-rec" className="self-start text-[13px] font-semibold text-text-primary">
-            {L("Ta opp på mobilen", "Record on the phone")}
+            {tk("app-audio-audio-takes-dialog.body.h3.9a449f5c0971")}
           </h3>
           <MobileQr m={m} size={170} />
           <p
@@ -378,12 +370,12 @@ function Body({
           >
             <Smartphone className="size-3.5" aria-hidden />
             {m.connected
-              ? L("Mobilen er tilkoblet", "The phone is connected")
-              : L("Venter på mobilen …", "Waiting for the phone …")}
+              ? tk("app-audio-audio-takes-dialog.body.p.701f8abba295")
+              : tk("app-audio-audio-takes-dialog.body.p.d2fb9cd7efc5")}
           </p>
           {m.pending.length ? (
             <p className="text-xs text-text-secondary">
-              {L(`${m.pending.length} lastes opp`, `${m.pending.length} uploading`)}
+              {tk("app-audio-audio-takes-dialog.body.p.7e5210ea94aa", { length: String(m.pending.length) })}
             </p>
           ) : null}
         </section>
@@ -397,7 +389,7 @@ function Body({
 
       <section aria-labelledby="takes-h" className="mt-4">
         <h3 id="takes-h" className="text-[13px] font-semibold text-text-primary">
-          {L("Takes", "Takes")}
+          {tk("app-audio-audio-takes-dialog.body.h3.610e437ca4d4")}
         </h3>
         {takes.length ? (
           <ul className="mt-1.5 flex flex-col gap-1" data-testid="audio-takes-list">
@@ -418,7 +410,7 @@ function Body({
                     {audioTakeLabel(t.number)} · {formatTakeLength(t.durationMs)}
                     {t.composition ? (
                       <span className="ml-1 rounded-sm bg-accent-warm/20 px-1 text-[11px] font-normal text-accent-warm">
-                        {L("komposisjon", "composition")}
+                        {tk("app-audio-audio-takes-dialog.body.span.87cd25a76aab")}
                       </span>
                     ) : null}
                   </span>
@@ -433,7 +425,7 @@ function Body({
                     <Play className="size-3.5 text-text-tertiary" aria-hidden />
                   )}
                   <span className="min-w-0 flex-1 truncate text-[11px] text-text-tertiary">
-                    {t.note || L("Opplastet", "Uploaded")} · {formatDate(t.createdAt)}
+                    {t.note || tk("app-audio-audio-takes-dialog.body.span.5baabfebc32f")} · {formatDate(t.createdAt)}
                   </span>
                   <Button
                     size="sm"
@@ -442,13 +434,13 @@ function Body({
                     disabled={!assetId}
                     data-testid="audio-take-edit"
                   >
-                    {L("Rediger", "Edit")}
+                    {tk("app-audio-audio-takes-dialog.body.button.09c361a8dcae")}
                   </Button>
                   {isActive ? (
                     <span className="text-[11px] font-medium text-accent-brand">
                       {target.kind === "line"
-                        ? L("Brukes i scenen", "Used in the scene")
-                        : L("Aktiv", "Active")}
+                        ? tk("app-audio-audio-takes-dialog.body.span.aef11553a5a4")
+                        : tk("app-audio-audio-takes-dialog.body.span.359d90c081e5")}
                     </span>
                   ) : (
                     <Button
@@ -461,7 +453,7 @@ function Body({
                       {busy === t.versionId ? (
                         <Loader2 className="size-3.5 animate-spin" aria-hidden />
                       ) : null}
-                      {L("Bruk dette", "Use this")}
+                      {tk("app-audio-audio-takes-dialog.body.button.8ca09116dbfd")}
                     </Button>
                   )}
                 </li>
@@ -471,11 +463,8 @@ function Body({
         ) : (
           <p className="mt-1 text-xs text-text-tertiary">
             {target.kind === "line"
-              ? L(
-                  "Ingen opptak ennå. Det første opptaket du beholder, legges i scenen der replikken begynner.",
-                  "No recordings yet. The first recording you keep is placed in the scene where the line begins.",
-                )
-              : L("Ingen opptak ennå.", "No recordings yet.")}
+              ? tk("app-audio-audio-takes-dialog.body.p.2b43e4518a37")
+              : tk("app-audio-audio-takes-dialog.body.p.fb2913f12c0d")}
           </p>
         )}
         {editing && assetId ? (
@@ -497,10 +486,7 @@ function Body({
         ) : null}
         {roomTakes.length ? (
           <p className="mt-2 text-[11px] text-text-tertiary" data-testid="audio-roomtone-count">
-            {L(
-              `${roomToneName(where)}: ${roomTakes.length} opptak i biblioteket`,
-              `${roomToneName(where)}: ${roomTakes.length} recordings in the library`,
-            )}
+            {tk("app-audio-audio-takes-dialog.body.p.ac9c0aa12871", { value1: String(roomToneName(where)), length: String(roomTakes.length) })}
           </p>
         ) : null}
       </section>
@@ -569,11 +555,8 @@ export function MicButton({
         "inline-flex size-7 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary " +
         (className ?? "")
       }
-      aria-label={L(`Ta opp lyd: ${label}`, `Record audio: ${label}`)}
-      title={L(
-        "Ta opp lyd på datamaskinen eller mobilen",
-        "Record audio on the computer or the phone",
-      )}
+      aria-label={tk("app-audio-audio-takes-dialog.mic-button.aria-label.fa7dd5e0d72f", { label: String(label) })}
+      title={tk("app-audio-audio-takes-dialog.mic-button.title.be91115be714")}
       data-testid="mic-button"
     >
       <Mic className="size-4" aria-hidden />
