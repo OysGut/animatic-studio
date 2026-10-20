@@ -95,12 +95,18 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       lateHydration.delete(onLate);
       setLanguage(s);
     };
-    const onLate = () => window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.setTimeout(apply, 0)));
+    // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
+    let quiet: number | undefined;
+    const onLate = () => {
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(() => window.requestAnimationFrame(() => window.requestAnimationFrame(apply)), 150);
+    };
     lateHydration.add(onLate);
     const guard = window.setTimeout(apply, 1500);
     return () => {
       lateHydration.delete(onLate);
       window.clearTimeout(guard);
+      window.clearTimeout(quiet);
     };
   }, []);
   useIso(() => {
