@@ -12,6 +12,7 @@
  */
 import { chromium } from "playwright";
 import { uiLang } from "./ui-lang.mjs";
+const EN = uiLang("nb") === "en";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -263,14 +264,14 @@ const sentCommands = () => COMMANDS;
 await run(
   "a01-lydressurs",
   async (page) => {
-    const mic = page.getByRole("button", { name: /Ta opp lyd: Opptak til «Vind i trærne»/ });
+    const mic = page.getByRole("button", { name: EN ? /Record audio: Recordings for “Vind i trærne”/ : /Ta opp lyd: Opptak til «Vind i trærne»/ });
     check(await mic.isVisible(), "mikrofonikonet står øverst i lydressursen (ikke kameraet)");
-    check(!(await page.getByRole("button", { name: /Importer fra mobil: Bilder av Vind/ }).isVisible().catch(() => false)), "ingen kameraikon for lyd");
+    check(!(await page.getByRole("button", { name: EN ? /Import from mobile: Pictures of Vind/ : /Importer fra mobil: Bilder av Vind/ }).isVisible().catch(() => false)), "ingen kameraikon for lyd");
     await mic.click();
     await page.waitForTimeout(900);
     const dlg = page.getByTestId("audio-takes-dialog");
     check(await dlg.isVisible(), "lydvinduet åpnes");
-    check(await dlg.getByText("Ta opp på denne datamaskinen").isVisible(), "L1: PC-opptak vises …");
+    check(await dlg.getByText(EN ? "Record on this computer" : "Ta opp på denne datamaskinen").isVisible(), "L1: PC-opptak vises …");
     check(await dlg.getByTestId("mobile-qr").isVisible(), "L1: … og QR-koden samtidig, uten ekstra klikk");
     check(await dlg.getByTestId("pc-rec-start").isVisible(), "L2: PC-opptak startes uten ekstra valg");
     check(await dlg.getByTestId("audio-takes-list").locator("li").count() >= 1, "eksisterende opptak vises som takes");
@@ -306,7 +307,7 @@ await run(
 await run(
   "a02-replikk-i-manus",
   async (page) => {
-    const mic = page.getByRole("button", { name: /Ta opp lyd: Scene/ }).first();
+    const mic = page.getByRole("button", { name: EN ? /Record audio: Scene/ : /Ta opp lyd: Scene/ }).first();
     check(await mic.isVisible(), "mikrofonikonet i inspektøren for en replikk");
     await mic.click();
     await page.waitForTimeout(900);
