@@ -40,14 +40,17 @@ import {
   MAX_PROMPT_CHARS,
   type Project,
   type ProjectState,
+  profileBudgetRemaining,
   providerInfo,
   providerModel,
   providersFor,
+  qualityProfileSnapshot,
   stripAttachedSection,
   withAttachedLegend,
   L,
   tm,
 } from "@/core";
+import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
@@ -179,6 +182,9 @@ export function GenerateImagePanel({
   const available = useProjectProviders(projectId, editable);
   const options = providersFor("image", new Set(available.data?.providers ?? []));
   const [pick, setPick] = useState<string>("lovable|");
+  // Kvalitetsprofil (M8, REQ-0854–0862): standard er prosjektets aktive profil, kan overstyres her
+  const [profileChoice, setProfileChoice] = useState<QualityProfileChoice>("active");
+  const profile = context ? chosenQualityProfile(context.state, profileChoice) : null;
   const choice = (() => {
     const [provider, model] = pick.split("|") as [string, string];
     const ok = options.find((o) => o.provider.id === provider);
@@ -281,17 +287,33 @@ export function GenerateImagePanel({
       ),
     );
   }, [insertPrompt]);
+  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
+  const [candidates, setCandidates] = useState(1);
   const usage = budget
     ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
     : null;
-  const overBudget = usage !== null && usage.remaining === 0;
+  // Profilens budsjettgrense (M8, REQ-0858): gjelder i tillegg til prosjektets ramme
+  const profileLeft = profileBudgetRemaining(profile, usage?.used ?? 0);
+  const overBudget = (usage !== null && usage.remaining === 0) || profileLeft === 0;
+  // Profilens valg fylles inn når den velges (brukerens egne valg overstyres ikke etterpå)
+  const appliedProfile = useRef<string | null>(null);
+  useEffect(() => {
+    if (!profile || appliedProfile.current === profile.id) return;
+    appliedProfile.current = profile.id;
+    const m = profile.spec.models?.image;
+    if (m) {
+      const hit = options.find((o) => o.models.some((mm) => mm.id === m));
+      if (hit) setPick(`${hit.provider.id}|${m}`);
+    }
+    if (profile.spec.resolution) setSizePick(profile.spec.resolution);
+    if (profile.spec.variants) setCandidates(Math.max(1, Math.min(4, profile.spec.variants)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
   // Følg den automatiske beskrivelsen til brukeren har endret den selv
   useEffect(() => {
     if (!edited && followAuto.current) setPrompt(auto);
   }, [auto, edited]);
   const [confirm, setConfirm] = useState(false);
-  // Kandidater (mandat 19.7): flere bilder å velge mellom, hvert som egen versjon
-  const [candidates, setCandidates] = useState(1);
   const costUsd =
     choice.provider === "lovable"
       ? null
@@ -371,6 +393,8 @@ export function GenerateImagePanel({
             model: choice.provider === "lovable" ? null : choice.model,
             size,
             ...(negative ? { negativePrompt: negative } : {}),
+            // M8 (REQ-0859): profilen bildet lages med, som øyeblikksbilde i jobbens metadata
+            ...(profile ? { qualityProfile: qualityProfileSnapshot(profile) } : {}),
             approved: true,
           },
         });
@@ -665,6 +689,17 @@ export function GenerateImagePanel({
                 )}
               </select>
             </label>
+          ) : null}
+          {context ? (
+            <QualityProfilePicker
+              state={context.state}
+              value={profileChoice}
+              onChange={(v) => {
+                setProfileChoice(v);
+                setConfirm(false);
+              }}
+              disabled={!editable || running}
+            />
           ) : null}
           {chosenModel &&
           IMAGE_PURPOSE_FOR_KIND[asset.kind] === "cutout" &&

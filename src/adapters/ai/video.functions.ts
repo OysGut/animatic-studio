@@ -24,8 +24,10 @@ import {
   isSceneVideoRefPath,
   SCENE_VIDEO_SOURCE,
   newId,
+  parseQualityProfileMeta,
   providerModel,
   takeIdFromLastFrame,
+  type QualityProfileSnapshot,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { validReferencePath } from "./gateway";
@@ -83,6 +85,8 @@ export interface StartVideoInput {
     readonly startMs: number;
     readonly endMs: number;
   } | null;
+  /** Kvalitetsprofilen videoen lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */
+  readonly qualityProfile?: QualityProfileSnapshot | null;
 }
 
 export type StartVideoResult =
@@ -207,6 +211,7 @@ function validateStart(d: unknown): StartVideoInput {
             endMs: pc["endMs"] as number,
           }
         : null,
+    qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
   };
 }
 
@@ -562,6 +567,8 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         aspect: data.aspect,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
         effort: effortOf(providerModel(data.provider, data.model, aiGate.settings)),
+        // Kvalitetsprofilen videoen ble laget med (M8, REQ-0859): et øyeblikksbilde
+        ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
         ...(data.chainAfter ? { chainAfter: data.chainAfter } : {}),
         // Video fra 2D-scenen (DEC-0083): kilden, bunten og biten, og figurenes referansebilder
         ...(data.piece

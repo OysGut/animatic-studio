@@ -12,6 +12,7 @@ import {
   JOB_STATE_LABEL,
   L,
   formatHeading,
+  jobQualityProfile,
   jobState,
   locale,
   tm,
@@ -174,6 +175,13 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                   </span>
                   <span className="truncate">
                     {j.provider} · {j.model}
+                    {/* M8 (REQ-0859): profilen resultatet ble laget med (øyeblikksbilde) */}
+                    {jobQualityProfile(j)
+                      ? L(
+                          ` · profil ${jobQualityProfile(j)!.name}`,
+                          ` · profile ${jobQualityProfile(j)!.name}`,
+                        )
+                      : ""}
                   </span>
                 </div>
                 {j.error && st !== "done" ? (

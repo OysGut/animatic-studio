@@ -89,6 +89,8 @@ export interface Project extends Entity<ProjectId> {
   readonly aiPricePerImage?: number;
   /** Antakelsene for varighetsestimatet, felles for prosjektet (KI-28, migrasjon 0028). Mangler = standard. */
   readonly durationAssumptions?: DurationAssumptions;
+  /** Aktiv kvalitetsprofil (M8, migrasjon 0063). Mangler/null = oppførselen er som før profilene fantes. */
+  readonly activeQualityProfileId?: string | null;
 }
 
 export interface Production extends Entity<ProductionId> {
@@ -940,6 +942,8 @@ export interface ProjectState {
   readonly dialogueReviews: Readonly<Record<string, import("./dialogue/drift").DialogueReview>>;
   /** DV8: gule huskelapper (migrasjon 0062). */
   readonly noteFlags: Readonly<Record<string, import("./notes/flags").NoteFlag>>;
+  /** M8: navngitte kvalitetsprofiler (migrasjon 0063). */
+  readonly qualityProfiles: Readonly<Record<string, import("./generation/quality-profile").QualityProfile>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1363,6 +1367,7 @@ export const COLLECTION_TABLES = {
   dialogueVersions: "dialogue_versions",
   dialogueReviews: "dialogue_reviews",
   noteFlags: "note_flags",
+  qualityProfiles: "quality_profiles",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1406,6 +1411,7 @@ export function emptyProjectState(project: Project): ProjectState {
     dialogueVersions: {},
     dialogueReviews: {},
     noteFlags: {},
+    qualityProfiles: {},
   };
 }
 

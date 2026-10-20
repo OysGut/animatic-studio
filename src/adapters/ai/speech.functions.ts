@@ -16,6 +16,7 @@ import {
   estimateCostUsd,
   isUuid,
   newId,
+  parseQualityProfileMeta,
   providerModel,
   speechSettingsError,
   speechLanguageError,
@@ -128,7 +129,7 @@ export const generateSpeech = createServerFn({ method: "POST" })
     if (problem) throw new Error(problem);
     const expectedRevision = x["scriptRevision"];
     if (expectedRevision !== undefined && (!Number.isInteger(expectedRevision) || Number(expectedRevision) < 1)) throw new Error(L("Ugyldig manusrevisjon", "Invalid script revision"));
-    return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"], model, language, settings: settings as SpeechSettings, expectedRevision };
+    return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"], model, language, settings: settings as SpeechSettings, expectedRevision, qualityProfile: parseQualityProfileMeta(x["qualityProfile"]) };
   })
   .handler(async ({ data, context }): Promise<SpeechResult> => {
     const { runSpeech } = await import("./speech-run.server");

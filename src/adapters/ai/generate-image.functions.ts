@@ -24,8 +24,10 @@ import {
   MAX_PROMPT_CHARS,
   monthStartUtc,
   newId,
+  parseQualityProfileMeta,
   providerModel,
   stripAttachedSection,
+  type QualityProfileSnapshot,
   L,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
@@ -69,6 +71,8 @@ export interface GenerateImageInput {
   readonly upscaleFactor?: 2 | 4;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
+  /** Kvalitetsprofilen bildet lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */
+  readonly qualityProfile?: QualityProfileSnapshot | null;
 }
 
 export type GenerateImageResult =
@@ -147,6 +151,7 @@ function validate(d: unknown): GenerateImageInput {
     operation: x["operation"] === "upscale" ? "upscale" : "generate",
     upscaleFactor: x["upscaleFactor"] === 4 ? 4 : 2,
     approved: true,
+    qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
   };
 }
 
@@ -399,12 +404,14 @@ export const generateImage = createServerFn({ method: "POST" })
       id: jobId,
       project_id: data.projectId,
       kind: "image",
-      ...(trace
+      ...(trace || data.qualityProfile
         ? {
             params: {
-              trace,
+              ...(trace ? { trace } : {}),
               // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
               effort: effortOf(providerModel(data.provider, model, aiGate.settings)),
+              // Kvalitetsprofilen bildet ble laget med (M8, REQ-0859): et øyeblikksbilde
+              ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
               ...(data.variantId ? { variantId: data.variantId } : {}),
             },
           }

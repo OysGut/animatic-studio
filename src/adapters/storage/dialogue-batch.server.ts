@@ -31,7 +31,7 @@ export async function processDialogueBatch(db: AnyClient, batchId: string, userD
       let result = item["result"] as Extract<Awaited<ReturnType<typeof runSpeech>>, { ok: true }> | null;
       if (!result) {
         await transition(item["id"], { status: "generating", attempts: Number(item["attempts"] ?? 0) + 1 });
-        const out = await runSpeech({ projectId: batch.project_id, blockId: String(item["block_id"]), voiceId: batch.voice.voiceId, model: batch.voice.modelId ?? "eleven_v3", language: String(item["language"]), settings: batch.voice.settings ?? {}, expectedRevision: item["script_revision"], jobId: String(item["job_id"]), batch: true }, { userId: batch.created_by, supabase: userDb });
+        const out = await runSpeech({ projectId: batch.project_id, blockId: String(item["block_id"]), voiceId: batch.voice.voiceId, model: batch.voice.modelId ?? "eleven_v3", language: String(item["language"]), settings: batch.voice.settings ?? {}, expectedRevision: item["script_revision"], jobId: String(item["job_id"]), batch: true, qualityProfile: (batch.voice as { qualityProfile?: import("@/core").QualityProfileSnapshot | null }).qualityProfile ?? null }, { userId: batch.created_by, supabase: userDb });
         if (!out.ok) {
           const blocked = out.status === 402 || out.status === 403;
           // 402/403: the provider refused before billing; retried only after the user reconfirms access (reconfirm_dialogue_batch).

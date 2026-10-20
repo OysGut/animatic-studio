@@ -14,6 +14,7 @@ import {
   L,
   locale,
   newId,
+  parseQualityProfileMeta,
   providerModel,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
@@ -80,6 +81,8 @@ export const generateSound = createServerFn({ method: "POST" })
       model: x["model"],
       seconds: (seconds as number | null) ?? null,
       loop: x["loop"] === true,
+      // Kvalitetsprofilen lyden lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata
+      qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
     };
   })
   .handler(async ({ data, context }): Promise<GenerateSoundResult> => {
@@ -196,6 +199,8 @@ export const generateSound = createServerFn({ method: "POST" })
         loop: data.loop,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
         effort: effortOf(m),
+        // Kvalitetsprofilen lyden ble laget med (M8, REQ-0859): et øyeblikksbilde
+        ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
         // Sporbarhet (DEC-0072, REQ-0257)
         trace: await (
           await import("./trace.server")
