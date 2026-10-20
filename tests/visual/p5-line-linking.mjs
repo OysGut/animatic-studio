@@ -21,7 +21,7 @@ for(const lang of ["nb","en"])await h.scenario(`p5-${lang}`,occ.id,lang,async pa
   });
   await page.getByRole("combobox",{name:lang==="nb"?"Manusspråk":"Script language",exact:true}).selectOption("en");
   await page.getByTestId("script-tab-inspector").click();
-  await page.locator(`[data-script-block="${blocks[0].id}"] [data-script-text]`).first().click();
+  await page.locator(`[data-block="${blocks[0].id}"]`).first().click();
   await page.getByTestId("line-links-open").click();
   const dialog=page.getByTestId("line-links-dialog");
   h.check(await dialog.getByTestId("line-link-row").count()===3,"rules appear before AI");
