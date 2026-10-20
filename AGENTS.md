@@ -24,13 +24,12 @@ Kortversjonen:
 4. Hemmeligheter (API-nøkler) skal bare ligge i backend-hemmelighetslageret, aldri i klientkode, repo eller logger.
 5. Migrasjoner skrives som `db/migrations/NNNN_navn.sql`. Lovable kjører dem aldri; Claude kjører dem etter at DB-testene er grønne. `src/integrations/supabase/` er autogenerert.
 6. Ikke force-push, rebase eller squash på `main`.
-7. Story Lab-visningene bygger de lagrede turene opp igjen med `src/core/storylab/replay.ts`.
-8. Story Lab transfers use pure planning and shared commands for validation and grouped undo.
+7. Story Lab views rebuild saved turns via `src/core/storylab/replay.ts`; transfers use pure plans and shared commands for validation and grouped undo.
 9. Script explorer reuses pagination, filtering, search and notes; only explicit navigation changes its source.
 10. Active scenes use a source-window bus; pinned explorers never publish their browsing selection.
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
-12. Automatic recognition and translation alignment (B-047/B-048) are the only exception to the single text-AI entry point: they run through the server-only service-AI path that forces the built-in AI and builds its prompts on the server, so it can never act as an open AI proxy.
-13. User text quotas exclude the two internal service tasks, while service quotas select only built-in service tasks; this keeps user-triggered fallback calls in the user quota. Visual suites updated from schema 40 onward share a schema-version constant to avoid repeated migration edits.
+12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point: server-only service AI forces the built-in model and builds prompts, never an open proxy.
+13. User quotas exclude these two service tasks; service quotas include only built-in service tasks, keeping user fallback calls in user quotas. Visual suites from schema 40 share a version constant to avoid repeated edits.
 14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
 16. Workspaces (GP1) are read-only to clients and changed only through security-definer functions in the database; linking a project to a workspace never grants project access, so project RLS stays the single source of project permissions.
 17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
