@@ -142,4 +142,31 @@ describe("DV5 batch, delvis feil og gjenopptak uten tap", () => {
     expect(strip(state.dialogueVersions)).toEqual(strip(initial.dialogueVersions));
     expect(state.audioClips[clipId]?.activeVersionId).toBe(initial.audioClips[clipId]?.activeVersionId);
   });
+  it.each([11, 29, 47])("DV7/DV8 seed %i: reviews, flags, red-line regeneration and whole-job undo never lose a version or edit", (seed) => {
+    const { s: initial, clipId } = dvBase();
+    let state = initial;
+    const random = mulberry32(seed);
+    const job: Command[] = [];
+    const clip = state.audioClips[clipId]!;
+    const production = state.occurrences[clip.occurrenceId]!.productionId;
+    for (let i = 0; i < 12; i++) {
+      const before = state;
+      const roll = random();
+      let command: Command;
+      if (roll < 0.3) command = { type: "EditBlockText", productionId: production, blockId: clip.blockId!, text: `Tekst ${seed}-${i}` } as Command;
+      else if (roll < 0.5) command = { type: "AddNoteFlag", flagId: dvId(5000 + seed * 100 + i), targetKind: "audio_clip", targetId: clipId, text: `lapp ${i}` };
+      else if (roll < 0.65) command = { type: "ReviewDialogueDrift", reviewId: dvId(6000 + seed * 100 + i), clipId };
+      else { const g = generatedCommand(state, clipId, 2000 + seed * 100 + i * 10); command = { ...g, reviewId: dvId(7000 + seed * 100 + i) }; }
+      const r = applyCommand(state, envelope(command));
+      if (!r.ok) { expect(state.dialogueVersions).toBe(before.dialogueVersions); continue; }
+      state = r.state;
+      if (command.type === "ApplyGeneratedDialogue") job.push(r.inverse);
+      for (const [id, v] of Object.entries(before.dialogueVersions)) expect(state.dialogueVersions[id]).toEqual(v);
+      expect(dialogueMirrorViolations(state)).toEqual([]);
+    }
+    const kept = strip(Object.fromEntries(Object.entries(state.dialogueVersions).filter(([id]) => initial.dialogueVersions[id])));
+    for (const inverse of job.reverse()) { const undo = applyCommand(state, envelope(inverse)); if (!undo.ok) throw new Error(undo.error.message); state = undo.state; }
+    expect(strip(Object.fromEntries(Object.entries(state.dialogueVersions).filter(([id]) => initial.dialogueVersions[id])))).toEqual(kept);
+    expect(Object.keys(state.dialogueVersions).sort()).toEqual(Object.keys(initial.dialogueVersions).sort());
+  });
 });
