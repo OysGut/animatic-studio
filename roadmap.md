@@ -1,3 +1,9 @@
+# P4 B – Lageksport med alfa (20.10.2026)
+- [ ] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
+- [ ] AlphaEncoder, strømmet PNG-ZIP og kontrollert WebM VP9-alfa, avbryt og fremdrift.
+- [ ] Felles dialog fra eksport og lagpaneler, prosjektlagrede valg.
+- [ ] Ekte pikseltester, nettlesernedlasting NO/EN, regresjoner, DB og krav REQ-0837–0844.
+
 # DV7+DV8 – Avvik, bokmerker og huskelapper (20.10.2026)
 - [x] DV7: felles avviksstatus i drift.ts, røde segmenter, statusikon i sceneeditor/manusutforsker/dialogeditor, ordvis Unicode-diff, gjennomgang med historikk, «Generer alle røde».
 - [x] DV8: personlige bokmerker (RPC + RLS), delte huskelapper via apply_changes, «Merknader og huskelapper» på prosjektsiden.
