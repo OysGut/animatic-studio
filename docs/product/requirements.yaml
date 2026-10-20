@@ -32054,3 +32054,276 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0863
+  title: 'P7: ProRes 422 HQ for filmeksport'
+  text: 'Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/engine/export/prores.ts
+  - src/engine/export/mov.ts
+  - src/engine/export/prores-export.ts
+  - src/app/assembly/ExportAnimaticDialog.tsx
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0864
+  title: 'P7: ProRes 4444 med alfa for lageksport'
+  text: 'Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/engine/export/alpha.ts
+  - src/core/layer-alpha.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0865
+  title: 'P7: PCM-lyd i MOV'
+  text: 'Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/engine/export/mov.ts
+  - src/engine/export/prores-export.ts
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0866
+  title: 'P7: Koder uten GPL, lastes ved behov'
+  text: 'ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/engine/export/prores.ts
+  - src/engine/export/prores.worker.ts
+  - docs/decisions/adr/ADR-0011-prores-mov.md
+  verification:
+  - tests/unit/prores-mov.test.ts
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0867
+  title: 'P7: Bakgrunnskø, strømming og minnegrense'
+  text: 'ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/prores-export.ts
+  - src/engine/export/prores-export.ts
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0868
+  title: 'P7: Kvalitetsprofil kan foreslå ProRes'
+  text: 'En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0869
+  title: 'P7: Ingen stille fallback'
+  text: 'Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.'
+  tests:
+  - tests/visual/p7-prores.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/engine/export/prores-support.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  - src/app/assembly/ExportAnimaticDialog.tsx
+  verification:
+  - tests/visual/p7-prores.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0870
+  title: 'P7: Polering av linjekoblingen'
+  text: 'Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0085
+    document: docs/decisions/adr/ADR-0011-prores-mov.md
+    section: P7
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).'
+  tests:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p5-line-linking.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/translation/line-link-labels.ts
+  - src/app/script/LineLinkReview.tsx
+  verification:
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p5-line-linking.mjs
+  notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0085
+    change: Registrert fra P7-oppdraget (ProRes/MOV).

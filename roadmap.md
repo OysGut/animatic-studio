@@ -192,3 +192,6 @@
 - [x] Linter/advisor, npm audit, GP5-lenker, mobilopplasting
 - [x] SECURITY_REVIEW_2026-10.md, KNOWN_ISSUES, SESSION_HANDOVER
 - [x] Migrasjon 0058 kjørt i Cloud og hashkontrollert av Claude/Øystein.
+
+## P7 ProRes/MOV (20.10)
+- [x] ProRes 422 HQ film + PCM, ProRes 4444 lag, kø/OPFS/grenser, profil, sperring, tester, polering linjekobling, krav REQ-0863–0870

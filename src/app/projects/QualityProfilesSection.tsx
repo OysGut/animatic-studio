@@ -216,7 +216,7 @@ function ProfileDialog({
   const [variants, setVariants] = useState(profile?.spec.variants?.toString() ?? "");
   const [resolution, setResolution] = useState<ImageSize | "">(profile?.spec.resolution ?? "");
   const [budget, setBudget] = useState(profile?.spec.budgetLimit?.toString() ?? "");
-  const [exportFormat, setExportFormat] = useState<"" | "mp4" | "webm" | "png-seq">(profile?.spec.export?.format ?? "");
+  const [exportFormat, setExportFormat] = useState<"" | "mp4" | "webm" | "png-seq" | "prores">(profile?.spec.export?.format ?? "");
   const [exportAlpha, setExportAlpha] = useState<"" | "straight" | "premultiplied">(profile?.spec.export?.alpha ?? "");
   const [exportBitrate, setExportBitrate] = useState(profile?.spec.export?.bitrateKbps?.toString() ?? "");
   const [models, setModels] = useState<Partial<Record<QualityProfileModelKind, string>>>(
@@ -335,7 +335,7 @@ function ProfileDialog({
       </fieldset>
       <fieldset className="flex flex-wrap gap-3">
         <legend>{L("Eksportinnstillinger", "Export settings")}</legend>
-        <label>{L("Format", "Format")} <select className={sel} data-testid="quality-profile-export-format" value={exportFormat} onChange={e=>setExportFormat(e.target.value as typeof exportFormat)}><option value="">{L("Ikke valgt", "Not chosen")}</option><option value="mp4">MP4</option><option value="webm">WebM</option><option value="png-seq">{L("PNG-sekvens", "PNG sequence")}</option></select></label>
+        <label>{L("Format", "Format")} <select className={sel} data-testid="quality-profile-export-format" value={exportFormat} onChange={e=>setExportFormat(e.target.value as typeof exportFormat)}><option value="">{L("Ikke valgt", "Not chosen")}</option><option value="mp4">MP4</option><option value="webm">WebM</option><option value="png-seq">{L("PNG-sekvens", "PNG sequence")}</option><option value="prores">{L("ProRes (MOV)", "ProRes (MOV)")}</option></select></label>
         <label>{L("Alfa", "Alpha")} <select className={sel} data-testid="quality-profile-export-alpha" value={exportAlpha} onChange={e=>setExportAlpha(e.target.value as typeof exportAlpha)}><option value="">{L("Ikke valgt", "Not chosen")}</option><option value="straight">{L("Rett", "Straight")}</option><option value="premultiplied">{L("Premultiplisert", "Premultiplied")}</option></select></label>
         <label>{L("Bitrate (kbps)", "Bitrate (kbps)")} <Input type="number" min={100} max={100000} className="h-7 w-24" data-testid="quality-profile-export-bitrate" value={exportBitrate} onChange={e=>setExportBitrate(e.target.value)} /></label>
       </fieldset>

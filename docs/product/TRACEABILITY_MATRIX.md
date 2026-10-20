@@ -19,7 +19,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 26 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 16 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 39 | 22 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 47 | 22 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 33 | 28 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
@@ -46,10 +46,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
 | L10N | Localization Engine | 50 | 4 | 49 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
-| EXPORT | Export Engine | 69 | 12 | 69 | 61 |
+| EXPORT | Export Engine | 77 | 12 | 77 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 332 | 23 | 328 | 217 |
+| UI | Brukergrensesnitt og designsystem | 340 | 23 | 336 | 217 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 218 | 102 |
+| 3 | 226 | 102 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -932,3 +932,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0860 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
 | REQ-0861 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
 | REQ-0862 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0863 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/prores.ts, src/engine/export/mov.ts, src/engine/export/prores-export.ts, src/app/assembly/ExportAnimaticDialog.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0864 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/alpha.ts, src/core/layer-alpha.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0865 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/mov.ts, src/engine/export/prores-export.ts | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0866 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/prores.ts, src/engine/export/prores.worker.ts, docs/decisions/adr/ADR-0011-prores-mov.md | 1 | tests/unit/prores-mov.test.ts | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0867 | Beslutning DEC-0085 | EXPORT, UI | src/core/prores-export.ts, src/engine/export/prores-export.ts | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0868 | Beslutning DEC-0085 | EXPORT, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0869 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/prores-support.ts, src/app/assembly/AlphaExportDialog.tsx, src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0870 | Beslutning DEC-0085 | EXPORT, UI | src/core/translation/line-link-labels.ts, src/app/script/LineLinkReview.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p5-line-linking.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |

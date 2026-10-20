@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **862**
-- Prioritet: P0: 147, P1: 527, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 335, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 126, Under arbeid: 13, Ikke startet: 58
+- Antall krav: **870**
+- Prioritet: P0: 147, P1: 535, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 343, teknisk-anbefaling: 7
+- Status: Verifisert: 665, Implementert – ikke verifisert: 134, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -11978,3 +11978,113 @@ Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har au
   - tests/visual/p6-quality-profiles.mjs
 - **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
 - **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0863 – P7: ProRes 422 HQ for filmeksport
+Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/prores.ts, src/engine/export/mov.ts, src/engine/export/prores-export.ts, src/app/assembly/ExportAnimaticDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0864 – P7: ProRes 4444 med alfa for lageksport
+Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/alpha.ts, src/core/layer-alpha.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0865 – P7: PCM-lyd i MOV
+Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/mov.ts, src/engine/export/prores-export.ts
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0866 – P7: Koder uten GPL, lastes ved behov
+ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+- **Implementering:** src/engine/export/prores.ts, src/engine/export/prores.worker.ts, docs/decisions/adr/ADR-0011-prores-mov.md
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0867 – P7: Bakgrunnskø, strømming og minnegrense
+ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/core/prores-export.ts, src/engine/export/prores-export.ts
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0868 – P7: Kvalitetsprofil kan foreslå ProRes
+En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0869 – P7: Ingen stille fallback
+Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.
+- **Tester:**
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/prores-support.ts, src/app/assembly/AlphaExportDialog.tsx, src/app/assembly/ExportAnimaticDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0870 – P7: Polering av linjekoblingen
+Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p5-line-linking.mjs
+- **Implementering:** src/core/translation/line-link-labels.ts, src/app/script/LineLinkReview.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.

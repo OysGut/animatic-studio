@@ -5,6 +5,8 @@ import { alphaExportError, alphaFileBase, alphaRange, DEFAULT_ALPHA_SETTINGS, is
   type AlphaExportSettings } from "@/core/layer-alpha";
 import { exportAlphaLayers, openAlphaSink, supportsVp9Alpha } from "@/engine/export/alpha";
 import { loadImages } from "@/engine/export/animatic";
+import { supportsProRes } from "@/engine/export/prores-support";
+import { PRORES_UNSUPPORTED } from "@/core/prores-export";
 import { signedUrls } from "@/app/library/asset-images";
 import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
@@ -30,6 +32,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
   const abort = useRef<AbortController | null>(null);
   const busy = progress !== null;
+  const proresOk = supportsProRes();
   useEffect(() => {
     if (!open) return;
     appliedProfile.current = null;
@@ -40,7 +43,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     } catch { /* Private browsing keeps the current draft only. */ }
     const ids = initialLayerIds?.length ? initialLayerIds : saved.layerIds.filter(id => layers.some(l => l.id === id));
     const preset = quality.profile?.spec.export;
-    setOptions({ ...saved, ...(preset?.alpha ? { alpha:preset.alpha } : {}), ...(preset?.format === "png-seq" ? {format:"png-seq"} : preset?.format === "webm" ? {format:"webm-vp9"} : {}), layerIds: ids.length ? ids : layers.map(l => l.id),
+    setOptions({ ...saved, ...(preset?.alpha ? { alpha:preset.alpha } : {}), ...(preset?.format === "png-seq" ? {format:"png-seq"} : preset?.format === "webm" ? {format:"webm-vp9"} : preset?.format === "prores" && supportsProRes() ? {format:"mov-prores4444"} : {}), layerIds: ids.length ? ids : layers.map(l => l.id),
       outFrame: Math.min(composition.durationFrames, Math.max(1, saved.outFrame)) });
     setError(null); setProgress(null); setReady(null);
     let active = true;
@@ -56,7 +59,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     appliedProfile.current = key;
     const preset = quality.profile?.spec.export;
     if (preset) setOptions(o => ({ ...o, ...(preset.alpha ? { alpha: preset.alpha } : {}),
-      ...(preset.format === "png-seq" ? { format: "png-seq" } : preset.format === "webm" ? { format: "webm-vp9" } : {}) }));
+      ...(preset.format === "png-seq" ? { format: "png-seq" } : preset.format === "webm" ? { format: "webm-vp9" } : preset.format === "prores" && supportsProRes() ? { format: "mov-prores4444" } : {}) }));
   }, [quality.profile, open]);
   useEffect(() => () => { if (ready) URL.revokeObjectURL(ready.url); }, [ready]);
   const validation = alphaExportError(state, composition, options);
@@ -88,8 +91,9 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     try {
       try { localStorage.setItem(storageKey, JSON.stringify(options)); } catch { /* Session only. */ }
       const base = alphaFileBase(scene, layers.filter(l => options.layerIds.includes(l.id)).map(l => l.name), range.start, range.end);
-      const png = options.format === "png-seq";
-      sink = await openAlphaSink(`${base}.${png ? "zip" : "webm"}`, png ? "application/zip" : "video/webm");
+      const png = options.format === "png-seq", mov = options.format === "mov-prores4444";
+      const ext = png ? "zip" : mov ? "mov" : "webm";
+      sink = await openAlphaSink(`${base}.${ext}`, png ? "application/zip" : mov ? "video/quicktime" : "video/webm");
       // Rig parts can refer to other versions; include those media in the usual image loader.
       const paths = [...new Set([...layers.flatMap(l => layerVersions(state, l).map(v => v.mediaPath)),
         ...Object.values(state.animationRigVersions).flatMap(v => Object.values(v.spec.parts ?? {}).flatMap(p => {
@@ -102,7 +106,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
       await exportAlphaLayers({ state, composition, settings: options, images, sink, fileBase: base,
         signal: ctrl.signal, onProgress: (done, total) => { setProgress({ done, total }); report(done, total); } });
       setReady(sink.link?.() ?? null);
-      if (occurrence) await recordExport({ productionId:occurrence.productionId,kind:"film",fileName:`${base}.${png?"zip":"webm"}`,occurrenceIds:[occurrence.id],settings:{format:options.format,alpha:options.alpha,layerIds:[...options.layerIds],effects:options.effects,startFrame:range.start,endFrame:range.end,qualityProfileId:snapshot?.id??null,qualityProfileName:snapshot?.name??null,qualityProfileSnapshot:snapshot?JSON.stringify(snapshot):null} });
+      if (occurrence) await recordExport({ productionId:occurrence.productionId,kind:"film",fileName:`${base}.${ext}`,occurrenceIds:[occurrence.id],settings:{format:options.format,alpha:options.alpha,layerIds:[...options.layerIds],effects:options.effects,startFrame:range.start,endFrame:range.end,qualityProfileId:snapshot?.id??null,qualityProfileName:snapshot?.name??null,qualityProfileSnapshot:snapshot?JSON.stringify(snapshot):null} });
     } catch (e) {
       await sink?.abort().catch(() => undefined);
       setError((e as Error).name === "AbortError" ? L("Eksporten er avbrutt. Ingen fil er lagret.", "Export cancelled. No file was saved.") : (e as Error).message);
@@ -116,7 +120,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         <DialogTitle>{L("Eksporter lag med gjennomsiktighet", "Export layers with transparency")}</DialogTitle>
         <DialogDescription>{scene}</DialogDescription>
       </DialogHeader>
-      <QualityProfilePicker stacked state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); const id = v === "active" ? state.project.activeQualityProfileId : v; const preset = id && v !== "none" ? state.qualityProfiles[id]?.spec.export : null; if (preset) patch({ ...(preset.alpha ? {alpha:preset.alpha} : {}), ...(preset.format === "png-seq" ? {format:"png-seq"} : preset.format === "webm" ? {format:"webm-vp9"} : {}) }); }} />
+      <QualityProfilePicker stacked state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); const id = v === "active" ? state.project.activeQualityProfileId : v; const preset = id && v !== "none" ? state.qualityProfiles[id]?.spec.export : null; if (preset) patch({ ...(preset.alpha ? {alpha:preset.alpha} : {}), ...(preset.format === "png-seq" ? {format:"png-seq"} : preset.format === "webm" ? {format:"webm-vp9"} : preset.format === "prores" && supportsProRes() ? {format:"mov-prores4444"} : {}) }); }} />
       <fieldset disabled={busy} className="flex min-w-0 flex-col gap-4 text-xs text-text-secondary">
         <div className="flex flex-col gap-2">
           <span>{L("Lag", "Layers")}</span>
@@ -143,8 +147,11 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
           <select className={control} data-testid="alpha-format" value={options.format} onChange={e => patch({ format: e.target.value as AlphaExportSettings["format"] })}>
             <option value="png-seq">{L("PNG-sekvens i ZIP", "PNG sequence in ZIP")}</option>
             <option value="webm-vp9" disabled={support !== true}>{L("WebM VP9 med alfa", "WebM VP9 with alpha")}</option>
+            <option value="mov-prores4444" disabled={!proresOk}>{L("ProRes 4444 med alfa (MOV)", "ProRes 4444 with alpha (MOV)")}</option>
           </select>
         </label>
+        {!proresOk ? <p role="status" data-testid="alpha-prores-unavailable">{PRORES_UNSUPPORTED()}</p> : null}
+        {options.format === "mov-prores4444" ? <p data-testid="alpha-prores-note">{L("ProRes 4444 med 16-biters alfa, Rec.709, uten lyd. Store filer lagres direkte i nettleserens lagring.", "ProRes 4444 with 16-bit alpha, Rec.709, no audio. Large files are written straight to browser storage.")}</p> : null}
         {support !== true ? <p role="status" data-testid="alpha-webm-unavailable">{support === null ? L("Kontrollerer WebM-alfastøtte …", "Checking WebM alpha support …") : L("WebM VP9 med alfa støttes ikke i denne nettleseren. Velg PNG-sekvens.", "WebM VP9 with alpha is not supported in this browser. Choose a PNG sequence.")}</p> : null}
         <label className="flex items-center justify-between gap-3">{L("Alfa", "Alpha")}
           <select className={control} data-testid="alpha-mode" value={options.alpha} onChange={e => patch({ alpha: e.target.value as AlphaExportSettings["alpha"] })}>
@@ -164,7 +171,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
       {ready ? <a data-testid="alpha-download" className="text-xs text-accent-brand underline" href={ready.url} download={ready.name}>{L("Last ned", "Download")}</a> : null}
       <DialogFooter>
         <Button variant="ghost" data-testid="alpha-cancel" onClick={() => busy && taskId.current ? exportQueue.cancel(taskId.current) : onOpenChange(false)}>{busy ? L("Avbryt", "Cancel") : L("Lukk", "Close")}</Button>
-        <Button data-testid="alpha-start" disabled={busy || !!validation || (options.format === "webm-vp9" && support !== true)} onClick={() => void run()}><Download />{L("Eksporter", "Export")}</Button>
+        <Button data-testid="alpha-start" disabled={busy || !!validation || (options.format === "webm-vp9" && support !== true) || (options.format === "mov-prores4444" && !proresOk)} onClick={() => void run()}><Download />{L("Eksporter", "Export")}</Button>
       </DialogFooter>
     </DialogContent>
   </Dialog>;
