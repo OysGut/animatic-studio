@@ -1104,6 +1104,54 @@ export function effortOf(model: ProviderModel | undefined): EffortLevel {
   return model?.tier ?? "balanced";
 }
 
+// ---------------------------------------------------------------- M8 kvalitetsprofiler (REQ-0854–0862)
+
+/** AI-typen i kvalitetsprofilen som svarer til en oppgave (null: profilen styrer ikke denne oppgaven). */
+export function profileKindOf(
+  capability: Capability,
+): import("./quality-profile").QualityProfileModelKind | null {
+  switch (capability) {
+    case "image":
+    case "upscale":
+      return "image";
+    case "video":
+    case "video_edit":
+      return "video";
+    case "speech":
+      return "speech";
+    case "sound":
+      return "sound";
+    default:
+      return null;
+  }
+}
+
+/**
+ * Modellvalget en kvalitetsprofil gir for en oppgave (REQ-0856): en uttrykkelig modell i profilen brukes
+ * når den er tilgjengelig (leverandøren er koblet til, eller innebygd); ellers velger profilens
+ * innsatsnivå som i effortChoice. Uten profil (eller uten treff) er svaret null – oppførselen er da
+ * nøyaktig som før profilene fantes.
+ */
+export function profileChoice(
+  capability: Capability,
+  profile: Pick<import("./quality-profile").QualityProfile, "spec"> | null,
+  connected: ReadonlySet<string>,
+  settings: readonly ModelSetting[] = activeSettings,
+): ModelChoice | null {
+  if (!profile) return null;
+  const kind = profileKindOf(capability);
+  if (!kind) return null;
+  const modelId = profile.spec.models?.[kind];
+  if (modelId) {
+    for (const o of providersFor(capability, connected, settings)) {
+      const m = o.models.find((x) => x.id === modelId);
+      if (m) return { provider: o.provider, model: m };
+    }
+    // Modellen i profilen er ikke tilgjengelig lenger: fall tilbake på innsatsnivået
+  }
+  return effortChoice(capability, profile.spec.effort ?? "balanced", connected, settings);
+}
+
 /** Kvalitetsmekanismene modellen faktisk har (mandat 19.4), som korte tekster på norsk. */
 export function qualityMechanisms(model: ProviderModel): string[] {
   const out: string[] = [];
