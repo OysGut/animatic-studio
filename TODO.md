@@ -1,5 +1,9 @@
 # TODO – Animatic Studio
 
+## B-049
+- ML1 akseptanse: kontroller verifisering4 i Claudes miljø; Courier Prime måles 6,439 em her (57/58 med portabel falsk mikrofon). Se ML1_REPORT.md.
+- ML2–ML4 følger senere oppdrag. Gå gjennom 266 inventarkonflikter eksplisitt, ikke slå sammen automatisk. Mars avgjør tredjespråk/kvalitetssikrere senere; bruk en-XA i ML2-testene.
+
 ## DV5/DV6 – rester før full verifikasjon
 - Claude: lokal DB og migrasjon 0061, nye RLS/grant/lease-tester og ende-til-ende med faste lydresultater.
 - Koble bakgrunnsresultatenes serverhistorikk til brukerens lokale angreliste.

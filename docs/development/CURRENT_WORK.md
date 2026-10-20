@@ -1,5 +1,10 @@
 # Pågående arbeid
 
+## B-049 ML1 – 20.10.2026
+- Språkgrunnlaget levert uten synlig endring/migrasjon. 9963 par, 266 beholdte gjennomgangspunkter; nb/en/en-XA og frozen baseline. Se ML1_REPORT.md.
+- Automatisk typekontroll OK; Vitest 1926/0 (10 eksisterende hoppet over), ML1 13, lokal DB 140/0; U5 65, T2 69, DV3 48, paneler 39.
+- Akseptanse åpen: verifisering4 57/58 i portabel testkopi; Courier Prime 6,439 em mot 6 em. Original suite 51/54 pga. tilleggsmikrofonavvik. Ingen tester svekket, ML2 ikke startet.
+
 ## C / B-050 – 20.10.2026, retterunde: klar for Cloud-gjennomgang
 - 0064_translation_line_links.sql skrevet, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet (create_project, create_dialogue_batch, guard_quality_profile_job, purge_removed_assets urørt). Skjemaversjon 64.
 - Nye tabeller: `translation_line_links` og `translation_lines` (engelske/oversatte linjer uten regelpar, per scenevariant og språk). Medlems-SELECT, ingen klientskriving, service_role ALL, RLS.
