@@ -120,7 +120,7 @@ export function qualityProfileError(name: string, spec: QualityProfileSpec): str
  */
 export function defaultQualityProfiles(): readonly { readonly name: string; readonly spec: QualityProfileSpec }[] {
   return [
-    { name: "Utkast", spec: { effort: "fast", variants: 1, resolution: "1K", export: { format: "mp4", bitrateKbps: 4000 } } },
+    { name: "Utkast", /* i18n-ignore: user-editable default data, mirrored in migration */ spec: { effort: "fast", variants: 1, resolution: "1K", export: { format: "mp4", bitrateKbps: 4000 } } },
     { name: "Gjennomgang", spec: { effort: "balanced", variants: 2, resolution: "2K", export: { format: "mp4", bitrateKbps: 8000 } } },
     { name: "Endelig", spec: { effort: "premium", variants: 2, resolution: "4K", export: { format: "mp4", bitrateKbps: 16000 } } },
   ];

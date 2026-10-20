@@ -6094,7 +6094,7 @@ try {
     const q = (await sql`select * from public.quality_profiles where id=${profile["id"]}`)[0];
     assert(q,"Missing profile");
     const snapshot = {id:q["id"],name:q["name"],spec:q["spec"]};
-    const insert = (id:string, snap:typeof snapshot=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','google/gemini-2.5-flash-image','','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
+    const insert = (id:string, snap:typeof snapshot=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','google/gemini-2.5-flash-image','test prompt','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
     const j1="00000000-0000-7000-8000-000000006311", j2="00000000-0000-7000-8000-000000006312";
     const results = await Promise.allSettled([insert(j1),insert(j2)]);
     assert(results.filter(r=>r.status==='fulfilled').length===1,`Concurrent reservations exceeded cap: ${results.map(r => r.status === "rejected" ? String(r.reason) : "ok").join(" | ")}`);

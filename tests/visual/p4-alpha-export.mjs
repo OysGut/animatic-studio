@@ -117,4 +117,18 @@ await h.scenario("p4-cancel", occ.id, "nb", async page => {
   h.check(!files.some(k => k.startsWith("alpha-")), "midlertidige eksportfiler ryddes ved avbryt");
   await page.getByTestId("alpha-export-dialog").screenshot({ path: `${h.out}/cancel.png` });
 });
+await h.scenario("p4-background", occ.id, "en", async page => {
+  c.duration_frames=20;
+  await page.reload({waitUntil:"networkidle"});
+  await page.getByTestId("alpha-export-open").click();
+  await page.getByTestId("alpha-range").selectOption("scene");
+  const download=page.waitForEvent("download");
+  await page.getByTestId("alpha-start").click();
+  await page.keyboard.press("Escape");
+  await h.waitHidden(page.getByTestId("alpha-export-dialog"));
+  const file=await download; await file.saveAs(`${h.out}/background.zip`);
+  h.check(Object.keys(unzipSync(readFileSync(`${h.out}/background.zip`))).length===20,"alpha queue continues after dialog closes");
+  h.check(await page.getByTestId("export-queue-task").getAttribute("data-status")==="done","shared queue reports completed alpha");
+  await page.getByTestId("export-queue").screenshot({path:`${h.out}/background.png`});
+});
 await h.finish();
