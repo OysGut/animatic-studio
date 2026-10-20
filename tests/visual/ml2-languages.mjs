@@ -102,8 +102,11 @@ const SHELL = [
   { name: "invitasjon", path: "/invitasjon" },
 ];
 await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
+  const errs = [];
+  page.on("pageerror", (e) => errs.push(String(e).split("\n")[0].slice(0, 90)));
   for (const tag of ["nb", "en", "en-XA"]) {
     for (const s of SHELL) {
+      errs.length = 0;
       await page.evaluate((l) => localStorage.setItem("animatic:lang", l), tag);
       await page.goto(h.base + s.path, { waitUntil: "networkidle" });
       await page.waitForTimeout(900);
@@ -114,6 +117,7 @@ await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
         wide: [...document.querySelectorAll("body *")].filter((el) => el.getBoundingClientRect().right > document.documentElement.clientWidth + 1 && el.children.length === 0).slice(0, 5).map((el) => el.getAttribute("data-testid") || el.tagName.toLowerCase()),
       }));
       h.check(r.lang === tag, `${s.name} ${tag}: <html lang> stemmer`);
+      h.check(errs.length === 0, `${s.name} ${tag}: ingen kjørefeil eller hydreringsavvik (${errs.join(" | ")})`);
       h.check(r.overflow <= 1, `${s.name} ${tag}: ingen vannrett rulling (${r.overflow} px${r.wide.length ? `: ${r.wide.join(", ")}` : ""})`);
       h.check(!/Unknown translation key|Invalid parameters for key|Legacy expression/.test(r.text), `${s.name} ${tag}: ingen nøkkelfeil i teksten`);
       if (tag === "en-XA") {
