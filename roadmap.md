@@ -1,5 +1,13 @@
 # Veikart
 
+## M6 – resten av produksjonskontrollen (20.10.2026)
+- [x] P8-avvik: vist modell = brukt modell; samlet kostnadsanslag i massemodus med kvalitetsprofil.
+- [x] Plan i docs/development/PLAN_M6_REST.md.
+- [x] A: AI-oppdatering ved avvik (bilde → ny versjon, shot → notat, røde replikker → DV7), kostnadsport.
+- [x] B: varighetsprognose fra historikk i scenenavigator og prosjektoversikt.
+- [x] C: kontekstuelle koblingsforslag, regler først, AI for usikre, godkjenning med angring.
+- [x] Tester (vitest, DB, m6-rest.mjs, regresjon), requirements.yaml, ROADMAP, build_docs/check_kb.
+
 ## P8 – AI-stilharmonisering (REQ-0137–0145, REQ-0400–0402) (20.10.2026)
 - [x] Kort plan i docs/development/PLAN_STYLE_HARMONIZATION.md før kode.
 - [x] «Harmoniser stil …» fra plakat, sceneeditor og Asset Studio; stil fra stilprofil eller referansebilde (6 dimensjoner).
