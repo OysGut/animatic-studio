@@ -8,6 +8,7 @@
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useRouter } from "@tanstack/react-router";
 import { L, getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
 import { t } from "@/core/i18n/keyed";
@@ -74,6 +75,7 @@ export function chooseLanguage(lang: UiLang) {
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
+  const router = useRouter();
   useEffect(() => {
     // Lagret språk settes først når hydreringen er ferdig: ruter som lastes etterpå (egne kodebiter)
     // hydreres ellers med et annet språk enn serveren tegnet. Siden er skjult (lang-pending) til da.
@@ -86,7 +88,16 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       (window as any).__langAt = performance.now(); // TMPDEBUG
       setLanguage(s);
     };
-    const settle = () => window.requestAnimationFrame(() => window.setTimeout(apply, 0));
+    // Vent på rutenes kodebiter (de hydreres for seg), deretter to tegninger før språket byttes.
+    const settle = () => {
+      const chunks = router.state.matches.map((m) => {
+        const route = router.looseRoutesById[m.routeId];
+        return route ? router.loadRouteChunk(route).catch(() => undefined) : undefined;
+      });
+      void Promise.all(chunks).then(() =>
+        window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.setTimeout(apply, 0))),
+      );
+    };
     if (document.readyState === "complete") settle();
     else window.addEventListener("load", settle, { once: true });
     const guard = window.setTimeout(apply, 1500);
