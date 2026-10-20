@@ -180,3 +180,22 @@ export function profileBudgetRemaining(
   if (limit === undefined || limit === null) return null;
   return Math.max(0, limit - used);
 }
+
+/**
+ * Validerer et profiløyeblikksbilde fra klienten før det lagres i jobbens metadata (serverfunksjonene).
+ * Returnerer null når feltet mangler; kaster ved ugyldig innhold. Størrelsen er begrenset slik at
+ * metadataen ikke kan blåses opp.
+ */
+export function parseQualityProfileMeta(x: unknown): QualityProfileSnapshot | null {
+  if (x === undefined || x === null) return null;
+  if (typeof x !== "object") throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+  const o = x as Record<string, unknown>;
+  if (typeof o["id"] !== "string" || !/^[0-9a-f-]{36}$/i.test(o["id"]))
+    throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+  if (typeof o["name"] !== "string" || o["name"].length > QUALITY_PROFILE_MAX_NAME)
+    throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+  const spec = o["spec"] && typeof o["spec"] === "object" ? o["spec"] : {};
+  if (new TextEncoder().encode(JSON.stringify(spec)).length > QUALITY_PROFILE_MAX_SPEC_BYTES)
+    throw new Error(L("Kvalitetsprofilen er for stor", "The quality profile is too large"));
+  return { id: o["id"], name: o["name"], spec: spec as QualityProfileSpec };
+}
