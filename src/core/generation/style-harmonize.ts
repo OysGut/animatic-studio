@@ -156,7 +156,16 @@ export function harmonizationOf(
  * Stilen som tekst for hver av de seks dimensjonene (REQ-0138), fra stilprofilen. `null` når profilen
  * mangler (da må et referansebilde bære stilen).
  */
-function dimensionText(g: StyleGuide | null | undefined): Record<string, string> | null {
+interface DimensionText {
+  readonly drawingStyle: string;
+  readonly colourPalette: string;
+  readonly lighting: string;
+  readonly texture: string;
+  readonly detail: string;
+  readonly atmosphere: string;
+}
+
+function dimensionText(g: StyleGuide | null | undefined): DimensionText | null {
   if (!g) return null;
   const t = (x: string) => x.trim().replace(/\s+/g, " ");
   const palette = [t(g.palette.description), g.palette.colors.join(", ")].filter(Boolean).join("; ");

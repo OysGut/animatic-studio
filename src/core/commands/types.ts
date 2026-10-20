@@ -1216,15 +1216,15 @@ export type Command = import("../animation/rig-commands").RigCommand
   | {
       readonly type: "ApplyHarmonizedImage";
       readonly harmonizationId: string;
-      readonly variantId: string;
-      readonly versionId: string;
+      readonly variantId: AssetVariantId;
+      readonly versionId: AssetVersionId;
       readonly media: AssetMedia;
       readonly note: string;
       readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields;
       /** Ny variant («Harmonisert – …») når bildet ikke skal inn i en eksisterende variant. */
-      readonly newVariant?: { readonly assetId: string; readonly fields: AssetVariantFields };
+      readonly newVariant?: { readonly assetId: AssetId; readonly fields: AssetVariantFields };
     }
-  | { readonly type: "UndoApplyHarmonizedImage"; readonly harmonizationId: string; readonly variantId: string; readonly versionId: string; readonly createdVariant: boolean }
+  | { readonly type: "UndoApplyHarmonizedImage"; readonly harmonizationId: string; readonly variantId: AssetVariantId; readonly versionId: AssetVersionId; readonly createdVariant: boolean }
   /** Endrer bruksvalget eller fjerner metadataen (removed). Originalbildet røres aldri. */
   | { readonly type: "SetStyleHarmonization"; readonly harmonizationId: string; readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields; readonly removed?: boolean }
   | { readonly type: "UndoAddStyleHarmonization"; readonly harmonizationId: string }
