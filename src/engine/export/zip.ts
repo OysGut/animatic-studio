@@ -49,7 +49,7 @@ export async function openZipSink(fileName: string): Promise<ZipSink | null> {
       // Ellers: last ned på vanlig måte
     }
   }
-  if (navigator.storage?.getDirectory) {
+  if (typeof navigator.storage?.getDirectory === "function") {
     const { openAlphaSink } = await import("./alpha");
     return openAlphaSink(fileName, "application/zip");
   }

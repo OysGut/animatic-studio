@@ -695,7 +695,7 @@ export function ExportAnimaticDialog({
         );
       throw e;
     } finally {
-      if (abort.current === ctrl) abort.current = null;
+      if (abort.current === ctrl) { abort.current = null; setProgress(null); }
     }
   }
 

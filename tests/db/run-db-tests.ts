@@ -6085,6 +6085,30 @@ try {
     assert((await sql`select 1 from public.quality_profiles where project_id = ${bp}`).length === 0, "profiler igjen etter sletting");
   });
 
+  await test("0063: profilbudsjett er atomisk, prosjektavgrenset og metadata uforanderlige", async () => {
+    const bp = String((await as("authenticated", ALICE, tx => tx`select public.create_project('Profile capacity',25,1) id`))[0]?.["id"]);
+    const profile = (await sql`select * from public.quality_profiles where project_id=${bp} and name='Utkast'`)[0];
+    assert(profile, "Missing profile");
+    await as("service_role",null,tx => tx`update public.quality_profiles set spec=spec || '{"budgetLimit":1}'::jsonb where id=${profile["id"]}`);
+    const q = (await sql`select * from public.quality_profiles where id=${profile["id"]}`)[0];
+    assert(q,"Missing profile");
+    const snapshot = {id:q["id"],name:q["name"],spec:q["spec"]};
+    const insert = (id:string, snap:unknown=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','test','','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
+    const j1="00000000-0000-7000-8000-000000006311", j2="00000000-0000-7000-8000-000000006312";
+    const results = await Promise.allSettled([insert(j1),insert(j2)]);
+    assert(results.filter(r=>r.status==='fulfilled').length===1,"Concurrent reservations exceeded cap");
+    const job=(await sql`select id,params from public.generation_jobs where project_id=${bp}`)[0];
+    assert(job,"Missing receipt");
+    assert(job["params"].qualityProfileId===q["id"],"Explicit profile ID missing");
+    await expectError(as("service_role",null,tx=>tx`update public.generation_jobs set params=${sql.json({qualityProfile:{...snapshot,name:"Forged"}})} where id=${job["id"]}`),"22023");
+    await expectError(insert("00000000-0000-7000-8000-000000006313",{...snapshot,id:"00000000-0000-7000-8000-000000000000"}),"42501");
+    await as("service_role",null,tx=>tx`update public.generation_jobs set status='failed' where id=${job["id"]}`);
+    await insert("00000000-0000-7000-8000-000000006314");
+    assert((await sql`select count(*)::int n from public.generation_jobs where project_id=${bp} and status<>'failed'`)[0]?.["n"]===1,"Failed reservation not released");
+    await expectError(insert("00000000-0000-7000-8000-000000006315",{...snapshot,spec:{budgetLimit:1000}}),"22023");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

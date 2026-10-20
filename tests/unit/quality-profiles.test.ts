@@ -1,7 +1,7 @@
 /** M8 kvalitetsprofiler (REQ-0854–0862): kommandoer, validering, modellvalg, budsjett og øyeblikksbilde. */
 import { describe, expect, it } from "vitest";
 import {
-  activeQualityProfile,
+  activeQualityProfile, qualityProfileBudgetError, qualityProfileUsage, parseQualityProfileMeta,
   applyCommand,
   BACKUP_STATE_TABLES,
   defaultQualityProfiles,
@@ -144,5 +144,26 @@ describe("M8 quality profiles – rules", () => {
   });
   it("the backup includes the profiles", () => {
     expect(BACKUP_STATE_TABLES).toContain("quality_profiles");
+  });
+});
+
+describe("M8 budget and validation", () => {
+  it("reserves every variant and permits the exact boundary", () => {
+    expect(qualityProfileBudgetError(3, 1, 2)).toBeNull();
+    expect(qualityProfileBudgetError(3, 1, 3)).not.toBeNull();
+    expect(qualityProfileBudgetError(0, 0, 1)).not.toBeNull();
+    expect(qualityProfileBudgetError(null, 100, 8)).toBeNull();
+  });
+  it("counts only this profile in the UTC month, including queued receipts", () => {
+    const job = { id:"x", kind:"image", status:"queued", createdAt:"2026-10-01T00:00:00Z", params:{qualityProfile:{id:"p"}} };
+    const jobs = [job, {...job,status:"failed"}, {...job,params:{qualityProfile:{id:"other"}}}, {...job,createdAt:"2026-09-30T23:59:59Z"}, {...job,kind:"prompt"}];
+    expect(qualityProfileUsage("p", jobs as never, new Date("2026-10-20T00:00:00Z"))).toBe(1);
+  });
+  it("rejects unsafe export and model settings", () => {
+    expect(qualityProfileError("P", { export: { bitrateKbps: 99 } })).not.toBeNull();
+    expect(qualityProfileError("P", { export: { bitrateKbps: 100 } })).toBeNull();
+    expect(qualityProfileError("P", { export: { format: "gif" as never } })).not.toBeNull();
+    expect(qualityProfileError("P", { export: { alpha: "black" as never } })).not.toBeNull();
+    expect(() => parseQualityProfileMeta({id:"00000000-0000-7000-8000-000000000001",name:"P",spec:{variants:9}})).toThrow();
   });
 });
