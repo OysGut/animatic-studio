@@ -16,8 +16,11 @@ import {
   type ProjectState,
   type QualityProfileSpec,
 } from "@/core";
-import { envelope, tid } from "../helpers/fixtures";
+import { envelope, seedProject, tid } from "../helpers/fixtures";
 
+function base(): ProjectState {
+  return seedProject(0).state;
+}
 function apply(s: ProjectState, c: Command) {
   const r = applyCommand(s, envelope(c));
   if (!r.ok) throw new Error(`${c.type}: ${r.error.message}`);
