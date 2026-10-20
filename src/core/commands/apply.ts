@@ -5036,7 +5036,7 @@ function run(
       if (herr) fail("invalid",herr);
       if (s.styleHarmonizations[c.harmonizationId]) fail("invalid",L("Samme harmonisering to ganger.","The same harmonization twice."));
       const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:1,removed:false,createdBy:env.actor,createdAt:env.at};
-      return {state:{...s2,styleHarmonizations:{...s2.styleHarmonizations,[h.id]:h}},inverse:{type:"UndoApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:h.versionId,createdVariant},affected:[h.id,c.versionId,...(createdVariant?[va.id]:[])]};
+      return {state:{...s2,styleHarmonizations:{...s2.styleHarmonizations,[h.id]:h}},inverse:{type:"UndoApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:c.versionId,createdVariant},affected:[h.id,c.versionId,...(createdVariant?[va.id]:[])]};
     }
     case "UndoApplyHarmonizedImage": {
       const h=need(s.styleHarmonizations[c.harmonizationId],L("Harmoniseringen","The harmonization"));
@@ -5046,8 +5046,8 @@ function run(
         fail("referenced",L("Bildet er i bruk og kan ikke fjernes.","The image is in use and cannot be removed."));
       const styleHarmonizations={...s.styleHarmonizations}; delete styleHarmonizations[h.id];
       const assetVersions={...s.assetVersions}; delete assetVersions[ver.id];
-      let assetVariants=s.assetVariants;
-      if (c.createdVariant) { assetVariants={...assetVariants}; delete assetVariants[va.id]; }
+      const assetVariants: Record<string, typeof va> = { ...s.assetVariants };
+      if (c.createdVariant) delete assetVariants[va.id];
       const media: AssetMedia={path:ver.mediaPath,mimeType:ver.mimeType,width:ver.width,height:ver.height,byteSize:ver.byteSize,sha256:ver.sha256};
       return {state:{...s,assetVariants,assetVersions,styleHarmonizations},inverse:{type:"ApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:ver.id,media,note:ver.note,fields:{versionId:h.versionId,sourceVersionId:h.sourceVersionId,model:h.model,qualityProfile:h.qualityProfile,styleProfileId:h.styleProfileId,referenceVersionId:h.referenceVersionId,use:h.use,note:h.note},...(c.createdVariant?{newVariant:{assetId:va.assetId,fields:{name:va.name,style:va.style,appearance:va.appearance}}}:{})},affected:[h.id,ver.id,...(c.createdVariant?[va.id]:[])]};
     }
