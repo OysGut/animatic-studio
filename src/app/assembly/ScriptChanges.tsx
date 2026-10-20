@@ -22,6 +22,7 @@ import {
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { AiUpdateSection } from "./AiUpdateSection";
+import { MaterialUpdateSection } from "./MaterialUpdateSection";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 
@@ -309,6 +310,9 @@ export function ScriptChanges({
           changes={list}
           takeIds={aiTakeIds}
         />
+      ) : null}
+      {editable && hasComposition ? (
+        <MaterialUpdateSection state={state} occurrenceId={occurrenceId} changes={list} run={run} />
       ) : null}
       {mats.some((m) => m.kind === "take" && state.takes[m.id]?.kind !== "ai_video") ? (
         <p className="text-[11px] text-text-tertiary">

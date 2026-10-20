@@ -148,7 +148,7 @@ export function HarmonizePanel({
           purpose: "cutout",
           variantId: null,
           provider: choice.provider.id,
-          model: choice.provider.id === "lovable" ? null : choice.model.id,
+          model: choice.model.id,
           size: m.size,
           approved: true,
           qualityProfile: qp,

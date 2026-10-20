@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **870**
-- Prioritet: P0: 147, P1: 535, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 343, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 146, Under arbeid: 13, Ikke startet: 46
+- Antall krav: **874**
+- Prioritet: P0: 147, P1: 539, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 347, teknisk-anbefaling: 7
+- Status: Verifisert: 665, Implementert – ikke verifisert: 150, Under arbeid: 13, Ikke startet: 46
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -12100,3 +12100,59 @@ Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosen
   - tests/visual/p5-line-linking.mjs
 - **Implementering:** src/core/translation/line-link-labels.ts, src/app/script/LineLinkReview.tsx
 - **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0871 – M6: Oppdatering med AI ved manusavvik (valg B)
+Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** VERSION, PROMPT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/assembly/material-update.ts, src/app/assembly/MaterialUpdateSection.tsx, src/app/assembly/ScriptChanges.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0872 – M6: Varighetsprognose fra prosjektets historikk
+Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SCRIPT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/screenplay/forecast.ts, src/app/projects/DurationOverview.tsx, src/app/script/SceneNavigator.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0873 – M6: Forslag til kontekstuell kobling av betegnelser
+Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/library/context-links.ts, src/app/library/ContextLinkSuggestions.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0874 – P8-retting: Vist bildemodell er brukt modell, og samlet anslag i massemodus
+Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** PROVIDER, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.
+- **Tester:**
+  - tests/unit/builtin-image-model.test.ts
+  - tests/visual/p8-style-harmonize.mjs
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/image-run.server.ts, src/adapters/storage/harmonize-batch.functions.ts, src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.

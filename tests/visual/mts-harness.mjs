@@ -112,7 +112,22 @@ export function harness(defaultOut) {
       if (/^reconfirmDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "reconfirmDialogueBatch", body: d }); return json({ ok: true }); }
       if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
       // P8: stilharmonisering (mock – ingen AI)
-      if (/^generateImage(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateImage", body: d }); const n = state.rpcs.filter(r => r.name === "generateImage").length; return json({ ok: true, versionId: `00000000-0000-7000-8000-${String(800000 + n).padStart(12, "0")}`, model: "google/gemini-3-pro-image", jobId: "00000000-0000-7000-8000-000000080000", media: { path: `${fx.project.id}/assets/generated/${d.assetId}/mock-${n}.png`, mimeType: "image/png", width: 1024, height: 1536, byteSize: 2048, sha256: "c".repeat(64) } }); }
+      if (/^generateImage(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateImage", body: d }); const n = state.rpcs.filter(r => r.name === "generateImage").length; return json({ ok: true, versionId: `00000000-0000-7000-8000-${String(800000 + n).padStart(12, "0")}`, model: d.model || "openai/gpt-image-2", jobId: "00000000-0000-7000-8000-000000080000", media: { path: `${fx.project.id}/assets/generated/${d.assetId}/mock-${n}.png`, mimeType: "image/png", width: 1024, height: 1536, byteSize: 2048, sha256: "c".repeat(64) } }); }
+      // M6: tekst-AI (mock – ingen AI). Svarer med ID-ene som står i prompten.
+      if (/^generateText(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "generateText", body: d });
+        const user = d.messages?.[d.messages.length - 1]?.content ?? "";
+        let text = "{}";
+        if (/update animatic material/.test(d.system ?? "")) {
+          const images = [...user.matchAll(/assetId ([0-9a-f-]{36})/g)].map((m) => ({ assetId: m[1], prompt: "The character looks up at the snowy sky, same design as before." }));
+          const shots = [...user.matchAll(/blockId ([0-9a-f-]{36})/g)].map((m) => ({ blockId: m[1], text: "Close-up: she looks up as the snow begins." }));
+          text = JSON.stringify({ images, shots });
+        } else if (/resolve references/.test(d.system ?? "")) {
+          const links = [...user.matchAll(/ITEM key=(\S+)\nWORD: [^\n]*\nCANDIDATES: ([0-9a-f-]{36})/g)].map((m) => ({ key: m[1], assetId: m[2] }));
+          text = JSON.stringify({ links });
+        }
+        return json({ ok: true, text, provider: "lovable", model: "built-in", usage: { inputTokens: 10, outputTokens: 10 }, costUsd: 0, usedFallback: false, reason: "pref", keyOwner: "lovable", jobId: "00000000-0000-7000-8000-000000090000" });
+      }
       if (/^listHarmonizeBatches(?:_|$)/.test(name)) return json(state.batches);
       if (/^createHarmonizeBatch(?:_|$)/.test(name)) {
         state.rpcs.push({ name: "createHarmonizeBatch", body: d });

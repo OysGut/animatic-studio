@@ -5,13 +5,16 @@
  * Scener som er flyttet siden siste lagrede versjon, har egen bakgrunnsfarge (REQ-0533).
  */
 import { AlertTriangle, GripVertical, MessageSquare, Search, X } from "lucide-react";
-import { useEffect, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
 import {
   HIT_LABEL,
   STORY_KIND_LABEL,
   SCENE_STATUS_LABEL,
   collation,
+  durationForecast,
+  formatDuration,
   formatHeading,
+  projectDurationAssumptions,
   keyBetween,
   L,
   localized,
@@ -107,6 +110,11 @@ export function SceneNavigator({
   const [dragId, setDragId] = useState<string | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const uncertain = uncertainVariants(state);
+  // Prognose fra historikk (M6): bare beregnet, aldri lagret og endrer aldri scenelengden
+  const forecast = useMemo(
+    () => new Map(durationForecast(state, productionId, projectDurationAssumptions(state.project)).scenes.map((x) => [x.occurrenceId, x])),
+    [state, productionId],
+  );
   // Objekter, rekvisitter, dyr og steder i biblioteket (karakterene har eget filter over)
   const filterAssets = Object.values(state.assets)
     .filter((a) => !a.archived && a.kind !== "sound" && a.kind !== "character")
@@ -446,6 +454,21 @@ export function SceneNavigator({
                           {merged ? L("Sammenslått", "Merged") : L("Deaktivert", "Inactive")}
                         </span>
                       )}
+                      {o.active && forecast.get(o.id) ? (
+                        <span
+                          data-testid="nav-forecast"
+                          className="tabular"
+                          title={
+                            forecast.get(o.id)!.actual
+                              ? L("Faktisk lengde (ferdig materiale)", "Actual length (finished material)")
+                              : L("Prognose fra prosjektets historikk, med usikkerhet", "Forecast from the project's history, with uncertainty")
+                          }
+                        >
+                          {forecast.get(o.id)!.actual
+                            ? formatDuration(forecast.get(o.id)!.seconds)
+                            : `${formatDuration(forecast.get(o.id)!.lowSeconds)}–${formatDuration(forecast.get(o.id)!.highSeconds)}`}
+                        </span>
+                      ) : null}
                       {uncertainSet.has(o.id) ? (
                         <span className="flex items-center gap-0.5 rounded-sm bg-status-uncertain-bg px-1 text-status-uncertain">
                           <AlertTriangle className="size-3" aria-hidden />

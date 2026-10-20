@@ -2578,6 +2578,167 @@ export type Database = {
           },
         ]
       }
+      harmonize_batch_items: {
+        Row: {
+          asset_id: string
+          attempts: number
+          batch_id: string
+          command_id: string
+          created_at: string
+          created_by: string
+          error: string | null
+          harmonization_id: string
+          id: string
+          job_id: string
+          position: number
+          project_id: string
+          result: Json | null
+          retryable: boolean
+          source_version_id: string
+          status: string
+          variant_id: string
+          version_id: string
+        }
+        Insert: {
+          asset_id: string
+          attempts?: number
+          batch_id: string
+          command_id: string
+          created_at?: string
+          created_by: string
+          error?: string | null
+          harmonization_id: string
+          id: string
+          job_id: string
+          position?: number
+          project_id: string
+          result?: Json | null
+          retryable?: boolean
+          source_version_id: string
+          status?: string
+          variant_id: string
+          version_id: string
+        }
+        Update: {
+          asset_id?: string
+          attempts?: number
+          batch_id?: string
+          command_id?: string
+          created_at?: string
+          created_by?: string
+          error?: string | null
+          harmonization_id?: string
+          id?: string
+          job_id?: string
+          position?: number
+          project_id?: string
+          result?: Json | null
+          retryable?: boolean
+          source_version_id?: string
+          status?: string
+          variant_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harmonize_batch_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "harmonize_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batch_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: true
+            referencedRelation: "generation_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batch_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      harmonize_batches: {
+        Row: {
+          access_blocked: boolean
+          created_at: string
+          created_by: string
+          id: string
+          lease_token: string | null
+          lease_until: string | null
+          model: string
+          pause_reason: string | null
+          project_id: string
+          provider: string
+          reference_version_id: string | null
+          request_id: string
+          size: string | null
+          status: string
+          style_profile_id: string | null
+        }
+        Insert: {
+          access_blocked?: boolean
+          created_at?: string
+          created_by: string
+          id: string
+          lease_token?: string | null
+          lease_until?: string | null
+          model: string
+          pause_reason?: string | null
+          project_id: string
+          provider: string
+          reference_version_id?: string | null
+          request_id: string
+          size?: string | null
+          status?: string
+          style_profile_id?: string | null
+        }
+        Update: {
+          access_blocked?: boolean
+          created_at?: string
+          created_by?: string
+          id?: string
+          lease_token?: string | null
+          lease_until?: string | null
+          model?: string
+          pause_reason?: string | null
+          project_id?: string
+          provider?: string
+          reference_version_id?: string | null
+          request_id?: string
+          size?: string | null
+          status?: string
+          style_profile_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harmonize_batches_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batches_reference_version_id_fkey"
+            columns: ["reference_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batches_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imported_documents: {
         Row: {
           byte_size: number
@@ -4425,6 +4586,158 @@ export type Database = {
           },
         ]
       }
+      style_harmonizations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          model: string
+          note: string
+          project_id: string
+          quality_profile: Json | null
+          reference_version_id: string | null
+          removed: boolean
+          revision: number
+          source_version_id: string
+          style_profile_id: string | null
+          use: string
+          version_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          model: string
+          note?: string
+          project_id: string
+          quality_profile?: Json | null
+          reference_version_id?: string | null
+          removed?: boolean
+          revision?: number
+          source_version_id: string
+          style_profile_id?: string | null
+          use: string
+          version_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model?: string
+          note?: string
+          project_id?: string
+          quality_profile?: Json | null
+          reference_version_id?: string | null
+          removed?: boolean
+          revision?: number
+          source_version_id?: string
+          style_profile_id?: string | null
+          use?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_harmonizations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_reference_version_id_fkey"
+            columns: ["reference_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_source_version_id_fkey"
+            columns: ["source_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      style_preferred_references: {
+        Row: {
+          asset_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          style_profile_id: string
+          variant_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          style_profile_id: string
+          variant_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          style_profile_id?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_preferred_references_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       style_profiles: {
         Row: {
           applies_to: Json
@@ -5133,8 +5446,22 @@ export type Database = {
         Args: { p_batch: string; p_lease: string }
         Returns: Json
       }
+      claim_harmonize_batch: {
+        Args: { p_batch: string; p_lease: string }
+        Returns: Json
+      }
       claim_mobile_import: { Args: { p_id: string }; Returns: boolean }
       complete_dialogue_batch_item: {
+        Args: {
+          p_changes: Json
+          p_command: Json
+          p_inverse: Json
+          p_item: string
+          p_lease: string
+        }
+        Returns: Json
+      }
+      complete_harmonize_batch_item: {
         Args: {
           p_changes: Json
           p_command: Json
@@ -5173,6 +5500,23 @@ export type Database = {
           p_width: number
         }
         Returns: Json
+      }
+      create_harmonize_batch: {
+        Args: {
+          p_actor: string
+          p_items: Json
+          p_key: string
+          p_key_owner: string
+          p_model: string
+          p_project: string
+          p_provider: string
+          p_quality_profile: Json
+          p_reference_version: string
+          p_request: string
+          p_size: string
+          p_style_profile: string
+        }
+        Returns: string
       }
       create_invitation: {
         Args: { p_email: string; p_project: string; p_role?: string }
@@ -5422,6 +5766,10 @@ export type Database = {
         Args: { p_actor: string; p_batch: string; p_project: string }
         Returns: undefined
       }
+      reconfirm_harmonize_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
       record_export: {
         Args: {
           p_file_name: string
@@ -5461,6 +5809,10 @@ export type Database = {
         Returns: undefined
       }
       resume_dialogue_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
+      resume_harmonize_batch: {
         Args: { p_actor: string; p_batch: string; p_project: string }
         Returns: undefined
       }
@@ -5505,6 +5857,10 @@ export type Database = {
       }
       touch_activity: { Args: never; Returns: undefined }
       transition_dialogue_batch_item: {
+        Args: { p_item: string; p_lease: string; p_patch: Json }
+        Returns: undefined
+      }
+      transition_harmonize_batch_item: {
         Args: { p_item: string; p_lease: string; p_patch: Json }
         Returns: undefined
       }

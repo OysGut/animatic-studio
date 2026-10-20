@@ -78,6 +78,7 @@ import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { CharacterVoiceSection } from "./CharacterVoiceSection";
 import { ContextNamesSection } from "./ContextNamesSection";
+import { ContextLinkSuggestions } from "./ContextLinkSuggestions";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 
@@ -357,6 +358,15 @@ export function AssetDetail(props: Props) {
           </div>
           {asset.kind !== "sound" ? (
             <ContextNamesSection
+              state={state}
+              asset={asset}
+              productionId={productionId}
+              editable={editable}
+              cmds={cmds}
+            />
+          ) : null}
+          {asset.kind !== "sound" ? (
+            <ContextLinkSuggestions
               state={state}
               asset={asset}
               productionId={productionId}

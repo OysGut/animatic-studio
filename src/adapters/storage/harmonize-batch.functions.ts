@@ -109,9 +109,15 @@ export const createHarmonizeBatch = createServerFn({ method: "POST" })
     const state = await loadProjectState(db, data.projectId);
     const err = harmonizeBatchSelectionError(state, data.items, data.styleProfileId, data.referenceVersionId);
     if (err) throw new Error(err);
-    const { LOVABLE_IMAGE_MODEL } = await import("@/core");
+    const { builtInImageModel } = await import("@/core");
     const own = data.provider !== "lovable";
-    const model = own ? (data.model ?? "") : process.env["ANIMATIC_IMAGE_MODEL"] || LOVABLE_IMAGE_MODEL;
+    // Massejobben lager frilagte figurer som enkeltharmoniseringen; valgt innebygd modell respekteres (P8-avvik 1)
+    const model = own
+      ? (data.model ?? "")
+      : builtInImageModel(data.model, "cutout", {
+          image: process.env["ANIMATIC_IMAGE_MODEL"],
+          cutout: process.env["ANIMATIC_CUTOUT_MODEL"],
+        });
     const { modelGate } = await import("../account/ai-models.server");
     const gate = await modelGate(db, data.provider, model);
     if (gate.message) throw new Error(gate.message);

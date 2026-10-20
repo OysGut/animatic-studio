@@ -19,7 +19,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 26 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 16 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 47 | 22 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 51 | 22 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 33 | 28 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
@@ -32,24 +32,24 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
 | CORE | Project Core | 245 | 59 | 245 | 128 |
-| SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
+| SCRIPT | Screenplay Engine | 138 | 32 | 138 | 134 |
 | TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
-| LIBRARY | Resource Library | 96 | 10 | 94 | 81 |
+| LIBRARY | Resource Library | 97 | 10 | 95 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
 | COMPOSE | 2D Composition Engine | 97 | 14 | 97 | 88 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
-| PROMPT | Prompt Orchestration Engine | 58 | 15 | 58 | 50 |
-| PROVIDER | Provider Adapters | 49 | 6 | 49 | 41 |
-| QUALITYCOST | Quality & Cost Engine | 40 | 7 | 40 | 38 |
+| PROMPT | Prompt Orchestration Engine | 59 | 15 | 59 | 50 |
+| PROVIDER | Provider Adapters | 50 | 6 | 50 | 41 |
+| QUALITYCOST | Quality & Cost Engine | 41 | 7 | 41 | 38 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
-| VERSION | Version & Dependency Engine | 97 | 38 | 97 | 94 |
+| VERSION | Version & Dependency Engine | 98 | 38 | 98 | 94 |
 | L10N | Localization Engine | 50 | 4 | 49 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 29 | 25 |
 | EXPORT | Export Engine | 77 | 12 | 77 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 340 | 23 | 337 | 217 |
+| UI | Brukergrensesnitt og designsystem | 343 | 23 | 340 | 217 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 226 | 102 |
+| 3 | 230 | 102 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -196,7 +196,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0124 | Kap. 8.1 (l. 370) | LIBRARY, UI | src/app/library/LibraryWorkspace.tsx, src/core/library/index.ts | 1 | tests/visual/screens.mjs::20-bibliotek, tests/visual/screens.mjs::21-bibliotek-ressurs | Verifisert | 2026-10-09 DEC-0030: Kategori, stikkord, søk og filter på type; status Verifisert |
 | REQ-0125 | Kap. 8.2 (l. 372) | LIBRARY, CORE | src/core/model.ts#Asset, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts::endring, arkivering og angre gir samme innhold tilbake, {'tests/db/run-db-tests.ts::0004': 'ressurs, variant og bildeversjon lagres og leses tilbake'} | Verifisert | 2026-10-09 DEC-0030: Ressurser har permanente UUID-er; status Verifisert |
 | REQ-0126 | Kap. 8.2 (l. 373-378) | LIBRARY, L10N | src/core/commands/apply.ts#normalizeAssetFields, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::lagrer foretrukket og alternative navn ryddet, og avviser tomt navn | Verifisert | 2026-10-09 DEC-0030: Foretrukket navn, alternative navn, kallenavn, tidligere navn og språknavn; status Verifisert |
-| REQ-0127 | Kap. 8.2 (l. 379) | LIBRARY, SCRIPT, CONTINUITY | src/core/library/index.ts, src/app/library/ContextNamesSection.tsx, db/migrations/0026_masks_voices_styles.sql | 1 | tests/unit/context-names.test.ts | Verifisert | 2026-10-12 DEC-0071: Betegnelser i bestemte linjer: brukeren velger linjene der «onkel» betyr ressursen (SetContextNames, assets.context_names); brukes i treff, figurer i AI-beskrivelser og ressursens bruk. |
+| REQ-0127 | Kap. 8.2 (l. 379) | LIBRARY, SCRIPT, CONTINUITY | src/core/library/index.ts, src/app/library/ContextNamesSection.tsx, db/migrations/0026_masks_voices_styles.sql | 1 | tests/unit/context-names.test.ts | Verifisert | 2026-10-20 DEC-0054: M6: forslag fra konteksten (til stede i scenen, tidligere koblinger, sist nevnte karakter) med AI bare for de usikre; se REQ-0873. |
 | REQ-0128 | Kap. 8.2 (l. 380) | LIBRARY, UI | src/core/library/index.ts#librarySuggestions, src/app/library/SuggestionsDialog.tsx | 1 | tests/unit/library.test.ts::foreslår karakterer og lokasjoner som mangler, med mulige treff som må bekreftes, tests/visual/screens.mjs::22-bibliotek-forslag | Verifisert | 2026-10-09 DEC-0034: Forslagene fra manuset utvidet med gratis regelbasert gjenkjenning av ressurser (REQ-0544–REQ-0548); status uendret Verifisert |
 | REQ-0129 | Kap. 8.2 (l. 381) | LIBRARY, SCRIPT | src/core/continuity/analysis.ts, src/app/continuity/ContinuityAnalysisPanel.tsx | 1 | tests/unit/analysis.test.ts, tests/visual/screens.mjs (87–88) | Verifisert | 2026-10-11 DEC-0056: Mulige skrivefeil i replikknavn |
 | REQ-0130 | Kap. 8.3 (l. 383) | VERSION, LIBRARY | src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx | 1 | tests/unit/analysis.test.ts, tests/visual/screens.mjs (87–88) | Verifisert | 2026-10-11 DEC-0056: Godkjenning viser scenene som berøres (2D-scener, bildeskifter, andre produksjoner, film) |
@@ -940,3 +940,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0868 | Beslutning DEC-0085 | EXPORT, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
 | REQ-0869 | Beslutning DEC-0085 | EXPORT, UI | src/engine/export/prores-support.ts, src/app/assembly/AlphaExportDialog.tsx, src/app/assembly/ExportAnimaticDialog.tsx | 1 | tests/visual/p7-prores.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
 | REQ-0870 | Beslutning DEC-0085 | EXPORT, UI | src/core/translation/line-link-labels.ts, src/app/script/LineLinkReview.tsx | 2 | tests/unit/prores-mov.test.ts, tests/visual/p5-line-linking.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0085: Registrert fra P7-oppdraget (ProRes/MOV). |
+| REQ-0871 | Beslutning DEC-0054 | VERSION, PROMPT, UI | src/core/assembly/material-update.ts, src/app/assembly/MaterialUpdateSection.tsx, src/app/assembly/ScriptChanges.tsx | 2 | tests/unit/m6-rest.test.ts, tests/visual/m6-rest.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
+| REQ-0872 | Beslutning DEC-0054 | SCRIPT, UI | src/core/screenplay/forecast.ts, src/app/projects/DurationOverview.tsx, src/app/script/SceneNavigator.tsx | 2 | tests/unit/m6-rest.test.ts, tests/visual/m6-rest.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
+| REQ-0873 | Beslutning DEC-0054 | LIBRARY, SCRIPT | src/core/library/context-links.ts, src/app/library/ContextLinkSuggestions.tsx | 2 | tests/unit/m6-rest.test.ts, tests/visual/m6-rest.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
+| REQ-0874 | Beslutning DEC-0054 | PROVIDER, QUALITYCOST, UI | src/core/generation/providers.ts, src/adapters/ai/image-run.server.ts, src/adapters/storage/harmonize-batch.functions.ts, src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx | 2 | tests/unit/builtin-image-model.test.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |

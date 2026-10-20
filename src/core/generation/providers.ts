@@ -151,6 +151,23 @@ export const LOVABLE_IMAGE_MODEL = "openai/gpt-image-2";
  */
 export const LOVABLE_CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
 
+/**
+ * Den innebygde bildemodellen som faktisk brukes (P8-avvik 1): modellen brukeren valgte, når den finnes i den
+ * innebygde katalogen, ellers standardmodellen for formålet. Slik er modellen som vises i valget, alltid den
+ * samme som lagres i metadataen.
+ */
+export function builtInImageModel(
+  requested: string | null | undefined,
+  purpose: string | null | undefined,
+  defaults: { readonly image?: string | undefined; readonly cutout?: string | undefined } = {},
+): string {
+  const catalog = PROVIDERS.find((p) => p.id === "lovable")?.models ?? [];
+  if (requested && catalog.some((m) => m.id === requested && m.capability === "image")) return requested;
+  return purpose === "cutout"
+    ? defaults.cutout || LOVABLE_CUTOUT_MODEL
+    : defaults.image || LOVABLE_IMAGE_MODEL;
+}
+
 // Tekstfeltene under er getters: teksten velges når den leses, så språkbytte virker også for katalogen.
 export const PROVIDERS: readonly ProviderInfo[] = [
   {
