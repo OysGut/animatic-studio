@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "entries": 9963,
+  "entries": 9958,
   "files": 448,
-  "literalPairs": 8673,
+  "literalPairs": 8668,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 102,
-  "candidates": 28814,
+  "references": 103,
+  "candidates": 28882,
   "conflicts": [
     {
       "kind": "parameter-contract",
@@ -24,13 +24,13 @@
       "kind": "dynamic-expression",
       "key": "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b",
       "file": "src/adapters/storage/commands.functions.ts",
-      "line": 55
+      "line": 56
     },
     {
       "kind": "dynamic-expression",
       "key": "adapters-storage-commands-functions.message.message.d62f99d8026f",
       "file": "src/adapters/storage/commands.functions.ts",
-      "line": 60
+      "line": 61
     },
     {
       "kind": "parameter-contract",
@@ -78,7 +78,7 @@
       "kind": "parameter-contract",
       "key": "app-assembly-audio-tracks.audio-tracks.aria-label.5bc137169d4d",
       "file": "src/app/assembly/AudioTracks.tsx",
-      "line": 259
+      "line": 260
     },
     {
       "kind": "parameter-contract",
@@ -180,13 +180,13 @@
       "kind": "parameter-contract",
       "key": "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3",
       "file": "src/app/assembly/FilmTimeline.tsx",
-      "line": 440
+      "line": 442
     },
     {
       "kind": "parameter-contract",
       "key": "app-assembly-film-timeline.clip-block.title.cb297fbaa38d",
       "file": "src/app/assembly/FilmTimeline.tsx",
-      "line": 448
+      "line": 450
     },
     {
       "kind": "parameter-contract",
@@ -564,7 +564,7 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-nearby-audio-panel.use.run.65d55e0319ac",
       "file": "src/app/scene-editor/NearbyAudioPanel.tsx",
-      "line": 128
+      "line": 130
     },
     {
       "kind": "dynamic-expression",
@@ -576,19 +576,19 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 219
+      "line": 221
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 237
+      "line": 239
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 366
+      "line": 368
     },
     {
       "kind": "dynamic-expression",
@@ -678,7 +678,7 @@
       "kind": "parameter-contract",
       "key": "app-script-script-page-view.line.title.f26c13209f66",
       "file": "src/app/script/ScriptPageView.tsx",
-      "line": 280
+      "line": 282
     },
     {
       "kind": "parameter-contract",
@@ -840,7 +840,7 @@
       "kind": "parameter-contract",
       "key": "routes-prosjekt-project-id.project-layout.p.de039078a0f5",
       "file": "src/routes/prosjekt.$projectId.tsx",
-      "line": 69
+      "line": 71
     },
     {
       "kind": "same-source-different-translation",
