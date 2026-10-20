@@ -27,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { audioBank, useAudioLoaded } from "./use-audio-playback";
+import { t as tk } from "@/core/i18n/keyed";
 
 const H = 220;
 const TOP = 10;
@@ -160,7 +161,7 @@ function Editor({
   function commit(next: VolumeKey[]) {
     const sorted = [...next].sort((a, b) => a.t - b.t);
     setKeys(sorted);
-    onChange(L("Volumpunkter", "Volume points"), { volumeKeys: sorted });
+    onChange(tk("app-audio-audio-clip-editor.commit.on-change.c0587669b9d5"), { volumeKeys: sorted });
   }
 
   function pointer(e: React.PointerEvent<SVGSVGElement>) {
@@ -259,18 +260,15 @@ function Editor({
     <>
       <DialogHeader>
         <DialogTitle>
-          {L("Lydprofil", "Volume profile")} – {clip.name || L("Lyd", "Audio")}
+          {tk("app-audio-audio-clip-editor.editor.dialog-title.623645b2dc23")} – {clip.name || tk("app-audio-audio-clip-editor.editor.dialog-title.69c929975ce1")}
         </DialogTitle>
         <DialogDescription>
           {AUDIO_KIND_LABEL[clip.kind]} · {fmt(length)}
           {clip.continues
-            ? L(" · løper videre over flere scener", " · continues over several scenes")
+            ? tk("app-audio-audio-clip-editor.editor.dialog-description.1f5bc6cf7989")
             : ""}
           .{" "}
-          {L(
-            "Klikk på den gule kurven for å legge til et volumpunkt, dra for å endre, dobbeltklikk for å fjerne.",
-            "Click the yellow curve to add a volume point, drag to change it, double-click to remove it.",
-          )}
+          {tk("app-audio-audio-clip-editor.editor.dialog-description.2d933392f1a3")}
         </DialogDescription>
       </DialogHeader>
 
@@ -280,10 +278,10 @@ function Editor({
           variant="secondary"
           disabled={!buf}
           onClick={() => (playing ? stop() : play(head >= item.length ? 0 : head))}
-          aria-label={playing ? L("Pause", "Pause") : L("Lytt", "Listen")}
+          aria-label={playing ? tk("app-audio-audio-clip-editor.editor.aria-label.a801f2fd8222") : tk("app-audio-audio-clip-editor.editor.aria-label.22be8db6636f")}
         >
           {playing ? <Pause /> : <Play />}
-          {playing ? L("Pause", "Pause") : L("Lytt", "Listen")}
+          {playing ? tk("app-audio-audio-clip-editor.editor.button.a801f2fd8222") : tk("app-audio-audio-clip-editor.editor.button.22be8db6636f")}
         </Button>
         <span className="font-mono text-xs tabular-nums text-text-secondary">
           {fmt(head)} / {fmt(item.length)}
@@ -295,7 +293,7 @@ function Editor({
           </span>
         ) : (
           <span className="text-xs text-text-tertiary">
-            {L("Nivå ved hodet:", "Level at the playhead:")}{" "}
+            {tk("app-audio-audio-clip-editor.editor.span.80c46dd1e04a")}{" "}
             {Math.round(volumeKeyDbAt(item.keys, head) * 10) / 10} dB
           </span>
         )}
@@ -303,7 +301,7 @@ function Editor({
         {editable && keys.length > 0 ? (
           <Button size="sm" variant="ghost" onClick={() => commit([])}>
             <Trash2 />
-            {L("Fjern alle punkter", "Remove all points")}
+            {tk("app-audio-audio-clip-editor.editor.button.7a795157459a")}
           </Button>
         ) : null}
       </div>
@@ -351,8 +349,8 @@ function Editor({
           {!buf ? (
             <p className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary">
               {version
-                ? L("Henter lydfilen …", "Loading the audio file …")
-                : L("Lydfilen mangler.", "The audio file is missing.")}
+                ? tk("app-audio-audio-clip-editor.editor.p.573560d6be1f")
+                : tk("app-audio-audio-clip-editor.editor.p.ccaf87fbb749")}
             </p>
           ) : null}
           <svg
@@ -360,7 +358,7 @@ function Editor({
             height={H}
             className="absolute inset-0 touch-none"
             role="application"
-            aria-label={L("Volumkurve", "Volume curve")}
+            aria-label={tk("app-audio-audio-clip-editor.editor.aria-label.55c45cdf7d66")}
             tabIndex={0}
             onKeyDown={(e) => {
               if (sel === null || !editable) return;
@@ -467,7 +465,7 @@ function Editor({
                   strokeDasharray="4 3"
                 />
                 <text x={xOf(cut) + 4} y={12} fontSize={10} fill="var(--status-discrepancy)">
-                  {L("Scenen slutter", "Scene ends")}
+                  {tk("app-audio-audio-clip-editor.editor.text.30810ea9869d")}
                 </text>
               </>
             ) : null}
@@ -497,10 +495,7 @@ function Editor({
         </div>
       </div>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Piltaster flytter valgt punkt (opp/ned 0,5 dB, venstre/høyre 0,1 s). Kurven ganges med klippets volum og inn-/uttoning, og gjelder både avspilling og eksport.",
-          "Arrow keys move the selected point (up/down 0.5 dB, left/right 0.1 s). The curve is multiplied by the clip's volume and fade in/out, and applies to both playback and export.",
-        )}
+        {tk("app-audio-audio-clip-editor.editor.p.2ca0871d7126")}
       </p>
     </>
   );
@@ -614,13 +609,13 @@ function TrimAndSpeed({
   function applySpeed(next: number) {
     const v = Math.min(400, Math.max(25, Math.round(next)));
     if (v === pct) return;
-    onChange(L(`Hastighet ${v} %`, `Speed ${v} %`), withSpeed(clip, v));
+    onChange(tk("app-audio-audio-clip-editor.apply-speed.on-change.99e09c01798c", { v: String(v) }), withSpeed(clip, v));
   }
 
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-2">
       <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
-        <span className="font-medium text-text-primary">{L("Hastighet", "Speed")}</span>
+        <span className="font-medium text-text-primary">{tk("app-audio-audio-clip-editor.trim-and-speed.span.dee8596dbe05")}</span>
         <input
           type="range"
           min={0}
@@ -628,7 +623,7 @@ function TrimAndSpeed({
           step={1}
           value={sliderOf(draftPct)}
           disabled={!editable}
-          aria-label={L("Hastighet (25–400 %)", "Speed (25–400 %)")}
+          aria-label={tk("app-audio-audio-clip-editor.trim-and-speed.aria-label.82ffec0086b1")}
           onChange={(e) => setDraftPct(pctOf(Number(e.target.value)))}
           onPointerUp={() => applySpeed(draftPct)}
           onKeyUp={() => applySpeed(draftPct)}
@@ -642,7 +637,7 @@ function TrimAndSpeed({
             step={1}
             value={draftPct}
             disabled={!editable}
-            aria-label={L("Hastighet i prosent", "Speed in per cent")}
+            aria-label={tk("app-audio-audio-clip-editor.trim-and-speed.aria-label.89e6181b1f5b")}
             onChange={(e) => setDraftPct(Number(e.target.value))}
             onBlur={() => applySpeed(draftPct)}
             onKeyDown={(e) => {
@@ -672,28 +667,28 @@ function TrimAndSpeed({
           ))}
         </span>
         <span className="text-text-tertiary">
-          {L("Tonehøyden følger hastigheten.", "Pitch follows the speed.")}
+          {tk("app-audio-audio-clip-editor.trim-and-speed.span.080de4547cad")}
         </span>
       </div>
 
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2 text-xs">
           <span className="font-medium text-text-primary">
-            {L("Start og slutt i lydfilen", "Start and end in the audio file")}
+            {tk("app-audio-audio-clip-editor.trim-and-speed.span.1ba450293c55")}
           </span>
           <span className="font-mono tabular-nums text-text-secondary">
             {fmt(shownIn)} – {fmt(shownOut)}
-            {total !== null ? L(` av ${fmt(total)}`, ` of ${fmt(total)}`) : ""}
+            {total !== null ? tk("app-audio-audio-clip-editor.trim-and-speed.span.dc81131a23cb", { value1: String(fmt(total)) }) : ""}
           </span>
           <span className="text-text-tertiary">
-            {L("Ny varighet i filmen:", "New duration in the film:")}{" "}
+            {tk("app-audio-audio-clip-editor.trim-and-speed.span.992672bf1ee3")}{" "}
             {fmt((shownOut - shownIn) / speed)}
           </span>
         </div>
         <div
           ref={barRef}
           className="relative h-11 touch-none select-none overflow-hidden rounded-sm bg-surface-2"
-          aria-label={L("Masker for start og slutt", "Masks for start and end")}
+          aria-label={tk("app-audio-audio-clip-editor.trim-and-speed.aria-label.3c660b5e7125")}
           onPointerMove={(e) => {
             if (!drag || !total) return;
             const t = secAt(e.clientX);
@@ -712,8 +707,8 @@ function TrimAndSpeed({
             if (Math.abs(nextIn - inSec) < 0.001 && Math.abs(nextOut - outSec) < 0.001) return;
             onChange(
               d.edge === "in"
-                ? L("Flytt startmasken", "Move the start mask")
-                : L("Flytt sluttmasken", "Move the end mask"),
+                ? tk("app-audio-audio-clip-editor.trim-and-speed.on-change.5fbaab3a8440")
+                : tk("app-audio-audio-clip-editor.trim-and-speed.on-change.77c2cb82e81a"),
               withTrim(clip, nextIn, nextOut),
             );
           }}
@@ -741,9 +736,9 @@ function TrimAndSpeed({
                   type="button"
                   disabled={!editable}
                   aria-label={
-                    edge === "in" ? L("Startmaske", "Start mask") : L("Sluttmaske", "End mask")
+                    edge === "in" ? tk("app-audio-audio-clip-editor.trim-and-speed.aria-label.84d6f7f59489") : tk("app-audio-audio-clip-editor.trim-and-speed.aria-label.68b82b6e2c3b")
                   }
-                  title={L("Dra for å flytte. Piltaster: 0,1 s", "Drag to move. Arrow keys: 0.1 s")}
+                  title={tk("app-audio-audio-clip-editor.trim-and-speed.title.15a0bb464174")}
                   onPointerDown={(e) => {
                     if (!editable) return;
                     e.preventDefault();
@@ -762,8 +757,8 @@ function TrimAndSpeed({
                         : outSec;
                     onChange(
                       edge === "in"
-                        ? L("Flytt startmasken", "Move the start mask")
-                        : L("Flytt sluttmasken", "Move the end mask"),
+                        ? tk("app-audio-audio-clip-editor.trim-and-speed.on-change.5fbaab3a8440.2")
+                        : tk("app-audio-audio-clip-editor.trim-and-speed.on-change.77c2cb82e81a.2"),
                       withTrim(clip, nIn, nOut),
                     );
                   }}
@@ -774,7 +769,7 @@ function TrimAndSpeed({
             </>
           ) : (
             <p className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary">
-              {L("Henter lydfilen …", "Loading the audio file …")}
+              {tk("app-audio-audio-clip-editor.trim-and-speed.p.815c2f3377d3")}
             </p>
           )}
         </div>

@@ -29,6 +29,7 @@ import { signedUrls } from "./asset-images";
 import { audioDuration } from "./asset-audio";
 import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { CostLines } from "@/app/ai/CostLines";
+import { t } from "@/core/i18n/keyed";
 
 const LENGTHS: readonly (number | null)[] = [null, 1, 2, 3, 5, 8, 10, 15, 20, 30];
 
@@ -111,20 +112,14 @@ export function GenerateSoundPanel({
           versionId: r.versionId as never,
           variantId: variant.id,
           media: { ...r.media, durationMs },
-          note: L(
-            `Generert med AI (${r.model}): ${prompt.trim()}`,
-            `Generated with AI (${r.model}): ${prompt.trim()}`,
-          ).slice(0, 500),
+          note: t("app-library-generate-sound-panel.note.l-generert-med-ai-r-model-prompt-trim-generated-with-ai-r-model-prompt-trim-slice.50a5946fb31e", { model: String(r.model), value2: String(prompt.trim()) }).slice(0, 500),
         },
-        L(`AI-lyd i «${variant.name}»`, `AI sound in “${variant.name}”`),
+        t("app-library-generate-sound-panel.res.cmds-run-and-wait.15701010066e", { name: String(variant.name) }),
       );
       if (res.error) setError(res.error);
       else
         setDone(
-          L(
-            "Lyden er lagt inn som ny versjon. Lytt og godkjenn den hvis den passer.",
-            "The sound has been added as a new version. Listen to it and approve it if it fits.",
-          ),
+          t("app-library-generate-sound-panel.run.set-done.f320210cf318"),
         );
     } catch (e) {
       setError((e as Error).message);
@@ -136,33 +131,30 @@ export function GenerateSoundPanel({
 
   return (
     <section
-      aria-label={L("Lag lyd med AI", "Generate sound with AI")}
+      aria-label={t("app-library-generate-sound-panel.generate-sound-panel.aria-label.bb1d4f0336c2")}
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2"
     >
       <div className="flex items-center justify-between">
         <h4 className="text-xs font-semibold text-text-primary">
-          {L("Lag lyd med AI", "Generate sound with AI")}
+          {t("app-library-generate-sound-panel.generate-sound-panel.h4.bb1d4f0336c2")}
         </h4>
         <Button size="sm" variant="ghost" onClick={onClose} disabled={running}>
-          {L("Lukk", "Close")}
+          {t("app-library-generate-sound-panel.generate-sound-panel.button.b2d20478ce14")}
         </Button>
       </div>
       {available.isLoading ? (
         <p className="text-xs text-text-tertiary">
-          {L("Henter leverandører …", "Loading providers …")}
+          {t("app-library-generate-sound-panel.generate-sound-panel.p.7f3e08418b4b")}
         </p>
       ) : !chosen ? (
         <p className="text-xs text-text-secondary">
-          {L(
-            "Ingen av prosjektets eiere har koblet til en lydleverandør ennå. Eieren kan koble til ElevenLabs under «AI-leverandører» på prosjektlisten.",
-            "None of the project's owners has connected a sound provider yet. The owner can connect ElevenLabs under “AI providers” on the project list.",
-          )}
+          {t("app-library-generate-sound-panel.generate-sound-panel.p.9f97ded97f7e")}
         </p>
       ) : (
         <>
           {state ? <QualityProfilePicker state={state} value={quality.choice} disabled={running} onChange={v => { quality.setChoice(v); setPick(null); setConfirm(false); }} /> : null}<QualityProfileBudget error={quality.budgetError} />
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Beskriv lyden (gjerne på engelsk)", "Describe the sound (English preferred)")}
+            {t("app-library-generate-sound-panel.generate-sound-panel.label.6bab6a686bc0")}
             <Textarea
               value={prompt}
               maxLength={1000}
@@ -177,9 +169,9 @@ export function GenerateSoundPanel({
           <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
             {models.length > 1 ? (
               <label className="flex items-center gap-1">
-                {L("Modell", "Model")}
+                {t("app-library-generate-sound-panel.generate-sound-panel.label.bfc44e2bfaae")}
                 <select
-                  aria-label={L("Lydmodell", "Sound model")}
+                  aria-label={t("app-library-generate-sound-panel.generate-sound-panel.aria-label.90c6b1a920e8")}
                   value={`${chosen.provider.id}|${chosen.model.id}`}
                   disabled={running}
                   onChange={(e) => {
@@ -204,9 +196,9 @@ export function GenerateSoundPanel({
               </span>
             )}
             <label className="flex items-center gap-1">
-              {L("Lengde", "Length")}
+              {t("app-library-generate-sound-panel.generate-sound-panel.label.401b22f9b62c")}
               <select
-                aria-label={L("Lengde på lyden", "Length of the sound")}
+                aria-label={t("app-library-generate-sound-panel.generate-sound-panel.aria-label.844c9add189c")}
                 value={seconds === null ? "" : String(seconds)}
                 disabled={running}
                 onChange={(e) => {
@@ -217,7 +209,7 @@ export function GenerateSoundPanel({
               >
                 {lengths.map((s) => (
                   <option key={s ?? "auto"} value={s === null ? "" : String(s)}>
-                    {s === null ? L("Automatisk", "Automatic") : `${s} s`}
+                    {s === null ? t("app-library-generate-sound-panel.generate-sound-panel.option.b3d2dc389bd1") : `${s} s`}
                   </option>
                 ))}
               </select>
@@ -232,13 +224,13 @@ export function GenerateSoundPanel({
                   setConfirm(false);
                 }}
               />
-              {L("Sømløs løkke (bakgrunnslyd)", "Seamless loop (background sound)")}
+              {t("app-library-generate-sound-panel.generate-sound-panel.label.3bd4b115b5e0")}
             </label>
           </div>
           {confirm ? (
             <div
               role="alertdialog"
-              aria-label={L("Bekreft generering", "Confirm generation")}
+              aria-label={t("app-library-generate-sound-panel.generate-sound-panel.aria-label.3823ab83a6ad")}
               className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-1 p-2"
             >
               <p className="text-xs text-text-primary">
@@ -253,16 +245,16 @@ export function GenerateSoundPanel({
                   ...(seconds === null ? { assumedMaxSeconds: maxS } : {}),
                   total:
                     cost !== null
-                      ? L(`høyst ${formatUsd(cost)}`, `at most ${formatUsd(cost)}`)
+                      ? t("app-library-generate-sound-panel.total.total.ad2104f4e760", { value1: String(formatUsd(cost)) })
                       : null,
                 })}
               />
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()} disabled={!canRun}>
-                  <AiGlyph /> {L("Ja, lag lyden", "Yes, make the sound")}
+                  <AiGlyph /> {t("app-library-generate-sound-panel.generate-sound-panel.button.7c6b3c48bd97")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                  {L("Avbryt", "Cancel")}
+                  {t("app-library-generate-sound-panel.generate-sound-panel.button.465a418f20d9")}
                 </Button>
               </div>
             </div>
@@ -275,7 +267,7 @@ export function GenerateSoundPanel({
               onClick={() => setConfirm(true)}
             >
               {running ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-              {running ? L("Lager lyden …", "Making the sound …") : L("Lag lyd …", "Make sound …")}
+              {running ? t("app-library-generate-sound-panel.generate-sound-panel.button.633f7288b3d0") : t("app-library-generate-sound-panel.generate-sound-panel.button.babd46c2c06b")}
             </Button>
           )}
         </>

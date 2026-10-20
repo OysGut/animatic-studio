@@ -20,6 +20,7 @@ import {
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { roomCandidates } from "./room-fill";
+import { t } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
 const sec = (ms: number) => (ms / 1000).toFixed(2);
@@ -48,16 +49,10 @@ export function TransitionsPanel({
   return (
     <details className="mt-3 border-t border-border pt-3" data-testid="audio-transitions" open>
       <summary className="cursor-pointer text-[13px] font-semibold text-text-primary">
-        {L(
-          `Overganger mellom takes (${joints.length})`,
-          `Transitions between takes (${joints.length})`,
-        )}
+        {t("app-audio-transitions-panel.transitions-panel.summary.5bda875e4e75", { length: String(joints.length) })}
       </summary>
       <p className="mt-1 text-[11px] text-text-tertiary">
-        {L(
-          "Myk opp skjøtene med korte toninger og romlyd under skjøten. Romlyd fra ulike opptak er ikke nødvendigvis lik – velg hvor den hentes fra og lytt.",
-          "Soften the joins with short fades and room tone under the join. Room tone from different recordings is not necessarily the same – choose where it comes from and listen.",
-        )}
+        {t("app-audio-transitions-panel.transitions-panel.p.7c6c760284da")}
       </p>
       <ul className="mt-2 flex flex-col gap-2">
         {joints.map((j) => (
@@ -122,10 +117,7 @@ function JointRow({
       const c = list[0];
       if (!c) {
         setMsg(
-          L(
-            "Fant ingen egnet romlyd i det valgte opptaket. Velg et annet opptak eller en romlydfil.",
-            "No suitable room tone was found in the chosen recording. Choose another recording or a room tone file.",
-          ),
+          t("app-audio-transitions-panel.apply.set-msg.f66e4a07eed5"),
         );
       } else
         room = {
@@ -146,13 +138,10 @@ function JointRow({
       data-testid="audio-transition"
     >
       <span className="self-center text-text-primary">
-        {L(
-          `Skjøt ved ${sec(j.atMs)} s: ${takeLabel(j.beforeVersionId)} → ${takeLabel(j.afterVersionId)}`,
-          `Join at ${sec(j.atMs)} s: ${takeLabel(j.beforeVersionId)} → ${takeLabel(j.afterVersionId)}`,
-        )}
+        {t("app-audio-transitions-panel.joint-row.span.b7816432a068", { value1: String(sec(j.atMs)), value2: String(takeLabel(j.beforeVersionId)), value3: String(takeLabel(j.afterVersionId)) })}
       </span>
       <label className="flex flex-col gap-0.5">
-        {L("Toning (ms)", "Fade (ms)")}
+        {t("app-audio-transitions-panel.joint-row.label.6abcbd23d78c")}
         <input
           value={fade}
           inputMode="numeric"
@@ -173,10 +162,10 @@ function JointRow({
           }}
           data-testid="audio-transition-room"
         />
-        {L("Romlyd under skjøten", "Room tone under the join")}
+        {t("app-audio-transitions-panel.joint-row.label.0b7b57238aab")}
       </label>
       <label className="flex flex-col gap-0.5">
-        {L("Romlyd fra", "Room tone from")}
+        {t("app-audio-transitions-panel.joint-row.label.909a747f1ca6")}
         <select
           value={source}
           disabled={!roomOn}
@@ -188,20 +177,14 @@ function JointRow({
           data-testid="audio-transition-source"
         >
           <option value={j.afterVersionId}>
-            {L(
-              `Opptaket etter (${takeLabel(j.afterVersionId)})`,
-              `The recording after (${takeLabel(j.afterVersionId)})`,
-            )}
+            {t("app-audio-transitions-panel.joint-row.option.09f2dcf361a0", { value1: String(takeLabel(j.afterVersionId)) })}
           </option>
           <option value={j.beforeVersionId}>
-            {L(
-              `Opptaket før (${takeLabel(j.beforeVersionId)})`,
-              `The recording before (${takeLabel(j.beforeVersionId)})`,
-            )}
+            {t("app-audio-transitions-panel.joint-row.option.e9ae67f12bfc", { value1: String(takeLabel(j.beforeVersionId)) })}
           </option>
           {roomFiles.map((f) => (
             <option key={f.versionId} value={f.versionId}>
-              {L(`Romlydfil: ${f.label}`, `Room tone file: ${f.label}`)}
+              {t("app-audio-transitions-panel.joint-row.option.3fe523094404", { label: String(f.label) })}
             </option>
           ))}
         </select>
@@ -218,7 +201,7 @@ function JointRow({
         data-testid="audio-transition-preview"
       >
         <Play className="size-3.5" aria-hidden />
-        {L("Lytt", "Listen")}
+        {t("app-audio-transitions-panel.joint-row.button.0f45557b0ed7")}
       </Button>
       {msg ? (
         <span className="basis-full text-accent-warm" role="status">

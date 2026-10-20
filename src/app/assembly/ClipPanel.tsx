@@ -62,6 +62,7 @@ import { CompareVersionsDialog } from "./CompareVersionsDialog";
 import { ContentSyncFlag } from "./ContentSyncFlag";
 import { useContentSync } from "./use-content-sync";
 import type { Commands } from "@/app/project/use-commands";
+import { t as tk } from "@/core/i18n/keyed";
 
 const label = "text-[11px] font-medium uppercase tracking-wider text-text-tertiary";
 
@@ -162,8 +163,8 @@ export function ClipPanel({
     return (
       <p className="p-3 text-[13px] text-text-tertiary">
         {clipCount === 0
-          ? L("Ingen aktive scener.", "No active scenes.")
-          : L("Velg en scene i tidslinjen.", "Select a scene in the timeline.")}
+          ? tk("app-assembly-clip-panel.clip-panel.p.94ed7f145a1c")
+          : tk("app-assembly-clip-panel.clip-panel.p.d72078209662")}
       </p>
     );
   const seconds = Math.round(framesToSeconds(clip.durationFrames, fps) * 100) / 100;
@@ -192,7 +193,7 @@ export function ClipPanel({
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
       <section
-        aria-label={L("Valgt scene", "Selected scene")}
+        aria-label={tk("app-assembly-clip-panel.clip-panel.aria-label.65d01ec7c46a")}
         className="flex flex-col gap-2 border-b border-border p-3"
       >
         <div className="-mx-3 group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
@@ -200,7 +201,7 @@ export function ClipPanel({
             {clip.productionNumber ?? "–"}
           </span>
           <h2 className="min-w-0 truncate text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-            {formatHeading(clip.heading) || L("Uten overskrift", "Untitled")}
+            {formatHeading(clip.heading) || tk("app-assembly-clip-panel.clip-panel.h2.6200b131dc8b")}
           </h2>
           <span className="ml-auto self-center">
             <ContentSyncFlag
@@ -214,20 +215,20 @@ export function ClipPanel({
           </span>
         </div>
         <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1.5 text-xs">
-          <dt className="text-text-tertiary">{L("Materiale", "Material")}</dt>
+          <dt className="text-text-tertiary">{tk("app-assembly-clip-panel.clip-panel.dt.c102c4a446e0")}</dt>
           <dd className="flex items-center gap-1.5 text-text-primary">
             {clip.source === "film" ? (
               <span className="flex min-w-0 items-center gap-1.5">
                 <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
                 <span className="truncate" title={clip.take?.media?.fileName}>
-                  {L("Ferdig film –", "Finished film –")}{" "}
-                  {clip.take?.media?.fileName ?? L("importert", "imported")}
+                  {tk("app-assembly-clip-panel.clip-panel.span.fccdc9c61be2")}{" "}
+                  {clip.take?.media?.fileName ?? tk("app-assembly-clip-panel.clip-panel.span.65afc9f67eed")}
                 </span>
               </span>
             ) : placeholder ? (
               <>
                 <Clapperboard className="size-3.5 text-text-tertiary" aria-hidden />
-                {L("Tittelkort (ingen 2D-scene ennå)", "Title card (no 2D scene yet)")}
+                {tk("app-assembly-clip-panel.clip-panel.dd.743591669634")}
               </>
             ) : (
               <>
@@ -236,9 +237,9 @@ export function ClipPanel({
               </>
             )}
           </dd>
-          <dt className="text-text-tertiary">{L("Starter", "Starts")}</dt>
+          <dt className="text-text-tertiary">{tk("app-assembly-clip-panel.clip-panel.dt.4d157383d3de")}</dt>
           <dd className="font-mono text-text-primary">{formatTimecode(clip.startFrame, fps)}</dd>
-          <dt className="self-center text-text-tertiary">{L("Lengde", "Length")}</dt>
+          <dt className="self-center text-text-tertiary">{tk("app-assembly-clip-panel.clip-panel.dt.08069689c8ca")}</dt>
           <dd className="flex flex-wrap items-center gap-1.5">
             {film ? (
               <span className="text-text-secondary">
@@ -246,8 +247,8 @@ export function ClipPanel({
                 <span className="text-text-tertiary">
                   (
                   {clip.edited
-                    ? L("summen av delene", "the sum of the parts")
-                    : L("filmens lengde", "the film's length")}
+                    ? tk("app-assembly-clip-panel.clip-panel.span.d7a6a6275f73")
+                    : tk("app-assembly-clip-panel.clip-panel.span.7d096b2cb640")}
                   )
                 </span>
               </span>
@@ -257,8 +258,8 @@ export function ClipPanel({
                 <span className="not-italic text-text-tertiary">
                   (
                   {clip.durationKind === "planned"
-                    ? L("planlagt", "planned")
-                    : L("beregnet fra manus", "estimated from the script")}
+                    ? tk("app-assembly-clip-panel.clip-panel.span.ff2e511cab3c")
+                    : tk("app-assembly-clip-panel.clip-panel.span.d6e5d96dd1c1")}
                   )
                 </span>
               </span>
@@ -267,7 +268,7 @@ export function ClipPanel({
                 <input
                   type="number"
                   inputMode="decimal"
-                  aria-label={L("Lengde i sekunder", "Length in seconds")}
+                  aria-label={tk("app-assembly-clip-panel.clip-panel.aria-label.e679b66c91ef")}
                   step={0.5}
                   min={MIN_DURATION_SECONDS}
                   max={MAX_DURATION_SECONDS}
@@ -288,23 +289,20 @@ export function ClipPanel({
                 <span className="text-text-tertiary">s</span>
                 {clip.durationKind === "estimate" ? (
                   <span className="text-text-tertiary">
-                    {L("(beregnet fra manus)", "(estimated from the script)")}
+                    {tk("app-assembly-clip-panel.clip-panel.span.3f20cdbe8dd4")}
                   </span>
                 ) : clip.durationKind === "planned" ? (
                   <span className="text-text-tertiary">
-                    {L("(planlagt på prosjektoversikten)", "(planned on the project overview)")}
+                    {tk("app-assembly-clip-panel.clip-panel.span.22b6933a77ce")}
                   </span>
                 ) : editable ? (
                   <button
                     type="button"
                     onClick={onEstimate}
                     className="rounded-sm px-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                    title={L(
-                      "Bruk lengden som er beregnet fra manuset",
-                      "Use the length estimated from the script",
-                    )}
+                    title={tk("app-assembly-clip-panel.clip-panel.title.b04a05937055")}
                   >
-                    {L("Fra manus", "From script")}
+                    {tk("app-assembly-clip-panel.clip-panel.button.3a2b98b43bd3")}
                   </button>
                 ) : null}
               </>
@@ -315,7 +313,7 @@ export function ClipPanel({
           {placeholder && editable ? (
             <Button size="sm" variant="secondary" onClick={onCreateComposition}>
               <Plus />
-              {L("Lag 2D-scene", "Create 2D scene")}
+              {tk("app-assembly-clip-panel.clip-panel.button.49253a9670dd")}
             </Button>
           ) : null}
           <Button size="sm" variant="secondary" asChild>
@@ -325,7 +323,7 @@ export function ClipPanel({
               search={{ scene: clip.occurrenceId }}
             >
               <Layers />
-              {L("Åpne i sceneeditoren", "Open in scene editor")}
+              {tk("app-assembly-clip-panel.clip-panel.link.36e0fe403371")}
             </Link>
           </Button>
           <Button size="sm" variant="ghost" asChild>
@@ -336,13 +334,10 @@ export function ClipPanel({
                 scene: clip.occurrenceId,
                 ...(hereBlock ? { blokk: hereBlock } : {}),
               }}
-              title={L(
-                "Åpne manuset med replikken eller handlingen under avspillingshodet valgt",
-                "Open the script with the line or action under the playhead selected",
-              )}
+              title={tk("app-assembly-clip-panel.clip-panel.title.a68b03ba85a3")}
             >
               <FileText />
-              {L("Vis i manus", "Show in script")}
+              {tk("app-assembly-clip-panel.clip-panel.link.b929ec96f50e")}
             </Link>
           </Button>
           {onGenerateScene ? (
@@ -350,13 +345,10 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onGenerateScene}
-              title={L(
-                "Les og forbered beskrivelsene for AI-video av scenen",
-                "Read and prepare the descriptions for AI video of the scene",
-              )}
+              title={tk("app-assembly-clip-panel.clip-panel.title.8256856243d6")}
             >
               <AiGlyph />
-              {L("Generer scene …", "Generate scene …")}
+              {tk("app-assembly-clip-panel.clip-panel.button.c3ab4b386090")}
             </Button>
           ) : null}
           {onAiDialogue ? (
@@ -364,13 +356,10 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onAiDialogue}
-              title={L(
-                "Les inn replikkene med AI-stemmer og legg dem på dialogsporet",
-                "Read the lines with AI voices and add them to the dialogue track",
-              )}
+              title={tk("app-assembly-clip-panel.clip-panel.title.d0c5cb7ec4aa")}
             >
               <Mic />
-              {L("Dialog med AI-stemmer …", "Dialogue with AI voices …")}
+              {tk("app-assembly-clip-panel.clip-panel.button.d8a66bd8e7ba")}
             </Button>
           ) : null}
           {editable ? (
@@ -378,13 +367,10 @@ export function ClipPanel({
               size="sm"
               variant="ghost"
               onClick={onDeactivate}
-              title={L(
-                "Tar scenen ut av filmen og manuset. Den slettes ikke og kan aktiveres igjen i manuset.",
-                "Takes the scene out of the film and the script. It is not deleted and can be activated again in the script.",
-              )}
+              title={tk("app-assembly-clip-panel.clip-panel.title.db8196f200d7")}
             >
               <EyeOff />
-              {L("Deaktiver", "Deactivate")}
+              {tk("app-assembly-clip-panel.clip-panel.button.111bfe616bd3")}
             </Button>
           ) : null}
         </div>
@@ -435,11 +421,11 @@ export function ClipPanel({
       />
 
       <section
-        aria-label={L("Manus for scenen", "Script for the scene")}
+        aria-label={tk("app-assembly-clip-panel.clip-panel.aria-label.6d6531c99186")}
         className="flex min-h-[280px] flex-1 flex-col"
       >
         <div className="group flex h-8 shrink-0 items-center gap-2 border-b border-border bg-surface-2 px-2">
-          <h2 className={label + " flex h-8 shrink-0 items-center"}>{L("Manus", "Script")}</h2>
+          <h2 className={label + " flex h-8 shrink-0 items-center"}>{tk("app-assembly-clip-panel.clip-panel.h2.898787411427")}</h2>
           {editable ? (
             <button
               type="button"
@@ -459,23 +445,17 @@ export function ClipPanel({
                   ? "bg-accent-warm/20 text-text-primary ring-1 ring-accent-warm"
                   : "text-text-secondary hover:bg-surface-3 hover:text-text-primary")
               }
-              title={L(
-                "Synk replikker: spill av, og trykk T hver gang replikken eller handlingen som står for tur, begynner. Klikk på en blokk for å begynne der.",
-                "Sync lines: play, and press T each time the line or action that is up next begins. Click a block to start there.",
-              )}
+              title={tk("app-assembly-clip-panel.clip-panel.title.959168d85247")}
             >
               <Timer className="size-3" aria-hidden />
               {sync && sync.occurrenceId === clip.occurrenceId
-                ? L("Synker (T)", "Syncing (T)")
-                : L("Synk replikker", "Sync lines")}
+                ? tk("app-assembly-clip-panel.clip-panel.button.69a63abc2582")
+                : tk("app-assembly-clip-panel.clip-panel.button.b3bb2ed5620c")}
             </button>
           ) : null}
           <label
             className="ml-auto flex items-center gap-1.5 text-xs text-text-secondary"
-            title={L(
-              "Manuset viser scenen under avspillingshodet",
-              "The script shows the scene under the playhead",
-            )}
+            title={tk("app-assembly-clip-panel.clip-panel.title.0bebd92f1a31")}
           >
             <input
               type="checkbox"
@@ -483,7 +463,7 @@ export function ClipPanel({
               onChange={(e) => onFollowChange(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            {L("Følg avspillingen", "Follow playback")}
+            {tk("app-assembly-clip-panel.clip-panel.label.990f9f298512")}
           </label>
         </div>
         <SceneText
@@ -560,13 +540,13 @@ function SceneText({
         type="button"
         onClick={() => onSeek(clip.startFrame)}
         className="mb-2 block text-left font-bold uppercase hover:text-accent-brand"
-        title={L("Gå til starten av scenen", "Go to the start of the scene")}
+        title={tk("app-assembly-clip-panel.scene-text.title.d7c315795777")}
       >
         {formatHeading(clip.heading)}
       </button>
       {blocks.length === 0 ? (
         <p className="text-text-tertiary">
-          {L("Scenen har ingen tekst.", "The scene has no text.")}
+          {tk("app-assembly-clip-panel.scene-text.p.26d0602a123e")}
         </p>
       ) : (
         blocks.map((b) => {
@@ -662,10 +642,10 @@ function Block({
   const sec = (f: number) => `${(Math.floor((f / fps) * 10) / 10).toLocaleString(locale())} s`;
   const how =
     span.kind === "time"
-      ? L("satt tid", "set time")
+      ? tk("app-assembly-clip-panel.how.message.c861a7564fdb")
       : span.kind === "linked"
-        ? L("fra lydklippet", "from the audio clip")
-        : L("beregnet", "estimated");
+        ? tk("app-assembly-clip-panel.how.message.41a9c95c3d6e")
+        : tk("app-assembly-clip-panel.how.message.04f5bbd36a1c");
   return (
     <div className={"group relative " + (syncing ? "rounded-sm ring-1 ring-accent-warm" : "")}>
       <p
@@ -679,13 +659,10 @@ function Block({
             onSeek(span.startFrame);
           }
         }}
-        title={`${L("Gå hit i filmen", "Go to this point in the film")} (${sec(span.startFrame)}, ${how})${
+        title={`${tk("app-assembly-clip-panel.block.title.4a8eedcf67d9")} (${sec(span.startFrame)}, ${how})${
           span.uncovered
             ? "\n" +
-              L(
-                "Tidskoblingen ligger etter slutten av klippet – ikke dekket av filmen",
-                "The time link is after the end of the clip – not covered by the film",
-              )
+              tk("app-assembly-clip-panel.block.title.14023ffc98cc")
             : ""
         }`}
         aria-current={active ? "true" : undefined}
@@ -702,7 +679,7 @@ function Block({
         <div className="-mt-0.5 flex flex-wrap items-center justify-end gap-1 font-sans text-[11px]">
           {syncing ? (
             <span className="rounded-sm bg-accent-warm/20 px-1 text-text-primary">
-              {L("neste: T", "next: T")}
+              {tk("app-assembly-clip-panel.block.span.47e6f755ad7f")}
             </span>
           ) : null}
           {links.map((l) => (
@@ -716,11 +693,8 @@ function Block({
               }
               title={
                 l.layerId
-                  ? `${L("Hendelse i 2D-scenen", "Event in the 2D scene")}: ${layerName(l.layerId) ?? L("lag", "layer")} (${L("tid i 2D-scenen", "time in the 2D scene")})${linkFrame(l) === null ? ` – ${L("kuttet bort i klippet", "cut from the clip")}` : ""}`
-                  : L(
-                      "Tidskobling (tid fra scenens begynnelse)",
-                      "Time link (time from the start of the scene)",
-                    )
+                  ? `${tk("app-assembly-clip-panel.block.title.5535abfd482e")}: ${layerName(l.layerId) ?? tk("app-assembly-clip-panel.block.title.c77bf3fa5b69")} (${tk("app-assembly-clip-panel.block.title.1704b616f3f7")})${linkFrame(l) === null ? ` – ${tk("app-assembly-clip-panel.block.title.d13c41b8b7ef")}` : ""}`
+                  : tk("app-assembly-clip-panel.block.title.5e70c7cb41c5")
               }
             >
               <button
@@ -732,13 +706,13 @@ function Block({
                 className="hover:text-text-primary"
               >
                 ⏱ {(Math.round(l.startMs / 100) / 10).toLocaleString(locale())} s
-                {l.layerId ? ` · ${layerName(l.layerId) ?? L("lag", "layer")}` : ""}
+                {l.layerId ? ` · ${layerName(l.layerId) ?? tk("app-assembly-clip-panel.block.button.c77bf3fa5b69")}` : ""}
               </button>
               {linkable ? (
                 <button
                   type="button"
                   onClick={() => onRemoveLink(l.id)}
-                  aria-label={L("Fjern tidskobling", "Remove time link")}
+                  aria-label={tk("app-assembly-clip-panel.block.aria-label.3183c55f251b")}
                   className="px-0.5 hover:text-status-danger"
                 >
                   ×
@@ -754,24 +728,18 @@ function Block({
                 className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                 title={
                   links.length
-                    ? L(
-                        "Flytt tidskoblingen til avspillingshodet",
-                        "Move the time link to the playhead",
-                      )
-                    : L("Koble blokken til avspillingshodet", "Link the block to the playhead")
+                    ? tk("app-assembly-clip-panel.block.title.1be66caeea35")
+                    : tk("app-assembly-clip-panel.block.title.cd90e560278b")
                 }
               >
-                ⏱ {links.length ? L("Flytt hit", "Move here") : L("Sett tid her", "Set time here")}
+                ⏱ {links.length ? tk("app-assembly-clip-panel.block.button.3ede03278d27") : tk("app-assembly-clip-panel.block.button.63568e4ef97b")}
               </button>
               {links.length ? (
                 <button
                   type="button"
                   onClick={() => onLink("add")}
                   className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
-                  title={L(
-                    "Legg til et tidsrom til (en replikk kan høres flere ganger)",
-                    "Add another time (a line can be heard more than once)",
-                  )}
+                  title={tk("app-assembly-clip-panel.block.title.3a3b363b8abb")}
                 >
                   + tid
                 </button>
@@ -871,39 +839,33 @@ function Versions({
     on ? (
       <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-status-success">
         <Check className="size-3" aria-hidden />
-        {L("I bruk", "In use")}
+        {tk("app-assembly-clip-panel.use.span.649ee126fc4e")}
       </span>
     ) : editable ? (
       <button
         type="button"
         onClick={() => onUseTake(id)}
         className="shrink-0 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-        aria-label={`${L("Bruk", "Use")} ${name}`}
+        aria-label={`${tk("app-assembly-clip-panel.use.aria-label.e17d76024cd1")} ${name}`}
       >
-        {L("Bruk denne", "Use this")}
+        {tk("app-assembly-clip-panel.use.button.d95b06a1ef34")}
       </button>
     ) : null;
 
   return (
     <section
-      aria-label={L("Versjoner av scenen", "Versions of the scene")}
+      aria-label={tk("app-assembly-clip-panel.versions.aria-label.785053120649")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
-      <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{L("Versjoner av scenen", "Versions of the scene")}</h2>
+      <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>{tk("app-assembly-clip-panel.versions.h2.785053120649")}</h2>
       {clip.inheritedFrom ? (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Film og klipping kommer fra hovedfilmen (scenen er delt). Velger eller klipper du noe her, får spinoffen sitt eget; hovedfilmen endres ikke.",
-            "Film and cutting come from the main film (the scene is shared). If you choose or cut something here, the spin-off gets its own; the main film is not changed.",
-          )}
+          {tk("app-assembly-clip-panel.versions.p.68f4671c4e31")}
         </p>
       ) : null}
       {clip.edited ? (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele versjonen.",
-            "The scene is cut together from parts (see “Cut”). “Use this” starts again with the whole version.",
-          )}
+          {tk("app-assembly-clip-panel.versions.p.7c0eec48c55d")}
         </p>
       ) : null}
       <div className={row(activeId === null)}>
@@ -914,7 +876,7 @@ function Versions({
         )}
         <span className="min-w-0 flex-1 truncate text-text-primary">
           Animatic{" "}
-          {clip.compositionId ? L("(2D-scene)", "(2D scene)") : L("(tittelkort)", "(title card)")}
+          {clip.compositionId ? tk("app-assembly-clip-panel.versions.span.dcc8938bfd13") : tk("app-assembly-clip-panel.versions.span.1bf589db4412")}
         </span>
         {use(activeId === null, null, "animatic")}
       </div>
@@ -931,18 +893,18 @@ function Versions({
       {films.map((t) => (
         <FilmRow key={t.id} take={t} fps={fps.num / fps.den} className={row(activeId === t.id)}>
           <select
-            aria-label={`Status for ${t.media?.fileName ?? L("filmen", "the film")}`}
+            aria-label={`Status for ${t.media?.fileName ?? tk("app-assembly-clip-panel.versions.aria-label.014bb29ad9fe")}`}
             value={t.status}
             disabled={!editable}
             onChange={(e) => onTakeStatus(t.id, e.target.value as TakeStatus)}
             className="h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
-            title={L("Status for filmen", "Status for the film")}
+            title={tk("app-assembly-clip-panel.versions.title.d036abd45983")}
           >
-            <option value="reference">{L("Referanse", "Reference")}</option>
-            <option value="in_progress">{L("Under arbeid", "In progress")}</option>
-            <option value="approved">{L("Godkjent", "Approved")}</option>
+            <option value="reference">{tk("app-assembly-clip-panel.versions.option.b2001a1f41e2")}</option>
+            <option value="in_progress">{tk("app-assembly-clip-panel.versions.option.6fcd11e727b5")}</option>
+            <option value="approved">{tk("app-assembly-clip-panel.versions.option.910806eb14b2")}</option>
           </select>
-          {use(activeId === t.id, t.id, t.media?.fileName ?? L("filmen", "the film"))}
+          {use(activeId === t.id, t.id, t.media?.fileName ?? tk("app-assembly-clip-panel.versions.use.014bb29ad9fe"))}
         </FilmRow>
       ))}
       {films.map((t) => (
@@ -964,10 +926,10 @@ function Versions({
             className="flex items-center gap-2 pl-6 text-[11px] text-text-tertiary"
           >
             <span className="min-w-0 truncate">
-              {L("Lyden i", "The audio in")} {t.media?.fileName ?? L("filmen", "the film")}
+              {tk("app-assembly-clip-panel.versions.span.7b455c5c63ce")} {t.media?.fileName ?? tk("app-assembly-clip-panel.versions.span.014bb29ad9fe")}
             </span>
             <select
-              aria-label={`${L("Lyden i", "The audio in")} ${t.media?.fileName ?? L("filmen", "the film")}`}
+              aria-label={`${tk("app-assembly-clip-panel.versions.aria-label.7b455c5c63ce")} ${t.media?.fileName ?? tk("app-assembly-clip-panel.versions.aria-label.014bb29ad9fe.2")}`}
               value={t.audioLanguage === "nb" ? "" : (t.audioLanguage ?? "")}
               disabled={!editable || !run}
               onChange={(e) =>
@@ -977,18 +939,15 @@ function Versions({
                     takeId: t.id,
                     audioLanguage: e.target.value || null,
                   },
-                  L("Endre dialog i filmlyden", "Change dialogue in the film audio"),
+                  tk("app-assembly-clip-panel.versions.run.d78aa13a6ce9"),
                 )
               }
               className="ml-auto h-5 shrink-0 rounded-sm border border-border-control bg-surface-3 px-0.5 text-[11px] text-text-secondary disabled:opacity-50"
-              title={L(
-                "Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon.",
-                "Is the dialogue mixed into the film audio? Then it cannot be fully replaced in another language version.",
-              )}
+              title={tk("app-assembly-clip-panel.versions.title.759f19ac4327")}
             >
-              <option value="">{L("Med norsk dialog", "With Norwegian dialogue")}</option>
-              <option value="en">{L("Med engelsk dialog", "With English dialogue")}</option>
-              <option value="none">{L("Bare musikk og effekter", "Music and effects only")}</option>
+              <option value="">{tk("app-assembly-clip-panel.versions.option.0c6433cf90a7")}</option>
+              <option value="en">{tk("app-assembly-clip-panel.versions.option.000514f9f2ed")}</option>
+              <option value="none">{tk("app-assembly-clip-panel.versions.option.caad573e2191")}</option>
             </select>
           </label>
         ))}
@@ -999,12 +958,9 @@ function Versions({
             variant="secondary"
             className="self-start"
             onClick={() => setCompareOpen(true)}
-            title={L(
-              "Se to versjoner av scenen side ved side, spilt av samtidig",
-              "See two versions of the scene side by side, played at the same time",
-            )}
+            title={tk("app-assembly-clip-panel.versions.title.1d30d49ae65b")}
           >
-            <Columns2 /> {L("Sammenlign versjoner …", "Compare versions …")}
+            <Columns2 /> {tk("app-assembly-clip-panel.versions.button.bd3d3aae8322")}
           </Button>
           {compareOpen ? (
             <CompareVersionsDialog
@@ -1026,7 +982,7 @@ function Versions({
             type="file"
             accept={FILM_ACCEPT}
             className="sr-only"
-            aria-label={L("Velg filmfil", "Choose film file")}
+            aria-label={tk("app-assembly-clip-panel.versions.aria-label.c44e135c07c7")}
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) void pick(f);
@@ -1039,12 +995,9 @@ function Versions({
                 variant="secondary"
                 className="self-start"
                 onClick={() => setStillOpen(true)}
-                title={L(
-                  "Vis et bilde fra ressursbiblioteket i en valgt tid (hele scenen eller som en ny del)",
-                  "Show an image from the asset library at a chosen time (the whole scene or as a new part)",
-                )}
+                title={tk("app-assembly-clip-panel.versions.title.f0618822bbd3")}
               >
-                <ImageIcon /> {L("Stillbilde fra biblioteket …", "Still from the library …")}
+                <ImageIcon /> {tk("app-assembly-clip-panel.versions.button.e98a536e8bd8")}
               </Button>
               {stillOpen ? (
                 <StillPickerDialog
@@ -1063,15 +1016,12 @@ function Versions({
             className="self-start"
             disabled={busy}
             onClick={() => fileRef.current?.click()}
-            title={L(
-              "Last opp ferdig film for scenen (MP4, MOV eller WebM). Filen lagres uendret, og den tas i bruk med én gang.",
-              "Upload a finished film for the scene (MP4, MOV or WebM). The file is stored unchanged and is used straight away.",
-            )}
+            title={tk("app-assembly-clip-panel.versions.title.c0ca1b4c4be5")}
           >
             {busy ? <Loader2 className="animate-spin" /> : <Upload />}
             {busy
-              ? L("Importerer …", "Importing …")
-              : L("Importer ferdig film …", "Import finished film …")}
+              ? tk("app-assembly-clip-panel.versions.button.9415560acd9f")
+              : tk("app-assembly-clip-panel.versions.button.67949c564705")}
           </Button>
         </>
       ) : null}
@@ -1099,13 +1049,10 @@ function FilmRow({
   const facts = [
     take.durationFrames ? formatSeconds(take.durationFrames / fps) : null,
     m?.width && m.height ? `${m.width}×${m.height}` : null,
-    m?.fps ? `${Math.round(m.fps * 100) / 100} ${L("b/s", "fps")}` : null,
-    m && !m.hasAudio ? L("uten lyd", "no audio") : null,
+    m?.fps ? `${Math.round(m.fps * 100) / 100} ${tk("app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.9ccb5f85fc08")}` : null,
+    m && !m.hasAudio ? tk("app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.19c7e8f8fedd") : null,
     m && m.hasAudio && m.byteSize > FILM_AUDIO_MAX_BYTES
-      ? L(
-          "lyden spilles ikke (filen er over 400 MB)",
-          "the audio is not played (the file is over 400 MB)",
-        )
+      ? tk("app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.f3a2dfb92cbf")
       : null,
   ].filter(Boolean);
   const off = m?.fps && Math.abs(m.fps - fps) > 0.05;
@@ -1114,12 +1061,12 @@ function FilmRow({
       <Film className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-text-primary" title={m?.fileName}>
-          {m?.fileName ?? L("Importert film", "Imported film")}
+          {m?.fileName ?? tk("app-assembly-clip-panel.film-row.span.be01fe50a25c")}
         </span>
         <span className="block truncate text-[11px] text-text-tertiary">
           {facts.join(" · ")}
           {off
-            ? ` · ${L("prosjektet har", "the project has")} ${Math.round(fps * 100) / 100} ${L("b/s", "fps")}`
+            ? ` · ${tk("app-assembly-clip-panel.film-row.span.9c61c804f374")} ${Math.round(fps * 100) / 100} ${tk("app-assembly-clip-panel.film-row.span.7f409ef2ef8a")}`
             : ""}
         </span>
       </span>
@@ -1147,13 +1094,13 @@ function TransitionRow({
   const first = clip.startFrame === 0;
   return (
     <section
-      aria-label={L("Overgang inn i scenen", "Transition into the scene")}
+      aria-label={tk("app-assembly-clip-panel.transition-row.aria-label.8dc4d6bbde87")}
       className="flex flex-col gap-1.5 border-b border-border p-3"
     >
       <h2 className={label + " -mx-3 flex h-8 shrink-0 items-center border-b border-border bg-surface-2 px-2"}>
         {first
-          ? L("Starten av filmen", "Start of the film")
-          : L("Overgang inn i scenen", "Transition into the scene")}
+          ? tk("app-assembly-clip-panel.transition-row.h2.fe87ad95e68e")
+          : tk("app-assembly-clip-panel.transition-row.h2.8dc4d6bbde87")}
       </h2>
       <TransitionEditor
         idPrefix={`overgang-${clip.occurrenceId}`}
@@ -1166,10 +1113,7 @@ function TransitionRow({
       />
       <label
         className="mt-1 flex items-center gap-1.5 text-xs text-text-secondary"
-        title={L(
-          "Scenen vises og eksporteres i svart-hvitt",
-          "The scene is shown and exported in black and white",
-        )}
+        title={tk("app-assembly-clip-panel.transition-row.title.d917d64007d8")}
       >
         <input
           type="checkbox"
@@ -1178,7 +1122,7 @@ function TransitionRow({
           onChange={(e) => onMonochrome(e.target.checked)}
           className="size-3.5 accent-[var(--accent-brand)]"
         />
-        {L("Svart-hvitt (også i eksporten)", "Black and white (also in the export)")}
+        {tk("app-assembly-clip-panel.transition-row.label.d7a0e0606f89")}
       </label>
     </section>
   );
@@ -1220,7 +1164,7 @@ function CoverageRow({
               ? null
               : { startBlockId, endBlockId },
         } as never,
-        L("Manusdekning for filmen", "Script coverage for the film"),
+        tk("app-assembly-clip-panel.set.run.67b9a4484e0a"),
       ) ?? null,
     );
   const start = cov?.startBlockId ?? blocks[0]!.id;
@@ -1228,10 +1172,10 @@ function CoverageRow({
   return (
     <div className="flex flex-col gap-0.5 pl-6 text-[11px] text-text-tertiary">
       <span>
-        {take.media?.fileName ?? L("Filmen", "The film")}{" "}
+        {take.media?.fileName ?? tk("app-assembly-clip-panel.coverage-row.span.d5c18fe57923")}{" "}
         {cov
-          ? L("dekker fra–til", "covers from–to")
-          : L("dekker hele scenen", "covers the whole scene")}
+          ? tk("app-assembly-clip-panel.coverage-row.span.82424be89c7d")
+          : tk("app-assembly-clip-panel.coverage-row.span.77124bca97fd")}
       </span>
       <div className="flex gap-1">
         {(["start", "end"] as const).map((which) => (
@@ -1239,8 +1183,8 @@ function CoverageRow({
             key={which}
             aria-label={
               which === "start"
-                ? L("Første linje filmen dekker", "First line the film covers")
-                : L("Siste linje filmen dekker", "Last line the film covers")
+                ? tk("app-assembly-clip-panel.coverage-row.aria-label.2e407db99a66")
+                : tk("app-assembly-clip-panel.coverage-row.aria-label.cab80234aa8a")
             }
             value={which === "start" ? start : end}
             disabled={!editable}

@@ -51,3 +51,9 @@
 - [x] 1 761 av 1 785 tekstpar flyttet med migrate.mjs; 24 på broen (19 ulik plassholderkontrakt, 5 dynamiske) til ML2f.
 - [x] 64 px overløp med en-XA og åpen opptaksdialog rettet i verktøyraden; ingen norske tekster igjen.
 - [x] Regresjon grønn: paneler, dv2, ca1–ca8, u5, mts ×3, dv7, ml2-languages 199/199, vitest 1939/0.
+
+## B-049 ML2e – montering, lyd og eksport (20.10.2026)
+- [x] Tekstene flyttet med migrate.mjs; resten med ulik plassholderkontrakt venter på ML2f.
+- [x] SuggestionsDialog viser begrunnelser på valgt språk.
+- [x] UI_LANG=nb|en i regresjonssuitene; dec0093, dec0094 og p4 grønne på begge språk.
+- [x] Regresjon grønn: dv4, dv5, p7, ca8, ml2-languages 256/256, vitest 1939/0.

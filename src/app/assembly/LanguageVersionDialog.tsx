@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 const sec = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
@@ -85,7 +86,7 @@ export function LanguageVersionDialog({
       <DialogContent className="max-h-[90vh] max-w-[860px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {L("Språkversjon", "Language version")}: {name}
+            {t("app-assembly-language-version-dialog.language-version-dialog.dialog-title.4e5be35f5554")}: {name}
           </DialogTitle>
           <DialogDescription>
             {L(
@@ -95,15 +96,12 @@ export function LanguageVersionDialog({
           </DialogDescription>
         </DialogHeader>
         <ul
-          aria-label={L("Sammendrag", "Summary")}
+          aria-label={t("app-assembly-language-version-dialog.language-version-dialog.aria-label.0f954da47c95")}
           className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs sm:grid-cols-3"
         >
           <Summary
             ok={translated === lines}
-            text={L(
-              `${translated} av ${lines} replikker oversatt`,
-              `${translated} of ${lines} lines translated`,
-            )}
+            text={t("app-assembly-language-version-dialog.language-version-dialog.text.1b848a43a037", { translated: String(translated), lines: String(lines) })}
           />
           <Summary
             ok={voiced === lines}
@@ -138,10 +136,10 @@ export function LanguageVersionDialog({
         </ul>
         {shown.length === 0 ? (
           <p className="text-[13px] text-text-tertiary">
-            {L("Ingen scener med replikker.", "No scenes with lines.")}
+            {t("app-assembly-language-version-dialog.language-version-dialog.p.ddab29dc161e")}
           </p>
         ) : (
-          <ul aria-label={L("Scener", "Scenes")} className="flex flex-col border border-border">
+          <ul aria-label={t("app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403")} className="flex flex-col border border-border">
             {shown.map((r) => (
               <li
                 key={r.clip.occurrenceId}
@@ -153,14 +151,14 @@ export function LanguageVersionDialog({
                     {formatHeading(r.clip.heading)}
                   </span>
                   <span className="shrink-0 text-text-tertiary">
-                    {r.translated}/{r.lines} {L("oversatt", "translated")} · {r.withAudio}/{r.lines}{" "}
-                    {L("med lyd", "with audio")}
+                    {r.translated}/{r.lines} {t("app-assembly-language-version-dialog.language-version-dialog.span.464dd52d6ef2")} · {r.withAudio}/{r.lines}{" "}
+                    {t("app-assembly-language-version-dialog.language-version-dialog.span.c4c0f5bc5141")}
                   </span>
                   <Button
                     size="sm"
                     variant="ghost"
-                    aria-label={L("Gå til scenen", "Go to the scene")}
-                    title={L("Gå til scenen", "Go to the scene")}
+                    aria-label={t("app-assembly-language-version-dialog.language-version-dialog.aria-label.b028055b606b")}
+                    title={t("app-assembly-language-version-dialog.language-version-dialog.title.b028055b606b")}
                     onClick={() => onSeek(r.clip.occurrenceId, 0)}
                   >
                     <Play />
@@ -255,28 +253,19 @@ function Conflict({
       <div className="flex items-start gap-2">
         <span className="min-w-0 flex-1 text-text-primary">
           <span className="font-script">
-            {L("«", "“")}
+            {t("app-assembly-language-version-dialog.conflict.span.08ff1d68cbe0")}
             {text.length > 80 ? `${text.slice(0, 80)} …` : text}
-            {L("»", "”")}
+            {t("app-assembly-language-version-dialog.conflict.span.9251902a2c6e")}
           </span>
           <span className="block text-text-tertiary">
             {long
-              ? L(
-                  `For lang: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)} til neste replikk (${sec(c.overflowMs)} over).`,
-                  `Too long: ${sec(c.lengthMs)} against ${sec(c.windowEndMs - c.windowStartMs)} until the next line (${sec(c.overflowMs)} over).`,
-                )
-              : L(
-                  `Kort: ${sec(c.lengthMs)} mot ${sec(c.windowEndMs - c.windowStartMs)}.`,
-                  `Short: ${sec(c.lengthMs)} against ${sec(c.windowEndMs - c.windowStartMs)}.`,
-                )}{" "}
+              ? t("app-assembly-language-version-dialog.conflict.span.2fc5785d7949", { value1: String(sec(c.lengthMs)), value2: String(sec(c.windowEndMs - c.windowStartMs)), value3: String(sec(c.overflowMs)) })
+              : t("app-assembly-language-version-dialog.conflict.span.c448426fadaa", { value1: String(sec(c.lengthMs)), value2: String(sec(c.windowEndMs - c.windowStartMs)) })}{" "}
             {c.source === "audio"
-              ? L("Målt fra lydfilen.", "Measured from the audio file.")
-              : L("Beregnet fra oversettelsen.", "Calculated from the translation.")}
+              ? t("app-assembly-language-version-dialog.conflict.span.4be66f769ccb")
+              : t("app-assembly-language-version-dialog.conflict.span.9d3d12e31a30")}
             {c.windowEstimated
-              ? L(
-                  " Tiden i den norske filmen er beregnet fra manuset.",
-                  " The time in the Norwegian film is calculated from the script.",
-                )
+              ? t("app-assembly-language-version-dialog.conflict.span.6768cfc59e6d")
               : ""}
           </span>
         </span>
@@ -284,10 +273,10 @@ function Conflict({
           size="sm"
           variant="ghost"
           onClick={onSeek}
-          title={L("Gå til replikken", "Go to the line")}
+          title={t("app-assembly-language-version-dialog.conflict.title.8f142194ee1f")}
         >
           <Play />
-          {L("Vis", "Show")}
+          {t("app-assembly-language-version-dialog.conflict.button.c1d9589e5d29")}
         </Button>
       </div>
       <ul className="flex flex-col gap-0.5 text-text-secondary">
@@ -300,7 +289,7 @@ function Conflict({
                 variant="secondary"
                 onClick={() => onEarlier(sg.clipId, sg.offsetMs)}
               >
-                {L("Flytt", "Move")}
+                {t("app-assembly-language-version-dialog.conflict.button.49115bed1922")}
               </Button>
             ) : null}
           </li>

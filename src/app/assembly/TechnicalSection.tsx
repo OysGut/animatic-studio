@@ -4,6 +4,7 @@
  */
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { L, playheadRows, technicalInfo, type FilmClip, type ProjectState } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export function TechnicalSection({
   state,
@@ -19,15 +20,15 @@ export function TechnicalSection({
   const here = frame === undefined ? null : playheadRows(state, clip, frame, state.project.fps);
   return (
     <section
-      aria-label={L("Teknisk", "Technical")}
+      aria-label={t("app-assembly-technical-section.technical-section.aria-label.281d8636e0b2")}
       className="flex flex-col gap-2 border-b border-border p-3"
     >
-      <PanelHeader as="h2" className="-mx-3" title={L("Teknisk", "Technical")} />
+      <PanelHeader as="h2" className="-mx-3" title={t("app-assembly-technical-section.technical-section.title.281d8636e0b2")} />
       <Rows rows={info.scene} />
       {here ? (
         <div className="flex flex-col gap-0.5">
           <p className="text-xs font-medium text-text-secondary">
-            {L("Avspillingshodet", "Playhead")}
+            {t("app-assembly-technical-section.technical-section.p.2f8e82ad59f8")}
           </p>
           <Rows rows={here} />
         </div>

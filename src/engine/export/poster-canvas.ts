@@ -6,6 +6,7 @@
 import { CSS_FONT, L, PT_TO_MM, textWidthPt, type RenderOp } from "@/core";
 import { imagePixelNeeds, type PdfImage } from "./poster-pdf";
 import { PNG_MAX_WIDTH, encodePngStrips } from "./png-writer";
+import { t } from "@/core/i18n/keyed";
 
 type Img = CanvasImageSource & { readonly width: number; readonly height: number };
 
@@ -115,10 +116,7 @@ export async function fetchBitmap(url: string, maxW?: number, maxH?: number): Pr
   const res = await fetch(url);
   if (!res.ok)
     throw new Error(
-      L(
-        `Bildet kunne ikke hentes (${res.status})`,
-        `The image could not be fetched (${res.status})`,
-      ),
+      t("engine-export-poster-canvas.fetch-bitmap.message.da4966223fa7", { status: String(res.status) }),
     );
   const blob = await res.blob();
   const full = await createImageBitmap(blob);
@@ -138,7 +136,7 @@ export function bitmapToPdfImage(bmp: ImageBitmap): PdfImage {
   const ctx = canvas.getContext("2d");
   if (!ctx)
     throw new Error(
-      L("Bildet er for stort for nettleseren.", "The image is too large for the browser."),
+      t("engine-export-poster-canvas.bitmap-to-pdf-image.message.bb273201cb7f"),
     );
   ctx.drawImage(bmp, 0, 0);
   const data = ctx.getImageData(0, 0, bmp.width, bmp.height).data;
@@ -197,16 +195,13 @@ export async function posterPng(
 ): Promise<{ parts: Uint8Array[]; ppi: number; width: number; height: number; missing: number }> {
   const stop = () => {
     if (signal?.aborted)
-      throw new DOMException(L("Eksporten ble avbrutt", "The export was cancelled"), "AbortError");
+      throw new DOMException(t("engine-export-poster-canvas.stop.message.086facdc5373"), "AbortError");
   };
   const s = ppi / 25.4;
   const { width, height } = posterPngSize(widthMm, heightMm, ppi);
   if (width > PNG_MAX_WIDTH || height > 65_535) {
     throw new Error(
-      L(
-        "Plakaten blir for stor i denne oppløsningen. Velg en lavere oppløsning.",
-        "The poster is too large at this resolution. Choose a lower resolution.",
-      ),
+      t("engine-export-poster-canvas.poster-png.message.38f00111642f"),
     );
   }
   stop();
@@ -237,7 +232,7 @@ export async function posterPng(
   if (!ctx) {
     for (const b of images.values()) b.close();
     throw new Error(
-      L("Nettleseren kunne ikke lage bildet.", "The browser could not create the image."),
+      t("engine-export-poster-canvas.poster-png.message.06587355712b"),
     );
   }
   try {

@@ -17,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useRecordExport } from "@/app/projects/use-history-records";
+import { t } from "@/core/i18n/keyed";
 
 const control =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -72,17 +73,14 @@ export function SubtitleDialog({
     >
       <DialogContent className="max-w-[480px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("Undertekster", "Subtitles")}</DialogTitle>
+          <DialogTitle>{t("app-assembly-subtitle-dialog.subtitle-dialog.dialog-title.2111515f7053")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Replikkene med tiden de har i filmen (koblet lyd eller anslått etter tekstmengden).",
-              "The lines with the time they have in the film (linked audio, or estimated from the amount of text).",
-            )}
+            {t("app-assembly-subtitle-dialog.subtitle-dialog.dialog-description.97d5ed69a347")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-wrap gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-tertiary">
-            {L("Språk", "Language")}
+            {t("app-assembly-subtitle-dialog.subtitle-dialog.label.17abed2f6e6b")}
             <select
               value={lang}
               onChange={(e) => {
@@ -114,26 +112,23 @@ export function SubtitleDialog({
           </label>
         </div>
         <p className="text-xs text-text-secondary">
-          {L(`${result.cues.length} undertekster.`, `${result.cues.length} subtitles.`)}
+          {t("app-assembly-subtitle-dialog.subtitle-dialog.p.1a1c373f0b2b", { length: String(result.cues.length) })}
           {result.missing
-            ? L(
-                ` ${result.missing} replikker er ikke oversatt og tas ikke med.`,
-                ` ${result.missing} lines are not translated and are left out.`,
-              )
+            ? t("app-assembly-subtitle-dialog.subtitle-dialog.p.b9a54ca916b3", { missing: String(result.missing) })
             : ""}
         </p>
         {ready ? (
           <a href={ready.url} download={ready.name} className="text-xs text-accent-brand underline">
-            {L("Last ned", "Download")} {ready.name}
+            {t("app-assembly-subtitle-dialog.subtitle-dialog.a.313c6d836426")} {ready.name}
           </a>
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {L("Lukk", "Close")}
+            {t("app-assembly-subtitle-dialog.subtitle-dialog.button.34ec39da394c")}
           </Button>
           <Button onClick={download} disabled={result.cues.length === 0}>
             <Download />
-            {L("Last ned", "Download")}
+            {t("app-assembly-subtitle-dialog.subtitle-dialog.button.313c6d836426")}
           </Button>
         </DialogFooter>
       </DialogContent>

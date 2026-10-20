@@ -11,8 +11,8 @@ import { fontsReady, textSpecsOf } from "../typography/fonts";
 import type { AnimaticExportOptions } from "./animatic";
 import { FilmVideoFrames } from "./film-video";
 import { MovWriter, audioFramesFor, toSowt, type ByteSink } from "./mov";
-
 import { supportsProRes } from "./prores-support";
+import { t } from "@/core/i18n/keyed";
 export { supportsProRes };
 
 /** Free origin storage for OPFS export, or null when unknown. */
@@ -62,7 +62,7 @@ export class ProResPool {
 }
 
 function abortCheck(signal?: AbortSignal) {
-  if (signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+  if (signal?.aborted) throw new DOMException(t("engine-export-prores-export.abort-check.message.efc8245fd1eb"), "AbortError");
 }
 
 /** Guards an in-memory sink against growing past the safe limit. */
@@ -71,7 +71,7 @@ export function guardedSink(sink: ByteSink, inMemory: boolean): ByteSink {
   return { write: async (c) => {
     n += c.length;
     if (inMemory && n > PRORES_MEMORY_LIMIT)
-      throw new Error(L("ProRes-filen ble for stor for minnet. Velg et kortere utvalg eller halv størrelse.", "The ProRes file grew too large for memory. Choose a shorter selection or half size."));
+      throw new Error(t("engine-export-prores-export.write.write.faa5bf92b1a8"));
     await sink.write(c);
   } };
 }
@@ -79,7 +79,7 @@ export function guardedSink(sink: ByteSink, inMemory: boolean): ByteSink {
 /** Normal film export: ProRes 422 HQ + stereo PCM 48 kHz in MOV. */
 export async function exportProResFilm(o: AnimaticExportOptions & { readonly sink: ByteSink }): Promise<{ bytes: number; audio: boolean }> {
   const total = o.endFrame - o.startFrame;
-  if (total <= 0) throw new Error(L("Utvalget er tomt.", "The selection is empty."));
+  if (total <= 0) throw new Error(t("engine-export-prores-export.export-pro-res-film.message.f642ea62e9ff"));
   const width = Math.max(2, Math.round(o.width / 2) * 2), height = Math.max(2, Math.round(o.height / 2) * 2);
   const step = o.fps.den / o.fps.num, from = o.startFrame * step, seconds = total * step;
   const audible = o.audio ? o.audio.items.filter((it) => !o.audio!.mutedKinds?.has(it.clip.kind)) : [];
@@ -89,7 +89,7 @@ export async function exportProResFilm(o: AnimaticExportOptions & { readonly sin
   const mov = new MovWriter(guardedSink(o.sink, !st.opfs), { width, height, fps: o.fps, profile: "hq", audioRate: withAudio ? 48000 : null });
   const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
-  if (!ctx) throw new Error(L("Lerretet er ikke tilgjengelig.", "The canvas is unavailable."));
+  if (!ctx) throw new Error(t("engine-export-prores-export.export-pro-res-film.message.5af6ad7366ac"));
   await fontsReady(textSpecsOf(o.state));
   const hasFilm = o.clips.some((c) => c.parts.some((p) => p.source === "take"));
   const video = hasFilm ? new FilmVideoFrames(await import("mediabunny"), o.filmUrls ?? {}) : null;

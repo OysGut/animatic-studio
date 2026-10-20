@@ -16,6 +16,8 @@
  *   ENV_FILE=…/.env node dec0090-mobile-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { uiLang } from "./ui-lang.mjs";
+const EN = uiLang("nb") === "en";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -240,7 +242,8 @@ const check = (ok, text) => {
 };
 
 /** Ny nettleser (tomt lokalt lager) som åpner sceneeditoren. */
-async function run(name, act, { lang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+async function run(name, act, { lang: askedLang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+  const lang = uiLang(askedLang);
   const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: "dark", ...(mobile ? { isMobile: true, hasTouch: true, permissions: ["camera", "microphone"] } : { permissions: ["microphone"] }) });
   await mock(ctx);
   const page = await ctx.newPage();
@@ -289,7 +292,7 @@ const lenOf = async (page) => Number(/\(([\d.]+) s\)/.exec(await page.getByTestI
 await run(
   "e01-lydeditor",
   async (page) => {
-    await page.getByRole("button", { name: /Ta opp lyd: Opptak til «Maja – Hører du det»/ }).click();
+    await page.getByRole("button", { name: EN ? /Record audio: Recordings for “Maja – Hører du det”/ : /Ta opp lyd: Opptak til «Maja – Hører du det»/ }).click();
     await page.waitForTimeout(900);
     const dlg = page.getByTestId("audio-takes-dialog");
     // Et nytt opptak på PC, så det finnes to takes
@@ -327,7 +330,7 @@ await run(
     await ed.getByTestId("audio-editor-undo").click();
     check(Number(await block.getAttribute("data-at-ms")) === 0, "én angring gjenoppretter hele draget");
     check(await ed.getByTestId("audio-editor-undo").isDisabled(), "pekerbevegelsene opprettet ikke ekstra angresteg");
-    await ed.getByRole("button", { name: "Gjør om", exact: true }).click();
+    await ed.getByRole("button", { name: EN ? "Redo" : "Gjør om", exact: true }).click();
     check(Number(await block.getAttribute("data-at-ms")) === movedAt, "gjør om gjenoppretter draget");
     await ed.getByTestId("audio-editor-undo").click();
     // Sett inn det nye opptaket etter
@@ -340,7 +343,7 @@ await run(
     await ed.getByTestId("audio-editor-undo").click();
     await page.waitForTimeout(200);
     check(Math.abs((await lenOf(page)) - before) < 0.01, "angre gir den forrige lyden tilbake (REQ-0695)");
-    await ed.getByRole("button", { name: "Gjør om" }).click();
+    await ed.getByRole("button", { name: EN ? "Redo" : "Gjør om" }).click();
     await page.waitForTimeout(200);
     check(Math.abs((await lenOf(page)) - after) < 0.01, "gjør om");
     // Legg oppå
@@ -372,7 +375,7 @@ await run(
     await page.mouse.click(r.x + 2, r.y + r.height / 2);
     await ed.getByTestId("audio-editor-play").click();
     await page.waitForTimeout(400);
-    check(/Stopp/.test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
+    check((EN ? /Stop/ : /Stopp/).test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
     await ed.getByTestId("audio-editor-play").click();
     // Lagre som ny versjon: komposisjonen sendes med
     const uploadsBefore = PC.uploads;

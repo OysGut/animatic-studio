@@ -21,6 +21,7 @@ import {
   type WordAlignment,
 } from "@/core";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
 /** Millisekunder per skjermpunkt når et mellomrom eller ord dras. */
@@ -83,10 +84,7 @@ export function PauseTimingPanel({
     setMsgs(onEdit(next));
   }
 
-  const cannot = L(
-    "Pausen kan ikke endres her (ordene mangler tid eller overlapper).",
-    "The pause cannot be changed here (the words lack timing or overlap).",
-  );
+  const cannot = t("app-audio-pause-timing-panel.cannot.message.9589b92aeb10");
 
   function changeGap(afterWord: number, byMs: number) {
     const cur = pauseFor(comp, afterWord)?.deltaMs ?? 0;
@@ -171,18 +169,12 @@ export function PauseTimingPanel({
                 <span
                   role="slider"
                   tabIndex={0}
-                  aria-label={L(
-                    `Pause mellom «${word(g.afterWord)}» og «${word(g.afterWord + 1)}»`,
-                    `Pause between “${word(g.afterWord)}” and “${word(g.afterWord + 1)}”`,
-                  )}
+                  aria-label={t("app-audio-pause-timing-panel.pause-timing-panel.aria-label.db6e8a38715a", { value1: String(word(g.afterWord)), value2: String(word(g.afterWord + 1)) })}
                   aria-valuemin={0}
                   aria-valuemax={60000}
                   aria-valuenow={Math.round(g.ms)}
                   aria-valuetext={`${Math.round(g.ms)} ms`}
-                  title={L(
-                    `${Math.round(g.ms)} ms – dra for lengre eller kortere pause, piltaster ±50 ms`,
-                    `${Math.round(g.ms)} ms – drag for a longer or shorter pause, arrow keys ±50 ms`,
-                  )}
+                  title={t("app-audio-pause-timing-panel.pause-timing-panel.title.8225ef09ae3e", { value1: String(Math.round(g.ms)) })}
                   onKeyDown={(e) => {
                     if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
                       e.preventDefault();
@@ -238,32 +230,26 @@ export function PauseTimingPanel({
         })}
       </p>
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Tidsredigering: avstanden viser pausene. Dra et mellomrom (eller ordet etter det) for lengre eller kortere pause. Marker flere ord og dra dem fra hverandre for å fordele tid likt. Manusteksten endres ikke.",
-          "Timing edit: the spacing shows the pauses. Drag a gap (or the word after it) for a longer or shorter pause. Mark several words and drag them apart to share time equally. The script text is not changed.",
-        )}
+        {t("app-audio-pause-timing-panel.pause-timing-panel.p.8df9c0305989")}
       </p>
 
       <div className="mt-2 flex flex-wrap items-end gap-2 text-xs text-text-secondary">
         {gapSel !== null && selGap !== null ? (
           <div className="flex flex-wrap items-end gap-2" data-testid="pause-editor">
             <span className="self-center text-text-primary">
-              {L(`Pause etter «${word(gapSel)}»`, `Pause after “${word(gapSel)}”`)}
+              {t("app-audio-pause-timing-panel.pause-timing-panel.span.f5c1fd1a04bd", { value1: String(word(gapSel)) })}
             </span>
             <MsField
-              label={L("Pause (ms)", "Pause (ms)")}
+              label={t("app-audio-pause-timing-panel.pause-timing-panel.label.b6fc0e1530f5")}
               value={Math.round(selGap)}
               onCommit={(v) => changeGap(gapSel, v - selGap)}
               testId="pause-ms"
             />
             <span className="self-center text-[11px] text-text-tertiary" data-testid="pause-delta">
-              {L(
-                `${(selected?.deltaMs ?? 0) >= 0 ? "+" : ""}${selected?.deltaMs ?? 0} ms mot opptaket`,
-                `${(selected?.deltaMs ?? 0) >= 0 ? "+" : ""}${selected?.deltaMs ?? 0} ms against the recording`,
-              )}
+              {t("app-audio-pause-timing-panel.pause-timing-panel.span.14e533343fa5", { value1: String((selected?.deltaMs ?? 0) >= 0 ? "+" : ""), value2: String(selected?.deltaMs ?? 0) })}
             </span>
             <label className="flex flex-col gap-0.5">
-              {L("Fyll", "Fill")}
+              {t("app-audio-pause-timing-panel.pause-timing-panel.label.b39369226c6b")}
               <select
                 value={fillKey(selected?.fill ?? { kind: "room" })}
                 onChange={(e) =>
@@ -272,31 +258,28 @@ export function PauseTimingPanel({
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary"
                 data-testid="pause-fill"
               >
-                <option value="room">{L("Naturlig romlyd", "Natural room tone")}</option>
-                <option value="silence">{L("Digital stillhet", "Digital silence")}</option>
+                <option value="room">{t("app-audio-pause-timing-panel.pause-timing-panel.option.438d4aebe5b4")}</option>
+                <option value="silence">{t("app-audio-pause-timing-panel.pause-timing-panel.option.7c2cc003b8e2")}</option>
                 {roomFiles.map((f) => (
                   <option key={f.versionId} value={`asset:${f.versionId}`}>
-                    {L(`Romlydfil: ${f.label}`, `Room tone file: ${f.label}`)}
+                    {t("app-audio-pause-timing-panel.pause-timing-panel.option.58b073cc8d3e", { label: String(f.label) })}
                   </option>
                 ))}
                 <option value="manual">
-                  {L("Manuelt (fyll selv)", "By hand (fill yourself)")}
+                  {t("app-audio-pause-timing-panel.pause-timing-panel.option.abb7ff6cb187")}
                 </option>
               </select>
             </label>
           </div>
         ) : (
           <span className="self-center text-[11px] text-text-tertiary">
-            {L(
-              "Klikk et mellomrom for å skrive inn pausen og velge fyll.",
-              "Click a gap to type the pause and choose the fill.",
-            )}
+            {t("app-audio-pause-timing-panel.pause-timing-panel.span.eb37fe41f318")}
           </span>
         )}
         {selWords ? (
           <div className="flex flex-wrap items-end gap-1" data-testid="pause-spread">
             <MsField
-              label={L("Mer pause i utvalget (ms)", "More pause in the selection (ms)")}
+              label={t("app-audio-pause-timing-panel.pause-timing-panel.label.fdd0b935d3e0")}
               value={Number(spreadMs) || 0}
               onCommit={(v) => setSpreadMs(String(Math.round(v)))}
               testId="pause-spread-ms"
@@ -312,7 +295,7 @@ export function PauseTimingPanel({
               }
               data-testid="pause-spread-apply"
             >
-              {L("Trekk fra hverandre", "Pull apart")}
+              {t("app-audio-pause-timing-panel.pause-timing-panel.button.2fc049d61ba4")}
             </Button>
           </div>
         ) : null}

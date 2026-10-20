@@ -23,6 +23,7 @@ import {
   type RoomSource,
   type WordAlignment,
 } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
 
@@ -115,10 +116,7 @@ export function fillRoom(
   return {
     composition: r.composition,
     messages: r.unfilled.map((u) =>
-      L(
-        `Pausen etter ord ${u.afterWord + 1}: ${u.message}`,
-        `The pause after word ${u.afterWord + 1}: ${u.message}`,
-      ),
+      tk("app-audio-room-fill.messages.r-unfilled-map.f34d6180911b", { value1: String(u.afterWord + 1), message: String(u.message) }),
     ),
   };
 }

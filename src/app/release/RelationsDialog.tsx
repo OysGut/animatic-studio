@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 const control =
   "h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
@@ -108,7 +109,7 @@ export function RelationsDialog({
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [kind, setKind] = useState<RelationKind>("friendship");
-  const name = (id: string) => state.assets[id]?.name ?? L("(ukjent)", "(unknown)");
+  const name = (id: string) => state.assets[id]?.name ?? t("app-release-relations-dialog.name.message.b615963035e7");
 
   const add = (
     items: {
@@ -164,7 +165,7 @@ export function RelationsDialog({
             },
           ],
         },
-        L("Endre relasjon", "Change relation"),
+        t("app-release-relations-dialog.update.cmds-run.87f973d97d98"),
         `relation:${r.id}`,
       ),
     );
@@ -173,12 +174,9 @@ export function RelationsDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{L("Relasjoner", "Relations")}</DialogTitle>
+          <DialogTitle>{t("app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Hvordan karakterene henger sammen. Godkjente relasjoner vises som linjer i karakterkartet. Forslagene kommer fra manuset og lagres bare når du godkjenner dem.",
-              "How the characters are connected. Approved relations are shown as lines in the character map. Suggestions come from the script and are only saved when you approve them.",
-            )}
+            {t("app-release-relations-dialog.relations-dialog.dialog-description.458ab38a3221")}
           </DialogDescription>
         </DialogHeader>
         {error ? (
@@ -189,10 +187,10 @@ export function RelationsDialog({
 
         <section aria-labelledby="rel-approved" className="flex flex-col gap-2">
           <h3 id="rel-approved" className="text-[13px] font-medium text-text-primary">
-            {L("Godkjente relasjoner", "Approved relations")} ({approved.length})
+            {t("app-release-relations-dialog.relations-dialog.h3.c320cb1a9df6")} ({approved.length})
           </h3>
           {approved.length === 0 ? (
-            <p className="text-xs text-text-tertiary">{L("Ingen ennå.", "None yet.")}</p>
+            <p className="text-xs text-text-tertiary">{t("app-release-relations-dialog.relations-dialog.p.7822c91cd692")}</p>
           ) : (
             <ul className="flex flex-col gap-1.5">
               {approved.map((r) => (
@@ -211,10 +209,7 @@ export function RelationsDialog({
                     </span>
                   </span>
                   <select
-                    aria-label={L(
-                      `Type relasjon mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
-                      `Type of relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
-                    )}
+                    aria-label={t("app-release-relations-dialog.relations-dialog.aria-label.62e513a76b03", { value1: String(name(r.fromAssetId)), value2: String(name(r.toAssetId)) })}
                     value={r.kind}
                     disabled={!editable}
                     onChange={(e) => update(r, { kind: e.target.value as RelationKind })}
@@ -227,14 +222,8 @@ export function RelationsDialog({
                     ))}
                   </select>
                   <BlurText
-                    label={L(
-                      `Navn på relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
-                      `Name of the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
-                    )}
-                    placeholder={L(
-                      "Navn (f.eks. «mor og datter»)",
-                      "Name (e.g. “mother and daughter”)",
-                    )}
+                    label={t("app-release-relations-dialog.relations-dialog.label.0e6aaec55589", { value1: String(name(r.fromAssetId)), value2: String(name(r.toAssetId)) })}
+                    placeholder={t("app-release-relations-dialog.relations-dialog.placeholder.2b4bbd2784de")}
                     value={r.label}
                     disabled={!editable}
                     onCommit={(label) => update(r, { label })}
@@ -245,15 +234,12 @@ export function RelationsDialog({
                       size="icon"
                       variant="ghost"
                       className="size-7"
-                      aria-label={L(
-                        `Fjern relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
-                        `Remove the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
-                      )}
+                      aria-label={t("app-release-relations-dialog.relations-dialog.aria-label.505edde0288f", { value1: String(name(r.fromAssetId)), value2: String(name(r.toAssetId)) })}
                       onClick={() =>
                         setError(
                           cmds.run(
                             { type: "SetRelationsRemoved", relationIds: [r.id], removed: true },
-                            L("Fjern relasjon", "Remove relation"),
+                            t("app-release-relations-dialog.relations-dialog.cmds-run.911dcb037d62"),
                           ),
                         )
                       }
@@ -265,14 +251,8 @@ export function RelationsDialog({
                   )}
                   <BlurText
                     multiline
-                    label={L(
-                      `Beskrivelse av relasjonen mellom ${name(r.fromAssetId)} og ${name(r.toAssetId)}`,
-                      `Description of the relation between ${name(r.fromAssetId)} and ${name(r.toAssetId)}`,
-                    )}
-                    placeholder={L(
-                      "Kort beskrivelse (vises når «tekst om relasjonene» er slått på)",
-                      "Short description (shown when “text about the relations” is turned on)",
-                    )}
+                    label={t("app-release-relations-dialog.relations-dialog.label.192c360dd148", { value1: String(name(r.fromAssetId)), value2: String(name(r.toAssetId)) })}
+                    placeholder={t("app-release-relations-dialog.relations-dialog.placeholder.4c6942742dfe")}
                     value={r.description}
                     disabled={!editable}
                     onCommit={(description) => update(r, { description })}
@@ -287,14 +267,11 @@ export function RelationsDialog({
         {editable ? (
           <section aria-labelledby="rel-suggest" className="flex flex-col gap-2">
             <h3 id="rel-suggest" className="text-[13px] font-medium text-text-primary">
-              {L("Forslag fra manuset", "Suggestions from the script")} ({suggestions.length})
+              {t("app-release-relations-dialog.relations-dialog.h3.35606830b1a2")} ({suggestions.length})
             </h3>
             {suggestions.length === 0 ? (
               <p className="text-xs text-text-tertiary">
-                {L(
-                  "Ingen nye forslag. Forslag kommer fra karakterer som er sammen i flere scener.",
-                  "No new suggestions. Suggestions come from characters who are together in several scenes.",
-                )}
+                {t("app-release-relations-dialog.relations-dialog.p.d801e32d792c")}
               </p>
             ) : (
               <ul className="flex flex-col gap-1.5">
@@ -307,12 +284,12 @@ export function RelationsDialog({
                       {name(sg.fromAssetId)} – {name(sg.toAssetId)}
                     </span>
                     <span className="text-xs text-text-secondary">
-                      {RELATION_NAME[sg.kind]} · {L("sammen i", "together in")} {sg.together}{" "}
-                      {L("scener", "scenes")}
+                      {RELATION_NAME[sg.kind]} · {t("app-release-relations-dialog.relations-dialog.span.dcef691c17f7")} {sg.together}{" "}
+                      {t("app-release-relations-dialog.relations-dialog.span.2561d97d8b12")}
                     </span>
                     {sg.evidence ? (
                       <span className="w-full truncate text-xs italic text-text-tertiary">
-                        {L(`«${sg.evidence.text}»`, `“${sg.evidence.text}”`)}
+                        {t("app-release-relations-dialog.relations-dialog.span.e2716bd0a669", { text: String(sg.evidence.text) })}
                       </span>
                     ) : null}
                     <span className="ml-auto flex gap-1">
@@ -322,15 +299,12 @@ export function RelationsDialog({
                         onClick={() =>
                           add(
                             [{ ...sg, status: "approved" }],
-                            L(
-                              `Godkjenn relasjon ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
-                              `Approve relation ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
-                            ),
+                            t("app-release-relations-dialog.relations-dialog.add.c82515b040ab", { value1: String(name(sg.fromAssetId)), value2: String(name(sg.toAssetId)) }),
                           )
                         }
                       >
                         <Check />
-                        {L("Godkjenn", "Approve")}
+                        {t("app-release-relations-dialog.relations-dialog.button.b87d739fe809")}
                       </Button>
                       <Button
                         size="sm"
@@ -338,15 +312,12 @@ export function RelationsDialog({
                         onClick={() =>
                           add(
                             [{ ...sg, status: "dismissed" }],
-                            L(
-                              `Avvis forslag ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
-                              `Dismiss suggestion ${name(sg.fromAssetId)} – ${name(sg.toAssetId)}`,
-                            ),
+                            t("app-release-relations-dialog.relations-dialog.add.e0a649283558", { value1: String(name(sg.fromAssetId)), value2: String(name(sg.toAssetId)) }),
                           )
                         }
                       >
                         <X />
-                        {L("Avvis", "Dismiss")}
+                        {t("app-release-relations-dialog.relations-dialog.button.30f86cfde141")}
                       </Button>
                     </span>
                   </li>
@@ -359,7 +330,7 @@ export function RelationsDialog({
         {editable ? (
           <section aria-labelledby="rel-new" className="flex flex-col gap-2">
             <h3 id="rel-new" className="text-[13px] font-medium text-text-primary">
-              {L("Ny relasjon", "New relation")}
+              {t("app-release-relations-dialog.relations-dialog.h3.72d78d656ea4")}
             </h3>
             <form
               className="flex flex-wrap items-center gap-2"
@@ -368,18 +339,18 @@ export function RelationsDialog({
                 if (!from || !to) return;
                 add(
                   [{ fromAssetId: from, toAssetId: to, kind, status: "approved" }],
-                  L("Ny relasjon", "New relation"),
+                  t("app-release-relations-dialog.relations-dialog.add.72d78d656ea4"),
                 );
                 setTo("");
               }}
             >
               <select
-                aria-label={L("Fra", "From")}
+                aria-label={t("app-release-relations-dialog.relations-dialog.aria-label.99bcd6c19ac2")}
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
                 className={control}
               >
-                <option value="">{L("Velg karakter …", "Choose a character …")}</option>
+                <option value="">{t("app-release-relations-dialog.relations-dialog.option.c89dda879904")}</option>
                 {people.map((a) => (
                   <option key={a.id} value={a.id}>
                     {a.name}
@@ -387,7 +358,7 @@ export function RelationsDialog({
                 ))}
               </select>
               <select
-                aria-label={L("Type", "Type")}
+                aria-label={t("app-release-relations-dialog.relations-dialog.aria-label.2042c7fa029e")}
                 value={kind}
                 onChange={(e) => setKind(e.target.value as RelationKind)}
                 className={control}
@@ -399,16 +370,13 @@ export function RelationsDialog({
                 ))}
               </select>
               <select
-                aria-label={L("Til", "To")}
+                aria-label={t("app-release-relations-dialog.relations-dialog.aria-label.463da37c8dd0")}
                 value={to}
                 onChange={(e) => setTo(e.target.value)}
                 className={control}
               >
                 <option value="">
-                  {L(
-                    "Velg karakter, sted eller objekt …",
-                    "Choose a character, location or object …",
-                  )}
+                  {t("app-release-relations-dialog.relations-dialog.option.60c36d601445")}
                 </option>
                 {others
                   .filter((a) => a.id !== from)
@@ -420,7 +388,7 @@ export function RelationsDialog({
               </select>
               <Button size="sm" type="submit" disabled={!from || !to}>
                 <Plus />
-                {L("Legg til", "Add")}
+                {t("app-release-relations-dialog.relations-dialog.button.f59746708b29")}
               </Button>
             </form>
           </section>

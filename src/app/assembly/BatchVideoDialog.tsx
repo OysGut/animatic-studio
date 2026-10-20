@@ -46,6 +46,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50";
@@ -172,7 +173,7 @@ export function BatchVideoDialog({
             removeSegmentIds: [],
             segments,
           },
-          L("Inndeling for generering (flere scener)", "Division for generation (several scenes)"),
+          tk("app-assembly-batch-video-dialog.r.cmds-run-and-wait.5254a8ba8e3d"),
           group,
         );
         if (r.error) {
@@ -191,14 +192,11 @@ export function BatchVideoDialog({
         n++;
         if (adaptPromptForModel(w.prompts[i] ?? "", chosen.model).blocked) {
           errors.push(
-            L(
-              `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}: replikkene er for lange for modellen`,
-              `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}: the dialogue is too long for the model`,
-            ),
+            tk("app-assembly-batch-video-dialog.run.errors-push.a9070233703f", { value1: String(w.clip.productionNumber ?? ""), value2: String(i + 1) }),
           );
           continue;
         }
-        setBusy(L(`Legger i kø … ${n} av ${totalSegments}`, `Queueing … ${n} of ${totalSegments}`));
+        setBusy(tk("app-assembly-batch-video-dialog.run.set-busy.5dffdc2066fa", { n: String(n), totalSegments: String(totalSegments) }));
         try {
           if (quality.budgetError) throw new Error(quality.budgetError);
           const r = await startVideoGeneration({
@@ -237,16 +235,10 @@ export function BatchVideoDialog({
       errors.length
         ? {
             kind: "error",
-            text: L(
-              `${queued} lagt i kø. Ikke lagt i kø: ${errors
+            text: tk("app-assembly-batch-video-dialog.text.text.f599dd171c64", { queued: String(queued), value2: String(errors
                 .slice(0, 6)
                 .map((x) => tm(x))
-                .join(" · ")}${errors.length > 6 ? ` (+${errors.length - 6})` : ""}`,
-              `${queued} queued. Not queued: ${errors
-                .slice(0, 6)
-                .map((x) => tm(x))
-                .join(" · ")}${errors.length > 6 ? ` (+${errors.length - 6})` : ""}`,
-            ),
+                .join(" · ")), value3: String(errors.length > 6 ? ` (+${errors.length - 6})` : "") }),
           }
         : {
             kind: "ok",
@@ -264,13 +256,10 @@ export function BatchVideoDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <ListOrdered className="size-4" aria-hidden />{" "}
-            {L("Video for flere scener", "Video for several scenes")}
+            {tk("app-assembly-batch-video-dialog.batch-video-dialog.dialog-title.a96fd66050f7")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Velg scenene. Hvert segment lages med beskrivelsen fra «Generer scene» (din egen eller den automatiske) og legges i køen. 2D-scenene endres aldri; ferdige videoer blir nye versjoner.",
-              "Choose the scenes. Each segment is made with the description from “Generate scene” (your own or the automatic one) and added to the queue. The 2D scenes are never changed; finished videos become new versions.",
-            )}
+            {tk("app-assembly-batch-video-dialog.batch-video-dialog.dialog-description.d1ee0ff0fb3e")}
           </DialogDescription>
         </DialogHeader>
         <QualityProfilePicker state={state} value={quality.choice} disabled={!!busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} />
@@ -278,14 +267,11 @@ export function BatchVideoDialog({
         <div className="-mx-1 flex min-h-0 flex-col gap-3 overflow-y-auto px-1">
           {available.isLoading ? (
             <p className="text-xs text-text-tertiary">
-              {L("Henter leverandører …", "Fetching providers …")}
+              {tk("app-assembly-batch-video-dialog.batch-video-dialog.p.2a6234ba65d9")}
             </p>
           ) : !chosen ? (
             <p className="text-[13px] text-text-secondary">
-              {L(
-                "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten.",
-                "No video provider is connected. The project's owner can connect one under “AI providers” on the project list.",
-              )}
+              {tk("app-assembly-batch-video-dialog.batch-video-dialog.p.a1231b16463c")}
             </p>
           ) : (
             <>
@@ -300,7 +286,7 @@ export function BatchVideoDialog({
               />
               <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
                 <select
-                  aria-label={L("Videomodell", "Video model")}
+                  aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.accd87b7d2b8")}
                   value={`${chosen.provider.id}|${chosen.model.id}`}
                   onChange={(e) => {
                     setPick(e.target.value);
@@ -319,19 +305,19 @@ export function BatchVideoDialog({
                   ))}
                 </select>
                 <select
-                  aria-label={L("Format", "Format")}
+                  aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.8a47f40d54ef")}
                   value={aspect}
                   onChange={(e) => setAspect(e.target.value as "16:9" | "9:16")}
                   className={ctl}
                   disabled={!!busy}
                 >
-                  <option value="16:9">{L("16:9 liggende", "16:9 landscape")}</option>
-                  <option value="9:16">{L("9:16 stående", "9:16 portrait")}</option>
+                  <option value="16:9">{tk("app-assembly-batch-video-dialog.batch-video-dialog.option.9ab391d39417")}</option>
+                  <option value="9:16">{tk("app-assembly-batch-video-dialog.batch-video-dialog.option.e2ab79e82dcf")}</option>
                 </select>
                 <label className="flex items-center gap-1">
-                  {L("Prioritet", "Priority")}
+                  {tk("app-assembly-batch-video-dialog.batch-video-dialog.label.1eeab9303c99")}
                   <select
-                    aria-label={L("Prioritet i køen", "Priority in the queue")}
+                    aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.e10f8f84041a")}
                     value={priority}
                     onChange={(e) => setPriority(Number(e.target.value) as 1 | 2 | 3)}
                     className={ctl}
@@ -351,7 +337,7 @@ export function BatchVideoDialog({
                     onChange={(e) => setChain(e.target.checked)}
                     disabled={!!busy}
                   />
-                  {L("Sammenheng mellom segmentene", "Continuity between the segments")}
+                  {tk("app-assembly-batch-video-dialog.batch-video-dialog.label.284377e12e64")}
                 </label>
                 <label className="flex items-center gap-1.5">
                   <input
@@ -363,7 +349,7 @@ export function BatchVideoDialog({
                     }}
                     disabled={!!busy}
                   />
-                  {L("Hopp over segmenter som har video", "Skip segments that already have video")}
+                  {tk("app-assembly-batch-video-dialog.batch-video-dialog.label.b2f517832e70")}
                 </label>
               </div>
               <div className="flex gap-2 text-xs">
@@ -381,7 +367,7 @@ export function BatchVideoDialog({
                     )
                   }
                 >
-                  {L("Velg alle uten video", "Select all without video")}
+                  {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.2cbfa29f8086")}
                 </Button>
                 <Button
                   size="sm"
@@ -389,11 +375,11 @@ export function BatchVideoDialog({
                   disabled={!!busy}
                   onClick={() => setSelected(new Set())}
                 >
-                  {L("Fjern valg", "Clear selection")}
+                  {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.4abb785ea991")}
                 </Button>
               </div>
               <ul
-                aria-label={L("Scener", "Scenes")}
+                aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.f5ae2186cca8")}
                 className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
               >
                 {works.map((w) => {
@@ -419,16 +405,16 @@ export function BatchVideoDialog({
                       </span>
                       <span className="w-40 text-text-secondary">
                         {w.plan.length}{" "}
-                        {w.plan.length === 1 ? L("segment", "segment") : L("segmenter", "segments")}
-                        {w.stored.length ? "" : L(" (forslag)", " (proposal)")} ·{" "}
-                        {w.withVideo.length} {L("med video", "with video")}
+                        {w.plan.length === 1 ? tk("app-assembly-batch-video-dialog.batch-video-dialog.span.808a703cfc27") : tk("app-assembly-batch-video-dialog.batch-video-dialog.span.7540abeec993")}
+                        {w.stored.length ? "" : tk("app-assembly-batch-video-dialog.batch-video-dialog.span.7d5e8b30ca7e")} ·{" "}
+                        {w.withVideo.length} {tk("app-assembly-batch-video-dialog.batch-video-dialog.span.e340a042dffd")}
                       </span>
                       <span className="tabular w-20 text-right text-text-secondary">
                         {b
-                          ? L("mangler startbilde", "missing start image")
+                          ? tk("app-assembly-batch-video-dialog.batch-video-dialog.span.df980ea038fd")
                           : t.length
                             ? `~${formatUsd(costFor(w))}`
-                            : L("ferdig", "done")}
+                            : tk("app-assembly-batch-video-dialog.batch-video-dialog.span.9963b3be2ef9")}
                       </span>
                     </li>
                   );
@@ -438,19 +424,16 @@ export function BatchVideoDialog({
                 <div
                   ref={(el) => el?.scrollIntoView?.({ block: "nearest" })}
                   role="alertdialog"
-                  aria-label={L("Bekreft videogenerering", "Confirm video generation")}
+                  aria-label={tk("app-assembly-batch-video-dialog.batch-video-dialog.aria-label.9b5ada7637b0")}
                   className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
                 >
                   <p className="text-xs text-text-primary">
                     {totalSegments}{" "}
-                    {totalSegments === 1 ? L("segment", "segment") : L("segmenter", "segments")} i{" "}
+                    {totalSegments === 1 ? tk("app-assembly-batch-video-dialog.batch-video-dialog.p.808a703cfc27") : tk("app-assembly-batch-video-dialog.batch-video-dialog.p.7540abeec993")} i{" "}
                     {runnable.length}{" "}
-                    {runnable.length === 1 ? L("scene", "scene") : L("scener", "scenes")}{" "}
-                    {L("med", "with")} {chosen.provider.name} – {chosen.model.label}.{" "}
-                    {L(
-                      `Belastes leverandørkontoen til prosjektets eier, anslått ${formatUsd(totalCost)} (et anslag; prisen regnes inn i taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du legge dem i kø nå?`,
-                      `Charged to the provider account of the project's owner, estimated at ${formatUsd(totalCost)} (an estimate; the price counts towards the limit straight away). Jobs waiting in the queue can be cancelled at no cost. Do you want to queue them now?`,
-                    )}
+                    {runnable.length === 1 ? tk("app-assembly-batch-video-dialog.batch-video-dialog.p.a89258cb0a00") : tk("app-assembly-batch-video-dialog.batch-video-dialog.p.0f157d644f37")}{" "}
+                    {tk("app-assembly-batch-video-dialog.batch-video-dialog.p.a7a32ef81137")} {chosen.provider.name} – {chosen.model.label}.{" "}
+                    {tk("app-assembly-batch-video-dialog.batch-video-dialog.p.2290afecd18f", { value1: String(formatUsd(totalCost)) })}
                   </p>
                   <CostLines
                     lines={costBreakdown(chosen.provider, chosen.model, {
@@ -463,20 +446,17 @@ export function BatchVideoDialog({
                   <SentPrompts
                     items={runnable.flatMap((w) =>
                       todo(w).map((i) => ({
-                        label: L(
-                          `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
-                          `Scene ${w.clip.productionNumber ?? ""}, segment ${i + 1}`,
-                        ),
+                        label: tk("app-assembly-batch-video-dialog.label.label.1a19052c9b7f", { value1: String(w.clip.productionNumber ?? ""), value2: String(i + 1) }),
                         ...adaptPromptForModel(w.prompts[i] ?? "", chosen.model),
                       })),
                     )}
                   />
                   <div className="flex gap-2">
                     <Button size="sm" onClick={() => void run()} disabled={!!busy}>
-                      <AiGlyph /> {L("Ja, legg i kø", "Yes, queue them")}
+                      <AiGlyph /> {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.e0c175903fc9")}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                      {L("Avbryt", "Cancel")}
+                      {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.7c4c558f629a")}
                     </Button>
                   </div>
                 </div>
@@ -502,7 +482,7 @@ export function BatchVideoDialog({
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={!!busy}>
-            {L("Lukk", "Close")}
+            {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.a94a68947d70")}
           </Button>
           {chosen ? (
             <Button
@@ -511,8 +491,8 @@ export function BatchVideoDialog({
               onClick={() => setConfirm(true)}
             >
               <AiGlyph />
-              {L("Lag video", "Make video")} ({totalSegments}{" "}
-              {totalSegments === 1 ? L("segment", "segment") : L("segmenter", "segments")}, ~
+              {tk("app-assembly-batch-video-dialog.batch-video-dialog.button.dbc345d7cb22")} ({totalSegments}{" "}
+              {totalSegments === 1 ? tk("app-assembly-batch-video-dialog.batch-video-dialog.button.808a703cfc27") : tk("app-assembly-batch-video-dialog.batch-video-dialog.button.7540abeec993")}, ~
               {formatUsd(totalCost)}) …
             </Button>
           ) : null}
