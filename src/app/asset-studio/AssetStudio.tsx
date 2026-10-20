@@ -389,7 +389,7 @@ export function AssetStudio({
       data-testid="asset-studio"
       data-draft-steps={d.draft.steps.length}
     >
-      <AlphaExportDialog state={view} composition={comp} initialLayerIds={[layerId]} open={alphaOpen} onOpenChange={setAlphaOpen} />
+      {alphaOpen ? <AlphaExportDialog state={view} composition={comp} initialLayerIds={[layerId]} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
       <Toolbar
         title={L(`Asset Studio – ${layer.name}`, `Asset Studio – ${layer.name}`)}
         status={

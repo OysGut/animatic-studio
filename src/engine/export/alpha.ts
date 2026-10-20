@@ -53,9 +53,11 @@ export async function openAlphaSink(name: string, mime: string): Promise<ZipSink
       const file = await handle.getFile();
       const url = URL.createObjectURL(file.slice(0, file.size, mime));
       link = { url, name };
-      await root.removeEntry(temp);
       const a = document.createElement("a"); a.href = url; a.download = name;
       document.body.appendChild(a); a.click(); a.remove();
+      // A File snapshot still depends on its OPFS backing entry in Chromium. Keep it
+      // until the download has had time to consume it, then release both resources.
+      setTimeout(() => { URL.revokeObjectURL(url); void root.removeEntry(temp).catch(() => undefined); }, 60_000);
     },
     abort: async () => {
       if (!closed) await writable.abort().catch(() => undefined);

@@ -682,7 +682,7 @@ export function ExportAnimaticDialog({
 
   return (
     <>
-    {alphaComposition ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
+    {alphaComposition && alphaOpen ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>

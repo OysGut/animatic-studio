@@ -446,8 +446,8 @@ export const LayersPanel = memo(function LayersPanel({
         onClick={() => setAlphaOpen(true)}>
         <Download className="size-3.5" />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
       </Button>
-      <AlphaExportDialog state={state} composition={composition} open={alphaOpen} onOpenChange={setAlphaOpen}
-        {...(selectedLayerId ? { initialLayerIds: [selectedLayerId] } : {})} />
+      {alphaOpen ? <AlphaExportDialog state={state} composition={composition} open={alphaOpen} onOpenChange={setAlphaOpen}
+        {...(selectedLayerId ? { initialLayerIds: [selectedLayerId] } : {})} /> : null}
       {back.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
           {L("Ingen lag ennå. Bruk «Legg til lag».", "No layers yet. Use “Add layer”.")}
