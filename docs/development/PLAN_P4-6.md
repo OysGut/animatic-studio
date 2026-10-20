@@ -12,7 +12,7 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. C og D er kartl
 - Datamodell: ingen ny tabell. Eksportvalg (`layerIds`, `range`, `effects`, `alpha: straight|premultiplied`, `format: png-seq|webm-vp9`) i klientens eksportflyt; valg huskes lokalt per prosjekt. Eksisterende eksport har dialogstyrt fremdrift/avbryt, ikke en felles bakgrunnskø.
 - Renderer: samme `film.ts`/compositor som vanlig eksport, med `background: transparent` og lagfilter; formatadapter-grensesnitt `AlphaEncoder` (png-seq, webm-vp9; ProRes 4444/MOV senere, DEC-0085).
 - Ingen stille fallback: WebM-alfa sjekkes med `VideoEncoder.isConfigSupported({ alpha: "keep" })`; ellers tydelig melding og valget sperres.
-- Tester: vitest piksel for piksel (hjørner alfa 0, figur alfa 255, premultiplisert vs. rett), visuell `p4-alpha-export.mjs` (33/33: faktiske PNG-ZIP-nedlastinger på norsk/engelsk, maskering og avbryt). WebM-alfa er sperret i testnettleseren; faktisk WebM-alfa er ikke verifisert.
+- Tester: vitest piksel for piksel (hjørner alfa 0, figur alfa 255, premultiplisert vs. rett), visuell `p4-alpha-export.mjs` (36/36: faktiske PNG-ZIP-nedlastinger på norsk/engelsk, maskering, effektvalg og avbryt). WebM-alfa er sperret i testnettleseren; faktisk WebM-alfa er ikke verifisert.
 
 ## C. Punkt 5 – AI-linjekobling (B-050, REQ-0845–0853)
 - Regelkobling (DEC-0058) først; bare usikre linjer sendes, per scene, klippet som i `align-prompt.ts`.

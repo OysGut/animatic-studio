@@ -2,7 +2,7 @@
 - [x] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
 - [x] AlphaEncoder, PNG-ZIP og kontrollert WebM VP9-alfa, avbryt og fremdrift. Faktisk WebM-alfa venter på nettleser/koder med positiv støtte.
 - [x] Felles dialog fra eksport, lagpanel og Asset Studio, lokale prosjektvalg.
-- [x] Ekte pikseltester og nettlesernedlasting NO/EN (33/33), eksport-/CA8-/MTS-/U5-/DV5-regresjoner, DB 132/132 og krav REQ-0837–0844.
+- [x] Ekte pikseltester og nettlesernedlasting NO/EN (36/36), DV1–DV8, CA1–CA8, MTS, U5, scene- og lydregresjoner, DB 132/132 og krav REQ-0837–0844. Vitest 1840/0; verifisering4 51/54 (kjente mikrofon-/fontavvik).
 - [ ] P5: linjekobling med godkjente 1:n/n:1-forslag, kostnadsport, kommandoer, lagring og tester. Kartlagt, ikke implementert.
 - [ ] P6: prosjektprofiler, genererings-/eksportoverstyring, kostnad og øyeblikksbilder, migrasjon og tester. Kartlagt, ikke implementert.
 
