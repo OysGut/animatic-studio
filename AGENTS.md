@@ -53,3 +53,4 @@ Kortversjonen:
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
 35. ML1 keeps the legacy i18n bridge unchanged; keyed messages use injected catalogs, explicit locale/fallbacks, and a frozen AST mapping baseline so no source text is lost.
+36. Language switching never remounts (routes and memo panels subscribe via useLanguage) so drafts survive; server error codes are additive and never rewrite existing L() sites, so ML1 keys stay stable.

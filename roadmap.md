@@ -38,3 +38,11 @@
 
 ## Tidligere fullført (se git-loggen)
 - P4/P5/P6 (linjekobling 0064, kvalitetsprofiler 0063, alfaeksport), DV1–DV8, CA1–CA8, MTS, P7 ProRes/MOV (egen koder, ADR-0011).
+
+## B-049 ML2 (20.10.2026)
+- [x] ML2a: språkvelger fra manifestet, en-XA i utvikling, språkbytte uten remontering, ingen lekkasje ved første tegning, stabile serverfeilkoder, ml2-languages-suite
+- [ ] ML2b: skall og konto (venter på neste melding fra Mars)
+- [ ] ML2c: manus
+- [ ] ML2d: sceneeditor (inkl. en-XA-overløp i toppstripen)
+- [ ] ML2e: montering og lyd, bibliotek og Asset Studio
+- [ ] ML2f: kjerne og server
