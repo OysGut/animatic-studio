@@ -82,7 +82,7 @@ export function ContextLinkSuggestions({
     ai.has(x.key)
       ? L("AI-vurdering", "AI assessment")
       : x.rule === "present"
-        ? L("den eneste av dem i scenen", "the only one of them in the scene")
+        ? x.confidence === "sure" ? L("den eneste av dem i scenen", "the only one of them in the scene") : L("flere mulige mål i scenen", "multiple possible targets in the scene")
         : x.rule === "known_context"
           ? L("samme betegnelse er koblet før", "the same term has been linked before")
           : L("sist nevnte karakter (usikkert)", "last mentioned character (uncertain)");
