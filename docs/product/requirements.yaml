@@ -5238,10 +5238,20 @@ requirements:
   - Brukeren kan velge flere bilder og starte stilharmonisering (med kostnadsgodkjenning).
   tests:
   - 'integrasjon: harmonisering via mock-adapter'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/style-harmonize.ts
+  - src/app/library/HarmonizePanel.tsx
+  - src/adapters/ai/image-run.server.ts
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5267,10 +5277,18 @@ requirements:
   - Harmoniseringsprompten inkluderer målverdier for alle seks dimensjonene.
   tests:
   - 'enhet: promptbygger for harmonisering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/style-harmonize.ts
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5294,10 +5312,19 @@ requirements:
   - Harmoniseringsprompt inkluderer identitetsbevarende instruksjoner og referansebilder.
   tests:
   - 'manuell: vurdering av gjenkjennelighet'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/style-harmonize.ts
+  - src/app/library/HarmonizePanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5323,10 +5350,18 @@ requirements:
   - Side-ved-side/før-etter-visning finnes før godkjenningsknappen.
   tests:
   - 'e2e: sammenligning før godkjenning'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/HarmonizeCompare.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5351,10 +5386,21 @@ requirements:
   - Bildet kan brukes lokalt uten å bli synlig i det globale biblioteket.
   tests:
   - 'integrasjon: lokal bruk'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - src/app/library/HarmonizePanel.tsx
+  - src/app/scene-editor/LayerImageDialog.tsx
+  - src/app/release/PosterHarmonizeDialog.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5379,10 +5425,19 @@ requirements:
   - Bildet lagres som ny variant under karakteren uten å erstatte eksisterende.
   tests:
   - 'enhet: lagre som variant'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - src/app/library/HarmonizePanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5408,10 +5463,18 @@ requirements:
   - Etter godkjenning er varianten tilgjengelig i det globale biblioteket.
   tests:
   - 'integrasjon: godkjenn og publiser'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/HarmonizePanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5435,10 +5498,19 @@ requirements:
   - For en karakter og stilprofil kan nøyaktig én variant være foretrukket referanse.
   tests:
   - 'enhet: foretrukket-referanse per (karakter, stilprofil)'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/commands/apply.ts
+  - db/migrations/0065_style_harmonization.sql
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -5463,10 +5535,18 @@ requirements:
   - Ingen kodevei publiserer en variant uten eksplisitt brukerkommando.
   tests:
   - 'integrasjon: ingen automatisk publisering'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/HarmonizePanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -15635,10 +15715,19 @@ requirements:
   tests:
   - 'integrasjon: harmonisering lager nye versjoner'
   - 'manuell: visuell konsistens'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/release/PosterInspector.tsx
+  - src/app/release/PosterHarmonizeDialog.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -15664,10 +15753,19 @@ requirements:
   - Gitt harmonisering, så kan brukeren velge modell og kvalitetsnivå før kjøring.
   tests:
   - 'integrasjon: valg sendes til Quality & Cost Engine'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/HarmonizePanel.tsx
+  - src/app/library/HarmonizeBatchPanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
@@ -15697,10 +15795,18 @@ requirements:
   tests:
   - 'integrasjon: ny stilvariant opprettes'
   - 'dataintegritet: eksisterende varianter uendret'
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/HarmonizePanel.tsx
+  verification:
+  - tests/unit/style-harmonize.test.ts
+  - tests/unit/harmonize-batch.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p8-style-harmonize.mjs
   history:
+  - date: '2026-10-20'
+    decision: DEC-0001
+    change: P8 stilharmonisering bygd (migrasjon 0065, ikke kjørt i Cloud).
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
