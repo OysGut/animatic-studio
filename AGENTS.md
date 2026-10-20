@@ -46,7 +46,7 @@ Kortversjonen:
 28. Alpha exports share drawFilmFrame; adapters finalize first.
 
 29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes profile budget reservations under the project lock so concurrent clients cannot exceed a profile cap.
-30. Film and alpha exports share a browser-local queue mounted at the root; closures capture inputs, so navigation preserves work while tab closure cannot resume a canvas encoder.
+30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
 31. Line correspondence uses scene-scoped block and translation IDs, reversible commands and translated projections only; backup remaps both arrays so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
