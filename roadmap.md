@@ -1,5 +1,14 @@
 # Veikart
 
+## B-049 ML3 – N manusspråk per prosjekt (20.10.2026)
+- [x] Kartlegging av lagrede språkmerker og constraints i ML3_REPORT.md (ingen kollisjoner i Cloud).
+- [x] Migrasjon 0066 (additiv): BCP-47 i 0016/0017-begrensningene, language_versions, nullable language_version_id; DB 142/142.
+- [x] Register, kommandoer med invers, innlasting, backup, regler (samme versjon, norsk kilde, «må gjennomgås»), B-048/B-050 eksplisitt språk.
+- [x] Brukerflate: språkversjoner, valg i manus/utforsker/linjekoblinger/eksport, eksplisitt norsk reserve eller stopp.
+- [x] Feilsiden følger valgt språk fra første tegning (test).
+- [x] Tester: vitest, ml3-script-languages.mjs, regresjon nb og UI_LANG=en.
+- [ ] Kjøring av 0066 i Cloud: venter på Claude (hasher må kontrolleres, se ML3_REPORT.md).
+
 ## B-049 ML1 (20.10.2026)
 - [x] Fullt AST-inventar, stabile nøkler, tapsfrie nb/en-filer og konfliktliste.
 - [x] Språkmanifest, validerte reserver, t/parametere/plural og automatisk en-XA; eksisterende bro uendret.
