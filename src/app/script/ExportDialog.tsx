@@ -4,7 +4,8 @@
  */
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, type NumberingMethod, type ProjectState } from "@/core";
+import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, exportLanguageDecision, languageLabel, type ExportFallbackChoice, type NumberingMethod, type ProjectState, type TranslationStatus } from "@/core";
+import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { savedTitlePage } from "@/core/commands/export-settings";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
@@ -36,6 +37,12 @@ interface Props {
    * endringen gjelder bare denne eksporten.
    */
   readonly onSaveTitlePage?: (lines: readonly string[]) => void;
+  /** ML3: den norske kildetilstanden (for språkvalget). Utelatt = `state`. */
+  readonly sourceState?: ProjectState;
+  /** ML3: oversettelsesstatus for valgt språk; ufullstendig krever eksplisitt valg (norsk reserve eller stopp). */
+  readonly languageStatus?: TranslationStatus | null;
+  /** ML3: bytt språkversjon fra eksporten. */
+  readonly onLanguageChange?: (language: string) => void;
 }
 
 type Format = "pdf" | "docx" | "fountain";
@@ -52,7 +59,15 @@ export function ExportDialog({
   lockedPages,
   language = "nb",
   onSaveTitlePage,
+  sourceState,
+  languageStatus = null,
+  onLanguageChange,
 }: Props) {
+  // ML3: ufullstendig oversettelse eksporteres bare etter et eksplisitt valg (norsk reserve eller stopp)
+  const [fallbackChoice, setFallbackChoice] = useState<ExportFallbackChoice | undefined>(undefined);
+  useEffect(() => setFallbackChoice(undefined), [language, open]);
+  const decision = language === "nb" || !languageStatus ? ({ kind: "complete" } as const) : exportLanguageDecision(languageStatus, fallbackChoice);
+  const languageBlocked = decision.kind === "needs-choice" || decision.kind === "stopped";
   const [format, setFormat] = useState<Format>("pdf");
   // Nummereringen huskes fra forrige eksport av prosjektet i denne nettleseren (KI-176, REQ-0482,
   // Mars 15.10.2026: «Husk forrige valg»). Første gang: produksjonsnummerering.
@@ -141,6 +156,7 @@ export function ExportDialog({
   const changed = preview.filter((p) => p.exportNumber !== p.productionNumber).length;
 
   function doExport() {
+    if (languageBlocked) return;
     setBusy(true);
     setError(null);
     try {
@@ -211,6 +227,7 @@ export function ExportDialog({
           includeInactive,
           fillOriginal,
           language,
+          ...(decision.kind === "fallback" ? { languageFallback: "nb" } : {}),
           withNotes: !!notes,
           lockedPages: format === "pdf" && lockedPages,
         },
@@ -396,6 +413,40 @@ export function ExportDialog({
             .{" "}
             {t("app-script-export-dialog.export-dialog.label.2a13ae5f5af3")}
           </label>
+          {onLanguageChange ? (
+            <label className="flex items-center gap-2">
+              {t("ml3-language-versions.export.language")}
+              <ScriptLanguageSelect
+                state={sourceState ?? state}
+                value={language}
+                onChange={onLanguageChange}
+                label={t("ml3-language-versions.export.language")}
+                testId="export-language-select"
+              />
+            </label>
+          ) : null}
+          {decision.kind !== "complete" ? (
+            <fieldset data-testid="export-language-incomplete" className="space-y-1 rounded-sm border border-status-uncertain p-2">
+              <legend className="px-1 text-text-primary">
+                {t("ml3-language-versions.export.incomplete", {
+                  language: languageLabel(language),
+                  missing: String(languageStatus?.missingIds.size ?? 0),
+                  uncertain: String(languageStatus?.uncertain ?? 0),
+                  review: String(languageStatus?.review ?? 0),
+                })}
+              </legend>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="export-language-fallback" data-testid="export-language-fallback" checked={fallbackChoice === "fallback"} onChange={() => setFallbackChoice("fallback")} />
+                {t("ml3-language-versions.export.fallback")}
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="export-language-fallback" data-testid="export-language-stop" checked={fallbackChoice === "stop"} onChange={() => setFallbackChoice("stop")} />
+                {t("ml3-language-versions.export.stop")}
+              </label>
+              {decision.kind === "needs-choice" ? <p className="text-text-tertiary">{t("ml3-language-versions.export.choose")}</p> : null}
+              {decision.kind === "stopped" ? <p role="status" data-testid="export-language-stopped" className="text-status-danger">{t("ml3-language-versions.export.stopped")}</p> : null}
+            </fieldset>
+          ) : null}
           {format === "pdf" && lockedPages ? (
             <p className="text-text-tertiary">
               {t("app-script-export-dialog.export-dialog.p.d7e1637f700f")}
@@ -521,7 +572,8 @@ export function ExportDialog({
           </Button>
           <Button
             onClick={doExport}
-            disabled={busy || preview.length === 0 || (method === "historical" && !historical)}
+            data-testid="script-export-run"
+            disabled={busy || languageBlocked || preview.length === 0 || (method === "historical" && !historical)}
           >
             <Download />
             {t("app-script-export-dialog.export-dialog.button.f614693c69c2")}{" "}

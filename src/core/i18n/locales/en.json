@@ -73130,5 +73130,131 @@
   },
   "app-script-remove-translations-dialog.language-word-en": {
     "text": "English"
+  },
+  "ml3-language-versions.error.language": {
+    "text": "The language code is invalid. Use a BCP-47 code such as de, pt-BR or sr-Latn."
+  },
+  "ml3-language-versions.error.norwegian": {
+    "text": "Norwegian is the source language and cannot be a language version."
+  },
+  "ml3-language-versions.error.name": {
+    "text": "The name must be between 1 and 120 characters."
+  },
+  "ml3-language-versions.error.status": {
+    "text": "Unknown status for the language version."
+  },
+  "ml3-language-versions.error.duplicate": {
+    "text": "The project already has a language version for {language}."
+  },
+  "ml3-language-versions.error.not-found": {
+    "text": "The language version was not found."
+  },
+  "ml3-language-versions.error.in-use": {
+    "text": "The language version is used by translations and cannot be undone. Remove it instead."
+  },
+  "ml3-language-versions.error.unchanged": {
+    "text": "There is no change to save."
+  },
+  "ml3-language-versions.error.mixed-versions": {
+    "text": "The lines in the link belong to different language versions."
+  },
+  "ml3-language-versions.button.manage": {
+    "text": "Language versions …"
+  },
+  "ml3-language-versions.dialog.title": {
+    "text": "Language versions"
+  },
+  "ml3-language-versions.dialog.description": {
+    "text": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations."
+  },
+  "ml3-language-versions.field.language": {
+    "text": "Target language (BCP-47)"
+  },
+  "ml3-language-versions.field.name": {
+    "text": "Name"
+  },
+  "ml3-language-versions.field.language-hint": {
+    "text": "For example de, pt-BR or sr-Latn"
+  },
+  "ml3-language-versions.button.add": {
+    "text": "Add language version"
+  },
+  "ml3-language-versions.button.rename": {
+    "text": "Save name"
+  },
+  "ml3-language-versions.button.remove": {
+    "text": "Remove"
+  },
+  "ml3-language-versions.button.restore": {
+    "text": "Restore"
+  },
+  "ml3-language-versions.button.register": {
+    "text": "Register"
+  },
+  "ml3-language-versions.button.close": {
+    "text": "Close"
+  },
+  "ml3-language-versions.label.registered": {
+    "text": "Registered language versions"
+  },
+  "ml3-language-versions.label.removed": {
+    "text": "Removed language versions"
+  },
+  "ml3-language-versions.label.derived": {
+    "text": "From earlier translations – not registered"
+  },
+  "ml3-language-versions.label.collision": {
+    "text": "Stored with several spellings: {tags}. Nothing is merged automatically."
+  },
+  "ml3-language-versions.label.status": {
+    "text": "{translated} of {lines} lines translated, {review} need review, {uncertain} uncertain"
+  },
+  "ml3-language-versions.empty": {
+    "text": "No language versions yet."
+  },
+  "ml3-language-versions.undo.add": {
+    "text": "Add language version {name}"
+  },
+  "ml3-language-versions.undo.rename": {
+    "text": "Rename language version {name}"
+  },
+  "ml3-language-versions.undo.remove": {
+    "text": "Remove language version {name}"
+  },
+  "ml3-language-versions.undo.restore": {
+    "text": "Restore language version {name}"
+  },
+  "ml3-language-versions.select.norwegian": {
+    "text": "Norwegian (source)"
+  },
+  "ml3-language-versions.option.derived": {
+    "text": "{label} – earlier translations"
+  },
+  "ml3-language-versions.explorer.language": {
+    "text": "Language in the script explorer"
+  },
+  "ml3-language-versions.links.language": {
+    "text": "Language version for line links"
+  },
+  "ml3-language-versions.export.language": {
+    "text": "Language version in the export"
+  },
+  "ml3-language-versions.export.incomplete": {
+    "text": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do."
+  },
+  "ml3-language-versions.export.fallback": {
+    "text": "Use Norwegian where the translation is missing"
+  },
+  "ml3-language-versions.export.stop": {
+    "text": "Stop the export until the translation is complete"
+  },
+  "ml3-language-versions.export.stopped": {
+    "text": "The export is stopped. No file has been created."
+  },
+  "ml3-language-versions.export.choose": {
+    "text": "Choose Norwegian fallback or stop before exporting."
+  },
+  "ml3-language-versions.review.languages": {
+    "text": "The Norwegian text has changed. Needs review in: {languages}"
   }
 }

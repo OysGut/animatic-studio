@@ -1,4 +1,5 @@
 import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
+import type { LanguageVersion } from "./translation/language-versions";
 import type { StyleHarmonization, StylePreferredReference } from "./generation/style-harmonize";
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
@@ -558,11 +559,11 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     }
     case "translationLines": {
       const u=e as unknown as TranslationLine;
-      return {...base,variant_id:u.variantId,language:u.language,ord:u.ord,kind:u.kind,text:u.text,removed:u.removed};
+      return {...base,variant_id:u.variantId,language:u.language,ord:u.ord,kind:u.kind,text:u.text,removed:u.removed,...(u.languageVersionId?{language_version_id:u.languageVersionId}:{})};
     }
     case "translationLineLinks": {
       const l=e as unknown as TranslationLineLink;
-      return {...base,variant_id:l.variantId,language:l.language,source_block_ids:l.sourceBlockIds,target_translation_ids:l.targetTranslationIds,origin:l.origin,confidence:l.confidence,reason:l.reason,removed:l.removed};
+      return {...base,variant_id:l.variantId,language:l.language,source_block_ids:l.sourceBlockIds,target_translation_ids:l.targetTranslationIds,origin:l.origin,confidence:l.confidence,reason:l.reason,removed:l.removed,...(l.languageVersionId?{language_version_id:l.languageVersionId}:{})};
     }
     case "styleHarmonizations": {
       const h=e as unknown as StyleHarmonization;
@@ -583,7 +584,12 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         based_on_rev: t.basedOnRev,
         status: t.status,
         removed: t.removed,
+        ...(t.languageVersionId ? { language_version_id: t.languageVersionId } : {}),
       };
+    }
+    case "languageVersions": {
+      const v = e as unknown as LanguageVersion;
+      return { ...base, language: v.language, source_language: "nb", name: v.name, status: v.status, removed: v.removed };
     }
     case "assetRelations": {
       const x = e as AssetRelation;
@@ -777,6 +783,7 @@ export const TABLE_ORDER: readonly string[] = [
   "time_links",
   "generation_prompts",
   "continuity_events",
+  "language_versions",
   "translations",
   "asset_relations",
   "posters",
@@ -929,6 +936,8 @@ export interface ProjectRows {
   readonly quality_profiles?: readonly Row[];
   readonly translation_line_links?: readonly Row[];
   readonly translation_lines?: readonly Row[];
+  /** ML3 språkversjoner (migrasjon 0066). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly language_versions?: readonly Row[];
   /** P8 stilharmonisering (migrasjon 0065). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly style_harmonizations?: readonly Row[];
   readonly style_preferred_references?: readonly Row[];
@@ -1619,8 +1628,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
       })),
     ),
-    translationLines: byId((r.translation_lines ?? []).map((x): TranslationLine => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),ord:num(x["ord"]),kind:str(x["kind"]),text:str(x["text"]),removed:x["removed"]===true}))),
-    translationLineLinks: byId((r.translation_line_links ?? []).map((x): TranslationLineLink => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),sourceBlockIds:json(x["source_block_ids"]) as string[],targetTranslationIds:json(x["target_translation_ids"]) as string[],origin:str(x["origin"]) as TranslationLineLink["origin"],confidence:num(x["confidence"]),reason:str(x["reason"]),removed:x["removed"]===true}))),
+    translationLines: byId((r.translation_lines ?? []).map((x): TranslationLine => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),ord:num(x["ord"]),kind:str(x["kind"]),text:str(x["text"]),removed:x["removed"]===true,...(x["language_version_id"]?{languageVersionId:str(x["language_version_id"])}:{})}))),
+    translationLineLinks: byId((r.translation_line_links ?? []).map((x): TranslationLineLink => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),sourceBlockIds:json(x["source_block_ids"]) as string[],targetTranslationIds:json(x["target_translation_ids"]) as string[],origin:str(x["origin"]) as TranslationLineLink["origin"],confidence:num(x["confidence"]),reason:str(x["reason"]),removed:x["removed"]===true,...(x["language_version_id"]?{languageVersionId:str(x["language_version_id"])}:{})}))),
+    languageVersions: byId((r.language_versions ?? []).map((x): LanguageVersion => ({id:str(x["id"]),revision:num(x["revision"]),language:str(x["language"]),name:str(x["name"] ?? ""),status:(x["status"]==="archived"?"archived":"active"),removed:x["removed"]===true,...(x["created_by"]?{createdBy:str(x["created_by"])}:{}),...(x["created_at"]?{createdAt:iso(x["created_at"])}:{})}))),
     styleHarmonizations: byId((r.style_harmonizations ?? []).map((x): StyleHarmonization => ({id:str(x["id"]),revision:num(x["revision"]),versionId:str(x["version_id"]),sourceVersionId:str(x["source_version_id"]),model:str(x["model"]),qualityProfile:(x["quality_profile"] ?? null) as StyleHarmonization["qualityProfile"],styleProfileId:optStr(x["style_profile_id"]),referenceVersionId:optStr(x["reference_version_id"]),use:str(x["use"]) as StyleHarmonization["use"],note:str(x["note"]),removed:x["removed"]===true}))),
     stylePreferredReferences: byId((r.style_preferred_references ?? []).map((x): StylePreferredReference => ({id:str(x["id"]),revision:num(x["revision"]),assetId:str(x["asset_id"]),styleProfileId:str(x["style_profile_id"]),variantId:str(x["variant_id"]),removed:x["removed"]===true}))),
     translations: byId(
@@ -1634,6 +1644,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         basedOnRev: num(x["based_on_rev"] ?? 0),
         status: (x["status"] === "uncertain" ? "uncertain" : "approved") as Translation["status"],
         removed: x["removed"] === true,
+        ...(x["language_version_id"] ? { languageVersionId: str(x["language_version_id"]) } : {}),
       })),
     ),
     assetRelations: byId(

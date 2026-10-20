@@ -82,6 +82,7 @@ export const BACKUP_STATE_TABLES = [
   "translation_line_links",
   "style_harmonizations",
   "style_preferred_references",
+  "language_versions",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -598,6 +599,7 @@ export function restoredState(
     translation_lines: t("translation_lines"),
     style_harmonizations: t("style_harmonizations"),
     style_preferred_references: t("style_preferred_references"),
+    language_versions: t("language_versions"),
   };
   let state: ProjectState;
   try {

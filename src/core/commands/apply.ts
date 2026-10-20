@@ -4,6 +4,8 @@ import { languageTagError } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
 import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
 import { qualityProfileError, type QualityProfile } from "../generation/quality-profile";
+import { isScriptLanguageTag } from "../translation/language-tags";
+import { languageVersionError, versionIdFor, type LanguageVersion, type LanguageVersionErrorCode } from "../translation/language-versions";
 import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
 import { applyRigCommand } from "../animation/rig-commands";
@@ -1035,13 +1037,38 @@ function continuityFieldsOf(
 /** Lengste oversatte tekst (som manusblokker). */
 const TRANSLATION_MAX = 20000;
 
+/**
+ * ML3: språkversjonen til en linjekobling følger målradene (samme språkversjon som linjene), ellers
+ * prosjektets versjon for språket. Mål med ulike versjoner avvises.
+ */
+function linkVersionId(s: ProjectState, f: { readonly language: string; readonly targetTranslationIds: readonly string[] }): string | undefined {
+  const ids = new Set<string>();
+  for (const id of f.targetTranslationIds) {
+    const v = s.translations[id]?.languageVersionId ?? s.translationLines?.[id]?.languageVersionId;
+    if (v) ids.add(v);
+  }
+  if (ids.size > 1) fail("invalid", tk("ml3-language-versions.error.mixed-versions"));
+  return [...ids][0] ?? versionIdFor(s, f.language);
+}
+
+/** ML3: feilmelding for en språkversjon. */
+function languageVersionMessage(code: LanguageVersionErrorCode, language: string): string {
+  switch (code) {
+    case "duplicate": return tk("ml3-language-versions.error.duplicate", { language });
+    case "language": return tk("ml3-language-versions.error.language");
+    case "norwegian": return tk("ml3-language-versions.error.norwegian");
+    case "name": return tk("ml3-language-versions.error.name");
+    case "status": return tk("ml3-language-versions.error.status");
+  }
+}
+
 function translationFieldsOf(
   s: ProjectState,
   f: TranslationFields,
 ): Omit<Translation, "id" | "revision" | "removed"> {
   if (!f || typeof f !== "object")
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.eb653dd6de37"));
-  if (typeof f.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(f.language))
+  if (!isScriptLanguageTag(f.language))
     fail("invalid", tk("core-commands-apply.translation-fields-of.fail.705cd5c07cc0"));
   if (f.language === "nb" || f.language === "no")
     fail(
@@ -1620,7 +1647,7 @@ function audioFields(
 }
 
 /** Språkkode (DEC-0058/0059), f.eks. «nb», «en» eller «en-GB». */
-const LANGUAGE_CODE = /^[a-z]{2}(-[A-Z]{2})?$/;
+const LANGUAGE_CODE = { test: (v: string) => isScriptLanguageTag(v) };
 
 /**
  * Samlede kommandoer (UpdateSceneDraft, RetimeScene): hver rad som trinnene endrer, skrives én gang per
@@ -4700,7 +4727,8 @@ function run(
       if (lineLinkError(s,c.fields)) fail("invalid",tk("core-commands-apply.run.fail.89e87eb528d2"));
       const old=(s.translationLineLinks ?? {})[c.linkId];
       if (!old) assertNewId(s,c.linkId);
-      const link: TranslationLineLink={...c.fields,id:c.linkId,revision:old ? rev(old) : 1,removed:c.removed === true,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at};
+      const lvId=linkVersionId(s,c.fields);
+      const link: TranslationLineLink={...c.fields,id:c.linkId,revision:old ? rev(old) : 1,removed:c.removed === true,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at,...(lvId?{languageVersionId:lvId}:{})};
       return {state:{...s,translationLineLinks:{...(s.translationLineLinks ?? {}),[link.id]:link}},inverse:old ? {type:"RestoreLineLinks",items:[old]} : {type:"UndoAddLineLink",linkId:link.id},affected:[link.id]};
     }
     case "UndoAddLineLink": {
@@ -4718,7 +4746,8 @@ function run(
         assertNewId(s,it.lineId);
         if (translationLineError(s,it.fields)) fail("invalid",tk("core-commands-apply.run.fail.f29afea92528"));
         const f=it.fields;
-        lines[it.lineId]={id:it.lineId,revision:1,variantId:f.variantId,language:f.language,ord:f.ord,kind:f.kind,text:f.text,removed:false};
+        const lvId=versionIdFor(s,f.language);
+        lines[it.lineId]={id:it.lineId,revision:1,variantId:f.variantId,language:f.language,ord:f.ord,kind:f.kind,text:f.text,removed:false,...(lvId?{languageVersionId:lvId}:{})};
       }
       const ids=c.items.map(i=>i.lineId);
       return {state:{...s,translationLines:lines},inverse:{type:"UndoAddTranslationLines",lineIds:ids,restore},affected:[...ids,...removeIds]};
@@ -4744,7 +4773,8 @@ function run(
       for (const item of additions) {
         assertNewId(s,item.linkId);
         if (links[item.linkId] || lineLinkError(s,item.fields)) fail("invalid",tk("core-commands-apply.run.fail.63ed75e56b51"));
-        links[item.linkId]={...item.fields,id:item.linkId,origin:"approved",removed:false,revision:1,createdBy:env.actor,createdAt:env.at};
+        const lvId=linkVersionId(s,item.fields);
+        links[item.linkId]={...item.fields,id:item.linkId,origin:"approved",removed:false,revision:1,createdBy:env.actor,createdAt:env.at,...(lvId?{languageVersionId:lvId}:{})};
       }
       // New approval rows undo to removed receipts, preserving provenance and one transaction.
       const undoItems=[...old,...additions.map(item=>({...links[item.linkId],removed:true} as TranslationLineLink))];
@@ -4874,7 +4904,8 @@ function run(
             tk("core-commands-apply.run.fail.55e593008ba0"),
           );
         taken.add(translationKey(f));
-        next[it.translationId] = { id: it.translationId, revision: 1, ...f, removed: false };
+        const lvId = versionIdFor(s, f.language);
+        next[it.translationId] = { id: it.translationId, revision: 1, ...f, removed: false, ...(lvId ? { languageVersionId: lvId } : {}) };
       }
       const ids = c.items.map((x) => x.translationId);
       return {
@@ -6782,6 +6813,44 @@ function run(
     case "SetNoteFlagRemoved": {
       const f = need((s.noteFlags ?? {})[c.flagId], tk("core-commands-apply.f.need.8ab231644533.3"));
       return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [f.id]: { ...f, removed: c.removed === true, revision: rev(f) } } }, inverse: { type: "SetNoteFlagRemoved", flagId: f.id, removed: f.removed }, affected: [f.id] };
+    }
+    // ML3 språkversjoner (B-049): register per prosjekt, alltid med norsk kilde
+    case "AddLanguageVersion": {
+      assertNewId(s, c.versionId);
+      const f = { language: c.language, name: typeof c.name === "string" ? c.name.trim() : "", status: c.status ?? "active" } as const;
+      const err = languageVersionError(s, f);
+      if (err) fail("invalid", languageVersionMessage(err, c.language));
+      const v: LanguageVersion = { id: c.versionId, revision: 1, ...f, removed: false, createdBy: env.actor, createdAt: env.at };
+      return { state: { ...s, languageVersions: { ...(s.languageVersions ?? {}), [v.id]: v } }, inverse: { type: "UndoAddLanguageVersion", versionId: v.id }, affected: [v.id] };
+    }
+    case "UndoAddLanguageVersion": {
+      const v = (s.languageVersions ?? {})[c.versionId];
+      if (!v) fail("invalid", tk("ml3-language-versions.error.not-found"));
+      // Rader som allerede bruker versjonen, hindrer angring (ingen stille tap)
+      const used = [...Object.values(s.translations), ...Object.values(s.translationLines ?? {}), ...Object.values(s.translationLineLinks ?? {})].some((r) => r.languageVersionId === v.id);
+      if (used) fail("invalid", tk("ml3-language-versions.error.in-use"));
+      const next = { ...(s.languageVersions ?? {}) };
+      delete next[v.id];
+      return { state: { ...s, languageVersions: next }, inverse: { type: "AddLanguageVersion", versionId: v.id, language: v.language, name: v.name, status: v.status }, affected: [v.id] };
+    }
+    case "UpdateLanguageVersion": {
+      const v = (s.languageVersions ?? {})[c.versionId];
+      if (!v || v.removed) fail("invalid", tk("ml3-language-versions.error.not-found"));
+      const f = { language: v.language, name: c.name !== undefined ? (typeof c.name === "string" ? c.name.trim() : "") : v.name, status: c.status ?? v.status };
+      const err = languageVersionError(s, f, v.id);
+      if (err) fail("invalid", languageVersionMessage(err, v.language));
+      if (f.name === v.name && f.status === v.status) fail("invalid", tk("ml3-language-versions.error.unchanged"));
+      return { state: { ...s, languageVersions: { ...(s.languageVersions ?? {}), [v.id]: { ...v, name: f.name, status: f.status, revision: rev(v) } } }, inverse: { type: "UpdateLanguageVersion", versionId: v.id, ...(f.name !== v.name ? { name: v.name } : {}), ...(f.status !== v.status ? { status: v.status } : {}) }, affected: [v.id] };
+    }
+    case "SetLanguageVersionRemoved": {
+      const v = (s.languageVersions ?? {})[c.versionId];
+      if (!v) fail("invalid", tk("ml3-language-versions.error.not-found"));
+      if (v.removed === c.removed) fail("invalid", tk("ml3-language-versions.error.unchanged"));
+      if (!c.removed) {
+        const err = languageVersionError(s, v, v.id);
+        if (err) fail("invalid", languageVersionMessage(err, v.language));
+      }
+      return { state: { ...s, languageVersions: { ...(s.languageVersions ?? {}), [v.id]: { ...v, removed: c.removed, revision: rev(v) } } }, inverse: { type: "SetLanguageVersionRemoved", versionId: v.id, removed: v.removed }, affected: [v.id] };
     }
     // M8 kvalitetsprofiler (REQ-0854–0862)
     case "AddQualityProfile": {

@@ -8,11 +8,12 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
-import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, useLanguage } from "@/app/i18n/language";
+import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, LANGUAGE_PENDING_CLASS, bootUiLanguage, useLanguage } from "@/app/i18n/language";
+import { getUiLanguage, onLanguageChange } from "@/core";
 
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
@@ -45,18 +46,25 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
+  // ML3: feilsiden kan vises før språket er satt ved første tegning; språket leses derfor synkront.
+  const lang = useSyncExternalStore(onLanguageChange, bootUiLanguage, getUiLanguage);
+  useEffect(() => {
+    const d = document.documentElement;
+    d.lang = lang;
+    d.classList.remove(LANGUAGE_PENDING_CLASS);
+  }, [lang]);
   useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div data-testid="root-error" lang={lang} className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          {t("routes-root.error-component.h1.e30fba673653")}
+          {t("routes-root.error-component.h1.e30fba673653", {}, lang)}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {t("routes-root.error-component.p.8ff66fea3622")}
+          {t("routes-root.error-component.p.8ff66fea3622", {}, lang)}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -66,16 +74,16 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            {t("routes-root.error-component.button.96f923db4f99")}
+            {t("routes-root.error-component.button.96f923db4f99", {}, lang)}
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            {t("routes-root.error-component.a.6fdb78437197")}
+            {t("routes-root.error-component.a.6fdb78437197", {}, lang)}
           </a>
         </div>
-        <ErrorDetails error={error} />
+        <ErrorDetails error={error} language={lang} />
       </div>
     </div>
   );

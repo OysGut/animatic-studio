@@ -4,9 +4,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isUuid, languageTagError, lineAlignmentPrompt, parseLineAlignment, uncertainLineScope } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { t } from "@/core/i18n/keyed";
+import { isScriptLanguageTag, isNorwegianSourceTag } from "@/core/translation/language-tags";
 interface Input { projectId: string; variantId: string; language: string; confirmed?: boolean; fingerprint?: string | undefined }
 function validate(x: Input): Input {
-  if (!x || !isUuid(x.projectId) || !isUuid(x.variantId) || languageTagError(x.language) || ["nb","no"].includes(x.language)) throw new Error(t("adapters-ai-line-align-functions.validate.message.85e7b2f5e863"));
+  if (!x || !isUuid(x.projectId) || !isUuid(x.variantId) || languageTagError(x.language) || !isScriptLanguageTag(x.language) || isNorwegianSourceTag(x.language)) throw new Error(t("adapters-ai-line-align-functions.validate.message.85e7b2f5e863"));
   return {projectId:x.projectId,variantId:x.variantId,language:x.language,confirmed:x.confirmed === true,fingerprint: typeof x.fingerprint === "string" ? x.fingerprint.slice(0,100) : undefined};
 }
 export const alignTranslationLines = createServerFn({method:"POST"})

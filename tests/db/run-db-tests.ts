@@ -153,6 +153,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     dialogue_versions: await q("dialogue_versions"),
     style_harmonizations: await q("style_harmonizations"),
     style_preferred_references: await q("style_preferred_references"),
+    language_versions: await q("language_versions"),
   };
   return stateFromRows(rows);
 }
@@ -5972,7 +5973,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 65, "skjemaversjon 65");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] >= 65, "skjemaversjon minst 65");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
@@ -6255,6 +6256,118 @@ try {
     assert((await sql`select count(*)::int n from public.change_log where id=${bCmdId}`)[0]?.["n"]===1,"command applied twice");
     await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.harmonize_batches where project_id=${bp}`).length===0,"batch left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0066: språkversjoner – RLS/grants, utvidede språkbegrensninger og slettingsrekkefølge", async () => {
+    const g=await sql`select has_table_privilege('anon','public.language_versions','SELECT') a, has_table_privilege('authenticated','public.language_versions','SELECT') r, has_table_privilege('authenticated','public.language_versions','INSERT') w, has_table_privilege('authenticated','public.language_versions','UPDATE') u, has_table_privilege('service_role','public.language_versions','INSERT') s, (select relrowsecurity from pg_class where oid='public.language_versions'::regclass) rls`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["u"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,"language_versions grants/RLS");
+    for (const t of ["translations","translation_lines","translation_line_links"]) {
+      const c=await sql`select is_nullable from information_schema.columns where table_schema='public' and table_name=${t} and column_name='language_version_id'`;
+      assert(c[0]?.["is_nullable"]==="YES",`${t}.language_version_id must be nullable`);
+      const old=await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${t} and column_name='language'`;
+      assert(old.length===1,`${t}.language must be kept`);
+    }
+    // Historisk gyldige verdier og særverdiene beholdes; nye BCP-47-koder godtas; ugyldige avvises.
+    const defs=Object.fromEntries((await sql`select conname, pg_get_constraintdef(oid) d from pg_constraint where conname in ('translations_language_check','audio_clips_language_check','takes_audio_language_check')`).map(r=>[r["conname"],String(r["d"])]));
+    assert(defs["audio_clips_language_check"]?.includes("'*'") && defs["takes_audio_language_check"]?.includes("'none'"),"special audio values lost");
+    const probe=async(v:string)=>{ try { await sql.begin(async tx=>{ await tx`insert into public.translations(id,project_id,block_id,language,text) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),${v},'x')`; }); return "inserted"; } catch(e){ return String((e as {code?:string}).code); } };
+    // Foreign keys fail after the check passes (23503); the check fails first for invalid tags (23514).
+    for (const v of ["en","en-GB","de","pt-BR","sr-Latn","zh-Hant-TW","es-419"]) { const r=await probe(v); assert(r==="23503",`valid tag ${v} rejected by check (${r})`); }
+    for (const v of ["EN","en-us","en_US","x","nb","no"]) { const r=await probe(v); assert(r==="23514",`invalid tag ${v} accepted (${r})`); }
+    for (const name of ["delete_project","purge_project_assets"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${name}(uuid,uuid)`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
+    }
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'") && ac.includes("Invalid language version scope"),"apply_changes lacks language versions");
+    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===66,"schema version 66");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.language_versions(id,project_id,language,name) values(gen_random_uuid(),gen_random_uuid(),'de','Tysk')`),"42501");
+  });
+
+  await test("0066: tre målspråk via apply_changes – revisjoner, idempotens, angre/gjør om, kollisjoner, sceneisolasjon, 1:n/n:1 og historiske rader", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('ML3 fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const mk=(n:number)=>{let k:string|null=null;return Array.from({length:n},(_,i)=>{k=keyBetween(k,null);return {blockId:newId() as never,kind:"action" as const,text:`Norsk ${i}`,orderKey:k};});};
+    const v1=newId(),v2=newId();const blocks1=mk(3),blocks2=mk(2);
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v1 as never,occurrenceId:newId() as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"A",time:"DAG"},blocks:blocks1});
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v2 as never,occurrenceId:newId() as never,orderKey:keyBetween(orderedOccurrences(st,prod.id).at(-1)?.orderKey ?? null,null),heading:{intExt:"INT.",location:"B",time:"DAG"},blocks:blocks2});
+    const norsk=async()=>Object.fromEntries((await sql`select id,text,revision from public.script_blocks where project_id=${bp}`).map(r=>[r["id"],`${r["text"]}#${r["revision"]}`]));
+    const before=await norsk();
+    // Historisk rad fra før 0066: ingen versjon, avledes fra prosjekt + språk
+    const legacyId=newId();
+    await sql`insert into public.translations(id,project_id,block_id,language,text,based_on_rev,status) values(${legacyId},${bp},${blocks1[2]!.blockId},'en','Old English',1,'approved')`;
+    st=await loadState(bp);
+    const ids:Record<string,string>={};
+    for (const language of ["de","pt-BR","sr-Latn"]) { ids[language]=newId(); st=await runCommand(st,ALICE,{type:"AddLanguageVersion",versionId:ids[language]!,language,name:`V ${language}`}); }
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.language_versions where project_id=${bp}`)).length===3,"member cannot read");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.language_versions where project_id=${bp}`)).length===0,"nonmember reads");
+    // Samme språk med annen skrivemåte stoppes av databasen også når kjernen omgås
+    const dup={id:newId(),project_id:bp,language:"pt-br",name:"Dup",status:"active",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddLanguageVersion"})},null,${sql.json({inserts:{language_versions:[dup]}})})`),/language|unique|check/i);
+    const dup2={...dup,id:newId(),language:"PT-BR"};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddLanguageVersion"})},null,${sql.json({inserts:{language_versions:[dup2]}})})`),/language|unique|check/i);
+    // Import (uncertain) i to språk, linjer i sr-Latn, 1:n og n:1
+    const tDe=newId(),tPt=newId(),u1=newId(),u2=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslations",items:[{translationId:tDe as never,fields:{blockId:blocks1[0]!.blockId,variantId:null,language:"de",text:"Deutsch",basedOnRev:1,status:"uncertain"}},{translationId:tPt as never,fields:{blockId:blocks1[0]!.blockId,variantId:null,language:"pt-BR",text:"Olá",basedOnRev:1,status:"uncertain"}}]});
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:u1,fields:{variantId:v1,language:"sr-Latn",ord:0,kind:"action",text:"Prva"}},{lineId:u2,fields:{variantId:v1,language:"sr-Latn",ord:1,kind:"action",text:"Druga"}}]});
+    const vrows=await sql`select id,language,language_version_id v from public.translations where project_id=${bp} union all select id,language,language_version_id from public.translation_lines where project_id=${bp}`;
+    assert(vrows.find(r=>r["id"]===tDe)?.["v"]===ids["de"] && vrows.find(r=>r["id"]===u1)?.["v"]===ids["sr-Latn"] && vrows.find(r=>r["id"]===legacyId)?.["v"]===null,"version ids not stored");
+    const split=newId(),merge=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:split,fields:{variantId:v1,language:"sr-Latn",sourceBlockIds:[blocks1[0]!.blockId],targetTranslationIds:[u1,u2],origin:"manual",confidence:1,reason:""}});
+    st=await runCommand(st,ALICE,{type:"ApproveLineLinks",linkIds:[],additions:[{linkId:merge,fields:{variantId:v1,language:"pt-BR",sourceBlockIds:[blocks1[0]!.blockId,blocks1[1]!.blockId],targetTranslationIds:[tPt],origin:"approved",confidence:0.9,reason:""}}]});
+    const lrows=await sql`select id,language_version_id v from public.translation_line_links where project_id=${bp}`;
+    assert(lrows.find(r=>r["id"]===split)?.["v"]===ids["sr-Latn"] && lrows.find(r=>r["id"]===merge)?.["v"]===ids["pt-BR"],"link versions");
+    // Feil scope: versjon fra et annet språk, mål fra en annen versjon, og annen scene
+    const wrongLang={id:newId(),project_id:bp,block_id:blocks1[1]!.blockId,variant_id:null,language:"pt-BR",text:"x",based_on_rev:1,status:"approved",removed:false,revision:1,language_version_id:ids["de"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},null,${sql.json({inserts:{translations:[wrongLang]}})})`),"22023");
+    const wrongTarget={id:newId(),project_id:bp,variant_id:v1,language:"sr-Latn",source_block_ids:[blocks1[1]!.blockId],target_translation_ids:[u1],origin:"manual",confidence:1,reason:"",removed:false,revision:1,language_version_id:ids["de"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[wrongTarget]}})})`),"22023");
+    const otherScene={...wrongTarget,id:newId(),variant_id:v2,source_block_ids:[blocks2[0]!.blockId],language_version_id:ids["sr-Latn"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[otherScene]}})})`),"22023");
+    // Revisjonskontroll
+    const stale={id:ids["de"],language:"de",name:"Gammel",status:"active",removed:false,revision:6,expected_revision:5};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateLanguageVersion"})},null,${sql.json({updates:{language_versions:[stale]}})})`),"P0409");
+    // Idempotens: samme kommando-ID to ganger gir ingen ny endring
+    const cmdId=newId();const rename:Command={type:"UpdateLanguageVersion",versionId:ids["de"]!,name:"Tysk"};
+    const res=applyCommand(st,{id:cmdId as never,actor:ALICE,at:new Date().toISOString(),command:rename});assert(res.ok,"rename rejected");
+    if (!res.ok) return;
+    const ch=diffStates(st,res.state);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${cmdId},${tx.json(rename as never)},${tx.json(res.inverse as never)},${tx.json(ch as never)})`);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${cmdId},${tx.json(rename as never)},${tx.json(res.inverse as never)},${tx.json(ch as never)})`),/./);
+    assert((await sql`select revision from public.language_versions where id=${ids["de"]!}`)[0]?.["revision"]===2,"rename applied twice");
+    st=res.state;
+    // Angre og gjør om navnet
+    st=await runCommand(st,ALICE,res.inverse);
+    assert((await sql`select name from public.language_versions where id=${ids["de"]!}`)[0]?.["name"]==="V de","undo rename");
+    st=await runCommand(st,ALICE,rename);
+    assert((await sql`select name from public.language_versions where id=${ids["de"]!}`)[0]?.["name"]==="Tysk","redo rename");
+    // Godkjenning, angring og fjerning: norsk og andre språk uendret
+    const deBefore=await sql`select id,text,status,revision from public.translations where language='de' and project_id=${bp}`;
+    const approve:Command={type:"UpdateTranslations",items:[{translationId:tPt as never,fields:{blockId:blocks1[0]!.blockId as never,variantId:null,language:"pt-BR",text:"Olá",basedOnRev:1,status:"approved"}}]};
+    const appr=applyCommand(st,{id:newId() as never,actor:ALICE,at:new Date().toISOString(),command:approve});assert(appr.ok,"approve");
+    if (!appr.ok) return;
+    st=await runCommand(st,ALICE,approve);
+    assert((await sql`select status from public.translations where id=${tPt}`)[0]?.["status"]==="approved","approve not stored");
+    st=await runCommand(st,ALICE,appr.inverse);
+    assert((await sql`select status from public.translations where id=${tPt}`)[0]?.["status"]==="uncertain","undo approve");
+    st=await runCommand(st,ALICE,{type:"SetLanguageVersionRemoved",versionId:ids["sr-Latn"]!,removed:true});
+    assert((await sql`select count(*)::int n from public.translation_lines where project_id=${bp} and not removed`)[0]?.["n"]===2,"removing a version deleted lines");
+    st=await runCommand(st,ALICE,{type:"SetLanguageVersionRemoved",versionId:ids["sr-Latn"]!,removed:false});
+    const deAfter=await sql`select id,text,status,revision from public.translations where language='de' and project_id=${bp}`;
+    assert(isDeepStrictEqual([...deBefore],[...deAfter]),"other language changed");
+    assert(isDeepStrictEqual(before,await norsk()),"Norwegian source changed");
+    // Kollisjoner fra historiske data blir liggende urørt
+    await sql`insert into public.translation_lines(id,project_id,variant_id,language,ord,text) values(${newId()},${bp},${v2},'en-us',0,'a'),(${newId()},${bp},${v2},'en-US',1,'b')`;
+    st=await loadState(bp);
+    st=await runCommand(st,ALICE,{type:"EditBlockText",productionId:prod.id,blockId:blocks2[1]!.blockId as never,text:"Senere endring"});
+    assert((await sql`select count(*)::int n from public.translation_lines where project_id=${bp} and lower(language)='en-us'`)[0]?.["n"]===2,"collision rows changed");
+    assert((await sql`select text from public.translations where id=${legacyId}`)[0]?.["text"]==="Old English","legacy row changed");
+    // Sletting og purge
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.language_versions where project_id=${bp}`).length===0,"language versions left after delete");
     await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
     assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
   });
