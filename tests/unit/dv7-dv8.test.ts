@@ -8,6 +8,7 @@ import {
 import { envelope } from "../helpers/fixtures";
 import { dvBase, dvId } from "../helpers/dialogue-fixture";
 import { generatedCommand } from "../helpers/generated-dialogue";
+import { fixture } from "../visual/fixture-state";
 
 function apply(s: ProjectState, c: Command, actor?: string) {
   const env = envelope(c);
@@ -175,7 +176,7 @@ describe("DV8 note flags", () => {
     const rows = diffStates(s, st).inserts as Record<string, Record<string, unknown>[]>;
     const row = rows["note_flags"]![0]!;
     expect(row["target_kind"]).toBe("occurrence");
-    const back = stateFromRows({ ...({} as never), project: {} as never, note_flags: [{ ...row, created_by: "u" }] } as never);
+    const back = stateFromRows({ ...(fixture.rows as never as Record<string, unknown>), project: fixture.project, note_flags: [{ ...row, created_by: "u" }] } as never);
     expect(back.noteFlags[dvId(712)]?.text).toBe("rad");
   });
 });
