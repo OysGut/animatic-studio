@@ -1,5 +1,5 @@
 import { describe,it,expect } from "vitest";
-import { applyCommand,blocksOfVariant,makeBackup,stateFromRows,diffStates,emptyProjectState,lineLinkError,parseLineAlignment,lineAlignmentPrompt,linksAboveThreshold,uncertainLineScope,type LineLinkFields,type ProjectState,type Command } from "@/core";
+import { applyCommand,blocksOfVariant,makeBackup,stateFromRows,diffStates,emptyProjectState,lineLinkError,parseLineAlignment,lineAlignmentPrompt,linksAboveThreshold,uncertainLineScope,translatedState,backupIdMap,restoredState,type LineLinkFields,type ProjectState,type Command,type ProjectRows } from "@/core";
 import {seedProject,tid,envelope} from "../helpers/fixtures";
 function fixture() {
   let s=seedProject(2).state;
@@ -22,5 +22,26 @@ describe("B-050 line linking",()=>{
   it("threshold is inclusive at 0.8, rejects invalid thresholds",()=>{const {fields}=fixture();const links=[{...fields,id:tid(),revision:1,removed:false,confidence:0.8},{...fields,id:tid(),revision:1,removed:false,confidence:0.79}];expect(linksAboveThreshold(links,0.8)).toEqual([links[0]?.id]);expect(linksAboveThreshold(links,-1)).toEqual([]);});
   it("bulk approval is one command and one inverse; undo/redo preserves Norwegian text",()=>{const {s,fields}=fixture();const id=tid();const r=apply(s,{type:"ApproveLineLinks",linkIds:[],additions:[{linkId:id,fields}]});expect(r.state.translationLineLinks[id]?.origin).toBe("approved");expect(r.state.blocks).toEqual(s.blocks);const undo=apply(r.state,r.inverse);expect(undo.state.translationLineLinks[id]?.removed).toBe(true);const redo=apply(undo.state,undo.inverse);expect(redo.state.translationLineLinks[id]?.removed).toBe(false);expect(redo.state.blocks).toEqual(s.blocks);});
   it("manual adjustment, rejection and creation undo are reversible",()=>{const {s,fields}=fixture();const id=tid();const add=apply(s,{type:"SetLineLink",linkId:id,fields});const reject=apply(add.state,{type:"RejectLineLinks",linkIds:[id],removed:true});expect(apply(reject.state,reject.inverse).state.translationLineLinks[id]?.removed).toBe(false);expect(apply(add.state,add.inverse).state.translationLineLinks[id]).toBeUndefined();});
+  it("approved 1:n and n:1 are used only by translated projection",()=>{
+    const {s,fields,targets,blocks}=fixture();
+    const one=apply(s,{type:"SetLineLink",linkId:tid(),fields:{...fields,origin:"approved",targetTranslationIds:targets.slice(0,2).map(t=>t.id)}}).state;
+    const source=blocks[0];if(!source)throw new Error("missing");
+    expect(translatedState(one,"en").blocks[source.id]?.text).toBe(targets.slice(0,2).map(t=>t.text).join("\n"));
+    expect(one.blocks[source.id]?.text).toBe(s.blocks[source.id]?.text);
+    expect(translatedState(one,"nb")).toBe(one);
+    const many=apply(s,{type:"SetLineLink",linkId:tid(),fields:{...fields,origin:"approved",sourceBlockIds:blocks.slice(0,2).map(b=>b.id)}}).state;
+    const second=blocks[1];if(!second)throw new Error("missing");
+    expect(translatedState(many,"en").blocks[second.id]?.text).toBe("");
+  });
+  it("backup includes approved links and remaps their arrays on restore",async()=>{
+    const {s,fields}=fixture();const id=tid();const linked=apply(s,{type:"SetLineLink",linkId:id,fields:{...fields,origin:"approved"}}).state;
+    const empty=emptyProjectState(s.project); const inserts=diffStates(empty,linked).inserts;
+    const rows={project:{id:s.project.id,name:s.project.name,revision:1,fps_num:25,fps_den:1,frame_width:1920,frame_height:1080},...inserts,script_block_revisions:[]} as unknown as ProjectRows;
+    const b=makeBackup({rows,scriptVersions:[],importedDocuments:[],changeLog:[],generationJobs:[],schemaVersion:64,createdAt:"2026-10-20T00:00:00Z",include:new Set()});
+    expect(b.tables["translation_line_links"]).toHaveLength(1);
+    const pid=tid<"project">(),main=tid<"production">();const map=await backupIdMap(b,pid,main);
+    const restored=restoredState(b,map,emptyProjectState({...s.project,id:pid}),tid());
+    const l=Object.values(restored.translationLineLinks)[0];expect(l?.sourceBlockIds).toEqual(fields.sourceBlockIds.map(x=>map.get(x)));expect(l?.targetTranslationIds).toEqual(fields.targetTranslationIds.map(x=>map.get(x)));
+  });
   it("storage roundtrip includes array references",()=>{const {s,fields}=fixture();const id=tid();const r=apply(s,{type:"SetLineLink",linkId:id,fields});const patch=diffStates(s,r.state);const row=patch.inserts["translation_line_links"]?.[0];expect(row?.["source_block_ids"]).toEqual(fields.sourceBlockIds);expect(row?.["target_translation_ids"]).toEqual(fields.targetTranslationIds);});
 });
