@@ -1,3 +1,10 @@
+# D fullføring (20.10.2026)
+- [ ] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.
+- [ ] Endelig 0063 med minimal create_project fra 0001 og serverhåndhevet profilbudsjett; ingen Cloud-kjøring.
+- [ ] Felles bakgrunnskø og strømmet PNG-ZIP med fremdrift/avbryt.
+- [ ] P6 NO/EN, full Vitest/DB og bestilte visuelle regresjoner.
+- [ ] REQ-0854–0862, Quality & Cost Engine, build_docs/check_kb og sluttrapport.
+
 # P4 B – Lageksport med alfa (20.10.2026)
 - [x] Felles compositor med transparent bakgrunn, lagfilter og effektvalg.
 - [x] AlphaEncoder, PNG-ZIP og kontrollert WebM VP9-alfa, avbryt og fremdrift. Faktisk WebM-alfa venter på nettleser/koder med positiv støtte.
