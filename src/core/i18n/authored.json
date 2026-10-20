@@ -4087,10 +4087,10 @@
     "ml3-language-versions.button.manage": {
       "replaces": [],
       "nb": {
-        "text": "Språkversjoner …"
+        "text": "Språk i manuset …"
       },
       "en": {
-        "text": "Language versions …"
+        "text": "Script languages …"
       }
     },
     "ml3-language-versions.dialog.title": {
@@ -4379,6 +4379,33 @@
       },
       "en": {
         "text": "The Norwegian text has changed. Needs review in: {languages}"
+      }
+    },
+    "ml4-export-fonts.pdf-blocked": {
+      "replaces": [],
+      "nb": {
+        "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
+      },
+      "en": {
+        "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+      }
+    },
+    "ml4-export-fonts.docx-warning": {
+      "replaces": [],
+      "nb": {
+        "text": "Word-fonten ({font}) har ikke {count} tegn: {chars}. Tegnene beholdes i filen, men Word viser dem med en annen font."
+      },
+      "en": {
+        "text": "The Word font ({font}) lacks {count} characters: {chars}. The characters are kept in the file, but Word shows them in another font."
+      }
+    },
+    "ml4-export-fonts.ok": {
+      "replaces": [],
+      "nb": {
+        "text": "Fonten ({font}) kan vise alle tegnene i eksporten."
+      },
+      "en": {
+        "text": "The font ({font}) can show every character in the export."
       }
     }
   }

@@ -4,7 +4,7 @@
  */
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, exportLanguageDecision, languageLabel, type ExportFallbackChoice, type NumberingMethod, type ProjectState, type TranslationStatus } from "@/core";
+import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, exportLanguageDecision, languageLabel, scriptExportFontCheck, scriptExportTexts, docxLanguageTag, type ExportFallbackChoice, type NumberingMethod, type ProjectState, type TranslationStatus } from "@/core";
 import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { savedTitlePage } from "@/core/commands/export-settings";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
@@ -155,8 +155,19 @@ export function ExportDialog({
   );
   const changed = preview.filter((p) => p.exportNumber !== p.productionNumber).length;
 
+  // ML4: fontkontroll før filen lages. PDF stoppes hvis tegn ville blitt «?»; Word får en advarsel.
+  const fontCheck = useMemo(
+    () =>
+      open
+        ? scriptExportFontCheck(scriptExportTexts(exportPaginationInput(state, productionId, opts), titleLines), format)
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [open, state, productionId, method, includeInactive, fillOriginal, historical, titleLines, format],
+  );
+  const fontBlocked = !!fontCheck?.blocking;
+
   function doExport() {
-    if (languageBlocked) return;
+    if (languageBlocked || fontBlocked) return;
     setBusy(true);
     setError(null);
     try {
@@ -206,6 +217,7 @@ export function ExportDialog({
       } else {
         const bytes = screenplayDocx(input, {
           title: state.project.name,
+          language: docxLanguageTag(language),
           titlePage,
           ...(notes ? { notes } : {}),
         });
@@ -425,6 +437,29 @@ export function ExportDialog({
               />
             </label>
           ) : null}
+          {fontCheck && fontCheck.font && fontCheck.unsupportedCount > 0 ? (
+            <p
+              role={fontCheck.blocking ? "alert" : "status"}
+              data-testid={fontCheck.blocking ? "export-font-blocked" : "export-font-warning"}
+              className={"rounded-sm border p-2 " + (fontCheck.blocking ? "border-status-danger text-status-danger" : "border-status-uncertain text-text-secondary")}
+            >
+              {fontCheck.blocking
+                ? t("ml4-export-fonts.pdf-blocked", {
+                    font: fontCheck.font,
+                    count: String(fontCheck.unsupportedCount),
+                    chars: fontCheck.unsupported.join(" "),
+                  })
+                : t("ml4-export-fonts.docx-warning", {
+                    font: fontCheck.font,
+                    count: String(fontCheck.unsupportedCount),
+                    chars: fontCheck.unsupported.join(" "),
+                  })}
+            </p>
+          ) : fontCheck?.font && language !== "nb" ? (
+            <p data-testid="export-font-ok" className="text-text-tertiary">
+              {t("ml4-export-fonts.ok", { font: fontCheck.font })}
+            </p>
+          ) : null}
           {decision.kind !== "complete" ? (
             <fieldset data-testid="export-language-incomplete" className="space-y-1 rounded-sm border border-status-uncertain p-2">
               <legend className="px-1 text-text-primary">
@@ -573,7 +608,7 @@ export function ExportDialog({
           <Button
             onClick={doExport}
             data-testid="script-export-run"
-            disabled={busy || languageBlocked || preview.length === 0 || (method === "historical" && !historical)}
+            disabled={busy || languageBlocked || fontBlocked || preview.length === 0 || (method === "historical" && !historical)}
           >
             <Download />
             {t("app-script-export-dialog.export-dialog.button.f614693c69c2")}{" "}

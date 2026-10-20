@@ -1,5 +1,13 @@
 # Veikart
 
+## B-049 ML4 – ende-til-ende (20.10.2026)
+- [x] Eksport med N språkversjoner: fontkontroll (PDF stopper i stedet for «?», Word advarer), språkmerke i Word.
+- [x] Releasekontroll: bygget stopper hvis nb/en ikke er komplette.
+- [x] Sikkerhetskopi før og etter 0066, AI med N språk (mock), ml4-e2e.mjs.
+- [x] ML3-avvik: AI-servertest, en-XA med UI_LANG=en, pgtest fjernet.
+- [x] Alle visuelle suiter på nb og UI_LANG=en; gjenstående avvik feiler likt på ML2f (se ML4_REPORT.md).
+- [ ] Språkstøtte i eldre suiter og retting av gamle suitefeil: venter på oppdrag.
+
 ## B-049 ML3 – N manusspråk per prosjekt (20.10.2026)
 - [x] Kartlegging av lagrede språkmerker og constraints i ML3_REPORT.md (ingen kollisjoner i Cloud).
 - [x] Migrasjon 0066 (additiv): BCP-47 i 0016/0017-begrensningene, language_versions, nullable language_version_id; DB 142/142.

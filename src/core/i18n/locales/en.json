@@ -73159,7 +73159,7 @@
     "text": "The lines in the link belong to different language versions."
   },
   "ml3-language-versions.button.manage": {
-    "text": "Language versions …"
+    "text": "Script languages …"
   },
   "ml3-language-versions.dialog.title": {
     "text": "Language versions"
@@ -73256,5 +73256,14 @@
   },
   "ml3-language-versions.review.languages": {
     "text": "The Norwegian text has changed. Needs review in: {languages}"
+  },
+  "ml4-export-fonts.pdf-blocked": {
+    "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+  },
+  "ml4-export-fonts.docx-warning": {
+    "text": "The Word font ({font}) lacks {count} characters: {chars}. The characters are kept in the file, but Word shows them in another font."
+  },
+  "ml4-export-fonts.ok": {
+    "text": "The font ({font}) can show every character in the export."
   }
 }

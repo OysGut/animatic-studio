@@ -73177,7 +73177,7 @@
     "text": "Linjene i koblingen hører til ulike språkversjoner."
   },
   "ml3-language-versions.button.manage": {
-    "text": "Språkversjoner …"
+    "text": "Språk i manuset …"
   },
   "ml3-language-versions.dialog.title": {
     "text": "Språkversjoner"
@@ -73274,5 +73274,14 @@
   },
   "ml3-language-versions.review.languages": {
     "text": "Norsk er endret. Må gjennomgås i: {languages}"
+  },
+  "ml4-export-fonts.pdf-blocked": {
+    "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
+  },
+  "ml4-export-fonts.docx-warning": {
+    "text": "Word-fonten ({font}) har ikke {count} tegn: {chars}. Tegnene beholdes i filen, men Word viser dem med en annen font."
+  },
+  "ml4-export-fonts.ok": {
+    "text": "Fonten ({font}) kan vise alle tegnene i eksporten."
   }
 }

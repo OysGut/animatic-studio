@@ -215,7 +215,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                 <AiGlyph />
                 {t("app-projects-projects-screen.projects-screen.button.f906b0863ecc")}
               </Button>
-              <Button variant="secondary" onClick={() => setRestoring(true)}>
+              <Button data-testid="restore-backup-open" variant="secondary" onClick={() => setRestoring(true)}>
                 <ArchiveRestore />
                 {t("app-projects-projects-screen.projects-screen.button.c36722de4cc3")}
               </Button>
@@ -396,6 +396,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
+                        data-testid="project-menu"
                         aria-label={t("app-projects-projects-screen.projects-screen.aria-label.20089e6afbf6", { name: String(p.name) })}
                         className="rounded-sm p-1 text-text-tertiary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
@@ -409,6 +410,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                         <Download /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.728534d50242")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
+                        data-testid="project-menu-backup"
                         onSelect={() => setDialog({ kind: "backup", target: target(p) })}
                       >
                         <DatabaseBackup /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.c8a1abd0cec2")}

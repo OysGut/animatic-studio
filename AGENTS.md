@@ -36,7 +36,7 @@ Kortversjonen:
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
 20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
-21. Asset-version creation order uses compareVersionCreation (timestamp, number, variant/version IDs) so same-millisecond recordings stay deterministic.
+21. Asset-version order uses compareVersionCreation so same-millisecond recordings stay deterministic.
 23. Invitations bind to the invited email: acceptance functions compare it with the signed-in auth email, so a leaked invitation link never grants access to someone else.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
@@ -48,8 +48,8 @@ Kortversjonen:
 29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock so caps hold.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
-31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag (nb source); old rows derive from project+language, so nothing is backfilled.
+31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag; old rows derive from project+language (no backfill).
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
-34. M6: additive updates, computed forecasts; context review tracks targets, AI scores.
-35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. Language switches never remount; server error codes are additive.
+34. M6: additive updates and computed forecasts.
+35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. Language switches never remount; server error codes are additive. Builds stop unless release-check.mjs finds nb/en complete; script PDF stops on glyphs Courier lacks.

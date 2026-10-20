@@ -2802,6 +2802,53 @@ export type Database = {
           },
         ]
       }
+      language_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          source_language: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source_language?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source_language?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "language_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lipsync_results: {
         Row: {
           algorithm_version: number
@@ -5013,6 +5060,7 @@ export type Database = {
           created_by: string | null
           id: string
           language: string
+          language_version_id: string | null
           origin: string
           project_id: string
           reason: string
@@ -5028,6 +5076,7 @@ export type Database = {
           created_by?: string | null
           id: string
           language: string
+          language_version_id?: string | null
           origin: string
           project_id: string
           reason?: string
@@ -5043,6 +5092,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           language?: string
+          language_version_id?: string | null
           origin?: string
           project_id?: string
           reason?: string
@@ -5053,6 +5103,13 @@ export type Database = {
           variant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "translation_line_links_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "translation_line_links_project_id_fkey"
             columns: ["project_id"]
@@ -5076,6 +5133,7 @@ export type Database = {
           id: string
           kind: string
           language: string
+          language_version_id: string | null
           ord: number
           project_id: string
           removed: boolean
@@ -5089,6 +5147,7 @@ export type Database = {
           id: string
           kind?: string
           language: string
+          language_version_id?: string | null
           ord: number
           project_id: string
           removed?: boolean
@@ -5102,6 +5161,7 @@ export type Database = {
           id?: string
           kind?: string
           language?: string
+          language_version_id?: string | null
           ord?: number
           project_id?: string
           removed?: boolean
@@ -5110,6 +5170,13 @@ export type Database = {
           variant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "translation_lines_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "translation_lines_project_id_fkey"
             columns: ["project_id"]
@@ -5134,6 +5201,7 @@ export type Database = {
           created_by: string | null
           id: string
           language: string
+          language_version_id: string | null
           project_id: string
           removed: boolean
           revision: number
@@ -5148,6 +5216,7 @@ export type Database = {
           created_by?: string | null
           id: string
           language: string
+          language_version_id?: string | null
           project_id: string
           removed?: boolean
           revision?: number
@@ -5162,6 +5231,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           language?: string
+          language_version_id?: string | null
           project_id?: string
           removed?: boolean
           revision?: number
@@ -5175,6 +5245,13 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
             referencedColumns: ["id"]
           },
           {

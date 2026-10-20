@@ -10,3 +10,4 @@ export * from "./versions";
 export * from "./story";
 export * from "./fountain";
 export * from "./flow";
+export * from "./export-fonts";
