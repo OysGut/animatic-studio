@@ -8,6 +8,7 @@ import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
 import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
+import { useRecordExport } from "@/app/projects/use-history-records";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
@@ -16,6 +17,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   state: ProjectState; composition: Composition; initialLayerIds?: readonly string[];
   open: boolean; onOpenChange: (open: boolean) => void;
 }) {
+  const recordExport = useRecordExport(state.project.id);
   const quality = useQualityProfile(state);
   const appliedProfile = useRef<string | null>(null);
   const taskId = useRef<string | null>(null);
@@ -100,6 +102,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
       await exportAlphaLayers({ state, composition, settings: options, images, sink, fileBase: base,
         signal: ctrl.signal, onProgress: (done, total) => { setProgress({ done, total }); report(done, total); } });
       setReady(sink.link?.() ?? null);
+      if (occurrence) await recordExport({ productionId:occurrence.productionId,kind:"film",fileName:`${base}.${png?"zip":"webm"}`,occurrenceIds:[occurrence.id],settings:{format:options.format,alpha:options.alpha,layerIds:[...options.layerIds],effects:options.effects,startFrame:range.start,endFrame:range.end,qualityProfileId:snapshot?.id??null,qualityProfileName:snapshot?.name??null,qualityProfileSnapshot:snapshot?JSON.stringify(snapshot):null} });
     } catch (e) {
       await sink?.abort().catch(() => undefined);
       setError((e as Error).name === "AbortError" ? L("Eksporten er avbrutt. Ingen fil er lagret.", "Export cancelled. No file was saved.") : (e as Error).message);

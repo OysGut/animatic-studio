@@ -364,7 +364,6 @@ export function SceneVideoSection({
   if (!flat.length)
     return (
       <p className="text-xs text-text-tertiary">
-      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
 
 
         {L(
@@ -383,6 +382,7 @@ export function SceneVideoSection({
         <Clapperboard className="size-4" aria-hidden />{" "}
         {L("Lag video med AI", "Make video with AI")}
       </h3>
+      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
       <EffortPicker
         capability="video"
         connected={new Set(available.data?.providers ?? [])}
