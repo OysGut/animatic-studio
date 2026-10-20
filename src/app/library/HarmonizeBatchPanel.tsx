@@ -6,7 +6,7 @@
 import { Loader2, Palette } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { L, localized, tm, newId, qualityProfileSnapshot, type ProjectState } from "@/core";
+import { L, estimateCostUsd, formatUsd, localized, tm, newId, qualityProfileSnapshot, type ProjectState } from "@/core";
 import {
   advanceHarmonizeBatch,
   createHarmonizeBatch,
@@ -15,7 +15,7 @@ import {
   type HarmonizeBatchView,
 } from "@/adapters/storage/harmonize-batch.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
-import type { useQualityProfile } from "@/app/ai/QualityProfilePicker";
+import { useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { Button } from "@/components/ui/button";
 import { CostConfirm } from "./ImageAiPanels";
 import type { ImageModelPick } from "./image-model";
@@ -79,6 +79,18 @@ export function HarmonizeBatchPanel({
   const requestId = useRef(newId<"command">());
   const count = chosen.size;
   const noStyle = !styleProfileId && !referenceVersionId;
+  // Samlet anslag (P8-avvik 2): pris per bilde for valgt modell og størrelse fra kvalitetsprofilen, ganger antallet.
+  // Profilens budsjett kontrolleres for hele antallet, ikke bare ett bilde.
+  const batchQuality = useQualityProfile(state, Math.max(1, count));
+  useEffect(() => {
+    batchQuality.setChoice(quality.choice);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quality.choice]);
+  const unitUsd = m.choice
+    ? estimateCostUsd(m.choice.provider.id, m.choice.model.id, { images: 1, ...(m.size ? { size: m.size } : {}) })
+    : null;
+  const priced = { ...m, unit: unitUsd };
+  const budgetError = batchQuality.budgetError ?? quality.budgetError;
 
   async function refresh(id: string) {
     const list = await listHarmonizeBatches({ data: { projectId } });
@@ -118,7 +130,7 @@ export function HarmonizeBatchPanel({
           styleProfileId,
           referenceVersionId,
           provider: m.choice.provider.id,
-          model: m.choice.provider.id === "lovable" ? null : m.choice.model.id,
+          model: m.choice.model.id,
           size: m.size,
           qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
           items: candidates.filter((c) => chosen.has(c.asset.id)).map((c) => ({ assetId: c.asset.id, sourceVersionId: c.sourceVersionId })),
@@ -184,9 +196,18 @@ export function HarmonizeBatchPanel({
               </label>
             ))}
           </fieldset>
+          {count > 0 && !noStyle ? (
+            <p data-testid="harmonize-batch-estimate" className="text-text-primary">
+              {L(
+                `Samlet anslag: ${count} ${count === 1 ? "generering" : "genereringer"} med ${m.choice?.model.label ?? "?"}${unitUsd !== null ? ` · ${formatUsd(unitUsd)} per bilde · totalt ${formatUsd(unitUsd * count)}` : " · prisen er ukjent"}${m.size ? ` · ${m.size}` : ""}${quality.profile ? ` · profil «${quality.profile.name}»` : ""}.`,
+                `Total estimate: ${count} ${count === 1 ? "generation" : "generations"} with ${m.choice?.model.label ?? "?"}${unitUsd !== null ? ` · ${formatUsd(unitUsd)} per image · ${formatUsd(unitUsd * count)} in total` : " · the price is unknown"}${m.size ? ` · ${m.size}` : ""}${quality.profile ? ` · profile “${quality.profile.name}”` : ""}.`,
+              )}
+            </p>
+          ) : null}
+          {budgetError ? <p role="alert" data-testid="harmonize-batch-budget" className="text-status-danger">{budgetError}</p> : null}
           <CostConfirm
-            m={m}
-            count={noStyle || quality.budgetError ? 0 : count}
+            m={priced}
+            count={noStyle || budgetError ? 0 : count}
             confirm={confirm}
             onConfirm={setConfirm}
             onRun={() => void start()}

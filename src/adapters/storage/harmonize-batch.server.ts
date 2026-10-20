@@ -71,7 +71,7 @@ export async function processHarmonizeBatch(db: AnyClient, batchId: string, limi
         }
         await transition(item["id"], { status: "generating", attempts: Number(item["attempts"] ?? 0) + 1 });
         const out = await runImageGeneration(
-          { projectId: batch.project_id, assetId: input.assetId, prompt, referencePaths: harmonizeAttachments(state, input).map((a) => a.path), identityFirst: true, purpose: "cutout", variantId: String(item["variant_id"]), provider: batch.provider, model: batch.provider === "lovable" ? null : batch.model, size: (batch.size as ImageSize | null) ?? null, approved: true, qualityProfile },
+          { projectId: batch.project_id, assetId: input.assetId, prompt, referencePaths: harmonizeAttachments(state, input).map((a) => a.path), identityFirst: true, purpose: "cutout", variantId: String(item["variant_id"]), provider: batch.provider, model: batch.model, size: (batch.size as ImageSize | null) ?? null, approved: true, qualityProfile },
           { userId: batch.created_by, supabase: db },
           { existingJobId: String(item["job_id"]) },
         );

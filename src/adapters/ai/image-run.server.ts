@@ -21,7 +21,7 @@ import {
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, gatewayError, referenceImages } from "./gateway";
-import { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
+import { builtInImageModel, LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
 import { MAX_PER_PROJECT_PER_DAY, MAX_PER_USER_PER_HOUR } from "./image-limits";
 import type { GenerateImageInput, GenerateImageResult } from "./generate-image.functions";
 
@@ -154,9 +154,10 @@ export async function runImageGeneration(
 
   const model = own
     ? (data.model ?? "")
-    : data.purpose === "cutout"
-      ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
-      : process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
+: builtInImageModel(data.model, data.purpose, {
+        image: process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL,
+        cutout: process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL,
+      });
   // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034); egne
   // modeller (lagt til av administrator) finnes bare i innstillingene, som sendes videre under
   const aiGate = await (

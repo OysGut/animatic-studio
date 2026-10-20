@@ -35,6 +35,7 @@ import {
   DURATION_SOURCE_LABEL,
   SCENE_STATUS_LABEL,
   estimateProduction,
+  durationForecast,
   filterStatusRows,
   formatDuration,
   formatEighths,
@@ -202,6 +203,8 @@ export function DurationOverview({
     const pagination = scriptPages(state, pid, { lockedPages: true });
     return estimateProduction(state, pid, assumptions, pagination);
   }, [state, pid, assumptions]);
+  // Prognose fra historikk (M6): beregnet ved visning, aldri lagret
+  const forecast = useMemo(() => (pid ? durationForecast(state, pid, assumptions) : null), [state, pid, assumptions]);
   const overview = useMemo(
     () => (pid && estimate ? productionStatus(state, pid, estimate) : null),
     [state, pid, estimate],
@@ -354,6 +357,26 @@ export function DurationOverview({
                 )
               : ""}
           </p>
+          {forecast ? (
+            <p data-testid="duration-forecast" className="mt-3 text-xs text-text-secondary">
+              <span className="font-medium text-text-primary">{L("Prognose fra historikk:", "Forecast from history:")}</span>{" "}
+              <span className="tabular">
+                {formatDuration(forecast.lowSeconds)}–{formatDuration(forecast.highSeconds)}
+              </span>
+              {forecast.fallback
+                ? L(
+                    " · for lite historikk ennå, bygger på standardantakelsene",
+                    " · not enough history yet, based on the standard assumptions",
+                  )
+                : L(
+                    `, basert på ${forecast.basedOnScenes} ${forecast.basedOnScenes === 1 ? "ferdig scene" : "ferdige scener"} og ${forecast.basedOnLines} ${forecast.basedOnLines === 1 ? "replikk" : "replikker"} med lyd`,
+                    `, based on ${forecast.basedOnScenes} finished ${forecast.basedOnScenes === 1 ? "scene" : "scenes"} and ${forecast.basedOnLines} ${forecast.basedOnLines === 1 ? "line" : "lines"} with audio`,
+                  )}
+              <span className="text-text-tertiary">
+                {L(" (bare beregnet – endrer ikke manus eller scenelengder)", " (computed only – does not change the script or scene lengths)")}
+              </span>
+            </p>
+          ) : null}
           <div className="mt-4 grid grid-cols-3 gap-3">
             {stat(
               L("Bekreftet", "Confirmed"),

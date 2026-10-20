@@ -102,3 +102,6 @@ export * from "./generation/style-harmonize";
 
 export * from "./translation/line-align-prompt";
 export * from "./translation/line-link-labels";
+export * from "./screenplay/forecast";
+export * from "./library/context-links";
+export * from "./assembly/material-update";

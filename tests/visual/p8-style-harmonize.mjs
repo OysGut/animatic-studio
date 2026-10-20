@@ -74,6 +74,8 @@ for (const lang of ["nb", "en"]) {
     const bp = page.getByTestId("harmonize-batch-panel");
     await bp.getByRole("button", { name: /Harmoniser \d+ …|Harmonize \d+ …/ }).click();
     h.check(!h.state.rpcs.some((r) => r.name === "createHarmonizeBatch"), "batch: ingen jobb før godkjenning");
+    const est = await bp.getByTestId("harmonize-batch-estimate").innerText();
+    h.check(/\$/.test(est) && /\d+ (genereringer|generations)/.test(est), "batch: samlet kostnadsanslag med antall");
     await bp.screenshot({ path: `${h.out}/batch-confirm-${lang}.png` });
     await bp.getByRole("button", { name: lang === "nb" ? "Ja, generer" : "Yes, generate" }).click();
     h.check(await h.eventually(() => h.state.rpcs.some((r) => r.name === "createHarmonizeBatch"), 5000), "batch: én godkjenning lager én jobb");
