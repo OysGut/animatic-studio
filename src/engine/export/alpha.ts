@@ -136,6 +136,32 @@ async function webmEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement): Pr
   };
 }
 
+/** P7: ProRes 4444 with 16-bit alpha in MOV, encoded in workers and streamed to the sink. */
+async function proresEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement, total: number): Promise<AlphaEncoder> {
+  const p = await import("./prores-export");
+  const { MovWriter } = await import("./mov");
+  await p.checkProResLimits(canvas.width, canvas.height, total, "4444", o.state, false);
+  const st = await p.proresStorage();
+  const mov = new MovWriter(p.guardedSink(o.sink, !st.opfs), { width: canvas.width, height: canvas.height,
+    fps: o.state.project.fps, profile: "4444", audioRate: null });
+  await mov.start();
+  const pool = new p.ProResPool();
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error(L("Lerretet er ikke tilgjengelig.", "The canvas is unavailable."));
+  const inFlight: Promise<Uint8Array>[] = [];
+  const drain = async (keep: number) => { while (inFlight.length > keep) { const f = await inFlight.shift()!; checkAbort(o.signal); await mov.addVideo(f); } };
+  return {
+    encode: async () => {
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+      const px = o.settings.alpha === "premultiplied" ? new Uint8ClampedArray(alphaPixels(data, "premultiplied")) : data;
+      inFlight.push(pool.encode(px, canvas.width, canvas.height, "4444"));
+      await drain(pool.size * 2 - 1);
+    },
+    finish: async () => { try { await drain(0); await mov.finish(); checkAbort(o.signal); await o.sink.close(); } finally { pool.close(); } },
+    abort: async () => { pool.close(); await o.sink.abort(); },
+  };
+}
+
 export async function exportAlphaLayers(o: AlphaExportOptions): Promise<void> {
   let encoder: AlphaEncoder | null = null;
   try {
@@ -169,7 +195,7 @@ export async function exportAlphaLayers(o: AlphaExportOptions): Promise<void> {
       await writeZip(o.sink, [], {}, { signal: o.signal, extra: frames() });
       await png.finish();
     } else {
-      encoder = await webmEncoder(o, canvas);
+      encoder = o.settings.format === "mov-prores4444" ? await proresEncoder(o, canvas, total) : await webmEncoder(o, canvas);
       for (let i = 0; i < total; i++) {
         checkAbort(o.signal); draw(i); await encoder.encode(canvas, i);
         o.onProgress?.(i + 1, total); await new Promise(r => setTimeout(r, 0));

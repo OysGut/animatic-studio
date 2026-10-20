@@ -12,7 +12,7 @@ export interface AlphaExportSettings {
   readonly outFrame: number;
   readonly effects: boolean;
   readonly alpha: "straight" | "premultiplied";
-  readonly format: "png-seq" | "webm-vp9";
+  readonly format: "png-seq" | "webm-vp9" | "mov-prores4444";
 }
 export const DEFAULT_ALPHA_SETTINGS: AlphaExportSettings = {
   layerIds: [], range: "scene", inFrame: 0, outFrame: 1,
@@ -25,7 +25,7 @@ export function isAlphaSettings(v: unknown): v is AlphaExportSettings {
     (o["range"] === "scene" || o["range"] === "in-out") &&
     Number.isInteger(o["inFrame"]) && Number.isInteger(o["outFrame"]) &&
     typeof o["effects"] === "boolean" && (o["alpha"] === "straight" || o["alpha"] === "premultiplied") &&
-    (o["format"] === "png-seq" || o["format"] === "webm-vp9");
+    (o["format"] === "png-seq" || o["format"] === "webm-vp9" || o["format"] === "mov-prores4444");
 }
 export function alphaRange(c: Composition, o: AlphaExportSettings) {
   return o.range === "scene" ? { start: 0, end: c.durationFrames } : { start: o.inFrame, end: o.outFrame };

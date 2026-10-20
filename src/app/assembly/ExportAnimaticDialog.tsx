@@ -35,6 +35,9 @@ import {
 import { useTextFonts } from "@/engine/typography/fonts";
 import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
+import { supportsProRes } from "@/engine/export/prores-support";
+import { PRORES_UNSUPPORTED } from "@/core/prores-export";
+import { openAlphaSink } from "@/engine/export/alpha";
 import {
   STEM_MAX_SECONDS,
   dialogueItems,
@@ -155,7 +158,7 @@ export function ExportAnimaticDialog({
   /** «video»: film med lyd. «dialogue»: bare dialogsporet som WAV (REQ-0350). */
   const [output, setOutput] = useState<"video" | "dialogue">("video");
   // Filformat og undertekster (DEC-0085): eget valg i nedlastingen
-  const [container, setContainer] = useState<"mp4" | "webm">("mp4");
+  const [container, setContainer] = useState<"mp4" | "webm" | "mov">("mp4");
   const [subMode, setSubMode] = useState<"burn" | "srt" | "vtt" | "none">("burn");
   const [subFile, setSubFile] = useState<ReadyFile | null>(null);
   const [charFile, setCharFile] = useState<ReadyFile | null>(null);
@@ -210,6 +213,7 @@ export function ExportAnimaticDialog({
     appliedProfile.current = key;
     const preset = quality.profile?.spec.export;
     if (preset?.format === "mp4" || preset?.format === "webm") setContainer(preset.format);
+    else if (preset?.format === "prores" && supportsProRes()) setContainer("mov");
     setBitrateKbps(preset?.bitrateKbps ?? null);
     setProfileResolution(quality.profile?.spec.resolution ?? null);
   }, [quality.profile, open]);
@@ -460,7 +464,8 @@ export function ExportAnimaticDialog({
       : baseChecks;
   const warnings = checks.some((c) => c.level === "warn");
   const busy = progress !== null && ready === null && error === null;
-  const supported = canExportVideo();
+  const proresOk = supportsProRes();
+  const supported = container === "mov" ? proresOk : canExportVideo();
 
   function enqueueExport() {
     const snapshot = quality.profile ? qualityProfileSnapshot(quality.profile) : null;
@@ -556,6 +561,38 @@ export function ExportAnimaticDialog({
               `Done, but ${lostAudio} ${lostAudio === 1 ? "audio file" : "audio files"} could not be read and are missing.`,
             ),
           );
+        return;
+      }
+      if (container === "mov") {
+        // P7: ProRes 422 HQ i MOV, strømmet til nettleserens lagring (OPFS) der det støttes
+        const lang = language.dialogue === MAIN_LANGUAGE ? "" : ` – ${langName}`;
+        const name = safeName(`${state.project.name} – ${what}${lang} – ${date}.mov`);
+        const { exportProResFilm } = await import("@/engine/export/prores-export");
+        const sink = await openAlphaSink(name, "video/quicktime");
+        try {
+          const res = await exportProResFilm({
+            state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
+            monochrome: mono, images, signal: ctrl.signal, sink,
+            audio: { items: audioItems, bank: audioBank, mutedKinds },
+            filmUrls: await freshFilmUrls(sel.clips, filmUrls),
+            ...(language.subtitles && subMode === "burn" ? { subtitles } : {}),
+            ...(separateLayers ? { characterPass: "main" as const } : {}),
+            onProgress: (done, total) => { if (abort.current === ctrl) { setProgress({ done, total }); report(done, total); } },
+          });
+          if (abort.current !== ctrl || ctrl.signal.aborted) { await sink.abort(); return; }
+          await sink.close();
+          const link = sink.link?.();
+          if (link) setReady({ ...link, bytes: res.bytes });
+          void recordExport({
+            productionId, kind: "film", fileName: name,
+            settings: { output, scope, size, width: outW, height: outH, monochrome: mono, language: language.dialogue,
+              subtitles: !!language.subtitles && subMode === "burn", subtitleMode: language.subtitles ? subMode : "none",
+              subtitleLanguage: language.subtitles, format: "mov-prores422hq", bitrateKbps: null,
+              qualityProfileId: quality.profile?.id ?? null, qualityProfileName: quality.profile?.name ?? null,
+              qualityProfileSnapshot: quality.profile ? JSON.stringify(qualityProfileSnapshot(quality.profile)) : null },
+            occurrenceIds: sel.clips.map((c) => c.occurrenceId),
+          });
+        } catch (e) { await sink.abort().catch(() => undefined); throw e; }
         return;
       }
       const file = await exportAnimatic({
@@ -988,7 +1025,7 @@ export function ExportAnimaticDialog({
                 {L("Filformat", "File format")}
                 <select
                   value={container}
-                  onChange={(e) => setContainer(e.target.value as "mp4" | "webm")}
+                  onChange={(e) => setContainer(e.target.value as "mp4" | "webm" | "mov")}
                   className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                   data-testid="export-format"
                 >
@@ -998,8 +1035,13 @@ export function ExportAnimaticDialog({
                   <option value="webm">
                     {L("WebM (VP9 – mindre fil)", "WebM (VP9 – smaller file)")}
                   </option>
+                  <option value="mov" disabled={!proresOk}>
+                    {L("MOV (ProRes 422 HQ – for videoredigering)", "MOV (ProRes 422 HQ – for editing)")}
+                  </option>
                 </select>
               </label>
+              {!proresOk ? <p role="status" data-testid="export-prores-unavailable" className="w-full">{PRORES_UNSUPPORTED()}</p> : null}
+              {container === "mov" ? <p data-testid="export-prores-note" className="w-full">{L("ProRes 422 HQ, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring.", "ProRes 422 HQ, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage.")}</p> : null}
               <label className="flex items-center gap-1.5">
                 {L("Undertekster", "Subtitles")}
                 <select
@@ -1174,6 +1216,7 @@ export function ExportAnimaticDialog({
             </Button>
           )}
           <Button
+            data-testid="export-start"
             onClick={enqueueExport}
             disabled={
               busy ||

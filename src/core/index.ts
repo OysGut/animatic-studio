@@ -100,3 +100,4 @@ export * from "./bookmark";
 export * from "./generation/quality-profile";
 
 export * from "./translation/line-align-prompt";
+export * from "./translation/line-link-labels";

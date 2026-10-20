@@ -4693,6 +4693,126 @@ export type Database = {
           },
         ]
       }
+      translation_line_links: {
+        Row: {
+          confidence: number
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          origin: string
+          project_id: string
+          reason: string
+          removed: boolean
+          revision: number
+          source_block_ids: string[]
+          target_translation_ids: string[]
+          variant_id: string
+        }
+        Insert: {
+          confidence: number
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          origin: string
+          project_id: string
+          reason?: string
+          removed?: boolean
+          revision?: number
+          source_block_ids: string[]
+          target_translation_ids: string[]
+          variant_id: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          origin?: string
+          project_id?: string
+          reason?: string
+          removed?: boolean
+          revision?: number
+          source_block_ids?: string[]
+          target_translation_ids?: string[]
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_line_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_line_links_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      translation_lines: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          language: string
+          ord: number
+          project_id: string
+          removed: boolean
+          revision: number
+          text: string
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          kind?: string
+          language: string
+          ord: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          text: string
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          language?: string
+          ord?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          text?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_lines_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_lines_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       translations: {
         Row: {
           based_on_rev: number

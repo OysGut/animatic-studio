@@ -28,7 +28,8 @@ export const QUALITY_PROFILE_MODEL_KIND_LABEL: Record<QualityProfileModelKind, s
 
 /** Eksportinnstillingene profilen foreslår (kan overstyres i hver eksportdialog). */
 export interface QualityProfileExport {
-  readonly format?: "mp4" | "webm" | "png-seq";
+  /** «prores»: ProRes 422 HQ for film, ProRes 4444 with alpha for layer export (P7). */
+  readonly format?: "mp4" | "webm" | "png-seq" | "prores";
   readonly bitrateKbps?: number | null;
   readonly alpha?: "straight" | "premultiplied" | null;
 }
@@ -95,7 +96,7 @@ export function qualityProfileError(name: string, spec: QualityProfileSpec): str
       );
   }
   if (spec.export) {
-    if (spec.export.format != null && !["mp4", "webm", "png-seq"].includes(spec.export.format)) return L("Ugyldig eksportformat", "Invalid export format");
+    if (spec.export.format != null && !["mp4", "webm", "png-seq", "prores"].includes(spec.export.format)) return L("Ugyldig eksportformat", "Invalid export format");
     if (spec.export.alpha != null && !["straight", "premultiplied"].includes(spec.export.alpha)) return L("Ugyldig alfa", "Invalid alpha");
     const bitrate = spec.export.bitrateKbps;
     if (bitrate != null && (!Number.isInteger(bitrate) || bitrate < 100 || bitrate > 100000)) return L("Bitrate må være mellom 100 og 100000 kbps", "Bitrate must be between 100 and 100000 kbps");
