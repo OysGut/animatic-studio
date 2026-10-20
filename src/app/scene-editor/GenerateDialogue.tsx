@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { L, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
+import { L, qualityProfileSnapshot, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { generateSpeech } from "@/adapters/ai/speech.functions";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { saveTake } from "@/app/audio/takes";
 import type { Commands } from "@/app/project/use-commands";
 
 export function GenerateDialogue({ state, projectId, occurrenceId, blockId, characterId, cmds, onSaved, onBusy }: { state: ProjectState; projectId: string; occurrenceId: string; blockId: string; characterId: string | null; cmds: Commands; onSaved: () => void; onBusy: (busy: boolean) => void }) {
+  const quality = useQualityProfile(state);
   const defaultVoice = characterId ? state.assets[characterId]?.voice ?? null : null;
   const language = speechLanguageOf(state, occurrenceId, blockId, characterId);
   const standard = defaultVoice ? { ...defaultVoice, language } : null;
@@ -19,14 +21,14 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
   const [error, setError] = useState<string | null>(null);
   useEffect(() => { setVoice(defaultVoice ? { ...defaultVoice, language } : null); setConfirm(false); }, [blockId, characterId, defaultVoice, language]);
   const block = state.blocks[blockId];
-  const model = voice?.modelId ?? SPEECH_MODEL;
+  const model = voice?.modelId ?? quality.profile?.spec.models?.speech ?? SPEECH_MODEL;
   const cost = estimateCostUsd("elevenlabs", model, { characters: block?.text.replace(/\s+/g, " ").trim().length ?? 0 });
   async function run() {
-    if (!voice || !block || busy) return;
+    if (!voice || !block || busy || quality.budgetError) return;
     onBusy(true); setBusy(true); setConfirm(false); setError(null);
     const approvedVoice = { ...voice, settings: { ...voice.settings } };
     try {
-      const r = await generateSpeech({ data: { projectId, blockId, voiceId: voice.voiceId, modelId: model, language: voice.language ?? "no", settings: voice.settings ?? {}, scriptRevision: block.currentRev, approved: true } });
+      const r = await generateSpeech({ data: { projectId, blockId, voiceId: voice.voiceId, modelId: model, language: voice.language ?? "no", settings: voice.settings ?? {}, scriptRevision: block.currentRev, approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null } });
       if (!r.ok) throw new Error(r.message);
       const url = (await signedUrls([r.media.path], 600))[r.media.path];
       if (!url) throw new Error(L("Lydfilen kunne ikke hentes.", "The audio file could not be loaded."));
@@ -46,12 +48,12 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
   }
   return <section data-testid="dialogue-generation" className="border-t border-border pt-2">
     <Button data-testid="dialogue-generate-open" size="sm" variant="secondary" disabled={busy} onClick={() => setOpen(!open)}>{L("Generer lydfil", "Generate audio file")}</Button>
-    {open ? <div className="mt-3 flex flex-col gap-3"><VoiceControls projectId={projectId} value={voice} onChange={v => { setVoice(v); setConfirm(false); }} disabled={busy} />
+    {open ? <div className="mt-3 flex flex-col gap-3"><QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setVoice(old => old ? { ...old, modelId: undefined } : old); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} /><VoiceControls projectId={projectId} value={voice ? { ...voice, modelId: model } : null} onChange={v => { setVoice(v); setConfirm(false); }} disabled={busy} />
       {confirm ? <div role="alertdialog" data-testid="dialogue-generation-confirm" aria-label={L("Godkjenn kostnaden", "Approve cost")} className="flex flex-col gap-2 border border-border p-2 text-xs text-text-primary">
         {L(`ElevenLabs · ${model} · ${voice?.language ?? "no"} · anslått ${cost === null ? "ukjent pris" : formatUsd(cost)}. En ny aktiv versjon lages. Gamle filer og redigeringer beholdes.`, `ElevenLabs · ${model} · ${voice?.language ?? "no"} · estimated ${cost === null ? "unknown price" : formatUsd(cost)}. A new active version is created. Previous files and edits are preserved.`)}
-        <Button data-testid="dialogue-generation-approve" size="sm" disabled={busy} onClick={() => void run()}>{L("Godkjenn og generer", "Approve and generate")}</Button>
+        <Button data-testid="dialogue-generation-approve" size="sm" disabled={busy || !!quality.budgetError} onClick={() => void run()}>{L("Godkjenn og generer", "Approve and generate")}</Button>
         <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>{L("Avbryt", "Cancel")}</Button>
-      </div> : <Button data-testid="dialogue-generation-start" size="sm" disabled={!voice || busy || cost === null} onClick={() => setConfirm(true)}>{busy ? L("Genererer …", "Generating …") : L("Generer …", "Generate …")}</Button>}
+      </div> : <Button data-testid="dialogue-generation-start" size="sm" disabled={!voice || busy || cost === null || !!quality.budgetError} onClick={() => setConfirm(true)}>{busy ? L("Genererer …", "Generating …") : L("Generer …", "Generate …")}</Button>}
     </div> : null}
     {open && cost === null ? <p role="alert" className="text-xs text-status-uncertain">{L("Modellprisen er ukjent. Administratoren må registrere prisen før generering.", "The model price is unknown. An administrator must register the price before generation.")}</p> : null}
     {error ? <p role="alert" className="text-xs text-status-danger">{error}</p> : null}

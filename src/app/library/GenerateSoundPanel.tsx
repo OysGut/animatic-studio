@@ -11,7 +11,7 @@ import {
   L,
   type Asset,
   type AssetVariant,
-  costBreakdown,
+  costBreakdown, profileChoice, qualityProfileSnapshot,
   defaultSoundPrompt,
   estimateCostUsd,
   formatUsd,
@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { signedUrls } from "./asset-images";
 import { audioDuration } from "./asset-audio";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { CostLines } from "@/app/ai/CostLines";
 
 const LENGTHS: readonly (number | null)[] = [null, 1, 2, 3, 5, 8, 10, 15, 20, 30];
@@ -49,7 +50,10 @@ export function GenerateSoundPanel({
   const options = providersFor("sound", new Set(available.data?.providers ?? []));
   const models = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
   const [pick, setPick] = useState<string | null>(null);
-  const chosen = models.find((m) => `${m.provider.id}|${m.model.id}` === pick) ?? models[0];
+  const state = cmds.current();
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("sound", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = models.find((m) => `${m.provider.id}|${m.model.id}` === pick) ?? (recommended ? models.find(m => m.model.id === recommended.model.id) : null) ?? models[0];
   const [prompt, setPrompt] = useState(() => defaultSoundPrompt(asset, variant));
   const [seconds, setSeconds] = useState<number | null>(null);
   const [loop, setLoop] = useState(false);
@@ -65,10 +69,10 @@ export function GenerateSoundPanel({
   const cost = chosen
     ? estimateCostUsd(chosen.provider.id, chosen.model.id, { seconds: seconds ?? maxS })
     : null;
-  const canRun = !!chosen && !!prompt.trim() && !running;
+  const canRun = !!chosen && !!prompt.trim() && !running && !quality.budgetError;
 
   async function run() {
-    if (!chosen) return;
+    if (!chosen || !canRun) return;
     setConfirm(false);
     setRunning(true);
     setError(null);
@@ -83,7 +87,7 @@ export function GenerateSoundPanel({
           model: chosen.model.id,
           seconds,
           loop,
-          approved: true,
+          approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
         },
       });
       if (!r.ok) {
@@ -156,6 +160,7 @@ export function GenerateSoundPanel({
         </p>
       ) : (
         <>
+          {state ? <QualityProfilePicker state={state} value={quality.choice} disabled={running} onChange={v => { quality.setChoice(v); setPick(null); setConfirm(false); }} /> : null}<QualityProfileBudget error={quality.budgetError} />
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
             {L("Beskriv lyden (gjerne på engelsk)", "Describe the sound (English preferred)")}
             <Textarea

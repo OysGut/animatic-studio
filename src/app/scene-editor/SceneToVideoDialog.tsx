@@ -27,7 +27,7 @@ import {
   Upload,
 } from "lucide-react";
 import {
-  L,
+  L, profileChoice, qualityProfileSnapshot,
   tm,
   adaptPromptForModel,
   batchInUse,
@@ -73,6 +73,7 @@ import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { RefetchVideoButton, canRefetchVideo } from "@/app/ai/RefetchVideoButton";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { signedUrls, useImageUrls } from "@/app/library/asset-images";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
@@ -281,7 +282,9 @@ export function SceneToVideoDialog({
   const options = providersFor("video_edit", new Set(available.data?.providers ?? []));
   const flat = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
   const [pick, setPick] = useState("");
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? flat[0] ?? null;
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("video_edit", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id) : null) ?? flat[0] ?? null;
   const [withAudio, setWithAudio] = useState(false);
 
   // ------------------------------------------------ Beskrivelsene
@@ -676,7 +679,8 @@ export function SceneToVideoDialog({
       const errors: string[] = [];
       let sent = 0;
       for (const piece of pieces) {
-        const r = await startVideoGeneration({
+        if (quality.budgetError) throw new Error(quality.budgetError);
+          const r = await startVideoGeneration({
           data: {
             projectId,
             occurrenceId,
@@ -687,7 +691,7 @@ export function SceneToVideoDialog({
             seconds: piece.billedSeconds,
             aspect,
             startImagePath: null,
-            approved: true,
+            approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
             sourceVideoPath: paths[piece.index]!,
             elementPaths,
             imagePaths,
@@ -759,6 +763,7 @@ export function SceneToVideoDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        <QualityProfilePicker state={state} value={quality.choice} disabled={phase.kind === "working"} onChange={v => { quality.setChoice(v); setPick(""); setPhase({ kind: "idle" }); }} /><QualityProfileBudget error={quality.budgetError} />
 
         {/* Hva viser scenen */}
         <section
