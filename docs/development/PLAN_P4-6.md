@@ -34,6 +34,6 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D er bygd med 0
 
 ## Risiko
 - WebM-alfa varierer mellom nettlesere; positiv WebCodecs-støtte kreves. Testnettleseren støtter ikke `alpha: keep`.
-- Minne ved lange PNG-sekvenser – ett komprimert bilde om gangen til zip (`writeZip`), diskbasert mellomlagring der OPFS finnes. File System Access brukes uten OPFS; uten begge sperres lageksport tydelig.
+- Minne ved lange PNG-sekvenser – ett komprimert bilde om gangen til zip (`writeZip`), diskbasert mellomlagring der OPFS finnes. Uten OPFS beholdes minnebasert reserve for PNG alltid; dette er et rapportert avvik fra ubetinget strømming.
 - AI-linjekobling med 1:n/n:1 krever streng validering for å hindre ugyldige ID-er.
 - Stor runde: bygges i rekkefølgen B → D → C, med tester per steg.

@@ -38,10 +38,19 @@ export async function supportsVp9Alpha(width: number, height: number): Promise<b
 /** Disk-backed staging: the download becomes visible only after successful finalization. */
 export async function openAlphaSink(name: string, mime: string): Promise<ZipSink> {
   if (!navigator.storage?.getDirectory) {
-    const picker = (globalThis as unknown as { showSaveFilePicker?: (options: {suggestedName: string}) => Promise<{createWritable(): Promise<{write(chunk:Uint8Array):Promise<void>;close():Promise<void>;abort():Promise<void>}>}> }).showSaveFilePicker;
-    if (!picker) throw new Error(L("Denne nettleseren kan ikke strømme eksporten til disk. Bruk en nettleser med filtilgang.", "This browser cannot stream the export to disk. Use a browser with file access."));
-    const handle=await picker({suggestedName:name}), writable=await handle.createWritable();
-    return {write:chunk=>writable.write(chunk),close:()=>writable.close(),abort:()=>writable.abort()};
+    const parts: BlobPart[] = [];
+    let link: { url: string; name: string } | null = null;
+    return {
+      write: async chunk => { parts.push(new Uint8Array(chunk).buffer); },
+      close: async () => {
+        const blob = new Blob(parts, { type: mime }); parts.length = 0;
+        const url = URL.createObjectURL(blob); link = { url, name };
+        const a = document.createElement("a"); a.href = url; a.download = name;
+        document.body.appendChild(a); a.click(); a.remove();
+      },
+      abort: async () => { parts.length = 0; if (link) URL.revokeObjectURL(link.url); link = null; },
+      link: () => link,
+    };
   }
   const root = await navigator.storage.getDirectory();
   const temp = `alpha-${crypto.randomUUID()}`;

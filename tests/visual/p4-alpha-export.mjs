@@ -128,6 +128,7 @@ await h.scenario("p4-background", occ.id, "en", async page => {
   await h.waitHidden(page.getByTestId("alpha-export-dialog"));
   const file=await download; await file.saveAs(`${h.out}/background.zip`);
   h.check(Object.keys(unzipSync(readFileSync(`${h.out}/background.zip`))).length===20,"alpha queue continues after dialog closes");
+  await page.getByTestId("export-queue-task").filter({has:page.getByText("Done",{exact:true})}).waitFor();
   h.check(await page.getByTestId("export-queue-task").getAttribute("data-status")==="done","shared queue reports completed alpha");
   await page.getByTestId("export-queue").screenshot({path:`${h.out}/background.png`});
 });
