@@ -50,3 +50,4 @@ Kortversjonen:
 
 31. Line correspondence uses scene-scoped block and translation IDs, reversible commands and translated projections only; backup remaps both arrays so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
+33. Style harmonization (P8) shares one image runner for single and batch jobs; "only here" stores the result in an archived variant so layers and posters can point at it without changing the visible library, and batch jobs reuse reserved generation_jobs with durable receipts so billed work never replays.
