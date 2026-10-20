@@ -8,6 +8,7 @@ import { L, flagsFor, newId, NOTE_FLAG_MAX_TEXT, type Command, type NoteFlagTarg
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
+import { useProfiles } from "@/app/project/use-project";
 
 export function NoteFlagControl({ state, kind, targetId, run, editable, names }: {
   state: ProjectState; kind: NoteFlagTargetKind; targetId: string;
@@ -17,6 +18,12 @@ export function NoteFlagControl({ state, kind, targetId, run, editable, names }:
   names?: Readonly<Record<string, string>> | undefined;
 }) {
   const flags = flagsFor(state, kind, targetId);
+  const userIds = [...new Set(flags.flatMap(f => [f.createdBy, f.editedBy]).filter((x): x is string => !!x))];
+  const profiles = useProfiles(userIds);
+  const nameOf = (id?: string | null) => {
+    const n = (id && (names?.[id] || profiles.data?.[id]?.display_name)) || "";
+    return n.trim() ? n : L("ukjent", "unknown");
+  };
   const active = flags.some(f => f.enabled);
   const [error, setError] = useState<string | null>(null);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -35,7 +42,7 @@ export function NoteFlagControl({ state, kind, targetId, run, editable, names }:
       {flags.map(f => <div key={f.id} data-testid="note-flag-item" data-enabled={f.enabled} className="mb-2 flex flex-col gap-1 border-b border-border pb-2">
         <label className="flex items-center gap-2 text-xs text-text-secondary"><input type="checkbox" data-testid="note-flag-enabled" checked={f.enabled} disabled={!editable} onChange={e => exec({ type: "UpdateNoteFlag", flagId: f.id, enabled: e.target.checked }, e.target.checked ? L("Slå på huskelapp", "Turn on note flag") : L("Slå av huskelapp", "Turn off note flag"))} />{f.enabled ? L("Aktiv", "Active") : L("Av (teksten beholdes)", "Off (text is kept)")}</label>
         <Textarea data-testid="note-flag-text" aria-label={L("Tekst på huskelappen (valgfri)", "Note flag text (optional)")} maxLength={NOTE_FLAG_MAX_TEXT} disabled={!editable} value={drafts[f.id] ?? f.text} onChange={e => setDrafts({ ...drafts, [f.id]: e.target.value })} className="min-h-14 text-xs" />
-        <p className="text-[11px] text-text-tertiary">{L(`Opprettet av ${names?.[f.createdBy ?? ""] ?? L("ukjent", "unknown")} ${when(f.createdAt)}`, `Created by ${names?.[f.createdBy ?? ""] ?? "unknown"} ${when(f.createdAt)}`)}{f.editedAt ? L(` · endret av ${names?.[f.editedBy ?? ""] ?? "ukjent"} ${when(f.editedAt)}`, ` · edited by ${names?.[f.editedBy ?? ""] ?? "unknown"} ${when(f.editedAt)}`) : ""}</p>
+        <p className="text-[11px] text-text-tertiary">{L(`Opprettet av ${nameOf(f.createdBy)} ${when(f.createdAt)}`, `Created by ${nameOf(f.createdBy)} ${when(f.createdAt)}`)}{f.editedAt ? L(` · endret av ${nameOf(f.editedBy)} ${when(f.editedAt)}`, ` · edited by ${nameOf(f.editedBy)} ${when(f.editedAt)}`) : ""}</p>
         {editable ? <div className="flex gap-2">
           <Button size="sm" variant="secondary" data-testid="note-flag-save" disabled={drafts[f.id] === undefined || drafts[f.id] === f.text} onClick={() => { exec({ type: "UpdateNoteFlag", flagId: f.id, text: drafts[f.id] ?? f.text }, L("Endre huskelapp", "Edit note flag")); setDrafts(({ [f.id]: _drop, ...rest }) => rest); }}>{L("Lagre tekst", "Save text")}</Button>
           <Button size="sm" variant="ghost" data-testid="note-flag-delete" onClick={() => exec({ type: "SetNoteFlagRemoved", flagId: f.id, removed: true }, L("Slett huskelapp", "Delete note flag"))}>{L("Slett", "Delete")}</Button>
