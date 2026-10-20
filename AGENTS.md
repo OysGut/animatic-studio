@@ -15,7 +15,7 @@ Fra fase 3 (oktober 2026) er arbeidsdelingen slik:
 - Claude er dirigent. Claude lager spesifikasjonene, går gjennom koden, kjører testene og kjører databasemigrasjonene.
 - Lovable skriver koden etter Claudes oppdrag.
 
-Arbeidsreglene i detalj står i Lovable workspace-skills `animatic-*`: animatic-oppdrag, animatic-arkitektur-og-data, animatic-ui-designsystem, animatic-testing, animatic-i18n, animatic-ai-tekst og animatic-story-lab. Skillene og oppdraget går foran eldre tekst i dette repoet.
+Arbeidsreglene står i workspace-skills `animatic-*`; skillene og oppdraget går foran eldre repotekst.
 
 Kortversjonen:
 1. Endre bare det oppdraget ber om. Spør hvis noe er uklart.
@@ -52,3 +52,4 @@ Kortversjonen:
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
+35. ML1 keeps the legacy i18n bridge unchanged; keyed messages use injected catalogs, explicit locale/fallbacks, and a frozen AST mapping baseline so no source text is lost.

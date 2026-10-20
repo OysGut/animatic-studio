@@ -73,6 +73,7 @@ describe('ML1 language/catalog contract', () => {
     const errors = catalogErrors(manifest, { ...catalogs, en: { ...en, count: wrong } }).join('\n');
     expect(errors).toMatch(/Missing plural form one/);
     expect(errors).toMatch(/Invalid plural form invented/);
+    expect(catalogErrors(manifest, { ...catalogs, en: { ...en, hello: { text: 'Hello {name}', parameters: [{ name: 'name' }, { name: 'name' }] } } })).toContain('Invalid parameter declaration: en:hello');
   });
   it('generated keyed API preserves text and exposes pseudo only on explicit use', () => {
     const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));

@@ -93,6 +93,7 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
       if (message.text === null && !message.plural) errors.push(`Missing text: ${lang.tag}:${key}`);
       if (JSON.stringify(messageParameterNames(message)) !== JSON.stringify(messageParameterNames(base))) errors.push(`Parameter mismatch: ${lang.tag}:${key}`);
       const declared = message.parameters?.map((p) => p.name);
+      if (declared && (new Set(declared).size !== declared.length || declared.some((name) => !/^[A-Za-z_][\w]*$/.test(name)))) errors.push(`Invalid parameter declaration: ${lang.tag}:${key}`);
       if (declared && JSON.stringify(unique(declared)) !== JSON.stringify(messageParameterNames(message))) errors.push(`Parameter contract mismatch: ${lang.tag}:${key}`);
       if (!!message.plural !== !!base.plural || (message.plural && (message.plural.parameter !== base.plural?.parameter || (message.plural.type ?? 'cardinal') !== (base.plural?.type ?? 'cardinal')))) errors.push(`Plural contract mismatch: ${lang.tag}:${key}`);
       if (message.plural) {
@@ -103,6 +104,7 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
         const forms = Object.values(message.plural.forms).map((form) => JSON.stringify(unique(namesIn(form))));
         if (new Set(forms).size > 1) errors.push(`Plural parameter mismatch: ${lang.tag}:${key}`);
       }
+      for (const name of Object.keys(message.formats ?? {})) if (!messageParameterNames(message).includes(name)) errors.push(`Unknown formatted parameter: ${lang.tag}:${key}`);
     }
     for (const key of Object.keys(catalog)) if (!allKeys.has(key)) errors.push(`Unknown catalog key: ${lang.tag}:${key}`);
   }
