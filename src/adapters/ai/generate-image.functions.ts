@@ -151,6 +151,7 @@ function validate(d: unknown): GenerateImageInput {
     operation: x["operation"] === "upscale" ? "upscale" : "generate",
     upscaleFactor: x["upscaleFactor"] === 4 ? 4 : 2,
     approved: true,
+    qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
   };
 }
 
@@ -409,6 +410,8 @@ export const generateImage = createServerFn({ method: "POST" })
               trace,
               // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
               effort: effortOf(providerModel(data.provider, model, aiGate.settings)),
+              // Kvalitetsprofilen bildet ble laget med (M8, REQ-0859): et øyeblikksbilde
+              ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
               ...(data.variantId ? { variantId: data.variantId } : {}),
             },
           }
