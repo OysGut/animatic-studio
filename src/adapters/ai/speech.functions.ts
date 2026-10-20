@@ -16,6 +16,7 @@ import {
   estimateCostUsd,
   isUuid,
   newId,
+  parseQualityProfileMeta,
   providerModel,
   speechSettingsError,
   speechLanguageError,
