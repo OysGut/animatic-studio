@@ -5,7 +5,7 @@
  * Escape, tap av fokus eller avbrutt peker forkaster draget. Beskyttede og låste tidsrom flyttes aldri.
  */
 import { useEffect, useRef, useState } from "react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import { planRhythm, rhythmDragShift, rhythmProtectedEnd } from "@/core/animation/rhythm";
 import { formatAnimationTime, formatFrameGap } from "@/core/animation/time-format";

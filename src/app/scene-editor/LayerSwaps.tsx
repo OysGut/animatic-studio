@@ -5,18 +5,7 @@
  */
 import { ArrowRightLeft, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  coverVersion,
-  layerFieldsOf,
-  locale,
-  sortedAssets,
-  variantsOf,
-  type Command,
-  type CompositionLayer,
-  type ImageSwap,
-  type ProjectState,
-} from "@/core";
+import { coverVersion, layerFieldsOf, locale, sortedAssets, variantsOf, type Command, type CompositionLayer, type ImageSwap, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
 import {
@@ -78,10 +67,7 @@ export function LayerSwaps({
       versionId: null,
     };
     setSwaps(
-      L(
-        `Bildeskifte til «${state.assets[assetId]?.name ?? "bilde"}»`,
-        `Image swap to “${state.assets[assetId]?.name ?? "image"}”`,
-      ),
+      t("app-scene-editor-layer-swaps.swap-to", { name: state.assets[assetId]?.name ?? t("app-scene-editor-layer-swaps.swap-to-image") }),
       [...layer.swaps.filter((w) => w.frame !== frame), swap].sort((a, b) => a.frame - b.frame),
     );
   }

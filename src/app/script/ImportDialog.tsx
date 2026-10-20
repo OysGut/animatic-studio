@@ -4,18 +4,7 @@
  */
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import {
-  L,
-  locale,
-  newId,
-  orderedOccurrences,
-  planImport,
-  planImportNotes,
-  tm,
-  type Command,
-  type ProductionId,
-  type ProjectState,
-} from "@/core";
+import { locale, newId, orderedOccurrences, planImport, planImportNotes, tm, type Command, type ProductionId, type ProjectState } from "@/core";
 import { savedTitlePage, titlePageCommand } from "@/core/commands/export-settings";
 import {
   SCREENPLAY_ACCEPT,

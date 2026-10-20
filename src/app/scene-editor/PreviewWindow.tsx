@@ -13,7 +13,7 @@ import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { ExternalLink, PanelBottomClose, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { renderFrame, type Composition, type ProjectState, L } from "@/core";
+import { renderFrame, type Composition, type ProjectState } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { storedNumber, usePaneSize, useStoredNumber } from "@/app/shell/pane-size";
 import { t as tk } from "@/core/i18n/keyed";

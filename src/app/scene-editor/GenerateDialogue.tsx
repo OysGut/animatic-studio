@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { L, qualityProfileSnapshot, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
+import { qualityProfileSnapshot, estimateCostUsd, formatUsd, SPEECH_MODEL, speechLanguageOf, type AssetVoice, type ProjectState } from "@/core";
 import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { VoiceControls } from "@/app/audio/VoiceControls";
 import { generateSpeech } from "@/adapters/ai/speech.functions";
@@ -51,7 +51,7 @@ export function GenerateDialogue({ state, projectId, occurrenceId, blockId, char
     <Button data-testid="dialogue-generate-open" size="sm" variant="secondary" disabled={busy} onClick={() => setOpen(!open)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.daa0584f5037")}</Button>
     {open ? <div className="mt-3 flex flex-col gap-3"><QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setVoice(old => { if (!old) return old; const { modelId: _modelId, ...rest } = old; return rest; }); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} /><VoiceControls projectId={projectId} value={voice ? { ...voice, modelId: model } : null} onChange={v => { setVoice(v); setConfirm(false); }} disabled={busy} />
       {confirm ? <div role="alertdialog" data-testid="dialogue-generation-confirm" aria-label={t("app-scene-editor-generate-dialogue.generate-dialogue.aria-label.5aad2202408b")} className="flex flex-col gap-2 border border-border p-2 text-xs text-text-primary">
-        {L(`ElevenLabs · ${model} · ${voice?.language ?? "no"} · anslått ${cost === null ? "ukjent pris" : formatUsd(cost)}. En ny aktiv versjon lages. Gamle filer og redigeringer beholdes.`, `ElevenLabs · ${model} · ${voice?.language ?? "no"} · estimated ${cost === null ? "unknown price" : formatUsd(cost)}. A new active version is created. Previous files and edits are preserved.`)}
+        {t("app-scene-editor-generate-dialogue.generate-summary", { model, language: voice?.language ?? "no", cost: cost === null ? t("app-scene-editor-generate-dialogue.generate-summary-unknown-price") : formatUsd(cost) })}
         <Button data-testid="dialogue-generation-approve" size="sm" disabled={busy || !!quality.budgetError} onClick={() => void run()}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.686a55a7ebf5")}</Button>
         <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>{t("app-scene-editor-generate-dialogue.generate-dialogue.button.18b2f897b3d7")}</Button>
       </div> : <Button data-testid="dialogue-generation-start" size="sm" disabled={!voice || busy || cost === null || !!quality.budgetError} onClick={() => setConfirm(true)}>{busy ? t("app-scene-editor-generate-dialogue.generate-dialogue.button.d20d6afa2eb6") : t("app-scene-editor-generate-dialogue.generate-dialogue.button.75e32e6da4db")}</Button>}

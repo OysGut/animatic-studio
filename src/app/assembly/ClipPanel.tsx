@@ -23,35 +23,7 @@ import {
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  FILM_AUDIO_MAX_BYTES,
-  MAX_DURATION_SECONDS,
-  MAX_TRANSITION_FRAMES,
-  MIN_DURATION_SECONDS,
-  blockAtFrame,
-  compositionFrameInClip,
-  blockSpans,
-  blocksOfVariant,
-  formatHeading,
-  formatTimecode,
-  L,
-  locale,
-  tm,
-  framesToSeconds,
-  secondsToFrames,
-  takeLabel,
-  type BlockSpan,
-  type Command,
-  type FilmClip,
-  type ProjectState,
-  type ScriptBlock,
-  type Take,
-  type TakeStatus,
-  type TimeLink,
-  type ClipPartFields,
-  type Transition,
-  type TransitionKind,
-} from "@/core";
+import { FILM_AUDIO_MAX_BYTES, MAX_DURATION_SECONDS, MAX_TRANSITION_FRAMES, MIN_DURATION_SECONDS, blockAtFrame, compositionFrameInClip, blockSpans, blocksOfVariant, formatHeading, formatTimecode, locale, tm, framesToSeconds, secondsToFrames, takeLabel, type BlockSpan, type Command, type FilmClip, type ProjectState, type ScriptBlock, type Take, type TakeStatus, type TimeLink, type ClipPartFields, type Transition, type TransitionKind } from "@/core";
 import { Button } from "@/components/ui/button";
 import { FILM_ACCEPT } from "./film-import";
 import { formatSeconds } from "./FilmTimeline";

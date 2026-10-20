@@ -7,15 +7,7 @@
  */
 import { Redo2, Undo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  filterPages,
-  formatHeading,
-  orderedOccurrences,
-  sceneNumberOf,
-  scriptPages,
-  type ProjectState,
-} from "@/core";
+import { filterPages, formatHeading, orderedOccurrences, sceneNumberOf, scriptPages, type ProjectState } from "@/core";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Inspector } from "@/app/script/Inspector";

@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { L } from "@/core";
+
 import { errorReport } from "./error-report";
 import { t } from "@/core/i18n/keyed";
 

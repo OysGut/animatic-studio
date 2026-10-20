@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { AssemblyWorkspace } from "@/app/assembly/AssemblyWorkspace";
-import { L } from "@/core";
+
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 

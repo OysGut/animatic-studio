@@ -1,5 +1,6 @@
-import { L } from "../i18n";
+
 import { ANIMAL_VERBS, LIVING_VERBS, LEXICON_FORMS, type EntityKind } from "./lexicon";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type Confidence = "high" | "medium" | "low";
 export interface EntityClassification { kind: EntityKind; confidence: Confidence; evidence: string }
@@ -16,12 +17,12 @@ export function classifySuggestion(candidate: ClassificationCandidate): EntityCl
     return tokens.flatMap((w, i) => nameWords.includes(w) ? [tokens.slice(Math.max(0, i - 4), i + 4)] : []);
   });
   const animalDescription = direct?.kind === "animal" || nearby.some((ws) => ws.some((w) => LEXICON_FORMS.get(w)?.kind === "animal"));
-  if (animalDescription) return result("animal", "high", L("Dyrenavn eller dyrebeskrivelse ved navnet", "Animal name or animal description beside the name"));
-  if (candidate.speaker) return result("character", "high", L("Har replikk i manuset", "Has dialogue in the script"));
-  if (candidate.heading) return result(direct?.kind === "environment" ? "environment" : "location", "high", L("Står i sceneoverskriften", "Appears in the scene heading"));
-  if (nearby.some((ws) => ws.some((w) => ANIMAL_VERBS.includes(w)))) return result("animal", "medium", L("Navnet står ved et dyreverb", "The name appears beside an animal verb"));
-  if (contexts.some((t) => /(?:lyden av|lyden frå|vi hører|vi høyrer|sound of|we hear)\s+/iu.test(t) && words(t).some((w) => nameWords.includes(w)))) return result("sound", "medium", L("Omtales som noe vi hører", "Described as something we hear"));
-  if (direct) return result(direct.kind, "high", L("Gjenkjent i leksikonet", "Recognized in the lexicon"));
-  if (nearby.some((ws) => ws.some((w) => LIVING_VERBS.includes(w)))) return result("character", "medium", L("Navnet står ved et verb for et levende vesen", "The name appears beside a verb for a living being"));
-  return result("object", "low", L("Navn uten tydelig typesignal – må vurderes", "Name without a clear type signal – needs review"));
+  if (animalDescription) return result("animal", "high", tk("core-library-classify.classify-suggestion.result.d0552e022141"));
+  if (candidate.speaker) return result("character", "high", tk("core-library-classify.classify-suggestion.result.a2afa1939e0b"));
+  if (candidate.heading) return result(direct?.kind === "environment" ? "environment" : "location", "high", tk("core-library-classify.classify-suggestion.result.9d5240d52568"));
+  if (nearby.some((ws) => ws.some((w) => ANIMAL_VERBS.includes(w)))) return result("animal", "medium", tk("core-library-classify.classify-suggestion.result.fdc3ef35926b"));
+  if (contexts.some((t) => /(?:lyden av|lyden frå|vi hører|vi høyrer|sound of|we hear)\s+/iu.test(t) && words(t).some((w) => nameWords.includes(w)))) return result("sound", "medium", tk("core-library-classify.classify-suggestion.result.cb7245b6d1b7"));
+  if (direct) return result(direct.kind, "high", tk("core-library-classify.classify-suggestion.result.2046dfa25053"));
+  if (nearby.some((ws) => ws.some((w) => LIVING_VERBS.includes(w)))) return result("character", "medium", tk("core-library-classify.classify-suggestion.result.9236eaa34df5"));
+  return result("object", "low", tk("core-library-classify.classify-suggestion.result.225fca15e26d"));
 }

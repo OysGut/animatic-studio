@@ -39,7 +39,8 @@ import type {
   SourceRef,
 } from "./types";
 import type { BlockKind, SceneHeading } from "../model";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Linjehøyde i den virtuelle kildereferansen (samme målestokk som RawLine.y: 12 pt per linje). */
 const LINE = 12;
@@ -353,10 +354,7 @@ export function parseFountain(source: string): FountainImport {
         isContinuation: true,
         elements: [],
         warnings: [
-          L(
-            "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
-            "Text before the first scene heading (continuation from an earlier scene)",
-          ),
+          tk("core-screenplay-fountain.warnings.warnings.69599da8d826"),
         ],
       };
       scenes.push(current);
@@ -424,10 +422,7 @@ export function parseFountain(source: string): FountainImport {
         ...(dual ? { marks: { dual: true } } : {}),
         ...(dual && !afterDialogue
           ? {
-              uncertain: L(
-                "Dobbel dialog (^) uten replikk rett foran – usikkert hvem som snakker samtidig",
-                "Double dialogue (^) without a line directly before – unclear who speaks at the same time",
-              ),
+              uncertain: tk("core-screenplay-fountain.uncertain.uncertain.9f4747a15151"),
             }
           : {}),
       });
@@ -535,10 +530,7 @@ export function parseFountain(source: string): FountainImport {
   const warnings: string[] = [];
   if (!out.some((s) => !s.isContinuation) && out.length)
     warnings.push(
-      L(
-        "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.",
-        "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
-      ),
+      tk("core-screenplay-fountain.parse-fountain.warnings-push.d412c359c655"),
     );
   const numbers = out.filter((s) => s.number !== null).map((s) => s.number as string);
   const seen = new Set<string>();
@@ -547,15 +539,12 @@ export function parseFountain(source: string): FountainImport {
   ];
   if (duplicateNumbers.length)
     warnings.push(
-      L(
-        `Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`,
-        `Scene numbers that occur more than once: ${duplicateNumbers.join(", ")}`,
-      ),
+      tk("core-screenplay-fountain.parse-fountain.warnings-push.2bbbb4f0bd97", { value1: String(duplicateNumbers.join(", ")) }),
     );
   const unnumbered = out.filter((s) => s.number === null && !s.isContinuation).length;
   if (unnumbered)
     warnings.push(
-      L(`${unnumbered} scene(r) uten scenenummer`, `${unnumbered} scene(s) without a scene number`),
+      tk("core-screenplay-fountain.parse-fountain.warnings-push.171f3499ccaf", { unnumbered: String(unnumbered) }),
     );
 
   // Fountain har ingen faste sider: beregn sidetallet med manusvisningens sidebryting

@@ -6,16 +6,7 @@
  */
 import { Link2, Plus, Volume2, VolumeX } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  AUDIO_TRACK_ORDER,
-  fpsToNumber,
-  L,
-  type AudioKind,
-  type FilmAudioItem,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, fpsToNumber, type AudioKind, type FilmAudioItem, type FilmClip, type ProjectState } from "@/core";
 import { peaks } from "@/engine/audio/mixer";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { TrackLabel, formatSeconds, type TimelineGeometry } from "./FilmTimeline";
@@ -258,10 +249,7 @@ export function AudioTracks({
                 <button
                   type="button"
                   onClick={() => onAdd(kind)}
-                  aria-label={L(
-                    `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("nb")}`,
-                    `Add ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("en")}`,
-                  )}
+                  aria-label={tk("app-assembly-audio-tracks.add-audio-kind", { kind: AUDIO_KIND_LABEL[kind].toLowerCase() })}
                   title={tk("app-assembly-audio-tracks.audio-tracks.title.e9d259e3c8ba")}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                 >

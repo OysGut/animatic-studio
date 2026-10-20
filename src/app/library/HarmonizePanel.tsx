@@ -8,25 +8,7 @@
 import { Globe, Loader2, Palette, Star } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  tm,
-  buildHarmonizePrompt,
-  harmonizeAttachments,
-  harmonizeNote,
-  harmonizedVariantName,
-  harmonizationOf,
-  HARMONIZE_IDENTITY_WARNING,
-  newId,
-  preferredStyleReference,
-  profileChoice,
-  qualityProfileSnapshot,
-  withAttachedLegend,
-  type AssetMedia,
-  type AssetVersion,
-  type HarmonizationUse,
-  type StyleHarmonizationFields,
-} from "@/core";
+import { tm, buildHarmonizePrompt, harmonizeAttachments, harmonizeNote, harmonizedVariantName, harmonizationOf, HARMONIZE_IDENTITY_WARNING, newId, preferredStyleReference, profileChoice, qualityProfileSnapshot, withAttachedLegend, type AssetMedia, type AssetVersion, type HarmonizationUse, type StyleHarmonizationFields } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { saveAssetToGlobal } from "@/adapters/global/global-library.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
@@ -41,6 +23,7 @@ import { HarmonizeBatchPanel } from "./HarmonizeBatchPanel";
 import { useImageModel } from "./image-model";
 import { useImageUrls } from "./asset-images";
 import type { LightboxTools } from "./ImageLightbox";
+import { t } from "@/core/i18n/keyed";
 
 const field = "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
 
@@ -135,7 +118,7 @@ export function HarmonizePanel({
     setConfirm(false);
     setMsg(null);
     setSaved(null);
-    setBusy(L("Harmoniserer stilen … (kan ta et minutt)", "Harmonizing the style … (can take a minute)"));
+    setBusy(t("app-library-harmonize-panel.run.set-busy.aa330672b739"));
     try {
       const qp = quality.profile ? qualityProfileSnapshot(quality.profile) : null;
       const r = await generateImage({
@@ -192,11 +175,11 @@ export function HarmonizePanel({
         fields,
         newVariant: {
           assetId: asset.id,
-          fields: { name: use === "local" ? `${harmonizedVariantName(name)} (${L("lokal", "local")})`.slice(0, 80) : harmonizedVariantName(name), style: "other", appearance: "" },
+          fields: { name: use === "local" ? `${harmonizedVariantName(name)} (${t("app-library-harmonize-panel.name.harmonized-variant-name-name-l-lokal-local-slice.65c96b9590dd")})`.slice(0, 80) : harmonizedVariantName(name), style: "other", appearance: "" },
           ...(use === "local" ? { archived: true } : {}),
         },
       },
-      L(`Harmonisert stil for «${asset.name}»`, `Harmonized style for “${asset.name}”`),
+      t("app-library-harmonize-panel.r.tools-cmds-run-and-wait.ab928293f84b", { name: String(asset.name) }),
     );
     if (r.error) {
       setMsg({ kind: "error", text: r.error });
@@ -206,10 +189,10 @@ export function HarmonizePanel({
     setPending(null);
     if (use === "local") {
       tools.onUseHere?.(pending.versionId);
-      setMsg({ kind: "ok", text: L("Brukt bare her. Ressursen i biblioteket er uendret.", "Used only here. The asset in the library is unchanged.") });
+      setMsg({ kind: "ok", text: t("app-library-harmonize-panel.text.text.1025fec05fa8") });
     } else {
       tools.onSaved?.({ versionId: pending.versionId, variantId, assetId: asset.id });
-      setMsg({ kind: "ok", text: L("Lagret som ny variant. Originalen er beholdt.", "Saved as a new variant. The original is kept.") });
+      setMsg({ kind: "ok", text: t("app-library-harmonize-panel.text.text.4830628cecf6") });
     }
   }
 
@@ -218,30 +201,30 @@ export function HarmonizePanel({
     const group = `pref-${saved.harmonizationId}`;
     const a = await tools.cmds.runAndWait(
       { type: "SetPreferredStyleReference", referenceId: newId<"command">(), fields: { assetId: asset.id, styleProfileId: saved.fields.styleProfileId, variantId: saved.variantId } },
-      L("Foretrukket referanse", "Preferred reference"),
+      t("app-library-harmonize-panel.a.tools-cmds-run-and-wait.43eafb111d6b"),
       group,
     );
     if (a.error) return setMsg({ kind: "error", text: a.error });
     await tools.cmds.runAndWait(
       { type: "SetStyleHarmonization", harmonizationId: saved.harmonizationId, fields: { ...saved.fields, use: "reference" } },
-      L("Foretrukket referanse", "Preferred reference"),
+      t("app-library-harmonize-panel.mark-preferred.tools-cmds-run-and-wait.ba0436a052af"),
       group,
     );
     setSaved({ ...saved, use: "reference", fields: { ...saved.fields, use: "reference" } });
-    setMsg({ kind: "ok", text: L("Merket som foretrukket referanse for stilprofilen.", "Marked as the preferred reference for the style profile.") });
+    setMsg({ kind: "ok", text: t("app-library-harmonize-panel.text.text.84c4ec175809") });
   }
 
   async function publish() {
     if (!saved || !ws.workspaceId) return;
-    setBusy(L("Publiserer …", "Publishing …"));
+    setBusy(t("app-library-harmonize-panel.publish.set-busy.4c7f80318bb2"));
     try {
       await saveAssetToGlobal({ data: { projectId, assetId: asset.id, workspaceId: ws.workspaceId } });
       await tools.cmds.runAndWait(
         { type: "SetStyleHarmonization", harmonizationId: saved.harmonizationId, fields: { ...saved.fields, use: "published" } },
-        L("Publisert til det globale biblioteket", "Published to the global library"),
+        t("app-library-harmonize-panel.publish.tools-cmds-run-and-wait.429acd6298d5"),
       );
       setSaved({ ...saved, use: "published", fields: { ...saved.fields, use: "published" } });
-      setMsg({ kind: "ok", text: L("Publisert til det globale biblioteket som ny stilvariant.", "Published to the global library as a new style variant.") });
+      setMsg({ kind: "ok", text: t("app-library-harmonize-panel.text.text.86977fd83b0a") });
     } catch (e) {
       setMsg({ kind: "error", text: tm((e as Error).message) });
     } finally {
@@ -252,26 +235,26 @@ export function HarmonizePanel({
   if (batch)
     return <HarmonizeBatchPanel tools={tools} projectId={projectId} styleProfileId={input.styleProfileId} referenceVersionId={input.referenceVersionId} m={m} quality={quality} onClose={() => setBatch(false)} />;
   if (!m.choices.length)
-    return <p className="text-xs text-text-tertiary">{L("Ingen bildemodeller er tilgjengelige.", "No image models are available.")}</p>;
+    return <p className="text-xs text-text-tertiary">{t("app-library-harmonize-panel.harmonize-panel.p.09c4a0937d84")}</p>;
   const preferred = input.styleProfileId ? preferredStyleReference(state, asset.id, input.styleProfileId) : null;
   return (
     <div data-testid="harmonize-panel" className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary">
       <h4 className="flex items-center gap-1 font-medium text-text-primary">
-        <Palette className="size-3.5" aria-hidden /> {L("Harmoniser stil", "Harmonize style")}
+        <Palette className="size-3.5" aria-hidden /> {t("app-library-harmonize-panel.harmonize-panel.h4.967a9a7f7af8")}
       </h4>
       {existing ? (
         <p data-testid="harmonize-made-with" className="text-text-tertiary">
           {existingProfile
-            ? L(`Laget med profil «${existingProfile}»`, `Made with profile “${existingProfile}”`)
-            : L("Laget med et referansebilde", "Made with a reference image")}{" "}
+            ? t("app-library-harmonize-panel.harmonize-panel.p.0bd79de7c469", { existingProfile: String(existingProfile) })
+            : t("app-library-harmonize-panel.harmonize-panel.p.8b7ee42013fb")}{" "}
           ({existing.model})
         </p>
       ) : null}
       <fieldset className="flex flex-col gap-1" disabled={!!busy || !!pending}>
-        <legend className="mb-1">{L("Stilen hentes fra", "Take the style from")}</legend>
+        <legend className="mb-1">{t("app-library-harmonize-panel.harmonize-panel.legend.8b7983bbabf5")}</legend>
         <label className="flex items-center gap-1.5">
           <input type="radio" name="harmonize-source" data-testid="harmonize-source-profile" checked={source === "profile"} disabled={!profiles.length} onChange={() => setSource("profile")} />
-          {L("En stilprofil", "A style profile")}
+          {t("app-library-harmonize-panel.harmonize-panel.label.93f13fb1082a")}
         </label>
         {source === "profile" ? (
           <select value={profileId} data-testid="harmonize-profile" onChange={(e) => { setProfileId(e.target.value); setConfirm(false); }} className={field}>
@@ -280,20 +263,17 @@ export function HarmonizePanel({
         ) : null}
         <label className="flex items-center gap-1.5">
           <input type="radio" name="harmonize-source" data-testid="harmonize-source-reference" checked={source === "reference"} onChange={() => setSource("reference")} />
-          {L("Et referansebilde", "A reference image")}
+          {t("app-library-harmonize-panel.harmonize-panel.label.363fe64c14e1")}
         </label>
         {source === "reference" ? (
           <select value={referenceId} data-testid="harmonize-reference" onChange={(e) => { setReferenceId(e.target.value); setConfirm(false); }} className={field}>
-            <option value="">{L("Velg et bilde …", "Choose an image …")}</option>
+            <option value="">{t("app-library-harmonize-panel.harmonize-panel.option.0616f2fa3a27")}</option>
             {references.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
           </select>
         ) : null}
       </fieldset>
       <p className="text-text-tertiary">
-        {L(
-          "Stilen dekker tegnestil, fargepalett, lyssetting, tekstur, detaljgrad og atmosfære.",
-          "The style covers drawing style, colour palette, lighting, texture, level of detail and atmosphere.",
-        )}
+        {t("app-library-harmonize-panel.harmonize-panel.p.fb1bf62ba729")}
       </p>
       <p role="note" data-testid="harmonize-warning" className="rounded-sm border border-accent-warm/50 bg-surface-1 p-1.5 text-text-primary">
         {HARMONIZE_IDENTITY_WARNING()}
@@ -309,14 +289,14 @@ export function HarmonizePanel({
           <div className="flex flex-wrap gap-1.5">
             {tools.onUseHere ? (
               <Button size="sm" data-testid="harmonize-use-local" onClick={() => void save("local")}>
-                {L("Bruk bare her", "Use only here")}
+                {t("app-library-harmonize-panel.harmonize-panel.button.37fd31700a6c")}
               </Button>
             ) : null}
             <Button size="sm" variant={tools.onUseHere ? "secondary" : "default"} data-testid="harmonize-use-variant" onClick={() => void save("variant")}>
-              {L("Lagre som alternativ variant", "Save as an alternative variant")}
+              {t("app-library-harmonize-panel.harmonize-panel.button.a0e39b3fd5fc")}
             </Button>
             <Button size="sm" variant="ghost" data-testid="harmonize-discard" onClick={() => setPending(null)}>
-              {L("Forkast", "Discard")}
+              {t("app-library-harmonize-panel.harmonize-panel.button.efb8f570a7b8")}
             </Button>
           </div>
         </div>
@@ -324,22 +304,22 @@ export function HarmonizePanel({
         <div className="flex flex-col gap-1.5" data-testid="harmonize-saved">
           <p data-testid="harmonize-saved-note" className="text-text-primary">
             {saved.fields.styleProfileId
-              ? L(`Laget med profil «${state.styleProfiles[saved.fields.styleProfileId]?.name ?? ""}»`, `Made with profile “${state.styleProfiles[saved.fields.styleProfileId]?.name ?? ""}”`)
-              : L("Laget med et referansebilde", "Made with a reference image")}
+              ? t("app-library-harmonize-panel.harmonize-panel.p.543ff15a6522", { value1: String(state.styleProfiles[saved.fields.styleProfileId]?.name ?? "") })
+              : t("app-library-harmonize-panel.harmonize-panel.p.8b7ee42013fb.2")}
           </p>
           <div className="flex flex-wrap gap-1.5">
             {saved.use !== "local" && saved.fields.styleProfileId ? (
               <Button size="sm" variant="secondary" data-testid="harmonize-mark-preferred" disabled={saved.use === "reference" || preferred?.variantId === saved.variantId} onClick={() => void markPreferred()}>
-                <Star /> {L("Merk som foretrukket referanse", "Mark as preferred reference")}
+                <Star /> {t("app-library-harmonize-panel.harmonize-panel.button.b25d79029c66")}
               </Button>
             ) : null}
             {saved.use !== "local" && ws.ready && ws.workspaceId && ws.rights.publish && !asset.globalAssetId ? (
               <Button size="sm" variant="secondary" data-testid="harmonize-publish" disabled={!!busy || saved.use === "published"} onClick={() => void publish()}
-                title={L("Eget, eksplisitt valg: kopierer ressursen med den nye stilvarianten til det globale biblioteket.", "A separate, explicit choice: copies the asset with the new style variant to the global library.")}>
-                <Globe /> {L("Publiser globalt …", "Publish globally …")}
+                title={t("app-library-harmonize-panel.harmonize-panel.title.adfe35737267")}>
+                <Globe /> {t("app-library-harmonize-panel.harmonize-panel.button.e7c31b69ff7a")}
               </Button>
             ) : null}
-            <Button size="sm" variant="ghost" onClick={onClose}>{L("Lukk", "Close")}</Button>
+            <Button size="sm" variant="ghost" onClick={onClose}>{t("app-library-harmonize-panel.harmonize-panel.button.5ea1153a88ba")}</Button>
           </div>
         </div>
       ) : (
@@ -353,13 +333,13 @@ export function HarmonizePanel({
             onClose={onClose}
             disabled={!tools.editable}
             busy={!!busy}
-            emptyText={L("Velg en utfylt stilprofil eller et referansebilde.", "Choose a filled-in style profile or a reference image.")}
-            confirmLabel={L("Bekreft stilharmonisering", "Confirm style harmonization")}
+            emptyText={t("app-library-harmonize-panel.harmonize-panel.empty-text.019188dd067d")}
+            confirmLabel={t("app-library-harmonize-panel.harmonize-panel.confirm-label.48f33bc9a77a")}
             icon={<Palette />}
-            startLabel={L("Harmoniser …", "Harmonize …")}
+            startLabel={t("app-library-harmonize-panel.harmonize-panel.start-label.81dee04b3a38")}
           />
           <Button size="sm" variant="ghost" data-testid="harmonize-batch-open" disabled={!tools.editable || !!busy} onClick={() => setBatch(true)}>
-            {L("Harmoniser flere karakterer …", "Harmonize more characters …")}
+            {t("app-library-harmonize-panel.harmonize-panel.button.c45b65e4926e")}
           </Button>
         </>
       )}

@@ -6,22 +6,7 @@
  */
 import { CheckCircle2, CircleHelp, Pause, Play, TriangleAlert } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
-import {
-  qualityDisclaimer,
-  QUALITY_LABEL,
-  chooseAttemptCommands,
-  filmClips,
-  videoQualityChecks,
-  type QualityCheck,
-  formatUsd,
-  L,
-  locale,
-  newId,
-  videoAttempts,
-  type GenerationJob,
-  type ProjectState,
-  type Take,
-} from "@/core";
+import { qualityDisclaimer, QUALITY_LABEL, chooseAttemptCommands, filmClips, videoQualityChecks, type QualityCheck, formatUsd, locale, newId, videoAttempts, type GenerationJob, type ProjectState, type Take } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";

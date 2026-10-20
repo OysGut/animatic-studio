@@ -4,14 +4,7 @@
  * standard») og for prosjektets standardovergang.
  */
 import { useState } from "react";
-import {
-  L,
-  collation,
-  MAX_TRANSITION_FRAMES,
-  TRANSITION_KINDS,
-  type Transition,
-  type TransitionKind,
-} from "@/core";
+import { collation, MAX_TRANSITION_FRAMES, TRANSITION_KINDS, type Transition, type TransitionKind } from "@/core";
 import { TRANSITION_LABEL } from "./transitions";
 import { t as tk } from "@/core/i18n/keyed";
 

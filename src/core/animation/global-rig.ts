@@ -3,7 +3,7 @@
  * arbeidsgruppen. Bruk i et prosjekt kopierer oppsettet inn som en ny prosjektversjon med opprinnelse; nyere
  * globale versjoner tas bare inn når brukeren bekrefter. Bilder kobles via den globale versjonen eller sha256.
  */
-import { L } from "../i18n";
+
 import type { AssetVersion, ProjectState } from "../model";
 import type { GlobalAssetBundle, GlobalVersion } from "../library/global";
 import type { Command } from "../commands/types";

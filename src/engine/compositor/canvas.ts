@@ -3,17 +3,10 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import {
-  L,
-  matrixScale,
-  multiply,
-  registerTextMeasurer,
-  type DrawItem,
-  type Frame,
-  type Matrix,
-} from "@/core";
+import { matrixScale, multiply, registerTextMeasurer, type DrawItem, type Frame, type Matrix } from "@/core";
 import { DEFAULT_ADJUSTMENTS } from "@/core/animation/parts";
 import { renderRigPart } from "./rig-parts";
+import { t as tk } from "@/core/i18n/keyed";
 
 /**
  * Tekstmåling for tekstlag (MTS §60–61): samme Canvas-måling i editoren, avspillingen og eksporten, så
@@ -312,7 +305,7 @@ function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number,
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(
-    it.version ? it.name : `${it.name}${L(" (uten bilde)", " (no image)")}`,
+    it.version ? it.name : `${it.name}${tk("engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c")}`,
     0,
     0,
     it.width * 0.9,

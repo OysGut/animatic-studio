@@ -19,31 +19,7 @@ import {
 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
-import {
-  aiUsage,
-  EFFORT_LABEL,
-  formatCredits,
-  formatUsd,
-  type GenerationJob,
-  JOB_STATE_LABEL,
-  jobEffort,
-  jobProgress,
-  type JobState,
-  jobState,
-  L, jobQualityProfile,
-  locale,
-  newId,
-  PRIORITY_LABEL,
-  type ProjectState,
-  PROVIDERS,
-  catalogSettings,
-  isProviderEnabled,
-  tm,
-  unclaimedImageJobs,
-  unclaimedVideoJobs,
-  variantsOf,
-  versionIdFromResultPath,
-} from "@/core";
+import { aiUsage, EFFORT_LABEL, formatCredits, formatUsd, type GenerationJob, JOB_STATE_LABEL, jobEffort, jobProgress, type JobState, jobState, jobQualityProfile, locale, newId, PRIORITY_LABEL, type ProjectState, PROVIDERS, catalogSettings, isProviderEnabled, tm, unclaimedImageJobs, unclaimedVideoJobs, variantsOf, versionIdFromResultPath } from "@/core";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useProfiles } from "@/app/project/use-project";
@@ -66,6 +42,7 @@ import { ProvidersDialog } from "./ProvidersDialog";
 import { claimVideo } from "./video-jobs";
 import { useProjectProviders } from "./use-project-providers";
 import { AiSourceCleanup } from "./AiSourceCleanup";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Leverandørene prosjektet kan bruke, og veien til å koble til flere (DEC-0069). */
 function ProviderLine({ projectId, userId }: { projectId: string; userId: string }) {
@@ -78,10 +55,10 @@ function ProviderLine({ projectId, userId }: { projectId: string; userId: string
     .join(", ");
   return (
     <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
-      {L("Tilgjengelige leverandører:", "Available providers:")}{" "}
+      {tk("app-ai-ai-panel.provider-line.p.f0131ba43df8")}{" "}
       <span className="text-text-primary">{names}</span>
       <Button size="sm" variant="ghost" onClick={() => setOpen(true)}>
-        {L("AI-leverandører …", "AI providers …")}
+        {tk("app-ai-ai-panel.provider-line.button.330d5f2883fc")}
       </Button>
       <ProvidersDialog open={open} onOpenChange={setOpen} userId={userId} />
     </p>
@@ -198,7 +175,7 @@ export function AiPanel({
               assetId: asset.id,
               fields: { name: "Animatic", style: "animatic", appearance: "" },
             },
-            L(`Ny variant for «${asset.name}»`, `New variant for “${asset.name}”`),
+            tk("app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa", { name: String(asset.name) }),
             group,
           );
           if (r.error) throw new Error(r.error);
@@ -210,12 +187,9 @@ export function AiPanel({
             versionId: versionId as never,
             variantId: variantId as never,
             media,
-            note: L(
-              `Generert med AI (${j.model}), hentet inn fra AI-jobbene`,
-              `Generated with AI (${j.model}), added from the AI jobs`,
-            ),
+            note: tk("app-ai-ai-panel.note.note.744d7cac95d2", { model: String(j.model) }),
           },
-          L(`Hent inn AI-bilde av «${asset.name}»`, `Add AI image of “${asset.name}”`),
+          tk("app-ai-ai-panel.r.cmds-run-and-wait.687f2fd9be02", { name: String(asset.name) }),
           group,
         );
         if (r.error) throw new Error(r.error);
@@ -235,33 +209,24 @@ export function AiPanel({
   return (
     <section aria-labelledby="ai-title" className="mt-10">
       <h2 id="ai-title" className="mb-2 text-base font-semibold text-text-primary">
-        {L("AI-budsjett og jobber", "AI budget and jobs")}
+        {tk("app-ai-ai-panel.ai-panel.h2.b2157c086bc5")}
       </h2>
       <Budget state={state} cmds={cmds} isOwner={isOwner} />
       <p className="mt-2 text-[13px] text-text-secondary">
-        {L("Denne måneden:", "This month:")}{" "}
+        {tk("app-ai-ai-panel.ai-panel.p.1eece335cadc")}{" "}
         <span className="tabular font-medium text-text-primary">{usage.used}</span>{" "}
         {usage.limit !== null ? (
           <>
-            {L("av", "of")} <span className="tabular">{usage.limit}</span>{" "}
-            {L("genereringer", "generations")} ({usage.remaining} {L("igjen", "left")})
+            {tk("app-ai-ai-panel.ai-panel.p.080d73395c4a")} <span className="tabular">{usage.limit}</span>{" "}
+            {tk("app-ai-ai-panel.ai-panel.p.2990ff3912e0")} ({usage.remaining} {tk("app-ai-ai-panel.ai-panel.p.42f093736ea3")})
           </>
         ) : (
-          L(
-            "genereringer (ingen egen ramme – de faste grensene gjelder: 30 per person i timen, 200 per prosjekt i døgnet)",
-            "generations (no own limit – the standard limits apply: 30 per person per hour, 200 per project per day)",
-          )
+          tk("app-ai-ai-panel.ai-panel.p.226910e754c3")
         )}
         {usage.estimatedCost !== null
-          ? L(
-              ` · anslått ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (noen uten anslag)" : ""}`,
-              ` · estimated ${formatCredits(usage.estimatedCost)}${usage.partlyUnknown ? " (some without an estimate)" : ""}`,
-            )
+          ? usage.partlyUnknown ? tk("app-ai-ai-panel.usage-estimate-partly-unknown", { cost: formatCredits(usage.estimatedCost) }) : tk("app-ai-ai-panel.usage-estimate", { cost: formatCredits(usage.estimatedCost) })
           : ""}
-        {L(
-          ` · API-kostnad med egne nøkler ca. ${formatUsd(usage.costUsd ?? 0)}`,
-          ` · API cost with your own keys approx. ${formatUsd(usage.costUsd ?? 0)}`,
-        )}
+        {tk("app-ai-ai-panel.ai-panel.p.4418a73a6199", { value1: String(formatUsd(usage.costUsd ?? 0)) })}
         .
       </p>
 
@@ -275,18 +240,9 @@ export function AiPanel({
           <AlertTriangle className="size-4 text-status-uncertain" aria-hidden />
           <span className="min-w-0 flex-1">
             {unclaimed.length === 1
-              ? L(
-                  "Ett AI-resultat ble laget, men ikke lagt inn",
-                  "One AI result was made but not added",
-                )
-              : L(
-                  `${unclaimed.length} AI-resultater ble laget, men ikke lagt inn`,
-                  `${unclaimed.length} AI results were made but not added`,
-                )}{" "}
-            {L(
-              "(bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens de ble laget). De er betalt og ligger trygt lagret.",
-              "(images in the library, videos as a new version of the scene – the page may have been closed while they were made). They are paid for and safely stored.",
-            )}
+              ? tk("app-ai-ai-panel.ai-panel.span.2b76cf4b030c")
+              : tk("app-ai-ai-panel.ai-panel.span.0e66e3b81edb", { length: String(unclaimed.length) })}{" "}
+            {tk("app-ai-ai-panel.ai-panel.span.9d18584f63ee")}
           </span>
           {editable ? (
             <Button
@@ -296,7 +252,7 @@ export function AiPanel({
               onClick={() => void claim(unclaimed)}
             >
               {claiming ? <Loader2 className="animate-spin" /> : <Download />}
-              {unclaimed.length === 1 ? L("Legg inn", "Add") : L("Legg inn alle", "Add all")}
+              {unclaimed.length === 1 ? tk("app-ai-ai-panel.ai-panel.button.c4f50e9742a2") : tk("app-ai-ai-panel.ai-panel.button.e3996d11a49f")}
             </Button>
           ) : null}
         </div>
@@ -308,16 +264,16 @@ export function AiPanel({
       ) : null}
 
       <div className="mt-4 flex items-center gap-2">
-        <h3 className="text-[13px] font-medium text-text-primary">{L("Jobber", "Jobs")}</h3>
+        <h3 className="text-[13px] font-medium text-text-primary">{tk("app-ai-ai-panel.ai-panel.h3.d6da1ee56d15")}</h3>
         <div
           role="group"
-          aria-label={L("Vis jobber", "Show jobs")}
+          aria-label={tk("app-ai-ai-panel.ai-panel.aria-label.e6d7b27d8ef8")}
           className="ml-2 flex items-center gap-0.5"
         >
           {(
             [
-              ["all", L("Alle", "All")],
-              ["problems", L("Ikke ferdige", "Not finished")],
+              ["all", tk("app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.90fd0f96f77f")],
+              ["problems", tk("app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.672049efa92e")],
             ] as const
           ).map(([id, text]) => (
             <button
@@ -342,19 +298,19 @@ export function AiPanel({
       </div>
       {jobs.isError ? (
         <p role="alert" className="mt-2 text-xs text-status-danger">
-          {L("Jobbene kunne ikke hentes:", "The jobs could not be loaded:")}{" "}
+          {tk("app-ai-ai-panel.ai-panel.p.c15bbdac71d9")}{" "}
           {(jobs.error as Error).message}
         </p>
       ) : shown.length === 0 ? (
         <p className="mt-2 text-xs text-text-tertiary">
           {list.length === 0
-            ? L("Ingen AI-genereringer ennå.", "No AI generations yet.")
-            : L("Ingen jobber som ikke er ferdige.", "No jobs that are not finished.")}
+            ? tk("app-ai-ai-panel.ai-panel.p.0d492a68d97a")
+            : tk("app-ai-ai-panel.ai-panel.p.aa7ed8cc5e0f")}
         </p>
       ) : (
         <ul
           className="mt-2 border border-border bg-surface-1"
-          aria-label={L("AI-jobber", "AI jobs")}
+          aria-label={tk("app-ai-ai-panel.ai-panel.aria-label.5daab1714cc0")}
         >
           {visible.map((j) => {
             const st = jobState(j, now);
@@ -373,7 +329,7 @@ export function AiPanel({
                       aria-hidden
                     />
                     {JOB_STATE_LABEL[st]}
-                    {profile ? <span data-testid="ai-job-quality-profile">{L(`Laget med profil ${profile.name}`, `Made with profile ${profile.name}`)}</span> : null}
+                    {profile ? <span data-testid="ai-job-quality-profile">{tk("app-ai-ai-panel.ai-panel.span.037b85777af1", { name: String(profile.name) })}</span> : null}
                   </span>
                   <span className="tabular text-[11px] text-text-tertiary">
                     {new Date(j.createdAt).toLocaleString(locale(), {
@@ -390,13 +346,13 @@ export function AiPanel({
                 <div className="min-w-0">
                   <p className="truncate text-text-primary">
                     {j.kind === "video"
-                      ? L("Video", "Video")
+                      ? tk("app-ai-ai-panel.ai-panel.p.ab192a3725f8")
                       : j.kind === "prompt"
-                        ? L("Beskrivelse skrevet av AI", "Description written by AI")
+                        ? tk("app-ai-ai-panel.ai-panel.p.0465d4e1a9b9")
                         : j.kind === "sound"
-                          ? L("Lyd", "Sound")
-                          : L("Bilde", "Image")}
-                    {asset ? ` ${j.kind === "prompt" ? "for" : L("av", "of")} «${asset.name}»` : ""}
+                          ? tk("app-ai-ai-panel.ai-panel.p.4c0a9e34abd5")
+                          : tk("app-ai-ai-panel.ai-panel.p.4359fc475a64")}
+                    {asset ? ` ${j.kind === "prompt" ? "for" : tk("app-ai-ai-panel.ai-panel.p.080d73395c4a.2")} «${asset.name}»` : ""}
                     <span className="text-text-tertiary">
                       {" "}
                       · {j.model}
@@ -413,7 +369,7 @@ export function AiPanel({
                     {j.resultText ? (
                       <>
                         <p className="mt-1 text-[11px] text-text-tertiary">
-                          {L("AI skrev:", "The AI wrote:")}
+                          {tk("app-ai-ai-panel.ai-panel.p.ed03edcfd4fa")}
                         </p>
                         <pre className="whitespace-pre-wrap font-mono text-[11px] text-text-secondary">
                           {j.resultText}
@@ -431,22 +387,13 @@ export function AiPanel({
                   {unclaimedIds.has(j.id) ? (
                     <p className="mt-0.5 text-xs text-status-uncertain">
                       {j.kind === "video"
-                        ? L(
-                            "Videoen er laget, men ikke lagt inn som versjon av scenen.",
-                            "The video is made, but not added as a version of the scene.",
-                          )
-                        : L(
-                            "Bildet er laget, men ikke lagt inn i biblioteket.",
-                            "The image is made, but not added to the library.",
-                          )}
+                        ? tk("app-ai-ai-panel.ai-panel.p.1d8a4db1910a")
+                        : tk("app-ai-ai-panel.ai-panel.p.d3adede2ddbf")}
                     </p>
                   ) : null}
                   {st === "stale" ? (
                     <p className="mt-0.5 text-xs text-status-uncertain">
-                      {L(
-                        "Jobben svarte ikke ferdig (siden ble kanskje lukket). Ingen ny versjon ble lagret; prøv igjen om du trenger bildet.",
-                        "The job did not finish in time (the page may have been closed). No new version was saved; try again if you need the image.",
-                      )}
+                      {tk("app-ai-ai-panel.ai-panel.p.4c2c4ffce6b0")}
                     </p>
                   ) : null}
                 </div>
@@ -461,7 +408,7 @@ export function AiPanel({
                         params={{ projectId }}
                         search={{ asset: asset.id }}
                       >
-                        {L("Vis", "View")}
+                        {tk("app-ai-ai-panel.ai-panel.link.4016655f7c25")}
                       </Link>
                     </Button>
                   ) : null}
@@ -476,13 +423,13 @@ export function AiPanel({
                       onClick={() => void claim([j])}
                     >
                       {claiming === j.id ? <Loader2 className="animate-spin" /> : <Download />}
-                      {L("Legg inn", "Add")}
+                      {tk("app-ai-ai-panel.ai-panel.button.c4f50e9742a2.2")}
                     </Button>
                   ) : null}
                   {editable && asset && j.kind === "image" ? (
                     <Button size="sm" variant="secondary" onClick={() => setRetry(j)}>
                       <RotateCcw />
-                      {L("Prøv igjen", "Try again")}
+                      {tk("app-ai-ai-panel.ai-panel.button.bdac359e3acb")}
                     </Button>
                   ) : null}
                 </div>
@@ -493,7 +440,7 @@ export function AiPanel({
       )}
       {shown.length > visible.length ? (
         <Button size="sm" variant="ghost" className="mt-1" onClick={() => setShowAll(true)}>
-          {L("Vis alle", "Show all")} ({shown.length})
+          {tk("app-ai-ai-panel.ai-panel.button.93e7b44b8d04")} ({shown.length})
         </Button>
       ) : null}
       <RetryDialog
@@ -534,26 +481,20 @@ function Budget({
   function save() {
     if (lim !== null && (!Number.isInteger(lim) || lim < 0 || lim > 100000)) {
       setErr(
-        L(
-          "Antallet må være et helt tall mellom 0 og 100 000 (tomt = ingen egen ramme).",
-          "The number must be a whole number between 0 and 100,000 (empty = no own limit).",
-        ),
+        tk("app-ai-ai-panel.save.set-err.fa641093c5d4"),
       );
       return;
     }
     if (pr !== null && (!Number.isFinite(pr) || pr < 0 || pr > 100000)) {
       setErr(
-        L(
-          "Prisen må være et tall (tomt = ukjent).",
-          "The price must be a number (empty = unknown).",
-        ),
+        tk("app-ai-ai-panel.save.set-err.ca3c81fd2f43"),
       );
       return;
     }
     setErr(
       cmds.run(
         { type: "SetAiBudget", monthLimit: lim, pricePerImage: pr },
-        L("Endre AI-budsjett", "Change AI budget"),
+        tk("app-ai-ai-panel.save.cmds-run.332619fcd839"),
       ),
     );
   }
@@ -562,51 +503,39 @@ function Budget({
     <div className="border border-border bg-surface-1 px-4 py-3">
       <div className="flex flex-wrap items-end gap-4">
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L(
-            "Høyst antall AI-genereringer per måned",
-            "Highest number of AI generations per month",
-          )}
+          {tk("app-ai-ai-panel.budget.label.a9470dff1b8f")}
           <input
             value={limit}
             onChange={(e) => setLimit(e.target.value)}
             disabled={!isOwner}
             inputMode="numeric"
-            placeholder={L("Ingen egen ramme", "No own limit")}
-            aria-label={L(
-              "Høyst antall AI-genereringer per måned",
-              "Highest number of AI generations per month",
-            )}
+            placeholder={tk("app-ai-ai-panel.budget.placeholder.2becf3cbe4e1")}
+            aria-label={tk("app-ai-ai-panel.budget.aria-label.a9470dff1b8f")}
             className={ctl}
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Anslått pris per bilde (kreditter)", "Estimated price per image (credits)")}
+          {tk("app-ai-ai-panel.budget.label.f895c62aaba5")}
           <input
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             disabled={!isOwner}
             inputMode="decimal"
-            placeholder={L("Ukjent", "Unknown")}
-            aria-label={L(
-              "Anslått pris per bilde i kreditter",
-              "Estimated price per image in credits",
-            )}
+            placeholder={tk("app-ai-ai-panel.budget.placeholder.3ccd27a54782")}
+            aria-label={tk("app-ai-ai-panel.budget.aria-label.009d21f15bfa")}
             className={ctl}
           />
         </label>
         {isOwner ? (
           <Button size="sm" disabled={!changed} onClick={save}>
-            {L("Lagre", "Save")}
+            {tk("app-ai-ai-panel.budget.button.13ec0ee5f594")}
           </Button>
         ) : null}
       </div>
       <p className="mt-2 text-xs text-text-tertiary">
         {isOwner
-          ? L(
-              "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
-              "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.",
-            )
-          : L("Bare eieren kan endre budsjettet.", "Only the owner can change the budget.")}
+          ? tk("app-ai-ai-panel.budget.p.9eadccb8743b")
+          : tk("app-ai-ai-panel.budget.p.cd9d16a09075")}
       </p>
       {err ? (
         <p role="alert" className="mt-1 text-xs text-status-danger">
@@ -644,14 +573,11 @@ function RetryDialog({
         <DialogHeader>
           <DialogTitle>
             <AiGlyph className="mr-1 inline size-4" aria-hidden />
-            {L("Prøv igjen", "Try again")}
+            {tk("app-ai-ai-panel.retry-dialog.dialog-title.1ccf1e27f0d8")}
             {asset ? `: «${asset.name}»` : ""}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Samme beskrivelse som sist. Det nye bildet lagres som en ny versjon; ingenting eksisterende endres.",
-              "The same description as last time. The new image is saved as a new version; nothing existing is changed.",
-            )}
+            {tk("app-ai-ai-panel.retry-dialog.dialog-description.17d0cfd033f2")}
           </DialogDescription>
         </DialogHeader>
         {job && asset ? (
@@ -677,7 +603,7 @@ function RetryDialog({
                     assetId: asset.id,
                     fields: { name: "Animatic", style: "animatic", appearance: "" },
                   },
-                  L(`Ny variant for «${asset.name}»`, `New variant for “${asset.name}”`),
+                  tk("app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa.2", { name: String(asset.name) }),
                 );
                 if (r.error) return r.error;
               }
@@ -687,12 +613,9 @@ function RetryDialog({
                   versionId: img.versionId as never,
                   variantId: variantId as never,
                   media: img.media,
-                  note: L(
-                    `Generert med AI (${img.model}), nytt forsøk`,
-                    `Generated with AI (${img.model}), new attempt`,
-                  ),
+                  note: tk("app-ai-ai-panel.note.note.53aad993372b", { model: String(img.model) }),
                 },
-                L(`AI-bilde av «${asset.name}»`, `AI image of “${asset.name}”`),
+                tk("app-ai-ai-panel.r.cmds-run-and-wait.56b486a12ca0", { name: String(asset.name) }),
               );
               return r.error;
             }}
@@ -700,7 +623,7 @@ function RetryDialog({
         ) : null}
         <DialogFooter>
           <Button variant="secondary" onClick={onClose}>
-            {L("Lukk", "Close")}
+            {tk("app-ai-ai-panel.retry-dialog.button.cd9827760969")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -754,7 +677,7 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
         data: { projectId, jobId: job.id, action, priority },
       });
       if (!r.ok)
-        setErr(r.message ? tm(r.message) : L("Kunne ikke endres.", "Could not be changed."));
+        setErr(r.message ? tm(r.message) : tk("app-ai-ai-panel.act.set-err.62534a79515a"));
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -765,7 +688,7 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
   return (
     <div className="flex flex-wrap items-center gap-1">
       <select
-        aria-label={L("Prioritet i køen", "Priority in the queue")}
+        aria-label={tk("app-ai-ai-panel.queue-controls.aria-label.13421340c9b6")}
         value={job.priority ?? 2}
         disabled={busy}
         onChange={(e) => void act("priority", Number(e.target.value) as 1 | 2 | 3)}
@@ -778,10 +701,10 @@ function QueueControls({ projectId, job }: { projectId: string; job: GenerationJ
         ))}
       </select>
       <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("first")}>
-        {L("Først", "First")}
+        {tk("app-ai-ai-panel.queue-controls.button.c40336910499")}
       </Button>
       <Button size="sm" variant="ghost" disabled={busy} onClick={() => void act("cancel")}>
-        {L("Avbryt", "Cancel")}
+        {tk("app-ai-ai-panel.queue-controls.button.caad46539049")}
       </Button>
       {err ? (
         <span role="alert" className="text-[11px] text-status-danger">

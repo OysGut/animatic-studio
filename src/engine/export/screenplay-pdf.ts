@@ -5,7 +5,7 @@
  */
 import type { Page } from "@/core/screenplay";
 import type { NotePlacement } from "@/core/notes";
-import { L } from "@/core";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 const PAGE_W = 612;

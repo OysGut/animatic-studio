@@ -3,7 +3,8 @@
  * Profilen hører til en ressurs av typen «character» eller «animal» (Mars 18.10.2026).
  * Lengdegrensene her er strengere enn i databasen (databasen er siste sperre).
  */
-import { L } from "../i18n";
+
+import { t } from "@/core/i18n/keyed";
 
 export type SpeechLevel = "child" | "youth" | "adult" | "academic" | "street";
 export const SPEECH_LEVELS: readonly SpeechLevel[] = [
@@ -146,13 +147,13 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 
 function fieldError(path: string, kind: Kind, v: unknown): string | null {
   const bad = () =>
-    L(`Ugyldig verdi i profilen (${path})`, `Invalid value in the profile (${path})`);
+    t("core-storylab-profile.bad.message.d4b7aa2ffb14", { path: String(path) });
   const long = () =>
-    L(`For lang tekst i profilen (${path})`, `Text too long in the profile (${path})`);
+    t("core-storylab-profile.long.message.f291dc84a55c", { path: String(path) });
   const strList = (max: number) => {
     if (!Array.isArray(v) || !v.every((x) => typeof x === "string")) return bad();
     if (v.length > max)
-      return L(`For mange punkter i profilen (${path})`, `Too many items in the profile (${path})`);
+      return t("core-storylab-profile.str-list.message.203544f90a07", { path: String(path) });
     return v.some((x: string) => x.length > PROFILE_LIMITS.item) ? long() : null;
   };
   switch (kind) {
@@ -190,44 +191,38 @@ function fieldError(path: string, kind: Kind, v: unknown): string | null {
 
 function check(p: unknown, partial: boolean): string | null {
   if (!p || typeof p !== "object" || Array.isArray(p))
-    return L("Profilen er ugyldig", "The profile is invalid");
+    return t("core-storylab-profile.check.message.01a5a98213fa");
   const o = p as Record<string, unknown>;
   for (const k of Object.keys(o))
     if (k !== "notes" && !(k in SCHEMA))
-      return L(`Ukjent felt i profilen (${k})`, `Unknown field in the profile (${k})`);
+      return t("core-storylab-profile.check.message.9448da9c16fe", { k: String(k) });
   if (o["notes"] !== undefined || !partial) {
     if (typeof o["notes"] !== "string")
-      return L("Ugyldig verdi i profilen (notes)", "Invalid value in the profile (notes)");
+      return t("core-storylab-profile.check.message.4924658f6b50");
     if (o["notes"].length > PROFILE_LIMITS.notes)
-      return L("For lang tekst i profilen (notes)", "Text too long in the profile (notes)");
+      return t("core-storylab-profile.check.message.ee7f34e157ac");
   }
   for (const [sec, fields] of Object.entries(SCHEMA)) {
     const part = o[sec];
     if (part === undefined && partial) continue;
     if (!part || typeof part !== "object" || Array.isArray(part))
-      return L(`Ugyldig del av profilen (${sec})`, `Invalid part of the profile (${sec})`);
+      return t("core-storylab-profile.check.message.d66339497b0c", { sec: String(sec) });
     const po = part as Record<string, unknown>;
     for (const k of Object.keys(po))
       if (!(k in fields))
-        return L(
-          `Ukjent felt i profilen (${sec}.${k})`,
-          `Unknown field in the profile (${sec}.${k})`,
-        );
+        return t("core-storylab-profile.check.message.6653a46b9506", { sec: String(sec), k: String(k) });
     for (const [f, kind] of Object.entries(fields)) {
       const v = po[f];
       if (v === undefined) {
         if (partial || OPTIONAL.has(f)) continue;
-        return L(
-          `Feltet mangler i profilen (${sec}.${f})`,
-          `The field is missing from the profile (${sec}.${f})`,
-        );
+        return t("core-storylab-profile.check.message.cf645cedeb54", { sec: String(sec), f: String(f) });
       }
       const e = fieldError(`${sec}.${f}`, kind, v);
       if (e) return e;
     }
   }
   if (JSON.stringify(p).length > PROFILE_LIMITS.total)
-    return L("Profilen er for stor", "The profile is too large");
+    return t("core-storylab-profile.check.message.61ca3abe01e6");
   return null;
 }
 

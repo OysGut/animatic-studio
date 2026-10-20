@@ -6,9 +6,10 @@
  * resultat får et øyeblikksbilde av profilen i metadataen (generation_jobs.params.qualityProfile).
  * Ren TypeScript (ADR-0003).
  */
-import { L } from "../i18n";
+
 import type { ProjectState } from "../model";
 import type { EffortLevel, ImageSize } from "./providers";
+import { t } from "@/core/i18n/keyed";
 
 /** AI-typene en profil kan velge modell for. */
 export type QualityProfileModelKind = "image" | "video" | "speech" | "sound";
@@ -20,10 +21,10 @@ export const QUALITY_PROFILE_MODEL_KINDS: readonly QualityProfileModelKind[] = [
 ];
 
 export const QUALITY_PROFILE_MODEL_KIND_LABEL: Record<QualityProfileModelKind, string> = {
-  image: L("Bilder", "Images"),
-  video: L("Video", "Video"),
-  speech: L("Tale", "Speech"),
-  sound: L("Lyd", "Sound"),
+  image: t("core-generation-quality-profile.image.image.5122089c6c95"),
+  video: t("core-generation-quality-profile.video.video.48db2336f7a3"),
+  speech: t("core-generation-quality-profile.speech.speech.1f8f000d42bd"),
+  sound: t("core-generation-quality-profile.sound.sound.711d49b5c374"),
 };
 
 /** Eksportinnstillingene profilen foreslår (kan overstyres i hver eksportdialog). */
@@ -67,49 +68,40 @@ export const QUALITY_PROFILE_MAX_BUDGET = 100000;
 export function qualityProfileError(name: string, spec: QualityProfileSpec): string | null {
   const n = name.trim();
   if (n.length === 0 || n.length > QUALITY_PROFILE_MAX_NAME)
-    return L(
-      `Navnet må ha mellom 1 og ${QUALITY_PROFILE_MAX_NAME} tegn`,
-      `The name must be between 1 and ${QUALITY_PROFILE_MAX_NAME} characters`,
-    );
+    return t("core-generation-quality-profile.quality-profile-error.message.5782e120cec5", { QUALITY_PROFILE_MAX_NAME: String(QUALITY_PROFILE_MAX_NAME) });
   if (spec.effort !== undefined && spec.effort !== null && !["fast", "balanced", "premium"].includes(spec.effort))
-    return L("Ugyldig innsatsnivå", "Invalid effort level");
+    return t("core-generation-quality-profile.quality-profile-error.message.d0a4eb059952");
   if (
     spec.resolution !== undefined &&
     spec.resolution !== null &&
     !["1K", "2K", "4K"].includes(spec.resolution)
   )
-    return L("Ugyldig oppløsning", "Invalid resolution");
+    return t("core-generation-quality-profile.quality-profile-error.message.85fb78940b66");
   if (spec.variants !== undefined && spec.variants !== null) {
     const v = spec.variants;
     if (!Number.isInteger(v) || v < 1 || v > QUALITY_PROFILE_MAX_VARIANTS)
-      return L(
-        `Antall varianter må være et helt tall mellom 1 og ${QUALITY_PROFILE_MAX_VARIANTS}`,
-        `The number of variants must be a whole number between 1 and ${QUALITY_PROFILE_MAX_VARIANTS}`,
-      );
+      return t("core-generation-quality-profile.quality-profile-error.message.7add39b29e37", { QUALITY_PROFILE_MAX_VARIANTS: String(QUALITY_PROFILE_MAX_VARIANTS) });
   }
   if (spec.budgetLimit !== undefined && spec.budgetLimit !== null) {
     const b = spec.budgetLimit;
     if (!Number.isInteger(b) || b < 0 || b > QUALITY_PROFILE_MAX_BUDGET)
-      return L(
-        `Budsjettgrensen må være et helt tall mellom 0 og ${QUALITY_PROFILE_MAX_BUDGET.toLocaleString()}`,
-        `The budget limit must be a whole number between 0 and ${QUALITY_PROFILE_MAX_BUDGET.toLocaleString()}`,
-      );
+      return t("core-generation-quality-profile.quality-profile-error.message.5886994cd86b", { value1: String(QUALITY_PROFILE_MAX_BUDGET.toLocaleString()) });
   }
   if (spec.export) {
-    if (spec.export.format != null && !["mp4", "webm", "png-seq", "prores"].includes(spec.export.format)) return L("Ugyldig eksportformat", "Invalid export format");
-    if (spec.export.alpha != null && !["straight", "premultiplied"].includes(spec.export.alpha)) return L("Ugyldig alfa", "Invalid alpha");
+    if (spec.export.format != null && !["mp4", "webm", "png-seq", "prores"].includes(spec.export.format)) return t("core-generation-quality-profile.quality-profile-error.message.3dc27f709829");
+    if (spec.export.alpha != null && !["straight", "premultiplied"].includes(spec.export.alpha)) return t("core-generation-quality-profile.quality-profile-error.message.d293518ef985");
     const bitrate = spec.export.bitrateKbps;
-    if (bitrate != null && (!Number.isInteger(bitrate) || bitrate < 100 || bitrate > 100000)) return L("Bitrate må være mellom 100 og 100000 kbps", "Bitrate must be between 100 and 100000 kbps");
+    if (bitrate != null && (!Number.isInteger(bitrate) || bitrate < 100 || bitrate > 100000)) return t("core-generation-quality-profile.quality-profile-error.message.ec844da498e5");
   }
   if (spec.models)
     for (const k of Object.keys(spec.models))
       if (!QUALITY_PROFILE_MODEL_KINDS.includes(k as QualityProfileModelKind) || typeof spec.models[k as QualityProfileModelKind] !== "string" || (spec.models[k as QualityProfileModelKind]?.length ?? 0) > 200)
-        return L("Ukjent AI-type i profilen", "Unknown AI type in the profile");
+        return t("core-generation-quality-profile.quality-profile-error.message.1cbbae858d3c");
   try {
     if (new TextEncoder().encode(JSON.stringify(spec ?? {})).length > QUALITY_PROFILE_MAX_SPEC_BYTES)
-      return L("Profilen er for stor", "The profile is too large");
+      return t("core-generation-quality-profile.quality-profile-error.message.d0f5f2517d3f");
   } catch {
-    return L("Ugyldig profil", "Invalid profile");
+    return t("core-generation-quality-profile.quality-profile-error.message.556769f3d0a4");
   }
   return null;
 }
@@ -195,15 +187,15 @@ export function profileBudgetRemaining(
  */
 export function parseQualityProfileMeta(x: unknown): QualityProfileSnapshot | null {
   if (x === undefined || x === null) return null;
-  if (typeof x !== "object") throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+  if (typeof x !== "object") throw new Error(t("core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677"));
   const o = x as Record<string, unknown>;
   if (typeof o["id"] !== "string" || !/^[0-9a-f-]{36}$/i.test(o["id"]))
-    throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+    throw new Error(t("core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677.2"));
   if (typeof o["name"] !== "string" || o["name"].length > QUALITY_PROFILE_MAX_NAME)
-    throw new Error(L("Ugyldig kvalitetsprofil", "Invalid quality profile"));
+    throw new Error(t("core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677.3"));
   const spec = o["spec"] && typeof o["spec"] === "object" ? o["spec"] : {};
   if (new TextEncoder().encode(JSON.stringify(spec)).length > QUALITY_PROFILE_MAX_SPEC_BYTES)
-    throw new Error(L("Kvalitetsprofilen er for stor", "The quality profile is too large"));
+    throw new Error(t("core-generation-quality-profile.parse-quality-profile-meta.message.0851274f6ae1"));
   const error = qualityProfileError(o["name"], spec as QualityProfileSpec);
   if (error) throw new Error(error);
   return { id: o["id"], name: o["name"], spec: JSON.parse(JSON.stringify(spec)) as QualityProfileSpec };

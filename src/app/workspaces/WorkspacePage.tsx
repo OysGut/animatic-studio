@@ -5,16 +5,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  tm,
-  keepsAnOwner,
-  workspaceRights,
-  WORKSPACE_INVITE_ROLES,
-  WORKSPACE_ROLES,
-  WORKSPACE_ROLE_LABEL,
-  type WorkspaceRole,
-} from "@/core";
+import { tm, keepsAnOwner, workspaceRights, WORKSPACE_INVITE_ROLES, WORKSPACE_ROLES, WORKSPACE_ROLE_LABEL, type WorkspaceRole } from "@/core";
 import {
   createWorkspaceInvitation,
   getWorkspace,

@@ -5,7 +5,8 @@
  * Zip64 (filer over 4 GB) støttes ikke – sikkerhetskopien lager aldri slike.
  */
 import { inflateSync } from "fflate";
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 export interface ZipIndexEntry {
   readonly name: string;
@@ -30,20 +31,17 @@ export async function readZipIndex(file: Blob): Promise<Map<string, ZipIndexEntr
       break;
     }
   }
-  if (eocd < 0) throw new Error(L("Filen er ikke en zip-fil.", "The file is not a zip file."));
+  if (eocd < 0) throw new Error(t("engine-import-zip-read.read-zip-index.message.377a90f2e29b"));
   const count = end.getUint16(eocd + 10, true);
   const cdSize = end.getUint32(eocd + 12, true);
   const cdOffset = end.getUint32(eocd + 16, true);
   if (count === 0xffff || cdSize === 0xffffffff || cdOffset === 0xffffffff)
     throw new Error(
-      L(
-        "Zip-filen er for stor (over 4 GB) til å leses her.",
-        "The zip file is too large (over 4 GB) to be read here.",
-      ),
+      t("engine-import-zip-read.read-zip-index.message.508d578599e5"),
     );
   if (cdOffset + cdSize > file.size)
     throw new Error(
-      L("Zip-filen er skadet eller ufullstendig.", "The zip file is damaged or incomplete."),
+      t("engine-import-zip-read.read-zip-index.message.0cf2daef7956"),
     );
   const cd = await bytes(file, cdOffset, cdOffset + cdSize);
   const dec = new TextDecoder("utf-8");
@@ -52,10 +50,7 @@ export async function readZipIndex(file: Blob): Promise<Map<string, ZipIndexEntr
   for (let n = 0; n < count; n++) {
     if (p + 46 > cd.byteLength || cd.getUint32(p, true) !== 0x02014b50)
       throw new Error(
-        L(
-          "Zip-filen er skadet (innholdsfortegnelsen).",
-          "The zip file is damaged (its contents list).",
-        ),
+        t("engine-import-zip-read.read-zip-index.message.6fc57fbaa34f"),
       );
     const method = cd.getUint16(p + 10, true);
     const compressedSize = cd.getUint32(p + 20, true);
@@ -77,30 +72,24 @@ export async function readZipIndex(file: Blob): Promise<Map<string, ZipIndexEntr
 export async function zipEntryBlob(file: Blob, e: ZipIndexEntry, type = ""): Promise<Blob> {
   const h = await bytes(file, e.localOffset, e.localOffset + 30);
   if (h.byteLength < 30 || h.getUint32(0, true) !== 0x04034b50)
-    throw new Error(L(`Zip-filen er skadet (${e.name}).`, `The zip file is damaged (${e.name}).`));
+    throw new Error(t("engine-import-zip-read.zip-entry-blob.message.d7953441644d", { name: String(e.name) }));
   const start = e.localOffset + 30 + h.getUint16(26, true) + h.getUint16(28, true);
   if (start + e.compressedSize > file.size)
     throw new Error(
-      L(`Zip-filen er ufullstendig (${e.name}).`, `The zip file is incomplete (${e.name}).`),
+      t("engine-import-zip-read.zip-entry-blob.message.06b543ceeaa0", { name: String(e.name) }),
     );
   const raw = file.slice(start, start + e.compressedSize, type);
   if (e.method === 0) return raw;
   if (e.method === 8) {
     if (e.size > 256 * 1024 * 1024)
       throw new Error(
-        L(
-          `${e.name.split("/").pop()} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio.`,
-          `${e.name.split("/").pop()} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.`,
-        ),
+        t("engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a", { value1: String(e.name.split("/").pop()) }),
       );
     const data = inflateSync(new Uint8Array(await raw.arrayBuffer()));
     return new Blob([data as unknown as BlobPart], { type });
   }
   throw new Error(
-    L(
-      `Ukjent komprimering i zip-filen (${e.name}).`,
-      `Unknown compression in the zip file (${e.name}).`,
-    ),
+    t("engine-import-zip-read.zip-entry-blob.message.b1d9207dc330", { name: String(e.name) }),
   );
 }
 

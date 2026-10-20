@@ -6,26 +6,7 @@
  */
 import { AlertTriangle, GripVertical, MessageSquare, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
-import {
-  HIT_LABEL,
-  STORY_KIND_LABEL,
-  SCENE_STATUS_LABEL,
-  collation,
-  durationForecast,
-  formatDuration,
-  formatHeading,
-  projectDurationAssumptions,
-  keyBetween,
-  L,
-  localized,
-  type HitKind,
-  orderedOccurrences,
-  type ProjectState,
-  type SceneStatus,
-  type SceneFilter,
-  type SceneOccurrence,
-  sceneNumberOf,
-} from "@/core";
+import { HIT_LABEL, STORY_KIND_LABEL, SCENE_STATUS_LABEL, collation, durationForecast, formatDuration, formatHeading, projectDurationAssumptions, keyBetween, type HitKind, orderedOccurrences, type ProjectState, type SceneStatus, type SceneFilter, type SceneOccurrence, sceneNumberOf } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
 import { t, tLocalized } from "@/core/i18n/keyed";
@@ -455,10 +436,7 @@ export function SceneNavigator({
                       {notes ? (
                         <span
                           className="flex items-center gap-0.5 text-note"
-                          title={L(
-                            notes === 1 ? "1 notat" : `${notes} notater`,
-                            notes === 1 ? "1 note" : `${notes} notes`,
-                          )}
+                          title={t("app-script-scene-navigator.notes", { count: notes })}
                         >
                           <MessageSquare className="size-3" aria-hidden />
                           {notes}
@@ -497,14 +475,8 @@ export function SceneNavigator({
                     onCheckedChange={(on) => onToggleActive(o.id, on)}
                     aria-label={
                       o.active
-                        ? L(
-                            `Deaktiver scene ${sceneNumberOf(state, o) ?? "uten nummer"}`,
-                            `Deactivate scene ${sceneNumberOf(state, o) ?? "without number"}`,
-                          )
-                        : L(
-                            `Aktiver scene ${sceneNumberOf(state, o) ?? "uten nummer"}`,
-                            `Activate scene ${sceneNumberOf(state, o) ?? "without number"}`,
-                          )
+                        ? t("app-script-scene-navigator.deactivate-scene", { number: sceneNumberOf(state, o) ?? t("app-script-scene-navigator.scene-without-number") })
+                        : t("app-script-scene-navigator.activate-scene", { number: sceneNumberOf(state, o) ?? t("app-script-scene-navigator.scene-without-number") })
                     }
                     className="scale-75"
                   />

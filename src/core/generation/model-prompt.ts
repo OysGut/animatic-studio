@@ -8,7 +8,8 @@
  * Brukeren ser alltid den tilpassede teksten før den sendes (synlige beskrivelser), og hva som ble endret.
  */
 import type { ProviderModel } from "./providers";
-import { L, localized } from "../i18n";
+
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 interface Section {
   readonly key: string;
@@ -36,22 +37,7 @@ const RULES: readonly { readonly match: RegExp; readonly key: string; readonly r
   { match: /^Avoid:/, key: "avoid", rank: 5 },
 ];
 
-const KEY_LABEL: Record<string, string> = localized({
-  setting: ["sted", "setting"],
-  figures: ["figurene", "the figures"],
-  style: ["stilregelen", "the style rule"],
-  continuity: ["kontinuitet", "continuity"],
-  notext: ["«ingen tekst i bildet»", "“no text in the image”"],
-  look: ["filmens uttrykk", "the film's look"],
-  camera: ["kamera", "camera"],
-  technique: ["teknikk", "technique"],
-  lighting: ["lys", "lighting"],
-  mood: ["stemning", "mood"],
-  endframe: ["«stabilt sluttbilde»", "“stable final frame”"],
-  palette: ["fargepalett", "colour palette"],
-  avoid: ["«unngå»", "“avoid”"],
-  other: ["egen tekst", "own text"],
-});
+const KEY_LABEL: Record<string, string> = tLocalized({ setting: "core-generation-model-prompt.key-label.setting.9c25472ea6d9", figures: "core-generation-model-prompt.key-label.figures.9c224a0a2a61", style: "core-generation-model-prompt.key-label.style.e37ec6d8e593", continuity: "core-generation-model-prompt.key-label.continuity.674d66f6b602", notext: "core-generation-model-prompt.key-label.notext.7fbdc6471989", look: "core-generation-model-prompt.key-label.look.47927c4b9a36", camera: "core-generation-model-prompt.key-label.camera.ab90fc737b5b", technique: "core-generation-model-prompt.key-label.technique.f9d432ec955c", lighting: "core-generation-model-prompt.key-label.lighting.7a6acd5449a7", mood: "core-generation-model-prompt.key-label.mood.0f21b2d60d11", endframe: "core-generation-model-prompt.key-label.endframe.ae6a91371118", palette: "core-generation-model-prompt.key-label.palette.754b90f69bef", avoid: "core-generation-model-prompt.key-label.avoid.d63806717a72", other: "core-generation-model-prompt.key-label.other.8525b5e0a666" });
 
 function sections(text: string): Section[] {
   const out: Section[] = [];
@@ -102,10 +88,7 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
       d.lines[0] =
         "Dialogue (for lip movement and acting only — this video has no sound; never show the words as text):";
       notes.push(
-        L(
-          "Modellen lager ikke lyd: replikkene brukes til munnbevegelser og spill.",
-          "The model does not make sound: the lines are used for lip movement and acting.",
-        ),
+        t("core-generation-model-prompt.adapt-prompt-for-model.notes-push.399a41a9f535"),
       );
     }
   }
@@ -126,10 +109,7 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
     out = join(ss);
     if (removed.length)
       notes.push(
-        L(
-          `Modellen tar imot høyst ${max} tegn: tok bort ${[...new Set(removed)].join(", ")}.`,
-          `The model accepts at most ${max} characters: removed ${[...new Set(removed)].join(", ")}.`,
-        ),
+        t("core-generation-model-prompt.adapt-prompt-for-model.notes-push.c3dd95ca17ef", { max: String(max), value2: String([...new Set(removed)].join(", ")) }),
       );
     if (out.length > max) {
       // Replikkene skal sendes ordrett: kort ned alt annet (lengste linje først), så ta bort linjer bakfra
@@ -163,18 +143,12 @@ export function adaptPromptForModel(text: string, model: ProviderModel): Adapted
       );
       out = join(ss);
       notes.push(
-        L(
-          `Teksten ble kortet ned til ${out.length} tegn; replikkene er beholdt ordrett.`,
-          `The text was shortened to ${out.length} characters; the lines are kept verbatim.`,
-        ),
+        t("core-generation-model-prompt.adapt-prompt-for-model.notes-push.57abab561801", { length: String(out.length) }),
       );
       if (out.length > max) {
         blocked = true;
         notes.push(
-          L(
-            "Replikkene alene er for lange for denne modellen. Del segmentet i kortere deler eller velg en annen modell.",
-            "The lines alone are too long for this model. Split the segment into shorter parts or choose another model.",
-          ),
+          t("core-generation-model-prompt.adapt-prompt-for-model.notes-push.e0b072e0675d"),
         );
       }
     }

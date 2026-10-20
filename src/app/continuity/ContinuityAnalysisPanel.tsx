@@ -17,19 +17,11 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  FINDING_LABEL,
-  L,
-  continuityAnalysis,
-  includeSceneCommands,
-  sortedProductions,
-  type Finding,
-  type FindingKind,
-  type ProjectState,
-} from "@/core";
+import { FINDING_LABEL, continuityAnalysis, includeSceneCommands, sortedProductions, type Finding, type FindingKind, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { useCommands } from "@/app/project/use-commands";
 import { readHiddenFindings, writeHiddenFindings } from "./hidden-findings";
+import { t } from "@/core/i18n/keyed";
 
 const ORDER: readonly FindingKind[] = [
   "spinoff_gap",
@@ -90,17 +82,14 @@ export function ContinuityAnalysisPanel({
     <section aria-labelledby="continuity-title" className="mt-8">
       <div className="mb-2 flex items-center gap-2">
         <h2 id="continuity-title" className="text-base font-semibold text-text-primary">
-          {L("Kontinuitetsanalyse", "Continuity analysis")}
+          {t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.h2.e12c9ec8d67a")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          {L(
-            "Råd om manus og produksjon – ingenting endres automatisk.",
-            "Advice on script and production – nothing is changed automatically.",
-          )}
+          {t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.span.c7f319dc227a")}
         </span>
         {productions.length > 1 ? (
           <select
-            aria-label={L("Produksjon for analysen", "Production for the analysis")}
+            aria-label={t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.aria-label.93689bf603f1")}
             value={productionId}
             onChange={(e) => setChosen(e.target.value)}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -120,8 +109,8 @@ export function ContinuityAnalysisPanel({
           >
             {showHidden ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
             {showHidden
-              ? L("Skjul igjen", "Hide again")
-              : L(`Vis skjulte (${hiddenCount})`, `Show hidden (${hiddenCount})`)}
+              ? t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.button.2a798bfbe96c")
+              : t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.button.bfc722871c4b", { hiddenCount: String(hiddenCount) })}
           </button>
         ) : null}
       </div>
@@ -129,14 +118,11 @@ export function ContinuityAnalysisPanel({
         {findings.length === 0 ? (
           <p className="flex items-center gap-2 px-4 py-3 text-[13px] text-text-secondary">
             <SearchCheck className="size-4 text-status-success" aria-hidden />
-            {L(
-              "Ingen funn. Manus, kontinuitet og 2D-scener henger sammen.",
-              "No findings. The script, continuity and 2D scenes are consistent.",
-            )}
+            {t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.4ef3a75ebdb1")}
           </p>
         ) : groups.length === 0 ? (
           <p className="px-4 py-3 text-[13px] text-text-tertiary">
-            {L("Alle funn er skjult.", "All findings are hidden.")}
+            {t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.af81201123a8")}
           </p>
         ) : (
           groups.map((g) => (
@@ -158,7 +144,7 @@ export function ContinuityAnalysisPanel({
                           .map((c) =>
                             cmds.run(
                               c,
-                              L(`Ta med scene i ${prod!.name}`, `Include scene in ${prod!.name}`),
+                              t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.cmds-run.82d940fab072", { name: String(prod!.name) }),
                             ),
                           )
                           .find((x) => x) ?? null,
@@ -173,10 +159,7 @@ export function ContinuityAnalysisPanel({
                             productionId: productionId as never,
                             disabled: true,
                           },
-                          L(
-                            `Slå av hendelsen i ${prod!.name}`,
-                            `Turn off the event in ${prod!.name}`,
-                          ),
+                          t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.cmds-run.2d37690e25d9", { name: String(prod!.name) }),
                         ),
                       )
                     }
@@ -204,10 +187,7 @@ export function ContinuityAnalysisPanel({
       {findings.some((f) => f.certainty === "uncertain") ? (
         <p className="mt-1.5 flex items-center gap-1 text-[11px] text-text-tertiary">
           <CircleHelp className="size-3" aria-hidden />
-          {L(
-            "Usikre funn bygger på tolkning av teksten og kan være feil.",
-            "Uncertain findings are based on interpreting the text and may be wrong.",
-          )}
+          {t("app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.cda8c242a64d")}
         </p>
       ) : null}
     </section>
@@ -243,12 +223,12 @@ function FindingRow({
       {uncertain ? (
         <CircleHelp
           className="mt-0.5 size-3.5 shrink-0 text-text-tertiary"
-          aria-label={L("Usikkert", "Uncertain")}
+          aria-label={t("app-continuity-continuity-analysis-panel.finding-row.aria-label.c5772cc515f5")}
         />
       ) : (
         <TriangleAlert
           className="mt-0.5 size-3.5 shrink-0 text-status-moved"
-          aria-label={L("Sannsynlig", "Likely")}
+          aria-label={t("app-continuity-continuity-analysis-panel.finding-row.aria-label.0440cdf1bb18")}
         />
       )}
       <span className="min-w-0 flex-1 text-text-primary">{f.message}</span>
@@ -258,13 +238,10 @@ function FindingRow({
             size="sm"
             variant="secondary"
             onClick={() => onInclude(f.includeOccurrenceId!)}
-            title={L(
-              `Legg hovedfilmens scene inn i ${production} (på plassen den har i hovedfilmen)`,
-              `Add the main film's scene to ${production} (in the place it has in the main film)`,
-            )}
+            title={t("app-continuity-continuity-analysis-panel.finding-row.title.e58706170cd4", { production: String(production) })}
           >
             <Plus />
-            {L("Ta med scenen", "Include the scene")}
+            {t("app-continuity-continuity-analysis-panel.finding-row.button.d1992e5381ee")}
           </Button>
         ) : null}
         {production && f.eventId ? (
@@ -272,12 +249,9 @@ function FindingRow({
             size="sm"
             variant="ghost"
             onClick={() => onDisableEvent(f.eventId!)}
-            title={L(
-              `Endringen gjelder ikke i ${production}. Hovedfilmen endres ikke.`,
-              `The change does not apply in ${production}. The main film is not changed.`,
-            )}
+            title={t("app-continuity-continuity-analysis-panel.finding-row.title.b8cd9877c07c", { production: String(production) })}
           >
-            {L("Slå av i", "Turn off in")} {production}
+            {t("app-continuity-continuity-analysis-panel.finding-row.button.0e9731b099e9")} {production}
           </Button>
         ) : null}
         {f.occurrenceId && IN_SCENE_EDITOR.has(f.kind) ? (
@@ -286,10 +260,10 @@ function FindingRow({
               to="/prosjekt/$projectId/scene"
               params={{ projectId }}
               search={{ scene: f.occurrenceId }}
-              title={L("Åpne scenen i sceneeditoren", "Open the scene in the scene editor")}
+              title={t("app-continuity-continuity-analysis-panel.finding-row.title.1ae8af000877")}
             >
               <Layers />
-              {L("Sceneeditor", "Scene editor")}
+              {t("app-continuity-continuity-analysis-panel.finding-row.link.598f88f98058")}
             </Link>
           </Button>
         ) : f.occurrenceId ? (
@@ -298,10 +272,10 @@ function FindingRow({
               to="/prosjekt/$projectId/manus"
               params={{ projectId }}
               search={{ scene: f.occurrenceId, ...(f.blockId ? { blokk: f.blockId } : {}) }}
-              title={L("Vis linjen i manuset", "Show the line in the script")}
+              title={t("app-continuity-continuity-analysis-panel.finding-row.title.3b3cbd15c22c")}
             >
               <FileText />
-              {L("Manus", "Script")}
+              {t("app-continuity-continuity-analysis-panel.finding-row.link.bf5c8d993e68")}
             </Link>
           </Button>
         ) : null}
@@ -311,10 +285,10 @@ function FindingRow({
               to="/prosjekt/$projectId/bibliotek"
               params={{ projectId }}
               search={{ asset: f.assetId }}
-              title={L("Åpne ressursen i biblioteket", "Open the asset in the library")}
+              title={t("app-continuity-continuity-analysis-panel.finding-row.title.7b99489540ba")}
             >
               <Library aria-hidden />
-              {L("Bibliotek", "Library")}
+              {t("app-continuity-continuity-analysis-panel.finding-row.link.e1776164cc11")}
             </Link>
           </Button>
         ) : null}
@@ -325,17 +299,14 @@ function FindingRow({
           onClick={onToggle}
           title={
             hidden
-              ? L("Vis funnet igjen", "Show the finding again")
-              : L(
-                  "Skjul funnet (huskes i denne nettleseren)",
-                  "Hide the finding (remembered in this browser)",
-                )
+              ? t("app-continuity-continuity-analysis-panel.finding-row.title.4a76d0f14664")
+              : t("app-continuity-continuity-analysis-panel.finding-row.title.5c45cd626ceb")
           }
-          aria-label={hidden ? L("Vis funnet", "Show finding") : L("Skjul funnet", "Hide finding")}
+          aria-label={hidden ? t("app-continuity-continuity-analysis-panel.finding-row.aria-label.e971f112cb08") : t("app-continuity-continuity-analysis-panel.finding-row.aria-label.853ff45b289f")}
           className="text-text-tertiary"
         >
           {hidden ? <Eye aria-hidden /> : <EyeOff aria-hidden />}
-          {hidden ? L("Vis", "Show") : L("Skjul", "Hide")}
+          {hidden ? t("app-continuity-continuity-analysis-panel.finding-row.button.ed62e1e48487") : t("app-continuity-continuity-analysis-panel.finding-row.button.ef1142d2b743")}
         </Button>
       </span>
     </li>

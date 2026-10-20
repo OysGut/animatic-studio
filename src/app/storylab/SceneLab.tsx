@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, L, characterSystemPrompt, emptyStoryProfile, knowledgeAt, lineCheckFromJson, lineCheckPrompt, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
+import { ANALYSIS_ASPECTS, ANALYSIS_ASPECT_LABEL, characterSystemPrompt, emptyStoryProfile, knowledgeAt, lineCheckFromJson, lineCheckPrompt, newId, parseJsonLoose, profileAt, sceneAnalysisFromJson, sceneAnalysisPrompt, unreadableReplyMessage, type LineCheckResult, type ProjectState, type SceneAnalysisPoint } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, createStorySession, forkStorySession, getStorySession, listStorySessions, saveStorySuggestion, type StorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";

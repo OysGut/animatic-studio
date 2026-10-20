@@ -10,7 +10,7 @@ import { filmClips } from "../assembly/film";
 import { sceneDialogueLines } from "../generation/speech";
 import { compareVersionCreation, variantsOf, versionsOf } from "../library";
 import { formatHeading } from "../screenplay/paginate";
-import { L } from "../i18n";
+
 import { audioVersion } from "./index";
 import { t as tk } from "@/core/i18n/keyed";
 

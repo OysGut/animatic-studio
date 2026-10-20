@@ -12,17 +12,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  isTextModelId,
-  isTextProviderId,
-  isTextTask,
-  isUuid,
-  type TextChoiceReason,
-  type TextProviderId,
-  type TextTask,
-} from "@/core";
+import { isTextModelId, isTextProviderId, isTextTask, isUuid, type TextChoiceReason, type TextProviderId, type TextTask } from "@/core";
 import { GATEWAY, gatewayError, isUnknownModelError } from "./gateway";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const MAX_TEXT_JOBS_PER_USER_PER_HOUR = 120;
 export const MAX_TEXT_SYSTEM_CHARS = 20_000;
@@ -63,15 +55,15 @@ export type GenerateTextResult =
 
 /** Kontroll av input (eksportert for testene). */
 export function validateTextInput(d: unknown): GenerateTextInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.577d6e170c71"));
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   if (typeof projectId !== "string" || !isUuid(projectId))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
-  if (!isTextTask(x["task"])) throw new Error(L("Ukjent oppgave", "Unknown task"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.d506465a80be"));
+  if (!isTextTask(x["task"])) throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.8eb263086a8a"));
   const system = x["system"];
   if (system !== undefined && (typeof system !== "string" || system.length > MAX_TEXT_SYSTEM_CHARS))
-    throw new Error(L("Systeminstruksen er for lang", "The system instruction is too long"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.cb34fce9daa3"));
   const messages = x["messages"];
   if (
     !Array.isArray(messages) ||
@@ -87,17 +79,17 @@ export function validateTextInput(d: unknown): GenerateTextInput {
         ((m as Record<string, unknown>)["content"] as string).length > 0,
     )
   )
-    throw new Error(L("Ugyldige meldinger", "Invalid messages"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.95ad372996f0"));
   const msgs = messages as { role: "user" | "assistant"; content: string }[];
   if (msgs[msgs.length - 1]!.role !== "user")
     throw new Error(
-      L("Siste melding må være fra brukeren", "The last message must be from the user"),
+      tk("adapters-ai-text-functions.validate-text-input.message.d48999213d4d"),
     );
   const total =
     (typeof system === "string" ? system.length : 0) +
     msgs.reduce((t, m) => t + m.content.length, 0);
   if (total > MAX_TEXT_TOTAL_CHARS)
-    throw new Error(L("Teksten er for lang", "The text is too long"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.055a893298fc"));
   const maxTokens = x["maxTokens"] ?? DEFAULT_TEXT_OUTPUT_TOKENS;
   if (
     typeof maxTokens !== "number" ||
@@ -105,7 +97,7 @@ export function validateTextInput(d: unknown): GenerateTextInput {
     maxTokens < 1 ||
     maxTokens > MAX_TEXT_OUTPUT_TOKENS
   )
-    throw new Error(L("Ugyldig svarlengde", "Invalid reply length"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.96b80a51de73"));
   const temperature = x["temperature"];
   if (
     temperature !== undefined &&
@@ -114,13 +106,13 @@ export function validateTextInput(d: unknown): GenerateTextInput {
       temperature < 0 ||
       temperature > 2)
   )
-    throw new Error(L("Ugyldig temperatur", "Invalid temperature"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.48f68893ad98"));
   const provider = x["provider"];
   if (provider !== undefined && provider !== "lovable" && !isTextProviderId(provider))
-    throw new Error(L("Ukjent tekstleverandør", "Unknown text provider"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.c2bc2fc1ba58"));
   const model = x["model"];
   if (model !== undefined && !isTextModelId(model))
-    throw new Error(L("Ugyldig modell", "Invalid model"));
+    throw new Error(tk("adapters-ai-text-functions.validate-text-input.message.4f7ad352eff5"));
   return {
     projectId,
     task: x["task"] as TextTask,
@@ -174,7 +166,7 @@ export async function lovableText(
     if (!text.trim())
       return {
         ok: false,
-        message: L("AI-tjenesten svarte uten tekst.", "The AI service replied without text."),
+        message: tk("adapters-ai-text-functions.message.message.43163e181625"),
         model,
       };
     return {
@@ -189,10 +181,7 @@ export async function lovableText(
   }
   return {
     ok: false,
-    message: L(
-      "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.",
-      "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.",
-    ),
+    message: tk("adapters-ai-text-functions.message.message.2fd3b559a274"),
     model: last,
   };
 }

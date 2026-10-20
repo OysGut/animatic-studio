@@ -19,12 +19,13 @@ import { pumpProjectQueue } from "@/adapters/ai/queue.functions";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { projectStateKey } from "@/app/project/use-project";
 import { fetchProjectState } from "@/adapters/browser/project-data";
-import { L } from "@/core";
+
 import { signedUrls } from "@/app/library/asset-images";
 import { readFilmMetadata } from "@/app/assembly/film-import";
 import { aiJobsKey, useAiJobs } from "./use-ai-jobs";
 import { storeLastFrame } from "./last-frame";
 import { addVideoAudioTrack, audioFromVideo } from "./video-audio";
+import { t as tk } from "@/core/i18n/keyed";
 
 const POLL_MS = 10_000;
 
@@ -117,24 +118,18 @@ async function claimVideoOnce(
   job: GenerationJob,
 ): Promise<string | null> {
   if (!job.resultPath || !job.occurrenceId)
-    return L("Jobben har ingen video.", "The job has no video.");
+    return tk("app-ai-video-jobs.claim-video-once.message.23e068bb111f");
   const now = cmds.current() ?? state;
   if (Object.values(now.takes).some((t) => t.mediaRef === job.resultPath)) return null;
   if (!now.occurrences[job.occurrenceId])
-    return L("Scenen finnes ikke lenger.", "The scene no longer exists.");
+    return tk("app-ai-video-jobs.claim-video-once.message.8627c0b0af17");
   const urls = await signedUrls([job.resultPath], 600);
   const url = urls[job.resultPath];
   if (!url)
-    return L(
-      "Videoen kunne ikke hentes fra lagringen.",
-      "The video could not be fetched from storage.",
-    );
+    return tk("app-ai-video-jobs.claim-video-once.message.3cb45d12c0f5");
   const res = await fetch(url);
   if (!res.ok)
-    return L(
-      `Videoen kunne ikke hentes (${res.status}).`,
-      `The video could not be fetched (${res.status}).`,
-    );
+    return tk("app-ai-video-jobs.claim-video-once.message.491daf6bba91", { status: String(res.status) });
   const blob = await res.blob();
   const file = new File([blob], `AI-video (${job.provider}).mp4`, {
     type: blob.type || "video/mp4",
@@ -145,10 +140,7 @@ async function claimVideoOnce(
   try {
     media = await readFilmMetadata(file);
   } catch (e) {
-    return L(
-      `Videoen kunne ikke leses: ${(e as Error).message}`,
-      `The video could not be read: ${(e as Error).message}`,
-    );
+    return tk("app-ai-video-jobs.claim-video-once.message.3e6a025d7ef5", { message: String((e as Error).message) });
   }
   // AI-videoens lyd spilles aldri som filmlyd: den legges inn som eget lydspor under (DEC-0085)
   const hadAudio = media.hasAudio;
@@ -172,17 +164,14 @@ async function claimVideoOnce(
       media,
     },
     fromScene
-      ? L(
-          `AI-video fra 2D-scenen (${job.provider}) som ny versjon`,
-          `AI video from the 2D scene (${job.provider}) as new version`,
-        )
-      : L(`AI-video (${job.provider}) som ny versjon`, `AI video (${job.provider}) as new version`),
+      ? tk("app-ai-video-jobs.r.cmds-run-and-wait.85b3e141b59d", { provider: String(job.provider) })
+      : tk("app-ai-video-jobs.r.cmds-run-and-wait.f7387e012b46", { provider: String(job.provider) }),
   );
   if (r.error && (cmds.current() ?? now).takes[takeId as never]) return null;
   if (r.error) return r.error;
   // Lyden i videoen blir et eget, dempet lydspor (DEC-0085); videoen spilles uten lyd
   if (hadAudio) {
-    const name = L(`Lyd fra AI-video (${job.provider})`, `Audio from AI video (${job.provider})`);
+    const name = tk("app-ai-video-jobs.name.message.97261084d899", { provider: String(job.provider) });
     const wav = await audioFromVideo(blob, name);
     if (wav) {
       const startMs = typeof job.params?.["startMs"] === "number" ? job.params["startMs"] : 0;

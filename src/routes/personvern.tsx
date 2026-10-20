@@ -4,7 +4,7 @@ import { AppHeader } from "@/app/shell/AppHeader";
 import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { PrivacyStatement } from "@/app/account/PrivacyStatement";
 import { usePrivacyPolicy } from "@/app/account/use-account";
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 /** Personvernerklæringen (DEC-0086): kan leses uten innlogging, fra forsiden og fra kontosiden. */

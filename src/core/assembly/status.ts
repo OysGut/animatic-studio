@@ -17,7 +17,7 @@ import { estimateProduction, type ProductionEstimate } from "../screenplay/durat
 import { matchingOccurrences, type SceneFilter } from "../screenplay/filter";
 import { filmClips } from "./film";
 import { discrepancies } from "./discrepancy";
-import { collation, localized } from "../i18n";
+import { collation } from "../i18n";
 import { tLocalized } from "@/core/i18n/keyed";
 
 /** Hvor tallet for scenen kommer fra (mandat 7.2). */

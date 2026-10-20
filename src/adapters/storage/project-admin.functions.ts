@@ -9,8 +9,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { isUuid, L } from "@/core";
+import { isUuid } from "@/core";
 import { checkSchema, type AnyClient } from "./project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export interface ProjectAdminInput {
   readonly projectId: string;
@@ -29,12 +30,12 @@ export type ProjectAdminResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): ProjectAdminInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(t("adapters-storage-project-admin-functions.validate.message.061cc5b811b1"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-storage-project-admin-functions.validate.message.5668ba39157a"));
   if (typeof x["confirmName"] !== "string" || x["confirmName"].length > 400)
-    throw new Error(L("Ugyldig bekreftelse", "Invalid confirmation"));
+    throw new Error(t("adapters-storage-project-admin-functions.validate.message.14ed0536951d"));
   return { projectId: x["projectId"], confirmName: x["confirmName"] };
 }
 
@@ -62,21 +63,18 @@ async function ownerContext(
     .is("removed_at", null)
     .maybeSingle();
   if ((member as { role?: string } | null)?.role !== "owner")
-    return L("Bare prosjekteieren kan gjøre dette.", "Only the project owner can do this.");
+    return t("adapters-storage-project-admin-functions.owner-context.message.3dd368192883");
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as AnyClient;
   const schema = await checkSchema(admin);
   if (schema.kind === "missing" || schema.version < 11)
-    return L(
-      "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
-      "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.",
-    );
+    return t("adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06");
   const { data: project } = await admin
     .from("projects")
     .select("name, deleted_at")
     .eq("id", projectId)
     .maybeSingle();
-  if (!project) return L("Prosjektet finnes ikke.", "The project does not exist.");
+  if (!project) return t("adapters-storage-project-admin-functions.owner-context.message.7c54c7e617d7");
   const p = project as { name: string; deleted_at: string | null };
   return { admin, name: p.name, deleted: p.deleted_at !== null };
 }
@@ -132,7 +130,7 @@ export async function removeFiles(
 }
 
 function dbMessage(e: { message?: string } | null): string {
-  const m = e?.message ?? L("Ukjent feil", "Unknown error");
+  const m = e?.message ?? t("adapters-storage-project-admin-functions.m.message.9baebecb7559");
   return m.length > 300 ? `${m.slice(0, 300)} …` : m;
 }
 
@@ -149,15 +147,12 @@ export const deleteProject = createServerFn({ method: "POST" })
     if (ctx.deleted)
       return {
         ok: false,
-        message: L("Prosjektet er allerede slettet.", "The project has already been deleted."),
+        message: t("adapters-storage-project-admin-functions.message.message.98d8310079ef"),
       };
     if (!nameMatches(data.confirmName, ctx.name))
       return {
         ok: false,
-        message: L(
-          "Navnet stemmer ikke med prosjektnavnet.",
-          "The name does not match the project name.",
-        ),
+        message: t("adapters-storage-project-admin-functions.message.message.c599356d6f80"),
       };
     const { data: res, error } = await ctx.admin.rpc("delete_project", {
       p_project: data.projectId,
@@ -166,10 +161,7 @@ export const deleteProject = createServerFn({ method: "POST" })
     if (error)
       return {
         ok: false,
-        message: L(
-          `Prosjektet ble ikke slettet: ${dbMessage(error)}`,
-          `The project was not deleted: ${dbMessage(error)}`,
-        ),
+        message: t("adapters-storage-project-admin-functions.message.message.ec827102c3fb", { value1: String(dbMessage(error)) }),
       };
     const r = res as { sources?: string[]; films?: string[]; removed_members?: number };
     const sources = [
@@ -199,18 +191,12 @@ export const purgeProjectAssets = createServerFn({ method: "POST" })
     if (!ctx.deleted)
       return {
         ok: false,
-        message: L(
-          "Ressursene kan bare slettes for godt etter at prosjektet er slettet.",
-          "The assets can only be deleted for good after the project has been deleted.",
-        ),
+        message: t("adapters-storage-project-admin-functions.message.message.4d0fb6e7b200"),
       };
     if (!nameMatches(data.confirmName, ctx.name))
       return {
         ok: false,
-        message: L(
-          "Navnet stemmer ikke med prosjektnavnet.",
-          "The name does not match the project name.",
-        ),
+        message: t("adapters-storage-project-admin-functions.message.message.c599356d6f80.2"),
       };
     const { data: res, error } = await ctx.admin.rpc("purge_project_assets", {
       p_project: data.projectId,
@@ -219,10 +205,7 @@ export const purgeProjectAssets = createServerFn({ method: "POST" })
     if (error)
       return {
         ok: false,
-        message: L(
-          `Ressursene ble ikke slettet: ${dbMessage(error)}`,
-          `The assets were not deleted: ${dbMessage(error)}`,
-        ),
+        message: t("adapters-storage-project-admin-functions.message.message.becbfb36937c", { value1: String(dbMessage(error)) }),
       };
     const r = res as { paths?: string[] };
     const paths = [...(r.paths ?? []), ...(await listFolder(ctx.admin, "assets", data.projectId))];

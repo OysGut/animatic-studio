@@ -13,16 +13,7 @@ import {
   useState,
   type PointerEvent as ReactPointerEvent,
 } from "react";
-import {
-  CSS_FONT,
-  L,
-  PT_TO_MM,
-  renderPoster,
-  type Poster,
-  type PosterElement,
-  type ProjectState,
-  type RenderOp,
-} from "@/core";
+import { CSS_FONT, PT_TO_MM, renderPoster, type Poster, type PosterElement, type ProjectState, type RenderOp } from "@/core";
 import { elementIdOfOp, isLocked } from "./poster-edit";
 import {
   changedFields,

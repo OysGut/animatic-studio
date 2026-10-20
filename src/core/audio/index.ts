@@ -7,7 +7,7 @@ import type { AssetVersion, AudioClip, AudioKind, ProjectState } from "../model"
 import type { FilmClip } from "../assembly/film";
 import { coverVersion, versionsOf } from "../library";
 import { framesToSeconds, type Rational } from "../time";
-import { L, localized } from "../i18n";
+
 import { clipEditOf, clipFileOf } from "../dialogue/versions";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 

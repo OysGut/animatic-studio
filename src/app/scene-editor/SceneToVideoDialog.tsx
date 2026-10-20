@@ -26,47 +26,7 @@ import {
   TriangleAlert,
   Upload,
 } from "lucide-react";
-import {
-  L, profileChoice, qualityProfileSnapshot,
-  tm,
-  adaptPromptForModel,
-  batchInUse,
-  batchSceneEdit,
-  buildSceneVideoPrompt,
-  estimateCostUsd,
-  filmAudio,
-  filmClips,
-  filmSelection,
-  filmTakeAudio,
-  formatUsd,
-  layersOf,
-  layerVersions,
-  locale,
-  newId,
-  planReferences,
-  planScenePieces,
-  providerModel,
-  providersFor,
-  referenceCount,
-  sceneBackground,
-  sceneCast,
-  sceneDescriptionFromScript,
-  sceneDescriptionUserText,
-  sceneVideoBatches,
-  sceneVideoRefPath,
-  sceneVideoSourcePath,
-  stateWithSource,
-  styleProfileFor,
-  styleText,
-  takeLabel,
-  MAX_SCENE_VIDEO_INSTRUCTIONS,
-  type FilmClip,
-  type ProjectState,
-  type SceneCastMember,
-  type SceneVideoBatch,
-  type SceneVideoSource,
-  type Take,
-} from "@/core";
+import { profileChoice, qualityProfileSnapshot, tm, adaptPromptForModel, batchInUse, batchSceneEdit, buildSceneVideoPrompt, estimateCostUsd, filmAudio, filmClips, filmSelection, filmTakeAudio, formatUsd, layersOf, layerVersions, locale, newId, planReferences, planScenePieces, providerModel, providersFor, referenceCount, sceneBackground, sceneCast, sceneDescriptionFromScript, sceneDescriptionUserText, sceneVideoBatches, sceneVideoRefPath, sceneVideoSourcePath, stateWithSource, styleProfileFor, styleText, takeLabel, MAX_SCENE_VIDEO_INSTRUCTIONS, type FilmClip, type ProjectState, type SceneCastMember, type SceneVideoBatch, type SceneVideoSource, type Take } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
@@ -1114,10 +1074,7 @@ export function SceneToVideoDialog({
                 )}
                 {(chosen.model.maxElements ?? 0) > 0 ? (
                   <span className="text-[11px] text-text-tertiary">
-                    {L(
-                      `Modellen tar imot ${chosen.model.maxElements} referansebilder; ${referenceCount(refs)} sendes.${refs.sheet.length ? ` ${refs.sheet.length} figurer settes sammen i ett samlebilde med navn.` : ""}`,
-                      `The model accepts ${chosen.model.maxElements} reference images; ${referenceCount(refs)} are sent.${refs.sheet.length ? ` ${refs.sheet.length} figures are put together in one reference sheet with names.` : ""}`,
-                    )}
+                    {refs.sheet.length ? tk("app-scene-editor-scene-to-video-dialog.references-sheet", { max: String(chosen.model.maxElements), sent: referenceCount(refs), figures: refs.sheet.length }) : tk("app-scene-editor-scene-to-video-dialog.references", { max: String(chosen.model.maxElements), sent: referenceCount(refs) })}
                   </span>
                 ) : null}
               </div>
@@ -1165,10 +1122,7 @@ export function SceneToVideoDialog({
             </p>
           ) : phase.kind === "sent" ? (
             <p role="status" className="text-xs text-status-success">
-              {L(
-                `Sendt (${phase.count} ${phase.count === 1 ? "del" : "deler"}). Videoen lages hos leverandøren og legges inn som ny versjon når den er ferdig – følg med i statusen øverst til høyre. Du kan lukke vinduet og jobbe videre.`,
-                `Sent (${phase.count} ${phase.count === 1 ? "part" : "parts"}). The video is made by the provider and added as a new version when it is finished – follow the status at the top right. You can close the window and keep working.`,
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.sent-parts", { count: phase.count })}
             </p>
           ) : null}
           {error ? (

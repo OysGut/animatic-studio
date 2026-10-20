@@ -3,8 +3,9 @@
  * Samme regler som private.project_lock / private.account_active i databasen, så serverfunksjonene kan gi en
  * forståelig melding før databasen avviser. Uten migrasjon 0033 (tabellene finnes ikke) er alt åpent.
  */
-import { L } from "@/core";
+
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export type AccountStatus = "active" | "blocked" | "deleting" | "deleted";
 export type ProjectLock = "owner_blocked" | "owner_deleting" | "owner_deleted" | "no_owner";
@@ -57,21 +58,12 @@ export function lockMessage(lock: ProjectLock, ownerName?: string | null): strin
   const owner = ownerName?.trim();
   switch (lock) {
     case "owner_blocked":
-      return L(
-        `Prosjektet er låst fordi eieren er blokkert. Kontakt ${owner ? `eieren (${owner}) eller ` : ""}administrator (${admin}).`,
-        `The project is locked because the owner is blocked. Contact ${owner ? `the owner (${owner}) or ` : ""}the administrator (${admin}).`,
-      );
+      return owner ? t("adapters-account-lock-server.owner-blocked-with-owner", { owner: String(owner), admin: String(admin) }) : t("adapters-account-lock-server.owner-blocked", { admin: String(admin) });
     case "owner_deleting":
     case "owner_deleted":
-      return L(
-        `Prosjektet er låst fordi eieren har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt ${admin}.`,
-        `The project is locked because the owner has deleted their account. The administrator can give the project a new owner: contact ${admin}.`,
-      );
+      return t("adapters-account-lock-server.lock-message.message.64581fe53b63", { admin: String(admin) });
     default:
-      return L(
-        `Prosjektet er låst fordi det ikke har noen eier. Kontakt administrator (${admin}).`,
-        `The project is locked because it has no owner. Contact the administrator (${admin}).`,
-      );
+      return t("adapters-account-lock-server.lock-message.message.32733622aa57", { admin: String(admin) });
   }
 }
 
@@ -85,10 +77,7 @@ export async function writeBlocked(
   userId: string,
 ): Promise<string | null> {
   if (!(await accountActive(db, userId)))
-    return L(
-      "Kontoen din er ikke aktiv. Kontakt administrator.",
-      "Your account is not active. Contact the administrator.",
-    );
+    return t("adapters-account-lock-server.write-blocked.message.0094128db376");
   const lock = await projectLock(db, projectId);
   return lock ? lockMessage(lock) : null;
 }

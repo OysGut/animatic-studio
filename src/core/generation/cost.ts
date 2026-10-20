@@ -4,8 +4,9 @@
  * prisen per kall på forhånd), så beløpene er alltid merket som anslag (REQ-0281).
  */
 import type { Project, ProjectState } from "../model";
-import { L, locale, localized } from "../i18n";
+import { locale } from "../i18n";
 import { assetVersionIdOfPath, takeIdOfFilmPath } from "../library/storage-paths";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** En rad i loggen over AI-genereringer (generation_jobs). */
 export interface GenerationJob {
@@ -121,14 +122,7 @@ export function jobState(j: GenerationJob, now: Date): JobState {
   return Number.isFinite(t) && now.getTime() - t > limit ? "stale" : "running";
 }
 
-export const JOB_STATE_LABEL: Record<JobState, string> = localized({
-  queued: ["I kø", "Queued"],
-  running: ["Pågår", "Running"],
-  done: ["Ferdig", "Done"],
-  failed: ["Feilet", "Failed"],
-  lost: ["Betalt, ikke lagret", "Paid, not saved"],
-  stale: ["Stoppet underveis", "Stopped along the way"],
-});
+export const JOB_STATE_LABEL: Record<JobState, string> = tLocalized({ queued: "core-generation-cost.job-state-label.queued.048b6cc02917", running: "core-generation-cost.job-state-label.running.96e2b0ec4880", done: "core-generation-cost.job-state-label.done.4455da929a67", failed: "core-generation-cost.job-state-label.failed.04a0187e2438", lost: "core-generation-cost.job-state-label.lost.ee6730017c3b", stale: "core-generation-cost.job-state-label.stale.537fddf96643" });
 
 /** Første øyeblikk i kalendermåneden (UTC). */
 export function monthStartUtc(now: Date): Date {
@@ -194,7 +188,7 @@ export function aiUsage(
 /** «12,50 kreditter». */
 export function formatCredits(n: number): string {
   const v = n.toLocaleString(locale(), { maximumFractionDigits: 2 });
-  return L(`${v} kreditter`, `${v} credits`);
+  return tk("core-generation-cost.format-credits.message.9a9d53f0a537", { v: String(v) });
 }
 
 /**
@@ -283,5 +277,5 @@ export function qualityProfileUsage(profileId: string, jobs: readonly Generation
 }
 export function qualityProfileBudgetError(limit: number | null | undefined, used: number, requested: number): string | null {
   if (limit == null || used + requested <= limit) return null;
-  return L("Profilens månedsbudsjett er brukt opp eller er for lite for dette valget.", "The profile's monthly budget is exhausted or too small for this selection.");
+  return tk("core-generation-cost.quality-profile-budget-error.message.f4b906b8ac24");
 }

@@ -4,18 +4,13 @@
  * og forslaget; den endrer aldri manuset. «Bruk forslaget» finnes i notatene i manuset og krever bekreftelse.
  */
 import { useMemo, useRef, useState } from "react";
-import {
-  L,
-  annotationsOfVariant,
-  newId,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { annotationsOfVariant, newId, type FilmClip, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { SceneScriptPanel } from "@/app/scene-editor/SceneScriptPanel";
 import type { Commands } from "@/app/project/use-commands";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function StudioScript({
   state,
@@ -56,7 +51,7 @@ export function StudioScript({
   return (
     <section className="flex min-h-0 flex-1 flex-col" data-testid="asset-studio-script">
       <PanelHeader
-        title={L("Manus", "Script")}
+        title={tk("app-asset-studio-studio-script.studio-script.title.42741e7fffb0")}
         actions={
           <Button
             size="sm"
@@ -65,7 +60,7 @@ export function StudioScript({
             data-testid="asset-studio-show-script"
             aria-pressed={show}
           >
-            {show ? L("Skjul manus", "Hide script") : L("Vis manus", "Show script")}
+            {show ? tk("app-asset-studio-studio-script.studio-script.button.0dedaa06de6b") : tk("app-asset-studio-studio-script.studio-script.button.5da74397cacf")}
           </Button>
         }
       />
@@ -86,10 +81,7 @@ export function StudioScript({
           />
           <div className="flex flex-col gap-2 border-t border-border p-2">
             <p className="text-[11px] text-text-tertiary">
-              {L(
-                "Karakterens replikker er markert. En forsøksvis endring lagres som notat og endrer ikke manuset.",
-                "The character's lines are highlighted. A trial edit is saved as a note and does not change the script.",
-              )}
+              {tk("app-asset-studio-studio-script.studio-script.p.526d7b35df27")}
             </p>
             {lineIds.map((id) => {
               const b = state.blocks[id];
@@ -113,7 +105,7 @@ export function StudioScript({
                       onClick={() => setEditing(id)}
                       data-testid="asset-studio-trial-edit"
                     >
-                      {L("Foreslå endring …", "Suggest a change …")}
+                      {tk("app-asset-studio-studio-script.studio-script.button.ff34fec65827")}
                     </Button>
                   ) : null}
                 </div>
@@ -122,7 +114,7 @@ export function StudioScript({
             {trials.length ? (
               <div className="flex flex-col gap-1" data-testid="asset-studio-trial-list">
                 <p className="text-[11px] font-medium text-text-secondary">
-                  {L("Forsøksvise endringer", "Trial edits")}
+                  {tk("app-asset-studio-studio-script.studio-script.p.06f0bb1d3441")}
                 </p>
                 {trials.map((a) => (
                   <div key={a.id} className="border-l-2 border-note bg-surface-2 px-2 py-1 text-[12px]">
@@ -174,14 +166,14 @@ function TrialEditForm({
             quote,
             text:
               comment.trim() ||
-              L("Forsøksvis manusredigering fra Asset Studio", "Trial script edit from Asset Studio"),
+              tk("app-asset-studio-studio-script.text.text.3afdf2ec0b1e"),
             authorName,
             kind: "trial_edit",
             suggestedText: suggested,
           },
         ],
       },
-      L("Forsøksvis manusredigering", "Trial script edit"),
+      tk("app-asset-studio-studio-script.e.cmds-run.b41c46a253ab"),
     );
     setErr(e);
     if (!e) onDone();
@@ -190,10 +182,7 @@ function TrialEditForm({
   return (
     <div className="flex flex-col gap-1.5 border border-note/40 bg-note-bg p-2" data-testid="asset-studio-trial-form">
       <label className="text-[11px] text-text-tertiary">
-        {L(
-          "Original (merk en del av teksten for å endre bare den)",
-          "Original (select part of the text to change only that)",
-        )}
+        {tk("app-asset-studio-studio-script.trial-edit-form.label.95d640f3aa9b")}
         <Textarea
           ref={original}
           readOnly
@@ -212,8 +201,8 @@ function TrialEditForm({
       </label>
       <label className="text-[11px] text-text-tertiary">
         {range.start === 0 && range.end === block.text.length
-          ? L("Forslag", "Suggestion")
-          : L(`Forslag for «${quote}»`, `Suggestion for “${quote}”`)}
+          ? tk("app-asset-studio-studio-script.trial-edit-form.label.1be6d9cf7209")
+          : tk("app-asset-studio-studio-script.trial-edit-form.label.de0537a996b3", { quote: String(quote) })}
         <Textarea
           autoFocus
           value={suggested}
@@ -225,7 +214,7 @@ function TrialEditForm({
         />
       </label>
       <label className="text-[11px] text-text-tertiary">
-        {L("Kommentar (valgfri)", "Comment (optional)")}
+        {tk("app-asset-studio-studio-script.trial-edit-form.label.77ead0bd8108")}
         <Textarea
           value={comment}
           maxLength={10000}
@@ -241,10 +230,10 @@ function TrialEditForm({
           disabled={suggested === quote}
           data-testid="asset-studio-trial-save"
         >
-          {L("Lagre som notat", "Save as note")}
+          {tk("app-asset-studio-studio-script.trial-edit-form.button.c07684c5f831")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onDone}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-asset-studio-studio-script.trial-edit-form.button.36e5dddb05c3")}
         </Button>
       </div>
       {err ? (

@@ -3,7 +3,7 @@
  * ikke – renderFrame lager dem virtuelt fra sekvensen, deltakerne og tiden (§63), så 2000 deltakere ikke
  * gir 2000 lag. Alt skrives via kommandoer (angre/gjør om), og rekkefølge og skjuling endrer aldri malen.
  */
-import { L } from "../i18n";
+
 import { compareKeys } from "../order-key";
 import {
   CREDIT_PARTICIPANTS_MAX,
@@ -14,6 +14,7 @@ import {
   type ProjectState,
 } from "../model";
 import type { CreditParticipantId, CreditSequenceId, OccurrenceId } from "../ids";
+import { t } from "@/core/i18n/keyed";
 
 /** Feltnøklene som brukes i standardoppsettet (malen kan ha flere; deltakerens `fields` følger malen). */
 export const CREDIT_FIELD_KEYS = ["navn", "rolle"] as const; // i18n-ignore – interne feltnøkler
@@ -43,15 +44,15 @@ export function creditSequenceOf(s: ProjectState, occurrenceId: string): CreditS
 export function creditParticipantError(
   f: Pick<CreditParticipant, "orderKey" | "groupKey" | "fields">,
 ): string | null {
-  if (!f.orderKey) return L("Ugyldig rekkefølge", "Invalid order");
-  if (f.groupKey.length > 200) return L("Gruppenavnet er for langt", "The group name is too long");
+  if (!f.orderKey) return t("core-credits-index.credit-participant-error.message.ad32dd09a62e");
+  if (f.groupKey.length > 200) return t("core-credits-index.credit-participant-error.message.9283114b3e65");
   const keys = Object.keys(f.fields);
-  if (keys.length > 20) return L("For mange felt (maks 20)", "Too many fields (max 20)");
+  if (keys.length > 20) return t("core-credits-index.credit-participant-error.message.6f89620fd19d");
   for (const k of keys) {
-    if (k.length > 100) return L("Feltnavnet er for langt", "The field name is too long");
+    if (k.length > 100) return t("core-credits-index.credit-participant-error.message.b1e7768b7f40");
     const v = f.fields[k]!;
     if (typeof v !== "string" || v.length > 500)
-      return L("Feltet er for langt (maks 500 tegn)", "The field is too long (max 500 characters)");
+      return t("core-credits-index.credit-participant-error.message.d09f3f61e2fe");
   }
   return null;
 }
@@ -61,14 +62,14 @@ export function creditSequenceError(
   f: Pick<CreditSequence, "presentation" | "durationFrames" | "pauseFrames" | "speed" | "direction">,
 ): string | null {
   if (!CREDIT_PRESENTATIONS.includes(f.presentation))
-    return L("Ugyldig presentasjonsform", "Invalid presentation");
+    return t("core-credits-index.credit-sequence-error.message.2f44298ab285");
   if (!Number.isInteger(f.durationFrames) || f.durationFrames < 1 || f.durationFrames > 1_000_000)
-    return L("Ugyldig varighet per deltaker", "Invalid duration per participant");
+    return t("core-credits-index.credit-sequence-error.message.e5a83edd448c");
   if (!Number.isInteger(f.pauseFrames) || f.pauseFrames < 0 || f.pauseFrames > 100_000)
-    return L("Ugyldig pause", "Invalid pause");
+    return t("core-credits-index.credit-sequence-error.message.465406b714af");
   if (!Number.isFinite(f.speed) || f.speed <= 0 || f.speed > 1000)
-    return L("Ugyldig hastighet", "Invalid speed");
-  if (f.direction !== "up" && f.direction !== "down") return L("Ugyldig retning", "Invalid direction");
+    return t("core-credits-index.credit-sequence-error.message.8c0ccb7b8b9f");
+  if (f.direction !== "up" && f.direction !== "down") return t("core-credits-index.credit-sequence-error.message.8c1d705a9ee2");
   return null;
 }
 

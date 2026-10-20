@@ -4,22 +4,11 @@
  * kvitteringen). Et element som stoppet midt i «generating», kan ha vært fakturert og kjøres aldri på nytt
  * (claim_harmonize_batch merker det som ikke-gjentakbart). Prompter og nøkler logges aldri.
  */
-import {
-  applyCommand,
-  buildHarmonizePrompt,
-  diffStates,
-  harmonizeAttachments,
-  harmonizeBatchCommand,
-  newId,
-  L,
-  type AssetMedia,
-  type Command,
-  type ImageSize,
-  type QualityProfileSnapshot,
-} from "@/core";
+import { applyCommand, buildHarmonizePrompt, diffStates, harmonizeAttachments, harmonizeBatchCommand, newId, type AssetMedia, type Command, type ImageSize, type QualityProfileSnapshot } from "@/core";
 import { loadProjectState, type AnyClient } from "./project-rows";
 import { memberRole, ROLE_RANK } from "../ai/ai-gate.server";
 import { runImageGeneration } from "../ai/image-run.server";
+import { t } from "@/core/i18n/keyed";
 
 interface BatchRow {
   id: string;
@@ -49,7 +38,7 @@ export async function processHarmonizeBatch(db: AnyClient, batchId: string, limi
   try {
     const role = await memberRole(db, batch.project_id, batch.created_by);
     if ((ROLE_RANK[role ?? ""] ?? 0) < (ROLE_RANK["editor"] ?? 3)) {
-      await pause(L("Skrivetilgangen er fjernet.", "Editing permission has been removed."));
+      await pause(t("adapters-storage-harmonize-batch-server.process-harmonize-batch.pause.5e7ffefc6544"));
       return { processed };
     }
     const { data: items, error: readError } = await db.from("harmonize_batch_items").select("*").eq("batch_id", batchId).in("status", ["waiting", "ready"]).order("position").limit(limit);
@@ -65,7 +54,7 @@ export async function processHarmonizeBatch(db: AnyClient, batchId: string, limi
         const input = { assetId: String(item["asset_id"]), versionId: String(item["source_version_id"]), styleProfileId: batch.style_profile_id, referenceVersionId: batch.reference_version_id };
         const prompt = buildHarmonizePrompt(state, input);
         if (!prompt) {
-          await transition(item["id"], { status: "skipped", retryable: false, error: L("Bildet eller stilen finnes ikke lenger.", "The image or the style no longer exists.") });
+          await transition(item["id"], { status: "skipped", retryable: false, error: t("adapters-storage-harmonize-batch-server.error.error.c1d64ea3057c") });
           await db.from("generation_jobs").update({ status: "failed", error: "skipped" } as never).eq("id", String(item["job_id"]));
           processed++; continue;
         }
@@ -106,11 +95,11 @@ export async function processHarmonizeBatch(db: AnyClient, batchId: string, limi
     const { count } = await db.from("harmonize_batch_items").select("id", { count: "exact", head: true }).eq("batch_id", batchId).in("status", ["waiting", "generating", "ready"]);
     if (count === 0) {
       const { count: failed } = await db.from("harmonize_batch_items").select("id", { count: "exact", head: true }).eq("batch_id", batchId).eq("status", "failed");
-      await db.from("harmonize_batches").update({ status: failed ? "paused" : "done", ...(failed ? { pause_reason: L("Noen bilder feilet. Originalene er uendret.", "Some images failed. The originals are unchanged.") } : {}) }).eq("id", batchId).eq("status", "running").eq("lease_token", lease);
+      await db.from("harmonize_batches").update({ status: failed ? "paused" : "done", ...(failed ? { pause_reason: t("adapters-storage-harmonize-batch-server.pause-reason.pause-reason.7faef36b486d") } : {}) }).eq("id", batchId).eq("status", "running").eq("lease_token", lease);
     }
     return { processed };
   } catch (e) {
-    await pause(L("Jobben ble stoppet. Lagrede resultater beholdes; gjenoppta uten å generere dem på nytt.", "The job stopped. Saved results are retained; resume without regenerating them."));
+    await pause(t("adapters-storage-harmonize-batch-server.process-harmonize-batch.pause.5373757652a0"));
     throw e;
   } finally {
     await db.from("harmonize_batches").update({ lease_token: null, lease_until: null }).eq("id", batchId).eq("lease_token", lease);

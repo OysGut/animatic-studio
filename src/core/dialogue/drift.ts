@@ -9,8 +9,9 @@
  */
 import type { AudioClip, ProjectState } from "../model";
 import { activeDialogueVersion } from "./versions";
-import { L } from "../i18n";
+
 import { textAtRevision } from "../assembly/discrepancy";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type DialogueReviewBasis = "manual" | "generated";
 export interface DialogueReview {
@@ -85,11 +86,11 @@ export function driftLines(s: ProjectState, characterId?: string): LineDrift[] {
 }
 
 export const DRIFT_LABEL = (status: DriftStatus): string => ({
-  none: L("Ingen lyd for replikken ennå", "No audio for the line yet"),
-  ok: L("Lyden følger gjeldende manus", "The audio follows the current script"),
-  reviewed: L("Manuset er endret, men avviket er gjennomgått", "The script has changed, but the difference has been reviewed"),
-  drift: L("Manuset er endret etter at lyden ble laget", "The script changed after the audio was made"),
-  unknown: L("Ukjent hvilken manusversjon lyden ble laget fra", "Unknown which script version the audio was made from"),
+  none: tk("core-dialogue-drift.none.none.13cfdd1b7a7f"),
+  ok: tk("core-dialogue-drift.ok.ok.8f433172c492"),
+  reviewed: tk("core-dialogue-drift.reviewed.reviewed.dd1543d7fe73"),
+  drift: tk("core-dialogue-drift.drift.drift.8a9d21b2e69e"),
+  unknown: tk("core-dialogue-drift.unknown.unknown.0160b2df46d5"),
 })[status];
 
 export type DiffPart = { readonly kind: "same" | "added" | "removed"; readonly text: string };

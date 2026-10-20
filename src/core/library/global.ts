@@ -7,11 +7,12 @@
  * Global ressurs, prosjektressurs og sceneforekomst er tre ulike objekter (§4). Prosjektressursen husker
  * koblingen (Asset.globalAssetId, AssetVersion.globalSource); filene er prosjektets egne kopier (§16).
  */
-import { L, localized, collation } from "../i18n";
+import { collation } from "../i18n";
 import type { Asset, AssetKind, AssetVersion, ProjectState, VisualStyle } from "../model";
 import type { AssetId, AssetVariantId, AssetVersionId } from "../ids";
 import type { AssetMedia, Command } from "../commands/types";
 import type { TemplateDefinition } from "../typography/template";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** Typer i det globale biblioteket (§3). Utvidbart uten nytt bibliotek (§3.7). */
 export const GLOBAL_KINDS = [
@@ -26,16 +27,7 @@ export const GLOBAL_KINDS = [
 ] as const;
 export type GlobalKind = (typeof GLOBAL_KINDS)[number];
 
-export const GLOBAL_KIND_LABEL: Record<GlobalKind, string> = localized({
-  logo: ["Logo og merkevare", "Logo and brand"],
-  character: ["Karakter", "Character"],
-  team_figure: ["Teamfigur", "Team figure"],
-  object: ["Objekt / rekvisitt", "Object / prop"],
-  environment: ["Miljø / bakgrunn", "Environment / background"],
-  sound: ["Lyd", "Sound"],
-  template: ["Grafisk mal", "Graphic template"],
-  other: ["Annet", "Other"],
-});
+export const GLOBAL_KIND_LABEL: Record<GlobalKind, string> = tLocalized({ logo: "core-library-global.global-kind-label.logo.144baa7a4181", character: "core-library-global.global-kind-label.character.4c9629cf531a", team_figure: "core-library-global.global-kind-label.team-figure.227cfa7d8c5c", object: "core-library-global.global-kind-label.object.359f97f75c6e", environment: "core-library-global.global-kind-label.environment.ca78d09ca5ef", sound: "core-library-global.global-kind-label.sound.a941bcd9c0a2", template: "core-library-global.global-kind-label.template.88b149caea11", other: "core-library-global.global-kind-label.other.37b9c69fcc6f" });
 
 export function isGlobalKind(v: unknown): v is GlobalKind {
   return typeof v === "string" && (GLOBAL_KINDS as readonly string[]).includes(v);
@@ -311,7 +303,7 @@ export function planUseGlobal(
     if (!variantId) {
       const nv = ids.variantIds[it.variant.id];
       if (!nv)
-        throw new Error(L("Mangler ID for ny variant", "Missing ID for new variant"));
+        throw new Error(tk("core-library-global.plan-use-global.message.4ebd2df432a0"));
       variantId = nv;
       createdVariants.set(it.variant.id, nv);
       fresh = true;
@@ -331,10 +323,7 @@ export function planUseGlobal(
       versionId: it.versionId,
       variantId,
       media: it.media,
-      note: L(
-        `Fra det globale biblioteket (v${it.version.number})`,
-        `From the global library (v${it.version.number})`,
-      ),
+      note: tk("core-library-global.note.note.5c31739b036f", { number: String(it.version.number) }),
       globalSource: { assetId: asset.id, variantId: it.variant.id, versionId: it.version.id },
       ...(it.version.template ? { template: it.version.template } : {}),
     });

@@ -2,22 +2,7 @@
  * Sikkerhetskopi i nettleseren (DEC-0049): hente alt som skal med, lage zip-filen, og gjenopprette fra en
  * zip-fil til et nytt prosjekt (filene lastes opp her, dataene skrives av serverfunksjonen restoreBackup).
  */
-import {
-  L,
-  BACKUP_JSON,
-  BACKUP_MAX_JSON_BYTES,
-  BACKUP_README,
-  backupIdMap,
-  backupReadme,
-  makeBackup,
-  parseBackup,
-  restoreFiles,
-  validateBackup,
-  type BackupData,
-  type BackupFileCategory,
-  type ProjectRows,
-  type Row,
-} from "@/core";
+import { BACKUP_JSON, BACKUP_MAX_JSON_BYTES, BACKUP_README, backupIdMap, backupReadme, makeBackup, parseBackup, restoreFiles, validateBackup, type BackupData, type BackupFileCategory, type ProjectRows, type Row } from "@/core";
 import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { restoreBackup } from "@/adapters/storage/backup.functions";
 import { fetchProjectRows, fetchSchemaStatus, fetchTable } from "@/adapters/browser/project-data";

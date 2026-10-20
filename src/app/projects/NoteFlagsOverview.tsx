@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { StickyNote } from "lucide-react";
-import { L, NOTE_FLAG_KIND_LABEL, NOTE_FLAG_TARGETS, noteFlagLocation, noteFlagOverview, sceneNumberOf, formatHeading, type NoteFlagSort, type NoteFlagTargetKind, type ProjectState } from "@/core";
+import { NOTE_FLAG_KIND_LABEL, NOTE_FLAG_TARGETS, noteFlagLocation, noteFlagOverview, sceneNumberOf, formatHeading, type NoteFlagSort, type NoteFlagTargetKind, type ProjectState } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 export function NoteFlagsOverview({ state, projectId, names }: { state: ProjectState; projectId: string; names: Readonly<Record<string, string>> }) {

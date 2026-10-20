@@ -4,7 +4,7 @@
  */
 import { Redo2, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { L, COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
+import { COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";

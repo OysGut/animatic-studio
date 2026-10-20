@@ -6,25 +6,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  assetFilePath,
-  L,
-  type AssetMedia,
-  SPEECH_LANGUAGE,
-  SPEECH_MODEL,
-  effortOf,
-  estimateCostUsd,
-  isUuid,
-  newId,
-  parseQualityProfileMeta,
-  providerModel,
-  speechSettingsError,
-  speechLanguageError,
-  type SpeechSettings,
-  type SpeechModel,
-  languageTagError,
-} from "@/core";
+import { assetFilePath, type AssetMedia, SPEECH_LANGUAGE, SPEECH_MODEL, effortOf, estimateCostUsd, isUuid, newId, parseQualityProfileMeta, providerModel, speechSettingsError, speechLanguageError, type SpeechSettings, type SpeechModel, languageTagError } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 const MAX_SPEECH_JOBS_PER_USER_PER_HOUR = 300;
@@ -62,20 +46,17 @@ export const listVoices = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    if (!isId(x["projectId"])) throw new Error(t("adapters-ai-speech-functions.list-voices.create-server-fn-method-post-middleware-require-supabase-auth-validator.4ae9c784e5de"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }): Promise<VoicesResult> => {
     const a = await editorAccess(context.supabase, data.projectId, context.userId);
-    if (!a) return { ok: false, message: L("Du har ikke tilgang.", "You do not have access.") };
+    if (!a) return { ok: false, message: t("adapters-ai-speech-functions.message.message.105ac28bbaf2") };
     const key = await a.gate.projectKey(a.db, data.projectId, "elevenlabs", context.userId);
     if (!key)
       return {
         ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører).",
-          "None of the project's owners has connected ElevenLabs (AI providers).",
-        ),
+        message: t("adapters-ai-speech-functions.message.message.15eb962bbbb3"),
       };
     const { decryptKey } = await import("./key-vault.server");
     const { ADAPTERS, scrubSecret } = await import("./providers.server");
@@ -90,10 +71,7 @@ export const listVoices = createServerFn({ method: "POST" })
     } catch (e) {
       return {
         ok: false,
-        message: L(
-          `Stemmene kunne ikke hentes: ${scrubSecret((e as Error).message, secret).slice(0, 300)}`,
-          `The voices could not be loaded: ${scrubSecret((e as Error).message, secret).slice(0, 300)}`,
-        ),
+        message: t("adapters-ai-speech-functions.message.message.63e5dd244c40", { value1: String(scrubSecret((e as Error).message, secret).slice(0, 300)) }),
       };
     }
   });
@@ -115,20 +93,20 @@ export const generateSpeech = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (!isId(x["projectId"]) || !isId(x["blockId"]))
-      throw new Error(L("Ugyldig replikk", "Invalid line"));
+      throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.db41107c580e"));
     if (typeof x["voiceId"] !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(x["voiceId"]))
-      throw new Error(L("Ugyldig stemme", "Invalid voice"));
+      throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.2e090fde1da3"));
     if (x["approved"] !== true)
-      throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
+      throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.4f4515f49dd9"));
     const model = x["modelId"] ?? SPEECH_MODEL;
     const language = x["language"] ?? SPEECH_LANGUAGE;
     const settings = x["settings"] ?? {};
     if (typeof model !== "string" || !/^[A-Za-z0-9_-]{1,100}$/.test(model) || typeof language !== "string" || languageTagError(language))
-      throw new Error(L("Ugyldig modell eller talespråk", "Invalid model or speech language"));
+      throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.70945565c22c"));
     const problem = speechSettingsError(settings);
     if (problem) throw new Error(problem);
     const expectedRevision = x["scriptRevision"];
-    if (expectedRevision !== undefined && (!Number.isInteger(expectedRevision) || Number(expectedRevision) < 1)) throw new Error(L("Ugyldig manusrevisjon", "Invalid script revision"));
+    if (expectedRevision !== undefined && (!Number.isInteger(expectedRevision) || Number(expectedRevision) < 1)) throw new Error(t("adapters-ai-speech-functions.generate-speech.create-server-fn-method-post-middleware-require-supabase-auth-validator.030a696f21c0"));
     return { projectId: x["projectId"], blockId: x["blockId"], voiceId: x["voiceId"], model, language, settings: settings as SpeechSettings, expectedRevision, qualityProfile: parseQualityProfileMeta(x["qualityProfile"]) };
   })
   .handler(async ({ data, context }): Promise<SpeechResult> => {
@@ -141,14 +119,14 @@ export const listSpeechModels = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isId(x["projectId"])) throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    if (!isId(x["projectId"])) throw new Error(t("adapters-ai-speech-functions.list-speech-models.create-server-fn-method-post-middleware-require-supabase-auth-validator.3f32490d1e59"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }): Promise<{ ok: true; models: SpeechModel[] } | { ok: false; message: string }> => {
     const a = await editorAccess(context.supabase, data.projectId, context.userId);
-    if (!a) return { ok: false, message: L("Du har ikke tilgang.", "You do not have access.") };
+    if (!a) return { ok: false, message: t("adapters-ai-speech-functions.message.message.105ac28bbaf2.2") };
     const key = await a.gate.projectKey(a.db, data.projectId, "elevenlabs", context.userId);
-    if (!key) return { ok: false, message: L("ElevenLabs er ikke koblet til.", "ElevenLabs is not connected.") };
+    if (!key) return { ok: false, message: t("adapters-ai-speech-functions.message.message.a01ae69b27a7") };
     const { decryptKey } = await import("./key-vault.server");
     const { ADAPTERS, scrubSecret } = await import("./providers.server");
     let secret: string | null = null;

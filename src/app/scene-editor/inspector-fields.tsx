@@ -2,7 +2,7 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { useRef, useState, type ReactNode } from "react";
 import { Diamond } from "lucide-react";
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 export const inputClass =

@@ -5,7 +5,7 @@
  */
 import { ListChecks } from "lucide-react";
 import { useState } from "react";
-import { contentSyncText, L, type ProjectState, type SceneContentSync } from "@/core";
+import { contentSyncText, type ProjectState, type SceneContentSync } from "@/core";
 import { useSession } from "@/app/auth/use-session";
 import { AssetWorklistDialog } from "@/app/library/AssetWorklistDialog";
 import { useCommands, type Commands } from "@/app/project/use-commands";

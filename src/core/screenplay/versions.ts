@@ -6,8 +6,9 @@
 import type { Asset, BlockKind, ProjectState, SceneHeading } from "../model";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { characterName, mentions } from "./filter";
-import { L, localized } from "../i18n";
+
 import { formatHeading, type PaginationScene } from "./paginate";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 export interface SnapshotBlock {
   readonly id: string;
@@ -152,21 +153,7 @@ export interface WordPart {
   readonly text: string;
 }
 
-export const CHANGE_LABEL: Record<ChangeType, string> = localized({
-  added: ["Ny scene", "New scene"],
-  removed: ["Fjernet scene", "Removed scene"],
-  deactivated: ["Deaktivert scene", "Deactivated scene"],
-  activated: ["Aktivert scene", "Activated scene"],
-  moved: ["Flyttet scene", "Moved scene"],
-  renumbered: ["Nytt scenenummer", "New scene number"],
-  heading: ["Endret sceneoverskrift", "Changed scene heading"],
-  dialogue: ["Endret dialog", "Changed dialogue"],
-  action: ["Endret handling", "Changed action"],
-  characters: ["Endrede karakterer", "Changed characters"],
-  objects: ["Endrede objekter", "Changed objects"],
-  take: ["Ny aktiv filmversjon", "New active film version"],
-  variant: ["Ny scenevariant", "New scene variant"],
-});
+export const CHANGE_LABEL: Record<ChangeType, string> = tLocalized({ added: "core-screenplay-versions.change-label.added.5114c854aee4", removed: "core-screenplay-versions.change-label.removed.c5e86892f445", deactivated: "core-screenplay-versions.change-label.deactivated.4774ad07e652", activated: "core-screenplay-versions.change-label.activated.fecc9f63cf95", moved: "core-screenplay-versions.change-label.moved.42d4055d23d0", renumbered: "core-screenplay-versions.change-label.renumbered.80fc502434b4", heading: "core-screenplay-versions.change-label.heading.4fe082c9dd60", dialogue: "core-screenplay-versions.change-label.dialogue.d6795e07a491", action: "core-screenplay-versions.change-label.action.801906765034", characters: "core-screenplay-versions.change-label.characters.3c91516d47eb", objects: "core-screenplay-versions.change-label.objects.28c0b753ea55", take: "core-screenplay-versions.change-label.take.9fa4a1505445", variant: "core-screenplay-versions.change-label.variant.92d9676e8329" });
 
 /** Replikk og parentes. Karakternavn rapporteres som egen type («Endrede karakterer»). */
 const DIALOGUE_KINDS: ReadonlySet<BlockKind> = new Set(["dialogue", "parenthetical"]);
@@ -288,11 +275,11 @@ function countText(lines: readonly LineChange[]): string {
   if (c)
     parts.push(
       c === 1
-        ? L(`${c} linje endret`, `${c} line changed`)
-        : L(`${c} linjer endret`, `${c} lines changed`),
+        ? t("core-screenplay-versions.count-text.parts-push.b2bdc909aae2", { c: String(c) })
+        : t("core-screenplay-versions.count-text.parts-push.3db66b147ea1", { c: String(c) }),
     );
-  if (a) parts.push(a === 1 ? L("1 ny", "1 new") : L(`${a} nye`, `${a} new`));
-  if (r) parts.push(L(`${r} fjernet`, `${r} removed`));
+  if (a) parts.push(a === 1 ? t("core-screenplay-versions.count-text.parts-push.0a2e005f5bf0") : t("core-screenplay-versions.count-text.parts-push.347a04bec628", { a: String(a) }));
+  if (r) parts.push(t("core-screenplay-versions.count-text.parts-push.d2e5fd74729b", { r: String(r) }));
   return parts.join(", ");
 }
 
@@ -453,12 +440,9 @@ export function wordDiff(before: string, after: string): WordPart[] {
 function placeText(snap: ScriptSnapshot, index: number): string {
   const prev = index > 0 ? snap.scenes[index - 1] : undefined;
   const where = prev
-    ? L(
-        `etter scene ${prev.number ?? `uten nummer (${formatHeading(prev.heading)})`}`,
-        `after scene ${prev.number ?? `no number (${formatHeading(prev.heading)})`}`,
-      )
-    : L("først", "first");
-  return L(`plass ${index + 1}, ${where}`, `place ${index + 1}, ${where}`);
+    ? prev.number != null ? t("core-screenplay-versions.after-scene", { number: prev.number }) : t("core-screenplay-versions.after-scene-unnumbered", { heading: formatHeading(prev.heading) })
+    : t("core-screenplay-versions.where.message.3bbdfb3819ec");
+  return t("core-screenplay-versions.place-text.message.fdb98baac3ee", { value1: String(index + 1), where: String(where) });
 }
 
 /**
@@ -492,7 +476,7 @@ export function diffSnapshots(
         type: "added",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `${placeText(newer, newer.scenes.indexOf(sc))}${sc.active ? "" : L(" (deaktivert)", " (deactivated)")}`,
+        detail: `${placeText(newer, newer.scenes.indexOf(sc))}${sc.active ? "" : t("core-screenplay-versions.detail.detail.bf2d9eb28354")}`,
         lines: sceneLineChanges(null, sc),
       });
       continue;
@@ -506,17 +490,14 @@ export function diffSnapshots(
         type: "moved",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: L(
-          `Sto på ${placeText(older, older.scenes.indexOf(old))}. Står nå på ${placeText(newer, newer.scenes.indexOf(sc))}.`,
-          `Was at ${placeText(older, older.scenes.indexOf(old))}. Now at ${placeText(newer, newer.scenes.indexOf(sc))}.`,
-        ),
+        detail: t("core-screenplay-versions.detail.detail.c43caaa05478", { value1: String(placeText(older, older.scenes.indexOf(old))), value2: String(placeText(newer, newer.scenes.indexOf(sc))) }),
       });
     if (old.number !== sc.number)
       out.push({
         type: "renumbered",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: `${old.number ?? L("uten nummer", "no number")} → ${sc.number ?? L("uten nummer", "no number")}`,
+        detail: `${old.number ?? t("core-screenplay-versions.detail.detail.d1b407cc4cd9")} → ${sc.number ?? t("core-screenplay-versions.detail.detail.d1b407cc4cd9.2")}`,
       });
     if (old.activeTakeId !== sc.activeTakeId)
       out.push({ type: "take", sceneId: sc.sceneId, ...label(sc) });
@@ -576,10 +557,7 @@ export function diffSnapshots(
         type: "removed",
         sceneId: sc.sceneId,
         ...label(sc),
-        detail: L(
-          `Sto på ${placeText(older, older.scenes.indexOf(sc))}`,
-          `Was at ${placeText(older, older.scenes.indexOf(sc))}`,
-        ),
+        detail: t("core-screenplay-versions.detail.detail.fbdf58bdb437", { value1: String(placeText(older, older.scenes.indexOf(sc))) }),
         lines: sceneLineChanges(sc, null),
       });
   return out;

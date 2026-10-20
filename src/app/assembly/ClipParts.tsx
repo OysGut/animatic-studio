@@ -5,21 +5,7 @@
  */
 import { Film, ImageIcon, Layers, Minus, Plus, RotateCcw, Scissors, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
-import {
-  L,
-  editableParts,
-  locale,
-  newId,
-  removePart,
-  setPartSource,
-  setPartTransition,
-  takeLabel,
-  trimPart,
-  type ClipPartFields,
-  type FilmClip,
-  type ProjectState,
-  type Take,
-} from "@/core";
+import { editableParts, locale, newId, removePart, setPartSource, setPartTransition, takeLabel, trimPart, type ClipPartFields, type FilmClip, type ProjectState, type Take } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t as tk } from "@/core/i18n/keyed";
 

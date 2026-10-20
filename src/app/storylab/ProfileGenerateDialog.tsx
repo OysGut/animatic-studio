@@ -5,15 +5,7 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import {
-  L,
-  profileError,
-  profileFromJson,
-  profileGeneratorPrompt,
-  type Asset,
-  type ProjectState,
-  type StoryProfile,
-} from "@/core";
+import { profileError, profileFromJson, profileGeneratorPrompt, type Asset, type ProjectState, type StoryProfile } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";

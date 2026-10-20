@@ -3,16 +3,7 @@
  * med mediabunny, filen lastes opp uendret til den private bøtta «assets» (kildematerialet bevares), og
  * versjonen lagres med AddTake. Feiler opplastingen, lagres ingenting.
  */
-import {
-  filmFilePath,
-  ASSET_MAX_BYTES,
-  FILM_MIME_TYPES,
-  L,
-  newId,
-  secondsToFrames,
-  type Rational,
-  type TakeMedia,
-} from "@/core";
+import { filmFilePath, ASSET_MAX_BYTES, FILM_MIME_TYPES, newId, secondsToFrames, type Rational, type TakeMedia } from "@/core";
 import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { safeFileName } from "@/app/library/asset-images";
 import { t as tk } from "@/core/i18n/keyed";

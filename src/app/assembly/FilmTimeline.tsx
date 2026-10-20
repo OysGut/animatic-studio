@@ -6,18 +6,7 @@
 import { TRANSITION_LABEL, transitionMarkBackground } from "./transitions";
 import { AlertTriangle, Clapperboard, Film, Layers } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import {
-  L,
-  formatHeading,
-  formatTimecode,
-  fpsToNumber,
-  framesToSeconds,
-  secondsToFrames,
-  MIN_DURATION_SECONDS,
-  type FilmClip,
-  type ProjectState,
-  locale,
-} from "@/core";
+import { formatHeading, formatTimecode, fpsToNumber, framesToSeconds, secondsToFrames, MIN_DURATION_SECONDS, type FilmClip, type ProjectState, locale } from "@/core";
 import { drawFilmFrame } from "@/engine/compositor/film";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { RulerTicks } from "@/app/scene-editor/Timeline";
@@ -440,42 +429,31 @@ const ClipBlock = memo(function ClipBlock({
           onDoubleClick();
         }
       }}
-      aria-label={L(
-        `Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
-          placeholder ? ", uten 2D-scene" : clip.source === "film" ? ", ferdig film" : ""
-        }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLocaleLowerCase("nb")} inn${clip.overlapFrames > 0 ? " med overlapp" : ""}` : ""}${clip.monochrome ? ", svart-hvitt" : ""}${flags ? ", manuset er endret etter materialet" : ""}`,
-        `Scene ${clip.productionNumber ?? index + 1}: ${heading}, ${formatSeconds(seconds)}${
-          placeholder ? ", no 2D scene" : clip.source === "film" ? ", finished film" : ""
-        }${clip.transition.kind !== "cut" ? `, ${TRANSITION_LABEL[clip.transition.kind].toLowerCase()} in${clip.overlapFrames > 0 ? " with overlap" : ""}` : ""}${clip.monochrome ? ", black and white" : ""}${flags ? ", the script has changed since the material was made" : ""}`,
-      )}
-      title={L(
-        `${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
-          clip.durationKind === "estimate"
-            ? " (beregnet fra manus)"
-            : clip.durationKind === "planned"
-              ? " (planlagt)"
-              : ""
-        }${placeholder ? "\nIngen 2D-scene ennå – vises som tittelkort" : ""}${
-          clip.edited
-            ? `\nKlippet: ${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"}`
-            : ""
-        }${
-          clip.source === "film" ? `\nFerdig film: ${clip.take?.media?.fileName ?? ""}` : ""
-        }\n${movable ? "Dra for å flytte scenen. " : ""}Dobbeltklikk for å åpne i sceneeditoren.`,
-        `${clip.productionNumber ?? ""} ${heading}\n${formatSeconds(seconds)}${
-          clip.durationKind === "estimate"
-            ? " (estimated from the script)"
-            : clip.durationKind === "planned"
-              ? " (planned)"
-              : ""
-        }${placeholder ? "\nNo 2D scene yet – shown as a title card" : ""}${
-          clip.edited
-            ? `\nEdited: ${clip.parts.length} ${clip.parts.length === 1 ? "part" : "parts"}`
-            : ""
-        }${
-          clip.source === "film" ? `\nFinished film: ${clip.take?.media?.fileName ?? ""}` : ""
-        }\n${movable ? "Drag to move the scene. " : ""}Double-click to open in the scene editor.`,
-      )}
+      aria-label={tk("app-assembly-film-timeline.clip-label", {
+          number: clip.productionNumber ?? index + 1,
+          heading,
+          duration: formatSeconds(seconds),
+          details:
+            (placeholder ? tk("app-assembly-film-timeline.clip-label-no-2d") : clip.source === "film" ? tk("app-assembly-film-timeline.clip-label-finished-film") : "") +
+            (clip.transition.kind !== "cut"
+              ? clip.overlapFrames > 0
+                ? tk("app-assembly-film-timeline.clip-label-transition-overlap", { transition: TRANSITION_LABEL[clip.transition.kind].toLowerCase() })
+                : tk("app-assembly-film-timeline.clip-label-transition", { transition: TRANSITION_LABEL[clip.transition.kind].toLowerCase() })
+              : "") +
+            (clip.monochrome ? tk("app-assembly-film-timeline.clip-label-monochrome") : "") +
+            (flags ? tk("app-assembly-film-timeline.clip-label-script-changed") : ""),
+        })}
+      title={tk("app-assembly-film-timeline.clip-tooltip", {
+          number: clip.productionNumber ?? "",
+          heading,
+          duration: formatSeconds(seconds),
+          details:
+            (clip.durationKind === "estimate" ? tk("app-assembly-film-timeline.clip-tooltip-estimate") : clip.durationKind === "planned" ? tk("app-assembly-film-timeline.clip-tooltip-planned") : "") +
+            (placeholder ? tk("app-assembly-film-timeline.clip-tooltip-no-2d") : "") +
+            (clip.edited ? tk("app-assembly-film-timeline.clip-tooltip-edited", { count: clip.parts.length }) : "") +
+            (clip.source === "film" ? tk("app-assembly-film-timeline.clip-tooltip-film", { file: clip.take?.media?.fileName ?? "" }) : ""),
+          move: movable ? tk("app-assembly-film-timeline.clip-tooltip-move") : "",
+        })}
       onPointerDown={onPointerDownBody}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

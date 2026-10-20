@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationLines } from "@/adapters/ai/line-align.functions";
-import { L, newId, linksAboveThreshold, uncertainLineScope, lineLinkStale, lineTargetText, confidencePercent, ratioTitle, discardedText, type Command, type ProjectState, type LineLinkFields } from "@/core";
+import { newId, linksAboveThreshold, uncertainLineScope, lineLinkStale, lineTargetText, confidencePercent, ratioTitle, discardedText, type Command, type ProjectState, type LineLinkFields } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { t as tk } from "@/core/i18n/keyed";
@@ -48,7 +48,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
         {estimate.profileName?<p>{tk("app-script-line-link-review.line-link-review.p.4b1b9331a285", { profileName: String(estimate.profileName) })}</p>:null}
         <Button size="sm" data-testid="line-links-confirm" disabled={busy} onClick={()=>void request(true)}>{tk("app-script-line-link-review.line-link-review.button.5160a7e9869e")}</Button>
       </div>:null}
-      {unpairedCount?<p data-testid="line-links-unpaired" className="text-xs text-text-secondary">{L(`${unpairedCount} ${unpairedCount===1?"oversatt linje":"oversatte linjer"} uten par`,`${unpairedCount} translated ${unpairedCount===1?"line":"lines"} without a pair`)}</p>:null}
+      {unpairedCount?<p data-testid="line-links-unpaired" className="text-xs text-text-secondary">{tk("app-script-line-link-review.unpaired", { count: unpairedCount })}</p>:null}
       {discarded?<p data-testid="line-links-discarded" role="status" className="text-xs text-status-uncertain">{discardedText(discarded)}</p>:null}
       <div className="flex flex-col divide-y divide-border">
         {allRows.filter(l=>filter==="all"||filter===l.origin).map(l=><div key={l.id} data-testid="line-link-row" className="flex flex-col gap-2 py-2 text-xs">

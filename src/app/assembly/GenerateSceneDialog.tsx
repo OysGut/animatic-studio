@@ -8,31 +8,7 @@
 import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
-import {
-  DEFAULT_SEGMENT_SECONDS,
-  MAX_PROMPT_CHARS,
-  SEGMENT_SECONDS,
-  blocksOfVariant,
-  buildScenePrompt,
-  formatHeading,
-  keysEvenly,
-  missingDialogue,
-  newId,
-  planSegments,
-  continuityCuts,
-  planFitsScene,
-  samePlan,
-  segmentDialogue,
-  segmentTimes,
-  compareKeys,
-  type FilmClip,
-  type GenerationPrompt,
-  type ProductionSegment,
-  type ProjectState,
-  type SegmentPlan,
-  L,
-  locale,
-} from "@/core";
+import { DEFAULT_SEGMENT_SECONDS, MAX_PROMPT_CHARS, SEGMENT_SECONDS, blocksOfVariant, buildScenePrompt, formatHeading, keysEvenly, missingDialogue, newId, planSegments, continuityCuts, planFitsScene, samePlan, segmentDialogue, segmentTimes, compareKeys, type FilmClip, type GenerationPrompt, type ProductionSegment, type ProjectState, type SegmentPlan, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { SceneVideoSection } from "./SceneVideoSection";
 import { Button } from "@/components/ui/button";
@@ -272,10 +248,7 @@ function Body({
               ))}
             </select>
             <span className="text-text-tertiary">
-              {L(
-                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segmenter"} (forslag)`,
-                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segments"} (suggested)`,
-              )}
+              {tk("app-assembly-generate-scene-dialog.segments-suggested", { count: plan.length })}
             </span>
           </label>
         )}

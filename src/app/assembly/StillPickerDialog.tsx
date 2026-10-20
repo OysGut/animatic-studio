@@ -5,18 +5,7 @@
  */
 import { ImageIcon } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  locale,
-  STILL_MAX_MS,
-  STILL_MIN_MS,
-  newId,
-  stillCandidates,
-  stillCommands,
-  type Command,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { locale, STILL_MAX_MS, STILL_MIN_MS, newId, stillCandidates, stillCommands, type Command, type FilmClip, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
 import {

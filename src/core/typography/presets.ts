@@ -3,7 +3,7 @@
  * redigeres etterpå i tidslinjen. Ingen egen animasjonsmodell.
  */
 import type { CompositionLayer, Keyframe, TransformProperty } from "../model";
-import { L, localized } from "../i18n";
+
 import type { LetterAnimation } from "./types";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 

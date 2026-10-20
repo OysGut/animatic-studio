@@ -5,17 +5,10 @@
  */
 import { Plus, Tags, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  collation,
-  formatHeading,
-  L,
-  linesWithWord,
-  type Asset,
-  type ContextName,
-  type ProjectState,
-} from "@/core";
+import { collation, formatHeading, linesWithWord, type Asset, type ContextName, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 export function ContextNamesSection({
   state,
@@ -59,11 +52,8 @@ export function ContextNamesSection({
     const ok = save(
       ids.length ? [...others, { name, blockIds: ids }] : others,
       ids.length
-        ? L(
-            `Betegnelsen «${name}» gjelder ${asset.name}`,
-            `The term “${name}” refers to ${asset.name}`,
-          )
-        : L(`Fjern betegnelsen «${name}»`, `Remove the term “${name}”`),
+        ? t("app-library-context-names-section.ok.save.35e49a47ab73", { name: String(name), name2: String(asset.name) })
+        : t("app-library-context-names-section.ok.save.7aaa05d457a2", { name: String(name) }),
     );
     if (ok) {
       setWord("");
@@ -81,12 +71,12 @@ export function ContextNamesSection({
     <div className="flex flex-col gap-1.5">
       <p className="flex items-center gap-1.5 text-xs text-text-secondary">
         <Tags className="size-3.5" aria-hidden />{" "}
-        {L("Betegnelser i bestemte linjer", "Terms in specific lines")}
+        {t("app-library-context-names-section.context-names-section.p.eddb7bb23d38")}
       </p>
       {list.length ? (
         <ul
           className="flex flex-wrap gap-1"
-          aria-label={L("Betegnelser i bestemte linjer", "Terms in specific lines")}
+          aria-label={t("app-library-context-names-section.context-names-section.aria-label.eddb7bb23d38")}
         >
           {list.map((n) => (
             <li
@@ -100,23 +90,23 @@ export function ContextNamesSection({
                   setWord(n.name);
                   setPicked(null);
                 }}
-                title={L("Vis og endre linjene", "Show and change the lines")}
+                title={t("app-library-context-names-section.context-names-section.title.f4b832274ed2")}
               >
                 «{n.name}»
               </button>
               <span className="text-text-tertiary">
                 {n.blockIds.length}{" "}
-                {n.blockIds.length === 1 ? L("linje", "line") : L("linjer", "lines")}
+                {n.blockIds.length === 1 ? t("app-library-context-names-section.context-names-section.span.e2622c84aff4") : t("app-library-context-names-section.context-names-section.span.7a8f08077845")}
               </span>
               {editable ? (
                 <button
                   type="button"
-                  aria-label={L(`Fjern betegnelsen ${n.name}`, `Remove the term ${n.name}`)}
+                  aria-label={t("app-library-context-names-section.context-names-section.aria-label.8000142029e5", { name: String(n.name) })}
                   className="rounded-sm p-0.5 text-text-tertiary hover:text-text-primary"
                   onClick={() =>
                     save(
                       list.filter((x) => x !== n),
-                      L(`Fjern betegnelsen «${n.name}»`, `Remove the term “${n.name}”`),
+                      t("app-library-context-names-section.context-names-section.save.b9957137c32b", { name: String(n.name) }),
                     )
                   }
                 >
@@ -128,18 +118,15 @@ export function ContextNamesSection({
         </ul>
       ) : (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            `F.eks. «onkel» når det er ${asset.name} som menes – bare i linjene du velger.`,
-            `E.g. “uncle” when ${asset.name} is meant – only in the lines you choose.`,
-          )}
+          {t("app-library-context-names-section.context-names-section.p.4eb446330c64", { name: String(asset.name) })}
         </p>
       )}
       {editable ? (
         <>
           <input
             type="text"
-            aria-label={L("Betegnelse", "Term")}
-            placeholder={L("Betegnelse, f.eks. onkel", "Term, e.g. uncle")}
+            aria-label={t("app-library-context-names-section.context-names-section.aria-label.690f825e0dea")}
+            placeholder={t("app-library-context-names-section.context-names-section.placeholder.13ef361697d5")}
             value={word}
             onChange={(e) => {
               setWord(e.target.value);
@@ -150,12 +137,12 @@ export function ContextNamesSection({
           {word.trim().length >= 2 ? (
             lines.length === 0 ? (
               <p className="text-[11px] text-text-tertiary">
-                {L("Ordet står ikke i manuset.", "The word is not in the script.")}
+                {t("app-library-context-names-section.context-names-section.p.3d81c82d5cef")}
               </p>
             ) : (
               <>
                 <ul
-                  aria-label={L("Linjer med betegnelsen", "Lines with the term")}
+                  aria-label={t("app-library-context-names-section.context-names-section.aria-label.0b995103ee8a")}
                   className="max-h-56 overflow-y-auto border border-border bg-surface-1"
                 >
                   {lines.map((l) => (
@@ -190,20 +177,17 @@ export function ContextNamesSection({
                   >
                     <Plus />
                     {chosen.size
-                      ? L(
-                          `«${word.trim()}» er ${asset.name} i ${chosen.size} ${chosen.size === 1 ? "linje" : "linjer"}`,
-                          `“${word.trim()}” is ${asset.name} in ${chosen.size} ${chosen.size === 1 ? "line" : "lines"}`,
-                        )
+                      ? t("app-library-context-names-section.word-is-asset", { word: word.trim(), asset: asset.name, count: chosen.size })
                       : existing
-                        ? L("Fjern betegnelsen", "Remove the term")
-                        : L("Kryss av linjene det gjelder", "Tick the lines it applies to")}
+                        ? t("app-library-context-names-section.context-names-section.button.c41f949f2532")
+                        : t("app-library-context-names-section.context-names-section.button.4038097b7114")}
                   </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => setPicked(new Set(lines.map((l) => l.blockId)))}
                   >
-                    {L("Velg alle", "Select all")}
+                    {t("app-library-context-names-section.context-names-section.button.29008e48b9b4")}
                   </Button>
                 </div>
               </>

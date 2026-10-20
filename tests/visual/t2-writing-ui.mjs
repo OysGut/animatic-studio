@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/t2-writing"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
@@ -134,7 +135,8 @@ async function eventually(fn, ms = 5000) {
 const cmds = (type) => S.commands.filter((c) => c?.type === type);
 const browser = await chromium.launch({ headless: true });
 
-async function scenario(name, fn, { lang = "nb", blokk = ACTION.id, nodes = [], mutate } = {}) {
+async function scenario(name, fn, { lang: askedLang = "nb", blokk = ACTION.id, nodes = [], mutate } = {}) {
+  const lang = uiLang(askedLang); // UI_LANG=en kjører alle scenarioene på engelsk
   S.commands = []; S.assist = [];
   rows = { ...fx.rows, story_canvas_nodes: nodes };
   if (mutate) rows = mutate(rows);

@@ -8,16 +8,10 @@ import type { Asset, ProjectState, SoundLink, SoundLinkKind } from "../model";
 import { formatHeading } from "../screenplay/paginate";
 import { orderedOccurrences } from "../views";
 import { compareKeys } from "../order-key";
-import { collation, L, localized } from "../i18n";
+import { collation } from "../i18n";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
-export const SOUND_LINK_LABEL: Record<SoundLinkKind, string> = localized({
-  asset: ["Karakter/ressurs", "Character/asset"],
-  block: ["Replikk/linje", "Line/dialogue"],
-  scene: ["Scene", "Scene"],
-  segment: ["Delsekvens", "Segment"],
-  event: ["Hendelse", "Event"],
-  production: ["Produksjon", "Production"],
-});
+export const SOUND_LINK_LABEL: Record<SoundLinkKind, string> = tLocalized({ asset: "core-library-sound-links.sound-link-label.asset.71095537b1b0", block: "core-library-sound-links.sound-link-label.block.bbb3fba8a588", scene: "core-library-sound-links.sound-link-label.scene.8ba2bd5a583f", segment: "core-library-sound-links.sound-link-label.segment.45583eb9e990", event: "core-library-sound-links.sound-link-label.event.2ae368e6ce0f", production: "core-library-sound-links.sound-link-label.production.7b13f8c0a771" });
 
 /** Sceneoverskrift med nummer i hovedfilmen (eller første produksjon den er med i). */
 function sceneText(s: ProjectState, sceneId: string): string {
@@ -38,40 +32,40 @@ export function soundLinkLabel(s: ProjectState, l: SoundLink): string {
   switch (l.kind) {
     case "asset":
       return (
-        s.assets[l.id]?.name ?? L("(ressursen finnes ikke lenger)", "(asset no longer exists)")
+        s.assets[l.id]?.name ?? tk("core-library-sound-links.sound-link-label.message.e4c4a3c78660")
       );
     case "block": {
       const b = s.blocks[l.id];
-      if (!b) return L("(linjen finnes ikke lenger)", "(line no longer exists)");
+      if (!b) return tk("core-library-sound-links.sound-link-label.message.9750df82af8b");
       const v = s.variants[b.variantId];
       const t = b.text.replace(/\s+/g, " ").trim();
       const text = t.length > 60 ? `${t.slice(0, 57)}…` : t;
       const prefix = v ? `${sceneText(s, v.sceneId)}: ` : "";
-      return L(`${prefix}«${text}»`, `${prefix}“${text}”`);
+      return tk("core-library-sound-links.sound-link-label.message.24b3dcf674f5", { prefix: String(prefix), text: String(text) });
     }
     case "scene":
       return s.scenes[l.id]
         ? sceneText(s, l.id)
-        : L("(scenen finnes ikke lenger)", "(scene no longer exists)");
+        : tk("core-library-sound-links.sound-link-label.message.bc284dab530c");
     case "segment": {
       const g = s.segments[l.id];
-      if (!g) return L("(delsekvensen finnes ikke lenger)", "(segment no longer exists)");
+      if (!g) return tk("core-library-sound-links.sound-link-label.message.78166a4664d6");
       const o = s.occurrences[g.occurrenceId];
       const all = Object.values(s.segments)
         .filter((x) => x.occurrenceId === g.occurrenceId && x.reason === g.reason)
         .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
-      return `${o ? sceneText(s, o.sceneId) : "Scene"}${L(", delsekvens ", ", segment ")}${all.indexOf(g) + 1}`;
+      return `${o ? sceneText(s, o.sceneId) : "Scene"}${tk("core-library-sound-links.sound-link-label.message.3b8ced4b0336")}${all.indexOf(g) + 1}`;
     }
     case "event": {
       const e = s.continuityEvents[l.id];
-      if (!e) return L("(hendelsen finnes ikke lenger)", "(event no longer exists)");
-      const what = e.description || L("hendelse", "event");
+      if (!e) return tk("core-library-sound-links.sound-link-label.message.1d02f88f4756");
+      const what = e.description || tk("core-library-sound-links.what.message.008647f465db");
       return `${s.assets[e.assetId]?.name ?? ""}: ${what} (${sceneText(s, e.sceneId)})`;
     }
     case "production":
       return (
         s.productions[l.id]?.name ??
-        L("(produksjonen finnes ikke lenger)", "(production no longer exists)")
+        tk("core-library-sound-links.sound-link-label.message.062a90d3d7f1")
       );
   }
 }

@@ -10,19 +10,7 @@ import { Loader2, Send } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useRef, useState } from "react";
 import { takeIdea } from "./new-project-idea";
-import {
-  L,
-  canvasSummary,
-  interviewNodesFromJson,
-  interviewSystemPrompt,
-  interviewToNodesPrompt,
-  newId,
-  unreadableReplyMessage,
-  type CanvasNode,
-  type InterviewMessage,
-  type ProjectState,
-  type ProposedCanvas,
-} from "@/core";
+import { canvasSummary, interviewNodesFromJson, interviewSystemPrompt, interviewToNodesPrompt, newId, unreadableReplyMessage, type CanvasNode, type InterviewMessage, type ProjectState, type ProposedCanvas } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
 import { appendStoryTurns, createStorySession, getStorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";
 import { useLanguage } from "@/app/i18n/language";

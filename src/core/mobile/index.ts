@@ -4,8 +4,9 @@
  * filinnholdet. Server og nettleser bruker de samme reglene.
  */
 import { isPartSlot } from "../animation/parts";
-import { L } from "../i18n";
+
 import { isUuid } from "../ids";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Hvor filene fra en økt skal (Mars: «for ulike scener genereres selvsagt ulike qr koder så alt havner rett»). */
 export type UploadContext =
@@ -96,28 +97,19 @@ export function checkMobileFile(
 ): string | null {
   const kind = mediaKindOf(mime);
   if (!kind)
-    return L(
-      "Filtypen tas ikke imot (bilder: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; lyd: MP3, WAV, M4A, OGG, WebM, FLAC).",
-      "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
-    );
+    return tk("core-mobile-index.check-mobile-file.message.70c465bdd29d");
   if (!allowed.includes(kind))
     return kind === "video"
-      ? L("Her kan du ikke laste opp video.", "You cannot upload video here.")
+      ? tk("core-mobile-index.check-mobile-file.message.e770eba5c6e8")
       : kind === "audio"
-        ? L("Her kan du ikke laste opp lyd.", "You cannot upload audio here.")
-        : L("Her kan du ikke laste opp bilder.", "You cannot upload images here.");
-  if (!Number.isFinite(bytes) || bytes <= 0) return L("Filen er tom.", "The file is empty.");
+        ? tk("core-mobile-index.check-mobile-file.message.47b1ed91e3c0")
+        : tk("core-mobile-index.check-mobile-file.message.46b51e56c6dc");
+  if (!Number.isFinite(bytes) || bytes <= 0) return tk("core-mobile-index.check-mobile-file.message.4129d3a6024f");
   const max = maxBytesFor(kind);
   if (bytes > max)
     return kind === "video"
-      ? L(
-          `Videoen er for stor (maks ${Math.round(max / 1024 ** 2)} MB). Del opp opptaket.`,
-          `The video is too large (max ${Math.round(max / 1024 ** 2)} MB). Split the recording.`,
-        )
-      : L(
-          `Filen er for stor (maks ${Math.round(max / 1024 ** 2)} MB).`,
-          `The file is too large (max ${Math.round(max / 1024 ** 2)} MB).`,
-        );
+      ? tk("core-mobile-index.check-mobile-file.message.e8bac3f52697", { value1: String(Math.round(max / 1024 ** 2)) })
+      : tk("core-mobile-index.check-mobile-file.message.0158cfbac0b7", { value1: String(Math.round(max / 1024 ** 2)) });
   return null;
 }
 

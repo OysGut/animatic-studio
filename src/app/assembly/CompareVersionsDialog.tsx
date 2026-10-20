@@ -6,21 +6,7 @@
  */
 import { Pause, Play } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  VERSION_KIND_LABEL,
-  comparableVersions,
-  compareLength,
-  filmMediaPaths,
-  formatTimecode,
-  L,
-  locale,
-  stillMediaPaths,
-  versionFrameAt,
-  versionSeconds,
-  type ComparableVersion,
-  type CompareSync,
-  type ProjectState,
-} from "@/core";
+import { VERSION_KIND_LABEL, comparableVersions, compareLength, filmMediaPaths, formatTimecode, locale, stillMediaPaths, versionFrameAt, versionSeconds, type ComparableVersion, type CompareSync, type ProjectState } from "@/core";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useImageUrls } from "@/app/library/asset-images";
 import { usePlayback } from "@/app/scene-editor/use-playback";

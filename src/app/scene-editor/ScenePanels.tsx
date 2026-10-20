@@ -15,7 +15,7 @@ import {
   Rows3,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
-import { L } from "@/core";
+
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { movePanelAmong, movePanelTo, type PanelId, type PanelMode } from "./panel-layout";
 import { panelTitle } from "./use-scene-panels";

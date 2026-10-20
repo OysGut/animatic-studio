@@ -7,15 +7,7 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, ListTodo, MessageSquare, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  discrepancies,
-  filmClips,
-  formatStamp,
-  projectTodo,
-  stepTask,
-  type ProjectState,
-} from "@/core";
+import { discrepancies, filmClips, formatStamp, projectTodo, stepTask, type ProjectState } from "@/core";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useWorklistCount } from "@/app/library/AssetWorklistDialog";

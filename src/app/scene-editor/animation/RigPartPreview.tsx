@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { L } from "@/core";
+
 import type { RigPart } from "@/core/animation/parts";
 import type { RelativePoint } from "@/core/animation/rig";
 import { renderRigPart } from "@/engine/compositor/rig-parts";

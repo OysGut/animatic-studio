@@ -7,17 +7,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
-import {
-  L,
-  locale,
-  formatDuration,
-  formatDurationAssumptions,
-  framesToSeconds,
-  snapshotDuration,
-  type DurationAssumptions,
-  type ProjectState,
-  type ScriptSnapshot,
-} from "@/core";
+import { locale, formatDuration, formatDurationAssumptions, framesToSeconds, snapshotDuration, type DurationAssumptions, type ProjectState, type ScriptSnapshot } from "@/core";
 import {
   DURATION_BASIS_LABEL,
   durationHistory,

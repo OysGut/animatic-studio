@@ -1,61 +1,61 @@
 {
   "version": 1,
   "entries": 9964,
-  "migrated": 5897,
+  "migrated": 9964,
   "files": 448,
   "literalPairs": 8674,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 5999,
-  "candidates": 29087,
+  "references": 10195,
+  "candidates": 29382,
   "conflicts": [
     {
       "kind": "parameter-contract",
       "key": "adapters-account-lock-server.lock-message.message.719814c41621",
       "file": "src/adapters/account/lock.server.ts",
-      "line": 60
+      "line": 61
     },
     {
       "kind": "parameter-contract",
       "key": "adapters-ai-video-functions.message.message.b49b7f3f602c",
       "file": "src/adapters/ai/video.functions.ts",
-      "line": 246
+      "line": 241
     },
     {
       "kind": "dynamic-expression",
       "key": "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b",
       "file": "src/adapters/storage/commands.functions.ts",
-      "line": 55
+      "line": 56
     },
     {
       "kind": "dynamic-expression",
       "key": "adapters-storage-commands-functions.message.message.d62f99d8026f",
       "file": "src/adapters/storage/commands.functions.ts",
-      "line": 60
+      "line": 61
     },
     {
       "kind": "parameter-contract",
       "key": "app-ai-ai-panel.ai-panel.p.e43f41cffc8c",
       "file": "src/app/ai/AiPanel.tsx",
-      "line": 256
+      "line": 251
     },
     {
       "kind": "parameter-contract",
       "key": "app-ai-providers-dialog.text.text.9f438ecf8438",
       "file": "src/app/ai/ProvidersDialog.tsx",
-      "line": 162
+      "line": 157
     },
     {
       "kind": "parameter-contract",
       "key": "app-ai-providers-dialog.provider-detail.p.7669dcef5fef",
       "file": "src/app/ai/ProvidersDialog.tsx",
-      "line": 358
+      "line": 344
     },
     {
       "kind": "parameter-contract",
       "key": "app-ai-trace-details.trace-details.row.b7ea035ed35f",
       "file": "src/app/ai/TraceDetails.tsx",
-      "line": 52
+      "line": 50
     },
     {
       "kind": "parameter-contract",
@@ -280,12 +280,6 @@
       "line": 61
     },
     {
-      "kind": "dynamic-expression",
-      "key": "app-assembly-use-film-language.language-name.message.666421b951b7",
-      "file": "src/app/assembly/use-film-language.tsx",
-      "line": 13
-    },
-    {
       "kind": "parameter-contract",
       "key": "app-audio-audio-composition-editor.audio-composition-editor.span.f35310bfb1df",
       "file": "src/app/audio/AudioCompositionEditor.tsx",
@@ -301,61 +295,61 @@
       "kind": "parameter-contract",
       "key": "app-global-save-to-global-button.text.text.a0064fe44474",
       "file": "src/app/global/SaveToGlobalButton.tsx",
-      "line": 38
+      "line": 36
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-asset-detail.delete-asset-confirm.p.528e9861e981",
       "file": "src/app/library/AssetDetail.tsx",
-      "line": 1503
+      "line": 1423
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.f28662943fa9",
       "file": "src/app/library/AssetWorklistDialog.tsx",
-      "line": 235
+      "line": 220
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-asset-zip.text.text.9b9dda910ea0",
       "file": "src/app/library/AssetZip.tsx",
-      "line": 144
+      "line": 142
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-asset-zip.text.text.940064c39189",
       "file": "src/app/library/AssetZip.tsx",
-      "line": 148
+      "line": 146
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-context-link-suggestions.approve.set-done.61ccd5e86792",
       "file": "src/app/library/ContextLinkSuggestions.tsx",
-      "line": 127
+      "line": 128
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-context-link-suggestions.context-link-suggestions.button.602f67fd9daf",
       "file": "src/app/library/ContextLinkSuggestions.tsx",
-      "line": 181
+      "line": 179
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-context-link-suggestions.context-link-suggestions.p.14d14e04420a",
       "file": "src/app/library/ContextLinkSuggestions.tsx",
-      "line": 188
+      "line": 186
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-context-names-section.context-names-section.button.103ddfcaabdb",
       "file": "src/app/library/ContextNamesSection.tsx",
-      "line": 193
+      "line": 188
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-cutout-dialog.editor.p.23b3e277a7aa",
       "file": "src/app/library/CutoutDialog.tsx",
-      "line": 930
+      "line": 913
     },
     {
       "kind": "parameter-contract",
@@ -373,19 +367,19 @@
       "kind": "parameter-contract",
       "key": "app-library-generate-image-panel.generate-image-panel.p.d36b3f69d43f",
       "file": "src/app/library/GenerateImagePanel.tsx",
-      "line": 487
+      "line": 464
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-generate-image-panel.generate-image-panel.label.0a6c94efbc62",
       "file": "src/app/library/GenerateImagePanel.tsx",
-      "line": 759
+      "line": 697
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-generate-image-panel.generate-image-panel.span.e708df37ba3a",
       "file": "src/app/library/GenerateImagePanel.tsx",
-      "line": 834
+      "line": 772
     },
     {
       "kind": "parameter-contract",
@@ -397,61 +391,61 @@
       "kind": "parameter-contract",
       "key": "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159",
       "file": "src/app/library/HarmonizeBatchPanel.tsx",
-      "line": 201
+      "line": 195
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-image-ai-panels.turnaround-panel.p.fd6dc2662f2e",
       "file": "src/app/library/ImageAiPanels.tsx",
-      "line": 427
+      "line": 398
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-image-ai-panels.cost-confirm.p.1c24a389e79e",
       "file": "src/app/library/ImageAiPanels.tsx",
-      "line": 829
+      "line": 788
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-image-ai-panels.text.text.19903587aa9e",
       "file": "src/app/library/ImageAiPanels.tsx",
-      "line": 1024
+      "line": 977
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-image-lightbox.split.on-job.d36ebeeac755",
       "file": "src/app/library/ImageLightbox.tsx",
-      "line": 1298
+      "line": 1221
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-image-parts-panel.text.text.9759bbc37633",
       "file": "src/app/library/ImagePartsPanel.tsx",
-      "line": 621
+      "line": 589
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.ddfc421528f8",
       "file": "src/app/library/ReuploadDialog.tsx",
-      "line": 164
+      "line": 156
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-style-profiles-panel.label.refs-map.f76fc723561d",
       "file": "src/app/library/StyleProfilesPanel.tsx",
-      "line": 193
+      "line": 188
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-trash-dialog.text.text.dc7d2be28d4c",
       "file": "src/app/library/TrashDialog.tsx",
-      "line": 106
+      "line": 107
     },
     {
       "kind": "parameter-contract",
       "key": "app-library-trash-dialog.trash-dialog.span.876eda49cd2b",
       "file": "src/app/library/TrashDialog.tsx",
-      "line": 175
+      "line": 173
     },
     {
       "kind": "parameter-contract",
@@ -463,13 +457,13 @@
       "kind": "parameter-contract",
       "key": "app-library-asset-images.media-from-stored-file.message.c2b008594093",
       "file": "src/app/library/asset-images.ts",
-      "line": 233
+      "line": 222
     },
     {
       "kind": "dynamic-expression",
       "key": "app-library-image-prep.note.note.d21f734c64e4",
       "file": "src/app/library/image-prep.ts",
-      "line": 168
+      "line": 163
     },
     {
       "kind": "parameter-contract",
@@ -629,12 +623,6 @@
     },
     {
       "kind": "dynamic-expression",
-      "key": "app-script-remove-translations-dialog.name.message.15d1b5cf63e3",
-      "file": "src/app/script/RemoveTranslationsDialog.tsx",
-      "line": 44
-    },
-    {
-      "kind": "dynamic-expression",
       "key": "app-script-scene-navigator.scene-navigator.title.5d843ae57d5d",
       "file": "src/app/script/SceneNavigator.tsx",
       "line": 458
@@ -709,7 +697,7 @@
       "kind": "parameter-contract",
       "key": "core-continuity-analysis.message.message.4f4edf9e9f50",
       "file": "src/core/continuity/analysis.ts",
-      "line": 531
+      "line": 484
     },
     {
       "kind": "parameter-contract",
@@ -721,91 +709,91 @@
       "kind": "parameter-contract",
       "key": "core-generation-brief.brief-summary-nb.message.acd89004c73e",
       "file": "src/core/generation/brief.ts",
-      "line": 443
+      "line": 430
     },
     {
       "kind": "parameter-contract",
       "key": "core-generation-brief.brief-summary-nb.message.561d2279680c",
       "file": "src/core/generation/brief.ts",
-      "line": 462
+      "line": 440
     },
     {
       "kind": "parameter-contract",
       "key": "core-generation-brief.brief-summary-nb.message.23c5878a89d5",
       "file": "src/core/generation/brief.ts",
-      "line": 471
+      "line": 446
     },
     {
       "kind": "parameter-contract",
       "key": "core-generation-providers.quality-mechanisms.out-push.2b3eda074604",
       "file": "src/core/generation/providers.ts",
-      "line": 1182
+      "line": 1041
     },
     {
       "kind": "dynamic-expression",
       "key": "core-generation-providers.value.value.d1d1e232b849",
       "file": "src/core/generation/providers.ts",
-      "line": 1257
+      "line": 1110
     },
     {
       "kind": "parameter-contract",
       "key": "core-generation-quality.text.text.8794e6693931",
       "file": "src/core/generation/quality.ts",
-      "line": 97
+      "line": 82
     },
     {
       "kind": "parameter-contract",
       "key": "core-generation-video.reason.reason.20613688625a",
       "file": "src/core/generation/video.ts",
-      "line": 374
+      "line": 369
     },
     {
       "kind": "parameter-contract",
       "key": "core-language-index.text.text.6cf7b86c882c",
       "file": "src/core/language/index.ts",
-      "line": 315
+      "line": 295
     },
     {
       "kind": "dynamic-expression",
       "key": "core-library-content-sync.content-sync-flag.message.6d78ae08bb8d",
       "file": "src/core/library/content-sync.ts",
-      "line": 37
+      "line": 38
     },
     {
       "kind": "dynamic-expression",
       "key": "core-presentation-poster.get.get.670123440a05",
       "file": "src/core/presentation/poster.ts",
-      "line": 78
+      "line": 76
     },
     {
       "kind": "parameter-contract",
       "key": "core-screenplay-restore-version.restore-version-plan.issue.e92817f47614",
       "file": "src/core/screenplay/restore-version.ts",
-      "line": 186
+      "line": 181
     },
     {
       "kind": "parameter-contract",
       "key": "core-screenplay-restore-version.restore-version-plan.issue.74c12409005a",
       "file": "src/core/screenplay/restore-version.ts",
-      "line": 195
+      "line": 190
     },
     {
       "kind": "parameter-contract",
       "key": "core-screenplay-restore-version.restore-version-plan.issue.66a4bfd9bd72",
       "file": "src/core/screenplay/restore-version.ts",
-      "line": 204
+      "line": 199
     },
     {
       "kind": "parameter-contract",
       "key": "core-screenplay-versions.where.message.efb3278a85ff",
       "file": "src/core/screenplay/versions.ts",
-      "line": 456
+      "line": 443
     },
     {
       "kind": "parameter-contract",
       "key": "core-translation-line-link-labels.ratio-title.message.a1c06218c905",
       "file": "src/core/translation/line-link-labels.ts",
-      "line": 24
+      "line": 25
     },
     {
       "kind": "parameter-contract",
@@ -842,6 +830,375 @@
       "key": "routes-prosjekt-project-id.project-layout.p.de039078a0f5",
       "file": "src/routes/prosjekt.$projectId.tsx",
       "line": 72
+    },
+    {
+      "kind": "dynamic-expression",
+      "key": "app-assembly-use-film-language.language-name.message.666421b951b7",
+      "file": "src/app/assembly/use-film-language.tsx",
+      "line": 13
+    },
+    {
+      "kind": "dynamic-expression",
+      "key": "app-script-remove-translations-dialog.name.message.15d1b5cf63e3",
+      "file": "src/app/script/RemoveTranslationsDialog.tsx",
+      "line": 44
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Legg til {value1}",
+      "keys": [
+        "app-assembly-audio-tracks.audio-tracks.aria-label.5bc137169d4d",
+        "app-assembly-add-audio-dialog.r.cmds-run-and-wait.43344156a5fa"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Egen versjon av scenen",
+      "keys": [
+        "app-project-use-commands.label.label.c88f7efd1c3c",
+        "app-assembly-assembly-workspace.own-first.run.bb0ac33af548",
+        "app-scene-editor-scene-editor-workspace.err.cmds-run.0f6070f03631",
+        "app-scene-editor-scene-editor-workspace.e.cmds-run.ab974716bf79"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Lyd",
+      "keys": [
+        "core-backup-index.backup-category-label.lyd.effe8c1543ae",
+        "core-generation-cost-report.kind-label.message.eec5b22efdc9",
+        "core-generation-providers.capability-label.sound.9069d5bcf965",
+        "core-generation-quality-profile.sound.sound.711d49b5c374",
+        "core-library-global.global-kind-label.sound.a941bcd9c0a2",
+        "core-library-index.asset-kind-label.sound.d0c8fe111b77",
+        "core-library-index.asset-kind-plural.sound.cbc011f908a0",
+        "app-ai-ai-panel.ai-panel.p.4c0a9e34abd5",
+        "app-ai-generation-status.kind-label.message.7b8e15eae019",
+        "app-mobile-mobile-import-dialog.body.span.1abf22a3ff39",
+        "app-mobile-mobile-import-library.mobile-import-library.option.1380b1d9eb4a",
+        "app-assembly-ai-dialogue-dialog.name.name.21288548c6ec",
+        "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d",
+        "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d.2",
+        "app-assembly-audio-tracks.label.memo.2274c457c44f",
+        "app-audio-audio-clip-editor.editor.dialog-title.69c929975ce1",
+        "app-library-suggestions-dialog.groups.message.a882465a46e5",
+        "app-library-asset-audio.name-from-file.message.f686ff702b49",
+        "app-library-asset-audio.name.name.03dbbf2ec6db",
+        "core-export-records.export-kind-label.audio.10319e1f9218",
+        "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde.2",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.c060ddfa1cde",
+        "app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba",
+        "app-projects-promotion-dialog.compare.title.9b137853ddf2"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Laget",
+      "keys": [
+        "core-commands-apply.l.need.80c6bba9c7a0",
+        "core-commands-apply.l.need.80c6bba9c7a0.2",
+        "core-commands-apply.l.need.80c6bba9c7a0.3",
+        "core-commands-apply.l.need.80c6bba9c7a0.4",
+        "core-commands-apply.l.need.80c6bba9c7a0.5",
+        "core-commands-apply.changed.need.31893f8f2dbe",
+        "app-assembly-compare-versions-dialog.side.dt.b09628b98445",
+        "app-account-cost-export.report-facts.message.dbf0ccafb17c",
+        "app-admin-admin-page.admin-page.th.44988da3f7a8",
+        "app-projects-backup-dialogs.restore-backup-dialog.p.6919ca2d10bf"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "2D-scenen",
+      "keys": [
+        "core-commands-apply.comp.need.118fc96033c3",
+        "core-commands-apply.pf.need.71e535a260df",
+        "core-commands-apply.comp.need.118fc96033c3.2",
+        "core-commands-apply.comp.need.118fc96033c3.3",
+        "core-commands-apply.comp.need.118fc96033c3.4",
+        "core-commands-apply.comp.need.118fc96033c3.5",
+        "core-commands-apply.comp.need.118fc96033c3.6",
+        "core-commands-apply.comp.need.118fc96033c3.7",
+        "core-commands-apply.comp.need.118fc96033c3.8",
+        "core-commands-apply.comp.need.118fc96033c3.9",
+        "app-asset-studio-asset-studio.conflict-names.d-conflicts-map.23313fa29d09",
+        "app-scene-editor-scene-to-video-dialog.label.label.f8cd1953e5af",
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.ccdac755ed35"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Ugyldig kobling",
+      "keys": [
+        "core-commands-apply.run.fail.3bc025bf2c59",
+        "core-commands-apply.run.fail.3bc025bf2c59.2",
+        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
+        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Replikken finnes ikke",
+      "keys": [
+        "core-commands-apply.run.fail.6fbc54425f99",
+        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Profilen er fjernet",
+      "keys": [
+        "core-commands-apply.run.fail.7c23382b944a",
+        "app-storylab-story-lab-workspace.text.text.64c415bdd29a"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "«{name}»",
+      "keys": [
+        "core-continuity-analysis.prod-name.message.bc1dac8f94c5",
+        "app-library-reupload-dialog.reupload-dialog.unknown-map.f736cf26e0c2"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "standard",
+      "keys": [
+        "core-continuity-analysis.variant-name.message.b03eb0bf87ae",
+        "app-library-continuity-panel.continuity-panel.span.7c48db48aef3"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Bilde",
+      "keys": [
+        "core-generation-cost-report.kind-label.message.8444fe29d13e",
+        "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc",
+        "app-ai-ai-panel.ai-panel.p.4359fc475a64",
+        "app-ai-generation-status.kind-label.message.61079e421e39",
+        "app-assembly-export-animatic-dialog.export-animatic-dialog.p.e33a9cb0d6da",
+        "app-assembly-film-timeline.film-timeline.track-label.42e0da0624e7",
+        "app-assembly-script-changes.block-label.shot.2f1d222efcf4",
+        "app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0",
+        "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc",
+        "app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563",
+        "app-scene-editor-timeline-helpers.event-kind.shot.d254223d6442",
+        "app-script-assist-proposal-diff.shot.shot.48cb12f713f9",
+        "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Ferdig",
+      "keys": [
+        "core-generation-cost-report.status-label.message.04a86e50e1ff",
+        "core-generation-cost.job-state-label.done.4455da929a67",
+        "app-ai-trace-details.trace-details.label.fedd2d37fc9b",
+        "app-library-harmonize-batch-panel.status.done.be723f263b44",
+        "app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c",
+        "app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c",
+        "app-assembly-export-queue-status.export-queue-status.p.8b3a5f6dc7d3",
+        "app-library-dialogue-batch-panel.status-label.message.eb79e9c2781e",
+        "core-assembly-status.scene-status-label.done.bc68a82f9b2f",
+        "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75",
+        "app-script-import-dialog.import-dialog.button.e00e46e21cdd",
+        "app-script-notes-panel.note-card.button.36c18caddaa0",
+        "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634",
+        "app-shell-task-nav.task-nav-inner.title.c176e9fc35c5"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "I kø",
+      "keys": [
+        "core-generation-cost.job-state-label.queued.048b6cc02917",
+        "core-generation-queue.label.label.2a9a29015402",
+        "app-mobile-mobile-page.queue-tile.aria-label.6fec569fcf3e",
+        "app-assembly-export-queue-status.export-queue-status.p.f66f1a482169",
+        "app-assembly-scene-video-section.scene-video-section.span.2531a9ba81fc"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "sted",
+      "keys": [
+        "core-generation-model-prompt.key-label.setting.9c25472ea6d9",
+        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Antall",
+      "keys": [
+        "core-generation-providers.label.label.81c02fd12e52",
+        "app-library-generate-image-panel.label.label.bfd80eaeddbd",
+        "app-projects-storage-section.storage-section.th.66729218f53f"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "ukjent pris",
+      "keys": [
+        "core-generation-providers.value.value.b7021620a041",
+        "app-library-generate-image-panel.generate-image-panel.p.2b6ce351bdc4",
+        "app-library-generate-image-panel.value.value.5dde0bb6f2b5",
+        "app-library-image-ai-panels.upscale-panel.p.4f0c9f2c6cf8",
+        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.4d53948d1ff4",
+        "app-assembly-ai-dialogue-dialog.value.value.e18ba2e3a24a"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Ressursen finnes ikke",
+      "keys": [
+        "core-generation-style-harmonize.preferred-reference-error.message.f3f5188e8bf4",
+        "adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.88b0cfae5299",
+        "adapters-global-global-library-functions.save-asset-to-global.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-return-project-id-uuid-x-project-id-asset-id-uuid-x-asset-id-workspace-id-uuid-x-workspace-id-handler.d555549b72ad"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Harmonisert",
+      "keys": [
+        "core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-harmonized-slice.5ae754bee023",
+        "core-library-provenance.version-origin-label.harmonized.7206ab6d8c21",
+        "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3",
+        "app-library-harmonize-compare.harmonize-compare.span.5a7da45245a3",
+        "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3.2"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Dyr",
+      "keys": [
+        "core-generation-style.style-use-label.animal.4cfbed92fac0",
+        "core-library-index.asset-kind-label.animal.67ee55073576",
+        "core-library-index.asset-kind-plural.animal.0c120a77f5af",
+        "app-library-suggestions-dialog.groups.message.155fef7d52d3",
+        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e637c9760c4d"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Steder",
+      "keys": [
+        "core-generation-style.style-use-label.location.4ca16ab3d75b",
+        "app-library-suggestions-dialog.groups.message.43bc4e836b38",
+        "app-release-poster-inspector.places.places.d595921f1fd8"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Standard",
+      "keys": [
+        "core-generation-trace.text.text.a2626bdecaac",
+        "app-global-global-library-dialog.name.name.5ae7e3c71566",
+        "app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed",
+        "app-assembly-audio-clip-panel.audio-clip-panel.option.a23664d8ed77",
+        "app-scene-editor-add-layer-dialog.add-layer-dialog.option.61b9332cabdd",
+        "app-scene-editor-animation-character-panel.character-panel.span.1b0a3286c59e",
+        "app-scene-editor-mts-actions.name.name.056953d7dfd9"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Bruk",
+      "keys": [
+        "core-generation-trace.param-label.purpose.3c914b290620",
+        "app-assembly-clip-panel.use.aria-label.e17d76024cd1",
+        "app-scene-editor-retime-dialog.retime-dialog.button.88f1fa541c29",
+        "app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1",
+        "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.4bb251b2b72f",
+        "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197",
+        "app-projects-project-format.project-format.button.60ca46216cca"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "replikk",
+      "keys": [
+        "core-notes-index.hit-label.dialogue.b92374b00b71",
+        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "endret",
+      "keys": [
+        "core-notes-index.format-edited.message.b308c59b7bcb",
+        "app-scene-editor-animation-character-panel.character-panel.p.5acf0b07bd70"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Sted",
+      "keys": [
+        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
+        "core-storylab-canvas.location.location.5be3d87e0de8",
+        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
+        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
+        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Spinoff",
+      "keys": [
+        "core-production-index.production-kind-label.spinoff.5de4a0a26157",
+        "app-library-dialogue-batch-panel.dialogue-batch-panel.title.248fce054d07"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": " (deaktivert)",
+      "keys": [
+        "core-screenplay-versions.detail.detail.bf2d9eb28354",
+        "app-library-approve-impact-dialog.label.message.dd51b2af2f2d",
+        "app-library-continuity-panel.scene-options.option.f0b8db8fd1be"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "uten nummer",
+      "keys": [
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2",
+        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
+        "app-script-inspector.scene-panel.span.ffd27913a1c8",
+        "app-script-inspector.scene-panel.p.ffd27913a1c8"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Velg en scene",
+      "keys": [
+        "core-script-assist-prompts.selected.message.96bcf1358b06",
+        "core-script-assist-prompts.next-line-prompt.message.65b837273648",
+        "core-script-assist-prompts.message.message.49241b66fcc9",
+        "app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1",
+        "app-script-assist-writing-panel.message.message.14df613ff48d"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Relasjoner",
+      "keys": [
+        "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766",
+        "app-release-poster-workspace.release.span.5380daa70605",
+        "app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d",
+        "app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Uten overskrift",
+      "keys": [
+        "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415",
+        "app-assembly-clip-panel.clip-panel.h2.6200b131dc8b",
+        "app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362"
+      ]
     },
     {
       "kind": "same-source-different-translation",
@@ -886,15 +1243,6 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Ressursen finnes ikke",
-      "keys": [
-        "adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.88b0cfae5299",
-        "adapters-global-global-library-functions.save-asset-to-global.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-return-project-id-uuid-x-project-id-asset-id-uuid-x-asset-id-workspace-id-uuid-x-workspace-id-handler.d555549b72ad",
-        "core-generation-style-harmonize.preferred-reference-error.message.f3f5188e8bf4"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Alle",
       "keys": [
         "app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.90fd0f96f77f",
@@ -915,57 +1263,6 @@
         "app-ai-ai-panel.ai-panel.span.037b85777af1",
         "app-assembly-alpha-export-dialog.alpha-export-dialog.p.a9317c6b4e7a",
         "app-assembly-export-queue-status.export-queue-status.p.a4fc60296eb0"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Lyd",
-      "keys": [
-        "app-ai-ai-panel.ai-panel.p.4c0a9e34abd5",
-        "app-ai-generation-status.kind-label.message.7b8e15eae019",
-        "app-mobile-mobile-import-dialog.body.span.1abf22a3ff39",
-        "app-mobile-mobile-import-library.mobile-import-library.option.1380b1d9eb4a",
-        "core-backup-index.backup-category-label.lyd.effe8c1543ae",
-        "core-generation-cost-report.kind-label.message.eec5b22efdc9",
-        "core-generation-providers.capability-label.sound.9069d5bcf965",
-        "core-generation-quality-profile.sound.sound.711d49b5c374",
-        "core-library-global.global-kind-label.sound.a941bcd9c0a2",
-        "core-library-index.asset-kind-label.sound.d0c8fe111b77",
-        "core-library-index.asset-kind-plural.sound.cbc011f908a0",
-        "app-assembly-ai-dialogue-dialog.name.name.21288548c6ec",
-        "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d",
-        "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d.2",
-        "app-assembly-audio-tracks.label.memo.2274c457c44f",
-        "app-audio-audio-clip-editor.editor.dialog-title.69c929975ce1",
-        "app-library-suggestions-dialog.groups.message.a882465a46e5",
-        "app-library-asset-audio.name-from-file.message.f686ff702b49",
-        "app-library-asset-audio.name.name.03dbbf2ec6db",
-        "core-export-records.export-kind-label.audio.10319e1f9218",
-        "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde.2",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.c060ddfa1cde",
-        "app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba",
-        "app-projects-promotion-dialog.compare.title.9b137853ddf2"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Bilde",
-      "keys": [
-        "app-ai-ai-panel.ai-panel.p.4359fc475a64",
-        "app-ai-generation-status.kind-label.message.61079e421e39",
-        "core-generation-cost-report.kind-label.message.8444fe29d13e",
-        "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc",
-        "app-assembly-export-animatic-dialog.export-animatic-dialog.p.e33a9cb0d6da",
-        "app-assembly-film-timeline.film-timeline.track-label.42e0da0624e7",
-        "app-assembly-script-changes.block-label.shot.2f1d222efcf4",
-        "app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0",
-        "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc",
-        "app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563",
-        "app-scene-editor-timeline-helpers.event-kind.shot.d254223d6442",
-        "app-script-assist-proposal-diff.shot.shot.48cb12f713f9",
-        "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d"
       ]
     },
     {
@@ -1011,53 +1308,6 @@
         "app-audio-audio-composition-editor.audio-composition-editor.label.6b547bef3cb4",
         "app-scene-editor-timeline.timeline.div.8ad8daaac00b",
         "app-scene-editor-record-audio-dialog.record-audio-dialog.span.3bb3ee349a15"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Ferdig",
-      "keys": [
-        "app-ai-trace-details.trace-details.label.fedd2d37fc9b",
-        "app-library-harmonize-batch-panel.status.done.be723f263b44",
-        "app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c",
-        "app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c",
-        "core-generation-cost-report.status-label.message.04a86e50e1ff",
-        "core-generation-cost.job-state-label.done.4455da929a67",
-        "app-assembly-export-queue-status.export-queue-status.p.8b3a5f6dc7d3",
-        "app-library-dialogue-batch-panel.status-label.message.eb79e9c2781e",
-        "core-assembly-status.scene-status-label.done.bc68a82f9b2f",
-        "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75",
-        "app-script-import-dialog.import-dialog.button.e00e46e21cdd",
-        "app-script-notes-panel.note-card.button.36c18caddaa0",
-        "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634",
-        "app-shell-task-nav.task-nav-inner.title.c176e9fc35c5"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Legg til {value1}",
-      "keys": [
-        "app-assembly-audio-tracks.audio-tracks.aria-label.5bc137169d4d",
-        "app-assembly-add-audio-dialog.r.cmds-run-and-wait.43344156a5fa"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "2D-scenen",
-      "keys": [
-        "app-asset-studio-asset-studio.conflict-names.d-conflicts-map.23313fa29d09",
-        "core-commands-apply.comp.need.118fc96033c3",
-        "core-commands-apply.pf.need.71e535a260df",
-        "core-commands-apply.comp.need.118fc96033c3.2",
-        "core-commands-apply.comp.need.118fc96033c3.3",
-        "core-commands-apply.comp.need.118fc96033c3.4",
-        "core-commands-apply.comp.need.118fc96033c3.5",
-        "core-commands-apply.comp.need.118fc96033c3.6",
-        "core-commands-apply.comp.need.118fc96033c3.7",
-        "core-commands-apply.comp.need.118fc96033c3.8",
-        "core-commands-apply.comp.need.118fc96033c3.9",
-        "app-scene-editor-scene-to-video-dialog.label.label.f8cd1953e5af",
-        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.ccdac755ed35"
       ]
     },
     {
@@ -1108,19 +1358,6 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Standard",
-      "keys": [
-        "app-global-global-library-dialog.name.name.5ae7e3c71566",
-        "core-generation-trace.text.text.a2626bdecaac",
-        "app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed",
-        "app-assembly-audio-clip-panel.audio-clip-panel.option.a23664d8ed77",
-        "app-scene-editor-add-layer-dialog.add-layer-dialog.option.61b9332cabdd",
-        "app-scene-editor-animation-character-panel.character-panel.span.1b0a3286c59e",
-        "app-scene-editor-mts-actions.name.name.056953d7dfd9"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Type",
       "keys": [
         "app-global-global-library-dialog.global-library-dialog.aria-label.faa62b3aa418",
@@ -1148,15 +1385,6 @@
       "keys": [
         "app-global-global-library-dialog.global-library-dialog.li.843f4e50752a",
         "app-script-explorer-script-explorer.explorer-content.p.25d7d411c290"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": " (deaktivert)",
-      "keys": [
-        "app-library-approve-impact-dialog.label.message.dd51b2af2f2d",
-        "app-library-continuity-panel.scene-options.option.f0b8db8fd1be",
-        "core-screenplay-versions.detail.detail.bf2d9eb28354"
       ]
     },
     {
@@ -1252,14 +1480,6 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "standard",
-      "keys": [
-        "app-library-continuity-panel.continuity-panel.span.7c48db48aef3",
-        "core-continuity-analysis.variant-name.message.b03eb0bf87ae"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Myk kant",
       "keys": [
         "app-library-cutout-dialog.editor.label.8d994ccffbb7",
@@ -1304,18 +1524,6 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "ukjent pris",
-      "keys": [
-        "app-library-generate-image-panel.generate-image-panel.p.2b6ce351bdc4",
-        "app-library-generate-image-panel.value.value.5dde0bb6f2b5",
-        "app-library-image-ai-panels.upscale-panel.p.4f0c9f2c6cf8",
-        "core-generation-providers.value.value.b7021620a041",
-        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.4d53948d1ff4",
-        "app-assembly-ai-dialogue-dialog.value.value.e18ba2e3a24a"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "bilder",
       "keys": [
         "app-library-generate-image-panel.targets-label.targets-label.c033e25d3dbd",
@@ -1323,26 +1531,6 @@
         "app-library-image-ai-panels.prompt-preview.button.209273aef674",
         "app-library-image-lightbox.grid-panel.span.1de987a78e52",
         "app-assembly-compare-versions-dialog.side.dd.64b62ae6f6fc"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Antall",
-      "keys": [
-        "app-library-generate-image-panel.label.label.bfd80eaeddbd",
-        "core-generation-providers.label.label.81c02fd12e52",
-        "app-projects-storage-section.storage-section.th.66729218f53f"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Harmonisert",
-      "keys": [
-        "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3",
-        "app-library-harmonize-compare.harmonize-compare.span.5a7da45245a3",
-        "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3.2",
-        "core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-harmonized-slice.5ae754bee023",
-        "core-library-provenance.version-origin-label.harmonized.7206ab6d8c21"
       ]
     },
     {
@@ -1386,14 +1574,6 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "«{name}»",
-      "keys": [
-        "app-library-reupload-dialog.reupload-dialog.unknown-map.f736cf26e0c2",
-        "core-continuity-analysis.prod-name.message.bc1dac8f94c5"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Lag filmens visuelle stil",
       "keys": [
         "app-library-style-profiles-panel.style-profile-list.button.52ad89848f13",
@@ -1422,186 +1602,6 @@
       "keys": [
         "app-mobile-mobile-import-library.mobile-import-library.aria-label.7d020634513b",
         "app-storylab-canvas-canvas-inspector.canvas-inspector.title.e2df95891216"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "I kø",
-      "keys": [
-        "app-mobile-mobile-page.queue-tile.aria-label.6fec569fcf3e",
-        "core-generation-cost.job-state-label.queued.048b6cc02917",
-        "core-generation-queue.label.label.2a9a29015402",
-        "app-assembly-export-queue-status.export-queue-status.p.f66f1a482169",
-        "app-assembly-scene-video-section.scene-video-section.span.2531a9ba81fc"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Egen versjon av scenen",
-      "keys": [
-        "app-project-use-commands.label.label.c88f7efd1c3c",
-        "app-assembly-assembly-workspace.own-first.run.bb0ac33af548",
-        "app-scene-editor-scene-editor-workspace.err.cmds-run.0f6070f03631",
-        "app-scene-editor-scene-editor-workspace.e.cmds-run.ab974716bf79"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Laget",
-      "keys": [
-        "core-commands-apply.l.need.80c6bba9c7a0",
-        "core-commands-apply.l.need.80c6bba9c7a0.2",
-        "core-commands-apply.l.need.80c6bba9c7a0.3",
-        "core-commands-apply.l.need.80c6bba9c7a0.4",
-        "core-commands-apply.l.need.80c6bba9c7a0.5",
-        "core-commands-apply.changed.need.31893f8f2dbe",
-        "app-assembly-compare-versions-dialog.side.dt.b09628b98445",
-        "app-account-cost-export.report-facts.message.dbf0ccafb17c",
-        "app-admin-admin-page.admin-page.th.44988da3f7a8",
-        "app-projects-backup-dialogs.restore-backup-dialog.p.6919ca2d10bf"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Ugyldig kobling",
-      "keys": [
-        "core-commands-apply.run.fail.3bc025bf2c59",
-        "core-commands-apply.run.fail.3bc025bf2c59.2",
-        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
-        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Replikken finnes ikke",
-      "keys": [
-        "core-commands-apply.run.fail.6fbc54425f99",
-        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Profilen er fjernet",
-      "keys": [
-        "core-commands-apply.run.fail.7c23382b944a",
-        "app-storylab-story-lab-workspace.text.text.64c415bdd29a"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "sted",
-      "keys": [
-        "core-generation-model-prompt.key-label.setting.9c25472ea6d9",
-        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Dyr",
-      "keys": [
-        "core-generation-style.style-use-label.animal.4cfbed92fac0",
-        "core-library-index.asset-kind-label.animal.67ee55073576",
-        "core-library-index.asset-kind-plural.animal.0c120a77f5af",
-        "app-library-suggestions-dialog.groups.message.155fef7d52d3",
-        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e637c9760c4d"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Steder",
-      "keys": [
-        "core-generation-style.style-use-label.location.4ca16ab3d75b",
-        "app-library-suggestions-dialog.groups.message.43bc4e836b38",
-        "app-release-poster-inspector.places.places.d595921f1fd8"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Bruk",
-      "keys": [
-        "core-generation-trace.param-label.purpose.3c914b290620",
-        "app-assembly-clip-panel.use.aria-label.e17d76024cd1",
-        "app-scene-editor-retime-dialog.retime-dialog.button.88f1fa541c29",
-        "app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1",
-        "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.4bb251b2b72f",
-        "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197",
-        "app-projects-project-format.project-format.button.60ca46216cca"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "replikk",
-      "keys": [
-        "core-notes-index.hit-label.dialogue.b92374b00b71",
-        "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "endret",
-      "keys": [
-        "core-notes-index.format-edited.message.b308c59b7bcb",
-        "app-scene-editor-animation-character-panel.character-panel.p.5acf0b07bd70"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Sted",
-      "keys": [
-        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
-        "core-storylab-canvas.location.location.5be3d87e0de8",
-        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
-        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
-        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Spinoff",
-      "keys": [
-        "core-production-index.production-kind-label.spinoff.5de4a0a26157",
-        "app-library-dialogue-batch-panel.dialogue-batch-panel.title.248fce054d07"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "uten nummer",
-      "keys": [
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2",
-        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
-        "app-script-inspector.scene-panel.span.ffd27913a1c8",
-        "app-script-inspector.scene-panel.p.ffd27913a1c8"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Velg en scene",
-      "keys": [
-        "core-script-assist-prompts.selected.message.96bcf1358b06",
-        "core-script-assist-prompts.next-line-prompt.message.65b837273648",
-        "core-script-assist-prompts.message.message.49241b66fcc9",
-        "app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1",
-        "app-script-assist-writing-panel.message.message.14df613ff48d"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Relasjoner",
-      "keys": [
-        "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766",
-        "app-release-poster-workspace.release.span.5380daa70605",
-        "app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d",
-        "app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Uten overskrift",
-      "keys": [
-        "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415",
-        "app-assembly-clip-panel.clip-panel.h2.6200b131dc8b",
-        "app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362"
       ]
     },
     {

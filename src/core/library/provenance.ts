@@ -10,20 +10,16 @@
  * Alt annet regnes som lastet opp. Harmonisering (REQ-0153, fase 8) finnes ikke ennå; en versjon med merknaden
  * «Harmonisert …» eller en jobb med `params.operation = "harmonize"` vises som harmonisert.
  */
-import { L, localized } from "../i18n";
+
 import type { AssetVersion, ProjectState } from "../model";
 import type { GenerationJob } from "../generation/cost";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type VersionOrigin = "upload" | "ai" | "cutout" | "harmonized";
 
 export const VERSION_ORIGINS: readonly VersionOrigin[] = ["upload", "ai", "cutout", "harmonized"];
 
-export const VERSION_ORIGIN_LABEL: Record<VersionOrigin, string> = localized({
-  upload: ["Lastet opp", "Uploaded"],
-  ai: ["Laget med AI", "Made with AI"],
-  cutout: ["Frilagt", "Cut out"],
-  harmonized: ["Harmonisert", "Harmonised"],
-});
+export const VERSION_ORIGIN_LABEL: Record<VersionOrigin, string> = tLocalized({ upload: "core-library-provenance.version-origin-label.upload.5c66fe9ff269", ai: "core-library-provenance.version-origin-label.ai.e7bddea54eed", cutout: "core-library-provenance.version-origin-label.cutout.e3b803b140dd", harmonized: "core-library-provenance.version-origin-label.harmonized.7206ab6d8c21" });
 
 export interface VersionProvenance {
   readonly origin: VersionOrigin;
@@ -122,32 +118,32 @@ export function provenanceLabel(p: VersionProvenance): string {
   if (p.origin === "ai") return p.model ? `AI · ${p.model}` : VERSION_ORIGIN_LABEL.ai;
   if (p.origin === "cutout")
     return p.fromNumber
-      ? L(`Frilagt fra v${p.fromNumber}`, `Cut out from v${p.fromNumber}`)
+      ? tk("core-library-provenance.provenance-label.message.b28c443174ab", { fromNumber: String(p.fromNumber) })
       : VERSION_ORIGIN_LABEL.cutout;
   if (p.origin === "upload" && p.reupload)
     return p.fromNumber
-      ? L(`Lastet opp på nytt (fra v${p.fromNumber})`, `Re-uploaded (from v${p.fromNumber})`)
-      : L("Lastet opp på nytt", "Re-uploaded");
+      ? tk("core-library-provenance.provenance-label.message.434592b1dab2", { fromNumber: String(p.fromNumber) })
+      : tk("core-library-provenance.provenance-label.message.d04c20045f40");
   return VERSION_ORIGIN_LABEL[p.origin];
 }
 
 /** Lengre forklaring (verktøytips). */
 export function provenanceDetail(p: VersionProvenance): string {
   const parts: string[] = [VERSION_ORIGIN_LABEL[p.origin]];
-  if (p.provider) parts.push(L(`leverandør: ${p.provider}`, `provider: ${p.provider}`));
-  if (p.model) parts.push(L(`modell: ${p.model}`, `model: ${p.model}`));
+  if (p.provider) parts.push(tk("core-library-provenance.provenance-detail.parts-push.db5a57fc938c", { provider: String(p.provider) }));
+  if (p.model) parts.push(tk("core-library-provenance.provenance-detail.parts-push.fa06e6305614", { model: String(p.model) }));
   if (p.fromNumber && p.origin === "cutout")
-    parts.push(L(`frilagt fra versjon ${p.fromNumber}`, `cut out from version ${p.fromNumber}`));
+    parts.push(tk("core-library-provenance.provenance-detail.parts-push.3800bc4a7e76", { fromNumber: String(p.fromNumber) }));
   if (p.reupload && p.fromNumber)
-    parts.push(L(`endret fra versjon ${p.fromNumber}`, `changed from version ${p.fromNumber}`));
+    parts.push(tk("core-library-provenance.provenance-detail.parts-push.b460391755c1", { fromNumber: String(p.fromNumber) }));
   parts.push(
     p.basis === "job"
-      ? L("fra AI-jobben", "from the AI job")
+      ? tk("core-library-provenance.provenance-detail.parts-push.8f78701047ed")
       : p.basis === "note"
-        ? L("fra merknaden på versjonen", "from the note on the version")
+        ? tk("core-library-provenance.provenance-detail.parts-push.cae6f7b2d077")
         : p.basis === "file_name"
-          ? L("fra filnavnet (jobben er ikke funnet)", "from the file name (job not found)")
-          : L("ingen AI-jobb eller merknad", "no AI job or note"),
+          ? tk("core-library-provenance.provenance-detail.parts-push.5520ec16a26d")
+          : tk("core-library-provenance.provenance-detail.parts-push.760abf455e60"),
   );
   return parts.join(" · ");
 }

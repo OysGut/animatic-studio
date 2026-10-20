@@ -4,7 +4,7 @@
  * kan angres. Sletting krever at prosjektnavnet skrives inn.
  */
 import { AlertTriangle, Loader2, LogOut, Trash2 } from "lucide-react";
-import { L, tm } from "@/core";
+import { tm } from "@/core";
 import { useEffect, useState } from "react";
 import { leaveProject } from "@/adapters/browser/projects";
 import {

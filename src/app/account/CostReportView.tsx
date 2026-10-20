@@ -6,15 +6,7 @@
 import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Download, Loader2 } from "lucide-react";
-import {
-  L,
-  buildCostReport,
-  locale,
-  reportMonths,
-  tm,
-  type CostJobRow,
-  type Currency,
-} from "@/core";
+import { buildCostReport, locale, reportMonths, tm, type CostJobRow, type Currency } from "@/core";
 import {
   fetchAiUsage,
   fetchUsdNokRates,

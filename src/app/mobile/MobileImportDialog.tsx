@@ -5,7 +5,7 @@
  */
 import { Camera, Check, Copy, Loader2, Smartphone, TriangleAlert } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
-import { L, formatDate, type UploadContext } from "@/core";
+import { formatDate, type UploadContext } from "@/core";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { createUploadSession } from "@/adapters/mobile/mobile.functions";
@@ -13,6 +13,7 @@ import type { MobileImportRow } from "@/adapters/browser/mobile-import";
 import { useImageUrls } from "@/app/library/asset-images";
 import { QrCode } from "./QrCode";
 import { sessionConnected, useMobileImports, useUploadSessions } from "./use-mobile-imports";
+import { t as tk } from "@/core/i18n/keyed";
 
 interface CachedSession {
   readonly sessionId: string;
@@ -31,17 +32,14 @@ function sessionFor(projectId: string, key: string, context: UploadContext, labe
     p = createUploadSession({ data: { projectId, context, label } })
       .then((r): CachedSession | string => {
         if (!r.ok || !r.token || !r.sessionId || !r.expiresAt)
-          return r.message || L("QR-koden kunne ikke lages.", "The QR code could not be made.");
+          return r.message || tk("app-mobile-mobile-import-dialog.session-for.create-upload-session-data-project-id-context-label-then.45f057797644");
         const s = { sessionId: r.sessionId, token: r.token, expiresAt: r.expiresAt };
         cache.set(key, s);
         return s;
       })
       // Nettleserens egne nettfeil («Failed to fetch» o.l.) vises på brukerens språk (DEC-0091)
       .catch(() =>
-        L(
-          "QR-koden kunne ikke lages: ingen forbindelse med serveren. Prøv igjen.",
-          "The QR code could not be made: no connection to the server. Try again.",
-        ),
+        tk("app-mobile-mobile-import-dialog.session-for.create-upload-session-data-project-id-context-label-then-r-cached-session-string-if-r-ok-r-token-r-session-id-r-expires-at-return-r-message-l-qr-koden-kunne-ikke-lages-the-qr-code-could-not-be-made-const-s-session-id-r-session-id-token-r-token-expires-at-r-expires-at-cache-set-key-s-return-s-nettleserens-egne-nettfeil-failed-to-fetch-o-l-vises-p-brukerens-spr-k-dec-0091-catch.36fb2096434f"),
       )
       .finally(() => inflight.delete(key));
     inflight.set(key, p);
@@ -173,7 +171,7 @@ export function MobileQr({
         <div
           style={{ width: size, height: size }}
           className="animate-pulse rounded-sm bg-surface-3"
-          aria-label={L("Lager QR-koden …", "Making the QR code …")}
+          aria-label={tk("app-mobile-mobile-import-dialog.mobile-qr.aria-label.b58e2b681d94")}
           data-testid="mobile-qr-loading"
         />
       )}
@@ -194,7 +192,7 @@ export function MobileQr({
           ) : (
             <Copy className="size-3.5" aria-hidden />
           )}
-          {copied ? L("Kopiert", "Copied") : L("Kopier lenken", "Copy the link")}
+          {copied ? tk("app-mobile-mobile-import-dialog.mobile-qr.button.2adbd0532f25") : tk("app-mobile-mobile-import-dialog.mobile-qr.button.3c9a7f02a298")}
         </button>
       ) : null}
     </div>
@@ -221,13 +219,10 @@ function Body({
         <Camera className="mt-0.5 size-4 shrink-0 text-accent-brand" aria-hidden />
         <div className="min-w-0">
           <DialogTitle className="text-base font-semibold text-text-primary">
-            {L("Importer fra mobil", "Import from mobile")}
+            {tk("app-mobile-mobile-import-dialog.body.dialog-title.0df803db9d66")}
           </DialogTitle>
           <DialogDescription className="mt-0.5 text-[13px] text-text-secondary">
-            {L(
-              "Skann koden med kameraet på mobilen. Bilder og video du tar eller velger der, kommer rett inn hit.",
-              "Scan the code with your phone's camera. Pictures and video you take or choose there come straight in here.",
-            )}
+            {tk("app-mobile-mobile-import-dialog.body.dialog-description.31815f0f05d1")}
           </DialogDescription>
         </div>
       </div>
@@ -246,20 +241,20 @@ function Body({
           >
             <Smartphone className="size-3.5" aria-hidden />
             {connected
-              ? L("Mobilen er tilkoblet", "The phone is connected")
-              : L("Venter på mobilen …", "Waiting for the phone …")}
+              ? tk("app-mobile-mobile-import-dialog.body.p.f140b4c0bfe7")
+              : tk("app-mobile-mobile-import-dialog.body.p.d7d0c4d70ce0")}
           </p>
           <p className="text-xs text-text-secondary" data-testid="mobile-received-count">
             {received.length === 1
-              ? L("Én fil mottatt", "One file received")
-              : L(`${received.length} filer mottatt`, `${received.length} files received`)}
+              ? tk("app-mobile-mobile-import-dialog.body.p.24d39a965e75")
+              : tk("app-mobile-mobile-import-dialog.body.p.454a49c41b58", { length: String(received.length) })}
             {pending.length
-              ? L(` · ${pending.length} lastes opp`, ` · ${pending.length} uploading`)
+              ? tk("app-mobile-mobile-import-dialog.body.p.10c5b1977115", { length: String(pending.length) })
               : ""}
           </p>
           {received[0] ? (
             <p className="text-xs text-text-tertiary">
-              {L("Siste:", "Latest:")} {received[0].file_name || received[0].kind} ·{" "}
+              {tk("app-mobile-mobile-import-dialog.body.p.9beaefe9e5c6")} {received[0].file_name || received[0].kind} ·{" "}
               {formatDate(received[0].confirmed_at ?? received[0].created_at)}
             </p>
           ) : null}
@@ -278,10 +273,7 @@ function Body({
           ) : null}
           {session ? (
             <p className="text-[11px] text-text-tertiary">
-              {L(
-                `Koden gjelder til ${formatDate(session.expiresAt)} og gir bare rett til å laste opp hit. Fra mobilen kan du dele en egen lenke med andre.`,
-                `The code is valid until ${formatDate(session.expiresAt)} and only allows uploading here. From the phone you can share a separate link with others.`,
-              )}
+              {tk("app-mobile-mobile-import-dialog.body.p.e098b3cbb597", { value1: String(formatDate(session.expiresAt)) })}
             </p>
           ) : null}
         </div>
@@ -290,11 +282,11 @@ function Body({
         <>
         {/* U5: tydelig godkjenningskø – antall som venter, og venter/godkjent på hver fil */}
         <div className="mt-4 flex items-center gap-2 border-b border-border pb-1" data-testid="mobile-queue-header">
-          <span className="text-chrome-label uppercase tracking-label text-text-tertiary">{L("Mottatt", "Received")}</span>
+          <span className="text-chrome-label uppercase tracking-label text-text-tertiary">{tk("app-mobile-mobile-import-dialog.body.span.240e5742bbe7")}</span>
           <span className="rounded-sm bg-surface-3 px-1.5 font-mono text-[11px] text-text-secondary">{received.length}</span>
           {actions ? (
             <span className="ml-auto rounded-sm bg-status-uncertain-bg px-1.5 text-[11px] text-status-uncertain" data-testid="mobile-queue-waiting">
-              {L(`${received.filter((r) => !r.asset_version_id && !r.dismissed).length} venter på godkjenning`, `${received.filter((r) => !r.asset_version_id && !r.dismissed).length} waiting for approval`)}
+              {tk("app-mobile-mobile-import-dialog.body.span.7a460d9c2ad8", { length: String(received.filter((r) => !r.asset_version_id && !r.dismissed).length) })}
             </span>
           ) : null}
         </div>
@@ -315,7 +307,7 @@ function Body({
                   <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
                 ) : (
                   <span className="text-xs text-text-secondary">
-                    {r.kind === "video" ? L("Video", "Video") : L("Lyd", "Audio")}
+                    {r.kind === "video" ? tk("app-mobile-mobile-import-dialog.body.span.e23cd08280d1") : tk("app-mobile-mobile-import-dialog.body.span.1abf22a3ff39")}
                   </span>
                 )}
               </div>
@@ -324,7 +316,7 @@ function Body({
               </span>
               {r.asset_version_id ? (
                 <span className="text-[11px] text-status-success">
-                  {L("Lagt inn som ny versjon", "Added as a new version")}
+                  {tk("app-mobile-mobile-import-dialog.body.span.34b65a2293a6")}
                 </span>
               ) : null}
               {actions ? actions(r) : null}
@@ -335,7 +327,7 @@ function Body({
       ) : null}
       <div className="mt-4 flex justify-end">
         <Button size="sm" variant="secondary" onClick={m.renew} disabled={!session}>
-          {L("Ny kode", "New code")}
+          {tk("app-mobile-mobile-import-dialog.body.button.7666ba02806f")}
         </Button>
       </div>
     </>
@@ -366,11 +358,8 @@ export function MobileCameraButton({
           "inline-flex size-7 items-center justify-center rounded-sm text-text-secondary hover:bg-surface-3 hover:text-text-primary " +
           (className ?? "")
         }
-        aria-label={L(`Importer fra mobil: ${label}`, `Import from mobile: ${label}`)}
-        title={L(
-          `Ta bilde eller video med mobilen – ${label}`,
-          `Take a picture or video with your phone – ${label}`,
-        )}
+        aria-label={tk("app-mobile-mobile-import-dialog.mobile-camera-button.aria-label.f3f641e69091", { label: String(label) })}
+        title={tk("app-mobile-mobile-import-dialog.mobile-camera-button.title.3fd8a40a9bc8", { label: String(label) })}
         data-testid="mobile-camera-button"
       >
         <Camera className="size-4" aria-hidden />

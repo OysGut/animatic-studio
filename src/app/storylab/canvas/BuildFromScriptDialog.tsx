@@ -1,6 +1,6 @@
 /** «Bygg fra manuset …» (SL7): forhåndsvisning av førsteoppsettet (layoutFromStructure), lagres først ved bekreftelse. */
 import { useMemo, useState } from "react";
-import { L, canvasNodeKindLabel, layoutFromStructure, newId, type ProjectState } from "@/core";
+import { canvasNodeKindLabel, layoutFromStructure, newId, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";

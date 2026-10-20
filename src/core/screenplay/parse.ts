@@ -8,8 +8,9 @@
  * Ingen scener oppfinnes: manglende eller uregelmessige numre beholdes som de er (mandat 4.1).
  */
 import type { BlockKind, SceneHeading } from "../model";
-import { L } from "../i18n";
+
 import type { ParsedElement, ParsedScene, ParsedScreenplay, RawLine, SourceRef } from "./types";
+import { t } from "@/core/i18n/keyed";
 
 const HEADING_RE =
   /^(?:(\d+[A-Z]{0,2})\s+)?((?:INT\.?\s*\/\s*EXT\.?|EXT\.?\s*\/\s*INT\.?|I\/E\.?|INT\.|EXT\.|INNE\.|UTE\.)\s*.+?)(?:\s+(\d+[A-Z]{0,2}))?$/;
@@ -168,10 +169,7 @@ export function parseScreenplayLines(
       const right = h[3] ?? null;
       let uncertain: string | undefined;
       if (left && right && left !== right)
-        uncertain = L(
-          `Ulike scenenumre i margene (${left} / ${right})`,
-          `Different scene numbers in the margins (${left} / ${right})`,
-        );
+        uncertain = t("core-screenplay-parse.classify.message.6d1380833c6f", { left: String(left), right: String(right) });
       return {
         line: l,
         text,
@@ -186,10 +184,7 @@ export function parseScreenplayLines(
         line: l,
         text,
         kind: "action",
-        uncertain: L(
-          "Linjen står utenfor kjente kolonner",
-          "The line is outside the known columns",
-        ),
+        uncertain: t("core-screenplay-parse.uncertain.uncertain.a2494e00de6e"),
       };
     if (dx < 36)
       return {
@@ -206,10 +201,7 @@ export function parseScreenplayLines(
         ...(TRANSITION_RE.test(text) || text.endsWith(":")
           ? {}
           : {
-              uncertain: L(
-                "Høyrestilt tekst tolket som handling",
-                "Right-aligned text interpreted as action",
-              ),
+              uncertain: t("core-screenplay-parse.uncertain.uncertain.b667d6d1a082"),
             }),
       };
     // Ren parentes på egen linje. Parentes etterfulgt av replikk på samme linje er skrevet inn i replikken – behold.
@@ -229,10 +221,7 @@ export function parseScreenplayLines(
           text,
           kind: "character",
           headingText: mixed[2]!,
-          uncertain: L(
-            "Karakter og replikk på samme linje – delt automatisk",
-            "Character and dialogue on the same line – split automatically",
-          ),
+          uncertain: t("core-screenplay-parse.uncertain.uncertain.0e74daf8be69"),
         };
       }
     }
@@ -242,10 +231,7 @@ export function parseScreenplayLines(
         line: l,
         text,
         kind: "dialogue",
-        uncertain: L(
-          "Innrykket tekst med små bokstaver tolket som replikk",
-          "Indented lower-case text interpreted as dialogue",
-        ),
+        uncertain: t("core-screenplay-parse.uncertain.uncertain.a25a76f3aacc"),
       };
     return { line: l, text, kind: "dialogue" };
   };
@@ -277,10 +263,7 @@ export function parseScreenplayLines(
         isContinuation: true,
         elements: [],
         warnings: [
-          L(
-            "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
-            "Text before the first scene heading (continuation from an earlier scene)",
-          ),
+          t("core-screenplay-parse.warnings.warnings.9711b57423eb"),
         ],
       };
       scenes.push(current);
@@ -334,7 +317,7 @@ export function parseScreenplayLines(
             kind: part.kind,
             text: part.text,
             source: src,
-            uncertain: L("Delt fra karakterlinjen", "Split from the character line"),
+            uncertain: t("core-screenplay-parse.uncertain.uncertain.81e182b49f2b"),
           };
           pushElement(pe);
           last = { kind: part.kind, line: c.line, text: part.text, element: pe };
@@ -415,10 +398,7 @@ export function parseScreenplayLines(
           : {
               ...e,
               kind: "action",
-              uncertain: L(
-                "Karakternavn uten replikk – tolket som handling",
-                "Character name without dialogue – interpreted as action",
-              ),
+              uncertain: t("core-screenplay-parse.uncertain.uncertain.4643595cee51"),
             };
       }
     });
@@ -441,15 +421,12 @@ export function parseScreenplayLines(
   ];
   if (duplicateNumbers.length)
     warnings.push(
-      L(
-        `Scenenumre som forekommer flere ganger: ${duplicateNumbers.join(", ")}`,
-        `Scene numbers that occur more than once: ${duplicateNumbers.join(", ")}`,
-      ),
+      t("core-screenplay-parse.parse-screenplay-lines.warnings-push.05e31a2746b4", { value1: String(duplicateNumbers.join(", ")) }),
     );
   const unnumbered = out.filter((s) => s.number === null && !s.isContinuation).length;
   if (unnumbered)
     warnings.push(
-      L(`${unnumbered} scene(r) uten scenenummer`, `${unnumbered} scene(s) without a scene number`),
+      t("core-screenplay-parse.parse-screenplay-lines.warnings-push.c67986037105", { unnumbered: String(unnumbered) }),
     );
 
   return {

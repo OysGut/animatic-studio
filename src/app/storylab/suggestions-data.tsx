@@ -2,7 +2,7 @@
 import { createContext, useContext } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { L } from "@/core";
+
 import { listStorySuggestions } from "@/adapters/storylab/sessions.functions";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { t } from "@/core/i18n/keyed";

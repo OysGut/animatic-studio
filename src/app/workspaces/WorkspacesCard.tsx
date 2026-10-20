@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { L, tm, WORKSPACE_ROLE_LABEL } from "@/core";
+import { tm, WORKSPACE_ROLE_LABEL } from "@/core";
 import { createWorkspace, listMyWorkspaces } from "@/adapters/browser/workspaces";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";

@@ -23,34 +23,7 @@ import { DurationHistory } from "./DurationHistory";
 import { HISTORY_SCHEMA, useSaveDurationEstimate } from "./use-history-records";
 import { versionDurationEstimate } from "@/app/project/use-versions";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
-import {
-  DEFAULT_DURATION_ASSUMPTIONS,
-  DURATION_ASSUMPTION_LIMITS,
-  normalizeDurationAssumptions,
-  projectDurationAssumptions,
-  sameDurationAssumptions,
-  FILM_LANGUAGES,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  DURATION_SOURCE_LABEL,
-  SCENE_STATUS_LABEL,
-  estimateProduction,
-  durationForecast,
-  filterStatusRows,
-  formatDuration,
-  formatEighths,
-  formatHeading,
-  orderedOccurrences,
-  parsePlannedDuration,
-  productionStatus,
-  scriptPages,
-  type DurationAssumptions,
-  type ProjectState,
-  type SceneStatus,
-  L,
-  collation,
-  tm,
-} from "@/core";
+import { DEFAULT_DURATION_ASSUMPTIONS, DURATION_ASSUMPTION_LIMITS, normalizeDurationAssumptions, projectDurationAssumptions, sameDurationAssumptions, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, DURATION_SOURCE_LABEL, SCENE_STATUS_LABEL, estimateProduction, durationForecast, filterStatusRows, formatDuration, formatEighths, formatHeading, orderedOccurrences, parsePlannedDuration, productionStatus, scriptPages, type DurationAssumptions, type ProjectState, type SceneStatus, collation, tm } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 const STATUS_CLASS: Record<SceneStatus, string> = {

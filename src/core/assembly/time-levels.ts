@@ -5,7 +5,7 @@
  * filmen. Absolutt filmtid lagres aldri; den beregnes fra klippene (filmClips).
  */
 import { type Rational } from "../time";
-import { L } from "../i18n";
+
 import { clipAtFrame, partAt, type FilmClip } from "./film";
 import { t } from "@/core/i18n/keyed";
 

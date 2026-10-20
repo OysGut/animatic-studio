@@ -16,9 +16,10 @@ import {
   Waves,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { L, audioTakeLabel, formatTakeLength, takeFileName, type MobileScript } from "@/core";
+import { audioTakeLabel, formatTakeLength, takeFileName, type MobileScript } from "@/core";
 import { useRecorder } from "@/app/audio/use-recorder";
 import type { QueueItem, UploadQueue, Uploader } from "./upload-queue";
+import { t } from "@/core/i18n/keyed";
 
 export function MobileAudio({
   script,
@@ -87,7 +88,7 @@ export function MobileAudio({
             type="button"
             onClick={rec.stop}
             className="flex size-24 items-center justify-center rounded-full bg-status-danger text-on-media active:opacity-80"
-            aria-label={L("Stopp opptaket", "Stop the recording")}
+            aria-label={t("app-mobile-mobile-audio.mobile-audio.aria-label.c41cdb9f141e")}
             data-testid="mobile-rec-stop"
           >
             <Square className="size-9 fill-current" aria-hidden />
@@ -98,7 +99,7 @@ export function MobileAudio({
             onClick={() => void record(false)}
             disabled={rec.phase === "starting"}
             className="flex size-24 items-center justify-center rounded-full border-4 border-status-danger bg-surface-2 active:bg-surface-3 disabled:opacity-60"
-            aria-label={L("Start opptak", "Start recording")}
+            aria-label={t("app-mobile-mobile-audio.mobile-audio.aria-label.ea53080f020f")}
             data-testid="mobile-rec-start"
           >
             {rec.phase === "starting" ? (
@@ -111,17 +112,11 @@ export function MobileAudio({
         <p className="text-sm text-text-secondary" role="status">
           {recording
             ? rec.roomTone
-              ? L(
-                  `Romlyd … ${formatTakeLength(rec.ms)} – vær helt stille`,
-                  `Room tone … ${formatTakeLength(rec.ms)} – keep completely quiet`,
-                )
-              : L(
-                  `Tar opp … ${formatTakeLength(rec.ms)}`,
-                  `Recording … ${formatTakeLength(rec.ms)}`,
-                )
+              ? t("app-mobile-mobile-audio.mobile-audio.p.730213cef880", { value1: String(formatTakeLength(rec.ms)) })
+              : t("app-mobile-mobile-audio.mobile-audio.p.0fc64d518af6", { value1: String(formatTakeLength(rec.ms)) })
             : takes.length
-              ? L("Trykk for et nytt take", "Tap for a new take")
-              : L("Trykk for å ta opp", "Tap to record")}
+              ? t("app-mobile-mobile-audio.mobile-audio.p.d26539215fdb")
+              : t("app-mobile-mobile-audio.mobile-audio.p.26720901dd1f")}
         </p>
         {rec.error ? (
           <p role="alert" className="text-center text-sm text-status-danger">
@@ -136,15 +131,12 @@ export function MobileAudio({
           data-testid="mobile-rec-roomtone"
         >
           <Waves className="size-4" aria-hidden />
-          {L(
-            "Ta opp romlyd (noen sekunder stillhet)",
-            "Record room tone (a few seconds of silence)",
-          )}
+          {t("app-mobile-mobile-audio.mobile-audio.button.b38aa2f26552")}
         </button>
       </div>
 
       {items.length ? (
-        <section aria-label={L("Dine opptak", "Your recordings")} data-testid="mobile-takes">
+        <section aria-label={t("app-mobile-mobile-audio.mobile-audio.aria-label.5f816fe2d1f9")} data-testid="mobile-takes">
           <ul className="flex flex-col gap-2">
             {[...items].reverse().map((it) => (
               <TakeRow
@@ -174,15 +166,12 @@ export function MobileAudio({
           >
             <Send className="size-4" aria-hidden />
             {picked.length === 1
-              ? L("Send det valgte opptaket", "Send the chosen recording")
-              : L(`Send de valgte (${picked.length})`, `Send the chosen ones (${picked.length})`)}
+              ? t("app-mobile-mobile-audio.mobile-audio.button.cb265a0ba5f2")
+              : t("app-mobile-mobile-audio.mobile-audio.button.dd8d31a7dc12", { length: String(picked.length) })}
           </button>
           {sendable.length > picked.length ? (
             <p className="mt-1 text-center text-xs text-text-tertiary">
-              {L(
-                "Opptak som ikke er valgt, blir liggende på telefonen.",
-                "Recordings that are not chosen stay on the phone.",
-              )}
+              {t("app-mobile-mobile-audio.mobile-audio.p.ded40acdc766")}
             </p>
           ) : null}
         </section>
@@ -194,15 +183,15 @@ export function MobileAudio({
 function statusText(status: QueueItem["status"]): string {
   switch (status) {
     case "local":
-      return L("Bare på telefonen", "Only on the phone");
+      return t("app-mobile-mobile-audio.status-text.message.740b13db28d9");
     case "queued":
-      return L("Venter på sending", "Waiting to send");
+      return t("app-mobile-mobile-audio.status-text.message.581de2511183");
     case "uploading":
-      return L("Sendes …", "Sending …");
+      return t("app-mobile-mobile-audio.status-text.message.e58b67d63328");
     case "sent":
-      return L("Sendt", "Sent");
+      return t("app-mobile-mobile-audio.status-text.message.a3127245f4a3");
     case "failed":
-      return L("Feilet", "Failed");
+      return t("app-mobile-mobile-audio.status-text.message.30d2a42ccf0d");
   }
 }
 
@@ -229,7 +218,7 @@ function TakeRow({
   }, [it.blob]);
   const canPick = it.status === "local" || it.status === "failed";
   const status =
-    canPick && chosen && it.status === "local" ? L("Valgt", "Chosen") : statusText(it.status);
+    canPick && chosen && it.status === "local" ? t("app-mobile-mobile-audio.status.message.1eb235bf0582") : statusText(it.status);
   return (
     <li
       className={
@@ -248,7 +237,7 @@ function TakeRow({
             checked={chosen}
             onChange={onToggle}
             className="size-5 accent-[var(--color-accent-brand)]"
-            aria-label={L(`Velg ${audioTakeLabel(n)}`, `Choose ${audioTakeLabel(n)}`)}
+            aria-label={t("app-mobile-mobile-audio.take-row.aria-label.c587767c4961", { value1: String(audioTakeLabel(n)) })}
             data-testid="mobile-take-choose"
           />
         ) : it.status === "sent" ? (
@@ -257,7 +246,7 @@ function TakeRow({
           <Loader2 className="size-5 animate-spin text-text-tertiary" aria-hidden />
         )}
         <span className="text-sm font-medium text-text-primary">
-          {it.roomTone ? L(`Romlyd ${n}`, `Room tone ${n}`) : audioTakeLabel(n)} ·{" "}
+          {it.roomTone ? t("app-mobile-mobile-audio.take-row.span.a7199d8fabcb", { n: String(n) }) : audioTakeLabel(n)} ·{" "}
           {formatTakeLength(it.durationMs)}
         </span>
         <span
@@ -285,7 +274,7 @@ function TakeRow({
             className="flex items-center gap-1 rounded-sm bg-surface-3 px-2 py-1 text-text-primary"
           >
             <RotateCw className="size-3" aria-hidden />
-            {L("Prøv igjen", "Try again")}
+            {t("app-mobile-mobile-audio.take-row.button.37fc0fbf26e8")}
           </button>
         </div>
       ) : null}
@@ -296,7 +285,7 @@ function TakeRow({
           className="flex items-center gap-1 self-end text-xs text-text-tertiary"
         >
           <Trash2 className="size-3" aria-hidden />
-          {L("Forkast", "Discard")}
+          {t("app-mobile-mobile-audio.take-row.button.d11b540d1c10")}
         </button>
       ) : null}
     </li>

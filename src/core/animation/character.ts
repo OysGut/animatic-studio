@@ -3,7 +3,7 @@
  * versjonshistorikk med sammenligning og «gjenopprett som ny versjon». Ren logikk – ingenting skrives her,
  * alt blir vanlige kommandoer med invers.
  */
-import { L } from "../i18n";
+
 import type { ProjectState } from "../model";
 import { sceneNumberOf } from "../views";
 import type { Command } from "../commands/types";

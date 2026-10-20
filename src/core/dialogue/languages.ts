@@ -1,6 +1,7 @@
 /** DV6: language preferences are independent from UI locale and recorded audio. */
 import type { ProjectState } from "../model";
-import { L, locale } from "../i18n";
+import { locale } from "../i18n";
+import { t } from "@/core/i18n/keyed";
 
 /** Standard talespråk når ingenting er valgt: norsk bokmål. */
 export const DEFAULT_SPEECH_LANGUAGE = "nb";
@@ -28,7 +29,7 @@ export function languageTagError(value: string): string | null {
   try {
     if (!value || value.length > 100 || Intl.getCanonicalLocales(value).length !== 1) throw new Error();
     return null;
-  } catch { return L("Ugyldig BCP-47-språkkode.", "Invalid BCP-47 language tag."); }
+  } catch { return t("core-dialogue-languages.language-tag-error.message.3028cba16405"); }
 }
 export function scriptLanguageOf(s: ProjectState, blockId: string): string {
   const b = s.blocks[blockId];
@@ -60,9 +61,5 @@ export function batchTimeEstimate(lines: readonly { text: string }[]) {
   const characters = lines.reduce((n,l) => n + [...l.text].length, 0);
   return { minSeconds: Math.ceil(lines.length * 2 + characters / 250), maxSeconds: Math.ceil(lines.length * 20 + characters / 25), uncertain: true };
 }
-export const existingSpeechWarning = () => L(
-  "Noen av de valgte scenene har allerede innspilt eller generert tale. Nye lydfiler blir lagt til som alternative versjoner og settes som aktive for de aktuelle replikkene. Ingen eksisterende lydfiler eller redigeringer blir slettet. Du kan senere velge tilbake en tidligere versjon.",
-  "Some of the selected scenes already have recorded or generated speech. New audio files will be added as alternative versions and made active for the selected lines. No existing audio files or edits will be deleted. You can choose a previous version again later.");
-export const multilingualSpeechWarning = () => L(
-  "Denne karakteren har replikker på flere språk. Kontroller hvilket språk som skal brukes før du genererer tale.",
-  "This character has lines in several languages. Check which language to use before generating speech.");
+export const existingSpeechWarning = () => t("core-dialogue-languages.existing-speech-warning.message.9a2fb570e056");
+export const multilingualSpeechWarning = () => t("core-dialogue-languages.multilingual-speech-warning.message.1d1ded01f164");

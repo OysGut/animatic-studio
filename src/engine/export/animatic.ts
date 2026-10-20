@@ -8,16 +8,7 @@
  * Bare på klienten.
  */
 import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
-import {
-  L,
-  cueAt,
-  type AudioKind,
-  type FilmAudioItem,
-  type FilmClip,
-  type ProjectState,
-  type Rational,
-  type SubtitleCue,
-} from "@/core";
+import { cueAt, type AudioKind, type FilmAudioItem, type FilmClip, type ProjectState, type Rational, type SubtitleCue } from "@/core";
 import { type AudioBank, hasAudioIn, renderAudio } from "../audio/mixer";
 import type { ImageSource } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";

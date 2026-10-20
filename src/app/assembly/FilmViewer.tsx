@@ -2,7 +2,7 @@
  * Filmvisningen i monteringen: bildet i den samlede filmen på avspillingshodet, i prosjektets format.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { L, type FilmClip, type ProjectState } from "@/core";
+import { type FilmClip, type ProjectState } from "@/core";
 import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { filmImageCache } from "./film-images";
 import { t } from "@/core/i18n/keyed";

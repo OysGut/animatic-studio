@@ -6,7 +6,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { useState } from "react";
 import { EXPORT_KIND_LABEL, describeExportSettings, type ExportKind } from "@/core/export-records";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
-import { L, locale, tm } from "@/core";
+import { locale, tm } from "@/core";
 import { HISTORY_SCHEMA, useExportRecords } from "./use-history-records";
 import { t } from "@/core/i18n/keyed";
 

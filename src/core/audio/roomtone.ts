@@ -8,7 +8,7 @@
  * Plattformnøytralt: jobber på `Float32Array` (mono) og millisekunder. Resultatet er vanlige deler med rollen
  * «room» på dialogsporet, så lydmotoren spiller og eksporterer dem som alt annet.
  */
-import { L } from "../i18n";
+
 import type { AudioComposition, AudioSegment } from "./composition";
 import type { PauseGap } from "./pauses";
 import { t } from "@/core/i18n/keyed";

@@ -14,24 +14,7 @@ import {
   Save,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  CHANGE_LABEL,
-  diffSnapshots,
-  L,
-  locale,
-  newId,
-  paginate,
-  snapshotFromState,
-  snapshotPaginationInput,
-  tm,
-  wordDiff,
-  type ChangeType,
-  type Command,
-  type LineChange,
-  type SceneChange,
-  type ProjectState,
-  type ScriptSnapshot,
-} from "@/core";
+import { CHANGE_LABEL, diffSnapshots, locale, newId, paginate, snapshotFromState, snapshotPaginationInput, tm, wordDiff, type ChangeType, type Command, type LineChange, type SceneChange, type ProjectState, type ScriptSnapshot } from "@/core";
 import { previewRestore } from "@/core/screenplay/restore-version";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { prepareDownload, type ReadyFile } from "@/app/download";
@@ -770,7 +753,7 @@ function Restore({
       const errors = await Promise.all(pending);
       if (errors.some((e) => e !== null)) {
         setError(
-          L(PARTIAL_RESTORE, "The restore was only partly completed – undo with ⌘/Ctrl + Z"),
+          tk("app-script-versions-dialog.partial-restore"),
         );
         return;
       }

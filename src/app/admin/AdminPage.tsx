@@ -10,7 +10,7 @@ import { useMemo, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Loader2, Search, ShieldCheck } from "lucide-react";
-import { L, locale, tm } from "@/core";
+import { locale, tm } from "@/core";
 import {
   adminReassignProject,
   adminSavePrivacy,

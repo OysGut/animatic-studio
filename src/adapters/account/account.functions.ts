@@ -5,8 +5,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, isUuid, parseNorgesBankRates, type CostJobRow } from "@/core";
+import { isUuid, parseNorgesBankRates, type CostJobRow } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 async function service(): Promise<AnyClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -31,7 +32,7 @@ export const requestMyDeletion = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["confirmEmail"] !== "string" || x["confirmEmail"].length > 320)
-      throw new Error(L("Skriv e-postadressen din", "Type your email address"));
+      throw new Error(t("adapters-account-account-functions.request-my-deletion.create-server-fn-method-post-middleware-require-supabase-auth-validator.4ef2f83b6a20"));
     return { confirmEmail: x["confirmEmail"] };
   })
   .handler(async ({ data, context }): Promise<{ ok: boolean; message: string }> => {
@@ -39,19 +40,13 @@ export const requestMyDeletion = createServerFn({ method: "POST" })
     if (!email || data.confirmEmail.trim().toLowerCase() !== email)
       return {
         ok: false,
-        message: L(
-          "E-postadressen stemmer ikke med kontoen din.",
-          "The email address does not match your account.",
-        ),
+        message: t("adapters-account-account-functions.message.message.42291595ea59"),
       };
     const { PERMANENT_ADMIN_EMAIL } = await import("./lock.server");
     if (email === PERMANENT_ADMIN_EMAIL)
       return {
         ok: false,
-        message: L(
-          "Den faste administratorkontoen kan ikke slettes.",
-          "The permanent administrator account cannot be deleted.",
-        ),
+        message: t("adapters-account-account-functions.message.message.0fc8a01c51c6"),
       };
     const db = await service();
     const after = new Date(Date.now() + DELETE_AFTER_DAYS * 24 * 60 * 60 * 1000).toISOString();
@@ -69,19 +64,13 @@ export const requestMyDeletion = createServerFn({ method: "POST" })
     if (error)
       return {
         ok: false,
-        message: L(
-          "Databasen må oppdateres (migrasjon 0033) før kontoen kan slettes.",
-          "The database must be updated (migration 0033) before the account can be deleted.",
-        ),
+        message: t("adapters-account-account-functions.message.message.a317e1ffa8cd"),
       };
     const auth = (db as unknown as { auth: { admin: AuthAdmin } }).auth.admin;
     await auth.updateUserById(context.userId, { ban_duration: BAN_FOREVER });
     return {
       ok: true,
-      message: L(
-        `Kontoen er låst og slettes for godt ${after.slice(0, 10)}. Bare administrator kan låse den opp før det.`,
-        `The account is locked and will be deleted for good on ${after.slice(0, 10)}. Only the administrator can unlock it before then.`,
-      ),
+      message: t("adapters-account-account-functions.message.message.a9fd3ce37e95", { value1: String(after.slice(0, 10)) }),
     };
   });
 
@@ -162,10 +151,10 @@ export const fetchAiUsage = createServerFn({ method: "POST" })
     const x = (d ?? {}) as Record<string, unknown>;
     const scope = x["scope"];
     if (scope !== "mine" && scope !== "project" && scope !== "account")
-      throw new Error(L("Ukjent utvalg", "Unknown selection"));
+      throw new Error(t("adapters-account-account-functions.fetch-ai-usage.create-server-fn-method-post-middleware-require-supabase-auth-validator.a2ff4292c34c"));
     const projectId = x["projectId"];
     if (scope !== "account" && !(typeof projectId === "string" && isUuid(projectId)))
-      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+      throw new Error(t("adapters-account-account-functions.fetch-ai-usage.create-server-fn-method-post-middleware-require-supabase-auth-validator.c16665369b05"));
     return { scope: scope as UsageScope, projectId: (projectId as string | undefined) ?? null };
   })
   .handler(async ({ data, context }): Promise<UsageResult> => {
@@ -186,14 +175,8 @@ export const fetchAiUsage = createServerFn({ method: "POST" })
           ok: false,
           message:
             data.scope === "project"
-              ? L(
-                  "Bare eieren ser hva prosjektet har kostet totalt.",
-                  "Only the owner sees what the project has cost in total.",
-                )
-              : L(
-                  "Forbruket vises for dem som kan endre prosjektet.",
-                  "The usage is shown to those who can change the project.",
-                ),
+              ? t("adapters-account-account-functions.message.message.4258e168332a")
+              : t("adapters-account-account-functions.message.message.9d163bde5f7f"),
           ...empty,
         };
     }
@@ -223,7 +206,7 @@ export const fetchUsdNokRates = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     const ok = (v: unknown) => typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v);
-    if (!ok(x["from"]) || !ok(x["to"])) throw new Error(L("Ugyldig periode", "Invalid period"));
+    if (!ok(x["from"]) || !ok(x["to"])) throw new Error(t("adapters-account-account-functions.fetch-usd-nok-rates.create-server-fn-method-post-middleware-require-supabase-auth-validator.906d14c9f8ba"));
     return { from: x["from"] as string, to: x["to"] as string };
   })
   .handler(async ({ data }): Promise<{ ok: boolean; rates: [string, number][] }> => {

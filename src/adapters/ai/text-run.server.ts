@@ -3,18 +3,7 @@
  * Oppførselen er den samme som før uttrekket; `extraParams` legges bare til i loggens params (for eksempel
  * `kind` for skrivehjelpen) og inneholder aldri prompttekst.
  */
-import {
-  L,
-  TEXT_PROVIDERS,
-  TEXT_PREFS_KEY,
-  chooseTextModel,
-  estimateTextCostUsd,
-  isModelEnabled,
-  isTextPrefs,
-  newId,
-  type AvailableTextProvider,
-  type TextProviderId,
-} from "@/core";
+import { TEXT_PROVIDERS, TEXT_PREFS_KEY, chooseTextModel, estimateTextCostUsd, isModelEnabled, isTextPrefs, newId, type AvailableTextProvider, type TextProviderId } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { TEXT_MODELS } from "./write-prompt.functions";
 import {
@@ -24,6 +13,7 @@ import {
   type GenerateTextResult,
   type KeyOwnerKind,
 } from "./text.functions";
+import { t as tk } from "@/core/i18n/keyed";
 
 interface TextKeyRow {
   readonly id: string;
@@ -84,10 +74,7 @@ export async function runTextGeneration(
   if ((ROLE_RANK[role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
     return {
       ok: false,
-      message: L(
-        "Du har ikke tilgang til å bruke AI i dette prosjektet.",
-        "You do not have access to use AI in this project.",
-      ),
+      message: tk("adapters-ai-text-run-server.message.message.b7c8025f319f"),
     };
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as AnyClient;
@@ -95,10 +82,7 @@ export async function runTextGeneration(
   if (schema.kind === "missing" || schema.version < 38)
     return {
       ok: false,
-      message: L(
-        "Databasen er ikke oppdatert for tekst-AI (migrasjon 0038).",
-        "The database is not updated for text AI (migration 0038).",
-      ),
+      message: tk("adapters-ai-text-run-server.message.message.1bb4d9cfaa4a"),
     };
   const { data: proj } = await admin
     .from("projects")
@@ -106,24 +90,18 @@ export async function runTextGeneration(
     .eq("id", data.projectId)
     .maybeSingle();
   if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-    return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+    return { ok: false, message: tk("adapters-ai-text-run-server.message.message.66ba62cdf3e7") };
   if ((proj as { ai_month_limit?: number | null }).ai_month_limit === 0)
     return {
       ok: false,
-      message: L(
-        "AI er slått av for prosjektet (budsjettet er 0). Eieren kan endre det på prosjektoversikten.",
-        "AI is turned off for the project (the budget is 0). The owner can change this on the project overview.",
-      ),
+      message: tk("adapters-ai-text-run-server.message.message.5c8257bb8acc"),
     };
 
   const hourAgo = new Date(Date.now() - 3600_000).toISOString();
   const overHourly = async (extra: number): Promise<string | null> => {
     const count = await userTextJobsInHour(admin, context.userId, hourAgo);
     return count - extra >= MAX_TEXT_JOBS_PER_USER_PER_HOUR
-      ? L(
-          `Grensen på ${MAX_TEXT_JOBS_PER_USER_PER_HOUR} tekstkall til AI i timen er nådd. Prøv igjen senere.`,
-          `The limit of ${MAX_TEXT_JOBS_PER_USER_PER_HOUR} text AI calls per hour has been reached. Try again later.`,
-        )
+      ? tk("adapters-ai-text-run-server.over-hourly.message.a640e864f25e", { MAX_TEXT_JOBS_PER_USER_PER_HOUR: String(MAX_TEXT_JOBS_PER_USER_PER_HOUR) })
       : null;
   };
   const before = await overHourly(0);
@@ -182,10 +160,7 @@ export async function runTextGeneration(
     if (!lovableKey)
       return {
         ok: false,
-        message: L(
-          "Ingen tekst-AI er tilgjengelig: ingen gyldig nøkkel, og innebygd AI er ikke slått på.",
-          "No text AI is available: no valid key, and built-in AI is not turned on.",
-        ),
+        message: tk("adapters-ai-text-run-server.message.message.c8cbed9fde5f"),
       };
   }
 
@@ -218,10 +193,7 @@ export async function runTextGeneration(
   if (logErr)
     return {
       ok: false,
-      message: L(
-        `Kallet kunne ikke logges: ${logErr.message}`,
-        `The call could not be logged: ${logErr.message}`,
-      ),
+      message: tk("adapters-ai-text-run-server.message.message.16bc4a16500e", { message: String(logErr.message) }),
     };
   // Samtidige kall: kontroller på nytt med denne jobben registrert
   const after =
@@ -310,7 +282,7 @@ export async function runTextGeneration(
     };
   } catch (e) {
     const { scrubSecret } = await import("./providers.server");
-    const raw = (e as Error).message || L("Ukjent feil", "Unknown error");
+    const raw = (e as Error).message || tk("adapters-ai-text-run-server.raw.message.28ecf6141d74");
     const message = scrubSecret(raw, secret);
     // Avvist kall: ingen kostnad hos leverandøren
     await finish({ status: "failed", cost_usd: 0, error: message.slice(0, 2000) });
@@ -318,11 +290,8 @@ export async function runTextGeneration(
       ok: false,
       message:
         (e as Error).name === "TimeoutError"
-          ? L(
-              "AI-tjenesten brukte for lang tid. Prøv igjen.",
-              "The AI service took too long. Try again.",
-            )
-          : L(`Teksten ble ikke skrevet: ${message}`, `The text was not written: ${message}`),
+          ? tk("adapters-ai-text-run-server.message.message.f402d1f17024")
+          : tk("adapters-ai-text-run-server.message.message.eb2d9690bdb9", { message: String(message) }),
     };
   }
 }

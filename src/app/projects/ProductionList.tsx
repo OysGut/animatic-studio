@@ -5,16 +5,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { CornerUpLeft, FileText, Film, Pencil, Plus } from "lucide-react";
 import { useState } from "react";
-import {
-  L,
-  PRODUCTION_KIND_LABEL,
-  locale,
-  activeStructure,
-  orderedOccurrences,
-  promotionCandidates,
-  sortedProductions,
-  type ProjectState,
-} from "@/core";
+import { PRODUCTION_KIND_LABEL, locale, activeStructure, orderedOccurrences, promotionCandidates, sortedProductions, type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
 import { Button } from "@/components/ui/button";

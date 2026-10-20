@@ -7,7 +7,7 @@
 import { Check, Copy, RotateCcw, TriangleAlert, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { L } from "@/core";
+
 import type { RejectedEdit } from "./use-commands";
 import { copyText } from "./clipboard";
 import { t } from "@/core/i18n/keyed";

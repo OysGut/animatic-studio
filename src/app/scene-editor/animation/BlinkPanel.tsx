@@ -5,7 +5,7 @@
  */
 import { useState } from "react";
 import { Eye, EyeOff, Plus, Trash2 } from "lucide-react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import type { AnimationUse, UseBehavior } from "@/core/animation/rig";
 import { IconButton } from "@/app/shell/workspace-chrome";

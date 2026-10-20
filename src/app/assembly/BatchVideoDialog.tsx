@@ -9,26 +9,7 @@ import { ListOrdered, Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  adaptPromptForModel,
-  chainStartPath,
-  costBreakdown,
-  estimateCostUsd,
-  filmClips,
-  formatHeading,
-  formatUsd,
-  keysEvenly,
-  L, profileChoice, qualityProfileSnapshot,
-  newId,
-  PRIORITY_LABEL,
-  type ProjectState,
-  providersFor,
-  sceneVideoWork,
-  type SceneVideoWork,
-  tm,
-  videoDurationFor,
-  videoStartImages,
-} from "@/core";
+import { adaptPromptForModel, chainStartPath, costBreakdown, estimateCostUsd, filmClips, formatHeading, formatUsd, keysEvenly, profileChoice, qualityProfileSnapshot, newId, PRIORITY_LABEL, type ProjectState, providersFor, sceneVideoWork, type SceneVideoWork, tm, videoDurationFor, videoStartImages } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
@@ -242,10 +223,7 @@ export function BatchVideoDialog({
           }
         : {
             kind: "ok",
-            text: L(
-              `${queued} ${queued === 1 ? "video er" : "videoer er"} lagt i kø hos ${chosen.provider.name}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.`,
-              `${queued} ${queued === 1 ? "video is" : "videos are"} queued at ${chosen.provider.name}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview.`,
-            ),
+            text: tk("app-assembly-batch-video-dialog.videos-queued-at", { count: queued, provider: chosen.provider.name }),
           },
     );
   }

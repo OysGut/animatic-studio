@@ -6,32 +6,7 @@
  */
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  filmMediaPaths,
-  filmRange,
-  shiftAudioItems,
-  shiftCues,
-  formatHeading,
-  formatTimecode,
-  framesToSeconds,
-  layerVersion,
-  layerVersions,
-  layersOf,
-  orderedOccurrences,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  type SubtitleCue,
-  type AudioKind,
-  type FilmAudioItem,
-  type ExportSettings,
-  type FilmClip,
-  type ProjectState,
-  L, qualityProfileSnapshot,
-  locale,
-  languageWord,
-  toSrt,
-  toVtt,
-} from "@/core";
+import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
 import { useTextFonts } from "@/engine/typography/fonts";
 import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
@@ -265,14 +240,7 @@ export function ExportAnimaticDialog({
       level: n > 0 ? "ok" : "warn",
       text:
         n > 0
-          ? L(
-              `${n} ${n === 1 ? "scene" : "scener"} i manusets rekkefølge, ${formatSeconds(
-                framesToSeconds(sel.endFrame - sel.startFrame, fps),
-              )}.`,
-              `${n} ${n === 1 ? "scene" : "scenes"} in script order, ${formatSeconds(
-                framesToSeconds(sel.endFrame - sel.startFrame, fps),
-              )}.`,
-            )
+          ? t("app-assembly-export-animatic-dialog.scenes-in-order", { count: n, duration: formatSeconds(framesToSeconds(sel.endFrame - sel.startFrame, fps)) })
           : t("app-assembly-export-animatic-dialog.text.text.75885539b60d"),
     });
     if (scope === "film") {
@@ -280,48 +248,26 @@ export function ExportAnimaticDialog({
       if (inactive > 0)
         out.push({
           level: "info",
-          text: L(
-            `${inactive} ${inactive === 1 ? "deaktivert scene er" : "deaktiverte scener er"} ikke med.`,
-            `${inactive} ${inactive === 1 ? "deactivated scene is" : "deactivated scenes are"} not included.`,
-          ),
+          text: t("app-assembly-export-animatic-dialog.inactive-not-included", { count: inactive }),
         });
     }
     const placeholders = sel.clips.filter((c) => c.source === "placeholder");
     if (placeholders.length > 0)
       out.push({
         level: "warn",
-        text: L(
-          `${placeholders.length} ${
-            placeholders.length === 1 ? "scene" : "scener"
-          } uten 2D-scene vises som tittelkort (${placeholders
-            .slice(0, 4)
-            .map((c) => c.productionNumber ?? formatHeading(c.heading))
-            .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
-          `${placeholders.length} ${
-            placeholders.length === 1 ? "scene" : "scenes"
-          } without a 2D scene are shown as title cards (${placeholders
-            .slice(0, 4)
-            .map((c) => c.productionNumber ?? formatHeading(c.heading))
-            .join(", ")}${placeholders.length > 4 ? " …" : ""}).`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.placeholders-title-cards", { count: placeholders.length, scenes: placeholders.slice(0, 4).map((c) => c.productionNumber ?? formatHeading(c.heading)).join(", ") + (placeholders.length > 4 ? " …" : "") }),
       });
     const films = sel.clips.filter((c) => c.source === "film");
     if (films.length > 0)
       out.push({
         level: filmMediaPaths(films).some((p) => !filmUrls?.[p]) ? "warn" : "ok",
-        text: L(
-          `${films.length} ${films.length === 1 ? "scene bruker" : "scener bruker"} film, AI-video eller stillbilde.`,
-          `${films.length} ${films.length === 1 ? "scene uses" : "scenes use"} film, AI video or a still image.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.scenes-use-film", { count: films.length }),
       });
     const estimated = sel.clips.filter((c) => c.durationKind === "estimate").length;
     if (estimated > 0)
       out.push({
         level: "info",
-        text: L(
-          `${estimated} ${estimated === 1 ? "scene har" : "scener har"} lengde beregnet fra manuset.`,
-          `${estimated} ${estimated === 1 ? "scene has" : "scenes have"} a length estimated from the script.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.scenes-estimated", { count: estimated }),
       });
     const need = new Set<string>();
     const texts: TextSpec[] = [];
@@ -339,10 +285,7 @@ export function ExportAnimaticDialog({
     if (missingVersions > 0)
       out.push({
         level: "warn",
-        text: L(
-          `${missingVersions} ${missingVersions === 1 ? "lag mangler" : "lag mangler"} bilde i biblioteket og blir usynlige.`,
-          `${missingVersions} ${missingVersions === 1 ? "layer is" : "layers are"} missing an image in the library and will be invisible.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.layers-missing-image", { count: missingVersions }),
       });
     // Lyd i utvalget
     const from = framesToSeconds(sel.startFrame, fps);
@@ -354,27 +297,13 @@ export function ExportAnimaticDialog({
     if (sounds.length > 0)
       out.push({
         level: "ok",
-        text: L(
-          `${audible.length} ${audible.length === 1 ? "lydklipp" : "lydklipp"} med i videoen${
-            audible.length < sounds.length
-              ? ` (${sounds.length - audible.length} i dempede spor er ikke med)`
-              : ""
-          }.`,
-          `${audible.length} ${audible.length === 1 ? "audio clip" : "audio clips"} included in the video${
-            audible.length < sounds.length
-              ? ` (${sounds.length - audible.length} in muted tracks are not included)`
-              : ""
-          }.`,
-        ),
+        text: audible.length < sounds.length ? t("app-assembly-export-animatic-dialog.audio-clips-included-muted", { count: audible.length, muted: sounds.length - audible.length }) : t("app-assembly-export-animatic-dialog.audio-clips-included", { count: audible.length }),
       });
     const noFile = sounds.filter((it) => it.version === null).length;
     if (noFile > 0)
       out.push({
         level: "warn",
-        text: L(
-          `${noFile} ${noFile === 1 ? "lydklipp mangler" : "lydklipp mangler"} lydfil og blir stille.`,
-          `${noFile} ${noFile === 1 ? "audio clip is" : "audio clips are"} missing an audio file and will be silent.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.audio-clips-no-file", { count: noFile }),
       });
     // Språkversjonen (DEC-0059)
     const mixed = sounds.filter(
@@ -384,10 +313,7 @@ export function ExportAnimaticDialog({
     if (mixed > 0)
       out.push({
         level: "warn",
-        text: L(
-          `${mixed} ${mixed === 1 ? "filmklipp har" : "filmklipp har"} dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.`,
-          `${mixed} ${mixed === 1 ? "film clip has" : "film clips have"} dialogue in another language mixed into the sound. It cannot be removed, and is played as it is.`,
-        ),
+        text: t("app-assembly-export-animatic-dialog.film-clips-mixed-dialogue", { count: mixed }),
       });
     const voices = dialogueItems(audible);
     if (output === "dialogue")
@@ -395,10 +321,7 @@ export function ExportAnimaticDialog({
         level: voices.length > 0 ? "ok" : "warn",
         text:
           voices.length > 0
-            ? L(
-                `Dialogspor (${langName}): ${voices.length} ${voices.length === 1 ? "lydklipp" : "lydklipp"} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.`,
-                `Dialogue track (${langName}): ${voices.length} ${voices.length === 1 ? "audio clip" : "audio clips"} with dialogue and narration. Music, effects and the sound in imported film are not included.`,
-              )
+            ? t("app-assembly-export-animatic-dialog.dialogue-track", { count: voices.length, language: langName })
             : t("app-assembly-export-animatic-dialog.text.text.5bf200104906", { langName: String(langName) }),
       });
     if (output === "dialogue" && to - from > STEM_MAX_SECONDS)
@@ -503,10 +426,7 @@ export function ExportAnimaticDialog({
           : scope === "pick" && sel.clips.length > 1
             ? t("app-assembly-export-animatic-dialog.what.message.3a6e463a56aa", { length: String(sel.clips.length) })
             : sel.clips.length === 1
-              ? L(
-                  `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
-                  `scene ${sel.clips[0]!.productionNumber ?? ""}`.trim(),
-                )
+              ? t("app-assembly-export-animatic-dialog.scene-number", { number: sel.clips[0]!.productionNumber ?? "" }).trim()
               : t("app-assembly-export-animatic-dialog.what.message.9903432debbd", { value1: String(sel.clips[0]!.productionNumber ?? ""), value2: String(sel.clips[sel.clips.length - 1]!.productionNumber ?? "") });
       if (output === "dialogue") {
         // Bare dialogsporet som WAV (DEC-0059, REQ-0350)
@@ -539,10 +459,7 @@ export function ExportAnimaticDialog({
         });
         if (lostAudio > 0)
           setError(
-            L(
-              `Ferdig, men ${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler.`,
-              `Done, but ${lostAudio} ${lostAudio === 1 ? "audio file" : "audio files"} could not be read and are missing.`,
-            ),
+            t("app-assembly-export-animatic-dialog.done-audio-lost", { count: lostAudio }),
           );
         return;
       }
@@ -681,17 +598,11 @@ export function ExportAnimaticDialog({
       const notes: string[] = [];
       if (lost > 0)
         notes.push(
-          L(
-            `${lost} ${lost === 1 ? "bilde" : "bilder"} kunne ikke lastes og mangler i videoen`,
-            `${lost} ${lost === 1 ? "image" : "images"} could not be loaded and are missing from the video`,
-          ),
+          t("app-assembly-export-animatic-dialog.images-lost", { count: lost }),
         );
       if (lostAudio > 0)
         notes.push(
-          L(
-            `${lostAudio} ${lostAudio === 1 ? "lydfil" : "lydfiler"} kunne ikke leses og mangler`,
-            `${lostAudio} ${lostAudio === 1 ? "audio file" : "audio files"} could not be read and are missing`,
-          ),
+          t("app-assembly-export-animatic-dialog.audio-lost", { count: lostAudio }),
         );
       if (audioPaths.length > lostAudio && file.audioCodec === null)
         notes.push(
@@ -706,10 +617,7 @@ export function ExportAnimaticDialog({
         setError(
           e instanceof ExportError
             ? e.message
-            : L(
-                `Eksporten stoppet: ${(e as Error).message || "ukjent feil"}`,
-                `The export stopped: ${(e as Error).message || "unknown error"}`,
-              ),
+            : (e as Error).message ? t("app-assembly-export-animatic-dialog.export-stopped", { error: (e as Error).message }) : t("app-assembly-export-animatic-dialog.export-stopped-unknown"),
         );
       throw e;
     } finally {

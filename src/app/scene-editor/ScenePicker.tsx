@@ -12,16 +12,7 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import {
-  L,
-  collation,
-  contentSyncText,
-  formatHeading,
-  sceneNumberOf,
-  type ProjectState,
-  type SceneContentSync,
-  type SceneOccurrence,
-} from "@/core";
+import { collation, contentSyncText, formatHeading, sceneNumberOf, type ProjectState, type SceneContentSync, type SceneOccurrence } from "@/core";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { t } from "@/core/i18n/keyed";
 

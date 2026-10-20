@@ -5,7 +5,7 @@
  */
 import { useMemo, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import type { Command } from "@/core/commands/types";
 import { PATTERN_TARGETS, patternError, planPatternEvents, type AnimationPattern, type PatternSpec, type PatternTarget } from "@/core/animation/patterns";
 import { IconButton } from "@/app/shell/workspace-chrome";

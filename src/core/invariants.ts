@@ -6,7 +6,8 @@
  */
 import { isValidOrderKey } from "./order-key";
 import { PRIMARY_LANGUAGE, type ProjectState } from "./model";
-import { L } from "./i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface Violation {
   readonly invariant: string;
@@ -19,16 +20,13 @@ export function checkInvariants(s: ProjectState): Violation[] {
 
   const mains = Object.values(s.productions).filter((p) => p.kind === "main");
   if (mains.length > 1)
-    add("MODEL", L("Mer enn én hovedproduksjon", "More than one main production"));
+    add("MODEL", tk("core-invariants.check-invariants.add.d429b92fced7"));
 
   for (const p of Object.values(s.productions)) {
     if (p.parentProductionId !== null && !s.productions[p.parentProductionId]) {
       add(
         "MODEL",
-        L(
-          `Produksjon ${p.id} viser til ukjent overordnet produksjon`,
-          `Production ${p.id} refers to an unknown parent production`,
-        ),
+        tk("core-invariants.check-invariants.add.4cb2248bdbd8", { id: String(p.id) }),
       );
     }
   }
@@ -37,10 +35,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (!s.productions[sc.originProductionId])
       add(
         "MODEL",
-        L(
-          `Scene ${sc.id}: ukjent opprinnelsesproduksjon`,
-          `Scene ${sc.id}: unknown origin production`,
-        ),
+        tk("core-invariants.check-invariants.add.fd093ffdcd50", { id: String(sc.id) }),
       );
     if (
       sc.storyTime.kind !== "linear" &&
@@ -49,10 +44,7 @@ export function checkInvariants(s: ProjectState): Violation[] {
     ) {
       add(
         "INV-09",
-        L(
-          `Scene ${sc.id}: fortellingstid ankret til ukjent scene`,
-          `Scene ${sc.id}: story time anchored to an unknown scene`,
-        ),
+        tk("core-invariants.check-invariants.add.dc0ed9cf6c06", { id: String(sc.id) }),
       );
     }
     if (
@@ -61,26 +53,23 @@ export function checkInvariants(s: ProjectState): Violation[] {
     ) {
       add(
         "INV-01",
-        L(
-          `Scene ${sc.id} er slått sammen, men har fortsatt aktiv forekomst`,
-          `Scene ${sc.id} is merged, but still has an active occurrence`,
-        ),
+        tk("core-invariants.check-invariants.add.12870510d9e2", { id: String(sc.id) }),
       );
     }
     if (sc.mergedIntoSceneId !== null && !s.scenes[sc.mergedIntoSceneId])
       add(
         "MODEL",
-        L(`Scene ${sc.id}: ukjent sammenslåingsmål`, `Scene ${sc.id}: unknown merge target`),
+        tk("core-invariants.check-invariants.add.429a4674bb2c", { id: String(sc.id) }),
       );
   }
 
   for (const va of Object.values(s.variants)) {
     if (!s.scenes[va.sceneId])
-      add("MODEL", L(`Variant ${va.id}: ukjent scene`, `Variant ${va.id}: unknown scene`));
+      add("MODEL", tk("core-invariants.check-invariants.add.b02a5155b872", { id: String(va.id) }));
     if (va.ownerProductionId !== null && !s.productions[va.ownerProductionId])
       add(
         "INV-04",
-        L(`Variant ${va.id}: ukjent eierproduksjon`, `Variant ${va.id}: unknown owner production`),
+        tk("core-invariants.check-invariants.add.2e369d62896e", { id: String(va.id) }),
       );
   }
 
@@ -97,43 +86,31 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (blockKeys.has(k))
       add(
         "MODEL",
-        L(
-          `Blokk ${b.id}: to blokker har samme plass i varianten`,
-          `Block ${b.id}: two blocks have the same place in the variant`,
-        ),
+        tk("core-invariants.check-invariants.add.a52acab4439d", { id: String(b.id) }),
       );
     blockKeys.add(k);
     if (!s.variants[b.variantId])
-      add("MODEL", L(`Blokk ${b.id}: ukjent variant`, `Block ${b.id}: unknown variant`));
+      add("MODEL", tk("core-invariants.check-invariants.add.30dfcd9a399d", { id: String(b.id) }));
     if (b.language !== PRIMARY_LANGUAGE)
       add(
         "INV-05",
-        L(
-          `Blokk ${b.id}: hovedmanusblokk er ikke norsk`,
-          `Block ${b.id}: main script block is not Norwegian`,
-        ),
+        tk("core-invariants.check-invariants.add.0888a95b7064", { id: String(b.id) }),
       );
     if (!isValidOrderKey(b.orderKey))
-      add("MODEL", L(`Blokk ${b.id}: ugyldig sorteringsnøkkel`, `Block ${b.id}: invalid sort key`));
+      add("MODEL", tk("core-invariants.check-invariants.add.85167cbd2543", { id: String(b.id) }));
     const revs = (revsByBlock.get(b.id) ?? []).sort((a, c) => a.rev - c.rev);
     const last = revs[revs.length - 1];
     if (!last || last.rev !== b.currentRev || last.text !== b.text) {
       add(
         "INV-13",
-        L(
-          `Blokk ${b.id}: gjeldende tekst stemmer ikke med revisjonshistorikken`,
-          `Block ${b.id}: current text does not match the revision history`,
-        ),
+        tk("core-invariants.check-invariants.add.cecf273318eb", { id: String(b.id) }),
       );
     }
     revs.forEach((r, i) => {
       if (r.rev !== i + 1)
         add(
           "INV-13",
-          L(
-            `Blokk ${b.id}: hull i revisjonshistorikken`,
-            `Block ${b.id}: gap in the revision history`,
-          ),
+          tk("core-invariants.check-invariants.add.7eca574c1d3d", { id: String(b.id) }),
         );
     });
   }
@@ -147,19 +124,16 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (!prod)
       add(
         "MODEL",
-        L(`Forekomst ${o.id}: ukjent produksjon`, `Occurrence ${o.id}: unknown production`),
+        tk("core-invariants.check-invariants.add.ef371818419d", { id: String(o.id) }),
       );
     if (!scene)
-      add("INV-03", L(`Forekomst ${o.id}: ukjent scene`, `Occurrence ${o.id}: unknown scene`));
+      add("INV-03", tk("core-invariants.check-invariants.add.6f4f64e6e124", { id: String(o.id) }));
     if (!variant)
-      add("MODEL", L(`Forekomst ${o.id}: ukjent variant`, `Occurrence ${o.id}: unknown variant`));
+      add("MODEL", tk("core-invariants.check-invariants.add.b18f9f469aad", { id: String(o.id) }));
     if (variant && variant.sceneId !== o.sceneId)
       add(
         "INV-03",
-        L(
-          `Forekomst ${o.id}: variant tilhører en annen scene`,
-          `Occurrence ${o.id}: variant belongs to another scene`,
-        ),
+        tk("core-invariants.check-invariants.add.439a2a6b66db", { id: String(o.id) }),
       );
     if (
       variant &&
@@ -168,32 +142,26 @@ export function checkInvariants(s: ProjectState): Violation[] {
     ) {
       add(
         "INV-04",
-        L(
-          `Forekomst ${o.id}: bruker en variant som eies av en annen produksjon`,
-          `Occurrence ${o.id}: uses a variant owned by another production`,
-        ),
+        tk("core-invariants.check-invariants.add.01b659a29ffd", { id: String(o.id) }),
       );
     }
     if (!isValidOrderKey(o.orderKey))
       add(
         "INV-01",
-        L(`Forekomst ${o.id}: ugyldig sorteringsnøkkel`, `Occurrence ${o.id}: invalid sort key`),
+        tk("core-invariants.check-invariants.add.2f9436d194d2", { id: String(o.id) }),
       );
     const keys = keysByProduction.get(o.productionId) ?? new Set<string>();
     if (keys.has(o.orderKey))
       add(
         "INV-01",
-        L(
-          `Produksjon ${o.productionId}: to forekomster har samme plass`,
-          `Production ${o.productionId}: two occurrences have the same place`,
-        ),
+        tk("core-invariants.check-invariants.add.e3b6208f919d", { productionId: String(o.productionId) }),
       );
     keys.add(o.orderKey);
     keysByProduction.set(o.productionId, keys);
     if (o.excerpt && (o.excerpt.inFrame < 0 || o.excerpt.outFrame <= o.excerpt.inFrame)) {
       add(
         "MODEL",
-        L(`Forekomst ${o.id}: ugyldig tidsutdrag`, `Occurrence ${o.id}: invalid time excerpt`),
+        tk("core-invariants.check-invariants.add.acbfe4979411", { id: String(o.id) }),
       );
     }
     if (o.activeTakeId !== null) {
@@ -202,18 +170,12 @@ export function checkInvariants(s: ProjectState): Violation[] {
       if (!t || !tOcc)
         add(
           "INV-07",
-          L(
-            `Forekomst ${o.id}: aktiv versjon finnes ikke`,
-            `Occurrence ${o.id}: active version does not exist`,
-          ),
+          tk("core-invariants.check-invariants.add.df8ddbfda832", { id: String(o.id) }),
         );
       else if (tOcc.sceneId !== o.sceneId)
         add(
           "INV-07",
-          L(
-            `Forekomst ${o.id}: aktiv versjon tilhører en annen scene`,
-            `Occurrence ${o.id}: active version belongs to another scene`,
-          ),
+          tk("core-invariants.check-invariants.add.24eb9ce72aa0", { id: String(o.id) }),
         );
     }
   }
@@ -222,56 +184,50 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (!s.occurrences[seg.occurrenceId])
       add(
         "INV-10",
-        L(`Segment ${seg.id}: ukjent forekomst`, `Segment ${seg.id}: unknown occurrence`),
+        tk("core-invariants.check-invariants.add.1b66912af5b4", { id: String(seg.id) }),
       );
     for (const bid of [seg.startBlockId, seg.endBlockId]) {
       if (bid !== null && !s.blocks[bid])
-        add("INV-10", L(`Segment ${seg.id}: ukjent blokk`, `Segment ${seg.id}: unknown block`));
+        add("INV-10", tk("core-invariants.check-invariants.add.8d8f1333e788", { id: String(seg.id) }));
     }
   }
 
   for (const t of Object.values(s.takes)) {
     if (!s.occurrences[t.occurrenceId])
-      add("INV-07", L(`Take ${t.id}: ukjent forekomst`, `Take ${t.id}: unknown occurrence`));
+      add("INV-07", tk("core-invariants.check-invariants.add.f0be89e1352e", { id: String(t.id) }));
     if (t.segmentId !== null) {
       const seg = s.segments[t.segmentId];
       if (!seg || seg.occurrenceId !== t.occurrenceId)
         add(
           "INV-10",
-          L(
-            `Take ${t.id}: segment tilhører en annen forekomst`,
-            `Take ${t.id}: segment belongs to another occurrence`,
-          ),
+          tk("core-invariants.check-invariants.add.28d657f0420c", { id: String(t.id) }),
         );
     }
     if (
       t.durationFrames !== null &&
       (!Number.isInteger(t.durationFrames) || t.durationFrames < 0)
     ) {
-      add("MODEL", L(`Take ${t.id}: ugyldig varighet`, `Take ${t.id}: invalid duration`));
+      add("MODEL", tk("core-invariants.check-invariants.add.817e1b911aba", { id: String(t.id) }));
     }
   }
 
   // Ressursbiblioteket (REQ-0125, REQ-0136, REQ-0146)
   for (const a of Object.values(s.assets)) {
     if (!a.name.trim())
-      add("MODEL", L(`Ressurs ${a.id}: mangler navn`, `Asset ${a.id}: missing name`));
+      add("MODEL", tk("core-invariants.check-invariants.add.2ba194ec86af", { id: String(a.id) }));
   }
   const versionNumbers = new Set<string>();
   for (const ver of Object.values(s.assetVersions)) {
     if (!s.assetVariants[ver.variantId])
       add(
         "MODEL",
-        L(`Ressursversjon ${ver.id}: ukjent variant`, `Asset version ${ver.id}: unknown variant`),
+        tk("core-invariants.check-invariants.add.9bdb3dc82c68", { id: String(ver.id) }),
       );
     const k = `${ver.variantId}|${ver.number}`;
     if (versionNumbers.has(k))
       add(
         "MODEL",
-        L(
-          `Ressursversjon ${ver.id}: samme nummer to ganger`,
-          `Asset version ${ver.id}: same number twice`,
-        ),
+        tk("core-invariants.check-invariants.add.7d80582793bb", { id: String(ver.id) }),
       );
     versionNumbers.add(k);
   }
@@ -279,17 +235,14 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if (!s.assets[va.assetId])
       add(
         "MODEL",
-        L(`Ressursvariant ${va.id}: ukjent ressurs`, `Asset variant ${va.id}: unknown asset`),
+        tk("core-invariants.check-invariants.add.b3269c5b49ba", { id: String(va.id) }),
       );
     if (va.approvedVersionId !== null) {
       const ver = s.assetVersions[va.approvedVersionId];
       if (!ver || ver.variantId !== va.id)
         add(
           "REQ-0136",
-          L(
-            `Ressursvariant ${va.id}: godkjent versjon tilhører ikke varianten`,
-            `Asset variant ${va.id}: approved version does not belong to the variant`,
-          ),
+          tk("core-invariants.check-invariants.add.beea12e94202", { id: String(va.id) }),
         );
     }
   }
@@ -299,59 +252,50 @@ export function checkInvariants(s: ProjectState): Violation[] {
     if ((n.blockId === null) === (n.variantId === null))
       add(
         "MODEL",
-        L(
-          `Notat ${n.id}: må høre til enten tekst eller scene`,
-          `Note ${n.id}: must belong to either a text or a scene`,
-        ),
+        tk("core-invariants.check-invariants.add.2897d5473c7a", { id: String(n.id) }),
       );
     if (n.blockId !== null && !s.blocks[n.blockId])
-      add("MODEL", L(`Notat ${n.id}: ukjent blokk`, `Note ${n.id}: unknown block`));
+      add("MODEL", tk("core-invariants.check-invariants.add.66b09ad0487e", { id: String(n.id) }));
     if (n.variantId !== null && !s.variants[n.variantId])
-      add("MODEL", L(`Notat ${n.id}: ukjent scene`, `Note ${n.id}: unknown scene`));
+      add("MODEL", tk("core-invariants.check-invariants.add.e8a4715e3ab0", { id: String(n.id) }));
   }
   // 2D-scener og lag (DEC-0035): koblet til scener og ressurser som finnes, unik lagrekkefølge
   const activeComp = new Set<string>();
   for (const c of Object.values(s.compositions)) {
     if (!s.variants[c.variantId])
-      add("MODEL", L(`2D-scene ${c.id}: ukjent scene`, `2D scene ${c.id}: unknown scene`));
+      add("MODEL", tk("core-invariants.check-invariants.add.833bcd3d38b1", { id: String(c.id) }));
     if (c.removed) continue;
     if (activeComp.has(c.variantId))
       add(
         "MODEL",
-        L(
-          `2D-scene ${c.id}: scenen har to 2D-scener`,
-          `2D scene ${c.id}: the scene has two 2D scenes`,
-        ),
+        tk("core-invariants.check-invariants.add.928967dd5624", { id: String(c.id) }),
       );
     activeComp.add(c.variantId);
   }
   const keysByComp = new Map<string, Set<string>>();
   for (const l of Object.values(s.layers)) {
     if (!s.compositions[l.compositionId])
-      add("MODEL", L(`Lag ${l.id}: ukjent 2D-scene`, `Layer ${l.id}: unknown 2D scene`));
+      add("MODEL", tk("core-invariants.check-invariants.add.f19494b0ca56", { id: String(l.id) }));
     if (l.assetId !== null && !s.assets[l.assetId])
-      add("MODEL", L(`Lag ${l.id}: ukjent ressurs`, `Layer ${l.id}: unknown asset`));
+      add("MODEL", tk("core-invariants.check-invariants.add.b6f6c892834e", { id: String(l.id) }));
     if (l.assetVariantId !== null) {
       const va = s.assetVariants[l.assetVariantId];
       if (!va || va.assetId !== l.assetId)
-        add("MODEL", L(`Lag ${l.id}: ugyldig variant`, `Layer ${l.id}: invalid variant`));
+        add("MODEL", tk("core-invariants.check-invariants.add.585161a32e73", { id: String(l.id) }));
     }
     if (l.versionId !== null) {
       const ve = s.assetVersions[l.versionId];
       if (!ve || ve.variantId !== l.assetVariantId)
-        add("MODEL", L(`Lag ${l.id}: ugyldig versjon`, `Layer ${l.id}: invalid version`));
+        add("MODEL", tk("core-invariants.check-invariants.add.2ae8b7cf2fce", { id: String(l.id) }));
     }
     if (l.kind !== "group" && l.kind !== "page" && l.assetId === null && l.fill === null && !(l.kind === "text" && l.text))
-      add("MODEL", L(`Lag ${l.id}: viser ingenting`, `Layer ${l.id}: shows nothing`));
+      add("MODEL", tk("core-invariants.check-invariants.add.42e8c587a46e", { id: String(l.id) }));
     let keys = keysByComp.get(l.compositionId);
     if (!keys) keysByComp.set(l.compositionId, (keys = new Set()));
     if (keys.has(l.orderKey))
       add(
         "MODEL",
-        L(
-          `Lag ${l.id}: samme plass i lagrekkefølgen som et annet lag`,
-          `Layer ${l.id}: same place in the layer order as another layer`,
-        ),
+        tk("core-invariants.check-invariants.add.47b407941cad", { id: String(l.id) }),
       );
     keys.add(l.orderKey);
   }
@@ -361,23 +305,17 @@ export function checkInvariants(s: ProjectState): Violation[] {
   for (const g of Object.values(s.generationPrompts ?? {})) {
     const seg = s.segments[g.segmentId];
     if (!s.occurrences[g.occurrenceId])
-      add("MODEL", L(`Beskrivelse ${g.id}: ukjent scene`, `Description ${g.id}: unknown scene`));
+      add("MODEL", tk("core-invariants.check-invariants.add.f4224ff9c297", { id: String(g.id) }));
     if (!seg || seg.occurrenceId !== g.occurrenceId)
       add(
         "MODEL",
-        L(
-          `Beskrivelse ${g.id}: segmentet hører ikke til scenen`,
-          `Description ${g.id}: the segment does not belong to the scene`,
-        ),
+        tk("core-invariants.check-invariants.add.521eab8a398e", { id: String(g.id) }),
       );
     if (g.removed) continue;
     if (promptSegments.has(g.segmentId))
       add(
         "MODEL",
-        L(
-          `Segment ${g.segmentId}: to egne beskrivelser`,
-          `Segment ${g.segmentId}: two own descriptions`,
-        ),
+        tk("core-invariants.check-invariants.add.715e9f383081", { segmentId: String(g.segmentId) }),
       );
     promptSegments.add(g.segmentId);
   }

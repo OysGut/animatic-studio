@@ -7,25 +7,7 @@
 import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  costBreakdown,
-  type FilmClip,
-  formatUsd,
-  L,
-  locale,
-  newId,
-  type ProjectState,
-  providerInfo,
-  providerModel,
-  sceneDialogueLines,
-  speechCostUsd,
-  SPEECH_MODEL,
-  catalogSettings,
-  isModelEnabled,
-  tm,
-  audioVersion,
-  voiceUsers,
-} from "@/core";
+import { costBreakdown, type FilmClip, formatUsd, locale, newId, type ProjectState, providerInfo, providerModel, sceneDialogueLines, speechCostUsd, SPEECH_MODEL, catalogSettings, isModelEnabled, tm, audioVersion, voiceUsers } from "@/core";
 import { generateSpeech, listVoices } from "@/adapters/ai/speech.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
@@ -308,10 +290,7 @@ export function AiDialogueDialog({
           }
         : {
             kind: "ok",
-            text: L(
-              `${made} ${made === 1 ? "replikk er" : "replikker er"} lest inn og lagt på dialogsporet. Hver kan angres.`,
-              `${made} ${made === 1 ? "line is" : "lines are"} read in and added to the dialogue track. Each can be undone.`,
-            ),
+            text: tk("app-assembly-ai-dialogue-dialog.lines-read-in", { count: made }),
           },
     );
   }
@@ -507,10 +486,7 @@ export function AiDialogueDialog({
                       variant="ghost"
                       className="m-1"
                       onClick={() => void playLine(l.blockId, l.audio!.clipId)}
-                      aria-label={L(
-                        `Spill av replikken til ${l.speaker || "karakteren"}`,
-                        `Play the line of ${l.speaker || "the character"}`,
-                      )}
+                      aria-label={l.speaker ? tk("app-assembly-ai-dialogue-dialog.play-line-of", { speaker: l.speaker }) : tk("app-assembly-ai-dialogue-dialog.play-line-of-character")}
                       title={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.2c63aef5e695")}
                     >
                       {playing === `line:${l.blockId}` ? <Pause /> : <Play />}

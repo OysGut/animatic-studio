@@ -8,7 +8,7 @@
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
-import { L, getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
+import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
 import { t } from "@/core/i18n/keyed";
 

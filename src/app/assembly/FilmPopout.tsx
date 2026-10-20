@@ -6,7 +6,7 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { L, type FilmClip, type ProjectState } from "@/core";
+import { type FilmClip, type ProjectState } from "@/core";
 import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { previewPopup } from "@/app/scene-editor/PreviewWindow";
 import { filmImageCache } from "./film-images";

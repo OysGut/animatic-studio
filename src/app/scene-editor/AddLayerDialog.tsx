@@ -4,23 +4,7 @@
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { Check, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  ASSET_KIND_LABEL,
-  coverVersion,
-  defaultLayerFields,
-  assetNames,
-  collation,
-  L,
-  newId,
-  sortedAssets,
-  variantsOf,
-  type AssetKind,
-  type Command,
-  type Composition,
-  type NewLayer,
-  type ProjectState,
-  sceneContinuityVariant,
-} from "@/core";
+import { ASSET_KIND_LABEL, coverVersion, defaultLayerFields, assetNames, collation, newId, sortedAssets, variantsOf, type AssetKind, type Command, type Composition, type NewLayer, type ProjectState, sceneContinuityVariant } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { Button } from "@/components/ui/button";
 import {

@@ -1,7 +1,7 @@
 /** Manual marking never changes the original image. Save is one ordinary scene-draft transaction. */
 import { useRef, useState } from "react";
 import { Crosshair, Hand, RotateCcw } from "lucide-react";
-import { L, newId, type Command, type ProjectState } from "@/core";
+import { newId, type Command, type ProjectState } from "@/core";
 import { FACE_ANCHORS, animationUseOf, rigOfVariant, type FaceAnchor, type RigAnchors } from "@/core/animation/rig";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Toolbar, ToolbarGroup, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";

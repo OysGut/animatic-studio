@@ -5,24 +5,7 @@
  */
 import { useState } from "react";
 import { Plus, Star, Trash2 } from "lucide-react";
-import {
-  L,
-  defaultQualityProfiles,
-  newId,
-  qualityProfileError,
-  qualityProfilesOf,
-  EFFORT_LABEL,
-  IMAGE_SIZE_LABEL,
-  providersFor,
-  type EffortLevel,
-  type ImageSize,
-  type ProjectState,
-  type QualityProfile,
-  type QualityProfileModelKind,
-  type QualityProfileSpec,
-  QUALITY_PROFILE_MODEL_KINDS,
-  QUALITY_PROFILE_MODEL_KIND_LABEL,
-} from "@/core";
+import { defaultQualityProfiles, newId, qualityProfileError, qualityProfilesOf, EFFORT_LABEL, IMAGE_SIZE_LABEL, providersFor, type EffortLevel, type ImageSize, type ProjectState, type QualityProfile, type QualityProfileModelKind, type QualityProfileSpec, QUALITY_PROFILE_MODEL_KINDS, QUALITY_PROFILE_MODEL_KIND_LABEL } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { PanelHeader } from "@/app/shell/workspace-chrome";

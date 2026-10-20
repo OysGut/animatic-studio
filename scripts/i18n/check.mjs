@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Kontroll av språk (DEC-0081, REQ-0630): finner brukervendt norsk tekst som ikke står i L("nb", "en"),
- * localized({ … }) eller et tekstpar. Kjøres i testene (tests/unit/i18n.test.ts) og for hånd:
+ * Kontroll av språk (DEC-0081, REQ-0630): finner brukervendt norsk tekst som ikke står i t("nøkkel") eller
+ * tLocalized({ … }). Etter ML2f er broen tom: nye L(…)/localized(…)-kall stoppes (skriv teksten i
+ * katalogen og bruk t()); tm() er bare for gamle, lagrede servermeldinger. Kjøres i testene (tests/unit/i18n.test.ts) og for hånd:
  *   node scripts/i18n/check.mjs            – hele src/
  *   node scripts/i18n/check.mjs fil1 fil2  – bare disse filene
  * Unntak: `// i18n-ignore-file` øverst i en fil (data som ikke vises, f.eks. gjenkjenning av norske ord i
@@ -33,7 +34,7 @@ function files(dir) {
   return out;
 }
 
-const OK_CALLS = new Set(["L", "localized", "tm", "t", "tk", "tKey", "tx", "i18nT", "tLocalized", "pair", "cn", "clsx", "cva", "twMerge"]);
+const OK_CALLS = new Set(["tm", "t", "tk", "tKey", "tx", "i18nT", "tLocalized", "pair", "cn", "clsx", "cva", "twMerge"]);
 function insideOk(node) {
   for (let p = node.parent; p; p = p.parent) {
     if (ts.isCallExpression(p)) {
@@ -44,6 +45,34 @@ function insideOk(node) {
     if (ts.isImportDeclaration(p) || ts.isExportDeclaration(p)) return true;
   }
   return false;
+}
+
+/** ML2f: L()/localized() er ikke lenger en skrivevei. Finner kall via import fra kjernen eller i18n. */
+export function bridgeCalls(file) {
+  const rel = relative(ROOT, file);
+  if (rel.startsWith("src/core/i18n/")) return [];
+  const src = readFileSync(file, "utf8");
+  const sf = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, file.endsWith("x") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  const aliases = new Map();
+  for (const stmt of sf.statements) {
+    if (!ts.isImportDeclaration(stmt) || !/(^|\/)(core|i18n)(\/index)?$|core\/i18n/.test(stmt.moduleSpecifier.text)) continue;
+    const nb = stmt.importClause?.namedBindings;
+    if (nb && ts.isNamedImports(nb)) for (const el of nb.elements) {
+      const imported = el.propertyName?.text ?? el.name.text;
+      if (imported === "L" || imported === "localized") aliases.set(el.name.text, imported);
+    }
+  }
+  if (!aliases.size) return [];
+  const hits = [];
+  const visit = (node) => {
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && aliases.has(node.expression.text)) {
+      const line = sf.getLineAndCharacterOfPosition(node.getStart()).line;
+      hits.push({ file: rel, line: line + 1, text: `${aliases.get(node.expression.text)}() er fjernet som skrivevei – legg teksten i katalogen og bruk t()` });
+    }
+    ts.forEachChild(node, visit);
+  };
+  visit(sf);
+  return hits;
 }
 
 export function check(file) {
@@ -83,6 +112,10 @@ export function check(file) {
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
+  const listForBridge = process.argv.slice(2).filter((a) => !a.startsWith("--"));
+  const bridge = (listForBridge.length ? listForBridge.map((a) => join(process.cwd(), a)) : files(join(ROOT, "src"))).flatMap(bridgeCalls);
+  for (const h of bridge) console.error(`${h.file}:${h.line}: ${h.text}`);
+  if (bridge.length) { console.error(`\n${bridge.length} nye L()/localized()-kall`); process.exit(1); }
   buildInventory(ROOT, true);
   const keyedErrors = checkKeyedCatalogs(ROOT);
   for (const error of keyedErrors) console.error(error);

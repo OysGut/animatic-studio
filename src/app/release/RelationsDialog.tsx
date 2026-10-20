@@ -5,19 +5,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Check, Plus, Trash2, X } from "lucide-react";
-import {
-  RELATION_COLOR,
-  RELATION_KINDS,
-  RELATION_NAME,
-  L,
-  approvedRelations,
-  newId,
-  relationSuggestions,
-  sortedAssets,
-  type AssetRelation,
-  type ProjectState,
-  type RelationKind,
-} from "@/core";
+import { RELATION_COLOR, RELATION_KINDS, RELATION_NAME, approvedRelations, newId, relationSuggestions, sortedAssets, type AssetRelation, type ProjectState, type RelationKind } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {

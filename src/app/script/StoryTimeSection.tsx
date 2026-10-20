@@ -5,20 +5,7 @@
  * angres. Vises bare i inspektøren, ikke i selve manuset (REQ-0102).
  */
 import { useState } from "react";
-import {
-  L,
-  STORY_KIND_LABEL,
-  STORY_PLACEMENT_LABEL,
-  formatHeading,
-  mainProduction,
-  orderedOccurrences,
-  storyPlacementOf,
-  storyTimeFor,
-  type Command,
-  type ProjectState,
-  type StoryKind,
-  type StoryPlacement,
-} from "@/core";
+import { STORY_KIND_LABEL, STORY_PLACEMENT_LABEL, formatHeading, mainProduction, orderedOccurrences, storyPlacementOf, storyTimeFor, type Command, type ProjectState, type StoryKind, type StoryPlacement } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 const ctl =

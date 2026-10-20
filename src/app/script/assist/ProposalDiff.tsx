@@ -1,5 +1,5 @@
 /** Skrivehjelpen (T2): gammel og ny tekst side om side, med markering på ordnivå og valg per linje. */
-import { L, wordDiff, type Proposal, type ProposalItem } from "@/core";
+import { wordDiff, type Proposal, type ProposalItem } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 const KIND: Record<string, () => string> = {

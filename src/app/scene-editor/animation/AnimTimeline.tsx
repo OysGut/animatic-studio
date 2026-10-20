@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState, useRef, type ReactNode } from "react";
-import { L, type Rational } from "@/core";
+import { type Rational } from "@/core";
 import { animationRuler } from "@/core/animation/time-format";
 import type { Playback } from "../use-playback";
 import type { AnimWindow } from "./TimeNavigator";

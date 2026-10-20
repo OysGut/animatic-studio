@@ -4,17 +4,7 @@
  * videre (REQ-0693/0695). Eksport gir WAV eller MP3 av hele komposisjonen, et område eller ett take, lokalt
  * eller som ny lydvariant i biblioteket (REQ-0696). Originalopptakene endres aldri.
  */
-import {
-  L,
-  audioExportName,
-  compositionLengthMs,
-  cropComposition,
-  newId,
-  type AssetVersion,
-  type AudioComposition,
-  type ProjectState,
-  type WordAlignment,
-} from "@/core";
+import { audioExportName, compositionLengthMs, cropComposition, newId, type AssetVersion, type AudioComposition, type ProjectState, type WordAlignment } from "@/core";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { signedUrls } from "@/app/library/asset-images";
 import { uploadAssetAudio } from "@/app/library/asset-audio";

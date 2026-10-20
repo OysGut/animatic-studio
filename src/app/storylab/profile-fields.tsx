@@ -4,14 +4,7 @@
  */
 import { X } from "lucide-react";
 import { useState } from "react";
-import {
-  L,
-  SPEECH_LEVELS,
-  emptyStoryProfile,
-  profileError,
-  type StoryProfile,
-  type StoryProfilePatch,
-} from "@/core";
+import { SPEECH_LEVELS, emptyStoryProfile, profileError, type StoryProfile, type StoryProfilePatch } from "@/core";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { t as tk } from "@/core/i18n/keyed";

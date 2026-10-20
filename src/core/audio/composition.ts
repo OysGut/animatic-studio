@@ -9,7 +9,7 @@
  */
 import type { AudioClip, ProjectState } from "../model";
 import { isUuid } from "../ids";
-import { L } from "../i18n";
+
 import { isVoiceKind } from "./index";
 import { t as tk } from "@/core/i18n/keyed";
 

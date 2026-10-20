@@ -6,7 +6,8 @@
 import type { AssetKind, ProjectState } from "../model";
 import { ASSET_KIND_PLURAL } from "./index";
 import { versionFileName } from "./file-names";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Kategori i zip-filen: en ressurstype, eller «film» for importert film. */
 export type ZipCategory = AssetKind | "film";
@@ -16,7 +17,7 @@ export const ZIP_CATEGORY_LABEL: Record<ZipCategory, string> = new Proxy(
   {} as Record<ZipCategory, string>,
   {
     get: (_t, k) =>
-      k === "film" ? L("Importert film", "Imported film") : ASSET_KIND_PLURAL[k as AssetKind],
+      k === "film" ? tk("core-library-zip.get.get.bec2c1d5386c") : ASSET_KIND_PLURAL[k as AssetKind],
   },
 );
 

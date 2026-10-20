@@ -1,12 +1,15 @@
 /**
  * Språket i tjenesten (DEC-0081, REQ-0629/0630): norsk (standard) eller engelsk.
  *
- * Regler for all brukervendt tekst (også verktøytips, aria-label og feilmeldinger):
- * - Inne i funksjoner og komponenter: `L("Lagre", "Save")` – teksten velges når den brukes.
- * - Faste oppslag på modulnivå (etiketter per type o.l.): `localized({ a: ["Norsk", "English"], … })`.
- *   Gir et vanlig `Record<K, string>` som alltid svarer på gjeldende språk.
+ * Regler for all brukervendt tekst (også verktøytips, aria-label og feilmeldinger), etter ML2f:
+ * - Skriv teksten i katalogen og bruk `t("nøkkel", { … })` fra `@/core/i18n/keyed`; faste oppslag på
+ *   modulnivå med `tLocalized({ a: "nøkkel", … })`. Flertall, valg og datoer står i `authored.json`.
+ * - `L()` og `localized()` er ikke lenger en skrivevei: `scripts/i18n/check.mjs` stopper nye kall.
+ *   Funksjonene finnes bare for å lese gamle tekstpar i testene.
+ * - `tm(melding)` brukes bare for gamle, lagrede servermeldinger som ble laget på norsk (f.eks.
+ *   begrunnelser lagret i databasen før ML2). Nye servermeldinger bruker stabile feilkoder
+ *   (`server-errors.ts`) eller `t()`.
  * - Datoer og tall: `locale()` i stedet for "nb-NO".
- * - Meldinger fra serveren (som lages på norsk der): vis dem med `tm(melding)`.
  * Ren TypeScript uten avhengigheter (kjernen er plattformnøytral). Brukerens eget innhold (manus,
  * notater, navn) og AI-prompter oversettes ikke.
  */
@@ -58,7 +61,10 @@ export function onLanguageChange(f: () => void): () => void {
   };
 }
 
-/** Brukervendt tekst på begge språk; svarer på gjeldende språk. */
+/**
+ * Brukervendt tekst på begge språk; svarer på gjeldende språk.
+ * @deprecated ML2f: ikke en skrivevei lenger – bruk `t()` med en katalognøkkel. Stoppes av i18n-sjekken.
+ */
 export function L(nb: string, en: string): string {
   return current === "nb" ? nb : current === "en" ? en : pseudoText(en);
 }
@@ -67,6 +73,7 @@ export function L(nb: string, en: string): string {
 export type TextPair = readonly [nb: string, en: string];
 
 /**
+ * @deprecated ML2f: bruk `tLocalized()` med katalognøkler. Stoppes av i18n-sjekken.
  * Et fast oppslag (f.eks. etikett per type) som alltid svarer på gjeldende språk. Brukes på modulnivå,
  * der `L` ville blitt regnet ut én gang.
  */
@@ -123,6 +130,7 @@ function compile(): Compiled[] {
 }
 
 /**
+ * Bare for gamle, lagrede servermeldinger (laget på norsk før ML2): viser dem på gjeldende språk.
  * En melding som er laget på norsk et annet sted (serveren), på gjeldende språk. Meldinger med flere
  * setninger oversettes setning for setning. Ukjent tekst vises som den er.
  */

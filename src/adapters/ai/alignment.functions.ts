@@ -7,8 +7,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { estimateCostUsd, isUuid, L, newId, providerModel } from "@/core";
+import { estimateCostUsd, isUuid, newId, providerModel } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 const MAX_ALIGNMENTS_PER_USER_PER_HOUR = 120;
@@ -34,10 +35,10 @@ export const alignAudio = createServerFn({ method: "POST" })
     const x = (d ?? {}) as Record<string, unknown>;
     for (const k of ["projectId", "versionId", "blockId"])
       if (typeof x[k] !== "string" || !isUuid(x[k] as string))
-        throw new Error(L("Ugyldig forespørsel", "Invalid request"));
-    if (x["provider"] !== "elevenlabs") throw new Error(L("Ukjent tjeneste", "Unknown service"));
+        throw new Error(t("adapters-ai-alignment-functions.align-audio.create-server-fn-method-post-middleware-require-supabase-auth-validator.960bd85ed814"));
+    if (x["provider"] !== "elevenlabs") throw new Error(t("adapters-ai-alignment-functions.align-audio.create-server-fn-method-post-middleware-require-supabase-auth-validator.84f0398ded82"));
     if (x["approved"] !== true)
-      throw new Error(L("Kostnaden må godkjennes først", "The cost must be approved first"));
+      throw new Error(t("adapters-ai-alignment-functions.align-audio.create-server-fn-method-post-middleware-require-supabase-auth-validator.398974b8be6a"));
     return {
       projectId: x["projectId"] as string,
       versionId: x["versionId"] as string,
@@ -56,10 +57,7 @@ export const alignAudio = createServerFn({ method: "POST" })
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang til å analysere lyd i dette prosjektet.",
-          "You do not have access to analyse audio in this project.",
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.a046ede9d072"),
       };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const db = supabaseAdmin as unknown as AnyClient;
@@ -67,10 +65,7 @@ export const alignAudio = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 37)
       return {
         ok: false,
-        message: L(
-          "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).",
-          "The database is missing word alignment. It must be updated (migration 0037).",
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.b42336c386de"),
       };
     const { data: proj } = await db
       .from("projects")
@@ -78,7 +73,7 @@ export const alignAudio = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+      return { ok: false, message: t("adapters-ai-alignment-functions.message.message.288e1c19d741") };
     const { data: ver } = await db
       .from("asset_versions")
       .select("id, variant_id, media_path, mime_type, duration_ms, byte_size_big")
@@ -93,14 +88,11 @@ export const alignAudio = createServerFn({ method: "POST" })
       byte_size_big: number | null;
     } | null;
     if (!v || v.duration_ms === null || !v.mime_type.startsWith("audio/"))
-      return { ok: false, message: L("Fant ikke opptaket.", "The recording was not found.") };
+      return { ok: false, message: t("adapters-ai-alignment-functions.message.message.256487e7601c") };
     if (v.duration_ms > MAX_AUDIO_MS || (v.byte_size_big ?? 0) > MAX_BYTES)
       return {
         ok: false,
-        message: L(
-          "Opptaket er for langt for ord-til-lyd (høyst 15 minutter).",
-          "The recording is too long for word alignment (15 minutes at most).",
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.d5b8defe67bb"),
       };
     const { data: block } = await db
       .from("script_blocks")
@@ -110,22 +102,19 @@ export const alignAudio = createServerFn({ method: "POST" })
       .maybeSingle();
     const b = block as { kind: string; text: string } | null;
     if (!b || b.kind !== "dialogue" || !b.text.trim())
-      return { ok: false, message: L("Fant ikke replikken.", "The line was not found.") };
+      return { ok: false, message: t("adapters-ai-alignment-functions.message.message.345d4ad48283") };
     const aiGate = await (
       await import("@/adapters/account/ai-models.server")
     ).modelGate(db, data.provider, data.model);
     if (aiGate.message) return { ok: false, message: aiGate.message };
     const m = providerModel(data.provider, data.model, aiGate.settings);
     if (!m || m.capability !== "alignment")
-      return { ok: false, message: L("Ukjent tjeneste.", "Unknown service.") };
+      return { ok: false, message: t("adapters-ai-alignment-functions.message.message.7fb47b6a9379") };
     const key = await gate.projectKey(db, data.projectId, data.provider, context.userId);
     if (!key)
       return {
         ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører på prosjektlisten).",
-          "None of the project's owners has connected ElevenLabs (AI providers on the project list).",
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.927cd0fc4b87"),
       };
     const seconds = v.duration_ms / 1000;
     const cost = estimateCostUsd(data.provider, data.model, { seconds }, aiGate.settings);
@@ -138,10 +127,7 @@ export const alignAudio = createServerFn({ method: "POST" })
         .eq("kind", "sound")
         .gte("created_at", hourAgo);
       if ((count ?? 0) - extra >= MAX_ALIGNMENTS_PER_USER_PER_HOUR)
-        return L(
-          `Grensen på ${MAX_ALIGNMENTS_PER_USER_PER_HOUR} lydjobber i timen er nådd.`,
-          `The limit of ${MAX_ALIGNMENTS_PER_USER_PER_HOUR} audio jobs per hour has been reached.`,
-        );
+        return t("adapters-ai-alignment-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-d-as-record-string-unknown-for-const-k-of-project-id-version-id-block-id-if-typeof-x-k-string-is-uuid-x-k-as-string-throw-new-error-l-ugyldig-foresp-rsel-invalid-request-if-x-provider-elevenlabs-throw-new-error-l-ukjent-tjeneste-unknown-service-if-x-approved-true-throw-new-error-l-kostnaden-m-godkjennes-f-rst-the-cost-must-be-approved-first-return-project-id-x-project-id-as-string-version-id-x-version-id-as-string-block-id-x-block-id-as-string-provider-elevenlabs-as-const-model-forced-alignment-handler.62ba8aa79c2a", { MAX_ALIGNMENTS_PER_USER_PER_HOUR: String(MAX_ALIGNMENTS_PER_USER_PER_HOUR) });
       const budget = await gate.overProjectBudget(
         db,
         data.projectId,
@@ -159,7 +145,7 @@ export const alignAudio = createServerFn({ method: "POST" })
       kind: "sound",
       provider: data.provider,
       model: data.model,
-      prompt: L(`Ord-til-lyd: ${b.text.slice(0, 900)}`, `Word alignment: ${b.text.slice(0, 900)}`),
+      prompt: t("adapters-ai-alignment-functions.prompt.prompt.32723a4e953a", { value1: String(b.text.slice(0, 900)) }),
       asset_id: null,
       status: "running",
       created_by: context.userId,
@@ -171,10 +157,7 @@ export const alignAudio = createServerFn({ method: "POST" })
     if (logErr)
       return {
         ok: false,
-        message: L(
-          `Jobben kunne ikke logges: ${logErr.message}`,
-          `The job could not be logged: ${logErr.message}`,
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.1e5466af1b77", { message: String(logErr.message) }),
       };
     const after = await limits(1);
     if (after) {
@@ -191,7 +174,7 @@ export const alignAudio = createServerFn({ method: "POST" })
     try {
       const { data: file, error: dlErr } = await db.storage.from(BUCKET).download(v.media_path);
       if (dlErr || !file)
-        throw new Error(L("Opptaket kunne ikke hentes.", "The recording could not be fetched."));
+        throw new Error(t("adapters-ai-alignment-functions.align-audio.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-d-as-record-string-unknown-for-const-k-of-project-id-version-id-block-id-if-typeof-x-k-string-is-uuid-x-k-as-string-throw-new-error-l-ugyldig-foresp-rsel-invalid-request-if-x-provider-elevenlabs-throw-new-error-l-ukjent-tjeneste-unknown-service-if-x-approved-true-throw-new-error-l-kostnaden-m-godkjennes-f-rst-the-cost-must-be-approved-first-return-project-id-x-project-id-as-string-version-id-x-version-id-as-string-block-id-x-block-id-as-string-provider-elevenlabs-as-const-model-forced-alignment-handler.d6e2d6fb6df3"));
       const { decryptKey } = await import("./key-vault.server");
       secret = await decryptKey(key, {
         userId: key.user_id,
@@ -215,16 +198,13 @@ export const alignAudio = createServerFn({ method: "POST" })
       };
     } catch (e) {
       const message = scrubSecret(
-        (e as Error).message || L("Ukjent feil", "Unknown error"),
+        (e as Error).message || t("adapters-ai-alignment-functions.message.scrub-secret.98e79076b522"),
         secret,
       ).slice(0, 2000);
       await finish({ status: "failed", error: message });
       return {
         ok: false,
-        message: L(
-          `Analysen feilet: ${message}. Du kan koble ordene for hånd.`,
-          `The analysis failed: ${message}. You can link the words by hand.`,
-        ),
+        message: t("adapters-ai-alignment-functions.message.message.625282e102f4", { message: String(message) }),
       };
     }
   });

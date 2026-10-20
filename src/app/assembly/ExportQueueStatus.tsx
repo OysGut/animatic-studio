@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from "react";
 import { X } from "lucide-react";
-import { L } from "@/core";
+
 import { Button } from "@/components/ui/button";
 import { exportQueue, type ExportTask } from "./export-queue";
 import { t } from "@/core/i18n/keyed";

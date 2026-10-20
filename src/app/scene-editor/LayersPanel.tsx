@@ -22,24 +22,7 @@ import {
   Unlock,
 } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import {
-  LAYER_KIND_LABEL,
-  layerVersion,
-  layerVersions,
-  layersOf,
-  newId,
-  transformAt,
-  applyMatrix,
-  groupMatrixAt,
-  groupOf,
-  regroupFields,
-  IDENTITY_TRANSFORM,
-  L,
-  type Command,
-  type Composition,
-  type CompositionLayer,
-  type ProjectState,
-} from "@/core";
+import { LAYER_KIND_LABEL, layerVersion, layerVersions, layersOf, newId, transformAt, applyMatrix, groupMatrixAt, groupOf, regroupFields, IDENTITY_TRANSFORM, type Command, type Composition, type CompositionLayer, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { layerFieldsOf as fieldsOf } from "@/core";
 import { removeLayer } from "./layer-actions";

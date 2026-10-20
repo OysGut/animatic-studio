@@ -3,16 +3,7 @@
  * et øyeblikksbilde hentes først når det trengs (sammenligning, visning, eksport).
  */
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  estimateProduction,
-  productionStatus,
-  projectDurationAssumptions,
-  scriptPages,
-  type DurationAssumptions,
-  type ProjectState,
-  type ScriptSnapshot,
-} from "@/core";
+import { estimateProduction, productionStatus, projectDurationAssumptions, scriptPages, type DurationAssumptions, type ProjectState, type ScriptSnapshot } from "@/core";
 import { durationSnapshot, type DurationSnapshot } from "@/core/screenplay/duration-snapshot";
 import {
   createScriptVersion,
@@ -21,6 +12,7 @@ import {
 } from "@/adapters/browser/versions";
 import { saveDurationEstimate } from "@/adapters/browser/history-records";
 import { estimatesKey } from "@/app/projects/use-history-records";
+import { t } from "@/core/i18n/keyed";
 
 export interface VersionRow {
   readonly id: string;
@@ -50,7 +42,7 @@ export function useVersionSnapshot(versionId: string | null) {
     staleTime: Infinity, // uforanderlig
     queryFn: async (): Promise<ScriptSnapshot> => {
       const snapshot = await fetchScriptSnapshot(versionId!);
-      if (!snapshot) throw new Error(L("Versjonen finnes ikke", "The version does not exist"));
+      if (!snapshot) throw new Error(t("app-project-use-versions.query-fn.query-fn.608669a1fce1"));
       return snapshot;
     },
   });

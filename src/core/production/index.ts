@@ -18,19 +18,10 @@ import { keyBetween, keysEvenly } from "../order-key";
 import { orderedOccurrences } from "../views";
 import { compositionOfVariant, layersOf } from "../composition/render";
 import { layerFieldsOf } from "../composition";
-import { collation, localized } from "../i18n";
+import { collation } from "../i18n";
+import { tLocalized } from "@/core/i18n/keyed";
 
-export const PRODUCTION_KIND_LABEL: Record<ProductionKind, string> = localized({
-  main: ["Hovedfilm", "Main film"],
-  spinoff: ["Spinoff", "Spin-off"],
-  trailer: ["Trailer", "Trailer"],
-  teaser: ["Teaser", "Teaser"],
-  short: ["Kortfilm", "Short film"],
-  pitch: ["Pitchfilm", "Pitch film"],
-  pilot: ["Pilotsekvens", "Pilot sequence"],
-  alternative: ["Alternativ fortelling", "Alternative story"],
-  other: ["Annen versjon", "Other version"],
-});
+export const PRODUCTION_KIND_LABEL: Record<ProductionKind, string> = tLocalized({ main: "core-production-index.production-kind-label.main.b07446579d03", spinoff: "core-production-index.production-kind-label.spinoff.5de4a0a26157", trailer: "core-production-index.production-kind-label.trailer.1e3f68e48854", teaser: "core-production-index.production-kind-label.teaser.6cce2ccb8b3a", short: "core-production-index.production-kind-label.short.82184e09a5fc", pitch: "core-production-index.production-kind-label.pitch.27685474c28f", pilot: "core-production-index.production-kind-label.pilot.5dc67e07dffa", alternative: "core-production-index.production-kind-label.alternative.e122a4af94a6", other: "core-production-index.production-kind-label.other.e0365556bcd5" });
 
 /** Produksjonene sortert: hovedfilmen først, så etter navn. */
 export function sortedProductions(s: ProjectState): Production[] {

@@ -74,6 +74,10 @@ export function migrateSource(source, file, mapping) {
   };
   visit(sf);
   if (!edits.length) return { source, stats };
+  // A text nested in another moved text's parameter (L inside L) moves on the next run, when the outer call is t().
+  const nested = edits.filter((e) => edits.some((o) => o !== e && o.start <= e.start && e.end <= o.end));
+  for (const _ of nested) { stats.moved--; keep('nested-next-run'); }
+  edits.splice(0, edits.length, ...edits.filter((e) => !nested.includes(e)));
   edits.sort((a, b) => b.start - a.start);
   for (let i = 1; i < edits.length; i++) if (edits[i].end > edits[i - 1].start) throw new Error(`Overlapping edits in ${file}`);
   let out = source;

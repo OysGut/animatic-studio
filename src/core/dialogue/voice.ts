@@ -1,7 +1,8 @@
 /** DV4: live provider capabilities, separate speech language and immutable generation settings. */
-import { L } from "../i18n";
+
 import type { AssetVoice } from "../model";
 import { languageTagError, normalizeLanguageTag } from "./languages";
+import { t } from "@/core/i18n/keyed";
 
 export interface SpeechModel {
   readonly modelId: string;
@@ -12,12 +13,12 @@ export interface SpeechModel {
 }
 export type SpeechSettings = Readonly<Record<string, number | boolean>>;
 export function speechSettingsError(settings: unknown): string | null {
-  if (!settings || typeof settings !== "object" || Array.isArray(settings)) return L("Ugyldige stemmeinnstillinger", "Invalid voice settings");
+  if (!settings || typeof settings !== "object" || Array.isArray(settings)) return t("core-dialogue-voice.speech-settings-error.message.e31399999dc4");
   for (const [key, value] of Object.entries(settings)) {
     if (key === "use_speaker_boost" && typeof value === "boolean") continue;
     const bounds = key === "speed" ? [0.7, 1.2] : ["stability", "similarity_boost", "style"].includes(key) ? [0, 1] : null;
     if (!bounds || typeof value !== "number" || !Number.isFinite(value) || value < (bounds[0] ?? 0) || value > (bounds[1] ?? 1))
-      return L("Ugyldige stemmeinnstillinger", "Invalid voice settings");
+      return t("core-dialogue-voice.speech-settings-error.message.e31399999dc4.2");
   }
   return null;
 }
@@ -27,7 +28,7 @@ export function assetVoiceError(voice: AssetVoice | null): string | null {
       typeof voice.label !== "string" || voice.label.length > 120 ||
       (voice.modelId !== undefined && !/^[A-Za-z0-9_-]{1,100}$/.test(voice.modelId)) ||
       (voice.language !== undefined && languageTagError(voice.language)))
-    return L("Ugyldig stemme", "Invalid voice");
+    return t("core-dialogue-voice.asset-voice-error.message.a4859bfe436f");
   return voice.settings === undefined ? null : speechSettingsError(voice.settings);
 }
 /** DV6-rest: modellens språkkode for et BCP-47-valg («nb» ↔ leverandørens «no»); null når modellen ikke har språket. */
@@ -39,7 +40,5 @@ export function providerLanguageCode(model: SpeechModel, language: string): stri
   return model.languages.find(l => normalizeLanguageTag(l.code) === primary)?.code ?? null;
 }
 export function speechLanguageError(model: SpeechModel, language: string): string | null {
-  return providerLanguageCode(model, language) !== null ? null : L(
-    "Modellen støtter ikke det valgte talespråket. Velg språk eller modell selv.",
-    "The model does not support the selected speech language. Choose a language or model yourself.");
+  return providerLanguageCode(model, language) !== null ? null : t("core-dialogue-voice.speech-language-error.message.788bc2c67ce4");
 }

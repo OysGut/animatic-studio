@@ -1,6 +1,6 @@
 /** Visning og rekkefølge for panelene i sceneeditoren, lagret på brukeren (se ScenePanels.tsx). */
 import { useCallback, useMemo } from "react";
-import { L } from "@/core";
+
 import { useUiPref } from "@/app/account/ui-prefs";
 import {
   DEFAULT_PANEL_PREFS,

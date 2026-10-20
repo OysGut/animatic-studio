@@ -4,7 +4,7 @@
  * så den står likt når brukeren går mellom manus, bibliotek og sceneeditor. Dobbeltklikk = standard.
  */
 import { useCallback, useRef, useState, useSyncExternalStore } from "react";
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 const PREFIX = "animatic:pane:";

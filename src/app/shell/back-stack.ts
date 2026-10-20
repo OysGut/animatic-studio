@@ -1,5 +1,5 @@
 /** Historikken for «Tilbake til …» (DEC-0063): rene funksjoner, testet i tests/unit/back-stack.test.ts. */
-import { L } from "@/core";
+
 import { t } from "@/core/i18n/keyed";
 
 export interface Entry {

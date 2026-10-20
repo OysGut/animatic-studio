@@ -7,51 +7,7 @@
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
-import {
-  applyMatrix,
-  cameraAt,
-  groupMatrixAt,
-  groupOf,
-  pathPointAt,
-  pathProgress,
-  pathSegments,
-  translatePath,
-  type Matrix,
-  type MotionPath,
-  dragMaskRect,
-  fieldsWithMaskAt,
-  fieldsWithTransformAt,
-  isMaskProperty,
-  layerFieldsOf,
-  maskAt,
-  type MaskRect,
-  shotAt,
-  toggleCurve,
-  transformAt,
-  withShot,
-  type CameraShot,
-  type CompositionLayer,
-  hitTest,
-  invert,
-  itemCorners,
-  maskOutline,
-  multiply,
-  renderFrame,
-  rotate,
-  translate,
-  type Command,
-  type Composition,
-  type DrawItem,
-  type Frame,
-  type LayerId,
-  type LayerTransform,
-  type ProjectState,
-  defaultLayerFields,
-  newId,
-  sceneContinuityVariant,
-  stretchedTransform,
-  L,
-} from "@/core";
+import { applyMatrix, cameraAt, groupMatrixAt, groupOf, pathPointAt, pathProgress, pathSegments, translatePath, type Matrix, type MotionPath, dragMaskRect, fieldsWithMaskAt, fieldsWithTransformAt, isMaskProperty, layerFieldsOf, maskAt, type MaskRect, shotAt, toggleCurve, transformAt, withShot, type CameraShot, type CompositionLayer, hitTest, invert, itemCorners, maskOutline, multiply, renderFrame, rotate, translate, type Command, type Composition, type DrawItem, type Frame, type LayerId, type LayerTransform, type ProjectState, defaultLayerFields, newId, sceneContinuityVariant, stretchedTransform } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { removeLayer } from "./layer-actions";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
@@ -1461,10 +1417,7 @@ export function Stage({
     zoomToLevel(next);
   }
 
-  const label = L(
-    `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`,
-    `${cameraMode ? "Camera view" : "2D scene"}: ${composition.name.trim() || "Untitled"}, ${frame.items.length} layers`,
-  );
+  const label = (cameraMode ? tk("app-scene-editor-stage.stage-label-camera", { name: composition.name.trim() || tk("app-scene-editor-stage.stage-label-unnamed"), layers: frame.items.length }) : tk("app-scene-editor-stage.stage-label", { name: composition.name.trim() || tk("app-scene-editor-stage.stage-label-unnamed"), layers: frame.items.length }));
   const shownCursor = panning ? "grabbing" : cursor;
 
   return (

@@ -6,7 +6,7 @@
 import { Link } from "@tanstack/react-router";
 import { Clapperboard, Film, Image as ImageIcon, Layers, Library, Mic, Timer } from "lucide-react";
 import { useMemo } from "react";
-import { blockLinks, takeLabel, type ProjectState, L, locale } from "@/core";
+import { blockLinks, takeLabel, type ProjectState, locale } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 const fmt = (ms: number) =>

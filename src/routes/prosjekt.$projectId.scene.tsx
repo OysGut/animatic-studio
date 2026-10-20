@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
-import { L } from "@/core";
+
 import { SceneEditorWorkspace } from "@/app/scene-editor/SceneEditorWorkspace";
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";

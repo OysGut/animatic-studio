@@ -11,22 +11,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { BookPlus, Check, ListPlus, Plus, X } from "lucide-react";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
-import {
-  L,
-  tm,
-  ASSET_KIND_LABEL,
-  REASON_LABEL,
-  USAGE_LABEL,
-  assetsInScene,
-  coverVersion,
-  librarySuggestions,
-  pendingPlansFor,
-  sceneContinuityVariant,
-  versionsOf,
-  type AssetVersion,
-  type LibrarySuggestion,
-  type ProjectState,
-} from "@/core";
+import { tm, ASSET_KIND_LABEL, REASON_LABEL, USAGE_LABEL, assetsInScene, coverVersion, librarySuggestions, pendingPlansFor, sceneContinuityVariant, versionsOf, type AssetVersion, type LibrarySuggestion, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { SuggestionsDialog } from "@/app/library/SuggestionsDialog";
 import { useAnalysisRows } from "@/app/library/entity-analysis-store";
@@ -205,10 +190,13 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     e.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
                     e.dataTransfer.effectAllowed = "copy";
                   }}
-                  title={L(
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planlagt fra en annen scene" : USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`,
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planned from another scene" : USAGE_LABEL[how]}${lookName ? `. Look in this scene (continuity): ${lookName}` : ""}${inScene ? `. In the scene${inScene > 1 ? ` (${inScene} layers)` : ""}` : ". Not yet added to the scene"}.\nDouble-click: choose or generate an image`,
-                  )}
+                  title={t("app-scene-editor-scene-assets-panel.asset-tooltip", {
+  name: asset.name,
+  kind: ASSET_KIND_LABEL[asset.kind],
+  usage: how === "planned" ? t("app-scene-editor-scene-assets-panel.asset-tooltip-planned") : USAGE_LABEL[how],
+  look: lookName ? t("app-scene-editor-scene-assets-panel.asset-tooltip-look", { look: lookName }) : "",
+  scene: inScene ? (inScene > 1 ? t("app-scene-editor-scene-assets-panel.asset-tooltip-in-scene-layers", { count: inScene }) : t("app-scene-editor-scene-assets-panel.asset-tooltip-in-scene")) : t("app-scene-editor-scene-assets-panel.asset-tooltip-not-in-scene"),
+})}
                   data-planned={plan ? true : undefined}
                   className={
                     "group relative flex flex-col overflow-hidden rounded-sm border bg-surface-2 " +
@@ -223,10 +211,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   {inScene ? (
                     <span
                       className="absolute left-1 top-1 z-[1] inline-flex items-center gap-0.5 rounded-sm bg-accent-brand px-1 text-[11px] font-medium text-accent-fg"
-                      aria-label={L(
-                        `I scenen${inScene > 1 ? `, ${inScene} lag` : ""}`,
-                        `In the scene${inScene > 1 ? `, ${inScene} layers` : ""}`,
-                      )}
+                      aria-label={inScene > 1 ? t("app-scene-editor-scene-assets-panel.in-scene-layers", { count: inScene }) : t("app-scene-editor-scene-assets-panel.in-scene")}
                     >
                       <Check className="size-3" aria-hidden />
                       {t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.84081f3271ac")}
@@ -334,10 +319,14 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
               <li
                 key={`${x.reason}|${x.name}`}
                 className="flex flex-col rounded-sm border border-dashed border-border px-1.5 py-0.5"
-                title={L(
-                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (usikker type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Kanskje samme som «${x.possibleMatch.assetName}»` : ""}${x.uncertain ? ". Usikkert forslag" : ""}`,
-                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (uncertain type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Possibly the same as “${x.possibleMatch.assetName}”` : ""}${x.uncertain ? ". Uncertain suggestion" : ""}`,
-                )}
+                title={t("app-scene-editor-scene-assets-panel.suggestion-tooltip", {
+  name: x.name,
+  kind: ASSET_KIND_LABEL[x.kind],
+  uncertainKind: x.kindUncertain ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain-kind") : "",
+  reason: REASON_LABEL[x.reason],
+  match: x.possibleMatch ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-match", { name: x.possibleMatch.assetName }) : "",
+  uncertain: x.uncertain ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain") : "",
+})}
               >
                 <span
                   className={

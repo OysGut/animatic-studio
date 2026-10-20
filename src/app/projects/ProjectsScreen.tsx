@@ -25,15 +25,7 @@ import {
   listProjects,
   type ProductionSummary,
 } from "@/adapters/browser/projects";
-import {
-  L,
-  PRODUCTION_KIND_LABEL,
-  collation,
-  locale,
-  localized,
-  tm,
-  type ProductionKind,
-} from "@/core";
+import { PRODUCTION_KIND_LABEL, collation, locale, tm, type ProductionKind } from "@/core";
 import { useProfiles } from "@/app/project/use-project";
 import { rememberProduction } from "@/app/project/use-production";
 import { LanguageSwitch } from "@/app/i18n/language";

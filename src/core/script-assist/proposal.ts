@@ -5,13 +5,14 @@
  * den i konflikt og kan ikke brukes.
  */
 import type { Command, NewAnnotation, NewBlock } from "../commands/types";
-import { L } from "../i18n";
+
 import { newId } from "../ids";
 import type { BlockKind, ProjectState, SceneHeading } from "../model";
 import { keyBetween } from "../order-key";
 import { parseJsonLoose } from "../storylab/prompts";
 import { activeStructure, orderedOccurrences } from "../views";
 import { MAX_ASSIST_BLOCK_CHARS, sceneBlocks, type AssistKind, type AssistPrompt, type AssistRequest } from "./prompts";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type ProposalKind = AssistKind | "format";
 
@@ -185,14 +186,11 @@ export function planApplyProposal(s: ProjectState, p: Proposal, keys: ReadonlySe
   const conflicts = proposalConflicts(s, p);
   const chosen = p.items.filter((i) => keys.has(i.key));
   const heading = p.headingFix && keys.has("heading");
-  if (chosen.length === 0 && !heading) return { ok: false, message: L("Velg minst én linje", "Select at least one line") };
+  if (chosen.length === 0 && !heading) return { ok: false, message: tk("core-script-assist-proposal.message.message.7382c1d94424") };
   if (chosen.some((i) => conflicts.has(i.key)) || (heading && conflicts.has("heading")))
     return {
       ok: false,
-      message: L(
-        "Noen andre har endret teksten siden forslaget ble laget. Lag forslaget på nytt.",
-        "Someone else changed the text after the suggestion was made. Create the suggestion again.",
-      ),
+      message: tk("core-script-assist-proposal.message.message.fe878e669f87"),
     };
   const pid = p.productionId as never;
   const commands: Command[] = [];
@@ -223,7 +221,7 @@ export function planApplyProposal(s: ProjectState, p: Proposal, keys: ReadonlySe
   if (p.kind === "next_line") {
     const a = p.anchor!;
     const occ = p.occurrenceId ? s.occurrences[p.occurrenceId] : undefined;
-    if (!occ) return { ok: false, message: L("Scenen finnes ikke", "The scene was not found") };
+    if (!occ) return { ok: false, message: tk("core-script-assist-proposal.message.message.877894bc190e") };
     const blocks = sceneBlocks(s, occ.id);
     const at = a.blockId ? blocks.findIndex((b) => b.id === a.blockId) : blocks.length - 1;
     let prev = at >= 0 ? blocks[at]!.orderKey : null;
@@ -281,10 +279,10 @@ export function planTrialNotes(
   ids: Ids = defaultIds,
 ): PlannedApply {
   if (!canSaveAsTrial(p))
-    return { ok: false, message: L("Dette forslaget kan ikke lagres som forsøksvis redigering", "This suggestion cannot be saved as a trial edit") };
+    return { ok: false, message: tk("core-script-assist-proposal.message.message.81b69b674276") };
   const conflicts = proposalConflicts(s, p);
   const chosen = p.items.filter((i) => keys.has(i.key) && i.blockId && !conflicts.has(i.key));
-  if (chosen.length === 0) return { ok: false, message: L("Velg minst én linje", "Select at least one line") };
+  if (chosen.length === 0) return { ok: false, message: tk("core-script-assist-proposal.message.message.7382c1d94424.2") };
   const annotations: NewAnnotation[] = chosen.map((i) => ({
     annotationId: ids("annotation") as never,
     blockId: i.blockId as never,
@@ -292,7 +290,7 @@ export function planTrialNotes(
     start: 0,
     end: i.oldText.length,
     quote: i.oldText.slice(0, 5000),
-    text: L("Forslag fra skrivehjelpen", "Suggestion from the writing assistant"),
+    text: tk("core-script-assist-proposal.text.text.30951c31a757"),
     authorName,
     kind: "trial_edit",
     suggestedText: i.newText,

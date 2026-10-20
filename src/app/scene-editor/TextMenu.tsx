@@ -4,7 +4,7 @@
  */
 import { useMemo, useState } from "react";
 import { Type } from "lucide-react";
-import { L, type Composition, type ProjectState } from "@/core";
+import { type Composition, type ProjectState } from "@/core";
 import {
   DropdownMenu,
   DropdownMenuContent,

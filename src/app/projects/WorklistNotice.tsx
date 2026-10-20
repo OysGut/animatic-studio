@@ -3,7 +3,7 @@
  */
 import { ListChecks } from "lucide-react";
 import { useState } from "react";
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { AssetWorklistDialog, useWorklistCount } from "@/app/library/AssetWorklistDialog";
 import { Button } from "@/components/ui/button";

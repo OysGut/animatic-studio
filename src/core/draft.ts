@@ -6,8 +6,9 @@
 import type { Command, CommandEnvelope } from "./commands/types";
 import { applyCommand, MAX_SCENE_DRAFT_STEPS, SCENE_DRAFT_STEPS } from "./commands/apply";
 import type { ProjectState } from "./model";
-import { L } from "./i18n";
+
 import { draftFieldPaths, draftRow, draftValueAt, mapDraftFields, materializeDraftStep, sameDraftValue, sparseDraftStep } from "./commands/draft-fields";
+import { t } from "@/core/i18n/keyed";
 
 export interface SceneDraft {
   readonly base: ProjectState;
@@ -51,8 +52,8 @@ export function createDraft(
 /** Legg et trinn i utkastet. Bare scenekommandoer er tillatt. */
 export function pushDraft(d: SceneDraft, cmd: Command): DraftResult {
   if (!SCENE_DRAFT_STEPS.has(cmd.type))
-    return { ok: false, message: L(`Ikke en scenekommando: ${cmd.type}`, `Not a scene command: ${cmd.type}`) };
-  if (d.steps.length >= MAX_SCENE_DRAFT_STEPS) return { ok: false, message: L("Utkastet er fullt", "Draft is full") };
+    return { ok: false, message: t("core-draft.message.message.5ad117310d5e", { type: String(cmd.type) }) };
+  if (d.steps.length >= MAX_SCENE_DRAFT_STEPS) return { ok: false, message: t("core-draft.message.message.10d479196e80") };
   const r = applyCommand(d.state, env(cmd));
   if (!r.ok) return { ok: false, message: [r.error.message, ...(r.error.details ?? [])].join(" — ") };
   return { ok: true, draft: { ...d, steps: [...d.steps, sparseDraftStep(d.state, r.state, cmd)], redo: [], state: r.state } };

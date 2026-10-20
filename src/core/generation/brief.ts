@@ -27,7 +27,8 @@
 import type { AssetKind, StyleGuide } from "../model";
 import { VERSION_VIEW_PROMPT, type VersionView } from "../library/view";
 import type { ImagePurpose } from "./prompt";
-import { L, localized } from "../i18n";
+
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type PromptFamily = "narrative" | "compact";
 
@@ -37,16 +38,7 @@ export function promptFamilyOf(provider: string, model: string | null | undefine
   return "narrative";
 }
 
-export const PROMPT_FAMILY_LABEL: Record<PromptFamily, string> = localized({
-  narrative: [
-    "fortellende beskrivelse (anbefalt for Nano Banana og GPT Image)",
-    "narrative description (recommended for Nano Banana and GPT Image)",
-  ],
-  compact: [
-    "kort og presis beskrivelse med identiteten først (anbefalt for Seedream, Qwen og FLUX)",
-    "short, precise description with the identity first (recommended for Seedream, Qwen and FLUX)",
-  ],
-});
+export const PROMPT_FAMILY_LABEL: Record<PromptFamily, string> = tLocalized({ narrative: "core-generation-brief.prompt-family-label.narrative.13521aabfc33", compact: "core-generation-brief.prompt-family-label.compact.b117cafc2d86" });
 
 /** Hva bildet er. */
 export type BriefTask =
@@ -422,12 +414,7 @@ export function renderBrief(
 
 // ---------------------------------------------------------------- Norsk oppsummering
 
-const TASK_NB: Record<BriefTask, string> = localized({
-  design: ["Figurdesign", "Character design"],
-  background: ["Bakgrunn", "Background"],
-  sheet: ["Karakterark", "Character sheet"],
-  view: ["Ny vinkel", "New angle"],
-});
+const TASK_NB: Record<BriefTask, string> = tLocalized({ design: "core-generation-brief.task-nb.design.5c467d06473d", background: "core-generation-brief.task-nb.background.860bf7e72714", sheet: "core-generation-brief.task-nb.sheet.9c93d889d649", view: "core-generation-brief.task-nb.view.298008809a66" });
 
 /** Kort, norsk oppsummering av bestillingen (vises over den engelske beskrivelsen). */
 export function briefSummaryNb(
@@ -440,45 +427,24 @@ export function briefSummaryNb(
   const views = b.views.map(viewLabel).join(", ");
   const colours = b.style.colours.length;
   return [
-    L(
-      `${TASK_NB[b.task]} av ${b.subject.name}${b.views.length ? ` – ${views.toLocaleLowerCase("nb")}` : ""}.`,
-      `${TASK_NB[b.task]}: ${b.subject.name}${b.views.length ? ` – ${views.toLocaleLowerCase("en")}` : ""}.`,
-    ),
+    tk("core-generation-brief.task-subject", { task: TASK_NB[b.task], subject: b.subject.name, views: b.views.length ? ` – ${views.toLowerCase()}` : "" }),
     b.subject.facts.length
-      ? L(
-          `Utseende fra faktaarket (${b.subject.facts.length} punkter).`,
-          `Appearance from the fact sheet (${b.subject.facts.length} points).`,
-        )
+      ? tk("core-generation-brief.brief-summary-nb.message.cb55804f34e1", { length: String(b.subject.facts.length) })
       : b.subject.notes.length
-        ? L(
-            "Utseende fra manusutdrag (ingen faktaark ennå – lag et for bedre treff).",
-            "Appearance from the script extract (no fact sheet yet – make one for better results).",
-          )
-        : L(
-            "Ingen beskrivelse av utseendet – lag et faktaark eller skriv en beskrivelse av objektet.",
-            "No description of the appearance – make a fact sheet or write a description of the object.",
-          ),
+        ? tk("core-generation-brief.brief-summary-nb.message.efdbac0b1d5b")
+        : tk("core-generation-brief.brief-summary-nb.message.ccfe49e5e0aa"),
     b.style.fromGuide
-      ? L(
-          `Stil fra «Filmens visuelle stil»${colours ? ` med ${colours} farger` : ""}.`,
-          `Style from “The film's visual style”${colours ? ` with ${colours} colours` : ""}.`,
-        )
-      : L(
-          "Ingen visuell stil fylt ut – bruker en enkel standardstil.",
-          "No visual style filled in – using a simple default style.",
-        ),
+      ? colours ? tk("core-generation-brief.style-colours", { colours }) : tk("core-generation-brief.style")
+      : tk("core-generation-brief.brief-summary-nb.message.6d41e214b773"),
     id || st
-      ? L(
-          `Referansebilder: ${[id ? `${id} av motivet` : "", st ? `${st} for stilen` : ""].filter(Boolean).join(", ")}.`,
-          `Reference images: ${[id ? `${id} of the subject` : "", st ? `${st} for the style` : ""].filter(Boolean).join(", ")}.`,
-        )
-      : L("Ingen referansebilder.", "No reference images."),
+      ? tk("core-generation-brief.reference-images", { list: [id ? tk("core-generation-brief.reference-images-subject", { count: id }) : "", st ? tk("core-generation-brief.reference-images-style", { count: st }) : ""].filter(Boolean).join(", ") })
+      : tk("core-generation-brief.brief-summary-nb.message.2908cb26b4d4"),
     b.purpose === "background"
-      ? L("Fyller hele bildet, uten figurer.", "Fills the whole image, without figures.")
+      ? tk("core-generation-brief.brief-summary-nb.message.63fad4139696")
       : b.transparent
-        ? L("Gjennomsiktig bakgrunn.", "Transparent background.")
-        : L("Hvit bakgrunn – frilegg etterpå.", "White background – cut out afterwards."),
-    `${L("Form:", "Format:")} ${PROMPT_FAMILY_LABEL[family]}.`,
+        ? tk("core-generation-brief.brief-summary-nb.message.583fb9b5952d")
+        : tk("core-generation-brief.brief-summary-nb.message.7fed28a90285"),
+    `${tk("core-generation-brief.brief-summary-nb.message.d12c4e840b38")} ${PROMPT_FAMILY_LABEL[family]}.`,
   ];
 }
 

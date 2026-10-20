@@ -3,7 +3,8 @@
  * i IndexedDB, så den overlever brutt nett og at siden lastes på nytt. Filene sendes én og én (to samtidig) og
  * bekreftes av serveren; samme ID sendt på nytt gir aldri en ny fil.
  */
-import { L, newId } from "@/core";
+import { newId } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 /**
  * «local»: et lydopptak som bare ligger på telefonen til brukeren velger å sende det (bolk B, REQ-0687) – lyd
@@ -234,7 +235,7 @@ export class Uploader {
         this.tries.delete(it.id);
         return this.queue.update(it.id, {
           status: "failed",
-          error: L("Ingen forbindelse. Prøv igjen.", "No connection. Try again."),
+          error: tk("app-mobile-upload-queue.error.error.d5611629dacb"),
         });
       }
       this.queue.update(it.id, { status: "queued" });

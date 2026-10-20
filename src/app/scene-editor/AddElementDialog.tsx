@@ -6,20 +6,7 @@
  */
 import { useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
-import {
-  ASSET_KIND_LABEL,
-  L,
-  coverVersion,
-  formatHeading,
-  newId,
-  orderedOccurrences,
-  planNoteText,
-  sceneChoices,
-  sceneNumberOf,
-  sortedAssets,
-  type AssetKind,
-  type ProjectState,
-} from "@/core";
+import { ASSET_KIND_LABEL, coverVersion, formatHeading, newId, orderedOccurrences, planNoteText, sceneChoices, sceneNumberOf, sortedAssets, type AssetKind, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
@@ -166,10 +153,7 @@ export function AddElementDialog({
     const ids = scenes.filter((o) => selected.has(o.id)).map((o) => o.id);
     const taskId = newId();
     const group = newId();
-    const label = L(
-      `«${asset?.name ?? ""}» skal inn i ${ids.length === 1 ? "1 scene" : `${ids.length} scener`}`,
-      `“${asset?.name ?? ""}” should be in ${ids.length === 1 ? "1 scene" : `${ids.length} scenes`}`,
-    );
+    const label = tk("app-scene-editor-add-element-dialog.should-be-in", { name: asset?.name ?? "", count: ids.length });
     let err = cmds.run(
       {
         type: "PlanAssetInScenes",

@@ -1,5 +1,5 @@
 /** P4: renderer-independent format adapters; future MOV/ProRes adapters implement AlphaEncoder. */
-import { L, type ProjectState } from "@/core";
+import { type ProjectState } from "@/core";
 import { alphaExportError, alphaRange, alphaSceneClip, alphaLayerIds, alphaPixels,
   type AlphaExportSettings } from "@/core/layer-alpha";
 import { drawFilmFrame } from "../compositor/film";

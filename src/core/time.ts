@@ -3,7 +3,7 @@
  * Absolutt filmtid lagres aldri; den beregnes fra aktiv rekkefølge.
  */
 
-import { L } from "./i18n";
+import { t } from "@/core/i18n/keyed";
 
 export interface Rational {
   readonly num: number;
@@ -17,7 +17,7 @@ export const FPS_23_976: Rational = { num: 24000, den: 1001 };
 export function validateFps(fps: Rational): void {
   if (!Number.isInteger(fps.num) || !Number.isInteger(fps.den) || fps.num <= 0 || fps.den <= 0) {
     throw new Error(
-      L(`Ugyldig bildefrekvens ${fps.num}/${fps.den}`, `Invalid frame rate ${fps.num}/${fps.den}`),
+      t("core-time.validate-fps.message.20a79989a0cd", { num: String(fps.num), den: String(fps.den) }),
     );
   }
 }

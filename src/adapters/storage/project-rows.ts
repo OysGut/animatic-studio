@@ -3,7 +3,8 @@
  * Fungerer med både nettleserklienten (RLS – bare egne prosjekter) og serverens admin-klient.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { L, stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
+import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
 export const EXPECTED_SCHEMA_VERSION = 65;
@@ -28,10 +29,7 @@ async function fetchAll(db: AnyClient, table: string, projectId: string): Promis
     const { data, error } = await query.range(from, from + PAGE - 1);
     if (error)
       throw new Error(
-        L(
-          `Kunne ikke lese ${table}: ${error.message}`,
-          `Could not read ${table}: ${error.message}`,
-        ),
+        t("adapters-storage-project-rows.fetch-all.message.516b76fc3c7f", { table: String(table), message: String(error.message) }),
       );
     out.push(...((data ?? []) as Row[]));
     if (!data || data.length < PAGE) return out;
@@ -66,17 +64,11 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     .maybeSingle();
   if (error)
     throw new Error(
-      L(
-        `Kunne ikke lese prosjektet: ${error.message}`,
-        `Could not read the project: ${error.message}`,
-      ),
+      t("adapters-storage-project-rows.load-project-rows.message.390061ee2e9e", { message: String(error.message) }),
     );
   if (!project)
     throw new Error(
-      L(
-        "Prosjektet finnes ikke, eller du har ikke tilgang",
-        "The project does not exist, or you do not have access",
-      ),
+      t("adapters-storage-project-rows.load-project-rows.message.e88457a4b9f7"),
     );
   const [
     productions,

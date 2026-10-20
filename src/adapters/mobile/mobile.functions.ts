@@ -8,28 +8,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  PERSONAL_MAX_BYTES,
-  PERSONAL_MAX_FILES,
-  PERSONAL_SESSION_MS,
-  SHARED_MAX_BYTES,
-  SHARED_MAX_FILES,
-  SHARED_SESSION_MS,
-  checkMobileFile,
-  cleanContributorName,
-  isUuid,
-  mediaKindOf,
-  mediaKindsFor,
-  mobileFilePath,
-  parseUploadContext,
-  scriptForLine,
-  sniffMatches,
-  type MobileMediaKind,
-  type MobileScript,
-  type UploadContext,
-} from "@/core";
+import { PERSONAL_MAX_BYTES, PERSONAL_MAX_FILES, PERSONAL_SESSION_MS, SHARED_MAX_BYTES, SHARED_MAX_FILES, SHARED_SESSION_MS, checkMobileFile, cleanContributorName, isUuid, mediaKindOf, mediaKindsFor, mobileFilePath, parseUploadContext, scriptForLine, sniffMatches, type MobileMediaKind, type MobileScript, type UploadContext } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 const ROLE_RANK: Record<string, number> = { viewer: 1, commenter: 2, editor: 3, owner: 4 };
@@ -55,27 +36,18 @@ function missingSchema(message: string): boolean {
   return /does not exist|schema cache|Could not find the (table|function)/i.test(message);
 }
 
-const SCHEMA_MESSAGE = L(
-  "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).",
-  "The database is missing mobile import. It must be updated (migration 0035).",
-);
+const SCHEMA_MESSAGE = t("adapters-mobile-mobile-functions.schema-message.message.9443d2639538");
 
 /** Feilmeldingene fra databasen på norsk og engelsk. */
 function dbMessage(message: string): string {
   if (missingSchema(message)) return SCHEMA_MESSAGE;
   if (/utløpt eller tilbakekalt/.test(message))
-    return L(
-      "Lenken er utløpt eller tilbakekalt. Be om en ny QR-kode.",
-      "The link has expired or been revoked. Ask for a new QR code.",
-    );
+    return t("adapters-mobile-mobile-functions.db-message.message.089685f21124");
   if (/Taket for opplastinger/.test(message))
-    return L(
-      "Taket for opplastinger på denne lenken er nådd.",
-      "The upload limit for this link has been reached.",
-    );
+    return t("adapters-mobile-mobile-functions.db-message.message.36d37f5588e9");
   if (/filtypen kan ikke/.test(message))
-    return L("Denne filtypen kan ikke lastes opp her.", "This file type cannot be uploaded here.");
-  return L("Noe gikk galt. Prøv igjen.", "Something went wrong. Try again.");
+    return t("adapters-mobile-mobile-functions.db-message.message.1c8d654cd2f6");
+  return t("adapters-mobile-mobile-functions.db-message.message.4e3db25eced1");
 }
 
 // ---------------------------------------------------------------- datamaskinen
@@ -170,9 +142,9 @@ export const createUploadSession = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+      throw new Error(t("adapters-mobile-mobile-functions.create-upload-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.fc0e6332865f"));
     const context = parseUploadContext(x["context"]);
-    if (!context) throw new Error(L("Ugyldig kontekst", "Invalid context"));
+    if (!context) throw new Error(t("adapters-mobile-mobile-functions.create-upload-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.60b92238b5ea"));
     const label = typeof x["label"] === "string" ? x["label"].trim().slice(0, 200) : "";
     return { projectId: x["projectId"], context, label };
   })
@@ -189,16 +161,13 @@ export const createUploadSession = createServerFn({ method: "POST" })
     if (rank < ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Bare eier og redaktør kan lage QR-koder for opplasting.",
-          "Only the owner and editors can make QR codes for upload.",
-        ),
+        message: t("adapters-mobile-mobile-functions.message.message.000c6715628a"),
       };
     const db = await service();
     if (!(await contextBelongs(db, data.projectId, data.context)))
       return {
         ok: false,
-        message: L("Målet finnes ikke i prosjektet.", "The target does not exist in the project."),
+        message: t("adapters-mobile-mobile-functions.message.message.21b72981ca75"),
       };
     const { data: profile } = await db
       .from("profiles")
@@ -263,7 +232,7 @@ async function touch(db: AnyClient, token: string): Promise<SessionRow | null> {
 const tokenOnly = (d: unknown) => {
   const x = (d ?? {}) as Record<string, unknown>;
   if (typeof x["token"] !== "string" || !TOKEN_RE.test(x["token"]))
-    throw new Error(L("Ugyldig lenke", "Invalid link"));
+    throw new Error(t("adapters-mobile-mobile-functions.token-only.message.f8b14a79c470"));
   return { token: x["token"] };
 };
 
@@ -318,10 +287,7 @@ export const mobileSession = createServerFn({ method: "POST" })
     if (!s)
       return {
         ok: false,
-        message: L(
-          "Lenken er utløpt eller tilbakekalt. Be om en ny QR-kode.",
-          "The link has expired or been revoked. Ask for a new QR code.",
-        ),
+        message: t("adapters-mobile-mobile-functions.message.message.3bec875be49f"),
       };
     const uploadContext = parseUploadContext(s.context);
     let rigCapture: MobileSessionInfo["rigCapture"];
@@ -364,7 +330,7 @@ export const mobileUploadTicket = createServerFn({ method: "POST" })
     const x = (d ?? {}) as Record<string, unknown>;
     const { token } = tokenOnly(d);
     if (typeof x["clientFileId"] !== "string" || !isUuid(x["clientFileId"]))
-      throw new Error(L("Ugyldig fil", "Invalid file"));
+      throw new Error(t("adapters-mobile-mobile-functions.mobile-upload-ticket.create-server-fn-method-post-validator.1fc98438e8ea"));
     const mime = typeof x["mime"] === "string" ? x["mime"].toLowerCase().split(";")[0]!.trim() : "";
     const bytes = typeof x["bytes"] === "number" ? x["bytes"] : -1;
     const fileName = typeof x["fileName"] === "string" ? x["fileName"].slice(0, 255) : "";
@@ -383,10 +349,7 @@ export const mobileUploadTicket = createServerFn({ method: "POST" })
     if (!s)
       return {
         ok: false,
-        message: L(
-          "Lenken er utløpt eller tilbakekalt. Be om en ny QR-kode.",
-          "The link has expired or been revoked. Ask for a new QR code.",
-        ),
+        message: t("adapters-mobile-mobile-functions.message.message.3bec875be49f.2"),
       };
     const problem = checkMobileFile(data.mime, data.bytes, s.media_kinds);
     if (problem) return { ok: false, message: problem };
@@ -412,7 +375,7 @@ export const mobileUploadTicket = createServerFn({ method: "POST" })
     if (upErr || !up)
       return {
         ok: false,
-        message: L("Lagringen svarte ikke. Prøv igjen.", "The storage did not respond. Try again."),
+        message: t("adapters-mobile-mobile-functions.message.message.0cff54ef52fd"),
       };
     return { ok: true, message: "", path: up.path, uploadToken: up.token };
   });
@@ -442,7 +405,7 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
     const x = (d ?? {}) as Record<string, unknown>;
     const { token } = tokenOnly(d);
     if (typeof x["clientFileId"] !== "string" || !isUuid(x["clientFileId"]))
-      throw new Error(L("Ugyldig fil", "Invalid file"));
+      throw new Error(t("adapters-mobile-mobile-functions.mobile-confirm-upload.create-server-fn-method-post-validator.5b2e5c94213e"));
     return { token, clientFileId: x["clientFileId"] };
   })
   .handler(async ({ data }): Promise<MobileConfirmResult> => {
@@ -456,7 +419,7 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
     const sx = sess as { id: string; media_kinds: MobileMediaKind[]; revoked_at: string | null; expires_at: string } | null;
     // Ø-11: tilbakekalt eller utløpt økt kan ikke bekrefte flere filer
     const s = sx && !sx.revoked_at && Date.parse(sx.expires_at) > Date.now() ? sx : null;
-    if (!s) return { ok: false, message: L("Ugyldig lenke", "Invalid link") };
+    if (!s) return { ok: false, message: t("adapters-mobile-mobile-functions.message.message.0aa7f47f70e7") };
     const { data: row } = await db
       .from("mobile_imports")
       .select("path, mime_type, status")
@@ -464,7 +427,7 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
       .eq("client_file_id", data.clientFileId)
       .maybeSingle();
     const r = row as { path: string; mime_type: string; status: string } | null;
-    if (!r) return { ok: false, message: L("Ukjent fil", "Unknown file") };
+    if (!r) return { ok: false, message: t("adapters-mobile-mobile-functions.message.message.86f3c3d3bbf4") };
     if (r.status === "done") return { ok: true, message: "" };
     const p = await probe(db, r.path);
     const confirm = (ok: boolean, bytes: number, error: string | null) =>
@@ -478,19 +441,13 @@ export const mobileConfirmUpload = createServerFn({ method: "POST" })
     if (!p)
       return {
         ok: false,
-        message: L(
-          "Filen er ikke kommet fram ennå. Prøv igjen.",
-          "The file has not arrived yet. Try again.",
-        ),
+        message: t("adapters-mobile-mobile-functions.message.message.393fa803728b"),
       };
     const problem =
       checkMobileFile(r.mime_type, p.size, s.media_kinds) ??
       (sniffMatches(r.mime_type, p.head)
         ? null
-        : L(
-            "Innholdet i filen stemmer ikke med filtypen.",
-            "The file's content does not match its type.",
-          ));
+        : t("adapters-mobile-mobile-functions.problem.create-server-fn-method-post-validator-d-unknown-const-x-d-as-record-string-unknown-const-token-token-only-d-if-typeof-x-client-file-id-string-is-uuid-x-client-file-id-throw-new-error-l-ugyldig-fil-invalid-file-return-token-client-file-id-x-client-file-id-handler.086eaf25ccb7"));
     if (problem) {
       // Filen som ble avvist, fjernes fra lagringen (den ble aldri registrert som mottatt)
       await db.storage.from(BUCKET).remove([r.path]);
@@ -522,7 +479,7 @@ export const mobileShareLink = createServerFn({ method: "POST" })
     if (!s0)
       return {
         ok: false,
-        message: L("Lenken er utløpt eller tilbakekalt.", "The link has expired or been revoked."),
+        message: t("adapters-mobile-mobile-functions.message.message.892c226d408b"),
       };
     const { data: full } = await db
       .from("upload_sessions")
@@ -542,10 +499,7 @@ export const mobileShareLink = createServerFn({ method: "POST" })
     if (!s || s.kind !== "personal")
       return {
         ok: false,
-        message: L(
-          "En delt lenke kan ikke deles videre. Be den som sendte den, om en ny.",
-          "A shared link cannot be shared on. Ask the person who sent it for a new one.",
-        ),
+        message: t("adapters-mobile-mobile-functions.message.message.5c6d5f1cd692"),
       };
     const token = await newToken();
     const expiresAt = new Date(Date.now() + SHARED_SESSION_MS).toISOString();

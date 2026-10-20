@@ -3,7 +3,7 @@
  * én WAV-fil (16 bit PCM, stereo) med samme plassering som avspillingen. Musikk, atmosfære, effekter og lyden
  * i importert film er ikke med. Bare på klienten (OfflineAudioContext).
  */
-import { L, isVoiceKind, type FilmAudioItem } from "@/core";
+import { isVoiceKind, type FilmAudioItem } from "@/core";
 import { type AudioBank, renderAudio } from "../audio/mixer";
 import { t as tk } from "@/core/i18n/keyed";
 

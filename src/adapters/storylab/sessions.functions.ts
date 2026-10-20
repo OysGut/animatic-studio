@@ -6,8 +6,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, isUuid, newId } from "@/core";
+import { isUuid, newId } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const STORY_SESSION_KINDS = [
   "interview",
@@ -46,9 +47,9 @@ export const listStorySuggestions = createServerFn({ method: "POST" })
     const x = obj(d);
     const status = x["status"], kind = x["kind"];
     if (status !== undefined && !oneOf(["open", "applied", "discarded"] as const, status))
-      throw new Error(L("Ugyldig status", "Invalid status"));
+      throw new Error(tk("adapters-storylab-sessions-functions.list-story-suggestions.create-server-fn-method-post-middleware-require-supabase-auth-input-validator.0f7084a4922f"));
     if (kind !== undefined && !oneOf(STORY_SUGGESTION_KINDS, kind))
-      throw new Error(L("Ukjent type forslag", "Unknown kind of suggestion"));
+      throw new Error(tk("adapters-storylab-sessions-functions.list-story-suggestions.create-server-fn-method-post-middleware-require-supabase-auth-input-validator.984da1592680"));
     return { projectId: projectIdOf(x),
       ...(status !== undefined ? { status: status as StorySuggestion["status"] } : {}),
       ...(kind !== undefined ? { kind: kind as StorySuggestionKind } : {}),
@@ -64,7 +65,7 @@ export const listStorySuggestions = createServerFn({ method: "POST" })
     if (data.kind) query = query.eq("kind", data.kind);
     if (data.sessionId) query = query.eq("session_id", data.sessionId);
     const { data: rows, error } = await query.order("created_at", { ascending: false }).limit(500);
-    if (error) return fail(L("Forslagene kunne ikke hentes.", "The suggestions could not be loaded."));
+    if (error) return fail(tk("adapters-storylab-sessions-functions.list-story-suggestions.fail.b223ebe86741"));
     return { ok: true, suggestions: ((rows ?? []) as Record<string, unknown>[]).map((r) => ({
       id: String(r["id"]), sessionId: r["session_id"] as string | null, turnId: r["turn_id"] as string | null,
       kind: r["kind"] as StorySuggestionKind, payload: r["payload"] as StorySuggestion["payload"],
@@ -117,23 +118,23 @@ const oneOf = <T extends string>(list: readonly T[], v: unknown): v is T =>
 function projectIdOf(x: Record<string, unknown>): string {
   const p = x["projectId"];
   if (typeof p !== "string" || !isUuid(p))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(tk("adapters-storylab-sessions-functions.project-id-of.message.de93966f2a75"));
   return p;
 }
 function idOf(x: Record<string, unknown>, k: string): string {
   const v = x[k];
-  if (typeof v !== "string" || !isUuid(v)) throw new Error(L("Ugyldig ID", "Invalid ID"));
+  if (typeof v !== "string" || !isUuid(v)) throw new Error(tk("adapters-storylab-sessions-functions.id-of.message.01d65cac801c"));
   return v;
 }
 const obj = (d: unknown): Record<string, unknown> => {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(tk("adapters-storylab-sessions-functions.obj.message.2d0cf835cadd"));
   return d as Record<string, unknown>;
 };
 
 /** Kontroll av turer (eksportert for testene). */
 export function turnsError(turns: unknown): string | null {
   if (!Array.isArray(turns) || turns.length > MAX_APPEND_TURNS)
-    return L("Ugyldige turer", "Invalid turns");
+    return tk("adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9");
   for (const t of turns as Record<string, unknown>[]) {
     if (
       !t ||
@@ -147,7 +148,7 @@ export function turnsError(turns: unknown): string | null {
       typeof t["at"] !== "string" ||
       t["at"].length > 40
     )
-      return L("Ugyldige turer", "Invalid turns");
+      return tk("adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2");
   }
   return null;
 }
@@ -173,20 +174,14 @@ async function gate(
   const role = await memberRole(userDb, projectId, userId);
   if ((ROLE_RANK[role ?? ""] ?? 0) < ROLE_RANK[minRole]!)
     return fail(
-      L(
-        "Du har ikke tilgang til Story Lab i dette prosjektet.",
-        "You do not have access to Story Lab in this project.",
-      ),
+      tk("adapters-storylab-sessions-functions.gate.fail.649c18dd16a8"),
     );
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const admin = supabaseAdmin as unknown as AnyClient;
   const s = await checkSchema(admin);
   if (s.kind === "missing" || s.version < 39)
     return fail(
-      L(
-        "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039).",
-        "The database is missing Story Lab. It must be updated (migration 0039).",
-      ),
+      tk("adapters-storylab-sessions-functions.gate.fail.cc0601aff526"),
     );
   return { admin };
 }
@@ -234,13 +229,13 @@ export const createStorySession = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = obj(d);
     if (!oneOf(STORY_SESSION_KINDS, x["kind"]))
-      throw new Error(L("Ukjent type økt", "Unknown kind of session"));
+      throw new Error(tk("adapters-storylab-sessions-functions.create-story-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.6c2a10ded8f0"));
     const title = typeof x["title"] === "string" ? x["title"].trim().slice(0, 200) : "";
     const context = x["context"] ?? {};
     if (!context || typeof context !== "object" || Array.isArray(context))
-      throw new Error(L("Ugyldig kontekst", "Invalid context"));
+      throw new Error(tk("adapters-storylab-sessions-functions.create-story-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.9dc2f199fd73"));
     if (bytes(context) > MAX_SESSION_CONTEXT_BYTES)
-      throw new Error(L("Konteksten er for stor", "The context is too large"));
+      throw new Error(tk("adapters-storylab-sessions-functions.create-story-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.2a6859befa58"));
     return {
       projectId: projectIdOf(x),
       kind: x["kind"],
@@ -269,13 +264,10 @@ export const createStorySession = createServerFn({ method: "POST" })
     } as never);
     if (error)
       return fail(
-        L(
-          `Økten kunne ikke lagres: ${error.message}`,
-          `The session could not be saved: ${error.message}`,
-        ),
+        tk("adapters-storylab-sessions-functions.create-story-session.fail.0f113d4c39e6", { message: String(error.message) }),
       );
     const s = await loadSession(g.admin, data.projectId, id);
-    return s ? { ok: true, session: s } : fail(L("Økten finnes ikke", "The session was not found"));
+    return s ? { ok: true, session: s } : fail(tk("adapters-storylab-sessions-functions.create-story-session.fail.051cfc3dcf13"));
   });
 
 export const appendStoryTurns = createServerFn({ method: "POST" })
@@ -286,10 +278,10 @@ export const appendStoryTurns = createServerFn({ method: "POST" })
     if (e) throw new Error(e);
     const cost = x["addCostUsd"] ?? 0;
     if (typeof cost !== "number" || !Number.isFinite(cost) || cost < 0 || cost > 1000)
-      throw new Error(L("Ugyldig kostnad", "Invalid cost"));
+      throw new Error(tk("adapters-storylab-sessions-functions.append-story-turns.create-server-fn-method-post-middleware-require-supabase-auth-validator.5418eefbb941"));
     const status = x["status"];
     if (status !== undefined && !oneOf(STORY_SESSION_STATUSES, status))
-      throw new Error(L("Ugyldig status", "Invalid status"));
+      throw new Error(tk("adapters-storylab-sessions-functions.append-story-turns.create-server-fn-method-post-middleware-require-supabase-auth-validator.153ddc87b33c"));
     return {
       projectId: projectIdOf(x),
       sessionId: idOf(x, "sessionId"),
@@ -308,16 +300,13 @@ export const appendStoryTurns = createServerFn({ method: "POST" })
       );
       if ("ok" in g) return g;
       const s = await loadSession(g.admin, data.projectId, data.sessionId);
-      if (!s) return fail(L("Økten finnes ikke", "The session was not found"));
-      if (s.status === "archived") return fail(L("Økten er arkivert", "The session is archived"));
+      if (!s) return fail(tk("adapters-storylab-sessions-functions.append-story-turns.fail.bda2c0f7725c"));
+      if (s.status === "archived") return fail(tk("adapters-storylab-sessions-functions.append-story-turns.fail.50b458ba5298"));
       const known = new Set(s.turns.map((t) => t.id));
       const turns = [...s.turns, ...data.turns.filter((t) => !known.has(t.id))];
       if (bytes(turns) > MAX_SESSION_TURNS_BYTES)
         return fail(
-          L(
-            "Økten er full. Lag en ny økt (forgren fra en tur) for å fortsette.",
-            "The session is full. Create a new session (branch from a turn) to continue.",
-          ),
+          tk("adapters-storylab-sessions-functions.append-story-turns.fail.16237d7b1faa"),
         );
       const costUsd = Math.round((s.costUsd + data.addCostUsd) * 1e6) / 1e6;
       // Revisjonskontroll på updated_at: samtidige skrivinger overskriver ikke hverandre
@@ -334,17 +323,11 @@ export const appendStoryTurns = createServerFn({ method: "POST" })
         .select("id");
       if (error)
         return fail(
-          L(
-            `Turene kunne ikke lagres: ${error.message}`,
-            `The turns could not be saved: ${error.message}`,
-          ),
+          tk("adapters-storylab-sessions-functions.append-story-turns.fail.bf71948de891", { message: String(error.message) }),
         );
       if (!upd || !(upd as unknown[]).length)
         return fail(
-          L(
-            "Økten ble endret samtidig. Last den inn på nytt.",
-            "The session was changed at the same time. Reload it.",
-          ),
+          tk("adapters-storylab-sessions-functions.append-story-turns.fail.cacb5b7f2a4f"),
         );
       return { ok: true, turns: turns.length, costUsd };
     },
@@ -356,7 +339,7 @@ export const forkStorySession = createServerFn({ method: "POST" })
     const x = obj(d);
     const t = x["fromTurn"];
     if (!Number.isInteger(t) || (t as number) < -1)
-      throw new Error(L("Ugyldig tur", "Invalid turn"));
+      throw new Error(tk("adapters-storylab-sessions-functions.fork-story-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.2e9a297eec70"));
     return { projectId: projectIdOf(x), sessionId: idOf(x, "sessionId"), fromTurn: t as number,
       ...(typeof x["title"] === "string" ? { title: x["title"].trim().slice(0, 200) } : {}) };
   })
@@ -369,8 +352,8 @@ export const forkStorySession = createServerFn({ method: "POST" })
     );
     if ("ok" in g) return g;
     const s = await loadSession(g.admin, data.projectId, data.sessionId);
-    if (!s) return fail(L("Økten finnes ikke", "The session was not found"));
-    if (data.fromTurn >= s.turns.length) return fail(L("Ugyldig tur", "Invalid turn"));
+    if (!s) return fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.1a24d9b9ef7c"));
+    if (data.fromTurn >= s.turns.length) return fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.2e9a297eec70"));
     const id = newId<"story_session">();
     const { error } = await g.admin.from("story_sessions").insert({
       id,
@@ -386,13 +369,10 @@ export const forkStorySession = createServerFn({ method: "POST" })
     } as never);
     if (error)
       return fail(
-        L(
-          `Økten kunne ikke lagres: ${error.message}`,
-          `The session could not be saved: ${error.message}`,
-        ),
+        tk("adapters-storylab-sessions-functions.fork-story-session.fail.a8d419af9760", { message: String(error.message) }),
       );
     const n = await loadSession(g.admin, data.projectId, id);
-    return n ? { ok: true, session: n } : fail(L("Økten finnes ikke", "The session was not found"));
+    return n ? { ok: true, session: n } : fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.1a24d9b9ef7c.2"));
   });
 
 export const listStorySessions = createServerFn({ method: "POST" })
@@ -433,7 +413,7 @@ export const getStorySession = createServerFn({ method: "POST" })
     );
     if ("ok" in g) return g;
     const s = await loadSession(g.admin, data.projectId, data.sessionId);
-    return s ? { ok: true, session: s } : fail(L("Økten finnes ikke", "The session was not found"));
+    return s ? { ok: true, session: s } : fail(tk("adapters-storylab-sessions-functions.get-story-session.fail.d0bb4ba3429c"));
   });
 
 export const saveStorySuggestion = createServerFn({ method: "POST" })
@@ -441,19 +421,19 @@ export const saveStorySuggestion = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = obj(d);
     if (!oneOf(STORY_SUGGESTION_KINDS, x["kind"]))
-      throw new Error(L("Ukjent type forslag", "Unknown kind of suggestion"));
+      throw new Error(tk("adapters-storylab-sessions-functions.save-story-suggestion.create-server-fn-method-post-middleware-require-supabase-auth-validator.3ffb9fa1bcfb"));
     const payload = x["payload"];
     if (!payload || typeof payload !== "object" || Array.isArray(payload))
-      throw new Error(L("Ugyldig forslag", "Invalid suggestion"));
+      throw new Error(tk("adapters-storylab-sessions-functions.save-story-suggestion.create-server-fn-method-post-middleware-require-supabase-auth-validator.741dfd84a76d"));
     if (bytes(payload) > 60_000)
-      throw new Error(L("Forslaget er for stort", "The suggestion is too large"));
+      throw new Error(tk("adapters-storylab-sessions-functions.save-story-suggestion.create-server-fn-method-post-middleware-require-supabase-auth-validator.9467b14a104e"));
     const turnId = x["turnId"];
     if (
       turnId !== undefined &&
       turnId !== null &&
       (typeof turnId !== "string" || turnId.length > 100)
     )
-      throw new Error(L("Ugyldig tur", "Invalid turn"));
+      throw new Error(tk("adapters-storylab-sessions-functions.save-story-suggestion.create-server-fn-method-post-middleware-require-supabase-auth-validator.b91db806aba0"));
     return {
       projectId: projectIdOf(x),
       sessionId:
@@ -472,7 +452,7 @@ export const saveStorySuggestion = createServerFn({ method: "POST" })
     );
     if ("ok" in g) return g;
     if (data.sessionId && !(await loadSession(g.admin, data.projectId, data.sessionId)))
-      return fail(L("Økten finnes ikke", "The session was not found"));
+      return fail(tk("adapters-storylab-sessions-functions.save-story-suggestion.fail.e5bae59f5da0"));
     const id = newId<"story_suggestion">();
     const { error } = await g.admin.from("story_suggestions").insert({
       id,
@@ -486,10 +466,7 @@ export const saveStorySuggestion = createServerFn({ method: "POST" })
     } as never);
     return error
       ? fail(
-          L(
-            `Forslaget kunne ikke lagres: ${error.message}`,
-            `The suggestion could not be saved: ${error.message}`,
-          ),
+          tk("adapters-storylab-sessions-functions.save-story-suggestion.fail.de232cc45dbf", { message: String(error.message) }),
         )
       : { ok: true, id };
   });
@@ -499,7 +476,7 @@ export const setSuggestionStatus = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = obj(d);
     if (!oneOf(["open", "applied", "discarded"] as const, x["status"]))
-      throw new Error(L("Ugyldig status", "Invalid status"));
+      throw new Error(tk("adapters-storylab-sessions-functions.set-suggestion-status.create-server-fn-method-post-middleware-require-supabase-auth-validator.dd0b8818378d"));
     return {
       projectId: projectIdOf(x),
       suggestionId: idOf(x, "suggestionId"),
@@ -523,5 +500,5 @@ export const setSuggestionStatus = createServerFn({ method: "POST" })
     if (error) return fail(error.message);
     return upd && (upd as unknown[]).length
       ? { ok: true }
-      : fail(L("Forslaget finnes ikke", "The suggestion was not found"));
+      : fail(tk("adapters-storylab-sessions-functions.set-suggestion-status.fail.9603fb08dc3e"));
   });

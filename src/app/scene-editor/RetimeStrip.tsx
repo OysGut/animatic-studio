@@ -2,7 +2,7 @@
  * Før/etter-stripe for ny scenevarighet (SV1): to rader i samme målestokk med mellomrom (fleksibel tid),
  * låste tidsrom og den nye tiden. Bare visning.
  */
-import { L, type LockedRange, type RetimeReport } from "@/core";
+import { type LockedRange, type RetimeReport } from "@/core";
 import { t } from "@/core/i18n/keyed";
 
 export function RetimeStrip({

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { L, formatHeading, newId, suggestionText, suggestionToCommands, type ProjectState, type SuggestionTarget, type TransferSuggestion } from "@/core";
+import { formatHeading, newId, suggestionText, suggestionToCommands, type ProjectState, type SuggestionTarget, type TransferSuggestion } from "@/core";
 import { setSuggestionStatus, type StorySuggestion, type StorySuggestionKind } from "@/adapters/storylab/sessions.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";

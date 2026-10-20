@@ -4,7 +4,7 @@
  * innlogging og fra kontosiden etter. Behandlingsansvarlig, kontakt og lagringssted fylles ut av administrator;
  * hver lagring er en ny versjon. Teksten er et utkast etter vanlig praksis og bør leses av en jurist.
  */
-import { L, locale } from "@/core";
+import { locale } from "@/core";
 import type { PrivacyFields } from "@/adapters/browser/account";
 import { t } from "@/core/i18n/keyed";
 

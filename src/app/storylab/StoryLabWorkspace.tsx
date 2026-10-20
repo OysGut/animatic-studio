@@ -7,16 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { LayoutGrid, List, PanelLeft, PanelRight, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  RELATION_LABEL,
-  RELATION_LABEL_EN,
-  knowledgeAt,
-  mainProduction,
-  locale,
-  type Asset,
-  type ProjectState,
-} from "@/core";
+import { RELATION_LABEL, RELATION_LABEL_EN, knowledgeAt, mainProduction, locale, type Asset, type ProjectState } from "@/core";
 import { listStorySessions, setSuggestionStatus, type StorySuggestion } from "@/adapters/storylab/sessions.functions";
 import { SuggestionsPanel } from "./SuggestionsPanel";
 import { SuggestionsNavigation, suggestionKey, useStorySuggestions } from "./suggestions-data";

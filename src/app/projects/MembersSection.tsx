@@ -16,7 +16,7 @@ import {
 } from "@/adapters/browser/members";
 import type { MemberRow, ProfileRow } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
-import { L, localized, locale, tm } from "@/core";
+import { locale, tm } from "@/core";
 import { t, tLocalized } from "@/core/i18n/keyed";
 
 const ROLE_LABEL: Record<string, string> = tLocalized({ owner: "app-projects-members-section.role-label.owner.2479f0cad1e9", editor: "app-projects-members-section.role-label.editor.66d469833732", commenter: "app-projects-members-section.role-label.commenter.0492a29e0284", viewer: "app-projects-members-section.role-label.viewer.27370640f10c" });

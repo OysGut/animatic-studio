@@ -20,27 +20,7 @@ import {
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
-import {
-  annotationsOfVariant,
-  blocksOfVariant,
-  compareKeys,
-  formatHeading,
-  keyBetween,
-  isSharedIn,
-  newId,
-  ownCopyCommands,
-  orderedOccurrences,
-  sceneNumberOf,
-  type BlockKind,
-  type Command,
-  type ProjectState,
-  type SceneHeading,
-  L,
-  tm,
-  lineAudioStatus,
-  lineInfo,
-  lineLabel,
-} from "@/core";
+import { annotationsOfVariant, blocksOfVariant, compareKeys, formatHeading, keyBetween, isSharedIn, newId, ownCopyCommands, orderedOccurrences, sceneNumberOf, type BlockKind, type Command, type ProjectState, type SceneHeading, tm, lineAudioStatus, lineInfo, lineLabel } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";

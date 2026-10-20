@@ -35,7 +35,8 @@ import {
   type PosterFontKey,
 } from "./metrics";
 import { RELATION_COLOR, RELATION_DASHED, approvedRelations, relationName } from "./relations";
-import { L, collation, localized } from "../i18n";
+import { collation } from "../i18n";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 // ---------- Standarder ----------
 
@@ -44,7 +45,7 @@ export const POSTER_FORMATS: readonly { id: string; name: string; w: number; h: 
   {
     id: "70x100",
     get name() {
-      return L("70 × 100 cm (stående)", "70 × 100 cm (portrait)");
+      return tk("core-presentation-poster.poster-formats.message.b0cd29542f2e");
     },
     w: 700,
     h: 1000,
@@ -52,7 +53,7 @@ export const POSTER_FORMATS: readonly { id: string; name: string; w: number; h: 
   {
     id: "50x70",
     get name() {
-      return L("50 × 70 cm (stående)", "50 × 70 cm (portrait)");
+      return tk("core-presentation-poster.poster-formats.message.ef4cd3cf49a5");
     },
     w: 500,
     h: 700,
@@ -61,51 +62,33 @@ export const POSTER_FORMATS: readonly { id: string; name: string; w: number; h: 
   { id: "a3", name: "A3 (29,7 × 42 cm)", w: 297, h: 420 },
 ];
 
-export const POSTER_KIND_LABEL: Record<PosterKind, string> = localized({
-  pitch: ["Kinopitch-plakat", "Cinema pitch poster"],
-  character_map: ["Karakter- og universkart", "Character and universe map"],
-});
+export const POSTER_KIND_LABEL: Record<PosterKind, string> = tLocalized({ pitch: "core-presentation-poster.poster-kind-label.pitch.11e13afe5f8d", character_map: "core-presentation-poster.poster-kind-label.character-map.83bc7cae50a4" });
 
-/** Et norsk og et engelsk navn. */
-const pair = (nb: string, en: string): readonly [string, string] => [nb, en];
+/** Navnene på innholdsvalgene på gjeldende språk. */
+const POSTER_OPTION_TEXT: Record<string, string> = tLocalized({ imagesAndNamesOnly: "core-presentation-poster.option-images-and-names-only", shortDescriptions: "core-presentation-poster.option-short-descriptions", longDescriptions: "core-presentation-poster.option-long-descriptions", relationLines: "core-presentation-poster.option-relation-lines", namedRelations: "core-presentation-poster.option-named-relations", relationTexts: "core-presentation-poster.option-relation-texts", objectImages: "core-presentation-poster.option-object-images", objectDescriptions: "core-presentation-poster.option-object-descriptions", placeImages: "core-presentation-poster.option-place-images", placeDescriptions: "core-presentation-poster.option-place-descriptions", logline: "core-presentation-poster.option-logline", genreMood: "core-presentation-poster.option-genre-mood", projectData: "core-presentation-poster.option-project-data" });
 
 /** Et innholdsvalg med navnet på gjeldende språk (leses på nytt hver gang, så språkbyttet virker). */
-function optionLabel(
-  key: keyof PosterOptions,
-  [nb, en]: readonly [string, string],
-): [keyof PosterOptions, string] {
-  const out: [keyof PosterOptions, string] = [key, nb];
-  Object.defineProperty(out, 1, { enumerable: true, get: () => L(nb, en) });
+function optionLabel(key: keyof PosterOptions): [keyof PosterOptions, string] {
+  const out: [keyof PosterOptions, string] = [key, ""];
+  Object.defineProperty(out, 1, { enumerable: true, get: () => POSTER_OPTION_TEXT[key] ?? key });
   return out;
 }
 
 /** Innholdsvalgene med navn, i mandatets rekkefølge (REQ-0390). */
 export const POSTER_OPTION_LABEL: readonly [keyof PosterOptions, string][] = [
-  optionLabel("imagesAndNamesOnly", pair("Bare bilder og navn", "Images and names only")),
-  optionLabel(
-    "shortDescriptions",
-    pair("Korte karakterbeskrivelser", "Short character descriptions"),
-  ),
-  optionLabel(
-    "longDescriptions",
-    pair("Utfyllende karakterbeskrivelser", "Full character descriptions"),
-  ),
-  optionLabel("relationLines", pair("Relasjonslinjer", "Relation lines")),
-  optionLabel("namedRelations", pair("Navngitte relasjoner", "Named relations")),
-  optionLabel("relationTexts", pair("Forklarende relasjonstekster", "Explanatory relation texts")),
-  optionLabel("objectImages", pair("Objektbilder", "Object images")),
-  optionLabel("objectDescriptions", pair("Objektbeskrivelser", "Object descriptions")),
-  optionLabel("placeImages", pair("Stedsbilder", "Place images")),
-  optionLabel("placeDescriptions", pair("Stedsbeskrivelser", "Place descriptions")),
-  optionLabel("logline", pair("Logline", "Logline")),
-  optionLabel("genreMood", pair("Sjanger og stemning", "Genre and mood")),
-  optionLabel(
-    "projectData",
-    pair(
-      "Andre prosjektdata (format, lengde, produksjon)",
-      "Other project data (format, length, production)",
-    ),
-  ),
+  optionLabel("imagesAndNamesOnly"),
+  optionLabel("shortDescriptions"),
+  optionLabel("longDescriptions"),
+  optionLabel("relationLines"),
+  optionLabel("namedRelations"),
+  optionLabel("relationTexts"),
+  optionLabel("objectImages"),
+  optionLabel("objectDescriptions"),
+  optionLabel("placeImages"),
+  optionLabel("placeDescriptions"),
+  optionLabel("logline"),
+  optionLabel("genreMood"),
+  optionLabel("projectData"),
 ];
 
 export function defaultOptions(kind: PosterKind): PosterOptions {
@@ -164,12 +147,7 @@ export const PALETTES: readonly Palette[] = [
   { name: "Papir", background: "#f4efe6", text: "#1b1b1b", accent: "#8a3b12", muted: "#6b6257" }, // i18n-ignore: lagret nøkkel
 ];
 
-const PALETTE_LABEL = localized({
-  Vinternatt: ["Vinternatt", "Winter night"],
-  Kino: ["Kino", "Cinema"],
-  Skog: ["Skog", "Forest"],
-  Papir: ["Papir", "Paper"],
-});
+const PALETTE_LABEL = tLocalized({ Vinternatt: "core-presentation-poster.palette-label.vinternatt.9b19d1bb5996", Kino: "core-presentation-poster.palette-label.kino.84052f456117", Skog: "core-presentation-poster.palette-label.skog.0ee4431bd1e3", Papir: "core-presentation-poster.palette-label.papir.546955ad4af1" });
 
 /** Visningsnavn for en fargepalett. Navnet lagres som nøkkel og endres ikke. */
 export function paletteLabel(name: string): string {
@@ -1267,21 +1245,7 @@ export function renderPoster(s: ProjectState, poster: Poster, lang = poster.lang
 // ---------- Lesbarhet (REQ-0392) ----------
 
 /** Navn på elementenes roller i redigeringen. */
-export const ROLE_LABEL: Record<string, string> = localized({
-  background: ["Bakgrunn", "Background"],
-  fade: ["Overgang", "Transition"],
-  title: ["Tittel", "Title"],
-  genre: ["Sjanger og stemning", "Genre and mood"],
-  tagline: ["Slagord", "Tagline"],
-  logline: ["Logline", "Logline"],
-  names: ["Navnelinje", "Names line"],
-  character: ["Karakter", "Character"],
-  place: ["Sted", "Place"],
-  object: ["Objekt", "Object"],
-  relation: ["Relasjon", "Relation"],
-  project: ["Prosjektdata", "Project data"],
-  custom: ["Eget element", "Own element"],
-});
+export const ROLE_LABEL: Record<string, string> = tLocalized({ background: "core-presentation-poster.role-label.background.6f7e6dc26963", fade: "core-presentation-poster.role-label.fade.8ec9616721a2", title: "core-presentation-poster.role-label.title.8180b40c0208", genre: "core-presentation-poster.role-label.genre.f92c0f7a69de", tagline: "core-presentation-poster.role-label.tagline.839a32673ff7", logline: "core-presentation-poster.role-label.logline.ac407c5b447f", names: "core-presentation-poster.role-label.names.d16952bc14f6", character: "core-presentation-poster.role-label.character.19b04fbee01e", place: "core-presentation-poster.role-label.place.22f9d6f3bdc7", object: "core-presentation-poster.role-label.object.9be89c770193", relation: "core-presentation-poster.role-label.relation.2552d2401aa1", project: "core-presentation-poster.role-label.project.af832a2830fb", custom: "core-presentation-poster.role-label.custom.beb37fce58e1" });
 
 export interface PosterCheck {
   readonly level: "ok" | "warn" | "info";
@@ -1317,55 +1281,40 @@ export function posterChecks(
     const tips: string[] = [];
     if (o.longDescriptions)
       tips.push(
-        L(
-          "bruk korte beskrivelser i stedet for utfyllende",
-          "use short descriptions instead of full ones",
-        ),
+        tk("core-presentation-poster.poster-checks.tips-push.5789f1ad6823"),
       );
     if (poster.document.characters.length > 6)
-      tips.push(L("vis færre karakterer", "show fewer characters"));
+      tips.push(tk("core-presentation-poster.poster-checks.tips-push.e59e1f580957"));
     if (
       poster.kind === "pitch" &&
       (o.shortDescriptions || o.longDescriptions || o.objectDescriptions)
     )
       tips.push(
-        L(
-          "bytt til karakter- og universkart for mye tekst",
-          "switch to the character and universe map for so much text",
-        ),
+        tk("core-presentation-poster.poster-checks.tips-push.52038be9cecf"),
       );
     if (o.placeDescriptions || o.objectDescriptions)
       tips.push(
-        L(
-          "slå av beskrivelser av steder eller objekter",
-          "turn off descriptions of places or objects",
-        ),
+        tk("core-presentation-poster.poster-checks.tips-push.d4f18a576d8a"),
       );
     const smallPart = small.length
-      ? L(
-          `${small.length} tekster er mindre enn ${Math.round(min)} pt`,
-          `${small.length} texts are smaller than ${Math.round(min)} pt`,
-        )
+      ? tk("core-presentation-poster.small-part.message.7ccc948aff99", { length: String(small.length), value2: String(Math.round(min)) })
       : "";
-    const joiner = small.length && over.length ? L(" og ", " and ") : "";
+    const joiner = small.length && over.length ? tk("core-presentation-poster.joiner.message.7d70a51b64af") : "";
     const overPart = over.length
-      ? L(`${over.length} tekster får ikke plass`, `${over.length} texts do not fit`)
+      ? tk("core-presentation-poster.over-part.message.dbfbf5e91a66", { length: String(over.length) })
       : "";
     const tipPart = tips.length
-      ? L(` Forslag: ${tips.join("; ")}.`, ` Suggestions: ${tips.join("; ")}.`)
+      ? tk("core-presentation-poster.tip-part.message.864ebbede266", { value1: String(tips.join("; ")) })
       : "";
     out.push({
       level: "warn",
-      text: `${L("Redusert lesbarhet: ", "Reduced legibility: ")}${smallPart}${joiner}${overPart}.${tipPart}`,
+      text: `${tk("core-presentation-poster.text.text.6bb38c6ede97")}${smallPart}${joiner}${overPart}.${tipPart}`,
       elementIds: [...new Set([...small, ...over].map((x) => x.id))],
     });
   } else
     out.push({
       level: "ok",
-      text: L(
-        `All tekst er minst ${Math.round(min)} pt og får plass.`,
-        `All text is at least ${Math.round(min)} pt and fits.`,
-      ),
+      text: tk("core-presentation-poster.text.text.e2c3ebf739e9", { value1: String(Math.round(min)) }),
     });
   const missing = poster.document.elements.filter(
     (e) => e.visible && e.kind === "image" && !elementVersion(s, e),
@@ -1375,14 +1324,8 @@ export function posterChecks(
       level: "warn",
       text:
         missing.length === 1
-          ? L(
-              "1 bilde mangler i biblioteket og vises som tom ramme.",
-              "1 image is missing from the library and is shown as an empty frame.",
-            )
-          : L(
-              `${missing.length} bilder mangler i biblioteket og vises som tom ramme.`,
-              `${missing.length} images are missing from the library and are shown as empty frames.`,
-            ),
+          ? tk("core-presentation-poster.text.text.d9a904701da5")
+          : tk("core-presentation-poster.text.text.46251777ce84", { length: String(missing.length) }),
       elementIds: missing.map((e) => e.id),
     });
   const empties = poster.document.elements.filter(
@@ -1394,14 +1337,8 @@ export function posterChecks(
       level: "info",
       text:
         empties.length === 1
-          ? L(
-              `Ett tekstfelt er tomt (${roles}) og vises ikke.`,
-              `One text field is empty (${roles}) and is not shown.`,
-            )
-          : L(
-              `${empties.length} tekstfelt er tomme (${roles}) og vises ikke.`,
-              `${empties.length} text fields are empty (${roles}) and are not shown.`,
-            ),
+          ? tk("core-presentation-poster.text.text.f4a6cdaa039a", { roles: String(roles) })
+          : tk("core-presentation-poster.text.text.5edcb4e59fb4", { length: String(empties.length), roles: String(roles) }),
       elementIds: empties.map((e) => e.id),
     });
   }
@@ -1415,14 +1352,8 @@ export function posterChecks(
         level: "info",
         text:
           untranslated.length === 1
-            ? L(
-                "1 tekst mangler engelsk versjon og vises på norsk.",
-                "1 text has no English version and is shown in Norwegian.",
-              )
-            : L(
-                `${untranslated.length} tekster mangler engelsk versjon og vises på norsk.`,
-                `${untranslated.length} texts have no English version and are shown in Norwegian.`,
-              ),
+            ? tk("core-presentation-poster.text.text.7c664d2f6b00")
+            : tk("core-presentation-poster.text.text.fd87329d7c53", { length: String(untranslated.length) }),
         elementIds: untranslated.map((e) => e.id),
       });
   }

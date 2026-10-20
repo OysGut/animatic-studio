@@ -4,16 +4,7 @@
  */
 import { MessageSquare } from "lucide-react";
 import { memo, useMemo, type ReactNode } from "react";
-import {
-  L,
-  flowLines,
-  lineKey,
-  type LineDecor,
-  type Page,
-  type PageLine,
-  type ProjectState,
-  tm,
-} from "@/core";
+import { flowLines, lineKey, type LineDecor, type Page, type PageLine, type ProjectState, tm } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 
@@ -280,7 +271,7 @@ function Line({
         <span
           className="absolute flex select-none items-center justify-center"
           style={{ top, left: "2.2em", width: "1em", height: "1em" }}
-          title={L(`Usikker tolkning: ${uncertain}`, `Uncertain interpretation: ${tm(uncertain)}`)}
+          title={t("app-script-script-page-view.uncertain-interpretation", { reason: tm(uncertain) })}
           aria-label={t("app-script-script-page-view.line.aria-label.387f4bf73f1a")}
         >
           <span

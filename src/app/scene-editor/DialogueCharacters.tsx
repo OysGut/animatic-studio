@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { L, dialogueCharacterSuggestions, dialogueSpeaker, newId, type ProjectState } from "@/core";
+import { dialogueCharacterSuggestions, dialogueSpeaker, newId, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";

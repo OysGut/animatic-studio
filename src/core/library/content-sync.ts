@@ -29,12 +29,13 @@ import { traceOf } from "../generation/trace";
 import { compositionOfVariant, layerVersion } from "../composition/render";
 import { assetWorklist, type WorkItem } from "./worklist";
 import { jobsByResultPath } from "./provenance";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Norsk nøkkel for flagget (brukes av tester); visningen er `contentSyncFlag()`. */
 export const CONTENT_SYNC_FLAG = "Ressursen er oppdatert etter at scenen ble laget"; // i18n-ignore
 const contentSyncFlag = () =>
-  L(CONTENT_SYNC_FLAG, "The asset was updated after the scene was made");
+  tk("core-library-content-sync.content-sync-flag");
 
 export type ResourceBasisSource =
   /** Lag i 2D-scenen låst til en bestemt versjon. */
@@ -379,7 +380,7 @@ export function contentSyncByScene(
 /** Teksten til flagget for én scene: «Ressursen er oppdatert …: Maja (v3 → v4)». */
 export function contentSyncText(s: ProjectState, sync: SceneContentSync): string {
   const parts = sync.items.map((it) => {
-    const name = s.assets[it.assetId]?.name ?? L("Ressurs", "Asset");
+    const name = s.assets[it.assetId]?.name ?? tk("core-library-content-sync.name.sync-items-map.4e5b5cd497bd");
     const a = s.assetVersions[it.oldVersionId]?.number;
     const b = s.assetVersions[it.newVersionId]?.number;
     return a && b ? `${name} (v${a} → v${b})` : name;

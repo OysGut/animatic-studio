@@ -6,7 +6,8 @@
 import type { Annotation, BlockKind, ProjectState } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { formatHeading, type Page, type PageLine } from "../screenplay/paginate";
-import { L, collation, locale, localized } from "../i18n";
+import { collation, locale } from "../i18n";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 /** Scenevarianten et notat hører til (blokkens variant for notater på tekst). */
 export function annotationVariant(s: ProjectState, a: Annotation): string | null {
@@ -281,17 +282,7 @@ export type HitKind =
   | "other"
   | "note";
 
-export const HIT_LABEL: Record<HitKind, string> = localized({
-  number: ["scenenummer", "scene number"],
-  heading: ["overskrift", "heading"],
-  action: ["handling", "action"],
-  dialogue: ["replikk", "dialogue"],
-  character: ["karakter", "character"],
-  parenthetical: ["parentes", "parenthetical"],
-  transition: ["overgang", "transition"],
-  other: ["tekst", "text"],
-  note: ["notat", "note"],
-});
+export const HIT_LABEL: Record<HitKind, string> = tLocalized({ number: "core-notes-index.hit-label.number.8ca00c500110", heading: "core-notes-index.hit-label.heading.70cc323fe79c", action: "core-notes-index.hit-label.action.0fc5821fef38", dialogue: "core-notes-index.hit-label.dialogue.b92374b00b71", character: "core-notes-index.hit-label.character.a8b9acf75c8f", parenthetical: "core-notes-index.hit-label.parenthetical.bcc86379db6b", transition: "core-notes-index.hit-label.transition.a5baca9eb633", other: "core-notes-index.hit-label.other.0be13e19ede5", note: "core-notes-index.hit-label.note.b4afde6486fc" });
 
 const KIND_HIT: Partial<Record<BlockKind, HitKind>> = {
   action: "action",
@@ -331,12 +322,12 @@ export function formatDate(iso: string): string {
   const d = new Date(iso);
   return Number.isNaN(d.getTime())
     ? iso
-    : `${d.toLocaleDateString(locale(), { day: "numeric", month: "short", year: "numeric" })} ${L("kl.", "at")} ${d.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" })}`;
+    : `${d.toLocaleDateString(locale(), { day: "numeric", month: "short", year: "numeric" })} ${t("core-notes-index.format-date.message.dd2368d95843")} ${d.toLocaleTimeString(locale(), { hour: "2-digit", minute: "2-digit" })}`;
 }
 
 /** Stempel for visning: «Mars · 9. okt. 2026 kl. 14:32». */
 export function formatStamp(a: Pick<Annotation, "authorName" | "stampAt">): string {
-  return `${a.authorName || L("Ukjent", "Unknown")} · ${formatDate(a.stampAt)}`;
+  return `${a.authorName || t("core-notes-index.format-stamp.message.8fb71601262c")} · ${formatDate(a.stampAt)}`;
 }
 
 /** «endret av Anita · 10. okt. 2026 kl. 09:15» (DEC-0032), eller tom tekst hvis notatet ikke er endret. */
@@ -346,9 +337,9 @@ export function formatEdited(
   if (!a.editedAt) return "";
   const who =
     a.editedByName && a.editedByName !== a.authorName
-      ? L(` av ${a.editedByName}`, ` by ${a.editedByName}`)
+      ? t("core-notes-index.who.message.0b8b0511c021", { editedByName: String(a.editedByName) })
       : "";
-  return `${L("endret", "edited")}${who} · ${formatDate(a.editedAt)}`;
+  return `${t("core-notes-index.format-edited.message.b308c59b7bcb")}${who} · ${formatDate(a.editedAt)}`;
 }
 export * from "./transfer";
 

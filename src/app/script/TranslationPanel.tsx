@@ -5,17 +5,7 @@ import { LineLinkReview } from "./LineLinkReview";
  */
 import { AlertTriangle, Check, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  L,
-  LANGUAGE_LABEL,
-  formatHeading,
-  needsReview,
-  newId,
-  textAtRevision,
-  translationOf,
-  type Command,
-  type ProjectState,
-} from "@/core";
+import { LANGUAGE_LABEL, formatHeading, needsReview, newId, textAtRevision, translationOf, type Command, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { t as tk } from "@/core/i18n/keyed";

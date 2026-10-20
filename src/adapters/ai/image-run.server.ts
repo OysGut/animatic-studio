@@ -6,24 +6,13 @@
  * kostnaden; her oppdateres den reserverte jobben (ingen ny rad), og resultatet lagres som kvittering i
  * jobbens params før det returneres.
  */
-import {
-  assetFilePath,
-  adaptPromptForModel,
-  effortOf,
-  estimateCostUsd,
-  type ImageSize,
-  imageSizesOf,
-  monthStartUtc,
-  newId,
-  providerModel,
-  stripAttachedSection,
-  L,
-} from "@/core";
+import { assetFilePath, adaptPromptForModel, effortOf, estimateCostUsd, type ImageSize, imageSizesOf, monthStartUtc, newId, providerModel, stripAttachedSection } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { GATEWAY, gatewayError, referenceImages } from "./gateway";
 import { builtInImageModel, LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
 import { MAX_PER_PROJECT_PER_DAY, MAX_PER_USER_PER_HOUR } from "./image-limits";
 import type { GenerateImageInput, GenerateImageResult } from "./generate-image.functions";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 
@@ -53,28 +42,19 @@ export async function runImageGeneration(
   if (schema.kind === "missing" || schema.version < 10)
     return {
       ok: false,
-      message: L(
-        "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "The database is missing the AI generation log. Contact the administrator to update Animatic Studio.",
-      ),
+      message: t("adapters-ai-image-run-server.message.message.d132ffa15512"),
     };
   const own = data.provider !== "lovable";
   if (data.operation === "upscale" && !own)
     return {
       ok: false,
-      message: L(
-        "Oppskalering krever en tilkoblet leverandør (fal.ai).",
-        "Upscaling requires a connected provider (fal.ai).",
-      ),
+      message: t("adapters-ai-image-run-server.message.message.81113e80ff60"),
     };
   const key = process.env["LOVABLE_API_KEY"];
   if (!own && !key)
     return {
       ok: false,
-      message: L(
-        "Den innebygde AI-en er ikke slått på. Kontakt administratoren.",
-        "The built-in AI is not enabled. Contact the administrator.",
-      ),
+      message: t("adapters-ai-image-run-server.message.message.a886c40aa9f9"),
     };
 
   // Et slettet prosjekt kan ikke få nye bilder (DEC-0046)
@@ -84,7 +64,7 @@ export async function runImageGeneration(
     .eq("id", data.projectId)
     .maybeSingle();
   if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-    return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+    return { ok: false, message: t("adapters-ai-image-run-server.message.message.387c93fe625f") };
 
   const { data: asset } = await admin
     .from("assets")
@@ -95,15 +75,12 @@ export async function runImageGeneration(
   if (!asset)
     return {
       ok: false,
-      message: L(
-        "Ressursen finnes ikke i prosjektet.",
-        "The asset does not exist in the project.",
-      ),
+      message: t("adapters-ai-image-run-server.message.message.4cf31cd6afc2"),
     };
   if ((asset as { kind: string }).kind === "sound")
     return {
       ok: false,
-      message: L("Lyd kan ikke genereres som bilde.", "Sound cannot be generated as an image."),
+      message: t("adapters-ai-image-run-server.message.message.09ccaf585ad5"),
     };
   const refCheck = await referenceImages(admin, data.projectId, data.referencePaths);
   if (!refCheck.ok) return { ok: false, message: refCheck.message };
@@ -120,10 +97,7 @@ export async function runImageGeneration(
   if (!batch && (mine ?? 0) >= MAX_PER_USER_PER_HOUR)
     return {
       ok: false,
-      message: L(
-        `Grensen på ${MAX_PER_USER_PER_HOUR} genereringer i timen er nådd. Prøv igjen senere.`,
-        `The limit of ${MAX_PER_USER_PER_HOUR} generations per hour has been reached. Try again later.`,
-      ),
+      message: t("adapters-ai-image-run-server.message.message.f634b8b27798", { MAX_PER_USER_PER_HOUR: String(MAX_PER_USER_PER_HOUR) }),
     };
   const { count: project } = await admin
     .from("generation_jobs")
@@ -134,10 +108,7 @@ export async function runImageGeneration(
   if (!batch && (project ?? 0) >= MAX_PER_PROJECT_PER_DAY)
     return {
       ok: false,
-      message: L(
-        `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
-        `The project's limit of ${MAX_PER_PROJECT_PER_DAY} generations per day has been reached.`,
-      ),
+      message: t("adapters-ai-image-run-server.message.message.ae7bddb6ab0e", { MAX_PER_PROJECT_PER_DAY: String(MAX_PER_PROJECT_PER_DAY) }),
     };
 
   // Prosjektets AI-budsjett (DEC-0053, REQ-0282/0284): kontrolleres etter at jobben er registrert
@@ -174,42 +145,30 @@ export async function runImageGeneration(
     if (schema.version < 24)
       return {
         ok: false,
-        message: L(
-          "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
-          "The database is not updated for own AI providers. Contact the administrator to update Animatic Studio.",
-        ),
+        message: t("adapters-ai-image-run-server.message.message.1fb2430caade"),
       };
     const m = providerModel(data.provider, model, aiGate.settings);
     const want = data.operation === "upscale" ? "upscale" : "image";
     if (!m || m.capability !== want)
       return {
         ok: false,
-        message: L(
-          "Modellen finnes ikke hos leverandøren.",
-          "The model does not exist at the provider.",
-        ),
+        message: t("adapters-ai-image-run-server.message.message.1acc76ad53fd"),
       };
     if (want === "upscale" && data.referencePaths.length !== 1)
       return {
         ok: false,
-        message: L("Velg ett bilde å oppskalere.", "Choose one image to upscale."),
+        message: t("adapters-ai-image-run-server.message.message.1e599be03c56"),
       };
     if (want === "image" && m.requiresImage && data.referencePaths.length === 0)
       return {
         ok: false,
-        message: L(
-          "Denne modellen trenger et forbildebilde.",
-          "This model needs a reference image.",
-        ),
+        message: t("adapters-ai-image-run-server.message.message.83727ffb6b6d"),
       };
     ownKey = await gate.projectKey(admin, data.projectId, data.provider, ctx.userId);
     if (!ownKey)
       return {
         ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
-          "None of the project's owners has connected this provider (AI providers on the project list).",
-        ),
+        message: t("adapters-ai-image-run-server.message.message.31480f9aea4d"),
       };
     // Størrelsen modellen kan lage (ellers modellens standard)
     const sz = imageSizesOf(providerModel(data.provider, model, aiGate.settings));
@@ -307,10 +266,7 @@ export async function runImageGeneration(
   if (logErr)
     return {
       ok: false,
-      message: L(
-        `Genereringen kunne ikke logges: ${logErr.message}`,
-        `The generation could not be logged: ${logErr.message}`,
-      ),
+      message: t("adapters-ai-image-run-server.message.message.67144c40f299", { message: String(logErr.message) }),
     };
   // Samtidige forespørsler: tell på nytt med denne jobben registrert
   if (!batch) {
@@ -332,10 +288,7 @@ export async function runImageGeneration(
       await admin.from("generation_jobs").delete().eq("id", jobId);
       return {
         ok: false,
-        message: L(
-          "Grensen for antall genereringer er nådd akkurat nå. Prøv igjen senere.",
-          "The limit on the number of generations has just been reached. Try again later.",
-        ),
+        message: t("adapters-ai-image-run-server.message.message.f5c81beffbff"),
       };
     }
   }
@@ -352,10 +305,7 @@ export async function runImageGeneration(
       await admin.from("generation_jobs").delete().eq("id", jobId);
       return {
         ok: false,
-        message: L(
-          `Prosjektets AI-budsjett for denne måneden (${pr.ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
-          `The project's AI budget for this month (${pr.ai_month_limit} generations) has been used up. The owner can change the budget on the project overview.`,
-        ),
+        message: t("adapters-ai-image-run-server.message.message.d81aa0c6f0c1", { ai_month_limit: String(pr.ai_month_limit) }),
       };
     }
   }
@@ -398,10 +348,7 @@ export async function runImageGeneration(
                 const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
                 if (error || !blob)
                   throw new Error(
-                    L(
-                      "Et forbildebilde kunne ikke hentes fra lagringen.",
-                      "A reference image could not be fetched from storage.",
-                    ),
+                    t("adapters-ai-image-run-server.references.data-reference-paths-map.f7d305e7282b"),
                   );
                 return blob;
               }),
@@ -423,17 +370,14 @@ export async function runImageGeneration(
         if (data.provider !== "fal")
           return {
             ok: false,
-            message: L("Leverandøren kan ikke oppskalere.", "The provider cannot upscale."),
+            message: t("adapters-ai-image-run-server.message.message.3754efa28d38"),
           };
         const { data: signed } = await admin.storage
           .from(BUCKET)
           .createSignedUrl(data.referencePaths[0]!, 600);
         if (!signed?.signedUrl)
           throw new Error(
-            L(
-              "Bildet kunne ikke hentes fra lagringen.",
-              "The image could not be fetched from storage.",
-            ),
+            t("adapters-ai-image-run-server.run-image-generation.message.ce98260c0ee2"),
           );
         out = await ADAPTERS.fal.upscale({
           key: secret,
@@ -454,7 +398,7 @@ export async function runImageGeneration(
       } else
         return {
           ok: false,
-          message: L("Leverandøren lager ikke bilder.", "The provider does not make images."),
+          message: t("adapters-ai-image-run-server.message.message.323549d2230f"),
         };
       charged = true;
       const mimeType = ["image/png", "image/jpeg", "image/webp"].includes(out.mimeType)
@@ -477,10 +421,7 @@ export async function runImageGeneration(
         });
       if (upErr)
         throw new Error(
-          L(
-            `Bildet kunne ikke lagres: ${upErr.message}`,
-            `The image could not be saved: ${upErr.message}`,
-          ),
+          t("adapters-ai-image-run-server.run-image-generation.message.9a64b624be20", { message: String(upErr.message) }),
         );
       const dims = mimeType === "image/png" ? pngSize(out.bytes) : { width: null, height: null };
       const done: GenerateImageResult = {
@@ -501,13 +442,13 @@ export async function runImageGeneration(
     return done;
     } catch (e) {
       const message = scrubSecret(
-        (e as Error).message || L("Ukjent feil", "Unknown error"),
+        (e as Error).message || t("adapters-ai-image-run-server.message.scrub-secret.c72966a8534f"),
         secret,
       ).slice(0, 2000);
       await finish({ status: charged ? "lost" : "failed", error: message });
       return {
         ok: false,
-        message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
+        message: t("adapters-ai-image-run-server.message.message.eb194f33ae99", { message: String(message) }),
       };
     }
   }
@@ -523,10 +464,7 @@ export async function runImageGeneration(
         const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
         if (error || !blob)
           throw new Error(
-            L(
-              "Et forbildebilde kunne ikke hentes fra lagringen.",
-              "A reference image could not be fetched from storage.",
-            ),
+            t("adapters-ai-image-run-server.references.data-reference-paths-map.f7d305e7282b.2"),
           );
         return blob;
       }),
@@ -622,7 +560,7 @@ export async function runImageGeneration(
     else if (first?.url) bytes = new Uint8Array(await (await fetch(first.url)).arrayBuffer());
     else
       throw new Error(
-        L("AI-tjenesten svarte uten bilde.", "The AI service replied without an image."),
+        t("adapters-ai-image-run-server.run-image-generation.message.ebf5f139d2c4"),
       );
 
     const versionId = newId<"asset_version">();
@@ -642,10 +580,7 @@ export async function runImageGeneration(
       });
     if (upErr)
       throw new Error(
-        L(
-          `Bildet kunne ikke lagres: ${upErr.message}`,
-          `The image could not be saved: ${upErr.message}`,
-        ),
+        t("adapters-ai-image-run-server.run-image-generation.message.9a64b624be20.2", { message: String(upErr.message) }),
       );
     const dims = pngSize(bytes);
     const done: GenerateImageResult = {
@@ -665,14 +600,14 @@ export async function runImageGeneration(
     await finish({ status: "done", result_path: path }, done);
     return done;
   } catch (e) {
-    const message = (e as Error).message || L("Ukjent feil", "Unknown error");
+    const message = (e as Error).message || t("adapters-ai-image-run-server.message.message.c72966a8534f");
     await finish({
       status: charged && budgeted ? "lost" : "failed",
       error: message.slice(0, 2000),
     });
     return {
       ok: false,
-      message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
+      message: t("adapters-ai-image-run-server.message.message.eb194f33ae99.2", { message: String(message) }),
     };
   }
 }

@@ -19,7 +19,8 @@ import { MAIN_LANGUAGE, clipLanguage, isVoiceKind } from "../audio";
 import { layersOf } from "../composition/render";
 import { translationOf } from "../translation";
 import { framesToSeconds } from "../time";
-import { L, localized, locale } from "../i18n";
+import { locale } from "../i18n";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /**
  * Dialogen i lyden til en importert film: språkkode når dialog og øvrig lyd er blandet, «none» når lyden er
@@ -65,13 +66,7 @@ export function languageState(s: ProjectState, lang: string): ProjectState {
 
 export type MaterialKind = "still" | "animatic2d" | "character2d" | "ai_video" | "imported_film";
 
-export const MATERIAL_LABEL: Record<MaterialKind, string> = localized({
-  still: ["Stillbilde", "Still image"],
-  animatic2d: ["Enkel 2D-animatic", "Simple 2D animatic"],
-  character2d: ["Redigerbare 2D-karakterer", "Editable 2D characters"],
-  ai_video: ["AI-generert video", "AI-generated video"],
-  imported_film: ["Ferdig importert film", "Finished imported film"],
-});
+export const MATERIAL_LABEL: Record<MaterialKind, string> = tLocalized({ still: "core-language-index.material-label.still.7548f560926f", animatic2d: "core-language-index.material-label.animatic2d.31d562be3f12", character2d: "core-language-index.material-label.character2d.1d0d7d5ebe58", ai_video: "core-language-index.material-label.ai-video.d130293ffd1d", imported_film: "core-language-index.material-label.imported-film.4fa4622cd63d" });
 
 const MATERIAL_RANK: Record<MaterialKind, number> = {
   still: 0,
@@ -125,31 +120,22 @@ export function lipSyncAdvice(kind: MaterialKind): LipSyncAdvice {
     case "animatic2d":
       return {
         action: "direct",
-        text: L("Dialogen kan byttes direkte.", "The dialogue can be switched directly."),
+        text: tk("core-language-index.text.text.f4e773a01bbe"),
       };
     case "character2d":
       return {
         action: "check",
-        text: L(
-          "Karakterene har bildeskifter (munn eller uttrykk). Kontroller at de passer til den nye replikken, og juster dem i sceneeditoren om nødvendig.",
-          "The characters have image changes (mouth or expression). Check that they fit the new line, and adjust them in the scene editor if necessary.",
-        ),
+        text: tk("core-language-index.text.text.ff54097816ff"),
       };
     case "ai_video":
       return {
         action: "lipsync",
-        text: L(
-          "Synlige munnbevegelser kan kreve ny leppesynk eller en målrettet oppdatering av segmentet. Ingenting lages på nytt automatisk – det krever ditt valg og kostnadsgodkjenning.",
-          "Visible mouth movements may require new lip sync or a targeted update of the segment. Nothing is regenerated automatically – it requires your choice and cost approval.",
-        ),
+        text: tk("core-language-index.text.text.030acc691093"),
       };
     case "imported_film":
       return {
         action: "lipsync",
-        text: L(
-          "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.",
-          "Visible mouth movements may require new lip sync. The film is not changed automatically.",
-        ),
+        text: tk("core-language-index.text.text.2049f0c0e8f0"),
       };
   }
 }
@@ -298,39 +284,24 @@ export function timingConflicts(
             offsetMs: Math.max(0, lStart - move),
             text:
               move >= overflow
-                ? L(
-                    `Start replikken ${fmt(move)} tidligere – da får den plass.`,
-                    `Start the line ${fmt(move)} earlier – then it fits.`,
-                  )
-                : L(
-                    `Start replikken ${fmt(move)} tidligere (det er plass til, men ikke nok alene).`,
-                    `Start the line ${fmt(move)} earlier (there is room, but not enough on its own).`,
-                  ),
+                ? tk("core-language-index.text.text.3abf4eaf6f59", { value1: String(fmt(move)) })
+                : tk("core-language-index.text.text.f0bcf9120e4b", { value1: String(fmt(move)) }),
           });
         }
         const words = Math.ceil((overflow / 1000) * WORDS_PER_SECOND);
         suggestions.push({
           kind: "shorten",
           words,
-          text: L(
-            `Kort ned oversettelsen med omtrent ${words} ${words === 1 ? "ord" : "ord"}.`,
-            `Shorten the translation by about ${words} ${words === 1 ? "word" : "words"}.`,
-          ),
+          text: tk("core-language-index.shorten-by", { count: words }),
         });
         if (next)
           suggestions.push({
             kind: "overlap",
-            text: L(
-              `La replikken gå ${fmt(overflow)} inn i neste replikk.`,
-              `Let the line run ${fmt(overflow)} into the next line.`,
-            ),
+            text: tk("core-language-index.text.text.099e68002934", { value1: String(fmt(overflow)) }),
           });
         suggestions.push({
           kind: "pause",
-          text: L(
-            "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).",
-            "Extend the pause before the next line in this language version (requires separate editing; the main film is not changed).",
-          ),
+          text: tk("core-language-index.text.text.025f9b6e4eba"),
         });
         out.push({ ...base, kind: "long", overflowMs: overflow, suggestions });
       } else if (window > 0 && lLength < window * 0.5 && window - lLength > 1500) {
@@ -341,10 +312,7 @@ export function timingConflicts(
           suggestions: [
             {
               kind: "pause",
-              text: L(
-                `Replikken er ${fmt(window - lLength)} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.`,
-                `The line is ${fmt(window - lLength)} shorter than the time it has. This may leave a long pause – consider a longer translation or leave the pause.`,
-              ),
+              text: tk("core-language-index.text.text.f74b370ccdd1", { value1: String(fmt(window - lLength)) }),
             },
           ],
         });

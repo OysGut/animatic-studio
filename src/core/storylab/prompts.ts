@@ -3,10 +3,11 @@
  * svarer på manusets språk. Karakterprompten får BARE det karakteren vet (knowledgeAt): andres hemmeligheter
  * og fakta bare regissøren kjenner, sendes aldri inn. Analysen er rådgivende, ikke en fasit.
  */
-import { L, localized } from "../i18n";
+
 import type { StoryFact } from "../model";
 import { emptyStoryProfile, mergeProfile, profileError, type StoryProfile } from "./profile";
 import { ANALYST, DIRECTOR, activeDirections, type Direction, type EngineState } from "./engine";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 const LANG_NAME: Record<string, string> = {
   nb: "Norwegian (Bokmal)",
@@ -172,18 +173,7 @@ export const ANALYSIS_ASPECTS: readonly AnalysisAspect[] = [
   "weaknesses",
 ];
 
-export const ANALYSIS_ASPECT_LABEL: Record<AnalysisAspect, string> = localized({
-  credibility: ["Karaktertroverdighet", "Character credibility"],
-  motivation: ["Motivasjon", "Motivation"],
-  conflict: ["Konflikt", "Conflict"],
-  subtext: ["Undertekst", "Subtext"],
-  relationships: ["Relasjoner", "Relationships"],
-  emotional_arc: ["Emosjonell utvikling", "Emotional development"],
-  knowledge: ["Kunnskap", "Knowledge"],
-  consequence: ["Konsekvens", "Consequence"],
-  rhythm: ["Rytme", "Rhythm"],
-  weaknesses: ["Mulige svakheter", "Possible weaknesses"],
-});
+export const ANALYSIS_ASPECT_LABEL: Record<AnalysisAspect, string> = tLocalized({ credibility: "core-storylab-prompts.analysis-aspect-label.credibility.242fb70d257d", motivation: "core-storylab-prompts.analysis-aspect-label.motivation.39c58e0a227e", conflict: "core-storylab-prompts.analysis-aspect-label.conflict.0cc0e8311a26", subtext: "core-storylab-prompts.analysis-aspect-label.subtext.afb67bffe46b", relationships: "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766", emotional_arc: "core-storylab-prompts.analysis-aspect-label.emotional-arc.9e8988e44008", knowledge: "core-storylab-prompts.analysis-aspect-label.knowledge.05a93298ce23", consequence: "core-storylab-prompts.analysis-aspect-label.consequence.cc7612136a49", rhythm: "core-storylab-prompts.analysis-aspect-label.rhythm.60497c6c9e4e", weaknesses: "core-storylab-prompts.analysis-aspect-label.weaknesses.c8f9124d88d9" });
 
 /** Spørsmålet hvert punkt besvarer (engelsk, til modellen). */
 const ASPECT_QUESTION: Record<AnalysisAspect, string> = {
@@ -395,8 +385,5 @@ export function parseJsonLoose(raw: string): unknown {
 
 /** Feilmelding når et AI-svar ikke kunne tolkes (for brukerflaten). */
 export function unreadableReplyMessage(): string {
-  return L(
-    "Svaret fra AI kunne ikke tolkes. Prøv igjen.",
-    "The AI reply could not be read. Try again.",
-  );
+  return tk("core-storylab-prompts.unreadable-reply-message.message.8de0ec1da46a");
 }

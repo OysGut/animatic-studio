@@ -6,20 +6,7 @@
  */
 import { Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  L,
-  locale,
-  clipFrameToComposition,
-  compositionFrameInClip,
-  filmAudio,
-  filmMediaPaths,
-  filmTakeAudio,
-  formatHeading,
-  framesToSeconds,
-  neighbourRange,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { locale, clipFrameToComposition, compositionFrameInClip, filmAudio, filmMediaPaths, filmTakeAudio, formatHeading, framesToSeconds, neighbourRange, type FilmClip, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { useFilmImages } from "@/app/assembly/film-images";

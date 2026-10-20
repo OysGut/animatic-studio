@@ -11,7 +11,7 @@ import type { BlockKind, ProjectState, ScriptBlock } from "../model";
 import { blocksOfVariant } from "../views";
 import { compareKeys } from "../order-key";
 import { blockSpans, type FilmClip } from "./film";
-import { L } from "../i18n";
+
 import { t as tk } from "@/core/i18n/keyed";
 
 export type ScriptChangeKind = "changed" | "added" | "removed";
@@ -157,10 +157,7 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       occurrenceId,
       label:
         t.kind === "imported_film"
-          ? L(
-              `Film: ${t.media?.fileName ?? "importert film"}`,
-              `Film: ${t.media?.fileName ?? "imported film"}`,
-            )
+          ? tk("core-assembly-discrepancy.film-take", { file: t.media?.fileName ?? tk("core-assembly-discrepancy.film-take-imported") })
           : t.kind === "ai_video"
             ? "AI-video"
             : t.kind === "still"

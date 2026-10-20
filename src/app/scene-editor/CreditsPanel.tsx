@@ -4,36 +4,19 @@
  * adskilt fra malen; rekkefølge og skjuling endrer aldri malen. Alt skrives med kommandoer (angre/gjør om).
  */
 import { useMemo, useRef, useState } from "react";
-import {
-  CREDIT_PARTICIPANTS_MAX,
-  CREDIT_PRESENTATIONS,
-  L,
-  compareKeys,
-  creditSequenceOf,
-  keyBetween,
-  newId,
-  type Command,
-  type CreditParticipant,
-  type CreditPresentation,
-  type CreditSequence,
-  type ProjectState,
-} from "@/core";
+import { CREDIT_PARTICIPANTS_MAX, CREDIT_PRESENTATIONS, compareKeys, creditSequenceOf, keyBetween, newId, type Command, type CreditParticipant, type CreditPresentation, type CreditSequence, type ProjectState } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
 import type { Commands } from "@/app/project/use-commands";
-import { t } from "@/core/i18n/keyed";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 const input =
   "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-[12px] text-text-primary";
 const select =
   "h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-[12px] text-text-primary";
 
-const PRESENTATION_LABEL: Record<CreditPresentation, { nb: string; en: string }> = {
-  roll: { nb: "Rullende", en: "Rolling" },
-  one_at_a_time: { nb: "Én om gangen", en: "One at a time" },
-  positions: { nb: "Plassert i bildet", en: "Positioned in the frame" }, // i18n-ignore – vises via L() under
-};
+const PRESENTATION_LABEL: Record<CreditPresentation, string> = tLocalized({ roll: "app-scene-editor-credits-panel.presentation-roll", one_at_a_time: "app-scene-editor-credits-panel.presentation-one-at-a-time", positions: "app-scene-editor-credits-panel.presentation-positions" });
 
 const ROW_H = 34;
 const VIEW_H = 320;
@@ -85,7 +68,7 @@ function DesignTab({
         >
           {CREDIT_PRESENTATIONS.map((p) => (
             <option key={p} value={p}>
-              {L(PRESENTATION_LABEL[p].nb, PRESENTATION_LABEL[p].en)}
+              {PRESENTATION_LABEL[p]}
             </option>
           ))}
         </select>

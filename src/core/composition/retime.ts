@@ -22,7 +22,7 @@ import type {
   SceneOccurrence,
 } from "../model";
 import type { Command, LayerFields } from "../commands/types";
-import { L } from "../i18n";
+
 import { newId as defaultNewId } from "../ids";
 import { compositionDuration } from "./animate";
 import { layerFieldsOf } from "./index";

@@ -3,7 +3,7 @@
  * permanent ID med produksjon, type, innstillinger, filnavn, scenene som var med, hvem og når. Raden lagres
  * etter at filen er laget og endres aldri. Eksporten selv endrer ingenting i prosjektet (REQ-0085).
  */
-import { L, localized } from "./i18n";
+
 import { t, tLocalized } from "@/core/i18n/keyed";
 
 export const EXPORT_KINDS = ["film", "script", "audio", "subtitles", "poster"] as const;
@@ -109,10 +109,7 @@ export function describeExportSettings(
   if (s["withNotes"] === true) parts.push(t("core-export-records.describe-export-settings.parts-push.16fe725d1217"));
   if (r.occurrenceIds.length)
     parts.push(
-      L(
-        `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scener"}`,
-        `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scenes"}`,
-      ),
+      t("core-export-records.scenes", { count: r.occurrenceIds.length }),
     );
   if (typeof s["qualityProfileName"] === "string") parts.push(t("core-export-records.describe-export-settings.parts-push.5eb68c2ddf11", { value1: String(s["qualityProfileName"]) }));
   return parts.join(" · ");

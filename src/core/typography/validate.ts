@@ -1,5 +1,5 @@
 /** Validering av tekst, form og effekter (MTS MT1). Returnerer normaliserte verdier eller en melding. */
-import { L } from "../i18n";
+
 import { fontById } from "./fonts";
 import {
   MAX_TEXT_CHARS,

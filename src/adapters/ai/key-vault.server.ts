@@ -10,7 +10,8 @@
  *   er en serverhemmelighet (versjon 1). Byttes hovednøkkelen, må nøklene legges inn på nytt.
  * - Klartekstnøkkelen returneres aldri til nettleseren, logges aldri og lagres ikke andre steder.
  */
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 const enc = new TextEncoder();
 
@@ -31,18 +32,12 @@ async function masterKey(version: number): Promise<CryptoKey> {
     const raw = process.env["ANIMATIC_KEY_ENCRYPTION_KEY"];
     if (!raw)
       throw new Error(
-        L(
-          "Hovednøkkelen (ANIMATIC_KEY_ENCRYPTION_KEY) mangler på serveren.",
-          "The master key (ANIMATIC_KEY_ENCRYPTION_KEY) is missing on the server.",
-        ),
+        t("adapters-ai-key-vault-server.master-key.message.c67ffd575516"),
       );
     const bytes = unb64(raw.trim());
     if (bytes.length !== 32)
       throw new Error(
-        L(
-          "ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).",
-          "ANIMATIC_KEY_ENCRYPTION_KEY must be 32 bytes (base64).",
-        ),
+        t("adapters-ai-key-vault-server.master-key.message.bd4f7eb03403"),
       );
     return crypto.subtle.importKey("raw", bytes as unknown as ArrayBuffer, "AES-GCM", false, [
       "encrypt",
@@ -52,7 +47,7 @@ async function masterKey(version: number): Promise<CryptoKey> {
   if (version === 1) {
     const secret = process.env["SUPABASE_SERVICE_ROLE_KEY"];
     if (!secret)
-      throw new Error(L("Serverhemmeligheten mangler.", "The server secret is missing."));
+      throw new Error(t("adapters-ai-key-vault-server.master-key.message.b584e292b530"));
     const base = await crypto.subtle.importKey("raw", enc.encode(secret), "HKDF", false, [
       "deriveKey",
     ]);
@@ -69,7 +64,7 @@ async function masterKey(version: number): Promise<CryptoKey> {
       ["encrypt", "decrypt"],
     );
   }
-  throw new Error(L("Ukjent nøkkelversjon.", "Unknown key version."));
+  throw new Error(t("adapters-ai-key-vault-server.master-key.message.8ced8c5be93d"));
 }
 
 /** Versjonen nye nøkler krypteres med. */
@@ -114,10 +109,7 @@ export async function decryptKey(
   } catch {
     // Ikke detaljer (ingen hjelp til en angriper); brukeren legger inn nøkkelen på nytt
     throw new Error(
-      L(
-        "Nøkkelen kunne ikke låses opp (hovednøkkelen på serveren er byttet). Legg inn nøkkelen på nytt.",
-        "The key could not be unlocked (the master key on the server has been changed). Enter the key again.",
-      ),
+      t("adapters-ai-key-vault-server.decrypt-key.message.f8155450f868"),
     );
   }
 }

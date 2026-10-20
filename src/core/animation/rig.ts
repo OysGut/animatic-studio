@@ -1,6 +1,6 @@
 /** Versioned, variant-owned character setup. All positions are relative to the source image. */
 import { isPartSlot, rigPartError, type RigPart } from "./parts";
-import { L } from "../i18n";
+
 import type { ProjectState } from "../model";
 import { t } from "@/core/i18n/keyed";
 export const RIG_MAX_BYTES = 512 * 1024;

@@ -5,17 +5,7 @@
  */
 import { Circle, Loader2, Mic, Square } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  AUDIO_TRACK_ORDER,
-  L,
-  blocksOfVariant,
-  locale,
-  newId,
-  type AudioKind,
-  dialogueSpeaker,
-  suggestedDialogueCharacter,
-  type ProjectState, lineDrift } from "@/core";
+import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, blocksOfVariant, locale, newId, type AudioKind, dialogueSpeaker, suggestedDialogueCharacter, type ProjectState, lineDrift } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { DialogueVersions } from "./DialogueVersions";
 import { DriftBadge, DriftDiffView } from "@/app/dialogue/DriftBadge";

@@ -3,18 +3,7 @@
  * automatisk eller ved siden av utvalget. Én AddCanvasNodes og kantkommandoene kjøres som én angregruppe.
  */
 import { useState } from "react";
-import {
-  CANVAS_DEFAULT_H,
-  CANVAS_DEFAULT_W,
-  L,
-  canvasEdgeKindLabel,
-  canvasNodeDefaults,
-  canvasNodeKindLabel,
-  newId,
-  type CanvasNode,
-  type Command,
-  type ProposedCanvas,
-} from "@/core";
+import { CANVAS_DEFAULT_H, CANVAS_DEFAULT_W, canvasEdgeKindLabel, canvasNodeDefaults, canvasNodeKindLabel, newId, type CanvasNode, type Command, type ProposedCanvas } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";

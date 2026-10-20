@@ -22,7 +22,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { memo, type ComponentType } from "react";
-import { L, canvasNodeKindLabel, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
+import { canvasNodeKindLabel, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
 import { AssetThumb } from "@/app/library/AssetThumb";
 import { useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";

@@ -10,24 +10,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { NotesPanel } from "@/app/script/NotesPanel";
 import { DriftBadge } from "@/app/dialogue/DriftBadge";
 import { Button } from "@/components/ui/button";
-import {
-  L,
-  annotationsOfVariant,
-  blockAtCompositionFrame,
-  blockSpans,
-  blocksOfVariant,
-  dialogueOwnerOf,
-  scriptSeekTarget,
-  SCRIPT_CLICK_DELAY_MS,
-  type ScriptSeek,
-  formatHeading,
-  sceneNumberOf,
-  type BlockKind,
-  type FilmClip,
-  type Command,
-  type NewAnnotation,
-  type ProjectState,
-} from "@/core";
+import { annotationsOfVariant, blockAtCompositionFrame, blockSpans, blocksOfVariant, dialogueOwnerOf, scriptSeekTarget, SCRIPT_CLICK_DELAY_MS, type ScriptSeek, formatHeading, sceneNumberOf, type BlockKind, type FilmClip, type Command, type NewAnnotation, type ProjectState } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
 import { t as tk } from "@/core/i18n/keyed";
 

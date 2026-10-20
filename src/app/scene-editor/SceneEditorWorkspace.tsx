@@ -23,38 +23,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type React
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
-import {
-  DEFAULT_COMPOSITION,
-  L,
-  compositionDuration,
-  defaultLayerFields,
-  compositionOfVariant,
-  formatHeading,
-  sceneNumberOf,
-  framesToSeconds,
-  layerVersion,
-  layerVersions,
-  layerFieldsOf,
-  layersOf,
-  newMotionPath,
-  pathPointsFromDrawing,
-  isSharedIn,
-  newId,
-  ownCopyCommands,
-  occurrenceKind,
-  orderedOccurrences,
-  audioClipFieldsOf,
-  audioVersion,
-  filmClips,
-  sceneWindowAudio,
-  type Composition,
-  type ProjectState,
-  sceneContinuityVariant,
-  previousSceneCamera,
-  sourceAt,
-  carryTargets,
-  scriptSeekTarget,
-} from "@/core";
+import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
@@ -419,10 +388,7 @@ function Editor({
       }
       const r = await runCarryOver(state, cmds, id, occurrenceId, [{ occurrenceId: t.next, mode: "add" }]);
       if (r.error) return r.error;
-      return L(
-        `Lagt til i scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
-        `Added to scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
-      );
+      return tk("app-scene-editor-scene-editor-workspace.added-to-scene", { scene: `${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() });
     },
     [occurrenceId, state, cmds],
   );

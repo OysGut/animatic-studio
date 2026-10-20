@@ -18,28 +18,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
-import {
-  PROVIDERS,
-  capRemaining,
-  catalogSettings,
-  customModelsOf,
-  isModelEnabled,
-  isProviderEnabled,
-  checkKeyFormat,
-  formatUsd,
-  CAPABILITY_LABEL,
-  type ProviderInfo,
-  L,
-  tm,
-  TEXT_PREFS_KEY,
-  TEXT_TASK_GROUPS,
-  TEXT_TASK_GROUP_LABEL,
-  isTextPrefs,
-  providerInfo,
-  textModelsOf,
-  type TextChoice,
-  type TextPrefs,
-} from "@/core";
+import { PROVIDERS, capRemaining, catalogSettings, customModelsOf, isModelEnabled, isProviderEnabled, checkKeyFormat, formatUsd, CAPABILITY_LABEL, type ProviderInfo, tm, TEXT_PREFS_KEY, TEXT_TASK_GROUPS, TEXT_TASK_GROUP_LABEL, isTextPrefs, providerInfo, textModelsOf, type TextChoice, type TextPrefs } from "@/core";
 import {
   listTextChoices,
   removeProviderKey,
@@ -58,6 +37,7 @@ import {
 import { accountAiKey, useAccountAi, type ProviderKeyRow } from "./use-providers";
 import { useAiModelSettings } from "./use-ai-model-settings";
 import { useUiPref } from "@/app/account/ui-prefs";
+import { t } from "@/core/i18n/keyed";
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -66,10 +46,7 @@ const ctl =
 function AdminOffNote() {
   return (
     <p role="note" className="text-[13px] text-status-uncertain">
-      {L(
-        "Administrator har slått av denne leverandøren for alle brukere. Den vises ikke i valglistene og kan ikke brukes før den slås på igjen.",
-        "The administrator has switched off this provider for all users. It is not shown in the lists and cannot be used until it is switched on again.",
-      )}
+      {t("app-ai-providers-dialog.admin-off-note.p.8c5dbc59b7bc")}
     </p>
   );
 }
@@ -79,28 +56,28 @@ function StatusBadge({ row, builtIn }: { row: ProviderKeyRow | undefined; builtI
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-text-secondary">
         <CheckCircle2 className="size-3.5 text-status-success" aria-hidden />{" "}
-        {L("Innebygd", "Built-in")}
+        {t("app-ai-providers-dialog.status-badge.span.224d42c78711")}
       </span>
     );
   if (!row)
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-text-tertiary">
-        <CircleDashed className="size-3.5" aria-hidden /> {L("Ikke koblet til", "Not connected")}
+        <CircleDashed className="size-3.5" aria-hidden /> {t("app-ai-providers-dialog.status-badge.span.707ab5215032")}
       </span>
     );
   if (row.status === "failed")
     return (
       <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-status-danger">
         <CircleAlert className="size-3.5" aria-hidden />{" "}
-        {L(`Nøkkelen virker ikke (${row.key_hint})`, `The key does not work (${row.key_hint})`)}
+        {t("app-ai-providers-dialog.status-badge.span.fb1c3c1e4e13", { key_hint: String(row.key_hint) })}
       </span>
     );
   return (
     <span className="flex shrink-0 items-center gap-1 whitespace-nowrap text-xs text-status-success">
       <CheckCircle2 className="size-3.5" aria-hidden />{" "}
-      {L(`Tilkoblet (${row.key_hint})`, `Connected (${row.key_hint})`)}
+      {t("app-ai-providers-dialog.status-badge.span.61ecf5f930b9", { key_hint: String(row.key_hint) })}
       {row.status === "untested" ? (
-        <span className="text-text-tertiary">{L(" · ikke prøvd", " · not tested")}</span>
+        <span className="text-text-tertiary">{t("app-ai-providers-dialog.status-badge.span.2ac592b164f3")}</span>
       ) : null}
     </span>
   );
@@ -155,14 +132,8 @@ function ProviderDetail({
           kind: "ok",
           text:
             r.status === "ok"
-              ? L(
-                  `Nøkkelen virker og er lagret kryptert.${r.message ? ` ${tm(r.message)}` : ""}`,
-                  `The key works and is saved encrypted.${r.message ? ` ${tm(r.message)}` : ""}`,
-                )
-              : L(
-                  `Nøkkelen er lagret kryptert. ${tm(r.message ?? "Den kunne ikke prøves nå.")}`,
-                  `The key is saved encrypted. ${tm(r.message ?? "It could not be tested now.")}`,
-                ),
+              ? t("app-ai-providers-dialog.text.text.dd4c5d90b477", { value1: String(r.message ? ` ${tm(r.message)}` : "") })
+              : t("app-ai-providers-dialog.key-saved-encrypted", { message: r.message ? tm(r.message) : t("app-ai-providers-dialog.key-not-tested") }),
         });
       } else setMsg({ kind: "error", text: tm(r.message) });
     } catch (e) {
@@ -179,7 +150,7 @@ function ProviderDetail({
       const r = await testSavedProviderKey({ data: { provider: p.id } });
       setMsg(
         r.ok
-          ? { kind: "ok", text: tm(r.message ?? L("Nøkkelen virker.", "The key works.")) }
+          ? { kind: "ok", text: tm(r.message ?? t("app-ai-providers-dialog.text.text.2556fd645036")) }
           : { kind: "error", text: tm(r.message) },
       );
     } catch (e) {
@@ -198,14 +169,11 @@ function ProviderDetail({
         r.ok
           ? {
               kind: "ok",
-              text: L(
-                "Nøkkelen er slettet fra Animatic Studio.",
-                "The key has been deleted from Animatic Studio.",
-              ),
+              text: t("app-ai-providers-dialog.text.text.74fba41561c8"),
             }
           : {
               kind: "error",
-              text: tm(r.message ?? L("Kunne ikke fjerne nøkkelen.", "Could not remove the key.")),
+              text: tm(r.message ?? t("app-ai-providers-dialog.text.text.f1727b86443d")),
             },
       );
     } finally {
@@ -222,16 +190,16 @@ function ProviderDetail({
         onClick={onBack}
         className="flex items-center gap-1 self-start text-xs text-text-secondary hover:text-text-primary"
       >
-        <ArrowLeft className="size-3.5" aria-hidden /> {L("Alle leverandører", "All providers")}
+        <ArrowLeft className="size-3.5" aria-hidden /> {t("app-ai-providers-dialog.provider-detail.button.ce207dab41a6")}
       </button>
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-text-primary">{p.name}</h3>
           <p className="mt-0.5 text-[13px] text-text-secondary">{p.description}</p>
           <p className="mt-1 text-xs text-text-tertiary">
-            {L("Kan lage:", "Can make:")}{" "}
+            {t("app-ai-providers-dialog.provider-detail.p.61c2d829e075")}{" "}
             {p.capabilities.map((c) => CAPABILITY_LABEL[c]).join(", ")} ·{" "}
-            {L("modeller:", "models:")}{" "}
+            {t("app-ai-providers-dialog.provider-detail.p.aee47d2a8c80")}{" "}
             {[...p.models, ...customModelsOf(p.id)]
               .filter((m) => !m.retired && isModelEnabled(catalogSettings(), p.id, m.id))
               .map((m) => m.label)
@@ -243,10 +211,7 @@ function ProviderDetail({
       {!isProviderEnabled(catalogSettings(), p.id) ? <AdminOffNote /> : null}
       {p.builtIn ? (
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
-            "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.",
-          )}
+          {t("app-ai-providers-dialog.provider-detail.p.e74e02c953df")}
         </p>
       ) : (
         <>
@@ -255,7 +220,7 @@ function ProviderDetail({
               id="steps-title"
               className="mb-1.5 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary"
             >
-              {L("Slik kobler du til", "How to connect")}
+              {t("app-ai-providers-dialog.provider-detail.h4.38ebf8428398")}
             </h4>
             <ol className="ml-4 flex list-decimal flex-col gap-1 text-[13px] text-text-primary">
               {p.keySteps.map((s) => (
@@ -263,10 +228,10 @@ function ProviderDetail({
               ))}
             </ol>
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-              <Link2 href={p.links.signup}>{L("Opprett konto", "Create account")}</Link2>
-              <Link2 href={p.links.billing}>{L("Betaling og kreditt", "Billing and credit")}</Link2>
-              <Link2 href={p.links.apiKeys}>{L("Hent API-nøkkel", "Get API key")}</Link2>
-              <Link2 href={p.links.pricing}>{L("Priser", "Pricing")}</Link2>
+              <Link2 href={p.links.signup}>{t("app-ai-providers-dialog.provider-detail.link2.68fc8e36ed68")}</Link2>
+              <Link2 href={p.links.billing}>{t("app-ai-providers-dialog.provider-detail.link2.365d69e023a0")}</Link2>
+              <Link2 href={p.links.apiKeys}>{t("app-ai-providers-dialog.provider-detail.link2.869dac22c8be")}</Link2>
+              <Link2 href={p.links.pricing}>{t("app-ai-providers-dialog.provider-detail.link2.83480500e7e0")}</Link2>
             </div>
           </section>
           <section
@@ -276,8 +241,8 @@ function ProviderDetail({
             <h4 id="key-title" className="flex items-center gap-1.5 text-[13px] font-medium">
               <KeyRound className="size-4" aria-hidden />
               {row
-                ? L("Bytt nøkkel", "Change key")
-                : L("Lim inn API-nøkkelen", "Paste the API key")}
+                ? t("app-ai-providers-dialog.provider-detail.h4.223a339f93d2")
+                : t("app-ai-providers-dialog.provider-detail.h4.d7388f0c6428")}
             </h4>
             <input
               type="password"
@@ -287,10 +252,10 @@ function ProviderDetail({
               onChange={(e) => setKey(e.target.value)}
               placeholder={
                 row
-                  ? L(`Nåværende: ${row.key_hint}`, `Current: ${row.key_hint}`)
-                  : L("Lim inn nøkkelen her", "Paste the key here")
+                  ? t("app-ai-providers-dialog.provider-detail.placeholder.ac0c19dcca57", { key_hint: String(row.key_hint) })
+                  : t("app-ai-providers-dialog.provider-detail.placeholder.986493436d94")
               }
-              aria-label={L(`API-nøkkel for ${p.name}`, `API key for ${p.name}`)}
+              aria-label={t("app-ai-providers-dialog.provider-detail.aria-label.9db0473550a8", { name: String(p.name) })}
               className={ctl + " w-full font-mono"}
               disabled={busy !== null}
             />
@@ -303,7 +268,7 @@ function ProviderDetail({
                 disabled={!key.trim() || !!fmt.error || busy !== null}
               >
                 {busy === "save" ? <Loader2 className="animate-spin" /> : <ShieldCheck />}
-                {L("Prøv og lagre", "Test and save")}
+                {t("app-ai-providers-dialog.provider-detail.button.56574c96b4dc")}
               </Button>
               {row ? (
                 <Button
@@ -313,7 +278,7 @@ function ProviderDetail({
                   disabled={busy !== null}
                 >
                   {busy === "test" ? <Loader2 className="animate-spin" /> : <CheckCircle2 />}
-                  {L("Prøv nøkkelen igjen", "Test the key again")}
+                  {t("app-ai-providers-dialog.provider-detail.button.237e69ee7013")}
                 </Button>
               ) : null}
               {row && !confirmRemove ? (
@@ -323,20 +288,17 @@ function ProviderDetail({
                   onClick={() => setConfirmRemove(true)}
                   disabled={busy !== null}
                 >
-                  <Trash2 /> {L("Fjern", "Remove")}
+                  <Trash2 /> {t("app-ai-providers-dialog.provider-detail.button.53168064bca8")}
                 </Button>
               ) : null}
               {confirmRemove ? (
                 <span className="flex items-center gap-2 text-xs text-text-secondary">
-                  {L(
-                    "Slette nøkkelen fra Animatic Studio?",
-                    "Delete the key from Animatic Studio?",
-                  )}
+                  {t("app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e")}
                   <Button size="sm" variant="destructive" onClick={() => void remove()}>
-                    {L("Slett", "Delete")}
+                    {t("app-ai-providers-dialog.provider-detail.button.fc90b6eada1b")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setConfirmRemove(false)}>
-                    {L("Avbryt", "Cancel")}
+                    {t("app-ai-providers-dialog.provider-detail.button.d869b1dd94e1")}
                   </Button>
                 </span>
               ) : null}
@@ -355,10 +317,7 @@ function ProviderDetail({
               </p>
             ) : null}
             <p className="text-[11px] text-text-tertiary">
-              {L(
-                `Nøkkelen sendes kryptert til serveren, prøves hos ${p.name} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos ${p.name} hvis du tror den er kommet på avveie.`,
-                `The key is sent encrypted to the server, tested with ${p.name} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at ${p.name} if you think it has been compromised.`,
-              )}
+              {t("app-ai-providers-dialog.key-handling", { provider: p.name })}
             </p>
           </section>
         </>
@@ -390,17 +349,17 @@ function CapSection({
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3"
     >
       <h3 id="cap-title" className="text-[13px] font-medium text-text-primary">
-        {L("Kostnadstak for egne nøkler", "Cost limit for own keys")}
+        {t("app-ai-providers-dialog.cap-section.h3.cdefe66f2823")}
       </h3>
       <div className="flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
         <label className="flex items-center gap-2">
-          {L("Høyst per måned (USD)", "Maximum per month (USD)")}
+          {t("app-ai-providers-dialog.cap-section.label.dae56024a178")}
           <input
             inputMode="decimal"
             value={value}
             onChange={(e) => setText(e.target.value)}
-            placeholder={L("Ingen tak", "No limit")}
-            aria-label={L("Kostnadstak per måned i USD", "Cost limit per month in USD")}
+            placeholder={t("app-ai-providers-dialog.cap-section.placeholder.ff1b9bf382ab")}
+            aria-label={t("app-ai-providers-dialog.cap-section.aria-label.d1a95c3820c7")}
             aria-invalid={invalid || undefined}
             className={ctl + " w-28 text-right tabular"}
           />
@@ -422,20 +381,17 @@ function CapSection({
             }
           }}
         >
-          {L("Lagre", "Save")}
+          {t("app-ai-providers-dialog.cap-section.button.a7b5bb51d444")}
         </Button>
         <span className="tabular text-xs text-text-tertiary">
-          {L("Brukt denne måneden:", "Used this month:")} ~{formatUsd(usedUsd)}
+          {t("app-ai-providers-dialog.cap-section.span.bd5edbbfaffc")} ~{formatUsd(usedUsd)}
           {remaining !== null
-            ? L(` · igjen ~${formatUsd(remaining)}`, ` · remaining ~${formatUsd(remaining)}`)
+            ? t("app-ai-providers-dialog.cap-section.span.3671ec1fb91a", { value1: String(formatUsd(remaining)) })
             : ""}
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Gjelder alle prosjekter som bruker nøklene dine, i tillegg til hvert prosjekts eget budsjett. Beløpene er anslag ut fra leverandørenes prislister; den faktiske regningen kommer fra leverandøren. Sett også gjerne en grense hos leverandøren.",
-          "Applies to all projects that use your keys, in addition to each project's own budget. The amounts are estimates based on the providers' price lists; the actual bill comes from the provider. You may also want to set a limit with the provider.",
-        )}
+        {t("app-ai-providers-dialog.cap-section.p.423354479f86")}
       </p>
       {err ? (
         <p role="alert" className="text-xs text-status-danger">
@@ -483,13 +439,10 @@ function TextAiSection({ open }: { open: boolean }) {
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-3"
     >
       <h3 id="text-ai-title" className="text-[13px] font-medium text-text-primary">
-        {L("Tekst-AI", "Text AI")}
+        {t("app-ai-providers-dialog.text-ai-section.h3.0c7abb774554")}
       </h3>
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Velg leverandør og modell for hver type tekstoppgave. «Automatisk» bruker den første leverandøren du har en gyldig nøkkel til, ellers den innebygde AI-en.",
-          "Choose the provider and model for each kind of text task. “Automatic” uses the first provider you have a valid key for, otherwise the built-in AI.",
-        )}
+        {t("app-ai-providers-dialog.text-ai-section.p.36980d550912")}
       </p>
       {choices.isLoading ? (
         <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
@@ -503,10 +456,7 @@ function TextAiSection({ open }: { open: boolean }) {
                 <span className="text-[13px] text-text-secondary">{TEXT_TASK_GROUP_LABEL[g]}</span>
                 <select
                   className={ctl}
-                  aria-label={L(
-                    `Leverandør for ${TEXT_TASK_GROUP_LABEL[g]}`,
-                    `Provider for ${TEXT_TASK_GROUP_LABEL[g]}`,
-                  )}
+                  aria-label={t("app-ai-providers-dialog.text-ai-section.aria-label.bb00b77db626", { value1: String(TEXT_TASK_GROUP_LABEL[g]) })}
                   value={cur?.provider ?? ""}
                   onChange={(e) => {
                     const p = e.target.value;
@@ -517,20 +467,17 @@ function TextAiSection({ open }: { open: boolean }) {
                     if (first) update(g, { provider: p as TextChoice["provider"], model: first });
                   }}
                 >
-                  <option value="">{L("Automatisk", "Automatic")}</option>
+                  <option value="">{t("app-ai-providers-dialog.text-ai-section.option.9ce269f4a98c")}</option>
                   {providers.map((p) => (
                     <option key={p.provider} value={p.provider}>
                       {providerInfo(p.provider)?.name ?? p.provider}
                     </option>
                   ))}
-                  <option value={LOVABLE_TEXT}>{L("Innebygd AI", "Built-in AI")}</option>
+                  <option value={LOVABLE_TEXT}>{t("app-ai-providers-dialog.text-ai-section.option.c22b9db65c4d")}</option>
                 </select>
                 <select
                   className={ctl}
-                  aria-label={L(
-                    `Modell for ${TEXT_TASK_GROUP_LABEL[g]}`,
-                    `Model for ${TEXT_TASK_GROUP_LABEL[g]}`,
-                  )}
+                  aria-label={t("app-ai-providers-dialog.text-ai-section.aria-label.30dcefe21caa", { value1: String(TEXT_TASK_GROUP_LABEL[g]) })}
                   value={cur && cur.provider !== "lovable" ? cur.model : ""}
                   disabled={!cur || cur.provider === "lovable"}
                   onChange={(e) =>
@@ -538,7 +485,7 @@ function TextAiSection({ open }: { open: boolean }) {
                   }
                 >
                   {!cur || cur.provider === "lovable" ? (
-                    <option value="">{L("Velges automatisk", "Chosen automatically")}</option>
+                    <option value="">{t("app-ai-providers-dialog.text-ai-section.option.9d0ccf79fa6a")}</option>
                   ) : (
                     (models.includes(cur.model) ? models : [cur.model, ...models]).map((m) => (
                       <option key={m} value={m}>
@@ -554,10 +501,7 @@ function TextAiSection({ open }: { open: boolean }) {
       )}
       {!choices.isLoading && providers.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Du har ingen egne tekstleverandører ennå. Koble til Claude, ChatGPT, Grok eller Gemini nedenfor.",
-            "You have no text providers of your own yet. Connect Claude, ChatGPT, Grok or Gemini below.",
-          )}
+          {t("app-ai-providers-dialog.text-ai-section.p.05cf8a2e14ac")}
         </p>
       ) : null}
     </section>
@@ -589,22 +533,16 @@ export function ProvidersDialog({
     >
       <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("AI-leverandører", "AI providers")}</DialogTitle>
+          <DialogTitle>{t("app-ai-providers-dialog.providers-dialog.dialog-title.a684c382a7a6")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Koble til tjenestene du vil bruke for bilder, video og lyd. De du kobler til, blir tilgjengelige i alle prosjektene du eier.",
-              "Connect the services you want to use for images, video and audio. Those you connect become available in all the projects you own.",
-            )}
+            {t("app-ai-providers-dialog.providers-dialog.dialog-description.f5764fdb18ba")}
           </DialogDescription>
         </DialogHeader>
         {ai.isLoading ? (
           <Loader2 className="size-5 animate-spin text-text-tertiary" aria-hidden />
         ) : ai.data?.missing ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
-            {L(
-              "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
-              "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.",
-            )}
+            {t("app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1")}
           </p>
         ) : sel ? (
           <ProviderDetail
@@ -621,7 +559,7 @@ export function ProvidersDialog({
               usedUsd={ai.data?.usedUsd ?? 0}
             />
             <TextAiSection open={open} />
-            <ul className="flex flex-col gap-1.5" aria-label={L("Leverandører", "Providers")}>
+            <ul className="flex flex-col gap-1.5" aria-label={t("app-ai-providers-dialog.providers-dialog.aria-label.c504d5dd202a")}>
               {PROVIDERS.map((p) => (
                 <li key={p.id}>
                   <button
@@ -641,7 +579,7 @@ export function ProvidersDialog({
                       <StatusBadge row={rows.get(p.id)} builtIn={p.builtIn} />
                     ) : (
                       <span className="shrink-0 whitespace-nowrap text-xs text-text-tertiary">
-                        {L("Slått av av administrator", "Switched off by the administrator")}
+                        {t("app-ai-providers-dialog.providers-dialog.span.8d349a2870d2")}
                       </span>
                     )}
                   </button>

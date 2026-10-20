@@ -6,11 +6,12 @@
  * nøkler. Tak: 20 kjøringer per prosjekt per døgn (alle oppgavene samlet) og en lås på 60 sekunder per
  * oppgave. Loggen i generation_jobs har oppgave, modell og kostnad – aldri prompt eller svar.
  */
-import { L, newId } from "@/core";
+import { newId } from "@/core";
 import { dailyQuotaError, lockActive } from "@/core/library/analysis-hash";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { lovableText } from "./text.functions";
 import { TEXT_MODELS } from "./write-prompt.functions";
+import { t } from "@/core/i18n/keyed";
 
 export type ServiceTask = "entity_analysis" | "translation_align";
 const SERVICE_TASKS: readonly ServiceTask[] = ["entity_analysis", "translation_align"];
@@ -34,10 +35,7 @@ export async function runServiceAi(input: {
     return {
       ok: false,
       retryable: false,
-      message: L(
-        "Den innebygde AI-en er ikke tilgjengelig nå. Forslagene bygger på manusreglene.",
-        "The built-in AI is not available right now. The suggestions are based on script rules.",
-      ),
+      message: t("adapters-ai-service-ai-server.message.message.82c9d0ca21a3"),
     };
   const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
   const { data: recent } = await admin
@@ -60,7 +58,7 @@ export async function runServiceAi(input: {
     return {
       ok: false,
       retryable: true,
-      message: L("Analysen kjører allerede.", "The analysis is already running."),
+      message: t("adapters-ai-service-ai-server.message.message.af2c69020fe1"),
     };
 
   const override = process.env["ANIMATIC_TEXT_MODEL"];
@@ -87,7 +85,7 @@ export async function runServiceAi(input: {
     return {
       ok: false,
       retryable: false,
-      message: L("Analysen kunne ikke logges.", "The analysis could not be logged."),
+      message: t("adapters-ai-service-ai-server.message.message.bb0694b486d4"),
     };
   const finish = (patch: Record<string, unknown>) =>
     admin
@@ -118,7 +116,7 @@ export async function runServiceAi(input: {
     return {
       ok: false,
       retryable: false,
-      message: L("Den innebygde AI-en svarte ikke.", "The built-in AI did not respond."),
+      message: t("adapters-ai-service-ai-server.message.message.79746a85d3ed"),
     };
   }
 }

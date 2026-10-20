@@ -18,7 +18,8 @@ import { compareKeys } from "../order-key";
 import { framesToSeconds } from "../time";
 import type { ClipPartFields } from "../commands/types";
 import { compositionOfVariant } from "../composition/render";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 /**
  * Bilder som kan være startbilde for videoen: bildene i scenens 2D-scene (bakgrunn først), så godkjente
@@ -337,20 +338,14 @@ export function aiUpdatePlan(
     return {
       segments: [],
       localOnly: false,
-      reason: L(
-        "Scenen har ingen lagret inndeling for video.",
-        "The scene has no saved breakdown for video.",
-      ),
+      reason: tk("core-generation-video.reason.reason.c9acc1dbaf0c"),
     };
   const visual = changes.filter((c) => !NON_VISUAL.has(c.blockKind));
   if (!visual.length)
     return {
       segments: [],
       localOnly: true,
-      reason: L(
-        "Endringene (notater/overganger) synes ikke i bildet. Godkjenn dem i stedet for å lage nye videoer.",
-        "The changes (notes/transitions) do not show in the picture. Approve them instead of making new videos.",
-      ),
+      reason: tk("core-generation-video.reason.reason.824128b69e54"),
     };
   const affected = new Set(affectedTakeIds);
   const located = new Set<number>();
@@ -371,13 +366,7 @@ export function aiUpdatePlan(
     segments,
     localOnly: false,
     reason: segments.length
-      ? L(
-          `Endringene berører ${segments.length === 1 ? "segment" : "segmentene"} ${segments.map((i) => i + 1).join(", ")}${unknown ? " (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med)" : ""}.`,
-          `The changes affect ${segments.length === 1 ? "segment" : "the segments"} ${segments.map((i) => i + 1).join(", ")}${unknown ? " (a removed line cannot be placed, so all segments with video are included)" : ""}.`,
-        )
-      : L(
-          "Ingen av segmentenes valgte videoer er laget fra det gamle manuset.",
-          "None of the segments' chosen videos were made from the old script.",
-        ),
+      ? (unknown ? tk("core-generation-video.changes-affect-unknown", { count: segments.length, segments: segments.map((i) => i + 1).join(", ") }) : tk("core-generation-video.changes-affect", { count: segments.length, segments: segments.map((i) => i + 1).join(", ") }))
+      : tk("core-generation-video.reason.reason.bd3238cdd55a"),
   };
 }

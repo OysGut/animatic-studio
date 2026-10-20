@@ -25,7 +25,7 @@ import {
   PROMPT_WRITER_SYSTEM,
   SCENE_DESCRIPTION_SYSTEM,
 } from "@/core";
-import { L } from "@/core";
+
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import {
   GATEWAY,
@@ -35,6 +35,7 @@ import {
   referenceImages,
   validReferencePath,
 } from "./gateway";
+import { t } from "@/core/i18n/keyed";
 
 /**
  * Språkmodellene som prøves, i rekkefølge (den første Lovable kjenner). Kan overstyres med
@@ -79,14 +80,14 @@ export type WritePromptResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): WritePromptInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(t("adapters-ai-write-prompt-functions.validate.message.24c66c979741"));
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const brief = x["brief"];
   const images = x["images"];
   if (typeof projectId !== "string" || !isUuid(projectId))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.d45c41b36f46"));
   const task: WriteTask =
     x["task"] === "style" || x["task"] === "visual" || x["task"] === "scene"
       ? (x["task"] as WriteTask)
@@ -94,18 +95,18 @@ function validate(d: unknown): WritePromptInput {
   // Stilanalysen og scenebeskrivelsen (DEC-0085) gjelder ikke én ressurs
   const noAsset = task === "style" || task === "scene";
   if (!noAsset && (typeof assetId !== "string" || !isUuid(assetId)))
-    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.2e5f5bfc8390"));
   if (
     noAsset &&
     assetId !== null &&
     assetId !== undefined &&
     (typeof assetId !== "string" || !isUuid(assetId))
   )
-    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.2e5f5bfc8390.2"));
   if (typeof brief !== "string" || !brief.trim() || brief.length > MAX_PROMPT_CHARS)
-    throw new Error(L("Grunnlaget mangler eller er for langt", "The basis is missing or too long"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.15b01622c845"));
   if (x["purpose"] !== "cutout" && x["purpose"] !== "background")
-    throw new Error(L("Ugyldig bruk", "Invalid use"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.01be383379b4"));
   if (
     !Array.isArray(images) ||
     images.length > MAX_ATTACHED_IMAGES ||
@@ -118,8 +119,8 @@ function validate(d: unknown): WritePromptInput {
         ((i as Record<string, unknown>)["label"] as string).length <= 300,
     )
   )
-    throw new Error(L("Ugyldige bilder", "Invalid images"));
-  if (x["approved"] !== true) throw new Error(L("Må bekreftes", "Must be confirmed"));
+    throw new Error(t("adapters-ai-write-prompt-functions.validate.message.7c43592e8298"));
+  if (x["approved"] !== true) throw new Error(t("adapters-ai-write-prompt-functions.validate.message.08a4f82d9e0f"));
   return {
     projectId,
     assetId: typeof assetId === "string" ? assetId : null,
@@ -164,10 +165,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     if ((ROLE_RANK[(member as { role?: string } | null)?.role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang til å bruke AI i dette prosjektet.",
-          "You do not have access to use AI in this project.",
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.4c2d9120af7b"),
       };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -176,10 +174,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 22)
       return {
         ok: false,
-        message: L(
-          "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
-          "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.",
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.9c28c20f674f"),
       };
     // Teksten skrives med Lovable AI: administrator kan ha slått av hele leverandøren (DEC-0088)
     const aiGate = await (
@@ -190,10 +185,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     if (!key)
       return {
         ok: false,
-        message: L(
-          "Den innebygde AI-en er ikke slått på. Kontakt administratoren.",
-          "The built-in AI is not enabled. Contact the administrator.",
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.ba89f8049a83"),
       };
 
     const { data: proj } = await admin
@@ -202,15 +194,12 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+      return { ok: false, message: t("adapters-ai-write-prompt-functions.message.message.f05bbb72b752") };
     // Eieren har slått av AI (budsjett 0): heller ingen AI-skrevne beskrivelser
     if ((proj as { ai_month_limit?: number | null }).ai_month_limit === 0)
       return {
         ok: false,
-        message: L(
-          "AI er slått av for prosjektet (budsjettet er 0). Eieren kan endre det på prosjektoversikten.",
-          "AI is turned off for the project (the budget is 0). The owner can change this on the project overview.",
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.d64d724438d3"),
       };
     if (data.assetId) {
       const { data: asset } = await admin
@@ -222,21 +211,15 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       if (!asset)
         return {
           ok: false,
-          message: L(
-            "Ressursen finnes ikke i prosjektet.",
-            "The asset does not exist in the project.",
-          ),
+          message: t("adapters-ai-write-prompt-functions.message.message.13c801507797"),
         };
       if ((asset as { kind: string }).kind === "sound" && data.task !== "visual")
         return {
           ok: false,
-          message: L(
-            "Lyd kan ikke få en bildebeskrivelse.",
-            "Sound cannot get an image description.",
-          ),
+          message: t("adapters-ai-write-prompt-functions.message.message.4ac1e529f99b"),
         };
     } else if (data.task !== "style" && data.task !== "scene")
-      return { ok: false, message: L("Ressursen mangler.", "The asset is missing.") };
+      return { ok: false, message: t("adapters-ai-write-prompt-functions.message.message.3c24378f2971") };
     const refCheck = await referenceImages(
       admin,
       data.projectId,
@@ -263,15 +246,9 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           .gte("created_at", dayAgo),
       ]);
       if ((mine ?? 0) - extra >= MAX_PROMPT_JOBS_PER_USER_PER_HOUR)
-        return L(
-          `Grensen på ${MAX_PROMPT_JOBS_PER_USER_PER_HOUR} AI-beskrivelser i timen er nådd. Prøv igjen senere.`,
-          `The limit of ${MAX_PROMPT_JOBS_PER_USER_PER_HOUR} AI descriptions per hour has been reached. Try again later.`,
-        );
+        return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.1e3043f207e3", { MAX_PROMPT_JOBS_PER_USER_PER_HOUR: String(MAX_PROMPT_JOBS_PER_USER_PER_HOUR) });
       if ((project ?? 0) - extra >= MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY)
-        return L(
-          `Prosjektets grense på ${MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY} AI-beskrivelser i døgnet er nådd.`,
-          `The project's limit of ${MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY} AI descriptions per day has been reached.`,
-        );
+        return t("adapters-ai-write-prompt-functions.over-limit.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.0690a800b7e9", { MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY: String(MAX_PROMPT_JOBS_PER_PROJECT_PER_DAY) });
       return null;
     };
     const before = await overLimit(0);
@@ -317,10 +294,7 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
     if (logErr)
       return {
         ok: false,
-        message: L(
-          `Kallet kunne ikke logges: ${logErr.message}`,
-          `The call could not be logged: ${logErr.message}`,
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.6d99dd724293", { message: String(logErr.message) }),
       };
     // Samtidige forespørsler: tell på nytt med denne jobben registrert
     const after = await overLimit(1);
@@ -421,14 +395,11 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
           await finish({
             status: "failed",
             model,
-            error: L("Tomt svar fra språkmodellen", "Empty reply from the language model"),
+            error: t("adapters-ai-write-prompt-functions.error.error.1a7750bd2314"),
           });
           return {
             ok: false,
-            message: L(
-              "AI-tjenesten svarte uten tekst. Prøv igjen.",
-              "The AI service replied without text. Try again.",
-            ),
+            message: t("adapters-ai-write-prompt-functions.message.message.830de55e747f"),
           };
         }
         // i18n-ignore: serverlogg for utvikleren
@@ -440,26 +411,17 @@ export const writeImagePrompt = createServerFn({ method: "POST" })
       await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
       return {
         ok: false,
-        message: L(
-          "Ingen av språkmodellene er tilgjengelige. Kontakt administratoren.",
-          "None of the language models are available. Contact the administrator.",
-        ),
+        message: t("adapters-ai-write-prompt-functions.message.message.0012d8d8fe9d"),
       };
     } catch (e) {
-      const message = (e as Error).message || L("Ukjent feil", "Unknown error");
+      const message = (e as Error).message || t("adapters-ai-write-prompt-functions.message.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-handler.a8b89351ac49");
       await finish({ status: "failed", error: message.slice(0, 2000) });
       return {
         ok: false,
         message:
           (e as Error).name === "TimeoutError"
-            ? L(
-                "AI-tjenesten brukte for lang tid. Prøv igjen.",
-                "The AI service took too long. Try again.",
-              )
-            : L(
-                `Beskrivelsen ble ikke skrevet: ${message}`,
-                `The description was not written: ${message}`,
-              ),
+            ? t("adapters-ai-write-prompt-functions.message.message.5ae5eeb17079")
+            : t("adapters-ai-write-prompt-functions.message.message.6494594d3f6e", { message: String(message) }),
       };
     }
   });

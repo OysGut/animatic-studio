@@ -8,21 +8,7 @@
  *   ved siden av og blir aktive først når brukeren velger dem («Bruk dette»).
  * - Romlyd (REQ-0690): egen lydressurs merket «romlyd», en per scene eller lydressurs.
  */
-import {
-  L,
-  ROOM_TONE_TAG,
-  audioClipFieldsOf,
-  lineInfo,
-  lineTitle,
-  newId,
-  roomToneAsset,
-  roomToneName,
-  variantsOf,
-  type AssetMedia,
-  type Command,
-  type ProjectState,
-  type DialogueVersionMeta,
-} from "@/core";
+import { ROOM_TONE_TAG, audioClipFieldsOf, lineInfo, lineTitle, newId, roomToneAsset, roomToneName, variantsOf, type AssetMedia, type Command, type ProjectState, type DialogueVersionMeta } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { t } from "@/core/i18n/keyed";
 

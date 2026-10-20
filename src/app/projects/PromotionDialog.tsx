@@ -6,31 +6,7 @@
  */
 import { AlertTriangle, ArrowRight, Check, Info } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  KEEP_ALL,
-  applyCommand,
-  comparePromotion,
-  choiceSize,
-  defaultChoice,
-  formatHeading,
-  mainProduction,
-  newId,
-  newMainVariantCommands,
-  orderedOccurrences,
-  promotionCandidates,
-  promotionCommands,
-  scriptOnlyChoice,
-  transferSceneCommands,
-  blocksOfVariant,
-  type Command,
-  type LineDiff,
-  type PromotionChoice,
-  type PromotionComparison,
-  type ProjectState,
-  L,
-  locale,
-  localized,
-} from "@/core";
+import { KEEP_ALL, applyCommand, comparePromotion, choiceSize, defaultChoice, formatHeading, mainProduction, newId, newMainVariantCommands, orderedOccurrences, promotionCandidates, promotionCommands, scriptOnlyChoice, transferSceneCommands, blocksOfVariant, type Command, type LineDiff, type PromotionChoice, type PromotionComparison, type ProjectState, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {

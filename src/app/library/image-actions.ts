@@ -15,6 +15,7 @@ import {
   type ProjectState,
 } from "@/core";
 import { uploadAssetImage } from "./asset-images";
+import { t as tk } from "@/core/i18n/keyed";
 
 type RunAndWait = (c: Command, label: string, group?: string) => Promise<{ error: string | null }>;
 
@@ -30,14 +31,8 @@ export async function loadImage(url: string): Promise<LoadedImage> {
   if (!res.ok)
     throw new Error(
       res.status === 400 || res.status === 403
-        ? L(
-            "Lenken til bildet har gått ut – lukk og åpne visningen igjen.",
-            "The link to the image has expired – close and reopen the view.",
-          )
-        : L(
-            `Bildet kunne ikke hentes (feil ${res.status}).`,
-            `The image could not be loaded (error ${res.status}).`,
-          ),
+        ? tk("app-library-image-actions.load-image.message.ebea03297952")
+        : tk("app-library-image-actions.load-image.message.eff158aa3860", { status: String(res.status) }),
     );
   const blob = await res.blob();
   let source: CanvasImageSource;
@@ -128,19 +123,10 @@ export function trimCanvas(c: HTMLCanvasElement): HTMLCanvasElement | null {
 /** Meldingen når «Fjern luften rundt» ikke har noe å fjerne. */
 export function noTrimMessage(reason: "full" | "empty" | "no-background"): string {
   if (reason === "full")
-    return L(
-      "Det er ingen luft å fjerne: figuren fyller allerede (nesten) hele bildet.",
-      "There is no air to remove: the figure already fills (almost) the whole image.",
-    );
+    return tk("app-library-image-actions.no-trim-message.message.e2612e5a5a0c");
   if (reason === "empty")
-    return L(
-      "Det er ingen luft å fjerne: bildet er bare bakgrunn (tomt).",
-      "There is no air to remove: the image is only background (empty).",
-    );
-  return L(
-    "Det er ingen luft å fjerne: kanten rundt bildet er verken gjennomsiktig eller ensfarget. Frilegg bildet først.",
-    "There is no air to remove: the edge around the image is neither transparent nor a single colour. Cut the image out first.",
-  );
+    return tk("app-library-image-actions.no-trim-message.message.54a1897f4e53");
+  return tk("app-library-image-actions.no-trim-message.message.1e9b9d4a9780");
 }
 
 /**
@@ -170,7 +156,7 @@ export async function canvasToPng(c: HTMLCanvasElement, name: string): Promise<F
       (b) =>
         b
           ? ok(b)
-          : fail(new Error(L("Bildet kunne ikke lages.", "The image could not be created."))),
+          : fail(new Error(tk("app-library-image-actions.blob.fail.d2a3503fa9b6"))),
       "image/png",
     ),
   );
@@ -210,7 +196,7 @@ export async function saveImageTo(
             assetId: assetId as never,
             fields: {
               kind: target.assetKind,
-              name: target.name.trim().slice(0, 200) || L("Utsnitt", "Crop"),
+              name: target.name.trim().slice(0, 200) || tk("app-library-image-actions.name.name.6a87545f553f"),
               names: [],
               description: "",
               category: "",
@@ -280,7 +266,7 @@ export async function createAssetWithVariant(
           assetId: assetId as never,
           fields: {
             kind: assetKind,
-            name: name.trim().slice(0, 200) || L("Del", "Part"),
+            name: name.trim().slice(0, 200) || tk("app-library-image-actions.name.name.f563d3f30c1d"),
             names: [],
             description: description.slice(0, 2000),
             category: "",

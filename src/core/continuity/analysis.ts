@@ -17,7 +17,7 @@ import { characterName, mentions } from "../screenplay/filter";
 import { assetNames, editDistance, nameKey } from "../library";
 import { outdatedLayers } from "../library/impact";
 import { compositionOfVariant, layersOf } from "../composition/render";
-import { L, localized } from "../i18n";
+
 import {
   appearanceAt,
   appearanceFrom,
@@ -30,6 +30,7 @@ import {
   layerEffectiveVariant,
   storyTimesCached,
 } from "./index";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type FindingKind =
   | "name_variant"
@@ -41,16 +42,7 @@ export type FindingKind =
   | "asset_outdated"
   | "spinoff_gap";
 
-export const FINDING_LABEL: Record<FindingKind, string> = localized({
-  name_variant: ["Mulig skrivefeil i navn", "Possible typo in a name"],
-  before_intro: ["Med før introduksjonen", "In the action before the introduction"],
-  before_established: ["Brukt før den er etablert", "Used before it is established"],
-  refers_deactivated: ["Viser til en deaktivert scene", "Refers to a deactivated scene"],
-  unexplained_change: ["Utseende endres uten årsak", "Look changes without a reason"],
-  timeline_conflict: ["Motsetning i fortellingstiden", "Conflict in story time"],
-  asset_outdated: ["Eldre versjon av en ressurs", "Older version of an asset"],
-  spinoff_gap: ["Mangler i produksjonen", "Missing from the production"],
-});
+export const FINDING_LABEL: Record<FindingKind, string> = tLocalized({ name_variant: "core-continuity-analysis.finding-label.name-variant.2754e827631a", before_intro: "core-continuity-analysis.finding-label.before-intro.530dbbe61018", before_established: "core-continuity-analysis.finding-label.before-established.4eb9465bd2b7", refers_deactivated: "core-continuity-analysis.finding-label.refers-deactivated.d9fdc52cee1c", unexplained_change: "core-continuity-analysis.finding-label.unexplained-change.cd6871ed50cd", timeline_conflict: "core-continuity-analysis.finding-label.timeline-conflict.85f7eeaf61b8", asset_outdated: "core-continuity-analysis.finding-label.asset-outdated.ab64e0d831e1", spinoff_gap: "core-continuity-analysis.finding-label.spinoff-gap.641c49bddeae" });
 
 export interface Finding {
   /** Stabil nøkkel (for å skjule et funn). */
@@ -74,7 +66,7 @@ type Occ = ReturnType<typeof orderedOccurrences>[number];
 const num = (o: Occ | undefined) =>
   o?.productionNumber
     ? `scene ${o.productionNumber}`
-    : L("scenen uten nummer", "the scene without number");
+    : tk("core-continuity-analysis.num.message.d03534f5a0d6");
 
 /** Kan to replikknavn være samme navn med skrivefeil? Ikke når de bare skiller seg i et tall («GUTT 1»). */
 function typoOf(a: string, b: string): boolean {
@@ -126,13 +118,13 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
   const mainP = Object.values(s.productions).find((p) => p.kind === "main");
   const derived = !!prod && prod.kind !== "main" && !!mainP;
   const prodName = prod
-    ? L(`«${prod.name}»`, `“${prod.name}”`)
-    : L("produksjonen", "the production");
+    ? tk("core-continuity-analysis.prod-name.message.bc1dac8f94c5", { name: String(prod.name) })
+    : tk("core-continuity-analysis.prod-name.message.c24585ca7f8e");
   const mainOccs = derived ? orderedOccurrences(s, mainP!.id).filter((o) => o.active) : [];
   const mainOf = (sceneId: string) => mainOccs.find((o) => o.sceneId === sceneId);
   const mainNum = (sceneId: string) => {
     const m = mainOf(sceneId);
-    return m?.productionNumber ? `scene ${m.productionNumber}` : L("en scene", "a scene");
+    return m?.productionNumber ? `scene ${m.productionNumber}` : tk("core-continuity-analysis.main-num.message.3368749f941f");
   };
   const capital = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
@@ -162,18 +154,12 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
       const where =
         info.n === 1
           ? num(info.first.o)
-          : L(
-              `${info.n} replikker, første i ${num(info.first.o)}`,
-              `${info.n} lines, first in ${num(info.first.o)}`,
-            );
+          : tk("core-continuity-analysis.where.message.ea0cdc772b32", { n: String(info.n), value2: String(num(info.first.o)) });
       out.push({
         key: `name:${name}`,
         kind: "name_variant",
         certainty: "uncertain",
-        message: L(
-          `«${name}» (${where}) ligner «${target}». Skrivefeil?`,
-          `“${name}” (${where}) looks like “${target}”. A typo?`,
-        ),
+        message: tk("core-continuity-analysis.message.message.f22ebfe7ccaa", { name: String(name), where: String(where), target: String(target) }),
         occurrenceId: info.first.o.id,
         blockId: info.first.b.id,
         assetId: asset ? asset[1].id : null,
@@ -204,10 +190,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
         key: `intro:${a.id}`,
         kind: "before_intro",
         certainty: "uncertain",
-        message: L(
-          `${a.name} er med i handlingen i ${num(early.o)}, men introduseres først i ${num(intro)} (navnet med store bokstaver eller første replikk).`,
-          `${a.name} is in the action in ${num(early.o)}, but is first introduced in ${num(intro)} (the capitalised name or first line).`,
-        ),
+        message: tk("core-continuity-analysis.message.message.8eb01625b6b5", { name: String(a.name), value2: String(num(early.o)), value3: String(num(intro)) }),
         occurrenceId: early.o.id,
         blockId: early.b.id,
         assetId: a.id,
@@ -247,10 +230,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
         key: `established:${a.id}`,
         kind: "before_established",
         certainty: "uncertain",
-        message: L(
-          `«${first.word}» står i bestemt form første gang den nevnes (${num(first.o)}). Skal den etableres først (for eksempel «${indef} ${suggestion}»)?`,
-          `“${first.word}” is in the definite form the first time it is mentioned (${num(first.o)}). Should it be introduced first (for example “${indef} ${suggestion}”)?`,
-        ),
+        message: tk("core-continuity-analysis.message.message.d8f2ed358063", { word: String(first.word), value2: String(num(first.o)), indef: String(indef), suggestion: String(suggestion) }),
         occurrenceId: first.o.id,
         blockId: first.b.id,
         assetId: a.id,
@@ -282,10 +262,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
             key: `deactivated:${a.id}:${o.id}`,
             kind: "refers_deactivated",
             certainty: "uncertain",
-            message: L(
-              `Replikken i ${num(o)} nevner ${a.name}, som bare er med i ${num(onlyIn[0])} (deaktivert).`,
-              `The line in ${num(o)} mentions ${a.name}, who is only in ${num(onlyIn[0])} (deactivated).`,
-            ),
+            message: tk("core-continuity-analysis.message.message.b7f59d3754f4", { value1: String(num(o)), name: String(a.name), value3: String(num(onlyIn[0])) }),
             occurrenceId: o.id,
             blockId: b.id,
             assetId: a.id,
@@ -319,10 +296,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
             key: `look:${l.id}:${o.id}`,
             kind: "unexplained_change",
             certainty: "likely",
-            message: L(
-              `${a.name} vises som «${variantName(s, variantId)}» i 2D-scenen i ${num(o)}, men kontinuiteten sier «${check.expected.name}».`,
-              `${a.name} is shown as “${variantName(s, variantId)}” in the 2D scene in ${num(o)}, but the continuity says “${check.expected.name}”.`,
-            ),
+            message: tk("core-continuity-analysis.message.message.afcd47c35736", { name: String(a.name), value2: String(variantName(s, variantId)), value3: String(num(o)), name4: String(check.expected.name) }),
             occurrenceId: o.id,
             blockId: null,
             assetId: a.id,
@@ -335,10 +309,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
               key: `change:${a.id}:${o.id}`,
               kind: "unexplained_change",
               certainty: "uncertain",
-              message: L(
-                `${a.name} bytter utseende fra «${variantName(s, prev.variantId)}» (${num(prev.o)}) til «${variantName(s, variantId)}» (${num(o)}) uten en registrert kontinuitetshendelse.`,
-                `${a.name} changes look from “${variantName(s, prev.variantId)}” (${num(prev.o)}) to “${variantName(s, variantId)}” (${num(o)}) without a recorded continuity event.`,
-              ),
+              message: tk("core-continuity-analysis.message.message.039932802032", { name: String(a.name), value2: String(variantName(s, prev.variantId)), value3: String(num(prev.o)), value4: String(variantName(s, variantId)), value5: String(num(o)) }),
               occurrenceId: o.id,
               blockId: null,
               assetId: a.id,
@@ -361,18 +332,15 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
       if (!st || st.kind === "linear" || !st.anchorSceneId) continue;
       const anchor = occOfScene(st.anchorSceneId);
       if (!s.scenes[st.anchorSceneId] || (anchor && !anchor.active)) {
-        const anchorName = anchor ? num(anchor) : L("en scene", "a scene");
+        const anchorName = anchor ? num(anchor) : tk("core-continuity-analysis.anchor-name.message.0925340fdc02");
         const anchorState = anchor
-          ? L("er deaktivert", "is deactivated")
-          : L("ikke finnes lenger", "no longer exists");
+          ? tk("core-continuity-analysis.anchor-state.message.2091a4530360")
+          : tk("core-continuity-analysis.anchor-state.message.87938161c50b");
         out.push({
           key: `anchor:${o.id}`,
           kind: "timeline_conflict",
           certainty: "likely",
-          message: L(
-            `Fortellingstiden i ${num(o)} er regnet fra ${anchorName}, som ${anchorState}.`,
-            `The story time in ${num(o)} is counted from ${anchorName}, which ${anchorState}.`,
-          ),
+          message: tk("core-continuity-analysis.message.message.9974dc9ce863", { value1: String(num(o)), anchorName: String(anchorName), anchorState: String(anchorState) }),
           occurrenceId: o.id,
           blockId: null,
           assetId: null,
@@ -383,10 +351,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
           key: `anchor:${o.id}`,
           kind: "spinoff_gap",
           certainty: "likely",
-          message: L(
-            `${capital(num(o))} er et tilbakeblikk (eller lignende) til ${mainNum(st.anchorSceneId)} i hovedfilmen, som ikke er med i ${prodName}.`,
-            `${capital(num(o))} is a flashback (or similar) to ${mainNum(st.anchorSceneId)} in the main film, which is not in ${prodName}.`,
-          ),
+          message: tk("core-continuity-analysis.message.message.4a7c77d4f84f", { value1: String(capital(num(o))), value2: String(mainNum(st.anchorSceneId)), prodName: String(prodName) }),
           occurrenceId: o.id,
           blockId: null,
           assetId: null,
@@ -407,10 +372,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
               key: `until:${e.id}`,
               kind: "timeline_conflict",
               certainty: "likely",
-              message: L(
-                `${a.name}: endringen i ${num(o)} skal vare til ${num(occOfScene(e.untilSceneId))}, men den scenen kommer ikke senere i fortellingstiden. Den gjelder derfor bare sin egen scene.`,
-                `${a.name}: the change in ${num(o)} is meant to last until ${num(occOfScene(e.untilSceneId))}, but that scene does not come later in story time. It therefore applies only to its own scene.`,
-              ),
+              message: tk("core-continuity-analysis.message.message.eeb3e34ba397", { name: String(a.name), value2: String(num(o)), value3: String(num(occOfScene(e.untilSceneId))) }),
               occurrenceId: o?.id ?? null,
               blockId: e.blockId,
               assetId: a.id,
@@ -426,10 +388,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
               key: `from:${e.id}`,
               kind: "timeline_conflict",
               certainty: "likely",
-              message: L(
-                `${a.name}: hendelsen i ${num(o)} sier utseendet før var «${variantName(s, e.fromVariantId)}», men etter de tidligere hendelsene er det «${variantName(s, before)}».`,
-                `${a.name}: the event in ${num(o)} says the look before was “${variantName(s, e.fromVariantId)}”, but after the earlier events it is “${variantName(s, before)}”.`,
-              ),
+              message: tk("core-continuity-analysis.message.message.957ae9b0b93c", { name: String(a.name), value2: String(num(o)), value3: String(variantName(s, e.fromVariantId)), value4: String(variantName(s, before)) }),
               occurrenceId: o?.id ?? null,
               blockId: e.blockId,
               assetId: a.id,
@@ -469,10 +428,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
           key: `gap-intro:${a.id}`,
           kind: "spinoff_gap",
           certainty: "uncertain",
-          message: L(
-            `${a.name} er med i ${num(first)}, men introduseres i ${mainNum(intro.sceneId)} i hovedfilmen, som ikke er med i ${prodName}.`,
-            `${a.name} is in ${num(first)}, but is introduced in ${mainNum(intro.sceneId)} in the main film, which is not in ${prodName}.`,
-          ),
+          message: tk("core-continuity-analysis.message.message.005dfaf02ce6", { name: String(a.name), value2: String(num(first)), value3: String(mainNum(intro.sceneId)), prodName: String(prodName) }),
           occurrenceId: first.id,
           blockId: null,
           assetId: a.id,
@@ -494,10 +450,7 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
             key: `gap-ref:${a.id}:${o.id}`,
             kind: "spinoff_gap",
             certainty: "uncertain",
-            message: L(
-              `Replikken i ${num(o)} nevner ${a.name}, som bare vises i ${mainNum(only.sceneId)} i hovedfilmen. Den scenen er ikke med i ${prodName}.`,
-              `The line in ${num(o)} mentions ${a.name}, who only appears in ${mainNum(only.sceneId)} in the main film. That scene is not in ${prodName}.`,
-            ),
+            message: tk("core-continuity-analysis.message.message.c4e55d6c393d", { value1: String(num(o)), name: String(a.name), value3: String(mainNum(only.sceneId)), prodName: String(prodName) }),
             occurrenceId: o.id,
             blockId: b.id,
             assetId: a.id,
@@ -523,15 +476,12 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
         );
         if (!later) continue;
         const desc = e.description.trim();
-        const descPart = desc ? L(` («${desc}»)`, ` (“${desc}”)`) : "";
+        const descPart = desc ? tk("core-continuity-analysis.desc-part.message.1ca284f3b63d", { desc: String(desc) }) : "";
         out.push({
           key: `gap-event:${e.id}`,
           kind: "spinoff_gap",
           certainty: "likely",
-          message: L(
-            `${a.name} har «${variantName(s, e.toVariantId)}» i ${num(later)}, men endringen${descPart} skjer i ${mainNum(sceneId)} i hovedfilmen, som ikke er med i ${prodName}. Ta med scenen, skriv en sammenbindende scene, eller slå av endringen i ${prodName}.`,
-            `${a.name} has “${variantName(s, e.toVariantId)}” in ${num(later)}, but the change${descPart} happens in ${mainNum(sceneId)} in the main film, which is not in ${prodName}. Include that scene, write a linking scene, or switch off the change in ${prodName}.`,
-          ),
+          message: tk("core-continuity-analysis.missing-change-scene", { asset: a.name, look: variantName(s, e.toVariantId), later: num(later), desc: descPart, main: mainNum(sceneId), production: prodName }),
           occurrenceId: later.id,
           blockId: null,
           assetId: a.id,
@@ -552,17 +502,14 @@ export function continuityAnalysis(s0: ProjectState, productionId: string): Find
       const o = occOfComp(x.compositionId);
       if (!o || !o.active) continue;
       const a = s.assets[x.assetId];
-      const assetName = a?.name ?? L("en ressurs", "an asset");
+      const assetName = a?.name ?? tk("core-continuity-analysis.asset-name.message.ee482b41c219");
       const shownVersion = s.assetVersions[x.versionId]?.number ?? "?";
       const approvedVersion = s.assetVersions[x.approvedVersionId]?.number ?? "?";
       out.push({
         key: `outdated:${x.layerId}`,
         kind: "asset_outdated",
         certainty: "likely",
-        message: L(
-          `2D-scenen i ${num(o)} viser v${shownVersion} av ${assetName} («${variantName(s, x.variantId)}»), men v${approvedVersion} er godkjent nå.`,
-          `The 2D scene in ${num(o)} shows v${shownVersion} of ${assetName} (“${variantName(s, x.variantId)}”), but v${approvedVersion} is approved now.`,
-        ),
+        message: tk("core-continuity-analysis.message.message.de48b923b476", { value1: String(num(o)), shownVersion: String(shownVersion), assetName: String(assetName), value4: String(variantName(s, x.variantId)), approvedVersion: String(approvedVersion) }),
         occurrenceId: o?.id ?? null,
         blockId: null,
         assetId: x.assetId,
@@ -587,5 +534,5 @@ function sceneHasLayer(s: ProjectState, variantId: string, assetId: string): boo
 }
 
 function variantName(s: ProjectState, id: string | null): string {
-  return id ? (s.assetVariants[id]?.name ?? L("ukjent", "unknown")) : L("standard", "default");
+  return id ? (s.assetVariants[id]?.name ?? tk("core-continuity-analysis.variant-name.message.79a4880e4d36")) : tk("core-continuity-analysis.variant-name.message.b03eb0bf87ae");
 }

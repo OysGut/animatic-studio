@@ -5,18 +5,7 @@
  */
 import { Pause, Play, Trash2 } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  AUDIO_KIND_LABEL,
-  audioVersion,
-  volumeKeyDbAt,
-  type AudioClip,
-  type AudioClipFields,
-  type FilmAudioItem,
-  type ProjectState,
-  type VolumeKey,
-  locale,
-} from "@/core";
+import { AUDIO_KIND_LABEL, audioVersion, volumeKeyDbAt, type AudioClip, type AudioClipFields, type FilmAudioItem, type ProjectState, type VolumeKey, locale } from "@/core";
 import { peaks, scheduleOne } from "@/engine/audio/mixer";
 import { Button } from "@/components/ui/button";
 import {

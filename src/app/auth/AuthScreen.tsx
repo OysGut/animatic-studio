@@ -3,7 +3,7 @@ import { sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/a
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { L } from "@/core";
+
 import { PrivacyLink } from "@/app/account/use-account";
 import { t } from "@/core/i18n/keyed";
 

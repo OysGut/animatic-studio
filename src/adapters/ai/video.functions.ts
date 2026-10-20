@@ -12,23 +12,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  adaptPromptForModel,
-  effortOf,
-  estimateCostUsd,
-  isProviderId,
-  isUuid,
-  MAX_PROMPT_CHARS,
-  isSceneVideoSourcePath,
-  isSceneVideoRefPath,
-  SCENE_VIDEO_SOURCE,
-  newId,
-  parseQualityProfileMeta,
-  providerModel,
-  takeIdFromLastFrame,
-  type QualityProfileSnapshot,
-} from "@/core";
+import { adaptPromptForModel, effortOf, estimateCostUsd, isProviderId, isUuid, MAX_PROMPT_CHARS, isSceneVideoSourcePath, isSceneVideoRefPath, SCENE_VIDEO_SOURCE, newId, parseQualityProfileMeta, providerModel, takeIdFromLastFrame, type QualityProfileSnapshot } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import { validReferencePath } from "./gateway";
 
@@ -100,38 +84,39 @@ export type StartVideoResult =
 
 export type { PollVideoResult } from "./video-followup.server";
 import type { PollVideoResult } from "./video-followup.server";
+import { t } from "@/core/i18n/keyed";
 
 const isId = (x: unknown): x is string => typeof x === "string" && isUuid(x);
 
 function validateStart(d: unknown): StartVideoInput {
   const x = (d ?? {}) as Record<string, unknown>;
   if (!isId(x["projectId"]) || !isId(x["occurrenceId"]))
-    throw new Error(L("Ugyldig scene", "Invalid scene"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.aa56ebab8071"));
   if (x["segmentId"] !== null && !isId(x["segmentId"]))
-    throw new Error(L("Ugyldig segment", "Invalid segment"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.22e92c105364"));
   const prompt = x["prompt"];
   if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
     throw new Error(
-      L("Beskrivelsen mangler eller er for lang", "The description is missing or too long"),
+      t("adapters-ai-video-functions.validate-start.message.560da14d69de"),
     );
   if (!isProviderId(x["provider"]) || x["provider"] === "lovable")
-    throw new Error(L("Ukjent leverandør", "Unknown provider"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.3b42c8e8e536"));
   if (typeof x["model"] !== "string" || x["model"].length > 120)
-    throw new Error(L("Ugyldig modell", "Invalid model"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.32bb0f7612a2"));
   const seconds = x["seconds"];
   if (typeof seconds !== "number" || !Number.isInteger(seconds) || seconds < 1 || seconds > 60)
-    throw new Error(L("Ugyldig lengde", "Invalid length"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.85b48512f5b3"));
   if (x["aspect"] !== "16:9" && x["aspect"] !== "9:16")
-    throw new Error(L("Ugyldig format", "Invalid format"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.dd57fa8b436e"));
   const img = x["startImagePath"];
   if (img !== null && !validReferencePath(x["projectId"], img))
-    throw new Error(L("Ugyldig startbilde", "Invalid start image"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.da96ef511596"));
   if (x["approved"] !== true)
-    throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.68ce8e8d99e9"));
   // Video fra 2D-scenen (DEC-0083)
   const src = x["sourceVideoPath"] ?? null;
   if (src !== null && !isSceneVideoSourcePath(x["projectId"], src))
-    throw new Error(L("Ugyldig video fra 2D-scenen", "Invalid video from the 2D scene"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.43720d3cd24e"));
   const els = x["elementPaths"] ?? [];
   if (
     !Array.isArray(els) ||
@@ -139,7 +124,7 @@ function validateStart(d: unknown): StartVideoInput {
     els.some((e) => !validReferencePath(x["projectId"] as string, e)) ||
     new Set(els).size !== els.length
   )
-    throw new Error(L("Ugyldige referansebilder", "Invalid reference images"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.47b4ff6dc06b"));
   const imgs = x["imagePaths"] ?? [];
   if (
     !Array.isArray(imgs) ||
@@ -152,7 +137,7 @@ function validateStart(d: unknown): StartVideoInput {
     new Set(imgs).size !== imgs.length ||
     els.length + imgs.length > 4
   )
-    throw new Error(L("Ugyldige referansebilder", "Invalid reference images"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.47b4ff6dc06b.2"));
   const pc = (x["piece"] ?? null) as Record<string, unknown> | null;
   const int = (v: unknown) => typeof v === "number" && Number.isInteger(v);
   if (
@@ -170,13 +155,10 @@ function validateStart(d: unknown): StartVideoInput {
       (pc["startMs"] as number) < 0 ||
       (pc["endMs"] as number) <= (pc["startMs"] as number))
   )
-    throw new Error(L("Ugyldig bit av scenen", "Invalid piece of the scene"));
+    throw new Error(t("adapters-ai-video-functions.validate-start.message.83a5235cc206"));
   if (src !== null && (x["queue"] === true || img !== null))
     throw new Error(
-      L(
-        "Video fra 2D-scenen sendes uten kø og uten startbilde",
-        "Video from the 2D scene is sent without queue and without a start image",
-      ),
+      t("adapters-ai-video-functions.validate-start.message.a34743baf2b3"),
     );
   return {
     projectId: x["projectId"],
@@ -233,20 +215,14 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang til å generere i dette prosjektet.",
-          "You do not have access to generate in this project.",
-        ),
+        message: t("adapters-ai-video-functions.message.message.2edc2ee76050"),
       };
     const db = await admin();
     const schema = await checkSchema(db);
     if (schema.kind === "missing" || schema.version < (data.queue ? 25 : 24))
       return {
         ok: false,
-        message: L(
-          `Databasen er ikke oppdatert for AI-video${data.queue ? " i kø" : ""}. Kontakt administratoren for å oppdatere Animatic Studio."0025" : "0024"}).`,
-          `The database is not up to date for AI video${data.queue ? " in the queue" : ""}. Contact the administrator to update Animatic Studio."0025" : "0024"}).`,
-        ),
+        message: data.queue ? t("adapters-ai-video-functions.database-outdated-queue") : t("adapters-ai-video-functions.database-outdated"),
       };
     const { data: proj } = await db
       .from("projects")
@@ -254,7 +230,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
+      return { ok: false, message: t("adapters-ai-video-functions.message.message.c25ac148352f") };
     const { data: occ } = await db
       .from("scene_occurrences")
       .select("id")
@@ -264,7 +240,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if (!occ)
       return {
         ok: false,
-        message: L("Scenen finnes ikke i prosjektet.", "The scene does not exist in the project."),
+        message: t("adapters-ai-video-functions.message.message.38182ff7ece2"),
       };
     if (data.segmentId) {
       const { data: seg } = await db
@@ -276,7 +252,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       if (!seg)
         return {
           ok: false,
-          message: L("Segmentet finnes ikke i scenen.", "The segment does not exist in the scene."),
+          message: t("adapters-ai-video-functions.message.message.f98405bd68b5"),
         };
     }
     // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034)
@@ -290,32 +266,20 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       return {
         ok: false,
         message: fromScene
-          ? L(
-              "Modellen kan ikke lage video fra 2D-scenen.",
-              "The model cannot make video from the 2D scene.",
-            )
-          : L(
-              "Modellen lager ikke video hos denne leverandøren.",
-              "This model does not make video with this provider.",
-            ),
+          ? t("adapters-ai-video-functions.message.message.16f8a9935786")
+          : t("adapters-ai-video-functions.message.message.abc9a2f7e75c"),
       };
     if (fromScene) {
       const range = m.editSeconds!;
       if (data.seconds < range.min || data.seconds > range.max)
         return {
           ok: false,
-          message: L(
-            `Modellen tar imot ${range.min}–${range.max} sekunder om gangen.`,
-            `The model accepts ${range.min}–${range.max} seconds at a time.`,
-          ),
+          message: t("adapters-ai-video-functions.message.message.c4ad00bcbc04", { min: String(range.min), max: String(range.max) }),
         };
       if ((data.elementPaths?.length ?? 0) + (data.imagePaths?.length ?? 0) > (m.maxElements ?? 0))
         return {
           ok: false,
-          message: L(
-            `Modellen tar imot høyst ${m.maxElements ?? 0} referansebilder.`,
-            `The model accepts at most ${m.maxElements ?? 0} reference images.`,
-          ),
+          message: t("adapters-ai-video-functions.message.message.1c8e93f08936", { value1: String(m.maxElements ?? 0) }),
         };
       // Videoen må ligge i lagringen (lastet opp av nettleseren like før)
       const { error: noVideo } = await db.storage
@@ -324,10 +288,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       if (noVideo)
         return {
           ok: false,
-          message: L(
-            "Videoen av 2D-scenen finnes ikke i lagringen. Prøv igjen.",
-            "The video of the 2D scene is not in storage. Try again.",
-          ),
+          message: t("adapters-ai-video-functions.message.message.dacb922f21a0"),
         };
       const fromLibrary = [
         ...(data.elementPaths ?? []),
@@ -346,10 +307,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         if (noRef)
           return {
             ok: false,
-            message: L(
-              "Et samlebilde av figurene finnes ikke i lagringen. Prøv igjen.",
-              "A reference sheet of the figures is not in storage. Try again.",
-            ),
+            message: t("adapters-ai-video-functions.message.message.f8abcb80d156"),
           };
       }
     }
@@ -358,29 +316,20 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if (adapted.blocked)
       return {
         ok: false,
-        message: L(
-          "Replikkene i segmentet er for lange for denne modellen (de må sendes ordrett). Del segmentet eller velg en annen modell.",
-          "The lines in the segment are too long for this model (they must be sent verbatim). Split the segment or choose another model.",
-        ),
+        message: t("adapters-ai-video-functions.message.message.1f59f462f56c"),
       };
     const sentPrompt = adapted.text;
     if (!fromScene && m.durations && !m.durations.includes(data.seconds))
       return {
         ok: false,
-        message: L(
-          `Modellen kan lage ${m.durations.join(", ")} sekunder.`,
-          `The model can make ${m.durations.join(", ")} seconds.`,
-        ),
+        message: t("adapters-ai-video-functions.message.message.f2d9358d8d89", { value1: String(m.durations.join(", ")) }),
       };
     if (data.chainAfter) {
       // Bare rett etter segmentet like før i samme scene: aldri seg selv eller i ring (da ville jobben vente for alltid)
       if (!data.segmentId || data.chainAfter === data.segmentId)
         return {
           ok: false,
-          message: L(
-            "Et segment kan bare vente på segmentet før.",
-            "A segment can only wait for the segment before it.",
-          ),
+          message: t("adapters-ai-video-functions.message.message.bc36642718c0"),
         };
       const { data: segs } = await db
         .from("production_segments")
@@ -393,10 +342,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
       if (at <= 0 || order[at - 1]!.id !== data.chainAfter)
         return {
           ok: false,
-          message: L(
-            "Segmentet før finnes ikke i scenen.",
-            "The segment before does not exist in the scene.",
-          ),
+          message: t("adapters-ai-video-functions.message.message.4dc9c685b962"),
         };
     }
     if (
@@ -407,7 +353,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     )
       return {
         ok: false,
-        message: L("Denne modellen trenger et startbilde.", "This model needs a start image."),
+        message: t("adapters-ai-video-functions.message.message.1ba8858a8b90"),
       };
     if (data.startImagePath) {
       // Siste bilde fra forrige segment (REQ-0263): må høre til en AI-video i prosjektet
@@ -423,10 +369,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         if (!take)
           return {
             ok: false,
-            message: L(
-              "Videoen startbildet kom fra, finnes ikke lenger.",
-              "The video the start image came from no longer exists.",
-            ),
+            message: t("adapters-ai-video-functions.message.message.aeeb902284c9"),
           };
         const { error: missing } = await db.storage
           .from(BUCKET)
@@ -434,10 +377,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
         if (missing)
           return {
             ok: false,
-            message: L(
-              "Siste bilde fra forrige segment ble ikke lagret. Legg inn videoen på nytt, eller velg et annet startbilde.",
-              "The last frame of the previous segment was not saved. Add the video again, or choose another start image.",
-            ),
+            message: t("adapters-ai-video-functions.message.message.b244cb5ba52d"),
           };
       } else {
         const { referenceImages } = await import("./gateway");
@@ -449,10 +389,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if (!key)
       return {
         ok: false,
-        message: L(
-          "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
-          "None of the project's owners have connected this provider (AI providers on the project list).",
-        ),
+        message: t("adapters-ai-video-functions.message.message.7c30ecd24ee8"),
       };
     const cost = estimateCostUsd(
       data.provider,
@@ -487,21 +424,12 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
           .eq("project_id", data.projectId)
           .eq("status", "queued");
         if ((waiting ?? 0) - extra >= MAX_QUEUED_PER_PROJECT)
-          return L(
-            `Køen er full (${MAX_QUEUED_PER_PROJECT} videoer venter). Vent til noen er ferdige.`,
-            `The queue is full (${MAX_QUEUED_PER_PROJECT} videos waiting). Wait until some are finished.`,
-          );
+          return t("adapters-ai-video-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-start-handler.10f27efe5b4f", { MAX_QUEUED_PER_PROJECT: String(MAX_QUEUED_PER_PROJECT) });
       } else {
         if ((mine ?? 0) - extra >= MAX_VIDEO_JOBS_PER_USER_PER_HOUR)
-          return L(
-            `Grensen på ${MAX_VIDEO_JOBS_PER_USER_PER_HOUR} videoer i timen er nådd. Legg dem i kø i stedet.`,
-            `The limit of ${MAX_VIDEO_JOBS_PER_USER_PER_HOUR} videos per hour has been reached. Queue them instead.`,
-          );
+          return t("adapters-ai-video-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-start-handler.4706ca649b88", { MAX_VIDEO_JOBS_PER_USER_PER_HOUR: String(MAX_VIDEO_JOBS_PER_USER_PER_HOUR) });
         if ((day ?? 0) - extra >= MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY)
-          return L(
-            `Prosjektets grense på ${MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY} videoer i døgnet er nådd.`,
-            `The project's limit of ${MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY} videos per day has been reached.`,
-          );
+          return t("adapters-ai-video-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-start-handler.72406f6d70bc", { MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY: String(MAX_VIDEO_JOBS_PER_PROJECT_PER_DAY) });
       }
       const budget = await gate.overProjectBudget(
         db,
@@ -532,10 +460,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if ((running ?? 0) >= (data.candidates ?? 1))
       return {
         ok: false,
-        message: L(
-          "En video for dette segmentet lages allerede. Vent til den er ferdig.",
-          "A video for this segment is already being made. Wait until it is finished.",
-        ),
+        message: t("adapters-ai-video-functions.message.message.ce01d6c0a6fb"),
       };
 
     const jobId = newId<"generation_job">();
@@ -606,10 +531,7 @@ export const startVideoGeneration = createServerFn({ method: "POST" })
     if (logErr)
       return {
         ok: false,
-        message: L(
-          `Jobben kunne ikke logges: ${logErr.message}`,
-          `The job could not be logged: ${logErr.message}`,
-        ),
+        message: t("adapters-ai-video-functions.message.message.939e0af974ce", { message: String(logErr.message) }),
       };
     const after = await limits(1);
     if (after) {
@@ -639,7 +561,7 @@ export const pollVideoJob = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (!isId(x["projectId"]) || !isId(x["jobId"]))
-      throw new Error(L("Ugyldig jobb", "Invalid job"));
+      throw new Error(t("adapters-ai-video-functions.poll-video-job.create-server-fn-method-post-middleware-require-supabase-auth-validator.e6ba7f8ab950"));
     return { projectId: x["projectId"], jobId: x["jobId"] };
   })
   .handler(async ({ data, context }): Promise<PollVideoResult> => {
@@ -650,7 +572,7 @@ export const pollVideoJob = createServerFn({ method: "POST" })
       context.userId,
     );
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
-      return { state: "failed", message: L("Ingen tilgang.", "No access.") };
+      return { state: "failed", message: t("adapters-ai-video-functions.message.message.43e67adffce2") };
     const { followUpVideoJob } = await import("./video-followup.server");
     return followUpVideoJob(await admin(), data.projectId, data.jobId);
   });
@@ -665,7 +587,7 @@ export const refetchVideoJob = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (!isId(x["projectId"]) || !isId(x["jobId"]))
-      throw new Error(L("Ugyldig jobb", "Invalid job"));
+      throw new Error(t("adapters-ai-video-functions.refetch-video-job.create-server-fn-method-post-middleware-require-supabase-auth-validator.bed951724cd1"));
     return { projectId: x["projectId"], jobId: x["jobId"] };
   })
   .handler(async ({ data, context }): Promise<PollVideoResult> => {
@@ -676,7 +598,7 @@ export const refetchVideoJob = createServerFn({ method: "POST" })
       context.userId,
     );
     if ((gate.ROLE_RANK[role ?? ""] ?? 0) < gate.ROLE_RANK["editor"]!)
-      return { state: "failed", message: L("Ingen tilgang.", "No access.") };
+      return { state: "failed", message: t("adapters-ai-video-functions.message.message.43e67adffce2.2") };
     const db = await admin();
     const { data: row } = await db
       .from("generation_jobs")
@@ -693,7 +615,7 @@ export const refetchVideoJob = createServerFn({ method: "POST" })
     if (!job || job.kind !== "video" || job.status !== "lost" || !job.external_id)
       return {
         state: "failed",
-        message: L("Denne videoen kan ikke hentes på nytt.", "This video cannot be fetched again."),
+        message: t("adapters-ai-video-functions.message.message.61d9b06904f4"),
       };
     await db
       .from("generation_jobs")

@@ -7,8 +7,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, SHARE_TOKEN, isUuid } from "@/core";
+import { SHARE_TOKEN, isUuid } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 /** Signerte lenker til filmen varer kort; spilleren henter en ny ved behov. */
@@ -32,7 +33,7 @@ function looksLikeMp4(head: Uint8Array): boolean {
 export const activateFilmShare = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { shareId: string }) => {
-    if (!isUuid(d?.shareId)) throw new Error(L("Ugyldig deling.", "Invalid share."));
+    if (!isUuid(d?.shareId)) throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator.64942bb5ba75"));
     return { shareId: d.shareId };
   })
   .handler(async ({ data, context }): Promise<{ token: string }> => {
@@ -44,7 +45,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
       .eq("id", data.shareId)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!row) throw new Error(L("Delingen finnes ikke.", "The share does not exist."));
+    if (!row) throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.e7e4af470ab7"));
     const key = String(row["storage_key"]);
     const admin = await service();
     const folder = key.split("/").slice(0, -1).join("/");
@@ -56,10 +57,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
     const size = Number(file?.metadata?.size ?? -1);
     if (!file || size !== Number(row["byte_size"]))
       throw new Error(
-        L(
-          "Filmfilen er ikke ferdig lastet opp. Prøv igjen.",
-          "The film file has not finished uploading. Try again.",
-        ),
+        t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.6df8afe7b4d6"),
       );
     // Sjekk at filen er mp4 (de første bytene)
     const { data: signed } = await admin.storage.from(BUCKET).createSignedUrl(key, 60);
@@ -68,7 +66,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
         .then((r) => r.arrayBuffer())
         .catch(() => null);
       if (head && !looksLikeMp4(new Uint8Array(head)))
-        throw new Error(L("Filen er ikke en MP4-video.", "The file is not an MP4 video."));
+        throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.e93a41872b64"));
     }
     // Rollen sjekkes i databasen
     const { data: token, error: ae } = await db.rpc("activate_film_share", {
