@@ -73130,5 +73130,131 @@
   },
   "app-script-remove-translations-dialog.language-word-en": {
     "text": "[!! ËËnnggllïïsshh !!]"
+  },
+  "ml3-language-versions.error.language": {
+    "text": "[!! TThhëë lláánnggüüáággëë ccôôddëë ïïss ïïnnvváállïïdd. ÜÜssëë áá BBCCPP-47 ccôôddëë ssüücchh ááss ddëë, pptt-BBRR ôôrr ssrr-LLááttnn. !!]"
+  },
+  "ml3-language-versions.error.norwegian": {
+    "text": "[!! NNôôrrwwëëggïïáánn ïïss tthhëë ssôôüürrccëë lláánnggüüáággëë áánndd ccáánnnnôôtt bbëë áá lláánnggüüáággëë vvëërrssïïôônn. !!]"
+  },
+  "ml3-language-versions.error.name": {
+    "text": "[!! TThhëë nnáámmëë mmüüsstt bbëë bbëëttwwëëëënn 1 áánndd 120 cchháárrááccttëërrss. !!]"
+  },
+  "ml3-language-versions.error.status": {
+    "text": "[!! ÜÜnnkknnôôwwnn ssttááttüüss ffôôrr tthhëë lláánnggüüáággëë vvëërrssïïôônn. !!]"
+  },
+  "ml3-language-versions.error.duplicate": {
+    "text": "[!! TThhëë pprrôôjjëëcctt áállrrëëááddyy hhááss áá lláánnggüüáággëë vvëërrssïïôônn ffôôrr {language}. !!]"
+  },
+  "ml3-language-versions.error.not-found": {
+    "text": "[!! TThhëë lláánnggüüáággëë vvëërrssïïôônn wwááss nnôôtt ffôôüünndd. !!]"
+  },
+  "ml3-language-versions.error.in-use": {
+    "text": "[!! TThhëë lláánnggüüáággëë vvëërrssïïôônn ïïss üüssëëdd bbyy ttrráánnssllááttïïôônnss áánndd ccáánnnnôôtt bbëë üünnddôônnëë. RRëëmmôôvvëë ïïtt ïïnnssttëëáádd. !!]"
+  },
+  "ml3-language-versions.error.unchanged": {
+    "text": "[!! TThhëërrëë ïïss nnôô cchháánnggëë ttôô ssáávvëë. !!]"
+  },
+  "ml3-language-versions.error.mixed-versions": {
+    "text": "[!! TThhëë llïïnnëëss ïïnn tthhëë llïïnnkk bbëëllôônngg ttôô ddïïffffëërrëënntt lláánnggüüáággëë vvëërrssïïôônnss. !!]"
+  },
+  "ml3-language-versions.button.manage": {
+    "text": "[!! LLáánnggüüáággëë vvëërrssïïôônnss … !!]"
+  },
+  "ml3-language-versions.dialog.title": {
+    "text": "[!! LLáánnggüüáággëë vvëërrssïïôônnss !!]"
+  },
+  "ml3-language-versions.dialog.description": {
+    "text": "[!! NNôôrrwwëëggïïáánn ïïss áállwwááyyss tthhëë ssôôüürrccëë. ËËáácchh lláánnggüüáággëë vvëërrssïïôônn hhááss ôônnëë ttáárrggëëtt lláánnggüüáággëë. RRëëmmôôvvïïnngg áá lláánnggüüáággëë vvëërrssïïôônn ddëëllëëttëëss nnôô ttrráánnssllááttïïôônnss. !!]"
+  },
+  "ml3-language-versions.field.language": {
+    "text": "[!! TTáárrggëëtt lláánnggüüáággëë (BBCCPP-47) !!]"
+  },
+  "ml3-language-versions.field.name": {
+    "text": "[!! NNáámmëë !!]"
+  },
+  "ml3-language-versions.field.language-hint": {
+    "text": "[!! FFôôrr ëëxxáámmppllëë ddëë, pptt-BBRR ôôrr ssrr-LLááttnn !!]"
+  },
+  "ml3-language-versions.button.add": {
+    "text": "[!! ÁÁdddd lláánnggüüáággëë vvëërrssïïôônn !!]"
+  },
+  "ml3-language-versions.button.rename": {
+    "text": "[!! SSáávvëë nnáámmëë !!]"
+  },
+  "ml3-language-versions.button.remove": {
+    "text": "[!! RRëëmmôôvvëë !!]"
+  },
+  "ml3-language-versions.button.restore": {
+    "text": "[!! RRëëssttôôrrëë !!]"
+  },
+  "ml3-language-versions.button.register": {
+    "text": "[!! RRëëggïïssttëërr !!]"
+  },
+  "ml3-language-versions.button.close": {
+    "text": "[!! CCllôôssëë !!]"
+  },
+  "ml3-language-versions.label.registered": {
+    "text": "[!! RRëëggïïssttëërrëëdd lláánnggüüáággëë vvëërrssïïôônnss !!]"
+  },
+  "ml3-language-versions.label.removed": {
+    "text": "[!! RRëëmmôôvvëëdd lláánnggüüáággëë vvëërrssïïôônnss !!]"
+  },
+  "ml3-language-versions.label.derived": {
+    "text": "[!! FFrrôômm ëëáárrllïïëërr ttrráánnssllááttïïôônnss – nnôôtt rrëëggïïssttëërrëëdd !!]"
+  },
+  "ml3-language-versions.label.collision": {
+    "text": "[!! SSttôôrrëëdd wwïïtthh ssëëvvëërrááll ssppëëllllïïnnggss: {tags}. NNôôtthhïïnngg ïïss mmëërrggëëdd ááüüttôômmááttïïccáállllyy. !!]"
+  },
+  "ml3-language-versions.label.status": {
+    "text": "[!! {translated} ôôff {lines} llïïnnëëss ttrráánnssllááttëëdd, {review} nnëëëëdd rrëëvvïïëëww, {uncertain} üünnccëërrttááïïnn !!]"
+  },
+  "ml3-language-versions.empty": {
+    "text": "[!! NNôô lláánnggüüáággëë vvëërrssïïôônnss yyëëtt. !!]"
+  },
+  "ml3-language-versions.undo.add": {
+    "text": "[!! ÁÁdddd lláánnggüüáággëë vvëërrssïïôônn {name} !!]"
+  },
+  "ml3-language-versions.undo.rename": {
+    "text": "[!! RRëënnáámmëë lláánnggüüáággëë vvëërrssïïôônn {name} !!]"
+  },
+  "ml3-language-versions.undo.remove": {
+    "text": "[!! RRëëmmôôvvëë lláánnggüüáággëë vvëërrssïïôônn {name} !!]"
+  },
+  "ml3-language-versions.undo.restore": {
+    "text": "[!! RRëëssttôôrrëë lláánnggüüáággëë vvëërrssïïôônn {name} !!]"
+  },
+  "ml3-language-versions.select.norwegian": {
+    "text": "[!! NNôôrrwwëëggïïáánn (ssôôüürrccëë) !!]"
+  },
+  "ml3-language-versions.option.derived": {
+    "text": "[!! {label} – ëëáárrllïïëërr ttrráánnssllááttïïôônnss !!]"
+  },
+  "ml3-language-versions.explorer.language": {
+    "text": "[!! LLáánnggüüáággëë ïïnn tthhëë ssccrrïïpptt ëëxxppllôôrrëërr !!]"
+  },
+  "ml3-language-versions.links.language": {
+    "text": "[!! LLáánnggüüáággëë vvëërrssïïôônn ffôôrr llïïnnëë llïïnnkkss !!]"
+  },
+  "ml3-language-versions.export.language": {
+    "text": "[!! LLáánnggüüáággëë vvëërrssïïôônn ïïnn tthhëë ëëxxppôôrrtt !!]"
+  },
+  "ml3-language-versions.export.incomplete": {
+    "text": "[!! TThhëë {language} ttrráánnssllááttïïôônn ïïss nnôôtt ccôômmppllëëttëë: {missing} llïïnnëëss áárrëë mmïïssssïïnngg, {uncertain} áárrëë üünnccëërrttááïïnn áánndd {review} nnëëëëdd rrëëvvïïëëww. CChhôôôôssëë wwhháátt tthhëë ëëxxppôôrrtt sshhôôüülldd ddôô. !!]"
+  },
+  "ml3-language-versions.export.fallback": {
+    "text": "[!! ÜÜssëë NNôôrrwwëëggïïáánn wwhhëërrëë tthhëë ttrráánnssllááttïïôônn ïïss mmïïssssïïnngg !!]"
+  },
+  "ml3-language-versions.export.stop": {
+    "text": "[!! SSttôôpp tthhëë ëëxxppôôrrtt üünnttïïll tthhëë ttrráánnssllááttïïôônn ïïss ccôômmppllëëttëë !!]"
+  },
+  "ml3-language-versions.export.stopped": {
+    "text": "[!! TThhëë ëëxxppôôrrtt ïïss ssttôôppppëëdd. NNôô ffïïllëë hhááss bbëëëënn ccrrëëááttëëdd. !!]"
+  },
+  "ml3-language-versions.export.choose": {
+    "text": "[!! CChhôôôôssëë NNôôrrwwëëggïïáánn ffáállllbbáácckk ôôrr ssttôôpp bbëëffôôrrëë ëëxxppôôrrttïïnngg. !!]"
+  },
+  "ml3-language-versions.review.languages": {
+    "text": "[!! TThhëë NNôôrrwwëëggïïáánn ttëëxxtt hhááss cchháánnggëëdd. NNëëëëddss rrëëvvïïëëww ïïnn: {languages} !!]"
   }
 }

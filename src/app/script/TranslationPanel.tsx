@@ -5,7 +5,7 @@ import { LineLinkReview } from "./LineLinkReview";
  */
 import { AlertTriangle, Check, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { LANGUAGE_LABEL, formatHeading, needsReview, newId, textAtRevision, translationOf, type Command, type ProjectState } from "@/core";
+import { LANGUAGE_LABEL, languageLabel, reviewLanguagesForBlock, formatHeading, needsReview, newId, textAtRevision, translationOf, type Command, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { t as tk } from "@/core/i18n/keyed";
@@ -151,6 +151,11 @@ export function TranslationPanel({
       <p className="text-[11px] text-text-tertiary">
         {tk("app-script-translation-panel.translation-panel.p.34959a2df1f2")}
       </p>
+      {block && reviewLanguagesForBlock(state, block.id).length ? (
+        <p data-testid="translation-review-languages" className="text-[11px] text-status-uncertain">
+          {tk("ml3-language-versions.review.languages", { languages: reviewLanguagesForBlock(state, block.id).map((l) => languageLabel(l)).join(", ") })}
+        </p>
+      ) : null}
       {(block?.variantId ?? variant?.id) && language !== "nb" ? <LineLinkReview state={state} variantId={block?.variantId ?? variant?.id ?? ""} language={language} editable={editable} run={run} /> : null}
       {err ? (
         <p role="alert" className="text-xs text-status-danger">

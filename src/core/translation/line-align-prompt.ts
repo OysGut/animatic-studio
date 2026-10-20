@@ -7,14 +7,17 @@ export interface TranslationLineLink {
   readonly sourceBlockIds: readonly string[]; readonly targetTranslationIds: readonly string[];
   readonly origin: "rule" | "ai" | "approved" | "manual";
   readonly confidence: number; readonly reason: string; readonly removed: boolean;
+  /** ML3: language version; absent on older rows (derived from project + language). */
+  readonly languageVersionId?: string;
   readonly createdBy?: string; readonly createdAt?: string;
 }
 /** B-050: an imported translated line without a rule pair, kept per scene and language for AI/manual linking. */
 export interface TranslationLine {
   readonly id: string; readonly revision: number; readonly variantId: string; readonly language: string;
   readonly ord: number; readonly kind: string; readonly text: string; readonly removed: boolean;
+  readonly languageVersionId?: string;
 }
-export type TranslationLineFields = Omit<TranslationLine, "id" | "revision" | "removed">;
+export type TranslationLineFields = Omit<TranslationLine, "id" | "revision" | "removed" | "languageVersionId">;
 export function translationLineError(s: ProjectState, f: TranslationLineFields): string | null {
   if (!f || !isUuid(f.variantId) || !s.variants[f.variantId] || f.language === "nb" || f.language === "no") return "scope";
   try { if (Intl.getCanonicalLocales(f.language).length !== 1) return "language"; } catch { return "language"; }
@@ -36,7 +39,7 @@ function targetInScope(s: ProjectState, id: string, variantId: string, language:
 export function lineLinkStale(s: ProjectState, l: TranslationLineLink): boolean {
   return !l.removed && lineLinkError(s, l) !== null;
 }
-export type LineLinkFields = Omit<TranslationLineLink, "id" | "revision" | "removed" | "createdBy" | "createdAt">;
+export type LineLinkFields = Omit<TranslationLineLink, "id" | "revision" | "removed" | "createdBy" | "createdAt" | "languageVersionId">;
 export function lineLinkError(s: ProjectState, f: LineLinkFields): string | null {
   if (!isUuid(f.variantId) || !s.variants[f.variantId] || f.language === "nb" || f.language === "no") return "scope";
   try { if (Intl.getCanonicalLocales(f.language).length !== 1) return "language"; } catch { return "language"; }

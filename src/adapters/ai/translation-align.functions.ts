@@ -18,6 +18,7 @@ import {
 } from "@/core/translation/align-prompt";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { t } from "@/core/i18n/keyed";
+import { isScriptLanguageTag, isNorwegianSourceTag } from "@/core/translation/language-tags";
 
 export interface AlignInput {
   readonly projectId: string;
@@ -33,7 +34,8 @@ export function validateAlignInput(d: unknown): AlignInput {
   const x = (d ?? {}) as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
     throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.0d8b6d131549"));
-  if (typeof x["language"] !== "string" || !/^[a-z]{2,3}(-[A-Za-z]{2})?$/u.test(x["language"]))
+  // ML3: målspråket er en eksplisitt, kanonisk BCP-47-kode (også skript, f.eks. sr-Latn), aldri norsk kilde.
+  if (!isScriptLanguageTag(x["language"]) || isNorwegianSourceTag(x["language"]))
     throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.9687ea20075b"));
   if (alignItemsError(x["items"])) throw new Error(t("adapters-ai-translation-align-functions.validate-align-input.message.c7b43dc8e147"));
   const items = (x["items"] as AlignRequestItem[]).map((it) => ({

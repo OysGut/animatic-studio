@@ -1013,6 +1013,11 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
   // M8 kvalitetsprofiler (REQ-0854–0862, migrasjon 0063)
+  // ML3: språkversjoner per prosjekt (migrasjon 0066). Fjerning sletter aldri oversettelser.
+  | { readonly type: "AddLanguageVersion"; readonly versionId: string; readonly language: string; readonly name: string; readonly status?: import("../translation/language-versions").LanguageVersionStatus }
+  | { readonly type: "UndoAddLanguageVersion"; readonly versionId: string }
+  | { readonly type: "UpdateLanguageVersion"; readonly versionId: string; readonly name?: string; readonly status?: import("../translation/language-versions").LanguageVersionStatus }
+  | { readonly type: "SetLanguageVersionRemoved"; readonly versionId: string; readonly removed: boolean }
   | { readonly type: "AddQualityProfile"; readonly profileId: string; readonly name: string; readonly spec: import("../generation/quality-profile").QualityProfileSpec; readonly restoreActive?: boolean }
   | { readonly type: "UndoAddQualityProfile"; readonly profileId: string; readonly restoreActive?: boolean }
   | { readonly type: "UpdateQualityProfile"; readonly profileId: string; readonly name?: string; readonly spec?: import("../generation/quality-profile").QualityProfileSpec }

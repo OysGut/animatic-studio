@@ -2,10 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, ExternalLink, Undo2, Redo2 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DriftBadge } from "@/app/dialogue/DriftBadge";
-import { lineDrift, blocksOfVariant, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
+import { lineDrift, blocksOfVariant, annotationsOfVariant, charactersInProduction, filterPages, formatHeading, mainProduction, orderedOccurrences, pageDecorations, scriptPages, sceneNumberOf, translatedState, HIT_LABEL, type NewAnnotation, type ProjectState } from "@/core";
 import { explorerContext, explorerGroups, type ExplorerHit } from "@/core/screenplay/explorer";
 import { ScriptPageView, type Selection } from "@/app/script/ScriptPageView";
 import { NotesPanel } from "@/app/script/NotesPanel";
+import { ScriptLanguageSelect } from "@/app/script/ScriptLanguageSelect";
 import { useCommands } from "@/app/project/use-commands";
 import { useMembers, useProjectState, canEdit } from "@/app/project/use-project";
 import { useActiveSceneInfo } from "@/app/shell/current-scene";
@@ -54,6 +55,9 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const [character, setCharacter] = useState(props.initial?.karakter ?? "");
   const [assetId, setAssetId] = useState("");
   const [kind, setKind] = useState<"all" | "dialogue" | "heading">("all");
+  // ML3: språkversjonen som vises (bare lesing; norsk kilde er standard og endres aldri herfra)
+  const [scriptLang, setScriptLang] = useState("nb");
+  const view = useMemo(() => translatedState(state, scriptLang), [state, scriptLang]);
   const [noteTarget, setNoteTarget] = useState<Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null>(null);
   const [noteId, setNoteId] = useState<string | null>(null);
   const root = useRef<HTMLDivElement | null>(null);
@@ -65,9 +69,9 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
   const visibleId = mode === "follow" ? activeOccurrence?.id ?? occurrences[0]?.id ?? null : selection.occurrenceId;
   const occurrence = visibleId ? state.occurrences[visibleId] : undefined;
   const variant = occurrence ? state.variants[occurrence.variantId] : undefined;
-  const pages = useMemo(() => filterPages(scriptPages(state, productionId, { lockedPages: true }).pages, new Set(visibleId ? [visibleId] : [])), [state, productionId, visibleId]);
+  const pages = useMemo(() => filterPages(scriptPages(view, productionId, { lockedPages: true }).pages, new Set(visibleId ? [visibleId] : [])), [view, productionId, visibleId]);
   const groups = useMemo(() => explorerGroups(state, productionId, { text: query, ...(character ? { character } : {}), ...(assetId ? { assetId } : {}) }, kind === "all" ? undefined : kind), [state, productionId, query, character, assetId, kind]);
-  const decor = useMemo(() => pageDecorations(pages, state, { query: query || character || state.assets[assetId]?.name || "", notes: true }), [pages, state, query, character, assetId]);
+  const decor = useMemo(() => pageDecorations(pages, view, { query: query || character || state.assets[assetId]?.name || "", notes: true }), [pages, view, query, character, assetId]);
   useEffect(() => { setNoteTarget(null); setNoteId(null); if (mode === "follow") setSelection({ occurrenceId: visibleId, blockId: null }); root.current?.scrollTo({ top: 0 }); }, [visibleId, mode]);
   useEffect(() => {
     if (!selection.blockId || mode === "follow") return;
@@ -102,6 +106,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
     </div>
     {active.closed ? <p role="status" className="px-3 py-1 text-xs text-status-uncertain">{t("app-script-explorer-script-explorer.explorer-content.p.ef33975dceb9")}</p> : null}
     <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-border p-2">
+      <ScriptLanguageSelect state={state} value={scriptLang} onChange={setScriptLang} label={t("ml3-language-versions.explorer.language")} testId="script-explorer-language" className="h-8 max-w-48 rounded-sm border border-border bg-surface-3 px-2 text-xs text-text-primary" />
       <Input data-testid="script-explorer-search" aria-label={t("app-script-explorer-script-explorer.explorer-content.aria-label.c64f0677f268")} placeholder={t("app-script-explorer-script-explorer.explorer-content.placeholder.a4cb06282c6e")} value={query} onChange={(e) => setQuery(e.target.value)} className="min-w-40 flex-1" />
       {(["all", "dialogue", "heading"] as const).map((value) => <ToolbarButton key={value} active={kind === value} aria-pressed={kind === value} onClick={() => setKind(value)}>{value === "all" ? t("app-script-explorer-script-explorer.explorer-content.toolbar-button.36db803c47a0") : value === "dialogue" ? t("app-script-explorer-script-explorer.explorer-content.toolbar-button.7dc91baf14b9") : t("app-script-explorer-script-explorer.explorer-content.toolbar-button.132476c7f15a")}</ToolbarButton>)}
       <select data-testid="script-explorer-character" aria-label={t("app-script-explorer-script-explorer.explorer-content.aria-label.3d7ec3440a0b")} className="h-8 max-w-48 rounded-sm border border-border bg-surface-3 px-2 text-xs text-text-primary" value={character} onChange={(e) => { setCharacter(e.target.value); setAssetId(""); }}><option value="">{t("app-script-explorer-script-explorer.explorer-content.option.dbd5a355b488")}</option>{charactersInProduction(state, productionId).map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}</select>
@@ -113,7 +118,7 @@ function ExplorerContent({ state, editable, cmds, ...props }: Props & { state: P
         {resultGroups.map((group) => <section key={group.label}><PanelHeader title={group.label} count={group.items.length} />{group.items.map((scene) => <div key={scene.occurrenceId} className="border-b border-border py-2"><p className="break-words text-xs font-medium text-text-primary">{scene.number} {scene.heading}</p>{scene.hits.map((hit, n) => <details key={`${hit.blockId}-${n}`} data-testid="script-explorer-hit" data-occurrence-id={hit.occurrenceId} className="py-1 text-xs text-text-secondary"><summary className="cursor-pointer break-words"><span className="text-text-tertiary">{HIT_LABEL[hit.kind]} · </span><Highlight text={hit.text} query={hit.query} /></summary><div data-testid="script-explorer-context" className="space-y-1 border-l border-border pl-2">{explorerContext(state, hit.occurrenceId, hit.blockId).map((b) => <p key={b.id} data-block-id={b.id} className="whitespace-pre-wrap break-words">{b.text}</p>)}</div><Button size="sm" variant="ghost" onClick={() => open(hit)}>{t("app-script-explorer-script-explorer.explorer-content.button.1086bdc39ae5")}</Button></details>)}</div>)}</section>)}
       </aside> : null}
       <div ref={root} className="min-h-0 min-w-0 flex-1 overflow-auto bg-bg-app" onMouseUp={() => { if (root.current) { const selected = selectedNoteTarget(root.current, state, pages); if (selected) { setNoteTarget(selected); setSelection({ occurrenceId: visibleId, blockId: selected.blockId }); } } }}>
-        {variant ? <ScriptPageView pages={pages} state={state} selection={{ occurrenceId: visibleId, blockId: selection.blockId }} zoom={0.8} onSelect={select} onActivate={select} flow={{ light: false }} decor={decor} onNoteClick={(ids, next) => { select(next); setNoteId(ids[0] ?? null); }} /> : <p className="p-4 text-xs text-text-tertiary">{t("app-script-explorer-script-explorer.explorer-content.p.e8c06996ab35")}</p>}
+        {variant ? <ScriptPageView pages={pages} state={view} selection={{ occurrenceId: visibleId, blockId: selection.blockId }} zoom={0.8} onSelect={select} onActivate={select} flow={{ light: false }} decor={decor} onNoteClick={(ids, next) => { select(next); setNoteId(ids[0] ?? null); }} /> : <p className="p-4 text-xs text-text-tertiary">{t("app-script-explorer-script-explorer.explorer-content.p.e8c06996ab35")}</p>}
       </div>
       <aside className="w-56 shrink-0 overflow-y-auto border-l border-border bg-surface-1 p-3">
         <PanelHeader title={t("app-script-explorer-script-explorer.explorer-content.title.02780cae297d")} actions={<><ToolbarButton variant="icon" disabled={!cmds.canUndo} aria-label={t("app-script-explorer-script-explorer.explorer-content.aria-label.871909b22d34")} title={t("app-script-explorer-script-explorer.explorer-content.title.871909b22d34")} onClick={cmds.undo}><Undo2 /></ToolbarButton><ToolbarButton variant="icon" disabled={!cmds.canRedo} aria-label={t("app-script-explorer-script-explorer.explorer-content.aria-label.9a8d5b29002a")} title={t("app-script-explorer-script-explorer.explorer-content.title.9a8d5b29002a")} onClick={cmds.redo}><Redo2 /></ToolbarButton></>} />

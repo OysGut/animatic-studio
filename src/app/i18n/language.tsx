@@ -55,6 +55,29 @@ function stored(): UiLang | null {
   }
 }
 
+/** ML3: nettleserens foretrukne visningsspråk (nb for norsk, en for engelsk), ellers null. */
+export function browserUiLanguage(languages: readonly string[]): UiLang | null {
+  for (const l of languages) {
+    const p = l.toLowerCase().split("-")[0];
+    if (p === "nb" || p === "no" || p === "nn") return "nb";
+    if (p === "en") return "en";
+  }
+  return null;
+}
+
+/**
+ * ML3: språket feilsiden skal vises på, lest synkront før første tegning – lagret valg, ellers
+ * nettleserspråket, ellers gjeldende språk. Feilsiden kan vises før LanguageRoot har satt språket.
+ */
+export function bootUiLanguage(): UiLang {
+  if (typeof window === "undefined") return getUiLanguage();
+  let fromStore: string | null = null;
+  try { fromStore = window.localStorage.getItem(LANGUAGE_KEY); } catch { fromStore = null; }
+  if (isUiLang(fromStore)) return fromStore === "en-XA" && !testLanguagesEnabled() ? "en" : fromStore;
+  const nav = typeof navigator === "undefined" ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
+  return browserUiLanguage(nav.filter(Boolean)) ?? getUiLanguage();
+}
+
 /** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
 let rootSettled = false;
 const lateHydration = new Set<() => void>();

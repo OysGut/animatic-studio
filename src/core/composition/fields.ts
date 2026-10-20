@@ -1,3 +1,4 @@
+import { isScriptLanguageTag } from "../translation/language-tags";
 /**
  * Felter og grenser for 2D-scener og lag (M3 del 2, mandat kap. 11). Ren logikk uten avhengigheter.
  * `normalize…` returnerer normaliserte felter eller en norsk feilmelding.
@@ -651,7 +652,7 @@ export function normalizeLanguageImages(
   const seen = new Set<string>();
   const out: LanguageImage[] = [];
   for (const li of list) {
-    if (!li || typeof li.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(li.language))
+    if (!li || typeof li.language !== "string" || !isScriptLanguageTag(li.language))
       return { ok: false, error: tk("core-composition-fields.error.error.09a2b9a18fb7") };
     if (li.language === "nb")
       return {

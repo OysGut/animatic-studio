@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationLines } from "@/adapters/ai/line-align.functions";
 import { newId, linksAboveThreshold, uncertainLineScope, lineLinkStale, lineTargetText, confidencePercent, ratioTitle, discardedText, type Command, type ProjectState, type LineLinkFields } from "@/core";
@@ -7,8 +8,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { t as tk } from "@/core/i18n/keyed";
 const control="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
 const originLabel=(origin:string)=> origin === "rule" ? tk("app-script-line-link-review.origin-label.message.dca37679cfa3") : origin === "ai" ? tk("app-script-line-link-review.origin-label.message.c50aaf5eb6c9") : origin === "approved" ? tk("app-script-line-link-review.origin-label.message.aeead83cf526") : tk("app-script-line-link-review.origin-label.message.ea611054606a");
-export function LineLinkReview({state,variantId,language,editable,run}:{state:ProjectState;variantId:string;language:string;editable:boolean;run:(c:Command,label:string)=>string|null}) {
+export function LineLinkReview({state,variantId,language:initialLanguage,editable,run}:{state:ProjectState;variantId:string;language:string;editable:boolean;run:(c:Command,label:string)=>string|null}) {
   const call=useServerFn(alignTranslationLines);
+  // ML3: the language version is an explicit choice here; B-050 always receives target language and scene.
+  const [language,setLanguageState]=useState(initialLanguage);
+  useEffect(()=>setLanguageState(initialLanguage),[initialLanguage]);
   const [open,setOpen]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState<string|null>(null),[filter,setFilter]=useState("all"),[threshold,setThreshold]=useState(0.8);
   const [estimate,setEstimate]=useState<{fingerprint:string;lines:number;profileName:string|null}|null>(null);
   const [proposals,setProposals]=useState<LineLinkFields[]>([]),[discarded,setDiscarded]=useState(0);
@@ -38,6 +42,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
     <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="line-links-dialog" className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface-2">
       <DialogHeader><DialogTitle>{tk("app-script-line-link-review.line-link-review.dialog-title.aa204482d1ef")}</DialogTitle></DialogHeader>
       <div className="flex flex-wrap items-center gap-2">
+        <ScriptLanguageSelect state={state} value={language} includeNorwegian={false} onChange={(l)=>{setLanguageState(l);setEstimate(null);setProposals([]);setDiscarded(0);setManualSource([]);setManualTarget([]);setAdjusting(null);}} label={tk("ml3-language-versions.links.language")} testId="line-links-language" />
         <select data-testid="line-links-filter" aria-label={tk("app-script-line-link-review.line-link-review.aria-label.9a1802fd6803")} className={control} value={filter} onChange={e=>setFilter(e.target.value)}>{["all","rule","ai","approved","manual"].map(o=><option key={o} value={o}>{o==="all"?tk("app-script-line-link-review.line-link-review.option.24596d8ebb46"):originLabel(o)}</option>)}</select>
         <label className="flex items-center gap-2 text-xs text-text-secondary">{tk("app-script-line-link-review.line-link-review.label.09f1de71bf43")}<input data-testid="line-links-threshold" type="number" min={0} max={1} step={0.05} className={control} value={threshold} onChange={e=>setThreshold(Number(e.target.value))}/></label>
         <Button size="sm" data-testid="line-links-approve-threshold" disabled={!editable||(!linksAboveThreshold(links.filter(l=>!lineLinkStale(state,l)),threshold).length&&!proposals.some(p=>p.confidence>=threshold)&&!ruleApprovals.length)} onClick={()=>{if (command({type:"ApproveLineLinks",linkIds:linksAboveThreshold(links.filter(l=>!lineLinkStale(state,l)),threshold),additions:[...ruleApprovals,...proposals.filter(p=>p.confidence>=threshold).map(fields=>({linkId:newId(),fields}))]})) setProposals(ps=>ps.filter(p=>p.confidence<threshold));}}>{tk("app-script-line-link-review.line-link-review.button.02cd0279d1ca")}</Button>

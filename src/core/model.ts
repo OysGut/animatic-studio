@@ -973,6 +973,8 @@ export interface ProjectState {
   readonly continuityEvents: Readonly<Record<string, ContinuityEvent>>;
   /** Oversettelser av manuset (språkversjoner, DEC-0058). */
   readonly translations: Readonly<Record<string, Translation>>;
+  /** ML3: språkversjoner per prosjekt (migrasjon 0066). Tomt for eldre prosjekter. */
+  readonly languageVersions: Readonly<Record<string, import("./translation/language-versions").LanguageVersion>>;
   /** Relasjoner mellom karakterene (DEC-0061). */
   readonly assetRelations: Readonly<Record<string, AssetRelation>>;
   /** Plakater og karakterkart (DEC-0061). */
@@ -1155,6 +1157,8 @@ export interface Translation extends Entity<TranslationId> {
   /** «uncertain»: automatisk koblet ved import og ikke godkjent ennå (REQ-0335). */
   readonly status: "approved" | "uncertain";
   readonly removed: boolean;
+  /** ML3: språkversjonen raden hører til; mangler for eldre rader (avledes fra prosjekt + språk). */
+  readonly languageVersionId?: string;
 }
 
 export interface ContinuityEvent extends Entity<ContinuityEventId> {
@@ -1355,6 +1359,7 @@ export const COLLECTION_TABLES = {
   generationPrompts: "generation_prompts",
   continuityEvents: "continuity_events",
   translations: "translations",
+  languageVersions: "language_versions",
   assetRelations: "asset_relations",
   posters: "posters",
   styleProfiles: "style_profiles",
@@ -1406,6 +1411,7 @@ export function emptyProjectState(project: Project): ProjectState {
     generationPrompts: {},
     continuityEvents: {},
     translations: {},
+    languageVersions: {},
     assetRelations: {},
     posters: {},
     styleProfiles: {},

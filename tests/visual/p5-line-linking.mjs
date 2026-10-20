@@ -1,5 +1,6 @@
 /** B-050 review and cost confirmation. Fixed replies only, no real AI calls. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 const h=harness("/tmp/browser/c/p5");
 const occ=h.rows.scene_occurrences.find(o=>o.active&&h.rows.script_blocks.filter(b=>b.variant_id===o.variant_id&&b.kind!=="heading"&&!b.removed).length>=3);
 if(!occ)throw new Error("Missing scene");
@@ -22,7 +23,7 @@ for(const lang of ["nb","en"])await h.scenario(`p5-${lang}`,occ.id,lang,async pa
     }
     return route.fulfill({status:200,contentType:"application/json",body:JSON.stringify({result:{ok:true,estimate:true,costUsd:0,servicePaid:true,fingerprint:"mock-fingerprint",lines:3,profileName:null},context:{}})});
   });
-  await page.getByRole("combobox",{name:lang==="nb"?"Manusspråk":"Script language",exact:true}).selectOption("en");
+  await page.getByRole("combobox",{name:byLang(lang,"Manusspråk","Script language"),exact:true}).selectOption("en");
   await page.locator(`[data-block="${blocks[0].id}"]`).first().click();
   await page.getByTestId("line-links-open").click();
   const dialog=page.getByTestId("line-links-dialog");

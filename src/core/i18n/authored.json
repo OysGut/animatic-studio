@@ -4002,6 +4002,384 @@
       "en": {
         "text": "English"
       }
+    },
+    "ml3-language-versions.error.language": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkkoden er ugyldig. Bruk en BCP-47-kode som de, pt-BR eller sr-Latn."
+      },
+      "en": {
+        "text": "The language code is invalid. Use a BCP-47 code such as de, pt-BR or sr-Latn."
+      }
+    },
+    "ml3-language-versions.error.norwegian": {
+      "replaces": [],
+      "nb": {
+        "text": "Norsk er kildespråket og kan ikke være en språkversjon."
+      },
+      "en": {
+        "text": "Norwegian is the source language and cannot be a language version."
+      }
+    },
+    "ml3-language-versions.error.name": {
+      "replaces": [],
+      "nb": {
+        "text": "Navnet må ha mellom 1 og 120 tegn."
+      },
+      "en": {
+        "text": "The name must be between 1 and 120 characters."
+      }
+    },
+    "ml3-language-versions.error.status": {
+      "replaces": [],
+      "nb": {
+        "text": "Ukjent status for språkversjonen."
+      },
+      "en": {
+        "text": "Unknown status for the language version."
+      }
+    },
+    "ml3-language-versions.error.duplicate": {
+      "replaces": [],
+      "nb": {
+        "text": "Prosjektet har allerede en språkversjon for {language}."
+      },
+      "en": {
+        "text": "The project already has a language version for {language}."
+      }
+    },
+    "ml3-language-versions.error.not-found": {
+      "replaces": [],
+      "nb": {
+        "text": "Fant ikke språkversjonen."
+      },
+      "en": {
+        "text": "The language version was not found."
+      }
+    },
+    "ml3-language-versions.error.in-use": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkversjonen er tatt i bruk av oversettelser og kan ikke angres bort. Fjern den i stedet."
+      },
+      "en": {
+        "text": "The language version is used by translations and cannot be undone. Remove it instead."
+      }
+    },
+    "ml3-language-versions.error.unchanged": {
+      "replaces": [],
+      "nb": {
+        "text": "Ingen endring å lagre."
+      },
+      "en": {
+        "text": "There is no change to save."
+      }
+    },
+    "ml3-language-versions.error.mixed-versions": {
+      "replaces": [],
+      "nb": {
+        "text": "Linjene i koblingen hører til ulike språkversjoner."
+      },
+      "en": {
+        "text": "The lines in the link belong to different language versions."
+      }
+    },
+    "ml3-language-versions.button.manage": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkversjoner …"
+      },
+      "en": {
+        "text": "Language versions …"
+      }
+    },
+    "ml3-language-versions.dialog.title": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkversjoner"
+      },
+      "en": {
+        "text": "Language versions"
+      }
+    },
+    "ml3-language-versions.dialog.description": {
+      "replaces": [],
+      "nb": {
+        "text": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser."
+      },
+      "en": {
+        "text": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations."
+      }
+    },
+    "ml3-language-versions.field.language": {
+      "replaces": [],
+      "nb": {
+        "text": "Målspråk (BCP-47)"
+      },
+      "en": {
+        "text": "Target language (BCP-47)"
+      }
+    },
+    "ml3-language-versions.field.name": {
+      "replaces": [],
+      "nb": {
+        "text": "Navn"
+      },
+      "en": {
+        "text": "Name"
+      }
+    },
+    "ml3-language-versions.field.language-hint": {
+      "replaces": [],
+      "nb": {
+        "text": "For eksempel de, pt-BR eller sr-Latn"
+      },
+      "en": {
+        "text": "For example de, pt-BR or sr-Latn"
+      }
+    },
+    "ml3-language-versions.button.add": {
+      "replaces": [],
+      "nb": {
+        "text": "Legg til språkversjon"
+      },
+      "en": {
+        "text": "Add language version"
+      }
+    },
+    "ml3-language-versions.button.rename": {
+      "replaces": [],
+      "nb": {
+        "text": "Lagre navn"
+      },
+      "en": {
+        "text": "Save name"
+      }
+    },
+    "ml3-language-versions.button.remove": {
+      "replaces": [],
+      "nb": {
+        "text": "Fjern"
+      },
+      "en": {
+        "text": "Remove"
+      }
+    },
+    "ml3-language-versions.button.restore": {
+      "replaces": [],
+      "nb": {
+        "text": "Gjenopprett"
+      },
+      "en": {
+        "text": "Restore"
+      }
+    },
+    "ml3-language-versions.button.register": {
+      "replaces": [],
+      "nb": {
+        "text": "Registrer"
+      },
+      "en": {
+        "text": "Register"
+      }
+    },
+    "ml3-language-versions.button.close": {
+      "replaces": [],
+      "nb": {
+        "text": "Lukk"
+      },
+      "en": {
+        "text": "Close"
+      }
+    },
+    "ml3-language-versions.label.registered": {
+      "replaces": [],
+      "nb": {
+        "text": "Registrerte språkversjoner"
+      },
+      "en": {
+        "text": "Registered language versions"
+      }
+    },
+    "ml3-language-versions.label.removed": {
+      "replaces": [],
+      "nb": {
+        "text": "Fjernede språkversjoner"
+      },
+      "en": {
+        "text": "Removed language versions"
+      }
+    },
+    "ml3-language-versions.label.derived": {
+      "replaces": [],
+      "nb": {
+        "text": "Fra eldre oversettelser – ikke registrert"
+      },
+      "en": {
+        "text": "From earlier translations – not registered"
+      }
+    },
+    "ml3-language-versions.label.collision": {
+      "replaces": [],
+      "nb": {
+        "text": "Lagret med flere skrivemåter: {tags}. Ingenting slås sammen automatisk."
+      },
+      "en": {
+        "text": "Stored with several spellings: {tags}. Nothing is merged automatically."
+      }
+    },
+    "ml3-language-versions.label.status": {
+      "replaces": [],
+      "nb": {
+        "text": "{translated} av {lines} linjer oversatt, {review} må gjennomgås, {uncertain} usikre"
+      },
+      "en": {
+        "text": "{translated} of {lines} lines translated, {review} need review, {uncertain} uncertain"
+      }
+    },
+    "ml3-language-versions.empty": {
+      "replaces": [],
+      "nb": {
+        "text": "Ingen språkversjoner ennå."
+      },
+      "en": {
+        "text": "No language versions yet."
+      }
+    },
+    "ml3-language-versions.undo.add": {
+      "replaces": [],
+      "nb": {
+        "text": "Legg til språkversjon {name}"
+      },
+      "en": {
+        "text": "Add language version {name}"
+      }
+    },
+    "ml3-language-versions.undo.rename": {
+      "replaces": [],
+      "nb": {
+        "text": "Gi nytt navn til språkversjon {name}"
+      },
+      "en": {
+        "text": "Rename language version {name}"
+      }
+    },
+    "ml3-language-versions.undo.remove": {
+      "replaces": [],
+      "nb": {
+        "text": "Fjern språkversjon {name}"
+      },
+      "en": {
+        "text": "Remove language version {name}"
+      }
+    },
+    "ml3-language-versions.undo.restore": {
+      "replaces": [],
+      "nb": {
+        "text": "Gjenopprett språkversjon {name}"
+      },
+      "en": {
+        "text": "Restore language version {name}"
+      }
+    },
+    "ml3-language-versions.select.norwegian": {
+      "replaces": [],
+      "nb": {
+        "text": "Norsk (kilde)"
+      },
+      "en": {
+        "text": "Norwegian (source)"
+      }
+    },
+    "ml3-language-versions.option.derived": {
+      "replaces": [],
+      "nb": {
+        "text": "{label} – eldre oversettelser"
+      },
+      "en": {
+        "text": "{label} – earlier translations"
+      }
+    },
+    "ml3-language-versions.explorer.language": {
+      "replaces": [],
+      "nb": {
+        "text": "Språk i manusutforskeren"
+      },
+      "en": {
+        "text": "Language in the script explorer"
+      }
+    },
+    "ml3-language-versions.links.language": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkversjon for linjekoblinger"
+      },
+      "en": {
+        "text": "Language version for line links"
+      }
+    },
+    "ml3-language-versions.export.language": {
+      "replaces": [],
+      "nb": {
+        "text": "Språkversjon i eksporten"
+      },
+      "en": {
+        "text": "Language version in the export"
+      }
+    },
+    "ml3-language-versions.export.incomplete": {
+      "replaces": [],
+      "nb": {
+        "text": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre."
+      },
+      "en": {
+        "text": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do."
+      }
+    },
+    "ml3-language-versions.export.fallback": {
+      "replaces": [],
+      "nb": {
+        "text": "Bruk norsk der oversettelsen mangler"
+      },
+      "en": {
+        "text": "Use Norwegian where the translation is missing"
+      }
+    },
+    "ml3-language-versions.export.stop": {
+      "replaces": [],
+      "nb": {
+        "text": "Stopp eksporten til oversettelsen er ferdig"
+      },
+      "en": {
+        "text": "Stop the export until the translation is complete"
+      }
+    },
+    "ml3-language-versions.export.stopped": {
+      "replaces": [],
+      "nb": {
+        "text": "Eksporten er stoppet. Ingen fil er laget."
+      },
+      "en": {
+        "text": "The export is stopped. No file has been created."
+      }
+    },
+    "ml3-language-versions.export.choose": {
+      "replaces": [],
+      "nb": {
+        "text": "Velg norsk reserve eller stopp før du eksporterer."
+      },
+      "en": {
+        "text": "Choose Norwegian fallback or stop before exporting."
+      }
+    },
+    "ml3-language-versions.review.languages": {
+      "replaces": [],
+      "nb": {
+        "text": "Norsk er endret. Må gjennomgås i: {languages}"
+      },
+      "en": {
+        "text": "The Norwegian text has changed. Needs review in: {languages}"
+      }
     }
   }
 }

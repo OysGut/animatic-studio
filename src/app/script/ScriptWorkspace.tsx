@@ -7,6 +7,8 @@ import { ProductionDialog } from "@/app/projects/ProductionDialog";
 import { PromotionDialog } from "@/app/projects/PromotionDialog";
 import { TranslationImportDialog } from "./TranslationImportDialog";
 import { RemoveTranslationsDialog } from "./RemoveTranslationsDialog";
+import { LanguageVersionsDialog } from "./LanguageVersionsDialog";
+import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { WritingPanel, type AssistTrigger } from "./assist/WritingPanel";
 import { AssistContextMenu, assistShortcut, selectedBlockIdsIn } from "./assist/assist-ui";
 import {
@@ -34,7 +36,7 @@ import {
   useState,
   type KeyboardEvent,
 } from "react";
-import { collation, changedBlockIds, discrepancies, filmClips, assetNames, allAssetUsage, charactersInProduction, filterPages, isFilterActive, matchingScenes, productionStatus, estimateProduction, alignBlockLines, annotationsByVariant, movedOccurrences, keysEvenly, LANGUAGE_LABEL, translatedState, translationStatus, newId, pageDecorations, resolveRange, searchHits, type Annotation, nameKey, orderedOccurrences, scriptPages, scriptView, sortedAssets, type ProjectState, type SceneFilter, promotionCandidates } from "@/core";
+import { collation, changedBlockIds, discrepancies, filmClips, assetNames, allAssetUsage, charactersInProduction, filterPages, isFilterActive, matchingScenes, productionStatus, estimateProduction, alignBlockLines, annotationsByVariant, movedOccurrences, keysEvenly, LANGUAGE_LABEL, isScriptLanguageTag, translatedState, translationStatus, newId, pageDecorations, resolveRange, searchHits, type Annotation, nameKey, orderedOccurrences, scriptPages, scriptView, sortedAssets, type ProjectState, type SceneFilter, promotionCandidates } from "@/core";
 import { canEdit, useMembers, useProfiles, useProjectState } from "@/app/project/use-project";
 import { initials, usePresence, type PresentUser } from "@/app/project/use-presence";
 import { useCommands, type Commands } from "@/app/project/use-commands";
@@ -178,7 +180,7 @@ function Workspace({
   const [lang, setLangState] = useState<string>(() => {
     try {
       const l = window.localStorage.getItem(`animatic:script-lang:${projectId}`) ?? "nb";
-      return LANGUAGE_LABEL[l] ? l : "nb";
+      return LANGUAGE_LABEL[l] || isScriptLanguageTag(l) ? l : "nb";
     } catch {
       return "nb";
     }
@@ -193,6 +195,7 @@ function Workspace({
   };
   const [importLangOpen, setImportLangOpen] = useState(false);
   const [removeLangOpen, setRemoveLangOpen] = useState(false);
+  const [langVersionsOpen, setLangVersionsOpen] = useState(false);
   const viewState = useMemo(() => translatedState(state, lang), [state, lang]);
   const langStatus = useMemo(
     () => (lang === "nb" ? null : translationStatus(state, productionId, lang)),
@@ -671,19 +674,14 @@ function Workspace({
         ) : (
           <span className="text-chrome font-medium text-text-primary">{productions[0]?.name}</span>
         )}
-        <select
-          aria-label={tk("app-script-script-workspace.workspace.aria-label.ef7efda65221")}
+        <ScriptLanguageSelect
+          state={state}
           value={lang}
-          onChange={(e) => setLang(e.target.value)}
+          onChange={setLang}
+          label={tk("app-script-script-workspace.workspace.aria-label.ef7efda65221")}
           title={tk("app-script-script-workspace.workspace.title.442aea26253d")}
-          className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
-        >
-          {Object.entries(LANGUAGE_LABEL).map(([k, v]) => (
-            <option key={k} value={k}>
-              {v}
-            </option>
-          ))}
-        </select>
+          testId="script-language-select"
+        />
         {langStatus ? (
           <span
             className="whitespace-nowrap text-xs text-text-tertiary"
@@ -712,6 +710,12 @@ function Workspace({
             {tk("app-script-script-workspace.workspace.toolbar-button.48dd6b7fbf04")}
           </ToolbarButton>
         ) : null}
+        </ToolbarGroup>
+        <ToolbarGroup priority={2}>
+        <ToolbarButton data-testid="language-versions-open" onClick={() => setLangVersionsOpen(true)}>
+          <Languages />
+          {tk("ml3-language-versions.button.manage")}
+        </ToolbarButton>
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>
@@ -785,7 +789,7 @@ function Workspace({
               <History />
               {tk("app-script-script-workspace.workspace.toolbar-button.d987ab9929c2")}
             </ToolbarButton>
-            <ToolbarButton onClick={() => setExportOpen(true)}>
+            <ToolbarButton data-testid="script-export-open" onClick={() => setExportOpen(true)}>
               <Download />
               {tk("app-script-script-workspace.workspace.toolbar-button.5e33b57871b7")}
             </ToolbarButton>
@@ -1220,6 +1224,9 @@ function Workspace({
           productionId={productionId}
           lockedPages={lockedPages}
           language={lang}
+          sourceState={state}
+          languageStatus={langStatus}
+          onLanguageChange={setLang}
           {...(editable && schema27
             ? {
                 onSaveTitlePage: (lines: readonly string[]) => {
@@ -1228,6 +1235,16 @@ function Workspace({
                 },
               }
             : {})}
+        />
+      ) : null}
+      {langVersionsOpen ? (
+        <LanguageVersionsDialog
+          open={langVersionsOpen}
+          onOpenChange={setLangVersionsOpen}
+          state={state}
+          productionId={productionId}
+          cmds={cmds}
+          editable={editable}
         />
       ) : null}
       {removeLangOpen && lang !== "nb" ? (
