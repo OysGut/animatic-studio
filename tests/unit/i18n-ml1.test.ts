@@ -178,3 +178,16 @@ describe('ML2b migration tool', () => {
     expect(new Set(lukk).size).toBe(2);
   });
 });
+describe('ML2b runtime catalog', () => {
+  it('every migrated text pair renders exactly its frozen nb/en text through t()', () => {
+    const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
+    const migrated = mapping.entries.filter((e: { migrated?: boolean }) => e.migrated);
+    expect(migrated.length).toBeGreaterThanOrEqual(1193);
+    for (const e of migrated) {
+      const params = Object.fromEntries(e.nb.parameters.map((p: { name: string }) => [p.name, `«${p.name}»`]));
+      const fill = (text: string) => text.replace(/\{([A-Za-z_]\w*)\}/g, (_, n: string) => `«${n}»`);
+      expect(t(e.key, params, 'nb')).toBe(fill(e.nb.text));
+      expect(t(e.key, params, 'en')).toBe(fill(e.en.text));
+    }
+  });
+});
