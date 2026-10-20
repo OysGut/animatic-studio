@@ -92,7 +92,7 @@ describe("P4 actual compositor pixels", () => {
     let pixels = new Uint8ClampedArray(canvas.data);
     const ctx = {
       getImageData: () => ({ data: pixels }),
-      putImageData: (image: { data: Uint8ClampedArray }) => { pixels = image.data; },
+      putImageData: (image: { data: Uint8ClampedArray }) => { pixels = new Uint8ClampedArray(image.data); },
     };
     desaturate(ctx as unknown as CanvasRenderingContext2D, 16, 16, true);
     expect([...pixels].filter((_, i) => i % 4 === 3)).toEqual(before.map(Math.round));
