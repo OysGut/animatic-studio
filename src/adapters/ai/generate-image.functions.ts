@@ -24,8 +24,10 @@ import {
   MAX_PROMPT_CHARS,
   monthStartUtc,
   newId,
+  parseQualityProfileMeta,
   providerModel,
   stripAttachedSection,
+  type QualityProfileSnapshot,
   L,
 } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
@@ -69,6 +71,8 @@ export interface GenerateImageInput {
   readonly upscaleFactor?: 2 | 4;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
+  /** Kvalitetsprofilen bildet lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */
+  readonly qualityProfile?: QualityProfileSnapshot | null;
 }
 
 export type GenerateImageResult =
