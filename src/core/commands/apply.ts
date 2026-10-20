@@ -2,6 +2,7 @@ import { assetVoiceError } from "../dialogue/voice";
 import { languageTagError } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
 import { NOTE_FLAG_TARGETS, NOTE_FLAG_MAX_TEXT, type NoteFlag } from "../notes/flags";
+import { qualityProfileError, type QualityProfile } from "../generation/quality-profile";
 import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
 import { applyRigCommand } from "../animation/rig-commands";
@@ -6984,6 +6985,47 @@ function run(
     case "SetNoteFlagRemoved": {
       const f = need((s.noteFlags ?? {})[c.flagId], L("Huskelappen", "The note flag"));
       return { state: { ...s, noteFlags: { ...(s.noteFlags ?? {}), [f.id]: { ...f, removed: c.removed === true, revision: rev(f) } } }, inverse: { type: "SetNoteFlagRemoved", flagId: f.id, removed: f.removed }, affected: [f.id] };
+    }
+    // M8 kvalitetsprofiler (REQ-0854–0862)
+    case "AddQualityProfile": {
+      assertNewId(s, c.profileId);
+      const err = qualityProfileError(c.name, c.spec ?? {});
+      if (err) fail("invalid", err);
+      const p: QualityProfile = { id: c.profileId, revision: 1, name: c.name.trim(), spec: c.spec ?? {}, removed: false, createdBy: env.actor, createdAt: env.at, editedBy: null, editedAt: null };
+      return { state: { ...s, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: p } }, inverse: { type: "UndoAddQualityProfile", profileId: p.id }, affected: [p.id] };
+    }
+    case "UndoAddQualityProfile": {
+      const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
+      const profiles = { ...(s.qualityProfiles ?? {}) };
+      delete profiles[p.id];
+      // Var profilen aktiv, fjernes valget samtidig (samma angregruppe)
+      const project = s.project.activeQualityProfileId === p.id ? { ...s.project, activeQualityProfileId: null, revision: s.project.revision + 1 } : s.project;
+      return { state: { ...s, project, qualityProfiles: profiles }, inverse: { type: "AddQualityProfile", profileId: p.id, name: p.name, spec: p.spec }, affected: [p.id, project.id] };
+    }
+    case "UpdateQualityProfile": {
+      const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
+      const name = c.name !== undefined ? c.name : p.name;
+      const spec = c.spec !== undefined ? c.spec : p.spec;
+      const err = qualityProfileError(name, spec ?? {});
+      if (err) fail("invalid", err);
+      const next: QualityProfile = { ...p, name: name.trim(), spec: spec ?? {}, editedBy: env.actor, editedAt: env.at, revision: rev(p) };
+      return { state: { ...s, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: next } }, inverse: { type: "UpdateQualityProfile", profileId: p.id, ...(c.name !== undefined ? { name: p.name } : {}), ...(c.spec !== undefined ? { spec: p.spec } : {}) }, affected: [p.id] };
+    }
+    case "SetQualityProfileRemoved": {
+      const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
+      const next: QualityProfile = { ...p, removed: c.removed === true, editedBy: env.actor, editedAt: env.at, revision: rev(p) };
+      // En fjernet profil kan ikke være aktiv
+      const project = c.removed === true && s.project.activeQualityProfileId === p.id ? { ...s.project, activeQualityProfileId: null, revision: s.project.revision + 1 } : s.project;
+      return { state: { ...s, project, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: next } }, inverse: { type: "SetQualityProfileRemoved", profileId: p.id, removed: p.removed }, affected: [p.id, project.id] };
+    }
+    case "SetActiveQualityProfile": {
+      if (c.profileId !== null) {
+        const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
+        if (p.removed) fail("invalid", L("Profilen er fjernet", "The profile is removed"));
+      }
+      const prev = s.project.activeQualityProfileId ?? null;
+      const project = { ...s.project, activeQualityProfileId: c.profileId, revision: s.project.revision + 1 };
+      return { state: { ...s, project }, inverse: { type: "SetActiveQualityProfile", profileId: prev }, affected: [s.project.id] };
     }
     case "SetAnnotationResolved": {
       const a = need(s.annotations[c.annotationId], L("Notatet", "The note"));
