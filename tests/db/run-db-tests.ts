@@ -53,6 +53,7 @@ import {
   textLayerFields,
   dialogueMirrorViolations,
   BACKUP_STATE_TABLES,
+  emptyStyleGuide,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -150,6 +151,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
     lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
     dialogue_versions: await q("dialogue_versions"),
+    style_harmonizations: await q("style_harmonizations"),
+    style_preferred_references: await q("style_preferred_references"),
   };
   return stateFromRows(rows);
 }
