@@ -45,12 +45,11 @@ Kortversjonen:
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
 28. Alpha exports share drawFilmFrame; adapters finalize first.
 
-29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes profile budget reservations under the project lock so concurrent clients cannot exceed a profile cap.
+29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock so caps hold.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
 31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
-35. ML1 keeps the legacy i18n bridge unchanged; keyed messages use injected catalogs, explicit locale/fallbacks, and a frozen AST mapping baseline so no source text is lost.
-36. Language switching never remounts (routes and memo panels subscribe via useLanguage) so drafts survive; server error codes are additive and never rewrite existing L() sites, so ML1 keys stay stable.
+35. i18n: the L() bridge stays until the inventory is empty; keyed catalogs use explicit fallbacks and a frozen AST baseline (no text lost). Language switches never remount (routes/memo panels use useLanguage) so drafts survive; server error codes are additive and never rewrite L() sites.
