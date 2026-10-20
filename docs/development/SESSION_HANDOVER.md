@@ -1,5 +1,11 @@
 # Handover – Animatic Studio
 
+## DV7/DV8 – 20.10.2026, kode levert; Cloud 0062 gjenstår
+- Migrasjon 0062_drift_notes_bookmarks.sql: dialogue_reviews, note_flags, user_bookmarks (RLS user_id = auth.uid()), set_my_bookmark/consume_my_bookmark, reconfirm_dialogue_batch, item-status «undone». Erstatter apply_changes, delete_project og purge_project_assets (kopiert fra 0061 og utvidet); purge_removed_assets er uendret.
+- Avvik lagres aldri; status beregnes i src/core/dialogue/drift.ts. Backup tar med reviews og lapper, ikke bokmerker.
+- DV5/DV6-rester rettet: hele jobben kan angres via lagrede inverser, blokkert jobb gjenopptas etter ny bekreftelse uten å kjøre tvetydige/fakturerte elementer, «nb» i stedet for «no» (leverandørkode mappes ved kall), produksjon per scene, ett usikkert tidsanslag.
+- Lokalt: tsc ok, Vitest 1826/10 hoppet over, DB 132/132, dv1–dv8, CA1–CA8, U5 65, scene-panels 39, lyd 28/24, MTS 130. Verifisering4 51/54 her (mikrofon + Courier Prime, kjente miljøavvik).
+
 ## DV5/DV6 – 19.10.2026, kode levert; Cloud-verifikasjon gjenstår
 - Doble forslag grupperes per permanent replikk/ressurs; bekreftelse kobler alle tilhørende klipp.
 - Massegenerering i karakterens Lyd/Stemme-seksjon: scene-/linjevalg, dekning, ordrett eksisterende-lyd-advarsel, eksplisitt kostnadsgodkjenning, separate språkjobber og varig fremdrift. Ukjent pris blokkerer start. Tidsanslag er uttrykkelig usikkert.
