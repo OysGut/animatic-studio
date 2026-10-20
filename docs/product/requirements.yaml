@@ -4882,6 +4882,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0071
     change: "Betegnelser i bestemte linjer: brukeren velger linjene der «onkel» betyr ressursen (SetContextNames, assets.context_names); brukes i treff, figurer i AI-beskrivelser og ressursens bruk."
+  - date: '2026-10-20'
+    decision: DEC-0054
+    change: "M6: forslag fra konteksten (til stede i scenen, tidligere koblinger, sist nevnte karakter) med AI bare for de usikre; se REQ-0873."
   notes: Kontekstavhengig kobling er mer enn enkel alias; se OPEN_QUESTIONS B (kontekstavhengig alias).
 - id: REQ-0128
   title: Usikre koblinger foreslås
@@ -32433,3 +32436,146 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+- id: REQ-0871
+  title: 'M6: Oppdatering med AI ved manusavvik (valg B)'
+  text: 'Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0054
+    document: docs/development/PLAN_M6_REST.md
+    section: M6 resten
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - VERSION
+  - PROMPT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.'
+  tests:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/assembly/material-update.ts
+  - src/app/assembly/MaterialUpdateSection.tsx
+  - src/app/assembly/ScriptChanges.tsx
+  verification:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0054
+    change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+- id: REQ-0872
+  title: 'M6: Varighetsprognose fra prosjektets historikk'
+  text: 'Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0054
+    document: docs/development/PLAN_M6_REST.md
+    section: M6 resten
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - SCRIPT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.'
+  tests:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/screenplay/forecast.ts
+  - src/app/projects/DurationOverview.tsx
+  - src/app/script/SceneNavigator.tsx
+  verification:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0054
+    change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+- id: REQ-0873
+  title: 'M6: Forslag til kontekstuell kobling av betegnelser'
+  text: 'Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0054
+    document: docs/development/PLAN_M6_REST.md
+    section: M6 resten
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - LIBRARY
+  - SCRIPT
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.'
+  tests:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/library/context-links.ts
+  - src/app/library/ContextLinkSuggestions.tsx
+  verification:
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+  notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0054
+    change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+- id: REQ-0874
+  title: 'P8-retting: Vist bildemodell er brukt modell, og samlet anslag i massemodus'
+  text: 'Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.'
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0054
+    document: docs/development/PLAN_M6_REST.md
+    section: M6 resten
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - PROVIDER
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - 'Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.'
+  tests:
+  - tests/unit/builtin-image-model.test.ts
+  - tests/visual/p8-style-harmonize.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/generation/providers.ts
+  - src/adapters/ai/image-run.server.ts
+  - src/adapters/storage/harmonize-batch.functions.ts
+  - src/app/library/HarmonizePanel.tsx
+  - src/app/library/HarmonizeBatchPanel.tsx
+  verification:
+  - tests/unit/builtin-image-model.test.ts
+  - tests/visual/p8-style-harmonize.mjs
+  notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0054
+    change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
