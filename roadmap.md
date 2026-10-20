@@ -1,5 +1,5 @@
 # C linjekobling (20.10.2026)
-- [ ] Regelbasert først, sceneavgrenset AI med kostnadsbekreftelse og gjennomgang av 1:n/n:1.
+- [x] Regelbasert først, sceneavgrenset AI med kostnadsbekreftelse og gjennomgang av lagrede 1:n/n:1-koblinger.
 - [x] Reversible kommandoer, 0064 fra 0063, RLS/grants/sletting og sikkerhetskopi skrevet; DB-verifikasjon blokkert av lokal Postgres.
 - [x] Språknavn i opptak og avstand ved alfa-profilvalg.
 - [x] P5 18/18 NO/EN, Vitest 1871/0, bestilte regresjoner kjørt; DB blokkert. REQ-0845–0853 og rapport.

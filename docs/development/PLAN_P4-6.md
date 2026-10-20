@@ -54,4 +54,3 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D/0063 er verif
 - DB-testkjøring blokkert før første test: lokal Postgres localhost:54329 utilgjengelig. To nye 0064 DB-tester skrevet for RLS/grants, apply_changes, fremmede referanser, delete og purge, men ikke kjørt. Migrasjonen er ikke DB-verifisert og anbefales ikke kjørt i Cloud ennå.
 - ÅPENT: Eksisterende import bevarer ikke oversatte linjer uten DEC-0058-regelpar. Gjennomgangen støtter derfor bare lagrede oversettelseslinjer; full B-050 for uparrede importlinjer er ikke ferdig. Dette krever varig importlinjemodell/utvidet importflyt. Ikke rapportert som full C-leveranse.
 - i18n 0 uten engelsk; build_docs/check_kb OK (862 krav, 0 udekkede mandatlinjer). REQ-0845–0853 er Implementert – ikke verifisert med eksplisitt importavgrensning.
-
