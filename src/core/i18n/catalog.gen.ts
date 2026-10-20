@@ -161,6 +161,11 @@ export const CATALOG: Record<string, string> = {
   "Analysen kjører allerede.": "The analysis is already running.",
   "Analysen kunne ikke lagres.": "The analysis could not be saved.",
   "Analysen kunne ikke logges.": "The analysis could not be logged.",
+  "Angringen stoppet etter {0} replikker: {1}": "Undo stopped after {0} lines: {1}",
+  "Angringen stoppet etter {0} replikker: endringen finnes ikke i historikken.":
+    "Undo stopped after {0} lines: the change is missing from the history.",
+  "Angringen stoppet etter {0} replikker. Noen har endret replikken siden.":
+    "Undo stopped after {0} lines. Someone has changed the line since.",
   "Animasjonsbruken finnes ikke": "The animation use was not found",
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
@@ -223,6 +228,8 @@ export const CATALOG: Record<string, string> = {
   "Bare tekstlag kan ha tekst": "Only text layers can have text",
   "before ({0}) må være mindre enn after ({1})": "before ({0}) must be less than after ({1})",
   "Begge scenene må være i samme produksjon": "Both scenes must be in the same production",
+  "Bekreft kostnaden på nytt før jobben fortsetter.":
+    "Approve the cost again before the job continues.",
   "Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt. Den endelige fakturaen fra leverandøren kan avvike; bruk leverandørens jobb-ID til avstemming.":
     "The amounts are estimated from the provider's price list when the job was ordered. The provider's final invoice may differ; use the provider's job ID for reconciliation.",
   "Beløpene er uten merverdiavgift. Kjøp av slike tjenester fra utlandet har normalt omvendt avgiftsplikt.":
@@ -290,6 +297,7 @@ export const CATALOG: Record<string, string> = {
     "The image the setup is built on is not in the project yet.",
   "Bildet på plakaten": "The image on the poster",
   "Bildet tilhører ikke oppsettets variant": "The image does not belong to the setup variant",
+  Bildevariant: "Image variant",
   Bildeversjonen: "The image version",
   "Bildeversjonen for språket": "The image version for the language",
   "Blokk {0}: gjeldende tekst stemmer ikke med revisjonshistorikken":
@@ -364,6 +372,8 @@ export const CATALOG: Record<string, string> = {
     "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
   "Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.":
     "The database is missing animation setups. Run migrations 0053 and 0054 first.",
+  "Databasen mangler avviksgjennomgang og huskelapper. Kjør migrasjon 0062 først.":
+    "The database is missing drift reviews and note flags. Run migration 0062 first.",
   "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).":
     "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
   "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.":
@@ -540,6 +550,7 @@ export const CATALOG: Record<string, string> = {
   "Eldre bildeversjoner som ikke brukes lenger. De slettes aldri automatisk. Manusversjoner og endringshistorikken ligger i databasen.":
     "Older image versions that are no longer used. They are never deleted automatically. Script versions and the change history are kept in the database.",
   "Elementet er utenfor plakaten": "The element is outside the poster",
+  "Elementet finnes ikke": "The item was not found",
   "Elementet ligger i en ukjent gruppe": "The element is in an unknown group",
   "Elementet viser et ukjent felt": "The element shows an unknown field",
   "Elementtypen er uendret": "The element type is unchanged",
@@ -798,11 +809,13 @@ export const CATALOG: Record<string, string> = {
   "Genereringen kunne ikke logges: {0}": "The generation could not be logged: {0}",
   "Genereringen må bekreftes": "The generation must be confirmed",
   "Genereringen stoppet: {0}": "The generation stopped: {0}",
+  "Generert lyd må følge gjeldende manus": "Generated audio must follow the current script",
   "Generert tale": "Generated speech",
   "Genererte mediefiler": "Generated media files",
   "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den.":
     "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it.",
   "Gjenkjent i leksikonet": "Recognized in the lexicon",
+  Gjennomgangen: "The review",
   "Gjennomsiktig bakgrunn": "Transparent background",
   "Gjennomsiktig bakgrunn.": "Transparent background.",
   "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;":
@@ -868,6 +881,7 @@ export const CATALOG: Record<string, string> = {
   "Høyst {0} koblinger": "At most {0} links",
   "Høyst 200 betegnelser": "At most 200 designations",
   "Høyst 4 figurer med referansebilde": "At most 4 figures with a reference image",
+  Huskelappen: "The note flag",
   "Hvit bakgrunn – frilegg etterpå.": "White background – cut out afterwards.",
   "I del {0}": "In part {0}",
   "I kilden": "In the source",
@@ -913,6 +927,7 @@ export const CATALOG: Record<string, string> = {
   "Ingen lagret manusversjon": "No saved script version",
   "Ingen lyd å endre": "No audio to change",
   "Ingen lyd å legge til": "No audio to add",
+  "Ingen lyd for replikken ennå": "No audio for the line yet",
   "ingen lyd i videoen – dialogen må legges på dialogsporet":
     "no sound in the video – the dialogue must be added to the dialogue track",
   "Ingen lyd valgt": "No audio selected",
@@ -952,6 +967,8 @@ export const CATALOG: Record<string, string> = {
   "Jobben feilet.": "The job failed.",
   "Jobben finnes ikke": "The job was not found",
   "Jobben finnes ikke.": "The job does not exist.",
+  "Jobben kjører. Vent til den er ferdig eller satt på pause.":
+    "The job is running. Wait until it is done or paused.",
   "Jobben kom aldri i gang hos leverandøren.": "The job never started at the provider.",
   "Jobben kunne ikke logges: {0}": "The job could not be logged: {0}",
   "Jobben startet, men kunne ikke registreres: {0}":
@@ -1131,6 +1148,7 @@ export const CATALOG: Record<string, string> = {
     "Sound effects and voices from text. Subscription with monthly characters/credits.",
   "Lydeffekter v2": "Sound effects v2",
   "Lyden ble ikke laget: {0}": "The sound was not made: {0}",
+  "Lyden følger gjeldende manus": "The audio follows the current script",
   "Lyden kunne ikke lagres: {0}": "The sound could not be saved: {0}",
   "Lyden må være AAC for at filmen skal spille på iPhone. Denne nettleseren laget en annen lydkodek; eksporter på nytt i Chrome, Edge eller Safari.":
     "The sound must be AAC for the film to play on iPhone. This browser made another audio codec; export again in Chrome, Edge or Safari.",
@@ -1142,10 +1160,12 @@ export const CATALOG: Record<string, string> = {
   Lydklippet: "The audio clip",
   "Lydkomposisjonen finnes ikke": "The audio composition was not found",
   "Lydlengde {0}–{1} s": "Audio length {0}–{1} s",
-  "Lydlengden kunne ikke måles. Ikke generer på nytt.":
-    "The audio duration could not be measured. Do not regenerate.",
+  "Lydlengden kunne ikke måles. Filen er bevart; ikke generer på nytt.":
+    "The audio duration could not be measured. The file is preserved; do not regenerate.",
   "Lydopptaket finnes ikke": "The recording was not found",
+  Lydsegment: "Audio segment",
   "Lydvarianten finnes ikke": "The audio variant was not found",
+  Lydversjon: "Audio version",
   Lydversjonen: "The audio version",
   "Lydversjonen er aktiv og slettes ikke": "The audio version is active and is not deleted",
   "Lydversjonen er slettet": "The audio version is deleted",
@@ -1185,8 +1205,11 @@ export const CATALOG: Record<string, string> = {
   Manusblokken: "The script block",
   "Manuset eller valget er endret. Kontroller og bekreft jobben på nytt.":
     "The script or selection has changed. Review and approve the job again.",
+  "Manuset er endret etter at lyden ble laget": "The script changed after the audio was made",
   "Manuset er endret etter at videoen ble laget.":
     "The script has changed since the video was made.",
+  "Manuset er endret, men avviket er gjennomgått":
+    "The script has changed, but the difference has been reviewed",
   "Manuset er endret. Kontroller replikken og godkjenn kostnaden på nytt.":
     "The script has changed. Review the line and approve the cost again.",
   "Manuset er endret. Resultatet er bevart, men ikke aktivert.":
@@ -1480,6 +1503,7 @@ export const CATALOG: Record<string, string> = {
   "Replikken har allerede leppesynk for dette taket": "The line already has lip sync for this take",
   "Replikken har flere lydversjoner eller leppesynk. Ingen versjon slettes; angre dem først.":
     "The line has several audio versions or lip sync. No version is deleted; undo them first.",
+  "Replikken har ikke avvik": "The line has no difference",
   "Replikken har ingen aktiv lydversjon": "The line has no active audio version",
   "Replikken har ingen lydversjon ennå. Last prosjektet på nytt.":
     "The line has no audio version yet. Reload the project.",
@@ -1802,6 +1826,8 @@ export const CATALOG: Record<string, string> = {
     "The time being removed overlaps a locked range. Choose another method, remove the lock or cancel.",
   Tidskoblingen: "The time link",
   "Tidsoppsettet er for stort": "The timing is too large",
+  "Tilgangen til ElevenLabs er ikke tilbake ennå.":
+    "Access to ElevenLabs has not been restored yet.",
   "Tilgjengelig via QR": "Available via QR",
   "Tittelen kan være høyst {0} tegn": "The title can be at most {0} characters",
   Tittelkort: "Title card",
@@ -1933,6 +1959,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lydkomposisjon": "Invalid audio composition",
   "Ugyldig lydversjon": "Invalid audio version",
   "Ugyldig mal": "Invalid template",
+  "Ugyldig mål for huskelappen": "Invalid target for the note flag",
   "Ugyldig malelement": "Invalid template element",
   "Ugyldig malendring": "Invalid template change",
   "Ugyldig malfelt": "Invalid template field",
@@ -2102,6 +2129,8 @@ export const CATALOG: Record<string, string> = {
   "Ukjent fil": "Unknown file",
   "Ukjent font": "Unknown font",
   "Ukjent handling": "Unknown action",
+  "Ukjent hvilken manusversjon lyden ble laget fra":
+    "Unknown which script version the audio was made from",
   "Ukjent koblingstype": "Unknown connection type",
   "Ukjent leppesynkkilde": "Unknown lip sync source",
   "Ukjent leverandør": "Unknown provider",
