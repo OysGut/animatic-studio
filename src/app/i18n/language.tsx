@@ -102,7 +102,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       quiet = window.setTimeout(() => window.requestAnimationFrame(() => window.requestAnimationFrame(apply)), 150);
     };
     lateHydration.add(onLate);
-    const guard = window.setTimeout(apply, 1500);
+    const guard = window.setTimeout(apply, 2800);
     return () => {
       lateHydration.delete(onLate);
       window.clearTimeout(guard);
