@@ -97,3 +97,4 @@ export * from "./dialogue/batch";
 export * from "./dialogue/drift";
 export * from "./notes/flags";
 export * from "./bookmark";
+export * from "./generation/quality-profile";
