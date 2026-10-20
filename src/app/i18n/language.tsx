@@ -83,6 +83,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
     const apply = () => {
       if (done) return;
       done = true;
+      (window as any).__langAt = performance.now(); // TMPDEBUG
       setLanguage(s);
     };
     const settle = () => window.requestAnimationFrame(() => window.setTimeout(apply, 0));
