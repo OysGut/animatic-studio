@@ -710,7 +710,7 @@ export function ExportAnimaticDialog({
     <>
     {alphaComposition && alphaOpen ? <AlphaExportDialog state={state} composition={alphaComposition} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
     <Dialog open={open && !alphaOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[640px] border-border bg-surface-2">
+      <DialogContent className="max-h-[90dvh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>{L("Eksporter animatic", "Export animatic")}</DialogTitle>
           <DialogDescription>

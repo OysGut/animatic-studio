@@ -210,7 +210,7 @@ export function AiPanel({
             variantId: variantId as never,
             media,
             note: L(
-              `Generert med AI (${j.model}), hentet inn fra AI-jobbene`,
+              `Generert med AI (${j.model}{jobQualityProfile(j) ? L(` · Laget med profil ${jobQualityProfile(j)?.name}`, ` · Made with profile ${jobQualityProfile(j)?.name}`) : ""}), hentet inn fra AI-jobbene`,
               `Generated with AI (${j.model}), added from the AI jobs`,
             ),
           },

@@ -31365,6 +31365,258 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0845
+  title: 'P5: Regelkobling først'
+  text: Regelkobling først. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Regelkobling først
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0846
+  title: 'P5: AI bare for usikre linjer'
+  text: AI bare for usikre linjer. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - AI bare for usikre linjer
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0847
+  title: 'P5: Kostnad og godkjenning av linjekobling'
+  text: Kostnad og godkjenning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Kostnad og godkjenning av linjekobling
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0848
+  title: 'P5: Forhåndsvisning av linjeforslag'
+  text: Forhåndsvisning av linjeforslag. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Forhåndsvisning av linjeforslag
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0849
+  title: 'P5: Godkjente linjekoblinger'
+  text: Godkjente linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Godkjente linjekoblinger
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0850
+  title: 'P5: Reversible linjekommandoer'
+  text: Reversible linjekommandoer. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Reversible linjekommandoer
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0851
+  title: 'P5: Norsk hovedmanus bevares'
+  text: Norsk hovedmanus bevares. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Norsk hovedmanus bevares
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0852
+  title: 'P5: Backup av linjekoblinger'
+  text: Backup av linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Backup av linjekoblinger
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0853
+  title: 'P5: Språk og testdekning av linjekobling'
+  text: Språk og testdekning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Språk og testdekning av linjekobling
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
 - id: REQ-0854
   title: 'M8: Navngitte prosjektprofiler'
   text: Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
