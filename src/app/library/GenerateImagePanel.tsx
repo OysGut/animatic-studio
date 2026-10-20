@@ -40,14 +40,17 @@ import {
   MAX_PROMPT_CHARS,
   type Project,
   type ProjectState,
+  profileBudgetRemaining,
   providerInfo,
   providerModel,
   providersFor,
+  qualityProfileSnapshot,
   stripAttachedSection,
   withAttachedLegend,
   L,
   tm,
 } from "@/core";
+import { QualityProfilePicker, chosenQualityProfile, type QualityProfileChoice } from "@/app/ai/QualityProfilePicker";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { CUTOUT_MODEL, IMAGE_MODEL, generateImage } from "@/adapters/ai/generate-image.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
