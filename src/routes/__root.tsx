@@ -13,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
-import { LanguageRoot } from "@/app/i18n/language";
+import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, useLanguage } from "@/app/i18n/language";
 import { L } from "@/core";
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
@@ -114,6 +114,8 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="nb">
       <head>
+        {/* ML2a: skjuler siden til lagret språk er satt, så første tegning ikke lekker norsk */}
+        <script dangerouslySetInnerHTML={{ __html: LANGUAGE_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>
@@ -128,6 +130,7 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   // «Tilbake til …» i toppstripen husker flatene brukeren har vært på (DEC-0063)
   useTrackNavigation();
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
 
   return (
     <QueryClientProvider client={queryClient}>
