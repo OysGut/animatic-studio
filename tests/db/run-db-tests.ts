@@ -6194,7 +6194,7 @@ try {
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.style_harmonizations(id,project_id,version_id,source_version_id,model,use) values(gen_random_uuid(),${bp},${newVerId},${srcVersionId},'x','variant')`),"42501");
     // Invalid metadata (unknown style profile) is rejected by apply_changes.
     const badRow={id:newId(),project_id:bp,version_id:newVerId,source_version_id:srcVersionId,model:"x",quality_profile:null,style_profile_id:newId(),reference_version_id:null,use:"variant",note:"",removed:false,revision:1};
-    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetStyleHarmonization"})},null,${sql.json({inserts:{style_harmonizations:[badRow]}})})`),"22023");
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetStyleHarmonization"})},null,${sql.json({inserts:{style_harmonizations:[badRow]}})})`),"23503");
     // REQ-0144: exactly one active preferred reference per (asset, style profile); the swap is atomic.
     const ref1=newId(),ref2=newId();
     st=await runCommand(st,ALICE,{type:"SetPreferredStyleReference",referenceId:ref1,fields:{assetId,styleProfileId:profileId,variantId:variantId as never}});
@@ -6236,7 +6236,7 @@ try {
     assert(claimed && claimed["lease_token"]===lease,"lease not granted");
     // A second claim while the lease is active returns nothing.
     assert((await as("service_role",null,tx=>tx`select public.claim_harmonize_batch(${b1},${newId()}) b`))[0]?.["b"]===null,"double claim");
-    await as("service_role",null,tx=>tx`select public.transition_harmonize_batch_item(${itemId},${lease},${sql.json({status:"ready"})}`);
+    await as("service_role",null,tx=>tx`select public.transition_harmonize_batch_item(${itemId},${lease},${sql.json({status:"ready"})})`);
     // Wrong command type is rejected.
     await expectError(as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${sql.json({type:"AddAssetVersion"})},null,null)`),"22023");
     // Completing applies the harmonized image through apply_changes in the same transaction.
