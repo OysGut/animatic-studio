@@ -274,3 +274,14 @@ export function jobEffort(
   const e = job.params?.["effort"];
   return e === "fast" || e === "balanced" || e === "premium" ? e : null;
 }
+
+/** Profile usage is independent of project usage; queued jobs reserve capacity. */
+export function qualityProfileUsage(profileId: string, jobs: readonly GenerationJob[], now: Date): number {
+  const from = monthStartUtc(now).getTime();
+  return jobs.filter(j => j.kind !== "prompt" && j.status !== "failed" && Date.parse(j.createdAt) >= from &&
+    (j.params?.["qualityProfile"] as { id?: unknown } | undefined)?.id === profileId).length;
+}
+export function qualityProfileBudgetError(limit: number | null | undefined, used: number, requested: number): string | null {
+  if (limit == null || used + requested <= limit) return null;
+  return L("Profilens månedsbudsjett er brukt opp eller er for lite for dette valget.", "The profile's monthly budget is exhausted or too small for this selection.");
+}

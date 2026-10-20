@@ -18,7 +18,7 @@ import {
   formatHeading,
   formatUsd,
   keysEvenly,
-  L,
+  L, profileChoice, qualityProfileSnapshot,
   newId,
   PRIORITY_LABEL,
   type ProjectState,
@@ -32,6 +32,7 @@ import {
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { SentPrompts } from "@/app/ai/SentPrompts";
@@ -68,7 +69,9 @@ export function BatchVideoDialog({
   const options = providersFor("video", new Set(available.data?.providers ?? []));
   const flat = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
   const [pick, setPick] = useState("");
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? flat[0] ?? null;
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("video", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id && m.provider.id === recommended.provider.id) : null) ?? flat[0] ?? null;
   const [aspect, setAspect] = useState<"16:9" | "9:16">(
     state.project.frameWidth >= state.project.frameHeight ? "16:9" : "9:16",
   );
@@ -197,6 +200,7 @@ export function BatchVideoDialog({
         }
         setBusy(L(`Legger i kø … ${n} av ${totalSegments}`, `Queueing … ${n} of ${totalSegments}`));
         try {
+          if (quality.budgetError) throw new Error(quality.budgetError);
           const r = await startVideoGeneration({
             data: {
               projectId,
@@ -208,7 +212,7 @@ export function BatchVideoDialog({
               seconds: seconds(w, i),
               aspect,
               startImagePath: after ? null : (fromPrev ?? (start ? start.mediaPath : null)),
-              approved: true,
+              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
               queue: true,
               priority,
               chainAfter: after,
@@ -269,6 +273,7 @@ export function BatchVideoDialog({
             )}
           </DialogDescription>
         </DialogHeader>
+        <QualityProfilePicker state={state} value={quality.choice} disabled={!!busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(false); }} /><QualityProfileBudget error={quality.budgetError} />
         {/* Bare innholdet ruller; tittel og knapper står fast (UX-gjennomgang DEC-0076) */}
         <div className="-mx-1 flex min-h-0 flex-col gap-3 overflow-y-auto px-1">
           {available.isLoading ? (

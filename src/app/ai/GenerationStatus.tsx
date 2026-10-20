@@ -175,13 +175,7 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                   </span>
                   <span className="truncate">
                     {j.provider} · {j.model}
-                    {/* M8 (REQ-0859): profilen resultatet ble laget med (øyeblikksbilde) */}
-                    {jobQualityProfile(j)
-                      ? L(
-                          ` · profil ${jobQualityProfile(j)!.name}`,
-                          ` · profile ${jobQualityProfile(j)!.name}`,
-                        )
-                      : ""}
+                    {jobQualityProfile(j) ? L(` · Laget med profil ${jobQualityProfile(j)?.name}`, ` · Made with profile ${jobQualityProfile(j)?.name}`) : ""}
                   </span>
                 </div>
                 {j.error && st !== "done" ? (

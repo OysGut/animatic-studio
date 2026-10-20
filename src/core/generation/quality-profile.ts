@@ -94,9 +94,15 @@ export function qualityProfileError(name: string, spec: QualityProfileSpec): str
         `The budget limit must be a whole number between 0 and ${QUALITY_PROFILE_MAX_BUDGET.toLocaleString()}`,
       );
   }
+  if (spec.export) {
+    if (spec.export.format != null && !["mp4", "webm", "png-seq"].includes(spec.export.format)) return L("Ugyldig eksportformat", "Invalid export format");
+    if (spec.export.alpha != null && !["straight", "premultiplied"].includes(spec.export.alpha)) return L("Ugyldig alfa", "Invalid alpha");
+    const bitrate = spec.export.bitrateKbps;
+    if (bitrate != null && (!Number.isInteger(bitrate) || bitrate < 100 || bitrate > 100000)) return L("Bitrate må være mellom 100 og 100000 kbps", "Bitrate must be between 100 and 100000 kbps");
+  }
   if (spec.models)
     for (const k of Object.keys(spec.models))
-      if (!QUALITY_PROFILE_MODEL_KINDS.includes(k as QualityProfileModelKind))
+      if (!QUALITY_PROFILE_MODEL_KINDS.includes(k as QualityProfileModelKind) || typeof spec.models[k as QualityProfileModelKind] !== "string" || (spec.models[k as QualityProfileModelKind]?.length ?? 0) > 200)
         return L("Ukjent AI-type i profilen", "Unknown AI type in the profile");
   try {
     if (new TextEncoder().encode(JSON.stringify(spec ?? {})).length > QUALITY_PROFILE_MAX_SPEC_BYTES)
@@ -114,7 +120,7 @@ export function qualityProfileError(name: string, spec: QualityProfileSpec): str
  */
 export function defaultQualityProfiles(): readonly { readonly name: string; readonly spec: QualityProfileSpec }[] {
   return [
-    { name: "Utkast", spec: { effort: "fast", variants: 1, resolution: "1K", export: { format: "mp4", bitrateKbps: 4000 } } },
+    { name: "Utkast", /* i18n-ignore: user-editable default data, mirrored in migration */ spec: { effort: "fast", variants: 1, resolution: "1K", export: { format: "mp4", bitrateKbps: 4000 } } },
     { name: "Gjennomgang", spec: { effort: "balanced", variants: 2, resolution: "2K", export: { format: "mp4", bitrateKbps: 8000 } } },
     { name: "Endelig", spec: { effort: "premium", variants: 2, resolution: "4K", export: { format: "mp4", bitrateKbps: 16000 } } },
   ];
@@ -197,5 +203,7 @@ export function parseQualityProfileMeta(x: unknown): QualityProfileSnapshot | nu
   const spec = o["spec"] && typeof o["spec"] === "object" ? o["spec"] : {};
   if (new TextEncoder().encode(JSON.stringify(spec)).length > QUALITY_PROFILE_MAX_SPEC_BYTES)
     throw new Error(L("Kvalitetsprofilen er for stor", "The quality profile is too large"));
-  return { id: o["id"], name: o["name"], spec: spec as QualityProfileSpec };
+  const error = qualityProfileError(o["name"], spec as QualityProfileSpec);
+  if (error) throw new Error(error);
+  return { id: o["id"], name: o["name"], spec: JSON.parse(JSON.stringify(spec)) as QualityProfileSpec };
 }

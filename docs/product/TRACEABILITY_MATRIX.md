@@ -19,7 +19,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 26 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 16 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 21 | 13 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 39 | 22 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 33 | 28 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
@@ -31,7 +31,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 227 | 59 | 227 | 119 |
+| CORE | Project Core | 245 | 59 | 236 | 128 |
 | SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
 | TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
@@ -41,15 +41,15 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
 | PROVIDER | Provider Adapters | 49 | 6 | 47 | 41 |
-| QUALITYCOST | Quality & Cost Engine | 31 | 7 | 30 | 29 |
+| QUALITYCOST | Quality & Cost Engine | 40 | 7 | 39 | 38 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
-| L10N | Localization Engine | 41 | 4 | 40 | 40 |
+| L10N | Localization Engine | 50 | 4 | 40 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
 | EXPORT | Export Engine | 69 | 12 | 69 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 323 | 23 | 319 | 208 |
+| UI | Brukergrensesnitt og designsystem | 332 | 23 | 328 | 217 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 200 | 93 |
+| 3 | 218 | 102 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -914,3 +914,21 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0842 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
 | REQ-0843 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
 | REQ-0844 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0845 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0846 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0847 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0848 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0849 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0850 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0851 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0852 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0853 | Beslutning DEC-0099 | L10N, CORE | – | 0 | – | Utsatt | 2026-10-20 DEC-0099: Registrert planlagt C-krav uten implementasjonsclaim. |
+| REQ-0854 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0855 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0856 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0857 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0858 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0859 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0860 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0861 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |
+| REQ-0862 | Beslutning DEC-0099 | CORE, QUALITYCOST, UI | src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql | 3 | tests/unit/quality-profiles.test.ts, tests/db/run-db-tests.ts, tests/visual/p6-quality-profiles.mjs | Verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet D-oppdrag. |

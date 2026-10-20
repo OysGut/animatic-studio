@@ -30,7 +30,7 @@ import {
   jobProgress,
   type JobState,
   jobState,
-  L,
+  L, jobQualityProfile,
   locale,
   newId,
   PRIORITY_LABEL,
@@ -166,7 +166,8 @@ export function AiPanel({
         }
         continue;
       }
-      const asset = j.assetId ? state.assets[j.assetId] : undefined;
+      const profile = jobQualityProfile(j);
+            const asset = j.assetId ? state.assets[j.assetId] : undefined;
       if (!asset || !j.resultPath) continue;
       setClaiming(j.id);
       try {
@@ -358,6 +359,7 @@ export function AiPanel({
           {visible.map((j) => {
             const st = jobState(j, now);
             const Icon = STATE_ICON[st];
+            const profile = jobQualityProfile(j);
             const asset = j.assetId ? state.assets[j.assetId] : undefined;
             return (
               <li
@@ -371,6 +373,7 @@ export function AiPanel({
                       aria-hidden
                     />
                     {JOB_STATE_LABEL[st]}
+                    {profile ? <span data-testid="ai-job-quality-profile">{L(`Laget med profil ${profile.name}`, `Made with profile ${profile.name}`)}</span> : null}
                   </span>
                   <span className="tabular text-[11px] text-text-tertiary">
                     {new Date(j.createdAt).toLocaleString(locale(), {

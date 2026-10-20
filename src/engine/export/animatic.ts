@@ -55,6 +55,7 @@ export interface AnimaticExportOptions {
   readonly mp4?: boolean;
   /** Alltid WebM (VP9/AV1) – brukerens valg i nedlastingen (DEC-0085). */
   readonly webm?: boolean;
+  readonly bitrateKbps?: number | null;
   /** CA8: «main» utelater karakterlag satt til eget lag; «separate» lager filen med bare dem. */
   readonly characterPass?: "all" | "main" | "separate";
 }
@@ -130,7 +131,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
 
   // Fontene må være lastet før første bilde (MTS §61): samme filer som i forhåndsvisningen
   await fontsReady(textSpecsOf(o.state));
-  const source = new mb.CanvasSource(canvas, { codec, quality: mb.QUALITY_HIGH });
+  const source = new mb.CanvasSource(canvas, { codec, quality: o.bitrateKbps ? o.bitrateKbps * 1000 : mb.QUALITY_HIGH });
   const fps = o.fps.num / o.fps.den;
   output.addVideoTrack(source, { frameRate: fps });
   const step = o.fps.den / o.fps.num;

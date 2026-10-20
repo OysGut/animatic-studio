@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **844**
-- Prioritet: P0: 147, P1: 509, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 317, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 117, Under arbeid: 13, Ikke startet: 58
+- Antall krav: **862**
+- Prioritet: P0: 147, P1: 527, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 335, teknisk-anbefaling: 7
+- Status: Verifisert: 665, Implementert – ikke verifisert: 117, Under arbeid: 13, Ikke startet: 58, Utsatt: 9
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -11708,3 +11708,237 @@ Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke
   - tests/visual/p4-alpha-export.mjs
 - **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
 - **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0845 – P5: Regelkobling først
+Regelkobling først. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Regelkobling først
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0846 – P5: AI bare for usikre linjer
+AI bare for usikre linjer. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - AI bare for usikre linjer
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0847 – P5: Kostnad og godkjenning av linjekobling
+Kostnad og godkjenning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Kostnad og godkjenning av linjekobling
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0848 – P5: Forhåndsvisning av linjeforslag
+Forhåndsvisning av linjeforslag. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Forhåndsvisning av linjeforslag
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0849 – P5: Godkjente linjekoblinger
+Godkjente linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Godkjente linjekoblinger
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0850 – P5: Reversible linjekommandoer
+Reversible linjekommandoer. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Reversible linjekommandoer
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0851 – P5: Norsk hovedmanus bevares
+Norsk hovedmanus bevares. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Norsk hovedmanus bevares
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0852 – P5: Backup av linjekoblinger
+Backup av linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Backup av linjekoblinger
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0853 – P5: Språk og testdekning av linjekobling
+Språk og testdekning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Utsatt
+- **Akseptansekriterier:**
+  - Språk og testdekning av linjekobling
+- **Tester:**
+- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+
+#### REQ-0854 – M8: Navngitte prosjektprofiler
+Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0855 – M8: Standardprofiler uten stille backfill
+Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare et tilbud.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare et tilbud.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0856 – M8: Modellvalg og genereringsoverstyring
+Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder tidligere oppførsel.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder tidligere oppførsel.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0857 – M8: Eksportvalg og overstyring
+Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0858 – M8: Profilbasert kostnadsport og budsjett
+Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før godkjenning.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før godkjenning.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0859 – M8: Uforanderlige resultatmetadata
+Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0860 – M8: Aktivt standardvalg og reversible kommandoer
+Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0861 – M8: Profiler i backup og tilgangskontroll
+Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0862 – M8: Profiler på norsk og engelsk
+Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.

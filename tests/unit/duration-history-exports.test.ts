@@ -311,3 +311,10 @@ describe("eksportloggen (REQ-0037)", () => {
     expect(exportRecordFromRow({ id: "x", kind: "zip" })).toBeNull();
   });
 });
+
+it("M8 export record preserves the complete immutable profile snapshot", () => {
+  const snapshot=JSON.stringify({id:main.id,name:"Final",spec:{models:{image:"model"},variants:2,resolution:"4K",export:{format:"mp4",bitrateKbps:16000}}});
+  const record=normalizeExportRecord({productionId:main.id,kind:"film",fileName:"test.mp4",occurrenceIds:[],settings:{qualityProfileId:main.id,qualityProfileName:"Final",qualityProfileSnapshot:snapshot}});
+  expect(record.settings["qualityProfileSnapshot"]).toBe(snapshot);
+  expect(JSON.parse(String(record.settings["qualityProfileSnapshot"])).spec.export.bitrateKbps).toBe(16000);
+});

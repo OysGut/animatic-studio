@@ -31365,3 +31365,620 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0845
+  title: 'P5: Regelkobling først'
+  text: Regelkobling først. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Regelkobling først
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0846
+  title: 'P5: AI bare for usikre linjer'
+  text: AI bare for usikre linjer. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - AI bare for usikre linjer
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0847
+  title: 'P5: Kostnad og godkjenning av linjekobling'
+  text: Kostnad og godkjenning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Kostnad og godkjenning av linjekobling
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0848
+  title: 'P5: Forhåndsvisning av linjeforslag'
+  text: Forhåndsvisning av linjeforslag. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Forhåndsvisning av linjeforslag
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0849
+  title: 'P5: Godkjente linjekoblinger'
+  text: Godkjente linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Godkjente linjekoblinger
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0850
+  title: 'P5: Reversible linjekommandoer'
+  text: Reversible linjekommandoer. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Reversible linjekommandoer
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0851
+  title: 'P5: Norsk hovedmanus bevares'
+  text: Norsk hovedmanus bevares. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Norsk hovedmanus bevares
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0852
+  title: 'P5: Backup av linjekoblinger'
+  text: Backup av linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Backup av linjekoblinger
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0853
+  title: 'P5: Språk og testdekning av linjekobling'
+  text: Språk og testdekning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: C
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - CORE
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Språk og testdekning av linjekobling
+  tests: []
+  status: Utsatt
+  implementation: []
+  verification: []
+  notes: Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert planlagt C-krav uten implementasjonsclaim.
+- id: REQ-0854
+  title: 'M8: Navngitte prosjektprofiler'
+  text: Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0855
+  title: 'M8: Standardprofiler uten stille backfill'
+  text: Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare
+    et tilbud.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare et
+    tilbud.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0856
+  title: 'M8: Modellvalg og genereringsoverstyring'
+  text: Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder
+    tidligere oppførsel.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder
+    tidligere oppførsel.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0857
+  title: 'M8: Eksportvalg og overstyring'
+  text: Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0858
+  title: 'M8: Profilbasert kostnadsport og budsjett'
+  text: Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før
+    godkjenning.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før godkjenning.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0859
+  title: 'M8: Uforanderlige resultatmetadata'
+  text: Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0860
+  title: 'M8: Aktivt standardvalg og reversible kommandoer'
+  text: Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0861
+  title: 'M8: Profiler i backup og tilgangskontroll'
+  text: Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.
+- id: REQ-0862
+  title: 'M8: Profiler på norsk og engelsk'
+  text: Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: D
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - QUALITYCOST
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+  tests:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  status: Verifisert
+  implementation:
+  - src/core/generation/quality-profile.ts
+  - src/app/projects/QualityProfilesSection.tsx
+  - src/app/ai/QualityProfilePicker.tsx
+  - db/migrations/0063_quality_profiles.sql
+  verification:
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+  notes: Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen
+    betalte AI-kall.
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet D-oppdrag.

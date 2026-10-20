@@ -33,6 +33,7 @@ export function DialogueVersions({ state, clip, cmds, onStopScene }: { state: Pr
       const active = clip.activeVersionId === v.id;
       return <div key={v.id} data-testid="dialogue-version" data-version-id={v.id} data-active={active} className="border-b border-border py-2">
         <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary"><span>{L(`Versjon ${i + 1}`, `Version ${i + 1}`)} · {v.source === "record" ? L("Opptak", "Recording") : v.source === "ai" ? L("Generert", "Generated") : v.source === "upload" ? L("Opplastet", "Uploaded") : L("Tidligere lyd", "Previous audio")} {v.modelId ?? ""}</span>{active ? <strong className="text-accent-brand">{L("Aktiv filmversjon", "Active film version")}</strong> : null}</div>
+        {typeof v.settings["qualityProfileName"] === "string" ? <p data-testid="dialogue-version-quality" className="text-xs text-text-tertiary">{L(`Laget med profil ${v.settings["qualityProfileName"]}`, `Made with profile ${v.settings["qualityProfileName"]}`)}</p> : null}
         <div data-testid="dialogue-version-wave" className="relative my-1 h-10 overflow-hidden bg-surface-1">{file ? <Wave path={file.mediaPath} sourceIn={v.sourceInMs / 1000} length={v.lengthMs * v.speed / 1000} width={640} height={40} color="var(--text-secondary)" loaded={loaded} /> : null}</div>
         <div className="flex flex-wrap gap-2">
           <Button data-testid="dialogue-version-preview" size="sm" variant="secondary" disabled={!file || !audioBank.get(file.mediaPath)} onClick={() => {

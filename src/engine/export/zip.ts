@@ -49,6 +49,10 @@ export async function openZipSink(fileName: string): Promise<ZipSink | null> {
       // Ellers: last ned på vanlig måte
     }
   }
+  if (typeof navigator.storage?.getDirectory === "function") {
+    const { openAlphaSink } = await import("./alpha");
+    return openAlphaSink(fileName, "application/zip");
+  }
   const parts: Uint8Array[] = [];
   let link: { url: string; name: string } | null = null;
   return {
@@ -137,7 +141,8 @@ export async function writeZip(
     }
     for (let i = 0; i < entries.length; i++) {
       if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
-      const e = entries[i]!;
+      const e = entries[i];
+      if (!e) continue;
       const url = urls[e.mediaPath];
       const res = url ? await fetch(url, { signal: o.signal ?? null }).catch(() => null) : null;
       if (!res?.ok || !res.body) {

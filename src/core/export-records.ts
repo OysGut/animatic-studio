@@ -64,6 +64,7 @@ export function normalizeExportRecord(x: NewExportRecord): NewExportRecord {
       (typeof v === "string" && v.length <= 300)
     )
       settings[k] = v;
+    else if (k === "qualityProfileSnapshot" && typeof v === "string" && v.length <= 5000) settings[k] = v;
     else if (Array.isArray(v) && v.length <= 50 && v.every((s) => typeof s === "string"))
       settings[k] = [...(v as readonly string[])];
   }
@@ -119,5 +120,6 @@ export function describeExportSettings(
         `${r.occurrenceIds.length} ${r.occurrenceIds.length === 1 ? "scene" : "scenes"}`,
       ),
     );
+  if (typeof s["qualityProfileName"] === "string") parts.push(L(`Laget med profil ${s["qualityProfileName"]}`, `Made with profile ${s["qualityProfileName"]}`));
   return parts.join(" · ");
 }

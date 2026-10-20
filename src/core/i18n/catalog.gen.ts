@@ -180,6 +180,8 @@ export const CATALOG: Record<string, string> = {
   "annet format enn prosjektet ({0}×{1})": "different format from the project ({0}×{1})",
   "Anslag: ca. {0} igjen": "Estimate: about {0} left",
   Antall: "Count",
+  "Antall varianter må være et helt tall mellom 1 og {0}":
+    "The number of variants must be a whole number between 1 and {0}",
   "Avbrutt før den ble sendt (kostet ingenting).": "Cancelled before it was sent (cost nothing).",
   "Avspilling og eksport lages i nettleseren og lagres ikke. Videoer av 2D-scenen som sendes til AI, ligger i en egen mappe for midlertidige filer.":
     "Playback and export are made in the browser and not saved. Videos of the 2D scene sent to AI are kept in a separate folder for temporary files.",
@@ -261,6 +263,7 @@ export const CATALOG: Record<string, string> = {
   "Bildene i oppsettet finnes ikke i det globale biblioteket. Lagre ressursen der først.":
     "The setup's images are not in the global library. Save the asset there first.",
   Bildenummer: "Frame number",
+  Bilder: "Images",
   "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform.":
     "Images with GPT Image and video with Sora. Payment is prepaid in the OpenAI Platform.",
   "Bilder med Nano Banana og video med Veo 3.1. Nøkkel fra Google AI Studio.":
@@ -300,6 +303,7 @@ export const CATALOG: Record<string, string> = {
   Bildevariant: "Image variant",
   Bildeversjonen: "The image version",
   "Bildeversjonen for språket": "The image version for the language",
+  "Bitrate må være mellom 100 og 100000 kbps": "Bitrate must be between 100 and 100000 kbps",
   "Blokk {0}: gjeldende tekst stemmer ikke med revisjonshistorikken":
     "Block {0}: current text does not match the revision history",
   "Blokk {0}: hovedmanusblokk er ikke norsk": "Block {0}: main script block is not Norwegian",
@@ -335,6 +339,8 @@ export const CATALOG: Record<string, string> = {
   "Brukeren er administrator.": "The user is an administrator.",
   "Brukeren er blokkert.": "The user is blocked.",
   "Brukeren er ikke lenger administrator.": "The user is no longer an administrator.",
+  "Budsjettgrensen må være et helt tall mellom 0 og {0}":
+    "The budget limit must be a whole number between 0 and {0}",
   "bytt til karakter- og universkart for mye tekst":
     "switch to the character and universe map for so much text",
   "ca. 1 megapiksel": "about 1 megapixel",
@@ -1053,6 +1059,8 @@ export const CATALOG: Record<string, string> = {
   "Kunne ikke lese prosjektet: {0}": "Could not read the project: {0}",
   Kutt: "Cut",
   "Kvadrat 1:1 (1080 × 1080)": "Square 1:1 (1080 × 1080)",
+  Kvalitetsprofilen: "The quality profile",
+  "Kvalitetsprofilen er for stor": "The quality profile is too large",
   "Kvalitetsvalg hos leverandøren (høy)": "Quality setting at the provider (high)",
   "La replikken gå {0} inn i neste replikk.": "Let the line run {0} into the next line.",
   "Lag {0}: samme plass i lagrekkefølgen som et annet lag":
@@ -1075,6 +1083,7 @@ export const CATALOG: Record<string, string> = {
   "Laget hører ikke til scenens 2D-scene": "The layer does not belong to the scene's 2D scene",
   "Laget må vise et bilde fra biblioteket eller en fargeflate":
     "The layer must show an image from the library or a colour fill",
+  "Laget med profil {0}": "Made with profile {0}",
   "Laget peker på en ukjent malforekomst": "The layer refers to an unknown template instance",
   "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen":
     "The layer to be used as a mask does not exist in this 2D scene",
@@ -1269,6 +1278,7 @@ export const CATALOG: Record<string, string> = {
   "Navnet er for langt": "The name is too long",
   "Navnet er for langt (maks 200 tegn)": "The name is too long (maximum 200 characters)",
   "Navnet inneholder ugyldige tegn": "The name contains invalid characters",
+  "Navnet må ha mellom 1 og {0} tegn": "The name must be between 1 and {0} characters",
   "Navnet står ved et dyreverb": "The name appears beside an animal verb",
   "Navnet står ved et verb for et levende vesen":
     "The name appears beside a verb for a living being",
@@ -1424,10 +1434,13 @@ export const CATALOG: Record<string, string> = {
   "Produksjonssegmenter viser til blokker som ville blitt flyttet":
     "Production segments refer to blocks that would be moved",
   Profilen: "The profile",
+  "Profilen er fjernet": "The profile is removed",
   "Profilen er fjernet. Hent den tilbake først.": "The profile has been removed. Restore it first.",
   "Profilen er for stor": "The profile is too large",
   "Profilen er ugyldig": "The profile is invalid",
   "Profilen hører til en annen karakter": "The profile belongs to another character",
+  "Profilens månedsbudsjett er brukt opp eller er for lite for dette valget.":
+    "The profile's monthly budget is exhausted or too small for this selection.",
   "Programmet kan ikke bruke denne typen modell hos leverandøren uten ny kode.":
     "The program cannot use this type of model with the provider without new code.",
   "Prosjektdataene kunne ikke lagres ({0}).": "The project data could not be saved ({0}).",
@@ -1794,6 +1807,7 @@ export const CATALOG: Record<string, string> = {
   "Taket finnes ikke": "The take was not found",
   "Taket for opplastinger på denne lenken er nådd.":
     "The upload limit for this link has been reached.",
+  Tale: "Speech",
   "Tale fra tekst": "Speech from text",
   "Taleren finnes ikke i biblioteket.": "The speaker does not exist in the library.",
   "Tar lengre tid enn vanlig ({0} så langt)": "Taking longer than usual ({0} so far)",
@@ -1856,6 +1870,7 @@ export const CATALOG: Record<string, string> = {
   "Ufullstendige variantfelter": "Incomplete variant fields",
   "Ugyldig {0}": "Invalid {0}",
   "Ugyldig aktivt område": "Invalid active range",
+  "Ugyldig alfa": "Invalid alpha",
   "Ugyldig algoritmeversjon": "Invalid algorithm version",
   "Ugyldig angring av generering": "Invalid generation undo",
   "Ugyldig animasjonsatferd": "Invalid animation behavior",
@@ -1886,6 +1901,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig deling.": "Invalid share.",
   "Ugyldig demping": "Invalid mute setting",
   "Ugyldig egenskap i nøkkelbilde": "Invalid property in keyframe",
+  "Ugyldig eksportformat": "Invalid export format",
   "Ugyldig element": "Invalid element",
   "Ugyldig element i malen": "Invalid element in the template",
   "Ugyldig eller brukt ID": "Invalid or used ID",
@@ -1920,6 +1936,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig ID {0}": "Invalid ID {0}",
   "Ugyldig ID: {0}": "Invalid ID: {0}",
   "Ugyldig innhold": "Invalid content",
+  "Ugyldig innsatsnivå": "Invalid effort level",
   "Ugyldig intensitet": "Invalid intensity",
   "Ugyldig intervall": "Invalid interval",
   "Ugyldig intervall: {0} >= {1}": "Invalid interval: {0} >= {1}",
@@ -1943,6 +1960,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig kontrollsum": "Invalid checksum",
   "Ugyldig kontur": "Invalid outline",
   "Ugyldig kostnad": "Invalid cost",
+  "Ugyldig kvalitetsprofil": "Invalid quality profile",
   "Ugyldig lag for masken": "Invalid layer for the mask",
   "Ugyldig lagringssti": "Invalid storage path",
   "Ugyldig lagringssti for bildet": "Invalid storage path for the image",
@@ -1984,6 +2002,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig ønske": "Invalid request",
   "Ugyldig oppdatering av oppsettet": "Invalid setup update",
   "Ugyldig oppgave": "Invalid task",
+  "Ugyldig oppløsning": "Invalid resolution",
   "Ugyldig opprinnelse for oppsettet": "Invalid setup origin",
   "Ugyldig ordkobling": "Invalid word alignment",
   "Ugyldig overgang": "Invalid transition",
@@ -2004,6 +2023,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig presentasjonsform": "Invalid presentation",
   "Ugyldig prioritet": "Invalid priority",
   "Ugyldig produksjon": "Invalid production",
+  "Ugyldig profil": "Invalid profile",
   "Ugyldig prosjekt": "Invalid project",
   "Ugyldig prosjekt eller bruker": "Invalid project or user",
   "Ugyldig prosjekt-ID": "Invalid project ID",
@@ -2116,6 +2136,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldige turer": "Invalid turns",
   ukjent: "unknown",
   Ukjent: "Unknown",
+  "Ukjent AI-type i profilen": "Unknown AI type in the profile",
   "ukjent beløp": "unknown amount",
   "Ukjent bildefrekvens": "Unknown frame rate",
   "Ukjent bruker": "Unknown user",

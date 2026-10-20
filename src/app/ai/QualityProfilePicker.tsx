@@ -3,7 +3,10 @@
  * aktive profil; brukeren kan overstyre per generering eller eksport, eller velge «Ingen profil»
  * (oppførselen er da som før profilene fantes). Viser ingenting når prosjektet ikke har profiler.
  */
-import { L, qualityProfilesOf, type ProjectState, type QualityProfile } from "@/core";
+import { L, qualityProfileUsage, qualityProfileBudgetError, qualityProfilesOf, type ProjectState, type QualityProfile } from "@/core";
+
+import { useState } from "react";
+import { useAiJobs } from "./use-ai-jobs";
 
 /** «active» = prosjektets aktive profil, «none» = ingen profil, ellers profilens ID. */
 export type QualityProfileChoice = "active" | "none" | string;
@@ -63,4 +66,21 @@ export function QualityProfilePicker({
       </select>
     </label>
   );
+}
+
+/** One shared profile choice and fail-closed budget display for paid dialogs. */
+export function useQualityProfile(state: ProjectState | null, requested = 1) {
+  const [choice, setChoice] = useState<QualityProfileChoice>("active");
+  const profile = state ? chosenQualityProfile(state, choice) : null;
+  const jobs = useAiJobs(state?.project.id ?? "", !!state && profile?.spec.budgetLimit != null);
+  const used = profile && jobs.data ? qualityProfileUsage(profile.id, jobs.data.jobs, new Date()) : 0;
+  const budgetError = profile?.spec.budgetLimit != null
+    ? !jobs.data || jobs.isError || jobs.data.monthCount === null
+      ? L("Profilens forbruk må kontrolleres før generering.", "Profile usage must be checked before generation.")
+      : qualityProfileBudgetError(profile.spec.budgetLimit, jobs.data.jobs.length >= 300 ? Math.max(used, jobs.data.monthCount) : used, requested)
+    : null;
+  return { choice, setChoice, profile, budgetError };
+}
+export function QualityProfileBudget({ error }: { error: string | null }) {
+  return error ? <p role="alert" data-testid="quality-profile-budget" className="text-xs text-status-danger">{error}</p> : null;
 }

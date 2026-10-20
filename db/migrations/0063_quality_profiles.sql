@@ -9,6 +9,8 @@
 -- create_project er erstattet (kopiert fra 0001): nye prosjekter får standardprofilene
 -- «Utkast», «Gjennomgang» og «Endelig», med «Utkast» aktiv. Eksisterende prosjekter endres ikke
 -- (ingen stille backfill); de tilbys standardprofilene i grensesnittet.
+-- create_dialogue_batch fra 0061: bare profiløyeblikksbilde i reserverte jobber.
+-- Ny private.guard_quality_profile_job håndhever profilgrensen atomisk.
 -- Ingen SQL mot storage.
 -- =====================================================================================
 
@@ -35,6 +37,44 @@ create policy quality_profiles_read on public.quality_profiles for select to aut
 -- Aktiv profil. Ingen fremmednøkkel: angring av AddQualityProfile sletter raden, og en fjernet
 -- profil nullstilles i kommandoen (SetQualityProfileRemoved / UndoAddQualityProfile).
 alter table public.projects add column active_quality_profile_id uuid;
+
+-- Every generation entry point (including queued DV jobs) reserves capacity atomically.
+create function private.guard_quality_profile_job() returns trigger
+language plpgsql security definer set search_path = '' as $$
+declare v_profile public.quality_profiles; v_used integer; v_limit integer; v_id uuid;
+begin
+  if TG_OP = 'UPDATE' and new.params->'qualityProfile' is distinct from old.params->'qualityProfile'
+    and old.params->'qualityProfile' is not null and old.params->'qualityProfile' <> 'null'::jsonb then
+    raise exception 'Quality profile snapshot is immutable' using errcode='22023';
+  end if;
+  if new.params->'qualityProfile' is null or new.params->'qualityProfile' = 'null'::jsonb
+    or new.kind in ('text','prompt') then return new; end if;
+  -- Existing reservations can finalize even after the profile is edited/removed.
+  if TG_OP='UPDATE' and old.status <> 'failed' then return new; end if;
+  perform 1 from public.projects where id=new.project_id and deleted_at is null for update;
+  if not found then raise exception 'Project not found' using errcode='42501'; end if;
+  v_id := (new.params->'qualityProfile'->>'id')::uuid;
+  select * into v_profile from public.quality_profiles where id=v_id and project_id=new.project_id;
+  if not found then raise exception 'Profile does not belong to project' using errcode='42501'; end if;
+  if TG_OP = 'INSERT' then
+    if v_profile.removed then raise exception 'Profile removed' using errcode='22023'; end if;
+    if new.params->'qualityProfile' is distinct from jsonb_build_object('id',v_profile.id,'name',v_profile.name,'spec',v_profile.spec) then
+      raise exception 'Profile changed; approve again' using errcode='22023';
+    end if;
+    new.params := new.params || jsonb_build_object('qualityProfileId',v_id);
+  end if;
+  v_limit := (v_profile.spec->>'budgetLimit')::integer;
+  if v_limit is null or new.status='failed' then return new; end if;
+  select count(*) into v_used from public.generation_jobs
+    where project_id=new.project_id and id<>new.id and status<>'failed' and kind not in ('text','prompt')
+    and params->'qualityProfile'->>'id'=v_id::text
+    and created_at >= date_trunc('month',now() at time zone 'UTC') at time zone 'UTC';
+  if v_used+1 > v_limit then raise exception 'Quality profile monthly budget exceeded' using errcode='22023'; end if;
+  return new;
+end $$;
+revoke all on function private.guard_quality_profile_job() from public,anon,authenticated;
+create trigger quality_profile_job_budget before insert or update of params,status on public.generation_jobs
+  for each row execute function private.guard_quality_profile_job();
 
 create or replace function public.apply_changes(
   p_project uuid, p_actor uuid, p_command_id uuid, p_command jsonb, p_inverse jsonb, p_changes jsonb
@@ -180,6 +220,11 @@ begin
   end if;
 
   -- 5) Kommandologg (ADR-0005)
+  if exists(select 1 from public.projects p where p.id=p_project and p.active_quality_profile_id is not null
+    and not exists(select 1 from public.quality_profiles q where q.id=p.active_quality_profile_id and q.project_id=p_project and not q.removed)) then
+    raise exception 'Invalid active quality profile' using errcode='22023';
+  end if;
+
   insert into public.change_log (id, project_id, actor, command_type, command, inverse, affected_ids)
     values (p_command_id, p_project, p_actor, p_command ->> 'type', p_command, p_inverse, v_affected);
 
@@ -418,5 +463,36 @@ begin
 end $$;
 revoke all on function public.create_project(text, integer, integer) from public, anon;
 grant execute on function public.create_project(text, integer, integer) to authenticated;
+
+create or replace function public.create_dialogue_batch(p_project uuid, p_actor uuid, p_request uuid, p_character uuid, p_voice jsonb, p_items jsonb, p_key uuid, p_key_owner uuid)
+returns uuid language plpgsql security definer set search_path = '' as $$
+declare v_id uuid; v_item jsonb; v_position integer := 0; v_limit integer; v_used integer;
+begin
+  perform 1 from public.projects where id = p_project and deleted_at is null for update;
+  if not found or private.member_role_rank(p_project,p_actor) < private.role_rank('editor') then raise exception 'Forbidden' using errcode = '42501'; end if;
+  select id into v_id from public.dialogue_batches where project_id = p_project and request_id = p_request;
+  if found then return v_id; end if;
+  if jsonb_typeof(p_items) <> 'array' or jsonb_array_length(p_items) not between 1 and 1000 then raise exception 'Invalid items' using errcode = '22023'; end if;
+  if not exists(select 1 from public.assets where id=p_character and project_id=p_project and not removed and kind in ('character','animal','other')) then raise exception 'Invalid character' using errcode='22023'; end if;
+  if jsonb_typeof(p_voice) <> 'object' or p_voice->>'provider' <> 'elevenlabs' or length(coalesce(p_voice->>'voiceId','')) not between 1 and 200 then raise exception 'Invalid voice' using errcode='22023'; end if;
+  if not exists(select 1 from public.ai_provider_keys where id=p_key and user_id=p_key_owner and provider='elevenlabs' and status <> 'failed') then raise exception 'Invalid provider key' using errcode='42501'; end if;
+  select ai_month_limit into v_limit from public.projects where id=p_project;
+  select count(*) into v_used from public.generation_jobs where project_id=p_project and status <> 'failed' and kind not in ('text','prompt') and created_at >= date_trunc('month',now() at time zone 'UTC') at time zone 'UTC';
+  if v_limit is not null and v_used+jsonb_array_length(p_items)>v_limit then raise exception 'Project generation budget exceeded' using errcode='22023'; end if;
+  v_id := gen_random_uuid();
+  insert into public.dialogue_batches(id,project_id,request_id,character_id,voice,created_by) values(v_id,p_project,p_request,p_character,p_voice,p_actor);
+  for v_item in select * from jsonb_array_elements(p_items) loop
+    if not exists (select 1 from public.script_blocks b join public.scene_occurrences o on o.variant_id = b.variant_id and o.project_id = b.project_id where b.id = (v_item->>'block_id')::uuid and o.id = (v_item->>'occurrence_id')::uuid and b.project_id = p_project and b.kind = 'dialogue' and not b.removed and o.active and b.current_rev = (v_item->>'script_revision')::integer) then raise exception 'Invalid line' using errcode = '22023'; end if;
+    if length(coalesce(v_item->>'language','')) not between 2 and 100 or (v_item->>'cost')::numeric < 0 then raise exception 'Invalid estimate or language'; end if;
+    insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,cost_usd,params,provider_key_id,key_owner)
+    values((v_item->>'job_id')::uuid,p_project,'sound','elevenlabs',coalesce(p_voice->>'modelId','eleven_v3'),'','queued',p_actor,(v_item->>'cost')::numeric,jsonb_build_object('kind','dialogue_batch','batchId',v_id,'blockId',v_item->>'block_id','language',v_item->>'language') || case when p_voice->'qualityProfile' is not null and p_voice->'qualityProfile'<>'null'::jsonb then jsonb_build_object('qualityProfile',p_voice->'qualityProfile') else '{}'::jsonb end,p_key,p_key_owner);
+    insert into public.dialogue_batch_items(id,batch_id,project_id,job_id,occurrence_id,block_id,script_revision,language,position,variant_id,version_id,clip_id,dialogue_version_id,composition_id,command_id,created_by)
+    values((v_item->>'id')::uuid,v_id,p_project,(v_item->>'job_id')::uuid,(v_item->>'occurrence_id')::uuid,(v_item->>'block_id')::uuid,(v_item->>'script_revision')::integer,v_item->>'language',v_position,(v_item->>'variant_id')::uuid,(v_item->>'version_id')::uuid,(v_item->>'clip_id')::uuid,(v_item->>'dialogue_version_id')::uuid,(v_item->>'composition_id')::uuid,(v_item->>'command_id')::uuid,p_actor);
+    v_position := v_position + 1;
+  end loop;
+  return v_id;
+end $$;
+revoke all on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid) from public,anon,authenticated;
+grant execute on function public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid) to service_role;
 
 insert into public.schema_version(version,description) values (63,'0063_quality_profiles: M8 kvalitetsprofiler, aktiv profil på prosjektet og standardprofiler for nye prosjekter');

@@ -9,7 +9,7 @@ import { CheckCircle2, Clapperboard, Loader2, TriangleAlert } from "lucide-react
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  L,
+  L, profileChoice, qualityProfileSnapshot,
   tm,
   adaptPromptForModel,
   assembleSegments,
@@ -33,6 +33,7 @@ import {
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -74,7 +75,9 @@ export function SceneVideoSection({
   const options = providersFor("video", new Set(available.data?.providers ?? []));
   const [pick, setPick] = useState("");
   const flat = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? flat[0] ?? null;
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("video", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id) : null) ?? flat[0] ?? null;
   const [aspect, setAspect] = useState<"16:9" | "9:16">(
     state.project.frameWidth >= state.project.frameHeight ? "16:9" : "9:16",
   );
@@ -103,7 +106,8 @@ export function SceneVideoSection({
   );
   const chainUrls = useImageUrls(chainPaths);
   // Kandidater (mandat 19.7): flere videoer per segment å velge mellom
-  const [candidates, setCandidates] = useState(1);
+  const [candidateOverride, setCandidates] = useState<number | null>(null);
+  const candidates = candidateOverride ?? quality.profile?.spec.variants ?? 1;
   // Myk overgang (0,5 s) mellom segmentene når scenen settes sammen (DEC-0071)
   const [softChoice, setSoft] = useState(true);
   // Myke overganger krever migrasjon 0026; på eldre databaser settes scenen sammen med rene kutt
@@ -230,6 +234,7 @@ export function SceneVideoSection({
       }
       try {
         for (let c = 0; c < candidates; c++) {
+          if (quality.budgetError) throw new Error(quality.budgetError);
           const r = await startVideoGeneration({
             data: {
               projectId,
@@ -242,7 +247,7 @@ export function SceneVideoSection({
               aspect,
               startImagePath: waits ? null : startFor(i),
               candidates,
-              approved: true,
+              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
               // Sammenheng i køen: venter på siste bilde fra segmentet før (DEC-0071)
               ...(waits ? { queue: true, chainAfter: stored[i - 1]!.id } : {}),
             },
@@ -359,6 +364,8 @@ export function SceneVideoSection({
   if (!flat.length)
     return (
       <p className="text-xs text-text-tertiary">
+
+
         {L(
           "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten (f.eks. Google Veo, Runway, OpenAI Sora eller fal.ai/Kling).",
           "No video provider is connected. The project owner can connect one under “AI providers” on the project list (e.g. Google Veo, Runway, OpenAI Sora or fal.ai/Kling).",
@@ -375,6 +382,7 @@ export function SceneVideoSection({
         <Clapperboard className="size-4" aria-hidden />{" "}
         {L("Lag video med AI", "Make video with AI")}
       </h3>
+      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
       <EffortPicker
         capability="video"
         connected={new Set(available.data?.providers ?? [])}

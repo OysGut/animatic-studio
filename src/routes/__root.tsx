@@ -16,6 +16,7 @@ import { useTrackNavigation } from "@/app/shell/back-navigation";
 import { LanguageRoot } from "@/app/i18n/language";
 import { L } from "@/core";
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
+import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
 
 function NotFoundComponent() {
   return (
@@ -133,6 +134,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <LanguageRoot>
         <Outlet />
+        <ExportQueueStatus />
       </LanguageRoot>
     </QueryClientProvider>
   );
