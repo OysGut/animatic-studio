@@ -30,6 +30,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const busy = progress !== null;
   useEffect(() => {
     if (!open) return;
+    appliedProfile.current = null;
     let saved = DEFAULT_ALPHA_SETTINGS;
     try {
       const raw: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "null");

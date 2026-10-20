@@ -24,6 +24,7 @@ for (const lang of ["nb","en"]) await h.scenario(`p6-${lang}`,clip.occurrence_id
   h.check(call?.body.qualityProfile?.id===pid && call.body.qualityProfile.name==="Final test","approved immutable profile snapshot sent");
   await page.getByTestId("record-audio-dialog").getByRole("button",{name:lang==="nb"?"Avbryt":"Cancel",exact:true}).last().click();
   await page.getByTestId("alpha-export-open").click();
+  await page.getByTestId("quality-profile-picker").selectOption(pid);
   h.check(await page.getByTestId("alpha-mode").inputValue()==="premultiplied","alpha profile applied");
   await page.getByTestId("alpha-export-dialog").screenshot({path:`${h.out}/alpha-${lang}.png`});
   await page.getByTestId("quality-profile-picker").selectOption("none");

@@ -175,6 +175,7 @@ export function ExportAnimaticDialog({
   // Standardvalg hver gang dialogen åpnes
   useEffect(() => {
     if (!open) return;
+    appliedProfile.current = null;
     setReady(null);
     setShareSource(null);
     setSubFile(null);
