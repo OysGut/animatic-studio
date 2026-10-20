@@ -1,3 +1,4 @@
+import { LineLinkReview } from "./LineLinkReview";
 /**
  * Oversettelse av valgt linje eller scenehode i inspektøren (M7 del 2, DEC-0058, REQ-0329–0331, REQ-0335).
  * Den norske teksten vises ved siden av og endres aldri herfra.
@@ -168,6 +169,7 @@ export function TranslationPanel({
           "The translation never changes the Norwegian script. Switch to “Norwegian” at the top to change the main script.",
         )}
       </p>
+      {(block?.variantId ?? variant?.id) && language !== "nb" ? <LineLinkReview state={state} variantId={block?.variantId ?? variant?.id ?? ""} language={language} editable={editable} run={run} /> : null}
       {err ? (
         <p role="alert" className="text-xs text-status-danger">
           {err}
