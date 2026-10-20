@@ -6208,7 +6208,7 @@ try {
     // Deletion paths remove the new tables; nothing is left behind.
     await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
     for (const t of ["style_harmonizations","style_preferred_references","harmonize_batches"])
-      assert((await sql`select id from ${sql(t)} where project_id=${bp}`.unsafe()).length===0,`${t} left after delete`);
+      assert((await sql`select id from ${sql(t)} where project_id=${bp}`).length===0,`${t} left after delete`);
     await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
     assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
   });
