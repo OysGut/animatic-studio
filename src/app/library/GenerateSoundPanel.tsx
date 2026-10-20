@@ -50,7 +50,7 @@ export function GenerateSoundPanel({
   const options = providersFor("sound", new Set(available.data?.providers ?? []));
   const models = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
   const [pick, setPick] = useState<string | null>(null);
-  const state = cmds.current();
+  const state = typeof cmds.current === "function" ? cmds.current() : null;
   const quality = useQualityProfile(state);
   const recommended = profileChoice("sound", quality.profile, new Set(available.data?.providers ?? []));
   const chosen = models.find((m) => `${m.provider.id}|${m.model.id}` === pick) ?? (recommended ? models.find(m => m.model.id === recommended.model.id) : null) ?? models[0];

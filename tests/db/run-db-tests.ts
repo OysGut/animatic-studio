@@ -3780,6 +3780,7 @@ try {
       asset_relations: await q("asset_relations"),
       posters: await q("posters"),
       style_profiles: await q("style_profiles"),
+      quality_profiles: await q("quality_profiles"),
       // DV2 (0060): lydversjonene hører med når lydklippene er med
       dialogue_versions: await q("dialogue_versions"),
     } as unknown as ProjectRows;
@@ -6093,10 +6094,10 @@ try {
     const q = (await sql`select * from public.quality_profiles where id=${profile["id"]}`)[0];
     assert(q,"Missing profile");
     const snapshot = {id:q["id"],name:q["name"],spec:q["spec"]};
-    const insert = (id:string, snap:unknown=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','test','','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
+    const insert = (id:string, snap:typeof snapshot=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','google/gemini-2.5-flash-image','','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
     const j1="00000000-0000-7000-8000-000000006311", j2="00000000-0000-7000-8000-000000006312";
     const results = await Promise.allSettled([insert(j1),insert(j2)]);
-    assert(results.filter(r=>r.status==='fulfilled').length===1,"Concurrent reservations exceeded cap");
+    assert(results.filter(r=>r.status==='fulfilled').length===1,`Concurrent reservations exceeded cap: ${results.map(r => r.status === "rejected" ? String(r.reason) : "ok").join(" | ")}`);
     const job=(await sql`select id,params from public.generation_jobs where project_id=${bp}`)[0];
     assert(job,"Missing receipt");
     assert(job["params"].qualityProfileId===q["id"],"Explicit profile ID missing");
