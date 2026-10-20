@@ -1749,6 +1749,67 @@ export type Database = {
           },
         ]
       }
+      dialogue_reviews: {
+        Row: {
+          basis: string
+          block_id: string
+          block_revision: number
+          created_at: string
+          created_by: string | null
+          dialogue_version_id: string
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          basis: string
+          block_id: string
+          block_revision: number
+          created_at?: string
+          created_by?: string | null
+          dialogue_version_id: string
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          basis?: string
+          block_id?: string
+          block_revision?: number
+          created_at?: string
+          created_by?: string | null
+          dialogue_version_id?: string
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_reviews_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_reviews_dialogue_version_id_fkey"
+            columns: ["dialogue_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dialogue_versions: {
         Row: {
           asset_id: string
@@ -2772,6 +2833,59 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "upload_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_flags: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          edited_at: string | null
+          edited_by: string | null
+          enabled: boolean
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          target_id: string
+          target_kind: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          enabled?: boolean
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          target_id: string
+          target_kind: string
+          text?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          enabled?: boolean
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          target_id?: string
+          target_kind?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_flags_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -4674,6 +4788,35 @@ export type Database = {
           },
         ]
       }
+      user_bookmarks: {
+        Row: {
+          project_id: string
+          target: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          project_id: string
+          target: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          project_id?: string
+          target?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_bookmarks_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspace_invitations: {
         Row: {
           accepted_at: string | null
@@ -4830,6 +4973,10 @@ export type Database = {
           p_lease: string
         }
         Returns: Json
+      }
+      consume_my_bookmark: {
+        Args: { p_project: string; p_updated_at: string }
+        Returns: boolean
       }
       create_dialogue_batch: {
         Args: {
@@ -5101,6 +5248,10 @@ export type Database = {
         }
         Returns: Json
       }
+      reconfirm_dialogue_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
       record_export: {
         Args: {
           p_file_name: string
@@ -5166,6 +5317,10 @@ export type Database = {
       }
       set_member_role: {
         Args: { p_project: string; p_role: string; p_user: string }
+        Returns: undefined
+      }
+      set_my_bookmark: {
+        Args: { p_project: string; p_target: Json }
         Returns: undefined
       }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
