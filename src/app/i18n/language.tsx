@@ -8,7 +8,6 @@
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
-import { useRouter } from "@tanstack/react-router";
 import { L, getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
 import { t } from "@/core/i18n/keyed";
@@ -56,8 +55,15 @@ function stored(): UiLang | null {
   }
 }
 
+/** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
+let rootSettled = false;
+const lateHydration = new Set<() => void>();
+
 /** Gjeldende visningsspråk (tegner komponenten på nytt når det endres). */
 export function useLanguage(): UiLang {
+  useEffect(() => {
+    if (rootSettled) for (const f of [...lateHydration]) f();
+  }, []);
   return useSyncExternalStore(onLanguageChange, getUiLanguage, () => "nb");
 }
 
@@ -75,34 +81,25 @@ export function chooseLanguage(lang: UiLang) {
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
-  const router = useRouter();
   useEffect(() => {
-    // Lagret språk settes først når hydreringen er ferdig: ruter som lastes etterpå (egne kodebiter)
-    // hydreres ellers med et annet språk enn serveren tegnet. Siden er skjult (lang-pending) til da.
+    // Lagret språk settes først når sidens egen del er hydrert: ruter ligger i egne kodebiter og
+    // hydreres etter roten, og ville ellers fått et annet språk enn serveren tegnet. Siden er skjult
+    // (lang-pending) til da; vakturet sørger for at den aldri blir stående skjult.
     const s = stored();
+    rootSettled = true;
     if (!s) return;
     let done = false;
     const apply = () => {
       if (done) return;
       done = true;
-      (window as any).__langAt = performance.now(); // TMPDEBUG
+      lateHydration.delete(onLate);
       setLanguage(s);
     };
-    // Vent på rutenes kodebiter (de hydreres for seg), deretter to tegninger før språket byttes.
-    const settle = () => {
-      const chunks = router.state.matches.map((m) => {
-        const route = router.looseRoutesById[m.routeId];
-        return route ? router.loadRouteChunk(route).catch(() => undefined) : undefined;
-      });
-      void Promise.all(chunks).then(() =>
-        window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.setTimeout(apply, 0))),
-      );
-    };
-    if (document.readyState === "complete") settle();
-    else window.addEventListener("load", settle, { once: true });
+    const onLate = () => window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.setTimeout(apply, 0)));
+    lateHydration.add(onLate);
     const guard = window.setTimeout(apply, 1500);
     return () => {
-      window.removeEventListener("load", settle);
+      lateHydration.delete(onLate);
       window.clearTimeout(guard);
     };
   }, []);
