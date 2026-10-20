@@ -112,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="nb">
+    <html lang="nb" suppressHydrationWarning>
       <head>
         {/* ML2a: skjuler siden til lagret språk er satt, så første tegning ikke lekker norsk */}
         <script dangerouslySetInnerHTML={{ __html: LANGUAGE_BOOT_SCRIPT }} />
