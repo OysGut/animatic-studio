@@ -42,5 +42,5 @@ Kortversjonen:
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
-26. Dialogue clips own placement/active choice; versions own file/edit, mirrored only by mirrorDialogueClips. Character rows are projections; voice defaults never mutate existing audio.
-27. Dialogue batches persist leased receipts in storage adapters; atomic completion prevents paid replays after undo.
+26. Dialogue clips own placement/active choice; versions own file/edit, mirrored only by mirrorDialogueClips. Character rows are projections; voice defaults never touch old audio.
+27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.

@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **800**
-- Prioritet: P0: 147, P1: 465, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 273, teknisk-anbefaling: 7
-- Status: Verifisert: 656, Implementert – ikke verifisert: 73, Under arbeid: 13, Ikke startet: 58
+- Antall krav: **836**
+- Prioritet: P0: 147, P1: 501, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 309, teknisk-anbefaling: 7
+- Status: Verifisert: 656, Implementert – ikke verifisert: 109, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -11020,3 +11020,579 @@ brukeren velger innhold og estimater per språkjobb
   - tests/visual/dv6-languages.mjs
 - **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
 - **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0801 – DV A1: manusendring gir rød status
+manusendring gir rød status
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - manusendring gir rød status
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0802 – DV A2: aktiv versjon bestemmer status
+aktiv versjon bestemmer status
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - aktiv versjon bestemmer status
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0803 – DV A3: endrede og fjernede passasjer identifiseres
+endrede og fjernede passasjer identifiseres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endrede og fjernede passasjer identifiseres
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0804 – DV A4: avviket er synlig overalt der manuset vises
+avviket er synlig overalt der manuset vises
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avviket er synlig overalt der manuset vises
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0805 – DV A5: lenke ut til riktig scene
+lenke ut til riktig scene
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - lenke ut til riktig scene
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0806 – DV A6: avspillingshodet settes på replikkstart
+avspillingshodet settes på replikkstart
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avspillingshodet settes på replikkstart
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0807 – DV A7: ingen automatisk avspilling
+ingen automatisk avspilling
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ingen automatisk avspilling
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0808 – DV A8: endringer vises i rødt i dialogeditoren
+endringer vises i rødt i dialogeditoren
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endringer vises i rødt i dialogeditoren
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0809 – DV A9: «Merk som gjennomgått» krever eksplisitt handling
+«Merk som gjennomgått» krever eksplisitt handling
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Merk som gjennomgått» krever eksplisitt handling
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0810 – DV A10: historikken bevares
+historikken bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - historikken bevares
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0811 – DV A11: ny manusendring gir rødt igjen
+ny manusendring gir rødt igjen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ny manusendring gir rødt igjen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0812 – DV A12: eldre versjon kan gi avvik igjen
+eldre versjon kan gi avvik igjen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - eldre versjon kan gi avvik igjen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0813 – DV R1: handlingen ligger i Asset Library
+handlingen ligger i Asset Library
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - handlingen ligger i Asset Library
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0814 – DV R2: berørte scener og replikker vises
+berørte scener og replikker vises
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - berørte scener og replikker vises
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0815 – DV R3: brukeren velger replikker
+brukeren velger replikker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger replikker
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0816 – DV R4: språk og kostnad vises før generering
+språk og kostnad vises før generering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - språk og kostnad vises før generering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0817 – DV R5: nye filer blir aktive, gamle bevares
+nye filer blir aktive, gamle bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - nye filer blir aktive, gamle bevares
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0818 – DV R6: riktig manusrevisjon registreres
+riktig manusrevisjon registreres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - riktig manusrevisjon registreres
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0819 – DV B1: sette personlig bokmerke
+sette personlig bokmerke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sette personlig bokmerke
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0820 – DV B2: «Fortsett ved bokmerke» åpner riktig sted
+«Fortsett ved bokmerke» åpner riktig sted
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Fortsett ved bokmerke» åpner riktig sted
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0821 – DV B3: bokmerket fjernes etter vellykket navigasjon
+bokmerket fjernes etter vellykket navigasjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - bokmerket fjernes etter vellykket navigasjon
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0822 – DV B4: andres bokmerker påvirkes ikke
+andres bokmerker påvirkes ikke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - andres bokmerker påvirkes ikke
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0823 – DV H1: merke lyd
+merke lyd
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - merke lyd
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0824 – DV H2: merke bilde
+merke bilde
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - merke bilde
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0825 – DV H3: valgfri tekst
+valgfri tekst
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - valgfri tekst
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0826 – DV H4: av/på
+av/på
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - av/på
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0827 – DV H5: avmarkering sletter ikke tekst
+avmarkering sletter ikke tekst
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avmarkering sletter ikke tekst
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0828 – DV H6: andre autoriserte ser lappen
+andre autoriserte ser lappen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - andre autoriserte ser lappen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0829 – DV H7: synkronisering
+synkronisering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - synkronisering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0830 – DV H8: oppretter og dato
+oppretter og dato
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - oppretter og dato
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0831 – DV H9: boks på prosjektsiden
+boks på prosjektsiden
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - boks på prosjektsiden
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0832 – DV H10: sortering etter dato og manusplassering
+sortering etter dato og manusplassering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sortering etter dato og manusplassering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0833 – DV H11: filter på oppretter
+filter på oppretter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - filter på oppretter
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0834 – DV H12: klikk åpner riktig sted
+klikk åpner riktig sted
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - klikk åpner riktig sted
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0835 – DV H13: virker selv om elementet er flyttet
+virker selv om elementet er flyttet
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - virker selv om elementet er flyttet
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0836 – DV H14: rettigheter følger samarbeidsmodellen
+rettigheter følger samarbeidsmodellen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - rettigheter følger samarbeidsmodellen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.

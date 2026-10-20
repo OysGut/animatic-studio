@@ -936,6 +936,10 @@ export interface ProjectState {
   readonly animationPatterns: Readonly<Record<string, AnimationPattern>>;
   /** DV2: lydversjoner per replikkforekomst (migrasjon 0060). */
   readonly dialogueVersions: Readonly<Record<string, import("./dialogue/versions").DialogueVersion>>;
+  /** DV7: gjennomganger av avvik mellom manus og lyd (migrasjon 0062). */
+  readonly dialogueReviews: Readonly<Record<string, import("./dialogue/drift").DialogueReview>>;
+  /** DV8: gule huskelapper (migrasjon 0062). */
+  readonly noteFlags: Readonly<Record<string, import("./notes/flags").NoteFlag>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1357,6 +1361,8 @@ export const COLLECTION_TABLES = {
   lipsyncResults: "lipsync_results",
   animationPatterns: "animation_patterns",
   dialogueVersions: "dialogue_versions",
+  dialogueReviews: "dialogue_reviews",
+  noteFlags: "note_flags",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1398,6 +1404,8 @@ export function emptyProjectState(project: Project): ProjectState {
     animationRigs: {}, animationRigVersions: {}, animationUses: {},
     lipsyncResults: {}, animationPatterns: {},
     dialogueVersions: {},
+    dialogueReviews: {},
+    noteFlags: {},
   };
 }
 

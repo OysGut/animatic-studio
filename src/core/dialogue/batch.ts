@@ -5,10 +5,13 @@ import { sceneDialogueLines } from "../generation/speech";
 import { activeDialogueVersion } from "./versions";
 import { scriptLanguageOf, speechLanguageOf, detectDialogueLanguage } from "./languages";
 import { sceneNumberOf } from "../views";
+import { lineDrift } from "./drift";
 
 export function characterDialogueCoverage(s: ProjectState, characterId: string) {
   const seen = new Set<string>();
-  return Object.values(s.productions).flatMap(p => filmClips(s, p.id)).flatMap(film => {
+  // DV5-rest: main production first, then spinoffs; each scene is shown with its own production.
+  const productions = Object.values(s.productions).sort((a, b) => (a.kind === "main" ? 0 : 1) - (b.kind === "main" ? 0 : 1) || a.name.localeCompare(b.name) || a.id.localeCompare(b.id));
+  return productions.flatMap(p => filmClips(s, p.id).map(film => ({ film, production: p }))).flatMap(({ film, production }) => {
     if (seen.has(film.occurrenceId)) return [];
     seen.add(film.occurrenceId);
     const lines = sceneDialogueLines(s, film).filter(line => {
@@ -20,13 +23,13 @@ export function characterDialogueCoverage(s: ProjectState, characterId: string) 
       const hasAudio = !!clip || line.hasAudio;
       const scriptLanguage = scriptLanguageOf(s, line.blockId);
       return { ...line, occurrenceId: film.occurrenceId, key: `${film.occurrenceId}:${line.blockId}`, hasAudio,
-        drift: hasAudio && (version?.scriptRevision === null || version?.scriptRevision !== s.blocks[line.blockId]?.currentRev),
+        drift: hasAudio && !!version && lineDrift(s, film.occurrenceId, line.blockId).status === "drift",
         scriptRevision: s.blocks[line.blockId]?.currentRev ?? 1, scriptLanguage,
         speechLanguage: speechLanguageOf(s, film.occurrenceId, line.blockId, characterId),
         detection: detectDialogueLanguage(line.text, scriptLanguage) };
     });
     const occurrence = s.occurrences[film.occurrenceId];
-    return lines.length && occurrence ? [{ occurrenceId: film.occurrenceId, title: s.variants[film.variantId]?.heading.location ?? "", number: sceneNumberOf(s, occurrence), lines,
+    return lines.length && occurrence ? [{ occurrenceId: film.occurrenceId, productionId: production.id, productionName: production.name, productionKind: production.kind, title: s.variants[film.variantId]?.heading.location ?? "", number: sceneNumberOf(s, occurrence), lines,
       total: lines.length, withAudio: lines.filter(l => l.hasAudio).length, missing: lines.filter(l => !l.hasAudio).length, drift: lines.filter(l => l.drift).length }] : [];
   });
 }

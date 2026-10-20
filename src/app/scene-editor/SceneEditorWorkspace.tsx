@@ -53,7 +53,10 @@ import {
   previousSceneCamera,
   sourceAt,
   carryTargets,
+  scriptSeekTarget,
 } from "@/core";
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
+import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -119,10 +122,18 @@ export function SceneEditorWorkspace({
   projectId,
   userId,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
+  initialTab = null,
 }: {
+  initialTab?: string | null;
   projectId: string;
   userId: string;
   initialOccurrenceId: string | null;
+  /** DV7: lenke ut fra et avvik – sett avspillingshodet på replikkstart (uten å starte avspilling). */
+  initialLineId?: string | null;
+  /** DV8: bokmerke – bildet avspillingshodet stod på. */
+  initialFrame?: number | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
@@ -154,6 +165,9 @@ export function SceneEditorWorkspace({
       roleKnown={members.isSuccess}
       cmds={cmds}
       initialOccurrenceId={initialOccurrenceId}
+      initialLineId={initialLineId}
+      initialFrame={initialFrame}
+      initialTab={initialTab}
       userId={userId}
     />
   );
@@ -166,8 +180,14 @@ function Editor({
   roleKnown,
   cmds,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
+  initialTab = null,
   userId,
 }: {
+  initialTab?: string | null;
+  initialLineId?: string | null;
+  initialFrame?: number | null;
   userId: string;
   state: ProjectState;
   editable: boolean;
@@ -276,7 +296,7 @@ function Editor({
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
-  const [sceneTab, setSceneTab] = useState("scene");
+  const [sceneTab, setSceneTab] = useState(initialTab ?? "scene");
   const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
   useEffect(() => { setAnimationRange(null); }, [composition?.id]);
   const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
@@ -585,6 +605,19 @@ function Editor({
 
   const side = panelsUi.mode === "side";
   const filmClip = occurrence ? (film.find((c) => c.occurrenceId === occurrence.id) ?? null) : null;
+  // DV7/DV8: hopp til replikken eller bokmerket én gang etter åpning. Avspilling startes aldri automatisk.
+  const [entrySeek, setEntrySeek] = useState<string | null>(null);
+  const entryDone = useRef(false);
+  useEffect(() => {
+    if (entryDone.current || !occurrence || occurrence.id !== initialOccurrenceId) return;
+    entryDone.current = true;
+    if (initialLineId) {
+      const t = scriptSeekTarget(state, filmClip, initialLineId);
+      if (t.compFrame !== null) { playback.pause(); playback.setFrame(t.compFrame); setEntrySeek(null); }
+      else setEntrySeek(L("Replikken har ingen plassering i scenen ennå (ingen lyd, tidskobling eller plass i filmen). Avspillingshodet er ikke flyttet.", "The line has no position in the scene yet (no audio, time link or place in the film). The playhead was not moved."));
+    } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
+  }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, filmClip, state, playback]);
+  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: sceneTab }); }, [projectId, occurrence?.id, playback.frame, sceneTab]);
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
@@ -599,6 +632,7 @@ function Editor({
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
         run={cmds.run}
         authorName={myName}
+        projectId={projectId}
         onSeek={(f) => {
           playback.pause();
           playback.setFrame(f);
@@ -1092,6 +1126,13 @@ function Editor({
                   {copyError ? <span className="text-status-danger">{copyError}</span> : null}
                 </div>
               ) : null}
+              {entrySeek ? (
+                <div role="status" data-testid="scene-entry-seek" className="flex min-h-8 shrink-0 items-center gap-2 border-b border-border bg-status-uncertain-bg px-3 py-1 text-xs text-text-primary">
+                  {entrySeek}
+                  <Button size="sm" variant="ghost" className="h-6" onClick={() => setEntrySeek(null)}>{L("Lukk", "Close")}</Button>
+                </div>
+              ) : null}
+              {occurrence ? <div className="flex h-7 shrink-0 items-center gap-2 border-b border-border px-3 text-xs text-text-secondary"><NoteFlagControl state={state} kind="occurrence" targetId={occurrence.id} run={cmds.run} editable={roleEditable} />{L("Huskelapp for scenen", "Note flag for the scene")}</div> : null}
               {found.length > 0 ? (
                 <div
                   role="status"

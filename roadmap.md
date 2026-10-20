@@ -1,10 +1,17 @@
+# DV7+DV8 – Avvik, bokmerker og huskelapper (20.10.2026)
+- [x] DV7: felles avviksstatus i drift.ts, røde segmenter, statusikon i sceneeditor/manusutforsker/dialogeditor, ordvis Unicode-diff, gjennomgang med historikk, «Generer alle røde».
+- [x] DV8: personlige bokmerker (RPC + RLS), delte huskelapper via apply_changes, «Merknader og huskelapper» på prosjektsiden.
+- [x] Migrasjon 0062 skrevet og testet lokalt (DB 132/132); krav REQ-0801–0836; dv7/dv8-suiter og regresjoner.
+- [ ] Cloud-kjøring av 0062: Claude kjører den.
+- [ ] DB-test for reconfirm_dialogue_batch med ekte jobbrader: ikke skrevet (krever full generation_jobs-fixtur).
+
 # DV5+DV6 – Massegenerering og språk (19.10.2026)
 - [x] Fjern doble forslag per replikk og ressurs.
 - [x] DV5: dekning, valg, bekreftelse, idempotente jobbelementer og tapsfri plassering; migrasjon 0061 skrevet.
 - [x] DV6: uavhengige språk, replikkoverstyring og brukerbestemt jobbfordeling.
 - [x] Enhetstester, DV5/DV6, DV1–DV4, CA1–CA8, U5, lyd og kravregister.
-- [ ] DB og Cloud ende-til-ende: blokkert av manglende lokal Postgres og ikke-kjørt 0061.
-- [ ] Full batch-angring i brukerflaten og gjenoppretting av leverandørblokk: serverhistorikken finnes, men tilkobling til lokal angreliste/tilgangsgjenoppretting gjenstår.
+- [x] Cloud 0061, DB 130/130 og publisering bekreftet av Øystein.
+- [x] Rester (20.10): «Angre hele jobben», gjenopptak etter leverandørblokk, BCP-47-språknavn, produksjon per scene, ett tidsanslag.
 
 # DV3+DV4 – Dialogeditor og stemme (19.10.2026)
 - [x] DV3: eksisterende opptaksdialog med kontekst, versjonsbølger, forhåndslytting, aktivt valg og bekreftet sletting.

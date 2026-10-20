@@ -1,6 +1,8 @@
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
 import type { DialogueVersion } from "./dialogue/versions";
+import type { DialogueReview } from "./dialogue/drift";
+import type { NoteFlag } from "./notes/flags";
 import type { AnimationPattern } from "./animation/patterns";
 /**
  * Endringssett mellom to tilstander (DEC-0022). Serveren kjører kommandoen i kjernen og sender
@@ -479,6 +481,14 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: v.removed,
       };
     }
+    case "dialogueReviews": {
+      const r = e as unknown as DialogueReview;
+      return { ...base, dialogue_version_id: r.dialogueVersionId, block_id: r.blockId, block_revision: r.blockRevision, basis: r.basis, removed: r.removed };
+    }
+    case "noteFlags": {
+      const f = e as unknown as NoteFlag;
+      return { ...base, target_kind: f.targetKind, target_id: f.targetId, text: f.text, enabled: f.enabled, edited_by: f.editedBy ?? null, edited_at: f.editedAt ?? null, removed: f.removed };
+    }
     case "clipParts": {
       const c = e as ClipPart;
       return {
@@ -739,6 +749,7 @@ export const TABLE_ORDER: readonly string[] = [
   "animation_patterns",
   "audio_clips",
   "dialogue_versions",
+  "dialogue_reviews",
   "clip_parts",
   "time_links",
   "generation_prompts",
@@ -752,6 +763,7 @@ export const TABLE_ORDER: readonly string[] = [
   "story_facts",
   "story_canvas_nodes",
   "story_canvas_edges",
+  "note_flags",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -878,6 +890,9 @@ export interface ProjectRows {
   readonly lipsync_results?: readonly Row[];
   readonly animation_patterns?: readonly Row[];
   readonly dialogue_versions?: readonly Row[];
+  /** DV7/DV8 (migrasjon 0062). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly dialogue_reviews?: readonly Row[];
+  readonly note_flags?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1463,6 +1478,26 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         speed: x["speed"] === undefined || x["speed"] === null ? 1 : Number(x["speed"]),
         compositionId: optStr(x["composition_id"]),
         ...(x["created_at"] ? { createdAt: iso(x["created_at"]) } : {}),
+        removed: x["removed"] === true,
+      })),
+    ),
+    dialogueReviews: byId(
+      (r.dialogue_reviews ?? []).map((x): DialogueReview => ({
+        id: str(x["id"]), revision: num(x["revision"]), dialogueVersionId: str(x["dialogue_version_id"]), blockId: str(x["block_id"]),
+        blockRevision: num(x["block_revision"]), basis: x["basis"] === "generated" ? "generated" : "manual",
+        ...(x["created_by"] ? { createdBy: str(x["created_by"]) } : {}),
+        ...(x["created_at"] ? { createdAt: iso(x["created_at"]) } : {}),
+        removed: x["removed"] === true,
+      })),
+    ),
+    noteFlags: byId(
+      (r.note_flags ?? []).map((x): NoteFlag => ({
+        id: str(x["id"]), revision: num(x["revision"]), targetKind: str(x["target_kind"]) as NoteFlag["targetKind"], targetId: str(x["target_id"]),
+        text: str(x["text"] ?? ""), enabled: x["enabled"] !== false,
+        ...(x["created_by"] ? { createdBy: str(x["created_by"]) } : {}),
+        ...(x["created_at"] ? { createdAt: iso(x["created_at"]) } : {}),
+        ...(x["edited_by"] ? { editedBy: str(x["edited_by"]) } : {}),
+        ...(x["edited_at"] ? { editedAt: iso(x["edited_at"]) } : {}),
         removed: x["removed"] === true,
       })),
     ),

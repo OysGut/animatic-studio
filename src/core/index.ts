@@ -94,3 +94,6 @@ export * from "./dialogue/characters";
 export * from "./dialogue/voice";
 export * from "./dialogue/languages";
 export * from "./dialogue/batch";
+export * from "./dialogue/drift";
+export * from "./notes/flags";
+export * from "./bookmark";

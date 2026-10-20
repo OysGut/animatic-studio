@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { L, SPEECH_MODEL, SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError } from "@/core";
+import { L, SPEECH_MODEL, SPEECH_LANGUAGE, type AssetVoice, type SpeechSettings, speechLanguageError, normalizeLanguageTag, languageLabel } from "@/core";
 import { listVoices, listSpeechModels } from "@/adapters/ai/speech.functions";
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +11,7 @@ export function VoiceControls({ projectId, value, onChange, disabled = false }: 
   const vs = voices.data?.ok ? voices.data.voices ?? [] : [];
   const ms = models.data?.ok ? models.data.models ?? [] : [];
   const modelId = value?.modelId ?? SPEECH_MODEL;
-  const language = value?.language ?? SPEECH_LANGUAGE;
+  const language = normalizeLanguageTag(value?.language ?? SPEECH_LANGUAGE);
   const model = ms.find(m => m.modelId === modelId);
   const set = (patch: Partial<AssetVoice>) => { if (value) onChange({ ...value, ...patch }); };
   const settings = value?.settings ?? {};
@@ -39,8 +39,8 @@ export function VoiceControls({ projectId, value, onChange, disabled = false }: 
           {ms.map(m => <option key={m.modelId} value={m.modelId}>{m.name}</option>)}
         </select></label>
         <label className="flex min-w-0 flex-col gap-1 text-xs text-text-secondary">{L("Talespråk", "Speech language")}<select data-testid="voice-language" className={field} value={language} disabled={disabled} onChange={e => set({ language: e.target.value })}>
-          {!model?.languages.some(l => l.code === language) ? <option value={language}>{language}</option> : null}
-          {model?.languages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
+          {!model?.languages.some(l => normalizeLanguageTag(l.code) === normalizeLanguageTag(language)) ? <option value={normalizeLanguageTag(language)}>{languageLabel(language)}</option> : null}
+          {model?.languages.map(l => <option key={l.code} value={normalizeLanguageTag(l.code)}>{languageLabel(l.code)}</option>)}
         </select></label>
       </div>
       {model && speechLanguageError(model, language) ? <p role="alert" className="text-xs text-status-danger">{speechLanguageError(model, language)}</p> : null}

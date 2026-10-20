@@ -12,6 +12,7 @@ import {
   providerModel,
   speechSettingsError,
   speechLanguageError,
+  providerLanguageCode,
   type SpeechSettings,
   type SpeechModel,
 } from "@/core";
@@ -204,7 +205,7 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
         model: data.model,
         voiceId: data.voiceId,
         text,
-        language: data.language,
+        language: providerLanguageCode(liveModel, data.language) ?? data.language,
         settings: data.settings,
       });
       if (!out.bytes.byteLength)

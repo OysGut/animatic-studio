@@ -1,7 +1,7 @@
 /** DV4: live provider capabilities, separate speech language and immutable generation settings. */
 import { L } from "../i18n";
 import type { AssetVoice } from "../model";
-import { languageTagError } from "./languages";
+import { languageTagError, normalizeLanguageTag } from "./languages";
 
 export interface SpeechModel {
   readonly modelId: string;
@@ -30,8 +30,16 @@ export function assetVoiceError(voice: AssetVoice | null): string | null {
     return L("Ugyldig stemme", "Invalid voice");
   return voice.settings === undefined ? null : speechSettingsError(voice.settings);
 }
+/** DV6-rest: modellens språkkode for et BCP-47-valg («nb» ↔ leverandørens «no»); null når modellen ikke har språket. */
+export function providerLanguageCode(model: SpeechModel, language: string): string | null {
+  const want = normalizeLanguageTag(language);
+  const exact = model.languages.find(l => l.code === language || normalizeLanguageTag(l.code) === want);
+  if (exact) return exact.code;
+  const primary = want.split("-")[0];
+  return model.languages.find(l => normalizeLanguageTag(l.code) === primary)?.code ?? null;
+}
 export function speechLanguageError(model: SpeechModel, language: string): string | null {
-  return model.languages.some(l => l.code === language) ? null : L(
+  return providerLanguageCode(model, language) !== null ? null : L(
     "Modellen støtter ikke det valgte talespråket. Velg språk eller modell selv.",
     "The model does not support the selected speech language. Choose a language or model yourself.");
 }

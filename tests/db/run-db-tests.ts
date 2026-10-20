@@ -5964,7 +5964,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 61, "skjemaversjon 61");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 62, "skjemaversjon 62");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
@@ -5994,6 +5994,57 @@ try {
     }
     const constraint = await sql`select pg_get_constraintdef(oid) as definition from pg_constraint where conname='generation_jobs_prompt_check' and conrelid='public.generation_jobs'::regclass`;
     assert(String(constraint[0]?.["definition"]).includes("sound"), "lydprompt kan ikke utelate manusinnhold");
+  });
+
+  await test("0062: gjennomganger, huskelapper og bokmerker har RLS, standard grants og riktige funksjoner", async () => {
+    for (const table of ["dialogue_reviews", "note_flags", "user_bookmarks"]) {
+      const rows = await sql`select relrowsecurity as rls from pg_class where oid=${`public.${table}`}::regclass`;
+      assert(rows[0]?.["rls"] === true, `${table}: RLS mangler`);
+      const g = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as ins,has_table_privilege('authenticated',${`public.${table}`},'DELETE') as del,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
+      assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, `${table}: grants avviker`);
+    }
+    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("array['note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
+    for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
+      const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
+      assert(b.indexOf("note_flags") < b.indexOf("delete from public.dialogue_versions") && b.includes("user_bookmarks") && b.includes("dialogue_reviews"), `${fn}: rydder ikke barn først`);
+    }
+    for (const [sig, client] of [["public.set_my_bookmark(uuid,jsonb)", true], ["public.consume_my_bookmark(uuid,timestamptz)", true], ["public.reconfirm_dialogue_batch(uuid,uuid,uuid)", false]] as const) {
+      const r = await sql`select has_function_privilege('authenticated',${sig},'EXECUTE') as client,has_function_privilege('anon',${sig},'EXECUTE') as anon`;
+      assert(r[0]?.["client"] === client && r[0]?.["anon"] === false, `${sig}: tilgang avviker`);
+    }
+    const status = String((await sql`select pg_get_constraintdef(oid) as d from pg_constraint where conname='dialogue_batch_items_status_check'`)[0]?.["d"]);
+    assert(status.includes("undone"), "angret jobbelement mangler");
+  });
+
+  await test("0062: bokmerker er personlige, ett per prosjekt, og fjernes bare av eieren etter navigasjon (B1–B4)", async () => {
+    const bp = (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Bokmerker') as id`)[0]!["id"])) as string;
+    await sql`insert into public.project_members (project_id, user_id, role) values (${bp}, ${BOB}, 'editor')`;
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene", frame: 10 })})`);
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene", frame: 20 })})`);
+    await as("authenticated", BOB, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "manus" })})`);
+    const mine = await as("authenticated", ALICE, (tx) => tx`select target, updated_at from public.user_bookmarks where project_id = ${bp}`);
+    assert(mine.length === 1 && (mine[0]!["target"] as { frame: number }).frame === 20, "Alice ser ikke bare sitt ene bokmerke");
+    const consumedByBob = await as("authenticated", BOB, (tx) => tx`select public.consume_my_bookmark(${bp}, ${mine[0]!["updated_at"] as Date}) as ok`);
+    assert(consumedByBob[0]?.["ok"] === false, "Bob fjernet Alices bokmerke");
+    const consumed = await as("authenticated", ALICE, (tx) => tx`select public.consume_my_bookmark(${bp}, ${mine[0]!["updated_at"] as Date}) as ok`);
+    assert(consumed[0]?.["ok"] === true, "Alice kunne ikke fjerne sitt bokmerke");
+    const bobs = await as("authenticated", BOB, (tx) => tx`select 1 from public.user_bookmarks where project_id = ${bp}`);
+    assert(bobs.length === 1, "Bobs bokmerke ble påvirket");
+    let refused = false;
+    try { await as("authenticated", CAROL, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene" })})`); } catch { refused = true; }
+    assert(refused, "ikke-medlem kunne sette bokmerke");
+    // Huskelapp via apply_changes: delt (Bob ser den), revisjonskontroll, av/på beholder teksten
+    const flagId = "00000000-0000-7000-8000-000000006201";
+    const row = { id: flagId, project_id: bp, revision: 1, target_kind: "occurrence", target_id: "00000000-0000-7000-8000-000000006202", text: "Sjekk lyset", enabled: true, edited_by: null, edited_at: null, removed: false };
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006203"}, ${sql.json({ type: "AddNoteFlag" })}, ${sql.json({ type: "UndoAddNoteFlag" })}, ${sql.json({ inserts: { note_flags: [row] } })})`);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006204"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, enabled: false, edited_by: BOB, revision: 2, expected_revision: 1 }] } })})`);
+    const seen = await as("authenticated", BOB, (tx) => tx`select text, enabled, created_by, edited_by from public.note_flags where id = ${flagId}`);
+    assert(seen[0]?.["text"] === "Sjekk lyset" && seen[0]?.["enabled"] === false && seen[0]?.["created_by"] === ALICE && seen[0]?.["edited_by"] === BOB, "lappen er ikke delt eller mistet teksten");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006205"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, revision: 2, expected_revision: 1 }] } })})`), "P0409");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.note_flags where id = ${flagId}`)).length === 0, "ikke-medlem ser lappen");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
+    assert((await sql`select 1 from public.user_bookmarks where project_id = ${bp}`).length === 0, "bokmerker igjen etter sletting");
   });
 
 } finally {

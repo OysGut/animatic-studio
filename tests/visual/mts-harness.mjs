@@ -108,6 +108,8 @@ export function harness(defaultOut) {
         return json({ id });
       }
       if (/^advanceDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "advanceDialogueBatch", body:d }); const b=state.batches.find(b=>b.id===d.batchId); if(b){for(const item of b.items.slice(0,2))item.status="done";b.status=b.items.every(i=>i.status==="done")?"done":"running";} return json({processed:2}); }
+      if (/^undoDialogueBatchJob(?:_|$)/.test(name)) { state.rpcs.push({ name: "undoDialogueBatchJob", body: d }); return json({ undone: 1 }); }
+      if (/^reconfirmDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "reconfirmDialogueBatch", body: d }); return json({ ok: true }); }
       if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
       if (/^listVoices(?:_|$)/.test(name)) return json({ ok: true, voices: [{ voiceId: "mock_voice", name: "Test voice", description: "Custom voice", previewUrl: null }, { voiceId: "other_voice", name: "Alternative voice", description: "", previewUrl: null }] });
       if (/^listSpeechModels(?:_|$)/.test(name)) return json({ ok: true, models: [{ modelId: "eleven_v3", name: "Eleven v3", languages: [{ code: "no", name: "Norwegian" }, { code: "es", name: "Spanish" }], maxCharacters: 5000, costMultiplier: 1 }] });
