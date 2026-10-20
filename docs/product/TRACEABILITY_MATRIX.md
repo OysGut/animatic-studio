@@ -44,12 +44,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | QUALITYCOST | Quality & Cost Engine | 41 | 7 | 41 | 38 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 98 | 38 | 98 | 94 |
-| L10N | Localization Engine | 50 | 4 | 49 | 40 |
+| L10N | Localization Engine | 54 | 4 | 53 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 29 | 25 |
 | EXPORT | Export Engine | 77 | 12 | 77 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 343 | 23 | 340 | 217 |
+| UI | Brukergrensesnitt og designsystem | 347 | 23 | 344 | 217 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 230 | 102 |
+| 3 | 234 | 102 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -944,3 +944,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0872 | Beslutning DEC-0054 | SCRIPT, UI | src/core/screenplay/forecast.ts, src/app/projects/DurationOverview.tsx, src/app/script/SceneNavigator.tsx | 2 | tests/unit/m6-rest.test.ts, tests/visual/m6-rest.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
 | REQ-0873 | Beslutning DEC-0054 | LIBRARY, SCRIPT | src/core/library/context-links.ts, src/app/library/ContextLinkSuggestions.tsx | 2 | tests/unit/m6-rest.test.ts, tests/visual/m6-rest.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
 | REQ-0874 | Beslutning DEC-0054 | PROVIDER, QUALITYCOST, UI | src/core/generation/providers.ts, src/adapters/ai/image-run.server.ts, src/adapters/storage/harmonize-batch.functions.ts, src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx | 2 | tests/unit/builtin-image-model.test.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0054: Registrert fra M6-oppdraget (resten av produksjonskontrollen). |
+| REQ-0875 | Beslutning DEC-0081 | L10N, UI | scripts/i18n/inventory.mjs, scripts/i18n/mapping.v1.json, scripts/i18n/references.v1.json, scripts/i18n/candidates.v1.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts | Implementert – ikke verifisert | 2026-10-20 DEC-0081: Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate. |
+| REQ-0876 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/messages.ts, src/core/i18n/keyed.ts, src/core/i18n/manifest.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts | Implementert – ikke verifisert | 2026-10-20 DEC-0081: Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate. |
+| REQ-0877 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/locales/nb.json, src/core/i18n/locales/en.json, src/core/i18n/locales/en-XA.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts | Implementert – ikke verifisert | 2026-10-20 DEC-0081: Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate. |
+| REQ-0878 | Beslutning DEC-0081 | L10N, UI | scripts/i18n/check.mjs, scripts/i18n/validate.mjs | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts | Implementert – ikke verifisert | 2026-10-20 DEC-0081: Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate. |

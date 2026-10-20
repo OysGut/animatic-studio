@@ -1,6 +1,6 @@
 # B-049 – N språk i brukerflaten og manuskoblingene
 
-Status: plan og teknisk anbefaling, ikke implementert. Oppdraget omfatter bare planen; ingen migrasjoner kjøres eller skrives i denne runden.
+Status: godkjent av Øystein 20.10.2026 i rekkefølgen ML1 → ML2 → ML3 → ML4. ML1 bygges uten migrasjon; ML2–ML4 er fortsatt planlagt.
 
 ## Rammer og akseptanse
 
@@ -9,6 +9,8 @@ Status: plan og teknisk anbefaling, ikke implementert. Oppdraget omfatter bare p
 - Eksisterende tekster, oversettelser, permanent identitet, linjekoblinger, lydversjoner og redigeringer bevares. Prosjektendringer følger `runCommand → apply_changes`, revisjonskontroll og angre/gjør om.
 - Nye UI-språk skal kunne leveres som oversettelsesfiler med språkmetadata uten å endre TypeScript-kode. Publisering av nye filer er fortsatt nødvendig; dette er ikke et nytt oversettelsesadministrasjonssystem.
 - Høyre-til-venstre er et vurderingspunkt, ikke en leveranse nå. Ingen påstand om full støtte for RTL eller alle PDF-skriftsystemer før egne tester.
+- ML1–ML2 bruker automatisk `en-XA` med utvidet og aksentuert engelsk som testdata. Mars velger senere tredjespråk og kvalitetssikrere; ingen oppdiktede ferdige oversettelser.
+- ML2-akseptanse: språkbytte mister aldri åpne utkast eller avbryter arbeid. Norsk og engelsk forblir like komplette som før etter hver runde, og eksisterende visuelle suiter skal være grønne.
 
 ## 1. Dagens løsning
 

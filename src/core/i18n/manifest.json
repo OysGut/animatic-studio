@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "defaultLocale": "nb",
+  "maxFallbackDepth": 8,
+  "languages": [
+    { "tag": "nb", "nativeName": "Norsk bokmål", "formatLocale": "nb-NO", "fallbacks": [], "direction": "ltr", "complete": true },
+    { "tag": "en", "nativeName": "English", "formatLocale": "en-GB", "fallbacks": ["nb"], "direction": "ltr", "complete": true },
+    { "tag": "en-XA", "nativeName": "Pseudo English", "formatLocale": "en-GB", "fallbacks": ["en"], "direction": "ltr", "complete": true, "testOnly": true }
+  ]
+}

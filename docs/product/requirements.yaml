@@ -32579,3 +32579,147 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0054
     change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+
+- id: REQ-0875
+  title: "ML1: tapsfritt AST-inventar og stabile tekstnøkler"
+  text: "Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0081
+    document: docs/development/PLAN_B049_MULTILANG.md
+    section: "ML1, godkjent oppdrag fra Øystein 20.10.2026 kl. 12:43 UTC"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0629
+  - REQ-0630
+  acceptance:
+  - "Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing."
+  tests:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  status: Implementert – ikke verifisert
+  implementation:
+  - scripts/i18n/inventory.mjs
+  - scripts/i18n/mapping.v1.json
+  - scripts/i18n/references.v1.json
+  - scripts/i18n/candidates.v1.json
+  verification:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0081
+    change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+
+- id: REQ-0876
+  title: "ML1: N-språkkatalog og nøkkelbasert oversettelse"
+  text: "Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0081
+    document: docs/development/PLAN_B049_MULTILANG.md
+    section: "ML1, godkjent oppdrag fra Øystein 20.10.2026 kl. 12:43 UTC"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0629
+  - REQ-0630
+  acceptance:
+  - "Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat."
+  tests:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/i18n/messages.ts
+  - src/core/i18n/keyed.ts
+  - src/core/i18n/manifest.json
+  verification:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0081
+    change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+
+- id: REQ-0877
+  title: "ML1: komplette tekstfiler, kompatibel bro og pseudospråk"
+  text: "Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0081
+    document: docs/development/PLAN_B049_MULTILANG.md
+    section: "ML1, godkjent oppdrag fra Øystein 20.10.2026 kl. 12:43 UTC"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0629
+  - REQ-0630
+  acceptance:
+  - "Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1."
+  tests:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/i18n/locales/nb.json
+  - src/core/i18n/locales/en.json
+  - src/core/i18n/locales/en-XA.json
+  verification:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0081
+    change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+
+- id: REQ-0878
+  title: "ML1: streng språk- og katalogkontroll"
+  text: "i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen."
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0081
+    document: docs/development/PLAN_B049_MULTILANG.md
+    section: "ML1, godkjent oppdrag fra Øystein 20.10.2026 kl. 12:43 UTC"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - L10N
+  - UI
+  invariants: []
+  dependencies:
+  - REQ-0629
+  - REQ-0630
+  acceptance:
+  - "i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen."
+  tests:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  status: Implementert – ikke verifisert
+  implementation:
+  - scripts/i18n/check.mjs
+  - scripts/i18n/validate.mjs
+  verification:
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0081
+    change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."

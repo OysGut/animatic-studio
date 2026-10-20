@@ -1,5 +1,11 @@
 # Veikart
 
+## B-049 ML1 (20.10.2026)
+- [ ] Fullt AST-inventar, stabile nøkler, tapsfrie nb/en-filer og konfliktliste.
+- [ ] Språkmanifest, validerte reserver, t/parametere/plural og automatisk en-XA; eksisterende bro uendret.
+- [ ] Utvidet sjekk, kjernetester, null-tap-test, full vitest/DB og bestilte visuelle regresjoner.
+- [ ] Kravregister, generert dokumentasjon og rapport; ingen migrasjon.
+
 ## Kontekstkoblinger og B-049-plan (20.10.2026)
 - [x] Synlig mål med miniatyr og målbytte; AI aldri forhåndsvalgt; prosent og grupperte gjentakelser.
 - [x] Tester: 1913 bestått, 10 eksisterende hoppet over; m6-rest 72/72 på norsk/engelsk; språksjekk 0 feil.

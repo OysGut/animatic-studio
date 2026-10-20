@@ -10,6 +10,8 @@
 import ts from "typescript";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { buildInventory } from "./inventory.mjs";
+import { checkKeyedCatalogs } from "./validate.mjs";
 
 const ROOT = new URL("../../", import.meta.url).pathname;
 const SKIP_DIRS = ["src/integrations", "src/routeTree.gen.ts", "src/core/i18n/catalog.gen.ts"];
@@ -31,7 +33,7 @@ function files(dir) {
   return out;
 }
 
-const OK_CALLS = new Set(["L", "localized", "tm", "pair", "cn", "clsx", "cva", "twMerge"]);
+const OK_CALLS = new Set(["L", "localized", "tm", "t", "pair", "cn", "clsx", "cva", "twMerge"]);
 function insideOk(node) {
   for (let p = node.parent; p; p = p.parent) {
     if (ts.isCallExpression(p)) {
@@ -81,6 +83,10 @@ export function check(file) {
 
 const isMain = import.meta.url === `file://${process.argv[1]}`;
 if (isMain) {
+  buildInventory(ROOT, true);
+  const keyedErrors = checkKeyedCatalogs(ROOT);
+  for (const error of keyedErrors) console.error(error);
+  if (keyedErrors.length) process.exit(1);
   const args = process.argv.slice(2).filter((a) => !a.startsWith("--"));
   const list = args.length ? args.map((a) => join(process.cwd(), a)) : files(join(ROOT, "src"));
   const all = list.flatMap(check);
