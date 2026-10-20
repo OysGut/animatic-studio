@@ -404,10 +404,10 @@ export const generateImage = createServerFn({ method: "POST" })
       id: jobId,
       project_id: data.projectId,
       kind: "image",
-      ...(trace
+      ...(trace || data.qualityProfile
         ? {
             params: {
-              trace,
+              ...(trace ? { trace } : {}),
               // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
               effort: effortOf(providerModel(data.provider, model, aiGate.settings)),
               // Kvalitetsprofilen bildet ble laget med (M8, REQ-0859): et øyeblikksbilde
