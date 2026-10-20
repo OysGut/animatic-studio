@@ -163,12 +163,17 @@ describe("harmonisert bilde lagres ikke-destruktivt (REQ-0141/0142)", () => {
     expect(h.note).toContain("Filmens visuelle stil");
     expect(h.qualityProfile?.name).toBe("Endelig");
     // Angring fjerner alt, og gjør-om gjennopretter det samme
-    const back = mustApply(t, r.inverse);
+    const backResult = applyCommand(t, envelope(r.inverse));
+    expect(backResult.ok).toBe(true);
+    if (!backResult.ok) return;
+    const back = backResult.state;
     expect(back.assetVersions[versionId]).toBeUndefined();
     expect(back.assetVariants[variantId]).toBeUndefined();
     expect(back.styleHarmonizations[harmonizationId]).toBeUndefined();
-    const fwd = mustApply(back, r.inverse ? (applyCommand(back, envelope(r.inverse as never)) as never) : (null as never));
-    expect(fwd).toBeTruthy();
+    // Gjør om: inversen av inversen gjennopretter alt
+    const fwd = mustApply(back, backResult.inverse);
+    expect(fwd.assetVersions[versionId]).toEqual(t.assetVersions[versionId]);
+    expect(fwd.styleHarmonizations[harmonizationId]).toMatchObject({ id: harmonizationId, removed: false });
     // Rundtur gjennom databaseradene
     const cs = diffStates(emptyProjectState(s.project), t);
     const rows = Object.fromEntries(Object.entries(cs.inserts)) as Record<string, unknown[]>;
@@ -235,9 +240,12 @@ describe("foretrukket referanse per (karakter, stilprofil) (REQ-0144)", () => {
     const back = mustApply(r2.state, r2.inverse);
     expect(preferredStyleReference(back, maja.id, profileId)?.variantId).toBe(v1.id);
     expect(back.stylePreferredReferences[ref2]).toBeUndefined();
-    // Gjør om
-    const fwd = mustApply(back, r2.inverse ? (applyCommand(back, envelope(r2.inverse as never)) as { ok: true; state: ProjectState; inverse: never }) : (null as never));
-    expect(preferredStyleReference(fwd.state, maja.id, profileId)?.variantId).toBe(v2);
+    // Gjør om: inversen av inversen peker igjen på v2
+    const backResult = applyCommand(r2.state, envelope(r2.inverse));
+    expect(backResult.ok).toBe(true);
+    if (!backResult.ok) return;
+    const fwd = mustApply(backResult.state, backResult.inverse);
+    expect(preferredStyleReference(fwd, maja.id, profileId)?.variantId).toBe(v2);
     // Ugyldige valg avvises
     expect(preferredReferenceError(s, { assetId: maja.id, styleProfileId: tid(), variantId: v1.id })).not.toBe(null);
     expect(preferredReferenceError(s, { assetId: maja.id, styleProfileId: profileId, variantId: tid() })).not.toBe(null);
