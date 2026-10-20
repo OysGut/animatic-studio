@@ -39,8 +39,8 @@ export function VoiceControls({ projectId, value, onChange, disabled = false }: 
           {ms.map(m => <option key={m.modelId} value={m.modelId}>{m.name}</option>)}
         </select></label>
         <label className="flex min-w-0 flex-col gap-1 text-xs text-text-secondary">{L("Talespråk", "Speech language")}<select data-testid="voice-language" className={field} value={language} disabled={disabled} onChange={e => set({ language: e.target.value })}>
-          {!model?.languages.some(l => l.code === language) ? <option value={language}>{language}</option> : null}
-          {model?.languages.map(l => <option key={l.code} value={l.code}>{l.name}</option>)}
+          {!model?.languages.some(l => normalizeLanguageTag(l.code) === normalizeLanguageTag(language)) ? <option value={normalizeLanguageTag(language)}>{languageLabel(language)}</option> : null}
+          {model?.languages.map(l => <option key={l.code} value={normalizeLanguageTag(l.code)}>{languageLabel(l.code)}</option>)}
         </select></label>
       </div>
       {model && speechLanguageError(model, language) ? <p role="alert" className="text-xs text-status-danger">{speechLanguageError(model, language)}</p> : null}
