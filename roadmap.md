@@ -3,8 +3,9 @@
 - [x] Reversible kommandoer, 0064 fra 0063, RLS/grants/sletting og sikkerhetskopi skrevet; DB-verifikasjon blokkert av lokal Postgres.
 - [x] Språknavn i opptak og avstand ved alfa-profilvalg.
 - [x] P5 18/18 NO/EN, Vitest 1871/0, bestilte regresjoner kjørt; DB blokkert. REQ-0845–0853 og rapport.
-- [ ] Full importlinjedekning: uparrede oversettelseslinjer må bevares varig; eksisterende importmodell mangler dette.
-- [ ] DB/Cloud-verifikasjon: lokal Postgres er utilgjengelig; 0064 ikke kjørt.
+- [x] Uparrede importlinjer bevares i translation_lines og kan kobles av AI/manuelt; utdaterte koblinger flagges uten å blokkere.
+- [x] Lokal DB 137/137 med 0064 (tvetydig id og helprosjektvalidering rettet).
+- [ ] Cloud-kjøring av 0064: venter på Øystein.
 
 # D fullføring (20.10.2026)
 - [x] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.

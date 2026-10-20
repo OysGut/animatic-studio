@@ -1,7 +1,28 @@
--- Animatic Studio 0064 – B-050 / REQ-0845–0853: approved scene-local line correspondence.
+-- Animatic Studio 0064 – B-050 / REQ-0845–0853: approved scene-local line correspondence and unpaired imported lines.
 -- Replaces apply_changes, delete_project, purge_project_assets from 0063_quality_profiles.sql.
 -- create_project, create_dialogue_batch, guard_quality_profile_job and purge_removed_assets unchanged.
 -- Written for review; not applied to Cloud by Lovable.
+-- B-050: imported translated lines without a rule pair, kept per scene variant and language.
+create table public.translation_lines (
+  id uuid primary key,
+  project_id uuid not null references public.projects(id),
+  variant_id uuid not null references public.scene_variants(id) on delete restrict,
+  language text not null check(char_length(language) between 2 and 100 and language not in ('nb','no')),
+  ord integer not null check(ord between 0 and 100000),
+  kind text not null default '' check(char_length(kind)<=30),
+  text text not null check(char_length(text) between 1 and 5000),
+  removed boolean not null default false,
+  revision integer not null default 1 check(revision>0),
+  created_at timestamptz not null default now(),
+  created_by uuid
+);
+revoke all on public.translation_lines from anon,authenticated;
+grant select on public.translation_lines to authenticated;
+grant all on public.translation_lines to service_role;
+alter table public.translation_lines enable row level security;
+create policy translation_lines_read on public.translation_lines for select to authenticated using(private.is_project_member(project_id));
+create index translation_lines_project_idx on public.translation_lines(project_id,variant_id,language);
+
 create table public.translation_line_links (
   id uuid primary key,
   project_id uuid not null references public.projects(id),
@@ -35,8 +56,9 @@ declare
                            'compositions','template_instances','credit_participants','credit_sequences','composition_layers','animation_uses','audio_clips','dialogue_versions','clip_parts','time_links','generation_prompts',
                            'continuity_events','translations','asset_relations','posters','style_profiles',
                            'story_profiles','story_profile_stages','story_facts','story_canvas_nodes','story_canvas_edges',
-                           'lipsync_results','animation_patterns','dialogue_reviews','note_flags','quality_profiles','translation_line_links'];
+                           'lipsync_results','animation_patterns','dialogue_reviews','note_flags','quality_profiles','translation_lines','translation_line_links'];
   v_t text;
+  v_link_check uuid[] := '{}';
   v_rows jsonb;
   v_row jsonb;
   v_cols text[];
@@ -103,6 +125,16 @@ begin
     v_affected := v_affected || p_project;
   end loop;
 
+  -- 0064: line links to validate: new rows, and updated rows whose scene, language or line references change.
+  -- Unchanged references (reject, undo of a stale link) are never blocked.
+  v_link_check := array(
+    select (r ->> 'id')::uuid from jsonb_array_elements(coalesce(p_changes -> 'inserts' -> 'translation_line_links','[]'::jsonb)) r
+    union all
+    select (r ->> 'id')::uuid from jsonb_array_elements(coalesce(p_changes -> 'updates' -> 'translation_line_links','[]'::jsonb)) r
+      where not exists(select 1 from public.translation_line_links o where o.id=(r ->> 'id')::uuid and o.project_id=p_project
+        and o.variant_id::text = r ->> 'variant_id' and o.language = r ->> 'language'
+        and to_jsonb(o.source_block_ids) = r -> 'source_block_ids' and to_jsonb(o.target_translation_ids) = r -> 'target_translation_ids'));
+
   -- 1) Nye rader (rekkefølge etter fremmednøkler)
   foreach v_t in array v_tables loop
     v_rows := coalesce(p_changes -> 'inserts' -> v_t, '[]'::jsonb);
@@ -143,7 +175,7 @@ begin
     and id in (select (r ->> 'id')::uuid from jsonb_array_elements(coalesce(p_changes -> 'deletes' -> 'animation_rigs', '[]'::jsonb)) r);
 
   -- 3) Fjernede rader (bare ved angre av opprettelse), motsatt rekkefølge
-  foreach v_t in array array['translation_line_links','quality_profiles','note_flags','dialogue_reviews','animation_patterns','lipsync_results','dialogue_versions','story_canvas_edges','story_canvas_nodes','story_facts','story_profile_stages','story_profiles','style_profiles','posters','asset_relations','translations','continuity_events','generation_prompts','time_links','clip_parts','audio_clips','animation_uses','composition_layers','credit_sequences','credit_participants','template_instances','compositions','script_annotations','animation_rig_versions','animation_rigs','asset_versions','asset_variants','assets',
+  foreach v_t in array array['translation_line_links','translation_lines','quality_profiles','note_flags','dialogue_reviews','animation_patterns','lipsync_results','dialogue_versions','story_canvas_edges','story_canvas_nodes','story_facts','story_profile_stages','story_profiles','style_profiles','posters','asset_relations','translations','continuity_events','generation_prompts','time_links','clip_parts','audio_clips','animation_uses','composition_layers','credit_sequences','credit_participants','template_instances','compositions','script_annotations','animation_rig_versions','animation_rigs','asset_versions','asset_variants','assets',
                              'takes','production_segments','scene_occurrences','script_blocks','scene_variants','scenes','productions'] loop
     for v_row in select * from jsonb_array_elements(coalesce(p_changes -> 'deletes' -> v_t, '[]'::jsonb)) loop
       execute format('delete from public.%I where id = ($1 ->> ''id'')::uuid and project_id = $2 and revision = ($1 ->> ''expected_revision'')::int', v_t)
@@ -168,11 +200,18 @@ begin
       from jsonb_populate_recordset(null::public.script_block_revisions, v_rows);
   end if;
 
-  -- 0064: validate array references after all inserts/updates, before logging.
-  if exists(select 1 from public.translation_line_links l where l.project_id=p_project and not l.removed and (
-    exists(select 1 from unnest(l.source_block_ids) id where not exists(select 1 from public.script_blocks b where b.id=id and b.project_id=p_project and b.variant_id=l.variant_id and not b.removed))
-    or exists(select 1 from unnest(l.target_translation_ids) id where not exists(select 1 from public.translations t join public.script_blocks b on b.id=t.block_id where t.id=id and t.project_id=p_project and b.project_id=p_project and b.variant_id=l.variant_id and t.language=l.language and not t.removed and not b.removed))
-  )) then raise exception 'Invalid line link scope' using errcode='22023'; end if;
+  -- 0064: validate only line links inserted, or updated with changed references, in this call. Links that later point at
+  -- removed or moved lines are reported as stale by the core and never block other commands.
+  if exists(select 1 from public.translation_line_links l
+    where l.project_id=p_project and not l.removed
+      and l.id = any(v_link_check)
+      and (
+        exists(select 1 from unnest(l.source_block_ids) as s(block_id) where not exists(select 1 from public.script_blocks b where b.id=s.block_id and b.project_id=p_project and b.variant_id=l.variant_id and not b.removed))
+        or exists(select 1 from unnest(l.target_translation_ids) as tt(translation_id) where not exists(select 1 from public.translations t join public.script_blocks b on b.id=t.block_id where t.id=tt.translation_id and t.project_id=p_project and b.project_id=p_project and b.variant_id=l.variant_id and t.language=l.language and not t.removed and not b.removed)
+          and not exists(select 1 from public.translation_lines u where u.id=tt.translation_id and u.project_id=p_project and u.variant_id=l.variant_id and u.language=l.language and not u.removed))
+        or cardinality(l.source_block_ids) <> (select count(distinct x) from unnest(l.source_block_ids) x)
+        or cardinality(l.target_translation_ids) <> (select count(distinct x) from unnest(l.target_translation_ids) x)
+      )) then raise exception 'Invalid line link scope' using errcode='22023'; end if;
   -- 5) Kommandologg (ADR-0005)
   if exists(select 1 from public.projects p where p.id=p_project and p.active_quality_profile_id is not null
     and not exists(select 1 from public.quality_profiles q where q.id=p.active_quality_profile_id and q.project_id=p_project and not q.removed)) then
@@ -238,6 +277,7 @@ begin
   delete from public.asset_relations where project_id = p_project;
   -- Oversettelser (on delete restrict mot linjer og scener, DEC-0058)
   delete from public.translation_line_links where project_id = p_project;
+  delete from public.translation_lines where project_id = p_project;
   delete from public.translations where project_id = p_project;
   delete from public.time_links where project_id = p_project;
   -- Leppesynk (CA5) og mønstre (CA6): før klippene, takene og linjene de peker på
@@ -336,6 +376,7 @@ begin
   delete from public.asset_relations where project_id = p_project;
   -- Oversettelser (on delete restrict mot linjer og scener, DEC-0058)
   delete from public.translation_line_links where project_id = p_project;
+  delete from public.translation_lines where project_id = p_project;
   delete from public.translations where project_id = p_project;
   delete from public.time_links where project_id = p_project;
   -- Leppesynk (CA5) og mønstre (CA6): før klippene, takene og linjene de peker på

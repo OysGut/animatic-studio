@@ -77,6 +77,7 @@ export const BACKUP_STATE_TABLES = [
   "dialogue_reviews",
   "note_flags",
   "quality_profiles",
+  "translation_lines",
   "translation_line_links",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
@@ -629,6 +630,7 @@ export function restoredState(
     note_flags: t("note_flags"),
     quality_profiles: t("quality_profiles"),
     translation_line_links: t("translation_line_links"),
+    translation_lines: t("translation_lines"),
   };
   let state: ProjectState;
   try {

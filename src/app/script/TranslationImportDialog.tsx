@@ -18,6 +18,7 @@ import {
   L,
   orderedOccurrences,
   translationItems,
+  unpairedTranslationLines,
   type Command,
   type ParsedScreenplay,
   type ProjectState,
@@ -201,6 +202,14 @@ export function TranslationImportDialog({
           translationId: x.existingId as never,
           fields: fields(x),
         })),
+      });
+    // B-050: lines the rules could not pair are kept per scene and language for AI/manual linking.
+    const unpaired = unpairedTranslationLines(state, language, rows, parsed);
+    if (unpaired.items.length || unpaired.retire.length)
+      commands.push({
+        type: "AddTranslationLines",
+        items: unpaired.items.slice(0, 2000).map((fields) => ({ lineId: newId(), fields })),
+        removeLineIds: unpaired.retire.slice(0, 2000),
       });
     const group = newId();
     for (const c of commands) {

@@ -92,6 +92,7 @@ const MAX_COMMAND_CHARS = 6_000_000;
 const INVERSE_ONLY = new Set<string>([
   "UndoReviewDialogueDrift",
   "UndoAddLineLink",
+  "UndoAddTranslationLines",
   "UndoAddNoteFlag",
   "UndoGeneratedDialogue",
   "RestoreDialogueCharacters",
@@ -772,7 +773,7 @@ export const runCommand = createServerFn({ method: "POST" })
           ),
         };
     }
-    if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks"].includes(data.command.type)) {
+    if (["SetLineLink","UndoAddLineLink","ApproveLineLinks","RejectLineLinks","RestoreLineLinks","AddTranslationLines","UndoAddTranslationLines"].includes(data.command.type)) {
       const schema=await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 64) return {ok:false,code:"schema",message:L("Linjekoblinger krever databaseversjon 64.","Line links require database version 64.")};
     }
