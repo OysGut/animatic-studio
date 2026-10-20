@@ -161,6 +161,8 @@ export function AssetStudio({
   const [conflict, setConflict] = useState(false);
   const [saving, setSaving] = useState(false);
   const [imagesOpen, setImagesOpen] = useState(false);
+  /** P8: «Harmoniser stil …» åpner bildedialogen med harmoniseringen fremme. */
+  const [harmonizeOpen, setHarmonizeOpen] = useState(false);
 
   const canEdit = editable && !!layer && !layer.locked;
   const fields = layer ? layerFieldsOf(layer) : null;
@@ -488,6 +490,24 @@ export function AssetStudio({
             >
               {L("Bilder og verktøy …", "Images and tools …")}
             </Button>
+            {asset && asset.kind !== "sound" && layer.assetId ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  setHarmonizeOpen(true);
+                  setImagesOpen(true);
+                }}
+                disabled={!editable}
+                data-testid="asset-studio-harmonize"
+                title={L(
+                  "Tegn om bildet til scenens felles stil med AI (koster, bekreftes først). «Bruk bare her» går til utkastet.",
+                  "Redraw the image in the scene's shared style with AI (costs, confirmed first). “Use only here” goes to the draft.",
+                )}
+              >
+                {L("Harmoniser stil …", "Harmonize style …")}
+              </Button>
+            ) : null}
             {editable && asset && asset.kind !== "sound" ? (
               <MobileCameraButton
                 projectId={projectId}
@@ -843,7 +863,11 @@ export function AssetStudio({
 
       <LayerImageDialog
         open={imagesOpen}
-        onOpenChange={setImagesOpen}
+        onOpenChange={(o) => {
+          setImagesOpen(o);
+          if (!o) setHarmonizeOpen(false);
+        }}
+        openHarmonize={harmonizeOpen}
         onCloseAutoFocus={(e) => {
           e.preventDefault();
           const opener = rootRef.current?.querySelector<HTMLElement>('[data-testid="asset-studio-images"]');

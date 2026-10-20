@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **870**
 - Prioritet: P0: 147, P1: 535, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 343, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 134, Under arbeid: 13, Ikke startet: 58
+- Status: Verifisert: 665, Implementert – ikke verifisert: 146, Under arbeid: 13, Ikke startet: 46
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -1847,11 +1847,12 @@ Når bilder fra forskjellige kilder brukes sammen, skal programmet kunne tilby A
 
 - **Kilde:** Kap. 9.2 (l. 404) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, PROVIDER, LIBRARY · **Invarianter:** INV-12
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Brukeren kan velge flere bilder og starte stilharmonisering (med kostnadsgodkjenning).
 - **Tester:**
   - integrasjon: harmonisering via mock-adapter
+- **Implementering:** src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx, src/adapters/ai/image-run.server.ts
 - **Merknad:** Stilharmonisering er i fase 8.
 
 #### REQ-0138 – Harmoniseringsdimensjoner
@@ -1860,11 +1861,12 @@ Karakterbilder skal kunne tilpasses en felles tegnestil, fargepalett, lyssetting
 - **Kilde:** Kap. 9.2 (l. 405-411) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, LIBRARY
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Harmoniseringsprompten inkluderer målverdier for alle seks dimensjonene.
 - **Tester:**
   - enhet: promptbygger for harmonisering
+- **Implementering:** src/core/generation/style-harmonize.ts
 
 #### REQ-0139 – Bevar gjenkjennelig identitet
 Stilharmoniseringen skal bevare karakterens gjenkjennelige identitet så langt som mulig.
@@ -1872,11 +1874,12 @@ Stilharmoniseringen skal bevare karakterens gjenkjennelige identitet så langt s
 - **Kilde:** Kap. 9.2 (l. 412) · **Opprinnelse:** mandat · **Type:** ikke-funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Harmoniseringsprompt inkluderer identitetsbevarende instruksjoner og referansebilder.
 - **Tester:**
   - manuell: vurdering av gjenkjennelighet
+- **Implementering:** src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx
 - **Merknad:** «Så langt som mulig» – ikke absolutt.
 
 #### REQ-0140 – Sammenligne original og harmonisert
@@ -1885,11 +1888,12 @@ Brukeren skal kunne sammenligne original og harmonisert variant før godkjenning
 - **Kilde:** Kap. 9.2 (l. 413) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** UI, LIBRARY · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Side-ved-side/før-etter-visning finnes før godkjenningsknappen.
 - **Tester:**
   - e2e: sammenligning før godkjenning
+- **Implementering:** src/app/library/HarmonizeCompare.tsx
 
 #### REQ-0141 – Harmonisert bilde brukt lokalt
 Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten eller scenen.
@@ -1897,11 +1901,12 @@ Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten elle
 - **Kilde:** Kap. 9.3 (l. 415-416) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Bildet kan brukes lokalt uten å bli synlig i det globale biblioteket.
 - **Tester:**
   - integrasjon: lokal bruk
+- **Implementering:** src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/release/PosterHarmonizeDialog.tsx
 
 #### REQ-0142 – Harmonisert bilde som alternativ variant
 Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
@@ -1909,11 +1914,12 @@ Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
 - **Kilde:** Kap. 9.3 (l. 417) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0135
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Bildet lagres som ny variant under karakteren uten å erstatte eksisterende.
 - **Tester:**
   - enhet: lagre som variant
+- **Implementering:** src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx
 
 #### REQ-0143 – Publisering til globalt karakterbibliotek
 Et harmonisert karakterbilde skal kunne godkjennes og publiseres til det globale karakterbiblioteket.
@@ -1921,11 +1927,12 @@ Et harmonisert karakterbilde skal kunne godkjennes og publiseres til det globale
 - **Kilde:** Kap. 9.3 (l. 418) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0142
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Etter godkjenning er varianten tilgjengelig i det globale biblioteket.
 - **Tester:**
   - integrasjon: godkjenn og publiser
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 - **Merknad:** Jf. kap. 34 pkt. 25, men plassert i fase 8 – se OPEN_QUESTIONS B (kontinuitetsprinsipper før harmonisering).
 
 #### REQ-0144 – Foretrukket referanse per stilprofil
@@ -1934,11 +1941,12 @@ Et harmonisert karakterbilde skal kunne merkes som foretrukket referanse for en 
 - **Kilde:** Kap. 9.3 (l. 419) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY
 - **Avhengigheter:** REQ-0147
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - For en karakter og stilprofil kan nøyaktig én variant være foretrukket referanse.
 - **Tester:**
   - enhet: foretrukket-referanse per (karakter, stilprofil)
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0065_style_harmonization.sql
 
 #### REQ-0145 – Publisering er eksplisitt brukerhandling
 Publisering av en variant til det globale biblioteket skal være en eksplisitt brukerhandling.
@@ -1946,11 +1954,12 @@ Publisering av en variant til det globale biblioteket skal være en eksplisitt b
 - **Kilde:** Kap. 9.3 (l. 420) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0143
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Ingen kodevei publiserer en variant uten eksplisitt brukerkommando.
 - **Tester:**
   - integrasjon: ingen automatisk publisering
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 - **Merknad:** Jf. kap. 34 pkt. 25. P0 som prinsipp, selv om funksjonen er fase 8.
 
 #### REQ-0146 – Scener bytter ikke automatisk variant
@@ -5414,12 +5423,13 @@ Plakatmodulen skal kunne harmonisere karakterbilder til samme tegnestil, lyssett
 - **Kilde:** Kap. 26.7 (l. 1146-1147) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, PROMPT, PROVIDER · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0384; Prompt Orchestration og Provider Adapters (fase 5)
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt karakterbilder i ulike stiler, når brukeren harmoniserer, så produseres nye versjoner i felles tegnestil, lyssetting og fargepalett uten at originalene endres.
 - **Tester:**
   - integrasjon: harmonisering lager nye versjoner
   - manuell: visuell konsistens
+- **Implementering:** src/app/release/PosterInspector.tsx, src/app/release/PosterHarmonizeDialog.tsx
 
 #### REQ-0401 – Valg av kvalitetsnivå og modell for harmonisering
 Brukeren skal kunne velge ønsket kvalitetsnivå og modell for stilharmonisering.
@@ -5427,11 +5437,12 @@ Brukeren skal kunne velge ønsket kvalitetsnivå og modell for stilharmonisering
 - **Kilde:** Kap. 26.7 (l. 1148) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** QUALITYCOST, PRESENT · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0400
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt harmonisering, så kan brukeren velge modell og kvalitetsnivå før kjøring.
 - **Tester:**
   - integrasjon: valg sendes til Quality & Cost Engine
+- **Implementering:** src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx
 
 #### REQ-0402 – Publisere harmoniserte bilder til globalt bibliotek
 Vellykkede harmoniserte bilder skal kunne publiseres til det globale ressursbiblioteket som nye godkjente stilvarianter.
@@ -5439,12 +5450,13 @@ Vellykkede harmoniserte bilder skal kunne publiseres til det globale ressursbibl
 - **Kilde:** Kap. 26.7 (l. 1149) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0400
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt et harmonisert bilde, når brukeren godkjenner og publiserer, så finnes det som ny stilvariant på karakteren i det globale biblioteket, og eksisterende varianter er uendret.
 - **Tester:**
   - integrasjon: ny stilvariant opprettes
   - dataintegritet: eksisterende varianter uendret
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 
 #### REQ-0403 – Flere plakatvarianter for hovedfilm og spinoffer
 Brukeren skal kunne lage og lagre flere plakatvarianter, både for hovedfilm og spinoffer.

@@ -558,7 +558,10 @@ export function ElementInspector({
   onReset,
   onRemove,
   onOrder,
+  onHarmonize,
 }: {
+  /** P8 (REQ-0400): «Harmoniser stil …» for bildet i elementet. Utelatt: ingen knapp. */
+  onHarmonize?: () => void;
   state: ProjectState;
   poster: Poster;
   element: PosterElement;
@@ -595,7 +598,7 @@ export function ElementInspector({
   );
   const asset = e.assetId ? state.assets[e.assetId] : undefined;
   const variants = asset
-    ? Object.values(state.assetVariants).filter((v) => v.assetId === asset.id && !v.archived)
+    ? Object.values(state.assetVariants).filter((v) => v.assetId === asset.id && (!v.archived || v.id === e.assetVariantId))
     : [];
   const versions = e.assetVariantId ? versionsOf(state, e.assetVariantId) : [];
   const images = sortedAssets(state).filter((a) => !a.archived && a.kind !== "sound");
@@ -857,6 +860,22 @@ export function ElementInspector({
                 ))}
               </select>
             </label>
+          ) : null}
+          {onHarmonize && e.assetId ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              disabled={ro}
+              data-testid="poster-harmonize"
+              onClick={onHarmonize}
+              title={L(
+                "Tegn om bildet til plakatens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
+                "Redraw the image in the poster's shared style with AI (costs, confirmed first). The original does not change.",
+              )}
+            >
+              {L("Harmoniser stil …", "Harmonize style …")}
+            </Button>
           ) : null}
           <div className="grid grid-cols-2 gap-1.5">
             <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">

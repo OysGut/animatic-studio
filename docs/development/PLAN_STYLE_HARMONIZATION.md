@@ -89,3 +89,8 @@ mønsteret fra `DialogueBatchPanel`). Ingen automatisk gjentakelse av uklare res
 ## Dokumentasjon
 requirements.yaml REQ-0137–0145 og 0400–0402 (status, implementation, verification), deretter
 build_docs.py og check_kb.py.
+
+## Gjennomført (20.10.2026)
+- «Bare her» lagrer bildet i en arkivert variant («Harmonisert – … (lokal)»), så laget/plakatelementet kan peke på det uten at bibliotekets synlige varianter endres.
+- Massejobben ligger i `src/adapters/storage/harmonize-batch.*` (AI-mappen skriver aldri prosjektdata) og bruker felles `src/adapters/ai/image-run.server.ts`.
+- Publisering bruker «Lagre i globalt bibliotek» (hele ressursen) og bare for ressurser som ikke alt er koblet til en global ressurs.

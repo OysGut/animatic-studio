@@ -42,6 +42,7 @@ import { PosterCanvas } from "./PosterCanvas";
 import { ElementInspector, PosterChecksList, PosterSettings } from "./PosterInspector";
 import { ExportPosterDialog, NewPosterDialog } from "./PosterDialogs";
 import { RelationsDialog } from "./RelationsDialog";
+import { PosterHarmonizeDialog } from "./PosterHarmonizeDialog";
 import {
   editElement,
   relayout,
@@ -132,6 +133,8 @@ function Release({
     [state.posters, productionId],
   );
   const [posterId, setPosterId] = useState<string | null>(null);
+  /** P8: elementet som harmoniseres (stor visning med «Harmoniser stil» fremme). */
+  const [harmonize, setHarmonize] = useState<string | null>(null);
   const poster: Poster | undefined = (posterId ? state.posters[posterId] : undefined) ?? posters[0];
   const shownPoster =
     poster && !poster.removed && poster.productionId === productionId ? poster : posters[0];
@@ -693,6 +696,7 @@ function Release({
                   <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
                     {L("Element", "Element")}
                     <select
+                      data-testid="poster-element-select"
                       value={element?.id ?? ""}
                       onChange={(e) => {
                         setSelected(e.target.value || null);
@@ -735,6 +739,7 @@ function Release({
                     onReset={reset}
                     onRemove={remove}
                     onOrder={order}
+                    onHarmonize={() => setHarmonize(element.id)}
                   />
                 ) : (
                   <p className="px-3 py-4 text-xs text-text-tertiary">
@@ -778,6 +783,17 @@ function Release({
           poster={shownPoster}
           open={exportOpen}
           onOpenChange={setExportOpen}
+        />
+      ) : null}
+      {harmonize && shownPoster ? (
+        <PosterHarmonizeDialog
+          state={state}
+          cmds={cmds}
+          projectId={projectId}
+          editable={editable}
+          element={shownPoster.document.elements.find((x) => x.id === harmonize) ?? null}
+          onUseHere={(patch) => changeElement(harmonize, patch, L("Harmonisert bilde bare her", "Harmonized image only here"))}
+          onClose={() => setHarmonize(null)}
         />
       ) : null}
       {relOpen ? (

@@ -34,22 +34,22 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | CORE | Project Core | 245 | 59 | 245 | 128 |
 | SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
 | TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
-| LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
+| LIBRARY | Resource Library | 96 | 10 | 94 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
 | COMPOSE | 2D Composition Engine | 97 | 14 | 97 | 88 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
-| PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
-| PROVIDER | Provider Adapters | 49 | 6 | 47 | 41 |
-| QUALITYCOST | Quality & Cost Engine | 40 | 7 | 39 | 38 |
+| PROMPT | Prompt Orchestration Engine | 58 | 15 | 58 | 50 |
+| PROVIDER | Provider Adapters | 49 | 6 | 49 | 41 |
+| QUALITYCOST | Quality & Cost Engine | 40 | 7 | 40 | 38 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
-| VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
+| VERSION | Version & Dependency Engine | 97 | 38 | 97 | 94 |
 | L10N | Localization Engine | 50 | 4 | 49 | 40 |
-| PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
+| PRESENT | Presentation Engine | 30 | 3 | 29 | 25 |
 | EXPORT | Export Engine | 77 | 12 | 77 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 340 | 23 | 336 | 217 |
+| UI | Brukergrensesnitt og designsystem | 340 | 23 | 337 | 217 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -206,15 +206,15 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0134 | Kap. 8.3 (l. 387) | VERSION, UI | src/core/library/impact.ts, src/app/library/ApproveImpactDialog.tsx, src/core/library/worklist.ts | 1 | tests/unit/analysis.test.ts, tests/visual/screens.mjs (87–88), tests/unit/worklist.test.ts | Verifisert | 2026-10-12 DEC-0072: Arbeidslisten for oppdaterte ressurser lar brukeren velge scene for scene også etter godkjenningen. |
 | REQ-0135 | Kap. 9.1 (l. 391-401) | LIBRARY | src/core/model.ts#AssetVariant, src/app/library/AssetDetail.tsx | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon | Verifisert | 2026-10-09 DEC-0030: Visuelle varianter med stil og utseende; status Verifisert |
 | REQ-0136 | Kap. 9.1 (l. 402) | LIBRARY, VERSION | src/core/commands/apply.ts#ApproveAssetVersion, db/migrations/0004_library_notes.sql | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon, tests/unit/library.test.ts::godkjenning av en annen variants versjon avvises, {'tests/db/run-db-tests.ts::0004': 'ressurs, variant og bildeversjon lagres og leses tilbake'} | Verifisert | 2026-10-09 DEC-0030: Versjoner per variant (uforanderlige) og egen godkjenning; status Verifisert |
-| REQ-0137 | Kap. 9.2 (l. 404) | PROMPT, PROVIDER, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0138 | Kap. 9.2 (l. 405-411) | PROMPT, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0139 | Kap. 9.2 (l. 412) | PROMPT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0140 | Kap. 9.2 (l. 413) | UI, LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0141 | Kap. 9.3 (l. 415-416) | LIBRARY, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0142 | Kap. 9.3 (l. 417) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0143 | Kap. 9.3 (l. 418) | LIBRARY, VERSION | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0144 | Kap. 9.3 (l. 419) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0145 | Kap. 9.3 (l. 420) | LIBRARY | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0137 | Kap. 9.2 (l. 404) | PROMPT, PROVIDER, LIBRARY | src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx, src/adapters/ai/image-run.server.ts | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0138 | Kap. 9.2 (l. 405-411) | PROMPT, LIBRARY | src/core/generation/style-harmonize.ts | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0139 | Kap. 9.2 (l. 412) | PROMPT | src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0140 | Kap. 9.2 (l. 413) | UI, LIBRARY | src/app/library/HarmonizeCompare.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0141 | Kap. 9.3 (l. 415-416) | LIBRARY, PRESENT | src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/release/PosterHarmonizeDialog.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0142 | Kap. 9.3 (l. 417) | LIBRARY | src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0143 | Kap. 9.3 (l. 418) | LIBRARY, VERSION | src/app/library/HarmonizePanel.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0144 | Kap. 9.3 (l. 419) | LIBRARY | src/core/commands/apply.ts, db/migrations/0065_style_harmonization.sql | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0145 | Kap. 9.3 (l. 420) | LIBRARY | src/app/library/HarmonizePanel.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0146 | Kap. 9.3 (l. 421) | LIBRARY, VERSION | src/core/commands/apply.ts#AddAssetVersion | 1 | tests/unit/library.test.ts::nummererer versjoner, og ny versjon endrer ikke godkjent versjon, tests/unit/verifisering-kommandoer.test.ts::ny versjon og ny variant publiseres: eksisterende scener viser fortsatt samme bilde og variant, tests/unit/verifisering-kommandoer.test.ts::godkjenning av ny versjon: scenene brukeren ikke velger, låses til versjonen de viste | Verifisert | 2026-10-15 DEC-0087: Mars godtok at en variant uten godkjent versjon viser nyeste bilde (KI-176) |
 | REQ-0147 | Kap. 9.4 (l. 423) | LIBRARY, PROMPT | src/core/generation/style.ts, db/migrations/0021_style_profiles.sql, src/app/projects/StyleGuideSection.tsx | 1 | tests/unit/style-prompt.test.ts, tests/unit/style-prompt.test.ts::lagres, endres og angres; høyst én standard; ugyldige verdier avvises, tests/unit/style-prompt.test.ts::et forbildebilde kan ikke angres bort så lenge stilen bruker det, tests/unit/style-prompt.test.ts::tar med filmen, stilen, scenen med lys, andre i scenen, godkjente bilder og det som skal unngås, tests/db/run-db-tests.ts::0021 (DEC-0065): filmens visuelle stil lagres og leses tilbake; høyst én standard | Verifisert | 2026-10-12 : Revisjon natt til 12.10.2026: bygd i DEC-0065: stilprofiler med forbildebilder og beskrivelse; verifisert med eksisterende tester |
 | REQ-0148 | Kap. 9.4 (l. 424-430) | LIBRARY, PROMPT, COMPOSE, PRESENT | src/core/generation/style.ts, src/app/projects/StyleGuideSection.tsx | 1 | tests/unit/style-uses.test.ts | Verifisert | 2026-10-12 DEC-0071: Flere stilprofiler med bruk (ressurstyper, plakater, 2D-animatic, AI-video); én profil per bruk; standardprofilen for resten. En profil for bestemte bruk blir aldri reserve for alt. |
@@ -469,9 +469,9 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0397 | Kap. 26.6 (l. 1133-1143) | PRESENT, UI | src/app/release/PosterWorkspace.tsx, src/app/release/PosterCanvas.tsx, src/app/release/PosterInspector.tsx | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (62) | Verifisert | 2026-10-11 DEC-0061: Plakaten kan endres fritt etter utkastet (flytt, størrelse, tekst, farger, bilder, egne elementer) |
 | REQ-0398 | Kap. 26.6 (l. 1144) | PRESENT | src/core/model.ts (PosterDocument, PosterElement) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (62) | Verifisert | 2026-10-11 DEC-0061: Hvert element (tekst, bilde, flate, relasjon) er eget og redigerbart |
 | REQ-0399 | Kap. 26.6 (l. 1145) | PRESENT | src/core/model.ts (PosterDocument), db/migrations/0019_presentation.sql | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061) | Verifisert | 2026-10-11 DEC-0061: Plakaten lagres som strukturert dokument, ikke som ett bilde |
-| REQ-0400 | Kap. 26.7 (l. 1146-1147) | PRESENT, PROMPT, PROVIDER | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0401 | Kap. 26.7 (l. 1148) | QUALITYCOST, PRESENT | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0402 | Kap. 26.7 (l. 1149) | LIBRARY, PRESENT, VERSION | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0400 | Kap. 26.7 (l. 1146-1147) | PRESENT, PROMPT, PROVIDER | src/app/release/PosterInspector.tsx, src/app/release/PosterHarmonizeDialog.tsx | 2 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0401 | Kap. 26.7 (l. 1148) | QUALITYCOST, PRESENT | src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx | 1 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0402 | Kap. 26.7 (l. 1149) | LIBRARY, PRESENT, VERSION | src/app/library/HarmonizePanel.tsx | 2 | tests/unit/style-harmonize.test.ts, tests/unit/harmonize-batch.test.ts, tests/db/run-db-tests.ts, tests/visual/p8-style-harmonize.mjs | Implementert – ikke verifisert | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0403 | Kap. 26.8 (l. 1150-1152) | PRESENT, CORE | src/app/release/PosterWorkspace.tsx (plakater per produksjon) | 2 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (60) | Verifisert | 2026-10-11 DEC-0061: Flere plakater per produksjon, også for spinoffer |
 | REQ-0404 | Kap. 26.8 (l. 1153) | PRESENT, L10N, EXPORT | src/core/presentation/poster.ts (LocalizedText, elementText), src/app/release/PosterInspector.tsx (Bilingual) | 1 | tests/unit/presentation.test.ts, tests/db/run-db-tests.ts (0019 DEC-0061), tests/visual/screens.mjs (66) | Verifisert | 2026-10-11 DEC-0061: Norsk og engelsk tekst; engelsk faller tilbake til norsk og meldes |
 | REQ-0405 | Kap. 27.1 (l. 1155-1168) | UI, CORE, QUEUE, QUALITYCOST, VERSION | src/core/assembly/status.ts#productionStatus, src/app/projects/DurationOverview.tsx, src/app/projects/ProjectOverview.tsx, src/app/ai/AiPanel.tsx, src/core/generation/cost.ts | 2 | tests/unit/production-status.test.ts, tests/visual/verifisering3-ui.mjs, docs/development/VISUAL_QA_DEC-0075.md, tests/unit/ai-control.test.ts | Verifisert | 2026-10-12 DEC-0075: Oversikten summerer API-kostnaden med egne nøkler (USD) for måneden; jobber som venter i køen telles ikke. |

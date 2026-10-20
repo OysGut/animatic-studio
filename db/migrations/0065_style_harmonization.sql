@@ -721,7 +721,7 @@ begin
   select * into v_item from public.harmonize_batch_items where id = p_item for update;
   if v_item.status = 'done' then return jsonb_build_object('ok',true); end if;
   if v_batch.status <> 'running' or v_batch.lease_token is distinct from p_lease or v_batch.lease_until <= now() or v_item.status <> 'ready' then raise exception 'Invalid lease' using errcode = '42501'; end if;
-  if p_command->>'type' <> 'ApplyHarmonizedImage' or (p_command->>'versionId')::uuid <> v_item.version_id or (p_command->>'variantId')::uuid <> v_item.variant_id or (p_command->>'harmonizationId')::uuid <> v_item.harmonization_id then raise exception 'Invalid command' using errcode = '22023'; end if;
+  if p_command->>'type' <> 'ApplyHarmonizedImage' or (p_command->>'versionId')::uuid <> v_item.version_id or (p_command->>'variantId')::uuid <> v_item.variant_id or (p_command->>'harmonizationId')::uuid <> v_item.harmonization_id or (p_command->'fields'->>'sourceVersionId')::uuid is distinct from v_item.source_version_id or (p_command->'newVariant'->>'assetId')::uuid is distinct from v_item.asset_id or coalesce(p_command->'fields'->>'use','') <> 'variant' then raise exception 'Invalid command' using errcode = '22023'; end if;
   if not exists(select 1 from public.change_log where id = v_item.command_id and project_id = v_item.project_id) then
     v_result := public.apply_changes(v_item.project_id, v_batch.created_by, v_item.command_id, p_command, p_inverse, p_changes);
   end if;

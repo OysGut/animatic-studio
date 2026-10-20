@@ -427,6 +427,7 @@ function Editor({
   );
   /** Åpne bildet stort med «Oppskaler» fremme (advarselen om forstørrelse, DEC-0080). */
   const [upscaleOpen, setUpscaleOpen] = useState(false);
+  const [harmonizeOpen, setHarmonizeOpen] = useState(false);
   const openLayerImage = useCallback(
     (id: string) => {
       setSelectedLayerId(id);
@@ -726,6 +727,10 @@ function Editor({
             : {})}
           onUpscale={() => {
             setUpscaleOpen(true);
+            openLayerImage(selectedLayer.id);
+          }}
+          onHarmonize={() => {
+            setHarmonizeOpen(true);
             openLayerImage(selectedLayer.id);
           }}
           onSeek={playback.setFrame}
@@ -1415,6 +1420,7 @@ function Editor({
           if (!o) {
             setImageLayerId(null);
             setUpscaleOpen(false);
+            setHarmonizeOpen(false);
           }
         }}
         state={state}
@@ -1423,6 +1429,7 @@ function Editor({
         editable={editable}
         cmds={cmds}
         openUpscale={upscaleOpen}
+        openHarmonize={harmonizeOpen}
       />
       {carry && occurrenceId ? (
         <CarryOverDialog

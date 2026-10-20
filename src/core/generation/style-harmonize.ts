@@ -320,3 +320,83 @@ export function harmonizeStylePreview(
   const g = styleProfileId ? s.styleProfiles[styleProfileId]?.guide : null;
   return g ? styleText(g).slice(0, 2000) : "";
 }
+
+// ---------------------------------------------------------------- Masseharmonisering (krav 6)
+
+/** Et element i en massejobb: forhåndstildelte ID-er, så et resultat bare kan legges inn én gang. */
+export interface HarmonizeBatchItemPlan {
+  readonly assetId: string;
+  readonly sourceVersionId: string;
+  readonly variantId: string;
+  readonly versionId: string;
+  readonly harmonizationId: string;
+}
+
+/** Høyst så mange bilder i én massejobb (samme grense som i databasen). */
+export const HARMONIZE_BATCH_MAX = 200;
+
+/**
+ * Bildene som kan harmoniseres i én jobb: hver ressurs med et bilde (dagens godkjente eller siste), uten
+ * dubletter og uten ressurser som er fjernet. Feilmelding når valget er ugyldig.
+ */
+export function harmonizeBatchSelectionError(
+  s: ProjectState,
+  items: readonly { readonly assetId: string; readonly sourceVersionId: string }[],
+  styleProfileId: string | null,
+  referenceVersionId: string | null,
+): string | null {
+  if (!items.length) return L("Velg minst ett bilde", "Choose at least one image");
+  if (items.length > HARMONIZE_BATCH_MAX)
+    return L(`Høyst ${HARMONIZE_BATCH_MAX} bilder i én jobb`, `At most ${HARMONIZE_BATCH_MAX} images in one job`);
+  if (!styleProfileId && !referenceVersionId)
+    return L("Velg en stilprofil eller et referansebilde", "Choose a style profile or a reference image");
+  const seen = new Set<string>();
+  for (const it of items) {
+    const key = `${it.assetId}:${it.sourceVersionId}`;
+    if (seen.has(key)) return L("Samme bilde to ganger", "The same image twice");
+    seen.add(key);
+    const a = s.assets[it.assetId];
+    const v = s.assetVersions[it.sourceVersionId];
+    if (!a || a.removed || !v || !v.mimeType.startsWith("image/") || s.assetVariants[v.variantId]?.assetId !== a.id)
+      return L("Et av bildene finnes ikke lenger", "One of the images no longer exists");
+    if (!buildHarmonizePrompt(s, { assetId: a.id, versionId: v.id, styleProfileId, referenceVersionId }))
+      return L("Stilprofilen er tom – fyll den ut eller velg et referansebilde", "The style profile is empty – fill it in or choose a reference image");
+  }
+  return null;
+}
+
+/**
+ * Kommandoen som legger inn ett ferdig resultat fra massejobben (alltid ny variant, aldri i stedet for en
+ * eksisterende – REQ-0142). Samme ID-er hver gang, så et resultat som legges inn på nytt avvises som dublett.
+ */
+export function harmonizeBatchCommand(
+  s: ProjectState,
+  item: HarmonizeBatchItemPlan,
+  result: { readonly media: import("../commands/types").AssetMedia; readonly model: string },
+  batch: { readonly styleProfileId: string | null; readonly referenceVersionId: string | null; readonly qualityProfile: QualityProfileSnapshot | null },
+) {
+  const profileName = batch.styleProfileId ? (s.styleProfiles[batch.styleProfileId]?.name ?? null) : null;
+  const note = harmonizeNote(profileName, result.model);
+  return {
+    type: "ApplyHarmonizedImage" as const,
+    harmonizationId: item.harmonizationId,
+    variantId: item.variantId as never,
+    versionId: item.versionId as never,
+    media: result.media,
+    note,
+    fields: {
+      versionId: item.versionId,
+      sourceVersionId: item.sourceVersionId,
+      model: result.model.slice(0, HARMONIZATION_MAX_MODEL),
+      qualityProfile: batch.qualityProfile,
+      styleProfileId: batch.styleProfileId,
+      referenceVersionId: batch.referenceVersionId,
+      use: "variant" as const,
+      note,
+    },
+    newVariant: {
+      assetId: item.assetId as never,
+      fields: { name: harmonizedVariantName(profileName), style: "other" as const, appearance: "" },
+    },
+  };
+}

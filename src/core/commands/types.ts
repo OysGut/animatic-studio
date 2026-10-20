@@ -1222,7 +1222,7 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly note: string;
       readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields;
       /** Ny variant («Harmonisert – …») når bildet ikke skal inn i en eksisterende variant. */
-      readonly newVariant?: { readonly assetId: AssetId; readonly fields: AssetVariantFields };
+      readonly newVariant?: { readonly assetId: AssetId; readonly fields: AssetVariantFields; /** «Bare her» (REQ-0141): varianten arkiveres, så ressursens bibliotek ikke endres. */ readonly archived?: boolean };
     }
   | { readonly type: "UndoApplyHarmonizedImage"; readonly harmonizationId: string; readonly variantId: AssetVariantId; readonly versionId: AssetVersionId; readonly createdVariant: boolean }
   /** Endrer bruksvalget eller fjerner metadataen (removed). Originalbildet røres aldri. */
