@@ -10,6 +10,7 @@ import {
   profileBudgetRemaining,
   profileChoice,
   qualityProfileError,
+  effortChoice,
   qualityProfileSnapshot,
   qualityProfilesOf,
   type Command,
