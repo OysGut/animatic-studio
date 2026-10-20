@@ -88,6 +88,22 @@ await h.scenario("p4-mask", occ.id, "nb", async page => {
   h.check(png.at(26,32)[3]===255 && png.at(32,32)[3]===0 && png.at(20,32)[3]===0, "uvalgt maskelag brukes som maske, ikke synlig innhold");
   solid.mask=null; edge.width=16; edge.transform={...edge.transform,x:12,opacity:.5};
 });
+await h.scenario("p4-effects", occ.id, "nb", async page => {
+  solid.effects={shadow:{color:"#ff0000",blur:0,offsetX:16,offsetY:0}};
+  await page.reload({waitUntil:"networkidle"});
+  await page.getByTestId("alpha-export-open").click();
+  await page.getByTestId(`alpha-layer-${edge.id}`).uncheck();
+  await page.getByTestId("alpha-range").selectOption("in-out");
+  await page.getByTestId("alpha-in").fill("0"); await page.getByTestId("alpha-out").fill("1");
+  for (const effects of [true,false]) {
+    await page.getByTestId("alpha-effects").setChecked(effects);
+    const pending=page.waitForEvent("download"); await page.getByTestId("alpha-start").click();
+    const dl=await pending,path=`${h.out}/effects-${effects}.zip`; await dl.saveAs(path);
+    const png=decode(Buffer.from(Object.values(unzipSync(readFileSync(path)))[0]));
+    h.check(png.at(47,32)[3]===(effects?255:0), `effets ${effects}: skygge er ${effects?"med":"utelatt"} i PNG`);
+  }
+  solid.effects=null;
+});
 await h.scenario("p4-cancel", occ.id, "nb", async page => {
   c.duration_frames = 250; // Reload the mocked row before opening a long export.
   await page.reload({ waitUntil: "networkidle" });

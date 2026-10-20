@@ -137,7 +137,7 @@ export function ExportAnimaticDialog({
 }) {
   const [scope, setScope] = useState<Scope>("film");
   const [alphaOpen, setAlphaOpen] = useState(false);
-  const alphaClip = clips.find(c => c.occurrenceId === selectedId) ?? clips.find(c => c.compositionId);
+  const alphaClip = clips.find(c => c.occurrenceId === selectedId);
   const alphaComposition = alphaClip?.compositionId ? state.compositions[alphaClip.compositionId] : undefined;
   const [fromId, setFromId] = useState<string>("");
   const [toId, setToId] = useState<string>("");
@@ -1128,7 +1128,7 @@ export function ExportAnimaticDialog({
         ) : null}
 
         <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
-        <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)}>
+        <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)} title={L("Velg en scene med 2D-komposisjon i monteringen.", "Select a scene with a 2D composition in the assembly.")}>
           <Download />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
         </Button>
 
