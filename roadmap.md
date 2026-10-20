@@ -1,5 +1,10 @@
 # Veikart
 
+## Kontekstkoblinger og B-049-plan (20.10.2026)
+- [ ] Synlig mål med miniatyr og målbytte; AI aldri forhåndsvalgt; prosent og grupperte gjentakelser.
+- [ ] Tester for rettelsene på norsk og engelsk.
+- [ ] Kun plan for B-049 i docs/development/PLAN_B049_MULTILANG.md; ingen språkimplementering eller migrasjon.
+
 ## M6 – resten av produksjonskontrollen (20.10.2026)
 - [x] P8-avvik: vist modell = brukt modell; samlet kostnadsanslag i massemodus med kvalitetsprofil.
 - [x] Plan i docs/development/PLAN_M6_REST.md.
