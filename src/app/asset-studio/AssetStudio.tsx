@@ -69,6 +69,8 @@ import { ObjectTimeline } from "./ObjectTimeline";
 import { StudioAudioTracks, muteDraftCommand } from "./StudioAudioTracks";
 import { StudioScript } from "./StudioScript";
 import { CarryOverDialog } from "@/app/scene-editor/CarryOverDialog";
+import { AlphaExportDialog } from "@/app/assembly/AlphaExportDialog";
+import { Download } from "lucide-react";
 
 const isTyping = (t: EventTarget | null) =>
   t instanceof HTMLElement &&
@@ -141,6 +143,7 @@ export function AssetStudio({
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const [mode, setMode] = useState<StudioPreviewMode>("object");
+  const [alphaOpen, setAlphaOpen] = useState(false);
   const [area, setArea] = useState<"object" | "scene">("object");
   const playback = usePlayback(
     duration,
@@ -386,6 +389,7 @@ export function AssetStudio({
       data-testid="asset-studio"
       data-draft-steps={d.draft.steps.length}
     >
+      {alphaOpen ? <AlphaExportDialog state={view} composition={comp} initialLayerIds={[layerId]} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
       <Toolbar
         title={L(`Asset Studio – ${layer.name}`, `Asset Studio – ${layer.name}`)}
         status={
@@ -418,6 +422,10 @@ export function AssetStudio({
           </IconButton>
         </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarButton data-testid="asset-studio-alpha-open" onClick={() => setAlphaOpen(true)}
+          title={L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}>
+          <Download className="size-4" />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
+        </ToolbarButton>
         <ToolbarGroup>
           <ToolbarButton
             active={mode === "object"}

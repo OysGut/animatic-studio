@@ -6,6 +6,9 @@
  * Alt-klikk på pilen lukker eller åpner alle. Hvilke som er lukket, huskes per bruker og scene.
  */
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AlphaExportDialog } from "@/app/assembly/AlphaExportDialog";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 import {
   ChevronDown,
   ChevronRight,
@@ -104,6 +107,7 @@ export const LayersPanel = memo(function LayersPanel({
   }, [state, back]);
   const urls = useImageUrls(paths).data;
   const [error, setError] = useState<string | null>(null);
+  const [alphaOpen, setAlphaOpen] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   /** Hvor laget slippes: foran eller bak raden, eller inn i gruppen (midten av en grupperad). */
   const [drop, setDrop] = useState<{ id: string; zone: "before" | "after" | "into" } | null>(null);
@@ -438,6 +442,12 @@ export const LayersPanel = memo(function LayersPanel({
           </button>
         ) : null}
       </div>
+      <Button variant="ghost" size="sm" className="justify-start text-xs" data-testid="alpha-export-open" disabled={!back.length}
+        onClick={() => setAlphaOpen(true)}>
+        <Download className="size-3.5" />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
+      </Button>
+      {alphaOpen ? <AlphaExportDialog state={state} composition={composition} open={alphaOpen} onOpenChange={setAlphaOpen}
+        {...(selectedLayerId ? { initialLayerIds: [selectedLayerId] } : {})} /> : null}
       {back.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
           {L("Ingen lag ennå. Bruk «Legg til lag».", "No layers yet. Use “Add layer”.")}

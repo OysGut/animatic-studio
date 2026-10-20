@@ -31037,3 +31037,331 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0837
+  title: 'P4: Valgte lag uten bakgrunn'
+  text: Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten bakgrunn.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten bakgrunn.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0838
+  title: 'P4: PNG-sekvens i ZIP'
+  text: PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0839
+  title: 'P4: WebM VP9 med eksplisitt alfastøtte'
+  text: WebM kan bare velges ved positiv alpha keep-støtte. Svart bakgrunn brukes aldri som reserve.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - WebM kan bare velges ved positiv alpha keep-støtte. Svart bakgrunn brukes aldri som reserve.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0840
+  title: 'P4: Tidsområde for lageksport'
+  text: Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0841
+  title: 'P4: Effekter og alfatolkning'
+  text: Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0842
+  title: 'P4: Samme compositor og formatadapter'
+  text: Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0843
+  title: 'P4: Fremdrift og avbryt uten halv fil'
+  text: Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+- id: REQ-0844
+  title: 'P4: Pikselkvalitet, språk og ikke-destruktivitet'
+  text: Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    document: docs/development/PLAN_P4-6.md
+    section: B
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - COMPOSE
+  - EXPORT
+  - UI
+  invariants:
+  - INV-11
+  dependencies: []
+  acceptance:
+  - Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
+  tests:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/layer-alpha.ts
+  - src/engine/export/alpha.ts
+  - src/engine/compositor/film.ts
+  - src/engine/compositor/canvas.ts
+  - src/app/assembly/AlphaExportDialog.tsx
+  verification:
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+  notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
+    formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
+    migrasjon for P4.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.

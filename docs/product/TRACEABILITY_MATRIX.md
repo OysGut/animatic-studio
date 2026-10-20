@@ -19,7 +19,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | INV-08 | Brukeren kan godkjenne avvik, oppdatere produksjonsmateriale eller angre relevant endring. | 27 | 26 |
 | INV-09 | Karakterkontinuitet følger fortellingstid, også ved flashbacks. | 16 | 16 |
 | INV-10 | Produksjonsteknisk segmentering endrer ikke manusscenenes identiteter. | 11 | 11 |
-| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 13 | 13 |
+| INV-11 | Generativ AI er valgfritt for ordinær 2D-animatic-avspilling og eksport. | 21 | 13 |
 | INV-12 | Betalte API-kall følger eksplisitte kostnadsgodkjenninger. | 20 | 17 |
 | INV-13 | Delte ressurser er versjonerte og ikke-destruktive. | 33 | 28 |
 | INV-14 | Deaktivering/skjuling er aldri sletting; materiale kan gjenaktiveres. | 17 | 17 |
@@ -31,12 +31,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 219 | 59 | 219 | 119 |
+| CORE | Project Core | 227 | 59 | 227 | 119 |
 | SCRIPT | Screenplay Engine | 136 | 32 | 136 | 134 |
 | TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
 | LIBRARY | Resource Library | 96 | 10 | 85 | 81 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 89 | 14 | 89 | 88 |
+| COMPOSE | 2D Composition Engine | 97 | 14 | 97 | 88 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 62 |
 | PROMPT | Prompt Orchestration Engine | 58 | 15 | 54 | 50 |
@@ -46,10 +46,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | VERSION | Version & Dependency Engine | 97 | 38 | 95 | 94 |
 | L10N | Localization Engine | 41 | 4 | 40 | 40 |
 | PRESENT | Presentation Engine | 30 | 3 | 25 | 25 |
-| EXPORT | Export Engine | 61 | 12 | 61 | 61 |
+| EXPORT | Export Engine | 69 | 12 | 69 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 315 | 23 | 311 | 208 |
+| UI | Brukergrensesnitt og designsystem | 323 | 23 | 319 | 208 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 67 |
 | 2 | 97 | 93 |
-| 3 | 192 | 93 |
+| 3 | 200 | 93 |
 | 4 | 85 | 84 |
 | 5 | 152 | 141 |
 | 6 | 49 | 48 |
@@ -906,3 +906,11 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0834 | Beslutning DEC-0099 | CORE, UI | src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql | 4 | – | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
 | REQ-0835 | Beslutning DEC-0099 | CORE, UI | src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql | 4 | – | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
 | REQ-0836 | Beslutning DEC-0099 | CORE, UI | src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql | 4 | – | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning. |
+| REQ-0837 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0838 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0839 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0840 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0841 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0842 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0843 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
+| REQ-0844 | Beslutning DEC-0099 | CORE, COMPOSE, EXPORT, UI | src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx | 2 | tests/unit/layer-alpha.test.ts, tests/visual/p4-alpha-export.mjs | Implementert – ikke verifisert | 2026-10-20 DEC-0099: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning. |
