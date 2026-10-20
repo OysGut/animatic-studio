@@ -31400,7 +31400,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0846
   title: 'P5: AI bare for usikre linjer'
   text: AI bare for usikre linjer.
@@ -31436,7 +31436,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0847
   title: 'P5: Kostnad og godkjenning av linjekobling'
   text: Kostnad og godkjenning av linjekobling.
@@ -31472,7 +31472,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0848
   title: 'P5: Forhåndsvisning av linjeforslag'
   text: Forhåndsvisning av linjeforslag.
@@ -31508,7 +31508,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0849
   title: 'P5: Godkjente linjekoblinger'
   text: Godkjente linjekoblinger.
@@ -31544,7 +31544,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0850
   title: 'P5: Reversible linjekommandoer'
   text: Reversible linjekommandoer.
@@ -31580,7 +31580,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0851
   title: 'P5: Norsk hovedmanus bevares'
   text: Norsk hovedmanus bevares.
@@ -31616,7 +31616,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0852
   title: 'P5: Backup av linjekoblinger'
   text: Backup av linjekoblinger.
@@ -31652,7 +31652,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0853
   title: 'P5: Språk og testdekning av linjekobling'
   text: Språk og testdekning av linjekobling.
@@ -31688,7 +31688,7 @@ requirements:
   history:
   - date: '2026-10-20'
     decision: DEC-0099
-    change: C implementert med sceneavgrensede forslag, eksplisitt bekreftelse og reversible linjekoblinger; DB-verifikasjon gjenstår.
+    change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
 - id: REQ-0854
   title: 'M8: Navngitte prosjektprofiler'
   text: Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.

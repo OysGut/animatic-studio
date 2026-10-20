@@ -1,15 +1,12 @@
 # Implementeringsstatus – Animatic Studio
 
-## C / B-050 – 20.10.2026, delvis levert; ikke klart for Cloud
-- 0064_translation_line_links.sql skrevet, IKKE kjørt. Erstatter apply_changes/delete_project/purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet. Schema 64, medlems-SELECT, ingen klientskriving, service-role ALL. purge_removed_assets urørt.
-- Gjennomgang per scene etter DEC-0058-import: 1:1/1:n/n:1, sikkerhet og begrunnelse, validering med forkastet-teller, kildefilter, godkjenn/avvis/juster, terskelgodkjenning i én kommando med invers. Godkjente koblinger brukes i oversatt visning uten norsk kildeendring; backup omskriver arrayreferanser.
-- Eksplisitt bekreftelse og fingeravtrykkskontroll før eksisterende tjenestebetalte translation_align. Brukerkostnad 0 USD; M8 vises som kontekst og overstyrer ikke tjenestens tekstmodell. Ingen ekte AI-kall eller betalte testkall. Oppdragsisolert kredittforbruk ikke tilgjengelig.
-- Språknavn i opptaksdialogen og stablet profilfelt med avstand i alfaeksport er rettet.
-- Automatisk typesignal: build OK. Full Vitest 1871 bestått, 0 feilet, 10 eksisterende hoppet over. Nye line-linking unit 10/10. P5 18/18 med norsk/engelsk skjermbilder. DV6 16/16, T2 69/69, Story Lab 32/32 ved isolert gjentak, U5 65/65, P6 18/18. Scene-panels 38/39: Alt-klikk-kontroll feiler også isolert; ingen retting utenfor oppdraget. Verifisering4 full kjøring 50/54: lyd/bilde-avvik 231 ms, Courier Prime-måling og to mikrofonkontroller; isolert gjentak ble avbrutt og teller ikke som full kjøring.
-- DB-testkjøring blokkert før første test: lokal Postgres localhost:54329 utilgjengelig. To nye 0064 DB-tester skrevet for RLS/grants, apply_changes, fremmede referanser, delete og purge, men ikke kjørt. Migrasjonen er ikke DB-verifisert og anbefales ikke kjørt i Cloud ennå.
-- ÅPENT: Eksisterende import bevarer ikke oversatte linjer uten DEC-0058-regelpar. Gjennomgangen støtter derfor bare lagrede oversettelseslinjer; full B-050 for uparrede importlinjer er ikke ferdig. Dette krever varig importlinjemodell/utvidet importflyt. Ikke rapportert som full C-leveranse.
-- i18n 0 uten engelsk; build_docs/check_kb OK (862 krav, 0 udekkede mandatlinjer). REQ-0845–0853 er Implementert – ikke verifisert med eksplisitt importavgrensning.
-
+## C / B-050 – 20.10.2026, retterunde: klar for Cloud-gjennomgang
+- 0064_translation_line_links.sql skrevet, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet (create_project, create_dialogue_batch, guard_quality_profile_job, purge_removed_assets urørt). Skjemaversjon 64.
+- Nye tabeller: `translation_line_links` og `translation_lines` (engelske/oversatte linjer uten regelpar, per scenevariant og språk). Medlems-SELECT, ingen klientskriving, service_role ALL, RLS.
+- Retting 1: tvetydig `id` i valideringen (unnest-alias) rettet med `s(block_id)`/`tt(translation_id)`.
+- Retting 2: apply_changes validerer bare linjekoblinger som legges til, eller endres med nye referanser, i samme kall (`v_link_check`). Koblinger som peker på fjernede/flyttede linjer regnes som utdatert i kjernen (`lineLinkStale`), vises med merke i gjennomgangen og blokkerer aldri andre kommandoer; avvisning og angring av utdaterte koblinger er tillatt, godkjenning krever gyldige linjer.
+- Retting 3: importen lagrer linjer uten regelpar via `AddTranslationLines` (invers `UndoAddTranslationLines`) i samme angregruppe; ny import av samme scene/språk pensjonerer eldre uparrede linjer (removed=true). AI-scope per scene: usikre oversettelser + uparrede linjer mot norske linjer bak usikre par eller uten oversettelse. Norsk hovedmanus endres aldri.
+- Tester: Vitest full grønn, line-linking 12/12 (1:n, n:1 og AI-only uparret linje med mock), DB 137/137 lokalt (inkl. fjernet lenket replikk: kommandoen og neste kommando lykkes), P5 24/24 NO/EN med utdatert-merke og uparret linje.
 
 ## D / M8 og P4-rester – 20.10.2026
 - 0063 er endelig lokalt, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0062; create_project fra 0001 (bare tre standardprofiler/aktivt valg); create_dialogue_batch fra 0061 (bare snapshot i jobbreservasjoner). purge_removed_assets urørt. Ny private.guard_quality_profile_job serialiserer månedskapasitet og beskytter metadata.

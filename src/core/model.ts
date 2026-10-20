@@ -944,6 +944,8 @@ export interface ProjectState {
   readonly noteFlags: Readonly<Record<string, import("./notes/flags").NoteFlag>>;
   /** M8: navngitte kvalitetsprofiler (migrasjon 0063). */
   readonly translationLineLinks: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLineLink>>;
+  /** B-050: imported translated lines without a rule pair (migration 0064). */
+  readonly translationLines: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLine>>;
   readonly qualityProfiles: Readonly<Record<string, import("./generation/quality-profile").QualityProfile>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
@@ -1369,6 +1371,7 @@ export const COLLECTION_TABLES = {
   dialogueReviews: "dialogue_reviews",
   noteFlags: "note_flags",
   qualityProfiles: "quality_profiles",
+  translationLines: "translation_lines",
   translationLineLinks: "translation_line_links",
 } as const;
 
@@ -1415,6 +1418,7 @@ export function emptyProjectState(project: Project): ProjectState {
     noteFlags: {},
     qualityProfiles: {},
     translationLineLinks: {},
+    translationLines: {},
   };
 }
 

@@ -1206,6 +1206,9 @@ export type Command = import("../animation/rig-commands").RigCommand
     }
   | { readonly type: "SetLineLink"; readonly linkId: string; readonly fields: LineLinkFields; readonly removed?: boolean }
   | { readonly type: "UndoAddLineLink"; readonly linkId: string }
+  /** B-050: keep imported translated lines without a rule pair; older unpaired lines of the same scenes can be retired. */
+  | { readonly type: "AddTranslationLines"; readonly items: readonly { readonly lineId: string; readonly fields: import("../translation/line-align-prompt").TranslationLineFields }[]; readonly removeLineIds?: readonly string[] }
+  | { readonly type: "UndoAddTranslationLines"; readonly lineIds: readonly string[]; readonly restore: readonly import("../translation/line-align-prompt").TranslationLine[] }
   | { readonly type: "ApproveLineLinks"; readonly linkIds: readonly string[]; readonly additions?: readonly { readonly linkId: string; readonly fields: LineLinkFields }[] }
   | { readonly type: "RejectLineLinks"; readonly linkIds: readonly string[]; readonly removed: boolean }
   | { readonly type: "RestoreLineLinks"; readonly items: readonly import("../translation/line-align-prompt").TranslationLineLink[] }

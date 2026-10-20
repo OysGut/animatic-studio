@@ -141,7 +141,7 @@ export function translatedState(s: ProjectState, lang: string): ProjectState {
   // B-050: approved correspondence affects translated projection only, never source state.
   for (const link of Object.values(s.translationLineLinks ?? {})) {
     if (link.removed || link.language !== lang || !["approved","manual"].includes(link.origin)) continue;
-    const texts=link.targetTranslationIds.map(id=>s.translations[id]).flatMap(t=>t && !t.removed && t.language===lang ? [t.text] : []);
+    const texts=link.targetTranslationIds.flatMap(id=>{const t=s.translations[id]??s.translationLines?.[id];return t && !t.removed && t.language===lang ? [t.text] : [];});
     if (!texts.length) continue;
     link.sourceBlockIds.forEach((id,index)=> {
       const b=blocks[id];
@@ -392,7 +392,7 @@ export function alignTranslation(
 export function alignLines(
   p: ParsedScene,
   blocks: readonly ScriptBlock[],
-): { lines: LinePair[]; unmatched: number } {
+): { lines: LinePair[]; unmatched: number; unpaired: UnpairedLine[] } {
   const E = p.elements.filter((e) => e.kind !== "heading" && e.text.trim());
   const B = blocks.filter((b) => b.kind !== "heading");
   const n = E.length;
@@ -438,20 +438,59 @@ export function alignLines(
       }
     }
   const lines: LinePair[] = [];
+  const unpaired: UnpairedLine[] = [];
   let unmatched = 0;
+  const keep = (i: number) => unpaired.push({ ord: i, kind: E[i]!.kind, text: E[i]!.text });
   for (let i = n, j = m; i > 0 || j > 0;) {
     const mv = move[i]![j]!;
     if (i > 0 && j > 0 && mv === 0) {
       if (sim(i - 1, j - 1) > 0) lines.push({ blockId: B[j - 1]!.id, text: E[i - 1]!.text });
-      else unmatched++;
+      else {
+        unmatched++;
+        keep(i - 1);
+      }
       i--;
       j--;
     } else if (i > 0 && (j === 0 || mv === 1)) {
       unmatched++;
+      keep(i - 1);
       i--;
     } else j--;
   }
-  return { lines: lines.reverse(), unmatched };
+  return { lines: lines.reverse(), unmatched, unpaired: unpaired.reverse() };
+}
+
+/** B-050: an imported line the rules could not pair; kept so AI or the user can link it later. */
+export interface UnpairedLine {
+  readonly ord: number;
+  readonly kind: string;
+  readonly text: string;
+}
+
+/**
+ * B-050: imported lines without a rule pair for the linked scenes, as fields for AddTranslationLines.
+ * Older unpaired lines of the same scenes and language are listed for retirement (never hard-deleted).
+ */
+export function unpairedTranslationLines(
+  s: ProjectState,
+  lang: string,
+  links: readonly { readonly link: SceneLink }[],
+  parsed: ParsedScreenplay,
+): { items: { variantId: string; language: string; ord: number; kind: string; text: string }[]; retire: string[] } {
+  const items: { variantId: string; language: string; ord: number; kind: string; text: string }[] = [];
+  const variants = new Set<string>();
+  for (const { link } of links) {
+    const o = link.occurrenceId ? s.occurrences[link.occurrenceId] : undefined;
+    const p = parsed.scenes[link.parsedIndex];
+    if (!o || !p || variants.has(o.variantId)) continue;
+    variants.add(o.variantId);
+    for (const u of alignLines(p, blocksOfVariant(s, o.variantId)).unpaired)
+      if (u.text.trim()) items.push({ variantId: o.variantId, language: lang, ord: u.ord, kind: u.kind.slice(0, 30), text: u.text.slice(0, 5000) });
+  }
+  const retire = Object.values(s.translationLines ?? {})
+    .filter((u) => !u.removed && u.language === lang && variants.has(u.variantId))
+    .map((u) => u.id);
+  return { items, retire };
 }
 
 export interface TranslationItem {

@@ -1,4 +1,4 @@
-import type { TranslationLineLink } from "./translation/line-align-prompt";
+import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
 import type { DialogueVersion } from "./dialogue/versions";
@@ -555,6 +555,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         removed: c.removed,
       };
     }
+    case "translationLines": {
+      const u=e as unknown as TranslationLine;
+      return {...base,variant_id:u.variantId,language:u.language,ord:u.ord,kind:u.kind,text:u.text,removed:u.removed};
+    }
     case "translationLineLinks": {
       const l=e as unknown as TranslationLineLink;
       return {...base,variant_id:l.variantId,language:l.language,source_block_ids:l.sourceBlockIds,target_translation_ids:l.targetTranslationIds,origin:l.origin,confidence:l.confidence,reason:l.reason,removed:l.removed};
@@ -775,6 +779,7 @@ export const TABLE_ORDER: readonly string[] = [
   "story_canvas_edges",
   "note_flags",
   "quality_profiles",
+  "translation_lines",
   "translation_line_links",
 ];
 
@@ -912,6 +917,7 @@ export interface ProjectRows {
   /** M8 kvalitetsprofiler (migrasjon 0063). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly quality_profiles?: readonly Row[];
   readonly translation_line_links?: readonly Row[];
+  readonly translation_lines?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1599,6 +1605,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         removed: x["removed"] === true,
       })),
     ),
+    translationLines: byId((r.translation_lines ?? []).map((x): TranslationLine => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),ord:num(x["ord"]),kind:str(x["kind"]),text:str(x["text"]),removed:x["removed"]===true}))),
     translationLineLinks: byId((r.translation_line_links ?? []).map((x): TranslationLineLink => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),sourceBlockIds:json(x["source_block_ids"]) as string[],targetTranslationIds:json(x["target_translation_ids"]) as string[],origin:str(x["origin"]) as TranslationLineLink["origin"],confidence:num(x["confidence"]),reason:str(x["reason"]),removed:x["removed"]===true}))),
     translations: byId(
       (r.translations ?? []).map((x) => ({

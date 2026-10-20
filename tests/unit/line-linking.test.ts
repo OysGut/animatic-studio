@@ -1,5 +1,5 @@
 import { describe,it,expect } from "vitest";
-import { applyCommand,blocksOfVariant,makeBackup,stateFromRows,diffStates,emptyProjectState,lineLinkError,parseLineAlignment,lineAlignmentPrompt,linksAboveThreshold,uncertainLineScope,translatedState,backupIdMap,restoredState,type LineLinkFields,type ProjectState,type Command,type ProjectRows } from "@/core";
+import { applyCommand,blocksOfVariant,makeBackup,stateFromRows,diffStates,emptyProjectState,lineLinkError,parseLineAlignment,lineAlignmentPrompt,linksAboveThreshold,uncertainLineScope,translatedState,backupIdMap,restoredState,alignLines,translationItems,unpairedTranslationLines,lineLinkStale,keyBetween,orderedOccurrences,type SceneLink,type ParsedScreenplay,type LineLinkFields,type ProjectState,type Command,type ProjectRows } from "@/core";
 import {seedProject,tid,envelope} from "../helpers/fixtures";
 function fixture() {
   let s=seedProject(2).state;
@@ -46,4 +46,61 @@ describe("B-050 line linking",()=>{
     const l=Object.values(restored.translationLineLinks)[0];expect(l?.sourceBlockIds).toEqual(fields.sourceBlockIds.map(x=>map.get(x)));expect(l?.targetTranslationIds).toEqual(fields.targetTranslationIds.map(x=>map.get(x)));
   });
   it("storage roundtrip includes array references",()=>{const {s,fields}=fixture();const id=tid();const r=apply(s,{type:"SetLineLink",linkId:id,fields});const patch=diffStates(s,r.state);const row=patch.inserts["translation_line_links"]?.[0];expect(row?.["source_block_ids"]).toEqual(fields.sourceBlockIds);expect(row?.["target_translation_ids"]).toEqual(fields.targetTranslationIds);});
+});
+describe("B-050 unpaired import lines",()=>{
+  it("keeps lines without a rule pair; AI links 1:n, n:1 and an unpaired line; Norwegian never changes",()=>{
+    const base=seedProject(1).state;const prod=Object.values(base.productions).find(p=>p.kind==="main");if(!prod)throw new Error("main");
+    const sceneId=tid<"scene">(),variantId=tid<"scene_variant">(),occurrenceId=tid<"scene_occurrence">();
+    const no=["Kari åpner døra og ser ut i snøen.","Hun tar på seg lua.","Hun går ut.","Hei!"];
+    let k:string|null=null;const blocks=no.map((text,i)=>{k=keyBetween(k,null);return {blockId:tid<"script_block">(),kind:(i===3?"dialogue":"action") as "action"|"dialogue",text,orderKey:k};});
+    const occs=orderedOccurrences(base,prod.id);
+    let s=apply(base,{type:"CreateScene",productionId:prod.id,sceneId,variantId,occurrenceId,orderKey:keyBetween(occs.at(-1)?.orderKey??null,null),heading:{intExt:"INT.",location:"HYTTA",time:"DAG"},blocks}).state;
+    const en=[["action","Kari opens the door."],["action","She looks out at the snow."],["action","She puts on her hat and walks out."],["dialogue","Hello!"],["dialogue","Anyone there?"]] as const;
+    const src={page:1,y:0};
+    const parsed={format:"fountain",pageCount:1,titlePage:[],warnings:[],stats:{numbered:0,unnumbered:1,uncertain:0,duplicateNumbers:[]},scenes:[{number:null,rawHeading:"INT. CABIN - DAY",heading:{intExt:"INT.",location:"CABIN",time:"DAY"},source:src,warnings:[],elements:en.map(([kind,text])=>({kind,text,source:src}))}]} as unknown as ParsedScreenplay;
+    const link={parsedIndex:0,parsedHeading:"INT. CABIN - DAY",parsedNumber:null,occurrenceId,certainty:"uncertain",lines:alignLines(parsed.scenes[0]!,blocksOfVariant(s,variantId)).lines,unmatched:0} as unknown as SceneLink;
+    const items=translationItems(s,"en",[{link,approved:false}],parsed).filter(x=>x.blockId);
+    const unpaired=unpairedTranslationLines(s,"en",[{link}],parsed);
+    expect(items.length+unpaired.items.length).toBe(en.length);
+    expect(unpaired.items.length).toBeGreaterThan(0);
+    s=apply(s,{type:"AddTranslations",items:items.map(x=>({translationId:tid<"translation">(),fields:{blockId:x.blockId as never,variantId:null,language:"en",text:x.text,basedOnRev:x.basedOnRev,status:"uncertain"}}))}).state;
+    const add=apply(s,{type:"AddTranslationLines",items:unpaired.items.map(fields=>({lineId:tid(),fields}))});
+    // Creation is reversible
+    expect(Object.values(apply(add.state,add.inverse).state.translationLines)).toHaveLength(0);
+    s=add.state;
+    const scope=uncertainLineScope(s,variantId,"en");
+    expect(scope.targets.map(t=>t.text).sort()).toEqual(en.map(x=>x[1]).slice().sort());
+    expect(scope.sources).toHaveLength(4);
+    const prompt=lineAlignmentPrompt(s,variantId,"en");
+    for (const u of unpaired.items) expect(prompt.user).toContain(u.text);
+    const id=(text:string)=>{const t=scope.targets.find(x=>x.text===text);if(!t)throw new Error(text);return t.id;};
+    const b=blocks.map(x=>x.blockId as string);
+    // Mocked AI answer (no real AI call).
+    const mock=JSON.stringify({links:[{sourceBlockIds:[b[0]],targetTranslationIds:[id(en[0][1]),id(en[1][1])],confidence:0.9,reason:"split"},{sourceBlockIds:[b[1],b[2]],targetTranslationIds:[id(en[2][1])],confidence:0.85,reason:"merged"},{sourceBlockIds:[b[3]],targetTranslationIds:[id(en[3][1]),id(en[4][1])],confidence:0.8,reason:"extra line"}]});
+    const r=parseLineAlignment(mock,s,variantId,"en");
+    expect(r.discarded).toBe(0);expect(r.links).toHaveLength(3);
+    const unpairedIds=new Set(Object.keys(s.translationLines));
+    expect(r.links.some(l=>l.targetTranslationIds.some(t=>unpairedIds.has(t)))).toBe(true);
+    const before=s.blocks;
+    const approved=apply(s,{type:"ApproveLineLinks",linkIds:[],additions:r.links.map(fields=>({linkId:tid(),fields}))}).state;
+    expect(approved.blocks).toEqual(before);
+    const view=translatedState(approved,"en");
+    expect(view.blocks[b[0]!]?.text).toBe(`${en[0][1]}\n${en[1][1]}`);
+    expect(view.blocks[b[1]!]?.text).toBe(en[2][1]);
+    expect(view.blocks[b[2]!]?.text).toBe("");
+    expect(view.blocks[b[3]!]?.text).toBe(`${en[3][1]}\n${en[4][1]}`);
+    expect(uncertainLineScope(approved,variantId,"en").targets).toHaveLength(0);
+  });
+  it("a link whose line is later removed is stale, not blocking; later commands still apply",()=>{
+    const {s,fields,blocks}=fixture();const id=tid();
+    const linked=apply(s,{type:"SetLineLink",linkId:id,fields:{...fields,origin:"approved"}}).state;
+    const prod=Object.values(s.productions).find(p=>p.kind==="main");if(!prod)throw new Error("main");
+    const removed=apply(linked,{type:"RemoveBlock",productionId:prod.id,blockId:blocks[0]!.id}).state;
+    const link=removed.translationLineLinks[id];if(!link)throw new Error("link");
+    expect(lineLinkStale(removed,link)).toBe(true);
+    expect(lineLinkStale(linked,linked.translationLineLinks[id]!)).toBe(false);
+    const other=blocks[1]!;
+    expect(apply(removed,{type:"EditBlockText",productionId:prod.id,blockId:other.id,text:"Senere endring"}).state.blocks[other.id]?.text).toBe("Senere endring");
+    expect(apply(removed,{type:"RejectLineLinks",linkIds:[id],removed:true}).state.translationLineLinks[id]?.removed).toBe(true);
+  });
 });

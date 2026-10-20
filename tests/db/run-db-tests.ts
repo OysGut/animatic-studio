@@ -36,6 +36,7 @@ import {
   blocksOfVariant,
   comparePromotion,
   keyBetween,
+  lineLinkStale,
   newMainVariantCommands,
   orderedOccurrences,
   promotionCommands,
@@ -134,6 +135,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     continuity_events: await q("continuity_events"),
     translations: await q("translations"),
     translation_line_links: await q("translation_line_links"),
+    translation_lines: await q("translation_lines"),
     asset_relations: await q("asset_relations"),
     posters: await q("posters"),
     style_profiles: await q("style_profiles"),
@@ -5967,7 +5969,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 63, "skjemaversjon 63");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 64, "skjemaversjon 64");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
@@ -6115,21 +6117,37 @@ try {
   await test("0064: approved links persist via apply_changes, RLS, foreign scope and project deletion", async () => {
     const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Line-link fixture') id`)[0]))?.["id"]);
     await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
-    const initial=await loadState(bp);const prod=Object.values(initial.productions).find(p=>p.kind==='main');assert(prod,"main missing");
-    const sceneId=newId(),variantId=newId(),blockId=newId(),occurrenceId=newId();
-    const created=applyCommand(initial,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"CreateScene",productionId:prod.id,sceneId:sceneId as never,variantId:variantId as never,occurrenceId:occurrenceId as never,orderKey:"a0",heading:{intExt:"INT.",location:"TEST",time:"DAG"},blocks:[{blockId:blockId as never,kind:"dialogue",text:"Norsk linje",orderKey:"a0"}]}});
-    assert(created.ok,"scene command failed");
-    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"CreateScene"})},${sql.json(JSON.parse(JSON.stringify(created.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(initial,created.state))))})`);
-    const translationId=newId();const translated=applyCommand(created.state,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"AddTranslations",items:[{translationId:translationId as never,fields:{blockId:blockId as never,variantId:null,language:"en",text:"English line",basedOnRev:1,status:"uncertain"}}]}});
-    assert(translated.ok,"translation command failed");
-    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},${sql.json(JSON.parse(JSON.stringify(translated.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(created.state,translated.state))))})`);
-    const id=newId();const row={id,project_id:bp,variant_id:variantId,language:"en",source_block_ids:[blockId],target_translation_ids:[translationId],origin:"approved",confidence:0.9,reason:"Evidence",removed:false,revision:1};
-    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},${sql.json({type:"UndoAddLineLink",linkId:id})},${sql.json({inserts:{translation_line_links:[row]}})})`);
-    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===1,"member cannot read");
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const sceneId=newId(),variantId=newId(),occurrenceId=newId(),b1=newId(),b2=newId(),b3=newId(),b4=newId();
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:sceneId as never,variantId:variantId as never,occurrenceId:occurrenceId as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"TEST",time:"DAG"},blocks:(()=>{let k:string|null=null;return [b1,b2,b3,b4].map((blockId,i)=>{k=keyBetween(k,null);return {blockId:blockId as never,kind:"action" as const,text:`Norsk linje ${i}`,orderKey:k};});})()});
+    const translationId=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslations",items:[{translationId:translationId as never,fields:{blockId:b1 as never,variantId:null,language:"en",text:"English line",basedOnRev:1,status:"uncertain"}}]});
+    // Unpaired imported lines are kept per scene and language (B-050).
+    const u1=newId(),u2=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:u1,fields:{variantId,language:"en",ord:2,kind:"action",text:"First half"}},{lineId:u2,fields:{variantId,language:"en",ord:3,kind:"action",text:"Second half"}}]});
+    assert((await sql`select id from public.translation_lines where project_id=${bp} and not removed`).length===2,"unpaired lines not kept");
+    const id=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:id,fields:{variantId,language:"en",sourceBlockIds:[b1],targetTranslationIds:[translationId],origin:"approved",confidence:0.9,reason:"Evidence"}});
+    const splitId=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:splitId,fields:{variantId,language:"en",sourceBlockIds:[b2],targetTranslationIds:[u1,u2],origin:"approved",confidence:0.8,reason:"Split"}});
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===2,"member cannot read");
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_lines where project_id=${bp}`)).length===2,"member cannot read lines");
     assert((await as("authenticated",CAROL,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===0,"nonmember sees links");
-    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[{...row,id:newId(),target_translation_ids:[newId()]}]}})})`),"22023");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.translation_lines where project_id=${bp}`)).length===0,"nonmember sees lines");
+    const row={id:newId(),project_id:bp,variant_id:variantId,language:"en",source_block_ids:[b3],target_translation_ids:[newId()],origin:"approved",confidence:0.9,reason:"",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[row]}})})`),"22023");
+    // A normal script edit removes a linked line: it succeeds, and later commands in the project still succeed.
+    st=await runCommand(st,ALICE,{type:"RemoveBlock",productionId:prod.id,blockId:b1 as never});
+    const link=st.translationLineLinks[id];assert(link && lineLinkStale(st,link),"removed source must make the link stale");
+    st=await runCommand(st,ALICE,{type:"EditBlockText",productionId:prod.id,blockId:b4 as never,text:"Endret senere"});
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[splitId],removed:true});
+    // Rejecting a stale link and bringing it back with unchanged references is never blocked.
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[id],removed:true});
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[id],removed:false});
+    assert((await sql`select text from public.script_blocks where id=${b4}`)[0]?.["text"]==="Endret senere","later command failed");
     await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.translation_line_links where project_id=${bp}`).length===0,"line links left after delete");
+    assert((await sql`select id from public.translation_lines where project_id=${bp}`).length===0,"unpaired lines left after delete");
     await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
     assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
   });
@@ -6144,7 +6162,12 @@ try {
       assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
     }
     const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
-    assert(body.includes("'translation_line_links'") && body.includes("Invalid line link scope"),"scope validation absent");
+    assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'") && body.includes("Invalid line link scope"),"scope validation absent");
+    assert(body.includes("p_changes -> 'inserts' -> 'translation_line_links'") && body.includes("v_link_check"),"validation must only cover links in this call");
+    for (const t of ["translation_lines"]) {
+      const g=await sql`select has_table_privilege('anon',${`public.${t}`},'SELECT') a, has_table_privilege('authenticated',${`public.${t}`},'SELECT') r, has_table_privilege('authenticated',${`public.${t}`},'INSERT') w, has_table_privilege('service_role',${`public.${t}`},'INSERT') s, (select relrowsecurity from pg_class where oid=${`public.${t}`}::regclass) rls`;
+      assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
+    }
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.translation_line_links(id,project_id,variant_id,language,source_block_ids,target_translation_ids,origin,confidence) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),'en','{}','{}','ai',0.5)`),"42501");
   });
 } finally {

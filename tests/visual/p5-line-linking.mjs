@@ -5,7 +5,10 @@ const occ=h.rows.scene_occurrences.find(o=>o.active&&h.rows.script_blocks.filter
 if(!occ)throw new Error("Missing scene");
 const blocks=h.rows.script_blocks.filter(b=>b.variant_id===occ.variant_id&&b.kind!=="heading"&&!b.removed).slice(0,3);
 const targets=blocks.map((b,i)=>({id:`00000000-0000-7000-8000-0000000064${String(i).padStart(2,"0")}`,project_id:h.fx.project.id,revision:1,block_id:b.id,variant_id:null,language:"en",text:`English line ${i}`,based_on_rev:b.current_rev,status:"uncertain",removed:false}));
-h.rows.translations=targets;h.rows.translation_line_links=[];
+h.rows.translations=targets;
+// B-050: one imported English line without a rule pair, and one manual link whose Norwegian line no longer exists (stale).
+h.rows.translation_lines=[{id:"00000000-0000-7000-8000-000000006480",project_id:h.fx.project.id,variant_id:occ.variant_id,language:"en",ord:9,kind:"action",text:"Unpaired English line",removed:false,revision:1}];
+h.rows.translation_line_links=[{id:"00000000-0000-7000-8000-000000006490",project_id:h.fx.project.id,variant_id:occ.variant_id,language:"en",source_block_ids:["00000000-0000-7000-8000-0000000064ff"],target_translation_ids:["00000000-0000-7000-8000-000000006480"],origin:"manual",confidence:1,reason:"",removed:false,revision:1}];
 for(const lang of ["nb","en"])await h.scenario(`p5-${lang}`,occ.id,lang,async page=>{
   await page.goto(h.base+h.P+"/manus");
   let paidCalls=0;
@@ -23,7 +26,10 @@ for(const lang of ["nb","en"])await h.scenario(`p5-${lang}`,occ.id,lang,async pa
   await page.locator(`[data-block="${blocks[0].id}"]`).first().click();
   await page.getByTestId("line-links-open").click();
   const dialog=page.getByTestId("line-links-dialog");
-  h.check(await dialog.getByTestId("line-link-row").count()===3,"rules appear before AI");
+  h.check(await dialog.getByTestId("line-link-row").count()===4,"rules appear before AI, with the saved link");
+  h.check(await dialog.getByTestId("line-link-stale").count()===1,"stale link is flagged, not hidden");
+  h.check(await dialog.getByTestId("line-links-unpaired").count()===1,"unpaired imported line is counted");
+  h.check(await dialog.getByTestId("line-links-targets").locator("option",{hasText:"Unpaired English line"}).count()===1,"unpaired line can be linked manually");
   await page.getByTestId("line-links-estimate").click();
   await page.getByTestId("line-links-cost").waitFor();
   h.check(paidCalls===0,"no AI call before confirmation");

@@ -1,4 +1,4 @@
-import { lineLinkError, type TranslationLineLink } from "../translation/line-align-prompt";
+import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
 import { languageTagError } from "../dialogue/languages";
 import { clipDrift, type DialogueReview } from "../dialogue/drift";
@@ -4943,13 +4943,35 @@ function run(
       const links={...(s.translationLineLinks ?? {})}; delete links[old.id];
       return {state:{...s,translationLineLinks:links},inverse:{type:"SetLineLink",linkId:old.id,fields:old},affected:[old.id]};
     }
+    case "AddTranslationLines": {
+      const removeIds=c.removeLineIds ?? [];
+      if (!Array.isArray(c.items) || c.items.length > 2000 || removeIds.length > 2000 || (!c.items.length && !removeIds.length)) fail("invalid",L("Ugyldig antall linjer.","Invalid number of lines."));
+      const lines={...(s.translationLines ?? {})}; const restore: TranslationLine[]=[];
+      for (const id of removeIds) { const old=need(lines[id],L("Linjen","The line")); restore.push(old); lines[id]={...old,removed:true,revision:rev(old)}; }
+      for (const it of c.items) {
+        if (lines[it.lineId]) fail("invalid",L("Samme linje to ganger.","The same line twice."));
+        assertNewId(s,it.lineId);
+        if (translationLineError(s,it.fields)) fail("invalid",L("Ugyldig oversatt linje.","Invalid translated line."));
+        const f=it.fields;
+        lines[it.lineId]={id:it.lineId,revision:1,variantId:f.variantId,language:f.language,ord:f.ord,kind:f.kind,text:f.text,removed:false};
+      }
+      const ids=c.items.map(i=>i.lineId);
+      return {state:{...s,translationLines:lines},inverse:{type:"UndoAddTranslationLines",lineIds:ids,restore},affected:[...ids,...removeIds]};
+    }
+    case "UndoAddTranslationLines": {
+      const lines={...(s.translationLines ?? {})};
+      const items=c.lineIds.map(id=>{const u=need(lines[id],L("Linjen","The line")); delete lines[id]; return {lineId:u.id,fields:{variantId:u.variantId,language:u.language,ord:u.ord,kind:u.kind,text:u.text}};});
+      for (const old of c.restore) { const now=need(lines[old.id],L("Linjen","The line")); lines[old.id]={...old,revision:rev(now)}; }
+      return {state:{...s,translationLines:lines},inverse:{type:"AddTranslationLines",items,removeLineIds:c.restore.map(r=>r.id)},affected:[...c.lineIds,...c.restore.map(r=>r.id)]};
+    }
     case "ApproveLineLinks":
     case "RejectLineLinks": {
       if ((!c.linkIds.length && !(c.type === "ApproveLineLinks" && c.additions?.length)) || c.linkIds.length > 400 || new Set(c.linkIds).size !== c.linkIds.length) fail("invalid",L("Ugyldig antall koblinger.","Invalid number of links."));
       const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];
       for (const id of c.linkIds) {
         const link=need(links[id],L("Linjekoblingen","The line link"));
-        if (lineLinkError(s,link)) fail("invalid",L("Koblingen er ikke lenger gyldig.","The link is no longer valid."));
+        // Approval needs valid lines; rejecting a stale link is always allowed.
+        if (c.type === "ApproveLineLinks" && lineLinkError(s,link)) fail("invalid",L("Koblingen er ikke lenger gyldig.","The link is no longer valid."));
         old.push(link); links[id]={...link,revision:rev(link),...(c.type === "ApproveLineLinks" ? {origin:"approved" as const,removed:false} : {removed:c.removed})};
       }
       const additions=c.type === "ApproveLineLinks" ? c.additions ?? [] : [];
@@ -4967,7 +4989,9 @@ function run(
       const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];
       for (const item of c.items) {
         const now=need(links[item.id],L("Linjekoblingen","The line link"));
-        if (lineLinkError(s,item)) fail("invalid",L("Ugyldig linjekobling.","Invalid line link."));
+        // Undo restores receipts unchanged; only changed references must be valid.
+        const sameRefs=item.variantId===now.variantId && item.language===now.language && item.sourceBlockIds.join()===now.sourceBlockIds.join() && item.targetTranslationIds.join()===now.targetTranslationIds.join();
+        if (!item.removed && !sameRefs && lineLinkError(s,item)) fail("invalid",L("Ugyldig linjekobling.","Invalid line link."));
         old.push(now);links[item.id]={...item,revision:rev(now)};
       }
       return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:old},affected:c.items.map(i=>i.id)};
