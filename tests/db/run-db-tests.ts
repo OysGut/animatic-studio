@@ -6047,6 +6047,44 @@ try {
     assert((await sql`select 1 from public.user_bookmarks where project_id = ${bp}`).length === 0, "bokmerker igjen etter sletting");
   });
 
+  await test("0063: kvalitetsprofiler har RLS, standard grants og riktige funksjoner (M8)", async () => {
+    const rows = await sql`select relrowsecurity as rls from pg_class where oid='public.quality_profiles'::regclass`;
+    assert(rows[0]?.["rls"] === true, "quality_profiles: RLS mangler");
+    const g = await sql`select has_table_privilege('anon','public.quality_profiles','SELECT') as anon,has_table_privilege('authenticated','public.quality_profiles','SELECT') as read,has_table_privilege('authenticated','public.quality_profiles','INSERT') as ins,has_table_privilege('authenticated','public.quality_profiles','DELETE') as del,has_table_privilege('service_role','public.quality_profiles','INSERT') as service`;
+    assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, "quality_profiles: grants avviker");
+    const col = await sql`select 1 from information_schema.columns where table_schema='public' and table_name='projects' and column_name='active_quality_profile_id'`;
+    assert(col.length === 1, "projects.active_quality_profile_id mangler");
+    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
+    assert(body.includes("array['quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
+    assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
+    for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
+      const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
+      assert(b.indexOf("quality_profiles") < b.indexOf("delete from public.dialogue_versions"), `${fn}: rydder ikke profilene`);
+    }
+    const cp = String((await sql`select pg_get_functiondef('public.create_project(text,integer,integer)'::regprocedure) as b`)[0]?.["b"]);
+    assert(cp.includes("'Utkast'") && cp.includes("'Gjennomgang'") && cp.includes("'Endelig'"), "create_project lager ikke standardprofilene");
+  });
+
+  await test("0063: nye prosjekter får standardprofilene; eksisterende endres ikke; skriving via apply_changes", async () => {
+    const bp = (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Profiler') as id`)[0]!["id"])) as string;
+    const profiles = await as("authenticated", ALICE, (tx) => tx`select name, spec from public.quality_profiles where project_id = ${bp} order by name`);
+    assert(profiles.length === 3, "nytt prosjekt mangler de tre standardprofilene");
+    const active = await sql`select p.name as name from public.projects pr join public.quality_profiles p on p.id = pr.active_quality_profile_id where pr.id = ${bp}`;
+    assert(active[0]?.["name"] === "Utkast", "Utkast er ikke aktiv i nye prosjekter");
+    // Skriving via apply_changes med revisjonskontroll; medlem leser, ikke-medlem ser ingenting
+    const pid = "00000000-0000-7000-8000-000000006301";
+    const row = { id: pid, project_id: bp, revision: 1, name: "Kino", spec: { effort: "premium", variants: 2 }, edited_by: null, edited_at: null, removed: false };
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006302"}, ${sql.json({ type: "AddQualityProfile" })}, ${sql.json({ type: "UndoAddQualityProfile" })}, ${sql.json({ inserts: { quality_profiles: [row] } })})`);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006303"}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ updates: { projects: [{ id: bp, revision: 2, expected_revision: 1, active_quality_profile_id: pid }] } })})`);
+    const seen = await as("authenticated", ALICE, (tx) => tx`select active_quality_profile_id from public.projects where id = ${bp}`);
+    assert(seen[0]?.["active_quality_profile_id"] === pid, "aktiv profil ble ikke satt");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006304"}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ updates: { quality_profiles: [{ ...row, name: "Kino 2", revision: 2, expected_revision: 2 }] } })})`), "P0409");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.quality_profiles where project_id = ${bp}`)).length === 0, "ikke-medlem ser profilene");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
+    assert((await sql`select 1 from public.quality_profiles where project_id = ${bp}`).length === 0, "profiler igjen etter sletting");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
