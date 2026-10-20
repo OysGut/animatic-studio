@@ -1,3 +1,5 @@
+import { execFileSync } from "node:child_process";
+import { writeFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { encodeProResFrame, type ProResProfile } from "@/engine/export/prores";
 import { MovWriter, audioFramesFor, toSowt } from "@/engine/export/mov";
@@ -85,6 +87,28 @@ describe("P7 ProRes in MOV", () => {
     expect(total).toBe(Math.round((5 * 48000 * 1001) / 24000));
     const layer = await makeMov("4444", fps, 32, 16, 2, false);
     expect(find(layer, ["moov", "trak"]).length).toBe(1);
+  });
+
+  // ffprobe verifiserer en ekte fil: pcm_s16le, 48 kHz stereo og riktig lengde (Øystein 20.10.2026).
+  const hasFfprobe = (() => {
+    try { execFileSync("ffprobe", ["-version"], { stdio: "ignore" }); return true; } catch { return false; }
+  })();
+  it.skipIf(!hasFfprobe)("ffprobe: film with audio has pcm_s16le 48 kHz stereo of the right length", async () => {
+    const fps = { num: 24000, den: 1001 };
+    const frames = 12; // 12 bilder à 1001/24000 s ≈ 0,5 s
+    const b = await makeMov("hq", fps, 32, 16, frames, true);
+    const path = "/tmp/p7-audio-check.mov";
+    writeFileSync(path, b);
+    const probe = JSON.parse(
+      execFileSync("ffprobe", ["-v", "error", "-select_streams", "a", "-show_entries", "stream=codec_name,sample_rate,channels,duration", "-of", "json", path], { encoding: "utf8" }),
+    ) as { streams: { codec_name: string; sample_rate: string; channels: number; duration: string }[] };
+    expect(probe.streams.length).toBe(1);
+    const a = probe.streams[0]!;
+    expect(a.codec_name).toBe("pcm_s16le");
+    expect(a.sample_rate).toBe("48000");
+    expect(a.channels).toBe(2);
+    const expected = (frames * 1001) / 24000;
+    expect(Math.abs(parseFloat(a.duration) - expected)).toBeLessThan(0.02);
   });
 
   it("4444: decoding the alpha plane of one frame gives alpha 0 in the transparent corner", async () => {
