@@ -105,7 +105,7 @@ const SHELL = [
   { name: "manusutforsker", path: `/manusutforsker/${h.P.split("/").pop()}` },
   { name: "sceneeditor-manus", path: `${h.P}/scene?scene=${clip.occurrence_id}` },
   // ML2d: sceneeditoren med animasjonsfanen
-  { name: "sceneeditor-animasjon", path: `${h.P}/scene?scene=${clip.occurrence_id}&tab=animation` },
+  { name: "sceneeditor-animasjon", path: `${h.P}/scene?scene=${clip.occurrence_id}&fane=animation` },
 ];
 await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
   const errs = [];
