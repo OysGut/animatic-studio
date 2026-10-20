@@ -74,9 +74,25 @@ export function chooseLanguage(lang: UiLang) {
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
-  useIso(() => {
+  useEffect(() => {
+    // Lagret språk settes først når hydreringen er ferdig: ruter som lastes etterpå (egne kodebiter)
+    // hydreres ellers med et annet språk enn serveren tegnet. Siden er skjult (lang-pending) til da.
     const s = stored();
-    if (s) setLanguage(s);
+    if (!s) return;
+    let done = false;
+    const apply = () => {
+      if (done) return;
+      done = true;
+      setLanguage(s);
+    };
+    const settle = () => window.requestAnimationFrame(() => window.setTimeout(apply, 0));
+    if (document.readyState === "complete") settle();
+    else window.addEventListener("load", settle, { once: true });
+    const guard = window.setTimeout(apply, 1500);
+    return () => {
+      window.removeEventListener("load", settle);
+      window.clearTimeout(guard);
+    };
   }, []);
   useIso(() => {
     const d = document.documentElement;
