@@ -4305,6 +4305,18 @@ function run(
 
     case "UndoCreateStyleProfile": {
       const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
+      // P8: profilen er stilkilden for harmoniseringer eller har foretrukne referanser (REQ-0144)
+      if (
+        Object.values(s.styleHarmonizations ?? {}).some((h) => !h.removed && h.styleProfileId === p.id) ||
+        Object.values(s.stylePreferredReferences ?? {}).some((r) => !r.removed && r.styleProfileId === p.id)
+      )
+        fail(
+          "referenced",
+          L(
+            "Stilprofilen brukes i en harmonisering og kan ikke fjernes ved angring.",
+            "The style profile is used in a harmonization and cannot be removed by undoing.",
+          ),
+        );
       if (p.appliesTo?.length)
         fail(
           "referenced",
