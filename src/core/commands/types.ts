@@ -1212,6 +1212,26 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "ApproveLineLinks"; readonly linkIds: readonly string[]; readonly additions?: readonly { readonly linkId: string; readonly fields: LineLinkFields }[] }
   | { readonly type: "RejectLineLinks"; readonly linkIds: readonly string[]; readonly removed: boolean }
   | { readonly type: "RestoreLineLinks"; readonly items: readonly import("../translation/line-align-prompt").TranslationLineLink[] }
+  /** P8 (REQ-0137–0145): et harmonisert bilde lagret som ny versjon, med metadata om kilden. */
+  | {
+      readonly type: "ApplyHarmonizedImage";
+      readonly harmonizationId: string;
+      readonly variantId: AssetVariantId;
+      readonly versionId: AssetVersionId;
+      readonly media: AssetMedia;
+      readonly note: string;
+      readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields;
+      /** Ny variant («Harmonisert – …») når bildet ikke skal inn i en eksisterende variant. */
+      readonly newVariant?: { readonly assetId: AssetId; readonly fields: AssetVariantFields };
+    }
+  | { readonly type: "UndoApplyHarmonizedImage"; readonly harmonizationId: string; readonly variantId: AssetVariantId; readonly versionId: AssetVersionId; readonly createdVariant: boolean }
+  /** Endrer bruksvalget eller fjerner metadataen (removed). Originalbildet røres aldri. */
+  | { readonly type: "SetStyleHarmonization"; readonly harmonizationId: string; readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields; readonly removed?: boolean }
+  | { readonly type: "UndoAddStyleHarmonization"; readonly harmonizationId: string }
+  | { readonly type: "RestoreStyleHarmonizations"; readonly items: readonly import("../generation/style-harmonize").StyleHarmonization[] }
+  /** REQ-0144: foretrukket referanse per (karakter, stilprofil) – bytter pekeren atomisk. */
+  | { readonly type: "SetPreferredStyleReference"; readonly referenceId: string; readonly fields: import("../generation/style-harmonize").StylePreferredReferenceFields }
+  | { readonly type: "UndoSetPreferredStyleReference"; readonly addedId: string | null; readonly restored: readonly import("../generation/style-harmonize").StylePreferredReference[] }
   /** Story Lab (SL1): karakterprofil – oppretter eller erstatter profilen for ressursen. */
   | {
       readonly type: "SetStoryProfile";

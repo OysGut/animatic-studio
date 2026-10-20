@@ -6,7 +6,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { L, stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 64;
+export const EXPECTED_SCHEMA_VERSION = 65;
 
 const PAGE = 1000;
 
@@ -109,7 +109,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     canvasEdges,
     templateInstances,
     creditParticipants,
-    creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines,
+    creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines, styleHarmonizations, stylePreferredReferences,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -153,6 +153,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "quality_profiles", projectId),
     fetchOptional(db, "translation_line_links", projectId),
     fetchOptional(db, "translation_lines", projectId),
+    fetchOptional(db, "style_harmonizations", projectId),
+    fetchOptional(db, "style_preferred_references", projectId),
   ]);
   return {
     project: project as Row,
@@ -195,6 +197,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     quality_profiles: qualityProfiles,
     translation_line_links: translationLineLinks,
     translation_lines: translationLines,
+    style_harmonizations: styleHarmonizations,
+    style_preferred_references: stylePreferredReferences,
   };
 }
 

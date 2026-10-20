@@ -1,4 +1,5 @@
 import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
+import type { StyleHarmonization, StylePreferredReference } from "./generation/style-harmonize";
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
 import type { DialogueVersion } from "./dialogue/versions";
@@ -563,6 +564,14 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       const l=e as unknown as TranslationLineLink;
       return {...base,variant_id:l.variantId,language:l.language,source_block_ids:l.sourceBlockIds,target_translation_ids:l.targetTranslationIds,origin:l.origin,confidence:l.confidence,reason:l.reason,removed:l.removed};
     }
+    case "styleHarmonizations": {
+      const h=e as unknown as StyleHarmonization;
+      return {...base,version_id:h.versionId,source_version_id:h.sourceVersionId,model:h.model,quality_profile:h.qualityProfile,style_profile_id:h.styleProfileId,reference_version_id:h.referenceVersionId,use:h.use,note:h.note,removed:h.removed};
+    }
+    case "stylePreferredReferences": {
+      const r=e as unknown as StylePreferredReference;
+      return {...base,asset_id:r.assetId,style_profile_id:r.styleProfileId,variant_id:r.variantId,removed:r.removed};
+    }
     case "translations": {
       const t = e as Translation;
       return {
@@ -781,6 +790,8 @@ export const TABLE_ORDER: readonly string[] = [
   "quality_profiles",
   "translation_lines",
   "translation_line_links",
+  "style_harmonizations",
+  "style_preferred_references",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -918,6 +929,9 @@ export interface ProjectRows {
   readonly quality_profiles?: readonly Row[];
   readonly translation_line_links?: readonly Row[];
   readonly translation_lines?: readonly Row[];
+  /** P8 stilharmonisering (migrasjon 0065). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly style_harmonizations?: readonly Row[];
+  readonly style_preferred_references?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1607,6 +1621,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     ),
     translationLines: byId((r.translation_lines ?? []).map((x): TranslationLine => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),ord:num(x["ord"]),kind:str(x["kind"]),text:str(x["text"]),removed:x["removed"]===true}))),
     translationLineLinks: byId((r.translation_line_links ?? []).map((x): TranslationLineLink => ({id:str(x["id"]),revision:num(x["revision"]),variantId:str(x["variant_id"]),language:str(x["language"]),sourceBlockIds:json(x["source_block_ids"]) as string[],targetTranslationIds:json(x["target_translation_ids"]) as string[],origin:str(x["origin"]) as TranslationLineLink["origin"],confidence:num(x["confidence"]),reason:str(x["reason"]),removed:x["removed"]===true}))),
+    styleHarmonizations: byId((r.style_harmonizations ?? []).map((x): StyleHarmonization => ({id:str(x["id"]),revision:num(x["revision"]),versionId:str(x["version_id"]),sourceVersionId:str(x["source_version_id"]),model:str(x["model"]),qualityProfile:(x["quality_profile"] ?? null) as StyleHarmonization["qualityProfile"],styleProfileId:optStr(x["style_profile_id"]),referenceVersionId:optStr(x["reference_version_id"]),use:str(x["use"]) as StyleHarmonization["use"],note:str(x["note"]),removed:x["removed"]===true}))),
+    stylePreferredReferences: byId((r.style_preferred_references ?? []).map((x): StylePreferredReference => ({id:str(x["id"]),revision:num(x["revision"]),assetId:str(x["asset_id"]),styleProfileId:str(x["style_profile_id"]),variantId:str(x["variant_id"]),removed:x["removed"]===true}))),
     translations: byId(
       (r.translations ?? []).map((x) => ({
         id: str(x["id"]) as never,

@@ -53,6 +53,7 @@ import {
   textLayerFields,
   dialogueMirrorViolations,
   BACKUP_STATE_TABLES,
+  emptyStyleGuide,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -150,6 +151,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
     lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
     dialogue_versions: await q("dialogue_versions"),
+    style_harmonizations: await q("style_harmonizations"),
+    style_preferred_references: await q("style_preferred_references"),
   };
   return stateFromRows(rows);
 }
@@ -5969,7 +5972,7 @@ try {
     assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
     assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
-    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 64, "skjemaversjon 64");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] === 65, "skjemaversjon 65");
   });
 
   await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
@@ -6169,6 +6172,116 @@ try {
       assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
     }
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.translation_line_links(id,project_id,variant_id,language,source_block_ids,target_translation_ids,origin,confidence) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),'en','{}','{}','ai',0.5)`),"42501");
+  });
+
+  await test("0065: harmonisering og foretrukket referanse via apply_changes, RLS og validering", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Harmonize fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    let st=await loadState(bp);
+    const assetId=newId(),variantId=newId(),srcVersionId=newId(),profileId=newId();
+    st=await runCommand(st,ALICE,{type:"CreateAssets",assets:[{assetId:assetId as never,fields:{kind:"character",name:"Maja",names:[],description:"",category:"",tags:[]}}]});
+    st=await runCommand(st,ALICE,{type:"CreateAssetVariant",variantId:variantId as never,assetId:assetId as never,fields:{name:"Animatic",style:"animatic",appearance:""}});
+    st=await runCommand(st,ALICE,{type:"AddAssetVersion",versionId:srcVersionId as never,variantId:variantId as never,media:{path:`${bp}/${assetId}/${srcVersionId}/maja.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"d".repeat(64)},note:"Kilde"});
+    st=await runCommand(st,ALICE,{type:"CreateStyleProfile",profileId:profileId as never,fields:{name:"Filmens visuelle stil",isDefault:true,guide:{...emptyStyleGuide(),visualStyle:"Watercolour"}}});
+    // Harmonized image: new variant + new version + metadata in one undoable command; source untouched.
+    const harmId=newId(),newVarId=newId(),newVerId=newId();
+    st=await runCommand(st,ALICE,{type:"ApplyHarmonizedImage",harmonizationId:harmId,variantId:newVarId as never,versionId:newVerId as never,media:{path:`${bp}/${assetId}/${newVerId}/maja-h.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"e".repeat(64)},note:"Harmonisert",fields:{versionId:newVerId,sourceVersionId:srcVersionId,model:"google/gemini-3-pro-image",qualityProfile:null,styleProfileId:profileId,referenceVersionId:null,use:"variant",note:"Harmonisert"},newVariant:{assetId:assetId as never,fields:{name:"Harmonisert – Filmens visuelle stil",style:"illustrated",appearance:""}}});
+    assert((await sql`select id from public.style_harmonizations where project_id=${bp} and version_id=${newVerId} and source_version_id=${srcVersionId}`).length===1,"harmonization row missing");
+    assert((await sql`select id from public.asset_versions where id=${newVerId}`).length===1,"harmonized version missing");
+    assert((await sql`select id from public.asset_variants where id=${newVarId}`).length===1,"harmonized variant missing");
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.style_harmonizations where project_id=${bp}`)).length===1,"member cannot read");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.style_harmonizations where project_id=${bp}`)).length===0,"nonmember sees harmonizations");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.style_harmonizations(id,project_id,version_id,source_version_id,model,use) values(gen_random_uuid(),${bp},${newVerId},${srcVersionId},'x','variant')`),"42501");
+    // Invalid metadata (unknown style profile) is rejected by apply_changes.
+    const badRow={id:newId(),project_id:bp,version_id:newVerId,source_version_id:srcVersionId,model:"x",quality_profile:null,style_profile_id:newId(),reference_version_id:null,use:"variant",note:"",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetStyleHarmonization"})},null,${sql.json({inserts:{style_harmonizations:[badRow]}})})`),"23503");
+    // REQ-0144: exactly one active preferred reference per (asset, style profile); the swap is atomic.
+    const ref1=newId(),ref2=newId();
+    st=await runCommand(st,ALICE,{type:"SetPreferredStyleReference",referenceId:ref1,fields:{assetId,styleProfileId:profileId,variantId:variantId as never}});
+    st=await runCommand(st,ALICE,{type:"SetPreferredStyleReference",referenceId:ref2,fields:{assetId,styleProfileId:profileId,variantId:newVarId as never}});
+    const active=await sql`select id from public.style_preferred_references where project_id=${bp} and not removed`;
+    assert(active.length===1 && active[0]?.["id"]===ref2,"exactly one active preferred reference");
+    assert((await sql`select removed from public.style_preferred_references where id=${ref1}`)[0]?.["removed"]===true,"old reference not retired");
+    // A raw insert of a second active row for the same pair is rejected.
+    const dupRow={id:newId(),project_id:bp,asset_id:assetId,style_profile_id:profileId,variant_id:variantId,removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetPreferredStyleReference"})},null,${sql.json({inserts:{style_preferred_references:[dupRow]}})})`),"22023");
+    // Deletion paths remove the new tables; nothing is left behind.
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    for (const t of ["style_harmonizations","style_preferred_references","harmonize_batches"])
+      assert((await sql`select id from ${sql(t)} where project_id=${bp}`).length===0,`${t} left after delete`);
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0065: harmoniseringsbatch er idempotent, budsjett- og nøkkelvernet, med lease og tapsfri fullføring", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Harmonize batch fixture') id`)[0]))?.["id"]);
+    let st=await loadState(bp);
+    const assetId=newId(),variantId=newId(),srcVersionId=newId(),profileId=newId();
+    st=await runCommand(st,ALICE,{type:"CreateAssets",assets:[{assetId:assetId as never,fields:{kind:"character",name:"Rev",names:[],description:"",category:"",tags:[]}}]});
+    st=await runCommand(st,ALICE,{type:"CreateAssetVariant",variantId:variantId as never,assetId:assetId as never,fields:{name:"Animatic",style:"animatic",appearance:""}});
+    st=await runCommand(st,ALICE,{type:"AddAssetVersion",versionId:srcVersionId as never,variantId:variantId as never,media:{path:`${bp}/${assetId}/${srcVersionId}/rev.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"f".repeat(64)},note:"Kilde"});
+    st=await runCommand(st,ALICE,{type:"CreateStyleProfile",profileId:profileId as never,fields:{name:"Filmens visuelle stil",isDefault:true,guide:{...emptyStyleGuide(),visualStyle:"Watercolour"}}});
+    const reqId=newId(),itemId=newId(),jobId=newId(),bVarId=newId(),bVerId=newId(),bHarmId=newId(),bCmdId=newId();
+    const items=()=>sql.json([{id:itemId,job_id:jobId,asset_id:assetId,source_version_id:srcVersionId,variant_id:bVarId,version_id:bVerId,harmonization_id:bHarmId,command_id:bCmdId,cost:0}]);
+    const create=(req:string)=>as("service_role",null,tx=>tx`select public.create_harmonize_batch(${bp},${ALICE},${req},${profileId},null,'lovable','google/gemini-3-pro-image','1K',null,${items()},null,${ALICE}) id`);
+    const b1=String((await create(reqId))[0]?.["id"]), b2=String((await create(reqId))[0]?.["id"]);
+    assert(b1===b2,"batch creation not idempotent");
+    assert((await sql`select count(*)::int n from public.harmonize_batches where project_id=${bp}`)[0]?.["n"]===1,"duplicate batch");
+    assert((await sql`select status from public.generation_jobs where id=${jobId}`)[0]?.["status"]==="queued","job receipt not reserved");
+    // A non-lovable provider without a valid key is rejected before anything is reserved.
+    await expectError(as("service_role",null,tx=>tx`select public.create_harmonize_batch(${bp},${ALICE},${newId()},${profileId},null,'openai','gpt-image','1K',null,${items()},null,${ALICE})`),"42501");
+    assert((await sql`select count(*)::int n from public.harmonize_batches where project_id=${bp}`)[0]?.["n"]===1,"rejected batch was created");
+    const lease=newId();
+    const claimed=(await as("service_role",null,tx=>tx`select public.claim_harmonize_batch(${b1},${lease}) b`))[0]?.["b"] as Record<string,unknown>;
+    assert(claimed && claimed["lease_token"]===lease,"lease not granted");
+    // A second claim while the lease is active returns nothing.
+    assert((await as("service_role",null,tx=>tx`select public.claim_harmonize_batch(${b1},${newId()}) b`))[0]?.["b"]===null,"double claim");
+    await as("service_role",null,tx=>tx`select public.transition_harmonize_batch_item(${itemId},${lease},${sql.json({status:"ready"})})`);
+    // Wrong command type is rejected.
+    await expectError(as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${sql.json({type:"AddAssetVersion"})},null,null)`),"22023");
+    // Completing applies the harmonized image through apply_changes in the same transaction.
+    const cmd: Command={type:"ApplyHarmonizedImage",harmonizationId:bHarmId,variantId:bVarId as never,versionId:bVerId as never,media:{path:`${bp}/${assetId}/${bVerId}/rev-h.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"a".repeat(64)},note:"Harmonisert",fields:{versionId:bVerId,sourceVersionId:srcVersionId,model:"google/gemini-3-pro-image",qualityProfile:null,styleProfileId:profileId,referenceVersionId:null,use:"variant",note:"Harmonisert"},newVariant:{assetId:assetId as never,fields:{name:"Harmonisert",style:"illustrated",appearance:""}}};
+    const res=applyCommand(st,{id:bCmdId as never,actor:ALICE,at:new Date().toISOString(),command:cmd});
+    assert(res.ok,`Kjernen avviste ApplyHarmonizedImage: ${res.ok?"":res.error.message}`);
+    if(res.ok){
+      const changes=diffStates(st,res.state);
+      await as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${tx.json(cmd as never)},${tx.json(res.inverse as never)},${tx.json(changes as never)})`);
+      st=res.state;
+    }
+    assert((await sql`select status from public.harmonize_batch_items where id=${itemId}`)[0]?.["status"]==="done","item not done");
+    assert((await sql`select id from public.style_harmonizations where id=${bHarmId}`).length===1,"harmonization not applied");
+    // Completing again is idempotent: no duplicate command in the log.
+    await as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${sql.json({type:"ApplyHarmonizedImage"})},null,null)`);
+    assert((await sql`select count(*)::int n from public.change_log where id=${bCmdId}`)[0]?.["n"]===1,"command applied twice");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.harmonize_batches where project_id=${bp}`).length===0,"batch left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0065: RLS/grants, server-only batchfunksjoner og slettingsrekkefølge", async () => {
+    for (const t of ["style_harmonizations","style_preferred_references","harmonize_batches","harmonize_batch_items"]) {
+      const g=await sql`select has_table_privilege('anon',${`public.${t}`},'SELECT') a, has_table_privilege('authenticated',${`public.${t}`},'SELECT') r, has_table_privilege('authenticated',${`public.${t}`},'INSERT') w, has_table_privilege('service_role',${`public.${t}`},'INSERT') s, (select relrowsecurity from pg_class where oid=${`public.${t}`}::regclass) rls`;
+      assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
+    }
+    for (const signature of ["public.create_harmonize_batch(uuid,uuid,uuid,uuid,uuid,text,text,text,jsonb,jsonb,uuid,uuid)","public.claim_harmonize_batch(uuid,uuid)","public.complete_harmonize_batch_item(uuid,uuid,jsonb,jsonb,jsonb)","public.transition_harmonize_batch_item(uuid,uuid,jsonb)","public.resume_harmonize_batch(uuid,uuid,uuid)","public.reconfirm_harmonize_batch(uuid,uuid,uuid)"]) {
+      const rights=await sql`select has_function_privilege('authenticated',${signature},'EXECUTE') c, has_function_privilege('anon',${signature},'EXECUTE') a, has_function_privilege('service_role',${signature},'EXECUTE') s`;
+      assert(rights[0]?.["c"]===false && rights[0]?.["a"]===false && rights[0]?.["s"]===true,`${signature}: tilgang avviker`);
+    }
+    const completeBody=String((await sql`select pg_get_functiondef('public.complete_harmonize_batch_item(uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(completeBody.includes("public.apply_changes") && completeBody.includes("lease_token") && completeBody.includes("ApplyHarmonizedImage"),"completion is not transactional/lease-guarded");
+    const claimBody=String((await sql`select pg_get_functiondef('public.claim_harmonize_batch(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(claimBody.includes("retryable = false"),"crashed generations must not be replayed");
+    for (const fn of ["delete_project(uuid,uuid)","purge_project_assets(uuid,uuid)"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.style_harmonizations")<body.indexOf("delete from public.style_profiles"),"harmonizations must delete before style profiles");
+      assert(body.includes("delete from public.harmonize_batches"),"harmonize batches not deleted");
+    }
+    const applyBody=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(applyBody.includes("'style_harmonizations'") && applyBody.includes("'style_preferred_references'"),"new tables missing from apply_changes");
+    assert(applyBody.includes("Invalid harmonization") && applyBody.includes("More than one preferred reference"),"validation absent");
+    const purgeBody=String((await sql`select pg_get_functiondef('public.purge_removed_assets(uuid,uuid,uuid[],uuid[])'::regprocedure) b`)[0]?.["b"]);
+    assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
   });
 } finally {
   await sql.end();

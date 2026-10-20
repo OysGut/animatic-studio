@@ -79,6 +79,8 @@ export const BACKUP_STATE_TABLES = [
   "quality_profiles",
   "translation_lines",
   "translation_line_links",
+  "style_harmonizations",
+  "style_preferred_references",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -631,6 +633,8 @@ export function restoredState(
     quality_profiles: t("quality_profiles"),
     translation_line_links: t("translation_line_links"),
     translation_lines: t("translation_lines"),
+    style_harmonizations: t("style_harmonizations"),
+    style_preferred_references: t("style_preferred_references"),
   };
   let state: ProjectState;
   try {

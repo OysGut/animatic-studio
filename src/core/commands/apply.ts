@@ -123,10 +123,17 @@ import {
 } from "../model";
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { STYLE_USES, STYLE_USE_LABEL, styleGuideError } from "../generation/style";
+import {
+  harmonizationError,
+  preferredReferenceError,
+  type StyleHarmonization,
+  type StylePreferredReference,
+} from "../generation/style-harmonize";
 import { blocksOfVariant } from "../views";
 import { normalizeDurationAssumptions, sameDurationAssumptions } from "../screenplay/duration";
 import { MAX_PROMPT_CHARS } from "../generation/prompt";
 import type {
+  AssetMedia,
   RelationFields,
   PosterFields,
   StyleProfileFields,
@@ -4298,6 +4305,18 @@ function run(
 
     case "UndoCreateStyleProfile": {
       const p = need(s.styleProfiles[c.profileId], L("Stilprofilen", "The style profile"));
+      // P8: profilen er stilkilden for harmoniseringer eller har foretrukne referanser (REQ-0144)
+      if (
+        Object.values(s.styleHarmonizations ?? {}).some((h) => !h.removed && h.styleProfileId === p.id) ||
+        Object.values(s.stylePreferredReferences ?? {}).some((r) => !r.removed && r.styleProfileId === p.id)
+      )
+        fail(
+          "referenced",
+          L(
+            "Stilprofilen brukes i en harmonisering og kan ikke fjernes ved angring.",
+            "The style profile is used in a harmonization and cannot be removed by undoing.",
+          ),
+        );
       if (p.appliesTo?.length)
         fail(
           "referenced",
@@ -4996,6 +5015,97 @@ function run(
       }
       return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:old},affected:c.items.map(i=>i.id)};
     }
+
+    // P8 (REQ-0137–0145, REQ-0400–0402): stilharmonisering. Originalen endres aldri; resultatet er en ny
+    // versjon (evt. på en ny variant) med metadata om kilde, modell, profil og bruksvalg.
+    case "ApplyHarmonizedImage": {
+      assertNewId(s,c.versionId); assertNewId(s,c.harmonizationId);
+      let assetVariants=s.assetVariants; let createdVariant=false;
+      if (c.newVariant) {
+        assertNewId(s,c.variantId);
+        need(s.assets[c.newVariant.assetId],L("Ressursen","The asset"));
+        assetVariants={...assetVariants,[c.variantId]:{id:c.variantId,revision:1,assetId:c.newVariant.assetId,...normalizeVariantFields(c.newVariant.fields),approvedVersionId:null,archived:false}};
+        createdVariant=true;
+      }
+      const va=need(assetVariants[c.variantId],L("Varianten","The variant"));
+      const m=c.media;
+      if (!m || typeof m.path!=="string" || typeof m.mimeType!=="string" || typeof m.sha256!=="string" || typeof c.note!=="string")
+        fail("invalid",L("Ufullstendige bildedata","Incomplete image data"));
+      if (!m.path.startsWith(`${s.project.id}/`) || m.path.length>600 || m.path.includes(".."))
+        fail("invalid",L("Ugyldig lagringssti for bildet","Invalid storage path for the image"));
+      if (!ASSET_MIME_TYPES.includes(m.mimeType))
+        fail("invalid",L("Bildet må være PNG, JPEG, WebP eller GIF","The image must be PNG, JPEG, WebP or GIF"));
+      if (!Number.isInteger(m.byteSize) || m.byteSize<=0 || m.byteSize>ASSET_MAX_BYTES)
+        fail("invalid",L("Bildet er for stort (maks 2 GB)","The image is too large (max 2 GB)"));
+      if (!/^[0-9a-f]{64}$/.test(m.sha256)) fail("invalid",L("Ugyldig kontrollsum","Invalid checksum"));
+      for (const d of [m.width,m.height]) if (d!==null && (!Number.isInteger(d) || d<=0 || d>100_000)) fail("invalid",L("Ugyldige bildemål","Invalid image dimensions"));
+      if (c.note.length>2000) fail("invalid",L("Merknaden er for lang","The annotation is too long"));
+      if (c.fields.versionId!==c.versionId) fail("invalid",L("Metadataen peker på en annen versjon","The metadata points at another version"));
+      const siblings=Object.values(s.assetVersions).filter((x)=>x.variantId===va.id);
+      const number=siblings.reduce((n,x)=>Math.max(n,x.number),0)+1;
+      const s2: ProjectState={...s,assetVariants,assetVersions:{...s.assetVersions,[c.versionId]:{id:c.versionId,revision:1,variantId:va.id,number,mediaPath:m.path,mimeType:m.mimeType,width:m.width,height:m.height,byteSize:m.byteSize,sha256:m.sha256,note:c.note.trim(),createdAt:env.at,createdBy:env.actor,durationMs:null}}};
+      const herr=harmonizationError(s2,c.fields);
+      if (herr) fail("invalid",herr);
+      if (s.styleHarmonizations[c.harmonizationId]) fail("invalid",L("Samme harmonisering to ganger.","The same harmonization twice."));
+      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:1,removed:false};
+      return {state:{...s2,styleHarmonizations:{...s2.styleHarmonizations,[h.id]:h}},inverse:{type:"UndoApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:c.versionId,createdVariant},affected:[h.id,c.versionId,...(createdVariant?[va.id]:[])]};
+    }
+    case "UndoApplyHarmonizedImage": {
+      const h=need(s.styleHarmonizations[c.harmonizationId],L("Harmoniseringen","The harmonization"));
+      const ver=need(s.assetVersions[c.versionId],L("Versjonen","The version"));
+      const va=need(s.assetVariants[c.variantId],L("Varianten","The variant"));
+      if (usedByPresentation(s,"versions",ver.id) || usedByLayer(s,"versionId",ver.id))
+        fail("referenced",L("Bildet er i bruk og kan ikke fjernes.","The image is in use and cannot be removed."));
+      const styleHarmonizations={...s.styleHarmonizations}; delete styleHarmonizations[h.id];
+      const assetVersions={...s.assetVersions}; delete assetVersions[ver.id];
+      const assetVariants: Record<string, typeof va> = { ...s.assetVariants };
+      if (c.createdVariant) delete assetVariants[va.id];
+      const media: AssetMedia={path:ver.mediaPath,mimeType:ver.mimeType,width:ver.width,height:ver.height,byteSize:ver.byteSize,sha256:ver.sha256};
+      return {state:{...s,assetVariants,assetVersions,styleHarmonizations},inverse:{type:"ApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:ver.id,media,note:ver.note,fields:{versionId:h.versionId,sourceVersionId:h.sourceVersionId,model:h.model,qualityProfile:h.qualityProfile,styleProfileId:h.styleProfileId,referenceVersionId:h.referenceVersionId,use:h.use,note:h.note},...(c.createdVariant?{newVariant:{assetId:va.assetId,fields:{name:va.name,style:va.style,appearance:va.appearance}}}:{})},affected:[h.id,ver.id,...(c.createdVariant?[va.id]:[])]};
+    }
+    case "SetStyleHarmonization": {
+      const old=(s.styleHarmonizations ?? {})[c.harmonizationId];
+      if (!old) assertNewId(s,c.harmonizationId);
+      if (!c.removed && harmonizationError(s,c.fields)) fail("invalid",L("Ugyldig harmonisering.","Invalid harmonization."));
+      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:old?rev(old):1,removed:c.removed===true};
+      return {state:{...s,styleHarmonizations:{...(s.styleHarmonizations ?? {}),[h.id]:h}},inverse:old?{type:"RestoreStyleHarmonizations",items:[old]}:{type:"UndoAddStyleHarmonization",harmonizationId:h.id},affected:[h.id]};
+    }
+    case "UndoAddStyleHarmonization": {
+      const old=need((s.styleHarmonizations ?? {})[c.harmonizationId],L("Harmoniseringen","The harmonization"));
+      const hs={...(s.styleHarmonizations ?? {})}; delete hs[old.id];
+      return {state:{...s,styleHarmonizations:hs},inverse:{type:"SetStyleHarmonization",harmonizationId:old.id,fields:{versionId:old.versionId,sourceVersionId:old.sourceVersionId,model:old.model,qualityProfile:old.qualityProfile,styleProfileId:old.styleProfileId,referenceVersionId:old.referenceVersionId,use:old.use,note:old.note}},affected:[old.id]};
+    }
+    case "RestoreStyleHarmonizations": {
+      const hs={...(s.styleHarmonizations ?? {})}; const old: StyleHarmonization[]=[];
+      for (const item of c.items) { const now=need(hs[item.id],L("Harmoniseringen","The harmonization")); old.push(now); hs[item.id]={...item,revision:rev(now)}; }
+      return {state:{...s,styleHarmonizations:hs},inverse:{type:"RestoreStyleHarmonizations",items:old},affected:c.items.map(i=>i.id)};
+    }
+    case "SetPreferredStyleReference": {
+      const perr=preferredReferenceError(s,c.fields);
+      if (perr) fail("invalid",perr);
+      const refs={...(s.stylePreferredReferences ?? {})};
+      const old=Object.values(refs).find((r)=>!r.removed && r.assetId===c.fields.assetId && r.styleProfileId===c.fields.styleProfileId);
+      const existing=refs[c.referenceId];
+      if (existing && !existing.removed && old && existing.id!==old.id) fail("invalid",L("ID-en er i bruk.","The ID is in use."));
+      const restored: StylePreferredReference[]=[];
+      if (old && old.id!==c.referenceId) { restored.push(old); refs[old.id]={...old,removed:true,revision:rev(old)}; }
+      if (existing) restored.push(existing); else assertNewId(s,c.referenceId);
+      refs[c.referenceId]={...c.fields,id:c.referenceId,revision:existing?rev(existing):1,removed:false};
+      return {state:{...s,stylePreferredReferences:refs},inverse:{type:"UndoSetPreferredStyleReference",addedId:existing?null:c.referenceId,restored},affected:[c.referenceId,...(old&&old.id!==c.referenceId?[old.id]:[])]};
+    }
+    case "UndoSetPreferredStyleReference": {
+      const refs={...(s.stylePreferredReferences ?? {})};
+      let redo: { referenceId: string; fields: import("../generation/style-harmonize").StylePreferredReferenceFields } | null=null;
+      if (c.addedId) { const added=need(refs[c.addedId],L("Referansen","The reference")); redo={referenceId:added.id,fields:{assetId:added.assetId,styleProfileId:added.styleProfileId,variantId:added.variantId}}; delete refs[added.id]; }
+      for (const item of c.restored) {
+        const now=need(refs[item.id],L("Referansen","The reference"));
+        if (!redo && !item.removed) redo={referenceId:now.id,fields:{assetId:now.assetId,styleProfileId:now.styleProfileId,variantId:now.variantId}};
+        refs[item.id]={...item,revision:rev(now)};
+      }
+      if (!redo) fail("invalid",L("Ingenting å gjøre om.","Nothing to redo."));
+      return {state:{...s,stylePreferredReferences:refs},inverse:{type:"SetPreferredStyleReference",...redo},affected:[...(c.addedId?[c.addedId]:[]),...c.restored.map(r=>r.id)]};
+    }
+
 
     case "AddTranslations": {
       if (!Array.isArray(c.items) || c.items.length === 0 || c.items.length > 2000)
@@ -6628,6 +6738,15 @@ function run(
             "The variant is used in a 2D scene and cannot be removed.",
           ),
         );
+      // P8 (REQ-0144): en foretrukket referanse for en stilprofil peker på varianten
+      if (Object.values(s.stylePreferredReferences ?? {}).some((r) => !r.removed && r.variantId === va.id))
+        fail(
+          "referenced",
+          L(
+            "Varianten er en foretrukket referanse for en stilprofil og kan ikke fjernes.",
+            "The variant is a preferred reference for a style profile and cannot be removed.",
+          ),
+        );
       const assetVariants = { ...s.assetVariants };
       delete assetVariants[va.id];
       return {
@@ -6797,6 +6916,15 @@ function run(
     case "UndoAddAssetVersion": {
       const ver = need(s.assetVersions[c.versionId], L("Versjonen", "The version"));
       const va = s.assetVariants[ver.variantId];
+      // P8: metadataen om en harmonisering må fjernes sammen med bildet (samme angregruppe)
+      if (Object.values(s.styleHarmonizations ?? {}).some((h) => !h.removed && (h.versionId === ver.id || h.sourceVersionId === ver.id || h.referenceVersionId === ver.id)))
+        fail(
+          "referenced",
+          L(
+            "Bildet har harmoniseringsmetadata og kan ikke fjernes alene. Angre hele harmoniseringen.",
+            "The image has harmonization metadata and cannot be removed on its own. Undo the whole harmonization.",
+          ),
+        );
       if (va?.approvedVersionId === ver.id)
         fail(
           "referenced",

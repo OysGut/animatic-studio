@@ -98,6 +98,7 @@ export * from "./dialogue/drift";
 export * from "./notes/flags";
 export * from "./bookmark";
 export * from "./generation/quality-profile";
+export * from "./generation/style-harmonize";
 
 export * from "./translation/line-align-prompt";
 export * from "./translation/line-link-labels";
