@@ -3,7 +3,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { L, isUuid, languageTagError, lineAlignmentPrompt, parseLineAlignment, uncertainLineScope } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
-interface Input { projectId: string; variantId: string; language: string; confirmed?: boolean; fingerprint?: string }
+interface Input { projectId: string; variantId: string; language: string; confirmed?: boolean; fingerprint?: string | undefined }
 function validate(x: Input): Input {
   if (!x || !isUuid(x.projectId) || !isUuid(x.variantId) || languageTagError(x.language) || ["nb","no"].includes(x.language)) throw new Error(L("Ugyldig scene eller språk.","Invalid scene or language."));
   return {projectId:x.projectId,variantId:x.variantId,language:x.language,confirmed:x.confirmed === true,fingerprint: typeof x.fingerprint === "string" ? x.fingerprint.slice(0,100) : undefined};

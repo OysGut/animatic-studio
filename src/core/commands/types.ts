@@ -1204,9 +1204,9 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly translationIds: readonly TranslationId[];
       readonly removed: boolean;
     }
-  | { readonly type: "SetLineLink"; readonly linkId: string; readonly fields: LineLinkFields }
+  | { readonly type: "SetLineLink"; readonly linkId: string; readonly fields: LineLinkFields; readonly removed?: boolean }
   | { readonly type: "UndoAddLineLink"; readonly linkId: string }
-  | { readonly type: "ApproveLineLinks"; readonly linkIds: readonly string[] }
+  | { readonly type: "ApproveLineLinks"; readonly linkIds: readonly string[]; readonly additions?: readonly { readonly linkId: string; readonly fields: LineLinkFields }[] }
   | { readonly type: "RejectLineLinks"; readonly linkIds: readonly string[]; readonly removed: boolean }
   | { readonly type: "RestoreLineLinks"; readonly items: readonly import("../translation/line-align-prompt").TranslationLineLink[] }
   /** Story Lab (SL1): karakterprofil – oppretter eller erstatter profilen for ressursen. */

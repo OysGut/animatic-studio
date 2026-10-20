@@ -4935,7 +4935,7 @@ function run(
       if (lineLinkError(s,c.fields)) fail("invalid",L("Ugyldig linjekobling eller språkversjon.","Invalid line link or language version."));
       const old=(s.translationLineLinks ?? {})[c.linkId];
       if (!old) assertNewId(s,c.linkId);
-      const link: TranslationLineLink={...c.fields,id:c.linkId,revision:old ? rev(old) : 1,removed:false,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at};
+      const link: TranslationLineLink={...c.fields,id:c.linkId,revision:old ? rev(old) : 1,removed:c.removed === true,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at};
       return {state:{...s,translationLineLinks:{...(s.translationLineLinks ?? {}),[link.id]:link}},inverse:old ? {type:"RestoreLineLinks",items:[old]} : {type:"UndoAddLineLink",linkId:link.id},affected:[link.id]};
     }
     case "UndoAddLineLink": {
@@ -4945,14 +4945,23 @@ function run(
     }
     case "ApproveLineLinks":
     case "RejectLineLinks": {
-      if (!c.linkIds.length || c.linkIds.length > 400 || new Set(c.linkIds).size !== c.linkIds.length) fail("invalid",L("Ugyldig antall koblinger.","Invalid number of links."));
+      if ((!c.linkIds.length && !(c.type === "ApproveLineLinks" && c.additions?.length)) || c.linkIds.length > 400 || new Set(c.linkIds).size !== c.linkIds.length) fail("invalid",L("Ugyldig antall koblinger.","Invalid number of links."));
       const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];
       for (const id of c.linkIds) {
         const link=need(links[id],L("Linjekoblingen","The line link"));
         if (lineLinkError(s,link)) fail("invalid",L("Koblingen er ikke lenger gyldig.","The link is no longer valid."));
         old.push(link); links[id]={...link,revision:rev(link),...(c.type === "ApproveLineLinks" ? {origin:"approved" as const,removed:false} : {removed:c.removed})};
       }
-      return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:old},affected:[...c.linkIds]};
+      const additions=c.type === "ApproveLineLinks" ? c.additions ?? [] : [];
+      if (additions.length > 400) fail("invalid",L("For mange koblinger.","Too many links."));
+      for (const item of additions) {
+        assertNewId(s,item.linkId);
+        if (links[item.linkId] || lineLinkError(s,item.fields)) fail("invalid",L("Ugyldig linjekobling.","Invalid line link."));
+        links[item.linkId]={...item.fields,id:item.linkId,origin:"approved",removed:false,revision:1,createdBy:env.actor,createdAt:env.at};
+      }
+      // New approval rows undo to removed receipts, preserving provenance and one transaction.
+      const undoItems=[...old,...additions.map(item=>({...links[item.linkId],removed:true} as TranslationLineLink))];
+      return {state:{...s,translationLineLinks:links},inverse:{type:"RestoreLineLinks",items:undoItems},affected:[...c.linkIds,...additions.map(i=>i.linkId)]};
     }
     case "RestoreLineLinks": {
       const links={...(s.translationLineLinks ?? {})}; const old: TranslationLineLink[]=[];

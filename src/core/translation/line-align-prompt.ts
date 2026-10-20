@@ -11,7 +11,7 @@ export interface TranslationLineLink {
 }
 export type LineLinkFields = Omit<TranslationLineLink, "id" | "revision" | "removed" | "createdBy" | "createdAt">;
 export function lineLinkError(s: ProjectState, f: LineLinkFields): string | null {
-  if (!isUuid(f.variantId) || !s.variants[f.variantId] || s.variants[f.variantId]?.removed || f.language === "nb" || f.language === "no") return "scope";
+  if (!isUuid(f.variantId) || !s.variants[f.variantId] || f.language === "nb" || f.language === "no") return "scope";
   try { if (Intl.getCanonicalLocales(f.language).length !== 1) return "language"; } catch { return "language"; }
   if (!["rule","ai","approved","manual"].includes(f.origin) || !Number.isFinite(f.confidence) || f.confidence < 0 || f.confidence > 1 || typeof f.reason !== "string" || f.reason.length > 300) return "fields";
   const a=f.sourceBlockIds, b=f.targetTranslationIds;
@@ -35,7 +35,7 @@ export function lineAlignmentPrompt(s: ProjectState, variantId: string, language
 export function parseLineAlignment(raw: string,s: ProjectState,variantId: string,language: string) {
   const v=parseJsonLoose(raw) as {links?:unknown} | null;
   const list=v && Array.isArray(v.links) ? v.links : [];
-  const scope=uncertainLineScope(s,variantId,language), sources=new Set(scope.sources.map(b=>b.id)), targets=new Set(scope.targets.map(t=>t.id));
+  const scope=uncertainLineScope(s,variantId,language), sources=new Set<string>(scope.sources.map(b=>b.id)), targets=new Set<string>(scope.targets.map(t=>t.id));
   const usedSources=new Set<string>(), usedTargets=new Set<string>();
   const links: LineLinkFields[]=[]; let discarded=0;
   for (const item of list) {

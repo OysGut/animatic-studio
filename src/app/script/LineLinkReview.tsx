@@ -12,7 +12,8 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
   const [estimate,setEstimate]=useState<{fingerprint:string;lines:number;profileName:string|null}|null>(null);
   const [proposals,setProposals]=useState<LineLinkFields[]>([]),[discarded,setDiscarded]=useState(0);
   const scope=uncertainLineScope(state,variantId,language);
-  const links=Object.values(state.translationLineLinks ?? {}).filter(l=>!l.removed&&l.variantId===variantId&&l.language===language);
+  const scopedLinks=Object.values(state.translationLineLinks ?? {}).filter(l=>l.variantId===variantId&&l.language===language);
+  const links=scopedLinks.filter(l=>!l.removed);
   const targets=Object.values(state.translations).filter(t=>!t.removed&&t.language===language&&t.blockId&&state.blocks[t.blockId]?.variantId===variantId);
   const sources=Object.values(state.blocks).filter(b=>!b.removed&&b.variantId===variantId&&b.kind!=="heading");
   const [manualSource,setManualSource]=useState<string[]>([]),[manualTarget,setManualTarget]=useState<string[]>([]);
@@ -27,7 +28,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
     } catch {setError(L("Koblingen kunne ikke analyseres. Prøv igjen.","The links could not be analysed. Try again."));}
     finally {setBusy(false);}
   }
-  const allRows=[...targets.filter(t=>!links.some(l=>l.targetTranslationIds.includes(t.id))).map(t=>({id:t.id,origin:"rule",confidence:t.status==="approved"?1:0.5,reason:"",sourceBlockIds:t.blockId?[t.blockId]:[],targetTranslationIds:[t.id],saved:false})),...links.map(l=>({...l,saved:true}))];
+  const allRows=[...targets.filter(t=>!scopedLinks.some(l=>l.targetTranslationIds.includes(t.id))).map(t=>({id:t.id,origin:"rule",confidence:t.status==="approved"?1:0.5,reason:"",sourceBlockIds:t.blockId?[t.blockId]:[],targetTranslationIds:[t.id],saved:false})),...links.map(l=>({...l,saved:true}))];
   return <>
     <Button size="sm" variant="outline" data-testid="line-links-open" onClick={()=>setOpen(true)}>{L("Gjennomgå linjekoblinger","Review line links")}</Button>
     <Dialog open={open} onOpenChange={setOpen}><DialogContent data-testid="line-links-dialog" className="max-h-[90vh] max-w-3xl overflow-y-auto border-border bg-surface-2">
@@ -35,7 +36,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
       <div className="flex flex-wrap items-center gap-2">
         <select data-testid="line-links-filter" aria-label={L("Kilde","Source")} className={control} value={filter} onChange={e=>setFilter(e.target.value)}>{["all","rule","ai","approved","manual"].map(o=><option key={o} value={o}>{o==="all"?L("Alle kilder","All sources"):originLabel(o)}</option>)}</select>
         <label className="flex items-center gap-2 text-xs text-text-secondary">{L("Terskel","Threshold")}<input data-testid="line-links-threshold" type="number" min={0} max={1} step={0.05} className={control} value={threshold} onChange={e=>setThreshold(Number(e.target.value))}/></label>
-        <Button size="sm" data-testid="line-links-approve-threshold" disabled={!editable||!linksAboveThreshold(links,threshold).length} onClick={()=>command({type:"ApproveLineLinks",linkIds:linksAboveThreshold(links,threshold)})}>{L("Godkjenn over terskel","Approve above threshold")}</Button>
+        <Button size="sm" data-testid="line-links-approve-threshold" disabled={!editable||(!linksAboveThreshold(links,threshold).length&&!proposals.some(p=>p.confidence>=threshold))} onClick={()=>{command({type:"ApproveLineLinks",linkIds:linksAboveThreshold(links,threshold),additions:proposals.filter(p=>p.confidence>=threshold).map(fields=>({linkId:newId(),fields}))});setProposals(ps=>ps.filter(p=>p.confidence<threshold));}}>{L("Godkjenn over terskel","Approve above threshold")}</Button>
         <Button size="sm" data-testid="line-links-estimate" disabled={!editable||busy||!scope.targets.length} onClick={()=>void request()}>{busy?L("Analyserer …","Analysing …"):L("Foreslå med AI","Suggest with AI")}</Button>
       </div>
       {estimate?<div data-testid="line-links-cost" className="flex flex-col gap-2 border-y border-border py-3 text-xs text-text-secondary">
@@ -49,7 +50,7 @@ export function LineLinkReview({state,variantId,language,editable,run}:{state:Pr
           <span className="text-text-tertiary">{originLabel(l.origin)} · {l.confidence.toFixed(2)} · {l.sourceBlockIds.length}:{l.targetTranslationIds.length}</span>
           <p className="text-text-secondary">{l.sourceBlockIds.map(id=>state.blocks[id]?.text).join(" / ")}</p><p className="text-text-primary">{l.targetTranslationIds.map(id=>state.translations[id]?.text).join(" / ")}</p>{l.reason?<p className="text-text-tertiary">{l.reason}</p>:null}
           <div className="flex gap-2"><Button size="sm" disabled={!editable} onClick={()=>l.saved?command({type:"ApproveLineLinks",linkIds:[l.id]}):command({type:"SetLineLink",linkId:newId(),fields:{variantId,language,sourceBlockIds:l.sourceBlockIds,targetTranslationIds:l.targetTranslationIds,origin:"approved",confidence:l.confidence,reason:""}})}>{L("Godkjenn","Approve")}</Button>
-            {l.saved?<Button size="sm" variant="ghost" disabled={!editable} onClick={()=>command({type:"RejectLineLinks",linkIds:[l.id],removed:true})}>{L("Avvis","Reject")}</Button>:null}
+            <Button size="sm" variant="ghost" disabled={!editable} onClick={()=>l.saved?command({type:"RejectLineLinks",linkIds:[l.id],removed:true}):command({type:"SetLineLink",linkId:newId(),fields:{variantId,language,sourceBlockIds:l.sourceBlockIds,targetTranslationIds:l.targetTranslationIds,origin:"rule",confidence:l.confidence,reason:""},removed:true})}>{L("Avvis","Reject")}</Button>
             <Button size="sm" variant="ghost" disabled={!editable} onClick={()=>{setManualSource([...l.sourceBlockIds]);setManualTarget([...l.targetTranslationIds]);}}>{L("Juster","Adjust")}</Button></div>
         </div>)}
         {proposals.filter(()=>filter==="all"||filter==="ai").map((l,i)=><div key={i} data-testid="line-link-proposal" className="flex flex-col gap-2 py-2 text-xs text-text-secondary"><span>{originLabel("ai")} · {l.confidence.toFixed(2)} · {l.sourceBlockIds.length}:{l.targetTranslationIds.length}</span><p>{l.sourceBlockIds.map(id=>state.blocks[id]?.text).join(" / ")}</p><p>{l.targetTranslationIds.map(id=>state.translations[id]?.text).join(" / ")}</p><p>{l.reason}</p><div className="flex gap-2"><Button size="sm" onClick={()=>{command({type:"SetLineLink",linkId:newId(),fields:{...l,origin:"approved"}});setProposals(ps=>ps.filter((_,k)=>i!==k));}}>{L("Godkjenn","Approve")}</Button><Button size="sm" variant="ghost" onClick={()=>setProposals(ps=>ps.filter((_,k)=>i!==k))}>{L("Avvis","Reject")}</Button><Button size="sm" variant="ghost" onClick={()=>{setManualSource([...l.sourceBlockIds]);setManualTarget([...l.targetTranslationIds]);}}>{L("Juster","Adjust")}</Button></div></div>)}
