@@ -29,7 +29,7 @@ Kortversjonen:
 10. Active scenes use a source-window bus; pinned explorers never publish their browsing selection.
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
 12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point: server-only service AI forces the built-in model and builds prompts, never an open proxy.
-13. User quotas exclude these two service tasks; service quotas include only built-in service tasks, keeping user fallback calls in user quotas. Visual suites from schema 40 share a version constant to avoid repeated edits.
+13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema-version constant.
 14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
 16. Workspaces (GP1) are read-only to clients and changed only through security-definer functions in the database; linking a project to a workspace never grants project access, so project RLS stays the single source of project permissions.
 17. The global library (GP2) is owned by workspaces and written only through security-definer functions; using a global asset copies its files into the project once per global version and keeps the link only as metadata, so projects and backups never depend on workspace membership.
@@ -49,4 +49,4 @@ Kortversjonen:
 30. Film and alpha exports share a browser-local queue mounted at the root; closures capture inputs, so navigation preserves work while tab closure cannot resume a canvas encoder.
 
 31. Line correspondence uses scene-scoped block and translation IDs, reversible commands and translated projections only; backup remaps both arrays so Norwegian sources never change.
-32. ProRes/MOV export uses our own TypeScript encoder in Web Workers behind AlphaEncoder and an append-only MOV writer (one mdat per sample, moov last), so files stream to OPFS without GPL code or seeking.
+32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
