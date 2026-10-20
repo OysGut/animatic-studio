@@ -106,6 +106,10 @@ const SHELL = [
   { name: "sceneeditor-manus", path: `${h.P}/scene?scene=${clip.occurrence_id}` },
   // ML2d: sceneeditoren med animasjonsfanen
   { name: "sceneeditor-animasjon", path: `${h.P}/scene?scene=${clip.occurrence_id}&fane=animation` },
+  // ML2e: montering, lyd og eksport (plakat ligger under utgivelse, lydbiblioteket under bibliotek)
+  { name: "montering", path: `${h.P}/montering` },
+  { name: "utgivelse", path: `${h.P}/utgivelse` },
+  { name: "bibliotek", path: `${h.P}/bibliotek` },
 ];
 await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
   const errs = [];
@@ -134,6 +138,31 @@ await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
       }
       if (tag === "en") h.check(!/\b(Avbryt|Lagre|Logg ut|Min konto|Prosjekter)\b/.test(r.text), `${s.name} en: ingen norske skallord`);
     }
+  }
+});
+
+// ML2e: eksportdialogene og lydvinduet på en-XA uten vannrett rulling og uten norsk
+await h.scenario("ml2e-eksport", clip.occurrence_id, "en-XA", async (page) => {
+  const noScroll = () => page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  const dialogs = [
+    { name: "alfaeksport", path: `${h.P}/scene?scene=${clip.occurrence_id}`, open: "alpha-export-open", dialog: "alpha-export-dialog" },
+    { name: "filmeksport", path: `${h.P}/montering`, open: "assembly-export-open", dialog: null },
+  ];
+  for (const d of dialogs) {
+    await page.goto(h.base + d.path, { waitUntil: "networkidle" });
+    await page.waitForTimeout(700);
+    const btn = page.getByTestId(d.open).first();
+    if (!(await btn.isEnabled().catch(() => false))) { console.log(`  MERK ${d.name}: knappen er ikke tilgjengelig i fixturen`); continue; }
+    await btn.click();
+    await page.waitForTimeout(700);
+    const box = d.dialog ? page.getByTestId(d.dialog) : page.getByRole("dialog").first();
+    h.check(await box.isVisible(), `${d.name} en-XA: dialogen åpnes`);
+    const text = await box.innerText();
+    h.check(text.includes("[!! "), `${d.name} en-XA: pseudotekst i dialogen`);
+    h.check(!/\b(Avbryt|Eksporter|Lagre|Velg|Start)\b/.test(text), `${d.name} en-XA: ingen norske ord i dialogen`);
+    const o = await noScroll();
+    h.check(o <= 1, `${d.name} en-XA: ingen vannrett rulling (${o} px)`);
+    await page.screenshot({ path: `${h.out}/ml2e-${d.name}-en-XA.png` });
   }
 });
 

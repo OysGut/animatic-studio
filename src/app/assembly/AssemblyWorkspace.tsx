@@ -955,6 +955,7 @@ function Assembly({
             variant="primary"
             className="shrink-0"
             onClick={() => setExportOpen(true)}
+            data-testid="assembly-export-open"
             disabled={clips.length === 0}
             title={tk("app-assembly-assembly-workspace.assembly.title.fb7019e1c867")}
             aria-label={tk("app-assembly-assembly-workspace.assembly.aria-label.5a7d076c826d")}
