@@ -51,3 +51,4 @@ Kortversjonen:
 31. Line correspondence uses scene-scoped block and translation IDs, reversible commands and translated projections only; backup remaps both arrays so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner for single/batch; "only here" uses an archived variant; batches reuse reserved jobs with receipts so billed work never replays.
+34. M6 rest reuses existing paths: AI material updates add versions/notes via commands, forecasts are computed only, context links store contextNames; no new tables.
