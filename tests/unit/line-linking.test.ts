@@ -36,7 +36,7 @@ describe("B-050 line linking",()=>{
   it("backup includes approved links and remaps their arrays on restore",async()=>{
     const {s,fields}=fixture();const id=tid();const linked=apply(s,{type:"SetLineLink",linkId:id,fields:{...fields,origin:"approved"}}).state;
     const empty=emptyProjectState(s.project); const inserts=diffStates(empty,linked).inserts;
-    const rows={project:{id:s.project.id,name:s.project.name,revision:1,fps_num:25,fps_den:1,frame_width:1920,frame_height:1080},...inserts,script_block_revisions:[]} as unknown as ProjectRows;
+    const rows={project:{id:s.project.id,name:s.project.name,revision:1,fps_num:25,fps_den:1,frame_width:1920,frame_height:1080},...inserts,script_block_revisions:s.blockRevisions.map(r=>({project_id:s.project.id,block_id:r.blockId,rev:r.rev,text:r.text,author:r.author,created_at:r.at}))} as unknown as ProjectRows;
     const b=makeBackup({rows,scriptVersions:[],importedDocuments:[],changeLog:[],generationJobs:[],schemaVersion:64,createdAt:"2026-10-20T00:00:00Z",include:new Set()});
     expect(b.tables["translation_line_links"]).toHaveLength(1);
     const pid=tid<"project">(),main=tid<"production">();const map=await backupIdMap(b,pid,main);
