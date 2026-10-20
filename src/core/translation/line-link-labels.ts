@@ -14,6 +14,7 @@ export function confidencePercent(c: number): string {
   return L(`${n} %`, `${n}%`);
 }
 
+// i18n-ignore: tallord, engelsk motstykke i EN
 const NB = ["null", "én", "to", "tre", "fire", "fem", "seks", "sju", "åtte", "ni", "ti"];
 const EN = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
 
