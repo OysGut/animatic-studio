@@ -4,7 +4,7 @@ import { inflateSync } from "node:zlib";
 import { defaultLayerFields, orderedOccurrences, renderFrame } from "@/core";
 import { alphaExportError, alphaSceneClip, alphaPixels, alphaRange, alphaFileBase, alphaLayerIds,
   DEFAULT_ALPHA_SETTINGS, isAlphaSettings } from "@/core/layer-alpha";
-import { drawFilmFrame } from "@/engine/compositor/film";
+import { drawFilmFrame, desaturate } from "@/engine/compositor/film";
 import { drawFrame } from "@/engine/compositor/canvas";
 import { encodePngStrips } from "@/engine/export/png-writer";
 import { supportsVp9Alpha, openAlphaSink } from "@/engine/export/alpha";
@@ -85,6 +85,14 @@ describe("P4 actual compositor pixels", () => {
       background: "transparent", layerIds: new Set([solid, edge]), images: new Map(), placeholders: false,
     });
     expect([...canvas.data]).toEqual([...preview.data]);
+  });
+  it("monochrome export preserves every pixel's alpha", () => {
+    const { canvas } = frame();
+    const before = [...canvas.data].filter((_, i) => i % 4 === 3);
+    desaturate(canvas.getContext() as unknown as CanvasRenderingContext2D, 16, 16, true);
+    expect([...canvas.data].filter((_, i) => i % 4 === 3)).toEqual(before);
+    expect(canvas.pixel(0,0)[3]).toBe(0);
+    expect(canvas.pixel(8,8)).toEqual([125,125,125,1]);
   });
   it("unselected layers do not leak into the image", () => {
     const { s, c, edge } = setup(); const clip = alphaSceneClip(s, c);
