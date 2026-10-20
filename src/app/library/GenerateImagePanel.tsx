@@ -182,6 +182,9 @@ export function GenerateImagePanel({
   const available = useProjectProviders(projectId, editable);
   const options = providersFor("image", new Set(available.data?.providers ?? []));
   const [pick, setPick] = useState<string>("lovable|");
+  // Kvalitetsprofil (M8, REQ-0854–0862): standard er prosjektets aktive profil, kan overstyres her
+  const [profileChoice, setProfileChoice] = useState<QualityProfileChoice>("active");
+  const profile = context ? chosenQualityProfile(context.state, profileChoice) : null;
   const choice = (() => {
     const [provider, model] = pick.split("|") as [string, string];
     const ok = options.find((o) => o.provider.id === provider);
