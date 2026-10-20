@@ -41,7 +41,7 @@ function withProfile(s: ProjectState, name = "Endelig", spec: QualityProfileSpec
 
 describe("M8 quality profiles – commands", () => {
   it("AddQualityProfile adds the profile; undo removes it exactly", () => {
-    const s0 = emptyProjectState();
+    const s0 = base();
     const { s, id, inverse } = withProfile(s0);
     expect(s.qualityProfiles[id]!.name).toBe("Endelig");
     expect(s.qualityProfiles[id]!.spec.effort).toBe("premium");
@@ -52,7 +52,7 @@ describe("M8 quality profiles – commands", () => {
     expect(redone.state.qualityProfiles[id]!.name).toBe("Endelig");
   });
   it("rejects invalid names and specs", () => {
-    const s = emptyProjectState();
+    const s = base();
     refused(s, { type: "AddQualityProfile", profileId: tid(), name: "  ", spec: {} });
     refused(s, { type: "AddQualityProfile", profileId: tid(), name: "X", spec: { variants: 0 } });
     refused(s, { type: "AddQualityProfile", profileId: tid(), name: "X", spec: { variants: 99 } });
@@ -60,7 +60,7 @@ describe("M8 quality profiles – commands", () => {
     refused(s, { type: "AddQualityProfile", profileId: tid(), name: "X", spec: { effort: "ultra" as never } });
   });
   it("UpdateQualityProfile changes name and spec; undo restores both", () => {
-    const { s, id } = withProfile(emptyProjectState());
+    const { s, id } = withProfile(base());
     const r = apply(s, { type: "UpdateQualityProfile", profileId: id, name: "Final 4K", spec: { effort: "fast" } });
     expect(r.state.qualityProfiles[id]!.name).toBe("Final 4K");
     expect(r.state.qualityProfiles[id]!.spec).toEqual({ effort: "fast" });
@@ -69,7 +69,7 @@ describe("M8 quality profiles – commands", () => {
     expect(undone.state.qualityProfiles[id]!.spec).toEqual(SPEC);
   });
   it("SetActiveQualityProfile sets and clears the active profile with revision check", () => {
-    const { s, id } = withProfile(emptyProjectState());
+    const { s, id } = withProfile(base());
     const r = apply(s, { type: "SetActiveQualityProfile", profileId: id });
     expect(r.state.project.activeQualityProfileId).toBe(id);
     expect(activeQualityProfile(r.state)?.id).toBe(id);
@@ -78,7 +78,7 @@ describe("M8 quality profiles – commands", () => {
     expect(activeQualityProfile(undone.state)).toBeNull();
   });
   it("a removed profile cannot be active; removing the active profile clears the choice", () => {
-    const { s, id } = withProfile(emptyProjectState());
+    const { s, id } = withProfile(base());
     const active = apply(s, { type: "SetActiveQualityProfile", profileId: id }).state;
     const removed = apply(active, { type: "SetQualityProfileRemoved", profileId: id, removed: true });
     expect(removed.state.qualityProfiles[id]!.removed).toBe(true);
@@ -89,7 +89,7 @@ describe("M8 quality profiles – commands", () => {
     expect(undone.state.qualityProfiles[id]!.removed).toBe(false);
   });
   it("undoing the creation of an active profile clears the active choice in the same undo", () => {
-    const { s, id } = withProfile(emptyProjectState());
+    const { s, id } = withProfile(base());
     const active = apply(s, { type: "SetActiveQualityProfile", profileId: id }).state;
     const undone = apply(active, { type: "UndoAddQualityProfile", profileId: id });
     expect(undone.state.qualityProfiles[id]).toBeUndefined();
@@ -104,7 +104,7 @@ describe("M8 quality profiles – rules", () => {
     for (const p of d) expect(qualityProfileError(p.name, p.spec)).toBeNull();
   });
   it("qualityProfilesOf sorts by name and hides removed profiles", () => {
-    let s = emptyProjectState();
+    let s = base();
     const a = withProfile(s, "B-profil"); s = a.s;
     const b = withProfile(s, "A-profil"); s = b.s;
     const c = withProfile(s, "C-profil"); s = c.s;
@@ -112,7 +112,7 @@ describe("M8 quality profiles – rules", () => {
     expect(qualityProfilesOf(s).map((p) => p.name)).toEqual(["A-profil", "B-profil"]);
   });
   it("the snapshot is frozen in time: changing the profile never changes old results", () => {
-    const { s, id } = withProfile(emptyProjectState());
+    const { s, id } = withProfile(base());
     const snap = qualityProfileSnapshot(s.qualityProfiles[id]!);
     const changed = apply(s, { type: "UpdateQualityProfile", profileId: id, spec: { effort: "fast" } }).state;
     expect(changed.qualityProfiles[id]!.spec.effort).toBe("fast");
