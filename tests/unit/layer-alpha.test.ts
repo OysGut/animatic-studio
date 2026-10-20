@@ -14,7 +14,9 @@ import { mustApply, seedProject, tid } from "../helpers/fixtures";
 import { SoftCanvas, softLog, resetSoftLog } from "../helpers/soft-canvas";
 
 function setup() {
-  const { state, mainId } = seedProject(1);
+  const seed = seedProject(1);
+  const mainId = seed.mainId;
+  const state = mustApply(seed.state, { type: "SetProjectFormat", width: 16, height: 16, fps: { num: 25, den: 1 } });
   const occ = orderedOccurrences(state, mainId)[0];
   if (!occ) throw new Error("Missing occurrence");
   const id = tid<"composition">(), solid = tid<"composition_layer">(), edge = tid<"composition_layer">();
@@ -32,7 +34,7 @@ function frame() {
   const fixture = setup();
   const canvas = new SoftCanvas(16, 16), clip = alphaSceneClip(fixture.s, fixture.c);
   if (!clip) throw new Error("Missing clip");
-  drawFilmFrame(canvas.getContext(), fixture.s, [clip], 0, {
+  drawFilmFrame(canvas.getContext() as unknown as CanvasRenderingContext2D, fixture.s, [clip], 0, {
     width: 16, height: 16, background: "transparent", images: new Map(),
     layerIds: new Set([fixture.solid, fixture.edge]), placeholders: false,
   });
@@ -63,7 +65,7 @@ describe("P4 actual compositor pixels", () => {
     const { canvas } = frame();
     expect(canvas.pixel(0, 0)).toEqual([0, 0, 0, 0]);
     expect(canvas.pixel(15, 15)).toEqual([0, 0, 0, 0]);
-    expect(canvas.pixel(8, 8)).toEqual([200, 100, 50, 255]);
+    expect(canvas.pixel(8, 8)).toEqual([200, 100, 50, 1]);
     expect(softLog.unsupported).toEqual([]);
   });
   it.each(["straight", "premultiplied"] as const)("partial edge survives PNG encoding (%s)", async mode => {
@@ -79,7 +81,7 @@ describe("P4 actual compositor pixels", () => {
   it("export frame equals preview frame for the same selected layers", () => {
     const { canvas, s, c, solid, edge } = frame();
     const preview = new SoftCanvas(16, 16);
-    drawFrame(preview.getContext(), renderFrame(s, c.id, 0, { view: "camera" }), {
+    drawFrame(preview.getContext() as unknown as CanvasRenderingContext2D, renderFrame(s, c.id, 0, { view: "camera" }), {
       background: "transparent", layerIds: new Set([solid, edge]), images: new Map(), placeholders: false,
     });
     expect([...canvas.data]).toEqual([...preview.data]);
@@ -88,10 +90,10 @@ describe("P4 actual compositor pixels", () => {
     const { s, c, edge } = setup(); const clip = alphaSceneClip(s, c);
     if (!clip) throw new Error("Missing clip");
     const canvas = new SoftCanvas(16, 16);
-    drawFilmFrame(canvas.getContext(), s, [clip], 0, { width: 16, height: 16,
+    drawFilmFrame(canvas.getContext() as unknown as CanvasRenderingContext2D, s, [clip], 0, { width: 16, height: 16,
       images: new Map(), background: "transparent", layerIds: new Set([edge]) });
     expect(canvas.pixel(8, 8)[3]).toBe(0);
-    expect(canvas.pixel(3, 8)[3]).toBe(128);
+    expect(canvas.pixel(3, 8)[3]).toBe(0.5);
   });
 });
 describe("P4 choices and format gate", () => {
@@ -135,7 +137,7 @@ describe("P4 streaming ZIP and cancellation", () => {
     expect(sink.close).toHaveBeenCalledOnce();
   });
   it("cancelled export aborts the sink and never finalizes a half file", async () => {
-    const ctrl = new AbortController(); const close = vi.fn(), abort = vi.fn();
+    const ctrl = new AbortController(); const close = vi.fn(async () => {}), abort = vi.fn(async () => {});
     const sink: ZipSink = { write: async () => {}, close, abort };
     async function* frames() { yield { path: "0.png", data: new Uint8Array([1]) }; ctrl.abort(); yield { path: "1.png", data: new Uint8Array([2]) }; }
     await expect(writeZip(sink, [], {}, { signal: ctrl.signal, extra: frames() })).rejects.toMatchObject({ name: "AbortError" });
