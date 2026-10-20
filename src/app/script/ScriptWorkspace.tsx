@@ -696,6 +696,9 @@ function Workspace({
               : ""}
           </span>
         ) : null}
+        </ToolbarGroup>
+        {/* ML4: import og fjerning av oversettelse går i «Mer» før språkvelgeren, så valgt språkversjon alltid vises */}
+        <ToolbarGroup priority={3}>
         {langStatus && editable ? (
           <ToolbarButton onClick={() => setImportLangOpen(true)}>
             <Languages />
@@ -712,10 +715,10 @@ function Workspace({
         ) : null}
         </ToolbarGroup>
         <ToolbarGroup priority={2}>
-        <ToolbarButton data-testid="language-versions-open" onClick={() => setLangVersionsOpen(true)}>
+        {/* ML4: ikonknapp, så verktøylinjen får plass uten «Mer …» ved 1280 px */}
+        <IconButton data-testid="language-versions-open" label={tk("ml3-language-versions.button.manage")} onClick={() => setLangVersionsOpen(true)}>
           <Languages />
-          {tk("ml3-language-versions.button.manage")}
-        </ToolbarButton>
+        </IconButton>
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>

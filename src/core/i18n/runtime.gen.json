@@ -30500,7 +30500,7 @@
       "text": "Lukk"
     },
     "ml3-language-versions.button.manage": {
-      "text": "Språkversjoner …"
+      "text": "Språk i manuset …"
     },
     "ml3-language-versions.button.register": {
       "text": "Registrer"
@@ -30618,6 +30618,15 @@
     },
     "ml3-language-versions.undo.restore": {
       "text": "Gjenopprett språkversjon {name}"
+    },
+    "ml4-export-fonts.docx-warning": {
+      "text": "Word-fonten ({font}) har ikke {count} tegn: {chars}. Tegnene beholdes i filen, men Word viser dem med en annen font."
+    },
+    "ml4-export-fonts.ok": {
+      "text": "Fonten ({font}) kan vise alle tegnene i eksporten."
+    },
+    "ml4-export-fonts.pdf-blocked": {
+      "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administrasjon"
@@ -61415,7 +61424,7 @@
       "text": "Close"
     },
     "ml3-language-versions.button.manage": {
-      "text": "Language versions …"
+      "text": "Script languages …"
     },
     "ml3-language-versions.button.register": {
       "text": "Register"
@@ -61533,6 +61542,15 @@
     },
     "ml3-language-versions.undo.restore": {
       "text": "Restore language version {name}"
+    },
+    "ml4-export-fonts.docx-warning": {
+      "text": "The Word font ({font}) lacks {count} characters: {chars}. The characters are kept in the file, but Word shows them in another font."
+    },
+    "ml4-export-fonts.ok": {
+      "text": "The font ({font}) can show every character in the export."
+    },
+    "ml4-export-fonts.pdf-blocked": {
+      "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administration"

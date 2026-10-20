@@ -162,7 +162,8 @@ function commentXml(id: number, n: ExportNote): string {
   return `<w:comment w:id="${id}" w:author="${esc(n.author || tk("engine-export-screenplay-docx.comment-xml.esc.e1c01748c122"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
 }
 
-const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="nb-NO"/>`;
+const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/>`;
+const rpr = (lang: string) => `${RPR}<w:lang w:val="${lang.replace(/[^A-Za-z0-9-]/g, "")}"/>`;
 
 function sectPr(opts: { header: boolean; titlePg: boolean; start?: number }): string {
   return (
@@ -174,6 +175,8 @@ function sectPr(opts: { header: boolean; titlePg: boolean; start?: number }): st
 }
 
 export interface DocxOptions {
+  /** Språkmerket i dokumentet (BCP-47), for stavekontroll og orddeling. Standard «nb-NO». */
+  readonly language?: string;
   readonly title?: string;
   readonly titlePage?: readonly string[];
   /** Notater som Word-kommentarer (DEC-0031). Nøkler: blokk-ID og forekomst-ID. */
@@ -225,7 +228,7 @@ export function screenplayDocx(
   const styles =
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n` +
     `<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">` +
-    `<w:docDefaults><w:rPrDefault><w:rPr>${RPR}</w:rPr></w:rPrDefault>` +
+    `<w:docDefaults><w:rPrDefault><w:rPr>${rpr(opts.language ?? "nb-NO")}</w:rPr></w:rPrDefault>` +
     `<w:pPrDefault><w:pPr><w:spacing w:before="0" w:after="0" w:line="${LINE}" w:lineRule="exact"/><w:widowControl w:val="0"/></w:pPr></w:pPrDefault></w:docDefaults>` +
     `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
 

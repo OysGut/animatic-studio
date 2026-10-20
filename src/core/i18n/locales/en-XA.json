@@ -73159,7 +73159,7 @@
     "text": "[!! TThhëë llïïnnëëss ïïnn tthhëë llïïnnkk bbëëllôônngg ttôô ddïïffffëërrëënntt lláánnggüüáággëë vvëërrssïïôônnss. !!]"
   },
   "ml3-language-versions.button.manage": {
-    "text": "[!! LLáánnggüüáággëë vvëërrssïïôônnss … !!]"
+    "text": "[!! SSccrrïïpptt lláánnggüüáággëëss … !!]"
   },
   "ml3-language-versions.dialog.title": {
     "text": "[!! LLáánnggüüáággëë vvëërrssïïôônnss !!]"
@@ -73256,5 +73256,14 @@
   },
   "ml3-language-versions.review.languages": {
     "text": "[!! TThhëë NNôôrrwwëëggïïáánn ttëëxxtt hhááss cchháánnggëëdd. NNëëëëddss rrëëvvïïëëww ïïnn: {languages} !!]"
+  },
+  "ml4-export-fonts.pdf-blocked": {
+    "text": "[!! TThhëë PPDDFF ffôônntt ({font}) ccáánnnnôôtt sshhôôww {count} cchháárrááccttëërrss ïïnn tthhïïss lláánnggüüáággëë vvëërrssïïôônn: {chars}. TThhëëyy wwôôüülldd bbëëccôômmëë \"?\" ïïnn tthhëë ffïïllëë, ssôô tthhëë PPDDFF ëëxxppôôrrtt ïïss ssttôôppppëëdd. CChhôôôôssëë WWôôrrdd ôôrr FFôôüünnttááïïnn, wwhhïïcchh kkëëëëpp ëëvvëërryy cchháárrááccttëërr. !!]"
+  },
+  "ml4-export-fonts.docx-warning": {
+    "text": "[!! TThhëë WWôôrrdd ffôônntt ({font}) lláácckkss {count} cchháárrááccttëërrss: {chars}. TThhëë cchháárrááccttëërrss áárrëë kkëëpptt ïïnn tthhëë ffïïllëë, bbüütt WWôôrrdd sshhôôwwss tthhëëmm ïïnn áánnôôtthhëërr ffôônntt. !!]"
+  },
+  "ml4-export-fonts.ok": {
+    "text": "[!! TThhëë ffôônntt ({font}) ccáánn sshhôôww ëëvvëërryy cchháárrááccttëërr ïïnn tthhëë ëëxxppôôrrtt. !!]"
   }
 }

@@ -255,7 +255,7 @@ export function BackupDialog({
               ) : null}
             </section>
             <div className="flex flex-wrap items-center gap-2">
-              <Button disabled={busy || tooBig} onClick={() => void download()}>
+              <Button data-testid="backup-download" disabled={busy || tooBig} onClick={() => void download()}>
                 {busy ? <Loader2 className="animate-spin" /> : <DatabaseBackup />}
                 {t("app-projects-backup-dialogs.backup-dialog.button.9066761217e2")} ({formatBytes(bytes)})
               </Button>
@@ -286,7 +286,7 @@ export function BackupDialog({
             <Message m={message} />
             {link ? (
               <p className="text-xs text-text-secondary">
-                <a href={link.url} download={link.name} className="underline underline-offset-2">
+                <a data-testid="backup-link" href={link.url} download={link.name} className="underline underline-offset-2">
                   {t("app-projects-backup-dialogs.backup-dialog.a.bd3f903a223e")}
                 </a>{" "}
                 {t("app-projects-backup-dialogs.backup-dialog.p.cea5346bf3cb")}
@@ -474,6 +474,7 @@ export function RestoreBackupDialog({
                 {t("app-projects-backup-dialogs.restore-backup-dialog.span.6edbd9149566")}
               </span>
               <Input
+                data-testid="restore-name"
                 value={name}
                 disabled={running || started}
                 onChange={(e) => setName(e.target.value)}
@@ -502,11 +503,11 @@ export function RestoreBackupDialog({
           <Message m={message} />
           <div className="flex flex-wrap items-center gap-2">
             {doneId ? (
-              <Button onClick={() => onOpenProject(doneId)}>
+              <Button data-testid="restore-done" onClick={() => onOpenProject(doneId)}>
                 {t("app-projects-backup-dialogs.restore-backup-dialog.button.e17e2c6431ea")}
               </Button>
             ) : (
-              <Button disabled={!opened || !name.trim() || running} onClick={() => void run()}>
+              <Button data-testid="restore-run" disabled={!opened || !name.trim() || running} onClick={() => void run()}>
                 {running ? <Loader2 className="animate-spin" /> : <ArchiveRestore />}
                 {started
                   ? t("app-projects-backup-dialogs.restore-backup-dialog.button.e05ae208c3ef")
