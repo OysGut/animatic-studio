@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, isUuid, assetVoiceError, characterDialogueCoverage, estimateCostUsd, newId, languageTagError, type AssetVoice } from "@/core";
+import { L, parseQualityProfileMeta, isUuid, assetVoiceError, characterDialogueCoverage, estimateCostUsd, newId, languageTagError, type AssetVoice } from "@/core";
 import type { AnyClient } from "../storage/project-rows";
 
 async function access(supabase: unknown, projectId: string, userId: string) {
@@ -24,7 +24,8 @@ export const listDialogueBatches = createServerFn({ method: "POST" }).middleware
 });
 export const createDialogueBatch = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator((raw: unknown) => {
   const { projectId, raw: x } = projectInput(raw);
-  const voice = x["voice"] as AssetVoice;
+  const rawVoice = x["voice"] as AssetVoice & { qualityProfile?: unknown };
+  const voice = rawVoice ? { ...rawVoice, qualityProfile: parseQualityProfileMeta(rawVoice.qualityProfile) } : rawVoice;
   if (x["approved"] !== true || !voice || assetVoiceError(voice) || typeof x["characterId"] !== "string" || !isUuid(x["characterId"]) || typeof x["requestId"] !== "string" || !isUuid(x["requestId"])) throw new Error(L("Ugyldig eller ubekreftet jobb", "Invalid or unapproved job"));
   const lines = x["lines"] as { key: string; language: string; revision: number }[];
   if (!Array.isArray(lines) || !lines.length || lines.length > 1000 || new Set(lines.map(l => l.key)).size !== lines.length || lines.some(l => typeof l.key !== "string" || languageTagError(l.language) || !Number.isInteger(l.revision))) throw new Error(L("Ugyldig replikkvalg", "Invalid line selection"));

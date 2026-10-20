@@ -25,7 +25,7 @@ export class ExportQueue {
   }
   enqueue(name: string, work: Work, profile?: QualityProfileSnapshot | null) {
     const id = crypto.randomUUID(), controller = new AbortController();
-    this.tasks = [...this.tasks, { id, name, profile, status: "queued", done: 0, total: 1 }];
+    this.tasks = [...this.tasks, { id, name, profile: profile ?? null, status: "queued", done: 0, total: 1 }];
     this.controllers.set(id, controller);
     this.pending.push({ id, work, controller });
     this.listeners.forEach(fn => fn());

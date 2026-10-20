@@ -45,3 +45,6 @@ Kortversjonen:
 26. Dialogue clips own placement/active choice; versions own file/edit, mirrored only by mirrorDialogueClips. Character rows are projections; voice defaults never touch old audio.
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
 28. Alpha exports share drawFilmFrame; adapters finalize before download.
+
+29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes profile budget reservations under the project lock so concurrent clients cannot exceed a profile cap.
+30. Film and alpha exports share a browser-local queue mounted at the root; closures capture inputs, so navigation preserves work while tab closure cannot resume a canvas encoder.

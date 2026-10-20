@@ -693,6 +693,7 @@ export function ExportAnimaticDialog({
                 `The export stopped: ${(e as Error).message || "unknown error"}`,
               ),
         );
+      throw e;
     } finally {
       if (abort.current === ctrl) abort.current = null;
     }
