@@ -34,6 +34,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { t } from "@/core/i18n/keyed";
+import { tm } from "@/core/i18n";
 
 type Choice = "skip" | "new" | "alias";
 type PickableKind = "character" | "animal" | "object" | "location" | "environment" | "sound";
@@ -356,7 +357,7 @@ export function SuggestionsDialog({
                           </span>
                           <span className="ml-2 text-xs text-status-uncertain" data-testid="library-suggestion-confidence">{confidenceOf(s) === "high" ? t("app-library-suggestions-dialog.suggestions-dialog.span.be034ba6f970") : confidenceOf(s) === "medium" ? t("app-library-suggestions-dialog.suggestions-dialog.span.430eb7822403") : t("app-library-suggestions-dialog.suggestions-dialog.span.5ae2efe875b3")}</span>
                         </div>
-                        <p className="break-words text-xs text-text-secondary">{ai[s.name]?.reason ?? s.evidence ?? ""}</p>
+                        <p className="break-words text-xs text-text-secondary">{ai[s.name]?.reason ?? (s.evidence ? tm(s.evidence) : "")}</p>
                         {ai[s.name]?.aliasOf && suggestions.some((candidate) => candidate.name === ai[s.name]?.aliasOf) ? <p className="break-words text-xs text-status-uncertain">{t("app-library-suggestions-dialog.suggestions-dialog.p.7c076dc7459a", { aliasOf: String(ai[s.name]?.aliasOf) })}</p> : null}
                         <div className="truncate text-xs text-text-tertiary" title={evidence(s)}>
                           {evidence(s)}
