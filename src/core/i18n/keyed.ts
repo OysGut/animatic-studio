@@ -4,7 +4,7 @@ import nb from './locales/nb.json';
 import en from './locales/en.json';
 import pseudo from './locales/en-XA.json';
 import { createTranslator, type MessageParameters } from './messages';
-import { getLanguage } from './index';
+import { getUiLanguage } from './index';
 let translate: ReturnType<typeof createTranslator> | undefined;
 export function t(key: string, params: MessageParameters = {}, language: string = getUiLanguage()): string {
   translate ??= createTranslator(manifest, { nb, en, 'en-XA': pseudo });
