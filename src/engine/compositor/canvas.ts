@@ -82,7 +82,10 @@ export function drawFrame(ctx: CanvasRenderingContext2D, frame: Frame, opts: Dra
     // CA emits derived rig items with the permanent host ID as prefix.
     if (opts.layerIds && !opts.layerIds.has(it.layerId) &&
       ![...opts.layerIds].some(id => it.layerId.startsWith(`${id}:rig:`))) continue;
-    drawItem(ctx, opts.effects === false ? { ...it, effects: undefined } : it, v, opts);
+    if (opts.effects === false) {
+      const { effects: _effects, ...plain } = it;
+      drawItem(ctx, plain, v, opts);
+    } else drawItem(ctx, it, v, opts);
   }
   ctx.restore();
 }

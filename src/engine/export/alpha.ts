@@ -98,8 +98,8 @@ async function webmEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement): Pr
     throw new Error(L("Denne nettleseren støtter ikke WebM VP9 med alfa. Velg PNG-sekvens.",
       "This browser does not support WebM VP9 with alpha. Choose a PNG sequence."));
   const mb = await import("mediabunny");
-  const output = new mb.Output({ format: new mb.WebMOutputFormat(),
-    target: new mb.StreamTarget(new WritableStream({ write: chunk => o.sink.write(chunk.data) })) });
+  const output = new mb.Output({ format: new mb.WebMOutputFormat({ live: true }),
+    target: new mb.AppendOnlyStreamTarget(new WritableStream({ write: chunk => o.sink.write(chunk) })) });
   const source = new mb.CanvasSource(canvas, { codec: "vp9", quality: mb.QUALITY_HIGH, alpha: "keep" });
   const fps = o.state.project.fps.num / o.state.project.fps.den;
   output.addVideoTrack(source, { frameRate: fps });

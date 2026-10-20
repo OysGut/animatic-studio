@@ -21,11 +21,11 @@ export const DEFAULT_ALPHA_SETTINGS: AlphaExportSettings = {
 export function isAlphaSettings(v: unknown): v is AlphaExportSettings {
   if (!v || typeof v !== "object") return false;
   const o = v as Record<string, unknown>;
-  return Array.isArray(o.layerIds) && o.layerIds.every(id => typeof id === "string") &&
-    (o.range === "scene" || o.range === "in-out") &&
-    Number.isInteger(o.inFrame) && Number.isInteger(o.outFrame) &&
-    typeof o.effects === "boolean" && (o.alpha === "straight" || o.alpha === "premultiplied") &&
-    (o.format === "png-seq" || o.format === "webm-vp9");
+  return Array.isArray(o["layerIds"]) && o["layerIds"].every(id => typeof id === "string") &&
+    (o["range"] === "scene" || o["range"] === "in-out") &&
+    Number.isInteger(o["inFrame"]) && Number.isInteger(o["outFrame"]) &&
+    typeof o["effects"] === "boolean" && (o["alpha"] === "straight" || o["alpha"] === "premultiplied") &&
+    (o["format"] === "png-seq" || o["format"] === "webm-vp9");
 }
 export function alphaRange(c: Composition, o: AlphaExportSettings) {
   return o.range === "scene" ? { start: 0, end: c.durationFrames } : { start: o.inFrame, end: o.outFrame };
