@@ -6,7 +6,6 @@ import { alphaExportError, alphaFileBase, alphaRange, DEFAULT_ALPHA_SETTINGS, is
 import { exportAlphaLayers, openAlphaSink, supportsVp9Alpha } from "@/engine/export/alpha";
 import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
-import { useUiPref } from "@/app/account/ui-prefs";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
@@ -15,7 +14,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   state: ProjectState; composition: Composition; initialLayerIds?: readonly string[];
   open: boolean; onOpenChange: (open: boolean) => void;
 }) {
-  const [saved, save] = useUiPref(`alphaExport.${state.project.id}`, DEFAULT_ALPHA_SETTINGS, isAlphaSettings);
+  const storageKey = `animatic:alpha-export:${state.project.id}`;
   const layers = useMemo(() => layersOf(state, composition.id), [state, composition.id]);
   const [options, setOptions] = useState<AlphaExportSettings>(DEFAULT_ALPHA_SETTINGS);
   const [support, setSupport] = useState<boolean | null>(null);
@@ -26,6 +25,11 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
   const busy = progress !== null;
   useEffect(() => {
     if (!open) return;
+    let saved = DEFAULT_ALPHA_SETTINGS;
+    try {
+      const raw: unknown = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (isAlphaSettings(raw)) saved = raw;
+    } catch { /* Private browsing keeps the current draft only. */ }
     const ids = initialLayerIds?.length ? initialLayerIds : saved.layerIds.filter(id => layers.some(l => l.id === id));
     setOptions({ ...saved, layerIds: ids.length ? ids : layers.map(l => l.id),
       outFrame: Math.min(composition.durationFrames, Math.max(1, saved.outFrame)) });
@@ -53,7 +57,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
     setError(null); setReady(null); setProgress({ done: 0, total: range.end - range.start });
     let sink: Awaited<ReturnType<typeof openAlphaSink>> | null = null;
     try {
-      save(options);
+      try { localStorage.setItem(storageKey, JSON.stringify(options)); } catch { /* Session only. */ }
       const base = alphaFileBase(scene, layers.filter(l => options.layerIds.includes(l.id)).map(l => l.name), range.start, range.end);
       const png = options.format === "png-seq";
       sink = await openAlphaSink(`${base}.${png ? "zip" : "webm"}`, png ? "application/zip" : "video/webm");

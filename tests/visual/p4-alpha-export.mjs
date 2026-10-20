@@ -53,7 +53,9 @@ for (const lang of ["nb", "en"]) await h.scenario(`p4-${lang}`, occ.id, lang, as
   h.check(png.width === 64 && png.height === 64, `${lang}: riktige mål`);
   h.check(png.at(0,0)[3] === 0 && png.at(63,63)[3] === 0, `${lang}: nedlastet PNG har gjennomsiktige hjørner`);
   h.check(png.at(32,32)[3] === 255, `${lang}: figur er helt dekkende`);
-  h.check(JSON.stringify(png.at(12,32)) === JSON.stringify([200,100,50,128]), `${lang}: rett kantfarge og delvis alfa`);
+  const edgePixel = png.at(12,32);
+  // Canvas unpremultiplication can round RGB by one byte; alpha must be exact.
+  h.check(edgePixel[3] === 128 && [200,100,50].every((v,i) => Math.abs(edgePixel[i]-v) <= 1), `${lang}: rett kantfarge og delvis alfa`);
   h.check(await page.getByTestId("alpha-download").isVisible(), `${lang}: ferdig fil og nedlastingslenke`);
   h.check(h.state.commands.length === 0, `${lang}: scenedata endres ikke`);
   await page.getByTestId("alpha-cancel").click(); await h.waitHidden(dialog);
@@ -69,7 +71,7 @@ for (const lang of ["nb", "en"]) await h.scenario(`p4-${lang}`, occ.id, lang, as
     const r = await VideoEncoder.isConfigSupported({ codec: "vp09.00.10.08", width:64, height:64, bitrate:8000000, alpha:"keep" });
     return r.supported === true && r.config.alpha === "keep";
   });
-  h.check(await page.getByTestId("alpha-format").locator('option[value="webm-vp9"]').isDisabled() === !supported, `${lang}: WebM sperres når alfa ikke støttes`);
+  h.check(await h.eventually(async () => await page.getByTestId("alpha-format").locator('option[value="webm-vp9"]').isDisabled() === !supported), `${lang}: WebM sperres når alfa ikke støttes`);
 });
 
 await h.scenario("p4-cancel", occ.id, "nb", async page => {
