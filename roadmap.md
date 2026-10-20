@@ -1,3 +1,9 @@
+# C linjekobling (20.10.2026)
+- [ ] Regelbasert først, sceneavgrenset AI med kostnadsbekreftelse og gjennomgang av 1:n/n:1.
+- [ ] Reversible kommandoer, 0064 fra 0063, RLS/grants/sletting og sikkerhetskopi.
+- [ ] Språknavn i opptak og avstand ved alfa-profilvalg.
+- [ ] P5 NO/EN, full Vitest/DB og bestilte regresjoner; REQ-0845–0853 og rapport.
+
 # D fullføring (20.10.2026)
 - [x] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.
 - [x] Endelig 0063 med minimal create_project fra 0001 og serverhåndhevet profilbudsjett; ingen Cloud-kjøring.
