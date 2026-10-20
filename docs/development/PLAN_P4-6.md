@@ -1,6 +1,6 @@
 # Plan P4–P6 (etter DV) – 20.10.2026
 
-Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. C og D er kartlagt, men ikke bygd.
+Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D er bygd med 0063 lokalt; C er ikke del av denne runden.
 
 ## A. Polering etter DV (ferdig)
 - Huskelapp: visningsnavn hentes fra profilene (`useProfiles`) der lappen vises; «ukjent» bare når navnet mangler.
@@ -9,7 +9,7 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. C og D er kartl
 - Manglende stemme/modell vises som «stemme ikke valgt» / «modell ikke valgt».
 
 ## B. Punkt 4 – lageksport med alfa (REQ-0837–0844)
-- Datamodell: ingen ny tabell. Eksportvalg (`layerIds`, `range`, `effects`, `alpha: straight|premultiplied`, `format: png-seq|webm-vp9`) i klientens eksportflyt; valg huskes lokalt per prosjekt. Eksisterende eksport har dialogstyrt fremdrift/avbryt, ikke en felles bakgrunnskø.
+- Datamodell: ingen ny tabell. Eksportvalg (`layerIds`, `range`, `effects`, `alpha: straight|premultiplied`, `format: png-seq|webm-vp9`) i klientens eksportflyt; valg huskes lokalt per prosjekt. Film og alfa deler en klientkø med global fremdrift/avbryt; dialoglukking stopper ikke eksport.
 - Renderer: samme `film.ts`/compositor som vanlig eksport, med `background: transparent` og lagfilter; formatadapter-grensesnitt `AlphaEncoder` (png-seq, webm-vp9; ProRes 4444/MOV senere, DEC-0085).
 - Ingen stille fallback: WebM-alfa sjekkes med `VideoEncoder.isConfigSupported({ alpha: "keep" })`; ellers tydelig melding og valget sperres.
 - Tester: vitest piksel for piksel (hjørner alfa 0, figur alfa 255, premultiplisert vs. rett), visuell `p4-alpha-export.mjs` (36/36: faktiske PNG-ZIP-nedlastinger på norsk/engelsk, maskering, effektvalg og avbryt). WebM-alfa er sperret i testnettleseren; faktisk WebM-alfa er ikke verifisert.
@@ -26,13 +26,14 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. C og D er kartl
 - Kommandoer `AddQualityProfile`, `UpdateQualityProfile`, `SetQualityProfileRemoved`, `SetActiveQualityProfile`.
 - Quality & Cost Engine: `providers.ts`/`cost.ts` tar profilen inn; resultater får `qualityProfileId` + øyeblikksbilde i metadata. Profilbytte endrer aldri gamle resultater.
 
-## Planlagt migrasjon fra 0063 (ikke skrevet eller kjørt)
+## Endelig migrasjon 0063 (skrevet og lokalt testet; ikke kjørt i Cloud)
 - Nye tabeller med revoke/grant og RLS (medlemmer leser, klient skriver ikke).
 - Erstatter `apply_changes`, `delete_project`, `purge_project_assets` (kopiert fra 0062). `purge_removed_assets` urørt.
-- Skjemaversjon 63; backup tar med profiler og godkjente linjekoblinger.
+- Skjemaversjon 63; backup tar med profiler. Linjekoblinger er utsatt til C.
+- create_project fra 0001: bare standardprofiler/aktivt valg; create_dialogue_batch fra 0061: bare profilmetadata i reserverte jobber. Ny privat budsjett-trigger.
 
 ## Risiko
 - WebM-alfa varierer mellom nettlesere; positiv WebCodecs-støtte kreves. Testnettleseren støtter ikke `alpha: keep`.
-- Minne ved lange PNG-sekvenser – ett komprimert bilde om gangen til zip (`writeZip`), diskbasert mellomlagring der OPFS finnes. Uten OPFS samles den komprimerte ZIP-filen i minnet, som eksisterende ZIP-eksport.
+- Minne ved lange PNG-sekvenser – ett komprimert bilde om gangen til zip (`writeZip`), diskbasert mellomlagring der OPFS finnes. File System Access brukes uten OPFS; uten begge sperres lageksport tydelig.
 - AI-linjekobling med 1:n/n:1 krever streng validering for å hindre ugyldige ID-er.
 - Stor runde: bygges i rekkefølgen B → D → C, med tester per steg.

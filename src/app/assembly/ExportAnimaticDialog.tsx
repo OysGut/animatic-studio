@@ -1163,7 +1163,7 @@ export function ExportAnimaticDialog({
           <Download />{L("Eksporter lag med gjennomsiktighet …", "Export layers with transparency …")}
         </Button>
 
-        <DialogFooter>
+        <DialogFooter className="sticky bottom-0 border-t border-border bg-surface-2 py-2">
           {busy ? (
             <Button variant="ghost" onClick={() => queueId.current ? exportQueue.cancel(queueId.current) : abort.current?.abort()}>
               {L("Avbryt", "Cancel")}

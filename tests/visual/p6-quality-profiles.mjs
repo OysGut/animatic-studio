@@ -6,6 +6,7 @@ if (!clip) throw new Error("Missing dialogue fixture");
 const pid="00000000-0000-7000-8000-000000006301";
 h.rows.quality_profiles=[{id:pid,project_id:h.fx.project.id,name:"Final test",revision:1,removed:false,spec:{effort:"premium",variants:2,resolution:"1K",models:{speech:"eleven_multilingual_v2"},export:{format:"png-seq",alpha:"premultiplied",bitrateKbps:16000}}}];
 h.fx.project.active_quality_profile_id=pid;
+for (const a of h.rows.assets) if (a.kind === "character") a.voice={provider:"elevenlabs",voiceId:"mock_voice",label:"Test voice",modelId:"eleven_v3",language:"nb",settings:{stability:0.5}};
 for (const lang of ["nb","en"]) await h.scenario(`p6-${lang}`,clip.occurrence_id,lang,async page=>{
   await page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`).dblclick();
   await page.getByTestId("dialogue-character-select").selectOption(h.rows.assets.find(a=>a.kind==="character").id);

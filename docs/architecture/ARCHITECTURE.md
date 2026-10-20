@@ -51,7 +51,7 @@ Relaterte dokumenter: `DOMAIN_MODEL.md`, `DATA_RELATIONSHIPS.md`, `INVARIANTS.md
 | Audio Engine | `core/audio`, `engine/audio` |
 | Prompt Orchestration Engine | `core/generation` (`prompt.ts`, `image-prompt.ts`, `scene-prompt.ts`, `prompt-writer.ts`; bruker stilprofilene fra Resource Library), serverfunksjoner i `adapters/ai` |
 | Provider Adapters | `core/generation/providers.ts` (leverandørkatalog: modeller, priser, lengder, oppløsning, innsatsnivå, begrensninger, modellvalg og kostnadsanslag – DEC-0069/0070/0075), `adapters/ai` (Lovable AI Gateway `gateway.ts`, egne nøkler i nøkkelhvelvet, `generate-image`/`video`/`sound`/`speech`/`write-prompt.functions.ts`, køen i `queue.functions.ts`) |
-| Quality & Cost Engine | `core/generation/cost.ts` (jobber, budsjett, forbruk i kreditter og USD), `core/generation/providers.ts` (`estimateCostUsd`, `costBreakdown`, kvalitetsmekanismer), sperrene i `adapters/ai`, `app/ai` |
+| Quality & Cost Engine | `core/generation/quality-profile.ts` (prosjektprofiler og uforanderlige øyeblikksbilder), `core/generation/cost.ts` (jobber, budsjett, forbruk i kreditter og USD), `core/generation/providers.ts` (`estimateCostUsd`, `costBreakdown`, kvalitetsmekanismer), sperrene i `adapters/ai`, `app/ai` |
 | Render Queue | tabell `generation_jobs`/`render_jobs`, worker |
 | Version & Dependency Engine | `core/commands` (kommandoer og inverser), `core/screenplay/versions.ts`, `core/assembly/discrepancy.ts`, `core/production` (spinoffer, tilbakeføring), `change_log` |
 | Localization Engine | `core/translation` (oversettelser, kobling, undertekster), `core/language` (filmspråk, timing, leppesynk) |
@@ -116,3 +116,9 @@ Desktop-versjon (macOS/Windows) kan bruke samme `core` og `engine` i Tauri eller
 | Lovable-synk (migrasjoner kjøres ikke automatisk) | Fast synkmelding; versjonstabell i databasen som UI sjekker mot forventet skjemaversjon. |
 | Samtidig redigering | Revisjonskontroll, tydelige konflikter, presence. |
 | Lovables agent endrer filer den ikke skal | AGENTS.md; CI-sjekk (kontrollsum, check_kb). |
+
+## M8 Quality & Cost Engine (0063)
+`quality_profiles` er prosjektdata med medlems-SELECT og ingen direkte klientskriving. Add/Update/SetRemoved/SetActive går via kommandoer og `apply_changes` med revisjoner og inverser. Nye prosjekter får Utkast (aktiv), Gjennomgang og Endelig; eksisterende får bare et eksplisitt tilbud. Backup inkluderer profiler og aktivt valg.
+Profilen foreslår modeller, innsats, oppløsning, varianter og eksportformat/bitrate/alfa; lokale valg overstyrer. Uten profil brukes tidligere standarder. `generation_jobs.params` får `qualityProfileId` og et validerbart øyeblikksbilde. Månedstaket teller genereringer (ikke USD), inkludert ventende reserverte jobber; feilede frigjør kapasitet. `private.guard_quality_profile_job` låser prosjektet før innsetting, avviser endret/fremmed profil og endring/fjerning av et eksisterende øyeblikksbilde. Eksisterende reserverte jobber kan ferdigstilles etter profilendringer.
+Film og alfa bruker `exportQueue`, en seriell klientkø montert i roten. Bekreftede innganger beholdes av jobbens closure; fremdrift/avbryt er global og dialoglukking stopper ikke arbeidet. Tabblukking eller full omlasting kan ikke gjenoppta en canvas-koder. PNG-ZIP strømmer til OPFS; File System Access er alternativet. Uten begge sperres lageksport med tydelig melding fremfor å akkumulere hele filen i minnet. ZIP-grensen uten ZIP64 er uendret.
+0063 erstatter apply_changes/delete_project/purge_project_assets fra 0062, create_project fra 0001 og create_dialogue_batch fra 0061 (kun øyeblikksbilde i reserverte jobber). purge_removed_assets er urørt. Migrasjonen kjøres ikke av Lovable.
