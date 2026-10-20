@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **862**
 - Prioritet: P0: 147, P1: 527, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 335, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 117, Under arbeid: 13, Ikke startet: 58, Utsatt: 9
+- Status: Verifisert: 665, Implementert – ikke verifisert: 126, Under arbeid: 13, Ikke startet: 58
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -11710,103 +11710,139 @@ Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke
 - **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
 
 #### REQ-0845 – P5: Regelkobling først
-Regelkobling først. Detaljering og implementasjon følger i separat C-oppdrag.
+Regelkobling først.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Regelkobling først
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0846 – P5: AI bare for usikre linjer
-AI bare for usikre linjer. Detaljering og implementasjon følger i separat C-oppdrag.
+AI bare for usikre linjer.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - AI bare for usikre linjer
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0847 – P5: Kostnad og godkjenning av linjekobling
-Kostnad og godkjenning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+Kostnad og godkjenning av linjekobling.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Kostnad og godkjenning av linjekobling
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0848 – P5: Forhåndsvisning av linjeforslag
-Forhåndsvisning av linjeforslag. Detaljering og implementasjon følger i separat C-oppdrag.
+Forhåndsvisning av linjeforslag.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Forhåndsvisning av linjeforslag
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0849 – P5: Godkjente linjekoblinger
-Godkjente linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+Godkjente linjekoblinger.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Godkjente linjekoblinger
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0850 – P5: Reversible linjekommandoer
-Reversible linjekommandoer. Detaljering og implementasjon følger i separat C-oppdrag.
+Reversible linjekommandoer.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Reversible linjekommandoer
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0851 – P5: Norsk hovedmanus bevares
-Norsk hovedmanus bevares. Detaljering og implementasjon følger i separat C-oppdrag.
+Norsk hovedmanus bevares.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Norsk hovedmanus bevares
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0852 – P5: Backup av linjekoblinger
-Backup av linjekoblinger. Detaljering og implementasjon følger i separat C-oppdrag.
+Backup av linjekoblinger.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Backup av linjekoblinger
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0853 – P5: Språk og testdekning av linjekobling
-Språk og testdekning av linjekobling. Detaljering og implementasjon følger i separat C-oppdrag.
+Språk og testdekning av linjekobling.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Utsatt
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Språk og testdekning av linjekobling
 - **Tester:**
-- **Merknad:** Reservert krav-ID fra tidligere P4–P6-plan. C er ikke bestilt i denne D-runden.
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
 
 #### REQ-0854 – M8: Navngitte prosjektprofiler
 Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.

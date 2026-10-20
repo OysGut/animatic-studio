@@ -1,6 +1,6 @@
 # Plan P4–P6 (etter DV) – 20.10.2026
 
-Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D er bygd med 0063 lokalt; C er ikke del av denne runden.
+Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D/0063 er verifisert og publisert av Øystein. C er implementert lokalt med 0064; DB og Cloud-verifikasjon gjenstår.
 
 ## A. Polering etter DV (ferdig)
 - Huskelapp: visningsnavn hentes fra profilene (`useProfiles`) der lappen vises; «ukjent» bare når navnet mangler.

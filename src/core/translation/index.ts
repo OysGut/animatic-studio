@@ -141,7 +141,7 @@ export function translatedState(s: ProjectState, lang: string): ProjectState {
   // B-050: approved correspondence affects translated projection only, never source state.
   for (const link of Object.values(s.translationLineLinks ?? {})) {
     if (link.removed || link.language !== lang || !["approved","manual"].includes(link.origin)) continue;
-    const texts=link.targetTranslationIds.map(id=>s.translations[id]).filter(t=>t && !t.removed && t.language===lang).map(t=>t.text);
+    const texts=link.targetTranslationIds.map(id=>s.translations[id]).flatMap(t=>t && !t.removed && t.language===lang ? [t.text] : []);
     if (!texts.length) continue;
     link.sourceBlockIds.forEach((id,index)=> {
       const b=blocks[id];
