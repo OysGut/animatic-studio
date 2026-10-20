@@ -1011,6 +1011,12 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UndoAddNoteFlag"; readonly flagId: string }
   | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
   | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
+  // M8 kvalitetsprofiler (REQ-0854–0862, migrasjon 0063)
+  | { readonly type: "AddQualityProfile"; readonly profileId: string; readonly name: string; readonly spec: import("../generation/quality-profile").QualityProfileSpec }
+  | { readonly type: "UndoAddQualityProfile"; readonly profileId: string }
+  | { readonly type: "UpdateQualityProfile"; readonly profileId: string; readonly name?: string; readonly spec?: import("../generation/quality-profile").QualityProfileSpec }
+  | { readonly type: "SetQualityProfileRemoved"; readonly profileId: string; readonly removed: boolean }
+  | { readonly type: "SetActiveQualityProfile"; readonly profileId: string | null }
   | {
       readonly type: "SetDialogueCharacter";
       readonly clipIds: readonly AudioClipId[];
