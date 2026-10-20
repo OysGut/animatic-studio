@@ -29709,3 +29709,1331 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0801
+  title: 'DV A1: manusendring gir rød status'
+  text: manusendring gir rød status
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - manusendring gir rød status
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0802
+  title: 'DV A2: aktiv versjon bestemmer status'
+  text: aktiv versjon bestemmer status
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - aktiv versjon bestemmer status
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0803
+  title: 'DV A3: endrede og fjernede passasjer identifiseres'
+  text: endrede og fjernede passasjer identifiseres
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - endrede og fjernede passasjer identifiseres
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0804
+  title: 'DV A4: avviket er synlig overalt der manuset vises'
+  text: avviket er synlig overalt der manuset vises
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - avviket er synlig overalt der manuset vises
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0805
+  title: 'DV A5: lenke ut til riktig scene'
+  text: lenke ut til riktig scene
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - lenke ut til riktig scene
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0806
+  title: 'DV A6: avspillingshodet settes på replikkstart'
+  text: avspillingshodet settes på replikkstart
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - avspillingshodet settes på replikkstart
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0807
+  title: 'DV A7: ingen automatisk avspilling'
+  text: ingen automatisk avspilling
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - ingen automatisk avspilling
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0808
+  title: 'DV A8: endringer vises i rødt i dialogeditoren'
+  text: endringer vises i rødt i dialogeditoren
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - endringer vises i rødt i dialogeditoren
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0809
+  title: 'DV A9: «Merk som gjennomgått» krever eksplisitt handling'
+  text: «Merk som gjennomgått» krever eksplisitt handling
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - «Merk som gjennomgått» krever eksplisitt handling
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0810
+  title: 'DV A10: historikken bevares'
+  text: historikken bevares
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - historikken bevares
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0811
+  title: 'DV A11: ny manusendring gir rødt igjen'
+  text: ny manusendring gir rødt igjen
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - ny manusendring gir rødt igjen
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0812
+  title: 'DV A12: eldre versjon kan gi avvik igjen'
+  text: eldre versjon kan gi avvik igjen
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '132'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - eldre versjon kan gi avvik igjen
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/dialogue/drift.ts
+  - src/app/dialogue/DriftBadge.tsx
+  - src/app/scene-editor/SceneScriptPanel.tsx
+  - src/app/scene-editor/SceneAudioRows.tsx
+  - src/app/script-explorer/ScriptExplorer.tsx
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0813
+  title: 'DV R1: handlingen ligger i Asset Library'
+  text: handlingen ligger i Asset Library
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - handlingen ligger i Asset Library
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0814
+  title: 'DV R2: berørte scener og replikker vises'
+  text: berørte scener og replikker vises
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - berørte scener og replikker vises
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0815
+  title: 'DV R3: brukeren velger replikker'
+  text: brukeren velger replikker
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - brukeren velger replikker
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0816
+  title: 'DV R4: språk og kostnad vises før generering'
+  text: språk og kostnad vises før generering
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - språk og kostnad vises før generering
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0817
+  title: 'DV R5: nye filer blir aktive, gamle bevares'
+  text: nye filer blir aktive, gamle bevares
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - nye filer blir aktive, gamle bevares
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0818
+  title: 'DV R6: riktig manusrevisjon registreres'
+  text: riktig manusrevisjon registreres
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '133'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - riktig manusrevisjon registreres
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/app/library/DialogueBatchPanel.tsx
+  - src/adapters/storage/dialogue-batch.server.ts
+  - src/core/commands/apply.ts
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0819
+  title: 'DV B1: sette personlig bokmerke'
+  text: sette personlig bokmerke
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '134'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - sette personlig bokmerke
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/bookmark.ts
+  - src/app/shell/BookmarkMenu.tsx
+  - src/adapters/browser/bookmarks.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0820
+  title: 'DV B2: «Fortsett ved bokmerke» åpner riktig sted'
+  text: «Fortsett ved bokmerke» åpner riktig sted
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '134'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - «Fortsett ved bokmerke» åpner riktig sted
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/bookmark.ts
+  - src/app/shell/BookmarkMenu.tsx
+  - src/adapters/browser/bookmarks.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0821
+  title: 'DV B3: bokmerket fjernes etter vellykket navigasjon'
+  text: bokmerket fjernes etter vellykket navigasjon
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '134'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - bokmerket fjernes etter vellykket navigasjon
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/bookmark.ts
+  - src/app/shell/BookmarkMenu.tsx
+  - src/adapters/browser/bookmarks.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0822
+  title: 'DV B4: andres bokmerker påvirkes ikke'
+  text: andres bokmerker påvirkes ikke
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '134'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - andres bokmerker påvirkes ikke
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/bookmark.ts
+  - src/app/shell/BookmarkMenu.tsx
+  - src/adapters/browser/bookmarks.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0823
+  title: 'DV H1: merke lyd'
+  text: merke lyd
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - merke lyd
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0824
+  title: 'DV H2: merke bilde'
+  text: merke bilde
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - merke bilde
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0825
+  title: 'DV H3: valgfri tekst'
+  text: valgfri tekst
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - valgfri tekst
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0826
+  title: 'DV H4: av/på'
+  text: av/på
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - av/på
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0827
+  title: 'DV H5: avmarkering sletter ikke tekst'
+  text: avmarkering sletter ikke tekst
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - avmarkering sletter ikke tekst
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0828
+  title: 'DV H6: andre autoriserte ser lappen'
+  text: andre autoriserte ser lappen
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - andre autoriserte ser lappen
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0829
+  title: 'DV H7: synkronisering'
+  text: synkronisering
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - synkronisering
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0830
+  title: 'DV H8: oppretter og dato'
+  text: oppretter og dato
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - oppretter og dato
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0831
+  title: 'DV H9: boks på prosjektsiden'
+  text: boks på prosjektsiden
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - boks på prosjektsiden
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0832
+  title: 'DV H10: sortering etter dato og manusplassering'
+  text: sortering etter dato og manusplassering
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - sortering etter dato og manusplassering
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0833
+  title: 'DV H11: filter på oppretter'
+  text: filter på oppretter
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - filter på oppretter
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0834
+  title: 'DV H12: klikk åpner riktig sted'
+  text: klikk åpner riktig sted
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - klikk åpner riktig sted
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0835
+  title: 'DV H13: virker selv om elementet er flyttet'
+  text: virker selv om elementet er flyttet
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - virker selv om elementet er flyttet
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
+- id: REQ-0836
+  title: 'DV H14: rettigheter følger samarbeidsmodellen'
+  text: rettigheter følger samarbeidsmodellen
+  origin: brukerbeslutning
+  source:
+    decision: DEC-0099
+    section: '135'
+    document: docs/product/phase3/DIALOGUE_VOICE_SPEC.md
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - rettigheter følger samarbeidsmodellen
+  tests:
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+  status: Implementert – ikke verifisert
+  implementation:
+  - src/core/notes/flags.ts
+  - src/app/dialogue/NoteFlagControl.tsx
+  - src/app/projects/NoteFlagsOverview.tsx
+  - src/adapters/storage/commands.functions.ts
+  - db/migrations/0062_drift_notes_bookmarks.sql
+  verification: []
+  notes: 'Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse.
+    Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.'
+  history:
+  - date: '2026-10-20'
+    decision: DEC-0099
+    change: Registrert fra bekreftet DV-oppdrag; ingen ny eller gjettet produktbeslutning.
