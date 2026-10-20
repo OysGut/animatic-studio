@@ -12,6 +12,7 @@ for (const lang of ["nb","en"]) await h.scenario(`p6-${lang}`,clip.occurrence_id
   await page.getByTestId("dialogue-generate-open").click();
   const picker=page.getByTestId("quality-profile-picker");
   h.check(await picker.inputValue()==="active","active project profile initially selected");
+  await page.getByTestId("voice-select").selectOption("mock_voice");
   await picker.selectOption(pid); h.check(await picker.inputValue()===pid,"explicit profile override");
   h.check(await page.getByTestId("voice-model").inputValue()==="eleven_multilingual_v2","profile changes speech estimate model");
   await page.getByTestId("dialogue-generation-start").click();
