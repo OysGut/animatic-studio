@@ -74,6 +74,20 @@ for (const lang of ["nb", "en"]) await h.scenario(`p4-${lang}`, occ.id, lang, as
   h.check(await page.getByTestId("alpha-format").locator('option[value="webm-vp9"]').evaluate(e => e.disabled) === !supported, `${lang}: WebM sperres når alfa ikke støttes`);
 });
 
+await h.scenario("p4-mask", occ.id, "nb", async page => {
+  solid.mask = { kind:"layer", layerId:edge.id, invert:false };
+  edge.width = 8; edge.transform = { ...edge.transform, x:24, opacity:1 };
+  await page.reload({waitUntil:"networkidle"});
+  await page.getByTestId("alpha-export-open").click();
+  await page.getByTestId(`alpha-layer-${edge.id}`).uncheck();
+  await page.getByTestId("alpha-range").selectOption("in-out");
+  await page.getByTestId("alpha-in").fill("0"); await page.getByTestId("alpha-out").fill("1");
+  const pending = page.waitForEvent("download"); await page.getByTestId("alpha-start").click();
+  const dl = await pending; const path=`${h.out}/mask.zip`; await dl.saveAs(path);
+  const files=unzipSync(readFileSync(path)), png=decode(Buffer.from(Object.values(files)[0]));
+  h.check(png.at(26,32)[3]===255 && png.at(32,32)[3]===0 && png.at(20,32)[3]===0, "uvalgt maskelag brukes som maske, ikke synlig innhold");
+  solid.mask=null; edge.width=16; edge.transform={...edge.transform,x:12,opacity:.5};
+});
 await h.scenario("p4-cancel", occ.id, "nb", async page => {
   c.duration_frames = 250; // Reload the mocked row before opening a long export.
   await page.reload({ waitUntil: "networkidle" });
