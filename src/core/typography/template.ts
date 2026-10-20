@@ -17,6 +17,7 @@ import type {
 } from "../ids";
 import type { CompositionLayer, Keyframe, ProjectState } from "../model";
 import { L } from "../i18n";
+import { t as tKey } from "@/core/i18n/keyed";
 
 export type TemplateCategory = "lower_third" | "title" | "text_card" | "text_object" | "credits";
 
@@ -72,31 +73,31 @@ const KEY = /^[a-z0-9_-]{1,40}$/;
 export function templateError(d: unknown): string | null {
   const t = d as TemplateDefinition;
   if (!t || typeof t !== "object" || t.format !== "animatic-template" || t.formatVersion !== 1)
-    return L("Ugyldig mal", "Invalid template");
-  if (!TEMPLATE_CATEGORIES.includes(t.category)) return L("Ukjent maltype", "Unknown template type");
+    return tKey("core-typography-template.template-error.message.6b3faad5d8a3");
+  if (!TEMPLATE_CATEGORIES.includes(t.category)) return tKey("core-typography-template.template-error.message.502a68da4d5b");
   if (!Number.isInteger(t.width) || !Number.isInteger(t.height) || t.width < 16 || t.height < 16 || t.width > 16384 || t.height > 16384)
-    return L("Ugyldig malformat", "Invalid template format");
-  if (!Array.isArray(t.slots) || !Array.isArray(t.elements)) return L("Ugyldig mal", "Invalid template");
-  if (t.elements.length === 0) return L("Malen har ingen elementer", "The template has no elements");
+    return tKey("core-typography-template.template-error.message.f221a3186b6a");
+  if (!Array.isArray(t.slots) || !Array.isArray(t.elements)) return tKey("core-typography-template.template-error.message.6b3faad5d8a3.2");
+  if (t.elements.length === 0) return tKey("core-typography-template.template-error.message.6da61b29594e");
   if (t.elements.length > MAX_TEMPLATE_ELEMENTS)
-    return L(`Malen har for mange elementer (maks ${MAX_TEMPLATE_ELEMENTS})`, `The template has too many elements (max ${MAX_TEMPLATE_ELEMENTS})`);
+    return tKey("core-typography-template.template-error.message.6cdf135fe96a", { MAX_TEMPLATE_ELEMENTS: String(MAX_TEMPLATE_ELEMENTS) });
   const slotKeys = new Set<string>();
   for (const s of t.slots) {
     if (!s || !KEY.test(s.key) || slotKeys.has(s.key) || typeof s.label !== "string" || s.label.length > 80 || (s.kind !== "text" && s.kind !== "image"))
-      return L("Ugyldig felt i malen", "Invalid field in the template");
+      return tKey("core-typography-template.template-error.message.d964f4b49407");
     slotKeys.add(s.key);
   }
   const keys = new Set<string>();
   for (const e of t.elements) {
-    if (!e || !KEY.test(e.key) || keys.has(e.key)) return L("Ugyldig element i malen", "Invalid element in the template");
+    if (!e || !KEY.test(e.key) || keys.has(e.key)) return tKey("core-typography-template.template-error.message.4215898179ac");
     keys.add(e.key);
-    if (e.slot !== null && !slotKeys.has(e.slot)) return L("Elementet viser et ukjent felt", "The element shows an unknown field");
-    if (!e.fields || typeof e.fields !== "object") return L("Ugyldig element i malen", "Invalid element in the template");
+    if (e.slot !== null && !slotKeys.has(e.slot)) return tKey("core-typography-template.template-error.message.86c27d8a5f07");
+    if (!e.fields || typeof e.fields !== "object") return tKey("core-typography-template.template-error.message.4215898179ac.2");
   }
   for (const e of t.elements)
     if (e.parentKey !== null && !t.elements.some((p) => p.key === e.parentKey && p.fields.kind === "group"))
-      return L("Elementet ligger i en ukjent gruppe", "The element is in an unknown group");
-  if (JSON.stringify(t).length > MAX_TEMPLATE_JSON) return L("Malen er for stor", "The template is too large");
+      return tKey("core-typography-template.template-error.message.8ca489cafa21");
+  if (JSON.stringify(t).length > MAX_TEMPLATE_JSON) return tKey("core-typography-template.template-error.message.2a7a1429bbe2");
   return null;
 }
 
@@ -277,10 +278,10 @@ export function planApplyTemplate(
   const ver = s.assetVersions[a.versionId];
   const def = ver?.template;
   const comp = s.compositions[a.compositionId];
-  if (!ver || !def) return { ok: false, reason: L("Malen finnes ikke", "The template does not exist") };
-  if (!comp) return { ok: false, reason: L("2D-scenen finnes ikke", "The 2D scene does not exist") };
+  if (!ver || !def) return { ok: false, reason: tKey("core-typography-template.reason.reason.ad3919ae06e7") };
+  if (!comp) return { ok: false, reason: tKey("core-typography-template.reason.reason.495b9541af70") };
   const variant = s.assetVariants[ver.variantId];
-  if (!variant) return { ok: false, reason: L("Malen finnes ikke", "The template does not exist") };
+  if (!variant) return { ok: false, reason: tKey("core-typography-template.reason.reason.ad3919ae06e7.2") };
   const values = { ...defaultTemplateValues(def), ...(a.values ?? {}) };
   const ids = new Map<string, string>();
   for (const e of def.elements) ids.set(e.key, a.newLayerId());
@@ -330,7 +331,7 @@ export function planUpdateTemplateValues(
   values: TemplateValues,
 ): { ok: true; command: Command } | { ok: false; reason: string } {
   const inst = s.templateInstances[instanceId];
-  if (!inst || inst.removed) return { ok: false, reason: L("Malforekomsten finnes ikke", "The template instance does not exist") };
+  if (!inst || inst.removed) return { ok: false, reason: tKey("core-typography-template.reason.reason.ff34111d10e1") };
   const merged = { ...inst.values, ...values };
   const updates: { layerId: LayerId; fields: LayerFields }[] = [];
   for (const l of instanceLayers(s, instanceId)) {
@@ -372,14 +373,14 @@ export function planTemplateVersionUpdate(
   newLayerId: () => string,
 ): { ok: true; command: Command } | { ok: false; reason: string } {
   const inst = s.templateInstances[instanceId];
-  if (!inst || inst.removed) return { ok: false, reason: L("Malforekomsten finnes ikke", "The template instance does not exist") };
+  if (!inst || inst.removed) return { ok: false, reason: tKey("core-typography-template.reason.reason.ff34111d10e1.2") };
   const oldDef = s.assetVersions[inst.templateVersionId]?.template;
   const newVer = s.assetVersions[newVersionId];
   const newDef = newVer?.template;
   const comp = s.compositions[inst.compositionId];
-  if (!oldDef || !newDef || !comp || !newVer) return { ok: false, reason: L("Malversjonen finnes ikke", "The template version does not exist") };
+  if (!oldDef || !newDef || !comp || !newVer) return { ok: false, reason: tKey("core-typography-template.reason.reason.ec925d64190b") };
   if (s.assetVariants[newVer.variantId]?.assetId !== inst.templateAssetId)
-    return { ok: false, reason: L("Versjonen hører til en annen mal", "The version belongs to another template") };
+    return { ok: false, reason: tKey("core-typography-template.reason.reason.7940f9c21fd9") };
   const current = new Map(instanceLayers(s, instanceId).map((l) => [l.template!.key, l]));
   const ids = new Map<string, string>();
   for (const e of newDef.elements) ids.set(e.key, current.get(e.key)?.id ?? newLayerId());

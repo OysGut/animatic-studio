@@ -12,6 +12,7 @@ import type { CompositionLayer, Keyframe, LayerTransform, ProjectState } from ".
 import { setKeyframe } from "./animate";
 import { renderFrame, valueAt } from "./render";
 import { localized } from "../i18n";
+import { tLocalized } from "@/core/i18n/keyed";
 
 /** Skaleringen regnes som skvist når bredde og høyde avviker mer enn dette (0,5 %). */
 const SQUISH_TOLERANCE = 0.005;
@@ -40,11 +41,7 @@ export function aspectResetScale(
 
 export type FlipMode = "whole" | "smooth" | "cut";
 
-export const FLIP_MODE_LABEL: Record<FlipMode, string> = localized({
-  whole: ["Hele laget", "Whole layer"],
-  smooth: ["Fra her – glidende snu", "From here – smooth flip"],
-  cut: ["Fra her – brått", "From here – abrupt"],
-});
+export const FLIP_MODE_LABEL: Record<FlipMode, string> = tLocalized({ whole: "core-composition-shape.flip-mode-label.whole.e6b1d671886b", smooth: "core-composition-shape.flip-mode-label.smooth.2aec5ef8ff45", cut: "core-composition-shape.flip-mode-label.cut.ada546665ed9" });
 
 /**
  * Nøkkelbildene etter speilvending fra et bilde. Laget snur mellom forrige nøkkelbilde (for laget) og

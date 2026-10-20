@@ -10,6 +10,7 @@ import type { Command } from "@/core/commands/types";
 import { planRhythm, rhythmDragShift, rhythmProtectedEnd } from "@/core/animation/rhythm";
 import { formatAnimationTime, formatFrameGap } from "@/core/animation/time-format";
 import type { AnimWindow } from "./TimeNavigator";
+import { t } from "@/core/i18n/keyed";
 
 export interface RhythmDragProps {
   readonly state: ProjectState;
@@ -59,7 +60,7 @@ export function RhythmDragLayer({ state, occurrenceId, editable, run, view, dura
 
   const finish = (commit: boolean) => {
     if (commit && plan?.retime?.ok && delta) {
-      const failure = run(plan.retime.command, L("Juster rytmen (dra)", "Adjust the rhythm (drag)"));
+      const failure = run(plan.retime.command, t("app-scene-editor-animation-rhythm-drag.failure.run.a27f0b09e0bc"));
       setError(failure);
     } else if (commit && plan?.error) setError(plan.error);
     setDrag(null); setShift(0);
@@ -97,11 +98,11 @@ export function RhythmDragLayer({ state, occurrenceId, editable, run, view, dura
       style={{ left: pct(m), opacity: (i + 1) / markers.length }} />) : null}
     {drag ? <div className="pointer-events-none absolute inset-x-0 top-1 flex justify-center">
       <span data-testid="ca8-rhythm-drag-delta" className="rounded-sm bg-accent-warm px-1.5 font-mono text-xs text-accent-fg">
-        {delta ? `${delta > 0 ? "+" : "−"} ${formatFrameGap(Math.abs(delta), fps)}` : L("Dra for å endre", "Drag to change")}
+        {delta ? `${delta > 0 ? "+" : "−"} ${formatFrameGap(Math.abs(delta), fps)}` : t("app-scene-editor-animation-rhythm-drag.rhythm-drag-layer.span.6360c6e28d2a")}
       </span>
     </div> : null}
     {drag ? <output data-testid="ca8-rhythm-drag-duration" className="pointer-events-none absolute right-2 top-1 rounded-sm bg-surface-2 px-1.5 font-mono text-xs text-text-primary">
-      {L("Ny scenetid:", "New scene time:")} {formatAnimationTime(plan?.afterFrames ?? duration, fps)}
+      {t("app-scene-editor-animation-rhythm-drag.rhythm-drag-layer.output.a9e2010a7552")} {formatAnimationTime(plan?.afterFrames ?? duration, fps)}
     </output> : null}
     <div aria-live="polite" className="sr-only">{error ?? ""}</div>
     {error ? <p role="alert" className="absolute bottom-1 left-2 rounded-sm bg-surface-2 px-1.5 text-[11px] text-status-danger">{error}</p> : null}

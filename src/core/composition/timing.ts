@@ -3,6 +3,7 @@
  * starten eller slutten av scenen. Rene funksjoner; samme regler i forhåndsvisning og eksport (renderFrame).
  */
 import { L } from "../i18n";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Hva tid som er lagt til i starten eller slutten viser. */
 export type PaddingFill = "freeze" | "background" | "black";
@@ -60,11 +61,11 @@ export function normalizeTiming(
 ): { ok: true; value: CompositionTiming } | { ok: false; error: string } {
   const bad = (error: string) => ({ ok: false as const, error });
   if (v === null || v === undefined) return { ok: true, value: EMPTY_TIMING };
-  if (typeof v !== "object") return bad(L("Ugyldig tidsoppsett", "Invalid timing"));
+  if (typeof v !== "object") return bad(tk("core-composition-timing.normalize-timing.bad.143afa9c7d46"));
   const o = v as Record<string, unknown>;
   const list = Array.isArray(o["lockedRanges"]) ? (o["lockedRanges"] as unknown[]) : [];
   if (list.length > MAX_LOCKED_RANGES)
-    return bad(L("For mange låste tidsrom", "Too many locked time ranges"));
+    return bad(tk("core-composition-timing.normalize-timing.bad.08d1fcd8892e"));
   const ranges: LockedRange[] = [];
   for (const r of list) {
     const x = (r ?? {}) as Record<string, unknown>;
@@ -76,7 +77,7 @@ export function normalizeTiming(
       !int(x["endFrame"]) ||
       x["endFrame"] <= x["startFrame"]
     )
-      return bad(L("Ugyldig låst tidsrom", "Invalid locked time range"));
+      return bad(tk("core-composition-timing.normalize-timing.bad.6cd0c4eeb6a1"));
     ranges.push({
       id: x["id"],
       startFrame: x["startFrame"],
@@ -87,12 +88,12 @@ export function normalizeTiming(
   ranges.sort((a, b) => a.startFrame - b.startFrame || a.id.localeCompare(b.id));
   for (let i = 1; i < ranges.length; i++)
     if (ranges[i]!.startFrame < ranges[i - 1]!.endFrame)
-      return bad(L("Låste tidsrom overlapper", "Locked time ranges overlap"));
+      return bad(tk("core-composition-timing.normalize-timing.bad.880c9770a7ec"));
   const p = (o["padding"] ?? {}) as Record<string, unknown>;
   const start = padding(p["start"]);
   const end = padding(p["end"]);
   if (start === undefined || end === undefined)
-    return bad(L("Ugyldig fyll i ny tid", "Invalid padding"));
+    return bad(tk("core-composition-timing.normalize-timing.bad.e01bdae2a50b"));
   return { ok: true, value: { lockedRanges: ranges, padding: { start, end } } };
 }
 

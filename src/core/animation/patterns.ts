@@ -5,6 +5,7 @@
  */
 import { L } from "../i18n";
 import { isUuid } from "../ids";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const PATTERN_ALGORITHM_VERSION = 1;
 export const PATTERN_NAME_MAX = 100;
@@ -67,25 +68,25 @@ export interface PatternEvent {
 }
 
 export function patternSpecError(spec: PatternSpec): string | null {
-  if (!spec || spec.format !== 1 || !PATTERN_TARGETS.includes(spec.target)) return L("Ugyldig mønster", "Invalid pattern");
+  if (!spec || spec.format !== 1 || !PATTERN_TARGETS.includes(spec.target)) return tk("core-animation-patterns.pattern-spec-error.message.190bb97c552f");
   const nums = [spec.intervalMinMs, spec.intervalMaxMs, spec.durationMinFrames, spec.durationMaxFrames, spec.intensity, spec.seed];
-  if (!nums.every(Number.isFinite)) return L("Ugyldig mønster", "Invalid pattern");
+  if (!nums.every(Number.isFinite)) return tk("core-animation-patterns.pattern-spec-error.message.190bb97c552f.2");
   if (spec.intervalMinMs < 100 || spec.intervalMaxMs > 600_000 || spec.intervalMinMs > spec.intervalMaxMs)
-    return L("Ugyldig intervall", "Invalid interval");
+    return tk("core-animation-patterns.pattern-spec-error.message.e32089e5c6e4");
   if (spec.durationMinFrames < 1 || spec.durationMaxFrames > 10_000 || spec.durationMinFrames > spec.durationMaxFrames)
-    return L("Ugyldig varighet", "Invalid duration");
-  if (spec.intensity < 0 || spec.intensity > 1) return L("Ugyldig intensitet", "Invalid intensity");
-  if (!Number.isInteger(spec.seed) || spec.seed < 0 || spec.seed > 0xffffffff) return L("Ugyldig seed", "Invalid seed");
-  if (spec.algorithmVersion !== PATTERN_ALGORITHM_VERSION) return L("Ugyldig algoritmeversjon", "Invalid algorithm version");
-  if (!spec.vary || typeof spec.vary !== "object") return L("Ugyldig variasjon", "Invalid variation");
+    return tk("core-animation-patterns.pattern-spec-error.message.9ecff5054ee3");
+  if (spec.intensity < 0 || spec.intensity > 1) return tk("core-animation-patterns.pattern-spec-error.message.accd5b89baf2");
+  if (!Number.isInteger(spec.seed) || spec.seed < 0 || spec.seed > 0xffffffff) return tk("core-animation-patterns.pattern-spec-error.message.cd5f757a177f");
+  if (spec.algorithmVersion !== PATTERN_ALGORITHM_VERSION) return tk("core-animation-patterns.pattern-spec-error.message.6ac8d081f39c");
+  if (!spec.vary || typeof spec.vary !== "object") return tk("core-animation-patterns.pattern-spec-error.message.704b3a66ff36");
   return null;
 }
 
 export function patternError(p: AnimationPattern): string | null {
-  if (!p || !isUuid(p.id) || (p.rigId !== null && !isUuid(p.rigId))) return L("Ugyldig mønster", "Invalid pattern");
+  if (!p || !isUuid(p.id) || (p.rigId !== null && !isUuid(p.rigId))) return tk("core-animation-patterns.pattern-error.message.ce10aeab9617");
   const name = p.name?.trim() ?? "";
-  if (!name || name.length > PATTERN_NAME_MAX) return L("Mønsteret må ha et navn", "The pattern needs a name");
-  if (typeof p.color !== "string" || !/^#[0-9a-f]{6}$/i.test(p.color)) return L("Ugyldig markørfarge", "Invalid marker color");
+  if (!name || name.length > PATTERN_NAME_MAX) return tk("core-animation-patterns.pattern-error.message.6ebad9133f1e");
+  if (typeof p.color !== "string" || !/^#[0-9a-f]{6}$/i.test(p.color)) return tk("core-animation-patterns.pattern-error.message.898641b578f7");
   return patternSpecError(p.spec);
 }
 

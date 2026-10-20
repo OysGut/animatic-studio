@@ -25,6 +25,7 @@ import {
 import { useImageUrls } from "@/app/library/asset-images";
 import { AUDIO_KIND_COLOR } from "@/app/assembly/AudioTracks";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 const fmt = (ms: number) => `${(Math.round(ms / 100) / 10).toLocaleString(locale())} s`;
 
@@ -136,25 +137,25 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
   const label =
     s < 0
       ? s === -1
-        ? L("Forrige scene", "Previous scene")
-        : L(`${-s} scener før`, `${-s} scenes before`)
+        ? t("app-scene-editor-nearby-audio-panel.label.memo.81524b621b38")
+        : t("app-scene-editor-nearby-audio-panel.label.memo.4654b35a0cd5", { value1: String(-s) })
       : s === 1
-        ? L("Neste scene", "Next scene")
-        : L(`${s} scener etter`, `${s} scenes after`);
+        ? t("app-scene-editor-nearby-audio-panel.label.memo.4a47fe5ec44c")
+        : t("app-scene-editor-nearby-audio-panel.label.memo.df9b65194dd2", { s: String(s) });
 
   return (
     <section
-      aria-label={L("Lyd i scenene rundt", "Audio in the surrounding scenes")}
+      aria-label={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.5d63fd0b349d")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <PanelHeader as="h2" title={L("Lyd i scenene rundt", "Audio in the surrounding scenes")} />
+      <PanelHeader as="h2" title={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.5d63fd0b349d")} />
       <div className="flex items-center gap-1 px-2 pb-1">
         <button
           type="button"
           onClick={() => setStep(prevStep)}
           disabled={prevStep < minStep}
-          aria-label={L("Bla bakover", "Scroll back")}
-          title={L("Scenen før", "Scene before")}
+          aria-label={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.1a5cf8d406fd")}
+          title={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.a923e1cce9a3")}
           className="rounded-sm p-0.5 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         >
           <ChevronLeft className="size-4" />
@@ -175,8 +176,8 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
           type="button"
           onClick={() => setStep(nextStep)}
           disabled={nextStep > maxStep}
-          aria-label={L("Bla framover", "Scroll forward")}
-          title={L("Scenen etter", "Scene after")}
+          aria-label={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.5c5fc0b6d742")}
+          title={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.06866d98d7dc")}
           className="rounded-sm p-0.5 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         >
           <ChevronRight className="size-4" />
@@ -184,7 +185,7 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
       </div>
       {audio.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
-          {L("Ingen lyd i denne scenen.", "No audio in this scene.")}
+          {t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.p.adbb2054f9b6")}
         </p>
       ) : (
         <ul className="flex flex-col overflow-y-auto px-1 pb-2">
@@ -200,24 +201,24 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
                     style={{ background: color }}
                   />
                   <span className="truncate text-[12px] text-text-primary" title={a.name}>
-                    {a.name || L("Lyd", "Audio")}
+                    {a.name || t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a")}
                     {a.language && a.language !== "*" ? ` (${languageWord(a.language)})` : ""}
                   </span>
                 </span>
                 <span className="flex min-w-0 items-center gap-1 pl-3.5">
                   <span className="min-w-0 flex-1 truncate text-[11px] text-text-tertiary">
                     {AUDIO_KIND_LABEL[a.kind]} · {fmt(a.lengthMs)}
-                    {a.continues ? L(" · løper videre", " · continues") : ""}
+                    {a.continues ? t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.c737330ef882") : ""}
                   </span>
                   <button
                     type="button"
                     onClick={() => preview(a)}
                     aria-label={
                       playingId === a.id
-                        ? L(`Stopp ${a.name}`, `Stop ${a.name}`)
-                        : L(`Lytt til ${a.name}`, `Listen to ${a.name}`)
+                        ? t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.3c28b9a35dad", { name: String(a.name) })
+                        : t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.df4c9847f246", { name: String(a.name) })
                     }
-                    title={playingId === a.id ? L("Stopp", "Stop") : L("Lytt", "Listen")}
+                    title={playingId === a.id ? t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.21dc72f27b65") : t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.78be1ac4f30d")}
                     className="rounded-sm p-0.5 text-text-tertiary hover:text-text-primary"
                   >
                     {playingId === a.id ? (
@@ -230,23 +231,20 @@ export const NearbyAudioPanel = memo(function NearbyAudioPanel({
                     inUse ? (
                       <span
                         className="flex shrink-0 items-center gap-0.5 text-[11px] text-status-success"
-                        title={L("Samme lyd finnes i scenen", "The same audio is in the scene")}
+                        title={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.4883df11f2d3")}
                       >
                         <Check className="size-3" aria-hidden />
-                        {L("I bruk", "In use")}
+                        {t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.0f0743fdd872")}
                       </span>
                     ) : (
                       <button
                         type="button"
                         onClick={() => use(a)}
                         className="flex shrink-0 items-center gap-0.5 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-2 hover:text-text-primary"
-                        title={L(
-                          "Legg samme lyd inn i scenen du jobber med (fra starten av scenen)",
-                          "Add the same audio to the scene you are working on (from the start of the scene)",
-                        )}
+                        title={t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.aeaffbac7eff")}
                       >
                         <Plus className="size-3" aria-hidden />
-                        {L("Bruk i scenen", "Use in scene")}
+                        {t("app-scene-editor-nearby-audio-panel.nearby-audio-panel.button.6c82d4f1f493")}
                       </button>
                     )
                   ) : null}

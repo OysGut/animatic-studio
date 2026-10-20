@@ -14,6 +14,7 @@ import { audioVersion } from "@/core/audio";
 import { IconButton } from "@/app/shell/workspace-chrome";
 import type { AnimWindow } from "./TimeNavigator";
 import { AssetThumb } from "@/app/library/AssetThumb";
+import { t as tk } from "@/core/i18n/keyed";
 
 const VISEME_COLORS: Record<string, string> = {
   A: "var(--viseme-a)", B: "var(--viseme-b)", C: "var(--viseme-c)", D: "var(--viseme-d)", E: "var(--viseme-e)", F: "var(--viseme-f)", G: "var(--viseme-g)", H: "var(--viseme-h)", X: "var(--viseme-x)",
@@ -40,7 +41,7 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
     if (!track || !takeId) return;
     const version = audioVersion(state, track.clip);
     const url = version ? urls[version.id] : undefined;
-    if (!version || !url) { setError(L("Lydfilen er ikke lastet ennå", "The audio file is not loaded yet")); return; }
+    if (!version || !url) { setError(tk("app-scene-editor-animation-mouth-track.analyze.set-error.2d6009abe85b")); return; }
     setBusy(true); setError(null);
     try {
       const bytes = new Uint8Array(await (await fetch(url)).arrayBuffer());
@@ -49,13 +50,13 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
       const draft = lipsyncDraft(crypto.randomUUID(), clipId, takeId, track.clip.blockId, out, resultOf(clipId) ?? null);
       setProposal({ clipId, draft });
     } catch {
-      setError(L("Analysen feilet. Prøv igjen.", "The analysis failed. Try again."));
+      setError(tk("app-scene-editor-animation-mouth-track.analyze.set-error.d7cb2781631d"));
     } finally { setBusy(false); }
   };
 
   const applyProposal = () => {
     if (!proposal) return;
-    const failure = run({ type: "SaveLipsyncResult", result: proposal.draft }, L("Lagre leppesynk", "Save lip sync"));
+    const failure = run({ type: "SaveLipsyncResult", result: proposal.draft }, tk("app-scene-editor-animation-mouth-track.failure.run.7927bb01e6ce"));
     if (failure) { setError(failure); return; }
     setProposal(null);
   };
@@ -65,18 +66,18 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
     const next = VISEME_ORDER[(VISEME_ORDER.indexOf(current) + 1) % VISEME_ORDER.length]!;
     const overrides = [...result.overrides.filter(o => o.frame !== span.frame), { frame: span.frame, viseme: next }]
       .sort((a, b) => a.frame - b.frame);
-    setError(run({ type: "SetLipsyncOverrides", lipsyncId: result.id, overrides }, L("Endre munnform", "Change mouth shape")));
+    setError(run({ type: "SetLipsyncOverrides", lipsyncId: result.id, overrides }, tk("app-scene-editor-animation-mouth-track.cycle-viseme.run.1e9dc8078635")));
   };
 
   if (!tracks.length) return null;
-  return <section data-testid="anim-mouth-track" aria-label={L("Munnformer", "Mouth shapes")} className="border-t border-border">
+  return <section data-testid="anim-mouth-track" aria-label={tk("app-scene-editor-animation-mouth-track.mouth-track.aria-label.3069222c7121")} className="border-t border-border">
     <div className="flex h-6 items-center gap-1 border-b border-border bg-surface-2 px-2">
       <Mic className="size-3 text-text-tertiary" aria-hidden />
-      <span className="text-[11px] uppercase tracking-wider text-text-tertiary">{L("Munnformer", "Mouth shapes")}</span>
+      <span className="text-[11px] uppercase tracking-wider text-text-tertiary">{tk("app-scene-editor-animation-mouth-track.mouth-track.span.3069222c7121")}</span>
       {proposal ? <span className="ml-auto flex items-center gap-1">
-        <span className="text-[11px] text-text-secondary">{L("Nytt leppesynk er et forslag", "New lip sync is a proposal")}</span>
-        <IconButton data-testid="lipsync-apply" label={L("Bruk", "Apply")} onClick={applyProposal}><Check /></IconButton>
-        <IconButton data-testid="lipsync-discard" label={L("Forkast", "Discard")} onClick={() => setProposal(null)}><X /></IconButton>
+        <span className="text-[11px] text-text-secondary">{tk("app-scene-editor-animation-mouth-track.mouth-track.span.e56c589724ab")}</span>
+        <IconButton data-testid="lipsync-apply" label={tk("app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1")} onClick={applyProposal}><Check /></IconButton>
+        <IconButton data-testid="lipsync-discard" label={tk("app-scene-editor-animation-mouth-track.mouth-track.label.681a5e530236")} onClick={() => setProposal(null)}><X /></IconButton>
       </span> : null}
       <span aria-live="assertive" data-testid="lipsync-message" className="ml-auto text-[11px] text-status-danger">{error ? <span role="alert">{error}</span> : null}</span>
     </div>
@@ -90,10 +91,10 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
         <div className="flex w-40 shrink-0 items-center gap-1 truncate px-2">
           <AssetThumb state={state} assetId={t.clip.assetId} size="sm" />
           <span className="truncate text-[11px] text-text-secondary">{t.block?.text ?? t.clip.name}</span>
-          {result ? <IconButton data-testid={`lipsync-toggle-${t.clip.id}`} aria-pressed={result.enabled} label={result.enabled ? L("Slå av leppesynk for replikken", "Turn off lip sync for the line") : L("Slå på leppesynk for replikken", "Turn on lip sync for the line")} active={result.enabled} disabled={!editable}
-            onClick={() => setError(run({ type: "SetLipsyncEnabled", lipsyncId: result.id, enabled: !result.enabled }, L("Endre leppesynk", "Change lip sync")))}><Mic /></IconButton> : null}
-          <IconButton data-testid={`lipsync-generate-${t.clip.id}`} label={result ? L("Generer leppesynk på nytt", "Regenerate lip sync") : L("Generer leppesynk", "Generate lip sync")} disabled={!editable || busy || !takeId} onClick={() => void analyze(t.clip.id)}><RefreshCw /></IconButton>
-          {stale ? <span className="text-[11px] text-status-discrepancy" title={L("Lyden er endret etter analysen", "The audio changed after the analysis")}>!</span> : null}
+          {result ? <IconButton data-testid={`lipsync-toggle-${t.clip.id}`} aria-pressed={result.enabled} label={result.enabled ? tk("app-scene-editor-animation-mouth-track.mouth-track.label.1be0031bd305") : tk("app-scene-editor-animation-mouth-track.mouth-track.label.69d757b4a151")} active={result.enabled} disabled={!editable}
+            onClick={() => setError(run({ type: "SetLipsyncEnabled", lipsyncId: result.id, enabled: !result.enabled }, tk("app-scene-editor-animation-mouth-track.mouth-track.run.323cd339490e")))}><Mic /></IconButton> : null}
+          <IconButton data-testid={`lipsync-generate-${t.clip.id}`} label={result ? tk("app-scene-editor-animation-mouth-track.mouth-track.label.01d46e56c2f7") : tk("app-scene-editor-animation-mouth-track.mouth-track.label.921e9ab066c5")} disabled={!editable || busy || !takeId} onClick={() => void analyze(t.clip.id)}><RefreshCw /></IconButton>
+          {stale ? <span className="text-[11px] text-status-discrepancy" title={tk("app-scene-editor-animation-mouth-track.mouth-track.title.549c70b0a94f")}>!</span> : null}
         </div>
         <div className="relative h-full min-w-0 flex-1">
           {shown?.spans.map(span => {
@@ -101,12 +102,12 @@ export function MouthTrack({ state, occurrenceId, language, view, frame, editabl
             if (b <= a) return null;
             const viseme = visemeAt(shown, span.frame);
             return <button key={span.frame} type="button" data-testid={`viseme-${t.clip.id}-${span.frame}`} data-viseme={viseme}
-              aria-label={L(`Munnform ${viseme}`, `Mouth shape ${viseme}`)} disabled={!editable || isProposal || !result}
+              aria-label={tk("app-scene-editor-animation-mouth-track.mouth-track.aria-label.e117606e9862", { viseme: String(viseme) })} disabled={!editable || isProposal || !result}
               onClick={() => result && cycleViseme(result, span)}
               className={"absolute top-1 flex h-5 items-center justify-center overflow-hidden rounded-sm font-mono text-[11px] font-semibold leading-none text-accent-fg focus-visible:ring-2 focus-visible:ring-focus-ring " + (isProposal ? "opacity-60 outline-dashed outline-1 outline-accent-brand" : "") + (active ? "" : " opacity-80")}
               style={{ left: `${px(a)}%`, width: `${Math.max(0.4, px(b) - px(a))}%`, background: VISEME_COLORS[viseme] }}><span aria-hidden data-testid="viseme-letter">{viseme}</span></button>;
           })}
-          {!shown ? <span className="absolute top-1.5 text-[11px] text-text-tertiary" style={{ left: `${px(t.start)}%` }}>{takeId ? L("Ingen leppesynk ennå", "No lip sync yet") : L("Velg et take først", "Choose a take first")}</span> : null}
+          {!shown ? <span className="absolute top-1.5 text-[11px] text-text-tertiary" style={{ left: `${px(t.start)}%` }}>{takeId ? tk("app-scene-editor-animation-mouth-track.mouth-track.span.dccc327c354c") : tk("app-scene-editor-animation-mouth-track.mouth-track.span.de86e9b87672")}</span> : null}
         </div>
       </div>;
     })}

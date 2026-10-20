@@ -18,6 +18,7 @@ import {
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { AUDIO_KIND_COLOR, Wave } from "@/app/assembly/AudioTracks";
 import type { TimelineRowGeometry } from "./Timeline";
+import { t } from "@/core/i18n/keyed";
 
 export function SceneAudioRows({
   state,
@@ -69,7 +70,7 @@ export function SceneAudioRows({
     return { lengthMs: Math.round(Math.max(50, Math.min(max, c.lengthMs + dMs))) };
   };
   return (
-    <div role="group" aria-label={L("Lyd i scenen", "Audio in the scene")}>
+    <div role="group" aria-label={t("app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.5da47ef814db")}>
       {groupDialogueTracks(state, items).map(group => <div key={group.key} data-testid="scene-character-track" data-character-track={group.key} className="relative border-b border-border/60" style={{ height: g.rowH }}>
         <div className="sticky left-0 z-20 flex h-full items-center border-r border-border bg-surface-1 px-2 text-xs text-text-secondary" style={{ width: g.labelW }}>{group.label}</div>
         {group.items.map((it) => {
@@ -91,12 +92,9 @@ export function SceneAudioRows({
             <div
               className="invisible shrink-0"
               style={{ width: g.labelW }}
-              title={`${c.name || L("Lyd", "Audio")} – ${AUDIO_KIND_LABEL[c.kind]}${
+              title={`${c.name || t("app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde")} – ${AUDIO_KIND_LABEL[c.kind]}${
                 incoming
-                  ? L(
-                      `, løper inn fra scene ${fromScene ?? ""}`,
-                      `, runs in from scene ${fromScene ?? ""}`,
-                    )
+                  ? t("app-scene-editor-scene-audio-rows.scene-audio-rows.title.3c14d5c565a6", { value1: String(fromScene ?? "") })
                   : ""
               }`}
             >
@@ -142,10 +140,10 @@ export function SceneAudioRows({
                   onChange(
                     c.id,
                     dr.mode === "move"
-                      ? L("Flytt lyd", "Move audio")
+                      ? t("app-scene-editor-scene-audio-rows.scene-audio-rows.on-change.ee0eebbd960a")
                       : dr.mode === "in"
-                        ? L("Kutt starten av lyden", "Cut the start of the audio")
-                        : L("Kutt slutten av lyden", "Cut the end of the audio"),
+                        ? t("app-scene-editor-scene-audio-rows.scene-audio-rows.on-change.5343427a666c")
+                        : t("app-scene-editor-scene-audio-rows.scene-audio-rows.on-change.6baaee483338"),
                     draftOf(it, dr.mode, dr.dx),
                   );
                 }}
@@ -154,15 +152,12 @@ export function SceneAudioRows({
                     return;
                   e.preventDefault();
                   const step = Math.round(1000 / g.fps) * (e.shiftKey ? 10 : 1);
-                  onChange(c.id, L("Flytt lyd", "Move audio"), {
+                  onChange(c.id, t("app-scene-editor-scene-audio-rows.scene-audio-rows.on-change.ee0eebbd960a.2"), {
                     offsetMs: Math.max(0, c.offsetMs + (e.key === "ArrowLeft" ? -step : step)),
                   });
                 }}
-                title={`${c.name || L("Lyd", "Audio")}\n${L(
-                  "Klikk: gå til starten. Dra: flytt. Dra i kantene: kutt. Dobbeltklikk: lydprofil, hastighet og masker",
-                  "Click: go to the start. Drag: move. Drag the edges: cut. Double-click: audio profile, speed and masks",
-                )}`}
-                aria-label={`${c.name || L("Lyd", "Audio")}, ${AUDIO_KIND_LABEL[c.kind]}`}
+                title={`${c.name || t("app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde.2")}\n${t("app-scene-editor-scene-audio-rows.scene-audio-rows.title.24b9cb15eac6")}`}
+                aria-label={`${c.name || t("app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.c060ddfa1cde")}, ${AUDIO_KIND_LABEL[c.kind]}`}
                 className={
                   "pointer-events-auto absolute top-[3px] flex touch-none overflow-hidden rounded-sm border text-left " +
                   (movable ? "cursor-grab active:cursor-grabbing " : "") +

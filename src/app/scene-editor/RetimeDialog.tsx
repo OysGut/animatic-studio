@@ -41,6 +41,7 @@ import { loadVersionBuffers, saveComposition } from "@/app/audio/composition-act
 import { RetimeStrip } from "./RetimeStrip";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { renderComposition } from "@/engine/audio/composition";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 type RunAndWait = (
   command: Command,
@@ -48,89 +49,40 @@ type RunAndWait = (
   group?: string,
 ) => Promise<{ error: string | null; commandId: string | null }>;
 
-const METHOD_LABEL: Record<RetimeMethod, string> = localized({
-  start: ["Start", "Start"],
-  end: ["Slutt", "End"],
-  pauses: ["Fordel på pausene", "Spread over the pauses"],
-  stretch_all: ["Strekk alt, også ordmellomrom", "Stretch everything, including word gaps"],
-  stretch_visual: ["Strekk alt unntatt lydfilene", "Stretch everything except the audio files"],
-});
+const METHOD_LABEL: Record<RetimeMethod, string> = tLocalized({ start: "app-scene-editor-retime-dialog.method-label.start.6294cf7bb3d4", end: "app-scene-editor-retime-dialog.method-label.end.f234fd267472", pauses: "app-scene-editor-retime-dialog.method-label.pauses.59e2a2b08976", stretch_all: "app-scene-editor-retime-dialog.method-label.stretch-all.ac05de4ce8aa", stretch_visual: "app-scene-editor-retime-dialog.method-label.stretch-visual.10c04de0044f" });
 
-const METHOD_HELP: Record<RetimeMethod, string> = localized({
-  start: [
-    "Tid legges til eller fjernes i starten. Alt innhold forskyves.",
-    "Time is added or removed at the start. All content is shifted.",
-  ],
-  end: [
-    "Tid legges til eller fjernes i slutten. Ingenting forskyves.",
-    "Time is added or removed at the end. Nothing is shifted.",
-  ],
-  pauses: [
-    "Tiden fordeles på mellomrommene mellom tale, effekter og låste tidsrom. Talelyd, musikk og video strekkes ikke.",
-    "The time is spread over the gaps between speech, effects and locked ranges. Speech, music and video are not stretched.",
-  ],
-  stretch_all: [
-    "All visuell timing skaleres. Lydklippene følger med, og mellomrommene mellom ordene strekkes. Ordene endrer ikke hastighet.",
-    "All visual timing is scaled. Audio clips follow, and the gaps between words are stretched. The words do not change speed.",
-  ],
-  stretch_visual: [
-    "All visuell timing skaleres. Lydklippene står urørt.",
-    "All visual timing is scaled. The audio clips stay untouched.",
-  ],
-});
+const METHOD_HELP: Record<RetimeMethod, string> = tLocalized({ start: "app-scene-editor-retime-dialog.method-help.start.aac4b4080834", end: "app-scene-editor-retime-dialog.method-help.end.16c696814ba9", pauses: "app-scene-editor-retime-dialog.method-help.pauses.e82e9e042cf9", stretch_all: "app-scene-editor-retime-dialog.method-help.stretch-all.ec0f0751a311", stretch_visual: "app-scene-editor-retime-dialog.method-help.stretch-visual.df00ada1a62f" });
 
-const FILL_LABEL: Record<PaddingFill, string> = localized({
-  freeze: ["Frys bildet", "Freeze frame"],
-  background: ["Bare bakgrunnen", "Background only"],
-  black: ["Svart", "Black"],
-});
+const FILL_LABEL: Record<PaddingFill, string> = tLocalized({ freeze: "app-scene-editor-retime-dialog.fill-label.freeze.cd03027a5452", background: "app-scene-editor-retime-dialog.fill-label.background.9eb64c2bca1b", black: "app-scene-editor-retime-dialog.fill-label.black.bfaab61c8fda" });
 
 /** Rapporten i klartekst. */
 function reportLines(r: RetimeReport, fps: number): string[] {
   const s = (f: number) => (Math.round((f / fps) * 100) / 100).toString();
   const out = [
-    L(
-      `Fra ${s(r.beforeFrames)} s til ${s(r.afterFrames)} s.`,
-      `From ${s(r.beforeFrames)} s to ${s(r.afterFrames)} s.`,
-    ),
+    tk("app-scene-editor-retime-dialog.out.message.1802ef9353c8", { value1: String(s(r.beforeFrames)), value2: String(s(r.afterFrames)) }),
   ];
   const n = (x: readonly unknown[]) => x.length;
-  if (n(r.moved)) out.push(L(`${n(r.moved)} ting flyttes.`, `${n(r.moved)} items are moved.`));
-  if (n(r.scaled)) out.push(L(`${n(r.scaled)} ting skaleres.`, `${n(r.scaled)} items are scaled.`));
+  if (n(r.moved)) out.push(tk("app-scene-editor-retime-dialog.report-lines.out-push.f439fb251de1", { value1: String(n(r.moved)) }));
+  if (n(r.scaled)) out.push(tk("app-scene-editor-retime-dialog.report-lines.out-push.12b8139e6057", { value1: String(n(r.scaled)) }));
   if (n(r.trimmed))
     out.push(
-      L(
-        `${n(r.trimmed)} ting trimmes eller fjernes.`,
-        `${n(r.trimmed)} items are trimmed or removed.`,
-      ),
+      tk("app-scene-editor-retime-dialog.report-lines.out-push.e83f6a915e6e", { value1: String(n(r.trimmed)) }),
     );
   if (n(r.gapsBefore))
     out.push(
-      L(
-        `Mellomrom før: ${r.gapsBefore.map((g) => s(g.endFrame - g.startFrame)).join(" / ")} s. Etter: ${r.gapsAfter.map((g) => s(g.endFrame - g.startFrame)).join(" / ")} s.`,
-        `Gaps before: ${r.gapsBefore.map((g) => s(g.endFrame - g.startFrame)).join(" / ")} s. After: ${r.gapsAfter.map((g) => s(g.endFrame - g.startFrame)).join(" / ")} s.`,
-      ),
+      tk("app-scene-editor-retime-dialog.report-lines.out-push.1bfb828c3104", { value1: String(r.gapsBefore.map((g) => s(g.endFrame - g.startFrame)).join(" / ")), value2: String(r.gapsAfter.map((g) => s(g.endFrame - g.startFrame)).join(" / ")) }),
     );
   if (n(r.collisions))
     out.push(
-      L(
-        `${n(r.collisions)} punkter havnet på samme bilde og ble skjøvet ett bilde. Ingen er slettet.`,
-        `${n(r.collisions)} points landed on the same frame and were pushed one frame. None are deleted.`,
-      ),
+      tk("app-scene-editor-retime-dialog.report-lines.out-push.291eb933e534", { value1: String(n(r.collisions)) }),
     );
   if (n(r.audioNotFitting))
     out.push(
-      L(
-        `${n(r.audioNotFitting)} lydklipp kunne ikke tilpasses helt: ${r.audioNotFitting.map((a) => a.detail || a.id).join(", ")}.`,
-        `${n(r.audioNotFitting)} audio clips could not be fully adjusted: ${r.audioNotFitting.map((a) => a.detail || a.id).join(", ")}.`,
-      ),
+      tk("app-scene-editor-retime-dialog.report-lines.out-push.b700d6dda40e", { value1: String(n(r.audioNotFitting)), value2: String(r.audioNotFitting.map((a) => a.detail || a.id).join(", ")) }),
     );
   if (n(r.remix))
     out.push(
-      L(
-        `${n(r.remix)} dialogopptak lagres som nye versjoner med endrede ordmellomrom.`,
-        `${n(r.remix)} dialogue recordings are saved as new versions with changed word gaps.`,
-      ),
+      tk("app-scene-editor-retime-dialog.report-lines.out-push.eb6408610e2f", { value1: String(n(r.remix)) }),
     );
   const manual = new Set(r.manual.map((m) => m.detail ?? ""));
   for (const m of manual) if (m) out.push(m);
@@ -226,14 +178,14 @@ export function RetimeDialog({
     void (async () => {
       const ids = [...new Set(plan.report.remix.flatMap((r) => r.composition.segments.map((s) => s.versionId)))];
       const sources = await loadVersionBuffers(ids.map((id) => state.assetVersions[id]).filter((v) => v !== undefined));
-      if (ids.some((id) => !sources.has(id))) throw new Error(L("Lyden kunne ikke lastes til forhåndslytting.", "The audio could not be loaded for preview."));
+      if (ids.some((id) => !sources.has(id))) throw new Error(tk("app-scene-editor-retime-dialog.retime-dialog.async-const-ids-new-set-plan-report-remix-flat-map-r-r-composition-segments-map-s-s-version-id-const-sources-await-load-version-buffers-ids-map-id-state-asset-versions-id-filter-v-v-undefined-if-ids-some-id-sources-has-id-throw-new-error-l-lyden-kunne-ikke-lastes-til-forh-ndslytting-the-audio-could-not-be-loaded-for-preview-const-buffers-new-map-string-audio-buffer-for-const-remix-of-plan-report-remix-const-buffer-await-render-composition-remix-composition-id-sources-get-id-sample-rate-48000-channels-1-buffers-set-remix-clip-id-buffer-if-alive-set-prepared-plan-buffers-sources.6c9c62575a41"));
       const buffers = new Map<string, AudioBuffer>();
       for (const remix of plan.report.remix) {
         const buffer = await renderComposition(remix.composition, (id) => sources.get(id), { sampleRate: 48000, channels: 1 });
         buffers.set(remix.clipId, buffer);
       }
       if (alive) setPrepared({ plan, buffers, sources });
-    })().catch((error: unknown) => { if (alive) setPrepareError(error instanceof Error ? error.message : L("Forhåndslyttingen kunne ikke lages.", "The preview could not be prepared.")); });
+    })().catch((error: unknown) => { if (alive) setPrepareError(error instanceof Error ? error.message : tk("app-scene-editor-retime-dialog.retime-dialog.set-prepare-error.9d27afa9549e")); });
     return () => { alive = false; };
   }, [plan, state]);
   const ready = !plan?.ok || !plan.report.remix.length || prepared?.plan === plan;
@@ -246,12 +198,12 @@ export function RetimeDialog({
     try {
       if (p.report.remix.length) {
         setBusy(
-          L("Lagrer dialogopptak med nye ordmellomrom …", "Saving dialogue with new word gaps …"),
+          tk("app-scene-editor-retime-dialog.apply.set-busy.5a4ec12bb2fd"),
         );
         const remixed: Record<string, { versionId: string; lengthMs: number }> = {};
         for (const r of p.report.remix) {
           const current = prepared;
-          if (!current || current.plan !== plan) throw new Error(L("Beregn forhåndslyttingen på nytt.", "Prepare the preview again."));
+          if (!current || current.plan !== plan) throw new Error(tk("app-scene-editor-retime-dialog.apply.message.f1f0b76bd22c"));
           const base = state.assetVersions[r.baseVersionId];
           const saved = await saveComposition(
             { runAndWait },
@@ -261,10 +213,7 @@ export function RetimeDialog({
             { variantId: r.variantId },
             r.composition,
             current.sources,
-            L(
-              "Ordmellomrom endret med scenevarigheten",
-              "Word gaps changed with the scene duration",
-            ),
+            tk("app-scene-editor-retime-dialog.saved.save-composition.8a4ec52847b6"),
             { group, prepared: current.buffers.get(r.clipId), ...(base?.alignment ? { alignment: alignmentInComposition(r.composition, base.alignment,
               base.composition ? { kind: "composition", composition: base.composition } : { kind: "version", versionId: base.id }) } : {}) },
           );
@@ -280,10 +229,10 @@ export function RetimeDialog({
         });
         if (!p.ok) throw new Error(p.reason);
       }
-      setBusy(L("Lagrer …", "Saving …"));
+      setBusy(tk("app-scene-editor-retime-dialog.apply.set-busy.645cd7e778e2"));
       const res = await runAndWait(
         p.ok ? p.command : plan.command,
-        L("Endre scenevarighet", "Change scene duration"),
+        tk("app-scene-editor-retime-dialog.res.run-and-wait.099e8158fe6a"),
         group,
       );
       if (res.error) {
@@ -306,18 +255,15 @@ export function RetimeDialog({
         className="max-h-[92vh] max-w-[760px] overflow-y-auto border-border bg-surface-2"
       >
         <DialogHeader>
-          <DialogTitle>{L("Endre scenevarighet", "Change scene duration")}</DialogTitle>
+          <DialogTitle>{tk("app-scene-editor-retime-dialog.retime-dialog.dialog-title.ebd387b42566")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Velg hvordan scenen skal få ny lengde. Ingenting endres før du trykker Bruk.",
-              "Choose how the scene gets its new length. Nothing changes until you press Apply.",
-            )}
+            {tk("app-scene-editor-retime-dialog.retime-dialog.dialog-description.ba3e4b629ee7")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-wrap items-center gap-2 text-sm text-text-secondary">
           <label className="flex items-center gap-2">
-            {L("Ny varighet (s)", "New duration (s)")}
+            {tk("app-scene-editor-retime-dialog.retime-dialog.label.fe7ec354e693")}
             <input
               data-testid="retime-seconds"
               type="number"
@@ -341,11 +287,11 @@ export function RetimeDialog({
                 setSeconds(String(Math.max(MIN_DURATION_SECONDS, Math.round((v + d) * 100) / 100)));
               }}
             >
-              {d < 0 ? L("− 1 s", "− 1 s") : L("+ 1 s", "+ 1 s")}
+              {d < 0 ? tk("app-scene-editor-retime-dialog.retime-dialog.button.74c3bcaf9203") : tk("app-scene-editor-retime-dialog.retime-dialog.button.2b9ddc090718")}
             </Button>
           ))}
           <span className="text-text-tertiary" data-testid="retime-delta">
-            {L("Nå", "Now")} {Math.round(framesToSeconds(currentFrames, fps) * 100) / 100} s
+            {tk("app-scene-editor-retime-dialog.retime-dialog.span.e61f63912962")} {Math.round(framesToSeconds(currentFrames, fps) * 100) / 100} s
             {delta !== 0
               ? ` (${delta > 0 ? "+" : "−"}${Math.round(framesToSeconds(Math.abs(delta), fps) * 100) / 100} s)`
               : ""}
@@ -354,7 +300,7 @@ export function RetimeDialog({
 
         <fieldset className="space-y-1.5" data-testid="retime-methods">
           <legend className="mb-1 text-sm font-medium text-text-primary">
-            {L("Metode", "Method")}
+            {tk("app-scene-editor-retime-dialog.retime-dialog.legend.0d940979c5e4")}
           </legend>
           {RETIME_METHODS.map((m) => (
             <label
@@ -380,7 +326,7 @@ export function RetimeDialog({
         {needsFill ? (
           <fieldset className="space-y-1" data-testid="retime-fill">
             <legend className="mb-1 text-sm font-medium text-text-primary">
-              {L("Hva viser den nye tiden?", "What does the new time show?")}
+              {tk("app-scene-editor-retime-dialog.retime-dialog.legend.9026108d943d")}
             </legend>
             <div className="flex flex-wrap gap-3 text-sm text-text-secondary">
               {(["freeze", "background", "black"] as const).map((f) => (
@@ -405,10 +351,7 @@ export function RetimeDialog({
                 onChange={(e) => setKeepAmbience(e.target.checked)}
                 className="accent-[var(--accent-brand)]"
               />
-              {L(
-                "La atmosfære og musikk som spiller, fortsette",
-                "Let ambience and music that is playing continue",
-              )}
+              {tk("app-scene-editor-retime-dialog.retime-dialog.label.068d986088e6")}
             </label>
           </fieldset>
         ) : null}
@@ -434,13 +377,13 @@ export function RetimeDialog({
         ) : (
           <p className="text-xs text-text-tertiary" data-testid="retime-choose">
             {method
-              ? L("Velg hva den nye tiden skal vise.", "Choose what the new time shows.")
-              : L("Velg en metode.", "Choose a method.")}
+              ? tk("app-scene-editor-retime-dialog.retime-dialog.p.b11dc2b2874e")
+              : tk("app-scene-editor-retime-dialog.retime-dialog.p.5150c32877cd")}
           </p>
         )}
 
         {prepareError ? <p role="alert" className="text-xs text-status-danger" data-testid="retime-audio-error">{prepareError}</p> : null}
-        {!ready && !prepareError ? <p role="status" className="text-xs text-text-secondary">{L("Lager forhåndslytting med nye ordmellomrom …", "Preparing preview with new word gaps …")}</p> : null}
+        {!ready && !prepareError ? <p role="status" className="text-xs text-text-secondary">{tk("app-scene-editor-retime-dialog.retime-dialog.p.dc28ca06615a")}</p> : null}
         {previewState && ready ? (
           <PreviewPlayer
             state={previewState}
@@ -471,7 +414,7 @@ export function RetimeDialog({
                   setNonce((n) => n + 1);
                 }}
               >
-                {L("Beregn på nytt", "Recalculate")}
+                {tk("app-scene-editor-retime-dialog.retime-dialog.button.f814a475bca3")}
               </Button>
             ) : null}
           </div>
@@ -480,14 +423,14 @@ export function RetimeDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={!!busy} data-testid="retime-cancel">
-            {L("Avbryt", "Cancel")}
+            {tk("app-scene-editor-retime-dialog.retime-dialog.button.368c51667f60")}
           </Button>
           <Button
             onClick={() => void apply()}
             disabled={!plan?.ok || !!busy || !!error || !ready}
             data-testid="retime-apply"
           >
-            {L("Bruk", "Apply")}
+            {tk("app-scene-editor-retime-dialog.retime-dialog.button.88f1fa541c29")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -585,7 +528,7 @@ function PreviewPlayer({
       <canvas
         ref={ref}
         role="img"
-        aria-label={L("Forhåndsspill av ny varighet", "Preview of the new duration")}
+        aria-label={tk("app-scene-editor-retime-dialog.preview-player.aria-label.1c569a9882f0")}
         className="w-48 rounded-sm bg-bg-app"
       />
       <div className="space-y-1">
@@ -598,7 +541,7 @@ function PreviewPlayer({
             setPlaying((p) => !p);
           }}
         >
-          {playing ? L("Stopp", "Stop") : L("Forhåndsspill", "Preview")}
+          {playing ? tk("app-scene-editor-retime-dialog.preview-player.button.dffb69ea9ec8") : tk("app-scene-editor-retime-dialog.preview-player.button.b9bdf95ba745")}
         </Button>
         <p className="font-mono text-xs text-text-tertiary">
           {(frame / fps).toFixed(2)} / {(frames / fps).toFixed(2)} s

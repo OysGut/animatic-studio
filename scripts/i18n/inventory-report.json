@@ -1,13 +1,13 @@
 {
   "version": 1,
   "entries": 9964,
-  "migrated": 2643,
+  "migrated": 4292,
   "files": 448,
   "literalPairs": 8674,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 2745,
-  "candidates": 31547,
+  "references": 4394,
+  "candidates": 33211,
   "conflicts": [
     {
       "kind": "parameter-contract",
@@ -481,19 +481,19 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-add-element-dialog.label.message.9e2fbf41005d",
       "file": "src/app/scene-editor/AddElementDialog.tsx",
-      "line": 168
+      "line": 169
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-carry-over-dialog.submit.on-done.363d9984ee39",
       "file": "src/app/scene-editor/CarryOverDialog.tsx",
-      "line": 100
+      "line": 101
     },
     {
       "kind": "dynamic-expression",
       "key": "app-scene-editor-credits-panel.design-tab.option.c0137faa825d",
       "file": "src/app/scene-editor/CreditsPanel.tsx",
-      "line": 87
+      "line": 88
     },
     {
       "kind": "parameter-contract",
@@ -505,121 +505,121 @@
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-image-dialog.body.title.cd53f6a2bfd7",
       "file": "src/app/scene-editor/LayerImageDialog.tsx",
-      "line": 724
+      "line": 679
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-image-dialog.delete-version-confirm.p.17fb8ea99c2d",
       "file": "src/app/scene-editor/LayerImageDialog.tsx",
-      "line": 963
+      "line": 909
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-inspector.layer-inspector.span.5d6bf790ea53",
       "file": "src/app/scene-editor/LayerInspector.tsx",
-      "line": 628
+      "line": 602
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-inspector.layer-inspector.span.98b4f314d66f",
       "file": "src/app/scene-editor/LayerInspector.tsx",
-      "line": 843
+      "line": 796
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-inspector.layer-inspector.span.287b192f1d14",
       "file": "src/app/scene-editor/LayerInspector.tsx",
-      "line": 889
+      "line": 839
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-layer-swaps.add.set-swaps.fec1302071ff",
       "file": "src/app/scene-editor/LayerSwaps.tsx",
-      "line": 80
+      "line": 81
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-nearby-audio-panel.use.run.65d55e0319ac",
       "file": "src/app/scene-editor/NearbyAudioPanel.tsx",
-      "line": 130
+      "line": 131
     },
     {
       "kind": "dynamic-expression",
       "key": "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e",
       "file": "src/app/scene-editor/PagesPanel.tsx",
-      "line": 186
+      "line": 184
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.da4a40f90b58",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 222
+      "line": 208
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.dfb42bb8ba29",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 240
+      "line": 226
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-assets-panel.scene-assets-panel.title.8999ef2aa1ce",
       "file": "src/app/scene-editor/SceneAssetsPanel.tsx",
-      "line": 369
+      "line": 337
     },
     {
       "kind": "dynamic-expression",
       "key": "app-scene-editor-scene-editor-workspace.carry-next.use-callback.b76e19921b89",
       "file": "src/app/scene-editor/SceneEditorWorkspace.tsx",
-      "line": 421
+      "line": 422
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.f7a2daae4f71",
       "file": "src/app/scene-editor/SceneToVideoDialog.tsx",
-      "line": 1194
+      "line": 1117
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.7acee102a032",
       "file": "src/app/scene-editor/SceneToVideoDialog.tsx",
-      "line": 1254
+      "line": 1168
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-stage.label.message.76e4da85b9e3",
       "file": "src/app/scene-editor/Stage.tsx",
-      "line": 1463
+      "line": 1464
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-text-inspector.template-section.hint.d5f141b4e14e",
       "file": "src/app/scene-editor/TextInspector.tsx",
-      "line": 714
+      "line": 706
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-animation-character-panel.character-panel.h3.ca0688eafa22",
       "file": "src/app/scene-editor/animation/CharacterPanel.tsx",
-      "line": 192
+      "line": 193
     },
     {
       "kind": "parameter-contract",
       "key": "app-scene-editor-animation-character-panel.character-panel.dialog-description.4aed602ebcd9",
       "file": "src/app/scene-editor/animation/CharacterPanel.tsx",
-      "line": 241
+      "line": 242
     },
     {
       "kind": "dynamic-expression",
       "key": "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.b1f81e305926",
       "file": "src/app/scene-editor/animation/MouthShapeEditor.tsx",
-      "line": 93
+      "line": 94
     },
     {
       "kind": "dynamic-expression",
       "key": "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.da4a34515891",
       "file": "src/app/scene-editor/animation/MouthShapeEditor.tsx",
-      "line": 93
+      "line": 94
     },
     {
       "kind": "parameter-contract",
@@ -933,10 +933,6 @@
         "app-library-asset-audio.name.name.03dbbf2ec6db",
         "app-mobile-mobile-import-dialog.body.span.1abf22a3ff39",
         "app-mobile-mobile-import-library.mobile-import-library.option.1380b1d9eb4a",
-        "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde.2",
-        "app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.c060ddfa1cde",
         "core-backup-index.backup-category-label.lyd.effe8c1543ae",
         "core-export-records.export-kind-label.audio.10319e1f9218",
         "core-generation-cost-report.kind-label.message.eec5b22efdc9",
@@ -945,6 +941,10 @@
         "core-library-global.global-kind-label.sound.a941bcd9c0a2",
         "core-library-index.asset-kind-label.sound.d0c8fe111b77",
         "core-library-index.asset-kind-plural.sound.cbc011f908a0",
+        "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.title.c060ddfa1cde.2",
+        "app-scene-editor-scene-audio-rows.scene-audio-rows.aria-label.c060ddfa1cde",
         "app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba",
         "app-projects-promotion-dialog.compare.title.9b137853ddf2"
       ]
@@ -959,11 +959,11 @@
         "app-assembly-film-timeline.film-timeline.track-label.42e0da0624e7",
         "app-assembly-script-changes.block-label.shot.2f1d222efcf4",
         "app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0",
+        "core-generation-cost-report.kind-label.message.8444fe29d13e",
+        "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc",
         "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc",
         "app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563",
         "app-scene-editor-timeline-helpers.event-kind.shot.d254223d6442",
-        "core-generation-cost-report.kind-label.message.8444fe29d13e",
-        "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc",
         "app-script-assist-proposal-diff.shot.shot.48cb12f713f9",
         "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d"
       ]
@@ -1023,10 +1023,10 @@
         "app-library-harmonize-batch-panel.status.done.be723f263b44",
         "app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c",
         "app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c",
-        "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75",
         "core-assembly-status.scene-status-label.done.bc68a82f9b2f",
         "core-generation-cost-report.status-label.message.04a86e50e1ff",
         "core-generation-cost.job-state-label.done.4455da929a67",
+        "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75",
         "app-script-import-dialog.import-dialog.button.e00e46e21cdd",
         "app-script-notes-panel.note-card.button.36c18caddaa0",
         "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634",
@@ -1048,10 +1048,10 @@
         "app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed",
         "app-assembly-audio-clip-panel.audio-clip-panel.option.a23664d8ed77",
         "app-global-global-library-dialog.name.name.5ae7e3c71566",
+        "core-generation-trace.text.text.a2626bdecaac",
         "app-scene-editor-add-layer-dialog.add-layer-dialog.option.61b9332cabdd",
         "app-scene-editor-animation-character-panel.character-panel.span.1b0a3286c59e",
-        "app-scene-editor-mts-actions.name.name.056953d7dfd9",
-        "core-generation-trace.text.text.a2626bdecaac"
+        "app-scene-editor-mts-actions.name.name.056953d7dfd9"
       ]
     },
     {
@@ -1191,10 +1191,10 @@
         "app-assembly-audio-clip-panel.audio-clip-panel.label.b8bf29af9ad8",
         "app-assembly-audio-tracks.audio-block.title.fa363d714f83",
         "app-assembly-script-changes.block-label.dialogue.42c9ace5fada",
+        "core-audio-takes.scene.message.0103405b4ba8",
         "app-scene-editor-layer-events.kind.dialogue.c95ea972d0f7",
         "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.aria-label.cdf07e33ff38",
         "app-scene-editor-timeline-helpers.event-kind.dialogue.e8af59e63262",
-        "core-audio-takes.scene.message.0103405b4ba8",
         "app-script-assist-proposal-diff.dialogue.dialogue.43c5e9205bfe",
         "app-script-script-helpers.kind-label.dialogue.ea045400b3b6",
         "app-storylab-conversation-view.turn-view.option.b1de0b645cf0",
@@ -1215,8 +1215,8 @@
       "text": "Uten overskrift",
       "keys": [
         "app-assembly-clip-panel.clip-panel.h2.6200b131dc8b",
-        "app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362",
-        "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415"
+        "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415",
+        "app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362"
       ]
     },
     {
@@ -1233,10 +1233,10 @@
       "text": "Bruk",
       "keys": [
         "app-assembly-clip-panel.use.aria-label.e17d76024cd1",
+        "core-generation-trace.param-label.purpose.3c914b290620",
         "app-scene-editor-retime-dialog.retime-dialog.button.88f1fa541c29",
         "app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1",
         "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.4bb251b2b72f",
-        "core-generation-trace.param-label.purpose.3c914b290620",
         "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197",
         "app-projects-project-format.project-format.button.60ca46216cca"
       ]
@@ -1300,8 +1300,6 @@
       "text": "2D-scenen",
       "keys": [
         "app-asset-studio-asset-studio.conflict-names.d-conflicts-map.23313fa29d09",
-        "app-scene-editor-scene-to-video-dialog.label.label.f8cd1953e5af",
-        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.ccdac755ed35",
         "core-commands-apply.comp.need.118fc96033c3",
         "core-commands-apply.pf.need.71e535a260df",
         "core-commands-apply.comp.need.118fc96033c3.2",
@@ -1311,7 +1309,9 @@
         "core-commands-apply.comp.need.118fc96033c3.6",
         "core-commands-apply.comp.need.118fc96033c3.7",
         "core-commands-apply.comp.need.118fc96033c3.8",
-        "core-commands-apply.comp.need.118fc96033c3.9"
+        "core-commands-apply.comp.need.118fc96033c3.9",
+        "app-scene-editor-scene-to-video-dialog.label.label.f8cd1953e5af",
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.ccdac755ed35"
       ]
     },
     {
@@ -1720,6 +1720,105 @@
     },
     {
       "kind": "same-source-different-translation",
+      "text": "2D-scenen (animatic)",
+      "keys": [
+        "core-assembly-discrepancy.label.label.80e277b15d75",
+        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.65043cefa612"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Scenenummer",
+      "keys": [
+        "core-assembly-technical.label.label.e446454b3c63",
+        "app-script-export-dialog.export-dialog.legend.7de83198fb7f"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Ugyldig kobling",
+      "keys": [
+        "core-commands-apply.run.fail.3bc025bf2c59",
+        "core-commands-apply.run.fail.3bc025bf2c59.2",
+        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
+        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Replikken finnes ikke",
+      "keys": [
+        "core-commands-apply.run.fail.6fbc54425f99",
+        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Profilen er fjernet",
+      "keys": [
+        "core-commands-apply.run.fail.7c23382b944a",
+        "app-storylab-story-lab-workspace.text.text.64c415bdd29a"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Laget med profil {value1}",
+      "keys": [
+        "core-export-records.describe-export-settings.parts-push.5eb68c2ddf11",
+        "app-scene-editor-dialogue-versions.dialogue-versions.p.4f1eb000f244"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "sted",
+      "keys": [
+        "core-generation-model-prompt.key-label.setting.9c25472ea6d9",
+        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "endret",
+      "keys": [
+        "core-notes-index.format-edited.message.b308c59b7bcb",
+        "app-scene-editor-animation-character-panel.character-panel.p.5acf0b07bd70"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Sted",
+      "keys": [
+        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
+        "core-storylab-canvas.location.location.5be3d87e0de8",
+        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
+        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
+        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "uten nummer",
+      "keys": [
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
+        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2",
+        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
+        "app-script-inspector.scene-panel.span.ffd27913a1c8",
+        "app-script-inspector.scene-panel.p.ffd27913a1c8"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
+      "text": "Velg en scene",
+      "keys": [
+        "core-script-assist-prompts.selected.message.96bcf1358b06",
+        "core-script-assist-prompts.next-line-prompt.message.65b837273648",
+        "core-script-assist-prompts.message.message.49241b66fcc9",
+        "app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1",
+        "app-script-assist-writing-panel.message.message.14df613ff48d"
+      ]
+    },
+    {
+      "kind": "same-source-different-translation",
       "text": "Nytt lag «{name}»",
       "keys": [
         "app-scene-editor-add-layer-dialog.add-from-library.submit.43dabcc95e51",
@@ -1804,29 +1903,10 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Velg en scene",
-      "keys": [
-        "app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1",
-        "core-script-assist-prompts.selected.message.96bcf1358b06",
-        "core-script-assist-prompts.next-line-prompt.message.65b837273648",
-        "core-script-assist-prompts.message.message.49241b66fcc9",
-        "app-script-assist-writing-panel.message.message.14df613ff48d"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
       "text": "Vis {value1}",
       "keys": [
         "app-scene-editor-scene-to-video-dialog.show-take.apply-edit.b4190a2ba8ed",
         "app-storylab-character-workspace.label.label.74bc66d36bba"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "2D-scenen (animatic)",
-      "keys": [
-        "app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.65043cefa612",
-        "core-assembly-discrepancy.label.label.80e277b15d75"
       ]
     },
     {
@@ -1852,86 +1932,6 @@
         "app-scene-editor-animation-character-panel.label.label.2e68fbe31ef8",
         "app-scene-editor-animation-pattern-studio.overlay.overlay.b048bb93d775",
         "core-composition-fields.blend-label.overlay.cacb6a5bb7dc"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "endret",
-      "keys": [
-        "app-scene-editor-animation-character-panel.character-panel.p.5acf0b07bd70",
-        "core-notes-index.format-edited.message.b308c59b7bcb"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Replikken finnes ikke",
-      "keys": [
-        "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee",
-        "core-commands-apply.run.fail.6fbc54425f99"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Scenenummer",
-      "keys": [
-        "core-assembly-technical.label.label.e446454b3c63",
-        "app-script-export-dialog.export-dialog.legend.7de83198fb7f"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Ugyldig kobling",
-      "keys": [
-        "core-commands-apply.run.fail.3bc025bf2c59",
-        "core-commands-apply.run.fail.3bc025bf2c59.2",
-        "core-storylab-canvas.canvas-node-error.message.7030a4ec6247",
-        "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Profilen er fjernet",
-      "keys": [
-        "core-commands-apply.run.fail.7c23382b944a",
-        "app-storylab-story-lab-workspace.text.text.64c415bdd29a"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Laget med profil {value1}",
-      "keys": [
-        "core-export-records.describe-export-settings.parts-push.5eb68c2ddf11",
-        "app-scene-editor-dialogue-versions.dialogue-versions.p.4f1eb000f244"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "sted",
-      "keys": [
-        "core-generation-model-prompt.key-label.setting.9c25472ea6d9",
-        "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Sted",
-      "keys": [
-        "core-presentation-poster.role-label.place.22f9d6f3bdc7",
-        "core-storylab-canvas.location.location.5be3d87e0de8",
-        "app-script-inspector.scene-panel.label.5d2b2d7b9eda",
-        "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda",
-        "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "uten nummer",
-      "keys": [
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9",
-        "core-screenplay-versions.detail.detail.d1b407cc4cd9.2",
-        "app-script-inspector.block-panel.p.1da6ef0d3d9a",
-        "app-script-inspector.scene-panel.span.ffd27913a1c8",
-        "app-script-inspector.scene-panel.p.ffd27913a1c8"
       ]
     },
     {

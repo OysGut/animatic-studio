@@ -251,7 +251,11 @@ export function generatedFiles(inventory) {
   const result = new Map([['scripts/i18n/mapping.v1.json', { version: inventory.version, entries: inventory.entries, conflicts: inventory.conflicts }], ['scripts/i18n/references.v1.json', inventory.references], ['scripts/i18n/candidates.v1.json', inventory.candidates], ['scripts/i18n/inventory-report.json', { ...summary, conflicts: inventory.conflicts }]]);
   for (const [lang, catalog] of Object.entries(locales)) result.set(`src/core/i18n/locales/${lang}.json`, catalog);
   result.set('src/core/i18n/runtime.gen.json', runtime);
-  return new Map([...result].map(([path, obj]) => [path, JSON.stringify(obj, null, 2) + '\n']));
+  // Candidates are written one compact entry per line so the file stays under the 10 MB repository limit.
+  const serialize = (path, obj) => path.endsWith('candidates.v1.json')
+    ? `[\n${obj.map((c) => JSON.stringify(c)).join(',\n')}\n]\n`
+    : JSON.stringify(obj, null, 2) + '\n';
+  return new Map([...result].map(([path, obj]) => [path, serialize(path, obj)]));
 }
 export function buildInventory(root = ROOT, verify = false) {
   const path = join(root, 'scripts/i18n/mapping.v1.json');

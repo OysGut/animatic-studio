@@ -22,9 +22,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export function carryLabel(name: string): string {
-  return L(`Bruk «${name}» i andre scener`, `Use “${name}” in other scenes`);
+  return t("app-scene-editor-carry-over-dialog.carry-label.message.d003692da5f5", { name: String(name) });
 }
 
 /** Kjører en plan som én angregruppe. Gir feilen (eller null) og antall nye lag. */
@@ -40,8 +41,8 @@ export async function runCarryOver(
     return {
       error:
         plan.reason === "same_scene"
-          ? L("Den valgte scenen bruker samme 2D-scene som denne.", "The chosen scene uses the same 2D scene as this one.")
-          : L("Velg minst én scene.", "Choose at least one scene."),
+          ? t("app-scene-editor-carry-over-dialog.error.error.05a9b406f6b3")
+          : t("app-scene-editor-carry-over-dialog.error.error.8ec7f04d3539"),
       created: 0,
       reused: 0,
     };
@@ -110,10 +111,7 @@ export function CarryOverDialog({
         <DialogHeader>
           <DialogTitle>{carryLabel(name)}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Laget kopieres med samme ressurs, variant, skala og rotasjon. Bevegelse og tid er lokal for hver scene.",
-              "The layer is copied with the same asset, variant, scale and rotation. Motion and timing are local to each scene.",
-            )}
+            {t("app-scene-editor-carry-over-dialog.carry-over-dialog.dialog-description.7c8035e40fc2")}
           </DialogDescription>
         </DialogHeader>
         <ul className="flex max-h-[50vh] flex-col gap-1 overflow-y-auto" data-testid="carry-over-list">
@@ -141,15 +139,15 @@ export function CarryOverDialog({
                     }}
                   />
                   <span className="tabular-nums text-text-secondary">{o.number ?? "–"}</span>
-                  <span className="truncate">{o.heading || L("Uten overskrift", "No heading")}</span>
+                  <span className="truncate">{o.heading || t("app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362")}</span>
                   {o.sameScene ? (
-                    <span className="text-xs text-text-tertiary">{L("(samme 2D-scene)", "(same 2D scene)")}</span>
+                    <span className="text-xs text-text-tertiary">{t("app-scene-editor-carry-over-dialog.carry-over-dialog.span.8b40fd165157")}</span>
                   ) : null}
                 </label>
                 {on && dup ? (
                   <div className="flex flex-col gap-1 pl-6 text-xs text-text-secondary" role="radiogroup" data-testid="carry-over-duplicate">
                     <span className="text-status-warning">
-                      {L("Ressursen finnes allerede i denne scenen.", "The asset is already in this scene.")}
+                      {t("app-scene-editor-carry-over-dialog.carry-over-dialog.span.840774469bb8")}
                     </span>
                     <label className="flex items-center gap-1">
                       <input
@@ -159,7 +157,7 @@ export function CarryOverDialog({
                         onChange={() => setModes({ ...modes, [o.occurrenceId]: "existing" })}
                         data-testid="carry-over-use-existing"
                       />
-                      {L("Bruk den som finnes", "Use the existing one")}
+                      {t("app-scene-editor-carry-over-dialog.carry-over-dialog.label.96d556621e7d")}
                     </label>
                     <label className="flex items-center gap-1">
                       <input
@@ -169,7 +167,7 @@ export function CarryOverDialog({
                         onChange={() => setModes({ ...modes, [o.occurrenceId]: "add" })}
                         data-testid="carry-over-add-another"
                       />
-                      {L("Legg til en til", "Add another")}
+                      {t("app-scene-editor-carry-over-dialog.carry-over-dialog.label.9d11685844c1")}
                     </label>
                   </div>
                 ) : null}
@@ -177,7 +175,7 @@ export function CarryOverDialog({
             );
           })}
           {!options.length ? (
-            <li className="text-xs text-text-tertiary">{L("Produksjonen har ingen andre scener.", "The production has no other scenes.")}</li>
+            <li className="text-xs text-text-tertiary">{t("app-scene-editor-carry-over-dialog.carry-over-dialog.li.55851ca1d758")}</li>
           ) : null}
         </ul>
         {error ? (
@@ -187,10 +185,10 @@ export function CarryOverDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-scene-editor-carry-over-dialog.carry-over-dialog.button.ab08459b06a1")}
           </Button>
           <Button onClick={() => void submit()} disabled={busy || picked.size === 0} data-testid="carry-over-submit">
-            {L("Legg til", "Add")}
+            {t("app-scene-editor-carry-over-dialog.carry-over-dialog.button.538a104fae24")}
           </Button>
         </DialogFooter>
       </DialogContent>

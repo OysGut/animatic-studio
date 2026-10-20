@@ -16,6 +16,7 @@ import {
   type RigSpec,
   type UseBehavior,
 } from "./rig";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Feltene i karakteratferden som kan arves fra oppsettet og overstyres lokalt per scene. */
 export const INHERITED_KEYS = ["blinkEnabled", "leftEyePatternId", "rightEyePatternId", "overlayPatternIds", "breath"] as const;
@@ -81,7 +82,7 @@ export function rigUsages(s: ProjectState, rigId: string): RigUsage[] {
     out.push({
       use,
       occurrenceId: occ.id,
-      label: L(`Scene ${number ?? "–"}${where ? ` · ${where}` : ""}`, `Scene ${number ?? "–"}${where ? ` · ${where}` : ""}`),
+      label: tk("core-animation-character.label.label.21386e955bf8", { value1: String(number ?? "–"), value2: String(where ? ` · ${where}` : "") }),
       versionNumber: v.number,
       current: rig?.currentVersionId === v.id,
     });

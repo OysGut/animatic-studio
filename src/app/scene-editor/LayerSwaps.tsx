@@ -28,6 +28,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AssetPicker } from "./LayerImageDialog";
+import { t } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -87,23 +88,20 @@ export function LayerSwaps({
 
   function change(w: ImageSwap, patch: Partial<ImageSwap>) {
     setSwaps(
-      L("Endre bildeskifte", "Change image swap"),
+      t("app-scene-editor-layer-swaps.change.set-swaps.413416e19e67"),
       layer.swaps.map((x) => (x.frame === w.frame ? { ...x, ...patch } : x)),
     );
   }
 
   return (
-    <section className="mb-4" aria-label={L("Bildeskifte", "Image swap")}>
+    <section className="mb-4" aria-label={t("app-scene-editor-layer-swaps.layer-swaps.aria-label.0b4eec48b78a")}>
       <h3 className="mb-1.5 text-xs font-medium uppercase tracking-[0.04em] text-text-tertiary">
-        {L("Bildeskifte", "Image swap")}
+        {t("app-scene-editor-layer-swaps.layer-swaps.h3.0b4eec48b78a")}
       </h3>
       <div className="flex flex-col gap-2">
         {layer.swaps.length === 0 ? (
           <p className="text-xs text-text-tertiary">
-            {L(
-              "Laget kan bytte til et annet bilde midt i scenen (hardt kutt). Flytt avspillingshodet dit skiftet skal skje.",
-              "The layer can switch to another image in the middle of the scene (a hard cut). Move the playhead to where the swap should happen.",
-            )}
+            {t("app-scene-editor-layer-swaps.layer-swaps.p.02bdec36beb6")}
           </p>
         ) : (
           <ul className="flex flex-col gap-1.5">
@@ -127,24 +125,21 @@ export function LayerSwaps({
                       type="button"
                       onClick={() => onSeek?.(w.frame)}
                       className="shrink-0 rounded-sm px-1 text-xs tabular-nums text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                      title={L("Gå til skiftet", "Go to the swap")}
+                      title={t("app-scene-editor-layer-swaps.layer-swaps.title.cd6e38779c42")}
                     >
-                      {L("fra", "from")} {seconds(w.frame)}
+                      {t("app-scene-editor-layer-swaps.layer-swaps.button.0290f4fdc1d6")} {seconds(w.frame)}
                     </button>
                     <span className="min-w-0 flex-1 truncate text-[13px] text-text-primary">
-                      {asset?.name ?? L("Ukjent ressurs", "Unknown asset")}
+                      {asset?.name ?? t("app-scene-editor-layer-swaps.layer-swaps.span.523c4fc01bca")}
                     </span>
                     {editable ? (
                       <button
                         type="button"
-                        aria-label={L(
-                          `Fjern bildeskiftet ved ${seconds(w.frame)}`,
-                          `Remove the image swap at ${seconds(w.frame)}`,
-                        )}
-                        title={L("Fjern bildeskiftet", "Remove the image swap")}
+                        aria-label={t("app-scene-editor-layer-swaps.layer-swaps.aria-label.7e2927cb0565", { value1: String(seconds(w.frame)) })}
+                        title={t("app-scene-editor-layer-swaps.layer-swaps.title.f6e6e9e6e9fe")}
                         onClick={() =>
                           setSwaps(
-                            L("Fjern bildeskifte", "Remove image swap"),
+                            t("app-scene-editor-layer-swaps.layer-swaps.set-swaps.6546adfe3876"),
                             layer.swaps.filter((x) => x.frame !== w.frame),
                           )
                         }
@@ -156,7 +151,7 @@ export function LayerSwaps({
                   </div>
                   {variants.length > 0 ? (
                     <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-                      {L("Variant", "Variant")}
+                      {t("app-scene-editor-layer-swaps.layer-swaps.label.94701a2511ee")}
                       <select
                         value={w.assetVariantId ?? ""}
                         disabled={!editable}
@@ -168,10 +163,10 @@ export function LayerSwaps({
                         }
                         className={selectClass}
                       >
-                        <option value="">{L("Forsidebildet", "Cover image")}</option>
+                        <option value="">{t("app-scene-editor-layer-swaps.layer-swaps.option.b44c486909b6")}</option>
                         {variants.map((v) => (
                           <option key={v.id} value={v.id}>
-                            {v.name || L("Uten navn", "Untitled")}
+                            {v.name || t("app-scene-editor-layer-swaps.layer-swaps.option.de77847b6a91")}
                           </option>
                         ))}
                       </select>
@@ -190,21 +185,15 @@ export function LayerSwaps({
             disabled={frame < 1}
             title={
               frame < 1
-                ? L(
-                    "Flytt avspillingshodet forbi starten av scenen først",
-                    "Move the playhead past the start of the scene first",
-                  )
-                : L(
-                    "Laget viser et annet bilde fra dette bildet",
-                    "The layer shows a different image from this point",
-                  )
+                ? t("app-scene-editor-layer-swaps.layer-swaps.title.ff186e3ff61a")
+                : t("app-scene-editor-layer-swaps.layer-swaps.title.52295238f3b8")
             }
             onClick={() => setPicking(true)}
           >
             <ArrowRightLeft className="size-3.5" />
             {here
-              ? L("Bytt bildet her …", "Change the image here …")
-              : L(`Bytt bilde ved ${seconds(frame)} …`, `Change image at ${seconds(frame)} …`)}
+              ? t("app-scene-editor-layer-swaps.layer-swaps.button.69b5c6b96c22")
+              : t("app-scene-editor-layer-swaps.layer-swaps.button.1adb77ea529b", { value1: String(seconds(frame)) })}
           </Button>
         ) : null}
         {error ? (
@@ -258,19 +247,16 @@ function SwapPicker({
       <DialogContent className="max-h-[86vh] max-w-[760px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {L(`Bildeskifte i «${layer.name}»`, `Image swap in “${layer.name}”`)}
+            {t("app-scene-editor-layer-swaps.swap-picker.dialog-title.8e6db16c2d82", { name: String(layer.name) })}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              `Fra ${when} viser laget bildet du velger. Plassering, størrelse og bevegelse beholdes.`,
-              `From ${when} the layer shows the image you choose. Position, size and movement are kept.`,
-            )}
+            {t("app-scene-editor-layer-swaps.swap-picker.dialog-description.9188382115ca", { when: String(when) })}
           </DialogDescription>
         </DialogHeader>
         <AssetPicker state={state} candidates={candidates} urls={urls} editable onPick={onPick} />
         <DialogFooter>
           <Button variant="secondary" onClick={() => onOpenChange(false)}>
-            {L("Avbryt", "Cancel")}
+            {t("app-scene-editor-layer-swaps.swap-picker.button.0b3fb7353ea5")}
           </Button>
         </DialogFooter>
       </DialogContent>
