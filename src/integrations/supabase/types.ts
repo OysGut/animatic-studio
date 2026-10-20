@@ -3263,6 +3263,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          active_quality_profile_id: string | null
           ai_month_limit: number | null
           ai_price_per_image: number | null
           created_at: string
@@ -3285,6 +3286,7 @@ export type Database = {
           workspace_id: string | null
         }
         Insert: {
+          active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
           created_at?: string
@@ -3307,6 +3309,7 @@ export type Database = {
           workspace_id?: string | null
         }
         Update: {
+          active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
           created_at?: string
@@ -3334,6 +3337,53 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quality_profiles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          edited_at: string | null
+          edited_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          spec: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]

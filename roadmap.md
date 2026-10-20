@@ -1,3 +1,11 @@
+# C linjekobling (20.10.2026)
+- [x] Regelbasert først, sceneavgrenset AI med kostnadsbekreftelse og gjennomgang av lagrede 1:n/n:1-koblinger.
+- [x] Reversible kommandoer, 0064 fra 0063, RLS/grants/sletting og sikkerhetskopi skrevet; DB-verifikasjon blokkert av lokal Postgres.
+- [x] Språknavn i opptak og avstand ved alfa-profilvalg.
+- [x] P5 18/18 NO/EN, Vitest 1871/0, bestilte regresjoner kjørt; DB blokkert. REQ-0845–0853 og rapport.
+- [ ] Full importlinjedekning: uparrede oversettelseslinjer må bevares varig; eksisterende importmodell mangler dette.
+- [ ] DB/Cloud-verifikasjon: lokal Postgres er utilgjengelig; 0064 ikke kjørt.
+
 # D fullføring (20.10.2026)
 - [x] Profilvalg og kostnadsport for tale, DV-batch, video, lyd og eksport; uforanderlige resultatmetadata.
 - [x] Endelig 0063 med minimal create_project fra 0001 og serverhåndhevet profilbudsjett; ingen Cloud-kjøring.

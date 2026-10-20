@@ -116,7 +116,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         <DialogTitle>{L("Eksporter lag med gjennomsiktighet", "Export layers with transparency")}</DialogTitle>
         <DialogDescription>{scene}</DialogDescription>
       </DialogHeader>
-      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); const id = v === "active" ? state.project.activeQualityProfileId : v; const preset = id && v !== "none" ? state.qualityProfiles[id]?.spec.export : null; if (preset) patch({ ...(preset.alpha ? {alpha:preset.alpha} : {}), ...(preset.format === "png-seq" ? {format:"png-seq"} : preset.format === "webm" ? {format:"webm-vp9"} : {}) }); }} />
+      <QualityProfilePicker stacked state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); const id = v === "active" ? state.project.activeQualityProfileId : v; const preset = id && v !== "none" ? state.qualityProfiles[id]?.spec.export : null; if (preset) patch({ ...(preset.alpha ? {alpha:preset.alpha} : {}), ...(preset.format === "png-seq" ? {format:"png-seq"} : preset.format === "webm" ? {format:"webm-vp9"} : {}) }); }} />
       <fieldset disabled={busy} className="flex min-w-0 flex-col gap-4 text-xs text-text-secondary">
         <div className="flex flex-col gap-2">
           <span>{L("Lag", "Layers")}</span>

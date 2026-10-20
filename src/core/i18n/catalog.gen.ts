@@ -721,6 +721,7 @@ export const CATALOG: Record<string, string> = {
   "For mange forsøk. Vent litt og prøv igjen.": "Too many attempts. Wait a little and try again.",
   "For mange jobber til trygg opprydding.": "Too many jobs for safe cleanup.",
   "For mange kamerautsnitt": "Too many camera shots",
+  "For mange koblinger.": "Too many links.",
   "For mange lag på én gang (maks 500)": "Too many layers at once (max 500)",
   "For mange låste tidsrom": "Too many locked time ranges",
   "For mange lydklipp på én gang (maks 500)": "Too many audio clips at once (max 500)",
@@ -1026,6 +1027,7 @@ export const CATALOG: Record<string, string> = {
   "Kling O3 Edit (fra 2D-scenen)": "Kling O3 Edit (from the 2D scene)",
   "Klippet versjon ({0} {1})": "Edited version ({0} {1})",
   Koblingen: "The connection",
+  "Koblingen er ikke lenger gyldig.": "The link is no longer valid.",
   "Koblingen mangler en node": "The connection is missing a node",
   "Koblingen peker på en fjernet node": "The connection points to a removed node",
   "Køen er full ({0} videoer venter). Vent til noen er ferdige.":
@@ -1129,6 +1131,8 @@ export const CATALOG: Record<string, string> = {
   "Leverandøren lager ikke video.": "The provider does not make video.",
   "Lim inn nøkkelen.": "Paste the key.",
   "Lineære scener har ikke anker": "Linear scenes have no anchor",
+  Linjekoblingen: "The line link",
+  "Linjekoblinger krever databaseversjon 64.": "Line links require database version 64.",
   "Linjen har allerede en oversettelse til dette språket":
     "The line already has a translation into this language",
   "Linjen har fått en annen oversettelse i mellomtiden":
@@ -1137,6 +1141,8 @@ export const CATALOG: Record<string, string> = {
   "Linjen står utenfor kjente kolonner": "The line is outside the known columns",
   "Linjene må høre til scenen": "The lines must belong to the scene",
   "Linjene må være i scenen": "The lines must be in the scene",
+  "Linjer er endret. Kontroller anslaget og bekreft på nytt.":
+    "Lines changed. Check the estimate and confirm again.",
   "Logg inn på aistudio.google.com med en Google-konto.":
     "Sign in at aistudio.google.com with a Google account.",
   "Logg inn på dev.runwayml.com (utviklerportalen, egen fra vanlig Runway-abonnement).":
@@ -1691,6 +1697,7 @@ export const CATALOG: Record<string, string> = {
   "Sikkerhetskopien er skadet ({0}).": "The backup is damaged ({0}).",
   "Sikkerhetskopien er skadet: {0}": "The backup is damaged: {0}",
   "Sikkerhetskopien gir et ugyldig prosjekt ({0}).": "The backup gives an invalid project ({0}).",
+  "Sikkerhetskopien har en ugyldig linjekobling.": "The backup contains an invalid line link.",
   "Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.":
     "The backup has an invalid poster and cannot be used.",
   "Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.":
@@ -1877,6 +1884,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig animasjonsdata": "Invalid animation data",
   "Ugyldig animasjonsoppsett": "Invalid animation setup",
   "Ugyldig ankerpunkt": "Invalid anchor point",
+  "Ugyldig antall koblinger.": "Invalid number of links.",
   "Ugyldig antall kontinuitetshendelser": "Invalid number of continuity events",
   "Ugyldig antall noder": "Invalid number of nodes",
   "Ugyldig antall oversettelser": "Invalid number of translations",
@@ -1971,6 +1979,8 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig lenke": "Invalid link",
   "Ugyldig leppesynk": "Invalid lip sync",
   "Ugyldig linjeavstand": "Invalid line spacing",
+  "Ugyldig linjekobling eller språkversjon.": "Invalid line link or language version.",
+  "Ugyldig linjekobling.": "Invalid line link.",
   "Ugyldig liste over hvem som vet": "Invalid list of who knows",
   "Ugyldig lydhash": "Invalid audio hash",
   "Ugyldig lydklipp": "Invalid audio clip",
@@ -2043,6 +2053,7 @@ export const CATALOG: Record<string, string> = {
   "Ugyldig rolle": "Invalid role",
   "Ugyldig rotasjon": "Invalid rotation",
   "Ugyldig scene": "Invalid scene",
+  "Ugyldig scene eller språk.": "Invalid scene or language.",
   "Ugyldig scene for faktumet": "Invalid scene for the fact",
   "Ugyldig scene-ID": "Invalid scene ID",
   "Ugyldig scenetype": "Invalid occurrence kind",
@@ -2246,6 +2257,7 @@ export const CATALOG: Record<string, string> = {
   "Velg en karakterprofil.": "Choose a character profile.",
   "Velg en scene": "Select a scene",
   "Velg en scene i hovedproduksjonen.": "Choose a scene in the main production.",
+  "Velg en scene med høyst 40 usikre linjer.": "Choose a scene with at most 40 uncertain lines.",
   "Velg en scenenode": "Select a scene node",
   "Velg et gyldig inn/ut-område innenfor scenen.": "Choose a valid in/out range within the scene.",
   "Velg ett bilde å oppskalere.": "Choose one image to upscale.",

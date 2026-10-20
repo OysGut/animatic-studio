@@ -138,6 +138,18 @@ export function translatedState(s: ProjectState, lang: string): ProjectState {
       variants[t.variantId] = { ...v, heading: headingFromText(t.text, v.heading) };
     }
   }
+  // B-050: approved correspondence affects translated projection only, never source state.
+  for (const link of Object.values(s.translationLineLinks ?? {})) {
+    if (link.removed || link.language !== lang || !["approved","manual"].includes(link.origin)) continue;
+    const texts=link.targetTranslationIds.map(id=>s.translations[id]).flatMap(t=>t && !t.removed && t.language===lang ? [t.text] : []);
+    if (!texts.length) continue;
+    link.sourceBlockIds.forEach((id,index)=> {
+      const b=blocks[id];
+      if (!b || b.variantId !== link.variantId) return;
+      // n:1 appears once instead of duplicating a merged translated line.
+      blocks[id]={...b,text:index===0 ? texts.join("\n") : ""};
+    });
+  }
   const out = { ...s, blocks, variants };
   byLang.set(lang, out);
   return out;

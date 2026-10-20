@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   applyCommand,
+  newId,
   emptyStoryProfile,
   diffStates,
   keysEvenly,
@@ -132,6 +133,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     generation_prompts: await q("generation_prompts"),
     continuity_events: await q("continuity_events"),
     translations: await q("translations"),
+    translation_line_links: await q("translation_line_links"),
     asset_relations: await q("asset_relations"),
     posters: await q("posters"),
     style_profiles: await q("style_profiles"),
@@ -6057,7 +6059,7 @@ try {
     assert(col.length === 1, "projects.active_quality_profile_id mangler");
     const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
     assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
-    assert(body.includes("array['quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
+    assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
     assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
     for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
       const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
@@ -6110,6 +6112,41 @@ try {
     await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
   });
 
+  await test("0064: approved links persist via apply_changes, RLS, foreign scope and project deletion", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Line-link fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    const initial=await loadState(bp);const prod=Object.values(initial.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const sceneId=newId(),variantId=newId(),blockId=newId(),occurrenceId=newId();
+    const created=applyCommand(initial,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"CreateScene",productionId:prod.id,sceneId:sceneId as never,variantId:variantId as never,occurrenceId:occurrenceId as never,orderKey:"a0",heading:{intExt:"INT.",location:"TEST",time:"DAG"},blocks:[{blockId:blockId as never,kind:"dialogue",text:"Norsk linje",orderKey:"a0"}]}});
+    assert(created.ok,"scene command failed");
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"CreateScene"})},${sql.json(JSON.parse(JSON.stringify(created.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(initial,created.state))))})`);
+    const translationId=newId();const translated=applyCommand(created.state,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:{type:"AddTranslations",items:[{translationId:translationId as never,fields:{blockId:blockId as never,variantId:null,language:"en",text:"English line",basedOnRev:1,status:"uncertain"}}]}});
+    assert(translated.ok,"translation command failed");
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},${sql.json(JSON.parse(JSON.stringify(translated.inverse)))},${sql.json(JSON.parse(JSON.stringify(diffStates(created.state,translated.state))))})`);
+    const id=newId();const row={id,project_id:bp,variant_id:variantId,language:"en",source_block_ids:[blockId],target_translation_ids:[translationId],origin:"approved",confidence:0.9,reason:"Evidence",removed:false,revision:1};
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},${sql.json({type:"UndoAddLineLink",linkId:id})},${sql.json({inserts:{translation_line_links:[row]}})})`);
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===1,"member cannot read");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===0,"nonmember sees links");
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[{...row,id:newId(),target_translation_ids:[newId()]}]}})})`),"22023");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.translation_line_links where project_id=${bp}`).length===0,"line links left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0064: line-link RLS/grants and deletion paths", async () => {
+    const grants=await sql`select has_table_privilege('anon','public.translation_line_links','SELECT') a, has_table_privilege('authenticated','public.translation_line_links','SELECT') r, has_table_privilege('authenticated','public.translation_line_links','INSERT') w, has_table_privilege('service_role','public.translation_line_links','INSERT') s`;
+    assert(grants[0]?.["a"]===false && grants[0]?.["r"]===true && grants[0]?.["w"]===false && grants[0]?.["s"]===true,"line-link grants");
+    const rls=await sql`select relrowsecurity from pg_class where oid='public.translation_line_links'::regclass`;
+    assert(rls[0]?.["relrowsecurity"]===true,"missing RLS");
+    for (const fn of ["delete_project(uuid,uuid)","purge_project_assets(uuid,uuid)"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
+    }
+    const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(body.includes("'translation_line_links'") && body.includes("Invalid line link scope"),"scope validation absent");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.translation_line_links(id,project_id,variant_id,language,source_block_ids,target_translation_ids,origin,confidence) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),'en','{}','{}','ai',0.5)`),"42501");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

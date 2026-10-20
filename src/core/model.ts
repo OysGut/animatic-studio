@@ -943,6 +943,7 @@ export interface ProjectState {
   /** DV8: gule huskelapper (migrasjon 0062). */
   readonly noteFlags: Readonly<Record<string, import("./notes/flags").NoteFlag>>;
   /** M8: navngitte kvalitetsprofiler (migrasjon 0063). */
+  readonly translationLineLinks: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLineLink>>;
   readonly qualityProfiles: Readonly<Record<string, import("./generation/quality-profile").QualityProfile>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
@@ -1368,6 +1369,7 @@ export const COLLECTION_TABLES = {
   dialogueReviews: "dialogue_reviews",
   noteFlags: "note_flags",
   qualityProfiles: "quality_profiles",
+  translationLineLinks: "translation_line_links",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1412,6 +1414,7 @@ export function emptyProjectState(project: Project): ProjectState {
     dialogueReviews: {},
     noteFlags: {},
     qualityProfiles: {},
+    translationLineLinks: {},
   };
 }
 

@@ -1,6 +1,6 @@
 # Plan P4–P6 (etter DV) – 20.10.2026
 
-Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D er bygd med 0063 lokalt; C er ikke del av denne runden.
+Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D/0063 er verifisert og publisert av Øystein. C er implementert lokalt med 0064; DB og Cloud-verifikasjon gjenstår.
 
 ## A. Polering etter DV (ferdig)
 - Huskelapp: visningsnavn hentes fra profilene (`useProfiles`) der lappen vises; «ukjent» bare når navnet mangler.
@@ -44,3 +44,13 @@ Status: A (polering) bygd. B (lageksport) bygd og lokalt testet. D er bygd med 0
 - Film/alfa deler seriell klientkø som fortsetter etter dialoglukking; fremdrift/avbryt globalt. OPFS strømmer PNG-ZIP. Uten OPFS beholdes minnebasert reserve for «PNG alltid»: rapportert avvik fra ubetinget strømming. Køen overlever ikke tabblukking/omlasting. WebM-alfa ikke støttet i testnettleseren.
 - Automatisk typekontroll/build OK. Vitest 1861 bestått, 0 feilet, 10 eksisterende hoppet over. Lokal DB 135/135. P6 18/18 NO/EN, P4 39/39, DV4 24/24, DV5 20/20, U5 65/65, CA8 22/22, MTS engine 42/42, scene panels 39/39. Verifisering4 51/54: Courier Prime og to falsk-mikrofonkontroller; hybrid-eksport og avspilling bestått på siste kjøring.
 - i18n/build_docs/check_kb OK; REQ-0854–0862 registrert, C-krav 0845–0853 utsatt, ingen implementasjon av C. Ingen ekte/betalte AI-kall. Kredittoversikt viser 1033 totalt i perioden 16.10–16.11, ikke et isolert tall for dette oppdraget.
+
+## C / B-050 – 20.10.2026, delvis levert; ikke klart for Cloud
+- 0064_translation_line_links.sql skrevet, IKKE kjørt. Erstatter apply_changes/delete_project/purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet. Schema 64, medlems-SELECT, ingen klientskriving, service-role ALL. purge_removed_assets urørt.
+- Gjennomgang per scene etter DEC-0058-import: 1:1/1:n/n:1, sikkerhet og begrunnelse, validering med forkastet-teller, kildefilter, godkjenn/avvis/juster, terskelgodkjenning i én kommando med invers. Godkjente koblinger brukes i oversatt visning uten norsk kildeendring; backup omskriver arrayreferanser.
+- Eksplisitt bekreftelse og fingeravtrykkskontroll før eksisterende tjenestebetalte translation_align. Brukerkostnad 0 USD; M8 vises som kontekst og overstyrer ikke tjenestens tekstmodell. Ingen ekte AI-kall eller betalte testkall. Oppdragsisolert kredittforbruk ikke tilgjengelig.
+- Språknavn i opptaksdialogen og stablet profilfelt med avstand i alfaeksport er rettet.
+- Automatisk typesignal: build OK. Full Vitest 1871 bestått, 0 feilet, 10 eksisterende hoppet over. Nye line-linking unit 10/10. P5 18/18 med norsk/engelsk skjermbilder. DV6 16/16, T2 69/69, Story Lab 32/32 ved isolert gjentak, U5 65/65, P6 18/18. Scene-panels 38/39: Alt-klikk-kontroll feiler også isolert; ingen retting utenfor oppdraget. Verifisering4 full kjøring 50/54: lyd/bilde-avvik 231 ms, Courier Prime-måling og to mikrofonkontroller; isolert gjentak ble avbrutt og teller ikke som full kjøring.
+- DB-testkjøring blokkert før første test: lokal Postgres localhost:54329 utilgjengelig. To nye 0064 DB-tester skrevet for RLS/grants, apply_changes, fremmede referanser, delete og purge, men ikke kjørt. Migrasjonen er ikke DB-verifisert og anbefales ikke kjørt i Cloud ennå.
+- ÅPENT: Eksisterende import bevarer ikke oversatte linjer uten DEC-0058-regelpar. Gjennomgangen støtter derfor bare lagrede oversettelseslinjer; full B-050 for uparrede importlinjer er ikke ferdig. Dette krever varig importlinjemodell/utvidet importflyt. Ikke rapportert som full C-leveranse.
+- i18n 0 uten engelsk; build_docs/check_kb OK (862 krav, 0 udekkede mandatlinjer). REQ-0845–0853 er Implementert – ikke verifisert med eksplisitt importavgrensning.
