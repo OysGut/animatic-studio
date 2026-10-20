@@ -6034,6 +6034,15 @@ try {
     let refused = false;
     try { await as("authenticated", CAROL, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene" })})`); } catch { refused = true; }
     assert(refused, "ikke-medlem kunne sette bokmerke");
+    // Huskelapp via apply_changes: delt (Bob ser den), revisjonskontroll, av/på beholder teksten
+    const flagId = "00000000-0000-7000-8000-000000006201";
+    const row = { id: flagId, project_id: bp, revision: 1, target_kind: "occurrence", target_id: "00000000-0000-7000-8000-000000006202", text: "Sjekk lyset", enabled: true, edited_by: null, edited_at: null, removed: false };
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006203"}, ${sql.json({ type: "AddNoteFlag" })}, ${sql.json({ type: "UndoAddNoteFlag" })}, ${sql.json({ inserts: { note_flags: [row] } })})`);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006204"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, enabled: false, edited_by: BOB, revision: 2, expected_revision: 1 }] } })})`);
+    const seen = await as("authenticated", BOB, (tx) => tx`select text, enabled, created_by, edited_by from public.note_flags where id = ${flagId}`);
+    assert(seen[0]?.["text"] === "Sjekk lyset" && seen[0]?.["enabled"] === false && seen[0]?.["created_by"] === ALICE && seen[0]?.["edited_by"] === BOB, "lappen er ikke delt eller mistet teksten");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006205"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, revision: 2, expected_revision: 1 }] } })})`), "P0409");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.note_flags where id = ${flagId}`)).length === 0, "ikke-medlem ser lappen");
     await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
     assert((await sql`select 1 from public.user_bookmarks where project_id = ${bp}`).length === 0, "bokmerker igjen etter sletting");
   });
