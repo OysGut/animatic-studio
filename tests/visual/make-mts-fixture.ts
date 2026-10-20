@@ -164,6 +164,23 @@ s = mustApply(s, {
 const cs = diffStates(fixture.state, s);
 for (const [t, list] of Object.entries(cs.inserts as Record<string, unknown[]>)) rows[t] = [...(rows[t] ?? []), ...list];
 
+// DV7: én replikk med avvik – den aktive lydversjonen ble laget fra revisjon n, manuset står nå på n+1.
+type R = Record<string, unknown>;
+const driftClip = (rows["audio_clips"] as R[]).find((c) => c["kind"] === "dialogue" && c["block_id"] && !c["removed"] && c["active_version_id"]);
+const driftBlock = driftClip && (rows["script_blocks"] as R[]).find((b) => b["id"] === driftClip["block_id"]);
+const driftVersion = driftClip && (rows["dialogue_versions"] as R[]).find((v) => v["id"] === driftClip["active_version_id"]);
+if (driftClip && driftBlock && driftVersion) {
+  const rev = Number(driftBlock["current_rev"]);
+  const oldText = String(driftBlock["text"]);
+  driftVersion["script_revision"] = rev;
+  driftBlock["current_rev"] = rev + 1;
+  driftBlock["text"] = `${oldText.split(" ").slice(1).join(" ")} nå med ny slutt`;
+  const revisions = (rows["script_block_revisions"] ?? []) as R[];
+  if (!revisions.some((r) => r["block_id"] === driftBlock["id"] && Number(r["rev"]) === rev)) revisions.push({ project_id: project.id, block_id: driftBlock["id"], rev, text: oldText, created_at: "2026-10-19T10:00:00Z", created_by: null });
+  revisions.push({ project_id: project.id, block_id: driftBlock["id"], rev: rev + 1, text: driftBlock["text"], created_at: "2026-10-20T10:00:00Z", created_by: null });
+  rows["script_block_revisions"] = revisions;
+}
+
 const instanceLayers = Object.values(s.layers).filter((l) => l.template?.instanceId === inst && !l.removed);
 writeFileSync(
   process.argv[2] ?? "/tmp/claude-0/mts-fixture.json",
@@ -195,6 +212,9 @@ writeFileSync(
         creditSeq: id(240),
         creditP1: id(241),
         creditP2: id(242),
+        driftOcc: driftClip?.["occurrence_id"] ?? null,
+        driftBlock: driftBlock?.["id"] ?? null,
+        driftClip: driftClip?.["id"] ?? null,
         instanceRole: instanceLayers.find((l) => l.template?.slot === "rolle")!.id,
       },
     },
