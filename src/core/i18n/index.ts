@@ -14,16 +14,37 @@ import { CATALOG } from "./catalog.gen";
 
 export type Lang = "nb" | "en";
 export const LANGUAGES: readonly Lang[] = ["nb", "en"];
+/** Språkene brukerflaten kan vises på (ML2a): `en-XA` er et testspråk bygd fra engelsk. */
+export type UiLang = Lang | "en-XA";
+export const UI_LANGUAGES: readonly UiLang[] = ["nb", "en", "en-XA"];
+export function isUiLang(v: unknown): v is UiLang {
+  return v === "nb" || v === "en" || v === "en-XA";
+}
 
-let current: Lang = "nb";
+let current: UiLang = "nb";
 const listeners = new Set<() => void>();
 
+/** Grunnspråket (nb/en). Testspråket `en-XA` regnes som engelsk her, så eksisterende kode virker uendret. */
 export function getLanguage(): Lang {
+  return current === "nb" ? "nb" : "en";
+}
+
+/** Det valgte visningsspråket, også testspråket `en-XA`. */
+export function getUiLanguage(): UiLang {
   return current;
 }
 
-export function setLanguage(lang: Lang): void {
-  if (lang !== "nb" && lang !== "en") return;
+/** Pseudotekst for `en-XA`: aksenter, doble bokstaver og markører, plassholdere `{x}` urørt. Lik inventarets. */
+export function pseudoText(text: string): string {
+  const map: Record<string, string> = { a: "á", e: "ë", i: "ï", o: "ô", u: "ü", A: "Á", E: "Ë", I: "Ï", O: "Ô", U: "Ü" };
+  return `[!! ${text
+    .split(/(\{[^{}]+\})/g)
+    .map((part) => (part.startsWith("{") ? part : part.replace(/[aeiouAEIOU]/g, (c) => map[c] ?? c).replace(/([a-záëïôü])/gi, "$1$1")))
+    .join("")} !!]`;
+}
+
+export function setLanguage(lang: UiLang): void {
+  if (!isUiLang(lang)) return;
   if (lang === current) return;
   current = lang;
   for (const f of listeners) f();
@@ -39,7 +60,7 @@ export function onLanguageChange(f: () => void): () => void {
 
 /** Brukervendt tekst på begge språk; svarer på gjeldende språk. */
 export function L(nb: string, en: string): string {
-  return current === "en" ? en : nb;
+  return current === "nb" ? nb : current === "en" ? en : pseudoText(en);
 }
 
 /** Et tekstpar for faste oppslag (`localized`). */
@@ -56,13 +77,13 @@ export function localized<K extends string | number>(
     get(target, prop, receiver) {
       const v = Reflect.get(target, prop, receiver) as unknown;
       if (Array.isArray(v) && v.length === 2 && typeof v[0] === "string")
-        return current === "en" ? v[1] : v[0];
+        return L(v[0], v[1] as string);
       return v;
     },
     getOwnPropertyDescriptor(target, prop) {
       const d = Reflect.getOwnPropertyDescriptor(target, prop);
       if (d && Array.isArray(d.value) && d.value.length === 2)
-        return { ...d, value: current === "en" ? d.value[1] : d.value[0] };
+        return { ...d, value: L(d.value[0] as string, d.value[1] as string) };
       return d;
     },
   });
@@ -70,12 +91,12 @@ export function localized<K extends string | number>(
 
 /** Språkkoden for datoer og tall. */
 export function locale(): string {
-  return current === "en" ? "en-GB" : "nb-NO";
+  return current === "nb" ? "nb-NO" : "en-GB";
 }
 
 /** Sorteringsspråket (alfabetisk rekkefølge i lister). */
 export function collation(): string {
-  return current === "en" ? "en" : "nb";
+  return current === "nb" ? "nb" : "en";
 }
 
 // ---------------------------------------------------------------- Meldinger fra serveren
@@ -107,6 +128,14 @@ function compile(): Compiled[] {
  */
 export function tm(message: string): string {
   if (current === "nb" || !message) return message;
+  if (current === "en-XA") {
+    const en = tmEn(message);
+    return en === message ? message : pseudoText(en);
+  }
+  return tmEn(message);
+}
+
+function tmEn(message: string): string {
   const one = (m: string): string | null => {
     // Samme tekst med punktum til slutt teller også («Ugyldig notat.» = «Ugyldig notat»)
     const end = /[.!?]$/.exec(m)?.[0] ?? "";
