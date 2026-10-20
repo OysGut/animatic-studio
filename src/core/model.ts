@@ -947,6 +947,10 @@ export interface ProjectState {
   /** B-050: imported translated lines without a rule pair (migration 0064). */
   readonly translationLines: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLine>>;
   readonly qualityProfiles: Readonly<Record<string, import("./generation/quality-profile").QualityProfile>>;
+  /** P8: metadata om harmoniserte versjoner (migrasjon 0065). */
+  readonly styleHarmonizations: Readonly<Record<string, import("./generation/style-harmonize").StyleHarmonization>>;
+  /** P8: foretrukket referanse per (karakter, stilprofil) (REQ-0144, migrasjon 0065). */
+  readonly stylePreferredReferences: Readonly<Record<string, import("./generation/style-harmonize").StylePreferredReference>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1373,6 +1377,8 @@ export const COLLECTION_TABLES = {
   qualityProfiles: "quality_profiles",
   translationLines: "translation_lines",
   translationLineLinks: "translation_line_links",
+  styleHarmonizations: "style_harmonizations",
+  stylePreferredReferences: "style_preferred_references",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1419,6 +1425,8 @@ export function emptyProjectState(project: Project): ProjectState {
     qualityProfiles: {},
     translationLineLinks: {},
     translationLines: {},
+    styleHarmonizations: {},
+    stylePreferredReferences: {},
   };
 }
 

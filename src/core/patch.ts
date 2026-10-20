@@ -781,6 +781,8 @@ export const TABLE_ORDER: readonly string[] = [
   "quality_profiles",
   "translation_lines",
   "translation_line_links",
+  "style_harmonizations",
+  "style_preferred_references",
 ];
 
 export function diffStates(before: ProjectState, after: ProjectState): ChangeSet {
@@ -918,6 +920,9 @@ export interface ProjectRows {
   readonly quality_profiles?: readonly Row[];
   readonly translation_line_links?: readonly Row[];
   readonly translation_lines?: readonly Row[];
+  /** P8 stilharmonisering (migrasjon 0065). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly style_harmonizations?: readonly Row[];
+  readonly style_preferred_references?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
