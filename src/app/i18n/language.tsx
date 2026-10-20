@@ -10,6 +10,7 @@ import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
 import { L, getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
+import { t } from "@/core/i18n/keyed";
 
 export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
@@ -98,8 +99,8 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   return (
     <div
       role="group"
-      aria-label={L("Språk", "Language")}
-      title={L("Språk i tjenesten", "Language of the app")}
+      aria-label={t("app-i18n-language.language-switch.aria-label.a2595484506d")}
+      title={t("app-i18n-language.language-switch.title.691fad620f12")}
       data-testid="language-switch"
       className="flex items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
     >
@@ -110,7 +111,7 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
           type="button"
           aria-pressed={lang === o.tag}
           data-testid={`language-${o.tag}`}
-          title={o.testOnly ? L("Testspråk (bare i utvikling)", "Test language (development only)") : o.nativeName}
+          title={o.testOnly ? t("app-i18n-language.language-switch.title.52f62cdf7cf1") : o.nativeName}
           className={seg(lang === o.tag)}
           onClick={() => chooseLanguage(o.tag)}
           lang={o.tag}

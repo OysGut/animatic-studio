@@ -23,6 +23,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { L } from "@/core";
 import { cn } from "@/lib/utils";
 import { countPrimary, planToolbarOverflow } from "./toolbar-overflow";
+import { t as tk } from "@/core/i18n/keyed";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -163,8 +164,8 @@ export function Toolbar({
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
-                  aria-label={moreLabel ?? L("Mer …", "More …")}
-                  title={moreLabel ?? L("Mer …", "More …")}
+                  aria-label={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.aria-label.1016500c135a")}
+                  title={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.title.1016500c135a")}
                 >
                   <MoreHorizontal aria-hidden />
                 </ToolbarButton>

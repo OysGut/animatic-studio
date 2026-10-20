@@ -36,6 +36,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export const SHARE_SCHEMA = 47;
 
@@ -56,7 +57,7 @@ export interface ShareSource {
 }
 
 const daysLabel = (d: ShareDays) =>
-  d === null ? L("Til jeg trekker den tilbake", "Until I revoke it") : L(`${d} dager`, `${d} days`);
+  d === null ? t("app-share-film-share-dialog.days-label.message.a4bdac33eac3") : t("app-share-film-share-dialog.days-label.message.5a4047009447", { d: String(d) });
 
 export function FilmShareDialog({
   open,
@@ -145,25 +146,22 @@ export function FilmShareDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md" data-testid="film-share-dialog">
         <DialogHeader>
-          <DialogTitle>{L("Del filmen med QR-kode", "Share the film with a QR code")}</DialogTitle>
+          <DialogTitle>{t("app-share-film-share-dialog.film-share-dialog.dialog-title.6399849814e9")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Lenken viser bare denne filmversjonen. Den gir ikke tilgang til manus, ressurser eller noe annet i prosjektet.",
-              "The link shows only this film version. It gives no access to the script, assets or anything else in the project.",
-            )}
+            {t("app-share-film-share-dialog.film-share-dialog.dialog-description.d5bff1c6dc21")}
           </DialogDescription>
           {source.creditsIncluded !== undefined ? (
             <p className="text-xs text-text-tertiary" data-testid="film-share-credits-note">
               {source.creditsIncluded
-                ? L("Rulleteksten er med i denne versjonen.", "The credits are included in this version.")
-                : L("Rulleteksten er ikke med i denne versjonen.", "The credits are not included in this version.")}
+                ? t("app-share-film-share-dialog.film-share-dialog.p.0c3aa664633e")
+                : t("app-share-film-share-dialog.film-share-dialog.p.5c4a38c4dd48")}
             </p>
           ) : null}
         </DialogHeader>
 
         {!ready ? (
           <p className="text-[13px] text-text-secondary">
-            {L("Deling krever en nyere databaseversjon.", "Sharing requires a newer database version.")}
+            {t("app-share-film-share-dialog.film-share-dialog.p.c318b43bbde3")}
           </p>
         ) : !eligible.ok ? (
           <p role="alert" className="text-[13px] text-status-warning" data-testid="film-share-ineligible">
@@ -171,10 +169,7 @@ export function FilmShareDialog({
           </p>
         ) : recordId === null ? (
           <p role="alert" className="text-[13px] text-status-danger">
-            {L(
-              "Filmversjonen kunne ikke registreres i eksportloggen, så den kan ikke deles. Eksporter på nytt.",
-              "The film version could not be recorded in the export log, so it cannot be shared. Export again.",
-            )}
+            {t("app-share-film-share-dialog.film-share-dialog.p.9f7a07c8a5ea")}
           </p>
         ) : url && active ? (
           <div className="flex flex-col items-center gap-3" data-testid="film-share-ready">
@@ -198,7 +193,7 @@ export function FilmShareDialog({
                 }}
               >
                 <Copy />
-                {copied ? L("Kopiert", "Copied") : L("Kopier lenken", "Copy the link")}
+                {copied ? t("app-share-film-share-dialog.film-share-dialog.button.653a513dd967") : t("app-share-film-share-dialog.film-share-dialog.button.cfdd73806aa2")}
               </Button>
               {typeof navigator !== "undefined" && "share" in navigator ? (
                 <Button
@@ -208,18 +203,18 @@ export function FilmShareDialog({
                   onClick={() => void navigator.share({ title: source.title, url }).catch(() => undefined)}
                 >
                   <Share2 />
-                  {L("Del …", "Share …")}
+                  {t("app-share-film-share-dialog.film-share-dialog.button.c47960429bcd")}
                 </Button>
               ) : null}
               <Button size="sm" variant="ghost" data-testid="film-share-revoke" onClick={() => void revoke(active.id)}>
-                {L("Trekk tilbake", "Revoke")}
+                {t("app-share-film-share-dialog.film-share-dialog.button.83646cb35a17")}
               </Button>
             </div>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
-              {L("Lenken virker i", "The link works for")}
+              {t("app-share-film-share-dialog.film-share-dialog.label.4ec0a35ea370")}
               <select
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
                 value={days === null ? "none" : String(days)}
@@ -235,17 +230,17 @@ export function FilmShareDialog({
             </label>
             <p className="text-xs text-text-tertiary" data-testid="film-share-status" data-status={phase === "idle" ? "not_shared" : "uploading"}>
               {phase === "uploading"
-                ? L("Laster opp filmen …", "Uploading the film …")
+                ? t("app-share-film-share-dialog.film-share-dialog.p.8119b22f18b2")
                 : phase === "checking"
-                  ? L("Sjekker at filmen kan spilles …", "Checking that the film can be played …")
-                  : L("Ikke delt ennå. QR-koden vises når filmen er klar.", "Not shared yet. The QR code appears when the film is ready.")}
+                  ? t("app-share-film-share-dialog.film-share-dialog.p.518e7d63fe9d")
+                  : t("app-share-film-share-dialog.film-share-dialog.p.bd4238e22171")}
             </p>
             <Button
               onClick={() => void share()}
               disabled={phase !== "idle" || recordId === undefined}
               data-testid="film-share-create"
             >
-              {L("Lag delingslenke", "Create share link")}
+              {t("app-share-film-share-dialog.film-share-dialog.button.517bc0ddf2a2")}
             </Button>
           </div>
         )}

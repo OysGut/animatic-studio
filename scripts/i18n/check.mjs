@@ -33,7 +33,7 @@ function files(dir) {
   return out;
 }
 
-const OK_CALLS = new Set(["L", "localized", "tm", "t", "pair", "cn", "clsx", "cva", "twMerge"]);
+const OK_CALLS = new Set(["L", "localized", "tm", "t", "tk", "tKey", "tx", "i18nT", "tLocalized", "pair", "cn", "clsx", "cva", "twMerge"]);
 function insideOk(node) {
   for (let p = node.parent; p; p = p.parent) {
     if (ts.isCallExpression(p)) {

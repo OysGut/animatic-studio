@@ -8,6 +8,7 @@ import { EXPORT_KIND_LABEL, describeExportSettings, type ExportKind } from "@/co
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { L, locale, tm } from "@/core";
 import { HISTORY_SCHEMA, useExportRecords } from "./use-history-records";
+import { t } from "@/core/i18n/keyed";
 
 export function ExportHistory({
   productionId,
@@ -33,19 +34,19 @@ export function ExportHistory({
         ) : (
           <ChevronRight className="size-3.5" aria-hidden />
         )}
-        {L("Tidligere eksporter", "Earlier exports")}
+        {t("app-projects-export-history.export-history.button.7b7f29e97f13")}
       </button>
       {open ? (
         records.isLoading ? (
-          <p className="mt-1 text-text-tertiary">{L("Henter …", "Loading …")}</p>
+          <p className="mt-1 text-text-tertiary">{t("app-projects-export-history.export-history.p.013654029550")}</p>
         ) : records.isError ? (
           <p role="alert" className="mt-1 text-status-danger">
-            {L("Eksportene kunne ikke hentes:", "The exports could not be loaded:")}{" "}
+            {t("app-projects-export-history.export-history.p.5712e2679acd")}{" "}
             {tm((records.error as Error).message)}
           </p>
         ) : !records.data?.length ? (
           <p className="mt-1 text-text-tertiary">
-            {L("Ingen eksporter er registrert ennå.", "No exports have been recorded yet.")}
+            {t("app-projects-export-history.export-history.p.74fb6ed988a6")}
           </p>
         ) : (
           <ul className="mt-1 max-h-40 overflow-y-auto border border-border bg-surface-1">

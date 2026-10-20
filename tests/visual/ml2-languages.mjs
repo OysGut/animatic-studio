@@ -92,6 +92,39 @@ await h.scenario("ml2-reserve", clip.occurrence_id, "nb", async (page) => {
   h.check(r.missing.length === 1 && r.missing[0].fallback === "en", "manglende tekst rapporteres med reservespråk");
 });
 
+
+// ML2b: skall og konto er flyttet til nøkler. Samme tekst på nb og en, og ingen vannrett rulling på en-XA.
+const SHELL = [
+  { name: "prosjektliste", path: "/" },
+  { name: "konto", path: "/konto" },
+  { name: "prosjektside", path: h.P },
+  { name: "personvern", path: "/personvern" },
+  { name: "invitasjon", path: "/invitasjon" },
+];
+await h.scenario("ml2b-skall", clip.occurrence_id, "nb", async (page) => {
+  for (const tag of ["nb", "en", "en-XA"]) {
+    for (const s of SHELL) {
+      await page.evaluate((l) => localStorage.setItem("animatic:lang", l), tag);
+      await page.goto(h.base + s.path, { waitUntil: "networkidle" });
+      await page.waitForTimeout(900);
+      const r = await page.evaluate(() => ({
+        lang: document.documentElement.lang,
+        overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        text: document.body.innerText,
+        wide: [...document.querySelectorAll("body *")].filter((el) => el.getBoundingClientRect().right > document.documentElement.clientWidth + 1 && el.children.length === 0).slice(0, 5).map((el) => el.getAttribute("data-testid") || el.tagName.toLowerCase()),
+      }));
+      h.check(r.lang === tag, `${s.name} ${tag}: <html lang> stemmer`);
+      h.check(r.overflow <= 1, `${s.name} ${tag}: ingen vannrett rulling (${r.overflow} px${r.wide.length ? `: ${r.wide.join(", ")}` : ""})`);
+      h.check(!/Unknown translation key|Invalid parameters for key|Legacy expression/.test(r.text), `${s.name} ${tag}: ingen nøkkelfeil i teksten`);
+      if (tag === "en-XA") {
+        h.check(r.text.includes("[!! "), `${s.name} en-XA: pseudotekst vises`);
+        await page.screenshot({ path: `${h.out}/ml2b-${s.name}-en-XA.png` });
+      }
+      if (tag === "en") h.check(!/\b(Avbryt|Lagre|Logg ut|Min konto|Prosjekter)\b/.test(r.text), `${s.name} en: ingen norske skallord`);
+    }
+  }
+});
+
 // Første tegning: lagret engelsk skal aldri vise norsk først
 {
   const { chromium } = await import("playwright");

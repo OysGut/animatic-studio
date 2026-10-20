@@ -9,7 +9,6 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
@@ -17,6 +16,7 @@ import { LanguageRoot, LANGUAGE_BOOT_SCRIPT, useLanguage } from "@/app/i18n/lang
 import { L } from "@/core";
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
+import { t } from "@/core/i18n/keyed";
 
 function NotFoundComponent() {
   return (
@@ -24,17 +24,17 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">
-          {L("Fant ikke siden", "Page not found")}
+          {t("routes-root.not-found-component.h2.cc99159dc152")}
         </h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {L("Siden finnes ikke eller er flyttet.", "The page does not exist or has moved.")}
+          {t("routes-root.not-found-component.p.1e497abdd8f7")}
         </p>
         <div className="mt-6">
           <Link
             to="/"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            {L("Til forsiden", "Go to the front page")}
+            {t("routes-root.not-found-component.link.40ee8c9ed320")}
           </Link>
         </div>
       </div>
@@ -53,13 +53,10 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          {L("Siden kunne ikke vises", "The page could not be shown")}
+          {t("routes-root.error-component.h1.e30fba673653")}
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {L(
-            "Noe gikk galt. Prøv igjen, eller gå til forsiden.",
-            "Something went wrong. Try again, or go to the front page.",
-          )}
+          {t("routes-root.error-component.p.8ff66fea3622")}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
@@ -69,13 +66,13 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
             }}
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
-            {L("Prøv igjen", "Try again")}
+            {t("routes-root.error-component.button.96f923db4f99")}
           </button>
           <a
             href="/"
             className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
-            {L("Til forsiden", "Go to the front page")}
+            {t("routes-root.error-component.a.6fdb78437197")}
           </a>
         </div>
         <ErrorDetails error={error} />

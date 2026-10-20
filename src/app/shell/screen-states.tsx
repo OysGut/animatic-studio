@@ -7,6 +7,7 @@ import { AlertTriangle } from "lucide-react";
 import { L } from "@/core";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 /** Lite, tokenfarget filmruteillustrasjon for tomme tilstander (ingen bildefil, følger temaet). */
 export function EmptyIllustration({ className }: { className?: string }) {
@@ -111,7 +112,7 @@ export function ErrorState({
       </div>
       {onRetry ? (
         <Button size="sm" variant="secondary" onClick={onRetry}>
-          {L("Prøv igjen", "Try again")}
+          {t("app-shell-screen-states.error-state.button.9bfe1dbb8700")}
         </Button>
       ) : null}
     </div>

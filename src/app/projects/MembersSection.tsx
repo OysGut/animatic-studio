@@ -17,26 +17,11 @@ import {
 import type { MemberRow, ProfileRow } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
 import { L, localized, locale, tm } from "@/core";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const ROLE_LABEL: Record<string, string> = localized({
-  owner: ["Eier", "Owner"],
-  editor: ["Redaktør", "Editor"],
-  commenter: ["Kommentator", "Commenter"],
-  viewer: ["Leser", "Viewer"],
-});
+const ROLE_LABEL: Record<string, string> = tLocalized({ owner: "app-projects-members-section.role-label.owner.2479f0cad1e9", editor: "app-projects-members-section.role-label.editor.66d469833732", commenter: "app-projects-members-section.role-label.commenter.0492a29e0284", viewer: "app-projects-members-section.role-label.viewer.27370640f10c" });
 
-const ROLE_HELP: Record<string, string> = localized({
-  owner: [
-    "Alt, også invitere, endre roller, godkjenne kostnader og slette prosjektet",
-    "Everything, including inviting, changing roles, approving costs and deleting the project",
-  ],
-  editor: [
-    "Kan endre manus, scener, bibliotek og film",
-    "Can change script, scenes, library and film",
-  ],
-  commenter: ["Kan lese og skrive notater", "Can read and write notes"],
-  viewer: ["Kan bare lese", "Can only read"],
-});
+const ROLE_HELP: Record<string, string> = tLocalized({ owner: "app-projects-members-section.role-help.owner.a6db4c95085c", editor: "app-projects-members-section.role-help.editor.2f21316a51f7", commenter: "app-projects-members-section.role-help.commenter.fe93f990649d", viewer: "app-projects-members-section.role-help.viewer.cace12ddc020" });
 
 const select =
   "h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary disabled:opacity-60";
@@ -62,19 +47,13 @@ function useInvitations(projectId: string, enabled: boolean) {
 function message(e: unknown): string {
   const m = e instanceof Error ? e.message : String(e);
   if (/function .*remove_member|could not find the function .*remove_member/i.test(m))
-    return L(
-      "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio.",
-      "The database cannot remove members yet. Contact the administrator to update Animatic Studio.",
-    );
+    return t("app-projects-members-section.message.message.f5b9e1478f2b");
   if (
     /function .*(set_member_role|set_invitation_role|revoke_invitation)|could not find the function/i.test(
       m,
     )
   )
-    return L(
-      "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio.",
-      "The database cannot change roles yet. Contact the administrator to update Animatic Studio.",
-    );
+    return t("app-projects-members-section.message.message.9bf4e1d2979e");
   return tm(m);
 }
 
@@ -133,7 +112,7 @@ export function MembersSection({
   const busy = setRole.isPending || remove.isPending;
   return (
     <>
-      <ul className="border border-border bg-surface-1" aria-label={L("Medlemmer", "Members")}>
+      <ul className="border border-border bg-surface-1" aria-label={t("app-projects-members-section.members-section.aria-label.9fbc1b4b4753")}>
         {members.map((m) => {
           const self = m.user_id === userId;
           // Eneste eier kan ikke miste eierrollen (databasen stopper det også)
@@ -148,43 +127,37 @@ export function MembersSection({
                   <span className="font-mono text-xs">{m.user_id.slice(0, 8)}</span>
                 )}
                 {self ? (
-                  <span className="ml-2 text-text-tertiary">{L("(deg)", "(you)")}</span>
+                  <span className="ml-2 text-text-tertiary">{t("app-projects-members-section.members-section.span.f5709f3b14c5")}</span>
                 ) : null}
               </span>
               {isOwner && confirmRemove === m.user_id ? (
                 <span
                   role="alertdialog"
-                  aria-label={L(`Fjerne ${name(m.user_id)}?`, `Remove ${name(m.user_id)}?`)}
+                  aria-label={t("app-projects-members-section.members-section.aria-label.3d6366f03169", { value1: String(name(m.user_id)) })}
                   className="flex items-center gap-2 text-xs text-text-secondary"
                 >
-                  {L(
-                    `Fjerne ${name(m.user_id)} fra prosjektet? Det hen har laget, blir værende.`,
-                    `Remove ${name(m.user_id)} from the project? Anything they have made will stay.`,
-                  )}
+                  {t("app-projects-members-section.members-section.span.e12b865c8de1", { value1: String(name(m.user_id)) })}
                   <Button
                     size="sm"
                     variant="destructive"
                     disabled={busy}
                     onClick={() => remove.mutate(m.user_id)}
                   >
-                    {L("Fjern", "Remove")}
+                    {t("app-projects-members-section.members-section.button.de3a176abf52")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setConfirmRemove(null)}>
-                    {L("Avbryt", "Cancel")}
+                    {t("app-projects-members-section.members-section.button.bee2a90b889c")}
                   </Button>
                 </span>
               ) : isOwner ? (
                 <span className="flex items-center gap-2">
                   <select
-                    aria-label={L(`Rolle for ${name(m.user_id)}`, `Role for ${name(m.user_id)}`)}
+                    aria-label={t("app-projects-members-section.members-section.aria-label.94397bf095ab", { value1: String(name(m.user_id)) })}
                     value={m.role}
                     disabled={busy}
                     title={
                       lastOwner
-                        ? L(
-                            "Prosjektet må ha minst én eier. Gjør en annen til eier først.",
-                            "The project must have at least one owner. Make someone else the owner first.",
-                          )
+                        ? t("app-projects-members-section.members-section.title.7b5d7c392cc1")
                         : ROLE_HELP[m.role]
                     }
                     onChange={(e) => {
@@ -193,10 +166,7 @@ export function MembersSection({
                         self &&
                         m.role === "owner" &&
                         !window.confirm(
-                          L(
-                            `Vil du gjøre deg selv til ${ROLE_LABEL[role]?.toLowerCase()}? Da kan du ikke lenger endre roller.`,
-                            `Do you want to make yourself ${ROLE_LABEL[role]?.toLowerCase()}? Then you can no longer change roles.`,
-                          ),
+                          t("app-projects-members-section.members-section.window-confirm.f37dca41d803", { value1: String(ROLE_LABEL[role]?.toLowerCase()) }),
                         )
                       )
                         return;
@@ -216,14 +186,8 @@ export function MembersSection({
                       variant="ghost"
                       disabled={busy}
                       onClick={() => setConfirmRemove(m.user_id)}
-                      aria-label={L(
-                        `Fjern ${name(m.user_id)} fra prosjektet`,
-                        `Remove ${name(m.user_id)} from the project`,
-                      )}
-                      title={L(
-                        "Fjern fra prosjektet (det personen har laget, blir værende)",
-                        "Remove from the project (anything they have made will stay)",
-                      )}
+                      aria-label={t("app-projects-members-section.members-section.aria-label.9d23f8499914", { value1: String(name(m.user_id)) })}
+                      title={t("app-projects-members-section.members-section.title.7798df79b6a6")}
                     >
                       <UserMinus />
                     </Button>
@@ -241,11 +205,11 @@ export function MembersSection({
       {isOwner && (invitations.data?.length ?? 0) > 0 ? (
         <div className="mt-4">
           <h3 className="mb-1 text-xs font-medium text-text-secondary">
-            {L("Invitert, ikke tatt imot ennå", "Invited, not yet accepted")}
+            {t("app-projects-members-section.members-section.h3.edd1ca021fa3")}
           </h3>
           <ul
             className="border border-border bg-surface-1"
-            aria-label={L("Ventende invitasjoner", "Pending invitations")}
+            aria-label={t("app-projects-members-section.members-section.aria-label.358a0ca3a361")}
           >
             {invitations.data!.map((inv) => (
               <li
@@ -255,36 +219,30 @@ export function MembersSection({
                 <span className="min-w-0 truncate text-text-secondary">
                   {inv.email}
                   <span className="ml-2 text-xs text-text-tertiary">
-                    {L("gjelder til", "valid until")}{" "}
+                    {t("app-projects-members-section.members-section.span.19f6997c4992")}{" "}
                     {new Date(inv.expires_at).toLocaleDateString(locale())}
                   </span>
                 </span>
                 <span className="flex items-center gap-2">
                   <select
-                    aria-label={L(
-                      `Rolle i invitasjonen til ${inv.email}`,
-                      `Role in the invitation to ${inv.email}`,
-                    )}
+                    aria-label={t("app-projects-members-section.members-section.aria-label.913be2b69e25", { email: String(inv.email) })}
                     value={inv.role}
                     disabled={setInvitationRole.isPending}
                     onChange={(e) => setInvitationRole.mutate({ id: inv.id, role: e.target.value })}
                     className={select}
                   >
-                    <option value="editor">{L("Redaktør", "Editor")}</option>
-                    <option value="commenter">{L("Kommentator", "Commenter")}</option>
-                    <option value="viewer">{L("Leser", "Viewer")}</option>
+                    <option value="editor">{t("app-projects-members-section.members-section.option.32bc26b65c5f")}</option>
+                    <option value="commenter">{t("app-projects-members-section.members-section.option.2a2faad8fa5d")}</option>
+                    <option value="viewer">{t("app-projects-members-section.members-section.option.b7d2fc552a29")}</option>
                   </select>
                   <Button
                     size="sm"
                     variant="ghost"
                     disabled={revoke.isPending}
                     onClick={() => revoke.mutate(inv.id)}
-                    aria-label={L(
-                      `Trekk tilbake invitasjonen til ${inv.email}`,
-                      `Withdraw the invitation to ${inv.email}`,
-                    )}
+                    aria-label={t("app-projects-members-section.members-section.aria-label.19fbf4bf8df9", { email: String(inv.email) })}
                   >
-                    {L("Trekk tilbake", "Withdraw")}
+                    {t("app-projects-members-section.members-section.button.dbe888c1ec1d")}
                   </Button>
                 </span>
               </li>

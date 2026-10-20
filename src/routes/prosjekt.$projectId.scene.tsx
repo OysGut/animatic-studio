@@ -3,14 +3,15 @@ import { useSession } from "@/app/auth/use-session";
 import { L } from "@/core";
 import { SceneEditorWorkspace } from "@/app/scene-editor/SceneEditorWorkspace";
 import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 /** ?scene=<forekomst-ID> åpner sceneeditoren med scenen valgt. */
 export const Route = createFileRoute("/prosjekt/$projectId/scene")({
   head: () => ({ meta: [
-    { title: L("Sceneeditor – Animatic Studio", "Scene editor – Animatic Studio") },
-    { name: "description", content: L("Rediger scenekomposisjoner og animatic i Animatic Studio.", "Edit scene compositions and animatic in Animatic Studio.") },
-    { property: "og:title", content: L("Sceneeditor – Animatic Studio", "Scene editor – Animatic Studio") }, // i18n-ignore: metakode
-    { property: "og:description", content: L("Rediger scenekomposisjoner og animatic i Animatic Studio.", "Edit scene compositions and animatic in Animatic Studio.") }, // i18n-ignore: metakode
+    { title: t("routes-prosjekt-project-id-scene.title.title.e56d614cb23c") },
+    { name: "description", content: t("routes-prosjekt-project-id-scene.content.content.65f619722830") },
+    { property: "og:title", content: t("routes-prosjekt-project-id-scene.content.content.867bd9fdb846") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("routes-prosjekt-project-id-scene.content.content.65f619722830.2") }, // i18n-ignore: metakode
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),

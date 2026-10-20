@@ -22,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export interface ProjectTarget {
   readonly id: string;
@@ -53,9 +54,9 @@ function ConfirmName({
   return (
     <label className="flex flex-col gap-1 text-xs text-text-secondary">
       <span>
-        {L("Skriv prosjektnavnet", "Type the project name")}{" "}
+        {t("app-projects-project-danger-dialogs.confirm-name.span.f99fe2efcec7")}{" "}
         <span className="font-medium text-text-primary">{name}</span>{" "}
-        {L("for å bekrefte", "to confirm")}
+        {t("app-projects-project-danger-dialogs.confirm-name.span.19ecec4b39d2")}
       </span>
       <input
         value={value}
@@ -63,7 +64,7 @@ function ConfirmName({
         disabled={disabled}
         autoComplete="off"
         spellCheck={false}
-        aria-label={L("Prosjektnavnet", "Project name")}
+        aria-label={t("app-projects-project-danger-dialogs.confirm-name.aria-label.3687c351c49b")}
         className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
       />
     </label>
@@ -101,20 +102,14 @@ export function DeleteProjectDialog({
         return;
       }
       onDone(
-        L(
-          `«${target.name}» er slettet. Ressursene ligger under «Ressurser fra slettede prosjekter».`,
-          `“${target.name}” has been deleted. The assets are under “Assets from deleted projects”.`,
-        ) +
+        t("app-projects-project-danger-dialogs.run.on-done.f4a0c5bc7b5d", { name: String(target.name) }) +
           (r.leftoverFiles > 0
-            ? L(
-                ` ${r.leftoverFiles} filer i lagringen kunne ikke slettes og blir liggende (de kan ikke nås fra appen).`,
-                ` ${r.leftoverFiles} files in storage could not be deleted and will remain (they cannot be reached from the app).`,
-              )
+            ? t("app-projects-project-danger-dialogs.run.on-done.cc136c86bed6", { leftoverFiles: String(r.leftoverFiles) })
             : ""),
       );
     } catch (e) {
       setError(
-        (e as Error).message || L("Prosjektet ble ikke slettet.", "The project was not deleted."),
+        (e as Error).message || t("app-projects-project-danger-dialogs.run.set-error.76738f486184"),
       );
     } finally {
       setBusy(false);
@@ -127,69 +122,51 @@ export function DeleteProjectDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
             <Trash2 className="size-5" aria-hidden />{" "}
-            {L(`Slett prosjektet «${target.name}»`, `Delete the project “${target.name}”`)}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.dialog-title.d97ebb6c50a4", { name: String(target.name) })}
           </DialogTitle>
           <DialogDescription>
-            {L("Dette kan ikke angres.", "This cannot be undone.")}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.dialog-description.4ebf95c78942")}
           </DialogDescription>
         </DialogHeader>
         <Warning>
-          <p className="font-medium">{L("Dette slettes for godt:", "This is deleted for good:")}</p>
+          <p className="font-medium">{t("app-projects-project-danger-dialogs.delete-project-dialog.p.0b524d907477")}</p>
           <ul className="list-disc pl-4 text-text-secondary">
             <li>
-              {L(
-                "manuset med alle versjoner, scener, notater og historikk",
-                "the script with all versions, scenes, notes and history",
-              )}
+              {t("app-projects-project-danger-dialogs.delete-project-dialog.li.99180ed7b9ba")}
             </li>
-            <li>{L("importerte manusfiler", "imported script files")}</li>
+            <li>{t("app-projects-project-danger-dialogs.delete-project-dialog.li.20b3e6b53bed")}</li>
             <li>
-              {L(
-                "2D-scener, kamera og lydklipp i scenene",
-                "2D scenes, camera and audio clips in the scenes",
-              )}
+              {t("app-projects-project-danger-dialogs.delete-project-dialog.li.50b0831075d2")}
             </li>
-            <li>{L("importert ferdig film", "imported finished film")}</li>
+            <li>{t("app-projects-project-danger-dialogs.delete-project-dialog.li.c66db6354cf7")}</li>
           </ul>
           {target.others > 0 ? (
             <p>
               {target.others === 1
-                ? L(
-                    "Én annen person mister tilgangen til prosjektet med én gang.",
-                    "One other person loses access to the project immediately.",
-                  )
-                : L(
-                    `${target.others} andre personer mister tilgangen til prosjektet med én gang.`,
-                    `${target.others} other people lose access to the project immediately.`,
-                  )}
+                ? t("app-projects-project-danger-dialogs.delete-project-dialog.p.173ae6d556fd")
+                : t("app-projects-project-danger-dialogs.delete-project-dialog.p.b791022ae6a5", { others: String(target.others) })}
             </p>
           ) : null}
           <p className="text-text-secondary">
-            {L("Ressursene (bilder og lyd) slettes", "The assets (images and sound) are")}{" "}
-            <span className="font-medium text-text-primary">{L("ikke", "not")}</span>{" "}
-            {L(
-              "nå. De blir liggende hos deg under «Ressurser fra slettede prosjekter», der du kan laste dem ned eller slette dem for godt senere.",
-              "deleted now. They stay with you under “Assets from deleted projects”, where you can download them or delete them for good later.",
-            )}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.p.5b476a29a137")}{" "}
+            <span className="font-medium text-text-primary">{t("app-projects-project-danger-dialogs.delete-project-dialog.span.2c20765e33e3")}</span>{" "}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.p.5a7689500b01")}
           </p>
         </Warning>
         <div className="rounded-sm border border-border bg-surface-1 p-3">
           <p className="mb-2 text-xs text-text-secondary">
-            {L(
-              "Vil du ta vare på noe først? Last ned ressursene og den importerte filmen som zip:",
-              "Want to keep anything first? Download the assets and the imported film as a zip:",
-            )}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.p.826310fe94d3")}
           </p>
           {zipState.data ? (
             <AssetZipPanel state={zipState.data} projectName={target.name} compact />
           ) : zipState.isError ? (
             <p className="text-xs text-status-danger">
-              {L("Ressursene kunne ikke hentes.", "The assets could not be loaded.")}
+              {t("app-projects-project-danger-dialogs.delete-project-dialog.p.83b62c631193")}
             </p>
           ) : (
             <p className="flex items-center gap-2 text-xs text-text-tertiary">
               <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
-              {L("Henter ressursene …", "Loading the assets …")}
+              {t("app-projects-project-danger-dialogs.delete-project-dialog.p.9fb9da1fd4b8")}
             </p>
           )}
         </div>
@@ -201,11 +178,11 @@ export function DeleteProjectDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.button.e5b658a16060")}
           </Button>
           <Button variant="destructive" disabled={!ok || busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <Trash2 />}
-            {L("Slett prosjektet for godt", "Delete the project for good")}
+            {t("app-projects-project-danger-dialogs.delete-project-dialog.button.bc0a7e281b1b")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -236,15 +213,12 @@ export function LeaveProjectDialog({
     if (e) {
       setError(
         /function .* does not exist|schema cache/i.test(e.message)
-          ? L(
-              "Databasen er ikke oppdatert ennå (migrasjon 0011).",
-              "The database is not updated yet (migration 0011).",
-            )
+          ? t("app-projects-project-danger-dialogs.run.set-error.4e0cdb68fb60")
           : e.message,
       );
       return;
     }
-    onDone(L(`Du har forlatt «${target.name}».`, `You have left “${target.name}”.`));
+    onDone(t("app-projects-project-danger-dialogs.run.on-done.b0b8212fc926", { name: String(target.name) }));
   }
 
   return (
@@ -253,24 +227,18 @@ export function LeaveProjectDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <LogOut className="size-5 text-status-danger" aria-hidden />{" "}
-            {L(`Forlat «${target.name}»`, `Leave “${target.name}”`)}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.dialog-title.f22dbe568576", { name: String(target.name) })}
           </DialogTitle>
           <DialogDescription>
-            {L("Dette kan ikke angres.", "This cannot be undone.")}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.dialog-description.63a27e749aee")}
           </DialogDescription>
         </DialogHeader>
         <Warning>
           <p>
-            {L(
-              "Du mister tilgangen til prosjektet med én gang. Du kan ikke få den tilbake selv – en eier må invitere deg på nytt.",
-              "You lose access to the project immediately. You cannot get it back yourself – an owner must invite you again.",
-            )}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.p.56afd0369427")}
           </p>
           <p className="text-text-secondary">
-            {L(
-              "Prosjektet og det du har laget i det, blir værende.",
-              "The project and what you have made in it will remain.",
-            )}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.p.4c1a45a9fdcc")}
           </p>
         </Warning>
         {error ? (
@@ -280,11 +248,11 @@ export function LeaveProjectDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.button.837d45676258")}
           </Button>
           <Button variant="destructive" disabled={busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <LogOut />}
-            {L("Forlat prosjektet", "Leave the project")}
+            {t("app-projects-project-danger-dialogs.leave-project-dialog.button.f6f664cc605f")}
           </Button>
         </DialogFooter>
       </DialogContent>
@@ -322,14 +290,11 @@ export function PurgeAssetsDialog({
         return;
       }
       onDone(
-        L(
-          `Ressursene fra «${target.name}» er slettet for godt.`,
-          `The assets from “${target.name}” have been deleted for good.`,
-        ),
+        t("app-projects-project-danger-dialogs.run.on-done.100e1e3fb25a", { name: String(target.name) }),
       );
     } catch (e) {
       setError(
-        (e as Error).message || L("Ressursene ble ikke slettet.", "The assets were not deleted."),
+        (e as Error).message || t("app-projects-project-danger-dialogs.run.set-error.c4fa650c29f1"),
       );
     } finally {
       setBusy(false);
@@ -342,24 +307,18 @@ export function PurgeAssetsDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-status-danger">
             <Trash2 className="size-5" aria-hidden />{" "}
-            {L(`Slett ressursene fra «${target.name}»`, `Delete the assets from “${target.name}”`)}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.dialog-title.c0b866755c65", { name: String(target.name) })}
           </DialogTitle>
           <DialogDescription>
-            {L("Dette kan ikke angres.", "This cannot be undone.")}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.dialog-description.0c492303fda6")}
           </DialogDescription>
         </DialogHeader>
         <Warning>
           <p>
-            {L(
-              "Alle bilder og lydfiler fra prosjektet slettes for godt, med alle versjoner og loggen over AI-genereringer. Prosjektet forsvinner helt fra lista.",
-              "All images and sound files from the project are deleted for good, with all versions and the log of AI generations. The project disappears from the list entirely.",
-            )}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.p.48090bc28a0e")}
           </p>
           <p className="text-text-secondary">
-            {L(
-              "Last dem ned som zip først hvis du vil ta vare på dem.",
-              "Download them as a zip first if you want to keep them.",
-            )}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.p.33bb677fe3d1")}
           </p>
         </Warning>
         <ConfirmName name={target.name} value={typed} onChange={setTyped} disabled={busy} />
@@ -370,11 +329,11 @@ export function PurgeAssetsDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.button.a7c4bf25a6cb")}
           </Button>
           <Button variant="destructive" disabled={!ok || busy} onClick={() => void run()}>
             {busy ? <Loader2 className="animate-spin" /> : <Trash2 />}
-            {L("Slett ressursene for godt", "Delete the assets for good")}
+            {t("app-projects-project-danger-dialogs.purge-assets-dialog.button.e4e5e0f6d476")}
           </Button>
         </DialogFooter>
       </DialogContent>

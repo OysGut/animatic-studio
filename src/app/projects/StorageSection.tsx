@@ -5,6 +5,7 @@ import { HardDrive } from "lucide-react";
 import { useMemo } from "react";
 import { L, locale, storageOverview, type ProjectState } from "@/core";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
+import { t as tk } from "@/core/i18n/keyed";
 
 const size = (b: number | null) =>
   b === null
@@ -29,21 +30,18 @@ export function StorageSection({ state, projectId }: { state: ProjectState; proj
         <summary className="flex cursor-pointer items-center gap-2">
           <HardDrive className="size-4 text-text-tertiary" aria-hidden />
           <h2 id="storage-title" className="text-base font-semibold text-text-primary">
-            {L("Lagring", "Storage")}
+            {tk("app-projects-storage-section.storage-section.h2.4f2dc5a77b3d")}
           </h2>
           <span className="text-xs text-text-tertiary">
-            {L(
-              `${size(rows.reduce((t, r) => t + (r.bytes ?? 0), 0))} i filer`,
-              `${size(rows.reduce((t, r) => t + (r.bytes ?? 0), 0))} in files`,
-            )}
+            {tk("app-projects-storage-section.storage-section.span.b391184b0642", { value1: String(size(rows.reduce((t, r) => t + (r.bytes ?? 0), 0))) })}
           </span>
         </summary>
         <table className="mt-2 w-full border border-border bg-surface-1 text-[13px]">
           <thead>
             <tr className="border-b border-border text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
-              <th className="px-3 py-1.5 font-medium">{L("Kategori", "Category")}</th>
-              <th className="px-3 py-1.5 text-right font-medium">{L("Antall", "Count")}</th>
-              <th className="px-3 py-1.5 text-right font-medium">{L("Størrelse", "Size")}</th>
+              <th className="px-3 py-1.5 font-medium">{tk("app-projects-storage-section.storage-section.th.0222f92bd332")}</th>
+              <th className="px-3 py-1.5 text-right font-medium">{tk("app-projects-storage-section.storage-section.th.66729218f53f")}</th>
+              <th className="px-3 py-1.5 text-right font-medium">{tk("app-projects-storage-section.storage-section.th.acfad4c6d8e2")}</th>
             </tr>
           </thead>
           <tbody>

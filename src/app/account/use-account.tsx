@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { t } from "@/core/i18n/keyed";
 
 export const MY_ACCOUNT_KEY = ["my-account"] as const;
 export const PRIVACY_KEY = ["privacy-policy"] as const;
@@ -124,17 +125,11 @@ export function AccountWatcher() {
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="px-5 pt-5">
-          <DialogTitle>{L("Les personvernerklæringen", "Read the privacy statement")}</DialogTitle>
+          <DialogTitle>{t("app-account-use-account.account-watcher.dialog-title.249ff62113f5")}</DialogTitle>
           <DialogDescription>
             {(a.acceptedVersion ?? 0) > 0
-              ? L(
-                  "Personvernerklæringen er endret. Les den før du fortsetter.",
-                  "The privacy statement has changed. Read it before you continue.",
-                )
-              : L(
-                  "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
-                  "Before you use Animatic Studio, read how we process your information.",
-                )}
+              ? t("app-account-use-account.account-watcher.dialog-description.af08127f81e4")
+              : t("app-account-use-account.account-watcher.dialog-description.4e07b85b3227")}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[55vh] overflow-y-auto border-y border-border px-5 py-4">
@@ -149,19 +144,19 @@ export function AccountWatcher() {
               className="size-4 accent-[var(--accent-brand)]"
               data-testid="privacy-read"
             />
-            {L("Jeg har lest personvernerklæringen", "I have read the privacy statement")}
+            {t("app-account-use-account.account-watcher.label.1341c2d6b674")}
           </label>
           {error ? <p className="text-xs text-status-danger">{error}</p> : null}
           <div className="flex justify-between gap-2">
             <Button variant="ghost" onClick={() => void signOut()}>
-              {L("Logg ut", "Sign out")}
+              {t("app-account-use-account.account-watcher.button.87149e26bf0b")}
             </Button>
             <Button
               disabled={!readIt || busy}
               onClick={() => void accept()}
               data-testid="privacy-accept-button"
             >
-              {L("Fortsett", "Continue")}
+              {t("app-account-use-account.account-watcher.button.4f70a8b92cf4")}
             </Button>
           </div>
         </DialogFooter>
@@ -180,7 +175,7 @@ export function PrivacyLink({ className }: { className?: string }) {
         "text-xs text-text-tertiary underline-offset-2 hover:text-text-secondary hover:underline"
       }
     >
-      {L("Personvern", "Privacy")}
+      {t("app-account-use-account.privacy-link.link.ac42faff7b54")}
     </Link>
   );
 }

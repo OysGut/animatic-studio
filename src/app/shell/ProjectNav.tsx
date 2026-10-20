@@ -13,20 +13,13 @@ import {
 import type { ReactNode } from "react";
 import { L, localized } from "@/core";
 import { useStoredFlag } from "./pane-size";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 /** Arbeidsflatene (INFORMATION_ARCHITECTURE.md). Flatene som ikke er bygget ennå vises deaktivert med milepæl. */
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
 
 /** Navn på arbeidsflatene (slås opp i render, så de følger språkvalget). */
-const NAV_LABEL = localized({
-  overview: ["Prosjektoversikt", "Project overview"],
-  script: ["Manus", "Script"],
-  storylab: ["Story Lab", "Story Lab"],
-  library: ["Ressursbibliotek", "Asset library"],
-  scene: ["Sceneeditor", "Scene editor"],
-  assembly: ["Montering", "Assembly"],
-  release: ["Utgivelse", "Release"],
-});
+const NAV_LABEL = tLocalized({ overview: "app-shell-project-nav.nav-label.overview.89940b851876", script: "app-shell-project-nav.nav-label.script.d8ab2fbdbb74", storylab: "app-shell-project-nav.nav-label.storylab.77e0aa3bb71c", library: "app-shell-project-nav.nav-label.library.04e76b60e919", scene: "app-shell-project-nav.nav-label.scene.e526371b5224", assembly: "app-shell-project-nav.nav-label.assembly.00bfb8ce638c", release: "app-shell-project-nav.nav-label.release.4e44a938bd23" });
 
 const LINKS = [
   {
@@ -111,10 +104,10 @@ export function ProjectNav({ projectId }: { projectId: string }) {
           aria-disabled
           aria-label={
             collapsed
-              ? L(`${w.label} – kommer i ${w.milestone}`, `${w.label} – coming in ${w.milestone}`)
+              ? t("app-shell-project-nav.project-nav.aria-label.401e138c59d2", { label: String(w.label), milestone: String(w.milestone) })
               : undefined
           }
-          title={L(`${w.label} – kommer i ${w.milestone}`, `${w.label} – coming in ${w.milestone}`)}
+          title={t("app-shell-project-nav.project-nav.title.401e138c59d2", { label: String(w.label), milestone: String(w.milestone) })}
           className={
             "flex h-9 shrink-0 cursor-not-allowed items-center gap-2 whitespace-nowrap px-3 text-[13px] text-text-disabled [&_svg]:size-4 [&_svg]:shrink-0" +
             (collapsed ? " px-2.5" : "")
@@ -133,12 +126,12 @@ export function ProjectNav({ projectId }: { projectId: string }) {
         type="button"
         onClick={() => setCollapsed(!collapsed)}
         className={item + " ml-auto px-2.5"}
-        aria-label={collapsed ? L("Vis menyen", "Show menu") : L("Skjul menyen", "Hide menu")}
+        aria-label={collapsed ? t("app-shell-project-nav.project-nav.aria-label.426f16733981") : t("app-shell-project-nav.project-nav.aria-label.8e84932634d1")}
         aria-expanded={!collapsed}
         title={
           collapsed
-            ? L("Vis menyen", "Show menu")
-            : L("Skjul menyen (bare ikoner)", "Hide menu (icons only)")
+            ? t("app-shell-project-nav.project-nav.title.426f16733981")
+            : t("app-shell-project-nav.project-nav.title.ec28e1bce3aa")
         }
       >
         {collapsed ? <PanelLeftOpen aria-hidden /> : <PanelLeftClose aria-hidden />}
