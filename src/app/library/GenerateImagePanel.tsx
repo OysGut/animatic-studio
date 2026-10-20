@@ -290,7 +290,23 @@ export function GenerateImagePanel({
   const usage = budget
     ? aiUsage(budget, jobs.data?.jobs ?? [], new Date(), jobs.data?.monthCount ?? undefined)
     : null;
-  const overBudget = usage !== null && usage.remaining === 0;
+  // Profilens budsjettgrense (M8, REQ-0858): gjelder i tillegg til prosjektets ramme
+  const profileLeft = profileBudgetRemaining(profile, usage?.used ?? 0);
+  const overBudget = (usage !== null && usage.remaining === 0) || profileLeft === 0;
+  // Profilens valg fylles inn når den velges (brukerens egne valg overstyres ikke etterpå)
+  const appliedProfile = useRef<string | null>(null);
+  useEffect(() => {
+    if (!profile || appliedProfile.current === profile.id) return;
+    appliedProfile.current = profile.id;
+    const m = profile.spec.models?.image;
+    if (m) {
+      const hit = options.find((o) => o.models.some((mm) => mm.id === m));
+      if (hit) setPick(`${hit.provider.id}|${m}`);
+    }
+    if (profile.spec.resolution) setSizePick(profile.spec.resolution);
+    if (profile.spec.variants) setCandidates(Math.max(1, Math.min(4, profile.spec.variants)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [profile]);
   // Følg den automatiske beskrivelsen til brukeren har endret den selv
   useEffect(() => {
     if (!edited && followAuto.current) setPrompt(auto);
