@@ -1,5 +1,12 @@
 # Veikart
 
+## B-049 ML1 (20.10.2026)
+- [x] Fullt AST-inventar, stabile nøkler, tapsfrie nb/en-filer og konfliktliste.
+- [x] Språkmanifest, validerte reserver, t/parametere/plural og automatisk en-XA; eksisterende bro uendret.
+- [x] Utvidet sjekk, 13 ML1-tester, null-tap, full vitest 1926/0 og DB 140/0; U5/T2/DV3/paneler grønne.
+- [ ] Verifisering4 helt grønn: venter på kontroll i Claudes miljø (Courier Prime 6,439 em her; 57/58 med portabel falsk mikrofon).
+- [x] Kravregister 0875–0878, build_docs/check_kb og ML1_REPORT; ingen migrasjon.
+
 ## Kontekstkoblinger og B-049-plan (20.10.2026)
 - [x] Synlig mål med miniatyr og målbytte; AI aldri forhåndsvalgt; prosent og grupperte gjentakelser.
 - [x] Tester: 1913 bestått, 10 eksisterende hoppet over; m6-rest 72/72 på norsk/engelsk; språksjekk 0 feil.

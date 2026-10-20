@@ -1,5 +1,10 @@
 # Handover – Animatic Studio
 
+## B-049 ML1 – 20.10.2026
+- Godkjent ML1 → ML2 → ML3 → ML4; bare ML1 kode levert. Inventar/mapping/kataloger, t og validering, en-XA, frozen baseline; gammel bro uendret. Ingen migrasjon.
+- Rapport: docs/development/ML1_REPORT.md. 9963 par, 266 konflikter beholdt; 13 nye tester, full Vitest 1926/0, lokal DB 140/0, U5 65/T2 69/DV3 48/paneler 39; build_docs/check_kb OK (878 krav).
+- Ikke fullt akseptert: verifisering4 fontmåling 6,439 em her, 57/58 med tilgjengelig Chromium/falsk mikrofon. Kontroller uendret suite hos Claude før ML2. ML2 skal bevare utkast/arbeid ved språkbytte; tredjespråk avgjøres senere av Mars.
+
 ## C / B-050 – 20.10.2026, retterunde: klar for Cloud-gjennomgang
 - 0064_translation_line_links.sql skrevet, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet (create_project, create_dialogue_batch, guard_quality_profile_job, purge_removed_assets urørt). Skjemaversjon 64.
 - Nye tabeller: `translation_line_links` og `translation_lines` (engelske/oversatte linjer uten regelpar, per scenevariant og språk). Medlems-SELECT, ingen klientskriving, service_role ALL, RLS.

@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **874**
-- Prioritet: P0: 147, P1: 539, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 347, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 150, Under arbeid: 13, Ikke startet: 46
+- Antall krav: **878**
+- Prioritet: P0: 147, P1: 543, P2: 149, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 351, teknisk-anbefaling: 7
+- Status: Verifisert: 665, Implementert – ikke verifisert: 154, Under arbeid: 13, Ikke startet: 46
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -12156,3 +12156,59 @@ Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kont
   - tests/visual/p8-style-harmonize.mjs
 - **Implementering:** src/core/generation/providers.ts, src/adapters/ai/image-run.server.ts, src/adapters/storage/harmonize-batch.functions.ts, src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx
 - **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0875 – ML1: tapsfritt AST-inventar og stabile tekstnøkler
+Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** scripts/i18n/inventory.mjs, scripts/i18n/mapping.v1.json, scripts/i18n/references.v1.json, scripts/i18n/candidates.v1.json
+
+#### REQ-0876 – ML1: N-språkkatalog og nøkkelbasert oversettelse
+Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** src/core/i18n/messages.ts, src/core/i18n/keyed.ts, src/core/i18n/manifest.json
+
+#### REQ-0877 – ML1: komplette tekstfiler, kompatibel bro og pseudospråk
+Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** src/core/i18n/locales/nb.json, src/core/i18n/locales/en.json, src/core/i18n/locales/en-XA.json
+
+#### REQ-0878 – ML1: streng språk- og katalogkontroll
+i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** scripts/i18n/check.mjs, scripts/i18n/validate.mjs
