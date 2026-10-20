@@ -97,7 +97,8 @@ export async function undoDialogueBatch(db: AnyClient, projectId: string, batchI
   for (const item of (items ?? []) as { id: string; command_id: string }[]) {
     const { data: log } = await db.from("change_log").select("inverse").eq("id", item.command_id).eq("project_id", projectId).maybeSingle();
     const inverse = (log as { inverse?: Command } | null)?.inverse;
-    if (!inverse) { await db.from("dialogue_batch_items").update({ status: "undone" }).eq("id", item.id).eq("status", "done"); continue; }
+    // Uten lagret invers kan ikke resultatet angres trygt; elementet merkes ikke som angret.
+    if (!inverse) throw new Error(L(`Angringen stoppet etter ${undone} replikker: endringen finnes ikke i historikken.`, `Undo stopped after ${undone} lines: the change is missing from the history.`));
     const state = await loadProjectState(db, projectId);
     const applied = applyCommand(state, { id: newId<"command">(), actor: actor as never, at: new Date().toISOString(), command: inverse });
     if (!applied.ok) throw new Error(L(`Angringen stoppet etter ${undone} replikker: ${applied.error.message}`, `Undo stopped after ${undone} lines: ${applied.error.message}`));
