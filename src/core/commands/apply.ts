@@ -6992,7 +6992,8 @@ function run(
       const err = qualityProfileError(c.name, c.spec ?? {});
       if (err) fail("invalid", err);
       const p: QualityProfile = { id: c.profileId, revision: 1, name: c.name.trim(), spec: c.spec ?? {}, removed: false, createdBy: env.actor, createdAt: env.at, editedBy: null, editedAt: null };
-      return { state: { ...s, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: p } }, inverse: { type: "UndoAddQualityProfile", profileId: p.id }, affected: [p.id] };
+      const project = c.restoreActive ? { ...s.project, activeQualityProfileId: p.id, revision: s.project.revision + 1 } : s.project;
+      return { state: { ...s, project, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: p } }, inverse: { type: "UndoAddQualityProfile", profileId: p.id }, affected: [p.id, ...(c.restoreActive ? [project.id] : [])] };
     }
     case "UndoAddQualityProfile": {
       const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
@@ -7000,7 +7001,7 @@ function run(
       delete profiles[p.id];
       // Var profilen aktiv, fjernes valget samtidig (samma angregruppe)
       const project = s.project.activeQualityProfileId === p.id ? { ...s.project, activeQualityProfileId: null, revision: s.project.revision + 1 } : s.project;
-      return { state: { ...s, project, qualityProfiles: profiles }, inverse: { type: "AddQualityProfile", profileId: p.id, name: p.name, spec: p.spec }, affected: [p.id, project.id] };
+      return { state: { ...s, project, qualityProfiles: profiles }, inverse: { type: "AddQualityProfile", profileId: p.id, name: p.name, spec: p.spec, restoreActive: s.project.activeQualityProfileId === p.id }, affected: [p.id, project.id] };
     }
     case "UpdateQualityProfile": {
       const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
@@ -7015,8 +7016,8 @@ function run(
       const p = need((s.qualityProfiles ?? {})[c.profileId], L("Kvalitetsprofilen", "The quality profile"));
       const next: QualityProfile = { ...p, removed: c.removed === true, editedBy: env.actor, editedAt: env.at, revision: rev(p) };
       // En fjernet profil kan ikke være aktiv
-      const project = c.removed === true && s.project.activeQualityProfileId === p.id ? { ...s.project, activeQualityProfileId: null, revision: s.project.revision + 1 } : s.project;
-      return { state: { ...s, project, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: next } }, inverse: { type: "SetQualityProfileRemoved", profileId: p.id, removed: p.removed }, affected: [p.id, project.id] };
+      const project = c.removed === true && s.project.activeQualityProfileId === p.id ? { ...s.project, activeQualityProfileId: null, revision: s.project.revision + 1 } : c.restoreActive && !c.removed ? { ...s.project, activeQualityProfileId:p.id, revision:s.project.revision + 1 } : s.project;
+      return { state: { ...s, project, qualityProfiles: { ...(s.qualityProfiles ?? {}), [p.id]: next } }, inverse: { type: "SetQualityProfileRemoved", profileId: p.id, removed: p.removed, restoreActive: c.removed && s.project.activeQualityProfileId === p.id }, affected: [p.id, project.id] };
     }
     case "SetActiveQualityProfile": {
       if (c.profileId !== null) {

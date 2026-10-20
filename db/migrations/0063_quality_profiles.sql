@@ -49,6 +49,8 @@ begin
   end if;
   if new.params->'qualityProfile' is null or new.params->'qualityProfile' = 'null'::jsonb
     or new.kind in ('text','prompt') then return new; end if;
+  -- Existing reservations can finalize even after the profile is edited/removed.
+  if TG_OP='UPDATE' and old.status <> 'failed' then return new; end if;
   perform 1 from public.projects where id=new.project_id and deleted_at is null for update;
   if not found then raise exception 'Project not found' using errcode='42501'; end if;
   v_id := (new.params->'qualityProfile'->>'id')::uuid;

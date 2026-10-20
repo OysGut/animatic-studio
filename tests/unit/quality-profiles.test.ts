@@ -88,6 +88,8 @@ describe("M8 quality profiles – commands", () => {
     // Angring av fjerningen gjenoppretter profilen (aktivvalget var en egen kommando)
     const undone = apply(removed.state, removed.inverse);
     expect(undone.state.qualityProfiles[id]!.removed).toBe(false);
+    expect(undone.state.project.activeQualityProfileId).toBe(id);
+    expect(apply(undone.state, undone.inverse).state.project.activeQualityProfileId).toBeNull();
   });
   it("undoing the creation of an active profile clears the active choice in the same undo", () => {
     const { s, id } = withProfile(base());
