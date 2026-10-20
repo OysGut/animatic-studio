@@ -9,7 +9,9 @@ import {
   estimateCostUsd,
   isUuid,
   newId,
+  parseQualityProfileMeta,
   providerModel,
+  type QualityProfileSnapshot,
   speechSettingsError,
   speechLanguageError,
   providerLanguageCode,
@@ -21,7 +23,7 @@ import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
 import type { SpeechResult } from "./speech.functions";
 const BUCKET = "assets";
 const MAX_SPEECH_JOBS_PER_USER_PER_HOUR = 300;
-export interface SpeechInput { projectId: string; blockId: string; voiceId: string; model: string; language: string; settings: SpeechSettings; expectedRevision?: unknown; jobId?: string; batch?: boolean }
+export interface SpeechInput { projectId: string; blockId: string; voiceId: string; model: string; language: string; settings: SpeechSettings; expectedRevision?: unknown; jobId?: string; batch?: boolean; /** Kvalitetsprofilen talen lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */ qualityProfile?: QualityProfileSnapshot | null }
 async function sha256(b: Uint8Array): Promise<string> {
   const h = await crypto.subtle.digest("SHA-256", b as unknown as ArrayBuffer);
   return [...new Uint8Array(h)].map((x) => x.toString(16).padStart(2, "0")).join("");
@@ -149,6 +151,8 @@ export async function runSpeech(data: SpeechInput, context: { supabase: unknown;
         scriptRevision: b.current_rev,
         // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
         effort: effortOf(providerModel("elevenlabs", data.model)),
+        // Kvalitetsprofilen talen ble laget med (M8, REQ-0859): et øyeblikksbilde
+        ...(data.qualityProfile ? { qualityProfile: data.qualityProfile } : {}),
         voiceId: data.voiceId,
         blockId: data.blockId,
         // Sporbarhet (DEC-0072, REQ-0257)
