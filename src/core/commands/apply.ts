@@ -5035,7 +5035,7 @@ function run(
       const herr=harmonizationError(s2,c.fields);
       if (herr) fail("invalid",herr);
       if (s.styleHarmonizations[c.harmonizationId]) fail("invalid",L("Samme harmonisering to ganger.","The same harmonization twice."));
-      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:1,removed:false,createdBy:env.actor,createdAt:env.at};
+      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:1,removed:false};
       return {state:{...s2,styleHarmonizations:{...s2.styleHarmonizations,[h.id]:h}},inverse:{type:"UndoApplyHarmonizedImage",harmonizationId:h.id,variantId:va.id,versionId:c.versionId,createdVariant},affected:[h.id,c.versionId,...(createdVariant?[va.id]:[])]};
     }
     case "UndoApplyHarmonizedImage": {
@@ -5055,7 +5055,7 @@ function run(
       const old=(s.styleHarmonizations ?? {})[c.harmonizationId];
       if (!old) assertNewId(s,c.harmonizationId);
       if (!c.removed && harmonizationError(s,c.fields)) fail("invalid",L("Ugyldig harmonisering.","Invalid harmonization."));
-      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:old?rev(old):1,removed:c.removed===true,createdBy:old?.createdBy ?? env.actor,createdAt:old?.createdAt ?? env.at};
+      const h: StyleHarmonization={...c.fields,id:c.harmonizationId,revision:old?rev(old):1,removed:c.removed===true};
       return {state:{...s,styleHarmonizations:{...(s.styleHarmonizations ?? {}),[h.id]:h}},inverse:old?{type:"RestoreStyleHarmonizations",items:[old]}:{type:"UndoAddStyleHarmonization",harmonizationId:h.id},affected:[h.id]};
     }
     case "UndoAddStyleHarmonization": {
@@ -5078,7 +5078,7 @@ function run(
       const restored: StylePreferredReference[]=[];
       if (old && old.id!==c.referenceId) { restored.push(old); refs[old.id]={...old,removed:true,revision:rev(old)}; }
       if (existing) restored.push(existing); else assertNewId(s,c.referenceId);
-      refs[c.referenceId]={...c.fields,id:c.referenceId,revision:existing?rev(existing):1,removed:false,createdBy:existing?.createdBy ?? env.actor,createdAt:existing?.createdAt ?? env.at};
+      refs[c.referenceId]={...c.fields,id:c.referenceId,revision:existing?rev(existing):1,removed:false};
       return {state:{...s,stylePreferredReferences:refs},inverse:{type:"UndoSetPreferredStyleReference",addedId:existing?null:c.referenceId,restored},affected:[c.referenceId,...(old&&old.id!==c.referenceId?[old.id]:[])]};
     }
     case "UndoSetPreferredStyleReference": {
