@@ -83,6 +83,7 @@ for (const lang of ["nb", "en"]) {
     const rows = await sec.getByTestId("context-link-row").count();
     h.check(rows >= 1, "kobling: forslag vises til godkjenning");
     h.check(h.state.commands.length === 0, "kobling: ingenting koblet før godkjenning");
+    h.check(await sec.getByTestId("context-link-repeat").count() >= 1, "kobling: like linjer grupperes med forklaring");
     const first = sec.getByTestId("context-link-row").first();
     h.check(await first.getByTestId("context-link-target-select").innerText() === "Maja", "kobling: foreslått mål vises med navn");
     h.check(await first.getByTestId("asset-thumb").isVisible(), "kobling: målressursen har miniatyr");

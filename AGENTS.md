@@ -51,4 +51,4 @@ Kortversjonen:
 31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change.
 32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
-34. M6: AI updates add versions/notes; forecasts are computed only; context links reuse contextNames.
+34. M6: additive updates, computed forecasts; contextNames review tracks targets/checks/AI scores.
