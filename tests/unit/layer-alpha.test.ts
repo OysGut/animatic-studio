@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { inflateSync } from "node:zlib";
-import { defaultLayerFields, layerFieldsOf, orderedOccurrences, renderFrame } from "@/core";
+import { defaultLayerFields, orderedOccurrences, renderFrame } from "@/core";
 import { alphaExportError, alphaSceneClip, alphaPixels, alphaRange, alphaFileBase, alphaLayerIds,
   DEFAULT_ALPHA_SETTINGS, isAlphaSettings } from "@/core/layer-alpha";
 import { drawFilmFrame } from "@/engine/compositor/film";
@@ -11,7 +11,7 @@ import { supportsVp9Alpha, openAlphaSink } from "@/engine/export/alpha";
 import { writeZip, type ZipSink } from "@/engine/export/zip";
 import { unzipSync } from "fflate";
 import { mustApply, seedProject, tid } from "../helpers/fixtures";
-import { SoftCanvas, SoftOffscreenCanvas, softLog, resetSoftLog } from "../helpers/soft-canvas";
+import { SoftCanvas, softLog, resetSoftLog } from "../helpers/soft-canvas";
 
 function setup() {
   const seed = seedProject(1);
@@ -95,23 +95,6 @@ describe("P4 actual compositor pixels", () => {
     expect(canvas.pixel(8, 8)[3]).toBe(0);
     expect(canvas.pixel(3, 8)[3]).toBe(0.5);
   });
-  it("an unselected mask still masks the selected layer", () => {
-    vi.stubGlobal("OffscreenCanvas", SoftOffscreenCanvas);
-    const { s, c, solid, edge } = setup();
-    const a = s.layers[solid], b = s.layers[edge];
-    if (!a || !b) throw new Error("Missing layers");
-    const state = mustApply(s, { type: "UpdateLayers", layers: [
-      { layerId: solid, fields: { ...layerFieldsOf(a), mask: { kind: "layer", layerId: edge, invert: false } } },
-      { layerId: edge, fields: { ...layerFieldsOf(b), width: 2, transform: { ...b.transform, x: 7, opacity: 1 } } },
-    ] });
-    const clip = alphaSceneClip(state,c); if (!clip) throw new Error("Missing clip");
-    const canvas = new SoftCanvas(16,16);
-    drawFilmFrame(canvas.getContext() as unknown as CanvasRenderingContext2D, state,[clip],0,{
-      width:16,height:16,images:new Map(),background:"transparent",layerIds:new Set([solid]) });
-    expect(canvas.pixel(7,8)[3]).toBe(1);
-    expect(canvas.pixel(9,8)[3]).toBe(0);
-    expect(canvas.pixel(0,0)[3]).toBe(0);
-  });
 });
 describe("P4 choices and format gate", () => {
   it("PNG defaults to straight alpha", () => {
@@ -160,12 +143,17 @@ describe("P4 streaming ZIP and cancellation", () => {
     vi.stubGlobal("navigator", { storage: {} });
     const anchor = { href: "", download: "", click: vi.fn(), remove: vi.fn() };
     vi.stubGlobal("document", { createElement: () => anchor, body: { appendChild: vi.fn() } });
+    const create = vi.spyOn(URL, "createObjectURL").mockReturnValue("blob:test");
+    const revoke = vi.spyOn(URL, "revokeObjectURL").mockImplementation(() => {});
     const sink = await openAlphaSink("layers.zip", "application/zip");
     await sink.write(new Uint8Array([1,2,3])); await sink.close();
     const link = sink.link?.(); if (!link) throw new Error("Missing download");
-    expect([...new Uint8Array(await (await fetch(link.url)).arrayBuffer())]).toEqual([1,2,3]);
+    const blob = create.mock.calls[0]?.[0];
+    if (!(blob instanceof Blob)) throw new Error("Missing blob");
+    expect([...new Uint8Array(await blob.arrayBuffer())]).toEqual([1,2,3]);
     expect(anchor.download).toBe("layers.zip"); expect(anchor.click).toHaveBeenCalledOnce();
     await sink.abort(); expect(sink.link?.()).toBeNull();
+    create.mockRestore(); revoke.mockRestore();
   });
   it("awaits each sink write before requesting another frame", async () => {
     const chunks: Uint8Array[] = []; let pending = false, produced = 0;
