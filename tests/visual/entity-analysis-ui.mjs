@@ -4,6 +4,8 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
+const LANG = uiLang("nb");
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/entity-analysis"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -108,14 +110,18 @@ async function main() {
   try {
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
-    await page.evaluate(([key, value]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", "nb"); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER })]);
-    await page.goto(`${base}${P}/bibliotek`, { waitUntil: "networkidle" });
-    await page.waitForTimeout(2500);
+    await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), LANG]);
+    // R7: «networkidle» + fast pause på 2,5 s ga tidsavbrudd under last. Vent i stedet på selve kallet.
+    await page.goto(`${base}${P}/bibliotek`, { waitUntil: "domcontentloaded" });
+    const button = page.getByTestId("library-suggestions-open");
+    await button.waitFor({ timeout: 60000 });
+    for (let i = 0; i < 100 && aiCalls.length === 0; i++) await page.waitForTimeout(200);
     check(aiCalls.length >= 1, "ny prosjektlasting uten lagret analyse utløser analysen automatisk");
     check(Array.isArray(aiCalls[0]?.scope?.sceneIds), "analysen sender bare scene-ID-er, ingen fri tekst");
     check(!("system" in (aiCalls[0] ?? {})) && !("messages" in (aiCalls[0] ?? {})), "ingen prompt fra klienten");
-    const button = page.getByRole("button", { name: /Forslag fra manuset/ }).first();
-    check(/nye forslag|Analyserer manuset/.test(await button.innerText()), "status vises i forslagsknappen");
+    const status = button.getByTestId("library-analysis-status");
+    check(await status.waitFor({ timeout: 15000 }).then(() => true, () => false), "status vises i forslagsknappen");
+    await page.waitForFunction(() => !document.querySelector('[data-testid="library-suggestions-open"]')?.disabled, null, { timeout: 15000 });
     await button.click();
     const dialog = page.getByTestId("library-suggestions");
     await dialog.waitFor();
