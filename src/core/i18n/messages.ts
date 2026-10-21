@@ -84,7 +84,7 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
     if (!catalog) { errors.push(`Missing catalog: ${lang.tag}`); continue; }
     for (const key of allKeys) {
       const message = catalog[key];
-      const base = nb[key];
+      const base = en[key];
       if (!base || !en[key] || (lang.complete && !message)) { errors.push(`Missing required message: ${lang.tag}:${key}`); continue; }
       if (!message) continue;
       if (message.executable === false) {
@@ -92,7 +92,7 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
         if (typeof message.source !== 'string' || !message.source) errors.push(`Missing legacy expression: ${lang.tag}:${key}`);
         continue;
       }
-      if (message.text === null && !message.plural) errors.push(`Missing text: ${lang.tag}:${key}`);
+      if ((message.text === null && !message.plural) || (message.text === '' && base.text !== '')) errors.push(`Missing text: ${lang.tag}:${key}`);
       if (JSON.stringify(messageParameterNames(message)) !== JSON.stringify(messageParameterNames(base))) errors.push(`Parameter mismatch: ${lang.tag}:${key}`);
       const declared = message.parameters?.map((p) => p.name);
       if (declared && (new Set(declared).size !== declared.length || declared.some((name) => !/^[A-Za-z_][\w]*$/.test(name)))) errors.push(`Invalid parameter declaration: ${lang.tag}:${key}`);
@@ -129,10 +129,12 @@ export function createTranslator(manifest: LanguageManifest, catalogs: Readonly<
   };
   return (key: string, params: MessageParameters = {}, requested = manifest.defaultLocale): string => {
     const { normalized, chain } = resolve(requested);
-    if (!catalogs['nb']?.[key]) throw new Error(`Unknown translation key: ${key}`);
+    if (!catalogs['en']?.[key]) throw new Error(`Unknown translation key: ${key}`);
     for (const tag of chain) {
       const message = catalogs[tag]?.[key];
       if (!message) continue;
+      if (message.text === '' && catalogs['en']?.[key]?.text !== '') continue;
+      if (message.text === null && !message.plural) continue;
       if (message.executable === false) throw new Error(`Legacy expression requires explicit migration: ${key}`);
       const expected = messageParameterNames(message);
       const supplied = Object.keys(params).sort();

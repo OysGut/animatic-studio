@@ -66,6 +66,7 @@ function norwegianAuthError(message: string, closedText?: string): string {
 
 /** Innlogging (e-post + passord eller innloggingslenke). Ingen markedsføringsflate – rett til arbeid. */
 export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
+  useLanguage();
   const [modeState, setMode] = useState<Mode>("signin");
   // B-109: stengt registrering skjuler «Opprett konto» (unntak: invitasjonslenker, som databasen slipper inn)
   const reg = useQuery({ queryKey: ["registration-status"], queryFn: fetchRegistrationStatus, staleTime: 60_000 });

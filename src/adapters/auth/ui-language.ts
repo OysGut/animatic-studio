@@ -8,9 +8,10 @@ export const requestUiLanguage = createIsomorphicFn()
     try {
       const cookie = getRequestHeader('cookie') ?? '';
       const value = cookie.split(';').map(v => v.trim()).find(v => v.startsWith('ptg-ui-language='))?.slice('ptg-ui-language='.length);
-      if (value && isUiLang(value)) return value;
+      const decoded = value ? decodeURIComponent(value) : undefined;
+      if (isUiLang(decoded)) return decoded;
       return matchUiLanguage(acceptLanguagePreferences(getRequestHeader('accept-language') ?? '')) ?? 'en';
-    } catch { return undefined; }
+    } catch { return 'en'; }
   })
   .client(() => undefined);
 export function installUiLanguageReader() { installRequestLanguageReader(requestUiLanguage); }

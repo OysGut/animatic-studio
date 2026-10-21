@@ -24,6 +24,7 @@ export const Route = createFileRoute("/tilbakestill-passord")({
 });
 
 function ResetPasswordPage() {
+  useLanguage();
   const [ready, setReady] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState("");

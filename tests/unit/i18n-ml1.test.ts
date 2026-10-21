@@ -30,10 +30,10 @@ describe('ML1 language/catalog contract', () => {
     expect(fallbackChain(manifest, 'nb')).toEqual(['nb', 'en']);
   });
   it('cycles, unknown reserves, duplicates and depth fail', () => {
-    const change = (fallbacks: readonly string[]) => ({ ...manifest, languages: manifest.languages.map((l) => l.tag === 'en' ? { ...l, fallbacks } : l) });
-    expect(() => validateManifest(change(['en-XA']))).toThrow(/cycle/);
+    const change = (fallbacks: readonly string[]) => ({ ...manifest, languages: manifest.languages.map((l) => l.tag === 'nb' ? { ...l, fallbacks } : l) });
+    expect(() => validateManifest(change(['nb']))).toThrow(/cycle/);
     expect(() => validateManifest(change(['fr']))).toThrow(/Unknown/);
-    expect(() => validateManifest({ ...manifest, maxFallbackDepth: 2 })).toThrow(/depth/);
+    expect(() => validateManifest({ ...manifest, maxFallbackDepth: 1 })).toThrow(/depth/);
     const lang = manifest.languages[1];
     if (!lang) throw new Error('fixture language missing');
     expect(() => validateManifest({ ...manifest, languages: [...manifest.languages, lang] })).toThrow(/Duplicate/);
