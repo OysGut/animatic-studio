@@ -73976,5 +73976,62 @@
   },
   "app-print.frame": {
     "text": "{seconds} s + {frames} f · frame {absolute}"
+  },
+  "print-measure.error-0": {
+    "text": "Invalid measurement point"
+  },
+  "print-measure.error-1": {
+    "text": "Invalid line"
+  },
+  "print-measure.error-2": {
+    "text": "Angle requires two nonzero lines"
+  },
+  "print-measure.error-3": {
+    "text": "Ratio requires nonnegative lengths and a positive denominator"
+  },
+  "print-measure.error-4": {
+    "text": "Invalid measurement value or unit"
+  },
+  "print-measure.error-5": {
+    "text": "Zoom must be positive"
+  },
+  "print-measure.error-6": {
+    "text": "Invalid tolerance"
+  },
+  "print-measure.error-7": {
+    "text": "Unknown marker type"
+  },
+  "print-measure.error-8": {
+    "text": "Marker ID is missing"
+  },
+  "print-measure.error-9": {
+    "text": "Invalid marker geometry"
+  },
+  "print-measure.error-10": {
+    "text": "Invalid measurement set reference or name"
+  },
+  "print-measure.error-11": {
+    "text": "Invalid frame"
+  },
+  "print-measure.error-12": {
+    "text": "Invalid timestamp"
+  },
+  "print-measure.error-13": {
+    "text": "Invalid marker list"
+  },
+  "print-measure.error-14": {
+    "text": "Duplicate marker ID"
+  },
+  "print-measure.error-15": {
+    "text": "Duplicate markers"
+  },
+  "print-measure.error-16": {
+    "text": "Invalid insertion"
+  },
+  "print-measure.error-17": {
+    "text": "Unknown marker"
+  },
+  "print-measure.error-18": {
+    "text": "Duplicate ID"
   }
 }

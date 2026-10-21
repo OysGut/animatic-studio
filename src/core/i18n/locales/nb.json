@@ -73994,5 +73994,62 @@
   },
   "app-print.frame": {
     "text": "{seconds} s + {frames} f · frame {absolute}"
+  },
+  "print-measure.error-0": {
+    "text": "Ugyldig målepunkt"
+  },
+  "print-measure.error-1": {
+    "text": "Ugyldig linje"
+  },
+  "print-measure.error-2": {
+    "text": "Vinkel krever to linjer med lengde"
+  },
+  "print-measure.error-3": {
+    "text": "Forhold krever ikke-negative lengder og positiv nevner"
+  },
+  "print-measure.error-4": {
+    "text": "Ugyldig måleverdi/enhet"
+  },
+  "print-measure.error-5": {
+    "text": "Zoom må være positiv"
+  },
+  "print-measure.error-6": {
+    "text": "Ugyldig toleranse"
+  },
+  "print-measure.error-7": {
+    "text": "Ukjent markørtype"
+  },
+  "print-measure.error-8": {
+    "text": "Markør mangler ID"
+  },
+  "print-measure.error-9": {
+    "text": "Ugyldig markørgeometri"
+  },
+  "print-measure.error-10": {
+    "text": "Ugyldig målesettreferanse/navn"
+  },
+  "print-measure.error-11": {
+    "text": "Ugyldig frame"
+  },
+  "print-measure.error-12": {
+    "text": "Ugyldig tidsstempel"
+  },
+  "print-measure.error-13": {
+    "text": "Ugyldig markørliste"
+  },
+  "print-measure.error-14": {
+    "text": "Duplisert markør-ID"
+  },
+  "print-measure.error-15": {
+    "text": "Dupliserte markører"
+  },
+  "print-measure.error-16": {
+    "text": "Ugyldig innsetting"
+  },
+  "print-measure.error-17": {
+    "text": "Ukjent markør"
+  },
+  "print-measure.error-18": {
+    "text": "Duplisert ID"
   }
 }

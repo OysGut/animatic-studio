@@ -31139,6 +31139,63 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "print-measure.error-0": {
+      "text": "Ugyldig målepunkt"
+    },
+    "print-measure.error-1": {
+      "text": "Ugyldig linje"
+    },
+    "print-measure.error-10": {
+      "text": "Ugyldig målesettreferanse/navn"
+    },
+    "print-measure.error-11": {
+      "text": "Ugyldig frame"
+    },
+    "print-measure.error-12": {
+      "text": "Ugyldig tidsstempel"
+    },
+    "print-measure.error-13": {
+      "text": "Ugyldig markørliste"
+    },
+    "print-measure.error-14": {
+      "text": "Duplisert markør-ID"
+    },
+    "print-measure.error-15": {
+      "text": "Dupliserte markører"
+    },
+    "print-measure.error-16": {
+      "text": "Ugyldig innsetting"
+    },
+    "print-measure.error-17": {
+      "text": "Ukjent markør"
+    },
+    "print-measure.error-18": {
+      "text": "Duplisert ID"
+    },
+    "print-measure.error-2": {
+      "text": "Vinkel krever to linjer med lengde"
+    },
+    "print-measure.error-3": {
+      "text": "Forhold krever ikke-negative lengder og positiv nevner"
+    },
+    "print-measure.error-4": {
+      "text": "Ugyldig måleverdi/enhet"
+    },
+    "print-measure.error-5": {
+      "text": "Zoom må være positiv"
+    },
+    "print-measure.error-6": {
+      "text": "Ugyldig toleranse"
+    },
+    "print-measure.error-7": {
+      "text": "Ukjent markørtype"
+    },
+    "print-measure.error-8": {
+      "text": "Markør mangler ID"
+    },
+    "print-measure.error-9": {
+      "text": "Ugyldig markørgeometri"
+    },
     "print-pdf.image-required": {
       "text": "Figurutskrift krever et kildebilde."
     },
@@ -62734,6 +62791,63 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "print-measure.error-0": {
+      "text": "Invalid measurement point"
+    },
+    "print-measure.error-1": {
+      "text": "Invalid line"
+    },
+    "print-measure.error-10": {
+      "text": "Invalid measurement set reference or name"
+    },
+    "print-measure.error-11": {
+      "text": "Invalid frame"
+    },
+    "print-measure.error-12": {
+      "text": "Invalid timestamp"
+    },
+    "print-measure.error-13": {
+      "text": "Invalid marker list"
+    },
+    "print-measure.error-14": {
+      "text": "Duplicate marker ID"
+    },
+    "print-measure.error-15": {
+      "text": "Duplicate markers"
+    },
+    "print-measure.error-16": {
+      "text": "Invalid insertion"
+    },
+    "print-measure.error-17": {
+      "text": "Unknown marker"
+    },
+    "print-measure.error-18": {
+      "text": "Duplicate ID"
+    },
+    "print-measure.error-2": {
+      "text": "Angle requires two nonzero lines"
+    },
+    "print-measure.error-3": {
+      "text": "Ratio requires nonnegative lengths and a positive denominator"
+    },
+    "print-measure.error-4": {
+      "text": "Invalid measurement value or unit"
+    },
+    "print-measure.error-5": {
+      "text": "Zoom must be positive"
+    },
+    "print-measure.error-6": {
+      "text": "Invalid tolerance"
+    },
+    "print-measure.error-7": {
+      "text": "Unknown marker type"
+    },
+    "print-measure.error-8": {
+      "text": "Marker ID is missing"
+    },
+    "print-measure.error-9": {
+      "text": "Invalid marker geometry"
     },
     "print-pdf.image-required": {
       "text": "Figure printing requires a source image."

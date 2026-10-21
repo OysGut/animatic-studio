@@ -73976,5 +73976,62 @@
   },
   "app-print.frame": {
     "text": "[!! {seconds} ss + {frames} ff · ffrráámmëë {absolute} !!]"
+  },
+  "print-measure.error-0": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt ppôôïïnntt !!]"
+  },
+  "print-measure.error-1": {
+    "text": "[!! ÏÏnnvváállïïdd llïïnnëë !!]"
+  },
+  "print-measure.error-2": {
+    "text": "[!! ÁÁnnggllëë rrëëqqüüïïrrëëss ttwwôô nnôônnzzëërrôô llïïnnëëss !!]"
+  },
+  "print-measure.error-3": {
+    "text": "[!! RRááttïïôô rrëëqqüüïïrrëëss nnôônnnnëëggááttïïvvëë llëënnggtthhss áánndd áá ppôôssïïttïïvvëë ddëënnôômmïïnnááttôôrr !!]"
+  },
+  "print-measure.error-4": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt vváállüüëë ôôrr üünnïïtt !!]"
+  },
+  "print-measure.error-5": {
+    "text": "[!! ZZôôôômm mmüüsstt bbëë ppôôssïïttïïvvëë !!]"
+  },
+  "print-measure.error-6": {
+    "text": "[!! ÏÏnnvváállïïdd ttôôllëërráánnccëë !!]"
+  },
+  "print-measure.error-7": {
+    "text": "[!! ÜÜnnkknnôôwwnn mmáárrkkëërr ttyyppëë !!]"
+  },
+  "print-measure.error-8": {
+    "text": "[!! MMáárrkkëërr ÏÏDD ïïss mmïïssssïïnngg !!]"
+  },
+  "print-measure.error-9": {
+    "text": "[!! ÏÏnnvváállïïdd mmáárrkkëërr ggëëôômmëëttrryy !!]"
+  },
+  "print-measure.error-10": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt ssëëtt rrëëffëërrëënnccëë ôôrr nnáámmëë !!]"
+  },
+  "print-measure.error-11": {
+    "text": "[!! ÏÏnnvváállïïdd ffrráámmëë !!]"
+  },
+  "print-measure.error-12": {
+    "text": "[!! ÏÏnnvváállïïdd ttïïmmëëssttáámmpp !!]"
+  },
+  "print-measure.error-13": {
+    "text": "[!! ÏÏnnvváállïïdd mmáárrkkëërr llïïsstt !!]"
+  },
+  "print-measure.error-14": {
+    "text": "[!! DDüüppllïïccááttëë mmáárrkkëërr ÏÏDD !!]"
+  },
+  "print-measure.error-15": {
+    "text": "[!! DDüüppllïïccááttëë mmáárrkkëërrss !!]"
+  },
+  "print-measure.error-16": {
+    "text": "[!! ÏÏnnvváállïïdd ïïnnssëërrttïïôônn !!]"
+  },
+  "print-measure.error-17": {
+    "text": "[!! ÜÜnnkknnôôwwnn mmáárrkkëërr !!]"
+  },
+  "print-measure.error-18": {
+    "text": "[!! DDüüppllïïccááttëë ÏÏDD !!]"
   }
 }
