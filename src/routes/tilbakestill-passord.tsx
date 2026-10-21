@@ -14,10 +14,10 @@ export const Route = createFileRoute("/tilbakestill-passord")({
   head: () => ({ meta: [
     { title: t("auth.password-reset.title") },
     { name: "description", content: t("auth.password-reset.description") },
-    { property: "og:title", content: t("auth.password-reset.title") },
-    { property: "og:description", content: t("auth.password-reset.description") },
-    { property: "og:type", content: t("auth.password-reset.og-type") },
-    { name: "twitter:card", content: t("auth.password-reset.twitter-card") },
+    { property: "og:title", content: t("auth.password-reset.title") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("auth.password-reset.description") }, // i18n-ignore: metakode
+    { property: "og:type", content: "website" }, // i18n-ignore: metakode
+    { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
   component: ResetPasswordPage,
 });
