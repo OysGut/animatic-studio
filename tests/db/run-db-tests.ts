@@ -5834,7 +5834,7 @@ try {
     assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
     const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
     assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
-    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')`;
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status')`; // B-109: eneste unntak, gir bare {open, message}
     assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
     const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
     assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
