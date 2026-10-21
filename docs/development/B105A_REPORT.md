@@ -1,55 +1,62 @@
-# B-105a / KR-1 – fortløpende rapport
+# B-105a / KR-1 – sluttrapport
 
 ## Status 21.10.2026
 
-**Ikke ferdig.** Denne leveransen er bildegrunnlaget og kartleggingen, ikke ferdig integrasjon. Eksisterende opplasting, eksport og AI-kall er fortsatt uendret. KR-1 er kartlagt, men ikke utført; det gjøres etter B-105a som bestilt.
+B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story Lab-prompter på serveren) er ferdige og testet. KR-1 er utført. **Ett avvik:** bildepromptene er ikke flyttet til serveren (se «Avvik»). Migrasjon 0078 ble rettet etter lokal DB-test (se «Migrasjon»).
 
-## Implementert grunnlag
+## Del 1 – én felles vei for bilder
 
-- `src/core/library/image-ingest.ts`: ren størrelsesplan og eksplisitt filvalg. Originalen beholder størrelsen; arbeidskopien følger `workingImageMaxSide`; proxy følger minste av filmens lengste side og 1920 px; miniatyr begrenses til 256 px. Ingen oppskalering.
-- `src/adapters/browser/image-ingest.ts`: nettleseradapteren `ingestImage(file, context)` returnerer uendret original, arbeidskopi og WebP-proxy/miniatyr. TIFF dekodes til en renderbar PNG for avledning, men råfilen returneres uendret. **Adapteren er ennå ikke koblet til opplasting/lagring.**
-- Bildeforberedelsen er flyttet til `src/adapters/browser/image-prep.ts`; den gamle inngangen `src/app/library/image-prep.ts` videresender eksportene, så eksisterende opplasting og tester beholder kompatibilitet.
-- `src/core/library/lru.ts` og `src/app/rig/contour-client.ts`: eksplisitt LRU med 64 elementer, testet for grense og nylig bruk. `ImageCache` er ikke endret.
-- Arkitekturregelen for bildeforberedelse er lagt til i `AGENTS.md`.
+- Ren logikk: `src/core/library/image-ingest.ts` (størrelsesplan, `imageFileForUse`, `versionImagePath`, `derivedFilesError`). Nettleserdel: `src/adapters/browser/image-ingest.ts`.
+- Alle opplastingsinnganger går via `uploadAssetImage` → `ingestImage`: AssetDetail, LayerImageDialog, ReuploadDialog, CutoutDialog, image-actions, mts-actions og MouthShapeEditor. Ingen app-kode laster opp bilder til `source/` utenom denne funksjonen (kontrollert med søk).
+- Filer som allerede ligger i lagringen (mobilimport, AI-resultater, gjenoppretting via `mediaFromStoredFile`) får proxy og miniatyr i bakgrunnen første gang de vises (`src/app/library/derived-backfill.ts`), uten å blokkere.
+- Originalen lagres uendret. TIFF: versjonen er en renderbar PNG, og den rå TIFF-fila bevares som `derivedFiles.originalRaw`.
+- Avledede filer valideres i kjernen (`derivedFilesError`) og i databasen (`private.derived_files_ok`). De følger med i sikkerhetskopi, global publisering/kopiering og `purge_*`.
+- Visning og forhåndsvisning bruker proxy; eksport (video, ProRes, PNG/alfa), rigg-PDF og zoom over 100 % bruker originalen. Eldre versjoner uten avledede filer bruker alltid originalen.
+- `ImageCache` er uendret; konturbufferet er LRU 64 med test.
 
-## Kartlegging
+## Del 2 – Story Lab-prompter på serveren
 
-Samme nåværende opplastingsfunksjon brukes i AssetDetail, LayerImageDialog, ReuploadDialog, CutoutDialog, image-actions, mts-actions og MouthShapeEditor. De sekundære inngangene sender i dag ofte ingen størrelsesgrense. Mobilimport og gjenoppretting av lagrede AI-filer bruker `mediaFromStoredFile` og må også integreres.
+- `src/adapters/ai/story-prompts.server.ts`: zod-validert forespørsel (character, analyst, sceneAnalysis, lineCheck, profileGenerator, interview, interviewNodes, contextLink, materialUpdate). Prompten bygges fra prosjektdata.
+- `src/adapters/ai/story-text.functions.ts`: `generateStoryText` og `estimateStoryPrompt` krever innlogging og leser prosjektet med brukerens tilgang (`loadProjectState(context.supabase, …)`, RLS). Bruker `runTextGeneration`, så kostnadsgodkjenning, kvoter og kvitteringer er som før. Estimatet returnerer bare tegnantall. Prompter og nøkler logges ikke.
+- Klienten sender bare oppgavetype og ID-er/parametere, aldri systemtekst.
+- Arkitekturvakt: `tests/architecture/server-prompts.test.ts` (ingen promptbyggere, `system:` eller rå tekstkall i klientkode).
 
-Andre bildeveier som må vurderes eksplisitt: AI-resultater, uttrekk av videoframes, referansebilder til scenevideo, backupgjenoppretting og kopier fra globalt bibliotek. Eksisterende TIFF-opplasting bevarer ikke rå TIFF; den lagrer konvertert PNG. Dette er funnet i kartleggingen, ikke rettet i dagens aktive opplastingsflyt.
+## Migrasjon 0078
 
-Proxyvalg må knyttes til konkret bruk. Kompositor, filmforhåndsvisning og rigg bruker i dag valgt versjons `mediaPath`; høyere eksportoppløsning alene gjenoppretter ikke detaljer fra originalen.
+`db/migrations/0078_b105a_derived_files.sql`, additiv, med 0077 som utgangspunkt:
+- ny kolonne `derived_files` (jsonb, nullable) på `asset_versions` og `global_asset_versions`;
+- **ny** hjelpefunksjon `private.derived_files_ok(jsonb)` med `execute` for authenticated og service_role;
+- erstatter `purge_project_assets` (0072), `purge_removed_assets` (0072) og `global_add_version` (0074);
+- skjemaversjon 78.
 
-Story Lab-klientene bygger fortsatt promptene. Kartlagte innganger: ConversationView, GroupConversationView, SceneLab, InterviewView, ProfileGenerateDialog og scene-batch. Bildeinnganger inkluderer GenerateImagePanel, ImageAiPanels, ImagePartsPanel, HarmonizePanel og MaterialUpdateSection. Serverflytting må gjenbruke `runTextGeneration`/`runImageGeneration` og eksisterende medlemskontroll, kvoter og kvitteringer uten leverandør- eller modellendring.
+**Endret etter Claudes gjennomgang (sagt fra her):** den første versjonen hadde delspørringer direkte i check-constraint, noe Postgres avviser («cannot use subquery in check constraint»). Sjekken er flyttet til `private.derived_files_ok` med samme regler. Hvis 0078 allerede er forsøkt kjørt i Cloud, feilet hele migrasjonen og ingenting ble endret. Den rettede fila må brukes.
 
-## Migrasjon
+## Tester (kjørt én om gangen)
 
-Ingen migrasjon er skrevet eller kjørt i denne delrunden. Neste ledige nummer i repoet er 0078 etter 0077. En nullable versjonskolonne for avledede filer kan håndteres av dagens dynamiske `apply_changes`, men `purge_project_assets` og `purge_removed_assets` fra 0072 samler bare eksisterende mediestier og må utvides hvis avledede filer lagres der. Endelig modell, backup og global kopiering er ikke ferdig implementert; ingen skjemaversjon er økt.
+- Full Vitest: **2224 bestått, 10 hoppet over, 0 feilet** (275 filer).
+- DB lokalt: **154/154**, inkludert ny 0078-test (gyldige/ugyldige avledede filer, RLS, ingen direkte klientskriving, purge tar med alle avledede stier). 0077-testen sjekket `=== 77` og ble endret til `>= 77`, som de andre versjonstestene.
+- i18n: `check.mjs` 0 tekster uten engelsk; ingen nye språkstrenger.
+- Nye enhetstester: `b105a-image-ingest` 10/10, `b105a-image-use` 8/8, `b105a-server-prompts` 6/6, arkitekturvakt grønn.
+- Regresjon: export-e2e film og scene (videofil > 0 byte), rigg-r4 12/12, u5-screens 63/63, scene-panels-ui 39/39, storylab-ui 32/32, storylab-scene-ui 18/18, t2-writing-ui 69/69, job-read 8/8. Også rigg-r1 12/12, rigg-r2 17/17, rigg-r3 15/15.
+- Testendringer: export-e2e velger norsk eksplisitt (standardspråket er engelsk etter B-111); storylab-suitene mocker de nye serverfunksjonene; `schema-version.mjs` er 78.
+- Tidligere feil i t2/u5 skyldtes testkjøreren min, som tvang `UI_LANG=nb` også på de engelske scenarioene. Uten den er begge grønne.
 
-## Faktisk kontroll
+## Produksjonsbygg (`npx vite build`)
 
-- Full Vitest: **2205 bestått, 10 eksisterende hoppet over, 0 feilet**; 272 testfiler bestått og 2 hoppet over.
-- Målrettet kjøring: **52/52** (ny størrelses-/filvalgtest, konturtest, eksisterende bildefunn og arkitekturtestene).
-- Ny `tests/unit/b105a-image-ingest.test.ts`: **10/10**. Testene dekker størrelser, ikke-oppskalering, original/proxy/miniatyrvalg og 64-elementers LRU.
-- Nettleseradapter: **6/6**, ekte syntetisk PNG på 6000 × 4000; råfilidentitet og SHA-256 uendret; arbeidskopi 3840 × 2560; WebP-proxy 1920 × 1280; WebP-miniatyr 256 × 171. Skjermbildet er kontrollert og begge avledede bilder vises. **Dette er ikke en test av alle opplastingsinngangene eller eksporten.**
-- `tests/visual/b105a-ingest-adapter.mjs` med Python-reserve bruker eksisterende Playwright uten ny npm-pakke. Første Node-kjøring manglet Playwright-pakken; kontrollen ble gjennomført med eksisterende Python Playwright.
-- Språkinventar og `build-catalog.mjs` regenerert; `check.mjs`: 0 tekster uten engelsk. Ingen nye språkstrenger er opprettet; adapteren gjenbruker eksisterende oversatte feiltekster.
-- Automatisk kontroll viste `build OK` etter kompatibilitetsinngangen ble gjenopprettet. Manuell prosjektbygging/typekontroll er ikke kjørt; miljøet kjører dette automatisk.
-- DB og bestilte visuelle regresjoner er **ikke kjørt** i denne delrunden.
+- `.map`-filer: **0**.
+- Klientbunter: 175 JS-filer; hver av de 19 rutefilene har egen bunt (18 navngitte + index).
+- Promptsignaturer i klientbunten: 0 (prompttekst finnes bare i serverbunten).
 
-## Produksjonskontroll
+## KR-1
 
-Ingen eksisterende produksjonsoutput (`dist`, `build`, `.output` osv.) ble funnet. Antall kildekart, rutebunter og størrelser i produksjonsbygget er derfor **uverifisert**, ikke rapportert som null eller godkjent. Bygget må inspiseres når faktisk produksjonsoutput finnes.
-
-## Gjenstående arbeid
-
-1. Koble ingest til alle innganger; lagre og validere filreferanser, migrasjon, backup/global kopiering og opprydding.
-2. Ikke-blokkerende oppgradering av eldre bilder; konkret proxy/originalvalg i visning, eksport og rigg.
-3. Serverbygde Story Lab- og bildeprompter med zod, autorisert prosjektlesing og arkitekturvakt.
-4. Full inngangs-/eksporttest, bestilte regresjoner én om gangen og lokale DB-tester.
-5. Produksjonsoutput med rutebunt-/kildekarttall.
-6. KR-1: kravregister og genererte KB-dokumenter etter B-105a.
+- REQ-0005: produktnavn From Pen to Glass (B-104), verifisert med b104-product-name.
+- REQ-0571: Implementert – ikke verifisert (GP1–GP5 bygget, egen akseptansetest mangler).
+- REQ-0430: Utgått, erstattet av B-111/B-107.
+- REQ-0882–0891 (A4–A13): Verifisert med print-pdf, print-contour, print-measure og rigg-r1–r4.
+- A1–A3, A14–A15 (REQ-0879–0881, 0892–0893) er rigg runde 5. A16 (REQ-0894) uendret.
+- Nye krav REQ-0916–0924 for B-100, B-097, B-098, B-099, B-104, B-107, B-109, B-110, B-111.
+- `build_docs.py` kjørt; `check_kb.py`: OK (924 krav).
 
 ## Avvik / åpne spørsmål
 
-Ingen produktvalg er endret, ingen betalte AI-kall, ingen nye npm-pakker eller direkte databaseendringer. Ingen spørsmål til produkteieren; rester er implementasjonsarbeid, ikke blokkerte brukeravklaringer. Delrunden er uttrykkelig ikke fullføring av oppdraget.
+- **Bildeprompter er ikke flyttet til serveren.** I GenerateImagePanel og de andre bildepanelene er prompten en tekst brukeren ser og kan redigere, og den forrige prompten huskes (Mars 13.10). Det finnes ingen skjult systemtekst. Hvis prompten bygges på serveren, kan brukeren ikke lenger se og redigere den før kjøringen. Det er en produktendring, så jeg har ikke valgt den selv. **Spørsmål:** skal bildepromptene bygges på serveren, med en forhåndsvisning hentet derfra?
