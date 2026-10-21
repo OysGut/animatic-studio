@@ -23798,9 +23798,6 @@
     "auth.password-reset.mismatch": {
       "text": "Passordene er ikke like."
     },
-    "auth.password-reset.og-type": {
-      "text": "website"
-    },
     "auth.password-reset.password": {
       "text": "Nytt passord"
     },
@@ -23818,9 +23815,6 @@
     },
     "auth.password-reset.too-short": {
       "text": "Passordet må ha minst 8 tegn."
-    },
-    "auth.password-reset.twitter-card": {
-      "text": "summary"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
@@ -55142,9 +55136,6 @@
     "auth.password-reset.mismatch": {
       "text": "The passwords do not match."
     },
-    "auth.password-reset.og-type": {
-      "text": "website"
-    },
     "auth.password-reset.password": {
       "text": "New password"
     },
@@ -55162,9 +55153,6 @@
     },
     "auth.password-reset.too-short": {
       "text": "The password must contain at least 8 characters."
-    },
-    "auth.password-reset.twitter-card": {
-      "text": "summary"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"
