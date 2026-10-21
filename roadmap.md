@@ -2,7 +2,8 @@
 
 ## B-087 Rigg & 2D-utskrift (21.10.2026)
 - [x] Runde 0: spesifikasjon v3, TODO_3D_PRINT.md, REQ-0879–REQ-0915, TODO/ROADMAP.
-- [ ] Runde 1–5 og 3D-print: utsatt, venter på oppdrag fra Claude.
+- [ ] Runde 1 (pågår): B-090-avklaringer (REQ-0895 verifisert, DEC-0100), riggmodell i src/core/rig, størrelsesmatematikk, parallakse, maler og arv, migrasjon 0071, Rigg-fane, platenivå i lagpanelet, tester.
+- [ ] Runde 2–5 og 3D-print: utsatt, venter på oppdrag fra Claude.
 
 ## Oppgave 3b (21.10.2026)
 - [x] Mock-merknad på 18 krav med historikk; KI-193/KI-204 åpne.
