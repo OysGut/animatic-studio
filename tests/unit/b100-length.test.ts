@@ -22,26 +22,25 @@ describe("B-100: lengden følger omtiming", () => {
   });
 });
 
-import { applyCommand, filmClips, type Command } from "@/core";
-import { compositionForOccurrence, planRetime } from "@/core/composition/retime";
+import { DEFAULT_COMPOSITION, applyCommand, filmClips, scriptView, type Command } from "@/core";
+import { planRetime } from "@/core/composition/retime";
 import { compositionDuration } from "@/core/composition/animate";
-import { envelope } from "../helpers/fixtures";
-import { fixture } from "../visual/fixture-state";
+import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
 
 describe("B-100: Scene og montering viser samme lengde etter omtiming", () => {
   it("RetimeScene gir samme lengde i Scene og i monteringen", () => {
-    const s = fixture.state;
-    const occ = Object.values(s.occurrences).find((o) => !o.removed && compositionForOccurrence(s, o))!;
-    const comp = compositionForOccurrence(s, occ)!;
-    const target = compositionDuration(s, comp) + 30;
-    const plan = planRetime(s, occ.id, { targetFrames: target, method: "end", keepAmbience: true });
+    const seed = seedProject(2);
+    const occId = scriptView(seed.state, seed.mainId)[1]!.occurrenceId;
+    const occ = seed.state.occurrences[occId]!;
+    const compositionId = tid<"composition">();
+    const s = mustApply(seed.state, { type: "CreateComposition", compositionId, variantId: occ.variantId, fields: { ...DEFAULT_COMPOSITION, durationFrames: 120, background: "#101114" } });
+    const plan = planRetime(s, occId, { targetFrames: 180, method: "end", keepAmbience: true });
     expect(plan.ok).toBe(true);
     const r = applyCommand(s, envelope((plan as { command: Command }).command));
     if (!r.ok) throw new Error(r.error.message);
-    const after = r.state;
-    const sceneLen = compositionDuration(after, after.compositions[comp.id]!);
-    const clip = filmClips(after, occ.productionId).find((c) => c.occurrenceId === occ.id)!;
-    expect(sceneLen).toBe(target);
-    expect(clip.durationFrames).toBe(target);
+    const sceneLen = compositionDuration(r.state, r.state.compositions[compositionId]!);
+    const clip = filmClips(r.state, occ.productionId).find((c) => c.occurrenceId === occId)!;
+    expect(sceneLen).toBe(180);
+    expect(clip.durationFrames).toBe(180);
   });
 });
