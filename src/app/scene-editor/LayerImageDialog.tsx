@@ -208,7 +208,6 @@ function Body({
     media: AssetMedia,
     note: string,
     label: string,
-    original: UploadedImage["original"] = null,
   ): Promise<string | null> {
     if (!asset) return t("app-scene-editor-layer-image-dialog.save-version.message.0eb54ac8c57d");
     let variantId = target;
@@ -229,20 +228,6 @@ function Body({
       setTarget(variantId);
     }
     const group = `opplasting-${versionId}`;
-    if (original) {
-      const o = await cmds.runAndWait(
-        {
-          type: "AddAssetVersion",
-          versionId: original.versionId as never,
-          variantId: variantId as never,
-          media: original.media,
-          note: original.note,
-        },
-        label,
-        group,
-      );
-      if (o.error) return o.error;
-    }
     const r = await cmds.runAndWait(
       {
         type: "AddAssetVersion",
@@ -276,7 +261,6 @@ function Body({
         file,
         workingImageMaxSide(state.project.frameWidth, state.project.frameHeight),
       );
-      // Originalen (når bildet er skalert ned) lagres som versjonen før arbeidskopien
       const err = await saveVersion(
         up.versionId,
         up.media,
@@ -284,7 +268,6 @@ function Body({
           .filter(Boolean)
           .join(" "),
         t("app-scene-editor-layer-image-dialog.err.save-version.88337b4ddfd9", { name: String(asset.name) }),
-        up.original,
       );
       if (err) setError(err);
     } catch (e) {

@@ -88,7 +88,9 @@ export async function uploadAssetImage(
   const versionId = newId<"asset_version">();
   const base = safeFileName(file.name).replace(/\.[A-Za-z0-9]{1,5}$/, "") || "bilde";
   const main = await uploadOne(projectId, assetId, versionId, ingest.decoded, safeFileName(file.name));
-  const derived: import("@/core").DerivedImageFiles = {};
+  const derived: {
+    -readonly [K in keyof import("@/core").DerivedImageFiles]: import("@/core").DerivedImageFile;
+  } = {};
   const longerSide = Math.max(ingest.dimensions.width, ingest.dimensions.height);
   const jobs: Promise<void>[] = [];
   if (ingest.working !== ingest.decoded && ingest.working.size !== ingest.decoded.size)
