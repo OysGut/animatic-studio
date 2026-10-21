@@ -3,7 +3,7 @@
  * gir tilbake samme kanal når navnet er i bruk; to lyttere på samme prosjekt (mobilimporten i prosjektet og i
  * sceneeditoren) krasjet derfor siden. Falsk klient som oppfører seg som Supabase på dette punktet.
  */
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const h = vi.hoisted(() => {
   const channels = new Map<string, { subscribed: boolean }>();
@@ -38,10 +38,16 @@ const h = vi.hoisted(() => {
   };
 });
 vi.mock("@/integrations/supabase/client", () => ({ supabase: h.client }));
+// R7: statisk import. Den dynamiske importen inne i testen lastet hele adaptertreet under testens
+// tidsgrense og fikk tidsavbrudd når full vitest kjørte mange filer samtidig. Nå lastes modulene før
+// testene starter, og hver test begynner med tomt kanalregister.
+import { subscribeMobileImports } from "@/adapters/browser/mobile-import";
+import { subscribeProjectChanges } from "@/adapters/browser/project-data";
+
+beforeEach(() => h.channels.clear());
 
 describe("sanntidskanaler", () => {
-  it("to lyttere på mobilimporten i samme prosjekt krasjer ikke", async () => {
-    const { subscribeMobileImports } = await import("@/adapters/browser/mobile-import");
+  it("to lyttere på mobilimporten i samme prosjekt krasjer ikke", () => {
     const a = subscribeMobileImports("p1", () => {});
     const b = subscribeMobileImports("p1", () => {});
     expect(h.channels.size).toBe(2);
@@ -53,8 +59,7 @@ describe("sanntidskanaler", () => {
     expect(h.channels.size).toBe(0);
   });
 
-  it("to lyttere på prosjektendringene krasjer ikke", async () => {
-    const { subscribeProjectChanges } = await import("@/adapters/browser/project-data");
+  it("to lyttere på prosjektendringene krasjer ikke", () => {
     const a = subscribeProjectChanges("p1", () => {});
     const b = subscribeProjectChanges("p1", () => {});
     a();
