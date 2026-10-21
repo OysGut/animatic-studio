@@ -1136,7 +1136,7 @@ async function openaiCompatText(
         : "";
   if (!text.trim()) throw emptyReply();
   return {
-    stopReason: c?.finish_reason,
+    ...(c?.finish_reason ? { stopReason: c.finish_reason } : {}),
     text: r.json ? checkJson(text) : text,
     usage: {
       inputTokens: num(j.usage?.prompt_tokens),
@@ -1206,7 +1206,7 @@ const anthropic = {
       .join("");
     if (!text.trim()) throw emptyReply();
     return {
-      stopReason: j.stop_reason,
+      ...(j.stop_reason ? { stopReason: j.stop_reason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: { inputTokens: num(j.usage?.input_tokens), outputTokens: num(j.usage?.output_tokens) },
       model: typeof j.model === "string" ? j.model : r.model,
@@ -1286,7 +1286,7 @@ const googleText = {
     const text = (c?.content?.parts ?? []).map((p) => p.text ?? "").join("");
     if (!text.trim()) throw emptyReply();
     return {
-      stopReason: c?.finishReason,
+      ...(c?.finishReason ? { stopReason: c.finishReason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: {
         inputTokens: num(j.usageMetadata?.promptTokenCount),

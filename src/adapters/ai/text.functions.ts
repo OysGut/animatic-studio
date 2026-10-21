@@ -176,7 +176,7 @@ export async function lovableText(
       };
     return {
       ok: true,
-      stopReason,
+      ...(stopReason ? { stopReason } : {}),
       text,
       model,
       usage: {
