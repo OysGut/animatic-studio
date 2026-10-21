@@ -120,7 +120,7 @@ async function main() {
     check(Array.isArray(aiCalls[0]?.scope?.sceneIds), "analysen sender bare scene-ID-er, ingen fri tekst");
     check(!("system" in (aiCalls[0] ?? {})) && !("messages" in (aiCalls[0] ?? {})), "ingen prompt fra klienten");
     await page.screenshot({ path: `${out}/after-analysis.png` });
-    console.log("DBG", await page.getByTestId("library-suggestions-open").count(), await button.evaluate(b => b.outerHTML.slice(0,400)));
+    console.log("DBG", await page.getByTestId("library-suggestions-open").count(), await button.evaluate(b => [!!b.closest("[hidden]"), b.closest("[data-toolbar-group]")?.offsetWidth, document.querySelector("[data-toolbar-group]")?.parentElement?.clientWidth, [...document.querySelectorAll("[data-toolbar-group]")].map(g=>g.offsetWidth+":"+!!g.closest("[hidden]")).join(",")]));
     const status = button.getByTestId("library-analysis-status");
     check(await status.waitFor({ timeout: 15000 }).then(() => true, () => false), "status vises i forslagsknappen");
     await page.waitForFunction(() => !document.querySelector('[data-testid="library-suggestions-open"]')?.disabled, null, { timeout: 15000 });
