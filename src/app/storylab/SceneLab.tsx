@@ -100,7 +100,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language: "nb" }).length))
     + (session?.turns.slice(0, (fromTurnId === null ? -1 : session.turns.findIndex((t) => t.id === fromTurnId)) + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
     + Math.max(0, ...directions.map((d) => d.length)) + 8 * 800 * 4;
-  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 2000 : 800);
+  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 8000 : dialog === "check" ? 2000 : 800);
   const remember = (s: StorySession) => { qc.setQueryData(["story-session", projectId, s.id], { ok: true, session: s }); void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); };
   const save = async (s: StorySession, turns: StoredTurn[], cost = 0, status: "active" | "paused" = "paused") => {
     const r = await append({ data: { projectId, sessionId: s.id, turns, addCostUsd: cost, status } });
@@ -125,7 +125,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     const asset = id ? state.assets[id] : undefined;
     if (!asset || !selectedBlock) return;
     const checkPrompt = lineCheckPrompt({ name: asset.name, profile: profileAt(state, asset.id, sceneId as never), knowledge: knowledgeAt(state, asset.id, sceneId as never), sceneHeading: data.heading, before: data.blocks.slice(0, data.blocks.findIndex((b) => b.id === selectedBlock.id)).filter((b) => b.kind === "dialogue").slice(-12).map((b) => b.text), line: selectedBlock.text, language });
-    const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: checkPrompt.system, messages: [{ role: "user", content: checkPrompt.user }], maxTokens: 800 } });
+    const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: checkPrompt.system, messages: [{ role: "user", content: checkPrompt.user }], maxTokens: 2000 } });
     if (!r.ok) throw new Error(r.message);
     const result = lineCheckFromJson(r.text); if (!result) throw new Error(unreadableReplyMessage());
     const s = analysisSession ?? await make("scene_analysis");
@@ -135,7 +135,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     if (r.usedFallback) setNote(tk("app-storylab-scene-lab.check-line.set-note.c5600584e586"));
   });
   const analyze = () => perform(async () => {
-    const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: analysisPrompt.system, messages: [{ role: "user", content: analysisPrompt.user }], maxTokens: 2000 } });
+    const r = await gen({ data: { projectId, task: "storylab_analysis", json: true, system: analysisPrompt.system, messages: [{ role: "user", content: analysisPrompt.user }], maxTokens: 8000 } });
     if (!r.ok) throw new Error(r.message);
     const p = sceneAnalysisFromJson(r.text, data.blocks.map((b) => b.id));
     const raw = parseJsonLoose(r.text) as { points?: unknown } | null;

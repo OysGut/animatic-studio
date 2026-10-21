@@ -94,6 +94,8 @@ export class ProviderError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    readonly code?: string,
+    readonly details?: { stopReason: string; outputTokens: number },
   ) {
     super(message);
   }
@@ -1005,6 +1007,7 @@ export interface TextRequest {
 }
 
 export interface TextResult {
+  readonly stopReason?: string;
   readonly text: string;
   readonly usage: { readonly inputTokens: number; readonly outputTokens: number };
   readonly model: string;
@@ -1029,22 +1032,48 @@ function refusal(): ProviderError {
   );
 }
 
-/** Kontrollerer JSON-svaret (fjerner eventuelle kodegjerder). */
-function checkJson(text: string): string {
-  const t = text
-    .trim()
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/```$/, "")
-    .trim();
+/** Henter én komplett JSON-verdi uten å reparere innholdet. */
+export function checkJson(text: string): string {
+  const start = text.search(/[\{\[]/);
+  let candidate = text.trim();
+  if (start >= 0) {
+    const stack: string[] = [];
+    let inString = false;
+    let escaped = false;
+    candidate = text.slice(start);
+    for (let i = start; i < text.length; i++) {
+      const c = text[i];
+      if (inString) {
+        if (escaped) escaped = false;
+        else if (c === "\\") escaped = true;
+        else if (c === '"') inString = false;
+      } else if (c === '"') inString = true;
+      else if (c === "{" || c === "[") stack.push(c);
+      else if (c === "}" || c === "]") {
+        const open = stack.pop();
+        if ((c === "}" && open !== "{") || (c === "]" && open !== "[")) break;
+        if (stack.length === 0) {
+          candidate = text.slice(start, i + 1);
+          break;
+        }
+      }
+    }
+  }
   try {
-    JSON.parse(t);
+    JSON.parse(candidate);
   } catch {
     throw new ProviderError(
       tk("adapters-ai-providers-server.check-json.message.3351ebadc995"),
       502,
     );
   }
-  return t;
+  return candidate;
+}
+
+function truncated(stopReason: string, outputTokens: number): ProviderError {
+  return new ProviderError(
+    tk("ai.text.truncated"), 502, "truncated", { stopReason, outputTokens },
+  );
 }
 
 /** Resonneringsmodeller hos OpenAI avviser temperature. */
@@ -1092,6 +1121,7 @@ async function openaiCompatText(
     usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
   const c = j.choices?.[0];
+  if (c?.finish_reason === "length") throw truncated(c.finish_reason, num(j.usage?.completion_tokens));
   if (c?.message?.refusal || c?.finish_reason === "content_filter") throw refusal();
   const content = c?.message?.content;
   const text =
@@ -1106,6 +1136,7 @@ async function openaiCompatText(
         : "";
   if (!text.trim()) throw emptyReply();
   return {
+    ...(c?.finish_reason ? { stopReason: c.finish_reason } : {}),
     text: r.json ? checkJson(text) : text,
     usage: {
       inputTokens: num(j.usage?.prompt_tokens),
@@ -1151,6 +1182,11 @@ const anthropic = {
           ...(system ? { system } : {}),
           messages: r.messages.map((m) => ({ role: m.role, content: m.content })),
           ...(r.temperature !== undefined ? { temperature: Math.min(1, r.temperature) } : {}),
+          // Auto-verktøy gir strukturert JSON når modellen velger det, med tekst som reserve.
+          ...(r.json ? {
+            tools: [{ name: "json_response", description: "Return the requested JSON object", input_schema: { type: "object" } }],
+            tool_choice: { type: "auto" },
+          } : {}),
         }),
       },
       T_TEXT,
@@ -1158,16 +1194,19 @@ const anthropic = {
     const j = (await res.json()) as {
       model?: string;
       stop_reason?: string;
-      content?: { type?: string; text?: string }[];
+      content?: { type?: string; text?: string; input?: unknown }[];
       usage?: { input_tokens?: number; output_tokens?: number };
     };
+    if (j.stop_reason === "max_tokens") throw truncated(j.stop_reason, num(j.usage?.output_tokens));
     if (j.stop_reason === "refusal") throw refusal();
-    const text = (j.content ?? [])
+    const tool = r.json ? j.content?.find((b) => b.type === "tool_use" && b.input !== undefined) : undefined;
+    const text = tool ? JSON.stringify(tool.input) : (j.content ?? [])
       .filter((b) => b.type === "text")
       .map((b) => b.text ?? "")
       .join("");
     if (!text.trim()) throw emptyReply();
     return {
+      ...(j.stop_reason ? { stopReason: j.stop_reason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: { inputTokens: num(j.usage?.input_tokens), outputTokens: num(j.usage?.output_tokens) },
       model: typeof j.model === "string" ? j.model : r.model,
@@ -1242,10 +1281,12 @@ const googleText = {
       usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
     };
     const c = j.candidates?.[0];
+    if (c?.finishReason === "MAX_TOKENS") throw truncated(c.finishReason, num(j.usageMetadata?.candidatesTokenCount));
     if (j.promptFeedback?.blockReason || c?.finishReason === "SAFETY") throw refusal();
     const text = (c?.content?.parts ?? []).map((p) => p.text ?? "").join("");
     if (!text.trim()) throw emptyReply();
     return {
+      ...(c?.finishReason ? { stopReason: c.finishReason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: {
         inputTokens: num(j.usageMetadata?.promptTokenCount),

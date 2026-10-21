@@ -1800,6 +1800,9 @@
     "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
       "text": "Ugyldige turer"
     },
+    "ai.text.truncated": {
+      "text": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg."
+    },
     "app-account-account-page.account-page.aria-label.3a881a93c577": {
       "text": "Visningsnavn"
     },
@@ -2966,6 +2969,12 @@
     },
     "app-ai-generation-status.kind-label.message.d951bb8fd767": {
       "text": "Video"
+    },
+    "app-ai-generation-status.mark-all-read": {
+      "text": "Merk alle som lest"
+    },
+    "app-ai-generation-status.mark-read": {
+      "text": "Merk som lest"
     },
     "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
       "text": " · del {value1} av {value2}"
@@ -7813,6 +7822,9 @@
     "app-i18n-language.language-switch.title.691fad620f12": {
       "text": "Språk i tjenesten"
     },
+    "app-inspect.angle": {
+      "text": "Vinkel"
+    },
     "app-inspect.close": {
       "text": "Lukk"
     },
@@ -7821,6 +7833,9 @@
     },
     "app-inspect.discard": {
       "text": "Forkast"
+    },
+    "app-inspect.distance": {
+      "text": "Avstand"
     },
     "app-inspect.dpi": {
       "text": "Kildefilen er under 150 dpi i fysisk størrelse"
@@ -7836,6 +7851,9 @@
     },
     "app-inspect.invalid": {
       "text": "Ugyldig målesett eller kalibrering mangler"
+    },
+    "app-inspect.line": {
+      "text": "Linje"
     },
     "app-inspect.markers": {
       "text": "Markører"
@@ -7854,6 +7872,12 @@
     },
     "app-inspect.plate": {
       "text": "Platenivå / kameraavstand"
+    },
+    "app-inspect.point": {
+      "text": "Punkt"
+    },
+    "app-inspect.ratio": {
+      "text": "Forhold"
     },
     "app-inspect.redo": {
       "text": "Gjør om"
@@ -13025,6 +13049,9 @@
     },
     "app-projects-project-overview.project-overview.span.a041cc091ba2": {
       "text": "Hovedfilmen har ingen scener ennå."
+    },
+    "app-projects-project-todo-box.mark-all-read": {
+      "text": "Merk alle som lest"
     },
     "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
       "text": "Vis alle"
@@ -33258,6 +33285,9 @@
     "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
       "text": "Invalid turns"
     },
+    "ai.text.truncated": {
+      "text": "The response was truncated because it was too long. Try again with a shorter selection."
+    },
     "app-account-account-page.account-page.aria-label.3a881a93c577": {
       "text": "Display name"
     },
@@ -34424,6 +34454,12 @@
     },
     "app-ai-generation-status.kind-label.message.d951bb8fd767": {
       "text": "Video"
+    },
+    "app-ai-generation-status.mark-all-read": {
+      "text": "Mark all as read"
+    },
+    "app-ai-generation-status.mark-read": {
+      "text": "Mark as read"
     },
     "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
       "text": " · part {value1} of {value2}"
@@ -39271,6 +39307,9 @@
     "app-i18n-language.language-switch.title.691fad620f12": {
       "text": "Language of the app"
     },
+    "app-inspect.angle": {
+      "text": "Angle"
+    },
     "app-inspect.close": {
       "text": "Close"
     },
@@ -39279,6 +39318,9 @@
     },
     "app-inspect.discard": {
       "text": "Discard"
+    },
+    "app-inspect.distance": {
+      "text": "Distance"
     },
     "app-inspect.dpi": {
       "text": "Source image is below 150 dpi at physical size"
@@ -39294,6 +39336,9 @@
     },
     "app-inspect.invalid": {
       "text": "Invalid measurement set or calibration missing"
+    },
+    "app-inspect.line": {
+      "text": "Line"
     },
     "app-inspect.markers": {
       "text": "Markers"
@@ -39312,6 +39357,12 @@
     },
     "app-inspect.plate": {
       "text": "Plate level / camera distance"
+    },
+    "app-inspect.point": {
+      "text": "Point"
+    },
+    "app-inspect.ratio": {
+      "text": "Ratio"
     },
     "app-inspect.redo": {
       "text": "Redo"
@@ -44483,6 +44534,9 @@
     },
     "app-projects-project-overview.project-overview.span.a041cc091ba2": {
       "text": "The main film has no scenes yet."
+    },
+    "app-projects-project-todo-box.mark-all-read": {
+      "text": "Mark all as read"
     },
     "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
       "text": "Show all"
