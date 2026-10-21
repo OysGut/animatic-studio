@@ -1,5 +1,12 @@
 # Veikart
 
+## Oppgave 3b (21.10.2026)
+- [x] Mock-merknad på 18 krav med historikk; KI-193/KI-204 åpne.
+- [x] Migrasjon 0070: delingsnøkkelen bare som pepret hash, eldre lenker virker; DB 146/146.
+- [ ] Kjøring av 0070 i Cloud og utfylling: venter på Claude.
+- [x] Canvas 500 noder i produksjonsbygg: under 3 s.
+- [x] Låste sider per dokument-ID med fallback og tester.
+
 ## V1 – status lik virkelighet (21.10.2026)
 - [x] Kravstatus, build_docs/check_kb, TODO og IMPLEMENTATION_STATUS.
 - [x] 21 suiter nb/en, p4–r3r4 og dec0094 med UI_LANG=en, «Mer …»-skjermbilder.
