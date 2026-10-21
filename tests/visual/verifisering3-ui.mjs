@@ -1006,6 +1006,9 @@ async function testOverview() {
   try {
     const text = async () =>
       (await page.locator("main, body").first().innerText()).replace(/\s+/g, " ");
+    // 3b: vent til oversikten er tegnet (teksten ble lest før første tegning ved last, så alle ti tallene manglet)
+    await page.getByText("Majas jul").first().waitFor({ timeout: 30000 }).catch(() => undefined);
+    await page.waitForTimeout(500);
     const t = await text();
     const figures = R([
       ["produksjoner i prosjektet", /Produksjoner.*Hovedfilm.*Majas jul/],

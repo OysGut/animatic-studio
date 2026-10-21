@@ -5249,8 +5249,10 @@ try {
       (await tx`select public.activate_film_share(${r.id}, 1000) as t`)[0]!["t"] as string,
     );
     assert(/^[0-9a-f]{64}$/.test(token), "nøkkelen");
-    const row = (await sql`select token_hash, expires_at from public.film_shares where id = ${r.id}`)[0]!;
-    assert(row["token_hash"] === (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen");
+    const row = (await sql`select token, token_hash, token_digest, expires_at from public.film_shares where id = ${r.id}`)[0]!;
+    // 0070: bare pepret hash lagres, ingen klartekst
+    assert(row["token"] === null && row["token_digest"] === row["token_hash"], "bare hash lagres");
+    assert(row["token_hash"] !== (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen er pepret");
     assert(row["expires_at"] !== null, "30 dager gir utløp");
     // Klienten kan ikke lese nøkkelen eller hashen direkte
     await expectError(as("authenticated", ALICE, (tx) => tx`select token from public.film_shares where id = ${r.id}`), "42501");
@@ -6515,6 +6517,46 @@ try {
     assert(Number((await sql`select count(*)::int n from public.asset_versions where derived_from_version_id is not null and id<>${nv}`)[0]?.["n"])===0,"no backfill");
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(!ac.includes("derived_from"),"apply_changes must be unchanged");
+  });
+  await test("0070: delingsnøkkelen lagres bare som pepret hash; eldre lenker virker og fylles ved oppslag", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=70,"schema version 70");
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('GP5 hash', 25, 1) as id`)[0]!["id"] as string);
+    const prod = (await sql`select id from public.productions where project_id = ${p} limit 1`)[0]!["id"] as string;
+    const rec = await as("authenticated", ALICE, async (tx) => (await tx`select public.record_export(${p}, ${prod}, 'film', 'film.mp4', '{}', '{}') as id`)[0]!["id"] as string);
+    const mk = async () => (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, null) as r`)[0]!["r"] as { id: string })).id;
+    // Ny deling: QR-nøkkelen kan vises igjen, slås opp via hash, og står ikke i klartekst noe sted
+    const a = await mk();
+    const ta = await as("authenticated", ALICE, async (tx) => (await tx`select public.activate_film_share(${a}, 1000) as t`)[0]!["t"] as string);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${a}) as t`)[0]!["t"])) === ta, "QR igjen");
+    const dump = JSON.stringify(await sql`select * from public.film_shares where id = ${a}`);
+    assert(!dump.includes(ta), "nøkkelen finnes ikke i raden");
+    assert((await sql`select public.film_share_lookup(${ta}) as id`)[0]!["id"] === a, "oppslag via hash");
+    assert((await sql`select public.film_share_lookup(${"0".repeat(64)}) as id`)[0]!["id"] === null, "ukjent nøkkel");
+    assert((await sql`select public.film_share_lookup('ikke-hex') as id`)[0]!["id"] === null, "ugyldig nøkkel");
+    // Bare service role kan slå opp; pepperen er utilgjengelig
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select pepper from private.film_share_secret`), "42501");
+    // Eldre deling (slik 0047 lagret den): klartekst + usaltet hash, ingen digest
+    const b = await mk(); const tb = "ab".repeat(32);
+    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tb}, token_hash=encode(sha256(convert_to(${tb}, 'UTF8')), 'hex') where id = ${b}`;
+    assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker");
+    const filled = (await sql`select token_digest, token from public.film_shares where id = ${b}`)[0]!;
+    assert(typeof filled["token_digest"] === "string" && filled["token"] === tb, "fylt ved første oppslag, klartekst ikke fjernet");
+    assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker etter utfylling");
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${b}) as t`)[0]!["t"])) === tb, "QR for eldre deling");
+    // Eksplisitt utfylling
+    const c = await mk(); const tc = "cd".repeat(32);
+    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tc}, token_hash=encode(sha256(convert_to(${tc}, 'UTF8')), 'hex') where id = ${c}`;
+    assert(Number((await sql`select private.film_share_backfill_digests() n`)[0]!["n"]) >= 1, "utfylling");
+    assert((await sql`select token_digest from public.film_shares where id = ${c}`)[0]!["token_digest"] !== null, "c fylt");
+    // Tilbakekalling stopper oppslaget i serveren (status), og QR forsvinner
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${a})`);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${a}) as t`)[0]!["t"])) === null, "ingen QR etter tilbakekalling");
+    // Ingen av de seks Cloud-funksjonene er erstattet
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("token_digest"),"apply_changes uendret");
+    await sql`select public.delete_project(${p}, ${ALICE})`;
   });
 } finally {
   await sql.end();

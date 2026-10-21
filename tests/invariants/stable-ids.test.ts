@@ -217,3 +217,43 @@ describe("låste sider følger blokkens side i originalen", () => {
     expect(locks(moved)[occs[0]!.id]).toBe(1);
   });
 });
+
+describe("låste sider per importert dokument (dokument-ID, fallback for gamle prosjekter)", () => {
+  const setup = (refs: (i: number) => { page: number; y: number; documentId?: string }) => {
+    const seed = seedProject(4);
+    const view = scriptView(seed.state, seed.mainId);
+    const blocks = { ...seed.state.blocks };
+    view.forEach((sc, i) => sc.blocks.forEach((b) => (blocks[b.id] = { ...blocks[b.id]!, sourceRef: refs(i) })));
+    return { seed, s: { ...seed.state, blocks } as ProjectState };
+  };
+  const locks = (st: ProjectState, mainId: string) =>
+    scriptPaginationInput(st, mainId as never, { lockedPages: true }).map((p) => p.lockedPage);
+
+  it("to manus med egne sidetall kolliderer ikke: dokument B følger etter dokument A", () => {
+    // A: side 1–2, B: side 1–2 i sitt eget dokument
+    const { seed, s } = setup((i) => ({ page: (i % 2) + 1, y: 0, documentId: i < 2 ? "a".repeat(64) : "b".repeat(64) }));
+    expect(locks(s, seed.mainId)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("gamle prosjekter uten dokument-ID får samme sider som før", () => {
+    const { seed, s } = setup((i) => ({ page: 3 + i, y: 0 }));
+    expect(locks(s, seed.mainId)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("eldre blokker og nytt dokument: det eldre manuset beholder sine sider", () => {
+    const { seed, s } = setup((i) => (i < 2 ? { page: 5 + i, y: 0 } : { page: 1 + (i - 2), y: 0, documentId: "c".repeat(64) }));
+    expect(locks(s, seed.mainId)).toEqual([1, 2, 3, 4]);
+  });
+
+  it("ombytting og deaktivering endrer ikke hvilket dokument eller hvilken side en scene har", () => {
+    const { seed, s } = setup((i) => ({ page: (i % 2) + 1, y: 0, documentId: i < 2 ? "a".repeat(64) : "b".repeat(64) }));
+    const occs = orderedOccurrences(s, seed.mainId);
+    const byOcc = (st: ProjectState) =>
+      Object.fromEntries(scriptPaginationInput(st, seed.mainId, { lockedPages: true }).map((p) => [p.occurrenceId, p.lockedPage]));
+    const moved = mustApply(s, { type: "MoveOccurrence", occurrenceId: occs[3]!.id, orderKey: keyBetween(null, occs[0]!.orderKey) });
+    expect(byOcc(moved)[occs[3]!.id]).toBe(4);
+    const off = mustApply(s, { type: "SetOccurrenceActive", occurrenceId: occs[2]!.id, active: false });
+    expect(byOcc(off)[occs[3]!.id]).toBe(4);
+  });
+});
+

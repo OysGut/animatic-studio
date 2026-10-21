@@ -137,6 +137,7 @@ export function ImportDialog({
       const command = planImport(state, read.parsed, {
         productionId: productionId as ProductionId,
         skipContinuation: !includeContinuation,
+        documentId: read.sha256,
       });
       // Importen og tittelsiden angres som ett steg (KI-20)
       const group = newId<"command">();

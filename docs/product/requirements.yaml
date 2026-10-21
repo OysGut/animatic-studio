@@ -8022,7 +8022,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0075
     change: "Med falsk ElevenLabs-adapter: lyd lages bare etter bekreftet kostnad og av redaktør/eier, lagres som MP3 under lydressursen (sti, sha256, størrelse), jobben logges med leverandør, modell, beskrivelse, pris og spor; panelet legger resultatet inn som ny versjon med modell og beskrivelse i notatet (ikke godkjent automatisk). Avslag gir ingen fil og en feilet jobb. Ikke prøvd mot den ekte tjenesten (KI-153)."
-  notes: Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5.
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5. Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0204
   title: Koble lydfiler til produksjonsobjekter
   text: Lydfiler skal kunne knyttes til karakterer, replikker, scener, delsekvenser, hendelser og produksjoner.
@@ -10357,7 +10360,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0075
     change: "Med falsk Google-adapter: et segment med sammenheng venter i køen til forrige segment har video og siste bilde er lagret, og sendes så med siste bilde som startbilde (bilde og signert lenke til adapteren); segmentet kan bare vente på segmentet like før."
-  notes: ''
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0264
   title: Sette segmenter sammen til én scene
   text: Etter generering skal segmentene kunne settes sammen til én scene.
@@ -10621,7 +10627,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0075
     change: "Med falske leverandørsvar: nøkkelen prøves hos leverandøren før lagring; en avvist nøkkel lagres ikke, en godkjent lagres kryptert (bare de fire siste tegnene i klartekst, knyttet til brukeren), og en nøkkel som ikke kunne prøves lagres som «ikke prøvd». Ikke prøvd mot de ekte tjenestene (KI-153)."
-  notes: ''
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0271
   title: Sikker nøkkelhåndtering
   text: API-nøkler skal håndteres sikkert.
@@ -19020,7 +19029,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "«Oppdater med AI»: beskrivelsen per segment vises og kan endres før sending, og den endrede sendes. «Generer scene»: samme beskrivelse sendt til Google Veo og OpenAI Sora gjennom hver sin adapter (samme segment). Merknad (tilgjengelighet): i src/app/assembly/AiUpdateSection.tsx:171–196 ligger «Tilbake til forslaget» i samme <label> som feltet; etter en endring mister feltet navnet sitt og knappen leses som «Beskrivelse for segment N»."
-  notes: Oppsummerer kap. 17.1, 17.3, 19.2.
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Oppsummerer kap. 17.1, 17.3, 19.2. Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0490
   title: 'Prinsipp 12: Engelske AI-instruksjoner og prompter'
   text: AI-systeminstruksjoner og genereringsprompter skal som hovedregel være på engelsk.
@@ -21719,7 +21731,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0075
     change: "Brukeren velger leverandør i «AI-leverandører», får veiledning og lenker, limer inn nøkkelen i et skjult felt som tømmes etter lagring; nøkkelen sendes én gang, prøves og lagres kryptert på serveren (bare de fire siste tegnene vises). Ikke prøvd mot de ekte tjenestene (KI-153)."
-  notes: "Adapterne er ikke prøvd mot de ekte tjenestene (KI-153)."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-153 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Adapterne er ikke prøvd mot de ekte tjenestene (KI-153). Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-153 er åpen)."
 - id: REQ-0567
   title: "Slett prosjekt (bare eier)"
   text: "Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet."
@@ -22318,6 +22333,10 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0076
     change: "Chromium med falsk mikrofon: opptak startes og stoppes i sceneeditoren, lagres som lydressurs og lydklipp (CreateAssets, CreateAssetVariant, AddAssetVersion, AddAudioClips) der avspillingshodet sto (2,2 s), vises i sporet, og kuttes til 0,5 s og utvides igjen i monteringen uten ny opplasting. En ekte mikrofon er ikke prøvd."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med falsk mikrofon, prøving med ekte opptak og utstyr gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med falsk mikrofon, prøving med ekte opptak og utstyr gjenstår."
 - id: REQ-0584
   title: "«Bruk aktivt utsnitt» i kamerautsnitt"
   text: "Start- og sluttrammen i et kamerautsnitt skal kunne hente utsnittet kameraet har når scenen rett før slutter (knappen «Bruk aktivt utsnitt»), så overgangen mellom scenene henger sammen."
@@ -22628,6 +22647,10 @@ requirements:
   - date: '2026-10-13'
     decision: DEC-0079
     change: "Godtatt av Mars (test 14). fal.ai-feilen «405» etter betalt jobb rettet (status hentes under app-ID-en, KI-188)."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0591
   title: "Arbeidsliste for oppdaterte ressurser"
   text: "Når en ressurs er oppdatert, skal brukeren kunne få opp en arbeidsliste over scenene som er berørt, og scene for scene velge om den nye versjonen skal brukes i stedet for den gamle."
@@ -23245,6 +23268,10 @@ requirements:
   - date: '2026-10-13'
     decision: DEC-0079
     change: "Opprettet etter Mars' testrunde 13.10.2026"
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0610
   title: "Bredere lagnavn i tidslinjen"
   text: "Skillet mellom lagnavnene og tidslinjen i sceneeditoren kan dras, så lange lagnavn kan leses. Bredden huskes i nettleseren; dobbeltklikk gir standard."
@@ -23676,6 +23703,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen)."
 - id: REQ-0624
   title: "Promptmotor per modellfamilie"
   text: "Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen modellen forstår best: fortellende avsnitt for Nano Banana og GPT Image (referanser med roller, positive formuleringer), kort og presis med identiteten først og egen negativ beskrivelse for Seedream, Qwen og FLUX. Ingen filmtittel, ingen replikker, nøytralt lys for figurdesign, farger med navn og kode, flat hvit bakgrunn (frilegges etterpå) når modellen ikke kan lage gjennomsiktighet. En norsk oppsummering vises over den engelske beskrivelsen."
@@ -23745,6 +23776,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen)."
 - id: REQ-0626
   title: "Visuelt faktaark per ressurs"
   text: "Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, hår, klær, farger, kjennetegn), ett per linje. Et utkast kan lages fra manuset og forsidebildet med AI (bekreftes), rettes og lagres (assets.visual_brief, migrasjon 0030). Faktaarket brukes i bildebeskrivelsene i stedet for manusutdrag."
@@ -23784,6 +23819,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen)."
 - id: REQ-0627
   title: "Seedream 4.5 og Qwen-Image-Edit"
   text: "Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD per bilde) og Qwen-Image-Edit (endrer et bilde, negativ beskrivelse, ca. 0,03 USD per megapiksel). Qwen krever et forbilde; det sjekkes før noe betales."
@@ -23817,6 +23856,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen)."
 - id: REQ-0628
   title: "Oppskalering"
   text: "Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 USD per megapiksel) eller Clarity (med AI-detaljer, ca. 0,03 USD per megapiksel). Prisen regnes fra størrelsen på resultatet og vises før «Ja, oppskaler»; resultatet blir en ny versjon (med samme vinkel)."
@@ -23854,6 +23897,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen)."
 - id: REQ-0629
   title: "Tjenesten på norsk og engelsk"
   text: "Brukeren kan veksle mellom norsk og engelsk som språk i tjenesten. Valget gjøres på hovedsiden (prosjektlisten), huskes og gjelder alle tekster brukeren ser: knapper, menyer, dialoger, meldinger, feilmeldinger, hjelpetekster, verktøytips og skjermlesertekster, også datoer og tall. Norsk er standard. Brukerens eget innhold (manus, notater, navn) oversettes ikke."
@@ -24033,6 +24080,10 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen)."
 
 - id: REQ-0634
   title: "Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser"
@@ -24374,6 +24425,10 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0085
     change: "Opprettet etter Mars' ønske 15.10.2026"
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen)."
 
 - id: REQ-0644
   title: "Kilden for AI-videoen kan være 2D-scenen, en AI-versjon eller en opplastet video"
@@ -24560,6 +24615,10 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0086
     change: "Opprettet etter Mars' ønske 15.10.2026"
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen). Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen)."
 
 - id: REQ-0650
   title: "Adminside bare for administrator; oystein@gutu.no er fast administrator"
@@ -26315,6 +26374,10 @@ requirements:
   - date: '2026-10-17'
     decision: DEC-0095
     change: "Bygget i bolk D"
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0699
   title: "Valg av analysetjeneste der brukeren er"
   text: "Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales."
@@ -27243,6 +27306,10 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: Registrert fra tilgjengelig oppdragskilde og eksisterende tester; Kap. 42–51 er supplert i B2 fra REQ-0740; historisk oppdragsdekning beholdes.
+  - date: '2026-10-21'
+    decision: 3b
+    change: "Merknad lagt til: Verifisert med mock, prøving med ekte nøkkel gjenstår. Status uendret (Verifisert med enhetstester og mock)."
+  notes: "Verifisert med mock, prøving med ekte nøkkel gjenstår."
 - id: REQ-0726
   title: 'Tekst-AI: autentisering, kvoter og trygge logger'
   text: Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett

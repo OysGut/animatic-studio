@@ -17,6 +17,8 @@ export interface PlanOptions {
   /** Hopp over tekst før første sceneoverskrift i stedet for å lage en fortsettelsesscene. */
   readonly skipContinuation?: boolean;
   readonly newId?: <K extends string>() => Id<K>;
+  /** Originaldokumentet (SHA-256 av filen): låste sider får eget sidenummerrom per dokument. */
+  readonly documentId?: string;
 }
 
 export function planImport(
@@ -39,7 +41,7 @@ export function planImport(
       kind: e.kind,
       text: e.text,
       orderKey: blockKeys[j]!,
-      sourceRef: e.source,
+      sourceRef: opts.documentId ? { ...e.source, documentId: opts.documentId } : e.source,
       uncertainty: e.uncertain ?? null,
     }));
     const headingNotes = [...ps.warnings];

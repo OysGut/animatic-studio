@@ -240,7 +240,7 @@ export interface ScriptBlock extends Entity<BlockId> {
   readonly text: string; // tekst i gjeldende revisjon (current_rev)
   readonly language: typeof PRIMARY_LANGUAGE;
   /** Hvor blokken kom fra i originaldokumentet (side og høyde), for sammenligning med originalen (mandat 4.2). */
-  readonly sourceRef: { readonly page: number; readonly y: number } | null;
+  readonly sourceRef: { readonly page: number; readonly y: number; readonly documentId?: string } | null;
   /** Usikker tolkning ved import (mandat 4.3 punkt 9). null = avklart. */
   readonly uncertainty: string | null;
   /** Fjernet fra manuset (historikken beholdes; kan gjenopprettes). Fjernede blokker vises ikke. */

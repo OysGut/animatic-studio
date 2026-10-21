@@ -20,11 +20,6 @@ async function service(): Promise<AnyClient> {
   return supabaseAdmin as unknown as AnyClient;
 }
 
-async function sha256Hex(s: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 /** mp4 har «ftyp» i byte 4–7. */
 function looksLikeMp4(head: Uint8Array): boolean {
   return head.length >= 8 && head[4] === 0x66 && head[5] === 0x74 && head[6] === 0x79 && head[7] === 0x70;
@@ -94,12 +89,14 @@ export const resolveFilmShare = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true; film: PublicFilm } | { ok: false }> => {
     // Samme svar for ugyldig, ukjent, utløpt og tilbakekalt nøkkel
     if (!SHARE_TOKEN.test(data.token)) return { ok: false };
-    const hash = await sha256Hex(data.token);
     const admin = await service();
+    // Oppslag via pepret hash i databasen (0070); nøkkelen logges aldri
+    const { data: shareId, error: le } = await admin.rpc("film_share_lookup", { p_token: data.token });
+    if (le || typeof shareId !== "string") return { ok: false };
     const { data: row } = await admin
       .from("film_shares")
       .select("title, storage_key, width, height, duration_ms, status, expires_at, project_id")
-      .eq("token_hash", hash)
+      .eq("id", shareId)
       .maybeSingle();
     if (!row || row["status"] !== "ready") return { ok: false };
     const expires = row["expires_at"] ? Date.parse(String(row["expires_at"])) : null;

@@ -216,7 +216,7 @@ export interface NewBlock {
   readonly kind: BlockKind;
   readonly text: string;
   readonly orderKey: string;
-  readonly sourceRef?: { readonly page: number; readonly y: number } | null;
+  readonly sourceRef?: { readonly page: number; readonly y: number; readonly documentId?: string } | null;
   readonly uncertainty?: string | null;
   readonly removed?: boolean;
 }

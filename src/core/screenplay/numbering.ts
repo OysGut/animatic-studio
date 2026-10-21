@@ -6,7 +6,7 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant, isScriptOccurrence, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
-import { lockedPageOffset, sceneSourcePage } from "./script-pages";
+import { lockedPageMapper, sceneSourcePage } from "./script-pages";
 
 import { t } from "@/core/i18n/keyed";
 
@@ -150,9 +150,10 @@ export function exportPaginationInput(
   const numbered = exportNumbering(s, productionId, opts);
   // REQ-0037: samme faste utgangspunkt som manusvisningen (alle importerte blokker), så låste sider ikke
   // flytter seg når scener byttes om, deaktiveres eller slettes
-  const offset = opts.lockedPages ? lockedPageOffset(s) : 0;
+  // og hvert importert dokument har sitt eget sidenummerrom (lockedPageMapper)
+  const map = lockedPageMapper(s);
   const locked = (page: number | undefined) =>
-    opts.lockedPages && page !== undefined ? { lockedPage: page - offset } : {};
+    opts.lockedPages && page !== undefined ? { lockedPage: page } : {};
   return numbered.map((n) => {
     const occ = s.occurrences[n.occurrenceId]!;
     if (n.omitted) {
@@ -177,14 +178,14 @@ export function exportPaginationInput(
       occurrenceId: n.occurrenceId,
       number: n.exportNumber,
       headingText: formatHeading(n.heading),
-      ...locked(sceneSourcePage(blocks)),
+      ...locked(sceneSourcePage(blocks, map)),
       blocks: [
         ...marker,
         ...blocks.map((b) => ({
           id: b.id,
           kind: b.kind,
           text: b.text,
-          ...locked(b.sourceRef?.page),
+          ...locked(map(b.sourceRef)),
           ...fountainMarksOf(b.sourceRef, b.text),
         })),
       ],

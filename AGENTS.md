@@ -34,7 +34,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
-19. Film shares (GP5): a hashed token binds one exported mp4; /se/$token resolves only via a server function.†
+19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
 20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
 21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
 23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
@@ -55,3 +55,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 35. i18n: all text uses t()/tLocalized with keyed catalogs; no new L()/localized(); builds stop unless nb/en are complete.†
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
+38. Locked script pages number each imported document separately (sourceRef.documentId = file SHA-256, import order); blocks without it form one legacy document, so old projects keep their pages.
