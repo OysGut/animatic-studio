@@ -51,6 +51,6 @@ Kortversjonen:
 31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag; old rows derive from project+language (no backfill).
 32. ProRes: own worker encoder, append-only MOV (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
-34. M6: additive updates and computed forecasts.
+34. M6: additive updates, computed forecasts.
 35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. No remount on language switch; server error codes additive. Builds stop unless nb/en are complete; script PDF stops on glyphs Courier lacks.
-36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup never deletes used files.
+36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
