@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { getLanguage, tm } from "@/core";
+import { getUiLanguage, tm } from "@/core";
 import {
   acceptPrivacy,
   fetchMyAccount,
@@ -89,12 +89,12 @@ export function AccountWatcher() {
     if (!a) return;
     if (!synced.current) {
       synced.current = true;
-      if (a.locale && a.locale !== getLanguage()) chooseLanguage(a.locale);
-      else if (!a.locale) void saveMyLocale(getLanguage()).catch(() => undefined);
+      if (a.locale && a.locale !== getUiLanguage()) void chooseLanguage(a.locale);
+      else if (!a.locale) void saveMyLocale(getUiLanguage()).catch(() => undefined);
       return;
     }
     // Testspråket en-XA lagres aldri på kontoen; det regnes som engelsk
-    const base = lang === "nb" ? "nb" : "en";
+    const base = lang === 'en-XA' ? 'en' : lang;
     if (a.locale !== base)
       void saveMyLocale(base).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
   }, [a, lang, qc]);

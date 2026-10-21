@@ -7,6 +7,7 @@
  * Plattformnøytral: ingen DOM eller nettleser-API-er (Intl finnes i alle JS-motorer).
  */
 import { t } from "./keyed";
+import { languageFormatLocale } from './languages';
 
 export type ClockPref = "country" | "24" | "12";
 export type DateFormatPref = "country" | "dmy-dot" | "ymd-iso" | "mdy-slash" | "dmy-slash";
@@ -30,11 +31,9 @@ const MIN = 60_000;
 const HOUR = 60 * MIN;
 const DAY = 24 * HOUR;
 
-const baseLang = (language: string) => (language === "nb" ? "nb" : "en");
-
 /** Språkkoden Intl får for ord og ukedager. */
 function wordLocale(o: TimeFormatOptions): string {
-  return baseLang(o.language) === "nb" ? "nb-NO" : "en";
+  return languageFormatLocale(o.language);
 }
 
 /** Landets vanlige språk (for «som landet»), f.eks. US → en-US, DE → de-DE. */

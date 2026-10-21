@@ -10,6 +10,25 @@ import { createTranslator, type MessageCatalog, type MessageParameters } from '.
 import { getUiLanguage, pseudoText } from './index';
 
 let translate: ReturnType<typeof createTranslator> | undefined;
+const catalogs: Record<string, MessageCatalog> = { nb: runtime.nb as MessageCatalog, en: runtime.en as MessageCatalog };
+const loaders = import.meta.glob<{ default: MessageCatalog }>('./locales/*.json');
+const pending = new Map<string, Promise<void>>();
+const missing = new Set<string>();
+/** Loads one locale, independently. No English fallback is cached as a translated result. */
+export function loadUiCatalog(language: string): Promise<void> {
+  if (catalogs[language] || language === 'en-XA') return Promise.resolve();
+  const previous = pending.get(language);
+  if (previous) return previous;
+  const loader = loaders[`./locales/${language}.json`];
+  if (!loader) return Promise.resolve();
+  const task = loader().then(module => {
+    // Only executable runtime keys enter the translator; legacy inventory rows stay build-time data.
+    catalogs[language] = Object.fromEntries(Object.entries(module.default).filter(([key]) => key in runtime.en));
+    translate = undefined;
+  }).catch(error => { pending.delete(language); throw error; });
+  pending.set(language, task);
+  return task;
+}
 function translator() {
   if (translate) return translate;
   const nb = runtime.nb as MessageCatalog;
@@ -22,7 +41,11 @@ function translator() {
       ...(msg.plural ? { plural: { ...msg.plural, forms: Object.fromEntries(Object.entries(msg.plural.forms).map(([c, f]) => [c, pseudoText(f)])) } } : {}),
     };
   }
-  translate = createTranslator(manifest, { nb, en, 'en-XA': pseudo });
+  catalogs['en-XA'] = pseudo;
+  translate = createTranslator(manifest, catalogs, event => {
+    const id = `${event.locale}:${event.key}`;
+    if (import.meta.env.DEV && !missing.has(id)) { missing.add(id); console.warn('Translation fallback', event); }
+  }, true);
   return translate;
 }
 

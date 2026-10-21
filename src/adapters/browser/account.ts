@@ -3,12 +3,13 @@
  * låste prosjekter. Uten migrasjon 0033 gir funksjonene «ukjent» i stedet for å feile.
  */
 import { browserClient, db, plainError, type BackendError } from "./client";
+import { isUiLang, type UiLang } from '@/core/i18n/languages';
 
 export interface MyAccount {
   readonly status: "active" | "blocked" | "deleting" | "deleted";
   readonly isAdmin: boolean;
   readonly permanentAdmin: boolean;
-  readonly locale: "nb" | "en" | null;
+  readonly locale: UiLang | null;
   readonly displayName: string;
   readonly privacyVersion: number | null;
   readonly acceptedVersion: number | null;
@@ -29,7 +30,7 @@ export async function fetchMyAccount(): Promise<MyAccount | null> {
     status: (a["status"] as MyAccount["status"]) ?? "active",
     isAdmin: a["is_admin"] === true,
     permanentAdmin: a["permanent_admin"] === true,
-    locale: a["locale"] === "en" || a["locale"] === "nb" ? a["locale"] : null,
+    locale: isUiLang(a['locale']) ? a['locale'] : null,
     displayName: typeof a["display_name"] === "string" ? a["display_name"] : "",
     privacyVersion: num(a["privacy_version"]),
     acceptedVersion: num(a["accepted_version"]),
@@ -67,7 +68,7 @@ export async function touchActivity(): Promise<void> {
   await db.rpc("touch_activity", {});
 }
 
-export async function saveMyLocale(locale: "nb" | "en"): Promise<BackendError | null> {
+export async function saveMyLocale(locale: UiLang): Promise<BackendError | null> {
   const { error } = await db.rpc("set_my_locale", { p_locale: locale });
   return plainError(error);
 }
