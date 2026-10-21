@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/auth";
+import { sendPasswordReset, sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -76,6 +76,19 @@ export function AuthScreen() {
       );
   }
 
+  async function resetPassword() {
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError(t("auth.password-reset.email-required"));
+      return;
+    }
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    await sendPasswordReset(email);
+    setBusy(false);
+    setNotice(t("auth.password-reset.sent"));
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <div className="w-full max-w-[360px]">
@@ -124,6 +137,12 @@ export function AuthScreen() {
               className="h-8 bg-surface-3"
             />
           </div>
+          {mode === "signin" ? (
+            <button type="button" className="text-xs text-accent-brand hover:underline"
+              disabled={busy} onClick={() => void resetPassword()}>
+              {t("auth.password-reset.forgot")}
+            </button>
+          ) : null}
           {mode === "signup" ? (
             <label className="flex items-start gap-2 text-xs text-text-secondary">
               <input

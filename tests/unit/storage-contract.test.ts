@@ -38,7 +38,7 @@ function schemaColumns(): Map<string, Set<string>> {
       }
       out.set(m[1]!, cols);
     }
-    for (const m of sql.matchAll(/alter table public\.(\w+) add column if not exists (\w+)/g)) {
+    for (const m of sql.matchAll(/alter table public\.(\w+) add column (?:if not exists )?(\w+)/g)) {
       out.get(m[1]!)?.add(m[2]!);
     }
   }

@@ -73490,5 +73490,227 @@
   },
   "core-rig-multiplane-commands.plate.invalid": {
     "text": "The plate does not exist in the scene's rig"
+  },
+  "app-shell-project-nav.nav-label.rig": {
+    "text": "Rig"
+  },
+  "routes-prosjekt-rigg.head.title": {
+    "text": "Rig – Animatic Studio"
+  },
+  "routes-prosjekt-rigg.head.description": {
+    "text": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates."
+  },
+  "app-rig.loading": {
+    "text": "Loading the rig …"
+  },
+  "app-rig.load-error": {
+    "text": "Could not load the project."
+  },
+  "app-rig.scene-label": {
+    "text": "Scene"
+  },
+  "app-rig.default-rig": {
+    "text": "Default rig (whole project)"
+  },
+  "app-rig.scene-option": {
+    "text": "Scene {number}"
+  },
+  "app-rig.camera-heading": {
+    "text": "Camera and lens"
+  },
+  "app-rig.sensor-width": {
+    "text": "Sensor width"
+  },
+  "app-rig.sensor-height": {
+    "text": "Sensor height"
+  },
+  "app-rig.focal-length": {
+    "text": "Focal length"
+  },
+  "app-rig.camera-height": {
+    "text": "Camera height above the table"
+  },
+  "app-rig.camera-mode": {
+    "text": "Camera mode"
+  },
+  "app-rig.mode-fixed": {
+    "text": "Fixed camera (digital zoom)"
+  },
+  "app-rig.mode-moving": {
+    "text": "The camera moves physically"
+  },
+  "app-rig.plates-heading": {
+    "text": "Plates"
+  },
+  "app-rig.plate-name": {
+    "text": "Name"
+  },
+  "app-rig.plate-height": {
+    "text": "Height above the table"
+  },
+  "app-rig.glass-thickness": {
+    "text": "Glass thickness"
+  },
+  "app-rig.add-plate": {
+    "text": "Add plate"
+  },
+  "app-rig.remove-plate": {
+    "text": "Remove the plate"
+  },
+  "app-rig.plate-in-use": {
+    "text": "The plate cannot be removed: layers in the scene use it."
+  },
+  "app-rig.calibration-heading": {
+    "text": "Calibration"
+  },
+  "app-rig.calibration-none": {
+    "text": "Not calibrated – the theoretical calculation is used."
+  },
+  "app-rig.calibration-valid": {
+    "text": "Valid calibration from {date}."
+  },
+  "app-rig.calibration-invalid": {
+    "text": "The calibration is invalid because the camera values changed. It is kept, but the theoretical calculation is used."
+  },
+  "app-rig.calibrate-button": {
+    "text": "Save measurement as calibration"
+  },
+  "app-rig.calibration-px-per-mm": {
+    "text": "Measured pixels per mm"
+  },
+  "app-rig.calibration-reference-plate": {
+    "text": "Reference plate for the measurement"
+  },
+  "app-rig.templates-heading": {
+    "text": "Templates"
+  },
+  "app-rig.save-as-template": {
+    "text": "Save as template"
+  },
+  "app-rig.update-template": {
+    "text": "Update the template"
+  },
+  "app-rig.apply-template": {
+    "text": "Use the template"
+  },
+  "app-rig.template-name-placeholder": {
+    "text": "Template name"
+  },
+  "app-rig.no-templates": {
+    "text": "No templates yet."
+  },
+  "app-rig.publish-global": {
+    "text": "Publish to the workspace library"
+  },
+  "app-rig.publish-done": {
+    "text": "The template is published in the workspace's global library."
+  },
+  "app-rig.publish-error": {
+    "text": "Could not publish the template."
+  },
+  "app-rig.print-heading": {
+    "text": "3D printing"
+  },
+  "app-rig.print-coming": {
+    "text": "Coming later"
+  },
+  "app-rig.units-label": {
+    "text": "Units"
+  },
+  "app-rig.unit-mm": {
+    "text": "mm"
+  },
+  "app-rig.unit-in": {
+    "text": "inches"
+  },
+  "app-rig.save-rig": {
+    "text": "Save the rig"
+  },
+  "app-rig.save-rig-label": {
+    "text": "Changed the rig"
+  },
+  "app-rig.new-plate-name": {
+    "text": "Plate {number}"
+  },
+  "app-rig.side-view-aria": {
+    "text": "Side view of the rig to scale: camera, lens and plates"
+  },
+  "app-rig.distance-label": {
+    "text": "Distance {distance}"
+  },
+  "app-rig.field-of-view": {
+    "text": "Field of view {size}"
+  },
+  "app-rig.layers-panel.plate-label": {
+    "text": "Plate"
+  },
+  "app-rig.layers-panel.no-plate": {
+    "text": "No plate"
+  },
+  "app-rig.layers-panel.physical-size": {
+    "text": "Physical size: {size}"
+  },
+  "app-rig.layers-panel.depth-label": {
+    "text": "Depth"
+  },
+  "app-rig.layers-panel.parallax-override": {
+    "text": "The parallax is overridden away from the plate level"
+  },
+  "app-rig.layers-panel.set-plate-label": {
+    "text": "Changed the layer's plate"
+  },
+  "auth.password-reset.forgot": {
+    "text": "Forgot password?"
+  },
+  "auth.password-reset.email-required": {
+    "text": "Enter a valid email address first."
+  },
+  "auth.password-reset.sent": {
+    "text": "If the email address exists in our system, an email with a password reset link has been sent."
+  },
+  "auth.password-reset.title": {
+    "text": "Reset password | Animatic Studio"
+  },
+  "auth.password-reset.description": {
+    "text": "Choose a new Animatic Studio password using the link from your email."
+  },
+  "auth.password-reset.og-type": {
+    "text": "website"
+  },
+  "auth.password-reset.twitter-card": {
+    "text": "summary"
+  },
+  "auth.password-reset.heading": {
+    "text": "Set a new password"
+  },
+  "auth.password-reset.password": {
+    "text": "New password"
+  },
+  "auth.password-reset.confirm": {
+    "text": "Confirm new password"
+  },
+  "auth.password-reset.save": {
+    "text": "Save new password"
+  },
+  "auth.password-reset.login": {
+    "text": "Back to sign in"
+  },
+  "auth.password-reset.success": {
+    "text": "Your password has been changed. You can now go to sign in."
+  },
+  "auth.password-reset.checking": {
+    "text": "Checking the reset link …"
+  },
+  "auth.password-reset.invalid": {
+    "text": "The link is invalid or expired. Request a new link from the sign-in page."
+  },
+  "auth.password-reset.too-short": {
+    "text": "The password must contain at least 8 characters."
+  },
+  "auth.password-reset.mismatch": {
+    "text": "The passwords do not match."
+  },
+  "auth.password-reset.failed": {
+    "text": "The password could not be changed. Try again or request a new reset link."
   }
 }

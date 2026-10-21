@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import {
+  Camera,
   Clapperboard,
   Drama,
   FileText,
@@ -19,7 +20,7 @@ import { t, tLocalized } from "@/core/i18n/keyed";
 const LATER: { label: string; icon: ReactNode; milestone: string }[] = [];
 
 /** Navn på arbeidsflatene (slås opp i render, så de følger språkvalget). */
-const NAV_LABEL = tLocalized({ overview: "app-shell-project-nav.nav-label.overview.89940b851876", script: "app-shell-project-nav.nav-label.script.d8ab2fbdbb74", storylab: "app-shell-project-nav.nav-label.storylab.77e0aa3bb71c", library: "app-shell-project-nav.nav-label.library.04e76b60e919", scene: "app-shell-project-nav.nav-label.scene.e526371b5224", assembly: "app-shell-project-nav.nav-label.assembly.00bfb8ce638c", release: "app-shell-project-nav.nav-label.release.4e44a938bd23" });
+const NAV_LABEL = tLocalized({ overview: "app-shell-project-nav.nav-label.overview.89940b851876", script: "app-shell-project-nav.nav-label.script.d8ab2fbdbb74", storylab: "app-shell-project-nav.nav-label.storylab.77e0aa3bb71c", library: "app-shell-project-nav.nav-label.library.04e76b60e919", scene: "app-shell-project-nav.nav-label.scene.e526371b5224", rig: "app-shell-project-nav.nav-label.rig", assembly: "app-shell-project-nav.nav-label.assembly.00bfb8ce638c", release: "app-shell-project-nav.nav-label.release.4e44a938bd23" });
 
 const LINKS = [
   {
@@ -50,6 +51,12 @@ const LINKS = [
     to: "/prosjekt/$projectId/scene",
     labelKey: "scene",
     icon: <Layers aria-hidden />,
+    exact: false,
+  },
+  {
+    to: "/prosjekt/$projectId/rigg",
+    labelKey: "rig",
+    icon: <Camera aria-hidden />,
     exact: false,
   },
   {

@@ -22,7 +22,8 @@ import {
   Unlock,
 } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { LAYER_KIND_LABEL, layerVersion, layerVersions, layersOf, newId, transformAt, applyMatrix, groupMatrixAt, groupOf, regroupFields, IDENTITY_TRANSFORM, type Command, type Composition, type CompositionLayer, type ProjectState } from "@/core";
+import { LAYER_KIND_LABEL, layerVersion, layerVersions, layersOf, newId, transformAt, applyMatrix, groupMatrixAt, groupOf, regroupFields, IDENTITY_TRANSFORM, hasParallaxOverride, physicalLayerSizeMm, rigForLayer, type Command, type Composition, type CompositionLayer, type ProjectState } from "@/core";
+import { formatLength, useRigUnits } from "@/app/rig/units";
 import { useImageUrls } from "@/app/library/asset-images";
 import { layerFieldsOf as fieldsOf } from "@/core";
 import { removeLayer } from "./layer-actions";
@@ -161,6 +162,11 @@ export const LayersPanel = memo(function LayersPanel({
   function exec(command: Command, label: string) {
     setError(run(command, label));
   }
+
+  // Riggen som gjelder for et lag (scenens egen, ellers prosjektets standardrigg); null uten rigg
+  const rigOf = (l: CompositionLayer) => rigForLayer(state, l);
+  const [rigUnit] = useRigUnits();
+  const selectedRig = selected && selected.kind !== "group" ? rigOf(selected) : null;
 
   function toggle(l: CompositionLayer, key: "visible" | "locked") {
     const f = fieldsOf(l);
@@ -579,6 +585,16 @@ export const LayersPanel = memo(function LayersPanel({
                         {l.kind === "group" ? tk("app-scene-editor-layers-panel.layers-panel.span.eb5e76617e9d", { members: String(members) }) : ""}
                         {inGroup ? tk("app-scene-editor-layers-panel.layers-panel.span.cf7fa6b462f3", { name: String(group.name) }) : ""}
                       </span>
+                      {l.rigPlateId && rigOf(l) && hasParallaxOverride(rigOf(l)!.spec, l) ? (
+                        <span
+                          className="text-[11px] font-medium text-status-warning"
+                          title={tk("app-rig.layers-panel.parallax-override")}
+                          aria-label={tk("app-rig.layers-panel.parallax-override")}
+                          data-testid={`rig-parallax-override-${l.id}`}
+                        >
+                          ≠
+                        </span>
+                      ) : null}
                     </span>
                   </button>
                   {editable ? (
@@ -700,6 +716,71 @@ export const LayersPanel = memo(function LayersPanel({
           />
         </div>
       )}
+      {selected && selectedRig ? (
+        <div className="space-y-1 border-t border-border px-3 py-2" data-testid="rig-layer-section">
+          <label className="flex items-center gap-2 text-[11px] text-text-tertiary">
+            {tk("app-rig.layers-panel.plate-label")}
+            <select
+              className="h-6 rounded-sm border border-border bg-surface-3 px-1 text-[11px] text-text-primary disabled:opacity-50"
+              value={selected.rigPlateId ?? ""}
+              disabled={!editable}
+              data-testid="rig-plate-select"
+              onChange={(e) =>
+                exec(
+                  {
+                    type: "SetLayerRigPlate",
+                    layerId: selected.id,
+                    plateId: e.target.value === "" ? null : e.target.value,
+                    depthMm: selected.rigPlateDepthMm ?? 0,
+                  },
+                  tk("app-rig.layers-panel.set-plate-label"),
+                )
+              }
+            >
+              <option value="">{tk("app-rig.layers-panel.no-plate")}</option>
+              {selectedRig.spec.plates.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          {selected.rigPlateId ? (
+            <>
+              <label className="flex items-center gap-2 text-[11px] text-text-tertiary">
+                {tk("app-rig.layers-panel.depth-label")}
+                <input
+                  key={`rig-depth-${selected.id}-${selected.rigPlateDepthMm ?? 0}`}
+                  defaultValue={selected.rigPlateDepthMm ?? 0}
+                  inputMode="decimal"
+                  disabled={!editable}
+                  className="h-6 w-16 rounded-sm border border-border bg-surface-3 px-1 text-[11px] text-text-primary disabled:opacity-50"
+                  data-testid="rig-depth-input"
+                  onBlur={(e) => {
+                    const depth = Number(e.target.value.replace(",", "."));
+                    if (!Number.isFinite(depth) || depth === (selected.rigPlateDepthMm ?? 0)) return;
+                    exec(
+                      { type: "SetLayerRigPlate", layerId: selected.id, plateId: selected.rigPlateId ?? null, depthMm: depth },
+                      tk("app-rig.layers-panel.set-plate-label"),
+                    );
+                  }}
+                />
+                <span>({rigUnit === "in" ? tk("app-rig.unit-in") : tk("app-rig.unit-mm")})</span>
+              </label>
+              {(() => {
+                const size = physicalLayerSizeMm(selectedRig.spec, selected, composition, frame);
+                return size ? (
+                  <p className="text-[11px] text-text-secondary" data-testid="rig-physical-size">
+                    {tk("app-rig.layers-panel.physical-size", {
+                      size: `${formatLength(size.widthMm, rigUnit)} × ${formatLength(size.heightMm, rigUnit)}`,
+                    })}
+                  </p>
+                ) : null;
+              })()}
+            </>
+          ) : null}
+        </div>
+      ) : null}
       {error ? (
         <p role="alert" className="px-3 pt-1 text-xs text-status-danger">
           {error}

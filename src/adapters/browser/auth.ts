@@ -56,3 +56,29 @@ export async function sendSignInLink(
 export async function signOut(): Promise<void> {
   await browserClient.auth.signOut();
 }
+
+/** Samme svar uavhengig av om kontoen finnes; ikke eksponer backend-feil. */
+export async function sendPasswordReset(email: string): Promise<AuthResult> {
+  try {
+    await browserClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/tilbakestill-passord",
+    });
+  } catch {
+    // Også transportfeil skjules for å unngå å røpe kontostatus.
+  }
+  return { error: null, session: null };
+}
+
+/** Oppdater passordet med recovery-økten, uten current_password. */
+export async function updateRecoveryPassword(password: string): Promise<{ error: BackendError | null }> {
+  const result = await browserClient.auth.updateUser({ password });
+  return { error: plainError(result.error) };
+}
+
+/** Recovery-hendelsen beholdes separat fra vanlige innlogginger. */
+export function onPasswordRecovery(listener: () => void): () => void {
+  const { data } = browserClient.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") listener();
+  });
+  return () => data.subscription.unsubscribe();
+}
