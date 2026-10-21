@@ -138,22 +138,24 @@ await page.goto(`${base}/prosjekt/${project.id}`, { waitUntil: "domcontentloaded
 await status.waitFor();
 await step("mislykkede jobber gir teller 2", () => count(2));
 await step("mislykket jobb tenner varseltrekanten", () => triangle(true));
-await status.click();
-const first = page.getByRole("listitem").filter({ has: page.getByTestId(`job-mark-read-${jobs[0].id}`) });
+const readBtn = n => page.getByTestId(`job-mark-read-${jobs[n].id}`);
 await step("Merk som lest demper én jobb og senker telleren", async () => {
- const item = first;
- const index = await item.evaluate(el => Array.from(el.parentElement.children).indexOf(el));
- const list = item.locator("..");
- await page.getByTestId(`job-mark-read-${jobs[0].id}`).click();
+ // Åpne listen hvis den ikke er åpen (sjekken skjer før klikk, så den aldri lukkes igjen).
+ await until(async () => {
+   if (await readBtn(0).count() === 0) await status.click();
+   return (await readBtn(0).count()) > 0;
+ }, "jobblisten åpnet ikke");
+ await readBtn(0).click();
  await count(1);
- await until(async () => Number(await list.getByRole("listitem").nth(index).evaluate(el => getComputedStyle(el).opacity)) < 1, "lest jobb er ikke nedtonet");
+ const li = page.getByText(jobs[0].model).locator("xpath=ancestor::li[1]");
+ await until(async () => Number(await li.evaluate(el => getComputedStyle(el).opacity)) < 1, "lest jobb er ikke nedtonet");
  await until(() => SERVER_PREFS.aiJobsRead?.readIds?.includes(jobs[0].id), "aiJobsRead.readIds ble ikke lagret på kontoen");
 });
 await step("Merk alle som lest fjerner uleste feil i begge visninger", async () => {
  await page.getByTestId("jobs-mark-all-read").click();
  await until(() => Boolean(SERVER_PREFS.aiJobsRead?.readBefore), "aiJobsRead.readBefore ble ikke lagret");
  assert(await page.getByTestId("jobs-mark-all-read").count() === 0, "fortsatt uleste feil i listen");
- assert(await page.getByTestId("todo-jobs-mark-all-read").count() === 0, "fortsatt uleste feil i TODO");
+ await until(async () => (await page.getByTestId("todo-jobs-mark-all-read").count()) === 0, "fortsatt uleste feil i TODO");
  assert(!(await status.innerText()).match(/\d+/), "telleren er ikke nullstilt");
 });
 await step("Merk alle slukker varseltrekanten", () => triangle(false));
