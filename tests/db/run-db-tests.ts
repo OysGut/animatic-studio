@@ -5679,7 +5679,7 @@ try {
     // Duplikat per klipp+take avvises i kjernen; den unike indeksen er siste skanse.
     await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(14) } }), /allerede leppesynk|already has lip sync/);
     // Ugyldige verdier avvises: ukjent klipp, ukjent kilde, ugyldig farge.
-    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke/);
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke|The line was not found/);
     await expectError(as("service_role", null, tx => tx`insert into public.lipsync_results(id,project_id,clip_id,take_id,source,algorithm_version,audio_hash,created_by) values (${C6(16)},${c6Project},${C6(11)},${C6(9)},'ukjent',1,'x',${ALICE})`), "23514");
     await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,name,color,spec,created_by) values (${C6(17)},${c6Project},'X','blå','{}',${ALICE})`), "23514");
     await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,rig_id,name,color,spec,created_by) values (${C6(18)},${c6Project},${C6(91)},'X','#a1b2c3','{}',${ALICE})`), "23503");

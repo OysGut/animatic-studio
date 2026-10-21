@@ -226,7 +226,7 @@ describe("ML3 – feilsiden følger språkvalget", () => {
   it("nettleserspråket brukes når ingenting er lagret", () => {
     expect(browserUiLanguage(["en-GB", "nb"])).toBe("en");
     expect(browserUiLanguage(["nn-NO"])).toBe("nb");
-    expect(browserUiLanguage(["de-DE"])).toBeNull();
+    expect(browserUiLanguage(["de-DE"])).toBe('de'); // B-107: German is now a complete UI locale.
   });
   it("lagret språk leses synkront før LanguageRoot har satt det", () => {
     expect(getUiLanguage()).toBe("nb");
