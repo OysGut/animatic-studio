@@ -100,9 +100,9 @@
 
 ## V1 + småting + ID-kartlegging (21.10.2026)
 - [x] Statusrapport lagret med vedlegg (STATUS_2026-10-21.md)
-- [ ] V1: verifiser 54 P0/P1-krav med test + REQ-0503/0145; build_docs/check_kb; TODO.md og IMPLEMENTATION_STATUS.md
-- [ ] 22 suiter til VISUAL_SCHEMA_VERSION + kontroll mot faste versjoner
+- [x] V1: verifiser 54 P0/P1-krav med test + REQ-0503/0145; build_docs/check_kb; TODO.md og IMPLEMENTATION_STATUS.md
+- [x] 22 suiter til VISUAL_SCHEMA_VERSION + kontroll mot faste versjoner
 - [x] scene-video-ui full UI_LANG; storylab-canvas-ui og mts-global overstyres av UI_LANG
-- [ ] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
-- [ ] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
+- [x] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
+- [x] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
 - [x] ID3: stabile ID-er (REQ-0037/0022/0518), migrasjon 0069, verifisering3 engelsk – se docs/development/ID3_REPORT.md
