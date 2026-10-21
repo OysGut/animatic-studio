@@ -1,5 +1,13 @@
 # Veikart
 
+## B-105a og KR-1 (21.10.2026)
+- [ ] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
+- [ ] Felles ingestImage, avledede filer, bakgrunnsoppgradering og begrenset konturbuffer.
+- [ ] Flytt Story Lab- og bildepromptbygging til autoriserte serveroppgaver.
+- [ ] Enhets-/arkitekturtester, sekvensielle visuelle regresjoner, full Vitest og lokale DB-tester.
+- [ ] Kontroller produksjonsbunter/kildekart og skriv B105A_REPORT.md.
+- [ ] KR-1: oppdater kravregisteret etter testdekning og kjør build_docs/check_kb.
+
 ## B-107 / B-111 – åpen språkliste (21.10.2026)
 - [x] Fjern .overforing og ignorer gamle øyeblikksbilder.
 - [x] Åpent register, separat lasting, reserve, CLDR og import-/eksportverktøy.
