@@ -54,3 +54,4 @@ Kortversjonen:
 34. M6: additive updates, computed forecasts.
 35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. No remount on language switch; server error codes additive. Builds stop unless nb/en are complete; script PDF stops on glyphs Courier lacks.
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
+37. R3: undo/redo of a global publish runs as a history effect bound to the command group (registerHistoryEffect): undo withdraws the global version via a security-definer function, redo republishes; global version rows and files are never changed, and other projects keep their copies.
