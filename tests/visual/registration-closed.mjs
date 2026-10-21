@@ -165,8 +165,7 @@ await run("stengt-feil-fra-databasen", "/konto", async (page, st) => {
   await page.locator("#email").fill("ny@example.no");
   await page.locator("#password").fill("hemmelig-passord");
   await page.getByTestId("signup-country").click();
-  await page.keyboard.type("Norge".slice(0, 3));
-  await page.keyboard.press("Enter");
+  await page.getByTestId("signup-country-option-NO").click();
   await page.getByTestId("signup-privacy").check();
   await page.getByTestId("auth-submit").click();
   await page.waitForTimeout(1000);
