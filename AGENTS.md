@@ -45,11 +45,11 @@ Kortversjonen:
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
 28. Alpha exports share drawFilmFrame; adapters finalize first.
 
-29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock so caps hold.
+29. Quality profiles use immutable per-result snapshots; a generation_jobs trigger serializes budget reservations under the project lock.
 30. Film/alpha exports share a root-mounted browser queue; navigation keeps work, tab closure cannot resume it.
 
 31. Line links use scene-scoped block/translation IDs and reversible commands; backup remaps both, so Norwegian sources never change. ML3: one language version per project+tag; old rows derive from project+language (no backfill).
-32. ProRes uses our own worker encoder and an append-only MOV writer (moov last), so exports stream to OPFS without GPL code.
+32. ProRes: own worker encoder, append-only MOV (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates and computed forecasts.
 35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. No remount on language switch; server error codes additive. Builds stop unless nb/en are complete; script PDF stops on glyphs Courier lacks.
