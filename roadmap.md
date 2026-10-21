@@ -1,5 +1,9 @@
 # Veikart
 
+## B-087 Rigg & 2D-utskrift (21.10.2026)
+- [x] Runde 0: spesifikasjon v3, TODO_3D_PRINT.md, REQ-0879–REQ-0915, TODO/ROADMAP.
+- [ ] Runde 1–5 og 3D-print: utsatt, venter på oppdrag fra Claude.
+
 ## Oppgave 3b (21.10.2026)
 - [x] Mock-merknad på 18 krav med historikk; KI-193/KI-204 åpne.
 - [x] Migrasjon 0070: delingsnøkkelen bare som pepret hash, eldre lenker virker; DB 146/146.
