@@ -385,9 +385,10 @@ export function globalUpdates(
   return out;
 }
 
+/** R3: prosjektet har selv laget filen (en egen versjon, ikke en kopi fra biblioteket) med samme innhold. */
 function hasSameFile(s: ProjectState, projectAssetId: string, sha256: string): boolean {
   return Object.values(s.assetVersions).some(
-    (v) => !v.removed && v.sha256 === sha256 && s.assetVariants[v.variantId]?.assetId === projectAssetId,
+    (v) => !v.removed && !v.globalSource && v.sha256 === sha256 && s.assetVariants[v.variantId]?.assetId === projectAssetId,
   );
 }
 
