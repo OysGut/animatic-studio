@@ -14638,6 +14638,9 @@
     "app-rig.camera-mode": {
       "text": "Kameramodus"
     },
+    "app-rig.contour.computing": {
+      "text": "Beregner konturen …"
+    },
     "app-rig.contour.cut-holes": {
       "text": "Skjær ut hull"
     },
@@ -14650,8 +14653,32 @@
     "app-rig.contour.heading": {
       "text": "Kontur for utskrift"
     },
+    "app-rig.contour.mode-full": {
+      "text": "Full figur"
+    },
+    "app-rig.contour.mode-line": {
+      "text": "Med klippelinje"
+    },
+    "app-rig.contour.mode-outline": {
+      "text": "Kun kontur"
+    },
     "app-rig.contour.preview-aria": {
       "text": "Forhåndsvisning av konturen"
+    },
+    "app-rig.contour.source-alpha": {
+      "text": "Bildets gjennomsiktighet"
+    },
+    "app-rig.contour.source-mask": {
+      "text": "Din maske"
+    },
+    "app-rig.contour.source-none": {
+      "text": "Ingen kontur – bildet skrives ut som det er"
+    },
+    "app-rig.contour.source-rectangle": {
+      "text": "Bildets rektangel (forslaget er slått av)"
+    },
+    "app-rig.contour.source-suggestion": {
+      "text": "Forslag"
     },
     "app-rig.contour.stroke-width": {
       "text": "Klippelinje"
@@ -46000,6 +46027,9 @@
     "app-rig.camera-mode": {
       "text": "Camera mode"
     },
+    "app-rig.contour.computing": {
+      "text": "Computing the contour …"
+    },
     "app-rig.contour.cut-holes": {
       "text": "Cut out holes"
     },
@@ -46012,8 +46042,32 @@
     "app-rig.contour.heading": {
       "text": "Print contour"
     },
+    "app-rig.contour.mode-full": {
+      "text": "Full figure"
+    },
+    "app-rig.contour.mode-line": {
+      "text": "With cut line"
+    },
+    "app-rig.contour.mode-outline": {
+      "text": "Contour only"
+    },
     "app-rig.contour.preview-aria": {
       "text": "Preview of the contour"
+    },
+    "app-rig.contour.source-alpha": {
+      "text": "The image's transparency"
+    },
+    "app-rig.contour.source-mask": {
+      "text": "Your mask"
+    },
+    "app-rig.contour.source-none": {
+      "text": "No contour – the image is printed as is"
+    },
+    "app-rig.contour.source-rectangle": {
+      "text": "The image rectangle (suggestion is off)"
+    },
+    "app-rig.contour.source-suggestion": {
+      "text": "Suggestion"
     },
     "app-rig.contour.stroke-width": {
       "text": "Cut line"

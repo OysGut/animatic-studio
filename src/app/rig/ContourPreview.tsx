@@ -6,21 +6,6 @@ import { useLanguage } from '@/app/i18n/language';
 import { useImageUrls } from '@/app/library/asset-images';
 import { ContourClient } from './contour-client';
 import { formatLength, useRigUnits } from './units';
-import type { ContourSource } from '@/core/print/contour';
-
-/** Eksplisitte nøkkelunioner (i18n-kontrollen tillater ikke dynamiske nøkler). */
-const SOURCE_KEY: Record<ContourSource, string> = {
-  mask: 'app-rig.contour.source-mask',
-  alpha: 'app-rig.contour.source-alpha',
-  suggestion: 'app-rig.contour.source-suggestion',
-  rectangle: 'app-rig.contour.source-rectangle',
-  none: 'app-rig.contour.source-none',
-};
-const MODE_KEY = {
-  full: 'app-rig.contour.mode-full',
-  line: 'app-rig.contour.mode-line',
-  outline: 'app-rig.contour.mode-outline',
-} as const;
 
 export function ContourPreview({ state, layer, spec, frame = 0, compact = false }: {
   state: ProjectState; layer: CompositionLayer; spec: MultiplaneRigSpec; frame?: number; compact?: boolean;
