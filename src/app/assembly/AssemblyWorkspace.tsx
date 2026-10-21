@@ -66,8 +66,11 @@ import {
   L,
   locale,
   tm,
+  layersOf,
+  layerVersions,
 } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
+import { ensureDerivedFiles } from "@/app/library/derived-backfill";
 import { useFilmVideo } from "./film-video";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { uploadFilm } from "./film-import";

@@ -29,6 +29,7 @@ import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
+import { ensureDerivedFiles } from "@/app/library/derived-backfill";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
