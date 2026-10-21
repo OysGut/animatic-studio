@@ -115,7 +115,9 @@ async function main(lang) {
     await page.goto(`${base}${P}/manus`, { waitUntil: "networkidle" });
     const langSelect = page.locator("select").filter({ has: page.locator('option[value="en"]') }).first();
     await langSelect.selectOption("en");
-    await page.getByTestId("translation-import-open").click();
+    // ML4: knappen ligger i «Mer»-menyen når verktøylinjen er smal
+    if (!(await page.getByTestId("translation-import-open").first().isVisible())) await page.getByRole("button", { name: /^(Mer|More)/ }).first().click();
+    await page.getByTestId("translation-import-open").first().click();
     const target = page.getByTestId("translation-import-target");
     await target.waitFor({ timeout: 5000 });
     check((await target.getAttribute("data-language")) === "en" && /\(en\)/.test(await target.innerText()), `${lang}: R8 dialogen viser valgt målspråk`);
