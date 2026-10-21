@@ -2074,6 +2074,7 @@ export type Database = {
           storage_key: string
           title: string
           token: string | null
+          token_digest: string | null
           token_hash: string | null
           width: number
         }
@@ -2097,6 +2098,7 @@ export type Database = {
           storage_key: string
           title: string
           token?: string | null
+          token_digest?: string | null
           token_hash?: string | null
           width: number
         }
@@ -2120,6 +2122,7 @@ export type Database = {
           storage_key?: string
           title?: string
           token?: string | null
+          token_digest?: string | null
           token_hash?: string | null
           width?: number
         }
@@ -5705,6 +5708,7 @@ export type Database = {
         Args: { p_dismissed: boolean; p_id: string }
         Returns: undefined
       }
+      film_share_lookup: { Args: { p_token: string }; Returns: string }
       film_share_token: { Args: { p_share: string }; Returns: string }
       global_add_version: {
         Args: {
