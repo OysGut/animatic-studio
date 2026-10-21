@@ -13,7 +13,7 @@ const lipsync = { id: ID(12), project_id: h.fx.project.id, revision: 1, clip_id:
 h.rows.lipsync_results = [lipsync];
 
 await h.scenario("ca5-track", OCC, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.getByTestId("anim-mouth-track").waitFor();
   h.check(await page.getByTestId("anim-mouth-track").isVisible(), "munnformsporet vises under dialogsporet");
   h.check(await page.getByTestId(`mouth-row-${CLIP}`).isVisible(), "én rad per replikk");
@@ -30,7 +30,7 @@ await h.scenario("ca5-track", OCC, "nb", async page => {
   await page.screenshot({ path: `${h.out}/mouth-track.png` });
 });
 await h.scenario("ca5-en", OCC, "en", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.getByTestId("anim-mouth-track").waitFor();
   h.check(await page.getByTestId("anim-mouth-track").isVisible(), "engelsk visning av sporet");
   h.check(await page.getByTestId("anim-mouth-track").getByRole("button").first().isVisible(), "engelske etiketter");

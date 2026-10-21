@@ -15,7 +15,7 @@ h.rows.animation_rigs = [{ id: ID(1), project_id: h.fx.project.id, revision: 1, 
 h.rows.animation_rig_versions = [{ id: ID(2), project_id: h.fx.project.id, revision: 1, rig_id: ID(1), source_version_id: source.id, number: 1, spec: { format: 1, anchors }, algorithm_version: 1, removed: false }];
 h.rows.animation_uses = [{ id: ID(3), project_id: h.fx.project.id, revision: 1, layer_id: layer.id, occurrence_id: occ.id, rig_version_id: ID(2), enabled: true, removed: false }];
 await h.scenario("ca3-mark", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca3-mark-face").click();
   await page.getByTestId("ca3-face-dialog").waitFor();
@@ -51,7 +51,7 @@ await h.scenario("ca3-mark", occ.id, "nb", async page => {
   await page.screenshot({ path: `${h.out}/ca3-rig.png` });
 });
 await h.scenario("ca3-en", occ.id, "en", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca3-mark-face").click();
   h.check(await page.getByRole("heading", { name: "Mark face", exact: true }).isVisible(), "engelsk dialog");

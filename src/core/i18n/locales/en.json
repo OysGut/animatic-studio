@@ -74033,5 +74033,41 @@
   },
   "print-measure.error-18": {
     "text": "Duplicate ID"
+  },
+  "b100.tracks.open": {
+    "text": "Expand animation tracks"
+  },
+  "b100.tracks.close": {
+    "text": "Collapse animation tracks"
+  },
+  "b100.tracks.auto": {
+    "text": "Expand selected layer automatically"
+  },
+  "b100.tracks.hint-rhythm": {
+    "text": "Cmd/Ctrl + drag on ruler or empty space: rhythm"
+  },
+  "b100.tracks.hint-spacing": {
+    "text": "Cmd/Ctrl + drag on the layer bar: spacing (Shift = whole animation)"
+  },
+  "b100.spacing.label": {
+    "text": "{delta} f · new length {length}"
+  },
+  "b100.spacing.limit-merge": {
+    "text": "Stopped: two keyframes cannot merge (at least 1 f apart)."
+  },
+  "b100.spacing.limit-locked": {
+    "text": "Stopped: a locked time range never moves."
+  },
+  "b100.spacing.limit-start": {
+    "text": "Stopped: the animation cannot start before the scene."
+  },
+  "b100.spacing.locked-layer": {
+    "text": "The layer is locked."
+  },
+  "b100.spacing.command": {
+    "text": "Spacing drag"
+  },
+  "b100.spacing.beyond": {
+    "text": "The animation runs past the end of the scene. Use “Change length” to extend the scene."
   }
 }

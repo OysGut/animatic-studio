@@ -56,7 +56,7 @@ for (const lang of ["nb", "en"]) await h.scenario(`dv3-${lang}`, clip.occurrence
   h.check(h.state.commands.some(c => c.type === "SetDialogueVersionRemoved" && c.removed === true), "only confirmed deletion removes inactive version");
   await dialog.getByRole("button", { name: byLang(lang, "Avbryt", "Cancel"), exact: true }).last().click();
   h.check(await page.getByTestId("scene-character-track").count() > 0, "scene timeline projects character rows");
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   h.check(await page.getByTestId("anim-dialogue-segment").count() > 0, "animation timeline contains dialogue rows");
 });
 await h.finish();

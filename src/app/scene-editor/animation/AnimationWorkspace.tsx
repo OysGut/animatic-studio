@@ -1,3 +1,4 @@
+/** B-100: ikke lenger i bruk (Animasjon-fanen er fjernet; sporene ligger i Scene). Beholdes til tekstinventarets grunnlinje kan oppdateres. */
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight, Play, Square, Repeat } from "lucide-react";
 import { type Composition, type ProjectState } from "@/core";

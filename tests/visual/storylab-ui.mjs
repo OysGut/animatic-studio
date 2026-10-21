@@ -246,7 +246,7 @@ async function say(page, text, first = false) {
 await run("fane og profil", async (page) => {
   const nav = page.getByRole("navigation", { name: "Arbeidsflater" });
   const links = (await nav.getByRole("link").allInnerTexts()).map((x) => x.trim());
-  check(links.join("|") === "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Montering|Utgivelse", "fanen Story Lab står etter Manus");
+  check(links.join("|") === "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Rigg|Montering|Utgivelse", "fanen Story Lab står etter Manus");
   await nav.getByRole("link", { name: "Story Lab" }).click();
   await page.getByTestId("storylab").waitFor();
   check((await page.getByTestId("storylab-character").count()) === 2, "to karakterer (Maja og Bestemor Anne)");

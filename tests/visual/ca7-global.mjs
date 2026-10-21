@@ -36,7 +36,7 @@ h.rows.global_animation_specs = [
 ];
 
 async function openCharacter(page) {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca7-character-open").click();
   await page.getByTestId("ca7-character-dialog").waitFor();

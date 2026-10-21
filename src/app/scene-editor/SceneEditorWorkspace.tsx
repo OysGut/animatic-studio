@@ -79,14 +79,13 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 import { isTypingTarget } from "./Timeline";
-import { AnimationWorkspace } from "./animation/AnimationWorkspace";
 import { VariantTracks } from "./animation/VariantTracks";
 import { DialogueTrack } from "./animation/DialogueTrack";
 import { MouthTrack } from "./animation/MouthTrack";
 import { PatternStudio } from "./animation/PatternStudio";
+import { SceneTrackGroups } from "./animation/SceneTrackGroups";
 import { RhythmPanel } from "./animation/RhythmPanel";
 import { runGroup } from "@/app/storylab/canvas/run-group";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { t as tk } from "@/core/i18n/keyed";
 
 export function SceneEditorWorkspace({
@@ -267,7 +266,10 @@ function Editor({
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
-  const [sceneTab, setSceneTab] = useState(initialTab ?? "scene");
+  const [tracksOpen, setTracksOpen] = useState(initialTab === "animation");
+  // B-100: spacing-drag – forhåndsvisning (ingen skriving) og uthevingen på lerretet
+  const [spacingPreview, setSpacingPreview] = useState<ProjectState | null>(null);
+  const [spacingHover, setSpacingHover] = useState<{ layerId: string; frame: number; whole: boolean } | null>(null);
   const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
   useEffect(() => { setAnimationRange(null); }, [composition?.id]);
   // B-100: avspillingsområdet følger ny lengde etter omtiming
@@ -276,7 +278,7 @@ function Editor({
     const prev = prevDurationRef.current; prevDurationRef.current = duration;
     if (prev !== duration) setAnimationRange(r => followRangeLength(r, prev, duration));
   }, [duration]);
-  const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
+  const playback = usePlayback(duration, state.project.fps, true, tracksOpen ? animationRange : null);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
@@ -592,7 +594,7 @@ function Editor({
       else setEntrySeek(tk("app-scene-editor-scene-editor-workspace.editor.set-entry-seek.3bc01f2622c8"));
     } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
   }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, filmClip, state, playback]);
-  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: sceneTab }); }, [projectId, occurrence?.id, playback.frame, sceneTab]);
+  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: tracksOpen ? "animation" : "scene" }); }, [projectId, occurrence?.id, playback.frame, tracksOpen]);
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
@@ -974,27 +976,6 @@ function Editor({
           ) : null}
         </div>
       </Toolbar>
-      <Tabs value={sceneTab} onValueChange={setSceneTab}>
-        <TabsList className="h-8 w-full justify-start rounded-none border-b border-border bg-surface-2 p-0">
-          <TabsTrigger value="scene" data-testid="scene-tab-scene" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.676cd3d0670d")}</TabsTrigger>
-          <TabsTrigger value="animation" data-testid="scene-tab-animation" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.9161a95d0f51")}</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {sceneTab === "animation" && composition && occurrence ? (
-        <AnimationWorkspace key={composition.id} state={state} composition={composition} duration={duration}
-          playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
-          urls={urls.data ?? {}} tracks={animView => <>
-            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
-              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
-              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />
-            <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
-              view={animView} onOpen={setProfileId} />
-            <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
-              view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
-            <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
-          </>} tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />}
-            rhythm={{ state, occurrenceId: occurrence.id, editable, run: cmds.run }} />
-      ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
         {side ? null : (
@@ -1032,6 +1013,7 @@ function Editor({
 
         {/* Arbeidsflaten */}
         <main
+          aria-label={tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.676cd3d0670d")}
           className={
             "flex flex-1 flex-col bg-surface-0 " +
             // Side om side: lerretet beholder en brukbar bredde; panelområdet ruller sidelengs
@@ -1111,9 +1093,10 @@ function Editor({
                 onSelectShot={setSelectedShotId}
                 onSeek={playback.setFrame}
               />
-              <div className="relative flex min-h-0 flex-1 flex-col">
+              <div className="relative flex min-h-[180px] flex-1 flex-col">
                 <Stage
-                  state={state}
+                  state={spacingPreview ?? state}
+                  spacingHover={spacingHover}
                   composition={composition}
                   editable={editable}
                   selectedLayerId={selectedLayer?.id ?? null}
@@ -1192,6 +1175,7 @@ function Editor({
                 autoKey={autoKey}
                 onAutoKeyChange={setAutoKey}
                 run={cmds.run}
+                spacing={{ onHover: setSpacingHover, onPreview: setSpacingPreview }}
                 retime={{
                   occurrenceId: occurrence.id,
                   runAndWait: cmds.runAndWait,
@@ -1234,6 +1218,25 @@ function Editor({
                   />
                 )}
               />
+              {occurrence ? (
+                <SceneTrackGroups key={composition.id} state={state} duration={duration} playback={playback}
+                  range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
+                  selectedLayerId={selectedLayer?.id ?? null} selectedLayerName={selectedLayer?.name ?? null}
+                  title={tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.9161a95d0f51")}
+                  forceOpen={initialTab === "animation"} onOpenChange={setTracksOpen}
+                  tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />}
+                  rhythm={{ state, occurrenceId: occurrence.id, editable, run: cmds.run }}
+                  tracks={animView => <>
+            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
+              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
+              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />
+            <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} onOpen={setProfileId} />
+            <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
+            <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
+          </>} />
+              ) : null}
             </>
           )}
         </main>
@@ -1274,7 +1277,6 @@ function Editor({
           </aside>
         ) : null}
       </div>
-      )}
       {occurrence ? (
         <SceneScriptDialog
           open={scriptEdit !== null}

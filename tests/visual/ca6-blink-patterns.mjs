@@ -13,7 +13,7 @@ h.rows.animation_uses = [{ id: ID(3), project_id: h.fx.project.id, revision: 1, 
 h.rows.animation_patterns = [{ id: ID(13), project_id: h.fx.project.id, revision: 1, rig_id: null, name: "Nervøs blinking", color: "#a1b2c3", spec: { format: 1, target: "eyes", intervalMinMs: 2000, intervalMaxMs: 5000, durationMinFrames: 2, durationMaxFrames: 4, intensity: 1, seed: 18427, vary: { interval: true, duration: false, intensity: false }, algorithmVersion: 1 }, removed: false }];
 
 async function openAnim(page) {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
 }
 await h.scenario("ca6-blink", occ.id, "nb", async page => {

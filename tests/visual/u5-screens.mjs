@@ -17,7 +17,7 @@ const SCREENS = [
   { name: "bibliotek", path: `${h.P}/bibliotek` },
   { name: "storylab", path: `${h.P}/storylab` },
   { name: "sceneeditor", path: `${h.P}/scene?scene=${occ.id}` },
-  { name: "animasjon", path: `${h.P}/scene?scene=${occ.id}`, after: async (page) => { await page.getByTestId("scene-tab-animation").click(); await page.waitForTimeout(800); } },
+  { name: "animasjon", path: `${h.P}/scene?scene=${occ.id}`, after: async (page) => { await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })(); await page.waitForTimeout(800); } },
   { name: "montering", path: `${h.P}/montering` },
   { name: "utgivelse", path: `${h.P}/utgivelse` },
 ];
@@ -128,12 +128,10 @@ await h.scenario("u5-bibliotek-rutenett", occ.id, "nb", async (page) => {
 });
 
 await h.scenario("u5-animasjon", occ.id, "nb", async (page) => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.waitForTimeout(800);
   h.check(await h.eventually(async () => (await page.getByTestId("anim-variant-tracks").locator('[data-image-state="ok"] img').evaluateAll(imgs => imgs.length > 0 && imgs.every(img => img.naturalWidth === 240))), 5000), "animasjonens sporhoder viser ferdig lastede testbilder");
-  const pan = await page.getByTestId("anim-preview-pan").boundingBox();
-  const panel = await page.getByTestId("anim-preview").boundingBox();
-  h.check(pan && panel && pan.height <= panel.height, `forhåndsvisningen har scenens format (${Math.round(pan?.width ?? 0)}×${Math.round(pan?.height ?? 0)})`);
+  h.check((await page.locator("main canvas").count()) > 0, "B-100: lerretet i Scene er forhåndsvisningen mens sporene er åpne");
   h.check(await page.getByTestId("ca8-rhythm-drag-layer").count() === 1, "dra-laget for rytme finnes");
   h.check((await page.getByTestId("ca8-rhythm-drag-layer").getAttribute("data-armed")) === "false", "dra-modusen er av uten Cmd/Ctrl");
   await page.keyboard.down("Control");
@@ -159,7 +157,7 @@ await h.scenario("u5-bilde-feiler", occ.id, "nb", async (page) => {
   h.check((await list.locator('[data-testid="asset-thumb"][data-has-image="true"]').count()) === 0, "ingen miniatyr står med ødelagt bilde");
   await checkReserves(page, list, "Story Lab med feilende bilder");
   await page.goto(`${h.base}${h.P}/scene?scene=${occ.id}`, { waitUntil: "networkidle" });
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   const tracks = page.getByTestId("anim-variant-tracks");
   h.check(await h.eventually(async () => (await tracks.locator('[data-testid="asset-thumb"][data-has-image="true"]').count()) === 0, 5000), "sporhodene viser reserve når bildet feiler");
   await checkReserves(page, tracks, "Karakterspor med feilende bilder");
@@ -185,7 +183,7 @@ try {
   });
   await h.scenario("u5-forhandsvisning-sporhoder", occ.id, "nb", async page => {
     await page.setViewportSize({ width: 1280, height: 900 });
-    await page.getByTestId("scene-tab-animation").click();
+    await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
     const rows = page.locator('[data-anim-track]');
     const count = await rows.count();
     const valid = await rows.evaluateAll(elements => elements.every(row => {
@@ -196,18 +194,10 @@ try {
     await checkReserves(page, page.getByTestId("anim-variant-tracks"), "Karakterspor");
     for (const width of [1280, 1600]) {
       await page.setViewportSize({ width, height: width === 1280 ? 900 : 1000 });
-      const measurements = await page.getByTestId("anim-preview-pan").evaluate(el => {
-        const preview = el.getBoundingClientRect();
-        const panel = el.closest('[data-testid="anim-preview"]')?.getBoundingClientRect();
-        const column = el.closest('[data-testid="anim-preview-resize"]')?.getBoundingClientRect();
-        const layers = el.parentElement?.querySelector('[data-testid="anim-preview-layers"]');
-        const useful = layers && layers.querySelectorAll("li").length > 0 && getComputedStyle(layers).backgroundColor === getComputedStyle(el.parentElement).backgroundColor;
-        return { width: preview.width, height: preview.height, panelGap: panel ? panel.bottom - preview.bottom : Infinity, columnGap: column ? column.bottom - preview.bottom : Infinity, useful };
-      });
-      h.check(measurements.height > 0 && (measurements.useful || (measurements.panelGap <= 120 && measurements.columnGap <= 120)),
-        `${width}: ingen svart restflate over 120 px (${measurements.useful ? "lagliste med panelfarge" : `${Math.round(measurements.columnGap)} px`})`);
-      const comp = h.rows.compositions.find(c => c.variant_id === occ.variant_id && !c.removed);
-      h.check(comp && Math.abs(measurements.width / measurements.height - comp.width / comp.height) < 0.02, `${width}: bildeformat bevart`);
+      // B-100: lerretet og sporgruppene står på samme skjerm
+      const canvas = await page.locator("main canvas").first().boundingBox();
+      const dock = await page.getByTestId("scene-track-groups").boundingBox();
+      h.check(!!canvas && !!dock && canvas.height > 80 && dock.y >= canvas.y, `${width}: lerret og animasjonsspor på samme skjerm (lerret ${Math.round(canvas?.height ?? 0)} px)`);
       await page.screenshot({ path: `${h.out}/animasjon-polish-${width}.png` });
     }
   });

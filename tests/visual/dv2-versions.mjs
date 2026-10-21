@@ -10,7 +10,7 @@ h.check(versions.length > 0 && versions.some(v => v.id === clip?.active_version_
 h.check(!h.rows.audio_clips.filter(c => c.kind !== "dialogue").some(c => c.active_version_id), "musikk og effekter har ingen versjoner");
 
 await h.scenario("dv2-scene", OCC, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   const seg = page.locator(`[data-testid="anim-dialogue-segment"][data-clip-id="${CLIP}"]`).first();
   h.check(await h.eventually(() => seg.isVisible(), 5000), "replikkens segment vises i dialogsporet");
   const active = versions.find(v => v.id === clip?.active_version_id);
