@@ -141487,7 +141487,10 @@
       "parameterConflict": false,
       "signature": "e9f321399391",
       "key": "app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r4-prores.film-option"
+      ]
     },
     {
       "file": "src/app/assembly/ExportAnimaticDialog.tsx",
@@ -141514,7 +141517,10 @@
       "parameterConflict": false,
       "signature": "bc1109fa88f7",
       "key": "app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r4-prores.film-note"
+      ]
     },
     {
       "file": "src/app/assembly/ExportAnimaticDialog.tsx",

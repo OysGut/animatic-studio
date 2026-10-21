@@ -4,7 +4,7 @@
  * same drawFilmFrame as playback and streamed to the sink (OPFS when available) – never held in memory.
  */
 import { cueAt, type ProjectState } from "@/core";
-import { PRORES_MEMORY_LIMIT, PRORES_UNSUPPORTED, proresBytesEstimate, proresLimitError, type ProResKind } from "@/core/prores-export";
+import { PRORES_MEMORY_LIMIT, PRORES_UNSUPPORTED, proresBytesEstimate, proresFrameBudget, proresLimitError, type ProResKind } from "@/core/prores-export";
 import { hasAudioIn, renderAudio } from "../audio/mixer";
 import { drawFilmFrame } from "../compositor/film";
 import { fontsReady, textSpecsOf } from "../typography/fonts";
@@ -29,7 +29,7 @@ export async function proresStorage(): Promise<{ opfs: boolean; available: numbe
 export async function checkProResLimits(width: number, height: number, frames: number, kind: ProResKind, state: ProjectState, audio: boolean): Promise<void> {
   if (!supportsProRes()) throw new Error(PRORES_UNSUPPORTED());
   const st = await proresStorage();
-  const err = proresLimitError(proresBytesEstimate(width, height, frames, kind, state.project.fps, audio), { ...st, width, height });
+  const err = proresLimitError(proresBytesEstimate(width, height, frames, kind, state.project.fps, audio, kind === "4444"), { ...st, width, height });
   if (err) throw new Error(err);
 }
 
@@ -51,11 +51,12 @@ export class ProResPool {
     }
   }
   get size() { return this.workers.length; }
-  encode(rgba: Uint8ClampedArray, width: number, height: number, profile: ProResKind): Promise<Uint8Array> {
+  /** R4: targetBytes is the frame budget from Apple's target bitrate (proresFrameBudget). */
+  encode(rgba: Uint8ClampedArray, width: number, height: number, profile: ProResKind, targetBytes?: number): Promise<Uint8Array> {
     const id = this.next++;
     return new Promise((ok, fail) => {
       this.waiting.set(id, { ok, fail });
-      this.workers[id % this.workers.length]!.postMessage({ id, width, height, profile, rgba }, [rgba.buffer]);
+      this.workers[id % this.workers.length]!.postMessage({ id, width, height, profile, rgba, targetBytes }, [rgba.buffer]);
     });
   }
   close() { for (const w of this.workers) w.terminate(); this.workers.length = 0; }
@@ -76,17 +77,19 @@ export function guardedSink(sink: ByteSink, inMemory: boolean): ByteSink {
   } };
 }
 
-/** Normal film export: ProRes 422 HQ + stereo PCM 48 kHz in MOV. */
-export async function exportProResFilm(o: AnimaticExportOptions & { readonly sink: ByteSink }): Promise<{ bytes: number; audio: boolean }> {
+/** Normal film export: ProRes 422 HQ (or 422/LT/Proxy, R4) + stereo PCM 48 kHz in MOV, at Apple's target bitrate. */
+export async function exportProResFilm(o: AnimaticExportOptions & { readonly sink: ByteSink; readonly profile?: ProResKind }): Promise<{ bytes: number; audio: boolean }> {
+  const kind: ProResKind = o.profile && o.profile !== "4444" ? o.profile : "hq";
   const total = o.endFrame - o.startFrame;
   if (total <= 0) throw new Error(t("engine-export-prores-export.export-pro-res-film.message.f642ea62e9ff"));
   const width = Math.max(2, Math.round(o.width / 2) * 2), height = Math.max(2, Math.round(o.height / 2) * 2);
   const step = o.fps.den / o.fps.num, from = o.startFrame * step, seconds = total * step;
   const audible = o.audio ? o.audio.items.filter((it) => !o.audio!.mutedKinds?.has(it.clip.kind)) : [];
   const withAudio = !!o.audio && hasAudioIn(audible, o.audio.bank, from, from + seconds);
-  await checkProResLimits(width, height, total, "hq", o.state, withAudio);
+  await checkProResLimits(width, height, total, kind, o.state, withAudio);
+  const budget = proresFrameBudget(width, height, o.fps, kind);
   const st = await proresStorage();
-  const mov = new MovWriter(guardedSink(o.sink, !st.opfs), { width, height, fps: o.fps, profile: "hq", audioRate: withAudio ? 48000 : null });
+  const mov = new MovWriter(guardedSink(o.sink, !st.opfs), { width, height, fps: o.fps, profile: kind, audioRate: withAudio ? 48000 : null });
   const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
   const ctx = canvas.getContext("2d", { alpha: false, willReadFrequently: true });
   if (!ctx) throw new Error(t("engine-export-prores-export.export-pro-res-film.message.5af6ad7366ac"));
@@ -136,7 +139,7 @@ export async function exportProResFilm(o: AnimaticExportOptions & { readonly sin
         ...(video ? { video: video.provider } : {}),
         ...(o.subtitles?.length ? { subtitle: cueAt(o.subtitles, (o.startFrame + i) * step * 1000)?.text ?? null } : {}),
       });
-      inFlight.push(pool.encode(ctx.getImageData(0, 0, width, height).data, width, height, "hq"));
+      inFlight.push(pool.encode(ctx.getImageData(0, 0, width, height).data, width, height, kind, budget));
       await drain(pool.size * 2 - 1);
       await new Promise((r) => setTimeout(r, 0));
     }

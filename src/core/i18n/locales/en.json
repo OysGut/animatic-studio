@@ -73333,5 +73333,20 @@
   },
   "r2-orphan-cleanup.error.generic": {
     "text": "The clean-up failed."
+  },
+  "r1-prores-offer.restore": {
+    "text": "Show the ProRes offer for {name} again"
+  },
+  "r4-prores.film-option": {
+    "text": "MOV (ProRes – for editing)"
+  },
+  "r4-prores.film-note": {
+    "text": "{profile} at Apple's target bitrate, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage."
+  },
+  "r4-prores.profile-label": {
+    "text": "ProRes profile"
+  },
+  "r4-prores.estimate": {
+    "text": "Estimated file size: up to {size}. Simple pictures give smaller files."
   }
 }

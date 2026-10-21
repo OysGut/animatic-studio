@@ -73333,5 +73333,20 @@
   },
   "r2-orphan-cleanup.error.generic": {
     "text": "[!! TThhëë ccllëëáánn-üüpp ffááïïllëëdd. !!]"
+  },
+  "r1-prores-offer.restore": {
+    "text": "[!! SShhôôww tthhëë PPrrôôRRëëss ôôffffëërr ffôôrr {name} áággááïïnn !!]"
+  },
+  "r4-prores.film-option": {
+    "text": "[!! MMÔÔVV (PPrrôôRRëëss – ffôôrr ëëddïïttïïnngg) !!]"
+  },
+  "r4-prores.film-note": {
+    "text": "[!! {profile} áátt ÁÁppppllëë'ss ttáárrggëëtt bbïïttrrááttëë, RRëëcc.709, ááüüddïïôô ááss PPCCMM 48 kkHHzz. LLáárrggëë ffïïllëëss áárrëë wwrrïïttttëënn ssttrrááïïgghhtt ttôô bbrrôôwwssëërr ssttôôrráággëë. !!]"
+  },
+  "r4-prores.profile-label": {
+    "text": "[!! PPrrôôRRëëss pprrôôffïïllëë !!]"
+  },
+  "r4-prores.estimate": {
+    "text": "[!! ËËssttïïmmááttëëdd ffïïllëë ssïïzzëë: üüpp ttôô {size}. SSïïmmppllëë ppïïccttüürrëëss ggïïvvëë ssmmáállllëërr ffïïllëëss. !!]"
   }
 }

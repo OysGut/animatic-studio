@@ -11,7 +11,7 @@ import { useTextFonts } from "@/engine/typography/fonts";
 import type { TextSpec } from "@/core";
 import { ExportError, canExportVideo, exportAnimatic, loadImages } from "@/engine/export/animatic";
 import { supportsProRes } from "@/engine/export/prores-support";
-import { PRORES_UNSUPPORTED } from "@/core/prores-export";
+import { PRORES_FILM_KINDS, PRORES_NAME, PRORES_UNSUPPORTED, formatBytes, proresBytesEstimate, type ProResKind } from "@/core/prores-export";
 import { openAlphaSink } from "@/engine/export/alpha";
 import {
   STEM_MAX_SECONDS,
@@ -121,6 +121,8 @@ export function ExportAnimaticDialog({
   const queueId = useRef<string | null>(null);
   const [profileResolution, setProfileResolution] = useState<string | null>(null);
   const [bitrateKbps, setBitrateKbps] = useState<number | null>(null);
+  // R4: ProRes-profilen for filmeksport (422 HQ som standard; 422, LT og Proxy valgfritt)
+  const [proresKind, setProresKind] = useState<ProResKind>("hq");
   const [scope, setScope] = useState<Scope>("film");
   const [alphaOpen, setAlphaOpen] = useState(false);
   const alphaClip = clips.find(c => c.occurrenceId === selectedId);
@@ -464,7 +466,7 @@ export function ExportAnimaticDialog({
         return;
       }
       if (container === "mov") {
-        // P7: ProRes 422 HQ i MOV, strømmet til nettleserens lagring (OPFS) der det støttes
+        // P7/R4: ProRes (valgt profil, Apples målbitrate) i MOV, strømmet til nettleserens lagring (OPFS) der det støttes
         const lang = language.dialogue === MAIN_LANGUAGE ? "" : ` – ${langName}`;
         const name = safeName(`${state.project.name} – ${what}${lang} – ${date}.mov`);
         const { exportProResFilm } = await import("@/engine/export/prores-export");
@@ -472,7 +474,7 @@ export function ExportAnimaticDialog({
         try {
           const res = await exportProResFilm({
             state, clips: sel.clips, startFrame: sel.startFrame, endFrame: sel.endFrame, width: outW, height: outH, fps,
-            monochrome: mono, images, signal: ctrl.signal, sink,
+            monochrome: mono, images, signal: ctrl.signal, sink, profile: proresKind,
             audio: { items: audioItems, bank: audioBank, mutedKinds },
             filmUrls: await freshFilmUrls(sel.clips, filmUrls),
             ...(language.subtitles && subMode === "burn" ? { subtitles } : {}),
@@ -487,7 +489,7 @@ export function ExportAnimaticDialog({
             productionId, kind: "film", fileName: name,
             settings: { output, scope, size, width: outW, height: outH, monochrome: mono, language: language.dialogue,
               subtitles: !!language.subtitles && subMode === "burn", subtitleMode: language.subtitles ? subMode : "none",
-              subtitleLanguage: language.subtitles, format: "mov-prores422hq", bitrateKbps: null,
+              subtitleLanguage: language.subtitles, format: proresKind === "hq" ? "mov-prores422hq" : `mov-prores422${proresKind === "422" ? "" : proresKind}`, bitrateKbps: null,
               qualityProfileId: quality.profile?.id ?? null, qualityProfileName: quality.profile?.name ?? null,
               qualityProfileSnapshot: quality.profile ? JSON.stringify(qualityProfileSnapshot(quality.profile)) : null },
             occurrenceIds: sel.clips.map((c) => c.occurrenceId),
@@ -912,12 +914,30 @@ export function ExportAnimaticDialog({
                     {t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.764c8c46455e")}
                   </option>
                   <option value="mov" disabled={!proresOk}>
-                    {t("app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391")}
+                    {t("r4-prores.film-option")}
                   </option>
                 </select>
               </label>
               {!proresOk ? <p role="status" data-testid="export-prores-unavailable" className="w-full">{PRORES_UNSUPPORTED()}</p> : null}
-              {container === "mov" ? <p data-testid="export-prores-note" className="w-full">{t("app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7")}</p> : null}
+              {container === "mov" ? (
+                <>
+                  <label className="flex items-center gap-1.5">
+                    {t("r4-prores.profile-label")}
+                    <select
+                      value={proresKind}
+                      onChange={(e) => setProresKind(e.target.value as ProResKind)}
+                      className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+                      data-testid="export-prores-profile"
+                    >
+                      {PRORES_FILM_KINDS.map((k) => <option key={k} value={k}>{PRORES_NAME[k]}</option>)}
+                    </select>
+                  </label>
+                  <p data-testid="export-prores-note" className="w-full">{t("r4-prores.film-note", { profile: PRORES_NAME[proresKind] })}</p>
+                  <p data-testid="export-prores-estimate" className="w-full">
+                    {t("r4-prores.estimate", { size: formatBytes(proresBytesEstimate(outW, outH, Math.max(0, sel.endFrame - sel.startFrame), proresKind, fps, audioItems.length > 0)) })}
+                  </p>
+                </>
+              ) : null}
               <label className="flex items-center gap-1.5">
                 {t("app-assembly-export-animatic-dialog.export-animatic-dialog.label.65f5cf932bea")}
                 <select

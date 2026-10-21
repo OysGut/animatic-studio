@@ -3,7 +3,8 @@
  * skrives via kommandoer (apply_changes) med angring. Standardprofilene «Utkast», «Gjennomgang» og «Endelig»
  * opprettes for nye prosjekter; eksisterende prosjekter tilbys dem her – ingenting endres i stillhet.
  */
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { isProresOfferDismissed, setProresOfferDismissed } from "./prores-offer-memory";
 import { Plus, Star, Trash2 } from "lucide-react";
 import { defaultQualityProfiles, newId, proresOfferProfile, proresSpecOf, qualityProfileError, qualityProfilesOf, EFFORT_LABEL, IMAGE_SIZE_LABEL, providersFor, type EffortLevel, type ImageSize, type ProjectState, type QualityProfile, type QualityProfileModelKind, type QualityProfileSpec, QUALITY_PROFILE_MODEL_KINDS, QUALITY_PROFILE_MODEL_KIND_LABEL } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
@@ -33,7 +34,10 @@ export function QualityProfilesSection({
   const [editing, setEditing] = useState<QualityProfile | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [offerHidden, setOfferHidden] = useState(false);
-  const offer = editable && !offerHidden ? proresOfferProfile(state) : null;
+  // R1: «Ikke nå» huskes per bruker og prosjekt i nettleseren; lest etter første tegning (ingen hydreringsavvik)
+  useEffect(() => { setOfferHidden(isProresOfferDismissed(userId, projectId)); }, [userId, projectId]);
+  const offerProfile = editable ? proresOfferProfile(state) : null;
+  const offer = offerProfile && !offerHidden ? offerProfile : null;
 
   function addDefaults() {
     for (const d of defaultQualityProfiles()) {
@@ -61,7 +65,13 @@ export function QualityProfilesSection({
             { type: "UpdateQualityProfile", profileId: offer.id, spec: proresSpecOf(offer.spec) },
             t("r1-prores-offer.undo-label", { name: offer.name }),
           ))}>{t("r1-prores-offer.accept")}</Button>
-          <Button size="sm" variant="ghost" data-testid="prores-offer-dismiss" onClick={() => setOfferHidden(true)}>{t("r1-prores-offer.dismiss")}</Button>
+          <Button size="sm" variant="ghost" data-testid="prores-offer-dismiss" onClick={() => { setOfferHidden(true); setProresOfferDismissed(userId, projectId, true); }}>{t("r1-prores-offer.dismiss")}</Button>
+        </div>
+      ) : offerProfile ? (
+        <div className="mb-2">
+          <Button size="sm" variant="ghost" data-testid="prores-offer-restore" onClick={() => { setOfferHidden(false); setProresOfferDismissed(userId, projectId, false); }}>
+            {t("r1-prores-offer.restore", { name: offerProfile.name })}
+          </Button>
         </div>
       ) : null}
       {profiles.length === 0 ? (
