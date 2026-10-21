@@ -145,9 +145,9 @@ await step("Merk som lest demper én jobb og senker telleren", async () => {
    if (await readBtn(0).count() === 0) await status.click();
    return (await readBtn(0).count()) > 0;
  }, "jobblisten åpnet ikke");
+ const li = readBtn(0).locator("xpath=ancestor::li[1]");
  await readBtn(0).click();
  await count(1);
- const li = page.getByText(jobs[0].model).locator("xpath=ancestor::li[1]");
  await until(async () => Number(await li.evaluate(el => getComputedStyle(el).opacity)) < 1, "lest jobb er ikke nedtonet");
  await until(() => SERVER_PREFS.aiJobsRead?.readIds?.includes(jobs[0].id), "aiJobsRead.readIds ble ikke lagret på kontoen");
 });
