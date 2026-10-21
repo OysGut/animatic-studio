@@ -99,6 +99,7 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
         <p>
           {t("app-account-privacy-statement.privacy-statement.p.cba960e48ca5")}
         </p>
+        <p data-testid="privacy-turnstile">{t("b110.privacy.turnstile")}</p>
       </Section>
 
       <Section title={t("app-account-privacy-statement.privacy-statement.title.5dc63510b970")}>

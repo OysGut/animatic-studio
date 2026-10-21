@@ -7529,6 +7529,70 @@
       "en": {
         "text": "Cancel"
       }
+    },
+    "b110.captcha.failed": {
+      "nb": {
+        "text": "Vi fikk ikke bekreftet at du ikke er en robot. Prøv igjen."
+      },
+      "en": {
+        "text": "We could not confirm that you are not a robot. Please try again."
+      }
+    },
+    "b110.captcha.unavailable": {
+      "nb": {
+        "text": "Robotkontrollen svarer ikke akkurat nå. Prøv igjen om litt."
+      },
+      "en": {
+        "text": "The robot check is not responding right now. Please try again shortly."
+      }
+    },
+    "b110.captcha.retry": {
+      "nb": {
+        "text": "Prøv igjen"
+      },
+      "en": {
+        "text": "Try again"
+      }
+    },
+    "b110.captcha.confirm": {
+      "nb": {
+        "text": "Bekreft at du ikke er en robot i boksen under. Handlingen fortsetter av seg selv."
+      },
+      "en": {
+        "text": "Confirm that you are not a robot in the box below. The action continues by itself."
+      }
+    },
+    "b110.admin.on": {
+      "nb": {
+        "text": "Robotkontroll (Cloudflare Turnstile) er på."
+      },
+      "en": {
+        "text": "Robot check (Cloudflare Turnstile) is on."
+      }
+    },
+    "b110.admin.off-title": {
+      "nb": {
+        "text": "Robotkontroll er av."
+      },
+      "en": {
+        "text": "Robot check is off."
+      }
+    },
+    "b110.admin.off": {
+      "nb": {
+        "text": "Nøklene for Cloudflare Turnstile (TURNSTILE_SITE_KEY og TURNSTILE_SECRET_KEY) mangler på serveren. Registrering, innloggingslenke og «Glemt passord» virker, men uten CAPTCHA."
+      },
+      "en": {
+        "text": "The Cloudflare Turnstile keys (TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY) are missing on the server. Sign-up, sign-in links and “Forgot password” work, but without CAPTCHA."
+      }
+    },
+    "b110.privacy.turnstile": {
+      "nb": {
+        "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
+      },
+      "en": {
+        "text": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f))."
+      }
     }
   }
 }

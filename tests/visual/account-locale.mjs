@@ -126,6 +126,9 @@ async function mock(ctx, st) {
     if (/fetchUsdNokRates/.test(name)) return json({ ok: true, rates: [] });
     if (/projectAiProviders/.test(name)) return json({ providers: [], missing: false });
     if (/pumpProjectQueue/.test(name)) return json({ sent: 0 });
+    // B-110: registreringen henter et pass fra serveren før signUp (CAPTCHA av i testen)
+    if (/^captchaConfig/.test(name)) return json({ enabled: false, siteKey: null });
+    if (/^requestSignupPass/.test(name)) return json({ ok: true });
     return route.abort();
   });
 }
