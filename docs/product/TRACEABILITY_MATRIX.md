@@ -49,7 +49,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | EXPORT | Export Engine | 77 | 12 | 77 | 61 |
 | SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 347 | 23 | 344 | 217 |
+| UI | Brukergrensesnitt og designsystem | 347 | 23 | 344 | 218 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 7 | 5 |
 
 ## Dekning per fase
@@ -60,7 +60,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | 2 | 97 | 93 |
 | 3 | 234 | 102 |
 | 4 | 85 | 84 |
-| 5 | 152 | 141 |
+| 5 | 152 | 142 |
 | 6 | 49 | 48 |
 | 7 | 63 | 62 |
 | 8 | 39 | 25 |
@@ -708,7 +708,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0636 | Beslutning DEC-0083 | AUDIO, VERSION | src/app/ai/video-jobs.ts, src/adapters/ai/providers.server.ts | 1 | tests/unit/scene-to-video.test.ts | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0637 | Beslutning DEC-0083 | UI, VERSION, TIMELINE | src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0638 | Beslutning DEC-0083 | QUALITYCOST, PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0083.md | Verifisert | 2026-10-15 DEC-0083: Opprettet etter Mars' ønske 15.10.2026 |
-| REQ-0639 | Beslutning DEC-0084 | UI | src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts | 2 | tests/unit/app-brand.test.ts, tests/visual/backlog-b2-ui.mjs | Implementert – ikke verifisert | 2026-10-19 DEC-0099: B2: nøytral avsendertekst, språkpar og katalogtest; plattformstyrt e-post er utenfor endringsområdet. |
+| REQ-0639 | Beslutning DEC-0084 | UI | src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts, src/core/i18n/authored.json (r6-brand.*), scripts/i18n/release-check.mjs (PLATFORM_NAME stopper bygget) | 2 | tests/unit/app-brand.test.ts, tests/visual/backlog-b2-ui.mjs, tests/unit/r3-r6-r8.test.ts, tests/visual/ai-admin-ui.mjs | Verifisert | 2026-10-21 DEC-0084: R6: seks tekster der plattformnavnet var byttet mekanisk ut, er skrevet nøytralt på nb og en; releasekontrollen stopper «Lovable» i brukertekster. |
 | REQ-0640 | Beslutning DEC-0085 | PROVIDER | src/core/generation/style.ts, src/app/projects/GlobalStyleText.tsx | 2 | tests/unit/scene-to-video.test.ts, tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0641 | Beslutning DEC-0085 | PROVIDER | src/app/scene-editor/SceneToVideoDialog.tsx | 1 | tests/visual/scene-video-ui.mjs, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
 | REQ-0642 | Beslutning DEC-0085 | PROVIDER | src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/write-prompt.functions.ts | 1 | tests/unit/scene-to-video.test.ts, docs/development/VISUAL_QA_DEC-0085.md | Verifisert | 2026-10-15 DEC-0085: Opprettet etter Mars' ønske 15.10.2026 |
@@ -748,7 +748,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0676 | Beslutning DEC-0090 | LIBRARY, UI | src/app/mobile/MobileImportLibrary.tsx, src/app/library/LibraryWorkspace.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0677 | Beslutning DEC-0090 | LIBRARY, COLLAB | src/adapters/browser/mobile-import.ts, src/app/mobile/use-mobile-imports.ts, src/app/mobile/MobileImportDialog.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0678 | Beslutning DEC-0090 | SECURITY, COLLAB | db/migrations/0035_mobile_import.sql, src/adapters/mobile/mobile.functions.ts | 2 | tests/db/run-db-tests.ts, tests/unit/mobile-server.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
-| REQ-0679 | Beslutning DEC-0090 | SECURITY, LIBRARY | src/core/mobile/index.ts | 1 | tests/unit/mobile-import.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
+| REQ-0679 | Beslutning DEC-0090 | SECURITY, LIBRARY | src/core/mobile/index.ts (videoMaxBytes/APP_TARGET: grensen bare i nettversjonen) | 1 | tests/unit/mobile-import.test.ts, tests/unit/r3-r6-r8.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-21 DEC-0090: R6: grensen er knyttet til nettversjonen (APP_TARGET = web); i desktopversjonen gir videoMaxBytes ingen grense. |
 | REQ-0680 | Beslutning DEC-0090 | SECURITY, LIBRARY | db/migrations/0035_mobile_import.sql, src/app/mobile/upload-queue.ts | 2 | tests/db/run-db-tests.ts, tests/unit/mobile-import.test.ts, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0681 | Beslutning DEC-0090 | COLLAB, UI | src/app/mobile/MobilePage.tsx | 1 | tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |
 | REQ-0682 | Beslutning DEC-0090 | SECURITY, COLLAB | src/adapters/mobile/mobile.functions.ts, db/migrations/0035_mobile_import.sql, src/app/mobile/MobileImportLibrary.tsx | 3 | tests/db/run-db-tests.ts, tests/unit/mobile-server.test.ts, tests/visual/dec0090-mobile-ui.mjs, docs/development/VISUAL_QA_DEC-0090A.md | Verifisert | 2026-10-16 DEC-0090: Bygget i bolk A |

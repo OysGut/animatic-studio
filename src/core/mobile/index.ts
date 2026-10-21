@@ -45,10 +45,19 @@ export const PERSONAL_MAX_BYTES = 20 * 1024 ** 3;
 export const SHARED_MAX_FILES = 200;
 export const SHARED_MAX_BYTES = 5 * 1024 ** 3;
 /**
- * Største videofil i nettversjonen (DEC-0090, REQ-0679). NB: denne grensen skal fjernes uten å spørre Mars den
- * dagen en desktopversjon lages (står også i TODO.md).
+ * Største videofil i nettversjonen (DEC-0090, REQ-0679). Grensen gjelder bare nettversjonen (lagringen i
+ * skyen); i desktopversjonen er det ingen grense (R6, se `videoMaxBytes`).
  */
 export const MOBILE_VIDEO_MAX_BYTES = 500 * 1024 * 1024;
+
+/** R6 (REQ-0679): hvilken utgave av appen koden kjører i. Nettversjonen i dag; en desktopversjon setter «desktop». */
+export type AppTarget = "web" | "desktop";
+export const APP_TARGET: AppTarget = "web";
+
+/** R6 (REQ-0679): største videofil – 500 MB i nettversjonen, ingen grense (null) i desktopversjonen. */
+export function videoMaxBytes(target: AppTarget = APP_TARGET): number | null {
+  return target === "desktop" ? null : MOBILE_VIDEO_MAX_BYTES;
+}
 export const MOBILE_IMAGE_MAX_BYTES = 100 * 1024 * 1024;
 export const MOBILE_AUDIO_MAX_BYTES = 400 * 1024 * 1024;
 
@@ -81,9 +90,9 @@ export function mediaKindOf(mime: string): MobileMediaKind | null {
   return null;
 }
 
-export function maxBytesFor(kind: MobileMediaKind): number {
+export function maxBytesFor(kind: MobileMediaKind, target: AppTarget = APP_TARGET): number {
   return kind === "video"
-    ? MOBILE_VIDEO_MAX_BYTES
+    ? (videoMaxBytes(target) ?? Number.POSITIVE_INFINITY)
     : kind === "audio"
       ? MOBILE_AUDIO_MAX_BYTES
       : MOBILE_IMAGE_MAX_BYTES;
@@ -94,6 +103,7 @@ export function checkMobileFile(
   mime: string,
   bytes: number,
   allowed: readonly MobileMediaKind[],
+  target: AppTarget = APP_TARGET,
 ): string | null {
   const kind = mediaKindOf(mime);
   if (!kind)
@@ -105,7 +115,7 @@ export function checkMobileFile(
         ? tk("core-mobile-index.check-mobile-file.message.47b1ed91e3c0")
         : tk("core-mobile-index.check-mobile-file.message.46b51e56c6dc");
   if (!Number.isFinite(bytes) || bytes <= 0) return tk("core-mobile-index.check-mobile-file.message.4129d3a6024f");
-  const max = maxBytesFor(kind);
+  const max = maxBytesFor(kind, target);
   if (bytes > max)
     return kind === "video"
       ? tk("core-mobile-index.check-mobile-file.message.e8bac3f52697", { value1: String(Math.round(max / 1024 ** 2)) })

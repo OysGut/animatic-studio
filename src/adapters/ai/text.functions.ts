@@ -181,7 +181,7 @@ export async function lovableText(
   }
   return {
     ok: false,
-    message: tk("adapters-ai-text-functions.message.message.2fd3b559a274"),
+    message: tk("r6-brand.text-model"),
     model: last,
   };
 }

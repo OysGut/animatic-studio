@@ -3,6 +3,7 @@
  * samme nøkler, ikke-tom tekst, de samme navngitte plassholderne og flertallsformer på begge språk.
  * Er dekningen under 100 %, stopper bygget (vite-tillegget i vite.config.ts) og kommandoen avslutter med 1.
  * en-XA genereres fra en og rapporteres bare (ikke krav).
+ * R6 (REQ-0639): ingen brukertekst på nb eller en kan nevne plattformnavnet «Lovable»; da stopper bygget også.
  *
  *   node scripts/i18n/release-check.mjs            (kontroll + rapport i konsollen)
  *   node scripts/i18n/release-check.mjs --write    (skriver også docs/development/i18n-coverage.json)
@@ -23,6 +24,9 @@ function entryTexts(entry) {
   return out;
 }
 
+/** R6 (REQ-0639): plattformnavnet skal ikke stå i brukertekster. */
+export const PLATFORM_NAME = /lovable/i;
+
 /** Dekningen per språk og en liste over feil. Ren funksjon over katalogene (testes i tests/unit). */
 export function coverageReport(catalogs, runtime, superseded = new Set()) {
   const nb = catalogs.nb ?? {}, en = catalogs.en ?? {}, xa = catalogs["en-XA"] ?? {};
@@ -41,6 +45,7 @@ export function coverageReport(catalogs, runtime, superseded = new Set()) {
     if (!bOk) problems.push({ key, problem: "en mangler" });
     if (aOk && bOk && placeholders(a.text) !== placeholders(b.text)) problems.push({ key, problem: "ulike plassholdere" });
     if (aOk && bOk && !!a.plural !== !!b.plural) problems.push({ key, problem: "flertallsform bare på ett språk" });
+    if ([...ta, ...tb].some((t) => PLATFORM_NAME.test(t))) problems.push({ key, problem: "plattformnavnet «Lovable» i brukertekst (REQ-0639)" });
     if (aOk) nbOk++;
     if (bOk) enOk++;
     if (entryTexts(xa[key]).length > 0) xaOk++;

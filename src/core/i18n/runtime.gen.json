@@ -819,9 +819,6 @@
     "adapters-ai-speech-run-server.run-speech.message.fe329e5ae5f8": {
       "text": "Replikken er for lang for modellen."
     },
-    "adapters-ai-text-functions.message.message.2fd3b559a274": {
-      "text": "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio."
-    },
     "adapters-ai-text-functions.message.message.43163e181625": {
       "text": "AI-tjenesten svarte uten tekst."
     },
@@ -2715,9 +2712,6 @@
     "app-admin-cron-status.text.text.9d6153356ac8": {
       "text": "Bakgrunnsjobb: har ikke kjørt ennå."
     },
-    "app-admin-cron-status.warning.message.1494cbf069ca": {
-      "text": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio."
-    },
     "app-ai-ai-panel.act.set-err.62534a79515a": {
       "text": "Kunne ikke endres."
     },
@@ -3074,9 +3068,6 @@
     },
     "app-ai-providers-dialog.provider-detail.p.aee47d2a8c80": {
       "text": "modeller:"
-    },
-    "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
-      "text": "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder."
     },
     "app-ai-providers-dialog.provider-detail.placeholder.986493436d94": {
       "text": "Lim inn nøkkelen her"
@@ -9352,9 +9343,6 @@
     },
     "app-library-generate-image-panel.generate-image-panel.p.b9225cd2f304": {
       "text": "Dette belastes"
-    },
-    "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1": {
-      "text": "Dette bruker kreditter i Animatic Studio-arbeidsområdet ("
     },
     "app-library-generate-image-panel.generate-image-panel.p.c6da9b6d9aee": {
       "text": "Prosjektoversikt → «Filmens visuelle stil»."
@@ -19942,9 +19930,6 @@
     "app-script-export-dialog.export-dialog.p.d7e1637f700f": {
       "text": "Låste sider: sideskiftene følger originalen der teksten er uendret."
     },
-    "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
-      "text": "Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra."
-    },
     "app-script-export-dialog.export-dialog.span.02b21f503acd": {
       "text": "Lagre en manusversjon først (Versjoner)"
     },
@@ -21137,9 +21122,6 @@
     },
     "app-script-script-workspace.workspace.toolbar-button.61cbc7374b1d": {
       "text": "Legg til scener …"
-    },
-    "app-script-script-workspace.workspace.toolbar-button.87153b7e849d": {
-      "text": "Importer engelsk manus …"
     },
     "app-script-script-workspace.workspace.toolbar-button.d987ab9929c2": {
       "text": "Versjoner"
@@ -28003,9 +27985,6 @@
     "core-generation-providers.providers.message.87223e1b609a": {
       "text": "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform."
     },
-    "core-generation-providers.providers.message.8ac7f045e797": {
-      "text": "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio."
-    },
     "core-generation-providers.providers.message.8c8224966290": {
       "text": "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den."
     },
@@ -30693,6 +30672,36 @@
     "r2-orphan-cleanup.title": {
       "text": "Slette ubrukte AI-filer?"
     },
+    "r3-global.error.no-version": {
+      "text": "Versjonen finnes ikke i prosjektet."
+    },
+    "r3-global.error.not-global": {
+      "text": "Ressursen er ikke koblet til en global ressurs i denne gruppen."
+    },
+    "r3-global.error.project-rights": {
+      "text": "Bare redaktører og eiere i prosjektet kan publisere globalt."
+    },
+    "r3-global.error.workspace-rights": {
+      "text": "Bare redaktører og eiere i gruppen kan publisere eller trekke tilbake globale versjoner."
+    },
+    "r3-global.publish-title": {
+      "text": "Legger den harmoniserte versjonen til den globale ressursen. Andre prosjekter endres ikke. Angre trekker den tilbake."
+    },
+    "r3-global.published-variant": {
+      "text": "Publisert som ny global variant (versjon {number}). Andre prosjekter får et varsel og velger selv."
+    },
+    "r3-global.published-version": {
+      "text": "Publisert som global versjon {number}. Andre prosjekter får et varsel og velger selv."
+    },
+    "r3-global.undo-label": {
+      "text": "Publiser versjon {number} globalt"
+    },
+    "r3-global.withdrawn-in-use": {
+      "text": "Versjon {number} av {name} er trukket tilbake globalt. Kopien i dette prosjektet er uendret."
+    },
+    "r3-global.withdrawn-label": {
+      "text": "trukket tilbake"
+    },
     "r4-prores.estimate": {
       "text": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer."
     },
@@ -30704,6 +30713,30 @@
     },
     "r4-prores.profile-label": {
       "text": "ProRes-profil"
+    },
+    "r6-brand.builtin-provider": {
+      "text": "Bruker tjenestens innebygde AI-kreditter. Ingen egen nøkkel – slått på for prosjektet."
+    },
+    "r6-brand.cron-warning": {
+      "text": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren."
+    },
+    "r6-brand.download-blocked": {
+      "text": "Startet ikke nedlastingen? En innebygd forhåndsvisning kan blokkere nedlastinger. Åpne appen i en egen fane og eksporter derfra."
+    },
+    "r6-brand.image-credits": {
+      "text": "Dette bruker tjenestens innebygde AI-kreditter ("
+    },
+    "r6-brand.provider-detail": {
+      "text": "Denne er alltid tilgjengelig og bruker tjenestens innebygde AI-kreditter. Prosjektets AI-budsjett gjelder."
+    },
+    "r6-brand.text-model": {
+      "text": "Ingen av språkmodellene ble gjenkjent. Sett ANIMATIC_TEXT_MODEL i serverens innstillinger."
+    },
+    "r8-translation-import.button": {
+      "text": "Importer oversatt manus …"
+    },
+    "r8-translation-import.target": {
+      "text": "Målspråk: {language} ({tag})"
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administrasjon"
@@ -31819,9 +31852,6 @@
     },
     "adapters-ai-speech-run-server.run-speech.message.fe329e5ae5f8": {
       "text": "The line is too long for the model."
-    },
-    "adapters-ai-text-functions.message.message.2fd3b559a274": {
-      "text": "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio."
     },
     "adapters-ai-text-functions.message.message.43163e181625": {
       "text": "The AI service replied without text."
@@ -33716,9 +33746,6 @@
     "app-admin-cron-status.text.text.9d6153356ac8": {
       "text": "Background job: has not run yet."
     },
-    "app-admin-cron-status.warning.message.1494cbf069ca": {
-      "text": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio."
-    },
     "app-ai-ai-panel.act.set-err.62534a79515a": {
       "text": "Could not be changed."
     },
@@ -34075,9 +34102,6 @@
     },
     "app-ai-providers-dialog.provider-detail.p.aee47d2a8c80": {
       "text": "models:"
-    },
-    "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
-      "text": "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies."
     },
     "app-ai-providers-dialog.provider-detail.placeholder.986493436d94": {
       "text": "Paste the key here"
@@ -40353,9 +40377,6 @@
     },
     "app-library-generate-image-panel.generate-image-panel.p.b9225cd2f304": {
       "text": "This is charged to the"
-    },
-    "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1": {
-      "text": "This uses credits in the Animatic Studio workspace ("
     },
     "app-library-generate-image-panel.generate-image-panel.p.c6da9b6d9aee": {
       "text": "Project overview → “The film's visual style”."
@@ -50943,9 +50964,6 @@
     "app-script-export-dialog.export-dialog.p.d7e1637f700f": {
       "text": "Locked pages: the page breaks follow the original where the text is unchanged."
     },
-    "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
-      "text": "Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there."
-    },
     "app-script-export-dialog.export-dialog.span.02b21f503acd": {
       "text": "Save a script version first (Versions)"
     },
@@ -52138,9 +52156,6 @@
     },
     "app-script-script-workspace.workspace.toolbar-button.61cbc7374b1d": {
       "text": "Add scenes …"
-    },
-    "app-script-script-workspace.workspace.toolbar-button.87153b7e849d": {
-      "text": "Import English script …"
     },
     "app-script-script-workspace.workspace.toolbar-button.d987ab9929c2": {
       "text": "Versions"
@@ -59004,9 +59019,6 @@
     "core-generation-providers.providers.message.87223e1b609a": {
       "text": "Images with GPT Image and video with Sora. Payment is prepaid in the OpenAI Platform."
     },
-    "core-generation-providers.providers.message.8ac7f045e797": {
-      "text": "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio."
-    },
     "core-generation-providers.providers.message.8c8224966290": {
       "text": "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it."
     },
@@ -61694,6 +61706,36 @@
     "r2-orphan-cleanup.title": {
       "text": "Delete unused AI files?"
     },
+    "r3-global.error.no-version": {
+      "text": "The version does not exist in the project."
+    },
+    "r3-global.error.not-global": {
+      "text": "The asset is not linked to a global asset in this group."
+    },
+    "r3-global.error.project-rights": {
+      "text": "Only editors and owners of the project can publish globally."
+    },
+    "r3-global.error.workspace-rights": {
+      "text": "Only editors and owners of the group can publish or withdraw global versions."
+    },
+    "r3-global.publish-title": {
+      "text": "Adds the harmonized version to the global asset. Other projects do not change. Undo withdraws it."
+    },
+    "r3-global.published-variant": {
+      "text": "Published as a new global variant (version {number}). Other projects get a notice and choose for themselves."
+    },
+    "r3-global.published-version": {
+      "text": "Published as global version {number}. Other projects get a notice and choose for themselves."
+    },
+    "r3-global.undo-label": {
+      "text": "Publish version {number} globally"
+    },
+    "r3-global.withdrawn-in-use": {
+      "text": "Version {number} of {name} has been withdrawn globally. The copy in this project is unchanged."
+    },
+    "r3-global.withdrawn-label": {
+      "text": "withdrawn"
+    },
     "r4-prores.estimate": {
       "text": "Estimated file size: up to {size}. Simple pictures give smaller files."
     },
@@ -61705,6 +61747,30 @@
     },
     "r4-prores.profile-label": {
       "text": "ProRes profile"
+    },
+    "r6-brand.builtin-provider": {
+      "text": "Uses the service's built-in AI credits. No key of your own – switched on for the project."
+    },
+    "r6-brand.cron-warning": {
+      "text": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and that the background job is set up on the server."
+    },
+    "r6-brand.download-blocked": {
+      "text": "Did the download not start? An embedded preview can block downloads. Open the app in a separate tab and export from there."
+    },
+    "r6-brand.image-credits": {
+      "text": "This uses the service's built-in AI credits ("
+    },
+    "r6-brand.provider-detail": {
+      "text": "This is always available and uses the service's built-in AI credits. The project's AI budget applies."
+    },
+    "r6-brand.text-model": {
+      "text": "None of the language models was recognised. Set ANIMATIC_TEXT_MODEL in the server settings."
+    },
+    "r8-translation-import.button": {
+      "text": "Import translated script …"
+    },
+    "r8-translation-import.target": {
+      "text": "Target language: {language} ({tag})"
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administration"

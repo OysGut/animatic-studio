@@ -149,7 +149,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       return t("core-generation-providers.providers.message.fae659820e31");
     },
     get description() {
-      return t("core-generation-providers.providers.message.8ac7f045e797");
+      return t("r6-brand.builtin-provider");
     },
     capabilities: ["image", "text"],
     builtIn: true,

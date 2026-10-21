@@ -363,6 +363,7 @@ export function ExportPosterDialog({
                 <input
                   type="radio"
                   name="poster-export"
+                  data-testid={`poster-export-${x}`}
                   checked={kind === x}
                   onChange={() => setKind(x)}
                   className="accent-[var(--accent-brand)]"
@@ -451,7 +452,7 @@ export function ExportPosterDialog({
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
             {t("app-release-poster-dialogs.export-poster-dialog.button.fbc82f428e1d")}
           </Button>
-          <Button onClick={run} disabled={busy}>
+          <Button onClick={run} disabled={busy} data-testid="poster-export-start">
             {busy ? <Loader2 className="animate-spin" /> : <Download />}
             {busy
               ? progress !== null

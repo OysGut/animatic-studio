@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **878**
 - Prioritet: P0: 147, P1: 543, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 351, teknisk-anbefaling: 7
-- Status: Verifisert: 665, Implementert – ikke verifisert: 154, Under arbeid: 13, Ikke startet: 46
+- Status: Verifisert: 666, Implementert – ikke verifisert: 153, Under arbeid: 13, Ikke startet: 46
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -8724,13 +8724,13 @@ Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdaterin
 - **Kilde:** Beslutning DEC-0084 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI
 - **Avhengigheter:** REQ-0629
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen brukervendt tekst inneholder «Lovable».
 - **Tester:**
   - tests/unit/app-brand.test.ts
   - tests/visual/backlog-b2-ui.mjs
-- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts, src/core/i18n/authored.json (r6-brand.*), scripts/i18n/release-check.mjs (PLATFORM_NAME stopper bygget)
 - **Merknad:** Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt og ikke fullstendig verifisert.
 
 #### REQ-0640 – Den globale beskrivelsen er én redigerbar tekst for hele prosjektet
@@ -9293,7 +9293,7 @@ En videofil kan være inntil 500 MB i nettversjonen (lagringen i Lovable Cloud).
   - Notat om desktopversjonen står i TODO og kildekoden.
 - **Tester:**
   - tests/unit/mobile-import.test.ts
-- **Implementering:** src/core/mobile/index.ts
+- **Implementering:** src/core/mobile/index.ts (videoMaxBytes/APP_TARGET: grensen bare i nettversjonen)
 
 #### REQ-0680 – Opplasting uten duplikater
 Nye forsøk etter feil eller brutt forbindelse gir ikke duplikater (hver fil har en ID fra mobilen som serveren gjenkjenner). Flere samtidige opplastinger håndteres, og store filer lastes direkte til lagringen uten å gå gjennom appens server.

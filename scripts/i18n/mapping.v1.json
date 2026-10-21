@@ -42280,7 +42280,10 @@
       "parameterConflict": false,
       "signature": "8ac7f045e797",
       "key": "core-generation-providers.providers.message.8ac7f045e797",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.builtin-provider"
+      ]
     },
     {
       "file": "src/core/generation/providers.ts",
@@ -74024,7 +74027,10 @@
       "parameterConflict": false,
       "signature": "2fd3b559a274",
       "key": "adapters-ai-text-functions.message.message.2fd3b559a274",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.text-model"
+      ]
     },
     {
       "file": "src/adapters/ai/translation-align.functions.ts",
@@ -85658,7 +85664,10 @@
       "parameterConflict": false,
       "signature": "e74e02c953df",
       "key": "app-ai-providers-dialog.provider-detail.p.e74e02c953df",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.provider-detail"
+      ]
     },
     {
       "file": "src/app/ai/ProvidersDialog.tsx",
@@ -104943,7 +104952,10 @@
       "parameterConflict": false,
       "signature": "c5c202e03cf1",
       "key": "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.image-credits"
+      ]
     },
     {
       "file": "src/app/library/GenerateImagePanel.tsx",
@@ -227121,7 +227133,10 @@
       "parameterConflict": false,
       "signature": "ecb8e8d06d7f",
       "key": "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.download-blocked"
+      ]
     },
     {
       "file": "src/app/script/ExportDialog.tsx",
@@ -235596,7 +235611,10 @@
       "parameterConflict": false,
       "signature": "87153b7e849d",
       "key": "app-script-script-workspace.workspace.toolbar-button.87153b7e849d",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r8-translation-import.button"
+      ]
     },
     {
       "file": "src/app/script/ScriptWorkspace.tsx",
@@ -268224,7 +268242,10 @@
       "parameterConflict": false,
       "signature": "1494cbf069ca",
       "key": "app-admin-cron-status.warning.message.1494cbf069ca",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "r6-brand.cron-warning"
+      ]
     },
     {
       "file": "src/app/admin/cron-status.ts",

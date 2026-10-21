@@ -28,14 +28,13 @@ Kortversjonen:
 9. Script explorer reuses pagination, filtering, search and notes; only explicit navigation changes its source.
 10. Active scenes use a source-window bus; pinned explorers never publish their browsing selection.
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
-12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point: server-only service AI forces the built-in model and builds prompts, never an open proxy.
-13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema-version constant.
+12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point via server-only service AI (built-in model, no open proxy); user quotas exclude them. Visual suites share one schema-version constant.
 14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
 16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
-20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
+20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
 21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
 23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
 
@@ -54,3 +53,4 @@ Kortversjonen:
 34. M6: additive updates, computed forecasts.
 35. i18n: all text uses t()/tLocalized with keyed catalogs and a frozen AST baseline (no text lost); check.mjs rejects new L()/localized(); authored.json holds plural/select/date messages; tm() only for old stored server messages. No remount on language switch; server error codes additive. Builds stop unless nb/en are complete; script PDF stops on glyphs Courier lacks.
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
+37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.

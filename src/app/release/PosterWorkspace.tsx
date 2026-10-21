@@ -458,7 +458,7 @@ function Release({
                 <option value="en">{tk("app-release-poster-workspace.release.option.cad6bb633625")}</option>
               </select>
             </label>
-            <ToolbarButton variant="primary" onClick={() => setExportOpen(true)}>
+            <ToolbarButton variant="primary" data-testid="poster-export-open" onClick={() => setExportOpen(true)}>
               <Download />
               {tk("app-release-poster-workspace.release.toolbar-button.9802b5d3d4f2")}
             </ToolbarButton>

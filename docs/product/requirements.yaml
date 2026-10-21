@@ -24143,15 +24143,19 @@ requirements:
   tests:
   - tests/unit/app-brand.test.ts
   - tests/visual/backlog-b2-ui.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/generation/providers.ts
   - src/adapters/ai/gateway.ts
   - src/app/shell/SchemaBanner.tsx
   - src/core/i18n/catalog.gen.ts
+  - src/core/i18n/authored.json (r6-brand.*)
+  - scripts/i18n/release-check.mjs (PLATFORM_NAME stopper bygget)
   verification:
   - tests/unit/app-brand.test.ts
   - tests/visual/backlog-b2-ui.mjs
+  - tests/unit/r3-r6-r8.test.ts
+  - tests/visual/ai-admin-ui.mjs
   history:
   - date: '2026-10-15'
     decision: DEC-0084
@@ -24159,6 +24163,9 @@ requirements:
   - date: '2026-10-19'
     decision: DEC-0099
     change: 'B2: nøytral avsendertekst, språkpar og katalogtest; plattformstyrt e-post er utenfor endringsområdet.'
+  - date: '2026-10-21'
+    decision: DEC-0084
+    change: 'R6: seks tekster der plattformnavnet var byttet mekanisk ut, er skrevet nøytralt på nb og en; releasekontrollen stopper «Lovable» i brukertekster.'
   notes: Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt
     og ikke fullstendig verifisert.
 
@@ -25511,9 +25518,10 @@ requirements:
   - "tests/unit/mobile-import.test.ts"
   status: Verifisert
   implementation:
-  - "src/core/mobile/index.ts"
+  - "src/core/mobile/index.ts (videoMaxBytes/APP_TARGET: grensen bare i nettversjonen)"
   verification:
   - "tests/unit/mobile-import.test.ts"
+  - "tests/unit/r3-r6-r8.test.ts"
   - "docs/development/VISUAL_QA_DEC-0090A.md"
   history:
   - date: '2026-10-16'
@@ -25522,6 +25530,10 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0090
     change: "Bygget i bolk A"
+  - date: '2026-10-21'
+    decision: DEC-0090
+    change: "R6: grensen er knyttet til nettversjonen (APP_TARGET = web); i desktopversjonen gir videoMaxBytes ingen grense."
+
 - id: REQ-0680
   title: "Opplasting uten duplikater"
   text: "Nye forsøk etter feil eller brutt forbindelse gir ikke duplikater (hver fil har en ID fra mobilen som serveren gjenkjenner). Flere samtidige opplastinger håndteres, og store filer lastes direkte til lagringen uten å gå gjennom appens server."

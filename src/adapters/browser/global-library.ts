@@ -27,11 +27,14 @@ export async function getProjectWorkspace(projectId: string): Promise<string | n
 
 /** Alle globale ressurser i gruppen med varianter og versjoner. */
 export async function listGlobalBundles(workspaceId: string): Promise<GlobalAssetBundle[]> {
-  const [a, v, ver] = await Promise.all([
+  const [a, v, ver, wd] = await Promise.all([
     db.from("global_assets").select("*").eq("workspace_id", workspaceId),
     db.from("global_asset_variants").select("*").eq("workspace_id", workspaceId),
     db.from("global_asset_versions").select("*").eq("workspace_id", workspaceId),
+    // R3 (0068): tilbaketrukne versjoner. Før migrasjonen finnes ikke tabellen; da er ingen trukket tilbake.
+    db.from("global_version_withdrawals").select("version_id").eq("workspace_id", workspaceId),
   ]);
+  const withdrawn = new Set(wd.error ? [] : ((wd.data ?? []) as Row[]).map((r) => str(r["version_id"])));
   fail(a.error);
   fail(v.error);
   fail(ver.error);
@@ -71,6 +74,7 @@ export async function listGlobalBundles(workspaceId: string): Promise<GlobalAsse
     note: str(r["note"]),
     createdAt: str(r["created_at"]),
     template: (r["template_spec"] ?? null) as TemplateDefinition | null,
+    ...(withdrawn.has(str(r["id"])) ? { withdrawn: true } : {}),
   }));
   return assets.map((asset) => ({
     asset,

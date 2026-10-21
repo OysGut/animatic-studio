@@ -73366,5 +73366,59 @@
   },
   "r4-prores.estimate": {
     "text": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer."
+  },
+  "r3-global.error.project-rights": {
+    "text": "Bare redaktører og eiere i prosjektet kan publisere globalt."
+  },
+  "r3-global.error.workspace-rights": {
+    "text": "Bare redaktører og eiere i gruppen kan publisere eller trekke tilbake globale versjoner."
+  },
+  "r3-global.error.no-version": {
+    "text": "Versjonen finnes ikke i prosjektet."
+  },
+  "r3-global.error.not-global": {
+    "text": "Ressursen er ikke koblet til en global ressurs i denne gruppen."
+  },
+  "r3-global.undo-label": {
+    "text": "Publiser versjon {number} globalt"
+  },
+  "r3-global.published-version": {
+    "text": "Publisert som global versjon {number}. Andre prosjekter får et varsel og velger selv."
+  },
+  "r3-global.published-variant": {
+    "text": "Publisert som ny global variant (versjon {number}). Andre prosjekter får et varsel og velger selv."
+  },
+  "r3-global.publish-title": {
+    "text": "Legger den harmoniserte versjonen til den globale ressursen. Andre prosjekter endres ikke. Angre trekker den tilbake."
+  },
+  "r3-global.withdrawn-label": {
+    "text": "trukket tilbake"
+  },
+  "r3-global.withdrawn-in-use": {
+    "text": "Versjon {number} av {name} er trukket tilbake globalt. Kopien i dette prosjektet er uendret."
+  },
+  "r6-brand.builtin-provider": {
+    "text": "Bruker tjenestens innebygde AI-kreditter. Ingen egen nøkkel – slått på for prosjektet."
+  },
+  "r6-brand.text-model": {
+    "text": "Ingen av språkmodellene ble gjenkjent. Sett ANIMATIC_TEXT_MODEL i serverens innstillinger."
+  },
+  "r6-brand.provider-detail": {
+    "text": "Denne er alltid tilgjengelig og bruker tjenestens innebygde AI-kreditter. Prosjektets AI-budsjett gjelder."
+  },
+  "r6-brand.image-credits": {
+    "text": "Dette bruker tjenestens innebygde AI-kreditter ("
+  },
+  "r6-brand.download-blocked": {
+    "text": "Startet ikke nedlastingen? En innebygd forhåndsvisning kan blokkere nedlastinger. Åpne appen i en egen fane og eksporter derfra."
+  },
+  "r6-brand.cron-warning": {
+    "text": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren."
+  },
+  "r8-translation-import.button": {
+    "text": "Importer oversatt manus …"
+  },
+  "r8-translation-import.target": {
+    "text": "Målspråk: {language} ({tag})"
   }
 }

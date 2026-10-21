@@ -73348,5 +73348,59 @@
   },
   "r4-prores.estimate": {
     "text": "[!! ËËssttïïmmááttëëdd ffïïllëë ssïïzzëë: üüpp ttôô {size}. SSïïmmppllëë ppïïccttüürrëëss ggïïvvëë ssmmáállllëërr ffïïllëëss. !!]"
+  },
+  "r3-global.error.project-rights": {
+    "text": "[!! ÔÔnnllyy ëëddïïttôôrrss áánndd ôôwwnnëërrss ôôff tthhëë pprrôôjjëëcctt ccáánn ppüübbllïïsshh ggllôôbbáállllyy. !!]"
+  },
+  "r3-global.error.workspace-rights": {
+    "text": "[!! ÔÔnnllyy ëëddïïttôôrrss áánndd ôôwwnnëërrss ôôff tthhëë ggrrôôüüpp ccáánn ppüübbllïïsshh ôôrr wwïïtthhddrrááww ggllôôbbááll vvëërrssïïôônnss. !!]"
+  },
+  "r3-global.error.no-version": {
+    "text": "[!! TThhëë vvëërrssïïôônn ddôôëëss nnôôtt ëëxxïïsstt ïïnn tthhëë pprrôôjjëëcctt. !!]"
+  },
+  "r3-global.error.not-global": {
+    "text": "[!! TThhëë áássssëëtt ïïss nnôôtt llïïnnkkëëdd ttôô áá ggllôôbbááll áássssëëtt ïïnn tthhïïss ggrrôôüüpp. !!]"
+  },
+  "r3-global.undo-label": {
+    "text": "[!! PPüübbllïïsshh vvëërrssïïôônn {number} ggllôôbbáállllyy !!]"
+  },
+  "r3-global.published-version": {
+    "text": "[!! PPüübbllïïsshhëëdd ááss ggllôôbbááll vvëërrssïïôônn {number}. ÔÔtthhëërr pprrôôjjëëccttss ggëëtt áá nnôôttïïccëë áánndd cchhôôôôssëë ffôôrr tthhëëmmssëëllvvëëss. !!]"
+  },
+  "r3-global.published-variant": {
+    "text": "[!! PPüübbllïïsshhëëdd ááss áá nnëëww ggllôôbbááll vváárrïïáánntt (vvëërrssïïôônn {number}). ÔÔtthhëërr pprrôôjjëëccttss ggëëtt áá nnôôttïïccëë áánndd cchhôôôôssëë ffôôrr tthhëëmmssëëllvvëëss. !!]"
+  },
+  "r3-global.publish-title": {
+    "text": "[!! ÁÁddddss tthhëë hháárrmmôônnïïzzëëdd vvëërrssïïôônn ttôô tthhëë ggllôôbbááll áássssëëtt. ÔÔtthhëërr pprrôôjjëëccttss ddôô nnôôtt cchháánnggëë. ÜÜnnddôô wwïïtthhddrrááwwss ïïtt. !!]"
+  },
+  "r3-global.withdrawn-label": {
+    "text": "[!! wwïïtthhddrrááwwnn !!]"
+  },
+  "r3-global.withdrawn-in-use": {
+    "text": "[!! VVëërrssïïôônn {number} ôôff {name} hhááss bbëëëënn wwïïtthhddrrááwwnn ggllôôbbáállllyy. TThhëë ccôôppyy ïïnn tthhïïss pprrôôjjëëcctt ïïss üünncchháánnggëëdd. !!]"
+  },
+  "r6-brand.builtin-provider": {
+    "text": "[!! ÜÜssëëss tthhëë ssëërrvvïïccëë'ss bbüüïïlltt-ïïnn ÁÁÏÏ ccrrëëddïïttss. NNôô kkëëyy ôôff yyôôüürr ôôwwnn – sswwïïttcchhëëdd ôônn ffôôrr tthhëë pprrôôjjëëcctt. !!]"
+  },
+  "r6-brand.text-model": {
+    "text": "[!! NNôônnëë ôôff tthhëë lláánnggüüáággëë mmôôddëëllss wwááss rrëëccôôggnnïïssëëdd. SSëëtt ÁÁNNÏÏMMÁÁTTÏÏCC_TTËËXXTT_MMÔÔDDËËLL ïïnn tthhëë ssëërrvvëërr ssëëttttïïnnggss. !!]"
+  },
+  "r6-brand.provider-detail": {
+    "text": "[!! TThhïïss ïïss áállwwááyyss áávvááïïlláábbllëë áánndd üüssëëss tthhëë ssëërrvvïïccëë'ss bbüüïïlltt-ïïnn ÁÁÏÏ ccrrëëddïïttss. TThhëë pprrôôjjëëcctt'ss ÁÁÏÏ bbüüddggëëtt ááppppllïïëëss. !!]"
+  },
+  "r6-brand.image-credits": {
+    "text": "[!! TThhïïss üüssëëss tthhëë ssëërrvvïïccëë'ss bbüüïïlltt-ïïnn ÁÁÏÏ ccrrëëddïïttss ( !!]"
+  },
+  "r6-brand.download-blocked": {
+    "text": "[!! DDïïdd tthhëë ddôôwwnnllôôáádd nnôôtt ssttáárrtt? ÁÁnn ëëmmbbëëddddëëdd pprrëëvvïïëëww ccáánn bbllôôcckk ddôôwwnnllôôááddss. ÔÔppëënn tthhëë áápppp ïïnn áá ssëëppáárrááttëë ttáább áánndd ëëxxppôôrrtt ffrrôômm tthhëërrëë. !!]"
+  },
+  "r6-brand.cron-warning": {
+    "text": "[!! TThhëë bbáácckkggrrôôüünndd jjôôbb hhááss nnôôtt rrüünn ïïnn tthhëë lláásstt {CRON_STALE_MINUTES} mmïïnnüüttëëss. CChhëëcckk tthháátt tthhëë áápppp ïïss ppüübbllïïsshhëëdd áánndd tthháátt tthhëë bbáácckkggrrôôüünndd jjôôbb ïïss ssëëtt üüpp ôônn tthhëë ssëërrvvëërr. !!]"
+  },
+  "r8-translation-import.button": {
+    "text": "[!! ÏÏmmppôôrrtt ttrráánnssllááttëëdd ssccrrïïpptt … !!]"
+  },
+  "r8-translation-import.target": {
+    "text": "[!! TTáárrggëëtt lláánnggüüáággëë: {language} ({tag}) !!]"
   }
 }
