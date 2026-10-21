@@ -132788,6 +132788,157 @@
     "parameterNames": []
   },
   {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 38,
+    "column": 91,
+    "start": 2126,
+    "end": 2148,
+    "scope": "positive",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.invalid')",
+    "key": "print-pdf.invalid",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 43,
+    "column": 87,
+    "start": 2565,
+    "end": 2587,
+    "scope": "calibration-ticks",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.invalid')",
+    "key": "print-pdf.invalid",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 60,
+    "column": 86,
+    "start": 3829,
+    "end": 3851,
+    "scope": "plan-print",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.invalid')",
+    "key": "print-pdf.invalid",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 63,
+    "column": 81,
+    "start": 4281,
+    "end": 4303,
+    "scope": "plan-print",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.invalid')",
+    "key": "print-pdf.invalid",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 71,
+    "column": 62,
+    "start": 5017,
+    "end": 5039,
+    "scope": "plan-print",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.invalid')",
+    "key": "print-pdf.invalid",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 76,
+    "column": 45,
+    "start": 5349,
+    "end": 5378,
+    "scope": "plan-print",
+    "context": "message",
+    "kind": "t",
+    "raw": "t('print-pdf.image-required')",
+    "key": "print-pdf.image-required",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/layout.ts",
+    "line": 97,
+    "column": 63,
+    "start": 7101,
+    "end": 7145,
+    "scope": "instruction",
+    "context": "instruction",
+    "kind": "t",
+    "raw": "t('print-pdf.instruction',{},input.language)",
+    "key": "print-pdf.instruction",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/render.ts",
+    "line": 16,
+    "column": 16,
+    "start": 955,
+    "end": 1006,
+    "scope": "render-pdf",
+    "context": "doc.text",
+    "kind": "t",
+    "raw": "t('print-pdf.overview',{id:o.itemId},plan.language)",
+    "key": "print-pdf.overview",
+    "parameterNames": [
+      "id"
+    ]
+  },
+  {
+    "file": "src/core/print/pdf/render.ts",
+    "line": 18,
+    "column": 129,
+    "start": 1236,
+    "end": 1301,
+    "scope": "render-pdf",
+    "context": "doc.text",
+    "kind": "t",
+    "raw": "t('print-pdf.tile',{row:p.row+1,column:p.column+1},plan.language)",
+    "key": "print-pdf.tile",
+    "parameterNames": [
+      "column",
+      "row"
+    ]
+  },
+  {
+    "file": "src/core/print/pdf/render.ts",
+    "line": 52,
+    "column": 82,
+    "start": 3691,
+    "end": 3725,
+    "scope": "render-pdf",
+    "context": "doc.text",
+    "kind": "t",
+    "raw": "t('print-pdf.qr',{},plan.language)",
+    "key": "print-pdf.qr",
+    "parameterNames": []
+  },
+  {
+    "file": "src/core/print/pdf/render.ts",
+    "line": 53,
+    "column": 40,
+    "start": 3798,
+    "end": 3863,
+    "scope": "render-pdf",
+    "context": "doc.text",
+    "kind": "t",
+    "raw": "t('print-pdf.tile',{row:p.row+1,column:p.column+1},plan.language)",
+    "key": "print-pdf.tile",
+    "parameterNames": [
+      "column",
+      "row"
+    ]
+  },
+  {
     "file": "src/core/production/index.ts",
     "line": 24,
     "column": 83,

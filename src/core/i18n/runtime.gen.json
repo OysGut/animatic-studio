@@ -31046,6 +31046,24 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "print-pdf.image-required": {
+      "text": "Figurutskrift krever et kildebilde."
+    },
+    "print-pdf.instruction": {
+      "text": "Skriv ut i 100 % / faktisk størrelse. Kontroller med linjal."
+    },
+    "print-pdf.invalid": {
+      "text": "Ugyldig utskriftsgeometri."
+    },
+    "print-pdf.overview": {
+      "text": "Oversiktsark: {id}"
+    },
+    "print-pdf.qr": {
+      "text": "QR runde 5"
+    },
+    "print-pdf.tile": {
+      "text": "rad {row} / kolonne {column}"
+    },
     "r1-prores-offer.accept": {
       "text": "Bruk ProRes"
     },
@@ -62530,6 +62548,24 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "print-pdf.image-required": {
+      "text": "Figure printing requires a source image."
+    },
+    "print-pdf.instruction": {
+      "text": "Print at 100 % / actual size. Check with a ruler."
+    },
+    "print-pdf.invalid": {
+      "text": "Invalid print geometry."
+    },
+    "print-pdf.overview": {
+      "text": "Overview: {id}"
+    },
+    "print-pdf.qr": {
+      "text": "QR round 5"
+    },
+    "print-pdf.tile": {
+      "text": "row {row} / column {column}"
     },
     "r1-prores-offer.accept": {
       "text": "Use ProRes"
