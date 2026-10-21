@@ -5,6 +5,7 @@
  *   ENV_FILE=.env [UI_LANG=en] node tests/visual/r1r2-prores-cleanup.mjs http://127.0.0.1:8080 /tmp/claude-0/mts-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 const h = harness("/tmp/browser/r1r2-prores-cleanup");
 const pid = h.fx.project.id;
@@ -20,6 +21,7 @@ const FILES = [
 const name = (url) => { try { return JSON.parse(Buffer.from(decodeURIComponent(new URL(url).pathname.split("/_serverFn/")[1]), "base64url").toString("utf8")).export; } catch { return "?"; } };
 
 for (const lang of ["nb", "en"]) await h.scenario(`r1r2-${lang}`, occ.id, lang, async (page) => {
+  const shown = uiLang(lang);
   const calls = [];
   await page.route("https://thumbs.test/**", (r) => r.fulfill({ status: 200, contentType: "image/png", body: PNG }));
   await page.route("**/_serverFn/**", async (route) => {
@@ -52,8 +54,8 @@ for (const lang of ["nb", "en"]) await h.scenario(`r1r2-${lang}`, occ.id, lang, 
   h.check((await page.getByTestId("orphan-cleanup-file").count()) === 3, `${lang}: tre filer i forhåndsvisningen`);
   h.check((await dialog.locator("img").count()) === 2, `${lang}: miniatyrer for bildene`);
   const summary = await page.getByTestId("orphan-cleanup-summary").innerText();
-  h.check(summary.includes("3") && summary.includes(lang === "nb" ? "12,5" : "12.5"), `${lang}: antall og størrelse vises (${summary.slice(0, 60)})`);
-  h.check(lang === "nb" ? /AI-filer/.test(summary) : /AI files/.test(summary), `${lang}: teksten er på riktig språk`);
+  h.check(summary.includes("3") && summary.includes(shown === "nb" ? "12,5" : "12.5"), `${lang}: antall og størrelse vises (${summary.slice(0, 60)})`);
+  h.check(shown === "nb" ? /AI-filer/.test(summary) : /AI files/.test(summary), `${lang}: teksten er på riktig språk`);
   await dialog.screenshot({ path: `${h.out}/cleanup-${lang}.png` });
   await page.getByTestId("orphan-cleanup-cancel").click();
   await dialog.waitFor({ state: "hidden", timeout: 5000 });
