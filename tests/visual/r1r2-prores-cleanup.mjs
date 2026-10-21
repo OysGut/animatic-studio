@@ -1,7 +1,7 @@
 /**
  * R1 + R2 (0067): tilbudet «Bruk ProRes som standard i Endelig-profilen?» (godta som angrbar kommando, eller «Ikke
  * nå») og oppryddingen av ubrukte AI-filer (forhåndsvisning med antall, størrelse og miniatyrer, eksplisitt
- * bekreftelse, ingen sletting ved avbryt, og bare eieren ser knappen). Alle serverkall er mocket.
+ * bekreftelse og ingen sletting ved avbryt). Eierkontrollen testes på serveren (enhetstest). Alle serverkall er mocket.
  *   ENV_FILE=.env [UI_LANG=en] node tests/visual/r1r2-prores-cleanup.mjs http://127.0.0.1:8080 /tmp/claude-0/mts-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
@@ -67,10 +67,4 @@ for (const lang of ["nb", "en"]) await h.scenario(`r1r2-${lang}`, occ.id, lang, 
   h.check(/2/.test(await status.innerText()) && /1/.test(await status.innerText()), `${lang}: resultatet viser slettede og beholdte filer`);
 });
 
-// Ikke-eiere ser verken knappen eller (som leser) tilbudet.
-for (const role of ["editor", "viewer"]) {
-  h.state.commands = [];
-  const { chromium } = await import("playwright");
-  void chromium;
-}
 await h.finish();
