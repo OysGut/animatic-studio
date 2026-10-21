@@ -57,7 +57,7 @@ Uendret: `delete_project` (0066, mykt slettet prosjekt; loggen slettes ved endel
 
 ## 3. Tester
 - Typekontroll (`tsc --noEmit`): ren.
-- Full vitest: se svaret (antall).
+- Full vitest: 1 999 bestått, 10 hoppet over, 0 feilet.
 - Nye enhetstester `tests/unit/r1r2-prores-cleanup.test.ts`: 11/11 (tilbud og angre/gjør om, regler for sti,
   alder og mapper, eierkontroll, angrehistorikk beskytter, jobber gjør det ikke, aktive jobber sperrer, ingen
   sletting uten bekreftelse, ny beregning ved sletting, logg).
