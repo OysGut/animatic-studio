@@ -1,9 +1,14 @@
+import { t } from '@/core/i18n/keyed';
+import { getUiLanguage } from '@/core/i18n';
+const escapeHtml = (text: string) => text.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
 export function renderErrorPage(): string {
+  const language = getUiLanguage();
+  const heading = escapeHtml(t('routes-root.error-component.h1.e30fba673653', {}, language));
   return `<!doctype html>
-<html lang="en">
+<html lang="${escapeHtml(language)}">
   <head>
     <meta charset="utf-8" />
-    <title>This page didn't load</title>
+    <title>${heading} · From Pen to Glass</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body { font: 15px/1.5 system-ui, -apple-system, sans-serif; background: #fafafa; color: #111; display: grid; place-items: center; min-height: 100vh; margin: 0; padding: 1.5rem; }
@@ -18,11 +23,11 @@ export function renderErrorPage(): string {
   </head>
   <body>
     <div class="card">
-      <h1>This page didn't load</h1>
-      <p>Something went wrong on our end. You can try refreshing or head back home.</p>
+      <h1>${heading}</h1>
+      <p>${escapeHtml(t('routes-root.error-component.p.8ff66fea3622', {}, language))}</p>
       <div class="actions">
-        <button class="primary" onclick="location.reload()">Try again</button>
-        <a class="secondary" href="/">Go home</a>
+        <button class="primary" onclick="location.reload()">${escapeHtml(t('routes-root.error-component.button.96f923db4f99', {}, language))}</button>
+        <a class="secondary" href="/">${escapeHtml(t('routes-root.error-component.a.6fdb78437197', {}, language))}</a>
       </div>
     </div>
   </body>

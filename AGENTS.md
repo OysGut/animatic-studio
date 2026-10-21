@@ -54,4 +54,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
 39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
 40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats unchanged.
-41. UI locales use the manifest and lazy catalogs; SSR language is request-scoped. Script/data Lang stays separate.
+41. Manifest UI locales use adapter-injected split loading and request-local SSR; core and script/data Lang stay portable.
