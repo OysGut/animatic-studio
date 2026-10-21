@@ -33,7 +33,8 @@ const DAY = 24 * HOUR;
 
 /** Språkkoden Intl får for ord og ukedager. */
 function wordLocale(o: TimeFormatOptions): string {
-  return languageFormatLocale(o.language);
+  // Preserve B-097's established English day-period spelling; the country still chooses hour cycle.
+  return o.language === 'en' || o.language === 'en-XA' ? 'en' : languageFormatLocale(o.language);
 }
 
 /** Landets vanlige språk (for «som landet»), f.eks. US → en-US, DE → de-DE. */
