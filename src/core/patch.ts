@@ -73,6 +73,7 @@ import type {
 } from "./model";
 import { isVersionView } from "./library/view";
 import { fontSpecError } from "./typography/project-fonts";
+import { derivedFilesError } from "./library/image-ingest";
 import { isAudioComposition, type AudioComposition } from "./audio/composition";
 import { ALIGNMENT_FORMAT, type WordAlignment } from "./audio/alignment";
 

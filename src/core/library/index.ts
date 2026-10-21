@@ -359,6 +359,8 @@ export function stillCandidates(
   return out;
 }
 
+export * from "./image-ingest";
+
 /** Merknaden originalen får når et stort bilde får en nedskalert arbeidskopi (DEC-0079). */
 // Merknaden lagres i prosjektet og gjenkjennes ved lesing, så begge språkene gjelder
 export const ORIGINAL_NOTE_MARK = "Original i full størrelse"; // i18n-ignore
