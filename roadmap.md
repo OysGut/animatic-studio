@@ -91,3 +91,11 @@
 - [x] UI_LANG=en i backlog-b2, ca1, ca3, ca4, ca7, dv4, m6-rest, mts-credits, mts-lower-thirds, mts-nondestructive, p6, p8
 - [x] Deterministisk full vitest (realtime-channels, tidsgrense for modullasting)
 - [x] AGENTS.md: regel 13 om tjenestekvoter tilbake; detaljer flyttet til docs/development/AGENTS_DETAILS.md
+
+## V1 + småting + ID-kartlegging (21.10.2026)
+- [ ] Statusrapport lagret med vedlegg (STATUS_2026-10-21.md)
+- [ ] V1: verifiser 54 P0/P1-krav med test + REQ-0503/0145; build_docs/check_kb; TODO.md og IMPLEMENTATION_STATUS.md
+- [ ] 22 suiter til VISUAL_SCHEMA_VERSION + kontroll mot faste versjoner
+- [ ] scene-video-ui full UI_LANG; storylab-canvas-ui og mts-global overstyres av UI_LANG
+- [ ] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
+- [ ] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
