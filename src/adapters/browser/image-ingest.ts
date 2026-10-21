@@ -3,12 +3,19 @@ import { imageDims, isTiff, prepareImage, tiffToPng } from './image-prep';
 import { t } from '@/core/i18n/keyed';
 
 /** Browser-only decoding/encoding. The original File is returned byte-for-byte unchanged. */
-export async function ingestImage(file: File, context: ImageIngestContext) {
+export async function ingestImage(
+  file: File,
+  context: ImageIngestContext,
+  maxSide?: number | null,
+) {
   const decoded = isTiff(file) ? await tiffToPng(file) : file;
   const dimensions = await imageDims(decoded);
   if (!dimensions) throw new Error(t('app-library-image-prep.tiff-to-png.message.07b6500cee95'));
   const plan = planImageIngest(dimensions, context);
-  const prepared = await prepareImage(decoded, Math.max(plan.working.width, plan.working.height));
+  const prepared =
+    maxSide === null
+      ? { working: decoded, workingNote: '', original: null }
+      : await prepareImage(decoded, maxSide ?? Math.max(plan.working.width, plan.working.height));
   const bitmap = await createImageBitmap(decoded);
   try {
     const encode = async (size: { width: number; height: number }, suffix: string) => {
