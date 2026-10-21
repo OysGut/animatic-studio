@@ -617,6 +617,7 @@ async function testKeyboard() {
       "Story Lab",
       "Ressursbibliotek",
       "Sceneeditor",
+      "Rigg",
       "Montering",
       "Utgivelse",
     ].map(T);
