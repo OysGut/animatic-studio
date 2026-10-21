@@ -167,6 +167,7 @@ export function Toolbar({
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
+                  data-testid="toolbar-more"
                   aria-label={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.aria-label.1016500c135a")}
                   title={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.title.1016500c135a")}
                 >
