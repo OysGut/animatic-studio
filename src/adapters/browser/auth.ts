@@ -92,5 +92,6 @@ export function onPasswordRecovery(listener: () => void): () => void {
 export async function signupCountry(): Promise<string | null> {
   const { data } = await browserClient.auth.getUser();
   const c = (data.user?.user_metadata as { country?: unknown } | undefined)?.country;
-  return typeof c === "string" && /^[A-Z]{2}$/.test(c) ? c : null;
+  // Metadata kan endres av brukeren selv; bare kjente ISO-koder godtas
+  return typeof c === "string" && isCountryCode(c) ? c : null;
 }
