@@ -3434,7 +3434,7 @@
         "plural": {
           "parameter": "count",
           "forms": {
-            "one": "{count} line that has been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+            "one": "{count} added line is kept (it is used by another scene in the version or as a boundary for a production segment).",
             "other": "{count} lines that have been added are kept (they are used by another scene in the version or as a boundary for a production segment)."
           }
         }
@@ -3459,7 +3459,7 @@
         "plural": {
           "parameter": "count",
           "forms": {
-            "one": "{count} line no longer exist.",
+            "one": "{count} line no longer exists.",
             "other": "{count} lines no longer exist."
           }
         }
