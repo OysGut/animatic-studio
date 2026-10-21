@@ -6353,6 +6353,158 @@
       "en": {
         "text": "{seconds} s + {frames} f · frame {absolute}"
       }
+    },
+    "print-measure.error-0": {
+      "nb": {
+        "text": "Ugyldig målepunkt"
+      },
+      "en": {
+        "text": "Invalid measurement point"
+      }
+    },
+    "print-measure.error-1": {
+      "nb": {
+        "text": "Ugyldig linje"
+      },
+      "en": {
+        "text": "Invalid line"
+      }
+    },
+    "print-measure.error-2": {
+      "nb": {
+        "text": "Vinkel krever to linjer med lengde"
+      },
+      "en": {
+        "text": "Angle requires two nonzero lines"
+      }
+    },
+    "print-measure.error-3": {
+      "nb": {
+        "text": "Forhold krever ikke-negative lengder og positiv nevner"
+      },
+      "en": {
+        "text": "Ratio requires nonnegative lengths and a positive denominator"
+      }
+    },
+    "print-measure.error-4": {
+      "nb": {
+        "text": "Ugyldig måleverdi/enhet"
+      },
+      "en": {
+        "text": "Invalid measurement value or unit"
+      }
+    },
+    "print-measure.error-5": {
+      "nb": {
+        "text": "Zoom må være positiv"
+      },
+      "en": {
+        "text": "Zoom must be positive"
+      }
+    },
+    "print-measure.error-6": {
+      "nb": {
+        "text": "Ugyldig toleranse"
+      },
+      "en": {
+        "text": "Invalid tolerance"
+      }
+    },
+    "print-measure.error-7": {
+      "nb": {
+        "text": "Ukjent markørtype"
+      },
+      "en": {
+        "text": "Unknown marker type"
+      }
+    },
+    "print-measure.error-8": {
+      "nb": {
+        "text": "Markør mangler ID"
+      },
+      "en": {
+        "text": "Marker ID is missing"
+      }
+    },
+    "print-measure.error-9": {
+      "nb": {
+        "text": "Ugyldig markørgeometri"
+      },
+      "en": {
+        "text": "Invalid marker geometry"
+      }
+    },
+    "print-measure.error-10": {
+      "nb": {
+        "text": "Ugyldig målesettreferanse/navn"
+      },
+      "en": {
+        "text": "Invalid measurement set reference or name"
+      }
+    },
+    "print-measure.error-11": {
+      "nb": {
+        "text": "Ugyldig frame"
+      },
+      "en": {
+        "text": "Invalid frame"
+      }
+    },
+    "print-measure.error-12": {
+      "nb": {
+        "text": "Ugyldig tidsstempel"
+      },
+      "en": {
+        "text": "Invalid timestamp"
+      }
+    },
+    "print-measure.error-13": {
+      "nb": {
+        "text": "Ugyldig markørliste"
+      },
+      "en": {
+        "text": "Invalid marker list"
+      }
+    },
+    "print-measure.error-14": {
+      "nb": {
+        "text": "Duplisert markør-ID"
+      },
+      "en": {
+        "text": "Duplicate marker ID"
+      }
+    },
+    "print-measure.error-15": {
+      "nb": {
+        "text": "Dupliserte markører"
+      },
+      "en": {
+        "text": "Duplicate markers"
+      }
+    },
+    "print-measure.error-16": {
+      "nb": {
+        "text": "Ugyldig innsetting"
+      },
+      "en": {
+        "text": "Invalid insertion"
+      }
+    },
+    "print-measure.error-17": {
+      "nb": {
+        "text": "Ukjent markør"
+      },
+      "en": {
+        "text": "Unknown marker"
+      }
+    },
+    "print-measure.error-18": {
+      "nb": {
+        "text": "Duplisert ID"
+      },
+      "en": {
+        "text": "Duplicate ID"
+      }
     }
   }
 }
