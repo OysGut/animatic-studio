@@ -131,5 +131,11 @@
 - [x] Runde 2: én skjerm, sporgrupper i Scene, autoutfelling i ui_prefs, gamle fane=animation-lenker
 - [x] Runde 3: spacing-drag (UpdateLayers, én angring, ingen migrasjon)
 - [x] Runde 4: CA1–CA8, regresjon og full vitest; rapport B100_REPORT.md
-- [ ] DB-testene: lokal Postgres kunne ikke startes i dette miljøet; ingen DB-endring, Claude kjører dem
-- [ ] BeyondEndNotice med forlengelsestilbud ved spacing-drag forbi slutt: bare melding i dag (se rapport)
+- [ ] DB-testene: kjøres av Claude (ingen DB-endring)
+- [x] BeyondEndNotice med «Forleng scenen …» via RetimeDialog (B-099-oppdraget)
+- [x] Slettet AnimationWorkspace/AnimPreview, ML1-baseline oppdatert (7 nøkler)
+- [x] Hover uten MotionPath: nøkkelbildenes posisjoner som punkter
+
+## B-099 QR-opptak med mobil i sceneeditoren
+- [x] QR i opptaksvinduet, status, ny versjon på replikk / ny lyd i scenen, PC-feil, rå lyd, «Ta opp lyd» på mobilsiden
+- [x] Tester: b099-enhetstester, scene-mobile-audio nb/en, regresjon, full vitest; rapport B099_REPORT.md
