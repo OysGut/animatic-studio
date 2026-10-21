@@ -21,3 +21,26 @@ describe("B-100: lengden følger omtiming", () => {
     expect(followRangeLength(null, 120, 180)).toBeNull();
   });
 });
+
+import { DEFAULT_COMPOSITION, applyCommand, filmClips, scriptView, type Command } from "@/core";
+import { planRetime } from "@/core/composition/retime";
+import { compositionDuration } from "@/core/composition/animate";
+import { envelope, mustApply, seedProject, tid } from "../helpers/fixtures";
+
+describe("B-100: Scene og montering viser samme lengde etter omtiming", () => {
+  it("RetimeScene gir samme lengde i Scene og i monteringen", () => {
+    const seed = seedProject(2);
+    const occId = scriptView(seed.state, seed.mainId)[1]!.occurrenceId;
+    const occ = seed.state.occurrences[occId]!;
+    const compositionId = tid<"composition">();
+    const s = mustApply(seed.state, { type: "CreateComposition", compositionId, variantId: occ.variantId, fields: { ...DEFAULT_COMPOSITION, durationFrames: 120, background: "#101114" } });
+    const plan = planRetime(s, occId, { targetFrames: 180, method: "end", keepAmbience: true, fill: "freeze" });
+    expect(plan.ok ? "ok" : JSON.stringify(plan).slice(0, 300)).toBe("ok");
+    const r = applyCommand(s, envelope((plan as { command: Command }).command));
+    if (!r.ok) throw new Error(r.error.message);
+    const sceneLen = compositionDuration(r.state, r.state.compositions[compositionId]!);
+    const clip = filmClips(r.state, occ.productionId).find((c) => c.occurrenceId === occId)!;
+    expect(sceneLen).toBe(180);
+    expect(clip.durationFrames).toBe(180);
+  });
+});

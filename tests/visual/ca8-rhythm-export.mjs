@@ -15,7 +15,7 @@ h.rows.animation_uses = [{ id: ID(3), project_id: pid, revision: 1, layer_id: la
 const dialogue = h.rows.audio_clips.filter(c => c.occurrence_id === occ.id && !c.removed && c.kind === "dialogue");
 
 await h.scenario("ca8-rhythm", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.getByTestId("ca8-rhythm-open").click();
   await page.getByTestId("ca8-rhythm-panel").waitFor();
   h.check((await page.getByTestId("ca8-rhythm-open").getAttribute("class"))?.includes("accent-warm"), "rytmeverktøyet er oransje markert");
@@ -36,7 +36,7 @@ await h.scenario("ca8-rhythm", occ.id, "nb", async page => {
   h.check(cmd?.steps?.every(s => ["UpdateComposition", "UpdateLayers", "UpdateAudioClips", "SetAudioClipsRemoved", "UpdateTimeLinks", "SetTransition", "SetPlannedDuration"].includes(s.type)), "bare vanlige tidstrinn");
 });
 await h.scenario("ca8-rhythm-discard", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.getByTestId("ca8-rhythm-open").click();
   await page.getByTestId("ca8-rhythm-tempo").fill("2");
   await page.getByTestId("ca8-rhythm-discard").click();
@@ -44,7 +44,7 @@ await h.scenario("ca8-rhythm-discard", occ.id, "nb", async page => {
   h.check(!h.state.commands.length, "«Forkast» lagrer ingenting");
 });
 await h.scenario("ca8-export", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca7-character-open").click();
   await page.getByTestId("ca8-export-mouth").waitFor();
@@ -57,7 +57,7 @@ await h.scenario("ca8-export", occ.id, "nb", async page => {
   await page.screenshot({ path: `${h.out}/export.png` });
 });
 await h.scenario("ca8-en", occ.id, "en", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   h.check((await page.getByTestId("ca8-rhythm-open").textContent())?.includes("Rhythm"), "engelsk rytmeknapp");
   await page.getByTestId("ca8-rhythm-open").click();
   h.check((await page.getByTestId("ca8-rhythm-new-duration").textContent())?.includes("New scene time"), "engelsk «New scene time»");

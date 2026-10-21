@@ -6505,6 +6505,102 @@
       "en": {
         "text": "Duplicate ID"
       }
+    },
+    "b100.tracks.open": {
+      "nb": {
+        "text": "Fell ut animasjonsspor"
+      },
+      "en": {
+        "text": "Expand animation tracks"
+      }
+    },
+    "b100.tracks.close": {
+      "nb": {
+        "text": "Fell sammen animasjonsspor"
+      },
+      "en": {
+        "text": "Collapse animation tracks"
+      }
+    },
+    "b100.tracks.auto": {
+      "nb": {
+        "text": "Fell ut valgt lag automatisk"
+      },
+      "en": {
+        "text": "Expand selected layer automatically"
+      }
+    },
+    "b100.tracks.hint-rhythm": {
+      "nb": {
+        "text": "Cmd/Ctrl + dra på linjal eller tomrom: rytme"
+      },
+      "en": {
+        "text": "Cmd/Ctrl + drag on ruler or empty space: rhythm"
+      }
+    },
+    "b100.tracks.hint-spacing": {
+      "nb": {
+        "text": "Cmd/Ctrl + dra på lagets felt: spacing (Shift = hele animasjonen)"
+      },
+      "en": {
+        "text": "Cmd/Ctrl + drag on the layer bar: spacing (Shift = whole animation)"
+      }
+    },
+    "b100.spacing.label": {
+      "nb": {
+        "text": "{delta} f · ny lengde {length}"
+      },
+      "en": {
+        "text": "{delta} f · new length {length}"
+      }
+    },
+    "b100.spacing.limit-merge": {
+      "nb": {
+        "text": "Stoppet: to nøkkelbilder kan ikke slås sammen (minst 1 f mellom)."
+      },
+      "en": {
+        "text": "Stopped: two keyframes cannot merge (at least 1 f apart)."
+      }
+    },
+    "b100.spacing.limit-locked": {
+      "nb": {
+        "text": "Stoppet: et låst tidsrom flyttes aldri."
+      },
+      "en": {
+        "text": "Stopped: a locked time range never moves."
+      }
+    },
+    "b100.spacing.limit-start": {
+      "nb": {
+        "text": "Stoppet: animasjonen kan ikke starte før scenen."
+      },
+      "en": {
+        "text": "Stopped: the animation cannot start before the scene."
+      }
+    },
+    "b100.spacing.locked-layer": {
+      "nb": {
+        "text": "Laget er låst."
+      },
+      "en": {
+        "text": "The layer is locked."
+      }
+    },
+    "b100.spacing.command": {
+      "nb": {
+        "text": "Spacing-drag"
+      },
+      "en": {
+        "text": "Spacing drag"
+      }
+    },
+    "b100.spacing.beyond": {
+      "nb": {
+        "text": "Animasjonen går forbi scenens slutt. Bruk «Endre lengde» for å forlenge scenen."
+      },
+      "en": {
+        "text": "The animation runs past the end of the scene. Use “Change length” to extend the scene."
+      }
     }
   }
 }

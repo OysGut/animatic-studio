@@ -407,7 +407,7 @@ async function testAreas() {
       "REQ-0427",
       "hovedmenyen har sju arbeidsflater",
       links.map((x) => x.trim()).join("|") ===
-        ["Prosjektoversikt", "Manus", "Story Lab", "Ressursbibliotek", "Sceneeditor", "Montering", "Utgivelse"].map(T).join("|"),
+        ["Prosjektoversikt", "Manus", "Story Lab", "Ressursbibliotek", "Sceneeditor", "Rigg", "Montering", "Utgivelse"].map(T).join("|"),
       links.join(", "),
     );
     check(
@@ -617,6 +617,7 @@ async function testKeyboard() {
       "Story Lab",
       "Ressursbibliotek",
       "Sceneeditor",
+      "Rigg",
       "Montering",
       "Utgivelse",
     ].map(T);

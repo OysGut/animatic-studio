@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button";
 import type { Playback } from "./use-playback";
 import { compositionFieldsOf, layerEventMarks, type LayerEventMark } from "./timeline-helpers";
 import { RetimeDialog } from "./RetimeDialog";
+import { SpacingRow, type SpacingHover } from "./SpacingDrag";
 import { useLanguage } from "@/app/i18n/language";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
@@ -78,6 +79,11 @@ interface Props {
     readonly audioUrls?: Readonly<Record<string, string>> | null;
     /** Øker når egenskapspanelet ber om dialogen. */
     readonly request?: number;
+  };
+  /** B-100: spacing-drag på lagets felt (Cmd/Ctrl + dra). Forhåndsvisning og utheving på lerretet. */
+  readonly spacing?: {
+    readonly onHover: (h: SpacingHover | null) => void;
+    readonly onPreview: (s: ProjectState | null) => void;
   };
 }
 
@@ -483,6 +489,7 @@ export function Timeline({
   run,
   audioRows,
   retime,
+  spacing,
 }: Props) {
   const [retimeTarget, setRetimeTarget] = useState<number | null>(null);
   const [endDrag, setEndDrag] = useState<{ x0: number; frames: number } | null>(null);
@@ -1578,6 +1585,9 @@ export function Timeline({
             </p>
           ) : (
             front.map((l) => (
+              <SpacingRow key={l.id} state={state} layer={l} ppf={ppf} trackLeft={labelW + GUTTER} durationFrames={durationFrames}
+                editable={editable} run={run} frameFromX={frameFromX}
+                onHover={spacing?.onHover ?? null} onPreview={spacing?.onPreview ?? null}>
               <LayerRow
                 key={l.id}
                 layer={l}
@@ -1602,6 +1612,7 @@ export function Timeline({
                 events={eventMarks.get(l.id)}
                 onEventPointerDown={onEventPointerDown}
               />
+              </SpacingRow>
             ))
           )}
 

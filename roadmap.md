@@ -127,7 +127,9 @@
 - [x] ID3: stabile ID-er (REQ-0037/0022/0518), migrasjon 0069, verifisering3 engelsk – se docs/development/ID3_REPORT.md
 
 ## B-100 Animasjon inn i Scene + spacing-drag
-- [x] Runde 1a: lengdefeil funnet (tidsvindu/avspillingsområde låst til gammel lengde), rettet med test
-- [ ] Runde 1b–2: én skjerm (fjern Animasjon-fanen, sporgrupper, paneler, omdirigering)
-- [ ] Runde 3: spacing-drag – venter på svar fra Claude om Cmd/Ctrl-fordeling og kommandotype
-- [ ] Runde 4: CA-suiter, regresjon, rapport
+- [x] Runde 1: lengdefeil (tidsvindu/avspillingsområde låst til gammel lengde) rettet; Scene = montering etter RetimeScene (test)
+- [x] Runde 2: én skjerm, sporgrupper i Scene, autoutfelling i ui_prefs, gamle fane=animation-lenker
+- [x] Runde 3: spacing-drag (UpdateLayers, én angring, ingen migrasjon)
+- [x] Runde 4: CA1–CA8, regresjon og full vitest; rapport B100_REPORT.md
+- [ ] DB-testene: lokal Postgres kunne ikke startes i dette miljøet; ingen DB-endring, Claude kjører dem
+- [ ] BeyondEndNotice med forlengelsestilbud ved spacing-drag forbi slutt: bare melding i dag (se rapport)

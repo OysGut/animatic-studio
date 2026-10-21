@@ -7,9 +7,9 @@ const comp = h.rows.compositions.find(c => !c.removed);
 const occ = h.rows.scene_occurrences.find(o => o.variant_id === comp?.variant_id);
 if (!occ) throw new Error("Fixture missing composed scene occurrence");
 await h.scenario("ca1", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.getByTestId("animation-workspace").waitFor();
-  h.check(await page.getByTestId("scene-tab-scene").isVisible(), "begge faner");
+  h.check((await page.getByTestId("scene-tab-animation").count()) === 0, "ingen egen Animasjon-fane (B-100)");
   await page.getByTestId("anim-frame-forward").click();
   h.check(await page.getByTestId("anim-playhead").getAttribute("data-frame") === "1", "frame frem");
   await page.getByTestId("anim-frame-back").click();
@@ -43,21 +43,18 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) === keyFrame - 1, "piltaster flytter én frame");
   await page.keyboard.press("Space"); await page.keyboard.press("Space");
   h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes(byLang("nb", "Spill", "Play")), "mellomrom spiller og stopper");
-  await page.getByTestId("anim-preview-zoom").selectOption("2");
-  const pan = await page.getByTestId("anim-preview-pan").boundingBox();
-  await page.mouse.move(pan.x + 40, pan.y + 40); await page.mouse.down(); await page.mouse.move(pan.x + 70, pan.y + 60); await page.mouse.up();
-  h.check(Number(await page.getByTestId("anim-preview-pan").getAttribute("data-pan-x")) !== 0, "panorering");
-  const separator = page.getByTestId("anim-preview-resize").getByRole("separator");
-  const before = Number(await separator.getAttribute("aria-valuenow"));
-  await separator.focus(); await page.keyboard.press("ArrowLeft");
-  h.check(Number(await separator.getAttribute("aria-valuenow")) !== before, "dra-kant tilgjengelig med tastatur");
-  await page.getByTestId("scene-tab-scene").click(); await page.getByTestId("scene-tab-animation").click();
+  // B-100: lerretet i Scene er forhåndsvisningen; sporgruppene felles sammen og ut
+  h.check((await page.getByTestId("anim-preview").count()) === 0, "egen forhåndsvisning er borte, lerretet brukes");
+  await page.getByTestId("scene-track-groups-toggle").click();
+  h.check((await page.getByTestId("scene-track-groups").getAttribute("data-open")) === "false", "sporgruppene felles sammen");
+  await page.getByTestId("scene-track-groups-toggle").click();
+  h.check((await page.getByTestId("scene-track-groups").getAttribute("data-open")) === "true", "sporgruppene felles ut");
   h.check(h.state.commands.length === 0, "visningskontroller skriver ikke prosjektdata");
   await page.screenshot({ path: `${h.out}/ca1-animation.png` });
 });
 await h.scenario("ca1-en", occ.id, "en", async page => {
-  h.check(await page.getByTestId("scene-tab-animation").textContent() === "Animation", "engelsk fane");
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Play"), "engelsk avspilling");
+  h.check((await page.getByTestId("scene-track-groups-toggle").getAttribute("aria-label")) === "Collapse animation tracks", "engelsk sporgruppeknapp");
 });
 await h.finish();

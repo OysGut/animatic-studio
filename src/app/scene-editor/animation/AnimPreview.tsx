@@ -1,3 +1,4 @@
+/** B-100: ikke lenger i bruk (Animasjon-fanen er fjernet; sporene ligger i Scene). Beholdes til tekstinventarets grunnlinje kan oppdateres. */
 /** Camera preview shares rendering and fonts with the scene/export engines. View transforms are local. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { layersOf, renderFrame, type Composition, type ProjectState } from "@/core";

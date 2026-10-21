@@ -74033,5 +74033,41 @@
   },
   "print-measure.error-18": {
     "text": "[!! DDüüppllïïccááttëë ÏÏDD !!]"
+  },
+  "b100.tracks.open": {
+    "text": "[!! ËËxxppáánndd áánnïïmmááttïïôônn ttrráácckkss !!]"
+  },
+  "b100.tracks.close": {
+    "text": "[!! CCôôllllááppssëë áánnïïmmááttïïôônn ttrráácckkss !!]"
+  },
+  "b100.tracks.auto": {
+    "text": "[!! ËËxxppáánndd ssëëllëëccttëëdd llááyyëërr ááüüttôômmááttïïccáállllyy !!]"
+  },
+  "b100.tracks.hint-rhythm": {
+    "text": "[!! CCmmdd/CCttrrll + ddrráágg ôônn rrüüllëërr ôôrr ëëmmppttyy ssppááccëë: rrhhyytthhmm !!]"
+  },
+  "b100.tracks.hint-spacing": {
+    "text": "[!! CCmmdd/CCttrrll + ddrráágg ôônn tthhëë llááyyëërr bbáárr: ssppááccïïnngg (SShhïïfftt = wwhhôôllëë áánnïïmmááttïïôônn) !!]"
+  },
+  "b100.spacing.label": {
+    "text": "[!! {delta} ff · nnëëww llëënnggtthh {length} !!]"
+  },
+  "b100.spacing.limit-merge": {
+    "text": "[!! SSttôôppppëëdd: ttwwôô kkëëyyffrráámmëëss ccáánnnnôôtt mmëërrggëë (áátt llëëáásstt 1 ff ááppáárrtt). !!]"
+  },
+  "b100.spacing.limit-locked": {
+    "text": "[!! SSttôôppppëëdd: áá llôôcckkëëdd ttïïmmëë rráánnggëë nnëëvvëërr mmôôvvëëss. !!]"
+  },
+  "b100.spacing.limit-start": {
+    "text": "[!! SSttôôppppëëdd: tthhëë áánnïïmmááttïïôônn ccáánnnnôôtt ssttáárrtt bbëëffôôrrëë tthhëë ssccëënnëë. !!]"
+  },
+  "b100.spacing.locked-layer": {
+    "text": "[!! TThhëë llááyyëërr ïïss llôôcckkëëdd. !!]"
+  },
+  "b100.spacing.command": {
+    "text": "[!! SSppááccïïnngg ddrráágg !!]"
+  },
+  "b100.spacing.beyond": {
+    "text": "[!! TThhëë áánnïïmmááttïïôônn rrüünnss ppáásstt tthhëë ëënndd ôôff tthhëë ssccëënnëë. ÜÜssëë “CChháánnggëë llëënnggtthh” ttôô ëëxxttëënndd tthhëë ssccëënnëë. !!]"
   }
 }

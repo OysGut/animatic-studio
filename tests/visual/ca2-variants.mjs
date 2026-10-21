@@ -14,7 +14,7 @@ layer.image_swaps = [
   { frame: 8, assetId: layer.asset_id, assetVariantId: versions.at(-1).variant_id, versionId: versions.at(-1).id },
 ];
 await h.scenario("ca2-variants", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   const track = page.locator(`[data-anim-track="${layer.id}"]`);
   await track.waitFor();
   const segments = track.getByTestId("anim-segment");
@@ -48,7 +48,7 @@ await h.scenario("ca2-variants", occ.id, "nb", async page => {
   }
 });
 await h.scenario("ca2-en", occ.id, "en", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   h.check((await page.getByTestId("anim-segment-replace").getAttribute("aria-label")).includes("Replace image"), "engelsk variantverktøy");
   await page.getByTestId("anim-segment-replace").click();

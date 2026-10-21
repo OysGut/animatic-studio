@@ -25,6 +25,8 @@ import { t as tk } from "@/core/i18n/keyed";
 
 interface StageProps {
   state: ProjectState;
+  /** B-100: spacing-drag – banen til laget under pekeren, med berørt del og tidspunkt i oransje. */
+  spacingHover?: { readonly layerId: string; readonly frame: number; readonly whole: boolean } | null;
   composition: Composition;
   editable: boolean;
   selectedLayerId: string | null;
@@ -130,6 +132,7 @@ interface MaskDrag {
 interface Colors {
   border: string;
   accent: string;
+  warm?: string;
 }
 
 const PADDING = 32;
@@ -457,6 +460,40 @@ function drawPathOverlay(
   ctx.restore();
 }
 
+/** B-100: berørt del av banen og punktet ved pekerens tid i oransje (spacing-drag). */
+function drawSpacingOverlay(
+  ctx: CanvasRenderingContext2D,
+  path: MotionPath,
+  toScene: Matrix | null,
+  v: View,
+  colors: Colors,
+  frame: number,
+  whole: boolean,
+) {
+  const sc = (x: number, y: number) => toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
+  const at = (f: number) => { const p = pathPointAt(path, pathProgress(path, f)); return sc(p.x, p.y); };
+  const warm = colors.warm ?? colors.accent;
+  const from = whole ? path.startFrame : Math.max(path.startFrame, Math.min(path.endFrame, frame));
+  ctx.save();
+  ctx.strokeStyle = warm;
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  const steps = Math.max(2, Math.min(200, path.endFrame - from));
+  for (let i = 0; i <= steps; i++) {
+    const q = at(from + ((path.endFrame - from) * i) / steps);
+    if (i === 0) ctx.moveTo(q.x, q.y);
+    else ctx.lineTo(q.x, q.y);
+  }
+  ctx.stroke();
+  const q = at(Math.max(path.startFrame, Math.min(path.endFrame, frame)));
+  ctx.fillStyle = warm;
+  ctx.beginPath();
+  ctx.arc(q.x, q.y, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 /** Streken mens en bane tegnes (skjermkoordinater). */
 function drawStroke(ctx: CanvasRenderingContext2D, pts: readonly Pt[], colors: Colors) {
   if (pts.length < 2) return;
@@ -501,6 +538,7 @@ export function Stage({
   drawPath = false,
   onPathDrawn,
   onDrawCancel,
+  spacingHover = null,
 }: StageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -574,6 +612,7 @@ export function Stage({
     colorsRef.current = {
       border: cs.getPropertyValue("--border-strong").trim() || FALLBACK.border,
       accent: cs.getPropertyValue("--accent-brand").trim() || FALLBACK.accent,
+      warm: cs.getPropertyValue("--accent-warm").trim() || FALLBACK.accent,
     };
     return () => ro.disconnect();
   }, []);
@@ -732,6 +771,13 @@ export function Stage({
         drawMaskHandles(ctx, selectedItem, view, colors);
       if (shownPath && !drawPath)
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
+      if (spacingHover) {
+        const hl = state.layers[spacingHover.layerId];
+        if (hl?.path) {
+          const g = groupOf(state, hl);
+          drawSpacingOverlay(ctx, hl.path, g ? groupMatrixAt(g, time) : null, view, colors, spacingHover.frame, spacingHover.whole);
+        }
+      }
       if (stroke) drawStroke(ctx, stroke, colors);
       if (overlayShot)
         drawCameraOverlay(ctx, overlayShot, composition, view, {
@@ -758,6 +804,8 @@ export function Stage({
     stroke,
     drawPath,
     state.layers,
+    spacingHover,
+    time,
   ]);
 
   // Rullehjul: ⌘/Ctrl zoomer rundt pekeren, ellers panorerer

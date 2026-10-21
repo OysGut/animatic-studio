@@ -74051,5 +74051,41 @@
   },
   "print-measure.error-18": {
     "text": "Duplisert ID"
+  },
+  "b100.tracks.open": {
+    "text": "Fell ut animasjonsspor"
+  },
+  "b100.tracks.close": {
+    "text": "Fell sammen animasjonsspor"
+  },
+  "b100.tracks.auto": {
+    "text": "Fell ut valgt lag automatisk"
+  },
+  "b100.tracks.hint-rhythm": {
+    "text": "Cmd/Ctrl + dra på linjal eller tomrom: rytme"
+  },
+  "b100.tracks.hint-spacing": {
+    "text": "Cmd/Ctrl + dra på lagets felt: spacing (Shift = hele animasjonen)"
+  },
+  "b100.spacing.label": {
+    "text": "{delta} f · ny lengde {length}"
+  },
+  "b100.spacing.limit-merge": {
+    "text": "Stoppet: to nøkkelbilder kan ikke slås sammen (minst 1 f mellom)."
+  },
+  "b100.spacing.limit-locked": {
+    "text": "Stoppet: et låst tidsrom flyttes aldri."
+  },
+  "b100.spacing.limit-start": {
+    "text": "Stoppet: animasjonen kan ikke starte før scenen."
+  },
+  "b100.spacing.locked-layer": {
+    "text": "Laget er låst."
+  },
+  "b100.spacing.command": {
+    "text": "Spacing-drag"
+  },
+  "b100.spacing.beyond": {
+    "text": "Animasjonen går forbi scenens slutt. Bruk «Endre lengde» for å forlenge scenen."
   }
 }
