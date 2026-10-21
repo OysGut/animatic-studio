@@ -2,11 +2,12 @@
 
 ## B-107 / B-111 – åpen språkliste (21.10.2026)
 - [x] Fjern .overforing og ignorer gamle øyeblikksbilder.
-- [ ] Åpent register, separat lasting, reserve, CLDR og import-/eksportverktøy.
-- [ ] Engelsk standard, nettleservalg og personlig språkprioritet.
-- [ ] Importer åtte språk, oppdater utdaterte tekster og grammatikk med kildehash/review.
-- [ ] Vakt mot etterslep, enhetstester, sekvensielle nb/en-regresjoner og fr/ja-stikkprøver.
-- [ ] Rapport docs/development/B107_REPORT.md og kontroll av profiles.locale.
+- [x] Åpent register, separat lasting, reserve, CLDR og import-/eksportverktøy.
+- [x] Engelsk standard, nettleservalg og personlig språkprioritet.
+- [x] Importer åtte språk, oppdater utdaterte tekster og grammatikk med kildehash/review.
+- [x] Vakt mot etterslep, 2195 beståtte enhetstester, sekvensielle kontoregresjoner nb/en og fr/ja-stikkprøver.
+- [x] Rapport docs/development/B107_REPORT.md og kontroll av profiles.locale; lokale DB-tester 153/153.
+- [ ] Claude må kjøre 0077 og publisere sammen med skjemaversjon 77; Cloud står på 76 fra før oppdraget.
 
 ## Aktivt oppdrag: runde 4 og B-095 (21.10.2026)
 - [x] A: skjemaversjon 72, regenerert i18n og full Vitest (2102 bestått / 10 eksisterende hoppet over).
