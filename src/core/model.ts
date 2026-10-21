@@ -572,6 +572,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
    * versjonsnummeret i merknaden. Mangler for eldre versjoner (opphavet slås da opp fra merknaden ved lesing).
    */
   readonly derivedFromVersionId?: AssetVersionId;
+  /**
+   * Avledede filer (B-105a, migrasjon 0078): arbeidskopi, avspillingsproxy og miniatyr – og rå TIFF når
+   * versjonen er en renderbar konvertering. Uforanderlig som resten av versjonen; eldre versjoner mangler den.
+   */
+  readonly derivedFiles?: import("./library/image-ingest").DerivedImageFiles;
 }
 
 /** Et element som skal inn i en scene (DEC-0088). */

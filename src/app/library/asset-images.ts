@@ -5,7 +5,8 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { assetFilePath, ASSET_MAX_BYTES, ASSET_MIME_TYPES, newId, type AssetMedia, type AssetVariantId, type Command } from "@/core";
-import { isTiff, prepareImage } from "./image-prep";
+import { isTiff } from "./image-prep";
+import { ingestImage } from "@/adapters/browser/image-ingest";
 import { sha256Hex } from "@/engine/import/browser";
 import {
   ASSET_BUCKET,
@@ -62,41 +63,75 @@ export interface UploadedImage {
   readonly media: AssetMedia;
   /** Merknad til versjonen (TIFF gjort om, skalert ned …), eller tom. */
   readonly note: string;
-  /** Originalen i full størrelse når bildet er skalert ned (lagres som versjonen før). */
-  readonly original: {
-    readonly versionId: string;
-    readonly media: AssetMedia;
-    readonly note: string;
-  } | null;
 }
 
 /**
- * Last opp et bilde og returner data til AddAssetVersion. TIFF gjøres om til PNG, og bilder større enn
- * `maxSide` får en nedskalert arbeidskopi i tillegg til originalen (Mars 2026-10-13). `maxSide` null: ingen
- * nedskalering. Kaster med norsk feilmelding.
+ * Last opp et bilde og returner data til AddAssetVersion (B-105a). Originalen lagres uendret (TIFF: råfila
+ * ligger som avledet fil, versjonen er den renderbare PNG-en); arbeidskopi (workingImageMaxSide), WebP-proxy
+ * og WebP-miniatyr lagres som avledede filer på samme versjon når de faktisk er mindre enn originalen.
+ * `maxSide` null: ingen nedskalert arbeidskopi. Kaster med norsk feilmelding.
  */
 export async function uploadAssetImage(
   projectId: string,
   assetId: string,
   file: File,
   maxSide: number | null = null,
+  frame: { width: number; height: number } | null = null,
 ): Promise<UploadedImage> {
   const problem = checkImageFile(file);
   if (problem) throw new Error(problem);
-  const prepared = await prepareImage(file, maxSide);
-  const original = prepared.original
-    ? {
-        ...(await uploadOne(projectId, assetId, prepared.original.file)),
-        note: prepared.original.note,
-      }
-    : null;
-  const working = await uploadOne(projectId, assetId, prepared.working);
-  return { ...working, note: prepared.workingNote, original };
+  const ingest = await ingestImage(
+    file,
+    { frameWidth: frame?.width ?? 0, frameHeight: frame?.height ?? 0 },
+    maxSide,
+  );
+  const versionId = newId<"asset_version">();
+  const base = safeFileName(file.name).replace(/\.[A-Za-z0-9]{1,5}$/, "") || "bilde";
+  const main = await uploadOne(projectId, assetId, versionId, ingest.decoded, safeFileName(file.name));
+  const derived: {
+    -readonly [K in keyof import("@/core").DerivedImageFiles]: import("@/core").DerivedImageFile;
+  } = {};
+  const longerSide = Math.max(ingest.dimensions.width, ingest.dimensions.height);
+  const jobs: Promise<void>[] = [];
+  if (ingest.working !== ingest.decoded && ingest.working.size !== ingest.decoded.size)
+    jobs.push(
+      uploadOne(projectId, assetId, versionId, ingest.working, `${base}-arbeidskopi`).then((d) => {
+        derived.working = d;
+      }),
+    );
+  if (longerSide > Math.max(ingest.plan.proxy.width, ingest.plan.proxy.height))
+    jobs.push(
+      uploadOne(projectId, assetId, versionId, ingest.proxy, `${base}-proxy.webp`).then((d) => {
+        derived.proxy = d;
+      }),
+    );
+  if (longerSide > Math.max(ingest.plan.thumbnail.width, ingest.plan.thumbnail.height))
+    jobs.push(
+      uploadOne(projectId, assetId, versionId, ingest.thumbnail, `${base}-miniatyr.webp`).then((d) => {
+        derived.thumbnail = d;
+      }),
+    );
+  if (isTiff(file))
+    jobs.push(
+      uploadOne(projectId, assetId, versionId, file, `${base}-ra.tiff`).then((d) => {
+        derived.originalRaw = d;
+      }),
+    );
+  await Promise.all(jobs);
+  return {
+    versionId,
+    media: {
+      ...main,
+      ...(derived.working || derived.proxy || derived.thumbnail || derived.originalRaw
+        ? { derivedFiles: derived }
+        : {}),
+    },
+    note: ingest.workingNote,
+  };
 }
 
 /**
- * Legg den opplastede filen inn som versjon(er) i varianten: originalen først (hvis bildet ble skalert ned),
- * så arbeidskopien – som ett angresteg. Returnerer feilmelding eller null.
+ * Legg den opplastede filen inn som versjon i varianten. Returnerer feilmelding eller null.
  */
 export async function addUploadedImage(
   runAndWait: (c: Command, label: string, group?: string) => Promise<{ error: string | null }>,
@@ -105,22 +140,7 @@ export async function addUploadedImage(
   label: string,
   note = "",
 ): Promise<string | null> {
-  const group = `opplasting-${up.versionId}`;
   const join = (...xs: string[]) => xs.filter(Boolean).join(" ");
-  if (up.original) {
-    const r = await runAndWait(
-      {
-        type: "AddAssetVersion",
-        versionId: up.original.versionId as never,
-        variantId: variantId as AssetVariantId,
-        media: up.original.media,
-        note: join(note, up.original.note).slice(0, 2000),
-      },
-      label,
-      group,
-    );
-    if (r.error) return r.error;
-  }
   const r = await runAndWait(
     {
       type: "AddAssetVersion",
@@ -130,20 +150,31 @@ export async function addUploadedImage(
       note: join(note, up.note).slice(0, 2000),
     },
     label,
-    group,
   );
   return r.error;
+}
+
+/** Last opp en avledet fil (proxy, miniatyr, arbeidskopi) for en eksisterende versjon. */
+export async function uploadDerivedImage(
+  projectId: string,
+  assetId: string,
+  versionId: string,
+  file: File,
+  fileName: string,
+): Promise<import("@/core").DerivedImageFile> {
+  return uploadOne(projectId, assetId, versionId, file, fileName);
 }
 
 async function uploadOne(
   projectId: string,
   assetId: string,
+  versionId: string,
   file: File,
-): Promise<{ versionId: string; media: AssetMedia }> {
-  const versionId = newId<"asset_version">();
+  fileName: string,
+): Promise<import("@/core").AssetMedia> {
   const bytes = new Uint8Array(await file.arrayBuffer());
   const [sha256, size] = await Promise.all([sha256Hex(bytes), imageSize(file)]);
-  const path = assetFilePath(projectId, "source", assetId, versionId, safeFileName(file.name));
+  const path = assetFilePath(projectId, "source", assetId, versionId, safeFileName(fileName));
   const error = await uploadFile(ASSET_BUCKET, path, file, {
     contentType: file.type,
     upsert: false,
@@ -158,15 +189,12 @@ async function uploadOne(
     );
   }
   return {
-    versionId,
-    media: {
-      path,
-      mimeType: file.type,
-      width: size.width,
-      height: size.height,
-      byteSize: file.size,
-      sha256,
-    },
+    path,
+    mimeType: file.type,
+    width: size.width,
+    height: size.height,
+    byteSize: file.size,
+    sha256,
   };
 }
 

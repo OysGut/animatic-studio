@@ -53682,5 +53682,10 @@
     "text": "언어 변경",
     "sourceHash": "5d11e2a3e1d1cbbcde92b403750055ee0b34535ff4d610c15f16500c6153e2f2",
     "review": "machine"
+  },
+  "app-library-derived-backfill.label": {
+    "text": "파생 이미지 파일이 저장되었습니다",
+    "sourceHash": "dcb7a99511237f43bf2e8ffe4b64a5b1732486e41eba30d84cce32a569063029",
+    "review": "machine"
   }
 }

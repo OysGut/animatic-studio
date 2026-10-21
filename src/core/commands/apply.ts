@@ -56,6 +56,7 @@ import { checkInvariants } from "../invariants";
 import { materializeDraftStep, sparseDraftStep } from "./draft-fields";
 
 import { templateError, type TemplateValues } from "../typography/template";
+import { derivedFilesError } from "../library/image-ingest";
 import { fontSpecError, FONT_PACK_MAX_BYTES, FONT_PACK_MIME } from "../typography/project-fonts";
 import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
 import { factError, type StoryFactFields } from "../storylab/facts";
@@ -6549,6 +6550,10 @@ function run(
         if (!from || from.id === c.versionId || s.assetVariants[from.variantId]?.assetId !== va.assetId)
           fail("invalid", tk("id3.derived-from.invalid"));
       }
+      if (m.derivedFiles !== undefined) {
+        const derr = derivedFilesError(m.derivedFiles);
+        if (derr) fail("invalid", derr);
+      }
       const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
       // Gjør om etter angre: behold det opprinnelige nummeret hvis det er ledig
       const number =
@@ -6583,6 +6588,10 @@ function run(
               ...(c.template !== undefined ? { template: c.template } : {}),
               ...(c.font !== undefined ? { font: c.font } : {}),
               ...(c.derivedFromVersionId !== undefined ? { derivedFromVersionId: c.derivedFromVersionId } : {}),
+              // B-105a: avledede filer (arbeidskopi, proxy, miniatyr, rå TIFF) – bare for bilder
+              ...(m.derivedFiles !== undefined && m.mimeType.startsWith("image/")
+                ? { derivedFiles: m.derivedFiles }
+                : {}),
               ...(c.globalSource !== undefined
                 ? {
                     globalSource: {
@@ -6680,6 +6689,7 @@ function run(
             byteSize: ver.byteSize,
             sha256: ver.sha256,
             ...(ver.durationMs !== null ? { durationMs: ver.durationMs } : {}),
+            ...(ver.derivedFiles ? { derivedFiles: ver.derivedFiles } : {}),
           },
           note: ver.note,
           number: ver.number,
@@ -6688,6 +6698,37 @@ function run(
           ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
           ...(ver.derivedFromVersionId ? { derivedFromVersionId: ver.derivedFromVersionId } : {}),
+        },
+        affected: [ver.id],
+      };
+    }
+
+    // B-105a: avledede filer på en bildeversjon (opplasting og bakgrunnsoppgradering av eldre bilder)
+    case "SetAssetVersionDerived": {
+      const ver = need(s.assetVersions[c.versionId], tk("core-commands-apply.ver.need.f1d2238c110b.2"));
+      if (!ver.mimeType.startsWith("image/"))
+        fail("invalid", tk("core-commands-apply.run.fail.bf6e905ff6b8.2"));
+      if (c.derived !== null) {
+        const derr = derivedFilesError(c.derived);
+        if (derr) fail("invalid", derr);
+      }
+      const { derivedFiles: _previous, ...withoutDerived } = ver;
+      return {
+        state: {
+          ...s,
+          assetVersions: {
+            ...s.assetVersions,
+            [ver.id]: {
+              ...withoutDerived,
+              revision: rev(ver),
+              ...(c.derived !== null ? { derivedFiles: c.derived } : {}),
+            },
+          },
+        },
+        inverse: {
+          type: "SetAssetVersionDerived",
+          versionId: ver.id,
+          derived: ver.derivedFiles ?? null,
         },
         affected: [ver.id],
       };

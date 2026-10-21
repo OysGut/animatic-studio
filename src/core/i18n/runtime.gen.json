@@ -9109,6 +9109,9 @@
     "app-library-cutout-dialog.size-kept-scaled": {
       "text": "{w} × {h} px (skalert ned for frilegging) · {percent} % av bildet beholdes. "
     },
+    "app-library-derived-backfill.label": {
+      "text": "Lagret avledede bildefiler"
+    },
     "app-library-dialogue-batch-panel.batch-estimate": {
       "text": "{lines} · {language} · {voice} · {model} · kostnadsanslag: {cost} · tidsanslag (usikkert): {time}"
     },
@@ -41175,6 +41178,9 @@
     },
     "app-library-cutout-dialog.size-kept-scaled": {
       "text": "{w} × {h} px (scaled down for cut-out) · {percent} % of the image is kept. "
+    },
+    "app-library-derived-backfill.label": {
+      "text": "Saved derived image files"
     },
     "app-library-dialogue-batch-panel.batch-estimate": {
       "text": "{lines} · {language} · {voice} · {model} · cost estimate: {cost} · time estimate (uncertain): {time}"

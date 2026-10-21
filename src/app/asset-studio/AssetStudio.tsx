@@ -12,7 +12,7 @@
  */
 import { Pause, Play, Redo2, Undo2, Unlock, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
+import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, versionImagePath, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -159,10 +159,10 @@ export function AssetStudio({
     const out: string[] = [];
     for (const l of Object.values(view.layers))
       if (l.compositionId === comp.id && !l.removed)
-        for (const v of layerVersions(view, l)) out.push(v.mediaPath);
+        for (const v of layerVersions(view, l)) out.push(versionImagePath(v, "playback"));
     if (asset)
       for (const v of variantsOf(view, asset.id))
-        for (const ver of versionsOf(view, v.id)) out.push(ver.mediaPath);
+        for (const ver of versionsOf(view, v.id)) out.push(versionImagePath(ver, "playback"));
     return out;
   }, [view, comp.id, asset]);
   const urls = useImageUrls(paths).data ?? {};

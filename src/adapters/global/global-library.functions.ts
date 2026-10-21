@@ -71,6 +71,35 @@ async function copyFile(a: AnyClient, from: string, to: string): Promise<string 
   return error.message;
 }
 
+/** Avledede bildefiler slik de lagres i derived_files (B-105a): nøklene er working/proxy/thumbnail/originalRaw. */
+type GlobalDerivedFile = {
+  readonly path: string;
+  readonly width: number | null;
+  readonly height: number | null;
+  readonly byteSize: number;
+  readonly sha256: string;
+};
+type GlobalDerivedFiles = Partial<Record<"working" | "proxy" | "thumbnail" | "originalRaw", GlobalDerivedFile>>;
+
+/** Kopierer de avledede filene og returnerer samme struktur med de nye stiene (undefined når det ikke er noen). */
+async function copyDerivedFiles(
+  a: AnyClient,
+  derived: GlobalDerivedFiles | null | undefined,
+  to: (d: GlobalDerivedFile) => string,
+): Promise<GlobalDerivedFiles | undefined> {
+  if (!derived || typeof derived !== "object") return undefined;
+  const out: GlobalDerivedFiles = {};
+  for (const key of ["working", "proxy", "thumbnail", "originalRaw"] as const) {
+    const d = derived[key];
+    if (!d || typeof d.path !== "string" || !d.path) continue;
+    const target = to(d);
+    const err = await copyFile(a, d.path, target);
+    if (err) throw new Error(err);
+    out[key] = { ...d, path: target };
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 type Storage = {
   from: (b: string) => {
     createSignedUrls: (
@@ -281,7 +310,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
     }[]).filter((v) => !v.archived);
     const { data: versions } = await db
       .from("asset_versions")
-      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
+      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec, derived_files")
       .in(
         "variant_id",
         vars.map((v) => v.id),
@@ -301,6 +330,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       removed: boolean | null;
       template_spec: TemplateDefinition | null;
       font_spec?: FontSpec | null;
+      derived_files?: GlobalDerivedFiles | null;
     }[])
       .filter((v) => !v.removed && v.media_path.startsWith(`${data.projectId}/`))
       .sort((x, y) => x.number - y.number);
@@ -328,6 +358,10 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
         const to = globalFilePath(data.workspaceId, globalAssetId, ver.sha256, extensionOf(ver.media_path));
         const err = await copyFile(sa, ver.media_path, to);
         if (err) throw new Error(err);
+        // B-105a: de avledede filene følger med til det globale biblioteket
+        const derivedFiles = await copyDerivedFiles(sa, ver.derived_files, (d) =>
+          globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+        );
         const { error: e3 } = await db.rpc("global_add_version", {
           p_variant: gv as string,
           p_storage_key: to,
@@ -340,6 +374,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
           p_note: ver.note ?? "",
           p_template_spec: ver.template_spec ?? null,
           ...(ver.font_spec ? { p_font_spec: ver.font_spec } : {}),
+          ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
         });
         if (e3) throw new Error(e3.message);
         count++;
@@ -391,7 +426,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
     // Lest med brukerens tilgang: bare versjoner i gruppen brukeren er med i
     const { data: rows } = await db
       .from("global_asset_versions")
-      .select("id, workspace_id, storage_key, mime_type, width, height, byte_size, sha256, duration_ms")
+      .select("id, workspace_id, storage_key, mime_type, width, height, byte_size, sha256, duration_ms, derived_files")
       .in(
         "id",
         data.items.map((i) => i.globalVersionId),
@@ -407,6 +442,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
         byte_size: number;
         sha256: string;
         duration_ms: number | null;
+        derived_files: GlobalDerivedFiles | null;
       }[]).map((r) => [r.id, r]),
     );
     const sa = await admin();
@@ -426,6 +462,16 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
       );
       const err = await copyFile(sa, g.storage_key, path);
       if (err) throw new Error(err);
+      // B-105a: de avledede filene kopieres én gang per global versjon, som originalen
+      const derivedFiles = await copyDerivedFiles(sa, g.derived_files, (d) =>
+        assetFilePath(
+          data.projectId,
+          "source",
+          it.projectAssetId,
+          it.projectVersionId,
+          `${d.sha256}.${extensionOf(d.path)}`,
+        ),
+      );
       out[it.globalVersionId] = {
         path,
         mimeType: g.mime_type,
@@ -434,6 +480,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
         byteSize: Number(g.byte_size),
         sha256: g.sha256,
         ...(g.duration_ms ? { durationMs: g.duration_ms } : {}),
+        ...(derivedFiles ? { derivedFiles } : {}),
       };
     }
     return out;
@@ -468,7 +515,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
     const { data: ver } = await db
       .from("asset_versions")
-      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
+      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec, derived_files")
       .eq("id", data.versionId)
       .eq("project_id", data.projectId)
       .maybeSingle();
@@ -477,6 +524,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
       byte_size_big: number; sha256: string; duration_ms: number | null; note: string | null; removed: boolean | null;
       template_spec: TemplateDefinition | null;
       font_spec?: FontSpec | null;
+      derived_files?: GlobalDerivedFiles | null;
     } | null;
     if (!v || v.removed || !v.media_path.startsWith(`${data.projectId}/`)) throw new Error(tk("r3-global.error.no-version"));
     const { data: va } = await db
@@ -533,11 +581,16 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     const to = globalFilePath(data.workspaceId, globalAssetId, v.sha256, extensionOf(v.media_path));
     const err = await copyFile(await admin(), v.media_path, to);
     if (err) throw new Error(err);
+    // B-105a: de avledede filene følger med til det globale biblioteket
+    const derivedFiles = await copyDerivedFiles(await admin(), v.derived_files, (d) =>
+      globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+    );
     const { data: gid, error: e2 } = await db.rpc("global_add_version", {
       p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
       p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
       p_template_spec: v.template_spec ?? null,
       ...(v.font_spec ? { p_font_spec: v.font_spec } : {}),
+      ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
     });
     if (e2) throw new Error(e2.message);
     const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();

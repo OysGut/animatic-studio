@@ -7700,6 +7700,15 @@
       "en": {
         "text": "Change language"
       }
+    },
+    "app-library-derived-backfill.label": {
+      "replaces": [],
+      "nb": {
+        "text": "Lagret avledede bildefiler"
+      },
+      "en": {
+        "text": "Saved derived image files"
+      }
     }
   }
 }

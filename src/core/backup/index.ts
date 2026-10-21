@@ -181,6 +181,19 @@ export function backupFiles(
       // i18n-ignore: kategorinøkkel
       mime.startsWith("audio/") ? "lyd" : "bilde",
     );
+    // B-105a: de avledede filene (arbeidskopi, proxy, miniatyr, rå TIFF) følger med i kopien
+    const derived = v["derived_files"];
+    if (derived && typeof derived === "object")
+      for (const d of Object.values(derived as Record<string, Record<string, unknown> | null>)) {
+        if (!d || typeof d !== "object") continue;
+        const path = s(d["path"]);
+        const dmime = path.endsWith(".webp")
+          ? "image/webp"
+          : /\.tiff?$/i.test(path)
+            ? "image/tiff"
+            : mime;
+        add("assets", path, Number(d["byteSize"] ?? d["byte_size"] ?? 0), dmime, "bilde");
+      }
   }
   for (const t of rows.takes) {
     const ref = s(t["media_ref"]);
@@ -652,7 +665,11 @@ export function restoredState(
   // Alle filstier må ligge i det nye prosjektets mappe
   const foreign = [
     ...Object.values(state.takes).map((x) => x.mediaRef),
-    ...Object.values(state.assetVersions).map((x) => x.mediaPath),
+    ...Object.values(state.assetVersions).flatMap((x) => [
+      x.mediaPath,
+      // B-105a: også stiene til de avledede filene må ligge i det nye prosjektets mappe
+      ...Object.values(x.derivedFiles ?? {}).map((d) => d?.path),
+    ]),
   ].filter((x): x is string => typeof x === "string" && x !== "" && !x.startsWith(`${pid}/`));
   if (foreign.length > 0)
     throw new Error(

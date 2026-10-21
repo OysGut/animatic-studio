@@ -24,11 +24,12 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type React
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
-import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
+import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, versionImagePath, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
+import { ensureDerivedFiles } from "@/app/library/derived-backfill";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
@@ -472,11 +473,21 @@ function Editor({
     if (!composition) return [];
     const out: string[] = [];
     for (const l of layersOf(state, composition.id)) {
-      for (const v of layerVersions(state, l)) out.push(v.mediaPath);
+      // B-105a: scenevisningen bruker proxyn når den finnes (fallback: originalen)
+      for (const v of layerVersions(state, l)) out.push(versionImagePath(v, "playback"));
     }
     return out;
   }, [state, composition]);
   const urls = useImageUrls(paths);
+  // B-105a: eldre bilder får proxy og miniatyr i bakgrunnen første gang de vises (uten å blokkere)
+  useEffect(() => {
+    if (!composition) return;
+    const versions = layersOf(state, composition.id).flatMap((l) => layerVersions(state, l));
+    ensureDerivedFiles(cmds.runAndWait, state, projectId, versions, {
+      width: state.project.frameWidth,
+      height: state.project.frameHeight,
+    });
+  }, [state, composition, projectId, cmds]);
 
   const hasComposition = useMemo(() => {
     const set = new Set<string>();

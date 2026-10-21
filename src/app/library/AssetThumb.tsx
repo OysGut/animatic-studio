@@ -4,7 +4,7 @@
  */
 import { useEffect, useMemo, useState } from "react";
 import { Music, UserRound, PawPrint, Package, Mountain } from "lucide-react";
-import { coverVersion, type ProjectState } from "@/core";
+import { coverVersion, versionImagePath, type ProjectState } from "@/core";
 import { cn } from "@/lib/utils";
 import { useImageUrls } from "./asset-images";
 
@@ -15,7 +15,8 @@ export function useAssetCovers(state: ProjectState, assetIds: readonly string[])
     const m = new Map<string, string>();
     for (const id of assetIds) {
       const v = coverVersion(state, id);
-      if (v && v.mimeType.startsWith("image/")) m.set(id, v.mediaPath);
+      // B-105a: miniatyrer i lister bruker den lille miniatyrfila når den finnes
+      if (v && v.mimeType.startsWith("image/")) m.set(id, versionImagePath(v, "thumbnail"));
     }
     return m;
     // eslint-disable-next-line react-hooks/exhaustive-deps

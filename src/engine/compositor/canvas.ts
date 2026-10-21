@@ -3,7 +3,7 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import { matrixScale, multiply, registerTextMeasurer, type DrawItem, type Frame, type Matrix } from "@/core";
+import { matrixScale, multiply, registerTextMeasurer, versionImagePath, type DrawItem, type Frame, type Matrix } from "@/core";
 import { DEFAULT_ADJUSTMENTS } from "@/core/animation/parts";
 import { renderRigPart } from "./rig-parts";
 import { t as tk } from "@/core/i18n/keyed";
@@ -128,7 +128,11 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
   } else if (it.kind === "fill") {
     paintFill(ctx, it, x, y);
   } else {
-    const img = it.version ? opts.images.get(it.version.mediaPath) : undefined;
+    // B-105a: avspilling bruker proxyn når den finnes; eksport og zoom signerer originalen (mediaPath)
+    const img = it.version
+      ? (opts.images.get(versionImagePath(it.version, "playback")) ??
+        opts.images.get(it.version.mediaPath))
+      : undefined;
     if (img && it.character) paintCharacterPart(ctx, it, img, x, y);
     else if (img) ctx.drawImage(img, x, y, it.width, it.height);
     else {
@@ -215,7 +219,14 @@ function maskedItem(
   if (m.kind === "layer") {
     // Maskelag med bilde som ikke er lastet ennå: vis laget uten maske heller enn ingenting
     const src = m.item;
-    if (src.kind === "image" && !(src.version && opts.images.get(src.version.mediaPath)))
+    if (
+      src.kind === "image" &&
+      !(
+        src.version &&
+        (opts.images.get(versionImagePath(src.version, "playback")) ??
+          opts.images.get(src.version.mediaPath))
+      )
+    )
       return null;
   }
   const cx = scratchFor(ctx, 0);

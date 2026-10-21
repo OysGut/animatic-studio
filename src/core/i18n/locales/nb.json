@@ -74444,5 +74444,8 @@
   },
   "app-i18n-language.language-switch.change-title": {
     "text": "Bytt språk"
+  },
+  "app-library-derived-backfill.label": {
+    "text": "Lagret avledede bildefiler"
   }
 }

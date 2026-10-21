@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { calibrationStatus, layerVersion, newId, physicalLayerSizeMm, plateDistanceMm, type ProjectState, type CompositionLayer, type MultiplaneRigSpec, type Command } from '@/core';
+import { calibrationStatus, layerVersion, newId, physicalLayerSizeMm, plateDistanceMm, versionImagePath, type ProjectState, type CompositionLayer, type MultiplaneRigSpec, type Command } from '@/core';
 import { createMarkerHistory, editMarkers, undoMarkers, redoMarkers, markerValue, markerError, screenToFigureMm, snapToContour, type Marker, type MeasurePoint, type MeasureLine } from '@/core/print/measure';
 import type { ContourResult } from '@/core/print/contour';
 import { t } from '@/core/i18n/keyed';
@@ -60,8 +60,11 @@ export function InspectionWindow({state,layer,spec,frame=0,onClose,onSave,editab
   const [draft,setDraft]=useState<Marker|null>(null);
   const client=useMemo(()=>new ContourClient(),[]);
   const version=layerVersion(state,layer,frame);
-  const images=useImageUrls(version?[version.mediaPath]:[]);
-  const url=version&&images.data?.[version.mediaPath];
+  // B-105a: proxy under 100 % zoom, originalen over 100 % (begge lenkene signeres; originalen lastes først ved bruk)
+  const playbackPath=version?versionImagePath(version,'playback'):null;
+  const images=useImageUrls(version?[...new Set([playbackPath,version.mediaPath] as string[])]:[]);
+  const chosenPath=version?(zoom>1?version.mediaPath:playbackPath):null;
+  const url=chosenPath?images.data?.[chosenPath]:null;
   const composition=state.compositions[layer.compositionId];
   const size=composition&&physicalLayerSizeMm(spec,layer,composition,frame);
   const w=size?.widthMm??1,h=size?.heightMm??1;
