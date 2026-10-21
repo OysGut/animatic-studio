@@ -72906,7 +72906,7 @@
     "plural": {
       "parameter": "count",
       "forms": {
-        "one": "[!! {count} llïïnnëë tthháátt hhááss bbëëëënn ááddddëëdd áárrëë kkëëpptt (tthhëëyy áárrëë üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]",
+        "one": "[!! {count} ááddddëëdd llïïnnëë ïïss kkëëpptt (ïïtt ïïss üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]",
         "other": "[!! {count} llïïnnëëss tthháátt hháávvëë bbëëëënn ááddddëëdd áárrëë kkëëpptt (tthhëëyy áárrëë üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]"
       }
     }
@@ -72916,7 +72916,7 @@
     "plural": {
       "parameter": "count",
       "forms": {
-        "one": "[!! {count} llïïnnëë nnôô llôônnggëërr ëëxxïïsstt. !!]",
+        "one": "[!! {count} llïïnnëë nnôô llôônnggëërr ëëxxïïssttss. !!]",
         "other": "[!! {count} llïïnnëëss nnôô llôônnggëërr ëëxxïïsstt. !!]"
       }
     }
