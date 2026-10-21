@@ -6611,6 +6611,54 @@ try {
     assert((await sql`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"] === 0, "maler slettet");
     assert((await sql`select count(*)::int n from public.rig_setups where project_id = ${bp}`)[0]!["n"] === 0, "rigger slettet");
   });
+  await test("0072: målesett – RLS, apply_changes, revisjon, invers, delete_project og purge", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) === 72, "schema version 72");
+    const bp = String((await as("authenticated", ALICE, async tx => (await tx`select public.create_project('Målesett') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const scene = crypto.randomUUID(), variant = crypto.randomUUID(), comp = crypto.randomUUID(), layer = crypto.randomUUID(), id = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${bp},${scene})`;
+    await sql`insert into public.compositions(id,project_id,variant_id) values(${comp},${bp},${variant})`;
+    await sql`insert into public.composition_layers(id,project_id,composition_id,order_key,kind,width,height,fill,transform) values(${layer},${bp},${comp},'a','character',100,100,'#ffffff','{}')`;
+    const row = {id, project_id: bp, layer_id: layer, frame: 0, name: "Høyde", markers: [{x: 0, y: 10}], revision: 1};
+    const inverse = {deletes: {measure_sets: [{id, expected_revision: 1}]}};
+    const apply = (changes: unknown, inv: unknown = {}) => as("service_role", null, tx => tx`select public.apply_changes(${bp},${ALICE},${crypto.randomUUID()},${tx.json({type: "MeasureSet"})},${tx.json(inv as never)},${tx.json(changes as never)})`);
+    await apply({inserts: {measure_sets: [row]}}, inverse);
+    assert((await as("authenticated", ALICE, tx => tx`select * from public.measure_sets where project_id=${bp}`)).length === 1, "medlem leser");
+    assert((await as("authenticated", CAROL, tx => tx`select * from public.measure_sets where project_id=${bp}`)).length === 0, "ikke-medlem nektes innsyn");
+    await expectError(as("authenticated", ALICE, tx => tx`update public.measure_sets set name='X' where id=${id}`), "42501");
+    await expectError(as("authenticated", ALICE, tx => tx`delete from public.measure_sets where id=${id}`), "42501");
+    await expectError(as("authenticated", ALICE, tx => tx`insert into public.measure_sets(id,project_id,layer_id,frame,name,markers) values(gen_random_uuid(),${bp},${layer},0,'X','[]')`), "42501");
+    const grants = (await sql`select relrowsecurity r from pg_class where oid='public.measure_sets'::regclass`)[0];
+    assert(grants?.["r"] === true, "RLS aktivert");
+    await apply({updates: {measure_sets: [{id, expected_revision: 1, revision: 2, name: "Bredde"}]}});
+    await expectError(apply({updates: {measure_sets: [{id, expected_revision: 1, revision: 2, name: "Foreldet"}]}}), "P0409");
+    await apply({updates: {measure_sets: [{id, expected_revision: 2, revision: 3, name: "Høyde"}]}});
+    assert((await sql`select name from public.measure_sets where id=${id}`)[0]?.["name"] === "Høyde", "angret oppdatering");
+    await apply({deletes: {measure_sets: [{id, expected_revision: 3}]}});
+    await apply({inserts: {measure_sets: [row]}}, inverse);
+    const saved = (await sql`select inverse from public.change_log where project_id=${bp} order by created_at desc limit 1`)[0]!["inverse"];
+    await apply(saved);
+    assert((await sql`select id from public.measure_sets where id=${id}`).length === 0, "lagret invers angrer opprettelse");
+    await apply({inserts: {measure_sets: [row]}});
+    for (const invalid of [{name: ""}, {name: "x".repeat(81)}, {markers: {}}, {markers: ["x".repeat(65536)]}, {frame: -1}]) {
+      await expectError(apply({inserts: {measure_sets: [{...row, ...invalid, id: crypto.randomUUID()}]}}), "23514");
+    }
+    await as("service_role", null, tx => tx`select public.purge_removed_assets(${bp},${ALICE},'{}'::uuid[],'{}'::uuid[])`);
+    assert((await sql`select id from public.measure_sets where id=${id}`).length === 1, "purge av ressurser beholder målesett");
+    await as("service_role", null, tx => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.measure_sets where project_id=${bp}`).length === 0, "delete_project sletter målesett før lag");
+    // Simuler innhold lagret samtidig med prosjektsletting: purge må også rydde dette.
+    await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values(${prod},${bp},'main','Hoved',24,1)`;
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${bp},${scene})`;
+    await sql`insert into public.compositions(id,project_id,variant_id) values(${comp},${bp},${variant})`;
+    await sql`insert into public.composition_layers(id,project_id,composition_id,order_key,kind,width,height,fill,transform) values(${layer},${bp},${comp},'a','character',100,100,'#ffffff','{}')`;
+    await sql`insert into public.measure_sets(id,project_id,layer_id,frame,name,markers) values(${id},${bp},${layer},0,'Purge','[]')`;
+    await as("service_role", null, tx => tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length === 0, "purge fjerner prosjekt og målesett");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

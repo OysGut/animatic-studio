@@ -961,6 +961,7 @@ export interface ProjectState {
   /** P8: foretrukket referanse per (karakter, stilprofil) (REQ-0144, migrasjon 0065). */
   readonly stylePreferredReferences: Readonly<Record<string, import("./generation/style-harmonize").StylePreferredReference>>;
   /** Rigg & 2D-utskrift (B-087, migrasjon 0071): riggmaler og rigger (standardrigg og per scene). */
+  readonly measureSets?: Readonly<Record<string, import("./print/measure/commands").StoredMeasureSet>>;
   readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
   readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
   readonly project: Project;
@@ -1396,6 +1397,7 @@ export const COLLECTION_TABLES = {
   translationLineLinks: "translation_line_links",
   styleHarmonizations: "style_harmonizations",
   stylePreferredReferences: "style_preferred_references",
+  measureSets: "measure_sets",
   rigTemplates: "rig_templates",
   rigSetups: "rig_setups",
 } as const;
@@ -1447,6 +1449,7 @@ export function emptyProjectState(project: Project): ProjectState {
     translationLines: {},
     styleHarmonizations: {},
     stylePreferredReferences: {},
+    measureSets: {},
     rigTemplates: {},
     rigSetups: {},
   };

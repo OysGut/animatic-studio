@@ -73766,5 +73766,89 @@
   },
   "app-rig.layers-panel.contour-heading": {
     "text": "[!! CCôônnttôôüürr !!]"
+  },
+  "app-inspect.open": {
+    "text": "[!! ÏÏnnssppëëcctt áánndd mmëëáássüürrëë !!]"
+  },
+  "app-inspect.close": {
+    "text": "[!! CCllôôssëë !!]"
+  },
+  "app-inspect.fit": {
+    "text": "[!! FFïïtt !!]"
+  },
+  "app-inspect.physical": {
+    "text": "[!! 100% pphhyyssïïccááll !!]"
+  },
+  "app-inspect.ruler": {
+    "text": "[!! SSccrrëëëënn rrüüllëërr: ááddjjüüsstt ttôô 50 mmmm ôônn áá pphhyyssïïccááll rrüüllëërr !!]"
+  },
+  "app-inspect.dpi": {
+    "text": "[!! SSôôüürrccëë ïïmmáággëë ïïss bbëëllôôww 150 ddppïï áátt pphhyyssïïccááll ssïïzzëë !!]"
+  },
+  "app-inspect.distance": {
+    "text": "[!! DDïïssttáánnccëë !!]"
+  },
+  "app-inspect.angle": {
+    "text": "[!! ÁÁnnggllëë !!]"
+  },
+  "app-inspect.ratio": {
+    "text": "[!! RRááttïïôô !!]"
+  },
+  "app-inspect.point": {
+    "text": "[!! PPôôïïnntt !!]"
+  },
+  "app-inspect.line": {
+    "text": "[!! LLïïnnëë !!]"
+  },
+  "app-inspect.save": {
+    "text": "[!! SSáávvëë mmëëáássüürrëëmmëënntt ssëëtt !!]"
+  },
+  "app-inspect.discard": {
+    "text": "[!! DDïïssccáárrdd !!]"
+  },
+  "app-inspect.name": {
+    "text": "[!! MMëëáássüürrëëmmëënntt ssëëtt nnáámmëë !!]"
+  },
+  "app-inspect.undo": {
+    "text": "[!! ÜÜnnddôô !!]"
+  },
+  "app-inspect.redo": {
+    "text": "[!! RRëëddôô !!]"
+  },
+  "app-inspect.pdf": {
+    "text": "[!! PPDDFF sshhëëëëtt ffrráámmëë – ccôômmïïnngg ïïnn rrôôüünndd 4 !!]"
+  },
+  "app-inspect.width": {
+    "text": "[!! WWïïddtthh !!]"
+  },
+  "app-inspect.height": {
+    "text": "[!! HHëëïïgghhtt !!]"
+  },
+  "app-inspect.plate": {
+    "text": "[!! PPllááttëë llëëvvëëll / ccáámmëërráá ddïïssttáánnccëë !!]"
+  },
+  "app-inspect.valid": {
+    "text": "[!! CCáállïïbbrrááttëëdd !!]"
+  },
+  "app-inspect.invalid": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt ssëëtt ôôrr ccáállïïbbrrááttïïôônn mmïïssssïïnngg !!]"
+  },
+  "app-inspect.help": {
+    "text": "[!! CCllïïcckk ttôô ppllááccëë mmëëáássüürrëëmmëënntt ppôôïïnnttss. SSppááccëë + ddrráágg ppáánnss. ÁÁlltt ddïïssáábbllëëss ssnnááppppïïnngg. TTáább ssëëllëëccttss mmáárrkkëërrss; áárrrrôôwwss mmôôvvëë, SShhïïfftt mmôôvvëëss 1 mmmm. DDëëllëëttëë rrëëmmôôvvëëss. !!]"
+  },
+  "app-inspect.delete": {
+    "text": "[!! DDëëllëëttëë mmáárrkkëërr !!]"
+  },
+  "app-inspect.markers": {
+    "text": "[!! MMáárrkkëërrss !!]"
+  },
+  "app-inspect.zoomIn": {
+    "text": "[!! ZZôôôômm ïïnn !!]"
+  },
+  "app-inspect.zoomOut": {
+    "text": "[!! ZZôôôômm ôôüütt !!]"
+  },
+  "app-inspect.units": {
+    "text": "[!! SSwwïïttcchh mmëëáássüürrëëmmëënntt üünnïïtt !!]"
   }
 }

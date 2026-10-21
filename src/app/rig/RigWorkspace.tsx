@@ -1,3 +1,4 @@
+import { InspectionWindow } from "./InspectionWindow";
 import { ContourPreview } from "./ContourPreview";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
 import { layerVersion, type CompositionLayer } from "@/core";
@@ -165,6 +166,7 @@ function Rig({
 }) {
   const [unit, setUnit] = useRigUnits();
   const [contourLayerId, setContourLayerId] = useState("");
+  const [inspectOpen, setInspectOpen] = useState(false);
   const [cutoutOpen, setCutoutOpen] = useState(false);
   const [sceneId, setSceneId] = useState<string>(""); // "" = prosjektets standardrigg
   const [error, setError] = useState<string | null>(null);
@@ -324,6 +326,8 @@ function Rig({
               {contourLayers.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
             </select>
             {contourLayer ? <ContourPreview state={state} layer={contourLayer} spec={spec} /> : <p className="text-xs text-text-secondary">{t("app-rig.contour.failed")}</p>}
+            <Button data-testid="inspect-open-rig" disabled={!contourLayer} onClick={() => setInspectOpen(true)}>{t("app-inspect.open")}</Button>
+            {inspectOpen && contourLayer && <InspectionWindow state={state} layer={contourLayer} spec={spec} editable={editable} onClose={() => setInspectOpen(false)} onSave={cmds.run} />}
             <Button data-testid="rig-contour-edit" variant="secondary" size="sm" disabled={!editable || !contourVersion || !contourAsset} onClick={() => setCutoutOpen(true)}>{t("app-rig.contour.edit")}</Button>
             {contourAsset && contourVersion && <CutoutDialog open={cutoutOpen} onOpenChange={setCutoutOpen} projectId={projectId} asset={contourAsset} version={contourVersion} cmds={cmds} onSaved={(versionId, variantId) => {
               if (!contourLayer) return;

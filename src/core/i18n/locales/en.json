@@ -73766,5 +73766,89 @@
   },
   "app-rig.layers-panel.contour-heading": {
     "text": "Contour"
+  },
+  "app-inspect.open": {
+    "text": "Inspect and measure"
+  },
+  "app-inspect.close": {
+    "text": "Close"
+  },
+  "app-inspect.fit": {
+    "text": "Fit"
+  },
+  "app-inspect.physical": {
+    "text": "100% physical"
+  },
+  "app-inspect.ruler": {
+    "text": "Screen ruler: adjust to 50 mm on a physical ruler"
+  },
+  "app-inspect.dpi": {
+    "text": "Source image is below 150 dpi at physical size"
+  },
+  "app-inspect.distance": {
+    "text": "Distance"
+  },
+  "app-inspect.angle": {
+    "text": "Angle"
+  },
+  "app-inspect.ratio": {
+    "text": "Ratio"
+  },
+  "app-inspect.point": {
+    "text": "Point"
+  },
+  "app-inspect.line": {
+    "text": "Line"
+  },
+  "app-inspect.save": {
+    "text": "Save measurement set"
+  },
+  "app-inspect.discard": {
+    "text": "Discard"
+  },
+  "app-inspect.name": {
+    "text": "Measurement set name"
+  },
+  "app-inspect.undo": {
+    "text": "Undo"
+  },
+  "app-inspect.redo": {
+    "text": "Redo"
+  },
+  "app-inspect.pdf": {
+    "text": "PDF sheet frame – coming in round 4"
+  },
+  "app-inspect.width": {
+    "text": "Width"
+  },
+  "app-inspect.height": {
+    "text": "Height"
+  },
+  "app-inspect.plate": {
+    "text": "Plate level / camera distance"
+  },
+  "app-inspect.valid": {
+    "text": "Calibrated"
+  },
+  "app-inspect.invalid": {
+    "text": "Invalid measurement set or calibration missing"
+  },
+  "app-inspect.help": {
+    "text": "Click to place measurement points. Space + drag pans. Alt disables snapping. Tab selects markers; arrows move, Shift moves 1 mm. Delete removes."
+  },
+  "app-inspect.delete": {
+    "text": "Delete marker"
+  },
+  "app-inspect.markers": {
+    "text": "Markers"
+  },
+  "app-inspect.zoomIn": {
+    "text": "Zoom in"
+  },
+  "app-inspect.zoomOut": {
+    "text": "Zoom out"
+  },
+  "app-inspect.units": {
+    "text": "Switch measurement unit"
   }
 }

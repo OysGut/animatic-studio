@@ -7813,6 +7813,75 @@
     "app-i18n-language.language-switch.title.691fad620f12": {
       "text": "Språk i tjenesten"
     },
+    "app-inspect.close": {
+      "text": "Lukk"
+    },
+    "app-inspect.delete": {
+      "text": "Slett markør"
+    },
+    "app-inspect.discard": {
+      "text": "Forkast"
+    },
+    "app-inspect.dpi": {
+      "text": "Kildefilen er under 150 dpi i fysisk størrelse"
+    },
+    "app-inspect.fit": {
+      "text": "Tilpass"
+    },
+    "app-inspect.height": {
+      "text": "Høyde"
+    },
+    "app-inspect.help": {
+      "text": "Klikk for målepunkter. Mellomrom + dra panorerer. Alt deaktiverer magnet. Tab velger markører; piler flytter, Shift gir 1 mm. Delete sletter."
+    },
+    "app-inspect.invalid": {
+      "text": "Ugyldig målesett eller kalibrering mangler"
+    },
+    "app-inspect.markers": {
+      "text": "Markører"
+    },
+    "app-inspect.name": {
+      "text": "Navn på målesett"
+    },
+    "app-inspect.open": {
+      "text": "Inspiser og mål"
+    },
+    "app-inspect.pdf": {
+      "text": "PDF-arkramme – kommer i runde 4"
+    },
+    "app-inspect.physical": {
+      "text": "100 % fysisk"
+    },
+    "app-inspect.plate": {
+      "text": "Platenivå / kameraavstand"
+    },
+    "app-inspect.redo": {
+      "text": "Gjør om"
+    },
+    "app-inspect.ruler": {
+      "text": "Skjermlinjal: juster til 50 mm på en fysisk linjal"
+    },
+    "app-inspect.save": {
+      "text": "Lagre målesett"
+    },
+    "app-inspect.undo": {
+      "text": "Angre"
+    },
+    "app-inspect.units": {
+      "text": "Bytt måleenhet"
+    },
+    "app-inspect.valid": {
+      "text": "Kalibrert"
+    },
+    "app-inspect.width": {
+      "text": "Bredde"
+    },
+    "app-inspect.zoomIn": {
+      "text": "Zoom inn"
+    },
+    "app-inspect.zoomOut": {
+      "text": "Zoom ut"
+    },
     "app-library-approve-impact-dialog.approve-impact-dialog.aria-label.a4177310e1aa": {
       "text": "Scener med 2D-scene"
     },
@@ -39201,6 +39270,75 @@
     },
     "app-i18n-language.language-switch.title.691fad620f12": {
       "text": "Language of the app"
+    },
+    "app-inspect.close": {
+      "text": "Close"
+    },
+    "app-inspect.delete": {
+      "text": "Delete marker"
+    },
+    "app-inspect.discard": {
+      "text": "Discard"
+    },
+    "app-inspect.dpi": {
+      "text": "Source image is below 150 dpi at physical size"
+    },
+    "app-inspect.fit": {
+      "text": "Fit"
+    },
+    "app-inspect.height": {
+      "text": "Height"
+    },
+    "app-inspect.help": {
+      "text": "Click to place measurement points. Space + drag pans. Alt disables snapping. Tab selects markers; arrows move, Shift moves 1 mm. Delete removes."
+    },
+    "app-inspect.invalid": {
+      "text": "Invalid measurement set or calibration missing"
+    },
+    "app-inspect.markers": {
+      "text": "Markers"
+    },
+    "app-inspect.name": {
+      "text": "Measurement set name"
+    },
+    "app-inspect.open": {
+      "text": "Inspect and measure"
+    },
+    "app-inspect.pdf": {
+      "text": "PDF sheet frame – coming in round 4"
+    },
+    "app-inspect.physical": {
+      "text": "100% physical"
+    },
+    "app-inspect.plate": {
+      "text": "Plate level / camera distance"
+    },
+    "app-inspect.redo": {
+      "text": "Redo"
+    },
+    "app-inspect.ruler": {
+      "text": "Screen ruler: adjust to 50 mm on a physical ruler"
+    },
+    "app-inspect.save": {
+      "text": "Save measurement set"
+    },
+    "app-inspect.undo": {
+      "text": "Undo"
+    },
+    "app-inspect.units": {
+      "text": "Switch measurement unit"
+    },
+    "app-inspect.valid": {
+      "text": "Calibrated"
+    },
+    "app-inspect.width": {
+      "text": "Width"
+    },
+    "app-inspect.zoomIn": {
+      "text": "Zoom in"
+    },
+    "app-inspect.zoomOut": {
+      "text": "Zoom out"
     },
     "app-library-approve-impact-dialog.approve-impact-dialog.aria-label.a4177310e1aa": {
       "text": "Scenes with a 2D scene"

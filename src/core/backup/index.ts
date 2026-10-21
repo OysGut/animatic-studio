@@ -83,6 +83,7 @@ export const BACKUP_STATE_TABLES = [
   "style_harmonizations",
   "style_preferred_references",
   "language_versions",
+  "measure_sets",
   "rig_templates",
   "rig_setups",
 ] as const;
@@ -602,6 +603,7 @@ export function restoredState(
     style_harmonizations: t("style_harmonizations"),
     style_preferred_references: t("style_preferred_references"),
     language_versions: t("language_versions"),
+    measure_sets: t("measure_sets"),
     rig_templates: t("rig_templates"),
     rig_setups: t("rig_setups"),
   };

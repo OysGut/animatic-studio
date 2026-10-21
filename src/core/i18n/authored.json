@@ -5793,6 +5793,230 @@
       "en": {
         "text": "Contour"
       }
+    },
+    "app-inspect.open": {
+      "nb": {
+        "text": "Inspiser og mål"
+      },
+      "en": {
+        "text": "Inspect and measure"
+      }
+    },
+    "app-inspect.close": {
+      "nb": {
+        "text": "Lukk"
+      },
+      "en": {
+        "text": "Close"
+      }
+    },
+    "app-inspect.fit": {
+      "nb": {
+        "text": "Tilpass"
+      },
+      "en": {
+        "text": "Fit"
+      }
+    },
+    "app-inspect.physical": {
+      "nb": {
+        "text": "100 % fysisk"
+      },
+      "en": {
+        "text": "100% physical"
+      }
+    },
+    "app-inspect.ruler": {
+      "nb": {
+        "text": "Skjermlinjal: juster til 50 mm på en fysisk linjal"
+      },
+      "en": {
+        "text": "Screen ruler: adjust to 50 mm on a physical ruler"
+      }
+    },
+    "app-inspect.dpi": {
+      "nb": {
+        "text": "Kildefilen er under 150 dpi i fysisk størrelse"
+      },
+      "en": {
+        "text": "Source image is below 150 dpi at physical size"
+      }
+    },
+    "app-inspect.distance": {
+      "nb": {
+        "text": "Avstand"
+      },
+      "en": {
+        "text": "Distance"
+      }
+    },
+    "app-inspect.angle": {
+      "nb": {
+        "text": "Vinkel"
+      },
+      "en": {
+        "text": "Angle"
+      }
+    },
+    "app-inspect.ratio": {
+      "nb": {
+        "text": "Forhold"
+      },
+      "en": {
+        "text": "Ratio"
+      }
+    },
+    "app-inspect.point": {
+      "nb": {
+        "text": "Punkt"
+      },
+      "en": {
+        "text": "Point"
+      }
+    },
+    "app-inspect.line": {
+      "nb": {
+        "text": "Linje"
+      },
+      "en": {
+        "text": "Line"
+      }
+    },
+    "app-inspect.save": {
+      "nb": {
+        "text": "Lagre målesett"
+      },
+      "en": {
+        "text": "Save measurement set"
+      }
+    },
+    "app-inspect.discard": {
+      "nb": {
+        "text": "Forkast"
+      },
+      "en": {
+        "text": "Discard"
+      }
+    },
+    "app-inspect.name": {
+      "nb": {
+        "text": "Navn på målesett"
+      },
+      "en": {
+        "text": "Measurement set name"
+      }
+    },
+    "app-inspect.undo": {
+      "nb": {
+        "text": "Angre"
+      },
+      "en": {
+        "text": "Undo"
+      }
+    },
+    "app-inspect.redo": {
+      "nb": {
+        "text": "Gjør om"
+      },
+      "en": {
+        "text": "Redo"
+      }
+    },
+    "app-inspect.pdf": {
+      "nb": {
+        "text": "PDF-arkramme – kommer i runde 4"
+      },
+      "en": {
+        "text": "PDF sheet frame – coming in round 4"
+      }
+    },
+    "app-inspect.width": {
+      "nb": {
+        "text": "Bredde"
+      },
+      "en": {
+        "text": "Width"
+      }
+    },
+    "app-inspect.height": {
+      "nb": {
+        "text": "Høyde"
+      },
+      "en": {
+        "text": "Height"
+      }
+    },
+    "app-inspect.plate": {
+      "nb": {
+        "text": "Platenivå / kameraavstand"
+      },
+      "en": {
+        "text": "Plate level / camera distance"
+      }
+    },
+    "app-inspect.valid": {
+      "nb": {
+        "text": "Kalibrert"
+      },
+      "en": {
+        "text": "Calibrated"
+      }
+    },
+    "app-inspect.invalid": {
+      "nb": {
+        "text": "Ugyldig målesett eller kalibrering mangler"
+      },
+      "en": {
+        "text": "Invalid measurement set or calibration missing"
+      }
+    },
+    "app-inspect.help": {
+      "nb": {
+        "text": "Klikk for målepunkter. Mellomrom + dra panorerer. Alt deaktiverer magnet. Tab velger markører; piler flytter, Shift gir 1 mm. Delete sletter."
+      },
+      "en": {
+        "text": "Click to place measurement points. Space + drag pans. Alt disables snapping. Tab selects markers; arrows move, Shift moves 1 mm. Delete removes."
+      }
+    },
+    "app-inspect.delete": {
+      "nb": {
+        "text": "Slett markør"
+      },
+      "en": {
+        "text": "Delete marker"
+      }
+    },
+    "app-inspect.markers": {
+      "nb": {
+        "text": "Markører"
+      },
+      "en": {
+        "text": "Markers"
+      }
+    },
+    "app-inspect.zoomIn": {
+      "nb": {
+        "text": "Zoom inn"
+      },
+      "en": {
+        "text": "Zoom in"
+      }
+    },
+    "app-inspect.zoomOut": {
+      "nb": {
+        "text": "Zoom ut"
+      },
+      "en": {
+        "text": "Zoom out"
+      }
+    },
+    "app-inspect.units": {
+      "nb": {
+        "text": "Bytt måleenhet"
+      },
+      "en": {
+        "text": "Switch measurement unit"
+      }
     }
   }
 }

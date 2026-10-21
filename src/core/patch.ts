@@ -502,6 +502,10 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
       const q = e as unknown as QualityProfile;
       return { ...base, name: q.name, spec: q.spec ?? {}, edited_by: q.editedBy ?? null, edited_at: q.editedAt ?? null, removed: q.removed };
     }
+    case "measureSets": {
+      const r = e as unknown as import("./print/measure/commands").StoredMeasureSet;
+      return { ...base, layer_id: r.layerId, frame: r.frame, name: r.name, markers: r.markers, created_at: r.createdAt, removed: r.removed };
+    }
     case "rigTemplates": {
       const r = e as unknown as import("./rig/multiplane").RigTemplate;
       return { ...base, name: r.name, spec: r.spec, removed: r.removed };
@@ -788,6 +792,7 @@ export const TABLE_ORDER: readonly string[] = [
   "credit_participants",
   "credit_sequences",
   "composition_layers",
+  "measure_sets",
   "animation_uses",
   "lipsync_results",
   "animation_patterns",
@@ -957,6 +962,7 @@ export interface ProjectRows {
   readonly style_harmonizations?: readonly Row[];
   readonly style_preferred_references?: readonly Row[];
   /** Rigg & 2D-utskrift (B-087, migrasjon 0071). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly measure_sets?: readonly Row[];
   readonly rig_templates?: readonly Row[];
   readonly rig_setups?: readonly Row[];
 }
@@ -1659,6 +1665,7 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     languageVersions: byId((r.language_versions ?? []).map((x): LanguageVersion => ({id:str(x["id"]),revision:num(x["revision"]),language:str(x["language"]),name:str(x["name"] ?? ""),status:(x["status"]==="archived"?"archived":"active"),removed:x["removed"]===true,...(x["created_by"]?{createdBy:str(x["created_by"])}:{}),...(x["created_at"]?{createdAt:iso(x["created_at"])}:{})}))),
     styleHarmonizations: byId((r.style_harmonizations ?? []).map((x): StyleHarmonization => ({id:str(x["id"]),revision:num(x["revision"]),versionId:str(x["version_id"]),sourceVersionId:str(x["source_version_id"]),model:str(x["model"]),qualityProfile:(x["quality_profile"] ?? null) as StyleHarmonization["qualityProfile"],styleProfileId:optStr(x["style_profile_id"]),referenceVersionId:optStr(x["reference_version_id"]),use:str(x["use"]) as StyleHarmonization["use"],note:str(x["note"]),removed:x["removed"]===true}))),
     stylePreferredReferences: byId((r.style_preferred_references ?? []).map((x): StylePreferredReference => ({id:str(x["id"]),revision:num(x["revision"]),assetId:str(x["asset_id"]),styleProfileId:str(x["style_profile_id"]),variantId:str(x["variant_id"]),removed:x["removed"]===true}))),
+    measureSets: byId((r.measure_sets ?? []).map((x): import("./print/measure/commands").StoredMeasureSet => ({ id:str(x["id"]), revision:num(x["revision"]), layerId:str(x["layer_id"]), frame:num(x["frame"]), name:str(x["name"]), markers:(json(x["markers"]) ?? []) as never, createdAt:str(x["created_at"]), removed:x["removed"]===true }))),
     rigTemplates: byId((r.rig_templates ?? []).map((x): import("./rig/multiplane").RigTemplate => ({id:str(x["id"]) as never,revision:num(x["revision"]),name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     rigSetups: byId((r.rig_setups ?? []).map((x): import("./rig/multiplane").RigSetup => ({id:str(x["id"]) as never,revision:num(x["revision"]),sceneId:optStr(x["scene_id"]) as never,templateId:optStr(x["template_id"]) as never,name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     translations: byId(
