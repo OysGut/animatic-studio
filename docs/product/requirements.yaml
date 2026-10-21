@@ -19500,7 +19500,9 @@ requirements:
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
   status: Verifisert
-  implementation: []
+  implementation:
+  - src/core/generation/style-harmonize.ts
+  - db/migrations/0068_global_withdrawals.sql
   verification:
   - "tests/unit/style-harmonize.test.ts – kjørt og bestått 2026-10-21 (V1)"
   - "tests/visual/p8-style-harmonize.mjs (110/110) – kjørt og bestått 2026-10-21 (V1)"

@@ -19,7 +19,7 @@
 
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
-Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
+Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 
 ## Sikkerhet
 - **GP5 delingslenker:** nøkkelen lagres i klartekst i `film_shares.token` (bare lesbar for redaktører og eiere via `film_share_token`) så QR-koden kan vises igjen. Vurder kryptering.
@@ -33,9 +33,7 @@ Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
 - **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.
 - **Fase 2 (DEC-0090, REQ-0668–0712):** alle bolkene A–E er bygget (bolk E: DEC-0096). Gjenstår: prøving på ekte telefoner og med ekte norsk lyd (KI-235, KI-239, KI-245, KI-248). KI-249 er rettet.
 - **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
-- **Eksport til ProRes/MOV** for klipping i Premiere/DaVinci (DEC-0085). Nettleseren kan bare lage MP4 (H.264/VP9) og WebM; ProRes må lages hos en tjeneste (f.eks. Runway `outputFormat: "prores"` for AI-video, eller en egen konverteringstjeneste) eller i en framtidig lokal versjon.
 - **Varsel når en generering er ferdig** – helst SMS til et mobilnummer registrert på brukeren (DEC-0085: *satt på vent*). Forslag: leverandøren melder ferdig (webhook fra fal.ai/Runway) → serveren legger inn videoen og sender varsel; ingen planlagt bakgrunnsjobb som kan bruke penger (DEC-0072). Krever valg av SMS-tjeneste (kostnad), felt for mobilnummer i brukerinnstillingene (personopplysning, samtykke) og godkjenning fra Mars.
-- **Stilharmonisering med AI** (REQ-0137–0145, REQ-0400–0402) – kostnaden er godkjent (DEC-0084).
 
 ## Må gjøres av Mars eller administrator (DEC-0086, DEC-0088)
 - Publiser appen, så bakgrunnsjobben (cron) kjører; adminsiden viser nå når den sist kjørte (DEC-0088).
@@ -68,17 +66,21 @@ Sist oppdatert: 2026-10-19 (DEC-0099, dokumentasjon og backlogg).
 
 ## Dokumentasjonsavstemming
 - Øysteins leverte sammendrag og kap. 42–51 er registrert i DEC-0099/REQ-0740–0749. Kravene har konkrete testhenvisninger og deldekningsmerknader; ikke alle kapittelreiser er ende-til-ende-verifisert.
-- Ferdig og fjernet fra byggebackloggen: T1, Story Lab, Manusutforsker, SV1, GP1–GP5, MT1–MT9/GP6, T2, CA1–CA8, U2/U4/U5, Ø-11, KI-240/241/242/251/252/255 og MT4-bilder. Øvrig ekte lyd-/mobilprøving over er fortsatt åpen.
+- Ferdig og fjernet fra byggebackloggen: ProRes/MOV-eksport (R4), AI-stilharmonisering (P8), T1, Story Lab, Manusutforsker, SV1, GP1–GP5, MT1–MT9/GP6, T2, CA1–CA8, U2/U4/U5, Ø-11, KI-240/241/242/251/252/255 og MT4-bilder. Øvrig ekte lyd-/mobilprøving over er fortsatt åpen.
 
 ## Krav som ikke er ferdige
-Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslutning.
+Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 112 Implementert – ikke verifisert, 13 Under arbeid, 45 Ikke startet). Status alene er ikke en ny produktbeslutning. Prosesskravene REQ-0450–0530 venter på Mars.
 
 ### Under arbeid (13)
 
+**P0 (1)**
+
 - REQ-0037 – Stabile identifikatorer for alle domeneobjekter
+
+**P1 (12)**
+
 - REQ-0451 – Fase 1: Arkitektur og datamodell
 - REQ-0455 – Fase 4: Tidslinje, lyd og filmmontering
-
 - REQ-0740 – Fra filmidé til Story Lab-canvas
 - REQ-0741 – Psykologisk karaktereditor og bevart arbeid
 - REQ-0742 – Individuell samtale ved valgt tidspunkt
@@ -90,35 +92,117 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0748 – Godkjent overføring til redigerbart manus
 - REQ-0749 – VennTing-teknologien er en selvstendig kopi
 
-### Implementert – ikke verifisert (22)
+### Implementert – ikke verifisert (112)
 
-- REQ-0639 – Avsendertekst: app verifisert; plattformstyrt auth-e-post ikke kontrollert.
+**P0 (6)**
 
-- REQ-0022 – Skille strukturell og innholdsmessig synkronisering
-- REQ-0121 – Sentralt ressursbibliotek
 - REQ-0269 – Leverandøruavhengig AI-arkitektur
 - REQ-0291 – Jobber uavhengige av nettleserfane
 - REQ-0293 – Vedvarende backend-jobbarkitektur
 - REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
-- REQ-0623 – Lag andre vinkler med AI
-- REQ-0625 – Stilanalyse av forbildebildene
-- REQ-0626 – Visuelt faktaark per ressurs
-- REQ-0627 – Seedream 4.5 og Qwen-Image-Edit
-- REQ-0628 – Oppskalering
-- REQ-0633 – Send 2D-scenen til AI-video fra sceneeditoren
+- REQ-0769 – DV L7: tidligere versjoner bevares
+- REQ-0770 – DV L8: volumkurver, klipping, hastighet og fades bevares ved bytte
+
+**P1 (95)**
+
+- REQ-0121 – Sentralt ressursbibliotek
 - REQ-0685 – Hele dialogteksten vises under opptak
 - REQ-0687 – Lydopptak på mobil – brukeren velger hva som sendes
 - REQ-0689 – Opptaksstatus og lokal lagring på telefonen
-- REQ-0697 – Lydmotor for komposisjoner
 - REQ-0699 – Valg av analysetjeneste der brukeren er
 - REQ-0704 – Ny eller endret setning: ta opp bare det som mangler
 - REQ-0708 – Naturlig romlyd i pauser
 - REQ-0709 – Romlyd i overganger mellom takes
 - REQ-0711 – Nettleserkompatibilitet for kamera, mikrofon og deling
+- REQ-0750 – DV M1: enkeltklikk på tidsplassert replikk flytter avspillingshodet
+- REQ-0751 – DV M2: hovedvisningen oppdateres
+- REQ-0752 – DV M3: dobbeltklikk åpner riktig dialogeditor
+- REQ-0753 – DV M4: riktig replikk forhåndsvalgt
+- REQ-0754 – DV M5: manglende timing uten falsk presisjon
+- REQ-0755 – DV D1: aktiv replikk lesbar under opptak
+- REQ-0756 – DV D2: kontekst i ca. 70 % styrke
+- REQ-0757 – DV D3: miniatyr når den finnes
+- REQ-0758 – DV D4: navn tydelig
+- REQ-0759 – DV D5: velge annen replikk i nedtrekkslisten
+- REQ-0760 – DV D6: sceneavspilling under opptak virker
+- REQ-0761 – DV D7: flere takes uten overskriving
+- REQ-0762 – DV D8: eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+- REQ-0763 – DV L1: ett felles spor per karakter
+- REQ-0764 – DV L2: spornavn er karakternavn
+- REQ-0765 – DV L3: replikker er separate segmenter
+- REQ-0766 – DV L4: versjoner stablet i dialogeditoren
+- REQ-0767 – DV L5: forhåndslytting
+- REQ-0768 – DV L6: bare aktiv versjon spilles i scenen
+- REQ-0771 – DV L9: gjenvalgt versjon arver gjeldende plassering
+- REQ-0772 – DV L10: ulik varighet uten utilsiktet overlapp
+- REQ-0773 – DV V1: «Generer lydfil»
+- REQ-0774 – DV V2: standardstemme forhåndsvalgt
+- REQ-0775 – DV V3: lokale overstyringer
+- REQ-0776 – DV V4: nye genereringer som separate versjoner
+- REQ-0777 – DV V5: Lyd / Stemme-seksjon per karakter
+- REQ-0778 – DV V6: velge ElevenLabs-stemme når integrasjonen finnes
+- REQ-0779 – DV V7: endret standardstemme endrer ikke tidligere filer
+- REQ-0780 – DV G1: handlingen i Asset Library gjelder bare aktivt prosjekt
+- REQ-0781 – DV G2: dekning viser scener som mangler tale helt eller delvis
+- REQ-0782 – DV G3: brukeren velger scener og replikker
+- REQ-0783 – DV G4: ordrett advarsel ved eksisterende lyd
+- REQ-0784 – DV G5: ny generering blir aktiv versjon
+- REQ-0785 – DV G6: ingen eksisterende lyd eller redigering slettes
+- REQ-0786 – DV G7: feil lar tidligere aktiv versjon stå
+- REQ-0787 – DV G8: kostnadsestimat og eksplisitt bekreftelse før betalte kall
+- REQ-0788 – DV G9: usikkert tidsestimat når forsvarlig
+- REQ-0789 – DV G10: varig fremdrift per replikk med gjenopptak
+- REQ-0790 – DV G11: automatisk plassering i riktig replikk og scene
+- REQ-0791 – DV G12: minimal gyldig 2D-scene opprettes ved behov
+- REQ-0792 – DV G13: tekniske gjentak oppretter ingen duplikater
+- REQ-0793 – DV S1: UiLocale, scriptLanguage og speechLanguage er uavhengige
+- REQ-0794 – DV S2: flere BCP-47-talespråk i samme prosjekt
+- REQ-0795 – DV S3: talespråk kan overstyres per replikk
+- REQ-0796 – DV S4: støtte kontrolleres mot modellens levende språkdata
+- REQ-0797 – DV S5: usikker språkdeteksjon varsler før massegenerering
+- REQ-0798 – DV S6: brukeren kan velge samlet generering med advarsel
+- REQ-0799 – DV S7: separate språkjobber med egne stemmer og modeller
+- REQ-0800 – DV S8: brukeren velger innhold og estimater per språkjobb
+- REQ-0801 – DV A1: manusendring gir rød status
+- REQ-0802 – DV A2: aktiv versjon bestemmer status
+- REQ-0803 – DV A3: endrede og fjernede passasjer identifiseres
+- REQ-0804 – DV A4: avviket er synlig overalt der manuset vises
+- REQ-0805 – DV A5: lenke ut til riktig scene
+- REQ-0806 – DV A6: avspillingshodet settes på replikkstart
+- REQ-0807 – DV A7: ingen automatisk avspilling
+- REQ-0808 – DV A8: endringer vises i rødt i dialogeditoren
+- REQ-0809 – DV A9: «Merk som gjennomgått» krever eksplisitt handling
+- REQ-0810 – DV A10: historikken bevares
+- REQ-0811 – DV A11: ny manusendring gir rødt igjen
+- REQ-0812 – DV A12: eldre versjon kan gi avvik igjen
+- REQ-0813 – DV R1: handlingen ligger i Asset Library
+- REQ-0814 – DV R2: berørte scener og replikker vises
+- REQ-0815 – DV R3: brukeren velger replikker
+- REQ-0816 – DV R4: språk og kostnad vises før generering
+- REQ-0817 – DV R5: nye filer blir aktive, gamle bevares
+- REQ-0818 – DV R6: riktig manusrevisjon registreres
+- REQ-0819 – DV B1: sette personlig bokmerke
+- REQ-0820 – DV B2: «Fortsett ved bokmerke» åpner riktig sted
+- REQ-0821 – DV B3: bokmerket fjernes etter vellykket navigasjon
+- REQ-0822 – DV B4: andres bokmerker påvirkes ikke
+- REQ-0823 – DV H1: merke lyd
+- REQ-0824 – DV H2: merke bilde
+- REQ-0825 – DV H3: valgfri tekst
+- REQ-0826 – DV H4: av/på
+- REQ-0827 – DV H5: avmarkering sletter ikke tekst
+- REQ-0828 – DV H6: andre autoriserte ser lappen
+- REQ-0829 – DV H7: synkronisering
+- REQ-0830 – DV H8: oppretter og dato
+- REQ-0831 – DV H9: boks på prosjektsiden
+- REQ-0832 – DV H10: sortering etter dato og manusplassering
+- REQ-0833 – DV H11: filter på oppretter
+- REQ-0834 – DV H12: klikk åpner riktig sted
+- REQ-0835 – DV H13: virker selv om elementet er flyttet
+- REQ-0836 – DV H14: rettigheter følger samarbeidsmodellen
+- REQ-0839 – P4: WebM VP9 med eksplisitt alfastøtte
 
-### Ikke startet (58)
+**P3 (11)**
 
-- REQ-0049 – Be om manglende referansefiler
 - REQ-0137 – AI-basert stilharmonisering
 - REQ-0138 – Harmoniseringsdimensjoner
 - REQ-0139 – Bevar gjenkjennelig identitet
@@ -127,25 +211,32 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0142 – Harmonisert bilde som alternativ variant
 - REQ-0143 – Publisering til globalt karakterbibliotek
 - REQ-0144 – Foretrukket referanse per stilprofil
-- REQ-0145 – Publisering er eksplisitt brukerhandling
 - REQ-0400 – Stilharmonisering av karakterbilder i plakat
 - REQ-0401 – Valg av kvalitetsnivå og modell for harmonisering
 - REQ-0402 – Publisere harmoniserte bilder til globalt bibliotek
+
+### Ikke startet (45)
+
+**P0 (5)**
+
+- REQ-0464 – Ingen lokale løsninger som bryter prinsippene
+- REQ-0475 – Ikke stille bort krav i stillhet
+- REQ-0508 – Mandatet er samlet produktspesifikasjon
+- REQ-0517 – Ikke redusere til enkel AI-videogenerator
+- REQ-0518 – Sporbarhet til felles prosjektstruktur
+
+**P1 (34)**
+
+- REQ-0049 – Be om manglende referansefiler
 - REQ-0429 – Foreslå informasjonsarkitektur som reduserer kompleksitet
 - REQ-0430 – Norske funksjonsnavn i grensesnittet
-- REQ-0431 – Engelske tekniske betegnelser internt
 - REQ-0450 – Faseinndelt utvikling
 - REQ-0453 – Fase 2: Manus og prosjektoversikt
 - REQ-0454 – Fase 3: Ressursbibliotek og 2D-sceneeditor
-- REQ-0456 – Fase 5: Genereringsmotor og AI-integrasjoner
-- REQ-0457 – Fase 6: Avansert produksjonskontroll
-- REQ-0458 – Fase 7: Flerspråklighet og avledede produksjoner
-- REQ-0459 – Fase 8: Presentasjonsmodul og videre kvalitetssystem
 - REQ-0460 – Fasene er utgangspunkt – vurder avhengigheter
 - REQ-0461 – Grunnarkitektur foran isolerte funksjoner
 - REQ-0462 – Aktiv, selvstendig og kritisk utviklingspartner
 - REQ-0463 – Vurdere helhetspåvirkning før forslag og kode
-- REQ-0464 – Ingen lokale løsninger som bryter prinsippene
 - REQ-0465 – Strukturert definisjon av nye utviklingsområder
 - REQ-0466 – Presise, kopierbare Lovable-instruksjoner
 - REQ-0467 – Innhold i Lovable-instruksjoner
@@ -156,13 +247,10 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0472 – Skille MVP og fremtidig funksjonalitet
 - REQ-0473 – Unngå udokumenterte egenskaper
 - REQ-0474 – Forklare forenkling eller utsettelse av krav
-- REQ-0475 – Ikke stille bort krav i stillhet
 - REQ-0476 – Steg-for-steg utvikling
 - REQ-0477 – Anbefalinger og konsekvensvurderinger ved arkitekturbeslutninger
 - REQ-0478 – Hele systemet forblir konsistent
-- REQ-0503 – Prinsipp 25: Publisering av harmoniserte bilder etter godkjenning
 - REQ-0507 – Ikke implementere alt umiddelbart
-- REQ-0508 – Mandatet er samlet produktspesifikasjon
 - REQ-0509 – Første oppgave 1: Identifisere arkitektoniske avhengigheter
 - REQ-0510 – Første oppgave 2: Foreslå robust intern datamodell
 - REQ-0511 – Første oppgave 3: Foreslå arkitektur for første versjon i Lovable
@@ -171,8 +259,17 @@ Maskinelt avstemt fra requirements.yaml; status alene er ikke en ny produktbeslu
 - REQ-0514 – Første oppgave 6: Utviklingsplan med milepæler
 - REQ-0515 – Første oppgave 7: Peke på tekniske risikoer
 - REQ-0516 – Første oppgave 8: Første presise Lovable-instruksjon
-- REQ-0517 – Ikke redusere til enkel AI-videogenerator
-- REQ-0518 – Sporbarhet til felles prosjektstruktur
 - REQ-0519 – Overordnet mål: kreativ kontroll og teknisk automatisering
 - REQ-0530 – Claudes rolle i prosjektet
+
+**P2 (4)**
+
+- REQ-0456 – Fase 5: Genereringsmotor og AI-integrasjoner
+- REQ-0457 – Fase 6: Avansert produksjonskontroll
+- REQ-0458 – Fase 7: Flerspråklighet og avledede produksjoner
 - REQ-0571 – Globale ressurser på tvers av prosjekter
+
+**P3 (2)**
+
+- REQ-0431 – Engelske tekniske betegnelser internt
+- REQ-0459 – Fase 8: Presentasjonsmodul og videre kvalitetssystem

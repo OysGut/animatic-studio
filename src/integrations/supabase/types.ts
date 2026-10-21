@@ -2578,6 +2578,42 @@ export type Database = {
           },
         ]
       }
+      global_version_withdrawals: {
+        Row: {
+          version_id: string
+          withdrawn_at: string
+          withdrawn_by: string
+          workspace_id: string
+        }
+        Insert: {
+          version_id: string
+          withdrawn_at?: string
+          withdrawn_by: string
+          workspace_id: string
+        }
+        Update: {
+          version_id?: string
+          withdrawn_at?: string
+          withdrawn_by?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_version_withdrawals_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: true
+            referencedRelation: "global_asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_version_withdrawals_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       harmonize_batch_items: {
         Row: {
           asset_id: string
@@ -5721,6 +5757,10 @@ export type Database = {
       global_set_asset_archived: {
         Args: { p_archived: boolean; p_asset: string }
         Returns: undefined
+      }
+      global_set_version_withdrawn: {
+        Args: { p_version: string; p_withdrawn: boolean }
+        Returns: boolean
       }
       global_update_asset: {
         Args: {
