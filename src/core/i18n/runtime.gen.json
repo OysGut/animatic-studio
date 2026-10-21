@@ -2970,6 +2970,12 @@
     "app-ai-generation-status.kind-label.message.d951bb8fd767": {
       "text": "Video"
     },
+    "app-ai-generation-status.mark-all-read": {
+      "text": "Merk alle som lest"
+    },
+    "app-ai-generation-status.mark-read": {
+      "text": "Merk som lest"
+    },
     "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
       "text": " · del {value1} av {value2}"
     },
@@ -13043,6 +13049,9 @@
     },
     "app-projects-project-overview.project-overview.span.a041cc091ba2": {
       "text": "Hovedfilmen har ingen scener ennå."
+    },
+    "app-projects-project-todo-box.mark-all-read": {
+      "text": "Merk alle som lest"
     },
     "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
       "text": "Vis alle"
@@ -34446,6 +34455,12 @@
     "app-ai-generation-status.kind-label.message.d951bb8fd767": {
       "text": "Video"
     },
+    "app-ai-generation-status.mark-all-read": {
+      "text": "Mark all as read"
+    },
+    "app-ai-generation-status.mark-read": {
+      "text": "Mark as read"
+    },
     "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
       "text": " · part {value1} of {value2}"
     },
@@ -44519,6 +44534,9 @@
     },
     "app-projects-project-overview.project-overview.span.a041cc091ba2": {
       "text": "The main film has no scenes yet."
+    },
+    "app-projects-project-todo-box.mark-all-read": {
+      "text": "Mark all as read"
     },
     "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
       "text": "Show all"

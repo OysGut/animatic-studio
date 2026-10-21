@@ -6025,6 +6025,30 @@
       "en": {
         "text": "The response was truncated because it was too long. Try again with a shorter selection."
       }
+    },
+    "app-ai-generation-status.mark-read": {
+      "nb": {
+        "text": "Merk som lest"
+      },
+      "en": {
+        "text": "Mark as read"
+      }
+    },
+    "app-ai-generation-status.mark-all-read": {
+      "nb": {
+        "text": "Merk alle som lest"
+      },
+      "en": {
+        "text": "Mark all as read"
+      }
+    },
+    "app-projects-project-todo-box.mark-all-read": {
+      "nb": {
+        "text": "Merk alle som lest"
+      },
+      "en": {
+        "text": "Mark all as read"
+      }
     }
   }
 }

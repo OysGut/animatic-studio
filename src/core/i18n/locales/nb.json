@@ -73871,5 +73871,14 @@
   },
   "ai.text.truncated": {
     "text": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg."
+  },
+  "app-ai-generation-status.mark-read": {
+    "text": "Merk som lest"
+  },
+  "app-ai-generation-status.mark-all-read": {
+    "text": "Merk alle som lest"
+  },
+  "app-projects-project-todo-box.mark-all-read": {
+    "text": "Merk alle som lest"
   }
 }

@@ -73853,5 +73853,14 @@
   },
   "ai.text.truncated": {
     "text": "[!! TThhëë rrëëssppôônnssëë wwááss ttrrüünnccááttëëdd bbëëccááüüssëë ïïtt wwááss ttôôôô llôônngg. TTrryy áággááïïnn wwïïtthh áá sshhôôrrttëërr ssëëllëëccttïïôônn. !!]"
+  },
+  "app-ai-generation-status.mark-read": {
+    "text": "[!! MMáárrkk ááss rrëëáádd !!]"
+  },
+  "app-ai-generation-status.mark-all-read": {
+    "text": "[!! MMáárrkk áállll ááss rrëëáádd !!]"
+  },
+  "app-projects-project-todo-box.mark-all-read": {
+    "text": "[!! MMáárrkk áállll ááss rrëëáádd !!]"
   }
 }
