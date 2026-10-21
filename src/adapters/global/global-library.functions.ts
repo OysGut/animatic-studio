@@ -391,7 +391,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
     // Lest med brukerens tilgang: bare versjoner i gruppen brukeren er med i
     const { data: rows } = await db
       .from("global_asset_versions")
-      .select("id, workspace_id, storage_key, mime_type, width, height, byte_size, sha256, duration_ms")
+      .select("id, workspace_id, storage_key, mime_type, width, height, byte_size, sha256, duration_ms, derived_files")
       .in(
         "id",
         data.items.map((i) => i.globalVersionId),
@@ -407,6 +407,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
         byte_size: number;
         sha256: string;
         duration_ms: number | null;
+        derived_files: GlobalDerivedFiles | null;
       }[]).map((r) => [r.id, r]),
     );
     const sa = await admin();
@@ -426,6 +427,16 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
       );
       const err = await copyFile(sa, g.storage_key, path);
       if (err) throw new Error(err);
+      // B-105a: de avledede filene kopieres én gang per global versjon, som originalen
+      const derivedFiles = await copyDerivedFiles(sa, g.derived_files, (d) =>
+        assetFilePath(
+          data.projectId,
+          "source",
+          it.projectAssetId,
+          it.projectVersionId,
+          `${d.sha256}.${extensionOf(d.path)}`,
+        ),
+      );
       out[it.globalVersionId] = {
         path,
         mimeType: g.mime_type,
@@ -434,6 +445,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
         byteSize: Number(g.byte_size),
         sha256: g.sha256,
         ...(g.duration_ms ? { durationMs: g.duration_ms } : {}),
+        ...(derivedFiles ? { derivedFiles } : {}),
       };
     }
     return out;
