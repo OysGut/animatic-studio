@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/asset-studio"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -163,7 +164,7 @@ async function save(page, studio) {
 async function scenario(name, lang, fn) {
   commands = [];
   conflictNext = false;
-  const { context, page, errors, studio } = await open(lang);
+  const { context, page, errors, studio } = await open(uiLang(lang));
   try {
     await openStudio(page, studio);
     await fn(page, studio);
