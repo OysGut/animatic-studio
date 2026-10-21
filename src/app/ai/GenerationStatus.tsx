@@ -129,8 +129,9 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
             return (
               <li
                 key={j.id}
+                data-testid={`generation-job-${j.id}`}
                 className={
-                  "border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0" +
+                  `border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0` + // i18n-ignore: CSS-klasser
                   (read ? " opacity-50" : "")
                 }
               >

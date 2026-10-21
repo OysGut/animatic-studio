@@ -73880,5 +73880,158 @@
   },
   "print-pdf.image-required": {
     "text": "[!! FFïïggüürrëë pprrïïnnttïïnngg rrëëqqüüïïrrëëss áá ssôôüürrccëë ïïmmáággëë. !!]"
+  },
+  "app-print.title": {
+    "text": "[!! PPDDFF pprrïïnnttïïnngg !!]"
+  },
+  "app-print.paper": {
+    "text": "[!! PPááppëërr !!]"
+  },
+  "app-print.orientation": {
+    "text": "[!! ÔÔrrïïëënnttááttïïôônn !!]"
+  },
+  "app-print.portrait": {
+    "text": "[!! PPôôrrttrrááïïtt !!]"
+  },
+  "app-print.landscape": {
+    "text": "[!! LLáánnddssccááppëë !!]"
+  },
+  "app-print.custom": {
+    "text": "[!! CCüüssttôômm !!]"
+  },
+  "app-print.width": {
+    "text": "[!! PPááppëërr wwïïddtthh (mmmm) !!]"
+  },
+  "app-print.height": {
+    "text": "[!! PPááppëërr hhëëïïgghhtt (mmmm) !!]"
+  },
+  "app-print.top": {
+    "text": "[!! TTôôpp mmáárrggïïnn (mmmm) !!]"
+  },
+  "app-print.right": {
+    "text": "[!! RRïïgghhtt mmáárrggïïnn (mmmm) !!]"
+  },
+  "app-print.bottom": {
+    "text": "[!! BBôôttttôômm mmáárrggïïnn (mmmm) !!]"
+  },
+  "app-print.left": {
+    "text": "[!! LLëëfftt mmáárrggïïnn (mmmm) !!]"
+  },
+  "app-print.calibration": {
+    "text": "[!! CCáállïïbbrrááttïïôônn rrüüllëërr !!]"
+  },
+  "app-print.length": {
+    "text": "[!! RRüüllëërr llëënnggtthh !!]"
+  },
+  "app-print.reference": {
+    "text": "[!! TTëëcchhnnïïccááll rrëëffëërrëënnccëë pprrïïnntt !!]"
+  },
+  "app-print.fields": {
+    "text": "[!! ÏÏnnffôôrrmmááttïïôônn ffïïëëllddss !!]"
+  },
+  "app-print.film": {
+    "text": "[!! FFïïllmm ttïïttllëë áánndd pprrôôddüüccttïïôônn !!]"
+  },
+  "app-print.scene": {
+    "text": "[!! SSccëënnëë !!]"
+  },
+  "app-print.asset": {
+    "text": "[!! CChháárrááccttëërr ôôrr ôôbbjjëëcctt !!]"
+  },
+  "app-print.time": {
+    "text": "[!! TTïïmmëë áánndd áábbssôôllüüttëë ffrráámmëë !!]"
+  },
+  "app-print.plate": {
+    "text": "[!! PPllááttëë llëëvvëëll !!]"
+  },
+  "app-print.size": {
+    "text": "[!! PPhhyyssïïccááll ssïïzzëë !!]"
+  },
+  "app-print.date": {
+    "text": "[!! DDááttëë !!]"
+  },
+  "app-print.arrow": {
+    "text": "[!! CCáámmëërráá üüpp !!]"
+  },
+  "app-print.qr": {
+    "text": "[!! RRëëssëërrvvëë QQRR ssppááccëë !!]"
+  },
+  "app-print.create": {
+    "text": "[!! CCrrëëááttëë PPDDFF !!]"
+  },
+  "app-print.busy": {
+    "text": "[!! CCrrëëááttïïnngg PPDDFF … !!]"
+  },
+  "app-print.warning": {
+    "text": "[!! PPrrïïnntt áátt 100% / ááccttüüááll ssïïzzëë. “FFïïtt ttôô ppáággëë” ïïnnvváállïïddááttëëss ccáállïïbbrrááttïïôônn. !!]"
+  },
+  "app-print.pages": {
+    "text": "[!! {count} sshhëëëëttss · 10 mmmm ôôvvëërrlláápp wwhhëënn ttïïllëëdd !!]"
+  },
+  "app-print.failure": {
+    "text": "[!! TThhëë PPDDFF ccôôüülldd nnôôtt bbëë ccrrëëááttëëdd. CChhëëcckk tthhëë pprrïïnntt ssëëttttïïnnggss áánndd ttrryy áággááïïnn. !!]"
+  },
+  "app-print.empty": {
+    "text": "[!! NNôô mmëëáássüürrëëmmëënntt ssëëttss áárrëë ssáávvëëdd ffôôrr tthhïïss ffïïggüürrëë áánndd ffrráámmëë. !!]"
+  },
+  "app-print.frame": {
+    "text": "[!! {seconds} ss + {frames} ff · ffrráámmëë {absolute} !!]"
+  },
+  "print-measure.error-0": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt ppôôïïnntt !!]"
+  },
+  "print-measure.error-1": {
+    "text": "[!! ÏÏnnvváállïïdd llïïnnëë !!]"
+  },
+  "print-measure.error-2": {
+    "text": "[!! ÁÁnnggllëë rrëëqqüüïïrrëëss ttwwôô nnôônnzzëërrôô llïïnnëëss !!]"
+  },
+  "print-measure.error-3": {
+    "text": "[!! RRááttïïôô rrëëqqüüïïrrëëss nnôônnnnëëggááttïïvvëë llëënnggtthhss áánndd áá ppôôssïïttïïvvëë ddëënnôômmïïnnááttôôrr !!]"
+  },
+  "print-measure.error-4": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt vváállüüëë ôôrr üünnïïtt !!]"
+  },
+  "print-measure.error-5": {
+    "text": "[!! ZZôôôômm mmüüsstt bbëë ppôôssïïttïïvvëë !!]"
+  },
+  "print-measure.error-6": {
+    "text": "[!! ÏÏnnvváállïïdd ttôôllëërráánnccëë !!]"
+  },
+  "print-measure.error-7": {
+    "text": "[!! ÜÜnnkknnôôwwnn mmáárrkkëërr ttyyppëë !!]"
+  },
+  "print-measure.error-8": {
+    "text": "[!! MMáárrkkëërr ÏÏDD ïïss mmïïssssïïnngg !!]"
+  },
+  "print-measure.error-9": {
+    "text": "[!! ÏÏnnvváállïïdd mmáárrkkëërr ggëëôômmëëttrryy !!]"
+  },
+  "print-measure.error-10": {
+    "text": "[!! ÏÏnnvváállïïdd mmëëáássüürrëëmmëënntt ssëëtt rrëëffëërrëënnccëë ôôrr nnáámmëë !!]"
+  },
+  "print-measure.error-11": {
+    "text": "[!! ÏÏnnvváállïïdd ffrráámmëë !!]"
+  },
+  "print-measure.error-12": {
+    "text": "[!! ÏÏnnvváállïïdd ttïïmmëëssttáámmpp !!]"
+  },
+  "print-measure.error-13": {
+    "text": "[!! ÏÏnnvváállïïdd mmáárrkkëërr llïïsstt !!]"
+  },
+  "print-measure.error-14": {
+    "text": "[!! DDüüppllïïccááttëë mmáárrkkëërr ÏÏDD !!]"
+  },
+  "print-measure.error-15": {
+    "text": "[!! DDüüppllïïccááttëë mmáárrkkëërrss !!]"
+  },
+  "print-measure.error-16": {
+    "text": "[!! ÏÏnnvváállïïdd ïïnnssëërrttïïôônn !!]"
+  },
+  "print-measure.error-17": {
+    "text": "[!! ÜÜnnkknnôôwwnn mmáárrkkëërr !!]"
+  },
+  "print-measure.error-18": {
+    "text": "[!! DDüüppllïïccááttëë ÏÏDD !!]"
   }
 }

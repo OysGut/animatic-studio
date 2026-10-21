@@ -6097,6 +6097,414 @@
       "en": {
         "text": "Figure printing requires a source image."
       }
+    },
+    "app-print.title": {
+      "nb": {
+        "text": "PDF-utskrift"
+      },
+      "en": {
+        "text": "PDF printing"
+      }
+    },
+    "app-print.paper": {
+      "nb": {
+        "text": "Papir"
+      },
+      "en": {
+        "text": "Paper"
+      }
+    },
+    "app-print.orientation": {
+      "nb": {
+        "text": "Retning"
+      },
+      "en": {
+        "text": "Orientation"
+      }
+    },
+    "app-print.portrait": {
+      "nb": {
+        "text": "Stående"
+      },
+      "en": {
+        "text": "Portrait"
+      }
+    },
+    "app-print.landscape": {
+      "nb": {
+        "text": "Liggende"
+      },
+      "en": {
+        "text": "Landscape"
+      }
+    },
+    "app-print.custom": {
+      "nb": {
+        "text": "Egendefinert"
+      },
+      "en": {
+        "text": "Custom"
+      }
+    },
+    "app-print.width": {
+      "nb": {
+        "text": "Arkbredde (mm)"
+      },
+      "en": {
+        "text": "Paper width (mm)"
+      }
+    },
+    "app-print.height": {
+      "nb": {
+        "text": "Arkhøyde (mm)"
+      },
+      "en": {
+        "text": "Paper height (mm)"
+      }
+    },
+    "app-print.top": {
+      "nb": {
+        "text": "Toppmarg (mm)"
+      },
+      "en": {
+        "text": "Top margin (mm)"
+      }
+    },
+    "app-print.right": {
+      "nb": {
+        "text": "Høyremarg (mm)"
+      },
+      "en": {
+        "text": "Right margin (mm)"
+      }
+    },
+    "app-print.bottom": {
+      "nb": {
+        "text": "Bunnmarg (mm)"
+      },
+      "en": {
+        "text": "Bottom margin (mm)"
+      }
+    },
+    "app-print.left": {
+      "nb": {
+        "text": "Venstremarg (mm)"
+      },
+      "en": {
+        "text": "Left margin (mm)"
+      }
+    },
+    "app-print.calibration": {
+      "nb": {
+        "text": "Kalibreringsmålestokk"
+      },
+      "en": {
+        "text": "Calibration ruler"
+      }
+    },
+    "app-print.length": {
+      "nb": {
+        "text": "Målestokklengde"
+      },
+      "en": {
+        "text": "Ruler length"
+      }
+    },
+    "app-print.reference": {
+      "nb": {
+        "text": "Teknisk referanseutskrift"
+      },
+      "en": {
+        "text": "Technical reference print"
+      }
+    },
+    "app-print.fields": {
+      "nb": {
+        "text": "Informasjonsfelt"
+      },
+      "en": {
+        "text": "Information fields"
+      }
+    },
+    "app-print.film": {
+      "nb": {
+        "text": "Filmtittel og produksjon"
+      },
+      "en": {
+        "text": "Film title and production"
+      }
+    },
+    "app-print.scene": {
+      "nb": {
+        "text": "Scene"
+      },
+      "en": {
+        "text": "Scene"
+      }
+    },
+    "app-print.asset": {
+      "nb": {
+        "text": "Karakter eller objekt"
+      },
+      "en": {
+        "text": "Character or object"
+      }
+    },
+    "app-print.time": {
+      "nb": {
+        "text": "Tid og absolutt frame"
+      },
+      "en": {
+        "text": "Time and absolute frame"
+      }
+    },
+    "app-print.plate": {
+      "nb": {
+        "text": "Platenivå"
+      },
+      "en": {
+        "text": "Plate level"
+      }
+    },
+    "app-print.size": {
+      "nb": {
+        "text": "Fysisk størrelse"
+      },
+      "en": {
+        "text": "Physical size"
+      }
+    },
+    "app-print.date": {
+      "nb": {
+        "text": "Dato"
+      },
+      "en": {
+        "text": "Date"
+      }
+    },
+    "app-print.arrow": {
+      "nb": {
+        "text": "Kameraets opp"
+      },
+      "en": {
+        "text": "Camera up"
+      }
+    },
+    "app-print.qr": {
+      "nb": {
+        "text": "Plass til QR"
+      },
+      "en": {
+        "text": "Reserve QR space"
+      }
+    },
+    "app-print.create": {
+      "nb": {
+        "text": "Lag PDF"
+      },
+      "en": {
+        "text": "Create PDF"
+      }
+    },
+    "app-print.busy": {
+      "nb": {
+        "text": "Lager PDF …"
+      },
+      "en": {
+        "text": "Creating PDF …"
+      }
+    },
+    "app-print.warning": {
+      "nb": {
+        "text": "Skriv ut i 100 % / faktisk størrelse. «Tilpass til side» ødelegger kalibreringen."
+      },
+      "en": {
+        "text": "Print at 100% / actual size. “Fit to page” invalidates calibration."
+      }
+    },
+    "app-print.pages": {
+      "nb": {
+        "text": "{count} ark · 10 mm overlapp ved deling"
+      },
+      "en": {
+        "text": "{count} sheets · 10 mm overlap when tiled"
+      }
+    },
+    "app-print.failure": {
+      "nb": {
+        "text": "PDF-en kunne ikke lages. Kontroller utskriftsvalgene og prøv igjen."
+      },
+      "en": {
+        "text": "The PDF could not be created. Check the print settings and try again."
+      }
+    },
+    "app-print.empty": {
+      "nb": {
+        "text": "Ingen målesett er lagret for denne figuren og framen."
+      },
+      "en": {
+        "text": "No measurement sets are saved for this figure and frame."
+      }
+    },
+    "app-print.frame": {
+      "nb": {
+        "text": "{seconds} s + {frames} f · frame {absolute}"
+      },
+      "en": {
+        "text": "{seconds} s + {frames} f · frame {absolute}"
+      }
+    },
+    "print-measure.error-0": {
+      "nb": {
+        "text": "Ugyldig målepunkt"
+      },
+      "en": {
+        "text": "Invalid measurement point"
+      }
+    },
+    "print-measure.error-1": {
+      "nb": {
+        "text": "Ugyldig linje"
+      },
+      "en": {
+        "text": "Invalid line"
+      }
+    },
+    "print-measure.error-2": {
+      "nb": {
+        "text": "Vinkel krever to linjer med lengde"
+      },
+      "en": {
+        "text": "Angle requires two nonzero lines"
+      }
+    },
+    "print-measure.error-3": {
+      "nb": {
+        "text": "Forhold krever ikke-negative lengder og positiv nevner"
+      },
+      "en": {
+        "text": "Ratio requires nonnegative lengths and a positive denominator"
+      }
+    },
+    "print-measure.error-4": {
+      "nb": {
+        "text": "Ugyldig måleverdi/enhet"
+      },
+      "en": {
+        "text": "Invalid measurement value or unit"
+      }
+    },
+    "print-measure.error-5": {
+      "nb": {
+        "text": "Zoom må være positiv"
+      },
+      "en": {
+        "text": "Zoom must be positive"
+      }
+    },
+    "print-measure.error-6": {
+      "nb": {
+        "text": "Ugyldig toleranse"
+      },
+      "en": {
+        "text": "Invalid tolerance"
+      }
+    },
+    "print-measure.error-7": {
+      "nb": {
+        "text": "Ukjent markørtype"
+      },
+      "en": {
+        "text": "Unknown marker type"
+      }
+    },
+    "print-measure.error-8": {
+      "nb": {
+        "text": "Markør mangler ID"
+      },
+      "en": {
+        "text": "Marker ID is missing"
+      }
+    },
+    "print-measure.error-9": {
+      "nb": {
+        "text": "Ugyldig markørgeometri"
+      },
+      "en": {
+        "text": "Invalid marker geometry"
+      }
+    },
+    "print-measure.error-10": {
+      "nb": {
+        "text": "Ugyldig målesettreferanse/navn"
+      },
+      "en": {
+        "text": "Invalid measurement set reference or name"
+      }
+    },
+    "print-measure.error-11": {
+      "nb": {
+        "text": "Ugyldig frame"
+      },
+      "en": {
+        "text": "Invalid frame"
+      }
+    },
+    "print-measure.error-12": {
+      "nb": {
+        "text": "Ugyldig tidsstempel"
+      },
+      "en": {
+        "text": "Invalid timestamp"
+      }
+    },
+    "print-measure.error-13": {
+      "nb": {
+        "text": "Ugyldig markørliste"
+      },
+      "en": {
+        "text": "Invalid marker list"
+      }
+    },
+    "print-measure.error-14": {
+      "nb": {
+        "text": "Duplisert markør-ID"
+      },
+      "en": {
+        "text": "Duplicate marker ID"
+      }
+    },
+    "print-measure.error-15": {
+      "nb": {
+        "text": "Dupliserte markører"
+      },
+      "en": {
+        "text": "Duplicate markers"
+      }
+    },
+    "print-measure.error-16": {
+      "nb": {
+        "text": "Ugyldig innsetting"
+      },
+      "en": {
+        "text": "Invalid insertion"
+      }
+    },
+    "print-measure.error-17": {
+      "nb": {
+        "text": "Ukjent markør"
+      },
+      "en": {
+        "text": "Unknown marker"
+      }
+    },
+    "print-measure.error-18": {
+      "nb": {
+        "text": "Duplisert ID"
+      },
+      "en": {
+        "text": "Duplicate ID"
+      }
     }
   }
 }

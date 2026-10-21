@@ -1,7 +1,8 @@
 import { jsPDF } from 'jspdf';
-import { t } from '../../i18n/keyed';
-import type { Point } from '../contour';
-import type { PrintPlan } from './layout';
+import { t } from '@/core/i18n/keyed';
+import type { Point } from '@/core/print/contour';
+import type { PrintPlan } from '@/core/print/pdf/layout';
+import { markerValue, formatMeasurement } from '@/core/print/measure';
 
 /** No DOM, canvas, resampling or file I/O. Encoded images are embedded at source resolution. */
 export function renderPdf(plan: PrintPlan): jsPDF {
@@ -20,8 +21,8 @@ export function renderPdf(plan: PrintPlan): jsPDF {
     for (const p of sheet.placements) {
       const {item,rect:r,source:s}=p, size=item.size, factor=size.unit==='in'?25.4:1;
       const point = (v:Point):Point => ({x:r.x-s.x+v.x,y:r.y-s.y+v.y});
-      const paths = (holes:boolean) => item.contour.paths.filter(path=>holes || !path.isHole).flatMap(path=>path.points.length ? [
-        {op:'m',c:[point(path.points[0]!).x,point(path.points[0]!).y]},
+      const paths = (holes:boolean) => item.contour.paths.filter(path=>holes || !path.isHole).flatMap(path=>path.points[0] ? [
+        {op:'m',c:[point(path.points[0]).x,point(path.points[0]).y]},
         ...path.points.slice(1).map(v=>({op:'l',c:[point(v).x,point(v).y]})),{op:'h',c:[]},
       ] : []);
       doc.saveGraphicsState();
@@ -31,13 +32,19 @@ export function renderPdf(plan: PrintPlan): jsPDF {
         doc.addImage(item.image.data,item.image.format,r.x-s.x,r.y-s.y,size.width*factor,size.height*factor,undefined,'NONE');
         doc.restoreGraphicsState();
       }
-      if (item.mode !== 'figure') { doc.setLineWidth(.1); doc.path(paths(item.cutHoles !== false)); doc.stroke(); }
+      if (item.mode !== 'figure') { doc.setDrawColor(55); doc.setLineWidth(item.strokeWidthMm??.1); doc.path(paths(item.cutHoles !== false)); doc.stroke(); }
       doc.setDrawColor(25,90,190); doc.setTextColor(25,90,190);
       for (const set of p.measurements) for (const marker of set.markers) {
         if (marker.kind==='point') { const q=point(marker.point); doc.circle(q.x,q.y,.7); }
         else {
           const lines = 'line' in marker ? [marker.line] : 'lines' in marker ? marker.lines : 'distances' in marker ? marker.distances : [{a:marker.points[1],b:marker.points[0]},{a:marker.points[1],b:marker.points[2]}];
           for (const l of lines) line(point(l.a),point(l.b));
+          const origin=lines[0]?.a;
+          if(origin) {
+            const value=markerValue(marker), q=point(origin);
+            const label=typeof value==='number'?(marker.kind==='angle'?`${value.toFixed(1)}°`:formatMeasurement(value,'mm')):'decimal' in value?`${value.decimal.toFixed(3)} (${value.percent.toFixed(1)}%)`:'';
+            doc.text(label,q.x+1,q.y-1);
+          }
         }
       }
       doc.restoreGraphicsState(); doc.setDrawColor(0); doc.setTextColor(0); doc.setLineWidth(.1);

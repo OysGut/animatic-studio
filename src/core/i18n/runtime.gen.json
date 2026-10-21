@@ -7864,9 +7864,6 @@
     "app-inspect.open": {
       "text": "Inspiser og mål"
     },
-    "app-inspect.pdf": {
-      "text": "PDF-arkramme – kommer i runde 4"
-    },
     "app-inspect.physical": {
       "text": "100 % fysisk"
     },
@@ -11831,6 +11828,102 @@
     },
     "app-mobile-use-mobile-imports.who.message.e35c0eb1e51e.2": {
       "text": "mobil"
+    },
+    "app-print.arrow": {
+      "text": "Kameraets opp"
+    },
+    "app-print.asset": {
+      "text": "Karakter eller objekt"
+    },
+    "app-print.bottom": {
+      "text": "Bunnmarg (mm)"
+    },
+    "app-print.busy": {
+      "text": "Lager PDF …"
+    },
+    "app-print.calibration": {
+      "text": "Kalibreringsmålestokk"
+    },
+    "app-print.create": {
+      "text": "Lag PDF"
+    },
+    "app-print.custom": {
+      "text": "Egendefinert"
+    },
+    "app-print.date": {
+      "text": "Dato"
+    },
+    "app-print.empty": {
+      "text": "Ingen målesett er lagret for denne figuren og framen."
+    },
+    "app-print.failure": {
+      "text": "PDF-en kunne ikke lages. Kontroller utskriftsvalgene og prøv igjen."
+    },
+    "app-print.fields": {
+      "text": "Informasjonsfelt"
+    },
+    "app-print.film": {
+      "text": "Filmtittel og produksjon"
+    },
+    "app-print.frame": {
+      "text": "{seconds} s + {frames} f · frame {absolute}"
+    },
+    "app-print.height": {
+      "text": "Arkhøyde (mm)"
+    },
+    "app-print.landscape": {
+      "text": "Liggende"
+    },
+    "app-print.left": {
+      "text": "Venstremarg (mm)"
+    },
+    "app-print.length": {
+      "text": "Målestokklengde"
+    },
+    "app-print.orientation": {
+      "text": "Retning"
+    },
+    "app-print.pages": {
+      "text": "{count} ark · 10 mm overlapp ved deling"
+    },
+    "app-print.paper": {
+      "text": "Papir"
+    },
+    "app-print.plate": {
+      "text": "Platenivå"
+    },
+    "app-print.portrait": {
+      "text": "Stående"
+    },
+    "app-print.qr": {
+      "text": "Plass til QR"
+    },
+    "app-print.reference": {
+      "text": "Teknisk referanseutskrift"
+    },
+    "app-print.right": {
+      "text": "Høyremarg (mm)"
+    },
+    "app-print.scene": {
+      "text": "Scene"
+    },
+    "app-print.size": {
+      "text": "Fysisk størrelse"
+    },
+    "app-print.time": {
+      "text": "Tid og absolutt frame"
+    },
+    "app-print.title": {
+      "text": "PDF-utskrift"
+    },
+    "app-print.top": {
+      "text": "Toppmarg (mm)"
+    },
+    "app-print.warning": {
+      "text": "Skriv ut i 100 % / faktisk størrelse. «Tilpass til side» ødelegger kalibreringen."
+    },
+    "app-print.width": {
+      "text": "Arkbredde (mm)"
     },
     "app-project-rejected-text-notice.intro.message.1ea2cc01d541": {
       "text": "Teksten din ble ikke lagret fordi en tidligere endring feilet. Den er tatt vare på her:"
@@ -31046,6 +31139,63 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "print-measure.error-0": {
+      "text": "Ugyldig målepunkt"
+    },
+    "print-measure.error-1": {
+      "text": "Ugyldig linje"
+    },
+    "print-measure.error-10": {
+      "text": "Ugyldig målesettreferanse/navn"
+    },
+    "print-measure.error-11": {
+      "text": "Ugyldig frame"
+    },
+    "print-measure.error-12": {
+      "text": "Ugyldig tidsstempel"
+    },
+    "print-measure.error-13": {
+      "text": "Ugyldig markørliste"
+    },
+    "print-measure.error-14": {
+      "text": "Duplisert markør-ID"
+    },
+    "print-measure.error-15": {
+      "text": "Dupliserte markører"
+    },
+    "print-measure.error-16": {
+      "text": "Ugyldig innsetting"
+    },
+    "print-measure.error-17": {
+      "text": "Ukjent markør"
+    },
+    "print-measure.error-18": {
+      "text": "Duplisert ID"
+    },
+    "print-measure.error-2": {
+      "text": "Vinkel krever to linjer med lengde"
+    },
+    "print-measure.error-3": {
+      "text": "Forhold krever ikke-negative lengder og positiv nevner"
+    },
+    "print-measure.error-4": {
+      "text": "Ugyldig måleverdi/enhet"
+    },
+    "print-measure.error-5": {
+      "text": "Zoom må være positiv"
+    },
+    "print-measure.error-6": {
+      "text": "Ugyldig toleranse"
+    },
+    "print-measure.error-7": {
+      "text": "Ukjent markørtype"
+    },
+    "print-measure.error-8": {
+      "text": "Markør mangler ID"
+    },
+    "print-measure.error-9": {
+      "text": "Ugyldig markørgeometri"
+    },
     "print-pdf.image-required": {
       "text": "Figurutskrift krever et kildebilde."
     },
@@ -39367,9 +39517,6 @@
     "app-inspect.open": {
       "text": "Inspect and measure"
     },
-    "app-inspect.pdf": {
-      "text": "PDF sheet frame – coming in round 4"
-    },
     "app-inspect.physical": {
       "text": "100% physical"
     },
@@ -43334,6 +43481,102 @@
     },
     "app-mobile-use-mobile-imports.who.message.e35c0eb1e51e.2": {
       "text": "mobile"
+    },
+    "app-print.arrow": {
+      "text": "Camera up"
+    },
+    "app-print.asset": {
+      "text": "Character or object"
+    },
+    "app-print.bottom": {
+      "text": "Bottom margin (mm)"
+    },
+    "app-print.busy": {
+      "text": "Creating PDF …"
+    },
+    "app-print.calibration": {
+      "text": "Calibration ruler"
+    },
+    "app-print.create": {
+      "text": "Create PDF"
+    },
+    "app-print.custom": {
+      "text": "Custom"
+    },
+    "app-print.date": {
+      "text": "Date"
+    },
+    "app-print.empty": {
+      "text": "No measurement sets are saved for this figure and frame."
+    },
+    "app-print.failure": {
+      "text": "The PDF could not be created. Check the print settings and try again."
+    },
+    "app-print.fields": {
+      "text": "Information fields"
+    },
+    "app-print.film": {
+      "text": "Film title and production"
+    },
+    "app-print.frame": {
+      "text": "{seconds} s + {frames} f · frame {absolute}"
+    },
+    "app-print.height": {
+      "text": "Paper height (mm)"
+    },
+    "app-print.landscape": {
+      "text": "Landscape"
+    },
+    "app-print.left": {
+      "text": "Left margin (mm)"
+    },
+    "app-print.length": {
+      "text": "Ruler length"
+    },
+    "app-print.orientation": {
+      "text": "Orientation"
+    },
+    "app-print.pages": {
+      "text": "{count} sheets · 10 mm overlap when tiled"
+    },
+    "app-print.paper": {
+      "text": "Paper"
+    },
+    "app-print.plate": {
+      "text": "Plate level"
+    },
+    "app-print.portrait": {
+      "text": "Portrait"
+    },
+    "app-print.qr": {
+      "text": "Reserve QR space"
+    },
+    "app-print.reference": {
+      "text": "Technical reference print"
+    },
+    "app-print.right": {
+      "text": "Right margin (mm)"
+    },
+    "app-print.scene": {
+      "text": "Scene"
+    },
+    "app-print.size": {
+      "text": "Physical size"
+    },
+    "app-print.time": {
+      "text": "Time and absolute frame"
+    },
+    "app-print.title": {
+      "text": "PDF printing"
+    },
+    "app-print.top": {
+      "text": "Top margin (mm)"
+    },
+    "app-print.warning": {
+      "text": "Print at 100% / actual size. “Fit to page” invalidates calibration."
+    },
+    "app-print.width": {
+      "text": "Paper width (mm)"
     },
     "app-project-rejected-text-notice.intro.message.1ea2cc01d541": {
       "text": "Your text was not saved because an earlier change failed. It is kept here:"
@@ -62548,6 +62791,63 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "print-measure.error-0": {
+      "text": "Invalid measurement point"
+    },
+    "print-measure.error-1": {
+      "text": "Invalid line"
+    },
+    "print-measure.error-10": {
+      "text": "Invalid measurement set reference or name"
+    },
+    "print-measure.error-11": {
+      "text": "Invalid frame"
+    },
+    "print-measure.error-12": {
+      "text": "Invalid timestamp"
+    },
+    "print-measure.error-13": {
+      "text": "Invalid marker list"
+    },
+    "print-measure.error-14": {
+      "text": "Duplicate marker ID"
+    },
+    "print-measure.error-15": {
+      "text": "Duplicate markers"
+    },
+    "print-measure.error-16": {
+      "text": "Invalid insertion"
+    },
+    "print-measure.error-17": {
+      "text": "Unknown marker"
+    },
+    "print-measure.error-18": {
+      "text": "Duplicate ID"
+    },
+    "print-measure.error-2": {
+      "text": "Angle requires two nonzero lines"
+    },
+    "print-measure.error-3": {
+      "text": "Ratio requires nonnegative lengths and a positive denominator"
+    },
+    "print-measure.error-4": {
+      "text": "Invalid measurement value or unit"
+    },
+    "print-measure.error-5": {
+      "text": "Zoom must be positive"
+    },
+    "print-measure.error-6": {
+      "text": "Invalid tolerance"
+    },
+    "print-measure.error-7": {
+      "text": "Unknown marker type"
+    },
+    "print-measure.error-8": {
+      "text": "Marker ID is missing"
+    },
+    "print-measure.error-9": {
+      "text": "Invalid marker geometry"
     },
     "print-pdf.image-required": {
       "text": "Figure printing requires a source image."

@@ -3041,6 +3041,60 @@ export type Database = {
           },
         ]
       }
+      measure_sets: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          frame: number
+          id: string
+          layer_id: string
+          markers: Json
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          frame: number
+          id: string
+          layer_id: string
+          markers: Json
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          frame?: number
+          id?: string
+          layer_id?: string
+          markers?: Json
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "measure_sets_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "measure_sets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mobile_imports: {
         Row: {
           approved_at: string | null
