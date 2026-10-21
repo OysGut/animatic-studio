@@ -217,7 +217,7 @@ function Conversation({
   const profile = ctx.profile ?? profileAt(state, ctx.assetId, ctx.sceneId as never) ?? emptyStoryProfile();
   const replies = turns.filter((t) => t.kind === "line" || t.kind === "analysis").length;
   const language = "nb";
-  const uiLang = useLanguage() === "en" ? "en" : "nb";
+  const uiLang = useLanguage();
 
   const build = (question: string, m: Mode) => {
     const at = new Date().toISOString();

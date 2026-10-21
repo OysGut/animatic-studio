@@ -5,9 +5,9 @@
  * kjennes igjen mot de norske malene, og ellers brukes `tm` som før.
  * Ren TypeScript uten avhengigheter.
  */
-import { createTranslator, type MessageCatalog, type MessageParameters, type LanguageManifest } from "./messages";
-import manifest from "./manifest.json";
-import { getUiLanguage, pseudoText, tm } from "./index";
+import { type MessageParameters } from "./messages";
+import { getUiLanguage, tm } from "./index";
+import { t } from './keyed';
 
 /** Kode → [norsk mal, engelsk mal]. Koder endres eller gjenbrukes aldri. */
 export const SERVER_ERRORS = {
@@ -29,23 +29,8 @@ export type ServerErrorCode = keyof typeof SERVER_ERRORS;
 
 export const serverErrorKey = (code: ServerErrorCode) => `server.error.${code}`;
 
-function catalogs(): Record<string, MessageCatalog> {
-  const nb: Record<string, { text: string }> = {};
-  const en: Record<string, { text: string }> = {};
-  const xa: Record<string, { text: string }> = {};
-  for (const [code, [n, e]] of Object.entries(SERVER_ERRORS)) {
-    const key = serverErrorKey(code as ServerErrorCode);
-    nb[key] = { text: n };
-    en[key] = { text: e };
-    xa[key] = { text: pseudoText(e) };
-  }
-  return { nb, en, "en-XA": xa };
-}
-
-let translate: ReturnType<typeof createTranslator> | undefined;
 function tr(code: ServerErrorCode, params: MessageParameters, lang: string) {
-  translate ??= createTranslator(manifest as LanguageManifest, catalogs());
-  return translate(serverErrorKey(code), params, lang);
+  return t(serverErrorKey(code), params, lang);
 }
 
 /** Feil med stabil kode. `message` er norsk, slik serveren alltid har svart. */

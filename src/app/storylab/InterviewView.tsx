@@ -98,7 +98,7 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
   const gen = useServerFn(generateText);
   const append = useServerFn(appendStoryTurns);
   const qc = useQueryClient();
-  const language = useLanguage() === "en" ? "en" : "nb";
+  const language = useLanguage();
   const summary = canvasSummary(state);
   const system = interviewSystemPrompt({ language, canvasSummary: summary, projectTitle: state.project.name });
   const messages = (extra?: string): InterviewMessage[] => [
