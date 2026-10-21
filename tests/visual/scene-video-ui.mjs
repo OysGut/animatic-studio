@@ -322,6 +322,8 @@ async function run(name, act, lang = "nb") {
     errors.push("act: " + e.message);
   }
   console.log(name, errors.length ? "FEIL: " + errors.join(" | ").slice(0, 800) : "ok");
+  // R7: en feil i selve scenarioet (tidsavbrudd o.l.) telles som feil, ikke bare de enkelte kontrollene
+  if (errors.length) fail++;
   await ctx.close();
 }
 let pass = 0, fail = 0;
