@@ -115,7 +115,10 @@ async function main(lang) {
     await page.goto(`${base}${P}/manus`, { waitUntil: "networkidle" });
     const langSelect = page.locator("select").filter({ has: page.locator('option[value="en"]') }).first();
     await langSelect.selectOption("en");
-    await page.getByRole("button", { name: /Importer oversatt manus|Import translated script/ }).click();
+    await page.getByTestId("translation-import-open").click();
+    const target = page.getByTestId("translation-import-target");
+    await target.waitFor({ timeout: 5000 });
+    check((await target.getAttribute("data-language")) === "en" && /\(en\)/.test(await target.innerText()), `${lang}: R8 dialogen viser valgt målspråk`);
     const chooser = page.waitForEvent("filechooser");
     await page.getByRole("button", { name: /Velg fil|Choose file/ }).click();
     await (await chooser).setFiles(fountain);
