@@ -9255,9 +9255,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.intro": {
-    "text": "O mesmo filme, cenas e imagens do norueguês. Aqui você pode ver o que está faltando ou precisa ser verificado na versão em {language}. Nada é recriado automaticamente, e o tempo do filme principal não é alterado.",
+    "text": "Esta versão usa o mesmo filme, as mesmas cenas e as mesmas imagens da versão principal. Aqui você pode ver o que está faltando ou precisa ser verificado na versão em {language}. Nada é regenerado automaticamente, e a temporização do filme principal permanece inalterada.",
     "sourceHash": "23ff1f283ba476c1db823352f99cf8325d50c88cf6a52bbe04534adc3ba35c21",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
     "text": "Cenas",
@@ -9348,9 +9348,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
-    "text": "O filme importado tem diálogo em {mixed} mixado ao áudio. Ele não pode ser substituído completamente: o áudio do filme é reproduzido como está, e o diálogo em {language} é sobreposto. Se o áudio for apenas música e efeitos, você pode indicar isso no painel da cena.",
+    "text": "O filme importado tem diálogos em {mixed} misturados ao áudio. Esses diálogos não podem ser substituídos completamente: o áudio do filme é reproduzido como está, com diálogos em {language} sobrepostos. Se o áudio contiver apenas música e efeitos, você pode indicar isso no painel da cena.",
     "sourceHash": "563a380e1b21f9eda37984d2f65d834ba96e43fdcf7aac87004422cecbcbcc64",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.mixed-scenes": {
     "text": null,
@@ -9366,9 +9366,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.move-line": {
-    "text": "Mover fala em {language}",
+    "text": "Mover a fala em {language}",
     "sourceHash": "cf795ff92d384e8cf8dcb6520b8b7617e1e4baa3ca5929b2b184f472a68c9d1c",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.timing-conflicts": {
     "text": null,
@@ -9384,9 +9384,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.voiced-lines": {
-    "text": "{voiced} de {lines} falas com áudio em {language}",
+    "text": "Falas com áudio em {language}: {voiced} de {lines}",
     "sourceHash": "06dcb0a09b77b929232dc0a05fea696fc539ace3e38756bfb514675c9eafd85f",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
     "text": null,
@@ -12934,9 +12934,9 @@
     "review": "user"
   },
   "app-i18n-language.language-switch.title.691fad620f12": {
-    "text": "Idioma do aplicativo",
+    "text": "Alterar idioma",
     "sourceHash": "6ef020fba3007c1c6d8f2daf97a0dbccc5cd6813c6e9f140ce7c17d916792bf1",
-    "review": "user"
+    "review": "machine"
   },
   "app-inspect.angle": {
     "text": "Ângulo",
@@ -51951,9 +51951,9 @@
     "review": "user"
   },
   "ml3-language-versions.export.incomplete": {
-    "text": "A tradução para {language} não está completa: faltam {missing} falas, {uncertain} são incertas e {review} precisam de revisão. Escolha o que fazer na exportação.",
+    "text": "A tradução para {language} está incompleta. Falas ausentes: {missing}; incertas: {uncertain}; que precisam de revisão: {review}. Escolha como a exportação deve lidar com isso.",
     "sourceHash": "a7bc82834ccdf3fa0c211eafb88156b1dbe1e6e1012a500e437c967be9e89bb9",
-    "review": "user"
+    "review": "machine"
   },
   "ml3-language-versions.export.language": {
     "text": "Versão de idioma na exportação",

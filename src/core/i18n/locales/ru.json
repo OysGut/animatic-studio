@@ -9275,9 +9275,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.intro": {
-    "text": "Тот же фильм, сцены и изображения, что и в норвежской версии. Здесь показано, чего не хватает или что требует проверки в версии на языке {language}. Автоматически ничего не пересоздаётся, а хронометраж основного фильма не меняется.",
+    "text": "В этой версии используются те же фильм, сцены и изображения, что и в основной версии. Здесь можно увидеть, чего не хватает или что нужно проверить в языковой версии «{language}». Ничего не создаётся заново автоматически, а временные параметры основного фильма остаются без изменений.",
     "sourceHash": "23ff1f283ba476c1db823352f99cf8325d50c88cf6a52bbe04534adc3ba35c21",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
     "text": "Сцены",
@@ -9369,9 +9369,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
-    "text": "В импортированном фильме диалог ({mixed}) сведен с аудиодорожкой. Его нельзя полностью заменить: звук фильма воспроизводится как есть, а диалог ({language}) накладывается поверх. Если аудио состоит только из музыки и эффектов, это можно указать в панели сцены.",
+    "text": "В звуковую дорожку импортированного фильма сведены диалоги на языке «{mixed}». Полностью заменить эти диалоги невозможно: звук фильма воспроизводится как есть, а поверх него накладываются диалоги на языке «{language}». Если в звуковой дорожке есть только музыка и эффекты, это можно указать на панели сцены.",
     "sourceHash": "563a380e1b21f9eda37984d2f65d834ba96e43fdcf7aac87004422cecbcbcc64",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.mixed-scenes": {
     "text": null,
@@ -9388,9 +9388,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.move-line": {
-    "text": "Переместить реплику ({language})",
+    "text": "Переместить реплику на языке «{language}»",
     "sourceHash": "cf795ff92d384e8cf8dcb6520b8b7617e1e4baa3ca5929b2b184f472a68c9d1c",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-language-version-dialog.timing-conflicts": {
     "text": null,
@@ -9407,9 +9407,9 @@
     "review": "user"
   },
   "app-assembly-language-version-dialog.voiced-lines": {
-    "text": "{voiced} из {lines} реплик со звуком на {language}",
+    "text": "Реплики с озвучкой на языке «{language}»: {voiced} из {lines}",
     "sourceHash": "06dcb0a09b77b929232dc0a05fea696fc539ace3e38756bfb514675c9eafd85f",
-    "review": "user"
+    "review": "machine"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
     "text": null,
@@ -12962,9 +12962,9 @@
     "review": "user"
   },
   "app-i18n-language.language-switch.title.691fad620f12": {
-    "text": "Язык интерфейса",
+    "text": "Изменить язык",
     "sourceHash": "6ef020fba3007c1c6d8f2daf97a0dbccc5cd6813c6e9f140ce7c17d916792bf1",
-    "review": "user"
+    "review": "machine"
   },
   "app-inspect.angle": {
     "text": "Угол",
@@ -52023,9 +52023,9 @@
     "review": "user"
   },
   "ml3-language-versions.export.incomplete": {
-    "text": "Перевод на {language} не завершен: отсутствует {missing} реплик, {uncertain} не уверены и {review} требуют проверки. Выберите действие для экспорта.",
+    "text": "Перевод на язык «{language}» не завершён. Отсутствующих реплик: {missing}; с неопределённым переводом: {uncertain}; требующих проверки: {review}. Выберите, как обработать это при экспорте.",
     "sourceHash": "a7bc82834ccdf3fa0c211eafb88156b1dbe1e6e1012a500e437c967be9e89bb9",
-    "review": "user"
+    "review": "machine"
   },
   "ml3-language-versions.export.language": {
     "text": "Языковая версия в экспорте",
