@@ -74300,5 +74300,68 @@
   },
   "b098.kind-plural.font": {
     "text": "[!! FFôônnttss !!]"
+  },
+  "b109.auth.closed": {
+    "text": "[!! TThhëë ssëërrvvïïccëë ïïss nnôôtt ááccccëëppttïïnngg nnëëww üüssëërrss rrïïgghhtt nnôôww. !!]"
+  },
+  "b109.admin.title": {
+    "text": "[!! NNëëww ssïïggnn-üüppss !!]"
+  },
+  "b109.admin.note": {
+    "text": "[!! WWhhëënn ssïïggnn-üüppss áárrëë ccllôôssëëdd, nnôôbbôôddyy ccáánn ccrrëëááttëë nnëëww ááccccôôüünnttss. ËËxxïïssttïïnngg üüssëërrss ssïïggnn ïïnn ááss bbëëffôôrrëë, áánndd ëëmmááïïll ááddddrrëëssssëëss wwïïtthh áánn ôôppëënn ïïnnvvïïttááttïïôônn ccáánn ssttïïllll ccrrëëááttëë áánn ááccccôôüünntt. !!]"
+  },
+  "b109.admin.label": {
+    "text": "[!! NNëëww ssïïggnn-üüppss: !!]"
+  },
+  "b109.admin.open": {
+    "text": "[!! ÔÔppëënn !!]"
+  },
+  "b109.admin.closed": {
+    "text": "[!! CCllôôssëëdd !!]"
+  },
+  "b109.admin.message": {
+    "text": "[!! MMëëssssáággëë ôônn tthhëë ssïïggnn-ïïnn ppáággëë wwhhëënn ssïïggnn-üüppss áárrëë ccllôôssëëdd (ôôppttïïôônnááll) !!]"
+  },
+  "b109.admin.save-message": {
+    "text": "[!! SSáávvëë mmëëssssáággëë !!]"
+  },
+  "b109.admin.changed": {
+    "text": "[!! LLáásstt cchháánnggëëdd {when} bbyy {who}. !!]"
+  },
+  "b109.admin.never-changed": {
+    "text": "[!! NNôôtt cchháánnggëëdd yyëëtt (ôôppëënn bbyy ddëëffááüülltt). !!]"
+  },
+  "b109.admin.unknown-user": {
+    "text": "[!! üünnkknnôôwwnn üüssëërr !!]"
+  },
+  "b109.admin.loading": {
+    "text": "[!! LLôôááddïïnngg … !!]"
+  },
+  "b109.admin.unavailable": {
+    "text": "[!! TThhëë ssëëttttïïnngg ïïss nnôôtt áávvááïïlláábbllëë yyëëtt. !!]"
+  },
+  "b109.admin.failed": {
+    "text": "[!! TThhëë cchháánnggëë wwááss nnôôtt ssáávvëëdd. TTrryy áággááïïnn. !!]"
+  },
+  "b109.admin.confirm-close-title": {
+    "text": "[!! CCllôôssëë nnëëww ssïïggnn-üüppss? !!]"
+  },
+  "b109.admin.confirm-close": {
+    "text": "[!! NNôôbbôôddyy ccáánn ccrrëëááttëë nnëëww ááccccôôüünnttss üünnttïïll yyôôüü ôôppëënn áággááïïnn. ËËxxïïssttïïnngg üüssëërrss áánndd ïïnnvvïïttëëdd ppëëôôppllëë áárrëë nnôôtt ááffffëëccttëëdd. !!]"
+  },
+  "b109.admin.confirm-close-ok": {
+    "text": "[!! CCllôôssëë !!]"
+  },
+  "b109.admin.confirm-open-title": {
+    "text": "[!! ÔÔppëënn nnëëww ssïïggnn-üüppss? !!]"
+  },
+  "b109.admin.confirm-open": {
+    "text": "[!! ÁÁnnyyôônnëë ccáánn ccrrëëááttëë áá nnëëww ááccccôôüünntt áággááïïnn. !!]"
+  },
+  "b109.admin.confirm-open-ok": {
+    "text": "[!! ÔÔppëënn !!]"
+  },
+  "b109.admin.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
   }
 }

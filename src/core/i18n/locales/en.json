@@ -74300,5 +74300,68 @@
   },
   "b098.kind-plural.font": {
     "text": "Fonts"
+  },
+  "b109.auth.closed": {
+    "text": "The service is not accepting new users right now."
+  },
+  "b109.admin.title": {
+    "text": "New sign-ups"
+  },
+  "b109.admin.note": {
+    "text": "When sign-ups are closed, nobody can create new accounts. Existing users sign in as before, and email addresses with an open invitation can still create an account."
+  },
+  "b109.admin.label": {
+    "text": "New sign-ups:"
+  },
+  "b109.admin.open": {
+    "text": "Open"
+  },
+  "b109.admin.closed": {
+    "text": "Closed"
+  },
+  "b109.admin.message": {
+    "text": "Message on the sign-in page when sign-ups are closed (optional)"
+  },
+  "b109.admin.save-message": {
+    "text": "Save message"
+  },
+  "b109.admin.changed": {
+    "text": "Last changed {when} by {who}."
+  },
+  "b109.admin.never-changed": {
+    "text": "Not changed yet (open by default)."
+  },
+  "b109.admin.unknown-user": {
+    "text": "unknown user"
+  },
+  "b109.admin.loading": {
+    "text": "Loading …"
+  },
+  "b109.admin.unavailable": {
+    "text": "The setting is not available yet."
+  },
+  "b109.admin.failed": {
+    "text": "The change was not saved. Try again."
+  },
+  "b109.admin.confirm-close-title": {
+    "text": "Close new sign-ups?"
+  },
+  "b109.admin.confirm-close": {
+    "text": "Nobody can create new accounts until you open again. Existing users and invited people are not affected."
+  },
+  "b109.admin.confirm-close-ok": {
+    "text": "Close"
+  },
+  "b109.admin.confirm-open-title": {
+    "text": "Open new sign-ups?"
+  },
+  "b109.admin.confirm-open": {
+    "text": "Anyone can create a new account again."
+  },
+  "b109.admin.confirm-open-ok": {
+    "text": "Open"
+  },
+  "b109.admin.cancel": {
+    "text": "Cancel"
   }
 }

@@ -51,10 +51,12 @@ export async function signUp(
 export async function sendSignInLink(
   email: string,
   redirect: string | undefined,
+  createUser = true,
 ): Promise<AuthResult> {
+  // B-109: når registreringen er stengt, lages ingen ny konto via lenken (databasen stopper det uansett)
   const res = await browserClient.auth.signInWithOtp({
     email,
-    options: redirect ? { emailRedirectTo: redirect } : {},
+    options: { ...(redirect ? { emailRedirectTo: redirect } : {}), shouldCreateUser: createUser },
   });
   return { error: plainError(res.error), session: res.data.session };
 }

@@ -5834,7 +5834,7 @@ try {
     assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
     const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
     assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
-    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute')`;
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status')`; // B-109: eneste unntak, gir bare {open, message}
     assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
     const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
     assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
@@ -6771,6 +6771,57 @@ try {
     // Sletting av prosjektet virker som før med en fontressurs i prosjektet
     await as("service_role", null, (tx) => tx`select public.delete_project(${fp},${ALICE})`);
     assert((await sql`select deleted_at from public.projects where id = ${fp}`)[0]?.["deleted_at"] != null, "delete_project virker med fontressurs");
+  });
+
+  // ---------- B-109: stenge for nye registreringer (0075) ----------
+  await test("0075 (B-109): stengt registrering stopper nye kontoer, slipper inviterte, bare admin endrer, anon ser bare open", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 75, "schema version 75");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${OYSTEIN}, 'Oystein@gutu.no') on conflict do nothing`;
+    const status = async (role: "anon" | "authenticated", u: string | null) =>
+      (await as(role, u, (tx) => tx`select public.registration_status() as s`))[0]!["s"] as Record<string, unknown>;
+    // Standard: åpen, og anon ser bare open og melding
+    const s0 = await status("anon", null);
+    assert(s0["open"] === true && Object.keys(s0).sort().join(",") === "message,open", "anon ser bare open og melding");
+    // Ingen direkte tilgang til tabellen
+    await expectError(as("anon", null, (tx) => tx`select * from public.service_settings`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.service_settings`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.service_settings set registration_open = false`), "42501");
+    // Bare administrator kan endre og lese detaljer
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_registration_open(false, 'x')`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.set_registration_open(false, 'x')`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_registration_settings()`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.admin_registration_settings()`), "42501");
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, '  Stengt for vinteren  ')`);
+    const s1 = await status("anon", null);
+    assert(s1["open"] === false && s1["message"] === "Stengt for vinteren", "stengt med melding");
+    assert(!JSON.stringify(s1).includes("@") && Object.keys(s1).length === 2, "ingen e-post eller brukerdata i status");
+    const ad = (await as("authenticated", OYSTEIN, (tx) => tx`select public.admin_registration_settings() as a`))[0]!["a"] as Record<string, unknown>;
+    assert(ad["open"] === false && typeof ad["changed_at"] === "string" && "changed_by_name" in ad && !("changed_by" in ad), "admin ser når og hvem (navn, ikke e-post)");
+    // Stengt: ny konto stoppes (også det auth lager ved innloggingslenke er en INSERT i auth.users)
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'ny@example.no')`, "PTG01");
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, null)`, "PTG01");
+    // Eksisterende brukere påvirkes ikke
+    await sql`update auth.users set email = email where id = ${ALICE}`;
+    assert((await as("authenticated", ALICE, (tx) => tx`select public.my_account() as a`)).length === 1, "eksisterende bruker virker");
+    // Invitert e-post slipper inn (prosjekt og arbeidsgruppe); utløpt, trukket og akseptert gjør ikke
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Invitasjon B-109') id`)[0]!["id"])));
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by) values (${bp}, 'kollega@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE})`;
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by, expires_at) values (${bp}, 'utlopt@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE}, now() - interval '1 day')`;
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by, revoked_at) values (${bp}, 'trukket@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE}, now())`;
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, ' Kollega@Example.no ')`;
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'utlopt@example.no')`, "PTG01");
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'trukket@example.no')`, "PTG01");
+    const ws = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('B-109') id`)[0]!["id"])));
+    await sql`insert into public.workspace_invitations (workspace_id, email, role, token_hash, invited_by) values (${ws}, 'gruppe@example.no', 'member', ${"b109-" + crypto.randomUUID()}, ${ALICE})`;
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'gruppe@example.no')`;
+    // Åpnes igjen: nye kontoer går, meldingen skjules
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(true, null)`);
+    const s2 = await status("authenticated", ALICE);
+    assert(s2["open"] === true && s2["message"] === null, "åpen igjen");
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'apen@example.no')`;
+    await expectError(as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, ${"x".repeat(501)})`), "22023");
+    assert((await status("anon", null))["open"] === true, "for lang melding endrer ingenting");
   });
 
 } finally {
