@@ -176,15 +176,12 @@ async function uploadOne(
     );
   }
   return {
-    versionId,
-    media: {
-      path,
-      mimeType: file.type,
-      width: size.width,
-      height: size.height,
-      byteSize: file.size,
-      sha256,
-    },
+    path,
+    mimeType: file.type,
+    width: size.width,
+    height: size.height,
+    byteSize: file.size,
+    sha256,
   };
 }
 
