@@ -1,5 +1,13 @@
 # Veikart
 
+## B-107 / B-111 – åpen språkliste (21.10.2026)
+- [x] Fjern .overforing og ignorer gamle øyeblikksbilder.
+- [ ] Åpent register, separat lasting, reserve, CLDR og import-/eksportverktøy.
+- [ ] Engelsk standard, nettleservalg og personlig språkprioritet.
+- [ ] Importer åtte språk, oppdater utdaterte tekster og grammatikk med kildehash/review.
+- [ ] Vakt mot etterslep, enhetstester, sekvensielle nb/en-regresjoner og fr/ja-stikkprøver.
+- [ ] Rapport docs/development/B107_REPORT.md og kontroll av profiles.locale.
+
 ## Aktivt oppdrag: runde 4 og B-095 (21.10.2026)
 - [x] A: skjemaversjon 72, regenerert i18n og full Vitest (2102 bestått / 10 eksisterende hoppet over).
 - [x] B: synkron lest-status og job-read 8/8 nb/en.
