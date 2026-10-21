@@ -1,77 +1,56 @@
-# Plan: Script-Driven Dialogue & Voice Studio (DV)
+# Statusrapport og forslag til neste steg (21.10.2026)
 
-Spesifikasjonen (§1–§147) lagres ordrett som `docs/product/phase3/DIALOGUE_VOICE_SPEC.md` i DV1. Ingen kode før planen er godkjent.
+Ingen kodeendringer. Hvis planen godkjennes, lagres rapporten som `docs/development/STATUS_2026-10-21.md`, og ingen andre filer endres.
 
-## 1. Kartlegging (§136)
+## 1. Status (`requirements.yaml`, 878 krav)
 
-| Område | Finnes i dag | Vurdering |
-|---|---|---|
-| `takes` + aktiv take (`scene_occurrences.active_take_id`) | Film/AI-video per forekomst, `producedFrom`/`acceptedFrom` (DEC-0054) | Gjenbrukes som mønster for revisjonsgrunnlag og godkjenning, ikke for dialog (takes er film) |
-| `audio_clips` | Ett klipp = plassering (`offsetMs`) **og** redigering (`sourceInMs`, `lengthMs`, `gainDb`, fades, `volumeKeys`, `speed`) + `blockId`, `language`, `versionId` | **Hovedfunn:** plassering og redigering er slått sammen. Dette bryter §37/§119. Utvides (se datamodell) |
-| `clip_parts` | Deler av film-take/komposisjon | Urørt; lydversjonens delredigering bruker eksisterende lydkomposisjoner (0036) |
-| Lydprofil (bølgeform, volumkurve, hastighet, trim, tastatur) | `AudioCompositionEditor`, klippredigering | Gjenbrukes, men leser/skriver lydversjonens felt i stedet for klippets |
-| Opptaksdialog (`RecordAudioDialog`) med replikkvelger og «Spill av scenen mens du tar opp» | Ja | Utvides til dialogeditor (D1–D8), ingen ny editor (§8) |
-| Ordkobling (0037) og `time_links` | Ja, `alignmentInComposition` | Gjenbrukes til ordnivå-navigasjon (§4) og avviksdiff |
-| `script_blocks` + `script_block_revisions` | Uforanderlige revisjoner | Grunnlag for «manusrevisjon per lydversjon» (§70–73) |
-| `script_annotations` (+ `resolved`, 0059) | Tekstnotater/nåler på blokk/variant | **Ikke** grunnlag for gule lapper: annen livssyklus (av/på ≠ løst, mål er lyd/bilde/forekomst). Egen tabell (§117) |
-| ElevenLabs (`speech.functions.ts`) | Stemmeliste, tale, `projectKey`, `estimateCostUsd` per tegn, `generation_jobs`, budsjett/godkjenning | Gjenbrukes; utvides med modellliste og språk per modell |
-| `assets.voice` (0026) | Standardstemme per karakter | Utvides til full stemmeprofil (§22–23) |
-| `lipsync_results` | Knyttet til take/klipp + lydhash | Re-pekes til lydversjon (stale ved versjonsbytte håndteres via hash) |
-| KI-241 | Rettet: nye opptak går til valgt klipp | Blir overflødig når klipp = replikkforekomst |
-| Flerbruker/realtime | `presence.ts`, revisjonssjekk i `apply_changes`, konfliktdialog | Gjenbrukes for lapper og versjonsvalg |
-| CA-dialogspor (`DialogueTrack.tsx`) | Ett spor per klipp, navn = klippnavn | Grupperes per karakter (L1–L3) |
+| Prioritet | Verifisert | Implementert, ikke verifisert | Under arbeid (delvis) | Ikke startet |
+|---|---|---|---|---|
+| P0 | 132 | 8 | 1 | 6 |
+| P1 | 363 | 134 | 12 | 34 |
+| P2 | 145 | 0 | 0 | 4 |
+| P3 | 26 | 11 | 0 | 2 |
+| **Sum** | **666** | **153** | **13** | **46** |
 
-## 2. Datamodell (§118–§122, §137)
+Kravene under «Implementert, ikke verifisert» for P0 og P1 er 142 til sammen. 54 av dem har allerede en test oppført, mens 88 mangler en. 34 av P1-kravene under «Ikke startet» (REQ-0450–0530) er prosess- og mandatkrav som beskriver hvordan Claude og Lovable skal jobbe, ikke funksjoner i appen. De kan bare få status ved et vedtak.
 
-```text
-asset (karakter) ── voice_profile (jsonb på assets.voice, utvidet)
-script_block (replikk, revisjoner)
-   └─ audio_clips  = DIALOGFOREKOMST: occurrence, blockId, characterAssetId, offsetMs,
-                     activeVersionId, language-overstyring   (eier scenetid + aktivt valg)
-        └─ dialogue_versions = LYDVERSJON: assetVersionId (fil), kilde (record|ai|upload),
-                     provider/voiceId/modelId/settings, sourceInMs, lengthMs, gain, fades,
-                     volumeKeys, speed, compositionId?, parentVersionId,
-                     scriptRevision (blokk-rev den ble laget fra), removed=false alltid ved bytte
-dialogue_reviews   = godkjenning (versionId + blockRev + hvem/når + grunnlag manual|generated)
-note_flags         = gul lapp (mål: kind+id, active, text, created/updated/statusBy)  DELT
-user_bookmarks     = personlig (user_id, project_id unik, kontekst jsonb)  utenfor apply_changes
-generation_jobs    = massejobber (params.kind='dialogue_batch', items med idempotensnøkkel)
-```
+**P0 som ikke er verifisert (15):**
+- REQ-0022 – skille mellom strukturell og innholdsmessig synk (implementert, har test)
+- REQ-0037 – stabile ID-er for alle domeneobjekter (under arbeid)
+- REQ-0145 – publisering er en eksplisitt brukerhandling (implementert, har test)
+- REQ-0269 – leverandøruavhengig AI (implementert)
+- REQ-0291 – jobber som er uavhengige av nettleserfanen (notatet sier at ekte kø gjenstår, M5)
+- REQ-0293 – vedvarende jobbarkitektur i backend (implementert)
+- REQ-0504 – jobber og status bevares mellom økter (implementert)
+- REQ-0503 – publisering av harmoniserte bilder etter godkjenning: står som «Ikke startet», men ble bygget i P8 og R3, så statusen er utdatert
+- REQ-0769 / REQ-0770 – DV: gamle lydversjoner og redigeringen deres bevares (har test)
+- REQ-0464, 0475, 0508, 0517, 0518 – prosesskrav fra mandatet
 
-- Avvik beregnes rent i `src/core/dialogue/drift.ts`: aktiv versjons `scriptRevision` mot blokkens gjeldende rev, minus gyldig `dialogue_reviews`. Ingen lagret «rød»-flagg → én felles status overalt (§77).
-- Migrering av eksisterende klipp: hvert `audio_clips` med `blockId` får én `dialogue_versions`-rad kopiert fra klippets redigeringsfelt; klippets felt beholdes som deprecated speiling (bakoverkompatibelt, ingen tap).
-- Bokmerker er personlig UI-tilstand: skrives via security-definer-funksjon `set_my_bookmark`/`consume_my_bookmark`, RLS `user_id = auth.uid()` (som `ui_prefs`). Anbefaling.
+**P1 som ikke er verifisert, gruppert (den fullstendige lista med én linje per ID legges i vedlegget til rapporten):**
+- DV-pakken REQ-0750–0836 (87 krav): M-, D-, L-, V-, G-, S-, A-, R-, B- og H-kravene. De er bygget og har visuelle suiter, men venter på kontroll hos Claude eller på ekte opptak.
+- P4/P5/P7 (REQ-0837–0870), M6 (REQ-0871–0873), P8-retting (REQ-0874), ML1 (REQ-0875–0878).
+- Fase 5-AI: REQ-0623, 0625–0628 og 0633 krever prøving med ekte nøkler (KI-193, KI-204).
+- Mobil og lyd fra fase 2: REQ-0685, 0687, 0689, 0697, 0699, 0704, 0708, 0709 og 0711 krever ekte telefoner og ekte norsk lyd.
+- Story Lab REQ-0740–0749 (under arbeid). Ikke alle reisene er testet fra start til slutt.
+- REQ-0049 (be om manglende referansefiler), REQ-0121 (sentralt ressursbibliotek), REQ-0429/0430 (informasjonsarkitektur og norske funksjonsnavn).
 
-## 3. Byggeplan
+**Avvik i dokumentene:** tallene i `TODO.md` er utdaterte (22 implementert og 58 ikke startet, mot 153 og 46 i `requirements.yaml`). TODO-punktene om ProRes og stilharmonisering under «Bestilt, ikke bygget» er allerede bygget (P7/R4 og P8/R3).
 
-| Steg | Innhold (§138-pakker) | Migrasjon | Akseptanse |
-|---|---|---|---|
-| **DV1** | Spec-fil. Manusnavigasjon: klikk → avspillingshode (time_links/ordkobling/blokkstart/anker, «estimert»/«mangler»-merking), dobbeltklikk → dialogeditor med forhåndsvalgt replikk, klikk/dobbeltklikk-debounce | Nei | M1–M5 |
-| **DV2** | Datamodellsplitt: `dialogue_versions`, `audio_clips.active_version_id`, `character_asset_id`; backfill; kommandoer `AddDialogueVersion`, `SetActiveDialogueVersion`, `UpdateDialogueVersionEdit`, `MoveDialogueLine` (alle med invers) | 0060 | L7–L9, tapsfri-test |
-| **DV3** | Forbedret dialogeditor: stor replikk, kontekst 70 %, portrett, navn, replikkvelger, hodetelefonvarsel, stablede versjonsbølger, forhåndslytt vs aktiv. Karakterspor i sceneeditor + CA-fanen, overlappsvarsel | Nei | D1–D8, L1–L6, L10 |
-| **DV4** | Lyd/Stemme-seksjon i Asset Library, stemmeprofil, ElevenLabs stemmer/modeller/språk, «Generer lydfil» med lokal overstyring, flere alternativer | 0061 (assets.voice-utvidelse ved behov) | V1–V7 |
-| **DV5** | Massegenerering: dekningsanalyse, scenevalg, advarsel, estimat (kost+tid), bekreftelse, fremdrift per replikk, gjenoppta, automatisk plassering, minimal 2D-scene, idempotens | 0062 (jobbelementer om nødvendig) | G1–G13 |
-| **DV6** | Språk: tre dimensjoner, replikkspråk, deteksjon som støtte, samlet eller oppdelte jobber | Nei (bruker `audio_clips.language` + blokk) | S1–S8 |
-| **DV7** | Avvik: drift-beregning, rødt i alle manusflater, ordvis diff i editor, lenke-ut, «Merk som gjennomgått», «Generer alle røde» | 0063 (`dialogue_reviews`) | A1–A12, R1–R6 |
-| **DV8** | Bokmerke (toppmeny), gule lapper på lyd/versjon/segment/bilde/variant/forekomst, merknadsboks på prosjektsiden (sortering/filter/navigasjon) + full regresjon | 0064 (`note_flags`, `user_bookmarks`) | B1–B4, H1–H14 |
+## 2. Forslag: de 5 viktigste neste oppgavene
 
-Per steg: kommandoer via `runCommand` → `apply_changes`; Vitest (kommando + invers/angring); DB-tester for RLS/grants/apply_changes/delete_project/purge; visuell suite `tests/visual/dvN-*.mjs` + regresjon CA1–CA8, U5, scene-panels, lydeditor.
+1. **Verifiseringsrunde V1: status lik virkelighet.** Krav: de 54 P0/P1-kravene som har test, REQ-0503 og REQ-0145. Hvorfor nå: 142 uverifiserte P0/P1-krav gir et falskt bilde av hvor langt Trollfilm har kommet. Mange trenger bare at testen kjøres og status oppdateres. Omfang: 1 runde, ingen migrasjon. Produktvalg: nei.
+2. **Ekte bakgrunnskø for AI-jobber (M5).** Krav: REQ-0291, 0293, 0504, KI-209. Hvorfor: tre P0-krav, og lange video- og bildejobber til «Jula på Dovre» stopper eller må hentes manuelt når fanen lukkes. Varslingen bygger på det samme. Omfang: 2–3 runder, med migrasjon (0069). Spørsmål til Mars: *Skal du få beskjed når en lang jobb er ferdig? A) bare i appen, B) e-post, C) SMS (koster per melding).*
+3. **Stabile ID-er og synkronisering (fullføre P0-grunnmuren).** Krav: REQ-0037, REQ-0022, REQ-0518. Hvorfor: alt annet (språkversjoner, spinoffer, lyd) hviler på dette. Et hull her kan gi tap av data senere. Omfang: 1–2 runder. Første steg er en kartlegging av hvilke objekter som mangler permanent ID. Migrasjon er sannsynlig. Produktvalg: nei.
+4. **Prøving med ekte utstyr og nøkler (DV og fase 2).** Krav: REQ-0685–0711, 0623–0633 og DV REQ-0750–0836. Hvorfor: dette er arbeidsflyten Anita skal bruke, og den er bare testet med mock. Omfang: 1 runde med sjekkliste og eventuelle rettinger. Ingen migrasjon. Spørsmål til Mars: *Hvem prøver, og når? A) Mars eller Anita med en sjekkliste fra Claude, B) en testkonto med begrenset budsjett som Claude styrer (koster litt i AI-kall).*
+5. **Reservefiler og ressursbibliotek (REQ-0049, REQ-0121).** Hvorfor: «be om manglende referansefiler» er ikke startet, og det gjør det raskere å komme i gang med manusene til Jula på Dovre. Omfang: 1–2 runder, kanskje uten migrasjon. Spørsmål til Mars: *Når en karakter eller lokasjon mangler referansebilde: A) bare en oversikt over hva som mangler, B) oversikt pluss en forespørsel du kan sende til en tegner, C) forslag om å generere med AI (koster).*
 
-**Tapsfri-test i hvert steg (§36/§120/§139):** egenskapsbasert test som kjører tilfeldige sekvenser (opptak, generering, bytte, flytt, redigering, angre) og verifiserer at alle versjoner og deres redigeringsfelt er bitidentiske før/etter bytte, og at ingen `dialogue_versions` får `removed=true` utenom eksplisitt sletting.
+Prosesskravene (REQ-0450–0530) bør få et samlet vedtak (forslag: «Utgått – erstattet av arbeidsdelingen i AGENTS.md»). Det krever bare et ja fra Mars.
 
-## 4. ElevenLabs og kostnadsport
-- Eksisterende `gate.projectKey`, `estimateCostUsd`, budsjett og godkjenning gjenbrukes; massejobben viser samlet estimat og krever ett eksplisitt «Godkjenn» før noe betalt kall (§50–52).
-- API slik jeg kjenner det: `GET /v1/voices` (stemmer inkl. egne/klonede, `labels`, `verified_languages`), `GET /v1/models` (`languages[]`, `can_do_text_to_speech`, `character_cost_multiplier`), `POST /v1/text-to-speech/{voice_id}` med `model_id`, `language_code` (enkelte modeller), `voice_settings`, `previous_text/next_text`.
-- **Kan ikke verifiseres her:** faktisk pris per tegn for kontoens plan, kvoter/hastighetsgrenser, hvilke modeller kontoen har, og tilgang til stemmekloning. Estimat merkes alltid «anslag»; mangler pris, vises «ukjent pris» (ingen oppdiktet tall).
-- Alle tester bruker mock-adapter; arkitekturtest som feiler hvis testkoden importerer ekte nettverkskall.
+## 3. Små tekniske ting
 
-## 5. Språk (B-049 og Del I)
-Anbefaling: tre uavhengige felt, aldri utledet av hverandre: `uiLocale` (bruker, eksisterende), `scriptLanguage` (prosjekt standard → variant/blokk-overstyring), `speechLanguage` (karakterprofil → replikk → genereringsvalg). BCP-47-koder uten fast liste; støttede språk hentes fra modellen. B-049 (flere grensesnittspråk) berører bare `uiLocale` og `L()`-katalogen og blokkeres ikke av DV.
-
-## 6. Risiko og åpne spørsmål
-- Backfill av eksisterende `audio_clips` er den største risikoen; testes mot kopi av lokal DB og kjøres av Claude.
-- `apply_changes`, `delete_project`, `purge_*` må utvides i 0060/0063/0064 fra siste definisjon (0058/0056); oppgis per migrasjon.
-- Ytelse ved mange stablede bølgeformer: lat lasting.
-- Åpent: skal «Generer all tale» kunne krysse prosjekter (§41), eller holder valgt aktivt prosjekt i første versjon? Anbefaling: bare aktivt prosjekt.
-- Åpent: rettigheter for å slette gule lapper — anbefaling: oppretter og eier/redaktør.
-- KI-167, KI-209, KI-243 står fortsatt som kjente rester.
+- **22 visuelle suiter med fast skjemaversjon**, blant dem `dec0090-mobile-ui`, `dec0093-audio-ui`, `storylab-ui` og `u2-chrome-ui`. Bytt til `VISUAL_SCHEMA_VERSION`, og legg inn en kontroll i testskriptet som stopper nye faste versjoner. Ca. en halv runde. Anbefales.
+- **`UI_LANG` i `scene-video-ui`, `storylab-canvas-ui` og `mts-global`:** anbefales for `scene-video-ui` (over 40 norske tekster; bytt til `data-testid`/`byLang`), siden det er den største gjenværende språkrisikoen. `storylab-canvas-ui` og `mts-global` har allerede egne engelske scenarioer, så det holder å la `UI_LANG` overstyre scenarioets språk. Ca. en halv runde til sammen.
+- Kontroller visuelt «Mer …»-menyen i de andre verktøylinjene etter R7-rettingen.
+- Oppdater `TODO.md`: riktige tall, og fjern ProRes og stilharmonisering fra «Bestilt, ikke bygget».
+- Sikkerhet: vurder å kryptere `film_shares.token` (TODO, GP5).
+- Mål Story Lab-canvaset i ferdig bygget app, ikke bare på utviklingsserveren.
