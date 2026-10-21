@@ -419,7 +419,9 @@ export type AssetKind =
   | "other"
   | "sound"
   /** Grafisk mal (MTS MT4, migrasjon 0049): versjonene bærer maldefinisjonen i `template`. */
-  | "template";
+  | "template"
+  /** Font lagt til fra Google Fonts (B-098, migrasjon 0074): versjonene bærer fontpakken og `font`. */
+  | "font";
 
 /** Type alternativt navn (REQ-0126). */
 export type AssetNameKind = "alias" | "nickname" | "former" | "language";
@@ -550,6 +552,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
    * Uforanderlig som resten av versjonen.
    */
   readonly template?: import("./typography/template").TemplateDefinition;
+  /** Fontmetadata (B-098, migrasjon 0074) når ressursen er en font. Filen er fontpakken. Uforanderlig. */
+  readonly font?: import("./typography/project-fonts").FontSpec;
   /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
   readonly removed?: boolean;
   /**

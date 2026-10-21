@@ -21,6 +21,11 @@ Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
 Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 
+## B-098 – fonter fra Google Fonts, rester
+- PDF-innbygging av prosjektfonter: ttf ligger i fontpakken, men ingen PDF-eksport bruker tekstlagenes fonter i dag (plakat-PDF bruker PDF-standardskriftene). Bygges når en PDF-eksport tegner tekstlag.
+- Lisens fra kilden: verken katalogen uten nøkkel eller Developer API oppgir lisens; den bestemmes nå fra kjente Apache-/UFL-lister (resten OFL). Bør kontrolleres mot METADATA.pb når det er tid.
+- Kontroller i Cloud at lagringsbøtta godtar fontpakken (opplasting som application/octet-stream; gjenoppretting fra sikkerhetskopi sender application/x-ptg-fontpack).
+
 ## Neste gang `apply_changes` endres
 - B-097: skriv `change_log.scene_ids` i samme transaksjon i `apply_changes` i stedet for i et eget kall etter (`runCommand`). Godkjent som midlertidig løsning 21.10.
 

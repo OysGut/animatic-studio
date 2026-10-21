@@ -23,11 +23,12 @@ export const GLOBAL_KINDS = [
   "environment",
   "sound",
   "template",
+  "font",
   "other",
 ] as const;
 export type GlobalKind = (typeof GLOBAL_KINDS)[number];
 
-export const GLOBAL_KIND_LABEL: Record<GlobalKind, string> = tLocalized({ logo: "core-library-global.global-kind-label.logo.144baa7a4181", character: "core-library-global.global-kind-label.character.4c9629cf531a", team_figure: "core-library-global.global-kind-label.team-figure.227cfa7d8c5c", object: "core-library-global.global-kind-label.object.359f97f75c6e", environment: "core-library-global.global-kind-label.environment.ca78d09ca5ef", sound: "core-library-global.global-kind-label.sound.a941bcd9c0a2", template: "core-library-global.global-kind-label.template.88b149caea11", other: "core-library-global.global-kind-label.other.37b9c69fcc6f" });
+export const GLOBAL_KIND_LABEL: Record<GlobalKind, string> = tLocalized({ logo: "core-library-global.global-kind-label.logo.144baa7a4181", character: "core-library-global.global-kind-label.character.4c9629cf531a", team_figure: "core-library-global.global-kind-label.team-figure.227cfa7d8c5c", object: "core-library-global.global-kind-label.object.359f97f75c6e", environment: "core-library-global.global-kind-label.environment.ca78d09ca5ef", sound: "core-library-global.global-kind-label.sound.a941bcd9c0a2", template: "core-library-global.global-kind-label.template.88b149caea11", font: "b098.global-kind.font", other: "core-library-global.global-kind-label.other.37b9c69fcc6f" });
 
 export function isGlobalKind(v: unknown): v is GlobalKind {
   return typeof v === "string" && (GLOBAL_KINDS as readonly string[]).includes(v);
@@ -47,6 +48,8 @@ export function projectKindOf(kind: GlobalKind): AssetKind {
       return "sound";
     case "template":
       return "template";
+    case "font":
+      return "font";
     default:
       return "other";
   }
@@ -66,6 +69,8 @@ export function globalKindOf(kind: AssetKind): GlobalKind {
       return "sound";
     case "template":
       return "template";
+    case "font":
+      return "font";
     default:
       return "other";
   }
@@ -86,6 +91,8 @@ export interface GlobalVersion {
   readonly note: string;
   readonly createdAt: string;
   readonly template?: TemplateDefinition | null;
+  /** Fontmetadata (B-098, migrasjon 0074) når den globale ressursen er en font. */
+  readonly font?: import("../typography/project-fonts").FontSpec | null;
   /** R3 (0068): trukket tilbake globalt – skjules for ny bruk; prosjekter som har kopien, beholder den. */
   readonly withdrawn?: boolean;
 }
@@ -329,6 +336,7 @@ export function planUseGlobal(
       note: tk("core-library-global.note.note.5c31739b036f", { number: String(it.version.number) }),
       globalSource: { assetId: asset.id, variantId: it.variant.id, versionId: it.version.id },
       ...(it.version.template ? { template: it.version.template } : {}),
+      ...(it.version.font ? { font: it.version.font } : {}),
     });
     if (fresh)
       commands.push({ type: "ApproveAssetVersion", variantId, versionId: it.versionId });

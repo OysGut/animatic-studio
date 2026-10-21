@@ -1,3 +1,3 @@
 # AGENTS.md – typography
 
-- Text-layer fonts come only from the licensed catalog in src/core/typography/fonts.ts, load lazily (incl. real italics) via src/engine/typography, and export awaits fontsReady; this keeps startup light and preview/export text identical.
+- Tekstlag bruker den faste katalogen pluss prosjektets fontressurser (`kind = 'font'`). Begge lastes lat, og eksporten venter på `fontsReady`. (Endret i B-098.)

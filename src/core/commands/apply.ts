@@ -56,6 +56,7 @@ import { checkInvariants } from "../invariants";
 import { materializeDraftStep, sparseDraftStep } from "./draft-fields";
 
 import { templateError, type TemplateValues } from "../typography/template";
+import { fontSpecError, FONT_PACK_MAX_BYTES, FONT_PACK_MIME } from "../typography/project-fonts";
 import { canHaveStoryProfile, profileError, profilePatchError } from "../storylab/profile";
 import { factError, type StoryFactFields } from "../storylab/facts";
 import { activeProfileOf } from "../storylab/stages";
@@ -363,7 +364,7 @@ function normalizeAssetFields(f: AssetFields): AssetFields {
   )
     fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.49a4f93a3497"));
   // «template» (MTS MT4) står ikke i ASSET_KINDS, så den ikke vises i typevalgene for vanlige ressurser
-  if (!(ASSET_KINDS as readonly string[]).includes(f.kind) && f.kind !== "template")
+  if (!(ASSET_KINDS as readonly string[]).includes(f.kind) && f.kind !== "template" && f.kind !== "font")
     fail("invalid", tk("core-commands-apply.normalize-asset-fields.fail.0cbfa9fe6623"));
   const name = f.name.trim();
   if (!name || name.length > 200)
@@ -5781,7 +5782,7 @@ function run(
 
     case "UpdateAsset": {
       const a = need(s.assets[c.assetId], tk("core-commands-apply.a.need.f66a94bd1bc8.3"));
-      if ((a.kind === "template") !== (c.fields.kind === "template"))
+      if ((a.kind === "template") !== (c.fields.kind === "template") || (a.kind === "font") !== (c.fields.kind === "font"))
         fail(
           "invalid",
           tk("core-commands-apply.run.fail.75cc6abb04c4"),
@@ -6514,7 +6515,15 @@ function run(
           "invalid",
           tk("core-commands-apply.run.fail.5be4d4c3999c"),
         );
-      else if ((s.assets[va.assetId]?.kind === "template") !== (c.template !== undefined))
+      else if ((s.assets[va.assetId]?.kind === "font") !== (c.font !== undefined))
+        fail("invalid", tk("b098.command.font-mismatch"));
+      else if (c.font !== undefined) {
+        const e = fontSpecError(c.font);
+        if (e) fail("invalid", e);
+        if (m.mimeType !== FONT_PACK_MIME) fail("invalid", tk("b098.command.font-mismatch"));
+        if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > FONT_PACK_MAX_BYTES)
+          fail("invalid", tk("core-commands-apply.run.fail.f79f89233d6b.2"));
+      } else if ((s.assets[va.assetId]?.kind === "template") !== (c.template !== undefined))
         fail(
           "invalid",
           tk("core-commands-apply.run.fail.2b3608b2865a"),
@@ -6526,7 +6535,7 @@ function run(
           "invalid",
           tk("core-commands-apply.run.fail.bf6e905ff6b8.2"),
         );
-      if (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES)
+      if (c.font === undefined && (!Number.isInteger(m.byteSize) || m.byteSize <= 0 || m.byteSize > ASSET_MAX_BYTES))
         fail("invalid", tk("core-commands-apply.run.fail.f79f89233d6b.2"));
       if (!/^[0-9a-f]{64}$/.test(m.sha256))
         fail("invalid", tk("core-commands-apply.run.fail.bacfc2e4bb12.2"));
@@ -6572,6 +6581,7 @@ function run(
               ...(sound && c.composition ? { composition: c.composition } : {}),
               ...(c.alignment ? { alignment: c.alignment } : {}),
               ...(c.template !== undefined ? { template: c.template } : {}),
+              ...(c.font !== undefined ? { font: c.font } : {}),
               ...(c.derivedFromVersionId !== undefined ? { derivedFromVersionId: c.derivedFromVersionId } : {}),
               ...(c.globalSource !== undefined
                 ? {

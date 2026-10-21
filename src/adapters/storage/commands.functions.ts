@@ -454,6 +454,14 @@ export function needsSchema49(command: { type: string } & Record<string, unknown
   return false;
 }
 
+/** Fontressurser (B-098) krever migrasjon 0074. */
+export function needsSchema74(command: { type: string } & Record<string, unknown>): boolean {
+  if (command.type === "AddAssetVersion") return command["font"] !== undefined;
+  if (command.type === "CreateAssets")
+    return ((command["assets"] as { fields?: { kind?: string } }[] | undefined) ?? []).some((a) => a.fields?.kind === "font");
+  return false;
+}
+
 /** Tekstlag, former og effekter (MTS MT1) krever migrasjon 0048. */
 export function needsSchema48(command: { type: string } & Record<string, unknown>): boolean {
   const layers = (cmd: Record<string, unknown>): unknown[] => {
@@ -781,6 +789,15 @@ export const runCommand = createServerFn({ method: "POST" })
           ok: false,
           code: "schema",
           message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: String(need) }),
+        };
+    }
+    if (needsSchema74(data.command as never)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 74)
+        return {
+          ok: false,
+          code: "schema",
+          message: tk("adapters-storage-commands-functions.message.message.28a62ad62dd5", { need: "74" }),
         };
     }
     if (needsSchema40(data.command as never)) {

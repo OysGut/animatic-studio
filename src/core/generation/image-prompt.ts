@@ -84,6 +84,7 @@ const KIND_TEXT: Record<Asset["kind"], string> = {
   other: "an element",
   sound: "an element",
   template: "an element",
+  font: "an element",
 };
 
 /** Tid på døgnet i scenehodet (norsk eller engelsk) → engelsk tid og forslag til lys. */

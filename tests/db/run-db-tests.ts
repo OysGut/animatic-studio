@@ -6716,6 +6716,63 @@ try {
     assert((await sql`select id from public.change_log where project_id = ${bp}`).length === 0, "delete_project sletter loggen");
   });
 
+  // ---------- B-098: fonter (0074) ----------
+  await test("0074 (B-098): fontressurs med font_spec via apply_changes, mime og kind-check, RLS og global font", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 74, "schema version 74");
+    const fp = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Fonter') as id`)[0]!["id"] as string);
+    const F = (n: number) => `abcdef00-0000-7000-8000-00000074${String(n).padStart(4, "0")}`;
+    let st = await loadState(fp);
+    const spec = {
+      family: "Lato", category: "sans", weights: [400], italics: [], subsets: ["latin"], license: "OFL-1.1",
+      sourceUrl: "https://fonts.google.com/specimen/Lato", version: "v24",
+      files: [{ name: "400-all-0.ttf", weight: 400, italic: false, format: "ttf", bytes: 10 }],
+    };
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: F(1) as never, fields: { kind: "font", name: "Lato", names: [], description: "", category: "sans", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", variantId: F(2) as never, assetId: F(1) as never, fields: { name: "Standard", style: "other", appearance: "" } });
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion", versionId: F(3) as never, variantId: F(2) as never,
+      media: { path: `${fp}/source/${F(1)}/${F(3)}/Lato.ptgfont`, mimeType: "application/x-ptg-fontpack", width: null, height: null, byteSize: 100, sha256: "f".repeat(64), durationMs: null },
+      note: "", font: spec as never,
+    });
+    const row = await sql`select a.kind, v.mime_type, v.font_spec from public.asset_versions v join public.asset_variants va on va.id = v.variant_id join public.assets a on a.id = va.asset_id where v.id = ${F(3)}`;
+    assert(row[0]?.["kind"] === "font" && row[0]?.["mime_type"] === "application/x-ptg-fontpack", "fontressursen ble ikke lagret");
+    assert(isDeepStrictEqual(row[0]?.["font_spec"], spec), "font_spec ble ikke lagret uendret");
+    const back = await loadState(fp);
+    assert(isDeepStrictEqual(back.assetVersions[F(3) as never]?.font, spec), "font_spec leses ikke tilbake");
+    // Ukjent type og fremmed mime avvises fortsatt; for stor metadata avvises
+    await expectError(sql`update public.assets set kind = 'skrift' where id = ${F(1)}`, "23514");
+    await expectError(
+      sql.begin(async (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+        values (gen_random_uuid(), ${fp}, ${F(2)}, 50, ${`${fp}/x/a.exe`}, 'application/x-msdownload', 1, ${"e".repeat(64)})`),
+      "23514",
+    );
+    await expectError(
+      sql.begin(async (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, font_spec)
+        values (gen_random_uuid(), ${fp}, ${F(2)}, 51, ${`${fp}/x/b.ptgfont`}, 'application/x-ptg-fontpack', 1, ${"e".repeat(64)},
+                (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 4000)))`),
+      "23514",
+    );
+    // RLS: medlem leser, utenforstående ser ingenting, klienten kan ikke skrive direkte
+    assert((await as("authenticated", ALICE, (tx) => tx`select font_spec from public.asset_versions where id = ${F(3)}`)).length === 1, "medlemmet ser fonten");
+    assert((await as("authenticated", BOB, (tx) => tx`select font_spec from public.asset_versions where id = ${F(3)}`)).length === 0, "utenforstående ser fonten");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.asset_versions set font_spec = '{}'::jsonb where id = ${F(3)}`), "42501");
+    // Globalt bibliotek: kind 'font' og font_spec via global_add_version
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Fontgruppe') as id`)[0]!["id"] as string);
+    const ga = await as("authenticated", ALICE, async (tx) => (await tx`select public.global_create_asset(${ws}, 'font', 'Lato', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv = await as("authenticated", ALICE, async (tx) => (await tx`select public.global_create_variant(${ga}, 'Standard', 'other', '') as id`)[0]!["id"] as string);
+    const sha = "d".repeat(64);
+    const gid = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.global_add_version(${gv}, ${`global/${ws}/${ga}/${sha}.ptgfont`}, 'application/x-ptg-fontpack', null, null, 100, ${sha}, null, '', null, ${tx.json(spec as never)}) as id`)[0]!["id"] as string);
+    const g = await as("authenticated", ALICE, (tx) => tx`select font_spec from public.global_asset_versions where id = ${gid}`);
+    assert(isDeepStrictEqual(g[0]?.["font_spec"], spec), "global font_spec gikk tapt");
+    assert((await as("authenticated", CAROL, (tx) => tx`select font_spec from public.global_asset_versions where id = ${gid}`)).length === 0, "utenforstående ser global font");
+    await expectError(sql`update public.global_asset_versions set font_spec = '{}'::jsonb where id = ${gid}`, "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.global_add_version(${gv}, ${`global/${ws}/${ga}/${sha}.ptgfont`}, 'x', null, null, 1, ${sha}, null, '', null, null)`), "42501");
+    // Sletting av prosjektet virker som før med en fontressurs i prosjektet
+    await as("service_role", null, (tx) => tx`select public.delete_project(${fp},${ALICE})`);
+    assert((await sql`select deleted_at from public.projects where id = ${fp}`)[0]?.["deleted_at"] != null, "delete_project virker med fontressurs");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

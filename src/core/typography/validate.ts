@@ -1,6 +1,7 @@
 /** Validering av tekst, form og effekter (MTS MT1). Returnerer normaliserte verdier eller en melding. */
 
 import { fontById } from "./fonts";
+import { isProjectFontId } from "./project-fonts";
 import {
   MAX_TEXT_CHARS,
   type LayerEffects,
@@ -53,7 +54,7 @@ export function normalizeTextSpec(t: TextSpec): Result<TextSpec> {
   const n = [...t.content].length;
   if (n > MAX_TEXT_CHARS)
     return bad(tk("core-typography-validate.normalize-text-spec.bad.e28766869227", { n: String(n), MAX_TEXT_CHARS: String(MAX_TEXT_CHARS) }));
-  if (!fontById(t.fontId)) return bad(tk("core-typography-validate.normalize-text-spec.bad.3b0e84f4ea54"));
+  if (!fontById(t.fontId) && !isProjectFontId(t.fontId)) return bad(tk("core-typography-validate.normalize-text-spec.bad.3b0e84f4ea54"));
   if (!fin(t.size) || t.size < 4 || t.size > 2000) return bad(tk("core-typography-validate.normalize-text-spec.bad.bb57b9377172"));
   if (!Number.isInteger(t.weight) || t.weight < 100 || t.weight > 900)
     return bad(tk("core-typography-validate.normalize-text-spec.bad.1499fd669143"));

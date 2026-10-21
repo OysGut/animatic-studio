@@ -3,6 +3,7 @@
  * databasefunksjonene (rollen sjekkes der). Filer går gjennom serverfunksjonene i
  * `src/adapters/global/global-library.functions.ts`.
  */
+import type { FontSpec } from "@/core/typography/project-fonts";
 import { isGlobalKind, type GlobalAsset, type GlobalAssetBundle, type GlobalKind, type GlobalVariant, type GlobalVersion, type VisualStyle, type TemplateDefinition } from "@/core";
 import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
 import { browserClient, db } from "./client";
@@ -74,6 +75,7 @@ export async function listGlobalBundles(workspaceId: string): Promise<GlobalAsse
     note: str(r["note"]),
     createdAt: str(r["created_at"]),
     template: (r["template_spec"] ?? null) as TemplateDefinition | null,
+    font: (r["font_spec"] ?? null) as FontSpec | null,
     ...(withdrawn.has(str(r["id"])) ? { withdrawn: true } : {}),
   }));
   return assets.map((asset) => ({

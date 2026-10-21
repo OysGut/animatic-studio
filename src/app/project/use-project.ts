@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 import type { ProjectState } from "@/core";
 import { fetchProjectState, subscribeProjectChanges } from "@/adapters/browser/project-data";
 import { listMembers, listProfiles } from "@/adapters/browser/members";
+import { useSyncProjectFonts } from "@/app/fonts/project-fonts";
 
 export const projectStateKey = (projectId: string) => ["project-state", projectId] as const;
 
@@ -52,6 +53,9 @@ export function useProjectState(projectId: string) {
       unsubscribe();
     };
   }, [projectId, qc]);
+
+  // B-098: prosjektets egne fonter blir tilgjengelige i alle fontvelgere, forhåndsvisning og eksport
+  useSyncProjectFonts(query.data);
 
   return query;
 }

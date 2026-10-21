@@ -72,6 +72,7 @@ import type {
   TakeCoverage,
 } from "./model";
 import { isVersionView } from "./library/view";
+import { fontSpecError } from "./typography/project-fonts";
 import { isAudioComposition, type AudioComposition } from "./audio/composition";
 import { ALIGNMENT_FORMAT, type WordAlignment } from "./audio/alignment";
 
@@ -334,6 +335,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         source_global_version_id: v.globalSource?.versionId ?? null,
         // Migrasjon 0049 (MTS MT4): maldefinisjonen
         template_spec: v.template ?? null,
+        // Migrasjon 0074 (B-098): fontmetadata
+        font_spec: v.font ?? null,
         // Migrasjon 0069 (REQ-0037): kildeversjonen som permanent ID
         derived_from_version_id: v.derivedFromVersionId ?? null,
       };
@@ -1392,6 +1395,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(isComposition(x["composition"]) ? { composition: x["composition"] } : {}),
         ...(json(x["template_spec"]) && typeof json(x["template_spec"]) === "object"
           ? { template: json(x["template_spec"]) as never }
+          : {}),
+        ...(json(x["font_spec"]) && typeof json(x["font_spec"]) === "object" && !fontSpecError(json(x["font_spec"]))
+          ? { font: json(x["font_spec"]) as never }
           : {}),
         ...(isAlignment(x["alignment"]) ? { alignment: x["alignment"] } : {}),
         ...(typeof x["derived_from_version_id"] === "string"

@@ -15,9 +15,9 @@ import {
 } from "../screenplay/filter";
 import { tLocalized } from "@/core/i18n/keyed";
 
-export const ASSET_KIND_LABEL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-label.character.49517a2ddd6e", object: "core-library-index.asset-kind-label.object.d93389b1439f", location: "core-library-index.asset-kind-label.location.2a35db2ba28b", animal: "core-library-index.asset-kind-label.animal.67ee55073576", environment: "core-library-index.asset-kind-label.environment.e49c88daabbe", other: "core-library-index.asset-kind-label.other.8160f8cedac7", sound: "core-library-index.asset-kind-label.sound.d0c8fe111b77", template: "core-library-index.asset-kind-label.template.baa6e4245283" });
+export const ASSET_KIND_LABEL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-label.character.49517a2ddd6e", object: "core-library-index.asset-kind-label.object.d93389b1439f", location: "core-library-index.asset-kind-label.location.2a35db2ba28b", animal: "core-library-index.asset-kind-label.animal.67ee55073576", environment: "core-library-index.asset-kind-label.environment.e49c88daabbe", other: "core-library-index.asset-kind-label.other.8160f8cedac7", sound: "core-library-index.asset-kind-label.sound.d0c8fe111b77", template: "core-library-index.asset-kind-label.template.baa6e4245283", font: "b098.global-kind.font" });
 
-export const ASSET_KIND_PLURAL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-plural.character.b640ce50cf83", object: "core-library-index.asset-kind-plural.object.0d09b30367e1", location: "core-library-index.asset-kind-plural.location.cb62899c72fa", animal: "core-library-index.asset-kind-plural.animal.0c120a77f5af", environment: "core-library-index.asset-kind-plural.environment.706f592feede", other: "core-library-index.asset-kind-plural.other.d18d4d6b32ae", sound: "core-library-index.asset-kind-plural.sound.cbc011f908a0", template: "core-library-index.asset-kind-plural.template.f33cf1e25c48" });
+export const ASSET_KIND_PLURAL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-plural.character.b640ce50cf83", object: "core-library-index.asset-kind-plural.object.0d09b30367e1", location: "core-library-index.asset-kind-plural.location.cb62899c72fa", animal: "core-library-index.asset-kind-plural.animal.0c120a77f5af", environment: "core-library-index.asset-kind-plural.environment.706f592feede", other: "core-library-index.asset-kind-plural.other.d18d4d6b32ae", sound: "core-library-index.asset-kind-plural.sound.cbc011f908a0", template: "core-library-index.asset-kind-plural.template.f33cf1e25c48", font: "b098.kind-plural.font" });
 
 /** Foretrukket navn og alle alternative navn (REQ-0126). */
 export function assetNames(a: Pick<Asset, "name" | "names">): string[] {
@@ -300,6 +300,7 @@ export function assetsInScene(
     other: 5,
     sound: 6,
     template: 7,
+    font: 8,
   };
   const out: { asset: Asset; how: UsageHow }[] = [];
   for (const [assetId, uses] of allAssetUsage(s, productionId)) {

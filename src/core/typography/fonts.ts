@@ -3,6 +3,9 @@
  * @fontsource (latin og latin-ext, så æ, ø, å og vanlige spesialtegn er med). Nettleseren og eksporten
  * laster de samme filene (src/engine/typography/fonts.ts), så teksten tegnes likt.
  */
+export type FontLicense = "OFL-1.1" | "Apache-2.0" | "UFL-1.0";
+export type FontCategory = "serif" | "sans" | "display" | "handwriting" | "mono";
+
 export interface FontEntry {
   readonly id: string;
   /** CSS-familienavnet fontene registreres med. */
@@ -11,12 +14,18 @@ export interface FontEntry {
   readonly weights: readonly number[];
   /** Vektene som har ekte kursivfiler (lastes lat). Andre vekter tegnes skråstilt av nettleseren. */
   readonly italics?: readonly number[];
-  readonly category: "serif" | "sans" | "display" | "mono";
-  readonly license: "OFL-1.1";
+  readonly category: FontCategory;
+  readonly license: FontLicense;
   /** npm-pakken filene kommer fra. */
   readonly source: string;
   /** «css»: lastes allerede av appens stilark. «lazy»: lastes først når en tekst bruker den. */
-  readonly loading: "css" | "lazy";
+  /** «asset»: prosjektets egen font (B-098), lastes fra prosjektets lagring med FontFace. */
+  readonly loading: "css" | "lazy" | "asset";
+  /** Prosjektfont: fontpakken i lagringen og filene i den. */
+  readonly mediaPath?: string;
+  readonly files?: readonly import("./project-fonts").FontFileRef[];
+  /** Prosjektfonten er fjernet: navnet beholdes, teksten tegnes med reservefonten og et varsel vises. */
+  readonly removed?: boolean;
 }
 
 export const FONT_CATALOG: readonly FontEntry[] = [
@@ -39,8 +48,17 @@ export const DEFAULT_FONT_ID = "inter";
 /** Reservefont når en font mangler (§61): tegnes, men advarsel vises. */
 export const FALLBACK_FAMILY = "system-ui, sans-serif";
 
+/** Prosjektets egne fonter (B-098). Settes av appen når prosjektet lastes; brukes av fontById. */
+let projectFonts: readonly FontEntry[] = [];
+export function setProjectFonts(list: readonly FontEntry[]): void {
+  projectFonts = list;
+}
+export function projectFontList(): readonly FontEntry[] {
+  return projectFonts;
+}
+
 export function fontById(id: string): FontEntry | undefined {
-  return FONT_CATALOG.find((f) => f.id === id);
+  return FONT_CATALOG.find((f) => f.id === id) ?? projectFonts.find((f) => f.id === id);
 }
 
 /** Nærmeste vekt fontene har. */
@@ -51,7 +69,7 @@ export function nearestWeight(font: FontEntry, weight: number): number {
 /** CSS-fontstrengen som brukes ved måling og tegning (samme i editor og eksport). */
 export function cssFont(spec: { fontId: string; size: number; weight: number; italic: boolean }): string {
   const f = fontById(spec.fontId);
-  const family = f ? `"${f.family}", ${FALLBACK_FAMILY}` : FALLBACK_FAMILY;
+  const family = f && !f.removed ? `"${f.family}", ${FALLBACK_FAMILY}` : FALLBACK_FAMILY;
   const w = f ? nearestWeight(f, spec.weight) : spec.weight;
   return `${spec.italic ? "italic " : ""}${w} ${spec.size}px ${family}`;
 }

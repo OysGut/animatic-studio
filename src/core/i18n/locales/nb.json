@@ -74207,5 +74207,116 @@
   },
   "b097.sound-kind.music": {
     "text": "Musikk"
+  },
+  "b098.command.font-mismatch": {
+    "text": "Fontdata passer bare til fontressurser, og en fontressurs må ha en fontpakke."
+  },
+  "b098.global-kind.font": {
+    "text": "Font"
+  },
+  "b098.add.error.upload": {
+    "text": "Fontfilen kunne ikke lagres. Prøv igjen."
+  },
+  "b098.add.undo-label": {
+    "text": "Legg til fonten «{family}»"
+  },
+  "b098.add.variant-name": {
+    "text": "Standard"
+  },
+  "b098.category.serif": {
+    "text": "Serif"
+  },
+  "b098.category.sans": {
+    "text": "Sans-serif"
+  },
+  "b098.category.display": {
+    "text": "Display"
+  },
+  "b098.category.handwriting": {
+    "text": "Håndskrift"
+  },
+  "b098.category.mono": {
+    "text": "Monospace"
+  },
+  "b098.variant.regular": {
+    "text": "{weight}"
+  },
+  "b098.variant.italic": {
+    "text": "{weight} kursiv"
+  },
+  "b098.sample.default": {
+    "text": "Blåbærsyltetøy og ærlig øl på Dovre"
+  },
+  "b098.unavailable": {
+    "text": "Google Fonts-katalogen er ikke tilgjengelig nå. Fonter som allerede er lagt til, virker som før."
+  },
+  "b098.dialog.title": {
+    "text": "Legg til font"
+  },
+  "b098.dialog.description": {
+    "text": "Søk i Google Fonts. Fonten lagres i prosjektet og virker også uten nett. Alt hentes via vår server, aldri direkte fra Google."
+  },
+  "b098.search.label": {
+    "text": "Søk etter navn"
+  },
+  "b098.search.placeholder": {
+    "text": "For eksempel Lato, eller lim inn et navn"
+  },
+  "b098.filter.category": {
+    "text": "Kategori"
+  },
+  "b098.filter.subset": {
+    "text": "Skriftsystem"
+  },
+  "b098.filter.all": {
+    "text": "Alle"
+  },
+  "b098.open-google": {
+    "text": "Åpne Google Fonts"
+  },
+  "b098.results.label": {
+    "text": "Treff"
+  },
+  "b098.loading": {
+    "text": "Henter katalogen …"
+  },
+  "b098.results.none": {
+    "text": "Ingen fonter passer søket."
+  },
+  "b098.sample.label": {
+    "text": "Prøvetekst"
+  },
+  "b098.variants.label": {
+    "text": "Vekter og stiler (høyst {max})"
+  },
+  "b098.license": {
+    "text": "Lisens: {license}"
+  },
+  "b098.license.notice": {
+    "text": "Denne fonten har Ubuntu Font Licence (UFL), ikke OFL eller Apache. Den kan brukes, men les lisensen før film eller plakat gis ut."
+  },
+  "b098.pick-hint": {
+    "text": "Velg en font i listen for å se den."
+  },
+  "b098.cancel": {
+    "text": "Avbryt"
+  },
+  "b098.adding": {
+    "text": "Legger til …"
+  },
+  "b098.add": {
+    "text": "Legg til"
+  },
+  "b098.picker.project-fonts": {
+    "text": "Fonter i prosjektet"
+  },
+  "b098.picker.removed": {
+    "text": "{family} (fjernet – reservefont brukes)"
+  },
+  "b098.picker.add": {
+    "text": "Legg til font …"
+  },
+  "b098.kind-plural.font": {
+    "text": "Fonter"
   }
 }

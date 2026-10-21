@@ -74189,5 +74189,116 @@
   },
   "b097.sound-kind.music": {
     "text": "[!! MMüüssïïcc !!]"
+  },
+  "b098.command.font-mismatch": {
+    "text": "[!! FFôônntt ddááttáá ôônnllyy ffïïttss ffôônntt áássssëëttss, áánndd áá ffôônntt áássssëëtt nnëëëëddss áá ffôônntt ppáácckkáággëë. !!]"
+  },
+  "b098.global-kind.font": {
+    "text": "[!! FFôônntt !!]"
+  },
+  "b098.add.error.upload": {
+    "text": "[!! TThhëë ffôônntt ffïïllëë ccôôüülldd nnôôtt bbëë ssáávvëëdd. PPllëëáássëë ttrryy áággááïïnn. !!]"
+  },
+  "b098.add.undo-label": {
+    "text": "[!! ÁÁdddd tthhëë ffôônntt “{family}” !!]"
+  },
+  "b098.add.variant-name": {
+    "text": "[!! SSttáánnddáárrdd !!]"
+  },
+  "b098.category.serif": {
+    "text": "[!! SSëërrïïff !!]"
+  },
+  "b098.category.sans": {
+    "text": "[!! SSáánnss ssëërrïïff !!]"
+  },
+  "b098.category.display": {
+    "text": "[!! DDïïssppllááyy !!]"
+  },
+  "b098.category.handwriting": {
+    "text": "[!! HHáánnddwwrrïïttïïnngg !!]"
+  },
+  "b098.category.mono": {
+    "text": "[!! MMôônnôôssppááccëë !!]"
+  },
+  "b098.variant.regular": {
+    "text": "[!! {weight} !!]"
+  },
+  "b098.variant.italic": {
+    "text": "[!! {weight} ïïttáállïïcc !!]"
+  },
+  "b098.sample.default": {
+    "text": "[!! BBllåbbærrssyyllttëëttøyy ôôgg ærrllïïgg øll ppå DDôôvvrrëë !!]"
+  },
+  "b098.unavailable": {
+    "text": "[!! TThhëë GGôôôôggllëë FFôônnttss ccááttáállôôggüüëë ïïss nnôôtt áávvááïïlláábbllëë rrïïgghhtt nnôôww. FFôônnttss yyôôüü hháávvëë áállrrëëááddyy ááddddëëdd wwôôrrkk ááss bbëëffôôrrëë. !!]"
+  },
+  "b098.dialog.title": {
+    "text": "[!! ÁÁdddd ffôônntt !!]"
+  },
+  "b098.dialog.description": {
+    "text": "[!! SSëëáárrcchh GGôôôôggllëë FFôônnttss. TThhëë ffôônntt ïïss ssáávvëëdd ïïnn tthhëë pprrôôjjëëcctt áánndd áállssôô wwôôrrkkss ôôffffllïïnnëë. ËËvvëërryytthhïïnngg ïïss ffëëttcchhëëdd vvïïáá ôôüürr ssëërrvvëërr, nnëëvvëërr ddïïrrëëccttllyy ffrrôômm GGôôôôggllëë. !!]"
+  },
+  "b098.search.label": {
+    "text": "[!! SSëëáárrcchh bbyy nnáámmëë !!]"
+  },
+  "b098.search.placeholder": {
+    "text": "[!! FFôôrr ëëxxáámmppllëë LLááttôô, ôôrr ppáássttëë áá nnáámmëë !!]"
+  },
+  "b098.filter.category": {
+    "text": "[!! CCááttëëggôôrryy !!]"
+  },
+  "b098.filter.subset": {
+    "text": "[!! SSccrrïïpptt !!]"
+  },
+  "b098.filter.all": {
+    "text": "[!! ÁÁllll !!]"
+  },
+  "b098.open-google": {
+    "text": "[!! ÔÔppëënn GGôôôôggllëë FFôônnttss !!]"
+  },
+  "b098.results.label": {
+    "text": "[!! RRëëssüüllttss !!]"
+  },
+  "b098.loading": {
+    "text": "[!! LLôôááddïïnngg tthhëë ccááttáállôôggüüëë … !!]"
+  },
+  "b098.results.none": {
+    "text": "[!! NNôô ffôônnttss mmááttcchh tthhëë ssëëáárrcchh. !!]"
+  },
+  "b098.sample.label": {
+    "text": "[!! SSáámmppllëë ttëëxxtt !!]"
+  },
+  "b098.variants.label": {
+    "text": "[!! WWëëïïgghhttss áánndd ssttyyllëëss (áátt mmôôsstt {max}) !!]"
+  },
+  "b098.license": {
+    "text": "[!! LLïïccëënnccëë: {license} !!]"
+  },
+  "b098.license.notice": {
+    "text": "[!! TThhïïss ffôônntt üüssëëss tthhëë ÜÜbbüünnttüü FFôônntt LLïïccëënnccëë (ÜÜFFLL), nnôôtt ÔÔFFLL ôôrr ÁÁppáácchhëë. ÏÏtt ccáánn bbëë üüssëëdd, bbüütt rrëëáádd tthhëë llïïccëënnccëë bbëëffôôrrëë rrëëllëëáássïïnngg áá ffïïllmm ôôrr ppôôssttëërr. !!]"
+  },
+  "b098.pick-hint": {
+    "text": "[!! CChhôôôôssëë áá ffôônntt ïïnn tthhëë llïïsstt ttôô ssëëëë ïïtt. !!]"
+  },
+  "b098.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "b098.adding": {
+    "text": "[!! ÁÁddddïïnngg … !!]"
+  },
+  "b098.add": {
+    "text": "[!! ÁÁdddd !!]"
+  },
+  "b098.picker.project-fonts": {
+    "text": "[!! FFôônnttss ïïnn tthhëë pprrôôjjëëcctt !!]"
+  },
+  "b098.picker.removed": {
+    "text": "[!! {family} (rrëëmmôôvvëëdd – ffáállllbbáácckk ffôônntt üüssëëdd) !!]"
+  },
+  "b098.picker.add": {
+    "text": "[!! ÁÁdddd ffôônntt … !!]"
+  },
+  "b098.kind-plural.font": {
+    "text": "[!! FFôônnttss !!]"
   }
 }

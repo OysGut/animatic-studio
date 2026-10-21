@@ -7,6 +7,7 @@
  * - «Bruk i prosjekt» (§5, §7, G3/G4): kopierer den globale filen inn i prosjektet (én kopi per prosjekt og
  *   versjon); kommandoene som kobler den inn, kjøres i nettleseren gjennom den vanlige kommandostakken.
  */
+import type { FontSpec } from "@/core/typography/project-fonts";
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { assetFilePath, extensionOf, globalFilePath, globalKindOf, isGlobalPathOf, isUuid, templateError, type AssetMedia, type TemplateDefinition } from "@/core";
@@ -280,7 +281,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
     }[]).filter((v) => !v.archived);
     const { data: versions } = await db
       .from("asset_versions")
-      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec")
+      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
       .in(
         "variant_id",
         vars.map((v) => v.id),
@@ -299,6 +300,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       note: string;
       removed: boolean | null;
       template_spec: TemplateDefinition | null;
+      font_spec?: FontSpec | null;
     }[])
       .filter((v) => !v.removed && v.media_path.startsWith(`${data.projectId}/`))
       .sort((x, y) => x.number - y.number);
@@ -337,6 +339,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
           p_duration_ms: ver.duration_ms,
           p_note: ver.note ?? "",
           p_template_spec: ver.template_spec ?? null,
+          ...(ver.font_spec ? { p_font_spec: ver.font_spec } : {}),
         });
         if (e3) throw new Error(e3.message);
         count++;
@@ -465,7 +468,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
     const { data: ver } = await db
       .from("asset_versions")
-      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec")
+      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
       .eq("id", data.versionId)
       .eq("project_id", data.projectId)
       .maybeSingle();
@@ -473,6 +476,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
       variant_id: string; media_path: string; mime_type: string; width: number | null; height: number | null;
       byte_size_big: number; sha256: string; duration_ms: number | null; note: string | null; removed: boolean | null;
       template_spec: TemplateDefinition | null;
+      font_spec?: FontSpec | null;
     } | null;
     if (!v || v.removed || !v.media_path.startsWith(`${data.projectId}/`)) throw new Error(tk("r3-global.error.no-version"));
     const { data: va } = await db
@@ -533,6 +537,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
       p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
       p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
       p_template_spec: v.template_spec ?? null,
+      ...(v.font_spec ? { p_font_spec: v.font_spec } : {}),
     });
     if (e2) throw new Error(e2.message);
     const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();

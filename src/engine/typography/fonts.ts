@@ -5,8 +5,12 @@
  */
 import { useEffect, useSyncExternalStore } from "react";
 import {
+  browserFilesFor,
   cssFont,
+  decodeFontPack,
   fontById,
+  setProjectFonts,
+  type FontEntry,
   fontsNeeded,
   layersOf,
   type ProjectState,
@@ -37,7 +41,8 @@ async function loadOne(fontId: string, weight: number, italic = false): Promise<
   if (!f) return;
   try {
     if (forcedMissing.has(fontId)) throw new Error("missing");
-    if (f.loading === "lazy") {
+    if (f.loading === "asset") await loadProjectFont(f, weight, italic);
+    else if (f.loading === "lazy") {
       const loader = (italic ? FONT_ITALIC_LOADERS : FONT_LOADERS)[fontId]?.[weight];
       if (!loader) throw new Error("no loader");
       await loader();
@@ -46,12 +51,62 @@ async function loadOne(fontId: string, weight: number, italic = false): Promise<
       // Æ, ø og å er med i prøveteksten, så latin-ext-delen lastes også
       const css = cssFont({ fontId, size: 32, weight, italic });
       const faces = await document.fonts.load(css, "AÆØÅaæøå"); // i18n-ignore – prøvetegn
-      if (f.loading === "lazy" && faces.length === 0) throw new Error("not loaded");
+      if (f.loading !== "css" && faces.length === 0) throw new Error("not loaded");
     }
     status.set(key, "ready");
   } catch {
     status.set(key, "missing");
   }
+  bump();
+}
+
+// ---------- Prosjektfonter (B-098) ----------
+
+/** Henter fontpakken fra prosjektets lagring. Settes av appen (motoren kjenner ikke lagringen). */
+let fetchPack: ((mediaPath: string) => Promise<Uint8Array>) | null = null;
+export function setProjectFontFetcher(fn: (mediaPath: string) => Promise<Uint8Array>): void {
+  fetchPack = fn;
+}
+const packs = new Map<string, Promise<ReturnType<typeof decodeFontPack>>>();
+
+async function loadProjectFont(f: FontEntry, weight: number, italic: boolean): Promise<void> {
+  if (f.removed || !f.mediaPath || !fetchPack) throw new Error("missing");
+  if (typeof document === "undefined" || typeof FontFace === "undefined") return;
+  let p = packs.get(f.mediaPath);
+  if (!p) {
+    p = fetchPack(f.mediaPath).then((b) => decodeFontPack(b));
+    packs.set(f.mediaPath, p);
+    p.catch(() => packs.delete(f.mediaPath!));
+  }
+  const pack = await p;
+  if (!pack) throw new Error("bad pack");
+  const files = browserFilesFor(pack.spec.files, weight, italic);
+  if (!files.length) throw new Error("no file");
+  for (const ref of files) {
+    const data = pack.files.get(ref.name);
+    if (!data) continue;
+    const face = new FontFace(f.family, data.slice().buffer, {
+      weight: String(weight),
+      style: italic ? "italic" : "normal",
+      ...(ref.unicodeRange ? { unicodeRange: ref.unicodeRange } : {}),
+    });
+    await face.load();
+    document.fonts.add(face);
+  }
+}
+
+/** Registrerer prosjektets fonter (fra prosjekttilstanden). Endrede fonter lastes på nytt ved behov. */
+let lastSignature = "";
+export function syncProjectFonts(entries: readonly FontEntry[]): void {
+  const sig = entries.map((e) => `${e.id}|${e.mediaPath ?? ""}|${e.removed ? 1 : 0}`).join(",");
+  if (sig === lastSignature) return;
+  lastSignature = sig;
+  setProjectFonts(entries);
+  for (const k of [...status.keys()])
+    if (k.startsWith("asset:")) {
+      status.delete(k);
+      pending.delete(k);
+    }
   bump();
 }
 
