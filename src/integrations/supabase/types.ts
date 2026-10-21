@@ -4459,6 +4459,48 @@ export type Database = {
           },
         ]
       }
+      service_settings: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          id: boolean
+          registration_message: string | null
+          registration_open: boolean
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: boolean
+          registration_message?: string | null
+          registration_open?: boolean
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          id?: boolean
+          registration_message?: string | null
+          registration_open?: boolean
+        }
+        Relationships: []
+      }
+      signup_passes: {
+        Row: {
+          created_at: string
+          email: string
+          expires_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          expires_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          expires_at?: string
+        }
+        Relationships: []
+      }
       storage_cleanups: {
         Row: {
           actor: string
@@ -5802,6 +5844,7 @@ export type Database = {
           users: number
         }[]
       }
+      admin_registration_settings: { Args: never; Returns: Json }
       apply_changes: {
         Args: {
           p_actor: string
@@ -6005,6 +6048,7 @@ export type Database = {
         }
         Returns: number
       }
+      issue_signup_pass: { Args: { p_email: string }; Returns: undefined }
       leave_project: { Args: { p_project: string }; Returns: undefined }
       leave_workspace: { Args: { p_workspace: string }; Returns: undefined }
       link_mobile_import: {
@@ -6186,6 +6230,7 @@ export type Database = {
         }
         Returns: string
       }
+      registration_status: { Args: never; Returns: Json }
       remove_member: {
         Args: { p_project: string; p_user: string }
         Returns: undefined
@@ -6250,6 +6295,10 @@ export type Database = {
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       set_project_workspace: {
         Args: { p_project: string; p_workspace: string }
+        Returns: undefined
+      }
+      set_registration_open: {
+        Args: { p_message?: string; p_open: boolean }
         Returns: undefined
       }
       set_workspace_member_role: {
