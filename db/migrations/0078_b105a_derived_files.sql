@@ -12,7 +12,8 @@
 -- 4. global_add_version (0074): kopiert ordrett, med bare p_derived_files lagt til
 --    (default null) og derived_files i insert. Den gamle signaturen slettes, som i 0052 og 0074.
 --    GRANT som før (bare authenticated).
--- Ny hjelpefunksjon: private.derived_files_ok(jsonb) (formsjekken; delspørringer er ikke lov i check).
+-- Ny hjelpefunksjon: private.valid_derived_files(jsonb, text) (form- og prefikssjekk; delspørringer er
+--   ikke lov direkte i check). purge_* tar dessuten bare med avledede stier under eget prosjekt.
 -- Erstatter:
 --   * purge_project_assets (0072)
 --   * purge_removed_assets (0072)
@@ -26,32 +27,36 @@
 -- =====================================================================================
 
 -- Formsjekken ligger i en egen immutable funksjon: Postgres tillater ikke delspørringer direkte
--- i en check-constraint (rettet etter lokal DB-test 21.10; ny funksjon, ingen erstattes).
-create or replace function private.derived_files_ok(d jsonb)
+-- i en check-constraint. Funksjonen krever også at hver sti ligger under radens eget prefiks og
+-- ikke inneholder «..», så opprydding aldri kan slette filer i et annet prosjekt eller en annen gruppe.
+create or replace function private.valid_derived_files(p_files jsonb, p_prefix text)
 returns boolean
 language sql
 immutable
 set search_path = ''
 as $$
-  select d is null or (jsonb_typeof(d) = 'object'
-    and pg_column_size(d) <= 65536
-    and not exists (select 1 from jsonb_object_keys(d) k
+  select p_files is null or (jsonb_typeof(p_files) = 'object'
+    and p_prefix is not null and length(p_prefix) > 1
+    and pg_catalog.pg_column_size(p_files) <= 65536
+    and not exists (select 1 from pg_catalog.jsonb_object_keys(p_files) k
       where k not in ('working','proxy','thumbnail','originalRaw'))
-    and not exists (select 1 from jsonb_each(d) f
-      where jsonb_typeof(f.value) <> 'object'
+    and not exists (select 1 from pg_catalog.jsonb_each(p_files) f
+      where pg_catalog.jsonb_typeof(f.value) <> 'object'
          or not (f.value ? 'path')
-         or jsonb_typeof(f.value -> 'path') <> 'string'
+         or pg_catalog.jsonb_typeof(f.value -> 'path') <> 'string'
          or length(f.value ->> 'path') = 0
-         or length(f.value ->> 'path') > 1024))
+         or length(f.value ->> 'path') > 1024
+         or pg_catalog.left(f.value ->> 'path', length(p_prefix)) <> p_prefix
+         or pg_catalog.strpos(f.value ->> 'path', '..') > 0))
 $$;
-revoke all on function private.derived_files_ok(jsonb) from public;
-grant execute on function private.derived_files_ok(jsonb) to authenticated, service_role;
+revoke all on function private.valid_derived_files(jsonb, text) from public;
+grant execute on function private.valid_derived_files(jsonb, text) to authenticated, service_role;
 
 alter table public.asset_versions add column if not exists derived_files jsonb
-  check (private.derived_files_ok(derived_files));
+  check (private.valid_derived_files(derived_files, project_id::text || '/'));
 
 alter table public.global_asset_versions add column if not exists derived_files jsonb
-  check (private.derived_files_ok(derived_files));
+  check (private.valid_derived_files(derived_files, 'global/' || workspace_id::text || '/'));
 
 create or replace function public.purge_project_assets(p_project uuid, p_actor uuid)
 returns jsonb
@@ -72,6 +77,9 @@ begin
     union select df.value ->> 'path' from public.asset_versions av
       cross join lateral jsonb_each(av.derived_files) df
       where av.project_id = p_project and av.derived_files is not null
+        -- Ekstra forsvar: bare stier under eget prosjekt, aldri «..»
+        and left(df.value ->> 'path', length(p_project::text) + 1) = p_project::text || '/'
+        and strpos(df.value ->> 'path', '..') = 0
     union select result_path from public.generation_jobs where project_id = p_project and result_path is not null
     -- Filer fra mobilen (DEC-0090), også de som aldri ble en versjon
     union select path from public.mobile_imports where project_id = p_project
@@ -274,6 +282,9 @@ begin
     union select df.value ->> 'path' from public.asset_versions av
       cross join lateral jsonb_each(av.derived_files) df
       where av.id = any (v_versions) and av.derived_files is not null
+        -- Ekstra forsvar: bare stier under eget prosjekt, aldri «..»
+        and left(df.value ->> 'path', length(p_project::text) + 1) = p_project::text || '/'
+        and strpos(df.value ->> 'path', '..') = 0
   ) x;
   -- AI-jobbloggen beholdes (kostnad og beskrivelse), men kobles fra ressursen som forsvinner
   update public.generation_jobs set asset_id = null where project_id = p_project and asset_id = any (v_assets);

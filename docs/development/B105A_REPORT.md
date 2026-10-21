@@ -25,16 +25,19 @@ B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story L
 
 `db/migrations/0078_b105a_derived_files.sql`, additiv, med 0077 som utgangspunkt:
 - ny kolonne `derived_files` (jsonb, nullable) på `asset_versions` og `global_asset_versions`;
-- **ny** hjelpefunksjon `private.derived_files_ok(jsonb)` med `execute` for authenticated og service_role;
-- erstatter `purge_project_assets` (0072), `purge_removed_assets` (0072) og `global_add_version` (0074);
+- **ny** hjelpefunksjon `private.valid_derived_files(p_files jsonb, p_prefix text)` (immutable, `search_path = ''`, execute for authenticated og service_role). CHECK kaller den med `project_id::text || '/'` for prosjektversjoner og `'global/' || workspace_id::text || '/'` for globale versjoner;
+- erstatter `purge_project_assets` (0072), `purge_removed_assets` (0072) og `global_add_version` (0074). Diffene mot 0072/0074 er uendret, bortsett fra at purge-funksjonene bare tar med avledede stier under eget prosjekt uten «..» (ekstra forsvar);
 - skjemaversjon 78.
 
-**Endret etter Claudes gjennomgang (sagt fra her):** den første versjonen hadde delspørringer direkte i check-constraint, noe Postgres avviser («cannot use subquery in check constraint»). Sjekken er flyttet til `private.derived_files_ok` med samme regler. Hvis 0078 allerede er forsøkt kjørt i Cloud, feilet hele migrasjonen og ingenting ble endret. Den rettede fila må brukes.
+**Retting etter Claudes kontroll (21.10):**
+1. Delspørringer i CHECK er flyttet til `private.valid_derived_files` (Postgres avviser dem direkte i CHECK).
+2. Sikkerhetshull lukket: en sti i `derived_files` må starte med radens prefiks og kan ikke inneholde «..». Det samme valideres på serveren i `AddAssetVersion` og `SetAssetVersionDerived` (`derivedFilesError(d, "<prosjekt-id>/")`). Global kopiering kopierer bare avledede filer fra eget prosjekt eller egen gruppe.
+3. Kontrollert lokalt: 0001–0077 kjørt, så hele 0078 i én transaksjon (`psql -1 -v ON_ERROR_STOP=1`): OK, skjemaversjon 77 → 78.
 
 ## Tester (kjørt én om gangen)
 
-- Full Vitest: **2224 bestått, 10 hoppet over, 0 feilet** (275 filer).
-- DB lokalt: **154/154**, inkludert ny 0078-test (gyldige/ugyldige avledede filer, RLS, ingen direkte klientskriving, purge tar med alle avledede stier). 0077-testen sjekket `=== 77` og ble endret til `>= 77`, som de andre versjonstestene.
+- Full Vitest: **2225 bestått, 10 hoppet over, 0 feilet** etter rettingen (ny enhetstest for prefiks og «..»).
+- DB lokalt: **154/154**. 0078-testen dekker avvist ukjent nøkkel, avvist sti til et annet prosjekt, avvist «..», avvist sti uten prefiks, global CHECK med gruppeprefiks, RLS, ingen direkte klientskriving, at purge tar med egne avledede stier, og at purge ikke tar med en fremmed sti selv om CHECK er fjernet (i en transaksjon som rulles tilbake). 0077-testen sjekket `=== 77` og ble endret til `>= 77`, som de andre versjonstestene.
 - i18n: `check.mjs` 0 tekster uten engelsk; ingen nye språkstrenger.
 - Nye enhetstester: `b105a-image-ingest` 10/10, `b105a-image-use` 8/8, `b105a-server-prompts` 6/6, arkitekturvakt grønn.
 - Regresjon: export-e2e film og scene (videofil > 0 byte), rigg-r4 12/12, u5-screens 63/63, scene-panels-ui 39/39, storylab-ui 32/32, storylab-scene-ui 18/18, t2-writing-ui 69/69, job-read 8/8. Også rigg-r1 12/12, rigg-r2 17/17, rigg-r3 15/15.

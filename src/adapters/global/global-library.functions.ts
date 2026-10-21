@@ -86,12 +86,15 @@ async function copyDerivedFiles(
   a: AnyClient,
   derived: GlobalDerivedFiles | null | undefined,
   to: (d: GlobalDerivedFile) => string,
+  /** Kildestiene må ligge under dette prefikset (eget prosjekt eller egen gruppe); andre hoppes over. */
+  fromPrefix: string,
 ): Promise<GlobalDerivedFiles | undefined> {
   if (!derived || typeof derived !== "object") return undefined;
   const out: GlobalDerivedFiles = {};
   for (const key of ["working", "proxy", "thumbnail", "originalRaw"] as const) {
     const d = derived[key];
     if (!d || typeof d.path !== "string" || !d.path) continue;
+    if (!d.path.startsWith(fromPrefix) || d.path.includes("..")) continue;
     const target = to(d);
     const err = await copyFile(a, d.path, target);
     if (err) throw new Error(err);
@@ -361,6 +364,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
         // B-105a: de avledede filene følger med til det globale biblioteket
         const derivedFiles = await copyDerivedFiles(sa, ver.derived_files, (d) =>
           globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+          `${data.projectId}/`,
         );
         const { error: e3 } = await db.rpc("global_add_version", {
           p_variant: gv as string,
@@ -471,6 +475,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
           it.projectVersionId,
           `${d.sha256}.${extensionOf(d.path)}`,
         ),
+        `global/${ws}/`,
       );
       out[it.globalVersionId] = {
         path,

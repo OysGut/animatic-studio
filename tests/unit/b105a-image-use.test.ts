@@ -67,4 +67,10 @@ describe("kallstedene", () => {
     expect(read("src/app/library/asset-images.ts")).toMatch(/ingestImage\(/);
     expect(read("src/app/library/derived-backfill.ts")).toMatch(/SetAssetVersionDerived/);
   });
+  it("krever eget prosjektprefiks og avviser .. (opprydding kan ikke slette andres filer)", () => {
+    expect(derivedFilesError({ proxy: file("p/a/v/proxy.webp") }, "p/")).toBeNull();
+    expect(derivedFilesError({ proxy: file("annet/a/v/proxy.webp") }, "p/")).not.toBeNull();
+    expect(derivedFilesError({ proxy: file("p/../annet/x.png") }, "p/")).not.toBeNull();
+    expect(derivedFilesError({ proxy: file("p/../annet/x.png") })).not.toBeNull();
+  });
 });

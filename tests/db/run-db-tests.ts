@@ -6887,7 +6887,21 @@ try {
     const good = { proxy: file(`${dp}/p.webp`), thumbnail: file(`${dp}/t.webp`), originalRaw: file(`${dp}/r.tiff`) };
     await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_files)
       values (${ver}, ${dp}, ${v}, 1, ${`${dp}/o.png`}, 'image/png', 1, ${"b".repeat(64)}, ${sql.json(good)})`;
-    for (const bad of [{ ukjent: file("x") }, { proxy: { width: 1 } }, { proxy: file("") }, ["x"]])
+    const other = await as("authenticated", BOB, async (tx) => (await tx`select public.create_project('Annet') as id`)[0]!["id"] as string);
+    const cases: [string, unknown][] = [
+      ["ukjent nøkkel", { ukjent: file(`${dp}/u.webp`) }],
+      ["sti til et annet prosjekt", { proxy: file(`${other}/offer.png`) }],
+      ["sti med ..", { proxy: file(`${dp}/../${other}/offer.png`) }],
+      ["sti uten prefiks", { proxy: file("offer.png") }],
+    ];
+    for (const [label, bad] of cases)
+      await expectError(sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_files)
+        values (gen_random_uuid(), ${dp}, ${v}, 9, ${`${dp}/x.png`}, 'image/png', 1, ${"d".repeat(64)}, ${sql.json(bad as never)})`, /check|violates/)
+        .catch((e) => { throw new Error(`${label}: ${(e as Error).message}`); });
+    // Globale versjoner: prefikset er global/<gruppe>/
+    const gcon = await sql`select pg_get_constraintdef(oid) d from pg_constraint where conrelid = 'public.global_asset_versions'::regclass and pg_get_constraintdef(oid) like '%valid_derived_files%'`;
+    assert(String(gcon[0]?.["d"] ?? "").includes("'global/'"), "global CHECK bruker global/<gruppe>/");
+    for (const bad of [{ proxy: { width: 1 } }, { proxy: file("") }, ["x"]])
       await expectError(sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_files)
         values (gen_random_uuid(), ${dp}, ${v}, 9, ${`${dp}/x.png`}, 'image/png', 1, ${"d".repeat(64)}, ${sql.json(bad as never)})`, /check|violates/);
     // Eldre versjoner uten avledede filer er gyldige
@@ -6898,6 +6912,20 @@ try {
     assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.asset_versions where id = ${ver}`)).length === 0, "ikke-medlem ser ingenting");
     await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
       values (gen_random_uuid(), ${dp}, ${v}, 3, ${`${dp}/k.png`}, 'image/png', 1, ${"e".repeat(64)})`), /42501|permission|row-level/);
+    // Ekstra forsvar: selv om en fremmed sti skulle ligge i raden, tar oppryddingen den ikke med
+    const foreign = `${other}/offer.png`;
+    const leaked = await sql.begin(async (tx) => {
+      const cn = (await tx`select conname from pg_constraint where conrelid = 'public.asset_versions'::regclass and pg_get_constraintdef(oid) like '%valid_derived_files%'`)[0]!["conname"] as string;
+      await tx.unsafe(`alter table public.asset_versions drop constraint "${cn}"`);
+      const fv = crypto.randomUUID();
+      await tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, removed, derived_files)
+        values (${fv}, ${dp}, ${v}, 4, ${`${dp}/f.png`}, 'image/png', 1, ${"f".repeat(64)}, true, ${tx.json({ proxy: file(foreign), thumbnail: file(`${dp}/../x`) } as never)})`;
+      const pr = (await tx`select public.purge_removed_assets(${dp}, ${ALICE}, array[]::uuid[], array[${fv}]::uuid[]) as r`)[0]!["r"] as { paths: string[] };
+      throw Object.assign(new Error("rollback"), { paths: pr.paths });
+    }).catch((e) => (e as { paths?: string[] }).paths ?? (() => { throw e; })());
+    assert(leaked.includes(`${dp}/f.png`), "purge_removed_assets tar med originalen");
+    assert(!leaked.some((x) => x === foreign || x.includes("..")), "purge_removed_assets rører ikke fremmede stier");
+    assert((await sql`select 1 from pg_constraint where conrelid = 'public.asset_versions'::regclass and pg_get_constraintdef(oid) like '%valid_derived_files%'`).length === 1, "CHECK er tilbake etter rollback");
     await as("service_role", null, (tx) => tx`select public.delete_project(${dp}, ${ALICE})`);
     const r = (await as("service_role", null, async (tx) => (await tx`select public.purge_project_assets(${dp}, ${ALICE}) as r`)[0]!["r"])) as { paths: string[] };
     for (const path of ["o.png", "p.webp", "t.webp", "r.tiff", "o2.png"])
