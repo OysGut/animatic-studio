@@ -53107,5 +53107,160 @@
     "text": "国別ユーザー数",
     "sourceHash": "2820c025a4a8a428b21432064ec2e69795a5aeceba9289aa0f8ea2f77f7302fe",
     "review": "machine"
+  },
+  "b097.last-changed.column": {
+    "text": "最終更新",
+    "sourceHash": "c2530eeaa4cb0cd4b51259f8f3496aebb719082b553ce63538fe49ea343c22d2",
+    "review": "machine"
+  },
+  "b097.last-changed.tip": {
+    "text": "最終更新：{time}",
+    "sourceHash": "c1aedf4dde80f86b9bcec4749c1366f0091e508b4eca517b40bcd9a6d4fbf99c",
+    "review": "machine"
+  },
+  "b097.last-changed.tip-by": {
+    "text": "最終更新：{time}（{name}）",
+    "sourceHash": "344ffcc0b545bea3e432b0d010bef3bd9ec77c48199a9264b2bc6c99e883a0e7",
+    "review": "machine"
+  },
+  "b097.last-changed.tip-created": {
+    "text": "作成：{time}（以降、変更の保存なし）",
+    "sourceHash": "df33b7dd4e3876e80561addf2d8ba46c49f22253b939e5d5886dac8665d9e6da",
+    "review": "machine"
+  },
+  "b097.last-changed.aria": {
+    "text": "最終更新：{when}。{tip}",
+    "sourceHash": "0eef7c6ac0e912e9a508b0bb950a93455ee9390c975114f1ff664266934a9165",
+    "review": "machine"
+  },
+  "b097.country.label": {
+    "text": "国",
+    "sourceHash": "47ca5ad3418b8ee55fe7af00e17c5ff7ddda08a4df95618ac7b1a7ed73607c23",
+    "review": "machine"
+  },
+  "b097.country.choose": {
+    "text": "国を選択…",
+    "sourceHash": "c99e93d909881432185bb1a0f3355a0032e14674dfa3d7c8d83c585427ff4fd6",
+    "review": "machine"
+  },
+  "b097.country.search": {
+    "text": "国を検索",
+    "sourceHash": "61434eafb314c68d174b97ed751a3917a9d1328cd010ef30c1857fcde38d6f04",
+    "review": "machine"
+  },
+  "b097.country.none": {
+    "text": "国が見つかりません",
+    "sourceHash": "c11d1271234f5db2c22eb6678b49b694e701921cfa5ffb4b83b2df8b033490c7",
+    "review": "machine"
+  },
+  "b097.country.required": {
+    "text": "国を選択してください。",
+    "sourceHash": "c973c3ca24ac29e908a2cc9d33bf2b1402889cddbdb11080d21b501010e0b440",
+    "review": "machine"
+  },
+  "b097.country.why": {
+    "text": "時刻と日付を使い慣れた形式で表示するため、および匿名の統計に使用します。",
+    "sourceHash": "25a245ad5196d013c7cf3f727898b7bb9667f7b8629f86dc66d59b98c5ce0e65",
+    "review": "machine"
+  },
+  "b097.country.gate-title": {
+    "text": "どの国にいますか？",
+    "sourceHash": "24725f71dc0bad000534d7af7438bb70540dbf4f32bc8819ccef512c33a000a4",
+    "review": "machine"
+  },
+  "b097.country.gate-text": {
+    "text": "時刻と日付を正しく表示するために、国の選択が必要です。後でアカウントページから変更できます。それ以外は変更されません。",
+    "sourceHash": "ab929fc97f92cda420e728802228b76ee906964aa10bdf53a0bed29761003322",
+    "review": "machine"
+  },
+  "b097.country.gate-save": {
+    "text": "保存して続行",
+    "sourceHash": "f7ebcbbd6710a44965e31d32f911b2458b6054294b173bca91b9f67d8bddb1c6",
+    "review": "machine"
+  },
+  "b097.region.title": {
+    "text": "国・時刻・日付",
+    "sourceHash": "d4a13b65c75e02442285e78c86e99e9a464d922b74ed8798232b17ed61dafd19",
+    "review": "machine"
+  },
+  "b097.region.clock": {
+    "text": "時刻形式",
+    "sourceHash": "f6b114689466385028b423c4593a45c25b312c369d61c7434f863c3ef9050fda",
+    "review": "machine"
+  },
+  "b097.region.date-format": {
+    "text": "日付形式",
+    "sourceHash": "163a515445c9be6b73d4a3d60f185907a1e486903359dd340959c82d6631228b",
+    "review": "machine"
+  },
+  "b097.region.as-country": {
+    "text": "国の設定に従う",
+    "sourceHash": "75d1fc3755293baec10ffb25b853945fbb016cca712c377a906733e533cd7e60",
+    "review": "machine"
+  },
+  "b097.region.clock-24": {
+    "text": "24時間制",
+    "sourceHash": "c45e52866e4efd4a598211ea3e35dc378de0e41cc4c76f612595b8f7cc33a3d4",
+    "review": "machine"
+  },
+  "b097.region.clock-12": {
+    "text": "12時間制",
+    "sourceHash": "fae1b94f389b8ec434284eb1deaf5d2da722da408fc62bc4e0b90e16a08c0ac0",
+    "review": "machine"
+  },
+  "b097.region.preview": {
+    "text": "時刻と日付は次のように表示されます：",
+    "sourceHash": "33010d8530c367ccfcd323fc749eaaa11b22e9a1bc712bc5991796ebe70340c0",
+    "review": "machine"
+  },
+  "b097.region.saved": {
+    "text": "国を保存しました。",
+    "sourceHash": "05d08df43ee7681e4ff562d349eccf9cd4a9fb9ef2e054755bf3f95f01703a28",
+    "review": "machine"
+  },
+  "b097.region.unavailable": {
+    "text": "データベースの更新後に国を選択できるようになります。",
+    "sourceHash": "4ab025e51425ddcb18cf3b9aba5ac09760d5bf2b03724160cdc82e592274fd27",
+    "review": "machine"
+  },
+  "b097.admin.users": {
+    "text": "ユーザー",
+    "sourceHash": "f3e2ae18b73a3fdeec367cc068fd3de4c3713f0105da07abca17dfc86005bdbc",
+    "review": "machine"
+  },
+  "b097.admin.total": {
+    "text": "合計",
+    "sourceHash": "3e249ce29188f8f2169b35873a04fcdb1ca679b6d5439e3b8e697fe121a9f7f3",
+    "review": "machine"
+  },
+  "b097.admin.unavailable": {
+    "text": "データベースの更新後に概要を確認できるようになります。",
+    "sourceHash": "8c40b9eb65411147cf62f196a7942172ec8d644ff5701f49f4f70cad3b4aeff6",
+    "review": "machine"
+  },
+  "b097.privacy.country": {
+    "text": "国：登録時またはアカウントページで選択する国（NOなどの国コード）です。時刻と日付を使い慣れた形式（時刻形式と日付形式）で表示するため、およびユーザーの所在地に関する匿名の統計に使用します。管理者に表示されるのは国別ユーザー数のみで、誰がどの国にいるかは表示されません。他のプロジェクトメンバーには、あなたの国は表示されません。アカウントページでいつでも変更できます。",
+    "sourceHash": "d7c38b8da03aab0dc8045edd04bd98358d2ef46f1d66ebccc421a8697ee73862",
+    "review": "machine"
+  },
+  "b097.sound-kind.ask": {
+    "text": "どの種類のサウンドですか？",
+    "sourceHash": "6002bffb2012d8e48933cdb1240bf21a0a6030fc63b60d27b31a07172cb14680",
+    "review": "machine"
+  },
+  "b097.sound-kind.sfx": {
+    "text": "効果音",
+    "sourceHash": "21fa01a5f64f8ea1321187a832e70c40289233c7b08801946be97a4d9c361e53",
+    "review": "machine"
+  },
+  "b097.sound-kind.ambience": {
+    "text": "アンビエンス",
+    "sourceHash": "b4970e7eaef12fb35ac685b4f201138c17f4efefb2e518b1cd6fce887a62b352",
+    "review": "machine"
+  },
+  "b097.sound-kind.music": {
+    "text": "音楽",
+    "sourceHash": "25fe89b95f6e4160b7d07ccaf5f13d9b402338e698ef08a9c6a11dc85c6a1c99",
+    "review": "machine"
   }
 }
