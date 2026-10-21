@@ -1,0 +1,3082 @@
+{
+ "app-audio-pause-timing-panel.pause-timing-panel.option.7c2cc003b8e2": {
+  "nb": "Digital stillhet",
+  "en": "Digital silence",
+  "oversatt": "デジタル無音"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.option.abb7ff6cb187": {
+  "nb": "Manuelt (fyll selv)",
+  "en": "By hand (fill yourself)",
+  "oversatt": "手動（自分で埋める）"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.p.8df9c0305989": {
+  "nb": "Tidsredigering: avstanden viser pausene. Dra et mellomrom (eller ordet etter det) for lengre eller kortere pause. Marker flere ord og dra dem fra hverandre for å fordele tid likt. Manusteksten endres ikke.",
+  "en": "Timing edit: the spacing shows the pauses. Drag a gap (or the word after it) for a longer or shorter pause. Mark several words and drag them apart to share time equally. The script text is not changed.",
+  "oversatt": "タイミング編集：間隔はポーズを表します。隙間（またはその直後の単語）をドラッグしてポーズの長さを調整します。複数の単語を選択して引き離すと、時間を均等に配分できます。脚本のテキストは変更されません。"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.span.14e533343fa5": {
+  "nb": "{value1}{value2} ms mot opptaket",
+  "en": "{value1}{value2} ms against the recording",
+  "oversatt": "録音に対して {value1}{value2} ms"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.span.eb37fe41f318": {
+  "nb": "Klikk et mellomrom for å skrive inn pausen og velge fyll.",
+  "en": "Click a gap to type the pause and choose the fill.",
+  "oversatt": "隙間をクリックしてポーズの長さを入力し、埋め方を選択します。"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.span.f5c1fd1a04bd": {
+  "nb": "Pause etter «{value1}»",
+  "en": "Pause after “{value1}”",
+  "oversatt": "「{value1}」の後のポーズ"
+ },
+ "app-audio-pause-timing-panel.pause-timing-panel.title.8225ef09ae3e": {
+  "nb": "{value1} ms – dra for lengre eller kortere pause, piltaster ±50 ms",
+  "en": "{value1} ms – drag for a longer or shorter pause, arrow keys ±50 ms",
+  "oversatt": "{value1} ms – ドラッグでポーズの長さを調整、矢印キーで ±50 ms"
+ },
+ "app-audio-room-fill.messages.r-unfilled-map.f34d6180911b": {
+  "nb": "Pausen etter ord {value1}: {message}",
+  "en": "The pause after word {value1}: {message}",
+  "oversatt": "単語 {value1} の後のポーズ：{message}"
+ },
+ "app-audio-takes.add-version.run.152ea4dd0569": {
+  "nb": "Nytt lydopptak",
+  "en": "New audio recording",
+  "oversatt": "新規音声録音"
+ },
+ "app-audio-takes.category.category.0a82e2f5112a": {
+  "nb": "Dialog",
+  "en": "Dialogue",
+  "oversatt": "セリフ"
+ },
+ "app-audio-takes.category.category.39656a5891aa": {
+  "nb": "Dialog (AI)",
+  "en": "Dialogue (AI)",
+  "oversatt": "セリフ (AI)"
+ },
+ "app-audio-takes.category.category.a6947327116b": {
+  "nb": "Romlyd",
+  "en": "Room tone",
+  "oversatt": "ルームトーン"
+ },
+ "app-audio-takes.choose-take.run.14093436a834": {
+  "nb": "Valgt opptak for replikken",
+  "en": "Chosen recording for the line",
+  "oversatt": "セリフに選択された録音"
+ },
+ "app-audio-takes.choose-take.run.808e8391fb65": {
+  "nb": "Opptaket godkjent",
+  "en": "Recording approved",
+  "oversatt": "録音を承認しました"
+ },
+ "app-audio-takes.generated.new-sound-asset.06f621d268ab": {
+  "nb": "Generert tale",
+  "en": "Generated speech",
+  "oversatt": "生成された音声"
+ },
+ "app-audio-takes.made.new-sound-asset.4aa46207f4ef": {
+  "nb": "Opptak",
+  "en": "Recordings",
+  "oversatt": "録音"
+ },
+ "app-audio-takes.made.new-sound-asset.b587bef106d3": {
+  "nb": "Romlyd",
+  "en": "Room tone",
+  "oversatt": "ルームトーン"
+ },
+ "app-audio-takes.new-sound-asset.run.25f24158bf25": {
+  "nb": "Ny lydvariant",
+  "en": "New audio variant",
+  "oversatt": "新規音声バリアント"
+ },
+ "app-audio-takes.new-sound-asset.run.cc17ebba9725": {
+  "nb": "Ny lyd «{name}»",
+  "en": "New audio “{name}”",
+  "oversatt": "新規音声「{name}」"
+ },
+ "app-audio-takes.new-variant.run.5804becbdc15": {
+  "nb": "Ny lydvariant",
+  "en": "New audio variant",
+  "oversatt": "新規音声バリアント"
+ },
+ "app-audio-takes.save-room-tone.new-variant.26f9abeb461a": {
+  "nb": "Romlyd",
+  "en": "Room tone",
+  "oversatt": "ルームトーン"
+ },
+ "app-audio-takes.save-take.message.07d3ed078977": {
+  "nb": "Replikken finnes ikke lenger.",
+  "en": "The line no longer exists.",
+  "oversatt": "セリフはもう存在しません。"
+ },
+ "app-audio-takes.save-take.new-variant.afe00012969a": {
+  "nb": "Opptak",
+  "en": "Recordings",
+  "oversatt": "録音"
+ },
+ "app-audio-takes.save-take.new-variant.afe00012969a.2": {
+  "nb": "Opptak",
+  "en": "Recordings",
+  "oversatt": "録音"
+ },
+ "app-audio-takes.save-take.run.0485f6cde6ad": {
+  "nb": "Replikken lagt i scenen",
+  "en": "Line added to the scene",
+  "oversatt": "セリフをシーンに追加しました"
+ },
+ "app-audio-takes.save-take.run.175dcf9b42af": {
+  "nb": "Ny lydversjon for replikken",
+  "en": "New audio version for the line",
+  "oversatt": "セリフの新規音声バージョン"
+ },
+ "app-audio-transitions-panel.apply.set-msg.f66e4a07eed5": {
+  "nb": "Fant ingen egnet romlyd i det valgte opptaket. Velg et annet opptak eller en romlydfil.",
+  "en": "No suitable room tone was found in the chosen recording. Choose another recording or a room tone file.",
+  "oversatt": "選択された録音内に適切なルームトーンが見つかりませんでした。別の録音またはルームトーンファイルを選択してください。"
+ },
+ "app-audio-transitions-panel.joint-row.button.0f45557b0ed7": {
+  "nb": "Lytt",
+  "en": "Listen",
+  "oversatt": "試聴"
+ },
+ "app-audio-transitions-panel.joint-row.label.0b7b57238aab": {
+  "nb": "Romlyd under skjøten",
+  "en": "Room tone under the join",
+  "oversatt": "つなぎ目のルームトーン"
+ },
+ "app-audio-transitions-panel.joint-row.label.6abcbd23d78c": {
+  "nb": "Toning (ms)",
+  "en": "Fade (ms)",
+  "oversatt": "フェード (ms)"
+ },
+ "app-audio-transitions-panel.joint-row.label.909a747f1ca6": {
+  "nb": "Romlyd fra",
+  "en": "Room tone from",
+  "oversatt": "ルームトーンの取得元"
+ },
+ "app-audio-transitions-panel.joint-row.option.09f2dcf361a0": {
+  "nb": "Opptaket etter ({value1})",
+  "en": "The recording after ({value1})",
+  "oversatt": "後ろの録音 ({value1})"
+ },
+ "app-audio-transitions-panel.joint-row.option.3fe523094404": {
+  "nb": "Romlydfil: {label}",
+  "en": "Room tone file: {label}",
+  "oversatt": "ルームトーンファイル：{label}"
+ },
+ "app-audio-transitions-panel.joint-row.option.e9ae67f12bfc": {
+  "nb": "Opptaket før ({value1})",
+  "en": "The recording before ({value1})",
+  "oversatt": "前の録音 ({value1})"
+ },
+ "app-audio-transitions-panel.joint-row.span.b7816432a068": {
+  "nb": "Skjøt ved {value1} s: {value2} → {value3}",
+  "en": "Join at {value1} s: {value2} → {value3}",
+  "oversatt": "{value1} 秒のつなぎ目：{value2} → {value3}"
+ },
+ "app-audio-transitions-panel.transitions-panel.p.7c6c760284da": {
+  "nb": "Myk opp skjøtene med korte toninger og romlyd under skjøten. Romlyd fra ulike opptak er ikke nødvendigvis lik – velg hvor den hentes fra og lytt.",
+  "en": "Soften the joins with short fades and room tone under the join. Room tone from different recordings is not necessarily the same – choose where it comes from and listen.",
+  "oversatt": "短めのフェードとつなぎ目の下のルームトーンで接合部をなめらかにします。録音によってルームトーンが異なる場合があるため、取得元を選択して試聴してください。"
+ },
+ "app-audio-transitions-panel.transitions-panel.summary.5bda875e4e75": {
+  "nb": "Overganger mellom takes ({length})",
+  "en": "Transitions between takes ({length})",
+  "oversatt": "テイク間のトランジション ({length})"
+ },
+ "app-audio-use-recorder.result.set-error.153e096cf89f": {
+  "nb": "Opptaket ble tomt.",
+  "en": "The recording is empty.",
+  "oversatt": "録音が空です。"
+ },
+ "app-audio-use-recorder.start.set-error.844a0a2d1efe": {
+  "nb": "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
+  "en": "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
+  "oversatt": "ブラウザでマイクの使用が許可されていませんでした。このページのマイクアクセスを許可して、もう一度お試しください。"
+ },
+ "app-audio-use-recorder.start.set-error.be7eb7b9f805": {
+  "nb": "Mikrofonen kan bare brukes på en sikker adresse (https).",
+  "en": "The microphone can only be used on a secure address (https).",
+  "oversatt": "マイクは安全なアドレス (https) でのみ使用できます。"
+ },
+ "app-audio-use-recorder.start.set-error.c370a016e8f1": {
+  "nb": "Fant ingen mikrofon ({message}).",
+  "en": "No microphone found ({message}).",
+  "oversatt": "マイクが見つかりませんでした ({message})。"
+ },
+ "app-audio-use-recorder.start.set-error.c60a7cfee07e": {
+  "nb": "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
+  "en": "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
+  "oversatt": "ブラウザが音声を録音できません。Chrome、Edge、Firefox、またはSafariをお試しください。"
+ },
+ "app-audio-voice-controls.voice-controls.button.05bf467f3dbd": {
+  "nb": "Hent stemmer og modeller igjen",
+  "en": "Refresh voices and models",
+  "oversatt": "音声とモデルを再読み込み"
+ },
+ "app-audio-voice-controls.voice-controls.button.0e0e9f446543": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "再試行"
+ },
+ "app-audio-voice-controls.voice-controls.label.099ed8c1ae71": {
+  "nb": "Stemme",
+  "en": "Voice",
+  "oversatt": "ボイス"
+ },
+ "app-audio-voice-controls.voice-controls.label.5872b6457506": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "モデル"
+ },
+ "app-audio-voice-controls.voice-controls.label.bb142efbabb7": {
+  "nb": "Talespråk",
+  "en": "Speech language",
+  "oversatt": "音声言語"
+ },
+ "app-audio-voice-controls.voice-controls.label.c0d86a56fb09": {
+  "nb": "Fremhev stemmen",
+  "en": "Speaker boost",
+  "oversatt": "スピーカーブースト"
+ },
+ "app-audio-voice-controls.voice-controls.option.2606111dded4": {
+  "nb": "Ingen stemme",
+  "en": "No voice",
+  "oversatt": "ボイスなし"
+ },
+ "app-audio-voice-controls.voice-controls.p.13d60691bc9e": {
+  "nb": "Henter stemmer og modeller …",
+  "en": "Loading voices and models …",
+  "oversatt": "ボイスとモデルを読み込み中…"
+ },
+ "app-audio-voice-controls.voice-controls.p.2faae78abc72": {
+  "nb": "Modellens språkstøtte er kjent; denne stemmens uttale på valgt språk er ikke bekreftet.",
+  "en": "The model's language support is known; this voice's pronunciation in the selected language is not verified.",
+  "oversatt": "モデルの言語サポートは確認済みですが、選択した言語におけるこのボイスの発音は未検証です。"
+ },
+ "app-audio-voice-controls.voice-controls.p.4af6ef8cbc52": {
+  "nb": "ElevenLabs · Stemme-ID: {voiceId}",
+  "en": "ElevenLabs · Voice ID: {voiceId}",
+  "oversatt": "ElevenLabs · ボイスID: {voiceId}"
+ },
+ "app-audio-voice-controls.voice-controls.p.4dc1c54fbe03": {
+  "nb": "Stemmer eller modeller kunne ikke hentes.",
+  "en": "Voices or models could not be loaded.",
+  "oversatt": "ボイスまたはモデルを読み込めませんでした。"
+ },
+ "app-audio-voice-controls.voice-controls.stability-l-stabilitet-stability-0-1-0-5-similarity-boost-l-stemmelikhet-similarity-0-1-0-75-style-l-stil-style-0-1-0-speed-l-talehastighet-speech-speed-0-7-1-2-1-as-const-map.0505f5b9b565": {
+  "nb": "Stemmelikhet",
+  "en": "Similarity",
+  "oversatt": "類似性"
+ },
+ "app-audio-voice-controls.voice-controls.stability-l-stabilitet-stability-0-1-0-5-similarity-boost-l-stemmelikhet-similarity-0-1-0-75-style-l-stil-style-0-1-0-speed-l-talehastighet-speech-speed-0-7-1-2-1-as-const-map.8e0116ac6f7a": {
+  "nb": "Talehastighet",
+  "en": "Speech speed",
+  "oversatt": "話速"
+ },
+ "app-audio-voice-controls.voice-controls.stability-l-stabilitet-stability-0-1-0-5-similarity-boost-l-stemmelikhet-similarity-0-1-0-75-style-l-stil-style-0-1-0-speed-l-talehastighet-speech-speed-0-7-1-2-1-as-const-map.9c5f2c7de5f2": {
+  "nb": "Stabilitet",
+  "en": "Stability",
+  "oversatt": "安定性"
+ },
+ "app-audio-voice-controls.voice-controls.stability-l-stabilitet-stability-0-1-0-5-similarity-boost-l-stemmelikhet-similarity-0-1-0-75-style-l-stil-style-0-1-0-speed-l-talehastighet-speech-speed-0-7-1-2-1-as-const-map.d44f7c9074b2": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "スタイル"
+ },
+ "app-auth-auth-screen.auth-screen.a.8a48040d6096": {
+  "nb": "personvernerklæringen",
+  "en": "privacy statement",
+  "oversatt": "プライバシーポリシー"
+ },
+ "app-auth-auth-screen.auth-screen.button.0c501076b9f7": {
+  "nb": "Har du konto? Logg inn",
+  "en": "Have an account? Sign in",
+  "oversatt": "アカウントをお持ちですか？ ログイン"
+ },
+ "app-auth-auth-screen.auth-screen.button.22a66d43cb57": {
+  "nb": "Ny bruker? Opprett konto",
+  "en": "New user? Create an account",
+  "oversatt": "初めてのご利用ですか？ アカウント作成"
+ },
+ "app-auth-auth-screen.auth-screen.button.54c2a58316bb": {
+  "nb": "Send innloggingslenke",
+  "en": "Send sign-in link",
+  "oversatt": "ログインリンクを送信"
+ },
+ "app-auth-auth-screen.auth-screen.button.852d2eee9390": {
+  "nb": "Logg inn",
+  "en": "Sign in",
+  "oversatt": "ログイン"
+ },
+ "app-auth-auth-screen.auth-screen.button.a327ce9931d2": {
+  "nb": "Opprett konto",
+  "en": "Create account",
+  "oversatt": "アカウントを作成"
+ },
+ "app-auth-auth-screen.auth-screen.h2.852d2eee9390": {
+  "nb": "Logg inn",
+  "en": "Sign in",
+  "oversatt": "ログイン"
+ },
+ "app-auth-auth-screen.auth-screen.h2.a327ce9931d2": {
+  "nb": "Opprett konto",
+  "en": "Create account",
+  "oversatt": "アカウントを作成"
+ },
+ "app-auth-auth-screen.auth-screen.label.7c26d484c7c6": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "メールアドレス"
+ },
+ "app-auth-auth-screen.auth-screen.label.d38edc077535": {
+  "nb": "Passord",
+  "en": "Password",
+  "oversatt": "パスワード"
+ },
+ "app-auth-auth-screen.auth-screen.p.e99ee6ebdf9f": {
+  "nb": "Fra manus til ferdig film – i én sammenhengende produksjon.",
+  "en": "From script to finished film – in one continuous production.",
+  "oversatt": "脚本から完成映像まで、ひとつのシームレスなプロダクションで。"
+ },
+ "app-auth-auth-screen.auth-screen.span.58227f6df4c1": {
+  "nb": "Jeg har lest ",
+  "en": "I have read the ",
+  "oversatt": "次を読み、同意します： "
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.2c6406a859ea": {
+  "nb": "Kontoen er sperret (blokkert eller låst for sletting). Kontakt administrator: oystein@gutu.no.",
+  "en": "The account is locked (blocked or locked for deletion). Contact the administrator: oystein@gutu.no.",
+  "oversatt": "アカウントがロックされています（ブロックまたは削除のためロック）。管理者にお問い合わせください: oystein@gutu.no"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.4b326751900a": {
+  "nb": "Noe gikk galt. Prøv igjen.",
+  "en": "Something went wrong. Try again.",
+  "oversatt": "問題が発生しました。もう一度お試しください。"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.9048c2290f5e": {
+  "nb": "For mange forsøk. Vent litt og prøv igjen.",
+  "en": "Too many attempts. Wait a little and try again.",
+  "oversatt": "試行回数が多すぎます。しばらく待ってから再試行してください。"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.95c18548f154": {
+  "nb": "Feil e-post eller passord.",
+  "en": "Wrong email or password.",
+  "oversatt": "メールアドレスまたはパスワードが正しくありません。"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.b3dd07f3b76a": {
+  "nb": "Passordet må ha minst 8 tegn.",
+  "en": "The password must be at least 8 characters.",
+  "oversatt": "パスワードは8文字以上である必要があります。"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.e4bd6f3f7df3": {
+  "nb": "E-postadressen er ikke bekreftet ennå. Sjekk innboksen din.",
+  "en": "The email address is not confirmed yet. Check your inbox.",
+  "oversatt": "メールアドレスがまだ確認されていません。受信トレイをご確認ください。"
+ },
+ "app-auth-auth-screen.norwegian-auth-error.message.fa8299739ce5": {
+  "nb": "Det finnes allerede en konto med denne e-postadressen.",
+  "en": "An account with this email address already exists.",
+  "oversatt": "このメールアドレスのアカウントは既に存在します。"
+ },
+ "app-auth-auth-screen.send-link.set-error.7166e0585ba7": {
+  "nb": "Skriv inn e-postadressen først.",
+  "en": "Enter your email address first.",
+  "oversatt": "先にメールアドレスを入力してください。"
+ },
+ "app-auth-auth-screen.send-link.set-notice.ff4036e3c48c": {
+  "nb": "Vi har sendt en innloggingslenke til {email}.",
+  "en": "We have sent a sign-in link to {email}.",
+  "oversatt": "{email} にログインリンクを送信しました。"
+ },
+ "app-auth-auth-screen.submit.set-error.d5170069ebaf": {
+  "nb": "Les personvernerklæringen først.",
+  "en": "Read the privacy statement first.",
+  "oversatt": "先にプライバシーポリシーをお読みください。"
+ },
+ "app-auth-auth-screen.submit.set-notice.a389c2300257": {
+  "nb": "Kontoen er opprettet. Bekreft e-postadressen via lenken vi sendte deg.",
+  "en": "The account has been created. Confirm your email address via the link we sent you.",
+  "oversatt": "アカウントが作成されました。送信されたリンクからメールアドレスを確認してください。"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.aria-label.93689bf603f1": {
+  "nb": "Produksjon for analysen",
+  "en": "Production for the analysis",
+  "oversatt": "分析対象のプロダクション"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.button.2a798bfbe96c": {
+  "nb": "Skjul igjen",
+  "en": "Hide again",
+  "oversatt": "再度非表示"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.button.bfc722871c4b": {
+  "nb": "Vis skjulte ({hiddenCount})",
+  "en": "Show hidden ({hiddenCount})",
+  "oversatt": "非表示項目を表示 ({hiddenCount})"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.cmds-run.2d37690e25d9": {
+  "nb": "Slå av hendelsen i {name}",
+  "en": "Turn off the event in {name}",
+  "oversatt": "{name} でイベントを無効化"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.cmds-run.82d940fab072": {
+  "nb": "Ta med scene i {name}",
+  "en": "Include scene in {name}",
+  "oversatt": "{name} にシーンを含める"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.h2.e12c9ec8d67a": {
+  "nb": "Kontinuitetsanalyse",
+  "en": "Continuity analysis",
+  "oversatt": "コンティニュイティ分析"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.4ef3a75ebdb1": {
+  "nb": "Ingen funn. Manus, kontinuitet og 2D-scener henger sammen.",
+  "en": "No findings. The script, continuity and 2D scenes are consistent.",
+  "oversatt": "指摘事項はありません。脚本、コンティニュイティ、2Dシーンの整合性が取れています。"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.af81201123a8": {
+  "nb": "Alle funn er skjult.",
+  "en": "All findings are hidden.",
+  "oversatt": "すべての指摘事項が非表示になっています。"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.p.cda8c242a64d": {
+  "nb": "Usikre funn bygger på tolkning av teksten og kan være feil.",
+  "en": "Uncertain findings are based on interpreting the text and may be wrong.",
+  "oversatt": "不確実な指摘はテキストの解釈に基づいており、誤っている可能性があります。"
+ },
+ "app-continuity-continuity-analysis-panel.continuity-analysis-panel.span.c7f319dc227a": {
+  "nb": "Råd om manus og produksjon – ingenting endres automatisk.",
+  "en": "Advice on script and production – nothing is changed automatically.",
+  "oversatt": "脚本と制作に関するアドバイスです。自動的に変更されるものはありません。"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.aria-label.0440cdf1bb18": {
+  "nb": "Sannsynlig",
+  "en": "Likely",
+  "oversatt": "可能性高"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.aria-label.853ff45b289f": {
+  "nb": "Skjul funnet",
+  "en": "Hide finding",
+  "oversatt": "指摘を非表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.aria-label.c5772cc515f5": {
+  "nb": "Usikkert",
+  "en": "Uncertain",
+  "oversatt": "不確実"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.aria-label.e971f112cb08": {
+  "nb": "Vis funnet",
+  "en": "Show finding",
+  "oversatt": "指摘を表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.button.0e9731b099e9": {
+  "nb": "Slå av i",
+  "en": "Turn off in",
+  "oversatt": "次で無効化:"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.button.d1992e5381ee": {
+  "nb": "Ta med scenen",
+  "en": "Include the scene",
+  "oversatt": "シーンを含める"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.button.ed62e1e48487": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.button.ef1142d2b743": {
+  "nb": "Skjul",
+  "en": "Hide",
+  "oversatt": "非表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.link.598f88f98058": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "シーンエディター"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.link.bf5c8d993e68": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "脚本"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.link.e1776164cc11": {
+  "nb": "Bibliotek",
+  "en": "Library",
+  "oversatt": "ライブラリ"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.1ae8af000877": {
+  "nb": "Åpne scenen i sceneeditoren",
+  "en": "Open the scene in the scene editor",
+  "oversatt": "シーンエディターでシーンを開く"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.3b3cbd15c22c": {
+  "nb": "Vis linjen i manuset",
+  "en": "Show the line in the script",
+  "oversatt": "脚本のセリフ行を表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.4a76d0f14664": {
+  "nb": "Vis funnet igjen",
+  "en": "Show the finding again",
+  "oversatt": "指摘を再表示"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.5c45cd626ceb": {
+  "nb": "Skjul funnet (huskes i denne nettleseren)",
+  "en": "Hide the finding (remembered in this browser)",
+  "oversatt": "指摘を非表示 (このブラウザに記憶されます)"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.7b99489540ba": {
+  "nb": "Åpne ressursen i biblioteket",
+  "en": "Open the asset in the library",
+  "oversatt": "ライブラリでアセットを開く"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.b8cd9877c07c": {
+  "nb": "Endringen gjelder ikke i {production}. Hovedfilmen endres ikke.",
+  "en": "The change does not apply in {production}. The main film is not changed.",
+  "oversatt": "この変更は {production} には適用されません。本編フィルムは変更されません。"
+ },
+ "app-continuity-continuity-analysis-panel.finding-row.title.e58706170cd4": {
+  "nb": "Legg hovedfilmens scene inn i {production} (på plassen den har i hovedfilmen)",
+  "en": "Add the main film's scene to {production} (in the place it has in the main film)",
+  "oversatt": "本編フィルムのシーンを {production} に追加 (本編と同じ位置)"
+ },
+ "app-dialogue-drift-badge.drift-badge.button.6c649dd082db": {
+  "nb": "Merk som gjennomgått – fjern avviksmerking",
+  "en": "Mark as reviewed – remove drift marking",
+  "oversatt": "確認済みに設定 – 差分マークを解除"
+ },
+ "app-dialogue-drift-badge.drift-badge.button.ee059ae96fa9": {
+  "nb": "Gå til replikken",
+  "en": "Go to the line",
+  "oversatt": "セリフへ移動"
+ },
+ "app-dialogue-drift-badge.drift-badge.link.8405fd7f7571": {
+  "nb": "Åpne scenen ved replikken",
+  "en": "Open the scene at the line",
+  "oversatt": "セリフの位置でシーンを開く"
+ },
+ "app-dialogue-drift-badge.drift-badge.p.74e451770e4c": {
+  "nb": "Lyden: manusrevisjon {audioRevision} · manuset nå: revisjon {currentRevision}",
+  "en": "Audio: script revision {audioRevision} · script now: revision {currentRevision}",
+  "oversatt": "音声: 脚本リビジョン {audioRevision} · 現在の脚本: リビジョン {currentRevision}"
+ },
+ "app-dialogue-drift-badge.drift-badge.run.fc76bdd38a50": {
+  "nb": "Merk som gjennomgått",
+  "en": "Mark as reviewed",
+  "oversatt": "確認済みに設定"
+ },
+ "app-dialogue-drift-badge.drift-diff-view.p.cc20a2ce0e31": {
+  "nb": "Fjernet fra manus:",
+  "en": "Removed from the script:",
+  "oversatt": "脚本から削除済み:"
+ },
+ "app-dialogue-drift-badge.drift-diff-view.p.d44a5b18ae23": {
+  "nb": "Teksten lyden ble laget fra, er ikke kjent. Sammenligningen kan ikke vises.",
+  "en": "The text the audio was made from is unknown. The comparison cannot be shown.",
+  "oversatt": "音声の生成元となったテキストが不明です。比較を表示できません。"
+ },
+ "app-dialogue-note-flag-control.label.message.1cfba46c53bd": {
+  "nb": "Huskelapp",
+  "en": "Note flag",
+  "oversatt": "メモフラグ"
+ },
+ "app-dialogue-note-flag-control.label.message.de3a4a78fa01": {
+  "nb": "Huskelapp ({length} aktiv)",
+  "en": "Note flag ({length} active)",
+  "oversatt": "メモフラグ (アクティブ: {length})"
+ },
+ "app-dialogue-note-flag-control.name-of.message.c817171c3000": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "不明"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.aria-label.337f36b4d791": {
+  "nb": "Tekst på huskelappen (valgfri)",
+  "en": "Note flag text (optional)",
+  "oversatt": "メモフラグのテキスト (任意)"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.button.6817a2c6e03e": {
+  "nb": "Ny huskelapp",
+  "en": "New note flag",
+  "oversatt": "新規メモフラグ"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.button.97715f200f95": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "削除"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.button.b40ff54b049e": {
+  "nb": "Lagre tekst",
+  "en": "Save text",
+  "oversatt": "テキストを保存"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.exec.48d4a0a38efb": {
+  "nb": "Slå av huskelapp",
+  "en": "Turn off note flag",
+  "oversatt": "メモフラグをオフにする"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.exec.64f24fea0210": {
+  "nb": "Endre huskelapp",
+  "en": "Edit note flag",
+  "oversatt": "メモフラグを編集"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.exec.6817a2c6e03e": {
+  "nb": "Ny huskelapp",
+  "en": "New note flag",
+  "oversatt": "新規メモフラグ"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.exec.bd4d5467b168": {
+  "nb": "Slå på huskelapp",
+  "en": "Turn on note flag",
+  "oversatt": "メモフラグをオンにする"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.exec.d9c341ae8e7d": {
+  "nb": "Slett huskelapp",
+  "en": "Delete note flag",
+  "oversatt": "メモフラグを削除"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.label.1d6117102efe": {
+  "nb": "Av (teksten beholdes)",
+  "en": "Off (text is kept)",
+  "oversatt": "オフ (テキストは保持されます)"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.label.5a14cd2d2aae": {
+  "nb": "Aktiv",
+  "en": "Active",
+  "oversatt": "アクティブ"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd": {
+  "nb": "Huskelapper",
+  "en": "Note flags",
+  "oversatt": "メモフラグ"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.p.7e80425b6f8c": {
+  "nb": "Opprettet av {value1} {value2}",
+  "en": "Created by {value1} {value2}",
+  "oversatt": "作成者: {value1} {value2}"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.p.be4f6f464ac9": {
+  "nb": "Ingen huskelapp her ennå.",
+  "en": "No note flag here yet.",
+  "oversatt": "ここにはまだメモフラグがありません。"
+ },
+ "app-dialogue-note-flag-control.note-flag-control.p.f76b01f9b8ee": {
+  "nb": " · endret av {value1} {value2}",
+  "en": " · edited by {value1} {value2}",
+  "oversatt": " · 編集者: {value1} {value2}"
+ },
+ "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16": {
+  "nb": "nb-NO",
+  "en": "en-GB",
+  "oversatt": "ja-JP"
+ },
+ "app-global-global-actions.error.error.fb060232c8f2": {
+  "nb": "Ressursen har ingen filer ennå.",
+  "en": "The asset has no files yet.",
+  "oversatt": "このアセットにはまだファイルがありません。"
+ },
+ "app-global-global-actions.error.run-group.dbd14e4d126f": {
+  "nb": "Bruk «{name}» fra det globale biblioteket",
+  "en": "Use “{name}” from the global library",
+  "oversatt": "グローバルライブラリの「{name}」を使用"
+ },
+ "app-global-global-library-dialog.create.act.0d7b0489a1da": {
+  "nb": "Ressursen ble opprettet uten fil. Opplastingen av filen feilet. Prøv igjen fra ressursen med «Last opp fil …».",
+  "en": "The asset was created without a file. The file upload failed. Please try again from the asset using “Upload file …”.",
+  "oversatt": "アセットはファイルなしで作成されました。ファイルのアップロードに失敗しました。アセットの「ファイルをアップロード…」からもう一度お試しください。"
+ },
+ "app-global-global-library-dialog.create.act.2e30574da328": {
+  "nb": "Den globale ressursen er laget.",
+  "en": "The global asset has been created.",
+  "oversatt": "グローバルアセットが作成されました。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.act.980bc9268e45": {
+  "nb": "Ny versjon publisert. Prosjektene som bruker ressursen, får et varsel og velger selv.",
+  "en": "New version published. Projects using the asset get a notice and choose for themselves.",
+  "oversatt": "新しいバージョンが公開されました。このアセットを使用しているプロジェクトに通知が届き、更新するかどうかを選択できます。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.12df3f2d1b6b": {
+  "nb": "Kategori",
+  "en": "Category",
+  "oversatt": "カテゴリー"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.349309ebbcaa": {
+  "nb": "Søk",
+  "en": "Search",
+  "oversatt": "検索"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.6fff7b5d855c": {
+  "nb": "Fil",
+  "en": "File",
+  "oversatt": "ファイル"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.9e935e59aa41": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.ab5260a2eb61": {
+  "nb": "Merke",
+  "en": "Tag",
+  "oversatt": "タグ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.edd45b597b9a": {
+  "nb": "Merker",
+  "en": "Tags",
+  "oversatt": "タグ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.faa62b3aa418": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.aria-label.faa62b3aa418.2": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.5c638abac4ad": {
+  "nb": "Ny versjon …",
+  "en": "New version …",
+  "oversatt": "新しいバージョン…"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.80efebfb6ceb": {
+  "nb": "Arkiver",
+  "en": "Archive",
+  "oversatt": "アーカイブ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.9500da253b32": {
+  "nb": "Bruk i prosjekt",
+  "en": "Use in project",
+  "oversatt": "プロジェクトで使用"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.997ea58ee386": {
+  "nb": "Hent manglende varianter",
+  "en": "Get missing variants",
+  "oversatt": "不足しているバリアントを取得"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.a64706d4c220": {
+  "nb": "Last opp fil …",
+  "en": "Upload file …",
+  "oversatt": "ファイルをアップロード…"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.b7c0895a7d9e": {
+  "nb": "Hent den nye versjonen",
+  "en": "Get the new version",
+  "oversatt": "新しいバージョンを取得"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.c8d7f62abff0": {
+  "nb": "Hent fram",
+  "en": "Restore",
+  "oversatt": "復元"
+ },
+ "app-global-global-library-dialog.global-library-dialog.button.e58cede1bdf5": {
+  "nb": "Legg til i det globale biblioteket",
+  "en": "Add to the global library",
+  "oversatt": "グローバルライブラリに追加"
+ },
+ "app-global-global-library-dialog.global-library-dialog.dialog-description.8ff55228021d": {
+  "nb": "Ressurser som deles i arbeidsgruppen «{workspaceName}». Det som hentes inn, blir en kopi i prosjektet; nye globale versjoner tas aldri inn av seg selv.",
+  "en": "Assets shared in the workspace “{workspaceName}”. What you bring in becomes a copy in the project; new global versions are never brought in by themselves.",
+  "oversatt": "ワークスペース「{workspaceName}」で共有されているアセット。読み込んだアセットはプロジェクト内のコピーとなり、グローバルで新しいバージョンが作成されても自動で取り込まれることはありません。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.dialog-description.d6cd863d4466": {
+  "nb": "Ressurser som deles i en arbeidsgruppe.",
+  "en": "Assets shared in a workspace.",
+  "oversatt": "ワークスペースで共有されているアセット。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.dialog-title.5633ef0a1f18": {
+  "nb": "Globalt bibliotek",
+  "en": "Global library",
+  "oversatt": "グローバルライブラリ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.div.c20f5e13b260": {
+  "nb": "ingen du har tilgang til",
+  "en": "none you have access to",
+  "oversatt": "アクセス権があるものはありません"
+ },
+ "app-global-global-library-dialog.global-library-dialog.div.dcd3b1266f5e": {
+  "nb": "Brukt i prosjekter:",
+  "en": "Used in projects:",
+  "oversatt": "使用中のプロジェクト:"
+ },
+ "app-global-global-library-dialog.global-library-dialog.h3.2dee9180574d": {
+  "nb": "Ny global ressurs",
+  "en": "New global asset",
+  "oversatt": "新規グローバルアセット"
+ },
+ "app-global-global-library-dialog.global-library-dialog.label.25aa4c5a32c6": {
+  "nb": "Vis arkiverte",
+  "en": "Show archived",
+  "oversatt": "アーカイブ済みを表示"
+ },
+ "app-global-global-library-dialog.global-library-dialog.li.843f4e50752a": {
+  "nb": "Ingen treff.",
+  "en": "No matches.",
+  "oversatt": "一致するものはありません。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.link.b2b8bad32cc5": {
+  "nb": "Min konto",
+  "en": "My account",
+  "oversatt": "マイアカウント"
+ },
+ "app-global-global-library-dialog.global-library-dialog.option.162186c63bf5": {
+  "nb": "Alle typer",
+  "en": "All types",
+  "oversatt": "すべてのタイプ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.option.c6b0a80e85bf": {
+  "nb": "Alle kategorier",
+  "en": "All categories",
+  "oversatt": "すべてのカテゴリー"
+ },
+ "app-global-global-library-dialog.global-library-dialog.option.d6017618f2d9": {
+  "nb": "Alle merker",
+  "en": "All tags",
+  "oversatt": "すべてのタグ"
+ },
+ "app-global-global-library-dialog.global-library-dialog.p.43e7196f3257": {
+  "nb": "Du er ikke medlem av arbeidsgruppen prosjektet er koblet til.",
+  "en": "You are not a member of the workspace the project is linked to.",
+  "oversatt": "プロジェクトがリンクされているワークスペースのメンバーではありません。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.p.5a35bca2a060": {
+  "nb": "Det globale biblioteket krever en nyere databaseversjon.",
+  "en": "The global library requires a newer database version.",
+  "oversatt": "グローバルライブラリには新しいデータベースバージョンが必要です。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.p.b130b57448e3": {
+  "nb": "Velg en ressurs for å se den.",
+  "en": "Choose an asset to see it.",
+  "oversatt": "アセットを選択して表示します。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.p.cca1ebe58835": {
+  "nb": "Prosjektet er ikke koblet til en arbeidsgruppe. Prosjektets eier kan koble det på gruppesiden under ",
+  "en": "The project is not linked to a workspace. The project owner can link it on the workspace page under ",
+  "oversatt": "プロジェクトがワークスペースにリンクされていません。プロジェクトの所有者は、ワークスペースページの次からリンクできます: "
+ },
+ "app-global-global-library-dialog.global-library-dialog.placeholder.7bab8b693b9c": {
+  "nb": "Merker, skilt med komma",
+  "en": "Tags, separated by commas",
+  "oversatt": "タグ（カンマ区切り）"
+ },
+ "app-global-global-library-dialog.global-library-dialog.placeholder.9e935e59aa41": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-global-global-library-dialog.global-library-dialog.placeholder.ca8b8a1af7de": {
+  "nb": "Søk etter navn, merke, kategori …",
+  "en": "Search by name, tag, category …",
+  "oversatt": "名前、タグ、カテゴリーで検索…"
+ },
+ "app-global-global-library-dialog.global-library-dialog.span.90a6a1b93385": {
+  "nb": "i prosjektet",
+  "en": "in the project",
+  "oversatt": "プロジェクト内"
+ },
+ "app-global-global-library-dialog.global-library-dialog.span.cbe825799eed": {
+  "nb": "arkivert",
+  "en": "archived",
+  "oversatt": "アーカイブ済み"
+ },
+ "app-global-global-library-dialog.global-library-dialog.span.cbe825799eed.2": {
+  "nb": "arkivert",
+  "en": "archived",
+  "oversatt": "アーカイブ済み"
+ },
+ "app-global-global-library-dialog.global-library-dialog.span.fea9485311d5": {
+  "nb": "Ny versjon finnes – oppdater? «{name}» ({value2}): v{usedNumber} → v{number}",
+  "en": "A new version exists – update? “{name}” ({value2}): v{usedNumber} → v{number}",
+  "oversatt": "新しいバージョンがあります – 更新しますか？「{name}」（{value2}）: v{usedNumber} → v{number}"
+ },
+ "app-global-global-library-dialog.global-library-dialog.title.10ac6c847d34": {
+  "nb": "Skjuler ressursen i det globale biblioteket. Prosjektene beholder sine kopier.",
+  "en": "Hides the asset in the global library. The projects keep their copies.",
+  "oversatt": "グローバルライブラリでアセットを非表示にします。各プロジェクトのコピーは保持されます。"
+ },
+ "app-global-global-library-dialog.global-library-dialog.title.d7a035374701": {
+  "nb": "Legger den nye versjonen til i prosjektet. Den godkjente versjonen og scenene endres ikke før du velger det.",
+  "en": "Adds the new version to the project. The approved version and the scenes do not change until you choose so.",
+  "oversatt": "新しいバージョンをプロジェクトに追加します。選択するまで、承認済みバージョンやシーンは変更されません。"
+ },
+ "app-global-global-library-dialog.name.name.5ae7e3c71566": {
+  "nb": "Standard",
+  "en": "Standard",
+  "oversatt": "標準"
+ },
+ "app-global-global-library-dialog.use.act.d78dd443e850": {
+  "nb": "Lagt til i prosjektet.",
+  "en": "Added to the project.",
+  "oversatt": "プロジェクトに追加しました。"
+ },
+ "app-global-global-library-dialog.use.act.d909b395d682": {
+  "nb": "Ressursen fantes i prosjektet og er gjenbrukt.",
+  "en": "The asset was already in the project and has been reused.",
+  "oversatt": "アセットはすでにプロジェクト内に存在していたため、再利用されました。"
+ },
+ "app-global-save-to-global-button.save-to-global-button.button.dbeb4d2ecc86": {
+  "nb": "Lagre i globalt bibliotek",
+  "en": "Save to global library",
+  "oversatt": "グローバルライブラリに保存"
+ },
+ "app-global-save-to-global-button.save-to-global-button.title.07ff4fc8f41c": {
+  "nb": "Kopier ressursen med varianter og bilder til det globale biblioteket i «{value1}». Prosjektet endres ikke.",
+  "en": "Copy the asset with variants and images to the global library in “{value1}”. The project does not change.",
+  "oversatt": "バリアントおよび画像とともにアセットを「{value1}」のグローバルライブラリにコピーします。プロジェクトは変更されません。"
+ },
+ "app-global-save-to-global-button.saved-global": {
+  "nb": {
+   "one": "Lagret i det globale biblioteket ({count} fil).",
+   "other": "Lagret i det globale biblioteket ({count} filer)."
+  },
+  "en": {
+   "one": "Saved in the global library ({count} file).",
+   "other": "Saved in the global library ({count} files)."
+  },
+  "oversatt": {
+   "other": "グローバルライブラリに保存しました（{count}ファイル）。"
+  }
+ },
+ "app-global-save-to-global-button.text.text.a0064fe44474": {
+  "nb": "Lagret i det globale biblioteket ({versions} {value2}).",
+  "en": "Saved in the global library ({versions} {value2}).",
+  "oversatt": "グローバルライブラリに保存しました（{versions} {value2}）。"
+ },
+ "app-i18n-language.language-switch.aria-label.a2595484506d": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "言語"
+ },
+ "app-i18n-language.language-switch.title.52f62cdf7cf1": {
+  "nb": "Testspråk (bare i utvikling)",
+  "en": "Test language (development only)",
+  "oversatt": "テスト言語（開発用のみ）"
+ },
+ "app-i18n-language.language-switch.title.691fad620f12": {
+  "nb": "Språk i tjenesten",
+  "en": "Language of the app",
+  "oversatt": "アプリの表示言語"
+ },
+ "app-inspect.angle": {
+  "nb": "Vinkel",
+  "en": "Angle",
+  "oversatt": "角度"
+ },
+ "app-inspect.close": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "app-inspect.delete": {
+  "nb": "Slett markør",
+  "en": "Delete marker",
+  "oversatt": "マーカーを削除"
+ },
+ "app-inspect.discard": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "破棄"
+ },
+ "app-inspect.distance": {
+  "nb": "Avstand",
+  "en": "Distance",
+  "oversatt": "距離"
+ },
+ "app-inspect.dpi": {
+  "nb": "Kildefilen er under 150 dpi i fysisk størrelse",
+  "en": "Source image is below 150 dpi at physical size",
+  "oversatt": "元の画像が実寸サイズで150 dpi未満です"
+ },
+ "app-inspect.fit": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "全体表示"
+ },
+ "app-inspect.height": {
+  "nb": "Høyde",
+  "en": "Height",
+  "oversatt": "高さ"
+ },
+ "app-inspect.help": {
+  "nb": "Klikk for målepunkter. Mellomrom + dra panorerer. Alt deaktiverer magnet. Tab velger markører; piler flytter, Shift gir 1 mm. Delete sletter.",
+  "en": "Click to place measurement points. Space + drag pans. Alt disables snapping. Tab selects markers; arrows move, Shift moves 1 mm. Delete removes.",
+  "oversatt": "クリックして計測ポイントを配置。Space + ドラッグでパン。Altでスナップを無効化。Tabでマーカーを選択、矢印キーで移動、Shiftで1 mm移動。Deleteで削除。"
+ },
+ "app-inspect.invalid": {
+  "nb": "Ugyldig målesett eller kalibrering mangler",
+  "en": "Invalid measurement set or calibration missing",
+  "oversatt": "無効な測定セット、またはキャリブレーションが不足しています"
+ },
+ "app-inspect.line": {
+  "nb": "Linje",
+  "en": "Line",
+  "oversatt": "線"
+ },
+ "app-inspect.markers": {
+  "nb": "Markører",
+  "en": "Markers",
+  "oversatt": "マーカー"
+ },
+ "app-inspect.name": {
+  "nb": "Navn på målesett",
+  "en": "Measurement set name",
+  "oversatt": "測定セット名"
+ },
+ "app-inspect.open": {
+  "nb": "Inspiser og mål",
+  "en": "Inspect and measure",
+  "oversatt": "検査と測定"
+ },
+ "app-inspect.pdf": {
+  "nb": "PDF-arkramme – kommer i runde 4",
+  "en": "PDF sheet frame – coming in round 4",
+  "oversatt": "PDFシートフレーム – ラウンド4で追加予定"
+ },
+ "app-inspect.physical": {
+  "nb": "100 % fysisk",
+  "en": "100% physical",
+  "oversatt": "100% 物理サイズ"
+ },
+ "app-inspect.plate": {
+  "nb": "Platenivå / kameraavstand",
+  "en": "Plate level / camera distance",
+  "oversatt": "プレートレベル / カメラ距離"
+ },
+ "app-inspect.point": {
+  "nb": "Punkt",
+  "en": "Point",
+  "oversatt": "ポイント"
+ },
+ "app-inspect.ratio": {
+  "nb": "Forhold",
+  "en": "Ratio",
+  "oversatt": "比率"
+ },
+ "app-inspect.redo": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "やり直し"
+ },
+ "app-inspect.ruler": {
+  "nb": "Skjermlinjal: juster til 50 mm på en fysisk linjal",
+  "en": "Screen ruler: adjust to 50 mm on a physical ruler",
+  "oversatt": "画面ルーラー: 物理的な定規で50 mmに合わせて調整"
+ },
+ "app-inspect.save": {
+  "nb": "Lagre målesett",
+  "en": "Save measurement set",
+  "oversatt": "測定セットを保存"
+ },
+ "app-inspect.undo": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "元に戻す"
+ },
+ "app-inspect.units": {
+  "nb": "Bytt måleenhet",
+  "en": "Switch measurement unit",
+  "oversatt": "測定単位を切り替え"
+ },
+ "app-inspect.valid": {
+  "nb": "Kalibrert",
+  "en": "Calibrated",
+  "oversatt": "キャリブレーション済み"
+ },
+ "app-inspect.width": {
+  "nb": "Bredde",
+  "en": "Width",
+  "oversatt": "幅"
+ },
+ "app-inspect.zoomIn": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "ズームイン"
+ },
+ "app-inspect.zoomOut": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "ズームアウト"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.aria-label.a4177310e1aa": {
+  "nb": "Scener med 2D-scene",
+  "en": "Scenes with a 2D scene",
+  "oversatt": "2Dシーンを含むシーン"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.button.519fccfaff95": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.button.dad6f23eb142": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.dialog-description.4ca829724279": {
+  "nb": "Bildet brukes i scenene under. Velg hvilke som skal få det nye bildet – de andre beholder bildet de har nå.",
+  "en": "The image is used in the scenes below. Choose which ones get the new image – the others keep the image they have now.",
+  "oversatt": "この画像は以下のシーンで使用されています。新しい画像を適用するシーンを選択してください。選択しなかったシーンは現在の画像を保持します。"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.d7af7f578283": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "」"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.dad6f23eb142": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.e5640f20eb11": {
+  "nb": "av «",
+  "en": "of “",
+  "oversatt": " / 「"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.p.a64e1784ca11": {
+  "nb": "Godkjenningen gjelder hele prosjektet, også andre produksjoner.",
+  "en": "The approval applies to the whole project, including other productions.",
+  "oversatt": "この承認は他のプロダクションを含むプロジェクト全体に適用されます。"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.p.bb7f88302c69": {
+  "nb": "Ferdig film kan være påvirket (usikkert – filmen endres ikke, kontroller den selv):",
+  "en": "A finished film may be affected (uncertain – the film is not changed, check it yourself):",
+  "oversatt": "完成した映像に影響がある可能性があります（未確定 – 映像自体は変更されません。ご自身で確認してください）："
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.p.c5bbe94479c9": {
+  "nb": "Ingen 2D-scener får et annet bilde.",
+  "en": "No 2D scenes get a different image.",
+  "oversatt": "別の画像が適用される2Dシーンはありません。"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.span.2d2255817622": {
+  "nb": " ({follows} bilde låses til dagens versjon)",
+  "en": " ({follows} image locked to today's version)",
+  "oversatt": " （{follows}件の画像が現在のバージョンに固定されます）"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.span.6465b25bfacc": {
+  "nb": "Beholder bildet den har nå",
+  "en": "Keeps the image it has now",
+  "oversatt": "現在の画像を保持"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.span.af5aa2d63731": {
+  "nb": " · {newer} bilde er låst til en nyere versjon og endres ikke",
+  "en": " · {newer} image is locked to a newer version and is not changed",
+  "oversatt": " · {newer}件の画像はより新しいバージョンに固定されているため変更されません"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.span.b85e291e1099": {
+  "nb": " ({locked} låst bilde oppdateres)",
+  "en": " ({locked} locked image updated)",
+  "oversatt": " （固定された画像{locked}件を更新）"
+ },
+ "app-library-approve-impact-dialog.approve-impact-dialog.span.e6651dd3fa03": {
+  "nb": "Får det nye bildet",
+  "en": "Gets the new image",
+  "oversatt": "新しい画像を適用"
+ },
+ "app-library-approve-impact-dialog.confirm.set-err.145c3611aee6": {
+  "nb": "Godkjenningen kan ikke gjøres: {message}",
+  "en": "The approval cannot be made: {message}",
+  "oversatt": "承認できません: {message}"
+ },
+ "app-library-approve-impact-dialog.e.cmds-run.45fc2d59bc59": {
+  "nb": "Godkjenn v{number} av «{name}»",
+  "en": "Approve v{number} of “{name}”",
+  "oversatt": "「{name}」のv{number}を承認"
+ },
+ "app-library-approve-impact-dialog.e.cmds-run.6a89a6a6537b": {
+  "nb": "Bilder i valgte scener",
+  "en": "Images in the chosen scenes",
+  "oversatt": "選択したシーンの画像"
+ },
+ "app-library-approve-impact-dialog.label.message.dd51b2af2f2d": {
+  "nb": " (deaktivert)",
+  "en": " (inactive)",
+  "oversatt": " （無効）"
+ },
+ "app-library-approve-impact-dialog.prod.message.0640a91d3954": {
+  "nb": " · ikke i noen produksjon",
+  "en": " · not in any production",
+  "oversatt": " · どのプロダクションにも含まれていません"
+ },
+ "app-library-approve-impact-dialog.prod.message.a3119ecda93c": {
+  "nb": "annen produksjon",
+  "en": "another production",
+  "oversatt": "別のプロダクション"
+ },
+ "app-library-asset-audio.audio-media-from-stored-file.message.b0f58e68c1c7": {
+  "nb": "Opptaket kunne ikke hentes: {value1}",
+  "en": "The recording could not be fetched: {value1}",
+  "oversatt": "テイクを取得できませんでした: {value1}"
+ },
+ "app-library-asset-audio.check-audio-file.message.631a5483dbce": {
+  "nb": "Filen er tom.",
+  "en": "The file is empty.",
+  "oversatt": "ファイルが空です。"
+ },
+ "app-library-asset-audio.check-audio-file.message.a0e0a9c19850": {
+  "nb": "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC.",
+  "en": "The audio must be MP3, WAV, OGG, WebM, M4A/AAC or FLAC.",
+  "oversatt": "音声は MP3、WAV、OGG、WebM、M4A/AAC、または FLAC である必要があります。"
+ },
+ "app-library-asset-audio.check-audio-file.message.d2ba1e224a71": {
+  "nb": "Lydfilen er større enn 2 GB.",
+  "en": "The audio file is larger than 2 GB.",
+  "oversatt": "音声ファイルが 2 GB を超えています。"
+ },
+ "app-library-asset-audio.label.label.de5d3bcdbac8": {
+  "nb": "Ny lydvariant",
+  "en": "New audio variant",
+  "oversatt": "新規音声バリアント"
+ },
+ "app-library-asset-audio.label.label.e1d5622b9562": {
+  "nb": "Ny lydfil",
+  "en": "New audio file",
+  "oversatt": "新規音声ファイル"
+ },
+ "app-library-asset-audio.label.label.f3e44f771b8a": {
+  "nb": "Ny lyd «{name}»",
+  "en": "New audio “{name}”",
+  "oversatt": "新規音声「{name}」"
+ },
+ "app-library-asset-audio.name-from-file.message.f686ff702b49": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "音声"
+ },
+ "app-library-asset-audio.name.name.03dbbf2ec6db": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "音声"
+ },
+ "app-library-asset-audio.recording-fetch-failed": {
+  "nb": "Opptaket kunne ikke hentes: {error}",
+  "en": "The recording could not be fetched: {error}",
+  "oversatt": "録音を取得できませんでした: {error}"
+ },
+ "app-library-asset-audio.recording-fetch-failed-unknown": {
+  "nb": "Opptaket kunne ikke hentes: ukjent feil",
+  "en": "The recording could not be fetched: unknown error",
+  "oversatt": "録音を取得できませんでした: 不明なエラー"
+ },
+ "app-library-asset-audio.upload-asset-audio.message.18b647a0d2a0": {
+  "nb": "Lyden ble ikke lastet opp: {message}",
+  "en": "The audio was not uploaded: {message}",
+  "oversatt": "音声がアップロードされませんでした: {message}"
+ },
+ "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
+  "nb": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The storage does not accept audio files yet. Contact the administrator to update Animatic Studio.",
+  "oversatt": "ストレージはまだ音声ファイルを受け付けていません。Animatic Studio を更新するには管理者に問い合わせてください。"
+ },
+ "app-library-asset-audio.upload-asset-audio.message.6586274ecaad": {
+  "nb": "Lydfilen kunne ikke leses av nettleseren. Prøv MP3 eller WAV.",
+  "en": "The browser could not read the audio file. Try MP3 or WAV.",
+  "oversatt": "ブラウザで音声ファイルを読み込めませんでした。MP3 または WAV をお試しください。"
+ },
+ "app-library-asset-detail.approve.cmds-run.b7a861a8849b": {
+  "nb": "Godkjenn v{number} av «{name}»",
+  "en": "Approve v{number} of “{name}”",
+  "oversatt": "「{name}」の v{number} を承認"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.219d8b430a93": {
+  "nb": "Fjern navnet {name}",
+  "en": "Remove the name {name}",
+  "oversatt": "名前「{name}」を削除"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.45f8ba674b84": {
+  "nb": "Type navn {value1}",
+  "en": "Name type {value1}",
+  "oversatt": "名前の種類 {value1}"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.67f83ae3e22f": {
+  "nb": "Alternativt navn {value1}",
+  "en": "Alternative name {value1}",
+  "oversatt": "別名 {value1}"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.7310e816d7b2": {
+  "nb": "Brukt i scener",
+  "en": "Used in scenes",
+  "oversatt": "使用シーン"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.92a5eab98df3": {
+  "nb": "Scener med eldre versjon",
+  "en": "Scenes with an older version",
+  "oversatt": "旧バージョンのシーン"
+ },
+ "app-library-asset-detail.asset-detail.aria-label.da622ec81dfa": {
+  "nb": "Språkkode for navn {value1}",
+  "en": "Language code for name {value1}",
+  "oversatt": "名前 {value1} の言語コード"
+ },
+ "app-library-asset-detail.asset-detail.button.1f0e12b0590b": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "破棄"
+ },
+ "app-library-asset-detail.asset-detail.button.4023b5954313": {
+  "nb": "Slett …",
+  "en": "Delete …",
+  "oversatt": "削除…"
+ },
+ "app-library-asset-detail.asset-detail.button.4053891f330a": {
+  "nb": "Arkiver",
+  "en": "Archive",
+  "oversatt": "アーカイブ"
+ },
+ "app-library-asset-detail.asset-detail.button.996f073f4a91": {
+  "nb": "Legg til navn",
+  "en": "Add name",
+  "oversatt": "名前を追加"
+ },
+ "app-library-asset-detail.asset-detail.button.db5b5e70e536": {
+  "nb": "Hent fram",
+  "en": "Restore",
+  "oversatt": "復元"
+ },
+ "app-library-asset-detail.asset-detail.button.e290da0f2adb": {
+  "nb": "Lagre endringer",
+  "en": "Save changes",
+  "oversatt": "変更を保存"
+ },
+ "app-library-asset-detail.asset-detail.cmds-run.91f8f799d264": {
+  "nb": "Hent fram «{name}»",
+  "en": "Restore “{name}”",
+  "oversatt": "「{name}」を復元"
+ },
+ "app-library-asset-detail.asset-detail.cmds-run.9f250eebb497": {
+  "nb": "Arkiver «{name}»",
+  "en": "Archive “{name}”",
+  "oversatt": "「{name}」をアーカイブ"
+ },
+ "app-library-asset-detail.asset-detail.label.075c2e80f75b": {
+  "nb": "Foretrukket navn",
+  "en": "Preferred name",
+  "oversatt": "優先する名前"
+ },
+ "app-library-asset-detail.asset-detail.label.3efe11b63666": {
+  "nb": "Beskrivelse",
+  "en": "Description",
+  "oversatt": "説明"
+ },
+ "app-library-asset-detail.asset-detail.label.46055f39de45": {
+  "nb": "Kategori",
+  "en": "Category",
+  "oversatt": "カテゴリー"
+ },
+ "app-library-asset-detail.asset-detail.label.506f5e544ce4": {
+  "nb": "Opptak til «{name}»",
+  "en": "Recordings for “{name}”",
+  "oversatt": "「{name}」のテイク"
+ },
+ "app-library-asset-detail.asset-detail.label.8ca55f16aea7": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-library-asset-detail.asset-detail.label.9c0585a0436d": {
+  "nb": "Bredde på «Brukt i scener»",
+  "en": "Width of “Used in scenes”",
+  "oversatt": "「使用シーン」の幅"
+ },
+ "app-library-asset-detail.asset-detail.label.c3b02881db89": {
+  "nb": "Bilder av {name}",
+  "en": "Pictures of {name}",
+  "oversatt": "{name} の画像"
+ },
+ "app-library-asset-detail.asset-detail.label.d696fb1ac9af": {
+  "nb": "Stikkord (skill med komma)",
+  "en": "Keywords (separated by commas)",
+  "oversatt": "キーワード（カンマ区切り）"
+ },
+ "app-library-asset-detail.asset-detail.link.e40ad82c4f1d": {
+  "nb": "Snakk med {name} i Story Lab",
+  "en": "Talk to {name} in Story Lab",
+  "oversatt": "Story Lab で {name} と対話"
+ },
+ "app-library-asset-detail.asset-detail.p.b8422fc38d18": {
+  "nb": "Mulige treff: ord i teksten som begynner med navnet. Sjekk at de stemmer.",
+  "en": "Possible matches: words in the text that begin with the name. Check that they are right.",
+  "oversatt": "一致候補: 名前で始まるテキスト内の単語です。正しいか確認してください。"
+ },
+ "app-library-asset-detail.asset-detail.p.bebf67b5d211": {
+  "nb": "Ingen alternative navn.",
+  "en": "No alternative names.",
+  "oversatt": "別名はありません。"
+ },
+ "app-library-asset-detail.asset-detail.p.c6bdef082565": {
+  "nb": "Ikke funnet i manuset under noen av navnene.",
+  "en": "Not found in the script under any of the names.",
+  "oversatt": "どの名前でも脚本内に見つかりませんでした。"
+ },
+ "app-library-asset-detail.asset-detail.placeholder.b0a32a6006a8": {
+  "nb": "F.eks. Familie, Rekvisitt, Gården",
+  "en": "E.g. Family, Props, The farm",
+  "oversatt": "例: 家族、小道具、農場"
+ },
+ "app-library-asset-detail.asset-detail.placeholder.e4da71a6752b": {
+  "nb": "F.eks. hovedrolle, vinter",
+  "en": "E.g. lead role, winter",
+  "oversatt": "例: 主役、冬"
+ },
+ "app-library-asset-detail.asset-detail.span.43af31a1858e": {
+  "nb": "Alternative navn – brukes for å kjenne igjen ressursen i manuset",
+  "en": "Alternative names – used to recognise the asset in the script",
+  "oversatt": "別名 – 脚本内のアセットを認識するために使用"
+ },
+ "app-library-asset-detail.asset-detail.span.4721799db868": {
+  "nb": " som «{matchedName}»",
+  "en": " as “{matchedName}”",
+  "oversatt": " 「{matchedName}」として"
+ },
+ "app-library-asset-detail.asset-detail.span.7310e816d7b2": {
+  "nb": "Brukt i scener",
+  "en": "Used in scenes",
+  "oversatt": "使用されているシーン"
+ },
+ "app-library-asset-detail.asset-detail.span.9708afcf546f": {
+  "nb": "brukt i scenens materiale",
+  "en": "used in the scene’s material",
+  "oversatt": "シーンの素材で使用"
+ },
+ "app-library-asset-detail.asset-detail.span.d016421103b8": {
+  "nb": " · deaktivert",
+  "en": " · inactive",
+  "oversatt": " · 非アクティブ"
+ },
+ "app-library-asset-detail.asset-detail.title.1c3012b76027": {
+  "nb": "Skjul ressursen fra listen. Ingenting slettes, og scener som bruker den, påvirkes ikke.",
+  "en": "Hide the asset from the list. Nothing is deleted, and scenes that use it are not affected.",
+  "oversatt": "アセットをリストから非表示にします。何も削除されず、使用しているシーンにも影響しません。"
+ },
+ "app-library-asset-detail.asset-detail.title.4629da3ff13a": {
+  "nb": "Flytt ressursen til «Slettede objekter» (kan hentes inn igjen)",
+  "en": "Move the asset to “Deleted items” (it can be restored)",
+  "oversatt": "アセットを「ゴミ箱」に移動（復元可能）"
+ },
+ "app-library-asset-detail.asset-detail.title.7bbe30bef638": {
+  "nb": "Vis scenen i manus",
+  "en": "Show the scene in the script",
+  "oversatt": "脚本内のシーンを表示"
+ },
+ "app-library-asset-detail.asset-detail.title.7bbe30bef638.2": {
+  "nb": "Vis scenen i manus",
+  "en": "Show the scene in the script",
+  "oversatt": "脚本内のシーンを表示"
+ },
+ "app-library-asset-detail.asset-detail.title.bb7f8eb3f520": {
+  "nb": "Vis ressursen i biblioteket igjen",
+  "en": "Show the asset in the library again",
+  "oversatt": "アセットをライブラリに再表示"
+ },
+ "app-library-asset-detail.asset-detail.title.d34d9105bf66": {
+  "nb": "Språkkode, f.eks. en for engelsk",
+  "en": "Language code, e.g. en for English",
+  "oversatt": "言語コード（例: 英語は en）"
+ },
+ "app-library-asset-detail.asset-detail.title.e40ad82c4f1d": {
+  "nb": "Snakk med {name} i Story Lab",
+  "en": "Talk to {name} in Story Lab",
+  "oversatt": "Story Labで{name}と会話"
+ },
+ "app-library-asset-detail.delete-asset-confirm.aria-label.56e2a7dbe5da": {
+  "nb": "Slett {name}",
+  "en": "Delete {name}",
+  "oversatt": "{name}を削除"
+ },
+ "app-library-asset-detail.delete-asset-confirm.button.5d261badec96": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-asset-detail.delete-asset-confirm.button.9277c6792009": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "削除"
+ },
+ "app-library-asset-detail.delete-asset-confirm.p.06dfebdebf71": {
+  "nb": "«{name}» flyttes til «Slettede objekter» og forsvinner fra biblioteket og lagvalgene.",
+  "en": "“{name}” is moved to “Deleted items” and disappears from the library and layer choices.",
+  "oversatt": "「{name}」は「ゴミ箱」に移動され、ライブラリおよびレイヤーの選択肢から非表示になります。"
+ },
+ "app-library-asset-detail.delete-asset-confirm.p.528e9861e981": {
+  "nb": "Den brukes i {value1}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.",
+  "en": "It is used in {value1}; they keep the image and sound of the asset until it is deleted for good, and it cannot be deleted for good until they are removed.",
+  "oversatt": "{value1}で使用されています。アセットが完全に削除されるまで画像と音声は保持され、これらが削除されるまで完全に消去することはできません。"
+ },
+ "app-library-asset-detail.delete-asset-confirm.p.839ad620f73d": {
+  "nb": " Den brukes ikke i noen scene.",
+  "en": " It is not used in any scene.",
+  "oversatt": " どのシーンでも使用されていません。"
+ },
+ "app-library-asset-detail.delete-asset-confirm.p.b75f480fd5f0": {
+  "nb": "Du kan hente den inn igjen, og endringen kan angres.",
+  "en": "You can restore it, and the change can be undone.",
+  "oversatt": "復元することができ、変更を取り消すことも可能です。"
+ },
+ "app-library-asset-detail.e.add-uploaded-image.af8d6ad653c3": {
+  "nb": "Nytt bilde i «{name}»",
+  "en": "New image in “{name}”",
+  "oversatt": "「{name}」の新規画像"
+ },
+ "app-library-asset-detail.e.cmds-run.2d765dbd6ed4": {
+  "nb": "Slett «{name}»",
+  "en": "Delete “{name}”",
+  "oversatt": "「{name}」を削除"
+ },
+ "app-library-asset-detail.in-use": {
+  "nb": "Den brukes i {uses}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.",
+  "en": "It is used in {uses}; they keep the image and sound of the asset until it is deleted for good, and it cannot be deleted for good until they are removed.",
+  "oversatt": "{uses}で使用されています。アセットが完全に削除されるまで画像と音声は保持され、これらが削除されるまで完全に消去することはできません。"
+ },
+ "app-library-asset-detail.in-use-and": {
+  "nb": " og ",
+  "en": " and ",
+  "oversatt": " および "
+ },
+ "app-library-asset-detail.in-use-audio": {
+  "nb": {
+   "one": "{count} lydklipp",
+   "other": "{count} lydklipp"
+  },
+  "en": {
+   "one": "{count} audio clip",
+   "other": "{count} audio clips"
+  },
+  "oversatt": {
+   "other": "{count}個の音声クリップ"
+  }
+ },
+ "app-library-asset-detail.in-use-layers": {
+  "nb": {
+   "one": "{count} lag i {scenes}",
+   "other": "{count} lag i {scenes}"
+  },
+  "en": {
+   "one": "{count} layer in {scenes}",
+   "other": "{count} layers in {scenes}"
+  },
+  "oversatt": {
+   "other": "{scenes}内の{count}個のレイヤー"
+  }
+ },
+ "app-library-asset-detail.in-use-scenes": {
+  "nb": {
+   "one": "{count} scene",
+   "other": "{count} scener"
+  },
+  "en": {
+   "one": "{count} scene",
+   "other": "{count} scenes"
+  },
+  "oversatt": {
+   "other": "{count}個のシーン"
+  }
+ },
+ "app-library-asset-detail.name-kind-label.alias.cac9be61c339": {
+  "nb": "Alternativt navn",
+  "en": "Alternative name",
+  "oversatt": "別名"
+ },
+ "app-library-asset-detail.name-kind-label.former.9fc0ac08b353": {
+  "nb": "Tidligere navn",
+  "en": "Former name",
+  "oversatt": "以前の名前"
+ },
+ "app-library-asset-detail.name-kind-label.language.995433f0237d": {
+  "nb": "Annet språk",
+  "en": "Other language",
+  "oversatt": "他の言語"
+ },
+ "app-library-asset-detail.name-kind-label.nickname.e5701b662546": {
+  "nb": "Kallenavn",
+  "en": "Nickname",
+  "oversatt": "ニックネーム"
+ },
+ "app-library-asset-detail.r.cmds-run-and-wait.64b373c83b93": {
+  "nb": "Ny lyd i «{name}»",
+  "en": "New sound in “{name}”",
+  "oversatt": "「{name}」の新規音声"
+ },
+ "app-library-asset-detail.r.cmds-run.438fb9f5784f": {
+  "nb": "Endre variant «{name}»",
+  "en": "Edit variant “{name}”",
+  "oversatt": "バリアント「{name}」を編集"
+ },
+ "app-library-asset-detail.r.cmds-run.763e8f23e6fd": {
+  "nb": "Ny variant «{n}»",
+  "en": "New variant “{n}”",
+  "oversatt": "新規バリアント「{n}」"
+ },
+ "app-library-asset-detail.save.cmds-run.2326823c276c": {
+  "nb": "Endre «{name}»",
+  "en": "Edit “{name}”",
+  "oversatt": "「{name}」を編集"
+ },
+ "app-library-asset-detail.style-label.animatic.802b1cb19d83": {
+  "nb": "Animatic",
+  "en": "Animatic",
+  "oversatt": "アニマティック"
+ },
+ "app-library-asset-detail.style-label.illustrated.505a87f8e201": {
+  "nb": "Illustrert",
+  "en": "Illustrated",
+  "oversatt": "イラスト"
+ },
+ "app-library-asset-detail.style-label.other.346620e2dc3d": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "その他"
+ },
+ "app-library-asset-detail.style-label.poster.40ef2d563219": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "ポスター"
+ },
+ "app-library-asset-detail.style-label.realistic.efa6eba6f907": {
+  "nb": "Filmrealistisk",
+  "en": "Film-realistic",
+  "oversatt": "映画的リアリズム"
+ },
+ "app-library-asset-detail.style-label.reference.c54657cb5bf2": {
+  "nb": "Originalt referansebilde",
+  "en": "Original reference image",
+  "oversatt": "元の参照画像"
+ },
+ "app-library-asset-detail.sync-flag.span.c00bb140fb6c": {
+  "nb": "Ressursen er oppdatert etter at scenen ble laget",
+  "en": "The asset was updated after the scene was made",
+  "oversatt": "アセットはシーン作成後に更新されました"
+ },
+ "app-library-asset-detail.sync-flag.title.43bd508edfc5": {
+  "nb": "{text}. Scenen er ikke endret; gå gjennom scenene for å bruke den nye versjonen.",
+  "en": "{text}. The scene has not changed; review the scenes to use the new version.",
+  "oversatt": "{text}。シーンは変更されていません。新しいバージョンを適用するにはシーンを確認してください。"
+ },
+ "app-library-asset-detail.variant-card.alt.8a3a225c63c0": {
+  "nb": "{name} – {name2}, versjon {number}",
+  "en": "{name} – {name2}, version {number}",
+  "oversatt": "{name} – {name2}、バージョン {number}"
+ },
+ "app-library-asset-detail.variant-card.aria-label.609d497c1f2e": {
+  "nb": "Hent fram varianten",
+  "en": "Restore the variant",
+  "oversatt": "バリアントを復元"
+ },
+ "app-library-asset-detail.variant-card.aria-label.91f3bc1bd842": {
+  "nb": "{name}, versjon {number}",
+  "en": "{name}, version {number}",
+  "oversatt": "{name}、バージョン {number}"
+ },
+ "app-library-asset-detail.variant-card.aria-label.d4f49e061073": {
+  "nb": "Arkiver varianten",
+  "en": "Archive the variant",
+  "oversatt": "バリアントをアーカイブ"
+ },
+ "app-library-asset-detail.variant-card.aria-label.f1e9196cc8ac": {
+  "nb": "Vis {name} – {name2}, versjon {number} i fullskjerm",
+  "en": "Show {name} – {name2}, version {number} in full screen",
+  "oversatt": "{name} – {name2}、バージョン {number} を全画面表示"
+ },
+ "app-library-asset-detail.variant-card.aria-label.f94499f2a6b1": {
+  "nb": "Versjoner av {name}",
+  "en": "Versions of {name}",
+  "oversatt": "{name} のバージョン"
+ },
+ "app-library-asset-detail.variant-card.button.133ed166ac52": {
+  "nb": "Fjern godkjenning",
+  "en": "Remove approval",
+  "oversatt": "承認を解除"
+ },
+ "app-library-asset-detail.variant-card.button.2f8b713cd5b3": {
+  "nb": "og",
+  "en": "and",
+  "oversatt": "および"
+ },
+ "app-library-asset-detail.variant-card.button.3eca50599a04": {
+  "nb": "Lag med AI",
+  "en": "Generate with AI",
+  "oversatt": "AIで生成"
+ },
+ "app-library-asset-detail.variant-card.button.58d7a798f223": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "アップロード中…"
+ },
+ "app-library-asset-detail.variant-card.button.6214e4f3fc43": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-asset-detail.variant-card.button.62a4e4606338": {
+  "nb": "Last opp bilde",
+  "en": "Upload image",
+  "oversatt": "画像をアップロード"
+ },
+ "app-library-asset-detail.variant-card.button.641237cfdd7d": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-library-asset-detail.variant-card.button.78487407b667": {
+  "nb": "Sammenlign",
+  "en": "Compare",
+  "oversatt": "比較"
+ },
+ "app-library-asset-detail.variant-card.button.8d5f1eb48e4d": {
+  "nb": "Last opp lyd",
+  "en": "Upload sound",
+  "oversatt": "音声をアップロード"
+ },
+ "app-library-asset-detail.variant-card.button.9353f50f023d": {
+  "nb": "Frilegg …",
+  "en": "Cut out …",
+  "oversatt": "切り抜き…"
+ },
+ "app-library-asset-detail.variant-card.button.c0f139e159f6": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-library-asset-detail.variant-card.button.cb1547eeee81": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "編集"
+ },
+ "app-library-asset-detail.variant-card.button.da6c5c6da990": {
+  "nb": "Bildeverktøy …",
+  "en": "Image tools …",
+  "oversatt": "画像ツール…"
+ },
+ "app-library-asset-detail.variant-card.cmds-run.133ed166ac52": {
+  "nb": "Fjern godkjenning",
+  "en": "Remove approval",
+  "oversatt": "承認を解除"
+ },
+ "app-library-asset-detail.variant-card.cmds-run.42942bd7d0c8": {
+  "nb": "Hent fram variant",
+  "en": "Restore variant",
+  "oversatt": "バリアントを復元"
+ },
+ "app-library-asset-detail.variant-card.cmds-run.72744cb221f3": {
+  "nb": "Arkiver variant",
+  "en": "Archive variant",
+  "oversatt": "バリアントをアーカイブ"
+ },
+ "app-library-asset-detail.variant-card.label.3d6c88f64c0c": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-library-asset-detail.variant-card.label.59207152ae60": {
+  "nb": "Utseende",
+  "en": "Appearance",
+  "oversatt": "外観"
+ },
+ "app-library-asset-detail.variant-card.label.73f742aea38f": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "スタイル"
+ },
+ "app-library-asset-detail.variant-card.label.78487407b667": {
+  "nb": "Sammenlign",
+  "en": "Compare",
+  "oversatt": "比較"
+ },
+ "app-library-asset-detail.variant-card.p.3999408ab611": {
+  "nb": "Ingen lyder ennå.",
+  "en": "No sounds yet.",
+  "oversatt": "音声はまだありません。"
+ },
+ "app-library-asset-detail.variant-card.p.5c02ded0c664": {
+  "nb": "1 versjon er skjult av filteret på opphav.",
+  "en": "1 version is hidden by the origin filter.",
+  "oversatt": "ソースフィルターにより1件のバージョンが非表示になっています。"
+ },
+ "app-library-asset-detail.variant-card.p.beaaec641337": {
+  "nb": "{hiddenByFilter} versjoner er skjult av filteret på opphav.",
+  "en": "{hiddenByFilter} versions are hidden by the origin filter.",
+  "oversatt": "ソースフィルターにより {hiddenByFilter} 件のバージョンが非表示になっています。"
+ },
+ "app-library-asset-detail.variant-card.p.c16784746589": {
+  "nb": "Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som skal få det. Uten godkjent bilde viser scenene det nyeste.",
+  "en": "When you approve an image, you see which scenes are affected and choose yourself which of them get it. Without an approved image, the scenes show the newest one.",
+  "oversatt": "画像を承認すると、影響を受けるシーンを確認し、どれに適用するかを選択できます。承認された画像がない場合、シーンには最新のものが表示されます。"
+ },
+ "app-library-asset-detail.variant-card.p.c5a23afb4e26": {
+  "nb": "Ingen bilder ennå.",
+  "en": "No images yet.",
+  "oversatt": "画像はまだありません。"
+ },
+ "app-library-asset-detail.variant-card.span.a3d0e9f090f0": {
+  "nb": "Arkivert",
+  "en": "Archived",
+  "oversatt": "アーカイブ済み"
+ },
+ "app-library-asset-detail.variant-card.span.e79d8716cb7d": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "承認済み"
+ },
+ "app-library-asset-detail.variant-card.title.23c7fb729258": {
+  "nb": "Stor visning med beskrivelsen og bildeverktøy: utsnitt, del opp i ruter, vinkel, andre vinkler, oppskalering",
+  "en": "Large view with the description and image tools: crop, split into tiles, angle, other angles, upscale",
+  "oversatt": "説明と画像ツール（トリミング、タイル分割、アングル、別アングル、アップスケール）を備えた拡大表示"
+ },
+ "app-library-asset-detail.variant-card.title.82f05d970b0a": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "無題"
+ },
+ "app-library-asset-detail.variant-card.title.846abe9e17f7": {
+  "nb": "Dobbeltklikk for fullskjerm, zoom og nedlasting",
+  "en": "Double-click for full screen, zoom and download",
+  "oversatt": "ダブルクリックで全画面表示、ズーム、ダウンロード"
+ },
+ "app-library-asset-detail.variant-card.title.c51dd4e56bb5": {
+  "nb": "Arkiver (ingenting slettes)",
+  "en": "Archive (nothing is deleted)",
+  "oversatt": "アーカイブ（何も削除されません）"
+ },
+ "app-library-asset-detail.variant-card.title.ecfdfb66fca2": {
+  "nb": "Fjern bakgrunnen (gratis, lagres som ny versjon)",
+  "en": "Remove the background (free, saved as a new version)",
+  "oversatt": "背景を削除（無料・新バージョンとして保存）"
+ },
+ "app-library-asset-detail.variant-card.title.fed0e3ebd92f": {
+  "nb": "Hent fram",
+  "en": "Restore",
+  "oversatt": "復元"
+ },
+ "app-library-asset-detail.variants.button.3c1dc4f7fee7": {
+  "nb": "Ny variant",
+  "en": "New variant",
+  "oversatt": "新規バリアント"
+ },
+ "app-library-asset-detail.variants.button.527e1706f5c2": {
+  "nb": "Gå gjennom scenene …",
+  "en": "Review the scenes …",
+  "oversatt": "シーンを確認…"
+ },
+ "app-library-asset-detail.variants.h2.03537eeb3e9c": {
+  "nb": "Visuelle varianter",
+  "en": "Visual variants",
+  "oversatt": "ビジュアルバリアント"
+ },
+ "app-library-asset-detail.variants.h2.f460b5b5c7d3": {
+  "nb": "Varianter av lyden",
+  "en": "Sound variants",
+  "oversatt": "音声バリアント"
+ },
+ "app-library-asset-detail.variants.label.661274bdd067": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "スタイル"
+ },
+ "app-library-asset-detail.variants.label.66219fb0ed5f": {
+  "nb": "Arkiverte",
+  "en": "Archived",
+  "oversatt": "アーカイブ済み"
+ },
+ "app-library-asset-detail.variants.label.c2624a75b433": {
+  "nb": "Navn på variant",
+  "en": "Variant name",
+  "oversatt": "バリアント名"
+ },
+ "app-library-asset-detail.variants.label.f5ea4f263706": {
+  "nb": "Utseende (valgfritt)",
+  "en": "Appearance (optional)",
+  "oversatt": "外観（任意）"
+ },
+ "app-library-asset-detail.variants.p.9295e143c1f3": {
+  "nb": "Ingen varianter ennå. En variant er for eksempel «Animatic», «Plakat» eller «Vinterklær». Last opp bilder til den – hvert bilde blir en versjon.",
+  "en": "No variants yet. A variant is, for example, “Animatic”, “Poster” or “Winter clothes”. Upload images to it – each image becomes a version.",
+  "oversatt": "バリアントはまだありません。バリアントとは、例えば「アニマティック」「ポスター」「冬服」などです。画像をアップロードすると、各画像がバージョンになります。"
+ },
+ "app-library-asset-detail.variants.placeholder.09f52ed30bcd": {
+  "nb": "F.eks. kort hår, vinterklær",
+  "en": "E.g. short hair, winter clothes",
+  "oversatt": "例：ショートヘア、冬服"
+ },
+ "app-library-asset-detail.variants.span.0992ba5bae33": {
+  "nb": "sted i filmen viser",
+  "en": "place in the film still shows",
+  "oversatt": "箇所の表示内容："
+ },
+ "app-library-asset-detail.variants.span.2b4a38427761": {
+  "nb": "Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen godkjenning.",
+  "en": "One identity – several looks and styles. Each variant has its own versions and approval.",
+  "oversatt": "1つのIDで複数の外観やスタイルに対応。各バリアントに個別のバージョンと承認があります。"
+ },
+ "app-library-asset-detail.variants.span.363469830023": {
+  "nb": "steder i filmen viser",
+  "en": "places in the film still show",
+  "oversatt": "箇所の表示内容："
+ },
+ "app-library-asset-detail.variants.span.98f6f95cb137": {
+  "nb": "fortsatt en eldre versjon av",
+  "en": "an older version of",
+  "oversatt": "の古いバージョンを表示中："
+ },
+ "app-library-asset-detail.variants.span.fcdc36659688": {
+  "nb": "Én lyd – flere utgaver. Hver variant har egne versjoner og egen godkjenning.",
+  "en": "One sound – several versions. Each variant has its own versions and approval.",
+  "oversatt": "1つのサウンドで複数の仕様に対応。各バリアントに個別のバージョンと承認があります。"
+ },
+ "app-library-asset-images.check-image-file.message.578b4a2c9f82": {
+  "nb": "Bildet er større enn 2 GB.",
+  "en": "The image is larger than 2 GB.",
+  "oversatt": "画像サイズが2GBを超えています。"
+ },
+ "app-library-asset-images.check-image-file.message.8c338d328c16": {
+  "nb": "Dette er en film. Film legges inn i monteringen: velg scenen og «Importer film» (MP4, MOV eller WebM).",
+  "en": "This is a film. Films are added in the assembly: choose the scene and “Import film” (MP4, MOV or WebM).",
+  "oversatt": "これは動画ファイルです。動画は編集（アセンブリ）で追加されます：シーンを選択して「動画をインポート」（MP4、MOV、WebM）を実行してください。"
+ },
+ "app-library-asset-images.check-image-file.message.c12865f50004": {
+  "nb": "Filen er tom.",
+  "en": "The file is empty.",
+  "oversatt": "ファイルが空です。"
+ },
+ "app-library-asset-images.check-image-file.message.ebded7c85066": {
+  "nb": "Bildet må være PNG, JPEG, WebP, GIF eller TIFF.",
+  "en": "The image must be PNG, JPEG, WebP, GIF or TIFF.",
+  "oversatt": "画像形式はPNG、JPEG、WebP、GIF、TIFFのいずれかである必要があります。"
+ },
+ "app-library-asset-images.image-fetch-failed": {
+  "nb": "Bildet kunne ikke hentes: {error}",
+  "en": "The image could not be fetched: {error}",
+  "oversatt": "画像を取得できませんでした: {error}"
+ },
+ "app-library-asset-images.image-fetch-failed-unknown": {
+  "nb": "Bildet kunne ikke hentes: ukjent feil",
+  "en": "The image could not be fetched: unknown error",
+  "oversatt": "画像を取得できませんでした: 不明なエラー"
+ },
+ "app-library-asset-images.media-from-stored-file.message.c2b008594093": {
+  "nb": "Bildet kunne ikke hentes: {value1}",
+  "en": "The image could not be fetched: {value1}",
+  "oversatt": "画像を取得できませんでした: {value1}"
+ },
+ "app-library-asset-images.upload-one.message.0cb14e697856": {
+  "nb": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The image storage bucket is missing. Contact the administrator to update Animatic Studio.",
+  "oversatt": "画像ストレージバケットが見つかりません。Animatic Studioのアップデートについて管理者に問い合わせてください。"
+ },
+ "app-library-asset-images.upload-one.message.de961140f8b0": {
+  "nb": "Bildet ble ikke lastet opp: {message}",
+  "en": "The image was not uploaded: {message}",
+  "oversatt": "画像をアップロードできませんでした: {message}"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.alt.4c9b8b2ffea0": {
+  "nb": "Godkjent versjon {value1}",
+  "en": "Approved version {value1}",
+  "oversatt": "承認済みバージョン {value1}"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.alt.e259cc2e67bc": {
+  "nb": "Versjon {value1} nå i scenen",
+  "en": "Version {value1} now in the scene",
+  "oversatt": "バージョン {value1} が現在シーンに適用中"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.aria-label.252d479eee48": {
+  "nb": "Berørte scener",
+  "en": "Affected scenes",
+  "oversatt": "影響を受けるシーン"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.button.043cc60ba630": {
+  "nb": "Behold",
+  "en": "Keep",
+  "oversatt": "保持"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.button.62f839c2a0f7": {
+  "nb": "Bruk ny versjon her",
+  "en": "Use the new version here",
+  "oversatt": "ここで新バージョンを使用"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-description.bc895287bfcd": {
+  "nb": "Scenene som fortsatt viser en eldre versjon. Gå gjennom én og én og velg om den nye versjonen skal brukes. Ingenting endres uten at du velger det, og AI-video lages aldri på nytt av seg selv.",
+  "en": "The scenes that still show an older version. Go through them one by one and choose whether the new version should be used. Nothing changes unless you choose it, and AI video is never made again by itself.",
+  "oversatt": "まだ古いバージョンを表示しているシーンです。1つずつ確認し、新バージョンを使用するかどうかを選択してください。選択しない限り何も変更されず、AI動画が自動で再生成されることもありません。"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-title.74df3dde3e9c": {
+  "nb": "Arbeidsliste – oppdaterte ressurser",
+  "en": "Worklist – updated assets",
+  "oversatt": "作業リスト – 更新されたアセット"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.b8549f730d8e": {
+  "nb": "Nå i scenen",
+  "en": "Now in the scene",
+  "oversatt": "現在シーンに適用中"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.e05d24939499": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "承認済み"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.link.50aa0146475a": {
+  "nb": "Lag ny video …",
+  "en": "Make new video …",
+  "oversatt": "新規動画を作成…"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.link.a2a875090ae1": {
+  "nb": "Åpne i sceneeditoren",
+  "en": "Open in the scene editor",
+  "oversatt": "シーンエディタで開く"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.link.d2f3644f103f": {
+  "nb": "Åpne i monteringen",
+  "en": "Open in the assembly",
+  "oversatt": "編集（アセンブリ）で開く"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.p.4a0d1bc6b404": {
+  "nb": "ressursen",
+  "en": "the asset",
+  "oversatt": "アセット"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.p.886aa844725b": {
+  "nb": "viser",
+  "en": "shows",
+  "oversatt": "表示中"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.p.88938589a7a6": {
+  "nb": "Ingen scener står igjen – alt viser den godkjente versjonen, eller du har valgt å beholde.",
+  "en": "No scenes are left – everything shows the approved version, or you have chosen to keep it.",
+  "oversatt": "残っているシーンはありません。すべて承認済みバージョンが表示されているか、保持が選択されています。"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.p.a9778864a253": {
+  "nb": "Videoen ble laget med den eldre versjonen som referanse. En video kan ikke byttes ut automatisk; lag en ny i monteringen hvis du vil, eller behold den.",
+  "en": "The video was made with the older version as a reference. A video cannot be replaced automatically; make a new one in the assembly if you want, or keep it.",
+  "oversatt": "動画は旧バージョンを参照して作成されました。動画は自動的に差し替えられません。必要に応じて編集（アセンブリ）で新規作成するか、そのまま保持してください。"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.p.c6800fb4cb6c": {
+  "nb": "Godkjent nå: v",
+  "en": "Approved now: v",
+  "oversatt": "現在の承認済み: v"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.e66660ceb126": {
+  "nb": "Behold eldre versjon i {value1}",
+  "en": "Keep older version in {value1}",
+  "oversatt": "{value1} の旧バージョンを保持"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.f28662943fa9": {
+  "nb": "Bruk {value1} v{value2} i {value3}",
+  "en": "Use {value1} v{value2} in {value3}",
+  "oversatt": "{value3} で {value1} v{value2} を使用"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.span.c2a3e9453200": {
+  "nb": "Ressurs",
+  "en": "Asset",
+  "oversatt": "アセット"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.span.eacc55c73d06": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.title.55dd13100162": {
+  "nb": "Åpner scenen i monteringen. Der starter du genereringen selv, med pris først.",
+  "en": "Opens the scene in the assembly. There you start the generation yourself, with the price first.",
+  "oversatt": "編集（アセンブリ）でシーンを開きます。価格を確認してから生成を開始してください。"
+ },
+ "app-library-asset-worklist-dialog.asset-worklist-dialog.title.da3cac579a30": {
+  "nb": "Scenen beholder det gamle bildet og forsvinner fra listen til en ny versjon godkjennes",
+  "en": "The scene keeps the old image and disappears from the list until a new version is approved",
+  "oversatt": "シーンは古い画像を保持し、新しいバージョンが承認されるまでリストから非表示になります"
+ },
+ "app-library-asset-worklist-dialog.kind-label.ai.cfbffbe42ad7": {
+  "nb": "AI-video",
+  "en": "AI video",
+  "oversatt": "AI動画"
+ },
+ "app-library-asset-worklist-dialog.kind-label.layer.bd7ceeafaf98": {
+  "nb": "2D-scene",
+  "en": "2D scene",
+  "oversatt": "2Dシーン"
+ },
+ "app-library-asset-worklist-dialog.kind-label.still.758a3b9fa8c2": {
+  "nb": "Stillbilde",
+  "en": "Still image",
+  "oversatt": "静止画"
+ },
+ "app-library-asset-worklist-dialog.scene-text.message.2f16d5a47a67": {
+  "nb": "2D-scene uten scene i filmen",
+  "en": "2D scene with no scene in the film",
+  "oversatt": "映画内にシーンがない2Dシーン"
+ },
+ "app-library-asset-worklist-dialog.scene-text.message.6cd9d9647af4": {
+  "nb": "Scene {value1}",
+  "en": "Scene {value1}",
+  "oversatt": "シーン {value1}"
+ },
+ "app-library-asset-worklist-dialog.use-version-in": {
+  "nb": "Bruk {asset} v{version} i {scene}",
+  "en": "Use {asset} v{version} in {scene}",
+  "oversatt": "{scene} で {asset} v{version} を使用"
+ },
+ "app-library-asset-worklist-dialog.use-version-in-asset": {
+  "nb": "ressursen",
+  "en": "the asset",
+  "oversatt": "アセット"
+ },
+ "app-library-asset-zip.asset-zip-dialog.dialog-description.313624f899ae": {
+  "nb": "Én mappe per kategori og ressurs; alle versjoner med originalt filnavn. Velg kategorier, eller last ned alt samlet.",
+  "en": "One folder per category and asset; all versions with their original file name. Choose categories, or download everything together.",
+  "oversatt": "カテゴリおよびアセットごとに1つのフォルダが作成され、すべてのバージョンが元のファイル名で保存されます。カテゴリを選択するか、すべてまとめてダウンロードしてください。"
+ },
+ "app-library-asset-zip.asset-zip-dialog.dialog-title.37082a1f4d35": {
+  "nb": "Last ned ressurser fra «{projectName}»",
+  "en": "Download assets from “{projectName}”",
+  "oversatt": "「{projectName}」からアセットをダウンロード"
+ },
+ "app-library-asset-zip.asset-zip-dialog.p.aec9d14a93a7": {
+  "nb": "Ressursene kunne ikke hentes",
+  "en": "The assets could not be fetched",
+  "oversatt": "アセットを取得できませんでした"
+ },
+ "app-library-asset-zip.asset-zip-dialog.p.c8281b2bb1c3": {
+  "nb": "Henter ressursene …",
+  "en": "Fetching the assets …",
+  "oversatt": "アセットを取得中…"
+ },
+ "app-library-asset-zip.asset-zip-panel.a.c3affb8018ae": {
+  "nb": "Lagre zip-filen",
+  "en": "Save the zip file",
+  "oversatt": "ZIPファイルを保存"
+ },
+ "app-library-asset-zip.asset-zip-panel.aria-label.89a5418ee6c1": {
+  "nb": "Last ned ressurser",
+  "en": "Download assets",
+  "oversatt": "アセットをダウンロード"
+ },
+ "app-library-asset-zip.asset-zip-panel.button.bbc765963d84": {
+  "nb": "Last ned valgte",
+  "en": "Download selected",
+  "oversatt": "選択項目をダウンロード"
+ },
+ "app-library-asset-zip.asset-zip-panel.button.c11fd28608b5": {
+  "nb": "Last ned alt",
+  "en": "Download all",
+  "oversatt": "すべてダウンロード"
+ },
+ "app-library-asset-zip.asset-zip-panel.button.f44bab868f90": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-asset-zip.asset-zip-panel.h3.f912a09ad9f6": {
+  "nb": "Last ned ressurser som zip",
+  "en": "Download assets as zip",
+  "oversatt": "ZIPとしてアセットをダウンロード"
+ },
+ "app-library-asset-zip.asset-zip-panel.p.41efa5af3f76": {
+  "nb": "Prosjektet har ingen ressursfiler.",
+  "en": "The project has no asset files.",
+  "oversatt": "プロジェクトにアセットファイルがありません。"
+ },
+ "app-library-asset-zip.asset-zip-panel.p.439f46679cfa": {
+  "nb": "(hvis nedlastingen ikke startet).",
+  "en": "(if the download did not start).",
+  "oversatt": "（ダウンロードが開始されなかった場合）。"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.199cb15f5c71": {
+  "nb": " · {value1} av {value2}",
+  "en": " · {value1} of {value2}",
+  "oversatt": " · {value1} / {value2}"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.293ad35aaf6a": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.2d183e292f07": {
+  "nb": "filer",
+  "en": "files",
+  "oversatt": "ファイル"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.2d183e292f07.2": {
+  "nb": "filer",
+  "en": "files",
+  "oversatt": "ファイル"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.2e1414afd07d": {
+  "nb": "Over {value1} – velg færre kategorier",
+  "en": "Over {value1} – choose fewer categories",
+  "oversatt": "{value1} を超過 – 選択するカテゴリを減らしてください"
+ },
+ "app-library-asset-zip.asset-zip-panel.span.c676a008823f": {
+  "nb": "fil",
+  "en": "file",
+  "oversatt": "ファイル"
+ },
+ "app-library-asset-zip.cats.message.8e38c648ff24": {
+  "nb": "alle ressurser",
+  "en": "all assets",
+  "oversatt": "すべてのアセット"
+ },
+ "app-library-asset-zip.text.text.03358cde7e13": {
+  "nb": "Nedlastingen ble avbrutt.",
+  "en": "The download was cancelled.",
+  "oversatt": "ダウンロードがキャンセルされました。"
+ },
+ "app-library-asset-zip.text.text.255bc44c3218": {
+  "nb": "Zip-filen kan være høyst {value1}. Velg færre kategorier og last ned i flere omganger.",
+  "en": "The zip file can be at most {value1}. Choose fewer categories and download in several rounds.",
+  "oversatt": "ZIPファイルは最大 {value1} までです。選択するカテゴリを減らし、複数回に分けてダウンロードしてください。"
+ },
+ "app-library-asset-zip.text.text.940064c39189": {
+  "nb": "Zip-filen «{name}» er laget ({length} {value3}).",
+  "en": "The zip file “{name}” has been created ({length} {value3}).",
+  "oversatt": "ZIPファイル「{name}」が作成されました（{length} {value3}）。"
+ },
+ "app-library-asset-zip.text.text.9b9dda910ea0": {
+  "nb": "Zip-filen er laget, men {length} {value2} kunne ikke hentes (se MANGLER.txt i zip-filen).",
+  "en": "The zip file has been created, but {length} {value2} could not be fetched (see MANGLER.txt in the zip file).",
+  "oversatt": "ZIPファイルは作成されましたが、{length} 件の {value2} を取得できませんでした（ZIP内の MANGLER.txt を参照してください）。"
+ },
+ "app-library-asset-zip.text.text.abaef2ceff1e": {
+  "nb": "Zip-filen kunne ikke lages: {message}",
+  "en": "The zip file could not be created: {message}",
+  "oversatt": "Zipファイルを作成できませんでした: {message}"
+ },
+ "app-library-asset-zip.zip-made": {
+  "nb": {
+   "one": "Zip-filen «{name}» er laget ({count} fil).",
+   "other": "Zip-filen «{name}» er laget ({count} filer)."
+  },
+  "en": {
+   "one": "The zip file “{name}” has been created ({count} file).",
+   "other": "The zip file “{name}” has been created ({count} files)."
+  },
+  "oversatt": {
+   "other": "Zipファイル「{name}」を作成しました（{count}件のファイル）。"
+  }
+ },
+ "app-library-asset-zip.zip-missing": {
+  "nb": {
+   "one": "Zip-filen er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).",
+   "other": "Zip-filen er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)."
+  },
+  "en": {
+   "one": "The zip file has been created, but {count} file could not be fetched (see MANGLER.txt in the zip file).",
+   "other": "The zip file has been created, but {count} files could not be fetched (see MANGLER.txt in the zip file)."
+  },
+  "oversatt": {
+   "other": "Zipファイルは作成されましたが、{count}件のファイルを取得できませんでした（Zip内のMANGLER.txtを参照）。"
+  }
+ },
+ "app-library-character-voice-section.character-voice-section.a.b1da0744e448": {
+  "nb": "Egen stemme hos ElevenLabs",
+  "en": "Custom voice at ElevenLabs",
+  "oversatt": "ElevenLabsのカスタムボイス"
+ },
+ "app-library-character-voice-section.character-voice-section.button.4cc97e574deb": {
+  "nb": "Lagre standardstemme",
+  "en": "Save default voice",
+  "oversatt": "デフォルトの声を保存"
+ },
+ "app-library-character-voice-section.character-voice-section.cmds-run.df5114228c2c": {
+  "nb": "Endre standardstemme",
+  "en": "Change default voice",
+  "oversatt": "デフォルトの声を変更"
+ },
+ "app-library-character-voice-section.character-voice-section.p.bc13402828e0": {
+  "nb": "Opprettelse av egen stemme hos ElevenLabs krever kontotilgang, rettigheter og samtykke. Hent stemmelisten igjen etterpå.",
+  "en": "Creating a custom voice at ElevenLabs requires account access, rights and consent. Refresh the voice list afterwards.",
+  "oversatt": "ElevenLabsでのカスタムボイスの作成には、アカウントアクセス、権利、同意が必要です。完了後にボイス一覧を再読み込みしてください。"
+ },
+ "app-library-character-voice-section.character-voice-section.record-l-innspilte-versjoner-recorded-versions-ai-l-genererte-versjoner-generated-versions-as-const-map.22b3efff0221": {
+  "nb": "Innspilte versjoner",
+  "en": "Recorded versions",
+  "oversatt": "録音バージョン"
+ },
+ "app-library-character-voice-section.character-voice-section.record-l-innspilte-versjoner-recorded-versions-ai-l-genererte-versjoner-generated-versions-as-const-map.3d8e71da10df": {
+  "nb": "Genererte versjoner",
+  "en": "Generated versions",
+  "oversatt": "生成バージョン"
+ },
+ "app-library-character-voice-section.character-voice-section.title.bddbec8177e9": {
+  "nb": "Lyd / Stemme",
+  "en": "Audio / Voice",
+  "oversatt": "音声 / ボイス"
+ },
+ "app-library-context-link-suggestions.approve-links": {
+  "nb": {
+   "one": "Godkjenn {count} kobling",
+   "other": "Godkjenn {count} koblinger"
+  },
+  "en": {
+   "one": "Approve {count} link",
+   "other": "Approve {count} links"
+  },
+  "oversatt": {
+   "other": "{count}件のリンクを承認"
+  }
+ },
+ "app-library-context-link-suggestions.approve.set-done.61ccd5e86792": {
+  "nb": "{length} {value2}. Kan angres.",
+  "en": "{length} {value2}. Can be undone.",
+  "oversatt": "{length}件の{value2}。取り消し可能です。"
+ },
+ "app-library-context-link-suggestions.confirm-uncertain": {
+  "nb": {
+   "one": "{count} usikre linje · {model} · anslått {cost}. Vil du fortsette?",
+   "other": "{count} usikre linjer · {model} · anslått {cost}. Vil du fortsette?"
+  },
+  "en": {
+   "one": "{count} uncertain line · {model} · estimated {cost}. Do you want to continue?",
+   "other": "{count} uncertain lines · {model} · estimated {cost}. Do you want to continue?"
+  },
+  "oversatt": {
+   "other": "不確実なセリフ{count}件 · {model} · 推定{cost}。続行しますか？"
+  }
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.aria-label.2d8a1675ffb2": {
+  "nb": "Bekreft AI-vurdering",
+  "en": "Confirm AI assessment",
+  "oversatt": "AI判定の確認"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.aria-label.8435f5faafc5": {
+  "nb": "Forslag til koblinger",
+  "en": "Suggested links",
+  "oversatt": "推奨リンク"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.aria-label.a5478280fb8c": {
+  "nb": "Velg kobling for «{word}» i {value2}",
+  "en": "Select link for “{word}” in {value2}",
+  "oversatt": "{value2}内の「{word}」のリンクを選択"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.aria-label.d36a2d08b263": {
+  "nb": "Målressurs",
+  "en": "Target asset",
+  "oversatt": "対象アセット"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.button.2c46d42497ab": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.button.602f67fd9daf": {
+  "nb": "Godkjenn {size} {value2}",
+  "en": "Approve {size} {value2}",
+  "oversatt": "{size}件の{value2}を承認"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.button.c065134a6e79": {
+  "nb": "Ja, la AI vurdere",
+  "en": "Yes, let AI assess",
+  "oversatt": "はい、AIに判定させる"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.button.fe1c4fe7cf42": {
+  "nb": "La AI vurdere {length} usikre …",
+  "en": "Let AI assess {length} uncertain …",
+  "oversatt": "不確実な{length}件をAIに判定させる…"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.h4.26b80b699cf9": {
+  "nb": "Forslag til koblinger fra konteksten",
+  "en": "Suggested links from the context",
+  "oversatt": "文脈からの推奨リンク"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.p.14d14e04420a": {
+  "nb": "{length} usikre {value2} · {label} · anslått {value4}. Vil du fortsette?",
+  "en": "{length} uncertain {value2} · {label} · estimated {value4}. Do you want to continue?",
+  "oversatt": "不確実な{value2}{length}件 · {label} · 推定{value4}。続行しますか？"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.p.8bbc44e6ef0b": {
+  "nb": "Samme ord og linje i {length} sceneforekomster; samme foreslåtte mål og begrunnelse.",
+  "en": "Same word and line in {length} scene occurrences; same proposed target and reason.",
+  "oversatt": "{length}箇所のシーンの出現で同一の単語とセリフ。推奨される対象と理由も同一です。"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.placeholder.9e5aef915e82": {
+  "nb": "Ingen sikker kobling",
+  "en": "No clear link",
+  "oversatt": "確実なリンクなし"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.span.2c958558b909": {
+  "nb": "Manuelt mål",
+  "en": "Manual target",
+  "oversatt": "手動設定の対象"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.span.5e89a54ead78": {
+  "nb": "Sikkerhet: {value1} %",
+  "en": "Confidence: {value1} %",
+  "oversatt": "信頼度: {value1}%"
+ },
+ "app-library-context-link-suggestions.context-link-suggestions.span.98bee91f2490": {
+  "nb": "Sikkerhet: ikke tallfestet",
+  "en": "Confidence: not quantified",
+  "oversatt": "信頼度: 未数値化"
+ },
+ "app-library-context-link-suggestions.e.cmds-run.7b0262f93598": {
+  "nb": "Koble betegnelser",
+  "en": "Link terms",
+  "oversatt": "用語をリンク"
+ },
+ "app-library-context-link-suggestions.lines-linked": {
+  "nb": {
+   "one": "{count} linje er koblet. Kan angres.",
+   "other": "{count} linjer er koblet. Kan angres."
+  },
+  "en": {
+   "one": "{count} line is linked. Can be undone.",
+   "other": "{count} lines are linked. Can be undone."
+  },
+  "oversatt": {
+   "other": "{count}件のセリフがリンクされました。取り消し可能です。"
+  }
+ },
+ "app-library-context-link-suggestions.rule-text.message.06a15f56f4f3": {
+  "nb": "sist nevnte karakter (usikkert)",
+  "en": "last mentioned character (uncertain)",
+  "oversatt": "直前に言及されたキャラクター（不確実）"
+ },
+ "app-library-context-link-suggestions.rule-text.message.35ee7fef9243": {
+  "nb": "samme betegnelse er koblet før",
+  "en": "the same term has been linked before",
+  "oversatt": "同一の用語が以前にリンク済み"
+ },
+ "app-library-context-link-suggestions.rule-text.message.634d58a4acd2": {
+  "nb": "AI-vurdering",
+  "en": "AI assessment",
+  "oversatt": "AI判定"
+ },
+ "app-library-context-link-suggestions.rule-text.message.6b9cf30a5eea": {
+  "nb": "den eneste av dem i scenen",
+  "en": "the only one of them in the scene",
+  "oversatt": "シーン内で唯一該当"
+ },
+ "app-library-context-link-suggestions.rule-text.message.b3f057fdbdeb": {
+  "nb": "flere mulige mål i scenen",
+  "en": "multiple possible targets in the scene",
+  "oversatt": "シーン内に複数の候補対象あり"
+ },
+ "app-library-context-names-section.context-names-section.aria-label.0b995103ee8a": {
+  "nb": "Linjer med betegnelsen",
+  "en": "Lines with the term",
+  "oversatt": "用語を含むセリフ"
+ },
+ "app-library-context-names-section.context-names-section.aria-label.690f825e0dea": {
+  "nb": "Betegnelse",
+  "en": "Term",
+  "oversatt": "用語"
+ },
+ "app-library-context-names-section.context-names-section.aria-label.8000142029e5": {
+  "nb": "Fjern betegnelsen {name}",
+  "en": "Remove the term {name}",
+  "oversatt": "用語「{name}」を削除"
+ },
+ "app-library-context-names-section.context-names-section.aria-label.eddb7bb23d38": {
+  "nb": "Betegnelser i bestemte linjer",
+  "en": "Terms in specific lines",
+  "oversatt": "特定のセリフ内の用語"
+ },
+ "app-library-context-names-section.context-names-section.button.103ddfcaabdb": {
+  "nb": "«{value1}» er {name} i {size} {value4}",
+  "en": "“{value1}” is {name} in {size} {value4}",
+  "oversatt": "{size}件の{value4}で「{value1}」は{name}です"
+ },
+ "app-library-context-names-section.context-names-section.button.29008e48b9b4": {
+  "nb": "Velg alle",
+  "en": "Select all",
+  "oversatt": "すべて選択"
+ },
+ "app-library-context-names-section.context-names-section.button.4038097b7114": {
+  "nb": "Kryss av linjene det gjelder",
+  "en": "Tick the lines it applies to",
+  "oversatt": "該当する行にチェックを入れてください"
+ },
+ "app-library-context-names-section.context-names-section.button.c41f949f2532": {
+  "nb": "Fjern betegnelsen",
+  "en": "Remove the term",
+  "oversatt": "呼称を削除"
+ },
+ "app-library-context-names-section.context-names-section.p.3d81c82d5cef": {
+  "nb": "Ordet står ikke i manuset.",
+  "en": "The word is not in the script.",
+  "oversatt": "その単語は脚本内にありません。"
+ },
+ "app-library-context-names-section.context-names-section.p.4eb446330c64": {
+  "nb": "F.eks. «onkel» når det er {name} som menes – bare i linjene du velger.",
+  "en": "E.g. “uncle” when {name} is meant – only in the lines you choose.",
+  "oversatt": "例: {name} を指す場合の「おじさん」（選択した行のみ）。"
+ },
+ "app-library-context-names-section.context-names-section.p.eddb7bb23d38": {
+  "nb": "Betegnelser i bestemte linjer",
+  "en": "Terms in specific lines",
+  "oversatt": "特定の行における呼称"
+ },
+ "app-library-context-names-section.context-names-section.placeholder.13ef361697d5": {
+  "nb": "Betegnelse, f.eks. onkel",
+  "en": "Term, e.g. uncle",
+  "oversatt": "呼称（例: おじさん）"
+ },
+ "app-library-context-names-section.context-names-section.save.b9957137c32b": {
+  "nb": "Fjern betegnelsen «{name}»",
+  "en": "Remove the term “{name}”",
+  "oversatt": "呼称「{name}」を削除"
+ },
+ "app-library-context-names-section.context-names-section.span.7a8f08077845": {
+  "nb": "linjer",
+  "en": "lines",
+  "oversatt": "行"
+ },
+ "app-library-context-names-section.context-names-section.span.e2622c84aff4": {
+  "nb": "linje",
+  "en": "line",
+  "oversatt": "行"
+ },
+ "app-library-context-names-section.context-names-section.title.f4b832274ed2": {
+  "nb": "Vis og endre linjene",
+  "en": "Show and change the lines",
+  "oversatt": "行を表示・変更"
+ },
+ "app-library-context-names-section.ok.save.35e49a47ab73": {
+  "nb": "Betegnelsen «{name}» gjelder {name2}",
+  "en": "The term “{name}” refers to {name2}",
+  "oversatt": "呼称「{name}」は {name2} を指しています"
+ },
+ "app-library-context-names-section.ok.save.7aaa05d457a2": {
+  "nb": "Fjern betegnelsen «{name}»",
+  "en": "Remove the term “{name}”",
+  "oversatt": "呼称「{name}」を削除"
+ },
+ "app-library-context-names-section.word-is-asset": {
+  "nb": {
+   "one": "«{word}» er {asset} i {count} linje",
+   "other": "«{word}» er {asset} i {count} linjer"
+  },
+  "en": {
+   "one": "“{word}” is {asset} in {count} line",
+   "other": "“{word}” is {asset} in {count} lines"
+  },
+  "oversatt": {
+   "other": "「{word}」は {count} 行で {asset} です"
+  }
+ },
+ "app-library-continuity-panel.continuity-panel.aria-label.cddcd082f32d": {
+  "nb": "Kontinuitetstidslinje",
+  "en": "Continuity timeline",
+  "oversatt": "コンティニュイティタイムライン"
+ },
+ "app-library-continuity-panel.continuity-panel.aria-label.f4aa145dd848": {
+  "nb": "Kontinuitet",
+  "en": "Continuity",
+  "oversatt": "コンティニュイティ"
+ },
+ "app-library-continuity-panel.continuity-panel.button.052644afeddc": {
+  "nb": "Slå av i {name}",
+  "en": "Turn off in {name}",
+  "oversatt": "{name} でオフにする"
+ },
+ "app-library-continuity-panel.continuity-panel.button.43e71da0f697": {
+  "nb": "Avvis",
+  "en": "Dismiss",
+  "oversatt": "却下"
+ },
+ "app-library-continuity-panel.continuity-panel.button.4ed5b0fbda51": {
+  "nb": "Ny hendelse i {name}",
+  "en": "New event in {name}",
+  "oversatt": "{name} に新規イベント"
+ },
+ "app-library-continuity-panel.continuity-panel.button.64c4f8d8f19a": {
+  "nb": "Slå på i {name}",
+  "en": "Turn on in {name}",
+  "oversatt": "{name} でオンにする"
+ },
+ "app-library-continuity-panel.continuity-panel.button.66f47868a5a8": {
+  "nb": "Angre avvisning",
+  "en": "Undo dismissal",
+  "oversatt": "却下を取り消す"
+ },
+ "app-library-continuity-panel.continuity-panel.button.76e2ee2f73d3": {
+  "nb": "Ny hendelse",
+  "en": "New event",
+  "oversatt": "新規イベント"
+ },
+ "app-library-continuity-panel.continuity-panel.button.915a34558ecb": {
+  "nb": "scene {number}",
+  "en": "scene {number}",
+  "oversatt": "シーン {number}"
+ },
+ "app-library-continuity-panel.continuity-panel.button.94f5381b1e20": {
+  "nb": "avviste forslag",
+  "en": "dismissed suggestions",
+  "oversatt": "却下された提案"
+ },
+ "app-library-continuity-panel.continuity-panel.button.9f8e9eed3ef5": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "シーン"
+ },
+ "app-library-continuity-panel.continuity-panel.button.b411bda25ced": {
+  "nb": "Godkjenn …",
+  "en": "Approve …",
+  "oversatt": "承認…"
+ },
+ "app-library-continuity-panel.continuity-panel.button.caa969f8b7ba": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "表示"
+ },
+ "app-library-continuity-panel.continuity-panel.button.dd048a258922": {
+  "nb": "Skjul",
+  "en": "Hide",
+  "oversatt": "非表示"
+ },
+ "app-library-continuity-panel.continuity-panel.cmds-run.425c76b29417": {
+  "nb": "Fjern kontinuitetshendelse",
+  "en": "Remove continuity event",
+  "oversatt": "コンティニュイティイベントを削除"
+ },
+ "app-library-continuity-panel.continuity-panel.cmds-run.66f47868a5a8": {
+  "nb": "Angre avvisning",
+  "en": "Undo dismissal",
+  "oversatt": "却下を取り消す"
+ },
+ "app-library-continuity-panel.continuity-panel.cmds-run.ab88db920d4f": {
+  "nb": "Slå av hendelsen i {name}",
+  "en": "Turn off the event in {name}",
+  "oversatt": "{name} でイベントをオフにする"
+ },
+ "app-library-continuity-panel.continuity-panel.cmds-run.c1eed607fac6": {
+  "nb": "Slå på hendelsen i {name}",
+  "en": "Turn on the event in {name}",
+  "oversatt": "{name} でイベントをオンにする"
+ },
+ "app-library-continuity-panel.continuity-panel.div.132c27c40f4c": {
+  "nb": "Tidslinje i fortellingstid",
+  "en": "Timeline in story time",
+  "oversatt": "作中時間のタイムライン"
+ },
+ "app-library-continuity-panel.continuity-panel.h2.f4aa145dd848": {
+  "nb": "Kontinuitet",
+  "en": "Continuity",
+  "oversatt": "コンティニュイティ"
+ },
+ "app-library-continuity-panel.continuity-panel.h3.d71a904dcabc": {
+  "nb": "Forslag fra manuset",
+  "en": "Suggestions from the script",
+  "oversatt": "脚本からの提案"
+ },
+ "app-library-continuity-panel.continuity-panel.p.4b4f64452be1": {
+  "nb": "Linjer der {name} nevnes og noe kan endre utseendet. Ingenting brukes før du godkjenner.",
+  "en": "Lines where {name} is mentioned and something may change the look. Nothing is used until you approve it.",
+  "oversatt": "{name} が言及され、外見が変化する可能性がある行です。承認するまで適用されません。"
+ },
+ "app-library-continuity-panel.continuity-panel.p.6b716428961b": {
+  "nb": "Utseendet ved begynnelsen av hver scene. Nedtonet: {name} nevnes ikke i scenen.",
+  "en": "The look at the start of each scene. Faded: {name} is not mentioned in the scene.",
+  "oversatt": "各シーン開始時の外見です。グレーアウト: シーン内で {name} が言及されていません。"
+ },
+ "app-library-continuity-panel.continuity-panel.p.e32d23438993": {
+  "nb": "Ingen hendelser. Legg inn en hendelse når {name} forandrer seg i historien – med utseendet før og etter (visuelle varianter over).",
+  "en": "No events. Add an event when {name} changes in the story – with the look before and after (visual variants above).",
+  "oversatt": "イベントがありません。作中で {name} に変化が生じる際に、変化前後の外見（上記の画像バリアント）を指定してイベントを追加してください。"
+ },
+ "app-library-continuity-panel.continuity-panel.span.365af2e91108": {
+  "nb": "«{text}»",
+  "en": "“{text}”",
+  "oversatt": "「{text}」"
+ },
+ "app-library-continuity-panel.continuity-panel.span.43e5432815fd": {
+  "nb": "over fra {value1}",
+  "en": "from {value1} onwards",
+  "oversatt": "{value1} 以降"
+ },
+ "app-library-continuity-panel.continuity-panel.span.48f51fe85e00": {
+  "nb": "slått av i {name}",
+  "en": "turned off in {name}",
+  "oversatt": "{name} でオフ"
+ },
+ "app-library-continuity-panel.continuity-panel.span.7c48db48aef3": {
+  "nb": "standard",
+  "en": "standard",
+  "oversatt": "標準"
+ },
+ "app-library-continuity-panel.continuity-panel.span.87dd6cacf301": {
+  "nb": "bare i {name}",
+  "en": "only in {name}",
+  "oversatt": "{name} のみ"
+ },
+ "app-library-continuity-panel.continuity-panel.span.8878a8833f6b": {
+  "nb": "scenen er ikke med – gjelder ikke",
+  "en": "the scene is not included – does not apply",
+  "oversatt": "シーンが含まれていません – 適用外"
+ },
+ "app-library-continuity-panel.continuity-panel.span.90ed61bda97b": {
+  "nb": " midt i scenen",
+  "en": " mid-scene",
+  "oversatt": " シーンの途中"
+ },
+ "app-library-continuity-panel.continuity-panel.span.a8d810745431": {
+  "nb": "Ved linjen",
+  "en": "At the line",
+  "oversatt": "セリフの位置"
+ },
+ "app-library-continuity-panel.continuity-panel.span.ad72e894ef88": {
+  "nb": "fra hovedfilmen",
+  "en": "from the main film",
+  "oversatt": "メインフィルムから"
+ },
+ "app-library-continuity-panel.continuity-panel.span.b8347098e40b": {
+  "nb": "tilbakeblikk / tidshopp",
+  "en": "flashback / time jump",
+  "oversatt": "回想 / タイムジャンプ"
+ },
+ "app-library-continuity-panel.continuity-panel.span.d10ca3cc794d": {
+  "nb": "Når utseendet endres i historien (f.eks. klipper håret). Riktig utseende i hver scene følger fortellingstiden – også i tilbakeblikk.",
+  "en": "When the look changes in the story (e.g. cuts their hair). The right look in each scene follows story time – including flashbacks.",
+  "oversatt": "物語の中で見た目が変わる場合（例：髪を切る）。各シーンの適切な見た目は、回想も含めてストーリー内の時間軸に従います。"
+ },
+ "app-library-continuity-panel.continuity-panel.title.25481a6d0d81": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "編集"
+ },
+ "app-library-continuity-panel.continuity-panel.title.4f95f8d9f31f": {
+  "nb": "Fjern hendelsen (kan angres)",
+  "en": "Remove the event (can be undone)",
+  "oversatt": "イベントを削除（取り消し可能）"
+ },
+ "app-library-continuity-panel.continuity-panel.title.74911220b77e": {
+  "nb": "Hendelsen gjelder bare i {prodName}",
+  "en": "The event applies only in {prodName}",
+  "oversatt": "このイベントは {prodName} にのみ適用されます"
+ },
+ "app-library-continuity-panel.continuity-panel.title.7da29c98f645": {
+  "nb": "Fyll inn utseendet før og etter, og godkjenn",
+  "en": "Fill in the look before and after, and approve",
+  "oversatt": "変更前と変更後の見た目を入力して承認"
+ },
+ "app-library-continuity-panel.continuity-panel.title.b7352afa1a75": {
+  "nb": "Vis scenen i manus",
+  "en": "Show the scene in the script",
+  "oversatt": "脚本内のシーンを表示"
+ },
+ "app-library-continuity-panel.continuity-panel.title.bd8f9cd18a77": {
+  "nb": "Vis forslaget igjen",
+  "en": "Show the suggestion again",
+  "oversatt": "提案を再表示"
+ },
+ "app-library-continuity-panel.continuity-panel.title.d4d250bd4658": {
+  "nb": "Ikke en endring",
+  "en": "Not a change",
+  "oversatt": "変更なし"
+ },
+ "app-library-continuity-panel.continuity-panel.title.ef68f2719a3b": {
+  "nb": "Hovedfilmen endres ikke",
+  "en": "The main film is not changed",
+  "oversatt": "メインフィルムは変更されません"
+ },
+ "app-library-continuity-panel.dismiss.cmds-run.a1e5b58350a2": {
+  "nb": "Avvis forslag til kontinuitet",
+  "en": "Dismiss continuity suggestion",
+  "oversatt": "コンティニュイティの提案を却下"
+ },
+ "app-library-continuity-panel.event-form.aria-label.4bcd20c83dfc": {
+  "nb": "Ny kontinuitetshendelse",
+  "en": "New continuity event",
+  "oversatt": "新規コンティニュイティイベント"
+ },
+ "app-library-continuity-panel.event-form.aria-label.afb17f78957c": {
+  "nb": "Endre kontinuitetshendelse",
+  "en": "Edit continuity event",
+  "oversatt": "コンティニュイティイベントを編集"
+ },
+ "app-library-continuity-panel.event-form.button.2b6273e2a2f0": {
+  "nb": "Lagre hendelsen",
+  "en": "Save the event",
+  "oversatt": "イベントを保存"
+ },
+ "app-library-continuity-panel.event-form.button.79307226f5a4": {
+  "nb": "Lagre endringen",
+  "en": "Save the change",
+  "oversatt": "変更を保存"
+ },
+ "app-library-continuity-panel.event-form.button.d594a54b4cec": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-continuity-panel.event-form.option.397bdf198f8e": {
+  "nb": "— ikke valgt —",
+  "en": "— not selected —",
+  "oversatt": "— 未選択 —"
+ },
+ "app-library-continuity-panel.event-form.option.4bb5be059581": {
+  "nb": "Fra scenens begynnelse",
+  "en": "From the start of the scene",
+  "oversatt": "シーンの開始から"
+ },
+ "app-library-continuity-panel.event-form.option.5cd838bdea16": {
+  "nb": "— ingen egen variant —",
+  "en": "— no separate variant —",
+  "oversatt": "— 個別のバリアントなし —"
+ },
+ "app-library-continuity-panel.event-form.option.ce2524bfc27e": {
+  "nb": "(scenen er ikke i hovedfilmen)",
+  "en": "(the scene is not in the main film)",
+  "oversatt": "(シーンはメインフィルムに含まれていません)"
+ },
+ "app-library-continuity-panel.event-form.option.e3e5e0b263d9": {
+  "nb": "— velg —",
+  "en": "— choose —",
+  "oversatt": "— 選択 —"
+ },
+ "app-library-continuity-panel.event-form.p.8745f0219a80": {
+  "nb": "Lag visuelle varianter (f.eks. «Langt hår» og «Kort hår») for å velge utseendet før og etter. Hendelsen kan også lagres bare med beskrivelse.",
+  "en": "Make visual variants (e.g. “Long hair” and “Short hair”) to choose the look before and after. The event can also be saved with just a description.",
+  "oversatt": "視覚バリアント（例：「長髪」や「短髪」）を作成して、変更前と変更後の見た目を選択します。イベントは説明のみで保存することもできます。"
+ },
+ "app-library-continuity-panel.event-form.placeholder.fb9474ffd015": {
+  "nb": "F.eks. {name} klipper håret kort",
+  "en": "E.g. {name} cuts their hair short",
+  "oversatt": "例：{name} が髪を短く切る"
+ },
+ "app-library-continuity-panel.event-form.text.40e98daba786": {
+  "nb": "Beskrivelse",
+  "en": "Description",
+  "oversatt": "説明"
+ },
+ "app-library-continuity-panel.event-form.text.71345582b956": {
+  "nb": "Fra linjen",
+  "en": "From the line",
+  "oversatt": "このセリフから"
+ },
+ "app-library-continuity-panel.event-form.text.8ae985f70afd": {
+  "nb": "Utseende etter",
+  "en": "Look after",
+  "oversatt": "変更後の見た目"
+ },
+ "app-library-continuity-panel.event-form.text.9c82a371587c": {
+  "nb": "Hva skjer",
+  "en": "What happens",
+  "oversatt": "発生する内容"
+ },
+ "app-library-continuity-panel.event-form.text.ca435491c8fe": {
+  "nb": "Over fra scene",
+  "en": "From scene onwards",
+  "oversatt": "このシーン以降"
+ },
+ "app-library-continuity-panel.event-form.text.d8c860f02481": {
+  "nb": "Varer",
+  "en": "Lasts",
+  "oversatt": "継続期間"
+ },
+ "app-library-continuity-panel.event-form.text.db03614ef542": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "シーン"
+ },
+ "app-library-continuity-panel.event-form.text.f6175b2fe111": {
+  "nb": "Utseende før",
+  "en": "Look before",
+  "oversatt": "変更前の見た目"
+ },
+ "app-library-continuity-panel.r.cmds-run.2ca43faa672b": {
+  "nb": "Endre kontinuitet for «{name}»",
+  "en": "Change continuity for “{name}”",
+  "oversatt": "「{name}」のコンティニュイティを変更"
+ },
+ "app-library-continuity-panel.r.cmds-run.6bc5e98852af": {
+  "nb": "Ny kontinuitetshendelse for «{name}»",
+  "en": "New continuity event for “{name}”",
+  "oversatt": "「{name}」の新規コンティニュイティイベント"
+ },
+ "app-library-continuity-panel.scene-options.option.f0b8db8fd1be": {
+  "nb": " (deaktivert)",
+  "en": " (deactivated)",
+  "oversatt": " (無効)"
+ },
+ "app-library-continuity-panel.scene.message.5f8240fabfbf": {
+  "nb": "Scene {productionNumber}",
+  "en": "Scene {productionNumber}",
+  "oversatt": "シーン {productionNumber}"
+ },
+ "app-library-continuity-panel.scene.message.7f3ea3e47349": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "シーン"
+ },
+ "app-library-cutout-dialog.blob.fail.7baa99e6f3b7": {
+  "nb": "Bildet kunne ikke lages",
+  "en": "The image could not be made",
+  "oversatt": "画像を作成できませんでした"
+ },
+ "app-library-cutout-dialog.editor.aria-label.1592ab60ea46": {
+  "nb": "Speilvend loddrett",
+  "en": "Flip vertically",
+  "oversatt": "上下反転"
+ },
+ "app-library-cutout-dialog.editor.aria-label.1a594b1c83ef": {
+  "nb": "Frilagt bilde",
+  "en": "Cut-out image",
+  "oversatt": "切り抜き画像"
+ },
+ "app-library-cutout-dialog.editor.aria-label.29435e6752c4": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "ズームイン"
+ },
+ "app-library-cutout-dialog.editor.aria-label.4504bcd05ebb": {
+  "nb": "Farge å tegne med",
+  "en": "Colour to draw with",
+  "oversatt": "描画色"
+ },
+ "app-library-cutout-dialog.editor.aria-label.54fd552b7963": {
+  "nb": "Pensel",
+  "en": "Brush",
+  "oversatt": "ブラシ"
+ },
+ "app-library-cutout-dialog.editor.aria-label.5e440908b18b": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "元に戻す"
+ },
+ "app-library-cutout-dialog.editor.aria-label.87cb6769faa2": {
+  "nb": "Bakgrunn i visningen",
+  "en": "Background in the view",
+  "oversatt": "ビューの背景"
+ },
+ "app-library-cutout-dialog.editor.aria-label.a2e598242fea": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "やり直し"
+ },
+ "app-library-cutout-dialog.editor.aria-label.cfb5e40bad89": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "ズームアウト"
+ },
+ "app-library-cutout-dialog.editor.aria-label.f595f6f1f54e": {
+  "nb": "Speilvend",
+  "en": "Flip",
+  "oversatt": "反転"
+ },
+ "app-library-cutout-dialog.editor.async-try-const-res-await-fetch-url-if-res-ok-throw-new-error-res-status-400-res-status-403-l-lenken-har-g-tt-ut-lukk-og-pne-vinduet-igjen-the-link-has-expired-close-and-reopen-the-window-l-feil-res-status-error-res-status-const-blob-await-res-blob-const-bmp-await-decode-image-blob-const-k-math-min-1-math-sqrt-cutout-max-pixels-bmp-width-bmp-height-const-w-math-max-1-math-round-bmp-width-k-const-h-math-max-1-math-round-bmp-height-k-const-c-document-create-element-canvas-c-width-w-c-height-h-const-ctx-c-get-context-2d-will-read-frequently-true-ctx-draw-image-bmp-source-0-0-w-h-bmp-close-const-img-ctx-get-image-data-0-0-w-h-if-cancelled-return-work-current-canvas-c-img-new-image-data-new-uint8clamped-array-img-data-w-h-set-src-w-h-pixels-img-data-scaled-k-1-catch-e-if-cancelled-set-load-error-l-bildet-kunne-ikke-hentes-e-as-error-message-the-image-could-not-be-fetched-e-as-error-message-finally-if-cancelled-set-busy-null.2c8e61fb3e8f": {
+  "nb": "lenken har gått ut – lukk og åpne vinduet igjen",
+  "en": "the link has expired – close and reopen the window",
+  "oversatt": "リンクの有効期限が切れました。ウィンドウを閉じて再度開いてください"
+ },
+ "app-library-cutout-dialog.editor.async-try-const-res-await-fetch-url-if-res-ok-throw-new-error-res-status-400-res-status-403-l-lenken-har-g-tt-ut-lukk-og-pne-vinduet-igjen-the-link-has-expired-close-and-reopen-the-window-l-feil-res-status-error-res-status-const-blob-await-res-blob-const-bmp-await-decode-image-blob-const-k-math-min-1-math-sqrt-cutout-max-pixels-bmp-width-bmp-height-const-w-math-max-1-math-round-bmp-width-k-const-h-math-max-1-math-round-bmp-height-k-const-c-document-create-element-canvas-c-width-w-c-height-h-const-ctx-c-get-context-2d-will-read-frequently-true-ctx-draw-image-bmp-source-0-0-w-h-bmp-close-const-img-ctx-get-image-data-0-0-w-h-if-cancelled-return-work-current-canvas-c-img-new-image-data-new-uint8clamped-array-img-data-w-h-set-src-w-h-pixels-img-data-scaled-k-1-catch-e-if-cancelled-set-load-error-l-bildet-kunne-ikke-hentes-e-as-error-message-the-image-could-not-be-fetched-e-as-error-message-finally-if-cancelled-set-busy-null.d1f68b901710": {
+  "nb": "feil {status}",
+  "en": "error {status}",
+  "oversatt": "エラー {status}"
+ },
+ "app-library-cutout-dialog.editor.button.282f8c951060": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "追加"
+ },
+ "app-library-cutout-dialog.editor.button.2d5158c89ade": {
+  "nb": "Tegn",
+  "en": "Draw",
+  "oversatt": "描画"
+ },
+ "app-library-cutout-dialog.editor.button.2da3b50c8d02": {
+  "nb": "Nytt forslag",
+  "en": "New suggestion",
+  "oversatt": "新しい提案"
+ },
+ "app-library-cutout-dialog.editor.button.517baced0d51": {
+  "nb": "Lagre som ny versjon",
+  "en": "Save as new version",
+  "oversatt": "新しいバージョンとして保存"
+ },
+ "app-library-cutout-dialog.editor.button.b913966d6787": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "全体を表示"
+ },
+ "app-library-cutout-dialog.editor.button.c2829357228e": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "app-library-cutout-dialog.editor.button.c6da9add20d8": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-library-cutout-dialog.editor.button.f595f6f1f54e": {
+  "nb": "Speilvend",
+  "en": "Flip",
+  "oversatt": "反転"
+ },
+ "app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.049acd949d04": {
+  "nb": "Mørk",
+  "en": "Dark",
+  "oversatt": "ダーク"
+ },
+ "app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.3d7c273c809d": {
+  "nb": "Rutet",
+  "en": "Checkered",
+  "oversatt": "市松模様"
+ },
+ "app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.c462797af573": {
+  "nb": "Lys",
+  "en": "Light",
+  "oversatt": "ライト"
+ },
+ "app-library-cutout-dialog.editor.dialog-description.1b177d85e268": {
+  "nb": "Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen, tegn med farge eller speilvend. Resultatet lagres som en ny versjon; originalen beholdes. Gratis – bildet sendes ingen steder. (For å speilvende bare i én scene: bruk «Speilvend» på laget.)",
+  "en": "The background is removed based on the colour along the edge of the image. Correct with the brush, draw in colour or flip. The result is saved as a new version; the original is kept. Free – the image is not sent anywhere. (To flip only in one scene: use “Flip” on the layer.)",
+  "oversatt": "画像の端の色に基づいて背景が削除されます。ブラシで修正したり、色で描画したり、反転したりできます。結果は新しいバージョンとして保存され、オリジナルは保持されます。ローカル処理のため、画像はどこにも送信されません。（1つのシーンでのみ反転する場合は、レイヤーの「反転」を使用してください。）"
+ },
+ "app-library-cutout-dialog.editor.dialog-title.88bcec1459bc": {
+  "nb": "Frilegg «{name}» (v{number})",
+  "en": "Cut out “{name}” (v{number})",
+  "oversatt": "「{name}」を切り抜き (v{number})"
+ },
+ "app-library-cutout-dialog.editor.label.3c80dfcb2c4a": {
+  "nb": "Toleranse",
+  "en": "Tolerance",
+  "oversatt": "許容量"
+ },
+ "app-library-cutout-dialog.editor.label.8d994ccffbb7": {
+  "nb": "Myk kant",
+  "en": "Soft edge",
+  "oversatt": "境界線をぼかす"
+ },
+ "app-library-cutout-dialog.editor.label.a6a3ad8b5149": {
+  "nb": "Fjern luften rundt figuren",
+  "en": "Remove the space around the figure",
+  "oversatt": "被写体の周囲の余白を削除"
+ },
+ "app-library-cutout-dialog.editor.label.d4cc3816922e": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "サイズ"
+ },
+ "app-library-cutout-dialog.editor.p.134340f122e8": {
+  "nb": "Nesten ingenting ble fjernet – øk toleransen, eller fjern bakgrunnen med penselen.",
+  "en": "Almost nothing was removed – increase the tolerance, or remove the background with the brush.",
+  "oversatt": "ほとんど削除されませんでした。許容量を上げるか、ブラシで背景を削除してください。"
+ },
+ "app-library-cutout-dialog.editor.p.23b3e277a7aa": {
+  "nb": "{w} × {h} px{value3} · {value4} % av bildet beholdes. ",
+  "en": "{w} × {h} px{value3} · {value4} % of the image is kept. ",
+  "oversatt": "{w} × {h} px{value3} · 画像の {value4} % を保持。 "
+ },
+ "app-library-cutout-dialog.editor.p.7d352c265cc6": {
+  "nb": "Nesten alt ble fjernet – senk toleransen.",
+  "en": "Almost everything was removed – lower the tolerance.",
+  "oversatt": "ほぼすべて削除されました。許容量を下げてください。"
+ },
+ "app-library-cutout-dialog.editor.p.e764cb259544": {
+  "nb": "Fungerer best når bakgrunnen er rolig og ulik figuren.",
+  "en": "Works best when the background is plain and different from the figure.",
+  "oversatt": "背景が単色で被写体と明確に異なる場合に最適に動作します。"
+ },
+ "app-library-cutout-dialog.editor.set-load-error.c6d0e5541b19": {
+  "nb": "Bildet kunne ikke hentes: {message}",
+  "en": "The image could not be fetched: {message}",
+  "oversatt": "画像を取得できませんでした: {message}"
+ },
+ "app-library-cutout-dialog.editor.span.4058c2d03631": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "保存中…"
+ },
+ "app-library-cutout-dialog.editor.span.576f4e6e04e3": {
+  "nb": "Rullehjul zoomer; hold mellomrom (eller midtre museknapp) og dra for å flytte.",
+  "en": "The scroll wheel zooms; hold space (or the middle mouse button) and drag to move.",
+  "oversatt": "スクロールホイールでズーム。Space（またはマウス中ボタン）を押しながらドラッグでパン。"
+ }
+}

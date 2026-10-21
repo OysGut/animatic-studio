@@ -1,0 +1,1722 @@
+{
+ "core-translation-index.language-label.en.6c5aa1625678": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "core-translation-index.language-label.nb.ce9fb99403a7": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "core-translation-line-link-labels.confidence-percent.message.0ae88505aa91": {
+  "nb": "{n} %",
+  "en": "{n}%",
+  "oversatt": "{n}%"
+ },
+ "core-translation-line-link-labels.discarded-text.message.122c3096d772": {
+  "nb": "1 ugyldig forslag forkastet.",
+  "en": "1 invalid suggestion discarded.",
+  "oversatt": "1件の無効な候補を破棄しました。"
+ },
+ "core-translation-line-link-labels.discarded-text.message.a44c236afcd9": {
+  "nb": "{n} ugyldige forslag forkastet.",
+  "en": "{n} invalid suggestions discarded.",
+  "oversatt": "{n}件の無効な候補を破棄しました。"
+ },
+ "core-translation-line-link-labels.number-word-0": {
+  "nb": "null",
+  "en": "zero",
+  "oversatt": "0"
+ },
+ "core-translation-line-link-labels.number-word-1": {
+  "nb": "én",
+  "en": "one",
+  "oversatt": "1"
+ },
+ "core-translation-line-link-labels.number-word-10": {
+  "nb": "ti",
+  "en": "ten",
+  "oversatt": "10"
+ },
+ "core-translation-line-link-labels.number-word-2": {
+  "nb": "to",
+  "en": "two",
+  "oversatt": "2"
+ },
+ "core-translation-line-link-labels.number-word-3": {
+  "nb": "tre",
+  "en": "three",
+  "oversatt": "3"
+ },
+ "core-translation-line-link-labels.number-word-4": {
+  "nb": "fire",
+  "en": "four",
+  "oversatt": "4"
+ },
+ "core-translation-line-link-labels.number-word-5": {
+  "nb": "fem",
+  "en": "five",
+  "oversatt": "5"
+ },
+ "core-translation-line-link-labels.number-word-6": {
+  "nb": "seks",
+  "en": "six",
+  "oversatt": "6"
+ },
+ "core-translation-line-link-labels.number-word-7": {
+  "nb": "sju",
+  "en": "seven",
+  "oversatt": "7"
+ },
+ "core-translation-line-link-labels.number-word-8": {
+  "nb": "åtte",
+  "en": "eight",
+  "oversatt": "8"
+ },
+ "core-translation-line-link-labels.number-word-9": {
+  "nb": "ni",
+  "en": "nine",
+  "oversatt": "9"
+ },
+ "core-translation-line-link-labels.pair-summary": {
+  "nb": "{sources} mot {targets}",
+  "en": "{sources} to {targets}",
+  "oversatt": "{sources} から {targets}"
+ },
+ "core-translation-line-link-labels.pair-summary-sources": {
+  "nb": {
+   "one": "{n} norsk linje",
+   "other": "{n} norske linjer"
+  },
+  "en": {
+   "one": "{n} Norwegian line",
+   "other": "{n} Norwegian lines"
+  },
+  "oversatt": {
+   "other": "{n}行のノルウェー語"
+  }
+ },
+ "core-translation-line-link-labels.pair-summary-targets": {
+  "nb": {
+   "one": "{n} oversatt",
+   "other": "{n} oversatte"
+  },
+  "en": {
+   "one": "{n} translated",
+   "other": "{n} translated"
+  },
+  "oversatt": {
+   "other": "{n}件翻訳済み"
+  }
+ },
+ "core-translation-line-link-labels.ratio-title.message.a1c06218c905": {
+  "nb": "{value1} norsk{value2} {value3} mot {value4} {value5}",
+  "en": "{value1} Norwegian {value2} to {value3} translated",
+  "oversatt": "{value1}件のノルウェー語{value2}（{value3}中）を翻訳済み"
+ },
+ "core-typography-presets.motion-preset-label.fade.9ef937509d07": {
+  "nb": "Ton inn/ut",
+  "en": "Fade",
+  "oversatt": "フェード"
+ },
+ "core-typography-presets.motion-preset-label.rotate.c07725549add": {
+  "nb": "Roter",
+  "en": "Rotate",
+  "oversatt": "回転"
+ },
+ "core-typography-presets.motion-preset-label.slide.211e29ea9c56": {
+  "nb": "Skli",
+  "en": "Slide",
+  "oversatt": "スライド"
+ },
+ "core-typography-presets.motion-preset-label.zoom.50e32518bda9": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "ズーム"
+ },
+ "core-typography-presets.reason.reason.8364486eddca": {
+  "nb": "Laget er for kort for både inn- og utanimasjon: {value1} bilder, men det trengs minst {value2}. Gjør animasjonen kortere eller laget lengre.",
+  "en": "The layer is too short for both an in and an out animation: {value1} frames, but at least {value2} are needed. Make the animation shorter or the layer longer.",
+  "oversatt": "レイヤーが短すぎるため、イン/アウト両方のアニメーションを設定できません: {value1}フレーム（最低{value2}フレーム必要）。アニメーションを短くするか、レイヤーを長くしてください。"
+ },
+ "core-typography-template.reason.reason.495b9541af70": {
+  "nb": "2D-scenen finnes ikke",
+  "en": "The 2D scene does not exist",
+  "oversatt": "2Dシーンが存在しません"
+ },
+ "core-typography-template.reason.reason.7940f9c21fd9": {
+  "nb": "Versjonen hører til en annen mal",
+  "en": "The version belongs to another template",
+  "oversatt": "バージョンが別のテンプレートに属しています"
+ },
+ "core-typography-template.reason.reason.ad3919ae06e7": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "テンプレートが存在しません"
+ },
+ "core-typography-template.reason.reason.ad3919ae06e7.2": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "テンプレートが存在しません"
+ },
+ "core-typography-template.reason.reason.ec925d64190b": {
+  "nb": "Malversjonen finnes ikke",
+  "en": "The template version does not exist",
+  "oversatt": "テンプレートバージョンが存在しません"
+ },
+ "core-typography-template.reason.reason.ff34111d10e1": {
+  "nb": "Malforekomsten finnes ikke",
+  "en": "The template instance does not exist",
+  "oversatt": "テンプレートインスタンスが存在しません"
+ },
+ "core-typography-template.reason.reason.ff34111d10e1.2": {
+  "nb": "Malforekomsten finnes ikke",
+  "en": "The template instance does not exist",
+  "oversatt": "テンプレートインスタンスが存在しません"
+ },
+ "core-typography-template.template-error.message.2a7a1429bbe2": {
+  "nb": "Malen er for stor",
+  "en": "The template is too large",
+  "oversatt": "テンプレートが大きすぎます"
+ },
+ "core-typography-template.template-error.message.4215898179ac": {
+  "nb": "Ugyldig element i malen",
+  "en": "Invalid element in the template",
+  "oversatt": "テンプレート内の要素が無効です"
+ },
+ "core-typography-template.template-error.message.4215898179ac.2": {
+  "nb": "Ugyldig element i malen",
+  "en": "Invalid element in the template",
+  "oversatt": "テンプレート内の要素が無効です"
+ },
+ "core-typography-template.template-error.message.502a68da4d5b": {
+  "nb": "Ukjent maltype",
+  "en": "Unknown template type",
+  "oversatt": "不明なテンプレートタイプです"
+ },
+ "core-typography-template.template-error.message.6b3faad5d8a3": {
+  "nb": "Ugyldig mal",
+  "en": "Invalid template",
+  "oversatt": "無効なテンプレートです"
+ },
+ "core-typography-template.template-error.message.6b3faad5d8a3.2": {
+  "nb": "Ugyldig mal",
+  "en": "Invalid template",
+  "oversatt": "無効なテンプレートです"
+ },
+ "core-typography-template.template-error.message.6cdf135fe96a": {
+  "nb": "Malen har for mange elementer (maks {MAX_TEMPLATE_ELEMENTS})",
+  "en": "The template has too many elements (max {MAX_TEMPLATE_ELEMENTS})",
+  "oversatt": "テンプレートの要素が多すぎます（最大 {MAX_TEMPLATE_ELEMENTS}）"
+ },
+ "core-typography-template.template-error.message.6da61b29594e": {
+  "nb": "Malen har ingen elementer",
+  "en": "The template has no elements",
+  "oversatt": "テンプレートに要素がありません"
+ },
+ "core-typography-template.template-error.message.86c27d8a5f07": {
+  "nb": "Elementet viser et ukjent felt",
+  "en": "The element shows an unknown field",
+  "oversatt": "要素が不明なフィールドを表示しています"
+ },
+ "core-typography-template.template-error.message.8ca489cafa21": {
+  "nb": "Elementet ligger i en ukjent gruppe",
+  "en": "The element is in an unknown group",
+  "oversatt": "要素が不明なグループに含まれています"
+ },
+ "core-typography-template.template-error.message.d964f4b49407": {
+  "nb": "Ugyldig felt i malen",
+  "en": "Invalid field in the template",
+  "oversatt": "テンプレート内のフィールドが無効です"
+ },
+ "core-typography-template.template-error.message.f221a3186b6a": {
+  "nb": "Ugyldig malformat",
+  "en": "Invalid template format",
+  "oversatt": "無効なテンプレート形式です"
+ },
+ "core-typography-validate.normalize-effects.bad.d6a5d5db62aa": {
+  "nb": "Ugyldig kontur",
+  "en": "Invalid outline",
+  "oversatt": "無効なアウトラインです"
+ },
+ "core-typography-validate.normalize-effects.bad.e15ada947a5b": {
+  "nb": "Ugyldig skygge",
+  "en": "Invalid shadow",
+  "oversatt": "無効なシャドウです"
+ },
+ "core-typography-validate.normalize-effects.bad.e57a5a64834e": {
+  "nb": "Ugyldig glød",
+  "en": "Invalid glow",
+  "oversatt": "無効な光彩です"
+ },
+ "core-typography-validate.normalize-letter-anim.bad.c9385d70a87b": {
+  "nb": "Ugyldig bokstavanimasjon",
+  "en": "Invalid letter animation",
+  "oversatt": "無効な文字アニメーションです"
+ },
+ "core-typography-validate.normalize-shape.bad.989213f99c01": {
+  "nb": "Ugyldig form",
+  "en": "Invalid shape",
+  "oversatt": "無効なシェイプです"
+ },
+ "core-typography-validate.normalize-shape.bad.b75748de5268": {
+  "nb": "Ugyldig kantlinje",
+  "en": "Invalid stroke",
+  "oversatt": "無効な線（ストローク）です"
+ },
+ "core-typography-validate.normalize-template-ref.bad.d703eb031df0": {
+  "nb": "Ugyldig malfelt",
+  "en": "Invalid template field",
+  "oversatt": "無効なテンプレートフィールドです"
+ },
+ "core-typography-validate.normalize-template-ref.bad.dffd099c124c": {
+  "nb": "Ugyldig malforekomst",
+  "en": "Invalid template instance",
+  "oversatt": "無効なテンプレートインスタンスです"
+ },
+ "core-typography-validate.normalize-template-ref.bad.e078e0326f89": {
+  "nb": "Ugyldig malelement",
+  "en": "Invalid template element",
+  "oversatt": "無効なテンプレート要素です"
+ },
+ "core-typography-validate.normalize-text-spec.bad.1499fd669143": {
+  "nb": "Ugyldig vekt",
+  "en": "Invalid weight",
+  "oversatt": "無効なウェイトです"
+ },
+ "core-typography-validate.normalize-text-spec.bad.21268635791c": {
+  "nb": "Ugyldig linjeavstand",
+  "en": "Invalid line spacing",
+  "oversatt": "無効な行送りです"
+ },
+ "core-typography-validate.normalize-text-spec.bad.3b0e84f4ea54": {
+  "nb": "Ukjent font",
+  "en": "Unknown font",
+  "oversatt": "不明なフォントです"
+ },
+ "core-typography-validate.normalize-text-spec.bad.5d8b2e2d4ad0": {
+  "nb": "Ugyldig bokstavavstand",
+  "en": "Invalid letter spacing",
+  "oversatt": "無効な文字間隔です"
+ },
+ "core-typography-validate.normalize-text-spec.bad.7d90c3c616b3": {
+  "nb": "Ugyldig justering",
+  "en": "Invalid alignment",
+  "oversatt": "無効な配置です"
+ },
+ "core-typography-validate.normalize-text-spec.bad.abc35c0addb6": {
+  "nb": "Fargen må være på formen #rrggbb",
+  "en": "The colour must be in the form #rrggbb",
+  "oversatt": "カラーは #rrggbb の形式である必要があります"
+ },
+ "core-typography-validate.normalize-text-spec.bad.bb57b9377172": {
+  "nb": "Ugyldig tekststørrelse",
+  "en": "Invalid text size",
+  "oversatt": "無効なテキストサイズです"
+ },
+ "core-typography-validate.normalize-text-spec.bad.e28766869227": {
+  "nb": "Teksten har {n} tegn. Grensen er {MAX_TEXT_CHARS} tegn per tekstlag. Del teksten på flere lag.",
+  "en": "The text has {n} characters. The limit is {MAX_TEXT_CHARS} characters per text layer. Split the text over several layers.",
+  "oversatt": "テキストは {n} 文字です。テキストレイヤーごとの上限は {MAX_TEXT_CHARS} 文字です。複数のレイヤーに分割してください。"
+ },
+ "core-typography-validate.normalize-text-spec.bad.fa792149bf50": {
+  "nb": "Ugyldig tekst",
+  "en": "Invalid text",
+  "oversatt": "無効なテキストです"
+ },
+ "core-workspaces.workspace-role-label.editor.0a3f3f0cc274": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "編集者"
+ },
+ "core-workspaces.workspace-role-label.member.8a2a74fbf742": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "メンバー"
+ },
+ "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "オーナー"
+ },
+ "engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c": {
+  "nb": " (uten bilde)",
+  "en": " (no image)",
+  "oversatt": "（画像なし）"
+ },
+ "engine-compositor-film.draw-source.draw-title-card.ddbf843041c0": {
+  "nb": "Ferdig film",
+  "en": "Finished film",
+  "oversatt": "完成した動画"
+ },
+ "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415": {
+  "nb": "Uten overskrift",
+  "en": "Without heading",
+  "oversatt": "見出しなし"
+ },
+ "engine-compositor-film.draw-title-card.message.b687cba6a4c5": {
+  "nb": "Ingen 2D-scene ennå",
+  "en": "No 2D scene yet",
+  "oversatt": "2Dシーンはまだありません"
+ },
+ "engine-export-alpha.check-abort.message.beb939e7ae1f": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセル済み"
+ },
+ "engine-export-alpha.encode.message.6a81b8072f16": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "キャンバスを利用できません。"
+ },
+ "engine-export-alpha.export-alpha-layers.message.3199d6a2083f": {
+  "nb": "Scenens plassering mangler.",
+  "en": "The scene's location is missing.",
+  "oversatt": "シーンの位置情報がありません。"
+ },
+ "engine-export-alpha.export-alpha-layers.message.f48e9ce41a0f": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "キャンバスを利用できません。"
+ },
+ "engine-export-alpha.prores-encoder.message.4f544d8dc2c6": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "キャンバスを利用できません。"
+ },
+ "engine-export-alpha.webm-encoder.message.5cce70f6bde9": {
+  "nb": "Denne nettleseren støtter ikke WebM VP9 med alfa. Velg PNG-sekvens.",
+  "en": "This browser does not support WebM VP9 with alpha. Choose a PNG sequence.",
+  "oversatt": "このブラウザはアルファ付きWebM VP9に対応していません。PNGシーケンスを選択してください。"
+ },
+ "engine-export-animatic.export-animatic.message.25b057ed803a": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセル済み"
+ },
+ "engine-export-animatic.export-animatic.message.5b6c6487795e": {
+  "nb": "Videoen ble tom.",
+  "en": "The video came out empty.",
+  "oversatt": "ビデオが空の状態で出力されました。"
+ },
+ "engine-export-animatic.export-animatic.message.a8cbd1798f03": {
+  "nb": "Nettleseren kan ikke kode video i {width} × {height}. Prøv halv størrelse, eller en annen nettleser.",
+  "en": "The browser cannot encode video at {width} × {height}. Try half the size, or another browser.",
+  "oversatt": "ブラウザが {width} × {height} のビデオをエンコードできません。半分のサイズにするか、別のブラウザをお試しください。"
+ },
+ "engine-export-animatic.export-animatic.message.aa9cad735d4d": {
+  "nb": "Kunne ikke tegne bildene (lerretet er ikke tilgjengelig).",
+  "en": "Could not draw the images (the canvas is not available).",
+  "oversatt": "画像を描画できませんでした（キャンバスが利用できません）。"
+ },
+ "engine-export-animatic.export-animatic.message.c17e79a74249": {
+  "nb": "Utvalget er tomt.",
+  "en": "The selection is empty.",
+  "oversatt": "選択項目が空です。"
+ },
+ "engine-export-animatic.export-animatic.message.f12f66905cf1": {
+  "nb": "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+  "en": "The browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
+  "oversatt": "ブラウザで動画を生成できません。Chrome、Edge、Safari、Firefoxの新しいバージョンを使用してください。"
+ },
+ "engine-export-audio-stem.export-dialogue-stem-parts.message.e1c7d00a2fa3": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセルされました"
+ },
+ "engine-export-png-writer.encode-png-strips.message.3d003dd2a29d": {
+  "nb": "Bildet er for bredt for nettleseren.",
+  "en": "The image is too wide for the browser.",
+  "oversatt": "画像がブラウザに対して広すぎます。"
+ },
+ "engine-export-png-writer.encode-png-strips.message.db1290b5a270": {
+  "nb": "Bildet må ha minst én piksel i hver retning.",
+  "en": "The image must be at least one pixel in each direction.",
+  "oversatt": "画像は縦横ともに少なくとも1ピクセル必要です。"
+ },
+ "engine-export-png-writer.encode-png-strips.message.dcc9175584b0": {
+  "nb": "Stripen har for få piksler.",
+  "en": "The strip has too few pixels.",
+  "oversatt": "ストリップのピクセル数が少なすぎます。"
+ },
+ "engine-export-poster-canvas.bitmap-to-pdf-image.message.bb273201cb7f": {
+  "nb": "Bildet er for stort for nettleseren.",
+  "en": "The image is too large for the browser.",
+  "oversatt": "画像がブラウザに対して大きすぎます。"
+ },
+ "engine-export-poster-canvas.fetch-bitmap.message.da4966223fa7": {
+  "nb": "Bildet kunne ikke hentes ({status})",
+  "en": "The image could not be fetched ({status})",
+  "oversatt": "画像を取得できませんでした ({status})"
+ },
+ "engine-export-poster-canvas.poster-png.message.06587355712b": {
+  "nb": "Nettleseren kunne ikke lage bildet.",
+  "en": "The browser could not create the image.",
+  "oversatt": "ブラウザで画像を生成できませんでした。"
+ },
+ "engine-export-poster-canvas.poster-png.message.38f00111642f": {
+  "nb": "Plakaten blir for stor i denne oppløsningen. Velg en lavere oppløsning.",
+  "en": "The poster is too large at this resolution. Choose a lower resolution.",
+  "oversatt": "この解像度ではポスターが大きすぎます。より低い解像度を選択してください。"
+ },
+ "engine-export-poster-canvas.stop.message.086facdc5373": {
+  "nb": "Eksporten ble avbrutt",
+  "en": "The export was cancelled",
+  "oversatt": "書き出しがキャンセルされました"
+ },
+ "engine-export-prores-export.abort-check.message.efc8245fd1eb": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセルされました"
+ },
+ "engine-export-prores-export.export-pro-res-film.message.5af6ad7366ac": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "キャンバスを利用できません。"
+ },
+ "engine-export-prores-export.export-pro-res-film.message.f642ea62e9ff": {
+  "nb": "Utvalget er tomt.",
+  "en": "The selection is empty.",
+  "oversatt": "選択範囲が空です。"
+ },
+ "engine-export-prores-export.write.write.faa5bf92b1a8": {
+  "nb": "ProRes-filen ble for stor for minnet. Velg et kortere utvalg eller halv størrelse.",
+  "en": "The ProRes file grew too large for memory. Choose a shorter selection or half size.",
+  "oversatt": "ProResファイルのサイズがメモリの上限を超えました。選択範囲を短くするか、ハーフサイズを選択してください。"
+ },
+ "engine-export-screenplay-docx.comment-xml.esc.e1c01748c122": {
+  "nb": "Ukjent",
+  "en": "Unknown",
+  "oversatt": "不明"
+ },
+ "engine-export-screenplay-pdf.highlight.message.3392376758bb": {
+  "nb": "Systemmerknad",
+  "en": "System note",
+  "oversatt": "システム注記"
+ },
+ "engine-export-screenplay-pdf.highlight.message.e5475048d630": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "メモ"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセルされました"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc.2": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセルされました"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc.3": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "キャンセルされました"
+ },
+ "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
+  "nb": "Disse filene kunne ikke hentes da zip-filen ble laget:\n\n{value1}\n",
+  "en": "These files could not be fetched when the zip file was made:\n\n{value1}\n",
+  "oversatt": "zipファイルの作成時に以下のファイルを取得できませんでした:\n\n{value1}\n"
+ },
+ "engine-export-zip.zip.message.d8988ee64a25": {
+  "nb": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
+  "en": "The zip file grew larger than 4 GB. Include fewer files and try again.",
+  "oversatt": "zipファイルが4 GBを超えました。ファイル数を減らして再試行してください。"
+ },
+ "engine-import-browser.decode-fountain.message.af53ad05831d": {
+  "nb": "Filen er ikke en Fountain-tekstfil. Fountain-manus er ren tekst (.fountain, .spmd eller .txt).",
+  "en": "The file is not a Fountain text file. Fountain scripts are plain text (.fountain, .spmd or .txt).",
+  "oversatt": "ファイルがFountainテキストファイルではありません。Fountain脚本はプレーンテキスト (.fountain、.spmd、または .txt) です。"
+ },
+ "engine-import-browser.read-screenplay-file.message.9a0ff2b5e05d": {
+  "nb": "Fant ingen tekst i PDF-en. Er det en skannet PDF? Den må ha tekst som kan merkes.",
+  "en": "No text found in the PDF. Is it a scanned PDF? It needs text that can be selected.",
+  "oversatt": "PDF内にテキストが見つかりません。スキャンされたPDFですか？選択可能なテキストが必要です。"
+ },
+ "engine-import-browser.read-screenplay-file.message.bd8815be4553": {
+  "nb": "Filen er større enn 100 MB.",
+  "en": "The file is larger than 100 MB.",
+  "oversatt": "ファイルサイズが100 MBを超えています。"
+ },
+ "engine-import-browser.read-screenplay-file.message.be31e7cdbed8": {
+  "nb": "Fant ingen manustekst i Fountain-filen.",
+  "en": "No script text found in the Fountain file.",
+  "oversatt": "Fountainファイル内に脚本テキストが見つかりません。"
+ },
+ "engine-import-browser.read-screenplay-file.message.d4aaf95bf60f": {
+  "nb": "Velg en PDF-, Word- eller Fountain-fil (.pdf, .docx eller .fountain). Final Draft-filer kan lagres som PDF.",
+  "en": "Choose a PDF, Word or Fountain file (.pdf, .docx or .fountain). Final Draft files can be saved as PDF.",
+  "oversatt": "PDF、Word、またはFountainファイル (.pdf、.docx、または .fountain) を選択してください。Final DraftファイルはPDFとして保存できます。"
+ },
+ "engine-import-browser.read-screenplay-file.message.dc9ed1cb5144": {
+  "nb": "Fant ingen tekst i Word-filen.",
+  "en": "No text found in the Word file.",
+  "oversatt": "Wordファイル内にテキストが見つかりません。"
+ },
+ "engine-import-docx-lines.docx-to-lines-and-notes.message.5a58821c5e2a": {
+  "nb": "Filen er ikke et gyldig Word-dokument (mangler word/document.xml)",
+  "en": "The file is not a valid Word document (word/document.xml is missing)",
+  "oversatt": "有効なWordドキュメントではありません (word/document.xml が見つかりません)"
+ },
+ "engine-import-docx-lines.filter.filter.f2692ff5617e": {
+  "nb": "DOCX-filen er for stor eller skadet",
+  "en": "The DOCX file is too large or damaged",
+  "oversatt": "DOCXファイルが大きすぎるか、破損しています"
+ },
+ "engine-import-pdf-lines.pdf-to-lines-and-notes.message.8a29a7d883c8": {
+  "nb": "PDF-en har {numPages} sider – maks {MAX_PAGES}",
+  "en": "The PDF has {numPages} pages – at most {MAX_PAGES}",
+  "oversatt": "PDFのページ数は {numPages} ページです（上限 {MAX_PAGES}）"
+ },
+ "engine-import-zip-read.read-zip-index.message.0cf2daef7956": {
+  "nb": "Zip-filen er skadet eller ufullstendig.",
+  "en": "The zip file is damaged or incomplete.",
+  "oversatt": "zipファイルが破損しているか、不完全です。"
+ },
+ "engine-import-zip-read.read-zip-index.message.377a90f2e29b": {
+  "nb": "Filen er ikke en zip-fil.",
+  "en": "The file is not a zip file.",
+  "oversatt": "ファイルがzipファイルではありません。"
+ },
+ "engine-import-zip-read.read-zip-index.message.508d578599e5": {
+  "nb": "Zip-filen er for stor (over 4 GB) til å leses her.",
+  "en": "The zip file is too large (over 4 GB) to be read here.",
+  "oversatt": "zipファイルが大きすぎるため (4 GB以上)、ここで読み込むことができません。"
+ },
+ "engine-import-zip-read.read-zip-index.message.6fc57fbaa34f": {
+  "nb": "Zip-filen er skadet (innholdsfortegnelsen).",
+  "en": "The zip file is damaged (its contents list).",
+  "oversatt": "zipファイルが破損しています (目録)。"
+ },
+ "engine-import-zip-read.zip-entry-blob.message.06b543ceeaa0": {
+  "nb": "Zip-filen er ufullstendig ({name}).",
+  "en": "The zip file is incomplete ({name}).",
+  "oversatt": "zipファイルが不完全です ({name})。"
+ },
+ "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
+  "nb": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio.",
+  "en": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.",
+  "oversatt": "{value1} は圧縮されており、ここで展開するには大きすぎます。Animatic Studioからダウンロードした状態のzipファイルを使用してください。"
+ },
+ "engine-import-zip-read.zip-entry-blob.message.b1d9207dc330": {
+  "nb": "Ukjent komprimering i zip-filen ({name}).",
+  "en": "Unknown compression in the zip file ({name}).",
+  "oversatt": "zipファイル内の不明な圧縮形式です ({name})。"
+ },
+ "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
+  "nb": "Zip-filen er skadet ({name}).",
+  "en": "The zip file is damaged ({name}).",
+  "oversatt": "zipファイルが破損しています ({name})。"
+ },
+ "id3.derived-from.invalid": {
+  "nb": "Kildeversjonen finnes ikke i denne ressursen.",
+  "en": "The source version does not exist in this asset.",
+  "oversatt": "このアセットにはソースバージョンが存在しません。"
+ },
+ "id3.duration.per-scene": {
+  "nb": "Per scene",
+  "en": "Per scene",
+  "oversatt": "シーンごと"
+ },
+ "id3.nav.workspaces": {
+  "nb": "Arbeidsflater",
+  "en": "Workspaces",
+  "oversatt": "ワークスペース"
+ },
+ "id3.pauses.unresolved": {
+  "nb": {
+   "one": "{count} lagret pause kan ikke knyttes til et ord i replikken (ordet er endret eller fjernet). Den brukes ikke før du setter pausen på nytt.",
+   "other": "{count} lagrede pauser kan ikke knyttes til et ord i replikken (ordene er endret eller fjernet). De brukes ikke før du setter pausene på nytt."
+  },
+  "en": {
+   "one": "{count} saved pause cannot be tied to a word in the line (the word was changed or removed). It is not used until you set the pause again.",
+   "other": "{count} saved pauses cannot be tied to a word in the line (the words were changed or removed). They are not used until you set the pauses again."
+  },
+  "oversatt": {
+   "other": "保存されたポーズのうち {count} 件をセリフ内の単語に紐付けることができません（単語が変更または削除されました）。ポーズを再設定するまで適用されません。"
+  }
+ },
+ "id3.provenance.unresolved": {
+  "nb": "kildeversjonen kan ikke bestemmes sikkert",
+  "en": "the source version cannot be determined with certainty",
+  "oversatt": "ソースバージョンを正確に特定できません"
+ },
+ "ml3-language-versions.button.add": {
+  "nb": "Legg til språkversjon",
+  "en": "Add language version",
+  "oversatt": "言語バージョンを追加"
+ },
+ "ml3-language-versions.button.close": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "ml3-language-versions.button.manage": {
+  "nb": "Språk i manuset …",
+  "en": "Script languages …",
+  "oversatt": "脚本の言語…"
+ },
+ "ml3-language-versions.button.register": {
+  "nb": "Registrer",
+  "en": "Register",
+  "oversatt": "登録"
+ },
+ "ml3-language-versions.button.remove": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "ml3-language-versions.button.rename": {
+  "nb": "Lagre navn",
+  "en": "Save name",
+  "oversatt": "名前を保存"
+ },
+ "ml3-language-versions.button.restore": {
+  "nb": "Gjenopprett",
+  "en": "Restore",
+  "oversatt": "復元"
+ },
+ "ml3-language-versions.dialog.description": {
+  "nb": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser.",
+  "en": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations.",
+  "oversatt": "ノルウェー語が常にソース言語となります。各言語バージョンには1つのターゲット言語が設定されます。言語バージョンを削除しても翻訳は削除されません。"
+ },
+ "ml3-language-versions.dialog.title": {
+  "nb": "Språkversjoner",
+  "en": "Language versions",
+  "oversatt": "言語バージョン"
+ },
+ "ml3-language-versions.empty": {
+  "nb": "Ingen språkversjoner ennå.",
+  "en": "No language versions yet.",
+  "oversatt": "言語バージョンがまだありません。"
+ },
+ "ml3-language-versions.error.duplicate": {
+  "nb": "Prosjektet har allerede en språkversjon for {language}.",
+  "en": "The project already has a language version for {language}.",
+  "oversatt": "プロジェクトにはすでに {language} の言語バージョンが存在します。"
+ },
+ "ml3-language-versions.error.in-use": {
+  "nb": "Språkversjonen er tatt i bruk av oversettelser og kan ikke angres bort. Fjern den i stedet.",
+  "en": "The language version is used by translations and cannot be undone. Remove it instead.",
+  "oversatt": "この言語バージョンは翻訳で使用されているため元に戻せません。代わりに削除してください。"
+ },
+ "ml3-language-versions.error.language": {
+  "nb": "Språkkoden er ugyldig. Bruk en BCP-47-kode som de, pt-BR eller sr-Latn.",
+  "en": "The language code is invalid. Use a BCP-47 code such as de, pt-BR or sr-Latn.",
+  "oversatt": "言語コードが無効です。de、pt-BR、sr-Latn などの BCP-47 コードを使用してください。"
+ },
+ "ml3-language-versions.error.mixed-versions": {
+  "nb": "Linjene i koblingen hører til ulike språkversjoner.",
+  "en": "The lines in the link belong to different language versions.",
+  "oversatt": "リンク内のセリフが異なる言語バージョンに属しています。"
+ },
+ "ml3-language-versions.error.name": {
+  "nb": "Navnet må ha mellom 1 og 120 tegn.",
+  "en": "The name must be between 1 and 120 characters.",
+  "oversatt": "名前は1〜120文字である必要があります。"
+ },
+ "ml3-language-versions.error.norwegian": {
+  "nb": "Norsk er kildespråket og kan ikke være en språkversjon.",
+  "en": "Norwegian is the source language and cannot be a language version.",
+  "oversatt": "ノルウェー語はソース言語であるため、言語バージョンとして追加することはできません。"
+ },
+ "ml3-language-versions.error.not-found": {
+  "nb": "Fant ikke språkversjonen.",
+  "en": "The language version was not found.",
+  "oversatt": "言語バージョンが見つかりませんでした。"
+ },
+ "ml3-language-versions.error.status": {
+  "nb": "Ukjent status for språkversjonen.",
+  "en": "Unknown status for the language version.",
+  "oversatt": "言語バージョンのステータスが不明です。"
+ },
+ "ml3-language-versions.error.unchanged": {
+  "nb": "Ingen endring å lagre.",
+  "en": "There is no change to save.",
+  "oversatt": "保存する変更はありません。"
+ },
+ "ml3-language-versions.explorer.language": {
+  "nb": "Språk i manusutforskeren",
+  "en": "Language in the script explorer",
+  "oversatt": "脚本エクスプローラーの言語"
+ },
+ "ml3-language-versions.export.choose": {
+  "nb": "Velg norsk reserve eller stopp før du eksporterer.",
+  "en": "Choose Norwegian fallback or stop before exporting.",
+  "oversatt": "書き出す前に、ノルウェー語のフォールバックを選択するか中止してください。"
+ },
+ "ml3-language-versions.export.fallback": {
+  "nb": "Bruk norsk der oversettelsen mangler",
+  "en": "Use Norwegian where the translation is missing",
+  "oversatt": "翻訳がない箇所にはノルウェー語を使用"
+ },
+ "ml3-language-versions.export.incomplete": {
+  "nb": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre.",
+  "en": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do.",
+  "oversatt": "{language} への翻訳が完了していません（未翻訳: {missing} 行、不確実: {uncertain} 行、要確認: {review} 行）。書き出し時の処理を選択してください。"
+ },
+ "ml3-language-versions.export.language": {
+  "nb": "Språkversjon i eksporten",
+  "en": "Language version in the export",
+  "oversatt": "書き出し時の言語バージョン"
+ },
+ "ml3-language-versions.export.stop": {
+  "nb": "Stopp eksporten til oversettelsen er ferdig",
+  "en": "Stop the export until the translation is complete",
+  "oversatt": "翻訳が完了するまで書き出しを中止"
+ },
+ "ml3-language-versions.export.stopped": {
+  "nb": "Eksporten er stoppet. Ingen fil er laget.",
+  "en": "The export is stopped. No file has been created.",
+  "oversatt": "書き出しが中止されました。ファイルは作成されていません。"
+ },
+ "ml3-language-versions.field.language": {
+  "nb": "Målspråk (BCP-47)",
+  "en": "Target language (BCP-47)",
+  "oversatt": "ターゲット言語（BCP-47）"
+ },
+ "ml3-language-versions.field.language-hint": {
+  "nb": "For eksempel de, pt-BR eller sr-Latn",
+  "en": "For example de, pt-BR or sr-Latn",
+  "oversatt": "例: de、pt-BR、sr-Latn"
+ },
+ "ml3-language-versions.field.name": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "ml3-language-versions.label.collision": {
+  "nb": "Lagret med flere skrivemåter: {tags}. Ingenting slås sammen automatisk.",
+  "en": "Stored with several spellings: {tags}. Nothing is merged automatically.",
+  "oversatt": "複数の表記で保存されています: {tags}。自動的に統合されるものはありません。"
+ },
+ "ml3-language-versions.label.derived": {
+  "nb": "Fra eldre oversettelser – ikke registrert",
+  "en": "From earlier translations – not registered",
+  "oversatt": "過去の翻訳から – 未登録"
+ },
+ "ml3-language-versions.label.registered": {
+  "nb": "Registrerte språkversjoner",
+  "en": "Registered language versions",
+  "oversatt": "登録済みの言語バージョン"
+ },
+ "ml3-language-versions.label.removed": {
+  "nb": "Fjernede språkversjoner",
+  "en": "Removed language versions",
+  "oversatt": "削除された言語バージョン"
+ },
+ "ml3-language-versions.label.status": {
+  "nb": "{translated} av {lines} linjer oversatt, {review} må gjennomgås, {uncertain} usikre",
+  "en": "{translated} of {lines} lines translated, {review} need review, {uncertain} uncertain",
+  "oversatt": "{lines} 行中 {translated} 行翻訳済み、{review} 行要確認、{uncertain} 行不確実"
+ },
+ "ml3-language-versions.links.language": {
+  "nb": "Språkversjon for linjekoblinger",
+  "en": "Language version for line links",
+  "oversatt": "セリフリンクの言語バージョン"
+ },
+ "ml3-language-versions.option.derived": {
+  "nb": "{label} – eldre oversettelser",
+  "en": "{label} – earlier translations",
+  "oversatt": "{label} – 過去の翻訳"
+ },
+ "ml3-language-versions.review.languages": {
+  "nb": "Norsk er endret. Må gjennomgås i: {languages}",
+  "en": "The Norwegian text has changed. Needs review in: {languages}",
+  "oversatt": "ノルウェー語のテキストが変更されました。確認が必要な言語: {languages}"
+ },
+ "ml3-language-versions.select.norwegian": {
+  "nb": "Norsk (kilde)",
+  "en": "Norwegian (source)",
+  "oversatt": "ノルウェー語（元言語）"
+ },
+ "ml3-language-versions.undo.add": {
+  "nb": "Legg til språkversjon {name}",
+  "en": "Add language version {name}",
+  "oversatt": "言語バージョン {name} を追加"
+ },
+ "ml3-language-versions.undo.remove": {
+  "nb": "Fjern språkversjon {name}",
+  "en": "Remove language version {name}",
+  "oversatt": "言語バージョン {name} を削除"
+ },
+ "ml3-language-versions.undo.rename": {
+  "nb": "Gi nytt navn til språkversjon {name}",
+  "en": "Rename language version {name}",
+  "oversatt": "言語バージョン {name} の名前を変更"
+ },
+ "ml3-language-versions.undo.restore": {
+  "nb": "Gjenopprett språkversjon {name}",
+  "en": "Restore language version {name}",
+  "oversatt": "言語バージョン {name} を復元"
+ },
+ "ml4-export-fonts.docx-warning": {
+  "nb": "Word-fonten ({font}) har ikke {count} tegn: {chars}. Tegnene beholdes i filen, men Word viser dem med en annen font.",
+  "en": "The Word font ({font}) lacks {count} characters: {chars}. The characters are kept in the file, but Word shows them in another font.",
+  "oversatt": "Word フォント（{font}）に {count} 文字が含まれていません: {chars}。文字自体はファイル内に保持されますが、Word では別のフォントで表示されます。"
+ },
+ "ml4-export-fonts.ok": {
+  "nb": "Fonten ({font}) kan vise alle tegnene i eksporten.",
+  "en": "The font ({font}) can show every character in the export.",
+  "oversatt": "フォント（{font}）は書き出しに含まれるすべての文字を表示できます。"
+ },
+ "ml4-export-fonts.pdf-blocked": {
+  "nb": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn.",
+  "en": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character.",
+  "oversatt": "PDF フォント（{font}）では、この言語バージョンの {count} 文字を表示できません: {chars}。ファイル内で「?」に変換されてしまうため、PDF の書き出しを停止しました。すべての文字が保持される Word または Fountain を選択してください。"
+ },
+ "print-measure.error-0": {
+  "nb": "Ugyldig målepunkt",
+  "en": "Invalid measurement point",
+  "oversatt": "無効な測定ポイントです"
+ },
+ "print-measure.error-1": {
+  "nb": "Ugyldig linje",
+  "en": "Invalid line",
+  "oversatt": "無効なラインです"
+ },
+ "print-measure.error-10": {
+  "nb": "Ugyldig målesettreferanse/navn",
+  "en": "Invalid measurement set reference or name",
+  "oversatt": "測定セットの参照または名前が無効です"
+ },
+ "print-measure.error-11": {
+  "nb": "Ugyldig frame",
+  "en": "Invalid frame",
+  "oversatt": "無効なフレームです"
+ },
+ "print-measure.error-12": {
+  "nb": "Ugyldig tidsstempel",
+  "en": "Invalid timestamp",
+  "oversatt": "無効なタイムスタンプです"
+ },
+ "print-measure.error-13": {
+  "nb": "Ugyldig markørliste",
+  "en": "Invalid marker list",
+  "oversatt": "無効なマーカーリストです"
+ },
+ "print-measure.error-14": {
+  "nb": "Duplisert markør-ID",
+  "en": "Duplicate marker ID",
+  "oversatt": "マーカー ID が重複しています"
+ },
+ "print-measure.error-15": {
+  "nb": "Dupliserte markører",
+  "en": "Duplicate markers",
+  "oversatt": "マーカーが重複しています"
+ },
+ "print-measure.error-16": {
+  "nb": "Ugyldig innsetting",
+  "en": "Invalid insertion",
+  "oversatt": "無効な挿入です"
+ },
+ "print-measure.error-17": {
+  "nb": "Ukjent markør",
+  "en": "Unknown marker",
+  "oversatt": "不明なマーカーです"
+ },
+ "print-measure.error-18": {
+  "nb": "Duplisert ID",
+  "en": "Duplicate ID",
+  "oversatt": "ID が重複しています"
+ },
+ "print-measure.error-2": {
+  "nb": "Vinkel krever to linjer med lengde",
+  "en": "Angle requires two nonzero lines",
+  "oversatt": "角度を測定するには長さを持つ2本のラインが必要です"
+ },
+ "print-measure.error-3": {
+  "nb": "Forhold krever ikke-negative lengder og positiv nevner",
+  "en": "Ratio requires nonnegative lengths and a positive denominator",
+  "oversatt": "比率を計算するには0以上の長さと正の分母が必要です"
+ },
+ "print-measure.error-4": {
+  "nb": "Ugyldig måleverdi/enhet",
+  "en": "Invalid measurement value or unit",
+  "oversatt": "無効な測定値または単位です"
+ },
+ "print-measure.error-5": {
+  "nb": "Zoom må være positiv",
+  "en": "Zoom must be positive",
+  "oversatt": "ズームは正の値である必要があります"
+ },
+ "print-measure.error-6": {
+  "nb": "Ugyldig toleranse",
+  "en": "Invalid tolerance",
+  "oversatt": "無効な許容値です"
+ },
+ "print-measure.error-7": {
+  "nb": "Ukjent markørtype",
+  "en": "Unknown marker type",
+  "oversatt": "不明なマーカータイプです"
+ },
+ "print-measure.error-8": {
+  "nb": "Markør mangler ID",
+  "en": "Marker ID is missing",
+  "oversatt": "マーカー ID がありません"
+ },
+ "print-measure.error-9": {
+  "nb": "Ugyldig markørgeometri",
+  "en": "Invalid marker geometry",
+  "oversatt": "無効なマーカー形状です"
+ },
+ "print-pdf.image-required": {
+  "nb": "Figurutskrift krever et kildebilde.",
+  "en": "Figure printing requires a source image.",
+  "oversatt": "フィギュアの印刷にはソース画像が必要です。"
+ },
+ "print-pdf.instruction": {
+  "nb": "Skriv ut i 100 % / faktisk størrelse. Kontroller med linjal.",
+  "en": "Print at 100 % / actual size. Check with a ruler.",
+  "oversatt": "100% / 実寸大で印刷してください。定規でサイズを確認してください。"
+ },
+ "print-pdf.invalid": {
+  "nb": "Ugyldig utskriftsgeometri.",
+  "en": "Invalid print geometry.",
+  "oversatt": "無効な印刷形状です。"
+ },
+ "print-pdf.overview": {
+  "nb": "Oversiktsark: {id}",
+  "en": "Overview: {id}",
+  "oversatt": "概要シート: {id}"
+ },
+ "print-pdf.qr": {
+  "nb": "QR runde 5",
+  "en": "QR round 5",
+  "oversatt": "QR ラウンド 5"
+ },
+ "print-pdf.tile": {
+  "nb": "rad {row} / kolonne {column}",
+  "en": "row {row} / column {column}",
+  "oversatt": "行 {row} / 列 {column}"
+ },
+ "r1-prores-offer.accept": {
+  "nb": "Bruk ProRes",
+  "en": "Use ProRes",
+  "oversatt": "ProRes を使用"
+ },
+ "r1-prores-offer.dismiss": {
+  "nb": "Ikke nå",
+  "en": "Not now",
+  "oversatt": "今はしない"
+ },
+ "r1-prores-offer.question": {
+  "nb": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre.",
+  "en": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo.",
+  "oversatt": "{name} プロファイルで ProRes をデフォルトとして使用しますか？書き出し時に MP4 ではなく ProRes/MOV が推奨されるようになります。後から変更可能です。"
+ },
+ "r1-prores-offer.restore": {
+  "nb": "Vis ProRes-tilbudet for {name} igjen",
+  "en": "Show the ProRes offer for {name} again",
+  "oversatt": "{name} の ProRes に関する案内を再度表示"
+ },
+ "r1-prores-offer.undo-label": {
+  "nb": "ProRes som standard i {name}",
+  "en": "ProRes as default in {name}",
+  "oversatt": "{name} で ProRes をデフォルトに設定"
+ },
+ "r2-orphan-cleanup.cancel": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "r2-orphan-cleanup.confirm": {
+  "nb": "Slett filene",
+  "en": "Delete the files",
+  "oversatt": "ファイルを削除"
+ },
+ "r2-orphan-cleanup.done": {
+  "nb": {
+   "one": "{count} fil slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden.",
+   "other": "{count} filer slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden."
+  },
+  "en": {
+   "one": "{count} file deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime.",
+   "other": "{count} files deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime."
+  },
+  "oversatt": {
+   "other": "{count} 件のファイルを削除しました ({size} MB)。{skipped} 件はその間に使用されたため保持されました。"
+  }
+ },
+ "r2-orphan-cleanup.error.confirm": {
+  "nb": "Bekreft slettingen først.",
+  "en": "Confirm the deletion first.",
+  "oversatt": "まず削除を確定してください。"
+ },
+ "r2-orphan-cleanup.error.generic": {
+  "nb": "Oppryddingen feilet.",
+  "en": "The clean-up failed.",
+  "oversatt": "クリーンアップに失敗しました。"
+ },
+ "r2-orphan-cleanup.error.input": {
+  "nb": "Ugyldig forespørsel om opprydding.",
+  "en": "Invalid clean-up request.",
+  "oversatt": "無効なクリーンアップリクエストです。"
+ },
+ "r2-orphan-cleanup.error.owner": {
+  "nb": "Bare prosjekteieren kan rydde opp i filer.",
+  "en": "Only the project owner can clean up files.",
+  "oversatt": "ファイルのクリーンアップを実行できるのはプロジェクト所有者のみです。"
+ },
+ "r2-orphan-cleanup.error.references": {
+  "nb": "Kunne ikke kontrollere hvilke filer som er i bruk. Ingenting er slettet.",
+  "en": "Could not check which files are in use. Nothing was deleted.",
+  "oversatt": "使用中のファイルを確認できませんでした。何も削除されていません。"
+ },
+ "r2-orphan-cleanup.error.remove": {
+  "nb": "Kunne ikke slette filene. Prøv igjen.",
+  "en": "Could not delete the files. Try again.",
+  "oversatt": "ファイルを削除できませんでした。もう一度お試しください。"
+ },
+ "r2-orphan-cleanup.error.too-many": {
+  "nb": "Prosjektet har for mange filer til å kontrollere nå. Ingenting er slettet.",
+  "en": "The project has too many files to check right now. Nothing was deleted.",
+  "oversatt": "プロジェクトのファイル数が多すぎるため、現在は確認できません。何も削除されていません。"
+ },
+ "r2-orphan-cleanup.none": {
+  "nb": "Fant ingen ubrukte AI-filer som kan slettes.",
+  "en": "No unused AI files that can be deleted were found.",
+  "oversatt": "削除可能な未使用のAIファイルは見つかりませんでした。"
+ },
+ "r2-orphan-cleanup.open": {
+  "nb": "Rydd opp i ubrukte AI-filer …",
+  "en": "Clean up unused AI files …",
+  "oversatt": "未使用のAIファイルをクリーンアップ…"
+ },
+ "r2-orphan-cleanup.summary": {
+  "nb": {
+   "one": "{count} AI-fil ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. Den er eldre enn ett døgn. Sletting kan ikke angres.",
+   "other": "{count} AI-filer ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. De er eldre enn ett døgn. Sletting kan ikke angres."
+  },
+  "en": {
+   "one": "{count} AI file ({size} MB) is not used by anything in the project and is not in the undo history. It is older than one day. Deleting cannot be undone.",
+   "other": "{count} AI files ({size} MB) are not used by anything in the project and are not in the undo history. They are older than one day. Deleting cannot be undone."
+  },
+  "oversatt": {
+   "other": "{count} 件のAIファイル ({size} MB) はプロジェクト内のどこにも使用されておらず、取り消し履歴にもありません。1日以上経過しています。削除を取り消すことはできません。"
+  }
+ },
+ "r2-orphan-cleanup.title": {
+  "nb": "Slette ubrukte AI-filer?",
+  "en": "Delete unused AI files?",
+  "oversatt": "未使用のAIファイルを削除しますか？"
+ },
+ "r3-global.error.no-version": {
+  "nb": "Versjonen finnes ikke i prosjektet.",
+  "en": "The version does not exist in the project.",
+  "oversatt": "そのバージョンはプロジェクト内に存在しません。"
+ },
+ "r3-global.error.not-global": {
+  "nb": "Ressursen er ikke koblet til en global ressurs i denne gruppen.",
+  "en": "The asset is not linked to a global asset in this group.",
+  "oversatt": "アセットはこのグループのグローバルアセットにリンクされていません。"
+ },
+ "r3-global.error.project-rights": {
+  "nb": "Bare redaktører og eiere i prosjektet kan publisere globalt.",
+  "en": "Only editors and owners of the project can publish globally.",
+  "oversatt": "グローバルに公開できるのは、プロジェクトの編集者と所有者のみです。"
+ },
+ "r3-global.error.workspace-rights": {
+  "nb": "Bare redaktører og eiere i gruppen kan publisere eller trekke tilbake globale versjoner.",
+  "en": "Only editors and owners of the group can publish or withdraw global versions.",
+  "oversatt": "グローバルバージョンの公開または取り下げができるのは、グループの編集者と所有者のみです。"
+ },
+ "r3-global.publish-title": {
+  "nb": "Legger den harmoniserte versjonen til den globale ressursen. Andre prosjekter endres ikke. Angre trekker den tilbake.",
+  "en": "Adds the harmonized version to the global asset. Other projects do not change. Undo withdraws it.",
+  "oversatt": "統一されたバージョンをグローバルアセットに追加します。他のプロジェクトは変更されません。取り消すと撤回されます。"
+ },
+ "r3-global.published-variant": {
+  "nb": "Publisert som ny global variant (versjon {number}). Andre prosjekter får et varsel og velger selv.",
+  "en": "Published as a new global variant (version {number}). Other projects get a notice and choose for themselves.",
+  "oversatt": "新しいグローバルバリアント（バージョン {number}）として公開されました。他のプロジェクトには通知が届き、適用するか選択できます。"
+ },
+ "r3-global.published-version": {
+  "nb": "Publisert som global versjon {number}. Andre prosjekter får et varsel og velger selv.",
+  "en": "Published as global version {number}. Other projects get a notice and choose for themselves.",
+  "oversatt": "グローバルバージョン {number} として公開されました。他のプロジェクトには通知が届き、適用するか選択できます。"
+ },
+ "r3-global.undo-label": {
+  "nb": "Publiser versjon {number} globalt",
+  "en": "Publish version {number} globally",
+  "oversatt": "バージョン {number} をグローバルに公開"
+ },
+ "r3-global.withdrawn-in-use": {
+  "nb": "Versjon {number} av {name} er trukket tilbake globalt. Kopien i dette prosjektet er uendret.",
+  "en": "Version {number} of {name} has been withdrawn globally. The copy in this project is unchanged.",
+  "oversatt": "{name} のバージョン {number} はグローバルで取り下げられました。このプロジェクト内のコピーは変更されません。"
+ },
+ "r3-global.withdrawn-label": {
+  "nb": "trukket tilbake",
+  "en": "withdrawn",
+  "oversatt": "取り下げ済み"
+ },
+ "r4-prores.estimate": {
+  "nb": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer.",
+  "en": "Estimated file size: up to {size}. Simple pictures give smaller files.",
+  "oversatt": "推定ファイルサイズ: 最大 {size}。シンプルな画像ほどファイルサイズは小さくなります。"
+ },
+ "r4-prores.film-note": {
+  "nb": "{profile} med Apples målbitrate, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring.",
+  "en": "{profile} at Apple's target bitrate, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage.",
+  "oversatt": "Apple目標ビットレートの {profile}、Rec.709、音声は PCM 48 kHz。大きなファイルはブラウザのストレージに直接書き込まれます。"
+ },
+ "r4-prores.film-option": {
+  "nb": "MOV (ProRes – for videoredigering)",
+  "en": "MOV (ProRes – for editing)",
+  "oversatt": "MOV (ProRes – 映像編集用)"
+ },
+ "r4-prores.profile-label": {
+  "nb": "ProRes-profil",
+  "en": "ProRes profile",
+  "oversatt": "ProResプロファイル"
+ },
+ "r6-brand.builtin-provider": {
+  "nb": "Bruker tjenestens innebygde AI-kreditter. Ingen egen nøkkel – slått på for prosjektet.",
+  "en": "Uses the service's built-in AI credits. No key of your own – switched on for the project.",
+  "oversatt": "サービスの組み込みAIクレジットを使用します。独自のキーは不要です（プロジェクトで有効化済み）。"
+ },
+ "r6-brand.cron-warning": {
+  "nb": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren.",
+  "en": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and that the background job is set up on the server.",
+  "oversatt": "バックグラウンドジョブが過去 {CRON_STALE_MINUTES} 分間実行されていません。アプリが公開されており、サーバー上でバックグラウンドジョブが設定されているか確認してください。"
+ },
+ "r6-brand.download-blocked": {
+  "nb": "Startet ikke nedlastingen? En innebygd forhåndsvisning kan blokkere nedlastinger. Åpne appen i en egen fane og eksporter derfra.",
+  "en": "Did the download not start? An embedded preview can block downloads. Open the app in a separate tab and export from there.",
+  "oversatt": "ダウンロードが開始されませんか？埋め込みプレビューによってダウンロードがブロックされている可能性があります。アプリを別のタブで開いて、そこから書き出してください。"
+ },
+ "r6-brand.image-credits": {
+  "nb": "Dette bruker tjenestens innebygde AI-kreditter (",
+  "en": "This uses the service's built-in AI credits (",
+  "oversatt": "これにはサービスの組み込みAIクレジットが使用されます ("
+ },
+ "r6-brand.provider-detail": {
+  "nb": "Denne er alltid tilgjengelig og bruker tjenestens innebygde AI-kreditter. Prosjektets AI-budsjett gjelder.",
+  "en": "This is always available and uses the service's built-in AI credits. The project's AI budget applies.",
+  "oversatt": "いつでも利用可能で、サービスの組み込みAIクレジットを使用します。プロジェクトのAI予算が適用されます。"
+ },
+ "r6-brand.text-model": {
+  "nb": "Ingen av språkmodellene ble gjenkjent. Sett ANIMATIC_TEXT_MODEL i serverens innstillinger.",
+  "en": "None of the language models was recognised. Set ANIMATIC_TEXT_MODEL in the server settings.",
+  "oversatt": "認識された言語モデルがありません。サーバー設定で ANIMATIC_TEXT_MODEL を設定してください。"
+ },
+ "r8-translation-import.button": {
+  "nb": "Importer oversatt manus …",
+  "en": "Import translated script …",
+  "oversatt": "翻訳された脚本をインポート…"
+ },
+ "r8-translation-import.target": {
+  "nb": "Målspråk: {language} ({tag})",
+  "en": "Target language: {language} ({tag})",
+  "oversatt": "対象言語: {language} ({tag})"
+ },
+ "routes-admin.admin-route.trail.a96adb8ff9c5": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "管理"
+ },
+ "routes-admin.content.content.2838c73c64a0": {
+  "nb": "Administrasjon – Animatic Studio",
+  "en": "Administration – Animatic Studio",
+  "oversatt": "管理 – Animatic Studio"
+ },
+ "routes-admin.content.content.4a28312072cc": {
+  "nb": "Administrer brukere og tjenesten i Animatic Studio.",
+  "en": "Manage users and the service in Animatic Studio.",
+  "oversatt": "Animatic Studio のユーザーとサービスを管理します。"
+ },
+ "routes-admin.content.content.4a28312072cc.2": {
+  "nb": "Administrer brukere og tjenesten i Animatic Studio.",
+  "en": "Manage users and the service in Animatic Studio.",
+  "oversatt": "Animatic Studio のユーザーとサービスを管理します。"
+ },
+ "routes-admin.title.title.50274d57d4da": {
+  "nb": "Administrasjon – Animatic Studio",
+  "en": "Administration – Animatic Studio",
+  "oversatt": "管理 – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.content.content.789e02872522": {
+  "nb": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.",
+  "en": "Members, invitations and projects in a workspace.",
+  "oversatt": "ワークスペース内のメンバー、招待、およびプロジェクト。"
+ },
+ "routes-gruppe-workspace-id.content.content.789e02872522.2": {
+  "nb": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.",
+  "en": "Members, invitations and projects in a workspace.",
+  "oversatt": "ワークスペース内のメンバー、招待、およびプロジェクト。"
+ },
+ "routes-gruppe-workspace-id.content.content.d76669de2282": {
+  "nb": "Arbeidsgruppe – Animatic Studio",
+  "en": "Workspace – Animatic Studio",
+  "oversatt": "ワークスペース – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.title.title.73796e5fd612": {
+  "nb": "Arbeidsgruppe – Animatic Studio",
+  "en": "Workspace – Animatic Studio",
+  "oversatt": "ワークスペース – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.workspace-route.trail.16e3d36e939a": {
+  "nb": "Arbeidsgruppe",
+  "en": "Workspace",
+  "oversatt": "ワークスペース"
+ },
+ "routes-index.content.content.75201acaab45": {
+  "nb": "Animatic Studio – fra manus til ferdig film.",
+  "en": "Animatic Studio – from script to finished film.",
+  "oversatt": "Animatic Studio – 脚本から完成作品まで。"
+ },
+ "routes-index.content.content.75201acaab45.2": {
+  "nb": "Animatic Studio – fra manus til ferdig film.",
+  "en": "Animatic Studio – from script to finished film.",
+  "oversatt": "Animatic Studio – 脚本から完成作品まで。"
+ },
+ "routes-index.content.content.d4c02791089e": {
+  "nb": "Animatic Studio – Prosjekter",
+  "en": "Animatic Studio – Projects",
+  "oversatt": "Animatic Studio – プロジェクト"
+ },
+ "routes-index.title.title.d34b816fe818": {
+  "nb": "Animatic Studio – Prosjekter",
+  "en": "Animatic Studio – Projects",
+  "oversatt": "Animatic Studio – プロジェクト"
+ },
+ "routes-invitasjon.accept-invitation.p.78d02d70a626": {
+  "nb": "Lenken mangler invitasjonskode.",
+  "en": "The link is missing an invitation code.",
+  "oversatt": "リンクに招待コードが含まれていません。"
+ },
+ "routes-invitasjon.accept-invitation.p.e3ae379101ad": {
+  "nb": "Godtar invitasjonen …",
+  "en": "Accepting the invitation …",
+  "oversatt": "招待を承諾中…"
+ },
+ "routes-invitasjon.accept-invitation.set-error.fa937f90fc5d": {
+  "nb": "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+  "en": "The invitation is invalid, has expired or has already been used.",
+  "oversatt": "招待が無効であるか、期限切れ、または既に使用されています。"
+ },
+ "routes-invitasjon.content.content.167a3d5e4f4c": {
+  "nb": "Invitasjon – Animatic Studio",
+  "en": "Invitation – Animatic Studio",
+  "oversatt": "招待 – Animatic Studio"
+ },
+ "routes-invitasjon.content.content.2b66322361d6": {
+  "nb": "Godta en prosjektinvitasjon i Animatic Studio.",
+  "en": "Accept a project invitation in Animatic Studio.",
+  "oversatt": "Animatic Studioでプロジェクトへの招待を承諾します。"
+ },
+ "routes-invitasjon.content.content.2b66322361d6.2": {
+  "nb": "Godta en prosjektinvitasjon i Animatic Studio.",
+  "en": "Accept a project invitation in Animatic Studio.",
+  "oversatt": "Animatic Studioでプロジェクトへの招待を承諾します。"
+ },
+ "routes-invitasjon.invalid.use-effect.a4bd36ee329e": {
+  "nb": "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+  "en": "The invitation is invalid, has expired or has already been used.",
+  "oversatt": "招待が無効であるか、期限切れ、または既に使用されています。"
+ },
+ "routes-invitasjon.title.title.15d2852cc7b6": {
+  "nb": "Invitasjon – Animatic Studio",
+  "en": "Invitation – Animatic Studio",
+  "oversatt": "招待 – Animatic Studio"
+ },
+ "routes-invitasjon.wrong.use-effect.09d63b5cc3ae": {
+  "nb": "Invitasjonen gjelder en annen e-postadresse. Logg inn med adressen invitasjonen ble sendt til.",
+  "en": "The invitation is for a different email address. Sign in with the address the invitation was sent to.",
+  "oversatt": "この招待は別のメールアドレス宛てです。招待が送信されたアドレスでログインしてください。"
+ },
+ "routes-konto.account-route.trail.3c7458431283": {
+  "nb": "Min konto",
+  "en": "My account",
+  "oversatt": "マイアカウント"
+ },
+ "routes-konto.content.content.b01c4654387c": {
+  "nb": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
+  "en": "Manage your account, language and AI preferences in Animatic Studio.",
+  "oversatt": "Animatic Studioのアカウント、言語、AI設定を管理します。"
+ },
+ "routes-konto.content.content.b01c4654387c.2": {
+  "nb": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
+  "en": "Manage your account, language and AI preferences in Animatic Studio.",
+  "oversatt": "Animatic Studioのアカウント、言語、AI設定を管理します。"
+ },
+ "routes-konto.content.content.f63ad82751ab": {
+  "nb": "Min konto – Animatic Studio",
+  "en": "My account – Animatic Studio",
+  "oversatt": "マイアカウント – Animatic Studio"
+ },
+ "routes-konto.title.title.0ad1dbde485e": {
+  "nb": "Min konto – Animatic Studio",
+  "en": "My account – Animatic Studio",
+  "oversatt": "マイアカウント – Animatic Studio"
+ },
+ "routes-m-token.content.content.0b31cbc4811d": {
+  "nb": "Last opp – Animatic Studio",
+  "en": "Upload – Animatic Studio",
+  "oversatt": "アップロード – Animatic Studio"
+ },
+ "routes-m-token.content.content.e9b3848a0c50": {
+  "nb": "Last opp materiale til et prosjekt i Animatic Studio.",
+  "en": "Upload material to an Animatic Studio project.",
+  "oversatt": "Animatic Studioのプロジェクトに素材をアップロードします。"
+ },
+ "routes-m-token.content.content.e9b3848a0c50.2": {
+  "nb": "Last opp materiale til et prosjekt i Animatic Studio.",
+  "en": "Upload material to an Animatic Studio project.",
+  "oversatt": "Animatic Studioのプロジェクトに素材をアップロードします。"
+ },
+ "routes-m-token.title.title.5c1d0ff564a2": {
+  "nb": "Last opp – Animatic Studio",
+  "en": "Upload – Animatic Studio",
+  "oversatt": "アップロード – Animatic Studio"
+ },
+ "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
+  "nb": "Manusutforskeren – Animatic Studio",
+  "en": "Script explorer – Animatic Studio",
+  "oversatt": "脚本エクスプローラー – Animatic Studio"
+ },
+ "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
+  "nb": "Søk i manuset og legg til notater i Animatic Studio.",
+  "en": "Search the screenplay and add notes in Animatic Studio.",
+  "oversatt": "Animatic Studioで脚本を検索し、メモを追加します。"
+ },
+ "routes-manusutforsker-project-id.content.content.ff977692e1ef": {
+  "nb": "Utforsk manuset og følg aktiv scene i et eget vindu.",
+  "en": "Explore the screenplay and follow the active scene in a separate window.",
+  "oversatt": "脚本を閲覧し、別ウィンドウでアクティブなシーンを追従します。"
+ },
+ "routes-manusutforsker-project-id.explorer-route.p.00bc51371ac2": {
+  "nb": "Prosjektet er låst eller kunne ikke åpnes.",
+  "en": "The project is locked or could not be opened.",
+  "oversatt": "プロジェクトがロックされているか、開くことができませんでした。"
+ },
+ "routes-manusutforsker-project-id.explorer-route.p.6701ac4df175": {
+  "nb": "Henter prosjekt …",
+  "en": "Loading project …",
+  "oversatt": "プロジェクトを読み込み中…"
+ },
+ "routes-manusutforsker-project-id.explorer-route.span.1bf9101e457f": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "脚本エクスプローラー"
+ },
+ "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
+  "nb": "Manusutforskeren – Animatic Studio",
+  "en": "Script explorer – Animatic Studio",
+  "oversatt": "脚本エクスプローラー – Animatic Studio"
+ },
+ "routes-personvern.content.content.87755ed805a8": {
+  "nb": "Personvern – Animatic Studio",
+  "en": "Privacy – Animatic Studio",
+  "oversatt": "プライバシー – Animatic Studio"
+ },
+ "routes-personvern.content.content.c2cd1c6e5143": {
+  "nb": "Les personvernerklæringen for Animatic Studio.",
+  "en": "Read the privacy statement for Animatic Studio.",
+  "oversatt": "Animatic Studioのプライバシーポリシーをご確認ください。"
+ },
+ "routes-personvern.content.content.c2cd1c6e5143.2": {
+  "nb": "Les personvernerklæringen for Animatic Studio.",
+  "en": "Read the privacy statement for Animatic Studio.",
+  "oversatt": "Animatic Studioのプライバシーポリシーをご確認ください。"
+ },
+ "routes-personvern.privacy-page.link.27b98f24370c": {
+  "nb": "Til innloggingen",
+  "en": "To sign-in",
+  "oversatt": "ログインへ"
+ },
+ "routes-personvern.privacy-page.link.591dcf692023": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "プロジェクト一覧へ"
+ },
+ "routes-personvern.privacy-page.p.c061de21bb96": {
+  "nb": "Henter …",
+  "en": "Loading …",
+  "oversatt": "読み込み中…"
+ },
+ "routes-personvern.privacy-page.trail.5e18a18818de": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "プライバシー"
+ },
+ "routes-personvern.title.title.c03602ed60a1": {
+  "nb": "Personvern – Animatic Studio",
+  "en": "Privacy – Animatic Studio",
+  "oversatt": "プライバシー – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
+  "nb": "Arbeid med karakterer og ressurser i Animatic Studio.",
+  "en": "Work with characters and assets in Animatic Studio.",
+  "oversatt": "Animatic Studio でキャラクターとアセットを操作します。"
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
+  "nb": "Arbeid med karakterer og ressurser i Animatic Studio.",
+  "en": "Work with characters and assets in Animatic Studio.",
+  "oversatt": "Animatic Studio でキャラクターとアセットを操作します。"
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
+  "nb": "Ressursbibliotek – Animatic Studio",
+  "en": "Asset library – Animatic Studio",
+  "oversatt": "アセットライブラリ – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
+  "nb": "Ressursbibliotek – Animatic Studio",
+  "en": "Asset library – Animatic Studio",
+  "oversatt": "アセットライブラリ – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
+  "nb": "Se filmprosjektets produksjoner i Animatic Studio.",
+  "en": "View your film project productions in Animatic Studio.",
+  "oversatt": "Animatic Studio で映画プロジェクトのプロダクションを表示します。"
+ },
+ "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
+  "nb": "Se filmprosjektets produksjoner i Animatic Studio.",
+  "en": "View your film project productions in Animatic Studio.",
+  "oversatt": "Animatic Studio で映画プロジェクトのプロダクションを表示します。"
+ },
+ "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
+  "nb": "Prosjektoversikt – Animatic Studio",
+  "en": "Project overview – Animatic Studio",
+  "oversatt": "プロジェクト概要 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
+  "nb": "Prosjektoversikt – Animatic Studio",
+  "en": "Project overview – Animatic Studio",
+  "oversatt": "プロジェクト概要 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
+  "nb": "Rediger filmmanuset og scenene i Animatic Studio.",
+  "en": "Edit your screenplay and scenes in Animatic Studio.",
+  "oversatt": "Animatic Studio で脚本とシーンを編集します。"
+ },
+ "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
+  "nb": "Rediger filmmanuset og scenene i Animatic Studio.",
+  "en": "Edit your screenplay and scenes in Animatic Studio.",
+  "oversatt": "Animatic Studio で脚本とシーンを編集します。"
+ },
+ "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
+  "nb": "Manus – Animatic Studio",
+  "en": "Script – Animatic Studio",
+  "oversatt": "脚本 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
+  "nb": "Manus – Animatic Studio",
+  "en": "Script – Animatic Studio",
+  "oversatt": "脚本 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
+  "nb": "Montering – Animatic Studio",
+  "en": "Assembly – Animatic Studio",
+  "oversatt": "編集 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
+  "nb": "Monter animatic, lyd og film i Animatic Studio.",
+  "en": "Assemble animatic, sound and film in Animatic Studio.",
+  "oversatt": "Animatic Studio でアニマティック、音声、映像を編集します。"
+ },
+ "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
+  "nb": "Monter animatic, lyd og film i Animatic Studio.",
+  "en": "Assemble animatic, sound and film in Animatic Studio.",
+  "oversatt": "Animatic Studio でアニマティック、音声、映像を編集します。"
+ },
+ "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
+  "nb": "Montering – Animatic Studio",
+  "en": "Assembly – Animatic Studio",
+  "oversatt": "編集 – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-scene.content.content.65f619722830": {
+  "nb": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
+  "en": "Edit scene compositions and animatic in Animatic Studio.",
+  "oversatt": "Animatic Studio でシーンの構図とアニマティックを編集します。"
+ },
+ "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
+  "nb": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
+  "en": "Edit scene compositions and animatic in Animatic Studio.",
+  "oversatt": "Animatic Studio でシーンの構図とアニマティックを編集します。"
+ },
+ "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
+  "nb": "Sceneeditor – Animatic Studio",
+  "en": "Scene editor – Animatic Studio",
+  "oversatt": "シーンエディター – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
+  "nb": "Sceneeditor – Animatic Studio",
+  "en": "Scene editor – Animatic Studio",
+  "oversatt": "シーンエディター – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
+  "nb": "Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio.",
+  "en": "Character work, scene laboratory and dialogue analysis in Animatic Studio.",
+  "oversatt": "Animatic Studio でのキャラクター設計、シーン検証、セリフ分析。"
+ },
+ "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
+  "nb": "Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.",
+  "en": "Explore characters, analyze scenes and try dialogue variants in Animatic Studio.",
+  "oversatt": "Animatic Studio でキャラクターを探求し、シーンを分析し、セリフのバリエーションを試します。"
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
+  "nb": "Utgivelse – Animatic Studio",
+  "en": "Release – Animatic Studio",
+  "oversatt": "リリース – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
+  "nb": "Arbeid med plakater og utgivelse i Animatic Studio.",
+  "en": "Work with posters and release in Animatic Studio.",
+  "oversatt": "Animatic Studio でポスターとリリース作業を行います。"
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
+  "nb": "Arbeid med plakater og utgivelse i Animatic Studio.",
+  "en": "Work with posters and release in Animatic Studio.",
+  "oversatt": "Animatic Studio でポスターとリリース作業を行います。"
+ },
+ "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
+  "nb": "Utgivelse – Animatic Studio",
+  "en": "Release – Animatic Studio",
+  "oversatt": "リリース – Animatic Studio"
+ },
+ "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
+  "nb": "Prosjekt – Animatic Studio",
+  "en": "Project – Animatic Studio",
+  "oversatt": "プロジェクト – Animatic Studio"
+ },
+ "routes-prosjekt-project-id.content.content.323705133be5": {
+  "nb": "Arbeidsflater for filmprosjektet i Animatic Studio.",
+  "en": "Workspaces for your film project in Animatic Studio.",
+  "oversatt": "Animatic Studio における映画プロジェクトのワークスペース。"
+ },
+ "routes-prosjekt-project-id.content.content.323705133be5.2": {
+  "nb": "Arbeidsflater for filmprosjektet i Animatic Studio.",
+  "en": "Workspaces for your film project in Animatic Studio.",
+  "oversatt": "Animatic Studio における映画プロジェクトのワークスペース。"
+ },
+ "routes-prosjekt-project-id.owner-blocked": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}.",
+  "en": "The owner of the project is blocked. Contact the administrator at {adminEmail}.",
+  "oversatt": "プロジェクトのオーナーがブロックされています。管理者（{adminEmail}）にお問い合わせください。"
+ },
+ "routes-prosjekt-project-id.owner-blocked-with-owner": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt eieren ({ownerName}) eller administrator på {adminEmail}.",
+  "en": "The owner of the project is blocked. Contact the owner ({ownerName}) or the administrator at {adminEmail}.",
+  "oversatt": "プロジェクトのオーナーがブロックされています。オーナー（{ownerName}）または管理者（{adminEmail}）にお問い合わせください。"
+ },
+ "routes-prosjekt-project-id.project-layout.h1.034a12e7f5db": {
+  "nb": "Prosjektet er slettet",
+  "en": "The project has been deleted",
+  "oversatt": "プロジェクトは削除されました"
+ },
+ "routes-prosjekt-project-id.project-layout.h1.83c2e8141203": {
+  "nb": "Prosjektet er låst",
+  "en": "The project is locked",
+  "oversatt": "プロジェクトはロックされています"
+ },
+ "routes-prosjekt-project-id.project-layout.link.015885f8011d": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "プロジェクト一覧へ"
+ },
+ "routes-prosjekt-project-id.project-layout.link.015885f8011d.2": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "プロジェクト一覧へ"
+ },
+ "routes-prosjekt-project-id.project-layout.p.5622c808d147": {
+  "nb": "Ingenting i prosjektet er slettet. Det åpnes igjen når eieren låses opp eller prosjektet får en ny eier.",
+  "en": "Nothing in the project has been deleted. It opens again when the owner is unlocked or the project gets a new owner.",
+  "oversatt": "プロジェクト内のデータは削除されていません。オーナーのロックが解除されるか、新しいオーナーが設定されると再び開くことができます。"
+ },
+ "routes-prosjekt-project-id.project-layout.p.9cb6096fbb82": {
+  "nb": "Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra slettede prosjekter» i prosjektlisten.",
+  "en": "The assets (images and audio) have been kept. You will find them under “Assets from deleted projects” in the project list.",
+  "oversatt": "アセット（画像および音声）は保持されています。プロジェクト一覧の「削除されたプロジェクトのアセット」から確認できます。"
+ },
+ "routes-prosjekt-project-id.project-layout.p.aba08d0d2b17": {
+  "nb": "Prosjektet har ingen eier. Kontakt administrator på {value1}.",
+  "en": "The project has no owner. Contact the administrator at {value1}.",
+  "oversatt": "プロジェクトにオーナーがいません。管理者（{value1}）にお問い合わせください。"
+ },
+ "routes-prosjekt-project-id.project-layout.p.de039078a0f5": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt {value1}administrator på {value2}.",
+  "en": "The owner of the project is blocked. Contact {value1}the administrator at {value2}.",
+  "oversatt": "プロジェクトの所有者がブロックされています。{value2} の{value1}管理者にお問い合わせください。"
+ },
+ "routes-prosjekt-project-id.project-layout.p.f6f3bd8e7d04": {
+  "nb": "Eieren av prosjektet har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt {value1}.",
+  "en": "The owner of the project has deleted their account. The administrator can give the project a new owner: contact {value1}.",
+  "oversatt": "プロジェクトの所有者がアカウントを削除しました。管理者が新しい所有者を割り当てることができます: {value1} までお問い合わせください。"
+ },
+ "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
+  "nb": "Prosjekt – Animatic Studio",
+  "en": "Project – Animatic Studio",
+  "oversatt": "プロジェクト – Animatic Studio"
+ },
+ "routes-prosjekt-rigg.head.description": {
+  "nb": "Multiplanrigg for 2D-utskrift: kamera, objektiv, plater, kalibrering og maler.",
+  "en": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates.",
+  "oversatt": "2Dプリント用マルチプレーンリグ：カメラ、レンズ、プレート、キャリブレーション、テンプレート。"
+ },
+ "routes-prosjekt-rigg.head.title": {
+  "nb": "Rigg – Animatic Studio",
+  "en": "Rig – Animatic Studio",
+  "oversatt": "リグ – Animatic Studio"
+ },
+ "routes-root.error-component.a.6fdb78437197": {
+  "nb": "Til forsiden",
+  "en": "Go to the front page",
+  "oversatt": "トップページへ"
+ },
+ "routes-root.error-component.button.96f923db4f99": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "再試行"
+ },
+ "routes-root.error-component.h1.e30fba673653": {
+  "nb": "Siden kunne ikke vises",
+  "en": "The page could not be shown",
+  "oversatt": "ページを表示できませんでした"
+ },
+ "routes-root.error-component.p.8ff66fea3622": {
+  "nb": "Noe gikk galt. Prøv igjen, eller gå til forsiden.",
+  "en": "Something went wrong. Try again, or go to the front page.",
+  "oversatt": "問題が発生しました。再試行するか、トップページに戻ってください。"
+ },
+ "routes-root.not-found-component.h2.cc99159dc152": {
+  "nb": "Fant ikke siden",
+  "en": "Page not found",
+  "oversatt": "ページが見つかりません"
+ },
+ "routes-root.not-found-component.link.40ee8c9ed320": {
+  "nb": "Til forsiden",
+  "en": "Go to the front page",
+  "oversatt": "トップページへ"
+ },
+ "routes-root.not-found-component.p.1e497abdd8f7": {
+  "nb": "Siden finnes ikke eller er flyttet.",
+  "en": "The page does not exist or has moved.",
+  "oversatt": "ページが存在しないか、移動した可能性があります。"
+ },
+ "routes-se-token.content.content.0c933cbe6ab9": {
+  "nb": "Se en film som er delt fra Animatic Studio.",
+  "en": "Watch a film shared from Animatic Studio.",
+  "oversatt": "Animatic Studio から共有された動画を視聴します。"
+ },
+ "routes-se-token.content.content.0c933cbe6ab9.2": {
+  "nb": "Se en film som er delt fra Animatic Studio.",
+  "en": "Watch a film shared from Animatic Studio.",
+  "oversatt": "Animatic Studio から共有された動画を視聴します。"
+ },
+ "routes-se-token.content.content.450bbeb07eba": {
+  "nb": "Film – Animatic Studio",
+  "en": "Film – Animatic Studio",
+  "oversatt": "動画 – Animatic Studio"
+ },
+ "routes-se-token.title.title.daa9a7b91a74": {
+  "nb": "Film – Animatic Studio",
+  "en": "Film – Animatic Studio",
+  "oversatt": "動画 – Animatic Studio"
+ }
+}

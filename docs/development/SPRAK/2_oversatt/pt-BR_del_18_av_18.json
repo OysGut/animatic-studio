@@ -1,0 +1,1732 @@
+{
+ "core-translation-index.language-label.en.6c5aa1625678": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "Inglês"
+ },
+ "core-translation-index.language-label.nb.ce9fb99403a7": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "Norueguês"
+ },
+ "core-translation-line-link-labels.confidence-percent.message.0ae88505aa91": {
+  "nb": "{n} %",
+  "en": "{n}%",
+  "oversatt": "{n}%"
+ },
+ "core-translation-line-link-labels.discarded-text.message.122c3096d772": {
+  "nb": "1 ugyldig forslag forkastet.",
+  "en": "1 invalid suggestion discarded.",
+  "oversatt": "1 sugestão inválida descartada."
+ },
+ "core-translation-line-link-labels.discarded-text.message.a44c236afcd9": {
+  "nb": "{n} ugyldige forslag forkastet.",
+  "en": "{n} invalid suggestions discarded.",
+  "oversatt": "{n} sugestões inválidas descartadas."
+ },
+ "core-translation-line-link-labels.number-word-0": {
+  "nb": "null",
+  "en": "zero",
+  "oversatt": "zero"
+ },
+ "core-translation-line-link-labels.number-word-1": {
+  "nb": "én",
+  "en": "one",
+  "oversatt": "um"
+ },
+ "core-translation-line-link-labels.number-word-10": {
+  "nb": "ti",
+  "en": "ten",
+  "oversatt": "dez"
+ },
+ "core-translation-line-link-labels.number-word-2": {
+  "nb": "to",
+  "en": "two",
+  "oversatt": "dois"
+ },
+ "core-translation-line-link-labels.number-word-3": {
+  "nb": "tre",
+  "en": "three",
+  "oversatt": "três"
+ },
+ "core-translation-line-link-labels.number-word-4": {
+  "nb": "fire",
+  "en": "four",
+  "oversatt": "quatro"
+ },
+ "core-translation-line-link-labels.number-word-5": {
+  "nb": "fem",
+  "en": "five",
+  "oversatt": "cinco"
+ },
+ "core-translation-line-link-labels.number-word-6": {
+  "nb": "seks",
+  "en": "six",
+  "oversatt": "seis"
+ },
+ "core-translation-line-link-labels.number-word-7": {
+  "nb": "sju",
+  "en": "seven",
+  "oversatt": "sete"
+ },
+ "core-translation-line-link-labels.number-word-8": {
+  "nb": "åtte",
+  "en": "eight",
+  "oversatt": "oito"
+ },
+ "core-translation-line-link-labels.number-word-9": {
+  "nb": "ni",
+  "en": "nine",
+  "oversatt": "nove"
+ },
+ "core-translation-line-link-labels.pair-summary": {
+  "nb": "{sources} mot {targets}",
+  "en": "{sources} to {targets}",
+  "oversatt": "{sources} para {targets}"
+ },
+ "core-translation-line-link-labels.pair-summary-sources": {
+  "nb": {
+   "one": "{n} norsk linje",
+   "other": "{n} norske linjer"
+  },
+  "en": {
+   "one": "{n} Norwegian line",
+   "other": "{n} Norwegian lines"
+  },
+  "oversatt": {
+   "one": "{n} linha em norueguês",
+   "many": "{n} linhas em norueguês",
+   "other": "{n} linhas em norueguês"
+  }
+ },
+ "core-translation-line-link-labels.pair-summary-targets": {
+  "nb": {
+   "one": "{n} oversatt",
+   "other": "{n} oversatte"
+  },
+  "en": {
+   "one": "{n} translated",
+   "other": "{n} translated"
+  },
+  "oversatt": {
+   "one": "{n} traduzido",
+   "many": "{n} traduzidos",
+   "other": "{n} traduzidos"
+  }
+ },
+ "core-translation-line-link-labels.ratio-title.message.a1c06218c905": {
+  "nb": "{value1} norsk{value2} {value3} mot {value4} {value5}",
+  "en": "{value1} Norwegian {value2} to {value3} translated",
+  "oversatt": "{value1} norueguês {value2} para {value3} traduzido"
+ },
+ "core-typography-presets.motion-preset-label.fade.9ef937509d07": {
+  "nb": "Ton inn/ut",
+  "en": "Fade",
+  "oversatt": "Fade"
+ },
+ "core-typography-presets.motion-preset-label.rotate.c07725549add": {
+  "nb": "Roter",
+  "en": "Rotate",
+  "oversatt": "Rotacionar"
+ },
+ "core-typography-presets.motion-preset-label.slide.211e29ea9c56": {
+  "nb": "Skli",
+  "en": "Slide",
+  "oversatt": "Deslizar"
+ },
+ "core-typography-presets.motion-preset-label.zoom.50e32518bda9": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "Zoom"
+ },
+ "core-typography-presets.reason.reason.8364486eddca": {
+  "nb": "Laget er for kort for både inn- og utanimasjon: {value1} bilder, men det trengs minst {value2}. Gjør animasjonen kortere eller laget lengre.",
+  "en": "The layer is too short for both an in and an out animation: {value1} frames, but at least {value2} are needed. Make the animation shorter or the layer longer.",
+  "oversatt": "A camada é muito curta para animações de entrada e saída: {value1} quadros, mas são necessários pelo menos {value2}. Encurte a animação ou aumente a camada."
+ },
+ "core-typography-template.reason.reason.495b9541af70": {
+  "nb": "2D-scenen finnes ikke",
+  "en": "The 2D scene does not exist",
+  "oversatt": "A cena 2D não existe"
+ },
+ "core-typography-template.reason.reason.7940f9c21fd9": {
+  "nb": "Versjonen hører til en annen mal",
+  "en": "The version belongs to another template",
+  "oversatt": "A versão pertence a outro modelo"
+ },
+ "core-typography-template.reason.reason.ad3919ae06e7": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "O modelo não existe"
+ },
+ "core-typography-template.reason.reason.ad3919ae06e7.2": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "O modelo não existe"
+ },
+ "core-typography-template.reason.reason.ec925d64190b": {
+  "nb": "Malversjonen finnes ikke",
+  "en": "The template version does not exist",
+  "oversatt": "A versão do modelo não existe"
+ },
+ "core-typography-template.reason.reason.ff34111d10e1": {
+  "nb": "Malforekomsten finnes ikke",
+  "en": "The template instance does not exist",
+  "oversatt": "A instância do modelo não existe"
+ },
+ "core-typography-template.reason.reason.ff34111d10e1.2": {
+  "nb": "Malforekomsten finnes ikke",
+  "en": "The template instance does not exist",
+  "oversatt": "A instância do modelo não existe"
+ },
+ "core-typography-template.template-error.message.2a7a1429bbe2": {
+  "nb": "Malen er for stor",
+  "en": "The template is too large",
+  "oversatt": "O modelo é grande demais"
+ },
+ "core-typography-template.template-error.message.4215898179ac": {
+  "nb": "Ugyldig element i malen",
+  "en": "Invalid element in the template",
+  "oversatt": "Elemento inválido no modelo"
+ },
+ "core-typography-template.template-error.message.4215898179ac.2": {
+  "nb": "Ugyldig element i malen",
+  "en": "Invalid element in the template",
+  "oversatt": "Elemento inválido no modelo"
+ },
+ "core-typography-template.template-error.message.502a68da4d5b": {
+  "nb": "Ukjent maltype",
+  "en": "Unknown template type",
+  "oversatt": "Tipo de modelo desconhecido"
+ },
+ "core-typography-template.template-error.message.6b3faad5d8a3": {
+  "nb": "Ugyldig mal",
+  "en": "Invalid template",
+  "oversatt": "Modelo inválido"
+ },
+ "core-typography-template.template-error.message.6b3faad5d8a3.2": {
+  "nb": "Ugyldig mal",
+  "en": "Invalid template",
+  "oversatt": "Modelo inválido"
+ },
+ "core-typography-template.template-error.message.6cdf135fe96a": {
+  "nb": "Malen har for mange elementer (maks {MAX_TEMPLATE_ELEMENTS})",
+  "en": "The template has too many elements (max {MAX_TEMPLATE_ELEMENTS})",
+  "oversatt": "O modelo tem elementos demais (máx. {MAX_TEMPLATE_ELEMENTS})"
+ },
+ "core-typography-template.template-error.message.6da61b29594e": {
+  "nb": "Malen har ingen elementer",
+  "en": "The template has no elements",
+  "oversatt": "O modelo não tem elementos"
+ },
+ "core-typography-template.template-error.message.86c27d8a5f07": {
+  "nb": "Elementet viser et ukjent felt",
+  "en": "The element shows an unknown field",
+  "oversatt": "O elemento mostra um campo desconhecido"
+ },
+ "core-typography-template.template-error.message.8ca489cafa21": {
+  "nb": "Elementet ligger i en ukjent gruppe",
+  "en": "The element is in an unknown group",
+  "oversatt": "O elemento está em um grupo desconhecido"
+ },
+ "core-typography-template.template-error.message.d964f4b49407": {
+  "nb": "Ugyldig felt i malen",
+  "en": "Invalid field in the template",
+  "oversatt": "Campo inválido no modelo"
+ },
+ "core-typography-template.template-error.message.f221a3186b6a": {
+  "nb": "Ugyldig malformat",
+  "en": "Invalid template format",
+  "oversatt": "Formato de modelo inválido"
+ },
+ "core-typography-validate.normalize-effects.bad.d6a5d5db62aa": {
+  "nb": "Ugyldig kontur",
+  "en": "Invalid outline",
+  "oversatt": "Contorno inválido"
+ },
+ "core-typography-validate.normalize-effects.bad.e15ada947a5b": {
+  "nb": "Ugyldig skygge",
+  "en": "Invalid shadow",
+  "oversatt": "Sombra inválida"
+ },
+ "core-typography-validate.normalize-effects.bad.e57a5a64834e": {
+  "nb": "Ugyldig glød",
+  "en": "Invalid glow",
+  "oversatt": "Brilho inválido"
+ },
+ "core-typography-validate.normalize-letter-anim.bad.c9385d70a87b": {
+  "nb": "Ugyldig bokstavanimasjon",
+  "en": "Invalid letter animation",
+  "oversatt": "Animação de letra inválida"
+ },
+ "core-typography-validate.normalize-shape.bad.989213f99c01": {
+  "nb": "Ugyldig form",
+  "en": "Invalid shape",
+  "oversatt": "Forma inválida"
+ },
+ "core-typography-validate.normalize-shape.bad.b75748de5268": {
+  "nb": "Ugyldig kantlinje",
+  "en": "Invalid stroke",
+  "oversatt": "Traçado inválido"
+ },
+ "core-typography-validate.normalize-template-ref.bad.d703eb031df0": {
+  "nb": "Ugyldig malfelt",
+  "en": "Invalid template field",
+  "oversatt": "Campo de modelo inválido"
+ },
+ "core-typography-validate.normalize-template-ref.bad.dffd099c124c": {
+  "nb": "Ugyldig malforekomst",
+  "en": "Invalid template instance",
+  "oversatt": "Instância de modelo inválida"
+ },
+ "core-typography-validate.normalize-template-ref.bad.e078e0326f89": {
+  "nb": "Ugyldig malelement",
+  "en": "Invalid template element",
+  "oversatt": "Elemento de modelo inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.1499fd669143": {
+  "nb": "Ugyldig vekt",
+  "en": "Invalid weight",
+  "oversatt": "Peso inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.21268635791c": {
+  "nb": "Ugyldig linjeavstand",
+  "en": "Invalid line spacing",
+  "oversatt": "Espaçamento de linha inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.3b0e84f4ea54": {
+  "nb": "Ukjent font",
+  "en": "Unknown font",
+  "oversatt": "Fonte desconhecida"
+ },
+ "core-typography-validate.normalize-text-spec.bad.5d8b2e2d4ad0": {
+  "nb": "Ugyldig bokstavavstand",
+  "en": "Invalid letter spacing",
+  "oversatt": "Espaçamento entre letras inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.7d90c3c616b3": {
+  "nb": "Ugyldig justering",
+  "en": "Invalid alignment",
+  "oversatt": "Alinhamento inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.abc35c0addb6": {
+  "nb": "Fargen må være på formen #rrggbb",
+  "en": "The colour must be in the form #rrggbb",
+  "oversatt": "A cor deve estar no formato #rrggbb"
+ },
+ "core-typography-validate.normalize-text-spec.bad.bb57b9377172": {
+  "nb": "Ugyldig tekststørrelse",
+  "en": "Invalid text size",
+  "oversatt": "Tamanho de texto inválido"
+ },
+ "core-typography-validate.normalize-text-spec.bad.e28766869227": {
+  "nb": "Teksten har {n} tegn. Grensen er {MAX_TEXT_CHARS} tegn per tekstlag. Del teksten på flere lag.",
+  "en": "The text has {n} characters. The limit is {MAX_TEXT_CHARS} characters per text layer. Split the text over several layers.",
+  "oversatt": "O texto contém {n} caracteres. O limite é de {MAX_TEXT_CHARS} caracteres por camada de texto. Divida o texto em várias camadas."
+ },
+ "core-typography-validate.normalize-text-spec.bad.fa792149bf50": {
+  "nb": "Ugyldig tekst",
+  "en": "Invalid text",
+  "oversatt": "Texto inválido"
+ },
+ "core-workspaces.workspace-role-label.editor.0a3f3f0cc274": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "Editor"
+ },
+ "core-workspaces.workspace-role-label.member.8a2a74fbf742": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "Membro"
+ },
+ "core-workspaces.workspace-role-label.owner.8c979f17c6d5": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "Proprietário"
+ },
+ "engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c": {
+  "nb": " (uten bilde)",
+  "en": " (no image)",
+  "oversatt": " (sem imagem)"
+ },
+ "engine-compositor-film.draw-source.draw-title-card.ddbf843041c0": {
+  "nb": "Ferdig film",
+  "en": "Finished film",
+  "oversatt": "Filme finalizado"
+ },
+ "engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415": {
+  "nb": "Uten overskrift",
+  "en": "Without heading",
+  "oversatt": "Sem título"
+ },
+ "engine-compositor-film.draw-title-card.message.b687cba6a4c5": {
+  "nb": "Ingen 2D-scene ennå",
+  "en": "No 2D scene yet",
+  "oversatt": "Nenhuma cena 2D ainda"
+ },
+ "engine-export-alpha.check-abort.message.beb939e7ae1f": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-alpha.encode.message.6a81b8072f16": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "A tela de pintura (canvas) não está disponível."
+ },
+ "engine-export-alpha.export-alpha-layers.message.3199d6a2083f": {
+  "nb": "Scenens plassering mangler.",
+  "en": "The scene's location is missing.",
+  "oversatt": "A localização da cena está ausente."
+ },
+ "engine-export-alpha.export-alpha-layers.message.f48e9ce41a0f": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "A tela de pintura (canvas) não está disponível."
+ },
+ "engine-export-alpha.prores-encoder.message.4f544d8dc2c6": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "A tela de pintura (canvas) não está disponível."
+ },
+ "engine-export-alpha.webm-encoder.message.5cce70f6bde9": {
+  "nb": "Denne nettleseren støtter ikke WebM VP9 med alfa. Velg PNG-sekvens.",
+  "en": "This browser does not support WebM VP9 with alpha. Choose a PNG sequence.",
+  "oversatt": "Este navegador não é compatível com WebM VP9 com canal alfa. Escolha uma sequência de PNG."
+ },
+ "engine-export-animatic.export-animatic.message.25b057ed803a": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-animatic.export-animatic.message.5b6c6487795e": {
+  "nb": "Videoen ble tom.",
+  "en": "The video came out empty.",
+  "oversatt": "O vídeo ficou vazio."
+ },
+ "engine-export-animatic.export-animatic.message.a8cbd1798f03": {
+  "nb": "Nettleseren kan ikke kode video i {width} × {height}. Prøv halv størrelse, eller en annen nettleser.",
+  "en": "The browser cannot encode video at {width} × {height}. Try half the size, or another browser.",
+  "oversatt": "O navegador não consegue codificar vídeo em {width} × {height}. Tente com a metade do tamanho ou use outro navegador."
+ },
+ "engine-export-animatic.export-animatic.message.aa9cad735d4d": {
+  "nb": "Kunne ikke tegne bildene (lerretet er ikke tilgjengelig).",
+  "en": "Could not draw the images (the canvas is not available).",
+  "oversatt": "Não foi possível renderizar as imagens (a tela de pintura não está disponível)."
+ },
+ "engine-export-animatic.export-animatic.message.c17e79a74249": {
+  "nb": "Utvalget er tomt.",
+  "en": "The selection is empty.",
+  "oversatt": "A seleção está vazia."
+ },
+ "engine-export-animatic.export-animatic.message.f12f66905cf1": {
+  "nb": "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+  "en": "The browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
+  "oversatt": "O navegador não pode criar vídeo. Use uma versão mais recente do Chrome, Edge, Safari ou Firefox."
+ },
+ "engine-export-audio-stem.export-dialogue-stem-parts.message.e1c7d00a2fa3": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-png-writer.encode-png-strips.message.3d003dd2a29d": {
+  "nb": "Bildet er for bredt for nettleseren.",
+  "en": "The image is too wide for the browser.",
+  "oversatt": "A imagem é larga demais para o navegador."
+ },
+ "engine-export-png-writer.encode-png-strips.message.db1290b5a270": {
+  "nb": "Bildet må ha minst én piksel i hver retning.",
+  "en": "The image must be at least one pixel in each direction.",
+  "oversatt": "A imagem deve ter pelo menos um pixel em cada direção."
+ },
+ "engine-export-png-writer.encode-png-strips.message.dcc9175584b0": {
+  "nb": "Stripen har for få piksler.",
+  "en": "The strip has too few pixels.",
+  "oversatt": "A tira tem poucos pixels."
+ },
+ "engine-export-poster-canvas.bitmap-to-pdf-image.message.bb273201cb7f": {
+  "nb": "Bildet er for stort for nettleseren.",
+  "en": "The image is too large for the browser.",
+  "oversatt": "A imagem é grande demais para o navegador."
+ },
+ "engine-export-poster-canvas.fetch-bitmap.message.da4966223fa7": {
+  "nb": "Bildet kunne ikke hentes ({status})",
+  "en": "The image could not be fetched ({status})",
+  "oversatt": "Não foi possível obter a imagem ({status})"
+ },
+ "engine-export-poster-canvas.poster-png.message.06587355712b": {
+  "nb": "Nettleseren kunne ikke lage bildet.",
+  "en": "The browser could not create the image.",
+  "oversatt": "O navegador não conseguiu criar a imagem."
+ },
+ "engine-export-poster-canvas.poster-png.message.38f00111642f": {
+  "nb": "Plakaten blir for stor i denne oppløsningen. Velg en lavere oppløsning.",
+  "en": "The poster is too large at this resolution. Choose a lower resolution.",
+  "oversatt": "O pôster é grande demais nesta resolução. Escolha uma resolução menor."
+ },
+ "engine-export-poster-canvas.stop.message.086facdc5373": {
+  "nb": "Eksporten ble avbrutt",
+  "en": "The export was cancelled",
+  "oversatt": "A exportação foi cancelada"
+ },
+ "engine-export-prores-export.abort-check.message.efc8245fd1eb": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-prores-export.export-pro-res-film.message.5af6ad7366ac": {
+  "nb": "Lerretet er ikke tilgjengelig.",
+  "en": "The canvas is unavailable.",
+  "oversatt": "O canvas não está disponível."
+ },
+ "engine-export-prores-export.export-pro-res-film.message.f642ea62e9ff": {
+  "nb": "Utvalget er tomt.",
+  "en": "The selection is empty.",
+  "oversatt": "A seleção está vazia."
+ },
+ "engine-export-prores-export.write.write.faa5bf92b1a8": {
+  "nb": "ProRes-filen ble for stor for minnet. Velg et kortere utvalg eller halv størrelse.",
+  "en": "The ProRes file grew too large for memory. Choose a shorter selection or half size.",
+  "oversatt": "O arquivo ProRes ficou grande demais para a memória. Escolha uma seleção mais curta ou metade do tamanho."
+ },
+ "engine-export-screenplay-docx.comment-xml.esc.e1c01748c122": {
+  "nb": "Ukjent",
+  "en": "Unknown",
+  "oversatt": "Desconhecido"
+ },
+ "engine-export-screenplay-pdf.highlight.message.3392376758bb": {
+  "nb": "Systemmerknad",
+  "en": "System note",
+  "oversatt": "Nota do sistema"
+ },
+ "engine-export-screenplay-pdf.highlight.message.e5475048d630": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "Nota"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc.2": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-zip.write-zip.message.080bb98d06cc.3": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Cancelado"
+ },
+ "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
+  "nb": "Disse filene kunne ikke hentes da zip-filen ble laget:\n\n{value1}\n",
+  "en": "These files could not be fetched when the zip file was made:\n\n{value1}\n",
+  "oversatt": "Estes arquivos não puderam ser obtidos quando o arquivo zip foi criado:\n\n{value1}\n"
+ },
+ "engine-export-zip.zip.message.d8988ee64a25": {
+  "nb": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
+  "en": "The zip file grew larger than 4 GB. Include fewer files and try again.",
+  "oversatt": "O arquivo zip ficou maior que 4 GB. Inclua menos arquivos e tente novamente."
+ },
+ "engine-import-browser.decode-fountain.message.af53ad05831d": {
+  "nb": "Filen er ikke en Fountain-tekstfil. Fountain-manus er ren tekst (.fountain, .spmd eller .txt).",
+  "en": "The file is not a Fountain text file. Fountain scripts are plain text (.fountain, .spmd or .txt).",
+  "oversatt": "O arquivo não é um arquivo de texto Fountain. Roteiros em Fountain são texto simples (.fountain, .spmd ou .txt)."
+ },
+ "engine-import-browser.read-screenplay-file.message.9a0ff2b5e05d": {
+  "nb": "Fant ingen tekst i PDF-en. Er det en skannet PDF? Den må ha tekst som kan merkes.",
+  "en": "No text found in the PDF. Is it a scanned PDF? It needs text that can be selected.",
+  "oversatt": "Nenhum texto encontrado no PDF. É um PDF digitalizado? Ele precisa ter texto selecionável."
+ },
+ "engine-import-browser.read-screenplay-file.message.bd8815be4553": {
+  "nb": "Filen er større enn 100 MB.",
+  "en": "The file is larger than 100 MB.",
+  "oversatt": "O arquivo é maior que 100 MB."
+ },
+ "engine-import-browser.read-screenplay-file.message.be31e7cdbed8": {
+  "nb": "Fant ingen manustekst i Fountain-filen.",
+  "en": "No script text found in the Fountain file.",
+  "oversatt": "Nenhum texto de roteiro encontrado no arquivo Fountain."
+ },
+ "engine-import-browser.read-screenplay-file.message.d4aaf95bf60f": {
+  "nb": "Velg en PDF-, Word- eller Fountain-fil (.pdf, .docx eller .fountain). Final Draft-filer kan lagres som PDF.",
+  "en": "Choose a PDF, Word or Fountain file (.pdf, .docx or .fountain). Final Draft files can be saved as PDF.",
+  "oversatt": "Escolha um arquivo PDF, Word ou Fountain (.pdf, .docx ou .fountain). Arquivos do Final Draft podem ser salvos como PDF."
+ },
+ "engine-import-browser.read-screenplay-file.message.dc9ed1cb5144": {
+  "nb": "Fant ingen tekst i Word-filen.",
+  "en": "No text found in the Word file.",
+  "oversatt": "Nenhum texto encontrado no arquivo do Word."
+ },
+ "engine-import-docx-lines.docx-to-lines-and-notes.message.5a58821c5e2a": {
+  "nb": "Filen er ikke et gyldig Word-dokument (mangler word/document.xml)",
+  "en": "The file is not a valid Word document (word/document.xml is missing)",
+  "oversatt": "O arquivo não é um documento do Word válido (word/document.xml ausente)"
+ },
+ "engine-import-docx-lines.filter.filter.f2692ff5617e": {
+  "nb": "DOCX-filen er for stor eller skadet",
+  "en": "The DOCX file is too large or damaged",
+  "oversatt": "O arquivo DOCX é grande demais ou está danificado"
+ },
+ "engine-import-pdf-lines.pdf-to-lines-and-notes.message.8a29a7d883c8": {
+  "nb": "PDF-en har {numPages} sider – maks {MAX_PAGES}",
+  "en": "The PDF has {numPages} pages – at most {MAX_PAGES}",
+  "oversatt": "O PDF tem {numPages} páginas – no máximo {MAX_PAGES}"
+ },
+ "engine-import-zip-read.read-zip-index.message.0cf2daef7956": {
+  "nb": "Zip-filen er skadet eller ufullstendig.",
+  "en": "The zip file is damaged or incomplete.",
+  "oversatt": "O arquivo zip está danificado ou incompleto."
+ },
+ "engine-import-zip-read.read-zip-index.message.377a90f2e29b": {
+  "nb": "Filen er ikke en zip-fil.",
+  "en": "The file is not a zip file.",
+  "oversatt": "O arquivo não é um arquivo zip."
+ },
+ "engine-import-zip-read.read-zip-index.message.508d578599e5": {
+  "nb": "Zip-filen er for stor (over 4 GB) til å leses her.",
+  "en": "The zip file is too large (over 4 GB) to be read here.",
+  "oversatt": "O arquivo zip é grande demais (mais de 4 GB) para ser lido aqui."
+ },
+ "engine-import-zip-read.read-zip-index.message.6fc57fbaa34f": {
+  "nb": "Zip-filen er skadet (innholdsfortegnelsen).",
+  "en": "The zip file is damaged (its contents list).",
+  "oversatt": "O arquivo zip está danificado (na lista de conteúdos)."
+ },
+ "engine-import-zip-read.zip-entry-blob.message.06b543ceeaa0": {
+  "nb": "Zip-filen er ufullstendig ({name}).",
+  "en": "The zip file is incomplete ({name}).",
+  "oversatt": "O arquivo zip está incompleto ({name})."
+ },
+ "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
+  "nb": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio.",
+  "en": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.",
+  "oversatt": "{value1} está compactado e é grande demais para ser descompactado aqui. Use o arquivo zip como foi baixado do Animatic Studio."
+ },
+ "engine-import-zip-read.zip-entry-blob.message.b1d9207dc330": {
+  "nb": "Ukjent komprimering i zip-filen ({name}).",
+  "en": "Unknown compression in the zip file ({name}).",
+  "oversatt": "Compactação desconhecida no arquivo zip ({name})."
+ },
+ "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
+  "nb": "Zip-filen er skadet ({name}).",
+  "en": "The zip file is damaged ({name}).",
+  "oversatt": "O arquivo zip está danificado ({name})."
+ },
+ "id3.derived-from.invalid": {
+  "nb": "Kildeversjonen finnes ikke i denne ressursen.",
+  "en": "The source version does not exist in this asset.",
+  "oversatt": "A versão de origem não existe neste ativo."
+ },
+ "id3.duration.per-scene": {
+  "nb": "Per scene",
+  "en": "Per scene",
+  "oversatt": "Por cena"
+ },
+ "id3.nav.workspaces": {
+  "nb": "Arbeidsflater",
+  "en": "Workspaces",
+  "oversatt": "Espaços de trabalho"
+ },
+ "id3.pauses.unresolved": {
+  "nb": {
+   "one": "{count} lagret pause kan ikke knyttes til et ord i replikken (ordet er endret eller fjernet). Den brukes ikke før du setter pausen på nytt.",
+   "other": "{count} lagrede pauser kan ikke knyttes til et ord i replikken (ordene er endret eller fjernet). De brukes ikke før du setter pausene på nytt."
+  },
+  "en": {
+   "one": "{count} saved pause cannot be tied to a word in the line (the word was changed or removed). It is not used until you set the pause again.",
+   "other": "{count} saved pauses cannot be tied to a word in the line (the words were changed or removed). They are not used until you set the pauses again."
+  },
+  "oversatt": {
+   "one": "{count} pausa salva não pode ser vinculada a uma palavra na fala (a palavra foi alterada ou removida). Ela não será usada até que você defina a pausa novamente.",
+   "many": "{count} pausas salvas não podem ser vinculadas a palavras na fala (as palavras foram alteradas ou removidas). Elas não serão usadas até que você defina as pausas novamente.",
+   "other": "{count} pausas salvas não podem ser vinculadas a palavras na fala (as palavras foram alteradas ou removidas). Elas não serão usadas até que você defina as pausas novamente."
+  }
+ },
+ "id3.provenance.unresolved": {
+  "nb": "kildeversjonen kan ikke bestemmes sikkert",
+  "en": "the source version cannot be determined with certainty",
+  "oversatt": "a versão de origem não pode ser determinada com certeza"
+ },
+ "ml3-language-versions.button.add": {
+  "nb": "Legg til språkversjon",
+  "en": "Add language version",
+  "oversatt": "Adicionar versão de idioma"
+ },
+ "ml3-language-versions.button.close": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "ml3-language-versions.button.manage": {
+  "nb": "Språk i manuset …",
+  "en": "Script languages …",
+  "oversatt": "Idiomas do roteiro…"
+ },
+ "ml3-language-versions.button.register": {
+  "nb": "Registrer",
+  "en": "Register",
+  "oversatt": "Registrar"
+ },
+ "ml3-language-versions.button.remove": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "Remover"
+ },
+ "ml3-language-versions.button.rename": {
+  "nb": "Lagre navn",
+  "en": "Save name",
+  "oversatt": "Salvar nome"
+ },
+ "ml3-language-versions.button.restore": {
+  "nb": "Gjenopprett",
+  "en": "Restore",
+  "oversatt": "Restaurar"
+ },
+ "ml3-language-versions.dialog.description": {
+  "nb": "Norsk er alltid kilden. Hver språkversjon har ett målspråk. Å fjerne en språkversjon sletter ingen oversettelser.",
+  "en": "Norwegian is always the source. Each language version has one target language. Removing a language version deletes no translations.",
+  "oversatt": "O norueguês é sempre a origem. Cada versão de idioma tem um idioma de destino. A remoção de uma versão de idioma não exclui nenhuma tradução."
+ },
+ "ml3-language-versions.dialog.title": {
+  "nb": "Språkversjoner",
+  "en": "Language versions",
+  "oversatt": "Versões de idioma"
+ },
+ "ml3-language-versions.empty": {
+  "nb": "Ingen språkversjoner ennå.",
+  "en": "No language versions yet.",
+  "oversatt": "Nenhuma versão de idioma ainda."
+ },
+ "ml3-language-versions.error.duplicate": {
+  "nb": "Prosjektet har allerede en språkversjon for {language}.",
+  "en": "The project already has a language version for {language}.",
+  "oversatt": "O projeto já possui uma versão de idioma para {language}."
+ },
+ "ml3-language-versions.error.in-use": {
+  "nb": "Språkversjonen er tatt i bruk av oversettelser og kan ikke angres bort. Fjern den i stedet.",
+  "en": "The language version is used by translations and cannot be undone. Remove it instead.",
+  "oversatt": "A versão de idioma está em uso por traduções e não pode ser desfeita. Em vez disso, remova-a."
+ },
+ "ml3-language-versions.error.language": {
+  "nb": "Språkkoden er ugyldig. Bruk en BCP-47-kode som de, pt-BR eller sr-Latn.",
+  "en": "The language code is invalid. Use a BCP-47 code such as de, pt-BR or sr-Latn.",
+  "oversatt": "O código de idioma é inválido. Use um código BCP-47 como de, pt-BR ou sr-Latn."
+ },
+ "ml3-language-versions.error.mixed-versions": {
+  "nb": "Linjene i koblingen hører til ulike språkversjoner.",
+  "en": "The lines in the link belong to different language versions.",
+  "oversatt": "As falas no vínculo pertencem a versões de idioma diferentes."
+ },
+ "ml3-language-versions.error.name": {
+  "nb": "Navnet må ha mellom 1 og 120 tegn.",
+  "en": "The name must be between 1 and 120 characters.",
+  "oversatt": "O nome deve ter entre 1 e 120 caracteres."
+ },
+ "ml3-language-versions.error.norwegian": {
+  "nb": "Norsk er kildespråket og kan ikke være en språkversjon.",
+  "en": "Norwegian is the source language and cannot be a language version.",
+  "oversatt": "O norueguês é o idioma de origem e não pode ser uma versão de idioma."
+ },
+ "ml3-language-versions.error.not-found": {
+  "nb": "Fant ikke språkversjonen.",
+  "en": "The language version was not found.",
+  "oversatt": "A versão de idioma não foi encontrada."
+ },
+ "ml3-language-versions.error.status": {
+  "nb": "Ukjent status for språkversjonen.",
+  "en": "Unknown status for the language version.",
+  "oversatt": "Status desconhecido para a versão de idioma."
+ },
+ "ml3-language-versions.error.unchanged": {
+  "nb": "Ingen endring å lagre.",
+  "en": "There is no change to save.",
+  "oversatt": "Nenhuma alteração para salvar."
+ },
+ "ml3-language-versions.explorer.language": {
+  "nb": "Språk i manusutforskeren",
+  "en": "Language in the script explorer",
+  "oversatt": "Idioma no explorador de roteiro"
+ },
+ "ml3-language-versions.export.choose": {
+  "nb": "Velg norsk reserve eller stopp før du eksporterer.",
+  "en": "Choose Norwegian fallback or stop before exporting.",
+  "oversatt": "Escolha o norueguês como reserva ou interrompa antes de exportar."
+ },
+ "ml3-language-versions.export.fallback": {
+  "nb": "Bruk norsk der oversettelsen mangler",
+  "en": "Use Norwegian where the translation is missing",
+  "oversatt": "Usar norueguês onde a tradução estiver ausente"
+ },
+ "ml3-language-versions.export.incomplete": {
+  "nb": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre.",
+  "en": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do.",
+  "oversatt": "A tradução para {language} não está completa: faltam {missing} falas, {uncertain} são incertas e {review} precisam de revisão. Escolha o que fazer na exportação."
+ },
+ "ml3-language-versions.export.language": {
+  "nb": "Språkversjon i eksporten",
+  "en": "Language version in the export",
+  "oversatt": "Versão de idioma na exportação"
+ },
+ "ml3-language-versions.export.stop": {
+  "nb": "Stopp eksporten til oversettelsen er ferdig",
+  "en": "Stop the export until the translation is complete",
+  "oversatt": "Interromper a exportação até que a tradução esteja completa"
+ },
+ "ml3-language-versions.export.stopped": {
+  "nb": "Eksporten er stoppet. Ingen fil er laget.",
+  "en": "The export is stopped. No file has been created.",
+  "oversatt": "A exportação foi interrompida. Nenhum arquivo foi criado."
+ },
+ "ml3-language-versions.field.language": {
+  "nb": "Målspråk (BCP-47)",
+  "en": "Target language (BCP-47)",
+  "oversatt": "Idioma de destino (BCP-47)"
+ },
+ "ml3-language-versions.field.language-hint": {
+  "nb": "For eksempel de, pt-BR eller sr-Latn",
+  "en": "For example de, pt-BR or sr-Latn",
+  "oversatt": "Por exemplo: de, pt-BR ou sr-Latn"
+ },
+ "ml3-language-versions.field.name": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Nome"
+ },
+ "ml3-language-versions.label.collision": {
+  "nb": "Lagret med flere skrivemåter: {tags}. Ingenting slås sammen automatisk.",
+  "en": "Stored with several spellings: {tags}. Nothing is merged automatically.",
+  "oversatt": "Armazenado com várias grafias: {tags}. Nada é mesclado automaticamente."
+ },
+ "ml3-language-versions.label.derived": {
+  "nb": "Fra eldre oversettelser – ikke registrert",
+  "en": "From earlier translations – not registered",
+  "oversatt": "De traduções anteriores – não registrado"
+ },
+ "ml3-language-versions.label.registered": {
+  "nb": "Registrerte språkversjoner",
+  "en": "Registered language versions",
+  "oversatt": "Versões de idioma registradas"
+ },
+ "ml3-language-versions.label.removed": {
+  "nb": "Fjernede språkversjoner",
+  "en": "Removed language versions",
+  "oversatt": "Versões de idioma removidas"
+ },
+ "ml3-language-versions.label.status": {
+  "nb": "{translated} av {lines} linjer oversatt, {review} må gjennomgås, {uncertain} usikre",
+  "en": "{translated} of {lines} lines translated, {review} need review, {uncertain} uncertain",
+  "oversatt": "{translated} de {lines} falas traduzidas, {review} precisam de revisão, {uncertain} incertas"
+ },
+ "ml3-language-versions.links.language": {
+  "nb": "Språkversjon for linjekoblinger",
+  "en": "Language version for line links",
+  "oversatt": "Versão de idioma para vínculos de falas"
+ },
+ "ml3-language-versions.option.derived": {
+  "nb": "{label} – eldre oversettelser",
+  "en": "{label} – earlier translations",
+  "oversatt": "{label} – traduções anteriores"
+ },
+ "ml3-language-versions.review.languages": {
+  "nb": "Norsk er endret. Må gjennomgås i: {languages}",
+  "en": "The Norwegian text has changed. Needs review in: {languages}",
+  "oversatt": "O texto em norueguês foi alterado. Precisa de revisão em: {languages}"
+ },
+ "ml3-language-versions.select.norwegian": {
+  "nb": "Norsk (kilde)",
+  "en": "Norwegian (source)",
+  "oversatt": "Norueguês (origem)"
+ },
+ "ml3-language-versions.undo.add": {
+  "nb": "Legg til språkversjon {name}",
+  "en": "Add language version {name}",
+  "oversatt": "Adicionar versão de idioma {name}"
+ },
+ "ml3-language-versions.undo.remove": {
+  "nb": "Fjern språkversjon {name}",
+  "en": "Remove language version {name}",
+  "oversatt": "Remover versão de idioma {name}"
+ },
+ "ml3-language-versions.undo.rename": {
+  "nb": "Gi nytt navn til språkversjon {name}",
+  "en": "Rename language version {name}",
+  "oversatt": "Renomear versão de idioma {name}"
+ },
+ "ml3-language-versions.undo.restore": {
+  "nb": "Gjenopprett språkversjon {name}",
+  "en": "Restore language version {name}",
+  "oversatt": "Restaurar versão de idioma {name}"
+ },
+ "ml4-export-fonts.docx-warning": {
+  "nb": "Word-fonten ({font}) har ikke {count} tegn: {chars}. Tegnene beholdes i filen, men Word viser dem med en annen font.",
+  "en": "The Word font ({font}) lacks {count} characters: {chars}. The characters are kept in the file, but Word shows them in another font.",
+  "oversatt": "A fonte do Word ({font}) não tem {count} caracteres: {chars}. Os caracteres são mantidos no arquivo, mas o Word os exibirá em outra fonte."
+ },
+ "ml4-export-fonts.ok": {
+  "nb": "Fonten ({font}) kan vise alle tegnene i eksporten.",
+  "en": "The font ({font}) can show every character in the export.",
+  "oversatt": "A fonte ({font}) pode exibir todos os caracteres na exportação."
+ },
+ "ml4-export-fonts.pdf-blocked": {
+  "nb": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn.",
+  "en": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character.",
+  "oversatt": "A fonte do PDF ({font}) não pode exibir {count} caracteres nesta versão de idioma: {chars}. Eles se tornariam \"?\" no arquivo, portanto a exportação em PDF foi interrompida. Escolha Word ou Fountain, que mantêm todos os caracteres."
+ },
+ "print-measure.error-0": {
+  "nb": "Ugyldig målepunkt",
+  "en": "Invalid measurement point",
+  "oversatt": "Ponto de medição inválido"
+ },
+ "print-measure.error-1": {
+  "nb": "Ugyldig linje",
+  "en": "Invalid line",
+  "oversatt": "Linha inválida"
+ },
+ "print-measure.error-10": {
+  "nb": "Ugyldig målesettreferanse/navn",
+  "en": "Invalid measurement set reference or name",
+  "oversatt": "Referência ou nome do conjunto de medição inválido"
+ },
+ "print-measure.error-11": {
+  "nb": "Ugyldig frame",
+  "en": "Invalid frame",
+  "oversatt": "Quadro inválido"
+ },
+ "print-measure.error-12": {
+  "nb": "Ugyldig tidsstempel",
+  "en": "Invalid timestamp",
+  "oversatt": "Carimbo de data/hora inválido"
+ },
+ "print-measure.error-13": {
+  "nb": "Ugyldig markørliste",
+  "en": "Invalid marker list",
+  "oversatt": "Lista de marcadores inválida"
+ },
+ "print-measure.error-14": {
+  "nb": "Duplisert markør-ID",
+  "en": "Duplicate marker ID",
+  "oversatt": "ID de marcador duplicado"
+ },
+ "print-measure.error-15": {
+  "nb": "Dupliserte markører",
+  "en": "Duplicate markers",
+  "oversatt": "Marcadores duplicados"
+ },
+ "print-measure.error-16": {
+  "nb": "Ugyldig innsetting",
+  "en": "Invalid insertion",
+  "oversatt": "Inserção inválida"
+ },
+ "print-measure.error-17": {
+  "nb": "Ukjent markør",
+  "en": "Unknown marker",
+  "oversatt": "Marcador desconhecido"
+ },
+ "print-measure.error-18": {
+  "nb": "Duplisert ID",
+  "en": "Duplicate ID",
+  "oversatt": "ID duplicado"
+ },
+ "print-measure.error-2": {
+  "nb": "Vinkel krever to linjer med lengde",
+  "en": "Angle requires two nonzero lines",
+  "oversatt": "O ângulo requer duas linhas com comprimento diferente de zero"
+ },
+ "print-measure.error-3": {
+  "nb": "Forhold krever ikke-negative lengder og positiv nevner",
+  "en": "Ratio requires nonnegative lengths and a positive denominator",
+  "oversatt": "A proporção requer comprimentos não negativos e um denominador positivo"
+ },
+ "print-measure.error-4": {
+  "nb": "Ugyldig måleverdi/enhet",
+  "en": "Invalid measurement value or unit",
+  "oversatt": "Valor ou unidade de medição inválido"
+ },
+ "print-measure.error-5": {
+  "nb": "Zoom må være positiv",
+  "en": "Zoom must be positive",
+  "oversatt": "O zoom deve ser positivo"
+ },
+ "print-measure.error-6": {
+  "nb": "Ugyldig toleranse",
+  "en": "Invalid tolerance",
+  "oversatt": "Tolerância inválida"
+ },
+ "print-measure.error-7": {
+  "nb": "Ukjent markørtype",
+  "en": "Unknown marker type",
+  "oversatt": "Tipo de marcador desconhecido"
+ },
+ "print-measure.error-8": {
+  "nb": "Markør mangler ID",
+  "en": "Marker ID is missing",
+  "oversatt": "Falta o ID do marcador"
+ },
+ "print-measure.error-9": {
+  "nb": "Ugyldig markørgeometri",
+  "en": "Invalid marker geometry",
+  "oversatt": "Geometria de marcador inválida"
+ },
+ "print-pdf.image-required": {
+  "nb": "Figurutskrift krever et kildebilde.",
+  "en": "Figure printing requires a source image.",
+  "oversatt": "A impressão de figuras requer uma imagem de origem."
+ },
+ "print-pdf.instruction": {
+  "nb": "Skriv ut i 100 % / faktisk størrelse. Kontroller med linjal.",
+  "en": "Print at 100 % / actual size. Check with a ruler.",
+  "oversatt": "Imprima em 100% / tamanho real. Verifique com uma régua."
+ },
+ "print-pdf.invalid": {
+  "nb": "Ugyldig utskriftsgeometri.",
+  "en": "Invalid print geometry.",
+  "oversatt": "Geometria de impressão inválida."
+ },
+ "print-pdf.overview": {
+  "nb": "Oversiktsark: {id}",
+  "en": "Overview: {id}",
+  "oversatt": "Visão geral: {id}"
+ },
+ "print-pdf.qr": {
+  "nb": "QR runde 5",
+  "en": "QR round 5",
+  "oversatt": "QR rodada 5"
+ },
+ "print-pdf.tile": {
+  "nb": "rad {row} / kolonne {column}",
+  "en": "row {row} / column {column}",
+  "oversatt": "linha {row} / coluna {column}"
+ },
+ "r1-prores-offer.accept": {
+  "nb": "Bruk ProRes",
+  "en": "Use ProRes",
+  "oversatt": "Usar ProRes"
+ },
+ "r1-prores-offer.dismiss": {
+  "nb": "Ikke nå",
+  "en": "Not now",
+  "oversatt": "Agora não"
+ },
+ "r1-prores-offer.question": {
+  "nb": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre.",
+  "en": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo.",
+  "oversatt": "Usar ProRes como padrão no perfil {name}? As exportações sugerirão ProRes/MOV em vez de MP4. Você pode desfazer isso depois."
+ },
+ "r1-prores-offer.restore": {
+  "nb": "Vis ProRes-tilbudet for {name} igjen",
+  "en": "Show the ProRes offer for {name} again",
+  "oversatt": "Mostrar a oferta de ProRes para {name} novamente"
+ },
+ "r1-prores-offer.undo-label": {
+  "nb": "ProRes som standard i {name}",
+  "en": "ProRes as default in {name}",
+  "oversatt": "ProRes como padrão em {name}"
+ },
+ "r2-orphan-cleanup.cancel": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "r2-orphan-cleanup.confirm": {
+  "nb": "Slett filene",
+  "en": "Delete the files",
+  "oversatt": "Excluir os arquivos"
+ },
+ "r2-orphan-cleanup.done": {
+  "nb": {
+   "one": "{count} fil slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden.",
+   "other": "{count} filer slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden."
+  },
+  "en": {
+   "one": "{count} file deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime.",
+   "other": "{count} files deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime."
+  },
+  "oversatt": {
+   "one": "{count} arquivo excluído ({size} MB). {skipped} foi mantido porque passou a ser usado enquanto isso.",
+   "many": "{count} arquivos excluídos ({size} MB). {skipped} foram mantidos porque passaram a ser usados enquanto isso.",
+   "other": "{count} arquivos excluídos ({size} MB). {skipped} foram mantidos porque passaram a ser usados enquanto isso."
+  }
+ },
+ "r2-orphan-cleanup.error.confirm": {
+  "nb": "Bekreft slettingen først.",
+  "en": "Confirm the deletion first.",
+  "oversatt": "Confirme a exclusão primeiro."
+ },
+ "r2-orphan-cleanup.error.generic": {
+  "nb": "Oppryddingen feilet.",
+  "en": "The clean-up failed.",
+  "oversatt": "A limpeza falhou."
+ },
+ "r2-orphan-cleanup.error.input": {
+  "nb": "Ugyldig forespørsel om opprydding.",
+  "en": "Invalid clean-up request.",
+  "oversatt": "Solicitação de limpeza inválida."
+ },
+ "r2-orphan-cleanup.error.owner": {
+  "nb": "Bare prosjekteieren kan rydde opp i filer.",
+  "en": "Only the project owner can clean up files.",
+  "oversatt": "Apenas o proprietário do projeto pode limpar arquivos."
+ },
+ "r2-orphan-cleanup.error.references": {
+  "nb": "Kunne ikke kontrollere hvilke filer som er i bruk. Ingenting er slettet.",
+  "en": "Could not check which files are in use. Nothing was deleted.",
+  "oversatt": "Não foi possível verificar quais arquivos estão em uso. Nada foi excluído."
+ },
+ "r2-orphan-cleanup.error.remove": {
+  "nb": "Kunne ikke slette filene. Prøv igjen.",
+  "en": "Could not delete the files. Try again.",
+  "oversatt": "Não foi possível excluir os arquivos. Tente novamente."
+ },
+ "r2-orphan-cleanup.error.too-many": {
+  "nb": "Prosjektet har for mange filer til å kontrollere nå. Ingenting er slettet.",
+  "en": "The project has too many files to check right now. Nothing was deleted.",
+  "oversatt": "O projeto tem arquivos demais para verificar agora. Nada foi excluído."
+ },
+ "r2-orphan-cleanup.none": {
+  "nb": "Fant ingen ubrukte AI-filer som kan slettes.",
+  "en": "No unused AI files that can be deleted were found.",
+  "oversatt": "Nenhum arquivo de IA não utilizado que possa ser excluído foi encontrado."
+ },
+ "r2-orphan-cleanup.open": {
+  "nb": "Rydd opp i ubrukte AI-filer …",
+  "en": "Clean up unused AI files …",
+  "oversatt": "Limpar arquivos de IA não utilizados…"
+ },
+ "r2-orphan-cleanup.summary": {
+  "nb": {
+   "one": "{count} AI-fil ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. Den er eldre enn ett døgn. Sletting kan ikke angres.",
+   "other": "{count} AI-filer ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. De er eldre enn ett døgn. Sletting kan ikke angres."
+  },
+  "en": {
+   "one": "{count} AI file ({size} MB) is not used by anything in the project and is not in the undo history. It is older than one day. Deleting cannot be undone.",
+   "other": "{count} AI files ({size} MB) are not used by anything in the project and are not in the undo history. They are older than one day. Deleting cannot be undone."
+  },
+  "oversatt": {
+   "one": "{count} arquivo de IA ({size} MB) não está sendo usado em nada no projeto e não consta no histórico de desfazer. Ele tem mais de um dia. A exclusão não pode ser desfeita.",
+   "many": "{count} arquivos de IA ({size} MB) não estão sendo usados em nada no projeto e não constam no histórico de desfazer. Eles têm mais de um dia. A exclusão não pode ser desfeita.",
+   "other": "{count} arquivos de IA ({size} MB) não estão sendo usados em nada no projeto e não constam no histórico de desfazer. Eles têm mais de um dia. A exclusão não pode ser desfeita."
+  }
+ },
+ "r2-orphan-cleanup.title": {
+  "nb": "Slette ubrukte AI-filer?",
+  "en": "Delete unused AI files?",
+  "oversatt": "Excluir arquivos de IA não utilizados?"
+ },
+ "r3-global.error.no-version": {
+  "nb": "Versjonen finnes ikke i prosjektet.",
+  "en": "The version does not exist in the project.",
+  "oversatt": "A versão não existe no projeto."
+ },
+ "r3-global.error.not-global": {
+  "nb": "Ressursen er ikke koblet til en global ressurs i denne gruppen.",
+  "en": "The asset is not linked to a global asset in this group.",
+  "oversatt": "O ativo não está vinculado a um ativo global neste grupo."
+ },
+ "r3-global.error.project-rights": {
+  "nb": "Bare redaktører og eiere i prosjektet kan publisere globalt.",
+  "en": "Only editors and owners of the project can publish globally.",
+  "oversatt": "Apenas editores e proprietários do projeto podem publicar globalmente."
+ },
+ "r3-global.error.workspace-rights": {
+  "nb": "Bare redaktører og eiere i gruppen kan publisere eller trekke tilbake globale versjoner.",
+  "en": "Only editors and owners of the group can publish or withdraw global versions.",
+  "oversatt": "Apenas editores e proprietários do grupo podem publicar ou retirar versões globais."
+ },
+ "r3-global.publish-title": {
+  "nb": "Legger den harmoniserte versjonen til den globale ressursen. Andre prosjekter endres ikke. Angre trekker den tilbake.",
+  "en": "Adds the harmonized version to the global asset. Other projects do not change. Undo withdraws it.",
+  "oversatt": "Adiciona a versão harmonizada ao ativo global. Outros projetos não são alterados. Desfazer retira a versão."
+ },
+ "r3-global.published-variant": {
+  "nb": "Publisert som ny global variant (versjon {number}). Andre prosjekter får et varsel og velger selv.",
+  "en": "Published as a new global variant (version {number}). Other projects get a notice and choose for themselves.",
+  "oversatt": "Publicado como nova variante global (versão {number}). Outros projetos recebem um aviso e decidem por si mesmos."
+ },
+ "r3-global.published-version": {
+  "nb": "Publisert som global versjon {number}. Andre prosjekter får et varsel og velger selv.",
+  "en": "Published as global version {number}. Other projects get a notice and choose for themselves.",
+  "oversatt": "Publicado como versão global {number}. Outros projetos recebem um aviso e decidem por si mesmos."
+ },
+ "r3-global.undo-label": {
+  "nb": "Publiser versjon {number} globalt",
+  "en": "Publish version {number} globally",
+  "oversatt": "Publicar versão {number} globalmente"
+ },
+ "r3-global.withdrawn-in-use": {
+  "nb": "Versjon {number} av {name} er trukket tilbake globalt. Kopien i dette prosjektet er uendret.",
+  "en": "Version {number} of {name} has been withdrawn globally. The copy in this project is unchanged.",
+  "oversatt": "A versão {number} de {name} foi retirada globalmente. A cópia neste projeto permanece inalterada."
+ },
+ "r3-global.withdrawn-label": {
+  "nb": "trukket tilbake",
+  "en": "withdrawn",
+  "oversatt": "retirado"
+ },
+ "r4-prores.estimate": {
+  "nb": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer.",
+  "en": "Estimated file size: up to {size}. Simple pictures give smaller files.",
+  "oversatt": "Tamanho estimado do arquivo: até {size}. Imagens simples geram arquivos menores."
+ },
+ "r4-prores.film-note": {
+  "nb": "{profile} med Apples målbitrate, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring.",
+  "en": "{profile} at Apple's target bitrate, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage.",
+  "oversatt": "{profile} na taxa de bits alvo da Apple, Rec.709, áudio em PCM 48 kHz. Arquivos grandes são gravados diretamente no armazenamento do navegador."
+ },
+ "r4-prores.film-option": {
+  "nb": "MOV (ProRes – for videoredigering)",
+  "en": "MOV (ProRes – for editing)",
+  "oversatt": "MOV (ProRes – para edição)"
+ },
+ "r4-prores.profile-label": {
+  "nb": "ProRes-profil",
+  "en": "ProRes profile",
+  "oversatt": "Perfil ProRes"
+ },
+ "r6-brand.builtin-provider": {
+  "nb": "Bruker tjenestens innebygde AI-kreditter. Ingen egen nøkkel – slått på for prosjektet.",
+  "en": "Uses the service's built-in AI credits. No key of your own – switched on for the project.",
+  "oversatt": "Usa os créditos de IA integrados do serviço. Sem chave própria – ativado para o projeto."
+ },
+ "r6-brand.cron-warning": {
+  "nb": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren.",
+  "en": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and that the background job is set up on the server.",
+  "oversatt": "A tarefa em segundo plano não é executada há {CRON_STALE_MINUTES} minutos. Verifique se o aplicativo está publicado e se a tarefa em segundo plano está configurada no servidor."
+ },
+ "r6-brand.download-blocked": {
+  "nb": "Startet ikke nedlastingen? En innebygd forhåndsvisning kan blokkere nedlastinger. Åpne appen i en egen fane og eksporter derfra.",
+  "en": "Did the download not start? An embedded preview can block downloads. Open the app in a separate tab and export from there.",
+  "oversatt": "O download não começou? Uma pré-visualização incorporada pode bloquear downloads. Abra o aplicativo em uma aba separada e exporte de lá."
+ },
+ "r6-brand.image-credits": {
+  "nb": "Dette bruker tjenestens innebygde AI-kreditter (",
+  "en": "This uses the service's built-in AI credits (",
+  "oversatt": "Isso usa os créditos de IA integrados do serviço ("
+ },
+ "r6-brand.provider-detail": {
+  "nb": "Denne er alltid tilgjengelig og bruker tjenestens innebygde AI-kreditter. Prosjektets AI-budsjett gjelder.",
+  "en": "This is always available and uses the service's built-in AI credits. The project's AI budget applies.",
+  "oversatt": "Sempre disponível e usa os créditos de IA integrados do serviço. O orçamento de IA do projeto se aplica."
+ },
+ "r6-brand.text-model": {
+  "nb": "Ingen av språkmodellene ble gjenkjent. Sett ANIMATIC_TEXT_MODEL i serverens innstillinger.",
+  "en": "None of the language models was recognised. Set ANIMATIC_TEXT_MODEL in the server settings.",
+  "oversatt": "Nenhum dos modelos de linguagem foi reconhecido. Defina ANIMATIC_TEXT_MODEL nas configurações do servidor."
+ },
+ "r8-translation-import.button": {
+  "nb": "Importer oversatt manus …",
+  "en": "Import translated script …",
+  "oversatt": "Importar roteiro traduzido…"
+ },
+ "r8-translation-import.target": {
+  "nb": "Målspråk: {language} ({tag})",
+  "en": "Target language: {language} ({tag})",
+  "oversatt": "Idioma de destino: {language} ({tag})"
+ },
+ "routes-admin.admin-route.trail.a96adb8ff9c5": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "Administração"
+ },
+ "routes-admin.content.content.2838c73c64a0": {
+  "nb": "Administrasjon – Animatic Studio",
+  "en": "Administration – Animatic Studio",
+  "oversatt": "Administração – Animatic Studio"
+ },
+ "routes-admin.content.content.4a28312072cc": {
+  "nb": "Administrer brukere og tjenesten i Animatic Studio.",
+  "en": "Manage users and the service in Animatic Studio.",
+  "oversatt": "Gerencie usuários e o serviço no Animatic Studio."
+ },
+ "routes-admin.content.content.4a28312072cc.2": {
+  "nb": "Administrer brukere og tjenesten i Animatic Studio.",
+  "en": "Manage users and the service in Animatic Studio.",
+  "oversatt": "Gerencie usuários e o serviço no Animatic Studio."
+ },
+ "routes-admin.title.title.50274d57d4da": {
+  "nb": "Administrasjon – Animatic Studio",
+  "en": "Administration – Animatic Studio",
+  "oversatt": "Administração – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.content.content.789e02872522": {
+  "nb": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.",
+  "en": "Members, invitations and projects in a workspace.",
+  "oversatt": "Membros, convites e projetos em um espaço de trabalho."
+ },
+ "routes-gruppe-workspace-id.content.content.789e02872522.2": {
+  "nb": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe.",
+  "en": "Members, invitations and projects in a workspace.",
+  "oversatt": "Membros, convites e projetos em um espaço de trabalho."
+ },
+ "routes-gruppe-workspace-id.content.content.d76669de2282": {
+  "nb": "Arbeidsgruppe – Animatic Studio",
+  "en": "Workspace – Animatic Studio",
+  "oversatt": "Espaço de trabalho – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.title.title.73796e5fd612": {
+  "nb": "Arbeidsgruppe – Animatic Studio",
+  "en": "Workspace – Animatic Studio",
+  "oversatt": "Espaço de trabalho – Animatic Studio"
+ },
+ "routes-gruppe-workspace-id.workspace-route.trail.16e3d36e939a": {
+  "nb": "Arbeidsgruppe",
+  "en": "Workspace",
+  "oversatt": "Espaço de trabalho"
+ },
+ "routes-index.content.content.75201acaab45": {
+  "nb": "Animatic Studio – fra manus til ferdig film.",
+  "en": "Animatic Studio – from script to finished film.",
+  "oversatt": "Animatic Studio – do roteiro ao filme finalizado."
+ },
+ "routes-index.content.content.75201acaab45.2": {
+  "nb": "Animatic Studio – fra manus til ferdig film.",
+  "en": "Animatic Studio – from script to finished film.",
+  "oversatt": "Animatic Studio – do roteiro ao filme finalizado."
+ },
+ "routes-index.content.content.d4c02791089e": {
+  "nb": "Animatic Studio – Prosjekter",
+  "en": "Animatic Studio – Projects",
+  "oversatt": "Animatic Studio – Projetos"
+ },
+ "routes-index.title.title.d34b816fe818": {
+  "nb": "Animatic Studio – Prosjekter",
+  "en": "Animatic Studio – Projects",
+  "oversatt": "Animatic Studio – Projetos"
+ },
+ "routes-invitasjon.accept-invitation.p.78d02d70a626": {
+  "nb": "Lenken mangler invitasjonskode.",
+  "en": "The link is missing an invitation code.",
+  "oversatt": "O link não contém um código de convite."
+ },
+ "routes-invitasjon.accept-invitation.p.e3ae379101ad": {
+  "nb": "Godtar invitasjonen …",
+  "en": "Accepting the invitation …",
+  "oversatt": "Aceitando o convite…"
+ },
+ "routes-invitasjon.accept-invitation.set-error.fa937f90fc5d": {
+  "nb": "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+  "en": "The invitation is invalid, has expired or has already been used.",
+  "oversatt": "O convite é inválido, expirou ou já foi utilizado."
+ },
+ "routes-invitasjon.content.content.167a3d5e4f4c": {
+  "nb": "Invitasjon – Animatic Studio",
+  "en": "Invitation – Animatic Studio",
+  "oversatt": "Convite – Animatic Studio"
+ },
+ "routes-invitasjon.content.content.2b66322361d6": {
+  "nb": "Godta en prosjektinvitasjon i Animatic Studio.",
+  "en": "Accept a project invitation in Animatic Studio.",
+  "oversatt": "Aceite um convite de projeto no Animatic Studio."
+ },
+ "routes-invitasjon.content.content.2b66322361d6.2": {
+  "nb": "Godta en prosjektinvitasjon i Animatic Studio.",
+  "en": "Accept a project invitation in Animatic Studio.",
+  "oversatt": "Aceite um convite de projeto no Animatic Studio."
+ },
+ "routes-invitasjon.invalid.use-effect.a4bd36ee329e": {
+  "nb": "Invitasjonen er ugyldig, utløpt eller allerede brukt.",
+  "en": "The invitation is invalid, has expired or has already been used.",
+  "oversatt": "O convite é inválido, expirou ou já foi utilizado."
+ },
+ "routes-invitasjon.title.title.15d2852cc7b6": {
+  "nb": "Invitasjon – Animatic Studio",
+  "en": "Invitation – Animatic Studio",
+  "oversatt": "Convite – Animatic Studio"
+ },
+ "routes-invitasjon.wrong.use-effect.09d63b5cc3ae": {
+  "nb": "Invitasjonen gjelder en annen e-postadresse. Logg inn med adressen invitasjonen ble sendt til.",
+  "en": "The invitation is for a different email address. Sign in with the address the invitation was sent to.",
+  "oversatt": "O convite é para outro endereço de e-mail. Entre com o endereço para o qual o convite foi enviado."
+ },
+ "routes-konto.account-route.trail.3c7458431283": {
+  "nb": "Min konto",
+  "en": "My account",
+  "oversatt": "Minha conta"
+ },
+ "routes-konto.content.content.b01c4654387c": {
+  "nb": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
+  "en": "Manage your account, language and AI preferences in Animatic Studio.",
+  "oversatt": "Gerencie sua conta, idioma e preferências de IA no Animatic Studio."
+ },
+ "routes-konto.content.content.b01c4654387c.2": {
+  "nb": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
+  "en": "Manage your account, language and AI preferences in Animatic Studio.",
+  "oversatt": "Gerencie sua conta, idioma e preferências de IA no Animatic Studio."
+ },
+ "routes-konto.content.content.f63ad82751ab": {
+  "nb": "Min konto – Animatic Studio",
+  "en": "My account – Animatic Studio",
+  "oversatt": "Minha conta – Animatic Studio"
+ },
+ "routes-konto.title.title.0ad1dbde485e": {
+  "nb": "Min konto – Animatic Studio",
+  "en": "My account – Animatic Studio",
+  "oversatt": "Minha conta – Animatic Studio"
+ },
+ "routes-m-token.content.content.0b31cbc4811d": {
+  "nb": "Last opp – Animatic Studio",
+  "en": "Upload – Animatic Studio",
+  "oversatt": "Fazer upload – Animatic Studio"
+ },
+ "routes-m-token.content.content.e9b3848a0c50": {
+  "nb": "Last opp materiale til et prosjekt i Animatic Studio.",
+  "en": "Upload material to an Animatic Studio project.",
+  "oversatt": "Faça upload de material para um projeto no Animatic Studio."
+ },
+ "routes-m-token.content.content.e9b3848a0c50.2": {
+  "nb": "Last opp materiale til et prosjekt i Animatic Studio.",
+  "en": "Upload material to an Animatic Studio project.",
+  "oversatt": "Faça upload de material para um projeto no Animatic Studio."
+ },
+ "routes-m-token.title.title.5c1d0ff564a2": {
+  "nb": "Last opp – Animatic Studio",
+  "en": "Upload – Animatic Studio",
+  "oversatt": "Fazer upload – Animatic Studio"
+ },
+ "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
+  "nb": "Manusutforskeren – Animatic Studio",
+  "en": "Script explorer – Animatic Studio",
+  "oversatt": "Explorador de roteiro – Animatic Studio"
+ },
+ "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
+  "nb": "Søk i manuset og legg til notater i Animatic Studio.",
+  "en": "Search the screenplay and add notes in Animatic Studio.",
+  "oversatt": "Pesquise no roteiro e adicione notas no Animatic Studio."
+ },
+ "routes-manusutforsker-project-id.content.content.ff977692e1ef": {
+  "nb": "Utforsk manuset og følg aktiv scene i et eget vindu.",
+  "en": "Explore the screenplay and follow the active scene in a separate window.",
+  "oversatt": "Explore o roteiro e acompanhe a cena ativa em uma janela separada."
+ },
+ "routes-manusutforsker-project-id.explorer-route.p.00bc51371ac2": {
+  "nb": "Prosjektet er låst eller kunne ikke åpnes.",
+  "en": "The project is locked or could not be opened.",
+  "oversatt": "O projeto está bloqueado ou não pôde ser aberto."
+ },
+ "routes-manusutforsker-project-id.explorer-route.p.6701ac4df175": {
+  "nb": "Henter prosjekt …",
+  "en": "Loading project …",
+  "oversatt": "Carregando projeto…"
+ },
+ "routes-manusutforsker-project-id.explorer-route.span.1bf9101e457f": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "Explorador de roteiro"
+ },
+ "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
+  "nb": "Manusutforskeren – Animatic Studio",
+  "en": "Script explorer – Animatic Studio",
+  "oversatt": "Explorador de roteiro – Animatic Studio"
+ },
+ "routes-personvern.content.content.87755ed805a8": {
+  "nb": "Personvern – Animatic Studio",
+  "en": "Privacy – Animatic Studio",
+  "oversatt": "Privacidade – Animatic Studio"
+ },
+ "routes-personvern.content.content.c2cd1c6e5143": {
+  "nb": "Les personvernerklæringen for Animatic Studio.",
+  "en": "Read the privacy statement for Animatic Studio.",
+  "oversatt": "Leia a política de privacidade do Animatic Studio."
+ },
+ "routes-personvern.content.content.c2cd1c6e5143.2": {
+  "nb": "Les personvernerklæringen for Animatic Studio.",
+  "en": "Read the privacy statement for Animatic Studio.",
+  "oversatt": "Leia a política de privacidade do Animatic Studio."
+ },
+ "routes-personvern.privacy-page.link.27b98f24370c": {
+  "nb": "Til innloggingen",
+  "en": "To sign-in",
+  "oversatt": "Ir para o login"
+ },
+ "routes-personvern.privacy-page.link.591dcf692023": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "Ir para a lista de projetos"
+ },
+ "routes-personvern.privacy-page.p.c061de21bb96": {
+  "nb": "Henter …",
+  "en": "Loading …",
+  "oversatt": "Carregando…"
+ },
+ "routes-personvern.privacy-page.trail.5e18a18818de": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "Privacidade"
+ },
+ "routes-personvern.title.title.c03602ed60a1": {
+  "nb": "Personvern – Animatic Studio",
+  "en": "Privacy – Animatic Studio",
+  "oversatt": "Privacidade – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
+  "nb": "Arbeid med karakterer og ressurser i Animatic Studio.",
+  "en": "Work with characters and assets in Animatic Studio.",
+  "oversatt": "Trabalhe com personagens e ativos no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
+  "nb": "Arbeid med karakterer og ressurser i Animatic Studio.",
+  "en": "Work with characters and assets in Animatic Studio.",
+  "oversatt": "Trabalhe com personagens e ativos no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
+  "nb": "Ressursbibliotek – Animatic Studio",
+  "en": "Asset library – Animatic Studio",
+  "oversatt": "Biblioteca de ativos – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
+  "nb": "Ressursbibliotek – Animatic Studio",
+  "en": "Asset library – Animatic Studio",
+  "oversatt": "Biblioteca de ativos – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
+  "nb": "Se filmprosjektets produksjoner i Animatic Studio.",
+  "en": "View your film project productions in Animatic Studio.",
+  "oversatt": "Veja as produções do seu projeto de filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
+  "nb": "Se filmprosjektets produksjoner i Animatic Studio.",
+  "en": "View your film project productions in Animatic Studio.",
+  "oversatt": "Veja as produções do seu projeto de filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
+  "nb": "Prosjektoversikt – Animatic Studio",
+  "en": "Project overview – Animatic Studio",
+  "oversatt": "Visão geral do projeto – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
+  "nb": "Prosjektoversikt – Animatic Studio",
+  "en": "Project overview – Animatic Studio",
+  "oversatt": "Visão geral do projeto – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
+  "nb": "Rediger filmmanuset og scenene i Animatic Studio.",
+  "en": "Edit your screenplay and scenes in Animatic Studio.",
+  "oversatt": "Edite seu roteiro e cenas no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
+  "nb": "Rediger filmmanuset og scenene i Animatic Studio.",
+  "en": "Edit your screenplay and scenes in Animatic Studio.",
+  "oversatt": "Edite seu roteiro e cenas no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
+  "nb": "Manus – Animatic Studio",
+  "en": "Script – Animatic Studio",
+  "oversatt": "Roteiro – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
+  "nb": "Manus – Animatic Studio",
+  "en": "Script – Animatic Studio",
+  "oversatt": "Roteiro – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
+  "nb": "Montering – Animatic Studio",
+  "en": "Assembly – Animatic Studio",
+  "oversatt": "Montagem – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
+  "nb": "Monter animatic, lyd og film i Animatic Studio.",
+  "en": "Assemble animatic, sound and film in Animatic Studio.",
+  "oversatt": "Monte animatic, som e filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
+  "nb": "Monter animatic, lyd og film i Animatic Studio.",
+  "en": "Assemble animatic, sound and film in Animatic Studio.",
+  "oversatt": "Monte animatic, som e filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
+  "nb": "Montering – Animatic Studio",
+  "en": "Assembly – Animatic Studio",
+  "oversatt": "Montagem – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-scene.content.content.65f619722830": {
+  "nb": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
+  "en": "Edit scene compositions and animatic in Animatic Studio.",
+  "oversatt": "Edite composições de cena e animatic no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
+  "nb": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
+  "en": "Edit scene compositions and animatic in Animatic Studio.",
+  "oversatt": "Edite composições de cena e animatic no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
+  "nb": "Sceneeditor – Animatic Studio",
+  "en": "Scene editor – Animatic Studio",
+  "oversatt": "Editor de cena – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
+  "nb": "Sceneeditor – Animatic Studio",
+  "en": "Scene editor – Animatic Studio",
+  "oversatt": "Editor de cena – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
+  "nb": "Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio.",
+  "en": "Character work, scene laboratory and dialogue analysis in Animatic Studio.",
+  "oversatt": "Trabalho de personagens, laboratório de cenas e análise de diálogos no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
+  "nb": "Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.",
+  "en": "Explore characters, analyze scenes and try dialogue variants in Animatic Studio.",
+  "oversatt": "Explore personagens, analise cenas e experimente variantes de diálogo no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
+  "nb": "Utgivelse – Animatic Studio",
+  "en": "Release – Animatic Studio",
+  "oversatt": "Lançamento – Animatic Studio"
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
+  "nb": "Arbeid med plakater og utgivelse i Animatic Studio.",
+  "en": "Work with posters and release in Animatic Studio.",
+  "oversatt": "Trabalhe com pôsteres e lançamento no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
+  "nb": "Arbeid med plakater og utgivelse i Animatic Studio.",
+  "en": "Work with posters and release in Animatic Studio.",
+  "oversatt": "Trabalhe com pôsteres e lançamento no Animatic Studio."
+ },
+ "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
+  "nb": "Utgivelse – Animatic Studio",
+  "en": "Release – Animatic Studio",
+  "oversatt": "Lançamento – Animatic Studio"
+ },
+ "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
+  "nb": "Prosjekt – Animatic Studio",
+  "en": "Project – Animatic Studio",
+  "oversatt": "Projeto – Animatic Studio"
+ },
+ "routes-prosjekt-project-id.content.content.323705133be5": {
+  "nb": "Arbeidsflater for filmprosjektet i Animatic Studio.",
+  "en": "Workspaces for your film project in Animatic Studio.",
+  "oversatt": "Espaços de trabalho para o seu projeto de filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id.content.content.323705133be5.2": {
+  "nb": "Arbeidsflater for filmprosjektet i Animatic Studio.",
+  "en": "Workspaces for your film project in Animatic Studio.",
+  "oversatt": "Espaços de trabalho para o seu projeto de filme no Animatic Studio."
+ },
+ "routes-prosjekt-project-id.owner-blocked": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}.",
+  "en": "The owner of the project is blocked. Contact the administrator at {adminEmail}.",
+  "oversatt": "O proprietário do projeto está bloqueado. Entre em contato com o administrador em {adminEmail}."
+ },
+ "routes-prosjekt-project-id.owner-blocked-with-owner": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt eieren ({ownerName}) eller administrator på {adminEmail}.",
+  "en": "The owner of the project is blocked. Contact the owner ({ownerName}) or the administrator at {adminEmail}.",
+  "oversatt": "O proprietário do projeto está bloqueado. Entre em contato com o proprietário ({ownerName}) ou com o administrador em {adminEmail}."
+ },
+ "routes-prosjekt-project-id.project-layout.h1.034a12e7f5db": {
+  "nb": "Prosjektet er slettet",
+  "en": "The project has been deleted",
+  "oversatt": "O projeto foi excluído"
+ },
+ "routes-prosjekt-project-id.project-layout.h1.83c2e8141203": {
+  "nb": "Prosjektet er låst",
+  "en": "The project is locked",
+  "oversatt": "O projeto está bloqueado"
+ },
+ "routes-prosjekt-project-id.project-layout.link.015885f8011d": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "Para a lista de projetos"
+ },
+ "routes-prosjekt-project-id.project-layout.link.015885f8011d.2": {
+  "nb": "Til prosjektlisten",
+  "en": "To the project list",
+  "oversatt": "Para a lista de projetos"
+ },
+ "routes-prosjekt-project-id.project-layout.p.5622c808d147": {
+  "nb": "Ingenting i prosjektet er slettet. Det åpnes igjen når eieren låses opp eller prosjektet får en ny eier.",
+  "en": "Nothing in the project has been deleted. It opens again when the owner is unlocked or the project gets a new owner.",
+  "oversatt": "Nada no projeto foi excluído. Ele será aberto novamente quando o proprietário for desbloqueado ou o projeto receber um novo proprietário."
+ },
+ "routes-prosjekt-project-id.project-layout.p.9cb6096fbb82": {
+  "nb": "Ressursene (bilder og lyd) er tatt vare på. Du finner dem under «Ressurser fra slettede prosjekter» i prosjektlisten.",
+  "en": "The assets (images and audio) have been kept. You will find them under “Assets from deleted projects” in the project list.",
+  "oversatt": "Os ativos (imagens e áudio) foram mantidos. Você os encontrará em “Ativos de projetos excluídos” na lista de projetos."
+ },
+ "routes-prosjekt-project-id.project-layout.p.aba08d0d2b17": {
+  "nb": "Prosjektet har ingen eier. Kontakt administrator på {value1}.",
+  "en": "The project has no owner. Contact the administrator at {value1}.",
+  "oversatt": "O projeto não tem proprietário. Entre em contato com o administrador em {value1}."
+ },
+ "routes-prosjekt-project-id.project-layout.p.de039078a0f5": {
+  "nb": "Eieren av prosjektet er blokkert. Kontakt {value1}administrator på {value2}.",
+  "en": "The owner of the project is blocked. Contact {value1}the administrator at {value2}.",
+  "oversatt": "O proprietário do projeto está bloqueado. Entre em contato com {value1}o administrador em {value2}."
+ },
+ "routes-prosjekt-project-id.project-layout.p.f6f3bd8e7d04": {
+  "nb": "Eieren av prosjektet har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt {value1}.",
+  "en": "The owner of the project has deleted their account. The administrator can give the project a new owner: contact {value1}.",
+  "oversatt": "O proprietário do projeto excluiu sua conta. O administrador pode definir um novo proprietário para o projeto: entre em contato com {value1}."
+ },
+ "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
+  "nb": "Prosjekt – Animatic Studio",
+  "en": "Project – Animatic Studio",
+  "oversatt": "Projeto – Animatic Studio"
+ },
+ "routes-prosjekt-rigg.head.description": {
+  "nb": "Multiplanrigg for 2D-utskrift: kamera, objektiv, plater, kalibrering og maler.",
+  "en": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates.",
+  "oversatt": "Rig multiplano para impressão 2D: câmera, lente, placas, calibração e modelos."
+ },
+ "routes-prosjekt-rigg.head.title": {
+  "nb": "Rigg – Animatic Studio",
+  "en": "Rig – Animatic Studio",
+  "oversatt": "Rig – Animatic Studio"
+ },
+ "routes-root.error-component.a.6fdb78437197": {
+  "nb": "Til forsiden",
+  "en": "Go to the front page",
+  "oversatt": "Ir para a página inicial"
+ },
+ "routes-root.error-component.button.96f923db4f99": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Tentar novamente"
+ },
+ "routes-root.error-component.h1.e30fba673653": {
+  "nb": "Siden kunne ikke vises",
+  "en": "The page could not be shown",
+  "oversatt": "A página não pôde ser exibida"
+ },
+ "routes-root.error-component.p.8ff66fea3622": {
+  "nb": "Noe gikk galt. Prøv igjen, eller gå til forsiden.",
+  "en": "Something went wrong. Try again, or go to the front page.",
+  "oversatt": "Algo deu errado. Tente novamente ou vá para a página inicial."
+ },
+ "routes-root.not-found-component.h2.cc99159dc152": {
+  "nb": "Fant ikke siden",
+  "en": "Page not found",
+  "oversatt": "Página não encontrada"
+ },
+ "routes-root.not-found-component.link.40ee8c9ed320": {
+  "nb": "Til forsiden",
+  "en": "Go to the front page",
+  "oversatt": "Ir para a página inicial"
+ },
+ "routes-root.not-found-component.p.1e497abdd8f7": {
+  "nb": "Siden finnes ikke eller er flyttet.",
+  "en": "The page does not exist or has moved.",
+  "oversatt": "A página não existe ou foi movida."
+ },
+ "routes-se-token.content.content.0c933cbe6ab9": {
+  "nb": "Se en film som er delt fra Animatic Studio.",
+  "en": "Watch a film shared from Animatic Studio.",
+  "oversatt": "Assista a um filme compartilhado do Animatic Studio."
+ },
+ "routes-se-token.content.content.0c933cbe6ab9.2": {
+  "nb": "Se en film som er delt fra Animatic Studio.",
+  "en": "Watch a film shared from Animatic Studio.",
+  "oversatt": "Assista a um filme compartilhado do Animatic Studio."
+ },
+ "routes-se-token.content.content.450bbeb07eba": {
+  "nb": "Film – Animatic Studio",
+  "en": "Film – Animatic Studio",
+  "oversatt": "Filme – Animatic Studio"
+ },
+ "routes-se-token.title.title.daa9a7b91a74": {
+  "nb": "Film – Animatic Studio",
+  "en": "Film – Animatic Studio",
+  "oversatt": "Filme – Animatic Studio"
+ }
+}

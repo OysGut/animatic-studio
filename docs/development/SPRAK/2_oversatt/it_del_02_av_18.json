@@ -1,0 +1,3021 @@
+{
+ "adapters-storylab-sessions-functions.set-suggestion-status.fail.9603fb08dc3e": {
+  "nb": "Forslaget finnes ikke",
+  "en": "The suggestion was not found",
+  "oversatt": "Il suggerimento non è stato trovato"
+ },
+ "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9": {
+  "nb": "Ugyldige turer",
+  "en": "Invalid turns",
+  "oversatt": "Turni non validi"
+ },
+ "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
+  "nb": "Ugyldige turer",
+  "en": "Invalid turns",
+  "oversatt": "Turni non validi"
+ },
+ "ai.text.truncated": {
+  "nb": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg.",
+  "en": "The response was truncated because it was too long. Try again with a shorter selection.",
+  "oversatt": "La risposta è stata troncata perché troppo lunga. Riprovare con una selezione più breve."
+ },
+ "app-account-account-page.account-page.aria-label.3a881a93c577": {
+  "nb": "Visningsnavn",
+  "en": "Display name",
+  "oversatt": "Nome visualizzato"
+ },
+ "app-account-account-page.account-page.aria-label.55d81f5ed2f6": {
+  "nb": "E-postadressen din",
+  "en": "Your email address",
+  "oversatt": "Il tuo indirizzo email"
+ },
+ "app-account-account-page.account-page.aria-label.9bfdde07b1d3": {
+  "nb": "Gjenta passordet",
+  "en": "Repeat the password",
+  "oversatt": "Ripeti la password"
+ },
+ "app-account-account-page.account-page.aria-label.d5d00f5fe2cb": {
+  "nb": "Nytt passord",
+  "en": "New password",
+  "oversatt": "Nuova password"
+ },
+ "app-account-account-page.account-page.button.635df60f0182": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Salva"
+ },
+ "app-account-account-page.account-page.button.6900b1be5d0a": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Chiudi"
+ },
+ "app-account-account-page.account-page.button.ac2f177d767b": {
+  "nb": "Endre passord",
+  "en": "Change password",
+  "oversatt": "Modifica password"
+ },
+ "app-account-account-page.account-page.button.f5964e6fad59": {
+  "nb": "Slett kontoen min",
+  "en": "Delete my account",
+  "oversatt": "Elimina il mio account"
+ },
+ "app-account-account-page.account-page.dd.3ea157877add": {
+  "nb": "Fast administrator",
+  "en": "Permanent administrator",
+  "oversatt": "Amministratore permanente"
+ },
+ "app-account-account-page.account-page.dd.476e5871100c": {
+  "nb": "Administrator",
+  "en": "Administrator",
+  "oversatt": "Amministratore"
+ },
+ "app-account-account-page.account-page.dd.9818c358ed9c": {
+  "nb": "Bruker",
+  "en": "User",
+  "oversatt": "Utente"
+ },
+ "app-account-account-page.account-page.dt.3a881a93c577": {
+  "nb": "Visningsnavn",
+  "en": "Display name",
+  "oversatt": "Nome visualizzato"
+ },
+ "app-account-account-page.account-page.dt.4ccb2731bfab": {
+  "nb": "Konto laget",
+  "en": "Account created",
+  "oversatt": "Account creato"
+ },
+ "app-account-account-page.account-page.dt.56839a8af169": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "Ruolo"
+ },
+ "app-account-account-page.account-page.dt.ade51be1b3f1": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "Email"
+ },
+ "app-account-account-page.account-page.h1.e6872b7b5c7f": {
+  "nb": "Min konto",
+  "en": "My account",
+  "oversatt": "Il mio account"
+ },
+ "app-account-account-page.account-page.link.9f9ca7316e88": {
+  "nb": "Til adminsiden",
+  "en": "To the admin page",
+  "oversatt": "Alla pagina di amministrazione"
+ },
+ "app-account-account-page.account-page.p.04c6a66a7233": {
+  "nb": "Det du selv har bestilt i alle prosjektene. Eieren av et prosjekt ser hva hele prosjektet har kostet på prosjektets oversikt.",
+  "en": "What you have ordered yourself in all projects. The owner of a project sees what the whole project has cost on the project overview.",
+  "oversatt": "Cosa hai ordinato personalmente in tutti i progetti. Il proprietario di un progetto vede il costo totale del progetto nella panoramica del progetto."
+ },
+ "app-account-account-page.account-page.p.1add060cb67d": {
+  "nb": "Databasen må oppdateres (migrasjon 0033) før språkvalg på kontoen, forbruk, personvern og sletting virker.",
+  "en": "The database must be updated (migration 0033) before account language, usage, privacy and deletion work.",
+  "oversatt": "Il database deve essere aggiornato (migrazione 0033) prima che la lingua dell'account, l'utilizzo, la privacy e l'eliminazione funzionino."
+ },
+ "app-account-account-page.account-page.p.35d769cea95d": {
+  "nb": "Du har lest versjon {acceptedVersion} av personvernerklæringen.",
+  "en": "You have read version {acceptedVersion} of the privacy statement.",
+  "oversatt": "Hai letto la versione {acceptedVersion} dell'informativa sulla privacy."
+ },
+ "app-account-account-page.account-page.p.3d5761b58054": {
+  "nb": "Den faste administratorkontoen kan ikke slettes.",
+  "en": "The permanent administrator account cannot be deleted.",
+  "oversatt": "L'account dell'amministratore permanente non può essere eliminato."
+ },
+ "app-account-account-page.account-page.p.64f5d36e0990": {
+  "nb": "Visningsnavnet ser de du deler prosjekter med. E-postadressen din vises ikke for dem.",
+  "en": "The display name is seen by those you share projects with. Your email address is not shown to them.",
+  "oversatt": "Il nome visualizzato è visibile a coloro con cui condividi i progetti. Il tuo indirizzo email non viene mostrato loro."
+ },
+ "app-account-account-page.account-page.p.8aa03e8c03e8": {
+  "nb": "Les hvordan vi behandler opplysningene dine.",
+  "en": "Read how we process your information.",
+  "oversatt": "Scopri come trattiamo i tuoi dati."
+ },
+ "app-account-account-page.account-page.p.fb52079cd767": {
+  "nb": "Kontoen låses med en gang og slettes for godt etter 30 dager. I mellomtiden kan bare administrator låse den opp. Prosjekter du eier, slettes ikke: de låses, og administrator kan gi dem en ny eier. Det du har gjort i andres prosjekter, står igjen som «Slettet bruker».",
+  "en": "The account is locked at once and deleted for good after 30 days. Until then, only the administrator can unlock it. Projects you own are not deleted: they are locked, and the administrator can give them a new owner. What you have done in others' projects remains as “Deleted user”.",
+  "oversatt": "L'account viene bloccato immediatamente ed eliminato definitivamente dopo 30 giorni. Nel frattempo, solo l'amministratore può sbloccarlo. I progetti di tua proprietà non vengono eliminati: vengono bloccati e l'amministratore può assegnare loro un nuovo proprietario. Ciò che hai fatto nei progetti altrui rimarrà contrassegnato come “Utente eliminato”."
+ },
+ "app-account-account-page.account-page.placeholder.11360c11e886": {
+  "nb": "Nytt passord (minst 8 tegn)",
+  "en": "New password (at least 8 characters)",
+  "oversatt": "Nuova password (almeno 8 caratteri)"
+ },
+ "app-account-account-page.account-page.placeholder.143050c7df6d": {
+  "nb": "Skriv e-postadressen din for å bekrefte",
+  "en": "Type your email address to confirm",
+  "oversatt": "Digita il tuo indirizzo email per confermare"
+ },
+ "app-account-account-page.account-page.placeholder.9bfdde07b1d3": {
+  "nb": "Gjenta passordet",
+  "en": "Repeat the password",
+  "oversatt": "Ripeti la password"
+ },
+ "app-account-account-page.account-page.project-name.43fec7dcd962": {
+  "nb": "Alle prosjekter",
+  "en": "All projects",
+  "oversatt": "Tutti i progetti"
+ },
+ "app-account-account-page.account-page.span.7542584b77d7": {
+  "nb": "Valget lagres på kontoen og gjelder neste gang du logger inn, også på andre maskiner.",
+  "en": "The choice is saved on the account and applies the next time you sign in, also on other computers.",
+  "oversatt": "La scelta viene salvata sull'account ed è valida al prossimo accesso, anche su altri computer."
+ },
+ "app-account-account-page.account-page.title.0a9bee9f065d": {
+  "nb": "Passord",
+  "en": "Password",
+  "oversatt": "Password"
+ },
+ "app-account-account-page.account-page.title.0ad0dd61ee8f": {
+  "nb": "AI-forbruk",
+  "en": "AI usage",
+  "oversatt": "Utilizzo IA"
+ },
+ "app-account-account-page.account-page.title.2cb4e1640f71": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "Privacy"
+ },
+ "app-account-account-page.account-page.title.3a0de0ed891b": {
+  "nb": "Profil",
+  "en": "Profile",
+  "oversatt": "Profilo"
+ },
+ "app-account-account-page.account-page.title.f1e74b20ac0c": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "Lingua"
+ },
+ "app-account-account-page.account-page.title.f5964e6fad59": {
+  "nb": "Slett kontoen min",
+  "en": "Delete my account",
+  "oversatt": "Elimina il mio account"
+ },
+ "app-account-account-page.save-name.set-name-msg.a4261bf49b5e": {
+  "nb": "Lagret.",
+  "en": "Saved.",
+  "oversatt": "Salvato."
+ },
+ "app-account-account-page.text.text.03230ef58e96": {
+  "nb": "Passordene er ikke like.",
+  "en": "The passwords are not the same.",
+  "oversatt": "Le password non corrispondono."
+ },
+ "app-account-account-page.text.text.329e2d824228": {
+  "nb": "Passordet må ha minst 8 tegn.",
+  "en": "The password must have at least 8 characters.",
+  "oversatt": "La password deve contenere almeno 8 caratteri."
+ },
+ "app-account-account-page.text.text.7badb3057a9e": {
+  "nb": "Passordet er endret.",
+  "en": "The password is changed.",
+  "oversatt": "La password è stata modificata."
+ },
+ "app-account-cost-export.children.group-head.2817287d1354": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "Mese"
+ },
+ "app-account-cost-export.children.group-head.6a237165c76a": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "Servizio · modello"
+ },
+ "app-account-cost-export.children.group-head.94b225f9ab46": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "Persona"
+ },
+ "app-account-cost-export.children.h.2cee2cdfef55": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "Per servizio e modello"
+ },
+ "app-account-cost-export.children.h.d911c0c60146": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "Per mese"
+ },
+ "app-account-cost-export.children.h.dd166de8725f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "Note"
+ },
+ "app-account-cost-export.children.h.eb2197ef5c1d": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "Per persona"
+ },
+ "app-account-cost-export.children.h.f2dec0f0db92": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "Voci"
+ },
+ "app-account-cost-export.children.table.155b0ad70670": {
+  "nb": "Opplysning",
+  "en": "Item",
+  "oversatt": "Elemento"
+ },
+ "app-account-cost-export.children.table.c2853bf5d369": {
+  "nb": "Verdi",
+  "en": "Value",
+  "oversatt": "Valore"
+ },
+ "app-account-cost-export.group-head.message.f1fb1150290a": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "Processi"
+ },
+ "app-account-cost-export.line-head.message.02cbde28d51d": {
+  "nb": "Leverandørens jobb-ID",
+  "en": "Provider job ID",
+  "oversatt": "ID processo del provider"
+ },
+ "app-account-cost-export.line-head.message.19ab8b6773d8": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "Progetto"
+ },
+ "app-account-cost-export.line-head.message.2f10fe10f8a8": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Tipo"
+ },
+ "app-account-cost-export.line-head.message.4657045ba1c1": {
+  "nb": "Mengde",
+  "en": "Quantity",
+  "oversatt": "Quantità"
+ },
+ "app-account-cost-export.line-head.message.5059e628802d": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "Stato"
+ },
+ "app-account-cost-export.line-head.message.56bfe4ac24fa": {
+  "nb": "Bestilt av",
+  "en": "Ordered by",
+  "oversatt": "Ordinato da"
+ },
+ "app-account-cost-export.line-head.message.781fec263d62": {
+  "nb": "Kreditter",
+  "en": "Credits",
+  "oversatt": "Crediti"
+ },
+ "app-account-cost-export.line-head.message.7d285296cd7a": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "Data"
+ },
+ "app-account-cost-export.line-head.message.92dc4d45163e": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modello"
+ },
+ "app-account-cost-export.line-head.message.a3947b231010": {
+  "nb": "Beløp USD",
+  "en": "Amount USD",
+  "oversatt": "Importo USD"
+ },
+ "app-account-cost-export.line-head.message.ab6763cf1bf0": {
+  "nb": "Enhetspris USD",
+  "en": "Unit price USD",
+  "oversatt": "Prezzo unitario USD"
+ },
+ "app-account-cost-export.line-head.message.b565a5abdaa9": {
+  "nb": "Tjeneste",
+  "en": "Service",
+  "oversatt": "Servizio"
+ },
+ "app-account-cost-export.line-head.message.bb8a7ec7ffd7": {
+  "nb": "Beløp NOK",
+  "en": "Amount NOK",
+  "oversatt": "Importo NOK"
+ },
+ "app-account-cost-export.line-head.message.cdcc7d064d19": {
+  "nb": "Kurs",
+  "en": "Rate",
+  "oversatt": "Tasso di cambio"
+ },
+ "app-account-cost-export.line-head.message.ed1d835b3dfc": {
+  "nb": "Gjelder",
+  "en": "Concerns",
+  "oversatt": "Oggetto"
+ },
+ "app-account-cost-export.report-facts.message.080892203a0f": {
+  "nb": "Sum USD",
+  "en": "Total USD",
+  "oversatt": "Totale USD"
+ },
+ "app-account-cost-export.report-facts.message.3698666b5510": {
+  "nb": "Laget av",
+  "en": "Created by",
+  "oversatt": "Creato da"
+ },
+ "app-account-cost-export.report-facts.message.3c7ac6f3ac85": {
+  "nb": "Norske kroner (NOK) og USD",
+  "en": "Norwegian kroner (NOK) and USD",
+  "oversatt": "Corone norvegesi (NOK) e USD"
+ },
+ "app-account-cost-export.report-facts.message.4ca2bf78d649": {
+  "nb": "Antall jobber",
+  "en": "Number of jobs",
+  "oversatt": "Numero di processi"
+ },
+ "app-account-cost-export.report-facts.message.55cf897e6d1b": {
+  "nb": "Periode",
+  "en": "Period",
+  "oversatt": "Periodo"
+ },
+ "app-account-cost-export.report-facts.message.6e238939eae9": {
+  "nb": "Sum NOK",
+  "en": "Total NOK",
+  "oversatt": "Totale NOK"
+ },
+ "app-account-cost-export.report-facts.message.bfb35afec136": {
+  "nb": "Valuta",
+  "en": "Currency",
+  "oversatt": "Valuta"
+ },
+ "app-account-cost-export.report-facts.message.c0c6bff0e0cd": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "Progetto"
+ },
+ "app-account-cost-export.report-facts.message.d9b58a50cb38": {
+  "nb": "Utvalg",
+  "en": "Selection",
+  "oversatt": "Selezione"
+ },
+ "app-account-cost-export.report-facts.message.dbf0ccafb17c": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "Data creazione"
+ },
+ "app-account-cost-export.sum.wb-add-worksheet.e647192a21b7": {
+  "nb": "Sammendrag",
+  "en": "Summary",
+  "oversatt": "Riepilogo"
+ },
+ "app-account-cost-export.to-pdf.doc-text.4983827296a1": {
+  "nb": "{projectName} – side {i} av {pages}",
+  "en": "{projectName} – page {i} of {pages}",
+  "oversatt": "{projectName} – pagina {i} di {pages}"
+ },
+ "app-account-cost-export.to-pdf.group-head.023ef4286b0e": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "Persona"
+ },
+ "app-account-cost-export.to-pdf.group-head.0738a7a01d71": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "Servizio · modello"
+ },
+ "app-account-cost-export.to-pdf.group-head.3d047da8f73d": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "Mese"
+ },
+ "app-account-cost-export.to-pdf.section.09af60a8f34f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "Note"
+ },
+ "app-account-cost-export.to-pdf.section.36355e558392": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "Per servizio e modello"
+ },
+ "app-account-cost-export.to-pdf.section.5616ad5d4813": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "Per persona"
+ },
+ "app-account-cost-export.to-pdf.section.7f2da456ec9d": {
+  "nb": "Merknad",
+  "en": "Note",
+  "oversatt": "Nota"
+ },
+ "app-account-cost-export.to-pdf.section.ef1ad36a484e": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "Per mese"
+ },
+ "app-account-cost-export.to-pdf.section.f2ab0c46b3df": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "Righe"
+ },
+ "app-account-cost-export.to-xlsx.group.0e8944420988": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "Per mese"
+ },
+ "app-account-cost-export.to-xlsx.group.4bcdf1838aca": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "Servizio · modello"
+ },
+ "app-account-cost-export.to-xlsx.group.4f07688907f9": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "Per servizio e modello"
+ },
+ "app-account-cost-export.to-xlsx.group.58d0d37a9010": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "Mese"
+ },
+ "app-account-cost-export.to-xlsx.group.735d6529d49b": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "Per persona"
+ },
+ "app-account-cost-export.to-xlsx.group.ce8efb8633e9": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "Persona"
+ },
+ "app-account-cost-export.to-xlsx.sum-add-row.be727f79046f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "Note"
+ },
+ "app-account-cost-export.ws.wb-add-worksheet.7ff7fe067bfa": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "Righe"
+ },
+ "app-account-cost-report-view.cost-report-view.aria-label.1e8854fe8733": {
+  "nb": "Valuta",
+  "en": "Currency",
+  "oversatt": "Valuta"
+ },
+ "app-account-cost-report-view.cost-report-view.aria-label.453e6c187a4c": {
+  "nb": "Periode",
+  "en": "Period",
+  "oversatt": "Periodo"
+ },
+ "app-account-cost-report-view.cost-report-view.label.0d1573b1bcc2": {
+  "nb": "Runway-kreditter",
+  "en": "Runway credits",
+  "oversatt": "Crediti Runway"
+ },
+ "app-account-cost-report-view.cost-report-view.label.324a52e3e6f8": {
+  "nb": "Sum NOK",
+  "en": "Total NOK",
+  "oversatt": "Totale NOK"
+ },
+ "app-account-cost-report-view.cost-report-view.label.c8612319559f": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "Processi"
+ },
+ "app-account-cost-report-view.cost-report-view.label.e37f457fa385": {
+  "nb": "Sum USD",
+  "en": "Total USD",
+  "oversatt": "Totale USD"
+ },
+ "app-account-cost-report-view.cost-report-view.option.26db8ed7da9c": {
+  "nb": "Dollar",
+  "en": "Dollars",
+  "oversatt": "Dollari"
+ },
+ "app-account-cost-report-view.cost-report-view.option.56734ca9629b": {
+  "nb": "Hele perioden",
+  "en": "The whole period",
+  "oversatt": "L'intero periodo"
+ },
+ "app-account-cost-report-view.cost-report-view.option.9bebccc5beb9": {
+  "nb": "Hele prosjektet",
+  "en": "The whole project",
+  "oversatt": "L'intero progetto"
+ },
+ "app-account-cost-report-view.cost-report-view.option.c33ff407a7af": {
+  "nb": "Kroner (og dollar)",
+  "en": "Kroner (and dollars)",
+  "oversatt": "Corone (e dollari)"
+ },
+ "app-account-cost-report-view.cost-report-view.p.53c1cfc327df": {
+  "nb": "Ingen AI-bruk i perioden.",
+  "en": "No AI usage in the period.",
+  "oversatt": "Nessun utilizzo di IA nel periodo."
+ },
+ "app-account-cost-report-view.cost-report-view.p.7828b010f0dc": {
+  "nb": "Kursene fra Norges Bank kunne ikke hentes nå, så beløpene vises i dollar.",
+  "en": "The rates from Norges Bank could not be fetched now, so the amounts are shown in dollars.",
+  "oversatt": "Impossibile recuperare i tassi di cambio da Norges Bank al momento, gli importi sono mostrati in dollari."
+ },
+ "app-account-cost-report-view.cost-report-view.p.ceaeca173f41": {
+  "nb": "Henter forbruket …",
+  "en": "Fetching the usage …",
+  "oversatt": "Recupero dell'utilizzo in corso…"
+ },
+ "app-account-cost-report-view.cost-report-view.summary.b7435a50e708": {
+  "nb": "Alle linjene ({length})",
+  "en": "All lines ({length})",
+  "oversatt": "Tutte le righe ({length})"
+ },
+ "app-account-cost-report-view.cost-report-view.th.2ab90e37f418": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "Data"
+ },
+ "app-account-cost-report-view.cost-report-view.th.797fbe4f6d65": {
+  "nb": "Mengde",
+  "en": "Qty",
+  "oversatt": "Qtà"
+ },
+ "app-account-cost-report-view.cost-report-view.th.98fcce6a5c21": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "Progetto"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b1ed6168a460": {
+  "nb": "Tjeneste",
+  "en": "Service",
+  "oversatt": "Servizio"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b3f8944269ce": {
+  "nb": "Hvem",
+  "en": "Who",
+  "oversatt": "Chi"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b41a537ba27f": {
+  "nb": "Gjelder",
+  "en": "Concerns",
+  "oversatt": "Riguarda"
+ },
+ "app-account-cost-report-view.cost-report-view.title.4d3e52aadb6a": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "Per mese"
+ },
+ "app-account-cost-report-view.cost-report-view.title.94d6137e58c1": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "Per servizio e modello"
+ },
+ "app-account-cost-report-view.cost-report-view.title.d143b4be389a": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "Per persona"
+ },
+ "app-account-cost-report-view.period-label.period-label.0ada20877409": {
+  "nb": "Hele perioden",
+  "en": "The whole period",
+  "oversatt": "L'intero periodo"
+ },
+ "app-account-cost-report-view.scope-label.message.1bd28d168ca5": {
+  "nb": "Mitt forbruk i alle prosjekter",
+  "en": "My usage in all projects",
+  "oversatt": "Il mio utilizzo in tutti i progetti"
+ },
+ "app-account-cost-report-view.scope-label.message.5c9c4aad4c7f": {
+  "nb": "Prosjektet totalt (alle medlemmer)",
+  "en": "The project in total (all members)",
+  "oversatt": "Il progetto in totale (tutti i membri)"
+ },
+ "app-account-cost-report-view.scope-label.message.9105670d93c0": {
+  "nb": "Mitt forbruk i prosjektet",
+  "en": "My usage in the project",
+  "oversatt": "Il mio utilizzo nel progetto"
+ },
+ "app-account-privacy-statement.missing.message.a2e081fb37e4": {
+  "nb": "(ikke fylt ut ennå)",
+  "en": "(not filled in yet)",
+  "oversatt": "(non ancora compilato)"
+ },
+ "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
+  "nb": "Personvernerklæring for Animatic Studio",
+  "en": "Privacy statement for Animatic Studio",
+  "oversatt": "Informativa sulla privacy di Animatic Studio"
+ },
+ "app-account-privacy-statement.privacy-statement.li.1c17eeebd1c9": {
+  "nb": "Dine API-nøkler til AI-leverandører, kryptert (AES-256-GCM). Nøklene kan ikke leses fra nettleseren, bare de fire siste tegnene vises.",
+  "en": "Your API keys for AI providers, encrypted (AES-256-GCM). The keys cannot be read from the browser; only the last four characters are shown.",
+  "oversatt": "Le tue chiavi API per i fornitori di IA, crittografate (AES-256-GCM). Le chiavi non possono essere lette dal browser; vengono visualizzati solo gli ultimi quattro caratteri."
+ },
+ "app-account-privacy-statement.privacy-statement.li.37f063f56774": {
+  "nb": "AI-bruk: hvilke AI-jobber som er bestilt, beskrivelsene som ble sendt, leverandør, modell, tidspunkt og anslått kostnad.",
+  "en": "AI usage: which AI jobs were ordered, the descriptions that were sent, provider, model, time and estimated cost.",
+  "oversatt": "Utilizzo dell'IA: quali processi IA sono stati richiesti, le descrizioni inviate, il fornitore, il modello, l'orario e il costo stimato."
+ },
+ "app-account-privacy-statement.privacy-statement.li.adc27bbe251b": {
+  "nb": "Innholdet du og prosjektmedlemmene lager: manus, scener, bilder, lyd, video, kommentarer og historikken over endringer (hvem som endret hva og når).",
+  "en": "The content you and the project members create: scripts, scenes, images, audio, video, comments and the history of changes (who changed what and when).",
+  "oversatt": "I contenuti creati da te e dai membri del progetto: sceneggiature, scene, immagini, audio, video, commenti e la cronologia delle modifiche (chi ha modificato cosa e quando)."
+ },
+ "app-account-privacy-statement.privacy-statement.li.c9ee2addaecf": {
+  "nb": "I nettleseren lagres bare det som trengs for innloggingen og valgene dine (for eksempel språk). Vi bruker ingen sporings- eller reklamekapsler.",
+  "en": "In the browser we store only what is needed for sign-in and your choices (for example language). We use no tracking or advertising cookies.",
+  "oversatt": "Nel browser memorizziamo solo ciò che è necessario per l'accesso e per le tue preferenze (ad esempio la lingua). Non utilizziamo cookie di tracciamento o pubblicitari."
+ },
+ "app-account-privacy-statement.privacy-statement.li.d927ab5cb1ca": {
+  "nb": "Konto: e-postadresse, visningsnavn, språkvalg, når kontoen ble laget og når du sist var aktiv. Passordet lagres bare som en kryptografisk sjekksum hos innloggingstjenesten; vi kan ikke se det.",
+  "en": "Account: email address, display name, language choice, when the account was created and when you were last active. The password is stored only as a cryptographic hash by the sign-in service; we cannot see it.",
+  "oversatt": "Account: indirizzo e-mail, nome visualizzato, preferenza di lingua, data di creazione dell'account e data dell'ultima attività. La password è memorizzata unicamente come hash crittografico dal servizio di autenticazione; noi non possiamo vederla."
+ },
+ "app-account-privacy-statement.privacy-statement.p.021c15bc5aae": {
+  "nb": "Versjon {version}{value2}",
+  "en": "Version {version}{value2}",
+  "oversatt": "Versione {version}{value2}"
+ },
+ "app-account-privacy-statement.privacy-statement.p.0e88e53dce35": {
+  "nb": "Automatisk gjenkjenning: når et manus lastes opp, importeres eller endres, og når en oversatt versjon kobles til det norske manuset, sendes korte manusutdrag (navn, sceneoverskrifter og noen setninger) til den innebygde AI-tjenesten. Den foreslår hvilke karakterer, dyr, objekter, steder, miljøer og lyder som finnes, og hvordan scenene i oversettelsen passer sammen. Dette skjer på tjenestens regning, uten dine API-nøkler. Utdragene og svarene lagres ikke i loggene; bare forslagene lagres i prosjektet, og ingenting tas i bruk før du godkjenner det.",
+  "en": "Automatic recognition: when a script is uploaded, imported or changed, and when a translated version is linked to the Norwegian script, short script excerpts (names, scene headings and a few sentences) are sent to the built-in AI service. It suggests which characters, animals, objects, locations, environments and sounds appear, and how the scenes in the translation match. This is at the service's expense, without your API keys. The excerpts and replies are not stored in the logs; only the suggestions are stored in the project, and nothing is used until you approve it.",
+  "oversatt": "Riconoscimento automatico: quando una sceneggiatura viene caricata, importata o modificata, e quando una versione tradotta viene collegata alla sceneggiatura norvegese, brevi estratti di testo (nomi, intestazioni di scena e alcune frasi) vengono inviati al servizio IA integrato. Questo suggerisce quali personaggi, animali, oggetti, luoghi, ambienti e suoni sono presenti, e come le scene della traduzione corrispondono. Ciò avviene a carico del servizio, senza utilizzare le tue chiavi API. Gli estratti e le risposte non vengono salvati nei log; nel progetto vengono memorizzati solo i suggerimenti, e nulla viene utilizzato finché non lo approvi."
+ },
+ "app-account-privacy-statement.privacy-statement.p.3aa9958e499c": {
+  "nb": "Kort fortalt: Vi selger aldri opplysninger om deg, viser ikke reklame og deler ikke dataene dine med andre for markedsføring. Vi behandler personopplysninger etter personvernforordningen (GDPR) og norsk personopplysningslov.",
+  "en": "In short: We never sell information about you, show no advertising and do not share your data with others for marketing. We process personal data under the General Data Protection Regulation (GDPR) and the Norwegian Personal Data Act.",
+  "oversatt": "In breve: non vendiamo mai le tue informazioni personali, non mostriamo pubblicità e non condividiamo i tuoi dati con terzi per finalità di marketing. Trattiamo i dati personali in conformità al Regolamento Generale sulla Protezione dei Dati (GDPR) e alla legge norvegese sulla protezione dei dati personali."
+ },
+ "app-account-privacy-statement.privacy-statement.p.43f087b1a7d6": {
+  "nb": "Du har rett til innsyn, retting, sletting, begrensning av behandlingen, dataportabilitet (du kan laste ned sikkerhetskopi av prosjektene dine) og til å protestere. Kontakt oss på adressen over. Du kan også klage til Datatilsynet (datatilsynet.no).",
+  "en": "You have the right of access, rectification, erasure, restriction of processing, data portability (you can download a backup of your projects) and to object. Contact us at the address above. You can also complain to the Norwegian Data Protection Authority (datatilsynet.no).",
+  "oversatt": "Hai il diritto di accesso, rettifica, cancellazione, limitazione del trattamento, portabilità dei dati (puoi scaricare un backup dei tuoi progetti) e di opposizione. Contattaci all'indirizzo sopra indicato. Puoi anche presentare un reclamo all'Autorità norvegese per la protezione dei dati (datatilsynet.no)."
+ },
+ "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
+  "nb": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+  "en": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+  "oversatt": "Animatic Studio utilizza una piattaforma cloud per database, file e autenticazione. Luogo di archiviazione: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.71d277fd1a52": {
+  "nb": "Endres erklæringen, får den et nytt versjonsnummer, og du blir bedt om å lese den ved neste innlogging.",
+  "en": "If the statement changes, it gets a new version number, and you are asked to read it at your next sign-in.",
+  "oversatt": "In caso di modifica dell'informativa, le verrà assegnato un nuovo numero di versione e ti verrà chiesto di leggerla al tuo accesso successivo."
+ },
+ "app-account-privacy-statement.privacy-statement.p.7f8c8d4d3739": {
+  "nb": "Vi selger, leier ut eller bytter aldri bort opplysninger om deg eller innholdet ditt, og vi bruker dem ikke til reklame eller profilering.",
+  "en": "We never sell, rent out or trade information about you or your content, and we do not use it for advertising or profiling.",
+  "oversatt": "Non vendiamo, non noleggiamo e non scambiamo mai informazioni su di te o sui tuoi contenuti, né li utilizziamo per pubblicità o profilazione."
+ },
+ "app-account-privacy-statement.privacy-statement.p.7f99cf886105": {
+  "nb": "Behandlingsansvarlig: ",
+  "en": "Controller: ",
+  "oversatt": "Titolare del trattamento: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.bd944bafa6ac": {
+  "nb": "Adresse: ",
+  "en": "Address: ",
+  "oversatt": "Indirizzo: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.c1f0a53d37c6": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "Bozza"
+ },
+ "app-account-privacy-statement.privacy-statement.p.cba960e48ca5": {
+  "nb": "For å levere tjenesten du har bedt om (avtale, GDPR art. 6 nr. 1 bokstav b); for sikkerhet, feilretting og for å hindre misbruk (berettiget interesse, bokstav f); og for å vise deg og prosjekteieren hva AI-bruken har kostet.",
+  "en": "To provide the service you have asked for (contract, GDPR Art. 6(1)(b)); for security, troubleshooting and to prevent misuse (legitimate interest, point (f)); and to show you and the project owner what the AI usage has cost.",
+  "oversatt": "Per fornire il servizio richiesto (contratto, art. 6, par. 1, lett. b del GDPR); per motivi di sicurezza, risoluzione dei problemi e per prevenire usi impropri (legittimo interesse, lett. f); e per mostrare a te e al proprietario del progetto i costi dell'utilizzo dell'IA."
+ },
+ "app-account-privacy-statement.privacy-statement.p.cc753e8bca5e": {
+  "nb": ", org.nr. {orgNumber}",
+  "en": ", org. no. {orgNumber}",
+  "oversatt": ", n. reg. impr. {orgNumber}"
+ },
+ "app-account-privacy-statement.privacy-statement.p.d4051b2cd87a": {
+  "nb": "Bruker du dine egne API-nøkler, er du selv kunde hos leverandøren, og det er dine vilkår med leverandøren som gjelder for det som sendes. Du er selv ansvarlig for at du har rett til å sende innholdet, og for å ikke sende personopplysninger om andre uten grunnlag. Vi lagrer nøklene kryptert og sender dem bare til leverandøren de hører til. Videresending til AI er en risiko i seg selv: les leverandørens vilkår før du bruker den.",
+  "en": "If you use your own API keys, you are the provider's customer, and your terms with the provider apply to what is sent. You are responsible for having the right to send the content, and for not sending personal data about others without a legal basis. We store the keys encrypted and send them only to the provider they belong to. Sending content to AI is a risk in itself: read the provider's terms before using it.",
+  "oversatt": "Se utilizzi le tue chiavi API personali, sei tu il cliente del fornitore e ai dati inviati si applicano i termini concordati con tale fornitore. Sei responsabile di avere il diritto di inviare tali contenuti e di non trasmettere dati personali di terzi senza una valida base giuridica. Memorizziamo le chiavi in modo crittografato e le trasmettiamo esclusivamente al fornitore a cui appartengono. L'invio di contenuti a servizi di IA comporta di per sé un rischio: consulta i termini del fornitore prima dell'uso."
+ },
+ "app-account-privacy-statement.privacy-statement.p.dbc1d18f53cb": {
+  "nb": "Så lenge du har konto. Sletter du kontoen, låses den i 30 dager (så den kan gjenopprettes ved en feil), og deretter fjernes e-post, navn, API-nøkler og innlogging. Endringer du har gjort i prosjekter andre er med i, står igjen merket «Slettet bruker», fordi de er en del av andres arbeid. Prosjekter du eier, slettes ikke automatisk; administrator kan gi dem en ny eier.",
+  "en": "As long as you have an account. If you delete your account, it is locked for 30 days (so it can be restored after a mistake), and then the email, name, API keys and sign-in are removed. Changes you made in projects others are part of remain marked “Deleted user”, because they are part of others' work. Projects you own are not deleted automatically; the administrator can give them a new owner.",
+  "oversatt": "I dati vengono conservati finché disponi di un account. Se elimini l'account, questo viene bloccato per 30 giorni (in modo da poter essere ripristinato in caso di errore), trascorsi i quali l'e-mail, il nome, le chiavi API e le credenziali di accesso vengono rimossi. Le modifiche apportate ai progetti a cui partecipano altri utenti rimangono contrassegnate come «Utente eliminato», poiché fanno parte del lavoro altrui. I progetti di tua proprietà non vengono eliminati automaticamente; l'amministratore può assegnarli a un nuovo proprietario."
+ },
+ "app-account-privacy-statement.privacy-statement.p.dff2f1c35777": {
+  "nb": "Kontakt om personvern: ",
+  "en": "Contact about privacy: ",
+  "oversatt": "Contatto per la privacy: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.e05cd3a83ae4": {
+  "nb": "AI er valgfritt. Når du selv bestiller en AI-jobb, sendes de delene av manus, beskrivelser, bilder, lyd eller video som jobben trenger, til leverandøren du har valgt (for eksempel OpenAI, Google, fal.ai, Runway eller ElevenLabs). Flere av dem ligger i USA, så opplysningene kan bli overført utenfor EØS.",
+  "en": "AI is optional. When you order an AI job yourself, the parts of the script, descriptions, images, audio or video the job needs are sent to the provider you have chosen (for example OpenAI, Google, fal.ai, Runway or ElevenLabs). Several of them are in the USA, so the information may be transferred outside the EEA.",
+  "oversatt": "L'uso dell'IA è facoltativo. Quando richiedi un'operazione con IA, le parti della sceneggiatura, delle descrizioni, delle immagini, dell'audio o del video necessarie per l'elaborazione vengono inviate al fornitore prescelto (ad esempio OpenAI, Google, fal.ai, Runway o ElevenLabs). Molti di essi hanno sede negli Stati Uniti, pertanto i dati potrebbero essere trasferiti al di fuori dello SEE."
+ },
+ "app-account-privacy-statement.privacy-statement.title.384c9e9e3a93": {
+  "nb": "1. Hvem som er ansvarlig",
+  "en": "1. Who is responsible",
+  "oversatt": "1. Chi è responsabile"
+ },
+ "app-account-privacy-statement.privacy-statement.title.5dc63510b970": {
+  "nb": "4. Vi selger ikke data",
+  "en": "4. We do not sell data",
+  "oversatt": "4. Non vendiamo i dati"
+ },
+ "app-account-privacy-statement.privacy-statement.title.6147dc559ba7": {
+  "nb": "7. Hvor lenge",
+  "en": "7. How long",
+  "oversatt": "7. Periodo di conservazione"
+ },
+ "app-account-privacy-statement.privacy-statement.title.6a7082391160": {
+  "nb": "5. Hvor dataene lagres",
+  "en": "5. Where the data is stored",
+  "oversatt": "5. Dove vengono memorizzati i dati"
+ },
+ "app-account-privacy-statement.privacy-statement.title.723f2a7e6fa3": {
+  "nb": "6. Når du bruker AI",
+  "en": "6. When you use AI",
+  "oversatt": "6. Quando utilizzi l'IA"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bb8134f59ff7": {
+  "nb": "3. Hvorfor, og med hvilket grunnlag",
+  "en": "3. Why, and on what basis",
+  "oversatt": "3. Finalità e base giuridica"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bc26684b55b8": {
+  "nb": "8. Dine rettigheter",
+  "en": "8. Your rights",
+  "oversatt": "8. I tuoi diritti"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bcd0918fbc59": {
+  "nb": "2. Hva vi lagrer",
+  "en": "2. What we store",
+  "oversatt": "2. Quali dati memorizziamo"
+ },
+ "app-account-privacy-statement.privacy-statement.title.f124235c6ca5": {
+  "nb": "9. Mer informasjon",
+  "en": "9. More information",
+  "oversatt": "9. Ulteriori informazioni"
+ },
+ "app-account-project-cost-section.project-cost-section.button.d1d7e14bdfbc": {
+  "nb": "Mitt forbruk",
+  "en": "My usage",
+  "oversatt": "Il mio utilizzo"
+ },
+ "app-account-project-cost-section.project-cost-section.button.d937301e7b73": {
+  "nb": "Prosjektet totalt",
+  "en": "The project in total",
+  "oversatt": "Totale del progetto"
+ },
+ "app-account-project-cost-section.project-cost-section.h2.6a56ead80637": {
+  "nb": "AI-forbruk og kostnadsrapport",
+  "en": "AI usage and cost report",
+  "oversatt": "Rapporto sui consumi e sui costi dell'IA"
+ },
+ "app-account-use-account.account-watcher.button.4f70a8b92cf4": {
+  "nb": "Fortsett",
+  "en": "Continue",
+  "oversatt": "Continua"
+ },
+ "app-account-use-account.account-watcher.button.87149e26bf0b": {
+  "nb": "Logg ut",
+  "en": "Sign out",
+  "oversatt": "Disconnetti"
+ },
+ "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
+  "nb": "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
+  "en": "Before you use Animatic Studio, read how we process your information.",
+  "oversatt": "Prima di utilizzare Animatic Studio, leggi come trattiamo le tue informazioni."
+ },
+ "app-account-use-account.account-watcher.dialog-description.af08127f81e4": {
+  "nb": "Personvernerklæringen er endret. Les den før du fortsetter.",
+  "en": "The privacy statement has changed. Read it before you continue.",
+  "oversatt": "L'informativa sulla privacy è cambiata. Leggila prima di continuare."
+ },
+ "app-account-use-account.account-watcher.dialog-title.249ff62113f5": {
+  "nb": "Les personvernerklæringen",
+  "en": "Read the privacy statement",
+  "oversatt": "Leggi l'informativa sulla privacy"
+ },
+ "app-account-use-account.account-watcher.label.1341c2d6b674": {
+  "nb": "Jeg har lest personvernerklæringen",
+  "en": "I have read the privacy statement",
+  "oversatt": "Ho letto l'informativa sulla privacy"
+ },
+ "app-account-use-account.privacy-link.link.ac42faff7b54": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "Privacy"
+ },
+ "app-admin-admin-page.admin-page.aria-label.25f6a8737929": {
+  "nb": "Søk",
+  "en": "Search",
+  "oversatt": "Cerca"
+ },
+ "app-admin-admin-page.admin-page.h1.c31a2370fb06": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "Amministrazione"
+ },
+ "app-admin-admin-page.admin-page.h1.c31a2370fb06.2": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "Amministrazione"
+ },
+ "app-admin-admin-page.admin-page.h2.06305ce350de": {
+  "nb": "Låste prosjekter ({length})",
+  "en": "Locked projects ({length})",
+  "oversatt": "Progetti bloccati ({length})"
+ },
+ "app-admin-admin-page.admin-page.h2.89e04d89f8fc": {
+  "nb": "Brukere",
+  "en": "Users",
+  "oversatt": "Utenti"
+ },
+ "app-admin-admin-page.admin-page.p-owners-map.6b27b8a87422": {
+  "nb": "(uten navn)",
+  "en": "(no name)",
+  "oversatt": "(senza nome)"
+ },
+ "app-admin-admin-page.admin-page.p.9da1ccc31370": {
+  "nb": "Medlemmene ser bare en melding om at prosjektet er låst. Gi prosjektet en ny eier for å åpne det igjen; tidligere eiere blir redaktører.",
+  "en": "The members only see a message that the project is locked. Give the project a new owner to open it again; former owners become editors.",
+  "oversatt": "I membri vedono solo un messaggio che indica che il progetto è bloccato. Assegna un nuovo proprietario al progetto per riaprirlo; i proprietari precedenti diventeranno redattori."
+ },
+ "app-admin-admin-page.admin-page.p.9dc3db4e207e": {
+  "nb": "Ingen tilgang.",
+  "en": "No access.",
+  "oversatt": "Nessun accesso."
+ },
+ "app-admin-admin-page.admin-page.p.c03358df5eb2": {
+  "nb": "{purged} konto(er) var låst i 30 dager og er nå slettet for godt (anonymisert).",
+  "en": "{purged} account(s) had been locked for 30 days and are now deleted for good (anonymised).",
+  "oversatt": "{purged} account sono rimasti bloccati per 30 giorni e sono ora stati eliminati definitivamente (anonimizzati)."
+ },
+ "app-admin-admin-page.admin-page.p.c9f9e0fc0c12": {
+  "nb": "Henter brukerne …",
+  "en": "Fetching the users …",
+  "oversatt": "Recupero utenti in corso…"
+ },
+ "app-admin-admin-page.admin-page.placeholder.7909773c3a75": {
+  "nb": "Søk på navn eller e-post",
+  "en": "Search by name or email",
+  "oversatt": "Cerca per nome o e-mail"
+ },
+ "app-admin-admin-page.admin-page.span.f0f0d620cbb8": {
+  "nb": "{total} brukere · {admins} administratorer · {blocked} blokkert · {deleting} låst for sletting",
+  "en": "{total} users · {admins} administrators · {blocked} blocked · {deleting} locked for deletion",
+  "oversatt": "{total} utenti · {admins} amministratori · {blocked} bloccati · {deleting} bloccati per l'eliminazione"
+ },
+ "app-admin-admin-page.admin-page.summary.0b5e6de839a1": {
+  "nb": "Alle prosjekter ({length})",
+  "en": "All projects ({length})",
+  "oversatt": "Tutti i progetti ({length})"
+ },
+ "app-admin-admin-page.admin-page.th.0f9fd2c60917": {
+  "nb": "Bruker",
+  "en": "User",
+  "oversatt": "Utente"
+ },
+ "app-admin-admin-page.admin-page.th.20e10a7b2643": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "Stato"
+ },
+ "app-admin-admin-page.admin-page.th.3e4e0008e278": {
+  "nb": "AI totalt",
+  "en": "AI total",
+  "oversatt": "Totale IA"
+ },
+ "app-admin-admin-page.admin-page.th.3fbb21c899fa": {
+  "nb": "Sist aktiv",
+  "en": "Last active",
+  "oversatt": "Ultima attività"
+ },
+ "app-admin-admin-page.admin-page.th.44988da3f7a8": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "Data di creazione"
+ },
+ "app-admin-admin-page.admin-page.th.e20a386237c9": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "Progetti"
+ },
+ "app-admin-admin-page.admin-page.th.f3d57d96435f": {
+  "nb": "Siste 30 dager",
+  "en": "Last 30 days",
+  "oversatt": "Ultimi 30 giorni"
+ },
+ "app-admin-admin-page.lock-label.message.2ff1c8869e6d": {
+  "nb": "Eieren er slettet",
+  "en": "The owner is deleted",
+  "oversatt": "Il proprietario è stato eliminato"
+ },
+ "app-admin-admin-page.lock-label.message.7ae247ff81a8": {
+  "nb": "Ingen eier",
+  "en": "No owner",
+  "oversatt": "Nessun proprietario"
+ },
+ "app-admin-admin-page.lock-label.message.9e87f490421f": {
+  "nb": "Åpent",
+  "en": "Open",
+  "oversatt": "Aperto"
+ },
+ "app-admin-admin-page.lock-label.message.c4561b5891e8": {
+  "nb": "Eieren har slettet kontoen (30 dager)",
+  "en": "The owner has deleted the account (30 days)",
+  "oversatt": "Il proprietario ha eliminato l'account (30 giorni)"
+ },
+ "app-admin-admin-page.lock-label.message.ca356997515f": {
+  "nb": "Eieren er blokkert",
+  "en": "The owner is blocked",
+  "oversatt": "Il proprietario è bloccato"
+ },
+ "app-admin-admin-page.locked-project.aria-label.cddf3e254116": {
+  "nb": "Ny eier",
+  "en": "New owner",
+  "oversatt": "Nuovo proprietario"
+ },
+ "app-admin-admin-page.locked-project.button.677727d39088": {
+  "nb": "Gi ny eier",
+  "en": "Give new owner",
+  "oversatt": "Assegna nuovo proprietario"
+ },
+ "app-admin-admin-page.locked-project.option.09fba6744c76": {
+  "nb": "Velg ny eier …",
+  "en": "Choose new owner …",
+  "oversatt": "Scegli nuovo proprietario…"
+ },
+ "app-admin-admin-page.locked-project.span.82c6d58b4834": {
+  "nb": "Eier: {value1}",
+  "en": "Owner: {value1}",
+  "oversatt": "Proprietario: {value1}"
+ },
+ "app-admin-admin-page.privacy-admin.button.b9d1e1700d6f": {
+  "nb": "Lagre som ny versjon",
+  "en": "Save as new version",
+  "oversatt": "Salva come nuova versione"
+ },
+ "app-admin-admin-page.privacy-admin.field.0001604ca29a": {
+  "nb": "Lagringssted (skyregion)",
+  "en": "Storage location (cloud region)",
+  "oversatt": "Posizione di archiviazione (regione cloud)"
+ },
+ "app-admin-admin-page.privacy-admin.field.358c7b1c8cc3": {
+  "nb": "Gate, postnummer og sted",
+  "en": "Street, postcode and town",
+  "oversatt": "Via, CAP e città"
+ },
+ "app-admin-admin-page.privacy-admin.field.534b4d72fdab": {
+  "nb": "Kontakt-e-post for personvern",
+  "en": "Contact email for privacy",
+  "oversatt": "E-mail di contatto per la privacy"
+ },
+ "app-admin-admin-page.privacy-admin.field.53824a104508": {
+  "nb": "f.eks. EU (Europa)",
+  "en": "e.g. EU (Europe)",
+  "oversatt": "ad es. UE (Europa)"
+ },
+ "app-admin-admin-page.privacy-admin.field.b0b933fa56ec": {
+  "nb": "Behandlingsansvarlig (navn)",
+  "en": "Controller (name)",
+  "oversatt": "Titolare del trattamento (nome)"
+ },
+ "app-admin-admin-page.privacy-admin.field.c4ba7c3fb7b2": {
+  "nb": "Organisasjonsnummer",
+  "en": "Organisation number",
+  "oversatt": "Numero di registrazione dell'organizzazione"
+ },
+ "app-admin-admin-page.privacy-admin.field.c5ea01529e3d": {
+  "nb": "Adresse",
+  "en": "Address",
+  "oversatt": "Indirizzo"
+ },
+ "app-admin-admin-page.privacy-admin.field.d57b35cd2237": {
+  "nb": "f.eks. Diagonalen AS",
+  "en": "e.g. Diagonalen AS",
+  "oversatt": "ad es. Diagonalen AS"
+ },
+ "app-admin-admin-page.privacy-admin.h2.83f00283bf55": {
+  "nb": "Personvernerklæringen",
+  "en": "The privacy statement",
+  "oversatt": "L'informativa sulla privacy"
+ },
+ "app-admin-admin-page.privacy-admin.label.14ad85b60799": {
+  "nb": "Mer informasjon (valgfritt, vises nederst)",
+  "en": "More information (optional, shown at the end)",
+  "oversatt": "Ulteriori informazioni (facoltativo, mostrato alla fine)"
+ },
+ "app-admin-admin-page.privacy-admin.link.5678f4294d88": {
+  "nb": "Se erklæringen",
+  "en": "View the statement",
+  "oversatt": "Visualizza l'informativa"
+ },
+ "app-admin-admin-page.privacy-admin.span.5b5f920144eb": {
+  "nb": "Versjon {version}",
+  "en": "Version {version}",
+  "oversatt": "Versione {version}"
+ },
+ "app-admin-admin-page.privacy-admin.span.a9f0baada789": {
+  "nb": "Alle brukerne blir bedt om å lese erklæringen på nytt ved neste innlogging.",
+  "en": "All users are asked to read the statement again at their next sign-in.",
+  "oversatt": "A tutti gli utenti verrà richiesto di rileggere l'informativa al prossimo accesso."
+ },
+ "app-admin-admin-page.role.message.348741ee89a8": {
+  "nb": "leser",
+  "en": "viewer",
+  "oversatt": "visualizzatore"
+ },
+ "app-admin-admin-page.role.message.521dbbacf178": {
+  "nb": "kommentator",
+  "en": "commenter",
+  "oversatt": "commentatore"
+ },
+ "app-admin-admin-page.role.message.df84d28482ad": {
+  "nb": "eier",
+  "en": "owner",
+  "oversatt": "proprietario"
+ },
+ "app-admin-admin-page.role.message.e25b204fd065": {
+  "nb": "redaktør",
+  "en": "editor",
+  "oversatt": "editor"
+ },
+ "app-admin-admin-page.status-label.message.206bb82b7e7f": {
+  "nb": "Slettet",
+  "en": "Deleted",
+  "oversatt": "Eliminato"
+ },
+ "app-admin-admin-page.status-label.message.3005b09235d1": {
+  "nb": "Aktiv",
+  "en": "Active",
+  "oversatt": "Attivo"
+ },
+ "app-admin-admin-page.status-label.message.4d66d8f3924e": {
+  "nb": "Blokkert",
+  "en": "Blocked",
+  "oversatt": "Bloccato"
+ },
+ "app-admin-admin-page.status-label.message.c871f437464f": {
+  "nb": "Låst for sletting",
+  "en": "Locked for deletion",
+  "oversatt": "Bloccato per l'eliminazione"
+ },
+ "app-admin-admin-page.user-row.aria-label.93cd0b1f3adf": {
+  "nb": "Fast administrator",
+  "en": "Permanent administrator",
+  "oversatt": "Amministratore permanente"
+ },
+ "app-admin-admin-page.user-row.aria-label.d2afaa70c2f7": {
+  "nb": "Administrator",
+  "en": "Administrator",
+  "oversatt": "Amministratore"
+ },
+ "app-admin-admin-page.user-row.button.2638f1efa4a4": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-admin-admin-page.user-row.button.2681a9925e30": {
+  "nb": "Slett (30 dager)",
+  "en": "Delete (30 days)",
+  "oversatt": "Elimina (30 giorni)"
+ },
+ "app-admin-admin-page.user-row.button.4df65aa68db3": {
+  "nb": "Opphev blokkering",
+  "en": "Unblock",
+  "oversatt": "Sblocca"
+ },
+ "app-admin-admin-page.user-row.button.526696b6d467": {
+  "nb": "Gjør til admin",
+  "en": "Make admin",
+  "oversatt": "Rendi amministratore"
+ },
+ "app-admin-admin-page.user-row.button.5781720b249a": {
+  "nb": "Blokker",
+  "en": "Block",
+  "oversatt": "Blocca"
+ },
+ "app-admin-admin-page.user-row.button.68c8209ac8bf": {
+  "nb": "Lås opp",
+  "en": "Unlock",
+  "oversatt": "Sblocca"
+ },
+ "app-admin-admin-page.user-row.button.b6ab829d744f": {
+  "nb": "Blokker …",
+  "en": "Block …",
+  "oversatt": "Blocca…"
+ },
+ "app-admin-admin-page.user-row.button.cb769d080c0b": {
+  "nb": "Slett …",
+  "en": "Delete …",
+  "oversatt": "Elimina…"
+ },
+ "app-admin-admin-page.user-row.button.db04b71d2910": {
+  "nb": "Fjern som admin",
+  "en": "Remove as admin",
+  "oversatt": "Rimuovi come amministratore"
+ },
+ "app-admin-admin-page.user-row.div.7c6ac8d95edb": {
+  "nb": "{jobs} jobber",
+  "en": "{jobs} jobs",
+  "oversatt": "{jobs} processi"
+ },
+ "app-admin-admin-page.user-row.div.968f3528e774": {
+  "nb": "slettes {value1}",
+  "en": "deleted on {value1}",
+  "oversatt": "eliminato il {value1}"
+ },
+ "app-admin-admin-page.user-row.div.f5649f3f9ab8": {
+  "nb": "Slettet bruker",
+  "en": "Deleted user",
+  "oversatt": "Utente eliminato"
+ },
+ "app-admin-admin-page.user-row.placeholder.f511fee39a87": {
+  "nb": "Begrunnelse (valgfri)",
+  "en": "Reason (optional)",
+  "oversatt": "Motivazione (facoltativa)"
+ },
+ "app-admin-admin-page.user-row.span.3dcd54e05365": {
+  "nb": "Slett: kontoen låses i 30 dager og anonymiseres deretter. Prosjektene brukeren eier, låses til de får ny eier.",
+  "en": "Delete: the account is locked for 30 days and then anonymised. The projects the user owns are locked until they get a new owner.",
+  "oversatt": "Elimina: l'account viene bloccato per 30 giorni e successivamente anonimizzato. I progetti di proprietà dell'utente rimangono bloccati finché non viene assegnato un nuovo proprietario."
+ },
+ "app-admin-admin-page.user-row.span.8502946aecd1": {
+  "nb": "Blokker: brukeren kan ikke logge inn. Er hen eier, låses prosjektene for alle til blokkeringen oppheves eller prosjektet får ny eier.",
+  "en": "Block: the user cannot sign in. If they are an owner, the projects are locked for everyone until the block is lifted or the project gets a new owner.",
+  "oversatt": "Blocca: l'utente non può accedere. Se è proprietario, i progetti vengono bloccati per tutti finché il blocco non viene revocato o il progetto ottiene un nuovo proprietario."
+ },
+ "app-admin-admin-page.user-row.summary.d15fbb3c3e67": {
+  "nb": "{length} prosjekter",
+  "en": "{length} projects",
+  "oversatt": "{length} progetti"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.5ed27011dafe": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.646c07f8a446": {
+  "nb": "Legg til ny modell",
+  "en": "Add a new model",
+  "oversatt": "Aggiungi nuovo modello"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.c38d85154f17": {
+  "nb": "Legg til modellen",
+  "en": "Add the model",
+  "oversatt": "Aggiungi il modello"
+ },
+ "app-admin-ai-connections-admin.add-model-form.h3.646c07f8a446": {
+  "nb": "Legg til ny modell",
+  "en": "Add a new model",
+  "oversatt": "Aggiungi nuovo modello"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.1797a6eddd30": {
+  "nb": "Pris i USD",
+  "en": "Price in USD",
+  "oversatt": "Prezzo in USD"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.452bbe3f193b": {
+  "nb": "Leverandør",
+  "en": "Provider",
+  "oversatt": "Provider"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.4703e723783f": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Tipo"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.82efd2cea02a": {
+  "nb": "Merknad (valgfri)",
+  "en": "Note (optional)",
+  "oversatt": "Nota (facoltativa)"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.be647b070339": {
+  "nb": "Enhet",
+  "en": "Unit",
+  "oversatt": "Unità"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.fb114bb521fd": {
+  "nb": "Modell-ID hos leverandøren",
+  "en": "Model ID at the provider",
+  "oversatt": "ID modello presso il provider"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.fec74b9ea098": {
+  "nb": "Navn i valglistene",
+  "en": "Name in the lists",
+  "oversatt": "Nome negli elenchi"
+ },
+ "app-admin-ai-connections-admin.add-model-form.p.5319dca1b322": {
+  "nb": "Modell-ID-er som virker for {value1} hos {value2}, f.eks.: {value3}. Bare små bokstaver, tall og . _ / -.",
+  "en": "Model IDs that work for {value1} with {value2}, e.g.: {value3}. Only lower-case letters, digits and . _ / -.",
+  "oversatt": "ID modello compatibili con {value1} presso {value2}, ad es.: {value3}. Solo lettere minuscole, cifre e . _ / -."
+ },
+ "app-admin-ai-connections-admin.add-model-form.p.ea91262cd1eb": {
+  "nb": "Hos leverandører vi allerede støtter kan en ny modell legges til uten ny kode – men bare modeller i samme familie som de innebygde, fordi programmet sender de samme feltene. Den nye modellen arver lengder, startbilde og andre tekniske egenskaper fra den innebygde modellen i familien. Prisen du oppgir, brukes i kostnadsanslaget.",
+  "en": "With providers we already support, a new model can be added without new code – but only models in the same family as the built-in ones, because the program sends the same fields. The new model inherits lengths, start image and other technical properties from the built-in model in the family. The price you enter is used in the cost estimate.",
+  "oversatt": "Con i provider già supportati è possibile aggiungere un nuovo modello senza scrivere nuovo codice, ma solo modelli della stessa famiglia di quelli integrati, poiché il programma invia gli stessi campi. Il nuovo modello eredita durate, immagine iniziale e altre proprietà tecniche dal modello integrato della famiglia. Il prezzo inserito viene utilizzato nella stima dei costi."
+ },
+ "app-admin-ai-connections-admin.add-model-form.placeholder.26d800137d95": {
+  "nb": "f.eks. Seedream 5",
+  "en": "e.g. Seedream 5",
+  "oversatt": "ad es. Seedream 5"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.button.93fab67d265a": {
+  "nb": "Administrer AI-tilkoblinger",
+  "en": "Manage AI connections",
+  "oversatt": "Gestisci connessioni IA"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.h2.c716664a2ff0": {
+  "nb": "AI-tilkoblinger",
+  "en": "AI connections",
+  "oversatt": "Connessioni IA"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.66afa263d9a2": {
+  "nb": "Henter AI-tilkoblingene …",
+  "en": "Fetching the AI connections …",
+  "oversatt": "Recupero delle connessioni IA in corso…"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.7e478e2636bb": {
+  "nb": "AI-tilkoblingene kunne ikke hentes.",
+  "en": "The AI connections could not be fetched.",
+  "oversatt": "Impossibile recuperare le connessioni IA."
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.b24a1bdacb73": {
+  "nb": "Databasen må oppdateres (migrasjon 0034).",
+  "en": "The database must be updated (migration 0034).",
+  "oversatt": "Il database deve essere aggiornato (migrazione 0034)."
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.span.68c07c1eef88": {
+  "nb": "Hvilke AI-leverandører og modeller alle brukerne kan velge, og hva de koster.",
+  "en": "Which AI providers and models all users can choose, and what they cost.",
+  "oversatt": "Quali provider e modelli di IA possono scegliere tutti gli utenti e quanto costano."
+ },
+ "app-admin-ai-connections-admin.ai-connections.aria-label.10c96c996fde": {
+  "nb": "Slå {name} av eller på",
+  "en": "Switch {name} off or on",
+  "oversatt": "Attiva o disattiva {name}"
+ },
+ "app-admin-ai-connections-admin.ai-connections.label.3a8d163c2802": {
+  "nb": "Leverandøren er av",
+  "en": "The provider is off",
+  "oversatt": "Il provider è disattivato"
+ },
+ "app-admin-ai-connections-admin.ai-connections.label.d07ba4d88564": {
+  "nb": "Leverandøren er på",
+  "en": "The provider is on",
+  "oversatt": "Il provider è attivo"
+ },
+ "app-admin-ai-connections-admin.ai-connections.p.d0a5a7034ad3": {
+  "nb": "Det som er slått av, vises ikke i valglistene i appen og avvises på serveren. Prisene er anslag fra leverandørenes prislister (eller det administrator har oppgitt). Hver bruker trenger fortsatt sin egen nøkkel hos leverandøren.",
+  "en": "What is switched off is not shown in the lists in the app and is refused on the server. The prices are estimates from the providers' price lists (or what the administrator has entered). Each user still needs their own key with the provider.",
+  "oversatt": "Ciò che è disattivato non viene mostrato negli elenchi dell'app e viene rifiutato dal server. I prezzi sono stime basate sui listini dei provider (o inserite dall'amministratore). Ogni utente deve comunque disporre della propria chiave presso il provider."
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.1650b76803f4": {
+  "nb": "Kan",
+  "en": "Can",
+  "oversatt": "Può"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.23e8b38d536a": {
+  "nb": "Lager",
+  "en": "Makes",
+  "oversatt": "Crea"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.3f85891d2b10": {
+  "nb": "Pris (anslag)",
+  "en": "Price (estimate)",
+  "oversatt": "Prezzo (stima)"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.4c8e24376f67": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modello"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.ebd4b70f28b9": {
+  "nb": "På",
+  "en": "On",
+  "oversatt": "Attivo"
+ },
+ "app-admin-ai-connections-admin.cron-status-line.p.3f1974e5a0ea": {
+  "nb": "Bakgrunnsjobb: status vises når databasen er oppdatert (migrasjon 0034).",
+  "en": "Background job: the status is shown when the database is updated (migration 0034).",
+  "oversatt": "Attività in background: lo stato verrà mostrato dopo l'aggiornamento del database (migrazione 0034)."
+ },
+ "app-admin-ai-connections-admin.cron-status-line.p.8dc7cfb4c6c1": {
+  "nb": "Siste kjøring feilet: {error}",
+  "en": "The last run failed: {error}",
+  "oversatt": "L'ultima esecuzione non è riuscita: {error}"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.1ebfa38059d9": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Testo"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Immagine"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.f398947a7a6f": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Video"
+ },
+ "app-admin-ai-connections-admin.model-row.aria-label.b2d42ee1e8bb": {
+  "nb": "Slå {label} av eller på",
+  "en": "Switch {label} off or on",
+  "oversatt": "Attiva o disattiva {label}"
+ },
+ "app-admin-ai-connections-admin.model-row.button.5e4c5ad020b6": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "Rimuovi"
+ },
+ "app-admin-ai-connections-admin.model-row.button.6b0ba4aa9467": {
+  "nb": "Fjern …",
+  "en": "Remove …",
+  "oversatt": "Rimuovi…"
+ },
+ "app-admin-ai-connections-admin.model-row.button.6f0707929bbb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-admin-ai-connections-admin.model-row.div.dc18abc7793b": {
+  "nb": "Lagt til av administrator – kan ikke brukes (ID-en passer ikke lenger)",
+  "en": "Added by administrator – cannot be used (the ID no longer fits)",
+  "oversatt": "Aggiunto dall'amministratore – non utilizzabile (l'ID non corrisponde più)"
+ },
+ "app-admin-ai-connections-admin.model-row.div.f6f9438cc790": {
+  "nb": "Lagt til av administrator",
+  "en": "Added by administrator",
+  "oversatt": "Aggiunto dall'amministratore"
+ },
+ "app-admin-ai-connections-admin.provider-requests.a.63ea418b9bd9": {
+  "nb": "Dokumentasjon",
+  "en": "Documentation",
+  "oversatt": "Documentazione"
+ },
+ "app-admin-ai-connections-admin.provider-requests.a.ab8c9deb6193": {
+  "nb": "Nettside",
+  "en": "Website",
+  "oversatt": "Sito web"
+ },
+ "app-admin-ai-connections-admin.provider-requests.aria-label.14bf549fe45a": {
+  "nb": "Status for {name}",
+  "en": "Status for {name}",
+  "oversatt": "Stato di {name}"
+ },
+ "app-admin-ai-connections-admin.provider-requests.button.0f2b86034247": {
+  "nb": "Send ønsket",
+  "en": "Send the request",
+  "oversatt": "Invia richiesta"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.1412f19c5dad": {
+  "nb": "f.eks. Luma AI",
+  "en": "e.g. Luma AI",
+  "oversatt": "ad es. Luma AI"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.35e2b0fc81ae": {
+  "nb": "Dokumentasjon (API)",
+  "en": "Documentation (API)",
+  "oversatt": "Documentazione (API)"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.ab8c9deb6193": {
+  "nb": "Nettside",
+  "en": "Website",
+  "oversatt": "Sito web"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.b1afb1e30080": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Nome"
+ },
+ "app-admin-ai-connections-admin.provider-requests.h3.e09b8920084c": {
+  "nb": "Be om ny leverandør",
+  "en": "Request a new provider",
+  "oversatt": "Richiedi nuovo provider"
+ },
+ "app-admin-ai-connections-admin.provider-requests.label.c3fd39476ecd": {
+  "nb": "Merknad (hva skal den brukes til?)",
+  "en": "Note (what should it be used for?)",
+  "oversatt": "Nota (a cosa serve?)"
+ },
+ "app-admin-ai-connections-admin.provider-requests.p.0c72ebb13dfb": {
+  "nb": "En helt ny leverandør (for eksempel Midjourney eller Luma) krever en kobling i koden som utvikleren lager: hvordan nøkkelen sjekkes, hvilke felt som sendes og hvordan resultatet hentes. Fyll ut ønsket her, så ligger det i listen til det er ferdig eller avvist.",
+  "en": "A completely new provider (for example Midjourney or Luma) needs a connection in the code that the developer builds: how the key is checked, which fields are sent and how the result is fetched. Fill in the request here, and it stays in the list until it is done or rejected.",
+  "oversatt": "Un provider completamente nuovo (ad esempio Midjourney o Luma) richiede un'integrazione nel codice creata dallo sviluppatore: come verificare la chiave, quali campi inviare e come recuperare il risultato. Compila la richiesta qui e rimarrà nell'elenco fino al completamento o al rifiuto."
+ },
+ "app-admin-ai-connections-admin.provider-requests.p.9a2fd15177c9": {
+  "nb": "Ingen ønsker ennå.",
+  "en": "No requests yet.",
+  "oversatt": "Nessuna richiesta al momento."
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.0e2529fc5e2c": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "Inviato"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.3b9d05c88038": {
+  "nb": "Merknad",
+  "en": "Note",
+  "oversatt": "Nota"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.4154477001de": {
+  "nb": "Leverandør",
+  "en": "Provider",
+  "oversatt": "Provider"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.c25e9a0d5335": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "Stato"
+ },
+ "app-admin-ai-connections-admin.send.set-error.c335ddaa3c3f": {
+  "nb": "Skriv navnet på leverandøren.",
+  "en": "Enter the name of the provider.",
+  "oversatt": "Inserisci il nome del provider."
+ },
+ "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Completato"
+ },
+ "app-admin-ai-connections-admin.status-label.message.633d8ff6da76": {
+  "nb": "Åpen",
+  "en": "Open",
+  "oversatt": "Aperto"
+ },
+ "app-admin-ai-connections-admin.status-label.message.7953ba35f50d": {
+  "nb": "Avvist",
+  "en": "Rejected",
+  "oversatt": "Rifiutato"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.54ff4b676dd7": {
+  "nb": "per kall",
+  "en": "per call",
+  "oversatt": "per chiamata"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.60907cb754e7": {
+  "nb": "per sekund",
+  "en": "per second",
+  "oversatt": "al secondo"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.6c75bc38ff8d": {
+  "nb": "per tegn",
+  "en": "per character",
+  "oversatt": "per carattere"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.f2a5828f6f0d": {
+  "nb": "per bilde",
+  "en": "per image",
+  "oversatt": "per immagine"
+ },
+ "app-admin-cron-status.ago.message.086115f60e72": {
+  "nb": "for {d} dager siden",
+  "en": "{d} days ago",
+  "oversatt": "{d} giorni fa"
+ },
+ "app-admin-cron-status.ago.message.2398dfc32f40": {
+  "nb": "for {h} timer siden",
+  "en": "{h} hours ago",
+  "oversatt": "{h} ore fa"
+ },
+ "app-admin-cron-status.ago.message.8cfe331fedff": {
+  "nb": "for 1 minutt siden",
+  "en": "1 minute ago",
+  "oversatt": "1 minuto fa"
+ },
+ "app-admin-cron-status.ago.message.af45a5e15ce8": {
+  "nb": "nettopp",
+  "en": "just now",
+  "oversatt": "proprio ora"
+ },
+ "app-admin-cron-status.ago.message.c6efd4662c82": {
+  "nb": "for {minutes} minutter siden",
+  "en": "{minutes} minutes ago",
+  "oversatt": "{minutes} minuti fa"
+ },
+ "app-admin-cron-status.text.text.2f7b3cfcd445": {
+  "nb": "Bakgrunnsjobb: sist kjørt kl. {when} ({value2}) · {sent} sendt · {done} videoer hentet · {purged} kontoer slettet",
+  "en": "Background job: last run at {when} ({value2}) · {sent} sent · {done} videos fetched · {purged} accounts deleted",
+  "oversatt": "Attività in background: ultima esecuzione alle {when} ({value2}) · {sent} inviati · {done} video recuperati · {purged} account eliminati"
+ },
+ "app-admin-cron-status.text.text.9d6153356ac8": {
+  "nb": "Bakgrunnsjobb: har ikke kjørt ennå.",
+  "en": "Background job: has not run yet.",
+  "oversatt": "Attività in background: non ancora eseguita."
+ },
+ "app-admin-cron-status.warning.message.1494cbf069ca": {
+  "nb": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.",
+  "en": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.",
+  "oversatt": "L'attività in background non è stata eseguita negli ultimi {CRON_STALE_MINUTES} minuti. Verifica che l'app sia pubblicata e che l'attività sia configurata in Animatic Studio."
+ },
+ "app-ai-ai-panel.act.set-err.62534a79515a": {
+  "nb": "Kunne ikke endres.",
+  "en": "Could not be changed.",
+  "oversatt": "Impossibile modificare."
+ },
+ "app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.672049efa92e": {
+  "nb": "Ikke ferdige",
+  "en": "Not finished",
+  "oversatt": "Non completati"
+ },
+ "app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.90fd0f96f77f": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "Tutti"
+ },
+ "app-ai-ai-panel.ai-panel.aria-label.5daab1714cc0": {
+  "nb": "AI-jobber",
+  "en": "AI jobs",
+  "oversatt": "Attività IA"
+ },
+ "app-ai-ai-panel.ai-panel.aria-label.e6d7b27d8ef8": {
+  "nb": "Vis jobber",
+  "en": "Show jobs",
+  "oversatt": "Mostra attività"
+ },
+ "app-ai-ai-panel.ai-panel.button.93e7b44b8d04": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "Mostra tutti"
+ },
+ "app-ai-ai-panel.ai-panel.button.bdac359e3acb": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Riprova"
+ },
+ "app-ai-ai-panel.ai-panel.button.c4f50e9742a2": {
+  "nb": "Legg inn",
+  "en": "Add",
+  "oversatt": "Aggiungi"
+ },
+ "app-ai-ai-panel.ai-panel.button.c4f50e9742a2.2": {
+  "nb": "Legg inn",
+  "en": "Add",
+  "oversatt": "Aggiungi"
+ },
+ "app-ai-ai-panel.ai-panel.button.e3996d11a49f": {
+  "nb": "Legg inn alle",
+  "en": "Add all",
+  "oversatt": "Aggiungi tutti"
+ },
+ "app-ai-ai-panel.ai-panel.h2.b2157c086bc5": {
+  "nb": "AI-budsjett og jobber",
+  "en": "AI budget and jobs",
+  "oversatt": "Budget IA e attività"
+ },
+ "app-ai-ai-panel.ai-panel.h3.d6da1ee56d15": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "Processi"
+ },
+ "app-ai-ai-panel.ai-panel.link.4016655f7c25": {
+  "nb": "Vis",
+  "en": "View",
+  "oversatt": "Visualizza"
+ },
+ "app-ai-ai-panel.ai-panel.p.0465d4e1a9b9": {
+  "nb": "Beskrivelse skrevet av AI",
+  "en": "Description written by AI",
+  "oversatt": "Descrizione scritta dall'IA"
+ },
+ "app-ai-ai-panel.ai-panel.p.080d73395c4a": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "di"
+ },
+ "app-ai-ai-panel.ai-panel.p.080d73395c4a.2": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "di"
+ },
+ "app-ai-ai-panel.ai-panel.p.0d492a68d97a": {
+  "nb": "Ingen AI-genereringer ennå.",
+  "en": "No AI generations yet.",
+  "oversatt": "Nessuna generazione IA finora."
+ },
+ "app-ai-ai-panel.ai-panel.p.1d8a4db1910a": {
+  "nb": "Videoen er laget, men ikke lagt inn som versjon av scenen.",
+  "en": "The video is made, but not added as a version of the scene.",
+  "oversatt": "Il video è stato creato, ma non aggiunto come versione della scena."
+ },
+ "app-ai-ai-panel.ai-panel.p.1eece335cadc": {
+  "nb": "Denne måneden:",
+  "en": "This month:",
+  "oversatt": "Questo mese:"
+ },
+ "app-ai-ai-panel.ai-panel.p.226910e754c3": {
+  "nb": "genereringer (ingen egen ramme – de faste grensene gjelder: 30 per person i timen, 200 per prosjekt i døgnet)",
+  "en": "generations (no own limit – the standard limits apply: 30 per person per hour, 200 per project per day)",
+  "oversatt": "generazioni (nessun limite personalizzato – si applicano i limiti standard: 30 a persona all'ora, 200 a progetto al giorno)"
+ },
+ "app-ai-ai-panel.ai-panel.p.2990ff3912e0": {
+  "nb": "genereringer",
+  "en": "generations",
+  "oversatt": "generazioni"
+ },
+ "app-ai-ai-panel.ai-panel.p.42f093736ea3": {
+  "nb": "igjen",
+  "en": "left",
+  "oversatt": "rimanenti"
+ },
+ "app-ai-ai-panel.ai-panel.p.4359fc475a64": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Immagine"
+ },
+ "app-ai-ai-panel.ai-panel.p.4418a73a6199": {
+  "nb": " · API-kostnad med egne nøkler ca. {value1}",
+  "en": " · API cost with your own keys approx. {value1}",
+  "oversatt": " · Costo API con chiavi personali circa {value1}"
+ },
+ "app-ai-ai-panel.ai-panel.p.4c0a9e34abd5": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "app-ai-ai-panel.ai-panel.p.4c2c4ffce6b0": {
+  "nb": "Jobben svarte ikke ferdig (siden ble kanskje lukket). Ingen ny versjon ble lagret; prøv igjen om du trenger bildet.",
+  "en": "The job did not finish in time (the page may have been closed). No new version was saved; try again if you need the image.",
+  "oversatt": "Il processo non è stato completato in tempo (la pagina potrebbe essere stata chiusa). Nessuna nuova versione salvata; riprova se ti serve l'immagine."
+ },
+ "app-ai-ai-panel.ai-panel.p.aa7ed8cc5e0f": {
+  "nb": "Ingen jobber som ikke er ferdige.",
+  "en": "No jobs that are not finished.",
+  "oversatt": "Nessun processo incompleto."
+ },
+ "app-ai-ai-panel.ai-panel.p.ab192a3725f8": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Video"
+ },
+ "app-ai-ai-panel.ai-panel.p.c15bbdac71d9": {
+  "nb": "Jobbene kunne ikke hentes:",
+  "en": "The jobs could not be loaded:",
+  "oversatt": "Impossibile caricare i processi:"
+ },
+ "app-ai-ai-panel.ai-panel.p.d3adede2ddbf": {
+  "nb": "Bildet er laget, men ikke lagt inn i biblioteket.",
+  "en": "The image is made, but not added to the library.",
+  "oversatt": "L'immagine è stata creata, ma non aggiunta alla libreria."
+ },
+ "app-ai-ai-panel.ai-panel.p.e43f41cffc8c": {
+  "nb": " · anslått {value1}{value2}",
+  "en": " · estimated {value1}{value2}",
+  "oversatt": " · stimato {value1}{value2}"
+ },
+ "app-ai-ai-panel.ai-panel.p.ed03edcfd4fa": {
+  "nb": "AI skrev:",
+  "en": "The AI wrote:",
+  "oversatt": "L'IA ha scritto:"
+ },
+ "app-ai-ai-panel.ai-panel.span.037b85777af1": {
+  "nb": "Laget med profil {name}",
+  "en": "Made with profile {name}",
+  "oversatt": "Creato con il profilo {name}"
+ },
+ "app-ai-ai-panel.ai-panel.span.0e66e3b81edb": {
+  "nb": "{length} AI-resultater ble laget, men ikke lagt inn",
+  "en": "{length} AI results were made but not added",
+  "oversatt": "{length} risultati IA creati ma non aggiunti"
+ },
+ "app-ai-ai-panel.ai-panel.span.2b76cf4b030c": {
+  "nb": "Ett AI-resultat ble laget, men ikke lagt inn",
+  "en": "One AI result was made but not added",
+  "oversatt": "Un risultato IA creato ma non aggiunto"
+ },
+ "app-ai-ai-panel.ai-panel.span.9d18584f63ee": {
+  "nb": "(bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens de ble laget). De er betalt og ligger trygt lagret.",
+  "en": "(images in the library, videos as a new version of the scene – the page may have been closed while they were made). They are paid for and safely stored.",
+  "oversatt": "(immagini nella libreria, video come nuova versione della scena – la pagina potrebbe essere stata chiusa durante la creazione). Sono stati elaborati e sono archiviati al sicuro."
+ },
+ "app-ai-ai-panel.budget.aria-label.009d21f15bfa": {
+  "nb": "Anslått pris per bilde i kreditter",
+  "en": "Estimated price per image in credits",
+  "oversatt": "Prezzo stimato per immagine in crediti"
+ },
+ "app-ai-ai-panel.budget.aria-label.a9470dff1b8f": {
+  "nb": "Høyst antall AI-genereringer per måned",
+  "en": "Highest number of AI generations per month",
+  "oversatt": "Numero massimo di generazioni IA al mese"
+ },
+ "app-ai-ai-panel.budget.button.13ec0ee5f594": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Salva"
+ },
+ "app-ai-ai-panel.budget.label.a9470dff1b8f": {
+  "nb": "Høyst antall AI-genereringer per måned",
+  "en": "Highest number of AI generations per month",
+  "oversatt": "Numero massimo di generazioni IA al mese"
+ },
+ "app-ai-ai-panel.budget.label.f895c62aaba5": {
+  "nb": "Anslått pris per bilde (kreditter)",
+  "en": "Estimated price per image (credits)",
+  "oversatt": "Prezzo stimato per immagine (crediti)"
+ },
+ "app-ai-ai-panel.budget.p.9eadccb8743b": {
+  "nb": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+  "en": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.",
+  "oversatt": "Al raggiungimento del limite, il server bloccherà le nuove generazioni fino al mese successivo. Il prezzo è una stima personalizzata (Animatic Studio mostra il consumo nell'area di lavoro) e viene utilizzato solo per mostrare il costo stimato."
+ },
+ "app-ai-ai-panel.budget.p.cd9d16a09075": {
+  "nb": "Bare eieren kan endre budsjettet.",
+  "en": "Only the owner can change the budget.",
+  "oversatt": "Solo il proprietario può modificare il budget."
+ },
+ "app-ai-ai-panel.budget.placeholder.2becf3cbe4e1": {
+  "nb": "Ingen egen ramme",
+  "en": "No own limit",
+  "oversatt": "Nessun limite personalizzato"
+ },
+ "app-ai-ai-panel.budget.placeholder.3ccd27a54782": {
+  "nb": "Ukjent",
+  "en": "Unknown",
+  "oversatt": "Sconosciuto"
+ },
+ "app-ai-ai-panel.note.note.53aad993372b": {
+  "nb": "Generert med AI ({model}), nytt forsøk",
+  "en": "Generated with AI ({model}), new attempt",
+  "oversatt": "Generato con IA ({model}), nuovo tentativo"
+ },
+ "app-ai-ai-panel.note.note.744d7cac95d2": {
+  "nb": "Generert med AI ({model}), hentet inn fra AI-jobbene",
+  "en": "Generated with AI ({model}), added from the AI jobs",
+  "oversatt": "Generato con IA ({model}), aggiunto dai processi IA"
+ },
+ "app-ai-ai-panel.provider-line.button.330d5f2883fc": {
+  "nb": "AI-leverandører …",
+  "en": "AI providers …",
+  "oversatt": "Provider IA…"
+ },
+ "app-ai-ai-panel.provider-line.p.f0131ba43df8": {
+  "nb": "Tilgjengelige leverandører:",
+  "en": "Available providers:",
+  "oversatt": "Provider disponibili:"
+ },
+ "app-ai-ai-panel.queue-controls.aria-label.13421340c9b6": {
+  "nb": "Prioritet i køen",
+  "en": "Priority in the queue",
+  "oversatt": "Priorità nella coda"
+ },
+ "app-ai-ai-panel.queue-controls.button.c40336910499": {
+  "nb": "Først",
+  "en": "First",
+  "oversatt": "Prima"
+ },
+ "app-ai-ai-panel.queue-controls.button.caad46539049": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa": {
+  "nb": "Ny variant for «{name}»",
+  "en": "New variant for “{name}”",
+  "oversatt": "Nuova variante per “{name}”"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa.2": {
+  "nb": "Ny variant for «{name}»",
+  "en": "New variant for “{name}”",
+  "oversatt": "Nuova variante per “{name}”"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.56b486a12ca0": {
+  "nb": "AI-bilde av «{name}»",
+  "en": "AI image of “{name}”",
+  "oversatt": "Immagine IA di “{name}”"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.687f2fd9be02": {
+  "nb": "Hent inn AI-bilde av «{name}»",
+  "en": "Add AI image of “{name}”",
+  "oversatt": "Aggiungi immagine IA di “{name}”"
+ },
+ "app-ai-ai-panel.retry-dialog.button.cd9827760969": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Chiudi"
+ },
+ "app-ai-ai-panel.retry-dialog.dialog-description.17d0cfd033f2": {
+  "nb": "Samme beskrivelse som sist. Det nye bildet lagres som en ny versjon; ingenting eksisterende endres.",
+  "en": "The same description as last time. The new image is saved as a new version; nothing existing is changed.",
+  "oversatt": "La stessa descrizione dell'ultima volta. La nuova immagine viene salvata come nuova versione; nulla di ciò che esiste viene modificato."
+ },
+ "app-ai-ai-panel.retry-dialog.dialog-title.1ccf1e27f0d8": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Riprova"
+ },
+ "app-ai-ai-panel.save.cmds-run.332619fcd839": {
+  "nb": "Endre AI-budsjett",
+  "en": "Change AI budget",
+  "oversatt": "Modifica budget IA"
+ },
+ "app-ai-ai-panel.save.set-err.ca3c81fd2f43": {
+  "nb": "Prisen må være et tall (tomt = ukjent).",
+  "en": "The price must be a number (empty = unknown).",
+  "oversatt": "Il prezzo deve essere un numero (vuoto = sconosciuto)."
+ },
+ "app-ai-ai-panel.save.set-err.fa641093c5d4": {
+  "nb": "Antallet må være et helt tall mellom 0 og 100 000 (tomt = ingen egen ramme).",
+  "en": "The number must be a whole number between 0 and 100,000 (empty = no own limit).",
+  "oversatt": "Il numero deve essere un intero compreso tra 0 e 100.000 (vuoto = nessun limite personalizzato)."
+ },
+ "app-ai-ai-panel.usage-estimate": {
+  "nb": " · anslått {cost}",
+  "en": " · estimated {cost}",
+  "oversatt": " · {cost} stimati"
+ },
+ "app-ai-ai-panel.usage-estimate-partly-unknown": {
+  "nb": " · anslått {cost} (noen uten anslag)",
+  "en": " · estimated {cost} (some without an estimate)",
+  "oversatt": " · {cost} stimati (alcuni senza stima)"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-action.e5e72ed20924": {
+  "nb": "Slett for godt",
+  "en": "Delete permanently",
+  "oversatt": "Elimina definitivamente"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-cancel.4586a298507b": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-description.56b2b4d2141c": {
+  "nb": "{value1} ubrukte videokilder eldre enn 30 dager slettes for godt. Ferdige filmer og filer som fortsatt brukes, beholdes.",
+  "en": "{value1} unused video sources older than 30 days will be permanently deleted. Finished films and files still in use are kept.",
+  "oversatt": "{value1} sorgenti video inutilizzate più vecchie di 30 giorni verranno eliminate definitivamente. I filmati completati e i file ancora in uso vengono mantenuti."
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-title.be771709a32f": {
+  "nb": "Slett gamle videokilder?",
+  "en": "Delete old video sources?",
+  "oversatt": "Eliminare le vecchie sorgenti video?"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.button.4cfe31fe5977": {
+  "nb": "Rydd gamle videokilder …",
+  "en": "Clean up old video sources …",
+  "oversatt": "Ripulisci vecchie sorgenti video…"
+ },
+ "app-ai-ai-source-cleanup.check.set-message.830fe31eda70": {
+  "nb": "Oppryddingen feilet.",
+  "en": "Cleanup failed.",
+  "oversatt": "Pulizia non riuscita."
+ },
+ "app-ai-ai-source-cleanup.check.set-message.c6c21d76901b": {
+  "nb": "Ingen gamle, ubrukte videokilder kan slettes nå.",
+  "en": "No old, unused video sources can be deleted now.",
+  "oversatt": "Nessuna vecchia sorgente video inutilizzata può essere eliminata ora."
+ },
+ "app-ai-ai-source-cleanup.remove.set-message.674989d04326": {
+  "nb": "Oppryddingen feilet.",
+  "en": "Cleanup failed.",
+  "oversatt": "Pulizia non riuscita."
+ },
+ "app-ai-ai-source-cleanup.remove.set-message.990678b39c26": {
+  "nb": "{deleted} videokilder slettet.",
+  "en": "{deleted} video sources deleted.",
+  "oversatt": "{deleted} sorgenti video eliminate."
+ },
+ "app-ai-cost-lines.cost-lines.aria-label.384fe72c59b3": {
+  "nb": "Kostnadsanslag",
+  "en": "Cost estimate",
+  "oversatt": "Stima dei costi"
+ },
+ "app-ai-effort-picker.effort-picker.aria-label.1963c68e41a4": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "Livello di impegno"
+ },
+ "app-ai-effort-picker.effort-picker.p.172bf9c50173": {
+  "nb": " · Kan: {value1}",
+  "en": " · Features: {value1}",
+  "oversatt": " · Funzionalità: {value1}"
+ },
+ "app-ai-generation-status.generation-status.aria-label.ad6a78d7509d": {
+  "nb": "AI-genereringer: {summary}",
+  "en": "AI generations: {summary}",
+  "oversatt": "Generazioni IA: {summary}"
+ },
+ "app-ai-generation-status.generation-status.div.df5170190148": {
+  "nb": "AI-genereringer",
+  "en": "AI generations",
+  "oversatt": "Generazioni IA"
+ },
+ "app-ai-generation-status.generation-status.link.6d0aecfbe617": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scena"
+ },
+ "app-ai-generation-status.generation-status.p.9a7dec43aba7": {
+  "nb": "Videoer lages hos leverandøren og hentes inn automatisk når de er ferdige. De legges inn som ny versjon av scenen neste gang en redaktør har prosjektet åpent.",
+  "en": "Videos are made by the provider and fetched automatically when finished. They are added as a new version of the scene the next time an editor has the project open.",
+  "oversatt": "I video vengono generati dal provider e scaricati automaticamente al termine. Vengono aggiunti come nuova versione della scena alla successiva apertura del progetto da parte di un operatore."
+ },
+ "app-ai-generation-status.generation-status.span.97306b01e2fb": {
+  "nb": " · Laget med profil {name}",
+  "en": " · Made with profile {name}",
+  "oversatt": " · Creato con il profilo {name}"
+ },
+ "app-ai-generation-status.generation-status.title.4ad93883f8ee": {
+  "nb": "AI-genereringer i prosjektet: hva som lages, står i kø og nylig ble ferdig",
+  "en": "AI generations in the project: what is being made, queued and recently finished",
+  "oversatt": "Generazioni IA nel progetto: elementi in elaborazione, in coda e completati di recente"
+ },
+ "app-ai-generation-status.kind-label.message.3f5b26cf401f": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Testo"
+ },
+ "app-ai-generation-status.kind-label.message.61079e421e39": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Immagine"
+ },
+ "app-ai-generation-status.kind-label.message.7b8e15eae019": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "app-ai-generation-status.kind-label.message.d951bb8fd767": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Video"
+ },
+ "app-ai-generation-status.mark-all-read": {
+  "nb": "Merk alle som lest",
+  "en": "Mark all as read",
+  "oversatt": "Segna tutti come letti"
+ },
+ "app-ai-generation-status.mark-read": {
+  "nb": "Merk som lest",
+  "en": "Mark as read",
+  "oversatt": "Segna come letto"
+ },
+ "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
+  "nb": " · del {value1} av {value2}",
+  "en": " · part {value1} of {value2}",
+  "oversatt": " · parte {value1} di {value2}"
+ },
+ "app-ai-generation-status.summary.message.656f23349e8a": {
+  "nb": "{failed} feilet",
+  "en": "{failed} failed",
+  "oversatt": "{failed} non riusciti"
+ },
+ "app-ai-generation-status.summary.message.a286b0b6765e": {
+  "nb": "{done} ferdig",
+  "en": "{done} done",
+  "oversatt": "{done} completati"
+ },
+ "app-ai-generation-status.summary.message.cd840264e782": {
+  "nb": "AI",
+  "en": "AI",
+  "oversatt": "AI"
+ },
+ "app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.e4f5fba2fca7": {
+  "nb": "{running} lages",
+  "en": "{running} in progress",
+  "oversatt": "{running} in corso"
+ },
+ "app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.f8adaa61ecf3": {
+  "nb": "{queued} i kø",
+  "en": "{queued} queued",
+  "oversatt": "{queued} in coda"
+ },
+ "app-ai-providers-dialog.admin-off-note.p.8c5dbc59b7bc": {
+  "nb": "Administrator har slått av denne leverandøren for alle brukere. Den vises ikke i valglistene og kan ikke brukes før den slås på igjen.",
+  "en": "The administrator has switched off this provider for all users. It is not shown in the lists and cannot be used until it is switched on again.",
+  "oversatt": "L'amministratore ha disattivato questo provider per tutti gli utenti. Non appare negli elenchi e non può essere utilizzato finché non verrà riattivato."
+ },
+ "app-ai-providers-dialog.cap-section.aria-label.d1a95c3820c7": {
+  "nb": "Kostnadstak per måned i USD",
+  "en": "Cost limit per month in USD",
+  "oversatt": "Limite di spesa mensile in USD"
+ },
+ "app-ai-providers-dialog.cap-section.button.a7b5bb51d444": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Salva"
+ },
+ "app-ai-providers-dialog.cap-section.h3.cdefe66f2823": {
+  "nb": "Kostnadstak for egne nøkler",
+  "en": "Cost limit for own keys",
+  "oversatt": "Limite di spesa per le proprie chiavi"
+ },
+ "app-ai-providers-dialog.cap-section.label.dae56024a178": {
+  "nb": "Høyst per måned (USD)",
+  "en": "Maximum per month (USD)",
+  "oversatt": "Massimo al mese (USD)"
+ },
+ "app-ai-providers-dialog.cap-section.p.423354479f86": {
+  "nb": "Gjelder alle prosjekter som bruker nøklene dine, i tillegg til hvert prosjekts eget budsjett. Beløpene er anslag ut fra leverandørenes prislister; den faktiske regningen kommer fra leverandøren. Sett også gjerne en grense hos leverandøren.",
+  "en": "Applies to all projects that use your keys, in addition to each project's own budget. The amounts are estimates based on the providers' price lists; the actual bill comes from the provider. You may also want to set a limit with the provider.",
+  "oversatt": "Si applica a tutti i progetti che utilizzano le tue chiavi, oltre al budget specifico di ciascun progetto. Gli importi sono stime basate sui listini dei provider; la fatturazione effettiva proviene direttamente dal provider. È consigliabile impostare un limite anche presso il provider."
+ },
+ "app-ai-providers-dialog.cap-section.placeholder.ff1b9bf382ab": {
+  "nb": "Ingen tak",
+  "en": "No limit",
+  "oversatt": "Nessun limite"
+ },
+ "app-ai-providers-dialog.cap-section.span.3671ec1fb91a": {
+  "nb": " · igjen ~{value1}",
+  "en": " · remaining ~{value1}",
+  "oversatt": " · rimanenti ~{value1}"
+ },
+ "app-ai-providers-dialog.cap-section.span.bd5edbbfaffc": {
+  "nb": "Brukt denne måneden:",
+  "en": "Used this month:",
+  "oversatt": "Utilizzati questo mese:"
+ },
+ "app-ai-providers-dialog.key-handling": {
+  "nb": "Nøkkelen sendes kryptert til serveren, prøves hos {provider} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {provider} hvis du tror den er kommet på avveie.",
+  "en": "The key is sent encrypted to the server, tested with {provider} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at {provider} if you think it has been compromised.",
+  "oversatt": "La chiave viene inviata crittografata al server, verificata con {provider} e salvata in modo cifrato. Non verrà mai più mostrata, tranne gli ultimi quattro caratteri. Viene utilizzata solo quando tu o altri utenti nei tuoi progetti richiedete una generazione (sempre previa conferma), entro il limite di spesa. Se la rimuovi qui, verrà eliminata definitivamente. Rimuovila anche da {provider} se ritieni sia stata compromessa."
+ },
+ "app-ai-providers-dialog.key-not-tested": {
+  "nb": "Den kunne ikke prøves nå.",
+  "en": "It could not be tested now.",
+  "oversatt": "Impossibile verificare la chiave in questo momento."
+ },
+ "app-ai-providers-dialog.key-saved-encrypted": {
+  "nb": "Nøkkelen er lagret kryptert. {message}",
+  "en": "The key is saved encrypted. {message}",
+  "oversatt": "La chiave è stata salvata in modo cifrato. {message}"
+ },
+ "app-ai-providers-dialog.provider-detail.aria-label.9db0473550a8": {
+  "nb": "API-nøkkel for {name}",
+  "en": "API key for {name}",
+  "oversatt": "Chiave API per {name}"
+ },
+ "app-ai-providers-dialog.provider-detail.button.237e69ee7013": {
+  "nb": "Prøv nøkkelen igjen",
+  "en": "Test the key again",
+  "oversatt": "Verifica nuovamente la chiave"
+ },
+ "app-ai-providers-dialog.provider-detail.button.53168064bca8": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "Rimuovi"
+ },
+ "app-ai-providers-dialog.provider-detail.button.56574c96b4dc": {
+  "nb": "Prøv og lagre",
+  "en": "Test and save",
+  "oversatt": "Verifica e salva"
+ },
+ "app-ai-providers-dialog.provider-detail.button.ce207dab41a6": {
+  "nb": "Alle leverandører",
+  "en": "All providers",
+  "oversatt": "Tutti i provider"
+ },
+ "app-ai-providers-dialog.provider-detail.button.d869b1dd94e1": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-ai-providers-dialog.provider-detail.button.fc90b6eada1b": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "Elimina"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.223a339f93d2": {
+  "nb": "Bytt nøkkel",
+  "en": "Change key",
+  "oversatt": "Modifica chiave"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.38ebf8428398": {
+  "nb": "Slik kobler du til",
+  "en": "How to connect",
+  "oversatt": "Come connettersi"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.d7388f0c6428": {
+  "nb": "Lim inn API-nøkkelen",
+  "en": "Paste the API key",
+  "oversatt": "Incolla la chiave API"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.365d69e023a0": {
+  "nb": "Betaling og kreditt",
+  "en": "Billing and credit",
+  "oversatt": "Fatturazione e crediti"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.68fc8e36ed68": {
+  "nb": "Opprett konto",
+  "en": "Create account",
+  "oversatt": "Crea account"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.83480500e7e0": {
+  "nb": "Priser",
+  "en": "Pricing",
+  "oversatt": "Prezzi"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.869dac22c8be": {
+  "nb": "Hent API-nøkkel",
+  "en": "Get API key",
+  "oversatt": "Ottieni chiave API"
+ },
+ "app-ai-providers-dialog.provider-detail.p.61c2d829e075": {
+  "nb": "Kan lage:",
+  "en": "Can make:",
+  "oversatt": "Può generare:"
+ },
+ "app-ai-providers-dialog.provider-detail.p.7669dcef5fef": {
+  "nb": "Nøkkelen sendes kryptert til serveren, prøves hos {name} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {name2} hvis du tror den er kommet på avveie.",
+  "en": "The key is sent encrypted to the server, tested with {name} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at {name2} if you think it has been compromised.",
+  "oversatt": "La chiave viene inviata crittografata al server, verificata con {name} e salvata in modo cifrato. Non verrà mai più mostrata, tranne gli ultimi quattro caratteri. Viene utilizzata solo quando tu o altri utenti nei tuoi progetti richiedete una generazione (sempre previa conferma), entro il limite di spesa. Se la rimuovi qui, verrà eliminata definitivamente. Rimuovila anche da {name2} se ritieni sia stata compromessa."
+ },
+ "app-ai-providers-dialog.provider-detail.p.aee47d2a8c80": {
+  "nb": "modeller:",
+  "en": "models:",
+  "oversatt": "modelli:"
+ },
+ "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
+  "nb": "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+  "en": "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.",
+  "oversatt": "Sempre disponibile; utilizza i crediti dello spazio di lavoro di Animatic Studio. Si applica il budget AI del progetto."
+ },
+ "app-ai-providers-dialog.provider-detail.placeholder.986493436d94": {
+  "nb": "Lim inn nøkkelen her",
+  "en": "Paste the key here",
+  "oversatt": "Incolla la chiave qui"
+ },
+ "app-ai-providers-dialog.provider-detail.placeholder.ac0c19dcca57": {
+  "nb": "Nåværende: {key_hint}",
+  "en": "Current: {key_hint}",
+  "oversatt": "Attuale: {key_hint}"
+ },
+ "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
+  "nb": "Slette nøkkelen fra Animatic Studio?",
+  "en": "Delete the key from Animatic Studio?",
+  "oversatt": "Eliminare la chiave da Animatic Studio?"
+ },
+ "app-ai-providers-dialog.providers-dialog.aria-label.c504d5dd202a": {
+  "nb": "Leverandører",
+  "en": "Providers",
+  "oversatt": "Provider"
+ },
+ "app-ai-providers-dialog.providers-dialog.dialog-description.f5764fdb18ba": {
+  "nb": "Koble til tjenestene du vil bruke for bilder, video og lyd. De du kobler til, blir tilgjengelige i alle prosjektene du eier.",
+  "en": "Connect the services you want to use for images, video and audio. Those you connect become available in all the projects you own.",
+  "oversatt": "Collega i servizi da utilizzare per immagini, video e audio. I servizi collegati saranno disponibili in tutti i progetti di tua proprietà."
+ },
+ "app-ai-providers-dialog.providers-dialog.dialog-title.a684c382a7a6": {
+  "nb": "AI-leverandører",
+  "en": "AI providers",
+  "oversatt": "Provider AI"
+ },
+ "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
+  "nb": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.",
+  "oversatt": "Il database non è ancora aggiornato per i provider AI personalizzati. Contatta l'amministratore per aggiornare Animatic Studio."
+ },
+ "app-ai-providers-dialog.providers-dialog.span.8d349a2870d2": {
+  "nb": "Slått av av administrator",
+  "en": "Switched off by the administrator",
+  "oversatt": "Disattivato dall'amministratore"
+ },
+ "app-ai-providers-dialog.status-badge.span.224d42c78711": {
+  "nb": "Innebygd",
+  "en": "Built-in",
+  "oversatt": "Integrato"
+ },
+ "app-ai-providers-dialog.status-badge.span.2ac592b164f3": {
+  "nb": " · ikke prøvd",
+  "en": " · not tested",
+  "oversatt": " · non testato"
+ },
+ "app-ai-providers-dialog.status-badge.span.61ecf5f930b9": {
+  "nb": "Tilkoblet ({key_hint})",
+  "en": "Connected ({key_hint})",
+  "oversatt": "Connesso ({key_hint})"
+ },
+ "app-ai-providers-dialog.status-badge.span.707ab5215032": {
+  "nb": "Ikke koblet til",
+  "en": "Not connected",
+  "oversatt": "Non connesso"
+ },
+ "app-ai-providers-dialog.status-badge.span.fb1c3c1e4e13": {
+  "nb": "Nøkkelen virker ikke ({key_hint})",
+  "en": "The key does not work ({key_hint})",
+  "oversatt": "La chiave non funziona ({key_hint})"
+ },
+ "app-ai-providers-dialog.text-ai-section.aria-label.30dcefe21caa": {
+  "nb": "Modell for {value1}",
+  "en": "Model for {value1}",
+  "oversatt": "Modello per {value1}"
+ },
+ "app-ai-providers-dialog.text-ai-section.aria-label.bb00b77db626": {
+  "nb": "Leverandør for {value1}",
+  "en": "Provider for {value1}",
+  "oversatt": "Provider per {value1}"
+ },
+ "app-ai-providers-dialog.text-ai-section.h3.0c7abb774554": {
+  "nb": "Tekst-AI",
+  "en": "Text AI",
+  "oversatt": "IA per il testo"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.9ce269f4a98c": {
+  "nb": "Automatisk",
+  "en": "Automatic",
+  "oversatt": "Automatico"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.9d0ccf79fa6a": {
+  "nb": "Velges automatisk",
+  "en": "Chosen automatically",
+  "oversatt": "Scelto automaticamente"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.c22b9db65c4d": {
+  "nb": "Innebygd AI",
+  "en": "Built-in AI",
+  "oversatt": "IA integrata"
+ },
+ "app-ai-providers-dialog.text-ai-section.p.05cf8a2e14ac": {
+  "nb": "Du har ingen egne tekstleverandører ennå. Koble til Claude, ChatGPT, Grok eller Gemini nedenfor.",
+  "en": "You have no text providers of your own yet. Connect Claude, ChatGPT, Grok or Gemini below.",
+  "oversatt": "Non hai ancora provider di testo personali. Connetti Claude, ChatGPT, Grok o Gemini qui sotto."
+ },
+ "app-ai-providers-dialog.text-ai-section.p.36980d550912": {
+  "nb": "Velg leverandør og modell for hver type tekstoppgave. «Automatisk» bruker den første leverandøren du har en gyldig nøkkel til, ellers den innebygde AI-en.",
+  "en": "Choose the provider and model for each kind of text task. “Automatic” uses the first provider you have a valid key for, otherwise the built-in AI.",
+  "oversatt": "Scegli il provider e il modello per ciascun tipo di attività di testo. \"Automatico\" utilizza il primo provider per cui hai una chiave valida, altrimenti l'IA integrata."
+ },
+ "app-ai-providers-dialog.text.text.2556fd645036": {
+  "nb": "Nøkkelen virker.",
+  "en": "The key works.",
+  "oversatt": "La chiave funziona."
+ },
+ "app-ai-providers-dialog.text.text.74fba41561c8": {
+  "nb": "Nøkkelen er slettet fra Animatic Studio.",
+  "en": "The key has been deleted from Animatic Studio.",
+  "oversatt": "La chiave è stata eliminata da Animatic Studio."
+ },
+ "app-ai-providers-dialog.text.text.9f438ecf8438": {
+  "nb": "Nøkkelen er lagret kryptert. {value1}",
+  "en": "The key is saved encrypted. {value1}",
+  "oversatt": "La chiave è salvata crittografata. {value1}"
+ },
+ "app-ai-providers-dialog.text.text.dd4c5d90b477": {
+  "nb": "Nøkkelen virker og er lagret kryptert.{value1}",
+  "en": "The key works and is saved encrypted.{value1}",
+  "oversatt": "La chiave funziona ed è salvata crittografata.{value1}"
+ },
+ "app-ai-providers-dialog.text.text.f1727b86443d": {
+  "nb": "Kunne ikke fjerne nøkkelen.",
+  "en": "Could not remove the key.",
+  "oversatt": "Impossibile rimuovere la chiave."
+ },
+ "app-ai-quality-profile-picker.budget-error.message.9c44e228cc9d": {
+  "nb": "Profilens forbruk må kontrolleres før generering.",
+  "en": "Profile usage must be checked before generation.",
+  "oversatt": "Il consumo del profilo deve essere verificato prima della generazione."
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.aria-label.722c4d3ff42e": {
+  "nb": "Kvalitetsprofil",
+  "en": "Quality profile",
+  "oversatt": "Profilo di qualità"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.label.722c4d3ff42e": {
+  "nb": "Kvalitetsprofil",
+  "en": "Quality profile",
+  "oversatt": "Profilo di qualità"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.162993b5715d": {
+  "nb": "Ingen profil",
+  "en": "No profile",
+  "oversatt": "Nessun profilo"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.804b180e1838": {
+  "nb": "Prosjektets profil (ingen valgt)",
+  "en": "The project's profile (none chosen)",
+  "oversatt": "Profilo del progetto (nessuno selezionato)"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.9f23e80fdb62": {
+  "nb": "Prosjektets profil ({name})",
+  "en": "The project's profile ({name})",
+  "oversatt": "Profilo del progetto ({name})"
+ },
+ "app-ai-refetch-video-button.go.set-msg.0ed74b029be8": {
+  "nb": "Leverandøren lager den fortsatt; den hentes inn når den er ferdig.",
+  "en": "The provider is still making it; it is fetched when finished.",
+  "oversatt": "Il provider la sta ancora elaborando; verrà recuperata al termine."
+ },
+ "app-ai-refetch-video-button.refetch-video-button.button.19b9fa1a5058": {
+  "nb": "Hent videoen igjen",
+  "en": "Fetch the video again",
+  "oversatt": "Recupera nuovamente il video"
+ },
+ "app-ai-refetch-video-button.refetch-video-button.title.66b34691db69": {
+  "nb": "Spør leverandøren om den ferdige videoen på nytt. Ingenting bestilles på nytt, så det koster ikke noe.",
+  "en": "Ask the provider for the finished video again. Nothing is ordered again, so it costs nothing.",
+  "oversatt": "Richiedi nuovamente al provider il video completato. Non viene effettuato un nuovo ordine, quindi non comporta alcun costo."
+ },
+ "app-ai-sent-prompts.sent-prompts.p.3d4fb296b758": {
+  "nb": "tegn",
+  "en": "characters",
+  "oversatt": "caratteri"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.0ad6cdb50924": {
+  "nb": "Se det som sendes til modellen",
+  "en": "See what is sent to the model",
+  "oversatt": "Visualizza ciò che viene inviato al modello"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.1910a33162ee": {
+  "nb": " (uendret)",
+  "en": " (unchanged)",
+  "oversatt": " (non modificato)"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.78813c7d5dce": {
+  "nb": " – tilpasset modellen i {length} av {length2}",
+  "en": " – adjusted for the model in {length} of {length2}",
+  "oversatt": " – adattato per il modello in {length} su {length2}"
+ },
+ "app-ai-trace-details.lines-changed-since": {
+  "nb": {
+   "one": "{count} linje er endret eller fjernet siden",
+   "other": "{count} linjer er endret eller fjernet siden"
+  },
+  "en": {
+   "one": "{count} line has been changed or removed since",
+   "other": "{count} lines have been changed or removed since"
+  },
+  "oversatt": {
+   "one": "{count} riga è stata modificata o rimossa da allora",
+   "many": "{count} righe sono state modificate o rimosse da allora",
+   "other": "{count} righe sono state modificate o rimosse da allora"
+  }
+ },
+ "app-ai-trace-details.trace-details.aria-label.3dc770f7e801": {
+  "nb": "Sporbarhet",
+  "en": "Traceability",
+  "oversatt": "Tracciabilità"
+ },
+ "app-ai-trace-details.trace-details.label.316dd5d16071": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "Stato"
+ },
+ "app-ai-trace-details.trace-details.label.36e947a3649f": {
+  "nb": "Manuset nå",
+  "en": "The script now",
+  "oversatt": "La sceneggiatura attuale"
+ },
+ "app-ai-trace-details.trace-details.label.4031ad12cb2e": {
+  "nb": "Registrert",
+  "en": "Registered",
+  "oversatt": "Registrato"
+ },
+ "app-ai-trace-details.trace-details.label.8585dcb9a20b": {
+  "nb": "Spor",
+  "en": "Trace",
+  "oversatt": "Traccia"
+ },
+ "app-ai-trace-details.trace-details.label.8965603b23ed": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "Inviato"
+ },
+ "app-ai-trace-details.trace-details.label.b9046da73e5b": {
+  "nb": "Resultat",
+  "en": "Result",
+  "oversatt": "Risultato"
+ },
+ "app-ai-trace-details.trace-details.label.e794da85be0b": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modello"
+ },
+ "app-ai-trace-details.trace-details.label.fedd2d37fc9b": {
+  "nb": "Ferdig",
+  "en": "Finished",
+  "oversatt": "Completato"
+ },
+ "app-ai-trace-details.trace-details.row.388e11567c38": {
+  "nb": "Jobben er eldre enn sporingen (bare beskrivelse, modell og tid)",
+  "en": "The job is older than the tracing (only description, model and time)",
+  "oversatt": "Il processo è più vecchio del tracciamento (solo descrizione, modello e ora)"
+ },
+ "app-ai-trace-details.trace-details.row.79db5b060319": {
+  "nb": "Uendret siden jobben",
+  "en": "Unchanged since the job",
+  "oversatt": "Invariato rispetto al processo"
+ },
+ "app-ai-trace-details.trace-details.row.b7ea035ed35f": {
+  "nb": "{changed} {value2} endret eller fjernet siden",
+  "en": "{changed} {value2} been changed or removed since",
+  "oversatt": "{changed} {value2} sono stati modificati o rimossi da allora"
+ },
+ "app-ai-video-audio.r.cmds-run-and-wait.60aea6cae59a": {
+  "nb": "Lyd fra AI-videoen «{name}»",
+  "en": "Audio from the AI video “{name}”",
+  "oversatt": "Audio dal video IA “{name}”"
+ },
+ "app-ai-video-jobs.claim-video-once.message.23e068bb111f": {
+  "nb": "Jobben har ingen video.",
+  "en": "The job has no video.",
+  "oversatt": "Il processo non ha video."
+ },
+ "app-ai-video-jobs.claim-video-once.message.3cb45d12c0f5": {
+  "nb": "Videoen kunne ikke hentes fra lagringen.",
+  "en": "The video could not be fetched from storage.",
+  "oversatt": "Impossibile recuperare il video dall'archiviazione."
+ },
+ "app-ai-video-jobs.claim-video-once.message.3e6a025d7ef5": {
+  "nb": "Videoen kunne ikke leses: {message}",
+  "en": "The video could not be read: {message}",
+  "oversatt": "Impossibile leggere il video: {message}"
+ },
+ "app-ai-video-jobs.claim-video-once.message.491daf6bba91": {
+  "nb": "Videoen kunne ikke hentes ({status}).",
+  "en": "The video could not be fetched ({status}).",
+  "oversatt": "Impossibile recuperare il video ({status})."
+ },
+ "app-ai-video-jobs.claim-video-once.message.8627c0b0af17": {
+  "nb": "Scenen finnes ikke lenger.",
+  "en": "The scene no longer exists.",
+  "oversatt": "La scena non esiste più."
+ },
+ "app-ai-video-jobs.name.message.97261084d899": {
+  "nb": "Lyd fra AI-video ({provider})",
+  "en": "Audio from AI video ({provider})",
+  "oversatt": "Audio dal video IA ({provider})"
+ },
+ "app-ai-video-jobs.r.cmds-run-and-wait.85b3e141b59d": {
+  "nb": "AI-video fra 2D-scenen ({provider}) som ny versjon",
+  "en": "AI video from the 2D scene ({provider}) as new version",
+  "oversatt": "Video IA dalla scena 2D ({provider}) come nuova versione"
+ },
+ "app-ai-video-jobs.r.cmds-run-and-wait.f7387e012b46": {
+  "nb": "AI-video ({provider}) som ny versjon",
+  "en": "AI video ({provider}) as new version",
+  "oversatt": "Video IA ({provider}) come nuova versione"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0285841312a7": {
+  "nb": "Ny lydfil",
+  "en": "New audio file",
+  "oversatt": "Nuovo file audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0d7f63fe7466": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "Dalla libreria"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0f79a0193f87": {
+  "nb": "Søk etter lyd",
+  "en": "Search for audio",
+  "oversatt": "Cerca audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.6d6fa2c78164": {
+  "nb": "Velg lydfil",
+  "en": "Choose audio file",
+  "oversatt": "Scegli file audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.a5ace96c2e19": {
+  "nb": "Lydfiler",
+  "en": "Audio files",
+  "oversatt": "File audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.b5365660c2ea": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "Lingua"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.28106a7a4511": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "Aggiungi"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.31bd12416461": {
+  "nb": "Last opp lydfil …",
+  "en": "Upload audio file …",
+  "oversatt": "Carica file audio …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.3ccbd795d544": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "Caricamento in corso …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.64257128f0ee": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.9ee3fe484e96": {
+  "nb": "Velg en scene i tidslinjen først.",
+  "en": "Choose a scene in the timeline first.",
+  "oversatt": "Seleziona prima una scena nella timeline."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.bd5742f43b46": {
+  "nb": "I scene {value1} {value2}, {value3} ut i scenen. Lyden følger scenen hvis den flyttes.",
+  "en": "In scene {value1} {value2}, {value3} into the scene. The audio follows the scene if it is moved.",
+  "oversatt": "Nella scena {value1} {value2}, a {value3} all'interno della scena. L'audio seguirà la scena se viene spostata."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-title.f0fb31ee65ae": {
+  "nb": "Legg til lyd",
+  "en": "Add audio",
+  "oversatt": "Aggiungi audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.h3.0285841312a7": {
+  "nb": "Ny lydfil",
+  "en": "New audio file",
+  "oversatt": "Nuovo file audio"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.h3.0d7f63fe7466": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "Dalla libreria"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.0148103611ae": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "Nessuno"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.09238fbb2350": {
+  "nb": "Bare",
+  "en": "Only",
+  "oversatt": "Solo"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "Predefinito"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.8d99699570cb": {
+  "nb": "Felles for alle språk",
+  "en": "Shared for all languages",
+  "oversatt": "Condiviso per tutte le lingue"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.c106baa52e71": {
+  "nb": "felles",
+  "en": "shared",
+  "oversatt": "condiviso"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.d62db98b151f": {
+  "nb": "Ingen replikker i scenen",
+  "en": "No lines in the scene",
+  "oversatt": "Nessuna battuta nella scena"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.p.04f3469c896a": {
+  "nb": "Ingen lydfiler i biblioteket ennå.",
+  "en": "No audio files in the library yet.",
+  "oversatt": "Nessun file audio ancora presente nella libreria."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.p.43408234335d": {
+  "nb": "MP3, WAV, OGG, M4A eller FLAC. Lagres i ressursbiblioteket (type «Lyd») og legges inn her.",
+  "en": "MP3, WAV, OGG, M4A or FLAC. Saved in the asset library (type “Audio”) and added here.",
+  "oversatt": "MP3, WAV, OGG, M4A o FLAC. Viene salvato nella libreria di risorse (tipo “Audio”) e aggiunto qui."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.placeholder.1949ed8b780b": {
+  "nb": "Søk etter lyd …",
+  "en": "Search for audio …",
+  "oversatt": "Cerca audio …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.43833b10a75e": {
+  "nb": "Spor",
+  "en": "Track",
+  "oversatt": "Traccia"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.62623cb8ecbc": {
+  "nb": "Replikk (valgfritt)",
+  "en": "Line (optional)",
+  "oversatt": "Battuta (opzionale)"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.b5365660c2ea": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "Lingua"
+ },
+ "app-assembly-add-audio-dialog.r.cmds-run-and-wait.43344156a5fa": {
+  "nb": "Legg til {value1}",
+  "en": "Add {value1}",
+  "oversatt": "Aggiungi {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.34ede965758a": {
+  "nb": "Spill av replikken til {value1}",
+  "en": "Play the line of {value1}",
+  "oversatt": "Riproduci la battuta di {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.58e105143702": {
+  "nb": "Stemmer",
+  "en": "Voices",
+  "oversatt": "Voci"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.c43c89ca0d32": {
+  "nb": "Bekreft innlesing",
+  "en": "Confirm reading in",
+  "oversatt": "Conferma generazione vocale"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.dac1bec0120e": {
+  "nb": "Replikker",
+  "en": "Lines",
+  "oversatt": "Battute"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.e6da7d599e00": {
+  "nb": "Hør stemmen til {name}",
+  "en": "Listen to the voice of {name}",
+  "oversatt": "Ascolta la voce di {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.ec1b8aa253ef": {
+  "nb": "Stemme for {name}",
+  "en": "Voice for {name}",
+  "oversatt": "Voce per {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.10121f7d6fca": {
+  "nb": "Ja, les inn",
+  "en": "Yes, read in",
+  "oversatt": "Sì, genera voce"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.3035c28f2a84": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Chiudi"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.398764189aa2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.b4921661c2ab": {
+  "nb": "Les inn",
+  "en": "Read in",
+  "oversatt": "Genera voce"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.c53a228ea155": {
+  "nb": "Prøve",
+  "en": "Preview",
+  "oversatt": "Anteprima"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-description.4e82a8ff8da1": {
+  "nb": "Replikkene leses inn med karakterens stemme og legges på dialogsporet der replikken skjer. Teksten er replikken slik den står i manuset. Opptak og importert dialog røres ikke.",
+  "en": "The lines are read in with the character's voice and added to the dialogue track where the line happens. The text is the line as it stands in the script. Recordings and imported dialogue are not touched.",
+  "oversatt": "Le battute vengono lette con la voce del personaggio e inserite nella traccia di dialogo nel punto corrispondente. Il testo corrisponde alla battuta presente nella sceneggiatura. Le registrazioni e i dialoghi importati non vengono modificati."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-title.00f0c4e97559": {
+  "nb": "Dialog med AI-stemmer",
+  "en": "Dialogue with AI voices",
+  "oversatt": "Dialogo con voci IA"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.18adfd59df61": {
+  "nb": " (brukes av {value1})",
+  "en": " (used by {value1})",
+  "oversatt": " (usato da {value1})"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.e5845bc6c891": {
+  "nb": "Ingen stemme",
+  "en": "No voice",
+  "oversatt": "Nessuna voce"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.0311ceb517d3": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "di"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.04cd8630ea62": {
+  "nb": "Stemme per karakter",
+  "en": "Voice per character",
+  "oversatt": "Voce per personaggio"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.100ef4070f6f": {
+  "nb": "med ElevenLabs. Belastes kontoen til prosjektets eier, anslått",
+  "en": "with ElevenLabs. Charged to the project owner's account, estimated at",
+  "oversatt": "con ElevenLabs. Addebitato sull'account del proprietario del progetto, stimato a"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.4d53948d1ff4": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "prezzo sconosciuto"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.63253e65c278": {
+  "nb": "ElevenLabs er ikke koblet til. Prosjektets eier kan koble det til under «AI-leverandører» på prosjektlisten.",
+  "en": "ElevenLabs is not connected. The project owner can connect it under “AI providers” on the project list.",
+  "oversatt": "ElevenLabs non è collegato. Il proprietario del progetto può collegarlo in «Fornitori IA» nell'elenco dei progetti."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.80873a842fb8": {
+  "nb": "Henter stemmer …",
+  "en": "Loading voices …",
+  "oversatt": "Caricamento voci in corso…"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.826dd297a583": {
+  "nb": "Replikker uten lyd er valgt.",
+  "en": "Lines without audio are selected.",
+  "oversatt": "Sono selezionate le battute prive di audio."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.864affde88cc": {
+  "nb": "Scenen har ingen replikker.",
+  "en": "The scene has no lines.",
+  "oversatt": "La scena non contiene battute."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.9de1d844099b": {
+  "nb": "tegn",
+  "en": "characters",
+  "oversatt": "caratteri"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.bb93ceb0b628": {
+  "nb": "Henter leverandører …",
+  "en": "Loading providers …",
+  "oversatt": "Caricamento fornitori in corso…"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.c4e7c7d62f28": {
+  "nb": "(et anslag). Vil du lese dem inn nå?",
+  "en": "(an estimate). Do you want to read them in now?",
+  "oversatt": "(una stima). Vuoi generarle ora?"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.e15eb6c56a7b": {
+  "nb": "Noen replikker har en karakter som ikke finnes i biblioteket; legg den til der for å gi den stemme.",
+  "en": "Some lines have a character that is not in the library; add it there to give it a voice.",
+  "oversatt": "Alcune battute sono assegnate a un personaggio non presente nella libreria; aggiungilo per assegnargli una voce."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9": {
+  "nb": "replikk",
+  "en": "line",
+  "oversatt": "battuta"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "battute"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a.2": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "battute"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.3406f6c1b00a": {
+  "nb": "Stemme:",
+  "en": "Voice:",
+  "oversatt": "Voce:"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.436f8a785531": {
+  "nb": "Har lyd",
+  "en": "Has audio",
+  "oversatt": "Ha audio"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.68068f09d385": {
+  "nb": "mangler",
+  "en": "missing",
+  "oversatt": "mancante"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.709df47b4c98": {
+  "nb": "Ingen stemme valgt",
+  "en": "No voice selected",
+  "oversatt": "Nessuna voce selezionata"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.89523b6c75bc": {
+  "nb": "Mangler lyd",
+  "en": "Missing audio",
+  "oversatt": "Audio mancante"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.8b2bc28e1525": {
+  "nb": "· stemme:",
+  "en": "· voice:",
+  "oversatt": "· voce:"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a24dea879231": {
+  "nb": " (opptak/import)",
+  "en": " (recording/import)",
+  "oversatt": " (registrazione/importazione)"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a4c8c2dc2f7e": {
+  "nb": "brukes også av",
+  "en": "also used by",
+  "oversatt": "usato anche da"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.b3d2460a4c9d": {
+  "nb": "· mangler stemme",
+  "en": "· missing voice",
+  "oversatt": "· voce mancante"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.eca9b3c9f787": {
+  "nb": "Uten navn",
+  "en": "No name",
+  "oversatt": "Senza nome"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.f4cf1a3435e2": {
+  "nb": "har lyd",
+  "en": "have audio",
+  "oversatt": "con audio"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.05954ad88fda": {
+  "nb": "Hør en prøve av stemmen",
+  "en": "Listen to a sample of the voice",
+  "oversatt": "Ascolta un campione della voce"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.2c63aef5e695": {
+  "nb": "Spill av lyden replikken har",
+  "en": "Play the audio the line has",
+  "oversatt": "Riproduci l'audio della battuta"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.d77529e07479": {
+  "nb": "Ingen prøve for stemmen",
+  "en": "No sample for the voice",
+  "oversatt": "Nessun campione per la voce"
+ },
+ "app-assembly-ai-dialogue-dialog.description.l-lest-inn-med-ai-stemmen-l-character-voice-label-l-text-read-in-with-the-ai-voice-l-character-voice-label-l-text-slice.a711e60de6d4": {
+  "nb": "Lest inn med AI-stemmen «{label}»: «{text}»",
+  "en": "Read in with the AI voice “{label}”: “{text}”",
+  "oversatt": "Registrato con la voce IA «{label}»: «{text}»"
+ },
+ "app-assembly-ai-dialogue-dialog.e.cmds-run.83f6ced7c610": {
+  "nb": "Stemme for karakteren",
+  "en": "Voice for the character",
+  "oversatt": "Voce per il personaggio"
+ },
+ "app-assembly-ai-dialogue-dialog.label.label.22038e56bfbf": {
+  "nb": "Tegn",
+  "en": "Characters",
+  "oversatt": "Caratteri"
+ },
+ "app-assembly-ai-dialogue-dialog.label.label.fabf40c27ec9": {
+  "nb": "Samlet anslag",
+  "en": "Estimated total",
+  "oversatt": "Totale stimato"
+ },
+ "app-assembly-ai-dialogue-dialog.lines-read-in": {
+  "nb": {
+   "one": "{count} replikk er lest inn og lagt på dialogsporet. Hver kan angres.",
+   "other": "{count} replikker er lest inn og lagt på dialogsporet. Hver kan angres."
+  },
+  "en": {
+   "one": "{count} line is read in and added to the dialogue track. Each can be undone.",
+   "other": "{count} lines are read in and added to the dialogue track. Each can be undone."
+  },
+  "oversatt": {
+   "one": "{count} battuta è stata registrata e aggiunta alla traccia dei dialoghi. Ognuna può essere annullata.",
+   "other": "{count} battute sono state registrate e aggiunte alla traccia dei dialoghi. Ognuna può essere annullata."
+  }
+ },
+ "app-assembly-ai-dialogue-dialog.name.name.21288548c6ec": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "app-assembly-ai-dialogue-dialog.note.note.c44b36ed3e4f": {
+  "nb": "Lest inn med AI (elevenlabs/{SPEECH_MODEL})",
+  "en": "Read in with AI (elevenlabs/{SPEECH_MODEL})",
+  "oversatt": "Registrato con IA (elevenlabs/{SPEECH_MODEL})"
+ },
+ "app-assembly-ai-dialogue-dialog.play-line-of": {
+  "nb": "Spill av replikken til {speaker}",
+  "en": "Play the line of {speaker}",
+  "oversatt": "Riproduci la battuta di {speaker}"
+ },
+ "app-assembly-ai-dialogue-dialog.play-line-of-character": {
+  "nb": "Spill av replikken til karakteren",
+  "en": "Play the line of the character",
+  "oversatt": "Riproduci la battuta del personaggio"
+ },
+ "app-assembly-ai-dialogue-dialog.res.cmds-run-and-wait.322a48f3e6d4": {
+  "nb": "AI-stemme: {name}",
+  "en": "AI voice: {name}",
+  "oversatt": "Voce IA: {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.run-all.cmds-run-and-wait.c9fdf50ebd5e": {
+  "nb": "AI-stemme: {name}",
+  "en": "AI voice: {name}",
+  "oversatt": "Voce IA: {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.run-all.set-busy.c66b6321c670": {
+  "nb": "Leser inn … {value1} av {length}",
+  "en": "Reading in … {value1} of {length}",
+  "oversatt": "Registrazione in corso… {value1} di {length}"
+ },
+ "app-assembly-ai-dialogue-dialog.targets-label.targets-label.b9c7e2e02290": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "battute"
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.4e568150b005": {
+  "nb": "Lydfilen mangler.",
+  "en": "The audio file is missing.",
+  "oversatt": "Il file audio è mancante."
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.55b21ca2d050": {
+  "nb": "{made} lest inn. {value2}",
+  "en": "{made} read in. {value2}",
+  "oversatt": "{made} registrata/e. {value2}"
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.88c0ff05514d": {
+  "nb": "Lyden kunne ikke spilles av.",
+  "en": "The audio could not be played.",
+  "oversatt": "Impossibile riprodurre l'audio."
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.8f60991872b0": {
+  "nb": "{made} {value2} lest inn og lagt på dialogsporet. Hver kan angres.",
+  "en": "{made} {value2} read in and added to the dialogue track. Each can be undone.",
+  "oversatt": "{made} {value2} registrate e aggiunte alla traccia dei dialoghi. Ognuna può essere annullata."
+ },
+ "app-assembly-ai-dialogue-dialog.total.total.81ac5d637ce2": {
+  "nb": "ca. {value1}",
+  "en": "approx. {value1}",
+  "oversatt": "circa {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.value.value.98830544e254": {
+  "nb": "ca. {value1}",
+  "en": "approx. {value1}",
+  "oversatt": "circa {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.value.value.e18ba2e3a24a": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "prezzo sconosciuto"
+ },
+ "app-assembly-ai-update-section.ai-update-section.aria-label.cff5fd241cb5": {
+  "nb": "Bekreft ny video",
+  "en": "Confirm new video",
+  "oversatt": "Conferma nuovo video"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.0213b3c41bdb": {
+  "nb": "Oppdater med AI",
+  "en": "Update with AI",
+  "oversatt": "Aggiorna con IA"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.0eae5369083a": {
+  "nb": "Ja, lag nye videoer",
+  "en": "Yes, make new videos",
+  "oversatt": "Sì, crea nuovi video"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.14e6b6f0ad02": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annulla"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.508577509caa": {
+  "nb": "Tilbake til forslaget",
+  "en": "Back to the suggestion",
+  "oversatt": "Torna alla proposta"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.a7c27d70b9d1": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "segmenti"
+ },
+ "app-assembly-ai-update-section.ai-update-section.label.497b477bfd08": {
+  "nb": "Beskrivelse for segment {value1}",
+  "en": "Description for segment {value1}",
+  "oversatt": "Descrizione per il segmento {value1}"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.01b1591be1e6": {
+  "nb": "Belastes prosjektets eier, anslått {value1} (et anslag). De gamle videoene beholdes.",
+  "en": "Charged to the project owner, estimated at {value1} (an estimate). The old videos are kept.",
+  "oversatt": "Addebitato al proprietario del progetto, stimato in {value1} (stima). I vecchi video vengono conservati."
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.20a41ec48ba1": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "con"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.2ca282bbc9af": {
+  "nb": "Oppdater AI-videoen",
+  "en": "Update the AI video",
+  "oversatt": "Aggiorna il video IA"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.6f400fcd28e3": {
+  "nb": "Ingen videoleverandør er koblet til (AI-leverandører på prosjektlisten).",
+  "en": "No video provider is connected (AI providers on the project list).",
+  "oversatt": "Nessun fornitore di video collegato (fornitori di IA nell'elenco del progetto)."
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.7a28a05bef70": {
+  "nb": "nye videoer",
+  "en": "new videos",
+  "oversatt": "nuovi video"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.7ff7db948778": {
+  "nb": " (samme som sist)",
+  "en": " (same as last time)",
+  "oversatt": " (uguale all'ultima volta)"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.dfa7da92a486": {
+  "nb": "ny video",
+  "en": "new video",
+  "oversatt": "nuovo video"
+ }
+}

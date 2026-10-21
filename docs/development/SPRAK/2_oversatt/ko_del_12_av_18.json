@@ -1,0 +1,3018 @@
+{
+ "app-script-assist-writing-panel.writing-panel.h3.4a397a4ff149": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "새 씬"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.518079e7996d": {
+  "nb": "Skriv om",
+  "en": "Rewrite",
+  "oversatt": "다시 쓰기"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.5313a20c9ef1": {
+  "nb": "Neste replikk",
+  "en": "Next line",
+  "oversatt": "다음 대사"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.590e2bab5227": {
+  "nb": "Formatsjekk",
+  "en": "Format check",
+  "oversatt": "형식 검사"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.6da054cfe2f1": {
+  "nb": "Sjekk og oversettelse",
+  "en": "Check and translation",
+  "oversatt": "검사 및 번역"
+ },
+ "app-script-assist-writing-panel.writing-panel.label.a82aed4cd888": {
+  "nb": "Noden er allerede brukt i scene {nodeUsedIn}. Lag likevel en ny, separat scene (den eksisterende endres ikke).",
+  "en": "The node is already used in scene {nodeUsedIn}. Create a new, separate scene anyway (the existing one is not changed).",
+  "oversatt": "이 노드는 이미 씬 {nodeUsedIn}에서 사용되었습니다. 그래도 별도의 새 씬을 만드시겠습니까(기존 씬은 변경되지 않음)?"
+ },
+ "app-script-assist-writing-panel.writing-panel.option.26060d25bd2b": {
+  "nb": "Fra beskrivelse",
+  "en": "From description",
+  "oversatt": "설명에서 가져오기"
+ },
+ "app-script-assist-writing-panel.writing-panel.option.2645a4404858": {
+  "nb": "(uten tittel)",
+  "en": "(untitled)",
+  "oversatt": "(제목 없음)"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.108152a12280": {
+  "nb": "{n} linjer valgt",
+  "en": "{n} lines selected",
+  "oversatt": "{n}개 라인 선택됨"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.1e9d27df40e5": {
+  "nb": "Skrivehjelpen krever redigeringstilgang.",
+  "en": "The writing assistant requires edit access.",
+  "oversatt": "글쓰기 어시스턴트를 사용하려면 편집 권한이 필요합니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.2a57ffaf683a": {
+  "nb": "Settes inn til slutt.",
+  "en": "Inserted at the end.",
+  "oversatt": "맨 끝에 삽입됩니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.2f7fa4e2c4f0": {
+  "nb": "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
+  "en": "The built-in AI was used because no own text provider could be used.",
+  "oversatt": "사용 가능한 자체 텍스트 제공업체가 없어 내장 AI가 사용되었습니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+  "nb": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
+  "en": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
+  "oversatt": "초안은 미확정 번역으로 저장되며 승인이 필요합니다. 노르웨이어 대본은 변경되지 않습니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.7934c771bc6b": {
+  "nb": "{value1} · {label} · anslått {value3}",
+  "en": "{value1} · {label} · estimated {value3}",
+  "oversatt": "{value1} · {label} · 예상 {value3}"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.8a7c9a9beee1": {
+  "nb": "Settes inn etter den valgte scenen.",
+  "en": "Inserted after the selected scene.",
+  "oversatt": "선택한 씬 뒤에 삽입됩니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.8c550f9bedc7": {
+  "nb": "Noen linjer er endret av noen andre etter at forslaget ble laget. De kan ikke brukes; lag forslaget på nytt.",
+  "en": "Some lines were changed by someone else after the suggestion was made. They cannot be used; create the suggestion again.",
+  "oversatt": "제안이 생성된 후 다른 사용자가 일부 라인을 수정했습니다. 적용할 수 없으므로 제안을 다시 생성하세요."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.90049b80cbee": {
+  "nb": "Finner tekst-AI …",
+  "en": "Finding text AI …",
+  "oversatt": "텍스트 AI 찾는 중…"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.d03ff48004e9": {
+  "nb": "Marker en replikk eller handling i manuset.",
+  "en": "Select a line or action in the script.",
+  "oversatt": "대본에서 대사나 지문을 선택하세요."
+ },
+ "app-script-assist-writing-panel.writing-panel.p.dd43db7101ec": {
+  "nb": "Brukt i økten: {value1}",
+  "en": "Spent this session: {value1}",
+  "oversatt": "이번 세션 사용량: {value1}"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.f1f37da2bc0c": {
+  "nb": "Skriver forslaget …",
+  "en": "Writing the suggestion …",
+  "oversatt": "제안 작성 중…"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.fe382f665edf": {
+  "nb": "Karakteren vet bare det Story Lab sier at den vet på dette tidspunktet.",
+  "en": "The character only knows what Story Lab says it knows at this point.",
+  "oversatt": "이 시점에서 캐릭터는 Story Lab에 명시된 내용만 알고 있습니다."
+ },
+ "app-script-assist-writing-panel.writing-panel.placeholder.19a8262143f4": {
+  "nb": "Ønske (valgfritt) – f.eks. «mer sint»",
+  "en": "Request (optional) – e.g. “angrier”",
+  "oversatt": "요청 사항(선택) – 예: “더 화난 느낌으로”"
+ },
+ "app-script-assist-writing-panel.writing-panel.placeholder.958e91747e11": {
+  "nb": "Kort beskrivelse av scenen",
+  "en": "Short description of the scene",
+  "oversatt": "씬에 대한 간단한 설명"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.16f70c48ca1c": {
+  "nb": "Neste replikk (Alt + Shift + N)",
+  "en": "Next line (Alt + Shift + N)",
+  "oversatt": "다음 대사 (Alt + Shift + N)"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.37e3eb3bd717": {
+  "nb": "Skriv om (Alt + Shift + R)",
+  "en": "Rewrite (Alt + Shift + R)",
+  "oversatt": "다시 쓰기 (Alt + Shift + R)"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.75814a344cfa": {
+  "nb": "Formatsjekk, gratis (Alt + Shift + F)",
+  "en": "Format check, free (Alt + Shift + F)",
+  "oversatt": "형식 검사, 무료 (Alt + Shift + F)"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.1a3c3eeef360": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.1a3c3eeef360.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.23f00f6c1c0c": {
+  "nb": "Foreslå neste replikk",
+  "en": "Suggest next line",
+  "oversatt": "다음 대사 제안"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.43722c49eb65": {
+  "nb": "Skriv om …",
+  "en": "Rewrite …",
+  "oversatt": "다시 쓰기…"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+  "nb": "Engelsk utkast",
+  "en": "English draft",
+  "oversatt": "영어 초안"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.5289d6353b39": {
+  "nb": "Språkvask",
+  "en": "Language polish",
+  "oversatt": "윤문"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227": {
+  "nb": "Formatsjekk",
+  "en": "Format check",
+  "oversatt": "형식 검사"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.636fb5cc2174": {
+  "nb": "Bruk valgte",
+  "en": "Use selected",
+  "oversatt": "선택 항목 사용"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.b8422687ce0d": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.c78619b71c82": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "폐기"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.c78619b71c82.2": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "폐기"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.ca9ac6b005f1": {
+  "nb": "Lagre som forsøksvis redigering",
+  "en": "Save as trial edit",
+  "oversatt": "임시 편집으로 저장"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.ca9ac6b005f1.2": {
+  "nb": "Lagre som forsøksvis redigering",
+  "en": "Save as trial edit",
+  "oversatt": "임시 편집으로 저장"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.cd9bd339bf7b": {
+  "nb": "Bekreft og send",
+  "en": "Confirm and send",
+  "oversatt": "확인 및 전송"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.d71e27f8f32f": {
+  "nb": "Lag utkast til scene",
+  "en": "Draft a scene",
+  "oversatt": "씬 초안 작성"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197": {
+  "nb": "Bruk",
+  "en": "Use",
+  "oversatt": "사용"
+ },
+ "app-script-block-links-section.block-links-section.aria-label.4c5b883a7388": {
+  "nb": "Åpne {name} i biblioteket",
+  "en": "Open {name} in the library",
+  "oversatt": "라이브러리에서 {name} 열기"
+ },
+ "app-script-block-links-section.block-links-section.aria-label.8929cf28ef38": {
+  "nb": "Koblinger for linjen",
+  "en": "Links for the line",
+  "oversatt": "대사 링크"
+ },
+ "app-script-block-links-section.block-links-section.li.24926cd36829": {
+  "nb": "Ingen – importer film eller lag AI-video i monteringen",
+  "en": "None – import film or make AI video in the assembly",
+  "oversatt": "없음 – 어셈블리에서 필름을 가져오거나 AI 비디오를 생성하세요"
+ },
+ "app-script-block-links-section.block-links-section.li.3d4a6abc5627": {
+  "nb": "Ingen – bruk «Synk replikker» i monteringen",
+  "en": "None – use “Sync lines” in the assembly",
+  "oversatt": "없음 – 어셈블리에서 '대사 동기화'를 사용하세요"
+ },
+ "app-script-block-links-section.block-links-section.li.b046aac2ce89": {
+  "nb": "Ingen – legg lyd på dialogsporet i monteringen",
+  "en": "None – add audio to the dialogue track in the assembly",
+  "oversatt": "없음 – 어셈블리의 대사 트랙에 오디오를 추가하세요"
+ },
+ "app-script-block-links-section.block-links-section.li.f962daff9087": {
+  "nb": "Ingen – koble linjen til et lag i sceneeditoren",
+  "en": "None – link the line to a layer in the scene editor",
+  "oversatt": "없음 – 씬 편집기에서 대사를 레이어에 연결하세요"
+ },
+ "app-script-block-links-section.block-links-section.link.e3fdf8b65a21": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-script-block-links-section.block-links-section.montering.6ab6efa3dbde": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "표시"
+ },
+ "app-script-block-links-section.block-links-section.montering.6ab6efa3dbde.2": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "표시"
+ },
+ "app-script-block-links-section.block-links-section.span.405cad589ca8": {
+  "nb": "hele scenen",
+  "en": "the whole scene",
+  "oversatt": "전체 씬"
+ },
+ "app-script-block-links-section.block-links-section.span.5ae8c9620429": {
+  "nb": "dekker linjen",
+  "en": "covers the line",
+  "oversatt": "대사 포함"
+ },
+ "app-script-block-links-section.block-links-section.span.7607ff032da6": {
+  "nb": "segmentet",
+  "en": "the segment",
+  "oversatt": "세그먼트"
+ },
+ "app-script-block-links-section.block-links-section.span.8a142ce45fd8": {
+  "nb": " · godkjent",
+  "en": " · approved",
+  "oversatt": " · 승인됨"
+ },
+ "app-script-block-links-section.block-links-section.title.09ad98462077": {
+  "nb": "Filmklipp",
+  "en": "Film clips",
+  "oversatt": "필름 클립"
+ },
+ "app-script-block-links-section.block-links-section.title.41e9be5b1a0d": {
+  "nb": "Tidspunkt i scenen",
+  "en": "Time in the scene",
+  "oversatt": "씬 내 시간"
+ },
+ "app-script-block-links-section.block-links-section.title.5758aad81b92": {
+  "nb": "Åpne lydfilen i biblioteket",
+  "en": "Open the audio file in the library",
+  "oversatt": "라이브러리에서 오디오 파일 열기"
+ },
+ "app-script-block-links-section.block-links-section.title.7b415e4bfd1b": {
+  "nb": "Hendelser i 2D-scenen",
+  "en": "Events in the 2D scene",
+  "oversatt": "2D 씬의 이벤트"
+ },
+ "app-script-block-links-section.block-links-section.title.d8ec1d2ea925": {
+  "nb": "Dialogopptak",
+  "en": "Dialogue recordings",
+  "oversatt": "대사 녹음본"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.a.2b14fcf177d7": {
+  "nb": "Åpne vinduet manuelt",
+  "en": "Open window manually",
+  "oversatt": "창 수동으로 열기"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.404e4b629270": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "대본 탐색기"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.8b1abcb1e1eb": {
+  "nb": "Endre vindusstørrelse",
+  "en": "Resize window",
+  "oversatt": "창 크기 조절"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.be55e869b1a8": {
+  "nb": "Lukk Manusutforskeren",
+  "en": "Close script explorer",
+  "oversatt": "대본 탐색기 닫기"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.p.7c774a42771f": {
+  "nb": "Nettleseren blokkerte vinduet. Tillat popup-vinduer for denne siden, eller åpne vinduet manuelt.",
+  "en": "Your browser blocked the window. Allow popups for this site, or open the window manually.",
+  "oversatt": "브라우저에서 팝업 창을 차단했습니다. 이 사이트의 팝업을 허용하거나 창을 직접 여세요."
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.span.404e4b629270": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "대본 탐색기"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.title.be55e869b1a8": {
+  "nb": "Lukk Manusutforskeren",
+  "en": "Close script explorer",
+  "oversatt": "대본 탐색기 닫기"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.toolbar-button.01bb4529fe0d": {
+  "nb": "Fest",
+  "en": "Pin",
+  "oversatt": "고정"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.3d7ec3440a0b": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "등장인물"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.7a3470613cac": {
+  "nb": "Steder og objekter",
+  "en": "Locations and objects",
+  "oversatt": "장소 및 오브젝트"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.871909b22d34": {
+  "nb": "Angre notat",
+  "en": "Undo note",
+  "oversatt": "메모 실행 취소"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.9a8d5b29002a": {
+  "nb": "Gjør om notat",
+  "en": "Redo note",
+  "oversatt": "메모 다시 실행"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.b0612b0fa775": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.b7eeecafc7af": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "이전 씬"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.c64f0677f268": {
+  "nb": "Søk i hele manuset",
+  "en": "Search the whole script",
+  "oversatt": "전체 대본 검색"
+ },
+ "app-script-explorer-script-explorer.explorer-content.button.1086bdc39ae5": {
+  "nb": "Åpne",
+  "en": "Open",
+  "oversatt": "열기"
+ },
+ "app-script-explorer-script-explorer.explorer-content.button.d2e41838a5fc": {
+  "nb": "Tilbake til aktiv scene",
+  "en": "Back to active scene",
+  "oversatt": "활성 씬으로 돌아가기"
+ },
+ "app-script-explorer-script-explorer.explorer-content.link.20fc3e3355c1": {
+  "nb": "Åpne i manus",
+  "en": "Open in script",
+  "oversatt": "대본에서 열기"
+ },
+ "app-script-explorer-script-explorer.explorer-content.new-label.1a52b920449e": {
+  "nb": "Notat på markert tekst",
+  "en": "Note on selected text",
+  "oversatt": "선택한 텍스트에 메모"
+ },
+ "app-script-explorer-script-explorer.explorer-content.new-label.dada04c66a45": {
+  "nb": "Legg til notat",
+  "en": "Add note",
+  "oversatt": "메모 추가"
+ },
+ "app-script-explorer-script-explorer.explorer-content.option.7a3470613cac": {
+  "nb": "Steder og objekter",
+  "en": "Locations and objects",
+  "oversatt": "위치 및 오브젝트"
+ },
+ "app-script-explorer-script-explorer.explorer-content.option.dbd5a355b488": {
+  "nb": "Alle karakterer",
+  "en": "All characters",
+  "oversatt": "모든 캐릭터"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.25d7d411c290": {
+  "nb": "Ingen treff.",
+  "en": "No results.",
+  "oversatt": "검색 결과가 없습니다."
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.7e3bf0a50454": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "저장 중 …"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.cf78ad85ac23": {
+  "nb": "Notatet ble ikke lagret. Teksten er beholdt:",
+  "en": "The note was not saved. Your text has been kept:",
+  "oversatt": "노트가 저장되지 않았습니다. 작성한 텍스트는 유지됩니다:"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.e8c06996ab35": {
+  "nb": "Manuset har ingen scener.",
+  "en": "The script has no scenes.",
+  "oversatt": "대본에 씬이 없습니다."
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.ef33975dceb9": {
+  "nb": "Hovedvinduet er lukket",
+  "en": "The main window is closed",
+  "oversatt": "메인 창이 닫혀 있습니다"
+ },
+ "app-script-explorer-script-explorer.explorer-content.placeholder.a4cb06282c6e": {
+  "nb": "Søk i hele manuset …",
+  "en": "Search the whole script …",
+  "oversatt": "전체 대본 검색 …"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.4eed2bdc78c6": {
+  "nb": "Følger vindu {value1} · {title}",
+  "en": "Following window {value1} · {title}",
+  "oversatt": "{value1} 창 따르는 중 · {title}"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.553184b77f37": {
+  "nb": "Følg aktiv scene",
+  "en": "Follow active scene",
+  "oversatt": "활성 씬 따르기"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.fed80a5372b1": {
+  "nb": "Viser søkeresultat",
+  "en": "Showing search result",
+  "oversatt": "검색 결과 표시 중"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.02780cae297d": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "노트"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.871909b22d34": {
+  "nb": "Angre notat",
+  "en": "Undo note",
+  "oversatt": "노트 실행 취소"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.9a8d5b29002a": {
+  "nb": "Gjør om notat",
+  "en": "Redo note",
+  "oversatt": "노트 다시 실행"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.b0612b0fa775": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.b7eeecafc7af": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "이전 씬"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.c6de4b729a1c": {
+  "nb": "Avvik mellom manus og lyd",
+  "en": "Script and audio differences",
+  "oversatt": "대본과 오디오 불일치"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.132476c7f15a": {
+  "nb": "Overskrifter",
+  "en": "Headings",
+  "oversatt": "헤딩"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.36db803c47a0": {
+  "nb": "Alt",
+  "en": "All",
+  "oversatt": "모두"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.7dc91baf14b9": {
+  "nb": "Replikker",
+  "en": "Dialogue",
+  "oversatt": "대사"
+ },
+ "app-script-explorer-script-explorer.label.label.14b473091f96": {
+  "nb": "Deltar",
+  "en": "Participates",
+  "oversatt": "참여"
+ },
+ "app-script-explorer-script-explorer.label.label.6ce67b7d210c": {
+  "nb": "Treff",
+  "en": "Results",
+  "oversatt": "결과"
+ },
+ "app-script-explorer-script-explorer.label.label.96ca51977db8": {
+  "nb": "Omtales",
+  "en": "Mentioned",
+  "oversatt": "언급됨"
+ },
+ "app-script-explorer-script-explorer.script-explorer.button.fe0fa89691b1": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.1f07d79dc7d2": {
+  "nb": "Du har ikke tilgang til prosjektet.",
+  "en": "You do not have access to this project.",
+  "oversatt": "이 프로젝트에 대한 접근 권한이 없습니다."
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.43b04a6fd41c": {
+  "nb": "Manuset kunne ikke hentes.",
+  "en": "The script could not be loaded.",
+  "oversatt": "대본을 불러올 수 없습니다."
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.9cb6a12d6af4": {
+  "nb": "Henter manus …",
+  "en": "Loading script …",
+  "oversatt": "대본 불러오는 중 …"
+ },
+ "app-script-explorer-script-explorer.title.message.3d344f60006f": {
+  "nb": "Ingen aktiv scene",
+  "en": "No active scene",
+  "oversatt": "활성 씬 없음"
+ },
+ "app-script-export-dialog.export-dialog.a.1ebd510d96a7": {
+  "nb": "Last ned «{name}»",
+  "en": "Download “{name}”",
+  "oversatt": "“{name}” 다운로드"
+ },
+ "app-script-export-dialog.export-dialog.aria-label.c83247845f9a": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "버전"
+ },
+ "app-script-export-dialog.export-dialog.button.1cf11cc3cf13": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-export-dialog.export-dialog.button.eac96f6141a2": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-script-export-dialog.export-dialog.button.f614693c69c2": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "내보내기"
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.7c1fa74ceb76": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "”"
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.b0505a9dcdb9": {
+  "nb": "scener. Eksporten endrer ingenting i prosjektet.",
+  "en": "scenes. The export does not change anything in the project.",
+  "oversatt": "씬. 내보내기를 해도 프로젝트 내용은 변경되지 않습니다."
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.b5e5a710b2bc": {
+  "nb": "«",
+  "en": "“",
+  "oversatt": "“"
+ },
+ "app-script-export-dialog.export-dialog.dialog-title.4798ad21711e": {
+  "nb": "Eksporter manus",
+  "en": "Export script",
+  "oversatt": "대본 내보내기"
+ },
+ "app-script-export-dialog.export-dialog.label.031e7654d236": {
+  "nb": "Ta med deaktiverte scener",
+  "en": "Include inactive scenes",
+  "oversatt": "비활성 씬 포함"
+ },
+ "app-script-export-dialog.export-dialog.label.162e1c74eb0b": {
+  "nb": "tydelig merket, uten nummer",
+  "en": "clearly marked, without a number",
+  "oversatt": "명확히 표시됨, 번호 없음"
+ },
+ "app-script-export-dialog.export-dialog.label.196f6fde7370": {
+  "nb": "som «UTGÅR»",
+  "en": "as “OMITTED”",
+  "oversatt": "“생략(OMITTED)”으로 표시"
+ },
+ "app-script-export-dialog.export-dialog.label.2a13ae5f5af3": {
+  "nb": "De gjenopprettes hvis filen importeres igjen.",
+  "en": "They are restored if the file is imported again.",
+  "oversatt": "파일을 다시 가져오면 복원됩니다."
+ },
+ "app-script-export-dialog.export-dialog.label.382e46a98e2e": {
+  "nb": "Tittelside (tom = ingen tittelside)",
+  "en": "Title page (empty = no title page)",
+  "oversatt": "표지 (비어 있음 = 표지 없음)"
+ },
+ "app-script-export-dialog.export-dialog.label.3913a86903d2": {
+  "nb": "Ta med notater",
+  "en": "Include notes",
+  "oversatt": "메모 포함"
+ },
+ "app-script-export-dialog.export-dialog.label.5d194335bf45": {
+  "nb": "som Fountain-notater [[…]], med navn og dato",
+  "en": "as Fountain notes [[…]], with name and date",
+  "oversatt": "이름 및 날짜가 포함된 Fountain 메모 [[…]] 형식으로"
+ },
+ "app-script-export-dialog.export-dialog.label.91aad564b1d0": {
+  "nb": "Gi også scener som var unummerert i originalen et mellomnummer (f.eks. 1A). Nye scener får det alltid.",
+  "en": "Also give scenes that were unnumbered in the original an in-between number (e.g. 1A). New scenes always get one.",
+  "oversatt": "원본에서 번호가 매겨지지 않은 씬에도 사이 번호(예: 1A)를 부여합니다. 새로운 씬에는 항상 번호가 부여됩니다."
+ },
+ "app-script-export-dialog.export-dialog.label.94e82acca1d7": {
+  "nb": "som Word-kommentarer, med navn og tidspunkt",
+  "en": "as Word comments, with name and time",
+  "oversatt": "이름 및 시간이 포함된 Word 메모 형식으로"
+ },
+ "app-script-export-dialog.export-dialog.label.d213245924c2": {
+  "nb": "som PDF-merknader, med navn og tidspunkt",
+  "en": "as PDF comments, with name and time",
+  "oversatt": "이름 및 시간이 포함된 PDF 주석 형식으로"
+ },
+ "app-script-export-dialog.export-dialog.legend.6fe6a7497744": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "형식"
+ },
+ "app-script-export-dialog.export-dialog.legend.7de83198fb7f": {
+  "nb": "Scenenummer",
+  "en": "Scene numbering",
+  "oversatt": "씬 번호 매기기"
+ },
+ "app-script-export-dialog.export-dialog.p.56edf081c585": {
+  "nb": "· ingen endringer",
+  "en": "· no changes",
+  "oversatt": "· 변경 사항 없음"
+ },
+ "app-script-export-dialog.export-dialog.p.5b17c918b07b": {
+  "nb": "Henter versjonen …",
+  "en": "Fetching the version …",
+  "oversatt": "버전을 가져오는 중…"
+ },
+ "app-script-export-dialog.export-dialog.p.5bca912aefc4": {
+  "nb": "Filen er laget:",
+  "en": "The file has been created:",
+  "oversatt": "파일이 생성되었습니다:"
+ },
+ "app-script-export-dialog.export-dialog.p.6fad06d2fe3f": {
+  "nb": "Kunne ikke hente versjonen. Prøv igjen.",
+  "en": "Could not fetch the version. Try again.",
+  "oversatt": "버전을 가져올 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-script-export-dialog.export-dialog.p.892810a87a9e": {
+  "nb": "Eksporten feilet",
+  "en": "The export failed",
+  "oversatt": "내보내기 실패"
+ },
+ "app-script-export-dialog.export-dialog.p.ba09db7f5f2c": {
+  "nb": "Forhåndsvisning av nummerering",
+  "en": "Numbering preview",
+  "oversatt": "번호 매기기 미리보기"
+ },
+ "app-script-export-dialog.export-dialog.p.d77bf1eca951": {
+  "nb": "· {changed} endret",
+  "en": "· {changed} changed",
+  "oversatt": "· {changed}개 변경됨"
+ },
+ "app-script-export-dialog.export-dialog.p.d7e1637f700f": {
+  "nb": "Låste sider: sideskiftene følger originalen der teksten er uendret.",
+  "en": "Locked pages: the page breaks follow the original where the text is unchanged.",
+  "oversatt": "페이지 고정: 텍스트가 변경되지 않은 경우 페이지 나눔이 원본을 따릅니다."
+ },
+ "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
+  "nb": "Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+  "en": "Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+  "oversatt": "다운로드가 시작되지 않았나요? Animatic Studio 미리보기가 다운로드를 차단할 수 있습니다. 별도 탭(미리보기 상단의 새 탭 버튼)에서 앱을 열고 거기서 내보내기를 진행해 주세요."
+ },
+ "app-script-export-dialog.export-dialog.span.02b21f503acd": {
+  "nb": "Lagre en manusversjon først (Versjoner)",
+  "en": "Save a script version first (Versions)",
+  "oversatt": "먼저 대본 버전을 저장하세요 (버전)"
+ },
+ "app-script-export-dialog.export-dialog.span.0570cbae45fd": {
+  "nb": "Bevar produksjonsnummerering",
+  "en": "Keep production numbering",
+  "oversatt": "프로덕션 번호 매기기 유지"
+ },
+ "app-script-export-dialog.export-dialog.span.140fdb55fa92": {
+  "nb": "Redigerbar; Word bryter sidene selv",
+  "en": "Editable; Word breaks the pages itself",
+  "oversatt": "편집 가능, Word에서 자동으로 페이지 나눔"
+ },
+ "app-script-export-dialog.export-dialog.span.2e7f5a46f438": {
+  "nb": "UTGÅR – ",
+  "en": "OMITTED – ",
+  "oversatt": "생략됨 – "
+ },
+ "app-script-export-dialog.export-dialog.span.33e12df0c58b": {
+  "nb": "Fylt ut med prosjektnavnet. Endre fritt.",
+  "en": "Filled in with the project name. Change freely.",
+  "oversatt": "프로젝트 이름으로 자동 입력되었습니다. 자유롭게 변경하세요."
+ },
+ "app-script-export-dialog.export-dialog.span.364dad201af9": {
+  "nb": "Alle aktive scener nummereres 1, 2, 3 …",
+  "en": "All active scenes are numbered 1, 2, 3 …",
+  "oversatt": "모든 활성 씬의 번호가 1, 2, 3… 순으로 매겨집니다"
+ },
+ "app-script-export-dialog.export-dialog.span.793f4e040a25": {
+  "nb": "Etablerte numre beholdes; nye scener får 42A, 42B …",
+  "en": "Established numbers are kept; new scenes get 42A, 42B …",
+  "oversatt": "기존 번호는 유지되며, 새로운 씬에는 42A, 42B… 등이 부여됩니다"
+ },
+ "app-script-export-dialog.export-dialog.span.7fde2e97a8b3": {
+  "nb": "Scener som fantes i versjonen får numrene derfra",
+  "en": "Scenes that existed in the version get their numbers from it",
+  "oversatt": "해당 버전에 존재했던 씬은 해당 버전의 번호를 가져옵니다"
+ },
+ "app-script-export-dialog.export-dialog.span.8697abcfdce9": {
+  "nb": "Ferdige sider, nøyaktig som i manusvisningen",
+  "en": "Finished pages, exactly as in the script view",
+  "oversatt": "완성된 페이지, 대본 보기와 정확히 일치"
+ },
+ "app-script-export-dialog.export-dialog.span.89e54cf8123b": {
+  "nb": "Deaktivert – ",
+  "en": "Inactive – ",
+  "oversatt": "비활성 – "
+ },
+ "app-script-export-dialog.export-dialog.span.8d1f1240995d": {
+  "nb": "Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst",
+  "en": "The title page is longer than can be saved for next time (about 3 kB, at most",
+  "oversatt": "표지가 다음 저장을 위해 허용된 크기보다 깁니다(약 3kB, 최대"
+ },
+ "app-script-export-dialog.export-dialog.span.9c2f221ce712": {
+  "nb": "Bevar valgt historisk nummerering",
+  "en": "Keep the chosen historical numbering",
+  "oversatt": "선택한 이전 번호 매기기 유지"
+ },
+ "app-script-export-dialog.export-dialog.span.a8e053496f38": {
+  "nb": "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt.",
+  "en": "Filled in from the saved title page (from the import or the previous export). Change freely.",
+  "oversatt": "저장된 표지(가져오기 또는 이전 내보내기)의 내용으로 입력되었습니다. 자유롭게 변경하세요."
+ },
+ "app-script-export-dialog.export-dialog.span.b1d66d194a22": {
+  "nb": "linjer). Hele teksten kommer med i denne filen, men den lagrede kopien blir kortet.",
+  "en": "lines). The whole text is included in this file, but the saved copy will be shortened.",
+  "oversatt": "줄). 전체 텍스트가 이 파일에 포함되지만, 저장되는 사본은 축약됩니다."
+ },
+ "app-script-export-dialog.export-dialog.span.ce980cf51696": {
+  "nb": "Ren tekst for andre manusprogrammer; de bryter sidene selv",
+  "en": "Plain text for other script programs; they break the pages themselves",
+  "oversatt": "다른 대본 프로그램용 일반 텍스트, 해당 프로그램에서 자동으로 페이지를 나눕니다"
+ },
+ "app-script-export-dialog.export-dialog.span.fb0bccb39106": {
+  "nb": "Fortløpende",
+  "en": "Continuous",
+  "oversatt": "연속"
+ },
+ "app-script-export-dialog.export-dialog.th.0f5266910982": {
+  "nb": "Eksport",
+  "en": "Export",
+  "oversatt": "내보내기"
+ },
+ "app-script-export-dialog.export-dialog.th.47d07aa8f817": {
+  "nb": "Overskrift",
+  "en": "Heading",
+  "oversatt": "제목"
+ },
+ "app-script-export-dialog.export-dialog.th.94e6ca13971b": {
+  "nb": "I dag",
+  "en": "Today",
+  "oversatt": "오늘"
+ },
+ "app-script-import-dialog.do-import.message.7b0cfdb04220": {
+  "nb": "Originalfilen kunne ikke lagres: lagringen godtar ennå ikke Fountain-filer (ren tekst). Importen er stoppet – ingenting er endret. Databasen må oppdateres så «sources» tillater text/plain ({message}).",
+  "en": "The original file could not be saved: the storage does not yet accept Fountain files (plain text). The import has stopped – nothing has changed. The database must be updated so “sources” allows text/plain ({message}).",
+  "oversatt": "원본 파일을 저장할 수 없습니다. 저장소에서 아직 Fountain 파일(일반 텍스트)을 지원하지 않습니다. 가져오기가 중단되었으며 변경된 내용이 없습니다. \"sources\"에서 text/plain을 허용하도록 데이터베이스를 업데이트해야 합니다({message})."
+ },
+ "app-script-import-dialog.do-import.message.7efee5915d7d": {
+  "nb": "Originalfilen kunne ikke lagres ({message}). Importen er stoppet – ingenting er endret. Er databasemigrasjon 0002 kjørt?",
+  "en": "The original file could not be saved ({message}). The import has stopped – nothing has changed. Has database migration 0002 been run?",
+  "oversatt": "원본 파일을 저장할 수 없습니다({message}). 가져오기가 중단되었으며 변경된 내용이 없습니다. 데이터베이스 마이그레이션 0002가 실행되었나요?"
+ },
+ "app-script-import-dialog.import-dialog.aria-label.863961f76e60": {
+  "nb": "Velg manusfil",
+  "en": "Choose script file",
+  "oversatt": "대본 파일 선택"
+ },
+ "app-script-import-dialog.import-dialog.button.7dc8880ce838": {
+  "nb": "Velg fil …",
+  "en": "Choose file …",
+  "oversatt": "파일 선택 …"
+ },
+ "app-script-import-dialog.import-dialog.button.9697f3b03d0e": {
+  "nb": "Velg en annen fil",
+  "en": "Choose another file",
+  "oversatt": "다른 파일 선택"
+ },
+ "app-script-import-dialog.import-dialog.button.9df095e2b803": {
+  "nb": "Prøv registreringen igjen",
+  "en": "Try the registration again",
+  "oversatt": "등록 다시 시도"
+ },
+ "app-script-import-dialog.import-dialog.button.ab8bf2ee3d96": {
+  "nb": "Importer",
+  "en": "Import",
+  "oversatt": "가져오기"
+ },
+ "app-script-import-dialog.import-dialog.button.e00e46e21cdd": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-script-import-dialog.import-dialog.button.eb2ecf1aa4cb": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-script-import-dialog.import-dialog.button.ec871e78dfae": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "개 씬"
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.337b3b78113c": {
+  "nb": " etter de {existing} scenene som finnes",
+  "en": " after the {existing} existing scenes",
+  "oversatt": " (기존 {existing}개 씬 뒤에)"
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.c95508206c3a": {
+  "nb": "PDF (f.eks. fra Final Draft), Word (.docx) eller Fountain (.fountain). Scenene legges i",
+  "en": "PDF (e.g. from Final Draft), Word (.docx) or Fountain (.fountain). The scenes are added to",
+  "oversatt": "PDF(예: Final Draft), Word(.docx) 또는 Fountain(.fountain). 씬은 다음에 추가됩니다: "
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.ef2ed7648511": {
+  "nb": ". Originalfilen lagres uendret.",
+  "en": ". The original file is saved unchanged.",
+  "oversatt": ". 원본 파일은 변경되지 않고 저장됩니다."
+ },
+ "app-script-import-dialog.import-dialog.dialog-title.93cd6d89e3a4": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "대본 가져오기"
+ },
+ "app-script-import-dialog.import-dialog.p.08e20e3a9a6e": {
+  "nb": "Notatene i filen ble ikke lagret: {value1}",
+  "en": "The notes in the file were not saved: {value1}",
+  "oversatt": "파일의 메모가 저장되지 않았습니다: {value1}"
+ },
+ "app-script-import-dialog.import-dialog.p.1317e7c11eb1": {
+  "nb": "Leser «{fileName}» …",
+  "en": "Reading “{fileName}” …",
+  "oversatt": "“{fileName}” 읽는 중 …"
+ },
+ "app-script-import-dialog.import-dialog.p.167095065673": {
+  "nb": "Originalen er registrert med kontrollsum.",
+  "en": "The original is registered with a checksum.",
+  "oversatt": "원본이 체크섬과 함께 등록되었습니다."
+ },
+ "app-script-import-dialog.import-dialog.p.2f2c8d7d6c45": {
+  "nb": " og {notes} notater",
+  "en": " and {notes} notes",
+  "oversatt": " 및 메모 {notes}개"
+ },
+ "app-script-import-dialog.import-dialog.p.47295aafdb5f": {
+  "nb": "Tittelsiden fra filen ble ikke lagret ({value1}). Manuset er importert; skriv tittelsiden i eksportdialogen.",
+  "en": "The title page from the file was not saved ({value1}). The script is imported; write the title page in the export dialog.",
+  "oversatt": "파일의 타이틀 페이지가 저장되지 않았습니다({value1}). 대본을 가져왔습니다. 타이틀 페이지는 내보내기 대화상자에서 작성하세요."
+ },
+ "app-script-import-dialog.import-dialog.p.55bb6af99877": {
+  "nb": "Manuset er importert, men originalfilen ble ikke registrert med kontrollsum ({value1}). Manuset er i orden og kan brukes. Originalen ligger lagret, men kan ikke kontrolleres eller lastes ned fra versjonene. Ikke importer på nytt (da blir scenene dobbelt) – prøv registreringen igjen, eller gi beskjed, så kan den gjøres for hånd.",
+  "en": "The script is imported, but the original file was not registered with a checksum ({value1}). The script is fine and can be used. The original is stored, but it cannot be verified or downloaded from the versions. Do not import again (then the scenes would be doubled) – try the registration again, or let us know so it can be done by hand.",
+  "oversatt": "대본을 가져왔지만 원본 파일이 체크섬과 함께 등록되지 않았습니다({value1}). 대본 자체는 정상이므로 작업에 사용할 수 있습니다. 원본 파일은 저장되었으나 버전을 통한 확인이나 다운로드는 불가능합니다. 다시 가져오지 마세요(씬이 중복됩니다). 등록을 다시 시도하거나 문의해 주시면 수동으로 처리해 드리겠습니다."
+ },
+ "app-script-import-dialog.import-dialog.p.6adda150e215": {
+  "nb": "Tittelsiden fra filen er lagret og foreslås når manuset eksporteres.",
+  "en": "The title page from the file is saved and suggested when the script is exported.",
+  "oversatt": "파일의 타이틀 페이지가 저장되었으며, 대본을 내보낼 때 추천 항목으로 표시됩니다."
+ },
+ "app-script-import-dialog.import-dialog.p.81dc994ccac3": {
+  "nb": " er importert. Hele importen kan angres med ⌘/Ctrl + Z.",
+  "en": " have been imported. The whole import can be undone with ⌘/Ctrl + Z.",
+  "oversatt": " 항목을 가져왔습니다. 전체 가져오기 작업은 ⌘/Ctrl + Z로 실행 취소할 수 있습니다."
+ },
+ "app-script-import-dialog.import-dialog.p.a1b4bf968f16": {
+  "nb": "Tittelsiden fra filen er lagret, men den var for lang og er kortet ned. Se over den når du eksporterer manuset.",
+  "en": "The title page from the file is saved, but it was too long and has been shortened. Check it when you export the script.",
+  "oversatt": "파일의 타이틀 페이지가 저장되었으나 길이가 너무 길어 축소되었습니다. 대본을 내보낼 때 확인해 주세요."
+ },
+ "app-script-import-dialog.import-dialog.p.e24ea975c4e3": {
+  "nb": "Slipp filen her, eller",
+  "en": "Drop the file here, or",
+  "oversatt": "여기에 파일을 드롭하거나"
+ },
+ "app-script-import-dialog.import-dialog.p.ec871e78dfae": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "개 씬"
+ },
+ "app-script-import-dialog.preview.aria-label.7d31b64b3fcd": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "불확실"
+ },
+ "app-script-import-dialog.preview.dd.23aabba27c51": {
+  "nb": "med nummer",
+  "en": "numbered",
+  "oversatt": "번호 있음"
+ },
+ "app-script-import-dialog.preview.dd.3a9c1e80e215": {
+  "nb": "overskrifter",
+  "en": "headings",
+  "oversatt": "개 씬 제목"
+ },
+ "app-script-import-dialog.preview.dd.5803635c5ff5": {
+  "nb": "(legges inn på samme sted, med navn og tidspunkt)",
+  "en": "(added in the same place, with name and time)",
+  "oversatt": "(이름 및 시간과 함께 동일한 위치에 추가됨)"
+ },
+ "app-script-import-dialog.preview.dd.7d9b7e84a91c": {
+  "nb": "elementer",
+  "en": "items",
+  "oversatt": "개 항목"
+ },
+ "app-script-import-dialog.preview.dd.a086c349debf": {
+  "nb": "uten",
+  "en": "unnumbered",
+  "oversatt": "번호 없음"
+ },
+ "app-script-import-dialog.preview.dd.a856071b7964": {
+  "nb": "ca. {pageCount} (beregnet – Fountain har ikke faste sider)",
+  "en": "about {pageCount} (estimated – Fountain has no fixed pages)",
+  "oversatt": "약 {pageCount}페이지(예상치 – Fountain은 고정 페이지가 없음)"
+ },
+ "app-script-import-dialog.preview.dt.0cf85e2f6dc3": {
+  "nb": "Tittelside",
+  "en": "Title page",
+  "oversatt": "타이틀 페이지"
+ },
+ "app-script-import-dialog.preview.dt.15766f518d67": {
+  "nb": "Sider",
+  "en": "Pages",
+  "oversatt": "페이지"
+ },
+ "app-script-import-dialog.preview.dt.ac937fe41f6a": {
+  "nb": "Usikre tolkninger",
+  "en": "Uncertain interpretations",
+  "oversatt": "불확실한 해석"
+ },
+ "app-script-import-dialog.preview.dt.b589862613ec": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-script-import-dialog.preview.dt.ba5e2a3a70eb": {
+  "nb": "Notater i filen",
+  "en": "Notes in the file",
+  "oversatt": "파일 내 메모"
+ },
+ "app-script-import-dialog.preview.dt.be567fb43bfb": {
+  "nb": "Fil",
+  "en": "File",
+  "oversatt": "파일"
+ },
+ "app-script-import-dialog.preview.em.782df97d66a6": {
+  "nb": "Fortsettelse fra forrige del",
+  "en": "Continuation from the previous part",
+  "oversatt": "이전 부분에서 이어짐"
+ },
+ "app-script-import-dialog.preview.label.dcb383de81cf": {
+  "nb": "Manuset starter midt i en scene. Ta med teksten før første sceneoverskrift som egen scene (uten nummer).",
+  "en": "The script starts in the middle of a scene. Include the text before the first scene heading as a scene of its own (without a number).",
+  "oversatt": "대본이 씬 중간부터 시작됩니다. 첫 번째 씬 제목 앞의 텍스트를 별도의 씬(번호 없음)으로 포함합니다."
+ },
+ "app-script-import-dialog.preview.p.32489fdb4259": {
+  "nb": "Scenenumre som står flere ganger: {value1}. Scenene importeres hver for seg.",
+  "en": "Scene numbers that appear more than once: {value1}. The scenes are imported one by one.",
+  "oversatt": "중복으로 나타나는 씬 번호: {value1}. 각 씬은 개별적으로 가져옵니다."
+ },
+ "app-script-import-dialog.preview.p.6133ac56207c": {
+  "nb": "Denne filen ble importert {previous}. Importerer du igjen, får du scenene to ganger.",
+  "en": "This file was imported {previous}. If you import it again, you get the scenes twice.",
+  "oversatt": "이 파일은 {previous}에 이미 가져왔습니다. 다시 가져오면 씬이 중복 생성됩니다."
+ },
+ "app-script-import-dialog.preview.summary.bd90e385254d": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-script-import-dialog.preview.th.488fdc54e745": {
+  "nb": "Overskrift",
+  "en": "Heading",
+  "oversatt": "헤딩"
+ },
+ "app-script-import-dialog.preview.th.76710db68cd7": {
+  "nb": "Side",
+  "en": "Page",
+  "oversatt": "페이지"
+ },
+ "app-script-import-dialog.preview.th.c8a03fb8d166": {
+  "nb": "Nr.",
+  "en": "No.",
+  "oversatt": "No."
+ },
+ "app-script-import-dialog.production-name.message.db14a5dcf3fb": {
+  "nb": "produksjonen",
+  "en": "the production",
+  "oversatt": "프로덕션"
+ },
+ "app-script-import-dialog.progress.progress.0d612b67aac3": {
+  "nb": "Oppretter {length} scener …",
+  "en": "Creating {length} scenes …",
+  "oversatt": "{length}개 씬 생성 중…"
+ },
+ "app-script-import-dialog.progress.progress.5960c4259ef9": {
+  "nb": "Lagrer originalfilen …",
+  "en": "Saving the original file …",
+  "oversatt": "원본 파일 저장 중…"
+ },
+ "app-script-import-dialog.progress.progress.6074fa6e50fc": {
+  "nb": "Legger inn {length} notater …",
+  "en": "Adding {length} notes …",
+  "oversatt": "{length}개 메모 추가 중…"
+ },
+ "app-script-import-dialog.progress.progress.780c1774fe18": {
+  "nb": "Registrerer originalen …",
+  "en": "Registering the original …",
+  "oversatt": "원본 등록 중…"
+ },
+ "app-script-import-dialog.r.run-and-wait.0827fde3f1a7": {
+  "nb": "{length} notater fra importen",
+  "en": "{length} notes from the import",
+  "oversatt": "가져오기 메모 {length}개"
+ },
+ "app-script-import-dialog.r.run-and-wait.fc95bbb03fc0": {
+  "nb": "Tittelside fra importen",
+  "en": "Title page from the import",
+  "oversatt": "가져오기 타이틀 페이지"
+ },
+ "app-script-import-dialog.res.run-and-wait.e7e1b0498f93": {
+  "nb": "Import av manus",
+  "en": "Import script",
+  "oversatt": "대본 가져오기"
+ },
+ "app-script-inspector.block-panel.aria-label.643462bd7347": {
+  "nb": "Elementtype",
+  "en": "Element type",
+  "oversatt": "요소 유형"
+ },
+ "app-script-inspector.block-panel.aria-label.afd57ee1c0d5": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-script-inspector.block-panel.button.9e75dd29b865": {
+  "nb": "Fjern blokken",
+  "en": "Remove the block",
+  "oversatt": "블록 제거"
+ },
+ "app-script-inspector.block-panel.button.d50065a0491a": {
+  "nb": "Del scenen her",
+  "en": "Split the scene here",
+  "oversatt": "여기서 씬 분할"
+ },
+ "app-script-inspector.block-panel.button.dd57511db5e6": {
+  "nb": "Ny blokk etter denne",
+  "en": "New block after this",
+  "oversatt": "이 뒤에 새 블록 추가"
+ },
+ "app-script-inspector.block-panel.new-label.48354a6c8f7e": {
+  "nb": "Notat på hele elementet",
+  "en": "Note on the whole element",
+  "oversatt": "전체 요소에 메모 추가"
+ },
+ "app-script-inspector.block-panel.p.1da6ef0d3d9a": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "번호 없음"
+ },
+ "app-script-inspector.block-panel.p.6824a8bc32e4": {
+  "nb": "Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».",
+  "en": "Note on single words: select the text in the script and choose “Add note”.",
+  "oversatt": "단어별 메모: 대본에서 텍스트를 선택한 후 \"메모 추가\"를 누르세요."
+ },
+ "app-script-inspector.block-panel.p.876e85475374": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-script-inspector.block-panel.p.878b847ce48d": {
+  "nb": "Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.",
+  "en": "Saved when you leave the field (or ⌘/Ctrl + Enter). Esc undoes.",
+  "oversatt": "필드를 벗어나면 저장됩니다(또는 ⌘/Ctrl + Enter). Esc를 누르면 실행 취소됩니다."
+ },
+ "app-script-inspector.block-panel.p.d996f62a2404": {
+  "nb": "Fjernet tekst kan hentes tilbake fra scenen. Historikken beholdes.",
+  "en": "Removed text can be restored to the scene. The history is kept.",
+  "oversatt": "제거된 텍스트는 씬으로 다시 복원할 수 있습니다. 히스토리는 유지됩니다."
+ },
+ "app-script-inspector.block-panel.p.ed3bf51ec389": {
+  "nb": "side",
+  "en": "page",
+  "oversatt": "페이지"
+ },
+ "app-script-inspector.block-panel.p.ed3bf51ec389.2": {
+  "nb": "side",
+  "en": "page",
+  "oversatt": "페이지"
+ },
+ "app-script-inspector.block-panel.p.f60cb0db6c7c": {
+  "nb": "i originalen",
+  "en": "in the original",
+  "oversatt": "원본 내"
+ },
+ "app-script-inspector.block-panel.run.a2c780f5e20b": {
+  "nb": "Godkjenn tolkning",
+  "en": "Approve interpretation",
+  "oversatt": "해석 승인"
+ },
+ "app-script-inspector.block-panel.run.efa6e11af60a": {
+  "nb": "Endre elementtype",
+  "en": "Change element type",
+  "oversatt": "요소 유형 변경"
+ },
+ "app-script-inspector.block-panel.title.4c90fbe46281": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-script-inspector.block-panel.title.643462bd7347": {
+  "nb": "Elementtype",
+  "en": "Element type",
+  "oversatt": "요소 유형"
+ },
+ "app-script-inspector.block-panel.title.98fa6fda1d8b": {
+  "nb": "Koblinger",
+  "en": "Links",
+  "oversatt": "링크"
+ },
+ "app-script-inspector.block-panel.title.afd57ee1c0d5": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-script-inspector.block-panel.title.f8d206861c09": {
+  "nb": "Kan ikke dele ved første blokk",
+  "en": "Cannot split at the first block",
+  "oversatt": "첫 번째 블록에서는 분할할 수 없습니다"
+ },
+ "app-script-inspector.block-panel.title.fc87c095e37f": {
+  "nb": "Handlinger",
+  "en": "Actions",
+  "oversatt": "작업"
+ },
+ "app-script-inspector.e.run.b269f88ff57e": {
+  "nb": "Ny blokk",
+  "en": "New block",
+  "oversatt": "새 블록"
+ },
+ "app-script-inspector.e.run.c2b171c9be97": {
+  "nb": "Lag egen versjon av scenen",
+  "en": "Make own version of the scene",
+  "oversatt": "씬의 고유 버전 만들기"
+ },
+ "app-script-inspector.e.run.c49f542ce812": {
+  "nb": "Fjern blokk",
+  "en": "Remove block",
+  "oversatt": "블록 제거"
+ },
+ "app-script-inspector.e.run.cd0fd3eabeca": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "새 씬"
+ },
+ "app-script-inspector.fork-notice.button.beae310f4a28": {
+  "nb": "Lag egen versjon",
+  "en": "Make own version",
+  "oversatt": "고유 버전 만들기"
+ },
+ "app-script-inspector.fork-notice.p.02ce0d559b19": {
+  "nb": "Denne scenen deles med hovedfilmen. Endrer du den her, får «",
+  "en": "This scene is shared with the main film. If you change it here, “",
+  "oversatt": "이 씬은 메인 필름과 공유됩니다. 여기서 변경하면 “"
+ },
+ "app-script-inspector.fork-notice.p.833b4cce76a9": {
+  "nb": "» automatisk sin egen versjon av scenen – hovedfilmen endres ikke.",
+  "en": "” automatically gets its own version of the scene – the main film is not changed.",
+  "oversatt": "”에 자동으로 씬의 고유 버전이 생성되며, 메인 필름은 변경되지 않습니다."
+ },
+ "app-script-inspector.inspector.aria-label.893684118699": {
+  "nb": "Inspektør",
+  "en": "Inspector",
+  "oversatt": "인스펙터"
+ },
+ "app-script-inspector.inspector.link.3d53ef93db1d": {
+  "nb": "{openCount} forslag fra Story Lab",
+  "en": "{openCount} suggestions from Story Lab",
+  "oversatt": "Story Lab의 제안 {openCount}개"
+ },
+ "app-script-inspector.inspector.span.3681171013f3": {
+  "nb": "Vis i filmen",
+  "en": "Show in film",
+  "oversatt": "필름에서 보기"
+ },
+ "app-script-inspector.inspector.span.6430e1c9c262": {
+  "nb": "Manusblokk",
+  "en": "Script block",
+  "oversatt": "대본 블록"
+ },
+ "app-script-inspector.inspector.span.84ec0326a8c8": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-script-inspector.inspector.span.85b9015c0bfa": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-script-inspector.inspector.span.8fb617b2eb41": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-script-inspector.inspector.span.a9c1c8f137df": {
+  "nb": "Undersøk scene i Story Lab",
+  "en": "Explore scene in Story Lab",
+  "oversatt": "Story Lab에서 씬 탐색"
+ },
+ "app-script-inspector.inspector.title.0d985a195132": {
+  "nb": "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen",
+  "en": "Open the assembly with the playhead where this line or action is in the film",
+  "oversatt": "이 대사 또는 동작이 있는 필름 위치에 재생 헤드를 두고 편집 열기"
+ },
+ "app-script-inspector.inspector.title.1582389ef2df": {
+  "nb": "Åpne monteringen med avspillingshodet ved starten av scenen",
+  "en": "Open the assembly with the playhead at the start of the scene",
+  "oversatt": "씬 시작 위치에 재생 헤드를 두고 편집 열기"
+ },
+ "app-script-inspector.inspector.title.ea1177837783": {
+  "nb": "Åpne denne scenen i sceneeditoren (2D-animatic)",
+  "en": "Open this scene in the scene editor (2D animatic)",
+  "oversatt": "이 씬을 씬 편집기(2D 애니매틱)에서 열기"
+ },
+ "app-script-inspector.inspector.title.f4833432d85d": {
+  "nb": "Undersøk scenen i Story Lab (velges som tidspunkt i fortellingen)",
+  "en": "Explore the scene in Story Lab (chosen as the point in the story)",
+  "oversatt": "Story Lab에서 씬 탐색(스토리의 특정 시점으로 선택됨)"
+ },
+ "app-script-inspector.save.run.66c963dd6fcc": {
+  "nb": "Rediger tekst",
+  "en": "Edit text",
+  "oversatt": "텍스트 편집"
+ },
+ "app-script-inspector.scene-panel.aria-label.1772bc9a00a7": {
+  "nb": "Aktiver scenen",
+  "en": "Activate the scene",
+  "oversatt": "씬 활성화"
+ },
+ "app-script-inspector.scene-panel.aria-label.2d6532875401": {
+  "nb": "Deaktiver scenen",
+  "en": "Deactivate the scene",
+  "oversatt": "씬 비활성화"
+ },
+ "app-script-inspector.scene-panel.aria-label.5cc0d19dd240": {
+  "nb": "Tid på døgnet",
+  "en": "Time of day",
+  "oversatt": "시간대"
+ },
+ "app-script-inspector.scene-panel.button.0bfe19533b27": {
+  "nb": "Ny scene etter denne",
+  "en": "New scene after this",
+  "oversatt": "이 뒤에 새 씬 추가"
+ },
+ "app-script-inspector.scene-panel.button.1d27711112fa": {
+  "nb": "Hent tilbake",
+  "en": "Restore",
+  "oversatt": "복원"
+ },
+ "app-script-inspector.scene-panel.button.29c015e004aa": {
+  "nb": "Slå sammen med neste scene",
+  "en": "Merge with the next scene",
+  "oversatt": "다음 씬과 병합"
+ },
+ "app-script-inspector.scene-panel.button.38c7d0fe76dd": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-inspector.scene-panel.button.38c7d0fe76dd.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-inspector.scene-panel.button.604b1a8ae53a": {
+  "nb": "Lagre overskrift",
+  "en": "Save heading",
+  "oversatt": "헤딩 저장"
+ },
+ "app-script-inspector.scene-panel.button.ac0a939e1835": {
+  "nb": "Gå til første blokk",
+  "en": "Go to first block",
+  "oversatt": "첫 번째 블록으로 이동"
+ },
+ "app-script-inspector.scene-panel.button.b3913a5b5eeb": {
+  "nb": "Slå sammen",
+  "en": "Merge",
+  "oversatt": "병합"
+ },
+ "app-script-inspector.scene-panel.label.071504247f25": {
+  "nb": "Sammenslått",
+  "en": "Merged",
+  "oversatt": "병합됨"
+ },
+ "app-script-inspector.scene-panel.label.1d537137116c": {
+  "nb": "Deaktivert",
+  "en": "Inactive",
+  "oversatt": "비활성"
+ },
+ "app-script-inspector.scene-panel.label.5d2b2d7b9eda": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "장소"
+ },
+ "app-script-inspector.scene-panel.label.aa6dd30292dd": {
+  "nb": "Aktiv",
+  "en": "Active",
+  "oversatt": "활성"
+ },
+ "app-script-inspector.scene-panel.label.c23814558fc1": {
+  "nb": "INT/EXT",
+  "en": "INT/EXT",
+  "oversatt": "INT/EXT"
+ },
+ "app-script-inspector.scene-panel.new-label.e5f006023739": {
+  "nb": "Nål på scenen",
+  "en": "Pin on the scene",
+  "oversatt": "씬에 고정"
+ },
+ "app-script-inspector.scene-panel.p.2430d544add9": {
+  "nb": "Deaktiverte scener er utelatt fra manus og film i denne produksjonen. Ingenting er slettet.",
+  "en": "Inactive scenes are left out of the script and film in this production. Nothing is deleted.",
+  "oversatt": "비활성화된 씬은 이 프로덕션의 대본과 필름에서 제외됩니다. 삭제된 항목은 없습니다."
+ },
+ "app-script-inspector.scene-panel.p.415dad468136": {
+  "nb": "Teksten i scene",
+  "en": "The text of scene",
+  "oversatt": "씬의 텍스트"
+ },
+ "app-script-inspector.scene-panel.p.6113461a1927": {
+  "nb": "er produksjonens nummer og endres ikke når scener flyttes. Ny nummerering velges ved eksport.",
+  "en": "is the production's number and does not change when scenes are moved. New numbering is chosen on export.",
+  "oversatt": "은(는) 프로덕션 고유 번호이며 씬을 이동해도 변경되지 않습니다. 새 번호 매기기는 내보내기 시 선택할 수 있습니다."
+ },
+ "app-script-inspector.scene-panel.p.b85dcd51fd9f": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "없음"
+ },
+ "app-script-inspector.scene-panel.p.c322b07e57c7": {
+  "nb": "Scenenummeret",
+  "en": "The scene number",
+  "oversatt": "씬 번호"
+ },
+ "app-script-inspector.scene-panel.p.dc3999e8bdf6": {
+  "nb": "legges sist i denne scenen. Den gamle scenen beholdes som «sammenslått» og kan hentes tilbake med Angre.",
+  "en": "is added last in this scene. The old scene is kept as “merged” and can be restored with Undo.",
+  "oversatt": "이(가) 이 씬의 마지막에 추가됩니다. 기존 씬은 '병합됨' 상태로 유지되며 '실행 취소'로 복원할 수 있습니다."
+ },
+ "app-script-inspector.scene-panel.p.ffd27913a1c8": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "번호 없음"
+ },
+ "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "장소"
+ },
+ "app-script-inspector.scene-panel.placeholder.66e9681b64e8": {
+  "nb": "DAG, KVELD, NATT …",
+  "en": "DAY, EVENING, NIGHT …",
+  "oversatt": "낮, 저녁, 밤 …"
+ },
+ "app-script-inspector.scene-panel.run.27a9b167b015": {
+  "nb": "Godkjenn overskrift",
+  "en": "Approve heading",
+  "oversatt": "헤딩 승인"
+ },
+ "app-script-inspector.scene-panel.run.59f681e3750c": {
+  "nb": "Hent tilbake tekst",
+  "en": "Restore text",
+  "oversatt": "텍스트 복원"
+ },
+ "app-script-inspector.scene-panel.run.676faa961714": {
+  "nb": "Deaktiver scene",
+  "en": "Deactivate scene",
+  "oversatt": "씬 비활성화"
+ },
+ "app-script-inspector.scene-panel.run.85ad477dbbd7": {
+  "nb": "Slå sammen scener",
+  "en": "Merge scenes",
+  "oversatt": "씬 병합"
+ },
+ "app-script-inspector.scene-panel.run.c4685d90d1e3": {
+  "nb": "Endre sceneoverskrift",
+  "en": "Change scene heading",
+  "oversatt": "씬 머리글 변경"
+ },
+ "app-script-inspector.scene-panel.run.f3c42173f4c8": {
+  "nb": "Aktiver scene",
+  "en": "Activate scene",
+  "oversatt": "씬 활성화"
+ },
+ "app-script-inspector.scene-panel.span.11592f16a888": {
+  "nb": "(tom)",
+  "en": "(empty)",
+  "oversatt": "(비어 있음)"
+ },
+ "app-script-inspector.scene-panel.span.3f2936ca36bb": {
+  "nb": "Tid",
+  "en": "Time",
+  "oversatt": "시간"
+ },
+ "app-script-inspector.scene-panel.span.ffd27913a1c8": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "번호 없음"
+ },
+ "app-script-inspector.scene-panel.title.0258d8046c5f": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "새 씬"
+ },
+ "app-script-inspector.scene-panel.title.229acbca1722": {
+  "nb": "Fjernet tekst",
+  "en": "Removed text",
+  "oversatt": "삭제된 텍스트"
+ },
+ "app-script-inspector.scene-panel.title.798a00fa8872": {
+  "nb": "Brukes også i",
+  "en": "Also used in",
+  "oversatt": "다음에서도 사용됨:"
+ },
+ "app-script-inspector.scene-panel.title.b3913a5b5eeb": {
+  "nb": "Slå sammen",
+  "en": "Merge",
+  "oversatt": "병합"
+ },
+ "app-script-inspector.scene-panel.title.bcaf9daf330b": {
+  "nb": "Sceneoverskrift",
+  "en": "Scene heading",
+  "oversatt": "씬 머리글"
+ },
+ "app-script-inspector.scene-panel.title.c3bd3f5dd07a": {
+  "nb": "Fortellingstid",
+  "en": "Story time",
+  "oversatt": "스토리 타임"
+ },
+ "app-script-inspector.scene-panel.title.cca2d0a97d57": {
+  "nb": "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre",
+  "en": "Turn on “Change order and visibility” in the scene list to change",
+  "oversatt": "변경하려면 씬 목록에서 '순서 및 가시성 변경'을 켜세요"
+ },
+ "app-script-inspector.scene-panel.title.ebc0e759b715": {
+  "nb": "Notater i scenen",
+  "en": "Notes in the scene",
+  "oversatt": "씬 내 메모"
+ },
+ "app-script-inspector.split.run.97b4128a914b": {
+  "nb": "Del scene",
+  "en": "Split scene",
+  "oversatt": "씬 분할"
+ },
+ "app-script-inspector.summary-panel.button.bedc3031353c": {
+  "nb": "Gå til neste usikre tolkning",
+  "en": "Go to next uncertain interpretation",
+  "oversatt": "다음 불확실한 해석으로 이동"
+ },
+ "app-script-inspector.summary-panel.dt.0354e7d1c7c9": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-script-inspector.summary-panel.dt.2e814d861303": {
+  "nb": "Usikre tolkninger",
+  "en": "Uncertain interpretations",
+  "oversatt": "불확실한 해석"
+ },
+ "app-script-inspector.summary-panel.dt.377a40ba07a7": {
+  "nb": "Siste scene starter på side",
+  "en": "Last scene starts on page",
+  "oversatt": "마지막 씬 시작 페이지:"
+ },
+ "app-script-inspector.summary-panel.dt.d091852cac74": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "활성"
+ },
+ "app-script-inspector.summary-panel.p.384a4ad6a9e0": {
+  "nb": "Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive. Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.",
+  "en": "Click a line in the script to correct its element type or text. Double-click to type. Scenes are moved and switched on and off in the list on the left after you turn on “Change order and visibility” – the script and film always follow the same order.",
+  "oversatt": "대본에서 줄을 클릭하여 요소 유형이나 텍스트를 수정하세요. 더블 클릭하여 입력합니다. '순서 및 가시성 변경'을 켜면 왼쪽 목록에서 씬을 이동하거나 켜고 끌 수 있습니다. 대본과 영상은 항상 동일한 순서를 따릅니다."
+ },
+ "app-script-inspector.uncertain-box.button.80a9025d3328": {
+  "nb": "Tolkningen er riktig",
+  "en": "The interpretation is correct",
+  "oversatt": "해석이 올바름"
+ },
+ "app-script-inspector.uncertain-box.span.6c3bf35fcf67": {
+  "nb": "Usikker tolkning: ",
+  "en": "Uncertain interpretation: ",
+  "oversatt": "불확실한 해석: "
+ },
+ "app-script-line-link-review.line-link-review.aria-label.9a1802fd6803": {
+  "nb": "Kilde",
+  "en": "Source",
+  "oversatt": "소스"
+ },
+ "app-script-line-link-review.line-link-review.button.0244a7caffef": {
+  "nb": "Gjennomgå linjekoblinger",
+  "en": "Review line links",
+  "oversatt": "대사 연결 검토"
+ },
+ "app-script-line-link-review.line-link-review.button.02cd0279d1ca": {
+  "nb": "Godkjenn over terskel",
+  "en": "Approve above threshold",
+  "oversatt": "임계값 이상 승인"
+ },
+ "app-script-line-link-review.line-link-review.button.310d919f50c9": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-script-line-link-review.line-link-review.button.4c75bb2f2c88": {
+  "nb": "Analyserer …",
+  "en": "Analysing …",
+  "oversatt": "분석 중…"
+ },
+ "app-script-line-link-review.line-link-review.button.5160a7e9869e": {
+  "nb": "Bekreft AI-analyse",
+  "en": "Confirm AI analysis",
+  "oversatt": "AI 분석 확인"
+ },
+ "app-script-line-link-review.line-link-review.button.6b9640842f63": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "승인"
+ },
+ "app-script-line-link-review.line-link-review.button.6b9640842f63.2": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "승인"
+ },
+ "app-script-line-link-review.line-link-review.button.87a7e505a418": {
+  "nb": "Lagre manuell kobling",
+  "en": "Save manual link",
+  "oversatt": "수동 연결 저장"
+ },
+ "app-script-line-link-review.line-link-review.button.a0bca928a5a4": {
+  "nb": "Foreslå med AI",
+  "en": "Suggest with AI",
+  "oversatt": "AI로 제안"
+ },
+ "app-script-line-link-review.line-link-review.button.aa1fed62325d": {
+  "nb": "Juster",
+  "en": "Adjust",
+  "oversatt": "조정"
+ },
+ "app-script-line-link-review.line-link-review.button.aa1fed62325d.2": {
+  "nb": "Juster",
+  "en": "Adjust",
+  "oversatt": "조정"
+ },
+ "app-script-line-link-review.line-link-review.button.b1a3ee01db86": {
+  "nb": "Avvis",
+  "en": "Reject",
+  "oversatt": "거부"
+ },
+ "app-script-line-link-review.line-link-review.button.b1a3ee01db86.2": {
+  "nb": "Avvis",
+  "en": "Reject",
+  "oversatt": "거부"
+ },
+ "app-script-line-link-review.line-link-review.dialog-title.aa204482d1ef": {
+  "nb": "Linjekoblinger",
+  "en": "Line links",
+  "oversatt": "대사 연결"
+ },
+ "app-script-line-link-review.line-link-review.label.09f1de71bf43": {
+  "nb": "Terskel",
+  "en": "Threshold",
+  "oversatt": "임계값"
+ },
+ "app-script-line-link-review.line-link-review.label.4c0f17fbd986": {
+  "nb": "Oversatte linjer",
+  "en": "Translated lines",
+  "oversatt": "번역된 대사"
+ },
+ "app-script-line-link-review.line-link-review.label.9de46a664f74": {
+  "nb": "Norske linjer",
+  "en": "Norwegian lines",
+  "oversatt": "노르웨이어 대사"
+ },
+ "app-script-line-link-review.line-link-review.option.24596d8ebb46": {
+  "nb": "Alle kilder",
+  "en": "All sources",
+  "oversatt": "모든 소스"
+ },
+ "app-script-line-link-review.line-link-review.p.2d546ce516b5": {
+  "nb": "Innebygd AI · {lines} usikre linjer · anslått kostnad for deg: 0 USD (tjenesten betaler).",
+  "en": "Built-in AI · {lines} uncertain lines · estimated cost to you: USD 0 (service paid).",
+  "oversatt": "내장 AI · 불확실한 대사 {lines}개 · 예상 비용: USD 0 (서비스 부담)."
+ },
+ "app-script-line-link-review.line-link-review.p.4b1b9331a285": {
+  "nb": "Kvalitetsprofil: {profileName}. Innebygd tekstmodell brukes.",
+  "en": "Quality profile: {profileName}. The built-in text model is used.",
+  "oversatt": "품질 프로필: {profileName}. 내장 텍스트 모델이 사용됩니다."
+ },
+ "app-script-line-link-review.line-link-review.p.63fff3b0112f": {
+  "nb": "{unpairedCount} {value2} uten par",
+  "en": "{unpairedCount} translated {value2} without a pair",
+  "oversatt": "연결되지 않은 번역된 {value2} {unpairedCount}개"
+ },
+ "app-script-line-link-review.line-link-review.span.2712d78c6e75": {
+  "nb": "Utdatert: en linje er fjernet eller flyttet",
+  "en": "Outdated: a line was removed or moved",
+  "oversatt": "만료됨: 대사가 삭제되었거나 이동되었습니다"
+ },
+ "app-script-line-link-review.origin-label.message.aeead83cf526": {
+  "nb": "Godkjent av bruker",
+  "en": "User approved",
+  "oversatt": "사용자 승인됨"
+ },
+ "app-script-line-link-review.origin-label.message.c50aaf5eb6c9": {
+  "nb": "AI-forslag",
+  "en": "AI suggestion",
+  "oversatt": "AI 제안"
+ },
+ "app-script-line-link-review.origin-label.message.dca37679cfa3": {
+  "nb": "Regel",
+  "en": "Rule",
+  "oversatt": "규칙"
+ },
+ "app-script-line-link-review.origin-label.message.ea611054606a": {
+  "nb": "Manuell",
+  "en": "Manual",
+  "oversatt": "수동"
+ },
+ "app-script-line-link-review.problem.run.16e497f69302": {
+  "nb": "Linjekoblinger",
+  "en": "Line links",
+  "oversatt": "대사 연결"
+ },
+ "app-script-line-link-review.request.set-error.72f29de43f04": {
+  "nb": "Koblingen kunne ikke analyseres. Prøv igjen.",
+  "en": "The links could not be analysed. Try again.",
+  "oversatt": "연결을 분석할 수 없습니다. 다시 시도하세요."
+ },
+ "app-script-line-link-review.unpaired": {
+  "nb": {
+   "one": "{count} oversatt linje uten par",
+   "other": "{count} oversatte linjer uten par"
+  },
+  "en": {
+   "one": "{count} translated line without a pair",
+   "other": "{count} translated lines without a pair"
+  },
+  "oversatt": {
+   "other": "연결되지 않은 번역된 대사 {count}개"
+  }
+ },
+ "app-script-notes-panel.e.run.6fea84673ef0": {
+  "nb": "Endre notat",
+  "en": "Edit note",
+  "oversatt": "메모 편집"
+ },
+ "app-script-notes-panel.e.run.c4d1f019e650": {
+  "nb": "Nytt notat",
+  "en": "New note",
+  "oversatt": "새 메모"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-action.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "제안 적용"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-action.b891c4285a33": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "삭제"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.1bb671203195": {
+  "nb": "«",
+  "en": "“",
+  "oversatt": "“"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.3c0e06882b2c": {
+  "nb": "Du kan angre slettingen med ⌘/Ctrl + Z.",
+  "en": "You can undo the deletion with ⌘/Ctrl + Z.",
+  "oversatt": "⌘/Ctrl + Z로 삭제를 실행 취소할 수 있습니다."
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.49250bc79bc9": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "”"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-title.4e056f906029": {
+  "nb": "Bruke forslaget i manuset?",
+  "en": "Use the suggestion in the script?",
+  "oversatt": "대본에 제안을 적용할까요?"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-title.ebbb81ea0efe": {
+  "nb": "Slette notatet?",
+  "en": "Delete the note?",
+  "oversatt": "메모를 삭제할까요?"
+ },
+ "app-script-notes-panel.note-card.button.0b3bbe0059f1": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-script-notes-panel.note-card.button.275d48310970": {
+  "nb": "Åpne igjen",
+  "en": "Reopen",
+  "oversatt": "다시 열기"
+ },
+ "app-script-notes-panel.note-card.button.30f24e17e633": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-notes-panel.note-card.button.36c18caddaa0": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-script-notes-panel.note-card.button.5e705445b458": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "편집"
+ },
+ "app-script-notes-panel.note-card.button.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "제안 적용"
+ },
+ "app-script-notes-panel.note-card.button.b891c4285a33": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "삭제"
+ },
+ "app-script-notes-panel.note-card.button.bfb57b0e5c02": {
+  "nb": "Marker som løst",
+  "en": "Resolve",
+  "oversatt": "해결"
+ },
+ "app-script-notes-panel.note-card.p.208d536e8791": {
+  "nb": "Hele elementet",
+  "en": "The whole element",
+  "oversatt": "전체 요소"
+ },
+ "app-script-notes-panel.note-card.p.7200848544ae": {
+  "nb": "«{value1}»",
+  "en": "“{value1}”",
+  "oversatt": "“{value1}”"
+ },
+ "app-script-notes-panel.note-card.run.7800971e9387": {
+  "nb": "Løs notatet",
+  "en": "Resolve note",
+  "oversatt": "메모 해결"
+ },
+ "app-script-notes-panel.note-card.run.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "제안 적용"
+ },
+ "app-script-notes-panel.note-card.run.9d60a9c3eabc": {
+  "nb": "Merknad ferdig",
+  "en": "Note done",
+  "oversatt": "메모 완료됨"
+ },
+ "app-script-notes-panel.note-card.run.caaf2883248f": {
+  "nb": "Åpne notatet igjen",
+  "en": "Reopen note",
+  "oversatt": "메모 다시 열기"
+ },
+ "app-script-notes-panel.note-card.run.db937f500520": {
+  "nb": "Slett notat",
+  "en": "Delete note",
+  "oversatt": "노트 삭제"
+ },
+ "app-script-notes-panel.note-card.span.105234e4f594": {
+  "nb": "Forslag:",
+  "en": "Suggestion:",
+  "oversatt": "제안:"
+ },
+ "app-script-notes-panel.note-card.span.18e99a9cfc19": {
+  "nb": "Forsøksvis manusredigering",
+  "en": "Trial script edit",
+  "oversatt": "시험적 대본 편집"
+ },
+ "app-script-notes-panel.note-card.span.2a88fa005f7d": {
+  "nb": "Teksten er endret – «{quote}» finnes ikke lenger",
+  "en": "The text has changed – “{quote}” no longer exists",
+  "oversatt": "텍스트가 변경되었습니다 – “{quote}” 항목이 더 이상 존재하지 않습니다"
+ },
+ "app-script-notes-panel.note-card.span.6ce84227139e": {
+  "nb": "Original:",
+  "en": "Original:",
+  "oversatt": "원본:"
+ },
+ "app-script-notes-panel.note-card.span.91d8807553d6": {
+  "nb": "Blir:",
+  "en": "Becomes:",
+  "oversatt": "변경 후:"
+ },
+ "app-script-notes-panel.note-card.span.984b9307fcef": {
+  "nb": "Systemmerknad",
+  "en": "System note",
+  "oversatt": "시스템 노트"
+ },
+ "app-script-notes-panel.note-card.span.afe154a4b854": {
+  "nb": "Nå:",
+  "en": "Now:",
+  "oversatt": "현재:"
+ },
+ "app-script-notes-panel.note-card.span.b9f6aaa4a166": {
+  "nb": "Endringen er en vanlig manusredigering og kan angres med ⌘/Ctrl + Z. Notatet blir stående til du sletter det.",
+  "en": "The change is an ordinary script edit and can be undone with ⌘/Ctrl + Z. The note stays until you delete it.",
+  "oversatt": "이 변경 사항은 일반적인 대본 편집이며 ⌘/Ctrl + Z로 실행 취소할 수 있습니다. 노트는 직접 삭제할 때까지 유지됩니다."
+ },
+ "app-script-notes-panel.note-card.span.ec8d8f232d0a": {
+  "nb": "Løst",
+  "en": "Resolved",
+  "oversatt": "해결됨"
+ },
+ "app-script-notes-panel.note-card.title.a7b8a8485d2b": {
+  "nb": "Teksten i manuset er endret, så forslaget kan ikke settes inn automatisk",
+  "en": "The text in the script has changed, so the suggestion cannot be inserted automatically",
+  "oversatt": "대본의 텍스트가 변경되어 제안을 자동으로 삽입할 수 없습니다"
+ },
+ "app-script-notes-panel.note-card.title.b85a4e84a652": {
+  "nb": "Lagre merknaden som ferdig (den forsvinner, og kan angres)",
+  "en": "Save the note as done (it disappears, and can be undone)",
+  "oversatt": "노트를 완료 상태로 저장(사라지며 실행 취소 가능)"
+ },
+ "app-script-notes-panel.note-card.title.bb8a2e9e1ab8": {
+  "nb": "Sett forslaget inn i manuset (spør først)",
+  "en": "Insert the suggestion in the script (asks first)",
+  "oversatt": "제안을 대본에 삽입(확인 메시지 표시)"
+ },
+ "app-script-notes-panel.notes-panel.button.81f9dc4b1fe8": {
+  "nb": "Lagre notat",
+  "en": "Save note",
+  "oversatt": "노트 저장"
+ },
+ "app-script-notes-panel.notes-panel.button.c41d1797f20e": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-notes-panel.notes-panel.p.5ea42d80dea6": {
+  "nb": "Ingen notater.",
+  "en": "No notes.",
+  "oversatt": "노트 없음."
+ },
+ "app-script-notes-panel.notes-panel.placeholder.3fb2af2fb906": {
+  "nb": "Skriv notatet …",
+  "en": "Write the note …",
+  "oversatt": "노트 작성…"
+ },
+ "app-script-remove-translations-dialog.e.cmds-run.ec50f7b3b45e": {
+  "nb": "Fjern alle oversettelser til {name}",
+  "en": "Remove all translations into {name}",
+  "oversatt": "{name}(으)로의 모든 번역 삭제"
+ },
+ "app-script-remove-translations-dialog.language-word-en": {
+  "nb": "engelsk",
+  "en": "English",
+  "oversatt": "영어"
+ },
+ "app-script-remove-translations-dialog.language-word-nb": {
+  "nb": "norsk",
+  "en": "Norwegian",
+  "oversatt": "노르웨이어"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.button.1bcfda73aa1e": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.button.298f4d9b8845": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "삭제"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.4db1acb59b42": {
+  "nb": "oversettelse",
+  "en": "translation",
+  "oversatt": "번역"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.8e2ea1fe2838": {
+  "nb": "i hele prosjektet (alle produksjoner) fjernes i én endring. Det norske manuset endres ikke, og alt kan angres (Cmd/Ctrl + Z).",
+  "en": "across the whole project (all productions) are removed in one change. The Norwegian script is not changed, and everything can be undone (Cmd/Ctrl + Z).",
+  "oversatt": "전체 프로젝트(모든 프로덕션)에서 한 번에 제거됩니다. 노르웨이어 대본은 변경되지 않으며, 모든 작업은 실행 취소(Cmd/Ctrl + Z)할 수 있습니다."
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.8fb918cc1538": {
+  "nb": "oversettelser",
+  "en": "translations",
+  "oversatt": "번역"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-title.59acc8f2b352": {
+  "nb": "Fjern alle oversettelser til {name}?",
+  "en": "Remove all translations into {name}?",
+  "oversatt": "{name}(으)로의 모든 번역을 삭제하시겠습니까?"
+ },
+ "app-script-scene-navigator.activate-scene": {
+  "nb": "Aktiver scene {number}",
+  "en": "Activate scene {number}",
+  "oversatt": "씬 {number} 활성화"
+ },
+ "app-script-scene-navigator.asset-kind-short.animal.91c86fa488be": {
+  "nb": "dyr",
+  "en": "animal",
+  "oversatt": "동물"
+ },
+ "app-script-scene-navigator.asset-kind-short.environment.e2306110f3a0": {
+  "nb": "miljø",
+  "en": "environment",
+  "oversatt": "환경"
+ },
+ "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0": {
+  "nb": "sted",
+  "en": "location",
+  "oversatt": "장소"
+ },
+ "app-script-scene-navigator.asset-kind-short.object.e3a47268765c": {
+  "nb": "objekt",
+  "en": "object",
+  "oversatt": "오브젝트"
+ },
+ "app-script-scene-navigator.asset-kind-short.other.6e0a697580d3": {
+  "nb": "annet",
+  "en": "other",
+  "oversatt": "기타"
+ },
+ "app-script-scene-navigator.deactivate-scene": {
+  "nb": "Deaktiver scene {number}",
+  "en": "Deactivate scene {number}",
+  "oversatt": "씬 {number} 비활성화"
+ },
+ "app-script-scene-navigator.move-to.l-flytt-scene-scene-number-of-state-o-move-scene-scene-number-of-state-o-trim.d3f1572c968a": {
+  "nb": "Flytt scene {value1}",
+  "en": "Move scene {value1}",
+  "oversatt": "씬 {value1} 이동"
+ },
+ "app-script-scene-navigator.notes": {
+  "nb": {
+   "one": "{count} notat",
+   "other": "{count} notater"
+  },
+  "en": {
+   "one": "{count} note",
+   "other": "{count} notes"
+  },
+  "oversatt": {
+   "other": "노트 {count}개"
+  }
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.4139dfcbe110": {
+  "nb": "Aktiver scene {value1}",
+  "en": "Activate scene {value1}",
+  "oversatt": "씬 {value1} 활성화"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.4f4be6b70233": {
+  "nb": "Endre rekkefølge og synlighet",
+  "en": "Change order and visibility",
+  "oversatt": "순서 및 가시성 변경"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.6b4272eb353b": {
+  "nb": "Vis bare scener med ressurs",
+  "en": "Show only scenes with an asset",
+  "oversatt": "에셋이 있는 씬만 표시"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.7179b1eb3e93": {
+  "nb": "Scener i produksjonen",
+  "en": "Scenes in the production",
+  "oversatt": "프로덕션 내 씬"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.7655577f6b82": {
+  "nb": "Vis bare scener med karakter",
+  "en": "Show only scenes with a character",
+  "oversatt": "캐릭터가 있는 씬만 표시"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.8bf7f0d66e5b": {
+  "nb": "Scener i produksjonen. Alt + pil flytter valgt scene.",
+  "en": "Scenes in the production. Alt + arrow moves the selected scene.",
+  "oversatt": "프로덕션의 씬 목록입니다. Alt + 화살표 키로 선택한 씬을 이동합니다."
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.9ebb18e0bf3f": {
+  "nb": "Vis bare scener med status",
+  "en": "Show only scenes with a status",
+  "oversatt": "상태가 지정된 씬만 표시"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.c2459c6ca950": {
+  "nb": "Søk i manus",
+  "en": "Search the script",
+  "oversatt": "대본 검색"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44": {
+  "nb": "Deaktiver scene {value1}",
+  "en": "Deactivate scene {value1}",
+  "oversatt": "씬 {value1} 비활성화"
+ },
+ "app-script-scene-navigator.scene-navigator.button.95a7e4becdab": {
+  "nb": "Nullstill",
+  "en": "Reset",
+  "oversatt": "초기화"
+ },
+ "app-script-scene-navigator.scene-navigator.div.3ee8cf607cef": {
+  "nb": "flyttet siden",
+  "en": "moved since",
+  "oversatt": "이후 이동됨:"
+ },
+ "app-script-scene-navigator.scene-navigator.div.cb12f5c0de28": {
+  "nb": "{movedCount} scener",
+  "en": "{movedCount} scenes",
+  "oversatt": "씬 {movedCount}개"
+ },
+ "app-script-scene-navigator.scene-navigator.div.e44f37ce2d3f": {
+  "nb": "siste versjon",
+  "en": "the last version",
+  "oversatt": "마지막 버전"
+ },
+ "app-script-scene-navigator.scene-navigator.div.f18fbfaecf34": {
+  "nb": "1 scene",
+  "en": "1 scene",
+  "oversatt": "씬 1개"
+ },
+ "app-script-scene-navigator.scene-navigator.label.0d7454b78653": {
+  "nb": "Navn i manuset",
+  "en": "Names in the script",
+  "oversatt": "대본상의 이름"
+ },
+ "app-script-scene-navigator.scene-navigator.label.89cd484d56d0": {
+  "nb": "Fra ressursbiblioteket",
+  "en": "From the asset library",
+  "oversatt": "에셋 라이브러리에서 가져옴"
+ },
+ "app-script-scene-navigator.scene-navigator.label.f1274043f91b": {
+  "nb": "Bare scener med manusendringer etter 2D-scene eller film",
+  "en": "Only scenes with script changes after the 2D scene or film",
+  "oversatt": "2D 씬 또는 영상 이후 대본이 수정된 씬만 표시"
+ },
+ "app-script-scene-navigator.scene-navigator.option.8d11f53c0e65": {
+  "nb": "Alle statuser",
+  "en": "All statuses",
+  "oversatt": "모든 상태"
+ },
+ "app-script-scene-navigator.scene-navigator.option.df2ed6ac2cba": {
+  "nb": "Alle karakterer",
+  "en": "All characters",
+  "oversatt": "모든 등장인물"
+ },
+ "app-script-scene-navigator.scene-navigator.option.f79271649da5": {
+  "nb": "Alle objekter og steder",
+  "en": "All objects and locations",
+  "oversatt": "모든 오브젝트 및 장소"
+ },
+ "app-script-scene-navigator.scene-navigator.p.1176f6cf0e8f": {
+  "nb": "Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.",
+  "en": "The filter only applies to the view. The film is unchanged. Moving is off while the filter is on.",
+  "oversatt": "필터는 화면 표시에만 적용됩니다. 영상은 변경되지 않습니다. 필터가 켜져 있는 동안에는 이동할 수 없습니다."
+ },
+ "app-script-scene-navigator.scene-navigator.p.a51d7d2ecc5b": {
+  "nb": "Fjern filteret for å flytte scener. Synlighet kan endres.",
+  "en": "Remove the filter to move scenes. Visibility can be changed.",
+  "oversatt": "씬을 이동하려면 필터를 제거하세요. 가시성은 변경할 수 있습니다."
+ },
+ "app-script-scene-navigator.scene-navigator.p.daea89179fad": {
+  "nb": "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på.",
+  "en": "Drag scenes to move them (or Alt + arrow). The switch on the right turns a scene on and off.",
+  "oversatt": "씬을 드래그하여 이동할 수 있습니다(또는 Alt + 화살표 키). 오른쪽 스위치로 씬을 켜거나 끌 수 있습니다."
+ },
+ "app-script-scene-navigator.scene-navigator.placeholder.9607819efbb0": {
+  "nb": "Søk i manus (tekst, sted, nummer)",
+  "en": "Search the script (text, location, number)",
+  "oversatt": "대본 검색(텍스트, 장소, 번호)"
+ },
+ "app-script-scene-navigator.scene-navigator.span.1c4a03ef3bf2": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-script-scene-navigator.scene-navigator.span.2cb6f17a3804": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "불확실"
+ },
+ "app-script-scene-navigator.scene-navigator.span.4f4be6b70233": {
+  "nb": "Endre rekkefølge og synlighet",
+  "en": "Change order and visibility",
+  "oversatt": "순서 및 가시성 변경"
+ },
+ "app-script-scene-navigator.scene-navigator.span.6742e74d1217": {
+  "nb": "{length} aktive av {length2}",
+  "en": "{length} active of {length2}",
+  "oversatt": "활성 {length}개 / 전체 {length2}개"
+ },
+ "app-script-scene-navigator.scene-navigator.span.7620d2fe46d5": {
+  "nb": "s.",
+  "en": "p.",
+  "oversatt": "p."
+ },
+ "app-script-scene-navigator.scene-navigator.span.bba87363b5e2": {
+  "nb": "Deaktivert",
+  "en": "Inactive",
+  "oversatt": "비활성화됨"
+ },
+ "app-script-scene-navigator.scene-navigator.span.beb3736f0d84": {
+  "nb": "Sammenslått",
+  "en": "Merged",
+  "oversatt": "병합됨"
+ },
+ "app-script-scene-navigator.scene-navigator.span.c5772d68da3f": {
+  "nb": "Treff",
+  "en": "Hit",
+  "oversatt": "일치"
+ },
+ "app-script-scene-navigator.scene-navigator.span.e4d59213ee1a": {
+  "nb": "Flyttet",
+  "en": "Moved",
+  "oversatt": "이동됨"
+ },
+ "app-script-scene-navigator.scene-navigator.span.f1d240f2f06c": {
+  "nb": "{length} av {length2} vises",
+  "en": "{length} of {length2} shown",
+  "oversatt": "{length2}개 중 {length}개 표시됨"
+ },
+ "app-script-scene-navigator.scene-navigator.span.f5061f26f348": {
+  "nb": "Egen versjon",
+  "en": "Own version",
+  "oversatt": "자체 버전"
+ },
+ "app-script-scene-navigator.scene-navigator.title.1f6383ec0ba5": {
+  "nb": "Prognose fra prosjektets historikk, med usikkerhet",
+  "en": "Forecast from the project's history, with uncertainty",
+  "oversatt": "프로젝트 기록 기반 예측(오차 범위 포함)"
+ },
+ "app-script-scene-navigator.scene-navigator.title.6b6011b95d15": {
+  "nb": "Fjern filter",
+  "en": "Remove filter",
+  "oversatt": "필터 제거"
+ },
+ "app-script-scene-navigator.scene-navigator.title.952c8d5f06f7": {
+  "nb": "Faktisk lengde (ferdig materiale)",
+  "en": "Actual length (finished material)",
+  "oversatt": "실제 길이(완성된 분량)"
+ },
+ "app-script-scene-navigator.scene-navigator.title.a3ff285efe82": {
+  "nb": "Står i scenen nå",
+  "en": "In the scene now",
+  "oversatt": "현재 씬에 있음"
+ },
+ "app-script-scene-navigator.scene-without-number": {
+  "nb": "uten nummer",
+  "en": "without number",
+  "oversatt": "번호 없음"
+ },
+ "app-script-script-helpers.kind-label.action.77665d4ab14f": {
+  "nb": "Handling",
+  "en": "Action",
+  "oversatt": "지문"
+ },
+ "app-script-script-helpers.kind-label.character.b5cc58d56174": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "등장인물"
+ },
+ "app-script-script-helpers.kind-label.dialogue.ea045400b3b6": {
+  "nb": "Replikk",
+  "en": "Dialogue",
+  "oversatt": "대사"
+ },
+ "app-script-script-helpers.kind-label.heading.42418a37eb55": {
+  "nb": "Sceneoverskrift",
+  "en": "Scene heading",
+  "oversatt": "씬 헤딩"
+ },
+ "app-script-script-helpers.kind-label.note.76d962063127": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "노트"
+ },
+ "app-script-script-helpers.kind-label.parenthetical.02375f854d46": {
+  "nb": "Parentes",
+  "en": "Parenthetical",
+  "oversatt": "지문(괄호)"
+ },
+ "app-script-script-helpers.kind-label.shot.bd1d7be692cf": {
+  "nb": "Innstilling",
+  "en": "Shot",
+  "oversatt": "샷"
+ },
+ "app-script-script-helpers.kind-label.transition.400119123396": {
+  "nb": "Overgang",
+  "en": "Transition",
+  "oversatt": "트랜지션"
+ },
+ "app-script-script-page-view.flow-sheet.aria-label.aa89dad7a83b": {
+  "nb": "Valgt scene (lesevisning)",
+  "en": "Selected scene (reading view)",
+  "oversatt": "선택한 씬(읽기 모드)"
+ },
+ "app-script-script-page-view.line.aria-label.13b008121044": {
+  "nb": "Oversettelsen må gjennomgås",
+  "en": "The translation must be reviewed",
+  "oversatt": "번역 검토 필요"
+ },
+ "app-script-script-page-view.line.aria-label.387f4bf73f1a": {
+  "nb": "Usikker tolkning",
+  "en": "Uncertain interpretation",
+  "oversatt": "불확실한 해석"
+ },
+ "app-script-script-page-view.line.aria-label.80023fd8c0e5": {
+  "nb": "Endret etter materialet",
+  "en": "Changed since the material was made",
+  "oversatt": "자료 생성 후 변경됨"
+ },
+ "app-script-script-page-view.line.aria-label.8d4e39b3c803": {
+  "nb": "{length} notater – vis",
+  "en": "{length} notes – show",
+  "oversatt": "노트 {length}개 – 보기"
+ },
+ "app-script-script-page-view.line.aria-label.a16a75e4aaf5": {
+  "nb": "Usikker oversettelse",
+  "en": "Uncertain translation",
+  "oversatt": "불확실한 번역"
+ },
+ "app-script-script-page-view.line.aria-label.cbcb7ee33c65": {
+  "nb": "Notat – vis",
+  "en": "Note – show",
+  "oversatt": "노트 – 보기"
+ },
+ "app-script-script-page-view.line.title.203abf286a8a": {
+  "nb": "Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren",
+  "en": "Changed after the material (2D scene or film) was made – see the inspector",
+  "oversatt": "자료(2D 씬 또는 영상) 생성 후 변경됨 – 인스펙터 참조"
+ },
+ "app-script-script-page-view.line.title.2563837d80d2": {
+  "nb": "Vis {length} notater",
+  "en": "Show {length} notes",
+  "oversatt": "노트 {length}개 표시"
+ },
+ "app-script-script-page-view.line.title.528ac11afc9d": {
+  "nb": "Ikke oversatt ennå (norsk tekst vises)",
+  "en": "Not translated yet (Norwegian text shown)",
+  "oversatt": "아직 번역되지 않음(노르웨이어 텍스트 표시됨)"
+ },
+ "app-script-script-page-view.line.title.a542e5888d4b": {
+  "nb": "Den norske teksten er endret etter oversettelsen – gjennomgå den",
+  "en": "The Norwegian text has changed since the translation – review it",
+  "oversatt": "번역 후 노르웨이어 텍스트가 변경됨 – 검토 필요"
+ },
+ "app-script-script-page-view.line.title.bf72fcfbadbc": {
+  "nb": "Usikker kobling fra import – godkjenn eller rett oversettelsen",
+  "en": "Uncertain link from import – approve or correct the translation",
+  "oversatt": "가져오기의 불확실한 연결 – 번역 승인 또는 수정"
+ },
+ "app-script-script-page-view.line.title.dc102e51c07d": {
+  "nb": "Vis notatet",
+  "en": "Show the note",
+  "oversatt": "노트 표시"
+ },
+ "app-script-script-page-view.line.title.f26c13209f66": {
+  "nb": "Usikker tolkning: {uncertain}",
+  "en": "Uncertain interpretation: {value1}",
+  "oversatt": "불확실한 해석: {value1}"
+ },
+ "app-script-script-page-view.page-sheet.aria-label.3ca941d4c1f5": {
+  "nb": "Side {number}",
+  "en": "Page {number}",
+  "oversatt": "{number}페이지"
+ },
+ "app-script-script-page-view.uncertain-interpretation": {
+  "nb": "Usikker tolkning: {reason}",
+  "en": "Uncertain interpretation: {reason}",
+  "oversatt": "불확실한 해석: {reason}"
+ },
+ "app-script-script-workspace.e.cmds-run.7bf7f54e70ef": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "새 씬"
+ },
+ "app-script-script-workspace.err.run.19bffc68c0d6": {
+  "nb": "Nytt notat",
+  "en": "New note",
+  "oversatt": "새 노트"
+ },
+ "app-script-script-workspace.error.error.9cbf95fa4a8e": {
+  "nb": "Teksten er endret mens du skrev – merk ordene på nytt.",
+  "en": "The text was changed while you were writing – select the words again.",
+  "oversatt": "작성하는 동안 텍스트가 변경되었습니다. 단어를 다시 선택하세요."
+ },
+ "app-script-script-workspace.my-name.message.e0177e934ee9": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "멤버"
+ },
+ "app-script-script-workspace.on-save-title-page.cmds-run-silent.4b33f3c3cbfc": {
+  "nb": "Lagre tittelsiden",
+  "en": "Save title page",
+  "oversatt": "타이틀 페이지 저장"
+ },
+ "app-script-script-workspace.others.use-presence.dd7c3ee425b2": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "멤버"
+ },
+ "app-script-script-workspace.pending-note-form.button.7b89e44e9453": {
+  "nb": "Lagre notat",
+  "en": "Save note",
+  "oversatt": "노트 저장"
+ },
+ "app-script-script-workspace.pending-note-form.button.feb08cc7c905": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-script-workspace.pending-note-form.placeholder.5a426aacadc4": {
+  "nb": "Skriv notatet …",
+  "en": "Write the note …",
+  "oversatt": "노트 작성 …"
+ },
+ "app-script-script-workspace.save-indicator.span.76d2d5532927": {
+  "nb": "Lagret",
+  "en": "Saved",
+  "oversatt": "저장됨"
+ },
+ "app-script-script-workspace.save-indicator.span.c775d27e8e0a": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "저장 중 …"
+ },
+ "app-script-script-workspace.script-workspace.div.33729a2872d9": {
+  "nb": "Manuset kunne ikke hentes.",
+  "en": "The script could not be loaded.",
+  "oversatt": "대본을 불러올 수 없습니다."
+ },
+ "app-script-script-workspace.script-workspace.p.6c70d6eba610": {
+  "nb": "Henter manus …",
+  "en": "Loading script …",
+  "oversatt": "대본 불러오는 중 …"
+ },
+ "app-script-script-workspace.script-workspace.p.982d6ef58489": {
+  "nb": "Teknisk detalj",
+  "en": "Technical detail",
+  "oversatt": "기술적 세부사항"
+ },
+ "app-script-script-workspace.workspace.aria-label.1a39ad059236": {
+  "nb": "Manussider. Pil opp og ned velger linje, Enter redigerer.",
+  "en": "Script pages. Up and down arrows select a line, Enter edits.",
+  "oversatt": "대본 페이지. 위/아래 방향키로 라인 선택, Enter 키로 편집."
+ },
+ "app-script-script-workspace.workspace.aria-label.2c75b17c31a9": {
+  "nb": "Låste sider",
+  "en": "Locked pages",
+  "oversatt": "잠긴 페이지"
+ },
+ "app-script-script-workspace.workspace.aria-label.476a13ae83e3": {
+  "nb": "Tilbakefør",
+  "en": "Carry back",
+  "oversatt": "이전으로 되돌리기"
+ },
+ "app-script-script-workspace.workspace.aria-label.d76d7968aeca": {
+  "nb": "Også her nå: {value1}",
+  "en": "Also here now: {value1}",
+  "oversatt": "현재 여기에도 있음: {value1}"
+ },
+ "app-script-script-workspace.workspace.aria-label.dfae56e1d21c": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "확대/축소"
+ },
+ "app-script-script-workspace.workspace.aria-label.ef7efda65221": {
+  "nb": "Manusspråk",
+  "en": "Script language",
+  "oversatt": "대본 언어"
+ },
+ "app-script-script-workspace.workspace.button.083015dbb2e5": {
+  "nb": "Skrivehjelp",
+  "en": "Writing assistant",
+  "oversatt": "작성 도우미"
+ },
+ "app-script-script-workspace.workspace.button.36d735c429be": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "대본 가져오기"
+ },
+ "app-script-script-workspace.workspace.button.61cbc7374b1d": {
+  "nb": "Legg til scener …",
+  "en": "Add scenes …",
+  "oversatt": "씬 추가 …"
+ },
+ "app-script-script-workspace.workspace.button.a577d61c554a": {
+  "nb": "Skriv ny scene",
+  "en": "Write new scene",
+  "oversatt": "새 씬 작성"
+ },
+ "app-script-script-workspace.workspace.button.de441996bb2a": {
+  "nb": "Legg til notat",
+  "en": "Add note",
+  "oversatt": "메모 추가"
+ },
+ "app-script-script-workspace.workspace.button.ebd161a4610b": {
+  "nb": "Inspektør",
+  "en": "Inspector",
+  "oversatt": "인스펙터"
+ },
+ "app-script-script-workspace.workspace.label.27533df79d71": {
+  "nb": "Vis endringsmerker",
+  "en": "Show change marks",
+  "oversatt": "변경 표시 보기"
+ },
+ "app-script-script-workspace.workspace.label.2c75b17c31a9": {
+  "nb": "Låste sider",
+  "en": "Locked pages",
+  "oversatt": "고정된 페이지"
+ },
+ "app-script-script-workspace.workspace.label.3362824102ea": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "실행 취소"
+ },
+ "app-script-script-workspace.workspace.label.68d82f85cc60": {
+  "nb": "Sort tekst på hvit bakgrunn",
+  "en": "Black text on white background",
+  "oversatt": "흰색 배경에 검은색 텍스트"
+ },
+ "app-script-script-workspace.workspace.label.8676b83317ee": {
+  "nb": "Vis kun valgt scene",
+  "en": "Show only selected scene",
+  "oversatt": "선택한 씬만 보기"
+ },
+ "app-script-script-workspace.workspace.label.ab8687b6461c": {
+  "nb": "Vis notater",
+  "en": "Show notes",
+  "oversatt": "메모 표시"
+ },
+ "app-script-script-workspace.workspace.label.b6704946a46c": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "다시 실행"
+ },
+ "app-script-script-workspace.workspace.label.ba59ddc1d352": {
+  "nb": "Bredde på scenelisten",
+  "en": "Width of the scene list",
+  "oversatt": "씬 목록 너비"
+ },
+ "app-script-script-workspace.workspace.label.c39571853125": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "다시 실행: {redoLabel}"
+ },
+ "app-script-script-workspace.workspace.label.e2cc01325b5b": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "실행 취소: {undoLabel}"
+ },
+ "app-script-script-workspace.workspace.label.f65e02e2f309": {
+  "nb": "Bredde på inspektøren",
+  "en": "Width of the inspector",
+  "oversatt": "인스펙터 너비"
+ },
+ "app-script-script-workspace.workspace.moved-baseline.081ba12b8257": {
+  "nb": "versjon {number}",
+  "en": "version {number}",
+  "oversatt": "버전 {number}"
+ },
+ "app-script-script-workspace.workspace.option.f2f185ef5aa4": {
+  "nb": "Tilpass bredde",
+  "en": "Fit width",
+  "oversatt": "너비 맞추기"
+ },
+ "app-script-script-workspace.workspace.p.0d1a72ef9f90": {
+  "nb": "Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye scener legges aldri inn i hovedfilmen automatisk.",
+  "en": "Reuse scenes from the main film, or write new scenes that exist only here. New scenes are never added to the main film automatically.",
+  "oversatt": "본편의 씬을 재사용하거나 여기에만 있는 새 씬을 작성하세요. 새 씬은 본편에 자동으로 추가되지 않습니다."
+ },
+ "app-script-script-workspace.workspace.p.17dbe6cfba2b": {
+  "nb": "Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en forhåndsvisning før noe lagres, og importen kan angres.",
+  "en": "Import the script as PDF (for example from Final Draft) or Word. You see a preview before anything is saved, and the import can be undone.",
+  "oversatt": "PDF(예: Final Draft) 또는 Word 형식으로 대본을 가져옵니다. 저장하기 전에 미리보기가 제공되며 가져오기를 실행 취소할 수 있습니다."
+ },
+ "app-script-script-workspace.workspace.p.29928c11a830": {
+  "nb": "Ingen scener i «{name}» ennå",
+  "en": "No scenes in “{name}” yet",
+  "oversatt": "“{name}”에 아직 씬이 없습니다"
+ },
+ "app-script-script-workspace.workspace.p.b3243fa495e0": {
+  "nb": "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den.",
+  "en": "The selected scene is deactivated, so it is not on the script pages. Turn it on in the list (under “Change order and visibility”) to see it.",
+  "oversatt": "선택한 씬이 비활성화되어 대본 페이지에 표시되지 않습니다. 보려면 목록(“순서 및 표시 여부 변경” 항목)에서 켜세요."
+ },
+ "app-script-script-workspace.workspace.p.c6a460464bdf": {
+  "nb": "«Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises til da.",
+  "en": "“Show only selected scene” is on – choose a scene in the list on the left. The whole script is shown until then.",
+  "oversatt": "“선택한 씬만 보기”가 켜져 있습니다. 왼쪽 목록에서 씬을 선택하세요. 선택 전까지는 전체 대본이 표시됩니다."
+ },
+ "app-script-script-workspace.workspace.p.f85765d85227": {
+  "nb": "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene.",
+  "en": "No active scenes match the filter. Deactivated scenes are not shown on the pages.",
+  "oversatt": "필터와 일치하는 활성 씬이 없습니다. 비활성화된 씬은 페이지에 표시되지 않습니다."
+ },
+ "app-script-script-workspace.workspace.run.13fb4ec5bff2": {
+  "nb": "Aktiver scene",
+  "en": "Activate scene",
+  "oversatt": "씬 활성화"
+ },
+ "app-script-script-workspace.workspace.run.785fcc2a05a5": {
+  "nb": "Deaktiver scene",
+  "en": "Deactivate scene",
+  "oversatt": "씬 비활성화"
+ },
+ "app-script-script-workspace.workspace.span.048b3ab3de10": {
+  "nb": " · {review} må gjennomgås",
+  "en": " · {review} to review",
+  "oversatt": " · 검토 필요 {review}건"
+ },
+ "app-script-script-workspace.workspace.span.446c7442419c": {
+  "nb": "{length} av {length2}",
+  "en": "{length} of {length2}",
+  "oversatt": "{length} / {length2}"
+ },
+ "app-script-script-workspace.workspace.span.7c7941fb9566": {
+  "nb": "Bare lesetilgang",
+  "en": "Read-only access",
+  "oversatt": "읽기 전용 액세스"
+ },
+ "app-script-script-workspace.workspace.span.7e399e2c169f": {
+  "nb": "Tilbakefør …",
+  "en": "Carry back …",
+  "oversatt": "역반영 …"
+ },
+ "app-script-script-workspace.workspace.span.a4fa89817a89": {
+  "nb": " · {uncertain} usikre",
+  "en": " · {uncertain} uncertain",
+  "oversatt": " · 불확실 {uncertain}건"
+ },
+ "app-script-script-workspace.workspace.span.b6b1aad09348": {
+  "nb": "(endret)",
+  "en": "(changed)",
+  "oversatt": "(변경됨)"
+ },
+ "app-script-script-workspace.workspace.span.b997ee84328e": {
+  "nb": "sider",
+  "en": "pages",
+  "oversatt": "페이지"
+ },
+ "app-script-script-workspace.workspace.span.ec47390de436": {
+  "nb": "{translated} av {lines} oversatt",
+  "en": "{translated} of {lines} translated",
+  "oversatt": "{lines}개 중 {translated}개 번역됨"
+ },
+ "app-script-script-workspace.workspace.title.1319d610390c": {
+  "nb": "Vis eller skjul notater i manuset (REQ-0538)",
+  "en": "Show or hide notes in the script (REQ-0538)",
+  "oversatt": "대본의 메모 표시 또는 숨기기 (REQ-0538)"
+ },
+ "app-script-script-workspace.workspace.title.134afc00c999": {
+  "nb": "Følg originalens sideskift for importert tekst (låste sider)",
+  "en": "Follow the original page breaks for imported text (locked pages)",
+  "oversatt": "가져온 텍스트의 원본 페이지 넘김 유지 (고정된 페이지)"
+ },
+ "app-script-script-workspace.workspace.title.181981dbb0d5": {
+  "nb": " – se hvor",
+  "en": " – see where",
+  "oversatt": " – 위치 보기"
+ },
+ "app-script-script-workspace.workspace.title.2c1f264d7e99": {
+  "nb": "Gjør om: {redoLabel} (⇧⌘Z)",
+  "en": "Redo: {redoLabel} (⇧⌘Z)",
+  "oversatt": "다시 실행: {redoLabel} (⇧⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.442aea26253d": {
+  "nb": "Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri.",
+  "en": "The language the script is shown in. Norwegian is the main script; translations never change it.",
+  "oversatt": "대본이 표시되는 언어입니다. 노르웨이어가 기본 대본이며, 번역본은 이를 절대 변경하지 않습니다."
+ },
+ "app-script-script-workspace.workspace.title.49da193529f4": {
+  "nb": "Røde merker i margen der teksten er endret etter at 2D-scenen eller filmen ble laget. Vises bare på skjermen, aldri i utskrift eller eksport.",
+  "en": "Red marks in the margin where the text was changed after the 2D scene or film was made. Shown on screen only, never in print or export.",
+  "oversatt": "2D 씬이나 영화가 제작된 후 텍스트가 변경된 여백의 빨간색 표시입니다. 화면에만 표시되며 인쇄나 내보내기 시에는 표시되지 않습니다."
+ },
+ "app-script-script-workspace.workspace.title.5e6d7daf8488": {
+  "nb": "Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen",
+  "en": "Carry changes or new scenes from this production back to the main film",
+  "oversatt": "이 프로덕션의 변경 사항이나 새 씬을 메인 영화로 가져오기"
+ },
+ "app-script-script-workspace.workspace.title.67cc04366e0d": {
+  "nb": "Fjern alle oversettelser til dette språket i én endring (kan angres)",
+  "en": "Remove all translations into this language in one change (can be undone)",
+  "oversatt": "한 번의 작업으로 이 언어로 된 모든 번역 제거(실행 취소 가능)"
+ },
+ "app-script-script-workspace.workspace.title.6d4e35b2e0a2": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "다시 실행 (⇧⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.9190e6a61a9c": {
+  "nb": "Angre: {undoLabel} (⌘Z)",
+  "en": "Undo: {undoLabel} (⌘Z)",
+  "oversatt": "실행 취소: {undoLabel} (⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.ab59c5d3bc7e": {
+  "nb": "Gjenbruk scener fra hovedfilmen eller en annen produksjon",
+  "en": "Reuse scenes from the main film or another production",
+  "oversatt": "메인 영화 또는 다른 프로덕션의 씬 재사용"
+ },
+ "app-script-script-workspace.workspace.title.bd4f0744ad84": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "실행 취소 (⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.dbf1ce70536a": {
+  "nb": "Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen.",
+  "en": "Show only the scene selected in the scene list. Does not change the film.",
+  "oversatt": "씬 목록에서 선택한 씬만 표시합니다. 영화는 변경되지 않습니다."
+ },
+ "app-script-script-workspace.workspace.title.e1e017defea2": {
+  "nb": "Notater, bare valgt scene og låste sider",
+  "en": "Notes, selected scene only and locked pages",
+  "oversatt": "메모, 선택한 씬만 및 잠긴 페이지"
+ },
+ "app-script-script-workspace.workspace.title.ecab89434db5": {
+  "nb": "Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen",
+  "en": "Lines that have been translated, and lines where the Norwegian has changed since translation",
+  "oversatt": "번역된 대사 및 번역 후 노르웨이어 원문이 변경된 대사"
+ },
+ "app-script-script-workspace.workspace.title.f3a9414f12ae": {
+  "nb": "Lesevisningen for valgt scene: sort tekst på hvit bakgrunn",
+  "en": "Reading view for the selected scene: black text on a white background",
+  "oversatt": "선택한 씬 읽기 모드: 흰색 배경에 검은색 텍스트"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.1de494e767b5": {
+  "nb": "Visning",
+  "en": "View",
+  "oversatt": "보기"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.36d735c429be": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "대본 가져오기"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.48dd6b7fbf04": {
+  "nb": "Fjern oversettelsene …",
+  "en": "Remove the translations …",
+  "oversatt": "번역 제거…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.5e33b57871b7": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "내보내기"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.61cbc7374b1d": {
+  "nb": "Legg til scener …",
+  "en": "Add scenes …",
+  "oversatt": "씬 추가…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.87153b7e849d": {
+  "nb": "Importer engelsk manus …",
+  "en": "Import English script …",
+  "oversatt": "영어 대본 가져오기…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.d987ab9929c2": {
+  "nb": "Versjoner",
+  "en": "Versions",
+  "oversatt": "버전"
+ },
+ "app-script-story-time-section.save.run.217d7895857f": {
+  "nb": "Scenen følger rekkefølgen",
+  "en": "The scene follows the running order",
+  "oversatt": "씬이 시퀀스 순서를 따름"
+ },
+ "app-script-story-time-section.save.run.6e414cb1d8c3": {
+  "nb": "Merk som {value1}",
+  "en": "Mark as {value1}",
+  "oversatt": "{value1}(으)로 표시"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.00af75e9d420": {
+  "nb": "Når i historien",
+  "en": "When in the story",
+  "oversatt": "스토리상의 시점"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.505b5a3a04ee": {
+  "nb": "Fortellingstid",
+  "en": "Story time",
+  "oversatt": "스토리 시간"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.7f5b07ac218a": {
+  "nb": "Scenen det skjer i forhold til",
+  "en": "The scene it happens in relation to",
+  "oversatt": "기준이 되는 씬"
+ },
+ "app-script-story-time-section.story-time-section.const-v-object-values-state-variants-find-x-x-scene-id-other-anchor-const-heading-v-format-heading-v-heading-scene-return-l-heading-ikke-i-hovedfilmen-heading-not-in-the-main-film.9c10c76f625b": {
+  "nb": "{heading} (ikke i hovedfilmen)",
+  "en": "{heading} (not in the main film)",
+  "oversatt": "{heading} (메인 영화에 없음)"
+ },
+ "app-script-story-time-section.story-time-section.option.76bcf4e55c84": {
+  "nb": "Velg scene …",
+  "en": "Choose a scene …",
+  "oversatt": "씬 선택…"
+ },
+ "app-script-story-time-section.story-time-section.option.a59806a48647": {
+  "nb": "Skjer",
+  "en": "Happens",
+  "oversatt": "발생 시점"
+ },
+ "app-script-story-time-section.story-time-section.p.5bb5fb6db2ba": {
+  "nb": "Fortellingstiden gjelder scenen i alle produksjoner og endres i hovedfilmen.",
+  "en": "Story time applies to the scene in all productions and is changed in the main film.",
+  "oversatt": "스토리 시간은 모든 프로덕션의 씬에 적용되며 메인 영화에서 변경됩니다."
+ },
+ "app-script-story-time-section.story-time-section.p.774137dc39c3": {
+  "nb": "Karakterenes utseende (kontinuitet) regnes ut fra når scenen skjer i historien, ikke hvor den står i filmen.",
+  "en": "The characters' appearance (continuity) is worked out from when the scene happens in the story, not where it sits in the film.",
+  "oversatt": "캐릭터의 외형(연속성)은 영화 내 위치가 아닌 스토리상 씬이 발생하는 시점을 기준으로 계산됩니다."
+ },
+ "app-script-story-time-section.story-time-section.p.dc33db7b4c6e": {
+  "nb": "Scenen skjer i historien der den står i filmen.",
+  "en": "The scene happens in the story where it sits in the film.",
+  "oversatt": "씬은 영화에 배치된 스토리 시점에 발생합니다."
+ },
+ "app-script-story-time-section.story-time-section.p.e46f9d52c066": {
+  "nb": "Velg scenen dette skjer i forhold til, så regnes kontinuiteten riktig. Uten valg brukes plassen i filmen.",
+  "en": "Choose the scene this happens in relation to, so continuity is worked out correctly. Without a choice, the place in the film is used.",
+  "oversatt": "연속성이 올바르게 계산되도록 이 사건의 기준이 되는 씬을 선택하세요. 선택하지 않으면 영화 내 위치가 사용됩니다."
+ },
+ "app-script-translation-import-dialog.ai-suggestion": {
+  "nb": " · Forslag fra AI ({confidence}){reason}",
+  "en": " · AI suggestion ({confidence}){reason}",
+  "oversatt": " · AI 제안 ({confidence}){reason}"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-high": {
+  "nb": "sikker",
+  "en": "certain",
+  "oversatt": "확실"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-low": {
+  "nb": "usikker",
+  "en": "uncertain",
+  "oversatt": "불확실"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-medium": {
+  "nb": "trolig",
+  "en": "likely",
+  "oversatt": "유력"
+ },
+ "app-script-translation-import-dialog.e.cmds-run.96a7ab3c19ed": {
+  "nb": "Importer {value1} manus",
+  "en": "Import {langName} script",
+  "oversatt": "{langName} 대본 가져오기"
+ },
+ "app-script-translation-import-dialog.import-script": {
+  "nb": "Importer {language} manus",
+  "en": "Import {language} script",
+  "oversatt": "{language} 대본 가져오기"
+ },
+ "app-script-translation-import-dialog.link-summary": {
+  "nb": "{certainty} · {lines} linjer{unmatched}",
+  "en": "{certainty} · {lines} lines{unmatched}",
+  "oversatt": "{certainty} · {lines}줄{unmatched}"
+ },
+ "app-script-translation-import-dialog.link-summary-manual": {
+  "nb": "Valgt manuelt",
+  "en": "Chosen manually",
+  "oversatt": "수동 선택됨"
+ },
+ "app-script-translation-import-dialog.link-summary-sure": {
+  "nb": "Sikker",
+  "en": "Certain",
+  "oversatt": "확실"
+ },
+ "app-script-translation-import-dialog.link-summary-unmatched": {
+  "nb": " · {count} uten par",
+  "en": " · {count} without a pair",
+  "oversatt": " · 짝 없는 항목 {count}개"
+ },
+ "app-script-translation-import-dialog.link-summary-unsure": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "불확실"
+ },
+ "app-script-translation-import-dialog.save.set-err.d96e6de84f3b": {
+  "nb": "Ingen scener er koblet.",
+  "en": "No scenes are linked.",
+  "oversatt": "연결된 씬이 없습니다."
+ },
+ "app-script-translation-import-dialog.suggest-with-ai.set-ai-note.723ce9f4696e": {
+  "nb": "Den innebygde AI-en svarte ikke. Koblingene bygger på reglene.",
+  "en": "The built-in AI did not respond. The links are based on rules.",
+  "oversatt": "내장 AI가 응답하지 않았습니다. 규칙에 따라 연결되었습니다."
+ },
+ "app-script-translation-import-dialog.suggest-with-ai.set-ai-note.8b8904dec6de": {
+  "nb": "Den innebygde AI-en foreslo koblinger for {length} usikre scener. Kontroller og godkjenn dem.",
+  "en": "The built-in AI suggested links for {length} uncertain scenes. Check and approve them.",
+  "oversatt": "내장 AI가 불확실한 씬 {length}개에 대한 연결을 제안했습니다. 확인 후 승인하세요."
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.2aeb56f5c4f7": {
+  "nb": "Norsk scene",
+  "en": "Norwegian scene",
+  "oversatt": "노르웨이어 씬"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.486814d2b668": {
+  "nb": "Koblinger",
+  "en": "Links",
+  "oversatt": "연결"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.d5f1cb20facd": {
+  "nb": "Godkjent kobling",
+  "en": "Approved link",
+  "oversatt": "승인된 연결"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.06d4f5b6706e": {
+  "nb": "Leser manuset …",
+  "en": "Reading the script …",
+  "oversatt": "대본을 읽는 중 …"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.13370c0a5a87": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.859270a91c19": {
+  "nb": "Lagre {lines} oversettelser",
+  "en": "Save {lines} translations",
+  "oversatt": "번역 {lines}개 저장"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.fc25aa9b4407": {
+  "nb": "Velg fil …",
+  "en": "Choose file …",
+  "oversatt": "파일 선택 …"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.dialog-description.02c0953ca29d": {
+  "nb": "Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.",
+  "en": "A finished translated script (PDF, Word or Fountain) is linked to the Norwegian scenes and lines. The Norwegian script is not changed. Check the links before you save.",
+  "oversatt": "완성된 번역 대본(PDF, Word 또는 Fountain)이 노르웨이어 씬 및 대사와 연결됩니다. 노르웨이어 대본은 변경되지 않습니다. 저장하기 전에 연결 상태를 확인하세요."
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.dialog-title.fb1c52f22990": {
+  "nb": "Importer {value1} manus",
+  "en": "Import {langName} script",
+  "oversatt": "{langName} 대본 가져오기"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.option.2ea52a3c1b68": {
+  "nb": "— ikke koble —",
+  "en": "— do not link —",
+  "oversatt": "— 연결 안 함 —"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.047d1307abf5": {
+  "nb": "{length} scener, {length2} koblet, {lines} linjer får oversettelse. Usikre koblinger er ikke krysset av – de lagres som usikre og kan godkjennes senere.",
+  "en": "{length} scenes, {length2} linked, {lines} lines get a translation. Uncertain links are not ticked – they are saved as uncertain and can be approved later.",
+  "oversatt": "{length}개 씬, {length2}개 연결됨, {lines}개 대사에 번역이 적용됩니다. 불확실한 연결은 체크되지 않으며, 불확실 상태로 저장되어 나중에 승인할 수 있습니다."
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.ceba985f4b6a": {
+  "nb": "Den innebygde AI-en ser på de usikre koblingene …",
+  "en": "The built-in AI is checking the uncertain links …",
+  "oversatt": "내장 AI가 불확실한 연결을 검토하는 중 …"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.f232f65f9647": {
+  "nb": "Samme norske scene er valgt for flere importerte scener. Bare den første brukes.",
+  "en": "The same Norwegian scene is chosen for several imported scenes. Only the first is used.",
+  "oversatt": "여러 가져온 씬에 동일한 노르웨이어 씬이 선택되었습니다. 첫 번째 씬만 사용됩니다."
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c": {
+  "nb": " · Forslag fra AI ({value1}){value2}",
+  "en": " · AI suggestion ({value1}){value2}",
+  "oversatt": " · AI 제안 ({value1}){value2}"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166": {
+  "nb": "{value1} · {length} linjer{value3}",
+  "en": "{value1} · {length} lines{value3}",
+  "oversatt": "{value1} · {length}줄{value3}"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.b42fadde7f0e": {
+  "nb": "Ikke koblet",
+  "en": "Not linked",
+  "oversatt": "연결되지 않음"
+ },
+ "app-script-translation-panel.save.run.3c8e90b789b8": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "번역 ({langName})"
+ },
+ "app-script-translation-panel.save.run.3c8e90b789b8.2": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "번역 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.aria-label.d679587cc24e": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "번역 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.button.30e626e26439": {
+  "nb": "Lagret",
+  "en": "Saved",
+  "oversatt": "저장됨"
+ },
+ "app-script-translation-panel.translation-panel.button.5d893a9834d5": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-script-translation-panel.translation-panel.button.b26882f93e4e": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-script-translation-panel.translation-panel.button.fc04ba2adbff": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "승인"
+ },
+ "app-script-translation-panel.translation-panel.h3.483ff179da30": {
+  "nb": "Norsk (hovedmanus)",
+  "en": "Norwegian (main script)",
+  "oversatt": "노르웨이어 (메인 대본)"
+ },
+ "app-script-translation-panel.translation-panel.h3.71328d6a925f": {
+  "nb": "Scenehode – norsk",
+  "en": "Scene heading – Norwegian",
+  "oversatt": "씬 헤딩 – 노르웨이어"
+ },
+ "app-script-translation-panel.translation-panel.p.3381de071f0d": {
+  "nb": "Koblet automatisk ved import – kontroller og godkjenn.",
+  "en": "Linked automatically on import – check and approve.",
+  "oversatt": "가져올 때 자동으로 연결됨 – 확인 후 승인하세요."
+ },
+ "app-script-translation-panel.translation-panel.p.34959a2df1f2": {
+  "nb": "Oversettelsen endrer aldri det norske manuset. Bytt til «Norsk» øverst for å endre hovedmanuset.",
+  "en": "The translation never changes the Norwegian script. Switch to “Norwegian” at the top to change the main script.",
+  "oversatt": "번역은 노르웨이어 대본을 변경하지 않습니다. 메인 대본을 변경하려면 상단에서 '노르웨이어'로 전환하세요."
+ },
+ "app-script-translation-panel.translation-panel.placeholder.1c6aaff3beaa": {
+  "nb": "Ikke oversatt ennå",
+  "en": "Not translated yet",
+  "oversatt": "아직 번역되지 않음"
+ },
+ "app-script-translation-panel.translation-panel.run.dff3e5573199": {
+  "nb": "Fjern oversettelse ({langName})",
+  "en": "Remove translation ({langName})",
+  "oversatt": "번역 제거 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.span.20ea3adffe37": {
+  "nb": "Den norske teksten er endret etter oversettelsen.",
+  "en": "The Norwegian text has changed since the translation.",
+  "oversatt": "번역 이후 노르웨이어 텍스트가 변경되었습니다."
+ },
+ "app-script-versions-dialog.change-detail.aria-label.631e8c5a9ad7": {
+  "nb": "{n} er kommet til",
+  "en": "{n} added",
+  "oversatt": "{n}개 추가됨"
+ },
+ "app-script-versions-dialog.change-detail.aria-label.b9307241a002": {
+  "nb": "{n} er borte",
+  "en": "{n} removed",
+  "oversatt": "{n}개 제거됨"
+ },
+ "app-script-versions-dialog.change-detail.button.3a1bf836e6fd": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "모두 표시"
+ },
+ "app-script-versions-dialog.change-detail.button.551c139a1a46": {
+  "nb": "linjer",
+  "en": "lines",
+  "oversatt": "줄"
+ },
+ "app-script-versions-dialog.compare.button.3b72c0bea3b0": {
+  "nb": "Tilbake",
+  "en": "Back",
+  "oversatt": "뒤로"
+ },
+ "app-script-versions-dialog.compare.button.a6b55382c6e1": {
+  "nb": "Gå til",
+  "en": "Go to",
+  "oversatt": "이동"
+ },
+ "app-script-versions-dialog.compare.div.9aa2fc5177e5": {
+  "nb": "til",
+  "en": "to",
+  "oversatt": "~"
+ }
+}

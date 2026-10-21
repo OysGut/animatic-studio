@@ -1,0 +1,3022 @@
+{
+ "core-commands-apply.translation-fields-of.fail.b8697ac1dfc3": {
+  "nb": "Norsk er hovedmanuset og oversettes ikke",
+  "en": "Norwegian is the main script and is not translated",
+  "oversatt": "O norueguês é o roteiro principal e não é traduzido"
+ },
+ "core-commands-apply.translation-fields-of.fail.eb653dd6de37": {
+  "nb": "Ugyldig oversettelse",
+  "en": "Invalid translation",
+  "oversatt": "Tradução inválida"
+ },
+ "core-commands-apply.translation-fields-of.fail.fc219dd67591": {
+  "nb": "Revisjonen finnes ikke",
+  "en": "The revision does not exist",
+  "oversatt": "A revisão não existe"
+ },
+ "core-commands-apply.translation-fields-of.fail.fc219dd67591.2": {
+  "nb": "Revisjonen finnes ikke",
+  "en": "The revision does not exist",
+  "oversatt": "A revisão não existe"
+ },
+ "core-commands-apply.u.need.e95acc024793": {
+  "nb": "Linjen",
+  "en": "The line",
+  "oversatt": "A fala"
+ },
+ "core-commands-apply.v.need.0466fefacd57": {
+  "nb": "Opptaket",
+  "en": "The recording",
+  "oversatt": "A gravação"
+ },
+ "core-commands-apply.v.need.4566fe3845fa": {
+  "nb": "Bildet",
+  "en": "The image",
+  "oversatt": "A imagem"
+ },
+ "core-commands-apply.v.need.4566fe3845fa.2": {
+  "nb": "Bildet",
+  "en": "The image",
+  "oversatt": "A imagem"
+ },
+ "core-commands-apply.v.need.8d1f3017c293": {
+  "nb": "Blokken eller varianten",
+  "en": "The block or variant",
+  "oversatt": "O bloco ou variante"
+ },
+ "core-commands-apply.v.need.acdff82a388d": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "A cena"
+ },
+ "core-commands-apply.v.need.aefe1a88d6d9": {
+  "nb": "Lydversjonen",
+  "en": "The audio version",
+  "oversatt": "A versão de áudio"
+ },
+ "core-commands-apply.v.need.aefe1a88d6d9.2": {
+  "nb": "Lydversjonen",
+  "en": "The audio version",
+  "oversatt": "A versão de áudio"
+ },
+ "core-commands-apply.v.need.aefe1a88d6d9.3": {
+  "nb": "Lydversjonen",
+  "en": "The audio version",
+  "oversatt": "A versão de áudio"
+ },
+ "core-commands-apply.v.need.aefe1a88d6d9.4": {
+  "nb": "Lydversjonen",
+  "en": "The audio version",
+  "oversatt": "A versão de áudio"
+ },
+ "core-commands-apply.v.need.cd0c858f5020": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.2": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.3": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.4": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.5": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.6": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.315882a5547a.7": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.va.need.447921afc7f5": {
+  "nb": "Varianten av ressursen",
+  "en": "The asset variant",
+  "oversatt": "A variante do ativo"
+ },
+ "core-commands-apply.va.need.447921afc7f5.2": {
+  "nb": "Varianten av ressursen",
+  "en": "The asset variant",
+  "oversatt": "A variante do ativo"
+ },
+ "core-commands-apply.va.need.5f17b1c836f3": {
+  "nb": "Varianten for språket",
+  "en": "The variant for the language",
+  "oversatt": "A variante para o idioma"
+ },
+ "core-commands-apply.va.need.7c3b80f26eaa": {
+  "nb": "Varianten av lydfilen",
+  "en": "The variant of the audio file",
+  "oversatt": "A variante do arquivo de áudio"
+ },
+ "core-commands-apply.valid-story-time.fail.0bac906370ff": {
+  "nb": "En scene kan ikke ankres til seg selv",
+  "en": "A scene cannot be anchored to itself",
+  "oversatt": "Uma cena não pode ser ancorada a si mesma"
+ },
+ "core-commands-apply.valid-story-time.fail.19865b0c5772": {
+  "nb": "Ankeret ville gitt en sirkel i fortellingstiden",
+  "en": "The anchor would create a loop in story time",
+  "oversatt": "A âncora criaria um ciclo no tempo da história"
+ },
+ "core-commands-apply.valid-story-time.fail.6cd8fd2e6898": {
+  "nb": "Ugyldig forskyvning",
+  "en": "Invalid offset",
+  "oversatt": "Deslocamento inválido"
+ },
+ "core-commands-apply.valid-story-time.fail.813c0cf1a857": {
+  "nb": "Ankerscenen finnes ikke",
+  "en": "The anchor scene does not exist",
+  "oversatt": "A cena âncora não existe"
+ },
+ "core-commands-apply.valid-story-time.fail.842e68eed37b": {
+  "nb": "Ukjent type fortellingstid",
+  "en": "Unknown story time type",
+  "oversatt": "Tipo de tempo da história desconhecido"
+ },
+ "core-commands-apply.valid-story-time.fail.bffd1f3268f4": {
+  "nb": "Lineære scener har ikke anker",
+  "en": "Linear scenes have no anchor",
+  "oversatt": "Cenas lineares não possuem âncora"
+ },
+ "core-commands-apply.variant.fail.36e064655cdb": {
+  "nb": "{what} hører ikke til ressursen",
+  "en": "{what} does not belong to the asset",
+  "oversatt": "{what} não pertence ao ativo"
+ },
+ "core-commands-apply.variant.need.aee0968fe242": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.variant.need.aee0968fe242.2": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.variant.need.aee0968fe242.3": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.variant.need.aee0968fe242.4": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "A variante"
+ },
+ "core-commands-apply.ve.need.315394bd6853": {
+  "nb": "Bildeversjonen for språket",
+  "en": "The image version for the language",
+  "oversatt": "A versão de imagem para o idioma"
+ },
+ "core-commands-apply.ve.need.6890d7bec134": {
+  "nb": "Lydversjonen",
+  "en": "The audio version",
+  "oversatt": "A versão de áudio"
+ },
+ "core-commands-apply.ve.need.d1986046a351": {
+  "nb": "Bildeversjonen",
+  "en": "The image version",
+  "oversatt": "A versão de imagem"
+ },
+ "core-commands-apply.ve.need.d1986046a351.2": {
+  "nb": "Bildeversjonen",
+  "en": "The image version",
+  "oversatt": "A versão da imagem"
+ },
+ "core-commands-apply.ver.need.45e9bd47ebb5": {
+  "nb": "Malversjonen",
+  "en": "The template version",
+  "oversatt": "A versão do modelo"
+ },
+ "core-commands-apply.ver.need.45e9bd47ebb5.2": {
+  "nb": "Malversjonen",
+  "en": "The template version",
+  "oversatt": "A versão do modelo"
+ },
+ "core-commands-apply.ver.need.f1d2238c110b": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "A versão"
+ },
+ "core-commands-apply.ver.need.f1d2238c110b.2": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "A versão"
+ },
+ "core-commands-apply.ver.need.f1d2238c110b.3": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "A versão"
+ },
+ "core-composition-fields.blend-label.color.3db247d33699": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "Cor"
+ },
+ "core-composition-fields.blend-label.darken.df32ade13bc9": {
+  "nb": "Mørkere",
+  "en": "Darken",
+  "oversatt": "Escurecer"
+ },
+ "core-composition-fields.blend-label.lighten.5b5d7b6aa6a4": {
+  "nb": "Lysere",
+  "en": "Lighten",
+  "oversatt": "Clarear"
+ },
+ "core-composition-fields.blend-label.multiply.9dde5bedc7ac": {
+  "nb": "Multipliser",
+  "en": "Multiply",
+  "oversatt": "Multiplicar"
+ },
+ "core-composition-fields.blend-label.normal.46f6b58cf0d2": {
+  "nb": "Normal",
+  "en": "Normal",
+  "oversatt": "Normal"
+ },
+ "core-composition-fields.blend-label.overlay.cacb6a5bb7dc": {
+  "nb": "Overlegg",
+  "en": "Overlay",
+  "oversatt": "Sobrepor"
+ },
+ "core-composition-fields.blend-label.screen.75d742ab12d6": {
+  "nb": "Skjerm",
+  "en": "Screen",
+  "oversatt": "Divisão"
+ },
+ "core-composition-fields.blend-label.soft-light.f2d19b35d47f": {
+  "nb": "Mykt lys",
+  "en": "Soft light",
+  "oversatt": "Luz Suave"
+ },
+ "core-composition-fields.composition-formats.message.1f180268ab0d": {
+  "nb": "Kvadrat 1:1 (1080 × 1080)",
+  "en": "Square 1:1 (1080 × 1080)",
+  "oversatt": "Quadrado 1:1 (1080 × 1080)"
+ },
+ "core-composition-fields.composition-formats.message.a1a6c0f641b2": {
+  "nb": "Kino 1.85:1 (1998 × 1080)",
+  "en": "Cinema 1.85:1 (1998 × 1080)",
+  "oversatt": "Cinema 1.85:1 (1998 × 1080)"
+ },
+ "core-composition-fields.composition-formats.message.bb75e0995a61": {
+  "nb": "Stående 9:16 (1080 × 1920)",
+  "en": "Portrait 9:16 (1080 × 1920)",
+  "oversatt": "Retrato 9:16 (1080 × 1920)"
+ },
+ "core-composition-fields.error.error.019feb331500": {
+  "nb": "To nøkkelbilder på samme bilde og egenskap",
+  "en": "Two keyframes on the same frame and property",
+  "oversatt": "Dois quadros-chave no mesmo quadro e propriedade"
+ },
+ "core-composition-fields.error.error.0649658150f2": {
+  "nb": "En gruppe kan ikke ligge i en gruppe",
+  "en": "A group cannot be inside another group",
+  "oversatt": "Um grupo não pode estar dentro de outro grupo"
+ },
+ "core-composition-fields.error.error.0684da26635e": {
+  "nb": "En gruppe kan ikke ha effekter",
+  "en": "A group cannot have effects",
+  "oversatt": "Um grupo não pode ter efeitos"
+ },
+ "core-composition-fields.error.error.070bbd8ae3c4": {
+  "nb": "Ugyldig kameraramme",
+  "en": "Invalid camera frame",
+  "oversatt": "Enquadramento de câmera inválido"
+ },
+ "core-composition-fields.error.error.09a2b9a18fb7": {
+  "nb": "Ugyldig språk for bildet",
+  "en": "Invalid language for the image",
+  "oversatt": "Idioma inválido para a imagem"
+ },
+ "core-composition-fields.error.error.0b4307721a01": {
+  "nb": "Bare fargeflater kan ha form",
+  "en": "Only colour fills can have a shape",
+  "oversatt": "Apenas preenchimentos de cor podem ter uma forma"
+ },
+ "core-composition-fields.error.error.0d2b9114f802": {
+  "nb": "Ugyldige bilder per språk",
+  "en": "Invalid images per language",
+  "oversatt": "Imagens por idioma inválidas"
+ },
+ "core-composition-fields.error.error.1294e3c5e368": {
+  "nb": "Ugyldig lag for masken",
+  "en": "Invalid layer for the mask",
+  "oversatt": "Camada inválida para a máscara"
+ },
+ "core-composition-fields.error.error.12e4b2ec92df": {
+  "nb": "Posisjonen er for langt utenfor scenen",
+  "en": "The position is too far outside the scene",
+  "oversatt": "A posição está muito fora da cena"
+ },
+ "core-composition-fields.error.error.1d822425770f": {
+  "nb": "Ugyldig punkt i banen",
+  "en": "Invalid point in the path",
+  "oversatt": "Ponto inválido na trajetória"
+ },
+ "core-composition-fields.error.error.2490286dbee7": {
+  "nb": "For mange bildeskifter",
+  "en": "Too many image swaps",
+  "oversatt": "Muitas trocas de imagem"
+ },
+ "core-composition-fields.error.error.2527917261cf": {
+  "nb": "Bredden må være et helt tall mellom {MIN_SIZE} og {MAX_SIZE}",
+  "en": "Width must be a whole number between {MIN_SIZE} and {MAX_SIZE}",
+  "oversatt": "A largura deve ser um número inteiro entre {MIN_SIZE} e {MAX_SIZE}"
+ },
+ "core-composition-fields.error.error.27338a882356": {
+  "nb": "Ugyldig hastighetskurve",
+  "en": "Invalid easing curve",
+  "oversatt": "Curva de atenuação (easing) inválida"
+ },
+ "core-composition-fields.error.error.27338a882356.2": {
+  "nb": "Ugyldig hastighetskurve",
+  "en": "Invalid easing curve",
+  "oversatt": "Curva de atenuação (easing) inválida"
+ },
+ "core-composition-fields.error.error.27f42ab840d5": {
+  "nb": "Ugyldig tid for banen",
+  "en": "Invalid time for the path",
+  "oversatt": "Tempo inválido para a trajetória"
+ },
+ "core-composition-fields.error.error.29da565c9517": {
+  "nb": "Ugyldig kamera",
+  "en": "Invalid camera",
+  "oversatt": "Câmera inválida"
+ },
+ "core-composition-fields.error.error.2f3f356fc3d3": {
+  "nb": "Bakgrunnsfargen må være på formen #rrggbb",
+  "en": "The background colour must be in the form #rrggbb",
+  "oversatt": "A cor de fundo deve estar no formato #rrggbb"
+ },
+ "core-composition-fields.error.error.3024617477db": {
+  "nb": "Ugyldige tegn i kameraet",
+  "en": "Invalid characters in the camera",
+  "oversatt": "Caracteres inválidos na câmera"
+ },
+ "core-composition-fields.error.error.31898a13dfeb": {
+  "nb": "Høyden må være et helt tall mellom {MIN_SIZE} og {MAX_SIZE}",
+  "en": "Height must be a whole number between {MIN_SIZE} and {MAX_SIZE}",
+  "oversatt": "A altura deve ser um número inteiro entre {MIN_SIZE} e {MAX_SIZE}"
+ },
+ "core-composition-fields.error.error.3475499a18da": {
+  "nb": "Ugyldig ankerpunkt",
+  "en": "Invalid anchor point",
+  "oversatt": "Ponto de ancoragem inválido"
+ },
+ "core-composition-fields.error.error.34d1e0ea261f": {
+  "nb": "Bildeskiftet mangler bilde",
+  "en": "The image swap is missing an image",
+  "oversatt": "A troca de imagem está sem uma imagem"
+ },
+ "core-composition-fields.error.error.3754542a313f": {
+  "nb": "En side viser ikke noe bilde selv",
+  "en": "A page does not show an image itself",
+  "oversatt": "Uma página não exibe uma imagem por si só"
+ },
+ "core-composition-fields.error.error.4ad15b3631e8": {
+  "nb": "Ugyldig plassering av masken",
+  "en": "Invalid position of the mask",
+  "oversatt": "Posição inválida da máscara"
+ },
+ "core-composition-fields.error.error.4c0101356b82": {
+  "nb": "Banen må ha mellom 2 og {MAX_PATH_POINTS} punkter",
+  "en": "The path must have between 2 and {MAX_PATH_POINTS} points",
+  "oversatt": "A trajetória deve ter entre 2 e {MAX_PATH_POINTS} pontos"
+ },
+ "core-composition-fields.error.error.5405cb447f1b": {
+  "nb": "Ugyldig plassering eller størrelse på masken i nøkkelbilde",
+  "en": "Invalid position or size of the mask in a keyframe",
+  "oversatt": "Posição ou tamanho inválido da máscara no quadro-chave"
+ },
+ "core-composition-fields.error.error.5484b6939b46": {
+  "nb": "Ugyldig gruppe",
+  "en": "Invalid group",
+  "oversatt": "Grupo inválido"
+ },
+ "core-composition-fields.error.error.5cd644bf0d61": {
+  "nb": "Ugyldig høyde",
+  "en": "Invalid height",
+  "oversatt": "Altura inválida"
+ },
+ "core-composition-fields.error.error.65da5e8cda8d": {
+  "nb": "For mange kamerautsnitt",
+  "en": "Too many camera shots",
+  "oversatt": "Planos de câmera demais"
+ },
+ "core-composition-fields.error.error.67039a07f370": {
+  "nb": "Ugyldige bildeskifter",
+  "en": "Invalid image swaps",
+  "oversatt": "Trocas de imagem inválidas"
+ },
+ "core-composition-fields.error.error.6c622f15f0e0": {
+  "nb": "Styrken på ease må være mellom 0 og 100 %",
+  "en": "The ease strength must be between 0 and 100 %",
+  "oversatt": "A intensidade do atenuação (ease) deve estar entre 0 e 100%"
+ },
+ "core-composition-fields.error.error.6c622f15f0e0.2": {
+  "nb": "Styrken på ease må være mellom 0 og 100 %",
+  "en": "The ease strength must be between 0 and 100 %",
+  "oversatt": "A intensidade do atenuação (ease) deve estar entre 0 e 100%"
+ },
+ "core-composition-fields.error.error.6d388f9d2902": {
+  "nb": "Ugyldig lagtype",
+  "en": "Invalid layer type",
+  "oversatt": "Tipo de camada inválido"
+ },
+ "core-composition-fields.error.error.758d808ebac0": {
+  "nb": "Ugyldig type maske",
+  "en": "Invalid mask type",
+  "oversatt": "Tipo de máscara inválido"
+ },
+ "core-composition-fields.error.error.76f016e9d457": {
+  "nb": "Masken er for stor",
+  "en": "The mask is too large",
+  "oversatt": "A máscara é grande demais"
+ },
+ "core-composition-fields.error.error.7eff99a93d22": {
+  "nb": "Ugyldig tempokurve",
+  "en": "Invalid tempo curve",
+  "oversatt": "Curva de andamento inválida"
+ },
+ "core-composition-fields.error.error.848ae0f42a0a": {
+  "nb": "Ugyldig verdi for {k}",
+  "en": "Invalid value for {k}",
+  "oversatt": "Valor inválido para {k}"
+ },
+ "core-composition-fields.error.error.85332dbf18d8": {
+  "nb": "Ugyldig bildeskifte",
+  "en": "Invalid image swap",
+  "oversatt": "Troca de imagem inválida"
+ },
+ "core-composition-fields.error.error.87b9ef0aae78": {
+  "nb": "Ugyldig kamerabane",
+  "en": "Invalid camera path",
+  "oversatt": "Trajetória de câmera inválida"
+ },
+ "core-composition-fields.error.error.89a432c6df1e": {
+  "nb": "Variant eller versjon uten ressurs",
+  "en": "Variant or version without an asset",
+  "oversatt": "Variante ou versão sem um ativo"
+ },
+ "core-composition-fields.error.error.8c32267612cd": {
+  "nb": "Kamerautsnittet må slutte etter at det starter",
+  "en": "The camera shot must end after it starts",
+  "oversatt": "O plano de câmera deve terminar depois de começar"
+ },
+ "core-composition-fields.error.error.904ff8576383": {
+  "nb": "Fargen må være på formen #rrggbb",
+  "en": "The colour must be in the form #rrggbb",
+  "oversatt": "A cor deve estar no formato #rrggbb"
+ },
+ "core-composition-fields.error.error.93ee74e67b12": {
+  "nb": "Laget må vise et bilde fra biblioteket eller en fargeflate",
+  "en": "The layer must show an image from the library or a colour fill",
+  "oversatt": "A camada deve exibir uma imagem da biblioteca ou um preenchimento de cor"
+ },
+ "core-composition-fields.error.error.967c355694b5": {
+  "nb": "Parallaksen må være mellom 0 og 4",
+  "en": "The parallax must be between 0 and 4",
+  "oversatt": "A paralaxe deve estar entre 0 e 4"
+ },
+ "core-composition-fields.error.error.96af0c80735e": {
+  "nb": "Ugyldig bredde",
+  "en": "Invalid width",
+  "oversatt": "Largura inválida"
+ },
+ "core-composition-fields.error.error.96e56cd7a8f9": {
+  "nb": "Ugyldig overgang i bildeskiftet",
+  "en": "Invalid transition in the image swap",
+  "oversatt": "Transição inválida na troca de imagem"
+ },
+ "core-composition-fields.error.error.9ce003dec334": {
+  "nb": "Et tekstlag viser tekst, ikke bilde eller fargeflate",
+  "en": "A text layer shows text, not an image or colour fill",
+  "oversatt": "Uma camada de texto exibe texto, não uma imagem ou preenchimento de cor"
+ },
+ "core-composition-fields.error.error.9e78d5e817ab": {
+  "nb": "Versjon uten variant",
+  "en": "Version without a variant",
+  "oversatt": "Versão sem variante"
+ },
+ "core-composition-fields.error.error.9e78d5e817ab.2": {
+  "nb": "Versjon uten variant",
+  "en": "Version without a variant",
+  "oversatt": "Versão sem variante"
+ },
+ "core-composition-fields.error.error.9f68d4ad33fc": {
+  "nb": "Bare sider kan ha en sideovergang",
+  "en": "Only pages can have a page transition",
+  "oversatt": "Apenas páginas podem ter uma transição de página"
+ },
+ "core-composition-fields.error.error.a1b730d3c93c": {
+  "nb": "Navnet er for langt (maks 200 tegn)",
+  "en": "The name is too long (maximum 200 characters)",
+  "oversatt": "O nome é longo demais (máximo de 200 caracteres)"
+ },
+ "core-composition-fields.error.error.a1b730d3c93c.2": {
+  "nb": "Navnet er for langt (maks 200 tegn)",
+  "en": "The name is too long (maximum 200 characters)",
+  "oversatt": "O nome é longo demais (máximo de 200 caracteres)"
+ },
+ "core-composition-fields.error.error.a4f1b97641ca": {
+  "nb": "Masken må ha bredde og høyde over 0",
+  "en": "The mask must have a width and height above 0",
+  "oversatt": "A máscara deve ter largura e altura maiores que 0"
+ },
+ "core-composition-fields.error.error.a4f1b97641ca.2": {
+  "nb": "Masken må ha bredde og høyde over 0",
+  "en": "The mask must have a width and height above 0",
+  "oversatt": "A máscara deve ter largura e altura maiores que 0"
+ },
+ "core-composition-fields.error.error.a62138f1e5f3": {
+  "nb": "To bilder for samme språk",
+  "en": "Two images for the same language",
+  "oversatt": "Duas imagens para o mesmo idioma"
+ },
+ "core-composition-fields.error.error.af5507d36308": {
+  "nb": "En gruppe viser ikke noe bilde selv",
+  "en": "A group does not show an image itself",
+  "oversatt": "Um grupo não exibe uma imagem por si só"
+ },
+ "core-composition-fields.error.error.b016677c4eb9": {
+  "nb": "Bare tekstlag kan ha tekst",
+  "en": "Only text layers can have text",
+  "oversatt": "Apenas camadas de texto podem conter texto"
+ },
+ "core-composition-fields.error.error.b1b26c07c31e": {
+  "nb": "Skaleringen er for stor",
+  "en": "The scale is too large",
+  "oversatt": "A escala é grande demais"
+ },
+ "core-composition-fields.error.error.b2f9ad3691b5": {
+  "nb": "Myk kant må være mellom 0 og {MAX_MASK_FEATHER} px",
+  "en": "The soft edge must be between 0 and {MAX_MASK_FEATHER} px",
+  "oversatt": "A borda suave deve estar entre 0 e {MAX_MASK_FEATHER} px"
+ },
+ "core-composition-fields.error.error.b38d50fa79ba": {
+  "nb": "Ugyldig varighet",
+  "en": "Invalid duration",
+  "oversatt": "Duração inválida"
+ },
+ "core-composition-fields.error.error.b7a65cea0f1c": {
+  "nb": "Krysstoningen er lengre enn bildet før",
+  "en": "The crossfade is longer than the image before it",
+  "oversatt": "O crossfade é mais longo do que a imagem anterior"
+ },
+ "core-composition-fields.error.error.b8bf91def60e": {
+  "nb": "Bare et lag med bilde kan ha et eget bilde per språk",
+  "en": "Only a layer with an image can have its own image per language",
+  "oversatt": "Apenas uma camada com imagem pode ter uma imagem própria por idioma"
+ },
+ "core-composition-fields.error.error.b9edd0bc2283": {
+  "nb": "To bildeskifter på samme bilde",
+  "en": "Two image swaps on the same frame",
+  "oversatt": "Duas trocas de imagem no mesmo quadro"
+ },
+ "core-composition-fields.error.error.ba372c41650b": {
+  "nb": "Ugyldig bevegelsesbane",
+  "en": "Invalid motion path",
+  "oversatt": "Trajetória de movimento inválida"
+ },
+ "core-composition-fields.error.error.bd227ec51d4c": {
+  "nb": "Navnet inneholder ugyldige tegn",
+  "en": "The name contains invalid characters",
+  "oversatt": "O nome contém caracteres inválidos"
+ },
+ "core-composition-fields.error.error.bd227ec51d4c.2": {
+  "nb": "Navnet inneholder ugyldige tegn",
+  "en": "The name contains invalid characters",
+  "oversatt": "O nome contém caracteres inválidos"
+ },
+ "core-composition-fields.error.error.bf97b53f71a2": {
+  "nb": "Banen må slutte etter at den starter",
+  "en": "The path must end after it starts",
+  "oversatt": "A trajetória deve terminar após o início"
+ },
+ "core-composition-fields.error.error.c2526fec210e": {
+  "nb": "For mange nøkkelbilder",
+  "en": "Too many keyframes",
+  "oversatt": "Muitos quadros-chave"
+ },
+ "core-composition-fields.error.error.c53bf4239394": {
+  "nb": "Ugyldig aktivt område",
+  "en": "Invalid active range",
+  "oversatt": "Intervalo ativo inválido"
+ },
+ "core-composition-fields.error.error.c75351cc5b56": {
+  "nb": "Ugyldig maske",
+  "en": "Invalid mask",
+  "oversatt": "Máscara inválida"
+ },
+ "core-composition-fields.error.error.c75351cc5b56.2": {
+  "nb": "Ugyldig maske",
+  "en": "Invalid mask",
+  "oversatt": "Máscara inválida"
+ },
+ "core-composition-fields.error.error.cac38573239b": {
+  "nb": "Kamerautsnittene overlapper. Flytt eller forkort ett av dem.",
+  "en": "The camera shots overlap. Move or shorten one of them.",
+  "oversatt": "Os planos de câmera se sobrepõem. Mova ou encurte um deles."
+ },
+ "core-composition-fields.error.error.ce5ce821788e": {
+  "nb": "Ugyldig nøkkelbilde",
+  "en": "Invalid keyframe",
+  "oversatt": "Quadro-chave inválido"
+ },
+ "core-composition-fields.error.error.d26c2a33b316": {
+  "nb": "Ugyldig kamerautsnitt",
+  "en": "Invalid camera shot",
+  "oversatt": "Plano de câmera inválido"
+ },
+ "core-composition-fields.error.error.d55dfbdc25cb": {
+  "nb": "Ugyldig verdi i nøkkelbilde",
+  "en": "Invalid value in keyframe",
+  "oversatt": "Valor inválido no quadro-chave"
+ },
+ "core-composition-fields.error.error.e14a8b17490f": {
+  "nb": "Punktene i tempokurven må stige fra start til slutt",
+  "en": "The tempo curve points must rise from start to end",
+  "oversatt": "Os pontos da curva de andamento devem subir do início ao fim"
+ },
+ "core-composition-fields.error.error.e3c0245908ea": {
+  "nb": "En gruppe kan ikke ha maske eller blandingsmodus",
+  "en": "A group cannot have a mask or blend mode",
+  "oversatt": "Um grupo não pode ter máscara ou modo de mesclagem"
+ },
+ "core-composition-fields.error.error.ead44afb7c76": {
+  "nb": "Norsk bruker lagets eget bilde",
+  "en": "Norwegian uses the layer's own image",
+  "oversatt": "O norueguês usa a própria imagem da camada"
+ },
+ "core-composition-fields.error.error.edb70213fe66": {
+  "nb": "Ugyldig sideovergang",
+  "en": "Invalid page transition",
+  "oversatt": "Transição de página inválida"
+ },
+ "core-composition-fields.error.error.f2b9e6a5c518": {
+  "nb": "Bildet for språket mangler variant",
+  "en": "The image for the language is missing a variant",
+  "oversatt": "A imagem para o idioma está sem uma variante"
+ },
+ "core-composition-fields.error.error.fd4ce020fb64": {
+  "nb": "Ugyldig egenskap i nøkkelbilde",
+  "en": "Invalid property in keyframe",
+  "oversatt": "Propriedade inválida no quadro-chave"
+ },
+ "core-composition-fields.error.error.ff8cc66d7da0": {
+  "nb": "Ugyldig blandingsmodus",
+  "en": "Invalid blend mode",
+  "oversatt": "Modo de mesclagem inválido"
+ },
+ "core-composition-fields.layer-kind-label.background.6e4860fc7e26": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "Plano de fundo"
+ },
+ "core-composition-fields.layer-kind-label.character.4ad6ccb07769": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personagem"
+ },
+ "core-composition-fields.layer-kind-label.effect.e9a75c00a85f": {
+  "nb": "Effekt",
+  "en": "Effect",
+  "oversatt": "Efeito"
+ },
+ "core-composition-fields.layer-kind-label.foreground.6f7287418771": {
+  "nb": "Forgrunn",
+  "en": "Foreground",
+  "oversatt": "Primeiro plano"
+ },
+ "core-composition-fields.layer-kind-label.group.0cdb01acb892": {
+  "nb": "Gruppe",
+  "en": "Group",
+  "oversatt": "Grupo"
+ },
+ "core-composition-fields.layer-kind-label.midground.31b050e96f64": {
+  "nb": "Mellomgrunn",
+  "en": "Midground",
+  "oversatt": "Plano intermediário"
+ },
+ "core-composition-fields.layer-kind-label.object.0cc9d5535e35": {
+  "nb": "Objekt",
+  "en": "Object",
+  "oversatt": "Objeto"
+ },
+ "core-composition-fields.layer-kind-label.other.03f5066b9af7": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Outro"
+ },
+ "core-composition-fields.layer-kind-label.page.1fb83e5a1234": {
+  "nb": "Side",
+  "en": "Page",
+  "oversatt": "Página"
+ },
+ "core-composition-fields.layer-kind-label.text.07732bbe6214": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Texto"
+ },
+ "core-composition-retime.cut-clip.fail.aaa64e807ab5": {
+  "nb": "«{value1}» ville blitt kuttet eller havnet utenfor scenen ({why}). Tale og effekter fjernes aldri automatisk. Velg en annen metode eller avbryt.",
+  "en": "“{value1}” would be cut or end up outside the scene ({why}). Speech and effects are never removed automatically. Choose another method or cancel.",
+  "oversatt": "“{value1}” seria cortado ou ficaria fora da cena ({why}). Fala e efeitos nunca são removidos automaticamente. Escolha outro método ou cancele."
+ },
+ "core-composition-retime.detail.detail.4dac1eb8eb27": {
+  "nb": "Overgangen ble kortet ned til scenens lengde.",
+  "en": "The transition was shortened to the scene length.",
+  "oversatt": "A transição foi encurtada para a duração da cena."
+ },
+ "core-composition-retime.detail.detail.71f09228db28": {
+  "nb": "Segmentet til generering har faste tider; kontroller det.",
+  "en": "The generation segment has fixed times; check it.",
+  "oversatt": "O segmento de geração tem tempos fixos; verifique-o."
+ },
+ "core-composition-retime.detail.detail.b86844f2fa56": {
+  "nb": "Prosjektets standardovergang er lengre enn scenen; endre den eller gi scenen egen overgang.",
+  "en": "The project's default transition is longer than the scene; change it or give the scene its own transition.",
+  "oversatt": "A transição padrão do projeto é mais longa que a cena; altere-a ou defina uma transição própria para a cena."
+ },
+ "core-composition-retime.detail.detail.e817e94bbf1c": {
+  "nb": "Delene av scenen i monteringen endres ikke; kontroller dem.",
+  "en": "The parts of the scene in the edit are not changed; check them.",
+  "oversatt": "As partes da cena na montagem não são alteradas; verifique-as."
+ },
+ "core-composition-retime.plan-retime.cut-clip.003cefddaa60": {
+  "nb": "før start",
+  "en": "before the start",
+  "oversatt": "antes do início"
+ },
+ "core-composition-retime.plan-retime.cut-clip.9b380ea76382": {
+  "nb": "etter slutt",
+  "en": "after the end",
+  "oversatt": "após o fim"
+ },
+ "core-composition-retime.plan-retime.fail.09789cd36388": {
+  "nb": "Scenen har bare {value1} s fleksibel tid mellom tale, effekter og låste tidsrom; du ba om {value2} s. Velg en annen metode eller avbryt.",
+  "en": "The scene has only {value1} s of flexible time between speech, effects and locked ranges; you asked for {value2} s. Choose another method or cancel.",
+  "oversatt": "A cena tem apenas {value1} s de tempo flexível entre falas, efeitos e intervalos bloqueados; você solicitou {value2} s. Escolha outro método ou cancele."
+ },
+ "core-composition-retime.plan-retime.fail.1f00ccf2c49a": {
+  "nb": "Låste tidsrom tar {value1} s, så scenen kan ikke bli {value2} s. Velg en annen metode eller avbryt.",
+  "en": "Locked ranges take {value1} s, so the scene cannot be {value2} s. Choose another method or cancel.",
+  "oversatt": "Os intervalos bloqueados ocupam {value1} s, portanto a cena não pode ter {value2} s. Escolha outro método ou cancele."
+ },
+ "core-composition-retime.plan-retime.fail.6648f814ca65": {
+  "nb": "Tiden som fjernes, overlapper et låst tidsrom. Velg en annen metode, fjern låsen eller avbryt.",
+  "en": "The time being removed overlaps a locked range. Choose another method, remove the lock or cancel.",
+  "oversatt": "O tempo sendo removido se sobrepõe a um intervalo bloqueado. Escolha outro método, desbloqueie ou cancele."
+ },
+ "core-composition-retime.plan-retime.fail.bdbe1ae383e2": {
+  "nb": "Velg hva den nye tiden skal vise: frys, bakgrunn eller svart.",
+  "en": "Choose what the new time shows: freeze, background or black.",
+  "oversatt": "Escolha o que o novo tempo deve exibir: congelamento, plano de fundo ou preto."
+ },
+ "core-composition-retime.plan-retime.fail.dec7ef736723": {
+  "nb": "Varigheten er uendret.",
+  "en": "The duration is unchanged.",
+  "oversatt": "A duração não foi alterada."
+ },
+ "core-composition-retime.plan-retime.fail.f31b7c90713b": {
+  "nb": "En kobling mellom manuset og tiden i scenen ville blitt kuttet. Manuskoblinger fjernes aldri automatisk. Velg en annen metode eller avbryt.",
+  "en": "A link between the script and the time in the scene would be cut. Script links are never removed automatically. Choose another method or cancel.",
+  "oversatt": "Um vínculo entre o roteiro e o tempo na cena seria cortado. Vínculos de roteiro nunca são removidos automaticamente. Escolha outro método ou cancele."
+ },
+ "core-composition-retime.reason.reason.7f054393382e": {
+  "nb": "Scenen har ingen 2D-scene.",
+  "en": "The scene has no 2D scene.",
+  "oversatt": "A cena não possui uma cena 2D."
+ },
+ "core-composition-shape.flip-mode-label.cut.ada546665ed9": {
+  "nb": "Fra her – brått",
+  "en": "From here – abrupt",
+  "oversatt": "A partir daqui – abrupto"
+ },
+ "core-composition-shape.flip-mode-label.smooth.2aec5ef8ff45": {
+  "nb": "Fra her – glidende snu",
+  "en": "From here – smooth flip",
+  "oversatt": "A partir daqui – virada suave"
+ },
+ "core-composition-shape.flip-mode-label.whole.e6b1d671886b": {
+  "nb": "Hele laget",
+  "en": "Whole layer",
+  "oversatt": "Camada inteira"
+ },
+ "core-composition-timing.normalize-timing.bad.08d1fcd8892e": {
+  "nb": "For mange låste tidsrom",
+  "en": "Too many locked time ranges",
+  "oversatt": "Muitos intervalos de tempo bloqueados"
+ },
+ "core-composition-timing.normalize-timing.bad.143afa9c7d46": {
+  "nb": "Ugyldig tidsoppsett",
+  "en": "Invalid timing",
+  "oversatt": "Temporização inválida"
+ },
+ "core-composition-timing.normalize-timing.bad.6cd0c4eeb6a1": {
+  "nb": "Ugyldig låst tidsrom",
+  "en": "Invalid locked time range",
+  "oversatt": "Intervalo de tempo bloqueado inválido"
+ },
+ "core-composition-timing.normalize-timing.bad.880c9770a7ec": {
+  "nb": "Låste tidsrom overlapper",
+  "en": "Locked time ranges overlap",
+  "oversatt": "Intervalos de tempo bloqueados se sobrepõem"
+ },
+ "core-composition-timing.normalize-timing.bad.e01bdae2a50b": {
+  "nb": "Ugyldig fyll i ny tid",
+  "en": "Invalid padding",
+  "oversatt": "Preenchimento inválido"
+ },
+ "core-continuity-analysis.anchor-name.message.0925340fdc02": {
+  "nb": "en scene",
+  "en": "a scene",
+  "oversatt": "uma cena"
+ },
+ "core-continuity-analysis.anchor-state.message.2091a4530360": {
+  "nb": "er deaktivert",
+  "en": "is deactivated",
+  "oversatt": "está desativada"
+ },
+ "core-continuity-analysis.anchor-state.message.87938161c50b": {
+  "nb": "ikke finnes lenger",
+  "en": "no longer exists",
+  "oversatt": "não existe mais"
+ },
+ "core-continuity-analysis.asset-name.message.ee482b41c219": {
+  "nb": "en ressurs",
+  "en": "an asset",
+  "oversatt": "um ativo"
+ },
+ "core-continuity-analysis.desc-part.message.1ca284f3b63d": {
+  "nb": " («{desc}»)",
+  "en": " (“{desc}”)",
+  "oversatt": " (“{desc}”)"
+ },
+ "core-continuity-analysis.finding-label.asset-outdated.ab64e0d831e1": {
+  "nb": "Eldre versjon av en ressurs",
+  "en": "Older version of an asset",
+  "oversatt": "Versão mais antiga de um ativo"
+ },
+ "core-continuity-analysis.finding-label.before-established.4eb9465bd2b7": {
+  "nb": "Brukt før den er etablert",
+  "en": "Used before it is established",
+  "oversatt": "Usado antes de ser estabelecido"
+ },
+ "core-continuity-analysis.finding-label.before-intro.530dbbe61018": {
+  "nb": "Med før introduksjonen",
+  "en": "In the action before the introduction",
+  "oversatt": "Na ação antes da introdução"
+ },
+ "core-continuity-analysis.finding-label.name-variant.2754e827631a": {
+  "nb": "Mulig skrivefeil i navn",
+  "en": "Possible typo in a name",
+  "oversatt": "Possível erro de digitação em um nome"
+ },
+ "core-continuity-analysis.finding-label.refers-deactivated.d9fdc52cee1c": {
+  "nb": "Viser til en deaktivert scene",
+  "en": "Refers to a deactivated scene",
+  "oversatt": "Refere-se a uma cena desativada"
+ },
+ "core-continuity-analysis.finding-label.spinoff-gap.641c49bddeae": {
+  "nb": "Mangler i produksjonen",
+  "en": "Missing from the production",
+  "oversatt": "Ausente da produção"
+ },
+ "core-continuity-analysis.finding-label.timeline-conflict.85f7eeaf61b8": {
+  "nb": "Motsetning i fortellingstiden",
+  "en": "Conflict in story time",
+  "oversatt": "Conflito no tempo da narrativa"
+ },
+ "core-continuity-analysis.finding-label.unexplained-change.cd6871ed50cd": {
+  "nb": "Utseende endres uten årsak",
+  "en": "Look changes without a reason",
+  "oversatt": "Aparência muda sem motivo"
+ },
+ "core-continuity-analysis.main-num.message.3368749f941f": {
+  "nb": "en scene",
+  "en": "a scene",
+  "oversatt": "uma cena"
+ },
+ "core-continuity-analysis.message.message.005dfaf02ce6": {
+  "nb": "{name} er med i {value2}, men introduseres i {value3} i hovedfilmen, som ikke er med i {prodName}.",
+  "en": "{name} is in {value2}, but is introduced in {value3} in the main film, which is not in {prodName}.",
+  "oversatt": "{name} está em {value2}, mas é introduzido em {value3} no filme principal, que não está em {prodName}."
+ },
+ "core-continuity-analysis.message.message.039932802032": {
+  "nb": "{name} bytter utseende fra «{value2}» ({value3}) til «{value4}» ({value5}) uten en registrert kontinuitetshendelse.",
+  "en": "{name} changes look from “{value2}” ({value3}) to “{value4}” ({value5}) without a recorded continuity event.",
+  "oversatt": "{name} muda de aparência de “{value2}” ({value3}) para “{value4}” ({value5}) sem um evento de continuidade registrado."
+ },
+ "core-continuity-analysis.message.message.4a7c77d4f84f": {
+  "nb": "{value1} er et tilbakeblikk (eller lignende) til {value2} i hovedfilmen, som ikke er med i {prodName}.",
+  "en": "{value1} is a flashback (or similar) to {value2} in the main film, which is not in {prodName}.",
+  "oversatt": "{value1} é um flashback (ou similar) para {value2} no filme principal, que não está em {prodName}."
+ },
+ "core-continuity-analysis.message.message.4f4edf9e9f50": {
+  "nb": "{name} har «{value2}» i {value3}, men endringen{descPart} skjer i {value5} i hovedfilmen, som ikke er med i {prodName}. Ta med scenen, skriv en sammenbindende scene, eller slå av endringen i {prodName7}.",
+  "en": "{name} has “{value2}” in {value3}, but the change{descPart} happens in {value5} in the main film, which is not in {prodName}. Include that scene, write a linking scene, or switch off the change in {prodName7}.",
+  "oversatt": "{name} tem “{value2}” em {value3}, mas a mudança{descPart} ocorre em {value5} no filme principal, que não está em {prodName}. Inclua essa cena, escreva uma cena de transição ou desative a mudança em {prodName7}."
+ },
+ "core-continuity-analysis.message.message.8eb01625b6b5": {
+  "nb": "{name} er med i handlingen i {value2}, men introduseres først i {value3} (navnet med store bokstaver eller første replikk).",
+  "en": "{name} is in the action in {value2}, but is first introduced in {value3} (the capitalised name or first line).",
+  "oversatt": "{name} está na ação em {value2}, mas é introduzido pela primeira vez em {value3} (o nome em maiúsculas ou a primeira fala)."
+ },
+ "core-continuity-analysis.message.message.957ae9b0b93c": {
+  "nb": "{name}: hendelsen i {value2} sier utseendet før var «{value3}», men etter de tidligere hendelsene er det «{value4}».",
+  "en": "{name}: the event in {value2} says the look before was “{value3}”, but after the earlier events it is “{value4}”.",
+  "oversatt": "{name}: o evento em {value2} indica que a aparência anterior era “{value3}”, mas após os eventos anteriores ela é “{value4}”."
+ },
+ "core-continuity-analysis.message.message.9974dc9ce863": {
+  "nb": "Fortellingstiden i {value1} er regnet fra {anchorName}, som {anchorState}.",
+  "en": "The story time in {value1} is counted from {anchorName}, which {anchorState}.",
+  "oversatt": "O tempo da narrativa em {value1} é contado a partir de {anchorName}, que {anchorState}."
+ },
+ "core-continuity-analysis.message.message.afcd47c35736": {
+  "nb": "{name} vises som «{value2}» i 2D-scenen i {value3}, men kontinuiteten sier «{name4}».",
+  "en": "{name} is shown as “{value2}” in the 2D scene in {value3}, but the continuity says “{name4}”.",
+  "oversatt": "{name} é mostrado como “{value2}” na cena 2D em {value3}, mas a continuidade indica “{name4}”."
+ },
+ "core-continuity-analysis.message.message.b7f59d3754f4": {
+  "nb": "Replikken i {value1} nevner {name}, som bare er med i {value3} (deaktivert).",
+  "en": "The line in {value1} mentions {name}, who is only in {value3} (deactivated).",
+  "oversatt": "A fala em {value1} menciona {name}, que só está em {value3} (desativada)."
+ },
+ "core-continuity-analysis.message.message.c4e55d6c393d": {
+  "nb": "Replikken i {value1} nevner {name}, som bare vises i {value3} i hovedfilmen. Den scenen er ikke med i {prodName}.",
+  "en": "The line in {value1} mentions {name}, who only appears in {value3} in the main film. That scene is not in {prodName}.",
+  "oversatt": "A fala em {value1} menciona {name}, que só aparece em {value3} no filme principal. Essa cena não está em {prodName}."
+ },
+ "core-continuity-analysis.message.message.d8f2ed358063": {
+  "nb": "«{word}» står i bestemt form første gang den nevnes ({value2}). Skal den etableres først (for eksempel «{indef} {suggestion}»)?",
+  "en": "“{word}” is in the definite form the first time it is mentioned ({value2}). Should it be introduced first (for example “{indef} {suggestion}”)?",
+  "oversatt": "“{word}” está na forma definida na primeira vez em que é mencionado ({value2}). Deveria ser introduzido primeiro (por exemplo, “{indef} {suggestion}”)?"
+ },
+ "core-continuity-analysis.message.message.de48b923b476": {
+  "nb": "2D-scenen i {value1} viser v{shownVersion} av {assetName} («{value4}»), men v{approvedVersion} er godkjent nå.",
+  "en": "The 2D scene in {value1} shows v{shownVersion} of {assetName} (“{value4}”), but v{approvedVersion} is approved now.",
+  "oversatt": "A cena 2D em {value1} exibe a v{shownVersion} de {assetName} (“{value4}”), mas a v{approvedVersion} está aprovada agora."
+ },
+ "core-continuity-analysis.message.message.eeb3e34ba397": {
+  "nb": "{name}: endringen i {value2} skal vare til {value3}, men den scenen kommer ikke senere i fortellingstiden. Den gjelder derfor bare sin egen scene.",
+  "en": "{name}: the change in {value2} is meant to last until {value3}, but that scene does not come later in story time. It therefore applies only to its own scene.",
+  "oversatt": "{name}: a alteração em {value2} deveria durar até {value3}, mas essa cena não vem depois no tempo da narrativa. Portanto, aplica-se apenas à sua própria cena."
+ },
+ "core-continuity-analysis.message.message.f22ebfe7ccaa": {
+  "nb": "«{name}» ({where}) ligner «{target}». Skrivefeil?",
+  "en": "“{name}” ({where}) looks like “{target}”. A typo?",
+  "oversatt": "“{name}” ({where}) parece com “{target}”. Um erro de digitação?"
+ },
+ "core-continuity-analysis.missing-change-scene": {
+  "nb": "{asset} har «{look}» i {later}, men endringen{desc} skjer i {main} i hovedfilmen, som ikke er med i {production}. Ta med scenen, skriv en sammenbindende scene, eller slå av endringen i {production}.",
+  "en": "{asset} has “{look}” in {later}, but the change{desc} happens in {main} in the main film, which is not in {production}. Include that scene, write a linking scene, or switch off the change in {production}.",
+  "oversatt": "{asset} tem “{look}” em {later}, mas a mudança{desc} ocorre em {main} no filme principal, que não está em {production}. Inclua essa cena, escreva uma cena de ligação ou desative a alteração em {production}."
+ },
+ "core-continuity-analysis.num.message.d03534f5a0d6": {
+  "nb": "scenen uten nummer",
+  "en": "the scene without number",
+  "oversatt": "a cena sem número"
+ },
+ "core-continuity-analysis.prod-name.message.bc1dac8f94c5": {
+  "nb": "«{name}»",
+  "en": "“{name}”",
+  "oversatt": "\"{name}\""
+ },
+ "core-continuity-analysis.prod-name.message.c24585ca7f8e": {
+  "nb": "produksjonen",
+  "en": "the production",
+  "oversatt": "a produção"
+ },
+ "core-continuity-analysis.variant-name.message.79a4880e4d36": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "desconhecido"
+ },
+ "core-continuity-analysis.variant-name.message.b03eb0bf87ae": {
+  "nb": "standard",
+  "en": "default",
+  "oversatt": "padrão"
+ },
+ "core-continuity-analysis.where.message.ea0cdc772b32": {
+  "nb": "{n} replikker, første i {value2}",
+  "en": "{n} lines, first in {value2}",
+  "oversatt": "{n} falas, primeira em {value2}"
+ },
+ "core-continuity-index.continuity-duration-label.permanent.3cf57df372ac": {
+  "nb": "For godt",
+  "en": "For good",
+  "oversatt": "Definitivo"
+ },
+ "core-continuity-index.continuity-duration-label.scene.3bdce58f6f13": {
+  "nb": "Bare denne scenen",
+  "en": "Only this scene",
+  "oversatt": "Apenas esta cena"
+ },
+ "core-continuity-index.continuity-duration-label.temporary.4bd7a5c288a1": {
+  "nb": "Til en bestemt scene",
+  "en": "Until a certain scene",
+  "oversatt": "Até uma cena específica"
+ },
+ "core-continuity-index.continuity-kind-label.aging.ccb740d17115": {
+  "nb": "Alder",
+  "en": "Age",
+  "oversatt": "Idade"
+ },
+ "core-continuity-index.continuity-kind-label.beard.c567ab78dc90": {
+  "nb": "Skjegg",
+  "en": "Beard",
+  "oversatt": "Barba"
+ },
+ "core-continuity-index.continuity-kind-label.carried-object.09da72ff688b": {
+  "nb": "Gjenstand den bærer",
+  "en": "Object it carries",
+  "oversatt": "Objeto que carrega"
+ },
+ "core-continuity-index.continuity-kind-label.costume.8dc2d1866635": {
+  "nb": "Kostyme / klær",
+  "en": "Costume / clothes",
+  "oversatt": "Figurino / roupas"
+ },
+ "core-continuity-index.continuity-kind-label.dirt.94e661124aeb": {
+  "nb": "Skitt",
+  "en": "Dirt",
+  "oversatt": "Sujeira"
+ },
+ "core-continuity-index.continuity-kind-label.hair-color.0167c648467a": {
+  "nb": "Hårfarge",
+  "en": "Hair colour",
+  "oversatt": "Cor do cabelo"
+ },
+ "core-continuity-index.continuity-kind-label.haircut.ffca5c30ff0a": {
+  "nb": "Hårklipp / frisyre",
+  "en": "Haircut / hairstyle",
+  "oversatt": "Corte de cabelo / penteado"
+ },
+ "core-continuity-index.continuity-kind-label.injury.e1a70517a47f": {
+  "nb": "Skade / bandasje",
+  "en": "Injury / bandage",
+  "oversatt": "Ferimento / curativo"
+ },
+ "core-continuity-index.continuity-kind-label.other.6be9d3bdd065": {
+  "nb": "Annen forandring",
+  "en": "Other change",
+  "oversatt": "Outra alteração"
+ },
+ "core-continuity-index.continuity-kind-label.scar.2c6d27bdcdcf": {
+  "nb": "Arr",
+  "en": "Scar",
+  "oversatt": "Cicatriz"
+ },
+ "core-continuity-index.continuity-kind-label.snow-water.35a466e5fa3b": {
+  "nb": "Snø / vann",
+  "en": "Snow / water",
+  "oversatt": "Neve / água"
+ },
+ "core-credits-index.credit-participant-error.message.6f89620fd19d": {
+  "nb": "For mange felt (maks 20)",
+  "en": "Too many fields (max 20)",
+  "oversatt": "Campos demais (máx. 20)"
+ },
+ "core-credits-index.credit-participant-error.message.9283114b3e65": {
+  "nb": "Gruppenavnet er for langt",
+  "en": "The group name is too long",
+  "oversatt": "O nome do grupo é longo demais"
+ },
+ "core-credits-index.credit-participant-error.message.ad32dd09a62e": {
+  "nb": "Ugyldig rekkefølge",
+  "en": "Invalid order",
+  "oversatt": "Ordem inválida"
+ },
+ "core-credits-index.credit-participant-error.message.b1e7768b7f40": {
+  "nb": "Feltnavnet er for langt",
+  "en": "The field name is too long",
+  "oversatt": "O nome do campo é longo demais"
+ },
+ "core-credits-index.credit-participant-error.message.d09f3f61e2fe": {
+  "nb": "Feltet er for langt (maks 500 tegn)",
+  "en": "The field is too long (max 500 characters)",
+  "oversatt": "O campo é longo demais (máx. 500 caracteres)"
+ },
+ "core-credits-index.credit-sequence-error.message.2f44298ab285": {
+  "nb": "Ugyldig presentasjonsform",
+  "en": "Invalid presentation",
+  "oversatt": "Apresentação inválida"
+ },
+ "core-credits-index.credit-sequence-error.message.465406b714af": {
+  "nb": "Ugyldig pause",
+  "en": "Invalid pause",
+  "oversatt": "Pausa inválida"
+ },
+ "core-credits-index.credit-sequence-error.message.8c0ccb7b8b9f": {
+  "nb": "Ugyldig hastighet",
+  "en": "Invalid speed",
+  "oversatt": "Velocidade inválida"
+ },
+ "core-credits-index.credit-sequence-error.message.8c1d705a9ee2": {
+  "nb": "Ugyldig retning",
+  "en": "Invalid direction",
+  "oversatt": "Direção inválida"
+ },
+ "core-credits-index.credit-sequence-error.message.e5a83edd448c": {
+  "nb": "Ugyldig varighet per deltaker",
+  "en": "Invalid duration per participant",
+  "oversatt": "Duração inválida por participante"
+ },
+ "core-dialogue-characters.dialogue-track-label.message.bcc249ae679c": {
+  "nb": "Ukjent taler",
+  "en": "Unknown speaker",
+  "oversatt": "Voz desconhecida"
+ },
+ "core-dialogue-drift.drift.drift.8a9d21b2e69e": {
+  "nb": "Manuset er endret etter at lyden ble laget",
+  "en": "The script changed after the audio was made",
+  "oversatt": "O roteiro mudou após a criação do áudio"
+ },
+ "core-dialogue-drift.none.none.13cfdd1b7a7f": {
+  "nb": "Ingen lyd for replikken ennå",
+  "en": "No audio for the line yet",
+  "oversatt": "Ainda não há áudio para a fala"
+ },
+ "core-dialogue-drift.ok.ok.8f433172c492": {
+  "nb": "Lyden følger gjeldende manus",
+  "en": "The audio follows the current script",
+  "oversatt": "O áudio segue o roteiro atual"
+ },
+ "core-dialogue-drift.reviewed.reviewed.dd1543d7fe73": {
+  "nb": "Manuset er endret, men avviket er gjennomgått",
+  "en": "The script has changed, but the difference has been reviewed",
+  "oversatt": "O roteiro foi alterado, mas a diferença foi revisada"
+ },
+ "core-dialogue-drift.unknown.unknown.0160b2df46d5": {
+  "nb": "Ukjent hvilken manusversjon lyden ble laget fra",
+  "en": "Unknown which script version the audio was made from",
+  "oversatt": "Versão do roteiro usada para criar o áudio desconhecida"
+ },
+ "core-dialogue-languages.existing-speech-warning.message.9a2fb570e056": {
+  "nb": "Noen av de valgte scenene har allerede innspilt eller generert tale. Nye lydfiler blir lagt til som alternative versjoner og settes som aktive for de aktuelle replikkene. Ingen eksisterende lydfiler eller redigeringer blir slettet. Du kan senere velge tilbake en tidligere versjon.",
+  "en": "Some of the selected scenes already have recorded or generated speech. New audio files will be added as alternative versions and made active for the selected lines. No existing audio files or edits will be deleted. You can choose a previous version again later.",
+  "oversatt": "Algumas das cenas selecionadas já possuem voz gravada ou gerada. Novos arquivos de áudio serão adicionados como versões alternativas e definidos como ativos para as falas selecionadas. Nenhum arquivo de áudio ou edição existente será excluído. Você poderá retornar a uma versão anterior mais tarde."
+ },
+ "core-dialogue-languages.language-tag-error.message.3028cba16405": {
+  "nb": "Ugyldig BCP-47-språkkode.",
+  "en": "Invalid BCP-47 language tag.",
+  "oversatt": "Tag de idioma BCP-47 inválida."
+ },
+ "core-dialogue-languages.multilingual-speech-warning.message.1d1ded01f164": {
+  "nb": "Denne karakteren har replikker på flere språk. Kontroller hvilket språk som skal brukes før du genererer tale.",
+  "en": "This character has lines in several languages. Check which language to use before generating speech.",
+  "oversatt": "Este personagem tem falas em vários idiomas. Verifique qual idioma usar antes de gerar a voz."
+ },
+ "core-dialogue-versions.dialogue-mirror-violations.out-push.5c4e099b2df6": {
+  "nb": "aktiv versjon er slettet",
+  "en": "active version is deleted",
+  "oversatt": "a versão ativa foi excluída"
+ },
+ "core-dialogue-versions.dialogue-mirror-violations.out-push.6851c70819a8": {
+  "nb": "speilingen avviker fra aktiv versjon",
+  "en": "the mirror differs from the active version",
+  "oversatt": "o espelhamento difere da versão ativa"
+ },
+ "core-dialogue-versions.dialogue-mirror-violations.out-push.bc58df6dc4c2": {
+  "nb": "aktiv versjon mangler eller tilhører et annet klipp",
+  "en": "active version is missing or belongs to another clip",
+  "oversatt": "a versão ativa está ausente ou pertence a outro clipe"
+ },
+ "core-dialogue-voice.asset-voice-error.message.a4859bfe436f": {
+  "nb": "Ugyldig stemme",
+  "en": "Invalid voice",
+  "oversatt": "Voz inválida"
+ },
+ "core-dialogue-voice.speech-language-error.message.788bc2c67ce4": {
+  "nb": "Modellen støtter ikke det valgte talespråket. Velg språk eller modell selv.",
+  "en": "The model does not support the selected speech language. Choose a language or model yourself.",
+  "oversatt": "O modelo não é compatível com o idioma de fala selecionado. Escolha um idioma ou modelo manualmente."
+ },
+ "core-dialogue-voice.speech-settings-error.message.e31399999dc4": {
+  "nb": "Ugyldige stemmeinnstillinger",
+  "en": "Invalid voice settings",
+  "oversatt": "Configurações de voz inválidas"
+ },
+ "core-dialogue-voice.speech-settings-error.message.e31399999dc4.2": {
+  "nb": "Ugyldige stemmeinnstillinger",
+  "en": "Invalid voice settings",
+  "oversatt": "Configurações de voz inválidas"
+ },
+ "core-draft.message.message.10d479196e80": {
+  "nb": "Utkastet er fullt",
+  "en": "Draft is full",
+  "oversatt": "O rascunho está cheio"
+ },
+ "core-draft.message.message.5ad117310d5e": {
+  "nb": "Ikke en scenekommando: {type}",
+  "en": "Not a scene command: {type}",
+  "oversatt": "Não é um comando de cena: {type}"
+ },
+ "core-export-records.describe-export-settings.parts-push.16fe725d1217": {
+  "nb": "med notater",
+  "en": "with notes",
+  "oversatt": "com notas"
+ },
+ "core-export-records.describe-export-settings.parts-push.197857d64b78": {
+  "nb": "språk: {value1}",
+  "en": "language: {value1}",
+  "oversatt": "idioma: {value1}"
+ },
+ "core-export-records.describe-export-settings.parts-push.3832d2ecc9eb": {
+  "nb": "nummerering: {value1}",
+  "en": "numbering: {value1}",
+  "oversatt": "numeração: {value1}"
+ },
+ "core-export-records.describe-export-settings.parts-push.4517c46dee3c": {
+  "nb": "halv størrelse",
+  "en": "half size",
+  "oversatt": "metade do tamanho"
+ },
+ "core-export-records.describe-export-settings.parts-push.5eb68c2ddf11": {
+  "nb": "Laget med profil {value1}",
+  "en": "Made with profile {value1}",
+  "oversatt": "Feito com o perfil {value1}"
+ },
+ "core-export-records.describe-export-settings.parts-push.68ed8c598538": {
+  "nb": "{length} {value2}",
+  "en": "{length} {value2}",
+  "oversatt": "{length} {value2}"
+ },
+ "core-export-records.describe-export-settings.parts-push.97c3415c7fc1": {
+  "nb": "med undertekster",
+  "en": "with subtitles",
+  "oversatt": "com legendas"
+ },
+ "core-export-records.describe-export-settings.parts-push.afd863bfe823": {
+  "nb": "svart-hvitt",
+  "en": "black and white",
+  "oversatt": "preto e branco"
+ },
+ "core-export-records.describe-export-settings.parts-push.c4b5cd2d5210": {
+  "nb": "full størrelse",
+  "en": "full size",
+  "oversatt": "tamanho original"
+ },
+ "core-export-records.export-kind-label.audio.10319e1f9218": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "Áudio"
+ },
+ "core-export-records.export-kind-label.film.811601c84f2d": {
+  "nb": "Film",
+  "en": "Film",
+  "oversatt": "Filme"
+ },
+ "core-export-records.export-kind-label.poster.4075a2784752": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "Pôster"
+ },
+ "core-export-records.export-kind-label.script.c898115de018": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "Roteiro"
+ },
+ "core-export-records.export-kind-label.subtitles.97599c1409e6": {
+  "nb": "Undertekster",
+  "en": "Subtitles",
+  "oversatt": "Legendas"
+ },
+ "core-export-records.normalize-export-record.message.5ba06df3bd6a": {
+  "nb": "For mange eksportinnstillinger",
+  "en": "Too many export settings",
+  "oversatt": "Muitas configurações de exportação"
+ },
+ "core-export-records.normalize-export-record.message.8135aeee283d": {
+  "nb": "Ukjent eksporttype",
+  "en": "Unknown export type",
+  "oversatt": "Tipo de exportação desconhecido"
+ },
+ "core-export-records.normalize-export-record.message.969a6792a5c9": {
+  "nb": "Ugyldig produksjon",
+  "en": "Invalid production",
+  "oversatt": "Produção inválida"
+ },
+ "core-export-records.normalize-export-record.message.9c37d64b2e7a": {
+  "nb": "For mange scener",
+  "en": "Too many scenes",
+  "oversatt": "Cenas demais"
+ },
+ "core-export-records.normalize-export-record.message.c5525d17bc65": {
+  "nb": "Ugyldig filnavn",
+  "en": "Invalid file name",
+  "oversatt": "Nome de arquivo inválido"
+ },
+ "core-export-records.normalize-export-record.message.c604b192c997": {
+  "nb": "Ugyldig scene-ID",
+  "en": "Invalid scene ID",
+  "oversatt": "ID de cena inválido"
+ },
+ "core-export-records.scenes": {
+  "nb": {
+   "one": "{count} scene",
+   "other": "{count} scener"
+  },
+  "en": {
+   "one": "{count} scene",
+   "other": "{count} scenes"
+  },
+  "oversatt": {
+   "one": "{count} cena",
+   "many": "{count} cenas",
+   "other": "{count} cenas"
+  }
+ },
+ "core-film-share.share-ineligible-text.message.0a62bcc9800d": {
+  "nb": "Filen er større enn 500 MB. Eksporter i halv størrelse eller et kortere utvalg for å dele den.",
+  "en": "The file is larger than 500 MB. Export at half size or a shorter selection to share it.",
+  "oversatt": "O arquivo é maior que 500 MB. Exporte na metade do tamanho ou uma seleção mais curta para compartilhar."
+ },
+ "core-film-share.share-ineligible-text.message.6610dec83728": {
+  "nb": "Filen er tom.",
+  "en": "The file is empty.",
+  "oversatt": "O arquivo está vazio."
+ },
+ "core-film-share.share-ineligible-text.message.9688dad34837": {
+  "nb": "Filmen må eksporteres som MP4 med H.264 for å kunne deles på mobil. Velg MP4 i eksporten. Hvis nettleseren ikke kan lage H.264, bruk Chrome, Edge eller Safari.",
+  "en": "The film must be exported as MP4 with H.264 to be shared on mobile. Choose MP4 in the export. If the browser cannot make H.264, use Chrome, Edge or Safari.",
+  "oversatt": "O filme deve ser exportado como MP4 com H.264 para ser compartilhado no celular. Escolha MP4 na exportação. Se o navegador não puder gerar H.264, use Chrome, Edge ou Safari."
+ },
+ "core-film-share.share-ineligible-text.message.ba69ffaeb8fb": {
+  "nb": "Lyden må være AAC for at filmen skal spille på iPhone. Denne nettleseren laget en annen lydkodek; eksporter på nytt i Chrome, Edge eller Safari.",
+  "en": "The sound must be AAC for the film to play on iPhone. This browser made another audio codec; export again in Chrome, Edge or Safari.",
+  "oversatt": "O áudio deve ser AAC para o filme ser reproduzido no iPhone. Este navegador gerou outro codec de áudio; exporte novamente no Chrome, Edge ou Safari."
+ },
+ "core-film-share.share-status-text.message.1f725d557ca7": {
+  "nb": "Lastes opp – ikke delt ennå",
+  "en": "Uploading – not shared yet",
+  "oversatt": "Enviando – ainda não compartilhado"
+ },
+ "core-film-share.share-status-text.message.61e0f8a61b44": {
+  "nb": "Trukket tilbake – ikke lenger delt",
+  "en": "Revoked – no longer shared",
+  "oversatt": "Revogado – não está mais compartilhado"
+ },
+ "core-film-share.share-status-text.message.b7c23fe8316a": {
+  "nb": "Tilgjengelig via QR",
+  "en": "Available via QR",
+  "oversatt": "Disponível via QR"
+ },
+ "core-film-share.share-status-text.message.ba1800731bb6": {
+  "nb": "Utløpt – ikke lenger delt",
+  "en": "Expired – no longer shared",
+  "oversatt": "Expirado – não está mais compartilhado"
+ },
+ "core-generation-ai-catalog.message.message.42a139134561": {
+  "nb": "Modellen finnes ikke hos leverandøren.",
+  "en": "The model does not exist at the provider.",
+  "oversatt": "O modelo não existe no provedor."
+ },
+ "core-generation-ai-catalog.price-text.message.2c98f77be09b": {
+  "nb": "{n} USD per sekund",
+  "en": "{n} USD per second",
+  "oversatt": "{n} USD por segundo"
+ },
+ "core-generation-ai-catalog.price-text.message.7dba8050e4fb": {
+  "nb": "pris ikke oppgitt",
+  "en": "price not given",
+  "oversatt": "preço não informado"
+ },
+ "core-generation-ai-catalog.price-text.message.b1141b3d3acc": {
+  "nb": "{n} USD per bilde",
+  "en": "{n} USD per image",
+  "oversatt": "{n} USD por imagem"
+ },
+ "core-generation-ai-catalog.price-text.message.cab6a0853671": {
+  "nb": "{n} USD per megapiksel",
+  "en": "{n} USD per megapixel",
+  "oversatt": "{n} USD por megapixel"
+ },
+ "core-generation-ai-catalog.price-text.message.d6d61ea03790": {
+  "nb": "{n} USD per tegn",
+  "en": "{n} USD per character",
+  "oversatt": "{n} USD por caractere"
+ },
+ "core-generation-ai-catalog.price-text.message.f45ff0f55f46": {
+  "nb": "{n} USD per kall",
+  "en": "{n} USD per call",
+  "oversatt": "{n} USD por chamada"
+ },
+ "core-generation-brief.brief-summary-nb.message.23c5878a89d5": {
+  "nb": "Referansebilder: {value1}.",
+  "en": "Reference images: {value1}.",
+  "oversatt": "Imagens de referência: {value1}."
+ },
+ "core-generation-brief.brief-summary-nb.message.2908cb26b4d4": {
+  "nb": "Ingen referansebilder.",
+  "en": "No reference images.",
+  "oversatt": "Nenhuma imagem de referência."
+ },
+ "core-generation-brief.brief-summary-nb.message.561d2279680c": {
+  "nb": "Stil fra «Filmens visuelle stil»{value1}.",
+  "en": "Style from “The film's visual style”{value1}.",
+  "oversatt": "Estilo de “O estilo visual do filme”{value1}."
+ },
+ "core-generation-brief.brief-summary-nb.message.583fb9b5952d": {
+  "nb": "Gjennomsiktig bakgrunn.",
+  "en": "Transparent background.",
+  "oversatt": "Fundo transparente."
+ },
+ "core-generation-brief.brief-summary-nb.message.63fad4139696": {
+  "nb": "Fyller hele bildet, uten figurer.",
+  "en": "Fills the whole image, without figures.",
+  "oversatt": "Preenche toda a imagem, sem figuras."
+ },
+ "core-generation-brief.brief-summary-nb.message.6d41e214b773": {
+  "nb": "Ingen visuell stil fylt ut – bruker en enkel standardstil.",
+  "en": "No visual style filled in – using a simple default style.",
+  "oversatt": "Nenhum estilo visual preenchido – usando um estilo padrão simples."
+ },
+ "core-generation-brief.brief-summary-nb.message.7fed28a90285": {
+  "nb": "Hvit bakgrunn – frilegg etterpå.",
+  "en": "White background – cut out afterwards.",
+  "oversatt": "Fundo branco – recortar depois."
+ },
+ "core-generation-brief.brief-summary-nb.message.acd89004c73e": {
+  "nb": "{value1} av {name}{value3}.",
+  "en": "{value1}: {name}{value3}.",
+  "oversatt": "{value1}: {name}{value3}."
+ },
+ "core-generation-brief.brief-summary-nb.message.cb55804f34e1": {
+  "nb": "Utseende fra faktaarket ({length} punkter).",
+  "en": "Appearance from the fact sheet ({length} points).",
+  "oversatt": "Aparência da folha de fatos ({length} pontos)."
+ },
+ "core-generation-brief.brief-summary-nb.message.ccfe49e5e0aa": {
+  "nb": "Ingen beskrivelse av utseendet – lag et faktaark eller skriv en beskrivelse av objektet.",
+  "en": "No description of the appearance – make a fact sheet or write a description of the object.",
+  "oversatt": "Sem descrição da aparência – crie uma folha de fatos ou escreva uma descrição do objeto."
+ },
+ "core-generation-brief.brief-summary-nb.message.d12c4e840b38": {
+  "nb": "Form:",
+  "en": "Format:",
+  "oversatt": "Formato:"
+ },
+ "core-generation-brief.brief-summary-nb.message.efdbac0b1d5b": {
+  "nb": "Utseende fra manusutdrag (ingen faktaark ennå – lag et for bedre treff).",
+  "en": "Appearance from the script extract (no fact sheet yet – make one for better results).",
+  "oversatt": "Aparência do trecho do roteiro (ainda sem folha de fatos – crie uma para melhores resultados)."
+ },
+ "core-generation-brief.prompt-family-label.compact.b117cafc2d86": {
+  "nb": "kort og presis beskrivelse med identiteten først (anbefalt for Seedream, Qwen og FLUX)",
+  "en": "short, precise description with the identity first (recommended for Seedream, Qwen and FLUX)",
+  "oversatt": "descrição curta e precisa com a identidade primeiro (recomendado para Seedream, Qwen e FLUX)"
+ },
+ "core-generation-brief.prompt-family-label.narrative.13521aabfc33": {
+  "nb": "fortellende beskrivelse (anbefalt for Nano Banana og GPT Image)",
+  "en": "narrative description (recommended for Nano Banana and GPT Image)",
+  "oversatt": "descrição narrativa (recomendado para Nano Banana e GPT Image)"
+ },
+ "core-generation-brief.reference-images": {
+  "nb": "Referansebilder: {list}.",
+  "en": "Reference images: {list}.",
+  "oversatt": "Imagens de referência: {list}."
+ },
+ "core-generation-brief.reference-images-style": {
+  "nb": "{count} for stilen",
+  "en": "{count} for the style",
+  "oversatt": "{count} para o estilo"
+ },
+ "core-generation-brief.reference-images-subject": {
+  "nb": "{count} av motivet",
+  "en": "{count} of the subject",
+  "oversatt": "{count} do tema"
+ },
+ "core-generation-brief.style": {
+  "nb": "Stil fra «Filmens visuelle stil».",
+  "en": "Style from “The film's visual style”.",
+  "oversatt": "Estilo de “O estilo visual do filme”."
+ },
+ "core-generation-brief.style-colours": {
+  "nb": "Stil fra «Filmens visuelle stil» med {colours} farger.",
+  "en": "Style from “The film's visual style” with {colours} colours.",
+  "oversatt": "Estilo de “O estilo visual do filme” com {colours} cores."
+ },
+ "core-generation-brief.task-nb.background.860bf7e72714": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "Fundo"
+ },
+ "core-generation-brief.task-nb.design.5c467d06473d": {
+  "nb": "Figurdesign",
+  "en": "Character design",
+  "oversatt": "Design de personagem"
+ },
+ "core-generation-brief.task-nb.sheet.9c93d889d649": {
+  "nb": "Karakterark",
+  "en": "Character sheet",
+  "oversatt": "Folha de personagem"
+ },
+ "core-generation-brief.task-nb.view.298008809a66": {
+  "nb": "Ny vinkel",
+  "en": "New angle",
+  "oversatt": "Novo ângulo"
+ },
+ "core-generation-brief.task-subject": {
+  "nb": "{task} av {subject}{views}.",
+  "en": "{task}: {subject}{views}.",
+  "oversatt": "{task}: {subject}{views}."
+ },
+ "core-generation-cost-report.kind-label.message.79675ce3b42c": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Vídeo"
+ },
+ "core-generation-cost-report.kind-label.message.8444fe29d13e": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Imagem"
+ },
+ "core-generation-cost-report.kind-label.message.d9e84cdaef1c": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Texto"
+ },
+ "core-generation-cost-report.kind-label.message.eec5b22efdc9": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Som"
+ },
+ "core-generation-cost-report.notes.message.20d9d4d7d68a": {
+  "nb": "Jobber som feilet uten å koste noe, og jobber som venter i køen, er ikke med. «Betalt, ikke lagret» er med fordi leverandøren kan ha tatt betalt.",
+  "en": "Jobs that failed without cost, and jobs waiting in the queue, are not included. “Paid, not saved” is included because the provider may have charged for it.",
+  "oversatt": "Tarefas que falharam sem custo e tarefas aguardando na fila não estão incluídas. “Pago, não salvo” está incluído porque o provedor pode ter cobrado por isso."
+ },
+ "core-generation-cost-report.notes.message.2abe86d011df": {
+  "nb": "Kronebeløpene er regnet om med Norges Banks valutakurs (USD/NOK) for dagen jobben ble laget, eller siste noterte kurs før den.",
+  "en": "The NOK amounts are converted with Norges Bank's exchange rate (USD/NOK) for the day the job was made, or the last rate quoted before it.",
+  "oversatt": "Os valores em NOK são convertidos com a taxa de câmbio do Norges Bank (USD/NOK) para o dia em que o trabalho foi criado, ou a última taxa cotada antes dele."
+ },
+ "core-generation-cost-report.notes.message.58fbf5353a7b": {
+  "nb": "Runway oppgir pris i kreditter: 1 kreditt = 0,01 USD.",
+  "en": "Runway states prices in credits: 1 credit = 0.01 USD.",
+  "oversatt": "A Runway informa os preços em créditos: 1 crédito = 0,01 USD."
+ },
+ "core-generation-cost-report.notes.message.82a7fced1fcf": {
+  "nb": "Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt. Den endelige fakturaen fra leverandøren kan avvike; bruk leverandørens jobb-ID til avstemming.",
+  "en": "The amounts are estimated from the provider's price list when the job was ordered. The provider's final invoice may differ; use the provider's job ID for reconciliation.",
+  "oversatt": "Os valores são estimados com base na tabela de preços do provedor no momento em que a tarefa foi solicitada. A fatura final do provedor pode divergir; use o ID da tarefa do provedor para reconciliação."
+ },
+ "core-generation-cost-report.notes.message.dd9f4f5c6394": {
+  "nb": "{unknown} jobb(er) mangler prisanslag og er regnet som 0.",
+  "en": "{unknown} job(s) have no price estimate and are counted as 0.",
+  "oversatt": "{unknown} tarefa(s) não têm estimativa de preço e são contadas como 0."
+ },
+ "core-generation-cost-report.notes.message.f34a87af0299": {
+  "nb": "Beløpene er uten merverdiavgift. Kjøp av slike tjenester fra utlandet har normalt omvendt avgiftsplikt.",
+  "en": "The amounts are without VAT. Purchases of such services from abroad are normally subject to reverse charge.",
+  "oversatt": "Os valores não incluem IVA. As compras desses serviços no exterior normalmente estão sujeitas à cobrança com tributação reversa."
+ },
+ "core-generation-cost-report.status-label.message.04a86e50e1ff": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Concluído"
+ },
+ "core-generation-cost-report.status-label.message.7322ebca7b77": {
+  "nb": "Pågår",
+  "en": "Running",
+  "oversatt": "Em execução"
+ },
+ "core-generation-cost-report.status-label.message.ec0ca1c9e2be": {
+  "nb": "Betalt, ikke lagret",
+  "en": "Paid, not saved",
+  "oversatt": "Pago, não salvo"
+ },
+ "core-generation-cost-report.title.title.e2031f987a1d": {
+  "nb": "Kostnadsoversikt – AI-tjenester",
+  "en": "Cost statement – AI services",
+  "oversatt": "Demonstrativo de custos – Serviços de IA"
+ },
+ "core-generation-cost-report.unit.unit.4cfc7caa7804": {
+  "nb": "sek",
+  "en": "sec",
+  "oversatt": "s"
+ },
+ "core-generation-cost-report.unit.unit.6812643b0d0f": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "imagem"
+ },
+ "core-generation-cost-report.unit.unit.d97f14767060": {
+  "nb": "stk",
+  "en": "pcs",
+  "oversatt": "un"
+ },
+ "core-generation-cost-report.unit.unit.f46774dcddd7": {
+  "nb": "tekst",
+  "en": "text",
+  "oversatt": "texto"
+ },
+ "core-generation-cost-report.user.user.f7adb03339c0": {
+  "nb": "Ukjent bruker",
+  "en": "Unknown user",
+  "oversatt": "Usuário desconhecido"
+ },
+ "core-generation-cost.format-credits.message.9a9d53f0a537": {
+  "nb": "{v} kreditter",
+  "en": "{v} credits",
+  "oversatt": "{v} créditos"
+ },
+ "core-generation-cost.job-state-label.done.4455da929a67": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Concluído"
+ },
+ "core-generation-cost.job-state-label.failed.04a0187e2438": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "Falhou"
+ },
+ "core-generation-cost.job-state-label.lost.ee6730017c3b": {
+  "nb": "Betalt, ikke lagret",
+  "en": "Paid, not saved",
+  "oversatt": "Pago, não salvo"
+ },
+ "core-generation-cost.job-state-label.queued.048b6cc02917": {
+  "nb": "I kø",
+  "en": "Queued",
+  "oversatt": "Na fila"
+ },
+ "core-generation-cost.job-state-label.running.96e2b0ec4880": {
+  "nb": "Pågår",
+  "en": "Running",
+  "oversatt": "Em execução"
+ },
+ "core-generation-cost.job-state-label.stale.537fddf96643": {
+  "nb": "Stoppet underveis",
+  "en": "Stopped along the way",
+  "oversatt": "Interrompido no processo"
+ },
+ "core-generation-cost.quality-profile-budget-error.message.f4b906b8ac24": {
+  "nb": "Profilens månedsbudsjett er brukt opp eller er for lite for dette valget.",
+  "en": "The profile's monthly budget is exhausted or too small for this selection.",
+  "oversatt": "O orçamento mensal do perfil está esgotado ou é insuficiente para esta seleção."
+ },
+ "core-generation-model-prompt.adapt-prompt-for-model.notes-push.399a41a9f535": {
+  "nb": "Modellen lager ikke lyd: replikkene brukes til munnbevegelser og spill.",
+  "en": "The model does not make sound: the lines are used for lip movement and acting.",
+  "oversatt": "O modelo não gera som: as falas são usadas para movimento labial e atuação."
+ },
+ "core-generation-model-prompt.adapt-prompt-for-model.notes-push.57abab561801": {
+  "nb": "Teksten ble kortet ned til {length} tegn; replikkene er beholdt ordrett.",
+  "en": "The text was shortened to {length} characters; the lines are kept verbatim.",
+  "oversatt": "O texto foi reduzido para {length} caracteres; as falas foram mantidas literalmente."
+ },
+ "core-generation-model-prompt.adapt-prompt-for-model.notes-push.c3dd95ca17ef": {
+  "nb": "Modellen tar imot høyst {max} tegn: tok bort {value2}.",
+  "en": "The model accepts at most {max} characters: removed {value2}.",
+  "oversatt": "O modelo aceita no máximo {max} caracteres: {value2} foram removidos."
+ },
+ "core-generation-model-prompt.adapt-prompt-for-model.notes-push.e0b072e0675d": {
+  "nb": "Replikkene alene er for lange for denne modellen. Del segmentet i kortere deler eller velg en annen modell.",
+  "en": "The lines alone are too long for this model. Split the segment into shorter parts or choose another model.",
+  "oversatt": "As falas por si sós são longas demais para este modelo. Divida o segmento em partes menores ou escolha outro modelo."
+ },
+ "core-generation-model-prompt.key-label.avoid.d63806717a72": {
+  "nb": "«unngå»",
+  "en": "“avoid”",
+  "oversatt": "“evitar”"
+ },
+ "core-generation-model-prompt.key-label.camera.ab90fc737b5b": {
+  "nb": "kamera",
+  "en": "camera",
+  "oversatt": "câmera"
+ },
+ "core-generation-model-prompt.key-label.continuity.674d66f6b602": {
+  "nb": "kontinuitet",
+  "en": "continuity",
+  "oversatt": "continuidade"
+ },
+ "core-generation-model-prompt.key-label.endframe.ae6a91371118": {
+  "nb": "«stabilt sluttbilde»",
+  "en": "“stable final frame”",
+  "oversatt": "“quadro final estável”"
+ },
+ "core-generation-model-prompt.key-label.figures.9c224a0a2a61": {
+  "nb": "figurene",
+  "en": "the figures",
+  "oversatt": "as figuras"
+ },
+ "core-generation-model-prompt.key-label.lighting.7a6acd5449a7": {
+  "nb": "lys",
+  "en": "lighting",
+  "oversatt": "iluminação"
+ },
+ "core-generation-model-prompt.key-label.look.47927c4b9a36": {
+  "nb": "filmens uttrykk",
+  "en": "the film's look",
+  "oversatt": "o visual do filme"
+ },
+ "core-generation-model-prompt.key-label.mood.0f21b2d60d11": {
+  "nb": "stemning",
+  "en": "mood",
+  "oversatt": "clima"
+ },
+ "core-generation-model-prompt.key-label.notext.7fbdc6471989": {
+  "nb": "«ingen tekst i bildet»",
+  "en": "“no text in the image”",
+  "oversatt": "“sem texto na imagem”"
+ },
+ "core-generation-model-prompt.key-label.other.8525b5e0a666": {
+  "nb": "egen tekst",
+  "en": "own text",
+  "oversatt": "texto próprio"
+ },
+ "core-generation-model-prompt.key-label.palette.754b90f69bef": {
+  "nb": "fargepalett",
+  "en": "colour palette",
+  "oversatt": "paleta de cores"
+ },
+ "core-generation-model-prompt.key-label.setting.9c25472ea6d9": {
+  "nb": "sted",
+  "en": "setting",
+  "oversatt": "cenário"
+ },
+ "core-generation-model-prompt.key-label.style.e37ec6d8e593": {
+  "nb": "stilregelen",
+  "en": "the style rule",
+  "oversatt": "a regra de estilo"
+ },
+ "core-generation-model-prompt.key-label.technique.f9d432ec955c": {
+  "nb": "teknikk",
+  "en": "technique",
+  "oversatt": "técnica"
+ },
+ "core-generation-model-settings.custom-model-from.message.b5f43fc4ccf2": {
+  "nb": "{name} (lagt til av administrator)",
+  "en": "{name} (added by administrator)",
+  "oversatt": "{name} (adicionado pelo administrador)"
+ },
+ "core-generation-model-settings.disabled-message.message.4cb258ded509": {
+  "nb": "Administrator har slått av denne AI-modellen for alle brukere. Velg en annen modell.",
+  "en": "The administrator has switched off this AI model for all users. Choose another model.",
+  "oversatt": "O administrador desativou este modelo de IA para todos os usuários. Escolha outro modelo."
+ },
+ "core-generation-model-settings.disabled-message.message.b704c2a7edea": {
+  "nb": "Administrator har slått av denne AI-leverandøren for alle brukere. Velg en annen leverandør.",
+  "en": "The administrator has switched off this AI provider for all users. Choose another provider.",
+  "oversatt": "O administrador desativou este provedor de IA para todos os usuários. Escolha outro provedor."
+ },
+ "core-generation-model-settings.error.error.0a26b7ee6e8f": {
+  "nb": "Modell-ID-en kan bare ha små bokstaver, tall og tegnene . _ / - (3–{MAX_MODEL_ID} tegn).",
+  "en": "The model ID can only contain lower-case letters, digits and the characters . _ / - (3–{MAX_MODEL_ID} characters).",
+  "oversatt": "O ID do modelo só pode conter letras minúsculas, dígitos e os caracteres . _ / - (3–{MAX_MODEL_ID} caracteres)."
+ },
+ "core-generation-model-settings.error.error.0bf8ecd783b4": {
+  "nb": "Velg type.",
+  "en": "Choose a type.",
+  "oversatt": "Escolha um tipo."
+ },
+ "core-generation-model-settings.error.error.20edf9496074": {
+  "nb": "Programmet kan ikke bruke denne typen modell hos leverandøren uten ny kode.",
+  "en": "The program cannot use this type of model with the provider without new code.",
+  "oversatt": "O programa não pode usar este tipo de modelo com o provedor sem código adicional."
+ },
+ "core-generation-model-settings.error.error.315cfe58e815": {
+  "nb": "Ukjent leverandør.",
+  "en": "Unknown provider.",
+  "oversatt": "Provedor desconhecido."
+ },
+ "core-generation-model-settings.error.error.3772d693926e": {
+  "nb": "Oppgi prisen i USD (0–1000).",
+  "en": "Enter the price in USD (0–1000).",
+  "oversatt": "Informe o preço em USD (0–1000)."
+ },
+ "core-generation-model-settings.error.error.96e8a66d2b02": {
+  "nb": "Feil prisenhet for typen.",
+  "en": "Wrong price unit for the type.",
+  "oversatt": "Unidade de preço incorreta para o tipo."
+ },
+ "core-generation-model-settings.error.error.abe635a53f77": {
+  "nb": "Modell-ID-en passer ikke med det programmet kan sende til leverandøren. Eksempler som virker: {examples}.",
+  "en": "The model ID does not match what the program can send to the provider. Examples that work: {examples}.",
+  "oversatt": "O ID do modelo não corresponde ao que o programa pode enviar ao provedor. Exemplos válidos: {examples}."
+ },
+ "core-generation-model-settings.error.error.aeca493671a4": {
+  "nb": "Skriv et navn (høyst 120 tegn).",
+  "en": "Enter a name (120 characters at most).",
+  "oversatt": "Insira um nome (máximo de 120 caracteres)."
+ },
+ "core-generation-model-settings.error.error.b10ecc9fd6bf": {
+  "nb": "Modellen finnes allerede i den innebygde katalogen.",
+  "en": "The model is already in the built-in catalogue.",
+  "oversatt": "O modelo já está no catálogo integrado."
+ },
+ "core-generation-model-settings.error.error.c786766a47f3": {
+  "nb": "Denne leverandøren kan ikke få egne modeller uten ny kode.",
+  "en": "This provider cannot get its own models without new code.",
+  "oversatt": "Este provedor não pode receber modelos próprios sem um novo código."
+ },
+ "core-generation-model-settings.error.error.d3d54a9e9919": {
+  "nb": "Merknaden er for lang.",
+  "en": "The note is too long.",
+  "oversatt": "A nota é longa demais."
+ },
+ "core-generation-providers.capability-label.alignment.315505b5841b": {
+  "nb": "Ord-til-lyd",
+  "en": "Word alignment",
+  "oversatt": "Alinhamento de palavras"
+ },
+ "core-generation-providers.capability-label.image.0b8183d2bc3f": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "Imagens"
+ },
+ "core-generation-providers.capability-label.sound.9069d5bcf965": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Áudio"
+ },
+ "core-generation-providers.capability-label.speech.a4141d40b4d4": {
+  "nb": "Tale",
+  "en": "Speech",
+  "oversatt": "Fala"
+ },
+ "core-generation-providers.capability-label.text.67d66f855964": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Texto"
+ },
+ "core-generation-providers.capability-label.upscale.9094c341367a": {
+  "nb": "Oppskalering",
+  "en": "Upscaling",
+  "oversatt": "Upscaling"
+ },
+ "core-generation-providers.capability-label.video-edit.ec4b5af08091": {
+  "nb": "Video fra 2D-scenen",
+  "en": "Video from the 2D scene",
+  "oversatt": "Vídeo da cena 2D"
+ },
+ "core-generation-providers.capability-label.video.1599c4fe017d": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Vídeo"
+ },
+ "core-generation-providers.effort-disclaimer.message.ad77f3fea910": {
+  "nb": "Høyere innsats koster mer, men er ingen garanti for et bedre resultat. Se på resultatet og velg selv.",
+  "en": "Higher effort costs more, but is no guarantee of a better result. Look at the result and choose for yourself.",
+  "oversatt": "Um esforço maior custa mais, mas não garante um resultado melhor. Avalie o resultado e decida você mesmo."
+ },
+ "core-generation-providers.effort-help.balanced.ae4d0b0e8a3a": {
+  "nb": "En fornuftig kombinasjon av kvalitet, pris og tid.",
+  "en": "A sensible mix of quality, price and time.",
+  "oversatt": "Um equilíbrio sensato entre qualidade, custo e tempo."
+ },
+ "core-generation-providers.effort-help.fast.1acbf692ad79": {
+  "nb": "Lavere kostnad og raske skisser.",
+  "en": "Lower cost and quick sketches.",
+  "oversatt": "Menor custo e esboços rápidos."
+ },
+ "core-generation-providers.effort-help.premium.eb97211de851": {
+  "nb": "Den mest omfattende modellen, med forbildebilder og flere kandidater der det støttes.",
+  "en": "The most comprehensive model, with reference images and several candidates where supported.",
+  "oversatt": "O modelo mais abrangente, com imagens de referência e vários candidatos onde houver suporte."
+ },
+ "core-generation-providers.effort-label.balanced.934d3da03e98": {
+  "nb": "Balansert",
+  "en": "Balanced",
+  "oversatt": "Equilibrado"
+ },
+ "core-generation-providers.effort-label.fast.4e975a2b43b7": {
+  "nb": "Rask / Økonomisk",
+  "en": "Fast / Economical",
+  "oversatt": "Rápido / Econômico"
+ },
+ "core-generation-providers.effort-label.premium.bae890684174": {
+  "nb": "Høy / Premium",
+  "en": "High / Premium",
+  "oversatt": "Alto / Premium"
+ },
+ "core-generation-providers.error.error.11758911bc46": {
+  "nb": "Ukjent tekstleverandør.",
+  "en": "Unknown text provider.",
+  "oversatt": "Provedor de texto desconhecido."
+ },
+ "core-generation-providers.error.error.1b3204ff58f8": {
+  "nb": "Nøkkelen kan ikke inneholde mellomrom eller linjeskift.",
+  "en": "The key cannot contain spaces or line breaks.",
+  "oversatt": "A chave não pode conter espaços nem quebras de linha."
+ },
+ "core-generation-providers.error.error.2280b978f1da": {
+  "nb": "Ukjent leverandør.",
+  "en": "Unknown provider.",
+  "oversatt": "Provedor desconhecido."
+ },
+ "core-generation-providers.error.error.22895e764383": {
+  "nb": "Denne leverandøren trenger ingen nøkkel.",
+  "en": "This provider does not need a key.",
+  "oversatt": "Este provedor não precisa de uma chave."
+ },
+ "core-generation-providers.error.error.267611fb2469": {
+  "nb": "Nøkkelen har feil lengde.",
+  "en": "The key has the wrong length.",
+  "oversatt": "A chave tem o comprimento incorreto."
+ },
+ "core-generation-providers.error.error.8bcda4f149e6": {
+  "nb": "Lim inn nøkkelen.",
+  "en": "Paste the key.",
+  "oversatt": "Cole a chave."
+ },
+ "core-generation-providers.error.error.943436f0735d": {
+  "nb": "Ingen tekst-AI er tilgjengelig. Koble til en leverandør under «AI-leverandører».",
+  "en": "No text AI is available. Connect a provider under “AI providers”.",
+  "oversatt": "Nenhuma IA de texto disponível. Conecte um provedor em «Provedores de IA»."
+ },
+ "core-generation-providers.error.error.d30b0da81464": {
+  "nb": "Den valgte tekstmodellen kan ikke brukes (ingen gyldig nøkkel, ukjent modell eller slått av).",
+  "en": "The chosen text model cannot be used (no valid key, unknown model or switched off).",
+  "oversatt": "O modelo de texto escolhido não pode ser usado (chave inválida, modelo desconhecido ou desativado)."
+ },
+ "core-generation-providers.format-usd.message.846590d9f5fb": {
+  "nb": "ukjent beløp",
+  "en": "unknown amount",
+  "oversatt": "valor desconhecido"
+ },
+ "core-generation-providers.generations": {
+  "nb": "{generations} genereringer{detail}",
+  "en": "{generations} generations{detail}",
+  "oversatt": "{generations} gerações{detail}"
+ },
+ "core-generation-providers.generations-candidates": {
+  "nb": "{times}{count} kandidater)",
+  "en": "{times}{count} candidates)",
+  "oversatt": "{times}{count} candidatos)"
+ },
+ "core-generation-providers.image-size-label.1k.77e63d3513b7": {
+  "nb": "Liten (ca. 1000 px)",
+  "en": "Small (about 1000 px)",
+  "oversatt": "Pequeno (aprox. 1000 px)"
+ },
+ "core-generation-providers.image-size-label.2k.c6bbff2a5487": {
+  "nb": "Middels (ca. 2000 px)",
+  "en": "Medium (about 2000 px)",
+  "oversatt": "Médio (aprox. 2000 px)"
+ },
+ "core-generation-providers.image-size-label.4k.cbc35023da20": {
+  "nb": "Stor (ca. 4000 px)",
+  "en": "Large (about 4000 px)",
+  "oversatt": "Grande (aprox. 4000 px)"
+ },
+ "core-generation-providers.label.label.1590da4c130f": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "core-generation-providers.label.label.52938752bbdd": {
+  "nb": "Ekstrarunder",
+  "en": "Extra rounds",
+  "oversatt": "Rodadas extras"
+ },
+ "core-generation-providers.label.label.81c02fd12e52": {
+  "nb": "Antall",
+  "en": "Count",
+  "oversatt": "Quantidade"
+ },
+ "core-generation-providers.label.label.a6dbd4fe6028": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Duração"
+ },
+ "core-generation-providers.label.label.a6dbd4fe6028.2": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Comprimento"
+ },
+ "core-generation-providers.label.label.c2f177847629": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "Resolução"
+ },
+ "core-generation-providers.label.label.dafb278acd09": {
+  "nb": "Samlet anslag",
+  "en": "Estimated total",
+  "oversatt": "Total estimado"
+ },
+ "core-generation-providers.label.label.feda3b15e97d": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "Nível de esforço"
+ },
+ "core-generation-providers.length": {
+  "nb": "Lengde {last} s",
+  "en": "Length {last} s",
+  "oversatt": "Duração {last} s"
+ },
+ "core-generation-providers.lengths": {
+  "nb": "Lengde {list} eller {last} s",
+  "en": "Length {list} or {last} s",
+  "oversatt": "Duração {list} ou {last} s"
+ },
+ "core-generation-providers.model-capabilities.limits-push.66a8a9509c75": {
+  "nb": "Beskrivelsen kortes ned til {value1} tegn",
+  "en": "The description is cut to {value1} characters",
+  "oversatt": "A descrição é reduzida para {value1} caracteres"
+ },
+ "core-generation-providers.model-capabilities.time-push.3088c3c141e0": {
+  "nb": "Lydlengde {value1}–{max} s",
+  "en": "Audio length {value1}–{max} s",
+  "oversatt": "Duração do áudio {value1}–{max} s"
+ },
+ "core-generation-providers.model-capabilities.time-push.e581a157b1cb": {
+  "nb": "Videolengde {value1}–{value2} s",
+  "en": "Video length {value1}–{value2} s",
+  "oversatt": "Duração do vídeo {value1}–{value2} s"
+ },
+ "core-generation-providers.models.models.0120272a3729": {
+  "nb": "Må ha startbilde",
+  "en": "Needs a start image",
+  "oversatt": "Precisa de uma imagem inicial"
+ },
+ "core-generation-providers.models.models.0120272a3729.2": {
+  "nb": "Må ha startbilde",
+  "en": "Needs a start image",
+  "oversatt": "Precisa de uma imagem inicial"
+ },
+ "core-generation-providers.models.models.0263845aa8dd": {
+  "nb": "ca. 2K",
+  "en": "about 2K",
+  "oversatt": "cerca de 2K"
+ },
+ "core-generation-providers.models.models.02de0748689f": {
+  "nb": "Tenker gjennom bildet før det lages",
+  "en": "Thinks through the image before it is made",
+  "oversatt": "Analisa a imagem antes de criá-la"
+ },
+ "core-generation-providers.models.models.09e58f8380ff": {
+  "nb": "Eleven v3 (norsk)",
+  "en": "Eleven v3 (Norwegian)",
+  "oversatt": "Eleven v3 (norueguês)"
+ },
+ "core-generation-providers.models.models.0b47ec937e8c": {
+  "nb": "Norsk og 70+ språk",
+  "en": "Norwegian and 70+ languages",
+  "oversatt": "Norueguês e mais de 70 idiomas"
+ },
+ "core-generation-providers.models.models.0c16daca9ba0": {
+  "nb": "Opptil 10 forbildebilder",
+  "en": "Up to 10 reference images",
+  "oversatt": "Até 10 imagens de referência"
+ },
+ "core-generation-providers.models.models.12328e5217d6": {
+  "nb": "Clarity – med AI-detaljer",
+  "en": "Clarity – with AI detail",
+  "oversatt": "Clarity – com detalhes por IA"
+ },
+ "core-generation-providers.models.models.140be2bf55a9": {
+  "nb": "Må ha et forbildebilde – den endrer et bilde, lager ikke fra bare tekst",
+  "en": "Needs a reference image – it changes an image, it does not create from text alone",
+  "oversatt": "Precisa de uma imagem de referência – modifica uma imagem, não cria apenas a partir de texto"
+ },
+ "core-generation-providers.models.models.18ddb38254de": {
+  "nb": "Norsk og engelsk",
+  "en": "Norwegian and English",
+  "oversatt": "Norueguês e inglês"
+ },
+ "core-generation-providers.models.models.18ddb38254de.2": {
+  "nb": "Norsk og engelsk",
+  "en": "Norwegian and English",
+  "oversatt": "Norueguês e inglês"
+ },
+ "core-generation-providers.models.models.2786815b0be6": {
+  "nb": "GPT Image 2.5 Flare (rask)",
+  "en": "GPT Image 2.5 Flare (fast)",
+  "oversatt": "GPT Image 2.5 Flare (rápido)"
+ },
+ "core-generation-providers.models.models.3f2a3533893c": {
+  "nb": "2× eller 4×",
+  "en": "2× or 4×",
+  "oversatt": "2× ou 4×"
+ },
+ "core-generation-providers.models.models.3f2a3533893c.2": {
+  "nb": "2× eller 4×",
+  "en": "2× or 4×",
+  "oversatt": "2× ou 4×"
+ },
+ "core-generation-providers.models.models.441f815ed440": {
+  "nb": "GPT Image 2.5 Sunburst (frilagt)",
+  "en": "GPT Image 2.5 Sunburst (cut-out)",
+  "oversatt": "GPT Image 2.5 Sunburst (recortado)"
+ },
+ "core-generation-providers.models.models.4a43fccf3184": {
+  "nb": "ca. 1 megapiksel",
+  "en": "about 1 megapixel",
+  "oversatt": "cerca de 1 megapixel"
+ },
+ "core-generation-providers.models.models.533d357f2dd8": {
+  "nb": "Sømløs løkke",
+  "en": "Seamless loop",
+  "oversatt": "Loop perfeito"
+ },
+ "core-generation-providers.models.models.533d357f2dd8.2": {
+  "nb": "Sømløs løkke",
+  "en": "Seamless loop",
+  "oversatt": "Loop perfeito"
+ },
+ "core-generation-providers.models.models.54a213b395a1": {
+  "nb": "Lydeffekter v2",
+  "en": "Sound effects v2",
+  "oversatt": "Efeitos sonoros v2"
+ },
+ "core-generation-providers.models.models.54b8f2f9331f": {
+  "nb": "Presise endringer i et bilde",
+  "en": "Precise changes to an image",
+  "oversatt": "Alterações precisas em uma imagem"
+ },
+ "core-generation-providers.models.models.558fec70e3d3": {
+  "nb": "SeedVR2 – skarpere (rimelig)",
+  "en": "SeedVR2 – sharper (affordable)",
+  "oversatt": "SeedVR2 – mais nítido (econômico)"
+ },
+ "core-generation-providers.models.models.5803710a68c5": {
+  "nb": "Norsk står ikke på ElevenLabs' liste over språk – må prøves (KI-245)",
+  "en": "Norwegian is not on ElevenLabs' list of languages – must be tried (KI-245)",
+  "oversatt": "O norueguês não está na lista de idiomas do ElevenLabs – precisa ser testado (KI-245)"
+ },
+ "core-generation-providers.models.models.639cd27f30a9": {
+  "nb": "Gjennomsiktig bakgrunn",
+  "en": "Transparent background",
+  "oversatt": "Fundo transparente"
+ },
+ "core-generation-providers.models.models.639cd27f30a9.2": {
+  "nb": "Gjennomsiktig bakgrunn",
+  "en": "Transparent background",
+  "oversatt": "Fundo transparente"
+ },
+ "core-generation-providers.models.models.63ef8d72cc54": {
+  "nb": "Lyd i videoen",
+  "en": "Sound in the video",
+  "oversatt": "Áudio no vídeo"
+ },
+ "core-generation-providers.models.models.63ef8d72cc54.2": {
+  "nb": "Lyd i videoen",
+  "en": "Sound in the video",
+  "oversatt": "Áudio no vídeo"
+ },
+ "core-generation-providers.models.models.63ef8d72cc54.3": {
+  "nb": "Lyd i videoen",
+  "en": "Sound in the video",
+  "oversatt": "Áudio no vídeo"
+ },
+ "core-generation-providers.models.models.63ef8d72cc54.4": {
+  "nb": "Lyd i videoen",
+  "en": "Sound in the video",
+  "oversatt": "Áudio no vídeo"
+ },
+ "core-generation-providers.models.models.685f5eeb64ba": {
+  "nb": "Holder en karakter lik på tvers av bilder",
+  "en": "Keeps a character the same across images",
+  "oversatt": "Mantém o mesmo personagem em diferentes imagens"
+ },
+ "core-generation-providers.models.models.6ae94317288c": {
+  "nb": "Kling 3 (fra startbilde)",
+  "en": "Kling 3 (from start image)",
+  "oversatt": "Kling 3 (a partir de imagem inicial)"
+ },
+ "core-generation-providers.models.models.76872f5ba94f": {
+  "nb": "Høyst 4 figurer med referansebilde",
+  "en": "At most 4 figures with a reference image",
+  "oversatt": "No máximo 4 personagens com imagem de referência"
+ },
+ "core-generation-providers.models.models.7aa51f0bba63": {
+  "nb": "2–30 sekunder per bit",
+  "en": "2–30 seconds per piece",
+  "oversatt": "2–30 segundos por trecho"
+ },
+ "core-generation-providers.models.models.7e6a0484f813": {
+  "nb": "Egen stemme per karakter",
+  "en": "Own voice per character",
+  "oversatt": "Voz própria por personagem"
+ },
+ "core-generation-providers.models.models.7e6a0484f813.2": {
+  "nb": "Egen stemme per karakter",
+  "en": "Own voice per character",
+  "oversatt": "Voz própria por personagem"
+ },
+ "core-generation-providers.models.models.7e6a0484f813.3": {
+  "nb": "Egen stemme per karakter",
+  "en": "Own voice per character",
+  "oversatt": "Voz própria por personagem"
+ },
+ "core-generation-providers.models.models.7e6a0484f813.4": {
+  "nb": "Egen stemme per karakter",
+  "en": "Own voice per character",
+  "oversatt": "Voz própria por personagem"
+ },
+ "core-generation-providers.models.models.7f5e13cfb0f4": {
+  "nb": "Som 2D-scenen (720–3840 px)",
+  "en": "As the 2D scene (720–3840 px)",
+  "oversatt": "Como a cena 2D (720–3840 px)"
+ },
+ "core-generation-providers.models.models.7f92abf8a5bc": {
+  "nb": "opptil 1440 px",
+  "en": "up to 1440 px",
+  "oversatt": "até 1440 px"
+ },
+ "core-generation-providers.models.models.85b91cec5695": {
+  "nb": "Kvalitetsvalg hos leverandøren (høy)",
+  "en": "Quality setting at the provider (high)",
+  "oversatt": "Configuração de qualidade no provedor (alta)"
+ },
+ "core-generation-providers.models.models.8a0825594c8c": {
+  "nb": "Norsk satt eksplisitt",
+  "en": "Norwegian set explicitly",
+  "oversatt": "Norueguês definido explicitamente"
+ },
+ "core-generation-providers.models.models.8ef474ee374b": {
+  "nb": "Bevarer bildet slik det er, bare skarpere",
+  "en": "Keeps the image as it is, just sharper",
+  "oversatt": "Mantém a imagem como está, apenas mais nítida"
+ },
+ "core-generation-providers.models.models.93c7648e5047": {
+  "nb": "Ord-til-lyd (Forced Alignment)",
+  "en": "Word alignment (Forced Alignment)",
+  "oversatt": "Alinhamento de palavras (Forced Alignment)"
+ },
+ "core-generation-providers.models.models.9797a7daa22c": {
+  "nb": "Aleph 2 (fra 2D-scenen)",
+  "en": "Aleph 2 (from the 2D scene)",
+  "oversatt": "Aleph 2 (a partir da cena 2D)"
+ },
+ "core-generation-providers.models.models.a65a6abd888a": {
+  "nb": "Som 2D-scenen (opptil 1080p)",
+  "en": "As the 2D scene (up to 1080p)",
+  "oversatt": "Como a cena 2D (até 1080p)"
+ },
+ "core-generation-providers.models.models.a946c5ce40ba": {
+  "nb": "opptil 4K",
+  "en": "up to 4K",
+  "oversatt": "até 4K"
+ },
+ "core-generation-providers.models.models.b86c4402093a": {
+  "nb": "Figurene beskrives bare med tekst (ingen referansebilder)",
+  "en": "The figures are described in text only (no reference images)",
+  "oversatt": "As figuras são descritas apenas em texto (sem imagens de referência)"
+ },
+ "core-generation-providers.models.models.c3cbe6d08b4f": {
+  "nb": "GPT Image 2.5 Sunburst (presis, frilagt)",
+  "en": "GPT Image 2.5 Sunburst (precise, cut-out)",
+  "oversatt": "GPT Image 2.5 Sunburst (preciso, recortado)"
+ },
+ "core-generation-providers.models.models.cc7927f1f52f": {
+  "nb": "Negativ beskrivelse",
+  "en": "Negative description",
+  "oversatt": "Descrição negativa"
+ },
+ "core-generation-providers.models.models.cc7927f1f52f.2": {
+  "nb": "Negativ beskrivelse",
+  "en": "Negative description",
+  "oversatt": "Descrição negativa"
+ },
+ "core-generation-providers.models.models.d1aaedac4f6d": {
+  "nb": "Flerspråklig tale v2 (uten norsk)",
+  "en": "Multilingual speech v2 (no Norwegian)",
+  "oversatt": "Fala multilíngue v2 (sem norueguês)"
+ },
+ "core-generation-providers.models.models.d406bfcf6278": {
+  "nb": "Kling O3 Edit (fra 2D-scenen)",
+  "en": "Kling O3 Edit (from the 2D scene)",
+  "oversatt": "Kling O3 Edit (a partir da cena 2D)"
+ },
+ "core-generation-providers.models.models.d65ac0de7bcb": {
+  "nb": "Lydeffekter fra beskrivelse",
+  "en": "Sound effects from a description",
+  "oversatt": "Efeitos sonoros a partir de uma descrição"
+ },
+ "core-generation-providers.models.models.d9137a4dadc8": {
+  "nb": "Tale fra tekst",
+  "en": "Speech from text",
+  "oversatt": "Fala a partir de texto"
+ },
+ "core-generation-providers.models.models.d9137a4dadc8.2": {
+  "nb": "Tale fra tekst",
+  "en": "Speech from text",
+  "oversatt": "Fala a partir de texto"
+ },
+ "core-generation-providers.models.models.e43597156ef3": {
+  "nb": "Legger til detaljer – kan endre små ting i bildet",
+  "en": "Adds detail – may change small things in the image",
+  "oversatt": "Adiciona detalhes – pode alterar pequenas coisas na imagem"
+ },
+ "core-generation-providers.models.models.e72a15589197": {
+  "nb": "3–15 sekunder per bit",
+  "en": "3–15 seconds per piece",
+  "oversatt": "3–15 segundos por trecho"
+ },
+ "core-generation-providers.models.models.ef3f6478e1f6": {
+  "nb": "Opptil 14 forbildebilder",
+  "en": "Up to 14 reference images",
+  "oversatt": "Até 14 imagens de referência"
+ },
+ "core-generation-providers.models.models.ef3f6478e1f6.2": {
+  "nb": "Opptil 14 forbildebilder",
+  "en": "Up to 14 reference images",
+  "oversatt": "Até 14 imagens de referência"
+ },
+ "core-generation-providers.providers.message.0f15e81eb929": {
+  "nb": "Legg inn betalingskort og kjøp kreditt under Billing.",
+  "en": "Add a payment card and buy credit under Billing.",
+  "oversatt": "Adicione um cartão de pagamento e compre créditos em Billing."
+ },
+ "core-generation-providers.providers.message.15e28b63ca2f": {
+  "nb": "Video fra et startbilde med Gen-4 Turbo, og 2D-scenen tegnet om til film med Aleph 2. Kreditter kjøpes i utviklerportalen.",
+  "en": "Video from a start image with Gen-4 Turbo, and the 2D scene redrawn as film with Aleph 2. Credits are bought in the developer portal.",
+  "oversatt": "Vídeo a partir de uma imagem inicial com Gen-4 Turbo e a cena 2D redesenhada como filme com Aleph 2. Os créditos são comprados no portal do desenvolvedor."
+ },
+ "core-generation-providers.providers.message.2a67473eaff3": {
+  "nb": "Opprett konto på fal.ai (logg inn med GitHub eller Google).",
+  "en": "Create an account at fal.ai (sign in with GitHub or Google).",
+  "oversatt": "Crie uma conta em fal.ai (faça login com GitHub ou Google)."
+ },
+ "core-generation-providers.providers.message.340d37018508": {
+  "nb": "Opprett konto eller logg inn på console.anthropic.com.",
+  "en": "Create an account or sign in at console.anthropic.com.",
+  "oversatt": "Crie uma conta ou faça login em console.anthropic.com."
+ },
+ "core-generation-providers.providers.message.35b34a9d4c48": {
+  "nb": "Logg inn på aistudio.google.com med en Google-konto.",
+  "en": "Sign in at aistudio.google.com with a Google account.",
+  "oversatt": "Faça login em aistudio.google.com com uma conta do Google."
+ },
+ "core-generation-providers.providers.message.395cf2ebad03": {
+  "nb": "Legg inn betalingskort og kjøp kreditt under Billing (OpenAI tar ikke betalt uten forhåndsbetaling).",
+  "en": "Add a payment card and buy credit under Billing (OpenAI does not charge without prepayment).",
+  "oversatt": "Adicione um cartão de pagamento e compre créditos em Billing (a OpenAI não faz cobranças sem pré-pagamento)."
+ },
+ "core-generation-providers.providers.message.3f6a75c4e842": {
+  "nb": "Logg inn på dev.runwayml.com (utviklerportalen, egen fra vanlig Runway-abonnement).",
+  "en": "Sign in at dev.runwayml.com (the developer portal, separate from a regular Runway subscription).",
+  "oversatt": "Faça login em dev.runwayml.com (o portal do desenvolvedor, separado de uma assinatura regular da Runway)."
+ },
+ "core-generation-providers.providers.message.423e80cdaf9a": {
+  "nb": "Kjøp kreditt under Billing for teamet ditt.",
+  "en": "Buy credit under Billing for your team.",
+  "oversatt": "Compre créditos em Billing para a sua equipe."
+ },
+ "core-generation-providers.providers.message.478247762189": {
+  "nb": "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).",
+  "en": "Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).",
+  "oversatt": "Acesse API keys → “Create new secret key”, nomeie-a como “Animatic Studio” e copie-a (começa com sk-)."
+ },
+ "core-generation-providers.providers.message.492b50a8376f": {
+  "nb": "Én konto for mange modeller (Kling, Flux m.fl.). Betal per bruk; godt valg for video fra et startbilde.",
+  "en": "One account for many models (Kling, Flux and others). Pay as you go; a good choice for video from a start image.",
+  "oversatt": "Uma conta para vários modelos (Kling, Flux e outros). Pague conforme o uso; uma boa opção para vídeo a partir de uma imagem inicial."
+ },
+ "core-generation-providers.providers.message.5644cb6e0181": {
+  "nb": "Opprett konto eller logg inn på platform.openai.com.",
+  "en": "Create an account or sign in at platform.openai.com.",
+  "oversatt": "Crie uma conta ou faça login em platform.openai.com."
+ },
+ "core-generation-providers.providers.message.58305044d7e4": {
+  "nb": "Gå til Settings → API Keys → «Create API key».",
+  "en": "Go to Settings → API Keys → “Create API key”.",
+  "oversatt": "Acesse Settings → API Keys → “Create API key”."
+ },
+ "core-generation-providers.providers.message.5c712e78bf84": {
+  "nb": "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).",
+  "en": "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
+  "oversatt": "Acesse Settings → API keys → “Create Key”, nomeie-a como “Animatic Studio” e copie-a (começa com sk-ant-)."
+ },
+ "core-generation-providers.providers.message.87223e1b609a": {
+  "nb": "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform.",
+  "en": "Images with GPT Image and video with Sora. Payment is prepaid in the OpenAI Platform.",
+  "oversatt": "Imagens com GPT Image e vídeo com Sora. O pagamento é pré-pago na OpenAI Platform."
+ },
+ "core-generation-providers.providers.message.8ac7f045e797": {
+  "nb": "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.",
+  "en": "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.",
+  "oversatt": "Usa os créditos do seu espaço de trabalho do Animatic Studio. Nenhuma chave própria – ativado para o projeto no Animatic Studio."
+ },
+ "core-generation-providers.providers.message.8c8224966290": {
+  "nb": "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den.",
+  "en": "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it.",
+  "oversatt": "Dê à chave acesso a “Efeitos sonoros” (e “Texto para voz” se quiser usar vozes) e copie-a."
+ },
+ "core-generation-providers.providers.message.8e79364fc993": {
+  "nb": "Tekst med Claude: manusarbeid, karaktersamtaler og analyse. Forhåndsbetalt kreditt i Claude Console.",
+  "en": "Text with Claude: script work, character conversations and analysis. Prepaid credit in the Claude Console.",
+  "oversatt": "Texto com Claude: trabalho de roteiro, diálogos de personagens e análise. Crédito pré-pago no Claude Console."
+ },
+ "core-generation-providers.providers.message.953b4308cdb7": {
+  "nb": "Verifiser organisasjonen hvis OpenAI ber om det (kreves for bildemodellene).",
+  "en": "Verify your organisation if OpenAI asks you to (required for the image models).",
+  "oversatt": "Verifique sua organização se a OpenAI solicitar (necessário para os modelos de imagem)."
+ },
+ "core-generation-providers.providers.message.9db345317264": {
+  "nb": "Gå til Dashboard → Keys → «Add key», velg rollen «API» og kopier nøkkelen (id:hemmelighet).",
+  "en": "Go to Dashboard → Keys → “Add key”, choose the role “API” and copy the key (id:secret).",
+  "oversatt": "Acesse Dashboard → Keys → “Add key”, escolha a função “API” e copie a chave (id:segredo)."
+ },
+ "core-generation-providers.providers.message.b3569009e306": {
+  "nb": "Opprett konto eller logg inn på console.x.ai.",
+  "en": "Create an account or sign in at console.x.ai.",
+  "oversatt": "Crie uma conta ou faça login em console.x.ai."
+ },
+ "core-generation-providers.providers.message.ba9a3debdc93": {
+  "nb": "Gå til «Get API key» → «Create API key» og kopier nøkkelen (begynner med AIza).",
+  "en": "Go to “Get API key” → “Create API key” and copy the key (it starts with AIza).",
+  "oversatt": "Acesse “Get API key” → “Create API key” e copie a chave (começa com AIza)."
+ },
+ "core-generation-providers.providers.message.c15528e8ebee": {
+  "nb": "Slå på betaling (et Google Cloud-faktureringskonto) – video og de beste bildemodellene krever det.",
+  "en": "Turn on billing (a Google Cloud billing account) – video and the best image models require it.",
+  "oversatt": "Ative o faturamento (uma conta de faturamento do Google Cloud) – o vídeo e os melhores modelos de imagem exigem isso."
+ },
+ "core-generation-providers.providers.message.cb382fe23ea5": {
+  "nb": "Opprett konto på elevenlabs.io og velg et abonnement (gratisnivået har få kreditter).",
+  "en": "Create an account at elevenlabs.io and choose a subscription (the free tier has few credits).",
+  "oversatt": "Crie uma conta em elevenlabs.io e escolha uma assinatura (o plano gratuito tem poucos créditos)."
+ },
+ "core-generation-providers.providers.message.cc6a980aa945": {
+  "nb": "Kjøp kreditt under Settings → Billing (API-et virker ikke uten kreditt).",
+  "en": "Buy credit under Settings → Billing (the API does not work without credit).",
+  "oversatt": "Compre créditos em Settings → Billing (a API não funciona sem créditos)."
+ },
+ "core-generation-providers.providers.message.d6c8579aceb7": {
+  "nb": "Tekst med Grok. Forhåndsbetalt kreditt i xAI Console.",
+  "en": "Text with Grok. Prepaid credit in the xAI Console.",
+  "oversatt": "Texto com Grok. Crédito pré-pago no xAI Console."
+ },
+ "core-generation-providers.providers.message.e0ee4a58ed79": {
+  "nb": "Lydeffekter og stemmer fra tekst. Abonnement med månedlige tegn/kreditter.",
+  "en": "Sound effects and voices from text. Subscription with monthly characters/credits.",
+  "oversatt": "Efeitos sonoros e vozes a partir de texto. Assinatura com caracteres/créditos mensais."
+ },
+ "core-generation-providers.providers.message.e3bf20933260": {
+  "nb": "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).",
+  "en": "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
+  "oversatt": "Acesse API Keys → “Create API Key”, nomeie-a como “Animatic Studio” e copie-a (começa com xai-)."
+ },
+ "core-generation-providers.providers.message.e4624ce04071": {
+  "nb": "Opprett en organisasjon og kjøp kreditter under Billing.",
+  "en": "Create an organisation and buy credits under Billing.",
+  "oversatt": "Crie uma organização e compre créditos em Billing."
+ },
+ "core-generation-providers.providers.message.f37a0bd9791d": {
+  "nb": "Gå til API Keys → «Create new key» og kopier nøkkelen (begynner med key_).",
+  "en": "Go to API Keys → “Create new key” and copy the key (it starts with key_).",
+  "oversatt": "Acesse API Keys → “Create new key” e copie a chave (começa com key_)."
+ },
+ "core-generation-providers.providers.message.fae659820e31": {
+  "nb": "Innebygd AI",
+  "en": "Built-in AI",
+  "oversatt": "IA integrada"
+ },
+ "core-generation-providers.providers.message.fbf31e640415": {
+  "nb": "Bilder med Nano Banana og video med Veo 3.1. Nøkkel fra Google AI Studio.",
+  "en": "Images with Nano Banana and video with Veo 3.1. Key from Google AI Studio.",
+  "oversatt": "Imagens com Nano Banana e vídeo com Veo 3.1. Chave do Google AI Studio."
+ },
+ "core-generation-providers.quality-mechanisms.out-push.2b3eda074604": {
+  "nb": "Lengde {value1}{value2}{value3} s",
+  "en": "Length {value1}{value2}{value3} s",
+  "oversatt": "Duração {value1}{value2}{value3} s"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.5a32879d280c": {
+  "nb": "Forbildebilder (referansestyring)",
+  "en": "Reference images (style reference)",
+  "oversatt": "Imagens de referência (referência de estilo)"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.872fedcca32c": {
+  "nb": "Startbilde",
+  "en": "Start image",
+  "oversatt": "Imagem inicial"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.af05c6a3b81a": {
+  "nb": "Lengde {value1}–{value2} s",
+  "en": "Length {value1}–{value2} s",
+  "oversatt": "Duração {value1}–{value2} s"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.b0f78cf604ad": {
+  "nb": "Flere kandidater (hver koster som ett bilde)",
+  "en": "Several candidates (each costs as one image)",
+  "oversatt": "Vários candidatos (cada um custa como uma imagem)"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.e66f441770d7": {
+  "nb": "Oppløsning {resolution}",
+  "en": "Resolution {resolution}",
+  "oversatt": "Resolução {resolution}"
+ },
+ "core-generation-providers.quality-mechanisms.out-push.fd17baccd39f": {
+  "nb": "Gjennomsiktig bakgrunn",
+  "en": "Transparent background",
+  "oversatt": "Fundo transparente"
+ },
+ "core-generation-providers.targets-word.message.8006c8a2ee35": {
+  "nb": "mål",
+  "en": "targets",
+  "oversatt": "destinos"
+ },
+ "core-generation-providers.text-task-group-label.general.95b26a644ca6": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Outro"
+ },
+ "core-generation-providers.text-task-group-label.script.cddea2355733": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "Roteiro"
+ },
+ "core-generation-providers.text-task-group-label.storylab-analysis.011a03c061a7": {
+  "nb": "Story Lab (analyse)",
+  "en": "Story Lab (analysis)",
+  "oversatt": "Story Lab (análise)"
+ },
+ "core-generation-providers.text-task-group-label.storylab-talk.c09215cfaa29": {
+  "nb": "Story Lab (samtaler)",
+  "en": "Story Lab (conversations)",
+  "oversatt": "Story Lab (diálogos)"
+ },
+ "core-generation-providers.value.value.27cda8eca4c9": {
+  "nb": "ingen automatiske – nye forsøk startes bare av deg",
+  "en": "none automatic – new attempts are only started by you",
+  "oversatt": "nenhuma automática – novas tentativas só são iniciadas por você"
+ },
+ "core-generation-providers.value.value.8d18db3db6f5": {
+  "nb": "{value1} s hver",
+  "en": "{value1} s each",
+  "oversatt": "{value1} s cada"
+ },
+ "core-generation-providers.value.value.a8927c6f3176": {
+  "nb": "1 generering",
+  "en": "1 generation",
+  "oversatt": "1 geração"
+ },
+ "core-generation-providers.value.value.b7021620a041": {
+  "nb": "ukjent pris",
+  "en": "price unknown",
+  "oversatt": "preço desconhecido"
+ },
+ "core-generation-providers.value.value.ce0bbea6908b": {
+  "nb": "ikke valgt – regnet med lengste, {value1} s",
+  "en": "not chosen – calculated with the longest, {value1} s",
+  "oversatt": "não escolhido – calculado com o mais longo, {value1} s"
+ },
+ "core-generation-providers.warning.warning.114a04890e58": {
+  "nb": "Nøkkelen ser ikke ut som en {name}-nøkkel. Sjekk at du kopierte hele nøkkelen.",
+  "en": "The key does not look like a {name} key. Check that you copied the whole key.",
+  "oversatt": "A chave não parece ser uma chave {name}. Verifique se copiou a chave inteira."
+ },
+ "core-generation-quality-profile.image.image.5122089c6c95": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "Imagens"
+ },
+ "core-generation-quality-profile.parse-quality-profile-meta.message.0851274f6ae1": {
+  "nb": "Kvalitetsprofilen er for stor",
+  "en": "The quality profile is too large",
+  "oversatt": "O perfil de qualidade é grande demais"
+ },
+ "core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677": {
+  "nb": "Ugyldig kvalitetsprofil",
+  "en": "Invalid quality profile",
+  "oversatt": "Perfil de qualidade inválido"
+ },
+ "core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677.2": {
+  "nb": "Ugyldig kvalitetsprofil",
+  "en": "Invalid quality profile",
+  "oversatt": "Perfil de qualidade inválido"
+ },
+ "core-generation-quality-profile.parse-quality-profile-meta.message.ad24fb38f677.3": {
+  "nb": "Ugyldig kvalitetsprofil",
+  "en": "Invalid quality profile",
+  "oversatt": "Perfil de qualidade inválido"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.1cbbae858d3c": {
+  "nb": "Ukjent AI-type i profilen",
+  "en": "Unknown AI type in the profile",
+  "oversatt": "Tipo de IA desconhecido no perfil"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.3dc27f709829": {
+  "nb": "Ugyldig eksportformat",
+  "en": "Invalid export format",
+  "oversatt": "Formato de exportação inválido"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.556769f3d0a4": {
+  "nb": "Ugyldig profil",
+  "en": "Invalid profile",
+  "oversatt": "Perfil inválido"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.5782e120cec5": {
+  "nb": "Navnet må ha mellom 1 og {QUALITY_PROFILE_MAX_NAME} tegn",
+  "en": "The name must be between 1 and {QUALITY_PROFILE_MAX_NAME} characters",
+  "oversatt": "O nome deve ter entre 1 e {QUALITY_PROFILE_MAX_NAME} caracteres"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.5886994cd86b": {
+  "nb": "Budsjettgrensen må være et helt tall mellom 0 og {value1}",
+  "en": "The budget limit must be a whole number between 0 and {value1}",
+  "oversatt": "O limite de orçamento deve ser um número inteiro entre 0 e {value1}"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.7add39b29e37": {
+  "nb": "Antall varianter må være et helt tall mellom 1 og {QUALITY_PROFILE_MAX_VARIANTS}",
+  "en": "The number of variants must be a whole number between 1 and {QUALITY_PROFILE_MAX_VARIANTS}",
+  "oversatt": "O número de variantes deve ser um número inteiro entre 1 e {QUALITY_PROFILE_MAX_VARIANTS}"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.85fb78940b66": {
+  "nb": "Ugyldig oppløsning",
+  "en": "Invalid resolution",
+  "oversatt": "Resolução inválida"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.d0a4eb059952": {
+  "nb": "Ugyldig innsatsnivå",
+  "en": "Invalid effort level",
+  "oversatt": "Nível de esforço inválido"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.d0f5f2517d3f": {
+  "nb": "Profilen er for stor",
+  "en": "The profile is too large",
+  "oversatt": "O perfil é grande demais"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.d293518ef985": {
+  "nb": "Ugyldig alfa",
+  "en": "Invalid alpha",
+  "oversatt": "Alfa inválido"
+ },
+ "core-generation-quality-profile.quality-profile-error.message.ec844da498e5": {
+  "nb": "Bitrate må være mellom 100 og 100000 kbps",
+  "en": "Bitrate must be between 100 and 100000 kbps",
+  "oversatt": "A taxa de bits deve estar entre 100 e 100000 kbps"
+ },
+ "core-generation-quality-profile.sound.sound.711d49b5c374": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Som"
+ },
+ "core-generation-quality-profile.speech.speech.1f8f000d42bd": {
+  "nb": "Tale",
+  "en": "Speech",
+  "oversatt": "Voz"
+ },
+ "core-generation-quality-profile.video.video.48db2336f7a3": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Vídeo"
+ },
+ "core-generation-quality.lines-not-in-description": {
+  "nb": {
+   "one": "{count} replikk var ikke med i beskrivelsen.",
+   "other": "{count} replikker var ikke med i beskrivelsen."
+  },
+  "en": {
+   "one": "{count} line was not included in the description.",
+   "other": "{count} lines were not included in the description."
+  },
+  "oversatt": {
+   "one": "{count} fala não foi incluída na descrição.",
+   "many": "{count} falas não foram incluídas na descrição.",
+   "other": "{count} falas não foram incluídas na descrição."
+  }
+ },
+ "core-generation-quality.quality-disclaimer.message.87b81bc24bfa": {
+  "nb": "Rådgivende: sjekklisten bygger på beskrivelsen og filens egenskaper, ikke på hva som faktisk vises. Se på videoen og avgjør selv.",
+  "en": "Advisory: the checklist is based on the description and the file's properties, not on what is actually shown. Watch the video and decide for yourself.",
+  "oversatt": "Informativo: a lista de verificação é baseada na descrição e nas propriedades do arquivo, não no que é exibido visualmente. Assista ao vídeo e avalie por conta própria."
+ },
+ "core-generation-quality.quality-label.camera.ee064275c9c4": {
+  "nb": "Kamera",
+  "en": "Camera",
+  "oversatt": "Câmera"
+ },
+ "core-generation-quality.quality-label.characters.092d98880025": {
+  "nb": "Karakterreferanser",
+  "en": "Character references",
+  "oversatt": "Referências de personagens"
+ },
+ "core-generation-quality.quality-label.continuity.677e61fefbf1": {
+  "nb": "Kontinuitet",
+  "en": "Continuity",
+  "oversatt": "Continuidade"
+ },
+ "core-generation-quality.quality-label.script.7f82367341a5": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "Roteiro"
+ },
+ "core-generation-quality.quality-label.style.087d90d2d146": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "Estilo"
+ },
+ "core-generation-quality.quality-label.technical.55f2fc08d633": {
+  "nb": "Teknisk",
+  "en": "Technical",
+  "oversatt": "Técnico"
+ },
+ "core-generation-quality.text.text.06951331981c": {
+  "nb": "Kamerabevegelsen fra animaticen var med.",
+  "en": "The camera movement from the animatic was included.",
+  "oversatt": "O movimento de câmera do animatic foi incluído."
+ },
+ "core-generation-quality.text.text.173d0843aabd": {
+  "nb": "Videoen ble laget uten startbilde – figurene kan se annerledes ut enn i godkjente bilder.",
+  "en": "The video was made without a start image – the figures may look different from the approved images.",
+  "oversatt": "O vídeo foi criado sem imagem inicial – os personagens podem estar diferentes das imagens aprovadas."
+ },
+ "core-generation-quality.text.text.3cbb9b93bc21": {
+  "nb": "Filinformasjonen mangler.",
+  "en": "The file information is missing.",
+  "oversatt": "As informações do arquivo estão ausentes."
+ },
+ "core-generation-quality.text.text.3dcd2ab235a6": {
+  "nb": "Beskrivelsen bygger på manuset slik det er nå.",
+  "en": "The description is based on the script as it is now.",
+  "oversatt": "A descrição é baseada no roteiro atual."
+ },
+ "core-generation-quality.text.text.4d9ded05170d": {
+  "nb": "Filmens visuelle stil var ikke med (tatt bort for lengden eller laget før stilen).",
+  "en": "The film's visual style was not included (removed for length, or made before the style).",
+  "oversatt": "O estilo visual do filme não foi incluído (removido por limite de tamanho ou criado antes da definição do estilo)."
+ },
+ "core-generation-quality.text.text.511ac5dd5117": {
+  "nb": "Startbildet var et godkjent bilde.",
+  "en": "The start image was an approved image.",
+  "oversatt": "A imagem inicial era uma imagem aprovada."
+ },
+ "core-generation-quality.text.text.5c1743d47351": {
+  "nb": "Ukjent startbilde.",
+  "en": "Unknown start image.",
+  "oversatt": "Imagem inicial desconhecida."
+ },
+ "core-generation-quality.text.text.75a8fd313c6b": {
+  "nb": "Beskrivelsen er ikke kjent.",
+  "en": "The description is not known.",
+  "oversatt": "A descrição é desconhecida."
+ },
+ "core-generation-quality.text.text.75a8fd313c6b.2": {
+  "nb": "Beskrivelsen er ikke kjent.",
+  "en": "The description is not known.",
+  "oversatt": "A descrição é desconhecida."
+ },
+ "core-generation-quality.text.text.7df96843c16b": {
+  "nb": "Manuset er endret etter at videoen ble laget.",
+  "en": "The script has changed since the video was made.",
+  "oversatt": "O roteiro foi alterado após a criação do vídeo."
+ },
+ "core-generation-quality.text.text.8794e6693931": {
+  "nb": "{length} {value2} ikke med i beskrivelsen.",
+  "en": "{length} {value2} not included in the description.",
+  "oversatt": "{length} {value2} não incluído na descrição."
+ },
+ "core-generation-quality.text.text.8b2d3026ceb6": {
+  "nb": "Beskrivelsen som ble sendt, er ikke kjent.",
+  "en": "The description that was sent is not known.",
+  "oversatt": "A descrição enviada é desconhecida."
+ },
+ "core-generation-quality.text.text.90cf03eb6baa": {
+  "nb": "Filmens visuelle stil er ikke fylt ut (prosjektoversikten).",
+  "en": "The film's visual style is not filled in (project overview).",
+  "oversatt": "O estilo visual do filme não foi preenchido (visão geral do projeto)."
+ },
+ "core-generation-quality.text.text.a0c038390823": {
+  "nb": "En figur forandrer seg i segmentet, men det sto ikke i beskrivelsen.",
+  "en": "A figure changes within the segment, but this was not in the description.",
+  "oversatt": "Um personagem muda dentro do segmento, mas isso não constava na descrição."
+ },
+ "core-generation-quality.text.text.a8f38437e2a6": {
+  "nb": "Alle replikkene i segmentet var med, ordrett.",
+  "en": "All the lines in the segment were included, word for word.",
+  "oversatt": "Todas as falas do segmento foram incluídas, palavra por palavra."
+ },
+ "core-generation-quality.text.text.daeb3dfe0872": {
+  "nb": "Startet fra siste bilde i segmentet før (sammenheng).",
+  "en": "Started from the last frame of the previous segment (continuity).",
+  "oversatt": "Iniciado a partir do último quadro do segmento anterior (continuidade)."
+ },
+ "core-generation-quality.text.text.dfee3b2d484e": {
+  "nb": "Ingen kamerabevegelse ble beskrevet (ingen i animaticen, eller tatt bort for lengden).",
+  "en": "No camera movement was described (none in the animatic, or removed for length).",
+  "oversatt": "Nenhum movimento de câmera foi descrito (inexistente no animatic ou removido por limite de tamanho)."
+ },
+ "core-generation-quality.text.text.e22eed0d12cc": {
+  "nb": "Ingen forandringer i utseendet i segmentet.",
+  "en": "No changes in appearance within the segment.",
+  "oversatt": "Nenhuma mudança na aparência dentro do segmento."
+ },
+ "core-generation-quality.text.text.f07402db35d5": {
+  "nb": "Filmens visuelle stil var med i beskrivelsen.",
+  "en": "The film's visual style was included in the description.",
+  "oversatt": "O estilo visual do filme foi incluído na descrição."
+ },
+ "core-generation-quality.text.text.fb5d9259daa3": {
+  "nb": "Startbildet var ikke (lenger) den godkjente versjonen.",
+  "en": "The start image was not (any longer) the approved version.",
+  "oversatt": "A imagem inicial não era (mais) a versão aprovada."
+ },
+ "core-generation-quality.text.text.fed066e25f13": {
+  "nb": "Forandringen i segmentet var beskrevet – sjekk at den synes.",
+  "en": "The change within the segment was described – check that it shows.",
+  "oversatt": "A alteração no segmento foi descrita – verifique se ela aparece."
+ },
+ "core-generation-quality.text.text.ff041b8a845c": {
+  "nb": "Lengde, format og oppløsning passer.",
+  "en": "Length, format and resolution are fine.",
+  "oversatt": "Duração, formato e resolução estão adequados."
+ },
+ "core-generation-quality.video-quality-checks.notes-push.094725f64a4b": {
+  "nb": "kortere enn segmentet ({value1} av {value2} s)",
+  "en": "shorter than the segment ({value1} of {value2} s)",
+  "oversatt": "mais curto que o segmento ({value1} de {value2} s)"
+ },
+ "core-generation-quality.video-quality-checks.notes-push.2eda3c2c5f27": {
+  "nb": "lavere oppløsning enn prosjektet ({height} mot {frameHeight} linjer)",
+  "en": "lower resolution than the project ({height} vs {frameHeight} lines)",
+  "oversatt": "resolução menor que a do projeto ({height} vs {frameHeight} linhas)"
+ },
+ "core-generation-quality.video-quality-checks.notes-push.a51837cf157a": {
+  "nb": "annet format enn prosjektet ({width}×{height})",
+  "en": "different format from the project ({width}×{height})",
+  "oversatt": "formato diferente do projeto ({width}×{height})"
+ },
+ "core-generation-quality.video-quality-checks.notes-push.c57101666488": {
+  "nb": "ingen lyd i videoen – dialogen må legges på dialogsporet",
+  "en": "no sound in the video – the dialogue must be added to the dialogue track",
+  "oversatt": "nenhum som no vídeo – o diálogo deve ser adicionado à faixa de diálogo"
+ },
+ "core-generation-queue.label.label.0f438bff92bc": {
+  "nb": "Lages …",
+  "en": "Generating …",
+  "oversatt": "Gerando…"
+ },
+ "core-generation-queue.label.label.2a9a29015402": {
+  "nb": "I kø",
+  "en": "In queue",
+  "oversatt": "Na fila"
+ },
+ "core-generation-queue.label.label.2fe376f90ecf": {
+  "nb": "Tar lengre tid enn vanlig ({value1} så langt)",
+  "en": "Taking longer than usual ({value1} so far)",
+  "oversatt": "Demorando mais que o normal ({value1} até agora)"
+ },
+ "core-generation-queue.label.label.3ea4155ca526": {
+  "nb": "Anslag: ca. {value1} igjen",
+  "en": "Estimate: about {value1} left",
+  "oversatt": "Estimativa: cerca de {value1} restantes"
+ },
+ "core-generation-queue.label.label.3f75e6d4faca": {
+  "nb": "I kø – nummer {value1}",
+  "en": "In queue – number {value1}",
+  "oversatt": "Na fila – número {value1}"
+ },
+ "core-generation-queue.label.label.ac98afcbbdb1": {
+  "nb": "{value1} % (fra {provider})",
+  "en": "{value1} % (from {provider})",
+  "oversatt": "{value1} % (de {provider})"
+ },
+ "core-generation-queue.label.label.d5b28f7b1888": {
+  "nb": "I kø – venter på videoen til segmentet før (sammenheng)",
+  "en": "In queue – waiting for the video of the previous segment (continuity)",
+  "oversatt": "Na fila – aguardando o vídeo do segmento anterior (continuidade)"
+ },
+ "core-generation-queue.minutes.message.419446e5f4ae": {
+  "nb": "{m} minutter",
+  "en": "{m} minutes",
+  "oversatt": "{m} minutos"
+ },
+ "core-generation-queue.minutes.message.5ef032dbe94a": {
+  "nb": "under ett minutt",
+  "en": "less than a minute",
+  "oversatt": "menos de um minuto"
+ },
+ "core-generation-queue.priority-label.1.54d429857915": {
+  "nb": "Høy",
+  "en": "High",
+  "oversatt": "Alta"
+ },
+ "core-generation-queue.priority-label.2.5719f22f0f42": {
+  "nb": "Normal",
+  "en": "Normal",
+  "oversatt": "Normal"
+ },
+ "core-generation-queue.priority-label.3.374c0dbd119b": {
+  "nb": "Lav",
+  "en": "Low",
+  "oversatt": "Baixa"
+ },
+ "core-generation-scene-to-video.message.message.2d18d510df3e": {
+  "nb": "Modellen kan ikke lage video fra 2D-scenen.",
+  "en": "The model cannot make video from the 2D scene.",
+  "oversatt": "O modelo não consegue gerar vídeo a partir da cena 2D."
+ },
+ "core-generation-scene-to-video.message.message.5a99d53cca31": {
+  "nb": "Scenen er {value1} sekunder. Modellen trenger minst {min} sekunder.",
+  "en": "The scene is {value1} seconds. The model needs at least {min} seconds.",
+  "oversatt": "A cena tem {value1} segundos. O modelo precisa de pelo menos {min} segundos."
+ },
+ "core-generation-style-analysis.style-analysis-label.breaks.00bcbf43ca75": {
+  "nb": "Dette bryter stilen",
+  "en": "This breaks the style",
+  "oversatt": "Isto quebra o estilo"
+ },
+ "core-generation-style-analysis.style-analysis-label.colour.41f9054510b0": {
+  "nb": "Farger",
+  "en": "Colours",
+  "oversatt": "Cores"
+ },
+ "core-generation-style-analysis.style-analysis-label.composition.713a3e1a79ee": {
+  "nb": "Komposisjon",
+  "en": "Composition",
+  "oversatt": "Composição"
+ },
+ "core-generation-style-analysis.style-analysis-label.detail.b51752389f1a": {
+  "nb": "Detaljnivå",
+  "en": "Level of detail",
+  "oversatt": "Nível de detalhe"
+ },
+ "core-generation-style-analysis.style-analysis-label.lighting.6f87f666ab2b": {
+  "nb": "Lys og skygge",
+  "en": "Light and shadow",
+  "oversatt": "Luz e sombra"
+ },
+ "core-generation-style-analysis.style-analysis-label.line.8134b5bc494d": {
+  "nb": "Strek",
+  "en": "Line",
+  "oversatt": "Traço"
+ },
+ "core-generation-style-analysis.style-analysis-label.shapes.3f5ad68e471c": {
+  "nb": "Formspråk og proporsjoner",
+  "en": "Shapes and proportions",
+  "oversatt": "Formas e proporções"
+ },
+ "core-generation-style-analysis.style-analysis-label.summary.52d9188463dd": {
+  "nb": "Stilen kort",
+  "en": "The style in brief",
+  "oversatt": "O estilo em resumo"
+ },
+ "core-generation-style-analysis.style-analysis-label.technique.f19d12cdd9a3": {
+  "nb": "Teknikk og medium",
+  "en": "Technique and medium",
+  "oversatt": "Técnica e suporte"
+ },
+ "core-generation-style-analysis.style-analysis-label.texture.5568c8dc35b7": {
+  "nb": "Tekstur",
+  "en": "Texture",
+  "oversatt": "Textura"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.09d6a6332e49": {
+  "nb": "Ugyldig bruksvalg",
+  "en": "Invalid use",
+  "oversatt": "Uso inválido"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.2445d3d4fa45": {
+  "nb": "Stilprofilen finnes ikke",
+  "en": "The style profile was not found",
+  "oversatt": "O perfil de estilo não foi encontrado"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.41f810e87806": {
+  "nb": "Den harmoniserte versjonen finnes ikke",
+  "en": "The harmonized version was not found",
+  "oversatt": "A versão harmonizada não foi encontrada"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.52a03cca2ecf": {
+  "nb": "Merknaden er for lang",
+  "en": "The annotation is too long",
+  "oversatt": "A anotação é longa demais"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.5b5f557a034e": {
+  "nb": "Velg en stilprofil eller et referansebilde",
+  "en": "Choose a style profile or a reference image",
+  "oversatt": "Escolha um perfil de estilo ou uma imagem de referência"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.5d301e07e1dc": {
+  "nb": "Resultatet kan ikke være sin egen kilde",
+  "en": "The result cannot be its own source",
+  "oversatt": "O resultado não pode ser sua própria fonte"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.7ba328af13fa": {
+  "nb": "Kildeversjonen finnes ikke",
+  "en": "The source version was not found",
+  "oversatt": "A versão de origem não foi encontrada"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.8bef52516e9a": {
+  "nb": "Referansebildet finnes ikke",
+  "en": "The reference image was not found",
+  "oversatt": "A imagem de referência não foi encontrada"
+ }
+}

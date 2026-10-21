@@ -1,0 +1,3002 @@
+{
+ "core-commands-apply.g.need.b48915069fad.3": {
+  "nb": "Stadiet",
+  "en": "The stage",
+  "oversatt": "Die Phase"
+ },
+ "core-commands-apply.g.need.b5262a58956d": {
+  "nb": "Gruppen",
+  "en": "The group",
+  "oversatt": "Die Gruppe"
+ },
+ "core-commands-apply.global-ref.fail.300fb117fe65": {
+  "nb": "Ugyldig kobling til det globale biblioteket",
+  "en": "Invalid link to the global library",
+  "oversatt": "Ungültige Verknüpfung zur globalen Bibliothek"
+ },
+ "core-commands-apply.gone.need.eb3c027217b8": {
+  "nb": "Relasjonen",
+  "en": "The relation",
+  "oversatt": "Die Relation"
+ },
+ "core-commands-apply.h.need.19429948dc36": {
+  "nb": "Harmoniseringen",
+  "en": "The harmonization",
+  "oversatt": "Die Harmonisierung"
+ },
+ "core-commands-apply.inst.need.57c39ddfee5c": {
+  "nb": "Malforekomsten",
+  "en": "The template instance",
+  "oversatt": "Die Vorlageninstanz"
+ },
+ "core-commands-apply.inst.need.57c39ddfee5c.2": {
+  "nb": "Malforekomsten",
+  "en": "The template instance",
+  "oversatt": "Die Vorlageninstanz"
+ },
+ "core-commands-apply.int.fail.5eff8a5e1065": {
+  "nb": "Ugyldig {what}",
+  "en": "Invalid {what}",
+  "oversatt": "Ungültige(s) {what}"
+ },
+ "core-commands-apply.keys.fail.c42b4b00d246": {
+  "nb": "Ugyldig volumpunkt (tid i ms, nivå mellom −60 og +12 dB)",
+  "en": "Invalid volume point (time in ms, level between −60 and +12 dB)",
+  "oversatt": "Ungültiger Lautstärkepunkt (Zeit in ms, Pegel zwischen −60 und +12 dB)"
+ },
+ "core-commands-apply.l.need.80c6bba9c7a0": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Die Ebene"
+ },
+ "core-commands-apply.l.need.80c6bba9c7a0.2": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Die Ebene"
+ },
+ "core-commands-apply.l.need.80c6bba9c7a0.3": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Die Ebene"
+ },
+ "core-commands-apply.l.need.80c6bba9c7a0.4": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Die Ebene"
+ },
+ "core-commands-apply.l.need.80c6bba9c7a0.5": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Die Ebene"
+ },
+ "core-commands-apply.layer-fields.fail.513f3348c7fa": {
+  "nb": "En lydfil kan ikke vises som lag",
+  "en": "An audio file cannot be shown as a layer",
+  "oversatt": "Eine Audiodatei kann nicht als Ebene angezeigt werden"
+ },
+ "core-commands-apply.layer-fields.fail.513f3348c7fa.2": {
+  "nb": "En lydfil kan ikke vises som lag",
+  "en": "An audio file cannot be shown as a layer",
+  "oversatt": "Eine Audiodatei kann nicht als Ebene angezeigt werden"
+ },
+ "core-commands-apply.layer-fields.fail.79c934507535": {
+  "nb": "Bildet for et språk må være en variant av samme ressurs som laget",
+  "en": "The image for a language must be a variant of the same asset as the layer",
+  "oversatt": "Das Bild für eine Sprache muss eine Variante desselben Assets wie die Ebene sein"
+ },
+ "core-commands-apply.layer-fields.fail.7f52555bd15a": {
+  "nb": "Varianten hører til en annen ressurs",
+  "en": "The variant belongs to another asset",
+  "oversatt": "Die Variante gehört zu einem anderen Asset"
+ },
+ "core-commands-apply.layer-fields.fail.7f52555bd15a.2": {
+  "nb": "Varianten hører til en annen ressurs",
+  "en": "The variant belongs to another asset",
+  "oversatt": "Die Variante gehört zu einem anderen Asset"
+ },
+ "core-commands-apply.layer-fields.fail.f4600eab3c7f": {
+  "nb": "Versjonen hører til en annen variant",
+  "en": "The version belongs to another variant",
+  "oversatt": "Die Version gehört zu einer anderen Variante"
+ },
+ "core-commands-apply.layer-fields.fail.f4600eab3c7f.2": {
+  "nb": "Versjonen hører til en annen variant",
+  "en": "The version belongs to another variant",
+  "oversatt": "Die Version gehört zu einer anderen Variante"
+ },
+ "core-commands-apply.layer-fields.fail.f4600eab3c7f.3": {
+  "nb": "Versjonen hører til en annen variant",
+  "en": "The version belongs to another variant",
+  "oversatt": "Die Version gehört zu einer anderen Variante"
+ },
+ "core-commands-apply.layer-fields.need.2a0057233cfc": {
+  "nb": "Bildet i bildeskiftet",
+  "en": "The image in the image swap",
+  "oversatt": "Das Bild im Bildwechsel"
+ },
+ "core-commands-apply.layer-fields.need.56dbffff510d": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "Das Asset"
+ },
+ "core-commands-apply.link.need.25ef8d16c50c": {
+  "nb": "Linjekoblingen",
+  "en": "The line link",
+  "oversatt": "Die Zeilenverknüpfung"
+ },
+ "core-commands-apply.list.need.1eeed154fa5d": {
+  "nb": "Segmentet",
+  "en": "The segment",
+  "oversatt": "Das Segment"
+ },
+ "core-commands-apply.message.message.5c925420dd7c": {
+  "nb": "Endringen ville brutt en systemregel",
+  "en": "The change would break a system rule",
+  "oversatt": "Die Änderung würde eine Systemregel verletzen"
+ },
+ "core-commands-apply.message.message.7fb07b9c942c": {
+  "nb": "Noen andre har endret dette i mellomtiden",
+  "en": "Someone else has changed this in the meantime",
+  "oversatt": "Jemand anderes hat dies in der Zwischenzeit geändert"
+ },
+ "core-commands-apply.n.need.090034be6d16": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Der Knoten"
+ },
+ "core-commands-apply.n.need.090034be6d16.2": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Der Knoten"
+ },
+ "core-commands-apply.n.need.090034be6d16.3": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Der Knoten"
+ },
+ "core-commands-apply.name.name.10726b1fac37": {
+  "nb": "Generert tale",
+  "en": "Generated speech",
+  "oversatt": "Generierte Sprache"
+ },
+ "core-commands-apply.need.fail.c40198b4a7fe": {
+  "nb": "{what} finnes ikke",
+  "en": "{what} was not found",
+  "oversatt": "{what} wurde nicht gefunden"
+ },
+ "core-commands-apply.new-scene.need.4930163eb96a": {
+  "nb": "Den nye scenen",
+  "en": "The new scene",
+  "oversatt": "Die neue Szene"
+ },
+ "core-commands-apply.nodes.need.1e4f52500a4c": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Der Knoten"
+ },
+ "core-commands-apply.normalize-annotation.fail.09292e24e862": {
+  "nb": "Blokken er fjernet",
+  "en": "The block has been removed",
+  "oversatt": "Der Block wurde entfernt"
+ },
+ "core-commands-apply.normalize-annotation.fail.0bdc84d7c0d6": {
+  "nb": "Notatet må høre til en scene eller tekst",
+  "en": "The note must belong to a scene or text",
+  "oversatt": "Die Notiz muss zu einer Szene oder einem Text gehören"
+ },
+ "core-commands-apply.normalize-annotation.fail.0be2b1ec2b0d": {
+  "nb": "En forsøksvis manusredigering må høre til en manuslinje",
+  "en": "A trial script edit must belong to a script line",
+  "oversatt": "Eine vorläufige Drehbuchbearbeitung muss zu einer Drehbuchzeile gehören"
+ },
+ "core-commands-apply.normalize-annotation.fail.27208039bdc7": {
+  "nb": "En nål på scenen har ikke tekstområde",
+  "en": "A pin on the scene has no text range",
+  "oversatt": "Ein Pin auf der Szene hat keinen Textbereich"
+ },
+ "core-commands-apply.normalize-annotation.fail.2f98f6279b1f": {
+  "nb": "Ugyldig foreslått tekst",
+  "en": "Invalid suggested text",
+  "oversatt": "Ungültiger Textvorschlag"
+ },
+ "core-commands-apply.normalize-annotation.fail.56bbbe25105e": {
+  "nb": "Notatet må ha tekst (maks 10 000 tegn)",
+  "en": "The note must have text (max 10,000 characters)",
+  "oversatt": "Die Notiz muss Text enthalten (max. 10.000 Zeichen)"
+ },
+ "core-commands-apply.normalize-annotation.fail.59b24d0b16aa": {
+  "nb": "Et notat på tekst har ikke scene i tillegg",
+  "en": "A note on text cannot also have a scene",
+  "oversatt": "Eine Notiz zu Text kann nicht zusätzlich einer Szene zugeordnet sein"
+ },
+ "core-commands-apply.normalize-annotation.fail.6eabe261790c": {
+  "nb": "Ugyldig notatstatus",
+  "en": "Invalid note status",
+  "oversatt": "Ungültiger Notizstatus"
+ },
+ "core-commands-apply.normalize-annotation.fail.7595e9f85f20": {
+  "nb": "Ugyldig tekstområde for notatet",
+  "en": "Invalid text range for the note",
+  "oversatt": "Ungültiger Textbereich für die Notiz"
+ },
+ "core-commands-apply.normalize-annotation.fail.7595e9f85f20.2": {
+  "nb": "Ugyldig tekstområde for notatet",
+  "en": "Invalid text range for the note",
+  "oversatt": "Ungültiger Textbereich für die Notiz"
+ },
+ "core-commands-apply.normalize-annotation.fail.a65da3b45de9": {
+  "nb": "Ugyldig tidspunkt for notatet",
+  "en": "Invalid time for the note",
+  "oversatt": "Ungültiger Zeitpunkt für die Notiz"
+ },
+ "core-commands-apply.normalize-annotation.fail.a816337346dd": {
+  "nb": "Ukjent notattype",
+  "en": "Unknown note type",
+  "oversatt": "Unbekannter Notiztyp"
+ },
+ "core-commands-apply.normalize-annotation.fail.ad6082629731": {
+  "nb": "Den markerte teksten finnes ikke i manuset",
+  "en": "The selected text does not exist in the script",
+  "oversatt": "Der ausgewählte Text existiert nicht im Drehbuch"
+ },
+ "core-commands-apply.normalize-annotation.fail.bb0816189b37": {
+  "nb": "Ugyldig sitat",
+  "en": "Invalid quote",
+  "oversatt": "Ungültiges Zitat"
+ },
+ "core-commands-apply.normalize-annotation.fail.d33670adc7b7": {
+  "nb": "Foreslått tekst uten forsøksvis redigering",
+  "en": "Suggested text without a trial edit",
+  "oversatt": "Textvorschlag ohne Probe-Bearbeitung"
+ },
+ "core-commands-apply.normalize-annotation.need.240f5ac3f427": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.02299a8cfbdc": {
+  "nb": "Et stikkord er for langt",
+  "en": "A keyword is too long",
+  "oversatt": "Ein Stichwort ist zu lang"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.0cbfa9fe6623": {
+  "nb": "Ukjent ressurstype",
+  "en": "Unknown asset type",
+  "oversatt": "Unbekannter Asset-Typ"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.0ff2e46ed709": {
+  "nb": "Et alternativt navn er for langt",
+  "en": "An alternative name is too long",
+  "oversatt": "Ein alternativer Name ist zu lang"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.22ef6084fba3": {
+  "nb": "For mange stikkord",
+  "en": "Too many keywords",
+  "oversatt": "Zu viele Stichwörter"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.39b0f5b53990": {
+  "nb": "For mange alternative navn",
+  "en": "Too many alternative names",
+  "oversatt": "Zu viele alternative Namen"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.3cff67207f18": {
+  "nb": "Ressursen må ha et navn (maks 200 tegn)",
+  "en": "The asset must have a name (max 200 characters)",
+  "oversatt": "Das Asset muss einen Namen haben (max. 200 Zeichen)"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.49a4f93a3497": {
+  "nb": "Ufullstendige ressursfelter",
+  "en": "Incomplete asset fields",
+  "oversatt": "Unvollständige Asset-Felder"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.66aeb55b5d13": {
+  "nb": "Kategorien er for lang",
+  "en": "The category is too long",
+  "oversatt": "Die Kategorie ist zu lang"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.8f6954756818": {
+  "nb": "Beskrivelsen er for lang",
+  "en": "The description is too long",
+  "oversatt": "Die Beschreibung ist zu lang"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.9820e1dbe5ca": {
+  "nb": "Ugyldig språkkode",
+  "en": "Invalid language code",
+  "oversatt": "Ungültiger Sprachcode"
+ },
+ "core-commands-apply.normalize-asset-fields.fail.d6524e95066b": {
+  "nb": "Ukjent navnetype",
+  "en": "Unknown name type",
+  "oversatt": "Unbekannter Namenstyp"
+ },
+ "core-commands-apply.normalize-variant-fields.fail.5f579682d80d": {
+  "nb": "Ukjent stil",
+  "en": "Unknown style",
+  "oversatt": "Unbekannter Stil"
+ },
+ "core-commands-apply.normalize-variant-fields.fail.c28526b5b5b4": {
+  "nb": "Utseendebeskrivelsen er for lang",
+  "en": "The appearance description is too long",
+  "oversatt": "Die Aussehensbeschreibung ist zu lang"
+ },
+ "core-commands-apply.normalize-variant-fields.fail.c3326cf0559c": {
+  "nb": "Ufullstendige variantfelter",
+  "en": "Incomplete variant fields",
+  "oversatt": "Unvollständige Variantenfelder"
+ },
+ "core-commands-apply.normalize-variant-fields.fail.f1ff484ae39b": {
+  "nb": "Varianten må ha et navn (maks 200 tegn)",
+  "en": "The variant must have a name (max 200 characters)",
+  "oversatt": "Die Variante muss einen Namen haben (max. 200 Zeichen)"
+ },
+ "core-commands-apply.note.note.fa29c4b1c5e8": {
+  "nb": "Massegenerert replikk",
+  "en": "Batch-generated line",
+  "oversatt": "Batch-generierte Dialogzeile"
+ },
+ "core-commands-apply.now.need.15bd98231f3e": {
+  "nb": "Linjen",
+  "en": "The line",
+  "oversatt": "Die Zeile"
+ },
+ "core-commands-apply.now.need.99c53bfc2c46": {
+  "nb": "Harmoniseringen",
+  "en": "The harmonization",
+  "oversatt": "Die Harmonisierung"
+ },
+ "core-commands-apply.now.need.c790eb8340c6": {
+  "nb": "Linjekoblingen",
+  "en": "The line link",
+  "oversatt": "Die Zeilenverknüpfung"
+ },
+ "core-commands-apply.now.need.fc11998da1a2": {
+  "nb": "Referansen",
+  "en": "The reference",
+  "oversatt": "Die Referenz"
+ },
+ "core-commands-apply.nv.need.4ffe9578935b": {
+  "nb": "Den nye varianten",
+  "en": "The new variant",
+  "oversatt": "Die neue Variante"
+ },
+ "core-commands-apply.nv.need.871ccc028013": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "Die Variante"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.10": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.11": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.12": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.13": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.14": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.15": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.16": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.2": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.3": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.4": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.5": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.6": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.7": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.8": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.19409a5cc0dd.9": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.o.need.6a267a80d65f": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.o.need.6a267a80d65f.2": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.o.need.6a267a80d65f.3": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.o.need.6a267a80d65f.4": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.occ.need.c74e3e0a72f5": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.occ.need.c74e3e0a72f5.2": {
+  "nb": "Forekomsten",
+  "en": "The occurrence",
+  "oversatt": "Das Vorkommen"
+ },
+ "core-commands-apply.old.need.06c609c3631a": {
+  "nb": "Linjekoblingen",
+  "en": "The line link",
+  "oversatt": "Die Zeilenverknüpfung"
+ },
+ "core-commands-apply.old.need.2231b94d8754": {
+  "nb": "Harmoniseringen",
+  "en": "The harmonization",
+  "oversatt": "Die Harmonisierung"
+ },
+ "core-commands-apply.old.need.da611a844cbd": {
+  "nb": "Linjen",
+  "en": "The line",
+  "oversatt": "Die Zeile"
+ },
+ "core-commands-apply.ov.need.7aeb626b4981": {
+  "nb": "Den opprinnelige varianten",
+  "en": "The original variant",
+  "oversatt": "Die ursprüngliche Variante"
+ },
+ "core-commands-apply.p.need.0a4bb91e2b76": {
+  "nb": "Profilen",
+  "en": "The profile",
+  "oversatt": "Das Profil"
+ },
+ "core-commands-apply.p.need.0a4bb91e2b76.2": {
+  "nb": "Profilen",
+  "en": "The profile",
+  "oversatt": "Das Profil"
+ },
+ "core-commands-apply.p.need.14e61a4bb845": {
+  "nb": "Stilprofilen",
+  "en": "The style profile",
+  "oversatt": "Das Stilprofil"
+ },
+ "core-commands-apply.p.need.14e61a4bb845.2": {
+  "nb": "Stilprofilen",
+  "en": "The style profile",
+  "oversatt": "Das Stilprofil"
+ },
+ "core-commands-apply.p.need.14e61a4bb845.3": {
+  "nb": "Stilprofilen",
+  "en": "The style profile",
+  "oversatt": "Das Stilprofil"
+ },
+ "core-commands-apply.p.need.14e61a4bb845.4": {
+  "nb": "Stilprofilen",
+  "en": "The style profile",
+  "oversatt": "Das Stilprofil"
+ },
+ "core-commands-apply.p.need.345947a21724": {
+  "nb": "Plakaten",
+  "en": "The poster",
+  "oversatt": "Das Poster"
+ },
+ "core-commands-apply.p.need.345947a21724.2": {
+  "nb": "Plakaten",
+  "en": "The poster",
+  "oversatt": "Das Poster"
+ },
+ "core-commands-apply.p.need.345947a21724.3": {
+  "nb": "Plakaten",
+  "en": "The poster",
+  "oversatt": "Das Poster"
+ },
+ "core-commands-apply.p.need.621f13ab4b10": {
+  "nb": "Kvalitetsprofilen",
+  "en": "The quality profile",
+  "oversatt": "Das Qualitätsprofil"
+ },
+ "core-commands-apply.p.need.621f13ab4b10.2": {
+  "nb": "Kvalitetsprofilen",
+  "en": "The quality profile",
+  "oversatt": "Das Qualitätsprofil"
+ },
+ "core-commands-apply.p.need.621f13ab4b10.3": {
+  "nb": "Kvalitetsprofilen",
+  "en": "The quality profile",
+  "oversatt": "Das Qualitätsprofil"
+ },
+ "core-commands-apply.p.need.621f13ab4b10.4": {
+  "nb": "Kvalitetsprofilen",
+  "en": "The quality profile",
+  "oversatt": "Das Qualitätsprofil"
+ },
+ "core-commands-apply.p.need.83aa7f655d8e": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.p.need.83aa7f655d8e.2": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.p.need.83aa7f655d8e.3": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.p.need.83aa7f655d8e.4": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.p.need.83aa7f655d8e.5": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.p.need.9afc95de1625": {
+  "nb": "Deltakeren",
+  "en": "The participant",
+  "oversatt": "Der Teilnehmer"
+ },
+ "core-commands-apply.p.need.9afc95de1625.2": {
+  "nb": "Deltakeren",
+  "en": "The participant",
+  "oversatt": "Der Teilnehmer"
+ },
+ "core-commands-apply.part-fields-of.fail.7a7ac42b6b1c": {
+  "nb": "Ugyldig kilde for delen",
+  "en": "Invalid source for the part",
+  "oversatt": "Ungültige Quelle für den Teil"
+ },
+ "core-commands-apply.part-fields-of.fail.a3f4e2d4745e": {
+  "nb": "Delen må ha versjon bare når kilden er film",
+  "en": "The part may only have a version when the source is film",
+  "oversatt": "Der Teil darf nur eine Version haben, wenn die Quelle Film ist"
+ },
+ "core-commands-apply.part-fields-of.fail.b771de8114b6": {
+  "nb": "Ugyldig del",
+  "en": "Invalid part",
+  "oversatt": "Ungültiger Teil"
+ },
+ "core-commands-apply.part-fields-of.fail.bf41314b1cc8": {
+  "nb": "Inn- og utpunkt må være hele millisekunder, og ut må være etter inn",
+  "en": "In and out points must be whole milliseconds, and out must be after in",
+  "oversatt": "In- und Out-Punkte müssen ganze Millisekunden sein, und Out muss nach In liegen"
+ },
+ "core-commands-apply.pf.need.71e535a260df": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "Die 2D-Szene"
+ },
+ "core-commands-apply.planned-or-fail.fail.b14f889ee131": {
+  "nb": "Ugyldig planlagt lengde",
+  "en": "Invalid planned length",
+  "oversatt": "Ungültige geplante Länge"
+ },
+ "core-commands-apply.poster-fields-of.fail.2a4ff0315b22": {
+  "nb": "Plakaten er for stor",
+  "en": "The poster is too large",
+  "oversatt": "Das Plakat ist zu groß"
+ },
+ "core-commands-apply.poster-fields-of.fail.3ea68299261b": {
+  "nb": "Plakaten tilhører en annen produksjon",
+  "en": "The poster belongs to another production",
+  "oversatt": "Das Plakat gehört zu einer anderen Produktion"
+ },
+ "core-commands-apply.poster-fields-of.fail.67222877f93c": {
+  "nb": "Ukjent plakattype",
+  "en": "Unknown poster type",
+  "oversatt": "Unbekannter Plakattyp"
+ },
+ "core-commands-apply.poster-fields-of.fail.8317719e5364": {
+  "nb": "Ugyldig plakat",
+  "en": "Invalid poster",
+  "oversatt": "Ungültiges Plakat"
+ },
+ "core-commands-apply.poster-fields-of.fail.84c011b222be": {
+  "nb": "Plakaten må ha et navn (maks 200 tegn)",
+  "en": "The poster must have a name (max 200 characters)",
+  "oversatt": "Das Plakat muss einen Namen haben (max. 200 Zeichen)"
+ },
+ "core-commands-apply.poster-fields-of.fail.935ed0b5decd": {
+  "nb": "Ugyldig format (5–300 cm)",
+  "en": "Invalid format (5–300 cm)",
+  "oversatt": "Ungültiges Format (5–300 cm)"
+ },
+ "core-commands-apply.poster-fields-of.fail.963da91bce02": {
+  "nb": "En lydfil kan ikke vises på plakaten",
+  "en": "An audio file cannot be shown on the poster",
+  "oversatt": "Eine Audiodatei kann nicht auf dem Plakat angezeigt werden"
+ },
+ "core-commands-apply.poster-fields-of.fail.966611c3dc2e": {
+  "nb": "Ukjent språk",
+  "en": "Unknown language",
+  "oversatt": "Unbekannte Sprache"
+ },
+ "core-commands-apply.poster-fields-of.need.3407b3f0ded9": {
+  "nb": "Bildet på plakaten",
+  "en": "The image on the poster",
+  "oversatt": "Das Bild auf dem Plakat"
+ },
+ "core-commands-apply.poster-fields-of.need.69ca4ea20008": {
+  "nb": "Varianten på plakaten",
+  "en": "The variant on the poster",
+  "oversatt": "Die Variante auf dem Plakat"
+ },
+ "core-commands-apply.poster-fields-of.need.9586cf378d30": {
+  "nb": "Relasjonen på plakaten",
+  "en": "The relation on the poster",
+  "oversatt": "Die Beziehung auf dem Plakat"
+ },
+ "core-commands-apply.produced-from-of.fail.eca35c22d122": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Ungültige Basis"
+ },
+ "core-commands-apply.produced-from-of.fail.eca35c22d122.2": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Ungültige Basis"
+ },
+ "core-commands-apply.production-id.need.10fa86ad944e": {
+  "nb": "Produksjon for blokken",
+  "en": "Production for the block",
+  "oversatt": "Produktion für den Block"
+ },
+ "core-commands-apply.production.need.029c6cd72e60": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.production.need.029c6cd72e60.2": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.production.need.029c6cd72e60.3": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.q.need.c20cd198d6e4": {
+  "nb": "Rulleteksten",
+  "en": "The credits sequence",
+  "oversatt": "Der Abspann"
+ },
+ "core-commands-apply.r.need.0517acc7550b": {
+  "nb": "Gjennomgangen",
+  "en": "The review",
+  "oversatt": "Die Überprüfung"
+ },
+ "core-commands-apply.r.need.63710286c2e8": {
+  "nb": "Relasjonen",
+  "en": "The relation",
+  "oversatt": "Die Beziehung"
+ },
+ "core-commands-apply.relation-fields-of.fail.0f7a1420eb04": {
+  "nb": "Beskrivelsen er for lang",
+  "en": "The description is too long",
+  "oversatt": "Die Beschreibung ist zu lang"
+ },
+ "core-commands-apply.relation-fields-of.fail.3a87aa964d8e": {
+  "nb": "Ukjent relasjonstype",
+  "en": "Unknown relation type",
+  "oversatt": "Unbekannter Beziehungstyp"
+ },
+ "core-commands-apply.relation-fields-of.fail.79d3bd5578bc": {
+  "nb": "Ugyldig relasjon",
+  "en": "Invalid relation",
+  "oversatt": "Ungültige Beziehung"
+ },
+ "core-commands-apply.relation-fields-of.fail.92dccdf85f06": {
+  "nb": "Lydfiler kan ikke ha relasjoner",
+  "en": "Audio files cannot have relations",
+  "oversatt": "Audiodateien können keine Beziehungen haben"
+ },
+ "core-commands-apply.relation-fields-of.fail.cc260a8be421": {
+  "nb": "En relasjon må gå mellom to forskjellige ressurser",
+  "en": "A relation must be between two different assets",
+  "oversatt": "Eine Beziehung muss zwischen zwei verschiedenen Assets bestehen"
+ },
+ "core-commands-apply.relation-fields-of.fail.cca2de6fa431": {
+  "nb": "Ugyldig status",
+  "en": "Invalid status",
+  "oversatt": "Ungültiger Status"
+ },
+ "core-commands-apply.relation-fields-of.fail.fe9d02cf9a0e": {
+  "nb": "Navnet er for langt",
+  "en": "The name is too long",
+  "oversatt": "Der Name ist zu lang"
+ },
+ "core-commands-apply.restored.fail.9c45a54b72ed": {
+  "nb": "Replikken har flere lydversjoner eller leppesynk. Ingen versjon slettes; angre dem først.",
+  "en": "The line has several audio versions or lip sync. No version is deleted; undo them first.",
+  "oversatt": "Die Dialogzeile hat mehrere Audioversionen oder Lip-Sync. Es wird keine Version gelöscht; machen Sie diese zuerst rückgängig."
+ },
+ "core-commands-apply.row.need.6c017b3107eb": {
+  "nb": "Språkmålet",
+  "en": "The language target",
+  "oversatt": "Das Sprachziel"
+ },
+ "core-commands-apply.run.fail.0346c02d9cb2": {
+  "nb": "Profilen er fjernet. Hent den tilbake først.",
+  "en": "The profile has been removed. Restore it first.",
+  "oversatt": "Das Profil wurde entfernt. Stellen Sie es zuerst wieder her."
+ },
+ "core-commands-apply.run.fail.056218678887": {
+  "nb": "Profilen hører til en annen karakter",
+  "en": "The profile belongs to another character",
+  "oversatt": "Das Profil gehört zu einem anderen Charakter"
+ },
+ "core-commands-apply.run.fail.0687c52045f9": {
+  "nb": "Ugyldig tid for segmentet",
+  "en": "Invalid time for the segment",
+  "oversatt": "Ungültige Zeit für das Segment"
+ },
+ "core-commands-apply.run.fail.08bf08b1cf5a": {
+  "nb": "Feil scene for animasjonsbruken",
+  "en": "Wrong scene for the animation use",
+  "oversatt": "Falsche Szene für die Animationsverwendung"
+ },
+ "core-commands-apply.run.fail.08bf08b1cf5a.2": {
+  "nb": "Feil scene for animasjonsbruken",
+  "en": "Wrong scene for the animation use",
+  "oversatt": "Falsche Szene für die Animationsverwendung"
+ },
+ "core-commands-apply.run.fail.0931cc58239e": {
+  "nb": "Bare dialog kan kobles til en karakter",
+  "en": "Only dialogue can be linked to a character",
+  "oversatt": "Nur Dialoge können mit einem Charakter verknüpft werden"
+ },
+ "core-commands-apply.run.fail.09df275a8cce": {
+  "nb": "Det lyden skal kobles til, finnes ikke",
+  "en": "The item the sound should be linked to does not exist",
+  "oversatt": "Das Element, mit dem der Ton verknüpft werden soll, existiert nicht"
+ },
+ "core-commands-apply.run.fail.09e0764e15c7": {
+  "nb": "Ugyldig endring av scenevarighet",
+  "en": "Invalid scene duration change",
+  "oversatt": "Ungültige Änderung der Szenendauer"
+ },
+ "core-commands-apply.run.fail.0aeb0396b2fb": {
+  "nb": "Varianten har bilder og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The variant has images and cannot be removed. Archive it instead.",
+  "oversatt": "Die Variante enthält Bilder und kann nicht entfernt werden. Archivieren Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.0b04d1ada500": {
+  "nb": "Ugyldige antakelser for varighetsestimatet",
+  "en": "Invalid assumptions for the duration estimate",
+  "oversatt": "Ungültige Annahmen für die Dauerschätzung"
+ },
+ "core-commands-apply.run.fail.0baef55845f5": {
+  "nb": "Ingen ressurser å legge til",
+  "en": "No assets to add",
+  "oversatt": "Keine Assets zum Hinzufügen vorhanden"
+ },
+ "core-commands-apply.run.fail.0c2cd6b5efc4": {
+  "nb": "Ugyldig språk for filmlyden",
+  "en": "Invalid language for the film audio",
+  "oversatt": "Ungültige Sprache für den Filmton"
+ },
+ "core-commands-apply.run.fail.0de72e918a2c": {
+  "nb": "Lagene hører ikke til samme 2D-scene",
+  "en": "The layers do not belong to the same 2D scene",
+  "oversatt": "Die Ebenen gehören nicht zur selben 2D-Szene"
+ },
+ "core-commands-apply.run.fail.0de9cece4a6c": {
+  "nb": "Ugyldig planlagt lengde",
+  "en": "Invalid planned length",
+  "oversatt": "Ungültige geplante Länge"
+ },
+ "core-commands-apply.run.fail.0e8b3d5fb382": {
+  "nb": "Forekomsten er ikke en rulletekst",
+  "en": "The occurrence is not a credits sequence",
+  "oversatt": "Das Vorkommen ist kein Abspann"
+ },
+ "core-commands-apply.run.fail.0f8acb0836d1": {
+  "nb": "Ugyldig antall relasjoner",
+  "en": "Invalid number of relations",
+  "oversatt": "Ungültige Anzahl von Relationen"
+ },
+ "core-commands-apply.run.fail.0f8acb0836d1.2": {
+  "nb": "Ugyldig antall relasjoner",
+  "en": "Invalid number of relations",
+  "oversatt": "Ungültige Anzahl von Relationen"
+ },
+ "core-commands-apply.run.fail.103b48d942c6": {
+  "nb": "Sammenslåingen stemmer ikke",
+  "en": "The merge does not match",
+  "oversatt": "Die Zusammenführung stimmt nicht überein"
+ },
+ "core-commands-apply.run.fail.107468d41a87": {
+  "nb": "Ugyldig karakterkobling",
+  "en": "Invalid character link",
+  "oversatt": "Ungültige Charakterverknüpfung"
+ },
+ "core-commands-apply.run.fail.1090bbf0b3ea": {
+  "nb": "Den aktive versjonen kan ikke slettes. Velg en annen først.",
+  "en": "The active version cannot be deleted. Choose another first.",
+  "oversatt": "Die aktive Version kann nicht gelöscht werden. Wählen Sie zuerst eine andere aus."
+ },
+ "core-commands-apply.run.fail.115aa05c487f": {
+  "nb": "Scenen er tatt i bruk og kan ikke angres. Deaktiver den i stedet.",
+  "en": "The scene is in use and cannot be undone. Deactivate it instead.",
+  "oversatt": "Die Szene wird verwendet und kann nicht rückgängig gemacht werden. Deaktivieren Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.10": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.11": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.12": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.13": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.14": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.15": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.16": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.17": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.18": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.19": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.2": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.20": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.21": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.22": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.23": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.3": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.4": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.5": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.6": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.7": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.8": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.1191fb10a4fb.9": {
+  "nb": "Ingen endring",
+  "en": "No change",
+  "oversatt": "Keine Änderung"
+ },
+ "core-commands-apply.run.fail.12b93d4f8422": {
+  "nb": "Forekomsten bruker ikke denne varianten",
+  "en": "The occurrence does not use this variant",
+  "oversatt": "Das Vorkommen verwendet diese Variante nicht"
+ },
+ "core-commands-apply.run.fail.12defba57062": {
+  "nb": "Ugyldig trinn i utkastet for scenen",
+  "en": "Invalid step in the scene draft",
+  "oversatt": "Ungültiger Schritt im Szenenentwurf"
+ },
+ "core-commands-apply.run.fail.12e7dfc4dafc": {
+  "nb": "Ingen lag å legge til",
+  "en": "No layers to add",
+  "oversatt": "Keine Ebenen zum Hinzufügen"
+ },
+ "core-commands-apply.run.fail.148502dada3b": {
+  "nb": "Ukjent ressursversjon",
+  "en": "Unknown asset version",
+  "oversatt": "Unbekannte Asset-Version"
+ },
+ "core-commands-apply.run.fail.15615d4251bb": {
+  "nb": "Replikken ville overlappe en annen replikk fra samme karakter. Ingen andre replikker flyttes.",
+  "en": "The line would overlap another line by the same character. No other lines are moved.",
+  "oversatt": "Die Dialogzeile würde eine andere Dialogzeile derselben Figur überlappen. Es werden keine weiteren Dialogzeilen verschoben."
+ },
+ "core-commands-apply.run.fail.17428c3d8e68": {
+  "nb": "Ugyldig språkmål",
+  "en": "Invalid language target",
+  "oversatt": "Ungültiges Sprachziel"
+ },
+ "core-commands-apply.run.fail.186cc3ce7432": {
+  "nb": "Bildet er i bruk og kan ikke fjernes.",
+  "en": "The image is in use and cannot be removed.",
+  "oversatt": "Das Bild wird verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.18934f1e81fa": {
+  "nb": "Ugyldig valg",
+  "en": "Invalid choice",
+  "oversatt": "Ungültige Auswahl"
+ },
+ "core-commands-apply.run.fail.1b2d497b2a23": {
+  "nb": "Ugyldig antall noder",
+  "en": "Invalid number of nodes",
+  "oversatt": "Ungültige Knotenanzahl"
+ },
+ "core-commands-apply.run.fail.1cf8022c5866": {
+  "nb": "Ressursen har fått stemme, betegnelser eller lydkoblinger og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The asset has a voice, designations or sound links and cannot be removed. Archive it instead.",
+  "oversatt": "Das Asset verfügt über eine Stimme, Bezeichnungen oder Audio-Verknüpfungen und kann nicht entfernt werden. Archivieren Sie es stattdessen."
+ },
+ "core-commands-apply.run.fail.1d0d38be4995": {
+  "nb": "Målscenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke slås sammen herfra. Gi den andre produksjonen egen versjon av scenen først.",
+  "en": "The target scene is also used in another production (for example a spin-off) and cannot be merged from here. Give the other production its own version of the scene first.",
+  "oversatt": "Die Zielszene wird auch in einer anderen Produktion verwendet (z. B. einem Spin-off) und kann von hier aus nicht zusammengeführt werden. Weisen Sie der anderen Produktion zuerst eine eigene Version der Szene zu."
+ },
+ "core-commands-apply.run.fail.1d5865621a01": {
+  "nb": "Bildet brukes i en 2D-scene og kan ikke fjernes.",
+  "en": "The image is used in a 2D scene and cannot be removed.",
+  "oversatt": "Das Bild wird in einer 2D-Szene verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.1d6c8b0c6a60": {
+  "nb": "Ressursen brukes i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The asset is used in a 2D scene and cannot be removed. Archive it instead.",
+  "oversatt": "Das Asset wird in einer 2D-Szene verwendet und kann nicht entfernt werden. Archivieren Sie es stattdessen."
+ },
+ "core-commands-apply.run.fail.1f06e5896fb1": {
+  "nb": "Stillbildet må være et PNG-, JPEG- eller WebP-bilde i ressursbiblioteket",
+  "en": "The still must be a PNG, JPEG or WebP image in the asset library",
+  "oversatt": "Das Standbild muss ein PNG-, JPEG- oder WebP-Bild in der Asset-Bibliothek sein"
+ },
+ "core-commands-apply.run.fail.2033cf23cc9a": {
+  "nb": "ID {id} er brukt to ganger",
+  "en": "ID {id} is used twice",
+  "oversatt": "ID {id} wird doppelt verwendet"
+ },
+ "core-commands-apply.run.fail.20f599eed294": {
+  "nb": "Ugyldig animasjonsoppsett",
+  "en": "Invalid animation setup",
+  "oversatt": "Ungültiges Animations-Setup"
+ },
+ "core-commands-apply.run.fail.230a43d67c98": {
+  "nb": "Kildescenen brukes også i andre produksjoner. Slå sammen der den bare finnes én gang.",
+  "en": "The source scene is also used in other productions. Merge where it only exists once.",
+  "oversatt": "Die Quellszene wird auch in anderen Produktionen verwendet. Führen Sie sie dort zusammen, wo sie nur einmal vorkommt."
+ },
+ "core-commands-apply.run.fail.244ffba1a39d": {
+  "nb": "Varianten er en foretrukket referanse for en stilprofil og kan ikke fjernes.",
+  "en": "The variant is a preferred reference for a style profile and cannot be removed.",
+  "oversatt": "Die Variante ist eine bevorzugte Referenz für ein Stilprofil und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.24b4ca8f826f": {
+  "nb": "Ugyldig notat",
+  "en": "Invalid note",
+  "oversatt": "Ungültige Notiz"
+ },
+ "core-commands-apply.run.fail.24fdaec2ca86": {
+  "nb": "Ingen lyd å endre",
+  "en": "No audio to change",
+  "oversatt": "Kein Audio zum Ändern"
+ },
+ "core-commands-apply.run.fail.254e29d4336d": {
+  "nb": "Samme linje to ganger.",
+  "en": "The same line twice.",
+  "oversatt": "Zweimal dieselbe Zeile."
+ },
+ "core-commands-apply.run.fail.2608e912fc62": {
+  "nb": "Bare en scene som tilhører en annen produksjon kan overføres",
+  "en": "Only a scene that belongs to another production can be transferred",
+  "oversatt": "Nur eine Szene, die zu einer anderen Produktion gehört, kann übertragen werden"
+ },
+ "core-commands-apply.run.fail.262b7e34755d": {
+  "nb": "Samme tidskobling to ganger",
+  "en": "The same time link twice",
+  "oversatt": "Zweimal dieselbe Zeitverknüpfung"
+ },
+ "core-commands-apply.run.fail.26ae31147a2b": {
+  "nb": "Samme notat-ID to ganger",
+  "en": "The same note ID twice",
+  "oversatt": "Zweimal dieselbe Notiz-ID"
+ },
+ "core-commands-apply.run.fail.26ae31147a2b.2": {
+  "nb": "Samme notat-ID to ganger",
+  "en": "The same note ID twice",
+  "oversatt": "Zweimal dieselbe Notiz-ID"
+ },
+ "core-commands-apply.run.fail.26e35ec964d5": {
+  "nb": "Betegnelsen må ha 1–80 tegn",
+  "en": "The designation must have 1–80 characters",
+  "oversatt": "Die Bezeichnung muss 1–80 Zeichen lang sein"
+ },
+ "core-commands-apply.run.fail.2ac778684e4e": {
+  "nb": "Opptaket brukes i en lydkomposisjon eller i en scene og kan ikke fjernes.",
+  "en": "The recording is used in an audio composition or in a scene and cannot be removed.",
+  "oversatt": "Die Aufnahme wird in einer Audiokomposition oder in einer Szene verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.2b17d85a7981": {
+  "nb": "Noden har koblinger. Fjern dem først.",
+  "en": "The node has connections. Remove them first.",
+  "oversatt": "Der Knoten weist Verbindungen auf. Entfernen Sie diese zuerst."
+ },
+ "core-commands-apply.run.fail.2b3608b2865a": {
+  "nb": "En mal må ha en maldefinisjon, og bare maler kan ha det",
+  "en": "A template must have a template definition, and only templates can have one",
+  "oversatt": "Eine Vorlage muss eine Vorlagendefinition haben, und nur Vorlagen können eine besitzen"
+ },
+ "core-commands-apply.run.fail.2c6997c9e8ab": {
+  "nb": "Varighet må være et ikke-negativt heltall bilder",
+  "en": "Duration must be a non-negative whole number of frames",
+  "oversatt": "Die Dauer muss eine nicht-negative ganze Zahl an Frames sein"
+ },
+ "core-commands-apply.run.fail.2c8fce45e436": {
+  "nb": "Lydversjonen hører til en annen replikk",
+  "en": "The audio version belongs to another line",
+  "oversatt": "Die Audioversion gehört zu einer anderen Dialogzeile"
+ },
+ "core-commands-apply.run.fail.2dada8685f83": {
+  "nb": "Forekomstene stemmer ikke med delingen",
+  "en": "The occurrences do not match the split",
+  "oversatt": "Die Vorkommen stimmen nicht mit der Teilung überein"
+ },
+ "core-commands-apply.run.fail.30e0bbf0560c": {
+  "nb": "Rulleteksten kan ha høyst {CREDIT_PARTICIPANTS_MAX} deltakere",
+  "en": "The credits can have at most {CREDIT_PARTICIPANTS_MAX} participants",
+  "oversatt": "Der Abspann darf höchstens {CREDIT_PARTICIPANTS_MAX} Mitwirkende enthalten"
+ },
+ "core-commands-apply.run.fail.31060cbe5b55": {
+  "nb": "Ingen lag å endre",
+  "en": "No layers to change",
+  "oversatt": "Keine Ebenen zum Ändern"
+ },
+ "core-commands-apply.run.fail.31b1bf8349cd": {
+  "nb": "Velg 1–500 bilder",
+  "en": "Choose 1–500 images",
+  "oversatt": "1–500 Bilder auswählen"
+ },
+ "core-commands-apply.run.fail.32415a83fac8": {
+  "nb": "Ugyldig tekst",
+  "en": "Invalid text",
+  "oversatt": "Ungültiger Text"
+ },
+ "core-commands-apply.run.fail.32f5a46a7fe1": {
+  "nb": "Replikken har ingen lydversjon ennå. Last prosjektet på nytt.",
+  "en": "The line has no audio version yet. Reload the project.",
+  "oversatt": "Die Dialogzeile hat noch keine Audioversion. Laden Sie das Projekt neu."
+ },
+ "core-commands-apply.run.fail.35b90d37002a": {
+  "nb": "Samme oversettelse to ganger",
+  "en": "The same translation twice",
+  "oversatt": "Zweimal dieselbe Übersetzung"
+ },
+ "core-commands-apply.run.fail.379370657c88": {
+  "nb": "For mange lydklipp på én gang (maks 500)",
+  "en": "Too many audio clips at once (max 500)",
+  "oversatt": "Zu viele Audioclips auf einmal (max. 500)"
+ },
+ "core-commands-apply.run.fail.38640f3a842b": {
+  "nb": "Koblingen er ikke lenger gyldig.",
+  "en": "The link is no longer valid.",
+  "oversatt": "Der Link ist nicht mehr gültig."
+ },
+ "core-commands-apply.run.fail.3924a1226a78": {
+  "nb": "Kildescenen har produksjonssegmenter",
+  "en": "The source scene has production segments",
+  "oversatt": "Die Quellszene enthält Produktionssegmente"
+ },
+ "core-commands-apply.run.fail.392651f69596": {
+  "nb": "Segmentet viser til en blokk i en annen variant",
+  "en": "The segment refers to a block in another variant",
+  "oversatt": "Das Segment verweist auf einen Block in einer anderen Variante"
+ },
+ "core-commands-apply.run.fail.392651f69596.2": {
+  "nb": "Segmentet viser til en blokk i en annen variant",
+  "en": "The segment refers to a block in another variant",
+  "oversatt": "Das Segment verweist auf einen Block in einer anderen Variante"
+ },
+ "core-commands-apply.run.fail.393c18b95ab7": {
+  "nb": "Ugyldig mål for huskelappen",
+  "en": "Invalid target for the note flag",
+  "oversatt": "Ungültiges Ziel für die Notizmarkierung"
+ },
+ "core-commands-apply.run.fail.39426785e783": {
+  "nb": "Utpunktet er etter slutten av filmen",
+  "en": "The out point is after the end of the film",
+  "oversatt": "Der Out-Punkt liegt hinter dem Ende des Films"
+ },
+ "core-commands-apply.run.fail.39613296f878": {
+  "nb": "Blokken brukes som grense for et produksjonssegment",
+  "en": "The block is used as a boundary for a production segment",
+  "oversatt": "Der Block wird als Begrenzung für ein Produktionssegment verwendet"
+ },
+ "core-commands-apply.run.fail.3a090d7e5697": {
+  "nb": "Kan ikke splitte ved første blokk",
+  "en": "Cannot split at the first block",
+  "oversatt": "Teilen am ersten Block nicht möglich"
+ },
+ "core-commands-apply.run.fail.3a2a99026f70": {
+  "nb": "Målscenen er slått sammen med en annen scene",
+  "en": "The target scene is already merged with another scene",
+  "oversatt": "Die Zielszene ist bereits mit einer anderen Szene zusammengeführt"
+ },
+ "core-commands-apply.run.fail.3abfc8d89d9d": {
+  "nb": "Rigg-delen tilhører ikke scenen",
+  "en": "The rig part does not belong to the scene",
+  "oversatt": "Der Rig-Teil gehört nicht zur Szene"
+ },
+ "core-commands-apply.run.fail.3bb30ed24241": {
+  "nb": "Forekomsten tilhører en annen produksjon",
+  "en": "The occurrence belongs to another production",
+  "oversatt": "Das Vorkommen gehört zu einer anderen Produktion"
+ },
+ "core-commands-apply.run.fail.3bc025bf2c59": {
+  "nb": "Ugyldig kobling",
+  "en": "Invalid link",
+  "oversatt": "Ungültige Verknüpfung"
+ },
+ "core-commands-apply.run.fail.3bc025bf2c59.2": {
+  "nb": "Ugyldig kobling",
+  "en": "Invalid link",
+  "oversatt": "Ungültige Verknüpfung"
+ },
+ "core-commands-apply.run.fail.3d46d4499a6e": {
+  "nb": "Et ord ligger etter slutten av opptaket",
+  "en": "A word is after the end of the recording",
+  "oversatt": "Ein Wort liegt hinter dem Ende der Aufnahme"
+ },
+ "core-commands-apply.run.fail.3d46d4499a6e.2": {
+  "nb": "Et ord ligger etter slutten av opptaket",
+  "en": "A word is after the end of the recording",
+  "oversatt": "Ein Wort liegt hinter dem Ende der Aufnahme"
+ },
+ "core-commands-apply.run.fail.3de4dca7e5fb": {
+  "nb": "Blokk-ID-er gjentas",
+  "en": "Block IDs are repeated",
+  "oversatt": "Block-IDs wiederholen sich"
+ },
+ "core-commands-apply.run.fail.3e01775fc197": {
+  "nb": "Ugyldige instrukser",
+  "en": "Invalid instructions",
+  "oversatt": "Ungültige Anweisungen"
+ },
+ "core-commands-apply.run.fail.3f074ef03872": {
+  "nb": "Den egne versjonen har egne oversettelser; angre dem først",
+  "en": "The own version has its own translations; undo them first",
+  "oversatt": "Die eigene Version hat eigene Übersetzungen; machen Sie diese zuerst rückgängig"
+ },
+ "core-commands-apply.run.fail.3f074ef03872.2": {
+  "nb": "Den egne versjonen har egne oversettelser; angre dem først",
+  "en": "The own version has its own translations; undo them first",
+  "oversatt": "Die eigene Version hat eigene Übersetzungen; machen Sie diese zuerst rückgängig"
+ },
+ "core-commands-apply.run.fail.3f89d6906184": {
+  "nb": "v{number} er godkjent. Godkjenn et annet bilde først.",
+  "en": "v{number} is approved. Approve another image first.",
+  "oversatt": "v{number} ist freigegeben. Geben Sie zuerst ein anderes Bild frei."
+ },
+ "core-commands-apply.run.fail.3fad1e23074d": {
+  "nb": "Ressursen brukes i en relasjon eller på en plakat og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The asset is used in a relation or on a poster and cannot be removed. Archive it instead.",
+  "oversatt": "Das Asset wird in einer Relation oder auf einem Poster verwendet und kann nicht entfernt werden. Archivieren Sie es stattdessen."
+ },
+ "core-commands-apply.run.fail.3fbd34bdac6d": {
+  "nb": "Segmentet har allerede en egen beskrivelse",
+  "en": "The segment already has its own description",
+  "oversatt": "Das Segment hat bereits eine eigene Beschreibung"
+ },
+ "core-commands-apply.run.fail.41755885877d": {
+  "nb": "Stilprofilen brukes i en harmonisering og kan ikke fjernes ved angring.",
+  "en": "The style profile is used in a harmonization and cannot be removed by undoing.",
+  "oversatt": "Das Stilprofil wird in einer Harmonisierung verwendet und kann durch Rückgängigmachen nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.41a4d4f2b9ce": {
+  "nb": "Velg 1–500 ressurser",
+  "en": "Choose 1–500 assets",
+  "oversatt": "Wählen Sie 1–500 Assets"
+ },
+ "core-commands-apply.run.fail.42404ff62cbc": {
+  "nb": "Uendret",
+  "en": "Unchanged",
+  "oversatt": "Unverändert"
+ },
+ "core-commands-apply.run.fail.42404ff62cbc.2": {
+  "nb": "Uendret",
+  "en": "Unchanged",
+  "oversatt": "Unverändert"
+ },
+ "core-commands-apply.run.fail.42404ff62cbc.3": {
+  "nb": "Uendret",
+  "en": "Unchanged",
+  "oversatt": "Unverändert"
+ },
+ "core-commands-apply.run.fail.42404ff62cbc.4": {
+  "nb": "Uendret",
+  "en": "Unchanged",
+  "oversatt": "Unverändert"
+ },
+ "core-commands-apply.run.fail.42404ff62cbc.5": {
+  "nb": "Uendret",
+  "en": "Unchanged",
+  "oversatt": "Unverändert"
+ },
+ "core-commands-apply.run.fail.424299adefdb": {
+  "nb": "Ugyldig antall kontinuitetshendelser",
+  "en": "Invalid number of continuity events",
+  "oversatt": "Ungültige Anzahl an Kontinuitätsereignissen"
+ },
+ "core-commands-apply.run.fail.424299adefdb.2": {
+  "nb": "Ugyldig antall kontinuitetshendelser",
+  "en": "Invalid number of continuity events",
+  "oversatt": "Ungültige Anzahl an Kontinuitätsereignissen"
+ },
+ "core-commands-apply.run.fail.4243a66425b3": {
+  "nb": "Lyd, tidskoblinger eller segmenter er koblet til linjer som ikke finnes i den nye versjonen. Fjern koblingene først.",
+  "en": "Audio, time links or segments are linked to lines that do not exist in the new version. Remove the links first.",
+  "oversatt": "Audio, Zeitverknüpfungen oder Segmente sind mit Dialogzeilen verknüpft, die in der neuen Version nicht existieren. Entfernen Sie zuerst die Verknüpfungen."
+ },
+ "core-commands-apply.run.fail.43e5b3ba4810": {
+  "nb": "Scenen brukes også i en annen produksjon (for eksempel en spinoff) og kan ikke deles herfra. Gi den andre produksjonen egen versjon av scenen først.",
+  "en": "The scene is also used in another production (for example a spin-off) and cannot be split from here. Give the other production its own version of the scene first.",
+  "oversatt": "Die Szene wird auch in einer anderen Produktion verwendet (z. B. einem Spin-off) und kann von hier aus nicht geteilt werden. Weisen Sie der anderen Produktion zuerst eine eigene Version der Szene zu."
+ },
+ "core-commands-apply.run.fail.43e798f328e9": {
+  "nb": "Samme relasjon to ganger",
+  "en": "The same relation twice",
+  "oversatt": "Dieselbe Relation doppelt vorhanden"
+ },
+ "core-commands-apply.run.fail.44711e2e68a5": {
+  "nb": "Laget peker på en ukjent malforekomst",
+  "en": "The layer refers to an unknown template instance",
+  "oversatt": "Die Ebene verweist auf ein unbekanntes Vorlagenvorkommen"
+ },
+ "core-commands-apply.run.fail.44d56ee9544d": {
+  "nb": "Varianten eies allerede av produksjonen",
+  "en": "The variant is already owned by the production",
+  "oversatt": "Die Variante befindet sich bereits im Besitz der Produktion"
+ },
+ "core-commands-apply.run.fail.44f73b3efc0e": {
+  "nb": "Bare film (importert eller AI-video) eller stillbilde kan brukes som del",
+  "en": "Only film (imported or AI video) or a still can be used as a part",
+  "oversatt": "Nur Film (importiertes oder KI-Video) oder ein Standbild kann als Teil verwendet werden"
+ },
+ "core-commands-apply.run.fail.47fdf02d57e3": {
+  "nb": "Varianten tilhører en annen scene",
+  "en": "The variant belongs to another scene",
+  "oversatt": "Die Variante gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.47fdf02d57e3.2": {
+  "nb": "Varianten tilhører en annen scene",
+  "en": "The variant belongs to another scene",
+  "oversatt": "Die Variante gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.48bea132f6ca": {
+  "nb": "Mangler ny forekomst for {id}",
+  "en": "Missing new occurrence for {id}",
+  "oversatt": "Fehlendes neues Vorkommen für {id}"
+ },
+ "core-commands-apply.run.fail.494de762ebe9": {
+  "nb": "2D-scenen hører til en annen scene",
+  "en": "The 2D scene belongs to another scene",
+  "oversatt": "Die 2D-Szene gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.4bb12992b233": {
+  "nb": "Ugyldig notatstatus",
+  "en": "Invalid note status",
+  "oversatt": "Ungültiger Notizstatus"
+ },
+ "core-commands-apply.run.fail.4dd0789defd1": {
+  "nb": "Scenen har fått eller mistet tekst etter at den ble laget, og kan ikke angres. Deaktiver den i stedet.",
+  "en": "The scene has gained or lost text since it was made, and cannot be undone. Deactivate it instead.",
+  "oversatt": "Die Szene hat seit ihrer Erstellung Text hinzugefügt oder verloren und kann nicht rückgängig gemacht werden. Deaktivieren Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.4fcf4f1ca46a": {
+  "nb": "Utpunktet er etter slutten av 2D-scenen",
+  "en": "The out point is after the end of the 2D scene",
+  "oversatt": "Der Out-Punkt liegt nach dem Ende der 2D-Szene"
+ },
+ "core-commands-apply.run.fail.50344121fa7d": {
+  "nb": "Malforekomsten har lag",
+  "en": "The template instance has layers",
+  "oversatt": "Die Vorlageninstanz enthält Ebenen"
+ },
+ "core-commands-apply.run.fail.50831d62447d": {
+  "nb": "For mange segmenter",
+  "en": "Too many segments",
+  "oversatt": "Zu viele Segmente"
+ },
+ "core-commands-apply.run.fail.5088785b428c": {
+  "nb": "Manuset inneholder ingen scener",
+  "en": "The script contains no scenes",
+  "oversatt": "Das Drehbuch enthält keine Szenen"
+ },
+ "core-commands-apply.run.fail.532eb0bc510e": {
+  "nb": "Scenen er allerede med i {name}",
+  "en": "The scene is already in {name}",
+  "oversatt": "Die Szene ist bereits in {name} enthalten"
+ },
+ "core-commands-apply.run.fail.5453d6443268": {
+  "nb": "Velg minst én linje i manuset",
+  "en": "Choose at least one line in the script",
+  "oversatt": "Wählen Sie mindestens eine Zeile im Drehbuch aus"
+ },
+ "core-commands-apply.run.fail.55b1d38c8fdc": {
+  "nb": "Merknaden er for lang",
+  "en": "The annotation is too long",
+  "oversatt": "Die Anmerkung ist zu lang"
+ },
+ "core-commands-apply.run.fail.55b1d38c8fdc.2": {
+  "nb": "Merknaden er for lang",
+  "en": "The annotation is too long",
+  "oversatt": "Die Anmerkung ist zu lang"
+ },
+ "core-commands-apply.run.fail.55e593008ba0": {
+  "nb": "Linjen har allerede en oversettelse til dette språket",
+  "en": "The line already has a translation into this language",
+  "oversatt": "Die Zeile verfügt bereits über eine Übersetzung in diese Sprache"
+ },
+ "core-commands-apply.run.fail.5678053100c4": {
+  "nb": "Produksjonen har plakater og kan ikke angres",
+  "en": "The production has posters and cannot be undone",
+  "oversatt": "Die Produktion enthält Plakate und kann nicht rückgängig gemacht werden"
+ },
+ "core-commands-apply.run.fail.57f46e91a350": {
+  "nb": "Bare film kan ha manusdekning",
+  "en": "Only film can have script coverage",
+  "oversatt": "Nur Filme können über Drehbuch-Coverage verfügen"
+ },
+ "core-commands-apply.run.fail.58050f840666": {
+  "nb": "Teksten er uendret",
+  "en": "The text is unchanged",
+  "oversatt": "Der Text ist unverändert"
+ },
+ "core-commands-apply.run.fail.5a07283b276c": {
+  "nb": "Lydversjonen har leppesynk. Angre leppesynket først.",
+  "en": "The audio version has lip sync. Undo the lip sync first.",
+  "oversatt": "Die Audioversion hat Lip-Sync. Machen Sie zuerst den Lip-Sync rückgängig."
+ },
+ "core-commands-apply.run.fail.5a4520e2607b": {
+  "nb": "En annen scene er plassert i fortellingstiden i forhold til den nye scenen. Endre den først.",
+  "en": "Another scene is placed in story time relative to the new scene. Change it first.",
+  "oversatt": "Eine andere Szene ist in der Erzählzeit relativ zur neuen Szene platziert. Ändern Sie diese zuerst."
+ },
+ "core-commands-apply.run.fail.5be4d4c3999c": {
+  "nb": "Bare lyd kan ha en lydkomposisjon",
+  "en": "Only audio can have an audio composition",
+  "oversatt": "Nur Audio kann eine Audiokomposition haben"
+ },
+ "core-commands-apply.run.fail.5c479f557940": {
+  "nb": "Ugyldig generert tale",
+  "en": "Invalid generated speech",
+  "oversatt": "Ungültige generierte Sprache"
+ },
+ "core-commands-apply.run.fail.5c6d480cde92": {
+  "nb": "Ugyldig status",
+  "en": "Invalid status",
+  "oversatt": "Ungültiger Status"
+ },
+ "core-commands-apply.run.fail.5c6d480cde92.2": {
+  "nb": "Ugyldig status",
+  "en": "Invalid status",
+  "oversatt": "Ungültiger Status"
+ },
+ "core-commands-apply.run.fail.5cad11beebf2": {
+  "nb": "Laget hører ikke til scenen",
+  "en": "The layer does not belong to the scene",
+  "oversatt": "Die Ebene gehört nicht zur Szene"
+ },
+ "core-commands-apply.run.fail.5db779041c90": {
+  "nb": "Replikken eller karakteren finnes ikke",
+  "en": "The line or character was not found",
+  "oversatt": "Die Dialogzeile oder Figur wurde nicht gefunden"
+ },
+ "core-commands-apply.run.fail.5de6b7f2e487": {
+  "nb": "Velg 1–500 scener",
+  "en": "Choose 1–500 scenes",
+  "oversatt": "Wählen Sie 1–500 Szenen aus"
+ },
+ "core-commands-apply.run.fail.5f0710f61967": {
+  "nb": "ID {layerId} er brukt to ganger",
+  "en": "ID {layerId} is used twice",
+  "oversatt": "ID {layerId} wird doppelt verwendet"
+ },
+ "core-commands-apply.run.fail.5f34b746afab": {
+  "nb": "Scenen har allerede en 2D-scene",
+  "en": "The scene already has a 2D scene",
+  "oversatt": "Die Szene verfügt bereits über eine 2D-Szene"
+ },
+ "core-commands-apply.run.fail.5f893eb8b897": {
+  "nb": "Linjen har fått en annen oversettelse i mellomtiden",
+  "en": "The line has received a different translation in the meantime",
+  "oversatt": "Die Zeile hat in der Zwischenzeit eine andere Übersetzung erhalten"
+ },
+ "core-commands-apply.run.fail.60295d0f1b8d": {
+  "nb": "Begge scenene må være i samme produksjon",
+  "en": "Both scenes must be in the same production",
+  "oversatt": "Beide Szenen müssen sich in derselben Produktion befinden"
+ },
+ "core-commands-apply.run.fail.6344e2d6f455": {
+  "nb": "Koblingen peker på en fjernet node",
+  "en": "The connection points to a removed node",
+  "oversatt": "Die Verbindung verweist auf einen entfernten Knoten"
+ },
+ "core-commands-apply.run.fail.6344e2d6f455.2": {
+  "nb": "Koblingen peker på en fjernet node",
+  "en": "The connection points to a removed node",
+  "oversatt": "Die Verbindung verweist auf einen entfernten Knoten"
+ },
+ "core-commands-apply.run.fail.63e58e07cdaf": {
+  "nb": "Metadataen peker på en annen versjon",
+  "en": "The metadata points at another version",
+  "oversatt": "Die Metadaten verweisen auf eine andere Version"
+ },
+ "core-commands-apply.run.fail.63ed75e56b51": {
+  "nb": "Ugyldig linjekobling.",
+  "en": "Invalid line link.",
+  "oversatt": "Ungültige Zeilenverknüpfung."
+ },
+ "core-commands-apply.run.fail.63ed75e56b51.2": {
+  "nb": "Ugyldig linjekobling.",
+  "en": "Invalid line link.",
+  "oversatt": "Ungültige Zeilenverknüpfung."
+ },
+ "core-commands-apply.run.fail.64582b36442d": {
+  "nb": "En lokal hendelse fjernes i stedet for å slås av",
+  "en": "A local event is removed instead of being turned off",
+  "oversatt": "Ein lokales Ereignis wird entfernt, anstatt deaktiviert zu werden"
+ },
+ "core-commands-apply.run.fail.649437ba0bb1": {
+  "nb": "Deltakeren er allerede fjernet",
+  "en": "The participant is already removed",
+  "oversatt": "Der Teilnehmer wurde bereits entfernt"
+ },
+ "core-commands-apply.run.fail.64b1464b43e6": {
+  "nb": "Blokkene stemmer ikke med sammenslåingen",
+  "en": "The blocks do not match the merge",
+  "oversatt": "Die Blöcke stimmen nicht mit der Zusammenführung überein"
+ },
+ "core-commands-apply.run.fail.64bab6ecff30": {
+  "nb": "Produksjonen har egen kontinuitet og kan ikke angres",
+  "en": "The production has its own continuity and cannot be undone",
+  "oversatt": "Die Produktion hat eine eigene Kontinuität und kann nicht rückgängig gemacht werden"
+ },
+ "core-commands-apply.run.fail.67e6aee040db": {
+  "nb": "Bildet brukes på en plakat eller som forbilde for filmens stil og kan ikke fjernes.",
+  "en": "The image is used on a poster or as a reference for the film's style and cannot be removed.",
+  "oversatt": "Das Bild wird auf einem Plakat oder als Stilreferenz für den Film verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.693fc28d9174": {
+  "nb": "Bare lydopptak kan ha ordkobling",
+  "en": "Only audio recordings can have word alignment",
+  "oversatt": "Nur Audioaufnahmen können eine Wortausrichtung haben"
+ },
+ "core-commands-apply.run.fail.6ac3eba406a5": {
+  "nb": "Ingen segmenter oppgitt",
+  "en": "No segments given",
+  "oversatt": "Keine Segmente angegeben"
+ },
+ "core-commands-apply.run.fail.6c70b2095d1b": {
+  "nb": "Allerede slettet",
+  "en": "Already deleted",
+  "oversatt": "Bereits gelöscht"
+ },
+ "core-commands-apply.run.fail.6c70b2095d1b.2": {
+  "nb": "Allerede slettet",
+  "en": "Already deleted",
+  "oversatt": "Bereits gelöscht"
+ },
+ "core-commands-apply.run.fail.6e014f819615": {
+  "nb": "Scenen har fått materiale i produksjonen. Deaktiver den i stedet.",
+  "en": "The scene has received material in the production. Deactivate it instead.",
+  "oversatt": "Die Szene hat Material in der Produktion erhalten. Deaktivieren Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.6ee639bc8f58": {
+  "nb": "Filinformasjon gjelder bare film",
+  "en": "File information only applies to film",
+  "oversatt": "Dateiinformationen gelten nur für Film"
+ },
+ "core-commands-apply.run.fail.6fbc54425f99": {
+  "nb": "Replikken finnes ikke",
+  "en": "The line does not exist",
+  "oversatt": "Die Dialogzeile existiert nicht"
+ },
+ "core-commands-apply.run.fail.7152eaeaa9f6": {
+  "nb": "Segmentet har en egen genereringsbeskrivelse",
+  "en": "The segment has its own generation description",
+  "oversatt": "Das Segment hat eine eigene Generierungsbeschreibung"
+ },
+ "core-commands-apply.run.fail.71ce23edc75a": {
+  "nb": "Ugyldig grunn",
+  "en": "Invalid reason",
+  "oversatt": "Ungültiger Grund"
+ },
+ "core-commands-apply.run.fail.71dd0ec5e8ae": {
+  "nb": "Ingen notater å legge til",
+  "en": "No notes to add",
+  "oversatt": "Keine Notizen zum Hinzufügen"
+ },
+ "core-commands-apply.run.fail.7272075a451c": {
+  "nb": "Versjonen er godkjent og kan ikke fjernes",
+  "en": "The version is approved and cannot be removed",
+  "oversatt": "Die Version ist freigegeben und kann nicht entfernt werden"
+ },
+ "core-commands-apply.run.fail.741a0d26bdf1": {
+  "nb": "Den nye scenen har produksjonsmateriale og kan ikke slås tilbake",
+  "en": "The new scene has production material and cannot be reverted",
+  "oversatt": "Die neue Szene enthält Produktionsmaterial und kann nicht zurückgesetzt werden"
+ },
+ "core-commands-apply.run.fail.74da5d95ba4d": {
+  "nb": "Lydversjonen er slettet",
+  "en": "The audio version is deleted",
+  "oversatt": "Die Audioversion wurde gelöscht"
+ },
+ "core-commands-apply.run.fail.7504824ae3d4": {
+  "nb": "Ugyldig harmonisering.",
+  "en": "Invalid harmonization.",
+  "oversatt": "Ungültige Harmonisierung."
+ },
+ "core-commands-apply.run.fail.7556f496a447": {
+  "nb": "Segmenter til generering må ha tid",
+  "en": "Segments for generation must have a time",
+  "oversatt": "Segmente für die Generierung müssen eine Zeitangabe haben"
+ },
+ "core-commands-apply.run.fail.75cc6abb04c4": {
+  "nb": "En mal kan ikke gjøres om til en annen ressurstype, eller omvendt",
+  "en": "A template cannot be changed into another asset type, or the other way round",
+  "oversatt": "Eine Vorlage kann nicht in einen anderen Asset-Typ umgewandelt werden und umgekehrt"
+ },
+ "core-commands-apply.run.fail.75f5550586f8": {
+  "nb": "For mange deler (maks {MAX_CLIP_PARTS})",
+  "en": "Too many parts (max {MAX_CLIP_PARTS})",
+  "oversatt": "Zu viele Teile (max. {MAX_CLIP_PARTS})"
+ },
+ "core-commands-apply.run.fail.7641448ad8b5": {
+  "nb": "Høyst {MAX_SOUND_LINKS} koblinger",
+  "en": "At most {MAX_SOUND_LINKS} links",
+  "oversatt": "Höchstens {MAX_SOUND_LINKS} Verknüpfungen"
+ },
+ "core-commands-apply.run.fail.78b89c2d3a09": {
+  "nb": "Versjonen tilhører en annen scene",
+  "en": "The version belongs to another scene",
+  "oversatt": "Die Version gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.78b89c2d3a09.2": {
+  "nb": "Versjonen tilhører en annen scene",
+  "en": "The version belongs to another scene",
+  "oversatt": "Die Version gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.78b89c2d3a09.3": {
+  "nb": "Versjonen tilhører en annen scene",
+  "en": "The version belongs to another scene",
+  "oversatt": "Die Version gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.796310d518b7": {
+  "nb": "Det er lastet opp nyere bilder etter dette. Det kan ikke fjernes.",
+  "en": "Newer images have been uploaded after this. It cannot be removed.",
+  "oversatt": "Danach wurden neuere Bilder hochgeladen. Es kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.7b7cc38ea941": {
+  "nb": "Segmentet hører til en annen scene",
+  "en": "The segment belongs to another scene",
+  "oversatt": "Das Segment gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.7b7cc38ea941.2": {
+  "nb": "Segmentet hører til en annen scene",
+  "en": "The segment belongs to another scene",
+  "oversatt": "Das Segment gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.7b9b5db3437a": {
+  "nb": "Samme betegnelse to ganger",
+  "en": "The same designation twice",
+  "oversatt": "Gleiche Bezeichnung doppelt vorhanden"
+ },
+ "core-commands-apply.run.fail.7bd082749046": {
+  "nb": "For mange lag på én gang (maks 500)",
+  "en": "Too many layers at once (max 500)",
+  "oversatt": "Zu viele Ebenen auf einmal (max. 500)"
+ },
+ "core-commands-apply.run.fail.7c23382b944a": {
+  "nb": "Profilen er fjernet",
+  "en": "The profile is removed",
+  "oversatt": "Das Profil wurde entfernt"
+ },
+ "core-commands-apply.run.fail.7d1aa6425f36": {
+  "nb": "For mange ressurser i én endring",
+  "en": "Too many assets in one change",
+  "oversatt": "Zu viele Assets in einer Änderung"
+ },
+ "core-commands-apply.run.fail.7e1816e55874": {
+  "nb": "Malversjonen brukes i en scene og kan ikke fjernes.",
+  "en": "The template version is used in a scene and cannot be removed.",
+  "oversatt": "Die Vorlagenversion wird in einer Szene verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.7e7a1a8c6519": {
+  "nb": "Prosjektet har allerede en standard stilprofil",
+  "en": "The project already has a default style profile",
+  "oversatt": "Das Projekt hat bereits ein Standard-Stilprofil"
+ },
+ "core-commands-apply.run.fail.7fd2f8806849": {
+  "nb": "Blokken er ikke fjernet",
+  "en": "The block has not been removed",
+  "oversatt": "Der Block wurde nicht entfernt"
+ },
+ "core-commands-apply.run.fail.8077964197e3": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Ungültige Grundlage"
+ },
+ "core-commands-apply.run.fail.8135b7ff01bd": {
+  "nb": "Høyst 200 betegnelser",
+  "en": "At most 200 designations",
+  "oversatt": "Höchstens 200 Bezeichnungen"
+ },
+ "core-commands-apply.run.fail.816b7399a39c": {
+  "nb": "Ukjent mål",
+  "en": "Unknown target",
+  "oversatt": "Unbekanntes Ziel"
+ },
+ "core-commands-apply.run.fail.82ff6c962eb3": {
+  "nb": "Notatet må ha tekst (maks 10 000 tegn)",
+  "en": "The note must have text (max 10,000 characters)",
+  "oversatt": "Die Notiz muss Text enthalten (max. 10.000 Zeichen)"
+ },
+ "core-commands-apply.run.fail.83251b4dff6b": {
+  "nb": "Segmentet har en egen beskrivelse. Tilbakestill den først.",
+  "en": "The segment has its own description. Reset it first.",
+  "oversatt": "Das Segment hat eine eigene Beschreibung. Bitte zuerst zurücksetzen."
+ },
+ "core-commands-apply.run.fail.8382aacbceca": {
+  "nb": "Versjonen hører til en annen mal",
+  "en": "The version belongs to another template",
+  "oversatt": "Die Version gehört zu einer anderen Vorlage"
+ },
+ "core-commands-apply.run.fail.838d32162c1a": {
+  "nb": "2D-scenen er slettet",
+  "en": "The 2D scene has been deleted",
+  "oversatt": "Die 2D-Szene wurde gelöscht"
+ },
+ "core-commands-apply.run.fail.838d32162c1a.2": {
+  "nb": "2D-scenen er slettet",
+  "en": "The 2D scene has been deleted",
+  "oversatt": "Die 2D-Szene wurde gelöscht"
+ },
+ "core-commands-apply.run.fail.83b56eb08225": {
+  "nb": "Blokker gjentas",
+  "en": "Blocks are repeated",
+  "oversatt": "Blöcke wiederholen sich"
+ },
+ "core-commands-apply.run.fail.84181468061d": {
+  "nb": "Replikken har ikke avvik",
+  "en": "The line has no difference",
+  "oversatt": "Die Dialogzeile weist keine Abweichung auf"
+ },
+ "core-commands-apply.run.fail.84f506950452": {
+  "nb": "Ugyldig animasjonsdata",
+  "en": "Invalid animation data",
+  "oversatt": "Ungültige Animationsdaten"
+ },
+ "core-commands-apply.run.fail.8569fc4deb58": {
+  "nb": "Instruksene er for lange (høyst {MAX_SCENE_VIDEO_INSTRUCTIONS} tegn)",
+  "en": "The instructions are too long (at most {MAX_SCENE_VIDEO_INSTRUCTIONS} characters)",
+  "oversatt": "Die Anweisungen sind zu lang (höchstens {MAX_SCENE_VIDEO_INSTRUCTIONS} Zeichen)"
+ },
+ "core-commands-apply.run.fail.857cef7b08da": {
+  "nb": "Scenen har ingen 2D-scene",
+  "en": "The scene has no 2D scene",
+  "oversatt": "Die Szene hat keine 2D-Szene"
+ },
+ "core-commands-apply.run.fail.869ee7c87423": {
+  "nb": "Planen stemmer ikke med delingen",
+  "en": "The plan does not match the split",
+  "oversatt": "Der Plan stimmt nicht mit der Teilung überein"
+ },
+ "core-commands-apply.run.fail.86af62095c51": {
+  "nb": "Linjene må være i scenen",
+  "en": "The lines must be in the scene",
+  "oversatt": "Die Dialogzeilen müssen in der Szene liegen"
+ },
+ "core-commands-apply.run.fail.8860001d638e": {
+  "nb": "Ugyldig bruk for stilprofilen",
+  "en": "Invalid use for the style profile",
+  "oversatt": "Ungültige Verwendung für das Stilprofil"
+ },
+ "core-commands-apply.run.fail.89bcb1f2b3c1": {
+  "nb": "Versjonen er ikke en mal",
+  "en": "The version is not a template",
+  "oversatt": "Die Version ist keine Vorlage"
+ },
+ "core-commands-apply.run.fail.89e87eb528d2": {
+  "nb": "Ugyldig linjekobling eller språkversjon.",
+  "en": "Invalid line link or language version.",
+  "oversatt": "Ungültige Zeilenverknüpfung oder Sprachversion."
+ },
+ "core-commands-apply.run.fail.8ae79a8d027f": {
+  "nb": "Karakteren finnes ikke",
+  "en": "The character was not found",
+  "oversatt": "Die Figur wurde nicht gefunden"
+ },
+ "core-commands-apply.run.fail.8af60a51bbfe": {
+  "nb": "Den nye scenen er brukt i en senere deling eller sammenslåing",
+  "en": "The new scene is used in a later split or merge",
+  "oversatt": "Die neue Szene wird in einer späteren Teilung oder Zusammenführung verwendet"
+ },
+ "core-commands-apply.run.fail.8b7013daefd3": {
+  "nb": "Versjonen tilhører en annen variant",
+  "en": "The version belongs to another variant",
+  "oversatt": "Die Version gehört zu einer anderen Variante"
+ },
+ "core-commands-apply.run.fail.8cf6dd892be3": {
+  "nb": "Den egne versjonen har egne notater; angre dem først",
+  "en": "The own version has its own notes; undo them first",
+  "oversatt": "Die eigene Version hat eigene Notizen; widerrufen Sie diese zuerst"
+ },
+ "core-commands-apply.run.fail.8d087d9077db": {
+  "nb": "Bare lydressurser kan kobles på denne måten",
+  "en": "Only audio assets can be linked in this way",
+  "oversatt": "Nur Audio-Assets können auf diese Weise verknüpft werden"
+ },
+ "core-commands-apply.run.fail.8d198ddd5d35": {
+  "nb": "Lydversjonen har leppesynk og slettes ikke",
+  "en": "The audio version has lip sync and is not deleted",
+  "oversatt": "Die Audioversion enthält Lip-Sync und wird nicht gelöscht"
+ },
+ "core-commands-apply.run.fail.8d7b886c2d39": {
+  "nb": "Blokken var ikke en del av sammenslåingen",
+  "en": "The block was not part of the merge",
+  "oversatt": "Der Block war nicht Teil der Zusammenführung"
+ },
+ "core-commands-apply.run.fail.909296a27bc6": {
+  "nb": "Ugyldig tidspunkt for endringen",
+  "en": "Invalid time for the change",
+  "oversatt": "Ungültiger Zeitpunkt für die Änderung"
+ },
+ "core-commands-apply.run.fail.91045cf1a494": {
+  "nb": "Lydversjonen er aktiv og slettes ikke",
+  "en": "The audio version is active and is not deleted",
+  "oversatt": "Die Audioversion ist aktiv und wird nicht gelöscht"
+ },
+ "core-commands-apply.run.fail.91045cf1a494.2": {
+  "nb": "Lydversjonen er aktiv og slettes ikke",
+  "en": "The audio version is active and is not deleted",
+  "oversatt": "Die Audioversion ist aktiv und wird nicht gelöscht"
+ },
+ "core-commands-apply.run.fail.911f0cdc2360": {
+  "nb": "Bare karakterer kan få stemme",
+  "en": "Only characters can have a voice",
+  "oversatt": "Nur Figuren können eine Stimme erhalten"
+ },
+ "core-commands-apply.run.fail.92fc2816e38c": {
+  "nb": "Bare replikker har lydversjoner",
+  "en": "Only lines have audio versions",
+  "oversatt": "Nur Dialogzeilen haben Audioversionen"
+ },
+ "core-commands-apply.run.fail.94a03f5a191f": {
+  "nb": "Inndelingen er endret i mellomtiden (av deg eller noen andre). Lukk og åpne vinduet igjen.",
+  "en": "The division was changed in the meantime (by you or someone else). Close the window and open it again.",
+  "oversatt": "Die Einteilung wurde in der Zwischenzeit geändert (von Ihnen oder jemand anderem). Schließen Sie das Fenster und öffnen Sie es erneut."
+ },
+ "core-commands-apply.run.fail.96412ad53411": {
+  "nb": "Tidsoppsettet er for stort",
+  "en": "The timing is too large",
+  "oversatt": "Das Timing ist zu groß"
+ },
+ "core-commands-apply.run.fail.975d6cdedb5d": {
+  "nb": "Planlagt lengde må være mellom 1 sekund og 10 timer",
+  "en": "Planned length must be between 1 second and 10 hours",
+  "oversatt": "Die geplante Länge muss zwischen 1 Sekunde und 10 Stunden liegen"
+ },
+ "core-commands-apply.run.fail.98d1da121bbe": {
+  "nb": "Ugyldig plassering",
+  "en": "Invalid position",
+  "oversatt": "Ungültige Position"
+ },
+ "core-commands-apply.run.fail.996bbf5f460f": {
+  "nb": "Teksten er for lang",
+  "en": "The text is too long",
+  "oversatt": "Der Text ist zu lang"
+ },
+ "core-commands-apply.run.fail.996bbf5f460f.2": {
+  "nb": "Teksten er for lang",
+  "en": "The text is too long",
+  "oversatt": "Der Text ist zu lang"
+ },
+ "core-commands-apply.run.fail.9ac798ceab57": {
+  "nb": "Karakteren har allerede en profil",
+  "en": "The character already has a profile",
+  "oversatt": "Die Figur hat bereits ein Profil"
+ },
+ "core-commands-apply.run.fail.9ac798ceab57.2": {
+  "nb": "Karakteren har allerede en profil",
+  "en": "The character already has a profile",
+  "oversatt": "Die Figur hat bereits ein Profil"
+ },
+ "core-commands-apply.run.fail.9b5fcd16022d": {
+  "nb": "Ugyldig trinn i malendringen",
+  "en": "Invalid step in the template change",
+  "oversatt": "Ungültiger Schritt in der Vorlagenänderung"
+ },
+ "core-commands-apply.run.fail.9b77f16847d8": {
+  "nb": "Stillbildet må ha en varighet",
+  "en": "The still must have a duration",
+  "oversatt": "Das Standbild muss eine Dauer haben"
+ },
+ "core-commands-apply.run.fail.9c1870afdd29": {
+  "nb": "Ingenting å gjøre om.",
+  "en": "Nothing to redo.",
+  "oversatt": "Nichts zu wiederholen."
+ },
+ "core-commands-apply.run.fail.9c390cecc6a7": {
+  "nb": "Tittelsiden er for lang til å lagres (maks om lag 3 kB)",
+  "en": "The title page is too long to save (max about 3 kB)",
+  "oversatt": "Die Titelseite ist zu lang zum Speichern (max. ca. 3 kB)"
+ },
+ "core-commands-apply.run.fail.9c944cc63828": {
+  "nb": "Bildet har harmoniseringsmetadata og kan ikke fjernes alene. Angre hele harmoniseringen.",
+  "en": "The image has harmonization metadata and cannot be removed on its own. Undo the whole harmonization.",
+  "oversatt": "Das Bild enthält Harmonisierungs-Metadaten und kann nicht einzeln entfernt werden. Machen Sie die gesamte Harmonisierung rückgängig."
+ },
+ "core-commands-apply.run.fail.9d626dbeeab2": {
+  "nb": "Varianten brukes andre steder",
+  "en": "The variant is used elsewhere",
+  "oversatt": "Die Variante wird an anderer Stelle verwendet"
+ },
+ "core-commands-apply.run.fail.9d80317af7d2": {
+  "nb": "Hovedfilmens hendelser fjernes i stedet for å slås av",
+  "en": "The main film's events are removed instead of being turned off",
+  "oversatt": "Die Ereignisse des Hauptfilms werden entfernt, anstatt deaktiviert zu werden"
+ },
+ "core-commands-apply.run.fail.9de614734d96": {
+  "nb": "Samme lag er med to ganger",
+  "en": "The same layer is included twice",
+  "oversatt": "Dieselbe Ebene ist doppelt vorhanden"
+ },
+ "core-commands-apply.run.fail.9deac46a3184": {
+  "nb": "Ugyldig lengde på lydfilen",
+  "en": "Invalid length of the audio file",
+  "oversatt": "Ungültige Länge der Audiodatei"
+ },
+ "core-commands-apply.run.fail.9e6811e0c72c": {
+  "nb": "Varianten brukes i en 2D-scene og kan ikke fjernes.",
+  "en": "The variant is used in a 2D scene and cannot be removed.",
+  "oversatt": "Die Variante wird in einer 2D-Szene verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.9ea46b6006dc": {
+  "nb": "Samme hendelse to ganger",
+  "en": "The same event twice",
+  "oversatt": "Dasselbe Ereignis doppelt vorhanden"
+ },
+ "core-commands-apply.run.fail.a055aa72fcb4": {
+  "nb": "Ufullstendige bildedata",
+  "en": "Incomplete image data",
+  "oversatt": "Unvollständige Bilddaten"
+ },
+ "core-commands-apply.run.fail.a055aa72fcb4.2": {
+  "nb": "Ufullstendige bildedata",
+  "en": "Incomplete image data",
+  "oversatt": "Unvollständige Bilddaten"
+ },
+ "core-commands-apply.run.fail.a2eb0aadc766": {
+  "nb": "Kildescenen er allerede slått sammen med en annen scene",
+  "en": "The source scene is already merged with another scene",
+  "oversatt": "Die Quellszene ist bereits mit einer anderen Szene zusammengeführt"
+ },
+ "core-commands-apply.run.fail.a36288d20fae": {
+  "nb": "Ressursen har fått visuelle varianter og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The asset has visual variants and cannot be removed. Archive it instead.",
+  "oversatt": "Das Asset besitzt visuelle Varianten und kann nicht entfernt werden. Archivieren Sie es stattdessen."
+ },
+ "core-commands-apply.run.fail.a37af7016617": {
+  "nb": "Ukjent bildefrekvens",
+  "en": "Unknown frame rate",
+  "oversatt": "Unbekannte Bildrate"
+ },
+ "core-commands-apply.run.fail.a3e3956d19b7": {
+  "nb": "Scenen er ikke slått sammen",
+  "en": "The scene has not been merged",
+  "oversatt": "Die Szene wurde nicht zusammengeführt"
+ },
+ "core-commands-apply.run.fail.a46fb444956c": {
+  "nb": "Beskrivelsen hører til et annet segment",
+  "en": "The description belongs to another segment",
+  "oversatt": "Die Beschreibung gehört zu einem anderen Segment"
+ },
+ "core-commands-apply.run.fail.a55702a743e4": {
+  "nb": "Bildet brukes som stillbilde i filmen og kan ikke fjernes.",
+  "en": "The image is used as a still in the film and cannot be removed.",
+  "oversatt": "Das Bild wird als Standbild im Film verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.a68c9d7db744": {
+  "nb": "Faktaarket er for langt (høyst 4000 tegn)",
+  "en": "The fact sheet is too long (at most 4,000 characters)",
+  "oversatt": "Das Datenblatt ist zu lang (maximal 4.000 Zeichen)"
+ },
+ "core-commands-apply.run.fail.a7b384899f9b": {
+  "nb": "Samme lydklipp er med to ganger",
+  "en": "The same audio clip is included twice",
+  "oversatt": "Derselbe Audioclip ist doppelt vorhanden"
+ },
+ "core-commands-apply.run.fail.a8ab2418c1cf": {
+  "nb": "Beskrivelsen må ha mellom 1 og {MAX_PROMPT_CHARS} tegn",
+  "en": "The description must have between 1 and {MAX_PROMPT_CHARS} characters",
+  "oversatt": "Die Beschreibung muss zwischen 1 und {MAX_PROMPT_CHARS} Zeichen lang sein"
+ },
+ "core-commands-apply.run.fail.a978af2390ea": {
+  "nb": "Segmentet har produsert materiale og kan ikke endres",
+  "en": "The segment has produced material and cannot be changed",
+  "oversatt": "Das Segment enthält produziertes Material und kann nicht geändert werden"
+ },
+ "core-commands-apply.run.fail.ab33cacf5990": {
+  "nb": "Ugyldige bildemål",
+  "en": "Invalid image dimensions",
+  "oversatt": "Ungültige Bildabmessungen"
+ },
+ "core-commands-apply.run.fail.ab33cacf5990.2": {
+  "nb": "Ugyldige bildemål",
+  "en": "Invalid image dimensions",
+  "oversatt": "Ungültige Bildabmessungen"
+ },
+ "core-commands-apply.run.fail.abf81837006b": {
+  "nb": "Feil 2D-scene",
+  "en": "Wrong 2D scene",
+  "oversatt": "Falsche 2D-Szene"
+ },
+ "core-commands-apply.run.fail.abf81837006b.2": {
+  "nb": "Feil 2D-scene",
+  "en": "Wrong 2D scene",
+  "oversatt": "Falsche 2D-Szene"
+ },
+ "core-commands-apply.run.fail.ae2bf229e914": {
+  "nb": "Elementet finnes ikke",
+  "en": "The item was not found",
+  "oversatt": "Das Element wurde nicht gefunden"
+ },
+ "core-commands-apply.run.fail.b011bd242f1a": {
+  "nb": "Stilprofilen er valgt for bestemte bruk og kan ikke fjernes ved angring. Fjern den i stilguiden i stedet.",
+  "en": "The style profile is selected for specific uses and cannot be removed by undoing. Remove it in the style guide instead.",
+  "oversatt": "Das Stilprofil ist für bestimmte Verwendungen ausgewählt und kann nicht durch Rückgängigmachen entfernt werden. Entfernen Sie es stattdessen im Styleguide."
+ },
+ "core-commands-apply.run.fail.b05a24446829": {
+  "nb": "Ugyldig antall koblinger.",
+  "en": "Invalid number of links.",
+  "oversatt": "Ungültige Anzahl an Verknüpfungen."
+ },
+ "core-commands-apply.run.fail.b141715260ce": {
+  "nb": "2D-scenen har lag og kan ikke fjernes. Slett den i stedet.",
+  "en": "The 2D scene has layers and cannot be removed. Delete it instead.",
+  "oversatt": "Die 2D-Szene enthält Ebenen und kann nicht entfernt werden. Löschen Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.b157f12cec83": {
+  "nb": "Ugyldig tittelside",
+  "en": "Invalid title page",
+  "oversatt": "Ungültige Titelseite"
+ },
+ "core-commands-apply.run.fail.b34521627676": {
+  "nb": "Blokk-ID-kartet er ufullstendig",
+  "en": "The block ID map is incomplete",
+  "oversatt": "Die Block-ID-Zuordnung ist unvollständig"
+ },
+ "core-commands-apply.run.fail.b44b446a1898": {
+  "nb": "Siste linje må komme etter første",
+  "en": "The last line must come after the first",
+  "oversatt": "Die letzte Zeile muss nach der ersten liegen"
+ },
+ "core-commands-apply.run.fail.b4d4f3fa97b0": {
+  "nb": "Replikken har ingen aktiv lydversjon",
+  "en": "The line has no active audio version",
+  "oversatt": "Die Dialogzeile hat keine aktive Audioversion"
+ },
+ "core-commands-apply.run.fail.b4d4f3fa97b0.2": {
+  "nb": "Replikken har ingen aktiv lydversjon",
+  "en": "The line has no active audio version",
+  "oversatt": "Die Dialogzeile hat keine aktive Audioversion"
+ },
+ "core-commands-apply.run.fail.b68db90b4809": {
+  "nb": "Forekomsten har allerede en rulletekst",
+  "en": "The occurrence already has a credits sequence",
+  "oversatt": "Das Vorkommen enthält bereits einen Abspann"
+ },
+ "core-commands-apply.run.fail.b69011b4bbf1": {
+  "nb": "To blokker kan ikke ha samme plass",
+  "en": "Two blocks cannot occupy the same position",
+  "oversatt": "Zwei Blöcke können nicht dieselbe Position einnehmen"
+ },
+ "core-commands-apply.run.fail.b72075d1a48f": {
+  "nb": "Den nye scenen er tatt i bruk andre steder",
+  "en": "The new scene is used elsewhere",
+  "oversatt": "Die neue Szene wird anderweitig verwendet"
+ },
+ "core-commands-apply.run.fail.b87723b08a65": {
+  "nb": "Produksjonssegmenter viser til blokker som ville blitt flyttet",
+  "en": "Production segments refer to blocks that would be moved",
+  "oversatt": "Produktionssegmente verweisen auf Blöcke, die verschoben würden"
+ },
+ "core-commands-apply.run.fail.ba159a047797": {
+  "nb": "Grensen må være et helt tall mellom 0 og 100 000",
+  "en": "The limit must be a whole number between 0 and 100,000",
+  "oversatt": "Das Limit muss eine ganze Zahl zwischen 0 und 100.000 sein"
+ },
+ "core-commands-apply.run.fail.ba6d1dab4bd7": {
+  "nb": "Ukjent vinkel",
+  "en": "Unknown angle",
+  "oversatt": "Unbekannter Winkel"
+ },
+ "core-commands-apply.run.fail.bacfc2e4bb12": {
+  "nb": "Ugyldig kontrollsum",
+  "en": "Invalid checksum",
+  "oversatt": "Ungültige Prüfsumme"
+ },
+ "core-commands-apply.run.fail.bacfc2e4bb12.2": {
+  "nb": "Ugyldig kontrollsum",
+  "en": "Invalid checksum",
+  "oversatt": "Ungültige Prüfsumme"
+ },
+ "core-commands-apply.run.fail.bc16f25f9b4e": {
+  "nb": "Generert lyd må følge gjeldende manus",
+  "en": "Generated audio must follow the current script",
+  "oversatt": "Generiertes Audio muss dem aktuellen Drehbuch folgen"
+ },
+ "core-commands-apply.run.fail.bc9197915a5a": {
+  "nb": "Ugyldig antall tidskoblinger",
+  "en": "Invalid number of time links",
+  "oversatt": "Ungültige Anzahl an Zeitverknüpfungen"
+ },
+ "core-commands-apply.run.fail.bcfaf6077b74": {
+  "nb": "Samme kobling to ganger",
+  "en": "The same link twice",
+  "oversatt": "Dieselbe Verknüpfung doppelt"
+ },
+ "core-commands-apply.run.fail.be2b3c18c49f": {
+  "nb": "Kan ikke slå en scene sammen med seg selv",
+  "en": "A scene cannot be merged with itself",
+  "oversatt": "Eine Szene kann nicht mit sich selbst zusammengeführt werden"
+ },
+ "core-commands-apply.run.fail.beacd2f4090b": {
+  "nb": "Ingen lag valgt",
+  "en": "No layers selected",
+  "oversatt": "Keine Ebenen ausgewählt"
+ },
+ "core-commands-apply.run.fail.bf6e299735f5": {
+  "nb": "Denne versjonen av scenen tilhører en annen produksjon",
+  "en": "This version of the scene belongs to another production",
+  "oversatt": "Diese Version der Szene gehört zu einer anderen Produktion"
+ },
+ "core-commands-apply.run.fail.bf6e905ff6b8": {
+  "nb": "Bildet må være PNG, JPEG, WebP eller GIF",
+  "en": "The image must be PNG, JPEG, WebP or GIF",
+  "oversatt": "Das Bild muss im Format PNG, JPEG, WebP oder GIF vorliegen"
+ },
+ "core-commands-apply.run.fail.bf6e905ff6b8.2": {
+  "nb": "Bildet må være PNG, JPEG, WebP eller GIF",
+  "en": "The image must be PNG, JPEG, WebP or GIF",
+  "oversatt": "Das Bild muss im Format PNG, JPEG, WebP oder GIF vorliegen"
+ },
+ "core-commands-apply.run.fail.c221967900f0": {
+  "nb": "Forekomstkartet stemmer ikke med bruken av scenen",
+  "en": "The occurrence map does not match the use of the scene",
+  "oversatt": "Die Vorkommen-Zuordnung stimmt nicht mit der Verwendung der Szene überein"
+ },
+ "core-commands-apply.run.fail.c36b4e11057b": {
+  "nb": "Gruppen har noder. Fjern dem fra gruppen først.",
+  "en": "The group has nodes. Remove them from the group first.",
+  "oversatt": "Die Gruppe enthält Nodes. Entfernen Sie diese zuerst aus der Gruppe."
+ },
+ "core-commands-apply.run.fail.c4078f3f4978": {
+  "nb": "Ugyldig lagringssti for bildet",
+  "en": "Invalid storage path for the image",
+  "oversatt": "Ungültiger Speicherpfad für das Bild"
+ },
+ "core-commands-apply.run.fail.c4078f3f4978.2": {
+  "nb": "Ugyldig lagringssti for bildet",
+  "en": "Invalid storage path for the image",
+  "oversatt": "Ungültiger Speicherpfad für das Bild"
+ },
+ "core-commands-apply.run.fail.c4dbc633d267": {
+  "nb": "Varianten brukes på en plakat og kan ikke fjernes.",
+  "en": "The variant is used on a poster and cannot be removed.",
+  "oversatt": "Die Variante wird auf einem Plakat verwendet und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.c5fb828ed558": {
+  "nb": "Ugyldig replikk for ordkobling",
+  "en": "Invalid line for word alignment",
+  "oversatt": "Ungültige Dialogzeile für Wortzuordnung"
+ },
+ "core-commands-apply.run.fail.c631839d8b25": {
+  "nb": "Segmentet tilhører en annen forekomst",
+  "en": "The segment belongs to another occurrence",
+  "oversatt": "Das Segment gehört zu einem anderen Vorkommen"
+ },
+ "core-commands-apply.run.fail.c6864d75c2e4": {
+  "nb": "Elementtypen er uendret",
+  "en": "The element type is unchanged",
+  "oversatt": "Der Elementtyp ist unverändert"
+ },
+ "core-commands-apply.run.fail.c6d8411e74ee": {
+  "nb": "Scenen har allerede en annen 2D-scene",
+  "en": "The scene already has another 2D scene",
+  "oversatt": "Die Szene hat bereits eine andere 2D-Szene"
+ },
+ "core-commands-apply.run.fail.c71669fa3021": {
+  "nb": "Den forrige lydversjonen finnes ikke",
+  "en": "The previous audio version was not found",
+  "oversatt": "Die vorherige Audioversion wurde nicht gefunden"
+ },
+ "core-commands-apply.run.fail.c7a02efe7e5d": {
+  "nb": "For mange planlagte scener",
+  "en": "Too many planned scenes",
+  "oversatt": "Zu viele geplante Szenen"
+ },
+ "core-commands-apply.run.fail.c7a02efe7e5d.2": {
+  "nb": "For mange planlagte scener",
+  "en": "Too many planned scenes",
+  "oversatt": "Zu viele geplante Szenen"
+ },
+ "core-commands-apply.run.fail.c8207819a4b2": {
+  "nb": "Produksjonen inneholder scener og kan ikke angres",
+  "en": "The production contains scenes and cannot be undone",
+  "oversatt": "Die Produktion enthält Szenen und kann nicht rückgängig gemacht werden"
+ },
+ "core-commands-apply.run.fail.c869cd7afd05": {
+  "nb": "Samme harmonisering to ganger.",
+  "en": "The same harmonization twice.",
+  "oversatt": "Gleiche Harmonisierung zweimal."
+ },
+ "core-commands-apply.run.fail.c90237d1bece": {
+  "nb": "Ugyldig scenetype",
+  "en": "Invalid occurrence kind",
+  "oversatt": "Ungültige Vorkommen-Art"
+ },
+ "core-commands-apply.run.fail.c9c3c91b30b8": {
+  "nb": "Forekomsten bruker allerede denne varianten",
+  "en": "The occurrence already uses this variant",
+  "oversatt": "Das Vorkommen verwendet diese Variante bereits"
+ },
+ "core-commands-apply.run.fail.cb37d067be6d": {
+  "nb": "Ingenting å godkjenne",
+  "en": "Nothing to approve",
+  "oversatt": "Nichts zu genehmigen"
+ },
+ "core-commands-apply.run.fail.cb5e3723481e": {
+  "nb": "Ugyldig malendring",
+  "en": "Invalid template change",
+  "oversatt": "Ungültige Vorlagenänderung"
+ },
+ "core-commands-apply.run.fail.cb7291831892": {
+  "nb": "For mange notater i én endring",
+  "en": "Too many notes in one change",
+  "oversatt": "Zu viele Notizen in einer Änderung"
+ },
+ "core-commands-apply.run.fail.cc0b051868a6": {
+  "nb": "Bredden må være et helt tall mellom 16 og 16384",
+  "en": "The width must be a whole number between 16 and 16384",
+  "oversatt": "Die Breite muss eine ganze Zahl zwischen 16 und 16384 sein"
+ },
+ "core-commands-apply.run.fail.cd7f81e8e704": {
+  "nb": "Ugyldige eksportinnstillinger",
+  "en": "Invalid export settings",
+  "oversatt": "Ungültige Exporteinstellungen"
+ },
+ "core-commands-apply.run.fail.cd7f81e8e704.2": {
+  "nb": "Ugyldige eksportinnstillinger",
+  "en": "Invalid export settings",
+  "oversatt": "Ungültige Exporteinstellungen"
+ },
+ "core-commands-apply.run.fail.cdc0d4ddaebf": {
+  "nb": "Scenen er endret i den andre produksjonen i mellomtiden. Lag egen versjon på nytt.",
+  "en": "The scene was changed in the other production in the meantime. Make a separate version again.",
+  "oversatt": "Die Szene wurde in der Zwischenzeit in der anderen Produktion geändert. Erstellen Sie erneut eine eigene Version."
+ },
+ "core-commands-apply.run.fail.ce1c9815ef21": {
+  "nb": "Lyd eller tidskoblinger er koblet til linjer bare den nye versjonen har",
+  "en": "Audio or time links are linked to lines only the new version has",
+  "oversatt": "Audio- oder Zeitverknüpfungen sind mit Zeilen verknüpft, die nur die neue Version enthält"
+ },
+ "core-commands-apply.run.fail.ce6ea8d09faf": {
+  "nb": "Ufullstendige notatdata",
+  "en": "Incomplete note data",
+  "oversatt": "Unvollständige Notizdaten"
+ },
+ "core-commands-apply.run.fail.ce89889b56fc": {
+  "nb": "Samme del to ganger",
+  "en": "The same part twice",
+  "oversatt": "Derselbe Teil zweimal"
+ },
+ "core-commands-apply.run.fail.cea522eeb861": {
+  "nb": "Ugyldig angring av generering",
+  "en": "Invalid generation undo",
+  "oversatt": "Generierung kann nicht rückgängig gemacht werden"
+ },
+ "core-commands-apply.run.fail.d120470befda": {
+  "nb": "Dette er ikke en deling som kan slås tilbake",
+  "en": "This is not a split that can be undone",
+  "oversatt": "Dies ist keine Teilung, die rückgängig gemacht werden kann"
+ },
+ "core-commands-apply.run.fail.d22f37b10dd7": {
+  "nb": "Blokken er allerede fjernet",
+  "en": "The block has already been removed",
+  "oversatt": "Der Block wurde bereits entfernt"
+ },
+ "core-commands-apply.run.fail.d54de575a710": {
+  "nb": "Bildet er gått gjennom i arbeidslisten og kan ikke fjernes.",
+  "en": "The image has been through the worklist and cannot be removed.",
+  "oversatt": "Das Bild wurde in der Arbeitsliste geprüft und kann nicht entfernt werden."
+ },
+ "core-commands-apply.run.fail.d6270f98e85b": {
+  "nb": "For mange koblinger.",
+  "en": "Too many links.",
+  "oversatt": "Zu viele Verknüpfungen."
+ },
+ "core-commands-apply.run.fail.d71ef564dfa8": {
+  "nb": "ID {segmentId} er allerede i bruk",
+  "en": "ID {segmentId} is already in use",
+  "oversatt": "ID {segmentId} wird bereits verwendet"
+ },
+ "core-commands-apply.run.fail.d7e940bc1191": {
+  "nb": "Rulleteksten er allerede fjernet",
+  "en": "The credits sequence is already removed",
+  "oversatt": "Der Abspann wurde bereits entfernt"
+ },
+ "core-commands-apply.run.fail.d9d18b49ae4b": {
+  "nb": "Bare replikker har talespråk",
+  "en": "Only dialogue lines have speech language",
+  "oversatt": "Nur Dialogzeilen haben eine gesprochene Sprache"
+ },
+ "core-commands-apply.run.fail.d9d5816ec86b": {
+  "nb": "En av linjene finnes ikke i manuset",
+  "en": "One of the lines does not exist in the script",
+  "oversatt": "Eine der Zeilen ist im Drehbuch nicht vorhanden"
+ },
+ "core-commands-apply.run.fail.d9e424c52804": {
+  "nb": "Samme node er med flere ganger",
+  "en": "The same node is listed more than once",
+  "oversatt": "Derselbe Node ist mehrfach aufgeführt"
+ },
+ "core-commands-apply.run.fail.da11c5bca828": {
+  "nb": "Scene, variant og forekomst hører ikke sammen",
+  "en": "Scene, variant and occurrence do not belong together",
+  "oversatt": "Szene, Variante und Vorkommen gehören nicht zusammen"
+ },
+ "core-commands-apply.run.fail.da27e402dc1c": {
+  "nb": "Versjonen hører til en annen scene",
+  "en": "The version belongs to another scene",
+  "oversatt": "Die Version gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.dc3d6e9e7817": {
+  "nb": "Segmentet har fått en annen egen beskrivelse i mellomtiden",
+  "en": "The segment has received a different description in the meantime",
+  "oversatt": "Das Segment hat in der Zwischenzeit eine andere Beschreibung erhalten"
+ },
+ "core-commands-apply.run.fail.dd1b7b817053": {
+  "nb": "Prisen må være et tall mellom 0 og 100 000",
+  "en": "The price must be a number between 0 and 100,000",
+  "oversatt": "Der Preis muss eine Zahl zwischen 0 und 100.000 sein"
+ },
+ "core-commands-apply.run.fail.dd384e5d8045": {
+  "nb": "Ingen beskrivelse å fjerne",
+  "en": "No description to remove",
+  "oversatt": "Keine Beschreibung zum Entfernen vorhanden"
+ },
+ "core-commands-apply.run.fail.dd3ff8542967": {
+  "nb": "ID {assetId} er brukt to ganger",
+  "en": "ID {assetId} is used twice",
+  "oversatt": "ID {assetId} wird zweimal verwendet"
+ },
+ "core-commands-apply.run.fail.df194d6d3a3f": {
+  "nb": "Blokken finnes ikke i scenen",
+  "en": "The block does not exist in the scene",
+  "oversatt": "Der Block existiert nicht in der Szene"
+ },
+ "core-commands-apply.run.fail.dffe6b7b50fd": {
+  "nb": "Notatet er for langt (høyst 2000 tegn)",
+  "en": "The note is too long (at most 2,000 characters)",
+  "oversatt": "Die Notiz ist zu lang (maximal 2.000 Zeichen)"
+ },
+ "core-commands-apply.run.fail.e1a4759e48db": {
+  "nb": "Feil prosjekt",
+  "en": "Wrong project",
+  "oversatt": "Falsches Projekt"
+ },
+ "core-commands-apply.run.fail.e1f81c493593": {
+  "nb": "Ugyldig antall linjer.",
+  "en": "Invalid number of lines.",
+  "oversatt": "Ungültige Zeilenanzahl."
+ },
+ "core-commands-apply.run.fail.e2820ee3b7c5": {
+  "nb": "ID {clipId} er brukt to ganger",
+  "en": "ID {clipId} is used twice",
+  "oversatt": "ID {clipId} wird doppelt verwendet"
+ },
+ "core-commands-apply.run.fail.e2c4b2494e3c": {
+  "nb": "Ugyldig antall oversettelser",
+  "en": "Invalid number of translations",
+  "oversatt": "Ungültige Anzahl an Übersetzungen"
+ },
+ "core-commands-apply.run.fail.e2c4b2494e3c.2": {
+  "nb": "Ugyldig antall oversettelser",
+  "en": "Invalid number of translations",
+  "oversatt": "Ungültige Anzahl an Übersetzungen"
+ },
+ "core-commands-apply.run.fail.e5b83a67739d": {
+  "nb": "ID-en er i bruk.",
+  "en": "The ID is in use.",
+  "oversatt": "Die ID wird bereits verwendet."
+ },
+ "core-commands-apply.run.fail.e68866fcd708": {
+  "nb": "Ugyldig utkast for scenen",
+  "en": "Invalid scene draft",
+  "oversatt": "Ungültiger Szenenentwurf"
+ },
+ "core-commands-apply.run.fail.e6c4d2321157": {
+  "nb": "Siste forekomst av scenen kan bare fjernes ved å angre opprettelsen av scenen",
+  "en": "The last occurrence of the scene can only be removed by undoing the creation of the scene",
+  "oversatt": "Das letzte Szenenvorkommen kann nur durch Rückgängigmachen der Szenenerstellung entfernt werden"
+ },
+ "core-commands-apply.run.fail.e833ab87862f": {
+  "nb": "Høyden må være et helt tall mellom 16 og 16384",
+  "en": "The height must be a whole number between 16 and 16384",
+  "oversatt": "Die Höhe muss eine ganze Zahl zwischen 16 und 16384 sein"
+ },
+ "core-commands-apply.run.fail.e834fe833d56": {
+  "nb": "Prosjektet har allerede en hovedproduksjon",
+  "en": "The project already has a main production",
+  "oversatt": "Das Projekt hat bereits eine Hauptproduktion"
+ },
+ "core-commands-apply.run.fail.eb7e8fe80886": {
+  "nb": "Ingen lyd å legge til",
+  "en": "No audio to add",
+  "oversatt": "Kein Audio zum Hinzufügen vorhanden"
+ },
+ "core-commands-apply.run.fail.eb82939b85c5": {
+  "nb": "Den egne versjonen er endret; angre endringene i den først",
+  "en": "The own version has been changed; undo those changes first",
+  "oversatt": "Die eigene Version wurde geändert; machen Sie diese Änderungen zuerst rückgängig"
+ },
+ "core-commands-apply.run.fail.ec88f2a854ad": {
+  "nb": "Segmentet har produsert materiale og kan ikke fjernes",
+  "en": "The segment has produced material and cannot be removed",
+  "oversatt": "Das Segment enthält produziertes Material und kann nicht entfernt werden"
+ },
+ "core-commands-apply.run.fail.ef58bb901e3a": {
+  "nb": "Den egne versjonen har en 2D-scene; angre den først",
+  "en": "The own version has a 2D scene; undo it first",
+  "oversatt": "Die eigene Version enthält eine 2D-Szene; machen Sie diese zuerst rückgängig"
+ },
+ "core-commands-apply.run.fail.f0d32ad7ecb3": {
+  "nb": "Delen tilhører en annen scene",
+  "en": "The part belongs to another scene",
+  "oversatt": "Der Teil gehört zu einer anderen Szene"
+ },
+ "core-commands-apply.run.fail.f1e5c378fda7": {
+  "nb": "Ugyldig trinn i endring av scenevarighet",
+  "en": "Invalid step in scene duration change",
+  "oversatt": "Ungültiger Schritt bei der Änderung der Szenendauer"
+ },
+ "core-commands-apply.run.fail.f29afea92528": {
+  "nb": "Ugyldig oversatt linje.",
+  "en": "Invalid translated line.",
+  "oversatt": "Ungültige übersetzte Zeile."
+ },
+ "core-commands-apply.run.fail.f2fb32b26d93": {
+  "nb": "Ugyldig mediesti",
+  "en": "Invalid media path",
+  "oversatt": "Ungültiger Medienpfad"
+ },
+ "core-commands-apply.run.fail.f3c5ad5ceea2": {
+  "nb": "Relasjonen vises på en plakat og kan ikke angres. Fjern den i stedet.",
+  "en": "The relation appears on a poster and cannot be undone. Remove it instead.",
+  "oversatt": "Die Verknüpfung erscheint auf einem Plakat und kann nicht rückgängig gemacht werden. Entfernen Sie sie stattdessen."
+ },
+ "core-commands-apply.run.fail.f4543f02b71e": {
+  "nb": "Ingen lyd valgt",
+  "en": "No audio selected",
+  "oversatt": "Kein Audio ausgewählt"
+ },
+ "core-commands-apply.run.fail.f57101b8ab6d": {
+  "nb": "Forekomsten har produksjonsmateriale. Deaktiver den i stedet.",
+  "en": "The occurrence has production material. Deactivate it instead.",
+  "oversatt": "Das Vorkommen enthält Produktionsmaterial. Deaktivieren Sie es stattdessen."
+ },
+ "core-commands-apply.run.fail.f5bb30ec8c5b": {
+  "nb": "Velg 1–4 (hvert bilde, toere, treere eller firere)",
+  "en": "Choose 1–4 (every frame, twos, threes or fours)",
+  "oversatt": "Wählen Sie 1–4 (auf Einer, Zweier, Dreier oder Vierer)"
+ },
+ "core-commands-apply.run.fail.f5c87cd8bb67": {
+  "nb": "Blokken brukes av et produksjonssegment",
+  "en": "The block is used by a production segment",
+  "oversatt": "Der Block wird von einem Produktionssegment verwendet"
+ },
+ "core-commands-apply.run.fail.f6065d812b79": {
+  "nb": "«{value1}» bruker allerede stilprofilen «{name}»",
+  "en": "“{value1}” already uses the style profile “{name}”",
+  "oversatt": "„{value1}“ verwendet bereits das Stilprofil „{name}“"
+ },
+ "core-commands-apply.run.fail.f6065d812b79.2": {
+  "nb": "«{value1}» bruker allerede stilprofilen «{name}»",
+  "en": "“{value1}” already uses the style profile “{name}”",
+  "oversatt": "„{value1}“ verwendet bereits das Stilprofil „{name}“"
+ },
+ "core-commands-apply.run.fail.f79f89233d6b": {
+  "nb": "Bildet er for stort (maks 2 GB)",
+  "en": "The image is too large (max 2 GB)",
+  "oversatt": "Das Bild ist zu groß (max. 2 GB)"
+ },
+ "core-commands-apply.run.fail.f79f89233d6b.2": {
+  "nb": "Bildet er for stort (maks 2 GB)",
+  "en": "The image is too large (max 2 GB)",
+  "oversatt": "Das Bild ist zu groß (max. 2 GB)"
+ },
+ "core-commands-apply.run.fail.f7c5485df649": {
+  "nb": "En oversettelse kan ikke flyttes til en annen linje eller et annet språk",
+  "en": "A translation cannot be moved to another line or another language",
+  "oversatt": "Eine Übersetzung kann nicht auf eine andere Zeile oder Sprache verschoben werden"
+ },
+ "core-commands-apply.run.fail.f98aa91c06a3": {
+  "nb": "Ikke slettet",
+  "en": "Not deleted",
+  "oversatt": "Nicht gelöscht"
+ },
+ "core-commands-apply.run.fail.f98aa91c06a3.2": {
+  "nb": "Ikke slettet",
+  "en": "Not deleted",
+  "oversatt": "Nicht gelöscht"
+ },
+ "core-commands-apply.run.fail.fa1e6dfea9a5": {
+  "nb": "Scenen er endret etter delingen og kan ikke slås tilbake automatisk",
+  "en": "The scene was changed after the split and cannot be reverted automatically",
+  "oversatt": "Die Szene wurde nach dem Teilen geändert und kann nicht automatisch zurückgesetzt werden"
+ },
+ "core-commands-apply.run.fail.fb833929f383": {
+  "nb": "Produksjonen må ha et navn",
+  "en": "The production must have a name",
+  "oversatt": "Die Produktion muss einen Namen haben"
+ },
+ "core-commands-apply.run.fail.fce1be24f040": {
+  "nb": "Kameraet er for stort",
+  "en": "The camera is too large",
+  "oversatt": "Die Kamera ist zu groß"
+ },
+ "core-commands-apply.run.fail.fde3c1d2c2ee": {
+  "nb": "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC",
+  "en": "The sound must be MP3, WAV, OGG, WebM, M4A/AAC or FLAC",
+  "oversatt": "Das Audioformat muss MP3, WAV, OGG, WebM, M4A/AAC oder FLAC sein"
+ },
+ "core-commands-apply.run.fail.ff7ff57d4d5b": {
+  "nb": "Ugyldig plassering i lagrekkefølgen",
+  "en": "Invalid position in the layer order",
+  "oversatt": "Ungültige Position in der Ebenenreihenfolge"
+ },
+ "core-commands-apply.run.fail.ff90fc98972c": {
+  "nb": "Manuset er endret. Resultatet er bevart, men ikke aktivert.",
+  "en": "The script has changed. The result is preserved but not activated.",
+  "oversatt": "Das Drehbuch wurde geändert. Das Ergebnis bleibt erhalten, ist jedoch nicht aktiviert."
+ },
+ "core-commands-apply.run.need.16680672678c": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "Das Asset"
+ },
+ "core-commands-apply.run.need.16680672678c.2": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "Das Asset"
+ },
+ "core-commands-apply.run.need.16680672678c.3": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "Das Asset"
+ },
+ "core-commands-apply.run.need.2b6fa9163f18": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.run.need.2b6fa9163f18.2": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.run.need.2b6fa9163f18.3": {
+  "nb": "Produksjonen",
+  "en": "The production",
+  "oversatt": "Die Produktion"
+ },
+ "core-commands-apply.run.need.4d338280178d": {
+  "nb": "Opprinnelig variant",
+  "en": "Original variant",
+  "oversatt": "Ursprüngliche Variante"
+ },
+ "core-commands-apply.run.need.594b13c00857": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.2": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.3": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.4": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.5": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.6": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.7": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.594b13c00857.8": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.run.need.5fcbce4639ae": {
+  "nb": "Overordnet produksjon",
+  "en": "Parent production",
+  "oversatt": "Übergeordnete Produktion"
+ },
+ "core-commands-apply.run.need.6b06525f1944": {
+  "nb": "Målscenen",
+  "en": "The target scene",
+  "oversatt": "Die Zielszene"
+ },
+ "core-commands-apply.run.need.ab5b93958552": {
+  "nb": "Kildevarianten",
+  "en": "The source variant",
+  "oversatt": "Die Quellvariante"
+ },
+ "core-commands-apply.sc.need.e5b3af0e559f": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.scene.need.89e5e8c309f1": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.scene.need.89e5e8c309f1.2": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.scene.need.89e5e8c309f1.3": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.seg.need.6fcf7559c02b": {
+  "nb": "Segmentet",
+  "en": "The segment",
+  "oversatt": "Das Segment"
+ },
+ "core-commands-apply.short.fail.1999e77cd58e": {
+  "nb": "For lang tekst i lydversjonen",
+  "en": "Text in the audio version is too long",
+  "oversatt": "Text in der Audioversion ist zu lang"
+ },
+ "core-commands-apply.source-scene.need.060816a20844": {
+  "nb": "Kildescenen",
+  "en": "The source scene",
+  "oversatt": "Die Quellszene"
+ },
+ "core-commands-apply.source-scene.need.060816a20844.2": {
+  "nb": "Kildescenen",
+  "en": "The source scene",
+  "oversatt": "Die Quellszene"
+ },
+ "core-commands-apply.source.need.f40c5d3b1836": {
+  "nb": "Kildescenen",
+  "en": "The source scene",
+  "oversatt": "Die Quellszene"
+ },
+ "core-commands-apply.source.need.f40c5d3b1836.2": {
+  "nb": "Kildescenen",
+  "en": "The source scene",
+  "oversatt": "Die Quellszene"
+ },
+ "core-commands-apply.source.need.f8ff37fb0b06": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "Die Variante"
+ },
+ "core-commands-apply.source.need.f8ff37fb0b06.2": {
+  "nb": "Varianten",
+  "en": "The variant",
+  "oversatt": "Die Variante"
+ },
+ "core-commands-apply.story-asset.fail.93010b6ee6ee": {
+  "nb": "Karakteren er fjernet",
+  "en": "The character has been removed",
+  "oversatt": "Der Charakter wurde entfernt"
+ },
+ "core-commands-apply.story-asset.fail.afda9e7789a5": {
+  "nb": "Bare karakterer og dyr kan ha en profil i Story Lab",
+  "en": "Only characters and animals can have a profile in Story Lab",
+  "oversatt": "Nur Charaktere und Tiere können ein Profil in Story Lab haben"
+ },
+ "core-commands-apply.story-fact-fields-of.need.07f15bf524aa": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.story-fact-fields-of.need.07f15bf524aa.2": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "Die Szene"
+ },
+ "core-commands-apply.style-profile-fields-of.fail.1a5d7414ab5e": {
+  "nb": "Stilprofilen må ha et navn (maks 120 tegn)",
+  "en": "The style profile must have a name (max 120 characters)",
+  "oversatt": "Das Stilprofil muss einen Namen haben (max. 120 Zeichen)"
+ },
+ "core-commands-apply.style-profile-fields-of.fail.33fe9e5313bb": {
+  "nb": "Forbildebildet må være et bilde",
+  "en": "The reference image must be an image",
+  "oversatt": "Das Referenzbild muss eine Bilddatei sein"
+ },
+ "core-commands-apply.style-profile-fields-of.fail.aa0fe51d1fda": {
+  "nb": "Ugyldig stilprofil",
+  "en": "Invalid style profile",
+  "oversatt": "Ungültiges Stilprofil"
+ },
+ "core-commands-apply.style-profile-fields-of.fail.aa0fe51d1fda.2": {
+  "nb": "Ugyldig stilprofil",
+  "en": "Invalid style profile",
+  "oversatt": "Ungültiges Stilprofil"
+ },
+ "core-commands-apply.style-profile-fields-of.fail.b3e627910868": {
+  "nb": "Prosjektet har allerede en standard stilprofil",
+  "en": "The project already has a default style profile",
+  "oversatt": "Das Projekt hat bereits ein Standard-Stilprofil"
+ },
+ "core-commands-apply.style-profile-fields-of.need.a17eb54a0e1a": {
+  "nb": "Forbildebildet",
+  "en": "The reference image",
+  "oversatt": "Das Referenzbild"
+ },
+ "core-commands-apply.t-occ.need.ce56e174e65d": {
+  "nb": "Forekomsten til versjonen",
+  "en": "The occurrence of the version",
+  "oversatt": "Das Vorkommen der Version"
+ },
+ "core-commands-apply.t.need.0f90ec539d53": {
+  "nb": "Oversettelsen",
+  "en": "The translation",
+  "oversatt": "Die Übersetzung"
+ },
+ "core-commands-apply.t.need.0f90ec539d53.2": {
+  "nb": "Oversettelsen",
+  "en": "The translation",
+  "oversatt": "Die Übersetzung"
+ },
+ "core-commands-apply.t.need.183b43aa1e75": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.2": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.3": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.4": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.5": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.6": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.7": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.183b43aa1e75.8": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "Die Version"
+ },
+ "core-commands-apply.t.need.fbe6c26e5adf": {
+  "nb": "Tidskoblingen",
+  "en": "The time link",
+  "oversatt": "Die Zeitverknüpfung"
+ },
+ "core-commands-apply.t.need.fbe6c26e5adf.2": {
+  "nb": "Tidskoblingen",
+  "en": "The time link",
+  "oversatt": "Die Zeitverknüpfung"
+ },
+ "core-commands-apply.take-media-of.fail.08366892ced8": {
+  "nb": "Ugyldig filinformasjon for filmen",
+  "en": "Invalid file information for the film",
+  "oversatt": "Ungültige Dateiinformationen für den Film"
+ },
+ "core-commands-apply.take-media-of.fail.08366892ced8.2": {
+  "nb": "Ugyldig filinformasjon for filmen",
+  "en": "Invalid file information for the film",
+  "oversatt": "Ungültige Dateiinformationen für den Film"
+ },
+ "core-commands-apply.target.need.02f9cc4b6c43": {
+  "nb": "Målscenen",
+  "en": "The target scene",
+  "oversatt": "Die Zielszene"
+ },
+ "core-commands-apply.target.need.02f9cc4b6c43.2": {
+  "nb": "Målscenen",
+  "en": "The target scene",
+  "oversatt": "Die Zielszene"
+ },
+ "core-commands-apply.target.need.0df9c8578b48": {
+  "nb": "Laget det skal flyttes bak",
+  "en": "The layer to move behind",
+  "oversatt": "Die Ebene, hinter die verschoben werden soll"
+ },
+ "core-commands-apply.template-values-error.message.417af66ba338": {
+  "nb": "Ugyldig variant i feltet",
+  "en": "Invalid variant in the field",
+  "oversatt": "Ungültige Variante im Feld"
+ },
+ "core-commands-apply.template-values-error.message.56aea7e68b2d": {
+  "nb": "Ugyldig innhold",
+  "en": "Invalid content",
+  "oversatt": "Ungültiger Inhalt"
+ },
+ "core-commands-apply.template-values-error.message.56aea7e68b2d.2": {
+  "nb": "Ugyldig innhold",
+  "en": "Invalid content",
+  "oversatt": "Ungültiger Inhalt"
+ },
+ "core-commands-apply.template-values-error.message.aef5bdabb282": {
+  "nb": "Ugyldig felt",
+  "en": "Invalid field",
+  "oversatt": "Ungültiges Feld"
+ },
+ "core-commands-apply.template-values-error.message.b2447a2904d4": {
+  "nb": "For mange felt",
+  "en": "Too many fields",
+  "oversatt": "Zu viele Felder"
+ },
+ "core-commands-apply.template-values-error.message.d049960d7801": {
+  "nb": "Bildet i feltet finnes ikke",
+  "en": "The image in the field does not exist",
+  "oversatt": "Das Bild im Feld existiert nicht"
+ },
+ "core-commands-apply.template-values-error.message.deb39779b502": {
+  "nb": "Ugyldig tekst",
+  "en": "Invalid text",
+  "oversatt": "Ungültiger Text"
+ },
+ "core-commands-apply.template-values-error.message.fe04c8c76c0f": {
+  "nb": "Teksten i feltet har {n} tegn. Grensen er 2000 tegn.",
+  "en": "The text in the field has {n} characters. The limit is 2000 characters.",
+  "oversatt": "Der Text im Feld hat {n} Zeichen. Das Limit liegt bei 2000 Zeichen."
+ },
+ "core-commands-apply.time-link-fields-of.fail.4a6de2a6f03b": {
+  "nb": "Ugyldig tidskobling",
+  "en": "Invalid time link",
+  "oversatt": "Ungültige Zeitverknüpfung"
+ },
+ "core-commands-apply.time-link-fields-of.fail.d840e389ebf5": {
+  "nb": "Blokken hører ikke til scenen",
+  "en": "The block does not belong to the scene",
+  "oversatt": "Der Block gehört nicht zur Szene"
+ },
+ "core-commands-apply.time-link-fields-of.fail.e211b20433e8": {
+  "nb": "Laget hører ikke til scenens 2D-scene",
+  "en": "The layer does not belong to the scene's 2D scene",
+  "oversatt": "Die Ebene gehört nicht zur 2D-Szene der Szene"
+ },
+ "core-commands-apply.time-link-fields-of.fail.f34b6788cf67": {
+  "nb": "Slutten på tidskoblingen må være etter starten",
+  "en": "The end of the time link must be after the start",
+  "oversatt": "Das Ende der Zeitverknüpfung muss nach dem Anfang liegen"
+ },
+ "core-commands-apply.time-link-fields-of.fail.f49c25a8d877": {
+  "nb": "Ugyldig tid for tidskoblingen",
+  "en": "Invalid time for the time link",
+  "oversatt": "Ungültige Zeit für die Zeitverknüpfung"
+ },
+ "core-commands-apply.to-variant-id.variant.fc4c1333b27f": {
+  "nb": "Utseendet etter",
+  "en": "The appearance after",
+  "oversatt": "Das Aussehen danach"
+ },
+ "core-commands-apply.transition-ms-of.fail.5ac489f8e261": {
+  "nb": "Overgangen kan ikke være lengre enn delen",
+  "en": "The transition cannot be longer than the part",
+  "oversatt": "Der Übergang darf nicht länger als der Teil sein"
+ },
+ "core-commands-apply.transition-ms-of.fail.bf3b7c2f75e7": {
+  "nb": "Overgangen må være 0–{MAX_PART_TRANSITION_MS} ms",
+  "en": "The transition must be 0–{MAX_PART_TRANSITION_MS} ms",
+  "oversatt": "Der Übergang muss 0–{MAX_PART_TRANSITION_MS} ms lang sein"
+ },
+ "core-commands-apply.transition-of.fail.b9314a81e22e": {
+  "nb": "Ugyldig overgang",
+  "en": "Invalid transition",
+  "oversatt": "Ungültiger Übergang"
+ },
+ "core-commands-apply.transition-of.fail.b9314a81e22e.2": {
+  "nb": "Ugyldig overgang",
+  "en": "Invalid transition",
+  "oversatt": "Ungültiger Übergang"
+ },
+ "core-commands-apply.transition-of.fail.b9314a81e22e.3": {
+  "nb": "Ugyldig overgang",
+  "en": "Invalid transition",
+  "oversatt": "Ungültiger Übergang"
+ },
+ "core-commands-apply.transition-of.fail.ccad4abddddf": {
+  "nb": "Overgangen må vare mellom 1 og {MAX_TRANSITION_FRAMES} bilder",
+  "en": "The transition must last between 1 and {MAX_TRANSITION_FRAMES} frames",
+  "oversatt": "Der Übergang muss zwischen 1 und {MAX_TRANSITION_FRAMES} Frames dauern"
+ },
+ "core-commands-apply.translation-fields-of.fail.0623198f6f04": {
+  "nb": "En oversettelse gjelder én linje eller ett scenehode",
+  "en": "A translation applies to one line or one scene heading",
+  "oversatt": "Eine Übersetzung gilt für eine Dialogzeile oder eine Szenenüberschrift"
+ },
+ "core-commands-apply.translation-fields-of.fail.14d30ec4a4bb": {
+  "nb": "Oversettelsen er tom. Fjern den i stedet.",
+  "en": "The translation is empty. Remove it instead.",
+  "oversatt": "Die Übersetzung ist leer. Entfernen Sie sie stattdessen."
+ },
+ "core-commands-apply.translation-fields-of.fail.6ea381291e51": {
+  "nb": "Ugyldig revisjon",
+  "en": "Invalid revision",
+  "oversatt": "Ungültige Revision"
+ },
+ "core-commands-apply.translation-fields-of.fail.705cd5c07cc0": {
+  "nb": "Ugyldig språkkode",
+  "en": "Invalid language code",
+  "oversatt": "Ungültiger Sprachcode"
+ },
+ "core-commands-apply.translation-fields-of.fail.73a9adebd4ff": {
+  "nb": "Oversettelsen er for lang",
+  "en": "The translation is too long",
+  "oversatt": "Die Übersetzung ist zu lang"
+ },
+ "core-commands-apply.translation-fields-of.fail.90cb0f0670c0": {
+  "nb": "Ugyldig status",
+  "en": "Invalid status",
+  "oversatt": "Ungültiger Status"
+ }
+}

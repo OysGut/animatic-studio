@@ -1,0 +1,3002 @@
+{
+ "app-script-versions-dialog.compare.div.9b05046bb9d9": {
+  "nb": "Fra",
+  "en": "From",
+  "oversatt": "보낸 사람"
+ },
+ "app-script-versions-dialog.compare.p.5568b12d3fc6": {
+  "nb": "Henter versjoner …",
+  "en": "Loading versions …",
+  "oversatt": "버전 불러오는 중…"
+ },
+ "app-script-versions-dialog.compare.p.cfa2159fa8de": {
+  "nb": "Ingen forskjeller.",
+  "en": "No differences.",
+  "oversatt": "차이점이 없습니다."
+ },
+ "app-script-versions-dialog.compare.p.fdaa3bf07b0e": {
+  "nb": "Kunne ikke hente versjonene.",
+  "en": "Could not load the versions.",
+  "oversatt": "버전을 불러올 수 없습니다."
+ },
+ "app-script-versions-dialog.compare.select.0770bffc7207": {
+  "nb": "Nyere versjon",
+  "en": "Newer version",
+  "oversatt": "최신 버전"
+ },
+ "app-script-versions-dialog.compare.select.5f11ea758846": {
+  "nb": "Eldre versjon",
+  "en": "Older version",
+  "oversatt": "이전 버전"
+ },
+ "app-script-versions-dialog.confirm.set-error.83694ff11e64": {
+  "nb": "Stoppet underveis: {error} Det som ble gjort, kan angres samlet med «Angre» (Ctrl+Z).",
+  "en": "Stopped partway: {error} What was done can be undone together with “Undo” (Ctrl+Z).",
+  "oversatt": "진행 중 중단됨: {error} 완료된 작업은 '실행 취소'(Ctrl+Z)로 한 번에 되돌릴 수 있습니다."
+ },
+ "app-script-versions-dialog.confirm.set-error.fe27baf66e14": {
+  "nb": null,
+  "en": "The restore was only partly completed – undo with ⌘/Ctrl + Z",
+  "oversatt": "복원이 일부만 완료되었습니다. ⌘/Ctrl + Z 키로 실행 취소하세요."
+ },
+ "app-script-versions-dialog.label.message.93ce529c6f7f": {
+  "nb": "Gjør v{number} gjeldende",
+  "en": "Make v{number} current",
+  "oversatt": "v{number}을(를) 현재 버전으로 설정"
+ },
+ "app-script-versions-dialog.line-row.span.50f1a48ac127": {
+  "nb": " (fjernet)",
+  "en": " (removed)",
+  "oversatt": " (삭제됨)"
+ },
+ "app-script-versions-dialog.line-row.span.7b8313c835a9": {
+  "nb": " (ny)",
+  "en": " (new)",
+  "oversatt": " (신규)"
+ },
+ "app-script-versions-dialog.line-row.span.e6c3fc46eda4": {
+  "nb": " (endret)",
+  "en": " (changed)",
+  "oversatt": " (변경됨)"
+ },
+ "app-script-versions-dialog.name.name.cdc6bc05bab6": {
+  "nb": "Versjon {nextNumber}",
+  "en": "Version {nextNumber}",
+  "oversatt": "버전 {nextNumber}"
+ },
+ "app-script-versions-dialog.on-success.set-notice.60c831e46d69": {
+  "nb": "Versjonen er lagret, men varighetsestimatet for den ble ikke lagret.",
+  "en": "The version is saved, but its duration estimate was not saved.",
+  "oversatt": "버전이 저장되었지만, 예상 지속 시간은 저장되지 않았습니다."
+ },
+ "app-script-versions-dialog.partial-restore": {
+  "nb": "Gjenopprettingen ble bare delvis utført – angre med ⌘/Ctrl + Z",
+  "en": "The restore was only partly completed – undo with ⌘/Ctrl + Z",
+  "oversatt": "복원이 일부만 완료되었습니다. ⌘/Ctrl + Z 키로 실행 취소하세요."
+ },
+ "app-script-versions-dialog.restore.aria-label.1ac8fcfa598e": {
+  "nb": "Dette endres i manuset",
+  "en": "This changes in the script",
+  "oversatt": "대본에서 변경되는 내용"
+ },
+ "app-script-versions-dialog.restore.button.0beacee11e9c": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-script-versions-dialog.restore.button.5b0bdea5f10e": {
+  "nb": "Tilbake",
+  "en": "Back",
+  "oversatt": "뒤로"
+ },
+ "app-script-versions-dialog.restore.p.2ddfbddaff73": {
+  "nb": "Henter versjonen …",
+  "en": "Loading the version …",
+  "oversatt": "버전 불러오는 중…"
+ },
+ "app-script-versions-dialog.restore.p.30480d2a56af": {
+  "nb": "Dette settes ikke tilbake:",
+  "en": "This is not set back:",
+  "oversatt": "다음에 대한 되돌리기는 지원되지 않습니다:"
+ },
+ "app-script-versions-dialog.restore.p.54b102ce3f27": {
+  "nb": "Versjonen kan ikke gjøres gjeldende herfra:",
+  "en": "This version cannot be made current from here:",
+  "oversatt": "여기에서는 이 버전을 현재 버전으로 설정할 수 없습니다:"
+ },
+ "app-script-versions-dialog.restore.p.94d964d80e5e": {
+  "nb": "Manuset er allerede likt versjonen. Ingenting å endre.",
+  "en": "The script is already the same as the version. Nothing to change.",
+  "oversatt": "대본이 이미 해당 버전과 동일합니다. 변경할 내용이 없습니다."
+ },
+ "app-script-versions-dialog.restore.p.aafc0c81078c": {
+  "nb": "Manuset settes tilbake til teksten, rekkefølgen, synligheten og overskriftene i versjonen. Ingenting slettes: linjer og scener som er kommet til senere, tas ut av manuset og kan hentes tilbake, og alle versjoner beholdes. Materiale laget fra nyere tekst vil vises som avvik. Endringen kan angres samlet.",
+  "en": "The script is set back to the text, order, visibility and headings in the version. Nothing is deleted: lines and scenes added later are taken out of the script and can be brought back, and all versions are kept. Material made from newer text will show as discrepancies. The change can be undone together.",
+  "oversatt": "대본이 해당 버전의 텍스트, 순서, 표시 여부 및 제목 상태로 되돌아갑니다. 삭제되는 항목은 없습니다. 나중에 추가된 대사와 씬은 대본에서 제외되지만 언제든 다시 가져올 수 있으며, 모든 버전은 보존됩니다. 최신 텍스트를 기반으로 제작된 자료는 불일치로 표시됩니다. 이 변경 사항은 한 번에 실행 취소할 수 있습니다."
+ },
+ "app-script-versions-dialog.restore.span.5dbe5eb3207e": {
+  "nb": "Gjør v{number} – {name} gjeldende",
+  "en": "Make v{number} – {name} current",
+  "oversatt": "v{number} – {name}을(를) 현재 버전으로 설정"
+ },
+ "app-script-versions-dialog.select.option.deacb04cdb8c": {
+  "nb": "Nå (lagret manus)",
+  "en": "Now (saved script)",
+  "oversatt": "현재(저장된 대본)"
+ },
+ "app-script-versions-dialog.show.a.0673a15f1e03": {
+  "nb": "Last ned «{name}»",
+  "en": "Download “{name}”",
+  "oversatt": "“{name}” 다운로드"
+ },
+ "app-script-versions-dialog.show.button.1719fd006ff4": {
+  "nb": "Tilbake",
+  "en": "Back",
+  "oversatt": "뒤로"
+ },
+ "app-script-versions-dialog.show.button.74204ac6d936": {
+  "nb": "Gjør denne versjonen gjeldende",
+  "en": "Make this version current",
+  "oversatt": "이 버전을 현재 버전으로 설정"
+ },
+ "app-script-versions-dialog.show.button.f190ce1c0305": {
+  "nb": "Eksporter PDF",
+  "en": "Export PDF",
+  "oversatt": "PDF 내보내기"
+ },
+ "app-script-versions-dialog.show.p.31cf29d85e49": {
+  "nb": "Filen er laget:",
+  "en": "The file is ready:",
+  "oversatt": "파일이 준비되었습니다:"
+ },
+ "app-script-versions-dialog.show.p.dc810f10ae03": {
+  "nb": "Henter versjonen …",
+  "en": "Loading the version …",
+  "oversatt": "버전 불러오는 중…"
+ },
+ "app-script-versions-dialog.show.span.bdd8b8a46fcd": {
+  "nb": "bare lesing",
+  "en": "read only",
+  "oversatt": "읽기 전용"
+ },
+ "app-script-versions-dialog.versions-dialog.aria-label.00b989f437d0": {
+  "nb": "Navn på versjonen",
+  "en": "Version name",
+  "oversatt": "버전 이름"
+ },
+ "app-script-versions-dialog.versions-dialog.aria-label.d8a80beb1675": {
+  "nb": "Merknad (valgfri)",
+  "en": "Note (optional)",
+  "oversatt": "메모 (선택 사항)"
+ },
+ "app-script-versions-dialog.versions-dialog.button.32ac29172e29": {
+  "nb": "Mot v{number}",
+  "en": "vs v{number}",
+  "oversatt": "v{number} 대비"
+ },
+ "app-script-versions-dialog.versions-dialog.button.9387faa510ff": {
+  "nb": "Lagre versjon",
+  "en": "Save version",
+  "oversatt": "버전 저장"
+ },
+ "app-script-versions-dialog.versions-dialog.button.b294bd06a0d2": {
+  "nb": "Vis",
+  "en": "View",
+  "oversatt": "보기"
+ },
+ "app-script-versions-dialog.versions-dialog.button.e635e8d9147e": {
+  "nb": "Mot nå",
+  "en": "vs now",
+  "oversatt": "현재 대비"
+ },
+ "app-script-versions-dialog.versions-dialog.dialog-description.27b08457ac4a": {
+  "nb": "En versjon er et fast bilde av manuset slik det er lagret nå: rekkefølge, aktive scener, numre og tekst. Den kan aldri endres i ettertid.",
+  "en": "A version is a fixed picture of the script as it is saved now: order, active scenes, numbers and text. It can never be changed afterwards.",
+  "oversatt": "버전은 순서, 활성 씬, 번호 및 텍스트 등 현재 저장된 대본의 고정된 스냅샷입니다. 나중에 변경할 수 없습니다."
+ },
+ "app-script-versions-dialog.versions-dialog.dialog-title.69bba483a0a7": {
+  "nb": "Manusversjoner",
+  "en": "Script versions",
+  "oversatt": "대본 버전"
+ },
+ "app-script-versions-dialog.versions-dialog.l-gjenopprettet-fra-v-v-number-v-name-restored-from-v-v-number-v-name-slice.d02d4cafbedd": {
+  "nb": "Gjenopprettet fra v{number} – {name}",
+  "en": "Restored from v{number} – {name}",
+  "oversatt": "v{number}에서 복원됨 – {name}"
+ },
+ "app-script-versions-dialog.versions-dialog.p.6f7927ecccce": {
+  "nb": "Versjonen ble ikke lagret:",
+  "en": "The version was not saved:",
+  "oversatt": "버전이 저장되지 않았습니다:"
+ },
+ "app-script-versions-dialog.versions-dialog.p.91a2313dd622": {
+  "nb": "Ingen versjoner ennå. Lagre en versjon før store endringer, så kan du alltid se og eksportere manuset slik det var.",
+  "en": "No versions yet. Save a version before big changes, so you can always see and export the script as it was.",
+  "oversatt": "아직 버전이 없습니다. 큰 변경을 하기 전에 버전을 저장하면, 대본의 이전 상태를 언제든 확인하고 내보낼 수 있습니다."
+ },
+ "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
+  "nb": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The database is missing script versions. Contact the administrator to update Animatic Studio.",
+  "oversatt": "데이터베이스에 대본 버전이 없습니다. Animatic Studio를 업데이트하려면 관리자에게 문의하세요."
+ },
+ "app-script-versions-dialog.versions-dialog.p.ec6f907a214f": {
+  "nb": "Henter versjoner …",
+  "en": "Loading versions …",
+  "oversatt": "버전 불러오는 중…"
+ },
+ "app-script-versions-dialog.versions-dialog.p.f0e236b18ee4": {
+  "nb": "Venter til endringene dine er lagret …",
+  "en": "Waiting for your changes to be saved …",
+  "oversatt": "변경 사항이 저장되기를 기다리는 중…"
+ },
+ "app-script-versions-dialog.versions-dialog.placeholder.a0370e7926be": {
+  "nb": "Versjon {nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med produsenten»)",
+  "en": "Version {nextNumber} (e.g. “Draft 9.4” or “After meeting with the producer”)",
+  "oversatt": "버전 {nextNumber} (예: \"초안 9.4\" 또는 \"프로듀서 미팅 후\")"
+ },
+ "app-script-versions-dialog.versions-dialog.placeholder.d8a80beb1675": {
+  "nb": "Merknad (valgfri)",
+  "en": "Note (optional)",
+  "oversatt": "메모 (선택 사항)"
+ },
+ "app-script-versions-dialog.versions-dialog.set-notice.ea1bb525ff46": {
+  "nb": "Manuset er nå som v{number}. Lagre det som en ny versjon hvis du vil ta vare på det.",
+  "en": "The script is now as v{number}. Save it as a new version if you want to keep it.",
+  "oversatt": "대본이 현재 v{number} 상태입니다. 유지하려면 새 버전으로 저장하세요."
+ },
+ "app-script-versions-dialog.versions-dialog.span.1c6db041588a": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "알 수 없음"
+ },
+ "app-share-film-player-page.film-player-page.main.385a941ea606": {
+  "nb": "Denne filmen er ikke lenger delt, eller lenken er feil.",
+  "en": "This film is no longer shared, or the link is wrong.",
+  "oversatt": "이 영상은 더 이상 공유되지 않거나 링크가 잘못되었습니다."
+ },
+ "app-share-film-player-page.film-player-page.main.50aed27d9aaa": {
+  "nb": "Henter filmen …",
+  "en": "Loading the film …",
+  "oversatt": "영상 불러오는 중…"
+ },
+ "app-share-film-share-dialog.days-label.message.5a4047009447": {
+  "nb": "{d} dager",
+  "en": "{d} days",
+  "oversatt": "{d}일"
+ },
+ "app-share-film-share-dialog.days-label.message.a4bdac33eac3": {
+  "nb": "Til jeg trekker den tilbake",
+  "en": "Until I revoke it",
+  "oversatt": "직접 취소할 때까지"
+ },
+ "app-share-film-share-dialog.expires": {
+  "nb": " til {date}",
+  "en": " until {date}",
+  "oversatt": " {date}까지"
+ },
+ "app-share-film-share-dialog.film-share-dialog.button.517bc0ddf2a2": {
+  "nb": "Lag delingslenke",
+  "en": "Create share link",
+  "oversatt": "공유 링크 생성"
+ },
+ "app-share-film-share-dialog.film-share-dialog.button.653a513dd967": {
+  "nb": "Kopiert",
+  "en": "Copied",
+  "oversatt": "복사됨"
+ },
+ "app-share-film-share-dialog.film-share-dialog.button.83646cb35a17": {
+  "nb": "Trekk tilbake",
+  "en": "Revoke",
+  "oversatt": "취소"
+ },
+ "app-share-film-share-dialog.film-share-dialog.button.c47960429bcd": {
+  "nb": "Del …",
+  "en": "Share …",
+  "oversatt": "공유…"
+ },
+ "app-share-film-share-dialog.film-share-dialog.button.cfdd73806aa2": {
+  "nb": "Kopier lenken",
+  "en": "Copy the link",
+  "oversatt": "링크 복사"
+ },
+ "app-share-film-share-dialog.film-share-dialog.dialog-description.d5bff1c6dc21": {
+  "nb": "Lenken viser bare denne filmversjonen. Den gir ikke tilgang til manus, ressurser eller noe annet i prosjektet.",
+  "en": "The link shows only this film version. It gives no access to the script, assets or anything else in the project.",
+  "oversatt": "이 링크는 해당 영상 버전만 표시합니다. 프로젝트의 대본, 에셋 또는 기타 항목에 대한 접근 권한은 부여되지 않습니다."
+ },
+ "app-share-film-share-dialog.film-share-dialog.dialog-title.6399849814e9": {
+  "nb": "Del filmen med QR-kode",
+  "en": "Share the film with a QR code",
+  "oversatt": "QR 코드로 영상 공유"
+ },
+ "app-share-film-share-dialog.film-share-dialog.label.4ec0a35ea370": {
+  "nb": "Lenken virker i",
+  "en": "The link works for",
+  "oversatt": "링크 유효 기간:"
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.0c3aa664633e": {
+  "nb": "Rulleteksten er med i denne versjonen.",
+  "en": "The credits are included in this version.",
+  "oversatt": "이 버전에는 엔딩 크레딧이 포함되어 있습니다."
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.518e7d63fe9d": {
+  "nb": "Sjekker at filmen kan spilles …",
+  "en": "Checking that the film can be played …",
+  "oversatt": "영상이 재생 가능한지 확인하는 중…"
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.5c4a38c4dd48": {
+  "nb": "Rulleteksten er ikke med i denne versjonen.",
+  "en": "The credits are not included in this version.",
+  "oversatt": "이 버전에는 엔딩 크레딧이 포함되어 있지 않습니다."
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.8119b22f18b2": {
+  "nb": "Laster opp filmen …",
+  "en": "Uploading the film …",
+  "oversatt": "영상 업로드 중…"
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.830f8eda6754": {
+  "nb": " til {value1}",
+  "en": " until {value1}",
+  "oversatt": " {value1}까지"
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.9f7a07c8a5ea": {
+  "nb": "Filmversjonen kunne ikke registreres i eksportloggen, så den kan ikke deles. Eksporter på nytt.",
+  "en": "The film version could not be recorded in the export log, so it cannot be shared. Export again.",
+  "oversatt": "내보내기 로그에 영상 버전을 기록할 수 없어 공유할 수 없습니다. 다시 내보내세요."
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.bd4238e22171": {
+  "nb": "Ikke delt ennå. QR-koden vises når filmen er klar.",
+  "en": "Not shared yet. The QR code appears when the film is ready.",
+  "oversatt": "아직 공유되지 않았습니다. 영상이 준비되면 QR 코드가 표시됩니다."
+ },
+ "app-share-film-share-dialog.film-share-dialog.p.c318b43bbde3": {
+  "nb": "Deling krever en nyere databaseversjon.",
+  "en": "Sharing requires a newer database version.",
+  "oversatt": "공유하려면 최신 데이터베이스 버전이 필요합니다."
+ },
+ "app-shell-app-header.app-header.aria-label.226fbea0a428": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "대본 탐색기"
+ },
+ "app-shell-app-header.app-header.aria-label.23c7aa0a7071": {
+  "nb": "Logg ut",
+  "en": "Sign out",
+  "oversatt": "로그아웃"
+ },
+ "app-shell-app-header.app-header.span.23c7aa0a7071": {
+  "nb": "Logg ut",
+  "en": "Sign out",
+  "oversatt": "로그아웃"
+ },
+ "app-shell-app-header.app-header.span.d9df6d2f7af1": {
+  "nb": "Admin",
+  "en": "Admin",
+  "oversatt": "관리자"
+ },
+ "app-shell-app-header.app-header.title.13b0f7b3c913": {
+  "nb": "Min konto: språk, passord, AI-forbruk og personvern",
+  "en": "My account: language, password, AI usage and privacy",
+  "oversatt": "내 계정: 언어, 비밀번호, AI 사용량 및 개인정보 보호"
+ },
+ "app-shell-app-header.app-header.title.1edf5c4e8789": {
+  "nb": "Lukk «Min konto»",
+  "en": "Close “My account”",
+  "oversatt": "\"내 계정\" 닫기"
+ },
+ "app-shell-app-header.app-header.title.226fbea0a428": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "대본 탐색기"
+ },
+ "app-shell-app-header.app-header.title.23c7aa0a7071": {
+  "nb": "Logg ut",
+  "en": "Sign out",
+  "oversatt": "로그아웃"
+ },
+ "app-shell-app-header.app-header.title.bbf114892f89": {
+  "nb": "Administrasjon: brukere, prosjekter og personvern",
+  "en": "Administration: users, projects and privacy",
+  "oversatt": "관리: 사용자, 프로젝트 및 개인정보 보호"
+ },
+ "app-shell-back-navigation.back-button.aria-label.3861550ee4eb": {
+  "nb": "Tilbake til {label}",
+  "en": "Back to {label}",
+  "oversatt": "{label}(으)로 돌아가기"
+ },
+ "app-shell-back-navigation.back-button.title.3861550ee4eb": {
+  "nb": "Tilbake til {label}",
+  "en": "Back to {label}",
+  "oversatt": "{label}(으)로 돌아가기"
+ },
+ "app-shell-back-stack.bibliotek.bibliotek.e95e5b235aea": {
+  "nb": "Ressursbibliotek",
+  "en": "Asset library",
+  "oversatt": "에셋 라이브러리"
+ },
+ "app-shell-back-stack.manus.manus.b8d7632aa7f9": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-shell-back-stack.montering.montering.467da07f9011": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "편집 (어셈블리)"
+ },
+ "app-shell-back-stack.page-label.message.27767f2f11ed": {
+  "nb": "Prosjektoversikt",
+  "en": "Project overview",
+  "oversatt": "프로젝트 개요"
+ },
+ "app-shell-back-stack.page-label.message.3fa7f2028d6f": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "프로젝트"
+ },
+ "app-shell-back-stack.page-label.message.4470a8757b28": {
+  "nb": "Invitasjon",
+  "en": "Invitation",
+  "oversatt": "초대"
+ },
+ "app-shell-back-stack.page-label.message.98aff45e9461": {
+  "nb": "Forrige side",
+  "en": "Previous page",
+  "oversatt": "이전 페이지"
+ },
+ "app-shell-back-stack.scene.scene.e7e46819bc4f": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-shell-back-stack.utgivelse.utgivelse.286bd54a6b6e": {
+  "nb": "Utgivelse",
+  "en": "Release",
+  "oversatt": "릴리스"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.aria-label.95b8135ba329": {
+  "nb": "Fortsett ved bokmerke",
+  "en": "Continue at bookmark",
+  "oversatt": "북마크 위치에서 계속"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.aria-label.b99bcd654111": {
+  "nb": "Sett bokmerke",
+  "en": "Set bookmark",
+  "oversatt": "북마크 설정"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.span.95b8135ba329": {
+  "nb": "Fortsett ved bokmerke",
+  "en": "Continue at bookmark",
+  "oversatt": "북마크 위치에서 계속"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.span.b99bcd654111": {
+  "nb": "Sett bokmerke",
+  "en": "Set bookmark",
+  "oversatt": "북마크 설정"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.title.9738bf0127a2": {
+  "nb": "Fortsett der du satte bokmerket",
+  "en": "Continue where you set the bookmark",
+  "oversatt": "북마크를 설정한 위치에서 계속"
+ },
+ "app-shell-bookmark-menu.bookmark-menu.title.e054fb3350cf": {
+  "nb": "Sett et personlig bokmerke her (scene, tid og visning)",
+  "en": "Set a personal bookmark here (scene, time and view)",
+  "oversatt": "여기에 개인 북마크 설정 (씬, 시간 및 뷰)"
+ },
+ "app-shell-bookmark-menu.resume.set-message.e0f9e74a6da2": {
+  "nb": "Kunne ikke åpne bokmerket. Det er beholdt. {message}",
+  "en": "Could not open the bookmark. It has been kept. {message}",
+  "oversatt": "북마크를 열 수 없습니다. 북마크는 유지되었습니다. {message}"
+ },
+ "app-shell-bookmark-menu.resume.set-message.e3c3cc444e28": {
+  "nb": "Bokmerket peker til et sted som ikke finnes lenger. Det er beholdt.",
+  "en": "The bookmark points to a place that no longer exists. It has been kept.",
+  "oversatt": "북마크가 더 이상 존재하지 않는 위치를 가리키고 있습니다. 북마크는 유지되었습니다."
+ },
+ "app-shell-bookmark-menu.save.set-message.0d7d623c4fc2": {
+  "nb": "Bokmerket er satt.",
+  "en": "The bookmark is set.",
+  "oversatt": "북마크가 설정되었습니다."
+ },
+ "app-shell-error-details.error-details.aria-label.edd22d4751f8": {
+  "nb": "Teknisk feilmelding",
+  "en": "Technical error message",
+  "oversatt": "기술 오류 메시지"
+ },
+ "app-shell-error-details.error-details.button.369721097502": {
+  "nb": "Kopier feilmeldingen",
+  "en": "Copy the error message",
+  "oversatt": "오류 메시지 복사"
+ },
+ "app-shell-error-details.error-details.button.41d68082e6c7": {
+  "nb": "Kopiert",
+  "en": "Copied",
+  "oversatt": "복사됨"
+ },
+ "app-shell-error-details.error-details.summary.f1c4612e3285": {
+  "nb": "Vis teknisk feilmelding",
+  "en": "Show technical error message",
+  "oversatt": "기술 오류 메시지 표시"
+ },
+ "app-shell-pane-size.pane-resizer.title.e38c76f18960": {
+  "nb": "dra for å endre, dobbeltklikk for standard",
+  "en": "drag to change, double-click for the default",
+  "oversatt": "드래그하여 변경, 더블 클릭하여 기본값으로 복원"
+ },
+ "app-shell-project-nav.nav-label.assembly.00bfb8ce638c": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "편집 (어셈블리)"
+ },
+ "app-shell-project-nav.nav-label.library.04e76b60e919": {
+  "nb": "Ressursbibliotek",
+  "en": "Asset library",
+  "oversatt": "에셋 라이브러리"
+ },
+ "app-shell-project-nav.nav-label.overview.89940b851876": {
+  "nb": "Prosjektoversikt",
+  "en": "Project overview",
+  "oversatt": "프로젝트 개요"
+ },
+ "app-shell-project-nav.nav-label.release.4e44a938bd23": {
+  "nb": "Utgivelse",
+  "en": "Release",
+  "oversatt": "릴리스"
+ },
+ "app-shell-project-nav.nav-label.rig": {
+  "nb": "Rigg",
+  "en": "Rig",
+  "oversatt": "리그"
+ },
+ "app-shell-project-nav.nav-label.scene.e526371b5224": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-shell-project-nav.nav-label.script.d8ab2fbdbb74": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-shell-project-nav.nav-label.storylab.77e0aa3bb71c": {
+  "nb": "Story Lab",
+  "en": "Story Lab",
+  "oversatt": "Story Lab"
+ },
+ "app-shell-project-nav.project-nav.aria-label.401e138c59d2": {
+  "nb": "{label} – kommer i {milestone}",
+  "en": "{label} – coming in {milestone}",
+  "oversatt": "{label} – {milestone}에 제공 예정"
+ },
+ "app-shell-project-nav.project-nav.aria-label.426f16733981": {
+  "nb": "Vis menyen",
+  "en": "Show menu",
+  "oversatt": "메뉴 표시"
+ },
+ "app-shell-project-nav.project-nav.aria-label.8e84932634d1": {
+  "nb": "Skjul menyen",
+  "en": "Hide menu",
+  "oversatt": "메뉴 숨기기"
+ },
+ "app-shell-project-nav.project-nav.title.401e138c59d2": {
+  "nb": "{label} – kommer i {milestone}",
+  "en": "{label} – coming in {milestone}",
+  "oversatt": "{label} – {milestone}에 제공 예정"
+ },
+ "app-shell-project-nav.project-nav.title.426f16733981": {
+  "nb": "Vis menyen",
+  "en": "Show menu",
+  "oversatt": "메뉴 표시"
+ },
+ "app-shell-project-nav.project-nav.title.ec28e1bce3aa": {
+  "nb": "Skjul menyen (bare ikoner)",
+  "en": "Hide menu (icons only)",
+  "oversatt": "메뉴 숨기기 (아이콘만 표시)"
+ },
+ "app-shell-schema-banner.schema-banner.p.4f37935f6a82": {
+  "nb": "Databasen er ikke satt opp ennå. ",
+  "en": "The database is not set up yet. ",
+  "oversatt": "데이터베이스가 아직 설정되지 않았습니다. "
+ },
+ "app-shell-schema-banner.schema-banner.p.93683cf75008": {
+  "nb": "Kontakt administratoren for å oppdatere Animatic Studio til versjon",
+  "en": "Contact the administrator to update Animatic Studio to version",
+  "oversatt": "관리자에게 문의하여 Animatic Studio를 다음 버전으로 업데이트하세요:"
+ },
+ "app-shell-schema-banner.schema-banner.p.ce6b8cbc90ba": {
+  "nb": "Databasen har versjon {version}, men appen trenger versjon {expected}. ",
+  "en": "The database is at version {version}, but the app needs version {expected}. ",
+  "oversatt": "데이터베이스 버전은 {version}이지만 앱에는 {expected} 버전이 필요합니다. "
+ },
+ "app-shell-screen-states.error-state.button.9bfe1dbb8700": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-shell-task-nav.task-nav-inner.aria-label.2b4b6b3d7366": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-shell-task-nav.task-nav-inner.aria-label.ebb67d9d62af": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "이전 씬"
+ },
+ "app-shell-task-nav.task-nav-inner.button.37958c487e84": {
+  "nb": "«{assetName}» skal inn i {length} scener – {remaining} gjenstår",
+  "en": "“{assetName}” goes into {length} scenes – {remaining} left",
+  "oversatt": "“{assetName}” 에셋이 {length}개 씬에 들어갑니다 – {remaining}개 남음"
+ },
+ "app-shell-task-nav.task-nav-inner.div.23deaaaf519f": {
+  "nb": "Oppgaver",
+  "en": "Tasks",
+  "oversatt": "작업"
+ },
+ "app-shell-task-nav.task-nav-inner.sc-placed-l-ikke-dratt-inn-enn-not-dragged-in-yet-sc-note-id-l-merknad-i-manuset-note-in-the-script-filter.457b5371844a": {
+  "nb": "Merknad i manuset",
+  "en": "Note in the script",
+  "oversatt": "대본 메모"
+ },
+ "app-shell-task-nav.task-nav-inner.sc-placed-l-ikke-dratt-inn-enn-not-dragged-in-yet-sc-note-id-l-merknad-i-manuset-note-in-the-script-filter.643bd71b4799": {
+  "nb": "Ikke dratt inn ennå",
+  "en": "Not dragged in yet",
+  "oversatt": "아직 드래그하여 추가하지 않음"
+ },
+ "app-shell-task-nav.task-nav-inner.span.7d649e825e33": {
+  "nb": "{remaining} av {total}",
+  "en": "{remaining} of {total}",
+  "oversatt": "{total}개 중 {remaining}개"
+ },
+ "app-shell-task-nav.task-nav-inner.title.00e38ae456bf": {
+  "nb": "Oppgaver: elementer som skal inn i flere scener",
+  "en": "Tasks: elements that should go into more scenes",
+  "oversatt": "작업: 여러 씬에 추가해야 할 요소"
+ },
+ "app-shell-task-nav.task-nav-inner.title.4ab2a1c98bc8": {
+  "nb": "Neste scene som skal oppdateres",
+  "en": "Next scene to update",
+  "oversatt": "업데이트할 다음 씬"
+ },
+ "app-shell-task-nav.task-nav-inner.title.c176e9fc35c5": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-shell-task-nav.task-nav-inner.title.d5c2c2e5285c": {
+  "nb": "Forrige scene som skal oppdateres",
+  "en": "Previous scene to update",
+  "oversatt": "업데이트할 이전 씬"
+ },
+ "app-shell-workspace-chrome.toolbar.aria-label.1016500c135a": {
+  "nb": "Mer …",
+  "en": "More …",
+  "oversatt": "더 보기 …"
+ },
+ "app-shell-workspace-chrome.toolbar.title.1016500c135a": {
+  "nb": "Mer …",
+  "en": "More …",
+  "oversatt": "더 보기 …"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.group.4a0fe4864f0e": {
+  "nb": "Alle arbeidsflater",
+  "en": "All workspaces",
+  "oversatt": "모든 작업 영역"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.group.4b7bf6dc0072": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.group.85cdc9f27401": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.group.ee161e61156f": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "편집 (어셈블리)"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.05522d505d90": {
+  "nb": "Åpne Manusutforskeren",
+  "en": "Open script explorer",
+  "oversatt": "대본 탐색기 열기"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.0a517bf7a43f": {
+  "nb": "Gjør om (også Ctrl + Y)",
+  "en": "Redo (also Ctrl + Y)",
+  "oversatt": "다시 실행 (Ctrl + Y도 가능)"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.0ebfb0514109": {
+  "nb": "Piltaster",
+  "en": "Arrow keys",
+  "oversatt": "방향키"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.1169c9d07875": {
+  "nb": "Formatsjekk av scenen, gratis",
+  "en": "Format check of the scene, free",
+  "oversatt": "씬 형식 검사, 무료"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.1298e8686626": {
+  "nb": "Til starten av filmen",
+  "en": "To the start of the film",
+  "oversatt": "영화 시작 부분으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.19f45e3c83ab": {
+  "nb": "Lagre teksten du skriver",
+  "en": "Save the text you are writing",
+  "oversatt": "작성 중인 텍스트 저장"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.249a5a94e40c": {
+  "nb": "Flytt valgt lag 1 px (med ⇧: 10 px)",
+  "en": "Move the selected layer 1 px (with ⇧: 10 px)",
+  "oversatt": "선택한 레이어 1 px 이동 (⇧ 사용 시: 10 px)"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.258ae7bc2644": {
+  "nb": "dra",
+  "en": "drag",
+  "oversatt": "드래그"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.2bca7bf47cad": {
+  "nb": "Ett sekund tilbake / fram",
+  "en": "One second back / forward",
+  "oversatt": "1초 뒤로 / 앞으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.301156308449": {
+  "nb": "Forrige / neste linje",
+  "en": "Previous / next line",
+  "oversatt": "이전 / 다음 줄"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.340ebb34b657": {
+  "nb": "Ti bilder tilbake / fram",
+  "en": "Ten frames back / forward",
+  "oversatt": "10프레임 뒤로 / 앞으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.34791d02cc98": {
+  "nb": "under «Synk replikker»",
+  "en": "under “Sync lines”",
+  "oversatt": "“대사 싱크” 항목"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.347d8951a527": {
+  "nb": "i montering og sceneeditor",
+  "en": "in assembly and scene editor",
+  "oversatt": "어셈블리 및 씬 편집기에서"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.379bfc38382c": {
+  "nb": "Spill av / pause",
+  "en": "Play / pause",
+  "oversatt": "재생 / 일시정지"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.379bfc38382c.2": {
+  "nb": "Spill av / pause",
+  "en": "Play / pause",
+  "oversatt": "재생 / 일시정지"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.379bfc38382c.3": {
+  "nb": "Spill av / pause",
+  "en": "Play / pause",
+  "oversatt": "재생 / 일시정지"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.3e9fe2e71960": {
+  "nb": "Lukk dialog eller meny",
+  "en": "Close dialog or menu",
+  "oversatt": "대화 상자 또는 메뉴 닫기"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.41919e9e8c8e": {
+  "nb": "Fjern valgt lydklipp",
+  "en": "Remove the selected audio clip",
+  "oversatt": "선택한 오디오 클립 제거"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.46cf3fd99e27": {
+  "nb": "Flytt scenen",
+  "en": "Move the scene",
+  "oversatt": "씬 이동"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.478d69ac346d": {
+  "nb": "Til slutten av filmen",
+  "en": "To the end of the film",
+  "oversatt": "영화 끝부분으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.48b8b9c2a394": {
+  "nb": "Til starten av scenen, eller forrige scene",
+  "en": "To the start of the scene, or the previous scene",
+  "oversatt": "씬 시작 위치 또는 이전 씬으로 이동"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.4f3eef032509": {
+  "nb": "Rediger valgt linje",
+  "en": "Edit the selected line",
+  "oversatt": "선택한 대사 편집"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.52dbd1e448c4": {
+  "nb": "fokus i tidslinjen",
+  "en": "focus in the timeline",
+  "oversatt": "타임라인에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.52dbd1e448c4.2": {
+  "nb": "fokus i tidslinjen",
+  "en": "focus in the timeline",
+  "oversatt": "타임라인에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.52dbd1e448c4.3": {
+  "nb": "fokus i tidslinjen",
+  "en": "focus in the timeline",
+  "oversatt": "타임라인에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.52dbd1e448c4.4": {
+  "nb": "fokus i tidslinjen",
+  "en": "focus in the timeline",
+  "oversatt": "타임라인에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.61f8a55ad6ab": {
+  "nb": "Slett valgt lag",
+  "en": "Delete the selected layer",
+  "oversatt": "선택한 레이어 삭제"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.672fece39828": {
+  "nb": "Angre din siste endring",
+  "en": "Undo your last change",
+  "oversatt": "마지막 변경 사항 실행 취소"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.7afaa200d59c": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.86270d47db2d": {
+  "nb": "når du kan redigere",
+  "en": "when you can edit",
+  "oversatt": "편집 가능한 상태일 때"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.8e3a233bffb7": {
+  "nb": "Skriv om markert tekst (skrivehjelp)",
+  "en": "Rewrite the selected text (writing assistant)",
+  "oversatt": "선택한 텍스트 다시 쓰기(글쓰기 도우미)"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.958943b6b4cc": {
+  "nb": "scenelisten, med «Endre rekkefølge og synlighet» på",
+  "en": "the scene list, with “Change order and visibility” turned on",
+  "oversatt": "씬 목록, “순서 및 표시 여부 변경” 활성화 시"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.9d89cc71bd58": {
+  "nb": "Forrige / neste scene",
+  "en": "Previous / next scene",
+  "oversatt": "이전 / 다음 씬"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.a707f7e5d53d": {
+  "nb": "Til start / slutt av scenen",
+  "en": "To start / end of the scene",
+  "oversatt": "씬의 시작 / 끝으로 이동"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.b657f94a7795": {
+  "nb": "Avbryt dra eller tegning av bane",
+  "en": "Cancel dragging or drawing a path",
+  "oversatt": "드래그 또는 패스 그리기 취소"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.b8c21a5b3b5d": {
+  "nb": "Vis hurtigtastene",
+  "en": "Show keyboard shortcuts",
+  "oversatt": "단축키 보기"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.c23db520d8dc": {
+  "nb": "Foreslå neste replikk (skrivehjelp)",
+  "en": "Suggest the next line (writing assistant)",
+  "oversatt": "다음 대사 추천(글쓰기 도우미)"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.c2fc9f6cd1bb": {
+  "nb": "Ett bilde tilbake / fram",
+  "en": "One frame back / forward",
+  "oversatt": "1프레임 뒤로 / 앞으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.c2fc9f6cd1bb.2": {
+  "nb": "Ett bilde tilbake / fram",
+  "en": "One frame back / forward",
+  "oversatt": "1프레임 뒤로 / 앞으로"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.cda78a8c5566": {
+  "nb": "fokus i scenelisten",
+  "en": "focus in the scene list",
+  "oversatt": "씬 목록에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.d11ef1468a0d": {
+  "nb": "fokus på lerretet",
+  "en": "focus on the canvas",
+  "oversatt": "캔버스에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.d11ef1468a0d.2": {
+  "nb": "fokus på lerretet",
+  "en": "focus on the canvas",
+  "oversatt": "캔버스에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.d11ef1468a0d.3": {
+  "nb": "fokus på lerretet",
+  "en": "focus on the canvas",
+  "oversatt": "캔버스에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.d5a28a93fc67": {
+  "nb": "Åpne valgt scene i sceneeditoren",
+  "en": "Open the selected scene in the scene editor",
+  "oversatt": "선택한 씬을 씬 에디터에서 열기"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.da8984442944": {
+  "nb": "Flytt valgt scene én plass",
+  "en": "Move the selected scene one place",
+  "oversatt": "선택한 씬을 한 칸 이동"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e4696fac3886": {
+  "nb": "Sett tiden for replikken som står for tur",
+  "en": "Set the time for the line whose turn it is",
+  "oversatt": "다음 차례 대사의 시간 설정"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e4cb52284a42": {
+  "nb": "Mellomrom",
+  "en": "Space",
+  "oversatt": "스페이스바"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e4cb52284a42.2": {
+  "nb": "Mellomrom",
+  "en": "Space",
+  "oversatt": "스페이스바"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e4cb52284a42.3": {
+  "nb": "Mellomrom",
+  "en": "Space",
+  "oversatt": "스페이스바"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e65cb72da1c6": {
+  "nb": "Panorer lerretet",
+  "en": "Pan the canvas",
+  "oversatt": "캔버스 패닝"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e68923e2b5c4": {
+  "nb": "fokus på manussidene",
+  "en": "focus on the script pages",
+  "oversatt": "대본 페이지에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e68923e2b5c4.2": {
+  "nb": "fokus på manussidene",
+  "en": "focus on the script pages",
+  "oversatt": "대본 페이지에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e68923e2b5c4.3": {
+  "nb": "fokus på manussidene",
+  "en": "focus on the script pages",
+  "oversatt": "대본 페이지에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e68923e2b5c4.4": {
+  "nb": "fokus på manussidene",
+  "en": "focus on the script pages",
+  "oversatt": "대본 페이지에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.e68923e2b5c4.5": {
+  "nb": "fokus på manussidene",
+  "en": "focus on the script pages",
+  "oversatt": "대본 페이지에 포커스"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.ee943e1daaad": {
+  "nb": "Slett valgt nøkkelbilde",
+  "en": "Delete the selected keyframe",
+  "oversatt": "선택한 키프레임 삭제"
+ },
+ "app-shortcuts-shortcut-list.shortcut-groups.shortcut.f87ce5770352": {
+  "nb": "Del klippet der avspillingshodet står",
+  "en": "Split the clip at the playhead",
+  "oversatt": "재생 헤드 위치에서 클립 분할"
+ },
+ "app-shortcuts-shortcuts-dialog.shortcuts-button.aria-label.0983d074842a": {
+  "nb": "Hurtigtaster",
+  "en": "Keyboard shortcuts",
+  "oversatt": "단축키"
+ },
+ "app-shortcuts-shortcuts-dialog.shortcuts-button.title.4df0293aed37": {
+  "nb": "Hurtigtaster ({SHORTCUT_HELP_KEY})",
+  "en": "Keyboard shortcuts ({SHORTCUT_HELP_KEY})",
+  "oversatt": "단축키({SHORTCUT_HELP_KEY})"
+ },
+ "app-shortcuts-shortcuts-dialog.shortcuts-dialog.dialog-description.b1a4afa3de19": {
+  "nb": "Tastene virker når du ikke skriver i et tekstfelt. På Windows og Linux brukes Ctrl der Mac bruker ⌘. Trykk",
+  "en": "The keys work when you are not typing in a text field. On Windows and Linux, Ctrl is used where Mac uses ⌘. Press",
+  "oversatt": "단축키는 텍스트 입력란을 작성하고 있지 않을 때 작동합니다. Windows 및 Linux에서는 Mac의 ⌘ 대신 Ctrl 키를 사용합니다. 누르기:"
+ },
+ "app-shortcuts-shortcuts-dialog.shortcuts-dialog.dialog-description.ffa392a8c581": {
+  "nb": "for å åpne denne oversikten.",
+  "en": "to open this overview.",
+  "oversatt": "이 개요를 열려면 누르세요."
+ },
+ "app-shortcuts-shortcuts-dialog.shortcuts-dialog.dialog-title.2ab72345ccfe": {
+  "nb": "Hurtigtaster",
+  "en": "Keyboard shortcuts",
+  "oversatt": "키보드 단축키"
+ },
+ "app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-description.318ac92ee7cc": {
+  "nb": "En premissnode og én node per scene i fortellingstid. Scener som allerede er på canvaset, hoppes over.",
+  "en": "A premise node and one node per scene in story time. Scenes already on the canvas are skipped.",
+  "oversatt": "스토리 시간 기준 전제 노드 하나와 씬당 노드 하나입니다. 캔버스에 이미 있는 씬은 건너뜁니다."
+ },
+ "app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.dialog-title.efa0788452c2": {
+  "nb": "Bygg fra manuset",
+  "en": "Build from the script",
+  "oversatt": "대본에서 빌드"
+ },
+ "app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.p.562f98ce63e5": {
+  "nb": "Alt fra manuset er allerede på canvaset.",
+  "en": "Everything from the script is already on the canvas.",
+  "oversatt": "대본의 모든 항목이 이미 캔버스에 있습니다."
+ },
+ "app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.toolbar-button.cb63358027a1": {
+  "nb": "Legg til {size} noder",
+  "en": "Add {size} nodes",
+  "oversatt": "노드 {size}개 추가"
+ },
+ "app-storylab-canvas-build-from-script-dialog.build-from-script-dialog.toolbar-button.dda5c0ca6f51": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-canvas-build-from-script-dialog.e.cmds-run.891234c2c685": {
+  "nb": "Bygg fra manuset",
+  "en": "Build from the script",
+  "oversatt": "대본에서 빌드"
+ },
+ "app-storylab-canvas-canvas-inspector.canvas-inspector.p.366a10b1c6df": {
+  "nb": "Velg en node for å redigere den. Dobbeltklikk eller trykk Enter.",
+  "en": "Select a node to edit it. Double-click or press Enter.",
+  "oversatt": "편집할 노드를 선택하세요. 더블 클릭하거나 Enter 키를 누르세요."
+ },
+ "app-storylab-canvas-canvas-inspector.canvas-inspector.p.45d45f263000": {
+  "nb": "{length} noder er valgt. Velg «Koble» for å koble to noder, eller «Grupper».",
+  "en": "{length} nodes are selected. Choose “Connect” to connect two nodes, or “Group”.",
+  "oversatt": "노드 {length}개가 선택되었습니다. 두 노드를 연결하려면 '연결'을 선택하거나 '그룹화'를 선택하세요."
+ },
+ "app-storylab-canvas-canvas-inspector.canvas-inspector.title.e2df95891216": {
+  "nb": "Kobling",
+  "en": "Connection",
+  "oversatt": "연결"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.aria-label.5061a80a909d": {
+  "nb": "Type kobling",
+  "en": "Connection type",
+  "oversatt": "연결 유형"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.aria-label.6b9355fb0aef": {
+  "nb": "Etikett",
+  "en": "Label",
+  "oversatt": "레이블"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.cmds-run.0aa05ab0a8a6": {
+  "nb": "Endre kobling",
+  "en": "Edit connection",
+  "oversatt": "연결 편집"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.cmds-run.a6faed03e463": {
+  "nb": "Fjern kobling",
+  "en": "Remove connection",
+  "oversatt": "연결 제거"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.label.bb187c370be8": {
+  "nb": "Fjern koblingen",
+  "en": "Remove the connection",
+  "oversatt": "연결 제거"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.p.dc68a8fc8941": {
+  "nb": "Uten tittel",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.placeholder.6b9355fb0aef": {
+  "nb": "Etikett",
+  "en": "Label",
+  "oversatt": "레이블"
+ },
+ "app-storylab-canvas-canvas-inspector.edge-row.title.bb187c370be8": {
+  "nb": "Fjern koblingen",
+  "en": "Remove the connection",
+  "oversatt": "연결 제거"
+ },
+ "app-storylab-canvas-canvas-inspector.flush.cmds-run.632f8c908310": {
+  "nb": "Endre tekst på canvaset",
+  "en": "Edit text on the canvas",
+  "oversatt": "캔버스에서 텍스트 편집"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.cmds-run.56709082f161": {
+  "nb": "Fjern fra canvaset",
+  "en": "Remove from the canvas",
+  "oversatt": "캔버스에서 제거"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.option.90b54e67ec34": {
+  "nb": "Standard for typen",
+  "en": "Default for the type",
+  "oversatt": "유형 기본값"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.option.cb0b50044448": {
+  "nb": "Ikke koblet",
+  "en": "Not linked",
+  "oversatt": "연결되지 않음"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.option.cb0b50044448.2": {
+  "nb": "Ikke koblet",
+  "en": "Not linked",
+  "oversatt": "연결되지 않음"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.p.c930329c39a9": {
+  "nb": "Ingen koblinger. Dra fra kanten av en node, eller velg to noder og «Koble».",
+  "en": "No connections. Drag from the edge of a node, or select two nodes and “Connect”.",
+  "oversatt": "연결이 없습니다. 노드 가장자리에서 드래그하거나 노드 두 개를 선택한 뒤 '연결'을 누르세요."
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.1227024dc6c7": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.12297b87975c": {
+  "nb": "Kobling til biblioteket",
+  "en": "Link to the library",
+  "oversatt": "라이브러리 연결"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.3ae895b2aecc": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "색상"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.6d1127a58908": {
+  "nb": "Tittel",
+  "en": "Title",
+  "oversatt": "제목"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.c04cb7ce4c65": {
+  "nb": "Kobling til en scene",
+  "en": "Link to a scene",
+  "oversatt": "씬에 연결"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.span.fb4c82aeee51": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.title.23cd82d675c6": {
+  "nb": "Koblinger",
+  "en": "Connections",
+  "oversatt": "연결"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.32f1d135ac5c": {
+  "nb": "Opprett scene i manuset …",
+  "en": "Create scene in the script …",
+  "oversatt": "대본에 씬 생성…"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.5c1668c85c3f": {
+  "nb": "Fjern noden",
+  "en": "Remove the node",
+  "oversatt": "노드 제거"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.a4b566f485f3": {
+  "nb": "Åpne karakteren",
+  "en": "Open the character",
+  "oversatt": "캐릭터 열기"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.a9875b96f31d": {
+  "nb": "Opprett sted i biblioteket …",
+  "en": "Create location in the library …",
+  "oversatt": "라이브러리에 로케이션 생성…"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.c1df78b9b97c": {
+  "nb": "Åpne i Scenelaben",
+  "en": "Open in the Scene Lab",
+  "oversatt": "씬 랩에서 열기"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.toolbar-button.f7932c4c754e": {
+  "nb": "Opprett i biblioteket …",
+  "en": "Create in the library …",
+  "oversatt": "라이브러리에 생성…"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.update.3bcc663172a5": {
+  "nb": "Koble til en scene",
+  "en": "Link to a scene",
+  "oversatt": "씬에 연결"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.update.64511bb6108a": {
+  "nb": "Endre nodetype",
+  "en": "Change node type",
+  "oversatt": "노드 유형 변경"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.update.b29f1732feac": {
+  "nb": "Koble til biblioteket",
+  "en": "Link to the library",
+  "oversatt": "라이브러리에 연결"
+ },
+ "app-storylab-canvas-canvas-inspector.node-form.update.c13375100abe": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "색상 변경"
+ },
+ "app-storylab-canvas-canvas-inspector.save.cmds-run.a21723671e85": {
+  "nb": "Endre kobling",
+  "en": "Edit connection",
+  "oversatt": "연결 편집"
+ },
+ "app-storylab-canvas-canvas-nodes.accent-brand.accent-brand.0b1cc44ff2cf": {
+  "nb": "Aksent",
+  "en": "Accent",
+  "oversatt": "강조"
+ },
+ "app-storylab-canvas-canvas-nodes.accent-warm.accent-warm.79e6a4bde59b": {
+  "nb": "Varm",
+  "en": "Warm",
+  "oversatt": "따뜻하게"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.aria-label.406f71ff7ff1": {
+  "nb": "Åpne karakteren",
+  "en": "Open the character",
+  "oversatt": "캐릭터 열기"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.aria-label.5bbbbf07456c": {
+  "nb": "Åpne i Scenelaben",
+  "en": "Open in the Scene Lab",
+  "oversatt": "씬 랩에서 열기"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.aria-label.60e39e1fafa3": {
+  "nb": "Koble hit",
+  "en": "Connect here",
+  "oversatt": "여기에 연결"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.aria-label.e00fa4c90f76": {
+  "nb": "Koble herfra",
+  "en": "Connect from here",
+  "oversatt": "여기서 연결"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.button.73160a1f3319": {
+  "nb": "Åpne",
+  "en": "Open",
+  "oversatt": "열기"
+ },
+ "app-storylab-canvas-canvas-nodes.node-body.strong.53b4cb83313f": {
+  "nb": "Uten tittel",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-storylab-canvas-canvas-nodes.note.note.280ce95b5018": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "노트"
+ },
+ "app-storylab-canvas-canvas-nodes.status-danger.status-danger.39de3665e2e0": {
+  "nb": "Rød",
+  "en": "Red",
+  "oversatt": "빨강"
+ },
+ "app-storylab-canvas-canvas-nodes.status-discrepancy.status-discrepancy.9c6225d46104": {
+  "nb": "Oransje",
+  "en": "Orange",
+  "oversatt": "주황"
+ },
+ "app-storylab-canvas-canvas-nodes.status-running.status-running.3ef4ba5dd95d": {
+  "nb": "Blå",
+  "en": "Blue",
+  "oversatt": "파랑"
+ },
+ "app-storylab-canvas-canvas-nodes.status-success.status-success.b1fc5276ed8f": {
+  "nb": "Grønn",
+  "en": "Green",
+  "oversatt": "초록"
+ },
+ "app-storylab-canvas-canvas-nodes.status-uncertain.status-uncertain.301fff7cbc3e": {
+  "nb": "Gul",
+  "en": "Yellow",
+  "oversatt": "노랑"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-description.ef8a99fd7fcb": {
+  "nb": "Ingenting endres før du bekrefter. Du kan angre etterpå.",
+  "en": "Nothing changes until you confirm. You can undo afterwards.",
+  "oversatt": "확인할 때까지 변경되지 않습니다. 나중에 실행 취소할 수 있습니다."
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-title.37f63e7a4f1d": {
+  "nb": "Opprett i biblioteket",
+  "en": "Create in the library",
+  "oversatt": "라이브러리에 생성"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.dialog-title.4ec92e80b723": {
+  "nb": "Opprett scene i manuset",
+  "en": "Create scene in the script",
+  "oversatt": "대본에 씬 생성"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.link.0fae73108cf8": {
+  "nb": "Vis i manuset",
+  "en": "Show in the script",
+  "oversatt": "대본에서 보기"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.link.70b58daab9e8": {
+  "nb": "Vis i biblioteket",
+  "en": "Show in the library",
+  "oversatt": "라이브러리에서 보기"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.6dd1765c83e0": {
+  "nb": "Etter {value1}",
+  "en": "After {value1}",
+  "oversatt": "{value1} 뒤"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.cf09e178e567": {
+  "nb": "Først i filmen",
+  "en": "First in the film",
+  "oversatt": "영화의 맨 처음"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.p.3a9b48e35e5c": {
+  "nb": "Ny ressurs: {value1} «{title}»",
+  "en": "New asset: {value1} “{title}”",
+  "oversatt": "새 에셋: {value1} “{title}”"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.p.491cd1d6736a": {
+  "nb": "Produksjon: {value1} (hovedvarianten, ny scene)",
+  "en": "Production: {value1} (main variant, new scene)",
+  "oversatt": "프로덕션: {value1} (기본 변형, 새 씬)"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.p.bae90363025a": {
+  "nb": "Ferdig. Noden er koblet.",
+  "en": "Done. The node is linked.",
+  "oversatt": "완료되었습니다. 노드가 연결되었습니다."
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.span.3750d8105fc9": {
+  "nb": "Ressurstype",
+  "en": "Asset type",
+  "oversatt": "에셋 유형"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.span.ec8974d17c76": {
+  "nb": "Lag også en Story Lab-profil med teksten som notat",
+  "en": "Also create a Story Lab profile with the text as a note",
+  "oversatt": "텍스트를 노트로 포함하여 Story Lab 프로필도 생성"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.span.ed14a5640f8d": {
+  "nb": "Plassering",
+  "en": "Placement",
+  "oversatt": "위치"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.toolbar-button.0dd2abc46e6f": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.toolbar-button.b4dc3af018c6": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.toolbar-button.b986808c0bee": {
+  "nb": "Bekreft",
+  "en": "Confirm",
+  "oversatt": "확인"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.e.run-group.20b2d472b6ae": {
+  "nb": "Overfør fra canvaset",
+  "en": "Transfer from the canvas",
+  "oversatt": "캔버스에서 가져오기"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.645e20b17089": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "장소"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.9c18f78d2fad": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e637c9760c4d": {
+  "nb": "Dyr",
+  "en": "Animal",
+  "oversatt": "동물"
+ },
+ "app-storylab-canvas-canvas-transfer-dialog.kind-label.message.e7f18511b330": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "캐릭터"
+ },
+ "app-storylab-canvas-canvas-view.add-node.run.02796a2af8e5": {
+  "nb": "Ny node",
+  "en": "New node",
+  "oversatt": "새 노드"
+ },
+ "app-storylab-canvas-canvas-view.aria-label.aria-label.555e042d54cd": {
+  "nb": "Uten tittel",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-storylab-canvas-canvas-view.canvas.aria-label.335eee4849d4": {
+  "nb": "Skrivecanvas",
+  "en": "Writing canvas",
+  "oversatt": "작성 캔버스"
+ },
+ "app-storylab-canvas-canvas-view.canvas.div.58823685172f": {
+  "nb": "Canvaset er tomt. Lag en node, bygg fra manuset eller start et intervju.",
+  "en": "The canvas is empty. Add a node, build from the script or start an interview.",
+  "oversatt": "캔버스가 비어 있습니다. 노드를 추가하거나 대본을 기반으로 생성하거나 인터뷰를 시작하세요."
+ },
+ "app-storylab-canvas-canvas-view.canvas.label.6e25d75b559e": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "확대"
+ },
+ "app-storylab-canvas-canvas-view.canvas.label.7d029ced0ca6": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "축소"
+ },
+ "app-storylab-canvas-canvas-view.canvas.label.7d9007ca9c1c": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "화면에 맞추기"
+ },
+ "app-storylab-canvas-canvas-view.canvas.label.e17fbdaa8bf5": {
+  "nb": "Fokuser på utvalg",
+  "en": "Focus on selection",
+  "oversatt": "선택 영역에 맞추기"
+ },
+ "app-storylab-canvas-canvas-view.canvas.span.8e639ce388b6": {
+  "nb": "{length} noder",
+  "en": "{length} nodes",
+  "oversatt": "{length}개 노드"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.4f98c3708e68": {
+  "nb": "Canvas",
+  "en": "Canvas",
+  "oversatt": "캔버스"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.6e25d75b559e": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "확대"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.7d029ced0ca6": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "축소"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.7d9007ca9c1c": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "화면에 맞추기"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.815ed7d54d8d": {
+  "nb": "Koble to valgte noder",
+  "en": "Connect two selected nodes",
+  "oversatt": "선택한 두 노드 연결"
+ },
+ "app-storylab-canvas-canvas-view.canvas.title.e17fbdaa8bf5": {
+  "nb": "Fokuser på utvalg",
+  "en": "Focus on selection",
+  "oversatt": "선택 영역에 맞추기"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.2612c8d2b4d6": {
+  "nb": "Bygg fra manuset …",
+  "en": "Build from the script …",
+  "oversatt": "대본에서 생성 …"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.268a7d51a18f": {
+  "nb": "Inspektør",
+  "en": "Inspector",
+  "oversatt": "인스펙터"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.43cb90c0bda5": {
+  "nb": "Grupper",
+  "en": "Group",
+  "oversatt": "그룹화"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.445b269418e0": {
+  "nb": "Ny node",
+  "en": "New node",
+  "oversatt": "새 노드"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.63854994c934": {
+  "nb": "Koble",
+  "en": "Connect",
+  "oversatt": "연결"
+ },
+ "app-storylab-canvas-canvas-view.canvas.toolbar-button.6c46ab1b7f71": {
+  "nb": "Intervju",
+  "en": "Interview",
+  "oversatt": "인터뷰"
+ },
+ "app-storylab-canvas-canvas-view.connect-selected.run.fbcc3eb43678": {
+  "nb": "Koble noder",
+  "en": "Connect nodes",
+  "oversatt": "노드 연결"
+ },
+ "app-storylab-canvas-canvas-view.duplicate.run.8b432d431e87": {
+  "nb": "Dupliser",
+  "en": "Duplicate",
+  "oversatt": "복제"
+ },
+ "app-storylab-canvas-canvas-view.e.run-group.44002b698871": {
+  "nb": "Grupper",
+  "en": "Group",
+  "oversatt": "그룹화"
+ },
+ "app-storylab-canvas-canvas-view.on-connect.run.2d5e3c67666b": {
+  "nb": "Koble noder",
+  "en": "Connect nodes",
+  "oversatt": "노드 연결"
+ },
+ "app-storylab-canvas-canvas-view.on-key-down-capture.run.51d93c055d09": {
+  "nb": "Fjern kobling",
+  "en": "Remove connection",
+  "oversatt": "연결 해제"
+ },
+ "app-storylab-canvas-canvas-view.on-key-down-capture.run.bc9bee59aa21": {
+  "nb": "Flytt på canvaset",
+  "en": "Move on the canvas",
+  "oversatt": "캔버스에서 이동"
+ },
+ "app-storylab-canvas-canvas-view.on-node-drag-stop.run.f2e450b7e14e": {
+  "nb": "Flytt på canvaset",
+  "en": "Move on the canvas",
+  "oversatt": "캔버스에서 이동"
+ },
+ "app-storylab-canvas-canvas-view.remove.run.51405fd6540d": {
+  "nb": "Fjern fra canvaset",
+  "en": "Remove from the canvas",
+  "oversatt": "캔버스에서 제거"
+ },
+ "app-storylab-canvas-canvas-view.title.title.04a747dada6b": {
+  "nb": "Gruppe",
+  "en": "Group",
+  "oversatt": "그룹"
+ },
+ "app-storylab-canvas-lazy-canvas-view.loading.p.088ac2d65d7a": {
+  "nb": "Henter canvaset …",
+  "en": "Loading the canvas …",
+  "oversatt": "캔버스 불러오는 중 …"
+ },
+ "app-storylab-character-workspace.arc-section.cmds-run.cbffd3d2de88": {
+  "nb": "Nytt stadium i karakterbuen",
+  "en": "New stage in the character arc",
+  "oversatt": "캐릭터 아크의 새 단계"
+ },
+ "app-storylab-character-workspace.arc-section.label.e4fa46f524b3": {
+  "nb": "Nytt stadium",
+  "en": "New stage",
+  "oversatt": "새 단계"
+ },
+ "app-storylab-character-workspace.arc-section.p.1a8352a1b17e": {
+  "nb": "Ingen stadier. Et stadium overstyrer felt i profilen fra en scene og utover i fortellingen.",
+  "en": "No stages. A stage overrides profile fields from a scene onwards in the story.",
+  "oversatt": "단계가 없습니다. 단계는 스토리의 특정 씬부터 프로필 필드를 덮어씁니다."
+ },
+ "app-storylab-character-workspace.arc-section.title.b8dda9f7085d": {
+  "nb": "Karakterbue",
+  "en": "Character arc",
+  "oversatt": "캐릭터 아크"
+ },
+ "app-storylab-character-workspace.arc-section.title.e4fa46f524b3": {
+  "nb": "Nytt stadium",
+  "en": "New stage",
+  "oversatt": "새 단계"
+ },
+ "app-storylab-character-workspace.character-workspace.cmds-run.0987cdaca7ba": {
+  "nb": "Hent tilbake profilen",
+  "en": "Restore the profile",
+  "oversatt": "프로필 복원"
+ },
+ "app-storylab-character-workspace.character-workspace.cmds-run.4a6f5e89223c": {
+  "nb": "Fjern profilen til {name}",
+  "en": "Remove the profile of {name}",
+  "oversatt": "{name}의 프로필 제거"
+ },
+ "app-storylab-character-workspace.character-workspace.p.9711edf20e27": {
+  "nb": "Profilen er fjernet. Stadier og fakta er beholdt.",
+  "en": "The profile has been removed. Stages and facts are kept.",
+  "oversatt": "프로필이 제거되었습니다. 단계와 팩트는 유지됩니다."
+ },
+ "app-storylab-character-workspace.character-workspace.p.c3e5f02a0f35": {
+  "nb": "{name} har ingen profil ennå.",
+  "en": "{name} has no profile yet.",
+  "oversatt": "{name}에게 아직 프로필이 없습니다."
+ },
+ "app-storylab-character-workspace.character-workspace.span.4b264c65ac75": {
+  "nb": "Lagret",
+  "en": "Saved",
+  "oversatt": "저장됨"
+ },
+ "app-storylab-character-workspace.character-workspace.span.8f9b3903a3c4": {
+  "nb": "Ikke lagret: rett feilen i feltet",
+  "en": "Not saved: fix the error in the field",
+  "oversatt": "저장되지 않음: 필드의 오류를 수정하세요"
+ },
+ "app-storylab-character-workspace.character-workspace.span.ab9fed06d72e": {
+  "nb": "Ulagrede endringer …",
+  "en": "Unsaved changes …",
+  "oversatt": "저장되지 않은 변경 사항 …"
+ },
+ "app-storylab-character-workspace.character-workspace.toolbar-button.0987cdaca7ba": {
+  "nb": "Hent tilbake profilen",
+  "en": "Restore the profile",
+  "oversatt": "프로필 복원"
+ },
+ "app-storylab-character-workspace.character-workspace.toolbar-button.3ddc3c238116": {
+  "nb": "Lag profil med AI …",
+  "en": "Create profile with AI …",
+  "oversatt": "AI로 프로필 생성 …"
+ },
+ "app-storylab-character-workspace.character-workspace.toolbar-button.5ed1a21a85a3": {
+  "nb": "Lag tom profil",
+  "en": "Create empty profile",
+  "oversatt": "빈 프로필 생성"
+ },
+ "app-storylab-character-workspace.character-workspace.toolbar-button.84ae6f9c1029": {
+  "nb": "Snakk med {name}",
+  "en": "Talk to {name}",
+  "oversatt": "{name}과(와) 대화하기"
+ },
+ "app-storylab-character-workspace.character-workspace.toolbar-button.f8e5374e5ec2": {
+  "nb": "Fjern profil",
+  "en": "Remove profile",
+  "oversatt": "프로필 제거"
+ },
+ "app-storylab-character-workspace.e.cmds-run.4e9d9abe57b4": {
+  "nb": "Profil for {name}",
+  "en": "Profile for {name}",
+  "oversatt": "{name}의 프로필"
+ },
+ "app-storylab-character-workspace.label.label.3f6e9968474f": {
+  "nb": "Vis karakterbuen",
+  "en": "Show the character arc",
+  "oversatt": "캐릭터 아크 표시"
+ },
+ "app-storylab-character-workspace.label.label.715cf003ff70": {
+  "nb": "Legg sammen {value1}",
+  "en": "Collapse {value1}",
+  "oversatt": "{value1} 접기"
+ },
+ "app-storylab-character-workspace.label.label.74bc66d36bba": {
+  "nb": "Vis {value1}",
+  "en": "Show {value1}",
+  "oversatt": "{value1} 표시"
+ },
+ "app-storylab-character-workspace.label.label.892a50b17ca2": {
+  "nb": "Legg sammen karakterbuen",
+  "en": "Collapse the character arc",
+  "oversatt": "캐릭터 아크 접기"
+ },
+ "app-storylab-character-workspace.stage-editor.aria-label.9940c56fcaf3": {
+  "nb": "Overstyr et felt",
+  "en": "Override a field",
+  "oversatt": "필드 오버라이드"
+ },
+ "app-storylab-character-workspace.stage-editor.button.1993f484d5d4": {
+  "nb": "Ikke overstyr",
+  "en": "Don’t override",
+  "oversatt": "오버라이드 안 함"
+ },
+ "app-storylab-character-workspace.stage-editor.cmds-run.6b781661047c": {
+  "nb": "Fjern stadium",
+  "en": "Remove stage",
+  "oversatt": "단계 제거"
+ },
+ "app-storylab-character-workspace.stage-editor.cmds-run.b39b3591dd73": {
+  "nb": "Endre stadium",
+  "en": "Change stage",
+  "oversatt": "단계 변경"
+ },
+ "app-storylab-character-workspace.stage-editor.label.a159496ebbd1": {
+  "nb": "Fra scene",
+  "en": "From scene",
+  "oversatt": "씬 시작 위치"
+ },
+ "app-storylab-character-workspace.stage-editor.label.ae52fad4a998": {
+  "nb": "Fjern stadiet",
+  "en": "Remove the stage",
+  "oversatt": "단계 제거"
+ },
+ "app-storylab-character-workspace.stage-editor.option.9fdfc39efa16": {
+  "nb": "Overstyr et felt …",
+  "en": "Override a field …",
+  "oversatt": "필드 오버라이드 …"
+ },
+ "app-storylab-character-workspace.stage-editor.title.ae52fad4a998": {
+  "nb": "Fjern stadiet",
+  "en": "Remove the stage",
+  "oversatt": "단계 제거"
+ },
+ "app-storylab-character-workspace.stage-editor.toolbar-button.a0a0e1681fd1": {
+  "nb": "Lagre stadium",
+  "en": "Save stage",
+  "oversatt": "단계 저장"
+ },
+ "app-storylab-conversation-view.conversation-view.p.473dcc9f3b3e": {
+  "nb": "Økten mangler en scene.",
+  "en": "The session has no scene.",
+  "oversatt": "세션에 씬이 없습니다."
+ },
+ "app-storylab-conversation-view.conversation-view.p.486d166b9688": {
+  "nb": "Intervjuet vises ved siden av canvaset. Åpne fanen «Canvas».",
+  "en": "The interview is shown next to the canvas. Open the “Canvas” tab.",
+  "oversatt": "인터뷰가 캔버스 옆에 표시됩니다. “캔버스” 탭을 여세요."
+ },
+ "app-storylab-conversation-view.conversation-view.p.4c9dabff88dc": {
+  "nb": "Henter økten …",
+  "en": "Loading the session …",
+  "oversatt": "세션을 불러오는 중 …"
+ },
+ "app-storylab-conversation-view.conversation-view.p.bb9968d17b09": {
+  "nb": "Økten kunne ikke hentes.",
+  "en": "The session could not be loaded.",
+  "oversatt": "세션을 불러올 수 없습니다."
+ },
+ "app-storylab-conversation-view.conversation.aria-label.60ff4fe9447c": {
+  "nb": "Modus",
+  "en": "Mode",
+  "oversatt": "모드"
+ },
+ "app-storylab-conversation-view.conversation.aria-label.73c1c4f4499d": {
+  "nb": "Fjern regien «{text}»",
+  "en": "Remove the direction “{text}”",
+  "oversatt": "지문 “{text}” 제거"
+ },
+ "app-storylab-conversation-view.conversation.aria-label.7749d2366f27": {
+  "nb": "Gjelder",
+  "en": "Applies to",
+  "oversatt": "적용 대상"
+ },
+ "app-storylab-conversation-view.conversation.aria-label.d7fd6fd88f2e": {
+  "nb": "Melding",
+  "en": "Message",
+  "oversatt": "메시지"
+ },
+ "app-storylab-conversation-view.conversation.aria-label.df02d08d4cfa": {
+  "nb": "Regi / tilstand",
+  "en": "Direction / state",
+  "oversatt": "지문 / 상태"
+ },
+ "app-storylab-conversation-view.conversation.li.e106bff78a8f": {
+  "nb": "Ingen registrerte fakta.",
+  "en": "No recorded facts.",
+  "oversatt": "기록된 정보 없음."
+ },
+ "app-storylab-conversation-view.conversation.p.88c78bb999af": {
+  "nb": "Svaret kunne ikke hentes.",
+  "en": "The reply could not be fetched.",
+  "oversatt": "응답을 가져올 수 없습니다."
+ },
+ "app-storylab-conversation-view.conversation.p.9188c532658b": {
+  "nb": "{name} svarer …",
+  "en": "{name} is answering …",
+  "oversatt": "{name} 응답 중 …"
+ },
+ "app-storylab-conversation-view.conversation.p.9a62cbfa4d26": {
+  "nb": "Analyserer …",
+  "en": "Analysing …",
+  "oversatt": "분석 중 …"
+ },
+ "app-storylab-conversation-view.conversation.p.ae51eee9ebf9": {
+  "nb": "Situasjon",
+  "en": "Situation",
+  "oversatt": "상황"
+ },
+ "app-storylab-conversation-view.conversation.placeholder.50281de2cbc8": {
+  "nb": "Si noe til {name} …",
+  "en": "Say something to {name} …",
+  "oversatt": "{name}에게 말하기 …"
+ },
+ "app-storylab-conversation-view.conversation.placeholder.e2d2ae4e6137": {
+  "nb": "Spør analytikeren …",
+  "en": "Ask the analyst …",
+  "oversatt": "분석가에게 질문하기 …"
+ },
+ "app-storylab-conversation-view.conversation.placeholder.f9c51d91584e": {
+  "nb": "Regi / tilstand, f.eks. «er bakfull»",
+  "en": "Direction / state, e.g. “is hungover”",
+  "oversatt": "지문 / 상태 (예: “숙취 상태임”)"
+ },
+ "app-storylab-conversation-view.conversation.span.3e52466fbc58": {
+  "nb": "{label} · anslått {value2} per melding",
+  "en": "{label} · estimated {value2} per message",
+  "oversatt": "{label} · 메시지당 약 {value2}"
+ },
+ "app-storylab-conversation-view.conversation.span.79597ce15012": {
+  "nb": "Brukt i økten: {value1}",
+  "en": "Spent in the session: {value1}",
+  "oversatt": "세션 내 사용량: {value1}"
+ },
+ "app-storylab-conversation-view.conversation.span.bfe0f05f07e9": {
+  "nb": "Egen hemmelighet",
+  "en": "Own secret",
+  "oversatt": "자신만의 비밀"
+ },
+ "app-storylab-conversation-view.conversation.span.fc926b97a4e0": {
+  "nb": "Finner tekst-AI …",
+  "en": "Finding text AI …",
+  "oversatt": "텍스트 AI 찾는 중…"
+ },
+ "app-storylab-conversation-view.conversation.speaker.5ad3c407afcb": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "분석"
+ },
+ "app-storylab-conversation-view.conversation.speaker.91d2e9712bca": {
+  "nb": "Regissør",
+  "en": "Director",
+  "oversatt": "감독"
+ },
+ "app-storylab-conversation-view.conversation.summary.97c2ee92c2cb": {
+  "nb": "Hva vet {name} nå?",
+  "en": "What does {name} know now?",
+  "oversatt": "현재 {name}이(가) 알고 있는 내용은?"
+ },
+ "app-storylab-conversation-view.conversation.title.e501d314de82": {
+  "nb": "Samtale med {name}",
+  "en": "Conversation with {name}",
+  "oversatt": "{name}와의 대화"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.0bbfca9ab3b6": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.2127f3dc380c": {
+  "nb": "Godta og send",
+  "en": "Accept and send",
+  "oversatt": "수락 및 전송"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.5ad3c407afcb": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "분석"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.61d1dfb777e7": {
+  "nb": "Legg til regi",
+  "en": "Add direction",
+  "oversatt": "디렉션 추가"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.8c4ab6bd3294": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.95f3da9c02f2": {
+  "nb": "I rollen",
+  "en": "In character",
+  "oversatt": "배역 몰입 (In-character)"
+ },
+ "app-storylab-conversation-view.conversation.toolbar-button.ec33bee30796": {
+  "nb": "Send",
+  "en": "Send",
+  "oversatt": "전송"
+ },
+ "app-storylab-conversation-view.name.message.68e2cfa30686": {
+  "nb": "Karakteren",
+  "en": "The character",
+  "oversatt": "캐릭터"
+ },
+ "app-storylab-conversation-view.new-session-form.h2.985791a7101c": {
+  "nb": "Ny samtale med {name}",
+  "en": "New conversation with {name}",
+  "oversatt": "{name}와의 새 대화"
+ },
+ "app-storylab-conversation-view.new-session-form.p.8e052e034bd0": {
+  "nb": "Tidspunkt",
+  "en": "Point in time",
+  "oversatt": "시점"
+ },
+ "app-storylab-conversation-view.new-session-form.span.f5994a12b307": {
+  "nb": "Situasjon (valgfritt)",
+  "en": "Situation (optional)",
+  "oversatt": "상황 (선택 사항)"
+ },
+ "app-storylab-conversation-view.new-session-form.toolbar-button.b2443a466c4b": {
+  "nb": "Start samtalen",
+  "en": "Start the conversation",
+  "oversatt": "대화 시작"
+ },
+ "app-storylab-conversation-view.new-session-form.toolbar-button.d20e9c9b7a64": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-conversation-view.scope-label.message.28a1cda93c2a": {
+  "nb": "økten",
+  "en": "the session",
+  "oversatt": "세션"
+ },
+ "app-storylab-conversation-view.scope-label.message.634c50c5beda": {
+  "nb": "scenen",
+  "en": "the scene",
+  "oversatt": "씬"
+ },
+ "app-storylab-conversation-view.scope-label.message.ae0272e14b8e": {
+  "nb": "neste replikk",
+  "en": "next line",
+  "oversatt": "다음 대사"
+ },
+ "app-storylab-conversation-view.send.set-note.b096b9ad87ec": {
+  "nb": "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
+  "en": "The built-in AI was used because no own text provider could be used.",
+  "oversatt": "자체 텍스트 제공자를 사용할 수 없어 내장 AI가 사용되었습니다."
+ },
+ "app-storylab-conversation-view.title.title.3afbc6605b46": {
+  "nb": "Samtale med {name}",
+  "en": "Conversation with {name}",
+  "oversatt": "{name}와의 대화"
+ },
+ "app-storylab-conversation-view.turn-view.aria-label.7e974fc2f6e3": {
+  "nb": "Lagre som forslag",
+  "en": "Save as suggestion",
+  "oversatt": "제안으로 저장"
+ },
+ "app-storylab-conversation-view.turn-view.aria-label.e8c9466d0c31": {
+  "nb": "Forgren herfra",
+  "en": "Branch from here",
+  "oversatt": "여기서 브랜치 생성"
+ },
+ "app-storylab-conversation-view.turn-view.option.257da54dbe45": {
+  "nb": "Lagre som forslag …",
+  "en": "Save as suggestion …",
+  "oversatt": "제안으로 저장…"
+ },
+ "app-storylab-conversation-view.turn-view.option.4133390abea1": {
+  "nb": "Motivasjon",
+  "en": "Motivation",
+  "oversatt": "동기"
+ },
+ "app-storylab-conversation-view.turn-view.option.5b466c6c7c5f": {
+  "nb": "Profilendring",
+  "en": "Profile change",
+  "oversatt": "프로필 변경"
+ },
+ "app-storylab-conversation-view.turn-view.option.b1de0b645cf0": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "대사"
+ },
+ "app-storylab-conversation-view.turn-view.span.32c5d0cbe679": {
+  "nb": "utenfor rollen",
+  "en": "out of character",
+  "oversatt": "배역 밖 (Out of character)"
+ },
+ "app-storylab-conversation-view.turn-view.span.3a569fe0c09d": {
+  "nb": "regi",
+  "en": "direction",
+  "oversatt": "디렉션"
+ },
+ "app-storylab-conversation-view.turn-view.title.5f07f1c5e5f8": {
+  "nb": "Forgren herfra (ny økt med turene til og med denne)",
+  "en": "Branch from here (new session with the turns up to this one)",
+  "oversatt": "여기서 브랜치 생성 (이 턴까지 포함된 새 세션)"
+ },
+ "app-storylab-facts-panel.e.cmds-run.1bae1d9a4707": {
+  "nb": "Nytt faktum",
+  "en": "New fact",
+  "oversatt": "새 팩트"
+ },
+ "app-storylab-facts-panel.e.cmds-run.56d793695e92": {
+  "nb": "Endre faktum",
+  "en": "Change fact",
+  "oversatt": "팩트 수정"
+ },
+ "app-storylab-facts-panel.fact-form.aria-label.8478e3e26812": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-storylab-facts-panel.fact-form.aria-label.9f3bde5c9cbd": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-storylab-facts-panel.fact-form.aria-label.a0e7e0e1cadc": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "캐릭터"
+ },
+ "app-storylab-facts-panel.fact-form.aria-label.ce207d5ef32e": {
+  "nb": "Type",
+  "en": "Kind",
+  "oversatt": "유형"
+ },
+ "app-storylab-facts-panel.fact-form.button.a5ad7dfefc4d": {
+  "nb": "Legg til en som vet det",
+  "en": "Add someone who knows",
+  "oversatt": "알고 있는 인물 추가"
+ },
+ "app-storylab-facts-panel.fact-form.option.1a967b304787": {
+  "nb": "Hemmelighet",
+  "en": "Secret",
+  "oversatt": "비밀"
+ },
+ "app-storylab-facts-panel.fact-form.option.78e0b7ebf4a0": {
+  "nb": "Faktum",
+  "en": "Fact",
+  "oversatt": "팩트"
+ },
+ "app-storylab-facts-panel.fact-form.p.70023504f28e": {
+  "nb": "Hvem vet det, fra hvilken scene",
+  "en": "Who knows it, from which scene",
+  "oversatt": "누가 아는지, 몇 번째 씬부터인지"
+ },
+ "app-storylab-facts-panel.fact-form.placeholder.320ba2c2d3b3": {
+  "nb": "Hva er sant i fortellingen?",
+  "en": "What is true in the story?",
+  "oversatt": "이야기에서 무엇이 진실인가요?"
+ },
+ "app-storylab-facts-panel.fact-form.scene-select.9ef18a508f12": {
+  "nb": "Skjer i scene",
+  "en": "Happens in scene",
+  "oversatt": "발생 씬"
+ },
+ "app-storylab-facts-panel.fact-form.scene-select.cba69e381ea3": {
+  "nb": "Vet det fra scene",
+  "en": "Knows it from scene",
+  "oversatt": "인지 씬"
+ },
+ "app-storylab-facts-panel.fact-form.toolbar-button.2b1eb07f4dc3": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-storylab-facts-panel.fact-form.toolbar-button.c1828dc1df96": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-facts-panel.fact-row.aria-label.15cad6df9fdd": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-storylab-facts-panel.fact-row.aria-label.44924fccc0c0": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "편집"
+ },
+ "app-storylab-facts-panel.fact-row.fact-known-by-map.34d823fecbff": {
+  "nb": "fra",
+  "en": "from",
+  "oversatt": "부터"
+ },
+ "app-storylab-facts-panel.fact-row.p.13c5f1b53943": {
+  "nb": "bare regissøren",
+  "en": "only the director",
+  "oversatt": "감독만"
+ },
+ "app-storylab-facts-panel.fact-row.p.68ddbf4e1e56": {
+  "nb": "Skjer",
+  "en": "Happens",
+  "oversatt": "발생"
+ },
+ "app-storylab-facts-panel.fact-row.p.785c83e50d06": {
+  "nb": "Vet det",
+  "en": "Known by",
+  "oversatt": "알고 있는 대상"
+ },
+ "app-storylab-facts-panel.fact-row.span.209aba8e7ce4": {
+  "nb": "Faktum",
+  "en": "Fact",
+  "oversatt": "팩트"
+ },
+ "app-storylab-facts-panel.fact-row.span.c5d3eb2490f3": {
+  "nb": "Hemmelighet",
+  "en": "Secret",
+  "oversatt": "비밀"
+ },
+ "app-storylab-facts-panel.facts-panel.cmds-run.0127681ec81d": {
+  "nb": "Fjern faktum",
+  "en": "Remove fact",
+  "oversatt": "팩트 제거"
+ },
+ "app-storylab-facts-panel.facts-panel.label.7a17ca464c32": {
+  "nb": "Nytt faktum",
+  "en": "New fact",
+  "oversatt": "새 팩트"
+ },
+ "app-storylab-facts-panel.facts-panel.li.d888710fc12f": {
+  "nb": "Ingen fakta ennå.",
+  "en": "No facts yet.",
+  "oversatt": "아직 팩트가 없습니다."
+ },
+ "app-storylab-facts-panel.facts-panel.title.7a17ca464c32": {
+  "nb": "Nytt faktum",
+  "en": "New fact",
+  "oversatt": "새 팩트"
+ },
+ "app-storylab-facts-panel.facts-panel.title.aad3e36edbda": {
+  "nb": "Fakta og hemmeligheter",
+  "en": "Facts and secrets",
+  "oversatt": "팩트 및 비밀"
+ },
+ "app-storylab-facts-panel.scene-select.option.f2ec70ebe653": {
+  "nb": "Uten tidspunkt",
+  "en": "No point in time",
+  "oversatt": "시점 없음"
+ },
+ "app-storylab-group-conversation-view.analyse.set-note.59c1e8919bad": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "내장 AI가 대체 기능으로 사용되었습니다."
+ },
+ "app-storylab-group-conversation-view.group-conversation-view.p.f7ef42db81ff": {
+  "nb": "Økten har ugyldige deltakere.",
+  "en": "The session has invalid participants.",
+  "oversatt": "세션에 유효하지 않은 참가자가 있습니다."
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.1ed3ac8ad83d": {
+  "nb": "Spørsmål",
+  "en": "Question",
+  "oversatt": "질문"
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.2b2a96d6de7e": {
+  "nb": "Regi / tilstand",
+  "en": "Direction / state",
+  "oversatt": "디렉션 / 상태"
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.587c68f5a74a": {
+  "nb": "Gyldighet",
+  "en": "Scope",
+  "oversatt": "범위"
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.5b651b8e9ff5": {
+  "nb": "Mål for regi",
+  "en": "Direction target",
+  "oversatt": "디렉션 대상"
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.8686bd1794a5": {
+  "nb": "Lagre som forslag",
+  "en": "Save as suggestion",
+  "oversatt": "제안으로 저장"
+ },
+ "app-storylab-group-conversation-view.group-conversation.aria-label.87c173dd984a": {
+  "nb": "Modus",
+  "en": "Mode",
+  "oversatt": "모드"
+ },
+ "app-storylab-group-conversation-view.group-conversation.label.0d285dc52a0f": {
+  "nb": "Forgren herfra",
+  "en": "Branch from here",
+  "oversatt": "여기서 브랜치 생성"
+ },
+ "app-storylab-group-conversation-view.group-conversation.label.c61b53c7e59a": {
+  "nb": "Fjern regi",
+  "en": "Remove direction",
+  "oversatt": "디렉션 제거"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.346d3360728d": {
+  "nb": "Motivasjon",
+  "en": "Motivation",
+  "oversatt": "동기"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.83342986aacb": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "분석"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.850b68a70f75": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "대사"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.8fe27f0849c5": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "해당 씬"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.b248668e8fe8": {
+  "nb": "Neste replikk",
+  "en": "Next line",
+  "oversatt": "다음 대사"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.d779194edb6c": {
+  "nb": "Alle",
+  "en": "Everyone",
+  "oversatt": "모두"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.df0c4dfa01b9": {
+  "nb": "Økten",
+  "en": "The session",
+  "oversatt": "해당 세션"
+ },
+ "app-storylab-group-conversation-view.group-conversation.option.ebeadeacc4c8": {
+  "nb": "Lagre som forslag …",
+  "en": "Save as suggestion …",
+  "oversatt": "제안으로 저장…"
+ },
+ "app-storylab-group-conversation-view.group-conversation.p.7359aef53f7b": {
+  "nb": "Anslått: {value1} · {label}",
+  "en": "Estimated: {value1} · {label}",
+  "oversatt": "예상: {value1} · {label}"
+ },
+ "app-storylab-group-conversation-view.group-conversation.placeholder.2b2a96d6de7e": {
+  "nb": "Regi / tilstand",
+  "en": "Direction / state",
+  "oversatt": "연출 / 상태"
+ },
+ "app-storylab-group-conversation-view.group-conversation.set-error.7ebfb0a38660": {
+  "nb": "Forgrening kunne ikke opprettes.",
+  "en": "The branch could not be created.",
+  "oversatt": "분기를 생성할 수 없습니다."
+ },
+ "app-storylab-group-conversation-view.group-conversation.set-error.9e92230a560d": {
+  "nb": "Forslaget kunne ikke lagres.",
+  "en": "The suggestion could not be saved.",
+  "oversatt": "제안을 저장할 수 없습니다."
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.1dcf9c0e9b72": {
+  "nb": "Pause",
+  "en": "Paused",
+  "oversatt": "일시 정지됨"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.35625c18fe5d": {
+  "nb": "Klar",
+  "en": "Ready",
+  "oversatt": "준비 완료"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.64b6963bb82c": {
+  "nb": "Kjører",
+  "en": "Running",
+  "oversatt": "실행 중"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.719f5f40fe2c": {
+  "nb": "Bekreft anslått kostnad: {value1} · {label}",
+  "en": "Confirm estimated cost: {value1} · {label}",
+  "oversatt": "예상 비용 확인: {value1} · {label}"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.83342986aacb": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "분석"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.9020483225c4": {
+  "nb": "Brukt i økten: {value1}",
+  "en": "Spent in the session: {value1}",
+  "oversatt": "세션에서 사용됨: {value1}"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.a03f7558e27b": {
+  "nb": "utenfor rollen",
+  "en": "out of character",
+  "oversatt": "캐릭터 외적 발언"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.a8bd86dcd160": {
+  "nb": "Regissør",
+  "en": "Director",
+  "oversatt": "감독"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.d779194edb6c": {
+  "nb": "Alle",
+  "en": "Everyone",
+  "oversatt": "모두"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.e2d53f4280e4": {
+  "nb": "Neste taler: {value1}",
+  "en": "Next speaker: {value1}",
+  "oversatt": "다음 발언자: {value1}"
+ },
+ "app-storylab-group-conversation-view.group-conversation.span.e2f97b3b37fd": {
+  "nb": "Stoppet",
+  "en": "Stopped",
+  "oversatt": "중지됨"
+ },
+ "app-storylab-group-conversation-view.group-conversation.summary.32774e77dc89": {
+  "nb": "Hva vet {value1} nå?",
+  "en": "What does {value1} know now?",
+  "oversatt": "{value1}은(는) 이제 무엇을 알고 있나요?"
+ },
+ "app-storylab-group-conversation-view.group-conversation.title.0d285dc52a0f": {
+  "nb": "Forgren herfra",
+  "en": "Branch from here",
+  "oversatt": "여기서 분기하기"
+ },
+ "app-storylab-group-conversation-view.group-conversation.title.932104100a24": {
+  "nb": "Gruppesamtale",
+  "en": "Group conversation",
+  "oversatt": "그룹 대화"
+ },
+ "app-storylab-group-conversation-view.group-conversation.title.c61b53c7e59a": {
+  "nb": "Fjern regi",
+  "en": "Remove direction",
+  "oversatt": "디렉션 제거"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.10152ec2e5a4": {
+  "nb": "Fri improvisasjon",
+  "en": "Free improvisation",
+  "oversatt": "자유 즉흥 연기"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.368c7b5a5cbe": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.4952e51dfe02": {
+  "nb": "Send",
+  "en": "Send",
+  "oversatt": "전송"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.553fee10a2dc": {
+  "nb": "Pause",
+  "en": "Pause",
+  "oversatt": "일시 정지"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.71a5f296b929": {
+  "nb": "Auto",
+  "en": "Auto",
+  "oversatt": "자동"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.83342986aacb": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "분석"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.83da90780369": {
+  "nb": "Spørsmål og svar",
+  "en": "Questions and answers",
+  "oversatt": "질문 및 답변"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.891ec3d972b5": {
+  "nb": "Kjør bolk",
+  "en": "Run batch",
+  "oversatt": "배치 실행"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.91fb8f7ee591": {
+  "nb": "Fortsett",
+  "en": "Continue",
+  "oversatt": "계속"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.c0264c6ada29": {
+  "nb": "Hvorfor sa du det?",
+  "en": "Why did you say that?",
+  "oversatt": "왜 그렇게 말했나요?"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.c2e369e2c8a4": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.d10e4fabdbab": {
+  "nb": "Bekreft",
+  "en": "Confirm",
+  "oversatt": "확인"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.e9ab8e1c727e": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "중지"
+ },
+ "app-storylab-group-conversation-view.group-conversation.toolbar-button.ef10891cda99": {
+  "nb": "Legg til regi",
+  "en": "Add direction",
+  "oversatt": "디렉션 추가"
+ },
+ "app-storylab-group-conversation-view.message.message.e2736ee2d835": {
+  "nb": "Samtalen kunne ikke fortsette. Prøv igjen.",
+  "en": "The conversation could not continue. Try again.",
+  "oversatt": "대화를 계속할 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-storylab-group-conversation-view.one-line.set-note.ac3e312ff8d9": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "기본 내장 AI가 대체 수단으로 사용되었습니다."
+ },
+ "app-storylab-interview-nodes-preview.e.run-group.2277f5c03bb0": {
+  "nb": "Noder fra intervjuet",
+  "en": "Nodes from the interview",
+  "oversatt": "인터뷰 노드"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-description.fe503670b8f4": {
+  "nb": "Velg hva som skal legges på canvaset. Ingenting legges inn uten at du velger det.",
+  "en": "Choose what to add to the canvas. Nothing is added unless you choose it.",
+  "oversatt": "캔버스에 추가할 항목을 선택하세요. 직접 선택하지 않은 항목은 추가되지 않습니다."
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-title.2af5e73b0f14": {
+  "nb": "Foreslåtte noder",
+  "en": "Proposed nodes",
+  "oversatt": "제안된 노드"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.label.0e787e8d899f": {
+  "nb": "Automatisk",
+  "en": "Automatic",
+  "oversatt": "자동"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.label.ef92b4500c3f": {
+  "nb": "Ved siden av utvalget",
+  "en": "Next to the selection",
+  "oversatt": "선택 항목 옆"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.legend.c00435ee2f82": {
+  "nb": "Plassering",
+  "en": "Placement",
+  "oversatt": "배치"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.toolbar-button.a5eceea6c575": {
+  "nb": "Legg til {size} noder",
+  "en": "Add {size} nodes",
+  "oversatt": "노드 {size}개 추가"
+ },
+ "app-storylab-interview-nodes-preview.interview-nodes-preview.toolbar-button.cb52749bae90": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "폐기"
+ },
+ "app-storylab-interview-view.interview-view.div.9c1b8b917437": {
+  "nb": "Intervjuet kunne ikke hentes.",
+  "en": "The interview could not be loaded.",
+  "oversatt": "인터뷰를 불러올 수 없습니다."
+ },
+ "app-storylab-interview-view.interview-view.p.ab8d17b33851": {
+  "nb": "En erfaren manusutvikler stiller spørsmål og hjelper deg å utvikle idéen. Svarene kan bli noder på canvaset.",
+  "en": "An experienced script developer asks questions and helps you develop the idea. The answers can become nodes on the canvas.",
+  "oversatt": "경험이 풍부한 대본 개발자가 질문을 통해 아이디어를 발전시키도록 돕습니다. 답변은 캔버스의 노드로 전환될 수 있습니다."
+ },
+ "app-storylab-interview-view.interview-view.p.ac2afaa64d45": {
+  "nb": "Henter intervjuet …",
+  "en": "Loading the interview …",
+  "oversatt": "인터뷰 불러오는 중…"
+ },
+ "app-storylab-interview-view.interview-view.title.fbbc84d72cf8": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "인터뷰 – 아이디어 발전시키기"
+ },
+ "app-storylab-interview-view.interview-view.toolbar-button.1532f18088fa": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-storylab-interview-view.interview-view.toolbar-button.dd8dbfaf0c40": {
+  "nb": "Start intervjuet",
+  "en": "Start the interview",
+  "oversatt": "인터뷰 시작"
+ },
+ "app-storylab-interview-view.interview.aria-label.77dd0c0ec322": {
+  "nb": "Svar til intervjueren",
+  "en": "Reply to the interviewer",
+  "oversatt": "인터뷰어에게 답변"
+ },
+ "app-storylab-interview-view.interview.p.0e2945b00fe5": {
+  "nb": "Fortell kort om idéen din, så stiller intervjueren spørsmål.",
+  "en": "Briefly describe your idea, and the interviewer will ask questions.",
+  "oversatt": "아이디어를 간단히 설명해 주시면 인터뷰어가 질문을 드립니다."
+ },
+ "app-storylab-interview-view.interview.p.7ec2ca052b58": {
+  "nb": "Du",
+  "en": "You",
+  "oversatt": "나"
+ },
+ "app-storylab-interview-view.interview.p.bade8796319c": {
+  "nb": "Manusutvikler",
+  "en": "Script developer",
+  "oversatt": "대본 개발자"
+ },
+ "app-storylab-interview-view.interview.p.d144cd2277bf": {
+  "nb": "Tenker …",
+  "en": "Thinking …",
+  "oversatt": "생각 중…"
+ },
+ "app-storylab-interview-view.interview.p.f13b00fd3653": {
+  "nb": "Brukt i intervjuet: {value1}",
+  "en": "Spent in the interview: {value1}",
+  "oversatt": "인터뷰 소요 시간: {value1}"
+ },
+ "app-storylab-interview-view.interview.placeholder.dd7284b4f008": {
+  "nb": "Skriv svaret ditt …",
+  "en": "Write your answer …",
+  "oversatt": "답변을 입력하세요…"
+ },
+ "app-storylab-interview-view.interview.span.6f4ffffeb7a4": {
+  "nb": "{label} · anslått {value2}",
+  "en": "{label} · estimated {value2}",
+  "oversatt": "{label} · 예상 {value2}"
+ },
+ "app-storylab-interview-view.interview.span.bba3d7a092a0": {
+  "nb": "Finner tekst-AI …",
+  "en": "Finding text AI …",
+  "oversatt": "텍스트 AI 찾는 중…"
+ },
+ "app-storylab-interview-view.interview.title.16b7a54bc52d": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "인터뷰 – 아이디어 발전시키기"
+ },
+ "app-storylab-interview-view.interview.toolbar-button.1268fc9acf5c": {
+  "nb": "Foreslå noder fra intervjuet …",
+  "en": "Propose nodes from the interview …",
+  "oversatt": "인터뷰에서 노드 제안 중…"
+ },
+ "app-storylab-interview-view.interview.toolbar-button.6ce50c5e4327": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-interview-view.interview.toolbar-button.cdd4e940e648": {
+  "nb": "Godta og fortsett",
+  "en": "Accept and continue",
+  "oversatt": "수락 후 계속"
+ },
+ "app-storylab-interview-view.interview.toolbar-button.dab8322e6de8": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-storylab-interview-view.interview.toolbar-button.e655be3ab656": {
+  "nb": "Send",
+  "en": "Send",
+  "oversatt": "전송"
+ },
+ "app-storylab-interview-view.send.set-note.475e948b32c2": {
+  "nb": "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
+  "en": "The built-in AI was used because no own text provider could be used.",
+  "oversatt": "사용 가능한 전용 텍스트 공급자가 없어 내장 AI가 사용되었습니다."
+ },
+ "app-storylab-interview-view.title.title.8d6711a205bf": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "인터뷰 – 아이디어 발전시키기"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.aria-label.95ca6fd6ada6": {
+  "nb": "Modus",
+  "en": "Mode",
+  "oversatt": "모드"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.dialog-title.eb2b97496274": {
+  "nb": "Gruppesamtale",
+  "en": "Group conversation",
+  "oversatt": "그룹 대화"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.label.8652b857c08a": {
+  "nb": "Situasjon",
+  "en": "Situation",
+  "oversatt": "상황"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.label.8945d234f786": {
+  "nb": "Tidspunkt i fortellingen",
+  "en": "Point in the story",
+  "oversatt": "스토리 내 시점"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.option.68793ca3a761": {
+  "nb": "Uten tidspunkt",
+  "en": "No point in time",
+  "oversatt": "시점 없음"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.p.a52f5280d71b": {
+  "nb": "Velg mellom 2 og 6 deltakere.",
+  "en": "Choose between 2 and 6 participants.",
+  "oversatt": "2명에서 6명 사이의 참가자를 선택하세요."
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.title.00fea5de6318": {
+  "nb": "Deltakere",
+  "en": "Participants",
+  "oversatt": "참가자"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.toolbar-button.640761a740d0": {
+  "nb": "Spørsmål og svar",
+  "en": "Questions and answers",
+  "oversatt": "질문과 답변"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.toolbar-button.a48c6c0816af": {
+  "nb": "Start samtalen",
+  "en": "Start the conversation",
+  "oversatt": "대화 시작"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.toolbar-button.dcbe38516142": {
+  "nb": "Fri improvisasjon",
+  "en": "Free improvisation",
+  "oversatt": "자유 즉흥 표현"
+ },
+ "app-storylab-new-group-dialog.new-group-dialog.toolbar-button.ea31644a77ac": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-new-group-dialog.submit.set-error.6b539b130a11": {
+  "nb": "Økten kunne ikke opprettes. Prøv igjen.",
+  "en": "The session could not be created. Try again.",
+  "oversatt": "세션을 생성할 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-storylab-new-group-dialog.title.title.d630fae95431": {
+  "nb": "Gruppesamtale",
+  "en": "Group conversation",
+  "oversatt": "그룹 대화"
+ },
+ "app-storylab-profile-fields.academic.academic.f60d14a457e8": {
+  "nb": "Akademisk",
+  "en": "Academic",
+  "oversatt": "학술적"
+ },
+ "app-storylab-profile-fields.adult.adult.3d685ecddce9": {
+  "nb": "Voksen",
+  "en": "Adult",
+  "oversatt": "성인"
+ },
+ "app-storylab-profile-fields.beliefs.aria-label.821d99e55160": {
+  "nb": "Hva hun/han tror",
+  "en": "What they believe",
+  "oversatt": "인물의 신념"
+ },
+ "app-storylab-profile-fields.beliefs.aria-label.bbb311e05667": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-storylab-profile-fields.beliefs.aria-label.ee623d5e5cde": {
+  "nb": "Hvem",
+  "en": "Who",
+  "oversatt": "대상"
+ },
+ "app-storylab-profile-fields.beliefs.button.d0c54a173b60": {
+  "nb": "Legg til en person",
+  "en": "Add a person",
+  "oversatt": "인물 추가"
+ },
+ "app-storylab-profile-fields.child.child.614376080e64": {
+  "nb": "Barn",
+  "en": "Child",
+  "oversatt": "하위 항목"
+ },
+ "app-storylab-profile-fields.chips.aria-label.0bd808a7ca71": {
+  "nb": "Legg til i {label}",
+  "en": "Add to {label}",
+  "oversatt": "{label}에 추가"
+ },
+ "app-storylab-profile-fields.chips.aria-label.b089944ebbad": {
+  "nb": "Fjern «{v}»",
+  "en": "Remove “{v}”",
+  "oversatt": "“{v}” 제거"
+ },
+ "app-storylab-profile-fields.chips.button.49467a69187c": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-storylab-profile-fields.chips.placeholder.5bda8469204f": {
+  "nb": "Skriv og trykk Enter",
+  "en": "Type and press Enter",
+  "oversatt": "입력 후 Enter 키를 누르세요"
+ },
+ "app-storylab-profile-fields.dramatic.dramatic.986cf622453e": {
+  "nb": "Dramatikk",
+  "en": "Drama",
+  "oversatt": "드라마"
+ },
+ "app-storylab-profile-fields.field-defs.f.03c4441bcbdd": {
+  "nb": "Fasade (slik hun/han fremstår)",
+  "en": "Facade (how they appear)",
+  "oversatt": "겉모습 (보여지는 모습)"
+ },
+ "app-storylab-profile-fields.field-defs.f.0a24f39a3acb": {
+  "nb": "Språknivå",
+  "en": "Level",
+  "oversatt": "수준"
+ },
+ "app-storylab-profile-fields.field-defs.f.121cc52dbf81": {
+  "nb": "Mål",
+  "en": "Goals",
+  "oversatt": "목표"
+ },
+ "app-storylab-profile-fields.field-defs.f.15203a5c5400": {
+  "nb": "Indre motsetninger",
+  "en": "Inner contradictions",
+  "oversatt": "내적 모순"
+ },
+ "app-storylab-profile-fields.field-defs.f.29b41868d5c3": {
+  "nb": "Ville aldri sagt",
+  "en": "Would never say",
+  "oversatt": "절대 하지 않을 말"
+ },
+ "app-storylab-profile-fields.field-defs.f.344cb82b6318": {
+  "nb": "Alder",
+  "en": "Age",
+  "oversatt": "연령"
+ },
+ "app-storylab-profile-fields.field-defs.f.3a3fbf2fc4c5": {
+  "nb": "Virkelighet (det som ligger under)",
+  "en": "Reality (what lies beneath)",
+  "oversatt": "본모습 (내면에 숨겨진 것)"
+ },
+ "app-storylab-profile-fields.field-defs.f.3e3a0d9d0638": {
+  "nb": "Sårbarheter",
+  "en": "Vulnerabilities",
+  "oversatt": "취약점"
+ },
+ "app-storylab-profile-fields.field-defs.f.46518bae64ef": {
+  "nb": "Ordvalg",
+  "en": "Word choice",
+  "oversatt": "단어 선택"
+ },
+ "app-storylab-profile-fields.field-defs.f.4e49a6e8af98": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-storylab-profile-fields.field-defs.f.535c2ad77deb": {
+  "nb": "Triggere",
+  "en": "Triggers",
+  "oversatt": "자극 요인"
+ },
+ "app-storylab-profile-fields.field-defs.f.5cd1821e55ca": {
+  "nb": "Typiske ord",
+  "en": "Typical vocabulary",
+  "oversatt": "자주 쓰는 어휘"
+ },
+ "app-storylab-profile-fields.field-defs.f.9567b8828108": {
+  "nb": "Bruker aldri",
+  "en": "Never uses",
+  "oversatt": "절대 쓰지 않는 어휘"
+ },
+ "app-storylab-profile-fields.field-defs.f.978b7621fdd5": {
+  "nb": "Yrke",
+  "en": "Occupation",
+  "oversatt": "직업"
+ },
+ "app-storylab-profile-fields.field-defs.f.a66b5568062f": {
+  "nb": "Skjuler",
+  "en": "Hides",
+  "oversatt": "숨기는 것"
+ },
+ "app-storylab-profile-fields.field-defs.f.b20ea957aed1": {
+  "nb": "Skjulte motiver",
+  "en": "Hidden motives",
+  "oversatt": "숨은 동기"
+ },
+ "app-storylab-profile-fields.field-defs.f.bb891d65b9bb": {
+  "nb": "Stemning",
+  "en": "Mood",
+  "oversatt": "분위기"
+ },
+ "app-storylab-profile-fields.field-defs.f.c69b7e03638b": {
+  "nb": "Dialekt",
+  "en": "Dialect",
+  "oversatt": "방언/사투리"
+ },
+ "app-storylab-profile-fields.field-defs.f.c997a4e66ebc": {
+  "nb": "Slik viser egenskapene seg",
+  "en": "How the traits show",
+  "oversatt": "특성이 드러나는 방식"
+ },
+ "app-storylab-profile-fields.field-defs.f.d4daecbf404a": {
+  "nb": "Blindsoner",
+  "en": "Blind spots",
+  "oversatt": "맹점"
+ },
+ "app-storylab-profile-fields.field-defs.f.d561526ac99a": {
+  "nb": "Hva hun/han tror om andre",
+  "en": "Beliefs about others",
+  "oversatt": "타인에 대한 생각"
+ },
+ "app-storylab-profile-fields.field-defs.f.e821b48b3e59": {
+  "nb": "Formalitet",
+  "en": "Formality",
+  "oversatt": "격식도"
+ },
+ "app-storylab-profile-fields.field-defs.f.eee889134a7b": {
+  "nb": "Eksempelreplikker",
+  "en": "Example lines",
+  "oversatt": "예시 대사"
+ },
+ "app-storylab-profile-fields.field-defs.f.f1864242afcd": {
+  "nb": "Høyst antall ord per svar",
+  "en": "Maximum words per reply",
+  "oversatt": "응답당 최대 단어 수"
+ },
+ "app-storylab-profile-fields.field-defs.f.f6f430a6ffb2": {
+  "nb": "Samtaleteknikker",
+  "en": "Conversational techniques",
+  "oversatt": "대화 방식"
+ },
+ "app-storylab-profile-fields.field-defs.f.f7f94ea0be02": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "배경"
+ },
+ "app-storylab-profile-fields.field-defs.f.fd80b7d29161": {
+  "nb": "Verdier",
+  "en": "Values",
+  "oversatt": "가치관"
+ },
+ "app-storylab-profile-fields.field-editor.option.4a272a1e64c9": {
+  "nb": "Ikke angitt",
+  "en": "Not set",
+  "oversatt": "설정 안 됨"
+ },
+ "app-storylab-profile-fields.high.high.74f07152d66f": {
+  "nb": "Høy",
+  "en": "High",
+  "oversatt": "높음"
+ },
+ "app-storylab-profile-fields.low.low.6ddaf555a0af": {
+  "nb": "Lav",
+  "en": "Low",
+  "oversatt": "낮음"
+ },
+ "app-storylab-profile-fields.medium.medium.a56bff4aab48": {
+  "nb": "Middels",
+  "en": "Medium",
+  "oversatt": "보통"
+ },
+ "app-storylab-profile-fields.notes.notes.1a9b4524e53b": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "노트"
+ },
+ "app-storylab-profile-fields.person.person.3ae395c7d598": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "인물"
+ },
+ "app-storylab-profile-fields.psychology.psychology.f23337471144": {
+  "nb": "Psykologi",
+  "en": "Psychology",
+  "oversatt": "심리"
+ },
+ "app-storylab-profile-fields.speech.speech.b712714b4da6": {
+  "nb": "Talestil",
+  "en": "Speech",
+  "oversatt": "말투"
+ },
+ "app-storylab-profile-fields.street.street.7ceb8e8f80b1": {
+  "nb": "Gate",
+  "en": "Street",
+  "oversatt": "거리"
+ },
+ "app-storylab-profile-fields.youth.youth.74637fa80402": {
+  "nb": "Ungdom",
+  "en": "Youth",
+  "oversatt": "청소년"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.dialog-title.e1b083b1e142": {
+  "nb": "Lag profil for {name} med AI",
+  "en": "Create a profile for {name} with AI",
+  "oversatt": "AI로 {name}의 프로필 생성"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.label.c806ceef36b3": {
+  "nb": "Bruk replikkene i manuset",
+  "en": "Use the lines in the script",
+  "oversatt": "대본의 대사 사용"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.p.235555e39a1d": {
+  "nb": "Finner tekst-AI …",
+  "en": "Finding text AI …",
+  "oversatt": "텍스트 AI 찾는 중…"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.p.57eda6a2a24c": {
+  "nb": "{label} · anslått {value2}",
+  "en": "{label} · estimated {value2}",
+  "oversatt": "{label} · 예상 {value2}"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.p.cdbcddd92bee": {
+  "nb": "Forslaget er likt dagens profil.",
+  "en": "The suggestion equals the current profile.",
+  "oversatt": "제안 내용이 현재 프로필과 동일합니다."
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.p.da99a53ebce0": {
+  "nb": "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
+  "en": "The built-in AI was used because no own text provider could be used.",
+  "oversatt": "사용자 지정 텍스트 제공자를 사용할 수 없어 내장 AI가 사용되었습니다."
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.span.272b10ae4f92": {
+  "nb": "Forslag",
+  "en": "Suggestion",
+  "oversatt": "제안"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.span.2dbf8a97656f": {
+  "nb": "Beskrivelse",
+  "en": "Description",
+  "oversatt": "설명"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.span.f72125fb9cce": {
+  "nb": "Nå",
+  "en": "Now",
+  "oversatt": "현재"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.174fab255592": {
+  "nb": "Bruk alt",
+  "en": "Use all",
+  "oversatt": "모두 사용"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.6ef5205c3c64": {
+  "nb": "Bekreft og lag profil",
+  "en": "Confirm and create profile",
+  "oversatt": "확인 및 프로필 생성"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.76624667f53e": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.96e30b9e19af": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "버리기"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.d0b0d7869cfe": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-storylab-profile-generate-dialog.profile-generate-dialog.toolbar-button.d78e27530f35": {
+  "nb": "Bruk valgte felt",
+  "en": "Use selected fields",
+  "oversatt": "선택한 필드 사용"
+ },
+ "app-storylab-profile-generate-dialog.run.set-err.19a7fb7aefc2": {
+  "nb": "Svaret fra AI kunne ikke tolkes som en profil. Prøv igjen.",
+  "en": "The AI reply could not be read as a profile. Try again.",
+  "oversatt": "AI 응답을 프로필로 해석할 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-storylab-scene-lab.analyze.set-note.eb8bc9dfb8d4": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "내장 AI가 대체 수단으로 사용되었습니다."
+ },
+ "app-storylab-scene-lab.check-card.span.630be099f983": {
+  "nb": "Nei",
+  "en": "No",
+  "oversatt": "아니요"
+ },
+ "app-storylab-scene-lab.check-card.span.923e28a71990": {
+  "nb": "Ja",
+  "en": "Yes",
+  "oversatt": "예"
+ },
+ "app-storylab-scene-lab.check-card.span.d8026fedc6af": {
+  "nb": "Delvis",
+  "en": "Partly",
+  "oversatt": "부분적으로"
+ },
+ "app-storylab-scene-lab.check-card.toolbar-button.65d8737c3d17": {
+  "nb": "Lag profil",
+  "en": "Create profile",
+  "oversatt": "프로필 생성"
+ },
+ "app-storylab-scene-lab.check-card.toolbar-button.d8c70b71a3f2": {
+  "nb": "Lagre som forslag",
+  "en": "Save as suggestion",
+  "oversatt": "제안으로 저장"
+ },
+ "app-storylab-scene-lab.check-line.set-note.c5600584e586": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "내장 AI가 대체 수단으로 사용되었습니다."
+ },
+ "app-storylab-scene-lab.generate.set-note.16319cc4cfd3": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "내장 AI가 대체 수단으로 사용되었습니다."
+ },
+ "app-storylab-scene-lab.generate.set-note.16319cc4cfd3.2": {
+  "nb": "Den innebygde AI-en ble brukt som reserve.",
+  "en": "The built-in AI was used as fallback.",
+  "oversatt": "내장 AI가 대체 수단으로 사용되었습니다."
+ },
+ "app-storylab-scene-lab.perform.set-error.824e0c293ba1": {
+  "nb": "Handlingen kunne ikke fullføres. Prøv igjen.",
+  "en": "The action could not be completed. Try again.",
+  "oversatt": "작업을 완료할 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-storylab-scene-lab.scene-lab.aria-label.5abac0bc7ba8": {
+  "nb": "Situasjon",
+  "en": "Situation",
+  "oversatt": "상황"
+ },
+ "app-storylab-scene-lab.scene-lab.aria-label.b81a2f33e19b": {
+  "nb": "Forgren fra tur",
+  "en": "Branch from turn",
+  "oversatt": "턴에서 브랜치 생성"
+ },
+ "app-storylab-scene-lab.scene-lab.aria-label.d174e7f3de39": {
+  "nb": "Velg replikk",
+  "en": "Select line",
+  "oversatt": "대사 선택"
+ },
+ "app-storylab-scene-lab.scene-lab.dialog-title.15f59547e798": {
+  "nb": "Analyser scenen",
+  "en": "Analyze scene",
+  "oversatt": "씬 분석"
+ },
+ "app-storylab-scene-lab.scene-lab.dialog-title.77cb309ea184": {
+  "nb": "Improviser scenen",
+  "en": "Improvise scene",
+  "oversatt": "씬 즉흥 연출"
+ },
+ "app-storylab-scene-lab.scene-lab.dialog-title.8fa3f8d3c533": {
+  "nb": "Lag varianter",
+  "en": "Create variants",
+  "oversatt": "변형 생성"
+ },
+ "app-storylab-scene-lab.scene-lab.dialog-title.9d92952c97bf": {
+  "nb": "Sjekk replikken",
+  "en": "Check line",
+  "oversatt": "대사 검토"
+ }
+}

@@ -1,0 +1,3034 @@
+{
+ "app-projects-members-section.role-label.commenter.0492a29e0284": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "コメント投稿者"
+ },
+ "app-projects-members-section.role-label.editor.66d469833732": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "編集者"
+ },
+ "app-projects-members-section.role-label.owner.2479f0cad1e9": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "オーナー"
+ },
+ "app-projects-members-section.role-label.viewer.27370640f10c": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "閲覧者"
+ },
+ "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3": {
+  "nb": "nb-NO",
+  "en": "en-GB",
+  "oversatt": "ja-JP"
+ },
+ "app-projects-note-flags-overview.body.span.593b2184fc2d": {
+  "nb": " · av",
+  "en": " · off",
+  "oversatt": " · オフ"
+ },
+ "app-projects-note-flags-overview.body.span.d97ed4a2b488": {
+  "nb": "(uten tekst)",
+  "en": "(no text)",
+  "oversatt": "(テキストなし)"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.h2.96003518f497": {
+  "nb": "Merknader og huskelapper",
+  "en": "Notes and note flags",
+  "oversatt": "メモとフラグ"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.27bc311f2d29": {
+  "nb": "Sorter",
+  "en": "Sort",
+  "oversatt": "並べ替え"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.ee812895b845": {
+  "nb": "Oppretter",
+  "en": "Creator",
+  "oversatt": "作成者"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.f63c28a3f4c6": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "ステータス"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.f86f2c2e4e65": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.06a546d4a8a5": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "日付"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.0799d936c79b": {
+  "nb": "Avslåtte",
+  "en": "Turned off",
+  "oversatt": "オフ"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.0c6ba0813b4e": {
+  "nb": "Scenerekkefølge",
+  "en": "Scene order",
+  "oversatt": "シーン順"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.2438446103b8": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "アクティブ"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.830ccb27b650": {
+  "nb": "Plassering i manus",
+  "en": "Script position",
+  "oversatt": "脚本内の位置"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "すべて"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4.2": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "すべて"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4.3": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "すべて"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.p.1931be00d54c": {
+  "nb": "Ingen huskelapper.",
+  "en": "No note flags.",
+  "oversatt": "メモフラグはありません。"
+ },
+ "app-projects-note-flags-overview.place.list-map.2096487ab9b8": {
+  "nb": "Elementet finnes ikke lenger",
+  "en": "The item no longer exists",
+  "oversatt": "この項目は存在しません"
+ },
+ "app-projects-production-dialog.e.cmds-run.0b4cbf9fc425": {
+  "nb": "Ny produksjon «{value1}»",
+  "en": "New production “{value1}”",
+  "oversatt": "新規プロダクション「{value1}」"
+ },
+ "app-projects-production-dialog.e.cmds-run.6e6a690f8f5d": {
+  "nb": "Scener lagt til i «{name}»",
+  "en": "Scenes added to “{name}”",
+  "oversatt": "「{name}」にシーンを追加しました"
+ },
+ "app-projects-production-dialog.production-dialog.aria-label.b387184dea29": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-projects-production-dialog.production-dialog.aria-label.ca91203533f3": {
+  "nb": "Hent scener fra",
+  "en": "Take scenes from",
+  "oversatt": "シーンの取得元"
+ },
+ "app-projects-production-dialog.production-dialog.button.48ee211b8751": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-production-dialog.production-dialog.button.4bfe9317488a": {
+  "nb": "Velg ingen",
+  "en": "Select none",
+  "oversatt": "選択を解除"
+ },
+ "app-projects-production-dialog.production-dialog.button.bee4eee53ce0": {
+  "nb": "Velg alle",
+  "en": "Select all",
+  "oversatt": "すべて選択"
+ },
+ "app-projects-production-dialog.production-dialog.button.f40999d89056": {
+  "nb": "Opprett",
+  "en": "Create",
+  "oversatt": "作成"
+ },
+ "app-projects-production-dialog.production-dialog.button.f79dcc02b875": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "追加"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-description.57b07e19ad9f": {
+  "nb": "Scenene gjenbrukes – endrer du dem her, får produksjonen sin egen versjon, og den andre produksjonen endres ikke.",
+  "en": "The scenes are reused – if you change them here, the production gets its own version, and the other production is not changed.",
+  "oversatt": "シーンは再利用されます。ここで変更してもこのプロダクション独自のバージョンとなり、元のプロダクションは変更されません。"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-description.86636283840d": {
+  "nb": "En spinoff, trailer eller kortfilm med egne scener, egen rekkefølge og egen film. Scener du velger, gjenbrukes – hovedfilmen endres ikke.",
+  "en": "A spin-off, trailer or short film with its own scenes, its own order and its own film. Scenes you choose are reused – the main film is not changed.",
+  "oversatt": "独自のシーン、順序、映像を持つスピンオフ、予告編、短編映画。選択したシーンは再利用され、本編映画は変更されません。"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-title.bc91930a4632": {
+  "nb": "Legg til scener i «{name}»",
+  "en": "Add scenes to “{name}”",
+  "oversatt": "「{name}」にシーンを追加"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-title.fabae9ebb982": {
+  "nb": "Ny produksjon",
+  "en": "New production",
+  "oversatt": "新規プロダクション"
+ },
+ "app-projects-production-dialog.production-dialog.label.1f6d9b913824": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-projects-production-dialog.production-dialog.label.35b8e6b26346": {
+  "nb": "Notat (valgfritt)",
+  "en": "Note (optional)",
+  "oversatt": "メモ（任意）"
+ },
+ "app-projects-production-dialog.production-dialog.label.8cbf603b9018": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-projects-production-dialog.production-dialog.p.167b3feac334": {
+  "nb": "{size} scener valgt.",
+  "en": "{size} scenes selected.",
+  "oversatt": "{size} 個のシーンを選択中。"
+ },
+ "app-projects-production-dialog.production-dialog.p.f6c51a841674": {
+  "nb": "1 scene valgt.",
+  "en": "1 scene selected.",
+  "oversatt": "1 個のシーンを選択中。"
+ },
+ "app-projects-production-dialog.production-dialog.p.fb13a1688bce": {
+  "nb": " Du kan også lage produksjonen tom og skrive nye scener i manuset.",
+  "en": " You can also create the production empty and write new scenes in the script.",
+  "oversatt": "空のプロダクションを作成して、脚本内に新しいシーンを執筆することもできます。"
+ },
+ "app-projects-production-dialog.production-dialog.placeholder.7b347be977a8": {
+  "nb": "F.eks. «Filmtittel – kortversjon»",
+  "en": "E.g. “Film title – short version”",
+  "oversatt": "例：「作品タイトル – ショートバージョン」"
+ },
+ "app-projects-production-dialog.production-dialog.placeholder.a62def93f26d": {
+  "nb": "Hva er denne versjonen? F.eks. «Kortversjon til festivalen, uten prologen»",
+  "en": "What is this version? E.g. “Short version for the festival, without the prologue”",
+  "oversatt": "どのようなバージョンですか？ 例：「プロローグ抜きの映画祭用ショートバージョン」"
+ },
+ "app-projects-production-dialog.production-dialog.span.249eaeb54dc9": {
+  "nb": " · finnes allerede",
+  "en": " · already included",
+  "oversatt": " · すでに追加済み"
+ },
+ "app-projects-production-dialog.production-dialog.span.53ac0ab38f48": {
+  "nb": "Scener fra",
+  "en": "Scenes from",
+  "oversatt": "元のシーン："
+ },
+ "app-projects-production-dialog.production-dialog.span.6e1b93c15987": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "シーン"
+ },
+ "app-projects-production-dialog.production-dialog.span.ba9287a26f9e": {
+  "nb": " · egen versjon i denne produksjonen",
+  "en": " · own version in this production",
+  "oversatt": " · このプロダクション独自のバージョン"
+ },
+ "app-projects-production-dialog.production-dialog.span.e3242b426b33": {
+  "nb": " · deaktivert",
+  "en": " · deactivated",
+  "oversatt": " · 無効化済み"
+ },
+ "app-projects-production-dialog.submit.set-err.4347e9ee1ca3": {
+  "nb": "Velg minst én scene.",
+  "en": "Choose at least one scene.",
+  "oversatt": "少なくとも1つのシーンを選択してください。"
+ },
+ "app-projects-production-dialog.submit.set-err.ac1c21a27874": {
+  "nb": "Gi produksjonen et navn.",
+  "en": "Give the production a name.",
+  "oversatt": "プロダクションに名前を付けてください。"
+ },
+ "app-projects-production-list.e.cmds-run.d195c6205e6c": {
+  "nb": "Notat for «{name}»",
+  "en": "Note for “{name}”",
+  "oversatt": "「{name}」のメモ"
+ },
+ "app-projects-production-list.production-list.aria-label.5aa7d1769e4a": {
+  "nb": "Notat for «{name}»",
+  "en": "Note for “{name}”",
+  "oversatt": "「{name}」のメモ"
+ },
+ "app-projects-production-list.production-list.aria-label.e51bd43db83d": {
+  "nb": "Rediger notat for «{name}»",
+  "en": "Edit note for “{name}”",
+  "oversatt": "「{name}」のメモを編集"
+ },
+ "app-projects-production-list.production-list.button.0de49086546c": {
+  "nb": "Film",
+  "en": "Film",
+  "oversatt": "映画"
+ },
+ "app-projects-production-list.production-list.button.12b16db9caae": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-production-list.production-list.button.1b1d9a055c41": {
+  "nb": "Tilbakefør",
+  "en": "Bring back",
+  "oversatt": "元に戻す"
+ },
+ "app-projects-production-list.production-list.button.210b2c82ebf1": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-projects-production-list.production-list.button.54d322bcdcee": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "脚本"
+ },
+ "app-projects-production-list.production-list.button.69edc139f15f": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-projects-production-list.production-list.button.d17ecf1a77cc": {
+  "nb": "Ny produksjon …",
+  "en": "New production …",
+  "oversatt": "新規プロダクション…"
+ },
+ "app-projects-production-list.production-list.placeholder.3c42b353d3ee": {
+  "nb": "Hva er denne versjonen?",
+  "en": "What is this version?",
+  "oversatt": "どのようなバージョンですか？"
+ },
+ "app-projects-production-list.production-list.span.69edc139f15f": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-projects-production-list.production-list.span.6fee261a2d87": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "アクティブ"
+ },
+ "app-projects-production-list.production-list.span.8cf8bf3b36a1": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "タイプ"
+ },
+ "app-projects-production-list.production-list.span.968a2d180d71": {
+  "nb": "Navn og notat",
+  "en": "Name and note",
+  "oversatt": "名前とメモ"
+ },
+ "app-projects-production-list.production-list.title.1bb0355b716e": {
+  "nb": "Gjenbruk flere scener fra en annen produksjon",
+  "en": "Reuse more scenes from another production",
+  "oversatt": "他のプロダクションから複数のシーンを再利用"
+ },
+ "app-projects-production-list.production-list.title.32bbd282791d": {
+  "nb": "Se hva produksjonen har endret, og før det du vil tilbake til hovedfilmen",
+  "en": "See what the production has changed, and bring back what you want to the main film",
+  "oversatt": "プロダクションで変更された内容を確認し、必要なものをメイン映画に反映します"
+ },
+ "app-projects-production-list.production-list.title.a55c354dc8c8": {
+  "nb": "Skriv hva denne produksjonen er",
+  "en": "Write what this production is",
+  "oversatt": "このプロダクションの内容を入力"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.aria-label.3687c351c49b": {
+  "nb": "Prosjektnavnet",
+  "en": "Project name",
+  "oversatt": "プロジェクト名"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.span.19ecec4b39d2": {
+  "nb": "for å bekrefte",
+  "en": "to confirm",
+  "oversatt": "と入力して確認"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.span.f99fe2efcec7": {
+  "nb": "Skriv prosjektnavnet",
+  "en": "Type the project name",
+  "oversatt": "プロジェクト名を入力してください"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.button.bc0a7e281b1b": {
+  "nb": "Slett prosjektet for godt",
+  "en": "Delete the project for good",
+  "oversatt": "プロジェクトを完全に削除"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.button.e5b658a16060": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.dialog-description.4ebf95c78942": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "この操作は取り消せません。"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.dialog-title.d97ebb6c50a4": {
+  "nb": "Slett prosjektet «{name}»",
+  "en": "Delete the project “{name}”",
+  "oversatt": "プロジェクト「{name}」を削除"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.20b3e6b53bed": {
+  "nb": "importerte manusfiler",
+  "en": "imported script files",
+  "oversatt": "インポートされた脚本ファイル"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.50b0831075d2": {
+  "nb": "2D-scener, kamera og lydklipp i scenene",
+  "en": "2D scenes, camera and audio clips in the scenes",
+  "oversatt": "2Dシーン、カメラ、およびシーン内の音声クリップ"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.99180ed7b9ba": {
+  "nb": "manuset med alle versjoner, scener, notater og historikk",
+  "en": "the script with all versions, scenes, notes and history",
+  "oversatt": "すべてのバージョン、シーン、メモ、履歴を含む脚本"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.c66db6354cf7": {
+  "nb": "importert ferdig film",
+  "en": "imported finished film",
+  "oversatt": "インポートされた完成版映像"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.0b524d907477": {
+  "nb": "Dette slettes for godt:",
+  "en": "This is deleted for good:",
+  "oversatt": "以下が完全に削除されます："
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.173ae6d556fd": {
+  "nb": "Én annen person mister tilgangen til prosjektet med én gang.",
+  "en": "One other person loses access to the project immediately.",
+  "oversatt": "他の1名がただちにプロジェクトにアクセスできなくなります。"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.5a7689500b01": {
+  "nb": "nå. De blir liggende hos deg under «Ressurser fra slettede prosjekter», der du kan laste dem ned eller slette dem for godt senere.",
+  "en": "deleted now. They stay with you under “Assets from deleted projects”, where you can download them or delete them for good later.",
+  "oversatt": "今すぐ削除されます。保持する場合は「削除済みプロジェクトのアセット」に残り、後でダウンロードまたは完全に削除できます。"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.5b476a29a137": {
+  "nb": "Ressursene (bilder og lyd) slettes",
+  "en": "The assets (images and sound) are",
+  "oversatt": "アセット（画像および音声）は"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.826310fe94d3": {
+  "nb": "Vil du ta vare på noe først? Last ned ressursene og den importerte filmen som zip:",
+  "en": "Want to keep anything first? Download the assets and the imported film as a zip:",
+  "oversatt": "先に保持したいものがありますか？アセットとインポートした映像をZIPとしてダウンロード："
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.83b62c631193": {
+  "nb": "Ressursene kunne ikke hentes.",
+  "en": "The assets could not be loaded.",
+  "oversatt": "アセットを読み込めませんでした。"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.9fb9da1fd4b8": {
+  "nb": "Henter ressursene …",
+  "en": "Loading the assets …",
+  "oversatt": "アセットを読み込み中…"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.b791022ae6a5": {
+  "nb": "{others} andre personer mister tilgangen til prosjektet med én gang.",
+  "en": "{others} other people lose access to the project immediately.",
+  "oversatt": "他の{others}名がただちにプロジェクトにアクセスできなくなります。"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.span.2c20765e33e3": {
+  "nb": "ikke",
+  "en": "not",
+  "oversatt": "ない"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.button.837d45676258": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.button.f6f664cc605f": {
+  "nb": "Forlat prosjektet",
+  "en": "Leave the project",
+  "oversatt": "プロジェクトを退出"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.dialog-description.63a27e749aee": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "この操作は取り消せません。"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.dialog-title.f22dbe568576": {
+  "nb": "Forlat «{name}»",
+  "en": "Leave “{name}”",
+  "oversatt": "「{name}」を退出"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.p.4c1a45a9fdcc": {
+  "nb": "Prosjektet og det du har laget i det, blir værende.",
+  "en": "The project and what you have made in it will remain.",
+  "oversatt": "プロジェクトと作成した内容はそのまま保持されます。"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.p.56afd0369427": {
+  "nb": "Du mister tilgangen til prosjektet med én gang. Du kan ikke få den tilbake selv – en eier må invitere deg på nytt.",
+  "en": "You lose access to the project immediately. You cannot get it back yourself – an owner must invite you again.",
+  "oversatt": "ただちにプロジェクトへのアクセス権を失います。自分で復帰することはできません。オーナーからの再招待が必要です。"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.button.a7c4bf25a6cb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.button.e4e5e0f6d476": {
+  "nb": "Slett ressursene for godt",
+  "en": "Delete the assets for good",
+  "oversatt": "アセットを完全に削除"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.dialog-description.0c492303fda6": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "この操作は取り消せません。"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.dialog-title.c0b866755c65": {
+  "nb": "Slett ressursene fra «{name}»",
+  "en": "Delete the assets from “{name}”",
+  "oversatt": "「{name}」のアセットを削除"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.p.33bb677fe3d1": {
+  "nb": "Last dem ned som zip først hvis du vil ta vare på dem.",
+  "en": "Download them as a zip first if you want to keep them.",
+  "oversatt": "残したい場合は、先にZIPとしてダウンロードしてください。"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.p.48090bc28a0e": {
+  "nb": "Alle bilder og lydfiler fra prosjektet slettes for godt, med alle versjoner og loggen over AI-genereringer. Prosjektet forsvinner helt fra lista.",
+  "en": "All images and sound files from the project are deleted for good, with all versions and the log of AI generations. The project disappears from the list entirely.",
+  "oversatt": "プロジェクトのすべての画像と音声ファイル、およびすべてのバージョンとAI生成ログが完全に削除されます。プロジェクトは一覧から完全に消去されます。"
+ },
+ "app-projects-project-danger-dialogs.run.on-done.100e1e3fb25a": {
+  "nb": "Ressursene fra «{name}» er slettet for godt.",
+  "en": "The assets from “{name}” have been deleted for good.",
+  "oversatt": "「{name}」のアセットは完全に削除されました。"
+ },
+ "app-projects-project-danger-dialogs.run.on-done.b0b8212fc926": {
+  "nb": "Du har forlatt «{name}».",
+  "en": "You have left “{name}”.",
+  "oversatt": "「{name}」を退出しました。"
+ },
+ "app-projects-project-danger-dialogs.run.on-done.cc136c86bed6": {
+  "nb": " {leftoverFiles} filer i lagringen kunne ikke slettes og blir liggende (de kan ikke nås fra appen).",
+  "en": " {leftoverFiles} files in storage could not be deleted and will remain (they cannot be reached from the app).",
+  "oversatt": " ストレージ内の {leftoverFiles} 個のファイルを削除できなかったため残ります（アプリからはアクセスできません）。"
+ },
+ "app-projects-project-danger-dialogs.run.on-done.f4a0c5bc7b5d": {
+  "nb": "«{name}» er slettet. Ressursene ligger under «Ressurser fra slettede prosjekter».",
+  "en": "“{name}” has been deleted. The assets are under “Assets from deleted projects”.",
+  "oversatt": "「{name}」は削除されました。アセットは「削除済みプロジェクトのアセット」に残っています。"
+ },
+ "app-projects-project-danger-dialogs.run.set-error.4e0cdb68fb60": {
+  "nb": "Databasen er ikke oppdatert ennå (migrasjon 0011).",
+  "en": "The database is not updated yet (migration 0011).",
+  "oversatt": "データベースがまだ更新されていません（マイグレーション 0011）。"
+ },
+ "app-projects-project-danger-dialogs.run.set-error.76738f486184": {
+  "nb": "Prosjektet ble ikke slettet.",
+  "en": "The project was not deleted.",
+  "oversatt": "プロジェクトは削除されませんでした。"
+ },
+ "app-projects-project-danger-dialogs.run.set-error.c4fa650c29f1": {
+  "nb": "Ressursene ble ikke slettet.",
+  "en": "The assets were not deleted.",
+  "oversatt": "アセットは削除されませんでした。"
+ },
+ "app-projects-project-format.apply.cmds-run.64c007da8319": {
+  "nb": "Endre prosjektets format",
+  "en": "Change the project format",
+  "oversatt": "プロジェクトのフォーマットを変更"
+ },
+ "app-projects-project-format.apply.set-err.eb874e528d22": {
+  "nb": "Bredde og høyde må være hele tall mellom 16 og 16384.",
+  "en": "Width and height must be whole numbers between 16 and 16384.",
+  "oversatt": "幅と高さは16〜16384の整数である必要があります。"
+ },
+ "app-projects-project-format.project-format.aria-label.6f5176579e90": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "やり直し"
+ },
+ "app-projects-project-format.project-format.aria-label.7cab821dc958": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "元に戻す: {undoLabel}"
+ },
+ "app-projects-project-format.project-format.aria-label.80c798f58696": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "元に戻す"
+ },
+ "app-projects-project-format.project-format.aria-label.bd9ba28e5ca5": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "やり直し: {redoLabel}"
+ },
+ "app-projects-project-format.project-format.button.60ca46216cca": {
+  "nb": "Bruk",
+  "en": "Apply",
+  "oversatt": "適用"
+ },
+ "app-projects-project-format.project-format.h2.423e3164e1ea": {
+  "nb": "Bildeformat og bildefrekvens",
+  "en": "Frame size and frame rate",
+  "oversatt": "フレームサイズとフレームレート"
+ },
+ "app-projects-project-format.project-format.label.3a661dd47897": {
+  "nb": "Bildeformat",
+  "en": "Frame size",
+  "oversatt": "フレームサイズ"
+ },
+ "app-projects-project-format.project-format.label.73444978f6aa": {
+  "nb": "Bredde (px)",
+  "en": "Width (px)",
+  "oversatt": "幅 (px)"
+ },
+ "app-projects-project-format.project-format.label.a68cae0d2bd2": {
+  "nb": "Bilder per sekund",
+  "en": "Frames per second",
+  "oversatt": "フレーム/秒"
+ },
+ "app-projects-project-format.project-format.label.b894d518d0e7": {
+  "nb": "Høyde (px)",
+  "en": "Height (px)",
+  "oversatt": "高さ (px)"
+ },
+ "app-projects-project-format.project-format.option.86ba15a5ea61": {
+  "nb": "Egendefinert",
+  "en": "Custom",
+  "oversatt": "カスタム"
+ },
+ "app-projects-project-format.project-format.p.180e72ac6416": {
+  "nb": "blir tilpasset: plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder og kamerautsnitt regnes om til ny bildefrekvens. Kan angres.",
+  "en": "are adjusted: position and camera are scaled so the frame height is kept and the centre stays fixed, and keyframes and camera shots are recalculated for the new frame rate. Can be undone.",
+  "oversatt": "調整されます：フレームの高さが維持され中心が固定されるように位置とカメラが拡大縮小され、キーフレームとカメラカットが新しいフレームレートに合わせて再計算されます。元に戻すことができます。"
+ },
+ "app-projects-project-format.project-format.p.3ccc868a7b52": {
+  "nb": "{scenes} 2D-scener",
+  "en": "{scenes} 2D scenes",
+  "oversatt": "{scenes} 件の2Dシーン"
+ },
+ "app-projects-project-format.project-format.p.6883f3682c39": {
+  "nb": "Gjelder hele prosjektet: alle scener i sceneeditoren, avspilling og eksport.",
+  "en": "Applies to the whole project: all scenes in the scene editor, playback and export.",
+  "oversatt": "プロジェクト全体に適用：シーンエディター内のすべてのシーン、再生、および書き出し。"
+ },
+ "app-projects-project-format.project-format.p.a1048613d0c6": {
+  "nb": "Én 2D-scene",
+  "en": "One 2D scene",
+  "oversatt": "1件の2Dシーン"
+ },
+ "app-projects-project-format.project-format.title.6f5176579e90": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "やり直し"
+ },
+ "app-projects-project-format.project-format.title.7cab821dc958": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "元に戻す: {undoLabel}"
+ },
+ "app-projects-project-format.project-format.title.80c798f58696": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "元に戻す"
+ },
+ "app-projects-project-format.project-format.title.bd9ba28e5ca5": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "やり直し: {redoLabel}"
+ },
+ "app-projects-project-overview.invite-form.button.ba71c19a1d36": {
+  "nb": "Lag invitasjon",
+  "en": "Create invitation",
+  "oversatt": "招待を作成"
+ },
+ "app-projects-project-overview.invite-form.button.d82ccdd2935d": {
+  "nb": "Kopier",
+  "en": "Copy",
+  "oversatt": "コピー"
+ },
+ "app-projects-project-overview.invite-form.label.eae13d71688e": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "メールアドレス"
+ },
+ "app-projects-project-overview.invite-form.label.efe938ec20e7": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "役割"
+ },
+ "app-projects-project-overview.invite-form.option.17787f224706": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "コメント作成者"
+ },
+ "app-projects-project-overview.invite-form.option.d07ee75c7b75": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "閲覧者"
+ },
+ "app-projects-project-overview.invite-form.option.f83206c7c9d6": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "編集者"
+ },
+ "app-projects-project-overview.invite-form.p.3dffbff2098a": {
+  "nb": "Send denne lenken til mottakeren. Den vises bare nå og gjelder i 14 dager.",
+  "en": "Send this link to the recipient. It is only shown now and is valid for 14 days.",
+  "oversatt": "このリンクを受信者に送信してください。このリンクは今だけ表示され、14日間有効です。"
+ },
+ "app-projects-project-overview.invite-form.p.b503b20a4399": {
+  "nb": "Invitasjonen kunne ikke lages.",
+  "en": "The invitation could not be created.",
+  "oversatt": "招待を作成できませんでした。"
+ },
+ "app-projects-project-overview.invite-form.placeholder.0051983f3d79": {
+  "nb": "E-post til den du vil invitere",
+  "en": "Email of the person you want to invite",
+  "oversatt": "招待したい相手のメールアドレス"
+ },
+ "app-projects-project-overview.project-mobile-import.button.7c77e8de0962": {
+  "nb": "Importer fra mobil",
+  "en": "Import from mobile",
+  "oversatt": "モバイルからインポート"
+ },
+ "app-projects-project-overview.project-mobile-import.label.93d00272760b": {
+  "nb": "Mobilimport til prosjektet",
+  "en": "Mobile import to the project",
+  "oversatt": "プロジェクトへのモバイルインポート"
+ },
+ "app-projects-project-overview.project-mobile-import.title.fd433bb23824": {
+  "nb": "Ta bilder og video med mobilen, eller velg filer der – de kommer rett inn i prosjektet",
+  "en": "Take pictures and video with your phone, or choose files there – they come straight into the project",
+  "oversatt": "スマートフォンで写真や動画を撮影するか、端末内のファイルを選択すると、プロジェクトに直接読み込まれます"
+ },
+ "app-projects-project-overview.project-overview.h2.935722885715": {
+  "nb": "Medlemmer",
+  "en": "Members",
+  "oversatt": "メンバー"
+ },
+ "app-projects-project-overview.project-overview.h2.c605146a3256": {
+  "nb": "Produksjoner",
+  "en": "Productions",
+  "oversatt": "プロダクション"
+ },
+ "app-projects-project-overview.project-overview.label.1892d5b35b15": {
+  "nb": "Henter prosjektet …",
+  "en": "Loading the project …",
+  "oversatt": "プロジェクトを読み込み中…"
+ },
+ "app-projects-project-overview.project-overview.link.d84287021552": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "脚本をインポート"
+ },
+ "app-projects-project-overview.project-overview.message.e8d82c6ba27d": {
+  "nb": "Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.",
+  "en": "The project could not be loaded. It does not exist, you do not have access, or something went wrong.",
+  "oversatt": "プロジェクトを読み込めませんでした。存在しないか、アクセス権がないか、問題が発生しました。"
+ },
+ "app-projects-project-overview.project-overview.p.304d29fc3cab": {
+  "nb": "bilder/s",
+  "en": "frames/s",
+  "oversatt": "フレーム/秒"
+ },
+ "app-projects-project-overview.project-overview.p.43a72081e427": {
+  "nb": "Hovedspråk norsk ·",
+  "en": "Main language: Norwegian ·",
+  "oversatt": "メイン言語: ノルウェー語 ·"
+ },
+ "app-projects-project-overview.project-overview.span.0b610697a8a4": {
+  "nb": "Teknisk detalj (send gjerne til Claude):",
+  "en": "Technical detail (feel free to send to Claude):",
+  "oversatt": "技術的な詳細（Claudeに送信してください）："
+ },
+ "app-projects-project-overview.project-overview.span.a041cc091ba2": {
+  "nb": "Hovedfilmen har ingen scener ennå.",
+  "en": "The main film has no scenes yet.",
+  "oversatt": "メインフィルムにはまだシーンがありません。"
+ },
+ "app-projects-project-todo-box.mark-all-read": {
+  "nb": "Merk alle som lest",
+  "en": "Mark all as read",
+  "oversatt": "すべて既読にする"
+ },
+ "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "すべて表示"
+ },
+ "app-projects-project-todo-box.project-todo-box.button.86a35ad92db8": {
+  "nb": "Vis færre",
+  "en": "Show fewer",
+  "oversatt": "表示を減らす"
+ },
+ "app-projects-project-todo-box.project-todo-box.h2.c773fde750b7": {
+  "nb": "TODO",
+  "en": "TODO",
+  "oversatt": "TODO"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.2c4d42ee9d02": {
+  "nb": "Gå til første scene",
+  "en": "Go to the first scene",
+  "oversatt": "最初のシーンに移動"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.99bb3b1415f1": {
+  "nb": "Scene {value1}",
+  "en": "Scene {value1}",
+  "oversatt": "シーン {value1}"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.c3d2e45ca772": {
+  "nb": "Se i monteringen",
+  "en": "See in assembly",
+  "oversatt": "編集（アセンブリ）で確認"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.2e1ba2b88d4d": {
+  "nb": "{discrepancyScenes} scener har",
+  "en": "{discrepancyScenes} scenes have",
+  "oversatt": "{discrepancyScenes} 件のシーンに"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.3470acb79010": {
+  "nb": "{failedJobs} AI-genereringer feilet eller ble borte siste uke – se AI-statusen øverst.",
+  "en": "{failedJobs} AI generations failed or were lost in the last week – see the AI status at the top.",
+  "oversatt": "過去1週間に {failedJobs} 件のAI生成が失敗したか失われました。上部のAIステータスを確認してください。"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.3822f3cbeeef": {
+  "nb": "Én scene har",
+  "en": "One scene has",
+  "oversatt": "1件のシーンに"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.4f991887329d": {
+  "nb": "Ett notat fra andre i manuset",
+  "en": "One note from others in the script",
+  "oversatt": "脚本内の他のユーザーからの注記（1件）"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.61e67abdc149": {
+  "nb": "Ingenting som venter akkurat nå.",
+  "en": "Nothing waiting right now.",
+  "oversatt": "現在保留中の項目はありません。"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.82edc7d1f313": {
+  "nb": "{length} notater fra andre i manuset",
+  "en": "{length} notes from others in the script",
+  "oversatt": "脚本内の他のユーザーからの注記（{length}件）"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.8ebd7504c0a4": {
+  "nb": "Én AI-generering feilet eller ble borte siste uke – se AI-statusen øverst.",
+  "en": "One AI generation failed or was lost in the last week – see the AI status at the top.",
+  "oversatt": "過去1週間にAI生成が1件失敗または失われました。上部のAIステータスを確認してください。"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.ec4f4f6d847e": {
+  "nb": "manusendringer etter at 2D-scene eller film ble laget.",
+  "en": "script changes since its 2D scene or film was made.",
+  "oversatt": "2Dシーンまたは映画が作成された後の脚本の変更。"
+ },
+ "app-projects-project-todo-box.project-todo-box.span.b976cf4d9c0d": {
+  "nb": "«{assetName}» skal inn i {length} scener – {remaining} gjenstår",
+  "en": "“{assetName}” goes into {length} scenes – {remaining} left",
+  "oversatt": "「{assetName}」は{length}個のシーンで使用されます - 残り{remaining}個"
+ },
+ "app-projects-projects-screen.owners.sorted-map.691f4e2d0597": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "不明"
+ },
+ "app-projects-projects-screen.person-name.message.5a45255f5d1b": {
+  "nb": "deg",
+  "en": "you",
+  "oversatt": "あなた"
+ },
+ "app-projects-projects-screen.person-name.message.ddcd5f5ef017": {
+  "nb": "ukjent bruker",
+  "en": "unknown user",
+  "oversatt": "不明なユーザー"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.20089e6afbf6": {
+  "nb": "Handlinger for {name}",
+  "en": "Actions for {name}",
+  "oversatt": "{name}のアクション"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.4e70b05e2758": {
+  "nb": "Ressurser fra slettede prosjekter",
+  "en": "Assets from deleted projects",
+  "oversatt": "削除されたプロジェクトのアセット"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.80782a130cdb": {
+  "nb": "Filmer i {name}",
+  "en": "Films in {name}",
+  "oversatt": "{name}内の映画"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.a2ba9a0063a8": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "プロジェクト"
+ },
+ "app-projects-projects-screen.projects-screen.button.3c8b0a9d15f3": {
+  "nb": "Last ned …",
+  "en": "Download …",
+  "oversatt": "ダウンロード…"
+ },
+ "app-projects-projects-screen.projects-screen.button.52e0ec6bee64": {
+  "nb": "Utvikle nytt prosjekt med skriveassistent",
+  "en": "Develop a new project with the writing assistant",
+  "oversatt": "執筆アシスタントで新しいプロジェクトを作成"
+ },
+ "app-projects-projects-screen.projects-screen.button.81fb7f5ba35d": {
+  "nb": "Opprett ditt første prosjekt",
+  "en": "Create your first project",
+  "oversatt": "最初のプロジェクトを作成"
+ },
+ "app-projects-projects-screen.projects-screen.button.c36722de4cc3": {
+  "nb": "Gjenopprett fra sikkerhetskopi …",
+  "en": "Restore from backup …",
+  "oversatt": "バックアップから復元…"
+ },
+ "app-projects-projects-screen.projects-screen.button.d47cbc393746": {
+  "nb": "Opprett",
+  "en": "Create",
+  "oversatt": "作成"
+ },
+ "app-projects-projects-screen.projects-screen.button.d6a9b1452650": {
+  "nb": "Slett for godt …",
+  "en": "Delete for good …",
+  "oversatt": "完全に削除…"
+ },
+ "app-projects-projects-screen.projects-screen.button.db5895b4c0f7": {
+  "nb": "Nytt prosjekt",
+  "en": "New project",
+  "oversatt": "新規プロジェクト"
+ },
+ "app-projects-projects-screen.projects-screen.button.f906b0863ecc": {
+  "nb": "AI-leverandører …",
+  "en": "AI providers …",
+  "oversatt": "AIプロバイダー…"
+ },
+ "app-projects-projects-screen.projects-screen.button.fd432d48ff10": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.728534d50242": {
+  "nb": "Last ned ressurser …",
+  "en": "Download assets …",
+  "oversatt": "アセットをダウンロード…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.ac48481c6e9a": {
+  "nb": "Forlat prosjekt …",
+  "en": "Leave project …",
+  "oversatt": "プロジェクトから退出…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.c18c43ad8b8a": {
+  "nb": "Slett prosjekt …",
+  "en": "Delete project …",
+  "oversatt": "プロジェクトを削除…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.c8a1abd0cec2": {
+  "nb": "Sikkerhetskopi …",
+  "en": "Backup …",
+  "oversatt": "バックアップ…"
+ },
+ "app-projects-projects-screen.projects-screen.h1.a2ba9a0063a8": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "プロジェクト"
+ },
+ "app-projects-projects-screen.projects-screen.h2.4e70b05e2758": {
+  "nb": "Ressurser fra slettede prosjekter",
+  "en": "Assets from deleted projects",
+  "oversatt": "削除されたプロジェクトのアセット"
+ },
+ "app-projects-projects-screen.projects-screen.hint.0f7f0eb700b0": {
+  "nb": "Opprett et prosjekt, eller be en prosjekteier om en invitasjon.",
+  "en": "Create a project, or ask a project owner for an invitation.",
+  "oversatt": "プロジェクトを作成するか、プロジェクト所有者に招待を依頼してください。"
+ },
+ "app-projects-projects-screen.projects-screen.label.4ac8886a5cb6": {
+  "nb": "Prosjektnavn",
+  "en": "Project name",
+  "oversatt": "プロジェクト名"
+ },
+ "app-projects-projects-screen.projects-screen.label.64a883d59754": {
+  "nb": "Kort idé",
+  "en": "Short idea",
+  "oversatt": "短いアイデア"
+ },
+ "app-projects-projects-screen.projects-screen.label.9fe8335868e8": {
+  "nb": "Henter prosjekter …",
+  "en": "Loading projects …",
+  "oversatt": "プロジェクトを読み込み中…"
+ },
+ "app-projects-projects-screen.projects-screen.message.8e11c986d83b": {
+  "nb": "Prosjektene kunne ikke hentes.",
+  "en": "The projects could not be loaded.",
+  "oversatt": "プロジェクトを読み込めませんでした。"
+ },
+ "app-projects-projects-screen.projects-screen.p.07de4a3517ea": {
+  "nb": "Prosjektet kunne ikke opprettes.",
+  "en": "The project could not be created.",
+  "oversatt": "プロジェクトを作成できませんでした。"
+ },
+ "app-projects-projects-screen.projects-screen.p.443cb9ea8879": {
+  "nb": "Databasen er kanskje ikke satt opp ennå.",
+  "en": "The database may not be set up yet.",
+  "oversatt": "データベースがまだ設定されていない可能性があります。"
+ },
+ "app-projects-projects-screen.projects-screen.p.4dc1f46d3b02": {
+  "nb": "Filmer du eier eller er invitert inn i, med spinoffer og andre versjoner.",
+  "en": "Films you own or have been invited to, with spin-offs and other versions.",
+  "oversatt": "あなたが所有しているか招待された映画（スピンオフやその他のバージョンを含む）。"
+ },
+ "app-projects-projects-screen.projects-screen.p.526f9a47fbd8": {
+  "nb": "Prosjektene er slettet, men bildene og lyden er tatt vare på. Last dem ned, eller slett dem for godt. Senere skal ressurser kunne gjøres globale og brukes i andre prosjekter.",
+  "en": "The projects are deleted, but the images and sound have been kept. Download them, or delete them for good. Later, assets will be able to be made global and used in other projects.",
+  "oversatt": "プロジェクトは削除されましたが、画像と音声は保持されています。ダウンロードするか、完全に削除してください。今後、アセットをグローバル化して他のプロジェクトで使用できるようになる予定です。"
+ },
+ "app-projects-projects-screen.projects-screen.p.aac736a063bc": {
+  "nb": "Henter filmene …",
+  "en": "Loading the films …",
+  "oversatt": "映画を読み込み中…"
+ },
+ "app-projects-projects-screen.projects-screen.placeholder.0cc91ba3adf2": {
+  "nb": "Prosjektnavn, f.eks. filmens tittel",
+  "en": "Project name, e.g. the film's title",
+  "oversatt": "プロジェクト名（例：映画のタイトル）"
+ },
+ "app-projects-projects-screen.projects-screen.placeholder.f03a2886b6d0": {
+  "nb": "Kort idé til skriveassistenten (valgfritt)",
+  "en": "Short idea for the writing assistant (optional)",
+  "oversatt": "執筆アシスタント向けの短いアイデア（任意）"
+ },
+ "app-projects-projects-screen.projects-screen.span.1be386492308": {
+  "nb": "{length} filmer",
+  "en": "{length} films",
+  "oversatt": "{length}本のフィルム"
+ },
+ "app-projects-projects-screen.projects-screen.span.3607cfacb937": {
+  "nb": "1 film",
+  "en": "1 film",
+  "oversatt": "1本のフィルム"
+ },
+ "app-projects-projects-screen.projects-screen.span.69ddbf4e4534": {
+  "nb": "{length} medlemmer",
+  "en": "{length} members",
+  "oversatt": "{length}人のメンバー"
+ },
+ "app-projects-projects-screen.projects-screen.span.80a8cc750f16": {
+  "nb": "Opprettet {value1}",
+  "en": "Created {value1}",
+  "oversatt": "作成日: {value1}"
+ },
+ "app-projects-projects-screen.projects-screen.span.a41f483c3d2d": {
+  "nb": "Eiere: {owners}",
+  "en": "Owners: {owners}",
+  "oversatt": "オーナー: {owners}"
+ },
+ "app-projects-projects-screen.projects-screen.span.b5e505e15968": {
+  "nb": "Eier: {owners}",
+  "en": "Owner: {owners}",
+  "oversatt": "オーナー: {owners}"
+ },
+ "app-projects-projects-screen.projects-screen.span.dcd013ecb85b": {
+  "nb": "1 medlem",
+  "en": "1 member",
+  "oversatt": "1人のメンバー"
+ },
+ "app-projects-projects-screen.projects-screen.span.ff77d21acbe6": {
+  "nb": "slettet {value1}",
+  "en": "deleted {value1}",
+  "oversatt": "{value1}を削除しました"
+ },
+ "app-projects-projects-screen.projects-screen.title.622d83c45445": {
+  "nb": "Opprett prosjektet og utvikle idéen i et intervju i Story Lab. Det du godkjenner, overføres til biblioteket og manuset.",
+  "en": "Create the project and develop the idea in an interview in Story Lab. What you approve is transferred to the library and the script.",
+  "oversatt": "プロジェクトを作成し、Story Labのインタビューでアイデアを発展させます。承認した内容はライブラリと脚本に反映されます。"
+ },
+ "app-projects-projects-screen.projects-screen.title.e72a69906d76": {
+  "nb": "Du har ingen prosjekter ennå.",
+  "en": "You have no projects yet.",
+  "oversatt": "プロジェクトがまだありません。"
+ },
+ "app-projects-projects-screen.role-label.commenter.be89d56414e9": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "コメント投稿者"
+ },
+ "app-projects-projects-screen.role-label.editor.f41247266ec1": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "編集者"
+ },
+ "app-projects-projects-screen.role-label.owner.3c69c8270508": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "オーナー"
+ },
+ "app-projects-projects-screen.role-label.viewer.1a2775cd37f9": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "閲覧者"
+ },
+ "app-projects-projects-screen.your-role.commenter.98aabc5298fa": {
+  "nb": "Du kommenterer",
+  "en": "You are a commenter",
+  "oversatt": "コメント投稿者権限です"
+ },
+ "app-projects-projects-screen.your-role.editor.7692a90b3fe7": {
+  "nb": "Du er redaktør",
+  "en": "You are an editor",
+  "oversatt": "編集者権限です"
+ },
+ "app-projects-projects-screen.your-role.owner.54ba81a79c8f": {
+  "nb": "Du eier prosjektet",
+  "en": "You own this project",
+  "oversatt": "このプロジェクトのオーナーです"
+ },
+ "app-projects-projects-screen.your-role.viewer.e40a6aa951dd": {
+  "nb": "Du kan lese",
+  "en": "You can view",
+  "oversatt": "閲覧のみ可能です"
+ },
+ "app-projects-promotion-dialog.changes-carried-over": {
+  "nb": {
+   "one": "{count} endring er ført over til hovedfilmen.",
+   "other": "{count} endringer er ført over til hovedfilmen."
+  },
+  "en": {
+   "one": "{count} change has been carried over to the main film.",
+   "other": "{count} changes have been carried over to the main film."
+  },
+  "oversatt": {
+   "other": "{count}件の変更がメインフィルムに反映されました。"
+  }
+ },
+ "app-projects-promotion-dialog.compare.aria-label.ae3e0749d03e": {
+  "nb": "Overfør laget {value1}",
+  "en": "Transfer the layer {value1}",
+  "oversatt": "レイヤー「{value1}」を反映"
+ },
+ "app-projects-promotion-dialog.compare.aria-label.bcabacb600fb": {
+  "nb": "Overfør linjen {value1}",
+  "en": "Transfer the line {value1}",
+  "oversatt": "セリフ「{value1}」を反映"
+ },
+ "app-projects-promotion-dialog.compare.label.2c38c01459ec": {
+  "nb": "Bakgrunnsfarge",
+  "en": "Background colour",
+  "oversatt": "背景色"
+ },
+ "app-projects-promotion-dialog.compare.label.865403af773a": {
+  "nb": "Ja, bytt ut den godkjente versjonen (den tas vare på og kan velges igjen)",
+  "en": "Yes, replace the approved version (it is kept and can be chosen again)",
+  "oversatt": "はい、承認済みバージョンを置き換えます（保持されるため、後から再選択できます）"
+ },
+ "app-projects-promotion-dialog.compare.li.5ea72ee445e1": {
+  "nb": "Endret: ",
+  "en": "Changed: ",
+  "oversatt": "変更: "
+ },
+ "app-projects-promotion-dialog.compare.li.70ba04bf85c1": {
+  "nb": "Fjernet: ",
+  "en": "Removed: ",
+  "oversatt": "削除: "
+ },
+ "app-projects-promotion-dialog.compare.li.d0c2e319b569": {
+  "nb": "Ny: ",
+  "en": "New: ",
+  "oversatt": "新規: "
+ },
+ "app-projects-promotion-dialog.compare.li.ea78e0b6c171": {
+  "nb": "lyd",
+  "en": "audio",
+  "oversatt": "オーディオ"
+ },
+ "app-projects-promotion-dialog.compare.p.7a881726f052": {
+  "nb": "Hovedfilmen:",
+  "en": "Main film:",
+  "oversatt": "メインフィルム:"
+ },
+ "app-projects-promotion-dialog.compare.p.8b2163a2bbfe": {
+  "nb": "Lengde på 2D-scenen:",
+  "en": "Length of the 2D scene:",
+  "oversatt": "2Dシーンの長さ:"
+ },
+ "app-projects-promotion-dialog.compare.p.a5e5fdb270d3": {
+  "nb": "Ingen forskjeller igjen – spinoffens versjon er lik hovedfilmens.",
+  "en": "No differences left – the spin-off's version is the same as the main film's.",
+  "oversatt": "差異はありません – スピンオフのバージョンはメインフィルムと同じです。"
+ },
+ "app-projects-promotion-dialog.compare.p.a8edd073b27c": {
+  "nb": "Hovedfilmen har ingen 2D-scene her. Velger du et lag, kopieres hele 2D-scenen.",
+  "en": "The main film has no 2D scene here. If you choose a layer, the whole 2D scene is copied.",
+  "oversatt": "メインフィルムのここには2Dシーンがありません。レイヤーを選択すると、2Dシーン全体がコピーされます。"
+ },
+ "app-projects-promotion-dialog.compare.p.c3926eed6570": {
+  "nb": " · {links} tidskoblinger er ulike",
+  "en": " · {links} time links differ",
+  "oversatt": " · {links}件のタイムリンクが異なります"
+ },
+ "app-projects-promotion-dialog.compare.p.c6cd03766050": {
+  "nb": "{main} kamerautsnitt i hovedfilmen, {spin} i spinoffen (med endringer).",
+  "en": "{main} camera shots in the main film, {spin} in the spin-off (with changes).",
+  "oversatt": "メインフィルムに{main}カット、スピンオフに{spin}カット（変更あり）。"
+ },
+ "app-projects-promotion-dialog.compare.p.d6492cdcb352": {
+  "nb": "(med spinoffens klipping)",
+  "en": "(with the spin-off's editing)",
+  "oversatt": "（スピンオフの編集を適用）"
+ },
+ "app-projects-promotion-dialog.compare.p.e098ea2eba1c": {
+  "nb": "Endringene lagres med historikk i hovedfilmen. Materiale laget fra det gamle manuset flagges som avvik, så du kan velge å godkjenne eller oppdatere det.",
+  "en": "The changes are saved with history in the main film. Material made from the old script is flagged as a discrepancy, so you can choose to approve or update it.",
+  "oversatt": "変更内容は履歴とともにメインフィルムに保存されます。古い脚本から作成された素材には相違フラグが付けられるため、承認するか更新するかを選択できます。"
+ },
+ "app-projects-promotion-dialog.compare.p.ff98ba6917f2": {
+  "nb": "Spinoffen:",
+  "en": "Spin-off:",
+  "oversatt": "スピンオフ:"
+ },
+ "app-projects-promotion-dialog.compare.span.1a03cc658d45": {
+  "nb": "Linjen er også endret i hovedfilmen. Hovedfilmens tekst erstattes hvis du krysser av.",
+  "en": "The line has also been changed in the main film. The main film's text is replaced if you tick it.",
+  "oversatt": "このセリフはメインフィルムでも変更されています。チェックを入れると、メインフィルムのテキストが置き換えられます。"
+ },
+ "app-projects-promotion-dialog.compare.span.4272f77508d9": {
+  "nb": "– fjernet i spinoffen",
+  "en": "– removed in the spin-off",
+  "oversatt": "– スピンオフで削除済み"
+ },
+ "app-projects-promotion-dialog.compare.span.878139a86430": {
+  "nb": "Spinoff-versjonen",
+  "en": "Spin-off version",
+  "oversatt": "スピンオフバージョン"
+ },
+ "app-projects-promotion-dialog.compare.span.9bae87671b44": {
+  "nb": "Scenehode:",
+  "en": "Scene heading:",
+  "oversatt": "柱書き（シーン見出し）:"
+ },
+ "app-projects-promotion-dialog.compare.span.c07b553b10e9": {
+  "nb": "Hovedfilmen bruker en godkjent versjon av scenen.",
+  "en": "The main film uses an approved version of the scene.",
+  "oversatt": "本編映画は承認済みのシーンバージョンを使用しています。"
+ },
+ "app-projects-promotion-dialog.compare.span.cdff22eef7af": {
+  "nb": "Lag",
+  "en": "Layer",
+  "oversatt": "レイヤー"
+ },
+ "app-projects-promotion-dialog.compare.span.dda1bf8bb55f": {
+  "nb": "– nytt lag",
+  "en": "– new layer",
+  "oversatt": "– 新規レイヤー"
+ },
+ "app-projects-promotion-dialog.compare.span.de9c53a9806b": {
+  "nb": "Hovedfilmen (original)",
+  "en": "Main film (original)",
+  "oversatt": "本編映画（オリジナル）"
+ },
+ "app-projects-promotion-dialog.compare.span.fbda5e3f8bda": {
+  "nb": "– endret: {value1}",
+  "en": "– changed: {value1}",
+  "oversatt": "– 変更：{value1}"
+ },
+ "app-projects-promotion-dialog.compare.title.0c592e97f9c2": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "脚本"
+ },
+ "app-projects-promotion-dialog.compare.title.447b692dff0e": {
+  "nb": "Kamera",
+  "en": "Camera",
+  "oversatt": "カメラ"
+ },
+ "app-projects-promotion-dialog.compare.title.9b137853ddf2": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "音声"
+ },
+ "app-projects-promotion-dialog.compare.title.b9a1253d8f24": {
+  "nb": "Bilde (2D-scenen)",
+  "en": "Image (2D scene)",
+  "oversatt": "画像（2Dシーン）"
+ },
+ "app-projects-promotion-dialog.compare.title.d6d40f18ab16": {
+  "nb": "Ferdig film og klipping",
+  "en": "Finished film and editing",
+  "oversatt": "完成映像と編集"
+ },
+ "app-projects-promotion-dialog.e.run-plan.85c29795bb98": {
+  "nb": "Tilbakefør fra {name}",
+  "en": "Transfer back from {name}",
+  "oversatt": "{name} から書き戻す"
+ },
+ "app-projects-promotion-dialog.e.run-plan.8affef3035ab": {
+  "nb": "Ny hovedfilmversjon fra {name}",
+  "en": "New main film version from {name}",
+  "oversatt": "{name} からの新しい本編映画バージョン"
+ },
+ "app-projects-promotion-dialog.e.run-plan.d2791bd75831": {
+  "nb": "Overfør scene fra {name}",
+  "en": "Transfer scene from {name}",
+  "oversatt": "{name} からシーンを転送"
+ },
+ "app-projects-promotion-dialog.line-label.added.5e0f1f0f90b7": {
+  "nb": "Ny linje",
+  "en": "New line",
+  "oversatt": "新しいライン"
+ },
+ "app-projects-promotion-dialog.line-label.changed.3a4f47e50aa9": {
+  "nb": "Endret",
+  "en": "Changed",
+  "oversatt": "変更済み"
+ },
+ "app-projects-promotion-dialog.line-label.conflict.e5d59030f073": {
+  "nb": "Endret i begge",
+  "en": "Changed in both",
+  "oversatt": "両方で変更済み"
+ },
+ "app-projects-promotion-dialog.line-label.main-newer.ba3bde32f60b": {
+  "nb": "Nyere i hovedfilmen",
+  "en": "Newer in the main film",
+  "oversatt": "本編映画の方が新しい"
+ },
+ "app-projects-promotion-dialog.line-label.removed.de2335fbb7d7": {
+  "nb": "Fjernet",
+  "en": "Removed",
+  "oversatt": "削除済み"
+ },
+ "app-projects-promotion-dialog.name.message.cc876cf60166": {
+  "nb": "spinoffen",
+  "en": "the spin-off",
+  "oversatt": "スピンオフ"
+ },
+ "app-projects-promotion-dialog.new-scene.aria-label.7abbeeba7e06": {
+  "nb": "Plassering i hovedfilmen",
+  "en": "Placement in the main film",
+  "oversatt": "本編映画内での配置"
+ },
+ "app-projects-promotion-dialog.new-scene.label.06b01496b3be": {
+  "nb": "Ta med lyd og tidskoblinger",
+  "en": "Include audio and time links",
+  "oversatt": "音声とタイムリンクを含める"
+ },
+ "app-projects-promotion-dialog.new-scene.label.7abbeeba7e06": {
+  "nb": "Plassering i hovedfilmen",
+  "en": "Placement in the main film",
+  "oversatt": "本編映画内での配置"
+ },
+ "app-projects-promotion-dialog.new-scene.option.c962a0f3c610": {
+  "nb": "Etter {label}",
+  "en": "After {label}",
+  "oversatt": "{label} の後"
+ },
+ "app-projects-promotion-dialog.new-scene.option.faff99bf2566": {
+  "nb": "Først i filmen",
+  "en": "First in the film",
+  "oversatt": "映画の先頭"
+ },
+ "app-projects-promotion-dialog.new-scene.p.69a6173e278b": {
+  "nb": "Scenen finnes bare i spinoffen. Den kan legges inn i hovedfilmen som en egen kopi (manus, historikk, oversettelser og 2D-scene). Spinoffens versjon endres ikke.",
+  "en": "The scene exists only in the spin-off. It can be added to the main film as its own copy (script, history, translations and 2D scene). The spin-off's version is not changed.",
+  "oversatt": "このシーンはスピンオフにのみ存在します。別のコピー（脚本、履歴、翻訳、2Dシーン）として本編映画に追加できます。スピンオフ側のバージョンは変更されません。"
+ },
+ "app-projects-promotion-dialog.new-version.finish.f19a616606c5": {
+  "nb": "Hovedfilmen bruker nå en egen kopi av spinoffens versjon. Den gamle versjonen er tatt vare på.",
+  "en": "The main film now uses its own copy of the spin-off's version. The old version has been kept.",
+  "oversatt": "本編映画はスピンオフバージョンの独立したコピーを使用するようになりました。以前のバージョンは保持されています。"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.aria-label.d8820e5131ae": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.267f7e080ae2": {
+  "nb": "Overfør valgte",
+  "en": "Transfer selected",
+  "oversatt": "選択した項目を転送"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.2fc6e9330fd2": {
+  "nb": "Overfør scenen til hovedfilmen",
+  "en": "Transfer the scene to the main film",
+  "oversatt": "シーンを本編映画に転送"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.36fa69ec1375": {
+  "nb": "Bare manus",
+  "en": "Script only",
+  "oversatt": "脚本のみ"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.7fca6a523481": {
+  "nb": "Lag ny hovedfilmversjon",
+  "en": "Make new main film version",
+  "oversatt": "新しい本編映画バージョンを作成"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.907a0100b618": {
+  "nb": "Behold alt uendret",
+  "en": "Keep everything unchanged",
+  "oversatt": "すべて変更しない"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.dialog-description.ed5d572466ab": {
+  "nb": "Scenene spinoffen har endret eller skrevet selv. Velg hva som skal føres over – ingenting skjer før du trykker «Overfør», og alt kan angres. Gamle versjoner tas vare på.",
+  "en": "The scenes the spin-off has changed or written itself. Choose what to carry over – nothing happens until you press “Transfer”, and everything can be undone. Old versions are kept.",
+  "oversatt": "スピンオフ側で変更または新規作成されたシーンです。引き継ぐ内容を選択してください。「転送」をクリックするまで何も適用されず、後から元に戻すこともできます。古いバージョンは保持されます。"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.dialog-title.62677a2313dc": {
+  "nb": "Tilbakefør fra «{name}» til hovedfilmen",
+  "en": "Transfer back from “{name}” to the main film",
+  "oversatt": "「{name}」から本編映画へ書き戻す"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.label.fc958f3dfc53": {
+  "nb": "Hele spinoff-versjonen som ny versjon i hovedfilmen",
+  "en": "The whole spin-off version as a new version in the main film",
+  "oversatt": "スピンオフバージョン全体を新しい本編映画バージョンとして採用"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.p.d1798aee36c7": {
+  "nb": "Spinoffen har ingen egne versjoner eller nye scener ennå. Når du endrer en gjenbrukt scene i spinoffen, får den sin egen versjon som kan føres tilbake her.",
+  "en": "The spin-off has no versions or new scenes of its own yet. When you change a reused scene in the spin-off, it gets its own version that can be carried back here.",
+  "oversatt": "スピンオフにはまだ独自のバージョンや新しいシーンがありません。スピンオフで再利用されたシーンを変更すると、独自のバージョンが作成され、ここで本編に書き戻せるようになります。"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.span.16a81f538148": {
+  "nb": "Egen versjon i spinoffen",
+  "en": "Own version in the spin-off",
+  "oversatt": "スピンオフ独自のバージョン"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.span.b0a6ba67196d": {
+  "nb": "Ny scene – bare i spinoffen",
+  "en": "New scene – only in the spin-off",
+  "oversatt": "新規シーン – スピンオフにのみ存在"
+ },
+ "app-projects-promotion-dialog.section.aria-label.db4187bd74a0": {
+  "nb": "Overfør {value1}",
+  "en": "Transfer {value1}",
+  "oversatt": "{value1} を転送"
+ },
+ "app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550": {
+  "nb": "{n} {value2} ført over til hovedfilmen.",
+  "en": "{n} {value2} been carried over to the main film.",
+  "oversatt": "{n} 件の {value2} を本編映画へ転送しました。"
+ },
+ "app-projects-promotion-dialog.transfer-chosen.set-err.b92b63a2e8f7": {
+  "nb": "Ingenting er valgt.",
+  "en": "Nothing is selected.",
+  "oversatt": "何も選択されていません。"
+ },
+ "app-projects-promotion-dialog.transfer-scene.finish.56741ccc97f8": {
+  "nb": "Scenen er lagt inn i hovedfilmen med egen kopi. Spinoffens versjon er uendret.",
+  "en": "The scene has been added to the main film as its own copy. The spin-off's version is unchanged.",
+  "oversatt": "シーンは独立したコピーとして本編に追加されました。スピンオフのバージョンは変更されていません。"
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.48f1f0f3eb47": {
+  "nb": "Endre kvalitetsprofilen «{name}»",
+  "en": "Edit the quality profile \"{name}\"",
+  "oversatt": "品質プロファイル「{name}」を編集"
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.5022869935d4": {
+  "nb": "Ny kvalitetsprofil «{name}»",
+  "en": "New quality profile \"{name}\"",
+  "oversatt": "新規品質プロファイル「{name}」"
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.ff9506ab0ff0": {
+  "nb": "Ny kvalitetsprofil «{name}»",
+  "en": "New quality profile \"{name}\"",
+  "oversatt": "新規品質プロファイル「{name}」"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.199cf4d2cacf": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "エフォートレベル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.270da238aa36": {
+  "nb": "Antall varianter",
+  "en": "Number of variants",
+  "oversatt": "バリアント数"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.2f06acdd0ec3": {
+  "nb": "Modell for {value1}",
+  "en": "Model for {value1}",
+  "oversatt": "{value1} のモデル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.76031e8a6db6": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "解像度"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.8f2415ab9021": {
+  "nb": "Profilnavn",
+  "en": "Profile name",
+  "oversatt": "プロファイル名"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.b4a69d526434": {
+  "nb": "Budsjettgrense per måned",
+  "en": "Budget limit per month",
+  "oversatt": "月あたりの予算制限"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.c99e03632a03": {
+  "nb": "Ny kvalitetsprofil",
+  "en": "New quality profile",
+  "oversatt": "新規品質プロファイル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.e563530ada2f": {
+  "nb": "Endre kvalitetsprofil",
+  "en": "Edit quality profile",
+  "oversatt": "品質プロファイルを編集"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.button.1ac177cba613": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.button.7dd68c1dc880": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.199cf4d2cacf": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "エフォートレベル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.73288b25da41": {
+  "nb": "Alfa",
+  "en": "Alpha",
+  "oversatt": "アルファ"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.76031e8a6db6": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "解像度"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.87eb6b0f610e": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.b4a69d526434": {
+  "nb": "Budsjettgrense per måned",
+  "en": "Budget limit per month",
+  "oversatt": "月あたりの予算制限"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.c3a245760f0d": {
+  "nb": "Bitrate (kbps)",
+  "en": "Bitrate (kbps)",
+  "oversatt": "ビットレート (kbps)"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.dba78363fe08": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "フォーマット"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.f2f787c112cc": {
+  "nb": "Varianter",
+  "en": "Variants",
+  "oversatt": "バリアント"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.legend.4b3045abb2ff": {
+  "nb": "Modeller per AI-type",
+  "en": "Models per AI type",
+  "oversatt": "AIタイプ別モデル"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.legend.e04587b485b1": {
+  "nb": "Eksportinnstillinger",
+  "en": "Export settings",
+  "oversatt": "書き出し設定"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.4044f9d0b89b": {
+  "nb": "Fra innsatsnivået",
+  "en": "From the effort level",
+  "oversatt": "エフォートレベルから"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.5f17b52cdd08": {
+  "nb": "Premultiplisert",
+  "en": "Premultiplied",
+  "oversatt": "プリマルチプライド"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.648dc83932d1": {
+  "nb": "PNG-sekvens",
+  "en": "PNG sequence",
+  "oversatt": "PNGシーケンス"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "未選択"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.2": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "未選択"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.3": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "未選択"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.4": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "未選択"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.a6dff85bdd6e": {
+  "nb": "ProRes (MOV)",
+  "en": "ProRes (MOV)",
+  "oversatt": "ProRes (MOV)"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.ff806e7ac6e2": {
+  "nb": "Rett",
+  "en": "Straight",
+  "oversatt": "ストレート"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.placeholder.4f87d8e17496": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "なし"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.6d75ac0a8869": {
+  "nb": "Sett som aktiv profil",
+  "en": "Set as the active profile",
+  "oversatt": "アクティブなプロファイルに設定"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.9529252f2ce8": {
+  "nb": "Fjern «{name}»",
+  "en": "Remove \"{name}\"",
+  "oversatt": "「{name}」を削除"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.ca935bb26f57": {
+  "nb": "Aktiv profil – klikk for å fjerne valget",
+  "en": "Active profile – click to clear",
+  "oversatt": "アクティブなプロファイル – クリックして解除"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.8c0bf4fd702a": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "編集"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.96fe3b33278f": {
+  "nb": "Legg til standardprofilene",
+  "en": "Add the default profiles",
+  "oversatt": "デフォルトのプロファイルを追加"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.9fa8ff3da0f7": {
+  "nb": "Ny profil",
+  "en": "New profile",
+  "oversatt": "新規プロファイル"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.81c62df7f64d": {
+  "nb": "Fjern aktiv profil",
+  "en": "Clear active profile",
+  "oversatt": "アクティブなプロファイルを解除"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.a1323399cae1": {
+  "nb": "Fjern kvalitetsprofilen «{name}»",
+  "en": "Remove the quality profile \"{name}\"",
+  "oversatt": "品質プロファイル「{name}」を削除"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.c227c9497432": {
+  "nb": "Sett «{name}» som aktiv profil",
+  "en": "Set \"{name}\" as the active profile",
+  "oversatt": "「{name}」をアクティブなプロファイルに設定"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094": {
+  "nb": "{variants} {value2}",
+  "en": "{variants} {value2}",
+  "oversatt": "{variants} {value2}"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.c97aefb7ce63": {
+  "nb": "høyst {budgetLimit}/mnd",
+  "en": "max {budgetLimit}/mo",
+  "oversatt": "最大 {budgetLimit}/月"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p.3d99683fa28f": {
+  "nb": "En profil samler modellvalg, oppløsning, innsatsnivå, antall varianter og eksportinnstillinger. Den aktive profilen brukes som standard ved generering og eksport, og kan overstyres hver gang. Å bytte profil endrer aldri eksisterende resultater.",
+  "en": "A profile gathers model choices, resolution, effort level, number of variants and export settings. The active profile is the default for generation and export, and can be overridden each time. Switching profile never changes existing results.",
+  "oversatt": "プロファイルには、モデルの選択、解像度、エフォートレベル、バリアント数、書き出し設定がまとめられます。アクティブなプロファイルは生成および書き出し時のデフォルトとして使用され、その都度上書き可能です。プロファイルを切り替えても、既存の生成結果が変更されることはありません。"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.span.a1357eca16bc": {
+  "nb": "Ingen valg lagret",
+  "en": "No settings saved",
+  "oversatt": "保存された設定はありません"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.span.ad5dc4ee75b6": {
+  "nb": "Prosjektet har ingen profiler ennå.",
+  "en": "The project has no profiles yet.",
+  "oversatt": "このプロジェクトにはまだプロファイルがありません。"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.6d75ac0a8869": {
+  "nb": "Sett som aktiv profil",
+  "en": "Set as the active profile",
+  "oversatt": "アクティブなプロファイルに設定"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.86c66d620967": {
+  "nb": "Kvalitetsprofiler",
+  "en": "Quality profiles",
+  "oversatt": "品質プロファイル"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.ca935bb26f57": {
+  "nb": "Aktiv profil – klikk for å fjerne valget",
+  "en": "Active profile – click to clear",
+  "oversatt": "アクティブなプロファイル – クリックして解除"
+ },
+ "app-projects-quality-profiles-section.variants": {
+  "nb": {
+   "one": "{count} variant",
+   "other": "{count} varianter"
+  },
+  "en": {
+   "one": "{count} variant",
+   "other": "{count} variants"
+  },
+  "oversatt": {
+   "other": "{count} 件のバリアント"
+  }
+ },
+ "app-projects-storage-section.storage-section.h2.4f2dc5a77b3d": {
+  "nb": "Lagring",
+  "en": "Storage",
+  "oversatt": "ストレージ"
+ },
+ "app-projects-storage-section.storage-section.span.b391184b0642": {
+  "nb": "{value1} i filer",
+  "en": "{value1} in files",
+  "oversatt": "ファイル容量: {value1}"
+ },
+ "app-projects-storage-section.storage-section.th.0222f92bd332": {
+  "nb": "Kategori",
+  "en": "Category",
+  "oversatt": "カテゴリ"
+ },
+ "app-projects-storage-section.storage-section.th.66729218f53f": {
+  "nb": "Antall",
+  "en": "Count",
+  "oversatt": "数"
+ },
+ "app-projects-storage-section.storage-section.th.acfad4c6d8e2": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "サイズ"
+ },
+ "app-projects-style-guide-section.analyse.set-error.5a93579a5c17": {
+  "nb": "Svaret fra AI kunne ikke leses. Prøv igjen.",
+  "en": "The reply from the AI could not be read. Try again.",
+  "oversatt": "AIからの応答を読み取れませんでした。もう一度お試しください。"
+ },
+ "app-projects-style-guide-section.analyse.set-error.6322f6473941": {
+  "nb": "Stilen ble ikke analysert.",
+  "en": "The style was not analysed.",
+  "oversatt": "スタイルは分析されませんでした。"
+ },
+ "app-projects-style-guide-section.err.cmds-run.2d61cb1d67e0": {
+  "nb": "Endre filmens visuelle stil",
+  "en": "Change the film's visual style",
+  "oversatt": "作品のビジュアルスタイルを変更"
+ },
+ "app-projects-style-guide-section.err.cmds-run.9a178c6a79c7": {
+  "nb": "Ny stilprofil «{value1}»",
+  "en": "New style profile “{value1}”",
+  "oversatt": "新規スタイルプロファイル「{value1}」"
+ },
+ "app-projects-style-guide-section.err.cmds-run.a1217e819847": {
+  "nb": "Endre stilprofilen «{value1}»",
+  "en": "Change the style profile “{value1}”",
+  "oversatt": "スタイルプロファイル「{value1}」を変更"
+ },
+ "app-projects-style-guide-section.err.cmds-run.bb6e2cd5f50f": {
+  "nb": "Fjern stilprofilen «{name}»",
+  "en": "Remove the style profile “{name}”",
+  "oversatt": "スタイルプロファイル「{name}」を削除"
+ },
+ "app-projects-style-guide-section.err.cmds-run.e3bd9e16d4a3": {
+  "nb": "Lag filmens visuelle stil",
+  "en": "Make the film's visual style",
+  "oversatt": "作品のビジュアルスタイルを作成"
+ },
+ "app-projects-style-guide-section.label.label.0dd5519d5394": {
+  "nb": "Unngå",
+  "en": "Avoid",
+  "oversatt": "除外事項"
+ },
+ "app-projects-style-guide-section.label.label.0eca2fdd7cac": {
+  "nb": "Visuell stil",
+  "en": "Visual style",
+  "oversatt": "ビジュアルスタイル"
+ },
+ "app-projects-style-guide-section.label.label.34deaa3bc540": {
+  "nb": "Publikum og tone",
+  "en": "Audience and tone",
+  "oversatt": "ターゲット層とトーン"
+ },
+ "app-projects-style-guide-section.label.label.3bade036daf6": {
+  "nb": "Teknikk og materialer",
+  "en": "Technique and materials",
+  "oversatt": "手法と素材"
+ },
+ "app-projects-style-guide-section.label.label.5a9451cf856f": {
+  "nb": "Stemning og følelse",
+  "en": "Mood and feeling",
+  "oversatt": "雰囲気と感情"
+ },
+ "app-projects-style-guide-section.label.label.5f40d76fba0c": {
+  "nb": "Verden: sted, tid og årstid",
+  "en": "The world: place, time and season",
+  "oversatt": "世界観: 場所・時代・季節"
+ },
+ "app-projects-style-guide-section.label.label.6bc0add9febe": {
+  "nb": "Omgivelser og bakgrunner",
+  "en": "Surroundings and backgrounds",
+  "oversatt": "周囲の環境と背景"
+ },
+ "app-projects-style-guide-section.label.label.749aa4fdbfc2": {
+  "nb": "Egne instrukser til AI-en",
+  "en": "Own instructions to the AI",
+  "oversatt": "AIへのカスタム指示"
+ },
+ "app-projects-style-guide-section.label.label.9432cb366cd9": {
+  "nb": "Hva filmen handler om",
+  "en": "What the film is about",
+  "oversatt": "作品の概要・テーマ"
+ },
+ "app-projects-style-guide-section.label.label.aec341995498": {
+  "nb": "Bildeutsnitt og kameraspråk",
+  "en": "Framing and camera language",
+  "oversatt": "構図とカメラワーク"
+ },
+ "app-projects-style-guide-section.label.label.c82839bfc8e2": {
+  "nb": "Figurer",
+  "en": "Characters",
+  "oversatt": "キャラクター"
+ },
+ "app-projects-style-guide-section.label.label.e415871fd9d3": {
+  "nb": "Lys",
+  "en": "Light",
+  "oversatt": "ライティング"
+ },
+ "app-projects-style-guide-section.name.name.814846ecf119": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "下書き"
+ },
+ "app-projects-style-guide-section.save.cmds-run.86f31c8bc895": {
+  "nb": "Hva stilprofilen gjelder for",
+  "en": "What the style profile applies to",
+  "oversatt": "スタイルプロファイルの適用対象"
+ },
+ "app-projects-style-guide-section.save.set-error.12505857d166": {
+  "nb": "Gi stilprofilen et navn.",
+  "en": "Give the style profile a name.",
+  "oversatt": "スタイルプロファイルの名前を入力してください。"
+ },
+ "app-projects-style-guide-section.save.set-error.906ffb90e99d": {
+  "nb": "Noen andre har endret filmens visuelle stil mens du skrev. Kopier det du har skrevet, lukk og åpne på nytt.",
+  "en": "Someone else changed the film's visual style while you were writing. Copy what you have written, close and open again.",
+  "oversatt": "入力中に他のユーザーによって映画のビジュアルスタイルが変更されました。入力した内容をコピーし、閉じてから再度開いてください。"
+ },
+ "app-projects-style-guide-section.save.set-error.fb2c09e808f7": {
+  "nb": "«{bad}» er ikke en farge på formen #rrggbb.",
+  "en": "“{bad}” is not a colour in the form #rrggbb.",
+  "oversatt": "「{bad}」は #rrggbb 形式のカラーコードではありません。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.01e2143ef77f": {
+  "nb": "Beskrivelse av fargene",
+  "en": "Description of the colours",
+  "oversatt": "色の説明"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.6087ec44889e": {
+  "nb": "Forhåndsvisning av beskrivelsen",
+  "en": "Preview of the description",
+  "oversatt": "説明のプレビュー"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.9193fb91ffd8": {
+  "nb": "Stilanalyse",
+  "en": "Style analysis",
+  "oversatt": "スタイル分析"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.a8d3fe27c570": {
+  "nb": "Bekreft stilanalyse",
+  "en": "Confirm style analysis",
+  "oversatt": "スタイル分析の確認"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.d051a1b89038": {
+  "nb": "Farger (#rrggbb, skilt med mellomrom)",
+  "en": "Colours (#rrggbb, separated by spaces)",
+  "oversatt": "カラー (#rrggbb、スペース区切り)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.1324834ef4c0": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.135d1e7ddee6": {
+  "nb": "Bruk det valgte i stilen",
+  "en": "Use the selection in the style",
+  "oversatt": "選択した内容をスタイルに適用"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.4abb85b60887": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.5ce321fc54e0": {
+  "nb": "Analyser stilen i forbildebildene …",
+  "en": "Analyse the style in the reference images …",
+  "oversatt": "リファレンス画像のスタイルを分析…"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.898762983e0d": {
+  "nb": "Fjern stilprofilen",
+  "en": "Remove the style profile",
+  "oversatt": "スタイルプロファイルを削除"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.8a243932d696": {
+  "nb": "Ja, analyser",
+  "en": "Yes, analyse",
+  "oversatt": "はい、分析します"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.8af3c4a6696c": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "破棄"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.9eb9c6c4709a": {
+  "nb": "Foreslå utkast fra prosjektet (fyller bare tomme felt)",
+  "en": "Suggest a draft from the project (fills empty fields only)",
+  "oversatt": "プロジェクトから下書きを提案 (空のフィールドのみ入力)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.ba969324d6d6": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.e29a61452c4f": {
+  "nb": "Analyserer … (opptil et halvt minutt)",
+  "en": "Analysing … (up to half a minute)",
+  "oversatt": "分析中… (最大30秒)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-description.cefa937571fa": {
+  "nb": "Dette sendes med i alle bildebeskrivelser, sammen med det programmet vet om scenene (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder. Skriv helst på engelsk – beskrivelsene som sendes, er på engelsk. Eksemplene i feltene viser hva som passer.",
+  "en": "This is sent with every image description, together with what the app knows about the scenes (place, time of day, light, who is there) and approved images. Preferably write in English – the descriptions sent are in English. The examples in the fields show what fits.",
+  "oversatt": "これは、アプリが把握しているシーン情報 (場所、時間帯、照明、登場人物) や承認済み画像とともに、すべての画像プロンプトに含めて送信されます。送信される説明文は英語のため、なるべく英語で記述してください。各項目の例を参考にしてください。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.3da8b3b612dc": {
+  "nb": "Stilprofil: {name}",
+  "en": "Style profile: {name}",
+  "oversatt": "スタイルプロファイル: {name}"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.4541d9ed708a": {
+  "nb": "Filmens visuelle stil",
+  "en": "The film's visual style",
+  "oversatt": "映画のビジュアルスタイル"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.d9b5eb79bfc3": {
+  "nb": "Ny stilprofil",
+  "en": "New style profile",
+  "oversatt": "新規スタイルプロファイル"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.h3.707a3428a5cc": {
+  "nb": "Stilanalyse – velg hva som skal inn i stilen",
+  "en": "Style analysis – choose what goes into the style",
+  "oversatt": "スタイル分析 – スタイルに取り込む内容を選択"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.label.5ac3e301e8e4": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.18f6e3054789": {
+  "nb": "Fargepalett",
+  "en": "Colour palette",
+  "oversatt": "カラーパレット"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.6feae9bc1307": {
+  "nb": "Gjelder for",
+  "en": "Applies to",
+  "oversatt": "適用対象"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.7887170bc913": {
+  "nb": "Forbildebilder ({length} valgt, høyst 6) – bilder som viser stilen",
+  "en": "Reference images ({length} selected, max 6) – images that show the style",
+  "oversatt": "リファレンス画像 ({length}枚選択中、最大6枚) – スタイルを示す画像"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.0d552a7c2ffb": {
+  "nb": "Norsk for deg å lese; den engelske teksten er den som havner i feltene og sendes med bildebeskrivelsene. Du kan rette feltene etterpå.",
+  "en": "Norwegian for you to read; the English text is what ends up in the fields and is sent with the image descriptions. You can correct the fields afterwards.",
+  "oversatt": "確認用の日本語表示です。フィールドに入力されて画像プロンプトとして送信されるのは英語のテキストです。フィールドの内容は後から修正できます。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.54f579561ac4": {
+  "nb": "forbildebilder sendes til en språkmodell i innebygd AI, som beskriver stilen. Det bruker litt kreditter (langt mindre enn et bilde) og endrer ingenting før du velger hva som skal inn.",
+  "en": "reference images are sent to a language model in built-in AI, which describes the style. It uses a few credits (far less than an image) and changes nothing until you choose what goes in.",
+  "oversatt": "リファレンス画像が内蔵AIの言語モデルに送信され、スタイルが分析・言語化されます。少量のクレジットを消費しますが (画像生成よりはるかに少量)、適用する項目を選択するまで何も変更されません。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.7201bcc3ee98": {
+  "nb": "Ingenting er lagret før du trykker «Lagre» nederst.",
+  "en": "Nothing is saved until you press “Save” at the bottom.",
+  "oversatt": "一番下の「保存」を押すまで変更は保存されません。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.785fc5d738a7": {
+  "nb": "Ingen bilder i biblioteket ennå.",
+  "en": "No images in the library yet.",
+  "oversatt": "ライブラリにまだ画像がありません。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.79d8dd862d98": {
+  "nb": "Forbildebildene nevnes i beskrivelsen. Å sende dem med til bildemodellen koster mer og venter på ditt ja.",
+  "en": "The reference images are mentioned in the description. Sending them to the image model costs more and waits for your yes.",
+  "oversatt": "リファレンス画像は説明文内で参照されます。画像生成モデルに画像自体を送信する場合は追加コストがかかるため、事前の承認が必要です。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.8ef266ebc933": {
+  "nb": "Et valgt forbilde er ikke lenger godkjent eller finnes ikke.",
+  "en": "A selected reference image is no longer approved or does not exist.",
+  "oversatt": "選択されたリファレンス画像は承認が取り消されたか、存在しません。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.c039b08da81e": {
+  "nb": "tegn til sammen (resten av beskrivelsen – bildet og scenene – må også få plass).",
+  "en": "characters in total (the rest of the description – the image and the scenes – must also fit).",
+  "oversatt": "合計文字数 (画像やシーンの説明など、残りのプロンプトも収める必要があります)。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.cff42ce71802": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.e413dff742c9": {
+  "nb": "Gjelder for (resten bruker filmens visuelle stil):",
+  "en": "Applies to (the rest use the film's visual style):",
+  "oversatt": "適用対象 (その他は映画全体のビジュアルスタイルを使用):"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.placeholder.b7c235f5a147": {
+  "nb": "F.eks. Plakatstil, Nattscener",
+  "en": "E.g. Poster style, Night scenes",
+  "oversatt": "例: ポスタースタイル、夜のシーン"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.pre.41adfbf536f8": {
+  "nb": "Velg en ressurs.",
+  "en": "Choose an asset.",
+  "oversatt": "アセットを選択してください。"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.span.2eeb488d0500": {
+  "nb": "Fargepaletten",
+  "en": "The colour palette",
+  "oversatt": "カラーパレット"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.span.5be9d986168d": {
+  "nb": "Slik blir en beskrivelse",
+  "en": "What a description looks like",
+  "oversatt": "説明のプレビュー"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.539ef5aaea6f": {
+  "nb": "Brukes av «{name}»",
+  "en": "Used by “{name}”",
+  "oversatt": "「{name}」で使用中"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.66352daa2446": {
+  "nb": "Velg forbildebilder nederst først",
+  "en": "Choose reference images at the bottom first",
+  "oversatt": "まず下部でリファレンス画像を選択してください"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.68c4b16aa462": {
+  "nb": "En bildeforstående AI ser på forbildebildene og beskriver stilen konkret",
+  "en": "An image-understanding AI looks at the reference images and describes the style concretely",
+  "oversatt": "画像認識AIがリファレンス画像を分析し、スタイルを具体的に説明します"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.026a1e5e5ff1": {
+  "nb": "Egen stil for plakater, steder, AI-video …",
+  "en": "Own style for posters, places, AI video …",
+  "oversatt": "ポスター、ロケーション、AI動画などのカスタムスタイル…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.85b6aa7f6377": {
+  "nb": "Vis …",
+  "en": "View …",
+  "oversatt": "表示…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.bafddd68a87e": {
+  "nb": "Rediger …",
+  "en": "Edit …",
+  "oversatt": "編集…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.f05e2e395adc": {
+  "nb": "Lag …",
+  "en": "Make …",
+  "oversatt": "作成…"
+ },
+ "app-projects-style-guide-section.style-guide-section.h2.cf3f3ca9b968": {
+  "nb": "Filmens visuelle stil",
+  "en": "The film's visual style",
+  "oversatt": "作品のビジュアルスタイル"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.034f7d03053b": {
+  "nb": "forbildebilder",
+  "en": "reference images",
+  "oversatt": "リファレンス画像"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.85775cfd3e37": {
+  "nb": "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere hva den handler om, stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
+  "en": "Not filled in. An image model knows nothing about the film – here you describe what it is about, style, technique, colours, light and mood, so that all the images the AI makes fit in.",
+  "oversatt": "未入力です。画像生成モデルは作品について何も知りません。AIが生成するすべての画像が統一感を持つよう、ここでテーマ、スタイル、手法、色彩、照明、雰囲気を指定してください。"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.9db020a2af76": {
+  "nb": "felt fylt ut",
+  "en": "fields filled in",
+  "oversatt": "入力済みフィールド"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.ceb65a4ada96": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-style-guide-section.style-guide-section.span.08f72f04f8b6": {
+  "nb": "brukes i alle AI-beskrivelser",
+  "en": "used in all AI descriptions",
+  "oversatt": "すべてのAI説明で使用"
+ },
+ "app-projects-style-guide-section.style-guide-section.span.24031cefee85": {
+  "nb": "ikke i bruk",
+  "en": "not in use",
+  "oversatt": "未使用"
+ },
+ "app-projects-style-guide-section.style-guide-section.title.7a07d463c76d": {
+  "nb": "Åpne stilprofilen",
+  "en": "Open the style profile",
+  "oversatt": "スタイルプロファイルを開く"
+ },
+ "app-projects-worklist-notice.worklist-notice.button.775711af54dd": {
+  "nb": "Arbeidsliste …",
+  "en": "Worklist …",
+  "oversatt": "作業リスト…"
+ },
+ "app-projects-worklist-notice.worklist-notice.p.32482b45dd0a": {
+  "nb": "{n} steder i filmen viser",
+  "en": "{n} places in the film show",
+  "oversatt": "作品内の{n}箇所で表示中："
+ },
+ "app-projects-worklist-notice.worklist-notice.p.65ed4276cc8e": {
+  "nb": "Ett sted i filmen viser",
+  "en": "One place in the film shows",
+  "oversatt": "作品内の1箇所で表示中："
+ },
+ "app-projects-worklist-notice.worklist-notice.p.c4f5976da776": {
+  "nb": "en eldre versjon av en ressurs enn den som er godkjent.",
+  "en": "an older version of an asset than the one that is approved.",
+  "oversatt": "承認済みよりも古いバージョンのアセットです。"
+ },
+ "app-release-poster-canvas.end-drag.on-commit.00f5884f9520": {
+  "nb": "Roter element",
+  "en": "Rotate element",
+  "oversatt": "要素を回転"
+ },
+ "app-release-poster-canvas.end-drag.on-commit.40400006785f": {
+  "nb": "Endre størrelse",
+  "en": "Resize",
+  "oversatt": "サイズ変更"
+ },
+ "app-release-poster-canvas.end-drag.on-commit.8cccd431d926": {
+  "nb": "Flytt element",
+  "en": "Move element",
+  "oversatt": "要素を移動"
+ },
+ "app-release-poster-canvas.on-key.on-commit.07742901f562": {
+  "nb": "Flytt element",
+  "en": "Move element",
+  "oversatt": "要素を移動"
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.01176a13ea38": {
+  "nb": "Plakaten «{name}». Klikk for å velge et element, dra for å flytte, piltaster flytter valgt element.",
+  "en": "The poster “{name}”. Click to select an element, drag to move it, arrow keys move the selected element.",
+  "oversatt": "ポスター「{name}」。クリックで要素を選択、ドラッグで移動、矢印キーで選択した要素を移動できます。"
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.47e78ff53838": {
+  "nb": "Endre størrelse (Shift: behold forholdet)",
+  "en": "Resize (Shift: keep the proportions)",
+  "oversatt": "サイズ変更 (Shift: 比率を維持)"
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.9c3e64951ba2": {
+  "nb": "Roter (Shift: trinn på 15°)",
+  "en": "Rotate (Shift: 15° steps)",
+  "oversatt": "回転 (Shift: 15°刻み)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.1f5e3badbf23": {
+  "nb": "Teksten får ikke plass",
+  "en": "The text does not fit",
+  "oversatt": "テキストが収まりません"
+ },
+ "app-release-poster-canvas.poster-canvas.title.47e78ff53838": {
+  "nb": "Endre størrelse (Shift: behold forholdet)",
+  "en": "Resize (Shift: keep the proportions)",
+  "oversatt": "サイズ変更 (Shift: 比率を維持)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.9c3e64951ba2": {
+  "nb": "Roter (Shift: trinn på 15°)",
+  "en": "Rotate (Shift: 15° steps)",
+  "oversatt": "回転 (Shift: 15°刻み)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.9f1a8c9f0f53": {
+  "nb": "Tomt tekstfelt",
+  "en": "Empty text box",
+  "oversatt": "空のテキストボックス"
+ },
+ "app-release-poster-dialogs.bytes.poster-pdf.ab0614cc12b1": {
+  "nb": "Eksporten ble avbrutt",
+  "en": "The export was cancelled",
+  "oversatt": "書き出しがキャンセルされました"
+ },
+ "app-release-poster-dialogs.err.cmds-run.854b54ad554a": {
+  "nb": "Ny plakat «{value1}»",
+  "en": "New poster “{value1}”",
+  "oversatt": "新規ポスター「{value1}」"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.a.d48121094d6e": {
+  "nb": "Last ned",
+  "en": "Download",
+  "oversatt": "ダウンロード"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.3fb29831834f": {
+  "nb": "Lag filen",
+  "en": "Create file",
+  "oversatt": "ファイルを生成"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.4a2e4248d5cf": {
+  "nb": "Lager filen … {value1} %",
+  "en": "Creating the file … {value1} %",
+  "oversatt": "ファイルを生成中… {value1} %"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.cb0da405af37": {
+  "nb": "Lager filen …",
+  "en": "Creating the file …",
+  "oversatt": "ファイルを生成中…"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.fbc82f428e1d": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.dialog-description.1b0e895891ca": {
+  "nb": "cm. Trykk-PDF-en har ekte tekst og bildene i trykkoppløsning.",
+  "en": "cm. The print PDF has real text and the images at print resolution.",
+  "oversatt": "cm。印刷用PDFには実テキストと印刷解像度の画像が含まれます。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.dialog-title.968827f73267": {
+  "nb": "Eksporter «{name}»",
+  "en": "Export “{name}”",
+  "oversatt": "「{name}」を書き出し"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.02bdaada2bb8": {
+  "nb": "Utfallende kant (3 mm)",
+  "en": "Bleed (3 mm)",
+  "oversatt": "塗り足し (3 mm)"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.0dc9f528e4c4": {
+  "nb": "Skjæremerker",
+  "en": "Crop marks",
+  "oversatt": "トンボ（トリムマーク）"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.a2d909d73b10": {
+  "nb": "Trykk-PDF",
+  "en": "Print PDF",
+  "oversatt": "印刷用PDF"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.b2a6cf629d85": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "解像度"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.b4ed18ed47fc": {
+  "nb": "PNG-bilde",
+  "en": "PNG image",
+  "oversatt": "PNG画像"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.de5a73993ed1": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "言語"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.legend.2eeae0ebdfaa": {
+  "nb": "Filtype",
+  "en": "File type",
+  "oversatt": "ファイル形式"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.bc56fd419d66": {
+  "nb": "72 ppi (skjerm)",
+  "en": "72 ppi (screen)",
+  "oversatt": "72 ppi (画面用)"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.1a307e989ca7": {
+  "nb": "Filen er laget.",
+  "en": "The file is ready.",
+  "oversatt": "ファイルの準備が完了しました。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.8aa4010b61dc": {
+  "nb": "{missing} bilder kunne ikke hentes og er vist som tom ramme. ",
+  "en": "{missing} images could not be fetched and are shown as empty frames. ",
+  "oversatt": "{missing} 件の画像を取得できなかったため、空のフレームとして表示されています。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.90625a001f58": {
+  "nb": "Ett bilde kunne ikke hentes og er vist som tom ramme. ",
+  "en": "One image could not be fetched and is shown as an empty frame. ",
+  "oversatt": "1件の画像を取得できなかったため、空のフレームとして表示されています。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.6acc2d264f0a": {
+  "nb": "piksler",
+  "en": "pixels",
+  "oversatt": "ピクセル"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.96d1db5d8c27": {
+  "nb": " Store filer tar litt tid å lage.",
+  "en": " Large files take a little while to make.",
+  "oversatt": " ファイルサイズが大きい場合、作成に少し時間がかかります。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.bc60e4dca3c0": {
+  "nb": "avhengig av bildene.",
+  "en": "depending on the images.",
+  "oversatt": "画像によって異なります。"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.d4f526186b2b": {
+  "nb": "Anslått filstørrelse",
+  "en": "Estimated file size",
+  "oversatt": "推定ファイルサイズ"
+ },
+ "app-release-poster-dialogs.list.message.54d5737c370a": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "なし"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.button.a26d83ce7762": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.button.c77fa45d07da": {
+  "nb": "Lag utkast",
+  "en": "Create draft",
+  "oversatt": "下書きを作成"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.dialog-description.0f1a2beae55f": {
+  "nb": "Programmet lager et førsteutkast fra prosjektet: de viktigste karakterene, steder og objekter, godkjente relasjoner og en stil. Alt kan endres etterpå.",
+  "en": "The app makes a first draft from the project: the main characters, places and objects, approved relations and a style. Everything can be changed afterwards.",
+  "oversatt": "プロジェクトから初稿を自動生成します（主要キャラクター、場所、オブジェクト、承認された関係性、スタイルなど）。すべて後から変更可能です。"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.dialog-title.9d53a39ea2a0": {
+  "nb": "Ny plakat",
+  "en": "New poster",
+  "oversatt": "新規ポスター"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.label.3825c170d033": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "言語"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.p.cfe54518e65d": {
+  "nb": "godkjente",
+  "en": "approved",
+  "oversatt": "承認済み"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.41417602bbc2": {
+  "nb": "Kinoplakat med få karakterer, stemning og tittel.",
+  "en": "Cinema poster with a few characters, mood and title.",
+  "oversatt": "少数のキャラクター、雰囲気、タイトルで構成された劇場用ポスター。"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.4d3c5a9e8971": {
+  "nb": "Steder:",
+  "en": "Places:",
+  "oversatt": "場所:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.7222ba2e02df": {
+  "nb": "Objekter:",
+  "en": "Objects:",
+  "oversatt": "オブジェクト:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.b79f0cb51c15": {
+  "nb": "(foreslått)",
+  "en": "(suggested)",
+  "oversatt": "(候補)"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.c20f21fdfbd7": {
+  "nb": "Relasjoner:",
+  "en": "Relations:",
+  "oversatt": "関係性:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.c360f7ae2d07": {
+  "nb": "Oversikt over karakterene, relasjonene, stedene og objektene.",
+  "en": "Overview of the characters, relations, places and objects.",
+  "oversatt": "キャラクター、関係性、場所、オブジェクトの概要。"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.d2e90544f05b": {
+  "nb": "Stil:",
+  "en": "Style:",
+  "oversatt": "スタイル:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.dea24df4403b": {
+  "nb": "Karakterer:",
+  "en": "Characters:",
+  "oversatt": "キャラクター:"
+ },
+ "app-release-poster-inspector.accent.accent.31c7d61e82e7": {
+  "nb": "Aksentfarge",
+  "en": "Accent colour",
+  "oversatt": "アクセントカラー"
+ },
+ "app-release-poster-inspector.accent.accent.9a36a844cd1c": {
+  "nb": "Aksent",
+  "en": "Accent",
+  "oversatt": "アクセント"
+ },
+ "app-release-poster-inspector.background.background.909f488bfdb8": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "背景"
+ },
+ "app-release-poster-inspector.background.background.b4b9947e469f": {
+  "nb": "Bakgrunnsfarge",
+  "en": "Background colour",
+  "oversatt": "背景色"
+ },
+ "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
+  "nb": "engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "app-release-poster-inspector.bilingual.label.e68a78963db2": {
+  "nb": "norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
+  "nb": "Tom: norsk tekst brukes",
+  "en": "Empty: the Norwegian text is used",
+  "oversatt": "未入力: ノルウェー語のテキストが使用されます"
+ },
+ "app-release-poster-inspector.characters.characters.6813a139c3eb": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "キャラクター"
+ },
+ "app-release-poster-inspector.element-inspector.button.6c9ccab16bf6": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "app-release-poster-inspector.element-inspector.button.b56be23e106d": {
+  "nb": "Tilbakestill",
+  "en": "Reset",
+  "oversatt": "リセット"
+ },
+ "app-release-poster-inspector.element-inspector.button.c6f0bfbd255e": {
+  "nb": "Flytt bak",
+  "en": "Send back",
+  "oversatt": "最背面へ移動"
+ },
+ "app-release-poster-inspector.element-inspector.button.d2c02687b715": {
+  "nb": "Flytt fram",
+  "en": "Bring forward",
+  "oversatt": "最前面へ移動"
+ },
+ "app-release-poster-inspector.element-inspector.button.f568217d5eee": {
+  "nb": "Harmoniser stil …",
+  "en": "Harmonize style …",
+  "oversatt": "スタイルを統一…"
+ },
+ "app-release-poster-inspector.element-inspector.label.28d7250686e8": {
+  "nb": "Dekkevne (%)",
+  "en": "Opacity (%)",
+  "oversatt": "不透明度 (%)"
+ },
+ "app-release-poster-inspector.element-inspector.label.28d7250686e8.2": {
+  "nb": "Dekkevne (%)",
+  "en": "Opacity (%)",
+  "oversatt": "不透明度 (%)"
+ },
+ "app-release-poster-inspector.element-inspector.label.43ca714179c4": {
+  "nb": "Stiplet",
+  "en": "Dashed",
+  "oversatt": "破線"
+ },
+ "app-release-poster-inspector.element-inspector.label.449e4324fffc": {
+  "nb": "Ressurs",
+  "en": "Asset",
+  "oversatt": "アセット"
+ },
+ "app-release-poster-inspector.element-inspector.label.478ff984c35e": {
+  "nb": "Halvfet",
+  "en": "Bold",
+  "oversatt": "太字"
+ },
+ "app-release-poster-inspector.element-inspector.label.78b5be9a9eec": {
+  "nb": "Synlig",
+  "en": "Visible",
+  "oversatt": "表示"
+ },
+ "app-release-poster-inspector.element-inspector.label.8534544fad56": {
+  "nb": "Tilpasning",
+  "en": "Fit",
+  "oversatt": "フィット"
+ },
+ "app-release-poster-inspector.element-inspector.label.905640d8322f": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "カラー"
+ },
+ "app-release-poster-inspector.element-inspector.label.905640d8322f.2": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "カラー"
+ },
+ "app-release-poster-inspector.element-inspector.label.9e443a3526a5": {
+  "nb": "Store bokstaver",
+  "en": "Capitals",
+  "oversatt": "大文字"
+ },
+ "app-release-poster-inspector.element-inspector.label.a86049b85f6d": {
+  "nb": "Linjefarge",
+  "en": "Line colour",
+  "oversatt": "線の色"
+ },
+ "app-release-poster-inspector.element-inspector.label.b20262857972": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "バージョン"
+ },
+ "app-release-poster-inspector.element-inspector.label.dc05a260e3fa": {
+  "nb": "Justering",
+  "en": "Alignment",
+  "oversatt": "整列"
+ },
+ "app-release-poster-inspector.element-inspector.label.e9fbbd403aec": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "テキスト"
+ },
+ "app-release-poster-inspector.element-inspector.label.eac19d8e106e": {
+  "nb": "Kursiv",
+  "en": "Italic",
+  "oversatt": "斜体"
+ },
+ "app-release-poster-inspector.element-inspector.label.f918229d9270": {
+  "nb": "Skrift",
+  "en": "Font",
+  "oversatt": "フォント"
+ },
+ "app-release-poster-inspector.element-inspector.num.099003fd2c1f": {
+  "nb": "Hjørner",
+  "en": "Corners",
+  "oversatt": "角"
+ },
+ "app-release-poster-inspector.element-inspector.num.273f9af4132f": {
+  "nb": "Høyde",
+  "en": "Height",
+  "oversatt": "高さ"
+ },
+ "app-release-poster-inspector.element-inspector.num.3212162adbb9": {
+  "nb": "Bredde",
+  "en": "Width",
+  "oversatt": "幅"
+ },
+ "app-release-poster-inspector.element-inspector.num.3e623a8ea29f": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "サイズ"
+ },
+ "app-release-poster-inspector.element-inspector.num.7e6d751da4af": {
+  "nb": "grader",
+  "en": "degrees",
+  "oversatt": "度"
+ },
+ "app-release-poster-inspector.element-inspector.num.8788f005a4dc": {
+  "nb": "Tykkelse",
+  "en": "Thickness",
+  "oversatt": "太さ"
+ },
+ "app-release-poster-inspector.element-inspector.num.8a200f74cd6b": {
+  "nb": "Sperring",
+  "en": "Tracking",
+  "oversatt": "トラッキング"
+ },
+ "app-release-poster-inspector.element-inspector.num.da69649b9eb8": {
+  "nb": "Rotasjon",
+  "en": "Rotation",
+  "oversatt": "回転"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "フォントを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.2": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "フォントを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.3": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "フォントを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.4": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "フォントを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0c0e947baff3": {
+  "nb": "Skjul element",
+  "en": "Hide element",
+  "oversatt": "要素を非表示"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.12b4624bd2fb": {
+  "nb": "Bytt variant",
+  "en": "Change variant",
+  "oversatt": "バリアントを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.30fcdec342d4": {
+  "nb": "Endre linje",
+  "en": "Change line",
+  "oversatt": "線を変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.7a27c2072c12": {
+  "nb": "Bytt versjon",
+  "en": "Change version",
+  "oversatt": "バージョンを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.a2883ee2fad3": {
+  "nb": "Endre justering",
+  "en": "Change alignment",
+  "oversatt": "配置を変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.b556ee1a8cdf": {
+  "nb": "Vis element",
+  "en": "Show element",
+  "oversatt": "要素を表示"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.cb50faab5279": {
+  "nb": "Endre dekkevne",
+  "en": "Change opacity",
+  "oversatt": "不透明度を変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.cb50faab5279.2": {
+  "nb": "Endre dekkevne",
+  "en": "Change opacity",
+  "oversatt": "不透明度を変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.d2d4d09164ef": {
+  "nb": "Endre tekst",
+  "en": "Change text",
+  "oversatt": "テキストを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.d8705ce5e0f3": {
+  "nb": "Endre linjefarge",
+  "en": "Change line colour",
+  "oversatt": "線の色を変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.e4e743923888": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "カラーを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.e4e743923888.2": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "カラーを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.f40d8e1e9fa6": {
+  "nb": "Endre tilpasning",
+  "en": "Change fit",
+  "oversatt": "フィットを変更"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.f4fde8162495": {
+  "nb": "Bytt bilde",
+  "en": "Change image",
+  "oversatt": "画像を変更"
+ },
+ "app-release-poster-inspector.element-inspector.option.047d46e4c76b": {
+  "nb": "Venstre",
+  "en": "Left",
+  "oversatt": "左"
+ },
+ "app-release-poster-inspector.element-inspector.option.0817808ae29a": {
+  "nb": "Høyre",
+  "en": "Right",
+  "oversatt": "右"
+ },
+ "app-release-poster-inspector.element-inspector.option.37292afe116b": {
+  "nb": "Godkjent eller nyeste",
+  "en": "Approved or latest",
+  "oversatt": "承認済みまたは最新"
+ },
+ "app-release-poster-inspector.element-inspector.option.630edc49d5ca": {
+  "nb": "Grotesk (Helvetica)",
+  "en": "Sans (Helvetica)",
+  "oversatt": "サンセリフ (Helvetica)"
+ },
+ "app-release-poster-inspector.element-inspector.option.835f0f675c81": {
+  "nb": "Antikva (Times)",
+  "en": "Serif (Times)",
+  "oversatt": "セリフ (Times)"
+ },
+ "app-release-poster-inspector.element-inspector.option.b20262857972": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "バージョン"
+ },
+ "app-release-poster-inspector.element-inspector.option.cc130b27b750": {
+  "nb": "Midtstilt",
+  "en": "Centred",
+  "oversatt": "中央揃え"
+ },
+ "app-release-poster-inspector.element-inspector.option.cc93c9e05f5c": {
+  "nb": "Hele bildet",
+  "en": "Whole image",
+  "oversatt": "画像全体"
+ },
+ "app-release-poster-inspector.element-inspector.option.e3f412286b9d": {
+  "nb": "Fyll rammen",
+  "en": "Fill the frame",
+  "oversatt": "フレームに合わせる"
+ },
+ "app-release-poster-inspector.element-inspector.option.e4771266e271": {
+  "nb": "Forsidebildet",
+  "en": "The cover image",
+  "oversatt": "カバー画像"
+ },
+ "app-release-poster-inspector.element-inspector.p.10a1b7bc27b5": {
+  "nb": "Endret av deg. Står når innholdet endres.",
+  "en": "Changed by you. Stays when the content changes.",
+  "oversatt": "あなたが変更しました。コンテンツが変わっても維持されます。"
+ },
+ "app-release-poster-inspector.element-inspector.p.241b7c63b034": {
+  "nb": "Laget av programmet. Endrer du det, blir det ditt og står når innholdet endres.",
+  "en": "Made by the app. If you change it, it becomes yours and stays when the content changes.",
+  "oversatt": "アプリによって作成されました。変更するとカスタム扱いになり、コンテンツが変わっても維持されます。"
+ },
+ "app-release-poster-inspector.element-inspector.p.c203b5a6725b": {
+  "nb": "Eget element.",
+  "en": "Custom element.",
+  "oversatt": "カスタム要素。"
+ },
+ "app-release-poster-inspector.element-inspector.title.3cc1d71d3465": {
+  "nb": "Linje",
+  "en": "Line",
+  "oversatt": "線"
+ },
+ "app-release-poster-inspector.element-inspector.title.3dff3eeeb264": {
+  "nb": "Programmet lager elementet på nytt",
+  "en": "The app makes the element again",
+  "oversatt": "アプリが要素を再生成します"
+ },
+ "app-release-poster-inspector.element-inspector.title.6a5955d62cf5": {
+  "nb": "Flate",
+  "en": "Fill",
+  "oversatt": "塗りつぶし"
+ },
+ "app-release-poster-inspector.element-inspector.title.a5dd5de6878f": {
+  "nb": "Tegn om bildet til plakatens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
+  "en": "Redraw the image in the poster's shared style with AI (costs, confirmed first). The original does not change.",
+  "oversatt": "ポスターの共通スタイルに合わせてAIで画像を再生成します（有料、事前確認あり）。オリジナルは変更されません。"
+ },
+ "app-release-poster-inspector.element-inspector.title.e65d846821e0": {
+  "nb": "Handlinger",
+  "en": "Actions",
+  "oversatt": "アクション"
+ },
+ "app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "画像"
+ },
+ "app-release-poster-inspector.element-inspector.title.e9fbbd403aec": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "テキスト"
+ },
+ "app-release-poster-inspector.muted.muted.6ed0859703dd": {
+  "nb": "Dempet farge",
+  "en": "Muted colour",
+  "oversatt": "落ち着いた色"
+ },
+ "app-release-poster-inspector.muted.muted.f93aac6e9328": {
+  "nb": "Dempet",
+  "en": "Muted",
+  "oversatt": "ミュート"
+ },
+ "app-release-poster-inspector.num.on-change.b6b1183fe4fd": {
+  "nb": "Endre {value1}",
+  "en": "Change {value1}",
+  "oversatt": "{value1} を変更"
+ },
+ "app-release-poster-inspector.objects.objects.9f4ef282532e": {
+  "nb": "Objekter",
+  "en": "Objects",
+  "oversatt": "オブジェクト"
+ },
+ "app-release-poster-inspector.pick.on-document.9c091bedf2a3": {
+  "nb": "Endre utvalget på plakaten",
+  "en": "Change the selection on the poster",
+  "oversatt": "ポスターの選択内容を変更"
+ },
+ "app-release-poster-inspector.places.places.d595921f1fd8": {
+  "nb": "Steder",
+  "en": "Places",
+  "oversatt": "場所"
+ },
+ "app-release-poster-inspector.poster-checks-list.aria-label.4278fd595e5b": {
+  "nb": "Kontroll av plakaten",
+  "en": "Check of the poster",
+  "oversatt": "ポスターの確認"
+ },
+ "app-release-poster-inspector.poster-checks-list.aria-label.896b8a01afb9": {
+  "nb": "Vis i plakaten: {text}",
+  "en": "Show in the poster: {text}",
+  "oversatt": "ポスターに表示: {text}"
+ },
+ "app-release-poster-inspector.poster-checks-list.button.f1ac6a3203ce": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "表示"
+ },
+ "app-release-poster-inspector.poster-settings.button.41c0a022c8ae": {
+  "nb": "Lag utkastet på nytt",
+  "en": "Redraft the poster",
+  "oversatt": "ポスターの下書きを再作成"
+ },
+ "app-release-poster-inspector.poster-settings.label.76c766b3293e": {
+  "nb": "Tittel",
+  "en": "Title",
+  "oversatt": "タイトル"
+ },
+ "app-release-poster-inspector.poster-settings.label.9843441a4ed2": {
+  "nb": "Sjanger og stemning",
+  "en": "Genre and mood",
+  "oversatt": "ジャンルとムード"
+ },
+ "app-release-poster-inspector.poster-settings.label.bcea48b950bf": {
+  "nb": "Slagord",
+  "en": "Tagline",
+  "oversatt": "タグライン"
+ },
+ "app-release-poster-inspector.poster-settings.label.caea5248c457": {
+  "nb": "Høyde (cm)",
+  "en": "Height (cm)",
+  "oversatt": "高さ (cm)"
+ },
+ "app-release-poster-inspector.poster-settings.label.d24bde1ca89e": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "言語"
+ },
+ "app-release-poster-inspector.poster-settings.label.d618c321e720": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "名前"
+ },
+ "app-release-poster-inspector.poster-settings.label.dc300cfc34a0": {
+  "nb": "Fargepalett",
+  "en": "Colour palette",
+  "oversatt": "カラーパレット"
+ },
+ "app-release-poster-inspector.poster-settings.label.f7167f2f6db5": {
+  "nb": "Bredde (cm)",
+  "en": "Width (cm)",
+  "oversatt": "幅 (cm)"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.22553ad64a2a": {
+  "nb": "Endre logline",
+  "en": "Change logline",
+  "oversatt": "ログラインを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.2a43aa2f90c6": {
+  "nb": "Endre slagord",
+  "en": "Change tagline",
+  "oversatt": "タグラインを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.413d1b72987d": {
+  "nb": "Endre sjanger",
+  "en": "Change genre",
+  "oversatt": "ジャンルを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.76cb1debf047": {
+  "nb": "Endre tittel",
+  "en": "Change title",
+  "oversatt": "タイトルを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.d6facbb2af09": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "色を変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.def7df9d3fd9": {
+  "nb": "Endre stil",
+  "en": "Change style",
+  "oversatt": "スタイルを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.3e76f71503df": {
+  "nb": "Endre språk på plakaten",
+  "en": "Change the poster language",
+  "oversatt": "ポスターの言語を変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.668f5ed1f83d": {
+  "nb": "Endre navn på plakaten",
+  "en": "Rename the poster",
+  "oversatt": "ポスター名を変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "フォーマットを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.2": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "フォーマットを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.3": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "フォーマットを変更"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.95f5171868f5": {
+  "nb": "Endre plakattype",
+  "en": "Change poster type",
+  "oversatt": "ポスタータイプを変更"
+ },
+ "app-release-poster-inspector.poster-settings.option.3ca6b49373b6": {
+  "nb": " (foreslått)",
+  "en": " (suggested)",
+  "oversatt": " (推奨)"
+ },
+ "app-release-poster-inspector.poster-settings.option.53af7efc3961": {
+  "nb": "Eget format",
+  "en": "Custom format",
+  "oversatt": "カスタムフォーマット"
+ },
+ "app-release-poster-inspector.poster-settings.option.baae3966c5fc": {
+  "nb": "Egen",
+  "en": "Custom",
+  "oversatt": "カスタム"
+ },
+ "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "app-release-poster-inspector.poster-settings.p.6f14fe5f4a16": {
+  "nb": "Ingen i biblioteket.",
+  "en": "None in the library.",
+  "oversatt": "ライブラリ内にありません。"
+ },
+ "app-release-poster-inspector.poster-settings.p.c843bbf68646": {
+  "nb": "Minste lesbare tekst i dette formatet:",
+  "en": "Smallest readable text in this format:",
+  "oversatt": "このフォーマットでの最小可読テキストサイズ:"
+ },
+ "app-release-poster-inspector.poster-settings.p.fa63270ab77e": {
+  "nb": "Lager plakaten på nytt fra innholdet over. Det du har flyttet eller endret selv, forsvinner (kan angres).",
+  "en": "Makes the poster again from the content above. What you have moved or changed yourself disappears (can be undone).",
+  "oversatt": "上記の内容からポスターを再作成します。手動で移動・変更した内容は失われます（元に戻すことは可能です）。"
+ },
+ "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2": {
+  "nb": "{value1} · {value2}",
+  "en": "{value1} · {value2}",
+  "oversatt": "{value1} · {value2}"
+ },
+ "app-release-poster-inspector.poster-settings.title.080c03a5a101": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "ポスター"
+ },
+ "app-release-poster-inspector.poster-settings.title.3f66ceb9e842": {
+  "nb": "Innhold",
+  "en": "Content",
+  "oversatt": "コンテンツ"
+ },
+ "app-release-poster-inspector.poster-settings.title.5ea77e7fd94e": {
+  "nb": "Tekster",
+  "en": "Texts",
+  "oversatt": "テキスト"
+ },
+ "app-release-poster-inspector.poster-settings.title.62bd578be6e4": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "スタイル"
+ },
+ "app-release-poster-inspector.poster-settings.title.a50a256fdc63": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "下書き"
+ },
+ "app-release-poster-inspector.poster-settings.title.ed32d315d129": {
+  "nb": "valgt",
+  "en": "selected",
+  "oversatt": "選択中"
+ },
+ "app-release-poster-inspector.rank": {
+  "nb": "{lines} · {scenes}",
+  "en": "{lines} · {scenes}",
+  "oversatt": "{lines} · {scenes}"
+ },
+ "app-release-poster-inspector.rank-lines": {
+  "nb": {
+   "one": "{count} replikk",
+   "other": "{count} replikker"
+  },
+  "en": {
+   "one": "{count} line",
+   "other": "{count} lines"
+  },
+  "oversatt": {
+   "other": "{count}件のセリフ"
+  }
+ },
+ "app-release-poster-inspector.rank-scenes": {
+  "nb": {
+   "one": "{count} scene",
+   "other": "{count} scener"
+  },
+  "en": {
+   "one": "{count} scene",
+   "other": "{count} scenes"
+  },
+  "oversatt": {
+   "other": "{count}件のシーン"
+  }
+ },
+ "app-release-poster-inspector.text.text.8fc21fb0debb": {
+  "nb": "Tekstfarge",
+  "en": "Text colour",
+  "oversatt": "テキストカラー"
+ },
+ "app-release-poster-inspector.text.text.91322597c1d2": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "テキスト"
+ }
+}

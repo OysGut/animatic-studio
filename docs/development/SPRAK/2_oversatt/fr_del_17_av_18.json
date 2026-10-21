@@ -1,0 +1,3062 @@
+{
+ "core-generation-style-harmonize.harmonization-error.message.a7d3a9f0dc59": {
+  "nb": "Ugyldig modell",
+  "en": "Invalid model",
+  "oversatt": "Modèle non valide"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.d26292f48f35": {
+  "nb": "Ugyldig kvalitetsprofil",
+  "en": "Invalid quality profile",
+  "oversatt": "Profil de qualité non valide"
+ },
+ "core-generation-style-harmonize.harmonization-error.message.d26292f48f35.2": {
+  "nb": "Ugyldig kvalitetsprofil",
+  "en": "Invalid quality profile",
+  "oversatt": "Profil de qualité non valide"
+ },
+ "core-generation-style-harmonize.harmonization-use-label.local.0b42b148dc7d": {
+  "nb": "Bare i denne plakaten eller scenen",
+  "en": "Only in this poster or scene",
+  "oversatt": "Uniquement dans cette affiche ou cette scène"
+ },
+ "core-generation-style-harmonize.harmonization-use-label.published.1eccd5e6edda": {
+  "nb": "Publisert til det globale biblioteket",
+  "en": "Published to the global library",
+  "oversatt": "Publié dans la bibliothèque globale"
+ },
+ "core-generation-style-harmonize.harmonization-use-label.reference.49b0848a1dfe": {
+  "nb": "Foretrukket referanse for en stilprofil",
+  "en": "Preferred reference for a style profile",
+  "oversatt": "Référence préférée pour un profil de style"
+ },
+ "core-generation-style-harmonize.harmonization-use-label.variant.11ab6e03ef9d": {
+  "nb": "Alternativ variant av ressursen",
+  "en": "Alternative variant of the asset",
+  "oversatt": "Variante alternative de l'élément"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.b8ca6e055253": {
+  "nb": "Velg en stilprofil eller et referansebilde",
+  "en": "Choose a style profile or a reference image",
+  "oversatt": "Choisissez un profil de style ou une image de référence"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.d13fdff0b683": {
+  "nb": "Samme bilde to ganger",
+  "en": "The same image twice",
+  "oversatt": "La même image deux fois"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.d7d726738470": {
+  "nb": "Høyst {HARMONIZE_BATCH_MAX} bilder i én jobb",
+  "en": "At most {HARMONIZE_BATCH_MAX} images in one job",
+  "oversatt": "{HARMONIZE_BATCH_MAX} images maximum par tâche"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.dd753eabc170": {
+  "nb": "Stilprofilen er tom – fyll den ut eller velg et referansebilde",
+  "en": "The style profile is empty – fill it in or choose a reference image",
+  "oversatt": "Le profil de style est vide – remplissez-le ou choisissez une image de référence"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.e717dc4c2bf8": {
+  "nb": "Et av bildene finnes ikke lenger",
+  "en": "One of the images no longer exists",
+  "oversatt": "L'une des images n'existe plus"
+ },
+ "core-generation-style-harmonize.harmonize-batch-selection-error.message.f52bda518c69": {
+  "nb": "Velg minst ett bilde",
+  "en": "Choose at least one image",
+  "oversatt": "Sélectionnez au moins une image"
+ },
+ "core-generation-style-harmonize.harmonize-identity-warning.message.bb379494fc5a": {
+  "nb": "AI-en kan endre karakterens kjennetegn. Sammenlign alltid med originalen før du godkjenner.",
+  "en": "The AI may change the character's distinguishing features. Always compare with the original before approving.",
+  "oversatt": "L'IA peut modifier les traits distinctifs du personnage. Comparez toujours avec l'original avant de valider."
+ },
+ "core-generation-style-harmonize.harmonize-note.profile-name-l-harmonisert-med-profilen-profile-name-m-harmonized-with-the-profile-profile-name-m-l-harmonisert-med-et-referansebilde-m-harmonized-with-a-reference-image-m-slice.a9dd3b11e482": {
+  "nb": "Harmonisert med profilen «{profileName}» ({m}).",
+  "en": "Harmonized with the profile \"{profileName}\" ({m}).",
+  "oversatt": "Harmonisé avec le profil « {profileName} » ({m})."
+ },
+ "core-generation-style-harmonize.harmonize-note.profile-name-l-harmonisert-med-profilen-profile-name-m-harmonized-with-the-profile-profile-name-m-l-harmonisert-med-et-referansebilde-m-harmonized-with-a-reference-image-m-slice.fbb53574b3a2": {
+  "nb": "Harmonisert med et referansebilde ({m}).",
+  "en": "Harmonized with a reference image ({m}).",
+  "oversatt": "Harmonisé avec une image de référence ({m})."
+ },
+ "core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-harmonized-slice.5ae754bee023": {
+  "nb": "Harmonisert",
+  "en": "Harmonized",
+  "oversatt": "Harmonisé"
+ },
+ "core-generation-style-harmonize.harmonized-variant-name.l-harmonisert-profile-name-harmonized-profile-name-slice.347756edb42b": {
+  "nb": "Harmonisert – {profileName}",
+  "en": "Harmonized – {profileName}",
+  "oversatt": "Harmonisé – {profileName}"
+ },
+ "core-generation-style-harmonize.preferred-reference-error.message.84f1fa54297b": {
+  "nb": "Varianten hører ikke til ressursen",
+  "en": "The variant does not belong to the asset",
+  "oversatt": "La variante n'appartient pas à l'élément"
+ },
+ "core-generation-style-harmonize.preferred-reference-error.message.bf33dd5f8010": {
+  "nb": "Stilprofilen finnes ikke",
+  "en": "The style profile was not found",
+  "oversatt": "Profil de style introuvable"
+ },
+ "core-generation-style-harmonize.preferred-reference-error.message.f3f5188e8bf4": {
+  "nb": "Ressursen finnes ikke",
+  "en": "The asset was not found",
+  "oversatt": "Élément introuvable"
+ },
+ "core-generation-style.style-guide-error.message.28029a7f8ae5": {
+  "nb": "Ukjent felt i stilprofilen",
+  "en": "Unknown field in the style profile",
+  "oversatt": "Champ inconnu dans le profil de style"
+ },
+ "core-generation-style.style-guide-error.message.316d0fd38e13": {
+  "nb": "Ugyldig fargepalett",
+  "en": "Invalid colour palette",
+  "oversatt": "Palette de couleurs non valide"
+ },
+ "core-generation-style.style-guide-error.message.3cd8c4a78f71": {
+  "nb": "Ugyldig stilprofil",
+  "en": "Invalid style profile",
+  "oversatt": "Profil de style non valide"
+ },
+ "core-generation-style.style-guide-error.message.7319ad177b9d": {
+  "nb": "Stilen er for lang til å få plass i beskrivelsen (maks {STYLE_TOTAL_LIMIT} tegn til sammen)",
+  "en": "The style is too long to fit in the description (maximum {STYLE_TOTAL_LIMIT} characters in total)",
+  "oversatt": "Le style est trop long pour entrer dans la description ({STYLE_TOTAL_LIMIT} caractères max. au total)"
+ },
+ "core-generation-style.style-guide-error.message.791036e2861e": {
+  "nb": "Den samlede beskrivelsen er for lang (maks {STYLE_TOTAL_LIMIT} tegn)",
+  "en": "The combined description is too long (maximum {STYLE_TOTAL_LIMIT} characters)",
+  "oversatt": "La description combinée est trop longue ({STYLE_TOTAL_LIMIT} caractères max.)"
+ },
+ "core-generation-style.style-guide-error.message.b1c87836637f": {
+  "nb": "Ugyldig tekst i stilprofilen",
+  "en": "Invalid text in the style profile",
+  "oversatt": "Texte non valide dans le profil de style"
+ },
+ "core-generation-style.style-guide-error.message.d50a01a2f256": {
+  "nb": "Teksten er for lang (maks {STYLE_FIELD_LIMIT} tegn per felt)",
+  "en": "The text is too long (maximum {STYLE_FIELD_LIMIT} characters per field)",
+  "oversatt": "Le texte est trop long ({STYLE_FIELD_LIMIT} caractères max. par champ)"
+ },
+ "core-generation-style.style-guide-error.message.de0c2c9941e5": {
+  "nb": "Ugyldige forbildebilder (høyst 12)",
+  "en": "Invalid reference images (at most 12)",
+  "oversatt": "Images de référence non valides (12 max.)"
+ },
+ "core-generation-style.style-use-label.ai-video.f1ed83f16e48": {
+  "nb": "AI-video",
+  "en": "AI video",
+  "oversatt": "Vidéo IA"
+ },
+ "core-generation-style.style-use-label.animal.4cfbed92fac0": {
+  "nb": "Dyr",
+  "en": "Animals",
+  "oversatt": "Animaux"
+ },
+ "core-generation-style.style-use-label.animatic.381a11119178": {
+  "nb": "2D-animatic",
+  "en": "2D animatic",
+  "oversatt": "Animatique 2D"
+ },
+ "core-generation-style.style-use-label.character.030566527626": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "Personnages"
+ },
+ "core-generation-style.style-use-label.environment.33b5012728e5": {
+  "nb": "Miljøer",
+  "en": "Environments",
+  "oversatt": "Environnements"
+ },
+ "core-generation-style.style-use-label.location.4ca16ab3d75b": {
+  "nb": "Steder",
+  "en": "Locations",
+  "oversatt": "Lieux"
+ },
+ "core-generation-style.style-use-label.object.c883fc40d3a8": {
+  "nb": "Objekter og rekvisitter",
+  "en": "Objects and props",
+  "oversatt": "Objets et accessoires"
+ },
+ "core-generation-style.style-use-label.other.72e85c6ec273": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Autre"
+ },
+ "core-generation-style.style-use-label.poster.ea3dc875eb1a": {
+  "nb": "Plakater",
+  "en": "Posters",
+  "oversatt": "Affiches"
+ },
+ "core-generation-trace.label.label.0612058bf76e": {
+  "nb": "Parametere",
+  "en": "Parameters",
+  "oversatt": "Paramètres"
+ },
+ "core-generation-trace.label.label.0ac98d6ad83c": {
+  "nb": "Beskrivelsesskriveren (innebygd AI)",
+  "en": "Description writer (built-in AI)",
+  "oversatt": "Rédacteur de description (IA intégrée)"
+ },
+ "core-generation-trace.label.label.38ef98b84350": {
+  "nb": "Systeminstruks",
+  "en": "System instruction",
+  "oversatt": "Instruction système"
+ },
+ "core-generation-trace.label.label.3d4622c4a0d8": {
+  "nb": "Manusversjon",
+  "en": "Script version",
+  "oversatt": "Version du scénario"
+ },
+ "core-generation-trace.label.label.660398861c5b": {
+  "nb": "Referanser",
+  "en": "References",
+  "oversatt": "Références"
+ },
+ "core-generation-trace.label.label.b68296b54f10": {
+  "nb": "Manuslinjer",
+  "en": "Script lines",
+  "oversatt": "Lignes de scénario"
+ },
+ "core-generation-trace.label.label.b68296b54f10.2": {
+  "nb": "Manuslinjer",
+  "en": "Script lines",
+  "oversatt": "Lignes de scénario"
+ },
+ "core-generation-trace.param-label.aspect.ba45bc892764": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "Format"
+ },
+ "core-generation-trace.param-label.candidates.b84ffba72c72": {
+  "nb": "Kandidater",
+  "en": "Candidates",
+  "oversatt": "Candidats"
+ },
+ "core-generation-trace.param-label.identity-first.c78748961219": {
+  "nb": "Identitet først",
+  "en": "Identity first",
+  "oversatt": "Identité d'abord"
+ },
+ "core-generation-trace.param-label.images.9ced865b0868": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "Images"
+ },
+ "core-generation-trace.param-label.loop.9eb135a61b23": {
+  "nb": "Sløyfe",
+  "en": "Loop",
+  "oversatt": "Boucle"
+ },
+ "core-generation-trace.param-label.purpose.3c914b290620": {
+  "nb": "Bruk",
+  "en": "Use",
+  "oversatt": "Utiliser"
+ },
+ "core-generation-trace.param-label.seconds.830a425a4455": {
+  "nb": "Sekunder",
+  "en": "Seconds",
+  "oversatt": "Secondes"
+ },
+ "core-generation-trace.param-label.voice-id.4eb3814d0a4c": {
+  "nb": "Stemme",
+  "en": "Voice",
+  "oversatt": "Voix"
+ },
+ "core-generation-trace.text.text.055111b41e2d": {
+  "nb": "Scenen var for lang til at revisjonene ble lagret",
+  "en": "The scene was too long for the revisions to be saved",
+  "oversatt": "La scène était trop longue pour enregistrer les révisions"
+ },
+ "core-generation-trace.text.text.16d50bae50d1": {
+  "nb": " (teksten er endret siden)",
+  "en": " (the text has changed since)",
+  "oversatt": " (le texte a été modifié depuis)"
+ },
+ "core-generation-trace.text.text.8b60ce566948": {
+  "nb": "{n} linjer i scenen med revisjon lagret",
+  "en": "{n} lines in the scene with revision saved",
+  "oversatt": "{n} lignes de la scène avec révision enregistrée"
+ },
+ "core-generation-trace.text.text.a2626bdecaac": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "Par défaut"
+ },
+ "core-generation-trace.text.text.ad39b8b19a07": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "Aucun"
+ },
+ "core-generation-trace.text.text.d75dc2ff1d8b": {
+  "nb": "Ingen lagret manusversjon",
+  "en": "No saved script version",
+  "oversatt": "Aucune version du scénario enregistrée"
+ },
+ "core-generation-trace.text.text.f30c93ef223a": {
+  "nb": "Ingen – bare beskrivelsen ble sendt",
+  "en": "None – only the description was sent",
+  "oversatt": "Aucune – seule la description a été envoyée"
+ },
+ "core-generation-video.changes-affect": {
+  "nb": {
+   "one": "Endringene berører segment {segments}.",
+   "other": "Endringene berører segmentene {segments}."
+  },
+  "en": {
+   "one": "The changes affect segment {segments}.",
+   "other": "The changes affect the segments {segments}."
+  },
+  "oversatt": {
+   "one": "Les modifications affectent le segment {segments}.",
+   "many": "Les modifications affectent les segments {segments}.",
+   "other": "Les modifications affectent les segments {segments}."
+  }
+ },
+ "core-generation-video.changes-affect-unknown": {
+  "nb": {
+   "one": "Endringene berører segment {segments} (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med).",
+   "other": "Endringene berører segmentene {segments} (en fjernet linje kan ikke plasseres, så alle segmenter med video er tatt med)."
+  },
+  "en": {
+   "one": "The changes affect segment {segments} (a removed line cannot be placed, so all segments with video are included).",
+   "other": "The changes affect the segments {segments} (a removed line cannot be placed, so all segments with video are included)."
+  },
+  "oversatt": {
+   "one": "Les modifications affectent le segment {segments} (une ligne supprimée ne peut pas être positionnée, tous les segments avec vidéo sont donc inclus).",
+   "many": "Les modifications affectent les segments {segments} (une ligne supprimée ne peut pas être positionnée, tous les segments avec vidéo sont donc inclus).",
+   "other": "Les modifications affectent les segments {segments} (une ligne supprimée ne peut pas être positionnée, tous les segments avec vidéo sont donc inclus)."
+  }
+ },
+ "core-generation-video.reason.reason.20613688625a": {
+  "nb": "Endringene berører {value1} {value2}{value3}.",
+  "en": "The changes affect {value1} {value2}{value3}.",
+  "oversatt": "Les modifications affectent {value1} {value2}{value3}."
+ },
+ "core-generation-video.reason.reason.824128b69e54": {
+  "nb": "Endringene (notater/overganger) synes ikke i bildet. Godkjenn dem i stedet for å lage nye videoer.",
+  "en": "The changes (notes/transitions) do not show in the picture. Approve them instead of making new videos.",
+  "oversatt": "Les modifications (notes/transitions) n'apparaissent pas à l'image. Approuvez-les au lieu de générer de nouvelles vidéos."
+ },
+ "core-generation-video.reason.reason.bd3238cdd55a": {
+  "nb": "Ingen av segmentenes valgte videoer er laget fra det gamle manuset.",
+  "en": "None of the segments' chosen videos were made from the old script.",
+  "oversatt": "Aucune des vidéos sélectionnées pour les segments n'a été créée à partir de l'ancien scénario."
+ },
+ "core-generation-video.reason.reason.c9acc1dbaf0c": {
+  "nb": "Scenen har ingen lagret inndeling for video.",
+  "en": "The scene has no saved breakdown for video.",
+  "oversatt": "La scène n'a pas de découpage enregistré pour la vidéo."
+ },
+ "core-ids.as-id.message.a709cc9c8d97": {
+  "nb": "Ugyldig ID: {value}",
+  "en": "Invalid ID: {value}",
+  "oversatt": "Identifiant non valide : {value}"
+ },
+ "core-invariants.check-invariants.add.01b659a29ffd": {
+  "nb": "Forekomst {id}: bruker en variant som eies av en annen produksjon",
+  "en": "Occurrence {id}: uses a variant owned by another production",
+  "oversatt": "Occurrence {id} : utilise une variante appartenant à une autre production"
+ },
+ "core-invariants.check-invariants.add.0888a95b7064": {
+  "nb": "Blokk {id}: hovedmanusblokk er ikke norsk",
+  "en": "Block {id}: main script block is not Norwegian",
+  "oversatt": "Bloc {id} : le bloc de scénario principal n'est pas en norvégien"
+ },
+ "core-invariants.check-invariants.add.12870510d9e2": {
+  "nb": "Scene {id} er slått sammen, men har fortsatt aktiv forekomst",
+  "en": "Scene {id} is merged, but still has an active occurrence",
+  "oversatt": "Scène {id} fusionnée, mais possède toujours une occurrence active"
+ },
+ "core-invariants.check-invariants.add.1b66912af5b4": {
+  "nb": "Segment {id}: ukjent forekomst",
+  "en": "Segment {id}: unknown occurrence",
+  "oversatt": "Segment {id} : occurrence inconnue"
+ },
+ "core-invariants.check-invariants.add.24eb9ce72aa0": {
+  "nb": "Forekomst {id}: aktiv versjon tilhører en annen scene",
+  "en": "Occurrence {id}: active version belongs to another scene",
+  "oversatt": "Occurrence {id} : la version active appartient à une autre scène"
+ },
+ "core-invariants.check-invariants.add.2897d5473c7a": {
+  "nb": "Notat {id}: må høre til enten tekst eller scene",
+  "en": "Note {id}: must belong to either a text or a scene",
+  "oversatt": "Note {id} : doit appartenir soit à un texte, soit à une scène"
+ },
+ "core-invariants.check-invariants.add.28d657f0420c": {
+  "nb": "Take {id}: segment tilhører en annen forekomst",
+  "en": "Take {id}: segment belongs to another occurrence",
+  "oversatt": "Prise {id} : le segment appartient à une autre occurrence"
+ },
+ "core-invariants.check-invariants.add.2ae8b7cf2fce": {
+  "nb": "Lag {id}: ugyldig versjon",
+  "en": "Layer {id}: invalid version",
+  "oversatt": "Calque {id} : version non valide"
+ },
+ "core-invariants.check-invariants.add.2ba194ec86af": {
+  "nb": "Ressurs {id}: mangler navn",
+  "en": "Asset {id}: missing name",
+  "oversatt": "Élément {id} : nom manquant"
+ },
+ "core-invariants.check-invariants.add.2e369d62896e": {
+  "nb": "Variant {id}: ukjent eierproduksjon",
+  "en": "Variant {id}: unknown owner production",
+  "oversatt": "Variante {id} : production propriétaire inconnue"
+ },
+ "core-invariants.check-invariants.add.2f9436d194d2": {
+  "nb": "Forekomst {id}: ugyldig sorteringsnøkkel",
+  "en": "Occurrence {id}: invalid sort key",
+  "oversatt": "Occurrence {id} : clé de tri non valide"
+ },
+ "core-invariants.check-invariants.add.30dfcd9a399d": {
+  "nb": "Blokk {id}: ukjent variant",
+  "en": "Block {id}: unknown variant",
+  "oversatt": "Bloc {id} : variante inconnue"
+ },
+ "core-invariants.check-invariants.add.429a4674bb2c": {
+  "nb": "Scene {id}: ukjent sammenslåingsmål",
+  "en": "Scene {id}: unknown merge target",
+  "oversatt": "Scène {id} : cible de fusion inconnue"
+ },
+ "core-invariants.check-invariants.add.42e8c587a46e": {
+  "nb": "Lag {id}: viser ingenting",
+  "en": "Layer {id}: shows nothing",
+  "oversatt": "Calque {id} : n'affiche rien"
+ },
+ "core-invariants.check-invariants.add.439a2a6b66db": {
+  "nb": "Forekomst {id}: variant tilhører en annen scene",
+  "en": "Occurrence {id}: variant belongs to another scene",
+  "oversatt": "Occurrence {id} : la variante appartient à une autre scène"
+ },
+ "core-invariants.check-invariants.add.47b407941cad": {
+  "nb": "Lag {id}: samme plass i lagrekkefølgen som et annet lag",
+  "en": "Layer {id}: same place in the layer order as another layer",
+  "oversatt": "Calque {id} : même position dans l'ordre des calques qu'un autre calque"
+ },
+ "core-invariants.check-invariants.add.4cb2248bdbd8": {
+  "nb": "Produksjon {id} viser til ukjent overordnet produksjon",
+  "en": "Production {id} refers to an unknown parent production",
+  "oversatt": "Production {id} fait référence à une production parente inconnue"
+ },
+ "core-invariants.check-invariants.add.521eab8a398e": {
+  "nb": "Beskrivelse {id}: segmentet hører ikke til scenen",
+  "en": "Description {id}: the segment does not belong to the scene",
+  "oversatt": "Description {id} : le segment n'appartient pas à la scène"
+ },
+ "core-invariants.check-invariants.add.585161a32e73": {
+  "nb": "Lag {id}: ugyldig variant",
+  "en": "Layer {id}: invalid variant",
+  "oversatt": "Calque {id} : variante non valide"
+ },
+ "core-invariants.check-invariants.add.66b09ad0487e": {
+  "nb": "Notat {id}: ukjent blokk",
+  "en": "Note {id}: unknown block",
+  "oversatt": "Note {id} : bloc inconnu"
+ },
+ "core-invariants.check-invariants.add.6f4f64e6e124": {
+  "nb": "Forekomst {id}: ukjent scene",
+  "en": "Occurrence {id}: unknown scene",
+  "oversatt": "Occurrence {id} : scène inconnue"
+ },
+ "core-invariants.check-invariants.add.715e9f383081": {
+  "nb": "Segment {segmentId}: to egne beskrivelser",
+  "en": "Segment {segmentId}: two own descriptions",
+  "oversatt": "Segment {segmentId} : deux descriptions propres"
+ },
+ "core-invariants.check-invariants.add.7d80582793bb": {
+  "nb": "Ressursversjon {id}: samme nummer to ganger",
+  "en": "Asset version {id}: same number twice",
+  "oversatt": "Version d'élément {id} : même numéro en double"
+ },
+ "core-invariants.check-invariants.add.7eca574c1d3d": {
+  "nb": "Blokk {id}: hull i revisjonshistorikken",
+  "en": "Block {id}: gap in the revision history",
+  "oversatt": "Bloc {id} : discontinuité dans l'historique des révisions"
+ },
+ "core-invariants.check-invariants.add.817e1b911aba": {
+  "nb": "Take {id}: ugyldig varighet",
+  "en": "Take {id}: invalid duration",
+  "oversatt": "Prise {id} : durée non valide"
+ },
+ "core-invariants.check-invariants.add.833bcd3d38b1": {
+  "nb": "2D-scene {id}: ukjent scene",
+  "en": "2D scene {id}: unknown scene",
+  "oversatt": "Scène 2D {id} : scène inconnue"
+ },
+ "core-invariants.check-invariants.add.85167cbd2543": {
+  "nb": "Blokk {id}: ugyldig sorteringsnøkkel",
+  "en": "Block {id}: invalid sort key",
+  "oversatt": "Bloc {id} : clé de tri non valide"
+ },
+ "core-invariants.check-invariants.add.8d8f1333e788": {
+  "nb": "Segment {id}: ukjent blokk",
+  "en": "Segment {id}: unknown block",
+  "oversatt": "Segment {id} : bloc inconnu"
+ },
+ "core-invariants.check-invariants.add.928967dd5624": {
+  "nb": "2D-scene {id}: scenen har to 2D-scener",
+  "en": "2D scene {id}: the scene has two 2D scenes",
+  "oversatt": "Scène 2D {id} : la scène comporte deux scènes 2D"
+ },
+ "core-invariants.check-invariants.add.9bdb3dc82c68": {
+  "nb": "Ressursversjon {id}: ukjent variant",
+  "en": "Asset version {id}: unknown variant",
+  "oversatt": "Version d'élément {id} : variante inconnue"
+ },
+ "core-invariants.check-invariants.add.a52acab4439d": {
+  "nb": "Blokk {id}: to blokker har samme plass i varianten",
+  "en": "Block {id}: two blocks have the same place in the variant",
+  "oversatt": "Bloc {id} : deux blocs occupent la même place dans la variante"
+ },
+ "core-invariants.check-invariants.add.acbfe4979411": {
+  "nb": "Forekomst {id}: ugyldig tidsutdrag",
+  "en": "Occurrence {id}: invalid time excerpt",
+  "oversatt": "Occurrence {id} : extrait temporel non valide"
+ },
+ "core-invariants.check-invariants.add.b02a5155b872": {
+  "nb": "Variant {id}: ukjent scene",
+  "en": "Variant {id}: unknown scene",
+  "oversatt": "Variante {id} : scène inconnue"
+ },
+ "core-invariants.check-invariants.add.b18f9f469aad": {
+  "nb": "Forekomst {id}: ukjent variant",
+  "en": "Occurrence {id}: unknown variant",
+  "oversatt": "Occurrence {id} : variante inconnue"
+ },
+ "core-invariants.check-invariants.add.b3269c5b49ba": {
+  "nb": "Ressursvariant {id}: ukjent ressurs",
+  "en": "Asset variant {id}: unknown asset",
+  "oversatt": "Variante d'élément {id} : élément inconnu"
+ },
+ "core-invariants.check-invariants.add.b6f6c892834e": {
+  "nb": "Lag {id}: ukjent ressurs",
+  "en": "Layer {id}: unknown asset",
+  "oversatt": "Calque {id} : élément inconnu"
+ },
+ "core-invariants.check-invariants.add.beea12e94202": {
+  "nb": "Ressursvariant {id}: godkjent versjon tilhører ikke varianten",
+  "en": "Asset variant {id}: approved version does not belong to the variant",
+  "oversatt": "Variante d'élément {id} : la version approuvée n'appartient pas à la variante"
+ },
+ "core-invariants.check-invariants.add.cecf273318eb": {
+  "nb": "Blokk {id}: gjeldende tekst stemmer ikke med revisjonshistorikken",
+  "en": "Block {id}: current text does not match the revision history",
+  "oversatt": "Bloc {id} : le texte actuel ne correspond pas à l'historique des révisions"
+ },
+ "core-invariants.check-invariants.add.d429b92fced7": {
+  "nb": "Mer enn én hovedproduksjon",
+  "en": "More than one main production",
+  "oversatt": "Plus d'une production principale"
+ },
+ "core-invariants.check-invariants.add.dc0ed9cf6c06": {
+  "nb": "Scene {id}: fortellingstid ankret til ukjent scene",
+  "en": "Scene {id}: story time anchored to an unknown scene",
+  "oversatt": "Scène {id} : temps narratif ancré à une scène inconnue"
+ },
+ "core-invariants.check-invariants.add.df8ddbfda832": {
+  "nb": "Forekomst {id}: aktiv versjon finnes ikke",
+  "en": "Occurrence {id}: active version does not exist",
+  "oversatt": "Occurrence {id} : la version active n'existe pas"
+ },
+ "core-invariants.check-invariants.add.e3b6208f919d": {
+  "nb": "Produksjon {productionId}: to forekomster har samme plass",
+  "en": "Production {productionId}: two occurrences have the same place",
+  "oversatt": "Production {productionId} : deux occurrences occupent la même place"
+ },
+ "core-invariants.check-invariants.add.e8a4715e3ab0": {
+  "nb": "Notat {id}: ukjent scene",
+  "en": "Note {id}: unknown scene",
+  "oversatt": "Note {id} : scène inconnue"
+ },
+ "core-invariants.check-invariants.add.ef371818419d": {
+  "nb": "Forekomst {id}: ukjent produksjon",
+  "en": "Occurrence {id}: unknown production",
+  "oversatt": "Occurrence {id} : production inconnue"
+ },
+ "core-invariants.check-invariants.add.f0be89e1352e": {
+  "nb": "Take {id}: ukjent forekomst",
+  "en": "Take {id}: unknown occurrence",
+  "oversatt": "Prise {id} : occurrence inconnue"
+ },
+ "core-invariants.check-invariants.add.f19494b0ca56": {
+  "nb": "Lag {id}: ukjent 2D-scene",
+  "en": "Layer {id}: unknown 2D scene",
+  "oversatt": "Calque {id} : scène 2D inconnue"
+ },
+ "core-invariants.check-invariants.add.f4224ff9c297": {
+  "nb": "Beskrivelse {id}: ukjent scene",
+  "en": "Description {id}: unknown scene",
+  "oversatt": "Description {id} : scène inconnue"
+ },
+ "core-invariants.check-invariants.add.fd093ffdcd50": {
+  "nb": "Scene {id}: ukjent opprinnelsesproduksjon",
+  "en": "Scene {id}: unknown origin production",
+  "oversatt": "Scène {id} : production d'origine inconnue"
+ },
+ "core-language-index.material-label.ai-video.d130293ffd1d": {
+  "nb": "AI-generert video",
+  "en": "AI-generated video",
+  "oversatt": "Vidéo générée par IA"
+ },
+ "core-language-index.material-label.animatic2d.31d562be3f12": {
+  "nb": "Enkel 2D-animatic",
+  "en": "Simple 2D animatic",
+  "oversatt": "Animatique 2D simple"
+ },
+ "core-language-index.material-label.character2d.1d0d7d5ebe58": {
+  "nb": "Redigerbare 2D-karakterer",
+  "en": "Editable 2D characters",
+  "oversatt": "Personnages 2D modifiables"
+ },
+ "core-language-index.material-label.imported-film.4fa4622cd63d": {
+  "nb": "Ferdig importert film",
+  "en": "Finished imported film",
+  "oversatt": "Film importé finalisé"
+ },
+ "core-language-index.material-label.still.7548f560926f": {
+  "nb": "Stillbilde",
+  "en": "Still image",
+  "oversatt": "Image fixe"
+ },
+ "core-language-index.shorten-by": {
+  "nb": {
+   "one": "Kort ned oversettelsen med omtrent {count} ord.",
+   "other": "Kort ned oversettelsen med omtrent {count} ord."
+  },
+  "en": {
+   "one": "Shorten the translation by about {count} word.",
+   "other": "Shorten the translation by about {count} words."
+  },
+  "oversatt": {
+   "one": "Raccourcissez la traduction d'environ {count} mot.",
+   "many": "Raccourcissez la traduction d'environ {count} de mots.",
+   "other": "Raccourcissez la traduction d'environ {count} mots."
+  }
+ },
+ "core-language-index.text.text.025f9b6e4eba": {
+  "nb": "Forleng pausen før neste replikk i denne språkversjonen (krever egen klipping; hovedfilmen endres ikke).",
+  "en": "Extend the pause before the next line in this language version (requires separate editing; the main film is not changed).",
+  "oversatt": "Prolongez la pause avant la réplique suivante dans cette version linguistique (nécessite un montage distinct ; le film principal n'est pas modifié)."
+ },
+ "core-language-index.text.text.030acc691093": {
+  "nb": "Synlige munnbevegelser kan kreve ny leppesynk eller en målrettet oppdatering av segmentet. Ingenting lages på nytt automatisk – det krever ditt valg og kostnadsgodkjenning.",
+  "en": "Visible mouth movements may require new lip sync or a targeted update of the segment. Nothing is regenerated automatically – it requires your choice and cost approval.",
+  "oversatt": "Les mouvements visibles de la bouche peuvent nécessiter une nouvelle synchro labiale ou une mise à jour ciblée du segment. Rien n'est régénéré automatiquement – cela nécessite votre choix et votre approbation des coûts."
+ },
+ "core-language-index.text.text.099e68002934": {
+  "nb": "La replikken gå {value1} inn i neste replikk.",
+  "en": "Let the line run {value1} into the next line.",
+  "oversatt": "Laissez la réplique empiéter de {value1} sur la réplique suivante."
+ },
+ "core-language-index.text.text.2049f0c0e8f0": {
+  "nb": "Synlige munnbevegelser kan kreve ny leppesynk. Filmen endres ikke automatisk.",
+  "en": "Visible mouth movements may require new lip sync. The film is not changed automatically.",
+  "oversatt": "Les mouvements visibles de la bouche peuvent nécessiter une nouvelle synchro labiale. Le film n'est pas modifié automatiquement."
+ },
+ "core-language-index.text.text.3abf4eaf6f59": {
+  "nb": "Start replikken {value1} tidligere – da får den plass.",
+  "en": "Start the line {value1} earlier – then it fits.",
+  "oversatt": "Avancez le début de la réplique de {value1} – elle tiendra alors."
+ },
+ "core-language-index.text.text.6cf7b86c882c": {
+  "nb": "Kort ned oversettelsen med omtrent {words} {value2}.",
+  "en": "Shorten the translation by about {words} {value2}.",
+  "oversatt": "Raccourcissez la traduction d'environ {words} {value2}."
+ },
+ "core-language-index.text.text.f0bcf9120e4b": {
+  "nb": "Start replikken {value1} tidligere (det er plass til, men ikke nok alene).",
+  "en": "Start the line {value1} earlier (there is room, but not enough on its own).",
+  "oversatt": "Avancez le début de la réplique de {value1} (il y a de la place, mais pas assez à elle seule)."
+ },
+ "core-language-index.text.text.f4e773a01bbe": {
+  "nb": "Dialogen kan byttes direkte.",
+  "en": "The dialogue can be switched directly.",
+  "oversatt": "Le dialogue peut être remplacé directement."
+ },
+ "core-language-index.text.text.f74b370ccdd1": {
+  "nb": "Replikken er {value1} kortere enn tiden den har. Det kan bli en lang pause – vurder en lengre oversettelse eller la pausen stå.",
+  "en": "The line is {value1} shorter than the time it has. This may leave a long pause – consider a longer translation or leave the pause.",
+  "oversatt": "La réplique est plus courte de {value1} que le temps disponible. Cela peut laisser une longue pause – envisagez une traduction plus longue ou conservez la pause."
+ },
+ "core-language-index.text.text.ff54097816ff": {
+  "nb": "Karakterene har bildeskifter (munn eller uttrykk). Kontroller at de passer til den nye replikken, og juster dem i sceneeditoren om nødvendig.",
+  "en": "The characters have image changes (mouth or expression). Check that they fit the new line, and adjust them in the scene editor if necessary.",
+  "oversatt": "Les personnages comportent des changements d'image (bouche ou expression). Vérifiez qu'ils correspondent à la nouvelle réplique et ajustez-les dans l'éditeur de scène si nécessaire."
+ },
+ "core-layer-alpha.alpha-export-error.message.43e0de41226e": {
+  "nb": "Velg minst ett lag fra denne scenen.",
+  "en": "Select at least one layer from this scene.",
+  "oversatt": "Sélectionnez au moins un calque de cette scène."
+ },
+ "core-layer-alpha.alpha-export-error.message.7b649b406223": {
+  "nb": "Velg et gyldig inn/ut-område innenfor scenen.",
+  "en": "Choose a valid in/out range within the scene.",
+  "oversatt": "Choisissez une plage d'entrée/sortie valide au sein de la scène."
+ },
+ "core-library-analysis-hash.daily-quota-error.message.330b7b020f3f": {
+  "nb": "Den automatiske analysen er kjørt {limit} ganger i dag for dette prosjektet. Den fortsetter i morgen.",
+  "en": "The automatic analysis has run {limit} times today for this project. It will continue tomorrow.",
+  "oversatt": "L'analyse automatique a été exécutée {limit} fois aujourd'hui pour ce projet. Elle se poursuivra demain."
+ },
+ "core-library-classify.classify-suggestion.result.2046dfa25053": {
+  "nb": "Gjenkjent i leksikonet",
+  "en": "Recognized in the lexicon",
+  "oversatt": "Reconnu dans le lexique"
+ },
+ "core-library-classify.classify-suggestion.result.225fca15e26d": {
+  "nb": "Navn uten tydelig typesignal – må vurderes",
+  "en": "Name without a clear type signal – needs review",
+  "oversatt": "Nom sans indice de type clair – à vérifier"
+ },
+ "core-library-classify.classify-suggestion.result.9236eaa34df5": {
+  "nb": "Navnet står ved et verb for et levende vesen",
+  "en": "The name appears beside a verb for a living being",
+  "oversatt": "Le nom apparaît à côté d'un verbe désignant un être vivant"
+ },
+ "core-library-classify.classify-suggestion.result.9d5240d52568": {
+  "nb": "Står i sceneoverskriften",
+  "en": "Appears in the scene heading",
+  "oversatt": "Apparaît dans l'en-tête de scène"
+ },
+ "core-library-classify.classify-suggestion.result.a2afa1939e0b": {
+  "nb": "Har replikk i manuset",
+  "en": "Has dialogue in the script",
+  "oversatt": "A des répliques dans le scénario"
+ },
+ "core-library-classify.classify-suggestion.result.cb7245b6d1b7": {
+  "nb": "Omtales som noe vi hører",
+  "en": "Described as something we hear",
+  "oversatt": "Décrit comme un élément sonore"
+ },
+ "core-library-classify.classify-suggestion.result.d0552e022141": {
+  "nb": "Dyrenavn eller dyrebeskrivelse ved navnet",
+  "en": "Animal name or animal description beside the name",
+  "oversatt": "Nom d'animal ou description animale à côté du nom"
+ },
+ "core-library-classify.classify-suggestion.result.fdc3ef35926b": {
+  "nb": "Navnet står ved et dyreverb",
+  "en": "The name appears beside an animal verb",
+  "oversatt": "Le nom apparaît à côté d'un verbe animalier"
+ },
+ "core-library-content-sync.content-sync-flag": {
+  "nb": "Ressursen er oppdatert etter at scenen ble laget",
+  "en": "The asset was updated after the scene was made",
+  "oversatt": "L'élément a été mis à jour après la création de la scène"
+ },
+ "core-library-content-sync.content-sync-flag.message.6d78ae08bb8d": {
+  "nb": null,
+  "en": "The asset was updated after the scene was made",
+  "oversatt": "L'élément a été mis à jour après la création de la scène"
+ },
+ "core-library-content-sync.name.sync-items-map.4e5b5cd497bd": {
+  "nb": "Ressurs",
+  "en": "Asset",
+  "oversatt": "Élément"
+ },
+ "core-library-global.global-kind-label.character.4c9629cf531a": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "core-library-global.global-kind-label.environment.ca78d09ca5ef": {
+  "nb": "Miljø / bakgrunn",
+  "en": "Environment / background",
+  "oversatt": "Environnement / décor"
+ },
+ "core-library-global.global-kind-label.logo.144baa7a4181": {
+  "nb": "Logo og merkevare",
+  "en": "Logo and brand",
+  "oversatt": "Logo et marque"
+ },
+ "core-library-global.global-kind-label.object.359f97f75c6e": {
+  "nb": "Objekt / rekvisitt",
+  "en": "Object / prop",
+  "oversatt": "Objet / accessoire"
+ },
+ "core-library-global.global-kind-label.other.37b9c69fcc6f": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Autre"
+ },
+ "core-library-global.global-kind-label.sound.a941bcd9c0a2": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Son"
+ },
+ "core-library-global.global-kind-label.team-figure.227cfa7d8c5c": {
+  "nb": "Teamfigur",
+  "en": "Team figure",
+  "oversatt": "Figurine d'équipe"
+ },
+ "core-library-global.global-kind-label.template.88b149caea11": {
+  "nb": "Grafisk mal",
+  "en": "Graphic template",
+  "oversatt": "Modèle graphique"
+ },
+ "core-library-global.note.note.5c31739b036f": {
+  "nb": "Fra det globale biblioteket (v{number})",
+  "en": "From the global library (v{number})",
+  "oversatt": "Depuis la bibliothèque globale (v{number})"
+ },
+ "core-library-global.plan-use-global.message.4ebd2df432a0": {
+  "nb": "Mangler ID for ny variant",
+  "en": "Missing ID for new variant",
+  "oversatt": "Identifiant manquant pour la nouvelle variante"
+ },
+ "core-library-index.asset-kind-label.animal.67ee55073576": {
+  "nb": "Dyr",
+  "en": "Animal",
+  "oversatt": "Animal"
+ },
+ "core-library-index.asset-kind-label.character.49517a2ddd6e": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "core-library-index.asset-kind-label.environment.e49c88daabbe": {
+  "nb": "Miljø / bakgrunn",
+  "en": "Environment / background",
+  "oversatt": "Environnement / décor"
+ },
+ "core-library-index.asset-kind-label.location.2a35db2ba28b": {
+  "nb": "Lokasjon",
+  "en": "Location",
+  "oversatt": "Lieu"
+ },
+ "core-library-index.asset-kind-label.object.d93389b1439f": {
+  "nb": "Objekt / rekvisitt",
+  "en": "Object / prop",
+  "oversatt": "Objet / accessoire"
+ },
+ "core-library-index.asset-kind-label.other.8160f8cedac7": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Autre"
+ },
+ "core-library-index.asset-kind-label.sound.d0c8fe111b77": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Son"
+ },
+ "core-library-index.asset-kind-label.template.baa6e4245283": {
+  "nb": "Grafisk mal",
+  "en": "Graphic template",
+  "oversatt": "Modèle graphique"
+ },
+ "core-library-index.asset-kind-plural.animal.0c120a77f5af": {
+  "nb": "Dyr",
+  "en": "Animals",
+  "oversatt": "Animaux"
+ },
+ "core-library-index.asset-kind-plural.character.b640ce50cf83": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "Personnages"
+ },
+ "core-library-index.asset-kind-plural.environment.706f592feede": {
+  "nb": "Miljøer",
+  "en": "Environments",
+  "oversatt": "Environnements"
+ },
+ "core-library-index.asset-kind-plural.location.cb62899c72fa": {
+  "nb": "Lokasjoner",
+  "en": "Locations",
+  "oversatt": "Lieux"
+ },
+ "core-library-index.asset-kind-plural.object.0d09b30367e1": {
+  "nb": "Objekter",
+  "en": "Objects",
+  "oversatt": "Objets"
+ },
+ "core-library-index.asset-kind-plural.other.d18d4d6b32ae": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "Autre"
+ },
+ "core-library-index.asset-kind-plural.sound.cbc011f908a0": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Son"
+ },
+ "core-library-index.asset-kind-plural.template.f33cf1e25c48": {
+  "nb": "Grafiske maler",
+  "en": "Graphic templates",
+  "oversatt": "Modèles graphiques"
+ },
+ "core-library-index.usage-label.audio.e8d440910aa3": {
+  "nb": "lydklipp i scenen",
+  "en": "audio clip in the scene",
+  "oversatt": "clip audio dans la scène"
+ },
+ "core-library-index.usage-label.layer.6fc8e5a746e7": {
+  "nb": "lag i 2D-scenen",
+  "en": "layer in the 2D scene",
+  "oversatt": "calque dans la scène 2D"
+ },
+ "core-library-index.usage-label.location.e3aa3ea0aaa0": {
+  "nb": "sted i overskriften",
+  "en": "location in the heading",
+  "oversatt": "lieu dans l'en-tête"
+ },
+ "core-library-index.usage-label.mentioned.a334d300d228": {
+  "nb": "nevnes",
+  "en": "mentioned",
+  "oversatt": "mentionné"
+ },
+ "core-library-index.usage-label.speaks.50700dfc76c5": {
+  "nb": "har replikk",
+  "en": "has a line",
+  "oversatt": "a une réplique"
+ },
+ "core-library-index.usage-label.text.34f190186828": {
+  "nb": "nevnes i teksten",
+  "en": "mentioned in the text",
+  "oversatt": "mentionné dans le texte"
+ },
+ "core-library-provenance.provenance-detail.parts-push.3800bc4a7e76": {
+  "nb": "frilagt fra versjon {fromNumber}",
+  "en": "cut out from version {fromNumber}",
+  "oversatt": "détouré depuis la version {fromNumber}"
+ },
+ "core-library-provenance.provenance-detail.parts-push.5520ec16a26d": {
+  "nb": "fra filnavnet (jobben er ikke funnet)",
+  "en": "from the file name (job not found)",
+  "oversatt": "d'après le nom de fichier (tâche introuvable)"
+ },
+ "core-library-provenance.provenance-detail.parts-push.760abf455e60": {
+  "nb": "ingen AI-jobb eller merknad",
+  "en": "no AI job or note",
+  "oversatt": "aucune tâche IA ou note"
+ },
+ "core-library-provenance.provenance-detail.parts-push.8f78701047ed": {
+  "nb": "fra AI-jobben",
+  "en": "from the AI job",
+  "oversatt": "d'après la tâche IA"
+ },
+ "core-library-provenance.provenance-detail.parts-push.b460391755c1": {
+  "nb": "endret fra versjon {fromNumber}",
+  "en": "changed from version {fromNumber}",
+  "oversatt": "modifié depuis la version {fromNumber}"
+ },
+ "core-library-provenance.provenance-detail.parts-push.cae6f7b2d077": {
+  "nb": "fra merknaden på versjonen",
+  "en": "from the note on the version",
+  "oversatt": "d'après la note de la version"
+ },
+ "core-library-provenance.provenance-detail.parts-push.db5a57fc938c": {
+  "nb": "leverandør: {provider}",
+  "en": "provider: {provider}",
+  "oversatt": "fournisseur : {provider}"
+ },
+ "core-library-provenance.provenance-detail.parts-push.fa06e6305614": {
+  "nb": "modell: {model}",
+  "en": "model: {model}",
+  "oversatt": "modèle : {model}"
+ },
+ "core-library-provenance.provenance-label.message.434592b1dab2": {
+  "nb": "Lastet opp på nytt (fra v{fromNumber})",
+  "en": "Re-uploaded (from v{fromNumber})",
+  "oversatt": "Re-téléversé (depuis la v{fromNumber})"
+ },
+ "core-library-provenance.provenance-label.message.b28c443174ab": {
+  "nb": "Frilagt fra v{fromNumber}",
+  "en": "Cut out from v{fromNumber}",
+  "oversatt": "Détouré depuis la v{fromNumber}"
+ },
+ "core-library-provenance.provenance-label.message.d04c20045f40": {
+  "nb": "Lastet opp på nytt",
+  "en": "Re-uploaded",
+  "oversatt": "Re-téléversé"
+ },
+ "core-library-provenance.version-origin-label.ai.e7bddea54eed": {
+  "nb": "Laget med AI",
+  "en": "Made with AI",
+  "oversatt": "Créé avec l'IA"
+ },
+ "core-library-provenance.version-origin-label.cutout.e3b803b140dd": {
+  "nb": "Frilagt",
+  "en": "Cut out",
+  "oversatt": "Détouré"
+ },
+ "core-library-provenance.version-origin-label.harmonized.7206ab6d8c21": {
+  "nb": "Harmonisert",
+  "en": "Harmonised",
+  "oversatt": "Harmonisé"
+ },
+ "core-library-provenance.version-origin-label.upload.5c66fe9ff269": {
+  "nb": "Lastet opp",
+  "en": "Uploaded",
+  "oversatt": "Téléversé"
+ },
+ "core-library-reupload.reupload-note.message.7884245562fe": {
+  "nb": "Erstatter v{number} (lastet opp på nytt)",
+  "en": "Replaces v{number} (uploaded again)",
+  "oversatt": "Remplace la v{number} (re-téléversé)"
+ },
+ "core-library-reupload.reupload-note.message.d8143e264cee": {
+  "nb": "Endret fra v{number} (lagt til)",
+  "en": "Changed from v{number} (added)",
+  "oversatt": "Modifié depuis la v{number} (ajouté)"
+ },
+ "core-library-scene-plans.label.label.924aede2b6a3": {
+  "nb": "Alle scener med {name}",
+  "en": "All scenes with {name}",
+  "oversatt": "Toutes les scènes avec {name}"
+ },
+ "core-library-scene-plans.label.label.a3c1fdd07a31": {
+  "nb": "Alle scener etter denne",
+  "en": "All scenes after this one",
+  "oversatt": "Toutes les scènes après celle-ci"
+ },
+ "core-library-scene-plans.label.label.b254548d4356": {
+  "nb": "Alle scener på {name}",
+  "en": "All scenes at {name}",
+  "oversatt": "Toutes les scènes à {name}"
+ },
+ "core-library-scene-plans.plan-note-text.message.42b113640dcd": {
+  "nb": "«{assetName}» skal inn i scenen (lagt til fra scene {fromNumber}). Skriv det inn i manuset, og lagre merknaden som ferdig.",
+  "en": "“{assetName}” should be in the scene (added from scene {fromNumber}). Write it into the script, and save the note as done.",
+  "oversatt": "« {assetName} » doit être dans la scène (ajouté depuis la scène {fromNumber}). Écrivez-le dans le scénario et marquez la note comme terminée."
+ },
+ "core-library-scene-plans.plan-note-text.message.f8e50e923623": {
+  "nb": "«{assetName}» skal inn i scenen. Skriv det inn i manuset, og lagre merknaden som ferdig.",
+  "en": "“{assetName}” should be in the scene. Write it into the script, and save the note as done.",
+  "oversatt": "« {assetName} » doit être dans la scène. Écrivez-le dans le scénario et marquez la note comme terminée."
+ },
+ "core-library-sound-links.sound-link-label.asset.71095537b1b0": {
+  "nb": "Karakter/ressurs",
+  "en": "Character/asset",
+  "oversatt": "Personnage/élément"
+ },
+ "core-library-sound-links.sound-link-label.block.bbb3fba8a588": {
+  "nb": "Replikk/linje",
+  "en": "Line/dialogue",
+  "oversatt": "Réplique"
+ },
+ "core-library-sound-links.sound-link-label.event.2ae368e6ce0f": {
+  "nb": "Hendelse",
+  "en": "Event",
+  "oversatt": "Événement"
+ },
+ "core-library-sound-links.sound-link-label.message.062a90d3d7f1": {
+  "nb": "(produksjonen finnes ikke lenger)",
+  "en": "(production no longer exists)",
+  "oversatt": "(la production n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.message.1d02f88f4756": {
+  "nb": "(hendelsen finnes ikke lenger)",
+  "en": "(event no longer exists)",
+  "oversatt": "(l’événement n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.message.24b3dcf674f5": {
+  "nb": "{prefix}«{text}»",
+  "en": "{prefix}“{text}”",
+  "oversatt": "{prefix}« {text} »"
+ },
+ "core-library-sound-links.sound-link-label.message.3b8ced4b0336": {
+  "nb": ", delsekvens ",
+  "en": ", segment ",
+  "oversatt": ", segment "
+ },
+ "core-library-sound-links.sound-link-label.message.78166a4664d6": {
+  "nb": "(delsekvensen finnes ikke lenger)",
+  "en": "(segment no longer exists)",
+  "oversatt": "(le segment n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.message.9750df82af8b": {
+  "nb": "(linjen finnes ikke lenger)",
+  "en": "(line no longer exists)",
+  "oversatt": "(la réplique n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.message.bc284dab530c": {
+  "nb": "(scenen finnes ikke lenger)",
+  "en": "(scene no longer exists)",
+  "oversatt": "(la scène n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.message.e4c4a3c78660": {
+  "nb": "(ressursen finnes ikke lenger)",
+  "en": "(asset no longer exists)",
+  "oversatt": "(l’élément n’existe plus)"
+ },
+ "core-library-sound-links.sound-link-label.production.7b13f8c0a771": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "Production"
+ },
+ "core-library-sound-links.sound-link-label.scene.8ba2bd5a583f": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "core-library-sound-links.sound-link-label.segment.45583eb9e990": {
+  "nb": "Delsekvens",
+  "en": "Segment",
+  "oversatt": "Segment"
+ },
+ "core-library-sound-links.what.message.008647f465db": {
+  "nb": "hendelse",
+  "en": "event",
+  "oversatt": "événement"
+ },
+ "core-library-storage.label.label.044d118681b1": {
+  "nb": "Genererte mediefiler",
+  "en": "Generated media files",
+  "oversatt": "Fichiers médias générés"
+ },
+ "core-library-storage.label.label.06e2a434bf50": {
+  "nb": "Eksportfiler",
+  "en": "Export files",
+  "oversatt": "Fichiers d'exportation"
+ },
+ "core-library-storage.label.label.4f9c479b6ba9": {
+  "nb": "Redigerbare prosjektdata",
+  "en": "Editable project data",
+  "oversatt": "Données de projet modifiables"
+ },
+ "core-library-storage.label.label.761b9e2dcee5": {
+  "nb": "Midlertidige renderingsfiler",
+  "en": "Temporary render files",
+  "oversatt": "Fichiers de rendu temporaires"
+ },
+ "core-library-storage.label.label.98afaee3796a": {
+  "nb": "Kildemedier",
+  "en": "Source media",
+  "oversatt": "Médias sources"
+ },
+ "core-library-storage.label.label.aacc66a13c42": {
+  "nb": "Historiske versjoner",
+  "en": "Historical versions",
+  "oversatt": "Versions historiques"
+ },
+ "core-library-storage.note.note.35d84008772d": {
+  "nb": "Bilder, lyd og video laget med AI.",
+  "en": "Images, audio and video made with AI.",
+  "oversatt": "Images, audio et vidéo créés par IA."
+ },
+ "core-library-storage.note.note.761d4dffb21a": {
+  "nb": "Eldre bildeversjoner som ikke brukes lenger. De slettes aldri automatisk. Manusversjoner og endringshistorikken ligger i databasen.",
+  "en": "Older image versions that are no longer used. They are never deleted automatically. Script versions and the change history are kept in the database.",
+  "oversatt": "Anciennes versions d’images qui ne sont plus utilisées. Elles ne sont jamais supprimées automatiquement. Les versions de scénario et l’historique des modifications sont conservés dans la base de données."
+ },
+ "core-library-storage.note.note.9a7c9943d358": {
+  "nb": "Avspilling og eksport lages i nettleseren og lagres ikke. Videoer av 2D-scenen som sendes til AI, ligger i en egen mappe for midlertidige filer.",
+  "en": "Playback and export are made in the browser and not saved. Videos of the 2D scene sent to AI are kept in a separate folder for temporary files.",
+  "oversatt": "La lecture et l’exportation sont générées dans le navigateur et ne sont pas enregistrées. Les vidéos de la scène 2D envoyées à l’IA sont conservées dans un dossier distinct pour les fichiers temporaires."
+ },
+ "core-library-storage.note.note.c578417e9c94": {
+  "nb": "Bilder og lyd som er lastet opp, og importert film. Importerte manusfiler ligger i egen lagring.",
+  "en": "Images and audio that have been uploaded, and imported film. Imported script files are kept in separate storage.",
+  "oversatt": "Images et audio importés, ainsi que films importés. Les fichiers de scénario importés sont conservés dans un stockage séparé."
+ },
+ "core-library-storage.note.note.f60c6db4789c": {
+  "nb": "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.",
+  "en": "Downloaded to your computer and not saved in the project. The settings are remembered per production.",
+  "oversatt": "Téléchargé sur votre ordinateur et non enregistré dans le projet. Les paramètres sont mémorisés par production."
+ },
+ "core-library-storage.note.note.fd1a9a99eba1": {
+  "nb": "Manus, scener, 2D-scener, lag, lyd- og klippdeler, koblinger, notater og ressursbeskrivelser i databasen.",
+  "en": "Script, scenes, 2D scenes, layers, audio and clip parts, links, notes and asset descriptions in the database.",
+  "oversatt": "Scénario, scènes, scènes 2D, calques, éléments audio et de montage, liens, notes et descriptions d’éléments dans la base de données."
+ },
+ "core-library-style-profiles.uses-label.uses-label.c5a152b9f3ea": {
+  "nb": "Ikke i bruk",
+  "en": "Not in use",
+  "oversatt": "Inutilisé"
+ },
+ "core-library-style-profiles.uses-label.uses-label.eebfa2889d6c": {
+  "nb": "Alt annet",
+  "en": "Everything else",
+  "oversatt": "Tout le reste"
+ },
+ "core-library-suggest.numbers-of.idx-sort-a-b-a-b-slice-0-6-map.e82fdf18af2f": {
+  "nb": "uten nr.",
+  "en": "no no.",
+  "oversatt": "sans n°"
+ },
+ "core-library-view.version-view-label.back.b22e35c52b42": {
+  "nb": "Bakfra",
+  "en": "Back",
+  "oversatt": "Dos"
+ },
+ "core-library-view.version-view-label.front.a850cfb7837c": {
+  "nb": "Forfra",
+  "en": "Front",
+  "oversatt": "Face"
+ },
+ "core-library-view.version-view-label.portrait.0970fe4c1624": {
+  "nb": "Portrett (hode og skuldre)",
+  "en": "Portrait (head and shoulders)",
+  "oversatt": "Portrait (tête et épaules)"
+ },
+ "core-library-view.version-view-label.sheet.cd5a4a9d5231": {
+  "nb": "Karakterark (flere vinkler)",
+  "en": "Character sheet (several angles)",
+  "oversatt": "Feuille de personnage (angles multiples)"
+ },
+ "core-library-view.version-view-label.side.68edfcd4bfb6": {
+  "nb": "Fra siden (profil)",
+  "en": "Side (profile)",
+  "oversatt": "Profil"
+ },
+ "core-library-view.version-view-label.three-quarter-back.a8c8fa47fc90": {
+  "nb": "Tre kvart bakfra",
+  "en": "Three-quarter back",
+  "oversatt": "Trois-quarts dos"
+ },
+ "core-library-view.version-view-label.three-quarter.26c05825fa40": {
+  "nb": "Tre kvart forfra",
+  "en": "Three-quarter front",
+  "oversatt": "Trois-quarts face"
+ },
+ "core-library-zip.get.get.bec2c1d5386c": {
+  "nb": "Importert film",
+  "en": "Imported film",
+  "oversatt": "Film importé"
+ },
+ "core-mobile-index.check-mobile-file.message.0158cfbac0b7": {
+  "nb": "Filen er for stor (maks {value1} MB).",
+  "en": "The file is too large (max {value1} MB).",
+  "oversatt": "Le fichier est trop volumineux ({value1} Mo max)."
+ },
+ "core-mobile-index.check-mobile-file.message.4129d3a6024f": {
+  "nb": "Filen er tom.",
+  "en": "The file is empty.",
+  "oversatt": "Le fichier est vide."
+ },
+ "core-mobile-index.check-mobile-file.message.46b51e56c6dc": {
+  "nb": "Her kan du ikke laste opp bilder.",
+  "en": "You cannot upload images here.",
+  "oversatt": "Vous ne pouvez pas importer d’images ici."
+ },
+ "core-mobile-index.check-mobile-file.message.47b1ed91e3c0": {
+  "nb": "Her kan du ikke laste opp lyd.",
+  "en": "You cannot upload audio here.",
+  "oversatt": "Vous ne pouvez pas importer de fichier audio ici."
+ },
+ "core-mobile-index.check-mobile-file.message.70c465bdd29d": {
+  "nb": "Filtypen tas ikke imot (bilder: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; lyd: MP3, WAV, M4A, OGG, WebM, FLAC).",
+  "en": "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
+  "oversatt": "Ce type de fichier n'est pas accepté (images : JPEG, PNG, WebP, GIF ; vidéo : MP4, MOV, WebM ; audio : MP3, WAV, M4A, OGG, WebM, FLAC)."
+ },
+ "core-mobile-index.check-mobile-file.message.e770eba5c6e8": {
+  "nb": "Her kan du ikke laste opp video.",
+  "en": "You cannot upload video here.",
+  "oversatt": "Vous ne pouvez pas importer de vidéo ici."
+ },
+ "core-mobile-index.check-mobile-file.message.e8bac3f52697": {
+  "nb": "Videoen er for stor (maks {value1} MB). Del opp opptaket.",
+  "en": "The video is too large (max {value1} MB). Split the recording.",
+  "oversatt": "La vidéo est trop volumineuse (max {value1} Mo). Scindez l'enregistrement."
+ },
+ "core-notes-flags.asset-variant.asset-variant.cbd2482bdf3c": {
+  "nb": "Bildevariant",
+  "en": "Image variant",
+  "oversatt": "Variante d'image"
+ },
+ "core-notes-flags.asset-version.asset-version.c5f2c69f2ebc": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Image"
+ },
+ "core-notes-flags.audio-clip.audio-clip.7c0ddf071ac7": {
+  "nb": "Lydsegment",
+  "en": "Audio segment",
+  "oversatt": "Segment audio"
+ },
+ "core-notes-flags.dialogue-version.dialogue-version.df9a620bc024": {
+  "nb": "Lydversjon",
+  "en": "Audio version",
+  "oversatt": "Version audio"
+ },
+ "core-notes-flags.occurrence.occurrence.86a7792d8ec2": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "core-notes-index.format-date.message.dd2368d95843": {
+  "nb": "kl.",
+  "en": "at",
+  "oversatt": "à"
+ },
+ "core-notes-index.format-edited.message.b308c59b7bcb": {
+  "nb": "endret",
+  "en": "edited",
+  "oversatt": "modifié"
+ },
+ "core-notes-index.format-stamp.message.8fb71601262c": {
+  "nb": "Ukjent",
+  "en": "Unknown",
+  "oversatt": "Inconnu"
+ },
+ "core-notes-index.hit-label.action.0fc5821fef38": {
+  "nb": "handling",
+  "en": "action",
+  "oversatt": "action"
+ },
+ "core-notes-index.hit-label.character.a8b9acf75c8f": {
+  "nb": "karakter",
+  "en": "character",
+  "oversatt": "personnage"
+ },
+ "core-notes-index.hit-label.dialogue.b92374b00b71": {
+  "nb": "replikk",
+  "en": "dialogue",
+  "oversatt": "réplique"
+ },
+ "core-notes-index.hit-label.heading.70cc323fe79c": {
+  "nb": "overskrift",
+  "en": "heading",
+  "oversatt": "en-tête"
+ },
+ "core-notes-index.hit-label.note.b4afde6486fc": {
+  "nb": "notat",
+  "en": "note",
+  "oversatt": "note"
+ },
+ "core-notes-index.hit-label.number.8ca00c500110": {
+  "nb": "scenenummer",
+  "en": "scene number",
+  "oversatt": "numéro de scène"
+ },
+ "core-notes-index.hit-label.other.0be13e19ede5": {
+  "nb": "tekst",
+  "en": "text",
+  "oversatt": "texte"
+ },
+ "core-notes-index.hit-label.parenthetical.bcc86379db6b": {
+  "nb": "parentes",
+  "en": "parenthetical",
+  "oversatt": "didascalie"
+ },
+ "core-notes-index.hit-label.transition.a5baca9eb633": {
+  "nb": "overgang",
+  "en": "transition",
+  "oversatt": "transition"
+ },
+ "core-notes-index.who.message.0b8b0511c021": {
+  "nb": " av {editedByName}",
+  "en": " by {editedByName}",
+  "oversatt": " par {editedByName}"
+ },
+ "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
+  "nb": "Animatic Studio (systemmerknad)",
+  "en": "Animatic Studio (system note)",
+  "oversatt": "Animatic Studio (note système)"
+ },
+ "core-order-key.digit-at.message.1f43a22004ab": {
+  "nb": "Ugyldig tegn i sorteringsnøkkel: {s}",
+  "en": "Invalid character in sort key: {s}",
+  "oversatt": "Caractère non valide dans la clé de tri : {s}"
+ },
+ "core-order-key.key-between.message.435906716cec": {
+  "nb": "Ugyldig nøkkel {before}",
+  "en": "Invalid key {before}",
+  "oversatt": "Clé non valide {before}"
+ },
+ "core-order-key.key-between.message.584eb3096aff": {
+  "nb": "before ({before}) må være mindre enn after ({after})",
+  "en": "before ({before}) must be less than after ({after})",
+  "oversatt": "before ({before}) doit être inférieur à after ({after})"
+ },
+ "core-order-key.key-between.message.5cf1443b4663": {
+  "nb": "Ugyldig nøkkel {after}",
+  "en": "Invalid key {after}",
+  "oversatt": "Clé non valide {after}"
+ },
+ "core-order-key.midpoint.message.242be3c6f083": {
+  "nb": "Ugyldig intervall: {a} >= {b}",
+  "en": "Invalid interval: {a} >= {b}",
+  "oversatt": "Intervalle non valide : {a} >= {b}"
+ },
+ "core-presentation-document.element-field-error.message.922cf5d8c10c": {
+  "nb": "Ugyldig rolle",
+  "en": "Invalid role",
+  "oversatt": "Rôle non valide"
+ },
+ "core-presentation-document.element-field-error.message.a90cde8e91d5": {
+  "nb": "Ugyldig verdi i elementet",
+  "en": "Invalid value in the element",
+  "oversatt": "Valeur non valide dans l'élément"
+ },
+ "core-presentation-document.element-field-error.message.bfff72cabc22": {
+  "nb": "Ukjent felt i elementet ({value1})",
+  "en": "Unknown field in the element ({value1})",
+  "oversatt": "Champ inconnu dans l'élément ({value1})"
+ },
+ "core-presentation-document.element-field-error.message.cd54581e8a52": {
+  "nb": "Ugyldig rotasjon",
+  "en": "Invalid rotation",
+  "oversatt": "Rotation non valide"
+ },
+ "core-presentation-document.poster-document-error.message.071ba3bcd1ed": {
+  "nb": "For mange elementer (maks 600)",
+  "en": "Too many elements (max 600)",
+  "oversatt": "Trop d'éléments (max 600)"
+ },
+ "core-presentation-document.poster-document-error.message.0a9c01bd87b8": {
+  "nb": "Ugyldig tekst på plakaten",
+  "en": "Invalid text on the poster",
+  "oversatt": "Texte non valide sur le poster"
+ },
+ "core-presentation-document.poster-document-error.message.19751bdc8fe9": {
+  "nb": "Teksten er for lang (maks 4000 tegn)",
+  "en": "The text is too long (max 4000 characters)",
+  "oversatt": "Le texte est trop long (max 4000 caractères)"
+ },
+ "core-presentation-document.poster-document-error.message.24294fe4019d": {
+  "nb": "Ugyldig farge",
+  "en": "Invalid colour",
+  "oversatt": "Couleur non valide"
+ },
+ "core-presentation-document.poster-document-error.message.2cb8b2e1de80": {
+  "nb": "Bildet mangler ressurs",
+  "en": "The image is missing an asset",
+  "oversatt": "L'image ne contient aucun élément"
+ },
+ "core-presentation-document.poster-document-error.message.5790cbaa1304": {
+  "nb": "Ugyldig utvalg",
+  "en": "Invalid selection",
+  "oversatt": "Sélection non valide"
+ },
+ "core-presentation-document.poster-document-error.message.5b260f89dd6e": {
+  "nb": "Ugyldige innholdsvalg",
+  "en": "Invalid content options",
+  "oversatt": "Options de contenu non valides"
+ },
+ "core-presentation-document.poster-document-error.message.5c5245b4d5e0": {
+  "nb": "Ugyldig størrelse",
+  "en": "Invalid size",
+  "oversatt": "Taille non valide"
+ },
+ "core-presentation-document.poster-document-error.message.7b80bf89b38b": {
+  "nb": "Ugyldig stil",
+  "en": "Invalid style",
+  "oversatt": "Style non valide"
+ },
+ "core-presentation-document.poster-document-error.message.85f01921bc9e": {
+  "nb": "Ukjent elementtype",
+  "en": "Unknown element type",
+  "oversatt": "Type d'élément inconnu"
+ },
+ "core-presentation-document.poster-document-error.message.888b7a1f0354": {
+  "nb": "Ugyldig plakat",
+  "en": "Invalid poster",
+  "oversatt": "Affiche non valide"
+ },
+ "core-presentation-document.poster-document-error.message.aefcbbc9090d": {
+  "nb": "Ugyldige mål",
+  "en": "Invalid dimensions",
+  "oversatt": "Dimensions non valides"
+ },
+ "core-presentation-document.poster-document-error.message.b64214dea2c6": {
+  "nb": "Ugyldig gjennomsiktighet",
+  "en": "Invalid opacity",
+  "oversatt": "Opacité non valide"
+ },
+ "core-presentation-document.poster-document-error.message.ba74918272a6": {
+  "nb": "Ugyldig skriftstørrelse",
+  "en": "Invalid font size",
+  "oversatt": "Taille de police non valide"
+ },
+ "core-presentation-document.poster-document-error.message.d53e5bd1afec": {
+  "nb": "Elementet er utenfor plakaten",
+  "en": "The element is outside the poster",
+  "oversatt": "L'élément est en dehors de l'affiche"
+ },
+ "core-presentation-document.poster-document-error.message.df524c85209f": {
+  "nb": "Ugyldig element",
+  "en": "Invalid element",
+  "oversatt": "Élément non valide"
+ },
+ "core-presentation-document.poster-document-error.message.df524c85209f.2": {
+  "nb": "Ugyldig element",
+  "en": "Invalid element",
+  "oversatt": "Élément non valide"
+ },
+ "core-presentation-document.poster-document-error.message.e112634a5f40": {
+  "nb": "Ugyldige farger",
+  "en": "Invalid colours",
+  "oversatt": "Couleurs non valides"
+ },
+ "core-presentation-poster.joiner.message.7d70a51b64af": {
+  "nb": " og ",
+  "en": " and ",
+  "oversatt": " et "
+ },
+ "core-presentation-poster.option-genre-mood": {
+  "nb": "Sjanger og stemning",
+  "en": "Genre and mood",
+  "oversatt": "Genre et tonalité"
+ },
+ "core-presentation-poster.option-images-and-names-only": {
+  "nb": "Bare bilder og navn",
+  "en": "Images and names only",
+  "oversatt": "Images et noms uniquement"
+ },
+ "core-presentation-poster.option-logline": {
+  "nb": "Logline",
+  "en": "Logline",
+  "oversatt": "Pitch (logline)"
+ },
+ "core-presentation-poster.option-long-descriptions": {
+  "nb": "Utfyllende karakterbeskrivelser",
+  "en": "Full character descriptions",
+  "oversatt": "Descriptions complètes des personnages"
+ },
+ "core-presentation-poster.option-named-relations": {
+  "nb": "Navngitte relasjoner",
+  "en": "Named relations",
+  "oversatt": "Relations nommées"
+ },
+ "core-presentation-poster.option-object-descriptions": {
+  "nb": "Objektbeskrivelser",
+  "en": "Object descriptions",
+  "oversatt": "Descriptions des objets"
+ },
+ "core-presentation-poster.option-object-images": {
+  "nb": "Objektbilder",
+  "en": "Object images",
+  "oversatt": "Images des objets"
+ },
+ "core-presentation-poster.option-place-descriptions": {
+  "nb": "Stedsbeskrivelser",
+  "en": "Place descriptions",
+  "oversatt": "Descriptions des lieux"
+ },
+ "core-presentation-poster.option-place-images": {
+  "nb": "Stedsbilder",
+  "en": "Place images",
+  "oversatt": "Images des lieux"
+ },
+ "core-presentation-poster.option-project-data": {
+  "nb": "Andre prosjektdata (format, lengde, produksjon)",
+  "en": "Other project data (format, length, production)",
+  "oversatt": "Autres données du projet (format, durée, production)"
+ },
+ "core-presentation-poster.option-relation-lines": {
+  "nb": "Relasjonslinjer",
+  "en": "Relation lines",
+  "oversatt": "Lignes relationnelles"
+ },
+ "core-presentation-poster.option-relation-texts": {
+  "nb": "Forklarende relasjonstekster",
+  "en": "Explanatory relation texts",
+  "oversatt": "Textes explicatifs des relations"
+ },
+ "core-presentation-poster.option-short-descriptions": {
+  "nb": "Korte karakterbeskrivelser",
+  "en": "Short character descriptions",
+  "oversatt": "Descriptions courtes des personnages"
+ },
+ "core-presentation-poster.over-part.message.dbfbf5e91a66": {
+  "nb": "{length} tekster får ikke plass",
+  "en": "{length} texts do not fit",
+  "oversatt": "{length} textes ne rentrent pas"
+ },
+ "core-presentation-poster.palette-label.kino.84052f456117": {
+  "nb": "Kino",
+  "en": "Cinema",
+  "oversatt": "Cinéma"
+ },
+ "core-presentation-poster.palette-label.papir.546955ad4af1": {
+  "nb": "Papir",
+  "en": "Paper",
+  "oversatt": "Papier"
+ },
+ "core-presentation-poster.palette-label.skog.0ee4431bd1e3": {
+  "nb": "Skog",
+  "en": "Forest",
+  "oversatt": "Forêt"
+ },
+ "core-presentation-poster.palette-label.vinternatt.9b19d1bb5996": {
+  "nb": "Vinternatt",
+  "en": "Winter night",
+  "oversatt": "Nuit d'hiver"
+ },
+ "core-presentation-poster.poster-checks.tips-push.52038be9cecf": {
+  "nb": "bytt til karakter- og universkart for mye tekst",
+  "en": "switch to the character and universe map for so much text",
+  "oversatt": "passez à la carte des personnages et de l'univers pour autant de texte"
+ },
+ "core-presentation-poster.poster-checks.tips-push.5789f1ad6823": {
+  "nb": "bruk korte beskrivelser i stedet for utfyllende",
+  "en": "use short descriptions instead of full ones",
+  "oversatt": "utilisez des descriptions courtes plutôt que complètes"
+ },
+ "core-presentation-poster.poster-checks.tips-push.d4f18a576d8a": {
+  "nb": "slå av beskrivelser av steder eller objekter",
+  "en": "turn off descriptions of places or objects",
+  "oversatt": "désactivez les descriptions de lieux ou d'objets"
+ },
+ "core-presentation-poster.poster-checks.tips-push.e59e1f580957": {
+  "nb": "vis færre karakterer",
+  "en": "show fewer characters",
+  "oversatt": "affichez moins de personnages"
+ },
+ "core-presentation-poster.poster-formats.message.b0cd29542f2e": {
+  "nb": "70 × 100 cm (stående)",
+  "en": "70 × 100 cm (portrait)",
+  "oversatt": "70 × 100 cm (portrait)"
+ },
+ "core-presentation-poster.poster-formats.message.ef4cd3cf49a5": {
+  "nb": "50 × 70 cm (stående)",
+  "en": "50 × 70 cm (portrait)",
+  "oversatt": "50 × 70 cm (portrait)"
+ },
+ "core-presentation-poster.poster-kind-label.character-map.83bc7cae50a4": {
+  "nb": "Karakter- og universkart",
+  "en": "Character and universe map",
+  "oversatt": "Carte des personnages et de l'univers"
+ },
+ "core-presentation-poster.poster-kind-label.pitch.11e13afe5f8d": {
+  "nb": "Kinopitch-plakat",
+  "en": "Cinema pitch poster",
+  "oversatt": "Affiche de pitch cinéma"
+ },
+ "core-presentation-poster.role-label.background.6f7e6dc26963": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "Arrière-plan"
+ },
+ "core-presentation-poster.role-label.character.19b04fbee01e": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "core-presentation-poster.role-label.custom.beb37fce58e1": {
+  "nb": "Eget element",
+  "en": "Own element",
+  "oversatt": "Élément personnalisé"
+ },
+ "core-presentation-poster.role-label.fade.8ec9616721a2": {
+  "nb": "Overgang",
+  "en": "Transition",
+  "oversatt": "Transition"
+ },
+ "core-presentation-poster.role-label.genre.f92c0f7a69de": {
+  "nb": "Sjanger og stemning",
+  "en": "Genre and mood",
+  "oversatt": "Genre et ambiance"
+ },
+ "core-presentation-poster.role-label.logline.ac407c5b447f": {
+  "nb": "Logline",
+  "en": "Logline",
+  "oversatt": "Logline"
+ },
+ "core-presentation-poster.role-label.names.d16952bc14f6": {
+  "nb": "Navnelinje",
+  "en": "Names line",
+  "oversatt": "Ligne de noms"
+ },
+ "core-presentation-poster.role-label.object.9be89c770193": {
+  "nb": "Objekt",
+  "en": "Object",
+  "oversatt": "Objet"
+ },
+ "core-presentation-poster.role-label.place.22f9d6f3bdc7": {
+  "nb": "Sted",
+  "en": "Place",
+  "oversatt": "Lieu"
+ },
+ "core-presentation-poster.role-label.project.af832a2830fb": {
+  "nb": "Prosjektdata",
+  "en": "Project data",
+  "oversatt": "Données du projet"
+ },
+ "core-presentation-poster.role-label.relation.2552d2401aa1": {
+  "nb": "Relasjon",
+  "en": "Relation",
+  "oversatt": "Relation"
+ },
+ "core-presentation-poster.role-label.tagline.839a32673ff7": {
+  "nb": "Slagord",
+  "en": "Tagline",
+  "oversatt": "Accroche"
+ },
+ "core-presentation-poster.role-label.title.8180b40c0208": {
+  "nb": "Tittel",
+  "en": "Title",
+  "oversatt": "Titre"
+ },
+ "core-presentation-poster.small-part.message.7ccc948aff99": {
+  "nb": "{length} tekster er mindre enn {value2} pt",
+  "en": "{length} texts are smaller than {value2} pt",
+  "oversatt": "{length} textes sont inférieurs à {value2} pt"
+ },
+ "core-presentation-poster.text.text.46251777ce84": {
+  "nb": "{length} bilder mangler i biblioteket og vises som tom ramme.",
+  "en": "{length} images are missing from the library and are shown as empty frames.",
+  "oversatt": "{length} images sont manquantes dans la bibliothèque et s'affichent sous forme de cadres vides."
+ },
+ "core-presentation-poster.text.text.5edcb4e59fb4": {
+  "nb": "{length} tekstfelt er tomme ({roles}) og vises ikke.",
+  "en": "{length} text fields are empty ({roles}) and are not shown.",
+  "oversatt": "{length} champs de texte sont vides ({roles}) et ne sont pas affichés."
+ },
+ "core-presentation-poster.text.text.6bb38c6ede97": {
+  "nb": "Redusert lesbarhet: ",
+  "en": "Reduced legibility: ",
+  "oversatt": "Lisibilité réduite : "
+ },
+ "core-presentation-poster.text.text.7c664d2f6b00": {
+  "nb": "1 tekst mangler engelsk versjon og vises på norsk.",
+  "en": "1 text has no English version and is shown in Norwegian.",
+  "oversatt": "1 texte n'a pas de version anglaise et s'affiche en norvégien."
+ },
+ "core-presentation-poster.text.text.d9a904701da5": {
+  "nb": "1 bilde mangler i biblioteket og vises som tom ramme.",
+  "en": "1 image is missing from the library and is shown as an empty frame.",
+  "oversatt": "1 image est manquante dans la bibliothèque et s'affiche sous forme de cadre vide."
+ },
+ "core-presentation-poster.text.text.e2c3ebf739e9": {
+  "nb": "All tekst er minst {value1} pt og får plass.",
+  "en": "All text is at least {value1} pt and fits.",
+  "oversatt": "Tout le texte fait au moins {value1} pt et tient dans l'espace."
+ },
+ "core-presentation-poster.text.text.f4a6cdaa039a": {
+  "nb": "Ett tekstfelt er tomt ({roles}) og vises ikke.",
+  "en": "One text field is empty ({roles}) and is not shown.",
+  "oversatt": "Un champ de texte est vide ({roles}) et n'est pas affiché."
+ },
+ "core-presentation-poster.text.text.fd87329d7c53": {
+  "nb": "{length} tekster mangler engelsk versjon og vises på norsk.",
+  "en": "{length} texts have no English version and are shown in Norwegian.",
+  "oversatt": "{length} textes n'ont pas de version anglaise et s'affichent en norvégien."
+ },
+ "core-presentation-poster.tip-part.message.864ebbede266": {
+  "nb": " Forslag: {value1}.",
+  "en": " Suggestions: {value1}.",
+  "oversatt": " Suggestions : {value1}."
+ },
+ "core-presentation-relations.relation-name.care.02ba5a5d5572": {
+  "nb": "Omsorg",
+  "en": "Care",
+  "oversatt": "Bienveillance"
+ },
+ "core-presentation-relations.relation-name.conflict.af8efcc91dc4": {
+  "nb": "Konflikt",
+  "en": "Conflict",
+  "oversatt": "Conflit"
+ },
+ "core-presentation-relations.relation-name.family.f255082f3e75": {
+  "nb": "Familie",
+  "en": "Family",
+  "oversatt": "Famille"
+ },
+ "core-presentation-relations.relation-name.friendship.fa09f3a467bb": {
+  "nb": "Vennskap",
+  "en": "Friendship",
+  "oversatt": "Amitié"
+ },
+ "core-presentation-relations.relation-name.hidden.b8a2c8a2b5fe": {
+  "nb": "Skjult forbindelse",
+  "en": "Hidden connection",
+  "oversatt": "Lien caché"
+ },
+ "core-presentation-relations.relation-name.mentor.c0eae1dc0711": {
+  "nb": "Mentor",
+  "en": "Mentor",
+  "oversatt": "Mentor"
+ },
+ "core-presentation-relations.relation-name.other.fba6f9802500": {
+  "nb": "Annen",
+  "en": "Other",
+  "oversatt": "Autre"
+ },
+ "core-presentation-relations.relation-name.romance.430df5ad42ed": {
+  "nb": "Romantikk",
+  "en": "Romance",
+  "oversatt": "Romance"
+ },
+ "core-production-index.production-kind-label.alternative.e122a4af94a6": {
+  "nb": "Alternativ fortelling",
+  "en": "Alternative story",
+  "oversatt": "Histoire alternative"
+ },
+ "core-production-index.production-kind-label.main.b07446579d03": {
+  "nb": "Hovedfilm",
+  "en": "Main film",
+  "oversatt": "Film principal"
+ },
+ "core-production-index.production-kind-label.other.e0365556bcd5": {
+  "nb": "Annen versjon",
+  "en": "Other version",
+  "oversatt": "Autre version"
+ },
+ "core-production-index.production-kind-label.pilot.5dc67e07dffa": {
+  "nb": "Pilotsekvens",
+  "en": "Pilot sequence",
+  "oversatt": "Séquence pilote"
+ },
+ "core-production-index.production-kind-label.pitch.27685474c28f": {
+  "nb": "Pitchfilm",
+  "en": "Pitch film",
+  "oversatt": "Film de pitch"
+ },
+ "core-production-index.production-kind-label.short.82184e09a5fc": {
+  "nb": "Kortfilm",
+  "en": "Short film",
+  "oversatt": "Court métrage"
+ },
+ "core-production-index.production-kind-label.spinoff.5de4a0a26157": {
+  "nb": "Spinoff",
+  "en": "Spin-off",
+  "oversatt": "Spin-off"
+ },
+ "core-production-index.production-kind-label.teaser.6cce2ccb8b3a": {
+  "nb": "Teaser",
+  "en": "Teaser",
+  "oversatt": "Teaser"
+ },
+ "core-production-index.production-kind-label.trailer.1e3f68e48854": {
+  "nb": "Trailer",
+  "en": "Trailer",
+  "oversatt": "Bande-annonce"
+ },
+ "core-production-promote.blocked.blocked.17e0a71bb0b0": {
+  "nb": "Hovedfilmen bruker en godkjent versjon av scenen. Bekreft at den skal byttes, eller la klippingen stå.",
+  "en": "The main film uses an approved version of the scene. Confirm that it should be replaced, or leave the edit as it is.",
+  "oversatt": "Le film principal utilise une version approuvée de la scène. Confirmez le remplacement ou conservez le montage actuel."
+ },
+ "core-production-promote.blocked.blocked.2c995787c737": {
+  "nb": "Spinoffens klipping bruker 2D-scenen, men hovedfilmen har ingen 2D-scene. Velg også lagene (da kopieres 2D-scenen).",
+  "en": "The spin-off's edit uses the 2D scene, but the main film has no 2D scene. Also choose the layers (then the 2D scene is copied).",
+  "oversatt": "Le montage du spin-off utilise la scène 2D, mais le film principal n'a pas de scène 2D. Sélectionnez également les calques (la scène 2D sera alors copiée)."
+ },
+ "core-production-promote.blocked.blocked.2cc0281f2acb": {
+  "nb": "Fant ikke scenen.",
+  "en": "The scene was not found.",
+  "oversatt": "Scène introuvable."
+ },
+ "core-production-promote.blocked.blocked.2cc0281f2acb.2": {
+  "nb": "Fant ikke scenen.",
+  "en": "The scene was not found.",
+  "oversatt": "Scène introuvable."
+ },
+ "core-production-promote.blocked.blocked.9117f1cb55ff": {
+  "nb": "Spinoffens klipping går lenger enn hovedfilmens 2D-scene. Velg også «Timing» (lengden på 2D-scenen).",
+  "en": "The spin-off's edit runs longer than the main film's 2D scene. Also choose “Timing” (the length of the 2D scene).",
+  "oversatt": "Le montage du spin-off est plus long que la scène 2D du film principal. Choisissez également « Timing » (la durée de la scène 2D)."
+ },
+ "core-production-promote.blocked.blocked.9acf7d63bc7e": {
+  "nb": "Hovedfilmens inndeling for generering bruker linjer som ikke finnes i spinoffens versjon. Lag ny inndeling først.",
+  "en": "The main film's split for generation uses lines that do not exist in the spin-off's version. Make a new split first.",
+  "oversatt": "Le découpage pour génération du film principal utilise des répliques qui n'existent pas dans la version du spin-off. Créez d'abord un nouveau découpage."
+ },
+ "core-production-promote.blocked.blocked.a9f97e244594": {
+  "nb": "Scenen finnes allerede i hovedfilmen.",
+  "en": "The scene already exists in the main film.",
+  "oversatt": "La scène existe déjà dans le film principal."
+ },
+ "core-production-promote.blocked.blocked.bee2ccdaa0e6": {
+  "nb": "Scenen finnes ikke i hovedfilmen. Bruk «Overfør scenen til hovedfilmen».",
+  "en": "The scene does not exist in the main film. Use “Transfer the scene to the main film”.",
+  "oversatt": "La scène n'existe pas dans le film principal. Utilisez « Transférer la scène vers le film principal »."
+ },
+ "core-production-promote.blocked.blocked.c1dad8d47094": {
+  "nb": "Scenen finnes ikke i hovedfilmen.",
+  "en": "The scene does not exist in the main film.",
+  "oversatt": "La scène n'existe pas dans le film principal."
+ },
+ "core-production-promote.layer-changes.out-add.7d2e69a9ecfd": {
+  "nb": "maske",
+  "en": "mask",
+  "oversatt": "masque"
+ },
+ "core-production-promote.layer-changes.out-add.7e22961fe7b4": {
+  "nb": "gruppe",
+  "en": "group",
+  "oversatt": "groupe"
+ },
+ "core-production-promote.layer-field-label.anchor.5509f59ef3a8": {
+  "nb": "ankerpunkt",
+  "en": "anchor point",
+  "oversatt": "point d'ancrage"
+ },
+ "core-production-promote.layer-field-label.asset-id.be280709bf2b": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "image"
+ },
+ "core-production-promote.layer-field-label.asset-variant-id.d0452f8fa1c0": {
+  "nb": "variant",
+  "en": "variant",
+  "oversatt": "variante"
+ },
+ "core-production-promote.layer-field-label.blend.ac3a5aa47fc2": {
+  "nb": "blanding",
+  "en": "blend",
+  "oversatt": "mélange"
+ },
+ "core-production-promote.layer-field-label.fill.8750e901ad3c": {
+  "nb": "farge",
+  "en": "colour",
+  "oversatt": "couleur"
+ },
+ "core-production-promote.layer-field-label.group-id.a7f95cc6d45d": {
+  "nb": "gruppe",
+  "en": "group",
+  "oversatt": "groupe"
+ },
+ "core-production-promote.layer-field-label.height.774cdd28ad64": {
+  "nb": "størrelse",
+  "en": "size",
+  "oversatt": "taille"
+ },
+ "core-production-promote.layer-field-label.keyframes.3d8b8d814676": {
+  "nb": "nøkkelbilder",
+  "en": "keyframes",
+  "oversatt": "images clés"
+ },
+ "core-production-promote.layer-field-label.kind.daeeaa75cd8f": {
+  "nb": "type",
+  "en": "type",
+  "oversatt": "type"
+ },
+ "core-production-promote.layer-field-label.language-images.2b6b14acbb84": {
+  "nb": "bilde per språk",
+  "en": "image per language",
+  "oversatt": "image par langue"
+ },
+ "core-production-promote.layer-field-label.locked.ded35026dd82": {
+  "nb": "lås",
+  "en": "lock",
+  "oversatt": "verrouillage"
+ },
+ "core-production-promote.layer-field-label.mask.01faf068dc0a": {
+  "nb": "maske",
+  "en": "mask",
+  "oversatt": "masque"
+ },
+ "core-production-promote.layer-field-label.name.d2b5e7b356cc": {
+  "nb": "navn",
+  "en": "name",
+  "oversatt": "nom"
+ },
+ "core-production-promote.layer-field-label.parallax.cfb63fc7426e": {
+  "nb": "parallakse",
+  "en": "parallax",
+  "oversatt": "parallaxe"
+ },
+ "core-production-promote.layer-field-label.path.c634fdaba373": {
+  "nb": "bevegelsesbane",
+  "en": "motion path",
+  "oversatt": "trajectoire"
+ },
+ "core-production-promote.layer-field-label.swaps.2d3131617d17": {
+  "nb": "bildeskifter",
+  "en": "image swaps",
+  "oversatt": "changements d'image"
+ },
+ "core-production-promote.layer-field-label.transform.6ba79cbbf13c": {
+  "nb": "plassering",
+  "en": "position",
+  "oversatt": "position"
+ },
+ "core-production-promote.layer-field-label.version-id.60993423f4d2": {
+  "nb": "versjon",
+  "en": "version",
+  "oversatt": "version"
+ },
+ "core-production-promote.layer-field-label.visible.367dbc801354": {
+  "nb": "synlighet",
+  "en": "visibility",
+  "oversatt": "visibilité"
+ },
+ "core-production-promote.layer-field-label.width.b416e21946b0": {
+  "nb": "størrelse",
+  "en": "size",
+  "oversatt": "taille"
+ },
+ "core-production-promote.what.what.3786b9880677": {
+  "nb": "hentet tilbake",
+  "en": "fetched back",
+  "oversatt": "récupéré"
+ },
+ "core-prores-export.gb.n-1024-3-to-locale-string.6ad24fa5ef35": {
+  "nb": "nb-NO",
+  "en": "en-GB",
+  "oversatt": "fr-FR"
+ },
+ "core-prores-export.prores-limit-error.message.8c0818bd0b32": {
+  "nb": "ProRes-filen blir omtrent {value1} GB. Uten lagring i nettleseren (OPFS) er grensen {value2} GB. Velg et kortere utvalg, halv størrelse, eller bruk Chrome eller Edge.",
+  "en": "The ProRes file will be about {value1} GB. Without browser storage (OPFS) the limit is {value2} GB. Choose a shorter selection, half size, or use Chrome or Edge.",
+  "oversatt": "Le fichier ProRes fera environ {value1} Go. Sans stockage dans le navigateur (OPFS), la limite est de {value2} Go. Choisissez une sélection plus courte, une demi-résolution, ou utilisez Chrome ou Edge."
+ },
+ "core-prores-export.prores-limit-error.message.c961855174fa": {
+  "nb": "ProRes støtter høyst {PRORES_MAX_SIDE} piksler på hver side.",
+  "en": "ProRes supports at most {PRORES_MAX_SIDE} pixels per side.",
+  "oversatt": "ProRes prend en charge au maximum {PRORES_MAX_SIDE} pixels par côté."
+ },
+ "core-prores-export.prores-limit-error.message.ec13018d6e2f": {
+  "nb": "ProRes-filen blir omtrent {value1} GB, men nettleseren har bare {value2} GB ledig til eksport. Velg et kortere utvalg eller frigjør plass.",
+  "en": "The ProRes file will be about {value1} GB, but the browser has only {value2} GB free for export. Choose a shorter selection or free up space.",
+  "oversatt": "Le fichier ProRes fera environ {value1} Go, mais le navigateur ne dispose que de {value2} Go d'espace libre pour l'exportation. Choisissez une sélection plus courte ou libérez de l'espace."
+ },
+ "core-prores-export.prores-unsupported.message.419c4ada7157": {
+  "nb": "ProRes kan ikke lages i denne nettleseren (mangler Web Workers). Velg et annet format.",
+  "en": "ProRes cannot be made in this browser (Web Workers are missing). Choose another format.",
+  "oversatt": "ProRes ne peut pas être généré dans ce navigateur (Web Workers manquants). Choisissez un autre format."
+ },
+ "core-rig-multiplane-commands.depth.invalid": {
+  "nb": "Ugyldig dybde (0–50 mm)",
+  "en": "Invalid depth (0–50 mm)",
+  "oversatt": "Profondeur non valide (0–50 mm)"
+ },
+ "core-rig-multiplane-commands.duplicate.invalid": {
+  "nb": "Det finnes allerede en rigg her",
+  "en": "A rig already exists here",
+  "oversatt": "Un rig existe déjà ici"
+ },
+ "core-rig-multiplane-commands.fresh.invalid": {
+  "nb": "ID-en er i bruk eller ugyldig",
+  "en": "The ID is in use or invalid",
+  "oversatt": "L'identifiant est déjà utilisé ou non valide"
+ },
+ "core-rig-multiplane-commands.layer.invalid": {
+  "nb": "Laget finnes ikke",
+  "en": "The layer does not exist",
+  "oversatt": "Le calque n'existe pas"
+ },
+ "core-rig-multiplane-commands.missing.invalid": {
+  "nb": "Riggen eller malen finnes ikke",
+  "en": "The rig or template does not exist",
+  "oversatt": "Le rig ou le modèle n'existe pas"
+ },
+ "core-rig-multiplane-commands.name.invalid": {
+  "nb": "Navnet må være 1–80 tegn",
+  "en": "The name must be 1–80 characters",
+  "oversatt": "Le nom doit comporter entre 1 et 80 caractères"
+ },
+ "core-rig-multiplane-commands.plate.invalid": {
+  "nb": "Platen finnes ikke i scenens rigg",
+  "en": "The plate does not exist in the scene's rig",
+  "oversatt": "Le plateau n'existe pas dans le rig de la scène"
+ },
+ "core-rig-multiplane-commands.scene.invalid": {
+  "nb": "Scenen finnes ikke",
+  "en": "The scene does not exist",
+  "oversatt": "La scène n'existe pas"
+ },
+ "core-rig-multiplane-commands.template.invalid": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "Le modèle n'existe pas"
+ },
+ "core-rig-multiplane.spec-error.calibration": {
+  "nb": "Ugyldig kalibrering",
+  "en": "Invalid calibration",
+  "oversatt": "Étalonnage non valide"
+ },
+ "core-rig-multiplane.spec-error.camera": {
+  "nb": "Kameraoppsettet mangler",
+  "en": "The camera setup is missing",
+  "oversatt": "La configuration de caméra est manquante"
+ },
+ "core-rig-multiplane.spec-error.distance": {
+  "nb": "Kameraet må stå høyere enn brennvidden",
+  "en": "The camera must be higher than the focal length",
+  "oversatt": "La caméra doit être plus haute que la distance focale"
+ },
+ "core-rig-multiplane.spec-error.focal": {
+  "nb": "Ugyldig brennvidde (1–2000 mm)",
+  "en": "Invalid focal length (1–2000 mm)",
+  "oversatt": "Distance focale non valide (1–2000 mm)"
+ },
+ "core-rig-multiplane.spec-error.format": {
+  "nb": "Ugyldig riggoppsett",
+  "en": "Invalid rig setup",
+  "oversatt": "Configuration de rig non valide"
+ },
+ "core-rig-multiplane.spec-error.glass": {
+  "nb": "Ugyldig glasstykkelse (0,1–50 mm)",
+  "en": "Invalid glass thickness (0.1–50 mm)",
+  "oversatt": "Épaisseur de verre non valide (0,1–50 mm)"
+ },
+ "core-rig-multiplane.spec-error.height": {
+  "nb": "Ugyldig kamerahøyde (50–10000 mm)",
+  "en": "Invalid camera height (50–10000 mm)",
+  "oversatt": "Hauteur de caméra non valide (50–10000 mm)"
+ },
+ "core-rig-multiplane.spec-error.mode": {
+  "nb": "Ugyldig kameramodus",
+  "en": "Invalid camera mode",
+  "oversatt": "Mode caméra non valide"
+ },
+ "core-rig-multiplane.spec-error.plate-height": {
+  "nb": "Platen ligger for høyt: kameraet kan ikke fokusere",
+  "en": "The plate is too high: the camera cannot focus",
+  "oversatt": "Le plateau est trop haut : la caméra ne peut pas faire la mise au point"
+ },
+ "core-rig-multiplane.spec-error.plate-id": {
+  "nb": "Platene må ha ulike, gyldige ID-er",
+  "en": "The plates must have unique, valid IDs",
+  "oversatt": "Les plateaux doivent avoir des identifiants valides et uniques"
+ },
+ "core-rig-multiplane.spec-error.plate-name": {
+  "nb": "Platenavnet må være 1–40 tegn",
+  "en": "The plate name must be 1–40 characters",
+  "oversatt": "Le nom du plateau doit comporter entre 1 et 40 caractères"
+ },
+ "core-rig-multiplane.spec-error.plates": {
+  "nb": "Riggen må ha mellom 1 og 12 plater",
+  "en": "The rig must have between 1 and 12 plates",
+  "oversatt": "Le rig doit comporter entre 1 et 12 plateaux"
+ },
+ "core-rig-multiplane.spec-error.sensor": {
+  "nb": "Ugyldig sensorstørrelse (1–1000 mm)",
+  "en": "Invalid sensor size (1–1000 mm)",
+  "oversatt": "Taille de capteur non valide (1–1000 mm)"
+ },
+ "core-screenplay-duration-snapshot.duration-basis-label.now.8ef7a95f6b06": {
+  "nb": "nå",
+  "en": "now",
+  "oversatt": "maintenant"
+ },
+ "core-screenplay-duration-snapshot.duration-basis-label.recomputed.ea851d01e648": {
+  "nb": "regnet på nytt med dagens antakelser",
+  "en": "recalculated with today's assumptions",
+  "oversatt": "recalculé avec les hypothèses actuelles"
+ },
+ "core-screenplay-duration-snapshot.duration-basis-label.stored.9a7496eb8264": {
+  "nb": "lagret estimat",
+  "en": "saved estimate",
+  "oversatt": "estimation enregistrée"
+ },
+ "core-screenplay-duration-snapshot.label.label.1efea326b6b2": {
+  "nb": "Nå",
+  "en": "Now",
+  "oversatt": "Maintenant"
+ },
+ "core-screenplay-duration-snapshot.label.label.4104e746c770": {
+  "nb": "Lagret estimat",
+  "en": "Saved estimate",
+  "oversatt": "Estimation enregistrée"
+ },
+ "core-screenplay-fountain.parse-fountain.warnings-push.171f3499ccaf": {
+  "nb": "{unnumbered} scene(r) uten scenenummer",
+  "en": "{unnumbered} scene(s) without a scene number",
+  "oversatt": "{unnumbered} scène(s) sans numéro de scène"
+ },
+ "core-screenplay-fountain.parse-fountain.warnings-push.2bbbb4f0bd97": {
+  "nb": "Scenenumre som forekommer flere ganger: {value1}",
+  "en": "Scene numbers that occur more than once: {value1}",
+  "oversatt": "Numéros de scène apparaissant plusieurs fois : {value1}"
+ },
+ "core-screenplay-fountain.parse-fountain.warnings-push.d412c359c655": {
+  "nb": "Fant ingen sceneoverskrifter (INT./EXT.). All tekst ligger i én scene uten overskrift.",
+  "en": "No scene headings (INT./EXT.) found. All text is in one scene without a heading.",
+  "oversatt": "Aucun en-tête de scène (INT./EXT.) trouvé. Tout le texte se trouve dans une seule scène sans en-tête."
+ },
+ "core-screenplay-fountain.uncertain.uncertain.9f4747a15151": {
+  "nb": "Dobbel dialog (^) uten replikk rett foran – usikkert hvem som snakker samtidig",
+  "en": "Double dialogue (^) without a line directly before – unclear who speaks at the same time",
+  "oversatt": "Dialogue simultané (^) sans réplique juste avant – interlocuteurs simultanés incertains"
+ },
+ "core-screenplay-fountain.warnings.warnings.69599da8d826": {
+  "nb": "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
+  "en": "Text before the first scene heading (continuation from an earlier scene)",
+  "oversatt": "Texte avant le premier en-tête de scène (suite d'une scène précédente)"
+ },
+ "core-screenplay-numbering.heading-text.heading-text.19d4b465cb9f": {
+  "nb": "UTGÅR",
+  "en": "OMITTED",
+  "oversatt": "SUPPRIMÉ"
+ },
+ "core-screenplay-numbering.text.text.a4a0b350ede1": {
+  "nb": "[DEAKTIVERT SCENE – IKKE MED I FILMEN]",
+  "en": "[DEACTIVATED SCENE – NOT IN THE FILM]",
+  "oversatt": "[SCÈNE DÉSACTIVÉE – HORS DU FILM]"
+ },
+ "core-screenplay-parse.classify.message.6d1380833c6f": {
+  "nb": "Ulike scenenumre i margene ({left} / {right})",
+  "en": "Different scene numbers in the margins ({left} / {right})",
+  "oversatt": "Numéros de scène différents dans les marges ({left} / {right})"
+ },
+ "core-screenplay-parse.parse-screenplay-lines.warnings-push.05e31a2746b4": {
+  "nb": "Scenenumre som forekommer flere ganger: {value1}",
+  "en": "Scene numbers that occur more than once: {value1}",
+  "oversatt": "Numéros de scène apparaissant plusieurs fois : {value1}"
+ },
+ "core-screenplay-parse.parse-screenplay-lines.warnings-push.c67986037105": {
+  "nb": "{unnumbered} scene(r) uten scenenummer",
+  "en": "{unnumbered} scene(s) without a scene number",
+  "oversatt": "{unnumbered} scène(s) sans numéro de scène"
+ },
+ "core-screenplay-parse.uncertain.uncertain.0e74daf8be69": {
+  "nb": "Karakter og replikk på samme linje – delt automatisk",
+  "en": "Character and dialogue on the same line – split automatically",
+  "oversatt": "Personnage et réplique sur la même ligne – scindés automatiquement"
+ },
+ "core-screenplay-parse.uncertain.uncertain.4643595cee51": {
+  "nb": "Karakternavn uten replikk – tolket som handling",
+  "en": "Character name without dialogue – interpreted as action",
+  "oversatt": "Nom de personnage sans réplique – interprété comme action"
+ },
+ "core-screenplay-parse.uncertain.uncertain.81e182b49f2b": {
+  "nb": "Delt fra karakterlinjen",
+  "en": "Split from the character line",
+  "oversatt": "Scindé depuis la ligne du personnage"
+ },
+ "core-screenplay-parse.uncertain.uncertain.a2494e00de6e": {
+  "nb": "Linjen står utenfor kjente kolonner",
+  "en": "The line is outside the known columns",
+  "oversatt": "La ligne se trouve en dehors des colonnes reconnues"
+ },
+ "core-screenplay-parse.uncertain.uncertain.a25a76f3aacc": {
+  "nb": "Innrykket tekst med små bokstaver tolket som replikk",
+  "en": "Indented lower-case text interpreted as dialogue",
+  "oversatt": "Texte indenté en minuscules interprété comme une réplique"
+ },
+ "core-screenplay-parse.uncertain.uncertain.b667d6d1a082": {
+  "nb": "Høyrestilt tekst tolket som handling",
+  "en": "Right-aligned text interpreted as action",
+  "oversatt": "Texte aligné à droite interprété comme action"
+ },
+ "core-screenplay-parse.warnings.warnings.9711b57423eb": {
+  "nb": "Tekst før første sceneoverskrift (fortsettelse fra tidligere scene)",
+  "en": "Text before the first scene heading (continuation from an earlier scene)",
+  "oversatt": "Texte avant le premier en-tête de scène (suite d'une scène précédente)"
+ },
+ "core-screenplay-plan.scenes.heading-notes-push.ef8cd0344f4a": {
+  "nb": "Scenen har ikke scenenummer i originalen",
+  "en": "The scene has no scene number in the original",
+  "oversatt": "La scène n'a pas de numéro de scène dans l'original"
+ },
+ "core-screenplay-restore-version.lines-kept": {
+  "nb": {
+   "one": "{count} linje som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment).",
+   "other": "{count} linjer som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment)."
+  },
+  "en": {
+   "one": "{count} line that has been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+   "other": "{count} lines that have been added are kept (they are used by another scene in the version or as a boundary for a production segment)."
+  },
+  "oversatt": {
+   "one": "{count} ligne ajoutée est conservée (elle est utilisée par une autre scène dans la version ou sert de limite à un segment de production).",
+   "many": "{count} lignes ajoutées sont conservées (elles sont utilisées par une autre scène dans la version ou servent de limite à un segment de production).",
+   "other": "{count} lignes ajoutées sont conservées (elles sont utilisées par une autre scène dans la version ou servent de limite à un segment de production)."
+  }
+ },
+ "core-screenplay-restore-version.lines-missing": {
+  "nb": {
+   "one": "{count} linje finnes ikke lenger.",
+   "other": "{count} linjer finnes ikke lenger."
+  },
+  "en": {
+   "one": "{count} line no longer exist.",
+   "other": "{count} lines no longer exist."
+  },
+  "oversatt": {
+   "one": "{count} ligne n'existe plus.",
+   "many": "{count} lignes n'existent plus.",
+   "other": "{count} lignes n'existent plus."
+  }
+ },
+ "core-screenplay-restore-version.lines-moved": {
+  "nb": {
+   "one": "{count} linje er flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her.",
+   "other": "{count} linjer er flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her."
+  },
+  "en": {
+   "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
+   "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+  },
+  "oversatt": {
+   "one": "{count} ligne a été déplacée vers une autre scène (division ou fusion) et n'est pas restaurée ici.",
+   "many": "{count} lignes ont été déplacées vers une autre scène (division ou fusion) et ne sont pas restaurées ici.",
+   "other": "{count} lignes ont été déplacées vers une autre scène (division ou fusion) et ne sont pas restaurées ici."
+  }
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.4aa9bec63821": {
+  "nb": "Scenen er laget etter versjonen (ved deling) og har tekst fra versjonen. Den beholdes aktiv.",
+  "en": "The scene was made after the version (by a split) and has text from the version. It is kept active.",
+  "oversatt": "La scène a été créée après la version (par division) et contient du texte de la version. Elle reste active."
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.66a4bfd9bd72": {
+  "nb": "{kept} {value2} som er kommet til, beholdes (de brukes av en annen scene i versjonen eller som grense for et produksjonssegment).",
+  "en": "{kept} {value2} that {value3} been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+  "oversatt": "{kept} {value2} qui {value3} été ajoutés sont conservés (ils sont utilisés par une autre scène de la version ou comme limite d'un segment de production)."
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.74c12409005a": {
+  "nb": "{missing} {value2} ikke lenger.",
+  "en": "{missing} {value2} no longer exist.",
+  "oversatt": "{missing} {value2} n'existent plus."
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.a008fd082b40": {
+  "nb": "Scenen bruker en annen versjon av scenen nå (egen versjon eller tilbakeføring). Teksten er ikke endret.",
+  "en": "The scene now uses another version of the scene (its own version or a reversion). The text is not changed.",
+  "oversatt": "La scène utilise désormais une autre version de la scène (sa propre version ou un rétablissement). Le texte n'est pas modifié."
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.be2afad91764": {
+  "nb": "Scenen finnes ikke lenger i produksjonen og kan ikke hentes tilbake herfra.",
+  "en": "The scene no longer exists in the production and cannot be restored from here.",
+  "oversatt": "La scène n'existe plus dans la production et ne peut pas être restaurée depuis ici."
+ },
+ "core-screenplay-restore-version.restore-version-plan.issue.e92817f47614": {
+  "nb": "{moved} {value2} flyttet til en annen scene (deling eller sammenslåing) og settes ikke tilbake her.",
+  "en": "{moved} {value2} been moved to another scene (split or merge) and is not restored here.",
+  "oversatt": "{moved} {value2} déplacées vers une autre scène (division ou fusion) et ne sont pas restaurées ici."
+ },
+ "core-screenplay-story.story-kind-label.dream.97c134d786ce": {
+  "nb": "Drøm",
+  "en": "Dream",
+  "oversatt": "Rêve"
+ },
+ "core-screenplay-story.story-kind-label.flashback.7cd6453c5ef0": {
+  "nb": "Tilbakeblikk",
+  "en": "Flashback",
+  "oversatt": "Flash-back"
+ },
+ "core-screenplay-story.story-kind-label.flashforward.7a1f8eead578": {
+  "nb": "Fremblikk",
+  "en": "Flash-forward",
+  "oversatt": "Flash-forward"
+ },
+ "core-screenplay-story.story-kind-label.jump.c2f61439fb96": {
+  "nb": "Tidshopp",
+  "en": "Time jump",
+  "oversatt": "Saut dans le temps"
+ },
+ "core-screenplay-story.story-kind-label.linear.e5f5651347ae": {
+  "nb": "Følger rekkefølgen",
+  "en": "Follows the order",
+  "oversatt": "Suit l'ordre chronologique"
+ },
+ "core-screenplay-story.story-placement-label.after.93e3ed5f9972": {
+  "nb": "etter",
+  "en": "after",
+  "oversatt": "après"
+ },
+ "core-screenplay-story.story-placement-label.before.37e200bfa66e": {
+  "nb": "før",
+  "en": "before",
+  "oversatt": "avant"
+ },
+ "core-screenplay-story.story-placement-label.same.f9ddbfcdb327": {
+  "nb": "samtidig med",
+  "en": "at the same time as",
+  "oversatt": "en même temps que"
+ },
+ "core-screenplay-versions.after-scene": {
+  "nb": "etter scene {number}",
+  "en": "after scene {number}",
+  "oversatt": "après la scène {number}"
+ },
+ "core-screenplay-versions.after-scene-unnumbered": {
+  "nb": "etter scene uten nummer ({heading})",
+  "en": "after scene no number ({heading})",
+  "oversatt": "après la scène sans numéro ({heading})"
+ },
+ "core-screenplay-versions.change-label.action.801906765034": {
+  "nb": "Endret handling",
+  "en": "Changed action",
+  "oversatt": "Action modifiée"
+ },
+ "core-screenplay-versions.change-label.activated.fecc9f63cf95": {
+  "nb": "Aktivert scene",
+  "en": "Activated scene",
+  "oversatt": "Scène activée"
+ },
+ "core-screenplay-versions.change-label.added.5114c854aee4": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "Nouvelle scène"
+ },
+ "core-screenplay-versions.change-label.characters.3c91516d47eb": {
+  "nb": "Endrede karakterer",
+  "en": "Changed characters",
+  "oversatt": "Personnages modifiés"
+ },
+ "core-screenplay-versions.change-label.deactivated.4774ad07e652": {
+  "nb": "Deaktivert scene",
+  "en": "Deactivated scene",
+  "oversatt": "Scène désactivée"
+ },
+ "core-screenplay-versions.change-label.dialogue.d6795e07a491": {
+  "nb": "Endret dialog",
+  "en": "Changed dialogue",
+  "oversatt": "Dialogue modifié"
+ },
+ "core-screenplay-versions.change-label.heading.4fe082c9dd60": {
+  "nb": "Endret sceneoverskrift",
+  "en": "Changed scene heading",
+  "oversatt": "En-tête de scène modifié"
+ },
+ "core-screenplay-versions.change-label.moved.42d4055d23d0": {
+  "nb": "Flyttet scene",
+  "en": "Moved scene",
+  "oversatt": "Scène déplacée"
+ },
+ "core-screenplay-versions.change-label.objects.28c0b753ea55": {
+  "nb": "Endrede objekter",
+  "en": "Changed objects",
+  "oversatt": "Objets modifiés"
+ },
+ "core-screenplay-versions.change-label.removed.c5e86892f445": {
+  "nb": "Fjernet scene",
+  "en": "Removed scene",
+  "oversatt": "Scène supprimée"
+ },
+ "core-screenplay-versions.change-label.renumbered.80fc502434b4": {
+  "nb": "Nytt scenenummer",
+  "en": "New scene number",
+  "oversatt": "Nouveau numéro de scène"
+ },
+ "core-screenplay-versions.change-label.take.9fa4a1505445": {
+  "nb": "Ny aktiv filmversjon",
+  "en": "New active film version",
+  "oversatt": "Nouvelle version active du film"
+ },
+ "core-screenplay-versions.change-label.variant.92d9676e8329": {
+  "nb": "Ny scenevariant",
+  "en": "New scene variant",
+  "oversatt": "Nouvelle variante de scène"
+ },
+ "core-screenplay-versions.count-text.parts-push.0a2e005f5bf0": {
+  "nb": "1 ny",
+  "en": "1 new",
+  "oversatt": "1 nouvelle"
+ },
+ "core-screenplay-versions.count-text.parts-push.347a04bec628": {
+  "nb": "{a} nye",
+  "en": "{a} new",
+  "oversatt": "{a} nouvelles"
+ },
+ "core-screenplay-versions.count-text.parts-push.3db66b147ea1": {
+  "nb": "{c} linjer endret",
+  "en": "{c} lines changed",
+  "oversatt": "{c} lignes modifiées"
+ },
+ "core-screenplay-versions.count-text.parts-push.b2bdc909aae2": {
+  "nb": "{c} linje endret",
+  "en": "{c} line changed",
+  "oversatt": "{c} ligne modifiée"
+ },
+ "core-screenplay-versions.count-text.parts-push.d2e5fd74729b": {
+  "nb": "{r} fjernet",
+  "en": "{r} removed",
+  "oversatt": "{r} supprimés"
+ },
+ "core-screenplay-versions.detail.detail.bf2d9eb28354": {
+  "nb": " (deaktivert)",
+  "en": " (deactivated)",
+  "oversatt": " (désactivée)"
+ },
+ "core-screenplay-versions.detail.detail.c43caaa05478": {
+  "nb": "Sto på {value1}. Står nå på {value2}.",
+  "en": "Was at {value1}. Now at {value2}.",
+  "oversatt": "Était à {value1}. Actuellement à {value2}."
+ },
+ "core-screenplay-versions.detail.detail.d1b407cc4cd9": {
+  "nb": "uten nummer",
+  "en": "no number",
+  "oversatt": "sans numéro"
+ },
+ "core-screenplay-versions.detail.detail.d1b407cc4cd9.2": {
+  "nb": "uten nummer",
+  "en": "no number",
+  "oversatt": "sans numéro"
+ },
+ "core-screenplay-versions.detail.detail.fbdf58bdb437": {
+  "nb": "Sto på {value1}",
+  "en": "Was at {value1}",
+  "oversatt": "Était à {value1}"
+ },
+ "core-screenplay-versions.place-text.message.fdb98baac3ee": {
+  "nb": "plass {value1}, {where}",
+  "en": "place {value1}, {where}",
+  "oversatt": "position {value1}, {where}"
+ },
+ "core-screenplay-versions.where.message.3bbdfb3819ec": {
+  "nb": "først",
+  "en": "first",
+  "oversatt": "en premier"
+ },
+ "core-screenplay-versions.where.message.efb3278a85ff": {
+  "nb": "etter scene {value1}",
+  "en": "after scene {value1}",
+  "oversatt": "après la scène {value1}"
+ },
+ "core-script-assist-prompts.assist-request-error.message.04131f3a4bdc": {
+  "nb": "Ukjent skrivehjelp",
+  "en": "Unknown writing aid",
+  "oversatt": "Aide à la rédaction inconnue"
+ },
+ "core-script-assist-prompts.assist-request-error.message.15588c449032": {
+  "nb": "Ønsket kan ha høyst {MAX_ASSIST_INSTRUCTION} tegn",
+  "en": "The request can have at most {MAX_ASSIST_INSTRUCTION} characters",
+  "oversatt": "La demande peut contenir au maximum {MAX_ASSIST_INSTRUCTION} caractères"
+ },
+ "core-script-assist-prompts.assist-request-error.message.2d26e640d40b": {
+  "nb": "Ugyldig forespørsel",
+  "en": "Invalid request",
+  "oversatt": "Demande non valide"
+ },
+ "core-script-assist-prompts.assist-request-error.message.8a5f2358c301": {
+  "nb": "Ugyldig scene",
+  "en": "Invalid scene",
+  "oversatt": "Scène non valide"
+ },
+ "core-script-assist-prompts.assist-request-error.message.ab0959633482": {
+  "nb": "Ugyldig produksjon",
+  "en": "Invalid production",
+  "oversatt": "Production non valide"
+ },
+ "core-script-assist-prompts.assist-request-error.message.c44f335ffde9": {
+  "nb": "Ugyldig ID",
+  "en": "Invalid ID",
+  "oversatt": "Identifiant non valide"
+ },
+ "core-script-assist-prompts.assist-request-error.message.dbf58a7daef0": {
+  "nb": "Ukjent omskriving",
+  "en": "Unknown rewrite",
+  "oversatt": "Réécriture inconnue"
+ },
+ "core-script-assist-prompts.assist-request-error.message.dff95ed1d03b": {
+  "nb": "Velg høyst {MAX_ASSIST_BLOCKS} linjer",
+  "en": "Select at most {MAX_ASSIST_BLOCKS} lines",
+  "oversatt": "Sélectionnez au maximum {MAX_ASSIST_BLOCKS} lignes"
+ },
+ "core-script-assist-prompts.assist-request-error.message.f921f59f465c": {
+  "nb": "Beskrivelsen kan ha høyst {MAX_ASSIST_DESCRIPTION} tegn",
+  "en": "The description can have at most {MAX_ASSIST_DESCRIPTION} characters",
+  "oversatt": "La description peut contenir au maximum {MAX_ASSIST_DESCRIPTION} caractères"
+ },
+ "core-script-assist-prompts.message.message.49241b66fcc9": {
+  "nb": "Velg en scene",
+  "en": "Select a scene",
+  "oversatt": "Sélectionnez une scène"
+ },
+ "core-script-assist-prompts.message.message.8fb869f6ca32": {
+  "nb": "Skriv hva du ønsker",
+  "en": "Write what you want",
+  "oversatt": "Écrivez ce que vous souhaitez"
+ },
+ "core-script-assist-prompts.message.message.975880aef759": {
+  "nb": "Alle linjene har allerede engelsk oversettelse",
+  "en": "All lines already have an English translation",
+  "oversatt": "Toutes les lignes ont déjà une traduction en anglais"
+ },
+ "core-script-assist-prompts.next-line-prompt.message.65b837273648": {
+  "nb": "Velg en scene",
+  "en": "Select a scene",
+  "oversatt": "Sélectionnez une scène"
+ },
+ "core-script-assist-prompts.next-line-prompt.message.913373249f2c": {
+  "nb": "Linjen hører ikke til scenen",
+  "en": "The line does not belong to the scene",
+  "oversatt": "La ligne n’appartient pas à la scène"
+ },
+ "core-script-assist-prompts.next-line-prompt.message.a5fb4e581f9c": {
+  "nb": "Velg en karakter",
+  "en": "Select a character",
+  "oversatt": "Sélectionnez un personnage"
+ },
+ "core-script-assist-prompts.scene-prompt.message.2517fe7e2fae": {
+  "nb": "Skriv en kort beskrivelse",
+  "en": "Write a short description",
+  "oversatt": "Écrivez une courte description"
+ },
+ "core-script-assist-prompts.scene-prompt.message.4c53b46ced58": {
+  "nb": "Scenen finnes ikke",
+  "en": "The scene was not found",
+  "oversatt": "La scène est introuvable"
+ },
+ "core-script-assist-prompts.scene-prompt.message.6c5772efc8a0": {
+  "nb": "Velg en scenenode",
+  "en": "Select a scene node",
+  "oversatt": "Sélectionnez un nœud de scène"
+ },
+ "core-script-assist-prompts.selected.message.19d083cb145b": {
+  "nb": "En linje er lengre enn {MAX_ASSIST_BLOCK_CHARS} tegn",
+  "en": "A line is longer than {MAX_ASSIST_BLOCK_CHARS} characters",
+  "oversatt": "Une ligne dépasse {MAX_ASSIST_BLOCK_CHARS} caractères"
+ },
+ "core-script-assist-prompts.selected.message.7c51b113f74e": {
+  "nb": "Velg minst én linje",
+  "en": "Select at least one line",
+  "oversatt": "Sélectionnez au moins une ligne"
+ },
+ "core-script-assist-prompts.selected.message.96bcf1358b06": {
+  "nb": "Velg en scene",
+  "en": "Select a scene",
+  "oversatt": "Sélectionnez une scène"
+ },
+ "core-script-assist-prompts.selected.message.b3d4283e65eb": {
+  "nb": "Linjene må høre til scenen",
+  "en": "The lines must belong to the scene",
+  "oversatt": "Les lignes doivent appartenir à la scène"
+ },
+ "core-script-assist-proposal.message.message.7382c1d94424": {
+  "nb": "Velg minst én linje",
+  "en": "Select at least one line",
+  "oversatt": "Sélectionnez au moins une ligne"
+ },
+ "core-script-assist-proposal.message.message.7382c1d94424.2": {
+  "nb": "Velg minst én linje",
+  "en": "Select at least one line",
+  "oversatt": "Sélectionnez au moins une ligne"
+ },
+ "core-script-assist-proposal.message.message.81b69b674276": {
+  "nb": "Dette forslaget kan ikke lagres som forsøksvis redigering",
+  "en": "This suggestion cannot be saved as a trial edit",
+  "oversatt": "Cette suggestion ne peut pas être enregistrée comme modification d’essai"
+ },
+ "core-script-assist-proposal.message.message.877894bc190e": {
+  "nb": "Scenen finnes ikke",
+  "en": "The scene was not found",
+  "oversatt": "La scène est introuvable"
+ },
+ "core-script-assist-proposal.message.message.fe878e669f87": {
+  "nb": "Noen andre har endret teksten siden forslaget ble laget. Lag forslaget på nytt.",
+  "en": "Someone else changed the text after the suggestion was made. Create the suggestion again.",
+  "oversatt": "Quelqu’un d’autre a modifié le texte depuis la création de la suggestion. Générez à nouveau la suggestion."
+ },
+ "core-script-assist-proposal.text.text.30951c31a757": {
+  "nb": "Forslag fra skrivehjelpen",
+  "en": "Suggestion from the writing assistant",
+  "oversatt": "Suggestion de l’aide à la rédaction"
+ },
+ "core-storylab-canvas-transfer.message.message.105cb913d896": {
+  "nb": "Scenen å plassere etter finnes ikke",
+  "en": "The scene to place after was not found",
+  "oversatt": "La scène après laquelle insérer est introuvable"
+ },
+ "core-storylab-canvas-transfer.message.message.13d3f8f4ba0b": {
+  "nb": "Prosjektet har ingen hovedproduksjon",
+  "en": "The project has no main production",
+  "oversatt": "Le projet n’a pas de production principale"
+ },
+ "core-storylab-canvas-transfer.message.message.4d676b0723ab": {
+  "nb": "Bare scenenoder kan bli scener",
+  "en": "Only scene nodes can become scenes",
+  "oversatt": "Seuls les nœuds de scène peuvent devenir des scènes"
+ },
+ "core-storylab-canvas-transfer.message.message.69ed2900865c": {
+  "nb": "Noden passer ikke for denne ressurstypen",
+  "en": "The node does not fit this asset type",
+  "oversatt": "Le nœud ne correspond pas à ce type d’élément"
+ },
+ "core-storylab-canvas-transfer.message.message.7c429b6b9b98": {
+  "nb": "Noden finnes ikke",
+  "en": "The node was not found",
+  "oversatt": "Le nœud est introuvable"
+ },
+ "core-storylab-canvas-transfer.message.message.c9e7ded51821": {
+  "nb": "Noden må ha en tittel",
+  "en": "The node needs a title",
+  "oversatt": "Le nœud doit avoir un titre"
+ },
+ "core-storylab-canvas-transfer.message.message.f305644f6e77": {
+  "nb": "Noden er allerede koblet",
+  "en": "The node is already linked",
+  "oversatt": "Le nœud est déjà associé"
+ },
+ "core-storylab-canvas.alternative-of.alternative-of.d63a45d859f8": {
+  "nb": "Alternativ til",
+  "en": "Alternative of",
+  "oversatt": "Variante de"
+ },
+ "core-storylab-canvas.alternative.alternative.ab9b197fc451": {
+  "nb": "Alternativ",
+  "en": "Alternative",
+  "oversatt": "Alternative"
+ },
+ "core-storylab-canvas.belongs-to.belongs-to.8abbcc03cc04": {
+  "nb": "Hører til",
+  "en": "Belongs to",
+  "oversatt": "Appartient à"
+ },
+ "core-storylab-canvas.canvas-edge-error.message.79cd4cb252b2": {
+  "nb": "En node kan ikke kobles til seg selv",
+  "en": "A node cannot be connected to itself",
+  "oversatt": "Un nœud ne peut pas être connecté à lui-même"
+ },
+ "core-storylab-canvas.canvas-edge-error.message.7c744edf6e9e": {
+  "nb": "Ugyldig kobling",
+  "en": "Invalid connection",
+  "oversatt": "Connexion non valide"
+ },
+ "core-storylab-canvas.canvas-edge-error.message.883454015909": {
+  "nb": "Ukjent koblingstype",
+  "en": "Unknown connection type",
+  "oversatt": "Type de connexion inconnu"
+ },
+ "core-storylab-canvas.canvas-edge-error.message.a13e6154d7cd": {
+  "nb": "Koblingen mangler en node",
+  "en": "The connection is missing a node",
+  "oversatt": "Il manque un nœud à la connexion"
+ },
+ "core-storylab-canvas.canvas-edge-error.message.e911d3a0a98b": {
+  "nb": "Etiketten kan være høyst {CANVAS_LABEL_MAX} tegn",
+  "en": "The label can be at most {CANVAS_LABEL_MAX} characters",
+  "oversatt": "L’étiquette ne peut pas dépasser {CANVAS_LABEL_MAX} caractères"
+ },
+ "core-storylab-canvas.canvas-node-error.message.264cfc65ae16": {
+  "nb": "Ugyldig størrelse",
+  "en": "Invalid size",
+  "oversatt": "Taille non valide"
+ },
+ "core-storylab-canvas.canvas-node-error.message.431a2384fc72": {
+  "nb": "Teksten kan være høyst {CANVAS_BODY_MAX} tegn",
+  "en": "The text can be at most {CANVAS_BODY_MAX} characters",
+  "oversatt": "Le texte ne peut pas dépasser {CANVAS_BODY_MAX} caractères"
+ },
+ "core-storylab-canvas.canvas-node-error.message.4d10d1fbf882": {
+  "nb": "Ugyldig node",
+  "en": "Invalid node",
+  "oversatt": "Nœud non valide"
+ },
+ "core-storylab-canvas.canvas-node-error.message.7030a4ec6247": {
+  "nb": "Ugyldig kobling",
+  "en": "Invalid link",
+  "oversatt": "Lien non valide"
+ },
+ "core-storylab-canvas.canvas-node-error.message.839ddfe433ba": {
+  "nb": "Ugyldig posisjon",
+  "en": "Invalid position",
+  "oversatt": "Position non valide"
+ },
+ "core-storylab-canvas.canvas-node-error.message.876cb4f2f1d3": {
+  "nb": "Tittelen kan være høyst {CANVAS_TITLE_MAX} tegn",
+  "en": "The title can be at most {CANVAS_TITLE_MAX} characters",
+  "oversatt": "Le titre ne peut pas dépasser {CANVAS_TITLE_MAX} caractères"
+ },
+ "core-storylab-canvas.canvas-node-error.message.98bdc81a7e8f": {
+  "nb": "Ugyldig farge",
+  "en": "Invalid colour",
+  "oversatt": "Couleur non valide"
+ },
+ "core-storylab-canvas.canvas-node-error.message.f4702edfa6e3": {
+  "nb": "Ukjent nodetype",
+  "en": "Unknown node type",
+  "oversatt": "Type de nœud inconnu"
+ },
+ "core-storylab-canvas.causes.causes.2af860c88540": {
+  "nb": "Forårsaker",
+  "en": "Causes",
+  "oversatt": "Provoque"
+ },
+ "core-storylab-canvas.character.character.7f4c710fdd24": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "core-storylab-canvas.conflicts.conflicts.9fd834e4ddae": {
+  "nb": "Er i konflikt med",
+  "en": "Conflicts with",
+  "oversatt": "Est en conflit avec"
+ },
+ "core-storylab-canvas.consequence.consequence.071d5046b0f8": {
+  "nb": "Konsekvens",
+  "en": "Consequence",
+  "oversatt": "Conséquence"
+ },
+ "core-storylab-canvas.event.event.bc94a5307323": {
+  "nb": "Hendelse",
+  "en": "Event",
+  "oversatt": "Événement"
+ },
+ "core-storylab-canvas.group.group.8d4eac26b119": {
+  "nb": "Gruppe",
+  "en": "Group",
+  "oversatt": "Groupe"
+ },
+ "core-storylab-canvas.idea.idea.fd9111ab288c": {
+  "nb": "Idé",
+  "en": "Idea",
+  "oversatt": "Idée"
+ },
+ "core-storylab-canvas.leads-to.leads-to.42ec5cf12796": {
+  "nb": "Fører til",
+  "en": "Leads to",
+  "oversatt": "Mène à"
+ },
+ "core-storylab-canvas.location.location.5be3d87e0de8": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "Lieu"
+ },
+ "core-storylab-canvas.note.note.1ed1091a5b73": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "Note"
+ },
+ "core-storylab-canvas.plot-point.plot-point.e581413c6812": {
+  "nb": "Plotpunkt",
+  "en": "Plot point",
+  "oversatt": "Point d’intrigue"
+ },
+ "core-storylab-canvas.plot.plot.114cb2d727ef": {
+  "nb": "Plot",
+  "en": "Plot",
+  "oversatt": "Intrigue"
+ },
+ "core-storylab-canvas.premise.premise.9de77c48671c": {
+  "nb": "Premiss",
+  "en": "Premise",
+  "oversatt": "Prémisse"
+ },
+ "core-storylab-canvas.relation.relation.0a6e501cc1c7": {
+  "nb": "Relasjon",
+  "en": "Relation",
+  "oversatt": "Relation"
+ },
+ "core-storylab-canvas.relation.relation.0a6e501cc1c7.2": {
+  "nb": "Relasjon",
+  "en": "Relation",
+  "oversatt": "Relation"
+ },
+ "core-storylab-canvas.scene.scene.6296666a38fc": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "core-storylab-canvas.subplot.subplot.36571c5f9b8c": {
+  "nb": "Sideplot",
+  "en": "Subplot",
+  "oversatt": "Intrigue secondaire"
+ },
+ "core-storylab-canvas.title.s-heading-l-scene-uten-overskrift-untitled-scene-slice.5ae82d998c5e": {
+  "nb": "Scene uten overskrift",
+  "en": "Untitled scene",
+  "oversatt": "Scène sans titre"
+ },
+ "core-storylab-canvas.turning-point.turning-point.aec313970a40": {
+  "nb": "Vendepunkt",
+  "en": "Turning point",
+  "oversatt": "Point de bascule"
+ },
+ "core-storylab-facts.fact-error.message.3a501081a5a9": {
+  "nb": "Faktumet er for langt",
+  "en": "The fact is too long",
+  "oversatt": "Le fait est trop long"
+ },
+ "core-storylab-facts.fact-error.message.40d66c6d8444": {
+  "nb": "Samme karakter står flere ganger",
+  "en": "The same character is listed more than once",
+  "oversatt": "Le même personnage est listé plusieurs fois"
+ },
+ "core-storylab-facts.fact-error.message.4290c084fed9": {
+  "nb": "Faktumet er ugyldig",
+  "en": "The fact is invalid",
+  "oversatt": "Le fait n’est pas valide"
+ },
+ "core-storylab-facts.fact-error.message.43505969a727": {
+  "nb": "Faktumet mangler tekst",
+  "en": "The fact has no text",
+  "oversatt": "Le fait ne contient aucun texte"
+ },
+ "core-storylab-facts.fact-error.message.6d025d417478": {
+  "nb": "Ugyldig scene for faktumet",
+  "en": "Invalid scene for the fact",
+  "oversatt": "Scène non valide pour le fait"
+ },
+ "core-storylab-facts.fact-error.message.ba38d4b33896": {
+  "nb": "Ugyldig type faktum",
+  "en": "Invalid kind of fact",
+  "oversatt": "Type de fait non valide"
+ },
+ "core-storylab-facts.fact-error.message.cc2906b15f7d": {
+  "nb": "Ugyldig liste over hvem som vet",
+  "en": "Invalid list of who knows",
+  "oversatt": "Liste non valide des personnes informées"
+ },
+ "core-storylab-facts.fact-error.message.cc2906b15f7d.2": {
+  "nb": "Ugyldig liste over hvem som vet",
+  "en": "Invalid list of who knows",
+  "oversatt": "Liste non valide des personnes informées"
+ },
+ "core-storylab-profile.bad.message.d4b7aa2ffb14": {
+  "nb": "Ugyldig verdi i profilen ({path})",
+  "en": "Invalid value in the profile ({path})",
+  "oversatt": "Valeur non valide dans le profil ({path})"
+ },
+ "core-storylab-profile.check.message.01a5a98213fa": {
+  "nb": "Profilen er ugyldig",
+  "en": "The profile is invalid",
+  "oversatt": "Le profil n'est pas valide"
+ },
+ "core-storylab-profile.check.message.4924658f6b50": {
+  "nb": "Ugyldig verdi i profilen (notes)",
+  "en": "Invalid value in the profile (notes)",
+  "oversatt": "Valeur non valide dans le profil (notes)"
+ },
+ "core-storylab-profile.check.message.61ca3abe01e6": {
+  "nb": "Profilen er for stor",
+  "en": "The profile is too large",
+  "oversatt": "Le profil est trop volumineux"
+ },
+ "core-storylab-profile.check.message.6653a46b9506": {
+  "nb": "Ukjent felt i profilen ({sec}.{k})",
+  "en": "Unknown field in the profile ({sec}.{k})",
+  "oversatt": "Champ inconnu dans le profil ({sec}.{k})"
+ },
+ "core-storylab-profile.check.message.9448da9c16fe": {
+  "nb": "Ukjent felt i profilen ({k})",
+  "en": "Unknown field in the profile ({k})",
+  "oversatt": "Champ inconnu dans le profil ({k})"
+ },
+ "core-storylab-profile.check.message.cf645cedeb54": {
+  "nb": "Feltet mangler i profilen ({sec}.{f})",
+  "en": "The field is missing from the profile ({sec}.{f})",
+  "oversatt": "Le champ est manquant dans le profil ({sec}.{f})"
+ },
+ "core-storylab-profile.check.message.d66339497b0c": {
+  "nb": "Ugyldig del av profilen ({sec})",
+  "en": "Invalid part of the profile ({sec})",
+  "oversatt": "Partie du profil non valide ({sec})"
+ },
+ "core-storylab-profile.check.message.ee7f34e157ac": {
+  "nb": "For lang tekst i profilen (notes)",
+  "en": "Text too long in the profile (notes)",
+  "oversatt": "Texte trop long dans le profil (notes)"
+ },
+ "core-storylab-profile.long.message.f291dc84a55c": {
+  "nb": "For lang tekst i profilen ({path})",
+  "en": "Text too long in the profile ({path})",
+  "oversatt": "Texte trop long dans le profil ({path})"
+ },
+ "core-storylab-profile.str-list.message.203544f90a07": {
+  "nb": "For mange punkter i profilen ({path})",
+  "en": "Too many items in the profile ({path})",
+  "oversatt": "Trop d'éléments dans le profil ({path})"
+ },
+ "core-storylab-prompts.analysis-aspect-label.conflict.0cc0e8311a26": {
+  "nb": "Konflikt",
+  "en": "Conflict",
+  "oversatt": "Conflit"
+ },
+ "core-storylab-prompts.analysis-aspect-label.consequence.cc7612136a49": {
+  "nb": "Konsekvens",
+  "en": "Consequence",
+  "oversatt": "Conséquence"
+ },
+ "core-storylab-prompts.analysis-aspect-label.credibility.242fb70d257d": {
+  "nb": "Karaktertroverdighet",
+  "en": "Character credibility",
+  "oversatt": "Crédibilité du personnage"
+ },
+ "core-storylab-prompts.analysis-aspect-label.emotional-arc.9e8988e44008": {
+  "nb": "Emosjonell utvikling",
+  "en": "Emotional development",
+  "oversatt": "Évolution émotionnelle"
+ },
+ "core-storylab-prompts.analysis-aspect-label.knowledge.05a93298ce23": {
+  "nb": "Kunnskap",
+  "en": "Knowledge",
+  "oversatt": "Connaissance"
+ },
+ "core-storylab-prompts.analysis-aspect-label.motivation.39c58e0a227e": {
+  "nb": "Motivasjon",
+  "en": "Motivation",
+  "oversatt": "Motivation"
+ },
+ "core-storylab-prompts.analysis-aspect-label.relationships.3ec69b505766": {
+  "nb": "Relasjoner",
+  "en": "Relationships",
+  "oversatt": "Relations"
+ },
+ "core-storylab-prompts.analysis-aspect-label.rhythm.60497c6c9e4e": {
+  "nb": "Rytme",
+  "en": "Rhythm",
+  "oversatt": "Rythme"
+ },
+ "core-storylab-prompts.analysis-aspect-label.subtext.afb67bffe46b": {
+  "nb": "Undertekst",
+  "en": "Subtext",
+  "oversatt": "Sous-texte"
+ },
+ "core-storylab-prompts.analysis-aspect-label.weaknesses.c8f9124d88d9": {
+  "nb": "Mulige svakheter",
+  "en": "Possible weaknesses",
+  "oversatt": "Faiblesses possibles"
+ },
+ "core-storylab-prompts.unreadable-reply-message.message.8de0ec1da46a": {
+  "nb": "Svaret fra AI kunne ikke tolkes. Prøv igjen.",
+  "en": "The AI reply could not be read. Try again.",
+  "oversatt": "Impossible d'interpréter la réponse de l'IA. Veuillez réessayer."
+ },
+ "core-storylab-transfer.source.message.d6d308540381": {
+  "nb": "Fra Story Lab, økt {value1}, tur {value2}.",
+  "en": "From Story Lab, session {value1}, turn {value2}.",
+  "oversatt": "Depuis Story Lab, session {value1}, tour {value2}."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.118622112c65": {
+  "nb": "Ugyldig replikk i utkastet.",
+  "en": "Invalid line in the draft.",
+  "oversatt": "Réplique non valide dans le brouillon."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.5227eb7e2b39": {
+  "nb": "Forslaget inneholder ingen gyldige profilfelt.",
+  "en": "The suggestion contains no valid profile fields.",
+  "oversatt": "La suggestion ne contient aucun champ de profil valide."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.528ee8ac38d8": {
+  "nb": "Taleren finnes ikke i biblioteket.",
+  "en": "The speaker does not exist in the library.",
+  "oversatt": "Le personnage qui s'exprime n'existe pas dans la bibliothèque."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.80765abd2eac": {
+  "nb": "Velg en karakterprofil.",
+  "en": "Choose a character profile.",
+  "oversatt": "Choisissez un profil de personnage."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.852626d343a1": {
+  "nb": "Scenen finnes ikke i hovedproduksjonen.",
+  "en": "The scene does not exist in the main production.",
+  "oversatt": "La scène n'existe pas dans la production principale."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.8b8d2a674221": {
+  "nb": "Blokken finnes ikke i denne scenen.",
+  "en": "The block does not exist in this scene.",
+  "oversatt": "Le bloc n'existe pas dans cette scène."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.8bfa3786e1b8": {
+  "nb": "Utkastet har ingen replikker.",
+  "en": "The draft has no lines.",
+  "oversatt": "Le brouillon ne contient aucune réplique."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.c2d776717e6e": {
+  "nb": "Kildescenen finnes ikke.",
+  "en": "The source scene does not exist.",
+  "oversatt": "La scène source n'existe pas."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.c7530381cb7e": {
+  "nb": "Replikken finnes ikke i denne scenen.",
+  "en": "The line does not exist in this scene.",
+  "oversatt": "La réplique n'existe pas dans cette scène."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.d2f3a11d5d5d": {
+  "nb": "Karakteren finnes ikke.",
+  "en": "The character does not exist.",
+  "oversatt": "Le personnage n'existe pas."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.e5e73b546e44": {
+  "nb": "Velg en scene i hovedproduksjonen.",
+  "en": "Choose a scene in the main production.",
+  "oversatt": "Choisissez une scène dans la production principale."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.f75108e116b8": {
+  "nb": "Forslaget hører til en annen scene.",
+  "en": "The suggestion belongs to another scene.",
+  "oversatt": "La suggestion appartient à une autre scène."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.f848b72c387e": {
+  "nb": "Scenen har ingen blokk å feste notatet til.",
+  "en": "The scene has no block to attach the note to.",
+  "oversatt": "La scène n'a aucun bloc auquel associer la note."
+ },
+ "core-storylab-transfer.suggestion-to-commands.fail.fad8ed846920": {
+  "nb": "Replikken er tom.",
+  "en": "The line is empty.",
+  "oversatt": "La réplique est vide."
+ },
+ "core-time.validate-fps.message.20a79989a0cd": {
+  "nb": "Ugyldig bildefrekvens {num}/{den}",
+  "en": "Invalid frame rate {num}/{den}",
+  "oversatt": "Fréquence d'images non valide {num}/{den}"
+ }
+}

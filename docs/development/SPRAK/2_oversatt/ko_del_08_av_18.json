@@ -1,0 +1,3034 @@
+{
+ "app-projects-members-section.role-label.commenter.0492a29e0284": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "댓글 작성자"
+ },
+ "app-projects-members-section.role-label.editor.66d469833732": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "편집자"
+ },
+ "app-projects-members-section.role-label.owner.2479f0cad1e9": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "소유자"
+ },
+ "app-projects-members-section.role-label.viewer.27370640f10c": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "뷰어"
+ },
+ "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3": {
+  "nb": "nb-NO",
+  "en": "en-GB",
+  "oversatt": "ko-KR"
+ },
+ "app-projects-note-flags-overview.body.span.593b2184fc2d": {
+  "nb": " · av",
+  "en": " · off",
+  "oversatt": " · 꺼짐"
+ },
+ "app-projects-note-flags-overview.body.span.d97ed4a2b488": {
+  "nb": "(uten tekst)",
+  "en": "(no text)",
+  "oversatt": "(텍스트 없음)"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.h2.96003518f497": {
+  "nb": "Merknader og huskelapper",
+  "en": "Notes and note flags",
+  "oversatt": "메모 및 플래그"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.27bc311f2d29": {
+  "nb": "Sorter",
+  "en": "Sort",
+  "oversatt": "정렬"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.ee812895b845": {
+  "nb": "Oppretter",
+  "en": "Creator",
+  "oversatt": "생성자"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.f63c28a3f4c6": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "상태"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.label.f86f2c2e4e65": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.06a546d4a8a5": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.0799d936c79b": {
+  "nb": "Avslåtte",
+  "en": "Turned off",
+  "oversatt": "꺼짐"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.0c6ba0813b4e": {
+  "nb": "Scenerekkefølge",
+  "en": "Scene order",
+  "oversatt": "씬 순서"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.2438446103b8": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "활성"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.830ccb27b650": {
+  "nb": "Plassering i manus",
+  "en": "Script position",
+  "oversatt": "대본 내 위치"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "전체"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4.2": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "전체"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.option.93b6f86fbac4.3": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "전체"
+ },
+ "app-projects-note-flags-overview.note-flags-overview.p.1931be00d54c": {
+  "nb": "Ingen huskelapper.",
+  "en": "No note flags.",
+  "oversatt": "메모 플래그가 없습니다."
+ },
+ "app-projects-note-flags-overview.place.list-map.2096487ab9b8": {
+  "nb": "Elementet finnes ikke lenger",
+  "en": "The item no longer exists",
+  "oversatt": "항목이 더 이상 존재하지 않습니다"
+ },
+ "app-projects-production-dialog.e.cmds-run.0b4cbf9fc425": {
+  "nb": "Ny produksjon «{value1}»",
+  "en": "New production “{value1}”",
+  "oversatt": "새 프로덕션 “{value1}”"
+ },
+ "app-projects-production-dialog.e.cmds-run.6e6a690f8f5d": {
+  "nb": "Scener lagt til i «{name}»",
+  "en": "Scenes added to “{name}”",
+  "oversatt": "“{name}”에 씬이 추가됨"
+ },
+ "app-projects-production-dialog.production-dialog.aria-label.b387184dea29": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-production-dialog.production-dialog.aria-label.ca91203533f3": {
+  "nb": "Hent scener fra",
+  "en": "Take scenes from",
+  "oversatt": "씬 가져올 위치:"
+ },
+ "app-projects-production-dialog.production-dialog.button.48ee211b8751": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-production-dialog.production-dialog.button.4bfe9317488a": {
+  "nb": "Velg ingen",
+  "en": "Select none",
+  "oversatt": "선택 해제"
+ },
+ "app-projects-production-dialog.production-dialog.button.bee4eee53ce0": {
+  "nb": "Velg alle",
+  "en": "Select all",
+  "oversatt": "모두 선택"
+ },
+ "app-projects-production-dialog.production-dialog.button.f40999d89056": {
+  "nb": "Opprett",
+  "en": "Create",
+  "oversatt": "생성"
+ },
+ "app-projects-production-dialog.production-dialog.button.f79dcc02b875": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-description.57b07e19ad9f": {
+  "nb": "Scenene gjenbrukes – endrer du dem her, får produksjonen sin egen versjon, og den andre produksjonen endres ikke.",
+  "en": "The scenes are reused – if you change them here, the production gets its own version, and the other production is not changed.",
+  "oversatt": "씬이 재사용됩니다. 여기서 변경하면 해당 프로덕션에만 별도 버전이 적용되며, 다른 프로덕션은 변경되지 않습니다."
+ },
+ "app-projects-production-dialog.production-dialog.dialog-description.86636283840d": {
+  "nb": "En spinoff, trailer eller kortfilm med egne scener, egen rekkefølge og egen film. Scener du velger, gjenbrukes – hovedfilmen endres ikke.",
+  "en": "A spin-off, trailer or short film with its own scenes, its own order and its own film. Scenes you choose are reused – the main film is not changed.",
+  "oversatt": "자체 씬, 순서 및 영상을 갖춘 스핀오프, 예고편 또는 단편 영화입니다. 선택한 씬은 재사용되며 메인 영상은 변경되지 않습니다."
+ },
+ "app-projects-production-dialog.production-dialog.dialog-title.bc91930a4632": {
+  "nb": "Legg til scener i «{name}»",
+  "en": "Add scenes to “{name}”",
+  "oversatt": "“{name}”에 씬 추가"
+ },
+ "app-projects-production-dialog.production-dialog.dialog-title.fabae9ebb982": {
+  "nb": "Ny produksjon",
+  "en": "New production",
+  "oversatt": "새 프로덕션"
+ },
+ "app-projects-production-dialog.production-dialog.label.1f6d9b913824": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-projects-production-dialog.production-dialog.label.35b8e6b26346": {
+  "nb": "Notat (valgfritt)",
+  "en": "Note (optional)",
+  "oversatt": "메모(선택 사항)"
+ },
+ "app-projects-production-dialog.production-dialog.label.8cbf603b9018": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-projects-production-dialog.production-dialog.p.167b3feac334": {
+  "nb": "{size} scener valgt.",
+  "en": "{size} scenes selected.",
+  "oversatt": "{size}개 씬 선택됨."
+ },
+ "app-projects-production-dialog.production-dialog.p.f6c51a841674": {
+  "nb": "1 scene valgt.",
+  "en": "1 scene selected.",
+  "oversatt": "1개 씬 선택됨."
+ },
+ "app-projects-production-dialog.production-dialog.p.fb13a1688bce": {
+  "nb": " Du kan også lage produksjonen tom og skrive nye scener i manuset.",
+  "en": " You can also create the production empty and write new scenes in the script.",
+  "oversatt": " 빈 프로덕션을 생성하고 대본에서 새 씬을 작성할 수도 있습니다."
+ },
+ "app-projects-production-dialog.production-dialog.placeholder.7b347be977a8": {
+  "nb": "F.eks. «Filmtittel – kortversjon»",
+  "en": "E.g. “Film title – short version”",
+  "oversatt": "예: “영화 제목 – 단편 버전”"
+ },
+ "app-projects-production-dialog.production-dialog.placeholder.a62def93f26d": {
+  "nb": "Hva er denne versjonen? F.eks. «Kortversjon til festivalen, uten prologen»",
+  "en": "What is this version? E.g. “Short version for the festival, without the prologue”",
+  "oversatt": "이 버전은 어떤 버전인가요? 예: “프롤로그가 없는 영화제용 단편 버전”"
+ },
+ "app-projects-production-dialog.production-dialog.span.249eaeb54dc9": {
+  "nb": " · finnes allerede",
+  "en": " · already included",
+  "oversatt": " · 이미 포함됨"
+ },
+ "app-projects-production-dialog.production-dialog.span.53ac0ab38f48": {
+  "nb": "Scener fra",
+  "en": "Scenes from",
+  "oversatt": "다음의 씬:"
+ },
+ "app-projects-production-dialog.production-dialog.span.6e1b93c15987": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-projects-production-dialog.production-dialog.span.ba9287a26f9e": {
+  "nb": " · egen versjon i denne produksjonen",
+  "en": " · own version in this production",
+  "oversatt": " · 이 프로덕션의 고유 버전"
+ },
+ "app-projects-production-dialog.production-dialog.span.e3242b426b33": {
+  "nb": " · deaktivert",
+  "en": " · deactivated",
+  "oversatt": " · 비활성화됨"
+ },
+ "app-projects-production-dialog.submit.set-err.4347e9ee1ca3": {
+  "nb": "Velg minst én scene.",
+  "en": "Choose at least one scene.",
+  "oversatt": "최소 하나의 씬을 선택하세요."
+ },
+ "app-projects-production-dialog.submit.set-err.ac1c21a27874": {
+  "nb": "Gi produksjonen et navn.",
+  "en": "Give the production a name.",
+  "oversatt": "프로덕션 이름을 입력하세요."
+ },
+ "app-projects-production-list.e.cmds-run.d195c6205e6c": {
+  "nb": "Notat for «{name}»",
+  "en": "Note for “{name}”",
+  "oversatt": "“{name}” 메모"
+ },
+ "app-projects-production-list.production-list.aria-label.5aa7d1769e4a": {
+  "nb": "Notat for «{name}»",
+  "en": "Note for “{name}”",
+  "oversatt": "“{name}” 메모"
+ },
+ "app-projects-production-list.production-list.aria-label.e51bd43db83d": {
+  "nb": "Rediger notat for «{name}»",
+  "en": "Edit note for “{name}”",
+  "oversatt": "“{name}” 메모 편집"
+ },
+ "app-projects-production-list.production-list.button.0de49086546c": {
+  "nb": "Film",
+  "en": "Film",
+  "oversatt": "영화"
+ },
+ "app-projects-production-list.production-list.button.12b16db9caae": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-production-list.production-list.button.1b1d9a055c41": {
+  "nb": "Tilbakefør",
+  "en": "Bring back",
+  "oversatt": "되돌리기"
+ },
+ "app-projects-production-list.production-list.button.210b2c82ebf1": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-projects-production-list.production-list.button.54d322bcdcee": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-projects-production-list.production-list.button.69edc139f15f": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-production-list.production-list.button.d17ecf1a77cc": {
+  "nb": "Ny produksjon …",
+  "en": "New production …",
+  "oversatt": "새 프로덕션…"
+ },
+ "app-projects-production-list.production-list.placeholder.3c42b353d3ee": {
+  "nb": "Hva er denne versjonen?",
+  "en": "What is this version?",
+  "oversatt": "이 버전은 어떤 버전인가요?"
+ },
+ "app-projects-production-list.production-list.span.69edc139f15f": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-production-list.production-list.span.6fee261a2d87": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "활성"
+ },
+ "app-projects-production-list.production-list.span.8cf8bf3b36a1": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-projects-production-list.production-list.span.968a2d180d71": {
+  "nb": "Navn og notat",
+  "en": "Name and note",
+  "oversatt": "이름 및 메모"
+ },
+ "app-projects-production-list.production-list.title.1bb0355b716e": {
+  "nb": "Gjenbruk flere scener fra en annen produksjon",
+  "en": "Reuse more scenes from another production",
+  "oversatt": "다른 프로덕션에서 더 많은 씬 재사용"
+ },
+ "app-projects-production-list.production-list.title.32bbd282791d": {
+  "nb": "Se hva produksjonen har endret, og før det du vil tilbake til hovedfilmen",
+  "en": "See what the production has changed, and bring back what you want to the main film",
+  "oversatt": "프로덕션의 변경 사항을 확인하고 원하는 항목을 메인 영화로 가져옵니다"
+ },
+ "app-projects-production-list.production-list.title.a55c354dc8c8": {
+  "nb": "Skriv hva denne produksjonen er",
+  "en": "Write what this production is",
+  "oversatt": "이 프로덕션에 대해 작성하세요"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.aria-label.3687c351c49b": {
+  "nb": "Prosjektnavnet",
+  "en": "Project name",
+  "oversatt": "프로젝트 이름"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.span.19ecec4b39d2": {
+  "nb": "for å bekrefte",
+  "en": "to confirm",
+  "oversatt": "입력하여 확인"
+ },
+ "app-projects-project-danger-dialogs.confirm-name.span.f99fe2efcec7": {
+  "nb": "Skriv prosjektnavnet",
+  "en": "Type the project name",
+  "oversatt": "프로젝트 이름을 입력하세요"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.button.bc0a7e281b1b": {
+  "nb": "Slett prosjektet for godt",
+  "en": "Delete the project for good",
+  "oversatt": "프로젝트 영구 삭제"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.button.e5b658a16060": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.dialog-description.4ebf95c78942": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "이 작업은 실행 취소할 수 없습니다."
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.dialog-title.d97ebb6c50a4": {
+  "nb": "Slett prosjektet «{name}»",
+  "en": "Delete the project “{name}”",
+  "oversatt": "“{name}” 프로젝트 삭제"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.20b3e6b53bed": {
+  "nb": "importerte manusfiler",
+  "en": "imported script files",
+  "oversatt": "가져온 대본 파일"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.50b0831075d2": {
+  "nb": "2D-scener, kamera og lydklipp i scenene",
+  "en": "2D scenes, camera and audio clips in the scenes",
+  "oversatt": "2D 씬, 카메라 및 씬 내의 오디오 클립"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.99180ed7b9ba": {
+  "nb": "manuset med alle versjoner, scener, notater og historikk",
+  "en": "the script with all versions, scenes, notes and history",
+  "oversatt": "모든 버전, 씬, 메모 및 히스토리가 포함된 대본"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.li.c66db6354cf7": {
+  "nb": "importert ferdig film",
+  "en": "imported finished film",
+  "oversatt": "가져온 완성된 영화"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.0b524d907477": {
+  "nb": "Dette slettes for godt:",
+  "en": "This is deleted for good:",
+  "oversatt": "다음 항목이 영구적으로 삭제됩니다:"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.173ae6d556fd": {
+  "nb": "Én annen person mister tilgangen til prosjektet med én gang.",
+  "en": "One other person loses access to the project immediately.",
+  "oversatt": "다른 1명이 프로젝트에 대한 접근 권한을 즉시 잃게 됩니다."
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.5a7689500b01": {
+  "nb": "nå. De blir liggende hos deg under «Ressurser fra slettede prosjekter», der du kan laste dem ned eller slette dem for godt senere.",
+  "en": "deleted now. They stay with you under “Assets from deleted projects”, where you can download them or delete them for good later.",
+  "oversatt": "지금 삭제됩니다. 해당 파일은 \"삭제된 프로젝트의 에셋\"에 유지되며, 나중에 다운로드하거나 완전히 삭제할 수 있습니다."
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.5b476a29a137": {
+  "nb": "Ressursene (bilder og lyd) slettes",
+  "en": "The assets (images and sound) are",
+  "oversatt": "에셋(이미지 및 오디오)은 다음과 같이 처리됩니다:"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.826310fe94d3": {
+  "nb": "Vil du ta vare på noe først? Last ned ressursene og den importerte filmen som zip:",
+  "en": "Want to keep anything first? Download the assets and the imported film as a zip:",
+  "oversatt": "먼저 보관하고 싶은 항목이 있나요? 에셋과 가져온 동영상을 zip 파일로 다운로드하세요:"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.83b62c631193": {
+  "nb": "Ressursene kunne ikke hentes.",
+  "en": "The assets could not be loaded.",
+  "oversatt": "에셋을 불러올 수 없습니다."
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.9fb9da1fd4b8": {
+  "nb": "Henter ressursene …",
+  "en": "Loading the assets …",
+  "oversatt": "에셋 불러오는 중…"
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.p.b791022ae6a5": {
+  "nb": "{others} andre personer mister tilgangen til prosjektet med én gang.",
+  "en": "{others} other people lose access to the project immediately.",
+  "oversatt": "다른 사용자 {others}명이 프로젝트에 대한 접근 권한을 즉시 잃게 됩니다."
+ },
+ "app-projects-project-danger-dialogs.delete-project-dialog.span.2c20765e33e3": {
+  "nb": "ikke",
+  "en": "not",
+  "oversatt": "삭제되지 않음"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.button.837d45676258": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.button.f6f664cc605f": {
+  "nb": "Forlat prosjektet",
+  "en": "Leave the project",
+  "oversatt": "프로젝트 나가기"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.dialog-description.63a27e749aee": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "이 작업은 실행 취소할 수 없습니다."
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.dialog-title.f22dbe568576": {
+  "nb": "Forlat «{name}»",
+  "en": "Leave “{name}”",
+  "oversatt": "\"{name}\" 나가기"
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.p.4c1a45a9fdcc": {
+  "nb": "Prosjektet og det du har laget i det, blir værende.",
+  "en": "The project and what you have made in it will remain.",
+  "oversatt": "프로젝트 및 프로젝트 내에서 생성한 작업물은 그대로 유지됩니다."
+ },
+ "app-projects-project-danger-dialogs.leave-project-dialog.p.56afd0369427": {
+  "nb": "Du mister tilgangen til prosjektet med én gang. Du kan ikke få den tilbake selv – en eier må invitere deg på nytt.",
+  "en": "You lose access to the project immediately. You cannot get it back yourself – an owner must invite you again.",
+  "oversatt": "프로젝트에 대한 접근 권한을 즉시 잃게 됩니다. 직접 다시 참여할 수 없으며, 소유자가 다시 초대해야 합니다."
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.button.a7c4bf25a6cb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.button.e4e5e0f6d476": {
+  "nb": "Slett ressursene for godt",
+  "en": "Delete the assets for good",
+  "oversatt": "에셋 영구 삭제"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.dialog-description.0c492303fda6": {
+  "nb": "Dette kan ikke angres.",
+  "en": "This cannot be undone.",
+  "oversatt": "이 작업은 실행 취소할 수 없습니다."
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.dialog-title.c0b866755c65": {
+  "nb": "Slett ressursene fra «{name}»",
+  "en": "Delete the assets from “{name}”",
+  "oversatt": "\"{name}\"의 에셋 삭제"
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.p.33bb677fe3d1": {
+  "nb": "Last dem ned som zip først hvis du vil ta vare på dem.",
+  "en": "Download them as a zip first if you want to keep them.",
+  "oversatt": "보관하려면 먼저 zip 파일로 다운로드하세요."
+ },
+ "app-projects-project-danger-dialogs.purge-assets-dialog.p.48090bc28a0e": {
+  "nb": "Alle bilder og lydfiler fra prosjektet slettes for godt, med alle versjoner og loggen over AI-genereringer. Prosjektet forsvinner helt fra lista.",
+  "en": "All images and sound files from the project are deleted for good, with all versions and the log of AI generations. The project disappears from the list entirely.",
+  "oversatt": "프로젝트의 모든 이미지와 오디오 파일이 모든 버전 및 AI 생성 기록과 함께 영구적으로 삭제됩니다. 프로젝트가 목록에서 완전히 사라집니다."
+ },
+ "app-projects-project-danger-dialogs.run.on-done.100e1e3fb25a": {
+  "nb": "Ressursene fra «{name}» er slettet for godt.",
+  "en": "The assets from “{name}” have been deleted for good.",
+  "oversatt": "\"{name}\"의 에셋이 영구적으로 삭제되었습니다."
+ },
+ "app-projects-project-danger-dialogs.run.on-done.b0b8212fc926": {
+  "nb": "Du har forlatt «{name}».",
+  "en": "You have left “{name}”.",
+  "oversatt": "\"{name}\"에서 나갔습니다."
+ },
+ "app-projects-project-danger-dialogs.run.on-done.cc136c86bed6": {
+  "nb": " {leftoverFiles} filer i lagringen kunne ikke slettes og blir liggende (de kan ikke nås fra appen).",
+  "en": " {leftoverFiles} files in storage could not be deleted and will remain (they cannot be reached from the app).",
+  "oversatt": " 저장소의 파일 {leftoverFiles}개를 삭제할 수 없어 그대로 유지됩니다(앱에서는 접근할 수 없습니다)."
+ },
+ "app-projects-project-danger-dialogs.run.on-done.f4a0c5bc7b5d": {
+  "nb": "«{name}» er slettet. Ressursene ligger under «Ressurser fra slettede prosjekter».",
+  "en": "“{name}” has been deleted. The assets are under “Assets from deleted projects”.",
+  "oversatt": "\"{name}\"이(가) 삭제되었습니다. 에셋은 \"삭제된 프로젝트의 에셋\"에 있습니다."
+ },
+ "app-projects-project-danger-dialogs.run.set-error.4e0cdb68fb60": {
+  "nb": "Databasen er ikke oppdatert ennå (migrasjon 0011).",
+  "en": "The database is not updated yet (migration 0011).",
+  "oversatt": "데이터베이스가 아직 업데이트되지 않았습니다(마이그레이션 0011)."
+ },
+ "app-projects-project-danger-dialogs.run.set-error.76738f486184": {
+  "nb": "Prosjektet ble ikke slettet.",
+  "en": "The project was not deleted.",
+  "oversatt": "프로젝트가 삭제되지 않았습니다."
+ },
+ "app-projects-project-danger-dialogs.run.set-error.c4fa650c29f1": {
+  "nb": "Ressursene ble ikke slettet.",
+  "en": "The assets were not deleted.",
+  "oversatt": "에셋이 삭제되지 않았습니다."
+ },
+ "app-projects-project-format.apply.cmds-run.64c007da8319": {
+  "nb": "Endre prosjektets format",
+  "en": "Change the project format",
+  "oversatt": "프로젝트 포맷 변경"
+ },
+ "app-projects-project-format.apply.set-err.eb874e528d22": {
+  "nb": "Bredde og høyde må være hele tall mellom 16 og 16384.",
+  "en": "Width and height must be whole numbers between 16 and 16384.",
+  "oversatt": "너비와 높이는 16에서 16384 사이의 정수여야 합니다."
+ },
+ "app-projects-project-format.project-format.aria-label.6f5176579e90": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "다시 실행"
+ },
+ "app-projects-project-format.project-format.aria-label.7cab821dc958": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "실행 취소: {undoLabel}"
+ },
+ "app-projects-project-format.project-format.aria-label.80c798f58696": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "실행 취소"
+ },
+ "app-projects-project-format.project-format.aria-label.bd9ba28e5ca5": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "다시 실행: {redoLabel}"
+ },
+ "app-projects-project-format.project-format.button.60ca46216cca": {
+  "nb": "Bruk",
+  "en": "Apply",
+  "oversatt": "적용"
+ },
+ "app-projects-project-format.project-format.h2.423e3164e1ea": {
+  "nb": "Bildeformat og bildefrekvens",
+  "en": "Frame size and frame rate",
+  "oversatt": "프레임 크기 및 프레임 레이트"
+ },
+ "app-projects-project-format.project-format.label.3a661dd47897": {
+  "nb": "Bildeformat",
+  "en": "Frame size",
+  "oversatt": "프레임 크기"
+ },
+ "app-projects-project-format.project-format.label.73444978f6aa": {
+  "nb": "Bredde (px)",
+  "en": "Width (px)",
+  "oversatt": "너비(px)"
+ },
+ "app-projects-project-format.project-format.label.a68cae0d2bd2": {
+  "nb": "Bilder per sekund",
+  "en": "Frames per second",
+  "oversatt": "초당 프레임 수"
+ },
+ "app-projects-project-format.project-format.label.b894d518d0e7": {
+  "nb": "Høyde (px)",
+  "en": "Height (px)",
+  "oversatt": "높이(px)"
+ },
+ "app-projects-project-format.project-format.option.86ba15a5ea61": {
+  "nb": "Egendefinert",
+  "en": "Custom",
+  "oversatt": "사용자 지정"
+ },
+ "app-projects-project-format.project-format.p.180e72ac6416": {
+  "nb": "blir tilpasset: plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder og kamerautsnitt regnes om til ny bildefrekvens. Kan angres.",
+  "en": "are adjusted: position and camera are scaled so the frame height is kept and the centre stays fixed, and keyframes and camera shots are recalculated for the new frame rate. Can be undone.",
+  "oversatt": "조정됨: 프레임 높이를 유지하고 중심을 고정한 상태로 위치와 카메라가 스케일링되며, 키프레임과 카메라 샷이 새 프레임 레이트에 맞게 다시 계산됩니다. 실행 취소할 수 있습니다."
+ },
+ "app-projects-project-format.project-format.p.3ccc868a7b52": {
+  "nb": "{scenes} 2D-scener",
+  "en": "{scenes} 2D scenes",
+  "oversatt": "{scenes}개의 2D 씬"
+ },
+ "app-projects-project-format.project-format.p.6883f3682c39": {
+  "nb": "Gjelder hele prosjektet: alle scener i sceneeditoren, avspilling og eksport.",
+  "en": "Applies to the whole project: all scenes in the scene editor, playback and export.",
+  "oversatt": "프로젝트 전체에 적용: 씬 편집기의 모든 씬, 재생 및 내보내기."
+ },
+ "app-projects-project-format.project-format.p.a1048613d0c6": {
+  "nb": "Én 2D-scene",
+  "en": "One 2D scene",
+  "oversatt": "2D 씬 1개"
+ },
+ "app-projects-project-format.project-format.title.6f5176579e90": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "다시 실행"
+ },
+ "app-projects-project-format.project-format.title.7cab821dc958": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "실행 취소: {undoLabel}"
+ },
+ "app-projects-project-format.project-format.title.80c798f58696": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "실행 취소"
+ },
+ "app-projects-project-format.project-format.title.bd9ba28e5ca5": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "다시 실행: {redoLabel}"
+ },
+ "app-projects-project-overview.invite-form.button.ba71c19a1d36": {
+  "nb": "Lag invitasjon",
+  "en": "Create invitation",
+  "oversatt": "초대 생성"
+ },
+ "app-projects-project-overview.invite-form.button.d82ccdd2935d": {
+  "nb": "Kopier",
+  "en": "Copy",
+  "oversatt": "복사"
+ },
+ "app-projects-project-overview.invite-form.label.eae13d71688e": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "이메일"
+ },
+ "app-projects-project-overview.invite-form.label.efe938ec20e7": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "역할"
+ },
+ "app-projects-project-overview.invite-form.option.17787f224706": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "댓글 작성자"
+ },
+ "app-projects-project-overview.invite-form.option.d07ee75c7b75": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "뷰어"
+ },
+ "app-projects-project-overview.invite-form.option.f83206c7c9d6": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "편집자"
+ },
+ "app-projects-project-overview.invite-form.p.3dffbff2098a": {
+  "nb": "Send denne lenken til mottakeren. Den vises bare nå og gjelder i 14 dager.",
+  "en": "Send this link to the recipient. It is only shown now and is valid for 14 days.",
+  "oversatt": "이 링크를 수신자에게 보내세요. 지금만 표시되며 14일 동안 유효합니다."
+ },
+ "app-projects-project-overview.invite-form.p.b503b20a4399": {
+  "nb": "Invitasjonen kunne ikke lages.",
+  "en": "The invitation could not be created.",
+  "oversatt": "초대를 생성할 수 없습니다."
+ },
+ "app-projects-project-overview.invite-form.placeholder.0051983f3d79": {
+  "nb": "E-post til den du vil invitere",
+  "en": "Email of the person you want to invite",
+  "oversatt": "초대할 사람의 이메일"
+ },
+ "app-projects-project-overview.project-mobile-import.button.7c77e8de0962": {
+  "nb": "Importer fra mobil",
+  "en": "Import from mobile",
+  "oversatt": "모바일에서 가져오기"
+ },
+ "app-projects-project-overview.project-mobile-import.label.93d00272760b": {
+  "nb": "Mobilimport til prosjektet",
+  "en": "Mobile import to the project",
+  "oversatt": "프로젝트로 모바일 가져오기"
+ },
+ "app-projects-project-overview.project-mobile-import.title.fd433bb23824": {
+  "nb": "Ta bilder og video med mobilen, eller velg filer der – de kommer rett inn i prosjektet",
+  "en": "Take pictures and video with your phone, or choose files there – they come straight into the project",
+  "oversatt": "휴대폰으로 사진과 동영상을 촬영하거나 파일을 선택하면 프로젝트로 바로 가져옵니다"
+ },
+ "app-projects-project-overview.project-overview.h2.935722885715": {
+  "nb": "Medlemmer",
+  "en": "Members",
+  "oversatt": "멤버"
+ },
+ "app-projects-project-overview.project-overview.h2.c605146a3256": {
+  "nb": "Produksjoner",
+  "en": "Productions",
+  "oversatt": "프로덕션"
+ },
+ "app-projects-project-overview.project-overview.label.1892d5b35b15": {
+  "nb": "Henter prosjektet …",
+  "en": "Loading the project …",
+  "oversatt": "프로젝트 불러오는 중…"
+ },
+ "app-projects-project-overview.project-overview.link.d84287021552": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "대본 가져오기"
+ },
+ "app-projects-project-overview.project-overview.message.e8d82c6ba27d": {
+  "nb": "Prosjektet kunne ikke hentes. Det finnes ikke, du har ikke tilgang, eller noe gikk galt.",
+  "en": "The project could not be loaded. It does not exist, you do not have access, or something went wrong.",
+  "oversatt": "프로젝트를 불러올 수 없습니다. 존재하지 않거나, 접근 권한이 없거나, 오류가 발생했습니다."
+ },
+ "app-projects-project-overview.project-overview.p.304d29fc3cab": {
+  "nb": "bilder/s",
+  "en": "frames/s",
+  "oversatt": "프레임/초"
+ },
+ "app-projects-project-overview.project-overview.p.43a72081e427": {
+  "nb": "Hovedspråk norsk ·",
+  "en": "Main language: Norwegian ·",
+  "oversatt": "기본 언어: 노르웨이어 ·"
+ },
+ "app-projects-project-overview.project-overview.span.0b610697a8a4": {
+  "nb": "Teknisk detalj (send gjerne til Claude):",
+  "en": "Technical detail (feel free to send to Claude):",
+  "oversatt": "기술적 세부사항 (Claude에 전달 가능):"
+ },
+ "app-projects-project-overview.project-overview.span.a041cc091ba2": {
+  "nb": "Hovedfilmen har ingen scener ennå.",
+  "en": "The main film has no scenes yet.",
+  "oversatt": "메인 필름에 아직 씬이 없습니다."
+ },
+ "app-projects-project-todo-box.mark-all-read": {
+  "nb": "Merk alle som lest",
+  "en": "Mark all as read",
+  "oversatt": "모두 읽음으로 표시"
+ },
+ "app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "모두 표시"
+ },
+ "app-projects-project-todo-box.project-todo-box.button.86a35ad92db8": {
+  "nb": "Vis færre",
+  "en": "Show fewer",
+  "oversatt": "간략히 표시"
+ },
+ "app-projects-project-todo-box.project-todo-box.h2.c773fde750b7": {
+  "nb": "TODO",
+  "en": "TODO",
+  "oversatt": "할 일"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.2c4d42ee9d02": {
+  "nb": "Gå til første scene",
+  "en": "Go to the first scene",
+  "oversatt": "첫 번째 씬으로 이동"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.99bb3b1415f1": {
+  "nb": "Scene {value1}",
+  "en": "Scene {value1}",
+  "oversatt": "씬 {value1}"
+ },
+ "app-projects-project-todo-box.project-todo-box.link.c3d2e45ca772": {
+  "nb": "Se i monteringen",
+  "en": "See in assembly",
+  "oversatt": "편집(어셈블리)에서 보기"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.2e1ba2b88d4d": {
+  "nb": "{discrepancyScenes} scener har",
+  "en": "{discrepancyScenes} scenes have",
+  "oversatt": "{discrepancyScenes}개 씬에 불일치가 있습니다"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.3470acb79010": {
+  "nb": "{failedJobs} AI-genereringer feilet eller ble borte siste uke – se AI-statusen øverst.",
+  "en": "{failedJobs} AI generations failed or were lost in the last week – see the AI status at the top.",
+  "oversatt": "지난주에 {failedJobs}개의 AI 생성이 실패했거나 유실되었습니다. 상단의 AI 상태를 확인하세요."
+ },
+ "app-projects-project-todo-box.project-todo-box.p.3822f3cbeeef": {
+  "nb": "Én scene har",
+  "en": "One scene has",
+  "oversatt": "1개 씬에 불일치가 있습니다"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.4f991887329d": {
+  "nb": "Ett notat fra andre i manuset",
+  "en": "One note from others in the script",
+  "oversatt": "대본에 다른 사용자의 노트 1개 있음"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.61e67abdc149": {
+  "nb": "Ingenting som venter akkurat nå.",
+  "en": "Nothing waiting right now.",
+  "oversatt": "현재 대기 중인 항목 없음"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.82edc7d1f313": {
+  "nb": "{length} notater fra andre i manuset",
+  "en": "{length} notes from others in the script",
+  "oversatt": "대본에 다른 사용자의 노트 {length}개 있음"
+ },
+ "app-projects-project-todo-box.project-todo-box.p.8ebd7504c0a4": {
+  "nb": "Én AI-generering feilet eller ble borte siste uke – se AI-statusen øverst.",
+  "en": "One AI generation failed or was lost in the last week – see the AI status at the top.",
+  "oversatt": "지난주에 AI 생성 1건이 실패했거나 유실되었습니다. 상단의 AI 상태를 확인하세요."
+ },
+ "app-projects-project-todo-box.project-todo-box.p.ec4f4f6d847e": {
+  "nb": "manusendringer etter at 2D-scene eller film ble laget.",
+  "en": "script changes since its 2D scene or film was made.",
+  "oversatt": "2D 씬 또는 필름 생성 이후 변경된 대본 내용."
+ },
+ "app-projects-project-todo-box.project-todo-box.span.b976cf4d9c0d": {
+  "nb": "«{assetName}» skal inn i {length} scener – {remaining} gjenstår",
+  "en": "“{assetName}” goes into {length} scenes – {remaining} left",
+  "oversatt": "“{assetName}” 에셋이 {length}개 씬에 들어감 – {remaining}개 남음"
+ },
+ "app-projects-projects-screen.owners.sorted-map.691f4e2d0597": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "알 수 없음"
+ },
+ "app-projects-projects-screen.person-name.message.5a45255f5d1b": {
+  "nb": "deg",
+  "en": "you",
+  "oversatt": "나"
+ },
+ "app-projects-projects-screen.person-name.message.ddcd5f5ef017": {
+  "nb": "ukjent bruker",
+  "en": "unknown user",
+  "oversatt": "알 수 없는 사용자"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.20089e6afbf6": {
+  "nb": "Handlinger for {name}",
+  "en": "Actions for {name}",
+  "oversatt": "{name} 작업"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.4e70b05e2758": {
+  "nb": "Ressurser fra slettede prosjekter",
+  "en": "Assets from deleted projects",
+  "oversatt": "삭제된 프로젝트의 에셋"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.80782a130cdb": {
+  "nb": "Filmer i {name}",
+  "en": "Films in {name}",
+  "oversatt": "{name}의 필름 목록"
+ },
+ "app-projects-projects-screen.projects-screen.aria-label.a2ba9a0063a8": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "프로젝트"
+ },
+ "app-projects-projects-screen.projects-screen.button.3c8b0a9d15f3": {
+  "nb": "Last ned …",
+  "en": "Download …",
+  "oversatt": "다운로드…"
+ },
+ "app-projects-projects-screen.projects-screen.button.52e0ec6bee64": {
+  "nb": "Utvikle nytt prosjekt med skriveassistent",
+  "en": "Develop a new project with the writing assistant",
+  "oversatt": "글쓰기 어시스턴트로 새 프로젝트 개발"
+ },
+ "app-projects-projects-screen.projects-screen.button.81fb7f5ba35d": {
+  "nb": "Opprett ditt første prosjekt",
+  "en": "Create your first project",
+  "oversatt": "첫 프로젝트 생성"
+ },
+ "app-projects-projects-screen.projects-screen.button.c36722de4cc3": {
+  "nb": "Gjenopprett fra sikkerhetskopi …",
+  "en": "Restore from backup …",
+  "oversatt": "백업에서 복원…"
+ },
+ "app-projects-projects-screen.projects-screen.button.d47cbc393746": {
+  "nb": "Opprett",
+  "en": "Create",
+  "oversatt": "생성"
+ },
+ "app-projects-projects-screen.projects-screen.button.d6a9b1452650": {
+  "nb": "Slett for godt …",
+  "en": "Delete for good …",
+  "oversatt": "영구 삭제…"
+ },
+ "app-projects-projects-screen.projects-screen.button.db5895b4c0f7": {
+  "nb": "Nytt prosjekt",
+  "en": "New project",
+  "oversatt": "새 프로젝트"
+ },
+ "app-projects-projects-screen.projects-screen.button.f906b0863ecc": {
+  "nb": "AI-leverandører …",
+  "en": "AI providers …",
+  "oversatt": "AI 제공업체…"
+ },
+ "app-projects-projects-screen.projects-screen.button.fd432d48ff10": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.728534d50242": {
+  "nb": "Last ned ressurser …",
+  "en": "Download assets …",
+  "oversatt": "에셋 다운로드…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.ac48481c6e9a": {
+  "nb": "Forlat prosjekt …",
+  "en": "Leave project …",
+  "oversatt": "프로젝트 나가기…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.c18c43ad8b8a": {
+  "nb": "Slett prosjekt …",
+  "en": "Delete project …",
+  "oversatt": "프로젝트 삭제…"
+ },
+ "app-projects-projects-screen.projects-screen.dropdown-menu-item.c8a1abd0cec2": {
+  "nb": "Sikkerhetskopi …",
+  "en": "Backup …",
+  "oversatt": "백업…"
+ },
+ "app-projects-projects-screen.projects-screen.h1.a2ba9a0063a8": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "프로젝트"
+ },
+ "app-projects-projects-screen.projects-screen.h2.4e70b05e2758": {
+  "nb": "Ressurser fra slettede prosjekter",
+  "en": "Assets from deleted projects",
+  "oversatt": "삭제된 프로젝트의 에셋"
+ },
+ "app-projects-projects-screen.projects-screen.hint.0f7f0eb700b0": {
+  "nb": "Opprett et prosjekt, eller be en prosjekteier om en invitasjon.",
+  "en": "Create a project, or ask a project owner for an invitation.",
+  "oversatt": "프로젝트를 생성하거나 프로젝트 소유자에게 초대를 요청하세요."
+ },
+ "app-projects-projects-screen.projects-screen.label.4ac8886a5cb6": {
+  "nb": "Prosjektnavn",
+  "en": "Project name",
+  "oversatt": "프로젝트 이름"
+ },
+ "app-projects-projects-screen.projects-screen.label.64a883d59754": {
+  "nb": "Kort idé",
+  "en": "Short idea",
+  "oversatt": "간단한 아이디어"
+ },
+ "app-projects-projects-screen.projects-screen.label.9fe8335868e8": {
+  "nb": "Henter prosjekter …",
+  "en": "Loading projects …",
+  "oversatt": "프로젝트 불러오는 중…"
+ },
+ "app-projects-projects-screen.projects-screen.message.8e11c986d83b": {
+  "nb": "Prosjektene kunne ikke hentes.",
+  "en": "The projects could not be loaded.",
+  "oversatt": "프로젝트를 불러올 수 없습니다."
+ },
+ "app-projects-projects-screen.projects-screen.p.07de4a3517ea": {
+  "nb": "Prosjektet kunne ikke opprettes.",
+  "en": "The project could not be created.",
+  "oversatt": "프로젝트를 생성할 수 없습니다."
+ },
+ "app-projects-projects-screen.projects-screen.p.443cb9ea8879": {
+  "nb": "Databasen er kanskje ikke satt opp ennå.",
+  "en": "The database may not be set up yet.",
+  "oversatt": "데이터베이스가 아직 설정되지 않았을 수 있습니다."
+ },
+ "app-projects-projects-screen.projects-screen.p.4dc1f46d3b02": {
+  "nb": "Filmer du eier eller er invitert inn i, med spinoffer og andre versjoner.",
+  "en": "Films you own or have been invited to, with spin-offs and other versions.",
+  "oversatt": "소유하거나 초대받은 필름(스핀오프 및 기타 버전 포함)."
+ },
+ "app-projects-projects-screen.projects-screen.p.526f9a47fbd8": {
+  "nb": "Prosjektene er slettet, men bildene og lyden er tatt vare på. Last dem ned, eller slett dem for godt. Senere skal ressurser kunne gjøres globale og brukes i andre prosjekter.",
+  "en": "The projects are deleted, but the images and sound have been kept. Download them, or delete them for good. Later, assets will be able to be made global and used in other projects.",
+  "oversatt": "프로젝트는 삭제되었지만 이미지와 오디오는 보존되었습니다. 다운로드하거나 영구 삭제하세요. 향후에는 에셋을 글로벌로 전환하여 다른 프로젝트에서도 사용할 수 있게 됩니다."
+ },
+ "app-projects-projects-screen.projects-screen.p.aac736a063bc": {
+  "nb": "Henter filmene …",
+  "en": "Loading the films …",
+  "oversatt": "필름 불러오는 중…"
+ },
+ "app-projects-projects-screen.projects-screen.placeholder.0cc91ba3adf2": {
+  "nb": "Prosjektnavn, f.eks. filmens tittel",
+  "en": "Project name, e.g. the film's title",
+  "oversatt": "프로젝트 이름(예: 필름 제목)"
+ },
+ "app-projects-projects-screen.projects-screen.placeholder.f03a2886b6d0": {
+  "nb": "Kort idé til skriveassistenten (valgfritt)",
+  "en": "Short idea for the writing assistant (optional)",
+  "oversatt": "글쓰기 어시스턴트를 위한 간단한 아이디어 (선택 사항)"
+ },
+ "app-projects-projects-screen.projects-screen.span.1be386492308": {
+  "nb": "{length} filmer",
+  "en": "{length} films",
+  "oversatt": "영화 {length}편"
+ },
+ "app-projects-projects-screen.projects-screen.span.3607cfacb937": {
+  "nb": "1 film",
+  "en": "1 film",
+  "oversatt": "영화 1편"
+ },
+ "app-projects-projects-screen.projects-screen.span.69ddbf4e4534": {
+  "nb": "{length} medlemmer",
+  "en": "{length} members",
+  "oversatt": "멤버 {length}명"
+ },
+ "app-projects-projects-screen.projects-screen.span.80a8cc750f16": {
+  "nb": "Opprettet {value1}",
+  "en": "Created {value1}",
+  "oversatt": "생성일: {value1}"
+ },
+ "app-projects-projects-screen.projects-screen.span.a41f483c3d2d": {
+  "nb": "Eiere: {owners}",
+  "en": "Owners: {owners}",
+  "oversatt": "소유자: {owners}"
+ },
+ "app-projects-projects-screen.projects-screen.span.b5e505e15968": {
+  "nb": "Eier: {owners}",
+  "en": "Owner: {owners}",
+  "oversatt": "소유자: {owners}"
+ },
+ "app-projects-projects-screen.projects-screen.span.dcd013ecb85b": {
+  "nb": "1 medlem",
+  "en": "1 member",
+  "oversatt": "멤버 1명"
+ },
+ "app-projects-projects-screen.projects-screen.span.ff77d21acbe6": {
+  "nb": "slettet {value1}",
+  "en": "deleted {value1}",
+  "oversatt": "삭제됨: {value1}"
+ },
+ "app-projects-projects-screen.projects-screen.title.622d83c45445": {
+  "nb": "Opprett prosjektet og utvikle idéen i et intervju i Story Lab. Det du godkjenner, overføres til biblioteket og manuset.",
+  "en": "Create the project and develop the idea in an interview in Story Lab. What you approve is transferred to the library and the script.",
+  "oversatt": "프로젝트를 생성하고 Story Lab의 인터뷰를 통해 아이디어를 발전시키세요. 승인한 내용은 라이브러리와 대본으로 전송됩니다."
+ },
+ "app-projects-projects-screen.projects-screen.title.e72a69906d76": {
+  "nb": "Du har ingen prosjekter ennå.",
+  "en": "You have no projects yet.",
+  "oversatt": "아직 프로젝트가 없습니다."
+ },
+ "app-projects-projects-screen.role-label.commenter.be89d56414e9": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "댓글 작성자"
+ },
+ "app-projects-projects-screen.role-label.editor.f41247266ec1": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "편집자"
+ },
+ "app-projects-projects-screen.role-label.owner.3c69c8270508": {
+  "nb": "Eier",
+  "en": "Owner",
+  "oversatt": "소유자"
+ },
+ "app-projects-projects-screen.role-label.viewer.1a2775cd37f9": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "뷰어"
+ },
+ "app-projects-projects-screen.your-role.commenter.98aabc5298fa": {
+  "nb": "Du kommenterer",
+  "en": "You are a commenter",
+  "oversatt": "댓글 작성자 권한입니다"
+ },
+ "app-projects-projects-screen.your-role.editor.7692a90b3fe7": {
+  "nb": "Du er redaktør",
+  "en": "You are an editor",
+  "oversatt": "편집자 권한입니다"
+ },
+ "app-projects-projects-screen.your-role.owner.54ba81a79c8f": {
+  "nb": "Du eier prosjektet",
+  "en": "You own this project",
+  "oversatt": "이 프로젝트의 소유자입니다"
+ },
+ "app-projects-projects-screen.your-role.viewer.e40a6aa951dd": {
+  "nb": "Du kan lese",
+  "en": "You can view",
+  "oversatt": "보기 권한이 있습니다"
+ },
+ "app-projects-promotion-dialog.changes-carried-over": {
+  "nb": {
+   "one": "{count} endring er ført over til hovedfilmen.",
+   "other": "{count} endringer er ført over til hovedfilmen."
+  },
+  "en": {
+   "one": "{count} change has been carried over to the main film.",
+   "other": "{count} changes have been carried over to the main film."
+  },
+  "oversatt": {
+   "other": "변경사항 {count}개가 메인 필름으로 반영되었습니다."
+  }
+ },
+ "app-projects-promotion-dialog.compare.aria-label.ae3e0749d03e": {
+  "nb": "Overfør laget {value1}",
+  "en": "Transfer the layer {value1}",
+  "oversatt": "{value1} 레이어 전송"
+ },
+ "app-projects-promotion-dialog.compare.aria-label.bcabacb600fb": {
+  "nb": "Overfør linjen {value1}",
+  "en": "Transfer the line {value1}",
+  "oversatt": "{value1} 대사 전송"
+ },
+ "app-projects-promotion-dialog.compare.label.2c38c01459ec": {
+  "nb": "Bakgrunnsfarge",
+  "en": "Background colour",
+  "oversatt": "배경색"
+ },
+ "app-projects-promotion-dialog.compare.label.865403af773a": {
+  "nb": "Ja, bytt ut den godkjente versjonen (den tas vare på og kan velges igjen)",
+  "en": "Yes, replace the approved version (it is kept and can be chosen again)",
+  "oversatt": "예, 승인된 버전을 교체합니다(이전 버전은 보관되어 다시 선택할 수 있음)"
+ },
+ "app-projects-promotion-dialog.compare.li.5ea72ee445e1": {
+  "nb": "Endret: ",
+  "en": "Changed: ",
+  "oversatt": "변경됨: "
+ },
+ "app-projects-promotion-dialog.compare.li.70ba04bf85c1": {
+  "nb": "Fjernet: ",
+  "en": "Removed: ",
+  "oversatt": "삭제됨: "
+ },
+ "app-projects-promotion-dialog.compare.li.d0c2e319b569": {
+  "nb": "Ny: ",
+  "en": "New: ",
+  "oversatt": "새 항목: "
+ },
+ "app-projects-promotion-dialog.compare.li.ea78e0b6c171": {
+  "nb": "lyd",
+  "en": "audio",
+  "oversatt": "오디오"
+ },
+ "app-projects-promotion-dialog.compare.p.7a881726f052": {
+  "nb": "Hovedfilmen:",
+  "en": "Main film:",
+  "oversatt": "메인 필름:"
+ },
+ "app-projects-promotion-dialog.compare.p.8b2163a2bbfe": {
+  "nb": "Lengde på 2D-scenen:",
+  "en": "Length of the 2D scene:",
+  "oversatt": "2D 씬 길이:"
+ },
+ "app-projects-promotion-dialog.compare.p.a5e5fdb270d3": {
+  "nb": "Ingen forskjeller igjen – spinoffens versjon er lik hovedfilmens.",
+  "en": "No differences left – the spin-off's version is the same as the main film's.",
+  "oversatt": "남은 차이점이 없습니다. 스핀오프 버전이 메인 필름과 동일합니다."
+ },
+ "app-projects-promotion-dialog.compare.p.a8edd073b27c": {
+  "nb": "Hovedfilmen har ingen 2D-scene her. Velger du et lag, kopieres hele 2D-scenen.",
+  "en": "The main film has no 2D scene here. If you choose a layer, the whole 2D scene is copied.",
+  "oversatt": "메인 필름의 이 위치에 2D 씬이 없습니다. 레이어를 선택하면 전체 2D 씬이 복사됩니다."
+ },
+ "app-projects-promotion-dialog.compare.p.c3926eed6570": {
+  "nb": " · {links} tidskoblinger er ulike",
+  "en": " · {links} time links differ",
+  "oversatt": " · 시간 링크 {links}개 다름"
+ },
+ "app-projects-promotion-dialog.compare.p.c6cd03766050": {
+  "nb": "{main} kamerautsnitt i hovedfilmen, {spin} i spinoffen (med endringer).",
+  "en": "{main} camera shots in the main film, {spin} in the spin-off (with changes).",
+  "oversatt": "메인 필름의 카메라 샷 {main}개, 스핀오프의 샷 {spin}개(변경사항 포함)."
+ },
+ "app-projects-promotion-dialog.compare.p.d6492cdcb352": {
+  "nb": "(med spinoffens klipping)",
+  "en": "(with the spin-off's editing)",
+  "oversatt": "(스핀오프의 편집 적용)"
+ },
+ "app-projects-promotion-dialog.compare.p.e098ea2eba1c": {
+  "nb": "Endringene lagres med historikk i hovedfilmen. Materiale laget fra det gamle manuset flagges som avvik, så du kan velge å godkjenne eller oppdatere det.",
+  "en": "The changes are saved with history in the main film. Material made from the old script is flagged as a discrepancy, so you can choose to approve or update it.",
+  "oversatt": "변경사항은 히스토리와 함께 메인 필름에 저장됩니다. 이전 대본으로 만든 자료는 불일치로 표시되므로 승인하거나 업데이트하도록 선택할 수 있습니다."
+ },
+ "app-projects-promotion-dialog.compare.p.ff98ba6917f2": {
+  "nb": "Spinoffen:",
+  "en": "Spin-off:",
+  "oversatt": "스핀오프:"
+ },
+ "app-projects-promotion-dialog.compare.span.1a03cc658d45": {
+  "nb": "Linjen er også endret i hovedfilmen. Hovedfilmens tekst erstattes hvis du krysser av.",
+  "en": "The line has also been changed in the main film. The main film's text is replaced if you tick it.",
+  "oversatt": "이 대사는 메인 필름에서도 변경되었습니다. 선택하면 메인 필름의 텍스트가 대체됩니다."
+ },
+ "app-projects-promotion-dialog.compare.span.4272f77508d9": {
+  "nb": "– fjernet i spinoffen",
+  "en": "– removed in the spin-off",
+  "oversatt": "– 스핀오프에서 삭제됨"
+ },
+ "app-projects-promotion-dialog.compare.span.878139a86430": {
+  "nb": "Spinoff-versjonen",
+  "en": "Spin-off version",
+  "oversatt": "스핀오프 버전"
+ },
+ "app-projects-promotion-dialog.compare.span.9bae87671b44": {
+  "nb": "Scenehode:",
+  "en": "Scene heading:",
+  "oversatt": "씬 제목:"
+ },
+ "app-projects-promotion-dialog.compare.span.c07b553b10e9": {
+  "nb": "Hovedfilmen bruker en godkjent versjon av scenen.",
+  "en": "The main film uses an approved version of the scene.",
+  "oversatt": "메인 필름에서 승인된 버전의 씬을 사용하고 있습니다."
+ },
+ "app-projects-promotion-dialog.compare.span.cdff22eef7af": {
+  "nb": "Lag",
+  "en": "Layer",
+  "oversatt": "레이어"
+ },
+ "app-projects-promotion-dialog.compare.span.dda1bf8bb55f": {
+  "nb": "– nytt lag",
+  "en": "– new layer",
+  "oversatt": "– 새 레이어"
+ },
+ "app-projects-promotion-dialog.compare.span.de9c53a9806b": {
+  "nb": "Hovedfilmen (original)",
+  "en": "Main film (original)",
+  "oversatt": "메인 필름(원본)"
+ },
+ "app-projects-promotion-dialog.compare.span.fbda5e3f8bda": {
+  "nb": "– endret: {value1}",
+  "en": "– changed: {value1}",
+  "oversatt": "– 변경됨: {value1}"
+ },
+ "app-projects-promotion-dialog.compare.title.0c592e97f9c2": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-projects-promotion-dialog.compare.title.447b692dff0e": {
+  "nb": "Kamera",
+  "en": "Camera",
+  "oversatt": "카메라"
+ },
+ "app-projects-promotion-dialog.compare.title.9b137853ddf2": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "오디오"
+ },
+ "app-projects-promotion-dialog.compare.title.b9a1253d8f24": {
+  "nb": "Bilde (2D-scenen)",
+  "en": "Image (2D scene)",
+  "oversatt": "이미지(2D 씬)"
+ },
+ "app-projects-promotion-dialog.compare.title.d6d40f18ab16": {
+  "nb": "Ferdig film og klipping",
+  "en": "Finished film and editing",
+  "oversatt": "완성본 필름 및 편집"
+ },
+ "app-projects-promotion-dialog.e.run-plan.85c29795bb98": {
+  "nb": "Tilbakefør fra {name}",
+  "en": "Transfer back from {name}",
+  "oversatt": "{name}에서 다시 가져오기"
+ },
+ "app-projects-promotion-dialog.e.run-plan.8affef3035ab": {
+  "nb": "Ny hovedfilmversjon fra {name}",
+  "en": "New main film version from {name}",
+  "oversatt": "{name}의 새 메인 필름 버전"
+ },
+ "app-projects-promotion-dialog.e.run-plan.d2791bd75831": {
+  "nb": "Overfør scene fra {name}",
+  "en": "Transfer scene from {name}",
+  "oversatt": "{name}에서 씬 가져오기"
+ },
+ "app-projects-promotion-dialog.line-label.added.5e0f1f0f90b7": {
+  "nb": "Ny linje",
+  "en": "New line",
+  "oversatt": "새 대사"
+ },
+ "app-projects-promotion-dialog.line-label.changed.3a4f47e50aa9": {
+  "nb": "Endret",
+  "en": "Changed",
+  "oversatt": "변경됨"
+ },
+ "app-projects-promotion-dialog.line-label.conflict.e5d59030f073": {
+  "nb": "Endret i begge",
+  "en": "Changed in both",
+  "oversatt": "양쪽 모두 변경됨"
+ },
+ "app-projects-promotion-dialog.line-label.main-newer.ba3bde32f60b": {
+  "nb": "Nyere i hovedfilmen",
+  "en": "Newer in the main film",
+  "oversatt": "메인 필름 버전이 더 최신임"
+ },
+ "app-projects-promotion-dialog.line-label.removed.de2335fbb7d7": {
+  "nb": "Fjernet",
+  "en": "Removed",
+  "oversatt": "제거됨"
+ },
+ "app-projects-promotion-dialog.name.message.cc876cf60166": {
+  "nb": "spinoffen",
+  "en": "the spin-off",
+  "oversatt": "스핀오프"
+ },
+ "app-projects-promotion-dialog.new-scene.aria-label.7abbeeba7e06": {
+  "nb": "Plassering i hovedfilmen",
+  "en": "Placement in the main film",
+  "oversatt": "메인 필름 내 배치"
+ },
+ "app-projects-promotion-dialog.new-scene.label.06b01496b3be": {
+  "nb": "Ta med lyd og tidskoblinger",
+  "en": "Include audio and time links",
+  "oversatt": "오디오 및 타이밍 링크 포함"
+ },
+ "app-projects-promotion-dialog.new-scene.label.7abbeeba7e06": {
+  "nb": "Plassering i hovedfilmen",
+  "en": "Placement in the main film",
+  "oversatt": "메인 필름 내 배치"
+ },
+ "app-projects-promotion-dialog.new-scene.option.c962a0f3c610": {
+  "nb": "Etter {label}",
+  "en": "After {label}",
+  "oversatt": "{label} 뒤"
+ },
+ "app-projects-promotion-dialog.new-scene.option.faff99bf2566": {
+  "nb": "Først i filmen",
+  "en": "First in the film",
+  "oversatt": "필름 맨 앞"
+ },
+ "app-projects-promotion-dialog.new-scene.p.69a6173e278b": {
+  "nb": "Scenen finnes bare i spinoffen. Den kan legges inn i hovedfilmen som en egen kopi (manus, historikk, oversettelser og 2D-scene). Spinoffens versjon endres ikke.",
+  "en": "The scene exists only in the spin-off. It can be added to the main film as its own copy (script, history, translations and 2D scene). The spin-off's version is not changed.",
+  "oversatt": "이 씬은 스핀오프에만 존재합니다. 별도의 복사본(대본, 히스토리, 번역 및 2D 씬)으로 메인 필름에 추가할 수 있습니다. 스핀오프 버전은 변경되지 않습니다."
+ },
+ "app-projects-promotion-dialog.new-version.finish.f19a616606c5": {
+  "nb": "Hovedfilmen bruker nå en egen kopi av spinoffens versjon. Den gamle versjonen er tatt vare på.",
+  "en": "The main film now uses its own copy of the spin-off's version. The old version has been kept.",
+  "oversatt": "이제 메인 필름에서 스핀오프 버전의 복사본을 사용합니다. 이전 버전은 유지됩니다."
+ },
+ "app-projects-promotion-dialog.promotion-dialog.aria-label.d8820e5131ae": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.267f7e080ae2": {
+  "nb": "Overfør valgte",
+  "en": "Transfer selected",
+  "oversatt": "선택 항목 가져오기"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.2fc6e9330fd2": {
+  "nb": "Overfør scenen til hovedfilmen",
+  "en": "Transfer the scene to the main film",
+  "oversatt": "씬을 메인 필름으로 가져오기"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.36fa69ec1375": {
+  "nb": "Bare manus",
+  "en": "Script only",
+  "oversatt": "대본만"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.7fca6a523481": {
+  "nb": "Lag ny hovedfilmversjon",
+  "en": "Make new main film version",
+  "oversatt": "새 메인 필름 버전 만들기"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.button.907a0100b618": {
+  "nb": "Behold alt uendret",
+  "en": "Keep everything unchanged",
+  "oversatt": "모두 변경 없이 유지"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.dialog-description.ed5d572466ab": {
+  "nb": "Scenene spinoffen har endret eller skrevet selv. Velg hva som skal føres over – ingenting skjer før du trykker «Overfør», og alt kan angres. Gamle versjoner tas vare på.",
+  "en": "The scenes the spin-off has changed or written itself. Choose what to carry over – nothing happens until you press “Transfer”, and everything can be undone. Old versions are kept.",
+  "oversatt": "스핀오프에서 변경했거나 직접 작성한 씬입니다. 가져올 항목을 선택하세요. '가져오기'를 누르기 전에는 아무것도 적용되지 않으며, 모두 실행 취소할 수 있습니다. 이전 버전은 유지됩니다."
+ },
+ "app-projects-promotion-dialog.promotion-dialog.dialog-title.62677a2313dc": {
+  "nb": "Tilbakefør fra «{name}» til hovedfilmen",
+  "en": "Transfer back from “{name}” to the main film",
+  "oversatt": "“{name}”에서 메인 필름으로 다시 가져오기"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.label.fc958f3dfc53": {
+  "nb": "Hele spinoff-versjonen som ny versjon i hovedfilmen",
+  "en": "The whole spin-off version as a new version in the main film",
+  "oversatt": "스핀오프 버전 전체를 메인 필름의 새 버전으로 적용"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.p.d1798aee36c7": {
+  "nb": "Spinoffen har ingen egne versjoner eller nye scener ennå. Når du endrer en gjenbrukt scene i spinoffen, får den sin egen versjon som kan føres tilbake her.",
+  "en": "The spin-off has no versions or new scenes of its own yet. When you change a reused scene in the spin-off, it gets its own version that can be carried back here.",
+  "oversatt": "스핀오프에 아직 자체 버전이나 새 씬이 없습니다. 스핀오프에서 재사용된 씬을 수정하면 자체 버전이 생성되어 여기로 다시 가져올 수 있습니다."
+ },
+ "app-projects-promotion-dialog.promotion-dialog.span.16a81f538148": {
+  "nb": "Egen versjon i spinoffen",
+  "en": "Own version in the spin-off",
+  "oversatt": "스핀오프 자체 버전"
+ },
+ "app-projects-promotion-dialog.promotion-dialog.span.b0a6ba67196d": {
+  "nb": "Ny scene – bare i spinoffen",
+  "en": "New scene – only in the spin-off",
+  "oversatt": "새 씬 – 스핀오프에만 있음"
+ },
+ "app-projects-promotion-dialog.section.aria-label.db4187bd74a0": {
+  "nb": "Overfør {value1}",
+  "en": "Transfer {value1}",
+  "oversatt": "{value1} 가져오기"
+ },
+ "app-projects-promotion-dialog.transfer-chosen.finish.5aeef21c1550": {
+  "nb": "{n} {value2} ført over til hovedfilmen.",
+  "en": "{n} {value2} been carried over to the main film.",
+  "oversatt": "{n}개의 {value2} 메인 필름으로 가져왔습니다."
+ },
+ "app-projects-promotion-dialog.transfer-chosen.set-err.b92b63a2e8f7": {
+  "nb": "Ingenting er valgt.",
+  "en": "Nothing is selected.",
+  "oversatt": "선택된 항목이 없습니다."
+ },
+ "app-projects-promotion-dialog.transfer-scene.finish.56741ccc97f8": {
+  "nb": "Scenen er lagt inn i hovedfilmen med egen kopi. Spinoffens versjon er uendret.",
+  "en": "The scene has been added to the main film as its own copy. The spin-off's version is unchanged.",
+  "oversatt": "씬이 메인 필름에 별도 사본으로 추가되었습니다. 스핀오프 버전은 변경되지 않습니다."
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.48f1f0f3eb47": {
+  "nb": "Endre kvalitetsprofilen «{name}»",
+  "en": "Edit the quality profile \"{name}\"",
+  "oversatt": "품질 프로필 \"{name}\" 편집"
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.5022869935d4": {
+  "nb": "Ny kvalitetsprofil «{name}»",
+  "en": "New quality profile \"{name}\"",
+  "oversatt": "새 품질 프로필 \"{name}\""
+ },
+ "app-projects-quality-profiles-section.e.cmds-run.ff9506ab0ff0": {
+  "nb": "Ny kvalitetsprofil «{name}»",
+  "en": "New quality profile \"{name}\"",
+  "oversatt": "새 품질 프로필 \"{name}\""
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.199cf4d2cacf": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "작업 강도 수준"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.270da238aa36": {
+  "nb": "Antall varianter",
+  "en": "Number of variants",
+  "oversatt": "변형 개수"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.2f06acdd0ec3": {
+  "nb": "Modell for {value1}",
+  "en": "Model for {value1}",
+  "oversatt": "{value1}용 모델"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.76031e8a6db6": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "해상도"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.8f2415ab9021": {
+  "nb": "Profilnavn",
+  "en": "Profile name",
+  "oversatt": "프로필 이름"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.b4a69d526434": {
+  "nb": "Budsjettgrense per måned",
+  "en": "Budget limit per month",
+  "oversatt": "월별 예산 한도"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.c99e03632a03": {
+  "nb": "Ny kvalitetsprofil",
+  "en": "New quality profile",
+  "oversatt": "새 품질 프로필"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.aria-label.e563530ada2f": {
+  "nb": "Endre kvalitetsprofil",
+  "en": "Edit quality profile",
+  "oversatt": "품질 프로필 편집"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.button.1ac177cba613": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.button.7dd68c1dc880": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.199cf4d2cacf": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "작업 강도 수준"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.73288b25da41": {
+  "nb": "Alfa",
+  "en": "Alpha",
+  "oversatt": "알파"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.76031e8a6db6": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "해상도"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.87eb6b0f610e": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.b4a69d526434": {
+  "nb": "Budsjettgrense per måned",
+  "en": "Budget limit per month",
+  "oversatt": "월별 예산 한도"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.c3a245760f0d": {
+  "nb": "Bitrate (kbps)",
+  "en": "Bitrate (kbps)",
+  "oversatt": "비트레이트 (kbps)"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.dba78363fe08": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "포맷"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.label.f2f787c112cc": {
+  "nb": "Varianter",
+  "en": "Variants",
+  "oversatt": "변형"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.legend.4b3045abb2ff": {
+  "nb": "Modeller per AI-type",
+  "en": "Models per AI type",
+  "oversatt": "AI 유형별 모델"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.legend.e04587b485b1": {
+  "nb": "Eksportinnstillinger",
+  "en": "Export settings",
+  "oversatt": "내보내기 설정"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.4044f9d0b89b": {
+  "nb": "Fra innsatsnivået",
+  "en": "From the effort level",
+  "oversatt": "작업 강도 수준 기준"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.5f17b52cdd08": {
+  "nb": "Premultiplisert",
+  "en": "Premultiplied",
+  "oversatt": "프리멀티플라이드"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.648dc83932d1": {
+  "nb": "PNG-sekvens",
+  "en": "PNG sequence",
+  "oversatt": "PNG 시퀀스"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "선택 안 됨"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.2": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "선택 안 됨"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.3": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "선택 안 됨"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.990dc7fab9ab.4": {
+  "nb": "Ikke valgt",
+  "en": "Not chosen",
+  "oversatt": "선택 안 됨"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.a6dff85bdd6e": {
+  "nb": "ProRes (MOV)",
+  "en": "ProRes (MOV)",
+  "oversatt": "ProRes (MOV)"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.option.ff806e7ac6e2": {
+  "nb": "Rett",
+  "en": "Straight",
+  "oversatt": "스트레이트"
+ },
+ "app-projects-quality-profiles-section.profile-dialog.placeholder.4f87d8e17496": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "없음"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.6d75ac0a8869": {
+  "nb": "Sett som aktiv profil",
+  "en": "Set as the active profile",
+  "oversatt": "활성 프로필로 설정"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.9529252f2ce8": {
+  "nb": "Fjern «{name}»",
+  "en": "Remove \"{name}\"",
+  "oversatt": "\"{name}\" 제거"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.aria-label.ca935bb26f57": {
+  "nb": "Aktiv profil – klikk for å fjerne valget",
+  "en": "Active profile – click to clear",
+  "oversatt": "활성 프로필 – 클릭하여 선택 해제"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.8c0bf4fd702a": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "편집"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.96fe3b33278f": {
+  "nb": "Legg til standardprofilene",
+  "en": "Add the default profiles",
+  "oversatt": "기본 프로필 추가"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.button.9fa8ff3da0f7": {
+  "nb": "Ny profil",
+  "en": "New profile",
+  "oversatt": "새 프로필"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.81c62df7f64d": {
+  "nb": "Fjern aktiv profil",
+  "en": "Clear active profile",
+  "oversatt": "활성 프로필 지우기"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.a1323399cae1": {
+  "nb": "Fjern kvalitetsprofilen «{name}»",
+  "en": "Remove the quality profile \"{name}\"",
+  "oversatt": "품질 프로필 \"{name}\" 제거"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.cmds-run.c227c9497432": {
+  "nb": "Sett «{name}» som aktiv profil",
+  "en": "Set \"{name}\" as the active profile",
+  "oversatt": "\"{name}\"(을)를 활성 프로필로 설정"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.05ef06239094": {
+  "nb": "{variants} {value2}",
+  "en": "{variants} {value2}",
+  "oversatt": "{variants} {value2}"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p-spec-effort-effort-label-p-spec-effort-null-p-spec-resolution-image-size-label-p-spec-resolution-null-p-spec-variants-l-p-spec-variants-p-spec-variants-1-variant-varianter-p-spec-variants-p-spec-variants-1-variant-variants-null-p-spec-budget-limit-null-l-h-yst-p-spec-budget-limit-mnd-max-p-spec-budget-limit-mo-null-filter.c97aefb7ce63": {
+  "nb": "høyst {budgetLimit}/mnd",
+  "en": "max {budgetLimit}/mo",
+  "oversatt": "월 최대 {budgetLimit}"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.p.3d99683fa28f": {
+  "nb": "En profil samler modellvalg, oppløsning, innsatsnivå, antall varianter og eksportinnstillinger. Den aktive profilen brukes som standard ved generering og eksport, og kan overstyres hver gang. Å bytte profil endrer aldri eksisterende resultater.",
+  "en": "A profile gathers model choices, resolution, effort level, number of variants and export settings. The active profile is the default for generation and export, and can be overridden each time. Switching profile never changes existing results.",
+  "oversatt": "프로필은 모델 선택, 해상도, 작업 수준, 변형 수 및 내보내기 설정을 한곳에 모아 둡니다. 활성 프로필은 생성 및 내보내기의 기본값으로 사용되며 언제든 재정의할 수 있습니다. 프로필을 변경해도 기존 결과물은 변경되지 않습니다."
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.span.a1357eca16bc": {
+  "nb": "Ingen valg lagret",
+  "en": "No settings saved",
+  "oversatt": "저장된 설정 없음"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.span.ad5dc4ee75b6": {
+  "nb": "Prosjektet har ingen profiler ennå.",
+  "en": "The project has no profiles yet.",
+  "oversatt": "프로젝트에 아직 프로필이 없습니다."
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.6d75ac0a8869": {
+  "nb": "Sett som aktiv profil",
+  "en": "Set as the active profile",
+  "oversatt": "활성 프로필로 설정"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.86c66d620967": {
+  "nb": "Kvalitetsprofiler",
+  "en": "Quality profiles",
+  "oversatt": "품질 프로필"
+ },
+ "app-projects-quality-profiles-section.quality-profiles-section.title.ca935bb26f57": {
+  "nb": "Aktiv profil – klikk for å fjerne valget",
+  "en": "Active profile – click to clear",
+  "oversatt": "활성 프로필 – 선택 해제하려면 클릭"
+ },
+ "app-projects-quality-profiles-section.variants": {
+  "nb": {
+   "one": "{count} variant",
+   "other": "{count} varianter"
+  },
+  "en": {
+   "one": "{count} variant",
+   "other": "{count} variants"
+  },
+  "oversatt": {
+   "other": "변형 {count}개"
+  }
+ },
+ "app-projects-storage-section.storage-section.h2.4f2dc5a77b3d": {
+  "nb": "Lagring",
+  "en": "Storage",
+  "oversatt": "스토리지"
+ },
+ "app-projects-storage-section.storage-section.span.b391184b0642": {
+  "nb": "{value1} i filer",
+  "en": "{value1} in files",
+  "oversatt": "파일 {value1}"
+ },
+ "app-projects-storage-section.storage-section.th.0222f92bd332": {
+  "nb": "Kategori",
+  "en": "Category",
+  "oversatt": "카테고리"
+ },
+ "app-projects-storage-section.storage-section.th.66729218f53f": {
+  "nb": "Antall",
+  "en": "Count",
+  "oversatt": "개수"
+ },
+ "app-projects-storage-section.storage-section.th.acfad4c6d8e2": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "크기"
+ },
+ "app-projects-style-guide-section.analyse.set-error.5a93579a5c17": {
+  "nb": "Svaret fra AI kunne ikke leses. Prøv igjen.",
+  "en": "The reply from the AI could not be read. Try again.",
+  "oversatt": "AI의 응답을 읽을 수 없습니다. 다시 시도해 주세요."
+ },
+ "app-projects-style-guide-section.analyse.set-error.6322f6473941": {
+  "nb": "Stilen ble ikke analysert.",
+  "en": "The style was not analysed.",
+  "oversatt": "스타일이 분석되지 않았습니다."
+ },
+ "app-projects-style-guide-section.err.cmds-run.2d61cb1d67e0": {
+  "nb": "Endre filmens visuelle stil",
+  "en": "Change the film's visual style",
+  "oversatt": "영화의 비주얼 스타일 변경"
+ },
+ "app-projects-style-guide-section.err.cmds-run.9a178c6a79c7": {
+  "nb": "Ny stilprofil «{value1}»",
+  "en": "New style profile “{value1}”",
+  "oversatt": "새 스타일 프로필 “{value1}”"
+ },
+ "app-projects-style-guide-section.err.cmds-run.a1217e819847": {
+  "nb": "Endre stilprofilen «{value1}»",
+  "en": "Change the style profile “{value1}”",
+  "oversatt": "스타일 프로필 “{value1}” 변경"
+ },
+ "app-projects-style-guide-section.err.cmds-run.bb6e2cd5f50f": {
+  "nb": "Fjern stilprofilen «{name}»",
+  "en": "Remove the style profile “{name}”",
+  "oversatt": "스타일 프로필 “{name}” 제거"
+ },
+ "app-projects-style-guide-section.err.cmds-run.e3bd9e16d4a3": {
+  "nb": "Lag filmens visuelle stil",
+  "en": "Make the film's visual style",
+  "oversatt": "영화의 비주얼 스타일 만들기"
+ },
+ "app-projects-style-guide-section.label.label.0dd5519d5394": {
+  "nb": "Unngå",
+  "en": "Avoid",
+  "oversatt": "제외 요소"
+ },
+ "app-projects-style-guide-section.label.label.0eca2fdd7cac": {
+  "nb": "Visuell stil",
+  "en": "Visual style",
+  "oversatt": "비주얼 스타일"
+ },
+ "app-projects-style-guide-section.label.label.34deaa3bc540": {
+  "nb": "Publikum og tone",
+  "en": "Audience and tone",
+  "oversatt": "타깃 및 톤앤매너"
+ },
+ "app-projects-style-guide-section.label.label.3bade036daf6": {
+  "nb": "Teknikk og materialer",
+  "en": "Technique and materials",
+  "oversatt": "기법 및 재료"
+ },
+ "app-projects-style-guide-section.label.label.5a9451cf856f": {
+  "nb": "Stemning og følelse",
+  "en": "Mood and feeling",
+  "oversatt": "분위기 및 감정"
+ },
+ "app-projects-style-guide-section.label.label.5f40d76fba0c": {
+  "nb": "Verden: sted, tid og årstid",
+  "en": "The world: place, time and season",
+  "oversatt": "세계관: 장소, 시간, 계절"
+ },
+ "app-projects-style-guide-section.label.label.6bc0add9febe": {
+  "nb": "Omgivelser og bakgrunner",
+  "en": "Surroundings and backgrounds",
+  "oversatt": "환경 및 배경"
+ },
+ "app-projects-style-guide-section.label.label.749aa4fdbfc2": {
+  "nb": "Egne instrukser til AI-en",
+  "en": "Own instructions to the AI",
+  "oversatt": "AI 맞춤 지시사항"
+ },
+ "app-projects-style-guide-section.label.label.9432cb366cd9": {
+  "nb": "Hva filmen handler om",
+  "en": "What the film is about",
+  "oversatt": "영화의 주제/줄거리"
+ },
+ "app-projects-style-guide-section.label.label.aec341995498": {
+  "nb": "Bildeutsnitt og kameraspråk",
+  "en": "Framing and camera language",
+  "oversatt": "프레이밍 및 카메라 연출"
+ },
+ "app-projects-style-guide-section.label.label.c82839bfc8e2": {
+  "nb": "Figurer",
+  "en": "Characters",
+  "oversatt": "캐릭터"
+ },
+ "app-projects-style-guide-section.label.label.e415871fd9d3": {
+  "nb": "Lys",
+  "en": "Light",
+  "oversatt": "조명"
+ },
+ "app-projects-style-guide-section.name.name.814846ecf119": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "초안"
+ },
+ "app-projects-style-guide-section.save.cmds-run.86f31c8bc895": {
+  "nb": "Hva stilprofilen gjelder for",
+  "en": "What the style profile applies to",
+  "oversatt": "스타일 프로필 적용 범위"
+ },
+ "app-projects-style-guide-section.save.set-error.12505857d166": {
+  "nb": "Gi stilprofilen et navn.",
+  "en": "Give the style profile a name.",
+  "oversatt": "스타일 프로필 이름을 입력하세요."
+ },
+ "app-projects-style-guide-section.save.set-error.906ffb90e99d": {
+  "nb": "Noen andre har endret filmens visuelle stil mens du skrev. Kopier det du har skrevet, lukk og åpne på nytt.",
+  "en": "Someone else changed the film's visual style while you were writing. Copy what you have written, close and open again.",
+  "oversatt": "작성하는 동안 다른 사용자가 영화의 시각적 스타일을 변경했습니다. 작성한 내용을 복사한 후 닫고 다시 여세요."
+ },
+ "app-projects-style-guide-section.save.set-error.fb2c09e808f7": {
+  "nb": "«{bad}» er ikke en farge på formen #rrggbb.",
+  "en": "“{bad}” is not a colour in the form #rrggbb.",
+  "oversatt": "“{bad}”은(는) #rrggbb 형식의 색상이 아닙니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.01e2143ef77f": {
+  "nb": "Beskrivelse av fargene",
+  "en": "Description of the colours",
+  "oversatt": "색상 설명"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.6087ec44889e": {
+  "nb": "Forhåndsvisning av beskrivelsen",
+  "en": "Preview of the description",
+  "oversatt": "설명 미리보기"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.9193fb91ffd8": {
+  "nb": "Stilanalyse",
+  "en": "Style analysis",
+  "oversatt": "스타일 분석"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.a8d3fe27c570": {
+  "nb": "Bekreft stilanalyse",
+  "en": "Confirm style analysis",
+  "oversatt": "스타일 분석 확인"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.aria-label.d051a1b89038": {
+  "nb": "Farger (#rrggbb, skilt med mellomrom)",
+  "en": "Colours (#rrggbb, separated by spaces)",
+  "oversatt": "색상(#rrggbb, 공백으로 구분)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.1324834ef4c0": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.135d1e7ddee6": {
+  "nb": "Bruk det valgte i stilen",
+  "en": "Use the selection in the style",
+  "oversatt": "선택 항목을 스타일에 적용"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.4abb85b60887": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.5ce321fc54e0": {
+  "nb": "Analyser stilen i forbildebildene …",
+  "en": "Analyse the style in the reference images …",
+  "oversatt": "레퍼런스 이미지의 스타일 분석 …"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.898762983e0d": {
+  "nb": "Fjern stilprofilen",
+  "en": "Remove the style profile",
+  "oversatt": "스타일 프로필 제거"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.8a243932d696": {
+  "nb": "Ja, analyser",
+  "en": "Yes, analyse",
+  "oversatt": "예, 분석합니다"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.8af3c4a6696c": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "취소"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.9eb9c6c4709a": {
+  "nb": "Foreslå utkast fra prosjektet (fyller bare tomme felt)",
+  "en": "Suggest a draft from the project (fills empty fields only)",
+  "oversatt": "프로젝트에서 초안 제안(빈 필드만 채움)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.ba969324d6d6": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.button.e29a61452c4f": {
+  "nb": "Analyserer … (opptil et halvt minutt)",
+  "en": "Analysing … (up to half a minute)",
+  "oversatt": "분석 중 … (최대 30초 소요)"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-description.cefa937571fa": {
+  "nb": "Dette sendes med i alle bildebeskrivelser, sammen med det programmet vet om scenene (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder. Skriv helst på engelsk – beskrivelsene som sendes, er på engelsk. Eksemplene i feltene viser hva som passer.",
+  "en": "This is sent with every image description, together with what the app knows about the scenes (place, time of day, light, who is there) and approved images. Preferably write in English – the descriptions sent are in English. The examples in the fields show what fits.",
+  "oversatt": "이 내용은 프로그램이 씬에 대해 파악한 정보(장소, 시간대, 조명, 등장인물) 및 승인된 이미지와 함께 모든 이미지 설명에 포함되어 전송됩니다. 전송되는 설명은 영어이므로 가급적 영어로 작성해 주세요. 필드의 예시를 참고하시기 바랍니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.3da8b3b612dc": {
+  "nb": "Stilprofil: {name}",
+  "en": "Style profile: {name}",
+  "oversatt": "스타일 프로필: {name}"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.4541d9ed708a": {
+  "nb": "Filmens visuelle stil",
+  "en": "The film's visual style",
+  "oversatt": "영화의 시각적 스타일"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.dialog-title.d9b5eb79bfc3": {
+  "nb": "Ny stilprofil",
+  "en": "New style profile",
+  "oversatt": "새 스타일 프로필"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.h3.707a3428a5cc": {
+  "nb": "Stilanalyse – velg hva som skal inn i stilen",
+  "en": "Style analysis – choose what goes into the style",
+  "oversatt": "스타일 분석 – 스타일에 적용할 항목 선택"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.label.5ac3e301e8e4": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.18f6e3054789": {
+  "nb": "Fargepalett",
+  "en": "Colour palette",
+  "oversatt": "색상 팔레트"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.6feae9bc1307": {
+  "nb": "Gjelder for",
+  "en": "Applies to",
+  "oversatt": "적용 대상"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.legend.7887170bc913": {
+  "nb": "Forbildebilder ({length} valgt, høyst 6) – bilder som viser stilen",
+  "en": "Reference images ({length} selected, max 6) – images that show the style",
+  "oversatt": "레퍼런스 이미지({length}개 선택됨, 최대 6개) – 스타일을 보여주는 이미지"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.0d552a7c2ffb": {
+  "nb": "Norsk for deg å lese; den engelske teksten er den som havner i feltene og sendes med bildebeskrivelsene. Du kan rette feltene etterpå.",
+  "en": "Norwegian for you to read; the English text is what ends up in the fields and is sent with the image descriptions. You can correct the fields afterwards.",
+  "oversatt": "표시는 사용자의 언어로 되지만, 필드에 입력되어 이미지 설명과 함께 전송되는 텍스트는 영어입니다. 필드는 나중에 수정할 수 있습니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.54f579561ac4": {
+  "nb": "forbildebilder sendes til en språkmodell i innebygd AI, som beskriver stilen. Det bruker litt kreditter (langt mindre enn et bilde) og endrer ingenting før du velger hva som skal inn.",
+  "en": "reference images are sent to a language model in built-in AI, which describes the style. It uses a few credits (far less than an image) and changes nothing until you choose what goes in.",
+  "oversatt": "레퍼런스 이미지가 내장 AI 언어 모델로 전송되어 스타일을 분석합니다. 약간의 크레딧이 소모되며(이미지 생성보다 훨씬 적음), 반영할 항목을 선택하기 전까지는 아무것도 변경되지 않습니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.7201bcc3ee98": {
+  "nb": "Ingenting er lagret før du trykker «Lagre» nederst.",
+  "en": "Nothing is saved until you press “Save” at the bottom.",
+  "oversatt": "하단의 “저장”을 누르기 전까지는 아무것도 저장되지 않습니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.785fc5d738a7": {
+  "nb": "Ingen bilder i biblioteket ennå.",
+  "en": "No images in the library yet.",
+  "oversatt": "라이브러리에 아직 이미지가 없습니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.79d8dd862d98": {
+  "nb": "Forbildebildene nevnes i beskrivelsen. Å sende dem med til bildemodellen koster mer og venter på ditt ja.",
+  "en": "The reference images are mentioned in the description. Sending them to the image model costs more and waits for your yes.",
+  "oversatt": "레퍼런스 이미지는 설명에 언급됩니다. 이미지 모델에 직접 전송하는 것은 추가 비용이 들며 사용자의 확인을 거칩니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.8ef266ebc933": {
+  "nb": "Et valgt forbilde er ikke lenger godkjent eller finnes ikke.",
+  "en": "A selected reference image is no longer approved or does not exist.",
+  "oversatt": "선택한 레퍼런스 이미지가 더 이상 승인되지 않았거나 존재하지 않습니다."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.c039b08da81e": {
+  "nb": "tegn til sammen (resten av beskrivelsen – bildet og scenene – må også få plass).",
+  "en": "characters in total (the rest of the description – the image and the scenes – must also fit).",
+  "oversatt": "자(전체 합계 기준, 나머지 설명인 이미지와 씬에 대한 내용도 포함되어야 합니다)."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.cff42ce71802": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.p.e413dff742c9": {
+  "nb": "Gjelder for (resten bruker filmens visuelle stil):",
+  "en": "Applies to (the rest use the film's visual style):",
+  "oversatt": "적용 대상(나머지는 영화의 시각적 스타일을 사용):"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.placeholder.b7c235f5a147": {
+  "nb": "F.eks. Plakatstil, Nattscener",
+  "en": "E.g. Poster style, Night scenes",
+  "oversatt": "예: 포스터 스타일, 야간 씬"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.pre.41adfbf536f8": {
+  "nb": "Velg en ressurs.",
+  "en": "Choose an asset.",
+  "oversatt": "에셋을 선택하세요."
+ },
+ "app-projects-style-guide-section.style-guide-dialog.span.2eeb488d0500": {
+  "nb": "Fargepaletten",
+  "en": "The colour palette",
+  "oversatt": "색상 팔레트"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.span.5be9d986168d": {
+  "nb": "Slik blir en beskrivelse",
+  "en": "What a description looks like",
+  "oversatt": "설명 예시"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.539ef5aaea6f": {
+  "nb": "Brukes av «{name}»",
+  "en": "Used by “{name}”",
+  "oversatt": "“{name}”에서 사용됨"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.66352daa2446": {
+  "nb": "Velg forbildebilder nederst først",
+  "en": "Choose reference images at the bottom first",
+  "oversatt": "먼저 하단에서 참조 이미지를 선택하세요"
+ },
+ "app-projects-style-guide-section.style-guide-dialog.title.68c4b16aa462": {
+  "nb": "En bildeforstående AI ser på forbildebildene og beskriver stilen konkret",
+  "en": "An image-understanding AI looks at the reference images and describes the style concretely",
+  "oversatt": "이미지 인식 AI가 참조 이미지를 분석하고 스타일을 구체적으로 설명합니다"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.026a1e5e5ff1": {
+  "nb": "Egen stil for plakater, steder, AI-video …",
+  "en": "Own style for posters, places, AI video …",
+  "oversatt": "포스터, 장소, AI 비디오 등을 위한 개별 스타일…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.85b6aa7f6377": {
+  "nb": "Vis …",
+  "en": "View …",
+  "oversatt": "보기…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.bafddd68a87e": {
+  "nb": "Rediger …",
+  "en": "Edit …",
+  "oversatt": "편집…"
+ },
+ "app-projects-style-guide-section.style-guide-section.button.f05e2e395adc": {
+  "nb": "Lag …",
+  "en": "Make …",
+  "oversatt": "만들기…"
+ },
+ "app-projects-style-guide-section.style-guide-section.h2.cf3f3ca9b968": {
+  "nb": "Filmens visuelle stil",
+  "en": "The film's visual style",
+  "oversatt": "영화의 시각적 스타일"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.034f7d03053b": {
+  "nb": "forbildebilder",
+  "en": "reference images",
+  "oversatt": "참조 이미지"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.85775cfd3e37": {
+  "nb": "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere hva den handler om, stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
+  "en": "Not filled in. An image model knows nothing about the film – here you describe what it is about, style, technique, colours, light and mood, so that all the images the AI makes fit in.",
+  "oversatt": "입력되지 않음. 이미지 모델은 영화에 대해 알지 못합니다. AI가 생성하는 모든 이미지가 어우러질 수 있도록 줄거리, 스타일, 기법, 색상, 조명 및 분위기를 여기에 설명하세요."
+ },
+ "app-projects-style-guide-section.style-guide-section.p.9db020a2af76": {
+  "nb": "felt fylt ut",
+  "en": "fields filled in",
+  "oversatt": "입력된 필드"
+ },
+ "app-projects-style-guide-section.style-guide-section.p.ceb65a4ada96": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-style-guide-section.style-guide-section.span.08f72f04f8b6": {
+  "nb": "brukes i alle AI-beskrivelser",
+  "en": "used in all AI descriptions",
+  "oversatt": "모든 AI 설명에 사용됨"
+ },
+ "app-projects-style-guide-section.style-guide-section.span.24031cefee85": {
+  "nb": "ikke i bruk",
+  "en": "not in use",
+  "oversatt": "사용 안 함"
+ },
+ "app-projects-style-guide-section.style-guide-section.title.7a07d463c76d": {
+  "nb": "Åpne stilprofilen",
+  "en": "Open the style profile",
+  "oversatt": "스타일 프로필 열기"
+ },
+ "app-projects-worklist-notice.worklist-notice.button.775711af54dd": {
+  "nb": "Arbeidsliste …",
+  "en": "Worklist …",
+  "oversatt": "작업 목록…"
+ },
+ "app-projects-worklist-notice.worklist-notice.p.32482b45dd0a": {
+  "nb": "{n} steder i filmen viser",
+  "en": "{n} places in the film show",
+  "oversatt": "영화 내 {n}개 위치에 표시됨"
+ },
+ "app-projects-worklist-notice.worklist-notice.p.65ed4276cc8e": {
+  "nb": "Ett sted i filmen viser",
+  "en": "One place in the film shows",
+  "oversatt": "영화 내 1개 위치에 표시됨"
+ },
+ "app-projects-worklist-notice.worklist-notice.p.c4f5976da776": {
+  "nb": "en eldre versjon av en ressurs enn den som er godkjent.",
+  "en": "an older version of an asset than the one that is approved.",
+  "oversatt": "승인된 버전보다 이전 버전의 에셋입니다."
+ },
+ "app-release-poster-canvas.end-drag.on-commit.00f5884f9520": {
+  "nb": "Roter element",
+  "en": "Rotate element",
+  "oversatt": "요소 회전"
+ },
+ "app-release-poster-canvas.end-drag.on-commit.40400006785f": {
+  "nb": "Endre størrelse",
+  "en": "Resize",
+  "oversatt": "크기 조절"
+ },
+ "app-release-poster-canvas.end-drag.on-commit.8cccd431d926": {
+  "nb": "Flytt element",
+  "en": "Move element",
+  "oversatt": "요소 이동"
+ },
+ "app-release-poster-canvas.on-key.on-commit.07742901f562": {
+  "nb": "Flytt element",
+  "en": "Move element",
+  "oversatt": "요소 이동"
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.01176a13ea38": {
+  "nb": "Plakaten «{name}». Klikk for å velge et element, dra for å flytte, piltaster flytter valgt element.",
+  "en": "The poster “{name}”. Click to select an element, drag to move it, arrow keys move the selected element.",
+  "oversatt": "포스터 “{name}”. 요소를 클릭하여 선택하고, 드래그하여 이동하며, 화살표 키로 선택한 요소를 이동합니다."
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.47e78ff53838": {
+  "nb": "Endre størrelse (Shift: behold forholdet)",
+  "en": "Resize (Shift: keep the proportions)",
+  "oversatt": "크기 조절 (Shift: 가로세로 비율 유지)"
+ },
+ "app-release-poster-canvas.poster-canvas.aria-label.9c3e64951ba2": {
+  "nb": "Roter (Shift: trinn på 15°)",
+  "en": "Rotate (Shift: 15° steps)",
+  "oversatt": "회전 (Shift: 15° 단위)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.1f5e3badbf23": {
+  "nb": "Teksten får ikke plass",
+  "en": "The text does not fit",
+  "oversatt": "텍스트가 영역을 벗어납니다"
+ },
+ "app-release-poster-canvas.poster-canvas.title.47e78ff53838": {
+  "nb": "Endre størrelse (Shift: behold forholdet)",
+  "en": "Resize (Shift: keep the proportions)",
+  "oversatt": "크기 조절 (Shift: 가로세로 비율 유지)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.9c3e64951ba2": {
+  "nb": "Roter (Shift: trinn på 15°)",
+  "en": "Rotate (Shift: 15° steps)",
+  "oversatt": "회전 (Shift: 15° 단위)"
+ },
+ "app-release-poster-canvas.poster-canvas.title.9f1a8c9f0f53": {
+  "nb": "Tomt tekstfelt",
+  "en": "Empty text box",
+  "oversatt": "빈 텍스트 상자"
+ },
+ "app-release-poster-dialogs.bytes.poster-pdf.ab0614cc12b1": {
+  "nb": "Eksporten ble avbrutt",
+  "en": "The export was cancelled",
+  "oversatt": "내보내기가 취소되었습니다"
+ },
+ "app-release-poster-dialogs.err.cmds-run.854b54ad554a": {
+  "nb": "Ny plakat «{value1}»",
+  "en": "New poster “{value1}”",
+  "oversatt": "새 포스터 “{value1}”"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.a.d48121094d6e": {
+  "nb": "Last ned",
+  "en": "Download",
+  "oversatt": "다운로드"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.3fb29831834f": {
+  "nb": "Lag filen",
+  "en": "Create file",
+  "oversatt": "파일 생성"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.4a2e4248d5cf": {
+  "nb": "Lager filen … {value1} %",
+  "en": "Creating the file … {value1} %",
+  "oversatt": "파일 생성 중… {value1} %"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.cb0da405af37": {
+  "nb": "Lager filen …",
+  "en": "Creating the file …",
+  "oversatt": "파일 생성 중…"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.button.fbc82f428e1d": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.dialog-description.1b0e895891ca": {
+  "nb": "cm. Trykk-PDF-en har ekte tekst og bildene i trykkoppløsning.",
+  "en": "cm. The print PDF has real text and the images at print resolution.",
+  "oversatt": "cm. 인쇄용 PDF에는 실제 텍스트와 인쇄 해상도의 이미지가 포함됩니다."
+ },
+ "app-release-poster-dialogs.export-poster-dialog.dialog-title.968827f73267": {
+  "nb": "Eksporter «{name}»",
+  "en": "Export “{name}”",
+  "oversatt": "“{name}” 내보내기"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.02bdaada2bb8": {
+  "nb": "Utfallende kant (3 mm)",
+  "en": "Bleed (3 mm)",
+  "oversatt": "도련 (3 mm)"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.0dc9f528e4c4": {
+  "nb": "Skjæremerker",
+  "en": "Crop marks",
+  "oversatt": "재단선"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.a2d909d73b10": {
+  "nb": "Trykk-PDF",
+  "en": "Print PDF",
+  "oversatt": "인쇄용 PDF"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.b2a6cf629d85": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "해상도"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.b4ed18ed47fc": {
+  "nb": "PNG-bilde",
+  "en": "PNG image",
+  "oversatt": "PNG 이미지"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.label.de5a73993ed1": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.legend.2eeae0ebdfaa": {
+  "nb": "Filtype",
+  "en": "File type",
+  "oversatt": "파일 형식"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.2ba2c82ca3fa": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "노르웨이어"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.7d645d203fe3": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "영어"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.option.bc56fd419d66": {
+  "nb": "72 ppi (skjerm)",
+  "en": "72 ppi (screen)",
+  "oversatt": "72 ppi (화면용)"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.1a307e989ca7": {
+  "nb": "Filen er laget.",
+  "en": "The file is ready.",
+  "oversatt": "파일이 준비되었습니다."
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.8aa4010b61dc": {
+  "nb": "{missing} bilder kunne ikke hentes og er vist som tom ramme. ",
+  "en": "{missing} images could not be fetched and are shown as empty frames. ",
+  "oversatt": "{missing}개의 이미지를 불러오지 못해 빈 프레임으로 표시됩니다. "
+ },
+ "app-release-poster-dialogs.export-poster-dialog.p.90625a001f58": {
+  "nb": "Ett bilde kunne ikke hentes og er vist som tom ramme. ",
+  "en": "One image could not be fetched and is shown as an empty frame. ",
+  "oversatt": "1개의 이미지를 불러오지 못해 빈 프레임으로 표시됩니다. "
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.6acc2d264f0a": {
+  "nb": "piksler",
+  "en": "pixels",
+  "oversatt": "픽셀"
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.96d1db5d8c27": {
+  "nb": " Store filer tar litt tid å lage.",
+  "en": " Large files take a little while to make.",
+  "oversatt": " 대용량 파일은 생성하는 데 시간이 다소 걸릴 수 있습니다."
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.bc60e4dca3c0": {
+  "nb": "avhengig av bildene.",
+  "en": "depending on the images.",
+  "oversatt": "이미지에 따라 다름."
+ },
+ "app-release-poster-dialogs.export-poster-dialog.span.d4f526186b2b": {
+  "nb": "Anslått filstørrelse",
+  "en": "Estimated file size",
+  "oversatt": "예상 파일 크기"
+ },
+ "app-release-poster-dialogs.list.message.54d5737c370a": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "없음"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.button.a26d83ce7762": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.button.c77fa45d07da": {
+  "nb": "Lag utkast",
+  "en": "Create draft",
+  "oversatt": "초안 생성"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.dialog-description.0f1a2beae55f": {
+  "nb": "Programmet lager et førsteutkast fra prosjektet: de viktigste karakterene, steder og objekter, godkjente relasjoner og en stil. Alt kan endres etterpå.",
+  "en": "The app makes a first draft from the project: the main characters, places and objects, approved relations and a style. Everything can be changed afterwards.",
+  "oversatt": "앱에서 프로젝트를 기반으로 첫 초안을 생성합니다. 주요 캐릭터, 장소 및 오브젝트, 승인된 관계와 스타일이 포함됩니다. 이후 언제든지 변경할 수 있습니다."
+ },
+ "app-release-poster-dialogs.new-poster-dialog.dialog-title.9d53a39ea2a0": {
+  "nb": "Ny plakat",
+  "en": "New poster",
+  "oversatt": "새 포스터"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.label.3825c170d033": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.label.5b853b6b614f": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.option.39e4c15e4b70": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "영어"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.option.e3870b997183": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "노르웨이어"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.p.cfe54518e65d": {
+  "nb": "godkjente",
+  "en": "approved",
+  "oversatt": "승인됨"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.41417602bbc2": {
+  "nb": "Kinoplakat med få karakterer, stemning og tittel.",
+  "en": "Cinema poster with a few characters, mood and title.",
+  "oversatt": "소수의 캐릭터, 분위기 및 타이틀이 포함된 영화 포스터입니다."
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.4d3c5a9e8971": {
+  "nb": "Steder:",
+  "en": "Places:",
+  "oversatt": "장소:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.7222ba2e02df": {
+  "nb": "Objekter:",
+  "en": "Objects:",
+  "oversatt": "오브젝트:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.b79f0cb51c15": {
+  "nb": "(foreslått)",
+  "en": "(suggested)",
+  "oversatt": "(추천)"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.c20f21fdfbd7": {
+  "nb": "Relasjoner:",
+  "en": "Relations:",
+  "oversatt": "관계:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.c360f7ae2d07": {
+  "nb": "Oversikt over karakterene, relasjonene, stedene og objektene.",
+  "en": "Overview of the characters, relations, places and objects.",
+  "oversatt": "캐릭터, 관계, 장소 및 오브젝트 개요입니다."
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.d2e90544f05b": {
+  "nb": "Stil:",
+  "en": "Style:",
+  "oversatt": "스타일:"
+ },
+ "app-release-poster-dialogs.new-poster-dialog.span.dea24df4403b": {
+  "nb": "Karakterer:",
+  "en": "Characters:",
+  "oversatt": "캐릭터:"
+ },
+ "app-release-poster-inspector.accent.accent.31c7d61e82e7": {
+  "nb": "Aksentfarge",
+  "en": "Accent colour",
+  "oversatt": "강조 색상"
+ },
+ "app-release-poster-inspector.accent.accent.9a36a844cd1c": {
+  "nb": "Aksent",
+  "en": "Accent",
+  "oversatt": "강조"
+ },
+ "app-release-poster-inspector.background.background.909f488bfdb8": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "배경"
+ },
+ "app-release-poster-inspector.background.background.b4b9947e469f": {
+  "nb": "Bakgrunnsfarge",
+  "en": "Background colour",
+  "oversatt": "배경 색상"
+ },
+ "app-release-poster-inspector.bilingual.label.2f1aee6df04c": {
+  "nb": "engelsk",
+  "en": "English",
+  "oversatt": "영어"
+ },
+ "app-release-poster-inspector.bilingual.label.e68a78963db2": {
+  "nb": "norsk",
+  "en": "Norwegian",
+  "oversatt": "노르웨이어"
+ },
+ "app-release-poster-inspector.bilingual.placeholder.701d079a0cb5": {
+  "nb": "Tom: norsk tekst brukes",
+  "en": "Empty: the Norwegian text is used",
+  "oversatt": "비어 있음: 노르웨이어 텍스트가 사용됨"
+ },
+ "app-release-poster-inspector.characters.characters.6813a139c3eb": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "등장인물"
+ },
+ "app-release-poster-inspector.element-inspector.button.6c9ccab16bf6": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-release-poster-inspector.element-inspector.button.b56be23e106d": {
+  "nb": "Tilbakestill",
+  "en": "Reset",
+  "oversatt": "재설정"
+ },
+ "app-release-poster-inspector.element-inspector.button.c6f0bfbd255e": {
+  "nb": "Flytt bak",
+  "en": "Send back",
+  "oversatt": "뒤로 보내기"
+ },
+ "app-release-poster-inspector.element-inspector.button.d2c02687b715": {
+  "nb": "Flytt fram",
+  "en": "Bring forward",
+  "oversatt": "앞으로 가져오기"
+ },
+ "app-release-poster-inspector.element-inspector.button.f568217d5eee": {
+  "nb": "Harmoniser stil …",
+  "en": "Harmonize style …",
+  "oversatt": "스타일 일치…"
+ },
+ "app-release-poster-inspector.element-inspector.label.28d7250686e8": {
+  "nb": "Dekkevne (%)",
+  "en": "Opacity (%)",
+  "oversatt": "불투명도(%)"
+ },
+ "app-release-poster-inspector.element-inspector.label.28d7250686e8.2": {
+  "nb": "Dekkevne (%)",
+  "en": "Opacity (%)",
+  "oversatt": "불투명도(%)"
+ },
+ "app-release-poster-inspector.element-inspector.label.43ca714179c4": {
+  "nb": "Stiplet",
+  "en": "Dashed",
+  "oversatt": "파선"
+ },
+ "app-release-poster-inspector.element-inspector.label.449e4324fffc": {
+  "nb": "Ressurs",
+  "en": "Asset",
+  "oversatt": "에셋"
+ },
+ "app-release-poster-inspector.element-inspector.label.478ff984c35e": {
+  "nb": "Halvfet",
+  "en": "Bold",
+  "oversatt": "굵게"
+ },
+ "app-release-poster-inspector.element-inspector.label.78b5be9a9eec": {
+  "nb": "Synlig",
+  "en": "Visible",
+  "oversatt": "표시"
+ },
+ "app-release-poster-inspector.element-inspector.label.8534544fad56": {
+  "nb": "Tilpasning",
+  "en": "Fit",
+  "oversatt": "맞춤"
+ },
+ "app-release-poster-inspector.element-inspector.label.905640d8322f": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "색상"
+ },
+ "app-release-poster-inspector.element-inspector.label.905640d8322f.2": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "색상"
+ },
+ "app-release-poster-inspector.element-inspector.label.9e443a3526a5": {
+  "nb": "Store bokstaver",
+  "en": "Capitals",
+  "oversatt": "대문자"
+ },
+ "app-release-poster-inspector.element-inspector.label.a86049b85f6d": {
+  "nb": "Linjefarge",
+  "en": "Line colour",
+  "oversatt": "선 색상"
+ },
+ "app-release-poster-inspector.element-inspector.label.b20262857972": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "버전"
+ },
+ "app-release-poster-inspector.element-inspector.label.dc05a260e3fa": {
+  "nb": "Justering",
+  "en": "Alignment",
+  "oversatt": "정렬"
+ },
+ "app-release-poster-inspector.element-inspector.label.e9fbbd403aec": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-release-poster-inspector.element-inspector.label.eac19d8e106e": {
+  "nb": "Kursiv",
+  "en": "Italic",
+  "oversatt": "기울임꼴"
+ },
+ "app-release-poster-inspector.element-inspector.label.f918229d9270": {
+  "nb": "Skrift",
+  "en": "Font",
+  "oversatt": "글꼴"
+ },
+ "app-release-poster-inspector.element-inspector.num.099003fd2c1f": {
+  "nb": "Hjørner",
+  "en": "Corners",
+  "oversatt": "모서리"
+ },
+ "app-release-poster-inspector.element-inspector.num.273f9af4132f": {
+  "nb": "Høyde",
+  "en": "Height",
+  "oversatt": "높이"
+ },
+ "app-release-poster-inspector.element-inspector.num.3212162adbb9": {
+  "nb": "Bredde",
+  "en": "Width",
+  "oversatt": "너비"
+ },
+ "app-release-poster-inspector.element-inspector.num.3e623a8ea29f": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "크기"
+ },
+ "app-release-poster-inspector.element-inspector.num.7e6d751da4af": {
+  "nb": "grader",
+  "en": "degrees",
+  "oversatt": "도"
+ },
+ "app-release-poster-inspector.element-inspector.num.8788f005a4dc": {
+  "nb": "Tykkelse",
+  "en": "Thickness",
+  "oversatt": "두께"
+ },
+ "app-release-poster-inspector.element-inspector.num.8a200f74cd6b": {
+  "nb": "Sperring",
+  "en": "Tracking",
+  "oversatt": "자간"
+ },
+ "app-release-poster-inspector.element-inspector.num.da69649b9eb8": {
+  "nb": "Rotasjon",
+  "en": "Rotation",
+  "oversatt": "회전"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "글꼴 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.2": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "글꼴 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.3": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "글꼴 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0aa1a59cf36f.4": {
+  "nb": "Endre skrift",
+  "en": "Change font",
+  "oversatt": "글꼴 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.0c0e947baff3": {
+  "nb": "Skjul element",
+  "en": "Hide element",
+  "oversatt": "요소 숨기기"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.12b4624bd2fb": {
+  "nb": "Bytt variant",
+  "en": "Change variant",
+  "oversatt": "변형 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.30fcdec342d4": {
+  "nb": "Endre linje",
+  "en": "Change line",
+  "oversatt": "선 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.7a27c2072c12": {
+  "nb": "Bytt versjon",
+  "en": "Change version",
+  "oversatt": "버전 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.a2883ee2fad3": {
+  "nb": "Endre justering",
+  "en": "Change alignment",
+  "oversatt": "맞춤 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.b556ee1a8cdf": {
+  "nb": "Vis element",
+  "en": "Show element",
+  "oversatt": "요소 표시"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.cb50faab5279": {
+  "nb": "Endre dekkevne",
+  "en": "Change opacity",
+  "oversatt": "불투명도 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.cb50faab5279.2": {
+  "nb": "Endre dekkevne",
+  "en": "Change opacity",
+  "oversatt": "불투명도 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.d2d4d09164ef": {
+  "nb": "Endre tekst",
+  "en": "Change text",
+  "oversatt": "텍스트 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.d8705ce5e0f3": {
+  "nb": "Endre linjefarge",
+  "en": "Change line colour",
+  "oversatt": "선 색상 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.e4e743923888": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "색상 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.e4e743923888.2": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "색상 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.f40d8e1e9fa6": {
+  "nb": "Endre tilpasning",
+  "en": "Change fit",
+  "oversatt": "맞춤 방식 변경"
+ },
+ "app-release-poster-inspector.element-inspector.on-change.f4fde8162495": {
+  "nb": "Bytt bilde",
+  "en": "Change image",
+  "oversatt": "이미지 변경"
+ },
+ "app-release-poster-inspector.element-inspector.option.047d46e4c76b": {
+  "nb": "Venstre",
+  "en": "Left",
+  "oversatt": "왼쪽"
+ },
+ "app-release-poster-inspector.element-inspector.option.0817808ae29a": {
+  "nb": "Høyre",
+  "en": "Right",
+  "oversatt": "오른쪽"
+ },
+ "app-release-poster-inspector.element-inspector.option.37292afe116b": {
+  "nb": "Godkjent eller nyeste",
+  "en": "Approved or latest",
+  "oversatt": "승인됨 또는 최신"
+ },
+ "app-release-poster-inspector.element-inspector.option.630edc49d5ca": {
+  "nb": "Grotesk (Helvetica)",
+  "en": "Sans (Helvetica)",
+  "oversatt": "산세리프(Helvetica)"
+ },
+ "app-release-poster-inspector.element-inspector.option.835f0f675c81": {
+  "nb": "Antikva (Times)",
+  "en": "Serif (Times)",
+  "oversatt": "세리프(Times)"
+ },
+ "app-release-poster-inspector.element-inspector.option.b20262857972": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "버전"
+ },
+ "app-release-poster-inspector.element-inspector.option.cc130b27b750": {
+  "nb": "Midtstilt",
+  "en": "Centred",
+  "oversatt": "가운데 맞춤"
+ },
+ "app-release-poster-inspector.element-inspector.option.cc93c9e05f5c": {
+  "nb": "Hele bildet",
+  "en": "Whole image",
+  "oversatt": "전체 이미지"
+ },
+ "app-release-poster-inspector.element-inspector.option.e3f412286b9d": {
+  "nb": "Fyll rammen",
+  "en": "Fill the frame",
+  "oversatt": "프레임 채우기"
+ },
+ "app-release-poster-inspector.element-inspector.option.e4771266e271": {
+  "nb": "Forsidebildet",
+  "en": "The cover image",
+  "oversatt": "커버 이미지"
+ },
+ "app-release-poster-inspector.element-inspector.p.10a1b7bc27b5": {
+  "nb": "Endret av deg. Står når innholdet endres.",
+  "en": "Changed by you. Stays when the content changes.",
+  "oversatt": "사용자가 변경함. 콘텐츠가 바뀌어도 유지됩니다."
+ },
+ "app-release-poster-inspector.element-inspector.p.241b7c63b034": {
+  "nb": "Laget av programmet. Endrer du det, blir det ditt og står når innholdet endres.",
+  "en": "Made by the app. If you change it, it becomes yours and stays when the content changes.",
+  "oversatt": "앱에서 생성함. 변경하면 사용자 설정으로 전환되어 콘텐츠가 바뀌어도 유지됩니다."
+ },
+ "app-release-poster-inspector.element-inspector.p.c203b5a6725b": {
+  "nb": "Eget element.",
+  "en": "Custom element.",
+  "oversatt": "사용자 지정 요소."
+ },
+ "app-release-poster-inspector.element-inspector.title.3cc1d71d3465": {
+  "nb": "Linje",
+  "en": "Line",
+  "oversatt": "선"
+ },
+ "app-release-poster-inspector.element-inspector.title.3dff3eeeb264": {
+  "nb": "Programmet lager elementet på nytt",
+  "en": "The app makes the element again",
+  "oversatt": "앱에서 요소를 다시 생성합니다"
+ },
+ "app-release-poster-inspector.element-inspector.title.6a5955d62cf5": {
+  "nb": "Flate",
+  "en": "Fill",
+  "oversatt": "칠"
+ },
+ "app-release-poster-inspector.element-inspector.title.a5dd5de6878f": {
+  "nb": "Tegn om bildet til plakatens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
+  "en": "Redraw the image in the poster's shared style with AI (costs, confirmed first). The original does not change.",
+  "oversatt": "AI를 사용하여 포스터의 공통 스타일에 맞게 이미지를 다시 그립니다(유료, 진행 전 확인). 원본은 변경되지 않습니다."
+ },
+ "app-release-poster-inspector.element-inspector.title.e65d846821e0": {
+  "nb": "Handlinger",
+  "en": "Actions",
+  "oversatt": "동작"
+ },
+ "app-release-poster-inspector.element-inspector.title.e98cd2f8a5a0": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "이미지"
+ },
+ "app-release-poster-inspector.element-inspector.title.e9fbbd403aec": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-release-poster-inspector.muted.muted.6ed0859703dd": {
+  "nb": "Dempet farge",
+  "en": "Muted colour",
+  "oversatt": "차분한 색상"
+ },
+ "app-release-poster-inspector.muted.muted.f93aac6e9328": {
+  "nb": "Dempet",
+  "en": "Muted",
+  "oversatt": "차분하게"
+ },
+ "app-release-poster-inspector.num.on-change.b6b1183fe4fd": {
+  "nb": "Endre {value1}",
+  "en": "Change {value1}",
+  "oversatt": "{value1} 변경"
+ },
+ "app-release-poster-inspector.objects.objects.9f4ef282532e": {
+  "nb": "Objekter",
+  "en": "Objects",
+  "oversatt": "오브젝트"
+ },
+ "app-release-poster-inspector.pick.on-document.9c091bedf2a3": {
+  "nb": "Endre utvalget på plakaten",
+  "en": "Change the selection on the poster",
+  "oversatt": "포스터의 선택 항목 변경"
+ },
+ "app-release-poster-inspector.places.places.d595921f1fd8": {
+  "nb": "Steder",
+  "en": "Places",
+  "oversatt": "장소"
+ },
+ "app-release-poster-inspector.poster-checks-list.aria-label.4278fd595e5b": {
+  "nb": "Kontroll av plakaten",
+  "en": "Check of the poster",
+  "oversatt": "포스터 검사"
+ },
+ "app-release-poster-inspector.poster-checks-list.aria-label.896b8a01afb9": {
+  "nb": "Vis i plakaten: {text}",
+  "en": "Show in the poster: {text}",
+  "oversatt": "포스터에 표시: {text}"
+ },
+ "app-release-poster-inspector.poster-checks-list.button.f1ac6a3203ce": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "표시"
+ },
+ "app-release-poster-inspector.poster-settings.button.41c0a022c8ae": {
+  "nb": "Lag utkastet på nytt",
+  "en": "Redraft the poster",
+  "oversatt": "포스터 초안 다시 만들기"
+ },
+ "app-release-poster-inspector.poster-settings.label.76c766b3293e": {
+  "nb": "Tittel",
+  "en": "Title",
+  "oversatt": "제목"
+ },
+ "app-release-poster-inspector.poster-settings.label.9843441a4ed2": {
+  "nb": "Sjanger og stemning",
+  "en": "Genre and mood",
+  "oversatt": "장르 및 분위기"
+ },
+ "app-release-poster-inspector.poster-settings.label.bcea48b950bf": {
+  "nb": "Slagord",
+  "en": "Tagline",
+  "oversatt": "태그라인"
+ },
+ "app-release-poster-inspector.poster-settings.label.caea5248c457": {
+  "nb": "Høyde (cm)",
+  "en": "Height (cm)",
+  "oversatt": "높이(cm)"
+ },
+ "app-release-poster-inspector.poster-settings.label.d24bde1ca89e": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-release-poster-inspector.poster-settings.label.d618c321e720": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-release-poster-inspector.poster-settings.label.dc300cfc34a0": {
+  "nb": "Fargepalett",
+  "en": "Colour palette",
+  "oversatt": "색상 팔레트"
+ },
+ "app-release-poster-inspector.poster-settings.label.f7167f2f6db5": {
+  "nb": "Bredde (cm)",
+  "en": "Width (cm)",
+  "oversatt": "너비(cm)"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.22553ad64a2a": {
+  "nb": "Endre logline",
+  "en": "Change logline",
+  "oversatt": "로그라인 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.2a43aa2f90c6": {
+  "nb": "Endre slagord",
+  "en": "Change tagline",
+  "oversatt": "태그라인 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.413d1b72987d": {
+  "nb": "Endre sjanger",
+  "en": "Change genre",
+  "oversatt": "장르 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.76cb1debf047": {
+  "nb": "Endre tittel",
+  "en": "Change title",
+  "oversatt": "제목 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.d6facbb2af09": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "색상 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-document.def7df9d3fd9": {
+  "nb": "Endre stil",
+  "en": "Change style",
+  "oversatt": "스타일 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.3e76f71503df": {
+  "nb": "Endre språk på plakaten",
+  "en": "Change the poster language",
+  "oversatt": "포스터 언어 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.668f5ed1f83d": {
+  "nb": "Endre navn på plakaten",
+  "en": "Rename the poster",
+  "oversatt": "포스터 이름 바꾸기"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "형식 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.2": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "형식 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.7305f75e196e.3": {
+  "nb": "Endre format",
+  "en": "Change format",
+  "oversatt": "형식 변경"
+ },
+ "app-release-poster-inspector.poster-settings.on-poster.95f5171868f5": {
+  "nb": "Endre plakattype",
+  "en": "Change poster type",
+  "oversatt": "포스터 유형 변경"
+ },
+ "app-release-poster-inspector.poster-settings.option.3ca6b49373b6": {
+  "nb": " (foreslått)",
+  "en": " (suggested)",
+  "oversatt": " (추천)"
+ },
+ "app-release-poster-inspector.poster-settings.option.53af7efc3961": {
+  "nb": "Eget format",
+  "en": "Custom format",
+  "oversatt": "사용자 지정 형식"
+ },
+ "app-release-poster-inspector.poster-settings.option.baae3966c5fc": {
+  "nb": "Egen",
+  "en": "Custom",
+  "oversatt": "사용자 지정"
+ },
+ "app-release-poster-inspector.poster-settings.option.cf6b065837cf": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "노르웨이어"
+ },
+ "app-release-poster-inspector.poster-settings.option.e6ed30832c1c": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "영어"
+ },
+ "app-release-poster-inspector.poster-settings.p.6f14fe5f4a16": {
+  "nb": "Ingen i biblioteket.",
+  "en": "None in the library.",
+  "oversatt": "라이브러리에 없습니다."
+ },
+ "app-release-poster-inspector.poster-settings.p.c843bbf68646": {
+  "nb": "Minste lesbare tekst i dette formatet:",
+  "en": "Smallest readable text in this format:",
+  "oversatt": "이 형식에서 읽을 수 있는 가장 작은 텍스트:"
+ },
+ "app-release-poster-inspector.poster-settings.p.fa63270ab77e": {
+  "nb": "Lager plakaten på nytt fra innholdet over. Det du har flyttet eller endret selv, forsvinner (kan angres).",
+  "en": "Makes the poster again from the content above. What you have moved or changed yourself disappears (can be undone).",
+  "oversatt": "위의 내용으로 포스터를 다시 만듭니다. 직접 이동하거나 변경한 내용은 사라집니다(실행 취소 가능)."
+ },
+ "app-release-poster-inspector.poster-settings.span.c0cc85c7cbb2": {
+  "nb": "{value1} · {value2}",
+  "en": "{value1} · {value2}",
+  "oversatt": "{value1} · {value2}"
+ },
+ "app-release-poster-inspector.poster-settings.title.080c03a5a101": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "포스터"
+ },
+ "app-release-poster-inspector.poster-settings.title.3f66ceb9e842": {
+  "nb": "Innhold",
+  "en": "Content",
+  "oversatt": "콘텐츠"
+ },
+ "app-release-poster-inspector.poster-settings.title.5ea77e7fd94e": {
+  "nb": "Tekster",
+  "en": "Texts",
+  "oversatt": "텍스트"
+ },
+ "app-release-poster-inspector.poster-settings.title.62bd578be6e4": {
+  "nb": "Stil",
+  "en": "Style",
+  "oversatt": "스타일"
+ },
+ "app-release-poster-inspector.poster-settings.title.a50a256fdc63": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "초안"
+ },
+ "app-release-poster-inspector.poster-settings.title.ed32d315d129": {
+  "nb": "valgt",
+  "en": "selected",
+  "oversatt": "선택됨"
+ },
+ "app-release-poster-inspector.rank": {
+  "nb": "{lines} · {scenes}",
+  "en": "{lines} · {scenes}",
+  "oversatt": "{lines} · {scenes}"
+ },
+ "app-release-poster-inspector.rank-lines": {
+  "nb": {
+   "one": "{count} replikk",
+   "other": "{count} replikker"
+  },
+  "en": {
+   "one": "{count} line",
+   "other": "{count} lines"
+  },
+  "oversatt": {
+   "other": "대사 {count}개"
+  }
+ },
+ "app-release-poster-inspector.rank-scenes": {
+  "nb": {
+   "one": "{count} scene",
+   "other": "{count} scener"
+  },
+  "en": {
+   "one": "{count} scene",
+   "other": "{count} scenes"
+  },
+  "oversatt": {
+   "other": "씬 {count}개"
+  }
+ },
+ "app-release-poster-inspector.text.text.8fc21fb0debb": {
+  "nb": "Tekstfarge",
+  "en": "Text colour",
+  "oversatt": "텍스트 색상"
+ },
+ "app-release-poster-inspector.text.text.91322597c1d2": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ }
+}

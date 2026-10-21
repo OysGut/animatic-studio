@@ -1,0 +1,3018 @@
+{
+ "adapters-storylab-sessions-functions.set-suggestion-status.fail.9603fb08dc3e": {
+  "nb": "Forslaget finnes ikke",
+  "en": "The suggestion was not found",
+  "oversatt": "제안을 찾을 수 없습니다"
+ },
+ "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9": {
+  "nb": "Ugyldige turer",
+  "en": "Invalid turns",
+  "oversatt": "잘못된 턴"
+ },
+ "adapters-storylab-sessions-functions.turns-error.message.9398c4f56ee9.2": {
+  "nb": "Ugyldige turer",
+  "en": "Invalid turns",
+  "oversatt": "잘못된 턴"
+ },
+ "ai.text.truncated": {
+  "nb": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg.",
+  "en": "The response was truncated because it was too long. Try again with a shorter selection.",
+  "oversatt": "응답이 너무 길어 잘렸습니다. 더 짧은 범위를 선택하여 다시 시도하세요."
+ },
+ "app-account-account-page.account-page.aria-label.3a881a93c577": {
+  "nb": "Visningsnavn",
+  "en": "Display name",
+  "oversatt": "표시 이름"
+ },
+ "app-account-account-page.account-page.aria-label.55d81f5ed2f6": {
+  "nb": "E-postadressen din",
+  "en": "Your email address",
+  "oversatt": "이메일 주소"
+ },
+ "app-account-account-page.account-page.aria-label.9bfdde07b1d3": {
+  "nb": "Gjenta passordet",
+  "en": "Repeat the password",
+  "oversatt": "비밀번호 재입력"
+ },
+ "app-account-account-page.account-page.aria-label.d5d00f5fe2cb": {
+  "nb": "Nytt passord",
+  "en": "New password",
+  "oversatt": "새 비밀번호"
+ },
+ "app-account-account-page.account-page.button.635df60f0182": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-account-account-page.account-page.button.6900b1be5d0a": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-account-account-page.account-page.button.ac2f177d767b": {
+  "nb": "Endre passord",
+  "en": "Change password",
+  "oversatt": "비밀번호 변경"
+ },
+ "app-account-account-page.account-page.button.f5964e6fad59": {
+  "nb": "Slett kontoen min",
+  "en": "Delete my account",
+  "oversatt": "내 계정 삭제"
+ },
+ "app-account-account-page.account-page.dd.3ea157877add": {
+  "nb": "Fast administrator",
+  "en": "Permanent administrator",
+  "oversatt": "영구 관리자"
+ },
+ "app-account-account-page.account-page.dd.476e5871100c": {
+  "nb": "Administrator",
+  "en": "Administrator",
+  "oversatt": "관리자"
+ },
+ "app-account-account-page.account-page.dd.9818c358ed9c": {
+  "nb": "Bruker",
+  "en": "User",
+  "oversatt": "사용자"
+ },
+ "app-account-account-page.account-page.dt.3a881a93c577": {
+  "nb": "Visningsnavn",
+  "en": "Display name",
+  "oversatt": "표시 이름"
+ },
+ "app-account-account-page.account-page.dt.4ccb2731bfab": {
+  "nb": "Konto laget",
+  "en": "Account created",
+  "oversatt": "계정 생성됨"
+ },
+ "app-account-account-page.account-page.dt.56839a8af169": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "역할"
+ },
+ "app-account-account-page.account-page.dt.ade51be1b3f1": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "이메일"
+ },
+ "app-account-account-page.account-page.h1.e6872b7b5c7f": {
+  "nb": "Min konto",
+  "en": "My account",
+  "oversatt": "내 계정"
+ },
+ "app-account-account-page.account-page.link.9f9ca7316e88": {
+  "nb": "Til adminsiden",
+  "en": "To the admin page",
+  "oversatt": "관리자 페이지로 이동"
+ },
+ "app-account-account-page.account-page.p.04c6a66a7233": {
+  "nb": "Det du selv har bestilt i alle prosjektene. Eieren av et prosjekt ser hva hele prosjektet har kostet på prosjektets oversikt.",
+  "en": "What you have ordered yourself in all projects. The owner of a project sees what the whole project has cost on the project overview.",
+  "oversatt": "모든 프로젝트에서 회원님이 직접 주문한 내역입니다. 프로젝트 소유자는 프로젝트 개요에서 전체 프로젝트 비용을 확인할 수 있습니다."
+ },
+ "app-account-account-page.account-page.p.1add060cb67d": {
+  "nb": "Databasen må oppdateres (migrasjon 0033) før språkvalg på kontoen, forbruk, personvern og sletting virker.",
+  "en": "The database must be updated (migration 0033) before account language, usage, privacy and deletion work.",
+  "oversatt": "계정 언어 설정, 사용량, 개인정보 보호 및 삭제 기능을 사용하려면 데이터베이스를 업데이트(마이그레이션 0033)해야 합니다."
+ },
+ "app-account-account-page.account-page.p.35d769cea95d": {
+  "nb": "Du har lest versjon {acceptedVersion} av personvernerklæringen.",
+  "en": "You have read version {acceptedVersion} of the privacy statement.",
+  "oversatt": "개인정보 처리방침 {acceptedVersion} 버전을 읽었습니다."
+ },
+ "app-account-account-page.account-page.p.3d5761b58054": {
+  "nb": "Den faste administratorkontoen kan ikke slettes.",
+  "en": "The permanent administrator account cannot be deleted.",
+  "oversatt": "영구 관리자 계정은 삭제할 수 없습니다."
+ },
+ "app-account-account-page.account-page.p.64f5d36e0990": {
+  "nb": "Visningsnavnet ser de du deler prosjekter med. E-postadressen din vises ikke for dem.",
+  "en": "The display name is seen by those you share projects with. Your email address is not shown to them.",
+  "oversatt": "표시 이름은 프로젝트를 공유하는 다른 사용자에게 표시됩니다. 이메일 주소는 공개되지 않습니다."
+ },
+ "app-account-account-page.account-page.p.8aa03e8c03e8": {
+  "nb": "Les hvordan vi behandler opplysningene dine.",
+  "en": "Read how we process your information.",
+  "oversatt": "개인정보 처리 방식을 확인하세요."
+ },
+ "app-account-account-page.account-page.p.fb52079cd767": {
+  "nb": "Kontoen låses med en gang og slettes for godt etter 30 dager. I mellomtiden kan bare administrator låse den opp. Prosjekter du eier, slettes ikke: de låses, og administrator kan gi dem en ny eier. Det du har gjort i andres prosjekter, står igjen som «Slettet bruker».",
+  "en": "The account is locked at once and deleted for good after 30 days. Until then, only the administrator can unlock it. Projects you own are not deleted: they are locked, and the administrator can give them a new owner. What you have done in others' projects remains as “Deleted user”.",
+  "oversatt": "계정은 즉시 잠기며 30일 후에 영구적으로 삭제됩니다. 그 전까지는 관리자만 잠금을 해제할 수 있습니다. 본인이 소유한 프로젝트는 삭제되지 않고 잠기며, 관리자가 새 소유자를 지정할 수 있습니다. 다른 사람의 프로젝트에서 작업한 내용은 '삭제된 사용자'로 남습니다."
+ },
+ "app-account-account-page.account-page.placeholder.11360c11e886": {
+  "nb": "Nytt passord (minst 8 tegn)",
+  "en": "New password (at least 8 characters)",
+  "oversatt": "새 비밀번호(최소 8자)"
+ },
+ "app-account-account-page.account-page.placeholder.143050c7df6d": {
+  "nb": "Skriv e-postadressen din for å bekrefte",
+  "en": "Type your email address to confirm",
+  "oversatt": "확인을 위해 이메일 주소를 입력하세요"
+ },
+ "app-account-account-page.account-page.placeholder.9bfdde07b1d3": {
+  "nb": "Gjenta passordet",
+  "en": "Repeat the password",
+  "oversatt": "비밀번호 재입력"
+ },
+ "app-account-account-page.account-page.project-name.43fec7dcd962": {
+  "nb": "Alle prosjekter",
+  "en": "All projects",
+  "oversatt": "모든 프로젝트"
+ },
+ "app-account-account-page.account-page.span.7542584b77d7": {
+  "nb": "Valget lagres på kontoen og gjelder neste gang du logger inn, også på andre maskiner.",
+  "en": "The choice is saved on the account and applies the next time you sign in, also on other computers.",
+  "oversatt": "설정은 계정에 저장되며 다른 컴퓨터를 포함하여 다음 로그인 시 적용됩니다."
+ },
+ "app-account-account-page.account-page.title.0a9bee9f065d": {
+  "nb": "Passord",
+  "en": "Password",
+  "oversatt": "비밀번호"
+ },
+ "app-account-account-page.account-page.title.0ad0dd61ee8f": {
+  "nb": "AI-forbruk",
+  "en": "AI usage",
+  "oversatt": "AI 사용량"
+ },
+ "app-account-account-page.account-page.title.2cb4e1640f71": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "개인정보 보호"
+ },
+ "app-account-account-page.account-page.title.3a0de0ed891b": {
+  "nb": "Profil",
+  "en": "Profile",
+  "oversatt": "프로필"
+ },
+ "app-account-account-page.account-page.title.f1e74b20ac0c": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-account-account-page.account-page.title.f5964e6fad59": {
+  "nb": "Slett kontoen min",
+  "en": "Delete my account",
+  "oversatt": "내 계정 삭제"
+ },
+ "app-account-account-page.save-name.set-name-msg.a4261bf49b5e": {
+  "nb": "Lagret.",
+  "en": "Saved.",
+  "oversatt": "저장되었습니다."
+ },
+ "app-account-account-page.text.text.03230ef58e96": {
+  "nb": "Passordene er ikke like.",
+  "en": "The passwords are not the same.",
+  "oversatt": "비밀번호가 일치하지 않습니다."
+ },
+ "app-account-account-page.text.text.329e2d824228": {
+  "nb": "Passordet må ha minst 8 tegn.",
+  "en": "The password must have at least 8 characters.",
+  "oversatt": "비밀번호는 최소 8자 이상이어야 합니다."
+ },
+ "app-account-account-page.text.text.7badb3057a9e": {
+  "nb": "Passordet er endret.",
+  "en": "The password is changed.",
+  "oversatt": "비밀번호가 변경되었습니다."
+ },
+ "app-account-cost-export.children.group-head.2817287d1354": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "월"
+ },
+ "app-account-cost-export.children.group-head.6a237165c76a": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "서비스 · 모델"
+ },
+ "app-account-cost-export.children.group-head.94b225f9ab46": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "담당자"
+ },
+ "app-account-cost-export.children.h.2cee2cdfef55": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "서비스 및 모델별"
+ },
+ "app-account-cost-export.children.h.d911c0c60146": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "월별"
+ },
+ "app-account-cost-export.children.h.dd166de8725f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-account-cost-export.children.h.eb2197ef5c1d": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "사용자별"
+ },
+ "app-account-cost-export.children.h.f2dec0f0db92": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "대사"
+ },
+ "app-account-cost-export.children.table.155b0ad70670": {
+  "nb": "Opplysning",
+  "en": "Item",
+  "oversatt": "항목"
+ },
+ "app-account-cost-export.children.table.c2853bf5d369": {
+  "nb": "Verdi",
+  "en": "Value",
+  "oversatt": "값"
+ },
+ "app-account-cost-export.group-head.message.f1fb1150290a": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "작업"
+ },
+ "app-account-cost-export.line-head.message.02cbde28d51d": {
+  "nb": "Leverandørens jobb-ID",
+  "en": "Provider job ID",
+  "oversatt": "제공업체 작업 ID"
+ },
+ "app-account-cost-export.line-head.message.19ab8b6773d8": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "프로젝트"
+ },
+ "app-account-cost-export.line-head.message.2f10fe10f8a8": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-account-cost-export.line-head.message.4657045ba1c1": {
+  "nb": "Mengde",
+  "en": "Quantity",
+  "oversatt": "수량"
+ },
+ "app-account-cost-export.line-head.message.5059e628802d": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "상태"
+ },
+ "app-account-cost-export.line-head.message.56bfe4ac24fa": {
+  "nb": "Bestilt av",
+  "en": "Ordered by",
+  "oversatt": "주문자"
+ },
+ "app-account-cost-export.line-head.message.781fec263d62": {
+  "nb": "Kreditter",
+  "en": "Credits",
+  "oversatt": "크레딧"
+ },
+ "app-account-cost-export.line-head.message.7d285296cd7a": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-account-cost-export.line-head.message.92dc4d45163e": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "모델"
+ },
+ "app-account-cost-export.line-head.message.a3947b231010": {
+  "nb": "Beløp USD",
+  "en": "Amount USD",
+  "oversatt": "금액 (USD)"
+ },
+ "app-account-cost-export.line-head.message.ab6763cf1bf0": {
+  "nb": "Enhetspris USD",
+  "en": "Unit price USD",
+  "oversatt": "단가 (USD)"
+ },
+ "app-account-cost-export.line-head.message.b565a5abdaa9": {
+  "nb": "Tjeneste",
+  "en": "Service",
+  "oversatt": "서비스"
+ },
+ "app-account-cost-export.line-head.message.bb8a7ec7ffd7": {
+  "nb": "Beløp NOK",
+  "en": "Amount NOK",
+  "oversatt": "금액 (NOK)"
+ },
+ "app-account-cost-export.line-head.message.cdcc7d064d19": {
+  "nb": "Kurs",
+  "en": "Rate",
+  "oversatt": "환율"
+ },
+ "app-account-cost-export.line-head.message.ed1d835b3dfc": {
+  "nb": "Gjelder",
+  "en": "Concerns",
+  "oversatt": "해당 항목"
+ },
+ "app-account-cost-export.report-facts.message.080892203a0f": {
+  "nb": "Sum USD",
+  "en": "Total USD",
+  "oversatt": "총합계 (USD)"
+ },
+ "app-account-cost-export.report-facts.message.3698666b5510": {
+  "nb": "Laget av",
+  "en": "Created by",
+  "oversatt": "생성자"
+ },
+ "app-account-cost-export.report-facts.message.3c7ac6f3ac85": {
+  "nb": "Norske kroner (NOK) og USD",
+  "en": "Norwegian kroner (NOK) and USD",
+  "oversatt": "노르웨이 크로네(NOK) 및 USD"
+ },
+ "app-account-cost-export.report-facts.message.4ca2bf78d649": {
+  "nb": "Antall jobber",
+  "en": "Number of jobs",
+  "oversatt": "작업 수"
+ },
+ "app-account-cost-export.report-facts.message.55cf897e6d1b": {
+  "nb": "Periode",
+  "en": "Period",
+  "oversatt": "기간"
+ },
+ "app-account-cost-export.report-facts.message.6e238939eae9": {
+  "nb": "Sum NOK",
+  "en": "Total NOK",
+  "oversatt": "총합계 (NOK)"
+ },
+ "app-account-cost-export.report-facts.message.bfb35afec136": {
+  "nb": "Valuta",
+  "en": "Currency",
+  "oversatt": "통화"
+ },
+ "app-account-cost-export.report-facts.message.c0c6bff0e0cd": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "프로젝트"
+ },
+ "app-account-cost-export.report-facts.message.d9b58a50cb38": {
+  "nb": "Utvalg",
+  "en": "Selection",
+  "oversatt": "선택 항목"
+ },
+ "app-account-cost-export.report-facts.message.dbf0ccafb17c": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "생성됨"
+ },
+ "app-account-cost-export.sum.wb-add-worksheet.e647192a21b7": {
+  "nb": "Sammendrag",
+  "en": "Summary",
+  "oversatt": "요약"
+ },
+ "app-account-cost-export.to-pdf.doc-text.4983827296a1": {
+  "nb": "{projectName} – side {i} av {pages}",
+  "en": "{projectName} – page {i} of {pages}",
+  "oversatt": "{projectName} – {pages}페이지 중 {i}페이지"
+ },
+ "app-account-cost-export.to-pdf.group-head.023ef4286b0e": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "담당자"
+ },
+ "app-account-cost-export.to-pdf.group-head.0738a7a01d71": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "서비스 · 모델"
+ },
+ "app-account-cost-export.to-pdf.group-head.3d047da8f73d": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "월"
+ },
+ "app-account-cost-export.to-pdf.section.09af60a8f34f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-account-cost-export.to-pdf.section.36355e558392": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "서비스 및 모델별"
+ },
+ "app-account-cost-export.to-pdf.section.5616ad5d4813": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "담당자별"
+ },
+ "app-account-cost-export.to-pdf.section.7f2da456ec9d": {
+  "nb": "Merknad",
+  "en": "Note",
+  "oversatt": "메모"
+ },
+ "app-account-cost-export.to-pdf.section.ef1ad36a484e": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "월별"
+ },
+ "app-account-cost-export.to-pdf.section.f2ab0c46b3df": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "대사"
+ },
+ "app-account-cost-export.to-xlsx.group.0e8944420988": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "월별"
+ },
+ "app-account-cost-export.to-xlsx.group.4bcdf1838aca": {
+  "nb": "Tjeneste · modell",
+  "en": "Service · model",
+  "oversatt": "서비스 · 모델"
+ },
+ "app-account-cost-export.to-xlsx.group.4f07688907f9": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "서비스 및 모델별"
+ },
+ "app-account-cost-export.to-xlsx.group.58d0d37a9010": {
+  "nb": "Måned",
+  "en": "Month",
+  "oversatt": "월"
+ },
+ "app-account-cost-export.to-xlsx.group.735d6529d49b": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "담당자별"
+ },
+ "app-account-cost-export.to-xlsx.group.ce8efb8633e9": {
+  "nb": "Person",
+  "en": "Person",
+  "oversatt": "담당자"
+ },
+ "app-account-cost-export.to-xlsx.sum-add-row.be727f79046f": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "메모"
+ },
+ "app-account-cost-export.ws.wb-add-worksheet.7ff7fe067bfa": {
+  "nb": "Linjer",
+  "en": "Lines",
+  "oversatt": "대사"
+ },
+ "app-account-cost-report-view.cost-report-view.aria-label.1e8854fe8733": {
+  "nb": "Valuta",
+  "en": "Currency",
+  "oversatt": "통화"
+ },
+ "app-account-cost-report-view.cost-report-view.aria-label.453e6c187a4c": {
+  "nb": "Periode",
+  "en": "Period",
+  "oversatt": "기간"
+ },
+ "app-account-cost-report-view.cost-report-view.label.0d1573b1bcc2": {
+  "nb": "Runway-kreditter",
+  "en": "Runway credits",
+  "oversatt": "Runway 크레딧"
+ },
+ "app-account-cost-report-view.cost-report-view.label.324a52e3e6f8": {
+  "nb": "Sum NOK",
+  "en": "Total NOK",
+  "oversatt": "총액(NOK)"
+ },
+ "app-account-cost-report-view.cost-report-view.label.c8612319559f": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "작업"
+ },
+ "app-account-cost-report-view.cost-report-view.label.e37f457fa385": {
+  "nb": "Sum USD",
+  "en": "Total USD",
+  "oversatt": "총액(USD)"
+ },
+ "app-account-cost-report-view.cost-report-view.option.26db8ed7da9c": {
+  "nb": "Dollar",
+  "en": "Dollars",
+  "oversatt": "달러"
+ },
+ "app-account-cost-report-view.cost-report-view.option.56734ca9629b": {
+  "nb": "Hele perioden",
+  "en": "The whole period",
+  "oversatt": "전체 기간"
+ },
+ "app-account-cost-report-view.cost-report-view.option.9bebccc5beb9": {
+  "nb": "Hele prosjektet",
+  "en": "The whole project",
+  "oversatt": "전체 프로젝트"
+ },
+ "app-account-cost-report-view.cost-report-view.option.c33ff407a7af": {
+  "nb": "Kroner (og dollar)",
+  "en": "Kroner (and dollars)",
+  "oversatt": "크로네(및 달러)"
+ },
+ "app-account-cost-report-view.cost-report-view.p.53c1cfc327df": {
+  "nb": "Ingen AI-bruk i perioden.",
+  "en": "No AI usage in the period.",
+  "oversatt": "해당 기간 동안 AI 사용 내역이 없습니다."
+ },
+ "app-account-cost-report-view.cost-report-view.p.7828b010f0dc": {
+  "nb": "Kursene fra Norges Bank kunne ikke hentes nå, så beløpene vises i dollar.",
+  "en": "The rates from Norges Bank could not be fetched now, so the amounts are shown in dollars.",
+  "oversatt": "현재 노르웨이 중앙은행(Norges Bank)의 환율 정보를 가져올 수 없어 금액이 달러로 표시됩니다."
+ },
+ "app-account-cost-report-view.cost-report-view.p.ceaeca173f41": {
+  "nb": "Henter forbruket …",
+  "en": "Fetching the usage …",
+  "oversatt": "사용량을 가져오는 중…"
+ },
+ "app-account-cost-report-view.cost-report-view.summary.b7435a50e708": {
+  "nb": "Alle linjene ({length})",
+  "en": "All lines ({length})",
+  "oversatt": "모든 항목 ({length})"
+ },
+ "app-account-cost-report-view.cost-report-view.th.2ab90e37f418": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-account-cost-report-view.cost-report-view.th.797fbe4f6d65": {
+  "nb": "Mengde",
+  "en": "Qty",
+  "oversatt": "수량"
+ },
+ "app-account-cost-report-view.cost-report-view.th.98fcce6a5c21": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "프로젝트"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b1ed6168a460": {
+  "nb": "Tjeneste",
+  "en": "Service",
+  "oversatt": "서비스"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b3f8944269ce": {
+  "nb": "Hvem",
+  "en": "Who",
+  "oversatt": "작업자"
+ },
+ "app-account-cost-report-view.cost-report-view.th.b41a537ba27f": {
+  "nb": "Gjelder",
+  "en": "Concerns",
+  "oversatt": "해당 항목"
+ },
+ "app-account-cost-report-view.cost-report-view.title.4d3e52aadb6a": {
+  "nb": "Per måned",
+  "en": "By month",
+  "oversatt": "월별"
+ },
+ "app-account-cost-report-view.cost-report-view.title.94d6137e58c1": {
+  "nb": "Per tjeneste og modell",
+  "en": "By service and model",
+  "oversatt": "서비스 및 모델별"
+ },
+ "app-account-cost-report-view.cost-report-view.title.d143b4be389a": {
+  "nb": "Per person",
+  "en": "By person",
+  "oversatt": "사용자별"
+ },
+ "app-account-cost-report-view.period-label.period-label.0ada20877409": {
+  "nb": "Hele perioden",
+  "en": "The whole period",
+  "oversatt": "전체 기간"
+ },
+ "app-account-cost-report-view.scope-label.message.1bd28d168ca5": {
+  "nb": "Mitt forbruk i alle prosjekter",
+  "en": "My usage in all projects",
+  "oversatt": "모든 프로젝트에서의 내 사용량"
+ },
+ "app-account-cost-report-view.scope-label.message.5c9c4aad4c7f": {
+  "nb": "Prosjektet totalt (alle medlemmer)",
+  "en": "The project in total (all members)",
+  "oversatt": "프로젝트 전체(모든 멤버)"
+ },
+ "app-account-cost-report-view.scope-label.message.9105670d93c0": {
+  "nb": "Mitt forbruk i prosjektet",
+  "en": "My usage in the project",
+  "oversatt": "프로젝트 내 내 사용량"
+ },
+ "app-account-privacy-statement.missing.message.a2e081fb37e4": {
+  "nb": "(ikke fylt ut ennå)",
+  "en": "(not filled in yet)",
+  "oversatt": "(아직 작성되지 않음)"
+ },
+ "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
+  "nb": "Personvernerklæring for Animatic Studio",
+  "en": "Privacy statement for Animatic Studio",
+  "oversatt": "Animatic Studio 개인정보 처리방침"
+ },
+ "app-account-privacy-statement.privacy-statement.li.1c17eeebd1c9": {
+  "nb": "Dine API-nøkler til AI-leverandører, kryptert (AES-256-GCM). Nøklene kan ikke leses fra nettleseren, bare de fire siste tegnene vises.",
+  "en": "Your API keys for AI providers, encrypted (AES-256-GCM). The keys cannot be read from the browser; only the last four characters are shown.",
+  "oversatt": "AI 제공업체용 API 키는 암호화(AES-256-GCM)되어 저장됩니다. 이 키는 브라우저에서 읽을 수 없으며 마지막 네 자리만 표시됩니다."
+ },
+ "app-account-privacy-statement.privacy-statement.li.37f063f56774": {
+  "nb": "AI-bruk: hvilke AI-jobber som er bestilt, beskrivelsene som ble sendt, leverandør, modell, tidspunkt og anslått kostnad.",
+  "en": "AI usage: which AI jobs were ordered, the descriptions that were sent, provider, model, time and estimated cost.",
+  "oversatt": "AI 사용량: 요청된 AI 작업, 전송된 설명, 제공업체, 모델, 시간 및 예상 비용."
+ },
+ "app-account-privacy-statement.privacy-statement.li.adc27bbe251b": {
+  "nb": "Innholdet du og prosjektmedlemmene lager: manus, scener, bilder, lyd, video, kommentarer og historikken over endringer (hvem som endret hva og når).",
+  "en": "The content you and the project members create: scripts, scenes, images, audio, video, comments and the history of changes (who changed what and when).",
+  "oversatt": "귀하와 프로젝트 멤버가 생성한 콘텐츠: 대본, 씬, 이미지, 오디오, 비디오, 댓글 및 변경 내역(누가 무엇을 언제 변경했는지)."
+ },
+ "app-account-privacy-statement.privacy-statement.li.c9ee2addaecf": {
+  "nb": "I nettleseren lagres bare det som trengs for innloggingen og valgene dine (for eksempel språk). Vi bruker ingen sporings- eller reklamekapsler.",
+  "en": "In the browser we store only what is needed for sign-in and your choices (for example language). We use no tracking or advertising cookies.",
+  "oversatt": "브라우저에는 로그인 및 환경 설정(예: 언어)에 필요한 정보만 저장됩니다. 추적 또는 광고 쿠키는 사용하지 않습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.li.d927ab5cb1ca": {
+  "nb": "Konto: e-postadresse, visningsnavn, språkvalg, når kontoen ble laget og når du sist var aktiv. Passordet lagres bare som en kryptografisk sjekksum hos innloggingstjenesten; vi kan ikke se det.",
+  "en": "Account: email address, display name, language choice, when the account was created and when you were last active. The password is stored only as a cryptographic hash by the sign-in service; we cannot see it.",
+  "oversatt": "계정: 이메일 주소, 표시 이름, 언어 선택, 계정 생성일 및 마지막 활동 시간. 비밀번호는 로그인 서비스에 암호화 해시 형태로만 저장되며, 당사는 이를 확인할 수 없습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.021c15bc5aae": {
+  "nb": "Versjon {version}{value2}",
+  "en": "Version {version}{value2}",
+  "oversatt": "버전 {version}{value2}"
+ },
+ "app-account-privacy-statement.privacy-statement.p.0e88e53dce35": {
+  "nb": "Automatisk gjenkjenning: når et manus lastes opp, importeres eller endres, og når en oversatt versjon kobles til det norske manuset, sendes korte manusutdrag (navn, sceneoverskrifter og noen setninger) til den innebygde AI-tjenesten. Den foreslår hvilke karakterer, dyr, objekter, steder, miljøer og lyder som finnes, og hvordan scenene i oversettelsen passer sammen. Dette skjer på tjenestens regning, uten dine API-nøkler. Utdragene og svarene lagres ikke i loggene; bare forslagene lagres i prosjektet, og ingenting tas i bruk før du godkjenner det.",
+  "en": "Automatic recognition: when a script is uploaded, imported or changed, and when a translated version is linked to the Norwegian script, short script excerpts (names, scene headings and a few sentences) are sent to the built-in AI service. It suggests which characters, animals, objects, locations, environments and sounds appear, and how the scenes in the translation match. This is at the service's expense, without your API keys. The excerpts and replies are not stored in the logs; only the suggestions are stored in the project, and nothing is used until you approve it.",
+  "oversatt": "자동 인식: 대본을 업로드, 가져오기 또는 편집할 때, 그리고 번역본을 원본 대본에 연결할 때 짧은 대본 발췌본(이름, 씬 제목 및 몇 가지 문장)이 내장 AI 서비스로 전송됩니다. 이 서비스는 어떤 캐릭터, 동물, 오브젝트, 장소, 환경 및 사운드가 나타나는지, 그리고 번역된 씬이 어떻게 일치하는지 제안합니다. 이는 서비스 부담으로 진행되며 귀하의 API 키를 사용하지 않습니다. 발췌본과 응답은 로그에 저장되지 않으며, 제안 사항만 프로젝트에 저장되고 승인하기 전까지는 적용되지 않습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.3aa9958e499c": {
+  "nb": "Kort fortalt: Vi selger aldri opplysninger om deg, viser ikke reklame og deler ikke dataene dine med andre for markedsføring. Vi behandler personopplysninger etter personvernforordningen (GDPR) og norsk personopplysningslov.",
+  "en": "In short: We never sell information about you, show no advertising and do not share your data with others for marketing. We process personal data under the General Data Protection Regulation (GDPR) and the Norwegian Personal Data Act.",
+  "oversatt": "요약: 당사는 귀하의 정보를 판매하지 않으며, 광고를 표시하지 않고, 마케팅 목적으로 귀하의 데이터를 제3자와 공유하지 않습니다. 당사는 일반 데이터 보호 규정(GDPR) 및 노르웨이 개인정보 보호법에 따라 개인 데이터를 처리합니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.43f087b1a7d6": {
+  "nb": "Du har rett til innsyn, retting, sletting, begrensning av behandlingen, dataportabilitet (du kan laste ned sikkerhetskopi av prosjektene dine) og til å protestere. Kontakt oss på adressen over. Du kan også klage til Datatilsynet (datatilsynet.no).",
+  "en": "You have the right of access, rectification, erasure, restriction of processing, data portability (you can download a backup of your projects) and to object. Contact us at the address above. You can also complain to the Norwegian Data Protection Authority (datatilsynet.no).",
+  "oversatt": "귀하는 열람, 정정, 삭제, 처리 제한, 데이터 이동성(프로젝트 백업 다운로드 가능) 및 반대할 권리가 있습니다. 위 주소로 문의해 주시기 바랍니다. 또한 노르웨이 데이터 보호국(datatilsynet.no)에 이의를 제기할 수도 있습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
+  "nb": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+  "en": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+  "oversatt": "Animatic Studio는 데이터베이스, 파일 및 로그인을 위해 클라우드 플랫폼을 사용합니다. 저장 위치: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.71d277fd1a52": {
+  "nb": "Endres erklæringen, får den et nytt versjonsnummer, og du blir bedt om å lese den ved neste innlogging.",
+  "en": "If the statement changes, it gets a new version number, and you are asked to read it at your next sign-in.",
+  "oversatt": "방침이 변경되면 새로운 버전 번호가 부여되며, 다음 로그인 시 이를 검토하도록 요청받게 됩니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.7f8c8d4d3739": {
+  "nb": "Vi selger, leier ut eller bytter aldri bort opplysninger om deg eller innholdet ditt, og vi bruker dem ikke til reklame eller profilering.",
+  "en": "We never sell, rent out or trade information about you or your content, and we do not use it for advertising or profiling.",
+  "oversatt": "당사는 귀하 또는 귀하의 콘텐츠에 대한 정보를 판매, 대여 또는 교환하지 않으며, 이를 광고나 프로파일링에 사용하지 않습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.7f99cf886105": {
+  "nb": "Behandlingsansvarlig: ",
+  "en": "Controller: ",
+  "oversatt": "개인정보 처리관리자: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.bd944bafa6ac": {
+  "nb": "Adresse: ",
+  "en": "Address: ",
+  "oversatt": "주소: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.c1f0a53d37c6": {
+  "nb": "Utkast",
+  "en": "Draft",
+  "oversatt": "초안"
+ },
+ "app-account-privacy-statement.privacy-statement.p.cba960e48ca5": {
+  "nb": "For å levere tjenesten du har bedt om (avtale, GDPR art. 6 nr. 1 bokstav b); for sikkerhet, feilretting og for å hindre misbruk (berettiget interesse, bokstav f); og for å vise deg og prosjekteieren hva AI-bruken har kostet.",
+  "en": "To provide the service you have asked for (contract, GDPR Art. 6(1)(b)); for security, troubleshooting and to prevent misuse (legitimate interest, point (f)); and to show you and the project owner what the AI usage has cost.",
+  "oversatt": "귀하가 요청한 서비스 제공(계약, GDPR 제6조 제1항 (b)); 보안, 문제 해결 및 오용 방지(정당한 이익, (f)목); 그리고 귀하와 프로젝트 소유자에게 AI 사용 비용을 표시하기 위함입니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.cc753e8bca5e": {
+  "nb": ", org.nr. {orgNumber}",
+  "en": ", org. no. {orgNumber}",
+  "oversatt": ", 사업자등록번호 {orgNumber}"
+ },
+ "app-account-privacy-statement.privacy-statement.p.d4051b2cd87a": {
+  "nb": "Bruker du dine egne API-nøkler, er du selv kunde hos leverandøren, og det er dine vilkår med leverandøren som gjelder for det som sendes. Du er selv ansvarlig for at du har rett til å sende innholdet, og for å ikke sende personopplysninger om andre uten grunnlag. Vi lagrer nøklene kryptert og sender dem bare til leverandøren de hører til. Videresending til AI er en risiko i seg selv: les leverandørens vilkår før du bruker den.",
+  "en": "If you use your own API keys, you are the provider's customer, and your terms with the provider apply to what is sent. You are responsible for having the right to send the content, and for not sending personal data about others without a legal basis. We store the keys encrypted and send them only to the provider they belong to. Sending content to AI is a risk in itself: read the provider's terms before using it.",
+  "oversatt": "자체 API 키를 사용하는 경우 귀하는 해당 제공업체의 고객이 되며, 전송되는 데이터에는 해당 제공업체와의 이용약관이 적용됩니다. 귀하는 콘텐츠를 전송할 권리가 있는지 확인하고 법적 근거 없이 타인의 개인 데이터를 전송하지 않을 책임이 있습니다. 당사는 키를 암호화하여 저장하며 해당 제공업체에만 전송합니다. AI로 콘텐츠를 전송하는 것 자체가 위험을 수반하므로, 사용하기 전에 제공업체의 약관을 확인하시기 바랍니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.dbc1d18f53cb": {
+  "nb": "Så lenge du har konto. Sletter du kontoen, låses den i 30 dager (så den kan gjenopprettes ved en feil), og deretter fjernes e-post, navn, API-nøkler og innlogging. Endringer du har gjort i prosjekter andre er med i, står igjen merket «Slettet bruker», fordi de er en del av andres arbeid. Prosjekter du eier, slettes ikke automatisk; administrator kan gi dem en ny eier.",
+  "en": "As long as you have an account. If you delete your account, it is locked for 30 days (so it can be restored after a mistake), and then the email, name, API keys and sign-in are removed. Changes you made in projects others are part of remain marked “Deleted user”, because they are part of others' work. Projects you own are not deleted automatically; the administrator can give them a new owner.",
+  "oversatt": "계정을 보유하고 있는 동안 보관됩니다. 계정을 삭제하면 실수로 인한 삭제에 대비해 30일간 잠금 처리된 후 이메일, 이름, API 키 및 로그인 정보가 제거됩니다. 다른 사용자가 참여 중인 프로젝트에서 귀하가 수정한 내역은 타인의 작업에 포함되므로 '삭제된 사용자'로 표시된 채 유지됩니다. 귀하가 소유한 프로젝트는 자동으로 삭제되지 않으며, 관리자가 새 소유자를 지정할 수 있습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.p.dff2f1c35777": {
+  "nb": "Kontakt om personvern: ",
+  "en": "Contact about privacy: ",
+  "oversatt": "개인정보 보호 문의: "
+ },
+ "app-account-privacy-statement.privacy-statement.p.e05cd3a83ae4": {
+  "nb": "AI er valgfritt. Når du selv bestiller en AI-jobb, sendes de delene av manus, beskrivelser, bilder, lyd eller video som jobben trenger, til leverandøren du har valgt (for eksempel OpenAI, Google, fal.ai, Runway eller ElevenLabs). Flere av dem ligger i USA, så opplysningene kan bli overført utenfor EØS.",
+  "en": "AI is optional. When you order an AI job yourself, the parts of the script, descriptions, images, audio or video the job needs are sent to the provider you have chosen (for example OpenAI, Google, fal.ai, Runway or ElevenLabs). Several of them are in the USA, so the information may be transferred outside the EEA.",
+  "oversatt": "AI 사용은 선택 사항입니다. AI 작업을 직접 주문하면 작업에 필요한 대본, 설명, 이미지, 오디오 또는 비디오의 일부가 선택한 제공업체(예: OpenAI, Google, fal.ai, Runway 또는 ElevenLabs)로 전송됩니다. 이들 중 다수는 미국에 위치해 있으므로 정보가 EEA 외부로 이전될 수 있습니다."
+ },
+ "app-account-privacy-statement.privacy-statement.title.384c9e9e3a93": {
+  "nb": "1. Hvem som er ansvarlig",
+  "en": "1. Who is responsible",
+  "oversatt": "1. 개인정보 처리 주체"
+ },
+ "app-account-privacy-statement.privacy-statement.title.5dc63510b970": {
+  "nb": "4. Vi selger ikke data",
+  "en": "4. We do not sell data",
+  "oversatt": "4. 데이터 미판매 원칙"
+ },
+ "app-account-privacy-statement.privacy-statement.title.6147dc559ba7": {
+  "nb": "7. Hvor lenge",
+  "en": "7. How long",
+  "oversatt": "7. 보관 기간"
+ },
+ "app-account-privacy-statement.privacy-statement.title.6a7082391160": {
+  "nb": "5. Hvor dataene lagres",
+  "en": "5. Where the data is stored",
+  "oversatt": "5. 데이터 저장 위치"
+ },
+ "app-account-privacy-statement.privacy-statement.title.723f2a7e6fa3": {
+  "nb": "6. Når du bruker AI",
+  "en": "6. When you use AI",
+  "oversatt": "6. AI 사용 시 유의사항"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bb8134f59ff7": {
+  "nb": "3. Hvorfor, og med hvilket grunnlag",
+  "en": "3. Why, and on what basis",
+  "oversatt": "3. 처리 목적 및 법적 근거"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bc26684b55b8": {
+  "nb": "8. Dine rettigheter",
+  "en": "8. Your rights",
+  "oversatt": "8. 정보주체의 권리"
+ },
+ "app-account-privacy-statement.privacy-statement.title.bcd0918fbc59": {
+  "nb": "2. Hva vi lagrer",
+  "en": "2. What we store",
+  "oversatt": "2. 수집하는 정보"
+ },
+ "app-account-privacy-statement.privacy-statement.title.f124235c6ca5": {
+  "nb": "9. Mer informasjon",
+  "en": "9. More information",
+  "oversatt": "9. 추가 정보"
+ },
+ "app-account-project-cost-section.project-cost-section.button.d1d7e14bdfbc": {
+  "nb": "Mitt forbruk",
+  "en": "My usage",
+  "oversatt": "내 사용량"
+ },
+ "app-account-project-cost-section.project-cost-section.button.d937301e7b73": {
+  "nb": "Prosjektet totalt",
+  "en": "The project in total",
+  "oversatt": "프로젝트 전체"
+ },
+ "app-account-project-cost-section.project-cost-section.h2.6a56ead80637": {
+  "nb": "AI-forbruk og kostnadsrapport",
+  "en": "AI usage and cost report",
+  "oversatt": "AI 사용량 및 비용 보고서"
+ },
+ "app-account-use-account.account-watcher.button.4f70a8b92cf4": {
+  "nb": "Fortsett",
+  "en": "Continue",
+  "oversatt": "계속"
+ },
+ "app-account-use-account.account-watcher.button.87149e26bf0b": {
+  "nb": "Logg ut",
+  "en": "Sign out",
+  "oversatt": "로그아웃"
+ },
+ "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
+  "nb": "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
+  "en": "Before you use Animatic Studio, read how we process your information.",
+  "oversatt": "Animatic Studio를 사용하기 전에 개인정보 처리 방침을 확인하세요."
+ },
+ "app-account-use-account.account-watcher.dialog-description.af08127f81e4": {
+  "nb": "Personvernerklæringen er endret. Les den før du fortsetter.",
+  "en": "The privacy statement has changed. Read it before you continue.",
+  "oversatt": "개인정보 처리 방침이 변경되었습니다. 계속하기 전에 확인하세요."
+ },
+ "app-account-use-account.account-watcher.dialog-title.249ff62113f5": {
+  "nb": "Les personvernerklæringen",
+  "en": "Read the privacy statement",
+  "oversatt": "개인정보 처리 방침 읽기"
+ },
+ "app-account-use-account.account-watcher.label.1341c2d6b674": {
+  "nb": "Jeg har lest personvernerklæringen",
+  "en": "I have read the privacy statement",
+  "oversatt": "개인정보 처리 방침을 읽었습니다"
+ },
+ "app-account-use-account.privacy-link.link.ac42faff7b54": {
+  "nb": "Personvern",
+  "en": "Privacy",
+  "oversatt": "개인정보 보호"
+ },
+ "app-admin-admin-page.admin-page.aria-label.25f6a8737929": {
+  "nb": "Søk",
+  "en": "Search",
+  "oversatt": "검색"
+ },
+ "app-admin-admin-page.admin-page.h1.c31a2370fb06": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "관리"
+ },
+ "app-admin-admin-page.admin-page.h1.c31a2370fb06.2": {
+  "nb": "Administrasjon",
+  "en": "Administration",
+  "oversatt": "관리"
+ },
+ "app-admin-admin-page.admin-page.h2.06305ce350de": {
+  "nb": "Låste prosjekter ({length})",
+  "en": "Locked projects ({length})",
+  "oversatt": "잠긴 프로젝트 ({length})"
+ },
+ "app-admin-admin-page.admin-page.h2.89e04d89f8fc": {
+  "nb": "Brukere",
+  "en": "Users",
+  "oversatt": "사용자"
+ },
+ "app-admin-admin-page.admin-page.p-owners-map.6b27b8a87422": {
+  "nb": "(uten navn)",
+  "en": "(no name)",
+  "oversatt": "(이름 없음)"
+ },
+ "app-admin-admin-page.admin-page.p.9da1ccc31370": {
+  "nb": "Medlemmene ser bare en melding om at prosjektet er låst. Gi prosjektet en ny eier for å åpne det igjen; tidligere eiere blir redaktører.",
+  "en": "The members only see a message that the project is locked. Give the project a new owner to open it again; former owners become editors.",
+  "oversatt": "멤버에게는 프로젝트가 잠겼다는 메시지만 표시됩니다. 다시 열려면 프로젝트에 새 소유자를 지정하세요. 이전 소유자는 편집자가 됩니다."
+ },
+ "app-admin-admin-page.admin-page.p.9dc3db4e207e": {
+  "nb": "Ingen tilgang.",
+  "en": "No access.",
+  "oversatt": "액세스 권한이 없습니다."
+ },
+ "app-admin-admin-page.admin-page.p.c03358df5eb2": {
+  "nb": "{purged} konto(er) var låst i 30 dager og er nå slettet for godt (anonymisert).",
+  "en": "{purged} account(s) had been locked for 30 days and are now deleted for good (anonymised).",
+  "oversatt": "{purged}개의 계정이 30일 동안 잠겨 있었으며 이제 영구적으로 삭제(익명화)되었습니다."
+ },
+ "app-admin-admin-page.admin-page.p.c9f9e0fc0c12": {
+  "nb": "Henter brukerne …",
+  "en": "Fetching the users …",
+  "oversatt": "사용자 목록 가져오는 중…"
+ },
+ "app-admin-admin-page.admin-page.placeholder.7909773c3a75": {
+  "nb": "Søk på navn eller e-post",
+  "en": "Search by name or email",
+  "oversatt": "이름 또는 이메일로 검색"
+ },
+ "app-admin-admin-page.admin-page.span.f0f0d620cbb8": {
+  "nb": "{total} brukere · {admins} administratorer · {blocked} blokkert · {deleting} låst for sletting",
+  "en": "{total} users · {admins} administrators · {blocked} blocked · {deleting} locked for deletion",
+  "oversatt": "총 {total}명의 사용자 · 관리자 {admins}명 · 차단됨 {blocked}명 · 삭제 대기 중 {deleting}명"
+ },
+ "app-admin-admin-page.admin-page.summary.0b5e6de839a1": {
+  "nb": "Alle prosjekter ({length})",
+  "en": "All projects ({length})",
+  "oversatt": "모든 프로젝트 ({length})"
+ },
+ "app-admin-admin-page.admin-page.th.0f9fd2c60917": {
+  "nb": "Bruker",
+  "en": "User",
+  "oversatt": "사용자"
+ },
+ "app-admin-admin-page.admin-page.th.20e10a7b2643": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "상태"
+ },
+ "app-admin-admin-page.admin-page.th.3e4e0008e278": {
+  "nb": "AI totalt",
+  "en": "AI total",
+  "oversatt": "AI 합계"
+ },
+ "app-admin-admin-page.admin-page.th.3fbb21c899fa": {
+  "nb": "Sist aktiv",
+  "en": "Last active",
+  "oversatt": "최근 활동"
+ },
+ "app-admin-admin-page.admin-page.th.44988da3f7a8": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "생성일"
+ },
+ "app-admin-admin-page.admin-page.th.e20a386237c9": {
+  "nb": "Prosjekter",
+  "en": "Projects",
+  "oversatt": "프로젝트"
+ },
+ "app-admin-admin-page.admin-page.th.f3d57d96435f": {
+  "nb": "Siste 30 dager",
+  "en": "Last 30 days",
+  "oversatt": "최근 30일"
+ },
+ "app-admin-admin-page.lock-label.message.2ff1c8869e6d": {
+  "nb": "Eieren er slettet",
+  "en": "The owner is deleted",
+  "oversatt": "소유자가 삭제됨"
+ },
+ "app-admin-admin-page.lock-label.message.7ae247ff81a8": {
+  "nb": "Ingen eier",
+  "en": "No owner",
+  "oversatt": "소유자 없음"
+ },
+ "app-admin-admin-page.lock-label.message.9e87f490421f": {
+  "nb": "Åpent",
+  "en": "Open",
+  "oversatt": "열기"
+ },
+ "app-admin-admin-page.lock-label.message.c4561b5891e8": {
+  "nb": "Eieren har slettet kontoen (30 dager)",
+  "en": "The owner has deleted the account (30 days)",
+  "oversatt": "소유자가 계정을 삭제함 (30일)"
+ },
+ "app-admin-admin-page.lock-label.message.ca356997515f": {
+  "nb": "Eieren er blokkert",
+  "en": "The owner is blocked",
+  "oversatt": "소유자가 차단됨"
+ },
+ "app-admin-admin-page.locked-project.aria-label.cddf3e254116": {
+  "nb": "Ny eier",
+  "en": "New owner",
+  "oversatt": "새 소유자"
+ },
+ "app-admin-admin-page.locked-project.button.677727d39088": {
+  "nb": "Gi ny eier",
+  "en": "Give new owner",
+  "oversatt": "새 소유자 지정"
+ },
+ "app-admin-admin-page.locked-project.option.09fba6744c76": {
+  "nb": "Velg ny eier …",
+  "en": "Choose new owner …",
+  "oversatt": "새 소유자 선택…"
+ },
+ "app-admin-admin-page.locked-project.span.82c6d58b4834": {
+  "nb": "Eier: {value1}",
+  "en": "Owner: {value1}",
+  "oversatt": "소유자: {value1}"
+ },
+ "app-admin-admin-page.privacy-admin.button.b9d1e1700d6f": {
+  "nb": "Lagre som ny versjon",
+  "en": "Save as new version",
+  "oversatt": "새 버전으로 저장"
+ },
+ "app-admin-admin-page.privacy-admin.field.0001604ca29a": {
+  "nb": "Lagringssted (skyregion)",
+  "en": "Storage location (cloud region)",
+  "oversatt": "저장 위치 (클라우드 리전)"
+ },
+ "app-admin-admin-page.privacy-admin.field.358c7b1c8cc3": {
+  "nb": "Gate, postnummer og sted",
+  "en": "Street, postcode and town",
+  "oversatt": "도로명 주소, 우편번호 및 시/도"
+ },
+ "app-admin-admin-page.privacy-admin.field.534b4d72fdab": {
+  "nb": "Kontakt-e-post for personvern",
+  "en": "Contact email for privacy",
+  "oversatt": "개인정보 보호 문의 이메일"
+ },
+ "app-admin-admin-page.privacy-admin.field.53824a104508": {
+  "nb": "f.eks. EU (Europa)",
+  "en": "e.g. EU (Europe)",
+  "oversatt": "예: EU(유럽)"
+ },
+ "app-admin-admin-page.privacy-admin.field.b0b933fa56ec": {
+  "nb": "Behandlingsansvarlig (navn)",
+  "en": "Controller (name)",
+  "oversatt": "개인정보 처리자(이름)"
+ },
+ "app-admin-admin-page.privacy-admin.field.c4ba7c3fb7b2": {
+  "nb": "Organisasjonsnummer",
+  "en": "Organisation number",
+  "oversatt": "사업자 등록 번호"
+ },
+ "app-admin-admin-page.privacy-admin.field.c5ea01529e3d": {
+  "nb": "Adresse",
+  "en": "Address",
+  "oversatt": "주소"
+ },
+ "app-admin-admin-page.privacy-admin.field.d57b35cd2237": {
+  "nb": "f.eks. Diagonalen AS",
+  "en": "e.g. Diagonalen AS",
+  "oversatt": "예: Diagonalen AS"
+ },
+ "app-admin-admin-page.privacy-admin.h2.83f00283bf55": {
+  "nb": "Personvernerklæringen",
+  "en": "The privacy statement",
+  "oversatt": "개인정보 처리방침"
+ },
+ "app-admin-admin-page.privacy-admin.label.14ad85b60799": {
+  "nb": "Mer informasjon (valgfritt, vises nederst)",
+  "en": "More information (optional, shown at the end)",
+  "oversatt": "추가 정보(선택 사항, 하단에 표시)"
+ },
+ "app-admin-admin-page.privacy-admin.link.5678f4294d88": {
+  "nb": "Se erklæringen",
+  "en": "View the statement",
+  "oversatt": "처리방침 보기"
+ },
+ "app-admin-admin-page.privacy-admin.span.5b5f920144eb": {
+  "nb": "Versjon {version}",
+  "en": "Version {version}",
+  "oversatt": "버전 {version}"
+ },
+ "app-admin-admin-page.privacy-admin.span.a9f0baada789": {
+  "nb": "Alle brukerne blir bedt om å lese erklæringen på nytt ved neste innlogging.",
+  "en": "All users are asked to read the statement again at their next sign-in.",
+  "oversatt": "모든 사용자는 다음 로그인 시 처리방침을 다시 읽도록 요청받습니다."
+ },
+ "app-admin-admin-page.role.message.348741ee89a8": {
+  "nb": "leser",
+  "en": "viewer",
+  "oversatt": "뷰어"
+ },
+ "app-admin-admin-page.role.message.521dbbacf178": {
+  "nb": "kommentator",
+  "en": "commenter",
+  "oversatt": "댓글 작성자"
+ },
+ "app-admin-admin-page.role.message.df84d28482ad": {
+  "nb": "eier",
+  "en": "owner",
+  "oversatt": "소유자"
+ },
+ "app-admin-admin-page.role.message.e25b204fd065": {
+  "nb": "redaktør",
+  "en": "editor",
+  "oversatt": "편집자"
+ },
+ "app-admin-admin-page.status-label.message.206bb82b7e7f": {
+  "nb": "Slettet",
+  "en": "Deleted",
+  "oversatt": "삭제됨"
+ },
+ "app-admin-admin-page.status-label.message.3005b09235d1": {
+  "nb": "Aktiv",
+  "en": "Active",
+  "oversatt": "활성"
+ },
+ "app-admin-admin-page.status-label.message.4d66d8f3924e": {
+  "nb": "Blokkert",
+  "en": "Blocked",
+  "oversatt": "차단됨"
+ },
+ "app-admin-admin-page.status-label.message.c871f437464f": {
+  "nb": "Låst for sletting",
+  "en": "Locked for deletion",
+  "oversatt": "삭제 대기 잠금"
+ },
+ "app-admin-admin-page.user-row.aria-label.93cd0b1f3adf": {
+  "nb": "Fast administrator",
+  "en": "Permanent administrator",
+  "oversatt": "영구 관리자"
+ },
+ "app-admin-admin-page.user-row.aria-label.d2afaa70c2f7": {
+  "nb": "Administrator",
+  "en": "Administrator",
+  "oversatt": "관리자"
+ },
+ "app-admin-admin-page.user-row.button.2638f1efa4a4": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-admin-admin-page.user-row.button.2681a9925e30": {
+  "nb": "Slett (30 dager)",
+  "en": "Delete (30 days)",
+  "oversatt": "삭제(30일)"
+ },
+ "app-admin-admin-page.user-row.button.4df65aa68db3": {
+  "nb": "Opphev blokkering",
+  "en": "Unblock",
+  "oversatt": "차단 해제"
+ },
+ "app-admin-admin-page.user-row.button.526696b6d467": {
+  "nb": "Gjør til admin",
+  "en": "Make admin",
+  "oversatt": "관리자로 지정"
+ },
+ "app-admin-admin-page.user-row.button.5781720b249a": {
+  "nb": "Blokker",
+  "en": "Block",
+  "oversatt": "차단"
+ },
+ "app-admin-admin-page.user-row.button.68c8209ac8bf": {
+  "nb": "Lås opp",
+  "en": "Unlock",
+  "oversatt": "잠금 해제"
+ },
+ "app-admin-admin-page.user-row.button.b6ab829d744f": {
+  "nb": "Blokker …",
+  "en": "Block …",
+  "oversatt": "차단…"
+ },
+ "app-admin-admin-page.user-row.button.cb769d080c0b": {
+  "nb": "Slett …",
+  "en": "Delete …",
+  "oversatt": "삭제…"
+ },
+ "app-admin-admin-page.user-row.button.db04b71d2910": {
+  "nb": "Fjern som admin",
+  "en": "Remove as admin",
+  "oversatt": "관리자 권한 해제"
+ },
+ "app-admin-admin-page.user-row.div.7c6ac8d95edb": {
+  "nb": "{jobs} jobber",
+  "en": "{jobs} jobs",
+  "oversatt": "작업 {jobs}개"
+ },
+ "app-admin-admin-page.user-row.div.968f3528e774": {
+  "nb": "slettes {value1}",
+  "en": "deleted on {value1}",
+  "oversatt": "{value1}에 삭제됨"
+ },
+ "app-admin-admin-page.user-row.div.f5649f3f9ab8": {
+  "nb": "Slettet bruker",
+  "en": "Deleted user",
+  "oversatt": "삭제된 사용자"
+ },
+ "app-admin-admin-page.user-row.placeholder.f511fee39a87": {
+  "nb": "Begrunnelse (valgfri)",
+  "en": "Reason (optional)",
+  "oversatt": "사유(선택 사항)"
+ },
+ "app-admin-admin-page.user-row.span.3dcd54e05365": {
+  "nb": "Slett: kontoen låses i 30 dager og anonymiseres deretter. Prosjektene brukeren eier, låses til de får ny eier.",
+  "en": "Delete: the account is locked for 30 days and then anonymised. The projects the user owns are locked until they get a new owner.",
+  "oversatt": "삭제: 계정이 30일 동안 잠긴 후 익명화됩니다. 해당 사용자가 소유한 프로젝트는 새 소유자가 지정될 때까지 잠깁니다."
+ },
+ "app-admin-admin-page.user-row.span.8502946aecd1": {
+  "nb": "Blokker: brukeren kan ikke logge inn. Er hen eier, låses prosjektene for alle til blokkeringen oppheves eller prosjektet får ny eier.",
+  "en": "Block: the user cannot sign in. If they are an owner, the projects are locked for everyone until the block is lifted or the project gets a new owner.",
+  "oversatt": "차단: 사용자가 로그인할 수 없습니다. 소유자인 경우 차단이 해제되거나 프로젝트에 새 소유자가 지정될 때까지 모든 사용자에게 프로젝트가 잠깁니다."
+ },
+ "app-admin-admin-page.user-row.summary.d15fbb3c3e67": {
+  "nb": "{length} prosjekter",
+  "en": "{length} projects",
+  "oversatt": "프로젝트 {length}개"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.5ed27011dafe": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.646c07f8a446": {
+  "nb": "Legg til ny modell",
+  "en": "Add a new model",
+  "oversatt": "새 모델 추가"
+ },
+ "app-admin-ai-connections-admin.add-model-form.button.c38d85154f17": {
+  "nb": "Legg til modellen",
+  "en": "Add the model",
+  "oversatt": "모델 추가"
+ },
+ "app-admin-ai-connections-admin.add-model-form.h3.646c07f8a446": {
+  "nb": "Legg til ny modell",
+  "en": "Add a new model",
+  "oversatt": "새 모델 추가"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.1797a6eddd30": {
+  "nb": "Pris i USD",
+  "en": "Price in USD",
+  "oversatt": "가격 (USD)"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.452bbe3f193b": {
+  "nb": "Leverandør",
+  "en": "Provider",
+  "oversatt": "제공업체"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.4703e723783f": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.82efd2cea02a": {
+  "nb": "Merknad (valgfri)",
+  "en": "Note (optional)",
+  "oversatt": "메모 (선택 사항)"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.be647b070339": {
+  "nb": "Enhet",
+  "en": "Unit",
+  "oversatt": "단위"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.fb114bb521fd": {
+  "nb": "Modell-ID hos leverandøren",
+  "en": "Model ID at the provider",
+  "oversatt": "제공업체의 모델 ID"
+ },
+ "app-admin-ai-connections-admin.add-model-form.label.fec74b9ea098": {
+  "nb": "Navn i valglistene",
+  "en": "Name in the lists",
+  "oversatt": "목록에 표시될 이름"
+ },
+ "app-admin-ai-connections-admin.add-model-form.p.5319dca1b322": {
+  "nb": "Modell-ID-er som virker for {value1} hos {value2}, f.eks.: {value3}. Bare små bokstaver, tall og . _ / -.",
+  "en": "Model IDs that work for {value1} with {value2}, e.g.: {value3}. Only lower-case letters, digits and . _ / -.",
+  "oversatt": "{value2}의 {value1}에 작동하는 모델 ID(예: {value3}). 소문자, 숫자 및 . _ / -만 사용할 수 있습니다."
+ },
+ "app-admin-ai-connections-admin.add-model-form.p.ea91262cd1eb": {
+  "nb": "Hos leverandører vi allerede støtter kan en ny modell legges til uten ny kode – men bare modeller i samme familie som de innebygde, fordi programmet sender de samme feltene. Den nye modellen arver lengder, startbilde og andre tekniske egenskaper fra den innebygde modellen i familien. Prisen du oppgir, brukes i kostnadsanslaget.",
+  "en": "With providers we already support, a new model can be added without new code – but only models in the same family as the built-in ones, because the program sends the same fields. The new model inherits lengths, start image and other technical properties from the built-in model in the family. The price you enter is used in the cost estimate.",
+  "oversatt": "이미 지원되는 제공업체의 경우 새 코드 없이 새 모델을 추가할 수 있지만, 프로그램이 동일한 필드를 전송하므로 내장된 모델과 동일한 제품군의 모델만 가능합니다. 새 모델은 해당 제품군의 내장 모델로부터 길이, 시작 이미지 및 기타 기술 속성을 상속받습니다. 입력한 가격은 예상 비용 계산에 사용됩니다."
+ },
+ "app-admin-ai-connections-admin.add-model-form.placeholder.26d800137d95": {
+  "nb": "f.eks. Seedream 5",
+  "en": "e.g. Seedream 5",
+  "oversatt": "예: Seedream 5"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.button.93fab67d265a": {
+  "nb": "Administrer AI-tilkoblinger",
+  "en": "Manage AI connections",
+  "oversatt": "AI 연결 관리"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.h2.c716664a2ff0": {
+  "nb": "AI-tilkoblinger",
+  "en": "AI connections",
+  "oversatt": "AI 연결"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.66afa263d9a2": {
+  "nb": "Henter AI-tilkoblingene …",
+  "en": "Fetching the AI connections …",
+  "oversatt": "AI 연결 가져오는 중…"
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.7e478e2636bb": {
+  "nb": "AI-tilkoblingene kunne ikke hentes.",
+  "en": "The AI connections could not be fetched.",
+  "oversatt": "AI 연결을 가져올 수 없습니다."
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.p.b24a1bdacb73": {
+  "nb": "Databasen må oppdateres (migrasjon 0034).",
+  "en": "The database must be updated (migration 0034).",
+  "oversatt": "데이터베이스를 업데이트해야 합니다(마이그레이션 0034)."
+ },
+ "app-admin-ai-connections-admin.ai-connections-admin.span.68c07c1eef88": {
+  "nb": "Hvilke AI-leverandører og modeller alle brukerne kan velge, og hva de koster.",
+  "en": "Which AI providers and models all users can choose, and what they cost.",
+  "oversatt": "모든 사용자가 선택할 수 있는 AI 제공업체 및 모델과 해당 비용입니다."
+ },
+ "app-admin-ai-connections-admin.ai-connections.aria-label.10c96c996fde": {
+  "nb": "Slå {name} av eller på",
+  "en": "Switch {name} off or on",
+  "oversatt": "{name} 켜기/끄기"
+ },
+ "app-admin-ai-connections-admin.ai-connections.label.3a8d163c2802": {
+  "nb": "Leverandøren er av",
+  "en": "The provider is off",
+  "oversatt": "제공업체 꺼짐"
+ },
+ "app-admin-ai-connections-admin.ai-connections.label.d07ba4d88564": {
+  "nb": "Leverandøren er på",
+  "en": "The provider is on",
+  "oversatt": "제공업체 켜짐"
+ },
+ "app-admin-ai-connections-admin.ai-connections.p.d0a5a7034ad3": {
+  "nb": "Det som er slått av, vises ikke i valglistene i appen og avvises på serveren. Prisene er anslag fra leverandørenes prislister (eller det administrator har oppgitt). Hver bruker trenger fortsatt sin egen nøkkel hos leverandøren.",
+  "en": "What is switched off is not shown in the lists in the app and is refused on the server. The prices are estimates from the providers' price lists (or what the administrator has entered). Each user still needs their own key with the provider.",
+  "oversatt": "비활성화된 항목은 앱 목록에 표시되지 않으며 서버에서 거부됩니다. 가격은 제공업체의 가격표를 기반으로 한 예상치(또는 관리자가 입력한 값)입니다. 각 사용자는 여전히 제공업체의 자체 키가 필요합니다."
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.1650b76803f4": {
+  "nb": "Kan",
+  "en": "Can",
+  "oversatt": "입력"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.23e8b38d536a": {
+  "nb": "Lager",
+  "en": "Makes",
+  "oversatt": "출력"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.3f85891d2b10": {
+  "nb": "Pris (anslag)",
+  "en": "Price (estimate)",
+  "oversatt": "가격 (예상)"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.4c8e24376f67": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "모델"
+ },
+ "app-admin-ai-connections-admin.ai-connections.th.ebd4b70f28b9": {
+  "nb": "På",
+  "en": "On",
+  "oversatt": "켜짐"
+ },
+ "app-admin-ai-connections-admin.cron-status-line.p.3f1974e5a0ea": {
+  "nb": "Bakgrunnsjobb: status vises når databasen er oppdatert (migrasjon 0034).",
+  "en": "Background job: the status is shown when the database is updated (migration 0034).",
+  "oversatt": "백그라운드 작업: 데이터베이스가 업데이트되면 상태가 표시됩니다(마이그레이션 0034)."
+ },
+ "app-admin-ai-connections-admin.cron-status-line.p.8dc7cfb4c6c1": {
+  "nb": "Siste kjøring feilet: {error}",
+  "en": "The last run failed: {error}",
+  "oversatt": "마지막 실행 실패: {error}"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.1ebfa38059d9": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.9a18abfb4d7d": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "이미지"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.b6de91fc1aba": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "오디오"
+ },
+ "app-admin-ai-connections-admin.kind-label.message.f398947a7a6f": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "비디오"
+ },
+ "app-admin-ai-connections-admin.model-row.aria-label.b2d42ee1e8bb": {
+  "nb": "Slå {label} av eller på",
+  "en": "Switch {label} off or on",
+  "oversatt": "{label} 켜기/끄기"
+ },
+ "app-admin-ai-connections-admin.model-row.button.5e4c5ad020b6": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-admin-ai-connections-admin.model-row.button.6b0ba4aa9467": {
+  "nb": "Fjern …",
+  "en": "Remove …",
+  "oversatt": "제거…"
+ },
+ "app-admin-ai-connections-admin.model-row.button.6f0707929bbb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-admin-ai-connections-admin.model-row.div.dc18abc7793b": {
+  "nb": "Lagt til av administrator – kan ikke brukes (ID-en passer ikke lenger)",
+  "en": "Added by administrator – cannot be used (the ID no longer fits)",
+  "oversatt": "관리자가 추가함 – 사용할 수 없음(ID가 더 이상 일치하지 않음)"
+ },
+ "app-admin-ai-connections-admin.model-row.div.f6f9438cc790": {
+  "nb": "Lagt til av administrator",
+  "en": "Added by administrator",
+  "oversatt": "관리자가 추가함"
+ },
+ "app-admin-ai-connections-admin.provider-requests.a.63ea418b9bd9": {
+  "nb": "Dokumentasjon",
+  "en": "Documentation",
+  "oversatt": "문서"
+ },
+ "app-admin-ai-connections-admin.provider-requests.a.ab8c9deb6193": {
+  "nb": "Nettside",
+  "en": "Website",
+  "oversatt": "웹사이트"
+ },
+ "app-admin-ai-connections-admin.provider-requests.aria-label.14bf549fe45a": {
+  "nb": "Status for {name}",
+  "en": "Status for {name}",
+  "oversatt": "{name} 상태"
+ },
+ "app-admin-ai-connections-admin.provider-requests.button.0f2b86034247": {
+  "nb": "Send ønsket",
+  "en": "Send the request",
+  "oversatt": "요청 보내기"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.1412f19c5dad": {
+  "nb": "f.eks. Luma AI",
+  "en": "e.g. Luma AI",
+  "oversatt": "예: Luma AI"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.35e2b0fc81ae": {
+  "nb": "Dokumentasjon (API)",
+  "en": "Documentation (API)",
+  "oversatt": "문서 (API)"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.ab8c9deb6193": {
+  "nb": "Nettside",
+  "en": "Website",
+  "oversatt": "웹사이트"
+ },
+ "app-admin-ai-connections-admin.provider-requests.field.b1afb1e30080": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-admin-ai-connections-admin.provider-requests.h3.e09b8920084c": {
+  "nb": "Be om ny leverandør",
+  "en": "Request a new provider",
+  "oversatt": "새 공급자 요청"
+ },
+ "app-admin-ai-connections-admin.provider-requests.label.c3fd39476ecd": {
+  "nb": "Merknad (hva skal den brukes til?)",
+  "en": "Note (what should it be used for?)",
+  "oversatt": "메모 (어떤 용도로 사용되나요?)"
+ },
+ "app-admin-ai-connections-admin.provider-requests.p.0c72ebb13dfb": {
+  "nb": "En helt ny leverandør (for eksempel Midjourney eller Luma) krever en kobling i koden som utvikleren lager: hvordan nøkkelen sjekkes, hvilke felt som sendes og hvordan resultatet hentes. Fyll ut ønsket her, så ligger det i listen til det er ferdig eller avvist.",
+  "en": "A completely new provider (for example Midjourney or Luma) needs a connection in the code that the developer builds: how the key is checked, which fields are sent and how the result is fetched. Fill in the request here, and it stays in the list until it is done or rejected.",
+  "oversatt": "완전히 새로운 공급자(예: Midjourney 또는 Luma)를 추가하려면 개발자가 키 확인 방식, 전송할 필드, 결과 수신 방식 등의 코드를 연동해야 합니다. 여기에 요청을 입력하면 완료되거나 거절될 때까지 목록에 유지됩니다."
+ },
+ "app-admin-ai-connections-admin.provider-requests.p.9a2fd15177c9": {
+  "nb": "Ingen ønsker ennå.",
+  "en": "No requests yet.",
+  "oversatt": "아직 요청이 없습니다."
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.0e2529fc5e2c": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "전송됨"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.3b9d05c88038": {
+  "nb": "Merknad",
+  "en": "Note",
+  "oversatt": "메모"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.4154477001de": {
+  "nb": "Leverandør",
+  "en": "Provider",
+  "oversatt": "공급자"
+ },
+ "app-admin-ai-connections-admin.provider-requests.th.c25e9a0d5335": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "상태"
+ },
+ "app-admin-ai-connections-admin.send.set-error.c335ddaa3c3f": {
+  "nb": "Skriv navnet på leverandøren.",
+  "en": "Enter the name of the provider.",
+  "oversatt": "공급자 이름을 입력하세요."
+ },
+ "app-admin-ai-connections-admin.status-label.message.0cfcf74a0634": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-admin-ai-connections-admin.status-label.message.633d8ff6da76": {
+  "nb": "Åpen",
+  "en": "Open",
+  "oversatt": "미해결"
+ },
+ "app-admin-ai-connections-admin.status-label.message.7953ba35f50d": {
+  "nb": "Avvist",
+  "en": "Rejected",
+  "oversatt": "거절됨"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.54ff4b676dd7": {
+  "nb": "per kall",
+  "en": "per call",
+  "oversatt": "호출당"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.60907cb754e7": {
+  "nb": "per sekund",
+  "en": "per second",
+  "oversatt": "초당"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.6c75bc38ff8d": {
+  "nb": "per tegn",
+  "en": "per character",
+  "oversatt": "자당"
+ },
+ "app-admin-ai-connections-admin.unit-label.message.f2a5828f6f0d": {
+  "nb": "per bilde",
+  "en": "per image",
+  "oversatt": "이미지당"
+ },
+ "app-admin-cron-status.ago.message.086115f60e72": {
+  "nb": "for {d} dager siden",
+  "en": "{d} days ago",
+  "oversatt": "{d}일 전"
+ },
+ "app-admin-cron-status.ago.message.2398dfc32f40": {
+  "nb": "for {h} timer siden",
+  "en": "{h} hours ago",
+  "oversatt": "{h}시간 전"
+ },
+ "app-admin-cron-status.ago.message.8cfe331fedff": {
+  "nb": "for 1 minutt siden",
+  "en": "1 minute ago",
+  "oversatt": "1분 전"
+ },
+ "app-admin-cron-status.ago.message.af45a5e15ce8": {
+  "nb": "nettopp",
+  "en": "just now",
+  "oversatt": "방금"
+ },
+ "app-admin-cron-status.ago.message.c6efd4662c82": {
+  "nb": "for {minutes} minutter siden",
+  "en": "{minutes} minutes ago",
+  "oversatt": "{minutes}분 전"
+ },
+ "app-admin-cron-status.text.text.2f7b3cfcd445": {
+  "nb": "Bakgrunnsjobb: sist kjørt kl. {when} ({value2}) · {sent} sendt · {done} videoer hentet · {purged} kontoer slettet",
+  "en": "Background job: last run at {when} ({value2}) · {sent} sent · {done} videos fetched · {purged} accounts deleted",
+  "oversatt": "백그라운드 작업: 마지막 실행 {when} ({value2}) · {sent}개 전송됨 · 비디오 {done}개 가져옴 · 계정 {purged}개 삭제됨"
+ },
+ "app-admin-cron-status.text.text.9d6153356ac8": {
+  "nb": "Bakgrunnsjobb: har ikke kjørt ennå.",
+  "en": "Background job: has not run yet.",
+  "oversatt": "백그라운드 작업: 아직 실행되지 않음."
+ },
+ "app-admin-cron-status.warning.message.1494cbf069ca": {
+  "nb": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.",
+  "en": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.",
+  "oversatt": "백그라운드 작업이 최근 {CRON_STALE_MINUTES}분 동안 실행되지 않았습니다. 앱이 게시되었고 Animatic Studio에 작업이 설정되어 있는지 확인하세요."
+ },
+ "app-ai-ai-panel.act.set-err.62534a79515a": {
+  "nb": "Kunne ikke endres.",
+  "en": "Could not be changed.",
+  "oversatt": "변경할 수 없습니다."
+ },
+ "app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.672049efa92e": {
+  "nb": "Ikke ferdige",
+  "en": "Not finished",
+  "oversatt": "미완료"
+ },
+ "app-ai-ai-panel.ai-panel.all-l-alle-all-problems-l-ikke-ferdige-not-finished-as-const-map.90fd0f96f77f": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "전체"
+ },
+ "app-ai-ai-panel.ai-panel.aria-label.5daab1714cc0": {
+  "nb": "AI-jobber",
+  "en": "AI jobs",
+  "oversatt": "AI 작업"
+ },
+ "app-ai-ai-panel.ai-panel.aria-label.e6d7b27d8ef8": {
+  "nb": "Vis jobber",
+  "en": "Show jobs",
+  "oversatt": "작업 표시"
+ },
+ "app-ai-ai-panel.ai-panel.button.93e7b44b8d04": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "모두 표시"
+ },
+ "app-ai-ai-panel.ai-panel.button.bdac359e3acb": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-ai-ai-panel.ai-panel.button.c4f50e9742a2": {
+  "nb": "Legg inn",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-ai-ai-panel.ai-panel.button.c4f50e9742a2.2": {
+  "nb": "Legg inn",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-ai-ai-panel.ai-panel.button.e3996d11a49f": {
+  "nb": "Legg inn alle",
+  "en": "Add all",
+  "oversatt": "모두 추가"
+ },
+ "app-ai-ai-panel.ai-panel.h2.b2157c086bc5": {
+  "nb": "AI-budsjett og jobber",
+  "en": "AI budget and jobs",
+  "oversatt": "AI 예산 및 작업"
+ },
+ "app-ai-ai-panel.ai-panel.h3.d6da1ee56d15": {
+  "nb": "Jobber",
+  "en": "Jobs",
+  "oversatt": "작업"
+ },
+ "app-ai-ai-panel.ai-panel.link.4016655f7c25": {
+  "nb": "Vis",
+  "en": "View",
+  "oversatt": "보기"
+ },
+ "app-ai-ai-panel.ai-panel.p.0465d4e1a9b9": {
+  "nb": "Beskrivelse skrevet av AI",
+  "en": "Description written by AI",
+  "oversatt": "AI가 작성한 설명"
+ },
+ "app-ai-ai-panel.ai-panel.p.080d73395c4a": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-ai-ai-panel.ai-panel.p.080d73395c4a.2": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-ai-ai-panel.ai-panel.p.0d492a68d97a": {
+  "nb": "Ingen AI-genereringer ennå.",
+  "en": "No AI generations yet.",
+  "oversatt": "아직 AI 생성 내역이 없습니다."
+ },
+ "app-ai-ai-panel.ai-panel.p.1d8a4db1910a": {
+  "nb": "Videoen er laget, men ikke lagt inn som versjon av scenen.",
+  "en": "The video is made, but not added as a version of the scene.",
+  "oversatt": "비디오가 생성되었지만 씬의 버전으로 추가되지 않았습니다."
+ },
+ "app-ai-ai-panel.ai-panel.p.1eece335cadc": {
+  "nb": "Denne måneden:",
+  "en": "This month:",
+  "oversatt": "이번 달:"
+ },
+ "app-ai-ai-panel.ai-panel.p.226910e754c3": {
+  "nb": "genereringer (ingen egen ramme – de faste grensene gjelder: 30 per person i timen, 200 per prosjekt i døgnet)",
+  "en": "generations (no own limit – the standard limits apply: 30 per person per hour, 200 per project per day)",
+  "oversatt": "회 생성 (개별 한도 없음 – 기본 한도 적용: 1인당 시간당 30회, 프로젝트당 하루 200회)"
+ },
+ "app-ai-ai-panel.ai-panel.p.2990ff3912e0": {
+  "nb": "genereringer",
+  "en": "generations",
+  "oversatt": "회 생성"
+ },
+ "app-ai-ai-panel.ai-panel.p.42f093736ea3": {
+  "nb": "igjen",
+  "en": "left",
+  "oversatt": "남음"
+ },
+ "app-ai-ai-panel.ai-panel.p.4359fc475a64": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "이미지"
+ },
+ "app-ai-ai-panel.ai-panel.p.4418a73a6199": {
+  "nb": " · API-kostnad med egne nøkler ca. {value1}",
+  "en": " · API cost with your own keys approx. {value1}",
+  "oversatt": " · 자체 키 사용 시 API 비용 약 {value1}"
+ },
+ "app-ai-ai-panel.ai-panel.p.4c0a9e34abd5": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "오디오"
+ },
+ "app-ai-ai-panel.ai-panel.p.4c2c4ffce6b0": {
+  "nb": "Jobben svarte ikke ferdig (siden ble kanskje lukket). Ingen ny versjon ble lagret; prøv igjen om du trenger bildet.",
+  "en": "The job did not finish in time (the page may have been closed). No new version was saved; try again if you need the image.",
+  "oversatt": "작업이 제시간에 완료되지 않았습니다(페이지가 닫혔을 수 있음). 새 버전이 저장되지 않았습니다. 이미지가 필요하면 다시 시도하세요."
+ },
+ "app-ai-ai-panel.ai-panel.p.aa7ed8cc5e0f": {
+  "nb": "Ingen jobber som ikke er ferdige.",
+  "en": "No jobs that are not finished.",
+  "oversatt": "미완료된 작업이 없습니다."
+ },
+ "app-ai-ai-panel.ai-panel.p.ab192a3725f8": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "비디오"
+ },
+ "app-ai-ai-panel.ai-panel.p.c15bbdac71d9": {
+  "nb": "Jobbene kunne ikke hentes:",
+  "en": "The jobs could not be loaded:",
+  "oversatt": "작업을 불러올 수 없습니다:"
+ },
+ "app-ai-ai-panel.ai-panel.p.d3adede2ddbf": {
+  "nb": "Bildet er laget, men ikke lagt inn i biblioteket.",
+  "en": "The image is made, but not added to the library.",
+  "oversatt": "이미지가 생성되었지만 라이브러리에 추가되지 않았습니다."
+ },
+ "app-ai-ai-panel.ai-panel.p.e43f41cffc8c": {
+  "nb": " · anslått {value1}{value2}",
+  "en": " · estimated {value1}{value2}",
+  "oversatt": " · 예상 {value1}{value2}"
+ },
+ "app-ai-ai-panel.ai-panel.p.ed03edcfd4fa": {
+  "nb": "AI skrev:",
+  "en": "The AI wrote:",
+  "oversatt": "AI 작성 내용:"
+ },
+ "app-ai-ai-panel.ai-panel.span.037b85777af1": {
+  "nb": "Laget med profil {name}",
+  "en": "Made with profile {name}",
+  "oversatt": "{name} 프로필로 생성됨"
+ },
+ "app-ai-ai-panel.ai-panel.span.0e66e3b81edb": {
+  "nb": "{length} AI-resultater ble laget, men ikke lagt inn",
+  "en": "{length} AI results were made but not added",
+  "oversatt": "{length}개의 AI 결과가 생성되었지만 추가되지 않았습니다"
+ },
+ "app-ai-ai-panel.ai-panel.span.2b76cf4b030c": {
+  "nb": "Ett AI-resultat ble laget, men ikke lagt inn",
+  "en": "One AI result was made but not added",
+  "oversatt": "1개의 AI 결과가 생성되었지만 추가되지 않았습니다"
+ },
+ "app-ai-ai-panel.ai-panel.span.9d18584f63ee": {
+  "nb": "(bilder i biblioteket, videoer som ny versjon av scenen – siden ble kanskje lukket mens de ble laget). De er betalt og ligger trygt lagret.",
+  "en": "(images in the library, videos as a new version of the scene – the page may have been closed while they were made). They are paid for and safely stored.",
+  "oversatt": "(라이브러리의 이미지, 씬의 새 버전 비디오 – 생성 중에 페이지가 닫혔을 수 있음). 비용은 지불되었으며 안전하게 저장되어 있습니다."
+ },
+ "app-ai-ai-panel.budget.aria-label.009d21f15bfa": {
+  "nb": "Anslått pris per bilde i kreditter",
+  "en": "Estimated price per image in credits",
+  "oversatt": "이미지당 예상 가격(크레딧)"
+ },
+ "app-ai-ai-panel.budget.aria-label.a9470dff1b8f": {
+  "nb": "Høyst antall AI-genereringer per måned",
+  "en": "Highest number of AI generations per month",
+  "oversatt": "월별 최대 AI 생성 횟수"
+ },
+ "app-ai-ai-panel.budget.button.13ec0ee5f594": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-ai-ai-panel.budget.label.a9470dff1b8f": {
+  "nb": "Høyst antall AI-genereringer per måned",
+  "en": "Highest number of AI generations per month",
+  "oversatt": "월별 최대 AI 생성 횟수"
+ },
+ "app-ai-ai-panel.budget.label.f895c62aaba5": {
+  "nb": "Anslått pris per bilde (kreditter)",
+  "en": "Estimated price per image (credits)",
+  "oversatt": "이미지당 예상 가격(크레딧)"
+ },
+ "app-ai-ai-panel.budget.p.9eadccb8743b": {
+  "nb": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+  "en": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.",
+  "oversatt": "한도에 도달하면 서버는 다음 달까지 새 생성을 중단합니다. 가격은 직접 입력한 예상치이며(Animatic Studio는 작업공간에 사용량을 표시함) 예상 비용을 표시하는 데만 사용됩니다."
+ },
+ "app-ai-ai-panel.budget.p.cd9d16a09075": {
+  "nb": "Bare eieren kan endre budsjettet.",
+  "en": "Only the owner can change the budget.",
+  "oversatt": "소유자만 예산을 변경할 수 있습니다."
+ },
+ "app-ai-ai-panel.budget.placeholder.2becf3cbe4e1": {
+  "nb": "Ingen egen ramme",
+  "en": "No own limit",
+  "oversatt": "개별 한도 없음"
+ },
+ "app-ai-ai-panel.budget.placeholder.3ccd27a54782": {
+  "nb": "Ukjent",
+  "en": "Unknown",
+  "oversatt": "알 수 없음"
+ },
+ "app-ai-ai-panel.note.note.53aad993372b": {
+  "nb": "Generert med AI ({model}), nytt forsøk",
+  "en": "Generated with AI ({model}), new attempt",
+  "oversatt": "AI({model})로 생성됨, 재시도"
+ },
+ "app-ai-ai-panel.note.note.744d7cac95d2": {
+  "nb": "Generert med AI ({model}), hentet inn fra AI-jobbene",
+  "en": "Generated with AI ({model}), added from the AI jobs",
+  "oversatt": "AI({model})로 생성됨, AI 작업에서 가져옴"
+ },
+ "app-ai-ai-panel.provider-line.button.330d5f2883fc": {
+  "nb": "AI-leverandører …",
+  "en": "AI providers …",
+  "oversatt": "AI 제공업체 …"
+ },
+ "app-ai-ai-panel.provider-line.p.f0131ba43df8": {
+  "nb": "Tilgjengelige leverandører:",
+  "en": "Available providers:",
+  "oversatt": "사용 가능한 제공업체:"
+ },
+ "app-ai-ai-panel.queue-controls.aria-label.13421340c9b6": {
+  "nb": "Prioritet i køen",
+  "en": "Priority in the queue",
+  "oversatt": "대기열 우선순위"
+ },
+ "app-ai-ai-panel.queue-controls.button.c40336910499": {
+  "nb": "Først",
+  "en": "First",
+  "oversatt": "맨 앞"
+ },
+ "app-ai-ai-panel.queue-controls.button.caad46539049": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa": {
+  "nb": "Ny variant for «{name}»",
+  "en": "New variant for “{name}”",
+  "oversatt": "“{name}”의 새 변형"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.0217985d73aa.2": {
+  "nb": "Ny variant for «{name}»",
+  "en": "New variant for “{name}”",
+  "oversatt": "“{name}”의 새 변형"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.56b486a12ca0": {
+  "nb": "AI-bilde av «{name}»",
+  "en": "AI image of “{name}”",
+  "oversatt": "“{name}”의 AI 이미지"
+ },
+ "app-ai-ai-panel.r.cmds-run-and-wait.687f2fd9be02": {
+  "nb": "Hent inn AI-bilde av «{name}»",
+  "en": "Add AI image of “{name}”",
+  "oversatt": "“{name}”의 AI 이미지 추가"
+ },
+ "app-ai-ai-panel.retry-dialog.button.cd9827760969": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-ai-ai-panel.retry-dialog.dialog-description.17d0cfd033f2": {
+  "nb": "Samme beskrivelse som sist. Det nye bildet lagres som en ny versjon; ingenting eksisterende endres.",
+  "en": "The same description as last time. The new image is saved as a new version; nothing existing is changed.",
+  "oversatt": "지난번과 동일한 설명입니다. 새 이미지는 새 버전으로 저장되며, 기존 항목은 변경되지 않습니다."
+ },
+ "app-ai-ai-panel.retry-dialog.dialog-title.1ccf1e27f0d8": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-ai-ai-panel.save.cmds-run.332619fcd839": {
+  "nb": "Endre AI-budsjett",
+  "en": "Change AI budget",
+  "oversatt": "AI 예산 변경"
+ },
+ "app-ai-ai-panel.save.set-err.ca3c81fd2f43": {
+  "nb": "Prisen må være et tall (tomt = ukjent).",
+  "en": "The price must be a number (empty = unknown).",
+  "oversatt": "가격은 숫자여야 합니다(비워 두면 알 수 없음)."
+ },
+ "app-ai-ai-panel.save.set-err.fa641093c5d4": {
+  "nb": "Antallet må være et helt tall mellom 0 og 100 000 (tomt = ingen egen ramme).",
+  "en": "The number must be a whole number between 0 and 100,000 (empty = no own limit).",
+  "oversatt": "수량은 0에서 100,000 사이의 정수여야 합니다(비워 두면 자체 한도 없음)."
+ },
+ "app-ai-ai-panel.usage-estimate": {
+  "nb": " · anslått {cost}",
+  "en": " · estimated {cost}",
+  "oversatt": " · 예상 {cost}"
+ },
+ "app-ai-ai-panel.usage-estimate-partly-unknown": {
+  "nb": " · anslått {cost} (noen uten anslag)",
+  "en": " · estimated {cost} (some without an estimate)",
+  "oversatt": " · 예상 {cost} (일부 예상치 없음)"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-action.e5e72ed20924": {
+  "nb": "Slett for godt",
+  "en": "Delete permanently",
+  "oversatt": "영구 삭제"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-cancel.4586a298507b": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-description.56b2b4d2141c": {
+  "nb": "{value1} ubrukte videokilder eldre enn 30 dager slettes for godt. Ferdige filmer og filer som fortsatt brukes, beholdes.",
+  "en": "{value1} unused video sources older than 30 days will be permanently deleted. Finished films and files still in use are kept.",
+  "oversatt": "30일이 지난 미사용 비디오 소스 {value1}개가 영구 삭제됩니다. 완성된 영상 및 현재 사용 중인 파일은 유지됩니다."
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.alert-dialog-title.be771709a32f": {
+  "nb": "Slett gamle videokilder?",
+  "en": "Delete old video sources?",
+  "oversatt": "오래된 비디오 소스를 삭제하시겠습니까?"
+ },
+ "app-ai-ai-source-cleanup.ai-source-cleanup.button.4cfe31fe5977": {
+  "nb": "Rydd gamle videokilder …",
+  "en": "Clean up old video sources …",
+  "oversatt": "오래된 비디오 소스 정리…"
+ },
+ "app-ai-ai-source-cleanup.check.set-message.830fe31eda70": {
+  "nb": "Oppryddingen feilet.",
+  "en": "Cleanup failed.",
+  "oversatt": "정리에 실패했습니다."
+ },
+ "app-ai-ai-source-cleanup.check.set-message.c6c21d76901b": {
+  "nb": "Ingen gamle, ubrukte videokilder kan slettes nå.",
+  "en": "No old, unused video sources can be deleted now.",
+  "oversatt": "지금 삭제할 수 있는 오래된 미사용 비디오 소스가 없습니다."
+ },
+ "app-ai-ai-source-cleanup.remove.set-message.674989d04326": {
+  "nb": "Oppryddingen feilet.",
+  "en": "Cleanup failed.",
+  "oversatt": "정리에 실패했습니다."
+ },
+ "app-ai-ai-source-cleanup.remove.set-message.990678b39c26": {
+  "nb": "{deleted} videokilder slettet.",
+  "en": "{deleted} video sources deleted.",
+  "oversatt": "비디오 소스 {deleted}개가 삭제되었습니다."
+ },
+ "app-ai-cost-lines.cost-lines.aria-label.384fe72c59b3": {
+  "nb": "Kostnadsanslag",
+  "en": "Cost estimate",
+  "oversatt": "예상 비용"
+ },
+ "app-ai-effort-picker.effort-picker.aria-label.1963c68e41a4": {
+  "nb": "Innsatsnivå",
+  "en": "Effort level",
+  "oversatt": "작업 강도 수준"
+ },
+ "app-ai-effort-picker.effort-picker.p.172bf9c50173": {
+  "nb": " · Kan: {value1}",
+  "en": " · Features: {value1}",
+  "oversatt": " · 지원 기능: {value1}"
+ },
+ "app-ai-generation-status.generation-status.aria-label.ad6a78d7509d": {
+  "nb": "AI-genereringer: {summary}",
+  "en": "AI generations: {summary}",
+  "oversatt": "AI 생성: {summary}"
+ },
+ "app-ai-generation-status.generation-status.div.df5170190148": {
+  "nb": "AI-genereringer",
+  "en": "AI generations",
+  "oversatt": "AI 생성"
+ },
+ "app-ai-generation-status.generation-status.link.6d0aecfbe617": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-ai-generation-status.generation-status.p.9a7dec43aba7": {
+  "nb": "Videoer lages hos leverandøren og hentes inn automatisk når de er ferdige. De legges inn som ny versjon av scenen neste gang en redaktør har prosjektet åpent.",
+  "en": "Videos are made by the provider and fetched automatically when finished. They are added as a new version of the scene the next time an editor has the project open.",
+  "oversatt": "비디오는 제공업체에서 생성되며 완료되면 자동으로 가져옵니다. 다음번에 편집자가 프로젝트를 열 때 씬의 새 버전으로 추가됩니다."
+ },
+ "app-ai-generation-status.generation-status.span.97306b01e2fb": {
+  "nb": " · Laget med profil {name}",
+  "en": " · Made with profile {name}",
+  "oversatt": " · 프로필 {name}(으)로 생성됨"
+ },
+ "app-ai-generation-status.generation-status.title.4ad93883f8ee": {
+  "nb": "AI-genereringer i prosjektet: hva som lages, står i kø og nylig ble ferdig",
+  "en": "AI generations in the project: what is being made, queued and recently finished",
+  "oversatt": "프로젝트의 AI 생성: 제작 중, 대기열 및 최근 완료된 항목"
+ },
+ "app-ai-generation-status.kind-label.message.3f5b26cf401f": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-ai-generation-status.kind-label.message.61079e421e39": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "이미지"
+ },
+ "app-ai-generation-status.kind-label.message.7b8e15eae019": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "오디오"
+ },
+ "app-ai-generation-status.kind-label.message.d951bb8fd767": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "비디오"
+ },
+ "app-ai-generation-status.mark-all-read": {
+  "nb": "Merk alle som lest",
+  "en": "Mark all as read",
+  "oversatt": "모두 읽음으로 표시"
+ },
+ "app-ai-generation-status.mark-read": {
+  "nb": "Merk som lest",
+  "en": "Mark as read",
+  "oversatt": "읽음으로 표시"
+ },
+ "app-ai-generation-status.part.shown-map.b693d0ae1f9b": {
+  "nb": " · del {value1} av {value2}",
+  "en": " · part {value1} of {value2}",
+  "oversatt": " · {value2} 중 {value1} 파트"
+ },
+ "app-ai-generation-status.summary.message.656f23349e8a": {
+  "nb": "{failed} feilet",
+  "en": "{failed} failed",
+  "oversatt": "{failed}개 실패"
+ },
+ "app-ai-generation-status.summary.message.a286b0b6765e": {
+  "nb": "{done} ferdig",
+  "en": "{done} done",
+  "oversatt": "{done}개 완료"
+ },
+ "app-ai-generation-status.summary.message.cd840264e782": {
+  "nb": "AI",
+  "en": "AI",
+  "oversatt": "AI"
+ },
+ "app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.e4f5fba2fca7": {
+  "nb": "{running} lages",
+  "en": "{running} in progress",
+  "oversatt": "{running}개 진행 중"
+ },
+ "app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.f8adaa61ecf3": {
+  "nb": "{queued} i kø",
+  "en": "{queued} queued",
+  "oversatt": "{queued}개 대기 중"
+ },
+ "app-ai-providers-dialog.admin-off-note.p.8c5dbc59b7bc": {
+  "nb": "Administrator har slått av denne leverandøren for alle brukere. Den vises ikke i valglistene og kan ikke brukes før den slås på igjen.",
+  "en": "The administrator has switched off this provider for all users. It is not shown in the lists and cannot be used until it is switched on again.",
+  "oversatt": "관리자가 모든 사용자에 대해 이 제공업체를 비활성화했습니다. 목록에 표시되지 않으며 다시 활성화될 때까지 사용할 수 없습니다."
+ },
+ "app-ai-providers-dialog.cap-section.aria-label.d1a95c3820c7": {
+  "nb": "Kostnadstak per måned i USD",
+  "en": "Cost limit per month in USD",
+  "oversatt": "월간 비용 한도 (USD)"
+ },
+ "app-ai-providers-dialog.cap-section.button.a7b5bb51d444": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "저장"
+ },
+ "app-ai-providers-dialog.cap-section.h3.cdefe66f2823": {
+  "nb": "Kostnadstak for egne nøkler",
+  "en": "Cost limit for own keys",
+  "oversatt": "개인 키 비용 한도"
+ },
+ "app-ai-providers-dialog.cap-section.label.dae56024a178": {
+  "nb": "Høyst per måned (USD)",
+  "en": "Maximum per month (USD)",
+  "oversatt": "월별 최대 금액 (USD)"
+ },
+ "app-ai-providers-dialog.cap-section.p.423354479f86": {
+  "nb": "Gjelder alle prosjekter som bruker nøklene dine, i tillegg til hvert prosjekts eget budsjett. Beløpene er anslag ut fra leverandørenes prislister; den faktiske regningen kommer fra leverandøren. Sett også gjerne en grense hos leverandøren.",
+  "en": "Applies to all projects that use your keys, in addition to each project's own budget. The amounts are estimates based on the providers' price lists; the actual bill comes from the provider. You may also want to set a limit with the provider.",
+  "oversatt": "각 프로젝트의 자체 예산 외에도 회원님의 키를 사용하는 모든 프로젝트에 적용됩니다. 금액은 제공업체의 가격표를 기반으로 한 추정치이며, 실제 청구는 제공업체에서 이루어집니다. 제공업체 측에서도 한도를 설정하는 것을 권장합니다."
+ },
+ "app-ai-providers-dialog.cap-section.placeholder.ff1b9bf382ab": {
+  "nb": "Ingen tak",
+  "en": "No limit",
+  "oversatt": "한도 없음"
+ },
+ "app-ai-providers-dialog.cap-section.span.3671ec1fb91a": {
+  "nb": " · igjen ~{value1}",
+  "en": " · remaining ~{value1}",
+  "oversatt": " · 남은 금액 ~{value1}"
+ },
+ "app-ai-providers-dialog.cap-section.span.bd5edbbfaffc": {
+  "nb": "Brukt denne måneden:",
+  "en": "Used this month:",
+  "oversatt": "이번 달 사용량:"
+ },
+ "app-ai-providers-dialog.key-handling": {
+  "nb": "Nøkkelen sendes kryptert til serveren, prøves hos {provider} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {provider} hvis du tror den er kommet på avveie.",
+  "en": "The key is sent encrypted to the server, tested with {provider} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at {provider} if you think it has been compromised.",
+  "oversatt": "키는 서버로 암호화되어 전송되고, {provider}에서 테스트를 거친 후 암호화되어 저장됩니다. 키는 다시 표시되지 않으며 마지막 네 자리만 표시됩니다. 비용 한도 내에서 회원님 또는 프로젝트의 다른 사용자가 생성을 요청할 때만(항상 확인 절차를 거침) 사용됩니다. 여기서 제거하면 삭제됩니다. 유출된 것으로 의심되는 경우 {provider}에서도 키를 삭제하세요."
+ },
+ "app-ai-providers-dialog.key-not-tested": {
+  "nb": "Den kunne ikke prøves nå.",
+  "en": "It could not be tested now.",
+  "oversatt": "지금은 테스트할 수 없습니다."
+ },
+ "app-ai-providers-dialog.key-saved-encrypted": {
+  "nb": "Nøkkelen er lagret kryptert. {message}",
+  "en": "The key is saved encrypted. {message}",
+  "oversatt": "키가 암호화되어 저장되었습니다. {message}"
+ },
+ "app-ai-providers-dialog.provider-detail.aria-label.9db0473550a8": {
+  "nb": "API-nøkkel for {name}",
+  "en": "API key for {name}",
+  "oversatt": "{name}용 API 키"
+ },
+ "app-ai-providers-dialog.provider-detail.button.237e69ee7013": {
+  "nb": "Prøv nøkkelen igjen",
+  "en": "Test the key again",
+  "oversatt": "키 다시 테스트"
+ },
+ "app-ai-providers-dialog.provider-detail.button.53168064bca8": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-ai-providers-dialog.provider-detail.button.56574c96b4dc": {
+  "nb": "Prøv og lagre",
+  "en": "Test and save",
+  "oversatt": "테스트 및 저장"
+ },
+ "app-ai-providers-dialog.provider-detail.button.ce207dab41a6": {
+  "nb": "Alle leverandører",
+  "en": "All providers",
+  "oversatt": "모든 제공업체"
+ },
+ "app-ai-providers-dialog.provider-detail.button.d869b1dd94e1": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-ai-providers-dialog.provider-detail.button.fc90b6eada1b": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "삭제"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.223a339f93d2": {
+  "nb": "Bytt nøkkel",
+  "en": "Change key",
+  "oversatt": "키 변경"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.38ebf8428398": {
+  "nb": "Slik kobler du til",
+  "en": "How to connect",
+  "oversatt": "연결 방법"
+ },
+ "app-ai-providers-dialog.provider-detail.h4.d7388f0c6428": {
+  "nb": "Lim inn API-nøkkelen",
+  "en": "Paste the API key",
+  "oversatt": "API 키 붙여넣기"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.365d69e023a0": {
+  "nb": "Betaling og kreditt",
+  "en": "Billing and credit",
+  "oversatt": "결제 및 크레딧"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.68fc8e36ed68": {
+  "nb": "Opprett konto",
+  "en": "Create account",
+  "oversatt": "계정 생성"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.83480500e7e0": {
+  "nb": "Priser",
+  "en": "Pricing",
+  "oversatt": "가격"
+ },
+ "app-ai-providers-dialog.provider-detail.link2.869dac22c8be": {
+  "nb": "Hent API-nøkkel",
+  "en": "Get API key",
+  "oversatt": "API 키 발급받기"
+ },
+ "app-ai-providers-dialog.provider-detail.p.61c2d829e075": {
+  "nb": "Kan lage:",
+  "en": "Can make:",
+  "oversatt": "생성 가능:"
+ },
+ "app-ai-providers-dialog.provider-detail.p.7669dcef5fef": {
+  "nb": "Nøkkelen sendes kryptert til serveren, prøves hos {name} og lagres kryptert. Den vises aldri igjen – bare de fire siste tegnene. Den brukes bare når du eller andre i prosjektene dine ber om en generering (alltid med bekreftelse), innenfor kostnadstaket. Fjerner du den her, slettes den. Slett den også hos {name2} hvis du tror den er kommet på avveie.",
+  "en": "The key is sent encrypted to the server, tested with {name} and saved encrypted. It is never shown again – only the last four characters. It is only used when you or others in your projects ask for a generation (always with confirmation), within the cost limit. If you remove it here, it is deleted. Also delete it at {name2} if you think it has been compromised.",
+  "oversatt": "키는 서버로 암호화되어 전송되고, {name}에서 테스트를 거친 후 암호화되어 저장됩니다. 키는 다시 표시되지 않으며 마지막 네 자리만 표시됩니다. 비용 한도 내에서 회원님 또는 프로젝트의 다른 사용자가 생성을 요청할 때만(항상 확인 절차를 거침) 사용됩니다. 여기서 제거하면 삭제됩니다. 유출된 것으로 의심되는 경우 {name2}에서도 키를 삭제하세요."
+ },
+ "app-ai-providers-dialog.provider-detail.p.aee47d2a8c80": {
+  "nb": "modeller:",
+  "en": "models:",
+  "oversatt": "모델:"
+ },
+ "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
+  "nb": "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+  "en": "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.",
+  "oversatt": "항상 사용 가능하며 Animatic Studio 워크스페이스의 크레딧을 사용합니다. 프로젝트의 AI 예산이 적용됩니다."
+ },
+ "app-ai-providers-dialog.provider-detail.placeholder.986493436d94": {
+  "nb": "Lim inn nøkkelen her",
+  "en": "Paste the key here",
+  "oversatt": "여기에 키 붙여넣기"
+ },
+ "app-ai-providers-dialog.provider-detail.placeholder.ac0c19dcca57": {
+  "nb": "Nåværende: {key_hint}",
+  "en": "Current: {key_hint}",
+  "oversatt": "현재: {key_hint}"
+ },
+ "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
+  "nb": "Slette nøkkelen fra Animatic Studio?",
+  "en": "Delete the key from Animatic Studio?",
+  "oversatt": "Animatic Studio에서 키를 삭제하시겠습니까?"
+ },
+ "app-ai-providers-dialog.providers-dialog.aria-label.c504d5dd202a": {
+  "nb": "Leverandører",
+  "en": "Providers",
+  "oversatt": "제공업체"
+ },
+ "app-ai-providers-dialog.providers-dialog.dialog-description.f5764fdb18ba": {
+  "nb": "Koble til tjenestene du vil bruke for bilder, video og lyd. De du kobler til, blir tilgjengelige i alle prosjektene du eier.",
+  "en": "Connect the services you want to use for images, video and audio. Those you connect become available in all the projects you own.",
+  "oversatt": "이미지, 비디오, 오디오에 사용할 서비스를 연결하세요. 연결한 서비스는 회원님이 소유한 모든 프로젝트에서 사용할 수 있습니다."
+ },
+ "app-ai-providers-dialog.providers-dialog.dialog-title.a684c382a7a6": {
+  "nb": "AI-leverandører",
+  "en": "AI providers",
+  "oversatt": "AI 제공업체"
+ },
+ "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
+  "nb": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.",
+  "oversatt": "데이터베이스가 아직 맞춤형 AI 제공업체용으로 업데이트되지 않았습니다. 관리자에게 문의하여 Animatic Studio를 업데이트하세요."
+ },
+ "app-ai-providers-dialog.providers-dialog.span.8d349a2870d2": {
+  "nb": "Slått av av administrator",
+  "en": "Switched off by the administrator",
+  "oversatt": "관리자가 비활성화함"
+ },
+ "app-ai-providers-dialog.status-badge.span.224d42c78711": {
+  "nb": "Innebygd",
+  "en": "Built-in",
+  "oversatt": "내장"
+ },
+ "app-ai-providers-dialog.status-badge.span.2ac592b164f3": {
+  "nb": " · ikke prøvd",
+  "en": " · not tested",
+  "oversatt": " · 테스트되지 않음"
+ },
+ "app-ai-providers-dialog.status-badge.span.61ecf5f930b9": {
+  "nb": "Tilkoblet ({key_hint})",
+  "en": "Connected ({key_hint})",
+  "oversatt": "연결됨 ({key_hint})"
+ },
+ "app-ai-providers-dialog.status-badge.span.707ab5215032": {
+  "nb": "Ikke koblet til",
+  "en": "Not connected",
+  "oversatt": "연결되지 않음"
+ },
+ "app-ai-providers-dialog.status-badge.span.fb1c3c1e4e13": {
+  "nb": "Nøkkelen virker ikke ({key_hint})",
+  "en": "The key does not work ({key_hint})",
+  "oversatt": "키가 작동하지 않음 ({key_hint})"
+ },
+ "app-ai-providers-dialog.text-ai-section.aria-label.30dcefe21caa": {
+  "nb": "Modell for {value1}",
+  "en": "Model for {value1}",
+  "oversatt": "{value1}용 모델"
+ },
+ "app-ai-providers-dialog.text-ai-section.aria-label.bb00b77db626": {
+  "nb": "Leverandør for {value1}",
+  "en": "Provider for {value1}",
+  "oversatt": "{value1}용 제공업체"
+ },
+ "app-ai-providers-dialog.text-ai-section.h3.0c7abb774554": {
+  "nb": "Tekst-AI",
+  "en": "Text AI",
+  "oversatt": "텍스트 AI"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.9ce269f4a98c": {
+  "nb": "Automatisk",
+  "en": "Automatic",
+  "oversatt": "자동"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.9d0ccf79fa6a": {
+  "nb": "Velges automatisk",
+  "en": "Chosen automatically",
+  "oversatt": "자동 선택됨"
+ },
+ "app-ai-providers-dialog.text-ai-section.option.c22b9db65c4d": {
+  "nb": "Innebygd AI",
+  "en": "Built-in AI",
+  "oversatt": "내장 AI"
+ },
+ "app-ai-providers-dialog.text-ai-section.p.05cf8a2e14ac": {
+  "nb": "Du har ingen egne tekstleverandører ennå. Koble til Claude, ChatGPT, Grok eller Gemini nedenfor.",
+  "en": "You have no text providers of your own yet. Connect Claude, ChatGPT, Grok or Gemini below.",
+  "oversatt": "아직 등록된 텍스트 제공업체가 없습니다. 아래에서 Claude, ChatGPT, Grok 또는 Gemini를 연결하세요."
+ },
+ "app-ai-providers-dialog.text-ai-section.p.36980d550912": {
+  "nb": "Velg leverandør og modell for hver type tekstoppgave. «Automatisk» bruker den første leverandøren du har en gyldig nøkkel til, ellers den innebygde AI-en.",
+  "en": "Choose the provider and model for each kind of text task. “Automatic” uses the first provider you have a valid key for, otherwise the built-in AI.",
+  "oversatt": "각 텍스트 작업 유형에 사용할 제공업체와 모델을 선택하세요. '자동'을 선택하면 유효한 키가 있는 첫 번째 제공업체를 사용하며, 없는 경우 내장 AI를 사용합니다."
+ },
+ "app-ai-providers-dialog.text.text.2556fd645036": {
+  "nb": "Nøkkelen virker.",
+  "en": "The key works.",
+  "oversatt": "키가 정상 작동합니다."
+ },
+ "app-ai-providers-dialog.text.text.74fba41561c8": {
+  "nb": "Nøkkelen er slettet fra Animatic Studio.",
+  "en": "The key has been deleted from Animatic Studio.",
+  "oversatt": "키가 Animatic Studio에서 삭제되었습니다."
+ },
+ "app-ai-providers-dialog.text.text.9f438ecf8438": {
+  "nb": "Nøkkelen er lagret kryptert. {value1}",
+  "en": "The key is saved encrypted. {value1}",
+  "oversatt": "키가 암호화되어 저장되었습니다. {value1}"
+ },
+ "app-ai-providers-dialog.text.text.dd4c5d90b477": {
+  "nb": "Nøkkelen virker og er lagret kryptert.{value1}",
+  "en": "The key works and is saved encrypted.{value1}",
+  "oversatt": "키가 정상 작동하며 암호화되어 저장되었습니다.{value1}"
+ },
+ "app-ai-providers-dialog.text.text.f1727b86443d": {
+  "nb": "Kunne ikke fjerne nøkkelen.",
+  "en": "Could not remove the key.",
+  "oversatt": "키를 제거할 수 없습니다."
+ },
+ "app-ai-quality-profile-picker.budget-error.message.9c44e228cc9d": {
+  "nb": "Profilens forbruk må kontrolleres før generering.",
+  "en": "Profile usage must be checked before generation.",
+  "oversatt": "생성 전에 프로필 사용량을 확인해야 합니다."
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.aria-label.722c4d3ff42e": {
+  "nb": "Kvalitetsprofil",
+  "en": "Quality profile",
+  "oversatt": "품질 프로필"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.label.722c4d3ff42e": {
+  "nb": "Kvalitetsprofil",
+  "en": "Quality profile",
+  "oversatt": "품질 프로필"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.162993b5715d": {
+  "nb": "Ingen profil",
+  "en": "No profile",
+  "oversatt": "프로필 없음"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.804b180e1838": {
+  "nb": "Prosjektets profil (ingen valgt)",
+  "en": "The project's profile (none chosen)",
+  "oversatt": "프로젝트 프로필 (선택되지 않음)"
+ },
+ "app-ai-quality-profile-picker.quality-profile-picker.option.9f23e80fdb62": {
+  "nb": "Prosjektets profil ({name})",
+  "en": "The project's profile ({name})",
+  "oversatt": "프로젝트 프로필 ({name})"
+ },
+ "app-ai-refetch-video-button.go.set-msg.0ed74b029be8": {
+  "nb": "Leverandøren lager den fortsatt; den hentes inn når den er ferdig.",
+  "en": "The provider is still making it; it is fetched when finished.",
+  "oversatt": "제공업체에서 아직 생성 중입니다. 완료되면 가져옵니다."
+ },
+ "app-ai-refetch-video-button.refetch-video-button.button.19b9fa1a5058": {
+  "nb": "Hent videoen igjen",
+  "en": "Fetch the video again",
+  "oversatt": "비디오 다시 가져오기"
+ },
+ "app-ai-refetch-video-button.refetch-video-button.title.66b34691db69": {
+  "nb": "Spør leverandøren om den ferdige videoen på nytt. Ingenting bestilles på nytt, så det koster ikke noe.",
+  "en": "Ask the provider for the finished video again. Nothing is ordered again, so it costs nothing.",
+  "oversatt": "제공업체에 완료된 비디오를 다시 요청합니다. 새로 주문하지 않으므로 추가 비용이 발생하지 않습니다."
+ },
+ "app-ai-sent-prompts.sent-prompts.p.3d4fb296b758": {
+  "nb": "tegn",
+  "en": "characters",
+  "oversatt": "자"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.0ad6cdb50924": {
+  "nb": "Se det som sendes til modellen",
+  "en": "See what is sent to the model",
+  "oversatt": "모델로 전송되는 내용 보기"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.1910a33162ee": {
+  "nb": " (uendret)",
+  "en": " (unchanged)",
+  "oversatt": " (변경 없음)"
+ },
+ "app-ai-sent-prompts.sent-prompts.summary.78813c7d5dce": {
+  "nb": " – tilpasset modellen i {length} av {length2}",
+  "en": " – adjusted for the model in {length} of {length2}",
+  "oversatt": " – {length2} 중 {length}에서 모델에 맞게 조정됨"
+ },
+ "app-ai-trace-details.lines-changed-since": {
+  "nb": {
+   "one": "{count} linje er endret eller fjernet siden",
+   "other": "{count} linjer er endret eller fjernet siden"
+  },
+  "en": {
+   "one": "{count} line has been changed or removed since",
+   "other": "{count} lines have been changed or removed since"
+  },
+  "oversatt": {
+   "other": "그 이후로 {count}개 줄이 변경되거나 삭제되었습니다"
+  }
+ },
+ "app-ai-trace-details.trace-details.aria-label.3dc770f7e801": {
+  "nb": "Sporbarhet",
+  "en": "Traceability",
+  "oversatt": "추적성"
+ },
+ "app-ai-trace-details.trace-details.label.316dd5d16071": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "상태"
+ },
+ "app-ai-trace-details.trace-details.label.36e947a3649f": {
+  "nb": "Manuset nå",
+  "en": "The script now",
+  "oversatt": "현재 대본"
+ },
+ "app-ai-trace-details.trace-details.label.4031ad12cb2e": {
+  "nb": "Registrert",
+  "en": "Registered",
+  "oversatt": "등록됨"
+ },
+ "app-ai-trace-details.trace-details.label.8585dcb9a20b": {
+  "nb": "Spor",
+  "en": "Trace",
+  "oversatt": "추적"
+ },
+ "app-ai-trace-details.trace-details.label.8965603b23ed": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "전송됨"
+ },
+ "app-ai-trace-details.trace-details.label.b9046da73e5b": {
+  "nb": "Resultat",
+  "en": "Result",
+  "oversatt": "결과"
+ },
+ "app-ai-trace-details.trace-details.label.e794da85be0b": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "모델"
+ },
+ "app-ai-trace-details.trace-details.label.fedd2d37fc9b": {
+  "nb": "Ferdig",
+  "en": "Finished",
+  "oversatt": "완료됨"
+ },
+ "app-ai-trace-details.trace-details.row.388e11567c38": {
+  "nb": "Jobben er eldre enn sporingen (bare beskrivelse, modell og tid)",
+  "en": "The job is older than the tracing (only description, model and time)",
+  "oversatt": "작업이 추적보다 오래되었습니다(설명, 모델, 시간만 포함)"
+ },
+ "app-ai-trace-details.trace-details.row.79db5b060319": {
+  "nb": "Uendret siden jobben",
+  "en": "Unchanged since the job",
+  "oversatt": "작업 이후 변경되지 않음"
+ },
+ "app-ai-trace-details.trace-details.row.b7ea035ed35f": {
+  "nb": "{changed} {value2} endret eller fjernet siden",
+  "en": "{changed} {value2} been changed or removed since",
+  "oversatt": "이후 {changed}{value2} 변경되거나 삭제되었습니다"
+ },
+ "app-ai-video-audio.r.cmds-run-and-wait.60aea6cae59a": {
+  "nb": "Lyd fra AI-videoen «{name}»",
+  "en": "Audio from the AI video “{name}”",
+  "oversatt": "AI 비디오 “{name}”의 오디오"
+ },
+ "app-ai-video-jobs.claim-video-once.message.23e068bb111f": {
+  "nb": "Jobben har ingen video.",
+  "en": "The job has no video.",
+  "oversatt": "작업에 비디오가 없습니다."
+ },
+ "app-ai-video-jobs.claim-video-once.message.3cb45d12c0f5": {
+  "nb": "Videoen kunne ikke hentes fra lagringen.",
+  "en": "The video could not be fetched from storage.",
+  "oversatt": "스토리지에서 비디오를 가져올 수 없습니다."
+ },
+ "app-ai-video-jobs.claim-video-once.message.3e6a025d7ef5": {
+  "nb": "Videoen kunne ikke leses: {message}",
+  "en": "The video could not be read: {message}",
+  "oversatt": "비디오를 읽을 수 없습니다: {message}"
+ },
+ "app-ai-video-jobs.claim-video-once.message.491daf6bba91": {
+  "nb": "Videoen kunne ikke hentes ({status}).",
+  "en": "The video could not be fetched ({status}).",
+  "oversatt": "비디오를 가져올 수 없습니다({status})."
+ },
+ "app-ai-video-jobs.claim-video-once.message.8627c0b0af17": {
+  "nb": "Scenen finnes ikke lenger.",
+  "en": "The scene no longer exists.",
+  "oversatt": "씬이 더 이상 존재하지 않습니다."
+ },
+ "app-ai-video-jobs.name.message.97261084d899": {
+  "nb": "Lyd fra AI-video ({provider})",
+  "en": "Audio from AI video ({provider})",
+  "oversatt": "AI 비디오({provider})의 오디오"
+ },
+ "app-ai-video-jobs.r.cmds-run-and-wait.85b3e141b59d": {
+  "nb": "AI-video fra 2D-scenen ({provider}) som ny versjon",
+  "en": "AI video from the 2D scene ({provider}) as new version",
+  "oversatt": "2D 씬의 AI 비디오({provider})를 새 버전으로 생성"
+ },
+ "app-ai-video-jobs.r.cmds-run-and-wait.f7387e012b46": {
+  "nb": "AI-video ({provider}) som ny versjon",
+  "en": "AI video ({provider}) as new version",
+  "oversatt": "AI 비디오({provider})를 새 버전으로 생성"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0285841312a7": {
+  "nb": "Ny lydfil",
+  "en": "New audio file",
+  "oversatt": "새 오디오 파일"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0d7f63fe7466": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "라이브러리에서 선택"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0f79a0193f87": {
+  "nb": "Søk etter lyd",
+  "en": "Search for audio",
+  "oversatt": "오디오 검색"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.6d6fa2c78164": {
+  "nb": "Velg lydfil",
+  "en": "Choose audio file",
+  "oversatt": "오디오 파일 선택"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.a5ace96c2e19": {
+  "nb": "Lydfiler",
+  "en": "Audio files",
+  "oversatt": "오디오 파일"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.aria-label.b5365660c2ea": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.28106a7a4511": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.31bd12416461": {
+  "nb": "Last opp lydfil …",
+  "en": "Upload audio file …",
+  "oversatt": "오디오 파일 업로드 …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.3ccbd795d544": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "업로드 중 …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.button.64257128f0ee": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.9ee3fe484e96": {
+  "nb": "Velg en scene i tidslinjen først.",
+  "en": "Choose a scene in the timeline first.",
+  "oversatt": "먼저 타임라인에서 씬을 선택하세요."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.bd5742f43b46": {
+  "nb": "I scene {value1} {value2}, {value3} ut i scenen. Lyden følger scenen hvis den flyttes.",
+  "en": "In scene {value1} {value2}, {value3} into the scene. The audio follows the scene if it is moved.",
+  "oversatt": "씬 {value1} {value2}의 {value3} 위치. 씬을 이동하면 오디오도 함께 이동합니다."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.dialog-title.f0fb31ee65ae": {
+  "nb": "Legg til lyd",
+  "en": "Add audio",
+  "oversatt": "오디오 추가"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.h3.0285841312a7": {
+  "nb": "Ny lydfil",
+  "en": "New audio file",
+  "oversatt": "새 오디오 파일"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.h3.0d7f63fe7466": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "라이브러리에서 선택"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.0148103611ae": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "없음"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.09238fbb2350": {
+  "nb": "Bare",
+  "en": "Only",
+  "oversatt": "전용"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "기본값"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.8d99699570cb": {
+  "nb": "Felles for alle språk",
+  "en": "Shared for all languages",
+  "oversatt": "모든 언어 공통"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.c106baa52e71": {
+  "nb": "felles",
+  "en": "shared",
+  "oversatt": "공통"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.option.d62db98b151f": {
+  "nb": "Ingen replikker i scenen",
+  "en": "No lines in the scene",
+  "oversatt": "씬에 대사 없음"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.p.04f3469c896a": {
+  "nb": "Ingen lydfiler i biblioteket ennå.",
+  "en": "No audio files in the library yet.",
+  "oversatt": "라이브러리에 아직 오디오 파일이 없습니다."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.p.43408234335d": {
+  "nb": "MP3, WAV, OGG, M4A eller FLAC. Lagres i ressursbiblioteket (type «Lyd») og legges inn her.",
+  "en": "MP3, WAV, OGG, M4A or FLAC. Saved in the asset library (type “Audio”) and added here.",
+  "oversatt": "MP3, WAV, OGG, M4A 또는 FLAC. 에셋 라이브러리(유형: “오디오”)에 저장된 후 여기에 추가됩니다."
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.placeholder.1949ed8b780b": {
+  "nb": "Søk etter lyd …",
+  "en": "Search for audio …",
+  "oversatt": "오디오 검색 …"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.43833b10a75e": {
+  "nb": "Spor",
+  "en": "Track",
+  "oversatt": "트랙"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.62623cb8ecbc": {
+  "nb": "Replikk (valgfritt)",
+  "en": "Line (optional)",
+  "oversatt": "대사 (선택 사항)"
+ },
+ "app-assembly-add-audio-dialog.add-audio-dialog.span.b5365660c2ea": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "언어"
+ },
+ "app-assembly-add-audio-dialog.r.cmds-run-and-wait.43344156a5fa": {
+  "nb": "Legg til {value1}",
+  "en": "Add {value1}",
+  "oversatt": "{value1} 추가"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.34ede965758a": {
+  "nb": "Spill av replikken til {value1}",
+  "en": "Play the line of {value1}",
+  "oversatt": "{value1}의 대사 재생"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.58e105143702": {
+  "nb": "Stemmer",
+  "en": "Voices",
+  "oversatt": "음성"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.c43c89ca0d32": {
+  "nb": "Bekreft innlesing",
+  "en": "Confirm reading in",
+  "oversatt": "낭독 확인"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.dac1bec0120e": {
+  "nb": "Replikker",
+  "en": "Lines",
+  "oversatt": "대사"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.e6da7d599e00": {
+  "nb": "Hør stemmen til {name}",
+  "en": "Listen to the voice of {name}",
+  "oversatt": "{name}의 음성 듣기"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.ec1b8aa253ef": {
+  "nb": "Stemme for {name}",
+  "en": "Voice for {name}",
+  "oversatt": "{name}의 음성"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.10121f7d6fca": {
+  "nb": "Ja, les inn",
+  "en": "Yes, read in",
+  "oversatt": "예, 낭독합니다"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.3035c28f2a84": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.398764189aa2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.b4921661c2ab": {
+  "nb": "Les inn",
+  "en": "Read in",
+  "oversatt": "낭독"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.c53a228ea155": {
+  "nb": "Prøve",
+  "en": "Preview",
+  "oversatt": "미리보기"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-description.4e82a8ff8da1": {
+  "nb": "Replikkene leses inn med karakterens stemme og legges på dialogsporet der replikken skjer. Teksten er replikken slik den står i manuset. Opptak og importert dialog røres ikke.",
+  "en": "The lines are read in with the character's voice and added to the dialogue track where the line happens. The text is the line as it stands in the script. Recordings and imported dialogue are not touched.",
+  "oversatt": "대사는 캐릭터의 음성으로 낭독되어 해당 대사가 나오는 대화 트랙에 추가됩니다. 텍스트는 대본에 적힌 그대로 적용됩니다. 기존 녹음 및 가져온 대화는 변경되지 않습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-title.00f0c4e97559": {
+  "nb": "Dialog med AI-stemmer",
+  "en": "Dialogue with AI voices",
+  "oversatt": "AI 음성 대화"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.18adfd59df61": {
+  "nb": " (brukes av {value1})",
+  "en": " (used by {value1})",
+  "oversatt": " ({value1}에서 사용 중)"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.e5845bc6c891": {
+  "nb": "Ingen stemme",
+  "en": "No voice",
+  "oversatt": "음성 없음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.0311ceb517d3": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.04cd8630ea62": {
+  "nb": "Stemme per karakter",
+  "en": "Voice per character",
+  "oversatt": "캐릭터별 음성"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.100ef4070f6f": {
+  "nb": "med ElevenLabs. Belastes kontoen til prosjektets eier, anslått",
+  "en": "with ElevenLabs. Charged to the project owner's account, estimated at",
+  "oversatt": "ElevenLabs 사용. 프로젝트 소유자의 계정에 청구되며, 예상 금액:"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.4d53948d1ff4": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "가격 알 수 없음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.63253e65c278": {
+  "nb": "ElevenLabs er ikke koblet til. Prosjektets eier kan koble det til under «AI-leverandører» på prosjektlisten.",
+  "en": "ElevenLabs is not connected. The project owner can connect it under “AI providers” on the project list.",
+  "oversatt": "ElevenLabs가 연결되지 않았습니다. 프로젝트 소유자가 프로젝트 목록의 'AI 제공업체'에서 연결할 수 있습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.80873a842fb8": {
+  "nb": "Henter stemmer …",
+  "en": "Loading voices …",
+  "oversatt": "음성 불러오는 중…"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.826dd297a583": {
+  "nb": "Replikker uten lyd er valgt.",
+  "en": "Lines without audio are selected.",
+  "oversatt": "오디오가 없는 대사가 선택되었습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.864affde88cc": {
+  "nb": "Scenen har ingen replikker.",
+  "en": "The scene has no lines.",
+  "oversatt": "씬에 대사가 없습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.9de1d844099b": {
+  "nb": "tegn",
+  "en": "characters",
+  "oversatt": "글자 수"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.bb93ceb0b628": {
+  "nb": "Henter leverandører …",
+  "en": "Loading providers …",
+  "oversatt": "제공업체 불러오는 중…"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.c4e7c7d62f28": {
+  "nb": "(et anslag). Vil du lese dem inn nå?",
+  "en": "(an estimate). Do you want to read them in now?",
+  "oversatt": "(예상치). 지금 낭독하시겠습니까?"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.e15eb6c56a7b": {
+  "nb": "Noen replikker har en karakter som ikke finnes i biblioteket; legg den til der for å gi den stemme.",
+  "en": "Some lines have a character that is not in the library; add it there to give it a voice.",
+  "oversatt": "일부 대사의 캐릭터가 라이브러리에 없습니다. 음성을 지정하려면 라이브러리에 캐릭터를 추가하세요."
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9": {
+  "nb": "replikk",
+  "en": "line",
+  "oversatt": "대사"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "대사"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a.2": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "대사"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.3406f6c1b00a": {
+  "nb": "Stemme:",
+  "en": "Voice:",
+  "oversatt": "음성:"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.436f8a785531": {
+  "nb": "Har lyd",
+  "en": "Has audio",
+  "oversatt": "오디오 있음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.68068f09d385": {
+  "nb": "mangler",
+  "en": "missing",
+  "oversatt": "누락됨"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.709df47b4c98": {
+  "nb": "Ingen stemme valgt",
+  "en": "No voice selected",
+  "oversatt": "음성 미선택"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.89523b6c75bc": {
+  "nb": "Mangler lyd",
+  "en": "Missing audio",
+  "oversatt": "오디오 누락"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.8b2bc28e1525": {
+  "nb": "· stemme:",
+  "en": "· voice:",
+  "oversatt": "· 음성:"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a24dea879231": {
+  "nb": " (opptak/import)",
+  "en": " (recording/import)",
+  "oversatt": " (녹음/가져오기)"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a4c8c2dc2f7e": {
+  "nb": "brukes også av",
+  "en": "also used by",
+  "oversatt": "다음에서도 사용 중: "
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.b3d2460a4c9d": {
+  "nb": "· mangler stemme",
+  "en": "· missing voice",
+  "oversatt": "· 음성 없음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.eca9b3c9f787": {
+  "nb": "Uten navn",
+  "en": "No name",
+  "oversatt": "이름 없음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.f4cf1a3435e2": {
+  "nb": "har lyd",
+  "en": "have audio",
+  "oversatt": "오디오 있음"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.05954ad88fda": {
+  "nb": "Hør en prøve av stemmen",
+  "en": "Listen to a sample of the voice",
+  "oversatt": "음성 샘플 듣기"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.2c63aef5e695": {
+  "nb": "Spill av lyden replikken har",
+  "en": "Play the audio the line has",
+  "oversatt": "대사에 연결된 오디오 재생"
+ },
+ "app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.d77529e07479": {
+  "nb": "Ingen prøve for stemmen",
+  "en": "No sample for the voice",
+  "oversatt": "음성 샘플 없음"
+ },
+ "app-assembly-ai-dialogue-dialog.description.l-lest-inn-med-ai-stemmen-l-character-voice-label-l-text-read-in-with-the-ai-voice-l-character-voice-label-l-text-slice.a711e60de6d4": {
+  "nb": "Lest inn med AI-stemmen «{label}»: «{text}»",
+  "en": "Read in with the AI voice “{label}”: “{text}”",
+  "oversatt": "AI 음성 “{label}” 샘플 낭독: “{text}”"
+ },
+ "app-assembly-ai-dialogue-dialog.e.cmds-run.83f6ced7c610": {
+  "nb": "Stemme for karakteren",
+  "en": "Voice for the character",
+  "oversatt": "캐릭터 음성"
+ },
+ "app-assembly-ai-dialogue-dialog.label.label.22038e56bfbf": {
+  "nb": "Tegn",
+  "en": "Characters",
+  "oversatt": "글자 수"
+ },
+ "app-assembly-ai-dialogue-dialog.label.label.fabf40c27ec9": {
+  "nb": "Samlet anslag",
+  "en": "Estimated total",
+  "oversatt": "예상 합계"
+ },
+ "app-assembly-ai-dialogue-dialog.lines-read-in": {
+  "nb": {
+   "one": "{count} replikk er lest inn og lagt på dialogsporet. Hver kan angres.",
+   "other": "{count} replikker er lest inn og lagt på dialogsporet. Hver kan angres."
+  },
+  "en": {
+   "one": "{count} line is read in and added to the dialogue track. Each can be undone.",
+   "other": "{count} lines are read in and added to the dialogue track. Each can be undone."
+  },
+  "oversatt": {
+   "other": "{count}개의 대사를 녹음하여 대사 트랙에 추가했습니다. 각각 실행 취소할 수 있습니다."
+  }
+ },
+ "app-assembly-ai-dialogue-dialog.name.name.21288548c6ec": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "사운드"
+ },
+ "app-assembly-ai-dialogue-dialog.note.note.c44b36ed3e4f": {
+  "nb": "Lest inn med AI (elevenlabs/{SPEECH_MODEL})",
+  "en": "Read in with AI (elevenlabs/{SPEECH_MODEL})",
+  "oversatt": "AI로 녹음됨 (elevenlabs/{SPEECH_MODEL})"
+ },
+ "app-assembly-ai-dialogue-dialog.play-line-of": {
+  "nb": "Spill av replikken til {speaker}",
+  "en": "Play the line of {speaker}",
+  "oversatt": "{speaker}의 대사 재생"
+ },
+ "app-assembly-ai-dialogue-dialog.play-line-of-character": {
+  "nb": "Spill av replikken til karakteren",
+  "en": "Play the line of the character",
+  "oversatt": "캐릭터의 대사 재생"
+ },
+ "app-assembly-ai-dialogue-dialog.res.cmds-run-and-wait.322a48f3e6d4": {
+  "nb": "AI-stemme: {name}",
+  "en": "AI voice: {name}",
+  "oversatt": "AI 음성: {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.run-all.cmds-run-and-wait.c9fdf50ebd5e": {
+  "nb": "AI-stemme: {name}",
+  "en": "AI voice: {name}",
+  "oversatt": "AI 음성: {name}"
+ },
+ "app-assembly-ai-dialogue-dialog.run-all.set-busy.c66b6321c670": {
+  "nb": "Leser inn … {value1} av {length}",
+  "en": "Reading in … {value1} of {length}",
+  "oversatt": "녹음 중 … {value1}/{length}"
+ },
+ "app-assembly-ai-dialogue-dialog.targets-label.targets-label.b9c7e2e02290": {
+  "nb": "replikker",
+  "en": "lines",
+  "oversatt": "대사"
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.4e568150b005": {
+  "nb": "Lydfilen mangler.",
+  "en": "The audio file is missing.",
+  "oversatt": "오디오 파일이 없습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.55b21ca2d050": {
+  "nb": "{made} lest inn. {value2}",
+  "en": "{made} read in. {value2}",
+  "oversatt": "{made} 녹음 완료. {value2}"
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.88c0ff05514d": {
+  "nb": "Lyden kunne ikke spilles av.",
+  "en": "The audio could not be played.",
+  "oversatt": "오디오를 재생할 수 없습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.text.text.8f60991872b0": {
+  "nb": "{made} {value2} lest inn og lagt på dialogsporet. Hver kan angres.",
+  "en": "{made} {value2} read in and added to the dialogue track. Each can be undone.",
+  "oversatt": "{made}개의 {value2} 녹음되어 대사 트랙에 추가되었습니다. 각각 실행 취소할 수 있습니다."
+ },
+ "app-assembly-ai-dialogue-dialog.total.total.81ac5d637ce2": {
+  "nb": "ca. {value1}",
+  "en": "approx. {value1}",
+  "oversatt": "약 {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.value.value.98830544e254": {
+  "nb": "ca. {value1}",
+  "en": "approx. {value1}",
+  "oversatt": "약 {value1}"
+ },
+ "app-assembly-ai-dialogue-dialog.value.value.e18ba2e3a24a": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "가격 미정"
+ },
+ "app-assembly-ai-update-section.ai-update-section.aria-label.cff5fd241cb5": {
+  "nb": "Bekreft ny video",
+  "en": "Confirm new video",
+  "oversatt": "새 비디오 확인"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.0213b3c41bdb": {
+  "nb": "Oppdater med AI",
+  "en": "Update with AI",
+  "oversatt": "AI로 업데이트"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.0eae5369083a": {
+  "nb": "Ja, lag nye videoer",
+  "en": "Yes, make new videos",
+  "oversatt": "예, 새 비디오를 생성합니다"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.14e6b6f0ad02": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.508577509caa": {
+  "nb": "Tilbake til forslaget",
+  "en": "Back to the suggestion",
+  "oversatt": "제안으로 돌아가기"
+ },
+ "app-assembly-ai-update-section.ai-update-section.button.a7c27d70b9d1": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "세그먼트"
+ },
+ "app-assembly-ai-update-section.ai-update-section.label.497b477bfd08": {
+  "nb": "Beskrivelse for segment {value1}",
+  "en": "Description for segment {value1}",
+  "oversatt": "세그먼트 {value1} 설명"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.01b1591be1e6": {
+  "nb": "Belastes prosjektets eier, anslått {value1} (et anslag). De gamle videoene beholdes.",
+  "en": "Charged to the project owner, estimated at {value1} (an estimate). The old videos are kept.",
+  "oversatt": "프로젝트 소유자에게 청구되며, 예상 비용은 약 {value1}입니다(추정치). 기존 비디오는 유지됩니다."
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.20a41ec48ba1": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "포함"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.2ca282bbc9af": {
+  "nb": "Oppdater AI-videoen",
+  "en": "Update the AI video",
+  "oversatt": "AI 비디오 업데이트"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.6f400fcd28e3": {
+  "nb": "Ingen videoleverandør er koblet til (AI-leverandører på prosjektlisten).",
+  "en": "No video provider is connected (AI providers on the project list).",
+  "oversatt": "연결된 비디오 제공업체가 없습니다(프로젝트 목록의 AI 제공업체 참조)."
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.7a28a05bef70": {
+  "nb": "nye videoer",
+  "en": "new videos",
+  "oversatt": "새 비디오"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.7ff7db948778": {
+  "nb": " (samme som sist)",
+  "en": " (same as last time)",
+  "oversatt": " (이전과 동일)"
+ },
+ "app-assembly-ai-update-section.ai-update-section.p.dfa7da92a486": {
+  "nb": "ny video",
+  "en": "new video",
+  "oversatt": "새 비디오"
+ }
+}

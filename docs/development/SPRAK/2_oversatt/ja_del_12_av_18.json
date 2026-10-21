@@ -1,0 +1,3018 @@
+{
+ "app-script-assist-writing-panel.writing-panel.h3.4a397a4ff149": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "新規シーン"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.518079e7996d": {
+  "nb": "Skriv om",
+  "en": "Rewrite",
+  "oversatt": "書き直し"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.5313a20c9ef1": {
+  "nb": "Neste replikk",
+  "en": "Next line",
+  "oversatt": "次のセリフ"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.590e2bab5227": {
+  "nb": "Formatsjekk",
+  "en": "Format check",
+  "oversatt": "フォーマットチェック"
+ },
+ "app-script-assist-writing-panel.writing-panel.h3.6da054cfe2f1": {
+  "nb": "Sjekk og oversettelse",
+  "en": "Check and translation",
+  "oversatt": "チェックと翻訳"
+ },
+ "app-script-assist-writing-panel.writing-panel.label.a82aed4cd888": {
+  "nb": "Noden er allerede brukt i scene {nodeUsedIn}. Lag likevel en ny, separat scene (den eksisterende endres ikke).",
+  "en": "The node is already used in scene {nodeUsedIn}. Create a new, separate scene anyway (the existing one is not changed).",
+  "oversatt": "このノードは既にシーン {nodeUsedIn} で使用されています。それでも新しい独立したシーンを作成しますか（既存のシーンは変更されません）。"
+ },
+ "app-script-assist-writing-panel.writing-panel.option.26060d25bd2b": {
+  "nb": "Fra beskrivelse",
+  "en": "From description",
+  "oversatt": "説明から"
+ },
+ "app-script-assist-writing-panel.writing-panel.option.2645a4404858": {
+  "nb": "(uten tittel)",
+  "en": "(untitled)",
+  "oversatt": "(無題)"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.108152a12280": {
+  "nb": "{n} linjer valgt",
+  "en": "{n} lines selected",
+  "oversatt": "{n} 行選択中"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.1e9d27df40e5": {
+  "nb": "Skrivehjelpen krever redigeringstilgang.",
+  "en": "The writing assistant requires edit access.",
+  "oversatt": "執筆アシスタントを使用するには編集権限が必要です。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.2a57ffaf683a": {
+  "nb": "Settes inn til slutt.",
+  "en": "Inserted at the end.",
+  "oversatt": "末尾に挿入されます。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.2f7fa4e2c4f0": {
+  "nb": "Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.",
+  "en": "The built-in AI was used because no own text provider could be used.",
+  "oversatt": "独自のテキストプロバイダーを使用できなかったため、組み込みのAIが使用されました。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.44cd5e7686d9": {
+  "nb": "Utkastet lagres som usikker oversettelse og må godkjennes. Det norske manuset endres ikke.",
+  "en": "The draft is saved as an uncertain translation and must be approved. The Norwegian script is not changed.",
+  "oversatt": "下書きは未確定の翻訳として保存され、承認が必要です。ノルウェー語の脚本は変更されません。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.7934c771bc6b": {
+  "nb": "{value1} · {label} · anslått {value3}",
+  "en": "{value1} · {label} · estimated {value3}",
+  "oversatt": "{value1} · {label} · 推定 {value3}"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.8a7c9a9beee1": {
+  "nb": "Settes inn etter den valgte scenen.",
+  "en": "Inserted after the selected scene.",
+  "oversatt": "選択したシーンの後に挿入されます。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.8c550f9bedc7": {
+  "nb": "Noen linjer er endret av noen andre etter at forslaget ble laget. De kan ikke brukes; lag forslaget på nytt.",
+  "en": "Some lines were changed by someone else after the suggestion was made. They cannot be used; create the suggestion again.",
+  "oversatt": "提案の作成後に一部の行が他のユーザーによって変更されました。適用できません。再度提案を作成してください。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.90049b80cbee": {
+  "nb": "Finner tekst-AI …",
+  "en": "Finding text AI …",
+  "oversatt": "テキストAIを検索中…"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.d03ff48004e9": {
+  "nb": "Marker en replikk eller handling i manuset.",
+  "en": "Select a line or action in the script.",
+  "oversatt": "脚本内のセリフまたはト書きを選択してください。"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.dd43db7101ec": {
+  "nb": "Brukt i økten: {value1}",
+  "en": "Spent this session: {value1}",
+  "oversatt": "このセッションでの消費: {value1}"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.f1f37da2bc0c": {
+  "nb": "Skriver forslaget …",
+  "en": "Writing the suggestion …",
+  "oversatt": "提案を作成中…"
+ },
+ "app-script-assist-writing-panel.writing-panel.p.fe382f665edf": {
+  "nb": "Karakteren vet bare det Story Lab sier at den vet på dette tidspunktet.",
+  "en": "The character only knows what Story Lab says it knows at this point.",
+  "oversatt": "キャラクターはこの時点でStory Labに設定された情報のみを把握しています。"
+ },
+ "app-script-assist-writing-panel.writing-panel.placeholder.19a8262143f4": {
+  "nb": "Ønske (valgfritt) – f.eks. «mer sint»",
+  "en": "Request (optional) – e.g. “angrier”",
+  "oversatt": "リクエスト（任意）– 例: 「もっと怒って」"
+ },
+ "app-script-assist-writing-panel.writing-panel.placeholder.958e91747e11": {
+  "nb": "Kort beskrivelse av scenen",
+  "en": "Short description of the scene",
+  "oversatt": "シーンの簡単な説明"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.16f70c48ca1c": {
+  "nb": "Neste replikk (Alt + Shift + N)",
+  "en": "Next line (Alt + Shift + N)",
+  "oversatt": "次のセリフ (Alt + Shift + N)"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.37e3eb3bd717": {
+  "nb": "Skriv om (Alt + Shift + R)",
+  "en": "Rewrite (Alt + Shift + R)",
+  "oversatt": "書き直し (Alt + Shift + R)"
+ },
+ "app-script-assist-writing-panel.writing-panel.title.75814a344cfa": {
+  "nb": "Formatsjekk, gratis (Alt + Shift + F)",
+  "en": "Format check, free (Alt + Shift + F)",
+  "oversatt": "フォーマットチェック、無料 (Alt + Shift + F)"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.1a3c3eeef360": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.1a3c3eeef360.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.23f00f6c1c0c": {
+  "nb": "Foreslå neste replikk",
+  "en": "Suggest next line",
+  "oversatt": "次のセリフを提案"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.43722c49eb65": {
+  "nb": "Skriv om …",
+  "en": "Rewrite …",
+  "oversatt": "書き直し…"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.51ceafe95950": {
+  "nb": "Engelsk utkast",
+  "en": "English draft",
+  "oversatt": "英語の下書き"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.5289d6353b39": {
+  "nb": "Språkvask",
+  "en": "Language polish",
+  "oversatt": "推敲"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.590e2bab5227": {
+  "nb": "Formatsjekk",
+  "en": "Format check",
+  "oversatt": "フォーマットチェック"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.636fb5cc2174": {
+  "nb": "Bruk valgte",
+  "en": "Use selected",
+  "oversatt": "選択した項目を適用"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.b8422687ce0d": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "再試行"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.c78619b71c82": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "破棄"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.c78619b71c82.2": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "破棄"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.ca9ac6b005f1": {
+  "nb": "Lagre som forsøksvis redigering",
+  "en": "Save as trial edit",
+  "oversatt": "試行編集として保存"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.ca9ac6b005f1.2": {
+  "nb": "Lagre som forsøksvis redigering",
+  "en": "Save as trial edit",
+  "oversatt": "試行編集として保存"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.cd9bd339bf7b": {
+  "nb": "Bekreft og send",
+  "en": "Confirm and send",
+  "oversatt": "確認して送信"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.d71e27f8f32f": {
+  "nb": "Lag utkast til scene",
+  "en": "Draft a scene",
+  "oversatt": "シーンの下書きを作成"
+ },
+ "app-script-assist-writing-panel.writing-panel.toolbar-button.e57e96fc3197": {
+  "nb": "Bruk",
+  "en": "Use",
+  "oversatt": "使用"
+ },
+ "app-script-block-links-section.block-links-section.aria-label.4c5b883a7388": {
+  "nb": "Åpne {name} i biblioteket",
+  "en": "Open {name} in the library",
+  "oversatt": "ライブラリで{name}を開く"
+ },
+ "app-script-block-links-section.block-links-section.aria-label.8929cf28ef38": {
+  "nb": "Koblinger for linjen",
+  "en": "Links for the line",
+  "oversatt": "セリフのリンク"
+ },
+ "app-script-block-links-section.block-links-section.li.24926cd36829": {
+  "nb": "Ingen – importer film eller lag AI-video i monteringen",
+  "en": "None – import film or make AI video in the assembly",
+  "oversatt": "なし – 編集でフィルムをインポートするかAI動画を作成"
+ },
+ "app-script-block-links-section.block-links-section.li.3d4a6abc5627": {
+  "nb": "Ingen – bruk «Synk replikker» i monteringen",
+  "en": "None – use “Sync lines” in the assembly",
+  "oversatt": "なし – 編集で「セリフを同期」を使用"
+ },
+ "app-script-block-links-section.block-links-section.li.b046aac2ce89": {
+  "nb": "Ingen – legg lyd på dialogsporet i monteringen",
+  "en": "None – add audio to the dialogue track in the assembly",
+  "oversatt": "なし – 編集でダイアログトラックに音声を追加"
+ },
+ "app-script-block-links-section.block-links-section.li.f962daff9087": {
+  "nb": "Ingen – koble linjen til et lag i sceneeditoren",
+  "en": "None – link the line to a layer in the scene editor",
+  "oversatt": "なし – シーンエディタでセリフをレイヤーにリンク"
+ },
+ "app-script-block-links-section.block-links-section.link.e3fdf8b65a21": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "シーンエディタ"
+ },
+ "app-script-block-links-section.block-links-section.montering.6ab6efa3dbde": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "表示"
+ },
+ "app-script-block-links-section.block-links-section.montering.6ab6efa3dbde.2": {
+  "nb": "Vis",
+  "en": "Show",
+  "oversatt": "表示"
+ },
+ "app-script-block-links-section.block-links-section.span.405cad589ca8": {
+  "nb": "hele scenen",
+  "en": "the whole scene",
+  "oversatt": "シーン全体"
+ },
+ "app-script-block-links-section.block-links-section.span.5ae8c9620429": {
+  "nb": "dekker linjen",
+  "en": "covers the line",
+  "oversatt": "セリフをカバー"
+ },
+ "app-script-block-links-section.block-links-section.span.7607ff032da6": {
+  "nb": "segmentet",
+  "en": "the segment",
+  "oversatt": "セグメント"
+ },
+ "app-script-block-links-section.block-links-section.span.8a142ce45fd8": {
+  "nb": " · godkjent",
+  "en": " · approved",
+  "oversatt": " · 承認済み"
+ },
+ "app-script-block-links-section.block-links-section.title.09ad98462077": {
+  "nb": "Filmklipp",
+  "en": "Film clips",
+  "oversatt": "フィルムクリップ"
+ },
+ "app-script-block-links-section.block-links-section.title.41e9be5b1a0d": {
+  "nb": "Tidspunkt i scenen",
+  "en": "Time in the scene",
+  "oversatt": "シーン内の時間"
+ },
+ "app-script-block-links-section.block-links-section.title.5758aad81b92": {
+  "nb": "Åpne lydfilen i biblioteket",
+  "en": "Open the audio file in the library",
+  "oversatt": "ライブラリで音声ファイルを開く"
+ },
+ "app-script-block-links-section.block-links-section.title.7b415e4bfd1b": {
+  "nb": "Hendelser i 2D-scenen",
+  "en": "Events in the 2D scene",
+  "oversatt": "2Dシーン内のイベント"
+ },
+ "app-script-block-links-section.block-links-section.title.d8ec1d2ea925": {
+  "nb": "Dialogopptak",
+  "en": "Dialogue recordings",
+  "oversatt": "ダイアログ録音"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.a.2b14fcf177d7": {
+  "nb": "Åpne vinduet manuelt",
+  "en": "Open window manually",
+  "oversatt": "ウィンドウを手動で開く"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.404e4b629270": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "脚本エクスプローラー"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.8b1abcb1e1eb": {
+  "nb": "Endre vindusstørrelse",
+  "en": "Resize window",
+  "oversatt": "ウィンドウサイズを変更"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.aria-label.be55e869b1a8": {
+  "nb": "Lukk Manusutforskeren",
+  "en": "Close script explorer",
+  "oversatt": "脚本エクスプローラーを閉じる"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.p.7c774a42771f": {
+  "nb": "Nettleseren blokkerte vinduet. Tillat popup-vinduer for denne siden, eller åpne vinduet manuelt.",
+  "en": "Your browser blocked the window. Allow popups for this site, or open the window manually.",
+  "oversatt": "ブラウザによってウィンドウがブロックされました。このサイトのポップアップを許可するか、手動でウィンドウを開いてください。"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.span.404e4b629270": {
+  "nb": "Manusutforskeren",
+  "en": "Script explorer",
+  "oversatt": "脚本エクスプローラー"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.title.be55e869b1a8": {
+  "nb": "Lukk Manusutforskeren",
+  "en": "Close script explorer",
+  "oversatt": "脚本エクスプローラーを閉じる"
+ },
+ "app-script-explorer-script-explorer-panel.script-explorer-panel.toolbar-button.01bb4529fe0d": {
+  "nb": "Fest",
+  "en": "Pin",
+  "oversatt": "固定"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.3d7ec3440a0b": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "キャラクター"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.7a3470613cac": {
+  "nb": "Steder og objekter",
+  "en": "Locations and objects",
+  "oversatt": "場所とオブジェクト"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.871909b22d34": {
+  "nb": "Angre notat",
+  "en": "Undo note",
+  "oversatt": "注記を元に戻す"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.9a8d5b29002a": {
+  "nb": "Gjør om notat",
+  "en": "Redo note",
+  "oversatt": "注記をやり直す"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.b0612b0fa775": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "次のシーン"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.b7eeecafc7af": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "前のシーン"
+ },
+ "app-script-explorer-script-explorer.explorer-content.aria-label.c64f0677f268": {
+  "nb": "Søk i hele manuset",
+  "en": "Search the whole script",
+  "oversatt": "脚本全体を検索"
+ },
+ "app-script-explorer-script-explorer.explorer-content.button.1086bdc39ae5": {
+  "nb": "Åpne",
+  "en": "Open",
+  "oversatt": "開く"
+ },
+ "app-script-explorer-script-explorer.explorer-content.button.d2e41838a5fc": {
+  "nb": "Tilbake til aktiv scene",
+  "en": "Back to active scene",
+  "oversatt": "アクティブなシーンに戻る"
+ },
+ "app-script-explorer-script-explorer.explorer-content.link.20fc3e3355c1": {
+  "nb": "Åpne i manus",
+  "en": "Open in script",
+  "oversatt": "脚本で開く"
+ },
+ "app-script-explorer-script-explorer.explorer-content.new-label.1a52b920449e": {
+  "nb": "Notat på markert tekst",
+  "en": "Note on selected text",
+  "oversatt": "選択したテキストの注記"
+ },
+ "app-script-explorer-script-explorer.explorer-content.new-label.dada04c66a45": {
+  "nb": "Legg til notat",
+  "en": "Add note",
+  "oversatt": "注記を追加"
+ },
+ "app-script-explorer-script-explorer.explorer-content.option.7a3470613cac": {
+  "nb": "Steder og objekter",
+  "en": "Locations and objects",
+  "oversatt": "ロケーションとオブジェクト"
+ },
+ "app-script-explorer-script-explorer.explorer-content.option.dbd5a355b488": {
+  "nb": "Alle karakterer",
+  "en": "All characters",
+  "oversatt": "すべてのキャラクター"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.25d7d411c290": {
+  "nb": "Ingen treff.",
+  "en": "No results.",
+  "oversatt": "結果が見つかりません。"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.7e3bf0a50454": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "保存中…"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.cf78ad85ac23": {
+  "nb": "Notatet ble ikke lagret. Teksten er beholdt:",
+  "en": "The note was not saved. Your text has been kept:",
+  "oversatt": "メモは保存されませんでした。入力したテキストは保持されています:"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.e8c06996ab35": {
+  "nb": "Manuset har ingen scener.",
+  "en": "The script has no scenes.",
+  "oversatt": "脚本にシーンがありません。"
+ },
+ "app-script-explorer-script-explorer.explorer-content.p.ef33975dceb9": {
+  "nb": "Hovedvinduet er lukket",
+  "en": "The main window is closed",
+  "oversatt": "メインウィンドウが閉じられています"
+ },
+ "app-script-explorer-script-explorer.explorer-content.placeholder.a4cb06282c6e": {
+  "nb": "Søk i hele manuset …",
+  "en": "Search the whole script …",
+  "oversatt": "脚本全体を検索…"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.4eed2bdc78c6": {
+  "nb": "Følger vindu {value1} · {title}",
+  "en": "Following window {value1} · {title}",
+  "oversatt": "ウィンドウ {value1} · {title} に追従中"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.553184b77f37": {
+  "nb": "Følg aktiv scene",
+  "en": "Follow active scene",
+  "oversatt": "アクティブなシーンに追従"
+ },
+ "app-script-explorer-script-explorer.explorer-content.span.fed80a5372b1": {
+  "nb": "Viser søkeresultat",
+  "en": "Showing search result",
+  "oversatt": "検索結果を表示中"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.02780cae297d": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "メモ"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.871909b22d34": {
+  "nb": "Angre notat",
+  "en": "Undo note",
+  "oversatt": "メモを元に戻す"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.9a8d5b29002a": {
+  "nb": "Gjør om notat",
+  "en": "Redo note",
+  "oversatt": "メモをやり直す"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.b0612b0fa775": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "次のシーン"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.b7eeecafc7af": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "前のシーン"
+ },
+ "app-script-explorer-script-explorer.explorer-content.title.c6de4b729a1c": {
+  "nb": "Avvik mellom manus og lyd",
+  "en": "Script and audio differences",
+  "oversatt": "脚本と音声の相違"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.132476c7f15a": {
+  "nb": "Overskrifter",
+  "en": "Headings",
+  "oversatt": "見出し"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.36db803c47a0": {
+  "nb": "Alt",
+  "en": "All",
+  "oversatt": "すべて"
+ },
+ "app-script-explorer-script-explorer.explorer-content.toolbar-button.7dc91baf14b9": {
+  "nb": "Replikker",
+  "en": "Dialogue",
+  "oversatt": "セリフ"
+ },
+ "app-script-explorer-script-explorer.label.label.14b473091f96": {
+  "nb": "Deltar",
+  "en": "Participates",
+  "oversatt": "参加"
+ },
+ "app-script-explorer-script-explorer.label.label.6ce67b7d210c": {
+  "nb": "Treff",
+  "en": "Results",
+  "oversatt": "件の結果"
+ },
+ "app-script-explorer-script-explorer.label.label.96ca51977db8": {
+  "nb": "Omtales",
+  "en": "Mentioned",
+  "oversatt": "言及"
+ },
+ "app-script-explorer-script-explorer.script-explorer.button.fe0fa89691b1": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "再試行"
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.1f07d79dc7d2": {
+  "nb": "Du har ikke tilgang til prosjektet.",
+  "en": "You do not have access to this project.",
+  "oversatt": "このプロジェクトへのアクセス権がありません。"
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.43b04a6fd41c": {
+  "nb": "Manuset kunne ikke hentes.",
+  "en": "The script could not be loaded.",
+  "oversatt": "脚本を読み込めませんでした。"
+ },
+ "app-script-explorer-script-explorer.script-explorer.p.9cb6a12d6af4": {
+  "nb": "Henter manus …",
+  "en": "Loading script …",
+  "oversatt": "脚本を読み込み中…"
+ },
+ "app-script-explorer-script-explorer.title.message.3d344f60006f": {
+  "nb": "Ingen aktiv scene",
+  "en": "No active scene",
+  "oversatt": "アクティブなシーンがありません"
+ },
+ "app-script-export-dialog.export-dialog.a.1ebd510d96a7": {
+  "nb": "Last ned «{name}»",
+  "en": "Download “{name}”",
+  "oversatt": "「{name}」をダウンロード"
+ },
+ "app-script-export-dialog.export-dialog.aria-label.c83247845f9a": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "バージョン"
+ },
+ "app-script-export-dialog.export-dialog.button.1cf11cc3cf13": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-export-dialog.export-dialog.button.eac96f6141a2": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "app-script-export-dialog.export-dialog.button.f614693c69c2": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "書き出し"
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.7c1fa74ceb76": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "」"
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.b0505a9dcdb9": {
+  "nb": "scener. Eksporten endrer ingenting i prosjektet.",
+  "en": "scenes. The export does not change anything in the project.",
+  "oversatt": "シーン。書き出しを行ってもプロジェクト内のデータは変更されません。"
+ },
+ "app-script-export-dialog.export-dialog.dialog-description.b5e5a710b2bc": {
+  "nb": "«",
+  "en": "“",
+  "oversatt": "「"
+ },
+ "app-script-export-dialog.export-dialog.dialog-title.4798ad21711e": {
+  "nb": "Eksporter manus",
+  "en": "Export script",
+  "oversatt": "脚本を書き出し"
+ },
+ "app-script-export-dialog.export-dialog.label.031e7654d236": {
+  "nb": "Ta med deaktiverte scener",
+  "en": "Include inactive scenes",
+  "oversatt": "無効なシーンを含める"
+ },
+ "app-script-export-dialog.export-dialog.label.162e1c74eb0b": {
+  "nb": "tydelig merket, uten nummer",
+  "en": "clearly marked, without a number",
+  "oversatt": "番号なしで明確にマーク"
+ },
+ "app-script-export-dialog.export-dialog.label.196f6fde7370": {
+  "nb": "som «UTGÅR»",
+  "en": "as “OMITTED”",
+  "oversatt": "「欠番（OMITTED）」として"
+ },
+ "app-script-export-dialog.export-dialog.label.2a13ae5f5af3": {
+  "nb": "De gjenopprettes hvis filen importeres igjen.",
+  "en": "They are restored if the file is imported again.",
+  "oversatt": "ファイルを再度インポートすると復元されます。"
+ },
+ "app-script-export-dialog.export-dialog.label.382e46a98e2e": {
+  "nb": "Tittelside (tom = ingen tittelside)",
+  "en": "Title page (empty = no title page)",
+  "oversatt": "タイトルページ（空 = タイトルページなし）"
+ },
+ "app-script-export-dialog.export-dialog.label.3913a86903d2": {
+  "nb": "Ta med notater",
+  "en": "Include notes",
+  "oversatt": "メモを含める"
+ },
+ "app-script-export-dialog.export-dialog.label.5d194335bf45": {
+  "nb": "som Fountain-notater [[…]], med navn og dato",
+  "en": "as Fountain notes [[…]], with name and date",
+  "oversatt": "名前と日付付きの Fountain メモ [[…]] として"
+ },
+ "app-script-export-dialog.export-dialog.label.91aad564b1d0": {
+  "nb": "Gi også scener som var unummerert i originalen et mellomnummer (f.eks. 1A). Nye scener får det alltid.",
+  "en": "Also give scenes that were unnumbered in the original an in-between number (e.g. 1A). New scenes always get one.",
+  "oversatt": "元で番号が振られていなかったシーンにも枝番号（例: 1A）を付与します。新しいシーンには常に付与されます。"
+ },
+ "app-script-export-dialog.export-dialog.label.94e82acca1d7": {
+  "nb": "som Word-kommentarer, med navn og tidspunkt",
+  "en": "as Word comments, with name and time",
+  "oversatt": "名前と日時付きの Word コメントとして"
+ },
+ "app-script-export-dialog.export-dialog.label.d213245924c2": {
+  "nb": "som PDF-merknader, med navn og tidspunkt",
+  "en": "as PDF comments, with name and time",
+  "oversatt": "名前と日時付きの PDF 注記として"
+ },
+ "app-script-export-dialog.export-dialog.legend.6fe6a7497744": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "フォーマット"
+ },
+ "app-script-export-dialog.export-dialog.legend.7de83198fb7f": {
+  "nb": "Scenenummer",
+  "en": "Scene numbering",
+  "oversatt": "シーン番号"
+ },
+ "app-script-export-dialog.export-dialog.p.56edf081c585": {
+  "nb": "· ingen endringer",
+  "en": "· no changes",
+  "oversatt": "· 変更なし"
+ },
+ "app-script-export-dialog.export-dialog.p.5b17c918b07b": {
+  "nb": "Henter versjonen …",
+  "en": "Fetching the version …",
+  "oversatt": "バージョンを取得中…"
+ },
+ "app-script-export-dialog.export-dialog.p.5bca912aefc4": {
+  "nb": "Filen er laget:",
+  "en": "The file has been created:",
+  "oversatt": "ファイルが作成されました:"
+ },
+ "app-script-export-dialog.export-dialog.p.6fad06d2fe3f": {
+  "nb": "Kunne ikke hente versjonen. Prøv igjen.",
+  "en": "Could not fetch the version. Try again.",
+  "oversatt": "バージョンを取得できませんでした。もう一度お試しください。"
+ },
+ "app-script-export-dialog.export-dialog.p.892810a87a9e": {
+  "nb": "Eksporten feilet",
+  "en": "The export failed",
+  "oversatt": "書き出しに失敗しました"
+ },
+ "app-script-export-dialog.export-dialog.p.ba09db7f5f2c": {
+  "nb": "Forhåndsvisning av nummerering",
+  "en": "Numbering preview",
+  "oversatt": "採番プレビュー"
+ },
+ "app-script-export-dialog.export-dialog.p.d77bf1eca951": {
+  "nb": "· {changed} endret",
+  "en": "· {changed} changed",
+  "oversatt": "· {changed} 件変更"
+ },
+ "app-script-export-dialog.export-dialog.p.d7e1637f700f": {
+  "nb": "Låste sider: sideskiftene følger originalen der teksten er uendret.",
+  "en": "Locked pages: the page breaks follow the original where the text is unchanged.",
+  "oversatt": "固定ページ: テキストが変更されていない箇所では、改ページは元のまま維持されます。"
+ },
+ "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
+  "nb": "Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+  "en": "Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+  "oversatt": "ダウンロードが開始されませんか？Animatic Studio のプレビューがダウンロードをブロックしている可能性があります。別のタブ（プレビュー上部の新しいタブボタン）でアプリを開き、そこから書き出してください。"
+ },
+ "app-script-export-dialog.export-dialog.span.02b21f503acd": {
+  "nb": "Lagre en manusversjon først (Versjoner)",
+  "en": "Save a script version first (Versions)",
+  "oversatt": "最初に脚本バージョンを保存してください（バージョン）"
+ },
+ "app-script-export-dialog.export-dialog.span.0570cbae45fd": {
+  "nb": "Bevar produksjonsnummerering",
+  "en": "Keep production numbering",
+  "oversatt": "プロダクションの採番を保持"
+ },
+ "app-script-export-dialog.export-dialog.span.140fdb55fa92": {
+  "nb": "Redigerbar; Word bryter sidene selv",
+  "en": "Editable; Word breaks the pages itself",
+  "oversatt": "編集可能。Word が自動で改ページします"
+ },
+ "app-script-export-dialog.export-dialog.span.2e7f5a46f438": {
+  "nb": "UTGÅR – ",
+  "en": "OMITTED – ",
+  "oversatt": "削除 – "
+ },
+ "app-script-export-dialog.export-dialog.span.33e12df0c58b": {
+  "nb": "Fylt ut med prosjektnavnet. Endre fritt.",
+  "en": "Filled in with the project name. Change freely.",
+  "oversatt": "プロジェクト名が自動入力されています。自由に変更してください。"
+ },
+ "app-script-export-dialog.export-dialog.span.364dad201af9": {
+  "nb": "Alle aktive scener nummereres 1, 2, 3 …",
+  "en": "All active scenes are numbered 1, 2, 3 …",
+  "oversatt": "すべてのアクティブなシーンに 1、2、3… と連番を振ります"
+ },
+ "app-script-export-dialog.export-dialog.span.793f4e040a25": {
+  "nb": "Etablerte numre beholdes; nye scener får 42A, 42B …",
+  "en": "Established numbers are kept; new scenes get 42A, 42B …",
+  "oversatt": "既存の番号は保持され、新しいシーンには 42A、42B… が付与されます"
+ },
+ "app-script-export-dialog.export-dialog.span.7fde2e97a8b3": {
+  "nb": "Scener som fantes i versjonen får numrene derfra",
+  "en": "Scenes that existed in the version get their numbers from it",
+  "oversatt": "そのバージョンに存在していたシーンは、当時の番号が引き継がれます"
+ },
+ "app-script-export-dialog.export-dialog.span.8697abcfdce9": {
+  "nb": "Ferdige sider, nøyaktig som i manusvisningen",
+  "en": "Finished pages, exactly as in the script view",
+  "oversatt": "完成ページ（脚本ビューとまったく同じ表示）"
+ },
+ "app-script-export-dialog.export-dialog.span.89e54cf8123b": {
+  "nb": "Deaktivert – ",
+  "en": "Inactive – ",
+  "oversatt": "非アクティブ – "
+ },
+ "app-script-export-dialog.export-dialog.span.8d1f1240995d": {
+  "nb": "Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst",
+  "en": "The title page is longer than can be saved for next time (about 3 kB, at most",
+  "oversatt": "タイトルページが次回保存可能な容量を超えています（約 3 kB、最大"
+ },
+ "app-script-export-dialog.export-dialog.span.9c2f221ce712": {
+  "nb": "Bevar valgt historisk nummerering",
+  "en": "Keep the chosen historical numbering",
+  "oversatt": "選択した過去の採番を保持"
+ },
+ "app-script-export-dialog.export-dialog.span.a8e053496f38": {
+  "nb": "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt.",
+  "en": "Filled in from the saved title page (from the import or the previous export). Change freely.",
+  "oversatt": "保存されたタイトルページ（インポート時または前回の書き出し時）から自動入力されています。自由に変更してください。"
+ },
+ "app-script-export-dialog.export-dialog.span.b1d66d194a22": {
+  "nb": "linjer). Hele teksten kommer med i denne filen, men den lagrede kopien blir kortet.",
+  "en": "lines). The whole text is included in this file, but the saved copy will be shortened.",
+  "oversatt": "行）。このファイルには全文が含まれますが、保存用コピーは切り詰められます。"
+ },
+ "app-script-export-dialog.export-dialog.span.ce980cf51696": {
+  "nb": "Ren tekst for andre manusprogrammer; de bryter sidene selv",
+  "en": "Plain text for other script programs; they break the pages themselves",
+  "oversatt": "他の脚本ソフト用のプレーンテキスト。改ページはソフト側で行われます"
+ },
+ "app-script-export-dialog.export-dialog.span.fb0bccb39106": {
+  "nb": "Fortløpende",
+  "en": "Continuous",
+  "oversatt": "連番"
+ },
+ "app-script-export-dialog.export-dialog.th.0f5266910982": {
+  "nb": "Eksport",
+  "en": "Export",
+  "oversatt": "書き出し"
+ },
+ "app-script-export-dialog.export-dialog.th.47d07aa8f817": {
+  "nb": "Overskrift",
+  "en": "Heading",
+  "oversatt": "見出し"
+ },
+ "app-script-export-dialog.export-dialog.th.94e6ca13971b": {
+  "nb": "I dag",
+  "en": "Today",
+  "oversatt": "今日"
+ },
+ "app-script-import-dialog.do-import.message.7b0cfdb04220": {
+  "nb": "Originalfilen kunne ikke lagres: lagringen godtar ennå ikke Fountain-filer (ren tekst). Importen er stoppet – ingenting er endret. Databasen må oppdateres så «sources» tillater text/plain ({message}).",
+  "en": "The original file could not be saved: the storage does not yet accept Fountain files (plain text). The import has stopped – nothing has changed. The database must be updated so “sources” allows text/plain ({message}).",
+  "oversatt": "元ファイルを保存できませんでした: ストレージが Fountain ファイル（プレーンテキスト）をまだサポートしていません。インポートは中止されました。何も変更されていません。「sources」で text/plain が許可されるようデータベースを更新する必要があります ({message})。"
+ },
+ "app-script-import-dialog.do-import.message.7efee5915d7d": {
+  "nb": "Originalfilen kunne ikke lagres ({message}). Importen er stoppet – ingenting er endret. Er databasemigrasjon 0002 kjørt?",
+  "en": "The original file could not be saved ({message}). The import has stopped – nothing has changed. Has database migration 0002 been run?",
+  "oversatt": "元ファイルを保存できませんでした ({message})。インポートは中止されました。何も変更されていません。データベースマイグレーション 0002 は実行されていますか？"
+ },
+ "app-script-import-dialog.import-dialog.aria-label.863961f76e60": {
+  "nb": "Velg manusfil",
+  "en": "Choose script file",
+  "oversatt": "脚本ファイルを選択"
+ },
+ "app-script-import-dialog.import-dialog.button.7dc8880ce838": {
+  "nb": "Velg fil …",
+  "en": "Choose file …",
+  "oversatt": "ファイルを選択…"
+ },
+ "app-script-import-dialog.import-dialog.button.9697f3b03d0e": {
+  "nb": "Velg en annen fil",
+  "en": "Choose another file",
+  "oversatt": "別のファイルを選択"
+ },
+ "app-script-import-dialog.import-dialog.button.9df095e2b803": {
+  "nb": "Prøv registreringen igjen",
+  "en": "Try the registration again",
+  "oversatt": "登録を再試行"
+ },
+ "app-script-import-dialog.import-dialog.button.ab8bf2ee3d96": {
+  "nb": "Importer",
+  "en": "Import",
+  "oversatt": "インポート"
+ },
+ "app-script-import-dialog.import-dialog.button.e00e46e21cdd": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "完了"
+ },
+ "app-script-import-dialog.import-dialog.button.eb2ecf1aa4cb": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "再試行"
+ },
+ "app-script-import-dialog.import-dialog.button.ec871e78dfae": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "シーン"
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.337b3b78113c": {
+  "nb": " etter de {existing} scenene som finnes",
+  "en": " after the {existing} existing scenes",
+  "oversatt": "（既存の {existing} シーンの後）"
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.c95508206c3a": {
+  "nb": "PDF (f.eks. fra Final Draft), Word (.docx) eller Fountain (.fountain). Scenene legges i",
+  "en": "PDF (e.g. from Final Draft), Word (.docx) or Fountain (.fountain). The scenes are added to",
+  "oversatt": "PDF（Final Draft など）、Word（.docx）、または Fountain（.fountain）。シーンは次に追加されます："
+ },
+ "app-script-import-dialog.import-dialog.dialog-description.ef2ed7648511": {
+  "nb": ". Originalfilen lagres uendret.",
+  "en": ". The original file is saved unchanged.",
+  "oversatt": "。元のファイルは変更されずに保存されます。"
+ },
+ "app-script-import-dialog.import-dialog.dialog-title.93cd6d89e3a4": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "脚本をインポート"
+ },
+ "app-script-import-dialog.import-dialog.p.08e20e3a9a6e": {
+  "nb": "Notatene i filen ble ikke lagret: {value1}",
+  "en": "The notes in the file were not saved: {value1}",
+  "oversatt": "ファイル内のメモは保存されませんでした：{value1}"
+ },
+ "app-script-import-dialog.import-dialog.p.1317e7c11eb1": {
+  "nb": "Leser «{fileName}» …",
+  "en": "Reading “{fileName}” …",
+  "oversatt": "「{fileName}」を読み込み中…"
+ },
+ "app-script-import-dialog.import-dialog.p.167095065673": {
+  "nb": "Originalen er registrert med kontrollsum.",
+  "en": "The original is registered with a checksum.",
+  "oversatt": "原本はチェックサム付きで登録されています。"
+ },
+ "app-script-import-dialog.import-dialog.p.2f2c8d7d6c45": {
+  "nb": " og {notes} notater",
+  "en": " and {notes} notes",
+  "oversatt": " および {notes} 件のメモ"
+ },
+ "app-script-import-dialog.import-dialog.p.47295aafdb5f": {
+  "nb": "Tittelsiden fra filen ble ikke lagret ({value1}). Manuset er importert; skriv tittelsiden i eksportdialogen.",
+  "en": "The title page from the file was not saved ({value1}). The script is imported; write the title page in the export dialog.",
+  "oversatt": "ファイルからのタイトルページは保存されませんでした（{value1}）。脚本はインポートされました。書き出しダイアログでタイトルページを入力してください。"
+ },
+ "app-script-import-dialog.import-dialog.p.55bb6af99877": {
+  "nb": "Manuset er importert, men originalfilen ble ikke registrert med kontrollsum ({value1}). Manuset er i orden og kan brukes. Originalen ligger lagret, men kan ikke kontrolleres eller lastes ned fra versjonene. Ikke importer på nytt (da blir scenene dobbelt) – prøv registreringen igjen, eller gi beskjed, så kan den gjøres for hånd.",
+  "en": "The script is imported, but the original file was not registered with a checksum ({value1}). The script is fine and can be used. The original is stored, but it cannot be verified or downloaded from the versions. Do not import again (then the scenes would be doubled) – try the registration again, or let us know so it can be done by hand.",
+  "oversatt": "脚本はインポートされましたが、元ファイルがチェックサム付きで登録されませんでした（{value1}）。脚本自体は問題なく使用できます。原本は保存されていますが、バージョン履歴からの検証やダウンロードはできません。再インポートはしないでください（シーンが重複します）。登録を再試行するか、手動で処理できるようサポートにお知らせください。"
+ },
+ "app-script-import-dialog.import-dialog.p.6adda150e215": {
+  "nb": "Tittelsiden fra filen er lagret og foreslås når manuset eksporteres.",
+  "en": "The title page from the file is saved and suggested when the script is exported.",
+  "oversatt": "ファイルからのタイトルページが保存され、脚本の書き出し時に提案されます。"
+ },
+ "app-script-import-dialog.import-dialog.p.81dc994ccac3": {
+  "nb": " er importert. Hele importen kan angres med ⌘/Ctrl + Z.",
+  "en": " have been imported. The whole import can be undone with ⌘/Ctrl + Z.",
+  "oversatt": " がインポートされました。インポート全体は ⌘/Ctrl + Z で取り消すことができます。"
+ },
+ "app-script-import-dialog.import-dialog.p.a1b4bf968f16": {
+  "nb": "Tittelsiden fra filen er lagret, men den var for lang og er kortet ned. Se over den når du eksporterer manuset.",
+  "en": "The title page from the file is saved, but it was too long and has been shortened. Check it when you export the script.",
+  "oversatt": "ファイルからのタイトルページは保存されましたが、長すぎたため短縮されました。脚本の書き出し時に確認してください。"
+ },
+ "app-script-import-dialog.import-dialog.p.e24ea975c4e3": {
+  "nb": "Slipp filen her, eller",
+  "en": "Drop the file here, or",
+  "oversatt": "ここにファイルをドロップ、または"
+ },
+ "app-script-import-dialog.import-dialog.p.ec871e78dfae": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "シーン"
+ },
+ "app-script-import-dialog.preview.aria-label.7d31b64b3fcd": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "不確定"
+ },
+ "app-script-import-dialog.preview.dd.23aabba27c51": {
+  "nb": "med nummer",
+  "en": "numbered",
+  "oversatt": "番号あり"
+ },
+ "app-script-import-dialog.preview.dd.3a9c1e80e215": {
+  "nb": "overskrifter",
+  "en": "headings",
+  "oversatt": "見出し"
+ },
+ "app-script-import-dialog.preview.dd.5803635c5ff5": {
+  "nb": "(legges inn på samme sted, med navn og tidspunkt)",
+  "en": "(added in the same place, with name and time)",
+  "oversatt": "（同じ場所に名前と日時付きで追加）"
+ },
+ "app-script-import-dialog.preview.dd.7d9b7e84a91c": {
+  "nb": "elementer",
+  "en": "items",
+  "oversatt": "項目"
+ },
+ "app-script-import-dialog.preview.dd.a086c349debf": {
+  "nb": "uten",
+  "en": "unnumbered",
+  "oversatt": "番号なし"
+ },
+ "app-script-import-dialog.preview.dd.a856071b7964": {
+  "nb": "ca. {pageCount} (beregnet – Fountain har ikke faste sider)",
+  "en": "about {pageCount} (estimated – Fountain has no fixed pages)",
+  "oversatt": "約 {pageCount}（推定値 – Fountain には固定ページがありません）"
+ },
+ "app-script-import-dialog.preview.dt.0cf85e2f6dc3": {
+  "nb": "Tittelside",
+  "en": "Title page",
+  "oversatt": "タイトルページ"
+ },
+ "app-script-import-dialog.preview.dt.15766f518d67": {
+  "nb": "Sider",
+  "en": "Pages",
+  "oversatt": "ページ"
+ },
+ "app-script-import-dialog.preview.dt.ac937fe41f6a": {
+  "nb": "Usikre tolkninger",
+  "en": "Uncertain interpretations",
+  "oversatt": "不確定な解釈"
+ },
+ "app-script-import-dialog.preview.dt.b589862613ec": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-script-import-dialog.preview.dt.ba5e2a3a70eb": {
+  "nb": "Notater i filen",
+  "en": "Notes in the file",
+  "oversatt": "ファイル内のメモ"
+ },
+ "app-script-import-dialog.preview.dt.be567fb43bfb": {
+  "nb": "Fil",
+  "en": "File",
+  "oversatt": "ファイル"
+ },
+ "app-script-import-dialog.preview.em.782df97d66a6": {
+  "nb": "Fortsettelse fra forrige del",
+  "en": "Continuation from the previous part",
+  "oversatt": "前のパートからの続き"
+ },
+ "app-script-import-dialog.preview.label.dcb383de81cf": {
+  "nb": "Manuset starter midt i en scene. Ta med teksten før første sceneoverskrift som egen scene (uten nummer).",
+  "en": "The script starts in the middle of a scene. Include the text before the first scene heading as a scene of its own (without a number).",
+  "oversatt": "脚本がシーンの途中で始まっています。最初のシーン見出しより前のテキストを独立したシーン（番号なし）として含めます。"
+ },
+ "app-script-import-dialog.preview.p.32489fdb4259": {
+  "nb": "Scenenumre som står flere ganger: {value1}. Scenene importeres hver for seg.",
+  "en": "Scene numbers that appear more than once: {value1}. The scenes are imported one by one.",
+  "oversatt": "複数回出現するシーン番号：{value1}。各シーンは個別にインポートされます。"
+ },
+ "app-script-import-dialog.preview.p.6133ac56207c": {
+  "nb": "Denne filen ble importert {previous}. Importerer du igjen, får du scenene to ganger.",
+  "en": "This file was imported {previous}. If you import it again, you get the scenes twice.",
+  "oversatt": "このファイルは {previous} にインポートされました。再度インポートすると、シーンが二重になります。"
+ },
+ "app-script-import-dialog.preview.summary.bd90e385254d": {
+  "nb": "Merknader",
+  "en": "Notes",
+  "oversatt": "注記"
+ },
+ "app-script-import-dialog.preview.th.488fdc54e745": {
+  "nb": "Overskrift",
+  "en": "Heading",
+  "oversatt": "見出し"
+ },
+ "app-script-import-dialog.preview.th.76710db68cd7": {
+  "nb": "Side",
+  "en": "Page",
+  "oversatt": "ページ"
+ },
+ "app-script-import-dialog.preview.th.c8a03fb8d166": {
+  "nb": "Nr.",
+  "en": "No.",
+  "oversatt": "No."
+ },
+ "app-script-import-dialog.production-name.message.db14a5dcf3fb": {
+  "nb": "produksjonen",
+  "en": "the production",
+  "oversatt": "プロダクション"
+ },
+ "app-script-import-dialog.progress.progress.0d612b67aac3": {
+  "nb": "Oppretter {length} scener …",
+  "en": "Creating {length} scenes …",
+  "oversatt": "{length} 件のシーンを作成中…"
+ },
+ "app-script-import-dialog.progress.progress.5960c4259ef9": {
+  "nb": "Lagrer originalfilen …",
+  "en": "Saving the original file …",
+  "oversatt": "オリジナルファイルを保存中…"
+ },
+ "app-script-import-dialog.progress.progress.6074fa6e50fc": {
+  "nb": "Legger inn {length} notater …",
+  "en": "Adding {length} notes …",
+  "oversatt": "{length} 件のメモを追加中…"
+ },
+ "app-script-import-dialog.progress.progress.780c1774fe18": {
+  "nb": "Registrerer originalen …",
+  "en": "Registering the original …",
+  "oversatt": "オリジナルを登録中…"
+ },
+ "app-script-import-dialog.r.run-and-wait.0827fde3f1a7": {
+  "nb": "{length} notater fra importen",
+  "en": "{length} notes from the import",
+  "oversatt": "インポートからのメモ {length} 件"
+ },
+ "app-script-import-dialog.r.run-and-wait.fc95bbb03fc0": {
+  "nb": "Tittelside fra importen",
+  "en": "Title page from the import",
+  "oversatt": "インポートからのタイトルページ"
+ },
+ "app-script-import-dialog.res.run-and-wait.e7e1b0498f93": {
+  "nb": "Import av manus",
+  "en": "Import script",
+  "oversatt": "脚本のインポート"
+ },
+ "app-script-inspector.block-panel.aria-label.643462bd7347": {
+  "nb": "Elementtype",
+  "en": "Element type",
+  "oversatt": "要素タイプ"
+ },
+ "app-script-inspector.block-panel.aria-label.afd57ee1c0d5": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "テキスト"
+ },
+ "app-script-inspector.block-panel.button.9e75dd29b865": {
+  "nb": "Fjern blokken",
+  "en": "Remove the block",
+  "oversatt": "ブロックを削除"
+ },
+ "app-script-inspector.block-panel.button.d50065a0491a": {
+  "nb": "Del scenen her",
+  "en": "Split the scene here",
+  "oversatt": "ここでシーンを分割"
+ },
+ "app-script-inspector.block-panel.button.dd57511db5e6": {
+  "nb": "Ny blokk etter denne",
+  "en": "New block after this",
+  "oversatt": "この後に新規ブロック"
+ },
+ "app-script-inspector.block-panel.new-label.48354a6c8f7e": {
+  "nb": "Notat på hele elementet",
+  "en": "Note on the whole element",
+  "oversatt": "要素全体のメモ"
+ },
+ "app-script-inspector.block-panel.p.1da6ef0d3d9a": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "番号なし"
+ },
+ "app-script-inspector.block-panel.p.6824a8bc32e4": {
+  "nb": "Notat på enkeltord: merk teksten i manuset og velg «Legg til notat».",
+  "en": "Note on single words: select the text in the script and choose “Add note”.",
+  "oversatt": "単語ごとのメモ：脚本内のテキストを選択して「メモを追加」を選択します。"
+ },
+ "app-script-inspector.block-panel.p.876e85475374": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "シーン"
+ },
+ "app-script-inspector.block-panel.p.878b847ce48d": {
+  "nb": "Lagres når du går ut av feltet (eller ⌘/Ctrl + Enter). Esc angrer.",
+  "en": "Saved when you leave the field (or ⌘/Ctrl + Enter). Esc undoes.",
+  "oversatt": "フィールドから離れると保存されます (または ⌘/Ctrl + Enter)。Esc で取り消します。"
+ },
+ "app-script-inspector.block-panel.p.d996f62a2404": {
+  "nb": "Fjernet tekst kan hentes tilbake fra scenen. Historikken beholdes.",
+  "en": "Removed text can be restored to the scene. The history is kept.",
+  "oversatt": "削除されたテキストはシーンに戻すことができます。履歴は保持されます。"
+ },
+ "app-script-inspector.block-panel.p.ed3bf51ec389": {
+  "nb": "side",
+  "en": "page",
+  "oversatt": "ページ"
+ },
+ "app-script-inspector.block-panel.p.ed3bf51ec389.2": {
+  "nb": "side",
+  "en": "page",
+  "oversatt": "ページ"
+ },
+ "app-script-inspector.block-panel.p.f60cb0db6c7c": {
+  "nb": "i originalen",
+  "en": "in the original",
+  "oversatt": "オリジナル内"
+ },
+ "app-script-inspector.block-panel.run.a2c780f5e20b": {
+  "nb": "Godkjenn tolkning",
+  "en": "Approve interpretation",
+  "oversatt": "解釈を承認"
+ },
+ "app-script-inspector.block-panel.run.efa6e11af60a": {
+  "nb": "Endre elementtype",
+  "en": "Change element type",
+  "oversatt": "要素タイプを変更"
+ },
+ "app-script-inspector.block-panel.title.4c90fbe46281": {
+  "nb": "Notater",
+  "en": "Notes",
+  "oversatt": "メモ"
+ },
+ "app-script-inspector.block-panel.title.643462bd7347": {
+  "nb": "Elementtype",
+  "en": "Element type",
+  "oversatt": "要素タイプ"
+ },
+ "app-script-inspector.block-panel.title.98fa6fda1d8b": {
+  "nb": "Koblinger",
+  "en": "Links",
+  "oversatt": "リンク"
+ },
+ "app-script-inspector.block-panel.title.afd57ee1c0d5": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "テキスト"
+ },
+ "app-script-inspector.block-panel.title.f8d206861c09": {
+  "nb": "Kan ikke dele ved første blokk",
+  "en": "Cannot split at the first block",
+  "oversatt": "最初のブロックでは分割できません"
+ },
+ "app-script-inspector.block-panel.title.fc87c095e37f": {
+  "nb": "Handlinger",
+  "en": "Actions",
+  "oversatt": "アクション"
+ },
+ "app-script-inspector.e.run.b269f88ff57e": {
+  "nb": "Ny blokk",
+  "en": "New block",
+  "oversatt": "新規ブロック"
+ },
+ "app-script-inspector.e.run.c2b171c9be97": {
+  "nb": "Lag egen versjon av scenen",
+  "en": "Make own version of the scene",
+  "oversatt": "シーンの独自バージョンを作成"
+ },
+ "app-script-inspector.e.run.c49f542ce812": {
+  "nb": "Fjern blokk",
+  "en": "Remove block",
+  "oversatt": "ブロックを削除"
+ },
+ "app-script-inspector.e.run.cd0fd3eabeca": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "新規シーン"
+ },
+ "app-script-inspector.fork-notice.button.beae310f4a28": {
+  "nb": "Lag egen versjon",
+  "en": "Make own version",
+  "oversatt": "独自バージョンを作成"
+ },
+ "app-script-inspector.fork-notice.p.02ce0d559b19": {
+  "nb": "Denne scenen deles med hovedfilmen. Endrer du den her, får «",
+  "en": "This scene is shared with the main film. If you change it here, “",
+  "oversatt": "このシーンは本編と共有されています。ここで変更すると、「"
+ },
+ "app-script-inspector.fork-notice.p.833b4cce76a9": {
+  "nb": "» automatisk sin egen versjon av scenen – hovedfilmen endres ikke.",
+  "en": "” automatically gets its own version of the scene – the main film is not changed.",
+  "oversatt": "」にこのシーンの独自バージョンが自動的に作成され、本編は変更されません。"
+ },
+ "app-script-inspector.inspector.aria-label.893684118699": {
+  "nb": "Inspektør",
+  "en": "Inspector",
+  "oversatt": "インスペクタ"
+ },
+ "app-script-inspector.inspector.link.3d53ef93db1d": {
+  "nb": "{openCount} forslag fra Story Lab",
+  "en": "{openCount} suggestions from Story Lab",
+  "oversatt": "Story Labからの提案 {openCount}件"
+ },
+ "app-script-inspector.inspector.span.3681171013f3": {
+  "nb": "Vis i filmen",
+  "en": "Show in film",
+  "oversatt": "ムービー内で表示"
+ },
+ "app-script-inspector.inspector.span.6430e1c9c262": {
+  "nb": "Manusblokk",
+  "en": "Script block",
+  "oversatt": "脚本ブロック"
+ },
+ "app-script-inspector.inspector.span.84ec0326a8c8": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "脚本"
+ },
+ "app-script-inspector.inspector.span.85b9015c0bfa": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "シーンエディタ"
+ },
+ "app-script-inspector.inspector.span.8fb617b2eb41": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "シーン"
+ },
+ "app-script-inspector.inspector.span.a9c1c8f137df": {
+  "nb": "Undersøk scene i Story Lab",
+  "en": "Explore scene in Story Lab",
+  "oversatt": "Story Labでシーンを確認"
+ },
+ "app-script-inspector.inspector.title.0d985a195132": {
+  "nb": "Åpne monteringen med avspillingshodet der denne replikken eller handlingen er i filmen",
+  "en": "Open the assembly with the playhead where this line or action is in the film",
+  "oversatt": "このセリフまたはアクションがあるムービー内の位置に再生ヘッドを合わせて編集を開く"
+ },
+ "app-script-inspector.inspector.title.1582389ef2df": {
+  "nb": "Åpne monteringen med avspillingshodet ved starten av scenen",
+  "en": "Open the assembly with the playhead at the start of the scene",
+  "oversatt": "シーンの開始位置に再生ヘッドを合わせて編集を開く"
+ },
+ "app-script-inspector.inspector.title.ea1177837783": {
+  "nb": "Åpne denne scenen i sceneeditoren (2D-animatic)",
+  "en": "Open this scene in the scene editor (2D animatic)",
+  "oversatt": "このシーンをシーンエディタ（2Dアニマティック）で開く"
+ },
+ "app-script-inspector.inspector.title.f4833432d85d": {
+  "nb": "Undersøk scenen i Story Lab (velges som tidspunkt i fortellingen)",
+  "en": "Explore the scene in Story Lab (chosen as the point in the story)",
+  "oversatt": "Story Labでシーンを確認（ストーリーの該当時点として選択）"
+ },
+ "app-script-inspector.save.run.66c963dd6fcc": {
+  "nb": "Rediger tekst",
+  "en": "Edit text",
+  "oversatt": "テキストを編集"
+ },
+ "app-script-inspector.scene-panel.aria-label.1772bc9a00a7": {
+  "nb": "Aktiver scenen",
+  "en": "Activate the scene",
+  "oversatt": "シーンを有効化"
+ },
+ "app-script-inspector.scene-panel.aria-label.2d6532875401": {
+  "nb": "Deaktiver scenen",
+  "en": "Deactivate the scene",
+  "oversatt": "シーンを非アクティブ化"
+ },
+ "app-script-inspector.scene-panel.aria-label.5cc0d19dd240": {
+  "nb": "Tid på døgnet",
+  "en": "Time of day",
+  "oversatt": "時間帯"
+ },
+ "app-script-inspector.scene-panel.button.0bfe19533b27": {
+  "nb": "Ny scene etter denne",
+  "en": "New scene after this",
+  "oversatt": "この後ろに新規シーンを追加"
+ },
+ "app-script-inspector.scene-panel.button.1d27711112fa": {
+  "nb": "Hent tilbake",
+  "en": "Restore",
+  "oversatt": "元に戻す"
+ },
+ "app-script-inspector.scene-panel.button.29c015e004aa": {
+  "nb": "Slå sammen med neste scene",
+  "en": "Merge with the next scene",
+  "oversatt": "次のシーンと結合"
+ },
+ "app-script-inspector.scene-panel.button.38c7d0fe76dd": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-inspector.scene-panel.button.38c7d0fe76dd.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-inspector.scene-panel.button.604b1a8ae53a": {
+  "nb": "Lagre overskrift",
+  "en": "Save heading",
+  "oversatt": "見出しを保存"
+ },
+ "app-script-inspector.scene-panel.button.ac0a939e1835": {
+  "nb": "Gå til første blokk",
+  "en": "Go to first block",
+  "oversatt": "最初のブロックへ移動"
+ },
+ "app-script-inspector.scene-panel.button.b3913a5b5eeb": {
+  "nb": "Slå sammen",
+  "en": "Merge",
+  "oversatt": "結合"
+ },
+ "app-script-inspector.scene-panel.label.071504247f25": {
+  "nb": "Sammenslått",
+  "en": "Merged",
+  "oversatt": "結合済み"
+ },
+ "app-script-inspector.scene-panel.label.1d537137116c": {
+  "nb": "Deaktivert",
+  "en": "Inactive",
+  "oversatt": "非アクティブ"
+ },
+ "app-script-inspector.scene-panel.label.5d2b2d7b9eda": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "場所"
+ },
+ "app-script-inspector.scene-panel.label.aa6dd30292dd": {
+  "nb": "Aktiv",
+  "en": "Active",
+  "oversatt": "アクティブ"
+ },
+ "app-script-inspector.scene-panel.label.c23814558fc1": {
+  "nb": "INT/EXT",
+  "en": "INT/EXT",
+  "oversatt": "INT/EXT"
+ },
+ "app-script-inspector.scene-panel.new-label.e5f006023739": {
+  "nb": "Nål på scenen",
+  "en": "Pin on the scene",
+  "oversatt": "シーンのピン留め"
+ },
+ "app-script-inspector.scene-panel.p.2430d544add9": {
+  "nb": "Deaktiverte scener er utelatt fra manus og film i denne produksjonen. Ingenting er slettet.",
+  "en": "Inactive scenes are left out of the script and film in this production. Nothing is deleted.",
+  "oversatt": "非アクティブなシーンは、このプロダクションの脚本とムービーから除外されます。削除されたデータはありません。"
+ },
+ "app-script-inspector.scene-panel.p.415dad468136": {
+  "nb": "Teksten i scene",
+  "en": "The text of scene",
+  "oversatt": "シーンのテキスト"
+ },
+ "app-script-inspector.scene-panel.p.6113461a1927": {
+  "nb": "er produksjonens nummer og endres ikke når scener flyttes. Ny nummerering velges ved eksport.",
+  "en": "is the production's number and does not change when scenes are moved. New numbering is chosen on export.",
+  "oversatt": "はプロダクション独自の番号であり、シーンが移動されても変更されません。新しい番号付けは書き出し時に選択します。"
+ },
+ "app-script-inspector.scene-panel.p.b85dcd51fd9f": {
+  "nb": "ingen",
+  "en": "none",
+  "oversatt": "なし"
+ },
+ "app-script-inspector.scene-panel.p.c322b07e57c7": {
+  "nb": "Scenenummeret",
+  "en": "The scene number",
+  "oversatt": "シーン番号"
+ },
+ "app-script-inspector.scene-panel.p.dc3999e8bdf6": {
+  "nb": "legges sist i denne scenen. Den gamle scenen beholdes som «sammenslått» og kan hentes tilbake med Angre.",
+  "en": "is added last in this scene. The old scene is kept as “merged” and can be restored with Undo.",
+  "oversatt": "はこのシーンの最後に追加されます。元のシーンは「結合済み」として保持され、「取り消し」で復元できます。"
+ },
+ "app-script-inspector.scene-panel.p.ffd27913a1c8": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "番号なし"
+ },
+ "app-script-inspector.scene-panel.placeholder.5d2b2d7b9eda": {
+  "nb": "Sted",
+  "en": "Location",
+  "oversatt": "場所"
+ },
+ "app-script-inspector.scene-panel.placeholder.66e9681b64e8": {
+  "nb": "DAG, KVELD, NATT …",
+  "en": "DAY, EVENING, NIGHT …",
+  "oversatt": "昼、夕方、夜…"
+ },
+ "app-script-inspector.scene-panel.run.27a9b167b015": {
+  "nb": "Godkjenn overskrift",
+  "en": "Approve heading",
+  "oversatt": "見出しを承認"
+ },
+ "app-script-inspector.scene-panel.run.59f681e3750c": {
+  "nb": "Hent tilbake tekst",
+  "en": "Restore text",
+  "oversatt": "テキストを復元"
+ },
+ "app-script-inspector.scene-panel.run.676faa961714": {
+  "nb": "Deaktiver scene",
+  "en": "Deactivate scene",
+  "oversatt": "シーンを無効化"
+ },
+ "app-script-inspector.scene-panel.run.85ad477dbbd7": {
+  "nb": "Slå sammen scener",
+  "en": "Merge scenes",
+  "oversatt": "シーンを結合"
+ },
+ "app-script-inspector.scene-panel.run.c4685d90d1e3": {
+  "nb": "Endre sceneoverskrift",
+  "en": "Change scene heading",
+  "oversatt": "シーン見出しを変更"
+ },
+ "app-script-inspector.scene-panel.run.f3c42173f4c8": {
+  "nb": "Aktiver scene",
+  "en": "Activate scene",
+  "oversatt": "シーンを有効化"
+ },
+ "app-script-inspector.scene-panel.span.11592f16a888": {
+  "nb": "(tom)",
+  "en": "(empty)",
+  "oversatt": "(空)"
+ },
+ "app-script-inspector.scene-panel.span.3f2936ca36bb": {
+  "nb": "Tid",
+  "en": "Time",
+  "oversatt": "時間"
+ },
+ "app-script-inspector.scene-panel.span.ffd27913a1c8": {
+  "nb": "uten nummer",
+  "en": "unnumbered",
+  "oversatt": "番号なし"
+ },
+ "app-script-inspector.scene-panel.title.0258d8046c5f": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "新規シーン"
+ },
+ "app-script-inspector.scene-panel.title.229acbca1722": {
+  "nb": "Fjernet tekst",
+  "en": "Removed text",
+  "oversatt": "削除されたテキスト"
+ },
+ "app-script-inspector.scene-panel.title.798a00fa8872": {
+  "nb": "Brukes også i",
+  "en": "Also used in",
+  "oversatt": "以下でも使用中:"
+ },
+ "app-script-inspector.scene-panel.title.b3913a5b5eeb": {
+  "nb": "Slå sammen",
+  "en": "Merge",
+  "oversatt": "結合"
+ },
+ "app-script-inspector.scene-panel.title.bcaf9daf330b": {
+  "nb": "Sceneoverskrift",
+  "en": "Scene heading",
+  "oversatt": "シーン見出し"
+ },
+ "app-script-inspector.scene-panel.title.c3bd3f5dd07a": {
+  "nb": "Fortellingstid",
+  "en": "Story time",
+  "oversatt": "劇中時間"
+ },
+ "app-script-inspector.scene-panel.title.cca2d0a97d57": {
+  "nb": "Slå på «Endre rekkefølge og synlighet» i scenelisten for å endre",
+  "en": "Turn on “Change order and visibility” in the scene list to change",
+  "oversatt": "変更するにはシーンリストで「順序と表示を変更」をオンにしてください"
+ },
+ "app-script-inspector.scene-panel.title.ebc0e759b715": {
+  "nb": "Notater i scenen",
+  "en": "Notes in the scene",
+  "oversatt": "シーン内のメモ"
+ },
+ "app-script-inspector.split.run.97b4128a914b": {
+  "nb": "Del scene",
+  "en": "Split scene",
+  "oversatt": "シーンを分割"
+ },
+ "app-script-inspector.summary-panel.button.bedc3031353c": {
+  "nb": "Gå til neste usikre tolkning",
+  "en": "Go to next uncertain interpretation",
+  "oversatt": "次の不確かな解釈へ移動"
+ },
+ "app-script-inspector.summary-panel.dt.0354e7d1c7c9": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-script-inspector.summary-panel.dt.2e814d861303": {
+  "nb": "Usikre tolkninger",
+  "en": "Uncertain interpretations",
+  "oversatt": "不確かな解釈"
+ },
+ "app-script-inspector.summary-panel.dt.377a40ba07a7": {
+  "nb": "Siste scene starter på side",
+  "en": "Last scene starts on page",
+  "oversatt": "最後のシーンの開始ページ:"
+ },
+ "app-script-inspector.summary-panel.dt.d091852cac74": {
+  "nb": "Aktive",
+  "en": "Active",
+  "oversatt": "アクティブ"
+ },
+ "app-script-inspector.summary-panel.p.384a4ad6a9e0": {
+  "nb": "Klikk på en linje i manuset for å rette elementtype eller tekst. Dobbeltklikk for å skrive. Scener flyttes og slås av og på i listen til venstre etter at du har slått på «Endre rekkefølge og synlighet» – manus og film følger alltid samme rekkefølge.",
+  "en": "Click a line in the script to correct its element type or text. Double-click to type. Scenes are moved and switched on and off in the list on the left after you turn on “Change order and visibility” – the script and film always follow the same order.",
+  "oversatt": "脚本内の行をクリックして要素タイプやテキストを修正します。ダブルクリックで入力できます。「順序と表示を変更」をオンにすると、左側のリストでシーンの並べ替えやオン/オフの切り替えができます。脚本と映像は常に同じ順序を保ちます。"
+ },
+ "app-script-inspector.uncertain-box.button.80a9025d3328": {
+  "nb": "Tolkningen er riktig",
+  "en": "The interpretation is correct",
+  "oversatt": "解釈は正しいです"
+ },
+ "app-script-inspector.uncertain-box.span.6c3bf35fcf67": {
+  "nb": "Usikker tolkning: ",
+  "en": "Uncertain interpretation: ",
+  "oversatt": "不確かな解釈: "
+ },
+ "app-script-line-link-review.line-link-review.aria-label.9a1802fd6803": {
+  "nb": "Kilde",
+  "en": "Source",
+  "oversatt": "ソース"
+ },
+ "app-script-line-link-review.line-link-review.button.0244a7caffef": {
+  "nb": "Gjennomgå linjekoblinger",
+  "en": "Review line links",
+  "oversatt": "行のリンクを確認"
+ },
+ "app-script-line-link-review.line-link-review.button.02cd0279d1ca": {
+  "nb": "Godkjenn over terskel",
+  "en": "Approve above threshold",
+  "oversatt": "しきい値以上を承認"
+ },
+ "app-script-line-link-review.line-link-review.button.310d919f50c9": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "閉じる"
+ },
+ "app-script-line-link-review.line-link-review.button.4c75bb2f2c88": {
+  "nb": "Analyserer …",
+  "en": "Analysing …",
+  "oversatt": "分析中…"
+ },
+ "app-script-line-link-review.line-link-review.button.5160a7e9869e": {
+  "nb": "Bekreft AI-analyse",
+  "en": "Confirm AI analysis",
+  "oversatt": "AI分析を確定"
+ },
+ "app-script-line-link-review.line-link-review.button.6b9640842f63": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-script-line-link-review.line-link-review.button.6b9640842f63.2": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-script-line-link-review.line-link-review.button.87a7e505a418": {
+  "nb": "Lagre manuell kobling",
+  "en": "Save manual link",
+  "oversatt": "手動リンクを保存"
+ },
+ "app-script-line-link-review.line-link-review.button.a0bca928a5a4": {
+  "nb": "Foreslå med AI",
+  "en": "Suggest with AI",
+  "oversatt": "AIで提案"
+ },
+ "app-script-line-link-review.line-link-review.button.aa1fed62325d": {
+  "nb": "Juster",
+  "en": "Adjust",
+  "oversatt": "調整"
+ },
+ "app-script-line-link-review.line-link-review.button.aa1fed62325d.2": {
+  "nb": "Juster",
+  "en": "Adjust",
+  "oversatt": "調整"
+ },
+ "app-script-line-link-review.line-link-review.button.b1a3ee01db86": {
+  "nb": "Avvis",
+  "en": "Reject",
+  "oversatt": "却下"
+ },
+ "app-script-line-link-review.line-link-review.button.b1a3ee01db86.2": {
+  "nb": "Avvis",
+  "en": "Reject",
+  "oversatt": "却下"
+ },
+ "app-script-line-link-review.line-link-review.dialog-title.aa204482d1ef": {
+  "nb": "Linjekoblinger",
+  "en": "Line links",
+  "oversatt": "行リンク"
+ },
+ "app-script-line-link-review.line-link-review.label.09f1de71bf43": {
+  "nb": "Terskel",
+  "en": "Threshold",
+  "oversatt": "しきい値"
+ },
+ "app-script-line-link-review.line-link-review.label.4c0f17fbd986": {
+  "nb": "Oversatte linjer",
+  "en": "Translated lines",
+  "oversatt": "翻訳済みセリフ"
+ },
+ "app-script-line-link-review.line-link-review.label.9de46a664f74": {
+  "nb": "Norske linjer",
+  "en": "Norwegian lines",
+  "oversatt": "ノルウェー語のセリフ"
+ },
+ "app-script-line-link-review.line-link-review.option.24596d8ebb46": {
+  "nb": "Alle kilder",
+  "en": "All sources",
+  "oversatt": "すべてのソース"
+ },
+ "app-script-line-link-review.line-link-review.p.2d546ce516b5": {
+  "nb": "Innebygd AI · {lines} usikre linjer · anslått kostnad for deg: 0 USD (tjenesten betaler).",
+  "en": "Built-in AI · {lines} uncertain lines · estimated cost to you: USD 0 (service paid).",
+  "oversatt": "内蔵AI · 不確実なセリフ {lines} 件 · 推定コスト: 0 USD (サービス負担)"
+ },
+ "app-script-line-link-review.line-link-review.p.4b1b9331a285": {
+  "nb": "Kvalitetsprofil: {profileName}. Innebygd tekstmodell brukes.",
+  "en": "Quality profile: {profileName}. The built-in text model is used.",
+  "oversatt": "品質プロファイル: {profileName}。内蔵テキストモデルを使用中。"
+ },
+ "app-script-line-link-review.line-link-review.p.63fff3b0112f": {
+  "nb": "{unpairedCount} {value2} uten par",
+  "en": "{unpairedCount} translated {value2} without a pair",
+  "oversatt": "ペアのない翻訳済み {value2}: {unpairedCount} 件"
+ },
+ "app-script-line-link-review.line-link-review.span.2712d78c6e75": {
+  "nb": "Utdatert: en linje er fjernet eller flyttet",
+  "en": "Outdated: a line was removed or moved",
+  "oversatt": "期限切れ: セリフが削除または移動されました"
+ },
+ "app-script-line-link-review.origin-label.message.aeead83cf526": {
+  "nb": "Godkjent av bruker",
+  "en": "User approved",
+  "oversatt": "ユーザー承認済み"
+ },
+ "app-script-line-link-review.origin-label.message.c50aaf5eb6c9": {
+  "nb": "AI-forslag",
+  "en": "AI suggestion",
+  "oversatt": "AIの提案"
+ },
+ "app-script-line-link-review.origin-label.message.dca37679cfa3": {
+  "nb": "Regel",
+  "en": "Rule",
+  "oversatt": "ルール"
+ },
+ "app-script-line-link-review.origin-label.message.ea611054606a": {
+  "nb": "Manuell",
+  "en": "Manual",
+  "oversatt": "手動"
+ },
+ "app-script-line-link-review.problem.run.16e497f69302": {
+  "nb": "Linjekoblinger",
+  "en": "Line links",
+  "oversatt": "セリフのリンク"
+ },
+ "app-script-line-link-review.request.set-error.72f29de43f04": {
+  "nb": "Koblingen kunne ikke analyseres. Prøv igjen.",
+  "en": "The links could not be analysed. Try again.",
+  "oversatt": "リンクを解析できませんでした。もう一度お試しください。"
+ },
+ "app-script-line-link-review.unpaired": {
+  "nb": {
+   "one": "{count} oversatt linje uten par",
+   "other": "{count} oversatte linjer uten par"
+  },
+  "en": {
+   "one": "{count} translated line without a pair",
+   "other": "{count} translated lines without a pair"
+  },
+  "oversatt": {
+   "other": "ペアのない翻訳済みセリフ {count} 件"
+  }
+ },
+ "app-script-notes-panel.e.run.6fea84673ef0": {
+  "nb": "Endre notat",
+  "en": "Edit note",
+  "oversatt": "メモを編集"
+ },
+ "app-script-notes-panel.e.run.c4d1f019e650": {
+  "nb": "Nytt notat",
+  "en": "New note",
+  "oversatt": "新規メモ"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-action.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "提案を適用"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-action.b891c4285a33": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "削除"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.1bb671203195": {
+  "nb": "«",
+  "en": "“",
+  "oversatt": "「"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.3c0e06882b2c": {
+  "nb": "Du kan angre slettingen med ⌘/Ctrl + Z.",
+  "en": "You can undo the deletion with ⌘/Ctrl + Z.",
+  "oversatt": "削除は ⌘/Ctrl + Z で元に戻せます。"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-description.49250bc79bc9": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "」"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-title.4e056f906029": {
+  "nb": "Bruke forslaget i manuset?",
+  "en": "Use the suggestion in the script?",
+  "oversatt": "脚本に提案を適用しますか？"
+ },
+ "app-script-notes-panel.note-card.alert-dialog-title.ebbb81ea0efe": {
+  "nb": "Slette notatet?",
+  "en": "Delete the note?",
+  "oversatt": "メモを削除しますか？"
+ },
+ "app-script-notes-panel.note-card.button.0b3bbe0059f1": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-script-notes-panel.note-card.button.275d48310970": {
+  "nb": "Åpne igjen",
+  "en": "Reopen",
+  "oversatt": "再オープン"
+ },
+ "app-script-notes-panel.note-card.button.30f24e17e633": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-notes-panel.note-card.button.36c18caddaa0": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "完了"
+ },
+ "app-script-notes-panel.note-card.button.5e705445b458": {
+  "nb": "Endre",
+  "en": "Edit",
+  "oversatt": "編集"
+ },
+ "app-script-notes-panel.note-card.button.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "提案を適用"
+ },
+ "app-script-notes-panel.note-card.button.b891c4285a33": {
+  "nb": "Slett",
+  "en": "Delete",
+  "oversatt": "削除"
+ },
+ "app-script-notes-panel.note-card.button.bfb57b0e5c02": {
+  "nb": "Marker som løst",
+  "en": "Resolve",
+  "oversatt": "解決済みにする"
+ },
+ "app-script-notes-panel.note-card.p.208d536e8791": {
+  "nb": "Hele elementet",
+  "en": "The whole element",
+  "oversatt": "要素全体"
+ },
+ "app-script-notes-panel.note-card.p.7200848544ae": {
+  "nb": "«{value1}»",
+  "en": "“{value1}”",
+  "oversatt": "「{value1}」"
+ },
+ "app-script-notes-panel.note-card.run.7800971e9387": {
+  "nb": "Løs notatet",
+  "en": "Resolve note",
+  "oversatt": "メモを解決"
+ },
+ "app-script-notes-panel.note-card.run.7ca2df9c7794": {
+  "nb": "Bruk forslaget",
+  "en": "Use the suggestion",
+  "oversatt": "提案を適用"
+ },
+ "app-script-notes-panel.note-card.run.9d60a9c3eabc": {
+  "nb": "Merknad ferdig",
+  "en": "Note done",
+  "oversatt": "メモ完了"
+ },
+ "app-script-notes-panel.note-card.run.caaf2883248f": {
+  "nb": "Åpne notatet igjen",
+  "en": "Reopen note",
+  "oversatt": "メモを再オープン"
+ },
+ "app-script-notes-panel.note-card.run.db937f500520": {
+  "nb": "Slett notat",
+  "en": "Delete note",
+  "oversatt": "メモを削除"
+ },
+ "app-script-notes-panel.note-card.span.105234e4f594": {
+  "nb": "Forslag:",
+  "en": "Suggestion:",
+  "oversatt": "提案:"
+ },
+ "app-script-notes-panel.note-card.span.18e99a9cfc19": {
+  "nb": "Forsøksvis manusredigering",
+  "en": "Trial script edit",
+  "oversatt": "脚本の試行編集"
+ },
+ "app-script-notes-panel.note-card.span.2a88fa005f7d": {
+  "nb": "Teksten er endret – «{quote}» finnes ikke lenger",
+  "en": "The text has changed – “{quote}” no longer exists",
+  "oversatt": "テキストが変更されました – 「{quote}」は存在しません"
+ },
+ "app-script-notes-panel.note-card.span.6ce84227139e": {
+  "nb": "Original:",
+  "en": "Original:",
+  "oversatt": "元のテキスト:"
+ },
+ "app-script-notes-panel.note-card.span.91d8807553d6": {
+  "nb": "Blir:",
+  "en": "Becomes:",
+  "oversatt": "変更後:"
+ },
+ "app-script-notes-panel.note-card.span.984b9307fcef": {
+  "nb": "Systemmerknad",
+  "en": "System note",
+  "oversatt": "システム注記"
+ },
+ "app-script-notes-panel.note-card.span.afe154a4b854": {
+  "nb": "Nå:",
+  "en": "Now:",
+  "oversatt": "現在:"
+ },
+ "app-script-notes-panel.note-card.span.b9f6aaa4a166": {
+  "nb": "Endringen er en vanlig manusredigering og kan angres med ⌘/Ctrl + Z. Notatet blir stående til du sletter det.",
+  "en": "The change is an ordinary script edit and can be undone with ⌘/Ctrl + Z. The note stays until you delete it.",
+  "oversatt": "この変更は通常の脚本編集であり、⌘/Ctrl + Z で元に戻せます。メモは削除するまで残ります。"
+ },
+ "app-script-notes-panel.note-card.span.ec8d8f232d0a": {
+  "nb": "Løst",
+  "en": "Resolved",
+  "oversatt": "解決済み"
+ },
+ "app-script-notes-panel.note-card.title.a7b8a8485d2b": {
+  "nb": "Teksten i manuset er endret, så forslaget kan ikke settes inn automatisk",
+  "en": "The text in the script has changed, so the suggestion cannot be inserted automatically",
+  "oversatt": "脚本内のテキストが変更されたため、提案を自動的に挿入できません"
+ },
+ "app-script-notes-panel.note-card.title.b85a4e84a652": {
+  "nb": "Lagre merknaden som ferdig (den forsvinner, og kan angres)",
+  "en": "Save the note as done (it disappears, and can be undone)",
+  "oversatt": "注記を完了として保存（非表示になり、元に戻せます）"
+ },
+ "app-script-notes-panel.note-card.title.bb8a2e9e1ab8": {
+  "nb": "Sett forslaget inn i manuset (spør først)",
+  "en": "Insert the suggestion in the script (asks first)",
+  "oversatt": "脚本に提案を挿入（確認あり）"
+ },
+ "app-script-notes-panel.notes-panel.button.81f9dc4b1fe8": {
+  "nb": "Lagre notat",
+  "en": "Save note",
+  "oversatt": "メモを保存"
+ },
+ "app-script-notes-panel.notes-panel.button.c41d1797f20e": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-notes-panel.notes-panel.p.5ea42d80dea6": {
+  "nb": "Ingen notater.",
+  "en": "No notes.",
+  "oversatt": "メモはありません。"
+ },
+ "app-script-notes-panel.notes-panel.placeholder.3fb2af2fb906": {
+  "nb": "Skriv notatet …",
+  "en": "Write the note …",
+  "oversatt": "メモを入力…"
+ },
+ "app-script-remove-translations-dialog.e.cmds-run.ec50f7b3b45e": {
+  "nb": "Fjern alle oversettelser til {name}",
+  "en": "Remove all translations into {name}",
+  "oversatt": "{name}への翻訳をすべて削除"
+ },
+ "app-script-remove-translations-dialog.language-word-en": {
+  "nb": "engelsk",
+  "en": "English",
+  "oversatt": "英語"
+ },
+ "app-script-remove-translations-dialog.language-word-nb": {
+  "nb": "norsk",
+  "en": "Norwegian",
+  "oversatt": "ノルウェー語"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.button.1bcfda73aa1e": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.button.298f4d9b8845": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.4db1acb59b42": {
+  "nb": "oversettelse",
+  "en": "translation",
+  "oversatt": "件の翻訳"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.8e2ea1fe2838": {
+  "nb": "i hele prosjektet (alle produksjoner) fjernes i én endring. Det norske manuset endres ikke, og alt kan angres (Cmd/Ctrl + Z).",
+  "en": "across the whole project (all productions) are removed in one change. The Norwegian script is not changed, and everything can be undone (Cmd/Ctrl + Z).",
+  "oversatt": "がプロジェクト全体（すべてのプロダクション）から一度に削除されます。ノルウェー語の脚本は変更されず、すべて元に戻せます (Cmd/Ctrl + Z)。"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-description.8fb918cc1538": {
+  "nb": "oversettelser",
+  "en": "translations",
+  "oversatt": "件の翻訳"
+ },
+ "app-script-remove-translations-dialog.remove-translations-dialog.dialog-title.59acc8f2b352": {
+  "nb": "Fjern alle oversettelser til {name}?",
+  "en": "Remove all translations into {name}?",
+  "oversatt": "{name}への翻訳をすべて削除しますか？"
+ },
+ "app-script-scene-navigator.activate-scene": {
+  "nb": "Aktiver scene {number}",
+  "en": "Activate scene {number}",
+  "oversatt": "シーン {number} を有効化"
+ },
+ "app-script-scene-navigator.asset-kind-short.animal.91c86fa488be": {
+  "nb": "dyr",
+  "en": "animal",
+  "oversatt": "動物"
+ },
+ "app-script-scene-navigator.asset-kind-short.environment.e2306110f3a0": {
+  "nb": "miljø",
+  "en": "environment",
+  "oversatt": "環境"
+ },
+ "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0": {
+  "nb": "sted",
+  "en": "location",
+  "oversatt": "ロケーション"
+ },
+ "app-script-scene-navigator.asset-kind-short.object.e3a47268765c": {
+  "nb": "objekt",
+  "en": "object",
+  "oversatt": "オブジェクト"
+ },
+ "app-script-scene-navigator.asset-kind-short.other.6e0a697580d3": {
+  "nb": "annet",
+  "en": "other",
+  "oversatt": "その他"
+ },
+ "app-script-scene-navigator.deactivate-scene": {
+  "nb": "Deaktiver scene {number}",
+  "en": "Deactivate scene {number}",
+  "oversatt": "シーン {number} を無効化"
+ },
+ "app-script-scene-navigator.move-to.l-flytt-scene-scene-number-of-state-o-move-scene-scene-number-of-state-o-trim.d3f1572c968a": {
+  "nb": "Flytt scene {value1}",
+  "en": "Move scene {value1}",
+  "oversatt": "シーン {value1} を移動"
+ },
+ "app-script-scene-navigator.notes": {
+  "nb": {
+   "one": "{count} notat",
+   "other": "{count} notater"
+  },
+  "en": {
+   "one": "{count} note",
+   "other": "{count} notes"
+  },
+  "oversatt": {
+   "other": "{count} 件のメモ"
+  }
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.4139dfcbe110": {
+  "nb": "Aktiver scene {value1}",
+  "en": "Activate scene {value1}",
+  "oversatt": "シーン {value1} を有効化"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.4f4be6b70233": {
+  "nb": "Endre rekkefølge og synlighet",
+  "en": "Change order and visibility",
+  "oversatt": "順序と表示/非表示を変更"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.6b4272eb353b": {
+  "nb": "Vis bare scener med ressurs",
+  "en": "Show only scenes with an asset",
+  "oversatt": "アセットを含むシーンのみ表示"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.7179b1eb3e93": {
+  "nb": "Scener i produksjonen",
+  "en": "Scenes in the production",
+  "oversatt": "プロダクション内のシーン"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.7655577f6b82": {
+  "nb": "Vis bare scener med karakter",
+  "en": "Show only scenes with a character",
+  "oversatt": "キャラクターを含むシーンのみ表示"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.8bf7f0d66e5b": {
+  "nb": "Scener i produksjonen. Alt + pil flytter valgt scene.",
+  "en": "Scenes in the production. Alt + arrow moves the selected scene.",
+  "oversatt": "プロダクション内のシーン。Alt + 矢印キーで選択したシーンを移動します。"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.9ebb18e0bf3f": {
+  "nb": "Vis bare scener med status",
+  "en": "Show only scenes with a status",
+  "oversatt": "ステータスのあるシーンのみ表示"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.c2459c6ca950": {
+  "nb": "Søk i manus",
+  "en": "Search the script",
+  "oversatt": "脚本を検索"
+ },
+ "app-script-scene-navigator.scene-navigator.aria-label.d22feb0aad44": {
+  "nb": "Deaktiver scene {value1}",
+  "en": "Deactivate scene {value1}",
+  "oversatt": "シーン {value1} を無効化"
+ },
+ "app-script-scene-navigator.scene-navigator.button.95a7e4becdab": {
+  "nb": "Nullstill",
+  "en": "Reset",
+  "oversatt": "リセット"
+ },
+ "app-script-scene-navigator.scene-navigator.div.3ee8cf607cef": {
+  "nb": "flyttet siden",
+  "en": "moved since",
+  "oversatt": "以降に移動"
+ },
+ "app-script-scene-navigator.scene-navigator.div.cb12f5c0de28": {
+  "nb": "{movedCount} scener",
+  "en": "{movedCount} scenes",
+  "oversatt": "{movedCount} シーン"
+ },
+ "app-script-scene-navigator.scene-navigator.div.e44f37ce2d3f": {
+  "nb": "siste versjon",
+  "en": "the last version",
+  "oversatt": "最新バージョン"
+ },
+ "app-script-scene-navigator.scene-navigator.div.f18fbfaecf34": {
+  "nb": "1 scene",
+  "en": "1 scene",
+  "oversatt": "1 シーン"
+ },
+ "app-script-scene-navigator.scene-navigator.label.0d7454b78653": {
+  "nb": "Navn i manuset",
+  "en": "Names in the script",
+  "oversatt": "脚本内の名前"
+ },
+ "app-script-scene-navigator.scene-navigator.label.89cd484d56d0": {
+  "nb": "Fra ressursbiblioteket",
+  "en": "From the asset library",
+  "oversatt": "アセットライブラリから"
+ },
+ "app-script-scene-navigator.scene-navigator.label.f1274043f91b": {
+  "nb": "Bare scener med manusendringer etter 2D-scene eller film",
+  "en": "Only scenes with script changes after the 2D scene or film",
+  "oversatt": "2Dシーンまたは映像の後に脚本変更があったシーンのみ"
+ },
+ "app-script-scene-navigator.scene-navigator.option.8d11f53c0e65": {
+  "nb": "Alle statuser",
+  "en": "All statuses",
+  "oversatt": "すべてのステータス"
+ },
+ "app-script-scene-navigator.scene-navigator.option.df2ed6ac2cba": {
+  "nb": "Alle karakterer",
+  "en": "All characters",
+  "oversatt": "すべてのキャラクター"
+ },
+ "app-script-scene-navigator.scene-navigator.option.f79271649da5": {
+  "nb": "Alle objekter og steder",
+  "en": "All objects and locations",
+  "oversatt": "すべてのオブジェクトと場所"
+ },
+ "app-script-scene-navigator.scene-navigator.p.1176f6cf0e8f": {
+  "nb": "Filteret gjelder bare visningen. Filmen er uendret. Flytting er av mens filteret er på.",
+  "en": "The filter only applies to the view. The film is unchanged. Moving is off while the filter is on.",
+  "oversatt": "フィルターは表示にのみ適用されます。映像は変更されません。フィルター有効時は移動が無効になります。"
+ },
+ "app-script-scene-navigator.scene-navigator.p.a51d7d2ecc5b": {
+  "nb": "Fjern filteret for å flytte scener. Synlighet kan endres.",
+  "en": "Remove the filter to move scenes. Visibility can be changed.",
+  "oversatt": "シーンを移動するにはフィルターを解除してください。表示状態は変更できます。"
+ },
+ "app-script-scene-navigator.scene-navigator.p.daea89179fad": {
+  "nb": "Dra scener for å flytte dem (eller Alt + pil). Bryteren til høyre slår en scene av og på.",
+  "en": "Drag scenes to move them (or Alt + arrow). The switch on the right turns a scene on and off.",
+  "oversatt": "ドラッグしてシーンを移動（または Alt + 矢印キー）。右側のスイッチでシーンのオン/オフを切り替えます。"
+ },
+ "app-script-scene-navigator.scene-navigator.placeholder.9607819efbb0": {
+  "nb": "Søk i manus (tekst, sted, nummer)",
+  "en": "Search the script (text, location, number)",
+  "oversatt": "脚本を検索（テキスト、場所、番号）"
+ },
+ "app-script-scene-navigator.scene-navigator.span.1c4a03ef3bf2": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "シーン"
+ },
+ "app-script-scene-navigator.scene-navigator.span.2cb6f17a3804": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "未確定"
+ },
+ "app-script-scene-navigator.scene-navigator.span.4f4be6b70233": {
+  "nb": "Endre rekkefølge og synlighet",
+  "en": "Change order and visibility",
+  "oversatt": "順序と表示状態を変更"
+ },
+ "app-script-scene-navigator.scene-navigator.span.6742e74d1217": {
+  "nb": "{length} aktive av {length2}",
+  "en": "{length} active of {length2}",
+  "oversatt": "{length} / {length2} 件が有効"
+ },
+ "app-script-scene-navigator.scene-navigator.span.7620d2fe46d5": {
+  "nb": "s.",
+  "en": "p.",
+  "oversatt": "p."
+ },
+ "app-script-scene-navigator.scene-navigator.span.bba87363b5e2": {
+  "nb": "Deaktivert",
+  "en": "Inactive",
+  "oversatt": "無効"
+ },
+ "app-script-scene-navigator.scene-navigator.span.beb3736f0d84": {
+  "nb": "Sammenslått",
+  "en": "Merged",
+  "oversatt": "結合済み"
+ },
+ "app-script-scene-navigator.scene-navigator.span.c5772d68da3f": {
+  "nb": "Treff",
+  "en": "Hit",
+  "oversatt": "一致"
+ },
+ "app-script-scene-navigator.scene-navigator.span.e4d59213ee1a": {
+  "nb": "Flyttet",
+  "en": "Moved",
+  "oversatt": "移動済み"
+ },
+ "app-script-scene-navigator.scene-navigator.span.f1d240f2f06c": {
+  "nb": "{length} av {length2} vises",
+  "en": "{length} of {length2} shown",
+  "oversatt": "{length} / {length2} 件を表示中"
+ },
+ "app-script-scene-navigator.scene-navigator.span.f5061f26f348": {
+  "nb": "Egen versjon",
+  "en": "Own version",
+  "oversatt": "独自バージョン"
+ },
+ "app-script-scene-navigator.scene-navigator.title.1f6383ec0ba5": {
+  "nb": "Prognose fra prosjektets historikk, med usikkerhet",
+  "en": "Forecast from the project's history, with uncertainty",
+  "oversatt": "プロジェクト履歴に基づく予測（不確実性あり）"
+ },
+ "app-script-scene-navigator.scene-navigator.title.6b6011b95d15": {
+  "nb": "Fjern filter",
+  "en": "Remove filter",
+  "oversatt": "フィルターを解除"
+ },
+ "app-script-scene-navigator.scene-navigator.title.952c8d5f06f7": {
+  "nb": "Faktisk lengde (ferdig materiale)",
+  "en": "Actual length (finished material)",
+  "oversatt": "実際の長さ（完成素材）"
+ },
+ "app-script-scene-navigator.scene-navigator.title.a3ff285efe82": {
+  "nb": "Står i scenen nå",
+  "en": "In the scene now",
+  "oversatt": "現在のシーン内"
+ },
+ "app-script-scene-navigator.scene-without-number": {
+  "nb": "uten nummer",
+  "en": "without number",
+  "oversatt": "番号なし"
+ },
+ "app-script-script-helpers.kind-label.action.77665d4ab14f": {
+  "nb": "Handling",
+  "en": "Action",
+  "oversatt": "アクション"
+ },
+ "app-script-script-helpers.kind-label.character.b5cc58d56174": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "キャラクター"
+ },
+ "app-script-script-helpers.kind-label.dialogue.ea045400b3b6": {
+  "nb": "Replikk",
+  "en": "Dialogue",
+  "oversatt": "セリフ"
+ },
+ "app-script-script-helpers.kind-label.heading.42418a37eb55": {
+  "nb": "Sceneoverskrift",
+  "en": "Scene heading",
+  "oversatt": "シーン見出し"
+ },
+ "app-script-script-helpers.kind-label.note.76d962063127": {
+  "nb": "Notat",
+  "en": "Note",
+  "oversatt": "メモ"
+ },
+ "app-script-script-helpers.kind-label.parenthetical.02375f854d46": {
+  "nb": "Parentes",
+  "en": "Parenthetical",
+  "oversatt": "ト書き (括弧)"
+ },
+ "app-script-script-helpers.kind-label.shot.bd1d7be692cf": {
+  "nb": "Innstilling",
+  "en": "Shot",
+  "oversatt": "カット"
+ },
+ "app-script-script-helpers.kind-label.transition.400119123396": {
+  "nb": "Overgang",
+  "en": "Transition",
+  "oversatt": "トランジション"
+ },
+ "app-script-script-page-view.flow-sheet.aria-label.aa89dad7a83b": {
+  "nb": "Valgt scene (lesevisning)",
+  "en": "Selected scene (reading view)",
+  "oversatt": "選択されたシーン (閲覧ビュー)"
+ },
+ "app-script-script-page-view.line.aria-label.13b008121044": {
+  "nb": "Oversettelsen må gjennomgås",
+  "en": "The translation must be reviewed",
+  "oversatt": "翻訳を確認する必要があります"
+ },
+ "app-script-script-page-view.line.aria-label.387f4bf73f1a": {
+  "nb": "Usikker tolkning",
+  "en": "Uncertain interpretation",
+  "oversatt": "不確実な解釈"
+ },
+ "app-script-script-page-view.line.aria-label.80023fd8c0e5": {
+  "nb": "Endret etter materialet",
+  "en": "Changed since the material was made",
+  "oversatt": "素材作成後に変更あり"
+ },
+ "app-script-script-page-view.line.aria-label.8d4e39b3c803": {
+  "nb": "{length} notater – vis",
+  "en": "{length} notes – show",
+  "oversatt": "{length}件のメモ – 表示"
+ },
+ "app-script-script-page-view.line.aria-label.a16a75e4aaf5": {
+  "nb": "Usikker oversettelse",
+  "en": "Uncertain translation",
+  "oversatt": "不確実な翻訳"
+ },
+ "app-script-script-page-view.line.aria-label.cbcb7ee33c65": {
+  "nb": "Notat – vis",
+  "en": "Note – show",
+  "oversatt": "メモ – 表示"
+ },
+ "app-script-script-page-view.line.title.203abf286a8a": {
+  "nb": "Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren",
+  "en": "Changed after the material (2D scene or film) was made – see the inspector",
+  "oversatt": "素材 (2Dシーンまたは映像) の作成後に変更されました – インスペクターを確認してください"
+ },
+ "app-script-script-page-view.line.title.2563837d80d2": {
+  "nb": "Vis {length} notater",
+  "en": "Show {length} notes",
+  "oversatt": "{length}件のメモを表示"
+ },
+ "app-script-script-page-view.line.title.528ac11afc9d": {
+  "nb": "Ikke oversatt ennå (norsk tekst vises)",
+  "en": "Not translated yet (Norwegian text shown)",
+  "oversatt": "未翻訳 (ノルウェー語のテキストを表示中)"
+ },
+ "app-script-script-page-view.line.title.a542e5888d4b": {
+  "nb": "Den norske teksten er endret etter oversettelsen – gjennomgå den",
+  "en": "The Norwegian text has changed since the translation – review it",
+  "oversatt": "翻訳後にノルウェー語のテキストが変更されました – 確認してください"
+ },
+ "app-script-script-page-view.line.title.bf72fcfbadbc": {
+  "nb": "Usikker kobling fra import – godkjenn eller rett oversettelsen",
+  "en": "Uncertain link from import – approve or correct the translation",
+  "oversatt": "インポート時のリンクが不確定です – 翻訳を承認または修正してください"
+ },
+ "app-script-script-page-view.line.title.dc102e51c07d": {
+  "nb": "Vis notatet",
+  "en": "Show the note",
+  "oversatt": "メモを表示"
+ },
+ "app-script-script-page-view.line.title.f26c13209f66": {
+  "nb": "Usikker tolkning: {uncertain}",
+  "en": "Uncertain interpretation: {value1}",
+  "oversatt": "不確実な解釈: {value1}"
+ },
+ "app-script-script-page-view.page-sheet.aria-label.3ca941d4c1f5": {
+  "nb": "Side {number}",
+  "en": "Page {number}",
+  "oversatt": "{number} ページ"
+ },
+ "app-script-script-page-view.uncertain-interpretation": {
+  "nb": "Usikker tolkning: {reason}",
+  "en": "Uncertain interpretation: {reason}",
+  "oversatt": "不確実な解釈: {reason}"
+ },
+ "app-script-script-workspace.e.cmds-run.7bf7f54e70ef": {
+  "nb": "Ny scene",
+  "en": "New scene",
+  "oversatt": "新規シーン"
+ },
+ "app-script-script-workspace.err.run.19bffc68c0d6": {
+  "nb": "Nytt notat",
+  "en": "New note",
+  "oversatt": "新規メモ"
+ },
+ "app-script-script-workspace.error.error.9cbf95fa4a8e": {
+  "nb": "Teksten er endret mens du skrev – merk ordene på nytt.",
+  "en": "The text was changed while you were writing – select the words again.",
+  "oversatt": "入力中にテキストが変更されました – 単語を再選択してください。"
+ },
+ "app-script-script-workspace.my-name.message.e0177e934ee9": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "メンバー"
+ },
+ "app-script-script-workspace.on-save-title-page.cmds-run-silent.4b33f3c3cbfc": {
+  "nb": "Lagre tittelsiden",
+  "en": "Save title page",
+  "oversatt": "タイトルページを保存"
+ },
+ "app-script-script-workspace.others.use-presence.dd7c3ee425b2": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "メンバー"
+ },
+ "app-script-script-workspace.pending-note-form.button.7b89e44e9453": {
+  "nb": "Lagre notat",
+  "en": "Save note",
+  "oversatt": "メモを保存"
+ },
+ "app-script-script-workspace.pending-note-form.button.feb08cc7c905": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-script-workspace.pending-note-form.placeholder.5a426aacadc4": {
+  "nb": "Skriv notatet …",
+  "en": "Write the note …",
+  "oversatt": "メモを入力…"
+ },
+ "app-script-script-workspace.save-indicator.span.76d2d5532927": {
+  "nb": "Lagret",
+  "en": "Saved",
+  "oversatt": "保存完了"
+ },
+ "app-script-script-workspace.save-indicator.span.c775d27e8e0a": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "保存中…"
+ },
+ "app-script-script-workspace.script-workspace.div.33729a2872d9": {
+  "nb": "Manuset kunne ikke hentes.",
+  "en": "The script could not be loaded.",
+  "oversatt": "脚本を読み込めませんでした。"
+ },
+ "app-script-script-workspace.script-workspace.p.6c70d6eba610": {
+  "nb": "Henter manus …",
+  "en": "Loading script …",
+  "oversatt": "脚本を読み込み中…"
+ },
+ "app-script-script-workspace.script-workspace.p.982d6ef58489": {
+  "nb": "Teknisk detalj",
+  "en": "Technical detail",
+  "oversatt": "技術詳細"
+ },
+ "app-script-script-workspace.workspace.aria-label.1a39ad059236": {
+  "nb": "Manussider. Pil opp og ned velger linje, Enter redigerer.",
+  "en": "Script pages. Up and down arrows select a line, Enter edits.",
+  "oversatt": "脚本ページ。上/下矢印キーで行を選択、Enterで編集。"
+ },
+ "app-script-script-workspace.workspace.aria-label.2c75b17c31a9": {
+  "nb": "Låste sider",
+  "en": "Locked pages",
+  "oversatt": "ロックされたページ"
+ },
+ "app-script-script-workspace.workspace.aria-label.476a13ae83e3": {
+  "nb": "Tilbakefør",
+  "en": "Carry back",
+  "oversatt": "元に戻す"
+ },
+ "app-script-script-workspace.workspace.aria-label.d76d7968aeca": {
+  "nb": "Også her nå: {value1}",
+  "en": "Also here now: {value1}",
+  "oversatt": "現在ここにも存在: {value1}"
+ },
+ "app-script-script-workspace.workspace.aria-label.dfae56e1d21c": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "ズーム"
+ },
+ "app-script-script-workspace.workspace.aria-label.ef7efda65221": {
+  "nb": "Manusspråk",
+  "en": "Script language",
+  "oversatt": "脚本の言語"
+ },
+ "app-script-script-workspace.workspace.button.083015dbb2e5": {
+  "nb": "Skrivehjelp",
+  "en": "Writing assistant",
+  "oversatt": "執筆アシスタント"
+ },
+ "app-script-script-workspace.workspace.button.36d735c429be": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "脚本をインポート"
+ },
+ "app-script-script-workspace.workspace.button.61cbc7374b1d": {
+  "nb": "Legg til scener …",
+  "en": "Add scenes …",
+  "oversatt": "シーンを追加…"
+ },
+ "app-script-script-workspace.workspace.button.a577d61c554a": {
+  "nb": "Skriv ny scene",
+  "en": "Write new scene",
+  "oversatt": "新規シーンを作成"
+ },
+ "app-script-script-workspace.workspace.button.de441996bb2a": {
+  "nb": "Legg til notat",
+  "en": "Add note",
+  "oversatt": "メモを追加"
+ },
+ "app-script-script-workspace.workspace.button.ebd161a4610b": {
+  "nb": "Inspektør",
+  "en": "Inspector",
+  "oversatt": "インスペクタ"
+ },
+ "app-script-script-workspace.workspace.label.27533df79d71": {
+  "nb": "Vis endringsmerker",
+  "en": "Show change marks",
+  "oversatt": "変更マークを表示"
+ },
+ "app-script-script-workspace.workspace.label.2c75b17c31a9": {
+  "nb": "Låste sider",
+  "en": "Locked pages",
+  "oversatt": "ページ固定"
+ },
+ "app-script-script-workspace.workspace.label.3362824102ea": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "取り消し"
+ },
+ "app-script-script-workspace.workspace.label.68d82f85cc60": {
+  "nb": "Sort tekst på hvit bakgrunn",
+  "en": "Black text on white background",
+  "oversatt": "白地に黒文字"
+ },
+ "app-script-script-workspace.workspace.label.8676b83317ee": {
+  "nb": "Vis kun valgt scene",
+  "en": "Show only selected scene",
+  "oversatt": "選択したシーンのみ表示"
+ },
+ "app-script-script-workspace.workspace.label.ab8687b6461c": {
+  "nb": "Vis notater",
+  "en": "Show notes",
+  "oversatt": "メモを表示"
+ },
+ "app-script-script-workspace.workspace.label.b6704946a46c": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "やり直し"
+ },
+ "app-script-script-workspace.workspace.label.ba59ddc1d352": {
+  "nb": "Bredde på scenelisten",
+  "en": "Width of the scene list",
+  "oversatt": "シーンリストの幅"
+ },
+ "app-script-script-workspace.workspace.label.c39571853125": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "やり直し: {redoLabel}"
+ },
+ "app-script-script-workspace.workspace.label.e2cc01325b5b": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "取り消し: {undoLabel}"
+ },
+ "app-script-script-workspace.workspace.label.f65e02e2f309": {
+  "nb": "Bredde på inspektøren",
+  "en": "Width of the inspector",
+  "oversatt": "インスペクタの幅"
+ },
+ "app-script-script-workspace.workspace.moved-baseline.081ba12b8257": {
+  "nb": "versjon {number}",
+  "en": "version {number}",
+  "oversatt": "バージョン {number}"
+ },
+ "app-script-script-workspace.workspace.option.f2f185ef5aa4": {
+  "nb": "Tilpass bredde",
+  "en": "Fit width",
+  "oversatt": "幅に合わせる"
+ },
+ "app-script-script-workspace.workspace.p.0d1a72ef9f90": {
+  "nb": "Gjenbruk scener fra hovedfilmen, eller skriv nye scener som bare finnes her. Nye scener legges aldri inn i hovedfilmen automatisk.",
+  "en": "Reuse scenes from the main film, or write new scenes that exist only here. New scenes are never added to the main film automatically.",
+  "oversatt": "本編のシーンを再利用するか、ここだけに存在する新しいシーンを作成します。新しいシーンが本編に自動で追加されることはありません。"
+ },
+ "app-script-script-workspace.workspace.p.17dbe6cfba2b": {
+  "nb": "Importer manuset som PDF (for eksempel fra Final Draft) eller Word. Du ser en forhåndsvisning før noe lagres, og importen kan angres.",
+  "en": "Import the script as PDF (for example from Final Draft) or Word. You see a preview before anything is saved, and the import can be undone.",
+  "oversatt": "PDF（例: Final Draft）またはWordから脚本をインポートします。保存前にプレビューを確認でき、インポートは取り消すことができます。"
+ },
+ "app-script-script-workspace.workspace.p.29928c11a830": {
+  "nb": "Ingen scener i «{name}» ennå",
+  "en": "No scenes in “{name}” yet",
+  "oversatt": "「{name}」にはまだシーンがありません"
+ },
+ "app-script-script-workspace.workspace.p.b3243fa495e0": {
+  "nb": "Den valgte scenen er deaktivert og står derfor ikke på manussidene. Slå den på i listen (med «Endre rekkefølge og synlighet») for å se den.",
+  "en": "The selected scene is deactivated, so it is not on the script pages. Turn it on in the list (under “Change order and visibility”) to see it.",
+  "oversatt": "選択したシーンは無効化されているため、脚本ページには表示されません。表示するにはリスト（「順序と表示の変更」内）で有効にしてください。"
+ },
+ "app-script-script-workspace.workspace.p.c6a460464bdf": {
+  "nb": "«Vis kun valgt scene» er på – velg en scene i listen til venstre. Hele manuset vises til da.",
+  "en": "“Show only selected scene” is on – choose a scene in the list on the left. The whole script is shown until then.",
+  "oversatt": "「選択したシーンのみ表示」が有効です。左側のリストからシーンを選択してください。それまでは脚本全体が表示されます。"
+ },
+ "app-script-script-workspace.workspace.p.f85765d85227": {
+  "nb": "Ingen aktive scener passer med filteret. Deaktiverte scener vises ikke på sidene.",
+  "en": "No active scenes match the filter. Deactivated scenes are not shown on the pages.",
+  "oversatt": "フィルターに一致するアクティブなシーンがありません。無効化されたシーンはページに表示されません。"
+ },
+ "app-script-script-workspace.workspace.run.13fb4ec5bff2": {
+  "nb": "Aktiver scene",
+  "en": "Activate scene",
+  "oversatt": "シーンを有効化"
+ },
+ "app-script-script-workspace.workspace.run.785fcc2a05a5": {
+  "nb": "Deaktiver scene",
+  "en": "Deactivate scene",
+  "oversatt": "シーンを無効化"
+ },
+ "app-script-script-workspace.workspace.span.048b3ab3de10": {
+  "nb": " · {review} må gjennomgås",
+  "en": " · {review} to review",
+  "oversatt": " · 要確認 {review} 件"
+ },
+ "app-script-script-workspace.workspace.span.446c7442419c": {
+  "nb": "{length} av {length2}",
+  "en": "{length} of {length2}",
+  "oversatt": "{length} / {length2}"
+ },
+ "app-script-script-workspace.workspace.span.7c7941fb9566": {
+  "nb": "Bare lesetilgang",
+  "en": "Read-only access",
+  "oversatt": "読み取り専用アクセス"
+ },
+ "app-script-script-workspace.workspace.span.7e399e2c169f": {
+  "nb": "Tilbakefør …",
+  "en": "Carry back …",
+  "oversatt": "反映…"
+ },
+ "app-script-script-workspace.workspace.span.a4fa89817a89": {
+  "nb": " · {uncertain} usikre",
+  "en": " · {uncertain} uncertain",
+  "oversatt": " · 不確定 {uncertain} 件"
+ },
+ "app-script-script-workspace.workspace.span.b6b1aad09348": {
+  "nb": "(endret)",
+  "en": "(changed)",
+  "oversatt": "(変更済み)"
+ },
+ "app-script-script-workspace.workspace.span.b997ee84328e": {
+  "nb": "sider",
+  "en": "pages",
+  "oversatt": "ページ"
+ },
+ "app-script-script-workspace.workspace.span.ec47390de436": {
+  "nb": "{translated} av {lines} oversatt",
+  "en": "{translated} of {lines} translated",
+  "oversatt": "{lines} 行中 {translated} 行翻訳済み"
+ },
+ "app-script-script-workspace.workspace.title.1319d610390c": {
+  "nb": "Vis eller skjul notater i manuset (REQ-0538)",
+  "en": "Show or hide notes in the script (REQ-0538)",
+  "oversatt": "脚本内のメモを表示または非表示 (REQ-0538)"
+ },
+ "app-script-script-workspace.workspace.title.134afc00c999": {
+  "nb": "Følg originalens sideskift for importert tekst (låste sider)",
+  "en": "Follow the original page breaks for imported text (locked pages)",
+  "oversatt": "インポートされたテキストの元の改ページを維持（ページ固定）"
+ },
+ "app-script-script-workspace.workspace.title.181981dbb0d5": {
+  "nb": " – se hvor",
+  "en": " – see where",
+  "oversatt": " – 該当箇所を確認"
+ },
+ "app-script-script-workspace.workspace.title.2c1f264d7e99": {
+  "nb": "Gjør om: {redoLabel} (⇧⌘Z)",
+  "en": "Redo: {redoLabel} (⇧⌘Z)",
+  "oversatt": "やり直し: {redoLabel} (⇧⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.442aea26253d": {
+  "nb": "Språket manuset vises på. Norsk er hovedmanuset; oversettelser endrer det aldri.",
+  "en": "The language the script is shown in. Norwegian is the main script; translations never change it.",
+  "oversatt": "脚本を表示する言語。ノルウェー語がメインの脚本であり、翻訳によって変更されることはありません。"
+ },
+ "app-script-script-workspace.workspace.title.49da193529f4": {
+  "nb": "Røde merker i margen der teksten er endret etter at 2D-scenen eller filmen ble laget. Vises bare på skjermen, aldri i utskrift eller eksport.",
+  "en": "Red marks in the margin where the text was changed after the 2D scene or film was made. Shown on screen only, never in print or export.",
+  "oversatt": "2Dシーンまたは映像の作成後にテキストが変更された箇所を示す余白の赤いマーク。画面上でのみ表示され、印刷や書き出しには含まれません。"
+ },
+ "app-script-script-workspace.workspace.title.5e6d7daf8488": {
+  "nb": "Før endringer eller nye scener fra denne produksjonen tilbake til hovedfilmen",
+  "en": "Carry changes or new scenes from this production back to the main film",
+  "oversatt": "このプロダクションの変更や新しいシーンを本編に反映"
+ },
+ "app-script-script-workspace.workspace.title.67cc04366e0d": {
+  "nb": "Fjern alle oversettelser til dette språket i én endring (kan angres)",
+  "en": "Remove all translations into this language in one change (can be undone)",
+  "oversatt": "この言語のすべての翻訳を一度に削除（取り消し可能）"
+ },
+ "app-script-script-workspace.workspace.title.6d4e35b2e0a2": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "やり直し (⇧⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.9190e6a61a9c": {
+  "nb": "Angre: {undoLabel} (⌘Z)",
+  "en": "Undo: {undoLabel} (⌘Z)",
+  "oversatt": "取り消し: {undoLabel} (⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.ab59c5d3bc7e": {
+  "nb": "Gjenbruk scener fra hovedfilmen eller en annen produksjon",
+  "en": "Reuse scenes from the main film or another production",
+  "oversatt": "本編または他のプロダクションからシーンを再利用"
+ },
+ "app-script-script-workspace.workspace.title.bd4f0744ad84": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "取り消し (⌘Z)"
+ },
+ "app-script-script-workspace.workspace.title.dbf1ce70536a": {
+  "nb": "Vis bare scenen som er valgt i scenelisten. Endrer ikke filmen.",
+  "en": "Show only the scene selected in the scene list. Does not change the film.",
+  "oversatt": "シーンリストで選択したシーンのみを表示します。本編は変更されません。"
+ },
+ "app-script-script-workspace.workspace.title.e1e017defea2": {
+  "nb": "Notater, bare valgt scene og låste sider",
+  "en": "Notes, selected scene only and locked pages",
+  "oversatt": "メモ、選択したシーンのみ、およびロックされたページ"
+ },
+ "app-script-script-workspace.workspace.title.ecab89434db5": {
+  "nb": "Linjer som er oversatt, og linjer der norsk er endret etter oversettelsen",
+  "en": "Lines that have been translated, and lines where the Norwegian has changed since translation",
+  "oversatt": "翻訳済みのセリフ、および翻訳後にノルウェー語が変更されたセリフ"
+ },
+ "app-script-script-workspace.workspace.title.f3a9414f12ae": {
+  "nb": "Lesevisningen for valgt scene: sort tekst på hvit bakgrunn",
+  "en": "Reading view for the selected scene: black text on a white background",
+  "oversatt": "選択したシーンの閲覧表示: 白背景に黒文字"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.1de494e767b5": {
+  "nb": "Visning",
+  "en": "View",
+  "oversatt": "表示"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.36d735c429be": {
+  "nb": "Importer manus",
+  "en": "Import script",
+  "oversatt": "脚本をインポート"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.48dd6b7fbf04": {
+  "nb": "Fjern oversettelsene …",
+  "en": "Remove the translations …",
+  "oversatt": "翻訳を削除…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.5e33b57871b7": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "書き出し"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.61cbc7374b1d": {
+  "nb": "Legg til scener …",
+  "en": "Add scenes …",
+  "oversatt": "シーンを追加…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.87153b7e849d": {
+  "nb": "Importer engelsk manus …",
+  "en": "Import English script …",
+  "oversatt": "英語の脚本をインポート…"
+ },
+ "app-script-script-workspace.workspace.toolbar-button.d987ab9929c2": {
+  "nb": "Versjoner",
+  "en": "Versions",
+  "oversatt": "バージョン"
+ },
+ "app-script-story-time-section.save.run.217d7895857f": {
+  "nb": "Scenen følger rekkefølgen",
+  "en": "The scene follows the running order",
+  "oversatt": "シーンは進行順に従います"
+ },
+ "app-script-story-time-section.save.run.6e414cb1d8c3": {
+  "nb": "Merk som {value1}",
+  "en": "Mark as {value1}",
+  "oversatt": "{value1} としてマーク"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.00af75e9d420": {
+  "nb": "Når i historien",
+  "en": "When in the story",
+  "oversatt": "劇中時間（いつ）"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.505b5a3a04ee": {
+  "nb": "Fortellingstid",
+  "en": "Story time",
+  "oversatt": "ストーリー時間"
+ },
+ "app-script-story-time-section.story-time-section.aria-label.7f5b07ac218a": {
+  "nb": "Scenen det skjer i forhold til",
+  "en": "The scene it happens in relation to",
+  "oversatt": "基準となる関連シーン"
+ },
+ "app-script-story-time-section.story-time-section.const-v-object-values-state-variants-find-x-x-scene-id-other-anchor-const-heading-v-format-heading-v-heading-scene-return-l-heading-ikke-i-hovedfilmen-heading-not-in-the-main-film.9c10c76f625b": {
+  "nb": "{heading} (ikke i hovedfilmen)",
+  "en": "{heading} (not in the main film)",
+  "oversatt": "{heading}（本編外）"
+ },
+ "app-script-story-time-section.story-time-section.option.76bcf4e55c84": {
+  "nb": "Velg scene …",
+  "en": "Choose a scene …",
+  "oversatt": "シーンを選択…"
+ },
+ "app-script-story-time-section.story-time-section.option.a59806a48647": {
+  "nb": "Skjer",
+  "en": "Happens",
+  "oversatt": "発生タイミング"
+ },
+ "app-script-story-time-section.story-time-section.p.5bb5fb6db2ba": {
+  "nb": "Fortellingstiden gjelder scenen i alle produksjoner og endres i hovedfilmen.",
+  "en": "Story time applies to the scene in all productions and is changed in the main film.",
+  "oversatt": "ストーリー時間はすべてのプロダクションのシーンに適用され、本編で変更されます。"
+ },
+ "app-script-story-time-section.story-time-section.p.774137dc39c3": {
+  "nb": "Karakterenes utseende (kontinuitet) regnes ut fra når scenen skjer i historien, ikke hvor den står i filmen.",
+  "en": "The characters' appearance (continuity) is worked out from when the scene happens in the story, not where it sits in the film.",
+  "oversatt": "キャラクターの外見（コンティニュイティ）は、映画内の配置ではなく、物語上の発生時点に基づいて計算されます。"
+ },
+ "app-script-story-time-section.story-time-section.p.dc33db7b4c6e": {
+  "nb": "Scenen skjer i historien der den står i filmen.",
+  "en": "The scene happens in the story where it sits in the film.",
+  "oversatt": "シーンは映画内の配置順と同じタイミングで物語上発生します。"
+ },
+ "app-script-story-time-section.story-time-section.p.e46f9d52c066": {
+  "nb": "Velg scenen dette skjer i forhold til, så regnes kontinuiteten riktig. Uten valg brukes plassen i filmen.",
+  "en": "Choose the scene this happens in relation to, so continuity is worked out correctly. Without a choice, the place in the film is used.",
+  "oversatt": "コンティニュイティを正確に計算するため、基準となる関連シーンを選択してください。選択しない場合は映画内の配置が使用されます。"
+ },
+ "app-script-translation-import-dialog.ai-suggestion": {
+  "nb": " · Forslag fra AI ({confidence}){reason}",
+  "en": " · AI suggestion ({confidence}){reason}",
+  "oversatt": " · AIの提案 ({confidence}){reason}"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-high": {
+  "nb": "sikker",
+  "en": "certain",
+  "oversatt": "高"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-low": {
+  "nb": "usikker",
+  "en": "uncertain",
+  "oversatt": "低"
+ },
+ "app-script-translation-import-dialog.ai-suggestion-medium": {
+  "nb": "trolig",
+  "en": "likely",
+  "oversatt": "中"
+ },
+ "app-script-translation-import-dialog.e.cmds-run.96a7ab3c19ed": {
+  "nb": "Importer {value1} manus",
+  "en": "Import {langName} script",
+  "oversatt": "{langName}の脚本をインポート"
+ },
+ "app-script-translation-import-dialog.import-script": {
+  "nb": "Importer {language} manus",
+  "en": "Import {language} script",
+  "oversatt": "{language}の脚本をインポート"
+ },
+ "app-script-translation-import-dialog.link-summary": {
+  "nb": "{certainty} · {lines} linjer{unmatched}",
+  "en": "{certainty} · {lines} lines{unmatched}",
+  "oversatt": "{certainty} · {lines} 行{unmatched}"
+ },
+ "app-script-translation-import-dialog.link-summary-manual": {
+  "nb": "Valgt manuelt",
+  "en": "Chosen manually",
+  "oversatt": "手動で選択済み"
+ },
+ "app-script-translation-import-dialog.link-summary-sure": {
+  "nb": "Sikker",
+  "en": "Certain",
+  "oversatt": "高"
+ },
+ "app-script-translation-import-dialog.link-summary-unmatched": {
+  "nb": " · {count} uten par",
+  "en": " · {count} without a pair",
+  "oversatt": " · 対応なし {count} 件"
+ },
+ "app-script-translation-import-dialog.link-summary-unsure": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "低"
+ },
+ "app-script-translation-import-dialog.save.set-err.d96e6de84f3b": {
+  "nb": "Ingen scener er koblet.",
+  "en": "No scenes are linked.",
+  "oversatt": "リンクされたシーンはありません。"
+ },
+ "app-script-translation-import-dialog.suggest-with-ai.set-ai-note.723ce9f4696e": {
+  "nb": "Den innebygde AI-en svarte ikke. Koblingene bygger på reglene.",
+  "en": "The built-in AI did not respond. The links are based on rules.",
+  "oversatt": "内蔵AIが応答しませんでした。ルールに基づいてリンクされました。"
+ },
+ "app-script-translation-import-dialog.suggest-with-ai.set-ai-note.8b8904dec6de": {
+  "nb": "Den innebygde AI-en foreslo koblinger for {length} usikre scener. Kontroller og godkjenn dem.",
+  "en": "The built-in AI suggested links for {length} uncertain scenes. Check and approve them.",
+  "oversatt": "内蔵AIが不確実な{length}件のシーンに対してリンクを提案しました。確認して承認してください。"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.2aeb56f5c4f7": {
+  "nb": "Norsk scene",
+  "en": "Norwegian scene",
+  "oversatt": "ノルウェー語のシーン"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.486814d2b668": {
+  "nb": "Koblinger",
+  "en": "Links",
+  "oversatt": "リンク"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.aria-label.d5f1cb20facd": {
+  "nb": "Godkjent kobling",
+  "en": "Approved link",
+  "oversatt": "承認済みのリンク"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.06d4f5b6706e": {
+  "nb": "Leser manuset …",
+  "en": "Reading the script …",
+  "oversatt": "脚本を読み込み中…"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.13370c0a5a87": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "キャンセル"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.859270a91c19": {
+  "nb": "Lagre {lines} oversettelser",
+  "en": "Save {lines} translations",
+  "oversatt": "{lines}件の翻訳を保存"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.button.fc25aa9b4407": {
+  "nb": "Velg fil …",
+  "en": "Choose file …",
+  "oversatt": "ファイルを選択…"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.dialog-description.02c0953ca29d": {
+  "nb": "Et ferdig oversatt manus (PDF, Word eller Fountain) kobles til de norske scenene og replikkene. Det norske manuset endres ikke. Kontroller koblingene før du lagrer.",
+  "en": "A finished translated script (PDF, Word or Fountain) is linked to the Norwegian scenes and lines. The Norwegian script is not changed. Check the links before you save.",
+  "oversatt": "翻訳済みの脚本（PDF、Word、Fountain）がノルウェー語のシーンやセリフにリンクされます。ノルウェー語の脚本は変更されません。保存する前にリンクを確認してください。"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.dialog-title.fb1c52f22990": {
+  "nb": "Importer {value1} manus",
+  "en": "Import {langName} script",
+  "oversatt": "{langName}の脚本をインポート"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.option.2ea52a3c1b68": {
+  "nb": "— ikke koble —",
+  "en": "— do not link —",
+  "oversatt": "— リンクしない —"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.047d1307abf5": {
+  "nb": "{length} scener, {length2} koblet, {lines} linjer får oversettelse. Usikre koblinger er ikke krysset av – de lagres som usikre og kan godkjennes senere.",
+  "en": "{length} scenes, {length2} linked, {lines} lines get a translation. Uncertain links are not ticked – they are saved as uncertain and can be approved later.",
+  "oversatt": "{length}件のシーン、{length2}件がリンク済み、{lines}行に翻訳が適用されます。不確実なリンクはチェックされていません。不確実な状態として保存され、後で承認できます。"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.ceba985f4b6a": {
+  "nb": "Den innebygde AI-en ser på de usikre koblingene …",
+  "en": "The built-in AI is checking the uncertain links …",
+  "oversatt": "内蔵AIが不確実なリンクを確認中…"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.p.f232f65f9647": {
+  "nb": "Samme norske scene er valgt for flere importerte scener. Bare den første brukes.",
+  "en": "The same Norwegian scene is chosen for several imported scenes. Only the first is used.",
+  "oversatt": "複数のインポートされたシーンに同じノルウェー語のシーンが選択されています。最初のシーンのみが使用されます。"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.a387fa350b4c": {
+  "nb": " · Forslag fra AI ({value1}){value2}",
+  "en": " · AI suggestion ({value1}){value2}",
+  "oversatt": " · AIの提案 ({value1}){value2}"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.aa4fdc605166": {
+  "nb": "{value1} · {length} linjer{value3}",
+  "en": "{value1} · {length} lines{value3}",
+  "oversatt": "{value1} · {length}行{value3}"
+ },
+ "app-script-translation-import-dialog.translation-import-dialog.span.b42fadde7f0e": {
+  "nb": "Ikke koblet",
+  "en": "Not linked",
+  "oversatt": "未リンク"
+ },
+ "app-script-translation-panel.save.run.3c8e90b789b8": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "翻訳 ({langName})"
+ },
+ "app-script-translation-panel.save.run.3c8e90b789b8.2": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "翻訳 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.aria-label.d679587cc24e": {
+  "nb": "Oversettelse ({langName})",
+  "en": "Translation ({langName})",
+  "oversatt": "翻訳 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.button.30e626e26439": {
+  "nb": "Lagret",
+  "en": "Saved",
+  "oversatt": "保存済み"
+ },
+ "app-script-translation-panel.translation-panel.button.5d893a9834d5": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "削除"
+ },
+ "app-script-translation-panel.translation-panel.button.b26882f93e4e": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "保存"
+ },
+ "app-script-translation-panel.translation-panel.button.fc04ba2adbff": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "承認"
+ },
+ "app-script-translation-panel.translation-panel.h3.483ff179da30": {
+  "nb": "Norsk (hovedmanus)",
+  "en": "Norwegian (main script)",
+  "oversatt": "ノルウェー語（メイン脚本）"
+ },
+ "app-script-translation-panel.translation-panel.h3.71328d6a925f": {
+  "nb": "Scenehode – norsk",
+  "en": "Scene heading – Norwegian",
+  "oversatt": "シーン見出し – ノルウェー語"
+ },
+ "app-script-translation-panel.translation-panel.p.3381de071f0d": {
+  "nb": "Koblet automatisk ved import – kontroller og godkjenn.",
+  "en": "Linked automatically on import – check and approve.",
+  "oversatt": "インポート時に自動リンクされました – 確認して承認してください。"
+ },
+ "app-script-translation-panel.translation-panel.p.34959a2df1f2": {
+  "nb": "Oversettelsen endrer aldri det norske manuset. Bytt til «Norsk» øverst for å endre hovedmanuset.",
+  "en": "The translation never changes the Norwegian script. Switch to “Norwegian” at the top to change the main script.",
+  "oversatt": "翻訳によってノルウェー語の脚本が変更されることはありません。メイン脚本を変更するには、上部で「ノルウェー語」に切り替えてください。"
+ },
+ "app-script-translation-panel.translation-panel.placeholder.1c6aaff3beaa": {
+  "nb": "Ikke oversatt ennå",
+  "en": "Not translated yet",
+  "oversatt": "未翻訳"
+ },
+ "app-script-translation-panel.translation-panel.run.dff3e5573199": {
+  "nb": "Fjern oversettelse ({langName})",
+  "en": "Remove translation ({langName})",
+  "oversatt": "翻訳を削除 ({langName})"
+ },
+ "app-script-translation-panel.translation-panel.span.20ea3adffe37": {
+  "nb": "Den norske teksten er endret etter oversettelsen.",
+  "en": "The Norwegian text has changed since the translation.",
+  "oversatt": "翻訳後にノルウェー語のテキストが変更されました。"
+ },
+ "app-script-versions-dialog.change-detail.aria-label.631e8c5a9ad7": {
+  "nb": "{n} er kommet til",
+  "en": "{n} added",
+  "oversatt": "{n}件追加"
+ },
+ "app-script-versions-dialog.change-detail.aria-label.b9307241a002": {
+  "nb": "{n} er borte",
+  "en": "{n} removed",
+  "oversatt": "{n}件削除"
+ },
+ "app-script-versions-dialog.change-detail.button.3a1bf836e6fd": {
+  "nb": "Vis alle",
+  "en": "Show all",
+  "oversatt": "すべて表示"
+ },
+ "app-script-versions-dialog.change-detail.button.551c139a1a46": {
+  "nb": "linjer",
+  "en": "lines",
+  "oversatt": "行"
+ },
+ "app-script-versions-dialog.compare.button.3b72c0bea3b0": {
+  "nb": "Tilbake",
+  "en": "Back",
+  "oversatt": "戻る"
+ },
+ "app-script-versions-dialog.compare.button.a6b55382c6e1": {
+  "nb": "Gå til",
+  "en": "Go to",
+  "oversatt": "移動"
+ },
+ "app-script-versions-dialog.compare.div.9aa2fc5177e5": {
+  "nb": "til",
+  "en": "to",
+  "oversatt": "～"
+ }
+}

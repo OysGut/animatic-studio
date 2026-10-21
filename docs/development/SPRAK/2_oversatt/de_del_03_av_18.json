@@ -1,0 +1,3155 @@
+{
+ "app-assembly-ai-update-section.run.errors-push.b6d049c6fdbb": {
+  "nb": "Segment {value1}: replikkene er for lange for modellen – del segmentet",
+  "en": "Segment {value1}: the lines are too long for the model – split the segment",
+  "oversatt": "Segment {value1}: Die Dialogzeilen sind zu lang für das Modell – teilen Sie das Segment"
+ },
+ "app-assembly-ai-update-section.targets-label.targets-label.b1b0690eaf2a": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "Segmente"
+ },
+ "app-assembly-ai-update-section.text.text.adc5ac2055b4": {
+  "nb": "{started} nye {value2} lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.",
+  "en": "{started} new {value2} queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.",
+  "oversatt": "{started} neue {value2} mit hoher Priorität in die Warteschlange eingereiht. Die alten bleiben erhalten; vergleichen und wählen Sie unter „Szene generieren“ und montieren Sie die Szene neu."
+ },
+ "app-assembly-ai-update-section.videos-queued-high-priority": {
+  "nb": {
+   "one": "{count} nye video er lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.",
+   "other": "{count} nye videoer er lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt."
+  },
+  "en": {
+   "one": "{count} new video is queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.",
+   "other": "{count} new videos are queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again."
+  },
+  "oversatt": {
+   "one": "{count} neues Video mit hoher Priorität in die Warteschlange eingereiht. Die alten bleiben erhalten; vergleichen und wählen Sie unter „Szene generieren“ und montieren Sie die Szene neu.",
+   "other": "{count} neue Videos mit hoher Priorität in die Warteschlange eingereiht. Die alten bleiben erhalten; vergleichen und wählen Sie unter „Szene generieren“ und montieren Sie die Szene neu."
+  }
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.a.4fc17a53a494": {
+  "nb": "Last ned",
+  "en": "Download",
+  "oversatt": "Herunterladen"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.button.09b88a706a31": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "Exportieren"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.button.b560be5571e5": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Schließen"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.button.c47662924ceb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.dialog-title.72cd53baff93": {
+  "nb": "Eksporter lag med gjennomsiktighet",
+  "en": "Export layers with transparency",
+  "oversatt": "Ebenen mit Transparenz exportieren"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.div.6c4fcbefe6e7": {
+  "nb": "Eksporterer {done} av {total} bilder",
+  "en": "Exporting {done} of {total} frames",
+  "oversatt": "{done} von {total} Bildern werden exportiert"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.126f17402939": {
+  "nb": "Tidsrom",
+  "en": "Range",
+  "oversatt": "Bereich"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.3c00ab5c7134": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "Format"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.55599ce69587": {
+  "nb": "Alfa",
+  "en": "Alpha",
+  "oversatt": "Alpha"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.963e888325f8": {
+  "nb": "Med effekter",
+  "en": "Include effects",
+  "oversatt": "Mit Effekten"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.df494ab02c7e": {
+  "nb": "Inn (bilde)",
+  "en": "In (frame)",
+  "oversatt": "In (Bild)"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.label.fa8d28c5a400": {
+  "nb": "Ut (første bilde utenfor)",
+  "en": "Out (first excluded frame)",
+  "oversatt": "Out (erstes Bild außerhalb)"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.143f6b819d53": {
+  "nb": "Hele scenen",
+  "en": "Whole scene",
+  "oversatt": "Ganze Szene"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.1c985467b60e": {
+  "nb": "ProRes 4444 med alfa (MOV)",
+  "en": "ProRes 4444 with alpha (MOV)",
+  "oversatt": "ProRes 4444 mit Alpha (MOV)"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.2e32fd4b57ee": {
+  "nb": "WebM VP9 med alfa",
+  "en": "WebM VP9 with alpha",
+  "oversatt": "WebM VP9 mit Alpha"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.76ff42a610aa": {
+  "nb": "Rett (standard for PNG)",
+  "en": "Straight (PNG default)",
+  "oversatt": "Straight (Standard für PNG)"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.7d412b42e2d2": {
+  "nb": "PNG-sekvens i ZIP",
+  "en": "PNG sequence in ZIP",
+  "oversatt": "PNG-Sequenz in ZIP"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.9a3274c0d6cf": {
+  "nb": "Premultiplisert",
+  "en": "Premultiplied",
+  "oversatt": "Premultiplied"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.option.cf3ce2d4c668": {
+  "nb": "Inn/ut",
+  "en": "In/out",
+  "oversatt": "In/Out"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.p.27029199f02f": {
+  "nb": "ProRes 4444 med 16-biters alfa, Rec.709, uten lyd. Store filer lagres direkte i nettleserens lagring.",
+  "en": "ProRes 4444 with 16-bit alpha, Rec.709, no audio. Large files are written straight to browser storage.",
+  "oversatt": "ProRes 4444 mit 16-Bit-Alpha, Rec.709, ohne Audio. Große Dateien werden direkt im Browser-Speicher abgelegt."
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.p.53a22e5ba25e": {
+  "nb": "Rett alfa beholder fargene i kanten. Premultiplisert alfa ganger fargene med gjennomsiktigheten; velg samme tolkning i programmet som leser filen.",
+  "en": "Straight alpha preserves edge colours. Premultiplied alpha multiplies colours by opacity; use the matching interpretation in the program reading the file.",
+  "oversatt": "Straight Alpha erhält die Kantenfarben. Premultiplied Alpha multipliziert die Farben mit der Deckkraft; wählen Sie im lesenden Programm die passende Interpretation."
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.p.8203935ad45f": {
+  "nb": "Kontrollerer WebM-alfastøtte …",
+  "en": "Checking WebM alpha support …",
+  "oversatt": "WebM-Alpha-Unterstützung wird geprüft …"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.p.8f788203b75b": {
+  "nb": "WebM VP9 med alfa støttes ikke i denne nettleseren. Velg PNG-sekvens.",
+  "en": "WebM VP9 with alpha is not supported in this browser. Choose a PNG sequence.",
+  "oversatt": "WebM VP9 mit Alpha wird in diesem Browser nicht unterstützt. Wählen Sie eine PNG-Sequenz."
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.p.a9317c6b4e7a": {
+  "nb": "Laget med profil {name}",
+  "en": "Made with profile {name}",
+  "oversatt": "Erstellt mit Profil {name}"
+ },
+ "app-assembly-alpha-export-dialog.alpha-export-dialog.span.08ea728eefd2": {
+  "nb": "Lag",
+  "en": "Layers",
+  "oversatt": "Ebenen"
+ },
+ "app-assembly-alpha-export-dialog.cancellable.message.314a2988409f": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Abgebrochen"
+ },
+ "app-assembly-alpha-export-dialog.cancellable.reject.314a2988409f": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Abgebrochen"
+ },
+ "app-assembly-alpha-export-dialog.run.export-queue-enqueue.f32fb4588ab1": {
+  "nb": "Noen bilder kunne ikke lastes. Prøv igjen før eksport.",
+  "en": "Some images could not be loaded. Retry before exporting.",
+  "oversatt": "Einige Bilder konnten nicht geladen werden. Vor dem Export erneut versuchen."
+ },
+ "app-assembly-alpha-export-dialog.run.set-error.ab4411585291": {
+  "nb": "Eksporten er avbrutt. Ingen fil er lagret.",
+  "en": "Export cancelled. No file was saved.",
+  "oversatt": "Export abgebrochen. Es wurde keine Datei gespeichert."
+ },
+ "app-assembly-alpha-export-dialog.scene.message.f3a836e2fac7": {
+  "nb": "Scene {number} {name}",
+  "en": "Scene {number} {name}",
+  "oversatt": "Szene {number} {name}"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.73cb3f01c570": {
+  "nb": "Undertekster …",
+  "en": "Subtitles …",
+  "oversatt": "Untertitel …"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.76e679caba93": {
+  "nb": "Språkversjon …",
+  "en": "Language version …",
+  "oversatt": "Sprachversion …"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.83312a07b4b1": {
+  "nb": "AI-video for flere scener på én gang (legges i kø, kostnaden vises først)",
+  "en": "AI video for several scenes at once (queued, the cost is shown first)",
+  "oversatt": "KI-Video für mehrere Szenen gleichzeitig (wird eingereiht, Kosten werden zuerst angezeigt)"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.858915123c30": {
+  "nb": "Overgangen alle scener får når de ikke har sin egen",
+  "en": "The transition every scene gets when it has none of its own",
+  "oversatt": "Der Übergang, den jede Szene erhält, wenn keine eigene festgelegt ist"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.991717bc5d88": {
+  "nb": "Engelsk versjon: oversettelse, dialoglyd, timing og leppesynk scene for scene",
+  "en": "English version: translation, dialogue audio, timing and lip sync scene by scene",
+  "oversatt": "Englische Version: Übersetzung, Dialog-Audio, Timing und Lippensynchronisation Szene für Szene"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.a00cb1223443": {
+  "nb": "Én filmfil som dekker flere scener: last opp én gang og del den på scenene",
+  "en": "One film file covering several scenes: upload it once and split it across the scenes",
+  "oversatt": "Eine Filmdatei für mehrere Szenen: einmal hochladen und auf die Szenen aufteilen"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.ab09f51a7299": {
+  "nb": "Standardovergang …",
+  "en": "Standard transition …",
+  "oversatt": "Standardübergang …"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.b31fa66aac0d": {
+  "nb": "Importer lang film …",
+  "en": "Import long film …",
+  "oversatt": "Langen Film importieren …"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.c4a4525c233b": {
+  "nb": "Undertekster (.srt eller .vtt) på norsk eller engelsk",
+  "en": "Subtitles (.srt or .vtt) in Norwegian or English",
+  "oversatt": "Untertitel (.srt oder .vtt) auf Norwegisch oder Englisch"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.span.d6d5b8aa43a6": {
+  "nb": "Video for flere scener …",
+  "en": "Video for several scenes …",
+  "oversatt": "Video für mehrere Szenen …"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.title.f9678342eb3f": {
+  "nb": "Standardovergang, lang film, video for flere scener, språkversjon og undertekster",
+  "en": "Standard transition, long film, video for several scenes, language version and subtitles",
+  "oversatt": "Standardübergang, langer Film, Video für mehrere Szenen, Sprachversion und Untertitel"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-more-menu.toolbar-button.9500f81ed2f1": {
+  "nb": "Mer",
+  "en": "More",
+  "oversatt": "Mehr"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.1af01e8ee77b": {
+  "nb": "En tekstscene mellom scenene, uten bilde av teksten",
+  "en": "A text scene between the scenes, without a picture of the text",
+  "oversatt": "Eine Textszene zwischen den Szenen, ohne Bild des Textes"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.2dcfdcfa50e3": {
+  "nb": "Tittelen med sider, bokstavanimasjon, logoer og eget lydspor",
+  "en": "The title with pages, letter animation, logos and its own soundtrack",
+  "oversatt": "Der Titel mit Seiten, Buchstabenanimation, Logos und eigener Tonspur"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.3ac0157a7fde": {
+  "nb": "Ny tekstscene",
+  "en": "New text scene",
+  "oversatt": "Neue Textszene"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.5c715309aeaa": {
+  "nb": "Ny rulletekst",
+  "en": "New credits",
+  "oversatt": "Neuer Abspann"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.6159c48c3561": {
+  "nb": "Rulletekst med eget deltakerregister, presentasjonsform og lydspor",
+  "en": "Credits with their own list of participants, presentation and soundtrack",
+  "oversatt": "Abspann mit eigener Teilnehmerliste, Präsentationsform und Tonspur"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.span.b427447d511c": {
+  "nb": "Ny filmtittel",
+  "en": "New film title",
+  "oversatt": "Neuer Filmtitel"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.title.63be1f7caa03": {
+  "nb": "Filmtittel, tekstscene eller rulletekst – egne deler av filmen, aldri manusscener",
+  "en": "Film title, text scene or credits – separate parts of the film, never script scenes",
+  "oversatt": "Filmtitel, Textszene oder Abspann – separate Teile des Films, niemals Drehbuchszenen"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-text-menu.toolbar-button.ddcebaf15757": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "Text"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.4073080dcf51": {
+  "nb": "Filmen i et eget vindu, f.eks. på en annen skjerm.",
+  "en": "The film in its own window, e.g. on another screen.",
+  "oversatt": "Der Film in einem eigenen Fenster, z. B. auf einem anderen Bildschirm."
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.7ef8ca936164": {
+  "nb": "Tidskoder, bildenummer og filinformasjon for scenen og delene.",
+  "en": "Timecodes, frame numbers and file information for the scene and its parts.",
+  "oversatt": "Timecodes, Bildnummern und Dateiinformationen für die Szene und ihre Teile."
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.hint.c8799e1a1b38": {
+  "nb": "Hele filmen i svart-hvitt (foreslås også i eksporten). Enkeltscener settes i panelet.",
+  "en": "The whole film in black and white (also suggested in the export). Single scenes are set in the panel.",
+  "oversatt": "Der gesamte Film in Schwarzweiß (wird auch beim Export vorgeschlagen). Einzelne Szenen werden im Bedienfeld festgelegt."
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.label.01c8a4adb4ee": {
+  "nb": "Svart-hvitt",
+  "en": "Black and white",
+  "oversatt": "Schwarzweiß"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.label.1875f107bdf2": {
+  "nb": "Teknisk visning",
+  "en": "Technical view",
+  "oversatt": "Technische Ansicht"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.label.379433325ec3": {
+  "nb": "Eget vindu",
+  "en": "Own window",
+  "oversatt": "Eigenes Fenster"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.span.b51ea08ac7fd": {
+  "nb": "(endret)",
+  "en": "(changed)",
+  "oversatt": "(geändert)"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.title.395f0d2fd144": {
+  "nb": "Svart-hvitt, teknisk visning og eget vindu",
+  "en": "Black and white, technical view and own window",
+  "oversatt": "Schwarzweiß, technische Ansicht und eigenes Fenster"
+ },
+ "app-assembly-assembly-toolbar-menus.assembly-view-menu.toolbar-button.69d57e54d93f": {
+  "nb": "Visning",
+  "en": "View",
+  "oversatt": "Ansicht"
+ },
+ "app-assembly-assembly-workspace.assembly-workspace.div.fc914a519614": {
+  "nb": "Filmen kunne ikke hentes.",
+  "en": "The film could not be loaded.",
+  "oversatt": "Der Film konnte nicht geladen werden."
+ },
+ "app-assembly-assembly-workspace.assembly-workspace.p.1d8f7cb242c0": {
+  "nb": "Henter filmen …",
+  "en": "Loading the film …",
+  "oversatt": "Film wird geladen …"
+ },
+ "app-assembly-assembly-workspace.assembly-workspace.p.9b1a7a1d2f85": {
+  "nb": "Teknisk detalj:",
+  "en": "Technical detail:",
+  "oversatt": "Technisches Detail:"
+ },
+ "app-assembly-assembly-workspace.assembly.aria-label.39de45f5517b": {
+  "nb": "Scene og manus",
+  "en": "Scene and script",
+  "oversatt": "Szene und Drehbuch"
+ },
+ "app-assembly-assembly-workspace.assembly.aria-label.5a7d076c826d": {
+  "nb": "Eksporter animatic",
+  "en": "Export animatic",
+  "oversatt": "Animatic exportieren"
+ },
+ "app-assembly-assembly-workspace.assembly.dialog-description.5beee04573fc": {
+  "nb": "Overgangen alle scener får når de ikke har sin egen. Scener med eget valg endres ikke.",
+  "en": "The transition every scene gets when it has no transition of its own. Scenes with their own choice are not changed.",
+  "oversatt": "Der Übergang, den jede Szene erhält, wenn sie keinen eigenen Übergang hat. Szenen mit eigener Auswahl werden nicht geändert."
+ },
+ "app-assembly-assembly-workspace.assembly.dialog-title.1ef99e056ac7": {
+  "nb": "Standardovergang",
+  "en": "Default transition",
+  "oversatt": "Standardübergang"
+ },
+ "app-assembly-assembly-workspace.assembly.edit-scene.2748b87bec00": {
+  "nb": "Bruk animatic i spinoffen",
+  "en": "Use animatic in the spin-off",
+  "oversatt": "Animatic im Spin-off verwenden"
+ },
+ "app-assembly-assembly-workspace.assembly.edit-scene.4b47c410e455": {
+  "nb": "Bruk importert film",
+  "en": "Use imported film",
+  "oversatt": "Importierten Film verwenden"
+ },
+ "app-assembly-assembly-workspace.assembly.edit-scene.8325c78eb5d7": {
+  "nb": "Hele klippet igjen",
+  "en": "Whole clip again",
+  "oversatt": "Wieder der ganze Clip"
+ },
+ "app-assembly-assembly-workspace.assembly.edit-scene.c00bb9bfb041": {
+  "nb": "Bruk animatic",
+  "en": "Use animatic",
+  "oversatt": "Animatic verwenden"
+ },
+ "app-assembly-assembly-workspace.assembly.label.0638f663ce98": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "Wiederholen"
+ },
+ "app-assembly-assembly-workspace.assembly.label.0638f663ce98.2": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "Wiederholen"
+ },
+ "app-assembly-assembly-workspace.assembly.label.45c0094c0be8": {
+  "nb": "Bredde på scenepanelet",
+  "en": "Width of the scene panel",
+  "oversatt": "Breite des Szenen-Bedienfelds"
+ },
+ "app-assembly-assembly-workspace.assembly.label.83d9a2d2fa50": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Rückgängig"
+ },
+ "app-assembly-assembly-workspace.assembly.label.83d9a2d2fa50.2": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Rückgängig"
+ },
+ "app-assembly-assembly-workspace.assembly.run.3435357980c9": {
+  "nb": "Endre overgang",
+  "en": "Change transition",
+  "oversatt": "Übergang ändern"
+ },
+ "app-assembly-assembly-workspace.assembly.run.5999f58ce31a": {
+  "nb": "Endre standardovergang",
+  "en": "Change default transition",
+  "oversatt": "Standardübergang ändern"
+ },
+ "app-assembly-assembly-workspace.assembly.run.81888de53927": {
+  "nb": "Farger for scenen",
+  "en": "Colour for the scene",
+  "oversatt": "Farbe für die Szene"
+ },
+ "app-assembly-assembly-workspace.assembly.run.d338ad550595": {
+  "nb": "Svart-hvitt for scenen",
+  "en": "Black and white for the scene",
+  "oversatt": "Schwarz-Weiß für die Szene"
+ },
+ "app-assembly-assembly-workspace.assembly.run.e9dfeeb52745": {
+  "nb": "Endre status for film",
+  "en": "Change film status",
+  "oversatt": "Filmstatus ändern"
+ },
+ "app-assembly-assembly-workspace.assembly.set-error.88501b4de63b": {
+  "nb": "Nettleseren stoppet det egne vinduet. Tillat sprettoppvinduer for siden.",
+  "en": "The browser blocked the separate window. Allow pop-ups for this site.",
+  "oversatt": "Der Browser hat das separate Fenster blockiert. Pop-ups für diese Website zulassen."
+ },
+ "app-assembly-assembly-workspace.assembly.set-error.8953fcd86dee": {
+  "nb": "Avspillingshodet er utenfor scenen. Flytt det inn i scenen først.",
+  "en": "The playhead is outside the scene. Move it into the scene first.",
+  "oversatt": "Der Abspielkopf befindet sich außerhalb der Szene. Bewegen Sie ihn zuerst in die Szene."
+ },
+ "app-assembly-assembly-workspace.assembly.set-error.949322dec77c": {
+  "nb": "Scenen er ikke med i filmen (den er deaktivert eller hører til en spinoff).",
+  "en": "The scene is not in the film (it is deactivated or belongs to a spin-off).",
+  "oversatt": "Die Szene ist nicht im Film enthalten (sie ist deaktiviert oder gehört zu einem Spin-off)."
+ },
+ "app-assembly-assembly-workspace.assembly.set-error.c0945ea8a36b": {
+  "nb": "Avspillingshodet er flyttet til scenen. Plasser det der klippet skal deles, og trykk igjen.",
+  "en": "The playhead was moved to the scene. Place it where the clip should be split, and press again.",
+  "oversatt": "Der Abspielkopf wurde zur Szene bewegt. Platzieren Sie ihn dort, wo der Clip geteilt werden soll, und drücken Sie erneut."
+ },
+ "app-assembly-assembly-workspace.assembly.set-error.e803c2f05b4f": {
+  "nb": "Scenen har ingen 2D-scene å bruke i stedet.",
+  "en": "The scene has no 2D scene to use instead.",
+  "oversatt": "Die Szene hat keine 2D-Szene, die stattdessen verwendet werden kann."
+ },
+ "app-assembly-assembly-workspace.assembly.span.044d39dcba66": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "Exportieren"
+ },
+ "app-assembly-assembly-workspace.assembly.span.1a7d97686d0b": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "Schnitt"
+ },
+ "app-assembly-assembly-workspace.assembly.span.5c1637368019": {
+  "nb": "Legg til lyd",
+  "en": "Add audio",
+  "oversatt": "Audio hinzufügen"
+ },
+ "app-assembly-assembly-workspace.assembly.span.7ffc5bbf0ac2": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "Szenen"
+ },
+ "app-assembly-assembly-workspace.assembly.span.a14ddf71893d": {
+  "nb": "Bare lesetilgang",
+  "en": "Read-only access",
+  "oversatt": "Nur Lesezugriff"
+ },
+ "app-assembly-assembly-workspace.assembly.span.b58ddf67bd0b": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "Szene"
+ },
+ "app-assembly-assembly-workspace.assembly.title.0638f663ce98": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "Wiederholen"
+ },
+ "app-assembly-assembly-workspace.assembly.title.55a386bcfe77": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "Wiederholen (⇧⌘Z)"
+ },
+ "app-assembly-assembly-workspace.assembly.title.6a7a7c1ed5bb": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "Rückgängig (⌘Z)"
+ },
+ "app-assembly-assembly-workspace.assembly.title.7ffc5bbf0ac2": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "Szenen"
+ },
+ "app-assembly-assembly-workspace.assembly.title.83d9a2d2fa50": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Rückgängig"
+ },
+ "app-assembly-assembly-workspace.assembly.title.a4e814b2575e": {
+  "nb": "Legg til lyd ved avspillingshodet",
+  "en": "Add audio at the playhead",
+  "oversatt": "Audio am Abspielkopf hinzufügen"
+ },
+ "app-assembly-assembly-workspace.assembly.title.b58ddf67bd0b": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "Szene"
+ },
+ "app-assembly-assembly-workspace.assembly.title.b9a2b55a75f8": {
+  "nb": "med 2D-scene",
+  "en": "with 2D scene",
+  "oversatt": "mit 2D-Szene"
+ },
+ "app-assembly-assembly-workspace.assembly.title.fb7019e1c867": {
+  "nb": "Lag en video av filmen eller et utvalg av scener",
+  "en": "Make a video of the film or a selection of scenes",
+  "oversatt": "Video des Films oder einer Auswahl von Szenen erstellen"
+ },
+ "app-assembly-assembly-workspace.change-audio.run.83c8e78bb682": {
+  "nb": "Flytt lyd til annen scene",
+  "en": "Move audio to another scene",
+  "oversatt": "Audio in eine andere Szene verschieben"
+ },
+ "app-assembly-assembly-workspace.change-audio.run.d4a448e66b27": {
+  "nb": "Flytt eller kutt lyd",
+  "en": "Move or trim audio",
+  "oversatt": "Audio verschieben oder trimmen"
+ },
+ "app-assembly-assembly-workspace.create-composition.run.0c7ee942ce1b": {
+  "nb": "Ny 2D-scene",
+  "en": "New 2D scene",
+  "oversatt": "Neue 2D-Szene"
+ },
+ "app-assembly-assembly-workspace.deactivate.run.09bb85ab865e": {
+  "nb": "Deaktiver scene",
+  "en": "Deactivate scene",
+  "oversatt": "Szene deaktivieren"
+ },
+ "app-assembly-assembly-workspace.import-film.use-callback.884caffa931e": {
+  "nb": "Filmen er lagret som versjon, men kunne ikke tas i bruk.",
+  "en": "The film was saved as a version, but could not be put into use.",
+  "oversatt": "Der Film wurde als Version gespeichert, konnte jedoch nicht angewendet werden."
+ },
+ "app-assembly-assembly-workspace.import-film.use-callback.fc8e581212e6": {
+  "nb": "Filmen kunne ikke importeres.",
+  "en": "The film could not be imported.",
+  "oversatt": "Der Film konnte nicht importiert werden."
+ },
+ "app-assembly-assembly-workspace.label.use-callback.c41ca6769417": {
+  "nb": "Importer film",
+  "en": "Import film",
+  "oversatt": "Film importieren"
+ },
+ "app-assembly-assembly-workspace.link-block.run.d66c3bdb2917": {
+  "nb": "Flytt tidskobling",
+  "en": "Move time link",
+  "oversatt": "Zeitverknüpfung verschieben"
+ },
+ "app-assembly-assembly-workspace.link-block.run.d68f7c111217": {
+  "nb": "Koble replikk til tid",
+  "en": "Link line to time",
+  "oversatt": "Dialogzeile mit Zeit verknüpfen"
+ },
+ "app-assembly-assembly-workspace.ok.l-flytt-scene-move-scene-clip-production-number-trim.a784d233dc12": {
+  "nb": "Flytt scene",
+  "en": "Move scene",
+  "oversatt": "Szene verschieben"
+ },
+ "app-assembly-assembly-workspace.on-save-settings.cmds-run-silent.1f0df78b0f6e": {
+  "nb": "Lagre eksportinnstillingene",
+  "en": "Save the export settings",
+  "oversatt": "Exporteinstellungen speichern"
+ },
+ "app-assembly-assembly-workspace.own-first.run.bb0ac33af548": {
+  "nb": "Egen versjon av scenen",
+  "en": "Own version of the scene",
+  "oversatt": "Eigene Version der Szene"
+ },
+ "app-assembly-assembly-workspace.remove-audio.run.625a7fda0a72": {
+  "nb": "Fjern lyd",
+  "en": "Remove audio",
+  "oversatt": "Audio entfernen"
+ },
+ "app-assembly-assembly-workspace.remove-link.run.57971ac983e9": {
+  "nb": "Fjern tidskobling",
+  "en": "Remove time link",
+  "oversatt": "Zeitverknüpfung entfernen"
+ },
+ "app-assembly-assembly-workspace.scene-label.message.1c09b0cc2ead": {
+  "nb": "Ingen scener",
+  "en": "No scenes",
+  "oversatt": "Keine Szenen"
+ },
+ "app-assembly-assembly-workspace.scene-label.message.83ced6a1cde5": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Szene"
+ },
+ "app-assembly-assembly-workspace.scene-label.message.e93b420c48d9": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "von"
+ },
+ "app-assembly-assembly-workspace.set-duration.edit-scene.f1243940677b": {
+  "nb": "Kutt slutten av klippet",
+  "en": "Trim the end of the clip",
+  "oversatt": "Ende des Clips trimmen"
+ },
+ "app-assembly-assembly-workspace.set-duration.run.93037e188cc9": {
+  "nb": "Endre lengde på scene",
+  "en": "Change scene length",
+  "oversatt": "Szenenlänge ändern"
+ },
+ "app-assembly-assembly-workspace.split-at-playhead.edit-scene.8f8fcb7367d7": {
+  "nb": "Splitt klipp",
+  "en": "Split clip",
+  "oversatt": "Clip teilen"
+ },
+ "app-assembly-assembly-workspace.split-at-playhead.set-error.5f4a236e0d33": {
+  "nb": "Et tittelkort kan ikke splittes. Lag en 2D-scene eller importer film først.",
+  "en": "A title card cannot be split. Create a 2D scene or import a film first.",
+  "oversatt": "Eine Titelkarte kann nicht geteilt werden. Erstellen Sie zuerst eine 2D-Szene oder importieren Sie Filmaufnahmen."
+ },
+ "app-assembly-assembly-workspace.split-at-playhead.set-error.99ed856267bf": {
+  "nb": "Avspillingshodet står på en grense mellom deler – flytt det litt og prøv igjen.",
+  "en": "The playhead is on a boundary between parts – move it a little and try again.",
+  "oversatt": "Der Abspielkopf befindet sich an einer Grenze zwischen Teilen – bewegen Sie ihn ein Stück und versuchen Sie es erneut."
+ },
+ "app-assembly-assembly-workspace.stamp-sync.set-error.87c6adb87ed0": {
+  "nb": "Avspillingshodet er utenfor scenen du synker. Gå tilbake til scenen og prøv igjen.",
+  "en": "The playhead is outside the scene you are syncing. Go back to the scene and try again.",
+  "oversatt": "Der Abspielkopf befindet sich außerhalb der Szene, die Sie synchronisieren. Kehren Sie zur Szene zurück und versuchen Sie es erneut."
+ },
+ "app-assembly-assembly-workspace.toolbar.aria-label.5e8db678678e": {
+  "nb": "Spill av",
+  "en": "Play",
+  "oversatt": "Abspielen"
+ },
+ "app-assembly-assembly-workspace.toolbar.aria-label.958627778c0c": {
+  "nb": "Tid i filmen",
+  "en": "Time in the film",
+  "oversatt": "Zeit im Film"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.11829848bd8d": {
+  "nb": "Til slutten av filmen (End)",
+  "en": "To the end of the film (End)",
+  "oversatt": "Zum Ende des Films (Ende)"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.142cd882dd0b": {
+  "nb": "Forrige scene (pil opp)",
+  "en": "Previous scene (up arrow)",
+  "oversatt": "Vorherige Szene (Pfeil nach oben)"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.2b9d51745b9c": {
+  "nb": "Spill i løkke",
+  "en": "Loop playback",
+  "oversatt": "Endlosschleife"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.56d58bf4cbd8": {
+  "nb": "Forrige bilde (pil venstre)",
+  "en": "Previous frame (left arrow)",
+  "oversatt": "Vorheriger Frame (Pfeil nach links)"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.8e8efc898013": {
+  "nb": "Neste bilde (pil høyre)",
+  "en": "Next frame (right arrow)",
+  "oversatt": "Nächster Frame (Pfeil nach rechts)"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.c39c47b65127": {
+  "nb": "Til start av filmen (Home)",
+  "en": "To the start of the film (Home)",
+  "oversatt": "Zum Anfang des Films (Pos 1)"
+ },
+ "app-assembly-assembly-workspace.toolbar.label.f44841beb32e": {
+  "nb": "Neste scene (pil ned)",
+  "en": "Next scene (down arrow)",
+  "oversatt": "Nächste Szene (Pfeil nach unten)"
+ },
+ "app-assembly-assembly-workspace.toolbar.title.a6cd6a6948cd": {
+  "nb": "Spill av hele filmen (mellomrom eller K)",
+  "en": "Play the whole film (space or K)",
+  "oversatt": "Ganzen Film abspielen (Leertaste oder K)"
+ },
+ "app-assembly-assembly-workspace.toolbar.title.ccac5ec9c64d": {
+  "nb": "Pause (mellomrom eller K)",
+  "en": "Pause (space or K)",
+  "oversatt": "Pause (Leertaste oder K)"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.aria-label.f8f383421807": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "Sprache"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.button.672b2bf8e2db": {
+  "nb": "Lydprofil, hastighet og masker …",
+  "en": "Audio profile, speed and masks …",
+  "oversatt": "Audioprofil, Geschwindigkeit und Masken …"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.button.a05605a8b15e": {
+  "nb": " ({length} punkter)",
+  "en": " ({length} points)",
+  "oversatt": " ({length} Punkte)"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.button.feb6555ed576": {
+  "nb": "Fjern fra filmen",
+  "en": "Remove from film",
+  "oversatt": "Aus Film entfernen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.31aaa16b8410": {
+  "nb": "Inntoning",
+  "en": "Fade in",
+  "oversatt": "Einblenden"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.4949c4800357": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Länge"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.5d4d7e9d12cd": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "Version"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.616485ec8c77": {
+  "nb": "Dempet (spilles ikke og kommer ikke med i eksporten)",
+  "en": "Muted (not played and not included in the export)",
+  "oversatt": "Stummgeschaltet (wird nicht abgespielt und nicht exportiert)"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.62fdc0100db4": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.6a52050d9c07": {
+  "nb": "Start i filen",
+  "en": "Start in the file",
+  "oversatt": "Start in der Datei"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.6b56e15d6e61": {
+  "nb": "Start i scenen",
+  "en": "Start in the scene",
+  "oversatt": "Start in der Szene"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.817d624f8f4b": {
+  "nb": "Spor",
+  "en": "Track",
+  "oversatt": "Spur"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.b8bf29af9ad8": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "Dialogzeile"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.f8f383421807": {
+  "nb": "Språk",
+  "en": "Language",
+  "oversatt": "Sprache"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.f99d0d312ea8": {
+  "nb": "Uttoning",
+  "en": "Fade out",
+  "oversatt": "Ausblenden"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.label.fab6626c6b62": {
+  "nb": "Opptak til «{value1}»",
+  "en": "Recordings for “{value1}”",
+  "oversatt": "Aufnahmen für „{value1}“"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.link.82cfbba22b37": {
+  "nb": "Åpne i biblioteket",
+  "en": "Open in library",
+  "oversatt": "In Bibliothek öffnen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.0fd56b62082c": {
+  "nb": "Endre lengde på lyd",
+  "en": "Change length of audio",
+  "oversatt": "Audiolänge ändern"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.19adbb87ef5e": {
+  "nb": "Stopp lyden ved scenens slutt",
+  "en": "Stop the audio at the end of the scene",
+  "oversatt": "Audio am Szenenende stoppen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.2fdfcaa699e7": {
+  "nb": "Demp lyd",
+  "en": "Mute audio",
+  "oversatt": "Audio stummschalten"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.3e90b37b01e4": {
+  "nb": "Koble lyd til replikk",
+  "en": "Link audio to line",
+  "oversatt": "Audio mit Dialogzeile verknüpfen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.4d6641a36249": {
+  "nb": "Endre språk for lyd",
+  "en": "Change language of audio",
+  "oversatt": "Audiosprache ändern"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.607a6678cd5b": {
+  "nb": "Kutt starten av lyden",
+  "en": "Trim the start of the audio",
+  "oversatt": "Audio-Anfang trimmen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.6e92837e9731": {
+  "nb": "Endre uttoning",
+  "en": "Change fade out",
+  "oversatt": "Ausblenden ändern"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.6fcc9002c60b": {
+  "nb": "Endre navn på lyd",
+  "en": "Rename audio",
+  "oversatt": "Audio umbenennen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.708056c9c3a2": {
+  "nb": "Endre volum",
+  "en": "Change volume",
+  "oversatt": "Lautstärke ändern"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.754894fc979b": {
+  "nb": "Flytt lyd til annet spor",
+  "en": "Move audio to another track",
+  "oversatt": "Audio auf andere Spur verschieben"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.9e31a18ea68f": {
+  "nb": "Bytt lydversjon",
+  "en": "Switch audio version",
+  "oversatt": "Audioversion wechseln"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.b4e70ca6ac67": {
+  "nb": "La lyden løpe videre",
+  "en": "Let the audio run on",
+  "oversatt": "Audio weiterlaufen lassen"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.bba6b10a3101": {
+  "nb": "Slå på lyd",
+  "en": "Unmute audio",
+  "oversatt": "Audio aktivieren"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.d6bbf8ae6b25": {
+  "nb": "Endre inntoning",
+  "en": "Change fade in",
+  "oversatt": "Einblenden ändern"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.on-change.f2e17d93b49e": {
+  "nb": "Flytt lyd",
+  "en": "Move audio",
+  "oversatt": "Audio verschieben"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.0e50c37b3e5d": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "Keine"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.218dd21c6610": {
+  "nb": "felles for alle språk",
+  "en": "shared across all languages",
+  "oversatt": "für alle Sprachen gemeinsam"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.5185a176094b": {
+  "nb": "Bare",
+  "en": "Only",
+  "oversatt": "Nur"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.7435e0c31a92": {
+  "nb": "Ingen replikker i scenen",
+  "en": "No lines in the scene",
+  "oversatt": "Keine Dialogzeilen in der Szene"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.a23664d8ed77": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "Standard"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.bbdd4be476cf": {
+  "nb": "Nyeste / godkjent",
+  "en": "Latest / approved",
+  "oversatt": "Neueste / freigegeben"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.option.c10db5228315": {
+  "nb": "Felles for alle språk",
+  "en": "Shared across all languages",
+  "oversatt": "Für alle Sprachen gemeinsam"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.p.0118517e2706": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "unbekannt"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.p.36698fe36a15": {
+  "nb": "(endres i lydprofilen)",
+  "en": "(changed in the audio profile)",
+  "oversatt": "(im Audioprofil geändert)"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.p.724f7fe9ea91": {
+  "nb": " · mangler",
+  "en": " · missing",
+  "oversatt": " · fehlt"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.p.7ced37a6aab0": {
+  "nb": "Fil:",
+  "en": "File:",
+  "oversatt": "Datei:"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.p.deb335d71e47": {
+  "nb": "Hastighet:",
+  "en": "Speed:",
+  "oversatt": "Geschwindigkeit:"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "Audio"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d.2": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "Audio"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.span.72f4668ba93c": {
+  "nb": "Løper videre over flere scener",
+  "en": "Runs on across several scenes",
+  "oversatt": "Läuft über mehrere Szenen weiter"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.span.e0f73aa1e830": {
+  "nb": "Ellers stopper lyden ved slutten av scenen",
+  "en": "Otherwise the audio stops at the end of the scene",
+  "oversatt": "Andernfalls stoppt das Audio am Ende der Szene"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.title.0c9793cbd3c1": {
+  "nb": "Starten er festet i denne scenen, men lyden fortsetter inn i de neste scenene",
+  "en": "The start is fixed in this scene, but the audio continues into the next scenes",
+  "oversatt": "Der Start ist in dieser Szene fixiert, aber das Audio läuft in die nächsten Szenen weiter"
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.title.234575f8d899": {
+  "nb": "Hvilken språkversjon lyden spilles i. Musikk og effekter er vanligvis felles.",
+  "en": "Which language version the audio plays in. Music and effects are usually shared.",
+  "oversatt": "In welcher Sprachversion das Audio abgespielt wird. Musik und Effekte werden üblicherweise geteilt."
+ },
+ "app-assembly-audio-clip-panel.audio-clip-panel.title.536acb9390ef": {
+  "nb": "Fjern lyden fra filmen (Delete). Kan angres.",
+  "en": "Remove the audio from the film (Delete). Can be undone.",
+  "oversatt": "Audio aus dem Film entfernen (Entf). Kann rückgängig gemacht werden."
+ },
+ "app-assembly-audio-clip-panel.gain.aria-label.617c9b36b481": {
+  "nb": "Volum i desibel",
+  "en": "Volume in decibels",
+  "oversatt": "Lautstärke in Dezibel"
+ },
+ "app-assembly-audio-clip-panel.gain.label.b9d969d90bfa": {
+  "nb": "Volum ({value1}{value2} dB)",
+  "en": "Volume ({value1}{value2} dB)",
+  "oversatt": "Lautstärke ({value1}{value2} dB)"
+ },
+ "app-assembly-audio-clip-panel.gain.title.14a2b1c82862": {
+  "nb": "Dobbeltklikk for 0 dB",
+  "en": "Double-click for 0 dB",
+  "oversatt": "Doppelklick für 0 dB"
+ },
+ "app-assembly-audio-tracks.add-audio-kind": {
+  "nb": "Legg til {kind}",
+  "en": "Add {kind}",
+  "oversatt": "{kind} hinzufügen"
+ },
+ "app-assembly-audio-tracks.audio-block.aria-label.3872c16095b5": {
+  "nb": ", dempet",
+  "en": ", muted",
+  "oversatt": ", stummgeschaltet"
+ },
+ "app-assembly-audio-tracks.audio-block.aria-label.bddda88ec3d7": {
+  "nb": ", replikk",
+  "en": ", line",
+  "oversatt": ", Dialogzeile"
+ },
+ "app-assembly-audio-tracks.audio-block.aria-label.d09731045dae": {
+  "nb": ", løper videre",
+  "en": ", continues",
+  "oversatt": ", läuft weiter"
+ },
+ "app-assembly-audio-tracks.audio-block.title.64d9b1bf4801": {
+  "nb": "Løper videre over flere scener",
+  "en": "Continues over several scenes",
+  "oversatt": "Läuft über mehrere Szenen weiter"
+ },
+ "app-assembly-audio-tracks.audio-block.title.8000353b2e59": {
+  "nb": "Dobbeltklikk for lydprofil og volumpunkter",
+  "en": "Double-click for the sound profile and volume points",
+  "oversatt": "Doppelklick für Audioprofil und Lautstärkepunkte"
+ },
+ "app-assembly-audio-tracks.audio-block.title.85535024c691": {
+  "nb": "Dra for å flytte, dra i kantene for å kutte",
+  "en": "Drag to move, drag the edges to trim",
+  "oversatt": "Ziehen zum Verschieben, an den Kanten ziehen zum Trimmen"
+ },
+ "app-assembly-audio-tracks.audio-block.title.d13bf3e03ce4": {
+  "nb": "Lydfilen mangler",
+  "en": "The sound file is missing",
+  "oversatt": "Die Audiodatei fehlt"
+ },
+ "app-assembly-audio-tracks.audio-block.title.d6f6a16600a0": {
+  "nb": "Lydfilen kunne ikke leses",
+  "en": "The sound file could not be read",
+  "oversatt": "Die Audiodatei konnte nicht gelesen werden"
+ },
+ "app-assembly-audio-tracks.audio-block.title.fa363d714f83": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "Dialogzeile"
+ },
+ "app-assembly-audio-tracks.audio-tracks.aria-label.5bc137169d4d": {
+  "nb": "Legg til {value1}",
+  "en": "Add {value1}",
+  "oversatt": "{value1} hinzufügen"
+ },
+ "app-assembly-audio-tracks.audio-tracks.aria-label.963bd8f7fd1e": {
+  "nb": "Lydspor",
+  "en": "Audio tracks",
+  "oversatt": "Audiospuren"
+ },
+ "app-assembly-audio-tracks.audio-tracks.aria-label.baa6b9a27adf": {
+  "nb": "Demp {value1}",
+  "en": "Mute {value1}",
+  "oversatt": "{value1} stummschalten"
+ },
+ "app-assembly-audio-tracks.audio-tracks.aria-label.c071943468aa": {
+  "nb": "Slå på {value1}",
+  "en": "Turn on {value1}",
+  "oversatt": "{value1} aktivieren"
+ },
+ "app-assembly-audio-tracks.audio-tracks.title.13ad2057fdf7": {
+  "nb": "Slå på lyden i sporet",
+  "en": "Turn on the sound in the track",
+  "oversatt": "Ton in der Spur aktivieren"
+ },
+ "app-assembly-audio-tracks.audio-tracks.title.4b1c1796b66d": {
+  "nb": "Demp sporet (også i eksporten)",
+  "en": "Mute the track (also in the export)",
+  "oversatt": "Spur stummschalten (auch beim Export)"
+ },
+ "app-assembly-audio-tracks.audio-tracks.title.e9d259e3c8ba": {
+  "nb": "Legg til lyd her (ved avspillingshodet)",
+  "en": "Add sound here (at the playhead)",
+  "oversatt": "Audio hier hinzufügen (am Abspielkopf)"
+ },
+ "app-assembly-audio-tracks.label.memo.2274c457c44f": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.aria-label.8a47f40d54ef": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "Format"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.aria-label.9b5ada7637b0": {
+  "nb": "Bekreft videogenerering",
+  "en": "Confirm video generation",
+  "oversatt": "Videogenerierung bestätigen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.aria-label.accd87b7d2b8": {
+  "nb": "Videomodell",
+  "en": "Video model",
+  "oversatt": "Videomodell"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.aria-label.e10f8f84041a": {
+  "nb": "Prioritet i køen",
+  "en": "Priority in the queue",
+  "oversatt": "Priorität in der Warteschlange"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.aria-label.f5ae2186cca8": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "Szenen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.2cbfa29f8086": {
+  "nb": "Velg alle uten video",
+  "en": "Select all without video",
+  "oversatt": "Alle ohne Video auswählen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.4abb785ea991": {
+  "nb": "Fjern valg",
+  "en": "Clear selection",
+  "oversatt": "Auswahl aufheben"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.7540abeec993": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "Segmente"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.7c4c558f629a": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.808a703cfc27": {
+  "nb": "segment",
+  "en": "segment",
+  "oversatt": "Segment"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.a94a68947d70": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Schließen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.dbc345d7cb22": {
+  "nb": "Lag video",
+  "en": "Make video",
+  "oversatt": "Video erstellen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.button.e0c175903fc9": {
+  "nb": "Ja, legg i kø",
+  "en": "Yes, queue them",
+  "oversatt": "Ja, in Warteschlange einreihen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.dialog-description.d1ee0ff0fb3e": {
+  "nb": "Velg scenene. Hvert segment lages med beskrivelsen fra «Generer scene» (din egen eller den automatiske) og legges i køen. 2D-scenene endres aldri; ferdige videoer blir nye versjoner.",
+  "en": "Choose the scenes. Each segment is made with the description from “Generate scene” (your own or the automatic one) and added to the queue. The 2D scenes are never changed; finished videos become new versions.",
+  "oversatt": "Wählen Sie die Szenen aus. Jedes Segment wird mit der Beschreibung aus „Szene generieren“ (Ihrer eigenen oder der automatischen) erstellt und in die Warteschlange eingereiht. Die 2D-Szenen werden nie verändert; fertige Videos werden zu neuen Versionen."
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.dialog-title.a96fd66050f7": {
+  "nb": "Video for flere scener",
+  "en": "Video for several scenes",
+  "oversatt": "Video für mehrere Szenen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.label.1eeab9303c99": {
+  "nb": "Prioritet",
+  "en": "Priority",
+  "oversatt": "Priorität"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.label.284377e12e64": {
+  "nb": "Sammenheng mellom segmentene",
+  "en": "Continuity between the segments",
+  "oversatt": "Kontinuität zwischen den Segmenten"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.label.b2f517832e70": {
+  "nb": "Hopp over segmenter som har video",
+  "en": "Skip segments that already have video",
+  "oversatt": "Segmente überspringen, die bereits ein Video haben"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.option.9ab391d39417": {
+  "nb": "16:9 liggende",
+  "en": "16:9 landscape",
+  "oversatt": "16:9 Querformat"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.option.e2ab79e82dcf": {
+  "nb": "9:16 stående",
+  "en": "9:16 portrait",
+  "oversatt": "9:16 Hochformat"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.0f157d644f37": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "Szenen"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.2290afecd18f": {
+  "nb": "Belastes leverandørkontoen til prosjektets eier, anslått {value1} (et anslag; prisen regnes inn i taket med en gang). Jobber som venter i køen kan avbrytes uten kostnad. Vil du legge dem i kø nå?",
+  "en": "Charged to the provider account of the project's owner, estimated at {value1} (an estimate; the price counts towards the limit straight away). Jobs waiting in the queue can be cancelled at no cost. Do you want to queue them now?",
+  "oversatt": "Wird dem Anbieterkonto des Projekteigentümers belastet, geschätzt auf {value1} (eine Schätzung; der Preis wird sofort auf das Limit angerechnet). Aufträge in der Warteschlange können kostenlos abgebrochen werden. Jetzt in die Warteschlange einreihen?"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.2a6234ba65d9": {
+  "nb": "Henter leverandører …",
+  "en": "Fetching providers …",
+  "oversatt": "Anbieter werden abgerufen …"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.7540abeec993": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "Segmente"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.808a703cfc27": {
+  "nb": "segment",
+  "en": "segment",
+  "oversatt": "Segment"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.a1231b16463c": {
+  "nb": "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten.",
+  "en": "No video provider is connected. The project's owner can connect one under “AI providers” on the project list.",
+  "oversatt": "Kein Videoanbieter verbunden. Der Projekteigentümer kann einen unter „KI-Anbieter“ in der Projektliste verbinden."
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.a7a32ef81137": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "mit"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.p.a89258cb0a00": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "Szene"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.7540abeec993": {
+  "nb": "segmenter",
+  "en": "segments",
+  "oversatt": "Segmente"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.7d5e8b30ca7e": {
+  "nb": " (forslag)",
+  "en": " (proposal)",
+  "oversatt": " (Vorschlag)"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.808a703cfc27": {
+  "nb": "segment",
+  "en": "segment",
+  "oversatt": "Segment"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.9963b3be2ef9": {
+  "nb": "ferdig",
+  "en": "done",
+  "oversatt": "Fertig"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.df980ea038fd": {
+  "nb": "mangler startbilde",
+  "en": "missing start image",
+  "oversatt": "Startbild fehlt"
+ },
+ "app-assembly-batch-video-dialog.batch-video-dialog.span.e340a042dffd": {
+  "nb": "med video",
+  "en": "with video",
+  "oversatt": "Mit Video"
+ },
+ "app-assembly-batch-video-dialog.label.label.1a19052c9b7f": {
+  "nb": "Scene {value1}, segment {value2}",
+  "en": "Scene {value1}, segment {value2}",
+  "oversatt": "Szene {value1}, Segment {value2}"
+ },
+ "app-assembly-batch-video-dialog.r.cmds-run-and-wait.5254a8ba8e3d": {
+  "nb": "Inndeling for generering (flere scener)",
+  "en": "Division for generation (several scenes)",
+  "oversatt": "Aufteilung zur Generierung (mehrere Szenen)"
+ },
+ "app-assembly-batch-video-dialog.run.errors-push.a9070233703f": {
+  "nb": "Scene {value1}, segment {value2}: replikkene er for lange for modellen",
+  "en": "Scene {value1}, segment {value2}: the dialogue is too long for the model",
+  "oversatt": "Szene {value1}, Segment {value2}: Der Dialog ist zu lang für das Modell"
+ },
+ "app-assembly-batch-video-dialog.run.set-busy.5dffdc2066fa": {
+  "nb": "Legger i kø … {n} av {totalSegments}",
+  "en": "Queueing … {n} of {totalSegments}",
+  "oversatt": "Wird eingereiht … {n} von {totalSegments}"
+ },
+ "app-assembly-batch-video-dialog.text.text.f599dd171c64": {
+  "nb": "{queued} lagt i kø. Ikke lagt i kø: {value2}{value3}",
+  "en": "{queued} queued. Not queued: {value2}{value3}",
+  "oversatt": "{queued} eingereiht. Nicht eingereiht: {value2}{value3}"
+ },
+ "app-assembly-batch-video-dialog.text.text.fdb3312d0ffb": {
+  "nb": "{queued} {value2} lagt i kø hos {name}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.",
+  "en": "{queued} {value2} queued at {name}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview.",
+  "oversatt": "{queued} {value2} bei {name} eingereiht. Sie werden höchstens zu dritt gesendet und nach Fertigstellung als neue Versionen hinzugefügt. Sie können dies unter KI-Jobs in der Projektübersicht verfolgen."
+ },
+ "app-assembly-batch-video-dialog.videos-queued-at": {
+  "nb": {
+   "one": "{count} video er lagt i kø hos {provider}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten.",
+   "other": "{count} videoer er lagt i kø hos {provider}. De sendes høyst tre om gangen og legges inn som nye versjoner når de er ferdige. Følg med under AI-jobber på prosjektoversikten."
+  },
+  "en": {
+   "one": "{count} video is queued at {provider}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview.",
+   "other": "{count} videos are queued at {provider}. They are sent three at a time at most and added as new versions when they are finished. Follow them under AI jobs on the project overview."
+  },
+  "oversatt": {
+   "one": "{count} Video ist bei {provider} eingereiht. Sie werden höchstens zu dritt gesendet und nach Fertigstellung als neue Versionen hinzugefügt. Sie können dies unter KI-Jobs in der Projektübersicht verfolgen.",
+   "other": "{count} Videos sind bei {provider} eingereiht. Sie werden höchstens zu dritt gesendet und nach Fertigstellung als neue Versionen hinzugefügt. Sie können dies unter KI-Jobs in der Projektübersicht verfolgen."
+  }
+ },
+ "app-assembly-clip-panel.block.aria-label.3183c55f251b": {
+  "nb": "Fjern tidskobling",
+  "en": "Remove time link",
+  "oversatt": "Zeitverknüpfung entfernen"
+ },
+ "app-assembly-clip-panel.block.button.3ede03278d27": {
+  "nb": "Flytt hit",
+  "en": "Move here",
+  "oversatt": "Hierher verschieben"
+ },
+ "app-assembly-clip-panel.block.button.63568e4ef97b": {
+  "nb": "Sett tid her",
+  "en": "Set time here",
+  "oversatt": "Zeit hier festlegen"
+ },
+ "app-assembly-clip-panel.block.button.c77bf3fa5b69": {
+  "nb": "lag",
+  "en": "layer",
+  "oversatt": "Ebene"
+ },
+ "app-assembly-clip-panel.block.span.47e6f755ad7f": {
+  "nb": "neste: T",
+  "en": "next: T",
+  "oversatt": "Weiter: T"
+ },
+ "app-assembly-clip-panel.block.title.14023ffc98cc": {
+  "nb": "Tidskoblingen ligger etter slutten av klippet – ikke dekket av filmen",
+  "en": "The time link is after the end of the clip – not covered by the film",
+  "oversatt": "Die Zeitverknüpfung liegt nach dem Ende des Clips – nicht durch den Film abgedeckt"
+ },
+ "app-assembly-clip-panel.block.title.1704b616f3f7": {
+  "nb": "tid i 2D-scenen",
+  "en": "time in the 2D scene",
+  "oversatt": "Zeit in der 2D-Szene"
+ },
+ "app-assembly-clip-panel.block.title.1be66caeea35": {
+  "nb": "Flytt tidskoblingen til avspillingshodet",
+  "en": "Move the time link to the playhead",
+  "oversatt": "Zeitverknüpfung zum Abspielkopf verschieben"
+ },
+ "app-assembly-clip-panel.block.title.3a3b363b8abb": {
+  "nb": "Legg til et tidsrom til (en replikk kan høres flere ganger)",
+  "en": "Add another time (a line can be heard more than once)",
+  "oversatt": "Weiteren Zeitraum hinzufügen (eine Replik kann mehrmals zu hören sein)"
+ },
+ "app-assembly-clip-panel.block.title.4a8eedcf67d9": {
+  "nb": "Gå hit i filmen",
+  "en": "Go to this point in the film",
+  "oversatt": "Im Film zu diesem Punkt springen"
+ },
+ "app-assembly-clip-panel.block.title.5535abfd482e": {
+  "nb": "Hendelse i 2D-scenen",
+  "en": "Event in the 2D scene",
+  "oversatt": "Ereignis in der 2D-Szene"
+ },
+ "app-assembly-clip-panel.block.title.5e70c7cb41c5": {
+  "nb": "Tidskobling (tid fra scenens begynnelse)",
+  "en": "Time link (time from the start of the scene)",
+  "oversatt": "Zeitverknüpfung (Zeit ab Szenenanfang)"
+ },
+ "app-assembly-clip-panel.block.title.c77bf3fa5b69": {
+  "nb": "lag",
+  "en": "layer",
+  "oversatt": "Ebene"
+ },
+ "app-assembly-clip-panel.block.title.cd90e560278b": {
+  "nb": "Koble blokken til avspillingshodet",
+  "en": "Link the block to the playhead",
+  "oversatt": "Block mit Abspielkopf verknüpfen"
+ },
+ "app-assembly-clip-panel.block.title.d13c41b8b7ef": {
+  "nb": "kuttet bort i klippet",
+  "en": "cut from the clip",
+  "oversatt": "Im Clip abgeschnitten"
+ },
+ "app-assembly-clip-panel.clip-panel.aria-label.65d01ec7c46a": {
+  "nb": "Valgt scene",
+  "en": "Selected scene",
+  "oversatt": "Ausgewählte Szene"
+ },
+ "app-assembly-clip-panel.clip-panel.aria-label.6d6531c99186": {
+  "nb": "Manus for scenen",
+  "en": "Script for the scene",
+  "oversatt": "Drehbuch für die Szene"
+ },
+ "app-assembly-clip-panel.clip-panel.aria-label.e679b66c91ef": {
+  "nb": "Lengde i sekunder",
+  "en": "Length in seconds",
+  "oversatt": "Dauer in Sekunden"
+ },
+ "app-assembly-clip-panel.clip-panel.button.111bfe616bd3": {
+  "nb": "Deaktiver",
+  "en": "Deactivate",
+  "oversatt": "Deaktivieren"
+ },
+ "app-assembly-clip-panel.clip-panel.button.3a2b98b43bd3": {
+  "nb": "Fra manus",
+  "en": "From script",
+  "oversatt": "Aus Drehbuch"
+ },
+ "app-assembly-clip-panel.clip-panel.button.49253a9670dd": {
+  "nb": "Lag 2D-scene",
+  "en": "Create 2D scene",
+  "oversatt": "2D-Szene erstellen"
+ },
+ "app-assembly-clip-panel.clip-panel.button.69a63abc2582": {
+  "nb": "Synker (T)",
+  "en": "Syncing (T)",
+  "oversatt": "Synchronisieren (T)"
+ },
+ "app-assembly-clip-panel.clip-panel.button.b3bb2ed5620c": {
+  "nb": "Synk replikker",
+  "en": "Sync lines",
+  "oversatt": "Dialogzeilen synchronisieren"
+ },
+ "app-assembly-clip-panel.clip-panel.button.c3ab4b386090": {
+  "nb": "Generer scene …",
+  "en": "Generate scene …",
+  "oversatt": "Szene generieren …"
+ },
+ "app-assembly-clip-panel.clip-panel.button.d8a66bd8e7ba": {
+  "nb": "Dialog med AI-stemmer …",
+  "en": "Dialogue with AI voices …",
+  "oversatt": "Dialog mit KI-Stimmen …"
+ },
+ "app-assembly-clip-panel.clip-panel.dd.743591669634": {
+  "nb": "Tittelkort (ingen 2D-scene ennå)",
+  "en": "Title card (no 2D scene yet)",
+  "oversatt": "Titelkarte (noch keine 2D-Szene)"
+ },
+ "app-assembly-clip-panel.clip-panel.dt.08069689c8ca": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Dauer"
+ },
+ "app-assembly-clip-panel.clip-panel.dt.4d157383d3de": {
+  "nb": "Starter",
+  "en": "Starts",
+  "oversatt": "Beginnt"
+ },
+ "app-assembly-clip-panel.clip-panel.dt.c102c4a446e0": {
+  "nb": "Materiale",
+  "en": "Material",
+  "oversatt": "Material"
+ },
+ "app-assembly-clip-panel.clip-panel.h2.6200b131dc8b": {
+  "nb": "Uten overskrift",
+  "en": "Untitled",
+  "oversatt": "Ohne Titel"
+ },
+ "app-assembly-clip-panel.clip-panel.h2.898787411427": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "Drehbuch"
+ },
+ "app-assembly-clip-panel.clip-panel.label.990f9f298512": {
+  "nb": "Følg avspillingen",
+  "en": "Follow playback",
+  "oversatt": "Wiedergabe folgen"
+ },
+ "app-assembly-clip-panel.clip-panel.link.36e0fe403371": {
+  "nb": "Åpne i sceneeditoren",
+  "en": "Open in scene editor",
+  "oversatt": "Im Szenen-Editor öffnen"
+ },
+ "app-assembly-clip-panel.clip-panel.link.b929ec96f50e": {
+  "nb": "Vis i manus",
+  "en": "Show in script",
+  "oversatt": "Im Drehbuch anzeigen"
+ },
+ "app-assembly-clip-panel.clip-panel.p.94ed7f145a1c": {
+  "nb": "Ingen aktive scener.",
+  "en": "No active scenes.",
+  "oversatt": "Keine aktiven Szenen."
+ },
+ "app-assembly-clip-panel.clip-panel.p.d72078209662": {
+  "nb": "Velg en scene i tidslinjen.",
+  "en": "Select a scene in the timeline.",
+  "oversatt": "Wählen Sie eine Szene in der Zeitleiste aus."
+ },
+ "app-assembly-clip-panel.clip-panel.span.22b6933a77ce": {
+  "nb": "(planlagt på prosjektoversikten)",
+  "en": "(planned on the project overview)",
+  "oversatt": "(in der Projektübersicht geplant)"
+ },
+ "app-assembly-clip-panel.clip-panel.span.3f20cdbe8dd4": {
+  "nb": "(beregnet fra manus)",
+  "en": "(estimated from the script)",
+  "oversatt": "(aus dem Drehbuch geschätzt)"
+ },
+ "app-assembly-clip-panel.clip-panel.span.65afc9f67eed": {
+  "nb": "importert",
+  "en": "imported",
+  "oversatt": "importiert"
+ },
+ "app-assembly-clip-panel.clip-panel.span.7d096b2cb640": {
+  "nb": "filmens lengde",
+  "en": "the film's length",
+  "oversatt": "Länge des Films"
+ },
+ "app-assembly-clip-panel.clip-panel.span.d6e5d96dd1c1": {
+  "nb": "beregnet fra manus",
+  "en": "estimated from the script",
+  "oversatt": "aus dem Drehbuch geschätzt"
+ },
+ "app-assembly-clip-panel.clip-panel.span.d7a6a6275f73": {
+  "nb": "summen av delene",
+  "en": "the sum of the parts",
+  "oversatt": "Summe der Teile"
+ },
+ "app-assembly-clip-panel.clip-panel.span.fccdc9c61be2": {
+  "nb": "Ferdig film –",
+  "en": "Finished film –",
+  "oversatt": "Fertiger Film –"
+ },
+ "app-assembly-clip-panel.clip-panel.span.ff2e511cab3c": {
+  "nb": "planlagt",
+  "en": "planned",
+  "oversatt": "geplant"
+ },
+ "app-assembly-clip-panel.clip-panel.title.0bebd92f1a31": {
+  "nb": "Manuset viser scenen under avspillingshodet",
+  "en": "The script shows the scene under the playhead",
+  "oversatt": "Das Drehbuch zeigt die Szene unter dem Abspielkopf"
+ },
+ "app-assembly-clip-panel.clip-panel.title.8256856243d6": {
+  "nb": "Les og forbered beskrivelsene for AI-video av scenen",
+  "en": "Read and prepare the descriptions for AI video of the scene",
+  "oversatt": "Beschreibungen für KI-Video der Szene lesen und vorbereiten"
+ },
+ "app-assembly-clip-panel.clip-panel.title.959168d85247": {
+  "nb": "Synk replikker: spill av, og trykk T hver gang replikken eller handlingen som står for tur, begynner. Klikk på en blokk for å begynne der.",
+  "en": "Sync lines: play, and press T each time the line or action that is up next begins. Click a block to start there.",
+  "oversatt": "Dialogzeilen synchronisieren: Abspielen und jedes Mal T drücken, wenn die nächste Dialogzeile oder Handlung beginnt. Auf einen Block klicken, um dort zu beginnen."
+ },
+ "app-assembly-clip-panel.clip-panel.title.a68b03ba85a3": {
+  "nb": "Åpne manuset med replikken eller handlingen under avspillingshodet valgt",
+  "en": "Open the script with the line or action under the playhead selected",
+  "oversatt": "Drehbuch mit der Dialogzeile oder Handlung unter dem Abspielkopf ausgewählt öffnen"
+ },
+ "app-assembly-clip-panel.clip-panel.title.b04a05937055": {
+  "nb": "Bruk lengden som er beregnet fra manuset",
+  "en": "Use the length estimated from the script",
+  "oversatt": "Aus dem Drehbuch geschätzte Länge verwenden"
+ },
+ "app-assembly-clip-panel.clip-panel.title.d0c5cb7ec4aa": {
+  "nb": "Les inn replikkene med AI-stemmer og legg dem på dialogsporet",
+  "en": "Read the lines with AI voices and add them to the dialogue track",
+  "oversatt": "Dialogzeilen mit KI-Stimmen einsprechen und zur Dialogspur hinzufügen"
+ },
+ "app-assembly-clip-panel.clip-panel.title.db8196f200d7": {
+  "nb": "Tar scenen ut av filmen og manuset. Den slettes ikke og kan aktiveres igjen i manuset.",
+  "en": "Takes the scene out of the film and the script. It is not deleted and can be activated again in the script.",
+  "oversatt": "Nimmt die Szene aus dem Film und dem Drehbuch heraus. Sie wird nicht gelöscht und kann im Drehbuch wieder aktiviert werden."
+ },
+ "app-assembly-clip-panel.coverage-row.aria-label.2e407db99a66": {
+  "nb": "Første linje filmen dekker",
+  "en": "First line the film covers",
+  "oversatt": "Erste vom Film abgedeckte Zeile"
+ },
+ "app-assembly-clip-panel.coverage-row.aria-label.cab80234aa8a": {
+  "nb": "Siste linje filmen dekker",
+  "en": "Last line the film covers",
+  "oversatt": "Letzte vom Film abgedeckte Zeile"
+ },
+ "app-assembly-clip-panel.coverage-row.span.77124bca97fd": {
+  "nb": "dekker hele scenen",
+  "en": "covers the whole scene",
+  "oversatt": "deckt die gesamte Szene ab"
+ },
+ "app-assembly-clip-panel.coverage-row.span.82424be89c7d": {
+  "nb": "dekker fra–til",
+  "en": "covers from–to",
+  "oversatt": "deckt von–bis ab"
+ },
+ "app-assembly-clip-panel.coverage-row.span.d5c18fe57923": {
+  "nb": "Filmen",
+  "en": "The film",
+  "oversatt": "Der Film"
+ },
+ "app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.19c7e8f8fedd": {
+  "nb": "uten lyd",
+  "en": "no audio",
+  "oversatt": "ohne Audio"
+ },
+ "app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.9ccb5f85fc08": {
+  "nb": "b/s",
+  "en": "fps",
+  "oversatt": "fps"
+ },
+ "app-assembly-clip-panel.facts.take-duration-frames-format-seconds-take-duration-frames-fps-null-m-width-m-height-m-width-m-height-null-m-fps-math-round-m-fps-100-100-l-b-s-fps-null-m-m-has-audio-l-uten-lyd-no-audio-null-m-m-has-audio-m-byte-size-film-audio-max-bytes-l-lyden-spilles-ikke-filen-er-over-400-mb-the-audio-is-not-played-the-file-is-over-400-mb-null-filter.f3a2dfb92cbf": {
+  "nb": "lyden spilles ikke (filen er over 400 MB)",
+  "en": "the audio is not played (the file is over 400 MB)",
+  "oversatt": "Audio wird nicht abgespielt (Datei ist über 400 MB)"
+ },
+ "app-assembly-clip-panel.film-row.span.7f409ef2ef8a": {
+  "nb": "b/s",
+  "en": "fps",
+  "oversatt": "fps"
+ },
+ "app-assembly-clip-panel.film-row.span.9c61c804f374": {
+  "nb": "prosjektet har",
+  "en": "the project has",
+  "oversatt": "Projekt hat"
+ },
+ "app-assembly-clip-panel.film-row.span.be01fe50a25c": {
+  "nb": "Importert film",
+  "en": "Imported film",
+  "oversatt": "Importierter Film"
+ },
+ "app-assembly-clip-panel.how.message.04f5bbd36a1c": {
+  "nb": "beregnet",
+  "en": "estimated",
+  "oversatt": "geschätzt"
+ },
+ "app-assembly-clip-panel.how.message.41a9c95c3d6e": {
+  "nb": "fra lydklippet",
+  "en": "from the audio clip",
+  "oversatt": "vom Audioclip"
+ },
+ "app-assembly-clip-panel.how.message.c861a7564fdb": {
+  "nb": "satt tid",
+  "en": "set time",
+  "oversatt": "festgelegte Zeit"
+ },
+ "app-assembly-clip-panel.scene-text.p.26d0602a123e": {
+  "nb": "Scenen har ingen tekst.",
+  "en": "The scene has no text.",
+  "oversatt": "Die Szene enthält keinen Text."
+ },
+ "app-assembly-clip-panel.scene-text.title.d7c315795777": {
+  "nb": "Gå til starten av scenen",
+  "en": "Go to the start of the scene",
+  "oversatt": "Zum Anfang der Szene springen"
+ },
+ "app-assembly-clip-panel.set.run.67b9a4484e0a": {
+  "nb": "Manusdekning for filmen",
+  "en": "Script coverage for the film",
+  "oversatt": "Drehbuchabdeckung für den Film"
+ },
+ "app-assembly-clip-panel.transition-row.aria-label.8dc4d6bbde87": {
+  "nb": "Overgang inn i scenen",
+  "en": "Transition into the scene",
+  "oversatt": "Übergang in die Szene"
+ },
+ "app-assembly-clip-panel.transition-row.h2.8dc4d6bbde87": {
+  "nb": "Overgang inn i scenen",
+  "en": "Transition into the scene",
+  "oversatt": "Übergang in die Szene"
+ },
+ "app-assembly-clip-panel.transition-row.h2.fe87ad95e68e": {
+  "nb": "Starten av filmen",
+  "en": "Start of the film",
+  "oversatt": "Anfang des Films"
+ },
+ "app-assembly-clip-panel.transition-row.label.d7a0e0606f89": {
+  "nb": "Svart-hvitt (også i eksporten)",
+  "en": "Black and white (also in the export)",
+  "oversatt": "Schwarzweiß (auch beim Export)"
+ },
+ "app-assembly-clip-panel.transition-row.title.d917d64007d8": {
+  "nb": "Scenen vises og eksporteres i svart-hvitt",
+  "en": "The scene is shown and exported in black and white",
+  "oversatt": "Die Szene wird in Schwarzweiß angezeigt und exportiert"
+ },
+ "app-assembly-clip-panel.use.aria-label.e17d76024cd1": {
+  "nb": "Bruk",
+  "en": "Use",
+  "oversatt": "Verwenden"
+ },
+ "app-assembly-clip-panel.use.button.d95b06a1ef34": {
+  "nb": "Bruk denne",
+  "en": "Use this",
+  "oversatt": "Diese verwenden"
+ },
+ "app-assembly-clip-panel.use.span.649ee126fc4e": {
+  "nb": "I bruk",
+  "en": "In use",
+  "oversatt": "In Verwendung"
+ },
+ "app-assembly-clip-panel.versions.aria-label.014bb29ad9fe": {
+  "nb": "filmen",
+  "en": "the film",
+  "oversatt": "der Film"
+ },
+ "app-assembly-clip-panel.versions.aria-label.014bb29ad9fe.2": {
+  "nb": "filmen",
+  "en": "the film",
+  "oversatt": "der Film"
+ },
+ "app-assembly-clip-panel.versions.aria-label.785053120649": {
+  "nb": "Versjoner av scenen",
+  "en": "Versions of the scene",
+  "oversatt": "Versionen der Szene"
+ },
+ "app-assembly-clip-panel.versions.aria-label.7b455c5c63ce": {
+  "nb": "Lyden i",
+  "en": "The audio in",
+  "oversatt": "Das Audio in"
+ },
+ "app-assembly-clip-panel.versions.aria-label.c44e135c07c7": {
+  "nb": "Velg filmfil",
+  "en": "Choose film file",
+  "oversatt": "Filmdatei auswählen"
+ },
+ "app-assembly-clip-panel.versions.button.67949c564705": {
+  "nb": "Importer ferdig film …",
+  "en": "Import finished film …",
+  "oversatt": "Fertigen Film importieren …"
+ },
+ "app-assembly-clip-panel.versions.button.9415560acd9f": {
+  "nb": "Importerer …",
+  "en": "Importing …",
+  "oversatt": "Importieren …"
+ },
+ "app-assembly-clip-panel.versions.button.bd3d3aae8322": {
+  "nb": "Sammenlign versjoner …",
+  "en": "Compare versions …",
+  "oversatt": "Versionen vergleichen …"
+ },
+ "app-assembly-clip-panel.versions.button.e98a536e8bd8": {
+  "nb": "Stillbilde fra biblioteket …",
+  "en": "Still from the library …",
+  "oversatt": "Standbild aus der Bibliothek …"
+ },
+ "app-assembly-clip-panel.versions.h2.785053120649": {
+  "nb": "Versjoner av scenen",
+  "en": "Versions of the scene",
+  "oversatt": "Versionen der Szene"
+ },
+ "app-assembly-clip-panel.versions.option.000514f9f2ed": {
+  "nb": "Med engelsk dialog",
+  "en": "With English dialogue",
+  "oversatt": "Mit englischem Dialog"
+ },
+ "app-assembly-clip-panel.versions.option.0c6433cf90a7": {
+  "nb": "Med norsk dialog",
+  "en": "With Norwegian dialogue",
+  "oversatt": "Mit norwegischem Dialog"
+ },
+ "app-assembly-clip-panel.versions.option.6fcd11e727b5": {
+  "nb": "Under arbeid",
+  "en": "In progress",
+  "oversatt": "In Bearbeitung"
+ },
+ "app-assembly-clip-panel.versions.option.910806eb14b2": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "Genehmigt"
+ },
+ "app-assembly-clip-panel.versions.option.b2001a1f41e2": {
+  "nb": "Referanse",
+  "en": "Reference",
+  "oversatt": "Referenz"
+ },
+ "app-assembly-clip-panel.versions.option.caad573e2191": {
+  "nb": "Bare musikk og effekter",
+  "en": "Music and effects only",
+  "oversatt": "Nur Musik und Effekte"
+ },
+ "app-assembly-clip-panel.versions.p.68f4671c4e31": {
+  "nb": "Film og klipping kommer fra hovedfilmen (scenen er delt). Velger eller klipper du noe her, får spinoffen sitt eget; hovedfilmen endres ikke.",
+  "en": "Film and cutting come from the main film (the scene is shared). If you choose or cut something here, the spin-off gets its own; the main film is not changed.",
+  "oversatt": "Film und Schnitt stammen aus dem Hauptfilm (die Szene wird geteilt). Wenn Sie hier etwas auswählen oder schneiden, erhält das Spin-off eine eigene Version; der Hauptfilm bleibt unverändert."
+ },
+ "app-assembly-clip-panel.versions.p.7c0eec48c55d": {
+  "nb": "Scenen er klippet sammen av deler (se «Klipp»). «Bruk denne» starter på nytt med hele versjonen.",
+  "en": "The scene is cut together from parts (see “Cut”). “Use this” starts again with the whole version.",
+  "oversatt": "Die Szene ist aus Teilen zusammengeschnitten (siehe „Schnitt“). „Diese verwenden“ startet wieder mit der vollständigen Version."
+ },
+ "app-assembly-clip-panel.versions.run.d78aa13a6ce9": {
+  "nb": "Endre dialog i filmlyden",
+  "en": "Change dialogue in the film audio",
+  "oversatt": "Dialog im Filmton ändern"
+ },
+ "app-assembly-clip-panel.versions.span.014bb29ad9fe": {
+  "nb": "filmen",
+  "en": "the film",
+  "oversatt": "der Film"
+ },
+ "app-assembly-clip-panel.versions.span.1bf589db4412": {
+  "nb": "(tittelkort)",
+  "en": "(title card)",
+  "oversatt": "(Titelkarte)"
+ },
+ "app-assembly-clip-panel.versions.span.7b455c5c63ce": {
+  "nb": "Lyden i",
+  "en": "The audio in",
+  "oversatt": "Das Audio in"
+ },
+ "app-assembly-clip-panel.versions.span.dcc8938bfd13": {
+  "nb": "(2D-scene)",
+  "en": "(2D scene)",
+  "oversatt": "(2D-Szene)"
+ },
+ "app-assembly-clip-panel.versions.title.1d30d49ae65b": {
+  "nb": "Se to versjoner av scenen side ved side, spilt av samtidig",
+  "en": "See two versions of the scene side by side, played at the same time",
+  "oversatt": "Zwei Versionen der Szene nebeneinander ansehen, synchron abgespielt"
+ },
+ "app-assembly-clip-panel.versions.title.759f19ac4327": {
+  "nb": "Er dialogen blandet inn i filmens lyd? Da kan den ikke byttes helt ut i en annen språkversjon.",
+  "en": "Is the dialogue mixed into the film audio? Then it cannot be fully replaced in another language version.",
+  "oversatt": "Ist der Dialog in den Filmton eingemischt? Dann kann er in einer anderen Sprachfassung nicht vollständig ersetzt werden."
+ },
+ "app-assembly-clip-panel.versions.title.c0ca1b4c4be5": {
+  "nb": "Last opp ferdig film for scenen (MP4, MOV eller WebM). Filen lagres uendret, og den tas i bruk med én gang.",
+  "en": "Upload a finished film for the scene (MP4, MOV or WebM). The file is stored unchanged and is used straight away.",
+  "oversatt": "Fertigen Film für die Szene hochladen (MP4, MOV oder WebM). Die Datei wird unverändert gespeichert und sofort verwendet."
+ },
+ "app-assembly-clip-panel.versions.title.d036abd45983": {
+  "nb": "Status for filmen",
+  "en": "Status for the film",
+  "oversatt": "Status des Films"
+ },
+ "app-assembly-clip-panel.versions.title.f0618822bbd3": {
+  "nb": "Vis et bilde fra ressursbiblioteket i en valgt tid (hele scenen eller som en ny del)",
+  "en": "Show an image from the asset library at a chosen time (the whole scene or as a new part)",
+  "oversatt": "Ein Bild aus der Asset-Bibliothek für eine gewählte Dauer anzeigen (gesamte Szene oder als neuer Teil)"
+ },
+ "app-assembly-clip-panel.versions.use.014bb29ad9fe": {
+  "nb": "filmen",
+  "en": "the film",
+  "oversatt": "der Film"
+ },
+ "app-assembly-clip-parts.clip-parts.aria-label.1538b2bace0c": {
+  "nb": "Kilde for del {value1}",
+  "en": "Source for part {value1}",
+  "oversatt": "Quelle für Teil {value1}"
+ },
+ "app-assembly-clip-parts.clip-parts.aria-label.2d624eee09e6": {
+  "nb": "Overgang inn i del {value1}",
+  "en": "Transition into part {value1}",
+  "oversatt": "Übergang in Teil {value1}"
+ },
+ "app-assembly-clip-parts.clip-parts.aria-label.b5dad0f44b23": {
+  "nb": "Klipp",
+  "en": "Clip",
+  "oversatt": "Clip"
+ },
+ "app-assembly-clip-parts.clip-parts.aria-label.b5dad0f44b23.2": {
+  "nb": "Klipp",
+  "en": "Clip",
+  "oversatt": "Clip"
+ },
+ "app-assembly-clip-parts.clip-parts.aria-label.d6c133661d07": {
+  "nb": "Fjern del {value1}",
+  "en": "Remove part {value1}",
+  "oversatt": "Teil {value1} entfernen"
+ },
+ "app-assembly-clip-parts.clip-parts.button.b2d3da6336ed": {
+  "nb": "Hele klippet",
+  "en": "Whole clip",
+  "oversatt": "Ganze Einstellung"
+ },
+ "app-assembly-clip-parts.clip-parts.button.c80119357046": {
+  "nb": "Hele klippet igjen",
+  "en": "Whole clip again",
+  "oversatt": "Wieder ganze Einstellung"
+ },
+ "app-assembly-clip-parts.clip-parts.button.fd2194a99a7b": {
+  "nb": "Splitt ved avspillingshodet",
+  "en": "Split at the playhead",
+  "oversatt": "Am Abspielkopf teilen"
+ },
+ "app-assembly-clip-parts.clip-parts.edit.165076610641": {
+  "nb": "Overgang mellom deler",
+  "en": "Transition between parts",
+  "oversatt": "Übergang zwischen Teilen"
+ },
+ "app-assembly-clip-parts.clip-parts.edit.685bf9c582b9": {
+  "nb": "Bytt kilde for del",
+  "en": "Change source for part",
+  "oversatt": "Quelle für Teil ändern"
+ },
+ "app-assembly-clip-parts.clip-parts.edit.831f674d8fe9": {
+  "nb": "Fjern del",
+  "en": "Remove part",
+  "oversatt": "Teil entfernen"
+ },
+ "app-assembly-clip-parts.clip-parts.edit.e397358d955a": {
+  "nb": "Endre innpunkt",
+  "en": "Change in point",
+  "oversatt": "In-Punkt ändern"
+ },
+ "app-assembly-clip-parts.clip-parts.edit.e497d809b818": {
+  "nb": "Endre utpunkt",
+  "en": "Change out point",
+  "oversatt": "Out-Punkt ändern"
+ },
+ "app-assembly-clip-parts.clip-parts.h2.b5dad0f44b23": {
+  "nb": "Klipp",
+  "en": "Clip",
+  "oversatt": "Einstellung"
+ },
+ "app-assembly-clip-parts.clip-parts.h2.b5dad0f44b23.2": {
+  "nb": "Klipp",
+  "en": "Clip",
+  "oversatt": "Clip"
+ },
+ "app-assembly-clip-parts.clip-parts.label.1895eb0f75a5": {
+  "nb": "Ut",
+  "en": "Out",
+  "oversatt": "Out"
+ },
+ "app-assembly-clip-parts.clip-parts.label.e6be0aafb79f": {
+  "nb": "Inn",
+  "en": "In",
+  "oversatt": "In"
+ },
+ "app-assembly-clip-parts.clip-parts.option.048281f6722b": {
+  "nb": "Tone 0,5 s",
+  "en": "Dissolve 0.5 s",
+  "oversatt": "Blende 0,5 s"
+ },
+ "app-assembly-clip-parts.clip-parts.option.0894298c24f6": {
+  "nb": "Tone 2 s",
+  "en": "Dissolve 2 s",
+  "oversatt": "Blende 2 s"
+ },
+ "app-assembly-clip-parts.clip-parts.option.3913cda02d76": {
+  "nb": "Kutt",
+  "en": "Cut",
+  "oversatt": "Schnitt"
+ },
+ "app-assembly-clip-parts.clip-parts.option.7632fe4d3f95": {
+  "nb": "Animatic (2D-scene)",
+  "en": "Animatic (2D scene)",
+  "oversatt": "Animatic (2D-Szene)"
+ },
+ "app-assembly-clip-parts.clip-parts.option.78173653a9e5": {
+  "nb": "Tone 1 s",
+  "en": "Dissolve 1 s",
+  "oversatt": "Blende 1 s"
+ },
+ "app-assembly-clip-parts.clip-parts.option.e765fd4973a3": {
+  "nb": "Tone 0,25 s",
+  "en": "Dissolve 0.25 s",
+  "oversatt": "Blende 0,25 s"
+ },
+ "app-assembly-clip-parts.clip-parts.p.0514e3afce37": {
+  "nb": "En av delene mangler kilde (2D-scenen eller filmen er borte) og vises som tittelkort.",
+  "en": "One of the parts has no source (the 2D scene or film is gone) and is shown as a title card.",
+  "oversatt": "Einer der Teile hat keine Quelle (die 2D-Szene oder der Film fehlt) und wird als Titelkarte angezeigt."
+ },
+ "app-assembly-clip-parts.clip-parts.span.bfe1a3480422": {
+  "nb": "{length} deler",
+  "en": "{length} parts",
+  "oversatt": "{length} Teile"
+ },
+ "app-assembly-clip-parts.clip-parts.span.ebec0aeec253": {
+  "nb": "én del",
+  "en": "one part",
+  "oversatt": "ein Teil"
+ },
+ "app-assembly-clip-parts.clip-parts.title.1c7bfb496256": {
+  "nb": "Fjern kutt og splitting: hele versjonen brukes igjen",
+  "en": "Remove cuts and splits: the whole version is used again",
+  "oversatt": "Schnitte und Teilungen entfernen: Die gesamte Version wird wieder verwendet"
+ },
+ "app-assembly-clip-parts.clip-parts.title.8a801aedfec8": {
+  "nb": "Fjern delen (kildemediet beholdes)",
+  "en": "Remove the part (the source media is kept)",
+  "oversatt": "Teil entfernen (das Quellmedium bleibt erhalten)"
+ },
+ "app-assembly-clip-parts.clip-parts.title.c460bb6637c8": {
+  "nb": "Del klippet i to der avspillingshodet står (tasten S). Begge delene bruker samme kilde.",
+  "en": "Split the clip in two at the playhead (key S). Both parts use the same source.",
+  "oversatt": "Clip an der Position des Abspielkopfs teilen (Taste S). Beide Teile verwenden dieselbe Quelle."
+ },
+ "app-assembly-clip-parts.clip-parts.title.d8ca1c2e35aa": {
+  "nb": "Myk overgang fra delen før (krysstoning, scenen blir ikke kortere)",
+  "en": "Soft transition from the previous part (cross-dissolve, the scene does not get shorter)",
+  "oversatt": "Weicher Übergang vom vorherigen Teil (Überblendung, die Szene wird nicht kürzer)"
+ },
+ "app-assembly-clip-parts.point-input.aria-label.577bba60303f": {
+  "nb": "{l}punkt i sekunder",
+  "en": "{l} point in seconds",
+  "oversatt": "{l}-Punkt in Sekunden"
+ },
+ "app-assembly-clip-parts.point-input.aria-label.90ebac78dd45": {
+  "nb": "{l}: ett bilde fram",
+  "en": "{l}: one frame forward",
+  "oversatt": "{l}: ein Frame vor"
+ },
+ "app-assembly-clip-parts.point-input.aria-label.dc1592f615eb": {
+  "nb": "{l}: ett bilde tilbake",
+  "en": "{l}: one frame back",
+  "oversatt": "{l}: ein Frame zurück"
+ },
+ "app-assembly-clip-parts.point-input.title.693a4d5aa0e1": {
+  "nb": "Ett bilde fram",
+  "en": "One frame forward",
+  "oversatt": "Ein Frame vor"
+ },
+ "app-assembly-clip-parts.point-input.title.85a7cc6df4fa": {
+  "nb": "Ett bilde tilbake",
+  "en": "One frame back",
+  "oversatt": "Ein Frame zurück"
+ },
+ "app-assembly-clip-parts.point-input.title.d4a803d3be6e": {
+  "nb": "Bilde {frame}",
+  "en": "Frame {frame}",
+  "oversatt": "Frame {frame}"
+ },
+ "app-assembly-compare-takes-dialog.attempt-info.p.87a1b2fcbf2b": {
+  "nb": "AI-video",
+  "en": "AI video",
+  "oversatt": "KI-Video"
+ },
+ "app-assembly-compare-takes-dialog.attempt-info.summary.b33bd5a787fe": {
+  "nb": "Beskrivelsen som ble sendt",
+  "en": "The description that was sent",
+  "oversatt": "Die gesendete Beschreibung"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.aria-label.321fdb8e858c": {
+  "nb": "Video til høyre",
+  "en": "Video on the right",
+  "oversatt": "Video rechts"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.aria-label.ccddf4b89d08": {
+  "nb": "Video til venstre",
+  "en": "Video on the left",
+  "oversatt": "Video links"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.button.23c2eacd1ae6": {
+  "nb": "Velg denne",
+  "en": "Choose this one",
+  "oversatt": "Diesen auswählen"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.button.bdf702937f90": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "Stopp"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.button.c5fcd510e773": {
+  "nb": "Spill begge fra start",
+  "en": "Play both from the start",
+  "oversatt": "Beide von Beginn abspielen"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.dialog-description.6aefb9d4f1e7": {
+  "nb": "for segmentet. Den valgte brukes når scenen settes sammen; de andre beholdes.",
+  "en": "for the segment. The chosen one is used when the scene is assembled; the others are kept.",
+  "oversatt": "für das Segment. Die ausgewählte Variante wird beim Zusammensetzen der Szene verwendet; die anderen bleiben erhalten."
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.dialog-description.93a24aff6e86": {
+  "nb": "video",
+  "en": "video",
+  "oversatt": "Video"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.dialog-description.a38b23af0f30": {
+  "nb": "videoer",
+  "en": "videos",
+  "oversatt": "Videos"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.dialog-title.d8f3a66ebb07": {
+  "nb": "Sammenlign videoer",
+  "en": "Compare videos",
+  "oversatt": "Videos vergleichen"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.dialog-title.deeb8f5ce259": {
+  "nb": "Kontroller videoen",
+  "en": "Check the video",
+  "oversatt": "Video prüfen"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.option.aea8a8e0f589": {
+  "nb": " (valgt)",
+  "en": " (chosen)",
+  "oversatt": " (ausgewählt)"
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.p.84eb6cbd2bf3": {
+  "nb": "Segmentet har ingen video ennå.",
+  "en": "The segment has no video yet.",
+  "oversatt": "Das Segment enthält noch kein Video."
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.p.88c2b3ac2d8a": {
+  "nb": "Lyden spilles bare fra videoen til venstre når begge går samtidig.",
+  "en": "Sound is only played from the video on the left when both play at the same time.",
+  "oversatt": "Audio wird nur vom linken Video abgespielt, wenn beide gleichzeitig laufen."
+ },
+ "app-assembly-compare-takes-dialog.compare-takes-dialog.span.8b060a4a961a": {
+  "nb": "Brukes for segmentet",
+  "en": "Used for the segment",
+  "oversatt": "Verwendet für das Segment"
+ },
+ "app-assembly-compare-takes-dialog.e.cmds-run.5d3ed1c21627": {
+  "nb": "Velg videoen for segmentet",
+  "en": "Choose the video for the segment",
+  "oversatt": "Video für das Segment auswählen"
+ },
+ "app-assembly-compare-takes-dialog.label.message.1012531e32d6": {
+  "nb": "Forsøk {value1}",
+  "en": "Attempt {value1}",
+  "oversatt": "Versuch {value1}"
+ },
+ "app-assembly-compare-takes-dialog.quality-list.aria-label.d733cdacdafa": {
+  "nb": "Sjekkliste",
+  "en": "Checklist",
+  "oversatt": "Checkliste"
+ },
+ "app-assembly-compare-takes-dialog.quality-list.p.d733cdacdafa": {
+  "nb": "Sjekkliste",
+  "en": "Checklist",
+  "oversatt": "Checkliste"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.aria-label.0b6a63c28038": {
+  "nb": "Felles avspillingshode",
+  "en": "Shared playhead",
+  "oversatt": "Gemeinsamer Abspielkopf"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.aria-label.c22f2b70880e": {
+  "nb": "Hvordan versjonene følger hverandre",
+  "en": "How the versions follow each other",
+  "oversatt": "Wie die Versionen einander folgen"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.button.eaa3d5b28abe": {
+  "nb": "Spill begge",
+  "en": "Play both",
+  "oversatt": "Beide abspielen"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-description.6e8743cb3be9": {
+  "nb": "Velg to versjoner av scenen. De spilles og spoles sammen; ingen av dem endres eller tas i bruk herfra.",
+  "en": "Choose two versions of the scene. They play and scrub together; neither of them is changed or taken into use from here.",
+  "oversatt": "Wählen Sie zwei Versionen der Szene aus. Sie werden gemeinsam abgespielt und gescrubbt; keine von ihnen wird hier geändert oder übernommen."
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.dialog-title.763b38e1cfcb": {
+  "nb": "Sammenlign versjoner – {title}",
+  "en": "Compare versions – {title}",
+  "oversatt": "Versionen vergleichen – {title}"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.label.e6eee3008e33": {
+  "nb": "Følg",
+  "en": "Follow",
+  "oversatt": "Folgen"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.option.961d046fdb77": {
+  "nb": "samme tid fra start",
+  "en": "same time from the start",
+  "oversatt": "Gleiche Zeit ab Beginn"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.option.c0e71281f04e": {
+  "nb": "samme andel av lengden",
+  "en": "same share of the length",
+  "oversatt": "Gleicher Anteil der Länge"
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.p.27a6b20a4bd8": {
+  "nb": "Scenen har bare én versjon. Importer film, lag AI-video eller legg inn et stillbilde for å kunne sammenligne.",
+  "en": "The scene has only one version. Import a film, make an AI video or add a still image to be able to compare.",
+  "oversatt": "Die Szene hat nur eine Version. Importieren Sie einen Film, erstellen Sie ein KI-Video oder fügen Sie ein Standbild hinzu, um vergleichen zu können."
+ },
+ "app-assembly-compare-versions-dialog.compare-versions-dialog.p.c599c487de6b": {
+  "nb": "Sammenligningen er uten lyd. Når en versjon er kortere, står siste bilde til den andre er ferdig (med «samme tid fra start»).",
+  "en": "The comparison has no sound. When one version is shorter, its last frame stays until the other has finished (with “same time from the start”).",
+  "oversatt": "Der Vergleich erfolgt ohne Ton. Wenn eine Version kürzer ist, bleibt ihr letztes Bild stehen, bis die andere beendet ist (bei „Gleiche Zeit ab Beginn“)."
+ },
+ "app-assembly-compare-versions-dialog.side.aria-label.540a1efa6927": {
+  "nb": "Versjon til venstre",
+  "en": "Version on the left",
+  "oversatt": "Version links"
+ },
+ "app-assembly-compare-versions-dialog.side.aria-label.e17a5ba4e357": {
+  "nb": "Versjon til høyre",
+  "en": "Version on the right",
+  "oversatt": "Version rechts"
+ },
+ "app-assembly-compare-versions-dialog.side.dd.3ada6939a19e": {
+  "nb": " · i bruk i filmen",
+  "en": " · in use in the film",
+  "oversatt": " · im Film verwendet"
+ },
+ "app-assembly-compare-versions-dialog.side.dd.64b62ae6f6fc": {
+  "nb": "bilder",
+  "en": "frames",
+  "oversatt": "Bilder"
+ },
+ "app-assembly-compare-versions-dialog.side.dd.c8cf517ec842": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "unbekannt"
+ },
+ "app-assembly-compare-versions-dialog.side.dt.0d40bd1ff3d6": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Länge"
+ },
+ "app-assembly-compare-versions-dialog.side.dt.b09628b98445": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "Erstellt"
+ },
+ "app-assembly-compare-versions-dialog.side.dt.fa7bbe45c333": {
+  "nb": "Her",
+  "en": "Here",
+  "oversatt": "Hier"
+ },
+ "app-assembly-compare-versions-dialog.side.option.40a721e7ebae": {
+  "nb": " (i bruk)",
+  "en": " (in use)",
+  "oversatt": " (in Verwendung)"
+ },
+ "app-assembly-content-sync-flag.content-sync-flag.aria-label.eb0da6188e26": {
+  "nb": "Ressurs oppdatert: {text}. Åpne arbeidslisten",
+  "en": "Asset updated: {text}. Open the worklist",
+  "oversatt": "Asset aktualisiert: {text}. Arbeitsliste öffnen"
+ },
+ "app-assembly-content-sync-flag.content-sync-flag.span.a775e049bd65": {
+  "nb": "Ressurs oppdatert",
+  "en": "Asset updated",
+  "oversatt": "Asset aktualisiert"
+ },
+ "app-assembly-content-sync-flag.content-sync-flag.title.29374ef3194f": {
+  "nb": "{text}. Åpne arbeidslisten …",
+  "en": "{text}. Open the worklist …",
+  "oversatt": "{text}. Arbeitsliste öffnen …"
+ },
+ "app-assembly-export-animatic-dialog.audio-clips-included": {
+  "nb": {
+   "one": "{count} lydklipp med i videoen.",
+   "other": "{count} lydklipp med i videoen."
+  },
+  "en": {
+   "one": "{count} audio clip included in the video.",
+   "other": "{count} audio clips included in the video."
+  },
+  "oversatt": {
+   "one": "{count} Audioclip im Video enthalten.",
+   "other": "{count} Audioclips im Video enthalten."
+  }
+ },
+ "app-assembly-export-animatic-dialog.audio-clips-included-muted": {
+  "nb": {
+   "one": "{count} lydklipp med i videoen ({muted} i dempede spor er ikke med).",
+   "other": "{count} lydklipp med i videoen ({muted} i dempede spor er ikke med)."
+  },
+  "en": {
+   "one": "{count} audio clip included in the video ({muted} in muted tracks are not included).",
+   "other": "{count} audio clips included in the video ({muted} in muted tracks are not included)."
+  },
+  "oversatt": {
+   "one": "{count} Audioclip im Video enthalten ({muted} in stummgeschalteten Spuren sind nicht enthalten).",
+   "other": "{count} Audioclips im Video enthalten ({muted} in stummgeschalteten Spuren sind nicht enthalten)."
+  }
+ },
+ "app-assembly-export-animatic-dialog.audio-clips-no-file": {
+  "nb": {
+   "one": "{count} lydklipp mangler lydfil og blir stille.",
+   "other": "{count} lydklipp mangler lydfil og blir stille."
+  },
+  "en": {
+   "one": "{count} audio clip is missing an audio file and will be silent.",
+   "other": "{count} audio clips are missing an audio file and will be silent."
+  },
+  "oversatt": {
+   "one": "Bei {count} Audioclip fehlt die Audiodatei; er bleibt stumm.",
+   "other": "Bei {count} Audioclips fehlt die Audiodatei; sie bleiben stumm."
+  }
+ },
+ "app-assembly-export-animatic-dialog.audio-lost": {
+  "nb": {
+   "one": "{count} lydfil kunne ikke leses og mangler",
+   "other": "{count} lydfiler kunne ikke leses og mangler"
+  },
+  "en": {
+   "one": "{count} audio file could not be read and are missing",
+   "other": "{count} audio files could not be read and are missing"
+  },
+  "oversatt": {
+   "one": "{count} Audiodatei konnte nicht gelesen werden und fehlt",
+   "other": "{count} Audiodateien konnten nicht gelesen werden und fehlen"
+  }
+ },
+ "app-assembly-export-animatic-dialog.dialogue-track": {
+  "nb": {
+   "one": "Dialogspor ({language}): {count} lydklipp med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.",
+   "other": "Dialogspor ({language}): {count} lydklipp med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med."
+  },
+  "en": {
+   "one": "Dialogue track ({language}): {count} audio clip with dialogue and narration. Music, effects and the sound in imported film are not included.",
+   "other": "Dialogue track ({language}): {count} audio clips with dialogue and narration. Music, effects and the sound in imported film are not included."
+  },
+  "oversatt": {
+   "one": "Dialogspur ({language}): {count} Audioclip mit Dialog und Off-Stimme. Musik, Effekte und Ton aus importiertem Film sind nicht enthalten.",
+   "other": "Dialogspur ({language}): {count} Audioclips mit Dialog und Off-Stimme. Musik, Effekte und Ton aus importiertem Film sind nicht enthalten."
+  }
+ },
+ "app-assembly-export-animatic-dialog.done-audio-lost": {
+  "nb": {
+   "one": "Ferdig, men {count} lydfil kunne ikke leses og mangler.",
+   "other": "Ferdig, men {count} lydfiler kunne ikke leses og mangler."
+  },
+  "en": {
+   "one": "Done, but {count} audio file could not be read and are missing.",
+   "other": "Done, but {count} audio files could not be read and are missing."
+  },
+  "oversatt": {
+   "one": "Fertig, aber {count} Audiodatei konnte nicht gelesen werden und fehlt.",
+   "other": "Fertig, aber {count} Audiodateien konnten nicht gelesen werden und fehlen."
+  }
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.a.151b30635bc0": {
+  "nb": "Last ned karakterlagene",
+  "en": "Download the character layers",
+  "oversatt": "Charaktereckebenen herunterladen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.a.1596dc39c65c": {
+  "nb": "Last ned",
+  "en": "Download",
+  "oversatt": "Herunterladen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.a.be9aad8ec9f6": {
+  "nb": "Last ned undertekstene",
+  "en": "Download the subtitles",
+  "oversatt": "Untertitel herunterladen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.35a8e5049bbd": {
+  "nb": "Siste scene",
+  "en": "Last scene",
+  "oversatt": "Letzte Szene"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.71e6fb36d69d": {
+  "nb": "OK",
+  "en": "OK",
+  "oversatt": "OK"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.8071e51b2042": {
+  "nb": "Fremdrift",
+  "en": "Progress",
+  "oversatt": "Fortschritt"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.a55a23ad7ecc": {
+  "nb": "Scener i eksporten",
+  "en": "Scenes in the export",
+  "oversatt": "Szenen im Export"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.ad4ffafdd70d": {
+  "nb": "Kontroll før eksport",
+  "en": "Check before export",
+  "oversatt": "Prüfung vor dem Export"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.aed8a09c683a": {
+  "nb": "Info",
+  "en": "Info",
+  "oversatt": "Info"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.b9d371cb37dc": {
+  "nb": "Første scene",
+  "en": "First scene",
+  "oversatt": "Erste Szene"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.c5724fbd8c35": {
+  "nb": "Merk",
+  "en": "Note",
+  "oversatt": "Hinweis"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.12f530b9d538": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "Alle"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.24d7c267343a": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "Exportieren"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.2b28b2dd28a0": {
+  "nb": "Del med QR-kode …",
+  "en": "Share with QR code …",
+  "oversatt": "Mit QR-Code teilen …"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.3e118f61a604": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "Keine"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.4ca3b34859ad": {
+  "nb": "Eksporter lag med gjennomsiktighet …",
+  "en": "Export layers with transparency …",
+  "oversatt": "Ebenen mit Transparenz exportieren …"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.93f2ccf9eceb": {
+  "nb": "Eksporter likevel",
+  "en": "Export anyway",
+  "oversatt": "Trotzdem exportieren"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.d51bb9abaaf8": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.button.fab9aaaf69c0": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Schließen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.0b1d776f5d50": {
+  "nb": "Videoen lages her i nettleseren av alt som er i filmen – 2D-scener, importert film, AI-video og lydsporene – uten nye kostnader. Eksporten endrer ingenting i prosjektet.",
+  "en": "The video is made here in the browser from everything in the film – 2D scenes, imported film, AI video and the audio tracks – at no extra cost. The export changes nothing in the project.",
+  "oversatt": "Das Video wird hier im Browser aus allen Inhalten des Films erstellt – 2D-Szenen, importierter Film, KI-Video und den Audiospuren – ohne zusätzliche Kosten. Der Export ändert nichts am Projekt."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.44d85f195f4d": {
+  "nb": "(en spinoff, trailer eller pitchfilm velges øverst i monteringen).",
+  "en": "(a spin-off, trailer or pitch film is chosen at the top of the assembly).",
+  "oversatt": "(ein Spin-off, Trailer oder Pitchfilm wird oben im Schnitt ausgewählt)."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-description.bc2b417caa92": {
+  "nb": "Produksjon:",
+  "en": "Production:",
+  "oversatt": "Produktion:"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.dialog-title.f19f9faf7736": {
+  "nb": "Eksporter animatic",
+  "en": "Export animatic",
+  "oversatt": "Animatic exportieren"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.h3.ad4ffafdd70d": {
+  "nb": "Kontroll før eksport",
+  "en": "Check before export",
+  "oversatt": "Prüfung vor dem Export"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.2c678aca5ccf": {
+  "nb": "Bitrate (kbps)",
+  "en": "Bitrate (kbps)",
+  "oversatt": "Bitrate (kbps)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.5d34e7666129": {
+  "nb": "Oppløsning",
+  "en": "Resolution",
+  "oversatt": "Auflösung"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.5f480757a5cd": {
+  "nb": "Hele filmen i svart-hvitt",
+  "en": "The whole film in black and white",
+  "oversatt": "Der gesamte Film in Schwarzweiß"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.65f5cf932bea": {
+  "nb": "Undertekster",
+  "en": "Subtitles",
+  "oversatt": "Untertitel"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.8ed585b4e68c": {
+  "nb": "Inkluder rulletekst",
+  "en": "Include credits",
+  "oversatt": "Abspann einbeziehen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.label.b1d0162bac69": {
+  "nb": "Filformat",
+  "en": "File format",
+  "oversatt": "Dateiformat"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.legend.5aedb80937f3": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "Größe"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.legend.615a07faf36f": {
+  "nb": "Hva",
+  "en": "What",
+  "oversatt": "Was"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.legend.ce685e047b9b": {
+  "nb": "Språk og innhold",
+  "en": "Language and content",
+  "oversatt": "Sprache und Inhalt"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.0ebe3e55b619": {
+  "nb": "Egen fil (SRT)",
+  "en": "Separate file (SRT)",
+  "oversatt": "Separate Datei (SRT)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.153f422a846d": {
+  "nb": "MP4 (H.264 – spilles overalt)",
+  "en": "MP4 (H.264 – plays everywhere)",
+  "oversatt": "MP4 (H.264 – überall abspielbar)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.2b5e1d4e3c6e": {
+  "nb": "Egen fil (WebVTT)",
+  "en": "Separate file (WebVTT)",
+  "oversatt": "Separate Datei (WebVTT)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.3e118f61a604": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "Keine"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.764c8c46455e": {
+  "nb": "WebM (VP9 – mindre fil)",
+  "en": "WebM (VP9 – smaller file)",
+  "oversatt": "WebM (VP9 – kleinere Datei)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.b08e214de259": {
+  "nb": "Brent inn i bildet",
+  "en": "Burned into the picture",
+  "oversatt": "Fest ins Bild eingebrannt"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.ba073253e1c7": {
+  "nb": "Prosjektformat",
+  "en": "Project format",
+  "oversatt": "Projektformat"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391": {
+  "nb": "MOV (ProRes 422 HQ – for videoredigering)",
+  "en": "MOV (ProRes 422 HQ – for editing)",
+  "oversatt": "MOV (ProRes 422 HQ – für den Schnitt)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.2fb3e37c871d": {
+  "nb": "Ferdig:",
+  "en": "Done:",
+  "oversatt": "Fertig:"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.7f00060d6fdc": {
+  "nb": "Eksporterer …",
+  "en": "Exporting …",
+  "oversatt": "Exportieren …"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.abc8b0f00b0f": {
+  "nb": "Scener som er satt til svart-hvitt, blir det uansett. Med lyden fra lydsporene (dempede spor er ikke med). Filformat og undertekster velges under.",
+  "en": "Scenes set to black and white stay that way. With the sound from the audio tracks (muted tracks are not included). File format and subtitles are chosen below.",
+  "oversatt": "Szenen, die auf Schwarzweiß eingestellt sind, bleiben so. Mit dem Ton der Tonspuren (stumme Spuren sind nicht enthalten). Dateiformat und Untertitel werden unten gewählt."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7": {
+  "nb": "ProRes 422 HQ, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring.",
+  "en": "ProRes 422 HQ, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage.",
+  "oversatt": "ProRes 422 HQ, Rec.709, Audio als PCM 48 kHz. Große Dateien werden direkt im Browserspeicher abgelegt."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.cc610166b8e0": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "von"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.e33a9cb0d6da": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "Bild"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.p.f77b75c919bf": {
+  "nb": "Denne nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
+  "en": "This browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
+  "oversatt": "Dieser Browser kann keine Videos erstellen. Bitte nutzen Sie eine neuere Version von Chrome, Edge, Safari oder Firefox."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.01940e0f9135": {
+  "nb": "raskere og mindre fil",
+  "en": "faster and a smaller file",
+  "oversatt": "schneller und kleinere Datei"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.0668da8035a2": {
+  "nb": "Valgt scene",
+  "en": "Selected scene",
+  "oversatt": "Ausgewählte Szene"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.297264f4ac41": {
+  "nb": "Dialog og forteller på",
+  "en": "Dialogue and narration in",
+  "oversatt": "Dialog und Erzählung auf"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.2dc1a9f9edd0": {
+  "nb": "Hvis nedlastingen ikke starter: åpne programmet i en egen fane.",
+  "en": "If the download does not start: open the app in a separate tab.",
+  "oversatt": "Falls der Download nicht startet: Öffnen Sie die App in einem separaten Tab."
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.34d2cfe81860": {
+  "nb": "Bilde og all lyd på",
+  "en": "Picture and all sound in",
+  "oversatt": "Bild und kompletter Ton auf"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.3c06d61df09f": {
+  "nb": "Kryss av scenene; de settes etter hverandre i filmens rekkefølge",
+  "en": "Tick the scenes; they are put one after another in the film's order",
+  "oversatt": "Szenen ankreuzen; sie werden der Reihenfolge des Films nach aneinandergefügt"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.4786d6ff3d56": {
+  "nb": "Halv størrelse",
+  "en": "Half size",
+  "oversatt": "Halbe Größe"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.50e6c869c89f": {
+  "nb": "Full størrelse",
+  "en": "Full size",
+  "oversatt": "Volle Größe"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.6c196015cc85": {
+  "nb": "Alle aktive scener",
+  "en": "All active scenes",
+  "oversatt": "Alle aktiven Szenen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.8110be288723": {
+  "nb": "Velg en scene i tidslinjen først",
+  "en": "Select a scene in the timeline first",
+  "oversatt": "Wählen Sie zuerst eine Szene in der Zeitleiste aus"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.a903a50c6b16": {
+  "nb": "Hele filmen",
+  "en": "The whole film",
+  "oversatt": "Der gesamte Film"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.afd88c929cf8": {
+  "nb": ", med undertekster i bildet",
+  "en": ", with subtitles in the picture",
+  "oversatt": ", mit Untertiteln im Bild"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.c5a5dd431c08": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Video"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.d0a240494b79": {
+  "nb": ", uten musikk og effekter",
+  "en": ", without music and effects",
+  "oversatt": ", ohne Musik und Effekte"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.d672908d89ab": {
+  "nb": "Valgte scener",
+  "en": "Selected scenes",
+  "oversatt": "Ausgewählte Szenen"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.d9fec06c5ad4": {
+  "nb": "Bare dialogspor (WAV)",
+  "en": "Dialogue track only (WAV)",
+  "oversatt": "Nur Dialogspur (WAV)"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.span.f85957df67da": {
+  "nb": "Fra scene til scene",
+  "en": "From scene to scene",
+  "oversatt": "Von Szene zu Szene"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.title.7a2a35a8ab00": {
+  "nb": "Velg et språk for undertekster over for å få undertekster",
+  "en": "Choose a subtitle language above to get subtitles",
+  "oversatt": "Wählen Sie oben eine Untertitelsprache aus, um Untertitel zu erhalten"
+ },
+ "app-assembly-export-animatic-dialog.export-animatic-dialog.title.d2997bee334d": {
+  "nb": "Velg en scene med 2D-komposisjon i monteringen.",
+  "en": "Select a scene with a 2D composition in the assembly.",
+  "oversatt": "Wählen Sie eine Szene mit 2D-Komposition im Schnitt aus."
+ },
+ "app-assembly-export-animatic-dialog.export-stopped": {
+  "nb": "Eksporten stoppet: {error}",
+  "en": "The export stopped: {error}",
+  "oversatt": "Export abgebrochen: {error}"
+ },
+ "app-assembly-export-animatic-dialog.export-stopped-unknown": {
+  "nb": "Eksporten stoppet: ukjent feil",
+  "en": "The export stopped: unknown error",
+  "oversatt": "Export abgebrochen: unbekannter Fehler"
+ },
+ "app-assembly-export-animatic-dialog.film-clips-mixed-dialogue": {
+  "nb": {
+   "one": "{count} filmklipp har dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.",
+   "other": "{count} filmklipp har dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er."
+  },
+  "en": {
+   "one": "{count} film clip has dialogue in another language mixed into the sound. It cannot be removed, and is played as it is.",
+   "other": "{count} film clips have dialogue in another language mixed into the sound. It cannot be removed, and is played as it is."
+  },
+  "oversatt": {
+   "one": "{count} Filmclip enthält Dialog in einer anderen Sprache, der in den Ton eingemischt ist. Er kann nicht entfernt werden und wird unverändert abgespielt.",
+   "other": "{count} Filmclips enthalten Dialog in einer anderen Sprache, der in den Ton eingemischt ist. Er kann nicht entfernt werden und wird unverändert abgespielt."
+  }
+ },
+ "app-assembly-export-animatic-dialog.images-lost": {
+  "nb": {
+   "one": "{count} bilde kunne ikke lastes og mangler i videoen",
+   "other": "{count} bilder kunne ikke lastes og mangler i videoen"
+  },
+  "en": {
+   "one": "{count} image could not be loaded and are missing from the video",
+   "other": "{count} images could not be loaded and are missing from the video"
+  },
+  "oversatt": {
+   "one": "{count} Bild konnte nicht geladen werden und fehlt im Video",
+   "other": "{count} Bilder konnten nicht geladen werden und fehlen im Video"
+  }
+ },
+ "app-assembly-export-animatic-dialog.inactive-not-included": {
+  "nb": {
+   "one": "{count} deaktivert scene er ikke med.",
+   "other": "{count} deaktiverte scener er ikke med."
+  },
+  "en": {
+   "one": "{count} deactivated scene is not included.",
+   "other": "{count} deactivated scenes are not included."
+  },
+  "oversatt": {
+   "one": "{count} deaktivierte Szene ist nicht enthalten.",
+   "other": "{count} deaktivierte Szenen sind nicht enthalten."
+  }
+ },
+ "app-assembly-export-animatic-dialog.layer-name.name-replace.d5c1e01b1ae9": {
+  "nb": " – karakterlag",
+  "en": " – character layers",
+  "oversatt": " – Figurenebenen"
+ },
+ "app-assembly-export-animatic-dialog.layers-missing-image": {
+  "nb": {
+   "one": "{count} lag mangler bilde i biblioteket og blir usynlige.",
+   "other": "{count} lag mangler bilde i biblioteket og blir usynlige."
+  },
+  "en": {
+   "one": "{count} layer is missing an image in the library and will be invisible.",
+   "other": "{count} layers are missing an image in the library and will be invisible."
+  },
+  "oversatt": {
+   "one": "Bei {count} Ebene fehlt das Bild in der Asset-Bibliothek; sie wird unsichtbar sein.",
+   "other": "Bei {count} Ebenen fehlt das Bild in der Asset-Bibliothek; sie werden unsichtbar sein."
+  }
+ },
+ "app-assembly-export-animatic-dialog.name.safe-name.dd70017cc00c": {
+  "nb": "dialog",
+  "en": "dialogue",
+  "oversatt": "Dialog"
+ },
+ "app-assembly-export-animatic-dialog.placeholders-title-cards": {
+  "nb": {
+   "one": "{count} scene uten 2D-scene vises som tittelkort ({scenes}).",
+   "other": "{count} scener uten 2D-scene vises som tittelkort ({scenes})."
+  },
+  "en": {
+   "one": "{count} scene without a 2D scene are shown as title cards ({scenes}).",
+   "other": "{count} scenes without a 2D scene are shown as title cards ({scenes})."
+  },
+  "oversatt": {
+   "one": "{count} Szene ohne 2D-Szene wird als Titelkarte dargestellt ({scenes}).",
+   "other": "{count} Szenen ohne 2D-Szene werden als Titelkarten dargestellt ({scenes})."
+  }
+ },
+ "app-assembly-export-animatic-dialog.run.message.13e8459375d0": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Abgebrochen"
+ },
+ "app-assembly-export-animatic-dialog.run.notes-push.0a14a701c36a": {
+  "nb": "{lostAudio} {value2} kunne ikke leses og mangler",
+  "en": "{lostAudio} {value2} could not be read and are missing",
+  "oversatt": "{lostAudio} {value2} konnte nicht gelesen werden und fehlt"
+ },
+ "app-assembly-export-animatic-dialog.run.notes-push.25511cb93f44": {
+  "nb": "{lost} {value2} kunne ikke lastes og mangler i videoen",
+  "en": "{lost} {value2} could not be loaded and are missing from the video",
+  "oversatt": "{lost} {value2} konnte nicht geladen werden und fehlt im Video"
+ },
+ "app-assembly-export-animatic-dialog.run.notes-push.92d5ae0011bd": {
+  "nb": "nettleseren kunne ikke kode lyd, så videoen er uten lyd",
+  "en": "the browser could not encode audio, so the video has no sound",
+  "oversatt": "Der Browser konnte kein Audio codieren, daher enthält das Video keinen Ton"
+ },
+ "app-assembly-export-animatic-dialog.run.set-error.31e01db3dc2c": {
+  "nb": "Ferdig, men {lostAudio} {value2} kunne ikke leses og mangler.",
+  "en": "Done, but {lostAudio} {value2} could not be read and are missing.",
+  "oversatt": "Fertig, aber {lostAudio} {value2} konnten nicht gelesen werden und fehlen."
+ },
+ "app-assembly-export-animatic-dialog.run.set-error.91c5e749a865": {
+  "nb": "Ferdig, men {value1}.",
+  "en": "Done, but {value1}.",
+  "oversatt": "Fertig, aber {value1}."
+ },
+ "app-assembly-export-animatic-dialog.run.set-error.fc1d2d8af57d": {
+  "nb": "Eksporten stoppet: {value1}",
+  "en": "The export stopped: {value1}",
+  "oversatt": "Der Export wurde abgebrochen: {value1}"
+ },
+ "app-assembly-export-animatic-dialog.scene-number": {
+  "nb": "scene {number}",
+  "en": "scene {number}",
+  "oversatt": "Szene {number}"
+ },
+ "app-assembly-export-animatic-dialog.scenes-estimated": {
+  "nb": {
+   "one": "{count} scene har lengde beregnet fra manuset.",
+   "other": "{count} scener har lengde beregnet fra manuset."
+  },
+  "en": {
+   "one": "{count} scene has a length estimated from the script.",
+   "other": "{count} scenes have a length estimated from the script."
+  },
+  "oversatt": {
+   "one": "{count} Szene hat eine aus dem Drehbuch geschätzte Länge.",
+   "other": "{count} Szenen haben eine aus dem Drehbuch geschätzte Länge."
+  }
+ },
+ "app-assembly-export-animatic-dialog.scenes-in-order": {
+  "nb": {
+   "one": "{count} scene i manusets rekkefølge, {duration}.",
+   "other": "{count} scener i manusets rekkefølge, {duration}."
+  },
+  "en": {
+   "one": "{count} scene in script order, {duration}.",
+   "other": "{count} scenes in script order, {duration}."
+  },
+  "oversatt": {
+   "one": "{count} Szene in Drehbuchreihenfolge, {duration}.",
+   "other": "{count} Szenen in Drehbuchreihenfolge, {duration}."
+  }
+ },
+ "app-assembly-export-animatic-dialog.scenes-use-film": {
+  "nb": {
+   "one": "{count} scene bruker film, AI-video eller stillbilde.",
+   "other": "{count} scener bruker film, AI-video eller stillbilde."
+  },
+  "en": {
+   "one": "{count} scene uses film, AI video or a still image.",
+   "other": "{count} scenes use film, AI video or a still image."
+  },
+  "oversatt": {
+   "one": "{count} Szene verwendet Film, KI-Video oder ein Standbild.",
+   "other": "{count} Szenen verwenden Film, KI-Video oder Standbilder."
+  }
+ },
+ "app-assembly-export-animatic-dialog.text.text.0af1306f023b": {
+  "nb": "{noFile} {value2} lydfil og blir stille.",
+  "en": "{noFile} {value2} missing an audio file and will be silent.",
+  "oversatt": "{noFile} {value2} fehlt eine Audiodatei und bleibt stumm."
+ },
+ "app-assembly-export-animatic-dialog.text.text.4bac8570af99": {
+  "nb": "{length} {value2} med i videoen{value3}.",
+  "en": "{length} {value2} included in the video{value3}.",
+  "oversatt": "{length} {value2} im Video enthalten{value3}."
+ },
+ "app-assembly-export-animatic-dialog.text.text.5bf200104906": {
+  "nb": "Ingen dialog på {langName} i utvalget – dialogsporet blir stille.",
+  "en": "No dialogue in {langName} in the selection – the dialogue track will be silent.",
+  "oversatt": "Kein Dialog auf {langName} in der Auswahl – die Dialogspur bleibt stumm."
+ },
+ "app-assembly-export-animatic-dialog.text.text.6dceefb276b4": {
+  "nb": "{estimated} {value2} lengde beregnet fra manuset.",
+  "en": "{estimated} {value2} a length estimated from the script.",
+  "oversatt": "{estimated} {value2} eine aus dem Drehbuch geschätzte Länge."
+ },
+ "app-assembly-export-animatic-dialog.text.text.75885539b60d": {
+  "nb": "Utvalget har ingen scener.",
+  "en": "The selection has no scenes.",
+  "oversatt": "Die Auswahl enthält keine Szenen."
+ },
+ "app-assembly-export-animatic-dialog.text.text.871c91046db1": {
+  "nb": "Ingen undertekster i utvalget (replikkene mangler oversettelse eller tid).",
+  "en": "No subtitles in the selection (the lines lack a translation or timing).",
+  "oversatt": "Keine Untertitel in der Auswahl (den Dialogzeilen fehlt Übersetzung oder Timing)."
+ },
+ "app-assembly-export-animatic-dialog.text.text.88ce0c88ca76": {
+  "nb": "{n} undertekster på {value2} brennes inn i bildet.",
+  "en": "{n} subtitles in {value2} are burned into the image.",
+  "oversatt": "{n} Untertitel in {value2} werden in das Bild eingebrannt."
+ },
+ "app-assembly-export-animatic-dialog.text.text.9332d5270889": {
+  "nb": "{length} {value2} uten 2D-scene vises som tittelkort ({value3}{value4}).",
+  "en": "{length} {value2} without a 2D scene are shown as title cards ({value3}{value4}).",
+  "oversatt": "{length} {value2} ohne 2D-Szene werden als Titelkarten angezeigt ({value3}{value4})."
+ },
+ "app-assembly-export-animatic-dialog.text.text.bef07ee7c439": {
+  "nb": "{inactive} {value2} ikke med.",
+  "en": "{inactive} {value2} not included.",
+  "oversatt": "{inactive} {value2} nicht enthalten."
+ },
+ "app-assembly-export-animatic-dialog.text.text.c8d201ba6102": {
+  "nb": "Dialogsporet lages for de første {value1} timene (grensen for WAV-filer). Velg et utvalg av scener for resten.",
+  "en": "The dialogue track is made for the first {value1} hours (the limit for WAV files). Choose a selection of scenes for the rest.",
+  "oversatt": "Die Dialogspur wird für die ersten {value1} Stunden erstellt (das Limit für WAV-Dateien). Wählen Sie für den Rest eine Auswahl an Szenen."
+ },
+ "app-assembly-export-animatic-dialog.text.text.cabe1e05bf3e": {
+  "nb": "Fonten mangler: {value1}. Teksten tegnes med en reservefont.",
+  "en": "Missing font: {value1}. The text is drawn with a fallback font.",
+  "oversatt": "Fehlende Schriftart: {value1}. Der Text wird mit einer Ersatzschriftart dargestellt."
+ },
+ "app-assembly-export-animatic-dialog.text.text.ccabe56aed9b": {
+  "nb": "Dialogspor ({langName}): {length} {value3} med dialog og forteller. Musikk, effekter og lyden i importert film er ikke med.",
+  "en": "Dialogue track ({langName}): {length} {value3} with dialogue and narration. Music, effects and the sound in imported film are not included.",
+  "oversatt": "Dialogspur ({langName}): {length} {value3} mit Dialog und Erzählung. Musik, Effekte und der Ton in importiertem Film sind nicht enthalten."
+ },
+ "app-assembly-export-animatic-dialog.text.text.d6f2e416a799": {
+  "nb": "{mixed} {value2} dialog på et annet språk blandet inn i lyden. Den kan ikke fjernes, og spilles som den er.",
+  "en": "{mixed} {value2} dialogue in another language mixed into the sound. It cannot be removed, and is played as it is.",
+  "oversatt": "{mixed} {value2} Dialog in einer anderen Sprache in den Ton gemischt. Er kann nicht entfernt werden und wird wie vorliegend abgespielt."
+ },
+ "app-assembly-export-animatic-dialog.text.text.e0e5a4b084d1": {
+  "nb": "{n} {value2} i manusets rekkefølge, {value3}.",
+  "en": "{n} {value2} in script order, {value3}.",
+  "oversatt": "{n} {value2} in Drehbuchreihenfolge, {value3}."
+ },
+ "app-assembly-export-animatic-dialog.text.text.e3f97dd2aee4": {
+  "nb": "{length} {value2} film, AI-video eller stillbilde.",
+  "en": "{length} {value2} film, AI video or a still image.",
+  "oversatt": "{length} {value2} Film, KI-Video oder Standbild."
+ },
+ "app-assembly-export-animatic-dialog.text.text.e579d41eff17": {
+  "nb": "{missingVersions} {value2} bilde i biblioteket og blir usynlige.",
+  "en": "{missingVersions} {value2} missing an image in the library and will be invisible.",
+  "oversatt": "{missingVersions} {value2} fehlt ein Bild in der Bibliothek und wird unsichtbar sein."
+ },
+ "app-assembly-export-animatic-dialog.what.message.3a6e463a56aa": {
+  "nb": "{length} scener",
+  "en": "{length} scenes",
+  "oversatt": "{length} Szenen"
+ },
+ "app-assembly-export-animatic-dialog.what.message.9903432debbd": {
+  "nb": "scener {value1}–{value2}",
+  "en": "scenes {value1}–{value2}",
+  "oversatt": "Szenen {value1}–{value2}"
+ },
+ "app-assembly-export-queue-status.export-queue-status.aria-label.73998bbbd4d4": {
+  "nb": "Eksportkø",
+  "en": "Export queue",
+  "oversatt": "Export-Warteschlange"
+ },
+ "app-assembly-export-queue-status.export-queue-status.aria-label.9052913c895d": {
+  "nb": "Avbryt / fjern eksport",
+  "en": "Cancel / dismiss export",
+  "oversatt": "Export abbrechen / verwerfen"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.1f1d503f0280": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "Abgebrochen"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.2c2d7a557513": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "Fehlgeschlagen"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.64c3eaa0b78b": {
+  "nb": "Eksporterer {done} av {total}",
+  "en": "Exporting {done} of {total}",
+  "oversatt": "Exportiere {done} von {total}"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.8b3a5f6dc7d3": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Fertig"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.a4fc60296eb0": {
+  "nb": "Laget med profil {name}",
+  "en": "Made with profile {name}",
+  "oversatt": "Erstellt mit Profil {name}"
+ },
+ "app-assembly-export-queue-status.export-queue-status.p.f66f1a482169": {
+  "nb": "I kø",
+  "en": "Queued",
+  "oversatt": "In Warteschlange"
+ },
+ "app-assembly-export-queue-status.export-queue-status.title.9052913c895d": {
+  "nb": "Avbryt / fjern eksport",
+  "en": "Cancel / dismiss export",
+  "oversatt": "Export abbrechen / verwerfen"
+ },
+ "app-assembly-film-import.check-film-file.message.093fd30458d6": {
+  "nb": "Filmen er større enn 2 GB.",
+  "en": "The film is larger than 2 GB.",
+  "oversatt": "Der Film ist größer als 2 GB."
+ },
+ "app-assembly-film-import.check-film-file.message.45169e5b6406": {
+  "nb": "Filmen må være MP4 (også .m4v), MOV (QuickTime) eller WebM. Andre formater (AVI, MKV, MXF …) kan gjøres om til MP4 (H.264) i et klippeprogram eller med HandBrake.",
+  "en": "The film must be MP4 (also .m4v), MOV (QuickTime) or WebM. Other formats (AVI, MKV, MXF …) can be converted to MP4 (H.264) in an editing program or with HandBrake.",
+  "oversatt": "Der Film muss im Format MP4 (auch .m4v), MOV (QuickTime) oder WebM vorliegen. Andere Formate (AVI, MKV, MXF …) können in einem Schnittprogramm oder mit HandBrake in MP4 (H.264) konvertiert werden."
+ },
+ "app-assembly-film-import.check-film-file.message.a9ff3f3662ca": {
+  "nb": "Filen er tom.",
+  "en": "The file is empty.",
+  "oversatt": "Die Datei ist leer."
+ },
+ "app-assembly-film-import.codec-name.message.9387128eafbc": {
+  "nb": "en ukjent kodek",
+  "en": "an unknown codec",
+  "oversatt": "ein unbekannter Codec"
+ },
+ "app-assembly-film-import.read-meta.message.09b2442e1b5b": {
+  "nb": "Filen har ingen video.",
+  "en": "The file has no video.",
+  "oversatt": "Die Datei enthält kein Video."
+ },
+ "app-assembly-film-import.read-meta.message.223210237229": {
+  "nb": "Filmen er kodet med {value1}, som denne nettleseren ikke kan spille av. Eksporter den som MP4 med H.264 (eller prøv Safari for HEVC).",
+  "en": "The film is encoded with {value1}, which this browser cannot play. Export it as MP4 with H.264 (or try Safari for HEVC).",
+  "oversatt": "Der Film ist mit {value1} codiert, was dieser Browser nicht abspielen kann. Exportieren Sie ihn als MP4 mit H.264 (oder versuchen Sie Safari für HEVC)."
+ },
+ "app-assembly-film-import.read-meta.message.4e88816e7eb5": {
+  "nb": "Filen kunne ikke leses som film. Prøv MP4 (H.264).",
+  "en": "The file could not be read as a film. Try MP4 (H.264).",
+  "oversatt": "Die Datei konnte nicht als Film gelesen werden. Versuchen Sie es mit MP4 (H.264)."
+ },
+ "app-assembly-film-import.read-meta.message.57854b823303": {
+  "nb": "Filmens lengde kunne ikke leses.",
+  "en": "The film's length could not be read.",
+  "oversatt": "Die Filmdauer konnte nicht ermittelt werden."
+ },
+ "app-assembly-film-import.upload-film.message.8917e47b2aed": {
+  "nb": "Filmen kunne ikke lastes opp: {message}",
+  "en": "The film could not be uploaded: {message}",
+  "oversatt": "Der Film konnte nicht hochgeladen werden: {message}"
+ },
+ "app-assembly-film-popout.film-popout.aria-label.24850d1b35ee": {
+  "nb": "Lukk det egne vinduet",
+  "en": "Close this window",
+  "oversatt": "Dieses Fenster schließen"
+ },
+ "app-assembly-film-popout.film-popout.aria-label.493c081ca69f": {
+  "nb": "Filmen på avspillingshodet",
+  "en": "The film at the playhead",
+  "oversatt": "Der Film am Abspielkopf"
+ },
+ "app-assembly-film-popout.film-popout.span.6c5cfd24e68b": {
+  "nb": " · svart-hvitt",
+  "en": " · black and white",
+  "oversatt": " · Schwarz-Weiß"
+ },
+ "app-assembly-film-popout.film-popout.span.d6a197d2ab21": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "Schnitt"
+ },
+ "app-assembly-film-popout.film-popout.title.70def42dc1b7": {
+  "nb": "Lukk det egne vinduet (filmen vises fortsatt i monteringen)",
+  "en": "Close this window (the film is still shown in the assembly)",
+  "oversatt": "Dieses Fenster schließen (der Film wird weiterhin im Schnitt angezeigt)"
+ },
+ "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
+  "nb": "Montering – Animatic Studio",
+  "en": "Assembly – Animatic Studio",
+  "oversatt": "Schnitt – Animatic Studio"
+ },
+ "app-assembly-film-timeline.clip-block.aria-label.ced9ea8fdfc3": {
+  "nb": "Scene {value1}: {heading}, {value3}{value4}{value5}{value6}{value7}",
+  "en": "Scene {value1}: {heading}, {value3}{value4}{value5}{value6}{value7}",
+  "oversatt": "Szene {value1}: {heading}, {value3}{value4}{value5}{value6}{value7}"
+ },
+ "app-assembly-film-timeline.clip-block.title.38d310a0c6fa": {
+  "nb": "inn i scenen",
+  "en": "into the scene",
+  "oversatt": "in die Szene"
+ },
+ "app-assembly-film-timeline.clip-block.title.39f3a314d106": {
+  "nb": "Splitt",
+  "en": "Split",
+  "oversatt": "Teilen"
+ },
+ "app-assembly-film-timeline.clip-block.title.68430a8571bf": {
+  "nb": "Dra for å endre lengden på scenen (eller skriv lengden i panelet til høyre)",
+  "en": "Drag to change the length of the scene (or type the length in the panel on the right)",
+  "oversatt": "Ziehen, um die Szenenlänge zu ändern (oder Dauer im rechten Bedienfeld eingeben)"
+ },
+ "app-assembly-film-timeline.clip-block.title.ae338d2b6c45": {
+  "nb": " (overlapper forrige scene)",
+  "en": " (overlaps previous scene)",
+  "oversatt": " (überlappt vorherige Szene)"
+ },
+ "app-assembly-film-timeline.clip-block.title.c25135a98658": {
+  "nb": " – prosjektets standard",
+  "en": " – the project's default",
+  "oversatt": " – Projektstandard"
+ },
+ "app-assembly-film-timeline.clip-block.title.cb297fbaa38d": {
+  "nb": "{value1} {heading}\n{value3}{value4}{value5}{value6}{value7}\n{value8}Dobbeltklikk for å åpne i sceneeditoren.",
+  "en": "{value1} {heading}\n{value3}{value4}{value5}{value6}{value7}\n{value8}Double-click to open in the scene editor.",
+  "oversatt": "{value1} {heading}\n{value3}{value4}{value5}{value6}{value7}\n{value8}Doppelklicken, um im Szeneneditor zu öffnen."
+ },
+ "app-assembly-film-timeline.clip-block.title.f3f9988963fe": {
+  "nb": "Manuset er endret her etter at materialet ble laget",
+  "en": "The script has changed here since the material was made",
+  "oversatt": "Das Drehbuch wurde hier geändert, nachdem das Material erstellt wurde"
+ },
+ "app-assembly-film-timeline.clip-label": {
+  "nb": "Scene {number}: {heading}, {duration}{details}",
+  "en": "Scene {number}: {heading}, {duration}{details}",
+  "oversatt": "Szene {number}: {heading}, {duration}{details}"
+ },
+ "app-assembly-film-timeline.clip-label-finished-film": {
+  "nb": ", ferdig film",
+  "en": ", finished film",
+  "oversatt": ", fertiger Film"
+ },
+ "app-assembly-film-timeline.clip-label-monochrome": {
+  "nb": ", svart-hvitt",
+  "en": ", black and white",
+  "oversatt": ", Schwarz-Weiß"
+ },
+ "app-assembly-film-timeline.clip-label-no-2d": {
+  "nb": ", uten 2D-scene",
+  "en": ", no 2D scene",
+  "oversatt": ", keine 2D-Szene"
+ },
+ "app-assembly-film-timeline.clip-label-script-changed": {
+  "nb": ", manuset er endret etter materialet",
+  "en": ", the script has changed since the material was made",
+  "oversatt": ", das Drehbuch wurde nach Erstellung des Materials geändert"
+ },
+ "app-assembly-film-timeline.clip-label-transition": {
+  "nb": ", {transition} inn",
+  "en": ", {transition} in",
+  "oversatt": ", {transition} einblenden"
+ },
+ "app-assembly-film-timeline.clip-label-transition-overlap": {
+  "nb": ", {transition} inn med overlapp",
+  "en": ", {transition} in with overlap",
+  "oversatt": ", {transition} einblenden mit Überlappung"
+ },
+ "app-assembly-film-timeline.clip-tooltip": {
+  "nb": "{number} {heading}\n{duration}{details}\n{move}Dobbeltklikk for å åpne i sceneeditoren.",
+  "en": "{number} {heading}\n{duration}{details}\n{move}Double-click to open in the scene editor.",
+  "oversatt": "{number} {heading}\n{duration}{details}\n{move}Doppelklicken, um im Szeneneditor zu öffnen."
+ },
+ "app-assembly-film-timeline.clip-tooltip-edited": {
+  "nb": {
+   "one": "\nKlippet: {count} del",
+   "other": "\nKlippet: {count} deler"
+  },
+  "en": {
+   "one": "\nEdited: {count} part",
+   "other": "\nEdited: {count} parts"
+  },
+  "oversatt": {
+   "one": "\nGeschnitten: {count} Teil",
+   "other": "\nGeschnitten: {count} Teile"
+  }
+ },
+ "app-assembly-film-timeline.clip-tooltip-estimate": {
+  "nb": " (beregnet fra manus)",
+  "en": " (estimated from the script)",
+  "oversatt": " (aus Drehbuch geschätzt)"
+ },
+ "app-assembly-film-timeline.clip-tooltip-film": {
+  "nb": "\nFerdig film: {file}",
+  "en": "\nFinished film: {file}",
+  "oversatt": "\nFertiger Film: {file}"
+ },
+ "app-assembly-film-timeline.clip-tooltip-move": {
+  "nb": "Dra for å flytte scenen. ",
+  "en": "Drag to move the scene. ",
+  "oversatt": "Ziehen, um die Szene zu verschieben. "
+ },
+ "app-assembly-film-timeline.clip-tooltip-no-2d": {
+  "nb": "\nIngen 2D-scene ennå – vises som tittelkort",
+  "en": "\nNo 2D scene yet – shown as a title card",
+  "oversatt": "\nNoch keine 2D-Szene – wird als Titelkarte angezeigt"
+ },
+ "app-assembly-film-timeline.clip-tooltip-planned": {
+  "nb": " (planlagt)",
+  "en": " (planned)",
+  "oversatt": " (geplant)"
+ },
+ "app-assembly-film-timeline.film-timeline.aria-label.2a4b89539d9b": {
+  "nb": "Zoom filmtidslinjen",
+  "en": "Zoom the film timeline",
+  "oversatt": "Film-Zeitleiste zoomen"
+ },
+ "app-assembly-film-timeline.film-timeline.aria-label.631079b51a8c": {
+  "nb": "Filmtidslinje",
+  "en": "Film timeline",
+  "oversatt": "Film-Zeitleiste"
+ },
+ "app-assembly-film-timeline.film-timeline.aria-label.866c236ff0d1": {
+  "nb": "Scener i filmen",
+  "en": "Scenes in the film",
+  "oversatt": "Szenen im Film"
+ },
+ "app-assembly-film-timeline.film-timeline.button.1a9de30c5436": {
+  "nb": "Hele filmen",
+  "en": "Whole film",
+  "oversatt": "Gesamter Film"
+ },
+ "app-assembly-film-timeline.film-timeline.label.d2df91f981e9": {
+  "nb": "Høyde på filmtidslinjen",
+  "en": "Height of the film timeline",
+  "oversatt": "Höhe der Film-Zeitleiste"
+ },
+ "app-assembly-film-timeline.film-timeline.span.dabbde9d5b78": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "Zoom"
+ },
+ "app-assembly-film-timeline.film-timeline.title.a14040133b81": {
+  "nb": "Vis hele filmen",
+  "en": "Show the whole film",
+  "oversatt": "Gesamten Film anzeigen"
+ },
+ "app-assembly-film-timeline.film-timeline.track-label.42e0da0624e7": {
+  "nb": "Bilde",
+  "en": "Picture",
+  "oversatt": "Bild"
+ },
+ "app-assembly-film-viewer.film-viewer.aria-label.afc6d9cc6295": {
+  "nb": "Filmen på avspillingshodet",
+  "en": "The film at the playhead",
+  "oversatt": "Der Film am Abspielkopf"
+ }
+}

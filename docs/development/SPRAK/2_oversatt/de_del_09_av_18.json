@@ -1,0 +1,3047 @@
+{
+ "app-release-poster-inspector.toggle.on-document.0faf3ea023af": {
+  "nb": "Endre innhold på plakaten",
+  "en": "Change poster content",
+  "oversatt": "Posterinhalt ändern"
+ },
+ "app-release-poster-workspace.new-custom.add-element.0e158e6bff1d": {
+  "nb": "Nytt bilde",
+  "en": "New image",
+  "oversatt": "Neues Bild"
+ },
+ "app-release-poster-workspace.new-custom.add-element.4c4cbdb804c9": {
+  "nb": "Ny flate",
+  "en": "New shape",
+  "oversatt": "Neue Form"
+ },
+ "app-release-poster-workspace.new-custom.add-element.cda2df5a0013": {
+  "nb": "Ny tekst",
+  "en": "New text",
+  "oversatt": "Neuer Text"
+ },
+ "app-release-poster-workspace.new-custom.set-error.a1dff6d89f59": {
+  "nb": "Biblioteket har ingen ressurser med bilder ennå.",
+  "en": "The library has no assets with images yet.",
+  "oversatt": "Die Bibliothek enthält noch keine Assets mit Bildern."
+ },
+ "app-release-poster-workspace.on-redraft.save.70f5b46eb2ac": {
+  "nb": "Lag utkastet på nytt",
+  "en": "Redraft the poster",
+  "oversatt": "Poster neu entwerfen"
+ },
+ "app-release-poster-workspace.order.save.9f30e66093ba": {
+  "nb": "Flytt bak",
+  "en": "Send back",
+  "oversatt": "Nach hinten verschieben"
+ },
+ "app-release-poster-workspace.order.save.a9339cab828f": {
+  "nb": "Flytt fram",
+  "en": "Bring forward",
+  "oversatt": "Nach vorne verschieben"
+ },
+ "app-release-poster-workspace.poster-workspace.div.f000d65e1831": {
+  "nb": "Prosjektet kunne ikke hentes.",
+  "en": "The project could not be loaded.",
+  "oversatt": "Das Projekt konnte nicht geladen werden."
+ },
+ "app-release-poster-workspace.poster-workspace.p.157c9664a3d1": {
+  "nb": "Henter prosjektet …",
+  "en": "Loading the project …",
+  "oversatt": "Projekt wird geladen …"
+ },
+ "app-release-poster-workspace.poster-workspace.p.373f0ad179c9": {
+  "nb": "Teknisk detalj",
+  "en": "Technical detail",
+  "oversatt": "Technisches Detail"
+ },
+ "app-release-poster-workspace.release.aria-label.47d18629b8d4": {
+  "nb": "Plakater",
+  "en": "Posters",
+  "oversatt": "Poster"
+ },
+ "app-release-poster-workspace.release.aria-label.616d74b4a361": {
+  "nb": "Språk i forhåndsvisningen",
+  "en": "Language of the preview",
+  "oversatt": "Sprache der Vorschau"
+ },
+ "app-release-poster-workspace.release.aria-label.8e8faa1f0f31": {
+  "nb": "Innstillinger for plakaten",
+  "en": "Settings for the poster",
+  "oversatt": "Einstellungen für das Poster"
+ },
+ "app-release-poster-workspace.release.aria-label.ce76d0602807": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "Produktion"
+ },
+ "app-release-poster-workspace.release.aria-label.cf3990f06b50": {
+  "nb": "Innstillinger",
+  "en": "Settings",
+  "oversatt": "Einstellungen"
+ },
+ "app-release-poster-workspace.release.aria-label.f0b64d62bbf2": {
+  "nb": "Fjern plakaten «{name}»",
+  "en": "Remove the poster “{name}”",
+  "oversatt": "Poster „{name}“ entfernen"
+ },
+ "app-release-poster-workspace.release.button.c8683396b684": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Schließen"
+ },
+ "app-release-poster-workspace.release.button.fbcb86b61afd": {
+  "nb": "Ny plakat",
+  "en": "New poster",
+  "oversatt": "Neues Poster"
+ },
+ "app-release-poster-workspace.release.change-element.596dd3816a3b": {
+  "nb": "Harmonisert bilde bare her",
+  "en": "Harmonized image only here",
+  "oversatt": "Harmonisiertes Bild nur hier"
+ },
+ "app-release-poster-workspace.release.cmds-run.f0b64d62bbf2": {
+  "nb": "Fjern plakaten «{name}»",
+  "en": "Remove the poster “{name}”",
+  "oversatt": "Poster „{name}“ entfernen"
+ },
+ "app-release-poster-workspace.release.label.0065aef473b7": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "Wiederholen: {redoLabel}"
+ },
+ "app-release-poster-workspace.release.label.0884e98d32ef": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "Rückgängig: {undoLabel}"
+ },
+ "app-release-poster-workspace.release.label.5b58d96eb2d9": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "Wiederholen"
+ },
+ "app-release-poster-workspace.release.label.67d99d6e5d5c": {
+  "nb": "Bredde på plakatlisten",
+  "en": "Width of the poster list",
+  "oversatt": "Breite der Posterliste"
+ },
+ "app-release-poster-workspace.release.label.6d38691f9c43": {
+  "nb": "Legg til flate",
+  "en": "Add shape",
+  "oversatt": "Form hinzufügen"
+ },
+ "app-release-poster-workspace.release.label.757a61b1be69": {
+  "nb": "Bredde på innstillingene",
+  "en": "Width of the settings",
+  "oversatt": "Breite der Einstellungen"
+ },
+ "app-release-poster-workspace.release.label.7c31d3b73122": {
+  "nb": "Element",
+  "en": "Element",
+  "oversatt": "Element"
+ },
+ "app-release-poster-workspace.release.label.b184f6f16bae": {
+  "nb": "Legg til bilde",
+  "en": "Add image",
+  "oversatt": "Bild hinzufügen"
+ },
+ "app-release-poster-workspace.release.label.bc5e159f3115": {
+  "nb": "Legg til tekst",
+  "en": "Add text",
+  "oversatt": "Text hinzufügen"
+ },
+ "app-release-poster-workspace.release.label.ce76d0602807": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "Produktion"
+ },
+ "app-release-poster-workspace.release.label.e43f0316bc07": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Rückgängig"
+ },
+ "app-release-poster-workspace.release.option.125b57011f77": {
+  "nb": "Velg et element …",
+  "en": "Choose an element …",
+  "oversatt": "Element auswählen …"
+ },
+ "app-release-poster-workspace.release.option.7b256a3b37c8": {
+  "nb": " (skjult)",
+  "en": " (hidden)",
+  "oversatt": " (ausgeblendet)"
+ },
+ "app-release-poster-workspace.release.option.c8bb36bc83a1": {
+  "nb": "Norsk",
+  "en": "Norwegian",
+  "oversatt": "Norwegisch"
+ },
+ "app-release-poster-workspace.release.option.cad6bb633625": {
+  "nb": "Engelsk",
+  "en": "English",
+  "oversatt": "Englisch"
+ },
+ "app-release-poster-workspace.release.p.619a05121915": {
+  "nb": "Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til trykk.",
+  "en": "Make a cinema pitch poster or a character and universe map. The app makes a first draft from the script and the library, which you can change freely and export for print.",
+  "oversatt": "Erstellen Sie ein Kino-Pitch-Poster oder eine Figuren- und Universumskarte. Die App erstellt einen ersten Entwurf aus dem Drehbuch und der Bibliothek, den Sie frei anpassen und für den Druck exportieren können."
+ },
+ "app-release-poster-workspace.release.p.f2100588b6d9": {
+  "nb": "Klikk på noe i plakaten, eller velg i listen over. Piltastene flytter valgt element.",
+  "en": "Click something in the poster, or choose from the list above. The arrow keys move the selected element.",
+  "oversatt": "Klicken Sie auf ein Element im Poster oder wählen Sie es aus der Liste oben aus. Mit den Pfeiltasten verschieben Sie das ausgewählte Element."
+ },
+ "app-release-poster-workspace.release.p.f21a622cb97b": {
+  "nb": "Ingen plakater ennå",
+  "en": "No posters yet",
+  "oversatt": "Noch keine Poster"
+ },
+ "app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.41201bd03653": {
+  "nb": "Kontroll",
+  "en": "Checks",
+  "oversatt": "Prüfungen"
+ },
+ "app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.7c31d3b73122": {
+  "nb": "Element",
+  "en": "Element",
+  "oversatt": "Element"
+ },
+ "app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.92521107769a": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "Poster"
+ },
+ "app-release-poster-workspace.release.span.0c4f34e87941": {
+  "nb": "Bare lesetilgang",
+  "en": "Read-only access",
+  "oversatt": "Schreibgeschützter Zugriff"
+ },
+ "app-release-poster-workspace.release.span.2250797ea93d": {
+  "nb": "Utgivelse",
+  "en": "Release",
+  "oversatt": "Veröffentlichung"
+ },
+ "app-release-poster-workspace.release.span.52832472a5b7": {
+  "nb": "norsk",
+  "en": "Norwegian",
+  "oversatt": "Norwegisch"
+ },
+ "app-release-poster-workspace.release.span.5380daa70605": {
+  "nb": "Relasjoner",
+  "en": "Relations",
+  "oversatt": "Beziehungen"
+ },
+ "app-release-poster-workspace.release.span.557f279fecfa": {
+  "nb": "Vis på",
+  "en": "Show in",
+  "oversatt": "Anzeigen in"
+ },
+ "app-release-poster-workspace.release.span.ae207c8e6671": {
+  "nb": "engelsk",
+  "en": "English",
+  "oversatt": "Englisch"
+ },
+ "app-release-poster-workspace.release.span.c1d9e794dcc3": {
+  "nb": "Plakater ({length})",
+  "en": "Posters ({length})",
+  "oversatt": "Poster ({length})"
+ },
+ "app-release-poster-workspace.release.title.54dae3e577b2": {
+  "nb": "Relasjoner mellom karakterene",
+  "en": "Relations between the characters",
+  "oversatt": "Beziehungen zwischen den Charakteren"
+ },
+ "app-release-poster-workspace.release.title.6d38691f9c43": {
+  "nb": "Legg til flate",
+  "en": "Add shape",
+  "oversatt": "Fläche hinzufügen"
+ },
+ "app-release-poster-workspace.release.title.9e9c617110c6": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "Rückgängig (⌘Z)"
+ },
+ "app-release-poster-workspace.release.title.af69fc49c826": {
+  "nb": "Fjern plakaten (kan angres)",
+  "en": "Remove the poster (can be undone)",
+  "oversatt": "Poster entfernen (kann rückgängig gemacht werden)"
+ },
+ "app-release-poster-workspace.release.title.b184f6f16bae": {
+  "nb": "Legg til bilde",
+  "en": "Add image",
+  "oversatt": "Bild hinzufügen"
+ },
+ "app-release-poster-workspace.release.title.bc5e159f3115": {
+  "nb": "Legg til tekst",
+  "en": "Add text",
+  "oversatt": "Text hinzufügen"
+ },
+ "app-release-poster-workspace.release.title.f4052e8ed488": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "Wiederholen (⇧⌘Z)"
+ },
+ "app-release-poster-workspace.release.title.f9640d5db842": {
+  "nb": "Gjør om: {redoLabel} (⇧⌘Z)",
+  "en": "Redo: {redoLabel} (⇧⌘Z)",
+  "oversatt": "Wiederholen: {redoLabel} (⇧⌘Z)"
+ },
+ "app-release-poster-workspace.release.title.fba85a87562d": {
+  "nb": "Angre: {undoLabel} (⌘Z)",
+  "en": "Undo: {undoLabel} (⌘Z)",
+  "oversatt": "Rückgängig: {undoLabel} (⌘Z)"
+ },
+ "app-release-poster-workspace.release.toolbar-button.9802b5d3d4f2": {
+  "nb": "Eksporter",
+  "en": "Export",
+  "oversatt": "Exportieren"
+ },
+ "app-release-poster-workspace.release.toolbar-button.fc935ac5452b": {
+  "nb": "Ny",
+  "en": "New",
+  "oversatt": "Neu"
+ },
+ "app-release-poster-workspace.remove.save.61782ea14e37": {
+  "nb": "Fjern element",
+  "en": "Remove element",
+  "oversatt": "Element entfernen"
+ },
+ "app-release-poster-workspace.reset.save.e63a3e554439": {
+  "nb": "Tilbakestill element",
+  "en": "Reset element",
+  "oversatt": "Element zurücksetzen"
+ },
+ "app-release-relations-dialog.name.message.b615963035e7": {
+  "nb": "(ukjent)",
+  "en": "(unknown)",
+  "oversatt": "(unbekannt)"
+ },
+ "app-release-relations-dialog.relations-dialog.add.72d78d656ea4": {
+  "nb": "Ny relasjon",
+  "en": "New relation",
+  "oversatt": "Neue Beziehung"
+ },
+ "app-release-relations-dialog.relations-dialog.add.c82515b040ab": {
+  "nb": "Godkjenn relasjon {value1} – {value2}",
+  "en": "Approve relation {value1} – {value2}",
+  "oversatt": "Beziehung {value1} – {value2} genehmigen"
+ },
+ "app-release-relations-dialog.relations-dialog.add.e0a649283558": {
+  "nb": "Avvis forslag {value1} – {value2}",
+  "en": "Dismiss suggestion {value1} – {value2}",
+  "oversatt": "Vorschlag {value1} – {value2} ablehnen"
+ },
+ "app-release-relations-dialog.relations-dialog.aria-label.2042c7fa029e": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Typ"
+ },
+ "app-release-relations-dialog.relations-dialog.aria-label.463da37c8dd0": {
+  "nb": "Til",
+  "en": "To",
+  "oversatt": "Bis"
+ },
+ "app-release-relations-dialog.relations-dialog.aria-label.505edde0288f": {
+  "nb": "Fjern relasjonen mellom {value1} og {value2}",
+  "en": "Remove the relation between {value1} and {value2}",
+  "oversatt": "Beziehung zwischen {value1} und {value2} entfernen"
+ },
+ "app-release-relations-dialog.relations-dialog.aria-label.62e513a76b03": {
+  "nb": "Type relasjon mellom {value1} og {value2}",
+  "en": "Type of relation between {value1} and {value2}",
+  "oversatt": "Beziehungstyp zwischen {value1} und {value2}"
+ },
+ "app-release-relations-dialog.relations-dialog.aria-label.99bcd6c19ac2": {
+  "nb": "Fra",
+  "en": "From",
+  "oversatt": "Von"
+ },
+ "app-release-relations-dialog.relations-dialog.button.30f86cfde141": {
+  "nb": "Avvis",
+  "en": "Dismiss",
+  "oversatt": "Ablehnen"
+ },
+ "app-release-relations-dialog.relations-dialog.button.b87d739fe809": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "Genehmigen"
+ },
+ "app-release-relations-dialog.relations-dialog.button.f59746708b29": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "Hinzufügen"
+ },
+ "app-release-relations-dialog.relations-dialog.cmds-run.911dcb037d62": {
+  "nb": "Fjern relasjon",
+  "en": "Remove relation",
+  "oversatt": "Beziehung entfernen"
+ },
+ "app-release-relations-dialog.relations-dialog.dialog-description.458ab38a3221": {
+  "nb": "Hvordan karakterene henger sammen. Godkjente relasjoner vises som linjer i karakterkartet. Forslagene kommer fra manuset og lagres bare når du godkjenner dem.",
+  "en": "How the characters are connected. Approved relations are shown as lines in the character map. Suggestions come from the script and are only saved when you approve them.",
+  "oversatt": "Wie die Charaktere miteinander verbunden sind. Genehmigte Beziehungen werden als Linien in der Charakterübersicht angezeigt. Vorschläge stammen aus dem Drehbuch und werden erst gespeichert, wenn Sie sie genehmigen."
+ },
+ "app-release-relations-dialog.relations-dialog.dialog-title.7981c29a676d": {
+  "nb": "Relasjoner",
+  "en": "Relations",
+  "oversatt": "Beziehungen"
+ },
+ "app-release-relations-dialog.relations-dialog.h3.35606830b1a2": {
+  "nb": "Forslag fra manuset",
+  "en": "Suggestions from the script",
+  "oversatt": "Vorschläge aus dem Drehbuch"
+ },
+ "app-release-relations-dialog.relations-dialog.h3.72d78d656ea4": {
+  "nb": "Ny relasjon",
+  "en": "New relation",
+  "oversatt": "Neue Beziehung"
+ },
+ "app-release-relations-dialog.relations-dialog.h3.c320cb1a9df6": {
+  "nb": "Godkjente relasjoner",
+  "en": "Approved relations",
+  "oversatt": "Genehmigte Beziehungen"
+ },
+ "app-release-relations-dialog.relations-dialog.label.0e6aaec55589": {
+  "nb": "Navn på relasjonen mellom {value1} og {value2}",
+  "en": "Name of the relation between {value1} and {value2}",
+  "oversatt": "Name der Beziehung zwischen {value1} und {value2}"
+ },
+ "app-release-relations-dialog.relations-dialog.label.192c360dd148": {
+  "nb": "Beskrivelse av relasjonen mellom {value1} og {value2}",
+  "en": "Description of the relation between {value1} and {value2}",
+  "oversatt": "Beschreibung der Beziehung zwischen {value1} und {value2}"
+ },
+ "app-release-relations-dialog.relations-dialog.option.60c36d601445": {
+  "nb": "Velg karakter, sted eller objekt …",
+  "en": "Choose a character, location or object …",
+  "oversatt": "Figur, Ort oder Objekt auswählen …"
+ },
+ "app-release-relations-dialog.relations-dialog.option.c89dda879904": {
+  "nb": "Velg karakter …",
+  "en": "Choose a character …",
+  "oversatt": "Figur auswählen …"
+ },
+ "app-release-relations-dialog.relations-dialog.p.7822c91cd692": {
+  "nb": "Ingen ennå.",
+  "en": "None yet.",
+  "oversatt": "Noch keine."
+ },
+ "app-release-relations-dialog.relations-dialog.p.d801e32d792c": {
+  "nb": "Ingen nye forslag. Forslag kommer fra karakterer som er sammen i flere scener.",
+  "en": "No new suggestions. Suggestions come from characters who are together in several scenes.",
+  "oversatt": "Keine neuen Vorschläge. Vorschläge basieren auf Figuren, die in mehreren Szenen zusammen auftreten."
+ },
+ "app-release-relations-dialog.relations-dialog.placeholder.2b4bbd2784de": {
+  "nb": "Navn (f.eks. «mor og datter»)",
+  "en": "Name (e.g. “mother and daughter”)",
+  "oversatt": "Name (z. B. „Mutter und Tochter“)"
+ },
+ "app-release-relations-dialog.relations-dialog.placeholder.4c6942742dfe": {
+  "nb": "Kort beskrivelse (vises når «tekst om relasjonene» er slått på)",
+  "en": "Short description (shown when “text about the relations” is turned on)",
+  "oversatt": "Kurzbeschreibung (wird angezeigt, wenn „Text über Beziehungen“ aktiviert ist)"
+ },
+ "app-release-relations-dialog.relations-dialog.span.2561d97d8b12": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "Szenen"
+ },
+ "app-release-relations-dialog.relations-dialog.span.dcef691c17f7": {
+  "nb": "sammen i",
+  "en": "together in",
+  "oversatt": "zusammen in"
+ },
+ "app-release-relations-dialog.relations-dialog.span.e2716bd0a669": {
+  "nb": "«{text}»",
+  "en": "“{text}”",
+  "oversatt": "„{text}“"
+ },
+ "app-release-relations-dialog.update.cmds-run.87f973d97d98": {
+  "nb": "Endre relasjon",
+  "en": "Change relation",
+  "oversatt": "Beziehung bearbeiten"
+ },
+ "app-rig.add-plate": {
+  "nb": "Legg til plate",
+  "en": "Add plate",
+  "oversatt": "Platte hinzufügen"
+ },
+ "app-rig.apply-template": {
+  "nb": "Bruk malen",
+  "en": "Use the template",
+  "oversatt": "Vorlage verwenden"
+ },
+ "app-rig.calibrate-button": {
+  "nb": "Lagre måling som kalibrering",
+  "en": "Save measurement as calibration",
+  "oversatt": "Messung als Kalibrierung speichern"
+ },
+ "app-rig.calibration-heading": {
+  "nb": "Kalibrering",
+  "en": "Calibration",
+  "oversatt": "Kalibrierung"
+ },
+ "app-rig.calibration-invalid": {
+  "nb": "Kalibreringen er ugyldig fordi kameraverdiene er endret. Den er beholdt, men teoriberegningen brukes.",
+  "en": "The calibration is invalid because the camera values changed. It is kept, but the theoretical calculation is used.",
+  "oversatt": "Die Kalibrierung ist ungültig, da die Kamerawerte geändert wurden. Sie wird beibehalten, aber die theoretische Berechnung verwendet."
+ },
+ "app-rig.calibration-none": {
+  "nb": "Ikke kalibrert – teoriberegning brukes.",
+  "en": "Not calibrated – the theoretical calculation is used.",
+  "oversatt": "Nicht kalibriert – theoretische Berechnung wird verwendet."
+ },
+ "app-rig.calibration-px-per-mm": {
+  "nb": "Målte piksler per mm",
+  "en": "Measured pixels per mm",
+  "oversatt": "Gemessene Pixel pro mm"
+ },
+ "app-rig.calibration-reference-plate": {
+  "nb": "Referanseplate for målingen",
+  "en": "Reference plate for the measurement",
+  "oversatt": "Referenzplatte für die Messung"
+ },
+ "app-rig.calibration-valid": {
+  "nb": "Gyldig kalibrering fra {date}.",
+  "en": "Valid calibration from {date}.",
+  "oversatt": "Gültige Kalibrierung vom {date}."
+ },
+ "app-rig.camera-heading": {
+  "nb": "Kamera og objektiv",
+  "en": "Camera and lens",
+  "oversatt": "Kamera und Objektiv"
+ },
+ "app-rig.camera-height": {
+  "nb": "Kamerahøyde over bordet",
+  "en": "Camera height above the table",
+  "oversatt": "Kamerahöhe über dem Tisch"
+ },
+ "app-rig.camera-mode": {
+  "nb": "Kameramodus",
+  "en": "Camera mode",
+  "oversatt": "Kameramodus"
+ },
+ "app-rig.contour.computing": {
+  "nb": "Beregner konturen …",
+  "en": "Computing the contour …",
+  "oversatt": "Kontur wird berechnet …"
+ },
+ "app-rig.contour.cut-holes": {
+  "nb": "Skjær ut hull",
+  "en": "Cut out holes",
+  "oversatt": "Löcher ausschneiden"
+ },
+ "app-rig.contour.edit": {
+  "nb": "Rett konturen",
+  "en": "Edit the contour",
+  "oversatt": "Kontur bearbeiten"
+ },
+ "app-rig.contour.failed": {
+  "nb": "Konturen kunne ikke beregnes",
+  "en": "The contour could not be computed",
+  "oversatt": "Kontur konnte nicht berechnet werden"
+ },
+ "app-rig.contour.heading": {
+  "nb": "Kontur for utskrift",
+  "en": "Print contour",
+  "oversatt": "Druckkontur"
+ },
+ "app-rig.contour.mode-full": {
+  "nb": "Full figur",
+  "en": "Full figure",
+  "oversatt": "Ganze Figur"
+ },
+ "app-rig.contour.mode-line": {
+  "nb": "Med klippelinje",
+  "en": "With cut line",
+  "oversatt": "Mit Schnittlinie"
+ },
+ "app-rig.contour.mode-outline": {
+  "nb": "Kun kontur",
+  "en": "Contour only",
+  "oversatt": "Nur Kontur"
+ },
+ "app-rig.contour.preview-aria": {
+  "nb": "Forhåndsvisning av konturen",
+  "en": "Preview of the contour",
+  "oversatt": "Konturvorschau"
+ },
+ "app-rig.contour.source-alpha": {
+  "nb": "Bildets gjennomsiktighet",
+  "en": "The image's transparency",
+  "oversatt": "Bildtransparenz"
+ },
+ "app-rig.contour.source-label": {
+  "nb": "Konturkilde: {source}",
+  "en": "Contour source: {source}",
+  "oversatt": "Konturquelle: {source}"
+ },
+ "app-rig.contour.source-mask": {
+  "nb": "Din maske",
+  "en": "Your mask",
+  "oversatt": "Ihre Maske"
+ },
+ "app-rig.contour.source-none": {
+  "nb": "Ingen kontur – bildet skrives ut som det er",
+  "en": "No contour – the image is printed as is",
+  "oversatt": "Keine Kontur – Bild wird unverändert gedruckt"
+ },
+ "app-rig.contour.source-rectangle": {
+  "nb": "Bildets rektangel (forslaget er slått av)",
+  "en": "The image rectangle (suggestion is off)",
+  "oversatt": "Bildrechteck (Vorschlag deaktiviert)"
+ },
+ "app-rig.contour.source-suggestion": {
+  "nb": "Forslag",
+  "en": "Suggestion",
+  "oversatt": "Vorschlag"
+ },
+ "app-rig.contour.stroke-width": {
+  "nb": "Klippelinje",
+  "en": "Cut line",
+  "oversatt": "Schnittlinie"
+ },
+ "app-rig.contour.suggestion-toggle": {
+  "nb": "Automatisk forslag",
+  "en": "Automatic suggestion",
+  "oversatt": "Automatischer Vorschlag"
+ },
+ "app-rig.default-rig": {
+  "nb": "Standardrigg (hele prosjektet)",
+  "en": "Default rig (whole project)",
+  "oversatt": "Standard-Rig (gesamtes Projekt)"
+ },
+ "app-rig.distance-label": {
+  "nb": "Avstand {distance}",
+  "en": "Distance {distance}",
+  "oversatt": "Abstand {distance}"
+ },
+ "app-rig.field-of-view": {
+  "nb": "Synsfelt {size}",
+  "en": "Field of view {size}",
+  "oversatt": "Sichtfeld {size}"
+ },
+ "app-rig.focal-length": {
+  "nb": "Brennvidde",
+  "en": "Focal length",
+  "oversatt": "Brennweite"
+ },
+ "app-rig.glass-thickness": {
+  "nb": "Glasstykkelse",
+  "en": "Glass thickness",
+  "oversatt": "Glasdicke"
+ },
+ "app-rig.layers-panel.contour-heading": {
+  "nb": "Kontur",
+  "en": "Contour",
+  "oversatt": "Kontur"
+ },
+ "app-rig.layers-panel.depth-label": {
+  "nb": "Dybde",
+  "en": "Depth",
+  "oversatt": "Tiefe"
+ },
+ "app-rig.layers-panel.no-plate": {
+  "nb": "Ingen plate",
+  "en": "No plate",
+  "oversatt": "Keine Platte"
+ },
+ "app-rig.layers-panel.parallax-override": {
+  "nb": "Parallaksen er overstyrt bort fra platenivået",
+  "en": "The parallax is overridden away from the plate level",
+  "oversatt": "Die Parallaxe ist abweichend von der Plattenebene überschrieben"
+ },
+ "app-rig.layers-panel.physical-size": {
+  "nb": "Fysisk størrelse: {size}",
+  "en": "Physical size: {size}",
+  "oversatt": "Physische Größe: {size}"
+ },
+ "app-rig.layers-panel.plate-label": {
+  "nb": "Plate",
+  "en": "Plate",
+  "oversatt": "Platte"
+ },
+ "app-rig.layers-panel.set-plate-label": {
+  "nb": "Endret plate for laget",
+  "en": "Changed the layer's plate",
+  "oversatt": "Platte der Ebene geändert"
+ },
+ "app-rig.load-error": {
+  "nb": "Kunne ikke laste prosjektet.",
+  "en": "Could not load the project.",
+  "oversatt": "Projekt konnte nicht geladen werden."
+ },
+ "app-rig.loading": {
+  "nb": "Laster riggen …",
+  "en": "Loading the rig …",
+  "oversatt": "Rig wird geladen …"
+ },
+ "app-rig.mode-fixed": {
+  "nb": "Fast kamera (digital zoom)",
+  "en": "Fixed camera (digital zoom)",
+  "oversatt": "Feste Kamera (digitaler Zoom)"
+ },
+ "app-rig.mode-moving": {
+  "nb": "Kameraet beveger seg fysisk",
+  "en": "The camera moves physically",
+  "oversatt": "Kamera bewegt sich physisch"
+ },
+ "app-rig.new-plate-name": {
+  "nb": "Plate {number}",
+  "en": "Plate {number}",
+  "oversatt": "Platte {number}"
+ },
+ "app-rig.no-templates": {
+  "nb": "Ingen maler ennå.",
+  "en": "No templates yet.",
+  "oversatt": "Noch keine Vorlagen."
+ },
+ "app-rig.plate-height": {
+  "nb": "Høyde over bordet",
+  "en": "Height above the table",
+  "oversatt": "Höhe über dem Tisch"
+ },
+ "app-rig.plate-in-use": {
+  "nb": "Platen kan ikke fjernes: den brukes av lag i scenen.",
+  "en": "The plate cannot be removed: layers in the scene use it.",
+  "oversatt": "Die Platte kann nicht entfernt werden: Sie wird von Ebenen in der Szene verwendet."
+ },
+ "app-rig.plate-name": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-rig.plates-heading": {
+  "nb": "Plater",
+  "en": "Plates",
+  "oversatt": "Platten"
+ },
+ "app-rig.print-coming": {
+  "nb": "Kommer senere",
+  "en": "Coming later",
+  "oversatt": "Kommt später"
+ },
+ "app-rig.print-heading": {
+  "nb": "3D-print",
+  "en": "3D printing",
+  "oversatt": "3D-Druck"
+ },
+ "app-rig.publish-done": {
+  "nb": "Malen er publisert i gruppens globale bibliotek.",
+  "en": "The template is published in the workspace's global library.",
+  "oversatt": "Die Vorlage wurde in der globalen Bibliothek des Arbeitsbereichs veröffentlicht."
+ },
+ "app-rig.publish-error": {
+  "nb": "Kunne ikke publisere malen.",
+  "en": "Could not publish the template.",
+  "oversatt": "Vorlage konnte nicht veröffentlicht werden."
+ },
+ "app-rig.publish-global": {
+  "nb": "Publiser til gruppens bibliotek",
+  "en": "Publish to the workspace library",
+  "oversatt": "In Arbeitsbereichs-Bibliothek veröffentlichen"
+ },
+ "app-rig.remove-plate": {
+  "nb": "Fjern platen",
+  "en": "Remove the plate",
+  "oversatt": "Platte entfernen"
+ },
+ "app-rig.save-as-template": {
+  "nb": "Lagre som mal",
+  "en": "Save as template",
+  "oversatt": "Als Vorlage speichern"
+ },
+ "app-rig.save-rig": {
+  "nb": "Lagre riggen",
+  "en": "Save the rig",
+  "oversatt": "Rig speichern"
+ },
+ "app-rig.save-rig-label": {
+  "nb": "Endret riggen",
+  "en": "Changed the rig",
+  "oversatt": "Rig geändert"
+ },
+ "app-rig.scene-label": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Szene"
+ },
+ "app-rig.scene-option": {
+  "nb": "Scene {number}",
+  "en": "Scene {number}",
+  "oversatt": "Szene {number}"
+ },
+ "app-rig.sensor-height": {
+  "nb": "Sensorhøyde",
+  "en": "Sensor height",
+  "oversatt": "Sensorhöhe"
+ },
+ "app-rig.sensor-width": {
+  "nb": "Sensorbredde",
+  "en": "Sensor width",
+  "oversatt": "Sensorbreite"
+ },
+ "app-rig.side-view-aria": {
+  "nb": "Sidesnitt av riggen i målestokk: kamera, objektiv og plater",
+  "en": "Side view of the rig to scale: camera, lens and plates",
+  "oversatt": "Maßstabsgetreue Seitenansicht des Rigs: Kamera, Objektiv und Platten"
+ },
+ "app-rig.template-name-placeholder": {
+  "nb": "Navn på malen",
+  "en": "Template name",
+  "oversatt": "Vorlagenname"
+ },
+ "app-rig.templates-heading": {
+  "nb": "Maler",
+  "en": "Templates",
+  "oversatt": "Vorlagen"
+ },
+ "app-rig.unit-in": {
+  "nb": "tommer",
+  "en": "inches",
+  "oversatt": "Zoll"
+ },
+ "app-rig.unit-mm": {
+  "nb": "mm",
+  "en": "mm",
+  "oversatt": "mm"
+ },
+ "app-rig.units-label": {
+  "nb": "Enheter",
+  "en": "Units",
+  "oversatt": "Einheiten"
+ },
+ "app-rig.update-template": {
+  "nb": "Oppdater malen",
+  "en": "Update the template",
+  "oversatt": "Vorlage aktualisieren"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.aria-label.28565d5f0cb2": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "Bibliothek durchsuchen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.aria-label.a5a88d65524a": {
+  "nb": "Merknaden",
+  "en": "The note",
+  "oversatt": "Die Notiz"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.button.1aa321bb9f11": {
+  "nb": "Bare denne scenen",
+  "en": "Only this scene",
+  "oversatt": "Nur diese Szene"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.button.324952ab3d21": {
+  "nb": "Lag og legg i scenen",
+  "en": "Create and add to the scene",
+  "oversatt": "Erstellen und zur Szene hinzufügen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.button.715202aa3c5f": {
+  "nb": "Lag ny",
+  "en": "Make new",
+  "oversatt": "Neu erstellen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.button.7845792738d4": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "Aus der Bibliothek"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.button.ac3336f2b0d6": {
+  "nb": "Legg til i {size} scener",
+  "en": "Add to {size} scenes",
+  "oversatt": "Zu {size} Szenen hinzufügen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.dialog-description.e0266ac2c131": {
+  "nb": "Velg fritt i biblioteket, eller lag en helt ny ting som ikke står i manuset.",
+  "en": "Choose freely from the library, or make something completely new that is not in the script.",
+  "oversatt": "Wählen Sie frei aus der Bibliothek oder erstellen Sie etwas völlig Neues, das nicht im Drehbuch steht."
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.dialog-description.f350a4599790": {
+  "nb": "Elementet er lagt inn i denne scenen. I scenene du velger, vises det med gul ramme i «I denne scenen» til du har dratt det inn på lerretet.",
+  "en": "The element has been added to this scene. In the scenes you choose, it is shown with a yellow frame in “In this scene” until you have dragged it onto the canvas.",
+  "oversatt": "Das Element wurde zu dieser Szene hinzugefügt. In den ausgewählten Szenen wird es unter „In dieser Szene“ mit einem gelben Rahmen angezeigt, bis Sie es auf die Leinwand gezogen haben."
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.dialog-title.21e41779eba7": {
+  "nb": "Legg til element i scenen",
+  "en": "Add element to the scene",
+  "oversatt": "Element zur Szene hinzufügen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.dialog-title.805e7b3aafaa": {
+  "nb": "Skal «{value1}» også inn i andre scener?",
+  "en": "Should “{value1}” also be in other scenes?",
+  "oversatt": "Soll „{value1}“ auch in andere Szenen eingefügt werden?"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.label.844b59ee8d8d": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Typ"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.label.a247b7645252": {
+  "nb": "Legg en merknad i manuset i disse scenene",
+  "en": "Put a note in the script in these scenes",
+  "oversatt": "Eine Notiz im Drehbuch dieser Szenen hinterlassen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.label.b7df704af6a3": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.p.2008d92f1b3d": {
+  "nb": "Databasen må oppdateres (migrasjon 0034) før elementet kan planlegges i flere scener.",
+  "en": "The database must be updated (migration 0034) before the element can be planned in several scenes.",
+  "oversatt": "Die Datenbank muss aktualisiert werden (Migration 0034), bevor das Element für mehrere Szenen eingeplant werden kann."
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.p.2bfdeb81ee6f": {
+  "nb": "Elementet legges i biblioteket og i scenen. Etterpå kan du laste opp et bilde eller lage det med AI.",
+  "en": "The element is added to the library and the scene. Afterwards you can upload an image or make one with AI.",
+  "oversatt": "Das Element wird zur Bibliothek und zur Szene hinzugefügt. Anschließend können Sie ein Bild hochladen oder eines mit KI erstellen."
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.p.3556924e9db7": {
+  "nb": "Ingenting i biblioteket passer.",
+  "en": "Nothing in the library matches.",
+  "oversatt": "Keine passenden Treffer in der Bibliothek."
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.placeholder.28565d5f0cb2": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "Bibliothek durchsuchen"
+ },
+ "app-scene-editor-add-element-dialog.add-element-dialog.placeholder.f11f9ccc04ea": {
+  "nb": "f.eks. Teddybjørn",
+  "en": "e.g. Teddy bear",
+  "oversatt": "z. B. Teddybär"
+ },
+ "app-scene-editor-add-element-dialog.err.cmds-run.ad9d4f5ccd6b": {
+  "nb": "Nytt element «{n}»",
+  "en": "New element “{n}”",
+  "oversatt": "Neues Element „{n}“"
+ },
+ "app-scene-editor-add-element-dialog.label.message.9e2fbf41005d": {
+  "nb": "«{value1}» skal inn i {value2}",
+  "en": "“{value1}” should be in {value2}",
+  "oversatt": "„{value1}“ soll in {value2}"
+ },
+ "app-scene-editor-add-element-dialog.should-be-in": {
+  "nb": {
+   "one": "«{name}» skal inn i {count} scene",
+   "other": "«{name}» skal inn i {count} scener"
+  },
+  "en": {
+   "one": "“{name}” should be in {count} scene",
+   "other": "“{name}” should be in {count} scenes"
+  },
+  "oversatt": {
+   "one": "„{name}“ soll in {count} Szene",
+   "other": "„{name}“ soll in {count} Szenen"
+  }
+ },
+ "app-scene-editor-add-layer-dialog.add-fill.submit.24d2a9a8e3b2": {
+  "nb": "Nytt lag «{name}»",
+  "en": "New layer “{name}”",
+  "oversatt": "Neue Ebene „{name}“"
+ },
+ "app-scene-editor-add-layer-dialog.add-from-library.submit.43dabcc95e51": {
+  "nb": "Nytt lag «{name}»",
+  "en": "New layer “{name}”",
+  "oversatt": "Neue Ebene „{name}“"
+ },
+ "app-scene-editor-add-layer-dialog.add-from-library.submit.a85690809ae2": {
+  "nb": "Nye lag ({length})",
+  "en": "New layers ({length})",
+  "oversatt": "Neue Ebenen ({length})"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.aria-label.5e9def071f53": {
+  "nb": "Variant av {name}",
+  "en": "Variant of {name}",
+  "oversatt": "Variante von {name}"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.aria-label.6f96fd0187c7": {
+  "nb": "Filtrer på type",
+  "en": "Filter by type",
+  "oversatt": "Nach Typ filtern"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.aria-label.792a643f7088": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "Bibliothek durchsuchen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.aria-label.e2517cb63fab": {
+  "nb": "Type lag",
+  "en": "Layer type",
+  "oversatt": "Ebenentyp"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.0b9485899d92": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "Hinzufügen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.0b9485899d92.2": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "Hinzufügen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.0de6bf96eabc": {
+  "nb": "Fargeflate",
+  "en": "Colour fill",
+  "oversatt": "Farbfläche"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.7c5088c7641f": {
+  "nb": "Fra biblioteket",
+  "en": "From the library",
+  "oversatt": "Aus der Bibliothek"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.8695ce6a1c3a": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.a6e047cb6949": {
+  "nb": "Legg til ({length})",
+  "en": "Add ({length})",
+  "oversatt": "Hinzufügen ({length})"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.button.f27fa8b39751": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "Alle"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.dialog-description.3ef4d2be34f5": {
+  "nb": "Velg bilder fra biblioteket, eller lag en ensfarget flate.",
+  "en": "Choose images from the library, or make a solid colour fill.",
+  "oversatt": "Wählen Sie Bilder aus der Bibliothek oder erstellen Sie eine einfarbige Fläche."
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.dialog-title.0b3ef204d70a": {
+  "nb": "Legg til lag",
+  "en": "Add layer",
+  "oversatt": "Ebene hinzufügen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.label.71e5697b40a0": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.label.d8de259fe99d": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "Farbe"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.option.61b9332cabdd": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "Standard"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.option.ba68ed84b263": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "Ohne Titel"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.p.6cda4dfbe164": {
+  "nb": "Ingen ressurser passer med søket.",
+  "en": "No assets match the search.",
+  "oversatt": "Keine Assets entsprechen der Suche."
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.p.fec48b0863d2": {
+  "nb": "Biblioteket er tomt. Legg til ressurser i Ressursbiblioteket først.",
+  "en": "The library is empty. Add assets to the asset library first.",
+  "oversatt": "Die Bibliothek ist leer. Fügen Sie zuerst Assets zur Asset-Bibliothek hinzu."
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.placeholder.792a643f7088": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "Bibliothek durchsuchen"
+ },
+ "app-scene-editor-add-layer-dialog.add-layer-dialog.title.b417114e9711": {
+  "nb": "{name} – uten bilde",
+  "en": "{name} – no image",
+  "oversatt": "{name} – kein Bild"
+ },
+ "app-scene-editor-add-layer-dialog.fill-name-set-fill-name.use-state.d784c28376f8": {
+  "nb": "Fargeflate",
+  "en": "Colour fill",
+  "oversatt": "Farbfläche"
+ },
+ "app-scene-editor-add-layer-dialog.name.message.4c8d3a9e7b75": {
+  "nb": "Fargeflate",
+  "en": "Colour fill",
+  "oversatt": "Farbfläche"
+ },
+ "app-scene-editor-animation-adjust-panel.adjust-panel.toolbar-button.09ac4dde5ecb": {
+  "nb": "Nullstill justeringer",
+  "en": "Reset adjustments",
+  "oversatt": "Anpassungen zurücksetzen"
+ },
+ "app-scene-editor-animation-adjust-panel.brightness.brightness.c9540ca177cf": {
+  "nb": "Lysstyrke",
+  "en": "Brightness",
+  "oversatt": "Helligkeit"
+ },
+ "app-scene-editor-animation-adjust-panel.contrast.contrast.497537c4a6f9": {
+  "nb": "Kontrast",
+  "en": "Contrast",
+  "oversatt": "Kontrast"
+ },
+ "app-scene-editor-animation-adjust-panel.height.height.ed146ae03395": {
+  "nb": "Høyde",
+  "en": "Height",
+  "oversatt": "Höhe"
+ },
+ "app-scene-editor-animation-adjust-panel.hue.hue.743bd5cd8f21": {
+  "nb": "Fargetone",
+  "en": "Hue",
+  "oversatt": "Farbton"
+ },
+ "app-scene-editor-animation-adjust-panel.opacity.opacity.c2733215de17": {
+  "nb": "Opasitet",
+  "en": "Opacity",
+  "oversatt": "Deckkraft"
+ },
+ "app-scene-editor-animation-adjust-panel.rotation.rotation.36c7f69a8966": {
+  "nb": "Rotasjon",
+  "en": "Rotation",
+  "oversatt": "Drehung"
+ },
+ "app-scene-editor-animation-adjust-panel.saturation.saturation.996f78c02f29": {
+  "nb": "Metning",
+  "en": "Saturation",
+  "oversatt": "Sättigung"
+ },
+ "app-scene-editor-animation-adjust-panel.width.width.a71fe2475655": {
+  "nb": "Bredde",
+  "en": "Width",
+  "oversatt": "Breite"
+ },
+ "app-scene-editor-animation-adjust-panel.x.x.b559a336c63f": {
+  "nb": "Forskyvning X",
+  "en": "Offset X",
+  "oversatt": "Versatz X"
+ },
+ "app-scene-editor-animation-adjust-panel.y.y.26643f22c547": {
+  "nb": "Forskyvning Y",
+  "en": "Offset Y",
+  "oversatt": "Versatz Y"
+ },
+ "app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162": {
+  "nb": "Avspillingshode",
+  "en": "Playhead",
+  "oversatt": "Abspielkopf"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76": {
+  "nb": "Zoom i tidslinjen",
+  "en": "Timeline zoom",
+  "oversatt": "Zeitleisten-Zoom"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.label.10fb270d5b3f": {
+  "nb": "Løkke",
+  "en": "Loop",
+  "oversatt": "Schleife"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.label.8feb5edbec92": {
+  "nb": "Spill av",
+  "en": "Play",
+  "oversatt": "Abspielen"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.label.b439d9e489fa": {
+  "nb": "Én frame frem",
+  "en": "Next frame",
+  "oversatt": "Ein Frame vor"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.label.ca107ae99658": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "Stopp"
+ },
+ "app-scene-editor-animation-animation-workspace.animation-workspace.label.df43697a1025": {
+  "nb": "Én frame tilbake",
+  "en": "Previous frame",
+  "oversatt": "Ein Frame zurück"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.aria-label.281c719242d1": {
+  "nb": "Blinking og øyne",
+  "en": "Blinking and eyes",
+  "oversatt": "Blinzeln und Augen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.aria-label.281c719242d1.2": {
+  "nb": "Blinking og øyne",
+  "en": "Blinking and eyes",
+  "oversatt": "Blinzeln und Augen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.eye-row.64985e67ac8d": {
+  "nb": "Venstre øye",
+  "en": "Left eye",
+  "oversatt": "Linkes Auge"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.eye-row.a9d547b61b2c": {
+  "nb": "Høyre øye",
+  "en": "Right eye",
+  "oversatt": "Rechtes Auge"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.label.9db6d02d3917": {
+  "nb": "Gjør halvlukket eller hel",
+  "en": "Toggle half-closed or full",
+  "oversatt": "Halb geschlossen oder ganz umschalten"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.label.ac183fdf4683": {
+  "nb": "Legg til blink på denne framen",
+  "en": "Add a blink at this frame",
+  "oversatt": "Blinzeln bei diesem Frame hinzufügen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.label.b7709c028cb0": {
+  "nb": "Fjern blinket",
+  "en": "Remove the blink",
+  "oversatt": "Blinzeln entfernen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.label.c3f02489ab9b": {
+  "nb": "Slå på automatisk blinking",
+  "en": "Turn on automatic blinking",
+  "oversatt": "Automatisches Blinzeln aktivieren"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.label.e6314294cedb": {
+  "nb": "Slå av automatisk blinking",
+  "en": "Turn off automatic blinking",
+  "oversatt": "Automatisches Blinzeln deaktivieren"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.p.57c314d975ca": {
+  "nb": "Ingen manuelle blink ennå.",
+  "en": "No manual blinks yet.",
+  "oversatt": "Noch kein manuelles Blinzeln vorhanden."
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.save.50a126f44f14": {
+  "nb": "Endre blink",
+  "en": "Change blink",
+  "oversatt": "Blinzeln ändern"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.save.95d308b5f535": {
+  "nb": "Fjern blink",
+  "en": "Remove blink",
+  "oversatt": "Blinzeln entfernen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.save.965eb15be4a6": {
+  "nb": "Endre blinking",
+  "en": "Change blinking",
+  "oversatt": "Blinzeln bearbeiten"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.save.987f3e165cf6": {
+  "nb": "Legg til blink",
+  "en": "Add blink",
+  "oversatt": "Blinzeln hinzufügen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.span.117f58aa1bc3": {
+  "nb": "Begge øyne",
+  "en": "Both eyes",
+  "oversatt": "Beide Augen"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.span.39780e36ac0e": {
+  "nb": "Venstre",
+  "en": "Left",
+  "oversatt": "Links"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.span.8797661cc0ec": {
+  "nb": "Manuelle blink",
+  "en": "Manual blinks",
+  "oversatt": "Manuelles Blinzeln"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.span.b67a7ff43bab": {
+  "nb": "Blinking",
+  "en": "Blinking",
+  "oversatt": "Blinzeln"
+ },
+ "app-scene-editor-animation-blink-panel.blink-panel.span.f6d06427bd70": {
+  "nb": "Høyre",
+  "en": "Right",
+  "oversatt": "Rechts"
+ },
+ "app-scene-editor-animation-blink-panel.eye-row.aria-label.185a57aeb9e9": {
+  "nb": "Mønster for {value1}",
+  "en": "Pattern for {value1}",
+  "oversatt": "Muster für {value1}"
+ },
+ "app-scene-editor-animation-blink-panel.eye-row.option.940bbe0d6c76": {
+  "nb": "Standardblinking",
+  "en": "Default blinking",
+  "oversatt": "Standard-Blinzeln"
+ },
+ "app-scene-editor-animation-blink-panel.eye-row.save.92bc0ce395ff": {
+  "nb": "Endre blinkemønster",
+  "en": "Change blink pattern",
+  "oversatt": "Blinzelmuster ändern"
+ },
+ "app-scene-editor-animation-character-panel.adopt.run.4af52f31a362": {
+  "nb": "Bruk ny versjon bare her",
+  "en": "Use the new version here only",
+  "oversatt": "Neue Version nur hier verwenden"
+ },
+ "app-scene-editor-animation-character-panel.adopt.run.9607c04518ae": {
+  "nb": "Oppdater alle scener",
+  "en": "Update all scenes",
+  "oversatt": "Alle Szenen aktualisieren"
+ },
+ "app-scene-editor-animation-character-panel.blink-enabled.blink-enabled.2daa85b654f6": {
+  "nb": "Automatisk blinking",
+  "en": "Automatic blinking",
+  "oversatt": "Automatisches Blinzeln"
+ },
+ "app-scene-editor-animation-character-panel.breath.breath.afaca1195431": {
+  "nb": "Pust",
+  "en": "Breathing",
+  "oversatt": "Atmung"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.aria-label.3087059d25aa": {
+  "nb": "Karakteratferd",
+  "en": "Character behavior",
+  "oversatt": "Charakterverhalten"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.aria-label.58da4653133f": {
+  "nb": "Eksportvalg",
+  "en": "Export options",
+  "oversatt": "Exportoptionen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.aria-label.dbf6354b6e68": {
+  "nb": "Bruk i andre scener",
+  "en": "Use in other scenes",
+  "oversatt": "In anderen Szenen verwenden"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.06a1b3bc48cf": {
+  "nb": "nyeste",
+  "en": "latest",
+  "oversatt": "Neueste"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.0b08b2b6c780": {
+  "nb": "Lagre som karakterens standard",
+  "en": "Save as the character's default",
+  "oversatt": "Als Standard für Charakter speichern"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.3f9796ef4f62": {
+  "nb": "Bare her",
+  "en": "Here only",
+  "oversatt": "Nur hier"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.543cda926f1a": {
+  "nb": "Ikke nå",
+  "en": "Not now",
+  "oversatt": "Nicht jetzt"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.57b24856e414": {
+  "nb": "Oppdater alle",
+  "en": "Update all",
+  "oversatt": "Alle aktualisieren"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.6cff81c3f6cf": {
+  "nb": "Ta inn",
+  "en": "Take in",
+  "oversatt": "Übernehmen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.6e8059581c24": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.77e8da658eee": {
+  "nb": "Ny global versjon {number} …",
+  "en": "New global version {number} …",
+  "oversatt": "Neue globale Version {number} …"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.885d825bf6c1": {
+  "nb": "denne scenen",
+  "en": "this scene",
+  "oversatt": "Diese Szene"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.af7e5e7ba0fc": {
+  "nb": "Versjon {number}",
+  "en": "Version {number}",
+  "oversatt": "Version {number}"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.bac324e0ec79": {
+  "nb": "global {globalNumber}",
+  "en": "global {globalNumber}",
+  "oversatt": "Global {globalNumber}"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.cc90619f06ca": {
+  "nb": "Publiser til globalt bibliotek",
+  "en": "Publish to global library",
+  "oversatt": "In globaler Bibliothek veröffentlichen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.button.f929f2f891d0": {
+  "nb": "Versjonshistorikk",
+  "en": "Version history",
+  "oversatt": "Versionsverlauf"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-description.0b9693e44150": {
+  "nb": "Oppsettet kopieres inn som en ny versjon i prosjektet. Scenene beholder versjonen sin til du velger noe annet.",
+  "en": "The setup is copied in as a new version in the project. The scenes keep their version until you choose otherwise.",
+  "oversatt": "Das Setup wird als neue Version in das Projekt kopiert. Die Szenen behalten ihre Version, bis Sie etwas anderes festlegen."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-description.24a44448d966": {
+  "nb": "Velg en versjon for å sammenligne med denne scenens versjon. Gjenoppretting lager en ny versjon; ingenting slettes.",
+  "en": "Choose a version to compare with this scene's version. Restoring makes a new version; nothing is deleted.",
+  "oversatt": "Wählen Sie eine Version zum Vergleichen mit der Version dieser Szene aus. Beim Wiederherstellen wird eine neue Version erstellt; es wird nichts gelöscht."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-description.2a94787ad27e": {
+  "nb": "Fra global versjon {globalNumber} (låst).",
+  "en": "From global version {globalNumber} (locked).",
+  "oversatt": "Aus globaler Version {globalNumber} (gesperrt)."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-description.4aed602ebcd9": {
+  "nb": "Oppsettet brukes i {length} {value2}. Ingenting oppdateres automatisk.",
+  "en": "The setup is used in {length} other {value2}. Nothing updates automatically.",
+  "oversatt": "Das Setup wird in {length} anderen {value2} verwendet. Es wird nichts automatisch aktualisiert."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-description.dddaca13d08a": {
+  "nb": "Oppsett versjon {value1} i denne scenen.",
+  "en": "Setup version {value1} in this scene.",
+  "oversatt": "Setup-Version {value1} in dieser Szene."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-title.8b27d48fe667": {
+  "nb": "Versjonshistorikk for oppsettet",
+  "en": "Version history for the setup",
+  "oversatt": "Versionsverlauf für das Setup"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-title.9fa1106cc41a": {
+  "nb": "Ta inn ny global versjon?",
+  "en": "Take in the new global version?",
+  "oversatt": "Neue globale Version übernehmen?"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-title.d619c69eb483": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Charakter"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.dialog-title.f020d273f6b1": {
+  "nb": "Hvor skal den nye versjonen brukes?",
+  "en": "Where should the new version be used?",
+  "oversatt": "Wo soll die neue Version verwendet werden?"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.h3.3087059d25aa": {
+  "nb": "Karakteratferd",
+  "en": "Character behavior",
+  "oversatt": "Charakterverhalten"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.h3.3c97b1aae0f7": {
+  "nb": "Eksportvalg for laget",
+  "en": "Export options for the layer",
+  "oversatt": "Exportoptionen für die Ebene"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.h3.ca0688eafa22": {
+  "nb": "Brukes i {length} {value2}",
+  "en": "Used in {length} other {value2}",
+  "oversatt": "Verwendet in {length} anderen {value2}"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.013cfcfa809e": {
+  "nb": "Pust i denne scenen",
+  "en": "Breathing in this scene",
+  "oversatt": "Atmung in dieser Szene"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.0169ea9b5869": {
+  "nb": "Gå til scenen",
+  "en": "Go to the scene",
+  "oversatt": "Zur Szene springen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.0169ea9b5869.2": {
+  "nb": "Gå til scenen",
+  "en": "Go to the scene",
+  "oversatt": "Zur Szene springen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.2c77808fe3e6": {
+  "nb": "Karakterdelene",
+  "en": "The character parts",
+  "oversatt": "Die Charakterteile"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.71d5d7516922": {
+  "nb": "Bruk karakterens standard",
+  "en": "Use the character's default",
+  "oversatt": "Standard des Charakters verwenden"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.eed8daa61f59": {
+  "nb": "Karakter: atferd, versjoner og eksport",
+  "en": "Character: behavior, versions and export",
+  "oversatt": "Charakter: Verhalten, Versionen und Export"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.label.f1cc77051bb8": {
+  "nb": "Gjenopprett som ny versjon",
+  "en": "Restore as a new version",
+  "oversatt": "Als neue Version wiederherstellen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.option.9f7a5ba338a1": {
+  "nb": "Eget lag (egen fil)",
+  "en": "Separate layer (own file)",
+  "oversatt": "Separate Ebene (eigene Datei)"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.option.fec8002fb7a6": {
+  "nb": "Brennes inn i bildet",
+  "en": "Burned into the image",
+  "oversatt": "Ins Bild einbrennen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.p.103a82e0bfd6": {
+  "nb": "Ingen forskjeller.",
+  "en": "No differences.",
+  "oversatt": "Keine Unterschiede."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.p.3a76cedbb0fd": {
+  "nb": "lagt til",
+  "en": "added",
+  "oversatt": "hinzugefügt"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.p.5acf0b07bd70": {
+  "nb": "endret",
+  "en": "changed",
+  "oversatt": "geändert"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.p.dfe90d0dca2f": {
+  "nb": "Valgene gjelder både forhåndsvisningen og eksporten. Ingenting slettes.",
+  "en": "The choices apply to both preview and export. Nothing is deleted.",
+  "oversatt": "Die Auswahl gilt sowohl für die Vorschau als auch für den Export. Es wird nichts gelöscht."
+ },
+ "app-scene-editor-animation-character-panel.character-panel.p.f1250b4a708b": {
+  "nb": "fjernet",
+  "en": "removed",
+  "oversatt": "entfernt"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.save.2016c75a718e": {
+  "nb": "Fjern lokal overstyring",
+  "en": "Remove local override",
+  "oversatt": "Lokale Übersteuerung entfernen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.save.acd6654f99d8": {
+  "nb": "Endre eksportvalg",
+  "en": "Change export options",
+  "oversatt": "Exportoptionen ändern"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.save.acd6654f99d8.2": {
+  "nb": "Endre eksportvalg",
+  "en": "Change export options",
+  "oversatt": "Exportoptionen ändern"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.set-local.8dd95c28ebcf": {
+  "nb": "Endre pust",
+  "en": "Change breathing",
+  "oversatt": "Atmung ändern"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.span.1b0a3286c59e": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "Standard"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.span.21b1f9ae33c7": {
+  "nb": "Arvet fra karakteren",
+  "en": "Inherited from the character",
+  "oversatt": "Vom Charakter übernommen"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.span.48c6b04d112d": {
+  "nb": "Lokal overstyring",
+  "en": "Local override",
+  "oversatt": "Lokale Übersteuerung"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.span.a429648adb05": {
+  "nb": "versjon {versionNumber}",
+  "en": "version {versionNumber}",
+  "oversatt": "Version {versionNumber}"
+ },
+ "app-scene-editor-animation-character-panel.character-panel.span.edbff7a24f83": {
+  "nb": "Lagre ressursen i det globale biblioteket for å dele oppsettet.",
+  "en": "Save the asset in the global library to share the setup.",
+  "oversatt": "Speichern Sie das Asset in der globalen Bibliothek, um das Setup zu teilen."
+ },
+ "app-scene-editor-animation-character-panel.describe.message.284e550f484e": {
+  "nb": "På · {value1} s",
+  "en": "On · {value1} s",
+  "oversatt": "Ein · {value1} s"
+ },
+ "app-scene-editor-animation-character-panel.describe.message.5bd479996600": {
+  "nb": "Standardblinking",
+  "en": "Default blinking",
+  "oversatt": "Standard-Blinzeln"
+ },
+ "app-scene-editor-animation-character-panel.describe.message.b75355c367f8": {
+  "nb": "På",
+  "en": "On",
+  "oversatt": "Ein"
+ },
+ "app-scene-editor-animation-character-panel.describe.message.f792226caa2a": {
+  "nb": "Av",
+  "en": "Off",
+  "oversatt": "Aus"
+ },
+ "app-scene-editor-animation-character-panel.describe.message.f792226caa2a.2": {
+  "nb": "Av",
+  "en": "Off",
+  "oversatt": "Aus"
+ },
+ "app-scene-editor-animation-character-panel.diff-label.message.7f1caad8a9c5": {
+  "nb": "Ankerpunkt",
+  "en": "Anchor",
+  "oversatt": "Ankerpunkt"
+ },
+ "app-scene-editor-animation-character-panel.diff-label.message.880787ef2b60": {
+  "nb": "Opprinnelse",
+  "en": "Origin",
+  "oversatt": "Ursprung"
+ },
+ "app-scene-editor-animation-character-panel.diff-label.message.ddaf131f8546": {
+  "nb": "Del",
+  "en": "Part",
+  "oversatt": "Teil"
+ },
+ "app-scene-editor-animation-character-panel.diff-label.message.f66bcd3335b8": {
+  "nb": "Atferd",
+  "en": "Behavior",
+  "oversatt": "Verhalten"
+ },
+ "app-scene-editor-animation-character-panel.failure.run-group.197d816253f1": {
+  "nb": "Ta inn global versjon {number}",
+  "en": "Take in global version {number}",
+  "oversatt": "Globale Version {number} übernehmen"
+ },
+ "app-scene-editor-animation-character-panel.failure.run.1553266fb7d3": {
+  "nb": "Gjenopprett versjon {number}",
+  "en": "Restore version {number}",
+  "oversatt": "Version {number} wiederherstellen"
+ },
+ "app-scene-editor-animation-character-panel.failure.run.a04da6a94024": {
+  "nb": "Lagre karakterens standardatferd",
+  "en": "Save the character's default behavior",
+  "oversatt": "Standardverhalten des Charakters speichern"
+ },
+ "app-scene-editor-animation-character-panel.label.label.0d7ccab6ea01": {
+  "nb": "Masker",
+  "en": "Masks",
+  "oversatt": "Masken"
+ },
+ "app-scene-editor-animation-character-panel.label.label.2e68fbe31ef8": {
+  "nb": "Overlegg",
+  "en": "Overlays",
+  "oversatt": "Overlays"
+ },
+ "app-scene-editor-animation-character-panel.label.label.a7805adf1fab": {
+  "nb": "Munnformer",
+  "en": "Mouth shapes",
+  "oversatt": "Mundformen"
+ },
+ "app-scene-editor-animation-character-panel.label.label.b5c5fb351242": {
+  "nb": "Blink",
+  "en": "Blinks",
+  "oversatt": "Blinzeln"
+ },
+ "app-scene-editor-animation-character-panel.label.label.c4c19160f6e3": {
+  "nb": "Justeringer",
+  "en": "Adjustments",
+  "oversatt": "Anpassungen"
+ },
+ "app-scene-editor-animation-character-panel.left-eye-pattern-id.left-eye-pattern-id.edffcd47c69e": {
+  "nb": "Mønster venstre øye",
+  "en": "Left eye pattern",
+  "oversatt": "Muster linkes Auge"
+ },
+ "app-scene-editor-animation-character-panel.overlay-pattern-ids.overlay-pattern-ids.4dea99ddcc0f": {
+  "nb": "Tics og overlegg",
+  "en": "Tics and overlays",
+  "oversatt": "Ticks und Overlays"
+ },
+ "app-scene-editor-animation-character-panel.publish.set-status.208e5f6005e8": {
+  "nb": "Oppsettet er publisert som ny låst versjon i det globale biblioteket.",
+  "en": "The setup was published as a new locked version in the global library.",
+  "oversatt": "Das Setup wurde als neue gesperrte Version in der globalen Bibliothek veröffentlicht."
+ },
+ "app-scene-editor-animation-character-panel.right-eye-pattern-id.right-eye-pattern-id.15dd3c5beb7c": {
+  "nb": "Mønster høyre øye",
+  "en": "Right eye pattern",
+  "oversatt": "Muster rechtes Auge"
+ },
+ "app-scene-editor-animation-character-panel.setup-used-in-others": {
+  "nb": {
+   "one": "Oppsettet brukes i {count} annen scene. Ingenting oppdateres automatisk.",
+   "other": "Oppsettet brukes i {count} andre scener. Ingenting oppdateres automatisk."
+  },
+  "en": {
+   "one": "The setup is used in {count} other scene. Nothing updates automatically.",
+   "other": "The setup is used in {count} other scenes. Nothing updates automatically."
+  },
+  "oversatt": {
+   "one": "Das Setup wird in {count} weiteren Szene verwendet. Nichts wird automatisch aktualisiert.",
+   "other": "Das Setup wird in {count} weiteren Szenen verwendet. Nichts wird automatisch aktualisiert."
+  }
+ },
+ "app-scene-editor-animation-character-panel.used-in-others": {
+  "nb": {
+   "one": "Brukes i {count} annen scene",
+   "other": "Brukes i {count} andre scener"
+  },
+  "en": {
+   "one": "Used in {count} other scene",
+   "other": "Used in {count} other scenes"
+  },
+  "oversatt": {
+   "one": "In {count} weiteren Szene verwendet",
+   "other": "In {count} weiteren Szenen verwendet"
+  }
+ },
+ "app-scene-editor-animation-dialogue-track.dialogue-track.p.ebcc66fec724": {
+  "nb": "Ingen dialogopptak i scenen.",
+  "en": "No dialogue recordings in the scene.",
+  "oversatt": "Keine Dialogaufnahmen in der Szene."
+ },
+ "app-scene-editor-animation-dialogue-track.dialogue-track.title.7d67f8352a10": {
+  "nb": "Dialog og lyd",
+  "en": "Dialogue and sound",
+  "oversatt": "Dialog und Ton"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.aria-label.5a6b85d5c4eb": {
+  "nb": "Ansiktsmarkering",
+  "en": "Face marking",
+  "oversatt": "Gesichtsmarkierung"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.aria-label.b39c120b2400": {
+  "nb": "Zoom i ansiktsmarkeringen",
+  "en": "Face marking zoom",
+  "oversatt": "Gesichtsmarkierungs-Zoom"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.dialog-title.f057f080a791": {
+  "nb": "Marker ansikt",
+  "en": "Mark face",
+  "oversatt": "Gesicht markieren"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.label.81c12cab89b8": {
+  "nb": "Panorer bildet",
+  "en": "Pan image",
+  "oversatt": "Bild schwenken"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.label.ba2dc3e8fc16": {
+  "nb": "Tilbakestill visningen",
+  "en": "Reset view",
+  "oversatt": "Ansicht zurücksetzen"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.option.b327a1f16be1": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "Einpassen"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.toolbar-button.16e8dc6a1b7f": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-scene-editor-animation-face-mark-dialog.face-mark-dialog.toolbar-button.3209a49e7862": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Speichern"
+ },
+ "app-scene-editor-animation-face-mark-dialog.failure.run.6187a03941e1": {
+  "nb": "Lagre ansiktsmarkering",
+  "en": "Save face marking",
+  "oversatt": "Gesichtsmarkierung speichern"
+ },
+ "app-scene-editor-animation-face-mark-dialog.head.head.4a98496b03f8": {
+  "nb": "Hode",
+  "en": "Head",
+  "oversatt": "Kopf"
+ },
+ "app-scene-editor-animation-face-mark-dialog.left-eye.left-eye.e262db91bc1b": {
+  "nb": "Venstre øye",
+  "en": "Left eye",
+  "oversatt": "Linkes Auge"
+ },
+ "app-scene-editor-animation-face-mark-dialog.mouth.mouth.88650f55ba66": {
+  "nb": "Munn",
+  "en": "Mouth",
+  "oversatt": "Mund"
+ },
+ "app-scene-editor-animation-face-mark-dialog.nose.nose.8f99e0834531": {
+  "nb": "Nese",
+  "en": "Nose",
+  "oversatt": "Nase"
+ },
+ "app-scene-editor-animation-face-mark-dialog.right-eye.right-eye.1c5ff0080e26": {
+  "nb": "Høyre øye",
+  "en": "Right eye",
+  "oversatt": "Rechtes Auge"
+ },
+ "app-scene-editor-animation-face-mark-dialog.save.set-error.b6500c2ae58d": {
+  "nb": "Oppsettet er endret av en annen bruker. Åpne markeringen på nytt.",
+  "en": "Another user changed the setup. Reopen the marking dialog.",
+  "oversatt": "Ein anderer Benutzer hat das Setup geändert. Öffnen Sie den Markierungsdialog erneut."
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.aria-label.3859cfb8e68f": {
+  "nb": "Penselstørrelse",
+  "en": "Brush size",
+  "oversatt": "Pinselgröße"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.aria-label.7ef669142a79": {
+  "nb": "Myk kant",
+  "en": "Feather",
+  "oversatt": "Weiche Kante"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.aria-label.c2d678afd5b3": {
+  "nb": "Tegn og masker rigg-delen",
+  "en": "Draw and mask the rig part",
+  "oversatt": "Rig-Teil zeichnen und maskieren"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.label.3859cfb8e68f": {
+  "nb": "Penselstørrelse",
+  "en": "Brush size",
+  "oversatt": "Pinselgröße"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.label.7ef669142a79": {
+  "nb": "Myk kant",
+  "en": "Feather",
+  "oversatt": "Weiche Kante"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.toolbar-button.71b6568222f1": {
+  "nb": "Angre strøk",
+  "en": "Undo stroke",
+  "oversatt": "Strich rückgängig machen"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.toolbar-button.8252c2a53e7e": {
+  "nb": "Tegn",
+  "en": "Draw",
+  "oversatt": "Zeichnen"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.toolbar-button.cbbed96dddca": {
+  "nb": "Nullstill maske",
+  "en": "Reset mask",
+  "oversatt": "Maske zurücksetzen"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.toolbar-button.d234f988fa3c": {
+  "nb": "Legg tilbake",
+  "en": "Restore",
+  "oversatt": "Wiederherstellen"
+ },
+ "app-scene-editor-animation-mask-brush.mask-brush.toolbar-button.ea8c6ab3026e": {
+  "nb": "Trekk fra",
+  "en": "Subtract",
+  "oversatt": "Subtrahieren"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.download-sheet.set-error.3b5d14c6ddda": {
+  "nb": "Tegnearket kunne ikke eksporteres",
+  "en": "The drawing sheet could not be exported",
+  "oversatt": "Das Zeichenblatt konnte nicht exportiert werden"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.failure.run.1fae1952c163": {
+  "nb": "Lagre munnformer og rigg-deler",
+  "en": "Save mouth shapes and rig parts",
+  "oversatt": "Mundformen und Rig-Teile speichern"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.left-eye-closed": {
+  "nb": "Venstre øye lukket",
+  "en": "Left eye closed",
+  "oversatt": "Linkes Auge geschlossen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.left-eye-open": {
+  "nb": "Venstre øye åpent",
+  "en": "Left eye open",
+  "oversatt": "Linkes Auge offen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.aria-label.59460df7896b": {
+  "nb": "Rigg-del",
+  "en": "Rig part",
+  "oversatt": "Rig-Teil"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.aria-label.c24cbd07a8bb": {
+  "nb": "Munnformer",
+  "en": "Mouth shapes",
+  "oversatt": "Mundformen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.aria-label.cdf07e33ff38": {
+  "nb": "Replikk",
+  "en": "Dialogue line",
+  "oversatt": "Dialogzeile"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.dialog-title.c4829cf8e935": {
+  "nb": "Munnformer og rigg-deler",
+  "en": "Mouth shapes and rig parts",
+  "oversatt": "Mundformen und Rig-Teile"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.0a96683d22df": {
+  "nb": "Importer rigg-del fra mobil",
+  "en": "Import rig part from mobile",
+  "oversatt": "Rig-Teil vom Smartphone importieren"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.24268b20878c": {
+  "nb": "Fjern rigg-del",
+  "en": "Remove rig part",
+  "oversatt": "Rig-Teil entfernen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.6abee1fae2f3": {
+  "nb": "Importer rigg-del",
+  "en": "Import rig part",
+  "oversatt": "Rig-Teil importieren"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.a3aaf78fd1bf": {
+  "nb": "Eksporter tegneark",
+  "en": "Export drawing sheet",
+  "oversatt": "Zeichenblatt exportieren"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.a977ade1446a": {
+  "nb": "{value1} · {slot}",
+  "en": "{value1} · {slot}",
+  "oversatt": "{value1} · {slot}"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.label.d5a8fec2d4f4": {
+  "nb": "Importer tegneark",
+  "en": "Import drawing sheet",
+  "oversatt": "Zeichenblatt importieren"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.0fdfeeb97556": {
+  "nb": "Munn {value1}",
+  "en": "Mouth {value1}",
+  "oversatt": "Mund {value1}"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.151411776ecc": {
+  "nb": "Ingen replikk",
+  "en": "No dialogue line",
+  "oversatt": "Keine Dialogzeile"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.206a1c4aa0ca": {
+  "nb": "Nese",
+  "en": "Nose",
+  "oversatt": "Nase"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.c99c6655380f": {
+  "nb": "Hode",
+  "en": "Head",
+  "oversatt": "Kopf"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.set-error.ebbf5fd0a693": {
+  "nb": "Tegnearket må være 960 × 1600 piksler",
+  "en": "The drawing sheet must be 960 × 1600 pixels",
+  "oversatt": "Das Zeichenblatt muss 960 × 1600 Pixel groß sein"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.title.04f575709789": {
+  "nb": "Forhåndsvisning",
+  "en": "Preview",
+  "oversatt": "Vorschau"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.title.59460df7896b": {
+  "nb": "Rigg-del",
+  "en": "Rig part",
+  "oversatt": "Rig-Teil"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.2d9cce94946f": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "Wird hochgeladen …"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.4d5cc3781b8f": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.86e969323a18": {
+  "nb": "Rediger",
+  "en": "Edit",
+  "oversatt": "Bearbeiten"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.8a049176c731": {
+  "nb": "OK",
+  "en": "OK",
+  "oversatt": "OK"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.b16aacdf3b7e": {
+  "nb": "Godkjenn rigg-del",
+  "en": "Approve rig part",
+  "oversatt": "Rig-Teil genehmigen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.b3db13118824": {
+  "nb": "Godkjent i utkast",
+  "en": "Approved in draft",
+  "oversatt": "Im Entwurf genehmigt"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.c77696111ed5": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Speichern"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.toolbar-button.dc33f796dd81": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "Genehmigt"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.note.note.e21724d62391": {
+  "nb": "Rigg-del",
+  "en": "Rig part",
+  "oversatt": "Rig-Teil"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.right-eye-closed": {
+  "nb": "Høyre øye lukket",
+  "en": "Right eye closed",
+  "oversatt": "Rechtes Auge geschlossen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.right-eye-open": {
+  "nb": "Høyre øye åpent",
+  "en": "Right eye open",
+  "oversatt": "Rechtes Auge offen"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.save.set-error.5aa79a1009d0": {
+  "nb": "Oppsettet er endret av en annen bruker. Åpne editoren på nytt.",
+  "en": "Another user changed the setup. Reopen the editor.",
+  "oversatt": "Ein anderer Benutzer hat das Setup geändert. Öffnen Sie den Editor erneut."
+ },
+ "app-scene-editor-animation-mouth-shape-editor.stage.message.399d9594d244": {
+  "nb": "Importen tilhører ikke denne rigg-delen",
+  "en": "The import does not belong to this rig part",
+  "oversatt": "Der Import gehört nicht zu diesem Rig-Teil"
+ },
+ "app-scene-editor-animation-mouth-shape-editor.stage.set-error.09320feecfea": {
+  "nb": "Importen feilet",
+  "en": "Import failed",
+  "oversatt": "Import fehlgeschlagen"
+ },
+ "app-scene-editor-animation-mouth-track.analyze.set-error.2d6009abe85b": {
+  "nb": "Lydfilen er ikke lastet ennå",
+  "en": "The audio file is not loaded yet",
+  "oversatt": "Die Audiodatei ist noch nicht geladen"
+ },
+ "app-scene-editor-animation-mouth-track.analyze.set-error.d7cb2781631d": {
+  "nb": "Analysen feilet. Prøv igjen.",
+  "en": "The analysis failed. Try again.",
+  "oversatt": "Die Analyse ist fehlgeschlagen. Versuchen Sie es erneut."
+ },
+ "app-scene-editor-animation-mouth-track.cycle-viseme.run.1e9dc8078635": {
+  "nb": "Endre munnform",
+  "en": "Change mouth shape",
+  "oversatt": "Mundform ändern"
+ },
+ "app-scene-editor-animation-mouth-track.failure.run.7927bb01e6ce": {
+  "nb": "Lagre leppesynk",
+  "en": "Save lip sync",
+  "oversatt": "Lippensynchronisation speichern"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.aria-label.3069222c7121": {
+  "nb": "Munnformer",
+  "en": "Mouth shapes",
+  "oversatt": "Mundformen"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.aria-label.e117606e9862": {
+  "nb": "Munnform {viseme}",
+  "en": "Mouth shape {viseme}",
+  "oversatt": "Mundform {viseme}"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.01d46e56c2f7": {
+  "nb": "Generer leppesynk på nytt",
+  "en": "Regenerate lip sync",
+  "oversatt": "Lippensynchronisation neu generieren"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.0a9f89123ac1": {
+  "nb": "Bruk",
+  "en": "Apply",
+  "oversatt": "Anwenden"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.1be0031bd305": {
+  "nb": "Slå av leppesynk for replikken",
+  "en": "Turn off lip sync for the line",
+  "oversatt": "Lippensynchronisation für die Zeile deaktivieren"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.681a5e530236": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "Verwerfen"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.69d757b4a151": {
+  "nb": "Slå på leppesynk for replikken",
+  "en": "Turn on lip sync for the line",
+  "oversatt": "Lippensynchronisation für die Dialogzeile aktivieren"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.label.921e9ab066c5": {
+  "nb": "Generer leppesynk",
+  "en": "Generate lip sync",
+  "oversatt": "Lippensynchronisation generieren"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.run.323cd339490e": {
+  "nb": "Endre leppesynk",
+  "en": "Change lip sync",
+  "oversatt": "Lippensynchronisation ändern"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.span.3069222c7121": {
+  "nb": "Munnformer",
+  "en": "Mouth shapes",
+  "oversatt": "Mundformen"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.span.dccc327c354c": {
+  "nb": "Ingen leppesynk ennå",
+  "en": "No lip sync yet",
+  "oversatt": "Noch keine Lippensynchronisation"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.span.de86e9b87672": {
+  "nb": "Velg et take først",
+  "en": "Choose a take first",
+  "oversatt": "Wählen Sie zuerst einen Take aus"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.span.e56c589724ab": {
+  "nb": "Nytt leppesynk er et forslag",
+  "en": "New lip sync is a proposal",
+  "oversatt": "Neue Lippensynchronisation ist ein Vorschlag"
+ },
+ "app-scene-editor-animation-mouth-track.mouth-track.title.549c70b0a94f": {
+  "nb": "Lyden er endret etter analysen",
+  "en": "The audio changed after the analysis",
+  "oversatt": "Das Audio wurde nach der Analyse geändert"
+ },
+ "app-scene-editor-animation-pattern-studio.create.run.10a9fa4fc072": {
+  "nb": "Lagre mønster",
+  "en": "Save pattern",
+  "oversatt": "Muster speichern"
+ },
+ "app-scene-editor-animation-pattern-studio.eye-left.eye-left.b28ceb1b5df1": {
+  "nb": "Venstre øye",
+  "en": "Left eye",
+  "oversatt": "Linkes Auge"
+ },
+ "app-scene-editor-animation-pattern-studio.eye-right.eye-right.04b9a4f583d8": {
+  "nb": "Høyre øye",
+  "en": "Right eye",
+  "oversatt": "Rechtes Auge"
+ },
+ "app-scene-editor-animation-pattern-studio.eyes.eyes.15c0db8c0f03": {
+  "nb": "Begge øyne",
+  "en": "Both eyes",
+  "oversatt": "Beide Augen"
+ },
+ "app-scene-editor-animation-pattern-studio.name.name.1c42a36a877f": {
+  "nb": "Nytt mønster",
+  "en": "New pattern",
+  "oversatt": "Neues Muster"
+ },
+ "app-scene-editor-animation-pattern-studio.overlay.overlay.b048bb93d775": {
+  "nb": "Overlegg",
+  "en": "Overlay",
+  "oversatt": "Overlay"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.07058fcdfd93": {
+  "nb": "Mønstre i prosjektet",
+  "en": "Patterns in the project",
+  "oversatt": "Muster im Projekt"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.2a174348c7d1": {
+  "nb": "Mønsterkurven",
+  "en": "The pattern curve",
+  "oversatt": "Die Musterkurve"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.384e7b1a311f": {
+  "nb": "Mål for mønsteret",
+  "en": "Pattern target",
+  "oversatt": "Musterziel"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.811b5602f7b4": {
+  "nb": "Mønstre",
+  "en": "Patterns",
+  "oversatt": "Muster"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.ba94fcbbcdf5": {
+  "nb": "Navn på mønsteret",
+  "en": "Pattern name",
+  "oversatt": "Mustername"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.aria-label.d98f978f420b": {
+  "nb": "Mønsterfarge (bare markør)",
+  "en": "Pattern color (marker only)",
+  "oversatt": "Musterfarbe (nur Markierung)"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.interval-min-ms-l-min-mellomrom-ms-min-interval-ms-100-60000-interval-max-ms-l-maks-mellomrom-ms-max-interval-ms-100-60000-duration-min-frames-l-min-varighet-frames-min-duration-frames-1-600-duration-max-frames-l-maks-varighet-frames-max-duration-frames-1-600-seed-l-seed-seed-0-4294967295-as-const-map.0fad020c0deb": {
+  "nb": "Maks. varighet (frames)",
+  "en": "Max duration (frames)",
+  "oversatt": "Max. Dauer (Frames)"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.interval-min-ms-l-min-mellomrom-ms-min-interval-ms-100-60000-interval-max-ms-l-maks-mellomrom-ms-max-interval-ms-100-60000-duration-min-frames-l-min-varighet-frames-min-duration-frames-1-600-duration-max-frames-l-maks-varighet-frames-max-duration-frames-1-600-seed-l-seed-seed-0-4294967295-as-const-map.2c0fb557bf67": {
+  "nb": "Min. varighet (frames)",
+  "en": "Min duration (frames)",
+  "oversatt": "Min. Dauer (Frames)"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.interval-min-ms-l-min-mellomrom-ms-min-interval-ms-100-60000-interval-max-ms-l-maks-mellomrom-ms-max-interval-ms-100-60000-duration-min-frames-l-min-varighet-frames-min-duration-frames-1-600-duration-max-frames-l-maks-varighet-frames-max-duration-frames-1-600-seed-l-seed-seed-0-4294967295-as-const-map.747a89fa09a3": {
+  "nb": "Seed",
+  "en": "Seed",
+  "oversatt": "Seed"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.interval-min-ms-l-min-mellomrom-ms-min-interval-ms-100-60000-interval-max-ms-l-maks-mellomrom-ms-max-interval-ms-100-60000-duration-min-frames-l-min-varighet-frames-min-duration-frames-1-600-duration-max-frames-l-maks-varighet-frames-max-duration-frames-1-600-seed-l-seed-seed-0-4294967295-as-const-map.9525cc4f5aac": {
+  "nb": "Min. mellomrom (ms)",
+  "en": "Min interval (ms)",
+  "oversatt": "Min. Intervall (ms)"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.interval-min-ms-l-min-mellomrom-ms-min-interval-ms-100-60000-interval-max-ms-l-maks-mellomrom-ms-max-interval-ms-100-60000-duration-min-frames-l-min-varighet-frames-min-duration-frames-1-600-duration-max-frames-l-maks-varighet-frames-max-duration-frames-1-600-seed-l-seed-seed-0-4294967295-as-const-map.ca527042ee85": {
+  "nb": "Maks. mellomrom (ms)",
+  "en": "Max interval (ms)",
+  "oversatt": "Max. Intervall (ms)"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.label.2b48f14a8b6e": {
+  "nb": "Fjern mønsteret",
+  "en": "Remove the pattern",
+  "oversatt": "Muster entfernen"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.label.9d4cc0c9790c": {
+  "nb": "Nytt mønster",
+  "en": "New pattern",
+  "oversatt": "Neues Muster"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.li.b6e2272ed826": {
+  "nb": "Ingen mønstre ennå.",
+  "en": "No patterns yet.",
+  "oversatt": "Noch keine Muster vorhanden."
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.p.4b8597cf2af3": {
+  "nb": "Samme seed gir samme kurve – også ved eksport.",
+  "en": "The same seed gives the same curve – also on export.",
+  "oversatt": "Derselbe Seed erzeugt dieselbe Kurve – auch beim Export."
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.p.b288af166da6": {
+  "nb": "Velg et mønster, eller lag et nytt.",
+  "en": "Choose a pattern, or create a new one.",
+  "oversatt": "Wählen Sie ein Muster oder erstellen Sie ein neues."
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.run.8819a7880c5e": {
+  "nb": "Fjern mønster",
+  "en": "Remove pattern",
+  "oversatt": "Muster entfernen"
+ },
+ "app-scene-editor-animation-pattern-studio.pattern-studio.title.811b5602f7b4": {
+  "nb": "Mønstre",
+  "en": "Patterns",
+  "oversatt": "Muster"
+ },
+ "app-scene-editor-animation-pattern-studio.update.run.6b57f2ef1879": {
+  "nb": "Endre mønster",
+  "en": "Change pattern",
+  "oversatt": "Muster ändern"
+ },
+ "app-scene-editor-animation-play-range.play-range.aria-label.2ca4c7312bb8": {
+  "nb": "Slutt på avspillingsområdet",
+  "en": "Playback range end",
+  "oversatt": "Ende des Abspielbereichs"
+ },
+ "app-scene-editor-animation-play-range.play-range.aria-label.eac5662a5a11": {
+  "nb": "Start på avspillingsområdet",
+  "en": "Playback range start",
+  "oversatt": "Start des Abspielbereichs"
+ },
+ "app-scene-editor-animation-rhythm-drag.failure.run.a27f0b09e0bc": {
+  "nb": "Juster rytmen (dra)",
+  "en": "Adjust the rhythm (drag)",
+  "oversatt": "Rhythmus anpassen (ziehen)"
+ },
+ "app-scene-editor-animation-rhythm-drag.rhythm-drag-layer.output.a9e2010a7552": {
+  "nb": "Ny scenetid:",
+  "en": "New scene time:",
+  "oversatt": "Neue Szenenzeit:"
+ },
+ "app-scene-editor-animation-rhythm-drag.rhythm-drag-layer.span.6360c6e28d2a": {
+  "nb": "Dra for å endre",
+  "en": "Drag to change",
+  "oversatt": "Zum Ändern ziehen"
+ },
+ "app-scene-editor-animation-rhythm-panel.failure.run.e5c8e3318d65": {
+  "nb": "Juster rytmen",
+  "en": "Adjust the rhythm",
+  "oversatt": "Rhythmus anpassen"
+ },
+ "app-scene-editor-animation-rhythm-panel.label.label.0785d03a2957": {
+  "nb": "Beskyttet (rytme)",
+  "en": "Protected (rhythm)",
+  "oversatt": "Geschützt (Rhythmus)"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.177bacb4abc5": {
+  "nb": "Fjern beskyttelsen",
+  "en": "Remove the protection",
+  "oversatt": "Schutz aufheben"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0": {
+  "nb": "Rytmeverktøy",
+  "en": "Rhythm tool",
+  "oversatt": "Rhythmus-Werkzeug"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.aria-label.f19d593893d0.2": {
+  "nb": "Rytmeverktøy",
+  "en": "Rhythm tool",
+  "oversatt": "Rhythmus-Werkzeug"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.12195c0de768": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "Verwerfen"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.3ce45bd0ae01": {
+  "nb": "Rytme",
+  "en": "Rhythm",
+  "oversatt": "Rhythmus"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.4bb251b2b72f": {
+  "nb": "Bruk",
+  "en": "Apply",
+  "oversatt": "Anwenden"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.button.b39950abeee9": {
+  "nb": "Beskytt",
+  "en": "Protect",
+  "oversatt": "Schützen"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.div.a36d7829f46b": {
+  "nb": "Forhåndsvisning",
+  "en": "Preview",
+  "oversatt": "Vorschau"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.3abab56147f0": {
+  "nb": "Forskyv",
+  "en": "Shift",
+  "oversatt": "Verschieben"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.8c12fda0fac9": {
+  "nb": "Skjæringspunkt (frame)",
+  "en": "Cut point (frame)",
+  "oversatt": "Schnittpunkt (Frame)"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.bfbb6a8861cd": {
+  "nb": "Pause",
+  "en": "Pause",
+  "oversatt": "Pause"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.cfcdcf9f816b": {
+  "nb": "Fordel",
+  "en": "Spread",
+  "oversatt": "Verteilen"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.e5ecb7f74070": {
+  "nb": "Fra",
+  "en": "From",
+  "oversatt": "Von"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.e67a2a0652c9": {
+  "nb": "Vekt",
+  "en": "Weight",
+  "oversatt": "Gewichtung"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.label.e923cdd382c1": {
+  "nb": "til",
+  "en": "to",
+  "oversatt": "bis"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.legend.0a8c804552ce": {
+  "nb": "Beskyttede tidsområder (flyttes aldri)",
+  "en": "Protected ranges (never moved)",
+  "oversatt": "Geschützte Bereiche (werden nie verschoben)"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.output.910e0b35cf99": {
+  "nb": "Ny scenetid:",
+  "en": "New scene time:",
+  "oversatt": "Neue Szenenzeit:"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.p.0163bae93df4": {
+  "nb": "Hold Cmd/Ctrl og dra i tidslinjen for å justere rytmen direkte. Shift fordeler.",
+  "en": "Hold Cmd/Ctrl and drag in the timeline to adjust the rhythm directly. Shift spreads.",
+  "oversatt": "Cmd/Ctrl gedrückt halten und in der Zeitleiste ziehen, um den Rhythmus direkt anzupassen. Shift verteilt."
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.p.0bc315e59315": {
+  "nb": "Scenen har ingen replikker. Takt og forskyvning virker på mellomrommene.",
+  "en": "The scene has no lines. Tempo and shift act on the gaps.",
+  "oversatt": "Die Szene enthält keine Dialogzeilen. Tempo und Verschiebung wirken auf die Lücken."
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.set-protected.358332bff108": {
+  "nb": "Beskytt tidsområde",
+  "en": "Protect range",
+  "oversatt": "Bereich schützen"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.set-protected.a8e7c7e8966f": {
+  "nb": "Fjern beskyttet tidsområde",
+  "en": "Remove protected range",
+  "oversatt": "Geschützten Bereich entfernen"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.span.3ce45bd0ae01": {
+  "nb": "Rytme",
+  "en": "Rhythm",
+  "oversatt": "Rhythmus"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.span.45ce15edb9b3": {
+  "nb": "Mellomrom {value1}",
+  "en": "Gap {value1}",
+  "oversatt": "Lücke {value1}"
+ },
+ "app-scene-editor-animation-rhythm-panel.rhythm-panel.span.8ccbeee2ac1f": {
+  "nb": "Takt",
+  "en": "Tempo",
+  "oversatt": "Tempo"
+ },
+ "app-scene-editor-animation-rig-part-preview.rig-part-preview.aria-label.5b9eea442ab7": {
+  "nb": "Munnform på karakteren",
+  "en": "Mouth shape on character",
+  "oversatt": "Mundform an der Figur"
+ },
+ "app-scene-editor-animation-time-navigator.time-navigator.aria-label.874659257a28": {
+  "nb": "Start på synlig område",
+  "en": "Visible range start",
+  "oversatt": "Start des sichtbaren Bereichs"
+ },
+ "app-scene-editor-animation-time-navigator.time-navigator.aria-label.a8ca47cc3af2": {
+  "nb": "Tidsnavigator",
+  "en": "Time navigator",
+  "oversatt": "Zeit-Navigator"
+ },
+ "app-scene-editor-animation-time-navigator.time-navigator.aria-label.a9fecc231e9f": {
+  "nb": "Slutt på synlig område",
+  "en": "Visible range end",
+  "oversatt": "Ende des sichtbaren Bereichs"
+ },
+ "app-scene-editor-animation-variant-tracks.finish.set-error.455b4d5c5a23": {
+  "nb": "Laget er endret av en annen bruker. Prøv igjen.",
+  "en": "Another user changed the layer. Please try again.",
+  "oversatt": "Eine andere Person hat die Ebene geändert. Bitte versuchen Sie es erneut."
+ },
+ "app-scene-editor-animation-variant-tracks.finish.write.9edd02579b31": {
+  "nb": "Flytt bildesegment",
+  "en": "Move image segment",
+  "oversatt": "Bildsegment verschieben"
+ },
+ "app-scene-editor-animation-variant-tracks.finish.write.dc0e400457f1": {
+  "nb": "Trim bildesegment",
+  "en": "Trim image segment",
+  "oversatt": "Bildsegment trimmen"
+ },
+ "app-scene-editor-animation-variant-tracks.pick.write.c735ca6346f3": {
+  "nb": "Velg bildevariant",
+  "en": "Choose image variant",
+  "oversatt": "Bildvariante wählen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.aria-label.202d9160b65b": {
+  "nb": "Trim slutten av segmentet",
+  "en": "Trim the end of the segment",
+  "oversatt": "Ende des Segments trimmen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.dialog-description.2b027d029fae": {
+  "nb": "Bildet byttes uten å endre lagets transformasjon.",
+  "en": "The image changes without changing the layer transform.",
+  "oversatt": "Das Bild wird ausgetauscht, ohne die Transformation der Ebene zu ändern."
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.dialog-title.c0a1248d9562": {
+  "nb": "Velg bildevariant",
+  "en": "Choose image variant",
+  "oversatt": "Bildvariante wählen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.43543ac141be": {
+  "nb": "Munnformer og rigg-deler",
+  "en": "Mouth shapes and rig parts",
+  "oversatt": "Mundformen und Rig-Teile"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.611baae3be56": {
+  "nb": "Erstatt bildet",
+  "en": "Replace image",
+  "oversatt": "Bild ersetzen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.724e230faf0c": {
+  "nb": "Start (frame)",
+  "en": "Start (frame)",
+  "oversatt": "Start (Frame)"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.72929a088058": {
+  "nb": "Fjern bildehendelsen",
+  "en": "Remove image event",
+  "oversatt": "Bild-Event entfernen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.7cba01db7111": {
+  "nb": "Marker ansikt",
+  "en": "Mark face",
+  "oversatt": "Gesicht markieren"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.a64252751a3c": {
+  "nb": "Legg inn bildehendelse",
+  "en": "Insert image event",
+  "oversatt": "Bild-Event einfügen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.bed02c257838": {
+  "nb": "Animasjon i denne scenen",
+  "en": "Animation in this scene",
+  "oversatt": "Animation in dieser Szene"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.c33983afbdb1": {
+  "nb": "Kopier bildehendelsen",
+  "en": "Copy image event",
+  "oversatt": "Bild-Event kopieren"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.label.ec70208184a7": {
+  "nb": "Varighet (frames)",
+  "en": "Duration (frames)",
+  "oversatt": "Dauer (Frames)"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.p.6abdfce588eb": {
+  "nb": "Ingen bildelag i scenen.",
+  "en": "No image layers in the scene.",
+  "oversatt": "Keine Bildebenen in der Szene."
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.run.7bd464febff0": {
+  "nb": "Endre animasjon i scenen",
+  "en": "Change scene animation",
+  "oversatt": "Szenenanimation ändern"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.toolbar-button.cfc9ca026c9e": {
+  "nb": "Asset Studio",
+  "en": "Asset Studio",
+  "oversatt": "Asset Studio"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.write.238e8b6481a2": {
+  "nb": "Flytt bildesegment",
+  "en": "Move image segment",
+  "oversatt": "Bildsegment verschieben"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.write.72929a088058": {
+  "nb": "Fjern bildehendelsen",
+  "en": "Remove image event",
+  "oversatt": "Bild-Event entfernen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.write.7f59322590b1": {
+  "nb": "Trim bildesegment",
+  "en": "Trim image segment",
+  "oversatt": "Bildsegment trimmen"
+ },
+ "app-scene-editor-animation-variant-tracks.variant-tracks.write.c33983afbdb1": {
+  "nb": "Kopier bildehendelsen",
+  "en": "Copy image event",
+  "oversatt": "Bild-Event kopieren"
+ },
+ "app-scene-editor-beyond-end-notice.and.message.a0667ea2c151": {
+  "nb": " og ",
+  "en": " and ",
+  "oversatt": " und "
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.aria-label.cb2a59a3eac2": {
+  "nb": "Etter scenens slutt",
+  "en": "After the end of the scene",
+  "oversatt": "Nach dem Szenenende"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.button.3198a54fbb13": {
+  "nb": "Forleng scenen til",
+  "en": "Extend the scene to",
+  "oversatt": "Szene verlängern bis"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.button.4a3c5f9e2955": {
+  "nb": "Lag «{name}»",
+  "en": "Layer “{name}”",
+  "oversatt": "Ebene „{name}“"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.button.a3137824c3e7": {
+  "nb": "Kamerautsnitt «{name}»",
+  "en": "Camera shot “{name}”",
+  "oversatt": "Kameraausschnitt „{name}“"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.button.c90e2ec62c85": {
+  "nb": "Vis og velg …",
+  "en": "Show and choose …",
+  "oversatt": "Anzeigen und auswählen …"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.button.d2597bb887f9": {
+  "nb": "Skjul liste",
+  "en": "Hide list",
+  "oversatt": "Liste ausblenden"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.16d558dbbee5": {
+  "nb": "nøkkelbilder",
+  "en": "keyframes",
+  "oversatt": "Keyframes"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.16d558dbbee5.2": {
+  "nb": "nøkkelbilder",
+  "en": "keyframes",
+  "oversatt": "Keyframes"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.98a2f777b8fc": {
+  "nb": "nøkkelbilde",
+  "en": "keyframe",
+  "oversatt": "Keyframe"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.98a2f777b8fc.2": {
+  "nb": "nøkkelbilde",
+  "en": "keyframe",
+  "oversatt": "Keyframe"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.acb81085b252": {
+  "nb": "kamerautsnitt",
+  "en": "camera shots",
+  "oversatt": "Kameraausschnitte"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.s.aeca7434adbc": {
+  "nb": "kamerautsnitt",
+  "en": "camera shot",
+  "oversatt": "Kameraausschnitt"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.030acac20ee6": {
+  "nb": " (går forbi slutten)",
+  "en": " (runs past the end)",
+  "oversatt": " (ragt über das Ende hinaus)"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.44687372e49e": {
+  "nb": "og vises ikke.",
+  "en": "and are not shown.",
+  "oversatt": "und werden nicht angezeigt."
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.b087a24c7696": {
+  "nb": "Ingenting er slettet.",
+  "en": "Nothing has been deleted.",
+  "oversatt": "Es wurde nichts gelöscht."
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.c9ddeeca9650": {
+  "nb": "ved",
+  "en": "at",
+  "oversatt": "bei"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.d487d1e71169": {
+  "nb": " (helt etter slutten)",
+  "en": " (entirely after the end)",
+  "oversatt": " (vollständig nach dem Ende)"
+ },
+ "app-scene-editor-beyond-end-notice.beyond-end-notice.span.f6dd4c364f3f": {
+  "nb": "ligger etter scenens slutt",
+  "en": "are past the end of the scene",
+  "oversatt": "liegen nach dem Szenenende"
+ },
+ "app-scene-editor-beyond-end-notice.extend.run.be5a1b7adc89": {
+  "nb": "Forleng scenen",
+  "en": "Extend the scene",
+  "oversatt": "Szene verlängern"
+ },
+ "app-scene-editor-camera-overlay.drag-label.message.2487491b3939": {
+  "nb": "Flytt kameraramme",
+  "en": "Move camera frame",
+  "oversatt": "Kamerarahmen verschieben"
+ },
+ "app-scene-editor-camera-overlay.drag-label.message.ba857573feb0": {
+  "nb": "Endre kamerabane",
+  "en": "Change camera path",
+  "oversatt": "Kamerapfad ändern"
+ },
+ "app-scene-editor-camera-overlay.drag-label.message.f7d94853441e": {
+  "nb": "Zoom kamera",
+  "en": "Zoom camera",
+  "oversatt": "Kamera zoomen"
+ },
+ "app-scene-editor-camera-overlay.draw-camera-overlay.label.df6d02623e7e": {
+  "nb": "Slutt",
+  "en": "End",
+  "oversatt": "Ende"
+ },
+ "app-scene-editor-camera-panel.camera-panel.aria-label.c8ff09f56ac3": {
+  "nb": "Banetype",
+  "en": "Path type",
+  "oversatt": "Pfadtyp"
+ },
+ "app-scene-editor-camera-panel.camera-panel.button.1c6dd1e00aca": {
+  "nb": "Slett kamerautsnitt",
+  "en": "Delete camera shot",
+  "oversatt": "Kameraausschnitt löschen"
+ },
+ "app-scene-editor-camera-panel.camera-panel.button.de1042f70af0": {
+  "nb": "Bytt start og slutt",
+  "en": "Swap start and end",
+  "oversatt": "Start und Ende tauschen"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.3750a798925f": {
+  "nb": "Rett kamerabane",
+  "en": "Straight camera path",
+  "oversatt": "Gerader Kamerapfad"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.3d2a541d33db": {
+  "nb": "Kurvet kamerabane",
+  "en": "Curved camera path",
+  "oversatt": "Gekrümmter Kamerapfad"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.54213bdbc4e7": {
+  "nb": "Endre hastighetskurve",
+  "en": "Change speed curve",
+  "oversatt": "Geschwindigkeitskurve ändern"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.61abfdb6eab7": {
+  "nb": "Gi kamerautsnitt navn",
+  "en": "Name the camera shot",
+  "oversatt": "Kameraausschnitt benennen"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.6ece8fe0473a": {
+  "nb": "Startramme: hele formatet",
+  "en": "Start frame: whole frame",
+  "oversatt": "Start-Frame: Gesamtes Format"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.72a9f73fc228": {
+  "nb": "Endre sluttramme",
+  "en": "Change end frame",
+  "oversatt": "End-Frame ändern"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.9bcc7535c472": {
+  "nb": "Sluttramme: hele formatet",
+  "en": "End frame: whole frame",
+  "oversatt": "End-Frame: Gesamtes Format"
+ },
+ "app-scene-editor-camera-panel.camera-panel.commit.a8ec73cd9d3e": {
+  "nb": "Endre startramme",
+  "en": "Change start frame",
+  "oversatt": "Start-Frame ändern"
+ },
+ "app-scene-editor-camera-panel.camera-panel.hint.6a17c12a763b": {
+  "nb": "bilde {startFrame}",
+  "en": "frame {startFrame}",
+  "oversatt": "Frame {startFrame}"
+ },
+ "app-scene-editor-camera-panel.camera-panel.hint.7700d092bd65": {
+  "nb": "bilde {endFrame}",
+  "en": "frame {endFrame}",
+  "oversatt": "Frame {endFrame}"
+ },
+ "app-scene-editor-camera-panel.camera-panel.l-rett-straight-false-l-kurvet-curved-true-as-const-map.b0447116557b": {
+  "nb": "Rett",
+  "en": "Straight",
+  "oversatt": "Gerade"
+ },
+ "app-scene-editor-camera-panel.camera-panel.l-rett-straight-false-l-kurvet-curved-true-as-const-map.cc04a45e5b01": {
+  "nb": "Kurvet",
+  "en": "Curved",
+  "oversatt": "Gekrümmt"
+ },
+ "app-scene-editor-camera-panel.camera-panel.label.0c3de49bba56": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-scene-editor-camera-panel.camera-panel.label.5355707172e2": {
+  "nb": "Slutt (s)",
+  "en": "End (s)",
+  "oversatt": "Ende (s)"
+ },
+ "app-scene-editor-camera-panel.camera-panel.label.65af20133200": {
+  "nb": "Start (s)",
+  "en": "Start (s)",
+  "oversatt": "Start (s)"
+ },
+ "app-scene-editor-camera-panel.camera-panel.label.706f10d86d7a": {
+  "nb": "Hastighet",
+  "en": "Speed",
+  "oversatt": "Geschwindigkeit"
+ },
+ "app-scene-editor-camera-panel.camera-panel.p.659aa1ab524c": {
+  "nb": "Dra i håndtakene på banen i scenen, eller dobbeltklikk banen for å bytte.",
+  "en": "Drag the handles on the path in the scene, or double-click the path to switch.",
+  "oversatt": "Ziehen Sie die Griffe auf dem Pfad in der Szene, oder doppelklicken Sie auf den Pfad, um zu wechseln."
+ },
+ "app-scene-editor-camera-panel.camera-panel.title.41b97ecad091": {
+  "nb": "Startramme (blå)",
+  "en": "Start frame (blue)",
+  "oversatt": "Start-Frame (blau)"
+ },
+ "app-scene-editor-camera-panel.camera-panel.title.6b59d9bb269e": {
+  "nb": "Bane",
+  "en": "Path",
+  "oversatt": "Pfad"
+ },
+ "app-scene-editor-camera-panel.camera-panel.title.ae8a26378eba": {
+  "nb": "Kamerautsnitt",
+  "en": "Camera shot",
+  "oversatt": "Kameraausschnitt"
+ },
+ "app-scene-editor-camera-panel.camera-panel.title.ae8a26378eba.2": {
+  "nb": "Kamerautsnitt",
+  "en": "Camera shot",
+  "oversatt": "Kameraausschnitt"
+ },
+ "app-scene-editor-camera-panel.camera-panel.title.ef9ac716d58f": {
+  "nb": "Sluttramme (rød)",
+  "en": "End frame (red)",
+  "oversatt": "End-Frame (rot)"
+ },
+ "app-scene-editor-camera-panel.easing-label.ease-in-out.9c97cd151cac": {
+  "nb": "Myk start og slutt",
+  "en": "Ease in and out",
+  "oversatt": "Sanfter Start und Stopp"
+ },
+ "app-scene-editor-camera-panel.easing-label.ease-in.2d772dc3edfd": {
+  "nb": "Myk start",
+  "en": "Ease in",
+  "oversatt": "Sanfter Start"
+ },
+ "app-scene-editor-camera-panel.easing-label.ease-out.986bfc35b6a4": {
+  "nb": "Myk slutt",
+  "en": "Ease out",
+  "oversatt": "Sanfter Stopp"
+ },
+ "app-scene-editor-camera-panel.easing-label.hold.d4076f411bb6": {
+  "nb": "Hold",
+  "en": "Hold",
+  "oversatt": "Halten"
+ },
+ "app-scene-editor-camera-panel.easing-label.linear.d1801edccdef": {
+  "nb": "Jevn",
+  "en": "Even",
+  "oversatt": "Gleichmäßig"
+ },
+ "app-scene-editor-camera-panel.err.run.adf0569d05a8": {
+  "nb": "Slett kamerautsnitt",
+  "en": "Delete camera shot",
+  "oversatt": "Kameraausschnitt löschen"
+ },
+ "app-scene-editor-camera-panel.frame-section.button.9d40e6d84771": {
+  "nb": "Bruk aktivt utsnitt",
+  "en": "Use active shot",
+  "oversatt": "Aktiven Ausschnitt verwenden"
+ },
+ "app-scene-editor-camera-panel.frame-section.button.d3a8d9c07721": {
+  "nb": "Hele formatet",
+  "en": "Whole frame",
+  "oversatt": "Gesamtes Format"
+ },
+ "app-scene-editor-camera-panel.frame-section.label.f915a28d629d": {
+  "nb": "Rotasjon (°)",
+  "en": "Rotation (°)",
+  "oversatt": "Drehung (°)"
+ },
+ "app-scene-editor-camera-panel.frame-section.p.15d0963ddcb1": {
+  "nb": "100 % = hele formatet",
+  "en": "100 % = the whole frame",
+  "oversatt": "100 % = gesamtes Format"
+ },
+ "app-scene-editor-camera-panel.frame-section.title.010254f47a92": {
+  "nb": "Scenen før har ingen 2D-scene (eller dette er første scene)",
+  "en": "The previous scene has no 2D scene (or this is the first scene)",
+  "oversatt": "Die vorherige Szene hat keine 2D-Szene (oder dies ist die erste Szene)"
+ },
+ "app-scene-editor-camera-panel.frame-section.title.ece6881754b4": {
+  "nb": "Kopier utsnittet kameraet har når scenen før slutter",
+  "en": "Copy the shot the camera has when the previous scene ends",
+  "oversatt": "Ausschnitt der Kamera am Ende der vorherigen Szene kopieren"
+ },
+ "app-scene-editor-camera-panel.set-time.commit.0b87d33d21f7": {
+  "nb": "Endre slutt for kamerautsnitt",
+  "en": "Change end of camera shot",
+  "oversatt": "Ende des Kameraausschnitts ändern"
+ },
+ "app-scene-editor-camera-panel.set-time.commit.4cdf540ca878": {
+  "nb": "Endre start for kamerautsnitt",
+  "en": "Change start of camera shot",
+  "oversatt": "Start des Kameraausschnitts ändern"
+ },
+ "app-scene-editor-camera-panel.set-time.set-error.443f652b4062": {
+  "nb": "Kamerautsnittet må slutte etter at det starter",
+  "en": "The camera shot must end after it starts",
+  "oversatt": "Der Kameraausschnitt muss nach seinem Start enden"
+ },
+ "app-scene-editor-camera-panel.set-time.set-error.84ba143006e8": {
+  "nb": "Tiden må være mellom 0 og {value1} sekunder",
+  "en": "The time must be between 0 and {value1} seconds",
+  "oversatt": "Die Zeit muss zwischen 0 und {value1} Sekunden liegen"
+ },
+ "app-scene-editor-camera-panel.set-zoom.set-error.5d886ddbfb36": {
+  "nb": "Zoom må være mellom {value1} og {value2} %",
+  "en": "Zoom must be between {value1} and {value2} %",
+  "oversatt": "Zoom muss zwischen {value1} und {value2} % liegen"
+ },
+ "app-scene-editor-camera-panel.swap.commit.7edc096b02dc": {
+  "nb": "Bytt start og slutt",
+  "en": "Swap start and end",
+  "oversatt": "Start und Ende tauschen"
+ },
+ "app-scene-editor-camera-panel.text-field.placeholder.437b384b9d4c": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "Ohne Titel"
+ },
+ "app-scene-editor-carry-over-dialog.carried-over": {
+  "nb": {
+   "one": "«{name}» er lagt til i {count} scene.",
+   "other": "«{name}» er lagt til i {count} scener."
+  },
+  "en": {
+   "one": "“{name}” was added to {count} scene.",
+   "other": "“{name}” was added to {count} scenes."
+  },
+  "oversatt": {
+   "one": "„{name}“ wurde zu {count} Szene hinzugefügt.",
+   "other": "„{name}“ wurde zu {count} Szenen hinzugefügt."
+  }
+ },
+ "app-scene-editor-carry-over-dialog.carried-over-reused": {
+  "nb": {
+   "one": "«{name}» er lagt til i {count} scene; den som fantes, brukes i {reused}.",
+   "other": "«{name}» er lagt til i {count} scener; den som fantes, brukes i {reused}."
+  },
+  "en": {
+   "one": "“{name}” was added to {count} scene; the existing one is used in {reused}.",
+   "other": "“{name}” was added to {count} scenes; the existing one is used in {reused}."
+  },
+  "oversatt": {
+   "one": "„{name}“ wurde zu {count} Szene hinzugefügt; das vorhandene Element wird in {reused} verwendet.",
+   "other": "„{name}“ wurde zu {count} Szenen hinzugefügt; das vorhandene Element wird in {reused} verwendet."
+  }
+ },
+ "app-scene-editor-carry-over-dialog.carry-label.message.d003692da5f5": {
+  "nb": "Bruk «{name}» i andre scener",
+  "en": "Use “{name}” in other scenes",
+  "oversatt": "„{name}“ in anderen Szenen verwenden"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.button.538a104fae24": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "Hinzufügen"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.button.ab08459b06a1": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Abbrechen"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.dialog-description.7c8035e40fc2": {
+  "nb": "Laget kopieres med samme ressurs, variant, skala og rotasjon. Bevegelse og tid er lokal for hver scene.",
+  "en": "The layer is copied with the same asset, variant, scale and rotation. Motion and timing are local to each scene.",
+  "oversatt": "Die Ebene wird mit demselben Asset, derselben Variante, Skalierung und Drehung kopiert. Bewegung und Timing sind für jede Szene lokal."
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.label.96d556621e7d": {
+  "nb": "Bruk den som finnes",
+  "en": "Use the existing one",
+  "oversatt": "Vorhandenes Element verwenden"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.label.9d11685844c1": {
+  "nb": "Legg til en til",
+  "en": "Add another",
+  "oversatt": "Weiteres hinzufügen"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.li.55851ca1d758": {
+  "nb": "Produksjonen har ingen andre scener.",
+  "en": "The production has no other scenes.",
+  "oversatt": "Die Produktion enthält keine weiteren Szenen."
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.span.840774469bb8": {
+  "nb": "Ressursen finnes allerede i denne scenen.",
+  "en": "The asset is already in this scene.",
+  "oversatt": "Das Asset ist in dieser Szene bereits vorhanden."
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.span.8b40fd165157": {
+  "nb": "(samme 2D-scene)",
+  "en": "(same 2D scene)",
+  "oversatt": "(gleiche 2D-Szene)"
+ },
+ "app-scene-editor-carry-over-dialog.carry-over-dialog.span.e4495ec6a362": {
+  "nb": "Uten overskrift",
+  "en": "No heading",
+  "oversatt": "Ohne Überschrift"
+ },
+ "app-scene-editor-carry-over-dialog.error.error.05a9b406f6b3": {
+  "nb": "Den valgte scenen bruker samme 2D-scene som denne.",
+  "en": "The chosen scene uses the same 2D scene as this one.",
+  "oversatt": "Die ausgewählte Szene verwendet dieselbe 2D-Szene wie diese."
+ },
+ "app-scene-editor-carry-over-dialog.error.error.8ec7f04d3539": {
+  "nb": "Velg minst én scene.",
+  "en": "Choose at least one scene.",
+  "oversatt": "Mindestens eine Szene auswählen."
+ },
+ "app-scene-editor-carry-over-dialog.submit.on-done.363d9984ee39": {
+  "nb": "«{name}» er lagt til i {created} {value3}{value4}.",
+  "en": "“{name}” was added to {created} {value3}{value4}.",
+  "oversatt": "„{name}“ wurde zu {created} {value3}{value4} hinzugefügt."
+ },
+ "app-scene-editor-credits-panel.add.run.65a3f1d55f47": {
+  "nb": "Ny deltaker",
+  "en": "New participant",
+  "oversatt": "Neue beteiligte Person"
+ },
+ "app-scene-editor-credits-panel.credits-panel.button.9dd6d709a240": {
+  "nb": "Medvirkende",
+  "en": "Participants",
+  "oversatt": "Mitwirkende"
+ },
+ "app-scene-editor-credits-panel.credits-panel.button.aabc36b5a4bb": {
+  "nb": "Design",
+  "en": "Design",
+  "oversatt": "Design"
+ },
+ "app-scene-editor-credits-panel.credits-panel.p.2c236b6f5efc": {
+  "nb": "Rulleteksten har ingen sekvens ennå.",
+  "en": "The credits have no sequence yet.",
+  "oversatt": "Der Abspann hat noch keine Sequenz."
+ },
+ "app-scene-editor-credits-panel.credits-panel.title.08f1748714f1": {
+  "nb": "Rulletekst",
+  "en": "Credits",
+  "oversatt": "Abspann"
+ },
+ "app-scene-editor-credits-panel.design-tab.label.23f186cbeeb8": {
+  "nb": "Varighet per deltaker (bilder)",
+  "en": "Duration per participant (frames)",
+  "oversatt": "Dauer pro beteiligter Person (Frames)"
+ },
+ "app-scene-editor-credits-panel.design-tab.label.4827019f5efb": {
+  "nb": "Hastighet (linjer per sekund)",
+  "en": "Speed (lines per second)",
+  "oversatt": "Geschwindigkeit (Zeilen pro Sekunde)"
+ },
+ "app-scene-editor-credits-panel.design-tab.label.57560f878f68": {
+  "nb": "Pause mellom deltakerne (bilder)",
+  "en": "Pause between participants (frames)",
+  "oversatt": "Pause zwischen beteiligten Personen (Frames)"
+ },
+ "app-scene-editor-credits-panel.design-tab.label.6c64f1b2c085": {
+  "nb": "Retning",
+  "en": "Direction",
+  "oversatt": "Richtung"
+ },
+ "app-scene-editor-credits-panel.design-tab.label.6d8c5561a420": {
+  "nb": "Presentasjonsform",
+  "en": "Presentation",
+  "oversatt": "Darstellung"
+ },
+ "app-scene-editor-credits-panel.design-tab.option.834a47afa340": {
+  "nb": "Oppover",
+  "en": "Up",
+  "oversatt": "Nach oben"
+ },
+ "app-scene-editor-credits-panel.design-tab.option.f65e8f256b8a": {
+  "nb": "Nedover",
+  "en": "Down",
+  "oversatt": "Nach unten"
+ },
+ "app-scene-editor-credits-panel.move.run.0d70130edd7f": {
+  "nb": "Flytt deltakeren",
+  "en": "Move the participant",
+  "oversatt": "Beteiligte Person verschieben"
+ },
+ "app-scene-editor-credits-panel.participants-tab.aria-label.2d01c53271b2": {
+  "nb": "Flytt ned",
+  "en": "Move down",
+  "oversatt": "Nach unten verschieben"
+ },
+ "app-scene-editor-credits-panel.participants-tab.aria-label.371c1cdfc2bf": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "Rolle"
+ },
+ "app-scene-editor-credits-panel.participants-tab.aria-label.8d24bb37a6c2": {
+  "nb": "Flytt opp",
+  "en": "Move up",
+  "oversatt": "Nach oben verschieben"
+ },
+ "app-scene-editor-credits-panel.participants-tab.aria-label.a95636c57b87": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ },
+ "app-scene-editor-credits-panel.participants-tab.button.589666392ba2": {
+  "nb": "Logo …",
+  "en": "Logo …",
+  "oversatt": "Logo …"
+ },
+ "app-scene-editor-credits-panel.participants-tab.button.ac8d5fd92bed": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "Entfernen"
+ },
+ "app-scene-editor-credits-panel.participants-tab.button.e74409e6814a": {
+  "nb": "Bytt logo",
+  "en": "Change logo",
+  "oversatt": "Logo ändern"
+ },
+ "app-scene-editor-credits-panel.participants-tab.button.fdfbed2b8e7d": {
+  "nb": "Ny deltaker",
+  "en": "New participant",
+  "oversatt": "Neue beteiligte Person"
+ },
+ "app-scene-editor-credits-panel.participants-tab.label.9c1727a9c327": {
+  "nb": "Skjul",
+  "en": "Hide",
+  "oversatt": "Ausblenden"
+ },
+ "app-scene-editor-credits-panel.participants-tab.p.57fd2ea31c46": {
+  "nb": "{length} av høyst {CREDIT_PARTICIPANTS_MAX} deltakere",
+  "en": "{length} of at most {CREDIT_PARTICIPANTS_MAX} participants",
+  "oversatt": "{length} von maximal {CREDIT_PARTICIPANTS_MAX} Mitwirkenden"
+ },
+ "app-scene-editor-credits-panel.participants-tab.placeholder.371c1cdfc2bf": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "Rolle"
+ },
+ "app-scene-editor-credits-panel.participants-tab.placeholder.a95636c57b87": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Name"
+ }
+}

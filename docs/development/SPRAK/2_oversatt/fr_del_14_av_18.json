@@ -1,0 +1,3012 @@
+{
+ "app-storylab-scene-lab.scene-lab.option.7a44fdeccb10": {
+  "nb": "Fra starten (tom gren)",
+  "en": "From the start (empty branch)",
+  "oversatt": "Depuis le début (branche vide)"
+ },
+ "app-storylab-scene-lab.scene-lab.p.3a246d42f794": {
+  "nb": "Anslått: {value1} · {label}",
+  "en": "Estimated: {value1} · {label}",
+  "oversatt": "Estimation : {value1} · {label}"
+ },
+ "app-storylab-scene-lab.scene-lab.p.60257a417868": {
+  "nb": "{lines} replikker · {words} ord",
+  "en": "{lines} lines · {words} words",
+  "oversatt": "{lines} répliques · {words} mots"
+ },
+ "app-storylab-scene-lab.scene-lab.p.84295ce17e6a": {
+  "nb": "Økten kunne ikke hentes.",
+  "en": "The session could not be loaded.",
+  "oversatt": "Impossible de charger la session."
+ },
+ "app-storylab-scene-lab.scene-lab.p.8dabc487657b": {
+  "nb": "Henter økten …",
+  "en": "Loading session …",
+  "oversatt": "Chargement de la session…"
+ },
+ "app-storylab-scene-lab.scene-lab.set-error.84295ce17e6a": {
+  "nb": "Økten kunne ikke hentes.",
+  "en": "The session could not be loaded.",
+  "oversatt": "Impossible de charger la session."
+ },
+ "app-storylab-scene-lab.scene-lab.set-error.dfe097e6abf4": {
+  "nb": "Økten hører til en annen scene.",
+  "en": "The session belongs to another scene.",
+  "oversatt": "La session appartient à une autre scène."
+ },
+ "app-storylab-scene-lab.scene-lab.span.eedccce9e58d": {
+  "nb": "usikker",
+  "en": "uncertain",
+  "oversatt": "incertain"
+ },
+ "app-storylab-scene-lab.scene-lab.title.435d04a9a112": {
+  "nb": "Scenelaben",
+  "en": "Scene lab",
+  "oversatt": "Laboratoire de scène"
+ },
+ "app-storylab-scene-lab.scene-lab.title.4d41543e3d66": {
+  "nb": "Scenetekst",
+  "en": "Scene text",
+  "oversatt": "Texte de la scène"
+ },
+ "app-storylab-scene-lab.scene-lab.title.c9cf0c0b91a2": {
+  "nb": "Deltakere",
+  "en": "Participants",
+  "oversatt": "Participants"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.0d50cf1bf200": {
+  "nb": "Sammenlign",
+  "en": "Compare",
+  "oversatt": "Comparer"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.3b2009ae849b": {
+  "nb": "Bekreft",
+  "en": "Confirm",
+  "oversatt": "Confirmer"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.487e7cf42e9f": {
+  "nb": "Har profil",
+  "en": "Has a profile",
+  "oversatt": "A un profil"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.4f8e8124aa9a": {
+  "nb": "Analyser scenen …",
+  "en": "Analyze scene …",
+  "oversatt": "Analyser la scène…"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.6698cc2b7721": {
+  "nb": "Improviser scenen …",
+  "en": "Improvise scene …",
+  "oversatt": "Improviser la scène…"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.7dafa6d61df4": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "Analyse"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.8052e4c18fe6": {
+  "nb": "Lagre som forslag",
+  "en": "Save as suggestion",
+  "oversatt": "Enregistrer comme suggestion"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.812449377db4": {
+  "nb": " (ingen profil)",
+  "en": " (no profile)",
+  "oversatt": " (aucun profil)"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.85243945086a": {
+  "nb": "Lagre varianten som scenetekstutkast",
+  "en": "Save variant as scene draft",
+  "oversatt": "Enregistrer la variante comme brouillon de scène"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.8886491bd365": {
+  "nb": "Lagre valgte som forslag",
+  "en": "Save selected as suggestions",
+  "oversatt": "Enregistrer la sélection comme suggestions"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.8f3a1bb3dacb": {
+  "nb": "Lag varianter …",
+  "en": "Create variants …",
+  "oversatt": "Créer des variantes…"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.9d92952c97bf": {
+  "nb": "Sjekk replikken",
+  "en": "Check line",
+  "oversatt": "Vérifier la réplique"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.addb2925c66f": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "Arrêter"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.c5b283eb3a0f": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Réessayer"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.de75908eceb1": {
+  "nb": "Ingen profil",
+  "en": "No profile",
+  "oversatt": "Aucun profil"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.e2e6a674a17f": {
+  "nb": "Replikksjekk",
+  "en": "Line check",
+  "oversatt": "Vérification de réplique"
+ },
+ "app-storylab-scene-lab.scene-lab.toolbar-button.f2b69c1715a1": {
+  "nb": "Improviser",
+  "en": "Improvise",
+  "oversatt": "Improviser"
+ },
+ "app-storylab-scene-lab.title.title.62b06a190232": {
+  "nb": "Original",
+  "en": "Original",
+  "oversatt": "Original"
+ },
+ "app-storylab-story-lab-workspace.context-panel.aria-label.b24bdc22ae0b": {
+  "nb": "Tidspunkt i fortellingen",
+  "en": "Point in the story",
+  "oversatt": "Moment dans l’histoire"
+ },
+ "app-storylab-story-lab-workspace.context-panel.li.1baf8ff22e81": {
+  "nb": "Ingen relasjoner.",
+  "en": "No relationships.",
+  "oversatt": "Aucune relation."
+ },
+ "app-storylab-story-lab-workspace.context-panel.option.985e5369a714": {
+  "nb": "Uten tidspunkt",
+  "en": "No point in time",
+  "oversatt": "Sans repère temporel"
+ },
+ "app-storylab-story-lab-workspace.context-panel.p.3177f9ca1c14": {
+  "nb": "Ingen registrerte fakta på dette tidspunktet.",
+  "en": "No recorded facts at this point.",
+  "oversatt": "Aucun fait enregistré à ce stade."
+ },
+ "app-storylab-story-lab-workspace.context-panel.p.65138ead728f": {
+  "nb": "Sortert etter fortellingstid.",
+  "en": "Sorted by story time.",
+  "oversatt": "Trié par ordre chronologique de l’histoire."
+ },
+ "app-storylab-story-lab-workspace.context-panel.p.c30dd57b4e9e": {
+  "nb": "Velg en karakter.",
+  "en": "Choose a character.",
+  "oversatt": "Choisissez un personnage."
+ },
+ "app-storylab-story-lab-workspace.context-panel.span.d625352fcb0b": {
+  "nb": "Hemmelighet",
+  "en": "Secret",
+  "oversatt": "Secret"
+ },
+ "app-storylab-story-lab-workspace.context-panel.tab-btn.2875f255e8ce": {
+  "nb": "Kontekst",
+  "en": "Context",
+  "oversatt": "Contexte"
+ },
+ "app-storylab-story-lab-workspace.context-panel.tab-btn.4a2bf9410da2": {
+  "nb": "Fakta og hemmeligheter",
+  "en": "Facts and secrets",
+  "oversatt": "Faits et secrets"
+ },
+ "app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a": {
+  "nb": "Relasjoner",
+  "en": "Relationships",
+  "oversatt": "Relations"
+ },
+ "app-storylab-story-lab-workspace.context-panel.title.22ca649fc97b": {
+  "nb": "Kunnskap",
+  "en": "Knowledge",
+  "oversatt": "Connaissances"
+ },
+ "app-storylab-story-lab-workspace.context-panel.title.82579b9559bf": {
+  "nb": "Hva {name} vet",
+  "en": "What {name} knows",
+  "oversatt": "Ce que {name} sait"
+ },
+ "app-storylab-story-lab-workspace.context-panel.title.b24bdc22ae0b": {
+  "nb": "Tidspunkt i fortellingen",
+  "en": "Point in the story",
+  "oversatt": "Moment dans l’histoire"
+ },
+ "app-storylab-story-lab-workspace.lab.dropdown-menu-item.3851eb3c0d15": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "Entretien – développer une idée"
+ },
+ "app-storylab-story-lab-workspace.lab.dropdown-menu-item.6343c2cf3f24": {
+  "nb": "Samtale med én karakter",
+  "en": "Conversation with one character",
+  "oversatt": "Conversation avec un personnage"
+ },
+ "app-storylab-story-lab-workspace.lab.dropdown-menu-item.862f5b244068": {
+  "nb": "Gruppesamtale",
+  "en": "Group conversation",
+  "oversatt": "Conversation de groupe"
+ },
+ "app-storylab-story-lab-workspace.lab.label.2f237e0e5295": {
+  "nb": "Bredde på kontekstpanelet",
+  "en": "Width of the context panel",
+  "oversatt": "Largeur du panneau de contexte"
+ },
+ "app-storylab-story-lab-workspace.lab.label.40fd042d0c32": {
+  "nb": "Skjul karakterpanelet",
+  "en": "Hide the character panel",
+  "oversatt": "Masquer le panneau des personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.label.6c2f6a706ea6": {
+  "nb": "Ny økt",
+  "en": "New session",
+  "oversatt": "Nouvelle session"
+ },
+ "app-storylab-story-lab-workspace.lab.label.6e808c792db8": {
+  "nb": "Vis kontekstpanelet",
+  "en": "Show the context panel",
+  "oversatt": "Afficher le panneau de contexte"
+ },
+ "app-storylab-story-lab-workspace.lab.label.704c241ec475": {
+  "nb": "Vis som rutenett",
+  "en": "Show as grid",
+  "oversatt": "Afficher sous forme de grille"
+ },
+ "app-storylab-story-lab-workspace.lab.label.ac091583c03e": {
+  "nb": "Vis karakterpanelet",
+  "en": "Show the character panel",
+  "oversatt": "Afficher le panneau des personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.label.b77acb5594ee": {
+  "nb": "Skjul kontekstpanelet",
+  "en": "Hide the context panel",
+  "oversatt": "Masquer le panneau de contexte"
+ },
+ "app-storylab-story-lab-workspace.lab.label.ea191768e024": {
+  "nb": "Vis som liste",
+  "en": "Show as list",
+  "oversatt": "Afficher sous forme de liste"
+ },
+ "app-storylab-story-lab-workspace.lab.label.f17aee671d92": {
+  "nb": "Bredde på karakterpanelet",
+  "en": "Width of the character panel",
+  "oversatt": "Largeur du panneau des personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.li.3497120bae58": {
+  "nb": "Ingen økter ennå.",
+  "en": "No sessions yet.",
+  "oversatt": "Aucune session pour le moment."
+ },
+ "app-storylab-story-lab-workspace.lab.li.bdf4893711b8": {
+  "nb": "Ingen karakterer eller dyr i biblioteket ennå.",
+  "en": "No characters or animals in the library yet.",
+  "oversatt": "Aucun personnage ou animal dans la bibliothèque pour le moment."
+ },
+ "app-storylab-story-lab-workspace.lab.p.7c25342a96e1": {
+  "nb": "Velg en karakter til venstre.",
+  "en": "Choose a character on the left.",
+  "oversatt": "Choisissez un personnage sur la gauche."
+ },
+ "app-storylab-story-lab-workspace.lab.p.ab8137971870": {
+  "nb": "Prosjektet har ingen scener ennå. Vil du utvikle idéen i et intervju?",
+  "en": "The project has no scenes yet. Would you like to develop the idea in an interview?",
+  "oversatt": "Le projet ne contient encore aucune scène. Souhaitez-vous développer l’idée lors d’un entretien ?"
+ },
+ "app-storylab-story-lab-workspace.lab.p.b94805adb8ce": {
+  "nb": "Canvaset er et visuelt arbeidsrom ved siden av manuset. Ingenting overføres til manuset eller biblioteket uten at du bekrefter.",
+  "en": "The canvas is a visual workspace next to the script. Nothing is transferred to the script or the library unless you confirm.",
+  "oversatt": "Le canevas est un espace de travail visuel à côté du scénario. Rien n’est transféré vers le scénario ou la bibliothèque sans votre confirmation."
+ },
+ "app-storylab-story-lab-workspace.lab.span.45e6c13282a2": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "Sans titre"
+ },
+ "app-storylab-story-lab-workspace.lab.span.fab8322cdbca": {
+  "nb": "forgrening",
+  "en": "branch",
+  "oversatt": "branche"
+ },
+ "app-storylab-story-lab-workspace.lab.title.1bac86c16bc1": {
+  "nb": "Story Lab",
+  "en": "Story Lab",
+  "oversatt": "Story Lab"
+ },
+ "app-storylab-story-lab-workspace.lab.title.40fd042d0c32": {
+  "nb": "Skjul karakterpanelet",
+  "en": "Hide the character panel",
+  "oversatt": "Masquer le panneau des personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.title.6c2f6a706ea6": {
+  "nb": "Ny økt",
+  "en": "New session",
+  "oversatt": "Nouvelle session"
+ },
+ "app-storylab-story-lab-workspace.lab.title.6e808c792db8": {
+  "nb": "Vis kontekstpanelet",
+  "en": "Show the context panel",
+  "oversatt": "Afficher le panneau de contexte"
+ },
+ "app-storylab-story-lab-workspace.lab.title.7ac108fdeec0": {
+  "nb": "Økter",
+  "en": "Sessions",
+  "oversatt": "Sessions"
+ },
+ "app-storylab-story-lab-workspace.lab.title.ac091583c03e": {
+  "nb": "Vis karakterpanelet",
+  "en": "Show the character panel",
+  "oversatt": "Afficher le panneau des personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.title.b77acb5594ee": {
+  "nb": "Skjul kontekstpanelet",
+  "en": "Hide the context panel",
+  "oversatt": "Masquer le panneau de contexte"
+ },
+ "app-storylab-story-lab-workspace.lab.title.f2f4c763c8aa": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "Personnages"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.249c91432f61": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "Scènes"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.3851eb3c0d15": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "Entretien – développer une idée"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.3851eb3c0d15.2": {
+  "nb": "Intervju – utvikle en idé",
+  "en": "Interview – develop an idea",
+  "oversatt": "Entretien – développer une idée"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.d51198b5c9f6": {
+  "nb": "Forslag ({value1})",
+  "en": "Suggestions ({value1})",
+  "oversatt": "Suggestions ({value1})"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.ededc41881b9": {
+  "nb": "Canvas",
+  "en": "Canvas",
+  "oversatt": "Canevas"
+ },
+ "app-storylab-story-lab-workspace.lab.toolbar-button.f2f4c763c8aa": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "Personnages"
+ },
+ "app-storylab-story-lab-workspace.on-undo.set-undo-error.22b868d4d3b0": {
+  "nb": "Overføringen er angret, men forslaget kunne ikke gjenåpnes.",
+  "en": "The transfer was undone, but the suggestion could not be reopened.",
+  "oversatt": "Le transfert a été annulé, mais la suggestion n’a pas pu être rouverte."
+ },
+ "app-storylab-story-lab-workspace.story-lab-workspace.div.8d6aee233cc4": {
+  "nb": "Story Lab kunne ikke hentes.",
+  "en": "Story Lab could not be loaded.",
+  "oversatt": "Impossible de charger Story Lab."
+ },
+ "app-storylab-story-lab-workspace.story-lab-workspace.p.08c966d820b5": {
+  "nb": "Henter Story Lab …",
+  "en": "Loading Story Lab …",
+  "oversatt": "Chargement de Story Lab…"
+ },
+ "app-storylab-story-lab-workspace.text.text.64c415bdd29a": {
+  "nb": "Profilen er fjernet",
+  "en": "The profile has been removed",
+  "oversatt": "Le profil a été supprimé"
+ },
+ "app-storylab-story-lab-workspace.text.text.6a60ace15222": {
+  "nb": "Mangler profil",
+  "en": "No profile yet",
+  "oversatt": "Aucun profil pour l'instant"
+ },
+ "app-storylab-story-lab-workspace.text.text.b7a167e8dee0": {
+  "nb": "Har profil",
+  "en": "Has a profile",
+  "oversatt": "A un profil"
+ },
+ "app-storylab-storylab-data.label.label.6c13d1c763ca": {
+  "nb": "Innebygd AI (inkludert)",
+  "en": "Built-in AI (included)",
+  "oversatt": "IA intégrée (incluse)"
+ },
+ "app-storylab-storylab-data.scene-label.message.01d878b5988f": {
+  "nb": "Uten tidspunkt",
+  "en": "No point in time",
+  "oversatt": "Aucun moment défini"
+ },
+ "app-storylab-storylab-data.scene-label.message.8df54761728a": {
+  "nb": "Ukjent scene",
+  "en": "Unknown scene",
+  "oversatt": "Scène inconnue"
+ },
+ "app-storylab-storylab-data.usd.message.fef5635bbc16": {
+  "nb": "ukjent beløp",
+  "en": "unknown amount",
+  "oversatt": "montant inconnu"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.aria-label.371904e59f22": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.aria-label.8eb0fa06d48b": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.aria-label.fbd04bcff035": {
+  "nb": "Etter blokk",
+  "en": "After block",
+  "oversatt": "Après le bloc"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.dialog-title.f1fa3956460e": {
+  "nb": "Forhåndsvis overføring",
+  "en": "Preview transfer",
+  "oversatt": "Aperçu du transfert"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.label.371904e59f22": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.label.8eb0fa06d48b": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "Personnage"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.label.c1c7daf90d18": {
+  "nb": "Plassering",
+  "en": "Placement",
+  "oversatt": "Emplacement"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.option.04d6a973f0e5": {
+  "nb": "Velg karakter",
+  "en": "Choose character",
+  "oversatt": "Choisir un personnage"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.option.1c2a1b885740": {
+  "nb": "Etter blokk: {text}",
+  "en": "After block: {text}",
+  "oversatt": "Après le bloc : {text}"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.option.73cc228e049b": {
+  "nb": "Før første blokk",
+  "en": "Before first block",
+  "oversatt": "Avant le premier bloc"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.p.2e2222061ccf": {
+  "nb": "Forslaget inneholder ingen gyldige profilfelt.",
+  "en": "The suggestion contains no valid profile fields.",
+  "oversatt": "La suggestion ne contient aucun champ de profil valide."
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.p.7100f83a43f1": {
+  "nb": "Produksjon: {value1}. Variant: {value2}.",
+  "en": "Production: {value1}. Variant: {value2}.",
+  "oversatt": "Production : {value1}. Variante : {value2}."
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.span.1e4f8cec4a31": {
+  "nb": "Nå",
+  "en": "Now",
+  "oversatt": "Maintenant"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.span.6420991aea23": {
+  "nb": "Forslag",
+  "en": "Suggestion",
+  "oversatt": "Suggestion"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.toolbar-button.3029bcbec23f": {
+  "nb": "Bekreft overføring",
+  "en": "Confirm transfer",
+  "oversatt": "Confirmer le transfert"
+ },
+ "app-storylab-suggestion-preview.suggestion-preview.toolbar-button.cd4ce3ae256b": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Annuler"
+ },
+ "app-storylab-suggestions-data.saved-suggestion.toolbar-button.b84b802541c7": {
+  "nb": "Lagret – se Forslag",
+  "en": "Saved – see Suggestions",
+  "oversatt": "Enregistré – voir Suggestions"
+ },
+ "app-storylab-suggestions-panel.action.suggestions-map.03f1f753a39a": {
+  "nb": "Legg som notat i manus …",
+  "en": "Add as script note …",
+  "oversatt": "Ajouter comme note au scénario…"
+ },
+ "app-storylab-suggestions-panel.action.suggestions-map.3c687619551c": {
+  "nb": "Bruk i manus …",
+  "en": "Use in script …",
+  "oversatt": "Utiliser dans le scénario…"
+ },
+ "app-storylab-suggestions-panel.action.suggestions-map.80149a43dbf4": {
+  "nb": "Sett inn i manus …",
+  "en": "Insert into script …",
+  "oversatt": "Insérer dans le scénario…"
+ },
+ "app-storylab-suggestions-panel.action.suggestions-map.879b054f1e27": {
+  "nb": "Sett inn utkast …",
+  "en": "Insert draft …",
+  "oversatt": "Insérer le brouillon…"
+ },
+ "app-storylab-suggestions-panel.action.suggestions-map.ef2ccf22e1d9": {
+  "nb": "Bruk på profilen …",
+  "en": "Apply to profile …",
+  "oversatt": "Appliquer au profil…"
+ },
+ "app-storylab-suggestions-panel.analysis.analysis.f724bae331a6": {
+  "nb": "Analyse",
+  "en": "Analysis",
+  "oversatt": "Analyse"
+ },
+ "app-storylab-suggestions-panel.applied.applied.d2676ab37e03": {
+  "nb": "Brukt",
+  "en": "Applied",
+  "oversatt": "Appliqué"
+ },
+ "app-storylab-suggestions-panel.apply.perform.6228ca5685b1": {
+  "nb": "Overføringen er lagret, men statusen kunne ikke oppdateres. Velg «Merk som brukt» eller angre.",
+  "en": "The transfer was saved, but its status could not be updated. Choose ‘Mark applied’ or undo.",
+  "oversatt": "Le transfert a été enregistré, mais son statut n’a pas pu être mis à jour. Choisissez « Marquer comme appliqué » ou annulez."
+ },
+ "app-storylab-suggestions-panel.apply.perform.914aed7e64e3": {
+  "nb": "Innholdet ble endret mens forhåndsvisningen var åpen. Lukk og åpne forhåndsvisningen på nytt.",
+  "en": "The content changed while the preview was open. Close and reopen the preview.",
+  "oversatt": "Le contenu a été modifié pendant que l'aperçu était ouvert. Fermez et rouvrez l'aperçu."
+ },
+ "app-storylab-suggestions-panel.apply.perform.a775800c565d": {
+  "nb": "Prosjektet kunne ikke hentes.",
+  "en": "The project could not be loaded.",
+  "oversatt": "Impossible de charger le projet."
+ },
+ "app-storylab-suggestions-panel.apply.perform.d42258ff6402": {
+  "nb": "Overføringen ble bare delvis lagret. Angre før du prøver igjen. {error}",
+  "en": "The transfer was only partially saved. Undo before trying again. {error}",
+  "oversatt": "Le transfert n’a été que partiellement enregistré. Annulez avant de réessayer. {error}"
+ },
+ "app-storylab-suggestions-panel.discarded.discarded.c29838d2c1fe": {
+  "nb": "Forkastet",
+  "en": "Discarded",
+  "oversatt": "Rejeté"
+ },
+ "app-storylab-suggestions-panel.line.line.fa65b7b2e102": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "Réplique"
+ },
+ "app-storylab-suggestions-panel.motivation.motivation.bc1efb5b304b": {
+  "nb": "Motivasjon",
+  "en": "Motivation",
+  "oversatt": "Motivation"
+ },
+ "app-storylab-suggestions-panel.open.open.c05a21c34b40": {
+  "nb": "Åpne",
+  "en": "Open",
+  "oversatt": "Ouvrir"
+ },
+ "app-storylab-suggestions-panel.perform.set-error.0aad5027dff0": {
+  "nb": "Overføringen kunne ikke utføres.",
+  "en": "The transfer could not be completed.",
+  "oversatt": "Le transfert n’a pas pu être effectué."
+ },
+ "app-storylab-suggestions-panel.plot-point.plot-point.5d988e42bd0d": {
+  "nb": "Handlingspunkt",
+  "en": "Plot point",
+  "oversatt": "Point d'intrigue"
+ },
+ "app-storylab-suggestions-panel.profile-change.profile-change.2bed015d6540": {
+  "nb": "Profilendring",
+  "en": "Profile change",
+  "oversatt": "Modification du profil"
+ },
+ "app-storylab-suggestions-panel.r.cmds-run-and-wait.374fb307bfe3": {
+  "nb": "Bruk forslag fra Story Lab",
+  "en": "Use Story Lab suggestion",
+  "oversatt": "Utiliser la suggestion du Story Lab"
+ },
+ "app-storylab-suggestions-panel.scene-draft.scene-draft.6db683f36c4e": {
+  "nb": "Sceneutkast",
+  "en": "Scene draft",
+  "oversatt": "Brouillon de scène"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.aria-label.0c6bbc346171": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "Statut"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.aria-label.86508ffd63df": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Type"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.div.e33d2b32ec10": {
+  "nb": "Forslagene kunne ikke hentes.",
+  "en": "The suggestions could not be loaded.",
+  "oversatt": "Impossible de charger les suggestions."
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.link.bd20b2947b2c": {
+  "nb": "Vis i manuset",
+  "en": "Show in script",
+  "oversatt": "Afficher dans le scénario"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.option.58c2bc05feb7": {
+  "nb": "Alle typer",
+  "en": "All types",
+  "oversatt": "Tous les types"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.p.0a64e3935826": {
+  "nb": "Henter forslag …",
+  "en": "Loading suggestions …",
+  "oversatt": "Chargement des suggestions…"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.p.ded326640d44": {
+  "nb": "Ingen forslag med disse filtrene.",
+  "en": "No suggestions match these filters.",
+  "oversatt": "Aucune suggestion ne correspond à ces filtres."
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.title.35026a619fe4": {
+  "nb": "Forslag",
+  "en": "Suggestions",
+  "oversatt": "Suggestions"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.title.d105079f89f8": {
+  "nb": "Uten scene",
+  "en": "No scene",
+  "oversatt": "Sans scène"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.38ab076eedbe": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Annuler"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.8b7e34756852": {
+  "nb": "Fra økten {sessionId}, tur {value2}",
+  "en": "From session {sessionId}, turn {value2}",
+  "oversatt": "De la session {sessionId}, tour {value2}"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.8eae4920a35e": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "Rejeter"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.9d64414bd2be": {
+  "nb": "Merk som brukt",
+  "en": "Mark applied",
+  "oversatt": "Marquer comme appliqué"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.b641a2eeb498": {
+  "nb": "Gjenåpne",
+  "en": "Reopen",
+  "oversatt": "Rouvrir"
+ },
+ "app-storylab-suggestions-panel.suggestions-panel.toolbar-button.dad1a4481844": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Réessayer"
+ },
+ "app-workspaces-workspace-page.label.member-list-map.273905b2804b": {
+  "nb": "Uten navn",
+  "en": "No name",
+  "oversatt": "Sans nom"
+ },
+ "app-workspaces-workspace-page.workspace-page.aria-label.1cdf3ef02328": {
+  "nb": "Rolle for",
+  "en": "Role for",
+  "oversatt": "Rôle pour"
+ },
+ "app-workspaces-workspace-page.workspace-page.aria-label.2071c9fb5d27": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "Rôle"
+ },
+ "app-workspaces-workspace-page.workspace-page.aria-label.958b05b1bcef": {
+  "nb": "Prosjekt å koble til",
+  "en": "Project to link",
+  "oversatt": "Projet à associer"
+ },
+ "app-workspaces-workspace-page.workspace-page.aria-label.c319ca060dd3": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Nom"
+ },
+ "app-workspaces-workspace-page.workspace-page.aria-label.cf6d69dd8d47": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "E-mail"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.11e3ad13d9af": {
+  "nb": "Koble til",
+  "en": "Link",
+  "oversatt": "Associer"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.41c727fa3333": {
+  "nb": "Lag invitasjon",
+  "en": "Create invitation",
+  "oversatt": "Créer une invitation"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.451213e18364": {
+  "nb": "Forlat gruppen",
+  "en": "Leave workspace",
+  "oversatt": "Quitter l'espace de travail"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.661942ee25fb": {
+  "nb": "Trekk tilbake",
+  "en": "Revoke",
+  "oversatt": "Révoquer"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.95e7b5aab9b5": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "Supprimer"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.ed23835d210c": {
+  "nb": "Lagre",
+  "en": "Save",
+  "oversatt": "Enregistrer"
+ },
+ "app-workspaces-workspace-page.workspace-page.button.efcb91dad8b1": {
+  "nb": "Koble fra",
+  "en": "Unlink",
+  "oversatt": "Dissocier"
+ },
+ "app-workspaces-workspace-page.workspace-page.main.1f9e86c7de4b": {
+  "nb": "Arbeidsgrupper krever en nyere databaseversjon.",
+  "en": "Workspaces require a newer database version.",
+  "oversatt": "Les espaces de travail nécessitent une version plus récente de la base de données."
+ },
+ "app-workspaces-workspace-page.workspace-page.main.f72e3be574fa": {
+  "nb": "Gruppen finnes ikke, eller du er ikke medlem.",
+  "en": "The workspace does not exist, or you are not a member.",
+  "oversatt": "L'espace de travail n'existe pas ou vous n'en faites pas partie."
+ },
+ "app-workspaces-workspace-page.workspace-page.option.529dfba33e11": {
+  "nb": "Velg et av dine prosjekter …",
+  "en": "Choose one of your projects …",
+  "oversatt": "Choisissez l'un de vos projets…"
+ },
+ "app-workspaces-workspace-page.workspace-page.p.171e1a352fcb": {
+  "nb": "Din rolle:",
+  "en": "Your role:",
+  "oversatt": "Votre rôle :"
+ },
+ "app-workspaces-workspace-page.workspace-page.p.236df4d88359": {
+  "nb": "Du ser bare prosjektene du selv er med i. Bare prosjektets eier kan koble det til eller fra.",
+  "en": "You only see the projects you are in yourself. Only the project owner can link or unlink it.",
+  "oversatt": "Vous ne voyez que les projets dont vous faites partie. Seul le propriétaire du projet peut l'associer ou le dissocier."
+ },
+ "app-workspaces-workspace-page.workspace-page.p.9f351053c626": {
+  "nb": "Send denne lenken til personen (vises bare nå):",
+  "en": "Send this link to the person (shown only now):",
+  "oversatt": "Envoyez ce lien à la personne (affiché uniquement maintenant) :"
+ },
+ "app-workspaces-workspace-page.workspace-page.placeholder.cf6d69dd8d47": {
+  "nb": "E-post",
+  "en": "Email",
+  "oversatt": "E-mail"
+ },
+ "app-workspaces-workspace-page.workspace-page.set-msg.cf0eb8ee16a9": {
+  "nb": "Gruppen må ha minst én eier.",
+  "en": "The workspace must have at least one owner.",
+  "oversatt": "L'espace de travail doit avoir au moins un propriétaire."
+ },
+ "app-workspaces-workspace-page.workspace-page.span.38114e021c7f": {
+  "nb": "deg",
+  "en": "you",
+  "oversatt": "vous"
+ },
+ "app-workspaces-workspace-page.workspace-page.title.3b4db312adaf": {
+  "nb": "Prosjekter i gruppen",
+  "en": "Projects in the workspace",
+  "oversatt": "Projets dans l'espace de travail"
+ },
+ "app-workspaces-workspace-page.workspace-page.title.95ed620a6176": {
+  "nb": "Arbeidsgruppe",
+  "en": "Workspace",
+  "oversatt": "Espace de travail"
+ },
+ "app-workspaces-workspace-page.workspace-page.title.ec33b6806924": {
+  "nb": "Inviter",
+  "en": "Invite",
+  "oversatt": "Inviter"
+ },
+ "app-workspaces-workspace-page.workspace-page.title.fd2077d2b4bb": {
+  "nb": "Medlemmer",
+  "en": "Members",
+  "oversatt": "Membres"
+ },
+ "app-workspaces-workspaces-card.workspaces-card.aria-label.ddc2b6b3f64a": {
+  "nb": "Navn på ny arbeidsgruppe",
+  "en": "Name of new workspace",
+  "oversatt": "Nom du nouvel espace de travail"
+ },
+ "app-workspaces-workspaces-card.workspaces-card.button.ff2ce537682b": {
+  "nb": "Opprett",
+  "en": "Create",
+  "oversatt": "Créer"
+ },
+ "app-workspaces-workspaces-card.workspaces-card.h2.d8a76c716a20": {
+  "nb": "Arbeidsgrupper",
+  "en": "Workspaces",
+  "oversatt": "Espaces de travail"
+ },
+ "app-workspaces-workspaces-card.workspaces-card.p.83c05b086205": {
+  "nb": "En arbeidsgruppe eier et felles ressursbibliotek. Å være med i en gruppe gir ikke tilgang til gruppens prosjekter.",
+  "en": "A workspace owns a shared asset library. Being in a workspace does not give access to its projects.",
+  "oversatt": "Un espace de travail possède une bibliothèque d’éléments partagée. Faire partie d'un espace de travail ne donne pas accès à ses projets."
+ },
+ "app-workspaces-workspaces-card.workspaces-card.p.a3a6ede1a37c": {
+  "nb": "Du er ikke med i noen arbeidsgruppe.",
+  "en": "You are not in any workspace.",
+  "oversatt": "Vous ne faites partie d'aucun espace de travail."
+ },
+ "app-workspaces-workspaces-card.workspaces-card.placeholder.ddc2b6b3f64a": {
+  "nb": "Navn på ny arbeidsgruppe",
+  "en": "Name of new workspace",
+  "oversatt": "Nom du nouvel espace de travail"
+ },
+ "auth.password-reset.checking": {
+  "nb": "Kontrollerer tilbakestillingslenken …",
+  "en": "Checking the reset link …",
+  "oversatt": "Vérification du lien de réinitialisation…"
+ },
+ "auth.password-reset.confirm": {
+  "nb": "Bekreft nytt passord",
+  "en": "Confirm new password",
+  "oversatt": "Confirmer le nouveau mot de passe"
+ },
+ "auth.password-reset.description": {
+  "nb": "Velg et nytt passord for Animatic Studio med lenken fra e-posten din.",
+  "en": "Choose a new Animatic Studio password using the link from your email.",
+  "oversatt": "Choisissez un nouveau mot de passe pour Animatic Studio à l'aide du lien envoyé par e-mail."
+ },
+ "auth.password-reset.email-required": {
+  "nb": "Skriv inn en gyldig e-postadresse først.",
+  "en": "Enter a valid email address first.",
+  "oversatt": "Veuillez d'abord saisir une adresse e-mail valide."
+ },
+ "auth.password-reset.failed": {
+  "nb": "Passordet kunne ikke endres. Prøv igjen, eller be om en ny tilbakestillingslenke.",
+  "en": "The password could not be changed. Try again or request a new reset link.",
+  "oversatt": "Le mot de passe n'a pas pu être modifié. Réessayez ou demandez un nouveau lien de réinitialisation."
+ },
+ "auth.password-reset.forgot": {
+  "nb": "Glemt passord?",
+  "en": "Forgot password?",
+  "oversatt": "Mot de passe oublié ?"
+ },
+ "auth.password-reset.heading": {
+  "nb": "Sett nytt passord",
+  "en": "Set a new password",
+  "oversatt": "Définir un nouveau mot de passe"
+ },
+ "auth.password-reset.invalid": {
+  "nb": "Lenken er ugyldig eller utløpt. Be om en ny lenke fra innloggingssiden.",
+  "en": "The link is invalid or expired. Request a new link from the sign-in page.",
+  "oversatt": "Le lien est invalide ou a expiré. Demandez un nouveau lien depuis la page de connexion."
+ },
+ "auth.password-reset.login": {
+  "nb": "Til innlogging",
+  "en": "Back to sign in",
+  "oversatt": "Retour à la connexion"
+ },
+ "auth.password-reset.mismatch": {
+  "nb": "Passordene er ikke like.",
+  "en": "The passwords do not match.",
+  "oversatt": "Les mots de passe ne correspondent pas."
+ },
+ "auth.password-reset.og-type": {
+  "nb": "website",
+  "en": "website",
+  "oversatt": "site web"
+ },
+ "auth.password-reset.password": {
+  "nb": "Nytt passord",
+  "en": "New password",
+  "oversatt": "Nouveau mot de passe"
+ },
+ "auth.password-reset.save": {
+  "nb": "Lagre nytt passord",
+  "en": "Save new password",
+  "oversatt": "Enregistrer le nouveau mot de passe"
+ },
+ "auth.password-reset.sent": {
+  "nb": "Hvis e-postadressen finnes hos oss, er det sendt en e-post med lenke for å tilbakestille passordet.",
+  "en": "If the email address exists in our system, an email with a password reset link has been sent.",
+  "oversatt": "Si cette adresse e-mail existe dans notre système, un e-mail contenant un lien de réinitialisation a été envoyé."
+ },
+ "auth.password-reset.success": {
+  "nb": "Passordet er endret. Du kan nå gå til innlogging.",
+  "en": "Your password has been changed. You can now go to sign in.",
+  "oversatt": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter."
+ },
+ "auth.password-reset.title": {
+  "nb": "Tilbakestill passord | Animatic Studio",
+  "en": "Reset password | Animatic Studio",
+  "oversatt": "Réinitialiser le mot de passe | Animatic Studio"
+ },
+ "auth.password-reset.too-short": {
+  "nb": "Passordet må ha minst 8 tegn.",
+  "en": "The password must contain at least 8 characters.",
+  "oversatt": "Le mot de passe doit comporter au moins 8 caractères."
+ },
+ "auth.password-reset.twitter-card": {
+  "nb": "summary",
+  "en": "summary",
+  "oversatt": "résumé"
+ },
+ "b099.mic.failed": {
+  "nb": "PC-mikrofonen virker ikke. Ta opp på mobilen i stedet: skann QR-koden.",
+  "en": "The computer microphone is not working. Record on your phone instead: scan the QR code.",
+  "oversatt": "Le microphone de l'ordinateur ne fonctionne pas. Enregistrez plutôt sur votre téléphone : scannez le code QR."
+ },
+ "b099.mobile.record-audio": {
+  "nb": "Ta opp lyd",
+  "en": "Record audio",
+  "oversatt": "Enregistrer l'audio"
+ },
+ "b099.mobile.record-audio-hint": {
+  "nb": "Med mikrofonen på telefonen",
+  "en": "With the phone microphone",
+  "oversatt": "Avec le microphone du téléphone"
+ },
+ "b099.qr.connected": {
+  "nb": "Mobilen er tilkoblet",
+  "en": "The phone is connected",
+  "oversatt": "Le téléphone est connecté"
+ },
+ "b099.qr.hint-line": {
+  "nb": "Skann koden. Mobilen viser replikken. Opptaket blir en ny versjon av replikken.",
+  "en": "Scan the code. The phone shows the line. The recording becomes a new version of the line.",
+  "oversatt": "Scannez le code. Le téléphone affiche la réplique. L'enregistrement devient une nouvelle prise de la réplique."
+ },
+ "b099.qr.hint-sound": {
+  "nb": "Skann koden. Opptaket blir en ny lyd i scenen ved {at}.",
+  "en": "Scan the code. The recording becomes a new sound in the scene at {at}.",
+  "oversatt": "Scannez le code. L'enregistrement devient un nouveau son dans la scène à {at}."
+ },
+ "b099.qr.label-sound": {
+  "nb": "Scene {scene} · {kind}",
+  "en": "Scene {scene} · {kind}",
+  "oversatt": "Scène {scene} · {kind}"
+ },
+ "b099.qr.pending": {
+  "nb": "{n} opptak venter",
+  "en": "{n} recordings waiting",
+  "oversatt": "{n} enregistrements en attente"
+ },
+ "b099.qr.received": {
+  "nb": "{n} opptak mottatt",
+  "en": "{n} recordings received",
+  "oversatt": "{n} enregistrements reçus"
+ },
+ "b099.qr.title": {
+  "nb": "Ta opp på mobilen",
+  "en": "Record on your phone",
+  "oversatt": "Enregistrer sur le téléphone"
+ },
+ "b099.qr.waiting": {
+  "nb": "Venter på mobilen",
+  "en": "Waiting for the phone",
+  "oversatt": "En attente du téléphone"
+ },
+ "b099.raw.hint": {
+  "nb": "Anbefalt for tale til film. Valget huskes.",
+  "en": "Recommended for film dialogue. Your choice is remembered.",
+  "oversatt": "Recommandé pour les dialogues de film. Le choix est mémorisé."
+ },
+ "b099.raw.label": {
+  "nb": "Rå lyd (uten støydemping og automatisk nivå)",
+  "en": "Raw audio (no noise suppression or automatic level)",
+  "oversatt": "Audio brut (sans réduction de bruit ni niveau automatique)"
+ },
+ "b099.scene.add-sound": {
+  "nb": "Legg i scenen",
+  "en": "Add to scene",
+  "oversatt": "Ajouter à la scène"
+ },
+ "b099.scene.sound-added": {
+  "nb": "Lagt i scenen",
+  "en": "Added to the scene",
+  "oversatt": "Ajouté à la scène"
+ },
+ "b099.scene.sound-label": {
+  "nb": "Lyd fra mobilen i scenen",
+  "en": "Sound from the phone in the scene",
+  "oversatt": "Son du téléphone dans la scène"
+ },
+ "b099.scene.sound-name": {
+  "nb": "Opptak fra mobil {stamp}",
+  "en": "Phone recording {stamp}",
+  "oversatt": "Enregistrement mobile {stamp}"
+ },
+ "b100.beyond.extend": {
+  "nb": "Forleng scenen …",
+  "en": "Extend the scene …",
+  "oversatt": "Prolonger la scène…"
+ },
+ "b100.beyond.text": {
+  "nb": "Animasjonen går {n} f forbi scenens slutt. Ingenting er forlenget.",
+  "en": "The animation runs {n} f past the end of the scene. Nothing has been extended.",
+  "oversatt": "L’animation dépasse la fin de la scène de {n} i. Rien n’a été prolongé."
+ },
+ "b100.spacing.command": {
+  "nb": "Spacing-drag",
+  "en": "Spacing drag",
+  "oversatt": "Glissement d'espacement (spacing)"
+ },
+ "b100.spacing.label": {
+  "nb": "{delta} f · ny lengde {length}",
+  "en": "{delta} f · new length {length}",
+  "oversatt": "{delta} i · nouvelle durée {length}"
+ },
+ "b100.spacing.limit-locked": {
+  "nb": "Stoppet: et låst tidsrom flyttes aldri.",
+  "en": "Stopped: a locked time range never moves.",
+  "oversatt": "Arrêté : une plage temporelle verrouillée ne se déplace jamais."
+ },
+ "b100.spacing.limit-merge": {
+  "nb": "Stoppet: to nøkkelbilder kan ikke slås sammen (minst 1 f mellom).",
+  "en": "Stopped: two keyframes cannot merge (at least 1 f apart).",
+  "oversatt": "Arrêté : deux images clés ne peuvent pas fusionner (au moins 1 i d'écart)."
+ },
+ "b100.spacing.limit-start": {
+  "nb": "Stoppet: animasjonen kan ikke starte før scenen.",
+  "en": "Stopped: the animation cannot start before the scene.",
+  "oversatt": "Arrêté : l’animation ne peut pas commencer avant la scène."
+ },
+ "b100.spacing.locked-layer": {
+  "nb": "Laget er låst.",
+  "en": "The layer is locked.",
+  "oversatt": "Le calque est verrouillé."
+ },
+ "b100.tracks.auto": {
+  "nb": "Fell ut valgt lag automatisk",
+  "en": "Expand selected layer automatically",
+  "oversatt": "Développer automatiquement le calque sélectionné"
+ },
+ "b100.tracks.close": {
+  "nb": "Fell sammen animasjonsspor",
+  "en": "Collapse animation tracks",
+  "oversatt": "Réduire les pistes d’animation"
+ },
+ "b100.tracks.hint-rhythm": {
+  "nb": "Cmd/Ctrl + dra på linjal eller tomrom: rytme",
+  "en": "Cmd/Ctrl + drag on ruler or empty space: rhythm",
+  "oversatt": "Cmd/Ctrl + glisser sur la règle ou le vide : rythme"
+ },
+ "b100.tracks.hint-spacing": {
+  "nb": "Cmd/Ctrl + dra på lagets felt: spacing (Shift = hele animasjonen)",
+  "en": "Cmd/Ctrl + drag on the layer bar: spacing (Shift = whole animation)",
+  "oversatt": "Cmd/Ctrl + glisser sur la barre du calque : spacing (Shift = toute l’animation)"
+ },
+ "b100.tracks.open": {
+  "nb": "Fell ut animasjonsspor",
+  "en": "Expand animation tracks",
+  "oversatt": "Développer les pistes d’animation"
+ },
+ "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fermer"
+ },
+ "components-ui-sheet.sheet-content.span.cbafaf5af058": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fermer"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.0125a209bbee": {
+  "nb": "Replikken finnes ikke",
+  "en": "The line was not found",
+  "oversatt": "La réplique est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.14de9ddf5b7c": {
+  "nb": "Replikken har allerede leppesynk for dette taket",
+  "en": "The line already has lip sync for this take",
+  "oversatt": "La réplique a déjà une synchro labiale pour cette prise"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.18db5ae4365a": {
+  "nb": "Oppsettet finnes ikke",
+  "en": "The setup was not found",
+  "oversatt": "La configuration est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.274c0083e49c": {
+  "nb": "Mønsteret finnes ikke",
+  "en": "The pattern was not found",
+  "oversatt": "Le motif est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.37a57c00baeb": {
+  "nb": "Manuslinjen finnes ikke",
+  "en": "The script line was not found",
+  "oversatt": "La réplique du scénario est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.ca091c7264d7": {
+  "nb": "Taket finnes ikke",
+  "en": "The take was not found",
+  "oversatt": "La prise est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.dce636ec1cfe": {
+  "nb": "Lydversjonen hører ikke til replikken",
+  "en": "The audio version does not belong to the line",
+  "oversatt": "La version audio n’appartient pas à la réplique"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.e28c08b63a8e": {
+  "nb": "Leppesynket finnes ikke",
+  "en": "The lip sync was not found",
+  "oversatt": "La synchro labiale est introuvable"
+ },
+ "core-animation-behavior-commands.apply-behavior-command.invalid.e28c08b63a8e.2": {
+  "nb": "Leppesynket finnes ikke",
+  "en": "The lip sync was not found",
+  "oversatt": "La synchro labiale est introuvable"
+ },
+ "core-animation-character.label.label.21386e955bf8": {
+  "nb": "Scene {value1}{value2}",
+  "en": "Scene {value1}{value2}",
+  "oversatt": "Scène {value1}{value2}"
+ },
+ "core-animation-global-rig.error.error.016e0d09557a": {
+  "nb": "Mangler ID for mønster",
+  "en": "Missing pattern ID",
+  "oversatt": "Identifiant de motif manquant"
+ },
+ "core-animation-global-rig.error.error.0cb206391860": {
+  "nb": "Bildene i oppsettet finnes ikke i det globale biblioteket. Lagre ressursen der først.",
+  "en": "The setup's images are not in the global library. Save the asset there first.",
+  "oversatt": "Les images de la configuration ne sont pas dans la bibliothèque globale. Enregistrez d’abord l’élément ici."
+ },
+ "core-animation-global-rig.error.error.18fe93488174": {
+  "nb": "Bildet oppsettet bygger på, er ikke tatt inn i prosjektet ennå.",
+  "en": "The image the setup is built on is not in the project yet.",
+  "oversatt": "L’image sur laquelle repose la configuration n’est pas encore intégrée au projet."
+ },
+ "core-animation-global-rig.error.error.33d895fb262d": {
+  "nb": "Oppsettet finnes ikke",
+  "en": "The setup was not found",
+  "oversatt": "La configuration est introuvable"
+ },
+ "core-animation-global-rig.error.error.91da537ca3cc": {
+  "nb": "Et av bildene i oppsettet er ikke tatt inn i prosjektet ennå.",
+  "en": "One of the setup's images is not in the project yet.",
+  "oversatt": "L’une des images de la configuration n’est pas encore intégrée au projet."
+ },
+ "core-animation-lipsync.lipsync-error.message.0798edb28767": {
+  "nb": "Ugyldig teksthash",
+  "en": "Invalid text hash",
+  "oversatt": "Hash de texte invalide"
+ },
+ "core-animation-lipsync.lipsync-error.message.15a418c52981": {
+  "nb": "Ukjent leppesynkkilde",
+  "en": "Unknown lip sync source",
+  "oversatt": "Source de synchro labiale inconnue"
+ },
+ "core-animation-lipsync.lipsync-error.message.45f71f08f7fe": {
+  "nb": "Ugyldig leppesynk",
+  "en": "Invalid lip sync",
+  "oversatt": "Synchro labiale non valide"
+ },
+ "core-animation-lipsync.lipsync-error.message.45f71f08f7fe.2": {
+  "nb": "Ugyldig leppesynk",
+  "en": "Invalid lip sync",
+  "oversatt": "Synchro labiale non valide"
+ },
+ "core-animation-lipsync.lipsync-error.message.6f61b1cd45ec": {
+  "nb": "Ugyldig munnformsekvens",
+  "en": "Invalid mouth shape sequence",
+  "oversatt": "Séquence de formes de bouche non valide"
+ },
+ "core-animation-lipsync.lipsync-error.message.757bc6ed5a92": {
+  "nb": "Ugyldig lydhash",
+  "en": "Invalid audio hash",
+  "oversatt": "Hash audio invalide"
+ },
+ "core-animation-lipsync.lipsync-error.message.89f1c471896c": {
+  "nb": "Ugyldig algoritmeversjon",
+  "en": "Invalid algorithm version",
+  "oversatt": "Version d'algorithme non valide"
+ },
+ "core-animation-lipsync.lipsync-error.message.a29be9e1df83": {
+  "nb": "Ugyldig overstyring",
+  "en": "Invalid override",
+  "oversatt": "Remplacement non valide"
+ },
+ "core-animation-lipsync.lipsync-error.message.b31655e7a023": {
+  "nb": "For mange overstyringer",
+  "en": "Too many overrides",
+  "oversatt": "Trop de remplacements"
+ },
+ "core-animation-lipsync.lipsync-error.message.c6c59e3d66b4": {
+  "nb": "For mange munnformer",
+  "en": "Too many mouth shapes",
+  "oversatt": "Trop de formes de bouche"
+ },
+ "core-animation-parts.e.e.866639f68389": {
+  "nb": "AO / ER",
+  "en": "AO / ER",
+  "oversatt": "AO / ER"
+ },
+ "core-animation-parts.rig-part-error.message.893787a526dd": {
+  "nb": "Ugyldig plassering av rigg-del",
+  "en": "Invalid rig part placement",
+  "oversatt": "Emplacement de pièce du rig non valide"
+ },
+ "core-animation-parts.rig-part-error.message.94b0b6bd314b": {
+  "nb": "Ugyldig rigg-del",
+  "en": "Invalid rig part",
+  "oversatt": "Pièce du rig non valide"
+ },
+ "core-animation-parts.rig-part-error.message.9d6336a9b425": {
+  "nb": "Ugyldige bildejusteringer",
+  "en": "Invalid image adjustments",
+  "oversatt": "Ajustements d'image non valides"
+ },
+ "core-animation-parts.strokes-error.message.cf771f661268": {
+  "nb": "Penselstrøk må ligge innenfor bildet",
+  "en": "Brush strokes must be within the image",
+  "oversatt": "Les coups de pinceau doivent se trouver dans l'image"
+ },
+ "core-animation-parts.strokes-error.message.e24368e91a18": {
+  "nb": "Ugyldige penselstrøk",
+  "en": "Invalid brush strokes",
+  "oversatt": "Coups de pinceau non valides"
+ },
+ "core-animation-patterns.pattern-error.message.6ebad9133f1e": {
+  "nb": "Mønsteret må ha et navn",
+  "en": "The pattern needs a name",
+  "oversatt": "Le motif a besoin d'un nom"
+ },
+ "core-animation-patterns.pattern-error.message.898641b578f7": {
+  "nb": "Ugyldig markørfarge",
+  "en": "Invalid marker color",
+  "oversatt": "Couleur de marqueur non valide"
+ },
+ "core-animation-patterns.pattern-error.message.ce10aeab9617": {
+  "nb": "Ugyldig mønster",
+  "en": "Invalid pattern",
+  "oversatt": "Motif non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.190bb97c552f": {
+  "nb": "Ugyldig mønster",
+  "en": "Invalid pattern",
+  "oversatt": "Motif non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.190bb97c552f.2": {
+  "nb": "Ugyldig mønster",
+  "en": "Invalid pattern",
+  "oversatt": "Motif non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.6ac8d081f39c": {
+  "nb": "Ugyldig algoritmeversjon",
+  "en": "Invalid algorithm version",
+  "oversatt": "Version d'algorithme non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.704b3a66ff36": {
+  "nb": "Ugyldig variasjon",
+  "en": "Invalid variation",
+  "oversatt": "Variation non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.9ecff5054ee3": {
+  "nb": "Ugyldig varighet",
+  "en": "Invalid duration",
+  "oversatt": "Durée non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.accd5b89baf2": {
+  "nb": "Ugyldig intensitet",
+  "en": "Invalid intensity",
+  "oversatt": "Intensité non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.cd5f757a177f": {
+  "nb": "Ugyldig seed",
+  "en": "Invalid seed",
+  "oversatt": "Graine (seed) non valide"
+ },
+ "core-animation-patterns.pattern-spec-error.message.e32089e5c6e4": {
+  "nb": "Ugyldig intervall",
+  "en": "Invalid interval",
+  "oversatt": "Intervalle non valide"
+ },
+ "core-animation-rhythm.plan-rhythm.empty.174ccc1c30e4": {
+  "nb": "Ugyldig takt",
+  "en": "Invalid tempo",
+  "oversatt": "Tempo non valide"
+ },
+ "core-animation-rhythm.plan-rhythm.empty.331f8bb24222": {
+  "nb": "Scenen har ingen 2D-scene.",
+  "en": "The scene has no 2D scene.",
+  "oversatt": "La scène n'a pas de scène 2D."
+ },
+ "core-animation-rhythm.plan-rhythm.empty.e837d5e358dd": {
+  "nb": "Scenen har ingen mellomrom som kan endres.",
+  "en": "The scene has no gaps that can change.",
+  "oversatt": "La scène n'a aucun intervalle modifiable."
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.003ffc041902": {
+  "nb": "Oppsettet finnes ikke",
+  "en": "The setup was not found",
+  "oversatt": "Configuration introuvable"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.014ab223c990": {
+  "nb": "Varianten mangler eller har allerede et oppsett",
+  "en": "The variant is missing or already has a setup",
+  "oversatt": "La variante est manquante ou possède déjà une configuration"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.14243df28e7d": {
+  "nb": "Ugyldig oppdatering av oppsettet",
+  "en": "Invalid setup update",
+  "oversatt": "Mise à jour de la configuration non valide"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.14d1e7ace06d": {
+  "nb": "Bildet tilhører ikke oppsettets variant",
+  "en": "The image does not belong to the setup variant",
+  "oversatt": "L'image n'appartient pas à la variante de la configuration"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.3f855d990879": {
+  "nb": "Bruken hører ikke til oppsettet",
+  "en": "The use does not belong to the setup",
+  "oversatt": "L'utilisation n'appartient pas à la configuration"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.523c1659e0e9": {
+  "nb": "Oppsettet kan ikke brukes på dette laget",
+  "en": "The setup cannot be used on this layer",
+  "oversatt": "La configuration ne peut pas être utilisée sur ce calque"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.57887f575259": {
+  "nb": "Ugyldig seed",
+  "en": "Invalid seed",
+  "oversatt": "Graine (seed) non valide"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.a2029bb49adc": {
+  "nb": "Animasjonsbruken finnes ikke",
+  "en": "The animation use was not found",
+  "oversatt": "Utilisation de l'animation introuvable"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.a2029bb49adc.2": {
+  "nb": "Animasjonsbruken finnes ikke",
+  "en": "The animation use was not found",
+  "oversatt": "Utilisation de l'animation introuvable"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.a62e1f95b044": {
+  "nb": "Oppsettet brukes fortsatt. Angre bruken først.",
+  "en": "The setup is still in use. Undo its use first.",
+  "oversatt": "La configuration est toujours utilisée. Annulez d'abord son utilisation."
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.c794e444119d": {
+  "nb": "Laget har allerede et animasjonsoppsett",
+  "en": "The layer already has an animation setup",
+  "oversatt": "Le calque possède déjà une configuration d'animation"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.c963304d68df": {
+  "nb": "Mønsteret finnes ikke",
+  "en": "The pattern was not found",
+  "oversatt": "Motif introuvable"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.d0f43012a9ac": {
+  "nb": "Ugyldig animasjonsatferd",
+  "en": "Invalid animation behavior",
+  "oversatt": "Comportement d'animation non valide"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.d0f43012a9ac.2": {
+  "nb": "Ugyldig animasjonsatferd",
+  "en": "Invalid animation behavior",
+  "oversatt": "Comportement d'animation non valide"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.db1483322141": {
+  "nb": "Alle valgte scener bruker allerede denne versjonen",
+  "en": "All chosen scenes already use this version",
+  "oversatt": "Toutes les scènes sélectionnées utilisent déjà cette version"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.fa7341151cce": {
+  "nb": "Ugyldig blink",
+  "en": "Invalid blink",
+  "oversatt": "Clignement non valide"
+ },
+ "core-animation-rig-commands.apply-rig-command.invalid.fdd080da6882": {
+  "nb": "Rigg-delen tilhører ikke ressursen",
+  "en": "The rig part does not belong to the asset",
+  "oversatt": "La partie du rig n'appartient pas à l'élément"
+ },
+ "core-animation-rig-commands.fresh.invalid.9a13ef459ae1": {
+  "nb": "Ugyldig eller brukt ID",
+  "en": "Invalid or used ID",
+  "oversatt": "Identifiant non valide ou déjà utilisé"
+ },
+ "core-animation-rig.breath-error.message.7b28b3c88d65": {
+  "nb": "Ugyldig pust",
+  "en": "Invalid breathing",
+  "oversatt": "Respiration non valide"
+ },
+ "core-animation-rig.export-flags-error.message.10111a9166c3": {
+  "nb": "Ugyldige eksportvalg",
+  "en": "Invalid export options",
+  "oversatt": "Options d'exportation non valides"
+ },
+ "core-animation-rig.rig-spec-error.message.1ac74d450f78": {
+  "nb": "Ugyldig animasjonsoppsett",
+  "en": "Invalid animation setup",
+  "oversatt": "Configuration d'animation non valide"
+ },
+ "core-animation-rig.rig-spec-error.message.1f68dffe51bb": {
+  "nb": "Ugyldige rigg-deler",
+  "en": "Invalid rig parts",
+  "oversatt": "Parties de rig non valides"
+ },
+ "core-animation-rig.rig-spec-error.message.2b765a047145": {
+  "nb": "Ankerpunkter må ligge innenfor bildet",
+  "en": "Anchors must be within the image",
+  "oversatt": "Les points d'ancrage doivent être situés dans l'image"
+ },
+ "core-animation-rig.rig-spec-error.message.339421d88273": {
+  "nb": "Ugyldig rigg-del",
+  "en": "Invalid rig part",
+  "oversatt": "Partie de rig non valide"
+ },
+ "core-animation-rig.rig-spec-error.message.7c26bdd97397": {
+  "nb": "Oppsettet er større enn 512 kB",
+  "en": "The setup exceeds 512 kB",
+  "oversatt": "La configuration dépasse 512 ko"
+ },
+ "core-animation-rig.rig-spec-error.message.959ab576abb9": {
+  "nb": "Ugyldig karakteratferd",
+  "en": "Invalid character behavior",
+  "oversatt": "Comportement de personnage non valide"
+ },
+ "core-animation-rig.rig-spec-error.message.e4c01f96bc7c": {
+  "nb": "Ugyldig opprinnelse for oppsettet",
+  "en": "Invalid setup origin",
+  "oversatt": "Origine de la configuration non valide"
+ },
+ "core-assembly-compare.edited-version": {
+  "nb": {
+   "one": "Klippet versjon ({count} del)",
+   "other": "Klippet versjon ({count} deler)"
+  },
+  "en": {
+   "one": "Edited version ({count} part)",
+   "other": "Edited version ({count} parts)"
+  },
+  "oversatt": {
+   "one": "Version montée ({count} partie)",
+   "many": "Version montée ({count} parties)",
+   "other": "Version montée ({count} parties)"
+  }
+ },
+ "core-assembly-compare.label.label.2920e4e484a2": {
+  "nb": "Animatic (2D-scene)",
+  "en": "Animatic (2D scene)",
+  "oversatt": "Animatique (scène 2D)"
+ },
+ "core-assembly-compare.label.label.3eeb41d9ec13": {
+  "nb": "Animatic (tittelkort)",
+  "en": "Animatic (title card)",
+  "oversatt": "Animatique (carton de titre)"
+ },
+ "core-assembly-compare.label.label.692a228ae4f0": {
+  "nb": "Klippet versjon ({length} {value2})",
+  "en": "Edited version ({length} {value2})",
+  "oversatt": "Version montée ({length} {value2})"
+ },
+ "core-assembly-compare.version-kind-label.ai-video.f5100fb8170a": {
+  "nb": "AI-video",
+  "en": "AI video",
+  "oversatt": "Vidéo IA"
+ },
+ "core-assembly-compare.version-kind-label.animatic.826b15651cab": {
+  "nb": "2D-animatic",
+  "en": "2D animatic",
+  "oversatt": "Animatique 2D"
+ },
+ "core-assembly-compare.version-kind-label.edit.57bb21f6fb50": {
+  "nb": "Klippet versjon",
+  "en": "Edited version",
+  "oversatt": "Version montée"
+ },
+ "core-assembly-compare.version-kind-label.imported-film.8637e910e31e": {
+  "nb": "Importert film",
+  "en": "Imported film",
+  "oversatt": "Film importé"
+ },
+ "core-assembly-compare.version-kind-label.still.8c10f7bdce78": {
+  "nb": "Stillbilde",
+  "en": "Still image",
+  "oversatt": "Image fixe"
+ },
+ "core-assembly-discrepancy.film-take": {
+  "nb": "Film: {file}",
+  "en": "Film: {file}",
+  "oversatt": "Film : {file}"
+ },
+ "core-assembly-discrepancy.film-take-imported": {
+  "nb": "importert film",
+  "en": "imported film",
+  "oversatt": "film importé"
+ },
+ "core-assembly-discrepancy.label.label.05bb905de0cf": {
+  "nb": "Film: {value1}",
+  "en": "Film: {value1}",
+  "oversatt": "Film : {value1}"
+ },
+ "core-assembly-discrepancy.label.label.80e277b15d75": {
+  "nb": "2D-scenen (animatic)",
+  "en": "2D scene (animatic)",
+  "oversatt": "Scène 2D (animatique)"
+ },
+ "core-assembly-discrepancy.label.label.a31351d4cc24": {
+  "nb": "Stillbilde",
+  "en": "Still image",
+  "oversatt": "Image fixe"
+ },
+ "core-assembly-discrepancy.label.label.eabb354bd919": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "Version"
+ },
+ "core-assembly-edit.still-image": {
+  "nb": "Stillbilde: {name}{version}",
+  "en": "Still image: {name}{version}",
+  "oversatt": "Image fixe : {name}{version}"
+ },
+ "core-assembly-edit.still-image-image": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "image"
+ },
+ "core-assembly-edit.take-label.message.9279a7e64eac": {
+  "nb": "Stillbilde: {value1}{value2}",
+  "en": "Still image: {value1}{value2}",
+  "oversatt": "Image fixe : {value1}{value2}"
+ },
+ "core-assembly-edit.take-label.message.b98ad3f87ffa": {
+  "nb": "Importert film",
+  "en": "Imported film",
+  "oversatt": "Film importé"
+ },
+ "core-assembly-status.duration-source-label.ai.563c92714034": {
+  "nb": "AI-video",
+  "en": "AI video",
+  "oversatt": "Vidéo IA"
+ },
+ "core-assembly-status.duration-source-label.animatic.47e96a8b8bd5": {
+  "nb": "2D-animatic",
+  "en": "2D animatic",
+  "oversatt": "Animatique 2D"
+ },
+ "core-assembly-status.duration-source-label.estimate.6bbfeb651821": {
+  "nb": "estimat",
+  "en": "estimate",
+  "oversatt": "estimation"
+ },
+ "core-assembly-status.duration-source-label.film.a21a8b43b949": {
+  "nb": "film",
+  "en": "film",
+  "oversatt": "film"
+ },
+ "core-assembly-status.duration-source-label.planned.6117e90d61f7": {
+  "nb": "planlagt",
+  "en": "planned",
+  "oversatt": "planifié"
+ },
+ "core-assembly-status.scene-status-label.animatic.26e6a9884a5e": {
+  "nb": "2D-animatic",
+  "en": "2D animatic",
+  "oversatt": "Animatique 2D"
+ },
+ "core-assembly-status.scene-status-label.done.bc68a82f9b2f": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Terminé"
+ },
+ "core-assembly-status.scene-status-label.film.5d25ca00d7fd": {
+  "nb": "Film, ikke godkjent",
+  "en": "Film, not approved",
+  "oversatt": "Film non approuvé"
+ },
+ "core-assembly-status.scene-status-label.inactive.69a20aae2490": {
+  "nb": "Deaktivert",
+  "en": "Inactive",
+  "oversatt": "Désactivé"
+ },
+ "core-assembly-status.scene-status-label.missing.b14468c5587e": {
+  "nb": "Mangler produksjon",
+  "en": "Missing production",
+  "oversatt": "Production manquante"
+ },
+ "core-assembly-technical.duration-label.estimate.3295c0fa5562": {
+  "nb": "beregnet fra manuset",
+  "en": "estimated from the script",
+  "oversatt": "estimée d’après le scénario"
+ },
+ "core-assembly-technical.duration-label.film.9e214ccf7c5c": {
+  "nb": "filmens lengde",
+  "en": "the film's length",
+  "oversatt": "durée du film"
+ },
+ "core-assembly-technical.duration-label.parts.59e3effca87b": {
+  "nb": "sum av delene",
+  "en": "sum of the parts",
+  "oversatt": "somme des parties"
+ },
+ "core-assembly-technical.duration-label.planned.9552e05ff3b9": {
+  "nb": "planlagt lengde",
+  "en": "planned length",
+  "oversatt": "durée prévue"
+ },
+ "core-assembly-technical.duration-label.set.7e87afd7387e": {
+  "nb": "satt i 2D-scenen eller monteringen",
+  "en": "set in the 2D scene or the assembly",
+  "oversatt": "définie dans la scène 2D ou le montage"
+ },
+ "core-assembly-technical.file-fps.clip-parts-map.61be0459c670": {
+  "nb": "{value1} bilder/s",
+  "en": "{value1} frames/s",
+  "oversatt": "{value1} i/s"
+ },
+ "core-assembly-technical.label.label.0ae498c4caab": {
+  "nb": "Status",
+  "en": "Status",
+  "oversatt": "État"
+ },
+ "core-assembly-technical.label.label.0dc1abe78f92": {
+  "nb": "Inn (film)",
+  "en": "In (film)",
+  "oversatt": "Point d'entrée (film)"
+ },
+ "core-assembly-technical.label.label.10b8504b954f": {
+  "nb": "I scenen",
+  "en": "In the scene",
+  "oversatt": "Dans la scène"
+ },
+ "core-assembly-technical.label.label.10b8504b954f.2": {
+  "nb": "I scenen",
+  "en": "In the scene",
+  "oversatt": "Dans la scène"
+ },
+ "core-assembly-technical.label.label.2cf1f40659b8": {
+  "nb": "Myk overgang inn",
+  "en": "Soft transition in",
+  "oversatt": "Fondu d'entrée"
+ },
+ "core-assembly-technical.label.label.2cf1f40659b8.2": {
+  "nb": "Myk overgang inn",
+  "en": "Soft transition in",
+  "oversatt": "Fondu d'entrée"
+ },
+ "core-assembly-technical.label.label.34fc6d3dd695": {
+  "nb": "I kilden",
+  "en": "In the source",
+  "oversatt": "Dans la source"
+ },
+ "core-assembly-technical.label.label.34fc6d3dd695.2": {
+  "nb": "I kilden",
+  "en": "In the source",
+  "oversatt": "Dans la source"
+ },
+ "core-assembly-technical.label.label.34fc6d3dd695.3": {
+  "nb": "I kilden",
+  "en": "In the source",
+  "oversatt": "Dans la source"
+ },
+ "core-assembly-technical.label.label.34fe32c75dca": {
+  "nb": "Lengden er",
+  "en": "Length is",
+  "oversatt": "La durée est de"
+ },
+ "core-assembly-technical.label.label.478ce56e48f3": {
+  "nb": "Format",
+  "en": "Format",
+  "oversatt": "Format"
+ },
+ "core-assembly-technical.label.label.541f2aca4ba5": {
+  "nb": "Film",
+  "en": "Film",
+  "oversatt": "Film"
+ },
+ "core-assembly-technical.label.label.551da5a56131": {
+  "nb": "Kilde inn/ut",
+  "en": "Source in/out",
+  "oversatt": "Source entrée/sortie"
+ },
+ "core-assembly-technical.label.label.627d90478419": {
+  "nb": "Overgang inn",
+  "en": "Transition in",
+  "oversatt": "Transition d'entrée"
+ },
+ "core-assembly-technical.label.label.6b81d3cb0f63": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "Vidéo"
+ },
+ "core-assembly-technical.label.label.7c545c9f8b78": {
+  "nb": "Bildefrekvens",
+  "en": "Frame rate",
+  "oversatt": "Fréquence d'images"
+ },
+ "core-assembly-technical.label.label.81c95bc8eb6e": {
+  "nb": "Ut (film)",
+  "en": "Out (film)",
+  "oversatt": "Point de sortie (film)"
+ },
+ "core-assembly-technical.label.label.996d3af02644": {
+  "nb": "Bildenummer",
+  "en": "Frame number",
+  "oversatt": "Numéro d'image"
+ },
+ "core-assembly-technical.label.label.9ee0bad191bb": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Durée"
+ },
+ "core-assembly-technical.label.label.b69e3a26e8a3": {
+  "nb": "Lyd i filen",
+  "en": "Audio in the file",
+  "oversatt": "Audio dans le fichier"
+ },
+ "core-assembly-technical.label.label.d0f773af4ef6": {
+  "nb": "Materiale",
+  "en": "Material",
+  "oversatt": "Média"
+ },
+ "core-assembly-technical.label.label.d6353caf4a5c": {
+  "nb": "Fil",
+  "en": "File",
+  "oversatt": "Fichier"
+ },
+ "core-assembly-technical.label.label.e446454b3c63": {
+  "nb": "Scenenummer",
+  "en": "Scene number",
+  "oversatt": "Numéro de scène"
+ },
+ "core-assembly-technical.label.label.ead6c0f6cbe0": {
+  "nb": "2D-scene bilde",
+  "en": "2D scene frame",
+  "oversatt": "Image de scène 2D"
+ },
+ "core-assembly-technical.label.label.f1a628819f02": {
+  "nb": "I del {value1}",
+  "en": "In part {value1}",
+  "oversatt": "Dans la partie {value1}"
+ },
+ "core-assembly-technical.label.label.f6d804950dd9": {
+  "nb": "Merk",
+  "en": "Note",
+  "oversatt": "Remarque"
+ },
+ "core-assembly-technical.overlap.message.ca5d56e365a2": {
+  "nb": " (overlapp {overlapFrames})",
+  "en": " (overlap {overlapFrames})",
+  "oversatt": " (chevauchement {overlapFrames})"
+ },
+ "core-assembly-technical.source-label.composition.b3e0746d3264": {
+  "nb": "2D-scene",
+  "en": "2D scene",
+  "oversatt": "Scène 2D"
+ },
+ "core-assembly-technical.source-label.film.230bab96d6d8": {
+  "nb": "Film",
+  "en": "Film",
+  "oversatt": "Film"
+ },
+ "core-assembly-technical.source-label.mixed.f0269663c045": {
+  "nb": "Sammensatt",
+  "en": "Mixed",
+  "oversatt": "Mixte"
+ },
+ "core-assembly-technical.source-label.placeholder.28aa44e5468d": {
+  "nb": "Tittelkort",
+  "en": "Title card",
+  "oversatt": "Carton de titre"
+ },
+ "core-assembly-technical.title.title.b039b9affa74": {
+  "nb": "Tittelkort",
+  "en": "Title card",
+  "oversatt": "Carton de titre"
+ },
+ "core-assembly-technical.title.title.d288d68d9db0": {
+  "nb": "Animatic (2D-scene)",
+  "en": "Animatic (2D scene)",
+  "oversatt": "Animatique (scène 2D)"
+ },
+ "core-assembly-technical.value.value.0cfb2f827b2a": {
+  "nb": "Tittelkort (ingen kilde)",
+  "en": "Title card (no source)",
+  "oversatt": "Carton de titre (sans source)"
+ },
+ "core-assembly-technical.value.value.22cb8469a4e5": {
+  "nb": "{kind} · {frames} bilder{overlap}",
+  "en": "{kind} · {frames} frames{overlap}",
+  "oversatt": "{kind} · {frames} images{overlap}"
+ },
+ "core-assembly-technical.value.value.375d627b1629": {
+  "nb": "{rateText} bilder/s",
+  "en": "{rateText} frames/s",
+  "oversatt": "{rateText} i/s"
+ },
+ "core-assembly-technical.value.value.39fcaa5c46f2": {
+  "nb": "{value1} (bilde {sceneFrame})",
+  "en": "{value1} (frame {sceneFrame})",
+  "oversatt": "{value1} (image {sceneFrame})"
+ },
+ "core-assembly-technical.value.value.692bc0f2f22b": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "Approuvé"
+ },
+ "core-assembly-technical.value.value.70d847eb7842": {
+  "nb": "Referanse",
+  "en": "Reference",
+  "oversatt": "Référence"
+ },
+ "core-assembly-technical.value.value.7a9dd36e5edb": {
+  "nb": "Stillbilde: {value1}",
+  "en": "Still image: {value1}",
+  "oversatt": "Image fixe : {value1}"
+ },
+ "core-assembly-technical.value.value.80d60ff86353": {
+  "nb": "Under arbeid",
+  "en": "In progress",
+  "oversatt": "En cours"
+ },
+ "core-assembly-technical.value.value.88704f3e1708": {
+  "nb": "{value1} (bilde {filmFrame})",
+  "en": "{value1} (frame {filmFrame})",
+  "oversatt": "{value1} (image {filmFrame})"
+ },
+ "core-assembly-technical.value.value.9edeb928ebe7": {
+  "nb": "Kutt",
+  "en": "Cut",
+  "oversatt": "Coupe"
+ },
+ "core-assembly-technical.value.value.a395f5c89880": {
+  "nb": "{value1} – {value2} ({durationFrames} bilder)",
+  "en": "{value1} – {value2} ({durationFrames} frames)",
+  "oversatt": "{value1} – {value2} ({durationFrames} images)"
+ },
+ "core-assembly-technical.value.value.ba0d651d3c7b": {
+  "nb": "Filmens bildefrekvens er en annen enn prosjektets; bilder gjentas eller hoppes over",
+  "en": "The film's frame rate differs from the project's; frames are repeated or skipped",
+  "oversatt": "La fréquence d'images du film diffère de celle du projet ; des images sont répétées ou ignorées"
+ },
+ "core-assembly-technical.value.value.c12393fee493": {
+  "nb": "{value1} · {durationFrames} bilder · {seconds} s",
+  "en": "{value1} · {durationFrames} frames · {seconds} s",
+  "oversatt": "{value1} · {durationFrames} images · {seconds} s"
+ },
+ "core-assembly-technical.value.value.c81f0aa535a7": {
+  "nb": "2D-scene bilde {frame}",
+  "en": "2D scene frame {frame}",
+  "oversatt": "Scène 2D image {frame}"
+ },
+ "core-assembly-technical.value.value.cc6ea7c26663": {
+  "nb": "{value1} · {secs} s{takeSuffix}",
+  "en": "{value1} · {secs} s{takeSuffix}",
+  "oversatt": "{value1} · {secs} s{takeSuffix}"
+ },
+ "core-assembly-technical.value.value.e66208ff61c3": {
+  "nb": "Stillbilde (samme bilde hele delen)",
+  "en": "Still image (the same image for the whole part)",
+  "oversatt": "Image fixe (la même image pour toute la partie)"
+ },
+ "core-assembly-technical.value.value.e8bb4ac19f03": {
+  "nb": "Ja",
+  "en": "Yes",
+  "oversatt": "Oui"
+ },
+ "core-assembly-technical.value.value.ed10be234b4b": {
+  "nb": "Nei",
+  "en": "No",
+  "oversatt": "Non"
+ },
+ "core-assembly-technical.value.value.efe572e06fca": {
+  "nb": "{value1} (bilde {partFrame})",
+  "en": "{value1} (frame {partFrame})",
+  "oversatt": "{value1} (image {partFrame})"
+ },
+ "core-assembly-time-levels.part-to-scene.message.ea6113e5d84e": {
+  "nb": "Delen {partIndex} finnes ikke i scenen",
+  "en": "Part {partIndex} does not exist in the scene",
+  "oversatt": "La partie {partIndex} n'existe pas dans la scène"
+ },
+ "core-audio-alignment.bad.message.6119346ca9dd": {
+  "nb": "Ugyldig ordkobling",
+  "en": "Invalid word alignment",
+  "oversatt": "Alignement des mots non valide"
+ },
+ "core-audio-alignment.line-status-label.message.07d247dde540": {
+  "nb": "Endret tekst med gammel lyd",
+  "en": "Changed text with old audio",
+  "oversatt": "Texte modifié avec ancien audio"
+ },
+ "core-audio-alignment.line-status-label.message.5e164d56b1c5": {
+  "nb": "Nytt opptak til gjennomgang",
+  "en": "New recording to review",
+  "oversatt": "Nouvelle prise à vérifier"
+ },
+ "core-audio-alignment.line-status-label.message.7b30975b5db5": {
+  "nb": "Godkjent oppdatert tekst og lyd",
+  "en": "Approved updated text and audio",
+  "oversatt": "Texte et audio mis à jour approuvés"
+ },
+ "core-audio-alignment.line-status-label.message.aa18b01dffeb": {
+  "nb": "Synkronisert",
+  "en": "In sync",
+  "oversatt": "Synchronisé"
+ },
+ "core-audio-alignment.line-status-label.message.e6bb2f6891ac": {
+  "nb": "Ny tekst uten lyd",
+  "en": "New text without audio",
+  "oversatt": "Nouveau texte sans audio"
+ },
+ "core-audio-composition.bad.message.b462ed57d183": {
+  "nb": "Ugyldig lydkomposisjon",
+  "en": "Invalid audio composition",
+  "oversatt": "Composition audio non valide"
+ },
+ "core-audio-composition.base.message.b144ce4b53bb": {
+  "nb": "lyd",
+  "en": "audio",
+  "oversatt": "audio"
+ },
+ "core-audio-composition.composition-error.message.2be77800c8b5": {
+  "nb": "Komposisjonen har for mange deler",
+  "en": "The composition has too many parts",
+  "oversatt": "La composition contient trop de parties"
+ },
+ "core-audio-composition.composition-error.message.4fddd315733e": {
+  "nb": "En del går forbi slutten av opptaket",
+  "en": "A part goes past the end of the recording",
+  "oversatt": "Une partie dépasse la fin de l'enregistrement"
+ },
+ "core-audio-composition.composition-error.message.90eccd158e84": {
+  "nb": "Komposisjonen bruker et opptak som ikke finnes eller ikke kan brukes",
+  "en": "The composition uses a recording that does not exist or cannot be used",
+  "oversatt": "La composition utilise une prise qui n'existe pas ou ne peut pas être utilisée"
+ },
+ "core-audio-composition.composition-error.message.920c764e2326": {
+  "nb": "Komposisjonen er for lang (maks 10 minutter)",
+  "en": "The composition is too long (max 10 minutes)",
+  "oversatt": "La composition est trop longue (10 minutes max.)"
+ },
+ "core-audio-composition.composition-error.message.ec2a6726b5b5": {
+  "nb": "Komposisjonen er tom",
+  "en": "The composition is empty",
+  "oversatt": "La composition est vide"
+ },
+ "core-audio-index.audio-kind-label.ambience.063ae2ad0777": {
+  "nb": "Atmosfære",
+  "en": "Ambience",
+  "oversatt": "Ambiance"
+ },
+ "core-audio-index.audio-kind-label.dialogue.496fc3ccd9d7": {
+  "nb": "Dialog",
+  "en": "Dialogue",
+  "oversatt": "Dialogue"
+ },
+ "core-audio-index.audio-kind-label.music.887b04818ab4": {
+  "nb": "Musikk",
+  "en": "Music",
+  "oversatt": "Musique"
+ },
+ "core-audio-index.audio-kind-label.narration.eac0d9233796": {
+  "nb": "Forteller",
+  "en": "Narration",
+  "oversatt": "Voix off"
+ },
+ "core-audio-index.audio-kind-label.sfx.5417ddbee494": {
+  "nb": "Effekter",
+  "en": "Effects",
+  "oversatt": "Effets"
+ },
+ "core-audio-index.name.name.8b12358ce61a": {
+  "nb": "Filmlyd",
+  "en": "Film audio",
+  "oversatt": "Audio du film"
+ },
+ "core-audio-roomtone.no-room-tone-message.message.82980bb806dc": {
+  "nb": "Fant ingen egnet romlyd for pausen. Velg stillhet eller en romlydfil.",
+  "en": "No suitable room tone was found for the pause. Choose silence or a room tone file.",
+  "oversatt": "Aucune ambiance sonore (room tone) appropriée n'a été trouvée pour la pause. Choisissez le silence ou un fichier d'ambiance sonore."
+ },
+ "core-audio-takes.room-tone-name.message.7ddabab07da7": {
+  "nb": "Romlyd – {where}",
+  "en": "Room tone – {where}",
+  "oversatt": "Ambiance sonore – {where}"
+ },
+ "core-audio-takes.room-tone-scene-name.message.3fb147d0a861": {
+  "nb": "Scene {sceneNumber}",
+  "en": "Scene {sceneNumber}",
+  "oversatt": "Scène {sceneNumber}"
+ },
+ "core-audio-takes.room-tone-scene-name.message.a37ad1ffd219": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "Scène"
+ },
+ "core-audio-takes.scene.message.0103405b4ba8": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "Réplique"
+ },
+ "core-audio-takes.scene.message.a5438f48fcfd": {
+  "nb": "Scene {sceneNumber}",
+  "en": "Scene {sceneNumber}",
+  "oversatt": "Scène {sceneNumber}"
+ },
+ "core-backup-index.assert-self-contained.message.10564ecb780b": {
+  "nb": "Sikkerhetskopien mangler bildet til en rigg-del.",
+  "en": "The backup is missing a rig part image.",
+  "oversatt": "L’image d’une pièce de rig est manquante dans la sauvegarde."
+ },
+ "core-backup-index.assert-self-contained.message.23f1008b1e80": {
+  "nb": "Sikkerhetskopien har en ugyldig linjekobling.",
+  "en": "The backup contains an invalid line link.",
+  "oversatt": "La sauvegarde contient une liaison de ligne non valide."
+ },
+ "core-backup-index.assert-self-contained.message.532a1d4f3e40": {
+  "nb": "Sikkerhetskopien viser til noe som ikke er med i den (style_profiles.guide) og kan ikke brukes.",
+  "en": "The backup refers to something that is not in it (style_profiles.guide) and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à un élément manquant (style_profiles.guide) et ne peut pas être utilisée."
+ },
+ "core-backup-index.assert-self-contained.message.72bee2145230": {
+  "nb": "Sikkerhetskopien viser til noe som ikke er med i den ({t}.{k}) og kan ikke brukes.",
+  "en": "The backup refers to something that is not in it ({t}.{k}) and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à un élément manquant ({t}.{k}) et ne peut pas être utilisée."
+ },
+ "core-backup-index.assert-self-contained.message.7522d88cabde": {
+  "nb": "Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.",
+  "en": "The backup has an invalid poster and cannot be used.",
+  "oversatt": "La sauvegarde contient une affiche non valide et ne peut pas être utilisée."
+ },
+ "core-backup-index.assert-self-contained.message.cbc9438c182e": {
+  "nb": "Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.",
+  "en": "The backup has an invalid style profile and cannot be used.",
+  "oversatt": "La sauvegarde contient un profil de style non valide et ne peut pas être utilisée."
+ },
+ "core-backup-index.assert-self-contained.message.d0a638c27cb4": {
+  "nb": "Sikkerhetskopien viser til noe som ikke er med i den (composition_layers.{col}) og kan ikke brukes.",
+  "en": "The backup refers to something that is not in it (composition_layers.{col}) and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à un élément manquant (composition_layers.{col}) et ne peut pas être utilisée."
+ },
+ "core-backup-index.assert-self-contained.message.d883eea976d1": {
+  "nb": "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
+  "en": "The backup refers to something that is not in it (posters.document) and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à un élément manquant (posters.document) et ne peut pas être utilisée."
+ },
+ "core-backup-index.backup-category-label.bilde.cfc8c57d9977": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "Images"
+ },
+ "core-backup-index.backup-category-label.film.d4953b381f91": {
+  "nb": "Importert film",
+  "en": "Imported film",
+  "oversatt": "Film importé"
+ },
+ "core-backup-index.backup-category-label.lyd.effe8c1543ae": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "Audio"
+ },
+ "core-backup-index.backup-category-label.manusfil.4767ebdbf51c": {
+  "nb": "Importerte manusfiler",
+  "en": "Imported script files",
+  "oversatt": "Fichiers de scénario importés"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.0b1007895dbb": {
+  "nb": "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;",
+  "en": "Restore: Projects → “Restore from backup …”. A new project is always made;",
+  "oversatt": "Restaurer : Projets → « Restaurer à partir d’une sauvegarde… ». Un nouveau projet est toujours créé ;"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.0e60fdcc65e7": {
+  "nb": "  importert film med deler og tidskoblinger, manusversjoner og importerte manusfiler.",
+  "en": "  imported film with parts and time links, script versions and imported script files.",
+  "oversatt": "  film importé avec parties et repères temporels, versions de scénario et fichiers de scénario importés."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.19ab6bf26884": {
+  "nb": "  «files» er en liste over alle mediefilene, også de som ikke er tatt med.",
+  "en": "  “files” is a list of all the media files, including those not included.",
+  "oversatt": "  « files » est la liste de tous les fichiers médias, y compris ceux non inclus."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.307bb9109748": {
+  "nb": "  manus (scener, varianter, blokker med teksthistorikk), produksjoner og spinoffer,",
+  "en": "  script (scenes, variants, blocks with text history), productions and spin-offs,",
+  "oversatt": "  scénario (scènes, variantes, blocs avec historique du texte), productions et déclinaisons,"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.350511403787": {
+  "nb": "- {BACKUP_JSON}: alle prosjektdata som tabeller (samme kolonner som databasen):",
+  "en": "- {BACKUP_JSON}: all project data as tables (the same columns as the database):",
+  "oversatt": "- {BACKUP_JSON} : toutes les données du projet sous forme de tables (mêmes colonnes que la base de données) :"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.37ae3941af04": {
+  "nb": "Disse {length} filene er IKKE med (de ligger fortsatt i prosjektet):",
+  "en": "These {length} files are NOT included (they are still in the project):",
+  "oversatt": "Ces {length} fichiers ne sont PAS inclus (ils restent dans le projet) :"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.458e2a5049e5": {
+  "nb": "  sceneforekomster, ressursbibliotek, notater, 2D-scener med lag og kamera, lydklipp,",
+  "en": "  scene occurrences, asset library, notes, 2D scenes with layers and camera, audio clips,",
+  "oversatt": "  occurrences de scène, bibliothèque d’éléments, notes, scènes 2D avec calques et caméra, clips audio,"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.56c0c0b981d5": {
+  "nb": "- filer/<bøtte>/<sti>: mediefilene, uendret.",
+  "en": "- filer/<bøtte>/<sti>: the media files, unchanged.",
+  "oversatt": "- filer/<bøtte>/<sti> : les fichiers médias, sans modification."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.5b33f4c77b75": {
+  "nb": "Innhold:",
+  "en": "Contents:",
+  "oversatt": "Contenu :"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.5fc82ca70a93": {
+  "nb": "Scener: {scenes}. Manusblokker: {blocks}. Manusversjoner: {versions}.",
+  "en": "Scenes: {scenes}. Script blocks: {blocks}. Script versions: {versions}.",
+  "oversatt": "Scènes : {scenes}. Blocs de scénario : {blocks}. Versions de scénario : {versions}."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.6b49b7313719": {
+  "nb": "Mediefiler med: {files}.",
+  "en": "Media files included: {files}.",
+  "oversatt": "Fichiers médias inclus : {files}."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.83e170294c2c": {
+  "nb": "ingenting eksisterende overskrives.",
+  "en": "nothing existing is overwritten.",
+  "oversatt": "aucun élément existant n’est écrasé."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.9c499b1d728e": {
+  "nb": "Ressurser: {assets}. 2D-scener: {compositions}. Lydklipp: {audioClips}.",
+  "en": "Assets: {assets}. 2D scenes: {compositions}. Audio clips: {audioClips}.",
+  "oversatt": "Éléments : {assets}. Scènes 2D : {compositions}. Clips audio : {audioClips}."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
+  "nb": "Sikkerhetskopi av «{name}» fra Animatic Studio",
+  "en": "Backup of “{name}” from Animatic Studio",
+  "oversatt": "Sauvegarde de « {name} » depuis Animatic Studio"
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.d0abfdf8285b": {
+  "nb": "  «history» inneholder kommandologgen og loggen over AI-generering (bare til orientering).",
+  "en": "  “history” contains the command log and the AI generation log (for information only).",
+  "oversatt": "  « history » contient l’historique des commandes et des générations IA (à titre indicatif uniquement)."
+ },
+ "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.e2aa4e337bc6": {
+  "nb": "Laget {createdAt} (formatversjon {formatVersion}, databaseversjon {schemaVersion}).",
+  "en": "Made {createdAt} (format version {formatVersion}, database version {schemaVersion}).",
+  "oversatt": "Créée le {createdAt} (version du format {formatVersion}, version de la base de données {schemaVersion})."
+ },
+ "core-backup-index.bad.message.24989a3ae78a": {
+  "nb": "Sikkerhetskopien viser til noe som ikke er med i den ({col}) og kan ikke brukes.",
+  "en": "The backup refers to something that is not in it ({col}) and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à un élément manquant ({col}) et ne peut pas être utilisée."
+ },
+ "core-backup-index.parse-backup.message.1da046813368": {
+  "nb": "Sikkerhetskopien er skadet ({t}).",
+  "en": "The backup is damaged ({t}).",
+  "oversatt": "La sauvegarde est corrompue ({t})."
+ },
+ "core-backup-index.parse-backup.message.39b03ff14504": {
+  "nb": "Sikkerhetskopien må ha nøyaktig én hovedfilm.",
+  "en": "The backup must have exactly one main film.",
+  "oversatt": "La sauvegarde doit contenir exactement un film principal."
+ },
+ "core-backup-index.parse-backup.message.3da8211ffa03": {
+  "nb": "Sikkerhetskopien mangler prosjektet.",
+  "en": "The backup is missing the project.",
+  "oversatt": "Le projet est manquant dans la sauvegarde."
+ },
+ "core-backup-index.parse-backup.message.6037216b6002": {
+  "nb": "Sikkerhetskopien mangler fillisten.",
+  "en": "The backup is missing the file list.",
+  "oversatt": "La liste des fichiers est manquante dans la sauvegarde."
+ },
+ "core-backup-index.parse-backup.message.970e50bda852": {
+  "nb": "Sikkerhetskopien mangler data.",
+  "en": "The backup is missing data.",
+  "oversatt": "Les données sont manquantes dans la sauvegarde."
+ },
+ "core-backup-index.parse-backup.message.9e11241c0bca": {
+  "nb": "Filen er ikke en sikkerhetskopi fra Animatic Studio.",
+  "en": "The file is not a backup from Animatic Studio.",
+  "oversatt": "Ce fichier n’est pas une sauvegarde Animatic Studio."
+ },
+ "core-backup-index.parse-backup.message.bc940e902884": {
+  "nb": "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.",
+  "en": "The backup was made with a newer version of Animatic Studio and cannot be read here.",
+  "oversatt": "La sauvegarde a été créée avec une version plus récente d’Animatic Studio et ne peut pas être lue ici."
+ },
+ "core-backup-index.parse-backup.message.c74afc7e8489": {
+  "nb": "Sikkerhetskopien er laget med en nyere database (versjon {value1}). Oppdater databasen først.",
+  "en": "The backup was made with a newer database (version {value1}). Update the database first.",
+  "oversatt": "La sauvegarde a été créée avec une base de données plus récente (version {value1}). Mettez d'abord à jour la base de données."
+ },
+ "core-backup-index.restored-state.message.1874fc82dc1b": {
+  "nb": "Feil prosjekt for gjenoppretting.",
+  "en": "Wrong project for restoring.",
+  "oversatt": "Projet incorrect pour la restauration."
+ },
+ "core-backup-index.restored-state.message.24af47f88679": {
+  "nb": "Det nye prosjektet mangler hovedfilm.",
+  "en": "The new project is missing a main film.",
+  "oversatt": "Le nouveau projet n'a pas de film principal."
+ },
+ "core-backup-index.restored-state.message.556acedd8924": {
+  "nb": "Sikkerhetskopien mangler hovedfilmen.",
+  "en": "The backup is missing the main film.",
+  "oversatt": "Le film principal est manquant dans la sauvegarde."
+ },
+ "core-backup-index.restored-state.message.745a06cf0ee3": {
+  "nb": "Sikkerhetskopien gir et ugyldig prosjekt ({detail}).",
+  "en": "The backup gives an invalid project ({detail}).",
+  "oversatt": "La sauvegarde génère un projet non valide ({detail})."
+ },
+ "core-backup-index.restored-state.message.b1f60ae5b347": {
+  "nb": "Sikkerhetskopien er skadet: {message}",
+  "en": "The backup is damaged: {message}",
+  "oversatt": "La sauvegarde est endommagée : {message}"
+ },
+ "core-backup-index.restored-state.message.fb87ab6b71ef": {
+  "nb": "Sikkerhetskopien viser til filer utenfor prosjektet og kan ikke brukes.",
+  "en": "The backup refers to files outside the project and cannot be used.",
+  "oversatt": "La sauvegarde fait référence à des fichiers externes au projet et ne peut pas être utilisée."
+ },
+ "core-commands-apply.a.need.2f43276b4fc5": {
+  "nb": "Karakteren",
+  "en": "The character",
+  "oversatt": "Le personnage"
+ },
+ "core-commands-apply.a.need.4619c75558af": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Le nœud"
+ },
+ "core-commands-apply.a.need.4bd65c8ae95b": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.a.need.4bd65c8ae95b.2": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.a.need.4bd65c8ae95b.3": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.a.need.4bd65c8ae95b.4": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.a.need.4bd65c8ae95b.5": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.a.need.842e287f8451": {
+  "nb": "Lydklippet",
+  "en": "The audio clip",
+  "oversatt": "Le clip audio"
+ },
+ "core-commands-apply.a.need.842e287f8451.2": {
+  "nb": "Lydklippet",
+  "en": "The audio clip",
+  "oversatt": "Le clip audio"
+ },
+ "core-commands-apply.a.need.95de442cb06c": {
+  "nb": "Ressursen på plakaten",
+  "en": "The asset on the poster",
+  "oversatt": "L'élément sur l'affiche"
+ },
+ "core-commands-apply.a.need.d46e4f867b8c": {
+  "nb": "Notatet",
+  "en": "The note",
+  "oversatt": "La note"
+ },
+ "core-commands-apply.a.need.d46e4f867b8c.2": {
+  "nb": "Notatet",
+  "en": "The note",
+  "oversatt": "La note"
+ },
+ "core-commands-apply.a.need.d46e4f867b8c.3": {
+  "nb": "Notatet",
+  "en": "The note",
+  "oversatt": "La note"
+ },
+ "core-commands-apply.a.need.d46e4f867b8c.4": {
+  "nb": "Notatet",
+  "en": "The note",
+  "oversatt": "La note"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.10": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.11": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.12": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.2": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.3": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.4": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.5": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.6": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.7": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.8": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.a.need.f66a94bd1bc8.9": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.added.need.6728f351666d": {
+  "nb": "Referansen",
+  "en": "The reference",
+  "oversatt": "La référence"
+ },
+ "core-commands-apply.af.need.9164b9c05b05": {
+  "nb": "Versjonen",
+  "en": "The version",
+  "oversatt": "La version"
+ },
+ "core-commands-apply.apply-command.fail.1ca964426207": {
+  "nb": "Det finnes {length} notater på denne teksten. Slett notatene først hvis endringen skal angres.",
+  "en": "There are {length} notes on this text. Delete the notes first if the change is to be undone.",
+  "oversatt": "Il y a {length} notes sur ce texte. Supprimez d'abord les notes pour pouvoir annuler la modification."
+ },
+ "core-commands-apply.apply-command.fail.353c6e16b98d": {
+  "nb": "Scenen er klippet eller har tidskoblinger i monteringen, så dette kan ikke angres.",
+  "en": "The scene is cut or has time links in the assembly, so this cannot be undone.",
+  "oversatt": "La scène est découpée ou possède des liaisons temporelles dans le montage ; cette action ne peut donc pas être annulée."
+ },
+ "core-commands-apply.apply-command.fail.3d3dec29e0b1": {
+  "nb": "Ressursen er brukt i en 2D-scene og kan ikke fjernes. Arkiver den i stedet.",
+  "en": "The asset is used in a 2D scene and cannot be removed. Archive it instead.",
+  "oversatt": "L'élément est utilisé dans une scène 2D et ne peut pas être supprimé. Archivez-le plutôt."
+ },
+ "core-commands-apply.apply-command.fail.4713d7677358": {
+  "nb": "Det ligger lyd på dette i filmen. Fjern lyden først hvis endringen skal angres.",
+  "en": "There is sound on this in the film. Remove the sound first if the change is to be undone.",
+  "oversatt": "Du son est associé à cet élément dans le film. Supprimez d'abord le son pour pouvoir annuler la modification."
+ },
+ "core-commands-apply.apply-command.fail.5e5e6432d761": {
+  "nb": "Teksten har oversettelser (for eksempel engelsk). Angre importen av oversettelsen eller fjern oversettelsene av disse linjene først.",
+  "en": "The text has translations (for example English). Undo the import of the translation or remove the translations of these lines first.",
+  "oversatt": "Le texte comporte des traductions (par exemple en anglais). Annulez l'importation de la traduction ou supprimez d'abord les traductions de ces lignes."
+ },
+ "core-commands-apply.apply-command.fail.5fdcb9475e15": {
+  "nb": "Scenen har en 2D-scene i sceneeditoren og kan ikke fjernes. Slett 2D-scenen først.",
+  "en": "The scene has a 2D scene in the scene editor and cannot be removed. Delete the 2D scene first.",
+  "oversatt": "La scène comporte une scène 2D dans l'éditeur de scène et ne peut pas être supprimée. Supprimez d'abord la scène 2D."
+ },
+ "core-commands-apply.apply-command.fail.a9b441303514": {
+  "nb": "Det er registrert kontinuitet (utseende) på dette. Fjern hendelsen først hvis endringen skal angres.",
+  "en": "Continuity (appearance) has been recorded for this. Remove the event first if the change is to be undone.",
+  "oversatt": "Une continuité (apparence) a été enregistrée pour cet élément. Supprimez d'abord l'événement si vous souhaitez annuler la modification."
+ },
+ "core-commands-apply.apply-command.fail.b3b487fb3399": {
+  "nb": "Replikken har lydversjoner som ikke kan fjernes. Ingen lydversjon slettes.",
+  "en": "The line has audio versions that cannot be removed. No audio version is deleted.",
+  "oversatt": "La réplique comporte des versions audio qui ne peuvent pas être supprimées. Aucune version audio n'est supprimée."
+ },
+ "core-commands-apply.apply-command.fail.f1efa40121aa": {
+  "nb": "Det finnes et notat på denne teksten. Slett notatet først hvis endringen skal angres.",
+  "en": "There is a note on this text. Delete the note first if the change is to be undone.",
+  "oversatt": "Il y a une note sur ce texte. Supprimez d'abord la note si vous souhaitez annuler la modification."
+ },
+ "core-commands-apply.assert-can-edit-variant.fail.731eac609516": {
+  "nb": "Denne versjonen av scenen tilhører en annen produksjon",
+  "en": "This version of the scene belongs to another production",
+  "oversatt": "Cette version de la scène appartient à une autre production"
+ },
+ "core-commands-apply.assert-can-edit-variant.fail.ca92e96a3180": {
+  "nb": "Scenen deles med hovedfilmen. Endringer i denne produksjonen lagres som egen versjon av scenen.",
+  "en": "The scene is shared with the main film. Changes in this production are saved as a separate version of the scene.",
+  "oversatt": "La scène est partagée avec le film principal. Les modifications dans cette production sont enregistrées en tant que version distincte de la scène."
+ },
+ "core-commands-apply.assert-key.fail.8115adfc5b00": {
+  "nb": "Ugyldig sorteringsnøkkel {key}",
+  "en": "Invalid sort key {key}",
+  "oversatt": "Clé de tri non valide {key}"
+ },
+ "core-commands-apply.assert-new-id.fail.8c297427af29": {
+  "nb": "Ugyldig ID {id}",
+  "en": "Invalid ID {id}",
+  "oversatt": "Identifiant non valide {id}"
+ },
+ "core-commands-apply.assert-new-id.fail.a6e7d3cb494b": {
+  "nb": "ID {id} er allerede i bruk",
+  "en": "ID {id} is already in use",
+  "oversatt": "L'identifiant {id} est déjà utilisé"
+ },
+ "core-commands-apply.assert-one-stage-per-scene.fail.c5365c9fe01f": {
+  "nb": "Karakteren har allerede et stadium fra denne scenen",
+  "en": "The character already has a stage from this scene",
+  "oversatt": "Le personnage possède déjà une étape issue de cette scène"
+ },
+ "core-commands-apply.assert-unique-relation.fail.9b10da4a06dd": {
+  "nb": "Relasjonen finnes allerede",
+  "en": "The relation already exists",
+  "oversatt": "La relation existe déjà"
+ },
+ "core-commands-apply.asset.need.7974d3050f34": {
+  "nb": "Lydfilen",
+  "en": "The audio file",
+  "oversatt": "Le fichier audio"
+ },
+ "core-commands-apply.audio-fields.fail.050b98fa964a": {
+  "nb": "Ugyldig valg for «løper videre»",
+  "en": "Invalid choice for “continues”",
+  "oversatt": "Choix non valide pour « continue »"
+ },
+ "core-commands-apply.audio-fields.fail.07dd76d98d3c": {
+  "nb": "Hastigheten må være mellom 25 og 400 %",
+  "en": "The speed must be between 25 and 400%",
+  "oversatt": "La vitesse doit être comprise entre 25 et 400 %"
+ },
+ "core-commands-apply.audio-fields.fail.0d31fbba5efc": {
+  "nb": "To volumpunkter på samme tid",
+  "en": "Two volume points at the same time",
+  "oversatt": "Deux points de volume au même instant"
+ },
+ "core-commands-apply.audio-fields.fail.1c0fe6f61acb": {
+  "nb": "Volumet må være mellom −60 og +12 dB",
+  "en": "The volume must be between −60 and +12 dB",
+  "oversatt": "Le volume doit être compris entre −60 et +12 dB"
+ },
+ "core-commands-apply.audio-fields.fail.380d3e25beb3": {
+  "nb": "Varianten hører til en annen ressurs",
+  "en": "The variant belongs to another asset",
+  "oversatt": "La variante appartient à un autre élément"
+ },
+ "core-commands-apply.audio-fields.fail.387c929241d3": {
+  "nb": "Ugyldig språk for lyden",
+  "en": "Invalid language for the sound",
+  "oversatt": "Langue non valide pour le son"
+ },
+ "core-commands-apply.audio-fields.fail.44d9f860b5a2": {
+  "nb": "Ugyldig demping",
+  "en": "Invalid mute setting",
+  "oversatt": "Paramètre de sourdine non valide"
+ },
+ "core-commands-apply.audio-fields.fail.4d5950ab2ca8": {
+  "nb": "Navnet er for langt",
+  "en": "The name is too long",
+  "oversatt": "Le nom est trop long"
+ },
+ "core-commands-apply.audio-fields.fail.63c138d0981e": {
+  "nb": "Versjonen hører til en annen variant",
+  "en": "The version belongs to another variant",
+  "oversatt": "La version appartient à une autre variante"
+ },
+ "core-commands-apply.audio-fields.fail.6e3ebb531beb": {
+  "nb": "Ukjent lydtype",
+  "en": "Unknown audio type",
+  "oversatt": "Type audio inconnu"
+ },
+ "core-commands-apply.audio-fields.fail.70cc3ca19989": {
+  "nb": "Ugyldig lydklipp",
+  "en": "Invalid audio clip",
+  "oversatt": "Clip audio non valide"
+ },
+ "core-commands-apply.audio-fields.fail.7977cfb5c7c1": {
+  "nb": "For mange volumpunkter (maks 500)",
+  "en": "Too many volume points (max 500)",
+  "oversatt": "Trop de points de volume (500 max.)"
+ },
+ "core-commands-apply.audio-fields.fail.810d98f16a66": {
+  "nb": "Ressursen er ikke en lydfil",
+  "en": "The asset is not an audio file",
+  "oversatt": "L'élément n'est pas un fichier audio"
+ },
+ "core-commands-apply.audio-fields.fail.da2ad8621dc3": {
+  "nb": "Replikken hører til en annen scene",
+  "en": "The line belongs to another scene",
+  "oversatt": "La réplique appartient à une autre scène"
+ },
+ "core-commands-apply.audio-fields.int.09e40d11a9a7": {
+  "nb": "start i scenen",
+  "en": "start in the scene",
+  "oversatt": "début dans la scène"
+ },
+ "core-commands-apply.audio-fields.int.3b699fb5ccb4": {
+  "nb": "inntoning",
+  "en": "fade in",
+  "oversatt": "fondu d'entrée"
+ },
+ "core-commands-apply.audio-fields.int.7f7b44687076": {
+  "nb": "lengde",
+  "en": "length",
+  "oversatt": "durée"
+ },
+ "core-commands-apply.audio-fields.int.b161043690a9": {
+  "nb": "start i lydfilen",
+  "en": "start in the audio file",
+  "oversatt": "début dans le fichier audio"
+ },
+ "core-commands-apply.audio-fields.int.da2be1137279": {
+  "nb": "uttoning",
+  "en": "fade out",
+  "oversatt": "fondu de sortie"
+ },
+ "core-commands-apply.audio-fields.need.fe507cf096f2": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "La scène"
+ },
+ "core-commands-apply.b.need.218c6f1c6e33": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.b.need.39d7882f196d": {
+  "nb": "Noden",
+  "en": "The node",
+  "oversatt": "Le nœud"
+ },
+ "core-commands-apply.b.need.440bfebc27b1": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.2": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.3": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.4": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.5": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.6": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.440bfebc27b1.7": {
+  "nb": "Manusblokken",
+  "en": "The script block",
+  "oversatt": "Le bloc de scénario"
+ },
+ "core-commands-apply.b.need.e4b7085bbc3f": {
+  "nb": "Blokken",
+  "en": "The block",
+  "oversatt": "Le bloc"
+ },
+ "core-commands-apply.b.need.e4b7085bbc3f.2": {
+  "nb": "Blokken",
+  "en": "The block",
+  "oversatt": "Le bloc"
+ },
+ "core-commands-apply.b.need.e4b7085bbc3f.3": {
+  "nb": "Blokken",
+  "en": "The block",
+  "oversatt": "Le bloc"
+ },
+ "core-commands-apply.b.need.e4b7085bbc3f.4": {
+  "nb": "Blokken",
+  "en": "The block",
+  "oversatt": "Le bloc"
+ },
+ "core-commands-apply.b.need.e4b7085bbc3f.5": {
+  "nb": "Blokken",
+  "en": "The block",
+  "oversatt": "Le bloc"
+ },
+ "core-commands-apply.b.need.e8b8292ff7bf": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.c-occurrence-id.fail.0d1984ba2cad": {
+  "nb": "Ugyldig scenetype",
+  "en": "Invalid occurrence kind",
+  "oversatt": "Type d'occurrence non valide"
+ },
+ "core-commands-apply.canvas-edge-fields-of.fail.8e35930ceda8": {
+  "nb": "Noden er fjernet",
+  "en": "The node has been removed",
+  "oversatt": "Le nœud a été supprimé"
+ },
+ "core-commands-apply.canvas-links-of.fail.10a17eaa0961": {
+  "nb": "En gruppe kan ikke ligge i seg selv",
+  "en": "A group cannot contain itself",
+  "oversatt": "Un groupe ne peut pas se contenir lui-même"
+ },
+ "core-commands-apply.canvas-links-of.fail.ec04e022d162": {
+  "nb": "Gruppen må være en gruppenode",
+  "en": "The group must be a group node",
+  "oversatt": "Le groupe doit être un nœud de groupe"
+ },
+ "core-commands-apply.canvas-links-of.need.22648d16076f": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "La scène"
+ },
+ "core-commands-apply.canvas-links-of.need.605b620bbbae": {
+  "nb": "Ressursen",
+  "en": "The asset",
+  "oversatt": "L'élément"
+ },
+ "core-commands-apply.changed.need.002144ecb105": {
+  "nb": "Lydklippet",
+  "en": "The audio clip",
+  "oversatt": "Le clip audio"
+ },
+ "core-commands-apply.changed.need.31893f8f2dbe": {
+  "nb": "Laget",
+  "en": "The layer",
+  "oversatt": "Le calque"
+ },
+ "core-commands-apply.changed.need.d041b9c2d6c1": {
+  "nb": "Relasjonen",
+  "en": "The relation",
+  "oversatt": "La relation"
+ },
+ "core-commands-apply.check-groups.fail.15af7f115373": {
+  "nb": "Gruppen finnes ikke i denne 2D-scenen",
+  "en": "The group does not exist in this 2D scene",
+  "oversatt": "Le groupe n'existe pas dans cette scène 2D"
+ },
+ "core-commands-apply.check-groups.fail.b4cc24e0688a": {
+  "nb": "Gruppen er slettet",
+  "en": "The group has been deleted",
+  "oversatt": "Le groupe a été supprimé"
+ },
+ "core-commands-apply.check-masks.fail.765458411686": {
+  "nb": "Et lag kan ikke være maske for seg selv",
+  "en": "A layer cannot be a mask for itself",
+  "oversatt": "Un calque ne peut pas être son propre masque"
+ },
+ "core-commands-apply.check-masks.fail.7f6a26c60e3b": {
+  "nb": "Laget som skal brukes som maske, finnes ikke i denne 2D-scenen",
+  "en": "The layer to be used as a mask does not exist in this 2D scene",
+  "oversatt": "Le calque à utiliser comme masque n'existe pas dans cette scène 2D"
+ },
+ "core-commands-apply.check-masks.fail.92e942ca652c": {
+  "nb": "Maskene går i ring (lagene maskerer hverandre)",
+  "en": "The masks form a loop (the layers mask each other)",
+  "oversatt": "Les masques forment une boucle (les calques se masquent mutuellement)"
+ },
+ "core-commands-apply.check-masks.fail.da01a985bedf": {
+  "nb": "En gruppe eller side kan ikke brukes som maske",
+  "en": "A group or page cannot be used as a mask",
+  "oversatt": "Un groupe ou une page ne peut pas être utilisé comme masque"
+ },
+ "core-commands-apply.check-task-id.fail.9383f3657c7c": {
+  "nb": "Ugyldig oppgave",
+  "en": "Invalid task",
+  "oversatt": "Tâche non valide"
+ },
+ "core-commands-apply.clean-versions.fail.153f4ef1ef6b": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Base non valide"
+ },
+ "core-commands-apply.clean-versions.fail.153f4ef1ef6b.2": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Base non valide"
+ },
+ "core-commands-apply.clean.fail.13c79e45d41e": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Base non valide"
+ },
+ "core-commands-apply.clean.fail.13c79e45d41e.2": {
+  "nb": "Ugyldig grunnlag",
+  "en": "Invalid basis",
+  "oversatt": "Base non valide"
+ },
+ "core-commands-apply.clip.need.4362655cd77c": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.clip.need.4362655cd77c.2": {
+  "nb": "Replikken",
+  "en": "The line",
+  "oversatt": "La réplique"
+ },
+ "core-commands-apply.comp.need.118fc96033c3": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.2": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.3": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.4": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.5": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.6": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.7": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.8": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.comp.need.118fc96033c3.9": {
+  "nb": "2D-scenen",
+  "en": "The 2D scene",
+  "oversatt": "La scène 2D"
+ },
+ "core-commands-apply.continuity-fields-of.fail.33efffb72988": {
+  "nb": "Ugyldig status",
+  "en": "Invalid status",
+  "oversatt": "Statut non valide"
+ },
+ "core-commands-apply.continuity-fields-of.fail.36dda2e1b710": {
+  "nb": "En hendelse fra hovedfilmen kan ikke gjøres lokal. Slå den av i spinoffen i stedet.",
+  "en": "An event from the main film cannot be made local. Turn it off in the spin-off instead.",
+  "oversatt": "Un événement du film principal ne peut pas être rendu local. Désactivez-le plutôt dans le spin-off."
+ },
+ "core-commands-apply.continuity-fields-of.fail.38a915f2e197": {
+  "nb": "Beskrivelsen er for lang",
+  "en": "The description is too long",
+  "oversatt": "La description est trop longue"
+ },
+ "core-commands-apply.continuity-fields-of.fail.45f5d92b5eed": {
+  "nb": "Ukjent type kontinuitetshendelse",
+  "en": "Unknown continuity event type",
+  "oversatt": "Type d'événement de continuité inconnu"
+ },
+ "core-commands-apply.continuity-fields-of.fail.64d2629fc38c": {
+  "nb": "Ugyldig kontinuitetshendelse",
+  "en": "Invalid continuity event",
+  "oversatt": "Événement de continuité non valide"
+ },
+ "core-commands-apply.continuity-fields-of.fail.68cc32b39eac": {
+  "nb": "Denne typen ressurs har ikke kontinuitet",
+  "en": "This type of asset has no continuity",
+  "oversatt": "Ce type d'élément n'a pas de continuité"
+ },
+ "core-commands-apply.continuity-fields-of.fail.6be806c8a95b": {
+  "nb": "En lokal hendelse kan ikke flyttes til hovedfilmen",
+  "en": "A local event cannot be moved to the main film",
+  "oversatt": "Un événement local ne peut pas être déplacé vers le film principal"
+ },
+ "core-commands-apply.continuity-fields-of.fail.8881e4053997": {
+  "nb": "Velg scenen der endringen er over",
+  "en": "Choose the scene where the change ends",
+  "oversatt": "Choisissez la scène où le changement se termine"
+ },
+ "core-commands-apply.continuity-fields-of.fail.a631ee54d738": {
+  "nb": "Endringen må vare til en senere scene",
+  "en": "The change must last until a later scene",
+  "oversatt": "Le changement doit durer jusqu'à une scène ultérieure"
+ },
+ "core-commands-apply.continuity-fields-of.fail.da74a1bf64c7": {
+  "nb": "Ukjent varighet",
+  "en": "Unknown duration",
+  "oversatt": "Durée inconnue"
+ },
+ "core-commands-apply.continuity-fields-of.fail.e4cf16786478": {
+  "nb": "Manuslinjen hører ikke til en scene",
+  "en": "The script line does not belong to a scene",
+  "oversatt": "La réplique du scénario n'appartient pas à une scène"
+ },
+ "core-commands-apply.continuity-fields-of.fail.fa0fbf99c75b": {
+  "nb": "Hovedfilmens hendelser er ikke lokale",
+  "en": "The main film's events are not local",
+  "oversatt": "Les événements du film principal ne sont pas locaux"
+ },
+ "core-commands-apply.continuity-fields-of.need.771effb5f150": {
+  "nb": "Scenen",
+  "en": "The scene",
+  "oversatt": "La scène"
+ },
+ "core-commands-apply.continuity-fields-of.need.fd75e73bcb50": {
+  "nb": "Scenen der endringen er over",
+  "en": "The scene where the change ends",
+  "oversatt": "La scène où le changement se termine"
+ },
+ "core-commands-apply.dialogue-edit-fields.fail.5bca8c4cdbcf": {
+  "nb": "Ugyldig redigering",
+  "en": "Invalid edit",
+  "oversatt": "Modification non valide"
+ },
+ "core-commands-apply.dialogue-edit-fields.fail.9323205aae09": {
+  "nb": "Lydkomposisjonen finnes ikke",
+  "en": "The audio composition was not found",
+  "oversatt": "La composition audio est introuvable"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.130c757cad94": {
+  "nb": "Lydopptaket finnes ikke",
+  "en": "The recording was not found",
+  "oversatt": "L'enregistrement est introuvable"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.145de80d52ce": {
+  "nb": "Foreldreversjonen hører ikke til replikken",
+  "en": "The parent version does not belong to the line",
+  "oversatt": "La version parente n'appartient pas à la réplique"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.62e6a59a8ce6": {
+  "nb": "Lydvarianten finnes ikke",
+  "en": "The audio variant was not found",
+  "oversatt": "La variante audio est introuvable"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.6cde734587a4": {
+  "nb": "Ugyldig lydversjon",
+  "en": "Invalid audio version",
+  "oversatt": "Version audio non valide"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.76aee4660193": {
+  "nb": "Lydfilen finnes ikke",
+  "en": "The audio file was not found",
+  "oversatt": "Le fichier audio est introuvable"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.7cc4f8ba4d83": {
+  "nb": "Ugyldig manusrevisjon",
+  "en": "Invalid script revision",
+  "oversatt": "Révision de scénario non valide"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.87ffa5735ee9": {
+  "nb": "Ukjent lydkilde",
+  "en": "Unknown audio source",
+  "oversatt": "Source audio inconnue"
+ },
+ "core-commands-apply.dialogue-version-fields.fail.e8d5f13b47da": {
+  "nb": "Ugyldige genereringsinnstillinger",
+  "en": "Invalid generation settings",
+  "oversatt": "Paramètres de génération non valides"
+ },
+ "core-commands-apply.e.need.0a11693d950c": {
+  "nb": "Koblingen",
+  "en": "The connection",
+  "oversatt": "La connexion"
+ },
+ "core-commands-apply.e.need.0a11693d950c.2": {
+  "nb": "Koblingen",
+  "en": "The connection",
+  "oversatt": "La connexion"
+ },
+ "core-commands-apply.e.need.0a11693d950c.3": {
+  "nb": "Koblingen",
+  "en": "The connection",
+  "oversatt": "La connexion"
+ },
+ "core-commands-apply.e.need.0a11693d950c.4": {
+  "nb": "Koblingen",
+  "en": "The connection",
+  "oversatt": "La connexion"
+ },
+ "core-commands-apply.ev.need.ee8a453a6747": {
+  "nb": "Kontinuitetshendelsen",
+  "en": "The continuity event",
+  "oversatt": "L'événement de continuité"
+ },
+ "core-commands-apply.ev.need.ee8a453a6747.2": {
+  "nb": "Kontinuitetshendelsen",
+  "en": "The continuity event",
+  "oversatt": "L'événement de continuité"
+ },
+ "core-commands-apply.ev.need.ee8a453a6747.3": {
+  "nb": "Kontinuitetshendelsen",
+  "en": "The continuity event",
+  "oversatt": "L'événement de continuité"
+ },
+ "core-commands-apply.f.need.716e5a25a786": {
+  "nb": "Faktumet",
+  "en": "The fact",
+  "oversatt": "Le fait"
+ },
+ "core-commands-apply.f.need.716e5a25a786.2": {
+  "nb": "Faktumet",
+  "en": "The fact",
+  "oversatt": "Le fait"
+ },
+ "core-commands-apply.f.need.716e5a25a786.3": {
+  "nb": "Faktumet",
+  "en": "The fact",
+  "oversatt": "Le fait"
+ },
+ "core-commands-apply.f.need.8ab231644533": {
+  "nb": "Huskelappen",
+  "en": "The note flag",
+  "oversatt": "L'annotation"
+ },
+ "core-commands-apply.f.need.8ab231644533.2": {
+  "nb": "Huskelappen",
+  "en": "The note flag",
+  "oversatt": "L'annotation"
+ },
+ "core-commands-apply.f.need.8ab231644533.3": {
+  "nb": "Huskelappen",
+  "en": "The note flag",
+  "oversatt": "L'annotation"
+ },
+ "core-commands-apply.from-variant-id.variant.54750c663342": {
+  "nb": "Utseendet før",
+  "en": "The appearance before",
+  "oversatt": "L'apparence précédente"
+ },
+ "core-commands-apply.g.need.31cdb75fe74f": {
+  "nb": "Segmentet",
+  "en": "The segment",
+  "oversatt": "Le segment"
+ },
+ "core-commands-apply.g.need.31cdb75fe74f.2": {
+  "nb": "Segmentet",
+  "en": "The segment",
+  "oversatt": "Le segment"
+ },
+ "core-commands-apply.g.need.b48915069fad": {
+  "nb": "Stadiet",
+  "en": "The stage",
+  "oversatt": "L'étape"
+ },
+ "core-commands-apply.g.need.b48915069fad.2": {
+  "nb": "Stadiet",
+  "en": "The stage",
+  "oversatt": "L'étape"
+ }
+}

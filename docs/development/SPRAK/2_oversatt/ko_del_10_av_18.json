@@ -1,0 +1,3002 @@
+{
+ "app-scene-editor-credits-panel.participants-tab.run.42bea290e501": {
+  "nb": "Sett logo på deltakeren",
+  "en": "Set the participant's logo",
+  "oversatt": "참여자의 로고 설정"
+ },
+ "app-scene-editor-credits-panel.participants-tab.title.8e4becbab568": {
+  "nb": "Logo fra det globale biblioteket ved siden av navnet (K)",
+  "en": "Logo from the global library next to the name (K)",
+  "oversatt": "이름 옆에 표시할 글로벌 라이브러리의 로고 (K)"
+ },
+ "app-scene-editor-credits-panel.participants-tab.title.fba86a683254": {
+  "nb": "Skjulte deltakere tegnes ikke",
+  "en": "Hidden participants are not drawn",
+  "oversatt": "숨겨진 참여자는 렌더링되지 않음"
+ },
+ "app-scene-editor-credits-panel.presentation-one-at-a-time": {
+  "nb": "Én om gangen",
+  "en": "One at a time",
+  "oversatt": "한 번에 하나씩"
+ },
+ "app-scene-editor-credits-panel.presentation-positions": {
+  "nb": "Plassert i bildet",
+  "en": "Positioned in the frame",
+  "oversatt": "프레임 내 배치됨"
+ },
+ "app-scene-editor-credits-panel.presentation-roll": {
+  "nb": "Rullende",
+  "en": "Rolling",
+  "oversatt": "롤링"
+ },
+ "app-scene-editor-credits-panel.remove.run.d2e55c53b751": {
+  "nb": "Fjern deltakeren",
+  "en": "Remove the participant",
+  "oversatt": "참여자 제거"
+ },
+ "app-scene-editor-credits-panel.set.run.8a500abc7f91": {
+  "nb": "Endre rulleteksten",
+  "en": "Change the credits",
+  "oversatt": "크레딧 변경"
+ },
+ "app-scene-editor-credits-panel.update.run.84d6f02e42a3": {
+  "nb": "Endre deltakeren",
+  "en": "Change the participant",
+  "oversatt": "참여자 변경"
+ },
+ "app-scene-editor-dialogue-characters.dialogue-characters.button.295c18266dd2": {
+  "nb": "Bekreft koblinger",
+  "en": "Confirm links",
+  "oversatt": "연결 확인"
+ },
+ "app-scene-editor-dialogue-characters.dialogue-characters.button.de8d92247396": {
+  "nb": "Koble replikker til karakterer",
+  "en": "Link lines to characters",
+  "oversatt": "대사를 캐릭터에 연결"
+ },
+ "app-scene-editor-dialogue-characters.r.cmds-run-and-wait.560274632326": {
+  "nb": "Bekreftet karakterkobling",
+  "en": "Confirmed character link",
+  "oversatt": "확인된 캐릭터 연결"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.button.6d7f74bb00ad": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.cmds-run.4a4c82cda462": {
+  "nb": "Endre talespråk",
+  "en": "Change speech language",
+  "oversatt": "음성 언어 변경"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.cmds-run.e53e451c3f2d": {
+  "nb": "Endre manusspråk",
+  "en": "Change script language",
+  "oversatt": "대본 언어 변경"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.label.f72b486a42e0": {
+  "nb": "Replikkens talespråk",
+  "en": "Line speech language",
+  "oversatt": "대사 음성 언어"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.p.72a56f10cfea": {
+  "nb": "Gjeldende manusspråk: {value1} · talespråk: {value2}",
+  "en": "Current script language: {value1} · speech language: {value2}",
+  "oversatt": "현재 대본 언어: {value1} · 음성 언어: {value2}"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.placeholder.18b33d22f88d": {
+  "nb": "Arv fra karakter",
+  "en": "Inherit from character",
+  "oversatt": "캐릭터 설정 상속"
+ },
+ "app-scene-editor-dialogue-language-controls.dialogue-language-controls.placeholder.8b66a9f4b0fb": {
+  "nb": "Arv",
+  "en": "Inherit",
+  "oversatt": "상속"
+ },
+ "app-scene-editor-dialogue-language-controls.label.label.4dd4b5aa50e9": {
+  "nb": "Replikkens manusspråk",
+  "en": "Line script language",
+  "oversatt": "대사 대본 언어"
+ },
+ "app-scene-editor-dialogue-language-controls.label.label.ac65e3e008f6": {
+  "nb": "Variantens manusspråk",
+  "en": "Variant script language",
+  "oversatt": "변형 대본 언어"
+ },
+ "app-scene-editor-dialogue-language-controls.label.label.ffca5a4fb89b": {
+  "nb": "Prosjektets manusspråk",
+  "en": "Project script language",
+  "oversatt": "프로젝트 대본 언어"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.aria-label.37f534dc7784": {
+  "nb": "Bekreft sletting av versjon",
+  "en": "Confirm version deletion",
+  "oversatt": "버전 삭제 확인"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.182f40d4c23d": {
+  "nb": "Slett versjon …",
+  "en": "Delete version …",
+  "oversatt": "버전 삭제…"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.59e6033fd696": {
+  "nb": "Stopp forhåndslytting",
+  "en": "Stop preview",
+  "oversatt": "미리 듣기 중지"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.640dbbbe8d50": {
+  "nb": "Forhåndslytt",
+  "en": "Preview",
+  "oversatt": "미리 듣기"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.7e6beda872e8": {
+  "nb": "Bruk i filmen",
+  "en": "Use in film",
+  "oversatt": "영화에 사용"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.8c7233ea2327": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.d237a25f5b92": {
+  "nb": "Ja, slett versjonen",
+  "en": "Yes, delete version",
+  "oversatt": "예, 버전 삭제"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.button.d6a3d8d2a910": {
+  "nb": "Rediger lydprofil",
+  "en": "Edit audio profile",
+  "oversatt": "오디오 프로필 편집"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.cmds-run.85c1d80c587a": {
+  "nb": "Slett lydversjon",
+  "en": "Delete audio version",
+  "oversatt": "오디오 버전 삭제"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.cmds-run.f548e1c2c187": {
+  "nb": "Velg filmversjon",
+  "en": "Choose film version",
+  "oversatt": "영화 버전 선택"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.cmds-run.f656d735019c": {
+  "nb": "Rediger lydversjon",
+  "en": "Edit audio version",
+  "oversatt": "오디오 버전 편집"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.div.bf299468ad78": {
+  "nb": "Slett denne inaktive versjonen? Handlingen kan angres.",
+  "en": "Delete this inactive version? This can be undone.",
+  "oversatt": "이 비활성 버전을 삭제하시겠습니까? 실행 취소할 수 있습니다."
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.p.4f1eb000f244": {
+  "nb": "Laget med profil {value1}",
+  "en": "Made with profile {value1}",
+  "oversatt": "{value1} 프로필로 생성됨"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.p.59bc96d9ef8c": {
+  "nb": "Replikker på samme karakterspor overlapper. Ingen andre replikker flyttes.",
+  "en": "Lines on the same character track overlap. No other lines are moved.",
+  "oversatt": "동일한 캐릭터 트랙의 대사가 겹칩니다. 다른 대사는 이동되지 않습니다."
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.p.8a1f3c663fa0": {
+  "nb": "Forhåndslytting endrer ikke filmversjonen.",
+  "en": "Preview does not change the film version.",
+  "oversatt": "미리 듣기는 영화 버전을 변경하지 않습니다."
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.span.742049068b81": {
+  "nb": "Opptak",
+  "en": "Recording",
+  "oversatt": "녹음"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.span.7b6fbf16552c": {
+  "nb": "Generert",
+  "en": "Generated",
+  "oversatt": "생성됨"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.span.84e36a502aed": {
+  "nb": "Opplastet",
+  "en": "Uploaded",
+  "oversatt": "업로드됨"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.span.c7cd4fc0ef6f": {
+  "nb": "Versjon {value1}",
+  "en": "Version {value1}",
+  "oversatt": "버전 {value1}"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.span.da0512cc7fc3": {
+  "nb": "Tidligere lyd",
+  "en": "Previous audio",
+  "oversatt": "이전 오디오"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.strong.116ea8e2f3b1": {
+  "nb": "Aktiv filmversjon",
+  "en": "Active film version",
+  "oversatt": "활성 필름 버전"
+ },
+ "app-scene-editor-dialogue-versions.dialogue-versions.title.b1c028a5ee0b": {
+  "nb": "Lydversjoner",
+  "en": "Audio versions",
+  "oversatt": "오디오 버전"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.aria-label.5aad2202408b": {
+  "nb": "Godkjenn kostnaden",
+  "en": "Approve cost",
+  "oversatt": "비용 승인"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.button.18b2f897b3d7": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.button.686a55a7ebf5": {
+  "nb": "Godkjenn og generer",
+  "en": "Approve and generate",
+  "oversatt": "승인 및 생성"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.button.75e32e6da4db": {
+  "nb": "Generer …",
+  "en": "Generate …",
+  "oversatt": "생성 …"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.button.d20d6afa2eb6": {
+  "nb": "Genererer …",
+  "en": "Generating …",
+  "oversatt": "생성 중 …"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.button.daa0584f5037": {
+  "nb": "Generer lydfil",
+  "en": "Generate audio file",
+  "oversatt": "오디오 파일 생성"
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.div.4f875ff43708": {
+  "nb": "ElevenLabs · {model} · {value2} · anslått {value3}. En ny aktiv versjon lages. Gamle filer og redigeringer beholdes.",
+  "en": "ElevenLabs · {model} · {value2} · estimated {value3}. A new active version is created. Previous files and edits are preserved.",
+  "oversatt": "ElevenLabs · {model} · {value2} · 예상 {value3}. 새로운 활성 버전이 생성됩니다. 이전 파일과 편집 내용은 유지됩니다."
+ },
+ "app-scene-editor-generate-dialogue.generate-dialogue.p.9f7936a9da7d": {
+  "nb": "Modellprisen er ukjent. Administratoren må registrere prisen før generering.",
+  "en": "The model price is unknown. An administrator must register the price before generation.",
+  "oversatt": "모델 가격을 알 수 없습니다. 생성하기 전에 관리자가 가격을 등록해야 합니다."
+ },
+ "app-scene-editor-generate-dialogue.generate-summary": {
+  "nb": "ElevenLabs · {model} · {language} · anslått {cost}. En ny aktiv versjon lages. Gamle filer og redigeringer beholdes.",
+  "en": "ElevenLabs · {model} · {language} · estimated {cost}. A new active version is created. Previous files and edits are preserved.",
+  "oversatt": "ElevenLabs · {model} · {language} · 예상 {cost}. 새로운 활성 버전이 생성됩니다. 이전 파일과 편집 내용은 유지됩니다."
+ },
+ "app-scene-editor-generate-dialogue.generate-summary-unknown-price": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "가격 미정"
+ },
+ "app-scene-editor-generate-dialogue.linked.cmds-run-and-wait.80b555fbb51a": {
+  "nb": "Koble karakter til replikken",
+  "en": "Link character to line",
+  "oversatt": "캐릭터를 대사에 연결"
+ },
+ "app-scene-editor-generate-dialogue.result.save-take.b19702b8562f": {
+  "nb": "AI-generert replikk",
+  "en": "AI-generated line",
+  "oversatt": "AI 생성 대사"
+ },
+ "app-scene-editor-generate-dialogue.run.message.12b237836818": {
+  "nb": "Prosjektet er lukket.",
+  "en": "The project is closed.",
+  "oversatt": "프로젝트가 종료되었습니다."
+ },
+ "app-scene-editor-generate-dialogue.run.message.12b237836818.2": {
+  "nb": "Prosjektet er lukket.",
+  "en": "The project is closed.",
+  "oversatt": "프로젝트가 종료되었습니다."
+ },
+ "app-scene-editor-generate-dialogue.run.message.52f8ec37256c": {
+  "nb": "Lydlengden kunne ikke måles. Filen er bevart hos prosjektet.",
+  "en": "The audio duration could not be measured. The file is preserved in the project.",
+  "oversatt": "오디오 길이를 측정할 수 없습니다. 파일은 프로젝트에 보존됩니다."
+ },
+ "app-scene-editor-generate-dialogue.run.message.b6737e0b5a59": {
+  "nb": "Lydfilen kunne ikke hentes.",
+  "en": "The audio file could not be loaded.",
+  "oversatt": "오디오 파일을 불러올 수 없습니다."
+ },
+ "app-scene-editor-generate-dialogue.run.message.b6737e0b5a59.2": {
+  "nb": "Lydfilen kunne ikke hentes.",
+  "en": "The audio file could not be loaded.",
+  "oversatt": "오디오 파일을 불러올 수 없습니다."
+ },
+ "app-scene-editor-inspector-fields.key-marker.aria-label.91b98153c212": {
+  "nb": "Sett nøkkelbilde for {label}",
+  "en": "Set keyframe for {label}",
+  "oversatt": "{label}에 키프레임 설정"
+ },
+ "app-scene-editor-inspector-fields.key-marker.aria-label.cede78e7bb05": {
+  "nb": "Fjern nøkkelbilde for {label}",
+  "en": "Remove keyframe for {label}",
+  "oversatt": "{label}의 키프레임 제거"
+ },
+ "app-scene-editor-inspector-fields.key-marker.title.21ef13d2ac82": {
+  "nb": "Sett nøkkelbilde på dette bildet",
+  "en": "Set keyframe on this frame",
+  "oversatt": "이 프레임에 키프레임 설정"
+ },
+ "app-scene-editor-inspector-fields.key-marker.title.d7c2ae24a247": {
+  "nb": "Fjern nøkkelbilde på dette bildet",
+  "en": "Remove keyframe on this frame",
+  "oversatt": "이 프레임에서 키프레임 제거"
+ },
+ "app-scene-editor-layer-events.add.run.e12744833915": {
+  "nb": "Koble manus til hendelse",
+  "en": "Link script to event",
+  "oversatt": "이벤트에 대본 연결"
+ },
+ "app-scene-editor-layer-events.kind.action.e64ea10b7b2f": {
+  "nb": "Handling",
+  "en": "Action",
+  "oversatt": "액션"
+ },
+ "app-scene-editor-layer-events.kind.dialogue.c95ea972d0f7": {
+  "nb": "Replikk",
+  "en": "Line",
+  "oversatt": "대사"
+ },
+ "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc": {
+  "nb": "Bilde",
+  "en": "Shot",
+  "oversatt": "샷"
+ },
+ "app-scene-editor-layer-events.layer-events.aria-label.25c5a29fd17d": {
+  "nb": "Fjern hendelsen",
+  "en": "Remove the event",
+  "oversatt": "이벤트 제거"
+ },
+ "app-scene-editor-layer-events.layer-events.aria-label.930f91e65691": {
+  "nb": "Hendelser i manuset",
+  "en": "Script events",
+  "oversatt": "대본 이벤트"
+ },
+ "app-scene-editor-layer-events.layer-events.aria-label.d95b6ea98816": {
+  "nb": "Manusblokk for hendelsen",
+  "en": "Script block for the event",
+  "oversatt": "이벤트의 대본 블록"
+ },
+ "app-scene-editor-layer-events.layer-events.button.0a688c48831e": {
+  "nb": "Koble her",
+  "en": "Link here",
+  "oversatt": "여기에 연결"
+ },
+ "app-scene-editor-layer-events.layer-events.option.7d8f8b82bd92": {
+  "nb": "Velg handling eller replikk …",
+  "en": "Choose an action or line …",
+  "oversatt": "액션 또는 대사 선택 …"
+ },
+ "app-scene-editor-layer-events.layer-events.p.650860773421": {
+  "nb": "Ingen ennå. Koble en handling eller replikk til det laget gjør på avspillingshodet.",
+  "en": "None yet. Link an action or line to what the layer does at the playhead.",
+  "oversatt": "아직 없습니다. 재생 헤드 위치에서 레이어가 수행하는 작업에 액션이나 대사를 연결하세요."
+ },
+ "app-scene-editor-layer-events.layer-events.run.fd84ecf1cfe6": {
+  "nb": "Fjern hendelse",
+  "en": "Remove event",
+  "oversatt": "이벤트 제거"
+ },
+ "app-scene-editor-layer-events.layer-events.span.d7bad2b14058": {
+  "nb": "Blokken er borte",
+  "en": "The block has been removed",
+  "oversatt": "블록이 삭제되었습니다"
+ },
+ "app-scene-editor-layer-events.layer-events.title.930f91e65691": {
+  "nb": "Hendelser i manuset",
+  "en": "Script events",
+  "oversatt": "대본 이벤트"
+ },
+ "app-scene-editor-layer-events.layer-events.title.aada8349175f": {
+  "nb": "Koble blokken til laget på avspillingshodet",
+  "en": "Link the block to the layer at the playhead",
+  "oversatt": "재생 헤드 위치에서 블록을 레이어에 연결"
+ },
+ "app-scene-editor-layer-events.layer-events.title.ba8e885ef2b9": {
+  "nb": "Gå til hendelsen",
+  "en": "Go to the event",
+  "oversatt": "이벤트로 이동"
+ },
+ "app-scene-editor-layer-image-dialog.asset-picker.aria-label.5206b6737078": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "라이브러리 검색"
+ },
+ "app-scene-editor-layer-image-dialog.asset-picker.p.fe014759b96f": {
+  "nb": "Ingen ressurser passer.",
+  "en": "No assets match.",
+  "oversatt": "일치하는 에셋이 없습니다."
+ },
+ "app-scene-editor-layer-image-dialog.asset-picker.placeholder.750cd0de9dee": {
+  "nb": "Søk i biblioteket …",
+  "en": "Search the library …",
+  "oversatt": "라이브러리 검색 …"
+ },
+ "app-scene-editor-layer-image-dialog.big-title": {
+  "nb": "{asset} – {variant} v{version}",
+  "en": "{asset} – {variant} v{version}",
+  "oversatt": "{asset} – {variant} v{version}"
+ },
+ "app-scene-editor-layer-image-dialog.big-title-unnamed": {
+  "nb": "Uten navn",
+  "en": "Without name",
+  "oversatt": "이름 없음"
+ },
+ "app-scene-editor-layer-image-dialog.body.aria-label.4d4c8a4fe30b": {
+  "nb": "Velg bildefil",
+  "en": "Choose image file",
+  "oversatt": "이미지 파일 선택"
+ },
+ "app-scene-editor-layer-image-dialog.body.aria-label.6abd63eacb7b": {
+  "nb": "Slett v{number}",
+  "en": "Delete v{number}",
+  "oversatt": "v{number} 삭제"
+ },
+ "app-scene-editor-layer-image-dialog.body.aria-label.6c1193abf401": {
+  "nb": "Nytt bilde",
+  "en": "New image",
+  "oversatt": "새 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.body.aria-label.9a2ff6c64427": {
+  "nb": "Vis v{number} stort, med beskrivelsen",
+  "en": "Show v{number} large, with the description",
+  "oversatt": "v{number} 크게 보기 및 설명 표시"
+ },
+ "app-scene-editor-layer-image-dialog.body.aria-label.e3605750a023": {
+  "nb": "Standardbilde",
+  "en": "Default image",
+  "oversatt": "기본 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.0afbc6a4a2e4": {
+  "nb": "Følg godkjent bilde",
+  "en": "Follow approved image",
+  "oversatt": "승인된 이미지 따르기"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.31c38b9619fa": {
+  "nb": "Velg fil …",
+  "en": "Choose file …",
+  "oversatt": "파일 선택 …"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.4644de1a142c": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "업로드 중 …"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.7958c1ef5871": {
+  "nb": "Frilegg bildet …",
+  "en": "Cut out image …",
+  "oversatt": "이미지 배경 제거(누끼) …"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.a5c7f5180f75": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-scene-editor-layer-image-dialog.body.button.b67c79709b66": {
+  "nb": "Følger godkjent bilde",
+  "en": "Following approved image",
+  "oversatt": "승인된 이미지 따르는 중"
+ },
+ "app-scene-editor-layer-image-dialog.body.dialog-description.04da70c619f2": {
+  "nb": "Laget er en fargeflate. Velg en ressurs fra biblioteket for å vise bildet dens.",
+  "en": "The layer is a colour fill. Choose an asset from the library to show its image.",
+  "oversatt": "이 레이어는 단색 채우기입니다. 이미지를 표시하려면 라이브러리에서 에셋을 선택하세요."
+ },
+ "app-scene-editor-layer-image-dialog.body.dialog-description.649e4c194560": {
+  "nb": "{name} – {value2}. Velg et annet bilde, last opp et nytt eller generer et nytt.",
+  "en": "{name} – {value2}. Choose another image, upload a new one or generate a new one.",
+  "oversatt": "{name} – {value2}. 다른 이미지를 선택하거나 새 이미지를 업로드 또는 생성하세요."
+ },
+ "app-scene-editor-layer-image-dialog.body.dialog-title.e77f922ac080": {
+  "nb": "Bilde for «{name}»",
+  "en": "Image for “{name}”",
+  "oversatt": "“{name}”의 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.body.h3.66b83752ff74": {
+  "nb": "Uten navn",
+  "en": "Without name",
+  "oversatt": "이름 없음"
+ },
+ "app-scene-editor-layer-image-dialog.body.h3.8052b7ca5d08": {
+  "nb": "Følger biblioteket",
+  "en": "Follows the library",
+  "oversatt": "라이브러리 따름"
+ },
+ "app-scene-editor-layer-image-dialog.body.h3.e1d574d7fba3": {
+  "nb": "Last opp et nytt bilde",
+  "en": "Upload a new image",
+  "oversatt": "새 이미지 업로드"
+ },
+ "app-scene-editor-layer-image-dialog.body.label.54007d9b85d4": {
+  "nb": "Bilder av {name} (laget «{name2}»)",
+  "en": "Pictures of {name} (layer “{name2}”)",
+  "oversatt": "{name}의 이미지 (레이어 “{name2}”)"
+ },
+ "app-scene-editor-layer-image-dialog.body.link.769abd72f77b": {
+  "nb": "Åpne i biblioteket",
+  "en": "Open in library",
+  "oversatt": "라이브러리에서 열기"
+ },
+ "app-scene-editor-layer-image-dialog.body.option.66b83752ff74": {
+  "nb": "Uten navn",
+  "en": "Without name",
+  "oversatt": "이름 없음"
+ },
+ "app-scene-editor-layer-image-dialog.body.p.139e32706cb4": {
+  "nb": "Ingen bilder i denne varianten.",
+  "en": "No images in this variant.",
+  "oversatt": "이 변형에 이미지가 없습니다."
+ },
+ "app-scene-editor-layer-image-dialog.body.p.26389a909457": {
+  "nb": "Ressursen har ingen bilder ennå. Last opp det første nedenfor.",
+  "en": "The asset has no images yet. Upload the first one below.",
+  "oversatt": "에셋에 아직 이미지가 없습니다. 아래에서 첫 이미지를 업로드하세요."
+ },
+ "app-scene-editor-layer-image-dialog.body.p.a78999adf0aa": {
+  "nb": "Lagres som ny versjon i biblioteket og brukes på laget med én gang.",
+  "en": "Saved as a new version in the library and used on the layer straight away.",
+  "oversatt": "라이브러리에 새 버전으로 저장되며 레이어에 즉시 적용됩니다."
+ },
+ "app-scene-editor-layer-image-dialog.body.save-version.7051f127d1d4": {
+  "nb": "Generert med AI ({model})",
+  "en": "Generated with AI ({model})",
+  "oversatt": "AI로 생성됨 ({model})"
+ },
+ "app-scene-editor-layer-image-dialog.body.save-version.a78661091aa0": {
+  "nb": "AI-bilde av «{name}»",
+  "en": "AI image of “{name}”",
+  "oversatt": "“{name}”의 AI 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.body.set-layer.0afbc6a4a2e4": {
+  "nb": "Følg godkjent bilde",
+  "en": "Follow approved image",
+  "oversatt": "승인된 이미지 따르기"
+ },
+ "app-scene-editor-layer-image-dialog.body.set-layer.3cbbbbbe87aa": {
+  "nb": "Bruk bilde v{number}",
+  "en": "Use image v{number}",
+  "oversatt": "이미지 v{number} 사용"
+ },
+ "app-scene-editor-layer-image-dialog.body.set-layer.9a26ce4898ea": {
+  "nb": "Bruk forsidebildet",
+  "en": "Use the cover image",
+  "oversatt": "커버 이미지 사용"
+ },
+ "app-scene-editor-layer-image-dialog.body.set-layer.d6541bc17acd": {
+  "nb": "Koble lag til ressurs",
+  "en": "Connect layer to asset",
+  "oversatt": "레이어를 에셋에 연결"
+ },
+ "app-scene-editor-layer-image-dialog.body.set-layer.fba9a181adf6": {
+  "nb": "Bruk frilagt bilde",
+  "en": "Use cut-out image",
+  "oversatt": "배경 제거된 이미지 사용"
+ },
+ "app-scene-editor-layer-image-dialog.body.span.56a15cee702b": {
+  "nb": "Forsidebildet",
+  "en": "Cover image",
+  "oversatt": "커버 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.body.span.8b03bafdaca5": {
+  "nb": " · arkivert",
+  "en": " · archived",
+  "oversatt": " · 아카이브됨"
+ },
+ "app-scene-editor-layer-image-dialog.body.span.a3eda72b2ac6": {
+  "nb": "Endres når et nytt bilde godkjennes",
+  "en": "Changes when a new image is approved",
+  "oversatt": "새 이미지가 승인되면 변경됩니다"
+ },
+ "app-scene-editor-layer-image-dialog.body.span.de2f6af6c508": {
+  "nb": "godkjent",
+  "en": "approved",
+  "oversatt": "승인됨"
+ },
+ "app-scene-editor-layer-image-dialog.body.title.092211641dfd": {
+  "nb": "Stor visning, zoom og beskrivelsen (prompten) som laget bildet",
+  "en": "Large view, zoom and the description (prompt) that made the image",
+  "oversatt": "크게 보기, 확대/축소 및 이미지를 생성한 설명(프롬프트)"
+ },
+ "app-scene-editor-layer-image-dialog.body.title.0bf8ebf61c5d": {
+  "nb": "Laget viser variantens godkjente (ellers nyeste) bilde, også når det kommer nye",
+  "en": "The layer shows the variant's approved (otherwise newest) image, including when new ones arrive",
+  "oversatt": "레이어는 새 이미지가 추가될 때를 포함하여 변형의 승인된(또는 최신) 이미지를 표시합니다."
+ },
+ "app-scene-editor-layer-image-dialog.body.title.5e4b0d928963": {
+  "nb": "Slett bildet (flyttes til «Slettede objekter»)",
+  "en": "Delete the image (moved to “Deleted items”)",
+  "oversatt": "이미지 삭제(\"삭제된 항목\"으로 이동)"
+ },
+ "app-scene-editor-layer-image-dialog.body.title.96ffb697c0d9": {
+  "nb": "Fjern bakgrunnen i bildet som vises nå (gratis, ny versjon)",
+  "en": "Remove the background of the image shown now (free, new version)",
+  "oversatt": "현재 표시된 이미지의 배경 제거(무료, 새 버전)"
+ },
+ "app-scene-editor-layer-image-dialog.body.title.9b6b3d5ecad2": {
+  "nb": "Bruk versjon {number} (dobbeltklikk: stor visning){value2}",
+  "en": "Use version {number} (double-click: large view){value2}",
+  "oversatt": "버전 {number} 사용(더블 클릭: 크게 보기){value2}"
+ },
+ "app-scene-editor-layer-image-dialog.body.title.bb0efe14f110": {
+  "nb": "Viser alltid ressursens forsidebilde (godkjent bilde)",
+  "en": "Always shows the asset's cover image (approved image)",
+  "oversatt": "항상 에셋의 대표 이미지(승인된 이미지)를 표시합니다."
+ },
+ "app-scene-editor-layer-image-dialog.body.title.cd53f6a2bfd7": {
+  "nb": "{name} – {value2} v{number}",
+  "en": "{name} – {value2} v{number}",
+  "oversatt": "{name} – {value2} v{number}"
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.aria-label.cf8fc3213c1e": {
+  "nb": "Slett v{number}",
+  "en": "Delete v{number}",
+  "oversatt": "v{number} 삭제"
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.button.606860c55a99": {
+  "nb": "Slett bildet",
+  "en": "Delete image",
+  "oversatt": "이미지 삭제"
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.button.79918e567ea6": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.p.03cb6e977c56": {
+  "nb": "v{number} flyttes til «Slettede objekter» i biblioteket. Der kan det hentes inn igjen eller slettes for godt.",
+  "en": "v{number} is moved to “Deleted items” in the library. It can be restored from there or deleted for good.",
+  "oversatt": "v{number}이(가) 라이브러리의 \"삭제된 항목\"으로 이동되었습니다. 거기서 복원하거나 영구 삭제할 수 있습니다."
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.p.17fb8ea99c2d": {
+  "nb": " {value1} bruker akkurat dette bildet og beholder det til det slettes for godt.",
+  "en": " {value1} uses this exact image and keeps it until it is deleted for good.",
+  "oversatt": " {value1}에서 이 이미지를 사용 중이며, 영구 삭제될 때까지 유지됩니다."
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.p.6380696bd3dc": {
+  "nb": "v{number} er godkjent og brukes i scenene. Godkjenn et annet bilde først, så kan dette slettes.",
+  "en": "v{number} is approved and used in the scenes. Approve another image first, then this can be deleted.",
+  "oversatt": "v{number}은(는) 승인되어 씬에서 사용 중입니다. 다른 이미지를 먼저 승인해야 이 이미지를 삭제할 수 있습니다."
+ },
+ "app-scene-editor-layer-image-dialog.delete-version-confirm.p.b9d43c5be592": {
+  "nb": " Ingen lag bruker akkurat dette bildet.",
+  "en": " No layer uses this exact image.",
+  "oversatt": " 이 이미지를 사용하는 레이어가 없습니다."
+ },
+ "app-scene-editor-layer-image-dialog.err.cmds-run.3cf2a41b3bb8": {
+  "nb": "Slett bilde v{value1}",
+  "en": "Delete image v{value1}",
+  "oversatt": "이미지 v{value1} 삭제"
+ },
+ "app-scene-editor-layer-image-dialog.err.l-lastet-opp-fra-sceneeditoren-uploaded-from-the-scene-editor-up-note-filter.e2670a2f5805": {
+  "nb": "Lastet opp fra sceneeditoren.",
+  "en": "Uploaded from the scene editor.",
+  "oversatt": "씬 편집기에서 업로드됨."
+ },
+ "app-scene-editor-layer-image-dialog.err.save-version.88337b4ddfd9": {
+  "nb": "Nytt bilde av «{name}»",
+  "en": "New image of “{name}”",
+  "oversatt": "“{name}”의 새 이미지"
+ },
+ "app-scene-editor-layer-image-dialog.label.on-place-parts.b718f27659ed": {
+  "nb": "Legg delene i scenen",
+  "en": "Put the parts in the scene",
+  "oversatt": "파츠를 씬에 배치"
+ },
+ "app-scene-editor-layer-image-dialog.locked-layer": {
+  "nb": " Ett lag bruker akkurat dette bildet og beholder det til det slettes for godt.",
+  "en": " One layer uses this exact image and keeps it until it is deleted for good.",
+  "oversatt": " 1개 레이어에서 이 이미지를 사용 중이며, 영구 삭제될 때까지 유지됩니다."
+ },
+ "app-scene-editor-layer-image-dialog.locked-layers": {
+  "nb": " {count} lag bruker akkurat dette bildet og beholder det til det slettes for godt.",
+  "en": " {count} layers uses this exact image and keeps it until it is deleted for good.",
+  "oversatt": " {count}개 레이어에서 이 이미지를 사용 중이며, 영구 삭제될 때까지 유지됩니다."
+ },
+ "app-scene-editor-layer-image-dialog.ok.set-layer.0e6e799ff30c": {
+  "nb": "Bruk nytt bilde",
+  "en": "Use new image",
+  "oversatt": "새 이미지 사용"
+ },
+ "app-scene-editor-layer-image-dialog.on-use-here.set-layer.043a3896c91b": {
+  "nb": "Harmonisert bilde bare her",
+  "en": "Harmonized image only here",
+  "oversatt": "여기에만 조화된 이미지 적용"
+ },
+ "app-scene-editor-layer-image-dialog.r.cmds-run-and-wait.5636f7ea3607": {
+  "nb": "Ny variant for «{name}»",
+  "en": "New variant for “{name}”",
+  "oversatt": "“{name}”의 새 변형"
+ },
+ "app-scene-editor-layer-image-dialog.save-version.message.0eb54ac8c57d": {
+  "nb": "Laget har ingen ressurs.",
+  "en": "The layer has no asset.",
+  "oversatt": "레이어에 에셋이 없습니다."
+ },
+ "app-scene-editor-layer-image-dialog.save-version.message.7a4f87dfc982": {
+  "nb": "Bildet ble lagret, men kunne ikke tas i bruk på laget.",
+  "en": "The image was saved, but could not be used on the layer.",
+  "oversatt": "이미지가 저장되었지만 레이어에 적용할 수 없습니다."
+ },
+ "app-scene-editor-layer-image-dialog.selected.aria-label.030197fbd738": {
+  "nb": "Valgt",
+  "en": "Selected",
+  "oversatt": "선택됨"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.animatic.937840e58a95": {
+  "nb": "Animatic",
+  "en": "Animatic",
+  "oversatt": "애니매틱"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.illustrated.701bc499562c": {
+  "nb": "Illustrert",
+  "en": "Illustrated",
+  "oversatt": "일러스트"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.other.064c18ba948a": {
+  "nb": "Annet",
+  "en": "Other",
+  "oversatt": "기타"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.poster.2a25a52bdea4": {
+  "nb": "Plakat",
+  "en": "Poster",
+  "oversatt": "포스터"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.realistic.a26816eb11fb": {
+  "nb": "Filmrealistisk",
+  "en": "Realistic",
+  "oversatt": "실사풍"
+ },
+ "app-scene-editor-layer-image-dialog.style-label.reference.6b95333c3619": {
+  "nb": "Referansebilde",
+  "en": "Reference image",
+  "oversatt": "참조 이미지"
+ },
+ "app-scene-editor-layer-inspector.change-kind.apply.358048d422a2": {
+  "nb": "Endre lagtype",
+  "en": "Change layer type",
+  "oversatt": "레이어 유형 변경"
+ },
+ "app-scene-editor-layer-inspector.color-field.aria-label.3a66704c353e": {
+  "nb": "(fargevelger)",
+  "en": "(colour picker)",
+  "oversatt": "(색상 피커)"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.apply.52268fb302b5": {
+  "nb": "Endre bakgrunn",
+  "en": "Change background",
+  "oversatt": "배경 변경"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.apply.77ddbc7d08dd": {
+  "nb": "Endre navn på 2D-scene",
+  "en": "Rename 2D scene",
+  "oversatt": "2D 씬 이름 바꾸기"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.aria-label.39419b2e045b": {
+  "nb": "Egenskaper for 2D-scenen",
+  "en": "Properties for the 2D scene",
+  "oversatt": "2D 씬 속성"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.aria-label.d1dda7dd0826": {
+  "nb": "Animer på enere, toere, treere eller firere",
+  "en": "Animate on ones, twos, threes or fours",
+  "oversatt": "1원, 2원, 3원 또는 4원으로 애니메이션 적용"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.button.ad44769668f8": {
+  "nb": "Endre scenevarighet …",
+  "en": "Change scene duration …",
+  "oversatt": "씬 길이 변경 …"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.h2.1bf0b9ef1123": {
+  "nb": "2D-scene",
+  "en": "2D scene",
+  "oversatt": "2D 씬"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.hint.23e7bd554865": {
+  "nb": "Velg et lag i scenen eller i listen for å endre det.",
+  "en": "Choose a layer in the scene or in the list to change it.",
+  "oversatt": "수정할 레이어를 씬 또는 목록에서 선택하세요."
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.label.3481ff9cff92": {
+  "nb": "Animer",
+  "en": "Animate",
+  "oversatt": "애니메이션"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.label.b5fb251149b2": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.label.dda7066c2362": {
+  "nb": "Bakgrunnsfarge",
+  "en": "Background colour",
+  "oversatt": "배경색"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.option.1727fcd237b8": {
+  "nb": "på firere",
+  "en": "on fours",
+  "oversatt": "4프레임마다"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.option.1da73b935fe1": {
+  "nb": "hvert bilde",
+  "en": "every frame",
+  "oversatt": "매 프레임"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.option.b9378f8eba47": {
+  "nb": "på toere",
+  "en": "on twos",
+  "oversatt": "2프레임마다"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.option.d675cba8e976": {
+  "nb": "på treere",
+  "en": "on threes",
+  "oversatt": "3프레임마다"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.p.2823f27a855a": {
+  "nb": "Bildeformat og bildefrekvens gjelder hele prosjektet og endres på prosjektoversikten.",
+  "en": "Frame size and frame rate apply to the whole project and are changed on the project overview.",
+  "oversatt": "프레임 크기와 프레임 레이트는 프로젝트 전체에 적용되며 프로젝트 개요에서 변경할 수 있습니다."
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.p.2de8a183c94d": {
+  "nb": "På toere oppdateres bevegelsen hvert annet bilde, som i stop motion. Filmen beholder bildefrekvensen sin.",
+  "en": "On twos the motion updates every other frame, as in stop motion. The film keeps its frame rate.",
+  "oversatt": "2프레임마다(on twos) 설정 시 스톱모션처럼 2프레임마다 동작이 업데이트됩니다. 영상의 프레임 레이트는 그대로 유지됩니다."
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.placeholder.a8d10a8d5461": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.run.9a851b42c36e": {
+  "nb": "Animer på {value1}",
+  "en": "Animate on {value1}",
+  "oversatt": "{value1} 프레임마다 애니메이션 적용"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.run.ce1e0c9beba8": {
+  "nb": "Animer hvert bilde",
+  "en": "Animate every frame",
+  "oversatt": "매 프레임 애니메이션 적용"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.title.3bd4ee136f7c": {
+  "nb": "Bakgrunn",
+  "en": "Background",
+  "oversatt": "배경"
+ },
+ "app-scene-editor-layer-inspector.composition-inspector.title.dfc893e77d34": {
+  "nb": "Bevegelse",
+  "en": "Motion",
+  "oversatt": "모션"
+ },
+ "app-scene-editor-layer-inspector.continuity-look": {
+  "nb": "Kontinuitet: i denne scenen skal {asset} ha utseendet «{look}».",
+  "en": "Continuity: in this scene {asset} should look like “{look}”.",
+  "oversatt": "연속성: 이 씬에서 {asset}은(는) “{look}” 모습이어야 합니다."
+ },
+ "app-scene-editor-layer-inspector.continuity-look-asset": {
+  "nb": "ressursen",
+  "en": "the asset",
+  "oversatt": "에셋"
+ },
+ "app-scene-editor-layer-inspector.duplicate.run.607a76cf9da4": {
+  "nb": "Dupliser lag «{name}»",
+  "en": "Duplicate layer “{name}”",
+  "oversatt": "“{name}” 레이어 복제"
+ },
+ "app-scene-editor-layer-inspector.e.run.af96ba5b8433": {
+  "nb": "Bruk den godkjente versjonen",
+  "en": "Use the approved version",
+  "oversatt": "승인된 버전 사용"
+ },
+ "app-scene-editor-layer-inspector.flip.apply.3b782138f916": {
+  "nb": "Speilvend {what} fra bilde {value2}",
+  "en": "Flip {what} from frame {value2}",
+  "oversatt": "{value2} 프레임부터 {what} 뒤집기"
+ },
+ "app-scene-editor-layer-inspector.flip.apply.e20c19dbc8c1": {
+  "nb": "Speilvend {what}",
+  "en": "Flip {what}",
+  "oversatt": "{what} 뒤집기"
+ },
+ "app-scene-editor-layer-inspector.label.message.8cfb5e8988fc": {
+  "nb": "Nullstill format – behold bredden (høyden rettes til bildets proporsjoner)",
+  "en": "Reset aspect – keep the width (the height is set to the image's proportions)",
+  "oversatt": "가로세로 비율 재설정 – 너비 유지(이미지 비율에 맞게 높이 조정)"
+ },
+ "app-scene-editor-layer-inspector.label.message.e16a78e21ae3": {
+  "nb": "Nullstill format – behold høyden (bredden rettes til bildets proporsjoner)",
+  "en": "Reset aspect – keep the height (the width is set to the image's proportions)",
+  "oversatt": "가로세로 비율 재설정 – 높이 유지(이미지 비율에 맞게 너비 조정)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.3d8c235b12ab": {
+  "nb": "Endre navn på lag",
+  "en": "Rename layer",
+  "oversatt": "레이어 이름 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.5c7249332234": {
+  "nb": "Samme bilde i engelsk versjon",
+  "en": "Same image in English version",
+  "oversatt": "영어 버전과 동일한 이미지"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.6ec4f8b2b65c": {
+  "nb": "Bruk utseendet fra kontinuiteten",
+  "en": "Use the look from continuity",
+  "oversatt": "연속성에 지정된 모습 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.7bf050999a04": {
+  "nb": "Endre parallakse",
+  "en": "Change parallax",
+  "oversatt": "패럴랙스 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.7cca0a4e2f5e": {
+  "nb": "Lås lag",
+  "en": "Lock layer",
+  "oversatt": "레이어 잠금"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.9609d9a7816d": {
+  "nb": "Eget bilde i engelsk versjon",
+  "en": "Own image in English version",
+  "oversatt": "영어 버전 전용 이미지"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.a8d3655e6307": {
+  "nb": "Lås opp lag",
+  "en": "Unlock layer",
+  "oversatt": "레이어 잠금 해제"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.a9cefac8a4f0": {
+  "nb": "Vis lag",
+  "en": "Show layer",
+  "oversatt": "레이어 표시"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.b074722d6a6e": {
+  "nb": "Endre farge",
+  "en": "Change colour",
+  "oversatt": "색상 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.c2404005c950": {
+  "nb": "Bruk den godkjente versjonen",
+  "en": "Use the approved version",
+  "oversatt": "승인된 버전 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.d3c8d15b735d": {
+  "nb": "Bytt bilde",
+  "en": "Change image",
+  "oversatt": "이미지 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.d3c8d15b735d.2": {
+  "nb": "Bytt bilde",
+  "en": "Change image",
+  "oversatt": "이미지 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.f772058468ce": {
+  "nb": "Endre størrelse",
+  "en": "Change size",
+  "oversatt": "크기 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.f772058468ce.2": {
+  "nb": "Endre størrelse",
+  "en": "Change size",
+  "oversatt": "크기 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.apply.ff8aa20999f9": {
+  "nb": "Skjul lag",
+  "en": "Hide layer",
+  "oversatt": "레이어 숨기기"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.aria-label.390e4e1ae608": {
+  "nb": "Egenskaper for lag",
+  "en": "Layer properties",
+  "oversatt": "레이어 속성"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.aria-label.4f123e87f87a": {
+  "nb": "Bilde i engelsk versjon",
+  "en": "Image in English version",
+  "oversatt": "영어 버전 이미지"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.aria-label.dc0b215c5e27": {
+  "nb": "Hvordan speilvendingen virker",
+  "en": "How the flip works",
+  "oversatt": "뒤집기 작동 방식"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.04731a6db7dc": {
+  "nb": "Bruk v{number}",
+  "en": "Use v{number}",
+  "oversatt": "v{number} 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.068c0f24d469": {
+  "nb": "Loddrett",
+  "en": "Vertical",
+  "oversatt": "수직"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.33c112803461": {
+  "nb": "Bruk «{name}»",
+  "en": "Use “{name}”",
+  "oversatt": "\"{name}\" 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.348d9bec122d": {
+  "nb": "Bruk også i …",
+  "en": "Also use in …",
+  "oversatt": "다음 위치에서도 사용…"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.3d5ea4304fa6": {
+  "nb": "Koble til ressurs …",
+  "en": "Connect to asset …",
+  "oversatt": "에셋에 연결…"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.5dcb8daae385": {
+  "nb": "Bruk v{number}",
+  "en": "Use v{number}",
+  "oversatt": "v{number} 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.738292fc9af7": {
+  "nb": "Slett lag",
+  "en": "Delete layer",
+  "oversatt": "레이어 삭제"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.ba32a3db9d39": {
+  "nb": "Bruk videre i neste scene",
+  "en": "Use in next scene",
+  "oversatt": "다음 씬에서 계속 사용"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.bf7b21871442": {
+  "nb": "Dupliser",
+  "en": "Duplicate",
+  "oversatt": "복제"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.c17406d80aac": {
+  "nb": "Velg eller last opp bilde …",
+  "en": "Choose or upload image …",
+  "oversatt": "이미지 선택 또는 업로드…"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.cfb184335255": {
+  "nb": "Vannrett",
+  "en": "Horizontal",
+  "oversatt": "수평"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.e0235f32dc81": {
+  "nb": "Oppskaler bildet …",
+  "en": "Upscale image …",
+  "oversatt": "이미지 업스케일…"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.e628489fa299": {
+  "nb": "Asset Studio",
+  "en": "Asset Studio",
+  "oversatt": "Asset Studio"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.button.f86952a2be5b": {
+  "nb": "Harmoniser stil …",
+  "en": "Harmonize style …",
+  "oversatt": "스타일 조화…"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.08bbbf89bd2f": {
+  "nb": "Glidende: bildet klemmes smalt og vokser ut speilvendt, som et kort som snus.",
+  "en": "Smooth: the image is squeezed narrow and grows out flipped, like a card being turned.",
+  "oversatt": "부드럽게: 카드를 뒤집듯이 이미지가 좁게 압축되었다가 반전되어 펼쳐집니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.194c562de84c": {
+  "nb": "Lagene i gruppen flyttes, roteres og skaleres sammen rundt gruppens ankerpunkt. Velg gruppe for et lag under «Gruppe» i lagets egenskaper.",
+  "en": "The layers in the group are moved, rotated and scaled together around the group's anchor point. Choose a group for a layer under “Group” in the layer's properties.",
+  "oversatt": "그룹 내 레이어는 그룹의 기준점(앵커 포인트)을 중심으로 함께 이동, 회전, 크기 조절됩니다. 레이어 속성의 \"그룹\"에서 해당 레이어의 그룹을 선택하세요."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.9d5e5271497b": {
+  "nb": "0 = står stille når kameraet beveger seg · 1 = følger scenen · over 1 = nærmere enn scenen",
+  "en": "0 = stays still when the camera moves · 1 = follows the scene · over 1 = closer than the scene",
+  "oversatt": "0 = 카메라 이동 시 정지 · 1 = 씬을 따름 · 1 초과 = 씬보다 가까움"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.d2d12f0c6c3a": {
+  "nb": "Laget snur fra forrige nøkkelbilde (ellers et halvt sekund før) til avspillingshodet, og er speilvendt resten av scenen.",
+  "en": "The layer turns from the previous keyframe (otherwise half a second earlier) up to the playhead, and stays flipped for the rest of the scene.",
+  "oversatt": "이전 키프레임(없는 경우 0.5초 전)부터 재생 헤드까지 레이어가 뒤집히며, 씬의 나머지 동안 반전된 상태를 유지합니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.da0ebc05b49d": {
+  "nb": "Brått: snur på ett bilde, som i stop motion.",
+  "en": "Abrupt: turns on a single frame, as in stop motion.",
+  "oversatt": "급격하게: 스톱모션처럼 단일 프레임에서 즉시 뒤집힙니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.hint.dd25a1bbba64": {
+  "nb": "Velg en variant for å låse en bestemt versjon.",
+  "en": "Choose a variant to lock a specific version.",
+  "oversatt": "특정 버전을 고정하려면 변형을 선택하세요."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.2d2adcf7f65c": {
+  "nb": "Synlig",
+  "en": "Visible",
+  "oversatt": "표시"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.42f20eddd552": {
+  "nb": "Gruppe",
+  "en": "Group",
+  "oversatt": "그룹"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.4f123e87f87a": {
+  "nb": "Bilde i engelsk versjon",
+  "en": "Image in English version",
+  "oversatt": "영어 버전 이미지"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.5216934aba3c": {
+  "nb": "Høyde (px)",
+  "en": "Height (px)",
+  "oversatt": "높이(px)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.5931082eeac9": {
+  "nb": "Parallakse",
+  "en": "Parallax",
+  "oversatt": "패럴랙스"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.59933de3f9c3": {
+  "nb": "Låst",
+  "en": "Locked",
+  "oversatt": "잠김"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.8bb0a95c64c3": {
+  "nb": "Skalering X (%)",
+  "en": "Scale X (%)",
+  "oversatt": "배율 X(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.9c13c3b3438d": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.9db1e6dc22e0": {
+  "nb": "Gjennomsiktighet (%)",
+  "en": "Opacity (%)",
+  "oversatt": "불투명도(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.9f00d829865e": {
+  "nb": "Bredde (px)",
+  "en": "Width (px)",
+  "oversatt": "너비(px)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.bce68472b3da": {
+  "nb": "Skalering Y (%)",
+  "en": "Scale Y (%)",
+  "oversatt": "배율 Y(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.dc2613b27e2c": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "버전"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.eb639ff25614": {
+  "nb": "Farge",
+  "en": "Colour",
+  "oversatt": "색상"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.label.ff8164b6b52b": {
+  "nb": "Rotasjon (°)",
+  "en": "Rotation (°)",
+  "oversatt": "회전(°)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.marker.8bb0a95c64c3": {
+  "nb": "Skalering X (%)",
+  "en": "Scale X (%)",
+  "oversatt": "배율 X(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.marker.9db1e6dc22e0": {
+  "nb": "Gjennomsiktighet (%)",
+  "en": "Opacity (%)",
+  "oversatt": "불투명도(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.marker.bce68472b3da": {
+  "nb": "Skalering Y (%)",
+  "en": "Scale Y (%)",
+  "oversatt": "배율 Y(%)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.marker.ff8164b6b52b": {
+  "nb": "Rotasjon (°)",
+  "en": "Rotation (°)",
+  "oversatt": "회전(°)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.094e7f4ca86f": {
+  "nb": "Samme som norsk",
+  "en": "Same as Norwegian",
+  "oversatt": "노르웨이어 버전과 동일"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.16e77947ffff": {
+  "nb": "Standard (forsidebildet)",
+  "en": "Default (cover image)",
+  "oversatt": "기본값(커버 이미지)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.2ab91b502eda": {
+  "nb": " (godkjent)",
+  "en": " (approved)",
+  "oversatt": " (승인됨)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.42f20eddd552": {
+  "nb": "Gruppe",
+  "en": "Group",
+  "oversatt": "그룹"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.4641b429bab2": {
+  "nb": " (arkivert)",
+  "en": " (archived)",
+  "oversatt": " (보관됨)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.ca94c09b593d": {
+  "nb": "Ingen gruppe",
+  "en": "No group",
+  "oversatt": "그룹 없음"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.e4825dde3296": {
+  "nb": "Godkjent / nyeste",
+  "en": "Approved / latest",
+  "oversatt": "승인됨 / 최신"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.f7795a80552d": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.option.f7795a80552d.2": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.p.63b13bf071c2": {
+  "nb": "Ukjent ressurs",
+  "en": "Unknown asset",
+  "oversatt": "알 수 없는 에셋"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.run.1d9dede3b5f3": {
+  "nb": "Legg «{name}» i «{name2}»",
+  "en": "Put “{name}” in “{name2}”",
+  "oversatt": "“{name}”을(를) “{name2}”에 넣기"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.run.64ae7cdcbbf4": {
+  "nb": "Ta ut av gruppe",
+  "en": "Remove from group",
+  "oversatt": "그룹에서 제거"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.05c5a96616b5": {
+  "nb": "Skaler lag",
+  "en": "Scale layer",
+  "oversatt": "레이어 크기 조절"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.05c5a96616b5.2": {
+  "nb": "Skaler lag",
+  "en": "Scale layer",
+  "oversatt": "레이어 크기 조절"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.24dce699d358": {
+  "nb": "Flytt lag",
+  "en": "Move layer",
+  "oversatt": "레이어 이동"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.24dce699d358.2": {
+  "nb": "Flytt lag",
+  "en": "Move layer",
+  "oversatt": "레이어 이동"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.255f1b31d935": {
+  "nb": "Nullstill format (behold høyden)",
+  "en": "Reset aspect (keep height)",
+  "oversatt": "종횡비 초기화(높이 유지)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.ae6e6d268b85": {
+  "nb": "Roter lag",
+  "en": "Rotate layer",
+  "oversatt": "레이어 회전"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.b457e2d5f31f": {
+  "nb": "Endre gjennomsiktighet",
+  "en": "Change opacity",
+  "oversatt": "불투명도 변경"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.set-t.dcc9a737bccb": {
+  "nb": "Nullstill format (behold bredden)",
+  "en": "Reset aspect (keep width)",
+  "oversatt": "종횡비 초기화(너비 유지)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.span.287b192f1d14": {
+  "nb": "Kontinuitet: i denne scenen skal {value1} ha utseendet «{name}».",
+  "en": "Continuity: in this scene {value1} should look like “{name}”.",
+  "oversatt": "연속성: 이 씬에서 {value1}의 모습은 “{name}”이어야 합니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.span.3e0c500704b1": {
+  "nb": "Speilvend",
+  "en": "Flip",
+  "oversatt": "뒤집기"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.span.5432bea25aae": {
+  "nb": "Laget viser v{number}, men v{number2} er godkjent nå.",
+  "en": "The layer shows v{number}, but v{number2} is approved now.",
+  "oversatt": "레이어가 v{number}을(를) 표시하고 있지만, 현재 v{number2}이(가) 승인되었습니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.span.5d6bf790ea53": {
+  "nb": "Bildet vises i {value1} % av sin egen størrelse{value2} – større enn pikslene i bildet, så det kan bli uskarpt.",
+  "en": "The image is shown at {value1} % of its own size{value2} – larger than the image's pixels, so it may look blurred.",
+  "oversatt": "이미지가 원래 크기의 {value1}%로 표시됩니다{value2}. 원본 픽셀보다 커서 흐릿하게 보일 수 있습니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.span.98b4f314d66f": {
+  "nb": "Et bildeskifte eller språkbilde viser {value1} v{number}, men v{number3} er godkjent nå.",
+  "en": "An image swap or language image shows {value1} v{number}, but v{number3} is approved now.",
+  "oversatt": "이미지 교체 또는 언어 이미지가 {value1} v{number}을(를) 표시하고 있지만, 현재 v{number3}이(가) 승인되었습니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.10dae0c7f2bb": {
+  "nb": "Speilvend laget loddrett i hele scenen",
+  "en": "Flip the layer vertically throughout the scene",
+  "oversatt": "씬 전체에서 레이어를 세로로 뒤집기"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.1384397cdc14": {
+  "nb": "Dybde",
+  "en": "Depth",
+  "oversatt": "깊이"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.2b433b40fd23": {
+  "nb": "Arbeid med dette objektet alene: bilder, tid, lyd og manus (Alt + dobbeltklikk på laget)",
+  "en": "Work on this object alone: images, timing, sound and script (Alt + double-click the layer)",
+  "oversatt": "이 오브젝트만 단독 작업: 이미지, 타이밍, 사운드 및 대본 (Alt + 레이어 더블 클릭)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.4a7464f2b6a1": {
+  "nb": "Lag",
+  "en": "Layer",
+  "oversatt": "레이어"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.59f320728f79": {
+  "nb": "Laget snur vannrett fram til avspillingshodet og er speilvendt resten av scenen",
+  "en": "The layer turns horizontally up to the playhead and stays flipped for the rest of the scene",
+  "oversatt": "재생 헤드까지 레이어가 가로로 반전되며 씬의 나머지 동안 뒤집힌 상태를 유지합니다"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.86b8b114bb9b": {
+  "nb": "Kopier laget til neste scene i produksjonen. Bevegelsen der blir lokal.",
+  "en": "Copy the layer to the next scene in the production. Its motion there is local.",
+  "oversatt": "프로덕션의 다음 씬으로 레이어를 복사합니다. 해당 씬에서의 움직임은 로컬로 적용됩니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.8b1a05309fa8": {
+  "nb": "Speilvend laget vannrett i hele scenen (bildet i biblioteket endres ikke)",
+  "en": "Flip the layer horizontally throughout the scene (the image in the library is not changed)",
+  "oversatt": "씬 전체에서 레이어를 가로로 뒤집기 (라이브러리의 이미지는 변경되지 않음)"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.8c9366dd218d": {
+  "nb": "Vis en annen variant av ressursen når filmen spilles eller eksporteres på engelsk. Den norske versjonen endres ikke.",
+  "en": "Show a different variant of the asset when the film is played or exported in English. The Norwegian version is not changed.",
+  "oversatt": "영어로 재생하거나 내보낼 때 에셋의 다른 변형을 표시합니다. 노르웨이어 버전은 변경되지 않습니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.90597bdab94a": {
+  "nb": "Laget snur loddrett fram til avspillingshodet og er speilvendt resten av scenen",
+  "en": "The layer turns vertically up to the playhead and stays flipped for the rest of the scene",
+  "oversatt": "재생 헤드까지 레이어가 세로로 반전되며 씬의 나머지 동안 뒤집힌 상태를 유지합니다"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563": {
+  "nb": "Bilde",
+  "en": "Image",
+  "oversatt": "이미지"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.bc93a9762cff": {
+  "nb": "Plassering",
+  "en": "Placement",
+  "oversatt": "배치"
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.e861175e0c92": {
+  "nb": "Tegn om bildet til scenens felles stil med AI (koster, bekreftes først). Originalen endres ikke.",
+  "en": "Redraw the image in the scene's shared style with AI (costs, confirmed first). The original does not change.",
+  "oversatt": "AI를 사용하여 씬의 공통 스타일에 맞춰 이미지를 다시 그립니다 (유료, 먼저 확인 필요). 원본은 변경되지 않습니다."
+ },
+ "app-scene-editor-layer-inspector.layer-inspector.title.f3de8b5b0fe5": {
+  "nb": "Synlighet",
+  "en": "Visibility",
+  "oversatt": "가시성"
+ },
+ "app-scene-editor-layer-inspector.magnified": {
+  "nb": "Bildet vises i {percent} % av sin egen størrelse – større enn pikslene i bildet, så det kan bli uskarpt.",
+  "en": "The image is shown at {percent} % of its own size – larger than the image's pixels, so it may look blurred.",
+  "oversatt": "이미지가 원래 크기의 {percent}%로 표시됩니다. 원본 픽셀보다 커서 흐릿하게 보일 수 있습니다."
+ },
+ "app-scene-editor-layer-inspector.magnified-frame": {
+  "nb": "Bildet vises i {percent} % av sin egen størrelse (bilde {frame}) – større enn pikslene i bildet, så det kan bli uskarpt.",
+  "en": "The image is shown at {percent} % of its own size (frame {frame}) – larger than the image's pixels, so it may look blurred.",
+  "oversatt": "이미지가 원래 크기의 {percent}%로 표시됩니다({frame} 프레임). 원본 픽셀보다 커서 흐릿하게 보일 수 있습니다."
+ },
+ "app-scene-editor-layer-inspector.name.l-f-name-kopi-f-name-copy-slice.76ea7b2e479d": {
+  "nb": "{name} (kopi)",
+  "en": "{name} (copy)",
+  "oversatt": "{name} (사본)"
+ },
+ "app-scene-editor-layer-inspector.remove.remove-layer.6379d567d16c": {
+  "nb": "Slett lag «{name}»",
+  "en": "Delete layer “{name}”",
+  "oversatt": "“{name}” 레이어 삭제"
+ },
+ "app-scene-editor-layer-inspector.reset-aspect-button.title.f898b74b8a98": {
+  "nb": "Laget har bildets egne proporsjoner",
+  "en": "The layer has the image's own proportions",
+  "oversatt": "레이어가 이미지 고유의 비율을 유지합니다"
+ },
+ "app-scene-editor-layer-inspector.step-label.message.1043d080b517": {
+  "nb": "toere",
+  "en": "twos",
+  "oversatt": "2콤마"
+ },
+ "app-scene-editor-layer-inspector.step-label.message.4bc8574b0759": {
+  "nb": "treere",
+  "en": "threes",
+  "oversatt": "3콤마"
+ },
+ "app-scene-editor-layer-inspector.step-label.message.f57a43554f05": {
+  "nb": "firere",
+  "en": "fours",
+  "oversatt": "4콤마"
+ },
+ "app-scene-editor-layer-inspector.swap-outdated": {
+  "nb": "Et bildeskifte eller språkbilde viser {asset} v{old}, men v{current} er godkjent nå.",
+  "en": "An image swap or language image shows {asset} v{old}, but v{current} is approved now.",
+  "oversatt": "이미지 교체 또는 언어 이미지가 {asset} v{old} 버전을 표시하고 있지만, 현재는 v{current} 버전이 승인되었습니다."
+ },
+ "app-scene-editor-layer-inspector.swap-outdated-asset": {
+  "nb": "ressursen",
+  "en": "the asset",
+  "oversatt": "에셋"
+ },
+ "app-scene-editor-layer-inspector.toggle-key.apply.4c77d7ef5c6a": {
+  "nb": "Sett nøkkelbilde",
+  "en": "Set keyframe",
+  "oversatt": "키프레임 설정"
+ },
+ "app-scene-editor-layer-inspector.toggle-key.apply.bf80aa84511d": {
+  "nb": "Fjern nøkkelbilde",
+  "en": "Remove keyframe",
+  "oversatt": "키프레임 제거"
+ },
+ "app-scene-editor-layer-inspector.what.message.52130d780cb4": {
+  "nb": "loddrett",
+  "en": "vertically",
+  "oversatt": "수직으로"
+ },
+ "app-scene-editor-layer-inspector.what.message.e077f11671a9": {
+  "nb": "vannrett",
+  "en": "horizontally",
+  "oversatt": "수평으로"
+ },
+ "app-scene-editor-layer-mask-section.change-kind.set-mask.5bb0e4978d40": {
+  "nb": "Rektangelmaske",
+  "en": "Rectangle mask",
+  "oversatt": "직사각형 마스크"
+ },
+ "app-scene-editor-layer-mask-section.change-kind.set-mask.6b4a3280f2a6": {
+  "nb": "Fjern maske",
+  "en": "Remove mask",
+  "oversatt": "마스크 제거"
+ },
+ "app-scene-editor-layer-mask-section.change-kind.set-mask.a944c6d7c8aa": {
+  "nb": "Bruk lag som maske",
+  "en": "Use layer as mask",
+  "oversatt": "레이어를 마스크로 사용"
+ },
+ "app-scene-editor-layer-mask-section.change-kind.set-mask.cf83a0e4c7fa": {
+  "nb": "Ellipsemaske",
+  "en": "Ellipse mask",
+  "oversatt": "타원 마스크"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.apply.8fbbd1fea987": {
+  "nb": "Blanding: {value1}",
+  "en": "Blend: {value1}",
+  "oversatt": "혼합: {value1}"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.aria-label.26c444143440": {
+  "nb": "Maskelag",
+  "en": "Mask layer",
+  "oversatt": "마스크 레이어"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.aria-label.4a1c475f64ff": {
+  "nb": "Blanding",
+  "en": "Blend",
+  "oversatt": "혼합"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.aria-label.54780a40f896": {
+  "nb": "Maske",
+  "en": "Mask",
+  "oversatt": "마스크"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.hint.283ccf1f1faf": {
+  "nb": "Målt i lagets egne piksler",
+  "en": "Measured in the layer's own pixels",
+  "oversatt": "레이어 자체 픽셀 기준으로 측정됨"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.hint.83ffbc5c204e": {
+  "nb": "fra øverste venstre hjørne.",
+  "en": "from the top left corner.",
+  "oversatt": "왼쪽 상단 모서리 기준."
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.hint.d1934ee63424": {
+  "nb": "Masken følger laget. Dra midtpunktet eller hjørnene på masken i scenen, og sett nøkkelbilder for å animere den.",
+  "en": "The mask follows the layer. Drag the midpoint or the corners of the mask in the scene, and set keyframes to animate it.",
+  "oversatt": "마스크가 레이어를 따릅니다. 씬에서 마스크의 중심점이나 모서리를 드래그하고, 키프레임을 설정하여 애니메이션을 적용하세요."
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.hint.d83380fb2fc6": {
+  "nb": "Laget vises bare der maskelaget dekker. Skjul maskelaget hvis det ikke skal synes selv.",
+  "en": "The layer is shown only where the mask layer covers. Hide the mask layer if it should not show itself.",
+  "oversatt": "마스크 레이어가 적용된 영역에만 레이어가 표시됩니다. 마스크 레이어 자체를 숨기려면 마스크 레이어를 숨김 처리하세요."
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.0e395c28826f": {
+  "nb": "Myk kant (px)",
+  "en": "Feather (px)",
+  "oversatt": "페더 (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.26c444143440": {
+  "nb": "Maskelag",
+  "en": "Mask layer",
+  "oversatt": "마스크 레이어"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.4a1c475f64ff": {
+  "nb": "Blanding",
+  "en": "Blend",
+  "oversatt": "혼합"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.531d6ca01bd1": {
+  "nb": "Høyde (px)",
+  "en": "Height (px)",
+  "oversatt": "높이 (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.54780a40f896": {
+  "nb": "Maske",
+  "en": "Mask",
+  "oversatt": "마스크"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.8c35e7859bc9": {
+  "nb": "Bredde (px)",
+  "en": "Width (px)",
+  "oversatt": "너비 (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.label.a11eb6e9b279": {
+  "nb": "Snu masken",
+  "en": "Invert the mask",
+  "oversatt": "마스크 반전"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.marker.36d62c6acd64": {
+  "nb": "Maskehøyde (px)",
+  "en": "Mask height (px)",
+  "oversatt": "마스크 높이 (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.marker.63b6e77d31af": {
+  "nb": "Maske Y (px)",
+  "en": "Mask Y (px)",
+  "oversatt": "마스크 Y (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.marker.75839cbf8c19": {
+  "nb": "Maskebredde (px)",
+  "en": "Mask width (px)",
+  "oversatt": "마스크 너비 (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.marker.96619dad9b7f": {
+  "nb": "Maske X (px)",
+  "en": "Mask X (px)",
+  "oversatt": "마스크 X (px)"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.option.325b8aebfae6": {
+  "nb": "slettet",
+  "en": "deleted",
+  "oversatt": "삭제됨"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.option.794abb4adb73": {
+  "nb": "Laget finnes ikke",
+  "en": "The layer does not exist",
+  "oversatt": "레이어가 존재하지 않습니다"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.option.d33ad9d0215c": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.option.d33ad9d0215c.2": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-mask.7afcdb47a5e2": {
+  "nb": "Bytt maskelag",
+  "en": "Change mask layer",
+  "oversatt": "마스크 레이어 변경"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-mask.a11eb6e9b279": {
+  "nb": "Snu masken",
+  "en": "Invert the mask",
+  "oversatt": "마스크 반전"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-mask.eb1c49b35641": {
+  "nb": "Snu masken tilbake",
+  "en": "Revert the mask inversion",
+  "oversatt": "마스크 반전 해제"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-rect.2e5db6787d89": {
+  "nb": "Flytt maske",
+  "en": "Move mask",
+  "oversatt": "마스크 이동"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-rect.2e5db6787d89.2": {
+  "nb": "Flytt maske",
+  "en": "Move mask",
+  "oversatt": "마스크 이동"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-rect.477b61a3b09d": {
+  "nb": "Endre størrelse på maske",
+  "en": "Resize mask",
+  "oversatt": "마스크 크기 조절"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-rect.477b61a3b09d.2": {
+  "nb": "Endre størrelse på maske",
+  "en": "Resize mask",
+  "oversatt": "마스크 크기 조절"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.set-shape.b647848d2291": {
+  "nb": "Endre myk kant",
+  "en": "Change feather",
+  "oversatt": "페더 변경"
+ },
+ "app-scene-editor-layer-mask-section.layer-mask-section.title.6ed7ad60aecf": {
+  "nb": "Maske og blanding",
+  "en": "Mask and blend",
+  "oversatt": "마스크 및 블렌드"
+ },
+ "app-scene-editor-layer-mask-section.mask-label.ellipse.4fcaaf762aa4": {
+  "nb": "Ellipse",
+  "en": "Ellipse",
+  "oversatt": "타원"
+ },
+ "app-scene-editor-layer-mask-section.mask-label.layer.b0665d381c77": {
+  "nb": "Bruk et annet lag",
+  "en": "Use another layer",
+  "oversatt": "다른 레이어 사용"
+ },
+ "app-scene-editor-layer-mask-section.mask-label.none.5b5854e79a9c": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "없음"
+ },
+ "app-scene-editor-layer-mask-section.mask-label.rect.d38f1a5c9698": {
+  "nb": "Rektangel",
+  "en": "Rectangle",
+  "oversatt": "직사각형"
+ },
+ "app-scene-editor-layer-mask-section.toggle-key.apply.d60fc2cff470": {
+  "nb": "Fjern nøkkelbilde for maske",
+  "en": "Remove keyframe for mask",
+  "oversatt": "마스크 키프레임 제거"
+ },
+ "app-scene-editor-layer-mask-section.toggle-key.apply.e28cc7c22f8a": {
+  "nb": "Sett nøkkelbilde for maske",
+  "en": "Set keyframe for mask",
+  "oversatt": "마스크 키프레임 설정"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.1371c3f1c622": {
+  "nb": "Rett linje",
+  "en": "Straight line",
+  "oversatt": "직선"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.2f29036a41d6": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.35b1e010f00a": {
+  "nb": "Tegner … (klikk for å avbryte)",
+  "en": "Drawing … (click to cancel)",
+  "oversatt": "그리는 중… (취소하려면 클릭)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.8c5a564ff457": {
+  "nb": "Glatt ut",
+  "en": "Smooth",
+  "oversatt": "부드럽게"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.e8220b95ed51": {
+  "nb": "Tegn på nytt",
+  "en": "Draw again",
+  "oversatt": "다시 그리기"
+ },
+ "app-scene-editor-layer-motion.layer-motion.button.ff90f1d079cd": {
+  "nb": "Tegn bane",
+  "en": "Draw path",
+  "oversatt": "패스 그리기"
+ },
+ "app-scene-editor-layer-motion.layer-motion.hint.795ae884dcfe": {
+  "nb": "Dra punktene på banen i scenen. Dobbeltklikk et punkt: kurve eller hjørne. Alt-klikk: fjern punktet.",
+  "en": "Drag the points on the path in the scene. Double-click a point: curve or corner. Alt-click: remove the point.",
+  "oversatt": "씬에서 패스 위의 점을 드래그하세요. 점 더블 클릭: 곡선 또는 모서리. Alt-클릭: 점 제거."
+ },
+ "app-scene-editor-layer-motion.layer-motion.hint.c483e8bbbe7a": {
+  "nb": "Banen slutter etter at scenen er ferdig.",
+  "en": "The path ends after the scene has finished.",
+  "oversatt": "패스가 씬 종료 이후에 끝납니다."
+ },
+ "app-scene-editor-layer-motion.layer-motion.hint.e84cf4428949": {
+  "nb": "Tegn veien laget skal gå i scenen med musen. Banen starter der avspillingshodet står og varer i to sekunder; tidene kan endres etterpå.",
+  "en": "Draw the route the layer should take in the scene with the mouse. The path starts where the playhead is and lasts two seconds; the times can be changed afterwards.",
+  "oversatt": "마우스로 레이어가 씬에서 이동할 경로를 그리세요. 패스는 재생 헤드 위치에서 시작하여 2초 동안 지속되며, 시간은 나중에 변경할 수 있습니다."
+ },
+ "app-scene-editor-layer-motion.layer-motion.label.3c4785e843f8": {
+  "nb": "Ease inn (slutt)",
+  "en": "Ease in (end)",
+  "oversatt": "이지 인 (끝)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.label.7d8ac379ddb6": {
+  "nb": "Slutt (s)",
+  "en": "End (s)",
+  "oversatt": "종료 (초)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.label.7fe17c12c0ab": {
+  "nb": "Start (s)",
+  "en": "Start (s)",
+  "oversatt": "시작 (초)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.label.eeb8dbbda81a": {
+  "nb": "Ease ut (start)",
+  "en": "Ease out (start)",
+  "oversatt": "이지 아웃 (시작)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.5604a3c91c06": {
+  "nb": "Fjern bane",
+  "en": "Remove path",
+  "oversatt": "패스 제거"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.786ec16053ee": {
+  "nb": "Endre ease inn",
+  "en": "Change ease in",
+  "oversatt": "이지 인 변경"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.9fdba349a820": {
+  "nb": "Glatt ut banen",
+  "en": "Smooth the path",
+  "oversatt": "패스 부드럽게 만들기"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.a205431575b2": {
+  "nb": "Endre start på banen",
+  "en": "Change path start",
+  "oversatt": "패스 시작 지점 변경"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.c4bde6952272": {
+  "nb": "Endre ease ut",
+  "en": "Change ease out",
+  "oversatt": "이지 아웃 변경"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.c608cc9d6a11": {
+  "nb": "Endre slutt på banen",
+  "en": "Change path end",
+  "oversatt": "패스 종료 지점 변경"
+ },
+ "app-scene-editor-layer-motion.layer-motion.set-path.f035fede0014": {
+  "nb": "Rett bane",
+  "en": "Straighten the path",
+  "oversatt": "패스 직선화"
+ },
+ "app-scene-editor-layer-motion.layer-motion.title.115b6507148a": {
+  "nb": "Færre punkter og myke kurver",
+  "en": "Fewer points and soft curves",
+  "oversatt": "더 적은 점과 부드러운 곡선"
+ },
+ "app-scene-editor-layer-motion.layer-motion.title.1cf190786fa3": {
+  "nb": "Rett linje fra start til slutt",
+  "en": "Straight line from start to end",
+  "oversatt": "시작부터 끝까지 직선"
+ },
+ "app-scene-editor-layer-motion.layer-motion.title.67cadfe3cf96": {
+  "nb": "Tegn banen i scenen (Esc avbryter)",
+  "en": "Draw the path in the scene (Esc cancels)",
+  "oversatt": "씬에서 패스 그리기 (Esc로 취소)"
+ },
+ "app-scene-editor-layer-motion.layer-motion.title.cee9be8fc4b5": {
+  "nb": "Bevegelsesbane",
+  "en": "Motion path",
+  "oversatt": "모션 패스"
+ },
+ "app-scene-editor-layer-motion.on-double.on-commit.ce9ebea7e307": {
+  "nb": "Fjern punkt i tempokurven",
+  "en": "Remove point from the tempo curve",
+  "oversatt": "템포 곡선에서 점 제거"
+ },
+ "app-scene-editor-layer-motion.on-up.on-commit.0373a392b08c": {
+  "nb": "Nytt punkt i tempokurven",
+  "en": "New point on the tempo curve",
+  "oversatt": "템포 곡선에 새 점 추가"
+ },
+ "app-scene-editor-layer-motion.on-up.on-commit.3d99fc628fa5": {
+  "nb": "Endre tempokurven",
+  "en": "Change the tempo curve",
+  "oversatt": "템포 곡선 변경"
+ },
+ "app-scene-editor-layer-motion.tempo-curve.aria-label.3b25381c21a9": {
+  "nb": "Tempokurve med {length} punkter",
+  "en": "Tempo curve with {length} points",
+  "oversatt": "점이 {length}개인 템포 곡선"
+ },
+ "app-scene-editor-layer-motion.tempo-curve.button.9aae06c8fa1c": {
+  "nb": "Jevnt tempo",
+  "en": "Even tempo",
+  "oversatt": "균일한 템포"
+ },
+ "app-scene-editor-layer-motion.tempo-curve.on-commit.9aae06c8fa1c": {
+  "nb": "Jevnt tempo",
+  "en": "Even tempo",
+  "oversatt": "균일한 템포"
+ },
+ "app-scene-editor-layer-motion.tempo-curve.span.5ebc5b4ede83": {
+  "nb": "Tempo",
+  "en": "Tempo",
+  "oversatt": "템포"
+ },
+ "app-scene-editor-layer-motion.tempo-curve.span.b4724b237996": {
+  "nb": "Klikk for å legge til et punkt, dra for å endre farten, dobbeltklikk for å fjerne.",
+  "en": "Click to add a point, drag to change the speed, double-click to remove.",
+  "oversatt": "클릭하여 포인트를 추가하고, 드래그하여 속도를 변경하며, 더블 클릭하여 제거합니다."
+ },
+ "app-scene-editor-layer-swaps.add.set-swaps.fec1302071ff": {
+  "nb": "Bildeskifte til «{value1}»",
+  "en": "Image swap to “{value1}”",
+  "oversatt": "“{value1}”(으)로 이미지 교체"
+ },
+ "app-scene-editor-layer-swaps.change.set-swaps.413416e19e67": {
+  "nb": "Endre bildeskifte",
+  "en": "Change image swap",
+  "oversatt": "이미지 교체 변경"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.aria-label.0b4eec48b78a": {
+  "nb": "Bildeskifte",
+  "en": "Image swap",
+  "oversatt": "이미지 교체"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.aria-label.7e2927cb0565": {
+  "nb": "Fjern bildeskiftet ved {value1}",
+  "en": "Remove the image swap at {value1}",
+  "oversatt": "{value1}의 이미지 교체 제거"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.button.0290f4fdc1d6": {
+  "nb": "fra",
+  "en": "from",
+  "oversatt": "시작:"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.button.1adb77ea529b": {
+  "nb": "Bytt bilde ved {value1} …",
+  "en": "Change image at {value1} …",
+  "oversatt": "{value1}에서 이미지 변경…"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.button.69b5c6b96c22": {
+  "nb": "Bytt bildet her …",
+  "en": "Change the image here …",
+  "oversatt": "여기서 이미지 변경…"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.h3.0b4eec48b78a": {
+  "nb": "Bildeskifte",
+  "en": "Image swap",
+  "oversatt": "이미지 교체"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.label.94701a2511ee": {
+  "nb": "Variant",
+  "en": "Variant",
+  "oversatt": "변형"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.option.b44c486909b6": {
+  "nb": "Forsidebildet",
+  "en": "Cover image",
+  "oversatt": "커버 이미지"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.option.de77847b6a91": {
+  "nb": "Uten navn",
+  "en": "Untitled",
+  "oversatt": "제목 없음"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.p.02bdec36beb6": {
+  "nb": "Laget kan bytte til et annet bilde midt i scenen (hardt kutt). Flytt avspillingshodet dit skiftet skal skje.",
+  "en": "The layer can switch to another image in the middle of the scene (a hard cut). Move the playhead to where the swap should happen.",
+  "oversatt": "레이어는 씬 중간에 다른 이미지로 전환될 수 있습니다(하드 컷). 교체가 일어날 지점으로 재생 헤드를 이동하세요."
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.set-swaps.6546adfe3876": {
+  "nb": "Fjern bildeskifte",
+  "en": "Remove image swap",
+  "oversatt": "이미지 교체 제거"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.span.523c4fc01bca": {
+  "nb": "Ukjent ressurs",
+  "en": "Unknown asset",
+  "oversatt": "알 수 없는 에셋"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.title.52295238f3b8": {
+  "nb": "Laget viser et annet bilde fra dette bildet",
+  "en": "The layer shows a different image from this point",
+  "oversatt": "레이어가 이 지점부터 다른 이미지를 표시합니다"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.title.cd6e38779c42": {
+  "nb": "Gå til skiftet",
+  "en": "Go to the swap",
+  "oversatt": "교체 지점으로 이동"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.title.f6e6e9e6e9fe": {
+  "nb": "Fjern bildeskiftet",
+  "en": "Remove the image swap",
+  "oversatt": "이미지 교체 제거"
+ },
+ "app-scene-editor-layer-swaps.layer-swaps.title.ff186e3ff61a": {
+  "nb": "Flytt avspillingshodet forbi starten av scenen først",
+  "en": "Move the playhead past the start of the scene first",
+  "oversatt": "먼저 재생 헤드를 씬 시작 지점 뒤로 이동하세요"
+ },
+ "app-scene-editor-layer-swaps.swap-picker.button.0b3fb7353ea5": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-scene-editor-layer-swaps.swap-picker.dialog-description.9188382115ca": {
+  "nb": "Fra {when} viser laget bildet du velger. Plassering, størrelse og bevegelse beholdes.",
+  "en": "From {when} the layer shows the image you choose. Position, size and movement are kept.",
+  "oversatt": "{when}부터 레이어에 선택한 이미지가 표시됩니다. 위치, 크기, 모션은 그대로 유지됩니다."
+ },
+ "app-scene-editor-layer-swaps.swap-picker.dialog-title.8e6db16c2d82": {
+  "nb": "Bildeskifte i «{name}»",
+  "en": "Image swap in “{name}”",
+  "oversatt": "“{name}”의 이미지 교체"
+ },
+ "app-scene-editor-layer-swaps.swap-to": {
+  "nb": "Bildeskifte til «{name}»",
+  "en": "Image swap to “{name}”",
+  "oversatt": "“{name}”(으)로 이미지 교체"
+ },
+ "app-scene-editor-layer-swaps.swap-to-image": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "이미지"
+ },
+ "app-scene-editor-layers-panel.backward.move-before.1578a153d0d6": {
+  "nb": "Flytt lag bak",
+  "en": "Move layer back",
+  "oversatt": "레이어 뒤로 보내기"
+ },
+ "app-scene-editor-layers-panel.drop-on.run.199aa53d4ad3": {
+  "nb": "Legg «{name}» i «{name2}»",
+  "en": "Put “{name}” in “{name2}”",
+  "oversatt": "“{name}”을(를) “{name2}”에 넣기"
+ },
+ "app-scene-editor-layers-panel.err.run.23fc3a4989f9": {
+  "nb": "Ny gruppe",
+  "en": "New group",
+  "oversatt": "새 그룹"
+ },
+ "app-scene-editor-layers-panel.err.run.6bc065c6c485": {
+  "nb": "Legg «{name}» i «{name2}»",
+  "en": "Put “{name}” in “{name2}”",
+  "oversatt": "“{name}”을(를) “{name2}”에 넣기"
+ },
+ "app-scene-editor-layers-panel.forward.move-before.99b29c53eb48": {
+  "nb": "Flytt lag fram",
+  "en": "Move layer forward",
+  "oversatt": "레이어 앞으로 가져오기"
+ },
+ "app-scene-editor-layers-panel.label.memo.17acbb91ef13": {
+  "nb": "Flytt lag",
+  "en": "Move layer",
+  "oversatt": "레이어 이동"
+ },
+ "app-scene-editor-layers-panel.label.memo.96be501e2dd5": {
+  "nb": "Ta «{name}» ut av gruppen",
+  "en": "Take “{name}” out of the group",
+  "oversatt": "그룹에서 “{name}” 꺼내기"
+ },
+ "app-scene-editor-layers-panel.label.memo.b931eadf62ef": {
+  "nb": "Legg «{name}» i gruppe",
+  "en": "Put “{name}” in a group",
+  "oversatt": "“{name}”을(를) 그룹에 넣기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.0df8ba730439": {
+  "nb": "Fjern «{name}» fra scenen",
+  "en": "Remove “{name}” from the scene",
+  "oversatt": "씬에서 “{name}” 제거"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.1580c74b392f": {
+  "nb": "Skjul lag",
+  "en": "Hide layer",
+  "oversatt": "레이어 숨기기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.245bee7d36a3": {
+  "nb": "Lukk gruppen «{name}»",
+  "en": "Collapse the group “{name}”",
+  "oversatt": "“{name}” 그룹 접기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.2589ae554009": {
+  "nb": "Lås lag",
+  "en": "Lock layer",
+  "oversatt": "레이어 잠금"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.2ba728f52562": {
+  "nb": "Låst",
+  "en": "Locked",
+  "oversatt": "잠김"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.4ee512ba28e5": {
+  "nb": "Flytt lag bak",
+  "en": "Move layer back",
+  "oversatt": "레이어를 뒤로 이동"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.5276a2f49f00": {
+  "nb": "Flytt lag fram",
+  "en": "Move layer forward",
+  "oversatt": "레이어를 앞으로 이동"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.697f7c407fae": {
+  "nb": "Lag",
+  "en": "Layers",
+  "oversatt": "레이어"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.835dbfad7903": {
+  "nb": "Lagene, forreste øverst",
+  "en": "Layers, front first",
+  "oversatt": "레이어, 맨 위 레이어가 맨 앞"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.94acff154dc6": {
+  "nb": "Ta «{name}» ut av gruppen",
+  "en": "Take “{name}” out of the group",
+  "oversatt": "“{name}” 그룹에서 빼기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.ae1170cba8dd": {
+  "nb": "Åpne gruppen «{name}»",
+  "en": "Expand the group “{name}”",
+  "oversatt": "“{name}” 그룹 펼치기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.beabbcc1219a": {
+  "nb": "Skjult",
+  "en": "Hidden",
+  "oversatt": "숨김"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.c6cbd6ad8f01": {
+  "nb": "Vis lag",
+  "en": "Show layer",
+  "oversatt": "레이어 표시"
+ },
+ "app-scene-editor-layers-panel.layers-panel.aria-label.fbadc2253a2e": {
+  "nb": "Lås opp lag",
+  "en": "Unlock layer",
+  "oversatt": "레이어 잠금 해제"
+ },
+ "app-scene-editor-layers-panel.layers-panel.button.0eca56bd7036": {
+  "nb": "Eksporter lag med gjennomsiktighet …",
+  "en": "Export layers with transparency …",
+  "oversatt": "투명도를 포함하여 레이어 내보내기…"
+ },
+ "app-scene-editor-layers-panel.layers-panel.button.5722e9257c30": {
+  "nb": "Ny gruppe",
+  "en": "New group",
+  "oversatt": "새 그룹"
+ },
+ "app-scene-editor-layers-panel.layers-panel.h2.697f7c407fae": {
+  "nb": "Lag",
+  "en": "Layers",
+  "oversatt": "레이어"
+ },
+ "app-scene-editor-layers-panel.layers-panel.label.01e4f93b9cc0": {
+  "nb": "Høyde på laglisten",
+  "en": "Height of the layer list",
+  "oversatt": "레이어 목록 높이"
+ },
+ "app-scene-editor-layers-panel.layers-panel.p.fe2f3b84eaf8": {
+  "nb": "Ingen lag ennå. Bruk «Legg til lag».",
+  "en": "No layers yet. Use “Add layer”.",
+  "oversatt": "레이어가 없습니다. '레이어 추가'를 사용하세요."
+ },
+ "app-scene-editor-layers-panel.layers-panel.remove-layer.0df8ba730439": {
+  "nb": "Fjern «{name}» fra scenen",
+  "en": "Remove “{name}” from the scene",
+  "oversatt": "씬에서 “{name}” 제거"
+ },
+ "app-scene-editor-layers-panel.layers-panel.span.cf7fa6b462f3": {
+  "nb": " · i «{name}»",
+  "en": " · in “{name}”",
+  "oversatt": " · “{name}” 내"
+ },
+ "app-scene-editor-layers-panel.layers-panel.span.d03940b16399": {
+  "nb": "Uten navn",
+  "en": "Without name",
+  "oversatt": "이름 없음"
+ },
+ "app-scene-editor-layers-panel.layers-panel.span.eb5e76617e9d": {
+  "nb": " · {members} lag",
+  "en": " · {members} layers",
+  "oversatt": " · 레이어 {members}개"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.1580c74b392f": {
+  "nb": "Skjul lag",
+  "en": "Hide layer",
+  "oversatt": "레이어 숨기기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.2589ae554009": {
+  "nb": "Lås lag",
+  "en": "Lock layer",
+  "oversatt": "레이어 잠금"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.27367b0ba529": {
+  "nb": "Ta ut av gruppen",
+  "en": "Take out of the group",
+  "oversatt": "그룹에서 빼기"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.486b28947c3e": {
+  "nb": "Dobbeltklikk for å velge et annet bilde",
+  "en": "Double-click to choose another image",
+  "oversatt": "다른 이미지를 선택하려면 더블클릭하세요"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.4dcce50c5cf4": {
+  "nb": "Lukk gruppen (Alt-klikk: lukk alle)",
+  "en": "Collapse the group (Alt-click: collapse all)",
+  "oversatt": "그룹 접기(Alt-클릭: 모두 접기)"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.5315475e3596": {
+  "nb": "Bak",
+  "en": "Back",
+  "oversatt": "뒤로"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.5db177ece09b": {
+  "nb": "Lag i en gruppe flyttes, roteres og skaleres sammen. Valgt lag legges i gruppen.",
+  "en": "Layers in a group are moved, rotated and scaled together. The selected layer is put in the group.",
+  "oversatt": "그룹 내의 레이어는 함께 이동, 회전 및 크기 조절됩니다. 선택한 레이어가 그룹에 추가됩니다."
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.a1dd0d5373ba": {
+  "nb": "Åpne gruppen (Alt-klikk: åpne alle)",
+  "en": "Expand the group (Alt-click: expand all)",
+  "oversatt": "그룹 펼치기(Alt-클릭: 모두 펼치기)"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.c6cbd6ad8f01": {
+  "nb": "Vis lag",
+  "en": "Show layer",
+  "oversatt": "레이어 표시"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.e73011c56feb": {
+  "nb": "Fram",
+  "en": "Forward",
+  "oversatt": "앞으로"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.ef4f6a732b66": {
+  "nb": "Fjern laget fra scenen (bildet blir i biblioteket, kan angres)",
+  "en": "Remove the layer from the scene (the image stays in the library, can be undone)",
+  "oversatt": "씬에서 레이어 제거(이미지는 라이브러리에 유지되며 실행 취소할 수 있음)"
+ },
+ "app-scene-editor-layers-panel.layers-panel.title.fbadc2253a2e": {
+  "nb": "Lås opp lag",
+  "en": "Unlock layer",
+  "oversatt": "레이어 잠금 해제"
+ },
+ "app-scene-editor-layers-panel.leave-group.exec.68e9421339ac": {
+  "nb": "Ta «{name}» ut av gruppen",
+  "en": "Take “{name}” out of the group",
+  "oversatt": "“{name}” 그룹에서 빼기"
+ },
+ "app-scene-editor-layers-panel.name.name.289cdc165924": {
+  "nb": "Gruppe {n}",
+  "en": "Group {n}",
+  "oversatt": "그룹 {n}"
+ },
+ "app-scene-editor-layers-panel.new-group.exec2.c116b4c93352": {
+  "nb": "Ny gruppe",
+  "en": "New group",
+  "oversatt": "새 그룹"
+ },
+ "app-scene-editor-layers-panel.toggle.exec.0510ed8b106a": {
+  "nb": "Lås lag",
+  "en": "Lock layer",
+  "oversatt": "레이어 잠금"
+ },
+ "app-scene-editor-layers-panel.toggle.exec.24fc9c23cc98": {
+  "nb": "Lås opp lag",
+  "en": "Unlock layer",
+  "oversatt": "레이어 잠금 해제"
+ },
+ "app-scene-editor-layers-panel.toggle.exec.69e012184db0": {
+  "nb": "Vis lag",
+  "en": "Show layer",
+  "oversatt": "레이어 표시"
+ },
+ "app-scene-editor-layers-panel.toggle.exec.7c2086edac23": {
+  "nb": "Skjul lag",
+  "en": "Hide layer",
+  "oversatt": "레이어 숨기기"
+ },
+ "app-scene-editor-mts-actions.apply-same-design.apply-template-version.f09aa0c420a0": {
+  "nb": "Bruk samme design som i {sceneLabel}",
+  "en": "Use the same design as in {sceneLabel}",
+  "oversatt": "{sceneLabel}과(와) 동일한 디자인 사용"
+ },
+ "app-scene-editor-mts-actions.error.error.916df2c3e532": {
+  "nb": "Malforekomsten finnes ikke",
+  "en": "The template instance does not exist",
+  "oversatt": "템플릿 인스턴스가 존재하지 않습니다"
+ },
+ "app-scene-editor-mts-actions.error.run.aa7dcff09cf5": {
+  "nb": "Legg til tekst",
+  "en": "Add text",
+  "oversatt": "텍스트 추가"
+ },
+ "app-scene-editor-mts-actions.error.run.d06838e5866a": {
+  "nb": "Ny lower third",
+  "en": "New lower third",
+  "oversatt": "새 하단 자막(Lower Third)"
+ },
+ "app-scene-editor-mts-actions.fields.text-layer-fields.aca1bb1ddf04": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-scene-editor-mts-actions.fields.text-layer-fields.aca1bb1ddf04.2": {
+  "nb": "Tekst",
+  "en": "Text",
+  "oversatt": "텍스트"
+ },
+ "app-scene-editor-mts-actions.group-name.group-name.51eb12439656": {
+  "nb": "Lower third",
+  "en": "Lower third",
+  "oversatt": "하단 자막(Lower Third)"
+ },
+ "app-scene-editor-mts-actions.label.label.c25caff463b9": {
+  "nb": "scene {num}",
+  "en": "scene {num}",
+  "oversatt": "씬 {num}"
+ },
+ "app-scene-editor-mts-actions.name-label.name-label.2d49b1d84a54": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "이름"
+ },
+ "app-scene-editor-mts-actions.name.message.eb5ac61b2cb5": {
+  "nb": "Mal",
+  "en": "Template",
+  "oversatt": "템플릿"
+ },
+ "app-scene-editor-mts-actions.name.name.056953d7dfd9": {
+  "nb": "Standard",
+  "en": "Default",
+  "oversatt": "기본값"
+ },
+ "app-scene-editor-mts-actions.name.name.33954feb5fdb": {
+  "nb": "Navn Navnesen",
+  "en": "Jane Doe",
+  "oversatt": "홍길동"
+ },
+ "app-scene-editor-mts-actions.r1.run-and-wait.0a9ef878e3ba": {
+  "nb": "Lagre som mal",
+  "en": "Save as template",
+  "oversatt": "템플릿으로 저장"
+ },
+ "app-scene-editor-mts-actions.r2.run-and-wait.b9090017aeed": {
+  "nb": "Lagre som mal",
+  "en": "Save as template",
+  "oversatt": "템플릿으로 저장"
+ },
+ "app-scene-editor-mts-actions.r3.run-and-wait.bf54ee7b842f": {
+  "nb": "Lagre som mal",
+  "en": "Save as template",
+  "oversatt": "템플릿으로 저장"
+ },
+ "app-scene-editor-mts-actions.role-label.role-label.5bf4368d9bdb": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "역할"
+ },
+ "app-scene-editor-mts-actions.role.role.3469d44e961d": {
+  "nb": "Rolle",
+  "en": "Role",
+  "oversatt": "역할"
+ },
+ "app-scene-editor-mts-actions.save-as-template.message.75b9a2a791af": {
+  "nb": "Malen finnes ikke",
+  "en": "The template does not exist",
+  "oversatt": "템플릿이 존재하지 않습니다"
+ },
+ "app-scene-editor-mts-actions.template-thumbnail.message.2c7a3b230c77": {
+  "nb": "Kunne ikke laste bildet til malminiatyren",
+  "en": "Could not load the image for the template thumbnail",
+  "oversatt": "템플릿 썸네일 이미지를 불러올 수 없습니다"
+ },
+ "app-scene-editor-mts-actions.template-thumbnail.message.65545a7c3c05": {
+  "nb": "Kunne ikke lage miniatyren",
+  "en": "Could not make the thumbnail",
+  "oversatt": "썸네일을 생성할 수 없습니다"
+ },
+ "app-scene-editor-mts-actions.template-thumbnail.message.65545a7c3c05.2": {
+  "nb": "Kunne ikke lage miniatyren",
+  "en": "Could not make the thumbnail",
+  "oversatt": "썸네일을 생성할 수 없습니다"
+ },
+ "app-scene-editor-mts-actions.template-thumbnail.reject.2c7a3b230c77": {
+  "nb": "Kunne ikke laste bildet til malminiatyren",
+  "en": "Could not load the image for the template thumbnail",
+  "oversatt": "템플릿 썸네일 이미지를 불러올 수 없습니다"
+ },
+ "app-scene-editor-mts-actions.update-instance-values.run.03e541a772ca": {
+  "nb": "Endre innholdet",
+  "en": "Change the content",
+  "oversatt": "콘텐츠 변경"
+ },
+ "app-scene-editor-mts-actions.update-instance-version.run.759c6025cae9": {
+  "nb": "Oppdater til ny malversjon",
+  "en": "Update to the new template version",
+  "oversatt": "새 템플릿 버전으로 업데이트"
+ },
+ "app-scene-editor-nearby-audio-panel.label.memo.4654b35a0cd5": {
+  "nb": "{value1} scener før",
+  "en": "{value1} scenes before",
+  "oversatt": "이전 {value1}개 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.label.memo.4a47fe5ec44c": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.label.memo.81524b621b38": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "이전 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.label.memo.df9b65194dd2": {
+  "nb": "{s} scener etter",
+  "en": "{s} scenes after",
+  "oversatt": "이후 {s}개 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.1a5cf8d406fd": {
+  "nb": "Bla bakover",
+  "en": "Scroll back",
+  "oversatt": "뒤로 스크롤"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.3c28b9a35dad": {
+  "nb": "Stopp {name}",
+  "en": "Stop {name}",
+  "oversatt": "{name} 정지"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.5c5fc0b6d742": {
+  "nb": "Bla framover",
+  "en": "Scroll forward",
+  "oversatt": "앞으로 스크롤"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.5d63fd0b349d": {
+  "nb": "Lyd i scenene rundt",
+  "en": "Audio in the surrounding scenes",
+  "oversatt": "주변 씬의 오디오"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.aria-label.df4c9847f246": {
+  "nb": "Lytt til {name}",
+  "en": "Listen to {name}",
+  "oversatt": "{name} 듣기"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.button.6c82d4f1f493": {
+  "nb": "Bruk i scenen",
+  "en": "Use in scene",
+  "oversatt": "씬에 사용"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.p.adbb2054f9b6": {
+  "nb": "Ingen lyd i denne scenen.",
+  "en": "No audio in this scene.",
+  "oversatt": "이 씬에 오디오가 없습니다."
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.0f0743fdd872": {
+  "nb": "I bruk",
+  "en": "In use",
+  "oversatt": "사용 중"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.713ef6fced8a": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "오디오"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.span.c737330ef882": {
+  "nb": " · løper videre",
+  "en": " · continues",
+  "oversatt": " · 계속 이어짐"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.06866d98d7dc": {
+  "nb": "Scenen etter",
+  "en": "Scene after",
+  "oversatt": "다음 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.21dc72f27b65": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "정지"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.4883df11f2d3": {
+  "nb": "Samme lyd finnes i scenen",
+  "en": "The same audio is in the scene",
+  "oversatt": "씬에 동일한 오디오가 있습니다"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.5d63fd0b349d": {
+  "nb": "Lyd i scenene rundt",
+  "en": "Audio in the surrounding scenes",
+  "oversatt": "주변 씬의 오디오"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.78be1ac4f30d": {
+  "nb": "Lytt",
+  "en": "Listen",
+  "oversatt": "듣기"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.a923e1cce9a3": {
+  "nb": "Scenen før",
+  "en": "Scene before",
+  "oversatt": "이전 씬"
+ },
+ "app-scene-editor-nearby-audio-panel.nearby-audio-panel.title.aeaffbac7eff": {
+  "nb": "Legg samme lyd inn i scenen du jobber med (fra starten av scenen)",
+  "en": "Add the same audio to the scene you are working on (from the start of the scene)",
+  "oversatt": "현재 작업 중인 씬에 동일한 오디오 추가(씬 시작부터)"
+ },
+ "app-scene-editor-nearby-audio-panel.use-in-scene": {
+  "nb": "Bruk «{name}» i scenen",
+  "en": "Use “{name}” in the scene",
+  "oversatt": "씬에 “{name}” 사용"
+ },
+ "app-scene-editor-nearby-audio-panel.use-in-scene-audio": {
+  "nb": "lyd",
+  "en": "audio",
+  "oversatt": "오디오"
+ },
+ "app-scene-editor-nearby-audio-panel.use.run.65d55e0319ac": {
+  "nb": "Bruk «{value1}» i scenen",
+  "en": "Use “{value1}” in the scene",
+  "oversatt": "씬에 “{value1}” 사용"
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.01d8f89e653a": {
+  "nb": "Naboscener som film",
+  "en": "Neighbouring scenes as film",
+  "oversatt": "인접한 씬을 영상으로"
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.d200877f274d": {
+  "nb": "Naboscener",
+  "en": "Neighbouring scenes",
+  "oversatt": "인접한 씬"
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.de15094e2a72": {
+  "nb": "Spill i sammenheng",
+  "en": "Play in sequence",
+  "oversatt": "연속 재생"
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.p.cb50176467ee": {
+  "nb": "bare visning",
+  "en": "view only",
+  "oversatt": "보기 전용"
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.span.4417cdcaec5e": {
+  "nb": "Neste: ",
+  "en": "Next: ",
+  "oversatt": "다음: "
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.span.4eb70268ccf9": {
+  "nb": "Forrige: ",
+  "en": "Previous: ",
+  "oversatt": "이전: "
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.span.a3e86f6914bb": {
+  "nb": "Denne: ",
+  "en": "This: ",
+  "oversatt": "현재: "
+ },
+ "app-scene-editor-neighbour-scenes.neighbour-scenes.title.aeb189c8f4b0": {
+  "nb": "Spill forrige scene, denne og neste i sammenheng",
+  "en": "Play the previous scene, this one and the next in sequence",
+  "oversatt": "이전 씬, 현재 씬, 다음 씬을 연속 재생"
+ },
+ "app-scene-editor-neighbour-scenes.where.message.50350d989702": {
+  "nb": "Denne scenen (importert film)",
+  "en": "This scene (imported film)",
+  "oversatt": "현재 씬(가져온 영상)"
+ },
+ "app-scene-editor-neighbour-scenes.where.message.ad286f2b8d32": {
+  "nb": "Forrige scene",
+  "en": "Previous scene",
+  "oversatt": "이전 씬"
+ },
+ "app-scene-editor-neighbour-scenes.where.message.ec9f77febae1": {
+  "nb": "Neste scene",
+  "en": "Next scene",
+  "oversatt": "다음 씬"
+ },
+ "app-scene-editor-pages-panel.duplicate.run.8d9e6e76d8d3": {
+  "nb": "Dupliser siden",
+  "en": "Duplicate the page",
+  "oversatt": "페이지 복제"
+ },
+ "app-scene-editor-pages-panel.error.run.a0323c1e15b4": {
+  "nb": "Ny side",
+  "en": "New page",
+  "oversatt": "새 페이지"
+ },
+ "app-scene-editor-pages-panel.name.name.476d269b640a": {
+  "nb": "Side {value1}",
+  "en": "Page {value1}",
+  "oversatt": "{value1}페이지"
+ },
+ "app-scene-editor-pages-panel.name.name.619c3ecea4f6": {
+  "nb": "kopi",
+  "en": "copy",
+  "oversatt": "복사본"
+ },
+ "app-scene-editor-pages-panel.pages-panel.aria-label.22df8d40d321": {
+  "nb": "Overgang inn i siden",
+  "en": "Transition into the page",
+  "oversatt": "페이지 시작 트랜지션"
+ },
+ "app-scene-editor-pages-panel.pages-panel.button.2111edecfebf": {
+  "nb": "Ny side",
+  "en": "New page",
+  "oversatt": "새 페이지"
+ },
+ "app-scene-editor-pages-panel.pages-panel.button.6b4ee0b29749": {
+  "nb": "Dupliser",
+  "en": "Duplicate",
+  "oversatt": "복제"
+ },
+ "app-scene-editor-pages-panel.pages-panel.button.8b0952ce532b": {
+  "nb": "Side",
+  "en": "Page",
+  "oversatt": "페이지"
+ },
+ "app-scene-editor-pages-panel.pages-panel.p.5b2d7a7e97dc": {
+  "nb": "Siden deler tittelen eller tekstscenen i trinn. Hver side har sitt tidsrom og sin overgang.",
+  "en": "Pages divide the title or text scene into steps. Each page has its own time range and transition.",
+  "oversatt": "페이지는 타이틀이나 텍스트 씬을 단계별로 나눕니다. 각 페이지는 고유한 시간 범위와 트랜지션을 가집니다."
+ },
+ "app-scene-editor-pages-panel.pages-panel.p.deda5946ea31": {
+  "nb": "Lagene i scenen legges inn i siden du velger. Tidsrommet dras i tidslinjen.",
+  "en": "The layers in the scene are placed in the page you select. The time range is dragged in the timeline.",
+  "oversatt": "씬의 레이어는 선택한 페이지에 배치됩니다. 시간 범위는 타임라인에서 드래그하여 조절합니다."
+ },
+ "app-scene-editor-pages-panel.pages-panel.span.b201fd8902c6": {
+  "nb": "hele",
+  "en": "all",
+  "oversatt": "전체"
+ },
+ "app-scene-editor-pages-panel.pages-panel.title.650aa4bff1cb": {
+  "nb": "Sider",
+  "en": "Pages",
+  "oversatt": "페이지"
+ },
+ "app-scene-editor-pages-panel.pages-panel.title.ace7a4250c6e": {
+  "nb": "Dupliser siden med innholdet",
+  "en": "Duplicate the page with its content",
+  "oversatt": "내용을 포함하여 페이지 복제"
+ },
+ "app-scene-editor-pages-panel.set-transition.run.923a5513653e": {
+  "nb": "Endre sideovergang",
+  "en": "Change page transition",
+  "oversatt": "페이지 트랜지션 변경"
+ },
+ "app-scene-editor-pages-panel.transition-cut": {
+  "nb": "Kutt",
+  "en": "Cut",
+  "oversatt": "컷"
+ },
+ "app-scene-editor-pages-panel.transition-dip": {
+  "nb": "Via svart",
+  "en": "Dip to black",
+  "oversatt": "딥 투 블랙"
+ },
+ "app-scene-editor-pages-panel.transition-dipwhite": {
+  "nb": "Via hvitt",
+  "en": "Dip to white",
+  "oversatt": "딥 투 화이트"
+ },
+ "app-scene-editor-pages-panel.transition-dissolve": {
+  "nb": "Tone",
+  "en": "Dissolve",
+  "oversatt": "디졸브"
+ },
+ "app-scene-editor-pages-panel.transition-iris": {
+  "nb": "Irismaske",
+  "en": "Iris",
+  "oversatt": "아이리스"
+ },
+ "app-scene-editor-pages-panel.transition-push": {
+  "nb": "Skyv",
+  "en": "Push",
+  "oversatt": "푸시"
+ },
+ "app-scene-editor-pages-panel.transition-wipe": {
+  "nb": "Visk",
+  "en": "Wipe",
+  "oversatt": "와이프"
+ },
+ "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
+  "nb": "Forhåndsvisning – Animatic Studio",
+  "en": "Preview – Animatic Studio",
+  "oversatt": "미리보기 – Animatic Studio"
+ },
+ "app-scene-editor-preview-window.corner-name.message.06dfe2ac283c": {
+  "nb": "oppe til høyre",
+  "en": "top right",
+  "oversatt": "우측 상단"
+ },
+ "app-scene-editor-preview-window.corner-name.message.1f2049cd14a8": {
+  "nb": "oppe til venstre",
+  "en": "top left",
+  "oversatt": "좌측 상단"
+ },
+ "app-scene-editor-preview-window.corner-name.message.6b2e126cd8ff": {
+  "nb": "nede til venstre",
+  "en": "bottom left",
+  "oversatt": "왼쪽 하단"
+ },
+ "app-scene-editor-preview-window.corner-name.message.edd8479ff87f": {
+  "nb": "nede til høyre",
+  "en": "bottom right",
+  "oversatt": "오른쪽 하단"
+ },
+ "app-scene-editor-preview-window.popout-preview.aria-label.9bdb232a8642": {
+  "nb": "Tilbake til redigeringsvinduet",
+  "en": "Back to the scene editor window",
+  "oversatt": "씬 편집기 창으로 돌아가기"
+ },
+ "app-scene-editor-preview-window.popout-preview.aria-label.d8771782f7c7": {
+  "nb": "Lukk forhåndsvisningen",
+  "en": "Close the preview",
+  "oversatt": "미리보기 닫기"
+ },
+ "app-scene-editor-preview-window.popout-preview.span.289608475142": {
+  "nb": "Ferdig utsnitt",
+  "en": "Finished shot",
+  "oversatt": "완성된 샷"
+ },
+ "app-scene-editor-preview-window.popout-preview.title.5b8f494c4e10": {
+  "nb": "Legg forhåndsvisningen tilbake i redigeringsvinduet",
+  "en": "Put the preview back in the scene editor window",
+  "oversatt": "미리보기를 씬 편집기 창으로 되돌리기"
+ },
+ "app-scene-editor-preview-window.popout-preview.title.d8771782f7c7": {
+  "nb": "Lukk forhåndsvisningen",
+  "en": "Close the preview",
+  "oversatt": "미리보기 닫기"
+ },
+ "app-scene-editor-preview-window.preview-canvas.aria-label.82d95ee66dc3": {
+  "nb": "Bildet slik det blir i filmen",
+  "en": "The image as it will be in the film",
+  "oversatt": "영화에 표시될 최종 이미지"
+ },
+ "app-scene-editor-preview-window.preview-video.aria-label.7f2058913b85": {
+  "nb": "Versjonen som brukes i filmen",
+  "en": "The version used in the film",
+  "oversatt": "영화에 사용된 버전"
+ },
+ "app-scene-editor-preview-window.win.aria-label.31a9f7e687be": {
+  "nb": "Flytt forhåndsvisningen (piltaster)",
+  "en": "Move the preview (arrow keys)",
+  "oversatt": "미리보기 이동(화살표 키)"
+ },
+ "app-scene-editor-preview-window.win.aria-label.462a30da593a": {
+  "nb": "Forhåndsvisning av ferdig utsnitt",
+  "en": "Preview of the finished shot",
+  "oversatt": "완성된 샷 미리보기"
+ },
+ "app-scene-editor-preview-window.win.aria-label.4ae640cd97bf": {
+  "nb": "Lukk forhåndsvisningen",
+  "en": "Close the preview",
+  "oversatt": "미리보기 닫기"
+ },
+ "app-scene-editor-preview-window.win.aria-label.c94bd4c89ace": {
+  "nb": "Åpne i eget vindu",
+  "en": "Open in own window",
+  "oversatt": "새 창으로 열기"
+ },
+ "app-scene-editor-preview-window.win.aria-label.d16c3ea009ad": {
+  "nb": "Endre størrelse på forhåndsvisningen (hjørne",
+  "en": "Resize the preview (",
+  "oversatt": "미리보기 크기 조절("
+ },
+ "app-scene-editor-preview-window.win.span.0efae5805c77": {
+  "nb": "Ferdig utsnitt",
+  "en": "Finished shot",
+  "oversatt": "완성된 샷"
+ },
+ "app-scene-editor-preview-window.win.title.009cbe4bb447": {
+  "nb": "Dra for å endre størrelse, dobbeltklikk for standard",
+  "en": "Drag to resize, double-click for the default size",
+  "oversatt": "드래그하여 크기 조절, 더블 클릭하여 기본 크기로 재설정"
+ },
+ "app-scene-editor-preview-window.win.title.12c055c689c8": {
+  "nb": "Åpne i eget vindu (kan flyttes til en annen skjerm)",
+  "en": "Open in own window (can be moved to another screen)",
+  "oversatt": "새 창으로 열기(다른 화면으로 이동 가능)"
+ },
+ "app-scene-editor-preview-window.win.title.4ae640cd97bf": {
+  "nb": "Lukk forhåndsvisningen",
+  "en": "Close the preview",
+  "oversatt": "미리보기 닫기"
+ },
+ "app-scene-editor-preview-window.win.title.6464c4e67a3e": {
+  "nb": "Dra for å flytte forhåndsvisningen",
+  "en": "Drag to move the preview",
+  "oversatt": "드래그하여 미리보기 이동"
+ },
+ "app-scene-editor-preview-window.zoom-label.message.b263ab1fdacc": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "맞추기"
+ },
+ "app-scene-editor-preview-window.zoom-select.aria-label.522401c84413": {
+  "nb": "Zoom i forhåndsvisningen",
+  "en": "Zoom in the preview",
+  "oversatt": "미리보기 확대/축소"
+ },
+ "app-scene-editor-preview-window.zoom-select.option.5c78357a1919": {
+  "nb": "Tilpass ({fitPercent} %)",
+  "en": "Fit ({fitPercent} %)",
+  "oversatt": "맞추기({fitPercent}%)"
+ },
+ "app-scene-editor-preview-window.zoom-select.title.f1f393dc12f8": {
+  "nb": "Zoom: «Tilpass» følger vinduets størrelse, 1:1 viser ett bildepunkt per skjermpunkt",
+  "en": "Zoom: “Fit” follows the window size, 1:1 shows one image pixel per screen pixel",
+  "oversatt": "확대/축소: '맞추기'는 창 크기에 맞추며, 1:1은 화면 픽셀당 하나의 이미지 픽셀을 표시합니다"
+ },
+ "app-scene-editor-record-audio-dialog.linked.cmds-run-and-wait.95259e018399": {
+  "nb": "Koble karakter til opptaket",
+  "en": "Link character to recording",
+  "oversatt": "녹음에 캐릭터 연결"
+ },
+ "app-scene-editor-record-audio-dialog.r.cmds-run-and-wait.622d0ca8ca57": {
+  "nb": "Lydopptak «{title}»",
+  "en": "Audio recording “{title}”",
+  "oversatt": "오디오 녹음 “{title}”"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.button.0105f189ee3b": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "중지"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.button.459663350e6a": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "버리기"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.button.a95f00f8e593": {
+  "nb": "Legg i scenen",
+  "en": "Add to scene",
+  "oversatt": "씬에 추가"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.button.ae4c0e1df207": {
+  "nb": "Ta opp",
+  "en": "Record",
+  "oversatt": "녹음"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.button.bc281784a1ed": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.cmds-run.f875c933b69b": {
+  "nb": "Velg karakter for replikken",
+  "en": "Choose character for line",
+  "oversatt": "대사에 해당하는 캐릭터 선택"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-description.25f4e227460c": {
+  "nb": "Opptaket starter {value1} ut i scenen. Bruk hodetelefoner hvis scenen spilles av mens du tar opp.",
+  "en": "The recording starts {value1} into the scene. Use headphones if the scene plays while you record.",
+  "oversatt": "녹음은 씬 시작 후 {value1} 지점에서 시작됩니다. 녹음하는 동안 씬을 재생하려면 헤드폰을 사용하세요."
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.dialog-title.98648fefb495": {
+  "nb": "Lydopptak",
+  "en": "Audio recording",
+  "oversatt": "오디오 녹음"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.div.44f2ab294970": {
+  "nb": "Huskelapp for replikkens lydsegment",
+  "en": "Note flag for the line's audio segment",
+  "oversatt": "대사의 오디오 세그먼트 메모 플래그"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.div.e0e446d3c491": {
+  "nb": "Manuset er endret etter at den aktive lyden ble laget. Endringene står i rødt:",
+  "en": "The script changed after the active audio was made. The changes are shown in red:",
+  "oversatt": "활성 오디오가 생성된 후 대본이 변경되었습니다. 변경 사항은 빨간색으로 표시됩니다:"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.label.33e3ee40e1da": {
+  "nb": "Spill av scenen mens du tar opp",
+  "en": "Play the scene while you record",
+  "oversatt": "녹음하는 동안 씬 재생"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.label.d7f53f15259f": {
+  "nb": "Karakter",
+  "en": "Character",
+  "oversatt": "캐릭터"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.option.1e8164ab62e8": {
+  "nb": "Ikke koblet",
+  "en": "Not linked",
+  "oversatt": "연결되지 않음"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.option.7eec3bb384d7": {
+  "nb": "Ingen",
+  "en": "None",
+  "oversatt": "없음"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.option.9cbc47ca923c": {
+  "nb": "Ingen replikker i scenen",
+  "en": "No lines in the scene",
+  "oversatt": "씬에 대사 없음"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.p.dadb79d04045": {
+  "nb": "Bruk hodetelefoner når scenen spilles under opptak.",
+  "en": "Use headphones when the scene plays during recording.",
+  "oversatt": "녹음 중 씬이 재생될 때는 헤드폰을 사용하세요."
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.placeholder.3c6ca787bd88": {
+  "nb": "Opptak (dato og tid)",
+  "en": "Recording (date and time)",
+  "oversatt": "녹음 (날짜 및 시간)"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.span.38b3663f6ac7": {
+  "nb": "Replikk (valgfritt)",
+  "en": "Line (optional)",
+  "oversatt": "대사 (선택 사항)"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.span.3bb3ee349a15": {
+  "nb": "Spor",
+  "en": "Track",
+  "oversatt": "트랙"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.span.87c6b2c662d6": {
+  "nb": "Navn i biblioteket",
+  "en": "Name in the library",
+  "oversatt": "라이브러리 내 이름"
+ },
+ "app-scene-editor-record-audio-dialog.record-audio-dialog.span.dbfce3788f71": {
+  "nb": "Tar opp …",
+  "en": "Recording …",
+  "oversatt": "녹음 중 …"
+ },
+ "app-scene-editor-record-audio-dialog.save.message.342a352bd751": {
+  "nb": "Prosjektet er lukket.",
+  "en": "The project is closed.",
+  "oversatt": "프로젝트가 닫혔습니다."
+ },
+ "app-scene-editor-record-audio-dialog.save.message.342a352bd751.2": {
+  "nb": "Prosjektet er lukket.",
+  "en": "The project is closed.",
+  "oversatt": "프로젝트가 닫혔습니다."
+ },
+ "app-scene-editor-record-audio-dialog.save.message.9cb2b7afbb96": {
+  "nb": "Replikken finnes ikke lenger.",
+  "en": "The line no longer exists.",
+  "oversatt": "대사가 더 이상 존재하지 않습니다."
+ },
+ "app-scene-editor-record-audio-dialog.start.set-error.2fe099680aff": {
+  "nb": "Fant ingen mikrofon ({message}).",
+  "en": "No microphone found ({message}).",
+  "oversatt": "마이크를 찾을 수 없습니다 ({message})."
+ },
+ "app-scene-editor-record-audio-dialog.start.set-error.aff4b707fbc5": {
+  "nb": "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
+  "en": "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
+  "oversatt": "브라우저에서 오디오를 녹음할 수 없습니다. Chrome, Edge, Firefox 또는 Safari를 사용해 보세요."
+ },
+ "app-scene-editor-record-audio-dialog.start.set-error.c67a5559ad35": {
+  "nb": "Opptaket ble tomt.",
+  "en": "The recording is empty.",
+  "oversatt": "녹음 내용이 비어 있습니다."
+ },
+ "app-scene-editor-record-audio-dialog.start.set-error.df0e4825b0da": {
+  "nb": "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
+  "en": "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
+  "oversatt": "브라우저의 마이크 접근이 허용되지 않았습니다. 페이지의 마이크 접근을 허용한 후 다시 시도하세요."
+ },
+ "app-scene-editor-record-audio-dialog.title.message.6cb66d126fd2": {
+  "nb": "Opptak {stamp}",
+  "en": "Recording {stamp}",
+  "oversatt": "녹음 {stamp}"
+ },
+ "app-scene-editor-retime-dialog.apply.message.f1f0b76bd22c": {
+  "nb": "Beregn forhåndslyttingen på nytt.",
+  "en": "Prepare the preview again.",
+  "oversatt": "미리듣기를 다시 준비합니다."
+ },
+ "app-scene-editor-retime-dialog.apply.set-busy.5a4ec12bb2fd": {
+  "nb": "Lagrer dialogopptak med nye ordmellomrom …",
+  "en": "Saving dialogue with new word gaps …",
+  "oversatt": "단어 간격이 수정된 대사 녹음을 저장하는 중 …"
+ },
+ "app-scene-editor-retime-dialog.apply.set-busy.645cd7e778e2": {
+  "nb": "Lagrer …",
+  "en": "Saving …",
+  "oversatt": "저장 중 …"
+ },
+ "app-scene-editor-retime-dialog.fill-label.background.9eb64c2bca1b": {
+  "nb": "Bare bakgrunnen",
+  "en": "Background only",
+  "oversatt": "배경만"
+ },
+ "app-scene-editor-retime-dialog.fill-label.black.bfaab61c8fda": {
+  "nb": "Svart",
+  "en": "Black",
+  "oversatt": "블랙"
+ },
+ "app-scene-editor-retime-dialog.fill-label.freeze.cd03027a5452": {
+  "nb": "Frys bildet",
+  "en": "Freeze frame",
+  "oversatt": "프리즈 프레임"
+ },
+ "app-scene-editor-retime-dialog.method-help.end.16c696814ba9": {
+  "nb": "Tid legges til eller fjernes i slutten. Ingenting forskyves.",
+  "en": "Time is added or removed at the end. Nothing is shifted.",
+  "oversatt": "끝부분에 시간이 추가되거나 제거됩니다. 아무것도 이동하지 않습니다."
+ },
+ "app-scene-editor-retime-dialog.method-help.pauses.e82e9e042cf9": {
+  "nb": "Tiden fordeles på mellomrommene mellom tale, effekter og låste tidsrom. Talelyd, musikk og video strekkes ikke.",
+  "en": "The time is spread over the gaps between speech, effects and locked ranges. Speech, music and video are not stretched.",
+  "oversatt": "시간이 음성, 효과음 및 잠긴 구간 사이의 간격에 분배됩니다. 음성, 음악 및 비디오는 늘어나지 않습니다."
+ },
+ "app-scene-editor-retime-dialog.method-help.start.aac4b4080834": {
+  "nb": "Tid legges til eller fjernes i starten. Alt innhold forskyves.",
+  "en": "Time is added or removed at the start. All content is shifted.",
+  "oversatt": "시작 부분에 시간이 추가되거나 제거됩니다. 모든 콘텐츠가 이동합니다."
+ },
+ "app-scene-editor-retime-dialog.method-help.stretch-all.ec0f0751a311": {
+  "nb": "All visuell timing skaleres. Lydklippene følger med, og mellomrommene mellom ordene strekkes. Ordene endrer ikke hastighet.",
+  "en": "All visual timing is scaled. Audio clips follow, and the gaps between words are stretched. The words do not change speed.",
+  "oversatt": "모든 시각적 타이밍의 크기가 조절됩니다. 오디오 클립도 함께 따라가며, 단어 사이의 간격이 늘어납니다. 단어 자체의 속도는 변경되지 않습니다."
+ },
+ "app-scene-editor-retime-dialog.method-help.stretch-visual.df00ada1a62f": {
+  "nb": "All visuell timing skaleres. Lydklippene står urørt.",
+  "en": "All visual timing is scaled. The audio clips stay untouched.",
+  "oversatt": "모든 시각적 타이밍의 크기가 조절됩니다. 오디오 클립은 그대로 유지됩니다."
+ },
+ "app-scene-editor-retime-dialog.method-label.end.f234fd267472": {
+  "nb": "Slutt",
+  "en": "End",
+  "oversatt": "끝"
+ },
+ "app-scene-editor-retime-dialog.method-label.pauses.59e2a2b08976": {
+  "nb": "Fordel på pausene",
+  "en": "Spread over the pauses",
+  "oversatt": "일시 중지 구간에 분배"
+ },
+ "app-scene-editor-retime-dialog.method-label.start.6294cf7bb3d4": {
+  "nb": "Start",
+  "en": "Start",
+  "oversatt": "시작"
+ },
+ "app-scene-editor-retime-dialog.method-label.stretch-all.ac05de4ce8aa": {
+  "nb": "Strekk alt, også ordmellomrom",
+  "en": "Stretch everything, including word gaps",
+  "oversatt": "단어 간격을 포함하여 모두 늘이기"
+ },
+ "app-scene-editor-retime-dialog.method-label.stretch-visual.10c04de0044f": {
+  "nb": "Strekk alt unntatt lydfilene",
+  "en": "Stretch everything except the audio files",
+  "oversatt": "오디오 파일을 제외하고 모두 늘이기"
+ },
+ "app-scene-editor-retime-dialog.out.message.1802ef9353c8": {
+  "nb": "Fra {value1} s til {value2} s.",
+  "en": "From {value1} s to {value2} s.",
+  "oversatt": "{value1}초에서 {value2}초로 변경."
+ },
+ "app-scene-editor-retime-dialog.preview-player.aria-label.1c569a9882f0": {
+  "nb": "Forhåndsspill av ny varighet",
+  "en": "Preview of the new duration",
+  "oversatt": "새로운 재생 시간 미리보기"
+ },
+ "app-scene-editor-retime-dialog.preview-player.button.b9bdf95ba745": {
+  "nb": "Forhåndsspill",
+  "en": "Preview",
+  "oversatt": "미리보기"
+ },
+ "app-scene-editor-retime-dialog.preview-player.button.dffb69ea9ec8": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "정지"
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.12b8139e6057": {
+  "nb": "{value1} ting skaleres.",
+  "en": "{value1} items are scaled.",
+  "oversatt": "{value1}개 항목의 크기가 조절됩니다."
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.1bfb828c3104": {
+  "nb": "Mellomrom før: {value1} s. Etter: {value2} s.",
+  "en": "Gaps before: {value1} s. After: {value2} s.",
+  "oversatt": "조정 전 간격: {value1}초. 조정 후: {value2}초."
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.291eb933e534": {
+  "nb": "{value1} punkter havnet på samme bilde og ble skjøvet ett bilde. Ingen er slettet.",
+  "en": "{value1} points landed on the same frame and were pushed one frame. None are deleted.",
+  "oversatt": "{value1}개 포인트가 동일한 프레임에 겹쳐 1프레임 뒤로 밀렸습니다. 삭제된 항목은 없습니다."
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.b700d6dda40e": {
+  "nb": "{value1} lydklipp kunne ikke tilpasses helt: {value2}.",
+  "en": "{value1} audio clips could not be fully adjusted: {value2}.",
+  "oversatt": "{value1}개의 오디오 클립을 완전히 맞출 수 없습니다: {value2}."
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.e83f6a915e6e": {
+  "nb": "{value1} ting trimmes eller fjernes.",
+  "en": "{value1} items are trimmed or removed.",
+  "oversatt": "{value1}개 항목이 트리밍되거나 제거됩니다."
+ },
+ "app-scene-editor-retime-dialog.report-lines.out-push.eb6408610e2f": {
+  "nb": "{value1} dialogopptak lagres som nye versjoner med endrede ordmellomrom.",
+  "en": "{value1} dialogue recordings are saved as new versions with changed word gaps.",
+  "oversatt": "{value1}개의 대사 녹음이 단어 간격이 변경된 새 버전으로 저장됩니다."
+ }
+}

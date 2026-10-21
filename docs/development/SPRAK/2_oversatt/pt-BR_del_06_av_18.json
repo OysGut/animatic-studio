@@ -1,0 +1,3072 @@
+{
+ "app-library-cutout-dialog.editor.span.5ce40ba2449d": {
+  "nb": "Lager forslag …",
+  "en": "Making a suggestion …",
+  "oversatt": "Criando sugestão…"
+ },
+ "app-library-cutout-dialog.editor.span.f9bee35d3138": {
+  "nb": "Henter bildet …",
+  "en": "Fetching the image …",
+  "oversatt": "Buscando a imagem…"
+ },
+ "app-library-cutout-dialog.editor.title.06d5ca23b0df": {
+  "nb": "Speilvend bildet vannrett (lagres i den nye versjonen)",
+  "en": "Flip the image horizontally (saved in the new version)",
+  "oversatt": "Espelhar a imagem horizontalmente (salvo na nova versão)"
+ },
+ "app-library-cutout-dialog.editor.title.4395dd79eb3c": {
+  "nb": "Beskjær bildet tett rundt figuren, med litt luft, så den ikke får en stor tom ramme",
+  "en": "Crop the image tightly around the figure, with a little space, so it does not get a large empty frame",
+  "oversatt": "Cortar a imagem rente à figura, com uma pequena margem, para não deixar uma moldura vazia grande"
+ },
+ "app-library-cutout-dialog.editor.title.a6d22c27b02f": {
+  "nb": "Speilvend bildet loddrett",
+  "en": "Flip the image vertically",
+  "oversatt": "Espelhar a imagem verticalmente"
+ },
+ "app-library-cutout-dialog.editor.title.b61904c034f4": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "Refazer (⇧⌘Z)"
+ },
+ "app-library-cutout-dialog.editor.title.c0fa2a3e9759": {
+  "nb": "Tegn med farge i bildet",
+  "en": "Draw in colour on the image",
+  "oversatt": "Desenhar em cores na imagem"
+ },
+ "app-library-cutout-dialog.editor.title.fc3b9294ef72": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "Desfazer (⌘Z)"
+ },
+ "app-library-cutout-dialog.r.cmds-run-and-wait.82b2cc47596c": {
+  "nb": "Frilagt bilde av «{name}»",
+  "en": "Cut out image of “{name}”",
+  "oversatt": "Imagem recortada de “{name}”"
+ },
+ "app-library-cutout-dialog.size-kept": {
+  "nb": "{w} × {h} px · {percent} % av bildet beholdes. ",
+  "en": "{w} × {h} px · {percent} % of the image is kept. ",
+  "oversatt": "{w} × {h} px · {percent} % da imagem é mantida. "
+ },
+ "app-library-cutout-dialog.size-kept-scaled": {
+  "nb": "{w} × {h} px (skalert ned for frilegging) · {percent} % av bildet beholdes. ",
+  "en": "{w} × {h} px (scaled down for cut-out) · {percent} % of the image is kept. ",
+  "oversatt": "{w} × {h} px (reduzida para recorte) · {percent} % da imagem é mantida. "
+ },
+ "app-library-dialogue-batch-panel.batch-estimate": {
+  "nb": "{lines} · {language} · {voice} · {model} · kostnadsanslag: {cost} · tidsanslag (usikkert): {time}",
+  "en": "{lines} · {language} · {voice} · {model} · cost estimate: {cost} · time estimate (uncertain): {time}",
+  "oversatt": "{lines} · {language} · {voice} · {model} · estimativa de custo: {cost} · estimativa de tempo (incerta): {time}"
+ },
+ "app-library-dialogue-batch-panel.batch-estimate-no-model": {
+  "nb": "modell ikke valgt",
+  "en": "model not chosen",
+  "oversatt": "modelo não escolhido"
+ },
+ "app-library-dialogue-batch-panel.batch-estimate-no-voice": {
+  "nb": "stemme ikke valgt",
+  "en": "voice not chosen",
+  "oversatt": "voz não escolhida"
+ },
+ "app-library-dialogue-batch-panel.batch-estimate-time": {
+  "nb": "{min}–{max} s, uten køventing",
+  "en": "{min}–{max} s, excluding queue wait",
+  "oversatt": "{min}–{max} s, sem contar espera na fila"
+ },
+ "app-library-dialogue-batch-panel.batch-estimate-unknown": {
+  "nb": "ukjent",
+  "en": "unknown",
+  "oversatt": "desconhecido"
+ },
+ "app-library-dialogue-batch-panel.batch-undo": {
+  "nb": {
+   "one": "{count} generert replikk angres. Den forrige aktive versjonen blir aktiv igjen. Ingen eldre lyd eller redigering slettes, og ingenting genereres på nytt.",
+   "other": "{count} genererte replikker angres. Den forrige aktive versjonen blir aktiv igjen. Ingen eldre lyd eller redigering slettes, og ingenting genereres på nytt."
+  },
+  "en": {
+   "one": "{count} generated line will be undone. The previous active version becomes active again. No older audio or edits are deleted, and nothing is generated again.",
+   "other": "{count} generated lines will be undone. The previous active version becomes active again. No older audio or edits are deleted, and nothing is generated again."
+  },
+  "oversatt": {
+   "one": "{count} fala gerada será desfeita. A versão ativa anterior voltará a ficar ativa. Nenhum áudio antigo ou edição será excluído, e nada será gerado novamente.",
+   "many": "{count} falas geradas serão desfeitas. A versão ativa anterior voltará a ficar ativa. Nenhum áudio antigo ou edição será excluído, e nada será gerado novamente.",
+   "other": "{count} falas geradas serão desfeitas. A versão ativa anterior voltará a ficar ativa. Nenhum áudio antigo ou edição será excluído, e nada será gerado novamente."
+  }
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.all-l-alle-all-missing-l-bare-de-som-mangler-missing-only-partial-l-delvise-partial-drift-l-bare-r-de-red-only-as-const-map.17a44628720c": {
+  "nb": "Alle",
+  "en": "All",
+  "oversatt": "Todos"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.all-l-alle-all-missing-l-bare-de-som-mangler-missing-only-partial-l-delvise-partial-drift-l-bare-r-de-red-only-as-const-map.4bffcf0b95b3": {
+  "nb": "Bare de som mangler",
+  "en": "Missing only",
+  "oversatt": "Apenas faltantes"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.all-l-alle-all-missing-l-bare-de-som-mangler-missing-only-partial-l-delvise-partial-drift-l-bare-r-de-red-only-as-const-map.65c8ac485275": {
+  "nb": "Delvise",
+  "en": "Partial",
+  "oversatt": "Parciais"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.all-l-alle-all-missing-l-bare-de-som-mangler-missing-only-partial-l-delvise-partial-drift-l-bare-r-de-red-only-as-const-map.cdaa0a2de64d": {
+  "nb": "Bare røde",
+  "en": "Red only",
+  "oversatt": "Apenas vermelhos"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.aria-label.87b20602c68c": {
+  "nb": "Replikkens talespråk (BCP-47)",
+  "en": "Line speech language (BCP-47)",
+  "oversatt": "Idioma falado da linha (BCP-47)"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.0e6909d73478": {
+  "nb": "Godkjenn og generer",
+  "en": "Approve and generate",
+  "oversatt": "Aprovar e gerar"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.2ea5e9b5dba0": {
+  "nb": "Genererer …",
+  "en": "Generating …",
+  "oversatt": "Gerando…"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.6b5fb6a751ce": {
+  "nb": "Angre hele jobben …",
+  "en": "Undo the whole job …",
+  "oversatt": "Desfazer todo o trabalho…"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.70d7aeff1526": {
+  "nb": "Godkjenn og fortsett",
+  "en": "Approve and continue",
+  "oversatt": "Aprovar e continuar"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.7fc310d62e47": {
+  "nb": "Gjenoppta / prøv feilede på nytt",
+  "en": "Resume / retry failed lines",
+  "oversatt": "Retomar / tentar novamente falas com falha"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.80e7d4ecec2a": {
+  "nb": "Angre hele jobben",
+  "en": "Undo the whole job",
+  "oversatt": "Desfazer todo o trabalho"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.a15edbc27cc2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.a15edbc27cc2.2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.a15edbc27cc2.3": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.a520a133610f": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "Tentar novamente"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.b9a59a117620": {
+  "nb": "Generer all tale for denne karakteren",
+  "en": "Generate all speech for this character",
+  "oversatt": "Gerar todas as falas para este personagem"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.bc8f11b553f0": {
+  "nb": "Kontroller og bekreft …",
+  "en": "Review and approve …",
+  "oversatt": "Revisar e aprovar…"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.e597cefbc23f": {
+  "nb": "Tilgangen er tilbake – bekreft og fortsett …",
+  "en": "Access restored – confirm and continue …",
+  "oversatt": "Acesso restaurado – confirmar e continuar…"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.button.ec605ea6dbe1": {
+  "nb": "Generer alle røde replikker",
+  "en": "Generate all red lines",
+  "oversatt": "Gerar todas as falas vermelhas"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.dialog-title.c8a21a538ae9": {
+  "nb": "Generer røde replikker · {name}",
+  "en": "Generate red lines · {name}",
+  "oversatt": "Gerar falas vermelhas · {name}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.dialog-title.eb6809e8aa30": {
+  "nb": "Generer tale · {name}",
+  "en": "Generate speech · {name}",
+  "oversatt": "Gerar fala · {name}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.label.c973bc410925": {
+  "nb": "Talespråk",
+  "en": "Speech language",
+  "oversatt": "Idioma falado"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.legend.0366981f563b": {
+  "nb": "Språkfordeling",
+  "en": "Language grouping",
+  "oversatt": "Agrupamento por idioma"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.0902f15b2c74": {
+  "nb": "{value1} · {withAudio} med lyd · {missing} uten lyd · {drift} med avvik",
+  "en": "{value1} · {withAudio} with audio · {missing} without audio · {drift} with drift",
+  "oversatt": "{value1} · {withAudio} com áudio · {missing} sem áudio · {drift} com desvio"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.1bea062fb01f": {
+  "nb": "Karakteren har ingen replikker i dette prosjektet.",
+  "en": "This character has no lines in this project.",
+  "oversatt": "Este personagem não tem falas neste projeto."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.47d870d6b0dd": {
+  "nb": "Jobbene kunne ikke hentes. Prøv igjen etter at databasen er oppdatert.",
+  "en": "Jobs could not be loaded. Try again after the database is updated.",
+  "oversatt": "Não foi possível carregar as tarefas. Tente novamente após atualizar o banco de dados."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.4d26b68ba378": {
+  "nb": "{value1} · {value2} valgt · {missing} mangler lyd · {withAudio} har lyd · {drift} avvik",
+  "en": "{value1} · {value2} selected · {missing} missing audio · {withAudio} have audio · {drift} drift",
+  "oversatt": "{value1} · {value2} selecionadas · {missing} sem áudio · {withAudio} têm áudio · {drift} desvio"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.59359009ba13": {
+  "nb": "{value1} angres. Den forrige aktive versjonen blir aktiv igjen. Ingen eldre lyd eller redigering slettes, og ingenting genereres på nytt.",
+  "en": "{value1} will be undone. The previous active version becomes active again. No older audio or edits are deleted, and nothing is generated again.",
+  "oversatt": "{value1} será desfeito. A versão ativa anterior volta a ficar ativa. Nenhum áudio ou edição anterior é excluído, e nada é gerado novamente."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.702cc3b1bab3": {
+  "nb": "{value1} · {value2} · {value3} · {value4} · kostnadsanslag: {value5} · tidsanslag (usikkert): {value6}",
+  "en": "{value1} · {value2} · {value3} · {value4} · cost estimate: {value5} · time estimate (uncertain): {value6}",
+  "oversatt": "{value1} · {value2} · {value3} · {value4} · custo estimado: {value5} · tempo estimado (incerto): {value6}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.79c0af393463": {
+  "nb": "Prosjekt: {name}",
+  "en": "Project: {name}",
+  "oversatt": "Projeto: {name}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.7da59b56e966": {
+  "nb": "Bare replikker der manuset er endret etter at lyden ble laget. Gamle versjoner beholdes.",
+  "en": "Only lines where the script changed after the audio was made. Old versions are kept.",
+  "oversatt": "Apenas falas cujo roteiro mudou após a criação do áudio. Versões antigas são mantidas."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.9644ddb3b5a7": {
+  "nb": "Karakteren har ingen røde replikker.",
+  "en": "This character has no red lines.",
+  "oversatt": "Este personagem não tem falas em vermelho."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.b4378c022e42": {
+  "nb": "Ny generering overtar aktiv versjon for valgte replikker.",
+  "en": "New generation replaces the active choice for selected lines.",
+  "oversatt": "A nova geração substitui a escolha ativa para as falas selecionadas."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.c8052572c564": {
+  "nb": "{name} · {value2} · {value3}",
+  "en": "{name} · {value2} · {value3}",
+  "oversatt": "{name} · {value2} · {value3}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.c8b3dc76b305": {
+  "nb": "Samlet jobb bruker {value1} for alle valgte replikker. Linjenes egne talespråk brukes bare ved oppdeling.",
+  "en": "The combined job uses {value1} for all selected lines. Individual line languages apply only when splitting.",
+  "oversatt": "A tarefa combinada usa {value1} para todas as falas selecionadas. Os idiomas individuais das falas só se aplicam ao dividir."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.ee4afe5ba0fc": {
+  "nb": "Kostnadsanslag: {value1}",
+  "en": "Cost estimate: {value1}",
+  "oversatt": "Custo estimado: {value1}"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.p.f3f51d97bc79": {
+  "nb": "{value1} gjenstår. Bare replikker leverandøren avviste før fakturering, og replikker som aldri ble sendt, kjøres. Ferdige replikker og uklare resultater kjøres ikke på nytt.",
+  "en": "{value1} remaining. Only lines the provider rejected before billing, and lines never sent, will run. Finished lines and unclear results are not run again.",
+  "oversatt": "{value1} restantes. Apenas falas que o provedor rejeitou antes do faturamento e falas que nunca foram enviadas serão executadas. Falas concluídas e resultados incertos não são executados novamente."
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.span.d681c9919a41": {
+  "nb": "Oppdaget: {value1} · usikkert (manus: {value2})",
+  "en": "Detected: {value1} · uncertain (script: {value2})",
+  "oversatt": "Detectado: {value1} · incerto (roteiro: {value2})"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.title.248fce054d07": {
+  "nb": "Spinoff",
+  "en": "Spinoff",
+  "oversatt": "Spinoff"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.title.92cd10ba4e5f": {
+  "nb": "Hovedfilm",
+  "en": "Main film",
+  "oversatt": "Filme principal"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.title.f0bbe50a8e0d": {
+  "nb": "Godkjenn kostnaden",
+  "en": "Approve cost",
+  "oversatt": "Aprovar custo"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.together-l-samlet-generering-uttale-er-ikke-garantert-generate-together-pronunciation-is-not-guaranteed-split-l-separate-jobber-etter-spr-k-separate-jobs-by-language-as-const-map.21c128fe5ef4": {
+  "nb": "Separate jobber etter språk",
+  "en": "Separate jobs by language",
+  "oversatt": "Separar tarefas por idioma"
+ },
+ "app-library-dialogue-batch-panel.dialogue-batch-panel.together-l-samlet-generering-uttale-er-ikke-garantert-generate-together-pronunciation-is-not-guaranteed-split-l-separate-jobber-etter-spr-k-separate-jobs-by-language-as-const-map.22f5f0e8f14d": {
+  "nb": "Samlet generering (uttale er ikke garantert)",
+  "en": "Generate together (pronunciation is not guaranteed)",
+  "oversatt": "Gerar em conjunto (a pronúncia não é garantida)"
+ },
+ "app-library-dialogue-batch-panel.n-lines.message.79809ebc2d20": {
+  "nb": "{n} replikker",
+  "en": "{n} lines",
+  "oversatt": "{n} falas"
+ },
+ "app-library-dialogue-batch-panel.n-lines.message.ab677ea9e6de": {
+  "nb": "1 replikk",
+  "en": "1 line",
+  "oversatt": "1 fala"
+ },
+ "app-library-dialogue-batch-panel.n-scenes.message.6a8a01eafb3e": {
+  "nb": "1 scene",
+  "en": "1 scene",
+  "oversatt": "1 cena"
+ },
+ "app-library-dialogue-batch-panel.n-scenes.message.ee09e8bb0359": {
+  "nb": "{n} scener",
+  "en": "{n} scenes",
+  "oversatt": "{n} cenas"
+ },
+ "app-library-dialogue-batch-panel.problem.priced-flat-map.d7e96012835a": {
+  "nb": "Modellens språkstøtte er ikke bekreftet.",
+  "en": "The model's language support is not verified.",
+  "oversatt": "O suporte de idioma do modelo não foi verificado."
+ },
+ "app-library-dialogue-batch-panel.status-label.message.42fbee116985": {
+  "nb": "Lyd lagret, venter på innlegging",
+  "en": "Audio saved, awaiting placement",
+  "oversatt": "Áudio salvo, aguardando inserção"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.457092640c4c": {
+  "nb": "Genererer",
+  "en": "Generating",
+  "oversatt": "Gerando"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.6828d92e3cf5": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "Falhou"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.70cf34d3aed5": {
+  "nb": "Hoppet over",
+  "en": "Skipped",
+  "oversatt": "Ignorado"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.b5dda3bfc7cc": {
+  "nb": "Venter",
+  "en": "Waiting",
+  "oversatt": "Aguardando"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.c6b034bb50bf": {
+  "nb": "Angret",
+  "en": "Undone",
+  "oversatt": "Desfeito"
+ },
+ "app-library-dialogue-batch-panel.status-label.message.eb79e9c2781e": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Concluído"
+ },
+ "app-library-generate-image-panel.candidate-images": {
+  "nb": "{count} bilder, hvert som egen versjon – koster {count} ganger så mye",
+  "en": "{count} images, each as its own version – costs {count} times as much",
+  "oversatt": "{count} imagens, cada uma como sua própria versão – custa {count} vezes mais"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.28ffd82da557": {
+  "nb": "Beskrivelse for AI-generering",
+  "en": "Description for AI generation",
+  "oversatt": "Descrição para geração por IA"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.5729ea679c31": {
+  "nb": "Bekreft generering",
+  "en": "Confirm generation",
+  "oversatt": "Confirmar geração"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.6cd2f309c3c8": {
+  "nb": "Leverandør og modell",
+  "en": "Provider and model",
+  "oversatt": "Provedor e modelo"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.6eac5653b1de": {
+  "nb": "Bestillingen kort",
+  "en": "Brief summary",
+  "oversatt": "Resumo do pedido"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.924cc768c0b6": {
+  "nb": "Bildestørrelse",
+  "en": "Image size",
+  "oversatt": "Tamanho da imagem"
+ },
+ "app-library-generate-image-panel.generate-image-panel.aria-label.9e128cdb7529": {
+  "nb": "Antall kandidater",
+  "en": "Number of candidates",
+  "oversatt": "Número de candidatos"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.0758d8cca839": {
+  "nb": "Ja, generer",
+  "en": "Yes, generate",
+  "oversatt": "Sim, gerar"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.15388f0ed6fe": {
+  "nb": "Skriver … (kan ta et halvt minutt)",
+  "en": "Writing … (may take half a minute)",
+  "oversatt": "Escrevendo… (pode levar meio minuto)"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.187cbde97a02": {
+  "nb": "Skriv på nytt med AI",
+  "en": "Write again with AI",
+  "oversatt": "Reescrever com IA"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.448bd157997f": {
+  "nb": "Se eller endre «Filmens visuelle stil» …",
+  "en": "View or change “The film's visual style” …",
+  "oversatt": "Ver ou alterar \"O estilo visual do filme\"…"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.4df37c4080c5": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.56a2ccb973a1": {
+  "nb": "Generer …",
+  "en": "Generate …",
+  "oversatt": "Gerar…"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.6d3464efba3d": {
+  "nb": "Tilbakestill",
+  "en": "Reset",
+  "oversatt": "Redefinir"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.7b749a7e6da9": {
+  "nb": "Fyll ut «Filmens visuelle stil» …",
+  "en": "Fill in “The film's visual style” …",
+  "oversatt": "Preencher \"O estilo visual do filme\"…"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.a047f8567741": {
+  "nb": "Genererer … (kan ta opptil ett minutt)",
+  "en": "Generating … (may take up to a minute)",
+  "oversatt": "Gerando… (pode levar até um minuto)"
+ },
+ "app-library-generate-image-panel.generate-image-panel.button.ad9910320245": {
+  "nb": "Skriv beskrivelsen med AI",
+  "en": "Write the description with AI",
+  "oversatt": "Escrever a descrição com IA"
+ },
+ "app-library-generate-image-panel.generate-image-panel.div.609dba5b72e9": {
+  "nb": "Sendes med til bildemodellen:",
+  "en": "Sent to the image model:",
+  "oversatt": "Enviado para o modelo de imagem:"
+ },
+ "app-library-generate-image-panel.generate-image-panel.h3.f7137e7df9de": {
+  "nb": "Generer et nytt bilde med AI",
+  "en": "Generate a new image with AI",
+  "oversatt": "Gerar uma nova imagem com IA"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.02a2d5239e5f": {
+  "nb": "Kandidater",
+  "en": "Candidates",
+  "oversatt": "Candidatos"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.0a6c94efbc62": {
+  "nb": "Send forbildene i full størrelse ({size} {value2}) – for karakterkort og detaljer",
+  "en": "Send the reference images at full size ({size} {value2}) – for character sheets and details",
+  "oversatt": "Enviar as imagens de referência em tamanho real ({size} {value2}) – para fichas de personagem e detalhes"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.0e5e237256f6": {
+  "nb": "Bruk dagens bilde (v{number}) som forbilde",
+  "en": "Use the current image (v{number}) as reference",
+  "oversatt": "Usar a imagem atual (v{number}) como referência"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.6cd2f309c3c8": {
+  "nb": "Leverandør og modell",
+  "en": "Provider and model",
+  "oversatt": "Provedor e modelo"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.7a9660c1f053": {
+  "nb": "Send filmens godkjente bilder med som stilforbilder",
+  "en": "Send the film's approved images along as style references",
+  "oversatt": "Enviar as imagens aprovadas do filme como referências de estilo"
+ },
+ "app-library-generate-image-panel.generate-image-panel.label.924cc768c0b6": {
+  "nb": "Bildestørrelse",
+  "en": "Image size",
+  "oversatt": "Tamanho da imagem"
+ },
+ "app-library-generate-image-panel.generate-image-panel.li.150d0b38aa87": {
+  "nb": " – utseendet beholdes",
+  "en": " – the appearance is kept",
+  "oversatt": " – a aparência é mantida"
+ },
+ "app-library-generate-image-panel.generate-image-panel.li.6784aa0831bc": {
+  "nb": " – bare stilen",
+  "en": " – style only",
+  "oversatt": " – apenas estilo"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.0023a4920019": {
+  "nb": "Beskrivelsen er laget fra ressursen og stilen.",
+  "en": "The description is made from the asset and the style.",
+  "oversatt": "A descrição é gerada a partir do ativo e do estilo."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.0e5279847698": {
+  "nb": "– et anslag).",
+  "en": "– an estimate).",
+  "oversatt": "– uma estimativa)."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.14451055cdf1": {
+  "nb": "ett bilde",
+  "en": "one image",
+  "oversatt": "uma imagem"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.14451055cdf1.2": {
+  "nb": "ett bilde",
+  "en": "one image",
+  "oversatt": "uma imagem"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.223f1926d20e": {
+  "nb": ", prisen er ukjent",
+  "en": ", the price is unknown",
+  "oversatt": ", o preço é desconhecido"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.22963b0ba2c8": {
+  "nb": "Bildene som sendes med er endret etter at AI skrev beskrivelsen, så den kan omtale feil bilde. Du kan likevel generere – eller skrive den på nytt først.",
+  "en": "The images sent with it have changed since the AI wrote the description, so it may refer to the wrong image. You can still generate – or write it again first.",
+  "oversatt": "As imagens enviadas foram alteradas após a IA escrever a descrição, portanto ela pode se referir à imagem incorreta. Você ainda pode gerar – ou reescrevê-la primeiro."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.2b6ce351bdc4": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "preço desconhecido"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.30915c9b7fc9": {
+  "nb": "{candidates} bilder",
+  "en": "{candidates} images",
+  "oversatt": "{candidates} imagens"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.30915c9b7fc9.2": {
+  "nb": "{candidates} bilder",
+  "en": "{candidates} images",
+  "oversatt": "{candidates} imagens"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.369696db8c8d": {
+  "nb": "Du kan endre den før du sender. Bildet lagres som ny versjon",
+  "en": "You can change it before you send. The image is saved as a new version",
+  "oversatt": "Você pode alterá-la antes de enviar. A imagem é salva como uma nova versão"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.47f4f640efe3": {
+  "nb": "og brukes på laget.",
+  "en": "and used on the layer.",
+  "oversatt": "e usada na camada."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.4bfa620e3738": {
+  "nb": "Vil du generere nå?",
+  "en": "Do you want to generate now?",
+  "oversatt": "Deseja gerar agora?"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.5714e03c691a": {
+  "nb": " Budsjettet er brukt opp; eieren kan endre det på prosjektoversikten.",
+  "en": " The budget is used up; the owner can change it on the project overview.",
+  "oversatt": " O orçamento foi esgotado; o proprietário pode alterá-lo na visão geral do projeto."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.6e7de831eb73": {
+  "nb": "Beskrivelsen er satt sammen av filmens visuelle stil, ressursen, scenene den er med i (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder i filmen.",
+  "en": "The description is put together from the film's visual style, the asset, the scenes it appears in (place, time of day, light, who is there) and the approved images in the film.",
+  "oversatt": "A descrição é composta pelo estilo visual do filme, pelo ativo, pelas cenas em que aparece (local, hora do dia, iluminação, quem está presente) e pelas imagens aprovadas no filme."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.6eac5653b1de": {
+  "nb": "Bestillingen kort",
+  "en": "Brief summary",
+  "oversatt": "Resumo breve"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.7ad4ac216d7e": {
+  "nb": "-kontoen til prosjektets eier (",
+  "en": " account of the project's owner (",
+  "oversatt": " do proprietário do projeto ("
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.8ca16bb84212": {
+  "nb": "Denne måneden: {used} av {limit} genereringer i prosjektets budsjett.",
+  "en": "This month: {used} of {limit} generations in the project's budget.",
+  "oversatt": "Este mês: {used} de {limit} gerações no orçamento do projeto."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.a47da21afeff": {
+  "nb": "(modellens faste størrelse)",
+  "en": "(the model's fixed size)",
+  "oversatt": "(tamanho fixo do modelo)"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.a47da21afeff.2": {
+  "nb": "(modellens faste størrelse)",
+  "en": "(the model's fixed size)",
+  "oversatt": "(tamanho fixo do modelo)"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.b9225cd2f304": {
+  "nb": "Dette belastes",
+  "en": "This is charged to the",
+  "oversatt": "Isso será cobrado na conta"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1": {
+  "nb": "Dette bruker kreditter i Animatic Studio-arbeidsområdet (",
+  "en": "This uses credits in the Animatic Studio workspace (",
+  "oversatt": "Isso usa créditos no espaço de trabalho do Animatic Studio ("
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.c6da9b6d9aee": {
+  "nb": "Prosjektoversikt → «Filmens visuelle stil».",
+  "en": "Project overview → “The film's visual style”.",
+  "oversatt": "Visão geral do projeto → “O estilo visual do filme”."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.d1aa4e3f94da": {
+  "nb": "Bildestørrelse:",
+  "en": "Image size:",
+  "oversatt": "Tamanho da imagem:"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.d1aa4e3f94da.2": {
+  "nb": "Bildestørrelse:",
+  "en": "Image size:",
+  "oversatt": "Tamanho da imagem:"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.d36b3f69d43f": {
+  "nb": " i «{value1}»",
+  "en": " in “{value1}”",
+  "oversatt": " em “{value1}”"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.d711cab7fc79": {
+  "nb": "Denne modellen kan ikke lage gjennomsiktig bakgrunn. Bruk «Frilegg bildet» etterpå, eller velg en modell merket «frilagt».",
+  "en": "This model cannot make a transparent background. Use “Cut out image” afterwards, or choose a model marked “cut out”.",
+  "oversatt": "Este modelo não cria fundo transparente. Use “Recortar imagem” depois, ou escolha um modelo marcado como “recortado”."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.e3db49489073": {
+  "nb": "Denne måneden: {used} genereringer (ingen egen ramme – faste grenser gjelder).",
+  "en": "This month: {used} generations (no separate limit – fixed limits apply).",
+  "oversatt": "Este mês: {used} gerações (sem limite separado – aplicam-se limites fixos)."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.e3db731f8849": {
+  "nb": ", anslått",
+  "en": ", estimated at",
+  "oversatt": ", estimado em"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.e5f92a562441": {
+  "nb": "Filmens visuelle stil er ikke fylt ut ennå. Beskrivelsen blir mye bedre når den er det:",
+  "en": "The film's visual style is not filled in yet. The description will be much better once it is:",
+  "oversatt": "O estilo visual do filme ainda não foi preenchido. A descrição ficará muito melhor assim que for preenchida:"
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.eddef8c64107": {
+  "nb": "Skrevet av AI ({model}). Les gjennom og endre det som ikke stemmer før du genererer.",
+  "en": "Written by AI ({model}). Read through it and change anything that is wrong before you generate.",
+  "oversatt": "Escrito por IA ({model}). Leia com atenção e altere o que estiver incorreto antes de gerar."
+ },
+ "app-library-generate-image-panel.generate-image-panel.p.fcbd5958af13": {
+  "nb": ", anslått {value1} – et anslag",
+  "en": ", estimated at {value1} – an estimate",
+  "oversatt": ", estimado em {value1} – uma estimativa"
+ },
+ "app-library-generate-image-panel.generate-image-panel.set-origin.af8d432801ee": {
+  "nb": "Siste beskrivelse for {name} ({when}). «Tilbakestill» gir den automatiske.",
+  "en": "Last description for {name} ({when}). “Reset” gives back the automatic one.",
+  "oversatt": "Última descrição para {name} ({when}). “Redefinir” restaura a automática."
+ },
+ "app-library-generate-image-panel.generate-image-panel.set-origin.fa9b6457c535": {
+  "nb": "Beskrivelsen fra bildet du valgte er satt inn.",
+  "en": "The description from the image you chose has been inserted.",
+  "oversatt": "A descrição da imagem selecionada foi inserida."
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.05bd9b9aeedc": {
+  "nb": "Bruker litt kreditter (langt mindre enn et bilde), teller ikke i bildebudsjettet.",
+  "en": "Uses a few credits (far less than an image), does not count towards the image budget.",
+  "oversatt": "Consome poucos créditos (muito menos que uma imagem) e não conta no orçamento de imagens."
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.1d756f586b3e": {
+  "nb": "tegn",
+  "en": "characters",
+  "oversatt": "caracteres"
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.2ef7be350cda": {
+  "nb": "Beskrivelsen er for lang",
+  "en": "The description is too long",
+  "oversatt": "A descrição é longa demais"
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.3e869a9eb207": {
+  "nb": ", med listen over bildene som sendes med",
+  "en": ", including the list of images sent with it",
+  "oversatt": ", incluindo a lista de imagens enviadas com ela"
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.8dcec8542f6d": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "de"
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.e708df37ba3a": {
+  "nb": "{candidates} bilder, hvert som egen versjon – koster {candidates2} ganger så mye",
+  "en": "{candidates} images, each as its own version – costs {candidates2} times as much",
+  "oversatt": "{candidates} imagens, cada uma como sua própria versão – custa {candidates2} vezes mais"
+ },
+ "app-library-generate-image-panel.generate-image-panel.span.f985152b1196": {
+  "nb": "Beskrivelse (engelsk gir best resultat)",
+  "en": "Description (English gives the best result)",
+  "oversatt": "Descrição (em inglês gera os melhores resultados)"
+ },
+ "app-library-generate-image-panel.generate-image-panel.title.833045f236e3": {
+  "nb": "Bruk den automatiske beskrivelsen igjen",
+  "en": "Use the automatic description again",
+  "oversatt": "Usar a descrição automática novamente"
+ },
+ "app-library-generate-image-panel.generate-image-panel.title.9c26aeab4880": {
+  "nb": "En språkmodell leser alt over (og ser bildene som sendes med) og skriver en presis beskrivelse. Du kan endre den før du genererer.",
+  "en": "A language model reads everything above (and sees the images sent with it) and writes a precise description. You can change it before you generate.",
+  "oversatt": "Um modelo de linguagem lê tudo acima (e visualiza as imagens enviadas com ele) para escrever uma descrição precisa. Você pode alterá-la antes de gerar."
+ },
+ "app-library-generate-image-panel.in-variant": {
+  "nb": " i «{name}»",
+  "en": " in “{name}”",
+  "oversatt": " em “{name}”"
+ },
+ "app-library-generate-image-panel.in-variant-unnamed": {
+  "nb": "Uten navn",
+  "en": "Without name",
+  "oversatt": "Sem nome"
+ },
+ "app-library-generate-image-panel.label.label.3113022c2c74": {
+  "nb": "Samlet anslag",
+  "en": "Estimated total",
+  "oversatt": "Total estimado"
+ },
+ "app-library-generate-image-panel.label.label.6d04cb168ac2": {
+  "nb": "Ekstrarunder",
+  "en": "Extra rounds",
+  "oversatt": "Rodadas extras"
+ },
+ "app-library-generate-image-panel.label.label.bfd80eaeddbd": {
+  "nb": "Antall",
+  "en": "Number",
+  "oversatt": "Quantidade"
+ },
+ "app-library-generate-image-panel.label.label.ce5c2ab7029a": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "app-library-generate-image-panel.lost-connection.message.e72c8e457e28": {
+  "nb": "Forbindelsen til serveren brøt mens bildet ble laget. Tjenesten kan likevel ha laget – og tatt betalt for – bildet. Se AI-jobbene før du prøver igjen, og velg gjerne mindre bildestørrelse eller færre forbildebilder.",
+  "en": "The connection to the server broke while the image was being made. The service may still have made – and charged for – the image. Check the AI jobs before you try again, and consider a smaller image size or fewer reference images.",
+  "oversatt": "A conexão com o servidor caiu enquanto a imagem estava sendo criada. O serviço ainda pode ter criado – e cobrado por – a imagem. Verifique as tarefas de IA antes de tentar novamente e considere um tamanho de imagem menor ou menos imagens de referência."
+ },
+ "app-library-generate-image-panel.run.set-done.748fb0b5d751": {
+  "nb": "{made} kandidater laget og lagret som nye versjoner. Sammenlign dem i biblioteket og godkjenn den du vil bruke.",
+  "en": "{made} candidates made and saved as new versions. Compare them in the library and approve the one you want to use.",
+  "oversatt": "{made} candidatos criados e salvos como novas versões. Compare-os na biblioteca e aprove o que desejar usar."
+ },
+ "app-library-generate-image-panel.run.set-done.9710f9ab86da": {
+  "nb": "Nytt bilde laget og lagret som ny versjon.",
+  "en": "New image made and saved as a new version.",
+  "oversatt": "Nova imagem criada e salva como uma nova versão."
+ },
+ "app-library-generate-image-panel.run.set-error.105685bd9481": {
+  "nb": "{made} av {candidates} laget. {value3}",
+  "en": "{made} of {candidates} made. {value3}",
+  "oversatt": "{made} de {candidates} criados. {value3}"
+ },
+ "app-library-generate-image-panel.send-originals": {
+  "nb": {
+   "one": "Send forbildene i full størrelse ({count} original) – for karakterkort og detaljer",
+   "other": "Send forbildene i full størrelse ({count} originaler) – for karakterkort og detaljer"
+  },
+  "en": {
+   "one": "Send the reference images at full size ({count} original) – for character sheets and details",
+   "other": "Send the reference images at full size ({count} originals) – for character sheets and details"
+  },
+  "oversatt": {
+   "one": "Enviar as imagens de referência em tamanho original ({count} original) – para fichas de personagem e detalhes",
+   "many": "Enviar as imagens de referência em tamanho original ({count} originais) – para fichas de personagem e detalhes",
+   "other": "Enviar as imagens de referência em tamanho original ({count} originais) – para fichas de personagem e detalhes"
+  }
+ },
+ "app-library-generate-image-panel.targets-label.targets-label.c033e25d3dbd": {
+  "nb": "bilder",
+  "en": "images",
+  "oversatt": "imagens"
+ },
+ "app-library-generate-image-panel.value.value.0a91ac13c9f7": {
+  "nb": "Innebygd bildemodell (innebygd AI)",
+  "en": "Built-in image model (built-in AI)",
+  "oversatt": "Modelo de imagem integrado (IA integrada)"
+ },
+ "app-library-generate-image-panel.value.value.5dde0bb6f2b5": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "preço desconhecido"
+ },
+ "app-library-generate-image-panel.value.value.af141b19c297": {
+  "nb": "1 bilde",
+  "en": "1 image",
+  "oversatt": "1 imagem"
+ },
+ "app-library-generate-image-panel.value.value.c84b3d7ecaae": {
+  "nb": "ingen automatiske – nye forsøk startes bare av deg",
+  "en": "none automatic – new attempts are only started by you",
+  "oversatt": "nenhuma automática – novas tentativas só são iniciadas por você"
+ },
+ "app-library-generate-image-panel.value.value.e89f114998b0": {
+  "nb": "{candidates} bilder",
+  "en": "{candidates} images",
+  "oversatt": "{candidates} imagens"
+ },
+ "app-library-generate-image-panel.write.set-error.21074e547fa9": {
+  "nb": "Beskrivelsen ble ikke skrevet.",
+  "en": "The description could not be written.",
+  "oversatt": "Não foi possível escrever a descrição."
+ },
+ "app-library-generate-sound-panel.confirm-sound": {
+  "nb": "Dette belastes {provider}-kontoen til prosjektets eier (én lyd, anslått høyst {cost}{longest} – et anslag). Vil du lage lyden nå?",
+  "en": "This is charged to the {provider} account of the project's owner (one sound, estimated at most {cost}{longest} – an estimate). Do you want to make the sound now?",
+  "oversatt": "Isso será cobrado na conta {provider} do proprietário do projeto (um som, estimado em no máximo {cost}{longest} – uma estimativa). Deseja criar o som agora?"
+ },
+ "app-library-generate-sound-panel.confirm-sound-longest": {
+  "nb": " regnet med lengste lengde, {seconds} sekunder",
+  "en": " based on the longest length, {seconds} seconds",
+  "oversatt": " com base na duração mais longa, {seconds} segundos"
+ },
+ "app-library-generate-sound-panel.confirm-sound-unknown-price": {
+  "nb": "ukjent pris",
+  "en": "an unknown price",
+  "oversatt": "um preço desconhecido"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.aria-label.3823ab83a6ad": {
+  "nb": "Bekreft generering",
+  "en": "Confirm generation",
+  "oversatt": "Confirmar geração"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.aria-label.844c9add189c": {
+  "nb": "Lengde på lyden",
+  "en": "Length of the sound",
+  "oversatt": "Duração do som"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.aria-label.90c6b1a920e8": {
+  "nb": "Lydmodell",
+  "en": "Sound model",
+  "oversatt": "Modelo de som"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.aria-label.bb1d4f0336c2": {
+  "nb": "Lag lyd med AI",
+  "en": "Generate sound with AI",
+  "oversatt": "Gerar som com IA"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.button.465a418f20d9": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.button.633f7288b3d0": {
+  "nb": "Lager lyden …",
+  "en": "Making the sound …",
+  "oversatt": "Gerando o som…"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.button.7c6b3c48bd97": {
+  "nb": "Ja, lag lyden",
+  "en": "Yes, make the sound",
+  "oversatt": "Sim, gerar o som"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.button.b2d20478ce14": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.button.babd46c2c06b": {
+  "nb": "Lag lyd …",
+  "en": "Make sound …",
+  "oversatt": "Gerar som…"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.h4.bb1d4f0336c2": {
+  "nb": "Lag lyd med AI",
+  "en": "Generate sound with AI",
+  "oversatt": "Gerar som com IA"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.label.3bd4b115b5e0": {
+  "nb": "Sømløs løkke (bakgrunnslyd)",
+  "en": "Seamless loop (background sound)",
+  "oversatt": "Loop contínuo (som de fundo)"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.label.401b22f9b62c": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "Duração"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.label.6bab6a686bc0": {
+  "nb": "Beskriv lyden (gjerne på engelsk)",
+  "en": "Describe the sound (English preferred)",
+  "oversatt": "Descreva o som (preferencialmente em inglês)"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.label.bfc44e2bfaae": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.option.b3d2dc389bd1": {
+  "nb": "Automatisk",
+  "en": "Automatic",
+  "oversatt": "Automático"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.p.7f3e08418b4b": {
+  "nb": "Henter leverandører …",
+  "en": "Loading providers …",
+  "oversatt": "Carregando provedores…"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.p.8b7aa7e0c916": {
+  "nb": "Dette belastes {name}-kontoen til prosjektets eier (én lyd, anslått høyst {value2}{value3} – et anslag). Vil du lage lyden nå?",
+  "en": "This is charged to the {name} account of the project's owner (one sound, estimated at most {value2}{value3} – an estimate). Do you want to make the sound now?",
+  "oversatt": "Isso será cobrado na conta do {name} do proprietário do projeto (um som, estimado em no máximo {value2}{value3} – uma estimativa). Deseja gerar o som agora?"
+ },
+ "app-library-generate-sound-panel.generate-sound-panel.p.9f97ded97f7e": {
+  "nb": "Ingen av prosjektets eiere har koblet til en lydleverandør ennå. Eieren kan koble til ElevenLabs under «AI-leverandører» på prosjektlisten.",
+  "en": "None of the project's owners has connected a sound provider yet. The owner can connect ElevenLabs under “AI providers” on the project list.",
+  "oversatt": "Nenhum dos proprietários do projeto conectou um provedor de som ainda. O proprietário pode conectar o ElevenLabs em \"Provedores de IA\" na lista de projetos."
+ },
+ "app-library-generate-sound-panel.note.l-generert-med-ai-r-model-prompt-trim-generated-with-ai-r-model-prompt-trim-slice.50a5946fb31e": {
+  "nb": "Generert med AI ({model}): {value2}",
+  "en": "Generated with AI ({model}): {value2}",
+  "oversatt": "Gerado com IA ({model}): {value2}"
+ },
+ "app-library-generate-sound-panel.res.cmds-run-and-wait.15701010066e": {
+  "nb": "AI-lyd i «{name}»",
+  "en": "AI sound in “{name}”",
+  "oversatt": "Som de IA em \"{name}\""
+ },
+ "app-library-generate-sound-panel.run.set-done.f320210cf318": {
+  "nb": "Lyden er lagt inn som ny versjon. Lytt og godkjenn den hvis den passer.",
+  "en": "The sound has been added as a new version. Listen to it and approve it if it fits.",
+  "oversatt": "O som foi adicionado como uma nova versão. Ouça e aprove se estiver adequado."
+ },
+ "app-library-generate-sound-panel.total.total.ad2104f4e760": {
+  "nb": "høyst {value1}",
+  "en": "at most {value1}",
+  "oversatt": "no máximo {value1}"
+ },
+ "app-library-harmonize-batch-panel.batch-total": {
+  "nb": {
+   "one": "Samlet anslag: {count} generering med {model}{price}{size}{profile}.",
+   "other": "Samlet anslag: {count} genereringer med {model}{price}{size}{profile}."
+  },
+  "en": {
+   "one": "Total estimate: {count} generation with {model}{price}{size}{profile}.",
+   "other": "Total estimate: {count} generations with {model}{price}{size}{profile}."
+  },
+  "oversatt": {
+   "one": "Estimativa total: {count} geração com {model}{price}{size}{profile}.",
+   "many": "Estimativa total: {count} gerações com {model}{price}{size}{profile}.",
+   "other": "Estimativa total: {count} gerações com {model}{price}{size}{profile}."
+  }
+ },
+ "app-library-harmonize-batch-panel.batch-total-price": {
+  "nb": " · {unit} per bilde · totalt {total}",
+  "en": " · {unit} per image · {total} in total",
+  "oversatt": " · {unit} por imagem · {total} no total"
+ },
+ "app-library-harmonize-batch-panel.batch-total-profile": {
+  "nb": " · profil «{name}»",
+  "en": " · profile “{name}”",
+  "oversatt": " · perfil \"{name}\""
+ },
+ "app-library-harmonize-batch-panel.batch-total-unknown-price": {
+  "nb": " · prisen er ukjent",
+  "en": " · the price is unknown",
+  "oversatt": " · o preço é desconhecido"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.button.67372ed7aa57": {
+  "nb": "Bekreft og fortsett (bare bilder som sikkert ikke er laget)",
+  "en": "Approve and continue (only images certainly not made)",
+  "oversatt": "Aprovar e continuar (apenas imagens certamente não criadas)"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.button.7509d45b9584": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.confirm-label.de2cbc6c3e7c": {
+  "nb": "Bekreft masseharmonisering",
+  "en": "Confirm batch harmonization",
+  "oversatt": "Confirmar harmonização em lote"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.empty-text.5dd09e2e4979": {
+  "nb": "Velg minst én karakter.",
+  "en": "Choose at least one character.",
+  "oversatt": "Escolha pelo menos um personagem."
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.empty-text.a9938db38386": {
+  "nb": "Velg en stilprofil eller et referansebilde først.",
+  "en": "Choose a style profile or a reference image first.",
+  "oversatt": "Escolha um perfil de estilo ou uma imagem de referência primeiro."
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.h4.86ff98e3854d": {
+  "nb": "Harmoniser flere karakterer",
+  "en": "Harmonize more characters",
+  "oversatt": "Harmonizar mais personagens"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.legend.32997592544e": {
+  "nb": "Karakterer med bilde",
+  "en": "Characters with an image",
+  "oversatt": "Personagens com imagem"
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.p.287a9869be20": {
+  "nb": "Ferdig. Hvert resultat er en ny variant; originalene er uendret.",
+  "en": "Done. Each result is a new variant; the originals are unchanged.",
+  "oversatt": "Concluído. Cada resultado é uma nova variante; os originais não foram alterados."
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.p.76b20646e06c": {
+  "nb": "Jobben kjører – den fortsetter selv om du lukker.",
+  "en": "The job is running – it continues even if you close.",
+  "oversatt": "O processo está em execução – continuará mesmo se você fechar."
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.p.ebcfbc789159": {
+  "nb": "Samlet anslag: {count} {value2} med {value3}{value4}{value5}{value6}.",
+  "en": "Total estimate: {count} {value2} with {value3}{value4}{value5}{value6}.",
+  "oversatt": "Estimativa total: {count} {value2} com {value3}{value4}{value5}{value6}."
+ },
+ "app-library-harmonize-batch-panel.harmonize-batch-panel.start-label.4d3729c3f904": {
+  "nb": "Harmoniser {count} …",
+  "en": "Harmonize {count} …",
+  "oversatt": "Harmonizar {count}…"
+ },
+ "app-library-harmonize-batch-panel.status.done.be723f263b44": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Concluído"
+ },
+ "app-library-harmonize-batch-panel.status.failed.949469a06648": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "Falhou"
+ },
+ "app-library-harmonize-batch-panel.status.generating.10ace14199ac": {
+  "nb": "Lager …",
+  "en": "Making …",
+  "oversatt": "Criando…"
+ },
+ "app-library-harmonize-batch-panel.status.ready.e735d35f0043": {
+  "nb": "Legges inn …",
+  "en": "Saving …",
+  "oversatt": "Salvando…"
+ },
+ "app-library-harmonize-batch-panel.status.skipped.1353cb3eea00": {
+  "nb": "Hoppet over",
+  "en": "Skipped",
+  "oversatt": "Ignorado"
+ },
+ "app-library-harmonize-batch-panel.status.waiting.041a3867bbb3": {
+  "nb": "Venter",
+  "en": "Waiting",
+  "oversatt": "Aguardando"
+ },
+ "app-library-harmonize-compare.harmonize-compare.alt.0cf9a2fef661": {
+  "nb": "Original",
+  "en": "Original",
+  "oversatt": "Original"
+ },
+ "app-library-harmonize-compare.harmonize-compare.alt.0cf9a2fef661.2": {
+  "nb": "Original",
+  "en": "Original",
+  "oversatt": "Original"
+ },
+ "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3": {
+  "nb": "Harmonisert",
+  "en": "Harmonized",
+  "oversatt": "Harmonizado"
+ },
+ "app-library-harmonize-compare.harmonize-compare.alt.5a7da45245a3.2": {
+  "nb": "Harmonisert",
+  "en": "Harmonized",
+  "oversatt": "Harmonizado"
+ },
+ "app-library-harmonize-compare.harmonize-compare.aria-label.4fbe0191f491": {
+  "nb": "Sammenligning",
+  "en": "Comparison",
+  "oversatt": "Comparação"
+ },
+ "app-library-harmonize-compare.harmonize-compare.aria-label.fac1c9169bde": {
+  "nb": "Skyver mellom original og harmonisert",
+  "en": "Slider between original and harmonized",
+  "oversatt": "Controle deslizante entre original e harmonizado"
+ },
+ "app-library-harmonize-compare.harmonize-compare.button.161029389940": {
+  "nb": "Skyver",
+  "en": "Slider",
+  "oversatt": "Controle deslizante"
+ },
+ "app-library-harmonize-compare.harmonize-compare.button.7af22ece9e2e": {
+  "nb": "Vis harmonisert",
+  "en": "Show harmonized",
+  "oversatt": "Mostrar harmonizado"
+ },
+ "app-library-harmonize-compare.harmonize-compare.button.815314ffe105": {
+  "nb": "Veksle",
+  "en": "Toggle",
+  "oversatt": "Alternar"
+ },
+ "app-library-harmonize-compare.harmonize-compare.button.f4285e660a5f": {
+  "nb": "Vis originalen",
+  "en": "Show the original",
+  "oversatt": "Mostrar o original"
+ },
+ "app-library-harmonize-compare.harmonize-compare.span.0cf9a2fef661": {
+  "nb": "Original",
+  "en": "Original",
+  "oversatt": "Original"
+ },
+ "app-library-harmonize-compare.harmonize-compare.span.5a7da45245a3": {
+  "nb": "Harmonisert",
+  "en": "Harmonized",
+  "oversatt": "Harmonizado"
+ },
+ "app-library-harmonize-panel.a.tools-cmds-run-and-wait.43eafb111d6b": {
+  "nb": "Foretrukket referanse",
+  "en": "Preferred reference",
+  "oversatt": "Referência preferencial"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.37fd31700a6c": {
+  "nb": "Bruk bare her",
+  "en": "Use only here",
+  "oversatt": "Usar apenas aqui"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.5ea1153a88ba": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.a0e39b3fd5fc": {
+  "nb": "Lagre som alternativ variant",
+  "en": "Save as an alternative variant",
+  "oversatt": "Salvar como variante alternativa"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.b25d79029c66": {
+  "nb": "Merk som foretrukket referanse",
+  "en": "Mark as preferred reference",
+  "oversatt": "Marcar como referência preferencial"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.c45b65e4926e": {
+  "nb": "Harmoniser flere karakterer …",
+  "en": "Harmonize more characters …",
+  "oversatt": "Harmonizar mais personagens…"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.e7c31b69ff7a": {
+  "nb": "Publiser globalt …",
+  "en": "Publish globally …",
+  "oversatt": "Publicar globalmente…"
+ },
+ "app-library-harmonize-panel.harmonize-panel.button.efb8f570a7b8": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "Descartar"
+ },
+ "app-library-harmonize-panel.harmonize-panel.confirm-label.48f33bc9a77a": {
+  "nb": "Bekreft stilharmonisering",
+  "en": "Confirm style harmonization",
+  "oversatt": "Confirmar harmonização de estilo"
+ },
+ "app-library-harmonize-panel.harmonize-panel.empty-text.019188dd067d": {
+  "nb": "Velg en utfylt stilprofil eller et referansebilde.",
+  "en": "Choose a filled-in style profile or a reference image.",
+  "oversatt": "Escolha um perfil de estilo preenchido ou uma imagem de referência."
+ },
+ "app-library-harmonize-panel.harmonize-panel.h4.967a9a7f7af8": {
+  "nb": "Harmoniser stil",
+  "en": "Harmonize style",
+  "oversatt": "Harmonizar estilo"
+ },
+ "app-library-harmonize-panel.harmonize-panel.label.363fe64c14e1": {
+  "nb": "Et referansebilde",
+  "en": "A reference image",
+  "oversatt": "Uma imagem de referência"
+ },
+ "app-library-harmonize-panel.harmonize-panel.label.93f13fb1082a": {
+  "nb": "En stilprofil",
+  "en": "A style profile",
+  "oversatt": "Um perfil de estilo"
+ },
+ "app-library-harmonize-panel.harmonize-panel.legend.8b7983bbabf5": {
+  "nb": "Stilen hentes fra",
+  "en": "Take the style from",
+  "oversatt": "Obter o estilo de"
+ },
+ "app-library-harmonize-panel.harmonize-panel.option.0616f2fa3a27": {
+  "nb": "Velg et bilde …",
+  "en": "Choose an image …",
+  "oversatt": "Escolher uma imagem…"
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.09c4a0937d84": {
+  "nb": "Ingen bildemodeller er tilgjengelige.",
+  "en": "No image models are available.",
+  "oversatt": "Nenhum modelo de imagem disponível."
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.0bd79de7c469": {
+  "nb": "Laget med profil «{existingProfile}»",
+  "en": "Made with profile “{existingProfile}”",
+  "oversatt": "Criado com o perfil “{existingProfile}”"
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.543ff15a6522": {
+  "nb": "Laget med profil «{value1}»",
+  "en": "Made with profile “{value1}”",
+  "oversatt": "Criado com o perfil “{value1}”"
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.8b7ee42013fb": {
+  "nb": "Laget med et referansebilde",
+  "en": "Made with a reference image",
+  "oversatt": "Criado com uma imagem de referência"
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.8b7ee42013fb.2": {
+  "nb": "Laget med et referansebilde",
+  "en": "Made with a reference image",
+  "oversatt": "Criado com uma imagem de referência"
+ },
+ "app-library-harmonize-panel.harmonize-panel.p.fb1bf62ba729": {
+  "nb": "Stilen dekker tegnestil, fargepalett, lyssetting, tekstur, detaljgrad og atmosfære.",
+  "en": "The style covers drawing style, colour palette, lighting, texture, level of detail and atmosphere.",
+  "oversatt": "O estilo abrange estilo de desenho, paleta de cores, iluminação, textura, nível de detalhe e atmosfera."
+ },
+ "app-library-harmonize-panel.harmonize-panel.start-label.81dee04b3a38": {
+  "nb": "Harmoniser …",
+  "en": "Harmonize …",
+  "oversatt": "Harmonizar…"
+ },
+ "app-library-harmonize-panel.harmonize-panel.title.adfe35737267": {
+  "nb": "Eget, eksplisitt valg: kopierer ressursen med den nye stilvarianten til det globale biblioteket.",
+  "en": "A separate, explicit choice: copies the asset with the new style variant to the global library.",
+  "oversatt": "Uma escolha separada e explícita: copia o ativo com a nova variante de estilo para a biblioteca global."
+ },
+ "app-library-harmonize-panel.mark-preferred.tools-cmds-run-and-wait.ba0436a052af": {
+  "nb": "Foretrukket referanse",
+  "en": "Preferred reference",
+  "oversatt": "Referência preferida"
+ },
+ "app-library-harmonize-panel.name.harmonized-variant-name-name-l-lokal-local-slice.65c96b9590dd": {
+  "nb": "lokal",
+  "en": "local",
+  "oversatt": "local"
+ },
+ "app-library-harmonize-panel.publish.set-busy.4c7f80318bb2": {
+  "nb": "Publiserer …",
+  "en": "Publishing …",
+  "oversatt": "Publicando…"
+ },
+ "app-library-harmonize-panel.publish.tools-cmds-run-and-wait.429acd6298d5": {
+  "nb": "Publisert til det globale biblioteket",
+  "en": "Published to the global library",
+  "oversatt": "Publicado na biblioteca global"
+ },
+ "app-library-harmonize-panel.r.tools-cmds-run-and-wait.ab928293f84b": {
+  "nb": "Harmonisert stil for «{name}»",
+  "en": "Harmonized style for “{name}”",
+  "oversatt": "Estilo harmonizado para “{name}”"
+ },
+ "app-library-harmonize-panel.run.set-busy.aa330672b739": {
+  "nb": "Harmoniserer stilen … (kan ta et minutt)",
+  "en": "Harmonizing the style … (can take a minute)",
+  "oversatt": "Harmonizando o estilo… (pode levar um minuto)"
+ },
+ "app-library-harmonize-panel.text.text.1025fec05fa8": {
+  "nb": "Brukt bare her. Ressursen i biblioteket er uendret.",
+  "en": "Used only here. The asset in the library is unchanged.",
+  "oversatt": "Usado apenas aqui. O ativo na biblioteca permanece inalterado."
+ },
+ "app-library-harmonize-panel.text.text.4830628cecf6": {
+  "nb": "Lagret som ny variant. Originalen er beholdt.",
+  "en": "Saved as a new variant. The original is kept.",
+  "oversatt": "Salvo como uma nova variante. O original foi mantido."
+ },
+ "app-library-harmonize-panel.text.text.84c4ec175809": {
+  "nb": "Merket som foretrukket referanse for stilprofilen.",
+  "en": "Marked as the preferred reference for the style profile.",
+  "oversatt": "Marcado como a referência preferida para o perfil de estilo."
+ },
+ "app-library-harmonize-panel.text.text.86977fd83b0a": {
+  "nb": "Publisert til det globale biblioteket som ny stilvariant.",
+  "en": "Published to the global library as a new style variant.",
+  "oversatt": "Publicado na biblioteca global como nova variante de estilo."
+ },
+ "app-library-image-actions.blob.fail.d2a3503fa9b6": {
+  "nb": "Bildet kunne ikke lages.",
+  "en": "The image could not be created.",
+  "oversatt": "Não foi possível criar a imagem."
+ },
+ "app-library-image-actions.load-image.message.ebea03297952": {
+  "nb": "Lenken til bildet har gått ut – lukk og åpne visningen igjen.",
+  "en": "The link to the image has expired – close and reopen the view.",
+  "oversatt": "O link para a imagem expirou – feche e abra a visualização novamente."
+ },
+ "app-library-image-actions.load-image.message.eff158aa3860": {
+  "nb": "Bildet kunne ikke hentes (feil {status}).",
+  "en": "The image could not be loaded (error {status}).",
+  "oversatt": "Não foi possível carregar a imagem (erro {status})."
+ },
+ "app-library-image-actions.name.name.6a87545f553f": {
+  "nb": "Utsnitt",
+  "en": "Crop",
+  "oversatt": "Recortar"
+ },
+ "app-library-image-actions.name.name.f563d3f30c1d": {
+  "nb": "Del",
+  "en": "Part",
+  "oversatt": "Parte"
+ },
+ "app-library-image-actions.no-trim-message.message.1e9b9d4a9780": {
+  "nb": "Det er ingen luft å fjerne: kanten rundt bildet er verken gjennomsiktig eller ensfarget. Frilegg bildet først.",
+  "en": "There is no air to remove: the edge around the image is neither transparent nor a single colour. Cut the image out first.",
+  "oversatt": "Não há respiro para remover: a borda ao redor da imagem não é transparente nem de cor sólida. Recorte a imagem primeiro."
+ },
+ "app-library-image-actions.no-trim-message.message.54a1897f4e53": {
+  "nb": "Det er ingen luft å fjerne: bildet er bare bakgrunn (tomt).",
+  "en": "There is no air to remove: the image is only background (empty).",
+  "oversatt": "Não há respiro para remover: a imagem é apenas fundo (vazia)."
+ },
+ "app-library-image-actions.no-trim-message.message.e2612e5a5a0c": {
+  "nb": "Det er ingen luft å fjerne: figuren fyller allerede (nesten) hele bildet.",
+  "en": "There is no air to remove: the figure already fills (almost) the whole image.",
+  "oversatt": "Não há respiro para remover: a figura já preenche (quase) toda a imagem."
+ },
+ "app-library-image-ai-panels.a.tools-cmds-run-and-wait.3c713f4a9aa5": {
+  "nb": "AI-vinkel av «{name}»",
+  "en": "AI angle of “{name}”",
+  "oversatt": "Ângulo de IA de “{name}”"
+ },
+ "app-library-image-ai-panels.a.tools-cmds-run-and-wait.9f30ec149a3f": {
+  "nb": "Oppskaler «{name}»",
+  "en": "Upscale “{name}”",
+  "oversatt": "Upscale de “{name}”"
+ },
+ "app-library-image-ai-panels.a.tools-cmds-run-and-wait.dd7b853571d6": {
+  "nb": "AI-variasjon av «{name}»",
+  "en": "AI variation of “{name}”",
+  "oversatt": "Variação de IA de “{name}”"
+ },
+ "app-library-image-ai-panels.cost-confirm.button.7f9610c91e00": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-image-ai-panels.cost-confirm.button.eb5cf818161b": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-image-ai-panels.cost-confirm.button.ffcd9a7b3032": {
+  "nb": "Ja, generer",
+  "en": "Yes, generate",
+  "oversatt": "Sim, gerar"
+ },
+ "app-library-image-ai-panels.cost-confirm.p.1c24a389e79e": {
+  "nb": "{count} {value2}{value3}. Teller i prosjektets AI-budsjett.",
+  "en": "{count} {value2}{value3}. Counts towards the project's AI budget.",
+  "oversatt": "{count} {value2}{value3}. Conta para o orçamento de IA do projeto."
+ },
+ "app-library-image-ai-panels.cost-confirm.p.7f644122a14e": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "com"
+ },
+ "app-library-image-ai-panels.cost-confirm.p.7ff37f5fab39": {
+  "nb": "generering",
+  "en": "generation",
+  "oversatt": "geração"
+ },
+ "app-library-image-ai-panels.cost-confirm.p.86b60bd56ab8": {
+  "nb": "genereringer",
+  "en": "generations",
+  "oversatt": "gerações"
+ },
+ "app-library-image-ai-panels.cost-confirm.p.c5d9188a907b": {
+  "nb": ", anslått {value1}",
+  "en": ", estimated {value1}",
+  "oversatt": ", estimado em {value1}"
+ },
+ "app-library-image-ai-panels.cost-confirm.p.f83230616852": {
+  "nb": ". Vil du fortsette?",
+  "en": ". Do you want to continue?",
+  "oversatt": ". Deseja continuar?"
+ },
+ "app-library-image-ai-panels.image-model-fields.label.b68a61a9bb51": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "Tamanho"
+ },
+ "app-library-image-ai-panels.image-model-fields.label.b8c823827d12": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "app-library-image-ai-panels.images-credits": {
+  "nb": {
+   "one": "{count} bilde · bruker AI-kreditter. Teller i prosjektets AI-budsjett.",
+   "other": "{count} bilder · bruker AI-kreditter. Teller i prosjektets AI-budsjett."
+  },
+  "en": {
+   "one": "{count} image · uses AI credits. Counts towards the project's AI budget.",
+   "other": "{count} images · uses AI credits. Counts towards the project's AI budget."
+  },
+  "oversatt": {
+   "one": "{count} imagem · usa créditos de IA. Conta para o orçamento de IA do projeto.",
+   "many": "{count} de imagens · usa créditos de IA. Conta para o orçamento de IA do projeto.",
+   "other": "{count} imagens · usa créditos de IA. Conta para o orçamento de IA do projeto."
+  }
+ },
+ "app-library-image-ai-panels.images-estimate": {
+  "nb": {
+   "one": "{count} bilde · anslått {cost}. Teller i prosjektets AI-budsjett.",
+   "other": "{count} bilder · anslått {cost}. Teller i prosjektets AI-budsjett."
+  },
+  "en": {
+   "one": "{count} image · estimated {cost}. Counts towards the project's AI budget.",
+   "other": "{count} images · estimated {cost}. Counts towards the project's AI budget."
+  },
+  "oversatt": {
+   "one": "{count} imagem · estimado em {cost}. Conta para o orçamento de IA do projeto.",
+   "many": "{count} de imagens · estimado em {cost}. Conta para o orçamento de IA do projeto.",
+   "other": "{count} imagens · estimado em {cost}. Conta para o orçamento de IA do projeto."
+  }
+ },
+ "app-library-image-ai-panels.label.message.512ce45aaa2b": {
+  "nb": "karakterark",
+  "en": "character sheet",
+  "oversatt": "folha de modelo do personagem"
+ },
+ "app-library-image-ai-panels.note.l-variasjon-i-1-av-count-fra-v-version-number-wanted-r-model-variation-i-1-of-count-from-v-version-number-wanted-r-model-slice.a5412144dbca": {
+  "nb": "Variasjon {value1} av {count} fra v{number}: «{wanted}» ({model}).",
+  "en": "Variation {value1} of {count} from v{number}: “{wanted}” ({model}).",
+  "oversatt": "Variação {value1} de {count} a partir de v{number}: “{wanted}” ({model})."
+ },
+ "app-library-image-ai-panels.note.note.31d1e81bd571": {
+  "nb": "Oppskalert {factor}× fra v{number} ({model}).",
+  "en": "Upscaled {factor}× from v{number} ({model}).",
+  "oversatt": "Upscaled {factor}× a partir de v{number} ({model})."
+ },
+ "app-library-image-ai-panels.note.note.8cf8399adeab": {
+  "nb": "Generert vinkel: {label}, fra v{number} ({model}).",
+  "en": "Generated angle: {label}, from v{number} ({model}).",
+  "oversatt": "Ângulo gerado: {label}, a partir de v{number} ({model})."
+ },
+ "app-library-image-ai-panels.prompt-preview.button.1afe0209e54f": {
+  "nb": "Vis beskrivelsen som sendes",
+  "en": "Show the description being sent",
+  "oversatt": "Mostrar a descrição que está sendo enviada"
+ },
+ "app-library-image-ai-panels.prompt-preview.button.209273aef674": {
+  "nb": "bilder",
+  "en": "images",
+  "oversatt": "imagens"
+ },
+ "app-library-image-ai-panels.prompt-preview.button.348794d72f82": {
+  "nb": "med",
+  "en": "attached",
+  "oversatt": "anexado"
+ },
+ "app-library-image-ai-panels.prompt-preview.button.77b138039c93": {
+  "nb": "Skjul beskrivelsen",
+  "en": "Hide the description",
+  "oversatt": "Ocultar a descrição"
+ },
+ "app-library-image-ai-panels.prompt-preview.button.f316e8036547": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "imagem"
+ },
+ "app-library-image-ai-panels.run.message.020200ad0736": {
+  "nb": "{made} laget. {value2}",
+  "en": "{made} made. {value2}",
+  "oversatt": "{made} criado. {value2}"
+ },
+ "app-library-image-ai-panels.run.message.2db231af9756": {
+  "nb": "Beskrivelsen kunne ikke lages.",
+  "en": "The description could not be created.",
+  "oversatt": "Não foi possível criar a descrição."
+ },
+ "app-library-image-ai-panels.run.message.2db231af9756.2": {
+  "nb": "Beskrivelsen kunne ikke lages.",
+  "en": "The description could not be created.",
+  "oversatt": "Não foi possível criar a descrição."
+ },
+ "app-library-image-ai-panels.run.message.f8ce4dd249c9": {
+  "nb": "{length} laget. {value2}",
+  "en": "{length} made. {value2}",
+  "oversatt": "{length} criados. {value2}"
+ },
+ "app-library-image-ai-panels.run.set-busy.07437c0a99ae": {
+  "nb": "Lager {value1} ({value2} av {length}) …",
+  "en": "Making {value1} ({value2} of {length}) …",
+  "oversatt": "Criando {value1} ({value2} de {length})…"
+ },
+ "app-library-image-ai-panels.run.set-busy.07b6dccfb31a": {
+  "nb": "Lager karakterarket … (kan ta opptil et par minutter)",
+  "en": "Making the character sheet … (can take up to a few minutes)",
+  "oversatt": "Criando a folha de personagem… (pode levar alguns minutos)"
+ },
+ "app-library-image-ai-panels.run.set-busy.c5650e6c1174": {
+  "nb": "Lager variasjon {value1} av {count} … (kan ta et minutt)",
+  "en": "Making variation {value1} of {count} … (can take a minute)",
+  "oversatt": "Criando variação {value1} de {count}… (pode levar um minuto)"
+ },
+ "app-library-image-ai-panels.run.tools-cmds-run-and-wait.3ed761d5bfd7": {
+  "nb": "Vinkel: {value1}",
+  "en": "View: {value1}",
+  "oversatt": "Ângulo: {value1}"
+ },
+ "app-library-image-ai-panels.run.tools-cmds-run-and-wait.3ed761d5bfd7.2": {
+  "nb": "Vinkel: {value1}",
+  "en": "View: {value1}",
+  "oversatt": "Ângulo: {value1}"
+ },
+ "app-library-image-ai-panels.text.text.07247108d225": {
+  "nb": "Lagret som ny versjon{value1}. Godkjenn den i biblioteket, eller velg den på laget.",
+  "en": "Saved as a new version{value1}. Approve it in the library, or choose it for the layer.",
+  "oversatt": "Salvo como uma nova versão{value1}. Aprove-a na biblioteca ou selecione-a na camada."
+ },
+ "app-library-image-ai-panels.text.text.19903587aa9e": {
+  "nb": "{made} {value2}. Originalen er beholdt.",
+  "en": "{made} {value2}. The original is kept.",
+  "oversatt": "{made} {value2}. O original foi mantido."
+ },
+ "app-library-image-ai-panels.text.text.51252432b44a": {
+  "nb": "Bildet er lagret, men vinkelen ble ikke merket: {error}",
+  "en": "The image was saved, but the angle was not marked: {error}",
+  "oversatt": "A imagem foi salva, mas o ângulo não foi marcado: {error}"
+ },
+ "app-library-image-ai-panels.text.text.512a5a405c7d": {
+  "nb": "{length} vinkler er lagret som nye versjoner, merket med vinkel.",
+  "en": "{length} angles have been saved as new versions, marked with their angle.",
+  "oversatt": "{length} ângulos foram salvos como novas versões, marcados com seu respectivo ângulo."
+ },
+ "app-library-image-ai-panels.text.text.d697257a9d82": {
+  "nb": "Karakterarket er lagret som ny versjon. Åpne det og bruk «Del opp i ruter» for å dele vinklene.",
+  "en": "The character sheet has been saved as a new version. Open it and use “Split into grid” to split the angles.",
+  "oversatt": "A folha de personagem foi salva como uma nova versão. Abra-a e use \"Dividir em grade\" para separar os ângulos."
+ },
+ "app-library-image-ai-panels.turnaround-panel.aria-label.8e29c168bb08": {
+  "nb": "Bekreft generering av vinkler",
+  "en": "Confirm generation of angles",
+  "oversatt": "Confirmar geração de ângulos"
+ },
+ "app-library-image-ai-panels.turnaround-panel.b.a3e1c1121472": {
+  "nb": "mest sammenheng",
+  "en": "most coherence",
+  "oversatt": "maior coerência"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.08d61bf0b416": {
+  "nb": "Ja, generer",
+  "en": "Yes, generate",
+  "oversatt": "Sim, gerar"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.40d3bd23c407": {
+  "nb": "bilder",
+  "en": "images",
+  "oversatt": "imagens"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.4503ef35977b": {
+  "nb": "Skjul beskrivelsen",
+  "en": "Hide the description",
+  "oversatt": "Ocultar a descrição"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.8b380f08f40e": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.a0b087dbb080": {
+  "nb": "Lag bildet …",
+  "en": "Make the image …",
+  "oversatt": "Criar a imagem…"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.a5e87c38896f": {
+  "nb": "bilde",
+  "en": "image",
+  "oversatt": "imagem"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.aa45b84a2f68": {
+  "nb": "Vis beskrivelsen som sendes",
+  "en": "Show the description being sent",
+  "oversatt": "Mostrar a descrição que está sendo enviada"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.af3302c367bc": {
+  "nb": "med",
+  "en": "attached",
+  "oversatt": "anexado"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.bec6ac9e71ac": {
+  "nb": "Lag {count} bilder …",
+  "en": "Make {count} images …",
+  "oversatt": "Criar {count} imagens…"
+ },
+ "app-library-image-ai-panels.turnaround-panel.button.e436478808c3": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-image-ai-panels.turnaround-panel.h4.2f56719bcdd4": {
+  "nb": "Lag andre vinkler",
+  "en": "Make other angles",
+  "oversatt": "Criar outros ângulos"
+ },
+ "app-library-image-ai-panels.turnaround-panel.label.350adb6bae41": {
+  "nb": "Størrelse",
+  "en": "Size",
+  "oversatt": "Tamanho"
+ },
+ "app-library-image-ai-panels.turnaround-panel.label.7f20f344e2d6": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "app-library-image-ai-panels.turnaround-panel.label.f41dd10576f6": {
+  "nb": "Send med to stilforbilder fra filmen",
+  "en": "Send along two style references from the film",
+  "oversatt": "Enviar com duas referências de estilo do filme"
+ },
+ "app-library-image-ai-panels.turnaround-panel.legend.1c4c2fcb4bea": {
+  "nb": "Vinkler",
+  "en": "Angles",
+  "oversatt": "Ângulos"
+ },
+ "app-library-image-ai-panels.turnaround-panel.legend.5ad5af1cd039": {
+  "nb": "Slik",
+  "en": "How",
+  "oversatt": "Como"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.06ea82e82e75": {
+  "nb": "genereringer",
+  "en": "generations",
+  "oversatt": "gerações"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.33d32bc64426": {
+  "nb": "Ingen bildemodeller er tilgjengelige.",
+  "en": "No image models are available.",
+  "oversatt": "Nenhum modelo de imagem disponível."
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.5d69342f703b": {
+  "nb": ". Vil du fortsette?",
+  "en": ". Do you want to continue?",
+  "oversatt": ". Deseja continuar?"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.71461a3ed071": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "com"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.759ebaf60758": {
+  "nb": "generering",
+  "en": "generation",
+  "oversatt": "geração"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.a2a2a5b8a0f8": {
+  "nb": "Velg minst én vinkel.",
+  "en": "Choose at least one angle.",
+  "oversatt": "Escolha pelo menos um ângulo."
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.c1c8707d17a2": {
+  "nb": "Tips: merk først hvilken vinkel dette bildet viser (over), så vet modellen hva den har å gå ut fra.",
+  "en": "Tip: first mark which angle this image shows (above), so the model knows what it has to work from.",
+  "oversatt": "Dica: primeiro marque qual ângulo esta imagem mostra (acima), para que o modelo saiba de onde partir."
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.df169e62a747": {
+  "nb": ", anslått {value1}",
+  "en": ", estimated {value1}",
+  "oversatt": ", estimado em {value1}"
+ },
+ "app-library-image-ai-panels.turnaround-panel.p.fd6dc2662f2e": {
+  "nb": "{count} {value2}{value3}. Teller i prosjektets AI-budsjett.",
+  "en": "{count} {value2}{value3}. Counts towards the project's AI budget.",
+  "oversatt": "{count} {value2}{value3}. Conta para o orçamento de IA do projeto."
+ },
+ "app-library-image-ai-panels.turnaround-panel.span.6440b580ee46": {
+  "nb": ", del opp med «Del opp i ruter» etterpå",
+  "en": ", split it into grid cells afterwards with “Split into grid”",
+  "oversatt": ", divida em células de grade depois com “Dividir em grade”"
+ },
+ "app-library-image-ai-panels.turnaround-panel.span.71b91e2c08dd": {
+  "nb": "Ett bilde per vinkel – høyere oppløsning; hver ny vinkel sendes med til neste",
+  "en": "One image per angle – higher resolution; each new angle is sent along to the next",
+  "oversatt": "Uma imagem por ângulo – resolução mais alta; cada novo ângulo é enviado junto para o próximo"
+ },
+ "app-library-image-ai-panels.turnaround-panel.span.e4ba3862b912": {
+  "nb": "Ett ark med alle vinklene side om side – ",
+  "en": "One sheet with all the angles side by side – ",
+  "oversatt": "Uma folha com todos os ângulos lado a lado – "
+ },
+ "app-library-image-ai-panels.upscale-panel.aria-label.dd9477bdabe2": {
+  "nb": "Bekreft oppskalering",
+  "en": "Confirm upscaling",
+  "oversatt": "Confirmar aumento de escala"
+ },
+ "app-library-image-ai-panels.upscale-panel.button.224c2028272c": {
+  "nb": "Ja, oppskaler",
+  "en": "Yes, upscale",
+  "oversatt": "Sim, aumentar escala"
+ },
+ "app-library-image-ai-panels.upscale-panel.button.7b75340334f1": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-image-ai-panels.upscale-panel.button.a840b070fd19": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-image-ai-panels.upscale-panel.button.cb22cd70f320": {
+  "nb": "Oppskaler …",
+  "en": "Upscale …",
+  "oversatt": "Aumentar escala…"
+ },
+ "app-library-image-ai-panels.upscale-panel.h4.cd444ecd55c2": {
+  "nb": "Oppskaler",
+  "en": "Upscale",
+  "oversatt": "Aumentar escala"
+ },
+ "app-library-image-ai-panels.upscale-panel.label.02224be21eb8": {
+  "nb": "Modell",
+  "en": "Model",
+  "oversatt": "Modelo"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.2131ad13909f": {
+  "nb": "Resultatet blir svært stort. Velg 2×, eller frilegg og fjern luften rundt først.",
+  "en": "The result will be very large. Choose 2×, or cut out the subject and remove the surrounding space first.",
+  "oversatt": "O resultado será muito grande. Escolha 2× ou recorte o tema e remova o espaço ao redor primeiro."
+ },
+ "app-library-image-ai-panels.upscale-panel.p.2d7c52068ac8": {
+  "nb": "Oppskalering bruker fal.ai. Koble til fal.ai under «AI-leverandører» på prosjektlisten (eieren gjør det), så blir valget tilgjengelig her.",
+  "en": "Upscaling uses fal.ai. Connect fal.ai under “AI providers” on the project list (the owner does this), and the option will be available here.",
+  "oversatt": "O aumento de escala usa fal.ai. Conecte o fal.ai em “Provedores de IA” na lista de projetos (o proprietário faz isso), e a opção ficará disponível aqui."
+ },
+ "app-library-image-ai-panels.upscale-panel.p.4f0c9f2c6cf8": {
+  "nb": "ukjent pris",
+  "en": "unknown price",
+  "oversatt": "preço desconhecido"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.61797f690b0d": {
+  "nb": "Anslått",
+  "en": "Estimated",
+  "oversatt": "Estimado"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.73d68d836c19": {
+  "nb": "Oppskalerer … (kan ta et minutt)",
+  "en": "Upscaling … (can take a minute)",
+  "oversatt": "Aumentando escala… (pode levar um minuto)"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.cd444ecd55c2": {
+  "nb": "Oppskaler",
+  "en": "Upscale",
+  "oversatt": "Aumentar escala"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.d15b327fb65c": {
+  "nb": "megapiksler",
+  "en": "megapixels",
+  "oversatt": "megapixels"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.e1a8e5c99d46": {
+  "nb": "med",
+  "en": "with",
+  "oversatt": "com"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.e55848dafdf3": {
+  "nb": ", anslått {value1}",
+  "en": ", estimated {value1}",
+  "oversatt": ", estimado em {value1}"
+ },
+ "app-library-image-ai-panels.upscale-panel.p.fee21458a0a4": {
+  "nb": "Teller i prosjektets AI-budsjett.",
+  "en": "Counts towards the project's AI budget.",
+  "oversatt": "Conta para o orçamento de IA do projeto."
+ },
+ "app-library-image-ai-panels.v.tools-cmds-run-and-wait.2250f4d11d39": {
+  "nb": "Vinkel: {label}",
+  "en": "View: {label}",
+  "oversatt": "Ângulo: {label}"
+ },
+ "app-library-image-ai-panels.variation-panel.confirm-label.1c2efd85a81c": {
+  "nb": "Bekreft generering av variasjoner",
+  "en": "Confirm generation of variations",
+  "oversatt": "Confirmar geração de variações"
+ },
+ "app-library-image-ai-panels.variation-panel.empty-text.99e79973aecb": {
+  "nb": "Skriv hva som skal være forskjellig.",
+  "en": "Write what should be different.",
+  "oversatt": "Escreva o que deve ser diferente."
+ },
+ "app-library-image-ai-panels.variation-panel.h4.f5ac2c24f865": {
+  "nb": "Lag variasjoner",
+  "en": "Make variations",
+  "oversatt": "Criar variações"
+ },
+ "app-library-image-ai-panels.variation-panel.label.904c4b45ccac": {
+  "nb": "Antall variasjoner",
+  "en": "Number of variations",
+  "oversatt": "Número de variações"
+ },
+ "app-library-image-ai-panels.variation-panel.label.b648cf98f3f9": {
+  "nb": "Send med to stilforbilder fra filmen",
+  "en": "Send along two style references from the film",
+  "oversatt": "Enviar duas referências de estilo do filme"
+ },
+ "app-library-image-ai-panels.variation-panel.p.fcfa59473ab2": {
+  "nb": "Ingen bildemodeller er tilgjengelige.",
+  "en": "No image models are available.",
+  "oversatt": "Nenhum modelo de imagem disponível."
+ },
+ "app-library-image-ai-panels.variation-panel.placeholder.c7ef4e7afdf2": {
+  "nb": "F.eks. «døren står åpen» eller «med snø på taket»",
+  "en": "E.g. “the door is open” or “with snow on the roof”",
+  "oversatt": "Ex.: “a porta está aberta” ou “com neve no telhado”"
+ },
+ "app-library-image-ai-panels.variation-panel.span.c8efa02f955a": {
+  "nb": "Hva ønsker du forskjellig?",
+  "en": "What do you want to be different?",
+  "oversatt": "O que você quer de diferente?"
+ },
+ "app-library-image-ai-panels.variation-panel.start-label.477a4bc4dd53": {
+  "nb": "Lag {count} variasjoner …",
+  "en": "Make {count} variations …",
+  "oversatt": "Criar {count} variações…"
+ },
+ "app-library-image-ai-panels.variation-panel.start-label.9fbc7d065b5d": {
+  "nb": "Lag variasjonen …",
+  "en": "Make the variation …",
+  "oversatt": "Criar a variação…"
+ },
+ "app-library-image-ai-panels.variations-saved": {
+  "nb": {
+   "one": "{count} variasjon er lagret som ny versjon. Originalen er beholdt.",
+   "other": "{count} variasjoner er lagret som nye versjoner. Originalen er beholdt."
+  },
+  "en": {
+   "one": "{count} variation has been saved as a new version. The original is kept.",
+   "other": "{count} variations have been saved as new versions. The original is kept."
+  },
+  "oversatt": {
+   "one": "{count} variação foi salva como uma nova versão. O original foi mantido.",
+   "many": "{count} variações foram salvas como novas versões. O original foi mantido.",
+   "other": "{count} variações foram salvas como novas versões. O original foi mantido."
+  }
+ },
+ "app-library-image-ai-panels.view-label.aria-label.4f5733562a29": {
+  "nb": "Vinkelen bildet viser",
+  "en": "The angle the image shows",
+  "oversatt": "O ângulo que a imagem mostra"
+ },
+ "app-library-image-ai-panels.view-label.label.226ae24f3dfd": {
+  "nb": "Bildet viser",
+  "en": "The image shows",
+  "oversatt": "A imagem mostra"
+ },
+ "app-library-image-ai-panels.view-label.option.9528ce71f957": {
+  "nb": "Ikke merket",
+  "en": "Not marked",
+  "oversatt": "Não marcado"
+ },
+ "app-library-image-ai-panels.view-label.tools-cmds-run.a632e1989889": {
+  "nb": "Vinkel: {value1}",
+  "en": "View: {value1}",
+  "oversatt": "Ângulo: {value1}"
+ },
+ "app-library-image-ai-panels.view-label.tools-cmds-run.ff053684ab84": {
+  "nb": "Fjern vinkel",
+  "en": "Remove view",
+  "oversatt": "Remover visualização"
+ },
+ "app-library-image-compare-dialog.image-compare-dialog.alt.adccf792faee": {
+  "nb": "Versjon {number}",
+  "en": "Version {number}",
+  "oversatt": "Versão {number}"
+ },
+ "app-library-image-compare-dialog.image-compare-dialog.button.bdd65fca3e65": {
+  "nb": "Godkjenn",
+  "en": "Approve",
+  "oversatt": "Aprovar"
+ },
+ "app-library-image-compare-dialog.image-compare-dialog.dialog-description.cf01154eb65a": {
+  "nb": "Versjonene vises i samme størrelse. Godkjenn den du vil bruke; den andre beholdes.",
+  "en": "The versions are shown at the same size. Approve the one you want to use; the other is kept.",
+  "oversatt": "As versões são mostradas no mesmo tamanho. Aprove a que deseja usar; a outra será mantida."
+ },
+ "app-library-image-compare-dialog.image-compare-dialog.dialog-title.f9e7d3b2bee4": {
+  "nb": "Sammenlign",
+  "en": "Compare",
+  "oversatt": "Comparar"
+ },
+ "app-library-image-compare-dialog.image-compare-dialog.span.4be80a1e85fd": {
+  "nb": "Godkjent",
+  "en": "Approved",
+  "oversatt": "Aprovado"
+ },
+ "app-library-image-lightbox.grid-panel.aria-label.23fd5837ab7d": {
+  "nb": "Navn på rute {value1}",
+  "en": "Name of tile {value1}",
+  "oversatt": "Nome do ladrilho {value1}"
+ },
+ "app-library-image-lightbox.grid-panel.button.3e4ff7d040c9": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-image-lightbox.grid-panel.button.f45726c387aa": {
+  "nb": "Del opp nå",
+  "en": "Make the split",
+  "oversatt": "Fazer a divisão"
+ },
+ "app-library-image-lightbox.grid-panel.label.58e45a32bed8": {
+  "nb": "Navn (får nummer 1, 2, 3 …)",
+  "en": "Name (numbered 1, 2, 3 …)",
+  "oversatt": "Nome (numerado como 1, 2, 3...)"
+ },
+ "app-library-image-lightbox.grid-panel.label.8e9c244dd4b2": {
+  "nb": "Fjern luften rundt hver rute",
+  "en": "Remove the air around each tile",
+  "oversatt": "Remover o espaço em branco ao redor de cada ladrilho"
+ },
+ "app-library-image-lightbox.grid-panel.label.b2e74fd75550": {
+  "nb": "Rader",
+  "en": "Rows",
+  "oversatt": "Linhas"
+ },
+ "app-library-image-lightbox.grid-panel.label.e8a814a178e6": {
+  "nb": "Kolonner",
+  "en": "Columns",
+  "oversatt": "Colunas"
+ },
+ "app-library-image-lightbox.grid-panel.legend.11eb638c07b3": {
+  "nb": "Navn på rutene (tomt: navn + nummer)",
+  "en": "Names of the tiles (empty: name + number)",
+  "oversatt": "Nomes dos ladrilhos (vazio: nome + número)"
+ },
+ "app-library-image-lightbox.grid-panel.p.37259e891eec": {
+  "nb": "Dra delelinjene i bildet for å flytte dem. Endrer du antallet, fordeles linjene jevnt igjen.",
+  "en": "Drag the dividing lines in the image to move them. If you change the number, the lines are spread evenly again.",
+  "oversatt": "Arraste as linhas divisórias na imagem para movê-las. Se você alterar a quantidade, as linhas serão distribuídas uniformemente de novo."
+ },
+ "app-library-image-lightbox.grid-panel.span.1de987a78e52": {
+  "nb": "bilder",
+  "en": "images",
+  "oversatt": "imagens"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.1fe63ef8ec35": {
+  "nb": "Loddrett delelinje {value1}",
+  "en": "Vertical dividing line {value1}",
+  "oversatt": "Linha divisória vertical {value1}"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.2a58853c65ce": {
+  "nb": "Vannrett delelinje {value1}",
+  "en": "Horizontal dividing line {value1}",
+  "oversatt": "Linha divisória horizontal {value1}"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.5750bf7d33c3": {
+  "nb": "Bildeverktøy",
+  "en": "Image tools",
+  "oversatt": "Ferramentas de imagem"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.83389ff73896": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "Mais zoom"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.84fc5bc845d1": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "Menos zoom"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.b5ae59f68645": {
+  "nb": "Bildeverktøy og beskrivelsen som laget bildet",
+  "en": "Image tools and the description that made the image",
+  "oversatt": "Ferramentas de imagem e a descrição que gerou a imagem"
+ },
+ "app-library-image-lightbox.image-lightbox.aria-label.c543dfa37997": {
+  "nb": "Beskrivelsen som laget bildet",
+  "en": "The description that made the image",
+  "oversatt": "A descrição que gerou a imagem"
+ },
+ "app-library-image-lightbox.image-lightbox.button.15018526ca50": {
+  "nb": "Sett inn denne beskrivelsen",
+  "en": "Insert this description",
+  "oversatt": "Inserir esta descrição"
+ },
+ "app-library-image-lightbox.image-lightbox.button.2714219c21bc": {
+  "nb": "Kopier",
+  "en": "Copy",
+  "oversatt": "Copiar"
+ },
+ "app-library-image-lightbox.image-lightbox.button.282e98f92d24": {
+  "nb": "Fjern luften rundt",
+  "en": "Remove the air around",
+  "oversatt": "Remover o espaço em branco ao redor"
+ },
+ "app-library-image-lightbox.image-lightbox.button.408f557ce365": {
+  "nb": "Frilegg …",
+  "en": "Cut out …",
+  "oversatt": "Recortar..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.4c8db4438427": {
+  "nb": "Utsnitt …",
+  "en": "Crop …",
+  "oversatt": "Enquadramento..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.5a973df63c8f": {
+  "nb": "Lag andre vinkler …",
+  "en": "Make other angles …",
+  "oversatt": "Criar outros ângulos..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.6015d99f816d": {
+  "nb": "Harmoniser stil …",
+  "en": "Harmonize style …",
+  "oversatt": "Harmonizar estilo..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.646da0c720fb": {
+  "nb": "Lag variasjoner …",
+  "en": "Make variations …",
+  "oversatt": "Criar variações..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.70a5a553290b": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "Ajustar"
+ },
+ "app-library-image-lightbox.image-lightbox.button.901c339103c5": {
+  "nb": "Kopiert",
+  "en": "Copied",
+  "oversatt": "Copiado"
+ },
+ "app-library-image-lightbox.image-lightbox.button.d73b9919a037": {
+  "nb": "Oppskaler …",
+  "en": "Upscale …",
+  "oversatt": "Upscale..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.d77d3407b95a": {
+  "nb": "Deler …",
+  "en": "Parts …",
+  "oversatt": "Partes..."
+ },
+ "app-library-image-lightbox.image-lightbox.button.ffd161fd3e71": {
+  "nb": "Del opp i ruter …",
+  "en": "Split into tiles …",
+  "oversatt": "Dividir em ladrilhos..."
+ },
+ "app-library-image-lightbox.image-lightbox.dialog-description.13eb9bb6f8f8": {
+  "nb": "Skriv navnet på delene som skal lages med AI, og velg ankerpunkt for hver.",
+  "en": "Write the names of the parts to make with AI, and choose an anchor point for each.",
+  "oversatt": "Escreva os nomes das partes a serem criadas com IA e escolha um ponto de ancoragem para cada uma."
+ },
+ "app-library-image-lightbox.image-lightbox.dialog-description.2f024db283ed": {
+  "nb": "Tegn en fri ramme rundt det du vil ta ut – slipp for å lukke den. Hold mellomrom og dra for å flytte bildet.",
+  "en": "Draw a free frame around what you want to take out – release to close it. Hold space and drag to move the image.",
+  "oversatt": "Desenhe uma seleção livre ao redor do que deseja extrair – solte para fechá-la. Segure Espaço e arraste para mover a imagem."
+ },
+ "app-library-image-lightbox.image-lightbox.dialog-description.afe54a67be63": {
+  "nb": "Rullehjul eller knappene zoomer, dra for å flytte rundt.",
+  "en": "The scroll wheel or buttons zoom, drag to move around.",
+  "oversatt": "A roda do mouse ou os botões controlam o zoom; arraste para mover."
+ },
+ "app-library-image-lightbox.image-lightbox.dialog-description.d106631702ca": {
+  "nb": "Dra delelinjene for å flytte dem, hver for seg. Klikk på en rute for å gi den et navn i sidepanelet.",
+  "en": "Drag the dividing lines to move them, one at a time. Click a tile to name it in the side panel.",
+  "oversatt": "Arraste as linhas divisórias para movê-las, uma de cada vez. Clique em um ladrilho para nomeá-lo no painel lateral."
+ },
+ "app-library-image-lightbox.image-lightbox.h3.5750bf7d33c3": {
+  "nb": "Bildeverktøy",
+  "en": "Image tools",
+  "oversatt": "Ferramentas de imagem"
+ },
+ "app-library-image-lightbox.image-lightbox.h3.5e432baf86dc": {
+  "nb": "Beskrivelse (prompt)",
+  "en": "Description (prompt)",
+  "oversatt": "Descrição (prompt)"
+ },
+ "app-library-image-lightbox.image-lightbox.p.1778bb211aa3": {
+  "nb": "Bildet er ikke laget med AI (lastet opp eller tegnet), så det har ingen beskrivelse.",
+  "en": "The image was not made with AI (uploaded or drawn), so it has no description.",
+  "oversatt": "A imagem não foi criada com IA (carregada ou desenhada), por isso não tem descrição."
+ },
+ "app-library-image-lightbox.image-lightbox.p.20a91f3deb1e": {
+  "nb": "Henter …",
+  "en": "Loading …",
+  "oversatt": "Carregando…"
+ },
+ "app-library-image-lightbox.image-lightbox.p.45b657b30f51": {
+  "nb": " Merknad: {note}",
+  "en": " Note: {note}",
+  "oversatt": " Nota: {note}"
+ },
+ "app-library-image-lightbox.image-lightbox.p.5a90f60107ec": {
+  "nb": "Henter bildet …",
+  "en": "Loading the image …",
+  "oversatt": "Carregando a imagem…"
+ },
+ "app-library-image-lightbox.image-lightbox.title.189db72c5164": {
+  "nb": "Tegn om bildet til filmens felles stil fra en stilprofil eller et referansebilde, med identiteten bevart (koster, bekreftes først)",
+  "en": "Redraw the image in the film's shared style from a style profile or a reference image, keeping the identity (costs, confirmed first)",
+  "oversatt": "Redesenhe a imagem no estilo compartilhado do filme a partir de um perfil de estilo ou imagem de referência, mantendo a identidade (pago, confirmado antes)"
+ },
+ "app-library-image-lightbox.image-lightbox.title.208a59a6af29": {
+  "nb": "Beskjær tett rundt figuren i et frilagt bilde (gratis, ny versjon)",
+  "en": "Crop tightly around the figure in a cut-out image (free, new version)",
+  "oversatt": "Corte rente à figura em uma imagem recortada (grátis, nova versão)"
+ },
+ "app-library-image-lightbox.image-lightbox.title.33e3bad6fa05": {
+  "nb": "Fjern bakgrunnen (gratis, ny versjon)",
+  "en": "Remove the background (free, new version)",
+  "oversatt": "Remover o fundo (grátis, nova versão)"
+ },
+ "app-library-image-lightbox.image-lightbox.title.4908c379bdbc": {
+  "nb": "Tegn en fri ramme rundt et utsnitt og lagre det som eget bilde",
+  "en": "Draw a free frame around a crop and save it as its own image",
+  "oversatt": "Desenhe uma moldura livre ao redor de um corte e salve-o como uma imagem própria"
+ },
+ "app-library-image-lightbox.image-lightbox.title.68d3e0b359ce": {
+  "nb": "Lag samme motiv med én ting forskjellig (f.eks. døren åpen) med AI",
+  "en": "Make the same subject with one thing different (e.g. the door open) with AI",
+  "oversatt": "Crie o mesmo motivo com um detalhe diferente (ex.: porta aberta) usando IA"
+ },
+ "app-library-image-lightbox.image-lightbox.title.694681aac8d3": {
+  "nb": "Del et karakterark i like store ruter",
+  "en": "Split a character sheet into equal tiles",
+  "oversatt": "Dividir uma folha de personagem em blocos iguais"
+ },
+ "app-library-image-lightbox.image-lightbox.title.724c71b03118": {
+  "nb": "Dra for å flytte delelinjen",
+  "en": "Drag to move the dividing line",
+  "oversatt": "Arraste para mover a linha divisória"
+ },
+ "app-library-image-lightbox.image-lightbox.title.936fa9fb8de7": {
+  "nb": "Del bildet i egne objekter (f.eks. dørramme og dørblad) med ankerpunkt, så de kan animeres hver for seg",
+  "en": "Split the image into separate objects (e.g. door frame and door leaf) with an anchor point, so they can be animated separately",
+  "oversatt": "Divida a imagem em objetos separados (ex.: batente e folha da porta) com ponto de ancoragem, para que possam ser animados separadamente"
+ },
+ "app-library-image-lightbox.image-lightbox.title.d5a8f1e2eb9e": {
+  "nb": "Øk oppløsningen med AI (koster litt, bekreftes først)",
+  "en": "Increase the resolution with AI (costs a little, confirmed first)",
+  "oversatt": "Aumente a resolução com IA (custo baixo, confirmado antes)"
+ },
+ "app-library-image-lightbox.image-lightbox.title.f2be8be6af4c": {
+  "nb": "Lag front, side, bak … av samme karakter eller objekt med AI, så de henger sammen",
+  "en": "Make front, side, back … of the same character or object with AI, so they match",
+  "oversatt": "Crie frente, lado, costas… do mesmo personagem ou objeto com IA, para que combinem entre si"
+ },
+ "app-library-image-lightbox.name-set-name.use-state.f0641eebdc00": {
+  "nb": "{name} – utsnitt",
+  "en": "{name} – crop",
+  "oversatt": "{name} – corte"
+ },
+ "app-library-image-lightbox.r.save-image-to.10a3fd10fec5": {
+  "nb": "Fjern luften rundt «{name}»",
+  "en": "Remove the air around “{name}”",
+  "oversatt": "Remover o espaço vazio ao redor de “{name}”"
+ },
+ "app-library-image-lightbox.r.save-image-to.2b14e6733108": {
+  "nb": "Del opp «{name}» i ruter",
+  "en": "Split “{name}” into tiles",
+  "oversatt": "Dividir “{name}” em blocos"
+ },
+ "app-library-image-lightbox.r.save-image-to.3a99853fee25": {
+  "nb": "Rute {value1} av {length} («{label}») fra {name} v{number}.",
+  "en": "Tile {value1} of {length} (“{label}”) from {name} v{number}.",
+  "oversatt": "Bloco {value1} de {length} (“{label}”) de {name} v{number}."
+ },
+ "app-library-image-lightbox.r.save-image-to.553398db5c84": {
+  "nb": "Luften rundt fjernet fra v{number} ({width} × {height} px).",
+  "en": "Air removed around v{number} ({width} × {height} px).",
+  "oversatt": "Espaço vazio removido ao redor da v{number} ({width} × {height} px)."
+ },
+ "app-library-image-lightbox.r.save-image-to.92a351401678": {
+  "nb": "Utsnitt «{value1}» fra {name} v{number} ({width} × {height} px).",
+  "en": "Crop “{value1}” from {name} v{number} ({width} × {height} px).",
+  "oversatt": "Corte “{value1}” de {name} v{number} ({width} × {height} px)."
+ },
+ "app-library-image-lightbox.r.save-image-to.f943d92d2010": {
+  "nb": "Utsnitt «{value1}»",
+  "en": "Crop “{value1}”",
+  "oversatt": "Corte “{value1}”"
+ },
+ "app-library-image-lightbox.save.on-job.5bd7bbdd287e": {
+  "nb": "Markeringen er for liten. Tegn en større ramme.",
+  "en": "The selection is too small. Draw a larger frame.",
+  "oversatt": "A seleção é muito pequena. Desenhe uma moldura maior."
+ },
+ "app-library-image-lightbox.save.on-job.b449aeec09e6": {
+  "nb": "Utsnittet er lagret som nytt bilde i {where}.",
+  "en": "The crop is saved as a new image in {where}.",
+  "oversatt": "O corte foi salvo como uma nova imagem em {where}."
+ },
+ "app-library-image-lightbox.save.on-job.d86e62c5cb47": {
+  "nb": "Lagrer utsnittet …",
+  "en": "Saving the crop …",
+  "oversatt": "Salvando o corte…"
+ },
+ "app-library-image-lightbox.selection-panel.button.2cafa3f9383a": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "Cancelar"
+ },
+ "app-library-image-lightbox.selection-panel.button.5cec689b9402": {
+  "nb": "Tegn på nytt",
+  "en": "Draw again",
+  "oversatt": "Desenhar novamente"
+ },
+ "app-library-image-lightbox.selection-panel.button.dca0fda644f1": {
+  "nb": "Lagre utsnittet",
+  "en": "Save crop",
+  "oversatt": "Salvar corte"
+ },
+ "app-library-image-lightbox.selection-panel.label.222c695aa6b0": {
+  "nb": "Navn på utsnittet",
+  "en": "Name of the crop",
+  "oversatt": "Nome do corte"
+ },
+ "app-library-image-lightbox.selection-panel.label.30c8da238a5d": {
+  "nb": "Fjern luften rundt",
+  "en": "Remove the air around",
+  "oversatt": "Remover o espaço vazio ao redor"
+ },
+ "app-library-image-lightbox.selection-panel.p.b0ad79651f44": {
+  "nb": "Hold museknappen nede og tegn rundt det du vil ta ut. Alt utenfor blir gjennomsiktig.",
+  "en": "Hold the mouse button down and draw around what you want to take out. Everything outside becomes transparent.",
+  "oversatt": "Mantenha o botão do mouse pressionado e desenhe ao redor do que deseja extrair. Tudo do lado de fora ficará transparente."
+ },
+ "app-library-image-lightbox.split.on-job.8ae526ba5754": {
+  "nb": "Rute {value1}: {error}",
+  "en": "Tile {value1}: {error}",
+  "oversatt": "Bloco {value1}: {error}"
+ },
+ "app-library-image-lightbox.split.on-job.d36ebeeac755": {
+  "nb": "{saved} ruter er lagret som nye bilder{value2}. Sett vinkelen på hvert bilde i stor visning.",
+  "en": "{saved} tiles are saved as new images{value2}. Set the angle on each image in the large view.",
+  "oversatt": "{saved} blocos foram salvos como novas imagens{value2}. Defina o ângulo em cada imagem na visualização ampliada."
+ },
+ "app-library-image-lightbox.split.on-job.df0e9c6a4fd3": {
+  "nb": "Deler opp i {n} ruter …",
+  "en": "Splitting into {n} tiles …",
+  "oversatt": "Dividindo em {n} blocos…"
+ },
+ "app-library-image-lightbox.target-picker.aria-label.7c65528cbe6b": {
+  "nb": "Objekt",
+  "en": "Object",
+  "oversatt": "Objeto"
+ },
+ "app-library-image-lightbox.target-picker.label.38ffb1de03e1": {
+  "nb": "Eksisterende objekt",
+  "en": "Existing object",
+  "oversatt": "Objeto existente"
+ },
+ "app-library-image-lightbox.target-picker.label.8b02d838cac1": {
+  "nb": "Ett nytt objekt per rute",
+  "en": "A new object per tile",
+  "oversatt": "Um novo objeto por bloco"
+ },
+ "app-library-image-lightbox.target-picker.label.bc400b391679": {
+  "nb": "Nytt objekt",
+  "en": "New object",
+  "oversatt": "Novo objeto"
+ },
+ "app-library-image-lightbox.target-picker.legend.384804aaea00": {
+  "nb": "Lagres i",
+  "en": "Saved in",
+  "oversatt": "Salvo em"
+ },
+ "app-library-image-lightbox.target-picker.option.b6b823c4456e": {
+  "nb": " – dette",
+  "en": " – this one",
+  "oversatt": " – este"
+ },
+ "app-library-image-lightbox.tiles-saved": {
+  "nb": "{saved} ruter er lagret som nye bilder. Sett vinkelen på hvert bilde i stor visning.",
+  "en": "{saved} tiles are saved as new images. Set the angle on each image in the large view.",
+  "oversatt": "{saved} ladrilhos foram salvos como novas imagens. Defina o ângulo em cada imagem na visualização ampliada."
+ },
+ "app-library-image-lightbox.tiles-saved-skipped": {
+  "nb": "{saved} ruter er lagret som nye bilder ({empty} tomme hoppet over). Sett vinkelen på hvert bilde i stor visning.",
+  "en": "{saved} tiles are saved as new images ({empty} empty skipped). Set the angle on each image in the large view.",
+  "oversatt": "{saved} ladrilhos foram salvos como novas imagens ({empty} vazios ignorados). Defina o ângulo em cada imagem na visualização ampliada."
+ },
+ "app-library-image-lightbox.trim-now.job.ac476c38ef1c": {
+  "nb": " (Luften ble funnet ut fra den ensfargede bakgrunnen.)",
+  "en": " (The air was found from the single-colour background.)",
+  "oversatt": " (O espaço vazio foi identificado a partir do fundo monocromático.)"
+ },
+ "app-library-image-lightbox.trim-now.job.d16df9bc2dac": {
+  "nb": "Lagret som ny versjon ({width} × {height} px). Originalen er beholdt.",
+  "en": "Saved as a new version ({width} × {height} px). The original is kept.",
+  "oversatt": "Salvo como uma nova versão ({width} × {height} px). O original foi mantido."
+ },
+ "app-library-image-lightbox.trim-now.job.fe9d03eca4af": {
+  "nb": "Fjerner luften rundt …",
+  "en": "Removing the air around …",
+  "oversatt": "Removendo o espaço vazio ao redor…"
+ },
+ "app-library-image-lightbox.where.on-job.2debdc89bd73": {
+  "nb": "«{value1}»",
+  "en": "“{value1}”",
+  "oversatt": "“{value1}”"
+ },
+ "app-library-image-lightbox.where.on-job.617b13d90316": {
+  "nb": "det nye objektet «{value1}»",
+  "en": "the new object “{value1}”",
+  "oversatt": "o novo objeto “{value1}”"
+ },
+ "app-library-image-parts-panel.a.tools-cmds-run-and-wait.ffafcea6273f": {
+  "nb": "AI-del «{partName}»",
+  "en": "AI part “{partName}”",
+  "oversatt": "Parte por IA “{partName}”"
+ },
+ "app-library-image-parts-panel.ai-parts.aria-label.aa76cabca6b5": {
+  "nb": "Fjern del {value1}",
+  "en": "Remove part {value1}",
+  "oversatt": "Remover parte {value1}"
+ },
+ "app-library-image-parts-panel.ai-parts.aria-label.c55f66613905": {
+  "nb": "Navn på del {value1}",
+  "en": "Name of part {value1}",
+  "oversatt": "Nome da parte {value1}"
+ },
+ "app-library-image-parts-panel.ai-parts.button.fdada512d499": {
+  "nb": "Legg til en del",
+  "en": "Add a part",
+  "oversatt": "Adicionar uma parte"
+ },
+ "app-library-image-parts-panel.ai-parts.confirm-label.7b67b91284f5": {
+  "nb": "Bekreft generering av deler",
+  "en": "Confirm generation of parts",
+  "oversatt": "Confirmar geração de partes"
+ },
+ "app-library-image-parts-panel.ai-parts.empty-text.e04bb1b9cf8d": {
+  "nb": "Skriv navnet på minst én del.",
+  "en": "Write the name of at least one part.",
+  "oversatt": "Escreva o nome de pelo menos uma parte."
+ },
+ "app-library-image-parts-panel.ai-parts.label.1493c492b2c1": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Tipo"
+ },
+ "app-library-image-parts-panel.ai-parts.label.7e8cfcde9cdf": {
+  "nb": "Ankerpunkt for del {value1}",
+  "en": "Anchor point for part {value1}",
+  "oversatt": "Ponto de ancoragem para a parte {value1}"
+ },
+ "app-library-image-parts-panel.ai-parts.label.b08b4f2da1f3": {
+  "nb": "Send med to stilforbilder fra filmen",
+  "en": "Send along two style references from the film",
+  "oversatt": "Enviar com duas referências de estilo do filme"
+ },
+ "app-library-image-parts-panel.ai-parts.legend.f463567ffb54": {
+  "nb": "Delene (navn og ankerpunkt)",
+  "en": "The parts (name and anchor point)",
+  "oversatt": "As partes (nome e ponto de ancoragem)"
+ },
+ "app-library-image-parts-panel.ai-parts.p.3f411614298e": {
+  "nb": "Hver del lages som eget objekt med bildet som forbilde, i samme stil.",
+  "en": "Each part is made as its own object with the image as reference, in the same style.",
+  "oversatt": "Cada parte é criada como seu próprio objeto tendo a imagem como referência, no mesmo estilo."
+ },
+ "app-library-image-parts-panel.ai-parts.p.7c501efe403a": {
+  "nb": "Ingen bildemodeller er tilgjengelige.",
+  "en": "No image models are available.",
+  "oversatt": "Nenhum modelo de imagem disponível."
+ },
+ "app-library-image-parts-panel.ai-parts.placeholder.89ae14dddd59": {
+  "nb": "Navn på delen",
+  "en": "Name of the part",
+  "oversatt": "Nome da parte"
+ },
+ "app-library-image-parts-panel.ai-parts.start-label.d0a001e58308": {
+  "nb": "Lag delen …",
+  "en": "Make the part …",
+  "oversatt": "Criar a parte…"
+ },
+ "app-library-image-parts-panel.ai-parts.start-label.e9c612ee64ba": {
+  "nb": "Lag {length} deler …",
+  "en": "Make {length} parts …",
+  "oversatt": "Criar {length} partes…"
+ },
+ "app-library-image-parts-panel.anchor-label.message.0ede8d3a7e62": {
+  "nb": "Høyre",
+  "en": "Right",
+  "oversatt": "Direita"
+ },
+ "app-library-image-parts-panel.anchor-label.message.8a7e21853cf2": {
+  "nb": "Venstre",
+  "en": "Left",
+  "oversatt": "Esquerda"
+ },
+ "app-library-image-parts-panel.anchor-label.message.fbbc8592ccc5": {
+  "nb": "Midt",
+  "en": "Centre",
+  "oversatt": "Centro"
+ },
+ "app-library-image-parts-panel.anchor-select.title.c3956c0b3923": {
+  "nb": "Ankerpunktet delen dreier eller smalner rundt (for et dørblad: hengselsiden)",
+  "en": "The anchor point the part turns or narrows around (for a door leaf: the hinge side)",
+  "oversatt": "O ponto de ancoragem em torno do qual a parte gira ou se estreita (para uma folha de porta: o lado da dobradiça)"
+ },
+ "app-library-image-parts-panel.c.create-asset-with-variant.1b90c54c7db1": {
+  "nb": "Del av «{name}» (laget med AI fra v{number}).",
+  "en": "Part of “{name}” (made with AI from v{number}).",
+  "oversatt": "Parte de “{name}” (criada com IA a partir de v{number})."
+ },
+ "app-library-image-parts-panel.c.create-asset-with-variant.97c70aa1611e": {
+  "nb": "Del «{partName}»",
+  "en": "Part “{partName}”",
+  "oversatt": "Parte “{partName}”"
+ },
+ "app-library-image-parts-panel.cut-part.button.04c35bc6c729": {
+  "nb": "Lagre delen",
+  "en": "Save the part",
+  "oversatt": "Salvar a parte"
+ },
+ "app-library-image-parts-panel.cut-part.button.b012c4c76e6e": {
+  "nb": "Tegn på nytt",
+  "en": "Draw again",
+  "oversatt": "Desenhar novamente"
+ },
+ "app-library-image-parts-panel.cut-part.label.1fdc6934bcd5": {
+  "nb": "Ankerpunkt for delen",
+  "en": "Anchor point for the part",
+  "oversatt": "Ponto de ancoragem para a parte"
+ },
+ "app-library-image-parts-panel.cut-part.label.6c5cb17f34dd": {
+  "nb": "Navn på delen",
+  "en": "Name of the part",
+  "oversatt": "Nome da parte"
+ },
+ "app-library-image-parts-panel.cut-part.label.7dfe17c03963": {
+  "nb": "Fjern luften rundt",
+  "en": "Remove the air around",
+  "oversatt": "Remover o espaço vazio ao redor"
+ },
+ "app-library-image-parts-panel.cut-part.label.aa33dbe6aea3": {
+  "nb": "Ankerpunkt",
+  "en": "Anchor point",
+  "oversatt": "Ponto de ancoragem"
+ },
+ "app-library-image-parts-panel.cut-part.label.cf12ea140d4c": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "Tipo"
+ },
+ "app-library-image-parts-panel.cut-part.label.d9609f6bf5f4": {
+  "nb": "Fjern delen fra originalen",
+  "en": "Remove the part from the original",
+  "oversatt": "Remover a parte do original"
+ },
+ "app-library-image-parts-panel.cut-part.p.b11dfd8543ff": {
+  "nb": "Tegn en fri ramme rundt delen i bildet (f.eks. dørbladet). Hold mellomrom og dra for å flytte bildet.",
+  "en": "Draw a free frame around the part in the image (e.g. the door leaf). Hold space and drag to move the image.",
+  "oversatt": "Desenhe um contorno livre ao redor da parte na imagem (ex.: a folha da porta). Segure a barra de espaço e arraste para mover a imagem."
+ },
+ "app-library-image-parts-panel.cut-part.p.db31a6621cea": {
+  "nb": "Gi delen et navn og lagre den.",
+  "en": "Name the part and save it.",
+  "oversatt": "Dê um nome à parte e salve-a."
+ },
+ "app-library-image-parts-panel.examples.message.3a0118fea91a": {
+  "nb": "f.eks. dørramme",
+  "en": "e.g. door frame",
+  "oversatt": "ex.: batente da porta"
+ },
+ "app-library-image-parts-panel.examples.message.6ef0e4c072f3": {
+  "nb": "f.eks. dørblad",
+  "en": "e.g. door leaf",
+  "oversatt": "ex.: folha da porta"
+ },
+ "app-library-image-parts-panel.fallback.message.e6e273f59500": {
+  "nb": "{name} – del {value2}",
+  "en": "{name} – part {value2}",
+  "oversatt": "{name} – parte {value2}"
+ },
+ "app-library-image-parts-panel.note.l-ai-del-part-name-av-asset-name-v-version-number-r-model-ankerpunkt-anchor-label-row-anchor-to-lower-case-ai-part-part-name-of-asset-name-v-version-number-r-model-anchor-point-anchor-label-row-anchor-to-lower-case-slice.8d39fbce4e2d": {
+  "nb": "AI-del «{partName}» av {name} v{number} ({model}, ankerpunkt: {value5}).",
+  "en": "AI part “{partName}” of {name} v{number} ({model}, anchor point: {value5}).",
+  "oversatt": "Parte de IA “{partName}” de {name} v{number} ({model}, ponto de ancoragem: {value5})."
+ },
+ "app-library-image-parts-panel.parts-panel.aria-label.5b020d9ecb9c": {
+  "nb": "Plassering {key} for «{name}»",
+  "en": "Placement {key} for “{name}”",
+  "oversatt": "Posicionamento {key} para “{name}”"
+ },
+ "app-library-image-parts-panel.parts-panel.aria-label.7b6eaa8a888a": {
+  "nb": "Delene som er laget",
+  "en": "The parts that have been made",
+  "oversatt": "As partes que foram criadas"
+ },
+ "app-library-image-parts-panel.parts-panel.button.16cebe721831": {
+  "nb": "Klipp ut (gratis)",
+  "en": "Cut out (free)",
+  "oversatt": "Recortar (grátis)"
+ },
+ "app-library-image-parts-panel.parts-panel.button.45e00a7f849e": {
+  "nb": "Legg delene i scenen",
+  "en": "Put the parts in the scene",
+  "oversatt": "Colocar as partes na cena"
+ },
+ "app-library-image-parts-panel.parts-panel.button.535a214b79b9": {
+  "nb": "Lag med AI …",
+  "en": "Make with AI …",
+  "oversatt": "Criar com IA…"
+ },
+ "app-library-image-parts-panel.parts-panel.button.c91ec8b00a5c": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "Concluído"
+ },
+ "app-library-image-parts-panel.parts-panel.h4.8d8db323ee7b": {
+  "nb": "Laget i denne økten",
+  "en": "Made in this session",
+  "oversatt": "Criado nesta sessão"
+ },
+ "app-library-image-parts-panel.parts-panel.label.20eefc113faf": {
+  "nb": "Ankerpunkt for «{name}»",
+  "en": "Anchor point for “{name}”",
+  "oversatt": "Ponto de ancoragem para “{name}”"
+ },
+ "app-library-image-parts-panel.parts-panel.span.fa3dabefba12": {
+  "nb": "(resten)",
+  "en": "(the rest)",
+  "oversatt": "(o restante)"
+ },
+ "app-library-image-parts-panel.parts-saved": {
+  "nb": {
+   "one": "{count} del er lagret som nytt objekt.",
+   "other": "{count} deler er lagret som nye objekter."
+  },
+  "en": {
+   "one": "{count} part has been saved as a new object.",
+   "other": "{count} parts have been saved as new objects."
+  },
+  "oversatt": {
+   "one": "{count} parte foi salva como novo objeto.",
+   "many": "{count} partes foram salvas como novos objetos.",
+   "other": "{count} partes foram salvas como novos objetos."
+  }
+ },
+ "app-library-image-parts-panel.r.save-image-to.3e0b9773a0c5": {
+  "nb": "Del «{partName}»",
+  "en": "Part “{partName}”",
+  "oversatt": "Parte “{partName}”"
+ },
+ "app-library-image-parts-panel.r.save-image-to.59d8e4d1e8d1": {
+  "nb": "Del «{partName}» klippet ut av {name} v{number} ({width} × {height} px, ankerpunkt: {value6}).",
+  "en": "Part “{partName}” cut out of {name} v{number} ({width} × {height} px, anchor point: {value6}).",
+  "oversatt": "Parte “{partName}” recortada de {name} v{number} ({width} × {height} px, ponto de ancoragem: {value6})."
+ },
+ "app-library-image-parts-panel.r2.save-image-to.0c0b6f932690": {
+  "nb": "Delen «{partName}» er fjernet (gjennomsiktig) fra v{number}.",
+  "en": "The part “{partName}” has been removed (transparent) from v{number}.",
+  "oversatt": "A parte “{partName}” foi removida (transparente) da v{number}."
+ },
+ "app-library-image-parts-panel.r2.save-image-to.d859ca8ae1e3": {
+  "nb": "Fjern «{partName}» fra «{name}»",
+  "en": "Remove “{partName}” from “{name}”",
+  "oversatt": "Remover “{partName}” de “{name}”"
+ },
+ "app-library-image-parts-panel.run.message.22265bae0d3b": {
+  "nb": "{made} laget. {value2}",
+  "en": "{made} made. {value2}",
+  "oversatt": "{made} criados. {value2}"
+ },
+ "app-library-image-parts-panel.run.message.7968b741a95e": {
+  "nb": "Beskrivelsen kunne ikke lages.",
+  "en": "The description could not be created.",
+  "oversatt": "Não foi possível criar a descrição."
+ },
+ "app-library-image-parts-panel.run.set-busy.7bd5665bbe4c": {
+  "nb": "Lager «{partName}» ({value2} av {length}) … (kan ta et minutt)",
+  "en": "Making “{partName}” ({value2} of {length}) … (can take a minute)",
+  "oversatt": "Criando “{partName}” ({value2} de {length})… (pode levar um minuto)"
+ },
+ "app-library-image-parts-panel.save.on-job.17dfc97bc33e": {
+  "nb": "Delen er lagret, men den ble ikke fjernet fra originalen: {error}",
+  "en": "The part was saved, but it was not removed from the original: {error}",
+  "oversatt": "A parte foi salva, mas não foi removida do original: {error}"
+ },
+ "app-library-image-parts-panel.save.on-job.63dd161fea79": {
+  "nb": "Markeringen er for liten. Tegn en større ramme.",
+  "en": "The selection is too small. Draw a larger frame.",
+  "oversatt": "A seleção é muito pequena. Desenhe um quadro maior."
+ },
+ "app-library-image-parts-panel.save.on-job.77ca92e970a8": {
+  "nb": "Lager delen «{partName}» …",
+  "en": "Making the part “{partName}” …",
+  "oversatt": "Criando a parte “{partName}”…"
+ },
+ "app-library-image-parts-panel.save.on-job.d22ef40b12ca": {
+  "nb": " Delen er fjernet fra originalen (ny versjon).",
+  "en": " The part has been removed from the original (new version).",
+  "oversatt": " A parte foi removida do original (nova versão)."
+ },
+ "app-library-image-parts-panel.save.on-job.f8a3089c7dd3": {
+  "nb": "«{partName}» er lagret som nytt objekt.{removed} Tegn rundt neste del, eller trykk «Ferdig».",
+  "en": "“{partName}” has been saved as a new object.{removed} Draw around the next part, or press “Done”.",
+  "oversatt": "“{partName}” foi salva como um novo objeto.{removed} Desenhe ao redor da próxima parte ou pressione “Concluído”."
+ },
+ "app-library-image-parts-panel.text.text.9759bbc37633": {
+  "nb": "{made} {value2}.",
+  "en": "{made} {value2}.",
+  "oversatt": "{made} {value2}."
+ },
+ "app-library-image-prep.blob.fail.750a8616edfc": {
+  "nb": "Bildet kunne ikke lagres.",
+  "en": "The image could not be saved.",
+  "oversatt": "Não foi possível salvar a imagem."
+ },
+ "app-library-image-prep.downscale.message.db490d24b154": {
+  "nb": "Nettleseren kan ikke tegne bildet.",
+  "en": "The browser cannot draw the image.",
+  "oversatt": "O navegador não consegue renderizar a imagem."
+ },
+ "app-library-image-prep.from-tiff.message.9162b5bb8a60": {
+  "nb": "Gjort om fra TIFF («{name}»). ",
+  "en": "Converted from TIFF (“{name}”). ",
+  "oversatt": "Convertido de TIFF (“{name}”). "
+ },
+ "app-library-image-prep.note.note.ed4d908b8b89": {
+  "nb": "Brukes ikke før den godkjennes.",
+  "en": "Not used until it is approved.",
+  "oversatt": "Não usado até ser aprovado."
+ },
+ "app-library-image-prep.original-note-mark": {
+  "nb": "Original i full størrelse",
+  "en": "Original at full size",
+  "oversatt": "Original em tamanho real"
+ },
+ "app-library-image-prep.tiff-to-png.message.07b6500cee95": {
+  "nb": "TIFF-filen har ingen størrelse.",
+  "en": "The TIFF file has no size.",
+  "oversatt": "O arquivo TIFF não tem dimensões."
+ },
+ "app-library-image-prep.tiff-to-png.message.254068a13e0c": {
+  "nb": "TIFF-filen kunne ikke leses.",
+  "en": "The TIFF file could not be read.",
+  "oversatt": "Não foi possível ler o arquivo TIFF."
+ },
+ "app-library-image-prep.tiff-to-png.message.8c08b46cc417": {
+  "nb": "TIFF-bildet er for stort til å gjøres om i nettleseren.",
+  "en": "The TIFF image is too large to convert in the browser.",
+  "oversatt": "A imagem TIFF é grande demais para converter no navegador."
+ },
+ "app-library-image-prep.tiff-to-png.message.c6773bf03d48": {
+  "nb": "Nettleseren kan ikke tegne bildet.",
+  "en": "The browser cannot draw the image.",
+  "oversatt": "O navegador não consegue renderizar a imagem."
+ },
+ "app-library-image-prep.tiff-to-png.message.f824b06d1848": {
+  "nb": "TIFF-filen inneholder ikke noe bilde.",
+  "en": "The TIFF file contains no image.",
+  "oversatt": "O arquivo TIFF não contém nenhuma imagem."
+ },
+ "app-library-image-prep.working-note.working-note.d654a37310bc": {
+  "nb": "{fromTiff}Arbeidskopi skalert ned fra {width} × {height} til {width4} × {height5} px for jevn avspilling. Originalen er versjonen før – godkjenn den for å bruke full størrelse.",
+  "en": "{fromTiff}Working copy scaled down from {width} × {height} to {width4} × {height5} px for smooth playback. The original is the version before – approve it to use full size.",
+  "oversatt": "{fromTiff}Cópia de trabalho reduzida de {width} × {height} para {width4} × {height5} px para uma reprodução suave. O original é a versão anterior – aprove-o para usar o tamanho real."
+ },
+ "app-library-image-viewer.download.message.143ad8d31eda": {
+  "nb": "Bildet kunne ikke hentes ({status})",
+  "en": "The image could not be fetched ({status})",
+  "oversatt": "Não foi possível carregar a imagem ({status})"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.4a8af2dce4c6": {
+  "nb": "Zoom inn",
+  "en": "Zoom in",
+  "oversatt": "Mais zoom"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.549120b3c8ec": {
+  "nb": "Neste versjon",
+  "en": "Next version",
+  "oversatt": "Próxima versão"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.b3624adedc14": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "Fechar"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.c78da2df291c": {
+  "nb": "Forrige versjon",
+  "en": "Previous version",
+  "oversatt": "Versão anterior"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.cb6c5b8e8f48": {
+  "nb": "Zoom ut",
+  "en": "Zoom out",
+  "oversatt": "Reduzir zoom"
+ },
+ "app-library-image-viewer.image-viewer.aria-label.f0b00396be40": {
+  "nb": "Bilde: {name}",
+  "en": "Image: {name}",
+  "oversatt": "Imagem: {name}"
+ },
+ "app-library-image-viewer.image-viewer.button.36daa946406e": {
+  "nb": "Tilpass",
+  "en": "Fit",
+  "oversatt": "Ajustar"
+ },
+ "app-library-image-viewer.image-viewer.button.da7b518df8f2": {
+  "nb": "Last ned",
+  "en": "Download",
+  "oversatt": "Baixar"
+ },
+ "app-library-image-viewer.image-viewer.p.634ebdf70ecb": {
+  "nb": "Rullehjul zoomer · dra for å flytte · dobbeltklikk veksler mellom hele bildet og zoom · ← → bytter versjon · Esc lukker",
+  "en": "Scroll wheel zooms · drag to move · double-click switches between the whole image and zoom · ← → changes version · Esc closes",
+  "oversatt": "A roda do mouse aplica zoom · arraste para mover · clique duplo alterna entre a imagem inteira e o zoom · ← → troca de versão · Esc fecha"
+ },
+ "app-library-image-viewer.image-viewer.title.48a58951e745": {
+  "nb": "Zoom ut (−)",
+  "en": "Zoom out (−)",
+  "oversatt": "Reduzir zoom (−)"
+ },
+ "app-library-image-viewer.image-viewer.title.55c0fa02de20": {
+  "nb": "Lukk (Esc)",
+  "en": "Close (Esc)",
+  "oversatt": "Fechar (Esc)"
+ },
+ "app-library-image-viewer.image-viewer.title.8bb7f3f6f007": {
+  "nb": "Zoom inn (+)",
+  "en": "Zoom in (+)",
+  "oversatt": "Ampliar zoom (+)"
+ },
+ "app-library-image-viewer.image-viewer.title.ad93ac37d18e": {
+  "nb": "Hele bildet (0)",
+  "en": "Whole image (0)",
+  "oversatt": "Imagem inteira (0)"
+ },
+ "app-library-image-viewer.image-viewer.title.b1bf57268739": {
+  "nb": "Last ned som «{name}»",
+  "en": "Download as “{name}”",
+  "oversatt": "Baixar como “{name}”"
+ },
+ "app-library-image-viewer.image-viewer.title.d0e886576bb0": {
+  "nb": "Forrige versjon (←)",
+  "en": "Previous version (←)",
+  "oversatt": "Versão anterior (←)"
+ },
+ "app-library-image-viewer.image-viewer.title.e02154d9478f": {
+  "nb": "Neste versjon (→)",
+  "en": "Next version (→)",
+  "oversatt": "Próxima versão (→)"
+ },
+ "app-library-library-workspace.err.cmds-run.b46182ed5bd4": {
+  "nb": "Ny ressurs «{name}»",
+  "en": "New asset “{name}”",
+  "oversatt": "Novo ativo “{name}”"
+ },
+ "app-library-library-workspace.library-workspace.div.01d5f9ff8f71": {
+  "nb": "Biblioteket kunne ikke hentes.",
+  "en": "The library could not be loaded.",
+  "oversatt": "Não foi possível carregar a biblioteca."
+ },
+ "app-library-library-workspace.library-workspace.p.04bfaf0d222f": {
+  "nb": "Teknisk detalj",
+  "en": "Technical detail",
+  "oversatt": "Detalhe técnico"
+ },
+ "app-library-library-workspace.library-workspace.p.f27dd2df9ebf": {
+  "nb": "Henter biblioteket …",
+  "en": "Loading the library …",
+  "oversatt": "Carregando a biblioteca…"
+ },
+ "app-library-library-workspace.library.aria-label.162b7ff202cc": {
+  "nb": "Søk i biblioteket",
+  "en": "Search the library",
+  "oversatt": "Pesquisar na biblioteca"
+ },
+ "app-library-library-workspace.library.aria-label.2b2cb74d92e1": {
+  "nb": "Opphav",
+  "en": "Origin",
+  "oversatt": "Origem"
+ },
+ "app-library-library-workspace.library.aria-label.4f79a8292ae4": {
+  "nb": "Kategori",
+  "en": "Category",
+  "oversatt": "Categoria"
+ },
+ "app-library-library-workspace.library.aria-label.53efbd1a807f": {
+  "nb": "Navn på ny ressurs",
+  "en": "Name of new asset",
+  "oversatt": "Nome do novo ativo"
+ },
+ "app-library-library-workspace.library.aria-label.97cd5fd15268": {
+  "nb": "Legg til ressurs",
+  "en": "Add asset",
+  "oversatt": "Adicionar ativo"
+ },
+ "app-library-library-workspace.library.aria-label.9b0279529371": {
+  "nb": "Type ny ressurs",
+  "en": "Type of new asset",
+  "oversatt": "Tipo do novo ativo"
+ },
+ "app-library-library-workspace.library.aria-label.bac7695a5b26": {
+  "nb": "Ressurser",
+  "en": "Assets",
+  "oversatt": "Ativos"
+ },
+ "app-library-library-workspace.library.aria-label.e82860dc407f": {
+  "nb": "Produksjon for bruk i scener og kontinuitet",
+  "en": "Production for use in scenes and continuity",
+  "oversatt": "Produção para uso em cenas e continuidade"
+ },
+ "app-library-library-workspace.library.empty-text.1584aed53577": {
+  "nb": "Ingen stilprofiler passer med søket.",
+  "en": "No style profiles match the search.",
+  "oversatt": "Nenhum perfil de estilo corresponde à pesquisa."
+ },
+ "app-library-library-workspace.library.empty-text.db772fbcaf8d": {
+  "nb": "Ingen stilprofiler ennå. Filmens visuelle stil beskriver stil, teknikk, farger og lys for alle bilder AI lager.",
+  "en": "No style profiles yet. The film's visual style describes style, technique, colours and light for all images that AI makes.",
+  "oversatt": "Nenhum perfil de estilo ainda. O estilo visual do filme descreve o estilo, a técnica, as cores e a iluminação para todas as imagens criadas por IA."
+ },
+ "app-library-library-workspace.library.label.48caa80636d5": {
+  "nb": "Angre",
+  "en": "Undo",
+  "oversatt": "Desfazer"
+ },
+ "app-library-library-workspace.library.label.701f98b70bfb": {
+  "nb": "Bilder av {value1} (ny)",
+  "en": "Pictures of {value1} (new)",
+  "oversatt": "Imagens de {value1} (novo)"
+ },
+ "app-library-library-workspace.library.label.72d50cda2209": {
+  "nb": "Bredde på ressurslisten",
+  "en": "Width of the asset list",
+  "oversatt": "Largura da lista de ativos"
+ },
+ "app-library-library-workspace.library.label.75e912ea5d1b": {
+  "nb": "Gjør om: {redoLabel}",
+  "en": "Redo: {redoLabel}",
+  "oversatt": "Refazer: {redoLabel}"
+ },
+ "app-library-library-workspace.library.label.79e5c6814aa8": {
+  "nb": "Arkiverte",
+  "en": "Archived",
+  "oversatt": "Arquivados"
+ },
+ "app-library-library-workspace.library.label.8c0de1564304": {
+  "nb": "Gjør om",
+  "en": "Redo",
+  "oversatt": "Refazer"
+ },
+ "app-library-library-workspace.library.label.9239d48ae2c9": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "Produção"
+ },
+ "app-library-library-workspace.library.label.9273ab8d6b80": {
+  "nb": "Vis som rutenett",
+  "en": "Show as grid",
+  "oversatt": "Exibir como grade"
+ },
+ "app-library-library-workspace.library.label.942889a14db3": {
+  "nb": "Bilder til en ny ressurs",
+  "en": "Pictures for a new asset",
+  "oversatt": "Imagens para um novo ativo"
+ },
+ "app-library-library-workspace.library.label.a260dd6cd078": {
+  "nb": "Angre: {undoLabel}",
+  "en": "Undo: {undoLabel}",
+  "oversatt": "Desfazer: {undoLabel}"
+ },
+ "app-library-library-workspace.library.label.cd3dff65bacf": {
+  "nb": "Vis som liste",
+  "en": "Show as list",
+  "oversatt": "Exibir como lista"
+ },
+ "app-library-library-workspace.library.li.37c63eec73f1": {
+  "nb": "Ingen ressurser har versjoner som er «{value1}».",
+  "en": "No assets have versions that are “{value1}”.",
+  "oversatt": "Nenhum ativo possui versões marcadas como “{value1}”."
+ },
+ "app-library-library-workspace.library.li.5d71942c524a": {
+  "nb": "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset».",
+  "en": "The library is empty. Add assets above, or use “Suggestions from the script”.",
+  "oversatt": "A biblioteca está vazia. Adicione ativos acima ou use “Sugestões do roteiro”."
+ },
+ "app-library-library-workspace.library.li.9a3080a24e75": {
+  "nb": "Ingen ressurser passer med søket.",
+  "en": "No assets match the search.",
+  "oversatt": "Nenhum ativo corresponde à pesquisa."
+ },
+ "app-library-library-workspace.library.option.059f794cdfdd": {
+  "nb": "Alle typer",
+  "en": "All types",
+  "oversatt": "Todos os tipos"
+ },
+ "app-library-library-workspace.library.option.6f1e2ae21936": {
+  "nb": "Alle opphav",
+  "en": "All origins",
+  "oversatt": "Todas as origens"
+ },
+ "app-library-library-workspace.library.option.784e9884bbd0": {
+  "nb": "Stilprofiler",
+  "en": "Style profiles",
+  "oversatt": "Perfis de estilo"
+ },
+ "app-library-library-workspace.library.option.7c234a45d5a6": {
+  "nb": "Alle kategorier",
+  "en": "All categories",
+  "oversatt": "Todas as categorias"
+ },
+ "app-library-library-workspace.library.option.f8079c3f80bf": {
+  "nb": "Mobilimport",
+  "en": "Mobile import",
+  "oversatt": "Importação móvel"
+ },
+ "app-library-library-workspace.library.p.2d48d5bcf6e4": {
+  "nb": "Filene fra mobilen vises til høyre. Bilder tatt for en ressurs blir nye versjoner av den.",
+  "en": "The files from the phone are shown on the right. Pictures taken for an asset become new versions of it.",
+  "oversatt": "Os arquivos do celular são mostrados à direita. Fotos tiradas para um ativo tornam-se novas versões dele."
+ },
+ "app-library-library-workspace.library.p.4e747c850714": {
+  "nb": "Velg en ressurs",
+  "en": "Choose an asset",
+  "oversatt": "Escolha um ativo"
+ },
+ "app-library-library-workspace.library.p.5f48e21eaafb": {
+  "nb": "Hver karakter, gjenstand og lokasjon finnes én gang i biblioteket og brukes i alle scener og produksjoner. Alternative navn (som «BESTEFAR» for «Halvard») gjør at den kjennes igjen i manuset.",
+  "en": "Each character, object and location exists once in the library and is used in all scenes and productions. Alternative names (such as “GRANDPA” for “Halvard”) let it be recognised in the script.",
+  "oversatt": "Cada personagem, objeto e locação existe uma única vez na biblioteca e é usado em todas as cenas e produções. Nomes alternativos (como “VOVÔ” para “Halvard”) permitem que seja reconhecido no roteiro."
+ },
+ "app-library-library-workspace.library.p.dda7b1033a83": {
+  "nb": "Velg en stilprofil",
+  "en": "Choose a style profile",
+  "oversatt": "Escolha um perfil de estilo"
+ },
+ "app-library-library-workspace.library.p.fa7dc25ea847": {
+  "nb": "Stilprofilene beskriver hvordan filmen skal se ut – stil, teknikk, farger, lys og stemning – og sendes med i alle AI-beskrivelser. Standardprofilen gjelder alt; egne profiler kan gjelde plakater, steder, AI-video og andre bruk.",
+  "en": "Style profiles describe how the film should look – style, technique, colours, light and mood – and are sent with every AI description. The default profile applies to everything; your own profiles can apply to posters, locations, AI video and other uses.",
+  "oversatt": "Os perfis de estilo descrevem como o filme deve parecer – estilo, técnica, cores, iluminação e clima – e são enviados em todas as descrições de IA. O perfil padrão se aplica a tudo; perfis próprios podem ser usados para cartazes, locações, vídeo por IA e outros fins."
+ },
+ "app-library-library-workspace.library.placeholder.a05f5d82e583": {
+  "nb": "Søk (navn, stikkord, hva lyd er koblet til)",
+  "en": "Search (name, keywords, what sound is linked to)",
+  "oversatt": "Pesquisar (nome, palavras-chave, ao que o som está vinculado)"
+ },
+ "app-library-library-workspace.library.placeholder.b0a9d6007a22": {
+  "nb": "Navn",
+  "en": "Name",
+  "oversatt": "Nome"
+ },
+ "app-library-library-workspace.library.set-error.c5d9763042c4": {
+  "nb": "Kjenner ikke igjen navnene. Bilder lastet ned fra biblioteket heter «Ressurs - Variant - vN»; andre bilder lastes opp fra varianten de hører til.",
+  "en": "The names are not recognised. Images downloaded from the library are called “Asset - Variant - vN”; other images are uploaded from the variant they belong to.",
+  "oversatt": "Os nomes não são reconhecidos. Imagens baixadas da biblioteca chamam-se “Ativo - Variante - vN”; outras imagens são carregadas a partir da variante à qual pertencem."
+ },
+ "app-library-library-workspace.library.span.6025b8998b1b": {
+  "nb": "Ressursbibliotek",
+  "en": "Asset library",
+  "oversatt": "Biblioteca de ativos"
+ },
+ "app-library-library-workspace.library.span.887241f39012": {
+  "nb": "Arkivert",
+  "en": "Archived",
+  "oversatt": "Arquivado"
+ },
+ "app-library-library-workspace.library.span.8ea825c6f57e": {
+  "nb": " · {newSuggestions} nye forslag",
+  "en": " · {newSuggestions} new suggestions",
+  "oversatt": " · {newSuggestions} novas sugestões"
+ },
+ "app-library-library-workspace.library.span.9e2d3f7cde9f": {
+  "nb": " · Analyserer manuset …",
+  "en": " · Analysing the script …",
+  "oversatt": " · Analisando o roteiro…"
+ },
+ "app-library-library-workspace.library.span.b968134af4b6": {
+  "nb": "{n} scener",
+  "en": "{n} scenes",
+  "oversatt": "{n} cenas"
+ },
+ "app-library-library-workspace.library.span.f3b713687829": {
+  "nb": "Bare lesetilgang",
+  "en": "Read-only access",
+  "oversatt": "Acesso somente leitura"
+ },
+ "app-library-library-workspace.library.title.2d28889aa63d": {
+  "nb": "Bruk i scener og kontinuitet gjelder denne produksjonen",
+  "en": "Use in scenes and continuity applies to this production",
+  "oversatt": "O uso em cenas e a continuidade aplicam-se a esta produção"
+ },
+ "app-library-library-workspace.library.title.47d6040f76f4": {
+  "nb": "Ressurser som deles i arbeidsgruppen: logoer, figurer, lyd og maler",
+  "en": "Assets shared in the workspace: logos, figures, sound and templates",
+  "oversatt": "Ativos compartilhados no espaço de trabalho: logotipos, personagens, som e modelos"
+ },
+ "app-library-library-workspace.library.title.4ff0e6a37602": {
+  "nb": "Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»).",
+  "en": "Upload images you have downloaded and changed. They are recognised by their name (“Asset - Variant - vN”).",
+  "oversatt": "Envie imagens que você baixou e modificou. Elas são reconhecidas pelo nome (“Ativo - Variante - vN”)."
+ },
+ "app-library-library-workspace.library.title.6376b982ae11": {
+  "nb": "Last ned ressursene som zip, per kategori eller alt samlet",
+  "en": "Download the assets as a zip, per category or all together",
+  "oversatt": "Baixe os ativos como zip, por categoria ou tudo junto"
+ },
+ "app-library-library-workspace.library.title.6b6d4bce062b": {
+  "nb": "Slettede ressurser og bilder: hent inn igjen eller slett for godt",
+  "en": "Deleted assets and images: restore them or delete them for good",
+  "oversatt": "Ativos e imagens excluídos: restaure-os ou exclua-os definitivamente"
+ },
+ "app-library-library-workspace.library.title.84d8c1f28714": {
+  "nb": "Gjør om: {redoLabel} (⇧⌘Z)",
+  "en": "Redo: {redoLabel} (⇧⌘Z)",
+  "oversatt": "Refazer: {redoLabel} (⇧⌘Z)"
+ },
+ "app-library-library-workspace.library.title.950f3f9f7cc6": {
+  "nb": "Vis bare ressurser med versjoner som er lastet opp, laget med AI, frilagt eller harmonisert",
+  "en": "Show only assets with versions that are uploaded, made with AI, cut out or harmonised",
+  "oversatt": "Mostrar apenas ativos com versões que foram carregadas, geradas por IA, recortadas ou harmonizadas"
+ },
+ "app-library-library-workspace.library.title.97cd5fd15268": {
+  "nb": "Legg til ressurs",
+  "en": "Add asset",
+  "oversatt": "Adicionar ativo"
+ },
+ "app-library-library-workspace.library.title.a7fec591843b": {
+  "nb": "Gjør om (⇧⌘Z)",
+  "en": "Redo (⇧⌘Z)",
+  "oversatt": "Refazer (⇧⌘Z)"
+ },
+ "app-library-library-workspace.library.title.c6e0d220ff93": {
+  "nb": "Karakterer og steder i manuset som ikke er i biblioteket ennå",
+  "en": "Characters and locations in the script that are not in the library yet",
+  "oversatt": "Personagens e locações no roteiro que ainda não estão na biblioteca"
+ },
+ "app-library-library-workspace.library.title.ca0a2e5c972a": {
+  "nb": "Angre (⌘Z)",
+  "en": "Undo (⌘Z)",
+  "oversatt": "Desfazer (⌘Z)"
+ },
+ "app-library-library-workspace.library.title.e35759c47e4f": {
+  "nb": "Angre: {undoLabel} (⌘Z)",
+  "en": "Undo: {undoLabel} (⌘Z)",
+  "oversatt": "Desfazer: {undoLabel} (⌘Z)"
+ },
+ "app-library-library-workspace.library.toolbar-button.1688610f3296": {
+  "nb": "Last opp endrede bilder …",
+  "en": "Upload changed images …",
+  "oversatt": "Carregar imagens modificadas…"
+ },
+ "app-library-library-workspace.library.toolbar-button.3bf626f47d18": {
+  "nb": "Globalt bibliotek",
+  "en": "Global library",
+  "oversatt": "Biblioteca global"
+ },
+ "app-library-library-workspace.library.toolbar-button.403e2946e466": {
+  "nb": "Last ned som zip",
+  "en": "Download as zip",
+  "oversatt": "Baixar como zip"
+ },
+ "app-library-library-workspace.library.toolbar-button.4758091a8bfe": {
+  "nb": "Slettede objekter",
+  "en": "Deleted items",
+  "oversatt": "Itens excluídos"
+ },
+ "app-library-library-workspace.library.toolbar-button.5a8949c8780e": {
+  "nb": "Forslag fra manuset",
+  "en": "Suggestions from the script",
+  "oversatt": "Sugestões do roteiro"
+ },
+ "app-library-reupload-dialog.label.message.baa3974e3ad8": {
+  "nb": "Erstatt v{number} av «{name}»",
+  "en": "Replace v{number} of “{name}”",
+  "oversatt": "Substituir v{number} de “{name}”"
+ },
+ "app-library-reupload-dialog.label.message.bd51b265b852": {
+  "nb": "Nytt bilde i «{name}»",
+  "en": "New image in “{name}”",
+  "oversatt": "Nova imagem em “{name}”"
+ }
+}

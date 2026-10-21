@@ -1,0 +1,3034 @@
+{
+ "app-library-reupload-dialog.posters": {
+  "nb": {
+   "one": "{count} plakat",
+   "other": "{count} plakater"
+  },
+  "en": {
+   "one": "{count} poster",
+   "other": "{count} posters"
+  },
+  "oversatt": {
+   "other": "{count}개 포스터"
+  }
+ },
+ "app-library-reupload-dialog.reupload-dialog.aria-label.cdd83739e2ad": {
+  "nb": "Hva skal skje med {name}?",
+  "en": "What should happen to {name}?",
+  "oversatt": "{name}에 어떤 작업을 진행하시겠습니까?"
+ },
+ "app-library-reupload-dialog.reupload-dialog.button.04a9cab2334f": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-library-reupload-dialog.reupload-dialog.button.0add2e0fc14e": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-library-reupload-dialog.reupload-dialog.button.3a1262b5e2e8": {
+  "nb": "Prøv igjen for resten",
+  "en": "Try again for the rest",
+  "oversatt": "나머지 항목 재시도"
+ },
+ "app-library-reupload-dialog.reupload-dialog.button.65fe2d2949bc": {
+  "nb": "Laster opp …",
+  "en": "Uploading …",
+  "oversatt": "업로드 중…"
+ },
+ "app-library-reupload-dialog.reupload-dialog.button.db13cc4ddbb8": {
+  "nb": "Last opp",
+  "en": "Upload",
+  "oversatt": "업로드"
+ },
+ "app-library-reupload-dialog.reupload-dialog.dialog-description.664f811e51fe": {
+  "nb": "Navnet viser hvilket bilde filen kommer fra. «Erstatt» gjør filen til ny versjon som tar over overalt det gamle bildet er brukt; det gamle tas vare på. «Legg til» gjør den til en ny versjon med eget nummer.",
+  "en": "The name shows which image the file comes from. “Replace” makes the file a new version that takes over everywhere the old image is used; the old one is kept. “Add” makes it a new version with its own number.",
+  "oversatt": "이름은 파일이 생성된 원본 이미지를 나타냅니다. '대체'를 선택하면 파일이 새 버전이 되어 기존 이미지가 사용된 모든 곳에 적용되며 기존 파일은 보존됩니다. '추가'를 선택하면 자체 번호가 부여된 새 버전으로 추가됩니다."
+ },
+ "app-library-reupload-dialog.reupload-dialog.dialog-title.0b2e6d46d9c6": {
+  "nb": "Bildene finnes i prosjektet",
+  "en": "These images are in the project",
+  "oversatt": "이 이미지들은 프로젝트에 있습니다"
+ },
+ "app-library-reupload-dialog.reupload-dialog.dialog-title.f37e7d1477d3": {
+  "nb": "Bildet finnes i prosjektet",
+  "en": "This image is in the project",
+  "oversatt": "이 이미지는 프로젝트에 있습니다"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.078a77a07bb6": {
+  "nb": "Kjenner ikke igjen",
+  "en": "Does not recognise",
+  "oversatt": "인식할 수 없음"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.0f43beb5061f": {
+  "nb": "opp fra varianten den hører til.",
+  "en": "from the variant it belongs to.",
+  "oversatt": "해당 변형에서"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.1dd34831542e": {
+  "nb": "dem",
+  "en": "them",
+  "oversatt": "항목들을"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.2bc5414bfb8f": {
+  "nb": "Last",
+  "en": "Upload",
+  "oversatt": "업로드"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.787a23f07b8b": {
+  "nb": "filene",
+  "en": "the files",
+  "oversatt": "파일들을"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.8bd50b34a65a": {
+  "nb": "filen",
+  "en": "the file",
+  "oversatt": "파일을"
+ },
+ "app-library-reupload-dialog.reupload-dialog.p.acce0ba63f8f": {
+  "nb": "den",
+  "en": "it",
+  "oversatt": "항목을"
+ },
+ "app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.49041b5ce931": {
+  "nb": "Hopp over",
+  "en": "Skip",
+  "oversatt": "건너뛰기"
+ },
+ "app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.bee71e072ad3": {
+  "nb": "Legg til som v{next}",
+  "en": "Add as v{next}",
+  "oversatt": "v{next}(으)로 추가"
+ },
+ "app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.e14e84a954cd": {
+  "nb": "Erstatt v{number} (blir v{next}, brukes overalt)",
+  "en": "Replace v{number} (becomes v{next}, used everywhere)",
+  "oversatt": "v{number} 대체(v{next}이(가) 되며, 모든 곳에 사용됨)"
+ },
+ "app-library-reupload-dialog.reupload-dialog.span.0b10bd7992b3": {
+  "nb": "Varianten har ingen godkjent versjon, så scener som følger den viser det nyeste bildet – også det du legger til. Godkjenn v{number} først hvis scenene skal beholde den.",
+  "en": "The variant has no approved version, so scenes that follow it show the newest image – including the one you add. Approve v{number} first if the scenes should keep it.",
+  "oversatt": "이 변형에는 승인된 버전이 없으므로 이를 따르는 씬에는 새로 추가하는 이미지를 포함하여 최신 이미지가 표시됩니다. 씬에서 기존 버전을 유지해야 하는 경우 먼저 v{number}을(를) 승인하세요."
+ },
+ "app-library-reupload-dialog.reupload-dialog.span.1ac1345cb768": {
+  "nb": "Fra «",
+  "en": "From “",
+  "oversatt": "출처: “"
+ },
+ "app-library-reupload-dialog.reupload-dialog.span.8c2e223d9167": {
+  "nb": "» ·",
+  "en": "” ·",
+  "oversatt": "” ·"
+ },
+ "app-library-reupload-dialog.reupload-dialog.span.d895e6189804": {
+  "nb": "vises ikke i scener eller på plakater nå",
+  "en": "not shown in scenes or on posters now",
+  "oversatt": "현재 씬이나 포스터에 표시되지 않음"
+ },
+ "app-library-reupload-dialog.reupload-dialog.unknown-map.f736cf26e0c2": {
+  "nb": "«{name}»",
+  "en": "“{name}”",
+  "oversatt": "“{name}”"
+ },
+ "app-library-reupload-dialog.run.message.9cb38d8ad01e": {
+  "nb": "v{number} ble lagt til som ny versjon, men tok ikke over: {e}",
+  "en": "v{number} was added as a new version, but did not take over: {e}",
+  "oversatt": "v{number}이(가) 새 버전으로 추가되었지만 적용되지 않았습니다: {e}"
+ },
+ "app-library-reupload-dialog.run.ok-push.15da85a7d4b3": {
+  "nb": "lagt til",
+  "en": "added",
+  "oversatt": "추가됨"
+ },
+ "app-library-reupload-dialog.run.ok-push.fabe2150f9ba": {
+  "nb": "erstatter v{number}",
+  "en": "replacing v{number}",
+  "oversatt": "v{number} 대체 중"
+ },
+ "app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.393cfc4ff298": {
+  "nb": "godkjent",
+  "en": "approved",
+  "oversatt": "승인됨"
+ },
+ "app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.3956706bd9af": {
+  "nb": "vises i {layers} lag i 2D-scener",
+  "en": "shown in {layers} layers in 2D scenes",
+  "oversatt": "2D 씬의 {layers}개 레이어에 표시됨"
+ },
+ "app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.ddfc421528f8": {
+  "nb": "{posters} {value2}",
+  "en": "{posters} {value2}",
+  "oversatt": "{posters} {value2}"
+ },
+ "app-library-sound-links-section.label.label.6d185eb004d0": {
+  "nb": "Delsekvens {value1}",
+  "en": "Segment {value1}",
+  "oversatt": "세그먼트 {value1}"
+ },
+ "app-library-sound-links-section.sound-links-section.aria-label.2836f138f416": {
+  "nb": "Fjern koblingen til {value1}",
+  "en": "Remove the link to {value1}",
+  "oversatt": "{value1} 링크 제거"
+ },
+ "app-library-sound-links-section.sound-links-section.aria-label.6a5e1822543f": {
+  "nb": "Koble til",
+  "en": "Link to",
+  "oversatt": "연결"
+ },
+ "app-library-sound-links-section.sound-links-section.aria-label.8b7b5837212e": {
+  "nb": "Koblinger",
+  "en": "Links",
+  "oversatt": "링크"
+ },
+ "app-library-sound-links-section.sound-links-section.aria-label.d7a07bbf7108": {
+  "nb": "Type kobling",
+  "en": "Link type",
+  "oversatt": "링크 유형"
+ },
+ "app-library-sound-links-section.sound-links-section.button.6a5e1822543f": {
+  "nb": "Koble til",
+  "en": "Link to",
+  "oversatt": "연결"
+ },
+ "app-library-sound-links-section.sound-links-section.h3.b687389fdeb4": {
+  "nb": "Hører til",
+  "en": "Belongs to",
+  "oversatt": "소속"
+ },
+ "app-library-sound-links-section.sound-links-section.option.8f78699d98ac": {
+  "nb": "Velg scene …",
+  "en": "Choose scene …",
+  "oversatt": "씬 선택…"
+ },
+ "app-library-sound-links-section.sound-links-section.option.d8614a6d1f1e": {
+  "nb": "Velg …",
+  "en": "Choose …",
+  "oversatt": "선택…"
+ },
+ "app-library-sound-links-section.sound-links-section.p.09a082330953": {
+  "nb": "Ingen koblinger. Koble lyden til en karakter, scene, replikk, delsekvens, hendelse eller produksjon, så finnes den igjen i søket.",
+  "en": "No links. Link the sound to a character, scene, line, segment, event or production, so it can be found again in search.",
+  "oversatt": "연결 없음. 사운드를 캐릭터, 씬, 대사, 세그먼트, 이벤트 또는 프로덕션에 연결하면 검색에서 찾을 수 있습니다."
+ },
+ "app-library-sound-links-section.sound-links-section.save.1865963d017d": {
+  "nb": "Fjern kobling for lyd",
+  "en": "Remove sound link",
+  "oversatt": "사운드 연결 해제"
+ },
+ "app-library-sound-links-section.sound-links-section.save.f914152e2df6": {
+  "nb": "Koble lyd",
+  "en": "Link sound",
+  "oversatt": "사운드 연결"
+ },
+ "app-library-style-profiles-panel.label.label.0558d9b49a26": {
+  "nb": "Stemning",
+  "en": "Mood",
+  "oversatt": "분위기"
+ },
+ "app-library-style-profiles-panel.label.label.1457a2a03402": {
+  "nb": "Unngå",
+  "en": "Avoid",
+  "oversatt": "제외 항목"
+ },
+ "app-library-style-profiles-panel.label.label.9b3346a579c0": {
+  "nb": "Lys",
+  "en": "Lighting",
+  "oversatt": "조명"
+ },
+ "app-library-style-profiles-panel.label.label.b5563d8b62f8": {
+  "nb": "Teknikk og materialer",
+  "en": "Technique and materials",
+  "oversatt": "기법 및 재료"
+ },
+ "app-library-style-profiles-panel.label.label.b75a6a27ab02": {
+  "nb": "Figurer",
+  "en": "Characters",
+  "oversatt": "캐릭터"
+ },
+ "app-library-style-profiles-panel.label.label.d856fbfbb47b": {
+  "nb": "Omgivelser",
+  "en": "Environments",
+  "oversatt": "환경"
+ },
+ "app-library-style-profiles-panel.label.label.f44f2af09965": {
+  "nb": "Visuell stil",
+  "en": "Visual style",
+  "oversatt": "비주얼 스타일"
+ },
+ "app-library-style-profiles-panel.label.refs-map.f76fc723561d": {
+  "nb": "{value1} – {value2} v{number}",
+  "en": "{value1} – {value2} v{number}",
+  "oversatt": "{value1} – {value2} v{number}"
+ },
+ "app-library-style-profiles-panel.reference-label": {
+  "nb": "{asset} – {variant} v{version}",
+  "en": "{asset} – {variant} v{version}",
+  "oversatt": "{asset} – {variant} v{version}"
+ },
+ "app-library-style-profiles-panel.reference-label-asset": {
+  "nb": "Ressurs",
+  "en": "Asset",
+  "oversatt": "에셋"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.aria-label.aaacd0b2b958": {
+  "nb": "Forbildebilder",
+  "en": "Reference images",
+  "oversatt": "참조 이미지"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.button.00cae1197825": {
+  "nb": "Rediger …",
+  "en": "Edit …",
+  "oversatt": "편집 …"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.button.d2ab745677b3": {
+  "nb": "Vis …",
+  "en": "View …",
+  "oversatt": "보기 …"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.h3.aaacd0b2b958": {
+  "nb": "Forbildebilder",
+  "en": "Reference images",
+  "oversatt": "참조 이미지"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.20c2f1c93630": {
+  "nb": "Gjelder for: {usesLabel}",
+  "en": "Applies to: {usesLabel}",
+  "oversatt": "적용 대상: {usesLabel}"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.27c0847f24a8": {
+  "nb": "felt fylt ut",
+  "en": "fields filled in",
+  "oversatt": "개 필드 작성됨"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.2ceb29348105": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.3fbfc6514119": {
+  "nb": "forbildebilder",
+  "en": "reference images",
+  "oversatt": "참조 이미지"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.6fa7e9761168": {
+  "nb": "Standard – brukes i alle AI-beskrivelser der ingen annen profil er valgt",
+  "en": "Default – used in all AI descriptions where no other profile is selected",
+  "oversatt": "기본값 – 다른 프로필이 선택되지 않은 모든 AI 설명에 사용됨"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.804c82d786f5": {
+  "nb": "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
+  "en": "Not filled in yet. An image model knows nothing about the film – here you describe the style, technique, colours, lighting and mood, so that every image the AI makes fits in.",
+  "oversatt": "아직 작성되지 않았습니다. 이미지 모델은 영화에 대해 아무것도 모릅니다. 여기서 스타일, 기법, 색상, 조명 및 분위기를 설명하여 AI가 생성하는 모든 이미지가 어울리도록 하세요."
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.a985272b5d55": {
+  "nb": " · også valgt for {usesLabel}",
+  "en": " · also selected for {usesLabel}",
+  "oversatt": " · {usesLabel}에도 선택됨"
+ },
+ "app-library-style-profiles-panel.style-profile-detail.p.dd7703121164": {
+  "nb": "Visuell stilprofil",
+  "en": "Visual style profile",
+  "oversatt": "비주얼 스타일 프로필"
+ },
+ "app-library-style-profiles-panel.style-profile-list.aria-label.29c07dff0a85": {
+  "nb": "Stilprofiler",
+  "en": "Style profiles",
+  "oversatt": "스타일 프로필"
+ },
+ "app-library-style-profiles-panel.style-profile-list.button.52ad89848f13": {
+  "nb": "Lag filmens visuelle stil",
+  "en": "Create the film's visual style",
+  "oversatt": "영화의 비주얼 스타일 만들기"
+ },
+ "app-library-style-profiles-panel.style-profile-list.button.e51b6f38822f": {
+  "nb": "Ny stilprofil (plakater, steder, AI-video …)",
+  "en": "New style profile (posters, places, AI video …)",
+  "oversatt": "새 스타일 프로필(포스터, 장소, AI 비디오 …)"
+ },
+ "app-library-style-profiles-panel.style-profile-list.span.9673cf13d08d": {
+  "nb": "Standard · ",
+  "en": "Default · ",
+  "oversatt": "기본값 · "
+ },
+ "app-library-suggestions-dialog.evidence.message.f769d67daa37": {
+  "nb": "også",
+  "en": "also",
+  "oversatt": "포함"
+ },
+ "app-library-suggestions-dialog.groups.message.155fef7d52d3": {
+  "nb": "Dyr",
+  "en": "Animals",
+  "oversatt": "동물"
+ },
+ "app-library-suggestions-dialog.groups.message.43bc4e836b38": {
+  "nb": "Steder",
+  "en": "Locations",
+  "oversatt": "장소"
+ },
+ "app-library-suggestions-dialog.groups.message.a882465a46e5": {
+  "nb": "Lyd",
+  "en": "Sound",
+  "oversatt": "사운드"
+ },
+ "app-library-suggestions-dialog.groups.message.ab9a17e4c764": {
+  "nb": "Objekter",
+  "en": "Objects",
+  "oversatt": "오브젝트"
+ },
+ "app-library-suggestions-dialog.groups.message.b7ca8ee8c932": {
+  "nb": "Miljø",
+  "en": "Environments",
+  "oversatt": "환경"
+ },
+ "app-library-suggestions-dialog.groups.message.f9db2ebcc3ce": {
+  "nb": "Karakterer",
+  "en": "Characters",
+  "oversatt": "캐릭터"
+ },
+ "app-library-suggestions-dialog.improve.set-err.cb3dda3f758f": {
+  "nb": "Analysen feilet. Prøv igjen.",
+  "en": "The analysis failed. Try again.",
+  "oversatt": "분석에 실패했습니다. 다시 시도해 주세요."
+ },
+ "app-library-suggestions-dialog.r.cmds-run-and-wait.20d5f32ac0e0": {
+  "nb": "{length} nye ressurser fra manuset",
+  "en": "{length} new assets from the script",
+  "oversatt": "대본의 새 에셋 {length}개"
+ },
+ "app-library-suggestions-dialog.r.cmds-run-and-wait.7d185f257bb1": {
+  "nb": "Ny ressurs «{value1}»",
+  "en": "New asset “{value1}”",
+  "oversatt": "새 에셋 “{value1}”"
+ },
+ "app-library-suggestions-dialog.r.cmds-run-and-wait.8aa1d568cfcd": {
+  "nb": "Alternativt navn for «{name}»",
+  "en": "Alternative name for “{name}”",
+  "oversatt": "“{name}”의 대체 이름"
+ },
+ "app-library-suggestions-dialog.scenes-label.message.734392b9f1e2": {
+  "nb": "{n} scener",
+  "en": "{n} scenes",
+  "oversatt": "{n}개 씬"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.aria-label.1bcd0bc19178": {
+  "nb": "Legg til {name}",
+  "en": "Add {name}",
+  "oversatt": "{name} 추가"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.aria-label.cc62a984fdab": {
+  "nb": "Hva slags type er {name}?",
+  "en": "What kind of {name} is it?",
+  "oversatt": "{name}의 유형은 무엇인가요?"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.aria-label.d0912c5df509": {
+  "nb": "Hva skal {name} bli?",
+  "en": "What should {name} become?",
+  "oversatt": "{name}을(를) 무엇으로 설정할까요?"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.14f757443b5f": {
+  "nb": "Vis skjulte ({hiddenCount})",
+  "en": "Show hidden ({hiddenCount})",
+  "oversatt": "숨김 항목 표시 ({hiddenCount})"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.19b6a4999c76": {
+  "nb": "Legg til",
+  "en": "Add",
+  "oversatt": "추가"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.2399d033d0dc": {
+  "nb": "Skjul",
+  "en": "Hide",
+  "oversatt": "숨기기"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.5028d6d9cd00": {
+  "nb": "Velg ingen",
+  "en": "Select none",
+  "oversatt": "선택 안 함"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.99116cd19559": {
+  "nb": "Legg til {total}",
+  "en": "Add {total}",
+  "oversatt": "{total}개 추가"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.a4b8512b9376": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.b615a940aa13": {
+  "nb": "Analyser på nytt",
+  "en": "Analyse again",
+  "oversatt": "다시 분석"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.button.b63fb3c6cd31": {
+  "nb": "Velg alle uten mulig treff",
+  "en": "Select all without a possible match",
+  "oversatt": "일치 항목이 없는 대상 모두 선택"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.dialog-description.21b282998039": {
+  "nb": "Forslag fra manuset",
+  "en": "Suggestions from the script",
+  "oversatt": "대본 추천 항목"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.dialog-title.21b282998039": {
+  "nb": "Forslag fra manuset",
+  "en": "Suggestions from the script",
+  "oversatt": "대본 추천 항목"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.option.13b268fecac1": {
+  "nb": "Alternativt navn for «{assetName}»?",
+  "en": "Alternative name for “{assetName}”?",
+  "oversatt": "\"{assetName}\"의 다른 이름인가요?"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.option.9ca86e9fbf34": {
+  "nb": "Ny",
+  "en": "New",
+  "oversatt": "신규"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.p.38f98c0c8465": {
+  "nb": "Typene for {aiCount} forslag er satt av den innebygde AI-en.",
+  "en": "The types of {aiCount} suggestions were set by the built-in AI.",
+  "oversatt": "제안된 {aiCount}개의 유형이 내장 AI에 의해 설정되었습니다."
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.p.60f96d69d7f1": {
+  "nb": "Typene bygger på manusreglene.",
+  "en": "The types are based on script rules.",
+  "oversatt": "유형은 대본 규칙을 기반으로 합니다."
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.p.7c076dc7459a": {
+  "nb": "Mulig samme som «{aliasOf}» – du avgjør",
+  "en": "Possibly the same as “{aliasOf}” – you decide",
+  "oversatt": "\"{aliasOf}\"와(과) 동일할 수 있습니다 – 직접 선택해 주세요"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.p.b68e2fbc2597": {
+  "nb": "Ingen forslag – alt er i biblioteket.",
+  "en": "No suggestions – everything is in the library.",
+  "oversatt": "추천 항목 없음 – 모두 라이브러리에 있습니다."
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.p.e852504da973": {
+  "nb": "Analyserer manuset …",
+  "en": "Analysing the script …",
+  "oversatt": "대본 분석 중…"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.span.430eb7822403": {
+  "nb": "Trolig",
+  "en": "Likely",
+  "oversatt": "유력함"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.span.5ae2efe875b3": {
+  "nb": "Usikker",
+  "en": "Uncertain",
+  "oversatt": "불확실함"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.span.be034ba6f970": {
+  "nb": "Sikker",
+  "en": "Confident",
+  "oversatt": "확실함"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.title.20a9a87ce2cb": {
+  "nb": "Ikke foreslå igjen",
+  "en": "Do not suggest again",
+  "oversatt": "다시 추천하지 않음"
+ },
+ "app-library-suggestions-dialog.suggestions-dialog.title.d7acf2e6e4fe": {
+  "nb": "Usikker kobling – du avgjør",
+  "en": "Uncertain link – you decide",
+  "oversatt": "불확실한 연결 – 직접 선택해 주세요"
+ },
+ "app-library-trash-dialog.e.cmds-run.ecee4ab84b21": {
+  "nb": "Hent inn igjen «{label}»",
+  "en": "Restore “{label}”",
+  "oversatt": "\"{label}\" 복원"
+ },
+ "app-library-trash-dialog.purged": {
+  "nb": "Slettet for godt: {label}.",
+  "en": "Deleted for good: {label}.",
+  "oversatt": "영구 삭제됨: {label}."
+ },
+ "app-library-trash-dialog.purged-leftover": {
+  "nb": "Slettet for godt: {label}. {files} filer ble liggende i lagringen.",
+  "en": "Deleted for good: {label}. {files} files were left in storage.",
+  "oversatt": "영구 삭제됨: {label}. {files}개 파일이 저장소에 남아 있습니다."
+ },
+ "app-library-trash-dialog.still-used": {
+  "nb": " · brukes fortsatt i {uses}",
+  "en": " · still used in {uses}",
+  "oversatt": " · {uses}에서 여전히 사용 중"
+ },
+ "app-library-trash-dialog.still-used-and": {
+  "nb": " og ",
+  "en": " and ",
+  "oversatt": " 및 "
+ },
+ "app-library-trash-dialog.still-used-audio": {
+  "nb": "{count} lydklipp",
+  "en": "{count} audio clips",
+  "oversatt": "오디오 클립 {count}개"
+ },
+ "app-library-trash-dialog.still-used-layers": {
+  "nb": "{count} lag",
+  "en": "{count} layers",
+  "oversatt": "레이어 {count}개"
+ },
+ "app-library-trash-dialog.text.text.494e31c60b51": {
+  "nb": "«{label}» er hentet inn igjen.",
+  "en": "“{label}” has been restored.",
+  "oversatt": "\"{label}\"이(가) 복원되었습니다."
+ },
+ "app-library-trash-dialog.text.text.dc7d2be28d4c": {
+  "nb": "Slettet for godt: {label}.{value2}",
+  "en": "Deleted for good: {label}.{value2}",
+  "oversatt": "영구 삭제됨: {label}.{value2}"
+ },
+ "app-library-trash-dialog.trash-dialog.aria-label.21ac42b4bc3f": {
+  "nb": "Bekreft sletting for godt",
+  "en": "Confirm deletion for good",
+  "oversatt": "영구 삭제 확인"
+ },
+ "app-library-trash-dialog.trash-dialog.aria-label.876d5f98d09b": {
+  "nb": "Slettede bilder",
+  "en": "Deleted images",
+  "oversatt": "삭제된 이미지"
+ },
+ "app-library-trash-dialog.trash-dialog.aria-label.90ec75c45c44": {
+  "nb": "Slettede ressurser",
+  "en": "Deleted assets",
+  "oversatt": "삭제된 에셋"
+ },
+ "app-library-trash-dialog.trash-dialog.button.4a79b7760cdc": {
+  "nb": "Slett for godt",
+  "en": "Delete for good",
+  "oversatt": "영구 삭제"
+ },
+ "app-library-trash-dialog.trash-dialog.button.6074ad810e8f": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-library-trash-dialog.trash-dialog.button.72f631a62c75": {
+  "nb": "Lukk",
+  "en": "Close",
+  "oversatt": "닫기"
+ },
+ "app-library-trash-dialog.trash-dialog.button.9cc51e982309": {
+  "nb": "Hent inn igjen",
+  "en": "Restore",
+  "oversatt": "복원"
+ },
+ "app-library-trash-dialog.trash-dialog.button.9cc51e982309.2": {
+  "nb": "Hent inn igjen",
+  "en": "Restore",
+  "oversatt": "복원"
+ },
+ "app-library-trash-dialog.trash-dialog.button.d54d45365f93": {
+  "nb": "For godt …",
+  "en": "For good …",
+  "oversatt": "영구 삭제…"
+ },
+ "app-library-trash-dialog.trash-dialog.button.d54d45365f93.2": {
+  "nb": "For godt …",
+  "en": "For good …",
+  "oversatt": "영구 삭제…"
+ },
+ "app-library-trash-dialog.trash-dialog.dialog-description.b6ba1ef44a5b": {
+  "nb": "Hent inn igjen det du trenger. Eieren kan slette for godt – det kan ikke angres, og filene forsvinner fra lagringen.",
+  "en": "Restore what you need. The owner can delete for good – this cannot be undone, and the files disappear from storage.",
+  "oversatt": "필요한 항목을 복원하세요. 소유자만 영구 삭제할 수 있으며, 이 작업은 취소할 수 없고 저장소에서 파일이 완전히 제거됩니다."
+ },
+ "app-library-trash-dialog.trash-dialog.dialog-title.f2a8a27f41db": {
+  "nb": "Slettede objekter",
+  "en": "Deleted items",
+  "oversatt": "삭제된 항목"
+ },
+ "app-library-trash-dialog.trash-dialog.h3.8648af697b4d": {
+  "nb": "Ressurser",
+  "en": "Assets",
+  "oversatt": "에셋"
+ },
+ "app-library-trash-dialog.trash-dialog.h3.a3003608f2f0": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "이미지"
+ },
+ "app-library-trash-dialog.trash-dialog.p.31e0dfe9e6ec": {
+  "nb": "Ingenting er slettet.",
+  "en": "Nothing has been deleted.",
+  "oversatt": "삭제된 항목이 없습니다."
+ },
+ "app-library-trash-dialog.trash-dialog.p.4218a851f3be": {
+  "nb": "«{label}» slettes for godt, med alle filene. Det kan ikke angres. AI-jobbloggen beholdes. Vil du slette?",
+  "en": "“{label}” will be deleted for good, with all its files. This cannot be undone. The AI job log is kept. Do you want to delete it?",
+  "oversatt": "“{label}” 및 모든 파일이 영구적으로 삭제됩니다. 이 작업은 취소할 수 없습니다. AI 작업 로그는 유지됩니다. 삭제하시겠습니까?"
+ },
+ "app-library-trash-dialog.trash-dialog.span.876eda49cd2b": {
+  "nb": " · brukes fortsatt i {value1}",
+  "en": " · still used in {value1}",
+  "oversatt": " · {value1}에서 계속 사용 중"
+ },
+ "app-library-trash-dialog.trash-dialog.title.49cc31ccf959": {
+  "nb": "Bare prosjektets eier kan slette for godt",
+  "en": "Only the project's owner can delete for good",
+  "oversatt": "프로젝트 소유자만 영구 삭제할 수 있습니다"
+ },
+ "app-library-trash-dialog.trash-dialog.title.49cc31ccf959.2": {
+  "nb": "Bare prosjektets eier kan slette for godt",
+  "en": "Only the project's owner can delete for good",
+  "oversatt": "프로젝트 소유자만 영구 삭제할 수 있습니다"
+ },
+ "app-library-trash-dialog.trash-dialog.title.4a79b7760cdc": {
+  "nb": "Slett for godt",
+  "en": "Delete for good",
+  "oversatt": "영구 삭제"
+ },
+ "app-library-trash-dialog.trash-dialog.title.4a79b7760cdc.2": {
+  "nb": "Slett for godt",
+  "en": "Delete for good",
+  "oversatt": "영구 삭제"
+ },
+ "app-library-visual-brief-editor.err.cmds-run.cb6354778352": {
+  "nb": "Faktaark for «{name}»",
+  "en": "Visual brief for “{name}”",
+  "oversatt": "“{name}”의 비주얼 브리프"
+ },
+ "app-library-visual-brief-editor.text.text.5011a43d9907": {
+  "nb": "Faktaarket ble ikke laget.",
+  "en": "The visual brief was not made.",
+  "oversatt": "비주얼 브리프를 생성하지 못했습니다."
+ },
+ "app-library-visual-brief-editor.text.text.a12946bd1ab7": {
+  "nb": "Utkast laget. Les gjennom, rett det som ikke stemmer, og lagre.",
+  "en": "Draft made. Read it through, correct anything that is wrong, and save.",
+  "oversatt": "초안이 생성되었습니다. 내용을 검토하고 올바르지 않은 부분을 수정한 뒤 저장하세요."
+ },
+ "app-library-visual-brief-editor.text.text.f85a5f54d28d": {
+  "nb": "Faktaarket er lagret.",
+  "en": "The visual brief is saved.",
+  "oversatt": "비주얼 브리프가 저장되었습니다."
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.aria-label.1cff9f90ebf2": {
+  "nb": "Visuelt faktaark",
+  "en": "Visual brief",
+  "oversatt": "비주얼 브리프"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.aria-label.346a0c7c9ee9": {
+  "nb": "Bekreft faktaark med AI",
+  "en": "Confirm visual brief with AI",
+  "oversatt": "AI로 비주얼 브리프 확인"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.aria-label.3cc045016ca3": {
+  "nb": "Visuelt faktaark for {name}",
+  "en": "Visual brief for {name}",
+  "oversatt": "{name}의 비주얼 브리프"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.9e81bd81f145": {
+  "nb": "Lagre faktaarket",
+  "en": "Save visual brief",
+  "oversatt": "비주얼 브리프 저장"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.aef759f94131": {
+  "nb": "Angre endringene",
+  "en": "Undo changes",
+  "oversatt": "변경 사항 실행 취소"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.b8daa3d0196e": {
+  "nb": "Lag et visuelt faktaark (bedre treff) …",
+  "en": "Make a visual brief (better matches) …",
+  "oversatt": "비주얼 브리프 만들기(더 정확한 결과)…"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.b9844dfe3943": {
+  "nb": "Lager utkast …",
+  "en": "Making draft …",
+  "oversatt": "초안 생성 중…"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.cf5f2b835d36": {
+  "nb": "Vis eller rett faktaarket …",
+  "en": "View or correct the visual brief …",
+  "oversatt": "비주얼 브리프 보기 또는 수정…"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.cfdadd9909c8": {
+  "nb": "Ja, lag utkast",
+  "en": "Yes, make a draft",
+  "oversatt": "예, 초안 만들기"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.da460559f93a": {
+  "nb": "Lag utkast fra manuset med AI …",
+  "en": "Make draft from the script with AI …",
+  "oversatt": "AI로 대본에서 초안 생성…"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.button.fa309cd73b32": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.h4.1cff9f90ebf2": {
+  "nb": "Visuelt faktaark",
+  "en": "Visual brief",
+  "oversatt": "비주얼 브리프"
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.p.426532648c23": {
+  "nb": "Manusets omtale av {name} (og forsidebildet) sendes til en språkmodell i innebygd AI, som lager et utkast. Det bruker litt kreditter (langt mindre enn et bilde).",
+  "en": "The script's mentions of {name} (and the cover image) are sent to a language model in built-in AI, which makes a draft. It uses a few credits (far less than an image).",
+  "oversatt": "대본 내 {name} 관련 내용(및 대표 이미지)이 내장 AI의 언어 모델로 전송되어 초안을 생성합니다. 약간의 크레딧이 사용됩니다(이미지 생성보다 훨씬 적음)."
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.p.5c1a3e670206": {
+  "nb": " Utkastet erstatter teksten i feltet (ikke lagret før du lagrer).",
+  "en": " The draft replaces the text in the field (not saved until you save).",
+  "oversatt": " 초안이 해당 필드의 텍스트를 대체합니다(직접 저장하기 전까지는 저장되지 않음)."
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.p.92ad57e47d88": {
+  "nb": "Det som synes: alder, kropp, ansikt, hår, klær, farger, kjennetegn. Brukes i alle bildebeskrivelser i stedet for manusutdrag.",
+  "en": "What can be seen: age, body, face, hair, clothes, colours, distinguishing marks. Used in all image descriptions instead of script excerpts.",
+  "oversatt": "보이는 특징: 나이, 체형, 얼굴, 머리 모양, 의상, 색상, 고유한 특징. 대본 발췌문 대신 모든 이미지 설명에 사용됩니다."
+ },
+ "app-library-visual-brief-editor.visual-brief-editor.span.5625b5f8c54a": {
+  "nb": "engelsk, ett kjennetegn per linje",
+  "en": "English, one feature per line",
+  "oversatt": "영어, 한 줄에 한 가지 특징씩 작성"
+ },
+ "app-mobile-mobile-actions.apply-video-to-scene.message.b4d66cb6f80d": {
+  "nb": "Videoen kunne ikke hentes.",
+  "en": "The video could not be fetched.",
+  "oversatt": "비디오를 가져올 수 없습니다."
+ },
+ "app-mobile-mobile-actions.from-mobile-fallback": {
+  "nb": "mobil",
+  "en": "mobile",
+  "oversatt": "모바일"
+ },
+ "app-mobile-mobile-actions.label.message.18b3fbd80710": {
+  "nb": "Nytt element fra mobil «{name}»",
+  "en": "New element from mobile “{name}”",
+  "oversatt": "모바일 “{name}”의 새 요소"
+ },
+ "app-mobile-mobile-actions.label.message.40eb0a44a43f": {
+  "nb": "Video fra mobil",
+  "en": "Video from mobile",
+  "oversatt": "모바일 비디오"
+ },
+ "app-mobile-mobile-actions.name.name.093837e5454e": {
+  "nb": "Fra mobil",
+  "en": "From mobile",
+  "oversatt": "모바일에서"
+ },
+ "app-mobile-mobile-actions.note.note.3f742c13823c": {
+  "nb": "Fra mobil ({value1})",
+  "en": "From mobile ({value1})",
+  "oversatt": "모바일에서 ({value1})"
+ },
+ "app-mobile-mobile-actions.note.note.e796727a816f": {
+  "nb": "mobil",
+  "en": "mobile",
+  "oversatt": "모바일"
+ },
+ "app-mobile-mobile-actions.note.note.e796727a816f.2": {
+  "nb": "mobil",
+  "en": "mobile",
+  "oversatt": "모바일"
+ },
+ "app-mobile-mobile-actions.scene-mobile-actions.add-image-as-new-asset.f2e0f2c85f05": {
+  "nb": "Bilde fra mobil",
+  "en": "Image from mobile",
+  "oversatt": "모바일 이미지"
+ },
+ "app-mobile-mobile-actions.scene-mobile-actions.button.1428dd36493d": {
+  "nb": "Bruk som film for scenen",
+  "en": "Use as film for the scene",
+  "oversatt": "씬의 영상으로 사용"
+ },
+ "app-mobile-mobile-actions.scene-mobile-actions.button.91640d5780c0": {
+  "nb": "Nytt element i biblioteket",
+  "en": "New element in the library",
+  "oversatt": "라이브러리의 새 요소"
+ },
+ "app-mobile-mobile-actions.scene-mobile-actions.span.d8591e22b250": {
+  "nb": "Brukt som film",
+  "en": "Used as film",
+  "oversatt": "영상으로 사용됨"
+ },
+ "app-mobile-mobile-actions.scene-mobile-actions.span.dd72c87f8a7c": {
+  "nb": "I biblioteket – dra det inn",
+  "en": "In the library – drag it in",
+  "oversatt": "라이브러리에서 – 여기로 드래그하세요"
+ },
+ "app-mobile-mobile-audio.mobile-audio.aria-label.5f816fe2d1f9": {
+  "nb": "Dine opptak",
+  "en": "Your recordings",
+  "oversatt": "내 녹음/녹화 목록"
+ },
+ "app-mobile-mobile-audio.mobile-audio.aria-label.c41cdb9f141e": {
+  "nb": "Stopp opptaket",
+  "en": "Stop the recording",
+  "oversatt": "녹음 중지"
+ },
+ "app-mobile-mobile-audio.mobile-audio.aria-label.ea53080f020f": {
+  "nb": "Start opptak",
+  "en": "Start recording",
+  "oversatt": "녹음 시작"
+ },
+ "app-mobile-mobile-audio.mobile-audio.button.b38aa2f26552": {
+  "nb": "Ta opp romlyd (noen sekunder stillhet)",
+  "en": "Record room tone (a few seconds of silence)",
+  "oversatt": "룸톤 녹음 (몇 초간 무음 유지)"
+ },
+ "app-mobile-mobile-audio.mobile-audio.button.cb265a0ba5f2": {
+  "nb": "Send det valgte opptaket",
+  "en": "Send the chosen recording",
+  "oversatt": "선택한 녹음 전송"
+ },
+ "app-mobile-mobile-audio.mobile-audio.button.dd8d31a7dc12": {
+  "nb": "Send de valgte ({length})",
+  "en": "Send the chosen ones ({length})",
+  "oversatt": "선택한 항목 전송 ({length})"
+ },
+ "app-mobile-mobile-audio.mobile-audio.p.0fc64d518af6": {
+  "nb": "Tar opp … {value1}",
+  "en": "Recording … {value1}",
+  "oversatt": "녹음 중 … {value1}"
+ },
+ "app-mobile-mobile-audio.mobile-audio.p.26720901dd1f": {
+  "nb": "Trykk for å ta opp",
+  "en": "Tap to record",
+  "oversatt": "탭하여 녹음"
+ },
+ "app-mobile-mobile-audio.mobile-audio.p.730213cef880": {
+  "nb": "Romlyd … {value1} – vær helt stille",
+  "en": "Room tone … {value1} – keep completely quiet",
+  "oversatt": "룸톤 … {value1} – 완전히 조용히 해주세요"
+ },
+ "app-mobile-mobile-audio.mobile-audio.p.d26539215fdb": {
+  "nb": "Trykk for et nytt take",
+  "en": "Tap for a new take",
+  "oversatt": "탭하여 새 테이크 녹음"
+ },
+ "app-mobile-mobile-audio.mobile-audio.p.ded40acdc766": {
+  "nb": "Opptak som ikke er valgt, blir liggende på telefonen.",
+  "en": "Recordings that are not chosen stay on the phone.",
+  "oversatt": "선택되지 않은 녹음은 휴대폰에 그대로 유지됩니다."
+ },
+ "app-mobile-mobile-audio.status-text.message.30d2a42ccf0d": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "실패"
+ },
+ "app-mobile-mobile-audio.status-text.message.581de2511183": {
+  "nb": "Venter på sending",
+  "en": "Waiting to send",
+  "oversatt": "전송 대기 중"
+ },
+ "app-mobile-mobile-audio.status-text.message.740b13db28d9": {
+  "nb": "Bare på telefonen",
+  "en": "Only on the phone",
+  "oversatt": "휴대폰에만 있음"
+ },
+ "app-mobile-mobile-audio.status-text.message.a3127245f4a3": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "전송됨"
+ },
+ "app-mobile-mobile-audio.status-text.message.e58b67d63328": {
+  "nb": "Sendes …",
+  "en": "Sending …",
+  "oversatt": "전송 중 …"
+ },
+ "app-mobile-mobile-audio.status.message.1eb235bf0582": {
+  "nb": "Valgt",
+  "en": "Chosen",
+  "oversatt": "선택됨"
+ },
+ "app-mobile-mobile-audio.take-row.aria-label.c587767c4961": {
+  "nb": "Velg {value1}",
+  "en": "Choose {value1}",
+  "oversatt": "{value1} 선택"
+ },
+ "app-mobile-mobile-audio.take-row.button.37fc0fbf26e8": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-mobile-mobile-audio.take-row.button.d11b540d1c10": {
+  "nb": "Forkast",
+  "en": "Discard",
+  "oversatt": "삭제"
+ },
+ "app-mobile-mobile-audio.take-row.span.a7199d8fabcb": {
+  "nb": "Romlyd {n}",
+  "en": "Room tone {n}",
+  "oversatt": "룸톤 {n}"
+ },
+ "app-mobile-mobile-import-dialog.body.button.7666ba02806f": {
+  "nb": "Ny kode",
+  "en": "New code",
+  "oversatt": "새 코드"
+ },
+ "app-mobile-mobile-import-dialog.body.dialog-description.31815f0f05d1": {
+  "nb": "Skann koden med kameraet på mobilen. Bilder og video du tar eller velger der, kommer rett inn hit.",
+  "en": "Scan the code with your phone's camera. Pictures and video you take or choose there come straight in here.",
+  "oversatt": "휴대폰 카메라로 코드를 스캔하세요. 휴대폰에서 촬영하거나 선택한 사진과 비디오가 여기로 바로 들어옵니다."
+ },
+ "app-mobile-mobile-import-dialog.body.dialog-title.0df803db9d66": {
+  "nb": "Importer fra mobil",
+  "en": "Import from mobile",
+  "oversatt": "모바일에서 가져오기"
+ },
+ "app-mobile-mobile-import-dialog.body.p.10c5b1977115": {
+  "nb": " · {length} lastes opp",
+  "en": " · {length} uploading",
+  "oversatt": " · {length}개 업로드 중"
+ },
+ "app-mobile-mobile-import-dialog.body.p.24d39a965e75": {
+  "nb": "Én fil mottatt",
+  "en": "One file received",
+  "oversatt": "파일 1개 수신됨"
+ },
+ "app-mobile-mobile-import-dialog.body.p.454a49c41b58": {
+  "nb": "{length} filer mottatt",
+  "en": "{length} files received",
+  "oversatt": "파일 {length}개 수신됨"
+ },
+ "app-mobile-mobile-import-dialog.body.p.9beaefe9e5c6": {
+  "nb": "Siste:",
+  "en": "Latest:",
+  "oversatt": "최근:"
+ },
+ "app-mobile-mobile-import-dialog.body.p.d7d0c4d70ce0": {
+  "nb": "Venter på mobilen …",
+  "en": "Waiting for the phone …",
+  "oversatt": "휴대폰 연결 대기 중 …"
+ },
+ "app-mobile-mobile-import-dialog.body.p.e098b3cbb597": {
+  "nb": "Koden gjelder til {value1} og gir bare rett til å laste opp hit. Fra mobilen kan du dele en egen lenke med andre.",
+  "en": "The code is valid until {value1} and only allows uploading here. From the phone you can share a separate link with others.",
+  "oversatt": "이 코드는 {value1}까지 유효하며, 여기로 업로드하는 것만 허용합니다. 모바일에서는 다른 사람들과 별도의 링크를 공유할 수 있습니다."
+ },
+ "app-mobile-mobile-import-dialog.body.p.f140b4c0bfe7": {
+  "nb": "Mobilen er tilkoblet",
+  "en": "The phone is connected",
+  "oversatt": "휴대폰이 연결되었습니다"
+ },
+ "app-mobile-mobile-import-dialog.body.span.1abf22a3ff39": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "오디오"
+ },
+ "app-mobile-mobile-import-dialog.body.span.240e5742bbe7": {
+  "nb": "Mottatt",
+  "en": "Received",
+  "oversatt": "수신됨"
+ },
+ "app-mobile-mobile-import-dialog.body.span.34b65a2293a6": {
+  "nb": "Lagt inn som ny versjon",
+  "en": "Added as a new version",
+  "oversatt": "새 버전으로 추가됨"
+ },
+ "app-mobile-mobile-import-dialog.body.span.7a460d9c2ad8": {
+  "nb": "{length} venter på godkjenning",
+  "en": "{length} waiting for approval",
+  "oversatt": "{length}개 승인 대기 중"
+ },
+ "app-mobile-mobile-import-dialog.body.span.e23cd08280d1": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "비디오"
+ },
+ "app-mobile-mobile-import-dialog.mobile-camera-button.aria-label.f3f641e69091": {
+  "nb": "Importer fra mobil: {label}",
+  "en": "Import from mobile: {label}",
+  "oversatt": "모바일에서 가져오기: {label}"
+ },
+ "app-mobile-mobile-import-dialog.mobile-camera-button.title.3fd8a40a9bc8": {
+  "nb": "Ta bilde eller video med mobilen – {label}",
+  "en": "Take a picture or video with your phone – {label}",
+  "oversatt": "휴대폰으로 사진 또는 동영상 촬영 – {label}"
+ },
+ "app-mobile-mobile-import-dialog.mobile-qr.aria-label.b58e2b681d94": {
+  "nb": "Lager QR-koden …",
+  "en": "Making the QR code …",
+  "oversatt": "QR 코드 생성 중…"
+ },
+ "app-mobile-mobile-import-dialog.mobile-qr.button.2adbd0532f25": {
+  "nb": "Kopiert",
+  "en": "Copied",
+  "oversatt": "복사됨"
+ },
+ "app-mobile-mobile-import-dialog.mobile-qr.button.3c9a7f02a298": {
+  "nb": "Kopier lenken",
+  "en": "Copy the link",
+  "oversatt": "링크 복사"
+ },
+ "app-mobile-mobile-import-dialog.session-for.create-upload-session-data-project-id-context-label-then-r-cached-session-string-if-r-ok-r-token-r-session-id-r-expires-at-return-r-message-l-qr-koden-kunne-ikke-lages-the-qr-code-could-not-be-made-const-s-session-id-r-session-id-token-r-token-expires-at-r-expires-at-cache-set-key-s-return-s-nettleserens-egne-nettfeil-failed-to-fetch-o-l-vises-p-brukerens-spr-k-dec-0091-catch.36fb2096434f": {
+  "nb": "QR-koden kunne ikke lages: ingen forbindelse med serveren. Prøv igjen.",
+  "en": "The QR code could not be made: no connection to the server. Try again.",
+  "oversatt": "QR 코드를 생성할 수 없습니다. 서버에 연결되지 않았습니다. 다시 시도해 주세요."
+ },
+ "app-mobile-mobile-import-dialog.session-for.create-upload-session-data-project-id-context-label-then.45f057797644": {
+  "nb": "QR-koden kunne ikke lages.",
+  "en": "The QR code could not be made.",
+  "oversatt": "QR 코드를 생성할 수 없습니다."
+ },
+ "app-mobile-mobile-import-library.context-label.message.5f17aefb4923": {
+  "nb": "Prosjektet",
+  "en": "The project",
+  "oversatt": "프로젝트"
+ },
+ "app-mobile-mobile-import-library.context-label.message.7f0c2c4832e7": {
+  "nb": "Ny ressurs (ikke lagret)",
+  "en": "New asset (not saved)",
+  "oversatt": "새 에셋 (저장되지 않음)"
+ },
+ "app-mobile-mobile-import-library.context-label.message.dc949fff9beb": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.02cdcad9587c": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.02e2aa63a15c": {
+  "nb": "Type",
+  "en": "Type",
+  "oversatt": "유형"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.1f9badcce02d": {
+  "nb": "Skjul",
+  "en": "Hide",
+  "oversatt": "숨기기"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.29ba6a60d36b": {
+  "nb": "Importøkt",
+  "en": "Import session",
+  "oversatt": "가져오기 세션"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.7d020634513b": {
+  "nb": "Kobling",
+  "en": "Link",
+  "oversatt": "링크"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.fb770f065a77": {
+  "nb": "Bidragsyter",
+  "en": "Contributor",
+  "oversatt": "기여자"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.aria-label.feb70fb17044": {
+  "nb": "Vis igjen",
+  "en": "Show again",
+  "oversatt": "다시 표시"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.button.2a3748786540": {
+  "nb": "Ny versjon – åpne ressursen",
+  "en": "New version – open the asset",
+  "oversatt": "새 버전 – 에셋 열기"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.button.3d0a98a892a3": {
+  "nb": "Åpne ressursen",
+  "en": "Open the asset",
+  "oversatt": "에셋 열기"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.h2.a63b6aa9da9f": {
+  "nb": "Mobilimport",
+  "en": "Mobile import",
+  "oversatt": "모바일 가져오기"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.label.2877be4d417e": {
+  "nb": "Vis skjulte",
+  "en": "Show hidden",
+  "oversatt": "숨겨진 항목 표시"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.1380b1d9eb4a": {
+  "nb": "Lyd",
+  "en": "Audio",
+  "oversatt": "오디오"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.36920688f5d4": {
+  "nb": "Alle økter",
+  "en": "All sessions",
+  "oversatt": "모든 세션"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.420e01744edb": {
+  "nb": "Bilder",
+  "en": "Images",
+  "oversatt": "이미지"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.47d6e256d584": {
+  "nb": "Alle typer",
+  "en": "All types",
+  "oversatt": "모든 유형"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.4dbfeca9604e": {
+  "nb": "Alle koblinger",
+  "en": "All links",
+  "oversatt": "모든 링크"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.5d720587ddf1": {
+  "nb": "Prosjektet",
+  "en": "The project",
+  "oversatt": "프로젝트"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.6108fc62ecb8": {
+  "nb": "Alle bidragsytere",
+  "en": "All contributors",
+  "oversatt": "모든 기여자"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.711df01c1a37": {
+  "nb": "Alle datoer",
+  "en": "All dates",
+  "oversatt": "모든 날짜"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.84361d3af8ee": {
+  "nb": "Siste 30 dager",
+  "en": "Last 30 days",
+  "oversatt": "최근 30일"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.989e3f54b491": {
+  "nb": "Video",
+  "en": "Video",
+  "oversatt": "비디오"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.9a5d2d7cf450": {
+  "nb": "Ikke knyttet",
+  "en": "Not linked",
+  "oversatt": "연결되지 않음"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.a5e63605fdb4": {
+  "nb": "Knyttet til ressurs eller scene",
+  "en": "Linked to an asset or scene",
+  "oversatt": "에셋 또는 씬에 연결됨"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.c9dbc4dcd875": {
+  "nb": "Siste døgn",
+  "en": "Last 24 hours",
+  "oversatt": "최근 24시간"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.option.faadb340a673": {
+  "nb": "Siste 7 dager",
+  "en": "Last 7 days",
+  "oversatt": "최근 7일"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.p.48b9bc9c073e": {
+  "nb": "Ingen filer fra mobil ennå. Bruk «Importer fra mobil» på prosjektsiden eller kameraikonet i en ressurs.",
+  "en": "No files from mobile yet. Use “Import from mobile” on the project page or the camera icon in an asset.",
+  "oversatt": "아직 모바일에서 가져온 파일이 없습니다. 프로젝트 페이지의 '모바일에서 가져오기' 또는 에셋의 카메라 아이콘을 사용하세요."
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.p.4930d9390487": {
+  "nb": "Alt som er tatt eller valgt på mobil – også av andre via delte lenker. Bilder tatt for en ressurs er lagt inn som nye versjoner (ikke godkjent).",
+  "en": "Everything taken or chosen on a phone – also by others through shared links. Pictures taken for an asset have been added as new versions (not approved).",
+  "oversatt": "휴대폰에서 촬영하거나 선택한 모든 항목(공유 링크를 통해 다른 사람이 올린 항목 포함)입니다. 에셋용으로 촬영한 사진은 새 버전(미승인)으로 추가되었습니다."
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.p.4da285fc2cec": {
+  "nb": "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).",
+  "en": "The database is missing mobile import. It must be updated (migration 0035).",
+  "oversatt": "데이터베이스에 모바일 가져오기 기능이 없습니다. 업데이트해야 합니다(마이그레이션 0035)."
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.p.9e7714526f7c": {
+  "nb": "Ingen filer passer med filteret.",
+  "en": "No files match the filter.",
+  "oversatt": "필터와 일치하는 파일이 없습니다."
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.p.a227602b2f19": {
+  "nb": " · delt lenke",
+  "en": " · shared link",
+  "oversatt": " · 공유 링크"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.span.36cd2dc8aaa7": {
+  "nb": "Film for scenen",
+  "en": "Film for the scene",
+  "oversatt": "씬용 영상"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.title.852693d9a3e1": {
+  "nb": "Skjul (filen og koblingene beholdes)",
+  "en": "Hide (the file and links are kept)",
+  "oversatt": "숨기기 (파일 및 링크는 유지됨)"
+ },
+ "app-mobile-mobile-import-library.mobile-import-library.title.feb70fb17044": {
+  "nb": "Vis igjen",
+  "en": "Show again",
+  "oversatt": "다시 표시"
+ },
+ "app-mobile-mobile-import-library.session-list.aria-label.bacd3536f52d": {
+  "nb": "Aktive lenker",
+  "en": "Active links",
+  "oversatt": "활성 링크"
+ },
+ "app-mobile-mobile-import-library.session-list.button.59da93eea68c": {
+  "nb": "Tilbakekall",
+  "en": "Revoke",
+  "oversatt": "취소"
+ },
+ "app-mobile-mobile-import-library.session-list.h3.bacd3536f52d": {
+  "nb": "Aktive lenker",
+  "en": "Active links",
+  "oversatt": "활성 링크"
+ },
+ "app-mobile-mobile-import-library.session-list.set-err.c116e415f3d9": {
+  "nb": "Du kan bare tilbakekalle dine egne QR-koder (eieren kan alle).",
+  "en": "You can only revoke your own QR codes (the owner can revoke all).",
+  "oversatt": "본인의 QR 코드만 취소할 수 있습니다(소유자는 모두 취소 가능)."
+ },
+ "app-mobile-mobile-import-library.session-list.span.0cb88709352f": {
+  "nb": "QR-kode",
+  "en": "QR code",
+  "oversatt": "QR 코드"
+ },
+ "app-mobile-mobile-import-library.session-list.span.14006ed8019d": {
+  "nb": "Prosjektet",
+  "en": "The project",
+  "oversatt": "프로젝트"
+ },
+ "app-mobile-mobile-import-library.session-list.span.4d5ff15aef41": {
+  "nb": "{files_count} filer",
+  "en": "{files_count} files",
+  "oversatt": "{files_count}개 파일"
+ },
+ "app-mobile-mobile-import-library.session-list.span.5aefceca8d07": {
+  "nb": "Delt lenke",
+  "en": "Shared link",
+  "oversatt": "공유 링크"
+ },
+ "app-mobile-mobile-import-library.session-list.span.7efacefcf5e0": {
+  "nb": "1 fil",
+  "en": "1 file",
+  "oversatt": "파일 1개"
+ },
+ "app-mobile-mobile-import-library.session-list.span.c2a19c2744e2": {
+  "nb": "til {value1}",
+  "en": "until {value1}",
+  "oversatt": "{value1}까지"
+ },
+ "app-mobile-mobile-page.mobile-page.aria-label.6f75c5f9dc18": {
+  "nb": "Henter …",
+  "en": "Loading …",
+  "oversatt": "불러오는 중 …"
+ },
+ "app-mobile-mobile-page.mobile-page.h1.c3aad59fb0f5": {
+  "nb": "Prosjektet",
+  "en": "The project",
+  "oversatt": "프로젝트"
+ },
+ "app-mobile-mobile-page.mobile-page.hint.8b6416086462": {
+  "nb": "Bilde etter bilde – sendes automatisk",
+  "en": "One after another – sent automatically",
+  "oversatt": "연속 촬영 – 자동으로 전송됨"
+ },
+ "app-mobile-mobile-page.mobile-page.label.2093f4055cfb": {
+  "nb": "Navnet ditt (valgfritt)",
+  "en": "Your name (optional)",
+  "oversatt": "이름 (선택 사항)"
+ },
+ "app-mobile-mobile-page.mobile-page.label.5788fd736553": {
+  "nb": "Ta bilder",
+  "en": "Take pictures",
+  "oversatt": "사진 촬영"
+ },
+ "app-mobile-mobile-page.mobile-page.label.c3ce9f6e925d": {
+  "nb": "Velg video",
+  "en": "Choose video",
+  "oversatt": "동영상 선택"
+ },
+ "app-mobile-mobile-page.mobile-page.label.cc9bbe80a022": {
+  "nb": "Velg bilder",
+  "en": "Choose pictures",
+  "oversatt": "사진 선택"
+ },
+ "app-mobile-mobile-page.mobile-page.label.da08e380f532": {
+  "nb": "Ta opp video",
+  "en": "Record video",
+  "oversatt": "동영상 녹화"
+ },
+ "app-mobile-mobile-page.mobile-page.label.e9269b3edefb": {
+  "nb": "Velg lydfiler",
+  "en": "Choose audio files",
+  "oversatt": "오디오 파일 선택"
+ },
+ "app-mobile-mobile-page.mobile-page.p.3c59d68146da": {
+  "nb": "Lenken gjelder til {value1}",
+  "en": "The link is valid until {value1}",
+  "oversatt": "링크 유효 기간: {value1}까지"
+ },
+ "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
+  "nb": "Last opp til Animatic Studio",
+  "en": "Upload to Animatic Studio",
+  "oversatt": "Animatic Studio에 업로드"
+ },
+ "app-mobile-mobile-page.mobile-page.p.cfc6f3f6eaa9": {
+  "nb": "Du er invitert til å sende inn",
+  "en": "You are invited to send in",
+  "oversatt": "제출 초대를 받았습니다"
+ },
+ "app-mobile-mobile-page.mobile-page.p.d344bf9b9045": {
+  "nb": "Fra {from} · ",
+  "en": "From {from} · ",
+  "oversatt": "{from} 님으로부터 · "
+ },
+ "app-mobile-mobile-page.mobile-page.p.d8a5dbfe574a": {
+  "nb": "Filene lagres ikke på telefonen i dette vinduet. Ikke lukk siden før alt er sendt.",
+  "en": "The files are not kept on the phone in this window. Do not close the page until everything is sent.",
+  "oversatt": "이 창에서는 휴대폰에 파일이 저장되지 않습니다. 전송이 완료될 때까지 페이지를 닫지 마세요."
+ },
+ "app-mobile-mobile-page.mobile-page.queue-add.c1fb4610e044": {
+  "nb": "Bilde {n}.jpg",
+  "en": "Picture {n}.jpg",
+  "oversatt": "사진 {n}.jpg"
+ },
+ "app-mobile-mobile-page.queue-list.aria-label.f96134cf464a": {
+  "nb": "Dine filer",
+  "en": "Your files",
+  "oversatt": "내 파일"
+ },
+ "app-mobile-mobile-page.queue-list.h2.42af69203fa2": {
+  "nb": "sendt",
+  "en": "sent",
+  "oversatt": "전송됨"
+ },
+ "app-mobile-mobile-page.queue-list.h2.f96134cf464a": {
+  "nb": "Dine filer",
+  "en": "Your files",
+  "oversatt": "내 파일"
+ },
+ "app-mobile-mobile-page.queue-tile.aria-label.23d0f8859898": {
+  "nb": "Feilet",
+  "en": "Failed",
+  "oversatt": "실패"
+ },
+ "app-mobile-mobile-page.queue-tile.aria-label.6fec569fcf3e": {
+  "nb": "I kø",
+  "en": "Queued",
+  "oversatt": "대기 중"
+ },
+ "app-mobile-mobile-page.queue-tile.aria-label.708b930cd1f8": {
+  "nb": "Sendt",
+  "en": "Sent",
+  "oversatt": "전송됨"
+ },
+ "app-mobile-mobile-page.queue-tile.aria-label.8676fe5a4c87": {
+  "nb": "Sendes",
+  "en": "Sending",
+  "oversatt": "전송 중"
+ },
+ "app-mobile-mobile-page.queue-tile.button.27aa076f0fdc": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-mobile-mobile-page.quick-camera.aria-label.d2402c0a18ef": {
+  "nb": "Ta bilde",
+  "en": "Take picture",
+  "oversatt": "사진 촬영"
+ },
+ "app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c": {
+  "nb": "Ferdig",
+  "en": "Done",
+  "oversatt": "완료"
+ },
+ "app-mobile-mobile-page.quick-camera.set-error.27dd10b8f10d": {
+  "nb": "Nettleseren gir ikke tilgang til kameraet her. Bruk «Velg bilder» i stedet.",
+  "en": "The browser does not give access to the camera here. Use “Choose pictures” instead.",
+  "oversatt": "이 브라우저에서는 카메라에 접근할 수 없습니다. 대신 '사진 선택'을 사용하세요."
+ },
+ "app-mobile-mobile-page.quick-camera.set-error.55678955401e": {
+  "nb": "Fikk ikke bruke kameraet. Gi tillatelse i nettleseren, eller bruk «Velg bilder».",
+  "en": "Could not use the camera. Allow it in the browser, or use “Choose pictures”.",
+  "oversatt": "카메라를 사용할 수 없습니다. 브라우저에서 권한을 허용하거나 '사진 선택'을 사용하세요."
+ },
+ "app-mobile-mobile-page.quick-camera.span.08ffddadb4d3": {
+  "nb": "{busy} sendes",
+  "en": "{busy} sending",
+  "oversatt": "{busy}개 전송 중"
+ },
+ "app-mobile-mobile-page.quick-camera.span.130e0ae7ec9c": {
+  "nb": "{sent} sendt",
+  "en": "{sent} sent",
+  "oversatt": "{sent}개 전송됨"
+ },
+ "app-mobile-mobile-page.quick-camera.span.9489a31f8b7b": {
+  "nb": "{count} tatt",
+  "en": "{count} taken",
+  "oversatt": "{count}개 촬영됨"
+ },
+ "app-mobile-mobile-page.share-button.button.99e3105dec94": {
+  "nb": "Del lenke",
+  "en": "Share link",
+  "oversatt": "링크 공유"
+ },
+ "app-mobile-mobile-page.share-button.p.1e0be1e60984": {
+  "nb": "Andre kan ta opp og sende lyd hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
+  "en": "Others can record and send audio here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
+  "oversatt": "다른 사용자가 계정 없이도 여기에 오디오를 녹음하고 전송할 수 있습니다. 자신이 전송한 항목만 볼 수 있으며, 7일 동안 유효하고 프로젝트에서 언제든 중단할 수 있습니다."
+ },
+ "app-mobile-mobile-page.share-button.p.62630d14dd8d": {
+  "nb": "Andre kan sende inn bilder og video hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
+  "en": "Others can send pictures and video here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
+  "oversatt": "다른 사용자가 계정 없이도 여기에 사진과 비디오를 전송할 수 있습니다. 자신이 전송한 항목만 볼 수 있으며, 7일 동안 유효하고 프로젝트에서 언제든 중단할 수 있습니다."
+ },
+ "app-mobile-mobile-page.share.set-msg.5bd04ec339d2": {
+  "nb": "Lenken er kopiert.",
+  "en": "The link has been copied.",
+  "oversatt": "링크가 복사되었습니다."
+ },
+ "app-mobile-mobile-page.share.set-msg.a225248ddb7e": {
+  "nb": "Kopier lenken under.",
+  "en": "Copy the link below.",
+  "oversatt": "아래 링크를 복사하세요."
+ },
+ "app-mobile-mobile-page.text.message.624aef06af2d": {
+  "nb": "Ta opp lyd til Animatic Studio: {label}",
+  "en": "Record audio for Animatic Studio: {label}",
+  "oversatt": "Animatic Studio용 오디오 녹음: {label}"
+ },
+ "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
+  "nb": "Send bilder og video til Animatic Studio: {label}",
+  "en": "Send pictures and video to Animatic Studio: {label}",
+  "oversatt": "Animatic Studio로 사진 및 비디오 전송: {label}"
+ },
+ "app-mobile-mouth-shape-capture.confirm.set-error.17d2c3892754": {
+  "nb": "Bildet kunne ikke sendes",
+  "en": "The image could not be sent",
+  "oversatt": "이미지를 전송할 수 없습니다"
+ },
+ "app-mobile-mouth-shape-capture.label.label.996955ff337f": {
+  "nb": "Flytt Y",
+  "en": "Move Y",
+  "oversatt": "Y 이동"
+ },
+ "app-mobile-mouth-shape-capture.label.label.a5b8b512fa39": {
+  "nb": "Flytt X",
+  "en": "Move X",
+  "oversatt": "X 이동"
+ },
+ "app-mobile-mouth-shape-capture.label.label.d51c258d1682": {
+  "nb": "Rotasjon",
+  "en": "Rotation",
+  "oversatt": "회전"
+ },
+ "app-mobile-mouth-shape-capture.label.label.d571cbee54ad": {
+  "nb": "Zoom",
+  "en": "Zoom",
+  "oversatt": "확대/축소"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.alt.0717ee88f750": {
+  "nb": "Forhåndsvisning",
+  "en": "Preview",
+  "oversatt": "미리보기"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.alt.9b203899a3a2": {
+  "nb": "Referansebilde",
+  "en": "Reference image",
+  "oversatt": "참조 이미지"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.button.58453435899f": {
+  "nb": "Bekreft og send",
+  "en": "Confirm and send",
+  "oversatt": "확인 및 전송"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.button.9042ef0b2a73": {
+  "nb": "Tilpass rammen",
+  "en": "Fit frame",
+  "oversatt": "프레임 맞추기"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.button.c3c17126cc7a": {
+  "nb": "Fotografer eller velg bilde",
+  "en": "Take or choose a picture",
+  "oversatt": "사진 촬영 또는 선택"
+ },
+ "app-mobile-mouth-shape-capture.mouth-shape-capture.button.dd856c2b6496": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-mobile-qr-code.qr-code.alt.ca9cbae89f84": {
+  "nb": "QR-kode – skann med kameraet på mobilen",
+  "en": "QR code – scan with your phone's camera",
+  "oversatt": "QR 코드 – 스마트폰 카메라로 스캔하세요"
+ },
+ "app-mobile-qr-code.qr-code.aria-label.c2588a248f23": {
+  "nb": "Lager QR-koden …",
+  "en": "Making the QR code …",
+  "oversatt": "QR 코드 생성 중…"
+ },
+ "app-mobile-upload-queue.error.error.d5611629dacb": {
+  "nb": "Ingen forbindelse. Prøv igjen.",
+  "en": "No connection. Try again.",
+  "oversatt": "연결되지 않았습니다. 다시 시도하세요."
+ },
+ "app-mobile-use-mobile-imports.name.name.5a86c1d87d6b": {
+  "nb": "Fra mobil",
+  "en": "From mobile",
+  "oversatt": "모바일에서"
+ },
+ "app-mobile-use-mobile-imports.note.message.fcb453aa7747": {
+  "nb": "Fra mobil ({who})",
+  "en": "From mobile ({who})",
+  "oversatt": "모바일에서 ({who})"
+ },
+ "app-mobile-use-mobile-imports.note.note.fcb453aa7747": {
+  "nb": "Fra mobil ({who})",
+  "en": "From mobile ({who})",
+  "oversatt": "모바일에서 ({who})"
+ },
+ "app-mobile-use-mobile-imports.r.cmds-run-and-wait.ffd1c10488b3": {
+  "nb": "Bilde fra mobil",
+  "en": "Image from mobile",
+  "oversatt": "모바일 이미지"
+ },
+ "app-mobile-use-mobile-imports.r.cmds-run-and-wait.ffd1c10488b3.2": {
+  "nb": "Bilde fra mobil",
+  "en": "Image from mobile",
+  "oversatt": "모바일 이미지"
+ },
+ "app-mobile-use-mobile-imports.saved.save-room-tone.a23826be7c1a": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-mobile-use-mobile-imports.who.message.e35c0eb1e51e": {
+  "nb": "mobil",
+  "en": "mobile",
+  "oversatt": "모바일"
+ },
+ "app-mobile-use-mobile-imports.who.message.e35c0eb1e51e.2": {
+  "nb": "mobil",
+  "en": "mobile",
+  "oversatt": "모바일"
+ },
+ "app-print.arrow": {
+  "nb": "Kameraets opp",
+  "en": "Camera up",
+  "oversatt": "카메라 상단 기준"
+ },
+ "app-print.asset": {
+  "nb": "Karakter eller objekt",
+  "en": "Character or object",
+  "oversatt": "캐릭터 또는 오브젝트"
+ },
+ "app-print.bottom": {
+  "nb": "Bunnmarg (mm)",
+  "en": "Bottom margin (mm)",
+  "oversatt": "하단 여백 (mm)"
+ },
+ "app-print.busy": {
+  "nb": "Lager PDF …",
+  "en": "Creating PDF …",
+  "oversatt": "PDF 생성 중…"
+ },
+ "app-print.calibration": {
+  "nb": "Kalibreringsmålestokk",
+  "en": "Calibration ruler",
+  "oversatt": "보정 눈금자"
+ },
+ "app-print.create": {
+  "nb": "Lag PDF",
+  "en": "Create PDF",
+  "oversatt": "PDF 만들기"
+ },
+ "app-print.custom": {
+  "nb": "Egendefinert",
+  "en": "Custom",
+  "oversatt": "사용자 지정"
+ },
+ "app-print.date": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-print.empty": {
+  "nb": "Ingen målesett er lagret for denne figuren og framen.",
+  "en": "No measurement sets are saved for this figure and frame.",
+  "oversatt": "이 피규어와 프레임에 저장된 측정 세트가 없습니다."
+ },
+ "app-print.failure": {
+  "nb": "PDF-en kunne ikke lages. Kontroller utskriftsvalgene og prøv igjen.",
+  "en": "The PDF could not be created. Check the print settings and try again.",
+  "oversatt": "PDF를 생성할 수 없습니다. 인쇄 설정을 확인하고 다시 시도하세요."
+ },
+ "app-print.fields": {
+  "nb": "Informasjonsfelt",
+  "en": "Information fields",
+  "oversatt": "정보 필드"
+ },
+ "app-print.film": {
+  "nb": "Filmtittel og produksjon",
+  "en": "Film title and production",
+  "oversatt": "영화 제목 및 프로덕션"
+ },
+ "app-print.frame": {
+  "nb": "{seconds} s + {frames} f · frame {absolute}",
+  "en": "{seconds} s + {frames} f · frame {absolute}",
+  "oversatt": "{seconds}초 + {frames}프레임 · 프레임 {absolute}"
+ },
+ "app-print.height": {
+  "nb": "Arkhøyde (mm)",
+  "en": "Paper height (mm)",
+  "oversatt": "용지 높이 (mm)"
+ },
+ "app-print.landscape": {
+  "nb": "Liggende",
+  "en": "Landscape",
+  "oversatt": "가로"
+ },
+ "app-print.left": {
+  "nb": "Venstremarg (mm)",
+  "en": "Left margin (mm)",
+  "oversatt": "왼쪽 여백 (mm)"
+ },
+ "app-print.length": {
+  "nb": "Målestokklengde",
+  "en": "Ruler length",
+  "oversatt": "눈금자 길이"
+ },
+ "app-print.orientation": {
+  "nb": "Retning",
+  "en": "Orientation",
+  "oversatt": "방향"
+ },
+ "app-print.pages": {
+  "nb": "{count} ark · 10 mm overlapp ved deling",
+  "en": "{count} sheets · 10 mm overlap when tiled",
+  "oversatt": "{count}장 · 분할 시 10mm 겹침"
+ },
+ "app-print.paper": {
+  "nb": "Papir",
+  "en": "Paper",
+  "oversatt": "용지"
+ },
+ "app-print.plate": {
+  "nb": "Platenivå",
+  "en": "Plate level",
+  "oversatt": "플레이트 레벨"
+ },
+ "app-print.portrait": {
+  "nb": "Stående",
+  "en": "Portrait",
+  "oversatt": "세로"
+ },
+ "app-print.qr": {
+  "nb": "Plass til QR",
+  "en": "Reserve QR space",
+  "oversatt": "QR 공간 확보"
+ },
+ "app-print.reference": {
+  "nb": "Teknisk referanseutskrift",
+  "en": "Technical reference print",
+  "oversatt": "기술 참조 인쇄"
+ },
+ "app-print.right": {
+  "nb": "Høyremarg (mm)",
+  "en": "Right margin (mm)",
+  "oversatt": "오른쪽 여백 (mm)"
+ },
+ "app-print.scene": {
+  "nb": "Scene",
+  "en": "Scene",
+  "oversatt": "씬"
+ },
+ "app-print.size": {
+  "nb": "Fysisk størrelse",
+  "en": "Physical size",
+  "oversatt": "실제 크기"
+ },
+ "app-print.time": {
+  "nb": "Tid og absolutt frame",
+  "en": "Time and absolute frame",
+  "oversatt": "시간 및 절대 프레임"
+ },
+ "app-print.title": {
+  "nb": "PDF-utskrift",
+  "en": "PDF printing",
+  "oversatt": "PDF 인쇄"
+ },
+ "app-print.top": {
+  "nb": "Toppmarg (mm)",
+  "en": "Top margin (mm)",
+  "oversatt": "위쪽 여백 (mm)"
+ },
+ "app-print.warning": {
+  "nb": "Skriv ut i 100 % / faktisk størrelse. «Tilpass til side» ødelegger kalibreringen.",
+  "en": "Print at 100% / actual size. “Fit to page” invalidates calibration.",
+  "oversatt": "100% / 실제 크기로 인쇄하세요. '페이지에 맞추기'를 사용하면 보정 값이 맞지 않게 됩니다."
+ },
+ "app-print.width": {
+  "nb": "Arkbredde (mm)",
+  "en": "Paper width (mm)",
+  "oversatt": "용지 너비 (mm)"
+ },
+ "app-project-rejected-text-notice.intro.message.1ea2cc01d541": {
+  "nb": "Teksten din ble ikke lagret fordi en tidligere endring feilet. Den er tatt vare på her:",
+  "en": "Your text was not saved because an earlier change failed. It is kept here:",
+  "oversatt": "이전 변경 사항 처리에 실패하여 텍스트가 저장되지 않았습니다. 작성한 내용은 여기에 보관되어 있습니다:"
+ },
+ "app-project-rejected-text-notice.intro.message.54438cd4c696": {
+  "nb": "Noen andre endret det samme samtidig, så teksten din ble ikke lagret. Deres versjon vises nå. Teksten din er tatt vare på her:",
+  "en": "Someone else changed the same thing at the same time, so your text was not saved. Their version is shown now. Your text is kept here:",
+  "oversatt": "동시에 다른 사용자가 동일한 항목을 변경하여 텍스트가 저장되지 않았습니다. 현재 해당 버전이 표시됩니다. 작성한 내용은 여기에 보관되어 있습니다:"
+ },
+ "app-project-rejected-text-notice.intro.message.a281a928a65e": {
+  "nb": "Teksten din ble ikke lagret. Den er tatt vare på her:",
+  "en": "Your text was not saved. It is kept here:",
+  "oversatt": "텍스트가 저장되지 않았습니다. 여기에 보관되어 있습니다:"
+ },
+ "app-project-rejected-text-notice.rejected-item.aria-label.1bedc520ab11": {
+  "nb": "Teksten din ble ikke lagret",
+  "en": "Your text was not saved",
+  "oversatt": "텍스트가 저장되지 않았습니다"
+ },
+ "app-project-rejected-text-notice.rejected-item.aria-label.1d653eb5ba10": {
+  "nb": "Lukk varselet",
+  "en": "Close the notice",
+  "oversatt": "알림 닫기"
+ },
+ "app-project-rejected-text-notice.rejected-item.aria-label.2fe8d352639e": {
+  "nb": "Teksten din",
+  "en": "Your text",
+  "oversatt": "입력한 텍스트"
+ },
+ "app-project-rejected-text-notice.rejected-item.aria-label.bd30935b718a": {
+  "nb": "Teksten som står nå",
+  "en": "The text as it reads now",
+  "oversatt": "현재 표시된 텍스트"
+ },
+ "app-project-rejected-text-notice.rejected-item.button.1be1638838ef": {
+  "nb": "Kopier teksten",
+  "en": "Copy the text",
+  "oversatt": "텍스트 복사"
+ },
+ "app-project-rejected-text-notice.rejected-item.button.325ef5f51448": {
+  "nb": "Prøv igjen med min tekst",
+  "en": "Try again with my text",
+  "oversatt": "내 텍스트로 다시 시도"
+ },
+ "app-project-rejected-text-notice.rejected-item.button.d9e0a43c813d": {
+  "nb": "Kopiert",
+  "en": "Copied",
+  "oversatt": "복사됨"
+ },
+ "app-project-rejected-text-notice.rejected-item.p.b2ff90f9a0ce": {
+  "nb": "Slik står linjen nå:",
+  "en": "This is how the line reads now:",
+  "oversatt": "현재 대사 내용:"
+ },
+ "app-project-rejected-text-notice.rejected-item.span.cbcc0a024b75": {
+  "nb": "Nettleseren tillot ikke kopiering. Merk teksten over og kopier den selv.",
+  "en": "The browser did not allow copying. Select the text above and copy it yourself.",
+  "oversatt": "브라우저에서 복사를 허용하지 않았습니다. 위의 텍스트를 선택한 후 직접 복사하세요."
+ },
+ "app-project-rejected-text-notice.rejected-item.title.59968396734c": {
+  "nb": "Kopier teksten du skrev til utklippstavlen",
+  "en": "Copy the text you wrote to the clipboard",
+  "oversatt": "작성한 텍스트를 클립보드에 복사"
+ },
+ "app-project-rejected-text-notice.rejected-item.title.798f938c56f7": {
+  "nb": "Lukk varselet (teksten forkastes)",
+  "en": "Close the notice (the text is discarded)",
+  "oversatt": "알림 닫기(텍스트는 삭제됨)"
+ },
+ "app-project-rejected-text-notice.rejected-item.title.97f9df50a2cf": {
+  "nb": "Legg teksten din oppå siste versjon av linjen. Den andres tekst kan fortsatt hentes med Angre.",
+  "en": "Put your text on top of the latest version of the line. The other text can still be restored with Undo.",
+  "oversatt": "최신 버전의 대사 위에 작성한 텍스트를 덮어씁니다. 다른 사람의 텍스트는 실행 취소로 다시 불러올 수 있습니다."
+ },
+ "app-project-use-commands.conflict-undo.message.b15a31c7cd3f": {
+  "nb": "Kan ikke angre: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
+  "en": "Cannot undo: someone else has changed the same thing afterwards. Their change has been kept.",
+  "oversatt": "실행 취소할 수 없음: 이후에 다른 사용자가 동일한 항목을 변경했습니다. 해당 변경 사항이 유지되었습니다."
+ },
+ "app-project-use-commands.done.fail.4e3270de049f": {
+  "nb": "Noen andre endret dette samtidig. Siste versjon er hentet – prøv igjen.",
+  "en": "Someone else changed this at the same time. The latest version has been fetched – try again.",
+  "oversatt": "다른 사용자가 동시에 이 항목을 변경했습니다. 최신 버전을 가져왔습니다. 다시 시도하세요."
+ },
+ "app-project-use-commands.done.fail.767f9794b133": {
+  "nb": "Endringen ble ikke lagret ({message}). Siste versjon er hentet.",
+  "en": "The change was not saved ({message}). The latest version has been fetched.",
+  "oversatt": "변경 사항이 저장되지 않았습니다({message}). 최신 버전을 가져왔습니다."
+ },
+ "app-project-use-commands.label.label.c88f7efd1c3c": {
+  "nb": "Egen versjon av scenen",
+  "en": "Own copy of the scene",
+  "oversatt": "씬의 자체 사본"
+ },
+ "app-project-use-commands.message.message.7d3a014eec1f": {
+  "nb": "Du har bare lesetilgang i dette prosjektet.",
+  "en": "You have read-only access to this project.",
+  "oversatt": "이 프로젝트에 대한 읽기 전용 접근 권한만 있습니다."
+ },
+ "app-project-use-commands.message.message.a0ff717da3c9": {
+  "nb": "Prosjektet er ikke lastet ennå.",
+  "en": "The project is not loaded yet.",
+  "oversatt": "프로젝트가 아직 로드되지 않았습니다."
+ },
+ "app-project-use-commands.message.message.e1ff01811ae3": {
+  "nb": "Kan ikke gjøre om: noen andre har endret det samme etterpå. Endringen deres er beholdt.",
+  "en": "Cannot redo: someone else has changed the same thing afterwards. Their change has been kept.",
+  "oversatt": "다시 실행할 수 없음: 이후에 다른 사용자가 동일한 항목을 변경했습니다. 해당 변경 사항이 유지되었습니다."
+ },
+ "app-project-use-commands.message.use-callback.f1243bbe5a7d": {
+  "nb": "Linjen finnes ikke lenger i siste versjon. Kopier teksten og lim den inn der den hører hjemme.",
+  "en": "The line no longer exists in the latest version. Copy the text and paste it where it belongs.",
+  "oversatt": "최신 버전에 해당 대사가 더 이상 존재하지 않습니다. 텍스트를 복사하여 원래 위치에 붙여넣으세요."
+ },
+ "app-project-use-commands.skipped.message.a32bdb4eb7ad": {
+  "nb": "Ikke lagret fordi en tidligere endring feilet. Siste versjon er hentet.",
+  "en": "Not saved because an earlier change failed. The latest version has been fetched.",
+  "oversatt": "이전 변경에 실패하여 저장되지 않았습니다. 최신 버전을 가져왔습니다."
+ },
+ "app-project-use-presence.name.name.3fbff1dfeba1": {
+  "nb": "Medlem",
+  "en": "Member",
+  "oversatt": "멤버"
+ },
+ "app-project-use-production.production-picker.aria-label.0d558dc6641a": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "프로덕션"
+ },
+ "app-project-use-production.production-picker.title.dad57cb9be2e": {
+  "nb": "Hvilken produksjon du arbeider med (hovedfilm, spinoff, trailer …)",
+  "en": "Which production you are working on (main film, spin-off, trailer …)",
+  "oversatt": "작업 중인 프로덕션(본편, 스핀오프, 예고편 등)"
+ },
+ "app-project-use-versions.query-fn.query-fn.608669a1fce1": {
+  "nb": "Versjonen finnes ikke",
+  "en": "The version does not exist",
+  "oversatt": "버전이 존재하지 않습니다"
+ },
+ "app-projects-backup-dialogs.backup-dialog.a.bd3f903a223e": {
+  "nb": "Lagre sikkerhetskopien",
+  "en": "Save the backup",
+  "oversatt": "백업 저장"
+ },
+ "app-projects-backup-dialogs.backup-dialog.aria-label.7cbee02d0e97": {
+  "nb": "Mediefiler",
+  "en": "Media files",
+  "oversatt": "미디어 파일"
+ },
+ "app-projects-backup-dialogs.backup-dialog.aria-label.a1b45009f8c3": {
+  "nb": "Alltid med",
+  "en": "Always included",
+  "oversatt": "항상 포함"
+ },
+ "app-projects-backup-dialogs.backup-dialog.button.673b03e714f2": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-backup-dialogs.backup-dialog.button.9066761217e2": {
+  "nb": "Last ned sikkerhetskopi",
+  "en": "Download backup",
+  "oversatt": "백업 다운로드"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.367c0533759e": {
+  "nb": "manusversjoner",
+  "en": "script versions",
+  "oversatt": "대본 버전"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.642b56fb7a1c": {
+  "nb": "filer",
+  "en": "files",
+  "oversatt": "파일"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.788d1e24d6e9": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.7c863dd5b5d9": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "씬"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.a595af30cbeb": {
+  "nb": "fil",
+  "en": "file",
+  "oversatt": "파일"
+ },
+ "app-projects-backup-dialogs.backup-dialog.count.ca3dddfa003f": {
+  "nb": "manusversjon",
+  "en": "script version",
+  "oversatt": "대본 버전"
+ },
+ "app-projects-backup-dialogs.backup-dialog.dialog-description.4b823ee2aa8b": {
+  "nb": "Hele prosjektet i én zip-fil som kan gjenopprettes senere, også i en annen konto. Formatet er dokumentert i filen LES-MEG.txt.",
+  "en": "The whole project in one zip file that can be restored later, including in another account. The format is documented in the file LES-MEG.txt.",
+  "oversatt": "다른 계정에서도 나중에 복원할 수 있는 하나의 zip 파일로 압축된 전체 프로젝트입니다. 형식은 LES-MEG.txt 파일에 문서화되어 있습니다."
+ },
+ "app-projects-backup-dialogs.backup-dialog.dialog-title.09f8b9ff432c": {
+  "nb": "Sikkerhetskopi av «",
+  "en": "Backup of “",
+  "oversatt": "다음의 백업: “"
+ },
+ "app-projects-backup-dialogs.backup-dialog.dialog-title.0ed362fb8349": {
+  "nb": "»",
+  "en": "”",
+  "oversatt": "”"
+ },
+ "app-projects-backup-dialogs.backup-dialog.h3.7cbee02d0e97": {
+  "nb": "Mediefiler",
+  "en": "Media files",
+  "oversatt": "미디어 파일"
+ },
+ "app-projects-backup-dialogs.backup-dialog.h3.a1b45009f8c3": {
+  "nb": "Alltid med",
+  "en": "Always included",
+  "oversatt": "항상 포함"
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.6bb7daa3ea14": {
+  "nb": "Prosjektet kunne ikke hentes:",
+  "en": "The project could not be fetched:",
+  "oversatt": "프로젝트를 가져올 수 없습니다:"
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.9c0eb089b058": {
+  "nb": "Prosjektet har ingen mediefiler.",
+  "en": "The project has no media files.",
+  "oversatt": "프로젝트에 미디어 파일이 없습니다."
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.9dac001f4c5a": {
+  "nb": "Henter prosjektet …",
+  "en": "Fetching the project …",
+  "oversatt": "프로젝트 가져오는 중…"
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.c120d86cfe80": {
+  "nb": "Manus med teksthistorikk",
+  "en": "Script with text history",
+  "oversatt": "텍스트 기록이 포함된 대본"
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.cea5346bf3cb": {
+  "nb": "(hvis nedlastingen ikke startet).",
+  "en": "(if the download did not start).",
+  "oversatt": "(다운로드가 시작되지 않은 경우)."
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.df41a8ddd9f1": {
+  "nb": "spinoffer, ressursbiblioteket, notater, 2D-scener med lag og kamera, lydklipp, monteringen (versjoner, deler og tidskoblinger) og historikken.",
+  "en": "spin-offs, the asset library, notes, 2D scenes with layers and camera, audio clips, the assembly (versions, parts and time links) and the history.",
+  "oversatt": "스핀오프, 에셋 라이브러리, 메모, 레이어와 카메라가 포함된 2D 씬, 오디오 클립, 편집(버전, 파트 및 시간 링크)과 히스토리."
+ },
+ "app-projects-backup-dialogs.backup-dialog.p.e140409fb7be": {
+  "nb": "Filer du ikke tar med, står i en liste i sikkerhetskopien. De vises som manglende hvis sikkerhetskopien gjenopprettes.",
+  "en": "Files you leave out are listed in the backup. They appear as missing if the backup is restored.",
+  "oversatt": "제외한 파일은 백업 내 목록에 기록됩니다. 백업을 복원할 때 누락된 것으로 표시됩니다."
+ },
+ "app-projects-backup-dialogs.backup-dialog.span.642b56fb7a1c": {
+  "nb": "filer",
+  "en": "files",
+  "oversatt": "파일"
+ },
+ "app-projects-backup-dialogs.backup-dialog.span.ae754690ed9e": {
+  "nb": " (eller bruk Chrome eller Edge, som lagrer rett til disk)",
+  "en": " (or use Chrome or Edge, which save straight to disk)",
+  "oversatt": " (또는 디스크에 바로 저장하는 Chrome이나 Edge 사용)"
+ },
+ "app-projects-backup-dialogs.backup-dialog.span.be644c34942a": {
+  "nb": "ta med færre mediefiler",
+  "en": "include fewer media files",
+  "oversatt": "미디어 파일 수를 줄여 포함"
+ },
+ "app-projects-backup-dialogs.backup-dialog.span.ecb35a1e7664": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-backup-dialogs.backup-dialog.span.ecb35a1e7664.2": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-backup-dialogs.missing-files": {
+  "nb": {
+   "one": "Sikkerhetskopien er laget, men {count} fil kunne ikke hentes (se MANGLER.txt i zip-filen).",
+   "other": "Sikkerhetskopien er laget, men {count} filer kunne ikke hentes (se MANGLER.txt i zip-filen)."
+  },
+  "en": {
+   "one": "The backup was made, but {count} file could not be fetched (see MANGLER.txt in the zip file).",
+   "other": "The backup was made, but {count} files could not be fetched (see MANGLER.txt in the zip file)."
+  },
+  "oversatt": {
+   "other": "백업이 생성되었지만 파일 {count}개를 가져올 수 없습니다(zip 파일 내 MANGLER.txt 참조)."
+  }
+ },
+ "app-projects-backup-dialogs.pick.set-name.3d29a8c95113": {
+  "nb": "(gjenopprettet)",
+  "en": "(restored)",
+  "oversatt": "(복원됨)"
+ },
+ "app-projects-backup-dialogs.pick.string.f0de42118e78": {
+  "nb": "Prosjekt",
+  "en": "Project",
+  "oversatt": "프로젝트"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.aria-label.21223d9313a0": {
+  "nb": "Innhold",
+  "en": "Contents",
+  "oversatt": "내용"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.aria-label.c45eef12c9f1": {
+  "nb": "Velg sikkerhetskopi",
+  "en": "Choose backup",
+  "oversatt": "백업 선택"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.button.1167cc6f5f1d": {
+  "nb": "Stopp",
+  "en": "Stop",
+  "oversatt": "중지"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.button.bf08d00abc99": {
+  "nb": "Gjenopprett som nytt prosjekt",
+  "en": "Restore as new project",
+  "oversatt": "새 프로젝트로 복원"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.button.e05ae208c3ef": {
+  "nb": "Prøv igjen",
+  "en": "Try again",
+  "oversatt": "다시 시도"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.button.e17e2c6431ea": {
+  "nb": "Åpne prosjektet",
+  "en": "Open the project",
+  "oversatt": "프로젝트 열기"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.dialog-description.fd56b9b2a3e3": {
+  "nb": "Sikkerhetskopien blir et nytt prosjekt der du er eier. Ingen eksisterende prosjekter endres. Medlemmer og invitasjoner tas ikke med.",
+  "en": "The backup becomes a new project that you own. No existing projects are changed. Members and invitations are not included.",
+  "oversatt": "백업은 사용자가 소유한 새 프로젝트로 생성됩니다. 기존 프로젝트는 변경되지 않습니다. 멤버 및 초대는 포함되지 않습니다."
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.dialog-title.ee27fd229e81": {
+  "nb": "Gjenopprett fra sikkerhetskopi",
+  "en": "Restore from backup",
+  "oversatt": "백업에서 복원"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.03b8cc5f3b82": {
+  "nb": "mediefiler",
+  "en": "media files",
+  "oversatt": "미디어 파일"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.2850a6686f26": {
+  "nb": "filer",
+  "en": "files",
+  "oversatt": "파일"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.61b5f8a874dc": {
+  "nb": "mangler i zip-filen.",
+  "en": "missing from the zip file.",
+  "oversatt": "zip 파일에서 누락되었습니다."
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.658f66d6507b": {
+  "nb": "fil er",
+  "en": "file is",
+  "oversatt": "파일이"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.6919ca2d10bf": {
+  "nb": "Laget",
+  "en": "Created",
+  "oversatt": "생성됨"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.8d1adb1df27b": {
+  "nb": "ikke med i sikkerhetskopien og vil mangle i det nye prosjektet.",
+  "en": "not in the backup and will be missing from the new project.",
+  "oversatt": "백업에 포함되지 않았으며 새 프로젝트에서 누락됩니다."
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.a623110d33d5": {
+  "nb": "fil",
+  "en": "file",
+  "oversatt": "파일"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.b0162457925d": {
+  "nb": "Leser sikkerhetskopien …",
+  "en": "Reading the backup …",
+  "oversatt": "백업 읽는 중…"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.p.b4e5cc1e8b68": {
+  "nb": "filer er",
+  "en": "files are",
+  "oversatt": "파일들이"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.04f73a80efee": {
+  "nb": "ressurs",
+  "en": "asset",
+  "oversatt": "에셋"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.11f7ddf52c0c": {
+  "nb": "2D-scene",
+  "en": "2D scene",
+  "oversatt": "2D 씬"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.2642495fac41": {
+  "nb": "manusversjon",
+  "en": "script version",
+  "oversatt": "대본 버전"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.42e6beedbad5": {
+  "nb": "2D-scener",
+  "en": "2D scenes",
+  "oversatt": "2D 씬"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.53c00155edd9": {
+  "nb": "lydklipp",
+  "en": "audio clips",
+  "oversatt": "오디오 클립"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.7259382d6098": {
+  "nb": "scener",
+  "en": "scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.7b07049be748": {
+  "nb": "manusversjoner",
+  "en": "script versions",
+  "oversatt": "대본 버전"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.7bb657a3134c": {
+  "nb": "scene",
+  "en": "scene",
+  "oversatt": "씬"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.81672a85cab5": {
+  "nb": "manusblokker",
+  "en": "script blocks",
+  "oversatt": "대본 블록"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.87954b56a395": {
+  "nb": "lydklipp",
+  "en": "audio clip",
+  "oversatt": "오디오 클립"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.9d8051e71119": {
+  "nb": "importerte filmer",
+  "en": "imported films",
+  "oversatt": "가져온 동영상"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.bfcf43fee1f3": {
+  "nb": "manusblokk",
+  "en": "script block",
+  "oversatt": "대본 블록"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.c810136f38ab": {
+  "nb": "importert film",
+  "en": "imported film",
+  "oversatt": "가져온 동영상"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.plural.db8fecfc7849": {
+  "nb": "ressurser",
+  "en": "assets",
+  "oversatt": "에셋"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.span.6860264728c5": {
+  "nb": "Lagrer manus, scener og montering …",
+  "en": "Saving the script, scenes and assembly …",
+  "oversatt": "대본, 씬 및 편집(어셈블리) 저장 중…"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.span.6edbd9149566": {
+  "nb": "Navn på det nye prosjektet",
+  "en": "Name of the new project",
+  "oversatt": "새 프로젝트 이름"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.span.88ee4de992f7": {
+  "nb": "Lager det nye prosjektet …",
+  "en": "Creating the new project …",
+  "oversatt": "새 프로젝트 생성 중…"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.span.e034e3e59109": {
+  "nb": "Sikkerhetskopi (zip)",
+  "en": "Backup (zip)",
+  "oversatt": "백업 (zip)"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.span.f257a1be973b": {
+  "nb": "Laster opp filer: {files} av {totalFiles} · {value3} av {value4}",
+  "en": "Uploading files: {files} of {totalFiles} · {value3} of {value4}",
+  "oversatt": "파일 업로드 중: {files}/{totalFiles} · {value3}/{value4}"
+ },
+ "app-projects-backup-dialogs.restore-backup-dialog.title.550fd57d46a5": {
+  "nb": "Stopper etter filen som lastes opp nå",
+  "en": "Stops after the file being uploaded now",
+  "oversatt": "현재 업로드 중인 파일 이후에 중지됩니다"
+ },
+ "app-projects-backup-dialogs.text.text.0f5fe9783d54": {
+  "nb": "Nedlastingen ble avbrutt.",
+  "en": "The download was cancelled.",
+  "oversatt": "다운로드가 취소되었습니다."
+ },
+ "app-projects-backup-dialogs.text.text.1540462f7768": {
+  "nb": "Sikkerhetskopien er laget, men {length} {value2} kunne ikke hentes (se MANGLER.txt i zip-filen).",
+  "en": "The backup was made, but {length} {value2} could not be fetched (see MANGLER.txt in the zip file).",
+  "oversatt": "백업이 생성되었으나 {length}개의 {value2}을(를) 가져올 수 없습니다(zip 파일의 MANGLER.txt 참조)."
+ },
+ "app-projects-backup-dialogs.text.text.2db3611d8b9f": {
+  "nb": "Sikkerhetskopien «{name}» er laget.",
+  "en": "The backup “{name}” was made.",
+  "oversatt": "백업 “{name}”이(가) 생성되었습니다."
+ },
+ "app-projects-backup-dialogs.text.text.67da105d8104": {
+  "nb": " Prosjektet «{value1}» er laget, men ikke ferdig: trykk «Prøv igjen» for å fortsette der den stoppet, eller slett det fra prosjektlisten.",
+  "en": " The project “{value1}” has been created but is not finished: press “Try again” to continue where it stopped, or delete it from the project list.",
+  "oversatt": " 프로젝트 “{value1}”이(가) 생성되었으나 완료되지 않았습니다. 중단된 위치부터 계속하려면 “다시 시도”를 누르거나, 프로젝트 목록에서 삭제하세요."
+ },
+ "app-projects-backup-dialogs.text.text.7294fa933471": {
+  "nb": "«{value1}» er gjenopprettet som nytt prosjekt.",
+  "en": "“{value1}” has been restored as a new project.",
+  "oversatt": "“{value1}”이(가) 새 프로젝트로 복원되었습니다."
+ },
+ "app-projects-backup-dialogs.text.text.8fdb69f1fd36": {
+  "nb": "Gjenopprettingen ble stoppet. Prosjektet «{value1}» er laget, men ikke ferdig. Trykk «Prøv igjen» for å fortsette der den stoppet, eller slett det fra prosjektlisten.",
+  "en": "The restore was stopped. The project “{value1}” has been created but is not finished. Press “Try again” to continue where it stopped, or delete it from the project list.",
+  "oversatt": "복원이 중단되었습니다. 프로젝트 “{value1}”이(가) 생성되었으나 완료되지 않았습니다. 중단된 위치부터 계속하려면 “다시 시도”를 누르거나, 프로젝트 목록에서 삭제하세요."
+ },
+ "app-projects-backup-dialogs.text.text.a5550b2f64cd": {
+  "nb": "Sikkerhetskopien kunne ikke lages: {message}",
+  "en": "The backup could not be made: {message}",
+  "oversatt": "백업을 생성할 수 없습니다: {message}"
+ },
+ "app-projects-backup-dialogs.text.text.e3db24475fe8": {
+  "nb": "Sikkerhetskopien er laget, men den kan ikke gjenopprettes slik den er ({problem}) Lag en ny når ingen andre redigerer, og si ifra hvis det skjer igjen.",
+  "en": "The backup was made, but it cannot be restored as it is ({problem}). Make a new one when nobody else is editing, and let us know if it happens again.",
+  "oversatt": "백업이 생성되었으나 현재 상태로는 복원할 수 없습니다({problem}). 다른 사용자가 편집 중이지 않을 때 새로 생성해 주시고, 문제가 지속되면 문의해 주세요."
+ },
+ "app-projects-backup.open-backup-file.message.23132bc02467": {
+  "nb": "Zip-filen er ikke en sikkerhetskopi fra Animatic Studio.",
+  "en": "The zip file is not a backup from Animatic Studio.",
+  "oversatt": "해당 zip 파일은 Animatic Studio 백업 파일이 아닙니다."
+ },
+ "app-projects-backup.open-backup-file.message.58d265d9f15e": {
+  "nb": "Sikkerhetskopien har for mye prosjektdata til å gjenopprettes her. Si ifra, så lager vi en løsning.",
+  "en": "The backup has too much project data to be restored here. Let us know and we will make a solution.",
+  "oversatt": "백업의 프로젝트 데이터가 너무 커서 여기서 복원할 수 없습니다. 문의해 주시면 해결 방법을 안내해 드리겠습니다."
+ },
+ "app-projects-backup.open-backup-file.message.8a6d7a4fd333": {
+  "nb": "Sikkerhetskopien er skadet (dataene kan ikke leses).",
+  "en": "The backup is damaged (the data cannot be read).",
+  "oversatt": "백업 파일이 손상되었습니다(데이터를 읽을 수 없습니다)."
+ },
+ "app-projects-backup.restore-from-backup.message.252a5b000bc1": {
+  "nb": "Filen {value1} kunne ikke lastes opp ({message}).",
+  "en": "The file {value1} could not be uploaded ({message}).",
+  "oversatt": "파일 {value1}을(를) 업로드할 수 없습니다({message})."
+ },
+ "app-projects-backup.restore-from-backup.message.28b9b1e05005": {
+  "nb": "Det nye prosjektet mangler hovedfilm.",
+  "en": "The new project is missing a main film.",
+  "oversatt": "새 프로젝트에 메인 필름이 누락되었습니다."
+ },
+ "app-projects-backup.restore-from-backup.message.4d81669ae2f8": {
+  "nb": "Avbrutt",
+  "en": "Cancelled",
+  "oversatt": "취소됨"
+ },
+ "app-projects-backup.restore-from-backup.message.ca82853739e0": {
+  "nb": "Prosjektet kunne ikke opprettes ({message}).",
+  "en": "The project could not be created ({message}).",
+  "oversatt": "프로젝트를 생성할 수 없습니다({message})."
+ },
+ "app-projects-duration-history.duration-history.caption.9675669e0a72": {
+  "nb": "Forventet filmlengde over tid, per manusversjon og lagret estimat",
+  "en": "Expected film length over time, per script version and saved estimate",
+  "oversatt": "대본 버전 및 저장된 예상치에 따른 예상 영화 길이 변화"
+ },
+ "app-projects-duration-history.duration-history.p.801d84037dac": {
+  "nb": "Ingen lagrede manusversjoner eller estimater ennå. Lagre en versjon i manuset («Versjoner») eller trykk «Lagre estimat», så vises utviklingen her.",
+  "en": "No saved script versions or estimates yet. Save a version in the script (“Versions”) or press “Save estimate”, and the trend will appear here.",
+  "oversatt": "아직 저장된 대본 버전이나 예상치가 없습니다. 대본(“버전”)에서 버전을 저장하거나 “예상치 저장”을 누르면 여기에 추이가 표시됩니다."
+ },
+ "app-projects-duration-history.duration-history.p.b724613016f8": {
+  "nb": "Henter manusversjoner og lagrede estimater …",
+  "en": "Loading script versions and saved estimates …",
+  "oversatt": "대본 버전 및 저장된 예상치 불러오는 중…"
+ },
+ "app-projects-duration-history.duration-history.p.e7634b57c2bd": {
+  "nb": "Lagrede estimater viser tallene slik de var, med antakelsene som ble brukt da (2D-scenenes lengde, planlagt lengde og bekreftet lengde på den tiden).",
+  "en": "Saved estimates show the figures as they were, with the assumptions used at the time (2D scene length, planned length and confirmed length at that time).",
+  "oversatt": "저장된 예상치는 당시 사용된 가정(2D 씬 길이, 계획된 길이 및 당시 확정된 길이)을 바탕으로 한 수치를 보여줍니다."
+ },
+ "app-projects-duration-history.duration-history.p.e7e784c1b5c3": {
+  "nb": " Versjoner uten lagret estimat er regnet på nytt fra versjonens tekst med dagens antakelser; «Forventet» bruker da filmens lengde der versjonen hadde ferdig film, og bekreftet lengde er ukjent.",
+  "en": " Versions without a saved estimate have been recalculated from the text of the version using today's assumptions. “Expected” then uses the film's length where that version had a finished film, and the confirmed length is unknown.",
+  "oversatt": " 저장된 예상치가 없는 버전은 현재의 가정을 사용하여 해당 버전의 텍스트로부터 다시 계산되었습니다. 이때 “예상”은 해당 버전에 완성된 영화가 있었던 경우 영화 길이를 사용하며, 확정된 길이는 알 수 없음으로 처리됩니다."
+ },
+ "app-projects-duration-history.duration-history.p.ec62413cc246": {
+  "nb": "Historikken kunne ikke hentes:",
+  "en": "The history could not be loaded:",
+  "oversatt": "기록을 불러올 수 없습니다:"
+ },
+ "app-projects-duration-history.duration-history.span.113593968a12": {
+  "nb": "Lengde",
+  "en": "Length",
+  "oversatt": "길이"
+ },
+ "app-projects-duration-history.duration-history.span.7782f9bd0835": {
+  "nb": "dagens tall",
+  "en": "current figures",
+  "oversatt": "현재 수치"
+ },
+ "app-projects-duration-history.duration-history.th.659b21e03544": {
+  "nb": "Scener",
+  "en": "Scenes",
+  "oversatt": "씬"
+ },
+ "app-projects-duration-history.duration-history.th.727401ac6426": {
+  "nb": "Endring",
+  "en": "Change",
+  "oversatt": "변경 사항"
+ },
+ "app-projects-duration-history.duration-history.th.75490d69e079": {
+  "nb": "Forventet",
+  "en": "Expected",
+  "oversatt": "예상"
+ },
+ "app-projects-duration-history.duration-history.th.7bd92445b486": {
+  "nb": "Dato",
+  "en": "Date",
+  "oversatt": "날짜"
+ },
+ "app-projects-duration-history.duration-history.th.912987706b55": {
+  "nb": "Versjon",
+  "en": "Version",
+  "oversatt": "버전"
+ },
+ "app-projects-duration-history.duration-history.th.adaa246f67aa": {
+  "nb": "Estimat",
+  "en": "Estimate",
+  "oversatt": "예상치"
+ },
+ "app-projects-duration-history.duration-history.th.ae756f92c960": {
+  "nb": "Bekreftet",
+  "en": "Confirmed",
+  "oversatt": "확정됨"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.00cb23c5e696": {
+  "nb": "Åpne i monteringen",
+  "en": "Open in assembly",
+  "oversatt": "편집(어셈블리)에서 열기"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.097dc4d3fe39": {
+  "nb": "Åpne i manuset",
+  "en": "Open in script",
+  "oversatt": "대본에서 열기"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.17efb8523bd6": {
+  "nb": "Oversettelse",
+  "en": "Translation",
+  "oversatt": "번역"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.510d15a17cf3": {
+  "nb": "Åpne i sceneeditoren",
+  "en": "Open in scene editor",
+  "oversatt": "씬 에디터에서 열기"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.7ebd73a4eb1e": {
+  "nb": "Manusendringer etter at 2D-scene eller film ble laget",
+  "en": "Script changes made after the 2D scene or film was made",
+  "oversatt": "2D 씬 또는 영화 제작 이후 대본 변경 사항"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.9a23f91f2271": {
+  "nb": "Karakter, objekt eller sted",
+  "en": "Character, object or location",
+  "oversatt": "인물, 사물 또는 장소"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.a3d01af35e76": {
+  "nb": "Søk i scenehoder",
+  "en": "Search scene headings",
+  "oversatt": "씬 헤딩 검색"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.b95f6bd700f7": {
+  "nb": "Ferdig {value1}, bekreftet {value2}, estimert {value3}",
+  "en": "Done {value1}, confirmed {value2}, estimated {value3}",
+  "oversatt": "완료 {value1}, 확정 {value2}, 예상 {value3}"
+ },
+ "app-projects-duration-overview.duration-overview.aria-label.cfcb3947b799": {
+  "nb": "Produksjon",
+  "en": "Production",
+  "oversatt": "프로덕션"
+ },
+ "app-projects-duration-overview.duration-overview.button.0894f98c0165": {
+  "nb": "Tilbakestill",
+  "en": "Reset",
+  "oversatt": "초기화"
+ },
+ "app-projects-duration-overview.duration-overview.button.88515c4f1e99": {
+  "nb": "Lagre estimat",
+  "en": "Save estimate",
+  "oversatt": "예상치 저장"
+ },
+ "app-projects-duration-overview.duration-overview.button.c74fa45323b9": {
+  "nb": "Nullstill filter",
+  "en": "Reset filter",
+  "oversatt": "필터 초기화"
+ },
+ "app-projects-duration-overview.duration-overview.button.e3f8dc1d3d8f": {
+  "nb": "Manusendringer",
+  "en": "Script changes",
+  "oversatt": "대본 변경 사항"
+ },
+ "app-projects-duration-overview.duration-overview.button.ed24c3eddc15": {
+  "nb": "Utvikling over tid",
+  "en": "Trend over time",
+  "oversatt": "시간 경과에 따른 변화 추이"
+ },
+ "app-projects-duration-overview.duration-overview.cmds-run.2d653a83fa04": {
+  "nb": "Planlagt lengde {value1}",
+  "en": "Planned length {value1}",
+  "oversatt": "계획된 길이 {value1}"
+ },
+ "app-projects-duration-overview.duration-overview.cmds-run.607f28aa589e": {
+  "nb": "Fjern planlagt lengde",
+  "en": "Remove planned length",
+  "oversatt": "계획된 길이 제거"
+ },
+ "app-projects-duration-overview.duration-overview.h2.032e43f1de26": {
+  "nb": "Varighet og produksjonsstatus",
+  "en": "Duration and production status",
+  "oversatt": "재생 시간 및 프로덕션 상태"
+ },
+ "app-projects-duration-overview.duration-overview.l-planlagt-lengde-for-scene-r-production-number-planned-length-for-scene-r-production-number-trim.e19867526e18": {
+  "nb": "Planlagt lengde for scene {value1}",
+  "en": "Planned length for scene {value1}",
+  "oversatt": "씬 {value1}의 계획된 길이"
+ },
+ "app-projects-duration-overview.duration-overview.label.80689e368251": {
+  "nb": "Bare med ressursendringer",
+  "en": "Only with asset changes",
+  "oversatt": "에셋 변경 사항만"
+ },
+ "app-projects-duration-overview.duration-overview.label.a9a667046098": {
+  "nb": "Bare med manusendringer",
+  "en": "Only with script changes",
+  "oversatt": "대본 변경 사항만"
+ },
+ "app-projects-duration-overview.duration-overview.num.83fb305f54bb": {
+  "nb": "Taletempo",
+  "en": "Speech rate",
+  "oversatt": "말하기 속도"
+ },
+ "app-projects-duration-overview.duration-overview.num.96f23c709476": {
+  "nb": "Per scene (etablering)",
+  "en": "Per scene (establishing)",
+  "oversatt": "씬당 (설정)"
+ },
+ "app-projects-duration-overview.duration-overview.num.a4f7c9601ee3": {
+  "nb": "ord/min",
+  "en": "words/min",
+  "oversatt": "단어/분"
+ },
+ "app-projects-duration-overview.duration-overview.num.ae41f60ad450": {
+  "nb": "Korteste scene",
+  "en": "Shortest scene",
+  "oversatt": "가장 짧은 씬"
+ },
+ "app-projects-duration-overview.duration-overview.num.cc27c279cb12": {
+  "nb": "sek",
+  "en": "sec",
+  "oversatt": "초"
+ },
+ "app-projects-duration-overview.duration-overview.num.cc27c279cb12.2": {
+  "nb": "sek",
+  "en": "sec",
+  "oversatt": "초"
+ },
+ "app-projects-duration-overview.duration-overview.num.cc27c279cb12.3": {
+  "nb": "sek",
+  "en": "sec",
+  "oversatt": "초"
+ },
+ "app-projects-duration-overview.duration-overview.num.f71c2b061fe1": {
+  "nb": "Handling per linje",
+  "en": "Action per line",
+  "oversatt": "라인당 액션"
+ },
+ "app-projects-duration-overview.duration-overview.option.2e237b6028d0": {
+  "nb": "Alle karakterer, objekter og steder",
+  "en": "All characters, objects and locations",
+  "oversatt": "모든 인물, 사물 및 장소"
+ },
+ "app-projects-duration-overview.duration-overview.option.4b8df452c048": {
+  "nb": "ikke ferdig oversatt",
+  "en": "not yet translated",
+  "oversatt": "미번역됨"
+ },
+ "app-projects-duration-overview.duration-overview.option.76f97f9b88ea": {
+  "nb": "Alle språk",
+  "en": "All languages",
+  "oversatt": "모든 언어"
+ },
+ "app-projects-duration-overview.duration-overview.option.bd1830e08a24": {
+  "nb": "Alle statuser",
+  "en": "All statuses",
+  "oversatt": "모든 상태"
+ },
+ "app-projects-duration-overview.duration-overview.p.0e1c518e21c6": {
+  "nb": " · for lite historikk ennå, bygger på standardantakelsene",
+  "en": " · not enough history yet, based on the standard assumptions",
+  "oversatt": " · 기록이 아직 충분하지 않아 기본 가정치를 기반으로 합니다"
+ },
+ "app-projects-duration-overview.duration-overview.p.1c00218d593b": {
+  "nb": "Estimatene er anslag ut fra mengden dialog og handling og er usikre. Du kan sette en planlagt lengde per scene (Per scene → Plan); den brukes også i monteringen. Begge erstattes av den faktiske lengden når 2D-scenen får satt lengde eller filmen er lagt inn. Hver scene telles én gang.",
+  "en": "The estimates are rough figures based on the amount of dialogue and action, and are uncertain. You can set a planned length per scene (Per scene → Plan); it is also used in the assembly. Both are replaced by the actual length once the 2D scene has a length or the film is added. Each scene is counted once.",
+  "oversatt": "예상치는 대사와 액션의 양을 기반으로 한 대략적인 수치이며 불확실할 수 있습니다. 씬별로 계획된 길이를 설정할 수 있으며(씬별 → 계획), 이 값은 편집(어셈블리)에서도 사용됩니다. 둘 다 2D 씬에 길이가 지정되거나 영상이 추가되면 실제 길이로 대체됩니다. 각 씬은 한 번만 계산됩니다."
+ },
+ "app-projects-duration-overview.duration-overview.p.2d8ad1b0b3f4": {
+  "nb": "Antakelser for estimatet",
+  "en": "Assumptions for the estimate",
+  "oversatt": "예상치 산출 기준"
+ },
+ "app-projects-duration-overview.duration-overview.p.38145e4d4e98": {
+  "nb": "Lagres ikke før databasen er oppdatert (migrasjon 0028).",
+  "en": "Not saved until the database is updated (migration 0028).",
+  "oversatt": "데이터베이스가 업데이트되기 전에는 저장되지 않습니다(마이그레이션 0028)."
+ },
+ "app-projects-duration-overview.duration-overview.p.3886da1e2d94": {
+  "nb": " · {inactive} deaktiverte er ikke med",
+  "en": " · {inactive} deactivated are not included",
+  "oversatt": " · 비활성화된 {inactive}개는 포함되지 않음"
+ },
+ "app-projects-duration-overview.duration-overview.p.4f4199fb5fb1": {
+  "nb": "Lagres for hele prosjektet og gjelder for alle.",
+  "en": "Saved for the whole project and applies to everyone.",
+  "oversatt": "프로젝트 전체에 저장되며 모든 사용자에게 적용됩니다."
+ },
+ "app-projects-duration-overview.duration-overview.p.704f856e2c5a": {
+  "nb": "aktive scener",
+  "en": "active scenes",
+  "oversatt": "활성 씬"
+ },
+ "app-projects-duration-overview.duration-overview.p.885059f12e51": {
+  "nb": "Forventet lengde nå",
+  "en": "Expected length now",
+  "oversatt": "현재 예상 길이"
+ },
+ "app-projects-duration-overview.duration-overview.p.ac51ac4d2fb4": {
+  "nb": "Du har bare lesetilgang: endringene gjelder bare her og lagres ikke.",
+  "en": "You have read-only access: the changes apply here only and are not saved.",
+  "oversatt": "읽기 전용 권한입니다. 변경 사항은 여기에만 적용되며 저장되지 않습니다."
+ },
+ "app-projects-duration-overview.duration-overview.p.c75714294bf6": {
+  "nb": "sider",
+  "en": "pages",
+  "oversatt": "페이지"
+ },
+ "app-projects-duration-overview.duration-overview.p.ff0c4803eec4": {
+  "nb": ", basert på {basedOnScenes} {value2} og {basedOnLines} {value4} med lyd",
+  "en": ", based on {basedOnScenes} finished {value2} and {basedOnLines} {value4} with audio",
+  "oversatt": ", 완료된 {basedOnScenes}{value2} 및 오디오가 포함된 {basedOnLines}{value4} 기반"
+ },
+ "app-projects-duration-overview.duration-overview.placeholder.4e17d46988e8": {
+  "nb": "Søk i scenehoder …",
+  "en": "Search scene headings …",
+  "oversatt": "씬 헤딩 검색…"
+ },
+ "app-projects-duration-overview.duration-overview.span.0b4efbea045a": {
+  "nb": "Prognose fra historikk:",
+  "en": "Forecast from history:",
+  "oversatt": "기록 기반 예측:"
+ },
+ "app-projects-duration-overview.duration-overview.span.13ce142f412b": {
+  "nb": "Fortsatt estimert",
+  "en": "Still estimated",
+  "oversatt": "여전히 예상됨"
+ },
+ "app-projects-duration-overview.duration-overview.span.1be46ca01daf": {
+  "nb": " (bare beregnet – endrer ikke manus eller scenelengder)",
+  "en": " (computed only – does not change the script or scene lengths)",
+  "oversatt": " (계산된 값만 해당 – 대본이나 씬 길이를 변경하지 않음)"
+ },
+ "app-projects-duration-overview.duration-overview.span.2c5d3f9f8ca3": {
+  "nb": "Bekreftet ellers",
+  "en": "Otherwise confirmed",
+  "oversatt": "그 외 확인됨"
+ },
+ "app-projects-duration-overview.duration-overview.span.a94792d60af1": {
+  "nb": "Ferdig film",
+  "en": "Finished film",
+  "oversatt": "완성된 필름"
+ },
+ "app-projects-duration-overview.duration-overview.span.c0bc5cfc4d81": {
+  "nb": "av",
+  "en": "of",
+  "oversatt": "/"
+ },
+ "app-projects-duration-overview.duration-overview.span.c5a06f2f294e": {
+  "nb": "Åpne",
+  "en": "Open",
+  "oversatt": "열기"
+ },
+ "app-projects-duration-overview.duration-overview.span.dcdbf11ad01c": {
+  "nb": "usikkert",
+  "en": "uncertain",
+  "oversatt": "불확실함"
+ },
+ "app-projects-duration-overview.duration-overview.stat.00dfa39cfafe": {
+  "nb": "estimat og plan for resten",
+  "en": "estimate and plan for the rest",
+  "oversatt": "나머지 예상치 및 계획"
+ },
+ "app-projects-duration-overview.duration-overview.stat.0226ed21e086": {
+  "nb": "Gjenstående",
+  "en": "Remaining",
+  "oversatt": "남은 분량"
+ },
+ "app-projects-duration-overview.duration-overview.stat.15eec3bc22ef": {
+  "nb": "fra 2D-animatic og film",
+  "en": "from 2D animatic and film",
+  "oversatt": "2D 애니매틱 및 필름에서 가져옴"
+ },
+ "app-projects-duration-overview.duration-overview.stat.635f0ef0ae09": {
+  "nb": "alle aktive scener",
+  "en": "all active scenes",
+  "oversatt": "모든 활성 씬"
+ },
+ "app-projects-duration-overview.duration-overview.stat.6629c7135c2f": {
+  "nb": "Bekreftet",
+  "en": "Confirmed",
+  "oversatt": "확인됨"
+ },
+ "app-projects-duration-overview.duration-overview.stat.890edb769c37": {
+  "nb": "alle aktive scener · {uncertainScenes} usikre, spenn {value2}–{value3}",
+  "en": "all active scenes · {uncertainScenes} uncertain, range {value2}–{value3}",
+  "oversatt": "모든 활성 씬 · 불확실한 씬 {uncertainScenes}개, 범위 {value2}–{value3}"
+ },
+ "app-projects-duration-overview.duration-overview.stat.9a1c1c026ede": {
+  "nb": "Bare manusestimat",
+  "en": "Script estimate only",
+  "oversatt": "대본 예상치만 해당"
+ },
+ "app-projects-duration-overview.duration-overview.td.e659f6ee5595": {
+  "nb": "Ingen scener passer filteret.",
+  "en": "No scenes match the filter.",
+  "oversatt": "필터와 일치하는 씬이 없습니다."
+ },
+ "app-projects-duration-overview.duration-overview.th.7fecce771d97": {
+  "nb": "Sider",
+  "en": "Pages",
+  "oversatt": "페이지"
+ },
+ "app-projects-duration-overview.duration-overview.th.83c9f8976374": {
+  "nb": "Nr.",
+  "en": "No.",
+  "oversatt": "번호"
+ },
+ "app-projects-duration-overview.duration-overview.th.c7c1d8cef916": {
+  "nb": "Estimat",
+  "en": "Estimate",
+  "oversatt": "예상치"
+ },
+ "app-projects-duration-overview.duration-overview.th.ee4b9ebc1dc0": {
+  "nb": "Nå",
+  "en": "Now",
+  "oversatt": "현재"
+ },
+ "app-projects-duration-overview.duration-overview.title.2878323e34dd": {
+  "nb": "Manus",
+  "en": "Script",
+  "oversatt": "대본"
+ },
+ "app-projects-duration-overview.duration-overview.title.46f425e77de1": {
+  "nb": "Åpne scenen i manuset",
+  "en": "Open the scene in the script",
+  "oversatt": "대본에서 씬 열기"
+ },
+ "app-projects-duration-overview.duration-overview.title.69bf08e1d5d9": {
+  "nb": "Scener der 2D-scenen viser eldre bilder enn de som nå er godkjent",
+  "en": "Scenes where the 2D scene shows older images than the ones now approved",
+  "oversatt": "2D 씬에 현재 승인된 이미지보다 오래된 이미지가 표시되는 씬"
+ },
+ "app-projects-duration-overview.duration-overview.title.780649703fc0": {
+  "nb": "Montering",
+  "en": "Assembly",
+  "oversatt": "편집 (어셈블리)"
+ },
+ "app-projects-duration-overview.duration-overview.title.e172b22a9146": {
+  "nb": "Lagre dagens tall og antakelser, så de kan sammenlignes senere (de regnes aldri på nytt)",
+  "en": "Save today's figures and assumptions so they can be compared later (they are never recalculated)",
+  "oversatt": "나중에 비교할 수 있도록 오늘의 수치와 가정을 저장합니다(재계산되지 않음)"
+ },
+ "app-projects-duration-overview.duration-overview.title.f779d2f4447e": {
+  "nb": "Sceneeditor",
+  "en": "Scene editor",
+  "oversatt": "씬 편집기"
+ },
+ "app-projects-duration-overview.duration-overview.title.fd6465b4f96e": {
+  "nb": "Usikkert estimat: scenen har lite eller ingen dialog, så lengden kan bli fra {value1} til {value2}. Sett en planlagt lengde når du vet mer.",
+  "en": "Uncertain estimate: the scene has little or no dialogue, so the length may be from {value1} to {value2}. Set a planned length when you know more.",
+  "oversatt": "불확실한 예상치: 이 씬에는 대사가 거의 없거나 전혀 없으므로 길이가 {value1}에서 {value2} 사이가 될 수 있습니다. 더 명확해지면 계획 길이를 설정하세요."
+ },
+ "app-projects-duration-overview.err.cmds-run-silent.859d1508b51c": {
+  "nb": "Antakelser for varighetsestimatet",
+  "en": "Assumptions for the duration estimate",
+  "oversatt": "재생 시간 예상 가정치"
+ },
+ "app-projects-duration-overview.forecast-basis": {
+  "nb": {
+   "one": ", basert på {scenes} ferdig scene og {lines}",
+   "other": ", basert på {scenes} ferdige scener og {lines}"
+  },
+  "en": {
+   "one": ", based on {scenes} finished scene and {lines}",
+   "other": ", based on {scenes} finished scenes and {lines}"
+  },
+  "oversatt": {
+   "other": ", 완성된 씬 {scenes}개 및 {lines} 기준"
+  }
+ },
+ "app-projects-duration-overview.forecast-basis-lines": {
+  "nb": {
+   "one": "{count} replikk med lyd",
+   "other": "{count} replikker med lyd"
+  },
+  "en": {
+   "one": "{count} line with audio",
+   "other": "{count} lines with audio"
+  },
+  "oversatt": {
+   "other": "오디오가 포함된 대사 {count}개"
+  }
+ },
+ "app-projects-duration-overview.on-error.set-estimate-note.6c3c6d6451ce": {
+  "nb": "Estimatet ble ikke lagret: {value1}",
+  "en": "The estimate was not saved: {value1}",
+  "oversatt": "예상치가 저장되지 않았습니다: {value1}"
+ },
+ "app-projects-duration-overview.on-success.set-estimate-note.3d3017f53675": {
+  "nb": "Estimatet er lagret og knyttet til den nyeste manusversjonen.",
+  "en": "The estimate is saved and linked to the newest script version.",
+  "oversatt": "예상치가 저장되었으며 최신 대본 버전에 연결되었습니다."
+ },
+ "app-projects-duration-overview.on-success.set-estimate-note.6a6048a8e9b3": {
+  "nb": "Estimatet er lagret.",
+  "en": "The estimate is saved.",
+  "oversatt": "예상치가 저장되었습니다."
+ },
+ "app-projects-duration-overview.planned-input.title.4ae4ec2051c8": {
+  "nb": "Planlagt lengde (m:ss eller sekunder). Tomt felt fjerner planen.",
+  "en": "Planned length (m:ss or seconds). An empty field removes the plan.",
+  "oversatt": "계획된 길이(분:초 또는 초 단위). 빈 칸으로 두면 계획이 삭제됩니다."
+ },
+ "app-projects-duration-overview.save-assumptions.set-assumption-error.ea6c6c7ffc13": {
+  "nb": "Ugyldig verdi – antakelsene er ikke lagret.",
+  "en": "Invalid value – the assumptions have not been saved.",
+  "oversatt": "잘못된 값 – 가정치가 저장되지 않았습니다."
+ },
+ "app-projects-export-history.export-history.button.7b7f29e97f13": {
+  "nb": "Tidligere eksporter",
+  "en": "Earlier exports",
+  "oversatt": "이전 내보내기 목록"
+ },
+ "app-projects-export-history.export-history.p.013654029550": {
+  "nb": "Henter …",
+  "en": "Loading …",
+  "oversatt": "불러오는 중 …"
+ },
+ "app-projects-export-history.export-history.p.5712e2679acd": {
+  "nb": "Eksportene kunne ikke hentes:",
+  "en": "The exports could not be loaded:",
+  "oversatt": "내보내기 목록을 불러올 수 없습니다:"
+ },
+ "app-projects-export-history.export-history.p.74fb6ed988a6": {
+  "nb": "Ingen eksporter er registrert ennå.",
+  "en": "No exports have been recorded yet.",
+  "oversatt": "아직 기록된 내보내기가 없습니다."
+ },
+ "app-projects-global-style-text.err.cmds-run.725b6bc7ba81": {
+  "nb": "Lag den globale beskrivelsen",
+  "en": "Make the global description",
+  "oversatt": "글로벌 설명 작성"
+ },
+ "app-projects-global-style-text.err.cmds-run.db04ed2474bc": {
+  "nb": "Endre den globale beskrivelsen",
+  "en": "Change the global description",
+  "oversatt": "글로벌 설명 변경"
+ },
+ "app-projects-global-style-text.err.cmds-run.e78996ab910f": {
+  "nb": "Global beskrivelse satt sammen av feltene igjen",
+  "en": "Global description put together from the fields again",
+  "oversatt": "필드에서 다시 조합된 전체 설명"
+ },
+ "app-projects-global-style-text.global-style-text.aria-label.ec2563bc4ab8": {
+  "nb": "Generell beskrivelse for hele prosjektet",
+  "en": "General description for the whole project",
+  "oversatt": "프로젝트 전체 일반 설명"
+ },
+ "app-projects-global-style-text.global-style-text.button.1b699d4efaea": {
+  "nb": "Tilbake til feltene",
+  "en": "Back to the fields",
+  "oversatt": "필드로 돌아가기"
+ },
+ "app-projects-global-style-text.global-style-text.button.4cc4a94131b4": {
+  "nb": "Rediger …",
+  "en": "Edit …",
+  "oversatt": "편집…"
+ },
+ "app-projects-global-style-text.global-style-text.button.60beae1563f6": {
+  "nb": "Lagre for hele prosjektet",
+  "en": "Save for the whole project",
+  "oversatt": "프로젝트 전체에 저장"
+ },
+ "app-projects-global-style-text.global-style-text.button.f37f45af9edb": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-global-style-text.global-style-text.label.ec2563bc4ab8": {
+  "nb": "Generell beskrivelse for hele prosjektet",
+  "en": "General description for the whole project",
+  "oversatt": "프로젝트 전체 일반 설명"
+ },
+ "app-projects-global-style-text.global-style-text.p.d0e4e3b22454": {
+  "nb": "Endres globalt for hele prosjektet: alle AI-bilder og -videoer bruker denne teksten fra nå av.",
+  "en": "Changed globally for the whole project: all AI images and videos use this text from now on.",
+  "oversatt": "프로젝트 전체에 일괄 적용됨: 이제부터 모든 AI 이미지 및 비디오에 이 텍스트가 사용됩니다."
+ },
+ "app-projects-global-style-text.global-style-text.pre.17a64c1afd9b": {
+  "nb": "Prosjektet har ingen visuell stil ennå. Fyll ut «Filmens visuelle stil» på prosjektoversikten, eller skriv en beskrivelse her.",
+  "en": "The project has no visual style yet. Fill in “The film's visual style” on the project overview, or write a description here.",
+  "oversatt": "프로젝트에 아직 시각적 스타일이 없습니다. 프로젝트 개요에서 '영화의 시각적 스타일'을 입력하거나 여기에 설명을 작성하세요."
+ },
+ "app-projects-global-style-text.global-style-text.span.4e49826f64ae": {
+  "nb": "(satt sammen av filmens visuelle stil)",
+  "en": "(put together from the film's visual style)",
+  "oversatt": "(영화의 시각적 스타일에서 조합됨)"
+ },
+ "app-projects-global-style-text.global-style-text.span.68d55ce4d416": {
+  "nb": "(redigert tekst)",
+  "en": "(edited text)",
+  "oversatt": "(편집된 텍스트)"
+ },
+ "app-projects-global-style-text.global-style-text.span.f98d478e6a6c": {
+  "nb": "Samlet beskrivelse som sendes til AI",
+  "en": "Combined description sent to AI",
+  "oversatt": "AI로 전송되는 통합 설명"
+ },
+ "app-projects-global-style-text.global-style-text.title.04e3a9bc65d8": {
+  "nb": "Rediger teksten. Endringen gjelder hele prosjektet.",
+  "en": "Edit the text. The change applies to the whole project.",
+  "oversatt": "텍스트를 편집하세요. 변경 사항은 프로젝트 전체에 적용됩니다."
+ },
+ "app-projects-global-style-text.global-style-text.title.53e47c7e97cc": {
+  "nb": "Bruk teksten som settes sammen av feltene i «Filmens visuelle stil» igjen",
+  "en": "Use the text put together from the fields in “The film's visual style” again",
+  "oversatt": "'영화의 시각적 스타일' 필드에서 조합된 텍스트 다시 사용"
+ },
+ "app-projects-members-section.members-section.aria-label.19fbf4bf8df9": {
+  "nb": "Trekk tilbake invitasjonen til {email}",
+  "en": "Withdraw the invitation to {email}",
+  "oversatt": "{email} 님에게 보낸 초대 취소"
+ },
+ "app-projects-members-section.members-section.aria-label.358a0ca3a361": {
+  "nb": "Ventende invitasjoner",
+  "en": "Pending invitations",
+  "oversatt": "대기 중인 초대"
+ },
+ "app-projects-members-section.members-section.aria-label.3d6366f03169": {
+  "nb": "Fjerne {value1}?",
+  "en": "Remove {value1}?",
+  "oversatt": "{value1} 님을 제거하시겠습니까?"
+ },
+ "app-projects-members-section.members-section.aria-label.913be2b69e25": {
+  "nb": "Rolle i invitasjonen til {email}",
+  "en": "Role in the invitation to {email}",
+  "oversatt": "{email} 님 초대 시 부여할 역할"
+ },
+ "app-projects-members-section.members-section.aria-label.94397bf095ab": {
+  "nb": "Rolle for {value1}",
+  "en": "Role for {value1}",
+  "oversatt": "{value1} 님의 역할"
+ },
+ "app-projects-members-section.members-section.aria-label.9d23f8499914": {
+  "nb": "Fjern {value1} fra prosjektet",
+  "en": "Remove {value1} from the project",
+  "oversatt": "프로젝트에서 {value1} 님 제거"
+ },
+ "app-projects-members-section.members-section.aria-label.9fbc1b4b4753": {
+  "nb": "Medlemmer",
+  "en": "Members",
+  "oversatt": "멤버"
+ },
+ "app-projects-members-section.members-section.button.bee2a90b889c": {
+  "nb": "Avbryt",
+  "en": "Cancel",
+  "oversatt": "취소"
+ },
+ "app-projects-members-section.members-section.button.dbe888c1ec1d": {
+  "nb": "Trekk tilbake",
+  "en": "Withdraw",
+  "oversatt": "철회"
+ },
+ "app-projects-members-section.members-section.button.de3a176abf52": {
+  "nb": "Fjern",
+  "en": "Remove",
+  "oversatt": "제거"
+ },
+ "app-projects-members-section.members-section.h3.edd1ca021fa3": {
+  "nb": "Invitert, ikke tatt imot ennå",
+  "en": "Invited, not yet accepted",
+  "oversatt": "초대됨, 아직 수락하지 않음"
+ },
+ "app-projects-members-section.members-section.option.2a2faad8fa5d": {
+  "nb": "Kommentator",
+  "en": "Commenter",
+  "oversatt": "댓글 작성자"
+ },
+ "app-projects-members-section.members-section.option.32bc26b65c5f": {
+  "nb": "Redaktør",
+  "en": "Editor",
+  "oversatt": "편집자"
+ },
+ "app-projects-members-section.members-section.option.b7d2fc552a29": {
+  "nb": "Leser",
+  "en": "Viewer",
+  "oversatt": "뷰어"
+ },
+ "app-projects-members-section.members-section.span.19f6997c4992": {
+  "nb": "gjelder til",
+  "en": "valid until",
+  "oversatt": "유효 기간:"
+ },
+ "app-projects-members-section.members-section.span.e12b865c8de1": {
+  "nb": "Fjerne {value1} fra prosjektet? Det hen har laget, blir værende.",
+  "en": "Remove {value1} from the project? Anything they have made will stay.",
+  "oversatt": "프로젝트에서 {value1} 님을 제거하시겠습니까? 해당 사용자가 작업한 내용은 그대로 유지됩니다."
+ },
+ "app-projects-members-section.members-section.span.f5709f3b14c5": {
+  "nb": "(deg)",
+  "en": "(you)",
+  "oversatt": "(나)"
+ },
+ "app-projects-members-section.members-section.title.7798df79b6a6": {
+  "nb": "Fjern fra prosjektet (det personen har laget, blir værende)",
+  "en": "Remove from the project (anything they have made will stay)",
+  "oversatt": "프로젝트에서 제거 (작업한 내용은 그대로 유지됨)"
+ },
+ "app-projects-members-section.members-section.title.7b5d7c392cc1": {
+  "nb": "Prosjektet må ha minst én eier. Gjør en annen til eier først.",
+  "en": "The project must have at least one owner. Make someone else the owner first.",
+  "oversatt": "프로젝트에는 최소 한 명의 소유자가 있어야 합니다. 먼저 다른 사용자를 소유자로 지정하세요."
+ },
+ "app-projects-members-section.members-section.window-confirm.f37dca41d803": {
+  "nb": "Vil du gjøre deg selv til {value1}? Da kan du ikke lenger endre roller.",
+  "en": "Do you want to make yourself {value1}? Then you can no longer change roles.",
+  "oversatt": "본인의 역할을 {value1}(으)로 변경하시겠습니까? 변경 후에는 더 이상 역할을 수정할 수 없습니다."
+ },
+ "app-projects-members-section.message.message.9bf4e1d2979e": {
+  "nb": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The database cannot change roles yet. Contact the administrator to update Animatic Studio.",
+  "oversatt": "데이터베이스에서 아직 역할을 변경할 수 없습니다. Animatic Studio를 업데이트하려면 관리자에게 문의하세요."
+ },
+ "app-projects-members-section.message.message.f5b9e1478f2b": {
+  "nb": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio.",
+  "en": "The database cannot remove members yet. Contact the administrator to update Animatic Studio.",
+  "oversatt": "데이터베이스에서 아직 멤버를 제거할 수 없습니다. Animatic Studio를 업데이트하려면 관리자에게 문의하세요."
+ },
+ "app-projects-members-section.role-help.commenter.fe93f990649d": {
+  "nb": "Kan lese og skrive notater",
+  "en": "Can read and write notes",
+  "oversatt": "노트 읽기 및 작성 가능"
+ },
+ "app-projects-members-section.role-help.editor.2f21316a51f7": {
+  "nb": "Kan endre manus, scener, bibliotek og film",
+  "en": "Can change script, scenes, library and film",
+  "oversatt": "대본, 씬, 라이브러리 및 필름 수정 가능"
+ },
+ "app-projects-members-section.role-help.owner.a6db4c95085c": {
+  "nb": "Alt, også invitere, endre roller, godkjenne kostnader og slette prosjektet",
+  "en": "Everything, including inviting, changing roles, approving costs and deleting the project",
+  "oversatt": "초대, 역할 변경, 비용 승인 및 프로젝트 삭제를 포함한 모든 권한"
+ },
+ "app-projects-members-section.role-help.viewer.cace12ddc020": {
+  "nb": "Kan bare lese",
+  "en": "Can only read",
+  "oversatt": "읽기만 가능"
+ }
+}
