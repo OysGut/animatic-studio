@@ -28,6 +28,7 @@ await scenario("X-lag-lower-third-mal", M.sceneA, "nb", async (page) => {
 });
 
 await scenario("Y-bruk-i-scene", M.sceneA, "nb", async (page) => {
+  await page.locator(`[data-layer-row="${M.instanceGroup}"]`).first().waitFor({ timeout: 15000 }).catch(() => {});
   check((await page.locator(`[data-layer-row="${M.instanceGroup}"]`).count()) > 0, "Y: malen er brukt i scene A (forekomsten vises som lag)");
   await selectLayer(page, M.instanceName);
   check(await page.getByTestId("mts-template-instance").isVisible(), "Y: egenskapspanelet viser malen og innholdet");

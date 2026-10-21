@@ -161,12 +161,16 @@ export function harness(defaultOut) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark", permissions: ["microphone"] });
     await mock(context, role);
     const page = await context.newPage();
+    // R7: under last (flere suiter samtidig, kald Vite-kompilering) tok første lasting over 30 s
+    page.setDefaultNavigationTimeout(90000);
     const errors = [];
     page.on("pageerror", (err) => errors.push(String(err)));
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
     await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
     await page.goto(`${base}${P}/scene?scene=${sceneId}`, { waitUntil: "networkidle" });
+    // R7: vent til sceneeditoren faktisk er tegnet (ikke bare en fast pause) før scenarioet starter
+    await page.getByTestId("scene-stage").first().waitFor({ timeout: 60000 }).catch(() => {});
     await page.waitForTimeout(2500);
     return { context, page, errors };
   }
