@@ -114,7 +114,7 @@ async function mock(ctx) {
 }
 
 browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH ?? "/bin/chromium" });
-const ctx = await browser.newContext({ viewport: { width: 1600, height: 1000 }, colorScheme: "dark" });
+const ctx = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
 await mock(ctx);
 await ctx.addInitScript(([key, user, language]) => {
  if (sessionStorage.getItem("job-read-init")) return;
@@ -145,7 +145,7 @@ await step("Merk som lest demper én jobb og senker telleren", async () => {
    if (await readBtn(0).count() === 0) await status.click();
    return (await readBtn(0).count()) > 0;
  }, "jobblisten åpnet ikke");
- const li = readBtn(0).locator("xpath=ancestor::li[1]");
+ const li = page.getByTestId(`generation-job-${jobs[0].id}`);
  await readBtn(0).click();
  await count(1);
  await until(async () => Number(await li.evaluate(el => getComputedStyle(el).opacity)) < 1, "lest jobb er ikke nedtonet");
@@ -168,7 +168,7 @@ await step("ny feil etter Merk alle gir teller 1 og ulest jobb", async () => {
  assert(await page.getByTestId(`job-mark-read-${jobs[1].id}`).count() === 0, "gammel feil ble ulest igjen");
 });
 await step("ny feil tenner varseltrekanten igjen", () => triangle(true));
-await page.screenshot({ path: `${out}/job-read-${lang}.png`, fullPage: true });
+await page.screenshot({ path: `${out}/job-read-${lang}.png` });
 await step("ingen nettleserfeil eller jobbskriving", async () => { assert(!errors.length, errors.join(" | ")); assert(!WRITES.some(w => w.table === "generation_jobs"), "jobbrader ble endret"); });
 await ctx.close();
 } catch (e) { check(false, e.stack ?? String(e)); }
