@@ -34,7 +34,7 @@ Kortversjonen:
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
-20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
+20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
 21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
 23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
 
