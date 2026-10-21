@@ -71,6 +71,35 @@ async function copyFile(a: AnyClient, from: string, to: string): Promise<string 
   return error.message;
 }
 
+/** Avledede bildefiler slik de lagres i derived_files (B-105a): nøklene er working/proxy/thumbnail/originalRaw. */
+type GlobalDerivedFile = {
+  readonly path: string;
+  readonly width: number | null;
+  readonly height: number | null;
+  readonly byteSize: number;
+  readonly sha256: string;
+};
+type GlobalDerivedFiles = Partial<Record<"working" | "proxy" | "thumbnail" | "originalRaw", GlobalDerivedFile>>;
+
+/** Kopierer de avledede filene og returnerer samme struktur med de nye stiene (undefined når det ikke er noen). */
+async function copyDerivedFiles(
+  a: AnyClient,
+  derived: GlobalDerivedFiles | null | undefined,
+  to: (d: GlobalDerivedFile) => string,
+): Promise<GlobalDerivedFiles | undefined> {
+  if (!derived || typeof derived !== "object") return undefined;
+  const out: GlobalDerivedFiles = {};
+  for (const key of ["working", "proxy", "thumbnail", "originalRaw"] as const) {
+    const d = derived[key];
+    if (!d || typeof d.path !== "string" || !d.path) continue;
+    const target = to(d);
+    const err = await copyFile(a, d.path, target);
+    if (err) throw new Error(err);
+    out[key] = { ...d, path: target };
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 type Storage = {
   from: (b: string) => {
     createSignedUrls: (
