@@ -73784,5 +73784,89 @@
   },
   "app-rig.layers-panel.contour-heading": {
     "text": "Kontur"
+  },
+  "app-inspect.open": {
+    "text": "Inspiser og mål"
+  },
+  "app-inspect.close": {
+    "text": "Lukk"
+  },
+  "app-inspect.fit": {
+    "text": "Tilpass"
+  },
+  "app-inspect.physical": {
+    "text": "100 % fysisk"
+  },
+  "app-inspect.ruler": {
+    "text": "Skjermlinjal: juster til 50 mm på en fysisk linjal"
+  },
+  "app-inspect.dpi": {
+    "text": "Kildefilen er under 150 dpi i fysisk størrelse"
+  },
+  "app-inspect.distance": {
+    "text": "Avstand"
+  },
+  "app-inspect.angle": {
+    "text": "Vinkel"
+  },
+  "app-inspect.ratio": {
+    "text": "Forhold"
+  },
+  "app-inspect.point": {
+    "text": "Punkt"
+  },
+  "app-inspect.line": {
+    "text": "Linje"
+  },
+  "app-inspect.save": {
+    "text": "Lagre målesett"
+  },
+  "app-inspect.discard": {
+    "text": "Forkast"
+  },
+  "app-inspect.name": {
+    "text": "Navn på målesett"
+  },
+  "app-inspect.undo": {
+    "text": "Angre"
+  },
+  "app-inspect.redo": {
+    "text": "Gjør om"
+  },
+  "app-inspect.pdf": {
+    "text": "PDF-arkramme – kommer i runde 4"
+  },
+  "app-inspect.width": {
+    "text": "Bredde"
+  },
+  "app-inspect.height": {
+    "text": "Høyde"
+  },
+  "app-inspect.plate": {
+    "text": "Platenivå / kameraavstand"
+  },
+  "app-inspect.valid": {
+    "text": "Kalibrert"
+  },
+  "app-inspect.invalid": {
+    "text": "Ugyldig målesett eller kalibrering mangler"
+  },
+  "app-inspect.help": {
+    "text": "Klikk for målepunkter. Mellomrom + dra panorerer. Alt deaktiverer magnet. Tab velger markører; piler flytter, Shift gir 1 mm. Delete sletter."
+  },
+  "app-inspect.delete": {
+    "text": "Slett markør"
+  },
+  "app-inspect.markers": {
+    "text": "Markører"
+  },
+  "app-inspect.zoomIn": {
+    "text": "Zoom inn"
+  },
+  "app-inspect.zoomOut": {
+    "text": "Zoom ut"
+  },
+  "app-inspect.units": {
+    "text": "Bytt måleenhet"
   }
 }

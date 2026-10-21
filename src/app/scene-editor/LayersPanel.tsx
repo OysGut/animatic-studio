@@ -1,3 +1,4 @@
+import { InspectionWindow } from "@/app/rig/InspectionWindow";
 import { ContourPreview } from "@/app/rig/ContourPreview";
 /**
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås, rekkefølge (knapper og dra-og-slipp),
@@ -95,6 +96,7 @@ export const LayersPanel = memo(function LayersPanel({
   }, [state, back]);
   const urls = useImageUrls(paths).data;
   const [error, setError] = useState<string | null>(null);
+  const [inspectOpen, setInspectOpen] = useState(false);
   const [alphaOpen, setAlphaOpen] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   /** Hvor laget slippes: foran eller bak raden, eller inn i gruppen (midten av en grupperad). */
@@ -785,6 +787,8 @@ export const LayersPanel = memo(function LayersPanel({
       {selected && selectedRig && selected.rigPlateId && layerVersion(state, selected, frame) ? (
         <div data-testid="rig-contour-panel" className="space-y-2 border-t border-border px-3 py-2">
           <h3 className="text-xs font-semibold text-text-primary">{tk("app-rig.layers-panel.contour-heading")}</h3>
+          <button data-testid="inspect-open-panel" className="rounded border border-border p-2 text-xs text-text-primary" onClick={() => setInspectOpen(true)}>{tk("app-inspect.open")}</button>
+          {inspectOpen && <InspectionWindow state={state} layer={selected} spec={selectedRig.spec} frame={frame} editable={editable} onClose={() => setInspectOpen(false)} onSave={run} />}
           <ContourPreview state={state} layer={selected} spec={selectedRig.spec} frame={frame} compact />
         </div>
       ) : null}

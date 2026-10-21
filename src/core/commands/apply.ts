@@ -1,3 +1,4 @@
+import { applyMeasureSetCommand } from "../print/measure/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
 import { languageTagError } from "../dialogue/languages";
@@ -1903,6 +1904,9 @@ function run(
     }
     case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "AdoptRigVersion": case "UndoAnimationChange": {
       try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("core-commands-apply.run.fail.20f599eed294")); }
+    }
+    case "SaveMeasureSet": case "SetMeasureSetRemoved": case "RestoreMeasureSet": {
+      try { return applyMeasureSetCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("app-inspect.invalid")); }
     }
     case "AddRigTemplate": case "UpdateRigTemplate": case "SetRigTemplateRemoved": case "AddRigSetup": case "UpdateRigSetup": case "SetRigSetupRemoved": case "ApplySceneRig": case "SetLayerRigPlate": case "UndoMultiplaneRigChange": {
       try { return applyMultiplaneRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("core-commands-apply.run.fail.20f599eed294")); }

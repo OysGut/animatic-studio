@@ -1119,6 +1119,8 @@ export type Database = {
           removed: boolean
           reviewed_versions: Json
           revision: number
+          rig_plate_depth_mm: number
+          rig_plate_id: string | null
           shape: Json | null
           template_instance_id: string | null
           template_key: string | null
@@ -1159,6 +1161,8 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          rig_plate_depth_mm?: number
+          rig_plate_id?: string | null
           shape?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
@@ -1199,6 +1203,8 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          rig_plate_depth_mm?: number
+          rig_plate_id?: string | null
           shape?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
@@ -2584,6 +2590,47 @@ export type Database = {
           },
         ]
       }
+      global_rig_templates: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          note: string
+          number: number
+          spec: Json
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          note?: string
+          number: number
+          spec: Json
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          note?: string
+          number?: number
+          spec?: Json
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_rig_templates_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       global_version_withdrawals: {
         Row: {
           version_id: string
@@ -3631,6 +3678,101 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "quality_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rig_setups: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string | null
+          spec: Json
+          template_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          spec: Json
+          template_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          spec?: Json
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rig_setups_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rig_setups_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rig_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          spec: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          spec: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rig_templates_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -5758,6 +5900,15 @@ export type Database = {
           p_patterns: Json
           p_rig_spec: Json
           p_variant: string
+        }
+        Returns: string
+      }
+      global_publish_rig_template: {
+        Args: {
+          p_name: string
+          p_note: string
+          p_spec: Json
+          p_workspace: string
         }
         Returns: string
       }

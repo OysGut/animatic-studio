@@ -102,7 +102,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     templateInstances,
     creditParticipants,
     creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines, styleHarmonizations, stylePreferredReferences, languageVersions,
-    rigTemplates, rigSetups,
+    rigTemplates, rigSetups, measureSets,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -151,6 +151,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "language_versions", projectId),
     fetchOptional(db, "rig_templates", projectId),
     fetchOptional(db, "rig_setups", projectId),
+    fetchOptional(db, "measure_sets", projectId),
   ]);
   return {
     project: project as Row,
@@ -196,6 +197,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     style_harmonizations: styleHarmonizations,
     style_preferred_references: stylePreferredReferences,
     language_versions: languageVersions,
+    measure_sets: measureSets,
     rig_templates: rigTemplates,
     rig_setups: rigSetups,
   };

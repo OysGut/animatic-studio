@@ -266,6 +266,7 @@
 | KI-248 | 2026-10-17 | Romlydfylling og overganger (bolk E) er bare prøvd med syntetiske signaler og Chromiums falske mikrofon. Tersklene (støygulv + 6 dB, 80 ms til ord, klikk 12 dB over) er anslag og må prøves med ekte norske opptak | Romlyden kan høres eller mangle | Velg stillhet eller en romlydfil for pausen | Åpen (prøving) |
 | KI-249 | 2026-10-17 | Nettlesertesten dec0093 feilet på L6/L7: «Send de valgte» på mobilen sendte ingenting. Årsak: `Uploader.stop()` i opprydningen av effekten i `MobilePage` stoppet instansen for godt når effekten ble kjørt på nytt (StrictMode/ny montering) | Opptak ble stående «i kø» | – | Rettet 17.10: `Uploader.start()` i effekten, unit-test, dec0093 28/28 |
 | KI-250 | 2026-10-17 | `tests/visual/screens.mjs` stopper ved skudd 33 (venter på tidslinjalen i regionen «Tidslinje»); skuddene 01–32 tas. Gjaldt også før UI-løftet | Færre skjermbilder i oversikten | Andre visuelle tester dekker tidslinjen | Åpen (testverktøy) |
+| KI-256 | 2026-10-21 | Banemasker støttes ikke som konturkilde i Rigg & 2D-utskrift (runde 2), fordi `LayerMask` ikke har baner (bare rektangel, ellipse og klippelag). Godtatt av oppdragsgiver | En figur med banemaske får kontur fra alfa/forslag i stedet | Utvid `LayerMask` med bane hvis behovet melder seg | Akseptert |
 
 
 
