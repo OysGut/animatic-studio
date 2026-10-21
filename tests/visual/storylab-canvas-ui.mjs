@@ -8,6 +8,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang, byLang } from "./ui-lang.mjs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -208,7 +209,9 @@ const check = (ok, text) => {
   ok ? pass++ : fail++;
 };
 
-async function run(name, act, { lang = "nb", path = "?visning=canvas", nodes = [] } = {}) {
+async function run(name, act, { lang: wanted = "nb", path = "?visning=canvas", nodes = [] } = {}) {
+  // V1: UI_LANG=en overstyrer scenarioets språk
+  const lang = uiLang(wanted);
   rows.story_canvas_nodes = nodes;
   reset();
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
@@ -401,7 +404,7 @@ await run("500 noder", async (page) => {
   console.log(`  info: siden lastet på nytt på ${S.t0 - boot} ms (utviklingsserver)`);
   await nodeLoc(page).first().waitFor({ timeout: 30000 });
   const ms = Date.now() - S.t0;
-  check((await page.getByText("500 noder").count()) === 1, "alle 500 noder er lastet");
+  check((await page.getByText(byLang("nb", "500 noder", "500 nodes")).count()) === 1, "alle 500 noder er lastet");
   check(ms < 3000, `canvaset med 500 noder er klart på ${ms} ms (under 3 s etter lasting)`);
 }, { nodes: Array.from({ length: 500 }, (_, i) => rowNode(100 + i)) });
 

@@ -4,6 +4,7 @@
  * ENV_FILE=… node tests/visual/mts-global.mjs <baseUrl> /tmp/claude-0/mts-fixture.json [out]
  */
 import { setup } from "./global-harness.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 const WS = "00000000-0000-4000-8000-00000000aaaa";
 const GT = "00000000-0000-4000-8000-00000000a010"; // global lower third-mal
@@ -58,7 +59,9 @@ const M = h.fx.mts;
 g.versions[0].template_spec = h.fx.rows.asset_versions.find((v) => v.id === M.v1)?.template_spec;
 if (!g.versions[0].template_spec) throw new Error("Fixture mangler maldefinisjon");
 
-await h.run("M1-AC-global-mal-i-bruk", `$P/scene?scene=${M.occB}`, async (page) => {
+// V1: UI_LANG=en overstyrer scenarioets språk (kontrollene bruker ID-er og loggede kall, ikke tekst)
+const run = (label, path, fn, opts = {}) => h.run(label, path, fn, { ...opts, lang: uiLang(opts.lang) });
+await run("M1-AC-global-mal-i-bruk", `$P/scene?scene=${M.occB}`, async (page) => {
   // AC/M1: den globale malen nås fra Tekst-menyen og brukes i prosjektet
   await page.getByTestId("mts-text-menu").click();
   await page.getByTestId("mts-global-templates").click();
@@ -74,7 +77,7 @@ await h.run("M1-AC-global-mal-i-bruk", `$P/scene?scene=${M.occB}`, async (page) 
   h.check(h.log.commands.some((c) => c?.type === "ApplyTemplate"), "M2: malen brukes i scenen etter kopieringen");
 });
 
-await h.run("M3-lokalt-innhold-endrer-ikke-malen", `$P/scene?scene=${M.occA}`, async (page) => {
+await run("M3-lokalt-innhold-endrer-ikke-malen", `$P/scene?scene=${M.occA}`, async (page) => {
   // Forekomsten fra fixturen: endre navnet lokalt
   const row = page.locator(`[data-layer-row="${M.instanceName}"]`).first();
   await row.locator("button[aria-pressed]").first().click();
@@ -88,14 +91,14 @@ await h.run("M3-lokalt-innhold-endrer-ikke-malen", `$P/scene?scene=${M.occA}`, a
   h.check(!h.log.rpcs.some((r) => r.name.startsWith("global_")), "M3: den globale malen røres ikke");
 });
 
-await h.run("M4-global-logo-i-tittel", `$P/scene?scene=${M.titleOcc}`, async (page) => {
+await run("M4-global-logo-i-tittel", `$P/scene?scene=${M.titleOcc}`, async (page) => {
   await page.getByTestId("mts-pages-panel").waitFor({ timeout: 5000 });
   await page.getByTestId("mts-text-menu").click();
   h.check(await page.getByTestId("mts-global-templates").isVisible(), "M4: globale ressurser nås også fra tittelen");
   await page.keyboard.press("Escape");
 });
 
-await h.run("M5-global-oppdatering-overskriver-ikke", `$P/scene?scene=${M.occA}`, async (page) => {
+await run("M5-global-oppdatering-overskriver-ikke", `$P/scene?scene=${M.occA}`, async (page) => {
   // Den globale malen finnes i en nyere versjon i biblioteket; å åpne scenen endrer ingenting
   await page.waitForTimeout(1500);
   h.check(h.log.commands.length === 0, "M5: en nyere global malversjon endrer aldri godkjente forekomster stille");
