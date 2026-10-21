@@ -81,7 +81,13 @@
 - [x] Strengere språkversjonssjekk i apply_changes
 
 ## R3 + R4 (21.10.2026)
-- [ ] R3: global publisering til eksisterende global ressurs – venter på svar om hva «angrbart» betyr (A eller B)
+- [x] R3: global publisering til eksisterende global ressurs (valg B, migrasjon 0068)
 - [x] R4: ProRes med Apples målbitrate, 422/LT/Proxy, estimert filstørrelse, ffprobe-tester
 - [x] R1-rest: «Ikke nå» huskes per bruker og prosjekt; kan hentes fram igjen
 - [x] AGENTS.md regel 36 om referansesjekken for oppryddingen
+
+## R7 (21.10.2026)
+- [x] Eldre suiter som feilet: asset-studio-ui, dec0089, scene-duration-ui, entity-analysis-ui, scene-video-ui, storylab-canvas-ui, mts-global, dv3
+- [x] UI_LANG=en i backlog-b2, ca1, ca3, ca4, ca7, dv4, m6-rest, mts-credits, mts-lower-thirds, mts-nondestructive, p6, p8
+- [x] Deterministisk full vitest (realtime-channels, tidsgrense for modullasting)
+- [x] AGENTS.md: regel 13 om tjenestekvoter tilbake; detaljer flyttet til docs/development/AGENTS_DETAILS.md
