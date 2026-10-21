@@ -1,5 +1,6 @@
 /** M8 profile choices, immutable provenance and queue continuation. No paid calls. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 const h = harness("/tmp/browser/p6-quality-profiles");
 const clip=h.rows.audio_clips.find(c=>c.kind==="dialogue" && c.block_id && !c.removed);
 if (!clip) throw new Error("Missing dialogue fixture");
@@ -23,7 +24,7 @@ for (const lang of ["nb","en"]) await h.scenario(`p6-${lang}`,clip.occurrence_id
   await h.eventually(()=>h.state.rpcs.some(r=>r.name==="generateSpeech"),5000);
   const call=h.state.rpcs.find(r=>r.name==="generateSpeech");
   h.check(call?.body.qualityProfile?.id===pid && call.body.qualityProfile.name==="Final test","approved immutable profile snapshot sent");
-  await page.getByTestId("record-audio-dialog").getByRole("button",{name:lang==="nb"?"Avbryt":"Cancel",exact:true}).last().click();
+  await page.getByTestId("record-audio-dialog").getByRole("button",{name:byLang(lang,"Avbryt","Cancel"),exact:true}).last().click();
   await page.getByTestId("alpha-export-open").click();
   await page.getByTestId("quality-profile-picker").selectOption(pid);
   h.check(await page.getByTestId("alpha-mode").inputValue()==="premultiplied","alpha profile applied");
