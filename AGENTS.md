@@ -39,7 +39,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 21. Asset versions sort via compareVersionCreation.
 23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so leaked links grant nobody access.
 
-24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
+24. Note resolution is reversible; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
 26. Dialogue clips own placement/active choice; versions own file/edit, mirrored only by mirrorDialogueClips.†
 27. Batches keep leased receipts so paid calls never replay. Drift is computed; bookmarks are private RPC rows; note flags are commands.
@@ -57,4 +57,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
 39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
-40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats keep old names.
+40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats unchanged.
