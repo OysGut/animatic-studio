@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { t as tk } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
-const OUT_TOKENS = 1500;
+const OUT_TOKENS = 2000;
 
 export function MaterialUpdateSection({
   state,

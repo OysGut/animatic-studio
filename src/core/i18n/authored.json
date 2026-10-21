@@ -6017,6 +6017,14 @@
       "en": {
         "text": "Switch measurement unit"
       }
+    },
+    "ai.text.truncated": {
+      "nb": {
+        "text": "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg."
+      },
+      "en": {
+        "text": "The response was truncated because it was too long. Try again with a shorter selection."
+      }
     }
   }
 }

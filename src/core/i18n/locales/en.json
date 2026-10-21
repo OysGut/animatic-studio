@@ -73850,5 +73850,8 @@
   },
   "app-inspect.units": {
     "text": "Switch measurement unit"
+  },
+  "ai.text.truncated": {
+    "text": "The response was truncated because it was too long. Try again with a shorter selection."
   }
 }

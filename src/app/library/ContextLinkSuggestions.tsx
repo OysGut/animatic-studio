@@ -16,7 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { AssetThumb, useAssetCovers } from "./AssetThumb";
 import { t } from "@/core/i18n/keyed";
 
-const OUT_TOKENS = 1200;
+const OUT_TOKENS = 2000;
 
 export function ContextLinkSuggestions({
   state,

@@ -165,9 +165,10 @@ async function step(description, action) {
 }
 const assert = (value, message) => { if (!value) throw new Error(message); };
 await page.goto(base + P + "/rigg", { waitUntil: "domcontentloaded", timeout: 90000 });
-const contour = page.getByTestId("rig-contour");
+// Scope til arbeidsflatens seksjon, ikke eventuelle andre kontur-elementer.
+const contour = page.locator('section[data-testid="rig-contour"]').first();
 for (const testId of ["rig-contour", "rig-contour-preview", "rig-contour-source", "rig-contour-mode", "rig-contour-suggestion", "rig-contour-holes", "rig-contour-stroke", "rig-contour-edit"]) {
- await step(`${testId} vises (${lang})`, async () => { await page.getByTestId(testId).waitFor({ state: "visible" }); });
+ await step(`${testId} vises (${lang})`, async () => { await (testId === "rig-contour" ? contour : contour.getByTestId(testId)).waitFor({ state: "visible" }); });
 }
 const translations = JSON.parse(readFileSync("src/core/i18n/runtime.gen.json", "utf8"));
 async function source(scope, kind) {

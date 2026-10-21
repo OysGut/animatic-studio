@@ -51,7 +51,7 @@ export type GenerateTextResult =
       readonly keyOwner: KeyOwnerKind;
       readonly jobId: string;
     }
-  | { readonly ok: false; readonly message: string };
+  | { readonly ok: false; readonly message: string; readonly truncated?: boolean };
 
 /** Kontroll av input (eksportert for testene). */
 export function validateTextInput(d: unknown): GenerateTextInput {
@@ -132,8 +132,8 @@ export async function lovableText(
   models: readonly string[],
   d: GenerateTextInput,
 ): Promise<
-  | { ok: true; text: string; model: string; usage: { inputTokens: number; outputTokens: number } }
-  | { ok: false; message: string; model: string }
+  | { ok: true; text: string; model: string; stopReason?: string; usage: { inputTokens: number; outputTokens: number } }
+  | { ok: false; message: string; model: string; truncated?: boolean; details?: { stopReason: string; outputTokens: number } }
 > {
   let last = models[0]!;
   for (const model of models) {
@@ -158,8 +158,13 @@ export async function lovableText(
       return { ok: false, message: gatewayError(res.status, body), model };
     }
     const j = (await res.json()) as {
-      choices?: { message?: { content?: unknown } }[];
+      choices?: { message?: { content?: unknown }; finish_reason?: string }[];
       usage?: { prompt_tokens?: number; completion_tokens?: number };
+    };
+    const stopReason = j.choices?.[0]?.finish_reason;
+    if (stopReason === "length") return {
+      ok: false, model, truncated: true, message: tk("ai.text.truncated"),
+      details: { stopReason, outputTokens: Number(j.usage?.completion_tokens) || 0 },
     };
     const c = j.choices?.[0]?.message?.content;
     const text = typeof c === "string" ? c : "";
@@ -171,6 +176,7 @@ export async function lovableText(
       };
     return {
       ok: true,
+      stopReason,
       text,
       model,
       usage: {

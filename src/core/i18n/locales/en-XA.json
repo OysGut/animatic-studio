@@ -73850,5 +73850,8 @@
   },
   "app-inspect.units": {
     "text": "[!! SSwwïïttcchh mmëëáássüürrëëmmëënntt üünnïïtt !!]"
+  },
+  "ai.text.truncated": {
+    "text": "[!! TThhëë rrëëssppôônnssëë wwááss ttrrüünnccááttëëdd bbëëccááüüssëë ïïtt wwááss ttôôôô llôônngg. TTrryy áággááïïnn wwïïtthh áá sshhôôrrttëërr ssëëllëëccttïïôônn. !!]"
   }
 }

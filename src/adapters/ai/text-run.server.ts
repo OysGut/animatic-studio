@@ -212,6 +212,7 @@ export async function runTextGeneration(
 
   let secret: string | null = null;
   try {
+    let stopReason: string | undefined;
     let text: string;
     let model: string;
     let usage: { inputTokens: number; outputTokens: number };
@@ -232,7 +233,7 @@ export async function runTextGeneration(
         ...(data.temperature !== undefined ? { temperature: data.temperature } : {}),
         ...(data.json ? { json: true } : {}),
       });
-      ({ text, model, usage } = r);
+      ({ text, model, usage, stopReason } = r);
     } else {
       const r = await lovableText(
         lovableKey!,
@@ -245,10 +246,11 @@ export async function runTextGeneration(
           model: r.model.slice(0, 100),
           cost_usd: 0,
           error: r.message.slice(0, 2000),
+          params: { ...baseParams, estimatedUsd: estimate, ...r.details },
         });
-        return { ok: false, message: r.message };
+        return { ok: false, message: r.message, ...(r.truncated ? { truncated: true } : {}) };
       }
-      ({ text, model, usage } = r);
+      ({ text, model, usage, stopReason } = r);
     }
     const costUsd = estimateTextCostUsd(
       choice.provider,
@@ -263,6 +265,7 @@ export async function runTextGeneration(
       params: {
         ...baseParams,
         estimatedUsd: estimate,
+        stopReason,
         inputTokens: usage.inputTokens,
         outputTokens: usage.outputTokens,
         costUsd,
@@ -281,13 +284,16 @@ export async function runTextGeneration(
       jobId,
     };
   } catch (e) {
-    const { scrubSecret } = await import("./providers.server");
+    const { scrubSecret, ProviderError } = await import("./providers.server");
     const raw = (e as Error).message || tk("adapters-ai-text-run-server.raw.message.28ecf6141d74");
     const message = scrubSecret(raw, secret);
     // Avvist kall: ingen kostnad hos leverandøren
-    await finish({ status: "failed", cost_usd: 0, error: message.slice(0, 2000) });
+    await finish({ status: "failed", cost_usd: 0, error: message.slice(0, 2000),
+      params: { ...baseParams, estimatedUsd: estimate, ...(e instanceof ProviderError ? e.details : {}) },
+    });
     return {
       ok: false,
+      ...(e instanceof ProviderError && e.code === "truncated" ? { truncated: true } : {}),
       message:
         (e as Error).name === "TimeoutError"
           ? tk("adapters-ai-text-run-server.message.message.f402d1f17024")
