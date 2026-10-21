@@ -5,6 +5,7 @@
  * Dokumentert i docs/development/VISUAL_QA_DEC-0086.md.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -133,7 +134,7 @@ async function mock(ctx, st) {
       return json(null);
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 33 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "privacy_policy") {
       const row = {
         version: 2,

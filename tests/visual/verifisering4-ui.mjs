@@ -22,6 +22,7 @@
  * Skjermbilder lagres i utmappen (standard /tmp/claude-0/qa76). Avslutter med kode 1 hvis en kontroll feiler.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { execFileSync } from "node:child_process";
 import { readFileSync, mkdirSync, existsSync, statSync } from "node:fs";
 
@@ -338,7 +339,7 @@ async function mock(ctx) {
       return json({ Key: path.replace("/storage/v1/object/", ""), Id: "x" });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 30 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
