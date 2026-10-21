@@ -173,7 +173,6 @@ await page.locator('section[data-testid="rig-contour"]').first().waitFor({ state
 await page.getByTestId("inspect-open-rig").waitFor({ state: "visible", timeout: 60000 });
 // De faktiske åpneknappene heter inspect-open-rig og inspect-open-panel.
 const dialog = page.getByTestId("inspect-window");
-const assert = (ok,message)=>{if(!ok)throw new Error(message);};
 await step("åpner inspeksjon uten utskrift",async()=>{await page.getByTestId("inspect-open-rig").click();await dialog.waitFor();assert(downloads.length===0,"Uventet PDF");});
 await step("ark og informasjonsfelt vises",async()=>{await dialog.getByTestId("print-preview").waitFor();assert(await dialog.getByTestId("print-fields").isVisible(),"Felter mangler");});
 await step("teknisk referanse er av som standard",async()=>{assert(!await dialog.getByTestId("print-reference").isChecked(),"Mål inkludert som standard");});
