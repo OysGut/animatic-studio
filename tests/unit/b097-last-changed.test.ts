@@ -28,6 +28,10 @@ describe("B-097 scenesOfChange", () => {
     const after = { ...state, layers: {} } as unknown as ProjectState;
     expect(scenesOfChange(state, after, ["l1"])).toEqual(["s1"]);
   });
+  it("en manusblokk som flyttes til en annen scene, merker begge scenene", () => {
+    const after = { ...state, blocks: { b2: { id: "b2", variantId: "v1" } } } as unknown as ProjectState;
+    expect(scenesOfChange(state, after, ["b2"])).toEqual(["s1", "s2"]);
+  });
   it("ukjente ID-er gir ingen scene", () => {
     expect(scenesOfChange(state, state, ["x"])).toEqual([]);
   });

@@ -111,6 +111,8 @@ language sql stable security definer set search_path = '' as $$
     'country', (select p.country from public.profiles p where p.user_id = (select auth.uid()))
   )
 $$;
+revoke all on function public.my_account() from public, anon;
+grant execute on function public.my_account() to authenticated;
 
 -- ---------- 4. Brukere per land (bare aggregert) ----------
 create function public.admin_country_counts()
