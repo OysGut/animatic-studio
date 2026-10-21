@@ -12,10 +12,10 @@ const UUID = /^[0-9a-f-]{36}$/;
  * forekomst-ID> velger tidspunktet i fortellingen (fra manus og sceneeditoren).
  */
 export const Route = createFileRoute("/prosjekt/$projectId/storylab")({
-  head: () => ({ meta: [{ title: "Story Lab – Animatic Studio" },
+  head: () => ({ meta: [{ title: "Story Lab – Pen to Glass" },
     { name: "description", content: t("routes-prosjekt-project-id-storylab.content.content.01bee122f398") },
     // i18n-ignore: standard metadata keys
-    { property: "og:title", content: "Story Lab – Animatic Studio" },
+    { property: "og:title", content: "Story Lab – Pen to Glass" },
     // i18n-ignore: standard metadata keys
     { property: "og:description", content: t("routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88") },
     // i18n-ignore: standard metadata keys

@@ -45,7 +45,7 @@ export function AppHeader({ email, trail }: AppHeaderProps) {
         to="/"
         className="text-[13px] font-semibold tracking-[0.02em] text-text-primary hover:text-accent-brand"
       >
-        Animatic Studio
+        From Pen to Glass
       </Link>
       <BackButton />
       {trail ? (

@@ -18,7 +18,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        // Animatic Studio: komfortabel 32 px / kompakt 24 px (DESIGN_SYSTEM §4)
+        // From Pen to Glass: komfortabel 32 px / kompakt 24 px (DESIGN_SYSTEM §4)
         default: "h-8 px-3 text-[13px]",
         sm: "h-6 rounded-sm px-2 text-xs",
         lg: "h-9 px-4 text-sm",

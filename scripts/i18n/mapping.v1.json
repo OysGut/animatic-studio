@@ -104,8 +104,8 @@
       "semantic": "adapters-ai-video-functions.message.message",
       "nb": {
         "kind": "template",
-        "text": "Databasen er ikke oppdatert for AI-video{value1}. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"}).",
-        "raw": "`Databasen er ikke oppdatert for AI-video${data.queue ? \" i kø\" : \"\"}. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"}).`",
+        "text": "Databasen er ikke oppdatert for AI-video{value1}. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"}).",
+        "raw": "`Databasen er ikke oppdatert for AI-video${data.queue ? \" i kø\" : \"\"}. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"}).`",
         "parameters": [
           {
             "name": "value1",
@@ -129,8 +129,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "The database is not up to date for AI video{value1}. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"}).",
-        "raw": "`The database is not up to date for AI video${data.queue ? \" in the queue\" : \"\"}. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"}).`",
+        "text": "The database is not up to date for AI video{value1}. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).",
+        "raw": "`The database is not up to date for AI video${data.queue ? \" in the queue\" : \"\"}. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).`",
         "parameters": [
           {
             "name": "value1",
@@ -13439,14 +13439,14 @@
       "semantic": "core-backup-index.parse-backup.message",
       "nb": {
         "kind": "literal",
-        "text": "Filen er ikke en sikkerhetskopi fra Animatic Studio.",
-        "raw": "\"Filen er ikke en sikkerhetskopi fra Animatic Studio.\"",
+        "text": "Filen er ikke en sikkerhetskopi fra From Pen to Glass.",
+        "raw": "\"Filen er ikke en sikkerhetskopi fra From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The file is not a backup from Animatic Studio.",
-        "raw": "\"The file is not a backup from Animatic Studio.\"",
+        "text": "The file is not a backup from From Pen to Glass.",
+        "raw": "\"The file is not a backup from From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -13466,14 +13466,14 @@
       "semantic": "core-backup-index.parse-backup.message",
       "nb": {
         "kind": "literal",
-        "text": "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.",
-        "raw": "\"Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.\"",
+        "text": "Sikkerhetskopien er laget med en nyere versjon av From Pen to Glass og kan ikke leses her.",
+        "raw": "\"Sikkerhetskopien er laget med en nyere versjon av From Pen to Glass og kan ikke leses her.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The backup was made with a newer version of Animatic Studio and cannot be read here.",
-        "raw": "\"The backup was made with a newer version of Animatic Studio and cannot be read here.\"",
+        "text": "The backup was made with a newer version of From Pen to Glass and cannot be read here.",
+        "raw": "\"The backup was made with a newer version of From Pen to Glass and cannot be read here.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -14154,8 +14154,8 @@
       "semantic": "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join",
       "nb": {
         "kind": "template",
-        "text": "Sikkerhetskopi av «{name}» fra Animatic Studio",
-        "raw": "`Sikkerhetskopi av «${sum.name}» fra Animatic Studio`",
+        "text": "Sikkerhetskopi av «{name}» fra From Pen to Glass",
+        "raw": "`Sikkerhetskopi av «${sum.name}» fra From Pen to Glass`",
         "parameters": [
           {
             "name": "name",
@@ -14166,8 +14166,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "Backup of “{name}” from Animatic Studio",
-        "raw": "`Backup of “${sum.name}” from Animatic Studio`",
+        "text": "Backup of “{name}” from From Pen to Glass",
+        "raw": "`Backup of “${sum.name}” from From Pen to Glass`",
         "parameters": [
           {
             "name": "name",
@@ -42267,14 +42267,14 @@
       "semantic": "core-generation-providers.providers.message",
       "nb": {
         "kind": "literal",
-        "text": "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.",
-        "raw": "\"Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.\"",
+        "text": "Bruker kredittene i From Pen to Glass-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i From Pen to Glass.",
+        "raw": "\"Bruker kredittene i From Pen to Glass-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.",
-        "raw": "\"Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.\"",
+        "text": "Uses the credits in your From Pen to Glass workspace. No key of your own – switched on for the project in From Pen to Glass.",
+        "raw": "\"Uses the credits in your From Pen to Glass workspace. No key of your own – switched on for the project in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -42459,14 +42459,14 @@
       "semantic": "core-generation-providers.providers.message",
       "nb": {
         "kind": "literal",
-        "text": "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).",
-        "raw": "\"Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).\"",
+        "text": "Gå til API keys → «Create new secret key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-).",
+        "raw": "\"Gå til API keys → «Create new secret key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-).\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).",
-        "raw": "\"Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).\"",
+        "text": "Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-).",
+        "raw": "\"Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-).\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -44511,14 +44511,14 @@
       "semantic": "core-generation-providers.providers.message",
       "nb": {
         "kind": "literal",
-        "text": "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).",
-        "raw": "\"Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).\"",
+        "text": "Gå til Settings → API keys → «Create Key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-ant-).",
+        "raw": "\"Gå til Settings → API keys → «Create Key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-ant-).\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
-        "raw": "\"Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).\"",
+        "text": "Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-).",
+        "raw": "\"Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-).\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -44619,14 +44619,14 @@
       "semantic": "core-generation-providers.providers.message",
       "nb": {
         "kind": "literal",
-        "text": "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).",
-        "raw": "\"Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).\"",
+        "text": "Gå til API Keys → «Create API Key», gi den navnet «Pen to Glass» og kopier den (begynner med xai-).",
+        "raw": "\"Gå til API Keys → «Create API Key», gi den navnet «Pen to Glass» og kopier den (begynner med xai-).\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
-        "raw": "\"Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).\"",
+        "text": "Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-).",
+        "raw": "\"Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-).\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -56084,14 +56084,14 @@
       "semantic": "core-notes-transfer.system-note-author.message",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio (systemmerknad)",
-        "raw": "\"Animatic Studio (systemmerknad)\"",
+        "text": "From Pen to Glass (systemmerknad)",
+        "raw": "\"From Pen to Glass (systemmerknad)\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio (system note)",
-        "raw": "\"Animatic Studio (system note)\"",
+        "text": "From Pen to Glass (system note)",
+        "raw": "\"From Pen to Glass (system note)\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -65491,8 +65491,8 @@
       "semantic": "engine-import-zip-read.zip-entry-blob.message",
       "nb": {
         "kind": "template",
-        "text": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio.",
-        "raw": "`${e.name.split(\"/\").pop()} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio.`",
+        "text": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra From Pen to Glass.",
+        "raw": "`${e.name.split(\"/\").pop()} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra From Pen to Glass.`",
         "parameters": [
           {
             "name": "value1",
@@ -65503,8 +65503,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.",
-        "raw": "`${e.name.split(\"/\").pop()} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.`",
+        "text": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from From Pen to Glass.",
+        "raw": "`${e.name.split(\"/\").pop()} is compressed and too large to unpack here. Use the zip file as it was downloaded from From Pen to Glass.`",
         "parameters": [
           {
             "name": "value1",
@@ -68571,14 +68571,14 @@
       "semantic": "adapters-ai-image-run-server.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the AI generation log. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the AI generation log. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the AI generation log. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the AI generation log. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -68811,14 +68811,14 @@
       "semantic": "adapters-ai-image-run-server.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for own AI providers. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for own AI providers. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for own AI providers. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for own AI providers. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -69666,14 +69666,14 @@
       "semantic": "adapters-ai-provider-keys-functions.schema-ok.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -71872,14 +71872,14 @@
       "semantic": "adapters-ai-sound-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for AI sound. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for AI sound. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for AI sound. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for AI sound. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -72514,14 +72514,14 @@
       "semantic": "adapters-ai-speech-run-server.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for AI speech. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for AI speech. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for AI speech. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for AI speech. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -74014,14 +74014,14 @@
       "semantic": "adapters-ai-text-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.",
-        "raw": "\"Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.\"",
+        "text": "From Pen to Glass kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i From Pen to Glass.",
+        "raw": "\"From Pen to Glass kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.",
-        "raw": "\"Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.\"",
+        "text": "From Pen to Glass did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in From Pen to Glass.",
+        "raw": "\"From Pen to Glass did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -76505,14 +76505,14 @@
       "semantic": "adapters-ai-write-prompt-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78173,14 +78173,14 @@
       "semantic": "adapters-storage-backup-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not up to date. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not up to date. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not up to date. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not up to date. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78830,14 +78830,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78857,14 +78857,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the project format. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the project format. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the project format. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the project format. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78884,14 +78884,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler lyd. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing sound. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing sound. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing sound. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing sound. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78911,14 +78911,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing clipping and time links. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing clipping and time links. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing clipping and time links. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing clipping and time links. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78938,14 +78938,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78965,14 +78965,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -78992,14 +78992,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79046,14 +79046,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing language versions of the script. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing language versions of the script. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing language versions of the script. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing language versions of the script. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79073,14 +79073,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79100,14 +79100,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79328,14 +79328,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing notes on the productions. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing notes on the productions. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing notes on the productions. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing notes on the productions. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79355,14 +79355,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79382,14 +79382,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79409,14 +79409,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79436,14 +79436,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79463,14 +79463,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79490,14 +79490,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing sound links. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing sound links. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing sound links. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing sound links. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79517,14 +79517,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing planned length per scene. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing planned length per scene. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing planned length per scene. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing planned length per scene. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79544,14 +79544,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the film's visual style. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the film's visual style. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the film's visual style. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the film's visual style. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79571,14 +79571,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing posters and relations. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing posters and relations. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing posters and relations. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing posters and relations. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79598,14 +79598,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79625,14 +79625,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -79652,14 +79652,14 @@
       "semantic": "adapters-storage-commands-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing the scene editor. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing the scene editor. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing the scene editor. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing the scene editor. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -81021,14 +81021,14 @@
       "semantic": "adapters-storage-project-admin-functions.owner-context.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -81511,14 +81511,14 @@
       "semantic": "adapters-storage-trash-functions.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -83980,14 +83980,14 @@
       "semantic": "app-ai-ai-panel.budget.p",
       "nb": {
         "kind": "literal",
-        "text": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
-        "raw": "\"Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.\"",
+        "text": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (From Pen to Glass viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+        "raw": "\"Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (From Pen to Glass viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.",
-        "raw": "\"When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.\"",
+        "text": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (From Pen to Glass shows the usage in the workspace) and is only used to show the estimated cost.",
+        "raw": "\"When the limit is reached, the server stops new generations until next month. The price is your own estimate (From Pen to Glass shows the usage in the workspace) and is only used to show the estimated cost.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -85516,14 +85516,14 @@
       "semantic": "app-ai-providers-dialog.text.text",
       "nb": {
         "kind": "literal",
-        "text": "Nøkkelen er slettet fra Animatic Studio.",
-        "raw": "\"Nøkkelen er slettet fra Animatic Studio.\"",
+        "text": "Nøkkelen er slettet fra From Pen to Glass.",
+        "raw": "\"Nøkkelen er slettet fra From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The key has been deleted from Animatic Studio.",
-        "raw": "\"The key has been deleted from Animatic Studio.\"",
+        "text": "The key has been deleted from From Pen to Glass.",
+        "raw": "\"The key has been deleted from From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -85651,14 +85651,14 @@
       "semantic": "app-ai-providers-dialog.provider-detail.p",
       "nb": {
         "kind": "literal",
-        "text": "Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
-        "raw": "\"Denne er alltid tilgjengelig og bruker kredittene i Animatic Studio-arbeidsområdet. Prosjektets AI-budsjett gjelder.\"",
+        "text": "Denne er alltid tilgjengelig og bruker kredittene i From Pen to Glass-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+        "raw": "\"Denne er alltid tilgjengelig og bruker kredittene i From Pen to Glass-arbeidsområdet. Prosjektets AI-budsjett gjelder.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.",
-        "raw": "\"This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.\"",
+        "text": "This is always available and uses the credits in the From Pen to Glass workspace. The project's AI budget applies.",
+        "raw": "\"This is always available and uses the credits in the From Pen to Glass workspace. The project's AI budget applies.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -86056,14 +86056,14 @@
       "semantic": "app-ai-providers-dialog.provider-detail.span",
       "nb": {
         "kind": "literal",
-        "text": "Slette nøkkelen fra Animatic Studio?",
-        "raw": "\"Slette nøkkelen fra Animatic Studio?\"",
+        "text": "Slette nøkkelen fra From Pen to Glass?",
+        "raw": "\"Slette nøkkelen fra From Pen to Glass?\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Delete the key from Animatic Studio?",
-        "raw": "\"Delete the key from Animatic Studio?\"",
+        "text": "Delete the key from From Pen to Glass?",
+        "raw": "\"Delete the key from From Pen to Glass?\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -86659,14 +86659,14 @@
       "semantic": "app-ai-providers-dialog.providers-dialog.p",
       "nb": {
         "kind": "literal",
-        "text": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is not yet updated for your own AI providers. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is not yet updated for your own AI providers. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -104939,14 +104939,14 @@
       "semantic": "app-library-generate-image-panel.generate-image-panel.p",
       "nb": {
         "kind": "literal",
-        "text": "Dette bruker kreditter i Animatic Studio-arbeidsområdet (",
-        "raw": "\"Dette bruker kreditter i Animatic Studio-arbeidsområdet (\"",
+        "text": "Dette bruker kreditter i From Pen to Glass-arbeidsområdet (",
+        "raw": "\"Dette bruker kreditter i From Pen to Glass-arbeidsområdet (\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "This uses credits in the Animatic Studio workspace (",
-        "raw": "\"This uses credits in the Animatic Studio workspace (\"",
+        "text": "This uses credits in the From Pen to Glass workspace (",
+        "raw": "\"This uses credits in the From Pen to Glass workspace (\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -120430,14 +120430,14 @@
       "semantic": "app-library-asset-images.upload-one.message",
       "nb": {
         "kind": "literal",
-        "text": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The image storage bucket is missing. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The image storage bucket is missing. Contact the administrator to update Animatic Studio.\"",
+        "text": "The image storage bucket is missing. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The image storage bucket is missing. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -123710,14 +123710,14 @@
       "semantic": "app-mobile-mobile-page.mobile-page.p",
       "nb": {
         "kind": "literal",
-        "text": "Last opp til Animatic Studio",
-        "raw": "\"Last opp til Animatic Studio\"",
+        "text": "Last opp til From Pen to Glass",
+        "raw": "\"Last opp til From Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Upload to Animatic Studio",
-        "raw": "\"Upload to Animatic Studio\"",
+        "text": "Upload to From Pen to Glass",
+        "raw": "\"Upload to From Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -124274,8 +124274,8 @@
       "semantic": "app-mobile-mobile-page.text.message",
       "nb": {
         "kind": "template",
-        "text": "Ta opp lyd til Animatic Studio: {label}",
-        "raw": "`Ta opp lyd til Animatic Studio: ${label}`",
+        "text": "Ta opp lyd til From Pen to Glass: {label}",
+        "raw": "`Ta opp lyd til From Pen to Glass: ${label}`",
         "parameters": [
           {
             "name": "label",
@@ -124286,8 +124286,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "Record audio for Animatic Studio: {label}",
-        "raw": "`Record audio for Animatic Studio: ${label}`",
+        "text": "Record audio for From Pen to Glass: {label}",
+        "raw": "`Record audio for From Pen to Glass: ${label}`",
         "parameters": [
           {
             "name": "label",
@@ -124313,8 +124313,8 @@
       "semantic": "app-mobile-mobile-page.text.message",
       "nb": {
         "kind": "template",
-        "text": "Send bilder og video til Animatic Studio: {label}",
-        "raw": "`Send bilder og video til Animatic Studio: ${label}`",
+        "text": "Send bilder og video til From Pen to Glass: {label}",
+        "raw": "`Send bilder og video til From Pen to Glass: ${label}`",
         "parameters": [
           {
             "name": "label",
@@ -124325,8 +124325,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "Send pictures and video to Animatic Studio: {label}",
-        "raw": "`Send pictures and video to Animatic Studio: ${label}`",
+        "text": "Send pictures and video to From Pen to Glass: {label}",
+        "raw": "`Send pictures and video to From Pen to Glass: ${label}`",
         "parameters": [
           {
             "name": "label",
@@ -142579,14 +142579,14 @@
       "semantic": "app-assembly-film-popout.film-popout.use-effect",
       "nb": {
         "kind": "literal",
-        "text": "Montering – Animatic Studio",
-        "raw": "\"Montering – Animatic Studio\"",
+        "text": "Montering – Pen to Glass",
+        "raw": "\"Montering – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Assembly – Animatic Studio",
-        "raw": "\"Assembly – Animatic Studio\"",
+        "text": "Assembly – Pen to Glass",
+        "raw": "\"Assembly – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -158824,14 +158824,14 @@
       "semantic": "app-library-asset-audio.upload-asset-audio.message",
       "nb": {
         "kind": "literal",
-        "text": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The storage does not accept audio files yet. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The storage does not accept audio files yet. Contact the administrator to update Animatic Studio.\"",
+        "text": "The storage does not accept audio files yet. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The storage does not accept audio files yet. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -187645,14 +187645,14 @@
       "semantic": "app-scene-editor-preview-window.copy-styles.message",
       "nb": {
         "kind": "literal",
-        "text": "Forhåndsvisning – Animatic Studio",
-        "raw": "\"Forhåndsvisning – Animatic Studio\"",
+        "text": "Forhåndsvisning – Pen to Glass",
+        "raw": "\"Forhåndsvisning – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Preview – Animatic Studio",
-        "raw": "\"Preview – Animatic Studio\"",
+        "text": "Preview – Pen to Glass",
+        "raw": "\"Preview – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -226904,14 +226904,14 @@
       "semantic": "app-script-export-dialog.export-dialog.p",
       "nb": {
         "kind": "literal",
-        "text": "Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
-        "raw": "\"Startet ikke nedlastingen? Forhåndsvisningen i Animatic Studio kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.\"",
+        "text": "Startet ikke nedlastingen? Forhåndsvisningen i From Pen to Glass kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+        "raw": "\"Startet ikke nedlastingen? Forhåndsvisningen i From Pen to Glass kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
-        "raw": "\"Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.\"",
+        "text": "Did the download not start? The From Pen to Glass preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+        "raw": "\"Did the download not start? The From Pen to Glass preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -238562,14 +238562,14 @@
       "semantic": "app-script-versions-dialog.versions-dialog.p",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database is missing script versions. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database is missing script versions. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database is missing script versions. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database is missing script versions. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -261298,14 +261298,14 @@
       "semantic": "app-account-privacy-statement.privacy-statement.h1",
       "nb": {
         "kind": "literal",
-        "text": "Personvernerklæring for Animatic Studio",
-        "raw": "\"Personvernerklæring for Animatic Studio\"",
+        "text": "Personvernerklæring for From Pen to Glass",
+        "raw": "\"Personvernerklæring for From Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Privacy statement for Animatic Studio",
-        "raw": "\"Privacy statement for Animatic Studio\"",
+        "text": "Privacy statement for From Pen to Glass",
+        "raw": "\"Privacy statement for From Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -261910,14 +261910,14 @@
       "semantic": "app-account-privacy-statement.privacy-statement.p",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
-        "raw": "\"Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
+        "text": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+        "raw": "\"From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
-        "raw": "\"Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
+        "text": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+        "raw": "\"From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -263859,14 +263859,14 @@
       "semantic": "app-account-use-account.account-watcher.dialog-description",
       "nb": {
         "kind": "literal",
-        "text": "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
-        "raw": "\"Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.\"",
+        "text": "Før du bruker From Pen to Glass, må du lese hvordan vi behandler opplysningene dine.",
+        "raw": "\"Før du bruker From Pen to Glass, må du lese hvordan vi behandler opplysningene dine.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Before you use Animatic Studio, read how we process your information.",
-        "raw": "\"Before you use Animatic Studio, read how we process your information.\"",
+        "text": "Before you use From Pen to Glass, read how we process your information.",
+        "raw": "\"Before you use From Pen to Glass, read how we process your information.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -268001,8 +268001,8 @@
       "semantic": "app-admin-cron-status.warning.message",
       "nb": {
         "kind": "template",
-        "text": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.",
-        "raw": "`Bakgrunnsjobben har ikke kjørt de siste ${CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i Animatic Studio.`",
+        "text": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i From Pen to Glass.",
+        "raw": "`Bakgrunnsjobben har ikke kjørt de siste ${CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i From Pen to Glass.`",
         "parameters": [
           {
             "name": "CRON_STALE_MINUTES",
@@ -268013,8 +268013,8 @@
       },
       "en": {
         "kind": "template",
-        "text": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.",
-        "raw": "`The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.`",
+        "text": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in From Pen to Glass.",
+        "raw": "`The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in From Pen to Glass.`",
         "parameters": [
           {
             "name": "CRON_STALE_MINUTES",
@@ -274727,14 +274727,14 @@
       "semantic": "app-projects-members-section.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database cannot remove members yet. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database cannot remove members yet. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database cannot remove members yet. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database cannot remove members yet. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -274754,14 +274754,14 @@
       "semantic": "app-projects-members-section.message.message",
       "nb": {
         "kind": "literal",
-        "text": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio.",
-        "raw": "\"Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio.\"",
+        "text": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere From Pen to Glass.",
+        "raw": "\"Databasen mangler endring av roller. Kontakt administratoren for å oppdatere From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The database cannot change roles yet. Contact the administrator to update Animatic Studio.",
-        "raw": "\"The database cannot change roles yet. Contact the administrator to update Animatic Studio.\"",
+        "text": "The database cannot change roles yet. Contact the administrator to update From Pen to Glass.",
+        "raw": "\"The database cannot change roles yet. Contact the administrator to update From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -287264,14 +287264,14 @@
       "semantic": "app-projects-backup.open-backup-file.message",
       "nb": {
         "kind": "literal",
-        "text": "Zip-filen er ikke en sikkerhetskopi fra Animatic Studio.",
-        "raw": "\"Zip-filen er ikke en sikkerhetskopi fra Animatic Studio.\"",
+        "text": "Zip-filen er ikke en sikkerhetskopi fra From Pen to Glass.",
+        "raw": "\"Zip-filen er ikke en sikkerhetskopi fra From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "The zip file is not a backup from Animatic Studio.",
-        "raw": "\"The zip file is not a backup from Animatic Studio.\"",
+        "text": "The zip file is not a backup from From Pen to Glass.",
+        "raw": "\"The zip file is not a backup from From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -289089,14 +289089,14 @@
       "semantic": "app-shell-schema-banner.schema-banner.p",
       "nb": {
         "kind": "literal",
-        "text": "Kontakt administratoren for å oppdatere Animatic Studio til versjon",
-        "raw": "\"Kontakt administratoren for å oppdatere Animatic Studio til versjon\"",
+        "text": "Kontakt administratoren for å oppdatere From Pen to Glass til versjon",
+        "raw": "\"Kontakt administratoren for å oppdatere From Pen to Glass til versjon\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Contact the administrator to update Animatic Studio to version",
-        "raw": "\"Contact the administrator to update Animatic Studio to version\"",
+        "text": "Contact the administrator to update From Pen to Glass to version",
+        "raw": "\"Contact the administrator to update From Pen to Glass to version\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291003,14 +291003,14 @@
       "semantic": "routes-admin.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Administrasjon – Animatic Studio",
-        "raw": "\"Administrasjon – Animatic Studio\"",
+        "text": "Administrasjon – Pen to Glass",
+        "raw": "\"Administrasjon – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Administration – Animatic Studio",
-        "raw": "\"Administration – Animatic Studio\"",
+        "text": "Administration – Pen to Glass",
+        "raw": "\"Administration – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291030,14 +291030,14 @@
       "semantic": "routes-admin.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Administrer brukere og tjenesten i Animatic Studio.",
-        "raw": "\"Administrer brukere og tjenesten i Animatic Studio.\"",
+        "text": "Administrer brukere og tjenesten i From Pen to Glass.",
+        "raw": "\"Administrer brukere og tjenesten i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Manage users and the service in Animatic Studio.",
-        "raw": "\"Manage users and the service in Animatic Studio.\"",
+        "text": "Manage users and the service in From Pen to Glass.",
+        "raw": "\"Manage users and the service in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291057,14 +291057,14 @@
       "semantic": "routes-admin.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Administrasjon – Animatic Studio",
-        "raw": "\"Administrasjon – Animatic Studio\"",
+        "text": "Administrasjon – Pen to Glass",
+        "raw": "\"Administrasjon – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Administration – Animatic Studio",
-        "raw": "\"Administration – Animatic Studio\"",
+        "text": "Administration – Pen to Glass",
+        "raw": "\"Administration – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291084,14 +291084,14 @@
       "semantic": "routes-admin.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Administrer brukere og tjenesten i Animatic Studio.",
-        "raw": "\"Administrer brukere og tjenesten i Animatic Studio.\"",
+        "text": "Administrer brukere og tjenesten i From Pen to Glass.",
+        "raw": "\"Administrer brukere og tjenesten i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Manage users and the service in Animatic Studio.",
-        "raw": "\"Manage users and the service in Animatic Studio.\"",
+        "text": "Manage users and the service in From Pen to Glass.",
+        "raw": "\"Manage users and the service in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291138,14 +291138,14 @@
       "semantic": "routes-gruppe-workspace-id.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Arbeidsgruppe – Animatic Studio",
-        "raw": "\"Arbeidsgruppe – Animatic Studio\"",
+        "text": "Arbeidsgruppe – Pen to Glass",
+        "raw": "\"Arbeidsgruppe – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Workspace – Animatic Studio",
-        "raw": "\"Workspace – Animatic Studio\"",
+        "text": "Workspace – Pen to Glass",
+        "raw": "\"Workspace – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291192,14 +291192,14 @@
       "semantic": "routes-gruppe-workspace-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeidsgruppe – Animatic Studio",
-        "raw": "\"Arbeidsgruppe – Animatic Studio\"",
+        "text": "Arbeidsgruppe – Pen to Glass",
+        "raw": "\"Arbeidsgruppe – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Workspace – Animatic Studio",
-        "raw": "\"Workspace – Animatic Studio\"",
+        "text": "Workspace – Pen to Glass",
+        "raw": "\"Workspace – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291273,14 +291273,14 @@
       "semantic": "routes-index.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio – Prosjekter",
-        "raw": "\"Animatic Studio – Prosjekter\"",
+        "text": "From Pen to Glass – Prosjekter",
+        "raw": "\"From Pen to Glass – Prosjekter\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio – Projects",
-        "raw": "\"Animatic Studio – Projects\"",
+        "text": "From Pen to Glass – Projects",
+        "raw": "\"From Pen to Glass – Projects\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291300,14 +291300,14 @@
       "semantic": "routes-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio – fra manus til ferdig film.",
-        "raw": "\"Animatic Studio – fra manus til ferdig film.\"",
+        "text": "From Pen to Glass – fra manus til ferdig film.",
+        "raw": "\"From Pen to Glass – fra manus til ferdig film.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio – from script to finished film.",
-        "raw": "\"Animatic Studio – from script to finished film.\"",
+        "text": "From Pen to Glass – from script to finished film.",
+        "raw": "\"From Pen to Glass – from script to finished film.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291327,14 +291327,14 @@
       "semantic": "routes-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio – Prosjekter",
-        "raw": "\"Animatic Studio – Prosjekter\"",
+        "text": "From Pen to Glass – Prosjekter",
+        "raw": "\"From Pen to Glass – Prosjekter\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio – Projects",
-        "raw": "\"Animatic Studio – Projects\"",
+        "text": "From Pen to Glass – Projects",
+        "raw": "\"From Pen to Glass – Projects\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291354,14 +291354,14 @@
       "semantic": "routes-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Animatic Studio – fra manus til ferdig film.",
-        "raw": "\"Animatic Studio – fra manus til ferdig film.\"",
+        "text": "From Pen to Glass – fra manus til ferdig film.",
+        "raw": "\"From Pen to Glass – fra manus til ferdig film.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Animatic Studio – from script to finished film.",
-        "raw": "\"Animatic Studio – from script to finished film.\"",
+        "text": "From Pen to Glass – from script to finished film.",
+        "raw": "\"From Pen to Glass – from script to finished film.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291381,14 +291381,14 @@
       "semantic": "routes-invitasjon.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Invitasjon – Animatic Studio",
-        "raw": "\"Invitasjon – Animatic Studio\"",
+        "text": "Invitasjon – Pen to Glass",
+        "raw": "\"Invitasjon – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Invitation – Animatic Studio",
-        "raw": "\"Invitation – Animatic Studio\"",
+        "text": "Invitation – Pen to Glass",
+        "raw": "\"Invitation – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291408,14 +291408,14 @@
       "semantic": "routes-invitasjon.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Godta en prosjektinvitasjon i Animatic Studio.",
-        "raw": "\"Godta en prosjektinvitasjon i Animatic Studio.\"",
+        "text": "Godta en prosjektinvitasjon i From Pen to Glass.",
+        "raw": "\"Godta en prosjektinvitasjon i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Accept a project invitation in Animatic Studio.",
-        "raw": "\"Accept a project invitation in Animatic Studio.\"",
+        "text": "Accept a project invitation in From Pen to Glass.",
+        "raw": "\"Accept a project invitation in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291435,14 +291435,14 @@
       "semantic": "routes-invitasjon.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Invitasjon – Animatic Studio",
-        "raw": "\"Invitasjon – Animatic Studio\"",
+        "text": "Invitasjon – Pen to Glass",
+        "raw": "\"Invitasjon – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Invitation – Animatic Studio",
-        "raw": "\"Invitation – Animatic Studio\"",
+        "text": "Invitation – Pen to Glass",
+        "raw": "\"Invitation – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291462,14 +291462,14 @@
       "semantic": "routes-invitasjon.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Godta en prosjektinvitasjon i Animatic Studio.",
-        "raw": "\"Godta en prosjektinvitasjon i Animatic Studio.\"",
+        "text": "Godta en prosjektinvitasjon i From Pen to Glass.",
+        "raw": "\"Godta en prosjektinvitasjon i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Accept a project invitation in Animatic Studio.",
-        "raw": "\"Accept a project invitation in Animatic Studio.\"",
+        "text": "Accept a project invitation in From Pen to Glass.",
+        "raw": "\"Accept a project invitation in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291624,14 +291624,14 @@
       "semantic": "routes-konto.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Min konto – Animatic Studio",
-        "raw": "\"Min konto – Animatic Studio\"",
+        "text": "Min konto – Pen to Glass",
+        "raw": "\"Min konto – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "My account – Animatic Studio",
-        "raw": "\"My account – Animatic Studio\"",
+        "text": "My account – Pen to Glass",
+        "raw": "\"My account – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291651,14 +291651,14 @@
       "semantic": "routes-konto.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
-        "raw": "\"Administrer kontoen, språk og AI-valg i Animatic Studio.\"",
+        "text": "Administrer kontoen, språk og AI-valg i From Pen to Glass.",
+        "raw": "\"Administrer kontoen, språk og AI-valg i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Manage your account, language and AI preferences in Animatic Studio.",
-        "raw": "\"Manage your account, language and AI preferences in Animatic Studio.\"",
+        "text": "Manage your account, language and AI preferences in From Pen to Glass.",
+        "raw": "\"Manage your account, language and AI preferences in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291678,14 +291678,14 @@
       "semantic": "routes-konto.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Min konto – Animatic Studio",
-        "raw": "\"Min konto – Animatic Studio\"",
+        "text": "Min konto – Pen to Glass",
+        "raw": "\"Min konto – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "My account – Animatic Studio",
-        "raw": "\"My account – Animatic Studio\"",
+        "text": "My account – Pen to Glass",
+        "raw": "\"My account – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291705,14 +291705,14 @@
       "semantic": "routes-konto.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Administrer kontoen, språk og AI-valg i Animatic Studio.",
-        "raw": "\"Administrer kontoen, språk og AI-valg i Animatic Studio.\"",
+        "text": "Administrer kontoen, språk og AI-valg i From Pen to Glass.",
+        "raw": "\"Administrer kontoen, språk og AI-valg i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Manage your account, language and AI preferences in Animatic Studio.",
-        "raw": "\"Manage your account, language and AI preferences in Animatic Studio.\"",
+        "text": "Manage your account, language and AI preferences in From Pen to Glass.",
+        "raw": "\"Manage your account, language and AI preferences in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291759,14 +291759,14 @@
       "semantic": "routes-m-token.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Last opp – Animatic Studio",
-        "raw": "\"Last opp – Animatic Studio\"",
+        "text": "Last opp – Pen to Glass",
+        "raw": "\"Last opp – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Upload – Animatic Studio",
-        "raw": "\"Upload – Animatic Studio\"",
+        "text": "Upload – Pen to Glass",
+        "raw": "\"Upload – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291786,14 +291786,14 @@
       "semantic": "routes-m-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Last opp materiale til et prosjekt i Animatic Studio.",
-        "raw": "\"Last opp materiale til et prosjekt i Animatic Studio.\"",
+        "text": "Last opp materiale til et prosjekt i From Pen to Glass.",
+        "raw": "\"Last opp materiale til et prosjekt i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Upload material to an Animatic Studio project.",
-        "raw": "\"Upload material to an Animatic Studio project.\"",
+        "text": "Upload material to an From Pen to Glass project.",
+        "raw": "\"Upload material to an From Pen to Glass project.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291813,14 +291813,14 @@
       "semantic": "routes-m-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Last opp – Animatic Studio",
-        "raw": "\"Last opp – Animatic Studio\"",
+        "text": "Last opp – Pen to Glass",
+        "raw": "\"Last opp – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Upload – Animatic Studio",
-        "raw": "\"Upload – Animatic Studio\"",
+        "text": "Upload – Pen to Glass",
+        "raw": "\"Upload – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291840,14 +291840,14 @@
       "semantic": "routes-m-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Last opp materiale til et prosjekt i Animatic Studio.",
-        "raw": "\"Last opp materiale til et prosjekt i Animatic Studio.\"",
+        "text": "Last opp materiale til et prosjekt i From Pen to Glass.",
+        "raw": "\"Last opp materiale til et prosjekt i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Upload material to an Animatic Studio project.",
-        "raw": "\"Upload material to an Animatic Studio project.\"",
+        "text": "Upload material to an From Pen to Glass project.",
+        "raw": "\"Upload material to an From Pen to Glass project.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291867,14 +291867,14 @@
       "semantic": "routes-manusutforsker-project-id.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Manusutforskeren – Animatic Studio",
-        "raw": "\"Manusutforskeren – Animatic Studio\"",
+        "text": "Manusutforskeren – Pen to Glass",
+        "raw": "\"Manusutforskeren – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Script explorer – Animatic Studio",
-        "raw": "\"Script explorer – Animatic Studio\"",
+        "text": "Script explorer – Pen to Glass",
+        "raw": "\"Script explorer – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291921,14 +291921,14 @@
       "semantic": "routes-manusutforsker-project-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Manusutforskeren – Animatic Studio",
-        "raw": "\"Manusutforskeren – Animatic Studio\"",
+        "text": "Manusutforskeren – Pen to Glass",
+        "raw": "\"Manusutforskeren – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Script explorer – Animatic Studio",
-        "raw": "\"Script explorer – Animatic Studio\"",
+        "text": "Script explorer – Pen to Glass",
+        "raw": "\"Script explorer – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -291948,14 +291948,14 @@
       "semantic": "routes-manusutforsker-project-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Søk i manuset og legg til notater i Animatic Studio.",
-        "raw": "\"Søk i manuset og legg til notater i Animatic Studio.\"",
+        "text": "Søk i manuset og legg til notater i From Pen to Glass.",
+        "raw": "\"Søk i manuset og legg til notater i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Search the screenplay and add notes in Animatic Studio.",
-        "raw": "\"Search the screenplay and add notes in Animatic Studio.\"",
+        "text": "Search the screenplay and add notes in From Pen to Glass.",
+        "raw": "\"Search the screenplay and add notes in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292056,14 +292056,14 @@
       "semantic": "routes-personvern.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Personvern – Animatic Studio",
-        "raw": "\"Personvern – Animatic Studio\"",
+        "text": "Personvern – Pen to Glass",
+        "raw": "\"Personvern – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Privacy – Animatic Studio",
-        "raw": "\"Privacy – Animatic Studio\"",
+        "text": "Privacy – Pen to Glass",
+        "raw": "\"Privacy – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292083,14 +292083,14 @@
       "semantic": "routes-personvern.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Les personvernerklæringen for Animatic Studio.",
-        "raw": "\"Les personvernerklæringen for Animatic Studio.\"",
+        "text": "Les personvernerklæringen for From Pen to Glass.",
+        "raw": "\"Les personvernerklæringen for From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Read the privacy statement for Animatic Studio.",
-        "raw": "\"Read the privacy statement for Animatic Studio.\"",
+        "text": "Read the privacy statement for From Pen to Glass.",
+        "raw": "\"Read the privacy statement for From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292110,14 +292110,14 @@
       "semantic": "routes-personvern.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Personvern – Animatic Studio",
-        "raw": "\"Personvern – Animatic Studio\"",
+        "text": "Personvern – Pen to Glass",
+        "raw": "\"Personvern – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Privacy – Animatic Studio",
-        "raw": "\"Privacy – Animatic Studio\"",
+        "text": "Privacy – Pen to Glass",
+        "raw": "\"Privacy – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292137,14 +292137,14 @@
       "semantic": "routes-personvern.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Les personvernerklæringen for Animatic Studio.",
-        "raw": "\"Les personvernerklæringen for Animatic Studio.\"",
+        "text": "Les personvernerklæringen for From Pen to Glass.",
+        "raw": "\"Les personvernerklæringen for From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Read the privacy statement for Animatic Studio.",
-        "raw": "\"Read the privacy statement for Animatic Studio.\"",
+        "text": "Read the privacy statement for From Pen to Glass.",
+        "raw": "\"Read the privacy statement for From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292272,14 +292272,14 @@
       "semantic": "routes-prosjekt-project-id-bibliotek.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Ressursbibliotek – Animatic Studio",
-        "raw": "\"Ressursbibliotek – Animatic Studio\"",
+        "text": "Ressursbibliotek – Pen to Glass",
+        "raw": "\"Ressursbibliotek – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Asset library – Animatic Studio",
-        "raw": "\"Asset library – Animatic Studio\"",
+        "text": "Asset library – Pen to Glass",
+        "raw": "\"Asset library – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292299,14 +292299,14 @@
       "semantic": "routes-prosjekt-project-id-bibliotek.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeid med karakterer og ressurser i Animatic Studio.",
-        "raw": "\"Arbeid med karakterer og ressurser i Animatic Studio.\"",
+        "text": "Arbeid med karakterer og ressurser i From Pen to Glass.",
+        "raw": "\"Arbeid med karakterer og ressurser i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Work with characters and assets in Animatic Studio.",
-        "raw": "\"Work with characters and assets in Animatic Studio.\"",
+        "text": "Work with characters and assets in From Pen to Glass.",
+        "raw": "\"Work with characters and assets in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292326,14 +292326,14 @@
       "semantic": "routes-prosjekt-project-id-bibliotek.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Ressursbibliotek – Animatic Studio",
-        "raw": "\"Ressursbibliotek – Animatic Studio\"",
+        "text": "Ressursbibliotek – Pen to Glass",
+        "raw": "\"Ressursbibliotek – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Asset library – Animatic Studio",
-        "raw": "\"Asset library – Animatic Studio\"",
+        "text": "Asset library – Pen to Glass",
+        "raw": "\"Asset library – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292353,14 +292353,14 @@
       "semantic": "routes-prosjekt-project-id-bibliotek.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeid med karakterer og ressurser i Animatic Studio.",
-        "raw": "\"Arbeid med karakterer og ressurser i Animatic Studio.\"",
+        "text": "Arbeid med karakterer og ressurser i From Pen to Glass.",
+        "raw": "\"Arbeid med karakterer og ressurser i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Work with characters and assets in Animatic Studio.",
-        "raw": "\"Work with characters and assets in Animatic Studio.\"",
+        "text": "Work with characters and assets in From Pen to Glass.",
+        "raw": "\"Work with characters and assets in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292380,14 +292380,14 @@
       "semantic": "routes-prosjekt-project-id-index.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Prosjektoversikt – Animatic Studio",
-        "raw": "\"Prosjektoversikt – Animatic Studio\"",
+        "text": "Prosjektoversikt – Pen to Glass",
+        "raw": "\"Prosjektoversikt – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Project overview – Animatic Studio",
-        "raw": "\"Project overview – Animatic Studio\"",
+        "text": "Project overview – Pen to Glass",
+        "raw": "\"Project overview – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292407,14 +292407,14 @@
       "semantic": "routes-prosjekt-project-id-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Se filmprosjektets produksjoner i Animatic Studio.",
-        "raw": "\"Se filmprosjektets produksjoner i Animatic Studio.\"",
+        "text": "Se filmprosjektets produksjoner i From Pen to Glass.",
+        "raw": "\"Se filmprosjektets produksjoner i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "View your film project productions in Animatic Studio.",
-        "raw": "\"View your film project productions in Animatic Studio.\"",
+        "text": "View your film project productions in From Pen to Glass.",
+        "raw": "\"View your film project productions in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292434,14 +292434,14 @@
       "semantic": "routes-prosjekt-project-id-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Prosjektoversikt – Animatic Studio",
-        "raw": "\"Prosjektoversikt – Animatic Studio\"",
+        "text": "Prosjektoversikt – Pen to Glass",
+        "raw": "\"Prosjektoversikt – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Project overview – Animatic Studio",
-        "raw": "\"Project overview – Animatic Studio\"",
+        "text": "Project overview – Pen to Glass",
+        "raw": "\"Project overview – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292461,14 +292461,14 @@
       "semantic": "routes-prosjekt-project-id-index.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Se filmprosjektets produksjoner i Animatic Studio.",
-        "raw": "\"Se filmprosjektets produksjoner i Animatic Studio.\"",
+        "text": "Se filmprosjektets produksjoner i From Pen to Glass.",
+        "raw": "\"Se filmprosjektets produksjoner i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "View your film project productions in Animatic Studio.",
-        "raw": "\"View your film project productions in Animatic Studio.\"",
+        "text": "View your film project productions in From Pen to Glass.",
+        "raw": "\"View your film project productions in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292488,14 +292488,14 @@
       "semantic": "routes-prosjekt-project-id-manus.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Manus – Animatic Studio",
-        "raw": "\"Manus – Animatic Studio\"",
+        "text": "Manus – Pen to Glass",
+        "raw": "\"Manus – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Script – Animatic Studio",
-        "raw": "\"Script – Animatic Studio\"",
+        "text": "Script – Pen to Glass",
+        "raw": "\"Script – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292515,14 +292515,14 @@
       "semantic": "routes-prosjekt-project-id-manus.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Rediger filmmanuset og scenene i Animatic Studio.",
-        "raw": "\"Rediger filmmanuset og scenene i Animatic Studio.\"",
+        "text": "Rediger filmmanuset og scenene i From Pen to Glass.",
+        "raw": "\"Rediger filmmanuset og scenene i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Edit your screenplay and scenes in Animatic Studio.",
-        "raw": "\"Edit your screenplay and scenes in Animatic Studio.\"",
+        "text": "Edit your screenplay and scenes in From Pen to Glass.",
+        "raw": "\"Edit your screenplay and scenes in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292542,14 +292542,14 @@
       "semantic": "routes-prosjekt-project-id-manus.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Manus – Animatic Studio",
-        "raw": "\"Manus – Animatic Studio\"",
+        "text": "Manus – Pen to Glass",
+        "raw": "\"Manus – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Script – Animatic Studio",
-        "raw": "\"Script – Animatic Studio\"",
+        "text": "Script – Pen to Glass",
+        "raw": "\"Script – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292569,14 +292569,14 @@
       "semantic": "routes-prosjekt-project-id-manus.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Rediger filmmanuset og scenene i Animatic Studio.",
-        "raw": "\"Rediger filmmanuset og scenene i Animatic Studio.\"",
+        "text": "Rediger filmmanuset og scenene i From Pen to Glass.",
+        "raw": "\"Rediger filmmanuset og scenene i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Edit your screenplay and scenes in Animatic Studio.",
-        "raw": "\"Edit your screenplay and scenes in Animatic Studio.\"",
+        "text": "Edit your screenplay and scenes in From Pen to Glass.",
+        "raw": "\"Edit your screenplay and scenes in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292596,14 +292596,14 @@
       "semantic": "routes-prosjekt-project-id-montering.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Montering – Animatic Studio",
-        "raw": "\"Montering – Animatic Studio\"",
+        "text": "Montering – Pen to Glass",
+        "raw": "\"Montering – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Assembly – Animatic Studio",
-        "raw": "\"Assembly – Animatic Studio\"",
+        "text": "Assembly – Pen to Glass",
+        "raw": "\"Assembly – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292623,14 +292623,14 @@
       "semantic": "routes-prosjekt-project-id-montering.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Monter animatic, lyd og film i Animatic Studio.",
-        "raw": "\"Monter animatic, lyd og film i Animatic Studio.\"",
+        "text": "Monter animatic, lyd og film i From Pen to Glass.",
+        "raw": "\"Monter animatic, lyd og film i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Assemble animatic, sound and film in Animatic Studio.",
-        "raw": "\"Assemble animatic, sound and film in Animatic Studio.\"",
+        "text": "Assemble animatic, sound and film in From Pen to Glass.",
+        "raw": "\"Assemble animatic, sound and film in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292650,14 +292650,14 @@
       "semantic": "routes-prosjekt-project-id-montering.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Montering – Animatic Studio",
-        "raw": "\"Montering – Animatic Studio\"",
+        "text": "Montering – Pen to Glass",
+        "raw": "\"Montering – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Assembly – Animatic Studio",
-        "raw": "\"Assembly – Animatic Studio\"",
+        "text": "Assembly – Pen to Glass",
+        "raw": "\"Assembly – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292677,14 +292677,14 @@
       "semantic": "routes-prosjekt-project-id-montering.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Monter animatic, lyd og film i Animatic Studio.",
-        "raw": "\"Monter animatic, lyd og film i Animatic Studio.\"",
+        "text": "Monter animatic, lyd og film i From Pen to Glass.",
+        "raw": "\"Monter animatic, lyd og film i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Assemble animatic, sound and film in Animatic Studio.",
-        "raw": "\"Assemble animatic, sound and film in Animatic Studio.\"",
+        "text": "Assemble animatic, sound and film in From Pen to Glass.",
+        "raw": "\"Assemble animatic, sound and film in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292704,14 +292704,14 @@
       "semantic": "routes-prosjekt-project-id-scene.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Sceneeditor – Animatic Studio",
-        "raw": "\"Sceneeditor – Animatic Studio\"",
+        "text": "Sceneeditor – Pen to Glass",
+        "raw": "\"Sceneeditor – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Scene editor – Animatic Studio",
-        "raw": "\"Scene editor – Animatic Studio\"",
+        "text": "Scene editor – Pen to Glass",
+        "raw": "\"Scene editor – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292731,14 +292731,14 @@
       "semantic": "routes-prosjekt-project-id-scene.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
-        "raw": "\"Rediger scenekomposisjoner og animatic i Animatic Studio.\"",
+        "text": "Rediger scenekomposisjoner og animatic i From Pen to Glass.",
+        "raw": "\"Rediger scenekomposisjoner og animatic i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Edit scene compositions and animatic in Animatic Studio.",
-        "raw": "\"Edit scene compositions and animatic in Animatic Studio.\"",
+        "text": "Edit scene compositions and animatic in From Pen to Glass.",
+        "raw": "\"Edit scene compositions and animatic in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292758,14 +292758,14 @@
       "semantic": "routes-prosjekt-project-id-scene.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Sceneeditor – Animatic Studio",
-        "raw": "\"Sceneeditor – Animatic Studio\"",
+        "text": "Sceneeditor – Pen to Glass",
+        "raw": "\"Sceneeditor – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Scene editor – Animatic Studio",
-        "raw": "\"Scene editor – Animatic Studio\"",
+        "text": "Scene editor – Pen to Glass",
+        "raw": "\"Scene editor – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292785,14 +292785,14 @@
       "semantic": "routes-prosjekt-project-id-scene.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Rediger scenekomposisjoner og animatic i Animatic Studio.",
-        "raw": "\"Rediger scenekomposisjoner og animatic i Animatic Studio.\"",
+        "text": "Rediger scenekomposisjoner og animatic i From Pen to Glass.",
+        "raw": "\"Rediger scenekomposisjoner og animatic i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Edit scene compositions and animatic in Animatic Studio.",
-        "raw": "\"Edit scene compositions and animatic in Animatic Studio.\"",
+        "text": "Edit scene compositions and animatic in From Pen to Glass.",
+        "raw": "\"Edit scene compositions and animatic in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292812,14 +292812,14 @@
       "semantic": "routes-prosjekt-project-id-storylab.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio.",
-        "raw": "\"Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio.\"",
+        "text": "Karakterarbeid, scenelaboratorium og dialoganalyse i From Pen to Glass.",
+        "raw": "\"Karakterarbeid, scenelaboratorium og dialoganalyse i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Character work, scene laboratory and dialogue analysis in Animatic Studio.",
-        "raw": "\"Character work, scene laboratory and dialogue analysis in Animatic Studio.\"",
+        "text": "Character work, scene laboratory and dialogue analysis in From Pen to Glass.",
+        "raw": "\"Character work, scene laboratory and dialogue analysis in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292839,14 +292839,14 @@
       "semantic": "routes-prosjekt-project-id-storylab.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.",
-        "raw": "\"Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio.\"",
+        "text": "Utforsk karakterer, analyser scener og prøv dialogvarianter i From Pen to Glass.",
+        "raw": "\"Utforsk karakterer, analyser scener og prøv dialogvarianter i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Explore characters, analyze scenes and try dialogue variants in Animatic Studio.",
-        "raw": "\"Explore characters, analyze scenes and try dialogue variants in Animatic Studio.\"",
+        "text": "Explore characters, analyze scenes and try dialogue variants in From Pen to Glass.",
+        "raw": "\"Explore characters, analyze scenes and try dialogue variants in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292866,14 +292866,14 @@
       "semantic": "routes-prosjekt-project-id.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Prosjekt – Animatic Studio",
-        "raw": "\"Prosjekt – Animatic Studio\"",
+        "text": "Prosjekt – Pen to Glass",
+        "raw": "\"Prosjekt – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Project – Animatic Studio",
-        "raw": "\"Project – Animatic Studio\"",
+        "text": "Project – Pen to Glass",
+        "raw": "\"Project – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292893,14 +292893,14 @@
       "semantic": "routes-prosjekt-project-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeidsflater for filmprosjektet i Animatic Studio.",
-        "raw": "\"Arbeidsflater for filmprosjektet i Animatic Studio.\"",
+        "text": "Arbeidsflater for filmprosjektet i From Pen to Glass.",
+        "raw": "\"Arbeidsflater for filmprosjektet i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Workspaces for your film project in Animatic Studio.",
-        "raw": "\"Workspaces for your film project in Animatic Studio.\"",
+        "text": "Workspaces for your film project in From Pen to Glass.",
+        "raw": "\"Workspaces for your film project in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292920,14 +292920,14 @@
       "semantic": "routes-prosjekt-project-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Prosjekt – Animatic Studio",
-        "raw": "\"Prosjekt – Animatic Studio\"",
+        "text": "Prosjekt – Pen to Glass",
+        "raw": "\"Prosjekt – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Project – Animatic Studio",
-        "raw": "\"Project – Animatic Studio\"",
+        "text": "Project – Pen to Glass",
+        "raw": "\"Project – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -292947,14 +292947,14 @@
       "semantic": "routes-prosjekt-project-id.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeidsflater for filmprosjektet i Animatic Studio.",
-        "raw": "\"Arbeidsflater for filmprosjektet i Animatic Studio.\"",
+        "text": "Arbeidsflater for filmprosjektet i From Pen to Glass.",
+        "raw": "\"Arbeidsflater for filmprosjektet i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Workspaces for your film project in Animatic Studio.",
-        "raw": "\"Workspaces for your film project in Animatic Studio.\"",
+        "text": "Workspaces for your film project in From Pen to Glass.",
+        "raw": "\"Workspaces for your film project in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293214,14 +293214,14 @@
       "semantic": "routes-prosjekt-project-id-utgivelse.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Utgivelse – Animatic Studio",
-        "raw": "\"Utgivelse – Animatic Studio\"",
+        "text": "Utgivelse – Pen to Glass",
+        "raw": "\"Utgivelse – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Release – Animatic Studio",
-        "raw": "\"Release – Animatic Studio\"",
+        "text": "Release – Pen to Glass",
+        "raw": "\"Release – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293241,14 +293241,14 @@
       "semantic": "routes-prosjekt-project-id-utgivelse.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeid med plakater og utgivelse i Animatic Studio.",
-        "raw": "\"Arbeid med plakater og utgivelse i Animatic Studio.\"",
+        "text": "Arbeid med plakater og utgivelse i From Pen to Glass.",
+        "raw": "\"Arbeid med plakater og utgivelse i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Work with posters and release in Animatic Studio.",
-        "raw": "\"Work with posters and release in Animatic Studio.\"",
+        "text": "Work with posters and release in From Pen to Glass.",
+        "raw": "\"Work with posters and release in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293268,14 +293268,14 @@
       "semantic": "routes-prosjekt-project-id-utgivelse.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Utgivelse – Animatic Studio",
-        "raw": "\"Utgivelse – Animatic Studio\"",
+        "text": "Utgivelse – Pen to Glass",
+        "raw": "\"Utgivelse – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Release – Animatic Studio",
-        "raw": "\"Release – Animatic Studio\"",
+        "text": "Release – Pen to Glass",
+        "raw": "\"Release – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293295,14 +293295,14 @@
       "semantic": "routes-prosjekt-project-id-utgivelse.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Arbeid med plakater og utgivelse i Animatic Studio.",
-        "raw": "\"Arbeid med plakater og utgivelse i Animatic Studio.\"",
+        "text": "Arbeid med plakater og utgivelse i From Pen to Glass.",
+        "raw": "\"Arbeid med plakater og utgivelse i From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Work with posters and release in Animatic Studio.",
-        "raw": "\"Work with posters and release in Animatic Studio.\"",
+        "text": "Work with posters and release in From Pen to Glass.",
+        "raw": "\"Work with posters and release in From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293322,14 +293322,14 @@
       "semantic": "routes-se-token.title.title",
       "nb": {
         "kind": "literal",
-        "text": "Film – Animatic Studio",
-        "raw": "\"Film – Animatic Studio\"",
+        "text": "Film – Pen to Glass",
+        "raw": "\"Film – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Film – Animatic Studio",
-        "raw": "\"Film – Animatic Studio\"",
+        "text": "Film – Pen to Glass",
+        "raw": "\"Film – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293349,14 +293349,14 @@
       "semantic": "routes-se-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Se en film som er delt fra Animatic Studio.",
-        "raw": "\"Se en film som er delt fra Animatic Studio.\"",
+        "text": "Se en film som er delt fra From Pen to Glass.",
+        "raw": "\"Se en film som er delt fra From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Watch a film shared from Animatic Studio.",
-        "raw": "\"Watch a film shared from Animatic Studio.\"",
+        "text": "Watch a film shared from From Pen to Glass.",
+        "raw": "\"Watch a film shared from From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293376,14 +293376,14 @@
       "semantic": "routes-se-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Film – Animatic Studio",
-        "raw": "\"Film – Animatic Studio\"",
+        "text": "Film – Pen to Glass",
+        "raw": "\"Film – Pen to Glass\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Film – Animatic Studio",
-        "raw": "\"Film – Animatic Studio\"",
+        "text": "Film – Pen to Glass",
+        "raw": "\"Film – Pen to Glass\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -293403,14 +293403,14 @@
       "semantic": "routes-se-token.content.content",
       "nb": {
         "kind": "literal",
-        "text": "Se en film som er delt fra Animatic Studio.",
-        "raw": "\"Se en film som er delt fra Animatic Studio.\"",
+        "text": "Se en film som er delt fra From Pen to Glass.",
+        "raw": "\"Se en film som er delt fra From Pen to Glass.\"",
         "parameters": []
       },
       "en": {
         "kind": "literal",
-        "text": "Watch a film shared from Animatic Studio.",
-        "raw": "\"Watch a film shared from Animatic Studio.\"",
+        "text": "Watch a film shared from From Pen to Glass.",
+        "raw": "\"Watch a film shared from From Pen to Glass.\"",
         "parameters": []
       },
       "parameterConflict": false,
@@ -294735,7 +294735,7 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
+      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
       "keys": [
         "adapters-ai-image-run-server.message.message.1fb2430caade",
         "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35"

@@ -7,7 +7,7 @@
   "templatePairs": 1272,
   "dynamicPairs": 18,
   "references": 10629,
-  "candidates": 30937,
+  "candidates": 30942,
   "conflicts": [
     {
       "kind": "parameter-contract",
@@ -1202,7 +1202,7 @@
     },
     {
       "kind": "same-source-different-translation",
-      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.",
+      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
       "keys": [
         "adapters-ai-image-run-server.message.message.1fb2430caade",
         "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35"

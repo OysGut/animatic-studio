@@ -90,7 +90,7 @@ export function suggestionToCommands(state: ProjectState, suggestion: TransferSu
       const block = blocks.find((b) => b.id === evidence) ?? blocks[0];
       if (!block) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.f848b72c387e"));
       const source = t("core-storylab-transfer.source.message.d6d308540381", { value1: String(suggestion.sessionId ?? "–"), value2: String(suggestion.turnId ?? "–") });
-      commands.push({ type: "AddAnnotations", annotations: [{ annotationId: newId<"annotation">(), blockId: block.id, variantId: null, start: 0, end: 0, quote: "", text: `${suggestionText(suggestion)}\n\n${source}`, authorName: "Animatic Studio", source: "system" }] });
+      commands.push({ type: "AddAnnotations", annotations: [{ annotationId: newId<"annotation">(), blockId: block.id, variantId: null, start: 0, end: 0, quote: "", text: `${suggestionText(suggestion)}\n\n${source}`, authorName: "From Pen to Glass", source: "system" }] });
     }
   }
   // Reuse command validation (including INV-04), without altering the caller's state.

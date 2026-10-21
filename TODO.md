@@ -1,4 +1,4 @@
-# TODO – Animatic Studio
+# TODO – From Pen to Glass
 
 ## B-049
 - ML1 akseptanse: kontroller verifisering4 i Claudes miljø; Courier Prime måles 6,439 em her (57/58 med portabel falsk mikrofon). Se ML1_REPORT.md.
@@ -20,6 +20,9 @@
 Huskeliste over det som er tenkt gjort, men ikke bygget. Holdes oppdatert av den som utvikler (Claude eller en annen KI) ved hver leveranse.
 Kilder: beslutningsloggen (`docs/decisions/DECISION_LOG.md`), kravregisteret (`docs/product/requirements.yaml`), kjente problemer (`docs/development/KNOWN_ISSUES.md`).
 Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
+
+## Neste gang `apply_changes` endres
+- B-097: skriv `change_log.scene_ids` i samme transaksjon i `apply_changes` i stedet for i et eget kall etter (`runCommand`). Godkjent som midlertidig løsning 21.10.
 
 ## Sikkerhet
 - **GP5 delingslenker:** nøkkelen lagres i klartekst i `film_shares.token` (bare lesbar for redaktører og eiere via `film_share_token`) så QR-koden kan vises igjen. Vurder kryptering.

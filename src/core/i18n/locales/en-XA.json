@@ -36,8 +36,8 @@
     "executable": false
   },
   "adapters-ai-video-functions.message.message.b49b7f3f602c": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô{value1}. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô.\"0025\" : \"0024\"}). !!]",
-    "source": "`The database is not up to date for AI video${data.queue ? \" in the queue\" : \"\"}. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"}).`",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô{value1}. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss.\"0025\" : \"0024\"}). !!]",
+    "source": "`The database is not up to date for AI video${data.queue ? \" in the queue\" : \"\"}. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).`",
     "parameters": [
       {
         "name": "value1",
@@ -4649,14 +4649,14 @@
     "executable": true
   },
   "core-backup-index.parse-backup.message.9e11241c0bca": {
-    "text": "[!! TThhëë ffïïllëë ïïss nnôôtt áá bbáácckküüpp ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The file is not a backup from Animatic Studio.\"",
+    "text": "[!! TThhëë ffïïllëë ïïss nnôôtt áá bbáácckküüpp ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The file is not a backup from From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "core-backup-index.parse-backup.message.bc940e902884": {
-    "text": "[!! TThhëë bbáácckküüpp wwááss mmááddëë wwïïtthh áá nnëëwwëërr vvëërrssïïôônn ôôff ÁÁnnïïmmááttïïcc SSttüüddïïôô áánndd ccáánnnnôôtt bbëë rrëëáádd hhëërrëë. !!]",
-    "source": "\"The backup was made with a newer version of Animatic Studio and cannot be read here.\"",
+    "text": "[!! TThhëë bbáácckküüpp wwááss mmááddëë wwïïtthh áá nnëëwwëërr vvëërrssïïôônn ôôff FFrrôômm PPëënn ttôô GGlláássss áánndd ccáánnnnôôtt bbëë rrëëáádd hhëërrëë. !!]",
+    "source": "\"The backup was made with a newer version of From Pen to Glass and cannot be read here.\"",
     "parameters": [],
     "executable": true
   },
@@ -4834,8 +4834,8 @@
     "executable": true
   },
   "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
-    "text": "[!! BBáácckküüpp ôôff “{name}” ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "`Backup of “${sum.name}” from Animatic Studio`",
+    "text": "[!! BBáácckküüpp ôôff “{name}” ffrrôômm FFrrôômm PPëënn ttôô GGlláássss !!]",
+    "source": "`Backup of “${sum.name}” from From Pen to Glass`",
     "parameters": [
       {
         "name": "name",
@@ -11413,8 +11413,8 @@
     "executable": true
   },
   "core-generation-providers.providers.message.8ac7f045e797": {
-    "text": "[!! ÜÜssëëss tthhëë ccrrëëddïïttss ïïnn yyôôüürr ÁÁnnïïmmááttïïcc SSttüüddïïôô wwôôrrkkssppááccëë. NNôô kkëëyy ôôff yyôôüürr ôôwwnn – sswwïïttcchhëëdd ôônn ffôôrr tthhëë pprrôôjjëëcctt ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.\"",
+    "text": "[!! ÜÜssëëss tthhëë ccrrëëddïïttss ïïnn yyôôüürr FFrrôômm PPëënn ttôô GGlláássss wwôôrrkkssppááccëë. NNôô kkëëyy ôôff yyôôüürr ôôwwnn – sswwïïttcchhëëdd ôônn ffôôrr tthhëë pprrôôjjëëcctt ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Uses the credits in your From Pen to Glass workspace. No key of your own – switched on for the project in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -11455,8 +11455,8 @@
     "executable": true
   },
   "core-generation-providers.providers.message.478247762189": {
-    "text": "[!! GGôô ttôô ÁÁPPÏÏ kkëëyyss → “CCrrëëááttëë nnëëww ssëëccrrëëtt kkëëyy”, nnáámmëë ïïtt “ÁÁnnïïmmááttïïcc SSttüüddïïôô” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh sskk-). !!]",
-    "source": "\"Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).\"",
+    "text": "[!! GGôô ttôô ÁÁPPÏÏ kkëëyyss → “CCrrëëááttëë nnëëww ssëëccrrëëtt kkëëyy”, nnáámmëë ïïtt “PPëënn ttôô GGlláássss” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh sskk-). !!]",
+    "source": "\"Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-).\"",
     "parameters": [],
     "executable": true
   },
@@ -11911,8 +11911,8 @@
     "executable": true
   },
   "core-generation-providers.providers.message.5c712e78bf84": {
-    "text": "[!! GGôô ttôô SSëëttttïïnnggss → ÁÁPPÏÏ kkëëyyss → “CCrrëëááttëë KKëëyy”, nnáámmëë ïïtt “ÁÁnnïïmmááttïïcc SSttüüddïïôô” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh sskk-áánntt-). !!]",
-    "source": "\"Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).\"",
+    "text": "[!! GGôô ttôô SSëëttttïïnnggss → ÁÁPPÏÏ kkëëyyss → “CCrrëëááttëë KKëëyy”, nnáámmëë ïïtt “PPëënn ttôô GGlláássss” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh sskk-áánntt-). !!]",
+    "source": "\"Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-).\"",
     "parameters": [],
     "executable": true
   },
@@ -11935,8 +11935,8 @@
     "executable": true
   },
   "core-generation-providers.providers.message.e3bf20933260": {
-    "text": "[!! GGôô ttôô ÁÁPPÏÏ KKëëyyss → “CCrrëëááttëë ÁÁPPÏÏ KKëëyy”, nnáámmëë ïïtt “ÁÁnnïïmmááttïïcc SSttüüddïïôô” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh xxááïï-). !!]",
-    "source": "\"Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).\"",
+    "text": "[!! GGôô ttôô ÁÁPPÏÏ KKëëyyss → “CCrrëëááttëë ÁÁPPÏÏ KKëëyy”, nnáámmëë ïïtt “PPëënn ttôô GGlláássss” áánndd ccôôppyy ïïtt (ïïtt ssttáárrttss wwïïtthh xxááïï-). !!]",
+    "source": "\"Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-).\"",
     "parameters": [],
     "executable": true
   },
@@ -14840,8 +14840,8 @@
     "executable": true
   },
   "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô (ssyyssttëëmm nnôôttëë) !!]",
-    "source": "\"Animatic Studio (system note)\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss (ssyyssttëëmm nnôôttëë) !!]",
+    "source": "\"From Pen to Glass (system note)\"",
     "parameters": [],
     "executable": true
   },
@@ -17136,8 +17136,8 @@
     "executable": true
   },
   "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
-    "text": "[!! {value1} ïïss ccôômmpprrëëssssëëdd áánndd ttôôôô lláárrggëë ttôô üünnppáácckk hhëërrëë. ÜÜssëë tthhëë zzïïpp ffïïllëë ááss ïïtt wwááss ddôôwwnnllôôááddëëdd ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "`${e.name.split(\"/\").pop()} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio.`",
+    "text": "[!! {value1} ïïss ccôômmpprrëëssssëëdd áánndd ttôôôô lláárrggëë ttôô üünnppáácckk hhëërrëë. ÜÜssëë tthhëë zzïïpp ffïïllëë ááss ïïtt wwááss ddôôwwnnllôôááddëëdd ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "`${e.name.split(\"/\").pop()} is compressed and too large to unpack here. Use the zip file as it was downloaded from From Pen to Glass.`",
     "parameters": [
       {
         "name": "value1",
@@ -17896,8 +17896,8 @@
     "executable": true
   },
   "adapters-ai-image-run-server.message.message.d132ffa15512": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ÁÁÏÏ ggëënnëërrááttïïôônn llôôgg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the AI generation log. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ÁÁÏÏ ggëënnëërrááttïïôônn llôôgg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the AI generation log. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -17956,8 +17956,8 @@
     "executable": true
   },
   "adapters-ai-image-run-server.message.message.1fb2430caade": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for own AI providers. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for own AI providers. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -18166,8 +18166,8 @@
     "executable": true
   },
   "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr yyôôüürr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr yyôôüürr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -18669,8 +18669,8 @@
     "executable": true
   },
   "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ ssôôüünndd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for AI sound. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ ssôôüünndd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for AI sound. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -18825,8 +18825,8 @@
     "executable": true
   },
   "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ ssppëëëëcchh. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for AI speech. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ ssppëëëëcchh. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for AI speech. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -19185,8 +19185,8 @@
     "executable": true
   },
   "adapters-ai-text-functions.message.message.2fd3b559a274": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô ddïïdd nnôôtt rrëëccôôggnnïïssëë áánnyy ôôff tthhëë lláánnggüüáággëë mmôôddëëllss. SSëëtt ÁÁNNÏÏMMÁÁTTÏÏCC_TTËËXXTT_MMÔÔDDËËLL ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss ddïïdd nnôôtt rrëëccôôggnnïïssëë áánnyy ôôff tthhëë lláánnggüüáággëë mmôôddëëllss. SSëëtt ÁÁNNÏÏMMÁÁTTÏÏCC_TTËËXXTT_MMÔÔDDËËLL ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"From Pen to Glass did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -19784,8 +19784,8 @@
     "executable": true
   },
   "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ-wwrrïïttttëënn ddëëssccrrïïppttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ÁÁÏÏ-wwrrïïttttëënn ddëëssccrrïïppttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20168,8 +20168,8 @@
     "executable": true
   },
   "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not up to date. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not up to date. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20324,44 +20324,44 @@
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë áássssëëtt llïïbbrráárryy áánndd nnôôttëëss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë áássssëëtt llïïbbrráárryy áánndd nnôôttëëss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.01438c3c6b49": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë pprrôôjjëëcctt ffôôrrmmáátt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the project format. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë pprrôôjjëëcctt ffôôrrmmáátt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the project format. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.115702403951": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing sound. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing sound. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.3d6e65936633": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccllïïppppïïnngg áánndd ttïïmmëë llïïnnkkss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing clipping and time links. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccllïïppppïïnngg áánndd ttïïmmëë llïïnnkkss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing clipping and time links. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.402d2c13486c": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë nnëëww ffëëááttüürrëëss (ttrráánnssïïttïïôônnss, bblláácckk áánndd wwhhïïttëë, ggrrôôüüppss, ïïmmáággëë sswwááppss áánndd mmôôttïïôônn ppáátthhss). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë nnëëww ffëëááttüürrëëss (ttrráánnssïïttïïôônnss, bblláácckk áánndd wwhhïïttëë, ggrrôôüüppss, ïïmmáággëë sswwááppss áánndd mmôôttïïôônn ppáátthhss). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ÁÁÏÏ bbüüddggëëtt áánndd ggëënnëërrááttïïôônn ddëëssccrrïïppttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ÁÁÏÏ bbüüddggëëtt áánndd ggëënnëërrááttïïôônn ddëëssccrrïïppttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccôônnttïïnnüüïïttyy ffôôrr tthhëë cchháárrááccttëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccôônnttïïnnüüïïttyy ffôôrr tthhëë cchháárrááccttëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20372,20 +20372,20 @@
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg lláánnggüüáággëë vvëërrssïïôônnss ôôff tthhëë ssccrrïïpptt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing language versions of the script. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg lláánnggüüáággëë vvëërrssïïôônnss ôôff tthhëë ssccrrïïpptt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing language versions of the script. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.fda297080af9": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg lláánnggüüáággëë vvëërrssïïôônnss ôôff tthhëë ffïïllmm (ááüüddïïôô áánndd ïïmmáággëëss ppëërr lláánnggüüáággëë). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg lláánnggüüáággëë vvëërrssïïôônnss ôôff tthhëë ffïïllmm (ááüüddïïôô áánndd ïïmmáággëëss ppëërr lláánnggüüáággëë). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccôônnttïïnnüüïïttyy ffôôrr ssppïïnn-ôôffffss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ccôônnttïïnnüüïïttyy ffôôrr ssppïïnn-ôôffffss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20438,80 +20438,80 @@
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg nnôôttëëss ôônn tthhëë pprrôôddüüccttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing notes on the productions. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg nnôôttëëss ôônn tthhëë pprrôôddüüccttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing notes on the productions. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr áánnggllëëss ôônn ïïmmáággëëss áánndd vvïïssüüááll ffáácctt sshhëëëëttss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr áánnggllëëss ôônn ïïmmáággëëss áánndd vvïïssüüááll ffáácctt sshhëëëëttss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr ddëëllëëttëëdd ïïttëëmmss, ssôôüünndd ssppëëëëdd áánndd “áánnïïmmááttëë ôônn ttwwôôss”. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr ddëëllëëttëëdd ïïttëëmmss, ssôôüünndd ssppëëëëdd áánndd “áánnïïmmááttëë ôônn ttwwôôss”. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr ssáávvëëdd ddüürrááttïïôônn ëëssttïïmmááttëëss áánndd tthhëë ëëxxppôôrrtt llôôgg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr ssáávvëëdd ddüürrááttïïôônn ëëssttïïmmááttëëss áánndd tthhëë ëëxxppôôrrtt llôôgg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.a351f6c20569": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr tthhëë wwôôrrkkllïïsstt áánndd ëëxxppôôrrtt ssëëttttïïnnggss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ááddddïïttïïôônn ffôôrr tthhëë wwôôrrkkllïïsstt áánndd ëëxxppôôrrtt ssëëttttïïnnggss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.f770da01452c": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë nnëëwwëësstt ááddddïïttïïôônn (mmáásskkss, ttrráánnssïïttïïôônnss, vvôôïïccëëss, ssttyyllëë pprrôôffïïllëëss). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë nnëëwwëësstt ááddddïïttïïôônn (mmáásskkss, ttrráánnssïïttïïôônnss, vvôôïïccëëss, ssttyyllëë pprrôôffïïllëëss). CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.16525acc1633": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd llïïnnkkss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing sound links. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd llïïnnkkss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing sound links. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.bb458d81609f": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg pplláánnnnëëdd llëënnggtthh ppëërr ssccëënnëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing planned length per scene. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg pplláánnnnëëdd llëënnggtthh ppëërr ssccëënnëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing planned length per scene. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.855135ab45cb": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ffïïllmm'ss vvïïssüüááll ssttyyllëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the film's visual style. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ffïïllmm'ss vvïïssüüááll ssttyyllëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the film's visual style. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ppôôssttëërrss áánndd rrëëllááttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing posters and relations. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ppôôssttëërrss áánndd rrëëllááttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing posters and relations. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.9678261bea35": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ïïmmppôôrrttëëdd ffïïllmm áánndd ttrráánnssïïttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ïïmmppôôrrttëëdd ffïïllmm áánndd ttrráánnssïïttïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd ááccrrôôssss ssëëvvëërrááll ssccëënnëëss áánndd vvôôllüümmëë ppôôïïnnttss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssôôüünndd ááccrrôôssss ssëëvvëërrááll ssccëënnëëss áánndd vvôôllüümmëë ppôôïïnnttss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "adapters-storage-commands-functions.message.message.0e67cf134641": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ssccëënnëë ëëddïïttôôrr. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing the scene editor. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg tthhëë ssccëënnëë ëëddïïttôôrr. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing the scene editor. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20827,8 +20827,8 @@
     "executable": true
   },
   "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ddëëllëëttïïôônn yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüppddááttëëdd ffôôrr ddëëllëëttïïôônn yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -20952,8 +20952,8 @@
     "executable": true
   },
   "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ddëëllëëttëëdd ïïttëëmmss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ddëëllëëttëëdd ïïttëëmmss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -21534,8 +21534,8 @@
     "executable": true
   },
   "app-ai-ai-panel.budget.p.9eadccb8743b": {
-    "text": "[!! WWhhëënn tthhëë llïïmmïïtt ïïss rrëëáácchhëëdd, tthhëë ssëërrvvëërr ssttôôppss nnëëww ggëënnëërrááttïïôônnss üünnttïïll nnëëxxtt mmôônntthh. TThhëë pprrïïccëë ïïss yyôôüürr ôôwwnn ëëssttïïmmááttëë (ÁÁnnïïmmááttïïcc SSttüüddïïôô sshhôôwwss tthhëë üüssáággëë ïïnn tthhëë wwôôrrkkssppááccëë) áánndd ïïss ôônnllyy üüssëëdd ttôô sshhôôww tthhëë ëëssttïïmmááttëëdd ccôôsstt. !!]",
-    "source": "\"When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost.\"",
+    "text": "[!! WWhhëënn tthhëë llïïmmïïtt ïïss rrëëáácchhëëdd, tthhëë ssëërrvvëërr ssttôôppss nnëëww ggëënnëërrááttïïôônnss üünnttïïll nnëëxxtt mmôônntthh. TThhëë pprrïïccëë ïïss yyôôüürr ôôwwnn ëëssttïïmmááttëë (FFrrôômm PPëënn ttôô GGlláássss sshhôôwwss tthhëë üüssáággëë ïïnn tthhëë wwôôrrkkssppááccëë) áánndd ïïss ôônnllyy üüssëëdd ttôô sshhôôww tthhëë ëëssttïïmmááttëëdd ccôôsstt. !!]",
+    "source": "\"When the limit is reached, the server stops new generations until next month. The price is your own estimate (From Pen to Glass shows the usage in the workspace) and is only used to show the estimated cost.\"",
     "parameters": [],
     "executable": true
   },
@@ -21942,8 +21942,8 @@
     "executable": true
   },
   "app-ai-providers-dialog.text.text.74fba41561c8": {
-    "text": "[!! TThhëë kkëëyy hhááss bbëëëënn ddëëllëëttëëdd ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The key has been deleted from Animatic Studio.\"",
+    "text": "[!! TThhëë kkëëyy hhááss bbëëëënn ddëëllëëttëëdd ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The key has been deleted from From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -21972,8 +21972,8 @@
     "executable": true
   },
   "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
-    "text": "[!! TThhïïss ïïss áállwwááyyss áávvááïïlláábbllëë áánndd üüssëëss tthhëë ccrrëëddïïttss ïïnn tthhëë ÁÁnnïïmmááttïïcc SSttüüddïïôô wwôôrrkkssppááccëë. TThhëë pprrôôjjëëcctt'ss ÁÁÏÏ bbüüddggëëtt ááppppllïïëëss. !!]",
-    "source": "\"This is always available and uses the credits in the Animatic Studio workspace. The project's AI budget applies.\"",
+    "text": "[!! TThhïïss ïïss áállwwááyyss áávvááïïlláábbllëë áánndd üüssëëss tthhëë ccrrëëddïïttss ïïnn tthhëë FFrrôômm PPëënn ttôô GGlláássss wwôôrrkkssppááccëë. TThhëë pprrôôjjëëcctt'ss ÁÁÏÏ bbüüddggëëtt ááppppllïïëëss. !!]",
+    "source": "\"This is always available and uses the credits in the From Pen to Glass workspace. The project's AI budget applies.\"",
     "parameters": [],
     "executable": true
   },
@@ -22068,8 +22068,8 @@
     "executable": true
   },
   "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
-    "text": "[!! DDëëllëëttëë tthhëë kkëëyy ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô? !!]",
-    "source": "\"Delete the key from Animatic Studio?\"",
+    "text": "[!! DDëëllëëttëë tthhëë kkëëyy ffrrôômm FFrrôômm PPëënn ttôô GGlláássss? !!]",
+    "source": "\"Delete the key from From Pen to Glass?\"",
     "parameters": [],
     "executable": true
   },
@@ -22212,8 +22212,8 @@
     "executable": true
   },
   "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt yyëëtt üüppddááttëëdd ffôôrr yyôôüürr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt yyëëtt üüppddááttëëdd ffôôrr yyôôüürr ôôwwnn ÁÁÏÏ pprrôôvvïïddëërrss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is not yet updated for your own AI providers. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -26687,8 +26687,8 @@
     "executable": true
   },
   "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1": {
-    "text": "[!! TThhïïss üüssëëss ccrrëëddïïttss ïïnn tthhëë ÁÁnnïïmmááttïïcc SSttüüddïïôô wwôôrrkkssppááccëë ( !!]",
-    "source": "\"This uses credits in the Animatic Studio workspace (\"",
+    "text": "[!! TThhïïss üüssëëss ccrrëëddïïttss ïïnn tthhëë FFrrôômm PPëënn ttôô GGlláássss wwôôrrkkssppááccëë ( !!]",
+    "source": "\"This uses credits in the From Pen to Glass workspace (\"",
     "parameters": [],
     "executable": true
   },
@@ -30606,8 +30606,8 @@
     "executable": true
   },
   "app-library-asset-images.upload-one.message.0cb14e697856": {
-    "text": "[!! TThhëë ïïmmáággëë ssttôôrráággëë bbüücckkëëtt ïïss mmïïssssïïnngg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The image storage bucket is missing. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ïïmmáággëë ssttôôrráággëë bbüücckkëëtt ïïss mmïïssssïïnngg. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The image storage bucket is missing. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -31406,8 +31406,8 @@
     "executable": true
   },
   "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
-    "text": "[!! ÜÜppllôôáádd ttôô ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Upload to Animatic Studio\"",
+    "text": "[!! ÜÜppllôôáádd ttôô FFrrôômm PPëënn ttôô GGlláássss !!]",
+    "source": "\"Upload to From Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -31538,8 +31538,8 @@
     "executable": true
   },
   "app-mobile-mobile-page.text.message.624aef06af2d": {
-    "text": "[!! RRëëccôôrrdd ááüüddïïôô ffôôrr ÁÁnnïïmmááttïïcc SSttüüddïïôô: {label} !!]",
-    "source": "`Record audio for Animatic Studio: ${label}`",
+    "text": "[!! RRëëccôôrrdd ááüüddïïôô ffôôrr FFrrôômm PPëënn ttôô GGlláássss: {label} !!]",
+    "source": "`Record audio for From Pen to Glass: ${label}`",
     "parameters": [
       {
         "name": "label",
@@ -31550,8 +31550,8 @@
     "executable": true
   },
   "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-    "text": "[!! SSëënndd ppïïccttüürrëëss áánndd vvïïddëëôô ttôô ÁÁnnïïmmááttïïcc SSttüüddïïôô: {label} !!]",
-    "source": "`Send pictures and video to Animatic Studio: ${label}`",
+    "text": "[!! SSëënndd ppïïccttüürrëëss áánndd vvïïddëëôô ttôô FFrrôômm PPëënn ttôô GGlláássss: {label} !!]",
+    "source": "`Send pictures and video to From Pen to Glass: ${label}`",
     "parameters": [
       {
         "name": "label",
@@ -35850,8 +35850,8 @@
     "executable": true
   },
   "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
-    "text": "[!! ÁÁssssëëmmbbllyy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Assembly – Animatic Studio\"",
+    "text": "[!! ÁÁssssëëmmbbllyy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Assembly – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -39810,8 +39810,8 @@
     "executable": true
   },
   "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-    "text": "[!! TThhëë ssttôôrráággëë ddôôëëss nnôôtt ááccccëëpptt ááüüddïïôô ffïïllëëss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The storage does not accept audio files yet. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ssttôôrráággëë ddôôëëss nnôôtt ááccccëëpptt ááüüddïïôô ffïïllëëss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The storage does not accept audio files yet. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -46683,8 +46683,8 @@
     "executable": true
   },
   "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
-    "text": "[!! PPrrëëvvïïëëww – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Preview – Animatic Studio\"",
+    "text": "[!! PPrrëëvvïïëëww – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Preview – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -56016,8 +56016,8 @@
     "executable": true
   },
   "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
-    "text": "[!! DDïïdd tthhëë ddôôwwnnllôôáádd nnôôtt ssttáárrtt? TThhëë ÁÁnnïïmmááttïïcc SSttüüddïïôô pprrëëvvïïëëww ccáánn bbllôôcckk ddôôwwnnllôôááddss. ÔÔppëënn tthhëë áápppp ïïnn áá ssëëppáárrááttëë ttáább (tthhëë nnëëww-ttáább bbüüttttôônn áátt tthhëë ttôôpp ôôff tthhëë pprrëëvvïïëëww) áánndd ëëxxppôôrrtt ffrrôômm tthhëërrëë. !!]",
-    "source": "\"Did the download not start? The Animatic Studio preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.\"",
+    "text": "[!! DDïïdd tthhëë ddôôwwnnllôôáádd nnôôtt ssttáárrtt? TThhëë FFrrôômm PPëënn ttôô GGlláássss pprrëëvvïïëëww ccáánn bbllôôcckk ddôôwwnnllôôááddss. ÔÔppëënn tthhëë áápppp ïïnn áá ssëëppáárrááttëë ttáább (tthhëë nnëëww-ttáább bbüüttttôônn áátt tthhëë ttôôpp ôôff tthhëë pprrëëvvïïëëww) áánndd ëëxxppôôrrtt ffrrôômm tthhëërrëë. !!]",
+    "source": "\"Did the download not start? The From Pen to Glass preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.\"",
     "parameters": [],
     "executable": true
   },
@@ -58782,8 +58782,8 @@
     "executable": true
   },
   "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssccrrïïpptt vvëërrssïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database is missing script versions. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss mmïïssssïïnngg ssccrrïïpptt vvëërrssïïôônnss. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database is missing script versions. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -64109,8 +64109,8 @@
     "executable": true
   },
   "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
-    "text": "[!! PPrrïïvvááccyy ssttááttëëmmëënntt ffôôrr ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Privacy statement for Animatic Studio\"",
+    "text": "[!! PPrrïïvvááccyy ssttááttëëmmëënntt ffôôrr FFrrôômm PPëënn ttôô GGlláássss !!]",
+    "source": "\"Privacy statement for From Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -64265,8 +64265,8 @@
     "executable": true
   },
   "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô bbrrüükkëërr ëënn sskkyyppllááttttffôôrrmm ffôôrr ddááttáábbáássëë, ffïïllëërr ôôgg ïïnnnnllôôggggïïnngg. LLáággrrïïnnggssssttëëdd:  !!]",
-    "source": "\"Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss bbrrüükkëërr ëënn sskkyyppllááttttffôôrrmm ffôôrr ddááttáábbáássëë, ffïïllëërr ôôgg ïïnnnnllôôggggïïnngg. LLáággrrïïnnggssssttëëdd:  !!]",
+    "source": "\"From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: \"",
     "parameters": [],
     "executable": true
   },
@@ -64707,8 +64707,8 @@
     "executable": true
   },
   "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-    "text": "[!! BBëëffôôrrëë yyôôüü üüssëë ÁÁnnïïmmááttïïcc SSttüüddïïôô, rrëëáádd hhôôww wwëë pprrôôccëëssss yyôôüürr ïïnnffôôrrmmááttïïôônn. !!]",
-    "source": "\"Before you use Animatic Studio, read how we process your information.\"",
+    "text": "[!! BBëëffôôrrëë yyôôüü üüssëë FFrrôômm PPëënn ttôô GGlláássss, rrëëáádd hhôôww wwëë pprrôôccëëssss yyôôüürr ïïnnffôôrrmmááttïïôônn. !!]",
+    "source": "\"Before you use From Pen to Glass, read how we process your information.\"",
     "parameters": [],
     "executable": true
   },
@@ -65698,8 +65698,8 @@
     "executable": true
   },
   "app-admin-cron-status.warning.message.1494cbf069ca": {
-    "text": "[!! TThhëë bbáácckkggrrôôüünndd jjôôbb hhááss nnôôtt rrüünn ïïnn tthhëë lláásstt {CRON_STALE_MINUTES} mmïïnnüüttëëss. CChhëëcckk tthháátt tthhëë áápppp ïïss ppüübbllïïsshhëëdd áánndd tthhëë jjôôbb ïïss ssëëtt üüpp ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "`The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in Animatic Studio.`",
+    "text": "[!! TThhëë bbáácckkggrrôôüünndd jjôôbb hhááss nnôôtt rrüünn ïïnn tthhëë lláásstt {CRON_STALE_MINUTES} mmïïnnüüttëëss. CChhëëcckk tthháátt tthhëë áápppp ïïss ppüübbllïïsshhëëdd áánndd tthhëë jjôôbb ïïss ssëëtt üüpp ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "`The background job has not run in the last ${CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in From Pen to Glass.`",
     "parameters": [
       {
         "name": "CRON_STALE_MINUTES",
@@ -67282,14 +67282,14 @@
     "executable": true
   },
   "app-projects-members-section.message.message.f5b9e1478f2b": {
-    "text": "[!! TThhëë ddááttáábbáássëë ccáánnnnôôtt rrëëmmôôvvëë mmëëmmbbëërrss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database cannot remove members yet. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ccáánnnnôôtt rrëëmmôôvvëë mmëëmmbbëërrss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database cannot remove members yet. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "app-projects-members-section.message.message.9bf4e1d2979e": {
-    "text": "[!! TThhëë ddááttáábbáássëë ccáánnnnôôtt cchháánnggëë rrôôllëëss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The database cannot change roles yet. Contact the administrator to update Animatic Studio.\"",
+    "text": "[!! TThhëë ddááttáábbáássëë ccáánnnnôôtt cchháánnggëë rrôôllëëss yyëëtt. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The database cannot change roles yet. Contact the administrator to update From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -70303,8 +70303,8 @@
     "executable": true
   },
   "app-projects-backup.open-backup-file.message.23132bc02467": {
-    "text": "[!! TThhëë zzïïpp ffïïllëë ïïss nnôôtt áá bbáácckküüpp ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"The zip file is not a backup from Animatic Studio.\"",
+    "text": "[!! TThhëë zzïïpp ffïïllëë ïïss nnôôtt áá bbáácckküüpp ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"The zip file is not a backup from From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -70743,8 +70743,8 @@
     "executable": true
   },
   "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-    "text": "[!! CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô ttôô vvëërrssïïôônn !!]",
-    "source": "\"Contact the administrator to update Animatic Studio to version\"",
+    "text": "[!! CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss ttôô vvëërrssïïôônn !!]",
+    "source": "\"Contact the administrator to update From Pen to Glass to version\"",
     "parameters": [],
     "executable": true
   },
@@ -71190,26 +71190,26 @@
     "executable": true
   },
   "routes-admin.title.title.50274d57d4da": {
-    "text": "[!! ÁÁddmmïïnnïïssttrrááttïïôônn – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Administration – Animatic Studio\"",
+    "text": "[!! ÁÁddmmïïnnïïssttrrááttïïôônn – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Administration – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-admin.content.content.4a28312072cc": {
-    "text": "[!! MMáánnáággëë üüssëërrss áánndd tthhëë ssëërrvvïïccëë ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Manage users and the service in Animatic Studio.\"",
+    "text": "[!! MMáánnáággëë üüssëërrss áánndd tthhëë ssëërrvvïïccëë ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Manage users and the service in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-admin.content.content.2838c73c64a0": {
-    "text": "[!! ÁÁddmmïïnnïïssttrrááttïïôônn – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Administration – Animatic Studio\"",
+    "text": "[!! ÁÁddmmïïnnïïssttrrááttïïôônn – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Administration – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-admin.content.content.4a28312072cc.2": {
-    "text": "[!! MMáánnáággëë üüssëërrss áánndd tthhëë ssëërrvvïïccëë ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Manage users and the service in Animatic Studio.\"",
+    "text": "[!! MMáánnáággëë üüssëërrss áánndd tthhëë ssëërrvvïïccëë ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Manage users and the service in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71220,8 +71220,8 @@
     "executable": true
   },
   "routes-gruppe-workspace-id.title.title.73796e5fd612": {
-    "text": "[!! WWôôrrkkssppááccëë – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Workspace – Animatic Studio\"",
+    "text": "[!! WWôôrrkkssppááccëë – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Workspace – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -71232,8 +71232,8 @@
     "executable": true
   },
   "routes-gruppe-workspace-id.content.content.d76669de2282": {
-    "text": "[!! WWôôrrkkssppááccëë – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Workspace – Animatic Studio\"",
+    "text": "[!! WWôôrrkkssppááccëë – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Workspace – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -71250,50 +71250,50 @@
     "executable": true
   },
   "routes-index.title.title.d34b816fe818": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô – PPrrôôjjëëccttss !!]",
-    "source": "\"Animatic Studio – Projects\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss – PPrrôôjjëëccttss !!]",
+    "source": "\"From Pen to Glass – Projects\"",
     "parameters": [],
     "executable": true
   },
   "routes-index.content.content.75201acaab45": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô – ffrrôômm ssccrrïïpptt ttôô ffïïnnïïsshhëëdd ffïïllmm. !!]",
-    "source": "\"Animatic Studio – from script to finished film.\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss – ffrrôômm ssccrrïïpptt ttôô ffïïnnïïsshhëëdd ffïïllmm. !!]",
+    "source": "\"From Pen to Glass – from script to finished film.\"",
     "parameters": [],
     "executable": true
   },
   "routes-index.content.content.d4c02791089e": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô – PPrrôôjjëëccttss !!]",
-    "source": "\"Animatic Studio – Projects\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss – PPrrôôjjëëccttss !!]",
+    "source": "\"From Pen to Glass – Projects\"",
     "parameters": [],
     "executable": true
   },
   "routes-index.content.content.75201acaab45.2": {
-    "text": "[!! ÁÁnnïïmmááttïïcc SSttüüddïïôô – ffrrôômm ssccrrïïpptt ttôô ffïïnnïïsshhëëdd ffïïllmm. !!]",
-    "source": "\"Animatic Studio – from script to finished film.\"",
+    "text": "[!! FFrrôômm PPëënn ttôô GGlláássss – ffrrôômm ssccrrïïpptt ttôô ffïïnnïïsshhëëdd ffïïllmm. !!]",
+    "source": "\"From Pen to Glass – from script to finished film.\"",
     "parameters": [],
     "executable": true
   },
   "routes-invitasjon.title.title.15d2852cc7b6": {
-    "text": "[!! ÏÏnnvvïïttááttïïôônn – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Invitation – Animatic Studio\"",
+    "text": "[!! ÏÏnnvvïïttááttïïôônn – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Invitation – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-invitasjon.content.content.2b66322361d6": {
-    "text": "[!! ÁÁccccëëpptt áá pprrôôjjëëcctt ïïnnvvïïttááttïïôônn ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Accept a project invitation in Animatic Studio.\"",
+    "text": "[!! ÁÁccccëëpptt áá pprrôôjjëëcctt ïïnnvvïïttááttïïôônn ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Accept a project invitation in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-invitasjon.content.content.167a3d5e4f4c": {
-    "text": "[!! ÏÏnnvvïïttááttïïôônn – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Invitation – Animatic Studio\"",
+    "text": "[!! ÏÏnnvvïïttááttïïôônn – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Invitation – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-invitasjon.content.content.2b66322361d6.2": {
-    "text": "[!! ÁÁccccëëpptt áá pprrôôjjëëcctt ïïnnvvïïttááttïïôônn ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Accept a project invitation in Animatic Studio.\"",
+    "text": "[!! ÁÁccccëëpptt áá pprrôôjjëëcctt ïïnnvvïïttááttïïôônn ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Accept a project invitation in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71328,26 +71328,26 @@
     "executable": true
   },
   "routes-konto.title.title.0ad1dbde485e": {
-    "text": "[!! MMyy ááccccôôüünntt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"My account – Animatic Studio\"",
+    "text": "[!! MMyy ááccccôôüünntt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"My account – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-konto.content.content.b01c4654387c": {
-    "text": "[!! MMáánnáággëë yyôôüürr ááccccôôüünntt, lláánnggüüáággëë áánndd ÁÁÏÏ pprrëëffëërrëënnccëëss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Manage your account, language and AI preferences in Animatic Studio.\"",
+    "text": "[!! MMáánnáággëë yyôôüürr ááccccôôüünntt, lláánnggüüáággëë áánndd ÁÁÏÏ pprrëëffëërrëënnccëëss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Manage your account, language and AI preferences in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-konto.content.content.f63ad82751ab": {
-    "text": "[!! MMyy ááccccôôüünntt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"My account – Animatic Studio\"",
+    "text": "[!! MMyy ááccccôôüünntt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"My account – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-konto.content.content.b01c4654387c.2": {
-    "text": "[!! MMáánnáággëë yyôôüürr ááccccôôüünntt, lláánnggüüáággëë áánndd ÁÁÏÏ pprrëëffëërrëënnccëëss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Manage your account, language and AI preferences in Animatic Studio.\"",
+    "text": "[!! MMáánnáággëë yyôôüürr ááccccôôüünntt, lláánnggüüáággëë áánndd ÁÁÏÏ pprrëëffëërrëënnccëëss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Manage your account, language and AI preferences in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71358,32 +71358,32 @@
     "executable": true
   },
   "routes-m-token.title.title.5c1d0ff564a2": {
-    "text": "[!! ÜÜppllôôáádd – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Upload – Animatic Studio\"",
+    "text": "[!! ÜÜppllôôáádd – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Upload – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-m-token.content.content.e9b3848a0c50": {
-    "text": "[!! ÜÜppllôôáádd mmááttëërrïïááll ttôô áánn ÁÁnnïïmmááttïïcc SSttüüddïïôô pprrôôjjëëcctt. !!]",
-    "source": "\"Upload material to an Animatic Studio project.\"",
+    "text": "[!! ÜÜppllôôáádd mmááttëërrïïááll ttôô áánn FFrrôômm PPëënn ttôô GGlláássss pprrôôjjëëcctt. !!]",
+    "source": "\"Upload material to an From Pen to Glass project.\"",
     "parameters": [],
     "executable": true
   },
   "routes-m-token.content.content.0b31cbc4811d": {
-    "text": "[!! ÜÜppllôôáádd – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Upload – Animatic Studio\"",
+    "text": "[!! ÜÜppllôôáádd – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Upload – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-m-token.content.content.e9b3848a0c50.2": {
-    "text": "[!! ÜÜppllôôáádd mmááttëërrïïááll ttôô áánn ÁÁnnïïmmááttïïcc SSttüüddïïôô pprrôôjjëëcctt. !!]",
-    "source": "\"Upload material to an Animatic Studio project.\"",
+    "text": "[!! ÜÜppllôôáádd mmááttëërrïïááll ttôô áánn FFrrôômm PPëënn ttôô GGlláássss pprrôôjjëëcctt. !!]",
+    "source": "\"Upload material to an From Pen to Glass project.\"",
     "parameters": [],
     "executable": true
   },
   "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
-    "text": "[!! SSccrrïïpptt ëëxxppllôôrrëërr – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Script explorer – Animatic Studio\"",
+    "text": "[!! SSccrrïïpptt ëëxxppllôôrrëërr – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Script explorer – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
@@ -71394,14 +71394,14 @@
     "executable": true
   },
   "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
-    "text": "[!! SSccrrïïpptt ëëxxppllôôrrëërr – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Script explorer – Animatic Studio\"",
+    "text": "[!! SSccrrïïpptt ëëxxppllôôrrëërr – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Script explorer – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
-    "text": "[!! SSëëáárrcchh tthhëë ssccrrëëëënnppllááyy áánndd áádddd nnôôttëëss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Search the screenplay and add notes in Animatic Studio.\"",
+    "text": "[!! SSëëáárrcchh tthhëë ssccrrëëëënnppllááyy áánndd áádddd nnôôttëëss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Search the screenplay and add notes in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71424,26 +71424,26 @@
     "executable": true
   },
   "routes-personvern.title.title.c03602ed60a1": {
-    "text": "[!! PPrrïïvvááccyy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Privacy – Animatic Studio\"",
+    "text": "[!! PPrrïïvvááccyy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Privacy – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-personvern.content.content.c2cd1c6e5143": {
-    "text": "[!! RRëëáádd tthhëë pprrïïvvááccyy ssttááttëëmmëënntt ffôôrr ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Read the privacy statement for Animatic Studio.\"",
+    "text": "[!! RRëëáádd tthhëë pprrïïvvááccyy ssttááttëëmmëënntt ffôôrr FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Read the privacy statement for From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-personvern.content.content.87755ed805a8": {
-    "text": "[!! PPrrïïvvááccyy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Privacy – Animatic Studio\"",
+    "text": "[!! PPrrïïvvááccyy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Privacy – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-personvern.content.content.c2cd1c6e5143.2": {
-    "text": "[!! RRëëáádd tthhëë pprrïïvvááccyy ssttááttëëmmëënntt ffôôrr ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Read the privacy statement for Animatic Studio.\"",
+    "text": "[!! RRëëáádd tthhëë pprrïïvvááccyy ssttááttëëmmëënntt ffôôrr FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Read the privacy statement for From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71472,158 +71472,158 @@
     "executable": true
   },
   "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
-    "text": "[!! ÁÁssssëëtt llïïbbrráárryy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Asset library – Animatic Studio\"",
+    "text": "[!! ÁÁssssëëtt llïïbbrráárryy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Asset library – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
-    "text": "[!! WWôôrrkk wwïïtthh cchháárrááccttëërrss áánndd áássssëëttss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Work with characters and assets in Animatic Studio.\"",
+    "text": "[!! WWôôrrkk wwïïtthh cchháárrááccttëërrss áánndd áássssëëttss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Work with characters and assets in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
-    "text": "[!! ÁÁssssëëtt llïïbbrráárryy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Asset library – Animatic Studio\"",
+    "text": "[!! ÁÁssssëëtt llïïbbrráárryy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Asset library – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
-    "text": "[!! WWôôrrkk wwïïtthh cchháárrááccttëërrss áánndd áássssëëttss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Work with characters and assets in Animatic Studio.\"",
+    "text": "[!! WWôôrrkk wwïïtthh cchháárrááccttëërrss áánndd áássssëëttss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Work with characters and assets in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
-    "text": "[!! PPrrôôjjëëcctt ôôvvëërrvvïïëëww – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Project overview – Animatic Studio\"",
+    "text": "[!! PPrrôôjjëëcctt ôôvvëërrvvïïëëww – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Project overview – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
-    "text": "[!! VVïïëëww yyôôüürr ffïïllmm pprrôôjjëëcctt pprrôôddüüccttïïôônnss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"View your film project productions in Animatic Studio.\"",
+    "text": "[!! VVïïëëww yyôôüürr ffïïllmm pprrôôjjëëcctt pprrôôddüüccttïïôônnss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"View your film project productions in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
-    "text": "[!! PPrrôôjjëëcctt ôôvvëërrvvïïëëww – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Project overview – Animatic Studio\"",
+    "text": "[!! PPrrôôjjëëcctt ôôvvëërrvvïïëëww – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Project overview – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
-    "text": "[!! VVïïëëww yyôôüürr ffïïllmm pprrôôjjëëcctt pprrôôddüüccttïïôônnss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"View your film project productions in Animatic Studio.\"",
+    "text": "[!! VVïïëëww yyôôüürr ffïïllmm pprrôôjjëëcctt pprrôôddüüccttïïôônnss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"View your film project productions in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
-    "text": "[!! SSccrrïïpptt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Script – Animatic Studio\"",
+    "text": "[!! SSccrrïïpptt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Script – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
-    "text": "[!! ËËddïïtt yyôôüürr ssccrrëëëënnppllááyy áánndd ssccëënnëëss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Edit your screenplay and scenes in Animatic Studio.\"",
+    "text": "[!! ËËddïïtt yyôôüürr ssccrrëëëënnppllááyy áánndd ssccëënnëëss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Edit your screenplay and scenes in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
-    "text": "[!! SSccrrïïpptt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Script – Animatic Studio\"",
+    "text": "[!! SSccrrïïpptt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Script – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
-    "text": "[!! ËËddïïtt yyôôüürr ssccrrëëëënnppllááyy áánndd ssccëënnëëss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Edit your screenplay and scenes in Animatic Studio.\"",
+    "text": "[!! ËËddïïtt yyôôüürr ssccrrëëëënnppllááyy áánndd ssccëënnëëss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Edit your screenplay and scenes in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
-    "text": "[!! ÁÁssssëëmmbbllyy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Assembly – Animatic Studio\"",
+    "text": "[!! ÁÁssssëëmmbbllyy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Assembly – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
-    "text": "[!! ÁÁssssëëmmbbllëë áánnïïmmááttïïcc, ssôôüünndd áánndd ffïïllmm ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Assemble animatic, sound and film in Animatic Studio.\"",
+    "text": "[!! ÁÁssssëëmmbbllëë áánnïïmmááttïïcc, ssôôüünndd áánndd ffïïllmm ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Assemble animatic, sound and film in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
-    "text": "[!! ÁÁssssëëmmbbllyy – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Assembly – Animatic Studio\"",
+    "text": "[!! ÁÁssssëëmmbbllyy – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Assembly – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
-    "text": "[!! ÁÁssssëëmmbbllëë áánnïïmmááttïïcc, ssôôüünndd áánndd ffïïllmm ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Assemble animatic, sound and film in Animatic Studio.\"",
+    "text": "[!! ÁÁssssëëmmbbllëë áánnïïmmááttïïcc, ssôôüünndd áánndd ffïïllmm ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Assemble animatic, sound and film in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
-    "text": "[!! SSccëënnëë ëëddïïttôôrr – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Scene editor – Animatic Studio\"",
+    "text": "[!! SSccëënnëë ëëddïïttôôrr – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Scene editor – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-scene.content.content.65f619722830": {
-    "text": "[!! ËËddïïtt ssccëënnëë ccôômmppôôssïïttïïôônnss áánndd áánnïïmmááttïïcc ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Edit scene compositions and animatic in Animatic Studio.\"",
+    "text": "[!! ËËddïïtt ssccëënnëë ccôômmppôôssïïttïïôônnss áánndd áánnïïmmááttïïcc ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Edit scene compositions and animatic in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
-    "text": "[!! SSccëënnëë ëëddïïttôôrr – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Scene editor – Animatic Studio\"",
+    "text": "[!! SSccëënnëë ëëddïïttôôrr – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Scene editor – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
-    "text": "[!! ËËddïïtt ssccëënnëë ccôômmppôôssïïttïïôônnss áánndd áánnïïmmááttïïcc ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Edit scene compositions and animatic in Animatic Studio.\"",
+    "text": "[!! ËËddïïtt ssccëënnëë ccôômmppôôssïïttïïôônnss áánndd áánnïïmmááttïïcc ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Edit scene compositions and animatic in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
-    "text": "[!! CChháárrááccttëërr wwôôrrkk, ssccëënnëë lláábbôôrrááttôôrryy áánndd ddïïáállôôggüüëë áánnáállyyssïïss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Character work, scene laboratory and dialogue analysis in Animatic Studio.\"",
+    "text": "[!! CChháárrááccttëërr wwôôrrkk, ssccëënnëë lláábbôôrrááttôôrryy áánndd ddïïáállôôggüüëë áánnáállyyssïïss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Character work, scene laboratory and dialogue analysis in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
-    "text": "[!! ËËxxppllôôrrëë cchháárrááccttëërrss, áánnáállyyzzëë ssccëënnëëss áánndd ttrryy ddïïáállôôggüüëë vváárrïïáánnttss ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Explore characters, analyze scenes and try dialogue variants in Animatic Studio.\"",
+    "text": "[!! ËËxxppllôôrrëë cchháárrááccttëërrss, áánnáállyyzzëë ssccëënnëëss áánndd ttrryy ddïïáállôôggüüëë vváárrïïáánnttss ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Explore characters, analyze scenes and try dialogue variants in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
-    "text": "[!! PPrrôôjjëëcctt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Project – Animatic Studio\"",
+    "text": "[!! PPrrôôjjëëcctt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Project – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id.content.content.323705133be5": {
-    "text": "[!! WWôôrrkkssppááccëëss ffôôrr yyôôüürr ffïïllmm pprrôôjjëëcctt ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Workspaces for your film project in Animatic Studio.\"",
+    "text": "[!! WWôôrrkkssppááccëëss ffôôrr yyôôüürr ffïïllmm pprrôôjjëëcctt ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Workspaces for your film project in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
-    "text": "[!! PPrrôôjjëëcctt – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Project – Animatic Studio\"",
+    "text": "[!! PPrrôôjjëëcctt – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Project – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id.content.content.323705133be5.2": {
-    "text": "[!! WWôôrrkkssppááccëëss ffôôrr yyôôüürr ffïïllmm pprrôôjjëëcctt ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Workspaces for your film project in Animatic Studio.\"",
+    "text": "[!! WWôôrrkkssppááccëëss ffôôrr yyôôüürr ffïïllmm pprrôôjjëëcctt ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Workspaces for your film project in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71688,50 +71688,50 @@
     "executable": true
   },
   "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
-    "text": "[!! RRëëllëëáássëë – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Release – Animatic Studio\"",
+    "text": "[!! RRëëllëëáássëë – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Release – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
-    "text": "[!! WWôôrrkk wwïïtthh ppôôssttëërrss áánndd rrëëllëëáássëë ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Work with posters and release in Animatic Studio.\"",
+    "text": "[!! WWôôrrkk wwïïtthh ppôôssttëërrss áánndd rrëëllëëáássëë ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Work with posters and release in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
-    "text": "[!! RRëëllëëáássëë – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Release – Animatic Studio\"",
+    "text": "[!! RRëëllëëáássëë – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Release – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
-    "text": "[!! WWôôrrkk wwïïtthh ppôôssttëërrss áánndd rrëëllëëáássëë ïïnn ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Work with posters and release in Animatic Studio.\"",
+    "text": "[!! WWôôrrkk wwïïtthh ppôôssttëërrss áánndd rrëëllëëáássëë ïïnn FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Work with posters and release in From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-se-token.title.title.daa9a7b91a74": {
-    "text": "[!! FFïïllmm – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Film – Animatic Studio\"",
+    "text": "[!! FFïïllmm – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Film – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-se-token.content.content.0c933cbe6ab9": {
-    "text": "[!! WWááttcchh áá ffïïllmm sshháárrëëdd ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Watch a film shared from Animatic Studio.\"",
+    "text": "[!! WWááttcchh áá ffïïllmm sshháárrëëdd ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Watch a film shared from From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
   "routes-se-token.content.content.450bbeb07eba": {
-    "text": "[!! FFïïllmm – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]",
-    "source": "\"Film – Animatic Studio\"",
+    "text": "[!! FFïïllmm – PPëënn ttôô GGlláássss !!]",
+    "source": "\"Film – Pen to Glass\"",
     "parameters": [],
     "executable": true
   },
   "routes-se-token.content.content.0c933cbe6ab9.2": {
-    "text": "[!! WWááttcchh áá ffïïllmm sshháárrëëdd ffrrôômm ÁÁnnïïmmááttïïcc SSttüüddïïôô. !!]",
-    "source": "\"Watch a film shared from Animatic Studio.\"",
+    "text": "[!! WWááttcchh áá ffïïllmm sshháárrëëdd ffrrôômm FFrrôômm PPëënn ttôô GGlláássss. !!]",
+    "source": "\"Watch a film shared from From Pen to Glass.\"",
     "parameters": [],
     "executable": true
   },
@@ -71830,10 +71830,10 @@
     "text": "[!! TThhëë pprrôôjjëëcctt ïïss llôôcckkëëdd bbëëccááüüssëë tthhëë ôôwwnnëërr ïïss bbllôôcckkëëdd. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ({admin}). !!]"
   },
   "adapters-ai-video-functions.database-outdated-queue": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô ïïnn tthhëë qqüüëëüüëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô.\"0025\" : \"0024\"}). !!]"
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô ïïnn tthhëë qqüüëëüüëë. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss.\"0025\" : \"0024\"}). !!]"
   },
   "adapters-ai-video-functions.database-outdated": {
-    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë ÁÁnnïïmmááttïïcc SSttüüddïïôô.\"0025\" : \"0024\"}). !!]"
+    "text": "[!! TThhëë ddááttáábbáássëë ïïss nnôôtt üüpp ttôô ddááttëë ffôôrr ÁÁÏÏ vvïïddëëôô. CCôônnttáácctt tthhëë ááddmmïïnnïïssttrrááttôôrr ttôô üüppddááttëë FFrrôômm PPëënn ttôô GGlláássss.\"0025\" : \"0024\"}). !!]"
   },
   "adapters-storage-commands-functions.undo-production-referenced": {
     "text": "[!! TThhëë pprrôôddüüccttïïôônn hhááss ssccrrïïpptt vvëërrssïïôônnss ôôrr ïïmmppôôrrttëëdd ssccrrïïpptt ffïïllëëss áánndd ccáánnnnôôtt bbëë üünnddôônnëë. ÏÏtt ïïss kkëëpptt ááss ïïtt ïïss. !!]"
@@ -73441,7 +73441,7 @@
     "text": "[!! RRïïgg !!]"
   },
   "routes-prosjekt-rigg.head.title": {
-    "text": "[!! RRïïgg – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]"
+    "text": "[!! RRïïgg – PPëënn ttôô GGlláássss !!]"
   },
   "routes-prosjekt-rigg.head.description": {
     "text": "[!! MMüüllttïïpplláánnëë rrïïgg ffôôrr 2DD pprrïïnnttïïnngg: ccáámmëërráá, llëënnss, ppllááttëëss, ccáállïïbbrrááttïïôônn áánndd ttëëmmppllááttëëss. !!]"
@@ -73615,10 +73615,10 @@
     "text": "[!! ÏÏff tthhëë ëëmmááïïll ááddddrrëëssss ëëxxïïssttss ïïnn ôôüürr ssyyssttëëmm, áánn ëëmmááïïll wwïïtthh áá ppáásssswwôôrrdd rrëëssëëtt llïïnnkk hhááss bbëëëënn ssëënntt. !!]"
   },
   "auth.password-reset.title": {
-    "text": "[!! RRëëssëëtt ppáásssswwôôrrdd | ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]"
+    "text": "[!! RRëëssëëtt ppáásssswwôôrrdd | PPëënn ttôô GGlláássss !!]"
   },
   "auth.password-reset.description": {
-    "text": "[!! CChhôôôôssëë áá nnëëww ÁÁnnïïmmááttïïcc SSttüüddïïôô ppáásssswwôôrrdd üüssïïnngg tthhëë llïïnnkk ffrrôômm yyôôüürr ëëmmááïïll. !!]"
+    "text": "[!! CChhôôôôssëë áá nnëëww FFrrôômm PPëënn ttôô GGlláássss ppáásssswwôôrrdd üüssïïnngg tthhëë llïïnnkk ffrrôômm yyôôüürr ëëmmááïïll. !!]"
   },
   "auth.password-reset.og-type": {
     "text": "[!! wwëëbbssïïttëë !!]"

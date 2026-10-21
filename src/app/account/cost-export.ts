@@ -206,7 +206,7 @@ export async function toDocx(r: CostReport): Promise<Blob> {
   const h = (text: string, level: (typeof d.HeadingLevel)[keyof typeof d.HeadingLevel]) =>
     new d.Paragraph({ text, heading: level, spacing: { before: 240, after: 120 } });
   const doc = new d.Document({
-    creator: "Animatic Studio",
+    creator: "From Pen to Glass",
     title: `${r.projectName} – ${r.title}`,
     sections: [
       {
@@ -237,7 +237,7 @@ export async function toDocx(r: CostReport): Promise<Blob> {
 export async function toXlsx(r: CostReport): Promise<Blob> {
   const ExcelJS = (await import("exceljs")).default;
   const wb = new ExcelJS.Workbook();
-  wb.creator = "Animatic Studio";
+  wb.creator = "From Pen to Glass";
   const sum = wb.addWorksheet(t("app-account-cost-export.sum.wb-add-worksheet.e647192a21b7"));
   sum.addRow([r.projectName]).font = { bold: true, size: 14 };
   sum.addRow([r.title]).font = { bold: true };

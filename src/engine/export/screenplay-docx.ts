@@ -281,7 +281,7 @@ export function screenplayDocx(
       : {}),
     "docProps/core.xml": strToU8(
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">` +
-        `<dc:title>${esc(opts.title ?? "Manus")}</dc:title><dc:creator>Animatic Studio</dc:creator></cp:coreProperties>`,
+        `<dc:title>${esc(opts.title ?? "Manus")}</dc:title><dc:creator>From Pen to Glass</dc:creator></cp:coreProperties>`,
     ),
   };
   // Fast tidsstempel gir like filer for like manus

@@ -34,7 +34,7 @@ export interface ExportNote {
   readonly text: string;
   readonly author: string;
   readonly stampAt: string;
-  /** Systemmerknad (DEC-0088): kommer fra Animatic Studio, ikke fra en person. */
+  /** Systemmerknad (DEC-0088): kommer fra From Pen to Glass, ikke fra en person. */
   readonly system?: boolean;
 }
 

@@ -322,7 +322,7 @@
       "text": "Velg ett bilde å oppskalere."
     },
     "adapters-ai-image-run-server.message.message.1fb2430caade": {
-      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-image-run-server.message.message.31480f9aea4d": {
       "text": "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten)."
@@ -358,7 +358,7 @@
       "text": "Ukjent feil"
     },
     "adapters-ai-image-run-server.message.message.d132ffa15512": {
-      "text": "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-image-run-server.message.message.d81aa0c6f0c1": {
       "text": "Prosjektets AI-budsjett for denne måneden ({ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten."
@@ -454,7 +454,7 @@
       "text": "Ukjent leverandør"
     },
     "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-provider-keys-functions.set-account-cap.create-server-fn-method-post-middleware-require-supabase-auth-validator.196b744b677e": {
       "text": "Ugyldig tak"
@@ -673,7 +673,7 @@
       "text": "Ukjent lydmodell."
     },
     "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-      "text": "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-sound-functions.message.message.57f75abedae7": {
       "text": "Du har ikke tilgang til å generere i dette prosjektet."
@@ -781,7 +781,7 @@
       "text": "Ingen av prosjektets eiere har koblet til ElevenLabs (AI-leverandører)."
     },
     "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-      "text": "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-speech-run-server.message.message.87fe8811cc21": {
       "text": "Bare replikker kan leses inn."
@@ -988,10 +988,10 @@
       "text": "Videoen av 2D-scenen"
     },
     "adapters-ai-video-functions.database-outdated": {
-      "text": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+      "text": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"})."
     },
     "adapters-ai-video-functions.database-outdated-queue": {
-      "text": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+      "text": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"})."
     },
     "adapters-ai-video-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-start-handler.10f27efe5b4f": {
       "text": "Køen er full ({MAX_QUEUED_PER_PROJECT} videoer venter). Vent til noen er ferdige."
@@ -1153,7 +1153,7 @@
       "text": "AI-tjenesten svarte uten tekst. Prøv igjen."
     },
     "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-      "text": "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-ai-write-prompt-functions.message.message.ba89f8049a83": {
       "text": "Den innebygde AI-en er ikke slått på. Kontakt administratoren."
@@ -1318,7 +1318,7 @@
       "text": "Prosjektet er gjenopprettet, men manusversjonene kunne ikke lagres ({message}). Prøv igjen."
     },
     "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-      "text": "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-backup-functions.message.message.8f3aa8a3ce3b": {
       "text": "Prosjektet finnes ikke."
@@ -1354,19 +1354,19 @@
       "text": "Sikkerhetskopien er for stor til å gjenopprettes her"
     },
     "adapters-storage-commands-functions.message.message.01438c3c6b49": {
-      "text": "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
-      "text": "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.0e67cf134641": {
-      "text": "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.115702403951": {
-      "text": "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler lyd. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.16525acc1633": {
-      "text": "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.1b1c45bc8516": {
       "text": "Linjekoblinger krever databaseversjon 64."
@@ -1387,13 +1387,13 @@
       "text": "Bildet har vært godkjent og kan ikke fjernes."
     },
     "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-      "text": "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.3d6e65936633": {
-      "text": "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.402d2c13486c": {
-      "text": "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.4c1a78e0865c": {
       "text": "Bare eieren av prosjektet kan endre AI-budsjettet."
@@ -1402,46 +1402,46 @@
       "text": "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037)."
     },
     "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-      "text": "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.7fde6dc68084": {
       "text": "Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først."
     },
     "adapters-storage-commands-functions.message.message.855135ab45cb": {
-      "text": "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-      "text": "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.9678261bea35": {
-      "text": "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.a351f6c20569": {
-      "text": "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.a5075b930191": {
       "text": "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039)."
     },
     "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
-      "text": "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
-      "text": "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.b87bdd379b23": {
       "text": "Databasen mangler avviksgjennomgang og huskelapper. Kjør migrasjon 0062 først."
     },
     "adapters-storage-commands-functions.message.message.bb458d81609f": {
-      "text": "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-      "text": "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.c52e168dcd76": {
       "text": "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034)."
     },
     "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-      "text": "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.c77162f93c47": {
       "text": "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032)."
@@ -1462,25 +1462,25 @@
       "text": "Bare dine egne siste endringer kan angres på denne måten."
     },
     "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
-      "text": "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.ef7edfce4adc": {
       "text": "Noen andre endret det samme samtidig. Hent siste versjon og prøv igjen."
     },
     "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-      "text": "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.f770da01452c": {
-      "text": "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.f958e3a6e218": {
       "text": "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036)."
     },
     "adapters-storage-commands-functions.message.message.fda297080af9": {
-      "text": "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-      "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "Produksjonen har eksporter eller lagrede estimater og kan ikke angres. Den beholdes som den er."
@@ -1654,7 +1654,7 @@
       "text": "Prosjektet finnes ikke."
     },
     "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-      "text": "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-project-admin-functions.validate.message.061cc5b811b1": {
       "text": "Ugyldig forespørsel"
@@ -1678,7 +1678,7 @@
       "text": "Ukjent feil"
     },
     "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-      "text": "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "adapters-storage-trash-functions.message.message.d503464a6474": {
       "text": "Bare prosjektets eier kan slette for godt."
@@ -2170,7 +2170,7 @@
       "text": "(ikke fylt ut ennå)"
     },
     "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
-      "text": "Personvernerklæring for Animatic Studio"
+      "text": "Personvernerklæring for From Pen to Glass"
     },
     "app-account-privacy-statement.privacy-statement.li.1c17eeebd1c9": {
       "text": "Dine API-nøkler til AI-leverandører, kryptert (AES-256-GCM). Nøklene kan ikke leses fra nettleseren, bare de fire siste tegnene vises."
@@ -2200,7 +2200,7 @@
       "text": "Du har rett til innsyn, retting, sletting, begrensning av behandlingen, dataportabilitet (du kan laste ned sikkerhetskopi av prosjektene dine) og til å protestere. Kontakt oss på adressen over. Du kan også klage til Datatilsynet (datatilsynet.no)."
     },
     "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
-      "text": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: "
+      "text": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: "
     },
     "app-account-privacy-statement.privacy-statement.p.71d277fd1a52": {
       "text": "Endres erklæringen, får den et nytt versjonsnummer, og du blir bedt om å lese den ved neste innlogging."
@@ -2278,7 +2278,7 @@
       "text": "Logg ut"
     },
     "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-      "text": "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine."
+      "text": "Før du bruker From Pen to Glass, må du lese hvordan vi behandler opplysningene dine."
     },
     "app-account-use-account.account-watcher.dialog-description.af08127f81e4": {
       "text": "Personvernerklæringen er endret. Les den før du fortsetter."
@@ -2836,7 +2836,7 @@
       "text": "Anslått pris per bilde (kreditter)"
     },
     "app-ai-ai-panel.budget.p.9eadccb8743b": {
-      "text": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (Animatic Studio viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad."
+      "text": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (From Pen to Glass viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad."
     },
     "app-ai-ai-panel.budget.p.cd9d16a09075": {
       "text": "Bare eieren kan endre budsjettet."
@@ -3085,7 +3085,7 @@
       "text": "Nåværende: {key_hint}"
     },
     "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
-      "text": "Slette nøkkelen fra Animatic Studio?"
+      "text": "Slette nøkkelen fra From Pen to Glass?"
     },
     "app-ai-providers-dialog.providers-dialog.aria-label.c504d5dd202a": {
       "text": "Leverandører"
@@ -3097,7 +3097,7 @@
       "text": "AI-leverandører"
     },
     "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-      "text": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-ai-providers-dialog.providers-dialog.span.8d349a2870d2": {
       "text": "Slått av av administrator"
@@ -3145,7 +3145,7 @@
       "text": "Nøkkelen virker."
     },
     "app-ai-providers-dialog.text.text.74fba41561c8": {
-      "text": "Nøkkelen er slettet fra Animatic Studio."
+      "text": "Nøkkelen er slettet fra From Pen to Glass."
     },
     "app-ai-providers-dialog.text.text.dd4c5d90b477": {
       "text": "Nøkkelen virker og er lagret kryptert.{value1}"
@@ -5341,7 +5341,7 @@
       "text": "Lukk det egne vinduet (filmen vises fortsatt i monteringen)"
     },
     "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
-      "text": "Montering – Animatic Studio"
+      "text": "Montering – Pen to Glass"
     },
     "app-assembly-film-timeline.clip-block.title.38d310a0c6fa": {
       "text": "inn i scenen"
@@ -7997,7 +7997,7 @@
       "text": "Lyden ble ikke lastet opp: {message}"
     },
     "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-      "text": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-library-asset-audio.upload-asset-audio.message.6586274ecaad": {
       "text": "Lydfilen kunne ikke leses av nettleseren. Prøv MP3 eller WAV."
@@ -8414,7 +8414,7 @@
       "text": "Bildet kunne ikke hentes: ukjent feil"
     },
     "app-library-asset-images.upload-one.message.0cb14e697856": {
-      "text": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-library-asset-images.upload-one.message.de961140f8b0": {
       "text": "Bildet ble ikke lastet opp: {message}"
@@ -11680,7 +11680,7 @@
       "text": "Lenken gjelder til {value1}"
     },
     "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
-      "text": "Last opp til Animatic Studio"
+      "text": "Last opp til From Pen to Glass"
     },
     "app-mobile-mobile-page.mobile-page.p.cfc6f3f6eaa9": {
       "text": "Du er invitert til å sende inn"
@@ -11755,10 +11755,10 @@
       "text": "Kopier lenken under."
     },
     "app-mobile-mobile-page.text.message.624aef06af2d": {
-      "text": "Ta opp lyd til Animatic Studio: {label}"
+      "text": "Ta opp lyd til From Pen to Glass: {label}"
     },
     "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-      "text": "Send bilder og video til Animatic Studio: {label}"
+      "text": "Send bilder og video til From Pen to Glass: {label}"
     },
     "app-mobile-mouth-shape-capture.confirm.set-error.17d2c3892754": {
       "text": "Bildet kunne ikke sendes"
@@ -12239,7 +12239,7 @@
       "text": "Sikkerhetskopien er laget, men den kan ikke gjenopprettes slik den er ({problem}) Lag en ny når ingen andre redigerer, og si ifra hvis det skjer igjen."
     },
     "app-projects-backup.open-backup-file.message.23132bc02467": {
-      "text": "Zip-filen er ikke en sikkerhetskopi fra Animatic Studio."
+      "text": "Zip-filen er ikke en sikkerhetskopi fra From Pen to Glass."
     },
     "app-projects-backup.open-backup-file.message.58d265d9f15e": {
       "text": "Sikkerhetskopien har for mye prosjektdata til å gjenopprettes her. Si ifra, så lager vi en løsning."
@@ -12673,10 +12673,10 @@
       "text": "Vil du gjøre deg selv til {value1}? Da kan du ikke lenger endre roller."
     },
     "app-projects-members-section.message.message.9bf4e1d2979e": {
-      "text": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-projects-members-section.message.message.f5b9e1478f2b": {
-      "text": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-projects-members-section.role-help.commenter.fe93f990649d": {
       "text": "Kan lese og skrive notater"
@@ -17857,7 +17857,7 @@
       "text": "Visk"
     },
     "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
-      "text": "Forhåndsvisning – Animatic Studio"
+      "text": "Forhåndsvisning – Pen to Glass"
     },
     "app-scene-editor-preview-window.corner-name.message.06dfe2ac283c": {
       "text": "oppe til høyre"
@@ -21802,7 +21802,7 @@
       "text": "Ingen versjoner ennå. Lagre en versjon før store endringer, så kan du alltid se og eksportere manuset slik det var."
     },
     "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
-      "text": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere Animatic Studio."
+      "text": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere From Pen to Glass."
     },
     "app-script-versions-dialog.versions-dialog.p.ec6f907a214f": {
       "text": "Henter versjoner …"
@@ -22035,7 +22035,7 @@
       "text": "Databasen er ikke satt opp ennå. "
     },
     "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-      "text": "Kontakt administratoren for å oppdatere Animatic Studio til versjon"
+      "text": "Kontakt administratoren for å oppdatere From Pen to Glass til versjon"
     },
     "app-shell-schema-banner.schema-banner.p.ce6b8cbc90ba": {
       "text": "Databasen har versjon {version}, men appen trenger versjon {expected}. "
@@ -23988,7 +23988,7 @@
       "text": "Bekreft nytt passord"
     },
     "auth.password-reset.description": {
-      "text": "Velg et nytt passord for Animatic Studio med lenken fra e-posten din."
+      "text": "Velg et nytt passord for From Pen to Glass med lenken fra e-posten din."
     },
     "auth.password-reset.email-required": {
       "text": "Skriv inn en gyldig e-postadresse først."
@@ -24024,7 +24024,7 @@
       "text": "Passordet er endret. Du kan nå gå til innlogging."
     },
     "auth.password-reset.title": {
-      "text": "Tilbakestill passord | Animatic Studio"
+      "text": "Tilbakestill passord | Pen to Glass"
     },
     "auth.password-reset.too-short": {
       "text": "Passordet må ha minst 8 tegn."
@@ -24856,7 +24856,7 @@
       "text": "Ressurser: {assets}. 2D-scener: {compositions}. Lydklipp: {audioClips}."
     },
     "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
-      "text": "Sikkerhetskopi av «{name}» fra Animatic Studio"
+      "text": "Sikkerhetskopi av «{name}» fra From Pen to Glass"
     },
     "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.d0abfdf8285b": {
       "text": "  «history» inneholder kommandologgen og loggen over AI-generering (bare til orientering)."
@@ -24883,10 +24883,10 @@
       "text": "Sikkerhetskopien mangler data."
     },
     "core-backup-index.parse-backup.message.9e11241c0bca": {
-      "text": "Filen er ikke en sikkerhetskopi fra Animatic Studio."
+      "text": "Filen er ikke en sikkerhetskopi fra From Pen to Glass."
     },
     "core-backup-index.parse-backup.message.bc940e902884": {
-      "text": "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her."
+      "text": "Sikkerhetskopien er laget med en nyere versjon av From Pen to Glass og kan ikke leses her."
     },
     "core-backup-index.parse-backup.message.c74afc7e8489": {
       "text": "Sikkerhetskopien er laget med en nyere database (versjon {value1}). Oppdater databasen først."
@@ -28583,7 +28583,7 @@
       "text": "Kjøp kreditt under Billing for teamet ditt."
     },
     "core-generation-providers.providers.message.478247762189": {
-      "text": "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-)."
+      "text": "Gå til API keys → «Create new secret key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-)."
     },
     "core-generation-providers.providers.message.492b50a8376f": {
       "text": "Én konto for mange modeller (Kling, Flux m.fl.). Betal per bruk; godt valg for video fra et startbilde."
@@ -28595,7 +28595,7 @@
       "text": "Gå til Settings → API Keys → «Create API key»."
     },
     "core-generation-providers.providers.message.5c712e78bf84": {
-      "text": "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-)."
+      "text": "Gå til Settings → API keys → «Create Key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-ant-)."
     },
     "core-generation-providers.providers.message.87223e1b609a": {
       "text": "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform."
@@ -28634,7 +28634,7 @@
       "text": "Lydeffekter og stemmer fra tekst. Abonnement med månedlige tegn/kreditter."
     },
     "core-generation-providers.providers.message.e3bf20933260": {
-      "text": "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-)."
+      "text": "Gå til API Keys → «Create API Key», gi den navnet «Pen to Glass» og kopier den (begynner med xai-)."
     },
     "core-generation-providers.providers.message.e4624ce04071": {
       "text": "Opprett en organisasjon og kjøp kreditter under Billing."
@@ -29757,7 +29757,7 @@
       "text": " av {editedByName}"
     },
     "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
-      "text": "Animatic Studio (systemmerknad)"
+      "text": "From Pen to Glass (systemmerknad)"
     },
     "core-order-key.digit-at.message.1f43a22004ab": {
       "text": "Ugyldig tegn i sorteringsnøkkel: {s}"
@@ -31139,7 +31139,7 @@
       "text": "Zip-filen er ufullstendig ({name})."
     },
     "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
-      "text": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra Animatic Studio."
+      "text": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra From Pen to Glass."
     },
     "engine-import-zip-read.zip-entry-blob.message.b1d9207dc330": {
       "text": "Ukjent komprimering i zip-filen ({name})."
@@ -31520,16 +31520,16 @@
       "text": "Administrasjon"
     },
     "routes-admin.content.content.2838c73c64a0": {
-      "text": "Administrasjon – Animatic Studio"
+      "text": "Administrasjon – Pen to Glass"
     },
     "routes-admin.content.content.4a28312072cc": {
-      "text": "Administrer brukere og tjenesten i Animatic Studio."
+      "text": "Administrer brukere og tjenesten i From Pen to Glass."
     },
     "routes-admin.content.content.4a28312072cc.2": {
-      "text": "Administrer brukere og tjenesten i Animatic Studio."
+      "text": "Administrer brukere og tjenesten i From Pen to Glass."
     },
     "routes-admin.title.title.50274d57d4da": {
-      "text": "Administrasjon – Animatic Studio"
+      "text": "Administrasjon – Pen to Glass"
     },
     "routes-gruppe-workspace-id.content.content.789e02872522": {
       "text": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe."
@@ -31538,25 +31538,25 @@
       "text": "Medlemmer, invitasjoner og prosjekter i en arbeidsgruppe."
     },
     "routes-gruppe-workspace-id.content.content.d76669de2282": {
-      "text": "Arbeidsgruppe – Animatic Studio"
+      "text": "Arbeidsgruppe – Pen to Glass"
     },
     "routes-gruppe-workspace-id.title.title.73796e5fd612": {
-      "text": "Arbeidsgruppe – Animatic Studio"
+      "text": "Arbeidsgruppe – Pen to Glass"
     },
     "routes-gruppe-workspace-id.workspace-route.trail.16e3d36e939a": {
       "text": "Arbeidsgruppe"
     },
     "routes-index.content.content.75201acaab45": {
-      "text": "Animatic Studio – fra manus til ferdig film."
+      "text": "From Pen to Glass – fra manus til ferdig film."
     },
     "routes-index.content.content.75201acaab45.2": {
-      "text": "Animatic Studio – fra manus til ferdig film."
+      "text": "From Pen to Glass – fra manus til ferdig film."
     },
     "routes-index.content.content.d4c02791089e": {
-      "text": "Animatic Studio – Prosjekter"
+      "text": "From Pen to Glass – Prosjekter"
     },
     "routes-index.title.title.d34b816fe818": {
-      "text": "Animatic Studio – Prosjekter"
+      "text": "From Pen to Glass – Prosjekter"
     },
     "routes-invitasjon.accept-invitation.p.78d02d70a626": {
       "text": "Lenken mangler invitasjonskode."
@@ -31568,19 +31568,19 @@
       "text": "Invitasjonen er ugyldig, utløpt eller allerede brukt."
     },
     "routes-invitasjon.content.content.167a3d5e4f4c": {
-      "text": "Invitasjon – Animatic Studio"
+      "text": "Invitasjon – Pen to Glass"
     },
     "routes-invitasjon.content.content.2b66322361d6": {
-      "text": "Godta en prosjektinvitasjon i Animatic Studio."
+      "text": "Godta en prosjektinvitasjon i From Pen to Glass."
     },
     "routes-invitasjon.content.content.2b66322361d6.2": {
-      "text": "Godta en prosjektinvitasjon i Animatic Studio."
+      "text": "Godta en prosjektinvitasjon i From Pen to Glass."
     },
     "routes-invitasjon.invalid.use-effect.a4bd36ee329e": {
       "text": "Invitasjonen er ugyldig, utløpt eller allerede brukt."
     },
     "routes-invitasjon.title.title.15d2852cc7b6": {
-      "text": "Invitasjon – Animatic Studio"
+      "text": "Invitasjon – Pen to Glass"
     },
     "routes-invitasjon.wrong.use-effect.09d63b5cc3ae": {
       "text": "Invitasjonen gjelder en annen e-postadresse. Logg inn med adressen invitasjonen ble sendt til."
@@ -31589,34 +31589,34 @@
       "text": "Min konto"
     },
     "routes-konto.content.content.b01c4654387c": {
-      "text": "Administrer kontoen, språk og AI-valg i Animatic Studio."
+      "text": "Administrer kontoen, språk og AI-valg i From Pen to Glass."
     },
     "routes-konto.content.content.b01c4654387c.2": {
-      "text": "Administrer kontoen, språk og AI-valg i Animatic Studio."
+      "text": "Administrer kontoen, språk og AI-valg i From Pen to Glass."
     },
     "routes-konto.content.content.f63ad82751ab": {
-      "text": "Min konto – Animatic Studio"
+      "text": "Min konto – Pen to Glass"
     },
     "routes-konto.title.title.0ad1dbde485e": {
-      "text": "Min konto – Animatic Studio"
+      "text": "Min konto – Pen to Glass"
     },
     "routes-m-token.content.content.0b31cbc4811d": {
-      "text": "Last opp – Animatic Studio"
+      "text": "Last opp – Pen to Glass"
     },
     "routes-m-token.content.content.e9b3848a0c50": {
-      "text": "Last opp materiale til et prosjekt i Animatic Studio."
+      "text": "Last opp materiale til et prosjekt i From Pen to Glass."
     },
     "routes-m-token.content.content.e9b3848a0c50.2": {
-      "text": "Last opp materiale til et prosjekt i Animatic Studio."
+      "text": "Last opp materiale til et prosjekt i From Pen to Glass."
     },
     "routes-m-token.title.title.5c1d0ff564a2": {
-      "text": "Last opp – Animatic Studio"
+      "text": "Last opp – Pen to Glass"
     },
     "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
-      "text": "Manusutforskeren – Animatic Studio"
+      "text": "Manusutforskeren – Pen to Glass"
     },
     "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
-      "text": "Søk i manuset og legg til notater i Animatic Studio."
+      "text": "Søk i manuset og legg til notater i From Pen to Glass."
     },
     "routes-manusutforsker-project-id.content.content.ff977692e1ef": {
       "text": "Utforsk manuset og følg aktiv scene i et eget vindu."
@@ -31631,16 +31631,16 @@
       "text": "Manusutforskeren"
     },
     "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
-      "text": "Manusutforskeren – Animatic Studio"
+      "text": "Manusutforskeren – Pen to Glass"
     },
     "routes-personvern.content.content.87755ed805a8": {
-      "text": "Personvern – Animatic Studio"
+      "text": "Personvern – Pen to Glass"
     },
     "routes-personvern.content.content.c2cd1c6e5143": {
-      "text": "Les personvernerklæringen for Animatic Studio."
+      "text": "Les personvernerklæringen for From Pen to Glass."
     },
     "routes-personvern.content.content.c2cd1c6e5143.2": {
-      "text": "Les personvernerklæringen for Animatic Studio."
+      "text": "Les personvernerklæringen for From Pen to Glass."
     },
     "routes-personvern.privacy-page.link.27b98f24370c": {
       "text": "Til innloggingen"
@@ -31655,94 +31655,94 @@
       "text": "Personvern"
     },
     "routes-personvern.title.title.c03602ed60a1": {
-      "text": "Personvern – Animatic Studio"
+      "text": "Personvern – Pen to Glass"
     },
     "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
-      "text": "Arbeid med karakterer og ressurser i Animatic Studio."
+      "text": "Arbeid med karakterer og ressurser i From Pen to Glass."
     },
     "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
-      "text": "Arbeid med karakterer og ressurser i Animatic Studio."
+      "text": "Arbeid med karakterer og ressurser i From Pen to Glass."
     },
     "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
-      "text": "Ressursbibliotek – Animatic Studio"
+      "text": "Ressursbibliotek – Pen to Glass"
     },
     "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
-      "text": "Ressursbibliotek – Animatic Studio"
+      "text": "Ressursbibliotek – Pen to Glass"
     },
     "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
-      "text": "Se filmprosjektets produksjoner i Animatic Studio."
+      "text": "Se filmprosjektets produksjoner i From Pen to Glass."
     },
     "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
-      "text": "Se filmprosjektets produksjoner i Animatic Studio."
+      "text": "Se filmprosjektets produksjoner i From Pen to Glass."
     },
     "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
-      "text": "Prosjektoversikt – Animatic Studio"
+      "text": "Prosjektoversikt – Pen to Glass"
     },
     "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
-      "text": "Prosjektoversikt – Animatic Studio"
+      "text": "Prosjektoversikt – Pen to Glass"
     },
     "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
-      "text": "Rediger filmmanuset og scenene i Animatic Studio."
+      "text": "Rediger filmmanuset og scenene i From Pen to Glass."
     },
     "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
-      "text": "Rediger filmmanuset og scenene i Animatic Studio."
+      "text": "Rediger filmmanuset og scenene i From Pen to Glass."
     },
     "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
-      "text": "Manus – Animatic Studio"
+      "text": "Manus – Pen to Glass"
     },
     "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
-      "text": "Manus – Animatic Studio"
+      "text": "Manus – Pen to Glass"
     },
     "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
-      "text": "Montering – Animatic Studio"
+      "text": "Montering – Pen to Glass"
     },
     "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
-      "text": "Monter animatic, lyd og film i Animatic Studio."
+      "text": "Monter animatic, lyd og film i From Pen to Glass."
     },
     "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
-      "text": "Monter animatic, lyd og film i Animatic Studio."
+      "text": "Monter animatic, lyd og film i From Pen to Glass."
     },
     "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
-      "text": "Montering – Animatic Studio"
+      "text": "Montering – Pen to Glass"
     },
     "routes-prosjekt-project-id-scene.content.content.65f619722830": {
-      "text": "Rediger scenekomposisjoner og animatic i Animatic Studio."
+      "text": "Rediger scenekomposisjoner og animatic i From Pen to Glass."
     },
     "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
-      "text": "Rediger scenekomposisjoner og animatic i Animatic Studio."
+      "text": "Rediger scenekomposisjoner og animatic i From Pen to Glass."
     },
     "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
-      "text": "Sceneeditor – Animatic Studio"
+      "text": "Sceneeditor – Pen to Glass"
     },
     "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
-      "text": "Sceneeditor – Animatic Studio"
+      "text": "Sceneeditor – Pen to Glass"
     },
     "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
-      "text": "Karakterarbeid, scenelaboratorium og dialoganalyse i Animatic Studio."
+      "text": "Karakterarbeid, scenelaboratorium og dialoganalyse i From Pen to Glass."
     },
     "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
-      "text": "Utforsk karakterer, analyser scener og prøv dialogvarianter i Animatic Studio."
+      "text": "Utforsk karakterer, analyser scener og prøv dialogvarianter i From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
-      "text": "Utgivelse – Animatic Studio"
+      "text": "Utgivelse – Pen to Glass"
     },
     "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
-      "text": "Arbeid med plakater og utgivelse i Animatic Studio."
+      "text": "Arbeid med plakater og utgivelse i From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
-      "text": "Arbeid med plakater og utgivelse i Animatic Studio."
+      "text": "Arbeid med plakater og utgivelse i From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
-      "text": "Utgivelse – Animatic Studio"
+      "text": "Utgivelse – Pen to Glass"
     },
     "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
-      "text": "Prosjekt – Animatic Studio"
+      "text": "Prosjekt – Pen to Glass"
     },
     "routes-prosjekt-project-id.content.content.323705133be5": {
-      "text": "Arbeidsflater for filmprosjektet i Animatic Studio."
+      "text": "Arbeidsflater for filmprosjektet i From Pen to Glass."
     },
     "routes-prosjekt-project-id.content.content.323705133be5.2": {
-      "text": "Arbeidsflater for filmprosjektet i Animatic Studio."
+      "text": "Arbeidsflater for filmprosjektet i From Pen to Glass."
     },
     "routes-prosjekt-project-id.owner-blocked": {
       "text": "Eieren av prosjektet er blokkert. Kontakt administrator på {adminEmail}."
@@ -31775,13 +31775,13 @@
       "text": "Eieren av prosjektet har slettet kontoen sin. Administrator kan gi prosjektet en ny eier: kontakt {value1}."
     },
     "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
-      "text": "Prosjekt – Animatic Studio"
+      "text": "Prosjekt – Pen to Glass"
     },
     "routes-prosjekt-rigg.head.description": {
       "text": "Multiplanrigg for 2D-utskrift: kamera, objektiv, plater, kalibrering og maler."
     },
     "routes-prosjekt-rigg.head.title": {
-      "text": "Rigg – Animatic Studio"
+      "text": "Rigg – Pen to Glass"
     },
     "routes-root.error-component.a.6fdb78437197": {
       "text": "Til forsiden"
@@ -31805,16 +31805,16 @@
       "text": "Siden finnes ikke eller er flyttet."
     },
     "routes-se-token.content.content.0c933cbe6ab9": {
-      "text": "Se en film som er delt fra Animatic Studio."
+      "text": "Se en film som er delt fra From Pen to Glass."
     },
     "routes-se-token.content.content.0c933cbe6ab9.2": {
-      "text": "Se en film som er delt fra Animatic Studio."
+      "text": "Se en film som er delt fra From Pen to Glass."
     },
     "routes-se-token.content.content.450bbeb07eba": {
-      "text": "Film – Animatic Studio"
+      "text": "Film – Pen to Glass"
     },
     "routes-se-token.title.title.daa9a7b91a74": {
-      "text": "Film – Animatic Studio"
+      "text": "Film – Pen to Glass"
     },
     "time.exact": {
       "text": "{weekday} {date} kl. {time}"
@@ -32155,7 +32155,7 @@
       "text": "Choose one image to upscale."
     },
     "adapters-ai-image-run-server.message.message.1fb2430caade": {
-      "text": "The database is not updated for own AI providers. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for own AI providers. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-image-run-server.message.message.31480f9aea4d": {
       "text": "None of the project's owners has connected this provider (AI providers on the project list)."
@@ -32191,7 +32191,7 @@
       "text": "Unknown error"
     },
     "adapters-ai-image-run-server.message.message.d132ffa15512": {
-      "text": "The database is missing the AI generation log. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the AI generation log. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-image-run-server.message.message.d81aa0c6f0c1": {
       "text": "The project's AI budget for this month ({ai_month_limit} generations) has been used up. The owner can change the budget on the project overview."
@@ -32287,7 +32287,7 @@
       "text": "Unknown provider"
     },
     "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-      "text": "The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-provider-keys-functions.set-account-cap.create-server-fn-method-post-middleware-require-supabase-auth-validator.196b744b677e": {
       "text": "Invalid limit"
@@ -32506,7 +32506,7 @@
       "text": "Unknown sound model."
     },
     "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-      "text": "The database is not updated for AI sound. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for AI sound. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-sound-functions.message.message.57f75abedae7": {
       "text": "You do not have access to generate in this project."
@@ -32614,7 +32614,7 @@
       "text": "None of the project's owners has connected ElevenLabs (AI providers)."
     },
     "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-      "text": "The database is not updated for AI speech. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for AI speech. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-speech-run-server.message.message.87fe8811cc21": {
       "text": "Only lines can be read aloud."
@@ -32821,10 +32821,10 @@
       "text": "The video of the 2D scene"
     },
     "adapters-ai-video-functions.database-outdated": {
-      "text": "The database is not up to date for AI video. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+      "text": "The database is not up to date for AI video. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
     },
     "adapters-ai-video-functions.database-outdated-queue": {
-      "text": "The database is not up to date for AI video in the queue. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+      "text": "The database is not up to date for AI video in the queue. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
     },
     "adapters-ai-video-functions.limits.create-server-fn-method-post-middleware-require-supabase-auth-validator-validate-start-handler.10f27efe5b4f": {
       "text": "The queue is full ({MAX_QUEUED_PER_PROJECT} videos waiting). Wait until some are finished."
@@ -32986,7 +32986,7 @@
       "text": "The AI service replied without text. Try again."
     },
     "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-      "text": "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass."
     },
     "adapters-ai-write-prompt-functions.message.message.ba89f8049a83": {
       "text": "The built-in AI is not enabled. Contact the administrator."
@@ -33151,7 +33151,7 @@
       "text": "The project has been restored, but the script versions could not be saved ({message}). Try again."
     },
     "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-      "text": "The database is not up to date. Contact the administrator to update Animatic Studio."
+      "text": "The database is not up to date. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-backup-functions.message.message.8f3aa8a3ce3b": {
       "text": "The project does not exist."
@@ -33187,19 +33187,19 @@
       "text": "The backup is too large to be restored here"
     },
     "adapters-storage-commands-functions.message.message.01438c3c6b49": {
-      "text": "The database is missing the project format. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the project format. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
-      "text": "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.0e67cf134641": {
-      "text": "The database is missing the scene editor. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the scene editor. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.115702403951": {
-      "text": "The database is missing sound. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing sound. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.16525acc1633": {
-      "text": "The database is missing sound links. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing sound links. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.1b1c45bc8516": {
       "text": "Line links require database version 64."
@@ -33220,13 +33220,13 @@
       "text": "The image has been approved and cannot be removed."
     },
     "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-      "text": "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.3d6e65936633": {
-      "text": "The database is missing clipping and time links. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing clipping and time links. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.402d2c13486c": {
-      "text": "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.4c1a78e0865c": {
       "text": "Only the owner of the project can change the AI budget."
@@ -33235,46 +33235,46 @@
       "text": "The database is missing word alignment. It must be updated (migration 0037)."
     },
     "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-      "text": "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.7fde6dc68084": {
       "text": "The database is missing lip sync and patterns. Run migration 0056 first."
     },
     "adapters-storage-commands-functions.message.message.855135ab45cb": {
-      "text": "The database is missing the film's visual style. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the film's visual style. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-      "text": "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.9678261bea35": {
-      "text": "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.a351f6c20569": {
-      "text": "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.a5075b930191": {
       "text": "The database is missing Story Lab. It must be updated (migration 0039)."
     },
     "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
-      "text": "The database is missing posters and relations. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing posters and relations. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
-      "text": "The database is missing language versions of the script. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing language versions of the script. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.b87bdd379b23": {
       "text": "The database is missing drift reviews and note flags. Run migration 0062 first."
     },
     "adapters-storage-commands-functions.message.message.bb458d81609f": {
-      "text": "The database is missing planned length per scene. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing planned length per scene. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-      "text": "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.c52e168dcd76": {
       "text": "The database is missing tasks and system notes. It must be updated (migration 0034)."
     },
     "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-      "text": "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.c77162f93c47": {
       "text": "The database is missing instructions for AI video. It must be updated (migration 0032)."
@@ -33295,25 +33295,25 @@
       "text": "Only your own latest changes can be undone in this way."
     },
     "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
-      "text": "The database is missing notes on the productions. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing notes on the productions. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.ef7edfce4adc": {
       "text": "Someone else changed the same thing at the same time. Fetch the latest version and try again."
     },
     "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-      "text": "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.f770da01452c": {
-      "text": "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.f958e3a6e218": {
       "text": "The database is missing audio compositions. It must be updated (migration 0036)."
     },
     "adapters-storage-commands-functions.message.message.fda297080af9": {
-      "text": "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio."
+      "text": "The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-      "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-commands-functions.undo-production-history": {
       "text": "The production has exports or saved estimates and cannot be undone. It is kept as it is."
@@ -33487,7 +33487,7 @@
       "text": "The project does not exist."
     },
     "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-      "text": "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio."
+      "text": "The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-project-admin-functions.validate.message.061cc5b811b1": {
       "text": "Invalid request"
@@ -33511,7 +33511,7 @@
       "text": "Unknown error"
     },
     "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-      "text": "The database is not up to date for deleted items. Contact the administrator to update Animatic Studio."
+      "text": "The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass."
     },
     "adapters-storage-trash-functions.message.message.d503464a6474": {
       "text": "Only the project owner can delete permanently."
@@ -34003,7 +34003,7 @@
       "text": "(not filled in yet)"
     },
     "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
-      "text": "Privacy statement for Animatic Studio"
+      "text": "Privacy statement for From Pen to Glass"
     },
     "app-account-privacy-statement.privacy-statement.li.1c17eeebd1c9": {
       "text": "Your API keys for AI providers, encrypted (AES-256-GCM). The keys cannot be read from the browser; only the last four characters are shown."
@@ -34033,7 +34033,7 @@
       "text": "You have the right of access, rectification, erasure, restriction of processing, data portability (you can download a backup of your projects) and to object. Contact us at the address above. You can also complain to the Norwegian Data Protection Authority (datatilsynet.no)."
     },
     "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
-      "text": "Animatic Studio bruker en skyplattform for database, filer og innlogging. Lagringssted: "
+      "text": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: "
     },
     "app-account-privacy-statement.privacy-statement.p.71d277fd1a52": {
       "text": "If the statement changes, it gets a new version number, and you are asked to read it at your next sign-in."
@@ -34111,7 +34111,7 @@
       "text": "Sign out"
     },
     "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-      "text": "Before you use Animatic Studio, read how we process your information."
+      "text": "Before you use From Pen to Glass, read how we process your information."
     },
     "app-account-use-account.account-watcher.dialog-description.af08127f81e4": {
       "text": "The privacy statement has changed. Read it before you continue."
@@ -34669,7 +34669,7 @@
       "text": "Estimated price per image (credits)"
     },
     "app-ai-ai-panel.budget.p.9eadccb8743b": {
-      "text": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (Animatic Studio shows the usage in the workspace) and is only used to show the estimated cost."
+      "text": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (From Pen to Glass shows the usage in the workspace) and is only used to show the estimated cost."
     },
     "app-ai-ai-panel.budget.p.cd9d16a09075": {
       "text": "Only the owner can change the budget."
@@ -34918,7 +34918,7 @@
       "text": "Current: {key_hint}"
     },
     "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
-      "text": "Delete the key from Animatic Studio?"
+      "text": "Delete the key from From Pen to Glass?"
     },
     "app-ai-providers-dialog.providers-dialog.aria-label.c504d5dd202a": {
       "text": "Providers"
@@ -34930,7 +34930,7 @@
       "text": "AI providers"
     },
     "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-      "text": "The database is not yet updated for your own AI providers. Contact the administrator to update Animatic Studio."
+      "text": "The database is not yet updated for your own AI providers. Contact the administrator to update From Pen to Glass."
     },
     "app-ai-providers-dialog.providers-dialog.span.8d349a2870d2": {
       "text": "Switched off by the administrator"
@@ -34978,7 +34978,7 @@
       "text": "The key works."
     },
     "app-ai-providers-dialog.text.text.74fba41561c8": {
-      "text": "The key has been deleted from Animatic Studio."
+      "text": "The key has been deleted from From Pen to Glass."
     },
     "app-ai-providers-dialog.text.text.dd4c5d90b477": {
       "text": "The key works and is saved encrypted.{value1}"
@@ -37174,7 +37174,7 @@
       "text": "Close this window (the film is still shown in the assembly)"
     },
     "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
-      "text": "Assembly – Animatic Studio"
+      "text": "Assembly – Pen to Glass"
     },
     "app-assembly-film-timeline.clip-block.title.38d310a0c6fa": {
       "text": "into the scene"
@@ -39830,7 +39830,7 @@
       "text": "The audio was not uploaded: {message}"
     },
     "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-      "text": "The storage does not accept audio files yet. Contact the administrator to update Animatic Studio."
+      "text": "The storage does not accept audio files yet. Contact the administrator to update From Pen to Glass."
     },
     "app-library-asset-audio.upload-asset-audio.message.6586274ecaad": {
       "text": "The browser could not read the audio file. Try MP3 or WAV."
@@ -40247,7 +40247,7 @@
       "text": "The image could not be fetched: unknown error"
     },
     "app-library-asset-images.upload-one.message.0cb14e697856": {
-      "text": "The image storage bucket is missing. Contact the administrator to update Animatic Studio."
+      "text": "The image storage bucket is missing. Contact the administrator to update From Pen to Glass."
     },
     "app-library-asset-images.upload-one.message.de961140f8b0": {
       "text": "The image was not uploaded: {message}"
@@ -43513,7 +43513,7 @@
       "text": "The link is valid until {value1}"
     },
     "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
-      "text": "Upload to Animatic Studio"
+      "text": "Upload to From Pen to Glass"
     },
     "app-mobile-mobile-page.mobile-page.p.cfc6f3f6eaa9": {
       "text": "You are invited to send in"
@@ -43588,10 +43588,10 @@
       "text": "Copy the link below."
     },
     "app-mobile-mobile-page.text.message.624aef06af2d": {
-      "text": "Record audio for Animatic Studio: {label}"
+      "text": "Record audio for From Pen to Glass: {label}"
     },
     "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-      "text": "Send pictures and video to Animatic Studio: {label}"
+      "text": "Send pictures and video to From Pen to Glass: {label}"
     },
     "app-mobile-mouth-shape-capture.confirm.set-error.17d2c3892754": {
       "text": "The image could not be sent"
@@ -44072,7 +44072,7 @@
       "text": "The backup was made, but it cannot be restored as it is ({problem}). Make a new one when nobody else is editing, and let us know if it happens again."
     },
     "app-projects-backup.open-backup-file.message.23132bc02467": {
-      "text": "The zip file is not a backup from Animatic Studio."
+      "text": "The zip file is not a backup from From Pen to Glass."
     },
     "app-projects-backup.open-backup-file.message.58d265d9f15e": {
       "text": "The backup has too much project data to be restored here. Let us know and we will make a solution."
@@ -44506,10 +44506,10 @@
       "text": "Do you want to make yourself {value1}? Then you can no longer change roles."
     },
     "app-projects-members-section.message.message.9bf4e1d2979e": {
-      "text": "The database cannot change roles yet. Contact the administrator to update Animatic Studio."
+      "text": "The database cannot change roles yet. Contact the administrator to update From Pen to Glass."
     },
     "app-projects-members-section.message.message.f5b9e1478f2b": {
-      "text": "The database cannot remove members yet. Contact the administrator to update Animatic Studio."
+      "text": "The database cannot remove members yet. Contact the administrator to update From Pen to Glass."
     },
     "app-projects-members-section.role-help.commenter.fe93f990649d": {
       "text": "Can read and write notes"
@@ -49690,7 +49690,7 @@
       "text": "Wipe"
     },
     "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
-      "text": "Preview – Animatic Studio"
+      "text": "Preview – Pen to Glass"
     },
     "app-scene-editor-preview-window.corner-name.message.06dfe2ac283c": {
       "text": "top right"
@@ -53635,7 +53635,7 @@
       "text": "No versions yet. Save a version before big changes, so you can always see and export the script as it was."
     },
     "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
-      "text": "The database is missing script versions. Contact the administrator to update Animatic Studio."
+      "text": "The database is missing script versions. Contact the administrator to update From Pen to Glass."
     },
     "app-script-versions-dialog.versions-dialog.p.ec6f907a214f": {
       "text": "Loading versions …"
@@ -53868,7 +53868,7 @@
       "text": "The database is not set up yet. "
     },
     "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-      "text": "Contact the administrator to update Animatic Studio to version"
+      "text": "Contact the administrator to update From Pen to Glass to version"
     },
     "app-shell-schema-banner.schema-banner.p.ce6b8cbc90ba": {
       "text": "The database is at version {version}, but the app needs version {expected}. "
@@ -55821,7 +55821,7 @@
       "text": "Confirm new password"
     },
     "auth.password-reset.description": {
-      "text": "Choose a new Animatic Studio password using the link from your email."
+      "text": "Choose a new From Pen to Glass password using the link from your email."
     },
     "auth.password-reset.email-required": {
       "text": "Enter a valid email address first."
@@ -55857,7 +55857,7 @@
       "text": "Your password has been changed. You can now go to sign in."
     },
     "auth.password-reset.title": {
-      "text": "Reset password | Animatic Studio"
+      "text": "Reset password | Pen to Glass"
     },
     "auth.password-reset.too-short": {
       "text": "The password must contain at least 8 characters."
@@ -56689,7 +56689,7 @@
       "text": "Assets: {assets}. 2D scenes: {compositions}. Audio clips: {audioClips}."
     },
     "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
-      "text": "Backup of “{name}” from Animatic Studio"
+      "text": "Backup of “{name}” from From Pen to Glass"
     },
     "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.d0abfdf8285b": {
       "text": "  “history” contains the command log and the AI generation log (for information only)."
@@ -56716,10 +56716,10 @@
       "text": "The backup is missing data."
     },
     "core-backup-index.parse-backup.message.9e11241c0bca": {
-      "text": "The file is not a backup from Animatic Studio."
+      "text": "The file is not a backup from From Pen to Glass."
     },
     "core-backup-index.parse-backup.message.bc940e902884": {
-      "text": "The backup was made with a newer version of Animatic Studio and cannot be read here."
+      "text": "The backup was made with a newer version of From Pen to Glass and cannot be read here."
     },
     "core-backup-index.parse-backup.message.c74afc7e8489": {
       "text": "The backup was made with a newer database (version {value1}). Update the database first."
@@ -60416,7 +60416,7 @@
       "text": "Buy credit under Billing for your team."
     },
     "core-generation-providers.providers.message.478247762189": {
-      "text": "Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-)."
+      "text": "Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-)."
     },
     "core-generation-providers.providers.message.492b50a8376f": {
       "text": "One account for many models (Kling, Flux and others). Pay as you go; a good choice for video from a start image."
@@ -60428,7 +60428,7 @@
       "text": "Go to Settings → API Keys → “Create API key”."
     },
     "core-generation-providers.providers.message.5c712e78bf84": {
-      "text": "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-)."
+      "text": "Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-)."
     },
     "core-generation-providers.providers.message.87223e1b609a": {
       "text": "Images with GPT Image and video with Sora. Payment is prepaid in the OpenAI Platform."
@@ -60467,7 +60467,7 @@
       "text": "Sound effects and voices from text. Subscription with monthly characters/credits."
     },
     "core-generation-providers.providers.message.e3bf20933260": {
-      "text": "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-)."
+      "text": "Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-)."
     },
     "core-generation-providers.providers.message.e4624ce04071": {
       "text": "Create an organisation and buy credits under Billing."
@@ -61590,7 +61590,7 @@
       "text": " by {editedByName}"
     },
     "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
-      "text": "Animatic Studio (system note)"
+      "text": "From Pen to Glass (system note)"
     },
     "core-order-key.digit-at.message.1f43a22004ab": {
       "text": "Invalid character in sort key: {s}"
@@ -62972,7 +62972,7 @@
       "text": "The zip file is incomplete ({name})."
     },
     "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
-      "text": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from Animatic Studio."
+      "text": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from From Pen to Glass."
     },
     "engine-import-zip-read.zip-entry-blob.message.b1d9207dc330": {
       "text": "Unknown compression in the zip file ({name})."
@@ -63353,16 +63353,16 @@
       "text": "Administration"
     },
     "routes-admin.content.content.2838c73c64a0": {
-      "text": "Administration – Animatic Studio"
+      "text": "Administration – Pen to Glass"
     },
     "routes-admin.content.content.4a28312072cc": {
-      "text": "Manage users and the service in Animatic Studio."
+      "text": "Manage users and the service in From Pen to Glass."
     },
     "routes-admin.content.content.4a28312072cc.2": {
-      "text": "Manage users and the service in Animatic Studio."
+      "text": "Manage users and the service in From Pen to Glass."
     },
     "routes-admin.title.title.50274d57d4da": {
-      "text": "Administration – Animatic Studio"
+      "text": "Administration – Pen to Glass"
     },
     "routes-gruppe-workspace-id.content.content.789e02872522": {
       "text": "Members, invitations and projects in a workspace."
@@ -63371,25 +63371,25 @@
       "text": "Members, invitations and projects in a workspace."
     },
     "routes-gruppe-workspace-id.content.content.d76669de2282": {
-      "text": "Workspace – Animatic Studio"
+      "text": "Workspace – Pen to Glass"
     },
     "routes-gruppe-workspace-id.title.title.73796e5fd612": {
-      "text": "Workspace – Animatic Studio"
+      "text": "Workspace – Pen to Glass"
     },
     "routes-gruppe-workspace-id.workspace-route.trail.16e3d36e939a": {
       "text": "Workspace"
     },
     "routes-index.content.content.75201acaab45": {
-      "text": "Animatic Studio – from script to finished film."
+      "text": "From Pen to Glass – from script to finished film."
     },
     "routes-index.content.content.75201acaab45.2": {
-      "text": "Animatic Studio – from script to finished film."
+      "text": "From Pen to Glass – from script to finished film."
     },
     "routes-index.content.content.d4c02791089e": {
-      "text": "Animatic Studio – Projects"
+      "text": "From Pen to Glass – Projects"
     },
     "routes-index.title.title.d34b816fe818": {
-      "text": "Animatic Studio – Projects"
+      "text": "From Pen to Glass – Projects"
     },
     "routes-invitasjon.accept-invitation.p.78d02d70a626": {
       "text": "The link is missing an invitation code."
@@ -63401,19 +63401,19 @@
       "text": "The invitation is invalid, has expired or has already been used."
     },
     "routes-invitasjon.content.content.167a3d5e4f4c": {
-      "text": "Invitation – Animatic Studio"
+      "text": "Invitation – Pen to Glass"
     },
     "routes-invitasjon.content.content.2b66322361d6": {
-      "text": "Accept a project invitation in Animatic Studio."
+      "text": "Accept a project invitation in From Pen to Glass."
     },
     "routes-invitasjon.content.content.2b66322361d6.2": {
-      "text": "Accept a project invitation in Animatic Studio."
+      "text": "Accept a project invitation in From Pen to Glass."
     },
     "routes-invitasjon.invalid.use-effect.a4bd36ee329e": {
       "text": "The invitation is invalid, has expired or has already been used."
     },
     "routes-invitasjon.title.title.15d2852cc7b6": {
-      "text": "Invitation – Animatic Studio"
+      "text": "Invitation – Pen to Glass"
     },
     "routes-invitasjon.wrong.use-effect.09d63b5cc3ae": {
       "text": "The invitation is for a different email address. Sign in with the address the invitation was sent to."
@@ -63422,34 +63422,34 @@
       "text": "My account"
     },
     "routes-konto.content.content.b01c4654387c": {
-      "text": "Manage your account, language and AI preferences in Animatic Studio."
+      "text": "Manage your account, language and AI preferences in From Pen to Glass."
     },
     "routes-konto.content.content.b01c4654387c.2": {
-      "text": "Manage your account, language and AI preferences in Animatic Studio."
+      "text": "Manage your account, language and AI preferences in From Pen to Glass."
     },
     "routes-konto.content.content.f63ad82751ab": {
-      "text": "My account – Animatic Studio"
+      "text": "My account – Pen to Glass"
     },
     "routes-konto.title.title.0ad1dbde485e": {
-      "text": "My account – Animatic Studio"
+      "text": "My account – Pen to Glass"
     },
     "routes-m-token.content.content.0b31cbc4811d": {
-      "text": "Upload – Animatic Studio"
+      "text": "Upload – Pen to Glass"
     },
     "routes-m-token.content.content.e9b3848a0c50": {
-      "text": "Upload material to an Animatic Studio project."
+      "text": "Upload material to an From Pen to Glass project."
     },
     "routes-m-token.content.content.e9b3848a0c50.2": {
-      "text": "Upload material to an Animatic Studio project."
+      "text": "Upload material to an From Pen to Glass project."
     },
     "routes-m-token.title.title.5c1d0ff564a2": {
-      "text": "Upload – Animatic Studio"
+      "text": "Upload – Pen to Glass"
     },
     "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
-      "text": "Script explorer – Animatic Studio"
+      "text": "Script explorer – Pen to Glass"
     },
     "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
-      "text": "Search the screenplay and add notes in Animatic Studio."
+      "text": "Search the screenplay and add notes in From Pen to Glass."
     },
     "routes-manusutforsker-project-id.content.content.ff977692e1ef": {
       "text": "Explore the screenplay and follow the active scene in a separate window."
@@ -63464,16 +63464,16 @@
       "text": "Script explorer"
     },
     "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
-      "text": "Script explorer – Animatic Studio"
+      "text": "Script explorer – Pen to Glass"
     },
     "routes-personvern.content.content.87755ed805a8": {
-      "text": "Privacy – Animatic Studio"
+      "text": "Privacy – Pen to Glass"
     },
     "routes-personvern.content.content.c2cd1c6e5143": {
-      "text": "Read the privacy statement for Animatic Studio."
+      "text": "Read the privacy statement for From Pen to Glass."
     },
     "routes-personvern.content.content.c2cd1c6e5143.2": {
-      "text": "Read the privacy statement for Animatic Studio."
+      "text": "Read the privacy statement for From Pen to Glass."
     },
     "routes-personvern.privacy-page.link.27b98f24370c": {
       "text": "To sign-in"
@@ -63488,94 +63488,94 @@
       "text": "Privacy"
     },
     "routes-personvern.title.title.c03602ed60a1": {
-      "text": "Privacy – Animatic Studio"
+      "text": "Privacy – Pen to Glass"
     },
     "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
-      "text": "Work with characters and assets in Animatic Studio."
+      "text": "Work with characters and assets in From Pen to Glass."
     },
     "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
-      "text": "Work with characters and assets in Animatic Studio."
+      "text": "Work with characters and assets in From Pen to Glass."
     },
     "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
-      "text": "Asset library – Animatic Studio"
+      "text": "Asset library – Pen to Glass"
     },
     "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
-      "text": "Asset library – Animatic Studio"
+      "text": "Asset library – Pen to Glass"
     },
     "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
-      "text": "View your film project productions in Animatic Studio."
+      "text": "View your film project productions in From Pen to Glass."
     },
     "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
-      "text": "View your film project productions in Animatic Studio."
+      "text": "View your film project productions in From Pen to Glass."
     },
     "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
-      "text": "Project overview – Animatic Studio"
+      "text": "Project overview – Pen to Glass"
     },
     "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
-      "text": "Project overview – Animatic Studio"
+      "text": "Project overview – Pen to Glass"
     },
     "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
-      "text": "Edit your screenplay and scenes in Animatic Studio."
+      "text": "Edit your screenplay and scenes in From Pen to Glass."
     },
     "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
-      "text": "Edit your screenplay and scenes in Animatic Studio."
+      "text": "Edit your screenplay and scenes in From Pen to Glass."
     },
     "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
-      "text": "Script – Animatic Studio"
+      "text": "Script – Pen to Glass"
     },
     "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
-      "text": "Script – Animatic Studio"
+      "text": "Script – Pen to Glass"
     },
     "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
-      "text": "Assembly – Animatic Studio"
+      "text": "Assembly – Pen to Glass"
     },
     "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
-      "text": "Assemble animatic, sound and film in Animatic Studio."
+      "text": "Assemble animatic, sound and film in From Pen to Glass."
     },
     "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
-      "text": "Assemble animatic, sound and film in Animatic Studio."
+      "text": "Assemble animatic, sound and film in From Pen to Glass."
     },
     "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
-      "text": "Assembly – Animatic Studio"
+      "text": "Assembly – Pen to Glass"
     },
     "routes-prosjekt-project-id-scene.content.content.65f619722830": {
-      "text": "Edit scene compositions and animatic in Animatic Studio."
+      "text": "Edit scene compositions and animatic in From Pen to Glass."
     },
     "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
-      "text": "Edit scene compositions and animatic in Animatic Studio."
+      "text": "Edit scene compositions and animatic in From Pen to Glass."
     },
     "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
-      "text": "Scene editor – Animatic Studio"
+      "text": "Scene editor – Pen to Glass"
     },
     "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
-      "text": "Scene editor – Animatic Studio"
+      "text": "Scene editor – Pen to Glass"
     },
     "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
-      "text": "Character work, scene laboratory and dialogue analysis in Animatic Studio."
+      "text": "Character work, scene laboratory and dialogue analysis in From Pen to Glass."
     },
     "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
-      "text": "Explore characters, analyze scenes and try dialogue variants in Animatic Studio."
+      "text": "Explore characters, analyze scenes and try dialogue variants in From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
-      "text": "Release – Animatic Studio"
+      "text": "Release – Pen to Glass"
     },
     "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
-      "text": "Work with posters and release in Animatic Studio."
+      "text": "Work with posters and release in From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
-      "text": "Work with posters and release in Animatic Studio."
+      "text": "Work with posters and release in From Pen to Glass."
     },
     "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
-      "text": "Release – Animatic Studio"
+      "text": "Release – Pen to Glass"
     },
     "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
-      "text": "Project – Animatic Studio"
+      "text": "Project – Pen to Glass"
     },
     "routes-prosjekt-project-id.content.content.323705133be5": {
-      "text": "Workspaces for your film project in Animatic Studio."
+      "text": "Workspaces for your film project in From Pen to Glass."
     },
     "routes-prosjekt-project-id.content.content.323705133be5.2": {
-      "text": "Workspaces for your film project in Animatic Studio."
+      "text": "Workspaces for your film project in From Pen to Glass."
     },
     "routes-prosjekt-project-id.owner-blocked": {
       "text": "The owner of the project is blocked. Contact the administrator at {adminEmail}."
@@ -63608,13 +63608,13 @@
       "text": "The owner of the project has deleted their account. The administrator can give the project a new owner: contact {value1}."
     },
     "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
-      "text": "Project – Animatic Studio"
+      "text": "Project – Pen to Glass"
     },
     "routes-prosjekt-rigg.head.description": {
       "text": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates."
     },
     "routes-prosjekt-rigg.head.title": {
-      "text": "Rig – Animatic Studio"
+      "text": "Rig – Pen to Glass"
     },
     "routes-root.error-component.a.6fdb78437197": {
       "text": "Go to the front page"
@@ -63638,16 +63638,16 @@
       "text": "The page does not exist or has moved."
     },
     "routes-se-token.content.content.0c933cbe6ab9": {
-      "text": "Watch a film shared from Animatic Studio."
+      "text": "Watch a film shared from From Pen to Glass."
     },
     "routes-se-token.content.content.0c933cbe6ab9.2": {
-      "text": "Watch a film shared from Animatic Studio."
+      "text": "Watch a film shared from From Pen to Glass."
     },
     "routes-se-token.content.content.450bbeb07eba": {
-      "text": "Film – Animatic Studio"
+      "text": "Film – Pen to Glass"
     },
     "routes-se-token.title.title.daa9a7b91a74": {
-      "text": "Film – Animatic Studio"
+      "text": "Film – Pen to Glass"
     },
     "time.exact": {
       "text": "{weekday} {date} at {time}"
