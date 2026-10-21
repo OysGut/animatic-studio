@@ -310,7 +310,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
     }[]).filter((v) => !v.archived);
     const { data: versions } = await db
       .from("asset_versions")
-      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
+      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec, derived_files")
       .in(
         "variant_id",
         vars.map((v) => v.id),
@@ -330,6 +330,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       removed: boolean | null;
       template_spec: TemplateDefinition | null;
       font_spec?: FontSpec | null;
+      derived_files?: GlobalDerivedFiles | null;
     }[])
       .filter((v) => !v.removed && v.media_path.startsWith(`${data.projectId}/`))
       .sort((x, y) => x.number - y.number);
@@ -357,6 +358,10 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
         const to = globalFilePath(data.workspaceId, globalAssetId, ver.sha256, extensionOf(ver.media_path));
         const err = await copyFile(sa, ver.media_path, to);
         if (err) throw new Error(err);
+        // B-105a: de avledede filene følger med til det globale biblioteket
+        const derivedFiles = await copyDerivedFiles(sa, ver.derived_files, (d) =>
+          globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+        );
         const { error: e3 } = await db.rpc("global_add_version", {
           p_variant: gv as string,
           p_storage_key: to,
@@ -369,6 +374,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
           p_note: ver.note ?? "",
           p_template_spec: ver.template_spec ?? null,
           ...(ver.font_spec ? { p_font_spec: ver.font_spec } : {}),
+          ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
         });
         if (e3) throw new Error(e3.message);
         count++;
@@ -509,7 +515,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
     const { data: ver } = await db
       .from("asset_versions")
-      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
+      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec, derived_files")
       .eq("id", data.versionId)
       .eq("project_id", data.projectId)
       .maybeSingle();
@@ -518,6 +524,7 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
       byte_size_big: number; sha256: string; duration_ms: number | null; note: string | null; removed: boolean | null;
       template_spec: TemplateDefinition | null;
       font_spec?: FontSpec | null;
+      derived_files?: GlobalDerivedFiles | null;
     } | null;
     if (!v || v.removed || !v.media_path.startsWith(`${data.projectId}/`)) throw new Error(tk("r3-global.error.no-version"));
     const { data: va } = await db
@@ -574,11 +581,16 @@ export const publishVersionToGlobal = createServerFn({ method: "POST" })
     const to = globalFilePath(data.workspaceId, globalAssetId, v.sha256, extensionOf(v.media_path));
     const err = await copyFile(await admin(), v.media_path, to);
     if (err) throw new Error(err);
+    // B-105a: de avledede filene følger med til det globale biblioteket
+    const derivedFiles = await copyDerivedFiles(await admin(), v.derived_files, (d) =>
+      globalFilePath(data.workspaceId, globalAssetId, d.sha256, extensionOf(d.path)),
+    );
     const { data: gid, error: e2 } = await db.rpc("global_add_version", {
       p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
       p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
       p_template_spec: v.template_spec ?? null,
       ...(v.font_spec ? { p_font_spec: v.font_spec } : {}),
+      ...(derivedFiles ? { p_derived_files: derivedFiles } : {}),
     });
     if (e2) throw new Error(e2.message);
     const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();
