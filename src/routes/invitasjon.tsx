@@ -5,7 +5,7 @@ import { AuthScreen } from "@/app/auth/AuthScreen";
 import { acceptInvitation } from "@/adapters/browser/members";
 import { acceptWorkspaceInvitation } from "@/adapters/browser/workspaces";
 
-import { useLanguage } from "@/app/i18n/language";
+import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 
 export const Route = createFileRoute("/invitasjon")({
@@ -57,7 +57,8 @@ function AcceptInvitation() {
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen invited />;
   return (
-    <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-bg-app px-4">
+      <LanguageSwitch compact />
       <p
         role={error ? "alert" : "status"}
         className={error ? "text-[13px] text-status-danger" : "text-[13px] text-text-secondary"}

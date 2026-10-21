@@ -6,7 +6,8 @@ import { createHash } from 'node:crypto';
 import manifestData from '@/core/i18n/manifest.json';
 import { canonicalLocale, fallbackChain, validateManifest, catalogErrors, createTranslator, type LanguageManifest, type MessageCatalog } from '@/core/i18n/messages';
 import { t } from '@/core/i18n/keyed';
-const manifest: LanguageManifest = manifestData;
+// This engine fixture stays nb/en; B-107 tests the shipped open registry separately.
+const manifest: LanguageManifest = { ...manifestData, languages: manifestData.languages.filter(l => ['nb', 'en', 'en-XA'].includes(l.tag)) };
 const nb: MessageCatalog = {
   hello: { text: 'Hei {name}', parameters: [{ name: 'name' }] },
   count: { text: null, plural: { parameter: 'count', forms: { one: '{count} scene', other: '{count} scener' } } },
@@ -23,10 +24,10 @@ describe('ML1 language/catalog contract', () => {
     expect(canonicalLocale('en-XA')).toBe('en-XA');
     for (const tag of ['', 'en_US', 'a', 'x'.repeat(101)]) expect(() => canonicalLocale(tag)).toThrow();
   });
-  it('explicit reserves end in nb without blind script stripping', () => {
-    expect(fallbackChain(manifest, 'en-XA')).toEqual(['en-XA', 'en', 'nb']);
-    expect(fallbackChain(manifest, 'fr-CA')).toEqual(['nb']);
-    expect(fallbackChain(manifest, 'nb')).toEqual(['nb']);
+  it('explicit reserves end in English without blind script stripping (B-111)', () => {
+    expect(fallbackChain(manifest, 'en-XA')).toEqual(['en-XA', 'en']);
+    expect(fallbackChain(manifest, 'fr-CA')).toEqual(['en']);
+    expect(fallbackChain(manifest, 'nb')).toEqual(['nb', 'en']);
   });
   it('cycles, unknown reserves, duplicates and depth fail', () => {
     const change = (fallbacks: readonly string[]) => ({ ...manifest, languages: manifest.languages.map((l) => l.tag === 'en' ? { ...l, fallbacks } : l) });

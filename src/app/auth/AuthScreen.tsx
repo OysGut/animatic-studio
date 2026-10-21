@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { PrivacyLink } from "@/app/account/use-account";
 import { CountryPicker } from "@/app/account/CountryPicker";
 import { t } from "@/core/i18n/keyed";
+import { LanguageSwitch, useLanguage } from '@/app/i18n/language';
 
 type Mode = "signin" | "signup";
 
@@ -204,6 +205,7 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <div className="w-full max-w-[360px]">
         <div className="mb-8">
+          <div className="mb-3 flex justify-end"><LanguageSwitch compact /></div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
             From Pen to Glass
           </h1>
