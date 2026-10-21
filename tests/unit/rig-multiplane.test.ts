@@ -176,11 +176,10 @@ describe("størrelsesmatematikk (B-087)", () => {
     expect(multiplaneRigSpecError(spec({ focalLengthMm: 0 }))).not.toBeNull();
     expect(multiplaneRigSpecError(spec({ sensorWidthMm: 5000 }))).not.toBeNull();
     // Platen kan ikke ligge nærmere kameraet enn brennvidden
-    const tooHigh = spec();
-    tooHigh.plates[1] = { ...tooHigh.plates[1]!, heightMm: 860 };
+    const base = spec();
+    const tooHigh: MultiplaneRigSpec = { ...base, plates: base.plates.map((p, i) => (i === 1 ? { ...p, heightMm: 860 } : p)) };
     expect(multiplaneRigSpecError(tooHigh)).not.toBeNull();
-    const dup = spec();
-    dup.plates[1] = { ...dup.plates[1]!, id: BORD };
+    const dup: MultiplaneRigSpec = { ...base, plates: base.plates.map((p, i) => (i === 1 ? { ...p, id: BORD } : p)) };
     expect(multiplaneRigSpecError(dup)).not.toBeNull();
   });
 });
