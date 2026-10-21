@@ -74,3 +74,8 @@
 - [x] SuggestionsDialog viser begrunnelser på valgt språk.
 - [x] UI_LANG=nb|en i regresjonssuitene; dec0093, dec0094 og p4 grønne på begge språk.
 - [x] Regresjon grønn: dv4, dv5, p7, ca8, ml2-languages 256/256, vitest 1939/0.
+
+## R1 + R2 (21.10.2026, migrasjon 0067)
+- [x] R1: «Endelig» foreslår ProRes i nye prosjekter; tilbud med angring i eksisterende
+- [x] R2: opprydding av foreldreløse AI-filer (valg C) med forhåndsvisning, bekreftelse og logg
+- [x] Strengere språkversjonssjekk i apply_changes
