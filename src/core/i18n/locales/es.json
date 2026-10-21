@@ -52595,5 +52595,640 @@
     "text": "La página no existe o se ha movido.",
     "sourceHash": "685a13f165c284746baaef69c953b26d1d9e9e754686a90802d9568c14e0e7a4",
     "review": "user"
+  },
+  "adapters-ai-image-run-server.message.message.1fb2430caade": {
+    "text": "La base de datos no está actualizada para proveedores de IA propios. Contacte al administrador para actualizar From Pen to Glass.",
+    "sourceHash": "62990e7784ab2c158d966e3cec76ed705e134fa7f50a838d99fe3f7a1ebb4ca7",
+    "review": "machine"
+  },
+  "adapters-ai-image-run-server.message.message.d132ffa15512": {
+    "text": "Falta el registro de generación por IA en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "fe2f6a030ef5bab595495998d82c7361b20b964facff34cb6805218305f3ac49",
+    "review": "machine"
+  },
+  "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
+    "text": "La base de datos aún no está actualizada para proveedores de IA propios. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "b753c6d4f0ba72e4843b545e879d8aeb991a9d2fc806fd2b680f480f0d9e3d44",
+    "review": "machine"
+  },
+  "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
+    "text": "La base de datos no está actualizada para sonido con IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "737b19cac2053fecc2cdd274a55a79bbdc0d1632ad74d3e127c1008bac2b044b",
+    "review": "machine"
+  },
+  "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
+    "text": "La base de datos no está actualizada para voz por IA. Contacte con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "1605867cd8a75a619a7fc962947bd557b43e7d8b0d99006e5997d7dd95ebc69e",
+    "review": "machine"
+  },
+  "adapters-ai-video-functions.database-outdated": {
+    "text": "La base de datos no está actualizada para vídeo por IA. Contacte con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
+    "sourceHash": "76e6a63159590de5dfe45713d8a89243c8590e34f2c26594717a8051567d1357",
+    "review": "machine"
+  },
+  "adapters-ai-video-functions.database-outdated-queue": {
+    "text": "La base de datos no está actualizada para vídeo por IA en cola. Contacte con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
+    "sourceHash": "13e88865091cd73e9d6da59ed7174ab7ac999cb5e3ee5da2059fad0e32486606",
+    "review": "machine"
+  },
+  "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
+    "text": "La base de datos no está actualizada para descripciones generadas por IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "0ba778c3d83c1e026c839a04397ad33e959841bbe08ce57b7ac12c425016974a",
+    "review": "machine"
+  },
+  "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
+    "text": "La base de datos no está actualizada. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "55329f42746643a57e0b2cf93ce95db9de6425c9cf2705fc93e88ec15bb0cd00",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.01438c3c6b49": {
+    "text": "Falta el formato del proyecto en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "3fb371cc72a8f69b9afefa57b072356df2241c6493b97d976d497858518dd810",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
+    "text": "Faltan la biblioteca de recursos y las notas en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "8ded54917a41d42d5b4a26e91faaf74bb94da839ec52cc1c71dda21c5cdb91fa",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.0e67cf134641": {
+    "text": "Falta el editor de escenas en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "056489422cf76b97d88e50992f4ad67f588d07bc83fa35d111c721fd1c8afc7e",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.115702403951": {
+    "text": "Falta el audio en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "195bd25399709c44a7bf5a5dbaea9d60e954890e8645f04a695464b511ecb48f",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.16525acc1633": {
+    "text": "Faltan los enlaces de audio en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "e3b9cae1fd5c0b65e10223645d6227fec54fa17a96f19aaefea922ad86faf010",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
+    "text": "Falta la continuidad de los personajes en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "d8f1f87bb040f3c5ec4a93df4b7c0b4063d8ad245cfd1c372eda644d7a78e79d",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.3d6e65936633": {
+    "text": "Faltan el recorte y los enlaces de tiempo en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "e4da7a1ff6d5b90569537d1bb48a692bbf2e7d812eef4ada98d72fd52fdfd078",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.402d2c13486c": {
+    "text": "Faltan las nuevas funciones en la base de datos (transiciones, blanco y negro, grupos, cambios de imagen y trayectorias de movimiento). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "7222c7f3c98bf44d38b25e0e9401979b3ee6b42e258ebc7813a5de8275e86d57",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.736fdd526c7e": {
+    "text": "Faltan el presupuesto de IA y las descripciones de generación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "2a1b77864b98682d4aef44602b97ef3d4fd198fe0bcacc6c438116597d1247ba",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.855135ab45cb": {
+    "text": "Falta el estilo visual de la película en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "f3e955afcaffca83dec974d0b3dacbcf2caee5ac2bdcba537e9b51ba62a3cace",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
+    "text": "Falta la extensión para estimaciones de duración guardadas y el registro de exportación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "79ac5d0e22f807f2a2da04e41562fe93d0fbdc09d79a55b8907403ef7c461f9a",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.9678261bea35": {
+    "text": "Faltan la película importada y las transiciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "76a7be09a739956553c730c5afb54642b080e8a8f60de9e417dae450a371305a",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.a351f6c20569": {
+    "text": "Falta la extensión para la lista de trabajo y los ajustes de exportación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "ba148fb0a67dc8cbc17782ae74fd732eebe6aa3ca14fe86eef6ab45ab18dd113",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
+    "text": "Faltan los carteles y las relaciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "7e05ebadef9e763eb4460f18836d598174d6c1cefdff44b66749222233b2b11e",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
+    "text": "Faltan las versiones de idioma del guion en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "855886a9a0e24e33457bf071dba69f38e515d58a99cf23b006d9cb526384703f",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.bb458d81609f": {
+    "text": "Falta la duración planificada por escena en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "81a6c707f8a5b8711f8b0145e2f85c7b3ab85cdbd11f9732bc6cbe86ffae252d",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
+    "text": "Falta la adición para elementos eliminados, velocidad de audio y «animar en doses» en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "cf1365062aef39dd1b09944c6c44ab10eb8982b3a5ea71390d64938e6d88d19a",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
+    "text": "Falta el audio a través de varias escenas y los puntos de volumen en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "c0fb2acea0f0421c5c84a6f3f74ae1b40d69d8e0658ef28809e37bd78d0f2a8b",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
+    "text": "Faltan las notas de las producciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "5d57544df2e2abad6660df9d2fbe121d21eb41a81f8c578c916e15fd38dbb601",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
+    "text": "Falta la continuidad para spin-offs en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "71cad715bf44048d2ccead536bf45d015067a6d045f20a49e536a74d9576de49",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.f770da01452c": {
+    "text": "Falta la adición más reciente en la base de datos (máscaras, transiciones, voces, perfiles de estilo). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "2c29104a011f243dca825e0aa56b13bfc10b096ca05b5dde613af6cbc8847206",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.fda297080af9": {
+    "text": "Faltan las versiones de idioma de la película en la base de datos (audio e imágenes por idioma). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "44da448e4963e002f33234b030709770750f999b4202d5819ecb3a05aa244bf1",
+    "review": "machine"
+  },
+  "adapters-storage-commands-functions.message.message.fe59c3be6214": {
+    "text": "Falta la adición para ángulos en imágenes y hojas informativas visuales en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "ef30d67b13b5cbc2ae4a53e8e18a96e4834ad9f1159aeee6e9fbb4507ec30c7e",
+    "review": "machine"
+  },
+  "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
+    "text": "La base de datos aún no está actualizada para la eliminación. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "c170aaf782a07441bbd8035838a5728d2f3f539f930e3526c4374bc70a706cfa",
+    "review": "machine"
+  },
+  "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
+    "text": "La base de datos no está actualizada para elementos eliminados. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "d5e79e7c78905c143e54e090d0ee21ff14c9e8711144796de48a9046ab18aab5",
+    "review": "machine"
+  },
+  "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
+    "text": "Declaración de privacidad de From Pen to Glass",
+    "sourceHash": "419b7b040c0093e032a357afb69bba1fed23fb1092e1253f671a8ea120cf84ef",
+    "review": "machine"
+  },
+  "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
+    "text": "From Pen to Glass utiliza una plataforma en la nube para la base de datos, los archivos y el inicio de sesión. Ubicación de almacenamiento: ",
+    "sourceHash": "628bfc45dbe793dbf4309571e9d0e24cc38daf5c497b6af7690a8b3dadcfbe99",
+    "review": "machine"
+  },
+  "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
+    "text": "Antes de usar From Pen to Glass, lea cómo procesamos su información.",
+    "sourceHash": "1970f55205bb969accdb064ae72b8dde1989193c3df50bc0e7b10573b03d55cb",
+    "review": "machine"
+  },
+  "app-ai-ai-panel.budget.p.9eadccb8743b": {
+    "text": "Al alcanzar el límite, el servidor detendrá las nuevas generaciones hasta el próximo mes. El precio es su propia estimación (From Pen to Glass muestra el consumo en el espacio de trabajo) y solo se utiliza para mostrar el coste estimado.",
+    "sourceHash": "0a6c73c32f6d349107d3a1baf38c0a3148f81b82e239b9ca72d6d99ecf104fe3",
+    "review": "machine"
+  },
+  "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
+    "text": "¿Eliminar la clave de From Pen to Glass?",
+    "sourceHash": "eac9426af2131e0b626cc891c00c43c978c55d177f9d13737df45367d792d023",
+    "review": "machine"
+  },
+  "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
+    "text": "La base de datos aún no está actualizada para proveedores propios de IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "a573836eca4f4f0ad598b47484bb4e39f0d5467d4371f98195174cbe411ce83c",
+    "review": "machine"
+  },
+  "app-ai-providers-dialog.text.text.74fba41561c8": {
+    "text": "La clave se ha eliminado de From Pen to Glass.",
+    "sourceHash": "2c87ee445d815bb0e4509a5cf4e3b4301c709d3a6b8ad59fa984cc4c5ca0b818",
+    "review": "machine"
+  },
+  "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
+    "text": "Montaje – Pen to Glass",
+    "sourceHash": "67764d40491c15519fa6670fcd11fc96e4052b4ba2fb40639df8e2e2c129f5f4",
+    "review": "machine"
+  },
+  "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
+    "text": "El almacenamiento aún no acepta archivos de audio. Contacte al administrador para actualizar From Pen to Glass.",
+    "sourceHash": "c9c0a314a9a412df7fe2c8088fd29f3ede9b0996283b5c7e35e04f97f07a410c",
+    "review": "machine"
+  },
+  "app-library-asset-images.upload-one.message.0cb14e697856": {
+    "text": "Falta el depósito de almacenamiento de imágenes. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "575222670779006a72639736d5d8973fb185f43dd1daaf6ac65496cc355ba7a8",
+    "review": "machine"
+  },
+  "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
+    "text": "Subir a From Pen to Glass",
+    "sourceHash": "c7a4b6a359c98ec7c8f351ba37d29d46df05aaa0b60afc62ee48af42607fdba7",
+    "review": "machine"
+  },
+  "app-mobile-mobile-page.text.message.624aef06af2d": {
+    "text": "Grabar audio para From Pen to Glass: {label}",
+    "sourceHash": "ecfba7679c8a17f4c836e09db218b365ac38bb74a519beb5adc6bef3c333a239",
+    "review": "machine"
+  },
+  "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
+    "text": "Enviar imágenes y video a From Pen to Glass: {label}",
+    "sourceHash": "24b7c7f2274ce31e433e8dc3535d39331ada02c960a77666e7e403de7c50893a",
+    "review": "machine"
+  },
+  "app-projects-backup.open-backup-file.message.23132bc02467": {
+    "text": "El archivo zip no es una copia de seguridad de From Pen to Glass.",
+    "sourceHash": "ce1f60c855b3648f722694c78f4fdf656f476e753cd862a1a53d650fae1e0992",
+    "review": "machine"
+  },
+  "app-projects-members-section.message.message.9bf4e1d2979e": {
+    "text": "La base de datos aún no admite cambiar roles. Contacte con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "45a0009abe965f8550cee18fcb8f55e81461ea70b6647da8203d90bde2c6cbc8",
+    "review": "machine"
+  },
+  "app-projects-members-section.message.message.f5b9e1478f2b": {
+    "text": "La base de datos aún no admite eliminar miembros. Contacte con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "face852fe215e97a89f258eea0abd9d4efa6375c34f949760d597c54ddee4ac5",
+    "review": "machine"
+  },
+  "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
+    "text": "Previsualización – Pen to Glass",
+    "sourceHash": "548529227ec155bbf2418063e8e530bee44136af20561bb9d9f998f4e857581b",
+    "review": "machine"
+  },
+  "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
+    "text": "Faltan versiones del guion en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "sourceHash": "b69e2ee4da58d5125f535762606c00c434fe88ab18a5e636de27717eae2af736",
+    "review": "machine"
+  },
+  "app-shell-schema-banner.schema-banner.p.93683cf75008": {
+    "text": "Contacte al administrador para actualizar From Pen to Glass a la versión",
+    "sourceHash": "fe5db6538e5392ccb51f694c33d7abd77ca22fb09b0c7e334a4f08348460cf24",
+    "review": "machine"
+  },
+  "auth.password-reset.description": {
+    "text": "Elija una nueva contraseña para From Pen to Glass usando el enlace de su correo electrónico.",
+    "sourceHash": "28abd930cd854bdc930f44655f6334517780bc9618492875d6d2a22f35509119",
+    "review": "machine"
+  },
+  "auth.password-reset.title": {
+    "text": "Restablecer contraseña | Pen to Glass",
+    "sourceHash": "bd4af07cb862d54a306125f5fc71ecca313bfad8752f0ffb057c1697a99d80a3",
+    "review": "machine"
+  },
+  "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
+    "text": "Copia de seguridad de «{name}» de From Pen to Glass",
+    "sourceHash": "3ee75355386e1d8222391317af4ec30a141f500a1e36269be08c210caa0df09d",
+    "review": "machine"
+  },
+  "core-backup-index.parse-backup.message.9e11241c0bca": {
+    "text": "El archivo no es una copia de seguridad de From Pen to Glass.",
+    "sourceHash": "7e4f4803f72e5de1f6751eaad9213ce797de9fbd803833f7f44c3d4168c0211e",
+    "review": "machine"
+  },
+  "core-backup-index.parse-backup.message.bc940e902884": {
+    "text": "La copia de seguridad se creó con una versión más reciente de From Pen to Glass y no se puede leer aquí.",
+    "sourceHash": "4972903b68d46e997ef8601af60032b113f94e9230f7af89258833b045769037",
+    "review": "machine"
+  },
+  "core-generation-providers.providers.message.478247762189": {
+    "text": "Vaya a API keys → «Create new secret key», asígnele el nombre «Pen to Glass» y cópiela (empieza por sk-).",
+    "sourceHash": "fbf0affd8691887b8d73149bdc1faa384549820eb7a917099861d132cbb22c12",
+    "review": "machine"
+  },
+  "core-generation-providers.providers.message.5c712e78bf84": {
+    "text": "Vaya a Settings → API keys → «Create Key», asígnele el nombre «Pen to Glass» y cópiela (empieza por sk-ant-).",
+    "sourceHash": "7015432332ad87df77bea43083f5c3f1c77202feee2e2a327ff16e76494c5e79",
+    "review": "machine"
+  },
+  "core-generation-providers.providers.message.e3bf20933260": {
+    "text": "Vaya a API Keys → «Create API Key», asígnele el nombre «Pen to Glass» y cópiela (empieza con xai-).",
+    "sourceHash": "7f951521512b8d41a864d41c39299880303e50d906552509ed1e3d2b2e137623",
+    "review": "machine"
+  },
+  "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
+    "text": "From Pen to Glass (nota del sistema)",
+    "sourceHash": "94ceae9531d38004aa2f7facb341b3bd86a9f0df0f5b3436f80b02b2d553cec5",
+    "review": "machine"
+  },
+  "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
+    "text": "{value1} está comprimido y es demasiado grande para descomprimirlo aquí. Use el archivo zip tal como se descargó de From Pen to Glass.",
+    "sourceHash": "06d5184c2c3276cd72289f432d439fed5aae50fc4e6adbf516c4f7cbdca968e3",
+    "review": "machine"
+  },
+  "routes-admin.content.content.2838c73c64a0": {
+    "text": "Administración – Pen to Glass",
+    "sourceHash": "152827154fd19818a1858066ff5536344cc5ab2aafc92baf32f3739a8bb51b5b",
+    "review": "machine"
+  },
+  "routes-admin.content.content.4a28312072cc": {
+    "text": "Administre los usuarios y el servicio en From Pen to Glass.",
+    "sourceHash": "efa7d3b25a9c836c71b9b20fe0ac365349ede8d0187911a713d1ee0f48679a4c",
+    "review": "machine"
+  },
+  "routes-admin.content.content.4a28312072cc.2": {
+    "text": "Administre los usuarios y el servicio en From Pen to Glass.",
+    "sourceHash": "efa7d3b25a9c836c71b9b20fe0ac365349ede8d0187911a713d1ee0f48679a4c",
+    "review": "machine"
+  },
+  "routes-admin.title.title.50274d57d4da": {
+    "text": "Administración – Pen to Glass",
+    "sourceHash": "152827154fd19818a1858066ff5536344cc5ab2aafc92baf32f3739a8bb51b5b",
+    "review": "machine"
+  },
+  "routes-gruppe-workspace-id.content.content.d76669de2282": {
+    "text": "Espacio de trabajo – Pen to Glass",
+    "sourceHash": "14e61a64f94e71b9c07443284de47c3e2950598bed9e33e6684c85add24e280d",
+    "review": "machine"
+  },
+  "routes-gruppe-workspace-id.title.title.73796e5fd612": {
+    "text": "Espacio de trabajo – Pen to Glass",
+    "sourceHash": "14e61a64f94e71b9c07443284de47c3e2950598bed9e33e6684c85add24e280d",
+    "review": "machine"
+  },
+  "routes-index.content.content.75201acaab45": {
+    "text": "From Pen to Glass – del guion a la película terminada.",
+    "sourceHash": "bd70cfdc878e8b69a92bf8ec6911342bedb94360700760a4780116504bc0fc82",
+    "review": "machine"
+  },
+  "routes-index.content.content.75201acaab45.2": {
+    "text": "From Pen to Glass – del guion a la película terminada.",
+    "sourceHash": "bd70cfdc878e8b69a92bf8ec6911342bedb94360700760a4780116504bc0fc82",
+    "review": "machine"
+  },
+  "routes-index.content.content.d4c02791089e": {
+    "text": "From Pen to Glass – Proyectos",
+    "sourceHash": "12d23f2fb56bf320e8134a4b1c3042160ae735ae15a758c3cd7b0b2ae54c9a4a",
+    "review": "machine"
+  },
+  "routes-index.title.title.d34b816fe818": {
+    "text": "From Pen to Glass – Proyectos",
+    "sourceHash": "12d23f2fb56bf320e8134a4b1c3042160ae735ae15a758c3cd7b0b2ae54c9a4a",
+    "review": "machine"
+  },
+  "routes-invitasjon.content.content.167a3d5e4f4c": {
+    "text": "Invitación – Pen to Glass",
+    "sourceHash": "04558fa89fe5e027200878075185c56ad7fce7d3d608f38a7a03b95a0aefd77e",
+    "review": "machine"
+  },
+  "routes-invitasjon.content.content.2b66322361d6": {
+    "text": "Acepte una invitación de proyecto en From Pen to Glass.",
+    "sourceHash": "90f862a04d235ebf3fff6fa70cb010810e3f86a0ced97b2c89dbc23a24d4e132",
+    "review": "machine"
+  },
+  "routes-invitasjon.content.content.2b66322361d6.2": {
+    "text": "Acepte una invitación de proyecto en From Pen to Glass.",
+    "sourceHash": "90f862a04d235ebf3fff6fa70cb010810e3f86a0ced97b2c89dbc23a24d4e132",
+    "review": "machine"
+  },
+  "routes-invitasjon.title.title.15d2852cc7b6": {
+    "text": "Invitación – Pen to Glass",
+    "sourceHash": "04558fa89fe5e027200878075185c56ad7fce7d3d608f38a7a03b95a0aefd77e",
+    "review": "machine"
+  },
+  "routes-konto.content.content.b01c4654387c": {
+    "text": "Gestione su cuenta, idioma y preferencias de IA en From Pen to Glass.",
+    "sourceHash": "fd4baab9bcc4c9ee197021909e5acce7c8122fe55d05299ce0f83ca26b214c0c",
+    "review": "machine"
+  },
+  "routes-konto.content.content.b01c4654387c.2": {
+    "text": "Gestione su cuenta, idioma y preferencias de IA en From Pen to Glass.",
+    "sourceHash": "fd4baab9bcc4c9ee197021909e5acce7c8122fe55d05299ce0f83ca26b214c0c",
+    "review": "machine"
+  },
+  "routes-konto.content.content.f63ad82751ab": {
+    "text": "Mi cuenta – Pen to Glass",
+    "sourceHash": "71f1ca0c6c02b0af64c96d5f8b3b4cd69bae0b10eaa198366ea5bebdff66b507",
+    "review": "machine"
+  },
+  "routes-konto.title.title.0ad1dbde485e": {
+    "text": "Mi cuenta – Pen to Glass",
+    "sourceHash": "71f1ca0c6c02b0af64c96d5f8b3b4cd69bae0b10eaa198366ea5bebdff66b507",
+    "review": "machine"
+  },
+  "routes-m-token.content.content.0b31cbc4811d": {
+    "text": "Subir – Pen to Glass",
+    "sourceHash": "2298eb1b091595b4661c59255f6cb24333960ea23f10baac042565e089e8ab29",
+    "review": "machine"
+  },
+  "routes-m-token.content.content.e9b3848a0c50": {
+    "text": "Suba material a un proyecto de From Pen to Glass.",
+    "sourceHash": "1451459947c9e04fbfe5cfa8df390db7162b0c2bab2ddf7fe994a03ba1187760",
+    "review": "machine"
+  },
+  "routes-m-token.content.content.e9b3848a0c50.2": {
+    "text": "Suba material a un proyecto de From Pen to Glass.",
+    "sourceHash": "1451459947c9e04fbfe5cfa8df390db7162b0c2bab2ddf7fe994a03ba1187760",
+    "review": "machine"
+  },
+  "routes-m-token.title.title.5c1d0ff564a2": {
+    "text": "Subir – Pen to Glass",
+    "sourceHash": "2298eb1b091595b4661c59255f6cb24333960ea23f10baac042565e089e8ab29",
+    "review": "machine"
+  },
+  "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
+    "text": "Explorador de guion – Pen to Glass",
+    "sourceHash": "db230c9c7c16555a08addfa98b6364540389f9e3f143675e37b546a894492a52",
+    "review": "machine"
+  },
+  "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
+    "text": "Busque en el guion y añada notas en From Pen to Glass.",
+    "sourceHash": "9c48a1b3f2dd86a4aead48507bfb9d29713210c7d4e95ef36df5d2023bd5e05b",
+    "review": "machine"
+  },
+  "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
+    "text": "Explorador de guion – Pen to Glass",
+    "sourceHash": "db230c9c7c16555a08addfa98b6364540389f9e3f143675e37b546a894492a52",
+    "review": "machine"
+  },
+  "routes-personvern.content.content.87755ed805a8": {
+    "text": "Privacidad – Pen to Glass",
+    "sourceHash": "9d404cec8ebb07546d089087054068b198170aff50ba075155198cb1d78a6c69",
+    "review": "machine"
+  },
+  "routes-personvern.content.content.c2cd1c6e5143": {
+    "text": "Lea la declaración de privacidad de From Pen to Glass.",
+    "sourceHash": "737aeeed308a07860c003becc46e23e336ba00b90cc5b367aa0cbae074decd65",
+    "review": "machine"
+  },
+  "routes-personvern.content.content.c2cd1c6e5143.2": {
+    "text": "Lea la declaración de privacidad de From Pen to Glass.",
+    "sourceHash": "737aeeed308a07860c003becc46e23e336ba00b90cc5b367aa0cbae074decd65",
+    "review": "machine"
+  },
+  "routes-personvern.title.title.c03602ed60a1": {
+    "text": "Privacidad – Pen to Glass",
+    "sourceHash": "9d404cec8ebb07546d089087054068b198170aff50ba075155198cb1d78a6c69",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
+    "text": "Trabaje con personajes y recursos en From Pen to Glass.",
+    "sourceHash": "e9bf30becd13e4064ec4212ab8051aa65c115b54d76b80567c108539cdbdf83a",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
+    "text": "Trabaje con personajes y recursos en From Pen to Glass.",
+    "sourceHash": "e9bf30becd13e4064ec4212ab8051aa65c115b54d76b80567c108539cdbdf83a",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
+    "text": "Biblioteca de recursos – Pen to Glass",
+    "sourceHash": "403cf93fac8f11288e77a57f08da71b2df59391a149af7592249098b7e7b1e5a",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
+    "text": "Biblioteca de recursos – Pen to Glass",
+    "sourceHash": "403cf93fac8f11288e77a57f08da71b2df59391a149af7592249098b7e7b1e5a",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
+    "text": "Vea las producciones de su proyecto de película en From Pen to Glass.",
+    "sourceHash": "8d7932e6f7ed01d6ac8ef641f8f8c4c92a59d299a1d24b1a157185419bbe11cb",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
+    "text": "Vea las producciones de su proyecto de película en From Pen to Glass.",
+    "sourceHash": "8d7932e6f7ed01d6ac8ef641f8f8c4c92a59d299a1d24b1a157185419bbe11cb",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
+    "text": "Resumen del proyecto – Pen to Glass",
+    "sourceHash": "03b638dd2b8e4e553222114d438992a38e01f63fde226cb1b2f512a8a477d716",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
+    "text": "Resumen del proyecto – Pen to Glass",
+    "sourceHash": "03b638dd2b8e4e553222114d438992a38e01f63fde226cb1b2f512a8a477d716",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
+    "text": "Edite su guion y sus escenas en From Pen to Glass.",
+    "sourceHash": "c585aebf17862e5757852b5430076148ece76851d137057c9927a2e466c9a2e3",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
+    "text": "Edite su guion y sus escenas en From Pen to Glass.",
+    "sourceHash": "c585aebf17862e5757852b5430076148ece76851d137057c9927a2e466c9a2e3",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
+    "text": "Guion – Pen to Glass",
+    "sourceHash": "323dda614c5bcc7e6f55aa01c6a463e6afb80257ea69691ab28c3af78f3824e3",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
+    "text": "Guion – Pen to Glass",
+    "sourceHash": "323dda614c5bcc7e6f55aa01c6a463e6afb80257ea69691ab28c3af78f3824e3",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
+    "text": "Montaje – Pen to Glass",
+    "sourceHash": "67764d40491c15519fa6670fcd11fc96e4052b4ba2fb40639df8e2e2c129f5f4",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
+    "text": "Monte la animática, el sonido y la película en From Pen to Glass.",
+    "sourceHash": "f00c1a71cd0ceaaecb9d2fe463365c0271c871f6bc71c045e05ba137d2cf9c9c",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
+    "text": "Monte la animática, el sonido y la película en From Pen to Glass.",
+    "sourceHash": "f00c1a71cd0ceaaecb9d2fe463365c0271c871f6bc71c045e05ba137d2cf9c9c",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
+    "text": "Montaje – Pen to Glass",
+    "sourceHash": "67764d40491c15519fa6670fcd11fc96e4052b4ba2fb40639df8e2e2c129f5f4",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-scene.content.content.65f619722830": {
+    "text": "Edite composiciones de escena y animáticas en From Pen to Glass.",
+    "sourceHash": "03462562b0690a2bdb25b2985c66857420a45bfeb63d63c118eacda3e3fd4a53",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
+    "text": "Edite composiciones de escena y animáticas en From Pen to Glass.",
+    "sourceHash": "03462562b0690a2bdb25b2985c66857420a45bfeb63d63c118eacda3e3fd4a53",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
+    "text": "Editor de escenas – Pen to Glass",
+    "sourceHash": "9a181b641d865088f9334e52f79515b36db36562de20ae75ff041e74ba4bf1d4",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
+    "text": "Editor de escenas – Pen to Glass",
+    "sourceHash": "9a181b641d865088f9334e52f79515b36db36562de20ae75ff041e74ba4bf1d4",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
+    "text": "Trabajo de personajes, laboratorio de escenas y análisis de diálogo en From Pen to Glass.",
+    "sourceHash": "f38086d07f290a9e5c044b28b83f6a0b3bb1b1b407e4f0417f7773974be2693e",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
+    "text": "Explore personajes, analice escenas y pruebe variantes de diálogo en From Pen to Glass.",
+    "sourceHash": "5b2d9e260133f9d4d66b55e2477b683500c85d5a099a3dace9ecb2258b0e717f",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
+    "text": "Publicación – Pen to Glass",
+    "sourceHash": "f5b0ad84e10fc53a529f3f15e8e53704775efd6f43d3f3f2bb91b1060aec2203",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
+    "text": "Trabaje con carteles y publicaciones en From Pen to Glass.",
+    "sourceHash": "e957e5b3c53cf043ffc6fcb54aab60effba83e31fa7433795faa9b90afc129bd",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
+    "text": "Trabaje con carteles y publicaciones en From Pen to Glass.",
+    "sourceHash": "e957e5b3c53cf043ffc6fcb54aab60effba83e31fa7433795faa9b90afc129bd",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
+    "text": "Publicación – Pen to Glass",
+    "sourceHash": "f5b0ad84e10fc53a529f3f15e8e53704775efd6f43d3f3f2bb91b1060aec2203",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
+    "text": "Proyecto – Pen to Glass",
+    "sourceHash": "2b4fa9871342a64a09974e23d2188b1565c185c9b12d3c9833d790aae358d655",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id.content.content.323705133be5": {
+    "text": "Espacios de trabajo para su proyecto cinematográfico en From Pen to Glass.",
+    "sourceHash": "5648da8cf205ebc3d801522f117d2dcdfc201d5515f40c885dac068c9fba10ed",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id.content.content.323705133be5.2": {
+    "text": "Espacios de trabajo para su proyecto cinematográfico en From Pen to Glass.",
+    "sourceHash": "5648da8cf205ebc3d801522f117d2dcdfc201d5515f40c885dac068c9fba10ed",
+    "review": "machine"
+  },
+  "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
+    "text": "Proyecto – Pen to Glass",
+    "sourceHash": "2b4fa9871342a64a09974e23d2188b1565c185c9b12d3c9833d790aae358d655",
+    "review": "machine"
+  },
+  "routes-prosjekt-rigg.head.title": {
+    "text": "Rig – Pen to Glass",
+    "sourceHash": "5acaba0494347fe592f1525ee3e66b33d0d5a71fbf3237dd8da9dc97e73ad9fd",
+    "review": "machine"
+  },
+  "routes-se-token.content.content.0c933cbe6ab9": {
+    "text": "Ver una película compartida desde From Pen to Glass.",
+    "sourceHash": "2d0e29d796db10cab212863d17fd96c871dd3ec5d1dc80a63e4da4379d2425a3",
+    "review": "machine"
+  },
+  "routes-se-token.content.content.0c933cbe6ab9.2": {
+    "text": "Ver una película compartida desde From Pen to Glass.",
+    "sourceHash": "2d0e29d796db10cab212863d17fd96c871dd3ec5d1dc80a63e4da4379d2425a3",
+    "review": "machine"
+  },
+  "routes-se-token.content.content.450bbeb07eba": {
+    "text": "Película – Pen to Glass",
+    "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
+    "review": "machine"
+  },
+  "routes-se-token.title.title.daa9a7b91a74": {
+    "text": "Película – Pen to Glass",
+    "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
+    "review": "machine"
   }
 }
