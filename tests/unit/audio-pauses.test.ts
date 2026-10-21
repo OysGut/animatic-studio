@@ -81,7 +81,7 @@ describe("pauser mellom ord", () => {
     wordsIntact(c);
     expect(c.format).toBe(2);
     expect(c.pauses).toEqual([
-      { id: expect.any(String), afterWord: 0, deltaMs: 300, fill: { kind: "room" } },
+      { id: expect.any(String), afterWord: 0, afterWordId: expect.any(String), deltaMs: 300, fill: { kind: "room" } },
     ]);
     // Hullet ligger inne i mellomrommet, aldri i et ord
     expect(pauseGaps(c, al, srcA).map((g) => [g.fromMs, g.toMs])).toEqual([[500, 800]]);
@@ -224,17 +224,17 @@ describe("pauser mellom ord", () => {
   it("fyll: romlyd er standard; stillhet og manuell står tomme; valgt romlydfil fylles", () => {
     const c = setPause(base, al, srcA, 0, 300, id)!;
     expect(pauseGaps(c, al, srcA)).toHaveLength(1);
-    const silent = setPauseFill(c, 0, { kind: "silence" }, id);
+    const silent = setPauseFill(c, al, 0, { kind: "silence" }, id);
     expect(silent.pauses![0]!.fill).toEqual({ kind: "silence" });
     expect(pauseGaps(silent, al, srcA)).toEqual([]);
     expect(silent.pauses![0]!.id).toBe(c.pauses![0]!.id);
-    const asset = setPauseFill(c, 0, { kind: "asset", versionId: B.versionId }, id);
+    const asset = setPauseFill(c, al, 0, { kind: "asset", versionId: B.versionId }, id);
     expect(pauseGaps(asset, al, srcA)).toHaveLength(1);
     expect(compositionError(asset, sourceMs)).toBeNull();
     // Fyllet beholdes når lengden endres
     expect(setPause(silent, al, srcA, 0, 500, id)!.pauses![0]!.fill).toEqual({ kind: "silence" });
     // Stillhet uten forlengelse beholdes som valg
-    expect(setPauseFill(base, 2, { kind: "silence" }, id).pauses).toHaveLength(1);
+    expect(setPauseFill(base, al, 2, { kind: "silence" }, id).pauses).toHaveLength(1);
     expect(sameComposition(c, silent)).toBe(false);
   });
 

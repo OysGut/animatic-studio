@@ -73402,5 +73402,27 @@
   },
   "r8-translation-import.target": {
     "text": "[!! TTáárrggëëtt lláánnggüüáággëë: {language} ({tag}) !!]"
+  },
+  "id3.pauses.unresolved": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "[!! {count} ssáávvëëdd ppááüüssëë ccáánnnnôôtt bbëë ttïïëëdd ttôô áá wwôôrrdd ïïnn tthhëë llïïnnëë (tthhëë wwôôrrdd wwááss cchháánnggëëdd ôôrr rrëëmmôôvvëëdd). ÏÏtt ïïss nnôôtt üüssëëdd üünnttïïll yyôôüü ssëëtt tthhëë ppááüüssëë áággááïïnn. !!]",
+        "other": "[!! {count} ssáávvëëdd ppááüüssëëss ccáánnnnôôtt bbëë ttïïëëdd ttôô áá wwôôrrdd ïïnn tthhëë llïïnnëë (tthhëë wwôôrrddss wwëërrëë cchháánnggëëdd ôôrr rrëëmmôôvvëëdd). TThhëëyy áárrëë nnôôtt üüssëëdd üünnttïïll yyôôüü ssëëtt tthhëë ppááüüssëëss áággááïïnn. !!]"
+      }
+    }
+  },
+  "id3.provenance.unresolved": {
+    "text": "[!! tthhëë ssôôüürrccëë vvëërrssïïôônn ccáánnnnôôtt bbëë ddëëttëërrmmïïnnëëdd wwïïtthh ccëërrttááïïnnttyy !!]"
+  },
+  "id3.derived-from.invalid": {
+    "text": "[!! TThhëë ssôôüürrccëë vvëërrssïïôônn ddôôëëss nnôôtt ëëxxïïsstt ïïnn tthhïïss áássssëëtt. !!]"
+  },
+  "id3.nav.workspaces": {
+    "text": "[!! WWôôrrkkssppááccëëss !!]"
+  },
+  "id3.duration.per-scene": {
+    "text": "[!! PPëërr ssccëënnëë !!]"
   }
 }

@@ -73402,5 +73402,27 @@
   },
   "r8-translation-import.target": {
     "text": "Target language: {language} ({tag})"
+  },
+  "id3.pauses.unresolved": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} saved pause cannot be tied to a word in the line (the word was changed or removed). It is not used until you set the pause again.",
+        "other": "{count} saved pauses cannot be tied to a word in the line (the words were changed or removed). They are not used until you set the pauses again."
+      }
+    }
+  },
+  "id3.provenance.unresolved": {
+    "text": "the source version cannot be determined with certainty"
+  },
+  "id3.derived-from.invalid": {
+    "text": "The source version does not exist in this asset."
+  },
+  "id3.nav.workspaces": {
+    "text": "Workspaces"
+  },
+  "id3.duration.per-scene": {
+    "text": "Per scene"
   }
 }

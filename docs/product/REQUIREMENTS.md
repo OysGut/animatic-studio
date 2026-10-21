@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **878**
 - Prioritet: P0: 147, P1: 543, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 351, teknisk-anbefaling: 7
-- Status: Verifisert: 708, Under arbeid: 13, Ikke startet: 45, Implementert – ikke verifisert: 112
+- Status: Verifisert: 709, Ikke startet: 45, Implementert – ikke verifisert: 112, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -503,12 +503,12 @@ Separate, stabile identifikatorer skal finnes for: prosjekt, produksjon, manusve
 
 - **Kilde:** Kap. 3.2 (l. 111-132) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
 - **Tester:**
   - enhet: skjemavalidering av ID-felt for alle 21 typer
-- **Implementering:** src/core/ids.ts, db/migrations/0028_duration_exports.sql, src/core/export-records.ts, docs/architecture/DOMAIN_MODEL.md
+- **Implementering:** src/core/ids.ts, db/migrations/0028_duration_exports.sql, src/core/export-records.ts, docs/architecture/DOMAIN_MODEL.md, src/core/audio/alignment.ts#assignWordIds (ord-ID-er), src/core/audio/pauses.ts#pauseWordId, src/core/library/provenance.ts#versionProvenance + db/migrations/0069_version_derivation.sql (derived_from_version_id), src/core/assembly/time-levels.ts#partKey/partById, src/core/translation/index.ts#identifyParsedScenes/parsedSceneOf, src/core/storylab/engine.ts (branchFrom turnId), src/adapters/storylab/sessions.functions.ts#forkStorySession, src/core/screenplay/script-pages.ts#lockedPageOffset/sceneSourcePage
 
 #### REQ-0038 – ID-er uavhengige av navn, språk og plassering
 Identifikatorene skal være uavhengige av navn, språk, plassering og synlige løpenumre.
@@ -6976,6 +6976,7 @@ Animatic Studio skal bygges som en sammenhengende, profesjonell filmproduksjonsa
   - For ethvert medieklipp, lydspor og eksport kan man spore tilbake til scene-ID, produksjon og manusversjon.
 - **Tester:**
   - manuell: gjennomgang av arbeidsleveranser
+- **Implementering:** src/core/library/provenance.ts + db/migrations/0069_version_derivation.sql (versjonsopphav som ID), src/core/assembly/time-levels.ts#partKey (deler i filmen spores til scene og del-ID)
 - **Merknad:** Gjentar kap. 2 / INV-01 som overordnet mål.
 
 #### REQ-0519 – Overordnet mål: kreativ kontroll og teknisk automatisering

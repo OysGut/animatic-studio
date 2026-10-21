@@ -563,6 +563,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly composition?: import("./audio/composition").AudioComposition;
   /** Ord-til-lyd for replikken opptaket gjelder (DEC-0095, migrasjon 0037). Kan endres (manuelt eller ny analyse). */
   readonly alignment?: import("./audio/alignment").WordAlignment;
+  /**
+   * Versjonen denne er frilagt fra eller erstatter (REQ-0037, migrasjon 0069): permanent ID i stedet for
+   * versjonsnummeret i merknaden. Mangler for eldre versjoner (opphavet slås da opp fra merknaden ved lesing).
+   */
+  readonly derivedFromVersionId?: AssetVersionId;
 }
 
 /** Et element som skal inn i en scene (DEC-0088). */

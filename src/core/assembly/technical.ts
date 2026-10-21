@@ -8,7 +8,7 @@ import { formatTimecode, framesToSeconds, type Rational } from "../time";
 import { locale } from "../i18n";
 import { takeLabel } from "./edit";
 import type { FilmClip } from "./film";
-import { clipTimeLevels } from "./time-levels";
+import { clipTimeLevels, partById } from "./time-levels";
 import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export interface TechRow {
@@ -165,7 +165,7 @@ export function playheadRows(
   if (filmFrame < clip.startFrame || filmFrame >= clip.startFrame + clip.durationFrames)
     return null;
   const at = clipTimeLevels(clip, 0, filmFrame, fps);
-  const part = clip.parts[at.partIndex]!;
+  const part = partById(clip, at.partId)!;
   const rows: TechRow[] = [
     {
       label: tk("core-assembly-technical.label.label.541f2aca4ba5"),

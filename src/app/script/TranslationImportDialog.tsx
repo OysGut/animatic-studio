@@ -8,7 +8,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationWithAi } from "@/adapters/ai/translation-align.functions";
 import { aiAlignRequest } from "@/core/translation/align-prompt";
 import { useMemo, useRef, useState } from "react";
-import { LANGUAGE_LABEL, languageWord, alignLines, alignTranslation, blocksOfVariant, formatHeading, newId, orderedOccurrences, translationItems, unpairedTranslationLines, type Command, type ParsedScreenplay, type ProjectState, type SceneLink } from "@/core";
+import { LANGUAGE_LABEL, languageWord, alignLines, alignTranslation, blocksOfVariant, identifyParsedScenes, parsedSceneOf, formatHeading, newId, orderedOccurrences, translationItems, unpairedTranslationLines, type Command, type ParsedScreenplay, type ProjectState, type SceneLink } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { SCREENPLAY_ACCEPT } from "@/engine/import/browser";
 import { Button } from "@/components/ui/button";
@@ -71,9 +71,15 @@ export function TranslationImportDialog({
 
   /** Den innebygde AI-en foreslår koblinger for usikre eller manglende scener (B-048). */
   async function suggestWithAi(parsedDoc: ParsedScreenplay, links: readonly SceneLink[]) {
+    // AI-forespørselen merker scenene med plassen i filen; svaret oversettes straks tilbake til scenens ID
+    const idAt = new Map(links.map((l) => [l.parsedIndex, l.parsedId]));
+    const sceneAt = (i: number) => {
+      const id = idAt.get(i);
+      return id ? parsedSceneOf(parsedDoc, { parsedId: id }) : undefined;
+    };
     const items = aiAlignRequest(
       links,
-      (i) => (parsedDoc.scenes[i]?.elements ?? []).filter((e) => e.kind !== "heading").map((e) => e.text),
+      (i) => (sceneAt(i)?.elements ?? []).filter((e) => e.kind !== "heading").map((e) => e.text),
       occs.map((o) => o.id),
     );
     if (!items.length) return;
@@ -84,13 +90,13 @@ export function TranslationImportDialog({
         setAiNote(r.message);
         return;
       }
-      const byIndex = new Map(r.links.map((l) => [l.index, l]));
+      const byId = new Map(r.links.flatMap((l) => (idAt.has(l.index) ? [[idAt.get(l.index)!, l] as const] : [])));
       setRows((rs) =>
         rs.map((row) => {
-          const ai = byIndex.get(row.link.parsedIndex);
+          const ai = byId.get(row.link.parsedId);
           if (!ai || row.manual || !ai.occurrenceId) return row;
           const o = state.occurrences[ai.occurrenceId];
-          const p = parsedDoc.scenes[row.link.parsedIndex];
+          const p = parsedSceneOf(parsedDoc, row.link);
           if (!o || !p) return row;
           const { lines, unmatched } = alignLines(p, blocksOfVariant(state, o.variantId));
           // Aldri stille godkjenning: AI-forslag krysses ikke av
@@ -119,13 +125,15 @@ export function TranslationImportDialog({
     try {
       const { readScreenplayFile } = await import("@/engine/import/browser");
       const r = await readScreenplayFile(file);
-      const links = alignTranslation(state, productionId, r.parsed);
-      setParsed(r.parsed);
+      // REQ-0037: scenene får ID én gang; koblingene peker på ID-en, ikke plassen
+      const doc = identifyParsedScenes(r.parsed);
+      const links = alignTranslation(state, productionId, doc);
+      setParsed(doc);
       setFileName(file.name);
       setRows(
         links.map((link) => ({ link, approved: link.certainty === "sure" && !!link.occurrenceId })),
       );
-      void suggestWithAi(r.parsed, links);
+      void suggestWithAi(doc, links);
     } catch (e) {
       setErr((e as Error).message);
     } finally {
@@ -139,7 +147,7 @@ export function TranslationImportDialog({
       rs.map((r, k) => {
         if (k !== i) return r;
         const o = occurrenceId ? state.occurrences[occurrenceId] : undefined;
-        const p = parsed.scenes[r.link.parsedIndex]!;
+        const p = parsedSceneOf(parsed, r.link)!;
         const { lines, unmatched } = o
           ? alignLines(p, blocksOfVariant(state, o.variantId))
           : { lines: [], unmatched: p.elements.length };

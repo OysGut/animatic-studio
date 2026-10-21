@@ -84,6 +84,8 @@ export function ReuploadDialog({
               variantId: va.id,
               media: up.media,
               note: reuploadNote(old, c),
+              // REQ-0037: versjonen som erstattes, som permanent ID
+              derivedFromVersionId: old.id,
             },
             label,
             group,

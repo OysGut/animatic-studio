@@ -168,6 +168,8 @@ export function LineWordsPanel({
         r.model,
         r.loss,
         new Date().toISOString(),
+        // REQ-0037: uendrede ord beholder ID-en, så pauser følger ordet etter ny analyse
+        al,
       );
       await save(next);
       const missing = next.words.filter(wordUncertain).length;
@@ -203,7 +205,7 @@ export function LineWordsPanel({
       let cur =
         al && o !== null && o !== undefined
           ? al
-          : manualAlignment(blockId, text, new Date().toISOString());
+          : manualAlignment(blockId, text, new Date().toISOString(), al);
       const idx = cur === al ? (o as number) : sel.from;
       cur = setWordTiming(cur, idx, a, b);
       await save(cur);

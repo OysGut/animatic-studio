@@ -8,6 +8,8 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+/** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
+const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
 import { uiLang, byLang } from "./ui-lang.mjs";
 const [
   base = "http://127.0.0.1:8080",
@@ -180,7 +182,7 @@ async function mock(ctx) {
     }
     if (/forkStorySession/.test(name)) {
       const p = S.sessions.get(d.sessionId);
-      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: d.fromTurn, turns: p.turns.slice(0, d.fromTurn + 1), status: "paused", updatedAt: now };
+      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: forkAt(p, d), turns: p.turns.slice(0, forkAt(p, d) + 1), status: "paused", updatedAt: now };
       S.sessions.set(s.id, s);
       return json({ ok: true, session: s });
     }
@@ -386,7 +388,7 @@ await run("tastaturnavigasjon", async (page) => {
 
 await run("engelsk", async (page) => {
   await page.getByTestId("canvas-add").waitFor();
-  check((await page.getByTestId("canvas-add").textContent()).includes("New node"), "engelsk verktøylinje");
+  check((await page.getByTestId("canvas-add").textContent()).includes(byLang("en", "Ny node", "New node")), "verktøylinjen på scenariospråket (UI_LANG overstyrer)");
   check((await page.getByTestId("storylab-tab-canvas").textContent()).includes("Canvas"), "engelsk fane");
 }, { lang: "en" });
 

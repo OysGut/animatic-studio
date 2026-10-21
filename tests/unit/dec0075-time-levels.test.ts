@@ -11,6 +11,7 @@ import {
   filmToScene,
   levelsToFilm,
   partToScene,
+  partKey,
   partToSource,
   playheadRows,
   sceneToFilm,
@@ -115,8 +116,9 @@ describe("rundtur", () => {
       const clip = clips[lv.clipIndex]!;
       expect(sceneToFilm(clip, lv.sceneFrame)).toBe(f);
       expect(filmToScene(clip, f)).toBe(lv.sceneFrame);
-      expect(partToScene(clip, lv.partIndex, lv.partFrame)).toBe(lv.sceneFrame);
+      expect(partToScene(clip, lv.partId, lv.partFrame)).toBe(lv.sceneFrame);
       expect(sceneToPart(clip, lv.sceneFrame)).toEqual({
+        partId: lv.partId,
         partIndex: lv.partIndex,
         partFrame: lv.partFrame,
       });
@@ -136,8 +138,9 @@ describe("rundtur", () => {
     const clip = filmClips(s, mainId).find((c) => c.occurrenceId === occ)!;
     for (let i = 0; i < clip.parts.length; i++)
       for (let o = 0; o < clip.parts[i]!.durationFrames; o++) {
-        const src = partToSource(clip, i, o, FPS_23_976);
-        expect(sourceToScene(clip, src, FPS_23_976)).toContain(partToScene(clip, i, o));
+        const key = partKey(clip, clip.parts[i]!);
+        const src = partToSource(clip, key, o, FPS_23_976);
+        expect(sourceToScene(clip, src, FPS_23_976)).toContain(partToScene(clip, key, o));
       }
   });
 
@@ -149,8 +152,8 @@ describe("rundtur", () => {
     expect(sourceToScene(clip, { kind: "take", takeId, ms: 4000 }, fps)).toEqual([]);
     expect(sourceToScene(clip, { kind: "take", takeId, ms: 500 }, fps)).toEqual([]);
     expect(sourceToScene(clip, { kind: "composition", frame: 50 }, fps)).toEqual([]);
-    expect(levelsToFilm(clips, { occurrenceId: tid(), partIndex: 0, partFrame: 0 })).toBeNull();
-    expect(levelsToFilm(clips, { occurrenceId: occ, partIndex: 9, partFrame: 0 })).toBeNull();
+    expect(levelsToFilm(clips, { occurrenceId: tid(), partId: clip.parts[0]!.id!, partFrame: 0 })).toBeNull();
+    expect(levelsToFilm(clips, { occurrenceId: occ, partId: tid(), partFrame: 0 })).toBeNull();
   });
 });
 

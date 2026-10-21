@@ -24,6 +24,12 @@ export interface AlignedWord {
   readonly loss: number | null;
   /** Rettet for hånd. */
   readonly manual?: boolean;
+  /**
+   * Permanent ID for ordet i denne replikkens kobling (REQ-0037). Pauser og rettinger peker på ID-en, aldri på
+   * plassen i listen. Mangler i koblinger laget før ID-ene; da utledes den ved lesing (`wordIds`), uten at
+   * den lagrede koblingen skrives om.
+   */
+  readonly id?: string;
 }
 
 export interface WordAlignment {
@@ -83,6 +89,8 @@ export function alignmentFromProvider(
   model: string,
   loss: number | null,
   at: string,
+  /** Koblingen som erstattes: uendrede ord beholder ID-en (REQ-0037). */
+  previous?: WordAlignment | null,
 ): WordAlignment {
   const tokens = tokenizeLine(text).slice(0, ALIGNMENT_MAX_WORDS);
   const theirs = found
@@ -124,12 +132,75 @@ export function alignmentFromProvider(
     } else if (dp[i + 1]![j]! >= dp[i]![j + 1]!) i++;
     else j++;
   }
-  return { format: ALIGNMENT_FORMAT, blockId, text, words, provider, model, loss, at };
+  return assignWordIds({ format: ALIGNMENT_FORMAT, blockId, text, words, provider, model, loss, at }, previous);
+}
+
+// ---------------------------------------------------------------- permanente ord-ID-er (REQ-0037)
+
+/** ID for ord nr. `i` i en eldre kobling uten ID-er (deterministisk fra den lagrede rekkefølgen). */
+export function legacyWordId(i: number): string {
+  return `w${i}`;
+}
+
+function hash32(text: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < text.length; i++) {
+    h ^= text.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h.toString(36);
+}
+
+/** ID-ene til ordene i koblingen, i samme rekkefølge (eldre ord uten ID får `legacyWordId`). */
+export function wordIds(a: Pick<WordAlignment, "words">): string[] {
+  return a.words.map((w, i) => w.id ?? legacyWordId(i));
+}
+
+/** Plassen til ordet med ID-en, eller -1 når ordet ikke finnes (lenger) i koblingen. */
+export function wordIndexOf(a: Pick<WordAlignment, "words">, id: string): number {
+  return wordIds(a).indexOf(id);
+}
+
+/** ID-en til ord nr. `i` (null utenfor koblingen). Plassen er bare et oppslag i den viste koblingen. */
+export function wordIdAt(a: Pick<WordAlignment, "words">, i: number): string | null {
+  return Number.isInteger(i) && i >= 0 && i < a.words.length ? (a.words[i]!.id ?? legacyWordId(i)) : null;
+}
+
+/**
+ * Gir alle ordene ID. Uendrede ord fra `previous` (samme normaliserte ord i samme rekkefølge, som
+ * `textChanges`) beholder ID-en sin, så pauser og rettinger følger ordet når teksten endres eller lyden
+ * analyseres på nytt. Nye ord får en ny, unik ID.
+ */
+export function assignWordIds(a: WordAlignment, previous?: WordAlignment | null): WordAlignment {
+  const carried: (string | null)[] = a.words.map(() => null);
+  if (previous) {
+    const ids = wordIds(previous);
+    textChanges(previous.text, a.text).forEach((c, j) => {
+      if (c.change === "same" && c.oldIndex !== null && j < carried.length) carried[j] = ids[c.oldIndex] ?? null;
+    });
+  }
+  const used = new Set<string>(carried.filter((x): x is string => x !== null));
+  const salt = hash32(`${a.blockId}|${a.at}|${a.provider}`);
+  const words = a.words.map((w, i) => {
+    let id = carried[i] ?? w.id ?? null;
+    if (id === null || (carried[i] === null && used.has(id))) {
+      id = `w${i.toString(36)}-${salt}`;
+      for (let k = 1; used.has(id); k++) id = `w${i.toString(36)}-${salt}-${k}`;
+    }
+    used.add(id);
+    return { ...w, id };
+  });
+  return { ...a, words };
 }
 
 /** En tom kobling for manuell redigering (ingen ord har tid ennå). */
-export function manualAlignment(blockId: string, text: string, at: string): WordAlignment {
-  return alignmentFromProvider(blockId, text, [], "manual", "manual", null, at);
+export function manualAlignment(
+  blockId: string,
+  text: string,
+  at: string,
+  previous?: WordAlignment | null,
+): WordAlignment {
+  return alignmentFromProvider(blockId, text, [], "manual", "manual", null, at, previous);
 }
 
 /**
@@ -189,6 +260,7 @@ export function alignmentError(a: unknown): string | null {
   if (o["loss"] !== null && typeof o["loss"] !== "number") return bad;
   const num = (v: unknown) =>
     v === null || (typeof v === "number" && Number.isInteger(v) && v >= 0 && v <= 36_000_000);
+  const ids = new Set<string>();
   for (const w of o["words"] as unknown[]) {
     if (!w || typeof w !== "object") return bad;
     const x = w as Record<string, unknown>;
@@ -198,6 +270,10 @@ export function alignmentError(a: unknown): string | null {
     if (x["startMs"] !== null && (x["endMs"] as number) < (x["startMs"] as number)) return bad;
     if (x["loss"] !== null && typeof x["loss"] !== "number") return bad;
     if (x["manual"] !== undefined && typeof x["manual"] !== "boolean") return bad;
+    if (x["id"] !== undefined) {
+      if (typeof x["id"] !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(x["id"]) || ids.has(x["id"])) return bad;
+      ids.add(x["id"]);
+    }
   }
   if (tokenizeLine(o["text"] as string).length !== (o["words"] as unknown[]).length) return bad;
   return null;

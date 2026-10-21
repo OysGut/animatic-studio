@@ -693,6 +693,8 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly globalSource?: import("../model").GlobalSource;
       /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
       readonly template?: import("../typography/template").TemplateDefinition;
+      /** Versjonen den nye er frilagt fra eller erstatter (REQ-0037, migrasjon 0069). Samme ressurs. */
+      readonly derivedFromVersionId?: AssetVersionId;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */

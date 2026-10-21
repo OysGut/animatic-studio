@@ -201,6 +201,7 @@ export interface RoomSource {
 export interface FillResult {
   readonly composition: AudioComposition;
   /** Pauser som ikke kunne fylles (ingen egnet romlyd). */
+  /** `afterWord` er ordets plass nå (til visning). */
   readonly unfilled: readonly { readonly afterWord: number; readonly message: string }[];
 }
 
@@ -222,12 +223,16 @@ export function fillPauseGaps(
 ): FillResult {
   const segments: AudioSegment[] = c.segments.filter((s) => s.role !== "room");
   const unfilled: { afterWord: number; message: string }[] = [];
+  const unfilledIds = new Set<string>();
   for (const g of gaps) {
     const src = sourceFor(g);
     const pieces = src ? buildRoomFill(src.candidates, g.toMs - g.fromMs, crossfadeMs) : [];
     if (!src || pieces.length === 0) {
-      if (!unfilled.some((u) => u.afterWord === g.pause.afterWord))
-        unfilled.push({ afterWord: g.pause.afterWord, message: NO_ROOM_TONE_MESSAGE() });
+      // Én melding per pause (pausens ID er nøkkelen; plassen vises bare)
+      if (!unfilledIds.has(g.pause.id)) {
+        unfilledIds.add(g.pause.id);
+        unfilled.push({ afterWord: g.wordIndex, message: NO_ROOM_TONE_MESSAGE() });
+      }
       continue;
     }
     for (const p of pieces)

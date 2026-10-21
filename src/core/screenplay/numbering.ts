@@ -6,6 +6,7 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant, isScriptOccurrence, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
+import { lockedPageOffset, sceneSourcePage } from "./script-pages";
 
 import { t } from "@/core/i18n/keyed";
 
@@ -147,17 +148,9 @@ export function exportPaginationInput(
   opts: NumberingOptions & { readonly lockedPages?: boolean },
 ): PaginationScene[] {
   const numbered = exportNumbering(s, productionId, opts);
-  let minPage = Infinity;
-  if (opts.lockedPages) {
-    // Bare scener som faktisk eksporteres med innhold (samme grunnlag som manusvisningen)
-    for (const n of numbered) {
-      if (n.omitted) continue;
-      const occ = s.occurrences[n.occurrenceId]!;
-      for (const b of blocksOfVariant(s, occ.variantId))
-        if (b.sourceRef) minPage = Math.min(minPage, b.sourceRef.page);
-    }
-  }
-  const offset = Number.isFinite(minPage) ? minPage - 1 : 0;
+  // REQ-0037: samme faste utgangspunkt som manusvisningen (alle importerte blokker), så låste sider ikke
+  // flytter seg når scener byttes om, deaktiveres eller slettes
+  const offset = opts.lockedPages ? lockedPageOffset(s) : 0;
   const locked = (page: number | undefined) =>
     opts.lockedPages && page !== undefined ? { lockedPage: page - offset } : {};
   return numbered.map((n) => {
@@ -184,7 +177,7 @@ export function exportPaginationInput(
       occurrenceId: n.occurrenceId,
       number: n.exportNumber,
       headingText: formatHeading(n.heading),
-      ...locked(blocks[0]?.sourceRef?.page),
+      ...locked(sceneSourcePage(blocks)),
       blocks: [
         ...marker,
         ...blocks.map((b) => ({

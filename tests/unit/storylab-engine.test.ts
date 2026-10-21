@@ -64,12 +64,12 @@ describe("forgrening", () => {
       line(B),
       line(C),
     );
-    const b = run(s, { type: "branchFrom", turnIndex: 0 });
+    const b = run(s, { type: "branchFrom", turnId: s.turns[0]!.id });
     expect(b.turns.map((t) => t.speaker)).toEqual([A]);
     expect(b.directions).toEqual([]);
     expect(b.status).toBe("paused");
-    expect(run(s, { type: "branchFrom", turnIndex: 1 }).directions.map((d) => d.id)).toEqual(["d1"]);
-    expect(run(s, { type: "branchFrom", turnIndex: 99 })).toBe(s);
+    expect(run(s, { type: "branchFrom", turnId: s.turns[1]!.id }).directions.map((d) => d.id)).toEqual(["d1"]);
+    expect(run(s, { type: "branchFrom", turnId: "ukjent" })).toBe(s);
   });
 });
 

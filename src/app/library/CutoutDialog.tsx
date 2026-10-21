@@ -595,6 +595,8 @@ function Editor({
           versionId: versionId as never,
           variantId: version.variantId,
           media,
+          // REQ-0037: kilden som permanent ID (nummeret i merknaden er bare tekst)
+          derivedFromVersionId: version.id,
           // i18n-ignore (merknaden leses av provenance.ts)
           note: `Frilagt fra v${version.number}${src.scaled ? " (skalert ned)" : ""}${
             flipped.x || flipped.y

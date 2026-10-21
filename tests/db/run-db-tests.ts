@@ -6445,7 +6445,7 @@ try {
     assert(ac.includes("v_link_scope") && ac.includes("target_translation_ids && v_lang_changed"),"apply_changes lacks the 0067 link scope");
   });
   await test("0068: R3 tilbaketrekking av globale versjoner – grants, rettigheter, angre/gjør om, andre prosjekter uendret", async () => {
-    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])===68,"schema version 68");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=68,"schema version 68");
     const g=await sql`select has_table_privilege('anon','public.global_version_withdrawals','SELECT') a, has_table_privilege('authenticated','public.global_version_withdrawals','SELECT') r, has_table_privilege('authenticated','public.global_version_withdrawals','INSERT') w, has_table_privilege('authenticated','public.global_version_withdrawals','DELETE') d, has_table_privilege('service_role','public.global_version_withdrawals','INSERT') s, (select relrowsecurity from pg_class where oid='public.global_version_withdrawals'::regclass) rls, has_function_privilege('anon','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fa, has_function_privilege('authenticated','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fu`;
     assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true && g[0]?.["fa"]===false && g[0]?.["fu"]===true,"global_version_withdrawals grants/RLS");
     const DAVE="44444444-4444-7444-8444-444444444444";
@@ -6488,6 +6488,33 @@ try {
     // Ingen funksjon er erstattet av 0068
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(!ac.includes("global_version_withdrawals"),"apply_changes must be unchanged");
+  });
+  await test("0069: opphavet til en versjon er en permanent ID (kontroll ved lagring, uforanderlig, ingen funksjon erstattet)", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=69,"schema version 69");
+    const col=await sql`select data_type, is_nullable from information_schema.columns where table_schema='public' and table_name='asset_versions' and column_name='derived_from_version_id'`;
+    assert(col[0]?.["data_type"]==="uuid" && col[0]?.["is_nullable"]==="YES","nullable uuid column");
+    const pid=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('ID3 opphav') id`)[0]))?.["id"]);
+    const asset=newId(), variant=newId();
+    let st=await loadState(pid);
+    st=await runCommand(st, ALICE, { type:"CreateAssets", assets:[{ assetId: asset as never, fields:{ kind:"character", name:"Maja", names:[], description:"", category:"", tags:[] } }] });
+    st=await runCommand(st, ALICE, { type:"CreateAssetVariant", variantId: variant as never, assetId: asset as never, fields:{ name:"Animatic", style:"animatic", appearance:"" } });
+    const from=newId();
+    st=await runCommand(st, ALICE, { type:"AddAssetVersion", versionId: from as never, variantId: variant as never,
+      media:{ path:`${pid}/id3/${from}/kilde.png`, mimeType:"image/png", width:10, height:10, byteSize:10, sha256:"c".repeat(64) }, note:"" });
+    const nv=newId();
+    st=await runCommand(st, ALICE, { type:"AddAssetVersion", versionId: nv as never, variantId: variant as never,
+      media:{ path:`${pid}/id3/${nv}/frilagt.png`, mimeType:"image/png", width:10, height:10, byteSize:10, sha256:"a".repeat(64) },
+      note:"Frilagt fra v1", derivedFromVersionId: from as never });
+    const back=await loadState(pid);
+    assert(back.assetVersions[nv]?.derivedFromVersionId===from,"derived_from_version_id round trip");
+    // Kilden må finnes i samme prosjekt og ressurs (sjekkes ved commit, uavhengig av rekkefølgen i kallet)
+    await expectError(sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_from_version_id)
+      values (gen_random_uuid(), ${pid}, ${variant}, 990, ${`${pid}/x/y/z.png`}, 'image/png', 1, ${"b".repeat(64)}, gen_random_uuid())`,"22023");
+    await expectError(sql`update public.asset_versions set derived_from_version_id=null where id=${nv}`,/INV-13/);
+    // Eldre rader er uendret (ingen tilbakefylling)
+    assert(Number((await sql`select count(*)::int n from public.asset_versions where derived_from_version_id is not null and id<>${nv}`)[0]?.["n"])===0,"no backfill");
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("derived_from"),"apply_changes must be unchanged");
   });
 } finally {
   await sql.end();

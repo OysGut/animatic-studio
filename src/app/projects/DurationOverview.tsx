@@ -541,7 +541,7 @@ export function DurationOverview({
         ) : (
           <ChevronRight className="size-4" aria-hidden />
         )}
-        Per scene
+        {t("id3.duration.per-scene")}
         {filtered ? (
           <span className="text-text-tertiary">
             ({rows.length} {t("app-projects-duration-overview.duration-overview.span.c0bc5cfc4d81")} {overview.rows.length})

@@ -283,13 +283,48 @@ function sceneSimilarity(a: SceneSig, b: SceneSig): number {
 
 export type LinkCertainty = "sure" | "uncertain";
 
+/**
+ * Gir hver tolket scene en midlertidig ID én gang (REQ-0037): `ps-1`, `ps-2` … etter rekkefølgen i filen.
+ * Scener som allerede har ID, beholder den, så koblinger overlever at listen sorteres, filtreres eller
+ * tolkes på nytt i samme import.
+ */
+export function identifyParsedScenes(parsed: ParsedScreenplay): ParsedScreenplay {
+  if (parsed.scenes.every((p) => typeof p.id === "string")) return parsed;
+  const used = new Set(parsed.scenes.map((p) => p.id).filter((x): x is string => typeof x === "string"));
+  let n = 0;
+  const next = () => {
+    let id: string;
+    do id = `ps-${++n}`;
+    while (used.has(id));
+    used.add(id);
+    return id;
+  };
+  return { ...parsed, scenes: parsed.scenes.map((p) => (typeof p.id === "string" ? p : { ...p, id: next() })) };
+}
+
+/** Den importerte scenen en kobling peker på (slått opp på ID), eller undefined. */
+export function parsedSceneOf(
+  parsed: ParsedScreenplay,
+  link: { readonly parsedId?: string; readonly parsedIndex?: number },
+): ParsedScene | undefined {
+  // Et manus som ikke er identifisert ennå, får de samme ID-ene som alignTranslation gir det
+  const doc = identifyParsedScenes(parsed);
+  // Eldre kobling uten ID (bare plass): plassen oversettes én gang til scenens ID, deretter slås ID-en opp
+  const id =
+    link.parsedId ??
+    (typeof link.parsedIndex === "number" ? doc.scenes[link.parsedIndex]?.id : undefined);
+  return id === undefined ? undefined : doc.scenes.find((p) => p.id === id);
+}
+
 export interface LinePair {
   readonly blockId: string;
   readonly text: string;
 }
 
 export interface SceneLink {
-  /** Indeks i det importerte manuset. */
+  /** Den importerte scenen: midlertidig ID fra tolkingen (REQ-0037). Identiteten i importen. */
+  readonly parsedId: string;
+  /** Plassen i det importerte manuset (bare til visning og som etikett i én AI-forespørsel, aldri nøkkel). */
   readonly parsedIndex: number;
   readonly parsedHeading: string;
   readonly parsedNumber: string | null;
@@ -313,8 +348,10 @@ const MIN = 0.3;
 export function alignTranslation(
   s: ProjectState,
   productionId: string,
-  parsed: ParsedScreenplay,
+  input: ParsedScreenplay,
 ): SceneLink[] {
+  // Koblingene peker på scenenes ID; gi dem ID nå hvis kallet ikke har gjort det (samme ID-er som i dialogen)
+  const parsed = identifyParsedScenes(input);
   const occs = orderedOccurrences(s, productionId).filter(isScriptOccurrence);
   const P = parsed.scenes.filter((p) => !p.isContinuation || p.elements.length);
   const pSig = P.map(sigOfParsed);
@@ -374,6 +411,7 @@ export function alignTranslation(
       ? alignLines(p, blocksOfVariant(s, occ.variantId))
       : { lines: [], unmatched: p.elements.length };
     return {
+      parsedId: p.id!,
       parsedIndex: parsed.scenes.indexOf(p),
       parsedHeading: p.rawHeading || formatHeading(p.heading),
       parsedNumber: p.number,
@@ -479,7 +517,7 @@ export function unpairedTranslationLines(
   const variants = new Set<string>();
   for (const { link } of links) {
     const o = link.occurrenceId ? s.occurrences[link.occurrenceId] : undefined;
-    const p = parsed.scenes[link.parsedIndex];
+    const p = parsedSceneOf(parsed, link);
     if (!o || !p || variants.has(o.variantId)) continue;
     variants.add(o.variantId);
     for (const u of alignLines(p, blocksOfVariant(s, o.variantId)).unpaired)
@@ -517,7 +555,7 @@ export function translationItems(
     const o = s.occurrences[link.occurrenceId];
     if (!o) continue;
     const status = approved ? "approved" : "uncertain";
-    const p = parsed.scenes[link.parsedIndex];
+    const p = parsedSceneOf(parsed, link);
     // En oversettelse brukeren har godkjent, overskrives bare av en godkjent kobling
     const keep = (existing: Translation | null) =>
       !!existing && existing.status === "approved" && !approved;

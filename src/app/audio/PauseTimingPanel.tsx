@@ -6,7 +6,7 @@
  * markering av ord endrer aldri timingen (§33).
  */
 import { useMemo, useRef, useState } from "react";
-import { newId, pauseFor, setPause, setPauseFill, spreadPause, wordSpansInComposition, type AlignmentSource, type AudioComposition, type LineToken, type PauseFill, type WordAlignment } from "@/core";
+import { newId, pauseFor, unresolvedPauses, setPause, setPauseFill, spreadPause, wordSpansInComposition, type AlignmentSource, type AudioComposition, type LineToken, type PauseFill, type WordAlignment } from "@/core";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
 
@@ -74,7 +74,7 @@ export function PauseTimingPanel({
   const cannot = t("app-audio-pause-timing-panel.cannot.message.9589b92aeb10");
 
   function changeGap(afterWord: number, byMs: number) {
-    const cur = pauseFor(comp, afterWord)?.deltaMs ?? 0;
+    const cur = pauseFor(comp, al, afterWord)?.deltaMs ?? 0;
     commit(setPause(comp, al, src, afterWord, cur + Math.round(byMs), segId), cannot);
   }
 
@@ -130,7 +130,7 @@ export function PauseTimingPanel({
     },
   });
 
-  const selected = gapSel !== null ? pauseFor(comp, gapSel) : undefined;
+  const selected = gapSel !== null ? pauseFor(comp, al, gapSel) : undefined;
   const selGap = (() => {
     if (gapSel === null) return null;
     const a = spans[gapSel];
@@ -138,6 +138,8 @@ export function PauseTimingPanel({
     return a && b ? Math.max(0, b.startMs - a.endMs) : null;
   })();
   const word = (i: number) => al.words[i]?.text ?? "";
+  // REQ-0037: pauser som ikke kan knyttes til et ord i koblingen (ordet er borte, eller eldre data er uklare)
+  const unresolved = unresolvedPauses(comp, al);
 
   return (
     <div data-testid="pause-timing">
@@ -173,7 +175,7 @@ export function PauseTimingPanel({
                     "mx-0.5 inline-block h-5 cursor-ew-resize touch-none rounded-sm border " +
                     (isGapSel
                       ? "border-accent-warm bg-accent-warm/40"
-                      : pauseFor(comp, g.afterWord)
+                      : pauseFor(comp, al, g.afterWord)
                         ? "border-accent-warm/60 bg-accent-warm/15"
                         : "border-border bg-surface-3")
                   }
@@ -240,7 +242,7 @@ export function PauseTimingPanel({
               <select
                 value={fillKey(selected?.fill ?? { kind: "room" })}
                 onChange={(e) =>
-                  setMsgs(onEdit(setPauseFill(comp, gapSel, fillFromKey(e.target.value), segId)))
+                  setMsgs(onEdit(setPauseFill(comp, al, gapSel, fillFromKey(e.target.value), segId)))
                 }
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary"
                 data-testid="pause-fill"
@@ -287,6 +289,11 @@ export function PauseTimingPanel({
           </div>
         ) : null}
       </div>
+      {unresolved.length ? (
+        <p className="mt-1 text-xs text-accent-warm" role="status" data-testid="pause-unresolved">
+          {t("id3.pauses.unresolved", { count: unresolved.length })}
+        </p>
+      ) : null}
       {msgs.length ? (
         <p className="mt-1 text-xs text-accent-warm" role="status" data-testid="pause-msg">
           {msgs.join(" ")}
