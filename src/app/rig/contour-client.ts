@@ -1,11 +1,12 @@
 import type { SourceOptions, ContourResult } from '@/core/print/contour';
+import { LruCache } from '@/core/library/lru';
 export interface ContourRequest extends Omit<SourceOptions, 'rgba'> {
   rgba: ArrayBuffer;
   mmPerPixel: number;
   cutHoles: boolean;
   strokeWidthMm: number;
 }
-const cache = new Map<string, ContourResult>();
+const cache = new LruCache<string, ContourResult>(64);
 /** Each preview owns its worker; changing input terminates obsolete computation. */
 export class ContourClient {
   private worker: Worker | undefined;
@@ -34,7 +35,6 @@ export class ContourClient {
         this.worker = undefined;
         if (data.error) reject(new Error(data.error));
         else {
-          if (cache.size >= 64) cache.delete(cache.keys().next().value!);
           cache.set(key, data.result);
           resolve(data.result);
         }
