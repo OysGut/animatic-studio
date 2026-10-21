@@ -7,7 +7,7 @@ import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/
 import { t } from "@/core/i18n/keyed";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 70;
+export const EXPECTED_SCHEMA_VERSION = 71;
 
 const PAGE = 1000;
 
@@ -102,6 +102,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     templateInstances,
     creditParticipants,
     creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines, styleHarmonizations, stylePreferredReferences, languageVersions,
+    rigTemplates, rigSetups,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -148,6 +149,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "style_harmonizations", projectId),
     fetchOptional(db, "style_preferred_references", projectId),
     fetchOptional(db, "language_versions", projectId),
+    fetchOptional(db, "rig_templates", projectId),
+    fetchOptional(db, "rig_setups", projectId),
   ]);
   return {
     project: project as Row,
@@ -193,6 +196,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     style_harmonizations: styleHarmonizations,
     style_preferred_references: stylePreferredReferences,
     language_versions: languageVersions,
+    rig_templates: rigTemplates,
+    rig_setups: rigSetups,
   };
 }
 

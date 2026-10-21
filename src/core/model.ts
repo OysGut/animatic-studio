@@ -820,6 +820,10 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly height: number;
   /** Parallakse: 0 står stille når kameraet beveger seg, 1 følger scenen, over 1 er nærmere enn scenen. */
   readonly parallax: number;
+  /** Rigg & 2D-utskrift (B-087, migrasjon 0071): platen laget ligger på i scenens multiplanrigg, eller null. */
+  readonly rigPlateId?: string | null;
+  /** Dybde/tykkelse på platen for laget i mm (B-090 pkt 6, standard 0; brukes av 3D-print senere). */
+  readonly rigPlateDepthMm?: number;
   readonly transform: LayerTransform;
   readonly keyframes: readonly Keyframe[];
   readonly visible: boolean;
@@ -956,6 +960,9 @@ export interface ProjectState {
   readonly styleHarmonizations: Readonly<Record<string, import("./generation/style-harmonize").StyleHarmonization>>;
   /** P8: foretrukket referanse per (karakter, stilprofil) (REQ-0144, migrasjon 0065). */
   readonly stylePreferredReferences: Readonly<Record<string, import("./generation/style-harmonize").StylePreferredReference>>;
+  /** Rigg & 2D-utskrift (B-087, migrasjon 0071): riggmaler og rigger (standardrigg og per scene). */
+  readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
+  readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -1389,6 +1396,8 @@ export const COLLECTION_TABLES = {
   translationLineLinks: "translation_line_links",
   styleHarmonizations: "style_harmonizations",
   stylePreferredReferences: "style_preferred_references",
+  rigTemplates: "rig_templates",
+  rigSetups: "rig_setups",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1438,6 +1447,8 @@ export function emptyProjectState(project: Project): ProjectState {
     translationLines: {},
     styleHarmonizations: {},
     stylePreferredReferences: {},
+    rigTemplates: {},
+    rigSetups: {},
   };
 }
 

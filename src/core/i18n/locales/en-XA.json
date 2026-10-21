@@ -73424,5 +73424,71 @@
   },
   "id3.duration.per-scene": {
     "text": "[!! PPëërr ssccëënnëë !!]"
+  },
+  "core-rig-multiplane.spec-error.format": {
+    "text": "[!! ÏÏnnvváállïïdd rrïïgg ssëëttüüpp !!]"
+  },
+  "core-rig-multiplane.spec-error.camera": {
+    "text": "[!! TThhëë ccáámmëërráá ssëëttüüpp ïïss mmïïssssïïnngg !!]"
+  },
+  "core-rig-multiplane.spec-error.sensor": {
+    "text": "[!! ÏÏnnvváállïïdd ssëënnssôôrr ssïïzzëë (1–1000 mmmm) !!]"
+  },
+  "core-rig-multiplane.spec-error.focal": {
+    "text": "[!! ÏÏnnvváállïïdd ffôôccááll llëënnggtthh (1–2000 mmmm) !!]"
+  },
+  "core-rig-multiplane.spec-error.height": {
+    "text": "[!! ÏÏnnvváállïïdd ccáámmëërráá hhëëïïgghhtt (50–10000 mmmm) !!]"
+  },
+  "core-rig-multiplane.spec-error.mode": {
+    "text": "[!! ÏÏnnvváállïïdd ccáámmëërráá mmôôddëë !!]"
+  },
+  "core-rig-multiplane.spec-error.distance": {
+    "text": "[!! TThhëë ccáámmëërráá mmüüsstt bbëë hhïïgghhëërr tthháánn tthhëë ffôôccááll llëënnggtthh !!]"
+  },
+  "core-rig-multiplane.spec-error.plates": {
+    "text": "[!! TThhëë rrïïgg mmüüsstt hháávvëë bbëëttwwëëëënn 1 áánndd 12 ppllááttëëss !!]"
+  },
+  "core-rig-multiplane.spec-error.plate-id": {
+    "text": "[!! TThhëë ppllááttëëss mmüüsstt hháávvëë üünnïïqqüüëë, vváállïïdd ÏÏDDss !!]"
+  },
+  "core-rig-multiplane.spec-error.plate-name": {
+    "text": "[!! TThhëë ppllááttëë nnáámmëë mmüüsstt bbëë 1–40 cchháárrááccttëërrss !!]"
+  },
+  "core-rig-multiplane.spec-error.plate-height": {
+    "text": "[!! TThhëë ppllááttëë ïïss ttôôôô hhïïgghh: tthhëë ccáámmëërráá ccáánnnnôôtt ffôôccüüss !!]"
+  },
+  "core-rig-multiplane.spec-error.glass": {
+    "text": "[!! ÏÏnnvváállïïdd gglláássss tthhïïcckknnëëssss (0.1–50 mmmm) !!]"
+  },
+  "core-rig-multiplane.spec-error.calibration": {
+    "text": "[!! ÏÏnnvváállïïdd ccáállïïbbrrááttïïôônn !!]"
+  },
+  "core-rig-multiplane-commands.fresh.invalid": {
+    "text": "[!! TThhëë ÏÏDD ïïss ïïnn üüssëë ôôrr ïïnnvváállïïdd !!]"
+  },
+  "core-rig-multiplane-commands.name.invalid": {
+    "text": "[!! TThhëë nnáámmëë mmüüsstt bbëë 1–80 cchháárrááccttëërrss !!]"
+  },
+  "core-rig-multiplane-commands.missing.invalid": {
+    "text": "[!! TThhëë rrïïgg ôôrr ttëëmmppllááttëë ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "core-rig-multiplane-commands.scene.invalid": {
+    "text": "[!! TThhëë ssccëënnëë ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "core-rig-multiplane-commands.template.invalid": {
+    "text": "[!! TThhëë ttëëmmppllááttëë ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "core-rig-multiplane-commands.duplicate.invalid": {
+    "text": "[!! ÁÁ rrïïgg áállrrëëááddyy ëëxxïïssttss hhëërrëë !!]"
+  },
+  "core-rig-multiplane-commands.layer.invalid": {
+    "text": "[!! TThhëë llááyyëërr ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "core-rig-multiplane-commands.depth.invalid": {
+    "text": "[!! ÏÏnnvváállïïdd ddëëpptthh (0–50 mmmm) !!]"
+  },
+  "core-rig-multiplane-commands.plate.invalid": {
+    "text": "[!! TThhëë ppllááttëë ddôôëëss nnôôtt ëëxxïïsstt ïïnn tthhëë ssccëënnëë'ss rrïïgg !!]"
   }
 }

@@ -39,9 +39,9 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 Spesifikasjon: `docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md`. Runde 0 (dokumentasjon) er ferdig 21.10.2026. Akseptansekriteriene A1–A17 er REQ-0879–REQ-0895.
 - **Runde 1:** riggmodell, maler, størrelsesmatematikk (m = f / (d − f), mm internt), Rigg-fane og platenivå. Migrasjon 0071. Krav: A13 (REQ-0891).
 - **Runde 2:** kontur fra maske, alfa eller avslåbart forslag. Krav: A5 (REQ-0883).
-- **Runde 3:** inspeksjonsvindu og måleverktøy. Krav: A6–A11 (REQ-0884–REQ-0889).
+- **Runde 3:** inspeksjonsvindu og måleverktøy. Migrasjon 0072. Krav: A6–A11 (REQ-0884–REQ-0889).
 - **Runde 4:** PDF-motor i mm, tre moduser, kalibrering og tiling. Krav: A4, A12 og A16 (REQ-0882, REQ-0890, REQ-0894).
-- **Runde 5:** batch, kopier, QR, tosidig utskrift og mobiloppslag. Migrasjon 0072. Krav: A1–A3, A14 og A15 (REQ-0879–REQ-0881, REQ-0892, REQ-0893).
+- **Runde 5:** batch, kopier, QR, tosidig utskrift og mobiloppslag. Migrasjon 0073. Krav: A1–A3, A14 og A15 (REQ-0879–REQ-0881, REQ-0892, REQ-0893).
 - **3D-print (utsatt, blokkerer ikke 2D):** 3D-01 … 3D-20 i `docs/development/TODO_3D_PRINT.md`, REQ-0896–REQ-0915. A17 (REQ-0895) dekkes av den TODO-en.
 
 ## Må gjøres av Mars eller administrator (DEC-0086, DEC-0088)

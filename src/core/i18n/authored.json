@@ -4881,6 +4881,182 @@
       "en": {
         "text": "Per scene"
       }
+    },
+    "core-rig-multiplane.spec-error.format": {
+      "nb": {
+        "text": "Ugyldig riggoppsett"
+      },
+      "en": {
+        "text": "Invalid rig setup"
+      }
+    },
+    "core-rig-multiplane.spec-error.camera": {
+      "nb": {
+        "text": "Kameraoppsettet mangler"
+      },
+      "en": {
+        "text": "The camera setup is missing"
+      }
+    },
+    "core-rig-multiplane.spec-error.sensor": {
+      "nb": {
+        "text": "Ugyldig sensorstørrelse (1–1000 mm)"
+      },
+      "en": {
+        "text": "Invalid sensor size (1–1000 mm)"
+      }
+    },
+    "core-rig-multiplane.spec-error.focal": {
+      "nb": {
+        "text": "Ugyldig brennvidde (1–2000 mm)"
+      },
+      "en": {
+        "text": "Invalid focal length (1–2000 mm)"
+      }
+    },
+    "core-rig-multiplane.spec-error.height": {
+      "nb": {
+        "text": "Ugyldig kamerahøyde (50–10000 mm)"
+      },
+      "en": {
+        "text": "Invalid camera height (50–10000 mm)"
+      }
+    },
+    "core-rig-multiplane.spec-error.mode": {
+      "nb": {
+        "text": "Ugyldig kameramodus"
+      },
+      "en": {
+        "text": "Invalid camera mode"
+      }
+    },
+    "core-rig-multiplane.spec-error.distance": {
+      "nb": {
+        "text": "Kameraet må stå høyere enn brennvidden"
+      },
+      "en": {
+        "text": "The camera must be higher than the focal length"
+      }
+    },
+    "core-rig-multiplane.spec-error.plates": {
+      "nb": {
+        "text": "Riggen må ha mellom 1 og 12 plater"
+      },
+      "en": {
+        "text": "The rig must have between 1 and 12 plates"
+      }
+    },
+    "core-rig-multiplane.spec-error.plate-id": {
+      "nb": {
+        "text": "Platene må ha ulike, gyldige ID-er"
+      },
+      "en": {
+        "text": "The plates must have unique, valid IDs"
+      }
+    },
+    "core-rig-multiplane.spec-error.plate-name": {
+      "nb": {
+        "text": "Platenavnet må være 1–40 tegn"
+      },
+      "en": {
+        "text": "The plate name must be 1–40 characters"
+      }
+    },
+    "core-rig-multiplane.spec-error.plate-height": {
+      "nb": {
+        "text": "Platen ligger for høyt: kameraet kan ikke fokusere"
+      },
+      "en": {
+        "text": "The plate is too high: the camera cannot focus"
+      }
+    },
+    "core-rig-multiplane.spec-error.glass": {
+      "nb": {
+        "text": "Ugyldig glasstykkelse (0,1–50 mm)"
+      },
+      "en": {
+        "text": "Invalid glass thickness (0.1–50 mm)"
+      }
+    },
+    "core-rig-multiplane.spec-error.calibration": {
+      "nb": {
+        "text": "Ugyldig kalibrering"
+      },
+      "en": {
+        "text": "Invalid calibration"
+      }
+    },
+    "core-rig-multiplane-commands.fresh.invalid": {
+      "nb": {
+        "text": "ID-en er i bruk eller ugyldig"
+      },
+      "en": {
+        "text": "The ID is in use or invalid"
+      }
+    },
+    "core-rig-multiplane-commands.name.invalid": {
+      "nb": {
+        "text": "Navnet må være 1–80 tegn"
+      },
+      "en": {
+        "text": "The name must be 1–80 characters"
+      }
+    },
+    "core-rig-multiplane-commands.missing.invalid": {
+      "nb": {
+        "text": "Riggen eller malen finnes ikke"
+      },
+      "en": {
+        "text": "The rig or template does not exist"
+      }
+    },
+    "core-rig-multiplane-commands.scene.invalid": {
+      "nb": {
+        "text": "Scenen finnes ikke"
+      },
+      "en": {
+        "text": "The scene does not exist"
+      }
+    },
+    "core-rig-multiplane-commands.template.invalid": {
+      "nb": {
+        "text": "Malen finnes ikke"
+      },
+      "en": {
+        "text": "The template does not exist"
+      }
+    },
+    "core-rig-multiplane-commands.duplicate.invalid": {
+      "nb": {
+        "text": "Det finnes allerede en rigg her"
+      },
+      "en": {
+        "text": "A rig already exists here"
+      }
+    },
+    "core-rig-multiplane-commands.layer.invalid": {
+      "nb": {
+        "text": "Laget finnes ikke"
+      },
+      "en": {
+        "text": "The layer does not exist"
+      }
+    },
+    "core-rig-multiplane-commands.depth.invalid": {
+      "nb": {
+        "text": "Ugyldig dybde (0–50 mm)"
+      },
+      "en": {
+        "text": "Invalid depth (0–50 mm)"
+      }
+    },
+    "core-rig-multiplane-commands.plate.invalid": {
+      "nb": {
+        "text": "Platen finnes ikke i scenens rigg"
+      },
+      "en": {
+        "text": "The plate does not exist in the scene's rig"
+      }
     }
   }
 }

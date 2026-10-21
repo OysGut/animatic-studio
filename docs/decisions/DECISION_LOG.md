@@ -1198,3 +1198,10 @@ Regler: DEC-ID-er er permanente. En beslutning endres aldri i ettertid; den erst
 - **Ø-11:** invitasjoner bindes til innlogget e-post, klienter får bare nødvendige AI-kolonner, Story Lab/tekst-AI er tilgangsbegrenset og loggfritt for hemmelig innhold, mobil- og filmdelevern testes. **Erstatter DEC-0097 punktet om uendret ai_model_settings-lesetilgang**, etter Øysteins Ø-11-oppdrag og godkjenning av 0058. Migrasjon 0058 er kjørt og publisert, apply_changes er uendret.
 - **Avgrensning:** det leverte sammendraget og kap. 42–51 er nå autoritative kilder for B2. B-numre som ikke er beskrevet i sammendraget tillegges ikke innhold. Originale spesifikasjonsfiler endres ikke.
 - **Sporbarhet:** REQ-0725–REQ-0739 supplerer eksisterende CA4–CA8-krav REQ-0715–REQ-0724; B2 legger til kapittelkrav fra REQ-0740.
+
+
+## DEC-0100 – Rigg & 2D-utskrift (B-087)
+- **Dato:** 2026-10-21 · **Type:** Bekreftet av bruker
+- **Kilde:** `docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md` (B-087).
+- **Beslutning:** Rigg & 2D-utskrift dokumenteres og gjennomføres i rundene 0–5; 3D-print er utsatt og blokkerer ikke 2D-utskrift. Akseptansekriteriene A1–A17 er REQ-0879–REQ-0895, og 3D-01–3D-20 er dokumentert som fremtidig arbeid i `docs/development/TODO_3D_PRINT.md` (REQ-0896–REQ-0915).
+- **Berørte krav:** REQ-0879–REQ-0915.

@@ -29537,6 +29537,72 @@
     "core-prores-export.prores-unsupported.message.419c4ada7157": {
       "text": "ProRes kan ikke lages i denne nettleseren (mangler Web Workers). Velg et annet format."
     },
+    "core-rig-multiplane-commands.depth.invalid": {
+      "text": "Ugyldig dybde (0–50 mm)"
+    },
+    "core-rig-multiplane-commands.duplicate.invalid": {
+      "text": "Det finnes allerede en rigg her"
+    },
+    "core-rig-multiplane-commands.fresh.invalid": {
+      "text": "ID-en er i bruk eller ugyldig"
+    },
+    "core-rig-multiplane-commands.layer.invalid": {
+      "text": "Laget finnes ikke"
+    },
+    "core-rig-multiplane-commands.missing.invalid": {
+      "text": "Riggen eller malen finnes ikke"
+    },
+    "core-rig-multiplane-commands.name.invalid": {
+      "text": "Navnet må være 1–80 tegn"
+    },
+    "core-rig-multiplane-commands.plate.invalid": {
+      "text": "Platen finnes ikke i scenens rigg"
+    },
+    "core-rig-multiplane-commands.scene.invalid": {
+      "text": "Scenen finnes ikke"
+    },
+    "core-rig-multiplane-commands.template.invalid": {
+      "text": "Malen finnes ikke"
+    },
+    "core-rig-multiplane.spec-error.calibration": {
+      "text": "Ugyldig kalibrering"
+    },
+    "core-rig-multiplane.spec-error.camera": {
+      "text": "Kameraoppsettet mangler"
+    },
+    "core-rig-multiplane.spec-error.distance": {
+      "text": "Kameraet må stå høyere enn brennvidden"
+    },
+    "core-rig-multiplane.spec-error.focal": {
+      "text": "Ugyldig brennvidde (1–2000 mm)"
+    },
+    "core-rig-multiplane.spec-error.format": {
+      "text": "Ugyldig riggoppsett"
+    },
+    "core-rig-multiplane.spec-error.glass": {
+      "text": "Ugyldig glasstykkelse (0,1–50 mm)"
+    },
+    "core-rig-multiplane.spec-error.height": {
+      "text": "Ugyldig kamerahøyde (50–10000 mm)"
+    },
+    "core-rig-multiplane.spec-error.mode": {
+      "text": "Ugyldig kameramodus"
+    },
+    "core-rig-multiplane.spec-error.plate-height": {
+      "text": "Platen ligger for høyt: kameraet kan ikke fokusere"
+    },
+    "core-rig-multiplane.spec-error.plate-id": {
+      "text": "Platene må ha ulike, gyldige ID-er"
+    },
+    "core-rig-multiplane.spec-error.plate-name": {
+      "text": "Platenavnet må være 1–40 tegn"
+    },
+    "core-rig-multiplane.spec-error.plates": {
+      "text": "Riggen må ha mellom 1 og 12 plater"
+    },
+    "core-rig-multiplane.spec-error.sensor": {
+      "text": "Ugyldig sensorstørrelse (1–1000 mm)"
+    },
     "core-screenplay-duration-snapshot.duration-basis-label.now.8ef7a95f6b06": {
       "text": "nå"
     },
@@ -60592,6 +60658,72 @@
     },
     "core-prores-export.prores-unsupported.message.419c4ada7157": {
       "text": "ProRes cannot be made in this browser (Web Workers are missing). Choose another format."
+    },
+    "core-rig-multiplane-commands.depth.invalid": {
+      "text": "Invalid depth (0–50 mm)"
+    },
+    "core-rig-multiplane-commands.duplicate.invalid": {
+      "text": "A rig already exists here"
+    },
+    "core-rig-multiplane-commands.fresh.invalid": {
+      "text": "The ID is in use or invalid"
+    },
+    "core-rig-multiplane-commands.layer.invalid": {
+      "text": "The layer does not exist"
+    },
+    "core-rig-multiplane-commands.missing.invalid": {
+      "text": "The rig or template does not exist"
+    },
+    "core-rig-multiplane-commands.name.invalid": {
+      "text": "The name must be 1–80 characters"
+    },
+    "core-rig-multiplane-commands.plate.invalid": {
+      "text": "The plate does not exist in the scene's rig"
+    },
+    "core-rig-multiplane-commands.scene.invalid": {
+      "text": "The scene does not exist"
+    },
+    "core-rig-multiplane-commands.template.invalid": {
+      "text": "The template does not exist"
+    },
+    "core-rig-multiplane.spec-error.calibration": {
+      "text": "Invalid calibration"
+    },
+    "core-rig-multiplane.spec-error.camera": {
+      "text": "The camera setup is missing"
+    },
+    "core-rig-multiplane.spec-error.distance": {
+      "text": "The camera must be higher than the focal length"
+    },
+    "core-rig-multiplane.spec-error.focal": {
+      "text": "Invalid focal length (1–2000 mm)"
+    },
+    "core-rig-multiplane.spec-error.format": {
+      "text": "Invalid rig setup"
+    },
+    "core-rig-multiplane.spec-error.glass": {
+      "text": "Invalid glass thickness (0.1–50 mm)"
+    },
+    "core-rig-multiplane.spec-error.height": {
+      "text": "Invalid camera height (50–10000 mm)"
+    },
+    "core-rig-multiplane.spec-error.mode": {
+      "text": "Invalid camera mode"
+    },
+    "core-rig-multiplane.spec-error.plate-height": {
+      "text": "The plate is too high: the camera cannot focus"
+    },
+    "core-rig-multiplane.spec-error.plate-id": {
+      "text": "The plates must have unique, valid IDs"
+    },
+    "core-rig-multiplane.spec-error.plate-name": {
+      "text": "The plate name must be 1–40 characters"
+    },
+    "core-rig-multiplane.spec-error.plates": {
+      "text": "The rig must have between 1 and 12 plates"
+    },
+    "core-rig-multiplane.spec-error.sensor": {
+      "text": "Invalid sensor size (1–1000 mm)"
     },
     "core-screenplay-duration-snapshot.duration-basis-label.now.8ef7a95f6b06": {
       "text": "now"
