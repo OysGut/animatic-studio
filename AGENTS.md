@@ -29,14 +29,14 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 10. Active scenes use a source-window bus; pinned explorers never publish their browsing selection.
 11. Recognition classifies librarySuggestions; AI reviews candidates only, and confirmed commands create assets.
 12. Only recognition and translation alignment (B-047/B-048) bypass the text-AI entry point via server-only service AI (built-in model, no open proxy).
-13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema-version constant.
+13. User quotas exclude these two service tasks; service quotas count only built-in service tasks. Visual suites share one schema constant.
 14. RetimeScene uses pure plans and revision checks in one undo; word-gap previews reuse their in-memory audio in saves.
 16. Workspaces (GP1) change only via security-definer functions; linking a project never grants access, so project RLS stays the only permission source.
 17. The global library (GP2) is written via security-definer functions; using an asset copies its files once per global version, so projects never depend on workspace membership.
 18. Carry-over (GP3): pure planCarryOver, one undo group, never the source 2D scene.†
 19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
 20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
-21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
+21. Asset versions sort via compareVersionCreation.
 23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
