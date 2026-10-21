@@ -4407,6 +4407,196 @@
       "en": {
         "text": "The font ({font}) can show every character in the export."
       }
+    },
+    "r1-prores-offer.question": {
+      "replaces": [],
+      "nb": {
+        "text": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre."
+      },
+      "en": {
+        "text": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo."
+      }
+    },
+    "r1-prores-offer.accept": {
+      "replaces": [],
+      "nb": {
+        "text": "Bruk ProRes"
+      },
+      "en": {
+        "text": "Use ProRes"
+      }
+    },
+    "r1-prores-offer.dismiss": {
+      "replaces": [],
+      "nb": {
+        "text": "Ikke nå"
+      },
+      "en": {
+        "text": "Not now"
+      }
+    },
+    "r1-prores-offer.undo-label": {
+      "replaces": [],
+      "nb": {
+        "text": "ProRes som standard i {name}"
+      },
+      "en": {
+        "text": "ProRes as default in {name}"
+      }
+    },
+    "r2-orphan-cleanup.open": {
+      "replaces": [],
+      "nb": {
+        "text": "Rydd opp i ubrukte AI-filer …"
+      },
+      "en": {
+        "text": "Clean up unused AI files …"
+      }
+    },
+    "r2-orphan-cleanup.title": {
+      "replaces": [],
+      "nb": {
+        "text": "Slette ubrukte AI-filer?"
+      },
+      "en": {
+        "text": "Delete unused AI files?"
+      }
+    },
+    "r2-orphan-cleanup.summary": {
+      "replaces": [],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} AI-fil ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. Den er eldre enn ett døgn. Sletting kan ikke angres.",
+            "other": "{count} AI-filer ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. De er eldre enn ett døgn. Sletting kan ikke angres."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} AI file ({size} MB) is not used by anything in the project and is not in the undo history. It is older than one day. Deleting cannot be undone.",
+            "other": "{count} AI files ({size} MB) are not used by anything in the project and are not in the undo history. They are older than one day. Deleting cannot be undone."
+          }
+        }
+      }
+    },
+    "r2-orphan-cleanup.none": {
+      "replaces": [],
+      "nb": {
+        "text": "Fant ingen ubrukte AI-filer som kan slettes."
+      },
+      "en": {
+        "text": "No unused AI files that can be deleted were found."
+      }
+    },
+    "r2-orphan-cleanup.done": {
+      "replaces": [],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} fil slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden.",
+            "other": "{count} filer slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} file deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime.",
+            "other": "{count} files deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime."
+          }
+        }
+      }
+    },
+    "r2-orphan-cleanup.cancel": {
+      "replaces": [],
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "r2-orphan-cleanup.confirm": {
+      "replaces": [],
+      "nb": {
+        "text": "Slett filene"
+      },
+      "en": {
+        "text": "Delete the files"
+      }
+    },
+    "r2-orphan-cleanup.error.owner": {
+      "replaces": [],
+      "nb": {
+        "text": "Bare prosjekteieren kan rydde opp i filer."
+      },
+      "en": {
+        "text": "Only the project owner can clean up files."
+      }
+    },
+    "r2-orphan-cleanup.error.references": {
+      "replaces": [],
+      "nb": {
+        "text": "Kunne ikke kontrollere hvilke filer som er i bruk. Ingenting er slettet."
+      },
+      "en": {
+        "text": "Could not check which files are in use. Nothing was deleted."
+      }
+    },
+    "r2-orphan-cleanup.error.too-many": {
+      "replaces": [],
+      "nb": {
+        "text": "Prosjektet har for mange filer til å kontrollere nå. Ingenting er slettet."
+      },
+      "en": {
+        "text": "The project has too many files to check right now. Nothing was deleted."
+      }
+    },
+    "r2-orphan-cleanup.error.input": {
+      "replaces": [],
+      "nb": {
+        "text": "Ugyldig forespørsel om opprydding."
+      },
+      "en": {
+        "text": "Invalid clean-up request."
+      }
+    },
+    "r2-orphan-cleanup.error.confirm": {
+      "replaces": [],
+      "nb": {
+        "text": "Bekreft slettingen først."
+      },
+      "en": {
+        "text": "Confirm the deletion first."
+      }
+    },
+    "r2-orphan-cleanup.error.remove": {
+      "replaces": [],
+      "nb": {
+        "text": "Kunne ikke slette filene. Prøv igjen."
+      },
+      "en": {
+        "text": "Could not delete the files. Try again."
+      }
+    },
+    "r2-orphan-cleanup.error.generic": {
+      "replaces": [],
+      "nb": {
+        "text": "Oppryddingen feilet."
+      },
+      "en": {
+        "text": "The clean-up failed."
+      }
     }
   }
 }

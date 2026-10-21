@@ -73265,5 +73265,73 @@
   },
   "ml4-export-fonts.ok": {
     "text": "[!! TThhëë ffôônntt ({font}) ccáánn sshhôôww ëëvvëërryy cchháárrááccttëërr ïïnn tthhëë ëëxxppôôrrtt. !!]"
+  },
+  "r1-prores-offer.question": {
+    "text": "[!! ÜÜssëë PPrrôôRRëëss ááss tthhëë ddëëffááüülltt ïïnn tthhëë {name} pprrôôffïïllëë? ËËxxppôôrrttss wwïïllll tthhëënn ssüüggggëësstt PPrrôôRRëëss/MMÔÔVV ïïnnssttëëáádd ôôff MMPP4. YYôôüü ccáánn üünnddôô. !!]"
+  },
+  "r1-prores-offer.accept": {
+    "text": "[!! ÜÜssëë PPrrôôRRëëss !!]"
+  },
+  "r1-prores-offer.dismiss": {
+    "text": "[!! NNôôtt nnôôww !!]"
+  },
+  "r1-prores-offer.undo-label": {
+    "text": "[!! PPrrôôRRëëss ááss ddëëffááüülltt ïïnn {name} !!]"
+  },
+  "r2-orphan-cleanup.open": {
+    "text": "[!! CCllëëáánn üüpp üünnüüssëëdd ÁÁÏÏ ffïïllëëss … !!]"
+  },
+  "r2-orphan-cleanup.title": {
+    "text": "[!! DDëëllëëttëë üünnüüssëëdd ÁÁÏÏ ffïïllëëss? !!]"
+  },
+  "r2-orphan-cleanup.summary": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "[!! {count} ÁÁÏÏ ffïïllëë ({size} MMBB) ïïss nnôôtt üüssëëdd bbyy áánnyytthhïïnngg ïïnn tthhëë pprrôôjjëëcctt áánndd ïïss nnôôtt ïïnn tthhëë üünnddôô hhïïssttôôrryy. ÏÏtt ïïss ôôllddëërr tthháánn ôônnëë ddááyy. DDëëllëëttïïnngg ccáánnnnôôtt bbëë üünnddôônnëë. !!]",
+        "other": "[!! {count} ÁÁÏÏ ffïïllëëss ({size} MMBB) áárrëë nnôôtt üüssëëdd bbyy áánnyytthhïïnngg ïïnn tthhëë pprrôôjjëëcctt áánndd áárrëë nnôôtt ïïnn tthhëë üünnddôô hhïïssttôôrryy. TThhëëyy áárrëë ôôllddëërr tthháánn ôônnëë ddááyy. DDëëllëëttïïnngg ccáánnnnôôtt bbëë üünnddôônnëë. !!]"
+      }
+    }
+  },
+  "r2-orphan-cleanup.none": {
+    "text": "[!! NNôô üünnüüssëëdd ÁÁÏÏ ffïïllëëss tthháátt ccáánn bbëë ddëëllëëttëëdd wwëërrëë ffôôüünndd. !!]"
+  },
+  "r2-orphan-cleanup.done": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "[!! {count} ffïïllëë ddëëllëëttëëdd ({size} MMBB). {skipped} wwëërrëë kkëëpptt bbëëccááüüssëë tthhëëyy hháádd bbëëëënn ppüütt ttôô üüssëë ïïnn tthhëë mmëëáánnttïïmmëë. !!]",
+        "other": "[!! {count} ffïïllëëss ddëëllëëttëëdd ({size} MMBB). {skipped} wwëërrëë kkëëpptt bbëëccááüüssëë tthhëëyy hháádd bbëëëënn ppüütt ttôô üüssëë ïïnn tthhëë mmëëáánnttïïmmëë. !!]"
+      }
+    }
+  },
+  "r2-orphan-cleanup.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "r2-orphan-cleanup.confirm": {
+    "text": "[!! DDëëllëëttëë tthhëë ffïïllëëss !!]"
+  },
+  "r2-orphan-cleanup.error.owner": {
+    "text": "[!! ÔÔnnllyy tthhëë pprrôôjjëëcctt ôôwwnnëërr ccáánn ccllëëáánn üüpp ffïïllëëss. !!]"
+  },
+  "r2-orphan-cleanup.error.references": {
+    "text": "[!! CCôôüülldd nnôôtt cchhëëcckk wwhhïïcchh ffïïllëëss áárrëë ïïnn üüssëë. NNôôtthhïïnngg wwááss ddëëllëëttëëdd. !!]"
+  },
+  "r2-orphan-cleanup.error.too-many": {
+    "text": "[!! TThhëë pprrôôjjëëcctt hhááss ttôôôô mmáánnyy ffïïllëëss ttôô cchhëëcckk rrïïgghhtt nnôôww. NNôôtthhïïnngg wwááss ddëëllëëttëëdd. !!]"
+  },
+  "r2-orphan-cleanup.error.input": {
+    "text": "[!! ÏÏnnvváállïïdd ccllëëáánn-üüpp rrëëqqüüëësstt. !!]"
+  },
+  "r2-orphan-cleanup.error.confirm": {
+    "text": "[!! CCôônnffïïrrmm tthhëë ddëëllëëttïïôônn ffïïrrsstt. !!]"
+  },
+  "r2-orphan-cleanup.error.remove": {
+    "text": "[!! CCôôüülldd nnôôtt ddëëllëëttëë tthhëë ffïïllëëss. TTrryy áággááïïnn. !!]"
+  },
+  "r2-orphan-cleanup.error.generic": {
+    "text": "[!! TThhëë ccllëëáánn-üüpp ffááïïllëëdd. !!]"
   }
 }

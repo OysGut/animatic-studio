@@ -6282,7 +6282,7 @@ try {
     }
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'") && ac.includes("Invalid language version scope"),"apply_changes lacks language versions");
-    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===66,"schema version 66");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=66,"schema version 66");
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.language_versions(id,project_id,language,name) values(gen_random_uuid(),gen_random_uuid(),'de','Tysk')`),"42501");
   });
 
@@ -6395,6 +6395,54 @@ try {
     assert(applyBody.includes("Invalid harmonization") && applyBody.includes("More than one preferred reference"),"validation absent");
     const purgeBody=String((await sql`select pg_get_functiondef('public.purge_removed_assets(uuid,uuid,uuid[],uuid[])'::regprocedure) b`)[0]?.["b"]);
     assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
+  });
+  await test("0067: R1 ProRes i «Endelig», R2 oppryddingslogg (grants/RLS) og strengere språkversjonssjekk", async () => {
+    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===67,"schema version 67");
+    // R1: nye prosjekter får ProRes i «Endelig»; øvrige standardprofiler er uendret
+    const np=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R1 fixture') id`)[0]))?.["id"]);
+    const qp=await sql`select name, spec from public.quality_profiles where project_id=${np} order by name`;
+    const spec=(n:string)=>qp.find(r=>r["name"]===n)?.["spec"] as {export?:{format?:string}}|undefined;
+    assert(spec("Endelig")?.export?.format==="prores" && spec("Utkast")?.export?.format==="mp4" && spec("Gjennomgang")?.export?.format==="mp4","create_project: Endelig must default to ProRes");
+    // R2: loggtabellen – bare serveren skriver, medlemmer leser, ikke-medlemmer ser ingenting
+    const g=await sql`select has_table_privilege('anon','public.storage_cleanups','SELECT') a, has_table_privilege('authenticated','public.storage_cleanups','SELECT') r, has_table_privilege('authenticated','public.storage_cleanups','INSERT') w, has_table_privilege('authenticated','public.storage_cleanups','DELETE') d, has_table_privilege('service_role','public.storage_cleanups','INSERT') s, (select relrowsecurity from pg_class where oid='public.storage_cleanups'::regclass) rls`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,"storage_cleanups grants/RLS");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes) values(${np},${ALICE},1,1)`),"42501");
+    await as("service_role",null,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes,paths) values(${np},${ALICE},1,10,${tx.json([`${np}/generated/a/v/x.png`])})`);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${np},${BOB},'editor')`;
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.storage_cleanups where project_id=${np}`)).length===1,"member cannot read log");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.storage_cleanups where project_id=${np}`)).length===0,"nonmember reads log");
+    await expectError(as("service_role",null,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes) values(${np},${ALICE},-1,0)`),"23514");
+    const purge=String((await sql`select pg_get_functiondef('public.purge_project_assets(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(purge.indexOf("delete from public.storage_cleanups")>0 && purge.indexOf("delete from public.storage_cleanups")<purge.indexOf("delete from public.projects"),"purge_project_assets must delete the cleanup log before the project");
+    await as("service_role",null,tx=>tx`select public.delete_project(${np},${ALICE})`);
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${np},${ALICE})`);
+    assert((await sql`select count(*)::int n from public.storage_cleanups where project_id=${np}`)[0]?.["n"]===0,"cleanup log survives purge");
+    // Språkversjonssjekken: lenker kontrolleres også når versjonen ikke sendes, og når en linje flyttes
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('0067 fixture') id`)[0]))?.["id"]);
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const v1=newId();const b0=newId() as never;
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v1 as never,occurrenceId:newId() as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"A",time:"DAG"},blocks:[{blockId:b0,kind:"action",text:"Norsk",orderKey:keyBetween(null,null)}]});
+    const ids:Record<string,string>={};
+    for (const language of ["de","pt-BR","sr-Latn"]) { ids[language]=newId(); st=await runCommand(st,ALICE,{type:"AddLanguageVersion",versionId:ids[language]!,language,name:`V ${language}`}); }
+    const uDe=newId(),uSr=newId(),uSr2=newId(),link=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:uDe,fields:{variantId:v1,language:"de",ord:0,kind:"action",text:"Eins"}},{lineId:uSr,fields:{variantId:v1,language:"sr-Latn",ord:0,kind:"action",text:"Prva"}},{lineId:uSr2,fields:{variantId:v1,language:"sr-Latn",ord:1,kind:"action",text:"Druga"}}]});
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:link,fields:{variantId:v1,language:"sr-Latn",sourceBlockIds:[b0],targetTranslationIds:[uSr],origin:"manual",confidence:1,reason:""}});
+    const rev=async(t:string,id:string)=>Number((await sql`select revision from ${sql(t)} where id=${id}`)[0]?.["revision"]);
+    // a) lenken får et mål fra en annen versjon uten å sende language_version_id
+    let r=await rev("translation_line_links",link);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({updates:{translation_line_links:[{id:link,target_translation_ids:[uSr,uDe],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // b) en linje lenken peker på, flyttes til en annen versjon (samme språk er påkrevd, så også språket flyttes)
+    r=await rev("translation_lines",uSr);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateTranslationLine"})},null,${sql.json({updates:{translation_lines:[{id:uSr,language:"de",language_version_id:ids["de"],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // c) feil versjon for språket avvises fortsatt
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateTranslationLine"})},null,${sql.json({updates:{translation_lines:[{id:uSr,language_version_id:ids["pt-BR"],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // d) gyldige endringer går gjennom: nytt mål i samme versjon uten å sende versjonen, og tekstendring på målet
+    const lr=await rev("translation_line_links",link);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"SetLineLink"})},null,${tx.json({updates:{translation_line_links:[{id:link,target_translation_ids:[uSr,uSr2],revision:lr+1,expected_revision:lr}]}})})`);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"UpdateTranslationLine"})},null,${tx.json({updates:{translation_lines:[{id:uSr,text:"Prva!",revision:r+1,expected_revision:r}]}})})`);
+    assert((await sql`select target_translation_ids t from public.translation_line_links where id=${link}`)[0]?.["t"].length===2,"valid link update lost");
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.includes("v_link_scope") && ac.includes("target_translation_ids && v_lang_changed"),"apply_changes lacks the 0067 link scope");
   });
 } finally {
   await sql.end();

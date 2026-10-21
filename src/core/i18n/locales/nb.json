@@ -73283,5 +73283,73 @@
   },
   "ml4-export-fonts.ok": {
     "text": "Fonten ({font}) kan vise alle tegnene i eksporten."
+  },
+  "r1-prores-offer.question": {
+    "text": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre."
+  },
+  "r1-prores-offer.accept": {
+    "text": "Bruk ProRes"
+  },
+  "r1-prores-offer.dismiss": {
+    "text": "Ikke nå"
+  },
+  "r1-prores-offer.undo-label": {
+    "text": "ProRes som standard i {name}"
+  },
+  "r2-orphan-cleanup.open": {
+    "text": "Rydd opp i ubrukte AI-filer …"
+  },
+  "r2-orphan-cleanup.title": {
+    "text": "Slette ubrukte AI-filer?"
+  },
+  "r2-orphan-cleanup.summary": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} AI-fil ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. Den er eldre enn ett døgn. Sletting kan ikke angres.",
+        "other": "{count} AI-filer ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. De er eldre enn ett døgn. Sletting kan ikke angres."
+      }
+    }
+  },
+  "r2-orphan-cleanup.none": {
+    "text": "Fant ingen ubrukte AI-filer som kan slettes."
+  },
+  "r2-orphan-cleanup.done": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} fil slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden.",
+        "other": "{count} filer slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden."
+      }
+    }
+  },
+  "r2-orphan-cleanup.cancel": {
+    "text": "Avbryt"
+  },
+  "r2-orphan-cleanup.confirm": {
+    "text": "Slett filene"
+  },
+  "r2-orphan-cleanup.error.owner": {
+    "text": "Bare prosjekteieren kan rydde opp i filer."
+  },
+  "r2-orphan-cleanup.error.references": {
+    "text": "Kunne ikke kontrollere hvilke filer som er i bruk. Ingenting er slettet."
+  },
+  "r2-orphan-cleanup.error.too-many": {
+    "text": "Prosjektet har for mange filer til å kontrollere nå. Ingenting er slettet."
+  },
+  "r2-orphan-cleanup.error.input": {
+    "text": "Ugyldig forespørsel om opprydding."
+  },
+  "r2-orphan-cleanup.error.confirm": {
+    "text": "Bekreft slettingen først."
+  },
+  "r2-orphan-cleanup.error.remove": {
+    "text": "Kunne ikke slette filene. Prøv igjen."
+  },
+  "r2-orphan-cleanup.error.generic": {
+    "text": "Oppryddingen feilet."
   }
 }

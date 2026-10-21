@@ -115,8 +115,26 @@ export function defaultQualityProfiles(): readonly { readonly name: string; read
   return [
     { name: "Utkast", /* i18n-ignore: user-editable default data, mirrored in migration */ spec: { effort: "fast", variants: 1, resolution: "1K", export: { format: "mp4", bitrateKbps: 4000 } } },
     { name: "Gjennomgang", spec: { effort: "balanced", variants: 2, resolution: "2K", export: { format: "mp4", bitrateKbps: 8000 } } },
-    { name: "Endelig", spec: { effort: "premium", variants: 2, resolution: "4K", export: { format: "mp4", bitrateKbps: 16000 } } },
+    { name: "Endelig", spec: { effort: "premium", variants: 2, resolution: "4K", export: { format: "prores" } } },
   ];
+}
+
+/** R1: navnet på standardprofilen som tilbys ProRes (data, som «Hovedfilm»). */
+export const FINAL_QUALITY_PROFILE_NAME = "Endelig"; // i18n-ignore: lagret standardnavn
+
+/**
+ * R1: «Endelig»-profilen i et eksisterende prosjekt som ennå ikke foreslår ProRes, eller null. Profiler med
+ * et annet eksportformat enn MP4 (eller uten eksportvalg) er valgt av brukeren og tilbys ikke – bare profilen
+ * med standardoppsettet fra før R1 (MP4) får tilbudet. Ingenting endres uten at brukeren godtar.
+ */
+export function proresOfferProfile(s: Pick<ProjectState, "qualityProfiles">): QualityProfile | null {
+  return qualityProfilesOf(s).find((p) => p.name.trim() === FINAL_QUALITY_PROFILE_NAME && p.spec.export?.format === "mp4") ?? null;
+}
+
+/** R1: profilens innstillinger med ProRes som eksportformat. Bitraten gjelder ikke ProRes og tas ut; resten beholdes. */
+export function proresSpecOf(spec: QualityProfileSpec): QualityProfileSpec {
+  const { bitrateKbps: _ignored, ...rest } = spec.export ?? {};
+  return { ...spec, export: { ...rest, format: "prores" } };
 }
 
 /** Den aktive profilen i prosjektet, eller null (oppførselen er da nøyaktig som før profilene fantes). */

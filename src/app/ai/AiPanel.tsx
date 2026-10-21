@@ -42,6 +42,7 @@ import { ProvidersDialog } from "./ProvidersDialog";
 import { claimVideo } from "./video-jobs";
 import { useProjectProviders } from "./use-project-providers";
 import { AiSourceCleanup } from "./AiSourceCleanup";
+import { OrphanCleanup } from "./OrphanCleanup";
 import { t as tk } from "@/core/i18n/keyed";
 
 /** Leverandørene prosjektet kan bruke, og veien til å koble til flere (DEC-0069). */
@@ -232,6 +233,7 @@ export function AiPanel({
 
       <ProviderLine projectId={projectId} userId={userId} />
       {isOwner ? <AiSourceCleanup projectId={projectId} /> : null}
+      {isOwner ? <OrphanCleanup projectId={projectId} /> : null}
       {unclaimed.length ? (
         <div
           role="status"

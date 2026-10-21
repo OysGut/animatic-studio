@@ -5,7 +5,7 @@
  */
 import { useState } from "react";
 import { Plus, Star, Trash2 } from "lucide-react";
-import { defaultQualityProfiles, newId, qualityProfileError, qualityProfilesOf, EFFORT_LABEL, IMAGE_SIZE_LABEL, providersFor, type EffortLevel, type ImageSize, type ProjectState, type QualityProfile, type QualityProfileModelKind, type QualityProfileSpec, QUALITY_PROFILE_MODEL_KINDS, QUALITY_PROFILE_MODEL_KIND_LABEL } from "@/core";
+import { defaultQualityProfiles, newId, proresOfferProfile, proresSpecOf, qualityProfileError, qualityProfilesOf, EFFORT_LABEL, IMAGE_SIZE_LABEL, providersFor, type EffortLevel, type ImageSize, type ProjectState, type QualityProfile, type QualityProfileModelKind, type QualityProfileSpec, QUALITY_PROFILE_MODEL_KINDS, QUALITY_PROFILE_MODEL_KIND_LABEL } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
@@ -32,6 +32,8 @@ export function QualityProfilesSection({
   const activeId = state.project.activeQualityProfileId ?? null;
   const [editing, setEditing] = useState<QualityProfile | "new" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [offerHidden, setOfferHidden] = useState(false);
+  const offer = editable && !offerHidden ? proresOfferProfile(state) : null;
 
   function addDefaults() {
     for (const d of defaultQualityProfiles()) {
@@ -52,6 +54,16 @@ export function QualityProfilesSection({
       <p className="mb-2 text-xs text-text-tertiary">
         {t("app-projects-quality-profiles-section.quality-profiles-section.p.3d99683fa28f")}
       </p>
+      {offer ? (
+        <div role="status" data-testid="prores-offer" className="mb-2 flex flex-wrap items-center gap-2 rounded-sm border border-accent-warm/50 bg-surface-2 px-3 py-2 text-xs text-text-primary">
+          <span className="flex-1">{t("r1-prores-offer.question", { name: offer.name })}</span>
+          <Button size="sm" variant="secondary" data-testid="prores-offer-accept" onClick={() => setError(cmds.run(
+            { type: "UpdateQualityProfile", profileId: offer.id, spec: proresSpecOf(offer.spec) },
+            t("r1-prores-offer.undo-label", { name: offer.name }),
+          ))}>{t("r1-prores-offer.accept")}</Button>
+          <Button size="sm" variant="ghost" data-testid="prores-offer-dismiss" onClick={() => setOfferHidden(true)}>{t("r1-prores-offer.dismiss")}</Button>
+        </div>
+      ) : null}
       {profiles.length === 0 ? (
         <div className="flex items-center gap-3 text-xs text-text-secondary">
           <span>{t("app-projects-quality-profiles-section.quality-profiles-section.span.ad5dc4ee75b6")}</span>
