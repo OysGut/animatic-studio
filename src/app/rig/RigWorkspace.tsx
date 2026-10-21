@@ -1,3 +1,6 @@
+import { ContourPreview } from "./ContourPreview";
+import { CutoutDialog } from "@/app/library/CutoutDialog";
+import { layerVersion, type CompositionLayer } from "@/core";
 /**
  * Arbeidsflaten «Rigg» (B-087/DEC-0100, runde 1): multiplanriggen i sidesnitt med kamera, objektiv og
  * plater i målestokk, kalibrering med gyldighetsstatus, kameramodus, maler i prosjektet og publisering
@@ -97,6 +100,7 @@ function RigSideView({ spec, unit }: { spec: MultiplaneRigSpec; unit: RigUnit })
       viewBox={`0 0 ${W} ${H}`}
       className="h-auto w-full max-w-[360px]"
       role="img"
+      data-testid="rig-side-view"
       aria-label={t("app-rig.side-view-aria")}
     >
       {/* bordet */}
@@ -160,6 +164,8 @@ function Rig({
   cmds: ReturnType<typeof useCommands>;
 }) {
   const [unit, setUnit] = useRigUnits();
+  const [contourLayerId, setContourLayerId] = useState("");
+  const [cutoutOpen, setCutoutOpen] = useState(false);
   const [sceneId, setSceneId] = useState<string>(""); // "" = prosjektets standardrigg
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
@@ -258,6 +264,11 @@ function Rig({
     }
   }
 
+  const contourLayers = Object.values(state.layers).filter(l => !l.removed && l.kind !== "group" && layerVersion(state, l) && state.variants[state.compositions[l.compositionId]?.variantId ?? ""]?.sceneId === (sceneId || sceneOptions[0]?.sceneId));
+  const contourLayer = contourLayers.find(l => l.id === contourLayerId) ?? contourLayers[0];
+  const contourVersion = contourLayer ? layerVersion(state, contourLayer) : null;
+  const contourAsset = contourLayer?.assetId ? state.assets[contourLayer.assetId] : null;
+
   const inputCls = "h-8 bg-surface-3";
   return (
     <div className="flex h-full min-h-0 flex-col overflow-y-auto">
@@ -299,7 +310,7 @@ function Rig({
         <section className="space-y-3">
           <RigSideView spec={spec} unit={unit} />
           {/* 3D-print: deaktivert plassholder (runde 5) */}
-          <div className="border border-border bg-surface-1 p-3">
+          <div className="border border-border bg-surface-1 p-3" data-testid="rig-print-placeholder">
             <h2 className="flex items-center gap-2 text-[13px] font-medium text-text-primary">
               <Printer className="size-4" aria-hidden /> {t("app-rig.print-heading")}
             </h2>
@@ -307,10 +318,22 @@ function Rig({
               {t("app-rig.print-coming")}
             </Button>
           </div>
+          <section data-testid="rig-contour" className="space-y-3 border border-border bg-surface-1 p-3">
+            <h2 className="text-sm font-semibold">{t("app-rig.contour.heading")}</h2>
+            <select aria-label={t("app-rig.contour.heading")} value={contourLayer?.id ?? ""} onChange={e => { setContourLayerId(e.target.value); setCutoutOpen(false); }} className="w-full rounded border border-border bg-surface-2 p-1 text-text-primary">
+              {contourLayers.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+            </select>
+            {contourLayer ? <ContourPreview state={state} layer={contourLayer} spec={spec} /> : <p className="text-xs text-text-secondary">{t("app-rig.contour.failed")}</p>}
+            <Button data-testid="rig-contour-edit" variant="secondary" size="sm" disabled={!editable || !contourVersion || !contourAsset} onClick={() => setCutoutOpen(true)}>{t("app-rig.contour.edit")}</Button>
+            {contourAsset && contourVersion && <CutoutDialog open={cutoutOpen} onOpenChange={setCutoutOpen} projectId={projectId} asset={contourAsset} version={contourVersion} cmds={cmds} onSaved={(versionId, variantId) => {
+              if (!contourLayer) return;
+              cmds.run({ type: "UpdateLayers", layers: [{ layerId: contourLayer.id, fields: { ...contourLayer, versionId, assetVariantId: variantId } as CompositionLayer }] }, t("app-rig.contour.edit"));
+            }} />}
+          </section>
         </section>
 
         <section className="space-y-5">
-          <fieldset className="grid max-w-xl grid-cols-2 gap-3" disabled={!editable}>
+          <fieldset className="grid max-w-xl grid-cols-2 gap-3" disabled={!editable} data-testid="rig-camera">
             <legend className="text-[13px] font-medium text-text-primary">{t("app-rig.camera-heading")}</legend>
             <LengthField id="rig-sensor-w" label={t("app-rig.sensor-width")} mm={spec.camera.sensorWidthMm} unit={unit} onCommit={(v) => patchCamera({ sensorWidthMm: v })} />
             <LengthField id="rig-sensor-h" label={t("app-rig.sensor-height")} mm={spec.camera.sensorHeightMm} unit={unit} onCommit={(v) => patchCamera({ sensorHeightMm: v })} />
@@ -332,7 +355,7 @@ function Rig({
             </div>
           </fieldset>
 
-          <fieldset className="max-w-xl space-y-2" disabled={!editable}>
+          <fieldset className="max-w-xl space-y-2" disabled={!editable} data-testid="rig-plates">
             <legend className="text-[13px] font-medium text-text-primary">{t("app-rig.plates-heading")}</legend>
             {spec.plates.map((p) => (
               <div key={p.id} className="flex flex-wrap items-end gap-2">
@@ -400,9 +423,9 @@ function Rig({
             </Button>
           </fieldset>
 
-          <fieldset className="max-w-xl space-y-2" disabled={!editable}>
+          <fieldset className="max-w-xl space-y-2" disabled={!editable} data-testid="rig-calibration">
             <legend className="text-[13px] font-medium text-text-primary">{t("app-rig.calibration-heading")}</legend>
-            <p className="text-xs text-text-secondary" role="status">
+            <p className="text-xs text-text-secondary" role="status" data-testid="rig-calibration-status">
               {calStatus === "none"
                 ? t("app-rig.calibration-none")
                 : calStatus === "valid"
@@ -458,7 +481,7 @@ function Rig({
             </div>
           </fieldset>
 
-          <fieldset className="max-w-xl space-y-2" disabled={!editable}>
+          <fieldset className="max-w-xl space-y-2" disabled={!editable} data-testid="rig-templates">
             <legend className="text-[13px] font-medium text-text-primary">{t("app-rig.templates-heading")}</legend>
             {templates.length === 0 ? <p className="text-xs text-text-tertiary">{t("app-rig.no-templates")}</p> : null}
             {templates.map((tmpl) => (

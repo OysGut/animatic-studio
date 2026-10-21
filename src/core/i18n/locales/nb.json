@@ -73730,5 +73730,59 @@
   },
   "auth.password-reset.failed": {
     "text": "Passordet kunne ikke endres. Prøv igjen, eller be om en ny tilbakestillingslenke."
+  },
+  "app-rig.contour.heading": {
+    "text": "Kontur for utskrift"
+  },
+  "app-rig.contour.source-label": {
+    "text": "Konturkilde: {source}"
+  },
+  "app-rig.contour.source-mask": {
+    "text": "Din maske"
+  },
+  "app-rig.contour.source-alpha": {
+    "text": "Bildets gjennomsiktighet"
+  },
+  "app-rig.contour.source-suggestion": {
+    "text": "Forslag"
+  },
+  "app-rig.contour.source-rectangle": {
+    "text": "Bildets rektangel (forslaget er slått av)"
+  },
+  "app-rig.contour.source-none": {
+    "text": "Ingen kontur – bildet skrives ut som det er"
+  },
+  "app-rig.contour.edit": {
+    "text": "Rett konturen"
+  },
+  "app-rig.contour.suggestion-toggle": {
+    "text": "Automatisk forslag"
+  },
+  "app-rig.contour.cut-holes": {
+    "text": "Skjær ut hull"
+  },
+  "app-rig.contour.stroke-width": {
+    "text": "Klippelinje"
+  },
+  "app-rig.contour.mode-full": {
+    "text": "Full figur"
+  },
+  "app-rig.contour.mode-line": {
+    "text": "Med klippelinje"
+  },
+  "app-rig.contour.mode-outline": {
+    "text": "Kun kontur"
+  },
+  "app-rig.contour.preview-aria": {
+    "text": "Forhåndsvisning av konturen"
+  },
+  "app-rig.contour.computing": {
+    "text": "Beregner konturen …"
+  },
+  "app-rig.contour.failed": {
+    "text": "Konturen kunne ikke beregnes"
+  },
+  "app-rig.layers-panel.contour-heading": {
+    "text": "Kontur"
   }
 }
