@@ -74405,5 +74405,41 @@
   },
   "b110.privacy.turnstile": {
     "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
+  },
+  "server.error.invalid_request": {
+    "text": "Ugyldig forespørsel"
+  },
+  "server.error.invalid_project_id": {
+    "text": "Ugyldig prosjekt-ID"
+  },
+  "server.error.invalid_command": {
+    "text": "Ugyldig kommando"
+  },
+  "server.error.invalid_revisions": {
+    "text": "Ugyldige revisjoner"
+  },
+  "server.error.change_too_large": {
+    "text": "Endringen er for stor"
+  },
+  "server.error.invalid_command_id": {
+    "text": "Ugyldig kommando-ID"
+  },
+  "server.error.no_workspace_access": {
+    "text": "Ingen tilgang til gruppen"
+  },
+  "server.error.asset_missing": {
+    "text": "Ressursen finnes ikke"
+  },
+  "server.error.storage_no_response": {
+    "text": "Lagringen svarte ikke"
+  },
+  "server.error.invalid_storage_path": {
+    "text": "Ugyldig lagringssti"
+  },
+  "server.error.invalid_script_revision": {
+    "text": "Ugyldig manusrevisjon"
+  },
+  "server.error.text_too_long": {
+    "text": "Teksten er for lang (maks {max} tegn)"
   }
 }

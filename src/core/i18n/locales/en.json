@@ -72927,7 +72927,7 @@
       "parameter": "count",
       "forms": {
         "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
-        "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+        "other": "{count} lines have been moved to another scene (split or merge) and are not restored here."
       }
     }
   },
@@ -74387,5 +74387,41 @@
   },
   "b110.privacy.turnstile": {
     "text": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f))."
+  },
+  "server.error.invalid_request": {
+    "text": "Invalid request"
+  },
+  "server.error.invalid_project_id": {
+    "text": "Invalid project ID"
+  },
+  "server.error.invalid_command": {
+    "text": "Invalid command"
+  },
+  "server.error.invalid_revisions": {
+    "text": "Invalid revisions"
+  },
+  "server.error.change_too_large": {
+    "text": "The change is too large"
+  },
+  "server.error.invalid_command_id": {
+    "text": "Invalid command ID"
+  },
+  "server.error.no_workspace_access": {
+    "text": "No access to the workspace"
+  },
+  "server.error.asset_missing": {
+    "text": "The asset does not exist"
+  },
+  "server.error.storage_no_response": {
+    "text": "The storage did not respond"
+  },
+  "server.error.invalid_storage_path": {
+    "text": "Invalid storage path"
+  },
+  "server.error.invalid_script_revision": {
+    "text": "Invalid script revision"
+  },
+  "server.error.text_too_long": {
+    "text": "The text is too long (max {max} characters)"
   }
 }

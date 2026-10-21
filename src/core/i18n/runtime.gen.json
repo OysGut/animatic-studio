@@ -32028,6 +32028,42 @@
     },
     "time.weekday-at": {
       "text": "{weekday} kl. {time}"
+    },
+    "server.error.invalid_request": {
+      "text": "Ugyldig forespørsel"
+    },
+    "server.error.invalid_project_id": {
+      "text": "Ugyldig prosjekt-ID"
+    },
+    "server.error.invalid_command": {
+      "text": "Ugyldig kommando"
+    },
+    "server.error.invalid_revisions": {
+      "text": "Ugyldige revisjoner"
+    },
+    "server.error.change_too_large": {
+      "text": "Endringen er for stor"
+    },
+    "server.error.invalid_command_id": {
+      "text": "Ugyldig kommando-ID"
+    },
+    "server.error.no_workspace_access": {
+      "text": "Ingen tilgang til gruppen"
+    },
+    "server.error.asset_missing": {
+      "text": "Ressursen finnes ikke"
+    },
+    "server.error.storage_no_response": {
+      "text": "Lagringen svarte ikke"
+    },
+    "server.error.invalid_storage_path": {
+      "text": "Ugyldig lagringssti"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Ugyldig manusrevisjon"
+    },
+    "server.error.text_too_long": {
+      "text": "Teksten er for lang (maks {max} tegn)"
     }
   },
   "en": {
@@ -62542,7 +62578,7 @@
         "parameter": "count",
         "forms": {
           "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
-          "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+          "other": "{count} lines have been moved to another scene (split or merge) and are not restored here."
         }
       }
     },
@@ -64059,6 +64095,42 @@
     },
     "time.weekday-at": {
       "text": "{weekday} at {time}"
+    },
+    "server.error.invalid_request": {
+      "text": "Invalid request"
+    },
+    "server.error.invalid_project_id": {
+      "text": "Invalid project ID"
+    },
+    "server.error.invalid_command": {
+      "text": "Invalid command"
+    },
+    "server.error.invalid_revisions": {
+      "text": "Invalid revisions"
+    },
+    "server.error.change_too_large": {
+      "text": "The change is too large"
+    },
+    "server.error.invalid_command_id": {
+      "text": "Invalid command ID"
+    },
+    "server.error.no_workspace_access": {
+      "text": "No access to the workspace"
+    },
+    "server.error.asset_missing": {
+      "text": "The asset does not exist"
+    },
+    "server.error.storage_no_response": {
+      "text": "The storage did not respond"
+    },
+    "server.error.invalid_storage_path": {
+      "text": "Invalid storage path"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Invalid script revision"
+    },
+    "server.error.text_too_long": {
+      "text": "The text is too long (max {max} characters)"
     }
   }
 }
