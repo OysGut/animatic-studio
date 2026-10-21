@@ -7,9 +7,10 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, ListTodo, MessageSquare, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
-import { discrepancies, filmClips, formatStamp, projectTodo, stepTask, type ProjectState } from "@/core";
+import { AI_JOBS_READ_KEY, discrepancies, filmClips, formatStamp, isAiJobsReadPrefs, isJobRead, markAllJobsRead, projectTodo, stepTask, type AiJobsReadPrefs, type ProjectState } from "@/core";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { useWorklistCount } from "@/app/library/AssetWorklistDialog";
 import { WorklistNotice } from "./WorklistNotice";
 import { t as tk } from "@/core/i18n/keyed";
@@ -46,14 +47,16 @@ export function ProjectTodoBox({
   );
   const worklist = useWorklistCount(state, projectId, productionId);
   const jobs = useAiJobs(projectId);
+  const [readPrefs, setReadPrefs] = useUiPref<AiJobsReadPrefs>(AI_JOBS_READ_KEY, {}, isAiJobsReadPrefs);
   const failedJobs = useMemo(() => {
     const now = Date.now();
     return (jobs.data?.jobs ?? []).filter(
       (j) =>
         (j.status === "failed" || j.status === "lost") &&
-        now - Date.parse(j.finishedAt ?? j.createdAt) < WEEK_MS,
+        now - Date.parse(j.finishedAt ?? j.createdAt) < WEEK_MS &&
+        !isJobRead(j, readPrefs),
     ).length;
-  }, [jobs.data]);
+  }, [jobs.data, readPrefs]);
   const [allNotes, setAllNotes] = useState(false);
   const empty =
     !todo.tasks.length &&
@@ -179,6 +182,14 @@ export function ProjectTodoBox({
           {failedJobs === 1
             ? tk("app-projects-project-todo-box.project-todo-box.p.8ebd7504c0a4")
             : tk("app-projects-project-todo-box.project-todo-box.p.3470acb79010", { failedJobs: String(failedJobs) })}
+          <button
+            type="button"
+            data-testid="todo-jobs-mark-all-read"
+            className="text-accent-brand hover:underline"
+            onClick={() => setReadPrefs(markAllJobsRead(new Date().toISOString()))}
+          >
+            {tk("app-projects-project-todo-box.mark-all-read")}
+          </button>
         </p>
       ) : null}
     </section>
