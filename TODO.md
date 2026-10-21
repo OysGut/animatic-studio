@@ -35,6 +35,15 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 - **Når en desktopversjon lages:** fjern grensen på 500 MB per videofil (REQ-0679) – uten å spørre Mars (DEC-0090).
 - **Varsel når en generering er ferdig** – helst SMS til et mobilnummer registrert på brukeren (DEC-0085: *satt på vent*). Forslag: leverandøren melder ferdig (webhook fra fal.ai/Runway) → serveren legger inn videoen og sender varsel; ingen planlagt bakgrunnsjobb som kan bruke penger (DEC-0072). Krever valg av SMS-tjeneste (kostnad), felt for mobilnummer i brukerinnstillingene (personopplysning, samtykke) og godkjenning fra Mars.
 
+## Rigg & 2D-utskrift og 3D-print (B-087) – utsatt arbeid
+Spesifikasjon: `docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md`. Runde 0 (dokumentasjon) er ferdig 21.10.2026. Akseptansekriteriene A1–A17 er REQ-0879–REQ-0895.
+- **Runde 1:** riggmodell, maler, størrelsesmatematikk (m = f / (d − f), mm internt), Rigg-fane og platenivå. Migrasjon 0071. Krav: A13 (REQ-0891).
+- **Runde 2:** kontur fra maske, alfa eller avslåbart forslag. Krav: A5 (REQ-0883).
+- **Runde 3:** inspeksjonsvindu og måleverktøy. Krav: A6–A11 (REQ-0884–REQ-0889).
+- **Runde 4:** PDF-motor i mm, tre moduser, kalibrering og tiling. Krav: A4, A12 og A16 (REQ-0882, REQ-0890, REQ-0894).
+- **Runde 5:** batch, kopier, QR, tosidig utskrift og mobiloppslag. Migrasjon 0072. Krav: A1–A3, A14 og A15 (REQ-0879–REQ-0881, REQ-0892, REQ-0893).
+- **3D-print (utsatt, blokkerer ikke 2D):** 3D-01 … 3D-20 i `docs/development/TODO_3D_PRINT.md`, REQ-0896–REQ-0915. A17 (REQ-0895) dekkes av den TODO-en.
+
 ## Må gjøres av Mars eller administrator (DEC-0086, DEC-0088)
 - Publiser appen, så bakgrunnsjobben (cron) kjører; adminsiden viser nå når den sist kjørte (DEC-0088).
 - Nye AI-leverandører som er ønsket på adminsiden, bygges av Claude (DEC-0088).
@@ -215,7 +224,9 @@ Maskinelt avstemt fra requirements.yaml 2026-10-21 (878 krav: 708 Verifisert, 11
 - REQ-0401 – Valg av kvalitetsnivå og modell for harmonisering
 - REQ-0402 – Publisere harmoniserte bilder til globalt bibliotek
 
-### Ikke startet (45)
+### Ikke startet (82)
+
+B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915 (3D-print, utsatt) er ikke listet enkeltvis nedenfor; se seksjonen om B-087 over.
 
 **P0 (5)**
 

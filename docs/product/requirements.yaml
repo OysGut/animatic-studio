@@ -33079,3 +33079,1031 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+
+- id: REQ-0879
+  title: "Rigg & 2D-utskrift A1: Én figur kan skrives ut i 20 identiske eksemplarer"
+  text: "A1: Én figur kan skrives ut i 20 identiske eksemplarer."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§2, §3"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - PRESENT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A1: Én figur kan skrives ut i 20 identiske eksemplarer."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+
+- id: REQ-0880
+  title: "Rigg & 2D-utskrift A2: Identiske utskrifter fjernes ikke automatisk"
+  text: "A2: Identiske utskrifter fjernes ikke automatisk."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§2, B-087 (ingen deduplisering)"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A2: Identiske utskrifter fjernes ikke automatisk."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+
+- id: REQ-0881
+  title: "Rigg & 2D-utskrift A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske"
+  text: "A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§3"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - TIMELINE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+
+- id: REQ-0882
+  title: "Rigg & 2D-utskrift A4: Valg mellom full farge, full figur med klippelinje og bare kontur"
+  text: "A4: Valg mellom full farge, full figur med klippelinje og bare kontur."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§4, §6"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A4: Valg mellom full farge, full figur med klippelinje og bare kontur."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+
+- id: REQ-0883
+  title: "Rigg & 2D-utskrift A5: Konturen er figurens faktiske silhuett, ikke rektangelet"
+  text: "A5: Konturen er figurens faktiske silhuett, ikke rektangelet."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§5, B-087 (masker)"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A5: Konturen er figurens faktiske silhuett, ikke rektangelet."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
+  notes: "Bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
+
+- id: REQ-0884
+  title: "Rigg & 2D-utskrift A6: Inspeksjonsvinduet kan åpnes uten å skrive ut"
+  text: "A6: Inspeksjonsvinduet kan åpnes uten å skrive ut."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§7, §10"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A6: Inspeksjonsvinduet kan åpnes uten å skrive ut."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0885
+  title: "Rigg & 2D-utskrift A7: Bredde og høyde kan måles"
+  text: "A7: Bredde og høyde kan måles."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§8"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A7: Bredde og høyde kan måles."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0886
+  title: "Rigg & 2D-utskrift A8: Avstand mellom valgfrie punkter kan måles"
+  text: "A8: Avstand mellom valgfrie punkter kan måles."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§8, §9"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A8: Avstand mellom valgfrie punkter kan måles."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0887
+  title: "Rigg & 2D-utskrift A9: Vinkler kan måles"
+  text: "A9: Vinkler kan måles."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§8, §9"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A9: Vinkler kan måles."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0888
+  title: "Rigg & 2D-utskrift A10: Forholdstall mellom valgte avstander kan måles"
+  text: "A10: Forholdstall mellom valgte avstander kan måles."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§8"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A10: Forholdstall mellom valgte avstander kan måles."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0889
+  title: "Rigg & 2D-utskrift A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom"
+  text: "A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§9"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  - CORE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+
+- id: REQ-0890
+  title: "Rigg & 2D-utskrift A12: Målelinjer skrives ikke automatisk ut"
+  text: "A12: Målelinjer skrives ikke automatisk ut."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§10, §11 (målingene lages i runde 3)"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A12: Målelinjer skrives ikke automatisk ut."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+
+- id: REQ-0891
+  title: "Rigg & 2D-utskrift A13: mm eller inches"
+  text: "A13: mm eller inches."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§8, §12, B-087 (mm internt, inches bare visning; brukes også i runde 3 og 4)"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - CORE
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A13: mm eller inches."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
+  notes: "Bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
+
+- id: REQ-0892
+  title: "Rigg & 2D-utskrift A14: Felles utskriftsinnstillinger for en hel batch"
+  text: "A14: Felles utskriftsinnstillinger for en hel batch."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§13"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A14: Felles utskriftsinnstillinger for en hel batch."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+
+- id: REQ-0893
+  title: "Rigg & 2D-utskrift A15: QR og konturmodus fungerer også i batch"
+  text: "A15: QR og konturmodus fungerer også i batch."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§13, §14"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A15: QR og konturmodus fungerer også i batch."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+
+- id: REQ-0894
+  title: "Rigg & 2D-utskrift A16: 2D-utskrift kan leveres uten 3D-generering"
+  text: "A16: 2D-utskrift kan leveres uten 3D-generering."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§1, §15, endelig instruksjon (første leverbare 2D-utskrift er runde 4)"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A16: 2D-utskrift kan leveres uten 3D-generering."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+
+- id: REQ-0895
+  title: "Rigg & 2D-utskrift A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO"
+  text: "A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§15, §16"
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - PROCESS
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md)."
+  notes: "Bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md)."
+
+- id: REQ-0896
+  title: "3D-print 3D-01: Generering av 3D-modell fra bilde"
+  text: "Lage en 3D-modell av en figur fra et valgt bilde (frame eller ressursversjon) via en ekstern bilde-til-3D-tjeneste."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - PROVIDER
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Et valgt bilde gir en 3D-modell som lagres som ny versjon knyttet til kildebildet; ingenting starter uten bekreftet kostnad."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-01)."
+
+- id: REQ-0897
+  title: "3D-print 3D-02: Flat underside eller full tredimensjonal figur"
+  text: "Brukeren velger mellom en figur med flat bakside (ligger på glassplaten) og en full 3D-figur."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Valget lagres per modell; flat underside gir en plan flate i platens plan innenfor printtoleransen."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-02)."
+
+- id: REQ-0898
+  title: "3D-print 3D-03: 2,5D-relieff og silhuetteffekter"
+  text: "Relieff der dybden følger bildet innenfor silhuetten, uten full 3D-rekonstruksjon."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Relieffets ytterkant følger den faktiske silhuetten (som A5), ikke rektangelet."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-03)."
+
+- id: REQ-0899
+  title: "3D-print 3D-04: Fysisk dybde med slider"
+  text: "Brukeren setter figurens fysiske dybde i mm med en slider."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Slideren viser dybden i valgt enhet (mm/inches) og endrer modellens dybde tilsvarende."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-04)."
+
+- id: REQ-0900
+  title: "3D-print 3D-05: Direkte numerisk dybdeverdi"
+  text: "Dybden kan skrives inn som tall i stedet for slider."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Inntastet verdi og slider viser alltid samme dybde; inches regnes om til mm uten avrundingstap utover visningen."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-05)."
+
+- id: REQ-0901
+  title: "3D-print 3D-06: Gjenbruk av nylig brukte dybdemål"
+  text: "Siste brukte dybdeverdier kan velges raskt."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "De siste dybdemålene vises som valg og gir nøyaktig samme verdi som sist."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-06)."
+
+- id: REQ-0902
+  title: "3D-print 3D-07: Skalakorreksjon når volumet bringer deler nærmere kameraet"
+  text: "En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bildet. Størrelsen korrigeres med samme linseformel som i 2D."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Den fremste og bakerste delen av figuren får beregnet avbildningsmål ut fra sin egen avstand til kameraet; den synlige størrelsen i kamera avviker ikke mer enn toleransen fra 2D-figuren."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-07)."
+
+- id: REQ-0903
+  title: "3D-print 3D-08: Samme riggkoordinatsystem som 2D"
+  text: "3D-modeller plasseres i det samme riggkoordinatsystemet (mm, platenivåer, kameraakse) som 2D-figurene."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En 3D-figur og en 2D-figur på samme plate og posisjon gir samme plassering og målestokk i kamera."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-08)."
+
+- id: REQ-0904
+  title: "3D-print 3D-09: Leverandørvalg for eksterne bilde-til-3D-jobber"
+  text: "Brukeren velger leverandør og modell for bilde-til-3D."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - PROVIDER
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Bare leverandører med gyldig nøkkel kan velges; valgt leverandør og modell lagres med resultatet."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-09)."
+
+- id: REQ-0905
+  title: "3D-print 3D-10: Integrasjon gjennom eksisterende AI-leverandørgrensesnitt"
+  text: "Bilde-til-3D bygges som en ny adapter i den eksisterende adaptermodellen, ikke som et eget system."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - PROVIDER
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Adapteren bruker samme nøkkellagring, logging uten hemmeligheter og testmønster (falskt nettverk) som de andre leverandørene."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-10)."
+
+- id: REQ-0906
+  title: "3D-print 3D-11: Kostnadsinformasjon før generering (kostnadsport)"
+  text: "Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor budsjettet."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - PROVIDER
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Uten bekreftelse gjøres ingen betalte kall; over budsjett stopper jobben før sending."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-11)."
+
+- id: REQ-0907
+  title: "3D-print 3D-12: Jobbstatus og feilhåndtering"
+  text: "3D-jobber vises i den samme jobblisten med status, fremdrift, feilmelding og nytt forsøk."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - PROVIDER
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En jobb som feiler, viser forståelig feil på norsk og engelsk; et nytt forsøk dobbeltbetaler ikke en fullført jobb."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-12)."
+
+- id: REQ-0908
+  title: "3D-print 3D-13: Interaktiv 3D-inspeksjon"
+  text: "Et 3D-inspeksjonsvindu (rotere, zoome, panorere) som motstykke til 2D-inspeksjonen."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Modellen kan roteres og måles i mm uavhengig av skjermzoom (som A11)."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-13)."
+
+- id: REQ-0909
+  title: "3D-print 3D-14: Kontroll av fysisk størrelse og modellgeometri"
+  text: "Vis modellens fysiske mål (bredde, høyde, dybde) og sammenlign med 2D-figurens beregnede størrelse."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Avvik mot beregnet størrelse over toleransen gir varsel."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-14)."
+
+- id: REQ-0910
+  title: "3D-print 3D-15: Printbarhetskontroll"
+  text: "Kontroll av at modellen kan printes: lukket nett (manifold), minste veggtykkelse, overheng og byggevolum."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En modell med hull eller for tynne vegger flagges før eksport; eksport er mulig bare med eksplisitt bekreftelse."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-15)."
+
+- id: REQ-0911
+  title: "3D-print 3D-16: STL- og 3MF-eksport"
+  text: "Eksport av modellen som STL og 3MF i mm."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Eksporterte filer har riktig fysisk størrelse i mm når de åpnes i en sliceprogramvare; 3MF tar med enhet og navn."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-16)."
+
+- id: REQ-0912
+  title: "3D-print 3D-17: Identifikasjonskode på egnet fysisk overflate"
+  text: "En kort ID-kode (samme ordning som QR i runde 5) preges eller trykkes på en flate som ikke synes i kamera (for eksempel undersiden)."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Koden plasseres automatisk på en flate som vender bort fra kameraet og kan leses etter print."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-17)."
+
+- id: REQ-0913
+  title: "3D-print 3D-18: Manuell inntasting av identifikasjonskode"
+  text: "Koden kan tastes inn for hånd når den ikke kan skannes."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Inntastet kode gir samme resultat som skanning; feil kode gir samme svar som ukjent kode."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-18)."
+
+- id: REQ-0914
+  title: "3D-print 3D-19: Navigasjon fra fysisk figur tilbake til digital scene"
+  text: "Oppslag på koden åpner riktig scene, frame og modellversjon."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Oppslaget åpner riktig scene og frame også etter omnummerering eller omrokkering av scener."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-19)."
+
+- id: REQ-0915
+  title: "3D-print 3D-20: Versjonering og ikke-destruktiv håndtering"
+  text: "Hver 3D-modell er en ny versjon; kildebilde, 2D-figur og aktiv versjon endres aldri automatisk."
+  origin: brukerbeslutning
+  source:
+    decision: B-087
+    document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
+    section: "§16"
+  type: funksjonell
+  priority: P2
+  phase: 3
+  modules:
+  - EXPORT
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "En ny 3D-modell endrer ikke 2D-figuren eller eksisterende versjoner; tidligere 3D-versjoner kan hentes fram."
+  tests: []
+  status: Ikke startet
+  implementation: []
+  verification: []
+  history:
+  - date: '2026-10-21'
+    decision: B-087
+    change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
+  notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-20)."

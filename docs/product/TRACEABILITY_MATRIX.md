@@ -31,26 +31,26 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 245 | 59 | 245 | 146 |
+| CORE | Project Core | 247 | 59 | 245 | 146 |
 | SCRIPT | Screenplay Engine | 138 | 32 | 138 | 136 |
-| TIMELINE | Timeline & Assembly Engine | 109 | 29 | 109 | 109 |
+| TIMELINE | Timeline & Assembly Engine | 110 | 29 | 109 | 109 |
 | LIBRARY | Resource Library | 97 | 10 | 96 | 87 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 97 | 14 | 97 | 96 |
+| COMPOSE | 2D Composition Engine | 114 | 14 | 97 | 96 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
 | AUDIO | Audio Engine | 69 | 2 | 69 | 63 |
 | PROMPT | Prompt Orchestration Engine | 59 | 15 | 59 | 54 |
-| PROVIDER | Provider Adapters | 50 | 6 | 50 | 46 |
+| PROVIDER | Provider Adapters | 55 | 6 | 50 | 46 |
 | QUALITYCOST | Quality & Cost Engine | 41 | 7 | 41 | 39 |
 | QUEUE | Render Queue | 36 | 13 | 36 | 33 |
 | VERSION | Version & Dependency Engine | 98 | 38 | 98 | 96 |
 | L10N | Localization Engine | 54 | 4 | 53 | 53 |
-| PRESENT | Presentation Engine | 30 | 3 | 30 | 26 |
-| EXPORT | Export Engine | 77 | 12 | 77 | 76 |
-| SECURITY | Security & Storage | 49 | 5 | 48 | 47 |
+| PRESENT | Presentation Engine | 31 | 3 | 30 | 26 |
+| EXPORT | Export Engine | 106 | 12 | 77 | 76 |
+| SECURITY | Security & Storage | 50 | 5 | 48 | 47 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 347 | 23 | 344 | 242 |
-| PROCESS | Arbeidsmåte og utviklingsprosess | 50 | 6 | 8 | 5 |
+| UI | Brukergrensesnitt og designsystem | 356 | 23 | 344 | 242 |
+| PROCESS | Arbeidsmåte og utviklingsprosess | 51 | 6 | 8 | 5 |
 
 ## Dekning per fase
 
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 69 |
 | 2 | 97 | 93 |
-| 3 | 234 | 134 |
+| 3 | 271 | 134 |
 | 4 | 85 | 84 |
 | 5 | 152 | 148 |
 | 6 | 49 | 48 |
@@ -948,3 +948,40 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0876 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/messages.ts, src/core/i18n/keyed.ts, src/core/i18n/manifest.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
 | REQ-0877 | Beslutning DEC-0081 | L10N, UI | src/core/i18n/locales/nb.json, src/core/i18n/locales/en.json, src/core/i18n/locales/en-XA.json | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
 | REQ-0878 | Beslutning DEC-0081 | L10N, UI | scripts/i18n/check.mjs, scripts/i18n/validate.mjs | 2 | tests/unit/i18n-ml1.test.ts, tests/unit/i18n.test.ts, tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1), tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1) | Verifisert | 2026-10-21 V1: Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21. |
+| REQ-0879 | Beslutning B-087 | EXPORT, PRESENT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0880 | Beslutning B-087 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0881 | Beslutning B-087 | EXPORT, TIMELINE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0882 | Beslutning B-087 | EXPORT, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
+| REQ-0883 | Beslutning B-087 | COMPOSE, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag). |
+| REQ-0884 | Beslutning B-087 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0885 | Beslutning B-087 | UI, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0886 | Beslutning B-087 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0887 | Beslutning B-087 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0888 | Beslutning B-087 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0889 | Beslutning B-087 | UI, CORE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
+| REQ-0890 | Beslutning B-087 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
+| REQ-0891 | Beslutning B-087 | CORE, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071). |
+| REQ-0892 | Beslutning B-087 | EXPORT, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0893 | Beslutning B-087 | EXPORT, SECURITY | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
+| REQ-0894 | Beslutning B-087 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
+| REQ-0895 | Beslutning B-087 | PROCESS | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md). |
+| REQ-0896 | Beslutning B-087 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0897 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0898 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0899 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0900 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0901 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0902 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0903 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0904 | Beslutning B-087 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0905 | Beslutning B-087 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0906 | Beslutning B-087 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0907 | Beslutning B-087 | PROVIDER, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0908 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0909 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0910 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0911 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0912 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0913 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0914 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0915 | Beslutning B-087 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
