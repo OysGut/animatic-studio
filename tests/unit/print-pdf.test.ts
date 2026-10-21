@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { calibrationTicks, planPrint, renderPdf, type PrintItem } from '../../src/core/print/pdf';
+import { calibrationTicks, planPrint, type PrintItem } from '../../src/core/print/pdf';
+import { renderPdf } from '../../src/engine/export/rig-pdf';
 const item = (extra: Partial<PrintItem> = {}):PrintItem => ({id:'a',size:{width:87.3,height:142.6},mode:'contour',contour:{source:'rectangle',widthMm:87.3,heightMm:142.6,pointCount:5,paths:[{isHole:false,orientation:'clockwise',points:[{x:0,y:0},{x:87.3,y:0},{x:87.3,y:142.6},{x:0,y:142.6},{x:0,y:0}]}]},...extra});
 describe('B-087 PDF engine',()=>{
  it('preserves mm and inch input without changing cut-line bounds',()=>{

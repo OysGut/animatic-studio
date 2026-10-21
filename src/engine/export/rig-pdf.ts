@@ -1,7 +1,7 @@
 import { jsPDF } from 'jspdf';
-import { t } from '../../i18n/keyed';
-import type { Point } from '../contour';
-import type { PrintPlan } from './layout';
+import { t } from '@/core/i18n/keyed';
+import type { Point } from '@/core/print/contour';
+import type { PrintPlan } from '@/core/print/pdf/layout';
 
 /** No DOM, canvas, resampling or file I/O. Encoded images are embedded at source resolution. */
 export function renderPdf(plan: PrintPlan): jsPDF {

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { cameraAt, transformAt, sceneNumberOf, type ProjectState, type CompositionLayer, type MultiplaneRigSpec } from '@/core';
-import { planPrint, renderPdf, type InfoField, type PrintItem, type PrintInput } from '@/core/print/pdf';
+import { planPrint, type InfoField, type PrintItem, type PrintInput } from '@/core/print/pdf';
+import { renderPdf } from '@/engine/export/rig-pdf';
 import type { ContourResult } from '@/core/print/contour';
 import { t } from '@/core/i18n/keyed';
 import { useUiPref } from '@/app/account/ui-prefs';
