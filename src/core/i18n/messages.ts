@@ -79,6 +79,8 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
   const en = catalogs['en'];
   if (!nb || !en) return ['Missing nb/en catalog'];
   const allKeys = new Set([...Object.keys(nb), ...Object.keys(en)]);
+  // English is the reserve, but nb/en still have the same authored parameter contract.
+  for (const key of allKeys) if (nb[key] && en[key] && JSON.stringify(messageParameterNames(nb[key])) !== JSON.stringify(messageParameterNames(en[key]))) errors.push(`Parameter mismatch: en:${key}`);
   for (const lang of manifest.languages) {
     const catalog = catalogs[lang.tag];
     if (!catalog) { errors.push(`Missing catalog: ${lang.tag}`); continue; }

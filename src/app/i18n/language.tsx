@@ -80,6 +80,21 @@ export function bootUiLanguage(): UiLang {
 /** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
 let rootSettled = false;
 const lateHydration = new Set<() => void>();
+let profileLanguage: UiLang | null = null;
+const explicitChoices = new Set<(lang: UiLang) => void>();
+export function onExplicitLanguageChoice(listener: (lang: UiLang) => void) {
+  explicitChoices.add(listener);
+  return () => { explicitChoices.delete(listener); };
+}
+/** Profile wins over browser/local choices at sign-in; never rewrites the explicit local choice. */
+export async function applyProfileLanguage(lang: UiLang | null) {
+  profileLanguage = lang;
+  const next = lang ?? stored() ?? browserUiLanguage(navigator.languages) ?? 'en';
+  await loadUiCatalog(next);
+  if (profileLanguage !== lang) return;
+  setLanguage(next);
+  document.cookie = `ptg-ui-language=${encodeURIComponent(next)}; Path=/; SameSite=Lax; Max-Age=31536000${window.location.protocol === 'https:' ? '; Secure' : ''}`;
+}
 
 /** Gjeldende visningsspråk (tegner komponenten på nytt når det endres). */
 export function useLanguage(): UiLang {
@@ -100,6 +115,8 @@ export async function chooseLanguage(lang: UiLang) {
     // privat vindu: gjelder bare denne økten
   }
   setLanguage(lang);
+  if (profileLanguage !== null) profileLanguage = lang;
+  for (const listener of explicitChoices) listener(lang);
 }
 
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
@@ -117,7 +134,8 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       if (done) return;
       done = true;
       lateHydration.delete(onLate);
-      void loadUiCatalog(s).then(() => setLanguage(s)).catch(() => setLanguage('en'));
+      const next = profileLanguage ?? s;
+      void loadUiCatalog(next).then(() => { if (profileLanguage === null || profileLanguage === next) setLanguage(next); }).catch(() => setLanguage('en'));
     };
     // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
     let quiet: number | undefined;
