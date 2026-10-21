@@ -37,7 +37,7 @@ Kortversjonen:
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
 20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
 21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
-23. Invitations bind to the invited email: acceptance functions compare it with the signed-in auth email, so a leaked invitation link never grants access to someone else.
+23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
