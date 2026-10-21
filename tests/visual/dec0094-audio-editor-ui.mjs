@@ -16,6 +16,9 @@
  *   ENV_FILE=…/.env node dec0090-mobile-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
+const EN = uiLang("nb") === "en";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -154,7 +157,7 @@ async function mock(ctx) {
       }
       return json(null);
     }
-    if (table === "schema_version") return json([{ version: 36 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (path.startsWith("/storage/v1/object/assets/") && req.method() === "POST") {
       PC.uploads++;
       uploaded.set(path.replace("/storage/v1/object/assets/", ""), req.postDataBuffer() ?? Buffer.alloc(0));
@@ -240,7 +243,8 @@ const check = (ok, text) => {
 };
 
 /** Ny nettleser (tomt lokalt lager) som åpner sceneeditoren. */
-async function run(name, act, { lang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+async function run(name, act, { lang: askedLang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+  const lang = uiLang(askedLang);
   const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: "dark", ...(mobile ? { isMobile: true, hasTouch: true, permissions: ["camera", "microphone"] } : { permissions: ["microphone"] }) });
   await mock(ctx);
   const page = await ctx.newPage();
@@ -289,7 +293,7 @@ const lenOf = async (page) => Number(/\(([\d.]+) s\)/.exec(await page.getByTestI
 await run(
   "e01-lydeditor",
   async (page) => {
-    await page.getByRole("button", { name: /Ta opp lyd: Opptak til «Maja – Hører du det»/ }).click();
+    await page.getByRole("button", { name: EN ? /Record audio: Recordings for “Maja – Hører du det”/ : /Ta opp lyd: Opptak til «Maja – Hører du det»/ }).click();
     await page.waitForTimeout(900);
     const dlg = page.getByTestId("audio-takes-dialog");
     // Et nytt opptak på PC, så det finnes to takes
@@ -315,6 +319,21 @@ await run(
     const before = await lenOf(page);
     check(Math.abs(before - 3.5) < 0.05, `lengden er opptakets (${before} s)`);
     await page.screenshot({ path: `${out}/e01a-editor.png` });
+    const block = ed.getByTestId("audio-editor-seg").first();
+    const box = await block.boundingBox();
+    if (!box) throw new Error("mangler lydsegment");
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 + 100, box.y + box.height / 2, { steps: 12 });
+    await page.mouse.up();
+    const movedAt = Number(await block.getAttribute("data-at-ms"));
+    check(movedAt > 0, `dra flytter delen (${movedAt} ms)`);
+    await ed.getByTestId("audio-editor-undo").click();
+    check(Number(await block.getAttribute("data-at-ms")) === 0, "én angring gjenoppretter hele draget");
+    check(await ed.getByTestId("audio-editor-undo").isDisabled(), "pekerbevegelsene opprettet ikke ekstra angresteg");
+    await ed.getByRole("button", { name: EN ? "Redo" : "Gjør om", exact: true }).click();
+    check(Number(await block.getAttribute("data-at-ms")) === movedAt, "gjør om gjenoppretter draget");
+    await ed.getByTestId("audio-editor-undo").click();
     // Sett inn det nye opptaket etter
     await ed.getByTestId("audio-editor-take").selectOption({ index: 1 });
     await ed.getByTestId("audio-editor-after").click();
@@ -325,7 +344,7 @@ await run(
     await ed.getByTestId("audio-editor-undo").click();
     await page.waitForTimeout(200);
     check(Math.abs((await lenOf(page)) - before) < 0.01, "angre gir den forrige lyden tilbake (REQ-0695)");
-    await ed.getByRole("button", { name: "Gjør om" }).click();
+    await ed.getByRole("button", { name: EN ? "Redo" : "Gjør om" }).click();
     await page.waitForTimeout(200);
     check(Math.abs((await lenOf(page)) - after) < 0.01, "gjør om");
     // Legg oppå
@@ -357,7 +376,7 @@ await run(
     await page.mouse.click(r.x + 2, r.y + r.height / 2);
     await ed.getByTestId("audio-editor-play").click();
     await page.waitForTimeout(400);
-    check(/Stopp/.test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
+    check((EN ? /Stop/ : /Stopp/).test(await ed.getByTestId("audio-editor-play").innerText()), "forhåndsavspilling av komposisjonen");
     await ed.getByTestId("audio-editor-play").click();
     // Lagre som ny versjon: komposisjonen sendes med
     const uploadsBefore = PC.uploads;

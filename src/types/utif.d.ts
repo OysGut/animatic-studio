@@ -1,4 +1,4 @@
-/** Minimal typing for «utif» (TIFF-dekoder, MIT). Bare det Animatic Studio bruker. */
+/** Minimal typing for «utif» (TIFF-dekoder, MIT). Bare det From Pen to Glass bruker. */
 declare module "utif" {
   export interface IFD {
     width: number;

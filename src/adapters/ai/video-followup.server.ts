@@ -3,16 +3,10 @@
  * (pollVideoJob) og av bakgrunnskøen (/api/public/cron/ai-jobs), så videoer hentes inn også når ingen har
  * prosjektet åpent. Ferdige videoer lagres i `<prosjekt>/films/<take>/ai-video.mp4`; bare én henter vinner.
  */
-import {
-  L,
-  filmFilePath,
-  lastFramePath,
-  newId,
-  SCENE_VIDEO_SOURCE,
-  VIDEO_JOB_MAX_MS,
-} from "@/core";
+import { filmFilePath, lastFramePath, newId, SCENE_VIDEO_SOURCE, VIDEO_JOB_MAX_MS } from "@/core";
 import type { KeyRow } from "./ai-gate.server";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 export { VIDEO_JOB_MAX_MS };
@@ -49,12 +43,12 @@ export async function followUpVideoJob(
     result_path: string | null;
   } | null;
   if (!job || job.kind !== "video")
-    return { state: "failed", message: L("Jobben finnes ikke.", "The job does not exist.") };
+    return { state: "failed", message: t("adapters-ai-video-followup-server.message.message.4407c292b2b8") };
   if (job.status === "done" && job.result_path)
     return { state: "done", resultPath: job.result_path };
   if (job.status === "queued") return { state: "running" };
   if (job.status !== "running")
-    return { state: "failed", message: L("Jobben feilet.", "The job failed.") };
+    return { state: "failed", message: t("adapters-ai-video-followup-server.message.message.522d15b8c542") };
   const fail = async (
     message: string,
     status: "failed" | "lost" = "failed",
@@ -74,7 +68,7 @@ export async function followUpVideoJob(
     // Startet, men leverandøren svarte aldri (fanen ble lukket under oppstart): regnes som stoppet
     return Date.now() - Date.parse(job.started_at ?? job.created_at) > 10 * 60_000
       ? fail(
-          L("Jobben kom aldri i gang hos leverandøren.", "The job never started at the provider."),
+          t("adapters-ai-video-followup-server.follow-up-video-job.fail.3c8b1637dfa0"),
         )
       : { state: "running" };
   }
@@ -84,18 +78,12 @@ export async function followUpVideoJob(
   // Kan være belastet hos leverandøren: regnes med i taket
   const giveUp = () =>
     fail(
-      L(
-        "Leverandøren ble ikke ferdig med videoen innen sju dager.",
-        "The provider did not finish the video within seven days.",
-      ),
+      t("adapters-ai-video-followup-server.give-up.fail.2bc3f93ad26e"),
       "lost",
     );
   if (!job.provider_key_id)
     return fail(
-      L(
-        "Nøkkelen er fjernet, så videoen kan ikke hentes.",
-        "The key was removed, so the video cannot be fetched.",
-      ),
+      t("adapters-ai-video-followup-server.follow-up-video-job.fail.d95febb10922"),
     );
   const { data: keyRow } = await db
     .from("ai_provider_keys")
@@ -104,10 +92,7 @@ export async function followUpVideoJob(
     .maybeSingle();
   if (!keyRow)
     return fail(
-      L(
-        "Nøkkelen er fjernet, så videoen kan ikke hentes.",
-        "The key was removed, so the video cannot be fetched.",
-      ),
+      t("adapters-ai-video-followup-server.follow-up-video-job.fail.d95febb10922.2"),
     );
   const k = keyRow as {
     id: string;
@@ -128,7 +113,7 @@ export async function followUpVideoJob(
   try {
     const adapter = ADAPTERS[job.provider as "openai" | "google" | "fal" | "runway"];
     if (!adapter || !("pollVideo" in adapter))
-      return fail(L("Leverandøren lager ikke video.", "The provider does not make video."));
+      return fail(t("adapters-ai-video-followup-server.follow-up-video-job.fail.711fc417fda6"));
     const r = await adapter.pollVideo(secret, job.model, job.external_id);
     if (r.state === "running") {
       if (tooOld) return giveUp();
@@ -151,10 +136,7 @@ export async function followUpVideoJob(
       });
     if (upErr)
       throw new Error(
-        L(
-          `Videoen kunne ikke lagres: ${upErr.message}`,
-          `The video could not be saved: ${upErr.message}`,
-        ),
+        t("adapters-ai-video-followup-server.follow-up-video-job.message.8dce5c6765cc", { message: String(upErr.message) }),
       );
     // Bare én henter vinner (samtidig oppfølging fra to faner): den andre ser jobben som ferdig
     const { data: won } = await db
@@ -256,13 +238,11 @@ export async function markStoppedSyncJobs(
     .from("generation_jobs")
     .update({
       status: "lost",
-      error: L(
-        "Stoppet underveis (ingen svar innen 15 minutter).",
-        "Stopped partway (no reply within 15 minutes).",
-      ),
+      error: t("adapters-ai-video-followup-server.error.error.5cbb8ba8e842"),
       finished_at: new Date(now).toISOString(),
     } as never)
     .in("kind", ["image", "sound", "prompt"])
+    .or("params->>kind.is.null,params->>kind.neq.dialogue_batch")
     .eq("status", "running")
     .lt("created_at", new Date(now - 15 * 60_000).toISOString());
   const { data } = await (projectId ? base.eq("project_id", projectId) : base).select("id");
@@ -306,14 +286,14 @@ export async function submitVideoJob(
     .eq("id", jobId)
     .maybeSingle();
   const job = row as JobForSubmit | null;
-  if (!job) return { ok: false, message: L("Jobben finnes ikke.", "The job does not exist.") };
+  if (!job) return { ok: false, message: t("adapters-ai-video-followup-server.message.message.4407c292b2b8.2") };
   const end = async (status: "failed" | "lost", message: string) =>
     db
       .from("generation_jobs")
       .update({ status, error: message, finished_at: new Date().toISOString() } as never)
       .eq("id", jobId)
       .eq("status", "running");
-  const keyRemoved = L("Nøkkelen er fjernet.", "The key was removed.");
+  const keyRemoved = t("adapters-ai-video-followup-server.key-removed.message.6125b40f6efe");
   if (!job.provider_key_id) {
     await end("failed", keyRemoved);
     return { ok: false, message: keyRemoved };
@@ -342,38 +322,35 @@ export async function submitVideoJob(
         .createSignedUrl(job.reference_path, 3600);
       if (!blob || !signed?.signedUrl)
         throw new Error(
-          L("Startbildet kunne ikke hentes.", "The start image could not be fetched."),
+          t("adapters-ai-video-followup-server.submit-video-job.message.0c73819f4507"),
         );
       image = { blob, url: signed.signedUrl };
     }
     const adapter = ADAPTERS[job.provider as "openai" | "google" | "fal" | "runway"];
     if (!adapter || !("startVideo" in adapter))
-      throw new Error(L("Leverandøren lager ikke video.", "The provider does not make video."));
+      throw new Error(t("adapters-ai-video-followup-server.submit-video-job.message.87703164942b"));
     // Video fra 2D-scenen (DEC-0083): videoen og figurenes bilder sendes som midlertidige lenker
     if (job.params?.source === SCENE_VIDEO_SOURCE) {
       if (!("editVideo" in adapter))
         throw new Error(
-          L(
-            "Leverandøren kan ikke lage video fra 2D-scenen.",
-            "The provider cannot make video from the 2D scene.",
-          ),
+          t("adapters-ai-video-followup-server.submit-video-job.message.2a86e5c18ec1"),
         );
       const sign = async (path: string, what: string) => {
         const { data: signed } = await db.storage.from(BUCKET).createSignedUrl(path, 3600);
         if (!signed?.signedUrl)
-          throw new Error(L(`${what} kunne ikke hentes.`, `${what} could not be fetched.`));
+          throw new Error(t("adapters-ai-video-followup-server.sign.message.1d262b0990da", { what: String(what) }));
         return signed.signedUrl;
       };
       const videoUrl = await sign(
         job.params.sourceVideoPath ?? "",
-        L("Videoen av 2D-scenen", "The video of the 2D scene"),
+        t("adapters-ai-video-followup-server.video-url.sign.2bb1ccd46525"),
       );
       const elementUrls: string[] = [];
       for (const p of job.params.elementPaths ?? [])
-        elementUrls.push(await sign(p, L("Et referansebilde", "A reference image")));
+        elementUrls.push(await sign(p, t("adapters-ai-video-followup-server.submit-video-job.sign.4f3e75de67e1")));
       const imageUrls: string[] = [];
       for (const p of job.params.imagePaths ?? [])
-        imageUrls.push(await sign(p, L("Et referansebilde", "A reference image")));
+        imageUrls.push(await sign(p, t("adapters-ai-video-followup-server.submit-video-job.sign.4f3e75de67e1.2")));
       submitted = true;
       const editId = await adapter.editVideo({
         key: secret,
@@ -392,17 +369,11 @@ export async function submitVideoJob(
       if (idErr2) {
         await end(
           "lost",
-          L(
-            `Jobben startet, men kunne ikke registreres: ${idErr2.message}`,
-            `The job started, but could not be registered: ${idErr2.message}`,
-          ),
+          t("adapters-ai-video-followup-server.submit-video-job.end.a2d5d2ff670d", { message: String(idErr2.message) }),
         );
         return {
           ok: false,
-          message: L(
-            "Videoen ble startet hos leverandøren, men kunne ikke registreres her. Den regnes med i kostnadstaket.",
-            "The video was started at the provider, but could not be registered here. It counts towards the cost limit.",
-          ),
+          message: t("adapters-ai-video-followup-server.message.message.aff3ee495f31"),
         };
       }
       return { ok: true };
@@ -424,23 +395,17 @@ export async function submitVideoJob(
     if (idErr) {
       await end(
         "lost",
-        L(
-          `Jobben startet, men kunne ikke registreres: ${idErr.message}`,
-          `The job started, but could not be registered: ${idErr.message}`,
-        ),
+        t("adapters-ai-video-followup-server.submit-video-job.end.b4db043d8ada", { message: String(idErr.message) }),
       );
       return {
         ok: false,
-        message: L(
-          "Videoen ble startet hos leverandøren, men kunne ikke registreres her. Den regnes med i kostnadstaket.",
-          "The video was started at the provider, but could not be registered here. It counts towards the cost limit.",
-        ),
+        message: t("adapters-ai-video-followup-server.message.message.aff3ee495f31.2"),
       };
     }
     return { ok: true };
   } catch (e) {
     const message = scrubSecret(
-      (e as Error).message || L("Ukjent feil", "Unknown error"),
+      (e as Error).message || t("adapters-ai-video-followup-server.message.scrub-secret.63dcbd159e01"),
       secret,
     ).slice(0, 2000);
     // For mange forespørsler (429): jobben er ikke startet hos leverandøren og legges tilbake i køen
@@ -453,20 +418,14 @@ export async function submitVideoJob(
         .eq("status", "running");
       return {
         ok: false,
-        message: L(
-          "Leverandøren er opptatt. Videoen ligger i kø og sendes når det er plass.",
-          "The provider is busy. The video is queued and will be sent when there is room.",
-        ),
+        message: t("adapters-ai-video-followup-server.message.message.eccee0afc417"),
       };
     }
     const rejected = e instanceof ProviderError && e.status >= 400 && e.status < 600;
     await end(submitted && !rejected ? "lost" : "failed", message);
     return {
       ok: false,
-      message: L(
-        `Videoen kunne ikke startes: ${message}`,
-        `The video could not be started: ${message}`,
-      ),
+      message: t("adapters-ai-video-followup-server.message.message.fbed721076a8", { message: String(message) }),
     };
   }
 }
@@ -518,10 +477,7 @@ export async function pumpVideoQueue(
         .from("generation_jobs")
         .update({
           status: "failed",
-          error: L(
-            "Prosjektet er slettet; jobben ble ikke sendt (kostet ingenting).",
-            "The project was deleted; the job was not sent (it cost nothing).",
-          ),
+          error: t("adapters-ai-video-followup-server.error.error.2af7cf0dc78c"),
           finished_at: new Date().toISOString(),
         } as never)
         .eq("id", j.id)
@@ -570,10 +526,7 @@ export async function pumpVideoQueue(
           .from("generation_jobs")
           .update({
             status: "failed",
-            error: L(
-              `${capMsg} Jobben ble ikke sendt (kostet ingenting).`,
-              `${capMsg} The job was not sent (it cost nothing).`,
-            ),
+            error: t("adapters-ai-video-followup-server.error.error.7da5f1d563df", { capMsg: String(capMsg) }),
             finished_at: new Date().toISOString(),
           } as never)
           .eq("id", j.id)
@@ -662,10 +615,7 @@ export async function resolveChain(
     if (!path)
       return {
         state: "failed",
-        message: L(
-          "Forrige segments video har en ukjent sti.",
-          "The previous segment's video has an unknown path.",
-        ),
+        message: t("adapters-ai-video-followup-server.message.message.55176e220a82"),
       };
     const { error } = await db.storage.from(BUCKET).createSignedUrl(path, 60);
     if (!error) return { state: "ready", path };
@@ -674,18 +624,12 @@ export async function resolveChain(
     if (Number.isFinite(done) && Date.now() - done > CHAIN_FRAME_WAIT_MS)
       return {
         state: "failed",
-        message: L(
-          "Siste bilde fra segmentet før ble ikke lagret (det skjer når prosjektet er åpent i en nettleser). Start segmentet på nytt (kostet ingenting).",
-          "The last image from the previous segment was not saved (this happens when the project is open in a browser). Start the segment again (it cost nothing).",
-        ),
+        message: t("adapters-ai-video-followup-server.message.message.b059e07841da"),
       };
     return { state: "wait" };
   }
   return {
     state: "failed",
-    message: L(
-      "Segmentet før fikk ingen video, så dette kunne ikke starte fra siste bilde (kostet ingenting).",
-      "The previous segment got no video, so this could not start from its last image (it cost nothing).",
-    ),
+    message: t("adapters-ai-video-followup-server.message.message.4d78f8b20e99"),
   };
 }

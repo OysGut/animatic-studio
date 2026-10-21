@@ -5,16 +5,9 @@
  * lag eller dialog flyttes aldri.
  */
 import { useRef, useState, type ReactNode } from "react";
-import {
-  L,
-  imageSegmentsOf,
-  insertImageSegment,
-  moveImageSegment,
-  trimImageSegment,
-  type LayerFields,
-  type ProjectState,
-} from "@/core";
+import { imageSegmentsOf, insertImageSegment, moveImageSegment, trimImageSegment, type LayerFields, type ProjectState } from "@/core";
 import { STUDIO_VERSION_DRAG_TYPE, type StripImage } from "./VariantStrip";
+import { t } from "@/core/i18n/keyed";
 
 type Drag = (
   | { kind: "range-start" | "range-end"; frame: number }
@@ -101,12 +94,12 @@ export function ObjectTimeline({
       if (next.from === range.from && next.to === range.to) return;
       onChange(
         { ...fields, activeRange: next.from === 0 && next.to >= dur - 1 ? null : next },
-        L("Endre objektets tidsområde", "Change the object's time range"),
+        t("app-asset-studio-object-timeline.end-drag.on-change.f585df89aeeb"),
       );
     } else if (d.kind === "move") {
-      onChange(moveImageSegment(fields, d.index, d.frame, dur), L("Flytt bildesegment", "Move image segment"));
+      onChange(moveImageSegment(fields, d.index, d.frame, dur), t("app-asset-studio-object-timeline.end-drag.on-change.54d380412f7a"));
     } else if (d.kind === "trim") {
-      onChange(trimImageSegment(fields, d.index, d.frame), L("Trim bildesegment", "Trim image segment"));
+      onChange(trimImageSegment(fields, d.index, d.frame), t("app-asset-studio-object-timeline.end-drag.on-change.0be5018fd590"));
     }
   }
 
@@ -117,7 +110,7 @@ export function ObjectTimeline({
     const img = JSON.parse(raw) as StripImage;
     onChange(
       insertImageSegment(fields, frameAt(e.clientX), img),
-      L("Nytt bildesegment", "New image segment"),
+      t("app-asset-studio-object-timeline.on-drop.on-change.491c60b16e71"),
     );
   }
 
@@ -131,7 +124,7 @@ export function ObjectTimeline({
         <div
           className="relative h-4 cursor-pointer rounded-sm bg-surface-3"
           onPointerDown={(e) => onSeek(frameAt(e.clientX))}
-          aria-label={L("Tidslinjal", "Time ruler")}
+          aria-label={t("app-asset-studio-object-timeline.object-timeline.aria-label.0b0d6aa63f88")}
         />
         {/* Aktivt tidsområde */}
         <div className="relative h-5 rounded-sm bg-surface-2" data-testid="asset-studio-range">
@@ -144,8 +137,8 @@ export function ObjectTimeline({
             className={handle}
             style={{ left: pct(shownRange.from) }}
             data-testid="asset-studio-range-start"
-            aria-label={L("Start på objektets tidsområde", "Start of the object's time range")}
-            title={L("Dra for å endre når objektet vises", "Drag to change when the object is shown")}
+            aria-label={t("app-asset-studio-object-timeline.object-timeline.aria-label.2c692eb1caa4")}
+            title={t("app-asset-studio-object-timeline.object-timeline.title.488098b2e451")}
             disabled={!editable}
             onPointerDown={(e) => startDrag(e, { kind: "range-start", frame: shownRange.from })}
             onPointerMove={moveDrag}
@@ -157,8 +150,8 @@ export function ObjectTimeline({
             className={handle}
             style={{ left: pct(shownRange.to + 1) }}
             data-testid="asset-studio-range-end"
-            aria-label={L("Slutt på objektets tidsområde", "End of the object's time range")}
-            title={L("Dra for å endre når objektet forsvinner", "Drag to change when the object disappears")}
+            aria-label={t("app-asset-studio-object-timeline.object-timeline.aria-label.d82cca1d9131")}
+            title={t("app-asset-studio-object-timeline.object-timeline.title.fb6976b74441")}
             disabled={!editable}
             onPointerDown={(e) => startDrag(e, { kind: "range-end", frame: shownRange.to })}
             onPointerMove={moveDrag}
@@ -210,10 +203,7 @@ export function ObjectTimeline({
                   (seg.index > 0 && editable ? " cursor-grab" : "")
                 }
                 style={{ left: pct(seg.start), width: pct(seg.end - seg.start) }}
-                title={L(
-                  "Klikk for å velge. Dra for å flytte starten. Dra i høyre kant for å trimme.",
-                  "Click to select. Drag to move the start. Drag the right edge to trim.",
-                )}
+                title={t("app-asset-studio-object-timeline.object-timeline.title.e35ddbfbaae4")}
               >
                 {seg.transition ? (
                   <span
@@ -223,13 +213,13 @@ export function ObjectTimeline({
                   />
                 ) : null}
                 <span className="relative truncate">
-                  {asset?.name ?? L("Fargeflate", "Colour fill")}
+                  {asset?.name ?? t("app-asset-studio-object-timeline.object-timeline.span.79c959d59ee4")}
                   {ver ? ` v${ver.number}` : ""}
                 </span>
                 {seg.end < dur && editable ? (
                   <span
                     role="separator"
-                    aria-label={L("Trim slutten av segmentet", "Trim the end of the segment")}
+                    aria-label={t("app-asset-studio-object-timeline.object-timeline.aria-label.b211c423a669")}
                     data-testid="asset-studio-segment-trim"
                     className="absolute right-0 top-0 h-full w-1.5 cursor-ew-resize bg-border"
                     onPointerDown={(e) => startDrag(e, { kind: "trim", index: seg.index, frame: seg.end })}

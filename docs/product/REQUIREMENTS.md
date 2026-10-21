@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **714**
-- Prioritet: P0: 145, P1: 381, P2: 149, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 187, teknisk-anbefaling: 7
-- Status: Verifisert: 631, Implementert – ikke verifisert: 21, Under arbeid: 3, Ikke startet: 59
+- Antall krav: **915**
+- Prioritet: P0: 147, P1: 560, P2: 169, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 388, teknisk-anbefaling: 7
+- Status: Verifisert: 710, Ikke startet: 81, Implementert – ikke verifisert: 112, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -308,7 +308,7 @@ Systemet skal skille mellom strukturell synkronisering (scener, delsekvenser, re
 
 - **Kilde:** Kap. 2.1 (l. 76-78) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-01, INV-07
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hvert produsert materiale lagrer referanse til manusversjon og ressursversjoner det er produsert fra, adskilt fra strukturell plassering.
 - **Tester:**
@@ -503,12 +503,12 @@ Separate, stabile identifikatorer skal finnes for: prosjekt, produksjon, manusve
 
 - **Kilde:** Kap. 3.2 (l. 111-132) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE · **Invarianter:** INV-02
-- **Status:** Under arbeid
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
 - **Tester:**
   - enhet: skjemavalidering av ID-felt for alle 21 typer
-- **Implementering:** src/core/ids.ts, db/migrations/0028_duration_exports.sql, src/core/export-records.ts, docs/architecture/DOMAIN_MODEL.md
+- **Implementering:** src/core/ids.ts, db/migrations/0028_duration_exports.sql, src/core/export-records.ts, docs/architecture/DOMAIN_MODEL.md, src/core/audio/alignment.ts#assignWordIds (ord-ID-er), src/core/audio/pauses.ts#pauseWordId, src/core/library/provenance.ts#versionProvenance + db/migrations/0069_version_derivation.sql (derived_from_version_id), src/core/assembly/time-levels.ts#partKey/partById, src/core/translation/index.ts#identifyParsedScenes/parsedSceneOf, src/core/storylab/engine.ts (branchFrom turnId), src/adapters/storylab/sessions.functions.ts#forkStorySession, src/core/screenplay/script-pages.ts#lockedPageOffset/sceneSourcePage
 
 #### REQ-0038 – ID-er uavhengige av navn, språk og plassering
 Identifikatorene skal være uavhengige av navn, språk, plassering og synlige løpenumre.
@@ -1847,11 +1847,12 @@ Når bilder fra forskjellige kilder brukes sammen, skal programmet kunne tilby A
 
 - **Kilde:** Kap. 9.2 (l. 404) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, PROVIDER, LIBRARY · **Invarianter:** INV-12
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Brukeren kan velge flere bilder og starte stilharmonisering (med kostnadsgodkjenning).
 - **Tester:**
   - integrasjon: harmonisering via mock-adapter
+- **Implementering:** src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx, src/adapters/ai/image-run.server.ts
 - **Merknad:** Stilharmonisering er i fase 8.
 
 #### REQ-0138 – Harmoniseringsdimensjoner
@@ -1860,11 +1861,12 @@ Karakterbilder skal kunne tilpasses en felles tegnestil, fargepalett, lyssetting
 - **Kilde:** Kap. 9.2 (l. 405-411) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT, LIBRARY
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Harmoniseringsprompten inkluderer målverdier for alle seks dimensjonene.
 - **Tester:**
   - enhet: promptbygger for harmonisering
+- **Implementering:** src/core/generation/style-harmonize.ts
 
 #### REQ-0139 – Bevar gjenkjennelig identitet
 Stilharmoniseringen skal bevare karakterens gjenkjennelige identitet så langt som mulig.
@@ -1872,11 +1874,12 @@ Stilharmoniseringen skal bevare karakterens gjenkjennelige identitet så langt s
 - **Kilde:** Kap. 9.2 (l. 412) · **Opprinnelse:** mandat · **Type:** ikke-funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PROMPT
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Harmoniseringsprompt inkluderer identitetsbevarende instruksjoner og referansebilder.
 - **Tester:**
   - manuell: vurdering av gjenkjennelighet
+- **Implementering:** src/core/generation/style-harmonize.ts, src/app/library/HarmonizePanel.tsx
 - **Merknad:** «Så langt som mulig» – ikke absolutt.
 
 #### REQ-0140 – Sammenligne original og harmonisert
@@ -1885,11 +1888,12 @@ Brukeren skal kunne sammenligne original og harmonisert variant før godkjenning
 - **Kilde:** Kap. 9.2 (l. 413) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** UI, LIBRARY · **Invarianter:** INV-08
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Side-ved-side/før-etter-visning finnes før godkjenningsknappen.
 - **Tester:**
   - e2e: sammenligning før godkjenning
+- **Implementering:** src/app/library/HarmonizeCompare.tsx
 
 #### REQ-0141 – Harmonisert bilde brukt lokalt
 Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten eller scenen.
@@ -1897,11 +1901,12 @@ Et harmonisert karakterbilde skal kunne brukes bare i den aktuelle plakaten elle
 - **Kilde:** Kap. 9.3 (l. 415-416) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT
 - **Avhengigheter:** REQ-0137
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Bildet kan brukes lokalt uten å bli synlig i det globale biblioteket.
 - **Tester:**
   - integrasjon: lokal bruk
+- **Implementering:** src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx, src/app/scene-editor/LayerImageDialog.tsx, src/app/release/PosterHarmonizeDialog.tsx
 
 #### REQ-0142 – Harmonisert bilde som alternativ variant
 Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
@@ -1909,11 +1914,12 @@ Et harmonisert karakterbilde skal kunne lagres som en alternativ variant.
 - **Kilde:** Kap. 9.3 (l. 417) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0135
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Bildet lagres som ny variant under karakteren uten å erstatte eksisterende.
 - **Tester:**
   - enhet: lagre som variant
+- **Implementering:** src/core/commands/apply.ts, src/app/library/HarmonizePanel.tsx
 
 #### REQ-0143 – Publisering til globalt karakterbibliotek
 Et harmonisert karakterbilde skal kunne godkjennes og publiseres til det globale karakterbiblioteket.
@@ -1921,11 +1927,12 @@ Et harmonisert karakterbilde skal kunne godkjennes og publiseres til det globale
 - **Kilde:** Kap. 9.3 (l. 418) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0142
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Etter godkjenning er varianten tilgjengelig i det globale biblioteket.
 - **Tester:**
   - integrasjon: godkjenn og publiser
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 - **Merknad:** Jf. kap. 34 pkt. 25, men plassert i fase 8 – se OPEN_QUESTIONS B (kontinuitetsprinsipper før harmonisering).
 
 #### REQ-0144 – Foretrukket referanse per stilprofil
@@ -1934,11 +1941,12 @@ Et harmonisert karakterbilde skal kunne merkes som foretrukket referanse for en 
 - **Kilde:** Kap. 9.3 (l. 419) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY
 - **Avhengigheter:** REQ-0147
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - For en karakter og stilprofil kan nøyaktig én variant være foretrukket referanse.
 - **Tester:**
   - enhet: foretrukket-referanse per (karakter, stilprofil)
+- **Implementering:** src/core/commands/apply.ts, db/migrations/0065_style_harmonization.sql
 
 #### REQ-0145 – Publisering er eksplisitt brukerhandling
 Publisering av en variant til det globale biblioteket skal være en eksplisitt brukerhandling.
@@ -1946,11 +1954,12 @@ Publisering av en variant til det globale biblioteket skal være en eksplisitt b
 - **Kilde:** Kap. 9.3 (l. 420) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0143
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen kodevei publiserer en variant uten eksplisitt brukerkommando.
 - **Tester:**
   - integrasjon: ingen automatisk publisering
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 - **Merknad:** Jf. kap. 34 pkt. 25. P0 som prinsipp, selv om funksjonen er fase 8.
 
 #### REQ-0146 – Scener bytter ikke automatisk variant
@@ -2741,7 +2750,7 @@ Brukeren skal kunne generere lyd.
 - **Tester:**
   - integrasjon: lydgenerering via adapter med mock-leverandør
 - **Implementering:** src/adapters/ai/sound.functions.ts, src/app/library/GenerateSoundPanel.tsx, src/adapters/ai/speech.functions.ts, src/app/assembly/AiDialogueDialog.tsx, src/core/generation/speech.ts
-- **Merknad:** Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5.
+- **Merknad:** Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5. Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0204 – Koble lydfiler til produksjonsobjekter
 Lydfiler skal kunne knyttes til karakterer, replikker, scener, delsekvenser, hendelser og produksjoner.
@@ -3565,6 +3574,7 @@ Referansebilder eller andre støttede kontinuitetsmekanismer skal brukes når de
 - **Tester:**
   - integrasjon: adapter med referansestøtte mottar referanse fra forrige segment
 - **Implementering:** src/core/generation/video.ts, src/app/ai/last-frame.ts, src/app/assembly/SceneVideoSection.tsx, src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0264 – Sette segmenter sammen til én scene
 Etter generering skal segmentene kunne settes sammen til én scene.
@@ -3660,6 +3670,7 @@ Brukeren skal kunne koble egne API-kontoer der leverandøren støtter det.
 - **Tester:**
   - integrasjon: registrering og validering av nøkkel mot mock
 - **Implementering:** src/app/ai/ProvidersDialog.tsx, src/adapters/ai/provider-keys.functions.ts, db/migrations/0024_ai_providers.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0271 – Sikker nøkkelhåndtering
 API-nøkler skal håndteres sikkert.
@@ -5414,12 +5425,13 @@ Plakatmodulen skal kunne harmonisere karakterbilder til samme tegnestil, lyssett
 - **Kilde:** Kap. 26.7 (l. 1146-1147) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** PRESENT, PROMPT, PROVIDER · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0384; Prompt Orchestration og Provider Adapters (fase 5)
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt karakterbilder i ulike stiler, når brukeren harmoniserer, så produseres nye versjoner i felles tegnestil, lyssetting og fargepalett uten at originalene endres.
 - **Tester:**
   - integrasjon: harmonisering lager nye versjoner
   - manuell: visuell konsistens
+- **Implementering:** src/app/release/PosterInspector.tsx, src/app/release/PosterHarmonizeDialog.tsx
 
 #### REQ-0401 – Valg av kvalitetsnivå og modell for harmonisering
 Brukeren skal kunne velge ønsket kvalitetsnivå og modell for stilharmonisering.
@@ -5427,11 +5439,12 @@ Brukeren skal kunne velge ønsket kvalitetsnivå og modell for stilharmonisering
 - **Kilde:** Kap. 26.7 (l. 1148) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** QUALITYCOST, PRESENT · **Invarianter:** INV-12
 - **Avhengigheter:** REQ-0400
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt harmonisering, så kan brukeren velge modell og kvalitetsnivå før kjøring.
 - **Tester:**
   - integrasjon: valg sendes til Quality & Cost Engine
+- **Implementering:** src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx
 
 #### REQ-0402 – Publisere harmoniserte bilder til globalt bibliotek
 Vellykkede harmoniserte bilder skal kunne publiseres til det globale ressursbiblioteket som nye godkjente stilvarianter.
@@ -5439,12 +5452,13 @@ Vellykkede harmoniserte bilder skal kunne publiseres til det globale ressursbibl
 - **Kilde:** Kap. 26.7 (l. 1149) · **Opprinnelse:** mandat · **Type:** funksjonell · **Prioritet:** P3 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT, VERSION · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0400
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - Gitt et harmonisert bilde, når brukeren godkjenner og publiserer, så finnes det som ny stilvariant på karakteren i det globale biblioteket, og eksisterende varianter er uendret.
 - **Tester:**
   - integrasjon: ny stilvariant opprettes
   - dataintegritet: eksisterende varianter uendret
+- **Implementering:** src/app/library/HarmonizePanel.tsx
 
 #### REQ-0403 – Flere plakatvarianter for hovedfilm og spinoffer
 Brukeren skal kunne lage og lagre flere plakatvarianter, både for hovedfilm og spinoffer.
@@ -6600,7 +6614,7 @@ AI-generering skal være modellagnostisk og basert på presise, synlige og redig
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
 - **Implementering:** src/app/ai/SentPrompts.tsx, src/app/assembly/AiUpdateSection.tsx
-- **Merknad:** Oppsummerer kap. 17.1, 17.3, 19.2.
+- **Merknad:** Oppsummerer kap. 17.1, 17.3, 19.2. Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0490 – Prinsipp 12: Engelske AI-instruksjoner og prompter
 AI-systeminstruksjoner og genereringsprompter skal som hovedregel være på engelsk.
@@ -6776,11 +6790,12 @@ Harmoniserte karakterbilder skal kunne publiseres til globalt ressursbibliotek e
 
 - **Kilde:** Kap. 34 (l. 1536-1537) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT · **Invarianter:** INV-13
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et harmonisert bilde publiseres kun etter godkjenning, som ny versjonert stilvariant.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/generation/style-harmonize.ts, db/migrations/0068_global_withdrawals.sql
 - **Merknad:** Oppsummerer kap. 9.2, 9.3, 26.7. Linje 1536/1537 duplikat.
 
 #### REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
@@ -6963,6 +6978,7 @@ Animatic Studio skal bygges som en sammenhengende, profesjonell filmproduksjonsa
   - For ethvert medieklipp, lydspor og eksport kan man spore tilbake til scene-ID, produksjon og manusversjon.
 - **Tester:**
   - manuell: gjennomgang av arbeidsleveranser
+- **Implementering:** src/core/library/provenance.ts + db/migrations/0069_version_derivation.sql (versjonsopphav som ID), src/core/assembly/time-levels.ts#partKey (deler i filmen spores til scene og del-ID)
 - **Merknad:** Gjentar kap. 2 / INV-01 som overordnet mål.
 
 #### REQ-0519 – Overordnet mål: kreativ kontroll og teknisk automatisering
@@ -7694,7 +7710,7 @@ Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenester
 - **Tester:**
   - planlagt
 - **Implementering:** src/core/generation/providers.ts, src/app/ai/ProvidersDialog.tsx, src/adapters/ai/provider-keys.functions.ts
-- **Merknad:** Adapterne er ikke prøvd mot de ekte tjenestene (KI-153).
+- **Merknad:** Adapterne er ikke prøvd mot de ekte tjenestene (KI-153). Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-153 er åpen).
 
 #### REQ-0567 – Slett prosjekt (bare eier)
 Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet.
@@ -7930,6 +7946,7 @@ Brukeren skal kunne ta opp lyd direkte (mikrofon) i sceneeditoren. Opptaket blir
 - **Tester:**
   - planlagt
 - **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx
+- **Merknad:** Verifisert med falsk mikrofon, prøving med ekte opptak og utstyr gjenstår.
 
 #### REQ-0584 – «Bruk aktivt utsnitt» i kamerautsnitt
 Start- og sluttrammen i et kamerautsnitt skal kunne hente utsnittet kameraet har når scenen rett før slutter (knappen «Bruk aktivt utsnitt»), så overgangen mellom scenene henger sammen.
@@ -8044,6 +8061,7 @@ Løsningen skal vise en liste over de mest brukte AI-leverandørene. Brukeren ka
   - tests/unit/ai-video.test.ts
   - tests/unit/ai-sound.test.ts
 - **Implementering:** src/core/generation/providers.ts, src/core/generation/video.ts, src/core/generation/sound.ts, src/app/ai/ProvidersDialog.tsx, src/app/assembly/SceneVideoSection.tsx, src/app/library/GenerateSoundPanel.tsx, src/adapters/ai/key-vault.server.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/provider-keys.functions.ts, src/adapters/ai/ai-gate.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/sound.functions.ts, db/migrations/0024_ai_providers.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0591 – Arbeidsliste for oppdaterte ressurser
 Når en ressurs er oppdatert, skal brukeren kunne få opp en arbeidsliste over scenene som er berørt, og scene for scene velge om den nye versjonen skal brukes i stedet for den gamle.
@@ -8304,6 +8322,7 @@ Replikker leses inn med en modell som kan norsk (Eleven v3), og språket settes 
 - **Tester:**
   - tests/unit/ai-speech.test.ts
 - **Implementering:** src/core/generation/speech.ts, src/adapters/ai/speech.functions.ts, src/adapters/ai/providers.server.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0610 – Bredere lagnavn i tidslinjen
 Skillet mellom lagnavnene og tidslinjen i sceneeditoren kan dras, så lange lagnavn kan leses. Bredden huskes i nettleseren; dobbeltklikk gir standard.
@@ -8483,7 +8502,7 @@ I stor visning kan brukeren velge modell og hvilke vinkler som skal lages av sam
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROMPT, PROVIDER, LIBRARY
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arket ber om vinklene i rekkefølge, samme høyde og grunnlinje, nøytral positur.
   - Hver vinkel får identitetsbildet først og tidligere vinkler som referanse.
@@ -8491,6 +8510,7 @@ I stor visning kan brukeren velge modell og hvilke vinkler som skal lages av sam
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/ImageAiPanels.tsx, src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/adapters/ai/generate-image.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0624 – Promptmotor per modellfamilie
 Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen modellen forstår best: fortellende avsnitt for Nano Banana og GPT Image (referanser med roller, positive formuleringer), kort og presis med identiteten først og egen negativ beskrivelse for Seedream, Qwen og FLUX. Ingen filmtittel, ingen replikker, nøytralt lys for figurdesign, farger med navn og kode, flat hvit bakgrunn (frilegges etterpå) når modellen ikke kan lage gjennomsiktighet. En norsk oppsummering vises over den engelske beskrivelsen.
@@ -8512,20 +8532,21 @@ Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen mode
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROMPT, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Analysen vises med avkrysning per del; valgte deler havner i riktige felt.
 - **Tester:**
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/core/generation/style-analysis.ts, src/adapters/ai/write-prompt.functions.ts, src/app/projects/StyleGuideSection.tsx
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0626 – Visuelt faktaark per ressurs
 Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, hår, klær, farger, kjennetegn), ett per linje. Et utkast kan lages fra manuset og forsidebildet med AI (bekreftes), rettes og lagres (assets.visual_brief, migrasjon 0030). Faktaarket brukes i bildebeskrivelsene i stedet for manusutdrag.
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** LIBRARY, PROMPT
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Faktaarket lagres, angres og leses tilbake likt.
   - Beskrivelsen bruker faktaarket og tar ikke med manusutdrag.
@@ -8534,26 +8555,28 @@ Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, h�
   - tests/db/run-db-tests.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/VisualBriefEditor.tsx, src/core/generation/style-analysis.ts, src/core/commands/apply.ts, db/migrations/0030_views_visual_brief.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0627 – Seedream 4.5 og Qwen-Image-Edit
 Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD per bilde) og Qwen-Image-Edit (endrer et bilde, negativ beskrivelse, ca. 0,03 USD per megapiksel). Qwen krever et forbilde; det sjekkes før noe betales.
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Seedream sendes til /edit med image_urls når forbilder finnes.
   - Qwen uten forbilde avvises før kallet.
 - **Tester:**
   - tests/unit/funn-2026-10-14.test.ts
 - **Implementering:** src/core/generation/providers.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0628 – Oppskalering
 Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 USD per megapiksel) eller Clarity (med AI-detaljer, ca. 0,03 USD per megapiksel). Prisen regnes fra størrelsen på resultatet og vises før «Ja, oppskaler»; resultatet blir en ny versjon (med samme vinkel).
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER, LIBRARY
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Anslaget følger megapikslene i resultatet.
   - Oppskalering uten tilkoblet fal.ai forklares; den innebygde tjenesten kan ikke oppskalere.
@@ -8561,6 +8584,7 @@ Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/ImageAiPanels.tsx, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts, src/core/generation/providers.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0629 – Tjenesten på norsk og engelsk
 Brukeren kan veksle mellom norsk og engelsk som språk i tjenesten. Valget gjøres på hovedsiden (prosjektlisten), huskes og gjelder alle tekster brukeren ser: knapper, menyer, dialoger, meldinger, feilmeldinger, hjelpetekster, verktøytips og skjermlesertekster, også datoer og tall. Norsk er standard. Brukerens eget innhold (manus, notater, navn) oversettes ikke.
@@ -8624,7 +8648,7 @@ En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering.
 - **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI, PROVIDER, COMPOSE
 - **Avhengigheter:** REQ-0180; REQ-0243
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Knappen finnes i sceneeditoren og åpner dialogen for scenen i fokus.
   - Det som sendes, er 2D-scenen også når en annen versjon vises i filmen.
@@ -8632,6 +8656,7 @@ En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering.
   - visuell: knapp, dialog og sending med mocket leverandør
   - enhet: forespørselen til fal.ai og Runway
 - **Implementering:** src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/video-followup.server.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0634 – Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser
 Beskrivelsen bygges automatisk av filmens visuelle stil, figurene i scenen (beskrivelse, visuelt faktaark og referansebilde for så mange som modellen tar imot, karakterer først), manusets handling og replikker i biten (bare for spill) og scenens egne instrukser. Den vises før sending. Er modellens grense for lengde nådd, tas stilnotater og manusdetaljer bort først; instruksene beholdes.
@@ -8712,11 +8737,14 @@ Grensesnittet nevner ikke Lovable (heller ikke i meldinger om databaseoppdaterin
 - **Kilde:** Beslutning DEC-0084 · **Opprinnelse:** brukerbeslutning · **Type:** ux · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI
 - **Avhengigheter:** REQ-0629
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen brukervendt tekst inneholder «Lovable».
 - **Tester:**
-  - enhet: søk i brukervendt tekst
+  - tests/unit/app-brand.test.ts
+  - tests/visual/backlog-b2-ui.mjs
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/gateway.ts, src/app/shell/SchemaBanner.tsx, src/core/i18n/catalog.gen.ts, src/core/i18n/authored.json (r6-brand.*), scripts/i18n/release-check.mjs (PLATFORM_NAME stopper bygget)
+- **Merknad:** Appstyrte tekster og katalog uten Lovable; plattform-eide integrasjoner og auth-e-postoppsett er urørt og ikke fullstendig verifisert.
 
 #### REQ-0640 – Den globale beskrivelsen er én redigerbar tekst for hele prosjektet
 Filmens visuelle stil settes sammen til én tekst som vises i sin helhet. Brukeren kan åpne den for redigering med tydelig melding om at endringen gjelder hele prosjektet. Den redigerte teksten er den ene versjonen og brukes av all AI-generering; «Tilbake til feltene» setter den sammen av feltene igjen.
@@ -8774,6 +8802,7 @@ Figurkort, bakgrunn og objekter i scenen sendes som referansebilder. Overskrider
 - **Tester:**
   - tests/unit/scene-to-video.test.ts
 - **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/video.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0644 – Kilden for AI-videoen kan være 2D-scenen, en AI-versjon eller en opplastet video
 Brukeren velger hva som sendes: 2D-scenen, en tidligere AI-video av scenen eller en opplastet/annen versjon. Videoen er lik det avspillingen viser, uten undertekster.
@@ -8854,6 +8883,7 @@ Leverandøren spørres alltid om videoen før en jobb regnes som tapt. En videoj
 - **Tester:**
   - tests/unit/verifisering3-ai-server.test.ts
 - **Implementering:** src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts, src/app/ai/RefetchVideoButton.tsx, src/core/generation/cost.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0650 – Adminside bare for administrator; oystein@gutu.no er fast administrator
 Adminsiden viser alle brukerne med navn, e-post, når kontoen ble laget, sist aktiv, status, prosjektene (bare navn og rolle) og AI-forbruk. Tilgangen kontrolleres på serveren. oystein@gutu.no er fast administrator og kan aldri blokkeres, slettes eller nedgraderes. Administrator kan gjøre andre til administrator. Administrator ser aldri innholdet i prosjektene.
@@ -9278,7 +9308,7 @@ En videofil kan være inntil 500 MB i nettversjonen (lagringen i Lovable Cloud).
   - Notat om desktopversjonen står i TODO og kildekoden.
 - **Tester:**
   - tests/unit/mobile-import.test.ts
-- **Implementering:** src/core/mobile/index.ts
+- **Implementering:** src/core/mobile/index.ts (videoMaxBytes/APP_TARGET: grensen bare i nettversjonen)
 
 #### REQ-0680 – Opplasting uten duplikater
 Nye forsøk etter feil eller brutt forbindelse gir ikke duplikater (hver fil har en ID fra mobilen som serveren gjenkjenner). Flere samtidige opplastinger håndteres, og store filer lastes direkte til lagringen uten å gå gjennom appens server.
@@ -9514,7 +9544,7 @@ Forhåndsavspilling og eksport bruker samme komposisjonsbeskrivelse og samme ber
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportert lyd er lik forhåndsavspillingen (test på samples).
 - **Tester:**
@@ -9536,6 +9566,7 @@ Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med 
   - tests/db/run-db-tests.ts
   - tests/visual/dec0095-word-alignment-ui.mjs
 - **Implementering:** src/core/audio/alignment.ts, src/core/commands/apply.ts, db/migrations/0037_word_alignment.sql, src/adapters/ai/alignment.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0699 – Valg av analysetjeneste der brukeren er
 Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales.
@@ -9743,3 +9774,2867 @@ Når en ressurs legges inn i en scene, får laget 50 % av lerretets høyde eller
 - **Tester:**
   - tests/unit/layer-fit.test.ts
 - **Implementering:** src/core/composition/index.ts
+
+#### REQ-0715 – Munnformer i uforanderlige rigg-versjoner
+Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Rhubarb A–H og X tegnes eller importeres, forhåndsvises med replikklyd og plasseres relativt til CA3-ankerpunktet. Andre scener beholder sin festede versjon.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/app/scene-editor/animation/MouthShapeEditor.tsx
+
+#### REQ-0716 – Tegneark per rigg-versjon
+Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ett PNG-ark med alle deler, munnformer og øyne kan eksporteres og importeres i et lokalt utkast. Ingenting tas i bruk før Lagre.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/engine/export/mouth-sheet.ts
+
+#### REQ-0717 – Godkjent QR-import av rigg-deler
+Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Mobilbroen mottar kun bilder til rigg-del eller munnform. Mobilen viser referanse, zoom, rotasjon, flytting og Tilpass. Bildet tas i bruk bare etter eksplisitt godkjenning og samlet revisjonskontrollert lagring.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** db/migrations/0055_animation_parts_mobile.sql
+
+#### REQ-0718 – Vektormasker og ikke-destruktive bildejusteringer
+Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Legg til, trekk fra og myk kant lagres som vektordata. Lysstyrke, kontrast, metning, fargetone og opasitet lagres i rigg-versjonen. Hele oppsettet er begrenset til 512 KiB; originaler endres ikke.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/core/animation/parts.ts
+
+#### REQ-0719 – Toppjustert forhåndsvisning og sammenhengende animasjonsspor
+Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje.
+
+- **Kilde:** Beslutning B-058 / CA4-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Forhåndsvisningen toppjusteres. Alle bildespor har miniatyr eller typeikon. Dialog og lyd følger rett under bildesporene i en scrollbar tidslinje.
+- **Tester:**
+  - tests/unit/ca4-parts.test.ts
+  - tests/visual/ca4-mouth-mask.mjs
+- **Implementering:** src/app/scene-editor/animation/DialogueTrack.tsx
+
+#### REQ-0720 – Automatisk leppesynk per replikk med brukerens bekreftelse
+Leppesynk analyseres i nettleseren (Rhubarb WASM, regelbasert reserve), lagres per replikk og take med kilde, versjon og lydhash, kan slås av/på per replikk, og ny eller endret synk vises som forslag med «Bruk»/«Forkast». Manuelle overstyringer overlever ny generering.
+
+- **Kilde:** Beslutning B-058 / CA5-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0719
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Analyse med Rhubarb (fonetisk) som WASM på klienten; regelbasert reserve ved feil.
+  - Resultatet lagres i lipsync_results per replikk og take, med kilde, algoritmeversjon og lydhash.
+  - Av/på per replikk og «generer på nytt» per replikk; forslag krever «Bruk».
+  - Manuelle frame-overstyringer lagres og overlever ny generering.
+- **Tester:**
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca5-lipsync.mjs
+- **Implementering:** src/core/animation/lipsync.ts, src/core/animation/behavior-commands.ts, src/engine/lipsync/analyze.ts, src/app/scene-editor/animation/MouthTrack.tsx
+
+#### REQ-0721 – Blinking, manuelle blink og navngitte animasjonsmønstre med seed
+Blinking per øye med tilfeldig intervall styrt av seed, manuelle blink og halvlukkede perioder, og navngitte mønstre (f.eks. «nervøs blinking») som gjenbrukes i prosjektet. Seed per bruk gjør resultatet deterministisk ved eksport.
+
+- **Kilde:** Beslutning B-058 / CA6-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0720
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Blinking per øye med seed-styrt intervall; manuelle blink og halvlukket.
+  - Navngitte mønstre lagres i animation_patterns og gjenbrukes per bruk.
+  - Samme seed gir samme hendelser på tvers av oppfriskning og maskiner.
+- **Tester:**
+  - tests/unit/ca5-ca6.test.ts
+  - tests/visual/ca6-blink-patterns.mjs
+- **Implementering:** src/core/animation/patterns.ts, src/core/animation/behavior-commands.ts, src/app/scene-editor/animation/BlinkPanel.tsx, src/app/scene-editor/animation/PatternStudio.tsx
+
+#### REQ-0722 – Rigger og mønstre i det globale biblioteket, arvet karakteratferd og valg av oppdatering
+Rigg-oppsett med mønstre kan publiseres som låste versjoner i arbeidsgruppens globale bibliotek og tas inn i andre prosjekter; nyere globale versjoner tas inn bare etter bekreftelse. Karakteratferd (blink, pust, tics, standardmønstre) lagres på karakterens oppsett og arves av alle bruk; lokale overstyringer vises tydelig. Ved endring vises «brukes i N andre scener» med hopp, og brukeren velger «bare her» eller «oppdater alle». Versjonshistorikk med sammenligning og «gjenopprett som ny versjon»; ingenting slettes.
+
+- **Kilde:** Beslutning B-058 / CA7-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-13, INV-C1
+- **Avhengigheter:** REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Publisering lager en ny, uforanderlig versjon i global_animation_specs (migrasjon 0057); bare eier og redaktør i gruppen kan publisere.
+  - Bruk i prosjekt kopierer oppsettet inn som ny prosjektversjon med opprinnelse (låst versjon); nyere global versjon krever bekreftelse.
+  - Effektiv atferd = karakterens standard med scenens lokale verdier over; lokale overstyringer merkes og kan tilbakestilles.
+  - «Brukes i N andre scener» med liste og hopp; «bare her» og «oppdater alle» er én kommando (AdoptRigVersion) med angring; ingenting oppdateres automatisk.
+  - Historikk med sammenligning og «gjenopprett som ny versjon»; ingen versjoner slettes.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca7-global.mjs
+- **Implementering:** src/core/animation/character.ts, src/core/animation/global-rig.ts, src/core/animation/rig-commands.ts, src/adapters/browser/global-library.ts, src/app/scene-editor/animation/CharacterPanel.tsx, db/migrations/0057_global_animation.sql
+
+#### REQ-0723 – Rytmeverktøyet (oransje) med forhåndsvisning og én angring
+Rytmeverktøyet (Director's Rhythm Engine) er oransje markert og gjenbruker RetimeScene: takt, pause og vekt per replikk, skjæringspunkt og forskyvning samlet eller proporsjonalt. Endringen forhåndsvises med ny scenetid og mellomrom før «Bruk», og «Bruk» er én angring. Ingenting lagres før «Bruk».
+
+- **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, UI · **Invarianter:** INV-C1
+- **Avhengigheter:** REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - planRhythm bygger på planRetime (metode «pauses») med eksplisitte endringer per mellomrom; mellomrom går aldri under null.
+  - Mellomrom før skjæringspunktet endres ikke.
+  - «Bruk» kjører én RetimeScene; «Forkast» lagrer ingenting.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/rhythm.ts, src/core/composition/retime.ts, src/app/scene-editor/animation/RhythmPanel.tsx
+
+#### REQ-0724 – Eksportvalg per karakterlag: innhold og innbrent eller eget lag
+Per lag velges om munnformer, blink, overlegg, masker og justeringer tas med, og om karakterdelene brennes inn eller eksporteres som eget lag. Valgene brukes i den felles tegnelisten, så forhåndsvisning og eksport er like; «eget lag» gir en egen fil ved eksport. Ingenting slettes.
+
+- **Kilde:** Beslutning B-058 / CA8-oppdrag 2026-10-19 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, EXPORT, UI · **Invarianter:** INV-C1
+- **Avhengigheter:** REQ-0720; REQ-0721
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksportvalgene lagres i animasjonsbrukens atferd via SetAnimationBehavior og valideres.
+  - evaluateCharacterFrame legger rigg-delene i tegnelisten etter valgene; samme tilstand gir samme bilde.
+  - Med «eget lag» utelates delene fra hovedfilmen og eksporteres som egen fil.
+- **Tester:**
+  - tests/unit/ca7-ca8.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/evaluate.ts, src/core/animation/rig.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/app/assembly/ExportAnimaticDialog.tsx, src/app/scene-editor/animation/CharacterPanel.tsx
+
+#### REQ-0725 – Tekst-AI med egne nøkler og modellvalg
+T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** PROVIDER
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegruppe; administratorens modellkontroll gjelder.
+- **Tester:**
+  - tests/unit/text-providers.test.ts
+  - tests/unit/text-adapters.test.ts
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/text.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
+
+#### REQ-0726 – Tekst-AI: autentisering, kvoter og trygge logger
+Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves. Nøkler, prompter og svar logges ikke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves. Nøkler, prompter og svar logges ikke.
+- **Tester:**
+  - tests/unit/security-review.test.ts
+  - tests/unit/service-ai-quota.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/adapters/ai/text.functions.ts, src/adapters/ai/text-run.server.ts
+
+#### REQ-0727 – Story Lab: profil og karakterbue
+Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profilfelt og scenestadier lagres med validerte kommandoer og ordinær angring. profileAt følger fortellingstid.
+- **Tester:**
+  - tests/unit/storylab-commands.test.ts
+  - tests/unit/storylab-knowledge.test.ts
+- **Implementering:** src/core/storylab/profile.ts, src/core/storylab/stages.ts
+
+#### REQ-0728 – Story Lab: kunnskapsgrenser
+knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates fra karakterprompter.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - knowledgeAt inkluderer bare fakta karakteren kjenner på valgt fortellingstid; ukjente hemmeligheter og senere hendelser utelates fra karakterprompter.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-prompts.test.ts
+- **Implementering:** src/core/storylab/facts.ts, src/core/storylab/prompts.ts
+
+#### REQ-0729 – Story Lab: turer, regi og forgrening
+Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler kan forgrenes.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Samme taler kommer aldri tre ganger på rad. Standard åtte turer før pause; regi har next, scene eller session-gyldighet, og samtaler kan forgrenes.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-replay.test.ts
+- **Implementering:** src/core/storylab/engine.ts, src/core/storylab/replay.ts
+
+#### REQ-0730 – Story Lab: økter og arbeidsflater
+Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av turer.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Karakterer, grupper, scenelab, intervju og canvas gjenbruker profiler og økter med lagret kontekst og kan fortsettes uten tap av turer.
+- **Tester:**
+  - tests/visual/storylab-ui.mjs
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+- **Implementering:** src/app/storylab/StoryLabWorkspace.tsx, src/adapters/storylab/sessions.functions.ts
+
+#### REQ-0731 – Story Lab: godkjent overføring og angring
+Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende kommandoer og samlet angring.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SCRIPT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Forslag kommer aldri automatisk inn i manus eller profil. Brukeren får forhåndsvisning og bekrefter; overføring bruker eksisterende kommandoer og samlet angring.
+- **Tester:**
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+- **Implementering:** src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx
+
+#### REQ-0732 – Story Lab: analysespråk og manusets språk
+Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Analyse og replikksjekk følger UI-språket; rolle-replikker følger manusets språk, foreløpig nb.
+- **Tester:**
+  - tests/unit/storylab-scene-view.test.tsx
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/app/storylab/ConversationView.tsx
+
+#### REQ-0733 – CA1: integrert animasjonsfane og framepresis navigasjon
+Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Scene og Animasjon bruker samme scenedata; tidskode, én-frame-steg, avspilling, navigator og område endrer ikke scenetransformasjonen.
+- **Tester:**
+  - tests/unit/ca-time-format.test.ts
+  - tests/visual/ca1-tab.mjs
+- **Implementering:** src/app/scene-editor/animation/AnimationWorkspace.tsx, src/core/animation/time-format.ts
+
+#### REQ-0734 – CA2: scene-pinnede bildevarianter og lydspor
+Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Animasjonen bruker eksisterende lag og bildesegmenter, variante- og versjonsetiketter, valgt lyd og felles sceneklokke.
+- **Tester:**
+  - tests/unit/ca-tracks.test.ts
+  - tests/visual/ca2-variants.mjs
+- **Implementering:** src/core/animation/tracks.ts, src/app/scene-editor/animation/VariantTracks.tsx
+
+#### REQ-0735 – CA3: uforanderlig rigg, ankerpunkter og ikke-destruktiv bruk
+Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Riggversjoner, ansiktsankre og scene-av/på går gjennom kommandoer med invers; uten rigg er hele framen identisk med tidligere rendering.
+- **Tester:**
+  - tests/unit/ca-rig.test.ts
+  - tests/visual/ca3-rig.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/animation/rig.ts, src/core/animation/evaluate.ts
+
+#### REQ-0736 – U5: konsistent presentasjon og fungerende miniatyrer
+Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon også ved lasting og feil.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Skjermene bruker felles tetthet, tokens, tilgjengelig fokus og tilstander. Miniatyrer viser faktisk bilde, ellers initial og typeikon også ved lasting og feil.
+- **Tester:**
+  - tests/visual/u5-screens.mjs
+- **Implementering:** src/app/library/AssetThumb.tsx, src/app/shell/screen-states.tsx
+
+#### REQ-0737 – CA8/U5: rytmedrag og beskyttede tidsområder
+Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** TIMELINE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Cmd/Ctrl-drag planlegger rytmeendringen via RetimeScene med én angring; beskyttede områder flyttes aldri.
+- **Tester:**
+  - tests/unit/u5-rhythm-drag.test.ts
+  - tests/visual/ca8-rhythm-export.mjs
+- **Implementering:** src/core/animation/rhythm.ts, src/app/scene-editor/animation/RhythmDrag.tsx
+
+#### REQ-0738 – Ø-11: invitasjoner og klientens minste lesetilgang
+Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter er ikke lesbare for klienter. Story Lab har RLS.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Prosjekt- og gruppeinvitasjoner krever riktig innlogget e-post, trimmet og case-insensitivt, med utløp og engangsbruk. AI-hemmeligheter er ikke lesbare for klienter. Story Lab har RLS.
+- **Tester:**
+  - tests/db/run-db-tests.ts
+  - tests/unit/security-review.test.ts
+- **Implementering:** db/migrations/0058_security_review.sql, src/adapters/account/ai-models.server.ts
+
+#### REQ-0739 – Ø-11: film- og mobilopplastingsvern
+Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten overskriving.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** sikkerhet · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Filmdelelenker har sikre token, utløp og tilbaketrekking. Mobilopplasting validerer token, aktiv økt, størrelse og filtype uten overskriving.
+- **Tester:**
+  - tests/unit/security-review.test.ts
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/adapters/share/film-share.functions.ts, src/adapters/mobile/mobile.functions.ts
+
+#### REQ-0740 – Fra filmidé til Story Lab-canvas
+Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset. Godkjente forslag overføres som redigerbart prosjektinnhold.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Brukeren starter med en kort filmidé. Adaptive spørsmål utvikler plot, karakterer og miljøer på skrivecanvaset. Godkjente forslag overføres som redigerbart prosjektinnhold.
+- **Tester:**
+  - tests/unit/storylab-interview.test.ts
+  - tests/unit/storylab-canvas.test.ts
+  - tests/visual/storylab-canvas-ui.mjs
+- **Implementering:** src/app/storylab/new-project-idea.ts, src/app/storylab/InterviewView.tsx, src/core/storylab/canvas-transfer.ts
+- **Merknad:** Deldekning: featuretester; samlet idé → adaptive spørsmål → canvas → godkjent overføring er ikke verifisert ende til ende.
+
+#### REQ-0741 – Psykologisk karaktereditor og bevart arbeid
+Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake til canvaset uten å miste arbeid.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Maja åpnes fra karakteroversikten. Profilen kan åpnes og redigeres, og egenskapene bevares. Brukeren går tilbake til canvaset uten å miste arbeid.
+- **Tester:**
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/CharacterWorkspace.tsx, src/core/storylab/profile.ts
+- **Merknad:** Profil og gjenåpning har tester; samlet retur til canvas med lagret profil trenger eksplisitt akseptansetest.
+
+#### REQ-0742 – Individuell samtale ved valgt tidspunkt
+Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Maja svarer ut fra profil og valgt fortellingstid. Brukeren kan bytte til analysemodus.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-replay.test.ts
+  - tests/visual/storylab-ui.mjs
+- **Implementering:** src/app/storylab/ConversationView.tsx, src/core/storylab/prompts.ts
+- **Merknad:** Dekning for kunnskap, modus og samtale; hele kapittelreisen er ikke samlet verifisert.
+
+#### REQ-0743 – Gruppesamtale med regi og pause
+Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause, stille spørsmål og endre instrukser.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Brukeren velger Maja og Ola og beskriver en situasjon. Karakterene improviserer. Regissøren kan stoppe, pause, stille spørsmål og endre instrukser.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-view.test.tsx
+  - tests/visual/storylab-group-ui.mjs
+- **Implementering:** src/app/storylab/GroupConversationView.tsx, src/core/storylab/engine.ts
+- **Merknad:** Motoren tester pause og regi. Full akseptansereise er ikke samlet kontrollert.
+
+#### REQ-0744 – Midlertidige tilstander endrer ikke profilen
+Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Regi som «Maja er bakfull» påvirker improvisasjonen uten å endre den permanente profilen.
+- **Tester:**
+  - tests/unit/storylab-engine.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+- **Implementering:** src/core/storylab/engine.ts, src/core/storylab/prompts.ts
+- **Merknad:** Regi har next/scene/session-levetid; konkret bakfull → uendret permanent profil-akseptanse er ikke påvist.
+
+#### REQ-0745 – Kunnskapsgrenser per deltaker
+Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid. Andres hemmeligheter lekker aldri.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Før en avsløring kjenner karakterene ikke avsløringen. Kunnskap skilles per deltaker og følger fortellingstid. Andres hemmeligheter lekker aldri.
+- **Tester:**
+  - tests/unit/storylab-knowledge.test.ts
+  - tests/unit/storylab-group-prompts.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+- **Implementering:** src/core/storylab/facts.ts, src/core/storylab/prompts.ts
+- **Merknad:** Direkte tester av før/etter avsløring, knownBy, tilbakeblikk og utelating av andres hemmeligheter. UI-akseptanse er separat.
+
+#### REQ-0746 – Rådgivende analyse av eksisterende scene
+Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Dialog og handling analyseres mot profiler og kontekst. Forslag forklares; originalen endres ikke automatisk.
+- **Tester:**
+  - tests/unit/storylab-scene-batch.test.ts
+  - tests/unit/storylab-line-check.test.ts
+  - tests/visual/storylab-scene-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/core/storylab/line-check.ts
+- **Merknad:** Analyse og forslag har tester; samlet kapittelreise er ikke kontrollert.
+
+#### REQ-0747 – Alternative improvisasjoner og sammenligning
+To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - To improvisasjoner med ulike instrukser kan lagres og sammenlignes. Brukeren velger elementer fra begge.
+- **Tester:**
+  - tests/unit/storylab-suggestions-view.test.tsx
+  - tests/visual/storylab-scene-ui.mjs
+  - tests/visual/storylab-suggestions-ui.mjs
+- **Implementering:** src/app/storylab/SceneLab.tsx, src/app/storylab/SuggestionsPanel.tsx
+- **Merknad:** A/B/C sammenlignes i scenelaben; lagring/sammenligning av to gruppeimprovisasjoner er ikke fullstendig påvist.
+
+#### REQ-0748 – Godkjent overføring til redigerbart manus
+Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk. Overføring bruker vanlige kommandoer og én angregruppe.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Et utdrag blir et redigerbart manusforslag. Brukeren godkjenner før overføring; ingenting overskrives automatisk. Overføring bruker vanlige kommandoer og én angregruppe.
+- **Tester:**
+  - tests/unit/storylab-transfer.test.ts
+  - tests/unit/storylab-transfer-undo.test.tsx
+  - tests/visual/storylab-suggestions-ui.mjs
+- **Implementering:** src/core/storylab/transfer.ts, src/app/storylab/SuggestionPreview.tsx
+- **Merknad:** Direkte tester av EditBlockText/InsertBlock, bevart original og samlet angring; samlet kapittelreise er separat.
+
+#### REQ-0749 – VennTing-teknologien er en selvstendig kopi
+Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering. VennTing røres ikke.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Under arbeid
+- **Akseptansekriterier:**
+  - Integrasjonsplanen bevarer VennTing-data. Ø-9 presiserer kopi inne i Animatic Studio, ikke levende synkronisering. VennTing røres ikke.
+- **Tester:**
+  - tests/unit/storylab-prompts.test.ts
+- **Implementering:** src/core/storylab/prompts.ts
+- **Merknad:** Kopiert promptmodul påvist; ingen ny tilgang til VennTing. Data-bevaring i VennTing er ikke testbar i dette prosjektet.
+
+#### REQ-0750 – DV M1: enkeltklikk på tidsplassert replikk flytter avspillingshodet
+enkeltklikk på tidsplassert replikk flytter avspillingshodet
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - enkeltklikk på tidsplassert replikk flytter avspillingshodet
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0751 – DV M2: hovedvisningen oppdateres
+hovedvisningen oppdateres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - hovedvisningen oppdateres
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0752 – DV M3: dobbeltklikk åpner riktig dialogeditor
+dobbeltklikk åpner riktig dialogeditor
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - dobbeltklikk åpner riktig dialogeditor
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0753 – DV M4: riktig replikk forhåndsvalgt
+riktig replikk forhåndsvalgt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - riktig replikk forhåndsvalgt
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0754 – DV M5: manglende timing uten falsk presisjon
+manglende timing uten falsk presisjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - manglende timing uten falsk presisjon
+- **Tester:**
+  - tests/visual/dv1-script-nav.mjs
+  - tests/unit/dialogue-navigation.test.ts
+- **Implementering:** src/core/dialogue/navigation.ts, src/app/scene-editor/SceneScriptPanel.tsx
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §126. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0755 – DV D1: aktiv replikk lesbar under opptak
+aktiv replikk lesbar under opptak
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - aktiv replikk lesbar under opptak
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0756 – DV D2: kontekst i ca. 70 % styrke
+kontekst i ca. 70 % styrke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - kontekst i ca. 70 % styrke
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0757 – DV D3: miniatyr når den finnes
+miniatyr når den finnes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - miniatyr når den finnes
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0758 – DV D4: navn tydelig
+navn tydelig
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - navn tydelig
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0759 – DV D5: velge annen replikk i nedtrekkslisten
+velge annen replikk i nedtrekkslisten
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - velge annen replikk i nedtrekkslisten
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0760 – DV D6: sceneavspilling under opptak virker
+sceneavspilling under opptak virker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sceneavspilling under opptak virker
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Eldre verifisering4-test mistet falsk mikrofon ved nettleser-reserve; ekte opptak må fortsatt kontrolleres.
+
+#### REQ-0761 – DV D7: flere takes uten overskriving
+flere takes uten overskriving
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - flere takes uten overskriving
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0762 – DV D8: eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - eksisterende lydprofil (volumkurver, hastighet, bølgeform) virker
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §127. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0763 – DV L1: ett felles spor per karakter
+ett felles spor per karakter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ett felles spor per karakter
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0764 – DV L2: spornavn er karakternavn
+spornavn er karakternavn
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - spornavn er karakternavn
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0765 – DV L3: replikker er separate segmenter
+replikker er separate segmenter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - replikker er separate segmenter
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0766 – DV L4: versjoner stablet i dialogeditoren
+versjoner stablet i dialogeditoren
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - versjoner stablet i dialogeditoren
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0767 – DV L5: forhåndslytting
+forhåndslytting
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - forhåndslytting
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0768 – DV L6: bare aktiv versjon spilles i scenen
+bare aktiv versjon spilles i scenen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - bare aktiv versjon spilles i scenen
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0769 – DV L7: tidligere versjoner bevares
+tidligere versjoner bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - tidligere versjoner bevares
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0770 – DV L8: volumkurver, klipping, hastighet og fades bevares ved bytte
+volumkurver, klipping, hastighet og fades bevares ved bytte
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - volumkurver, klipping, hastighet og fades bevares ved bytte
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0771 – DV L9: gjenvalgt versjon arver gjeldende plassering
+gjenvalgt versjon arver gjeldende plassering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - gjenvalgt versjon arver gjeldende plassering
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0772 – DV L10: ulik varighet uten utilsiktet overlapp
+ulik varighet uten utilsiktet overlapp
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ulik varighet uten utilsiktet overlapp
+- **Tester:**
+  - tests/visual/dv3-dialogue-editor.mjs
+  - tests/unit/dv3-dv4.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+- **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx, src/app/scene-editor/DialogueVersions.tsx, src/core/dialogue/characters.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §129. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0773 – DV V1: «Generer lydfil»
+«Generer lydfil»
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Generer lydfil»
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0774 – DV V2: standardstemme forhåndsvalgt
+standardstemme forhåndsvalgt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - standardstemme forhåndsvalgt
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0775 – DV V3: lokale overstyringer
+lokale overstyringer
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - lokale overstyringer
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0776 – DV V4: nye genereringer som separate versjoner
+nye genereringer som separate versjoner
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - nye genereringer som separate versjoner
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0777 – DV V5: Lyd / Stemme-seksjon per karakter
+Lyd / Stemme-seksjon per karakter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - Lyd / Stemme-seksjon per karakter
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0778 – DV V6: velge ElevenLabs-stemme når integrasjonen finnes
+velge ElevenLabs-stemme når integrasjonen finnes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - velge ElevenLabs-stemme når integrasjonen finnes
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon. Kontoens eksisterende stemmer/modeller hentes. Opprettelse av ny egendefinert stemme skjer hos ElevenLabs, som håndhever konto og samtykke; ingen innebygd kloning.
+
+#### REQ-0779 – DV V7: endret standardstemme endrer ikke tidligere filer
+endret standardstemme endrer ikke tidligere filer
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endret standardstemme endrer ikke tidligere filer
+- **Tester:**
+  - tests/visual/dv4-voice.mjs
+  - tests/unit/dv4-speech-server.test.ts
+  - tests/unit/dv3-dv4.test.ts
+- **Implementering:** src/app/library/CharacterVoiceSection.tsx, src/app/scene-editor/GenerateDialogue.tsx, src/adapters/ai/speech.functions.ts
+- **Merknad:** Kilde: Øysteins DV1/DV2-godkjenning og DV3/DV4-oppdrag 19.10.2026; komprimert DV-spesifikasjon §128. DEC-0099 er konsolideringsreferansen; originalkilden er brukeroppdraget, ikke eldre Story Lab-punkter. Ingen betalte testkall. Status Implementert innebærer ikke full Cloud-verifikasjon.
+
+#### REQ-0780 – DV G1: handlingen i Asset Library gjelder bare aktivt prosjekt
+handlingen i Asset Library gjelder bare aktivt prosjekt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - handlingen i Asset Library gjelder bare aktivt prosjekt
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0781 – DV G2: dekning viser scener som mangler tale helt eller delvis
+dekning viser scener som mangler tale helt eller delvis
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - dekning viser scener som mangler tale helt eller delvis
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0782 – DV G3: brukeren velger scener og replikker
+brukeren velger scener og replikker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger scener og replikker
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0783 – DV G4: ordrett advarsel ved eksisterende lyd
+ordrett advarsel ved eksisterende lyd
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ordrett advarsel ved eksisterende lyd
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0784 – DV G5: ny generering blir aktiv versjon
+ny generering blir aktiv versjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ny generering blir aktiv versjon
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0785 – DV G6: ingen eksisterende lyd eller redigering slettes
+ingen eksisterende lyd eller redigering slettes
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ingen eksisterende lyd eller redigering slettes
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0786 – DV G7: feil lar tidligere aktiv versjon stå
+feil lar tidligere aktiv versjon stå
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - feil lar tidligere aktiv versjon stå
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0787 – DV G8: kostnadsestimat og eksplisitt bekreftelse før betalte kall
+kostnadsestimat og eksplisitt bekreftelse før betalte kall
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - kostnadsestimat og eksplisitt bekreftelse før betalte kall
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0788 – DV G9: usikkert tidsestimat når forsvarlig
+usikkert tidsestimat når forsvarlig
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - usikkert tidsestimat når forsvarlig
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0789 – DV G10: varig fremdrift per replikk med gjenopptak
+varig fremdrift per replikk med gjenopptak
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - varig fremdrift per replikk med gjenopptak
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0790 – DV G11: automatisk plassering i riktig replikk og scene
+automatisk plassering i riktig replikk og scene
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - automatisk plassering i riktig replikk og scene
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0791 – DV G12: minimal gyldig 2D-scene opprettes ved behov
+minimal gyldig 2D-scene opprettes ved behov
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - minimal gyldig 2D-scene opprettes ved behov
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0792 – DV G13: tekniske gjentak oppretter ingen duplikater
+tekniske gjentak oppretter ingen duplikater
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - tekniske gjentak oppretter ingen duplikater
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv5-batch.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0793 – DV S1: UiLocale, scriptLanguage og speechLanguage er uavhengige
+UiLocale, scriptLanguage og speechLanguage er uavhengige
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - UiLocale, scriptLanguage og speechLanguage er uavhengige
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0794 – DV S2: flere BCP-47-talespråk i samme prosjekt
+flere BCP-47-talespråk i samme prosjekt
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - flere BCP-47-talespråk i samme prosjekt
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0795 – DV S3: talespråk kan overstyres per replikk
+talespråk kan overstyres per replikk
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - talespråk kan overstyres per replikk
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0796 – DV S4: støtte kontrolleres mot modellens levende språkdata
+støtte kontrolleres mot modellens levende språkdata
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - støtte kontrolleres mot modellens levende språkdata
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0797 – DV S5: usikker språkdeteksjon varsler før massegenerering
+usikker språkdeteksjon varsler før massegenerering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - usikker språkdeteksjon varsler før massegenerering
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0798 – DV S6: brukeren kan velge samlet generering med advarsel
+brukeren kan velge samlet generering med advarsel
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren kan velge samlet generering med advarsel
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0799 – DV S7: separate språkjobber med egne stemmer og modeller
+separate språkjobber med egne stemmer og modeller
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - separate språkjobber med egne stemmer og modeller
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0800 – DV S8: brukeren velger innhold og estimater per språkjobb
+brukeren velger innhold og estimater per språkjobb
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger innhold og estimater per språkjobb
+- **Tester:**
+  - tests/unit/dv5-dv6.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv6-languages.mjs
+- **Implementering:** src/core/dialogue/batch.ts, src/core/dialogue/languages.ts, src/adapters/storage/dialogue-batch.functions.ts, src/adapters/storage/dialogue-batch.server.ts, src/app/library/DialogueBatchPanel.tsx, db/migrations/0061_dialogue_batch_languages.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV5/DV6-oppdrag 19.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0061 er skrevet, ikke kjørt. Ingen betalte ElevenLabs-testkall. Database og publisert ende-til-ende-verifikasjon gjenstår.
+
+#### REQ-0801 – DV A1: manusendring gir rød status
+manusendring gir rød status
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - manusendring gir rød status
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0802 – DV A2: aktiv versjon bestemmer status
+aktiv versjon bestemmer status
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - aktiv versjon bestemmer status
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0803 – DV A3: endrede og fjernede passasjer identifiseres
+endrede og fjernede passasjer identifiseres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endrede og fjernede passasjer identifiseres
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0804 – DV A4: avviket er synlig overalt der manuset vises
+avviket er synlig overalt der manuset vises
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avviket er synlig overalt der manuset vises
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0805 – DV A5: lenke ut til riktig scene
+lenke ut til riktig scene
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - lenke ut til riktig scene
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0806 – DV A6: avspillingshodet settes på replikkstart
+avspillingshodet settes på replikkstart
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avspillingshodet settes på replikkstart
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0807 – DV A7: ingen automatisk avspilling
+ingen automatisk avspilling
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ingen automatisk avspilling
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0808 – DV A8: endringer vises i rødt i dialogeditoren
+endringer vises i rødt i dialogeditoren
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - endringer vises i rødt i dialogeditoren
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0809 – DV A9: «Merk som gjennomgått» krever eksplisitt handling
+«Merk som gjennomgått» krever eksplisitt handling
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Merk som gjennomgått» krever eksplisitt handling
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0810 – DV A10: historikken bevares
+historikken bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - historikken bevares
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0811 – DV A11: ny manusendring gir rødt igjen
+ny manusendring gir rødt igjen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - ny manusendring gir rødt igjen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0812 – DV A12: eldre versjon kan gi avvik igjen
+eldre versjon kan gi avvik igjen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - eldre versjon kan gi avvik igjen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/core/dialogue/drift.ts, src/app/dialogue/DriftBadge.tsx, src/app/scene-editor/SceneScriptPanel.tsx, src/app/scene-editor/SceneAudioRows.tsx, src/app/script-explorer/ScriptExplorer.tsx, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0813 – DV R1: handlingen ligger i Asset Library
+handlingen ligger i Asset Library
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - handlingen ligger i Asset Library
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0814 – DV R2: berørte scener og replikker vises
+berørte scener og replikker vises
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - berørte scener og replikker vises
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0815 – DV R3: brukeren velger replikker
+brukeren velger replikker
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - brukeren velger replikker
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0816 – DV R4: språk og kostnad vises før generering
+språk og kostnad vises før generering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - språk og kostnad vises før generering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0817 – DV R5: nye filer blir aktive, gamle bevares
+nye filer blir aktive, gamle bevares
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - nye filer blir aktive, gamle bevares
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0818 – DV R6: riktig manusrevisjon registreres
+riktig manusrevisjon registreres
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - riktig manusrevisjon registreres
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv7-drift.mjs
+- **Implementering:** src/app/library/DialogueBatchPanel.tsx, src/adapters/storage/dialogue-batch.server.ts, src/core/commands/apply.ts
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0819 – DV B1: sette personlig bokmerke
+sette personlig bokmerke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sette personlig bokmerke
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0820 – DV B2: «Fortsett ved bokmerke» åpner riktig sted
+«Fortsett ved bokmerke» åpner riktig sted
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - «Fortsett ved bokmerke» åpner riktig sted
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0821 – DV B3: bokmerket fjernes etter vellykket navigasjon
+bokmerket fjernes etter vellykket navigasjon
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - bokmerket fjernes etter vellykket navigasjon
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0822 – DV B4: andres bokmerker påvirkes ikke
+andres bokmerker påvirkes ikke
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - andres bokmerker påvirkes ikke
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/bookmark.ts, src/app/shell/BookmarkMenu.tsx, src/adapters/browser/bookmarks.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0823 – DV H1: merke lyd
+merke lyd
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - merke lyd
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0824 – DV H2: merke bilde
+merke bilde
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - merke bilde
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0825 – DV H3: valgfri tekst
+valgfri tekst
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - valgfri tekst
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0826 – DV H4: av/på
+av/på
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - av/på
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0827 – DV H5: avmarkering sletter ikke tekst
+avmarkering sletter ikke tekst
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - avmarkering sletter ikke tekst
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0828 – DV H6: andre autoriserte ser lappen
+andre autoriserte ser lappen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - andre autoriserte ser lappen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0829 – DV H7: synkronisering
+synkronisering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - synkronisering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0830 – DV H8: oppretter og dato
+oppretter og dato
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - oppretter og dato
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0831 – DV H9: boks på prosjektsiden
+boks på prosjektsiden
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - boks på prosjektsiden
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0832 – DV H10: sortering etter dato og manusplassering
+sortering etter dato og manusplassering
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - sortering etter dato og manusplassering
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0833 – DV H11: filter på oppretter
+filter på oppretter
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - filter på oppretter
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0834 – DV H12: klikk åpner riktig sted
+klikk åpner riktig sted
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - klikk åpner riktig sted
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0835 – DV H13: virker selv om elementet er flyttet
+virker selv om elementet er flyttet
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - virker selv om elementet er flyttet
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0836 – DV H14: rettigheter følger samarbeidsmodellen
+rettigheter følger samarbeidsmodellen
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - rettigheter følger samarbeidsmodellen
+- **Tester:**
+  - tests/unit/dv7-dv8.test.ts
+  - tests/invariants/dialogue-lossless.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/dv8-notes.mjs
+- **Implementering:** src/core/notes/flags.ts, src/app/dialogue/NoteFlagControl.tsx, src/app/projects/NoteFlagsOverview.tsx, src/adapters/storage/commands.functions.ts, db/migrations/0062_drift_notes_bookmarks.sql
+- **Merknad:** Kilde: Øysteins bekreftede DV7/DV8-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse. Migrasjon 0062 er skrevet og testet lokalt, ikke kjørt i Cloud. Ingen betalte ElevenLabs-testkall.
+
+#### REQ-0837 – P4: Valgte lag uten bakgrunn
+Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten bakgrunn.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten bakgrunn.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0838 – P4: PNG-sekvens i ZIP
+PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0839 – P4: WebM VP9 med eksplisitt alfastøtte
+WebM kan bare velges ved positiv alpha keep-støtte. Svart bakgrunn brukes aldri som reserve.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Implementert – ikke verifisert
+- **Akseptansekriterier:**
+  - WebM kan bare velges ved positiv alpha keep-støtte. Svart bakgrunn brukes aldri som reserve.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0840 – P4: Tidsområde for lageksport
+Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0841 – P4: Effekter og alfatolkning
+Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0842 – P4: Samme compositor og formatadapter
+Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0843 – P4: Fremdrift og avbryt uten halv fil
+Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0844 – P4: Pikselkvalitet, språk og ikke-destruktivitet
+Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
+- **Tester:**
+  - tests/unit/layer-alpha.test.ts
+  - tests/visual/p4-alpha-export.mjs
+- **Implementering:** src/core/layer-alpha.ts, src/engine/export/alpha.ts, src/engine/compositor/film.ts, src/engine/compositor/canvas.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen migrasjon for P4.
+
+#### REQ-0845 – P5: Regelkobling først
+Regelkobling først.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Regelkobling først
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0846 – P5: AI bare for usikre linjer
+AI bare for usikre linjer.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - AI bare for usikre linjer
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0847 – P5: Kostnad og godkjenning av linjekobling
+Kostnad og godkjenning av linjekobling.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Kostnad og godkjenning av linjekobling
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0848 – P5: Forhåndsvisning av linjeforslag
+Forhåndsvisning av linjeforslag.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Forhåndsvisning av linjeforslag
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0849 – P5: Godkjente linjekoblinger
+Godkjente linjekoblinger.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Godkjente linjekoblinger
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0850 – P5: Reversible linjekommandoer
+Reversible linjekommandoer.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Reversible linjekommandoer
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0851 – P5: Norsk hovedmanus bevares
+Norsk hovedmanus bevares.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Norsk hovedmanus bevares
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0852 – P5: Backup av linjekoblinger
+Backup av linjekoblinger.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Backup av linjekoblinger
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0853 – P5: Språk og testdekning av linjekobling
+Språk og testdekning av linjekobling.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, CORE · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Språk og testdekning av linjekobling
+- **Tester:**
+  - tests/unit/line-linking.test.ts
+  - tests/visual/p5-line-linking.mjs
+  - tests/db/run-db-tests.ts
+- **Implementering:** src/core/translation/line-align-prompt.ts, src/adapters/ai/line-align.functions.ts, src/app/script/LineLinkReview.tsx, db/migrations/0064_translation_line_links.sql
+- **Merknad:** C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
+
+#### REQ-0854 – M8: Navngitte prosjektprofiler
+Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0855 – M8: Standardprofiler uten stille backfill
+Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare et tilbud.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Nye prosjekter får Utkast, Gjennomgang og Endelig med Utkast aktiv; eksisterende prosjekter får bare et tilbud.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0856 – M8: Modellvalg og genereringsoverstyring
+Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder tidligere oppførsel.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Bilde, video, lyd, tale og DV-batch foreslår profilens valg, med lokal overstyring; ingen profil beholder tidligere oppførsel.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0857 – M8: Eksportvalg og overstyring
+Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Eksportdialogene viser profilen og lar brukeren overstyre oppløsning, format, bitrate og alfa.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0858 – M8: Profilbasert kostnadsport og budsjett
+Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før godkjenning.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profilens månedsgrense håndheves atomisk ved jobbreservasjon; kostnaden beregnes med valgt modell før godkjenning.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0859 – M8: Uforanderlige resultatmetadata
+Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Resultater beholder qualityProfileId og profiløyeblikksbilde; profilbytte endrer aldri gamle resultater.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0860 – M8: Aktivt standardvalg og reversible kommandoer
+Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Én aktiv prosjektprofil velges via reversible kommandoer med revisjonskontroll.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0861 – M8: Profiler i backup og tilgangskontroll
+Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Backup inkluderer profiler og aktivt valg; prosjektmedlemmer leser, klienten skriver ikke direkte.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0862 – M8: Profiler på norsk og engelsk
+Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+
+- **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Profiladministrasjon og profilvalg finnes på norsk bokmål og engelsk og har automatiserte tester.
+- **Tester:**
+  - tests/unit/quality-profiles.test.ts
+  - tests/db/run-db-tests.ts
+  - tests/visual/p6-quality-profiles.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx, src/app/ai/QualityProfilePicker.tsx, db/migrations/0063_quality_profiles.sql
+- **Merknad:** Verifisert lokalt med mocks. 0063 er endelig lokalt; Cloud kjøres av Claude etter funksjonsdiff. Ingen betalte AI-kall.
+
+#### REQ-0863 – P7: ProRes 422 HQ for filmeksport
+Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/prores.ts, src/engine/export/mov.ts, src/engine/export/prores-export.ts, src/app/assembly/ExportAnimaticDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0864 – P7: ProRes 4444 med alfa for lageksport
+Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/alpha.ts, src/core/layer-alpha.ts, src/app/assembly/AlphaExportDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0865 – P7: PCM-lyd i MOV
+Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/mov.ts, src/engine/export/prores-export.ts
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0866 – P7: Koder uten GPL, lastes ved behov
+ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+- **Implementering:** src/engine/export/prores.ts, src/engine/export/prores.worker.ts, docs/decisions/adr/ADR-0011-prores-mov.md
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0867 – P7: Bakgrunnskø, strømming og minnegrense
+ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/core/prores-export.ts, src/engine/export/prores-export.ts
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0868 – P7: Kvalitetsprofil kan foreslå ProRes
+En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/core/generation/quality-profile.ts, src/app/projects/QualityProfilesSection.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0869 – P7: Ingen stille fallback
+Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.
+- **Tester:**
+  - tests/visual/p7-prores.mjs
+- **Implementering:** src/engine/export/prores-support.ts, src/app/assembly/AlphaExportDialog.tsx, src/app/assembly/ExportAnimaticDialog.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0870 – P7: Polering av linjekoblingen
+Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).
+
+- **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).
+- **Tester:**
+  - tests/unit/prores-mov.test.ts
+  - tests/visual/p5-line-linking.mjs
+- **Implementering:** src/core/translation/line-link-labels.ts, src/app/script/LineLinkReview.tsx
+- **Merknad:** Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
+
+#### REQ-0871 – M6: Oppdatering med AI ved manusavvik (valg B)
+Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** VERSION, PROMPT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/assembly/material-update.ts, src/app/assembly/MaterialUpdateSection.tsx, src/app/assembly/ScriptChanges.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0872 – M6: Varighetsprognose fra prosjektets historikk
+Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SCRIPT, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/screenplay/forecast.ts, src/app/projects/DurationOverview.tsx, src/app/script/SceneNavigator.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0873 – M6: Forslag til kontekstuell kobling av betegnelser
+Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** LIBRARY, SCRIPT · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.
+- **Tester:**
+  - tests/unit/m6-rest.test.ts
+  - tests/visual/m6-rest.mjs
+- **Implementering:** src/core/library/context-links.ts, src/app/library/ContextLinkSuggestions.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0874 – P8-retting: Vist bildemodell er brukt modell, og samlet anslag i massemodus
+Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.
+
+- **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** PROVIDER, QUALITYCOST, UI · **Invarianter:** INV-11
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.
+- **Tester:**
+  - tests/unit/builtin-image-model.test.ts
+  - tests/visual/p8-style-harmonize.mjs
+- **Implementering:** src/core/generation/providers.ts, src/adapters/ai/image-run.server.ts, src/adapters/storage/harmonize-batch.functions.ts, src/app/library/HarmonizePanel.tsx, src/app/library/HarmonizeBatchPanel.tsx
+- **Merknad:** Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
+
+#### REQ-0875 – ML1: tapsfritt AST-inventar og stabile tekstnøkler
+Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** scripts/i18n/inventory.mjs, scripts/i18n/mapping.v1.json, scripts/i18n/references.v1.json, scripts/i18n/candidates.v1.json
+
+#### REQ-0876 – ML1: N-språkkatalog og nøkkelbasert oversettelse
+Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** src/core/i18n/messages.ts, src/core/i18n/keyed.ts, src/core/i18n/manifest.json
+
+#### REQ-0877 – ML1: komplette tekstfiler, kompatibel bro og pseudospråk
+Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** src/core/i18n/locales/nb.json, src/core/i18n/locales/en.json, src/core/i18n/locales/en-XA.json
+
+#### REQ-0878 – ML1: streng språk- og katalogkontroll
+i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen.
+
+- **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** L10N, UI
+- **Avhengigheter:** REQ-0629; REQ-0630
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen.
+- **Tester:**
+  - tests/unit/i18n-ml1.test.ts
+  - tests/unit/i18n.test.ts
+- **Implementering:** scripts/i18n/check.mjs, scripts/i18n/validate.mjs
+
+#### REQ-0879 – Rigg & 2D-utskrift A1: Én figur kan skrives ut i 20 identiske eksemplarer
+A1: Én figur kan skrives ut i 20 identiske eksemplarer.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, PRESENT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A1: Én figur kan skrives ut i 20 identiske eksemplarer.
+- **Tester:**
+- **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
+
+#### REQ-0880 – Rigg & 2D-utskrift A2: Identiske utskrifter fjernes ikke automatisk
+A2: Identiske utskrifter fjernes ikke automatisk.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A2: Identiske utskrifter fjernes ikke automatisk.
+- **Tester:**
+- **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
+
+#### REQ-0881 – Rigg & 2D-utskrift A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske
+A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, TIMELINE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
+- **Tester:**
+- **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
+
+#### REQ-0882 – Rigg & 2D-utskrift A4: Valg mellom full farge, full figur med klippelinje og bare kontur
+A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
+- **Tester:**
+- **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
+
+#### REQ-0883 – Rigg & 2D-utskrift A5: Konturen er figurens faktiske silhuett, ikke rektangelet
+A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
+- **Tester:**
+- **Merknad:** Bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag).
+
+#### REQ-0884 – Rigg & 2D-utskrift A6: Inspeksjonsvinduet kan åpnes uten å skrive ut
+A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0885 – Rigg & 2D-utskrift A7: Bredde og høyde kan måles
+A7: Bredde og høyde kan måles.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A7: Bredde og høyde kan måles.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0886 – Rigg & 2D-utskrift A8: Avstand mellom valgfrie punkter kan måles
+A8: Avstand mellom valgfrie punkter kan måles.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A8: Avstand mellom valgfrie punkter kan måles.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0887 – Rigg & 2D-utskrift A9: Vinkler kan måles
+A9: Vinkler kan måles.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A9: Vinkler kan måles.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0888 – Rigg & 2D-utskrift A10: Forholdstall mellom valgte avstander kan måles
+A10: Forholdstall mellom valgte avstander kan måles.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A10: Forholdstall mellom valgte avstander kan måles.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0889 – Rigg & 2D-utskrift A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom
+A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI, CORE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
+- **Tester:**
+- **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
+
+#### REQ-0890 – Rigg & 2D-utskrift A12: Målelinjer skrives ikke automatisk ut
+A12: Målelinjer skrives ikke automatisk ut.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A12: Målelinjer skrives ikke automatisk ut.
+- **Tester:**
+- **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
+
+#### REQ-0891 – Rigg & 2D-utskrift A13: mm eller inches
+A13: mm eller inches.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** CORE, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A13: mm eller inches.
+- **Tester:**
+- **Merknad:** Bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071).
+
+#### REQ-0892 – Rigg & 2D-utskrift A14: Felles utskriftsinnstillinger for en hel batch
+A14: Felles utskriftsinnstillinger for en hel batch.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, UI
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A14: Felles utskriftsinnstillinger for en hel batch.
+- **Tester:**
+- **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
+
+#### REQ-0893 – Rigg & 2D-utskrift A15: QR og konturmodus fungerer også i batch
+A15: QR og konturmodus fungerer også i batch.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT, SECURITY
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A15: QR og konturmodus fungerer også i batch.
+- **Tester:**
+- **Merknad:** Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072).
+
+#### REQ-0894 – Rigg & 2D-utskrift A16: 2D-utskrift kan leveres uten 3D-generering
+A16: 2D-utskrift kan leveres uten 3D-generering.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - A16: 2D-utskrift kan leveres uten 3D-generering.
+- **Tester:**
+- **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
+
+#### REQ-0895 – Rigg & 2D-utskrift A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO
+A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** PROCESS
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO.
+- **Tester:**
+  - tests/unit/todo-3d-print.test.ts
+- **Implementering:** docs/development/TODO_3D_PRINT.md
+- **Merknad:** Dokumentasjon verifisert av tests/unit/todo-3d-print.test.ts.
+
+#### REQ-0896 – 3D-print 3D-01: Generering av 3D-modell fra bilde
+Lage en 3D-modell av en figur fra et valgt bilde (frame eller ressursversjon) via en ekstern bilde-til-3D-tjeneste.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** PROVIDER, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Et valgt bilde gir en 3D-modell som lagres som ny versjon knyttet til kildebildet; ingenting starter uten bekreftet kostnad.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-01).
+
+#### REQ-0897 – 3D-print 3D-02: Flat underside eller full tredimensjonal figur
+Brukeren velger mellom en figur med flat bakside (ligger på glassplaten) og en full 3D-figur.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Valget lagres per modell; flat underside gir en plan flate i platens plan innenfor printtoleransen.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-02).
+
+#### REQ-0898 – 3D-print 3D-03: 2,5D-relieff og silhuetteffekter
+Relieff der dybden følger bildet innenfor silhuetten, uten full 3D-rekonstruksjon.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Relieffets ytterkant følger den faktiske silhuetten (som A5), ikke rektangelet.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-03).
+
+#### REQ-0899 – 3D-print 3D-04: Fysisk dybde med slider
+Brukeren setter figurens fysiske dybde i mm med en slider.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Slideren viser dybden i valgt enhet (mm/inches) og endrer modellens dybde tilsvarende.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-04).
+
+#### REQ-0900 – 3D-print 3D-05: Direkte numerisk dybdeverdi
+Dybden kan skrives inn som tall i stedet for slider.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Inntastet verdi og slider viser alltid samme dybde; inches regnes om til mm uten avrundingstap utover visningen.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-05).
+
+#### REQ-0901 – 3D-print 3D-06: Gjenbruk av nylig brukte dybdemål
+Siste brukte dybdeverdier kan velges raskt.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - De siste dybdemålene vises som valg og gir nøyaktig samme verdi som sist.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-06).
+
+#### REQ-0902 – 3D-print 3D-07: Skalakorreksjon når volumet bringer deler nærmere kameraet
+En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bildet. Størrelsen korrigeres med samme linseformel som i 2D.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Den fremste og bakerste delen av figuren får beregnet avbildningsmål ut fra sin egen avstand til kameraet; den synlige størrelsen i kamera avviker ikke mer enn toleransen fra 2D-figuren.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-07).
+
+#### REQ-0903 – 3D-print 3D-08: Samme riggkoordinatsystem som 2D
+3D-modeller plasseres i det samme riggkoordinatsystemet (mm, platenivåer, kameraakse) som 2D-figurene.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - En 3D-figur og en 2D-figur på samme plate og posisjon gir samme plassering og målestokk i kamera.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-08).
+
+#### REQ-0904 – 3D-print 3D-09: Leverandørvalg for eksterne bilde-til-3D-jobber
+Brukeren velger leverandør og modell for bilde-til-3D.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** PROVIDER, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Bare leverandører med gyldig nøkkel kan velges; valgt leverandør og modell lagres med resultatet.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-09).
+
+#### REQ-0905 – 3D-print 3D-10: Integrasjon gjennom eksisterende AI-leverandørgrensesnitt
+Bilde-til-3D bygges som en ny adapter i den eksisterende adaptermodellen, ikke som et eget system.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** PROVIDER, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Adapteren bruker samme nøkkellagring, logging uten hemmeligheter og testmønster (falskt nettverk) som de andre leverandørene.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-10).
+
+#### REQ-0906 – 3D-print 3D-11: Kostnadsinformasjon før generering (kostnadsport)
+Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor budsjettet.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** PROVIDER, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Uten bekreftelse gjøres ingen betalte kall; over budsjett stopper jobben før sending.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-11).
+
+#### REQ-0907 – 3D-print 3D-12: Jobbstatus og feilhåndtering
+3D-jobber vises i den samme jobblisten med status, fremdrift, feilmelding og nytt forsøk.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** PROVIDER, EXPORT
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - En jobb som feiler, viser forståelig feil på norsk og engelsk; et nytt forsøk dobbeltbetaler ikke en fullført jobb.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-12).
+
+#### REQ-0908 – 3D-print 3D-13: Interaktiv 3D-inspeksjon
+Et 3D-inspeksjonsvindu (rotere, zoome, panorere) som motstykke til 2D-inspeksjonen.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Modellen kan roteres og måles i mm uavhengig av skjermzoom (som A11).
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-13).
+
+#### REQ-0909 – 3D-print 3D-14: Kontroll av fysisk størrelse og modellgeometri
+Vis modellens fysiske mål (bredde, høyde, dybde) og sammenlign med 2D-figurens beregnede størrelse.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Avvik mot beregnet størrelse over toleransen gir varsel.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-14).
+
+#### REQ-0910 – 3D-print 3D-15: Printbarhetskontroll
+Kontroll av at modellen kan printes: lukket nett (manifold), minste veggtykkelse, overheng og byggevolum.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - En modell med hull eller for tynne vegger flagges før eksport; eksport er mulig bare med eksplisitt bekreftelse.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-15).
+
+#### REQ-0911 – 3D-print 3D-16: STL- og 3MF-eksport
+Eksport av modellen som STL og 3MF i mm.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Eksporterte filer har riktig fysisk størrelse i mm når de åpnes i en sliceprogramvare; 3MF tar med enhet og navn.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-16).
+
+#### REQ-0912 – 3D-print 3D-17: Identifikasjonskode på egnet fysisk overflate
+En kort ID-kode (samme ordning som QR i runde 5) preges eller trykkes på en flate som ikke synes i kamera (for eksempel undersiden).
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Koden plasseres automatisk på en flate som vender bort fra kameraet og kan leses etter print.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-17).
+
+#### REQ-0913 – 3D-print 3D-18: Manuell inntasting av identifikasjonskode
+Koden kan tastes inn for hånd når den ikke kan skannes.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Inntastet kode gir samme resultat som skanning; feil kode gir samme svar som ukjent kode.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-18).
+
+#### REQ-0914 – 3D-print 3D-19: Navigasjon fra fysisk figur tilbake til digital scene
+Oppslag på koden åpner riktig scene, frame og modellversjon.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - Oppslaget åpner riktig scene og frame også etter omnummerering eller omrokkering av scener.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-19).
+
+#### REQ-0915 – 3D-print 3D-20: Versjonering og ikke-destruktiv håndtering
+Hver 3D-modell er en ny versjon; kildebilde, 2D-figur og aktiv versjon endres aldri automatisk.
+
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Moduler:** EXPORT, COMPOSE
+- **Status:** Ikke startet
+- **Akseptansekriterier:**
+  - En ny 3D-modell endrer ikke 2D-figuren eller eksisterende versjoner; tidligere 3D-versjoner kan hentes fram.
+- **Tester:**
+- **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-20).

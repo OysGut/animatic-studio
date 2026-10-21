@@ -6,19 +6,12 @@
  */
 import { Link2, Plus, Volume2, VolumeX } from "lucide-react";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  AUDIO_TRACK_ORDER,
-  fpsToNumber,
-  L,
-  type AudioKind,
-  type FilmAudioItem,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, fpsToNumber, type AudioKind, type FilmAudioItem, type FilmClip, type ProjectState } from "@/core";
 import { peaks } from "@/engine/audio/mixer";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import { TrackLabel, formatSeconds, type TimelineGeometry } from "./FilmTimeline";
+import { useLanguage } from "@/app/i18n/language";
+import { t as tk } from "@/core/i18n/keyed";
 
 const LANE_H = 26;
 const DRAG_THRESHOLD = 4;
@@ -215,7 +208,7 @@ export function AudioTracks({
   }
 
   return (
-    <div role="group" aria-label={L("Lydspor", "Audio tracks")}>
+    <div role="group" aria-label={tk("app-assembly-audio-tracks.audio-tracks.aria-label.963bd8f7fd1e")}>
       {AUDIO_TRACK_ORDER.map((kind) => {
         const list = byKind.get(kind) ?? [];
         const ln = lanes(list);
@@ -237,33 +230,27 @@ export function AudioTracks({
                 aria-pressed={muted}
                 aria-label={
                   muted
-                    ? L(`Slå på ${AUDIO_KIND_LABEL[kind]}`, `Turn on ${AUDIO_KIND_LABEL[kind]}`)
-                    : L(`Demp ${AUDIO_KIND_LABEL[kind]}`, `Mute ${AUDIO_KIND_LABEL[kind]}`)
+                    ? tk("app-assembly-audio-tracks.audio-tracks.aria-label.c071943468aa", { value1: String(AUDIO_KIND_LABEL[kind]) })
+                    : tk("app-assembly-audio-tracks.audio-tracks.aria-label.baa6b9a27adf", { value1: String(AUDIO_KIND_LABEL[kind]) })
                 }
                 title={
                   muted
-                    ? L("Slå på lyden i sporet", "Turn on the sound in the track")
-                    : L("Demp sporet (også i eksporten)", "Mute the track (also in the export)")
+                    ? tk("app-assembly-audio-tracks.audio-tracks.title.13ad2057fdf7")
+                    : tk("app-assembly-audio-tracks.audio-tracks.title.4b1c1796b66d")
                 }
                 className={
-                  "rounded-sm p-0.5 hover:bg-surface-3 " +
-                  (muted ? "text-status-danger" : "text-text-tertiary hover:text-text-primary")
+                  "rounded-sm p-0.5 hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
+                  (muted ? "bg-status-danger-bg text-status-danger" : "text-text-tertiary hover:text-text-primary")
                 }
               >
-                {muted ? <VolumeX className="size-3.5" /> : <Volume2 className="size-3.5" />}
+                {muted ? <VolumeX className="size-3.5" aria-hidden /> : <Volume2 className="size-3.5" aria-hidden />}
               </button>
               {editable ? (
                 <button
                   type="button"
                   onClick={() => onAdd(kind)}
-                  aria-label={L(
-                    `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("nb")}`,
-                    `Add ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase("en")}`,
-                  )}
-                  title={L(
-                    "Legg til lyd her (ved avspillingshodet)",
-                    "Add sound here (at the playhead)",
-                  )}
+                  aria-label={tk("app-assembly-audio-tracks.add-audio-kind", { kind: AUDIO_KIND_LABEL[kind].toLowerCase() })}
+                  title={tk("app-assembly-audio-tracks.audio-tracks.title.e9d259e3c8ba")}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                 >
                   <Plus className="size-3.5" />
@@ -356,34 +343,35 @@ const AudioBlock = memo(function AudioBlock({
   onCancel: () => void;
   onOpen: (clipId: string) => void;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const c = item.clip;
   // Lyd som løper videre over flere scener er varmgul (DEC-0045)
   const color = c.continues ? "var(--accent-warm)" : AUDIO_KIND_COLOR[c.kind];
   const missing = item.version === null;
   const failed = item.version ? audioBank.hasFailed(item.version.mediaPath) : false;
-  const label = c.name || L("Lyd", "Sound");
+  const label = c.name || tk("app-assembly-audio-tracks.label.memo.2274c457c44f");
   const edge = Math.min(6, Math.floor(width / 4));
   return (
     <div
       role="button"
       tabIndex={selected ? 0 : -1}
       aria-pressed={selected}
-      aria-label={`${label}, ${formatSeconds(length)}${c.continues ? L(", løper videre", ", continues") : ""}${c.muted ? L(", dempet", ", muted") : ""}${
-        blockText ? `${L(", replikk", ", line")}: ${blockText.slice(0, 60)}` : ""
+      aria-label={`${label}, ${formatSeconds(length)}${c.continues ? tk("app-assembly-audio-tracks.audio-block.aria-label.d09731045dae") : ""}${c.muted ? tk("app-assembly-audio-tracks.audio-block.aria-label.3872c16095b5") : ""}${
+        blockText ? `${tk("app-assembly-audio-tracks.audio-block.aria-label.bddda88ec3d7")}: ${blockText.slice(0, 60)}` : ""
       }`}
       title={`${label}\n${formatSeconds(length)}${
-        blockText ? `\n${L("Replikk", "Line")}: ${blockText.slice(0, 120)}` : ""
+        blockText ? `\n${tk("app-assembly-audio-tracks.audio-block.title.fa363d714f83")}: ${blockText.slice(0, 120)}` : ""
       }${
         missing
-          ? `\n${L("Lydfilen mangler", "The sound file is missing")}`
+          ? `\n${tk("app-assembly-audio-tracks.audio-block.title.d13bf3e03ce4")}`
           : failed
-            ? `\n${L("Lydfilen kunne ikke leses", "The sound file could not be read")}`
+            ? `\n${tk("app-assembly-audio-tracks.audio-block.title.d6f6a16600a0")}`
             : ""
-      }${c.continues ? `\n${L("Løper videre over flere scener", "Continues over several scenes")}` : ""}${
+      }${c.continues ? `\n${tk("app-assembly-audio-tracks.audio-block.title.64d9b1bf4801")}` : ""}${
         editable
-          ? `\n${L("Dra for å flytte, dra i kantene for å kutte", "Drag to move, drag the edges to trim")}`
+          ? `\n${tk("app-assembly-audio-tracks.audio-block.title.85535024c691")}`
           : ""
-      }\n${L("Dobbeltklikk for lydprofil og volumpunkter", "Double-click for the sound profile and volume points")}`}
+      }\n${tk("app-assembly-audio-tracks.audio-block.title.8000353b2e59")}`}
       onPointerDown={(e) => onDown(e, item, "move")}
       onPointerMove={onMove}
       onPointerUp={onUp}

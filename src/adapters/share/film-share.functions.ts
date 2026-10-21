@@ -7,8 +7,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, SHARE_TOKEN, isUuid } from "@/core";
+import { SHARE_TOKEN, isUuid } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 /** Signerte lenker til filmen varer kort; spilleren henter en ny ved behov. */
@@ -19,11 +20,6 @@ async function service(): Promise<AnyClient> {
   return supabaseAdmin as unknown as AnyClient;
 }
 
-async function sha256Hex(s: string): Promise<string> {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
-  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
-}
-
 /** mp4 har «ftyp» i byte 4–7. */
 function looksLikeMp4(head: Uint8Array): boolean {
   return head.length >= 8 && head[4] === 0x66 && head[5] === 0x74 && head[6] === 0x79 && head[7] === 0x70;
@@ -32,7 +28,7 @@ function looksLikeMp4(head: Uint8Array): boolean {
 export const activateFilmShare = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { shareId: string }) => {
-    if (!isUuid(d?.shareId)) throw new Error(L("Ugyldig deling.", "Invalid share."));
+    if (!isUuid(d?.shareId)) throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator.64942bb5ba75"));
     return { shareId: d.shareId };
   })
   .handler(async ({ data, context }): Promise<{ token: string }> => {
@@ -44,7 +40,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
       .eq("id", data.shareId)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    if (!row) throw new Error(L("Delingen finnes ikke.", "The share does not exist."));
+    if (!row) throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.e7e4af470ab7"));
     const key = String(row["storage_key"]);
     const admin = await service();
     const folder = key.split("/").slice(0, -1).join("/");
@@ -56,10 +52,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
     const size = Number(file?.metadata?.size ?? -1);
     if (!file || size !== Number(row["byte_size"]))
       throw new Error(
-        L(
-          "Filmfilen er ikke ferdig lastet opp. Prøv igjen.",
-          "The film file has not finished uploading. Try again.",
-        ),
+        t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.6df8afe7b4d6"),
       );
     // Sjekk at filen er mp4 (de første bytene)
     const { data: signed } = await admin.storage.from(BUCKET).createSignedUrl(key, 60);
@@ -68,7 +61,7 @@ export const activateFilmShare = createServerFn({ method: "POST" })
         .then((r) => r.arrayBuffer())
         .catch(() => null);
       if (head && !looksLikeMp4(new Uint8Array(head)))
-        throw new Error(L("Filen er ikke en MP4-video.", "The file is not an MP4 video."));
+        throw new Error(t("adapters-share-film-share-functions.activate-film-share.create-server-fn-method-post-middleware-require-supabase-auth-input-validator-d-share-id-string-if-is-uuid-d-share-id-throw-new-error-l-ugyldig-deling-invalid-share-return-share-id-d-share-id-handler.e93a41872b64"));
     }
     // Rollen sjekkes i databasen
     const { data: token, error: ae } = await db.rpc("activate_film_share", {
@@ -96,12 +89,14 @@ export const resolveFilmShare = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<{ ok: true; film: PublicFilm } | { ok: false }> => {
     // Samme svar for ugyldig, ukjent, utløpt og tilbakekalt nøkkel
     if (!SHARE_TOKEN.test(data.token)) return { ok: false };
-    const hash = await sha256Hex(data.token);
     const admin = await service();
+    // Oppslag via pepret hash i databasen (0070); nøkkelen logges aldri
+    const { data: shareId, error: le } = await admin.rpc("film_share_lookup", { p_token: data.token });
+    if (le || typeof shareId !== "string") return { ok: false };
     const { data: row } = await admin
       .from("film_shares")
       .select("title, storage_key, width, height, duration_ms, status, expires_at, project_id")
-      .eq("token_hash", hash)
+      .eq("id", shareId)
       .maybeSingle();
     if (!row || row["status"] !== "ready") return { ok: false };
     const expires = row["expires_at"] ? Date.parse(String(row["expires_at"])) : null;

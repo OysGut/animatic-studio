@@ -7,7 +7,8 @@
  * støtter (se katalogen i src/core/generation/providers.ts). Formatene følger leverandørenes egne
  * dokumentasjon (oktober 2026) og er ikke prøvd mot de ekte tjenestene herfra (KI-153).
  */
-import { L, filterTextModels, type ProviderId, type TextProviderId } from "@/core";
+import { filterTextModels, type ProviderId, type TextProviderId } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 const T_TEST = 20_000;
 const T_IMAGE = 150_000;
@@ -93,6 +94,8 @@ export class ProviderError extends Error {
   constructor(
     message: string,
     readonly status: number,
+    readonly code?: string,
+    readonly details?: { stopReason: string; outputTokens: number },
   ) {
     super(message);
   }
@@ -189,7 +192,7 @@ async function readLimited(res: Response, max: number): Promise<Uint8Array> {
   const len = Number(res.headers.get("content-length") ?? "0");
   if (len > max)
     throw new ProviderError(
-      L("Filen er for stor til å hentes inn.", "The file is too large to fetch."),
+      tk("adapters-ai-providers-server.read-limited.message.d8da813dcf12"),
       413,
     );
   if (!res.body) return new Uint8Array(0);
@@ -203,7 +206,7 @@ async function readLimited(res: Response, max: number): Promise<Uint8Array> {
     if (total > max) {
       await reader.cancel().catch(() => undefined);
       throw new ProviderError(
-        L("Filen er for stor til å hentes inn.", "The file is too large to fetch."),
+        tk("adapters-ai-providers-server.read-limited.message.d8da813dcf12.2"),
         413,
       );
     }
@@ -226,7 +229,7 @@ async function download(url: string, headers: Record<string, string> = {}) {
   const first = safeDownloadUrl(url);
   if (!first)
     throw new ProviderError(
-      L("Uventet adresse til filen.", "Unexpected address for the file."),
+      tk("adapters-ai-providers-server.download.message.9e6d5abe9c39"),
       400,
     );
   let current: URL = first;
@@ -242,7 +245,7 @@ async function download(url: string, headers: Record<string, string> = {}) {
       const next: URL | null = loc ? safeDownloadUrl(new URL(loc, current).toString()) : null;
       if (!next)
         throw new ProviderError(
-          L("Uventet videresending av filen.", "Unexpected redirect of the file."),
+          tk("adapters-ai-providers-server.download.message.40918853ace9"),
           400,
         );
       current = next;
@@ -337,7 +340,7 @@ const openai = {
     const img = findBase64Image(await res.json());
     if (!img)
       throw new ProviderError(
-        L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+        tk("adapters-ai-providers-server.image.message.8717fc472f21"),
         502,
       );
     return { bytes: unb64(img.data), mimeType: "image/png" };
@@ -361,7 +364,7 @@ const openai = {
     const j = (await res.json()) as { id?: string };
     if (!j.id)
       throw new ProviderError(
-        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        tk("adapters-ai-providers-server.start-video.message.f60f354802e8"),
         502,
       );
     return j.id;
@@ -387,7 +390,7 @@ const openai = {
     if (j.status === "failed")
       return {
         state: "failed",
-        message: j.error?.message ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+        message: j.error?.message ?? tk("adapters-ai-providers-server.message.message.0ddf8402a72b"),
       };
     return {
       state: "running",
@@ -465,7 +468,7 @@ const google = {
     json = null; // svaret kan være titalls MB: slipp det før bildet pakkes ut
     if (!img)
       throw new ProviderError(
-        L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+        tk("adapters-ai-providers-server.image.message.8717fc472f21.2"),
         502,
       );
     return { bytes: unb64(img.data), mimeType: img.mimeType };
@@ -489,7 +492,7 @@ const google = {
     const j = (await res.json()) as { name?: string };
     if (!j.name)
       throw new ProviderError(
-        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        tk("adapters-ai-providers-server.start-video.message.f60f354802e8.2"),
         502,
       );
     return j.name;
@@ -497,7 +500,7 @@ const google = {
   async pollVideo(key: string, _model: string, name: string): Promise<VideoPoll> {
     // Operasjonsnavnet kommer fra Google; bare den kjente formen godtas (ingen vilkårlige adresser)
     if (!/^models\/[\w.-]+\/operations\/[\w.-]+$/.test(name))
-      return { state: "failed", message: L("Ugyldig jobb-ID.", "Invalid job ID.") };
+      return { state: "failed", message: tk("adapters-ai-providers-server.message.message.870b50c7270e") };
     const res = await call(`${GEMINI}/${name}`, { headers: geminiAuth(key) }, T_TEST);
     const j = (await res.json()) as {
       done?: boolean;
@@ -508,21 +511,18 @@ const google = {
     if (j.error)
       return {
         state: "failed",
-        message: j.error.message ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+        message: j.error.message ?? tk("adapters-ai-providers-server.message.message.0ddf8402a72b.2"),
       };
     const uri = j.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
     if (!uri)
       return {
         state: "failed",
-        message: L(
-          "Videoen ble stoppet (innholdsregler eller ukjent feil).",
-          "The video was stopped (content rules or unknown error).",
-        ),
+        message: tk("adapters-ai-providers-server.message.message.963db10a3e74"),
       };
     if (!uri.startsWith("https://generativelanguage.googleapis.com/"))
       return {
         state: "failed",
-        message: L("Uventet adresse til videoen.", "Unexpected address for the video."),
+        message: tk("adapters-ai-providers-server.message.message.42c98c0484e9"),
       };
     return { state: "done", ...(await download(uri, geminiAuth(key))) };
   },
@@ -548,7 +548,7 @@ async function falRun(key: string, model: string, input: Record<string, unknown>
   const j = (await res.json()) as { request_id?: string };
   if (!j.request_id)
     throw new ProviderError(
-      L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+      tk("adapters-ai-providers-server.fal-run.message.d14cfe249470"),
       502,
     );
   return j.request_id;
@@ -598,7 +598,7 @@ const fal = {
       // Qwen-Image-Edit: endrer bilder (krever forbilde), har negativ beskrivelse
       if (!refs.length)
         throw new ProviderError(
-          L("Denne modellen trenger et forbildebilde.", "This model needs a reference image."),
+          tk("adapters-ai-providers-server.image.message.d0a954759e5b"),
           400,
         );
       model = r.model;
@@ -621,7 +621,7 @@ const fal = {
         output_format: "png",
       };
     }
-    if (!FAL_MODEL.test(model)) throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    if (!FAL_MODEL.test(model)) throw new ProviderError(tk("adapters-ai-providers-server.image.message.e90326fd1a56"), 400);
     const id = await falRun(r.key, model, input);
     const deadline = Date.now() + T_IMAGE;
     while (Date.now() < deadline) {
@@ -630,13 +630,13 @@ const fal = {
       if (!p.done) continue;
       if ("error" in p)
         throw new ProviderError(
-          p.error ?? L("Bildet kunne ikke lages.", "The image could not be made."),
+          p.error ?? tk("adapters-ai-providers-server.image.message.bb0e3972e203"),
           502,
         );
       const url = (p.result["images"] as { url?: string }[] | undefined)?.[0]?.url;
       if (!url)
         throw new ProviderError(
-          L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+          tk("adapters-ai-providers-server.image.message.8717fc472f21.3"),
           502,
         );
       const d = await download(url);
@@ -646,14 +646,14 @@ const fal = {
       };
     }
     throw new ProviderError(
-      L("Bildet ble ikke ferdig i tide.", "The image was not finished in time."),
+      tk("adapters-ai-providers-server.image.message.8fe0e5a85b98"),
       504,
     );
   },
   /** Oppskalering (DEC-0080): SeedVR2 (skarpere) eller Clarity (med AI-detaljer). */
   async upscale(r: UpscaleRequest) {
     if (!FAL_MODEL.test(r.model))
-      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.upscale.message.b327f2c053a7"), 400);
     let input: Record<string, unknown>;
     if (r.model.startsWith("fal-ai/seedvr"))
       input = {
@@ -671,7 +671,7 @@ const fal = {
         resemblance: 0.85,
       };
     else
-      throw new ProviderError(L("Modellen kan ikke oppskalere.", "The model cannot upscale."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.upscale.message.5aa67ddbf871"), 400);
     const id = await falRun(r.key, r.model, input);
     const deadline = Date.now() + T_IMAGE;
     while (Date.now() < deadline) {
@@ -680,13 +680,13 @@ const fal = {
       if (!p.done) continue;
       if ("error" in p)
         throw new ProviderError(
-          p.error ?? L("Bildet kunne ikke oppskaleres.", "The image could not be upscaled."),
+          p.error ?? tk("adapters-ai-providers-server.upscale.message.f0751c7e72eb"),
           502,
         );
       const url = (p.result["image"] as { url?: string } | undefined)?.url;
       if (!url)
         throw new ProviderError(
-          L("Tjenesten svarte uten bilde.", "The service replied without an image."),
+          tk("adapters-ai-providers-server.upscale.message.0bf4fbe4f680"),
           502,
         );
       const d = await download(url);
@@ -696,16 +696,16 @@ const fal = {
       };
     }
     throw new ProviderError(
-      L("Bildet ble ikke ferdig i tide.", "The image was not finished in time."),
+      tk("adapters-ai-providers-server.upscale.message.029afeaf1e8e"),
       504,
     );
   },
   async startVideo(r: VideoRequest) {
     if (!FAL_MODEL.test(r.model))
-      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.start-video.message.4ffaa865df92"), 400);
     if (!r.image)
       throw new ProviderError(
-        L("Denne modellen trenger et startbilde.", "This model needs a start image."),
+        tk("adapters-ai-providers-server.start-video.message.534bc6ed5194"),
         400,
       );
     return falRun(r.key, r.model, {
@@ -718,7 +718,7 @@ const fal = {
   /** Kling O3 Edit (DEC-0083): videoen er @Video1, figurene @Element1 … med bildet som forside. */
   async editVideo(r: VideoEditRequest) {
     if (!FAL_MODEL.test(r.model) || !r.model.includes("video-to-video"))
-      throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.edit-video.message.453bff21f388"), 400);
     return falRun(r.key, r.model, {
       prompt: r.prompt,
       video_url: r.videoUrl,
@@ -737,19 +737,19 @@ const fal = {
   },
   async pollVideo(key: string, model: string, id: string): Promise<VideoPoll> {
     if (!FAL_MODEL.test(model))
-      return { state: "failed", message: L("Ukjent modell.", "Unknown model.") };
+      return { state: "failed", message: tk("adapters-ai-providers-server.message.message.16611b15f502") };
     const p = await falPoll(key, model, id);
     if (!p.done) return { state: "running" };
     if ("error" in p)
       return {
         state: "failed",
-        message: p.error ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+        message: p.error ?? tk("adapters-ai-providers-server.message.message.0ddf8402a72b.3"),
       };
     const url = (p.result["video"] as { url?: string } | undefined)?.url;
     if (!url)
       return {
         state: "failed",
-        message: L("Tjenesten svarte uten video.", "The service replied without a video."),
+        message: tk("adapters-ai-providers-server.message.message.9c48c8e488e3"),
       };
     return { state: "done", ...(await download(url)) };
   },
@@ -770,7 +770,7 @@ const runway = {
   async startVideo(r: VideoRequest) {
     if (!r.image)
       throw new ProviderError(
-        L("Runway trenger et startbilde.", "Runway needs a start image."),
+        tk("adapters-ai-providers-server.start-video.message.3f59de44c40f"),
         400,
       );
     const res = await call(
@@ -791,14 +791,14 @@ const runway = {
     const j = (await res.json()) as { id?: string };
     if (!j.id)
       throw new ProviderError(
-        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        tk("adapters-ai-providers-server.start-video.message.f60f354802e8.3"),
         502,
       );
     return j.id;
   },
   /** Aleph 2 (DEC-0083): tegner om videoen etter teksten (ingen referansebilder av figurene). */
   async editVideo(r: VideoEditRequest) {
-    if (r.model !== "aleph2") throw new ProviderError(L("Ukjent modell.", "Unknown model."), 400);
+    if (r.model !== "aleph2") throw new ProviderError(tk("adapters-ai-providers-server.edit-video.message.453bff21f388.2"), 400);
     const res = await call(
       `${RUNWAY}/video_to_video`,
       {
@@ -815,7 +815,7 @@ const runway = {
     const j = (await res.json()) as { id?: string };
     if (!j.id)
       throw new ProviderError(
-        L("Tjenesten svarte uten jobb-ID.", "The service replied without a job ID."),
+        tk("adapters-ai-providers-server.edit-video.message.37e81dd816c2"),
         502,
       );
     return j.id;
@@ -837,7 +837,7 @@ const runway = {
     if (j.status === "FAILED" || j.status === "CANCELLED")
       return {
         state: "failed",
-        message: j.failure ?? L("Videoen kunne ikke lages.", "The video could not be made."),
+        message: j.failure ?? tk("adapters-ai-providers-server.message.message.0ddf8402a72b.4"),
       };
     return {
       state: "running",
@@ -946,6 +946,16 @@ const elevenlabs = {
             : null,
       }));
   },
+  /** DV4: provider's current TTS models and language capabilities. */
+  async speechModels(key: string): Promise<import("@/core/dialogue/voice").SpeechModel[]> {
+    const res = await call(`${ELEVEN}/models`, { headers: elevenAuth(key) }, T_TEST);
+    const rows = await res.json() as { model_id?: string; name?: string; can_do_text_to_speech?: boolean; languages?: { language_id: string; name: string }[]; maximum_text_length_per_request?: number; character_cost_multiplier?: number }[];
+    return rows.filter(m => m.can_do_text_to_speech && typeof m.model_id === "string")
+      .map(m => ({ modelId: String(m.model_id), name: String(m.name ?? m.model_id).slice(0, 120),
+        languages: (m.languages ?? []).filter(l => typeof l.language_id === "string" && typeof l.name === "string").map(l => ({ code: l.language_id, name: l.name })),
+        maxCharacters: typeof m.maximum_text_length_per_request === "number" ? m.maximum_text_length_per_request : null,
+        costMultiplier: typeof m.character_cost_multiplier === "number" ? m.character_cost_multiplier : null }));
+  },
   /** Tale fra tekst med en bestemt stemme (MP3), DEC-0071. */
   async speech(r: {
     key: string;
@@ -953,9 +963,10 @@ const elevenlabs = {
     voiceId: string;
     text: string;
     language?: string;
+    settings?: import("@/core/dialogue/voice").SpeechSettings;
   }) {
     if (!/^[A-Za-z0-9_-]{1,64}$/.test(r.voiceId))
-      throw new ProviderError(L("Ugyldig stemme.", "Invalid voice."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.speech.message.e0271e6c8eb0"), 400);
     const res = await call(
       `${ELEVEN}/text-to-speech/${encodeURIComponent(r.voiceId)}?output_format=mp3_44100_128`,
       {
@@ -964,6 +975,7 @@ const elevenlabs = {
         body: JSON.stringify({
           text: r.text,
           model_id: r.model,
+          ...(r.settings ? { voice_settings: r.settings } : {}),
           // Uten språk gjetter modellen – og norsk ble lest som dansk
           ...(r.language ? { language_code: r.language } : {}),
         }),
@@ -995,6 +1007,7 @@ export interface TextRequest {
 }
 
 export interface TextResult {
+  readonly stopReason?: string;
   readonly text: string;
   readonly usage: { readonly inputTokens: number; readonly outputTokens: number };
   readonly model: string;
@@ -1007,34 +1020,60 @@ const num = (v: unknown): number => (typeof v === "number" && Number.isFinite(v)
 
 function emptyReply(): ProviderError {
   return new ProviderError(
-    L("Tjenesten svarte uten tekst.", "The service replied without text."),
+    tk("adapters-ai-providers-server.empty-reply.message.45ba3697587f"),
     502,
   );
 }
 
 function refusal(): ProviderError {
   return new ProviderError(
-    L("Modellen avslo forespørselen.", "The model refused the request."),
+    tk("adapters-ai-providers-server.refusal.message.53311a1dd763"),
     422,
   );
 }
 
-/** Kontrollerer JSON-svaret (fjerner eventuelle kodegjerder). */
-function checkJson(text: string): string {
-  const t = text
-    .trim()
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/```$/, "")
-    .trim();
+/** Henter én komplett JSON-verdi uten å reparere innholdet. */
+export function checkJson(text: string): string {
+  const start = text.search(/[\{\[]/);
+  let candidate = text.trim();
+  if (start >= 0) {
+    const stack: string[] = [];
+    let inString = false;
+    let escaped = false;
+    candidate = text.slice(start);
+    for (let i = start; i < text.length; i++) {
+      const c = text[i];
+      if (inString) {
+        if (escaped) escaped = false;
+        else if (c === "\\") escaped = true;
+        else if (c === '"') inString = false;
+      } else if (c === '"') inString = true;
+      else if (c === "{" || c === "[") stack.push(c);
+      else if (c === "}" || c === "]") {
+        const open = stack.pop();
+        if ((c === "}" && open !== "{") || (c === "]" && open !== "[")) break;
+        if (stack.length === 0) {
+          candidate = text.slice(start, i + 1);
+          break;
+        }
+      }
+    }
+  }
   try {
-    JSON.parse(t);
+    JSON.parse(candidate);
   } catch {
     throw new ProviderError(
-      L("Tjenesten svarte ikke med gyldig JSON.", "The service did not reply with valid JSON."),
+      tk("adapters-ai-providers-server.check-json.message.3351ebadc995"),
       502,
     );
   }
-  return t;
+  return candidate;
+}
+
+function truncated(stopReason: string, outputTokens: number): ProviderError {
+  return new ProviderError(
+    tk("ai.text.truncated"), 502, "truncated", { stopReason, outputTokens },
+  );
 }
 
 /** Resonneringsmodeller hos OpenAI avviser temperature. */
@@ -1082,6 +1121,7 @@ async function openaiCompatText(
     usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
   const c = j.choices?.[0];
+  if (c?.finish_reason === "length") throw truncated(c.finish_reason, num(j.usage?.completion_tokens));
   if (c?.message?.refusal || c?.finish_reason === "content_filter") throw refusal();
   const content = c?.message?.content;
   const text =
@@ -1096,6 +1136,7 @@ async function openaiCompatText(
         : "";
   if (!text.trim()) throw emptyReply();
   return {
+    ...(c?.finish_reason ? { stopReason: c.finish_reason } : {}),
     text: r.json ? checkJson(text) : text,
     usage: {
       inputTokens: num(j.usage?.prompt_tokens),
@@ -1141,6 +1182,11 @@ const anthropic = {
           ...(system ? { system } : {}),
           messages: r.messages.map((m) => ({ role: m.role, content: m.content })),
           ...(r.temperature !== undefined ? { temperature: Math.min(1, r.temperature) } : {}),
+          // Auto-verktøy gir strukturert JSON når modellen velger det, med tekst som reserve.
+          ...(r.json ? {
+            tools: [{ name: "json_response", description: "Return the requested JSON object", input_schema: { type: "object" } }],
+            tool_choice: { type: "auto" },
+          } : {}),
         }),
       },
       T_TEXT,
@@ -1148,16 +1194,19 @@ const anthropic = {
     const j = (await res.json()) as {
       model?: string;
       stop_reason?: string;
-      content?: { type?: string; text?: string }[];
+      content?: { type?: string; text?: string; input?: unknown }[];
       usage?: { input_tokens?: number; output_tokens?: number };
     };
+    if (j.stop_reason === "max_tokens") throw truncated(j.stop_reason, num(j.usage?.output_tokens));
     if (j.stop_reason === "refusal") throw refusal();
-    const text = (j.content ?? [])
+    const tool = r.json ? j.content?.find((b) => b.type === "tool_use" && b.input !== undefined) : undefined;
+    const text = tool ? JSON.stringify(tool.input) : (j.content ?? [])
       .filter((b) => b.type === "text")
       .map((b) => b.text ?? "")
       .join("");
     if (!text.trim()) throw emptyReply();
     return {
+      ...(j.stop_reason ? { stopReason: j.stop_reason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: { inputTokens: num(j.usage?.input_tokens), outputTokens: num(j.usage?.output_tokens) },
       model: typeof j.model === "string" ? j.model : r.model,
@@ -1203,7 +1252,7 @@ const googleText = {
   },
   async text(r: TextRequest): Promise<TextResult> {
     if (!/^[A-Za-z0-9._-]+$/.test(r.model))
-      throw new ProviderError(L("Ugyldig modellnavn.", "Invalid model name."), 400);
+      throw new ProviderError(tk("adapters-ai-providers-server.text.message.8fcd27b791ff"), 400);
     const system = [r.system, r.json ? JSON_INSTRUCTION : ""].filter(Boolean).join("\n\n");
     const res = await call(
       `${GEMINI}/models/${r.model}:generateContent`,
@@ -1232,10 +1281,12 @@ const googleText = {
       usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number };
     };
     const c = j.candidates?.[0];
+    if (c?.finishReason === "MAX_TOKENS") throw truncated(c.finishReason, num(j.usageMetadata?.candidatesTokenCount));
     if (j.promptFeedback?.blockReason || c?.finishReason === "SAFETY") throw refusal();
     const text = (c?.content?.parts ?? []).map((p) => p.text ?? "").join("");
     if (!text.trim()) throw emptyReply();
     return {
+      ...(c?.finishReason ? { stopReason: c.finishReason } : {}),
       text: r.json ? checkJson(text) : text,
       usage: {
         inputTokens: num(j.usageMetadata?.promptTokenCount),
@@ -1284,22 +1335,16 @@ export async function testProviderKey(
     )
       return {
         result: "rejected",
-        message: L("Tjenesten godtok ikke nøkkelen.", "The service did not accept the key."),
+        message: tk("adapters-ai-providers-server.message.message.8a7a46a947dc"),
       };
     if (status === 402 || status === 429)
       return {
         result: "limited",
-        message: L(
-          "Nøkkelen er gyldig, men kontoen mangler kreditt eller er midlertidig begrenset.",
-          "The key is valid, but the account lacks credit or is temporarily limited.",
-        ),
+        message: tk("adapters-ai-providers-server.message.message.e3a9f0978b39"),
       };
     return {
       result: "unknown",
-      message: L(
-        `Nøkkelen kunne ikke prøves akkurat nå (${(e as Error).message.slice(0, 120)}).`,
-        `The key could not be tested right now (${(e as Error).message.slice(0, 120)}).`,
-      ),
+      message: tk("adapters-ai-providers-server.message.message.e2e4db6d8f9a", { value1: String((e as Error).message.slice(0, 120)) }),
     };
   }
 }

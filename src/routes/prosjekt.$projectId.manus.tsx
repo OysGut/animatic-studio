@@ -1,7 +1,9 @@
-import { L } from "@/core";
+
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { ScriptWorkspace } from "@/app/script/ScriptWorkspace";
+import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 /**
  * ?scene=<forekomst-ID> åpner manuset med scenen valgt (f.eks. fra «Brukt i scener» i biblioteket);
@@ -9,10 +11,10 @@ import { ScriptWorkspace } from "@/app/script/ScriptWorkspace";
  */
 export const Route = createFileRoute("/prosjekt/$projectId/manus")({
   head: () => ({ meta: [
-    { title: L("Manus – Animatic Studio", "Script – Animatic Studio") },
-    { name: "description", content: L("Rediger filmmanuset og scenene i Animatic Studio.", "Edit your screenplay and scenes in Animatic Studio.") },
-    { property: "og:title", content: L("Manus – Animatic Studio", "Script – Animatic Studio") }, // i18n-ignore: metakode
-    { property: "og:description", content: L("Rediger filmmanuset og scenene i Animatic Studio.", "Edit your screenplay and scenes in Animatic Studio.") }, // i18n-ignore: metakode
+    { title: t("routes-prosjekt-project-id-manus.title.title.fd507ce55a58") },
+    { name: "description", content: t("routes-prosjekt-project-id-manus.content.content.6918ed5f9558") },
+    { property: "og:title", content: t("routes-prosjekt-project-id-manus.content.content.a5f21f0482ff") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2") }, // i18n-ignore: metakode
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
@@ -28,6 +30,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/manus")({
 });
 
 function ScriptRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { scene, blokk } = Route.useSearch();
   const session = useSession();

@@ -1,13 +1,14 @@
 /** SL6: explicit, reversible transfer plans. No persistence or mutation of the source state. */
 import type { Command } from "../commands/types";
 import { applyCommand } from "../commands/apply";
-import { L } from "../i18n";
+
 import { newId, type ProductionId, type VariantId, type UserId } from "../ids";
 import { mainProduction, type ProjectState } from "../model";
 import { keyBetween } from "../order-key";
 import { blocksOfVariant } from "../views";
 import { activeProfileOf } from "./stages";
 import { canHaveStoryProfile, emptyStoryProfile, mergeProfile, profilePatchError, type StoryProfilePatch } from "./profile";
+import { t } from "@/core/i18n/keyed";
 
 export type SuggestionKind = "line" | "scene_draft" | "profile_change" | "analysis" | "motivation" | "plot_point";
 export interface TransferSuggestion {
@@ -40,45 +41,45 @@ export function suggestionToCommands(state: ProjectState, suggestion: TransferSu
   const p = suggestion.payload;
   const commands: Command[] = [];
   if (suggestion.kind === "profile_change") {
-    if (!("assetId" in target)) return fail(L("Velg en karakterprofil.", "Choose a character profile."));
+    if (!("assetId" in target)) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.80765abd2eac"));
     const asset = state.assets[target.assetId];
-    if (!asset || asset.removed || !canHaveStoryProfile(asset.kind)) return fail(L("Karakteren finnes ikke.", "The character does not exist."));
+    if (!asset || asset.removed || !canHaveStoryProfile(asset.kind)) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.d2f3a11d5d5d"));
     const patch = suggestionProfilePatch(p);
-    if (!patch) return fail(L("Forslaget inneholder ingen gyldige profilfelt.", "The suggestion contains no valid profile fields."));
+    if (!patch) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.5227eb7e2b39"));
     const current = activeProfileOf(state, asset.id);
     commands.push({ type: "SetStoryProfile", assetId: asset.id, profileId: current?.id ?? newId<"story_profile">(), profile: mergeProfile(current?.profile ?? emptyStoryProfile(), patch) });
   } else {
-    if (!("variantId" in target)) return fail(L("Velg en scene i hovedproduksjonen.", "Choose a scene in the main production."));
+    if (!("variantId" in target)) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.e5e73b546e44"));
     const main = mainProduction(state);
     const variant = state.variants[target.variantId];
     const occurrence = Object.values(state.occurrences).find((o) => o.active && o.productionId === target.productionId && o.variantId === target.variantId);
-    if (!main || main.id !== target.productionId || !variant || !occurrence || !state.scenes[variant.sceneId]) return fail(L("Scenen finnes ikke i hovedproduksjonen.", "The scene does not exist in the main production."));
-    if (typeof p["sceneId"] === "string" && !state.scenes[p["sceneId"]]) return fail(L("Kildescenen finnes ikke.", "The source scene does not exist."));
+    if (!main || main.id !== target.productionId || !variant || !occurrence || !state.scenes[variant.sceneId]) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.852626d343a1"));
+    if (typeof p["sceneId"] === "string" && !state.scenes[p["sceneId"]]) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.c2d776717e6e"));
     const blocks = blocksOfVariant(state, target.variantId);
     const after = target.afterBlockId === null ? undefined : blocks.find((b) => b.id === target.afterBlockId);
-    if (target.afterBlockId !== null && !after) return fail(L("Blokken finnes ikke i denne scenen.", "The block does not exist in this scene."));
+    if (target.afterBlockId !== null && !after) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.8b8d2a674221"));
     const productionId = target.productionId as ProductionId;
     const variantId = target.variantId as VariantId;
     if (suggestion.kind === "line" && typeof p["blockId"] === "string") {
       const block = blocks.find((b) => b.id === p["blockId"]);
-      if (!block || block.kind !== "dialogue") return fail(L("Replikken finnes ikke i denne scenen.", "The line does not exist in this scene."));
-      if (p["sceneId"] && p["sceneId"] !== variant.sceneId) return fail(L("Forslaget hører til en annen scene.", "The suggestion belongs to another scene."));
+      if (!block || block.kind !== "dialogue") return fail(t("core-storylab-transfer.suggestion-to-commands.fail.c7530381cb7e"));
+      if (p["sceneId"] && p["sceneId"] !== variant.sceneId) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.f75108e116b8"));
       commands.push({ type: "EditBlockText", productionId, blockId: block.id, text: suggestionText(suggestion) });
     } else if (suggestion.kind === "line" || suggestion.kind === "scene_draft") {
       const raw = suggestion.kind === "line" ? [p] : p["turns"] ?? p["lines"];
-      if (!Array.isArray(raw) || raw.length === 0) return fail(L("Utkastet har ingen replikker.", "The draft has no lines."));
+      if (!Array.isArray(raw) || raw.length === 0) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.8bfa3786e1b8"));
       // Removed blocks still occupy keys in InsertBlock; include them when finding the next key.
       const occupied = Object.values(state.blocks).filter((b) => b.variantId === variantId).sort((a, b) => a.orderKey < b.orderKey ? -1 : a.orderKey > b.orderKey ? 1 : 0);
       let previous = after?.orderKey ?? null;
       const next = occupied.find((b) => previous === null || b.orderKey > previous)?.orderKey ?? null;
       for (const value of raw) {
-        if (!value || typeof value !== "object") return fail(L("Ugyldig replikk i utkastet.", "Invalid line in the draft."));
+        if (!value || typeof value !== "object") return fail(t("core-storylab-transfer.suggestion-to-commands.fail.118622112c65"));
         const line = value as Record<string, unknown>;
         const speaker = textOf(line, "speakerAssetId") || textOf(line, "speaker") || textOf(line, "assetId");
         const asset = state.assets[speaker];
-        if (!asset || asset.removed || !canHaveStoryProfile(asset.kind)) return fail(L("Taleren finnes ikke i biblioteket.", "The speaker does not exist in the library."));
+        if (!asset || asset.removed || !canHaveStoryProfile(asset.kind)) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.528ee8ac38d8"));
         const text = textOf(line, "text");
-        if (!text.trim()) return fail(L("Replikken er tom.", "The line is empty."));
+        if (!text.trim()) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.fad8ed846920"));
         for (const [kind, content] of [["character", asset.name.toUpperCase()], ["dialogue", text]] as const) {
           previous = keyBetween(previous, next);
           commands.push({ type: "InsertBlock", productionId, variantId, block: { blockId: newId<"script_block">(), kind, text: content, orderKey: previous } });
@@ -87,9 +88,9 @@ export function suggestionToCommands(state: ProjectState, suggestion: TransferSu
     } else {
       const evidence = Array.isArray(p["evidence"]) ? p["evidence"][0] : undefined;
       const block = blocks.find((b) => b.id === evidence) ?? blocks[0];
-      if (!block) return fail(L("Scenen har ingen blokk å feste notatet til.", "The scene has no block to attach the note to."));
-      const source = L(`Fra Story Lab, økt ${suggestion.sessionId ?? "–"}, tur ${suggestion.turnId ?? "–"}.`, `From Story Lab, session ${suggestion.sessionId ?? "–"}, turn ${suggestion.turnId ?? "–"}.`);
-      commands.push({ type: "AddAnnotations", annotations: [{ annotationId: newId<"annotation">(), blockId: block.id, variantId: null, start: 0, end: 0, quote: "", text: `${suggestionText(suggestion)}\n\n${source}`, authorName: "Animatic Studio", source: "system" }] });
+      if (!block) return fail(t("core-storylab-transfer.suggestion-to-commands.fail.f848b72c387e"));
+      const source = t("core-storylab-transfer.source.message.d6d308540381", { value1: String(suggestion.sessionId ?? "–"), value2: String(suggestion.turnId ?? "–") });
+      commands.push({ type: "AddAnnotations", annotations: [{ annotationId: newId<"annotation">(), blockId: block.id, variantId: null, start: 0, end: 0, quote: "", text: `${suggestionText(suggestion)}\n\n${source}`, authorName: "From Pen to Glass", source: "system" }] });
     }
   }
   // Reuse command validation (including INV-04), without altering the caller's state.

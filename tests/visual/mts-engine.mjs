@@ -115,6 +115,32 @@ await scenario("AG-gjenbruk-i-annen-scene", M.sceneB, "nb", async (page) => {
   check(c?.steps?.some((s) => s.type === "AddLayers" && s.layers.length === 4), "AG: design og animasjon blir vanlige lag");
 });
 
+await scenario("MT4-bilde-i-malminiatyr", M.sceneA, "nb", async (page) => {
+  const comp = h.rows.compositions.find(c => c.id === M.compA);
+  const imageLayer = h.rows.composition_layers.find(l => l.composition_id === comp?.id && l.asset_id && !l.removed);
+  if (!imageLayer) throw new Error("fixturen mangler bildelag");
+  await selectLayer(page, imageLayer.id);
+  await page.getByTestId("mts-save-template").click();
+  await page.getByTestId("mts-save-template-name").fill("Bildemal");
+  await page.getByTestId("mts-save-template-confirm").click();
+  await waitHidden(page.getByTestId("mts-save-template-dialog"));
+  check(await eventually(() => state.uploadBodies.length > 0), "MT4: bildemalens miniatyr er lastet opp");
+  const raw = state.uploadBodies[0];
+  const start = raw?.indexOf(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10])) ?? -1;
+  const pixels = start < 0 ? 0 : await page.evaluate(async b64 => {
+    const image = new Image();
+    image.src = `data:image/png;base64,${b64}`;
+    await image.decode();
+    const canvas = document.createElement("canvas"); canvas.width = image.width; canvas.height = image.height;
+    const ctx = canvas.getContext("2d"); ctx.drawImage(image, 0, 0);
+    const data = ctx.getImageData(0, 0, image.width, image.height).data;
+    let n = 0;
+    for (let i = 0; i < data.length; i += 4) if (data[i] > 210 && data[i + 1] > 140 && data[i + 1] < 205 && data[i + 2] < 100 && data[i + 3] > 200) n++;
+    return n;
+  }, raw.subarray(start).toString("base64"));
+  check(pixels > 100, `MT4: lagret PNG inneholder testbildets gule felt (${pixels} bildepunkter), ikke en tom reserve`);
+});
+
 await scenario("AH-lokal-tekst", M.sceneA, "nb", async (page) => {
   await selectLayer(page, M.instanceName);
   const field = page.getByTestId("mts-template-field-navn");

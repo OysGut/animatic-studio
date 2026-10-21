@@ -6,7 +6,9 @@ import type { ProjectState, SceneHeading } from "../model";
 import { orderedOccurrences, blocksOfVariant, isScriptOccurrence, sceneNumberOf } from "../views";
 import { formatHeading, type PaginationScene } from "./paginate";
 import { fountainMarksOf } from "./fountain";
-import { L } from "../i18n";
+import { lockedPageMapper, sceneSourcePage } from "./script-pages";
+
+import { t } from "@/core/i18n/keyed";
 
 export type NumberingMethod = "continuous" | "production" | "historical";
 
@@ -146,26 +148,19 @@ export function exportPaginationInput(
   opts: NumberingOptions & { readonly lockedPages?: boolean },
 ): PaginationScene[] {
   const numbered = exportNumbering(s, productionId, opts);
-  let minPage = Infinity;
-  if (opts.lockedPages) {
-    // Bare scener som faktisk eksporteres med innhold (samme grunnlag som manusvisningen)
-    for (const n of numbered) {
-      if (n.omitted) continue;
-      const occ = s.occurrences[n.occurrenceId]!;
-      for (const b of blocksOfVariant(s, occ.variantId))
-        if (b.sourceRef) minPage = Math.min(minPage, b.sourceRef.page);
-    }
-  }
-  const offset = Number.isFinite(minPage) ? minPage - 1 : 0;
+  // REQ-0037: samme faste utgangspunkt som manusvisningen (alle importerte blokker), så låste sider ikke
+  // flytter seg når scener byttes om, deaktiveres eller slettes
+  // og hvert importert dokument har sitt eget sidenummerrom (lockedPageMapper)
+  const map = lockedPageMapper(s);
   const locked = (page: number | undefined) =>
-    opts.lockedPages && page !== undefined ? { lockedPage: page - offset } : {};
+    opts.lockedPages && page !== undefined ? { lockedPage: page } : {};
   return numbered.map((n) => {
     const occ = s.occurrences[n.occurrenceId]!;
     if (n.omitted) {
       return {
         occurrenceId: n.occurrenceId,
         number: n.exportNumber,
-        headingText: opts.omittedText ?? L("UTGÅR", "OMITTED"),
+        headingText: opts.omittedText ?? t("core-screenplay-numbering.heading-text.heading-text.19d4b465cb9f"),
         blocks: [],
       };
     }
@@ -175,10 +170,7 @@ export function exportPaginationInput(
           {
             id: `${n.occurrenceId}:deaktivert`,
             kind: "note" as const,
-            text: L(
-              "[DEAKTIVERT SCENE – IKKE MED I FILMEN]",
-              "[DEACTIVATED SCENE – NOT IN THE FILM]",
-            ),
+            text: t("core-screenplay-numbering.text.text.a4a0b350ede1"),
           },
         ]
       : [];
@@ -186,14 +178,14 @@ export function exportPaginationInput(
       occurrenceId: n.occurrenceId,
       number: n.exportNumber,
       headingText: formatHeading(n.heading),
-      ...locked(blocks[0]?.sourceRef?.page),
+      ...locked(sceneSourcePage(blocks, map)),
       blocks: [
         ...marker,
         ...blocks.map((b) => ({
           id: b.id,
           kind: b.kind,
           text: b.text,
-          ...locked(b.sourceRef?.page),
+          ...locked(map(b.sourceRef)),
           ...fountainMarksOf(b.sourceRef, b.text),
         })),
       ],

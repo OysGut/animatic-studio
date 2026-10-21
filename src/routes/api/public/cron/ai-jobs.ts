@@ -45,6 +45,17 @@ export const Route = createFileRoute("/api/public/cron/ai-jobs")({
           Object.assign(run, summary);
           // Køen (fra 0025): send ventende jobber der det er blitt ledig plass
           if (schema.version >= 25) run.sent = await pumpVideoQueue(db, { budgetMs: 20_000 });
+          if (schema.version >= 61) {
+            const { pumpDialogueBatches } = await import("@/adapters/storage/dialogue-batch.server");
+            const speech = await pumpDialogueBatches(db);
+            run.checked += speech.processed;
+          }
+          // P8: masseharmonisering fortsetter selv om fanen lukkes (lease og kvitteringer, 0065)
+          if (schema.version >= 65) {
+            const { pumpHarmonizeBatches } = await import("@/adapters/storage/harmonize-batch.server");
+            const images = await pumpHarmonizeBatches(db);
+            run.checked += images.processed;
+          }
           // Kontoer der de 30 dagene er gått (fra 0033)
           if (schema.version >= 33) {
             const { purgeDueAccounts } = await import("@/adapters/account/admin.functions");

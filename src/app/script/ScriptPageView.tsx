@@ -4,16 +4,9 @@
  */
 import { MessageSquare } from "lucide-react";
 import { memo, useMemo, type ReactNode } from "react";
-import {
-  L,
-  flowLines,
-  lineKey,
-  type LineDecor,
-  type Page,
-  type PageLine,
-  type ProjectState,
-  tm,
-} from "@/core";
+import { flowLines, lineKey, type LineDecor, type Page, type PageLine, type ProjectState, tm } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 export interface Selection {
   readonly occurrenceId: string | null;
@@ -131,9 +124,10 @@ const PageSheet = memo(function PageSheet({
   changed,
   language,
 }: SheetProps) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   return (
     <section
-      aria-label={L(`Side ${page.number}`, `Page ${page.number}`)}
+      aria-label={t("app-script-script-page-view.page-sheet.aria-label.3ca941d4c1f5", { number: String(page.number) })}
       data-page={page.number}
       className="relative shrink-0 bg-script-paper font-script text-script-ink shadow-[0_1px_0_rgb(255_255_255/0.04),0_8px_24px_rgb(0_0_0/0.45)]"
       style={{
@@ -277,8 +271,8 @@ function Line({
         <span
           className="absolute flex select-none items-center justify-center"
           style={{ top, left: "2.2em", width: "1em", height: "1em" }}
-          title={L(`Usikker tolkning: ${uncertain}`, `Uncertain interpretation: ${tm(uncertain)}`)}
-          aria-label={L("Usikker tolkning", "Uncertain interpretation")}
+          title={t("app-script-script-page-view.uncertain-interpretation", { reason: tm(uncertain) })}
+          aria-label={t("app-script-script-page-view.line.aria-label.387f4bf73f1a")}
         >
           <span
             className="flex items-center justify-center rounded-full bg-status-uncertain font-sans font-bold text-accent-fg"
@@ -292,11 +286,8 @@ function Line({
         <span
           className="absolute select-none rounded-sm bg-status-danger"
           style={{ top, left: "3.4em", width: "0.25em", height: "1em" }}
-          title={L(
-            "Endret etter at materialet (2D-scene eller film) ble laget – se inspektøren",
-            "Changed after the material (2D scene or film) was made – see the inspector",
-          )}
-          aria-label={L("Endret etter materialet", "Changed since the material was made")}
+          title={t("app-script-script-page-view.line.title.203abf286a8a")}
+          aria-label={t("app-script-script-page-view.line.aria-label.80023fd8c0e5")}
         />
       ) : null}
       {lang && lang !== "missing" && langFirst ? (
@@ -308,19 +299,13 @@ function Line({
           style={{ top, left: "2.9em", width: "0.25em", height: "1em" }}
           title={
             lang === "review"
-              ? L(
-                  "Den norske teksten er endret etter oversettelsen – gjennomgå den",
-                  "The Norwegian text has changed since the translation – review it",
-                )
-              : L(
-                  "Usikker kobling fra import – godkjenn eller rett oversettelsen",
-                  "Uncertain link from import – approve or correct the translation",
-                )
+              ? t("app-script-script-page-view.line.title.a542e5888d4b")
+              : t("app-script-script-page-view.line.title.bf72fcfbadbc")
           }
           aria-label={
             lang === "review"
-              ? L("Oversettelsen må gjennomgås", "The translation must be reviewed")
-              : L("Usikker oversettelse", "Uncertain translation")
+              ? t("app-script-script-page-view.line.aria-label.13b008121044")
+              : t("app-script-script-page-view.line.aria-label.a16a75e4aaf5")
           }
         />
       ) : null}
@@ -331,16 +316,13 @@ function Line({
           style={{ top, left: "46.4em", height: "1em", fontSize: "1em" }}
           title={
             decor.notesHere.length === 1
-              ? L("Vis notatet", "Show the note")
-              : L(`Vis ${decor.notesHere.length} notater`, `Show ${decor.notesHere.length} notes`)
+              ? t("app-script-script-page-view.line.title.dc102e51c07d")
+              : t("app-script-script-page-view.line.title.2563837d80d2", { length: String(decor.notesHere.length) })
           }
           aria-label={
             decor.notesHere.length === 1
-              ? L("Notat – vis", "Note – show")
-              : L(
-                  `${decor.notesHere.length} notater – vis`,
-                  `${decor.notesHere.length} notes – show`,
-                )
+              ? t("app-script-script-page-view.line.aria-label.cbcb7ee33c65")
+              : t("app-script-script-page-view.line.aria-label.8d4e39b3c803", { length: String(decor.notesHere.length) })
           }
           onClick={() => onNoteClick?.(decor.notesHere, sel)}
         >
@@ -371,10 +353,7 @@ function Line({
         }
         title={
           lang === "missing"
-            ? L(
-                "Ikke oversatt ennå (norsk tekst vises)",
-                "Not translated yet (Norwegian text shown)",
-              )
+            ? t("app-script-script-page-view.line.title.528ac11afc9d")
             : undefined
         }
         style={{
@@ -436,7 +415,7 @@ function FlowSheet({
   return (
     <div className="px-6 py-4" style={{ fontSize: `${16 * zoom}px` }}>
       <section
-        aria-label={L("Valgt scene (lesevisning)", "Selected scene (reading view)")}
+        aria-label={t("app-script-script-page-view.flow-sheet.aria-label.aa89dad7a83b")}
         data-flow
         className={"relative mx-auto font-script " + (light ? "text-on-paper" : "text-text-primary")}
         style={{

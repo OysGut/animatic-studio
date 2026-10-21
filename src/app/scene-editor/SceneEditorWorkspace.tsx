@@ -19,41 +19,14 @@ import {
   Redo2,
   Undo2,
 } from "lucide-react";
+import { followRangeLength } from "@/core/animation/time-format";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
-import {
-  DEFAULT_COMPOSITION,
-  L,
-  compositionDuration,
-  defaultLayerFields,
-  compositionOfVariant,
-  formatHeading,
-  sceneNumberOf,
-  framesToSeconds,
-  layerVersion,
-  layerVersions,
-  layerFieldsOf,
-  layersOf,
-  newMotionPath,
-  pathPointsFromDrawing,
-  isSharedIn,
-  newId,
-  ownCopyCommands,
-  occurrenceKind,
-  orderedOccurrences,
-  audioClipFieldsOf,
-  audioVersion,
-  filmClips,
-  sceneWindowAudio,
-  type Composition,
-  type ProjectState,
-  sceneContinuityVariant,
-  previousSceneCamera,
-  sourceAt,
-  carryTargets,
-} from "@/core";
+import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
+import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -71,6 +44,7 @@ import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
+import { useSceneLastChanges } from "./use-scene-last-changes";
 import { ScenePicker } from "./ScenePicker";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
@@ -106,19 +80,31 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
 import { isShortcutHelpKey } from "@/app/shortcuts/shortcut-list";
 import { isTypingTarget } from "./Timeline";
-import { AnimationWorkspace } from "./animation/AnimationWorkspace";
 import { VariantTracks } from "./animation/VariantTracks";
 import { DialogueTrack } from "./animation/DialogueTrack";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { MouthTrack } from "./animation/MouthTrack";
+import { PatternStudio } from "./animation/PatternStudio";
+import { SceneTrackGroups } from "./animation/SceneTrackGroups";
+import { RhythmPanel } from "./animation/RhythmPanel";
+import { runGroup } from "@/app/storylab/canvas/run-group";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function SceneEditorWorkspace({
   projectId,
   userId,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
+  initialTab = null,
 }: {
+  initialTab?: string | null;
   projectId: string;
   userId: string;
   initialOccurrenceId: string | null;
+  /** DV7: lenke ut fra et avvik – sett avspillingshodet på replikkstart (uten å starte avspilling). */
+  initialLineId?: string | null;
+  /** DV8: bokmerke – bildet avspillingshodet stod på. */
+  initialFrame?: number | null;
 }) {
   const query = useProjectState(projectId);
   const members = useMembers(projectId);
@@ -128,16 +114,16 @@ export function SceneEditorWorkspace({
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter scenene …", "Loading the scene …")}
+        {tk("app-scene-editor-scene-editor-workspace.scene-editor-workspace.p.23040d10d318")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Scenene kunne ikke hentes.", "The scene could not be loaded.")}
+        {tk("app-scene-editor-scene-editor-workspace.scene-editor-workspace.div.1f17b61153ea")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L("Teknisk detalj:", "Technical detail:")} {query.error.message}
+            {tk("app-scene-editor-scene-editor-workspace.scene-editor-workspace.p.41327cc1e871")} {query.error.message}
           </p>
         ) : null}
       </div>
@@ -150,6 +136,9 @@ export function SceneEditorWorkspace({
       roleKnown={members.isSuccess}
       cmds={cmds}
       initialOccurrenceId={initialOccurrenceId}
+      initialLineId={initialLineId}
+      initialFrame={initialFrame}
+      initialTab={initialTab}
       userId={userId}
     />
   );
@@ -162,8 +151,14 @@ function Editor({
   roleKnown,
   cmds,
   initialOccurrenceId,
+  initialLineId = null,
+  initialFrame = null,
+  initialTab = null,
   userId,
 }: {
+  initialTab?: string | null;
+  initialLineId?: string | null;
+  initialFrame?: number | null;
   userId: string;
   state: ProjectState;
   editable: boolean;
@@ -172,6 +167,7 @@ function Editor({
   initialOccurrenceId: string | null;
   projectId: string;
 }) {
+  const lastChanges = useSceneLastChanges(projectId);
   const [copyError, setCopyError] = useState<string | null>(null);
   // Valgt produksjon (DEC-0057)
   const [productionId, setProductionId] = useActiveProduction(
@@ -217,7 +213,7 @@ function Editor({
     if (!commands) return;
     const group = newId();
     for (const c of commands) {
-      const err = cmds.run(c, L("Egen versjon av scenen", "Own copy of the scene"), group);
+      const err = cmds.run(c, tk("app-scene-editor-scene-editor-workspace.err.cmds-run.0f6070f03631"), group);
       if (err) {
         setCopyError(err);
         return;
@@ -229,7 +225,7 @@ function Editor({
   // Manuset i eget vindu (DEC-0089)
   const [scriptEdit, setScriptEdit] = useState<{ blockId: string | null } | null>(null);
   const me = useProfiles([userId]);
-  const myName = me.data?.[userId]?.display_name || L("Medlem", "Member");
+  const myName = me.data?.[userId]?.display_name || tk("app-scene-editor-scene-editor-workspace.my-name.message.fb62c54c5770");
   const [selectedShotId, setSelectedShotIdState] = useState<string | null>(null);
   // Ett valg om gangen: et lag eller et kamerautsnitt
   // Stabile funksjoner, så panelene som er memoisert ikke tegnes om for hvert bilde under avspilling
@@ -268,14 +264,25 @@ function Editor({
   // «Ressurs oppdatert» (REQ-0022): scener laget med en eldre ressursversjon
   const contentSync = useContentSync(state, projectId, productionId);
   const [retimeRequest, setRetimeRequest] = useState(0);
+  /** B-100: foreslått lengde når endringen åpnes fra varselet om tid etter slutten. */
+  const [retimeFrames, setRetimeFrames] = useState<number | undefined>(undefined);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
   );
-  const [sceneTab, setSceneTab] = useState("scene");
+  const [tracksOpen, setTracksOpen] = useState(initialTab === "animation");
+  // B-100: spacing-drag – forhåndsvisning (ingen skriving) og uthevingen på lerretet
+  const [spacingPreview, setSpacingPreview] = useState<ProjectState | null>(null);
+  const [spacingHover, setSpacingHover] = useState<{ layerId: string; frame: number; whole: boolean } | null>(null);
   const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
   useEffect(() => { setAnimationRange(null); }, [composition?.id]);
-  const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
+  // B-100: avspillingsområdet følger ny lengde etter omtiming
+  const prevDurationRef = useRef(duration);
+  useEffect(() => {
+    const prev = prevDurationRef.current; prevDurationRef.current = duration;
+    if (prev !== duration) setAnimationRange(r => followRangeLength(r, prev, duration));
+  }, [duration]);
+  const playback = usePlayback(duration, state.project.fps, true, tracksOpen ? animationRange : null);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
@@ -359,6 +366,8 @@ function Editor({
       : null;
   const [addOpen, setAddOpen] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
+  /** DV1: replikken opptaksvinduet åpnes med (dobbeltklikk i manuset), eller null (mikrofonikonet). */
+  const [recordBlockId, setRecordBlockId] = useState<string | null>(null);
   const [aiVideoOpen, setAiVideoOpen] = useState(false);
   /** Avvik ved manusendring for scenen (DEC-0054). */
   const found = useSceneDiscrepancies(state, occurrenceId);
@@ -384,7 +393,7 @@ function Editor({
       if (!occurrenceId) return null;
       const t = carryTargets(state, id, occurrenceId);
       if (!t.next)
-        return L("Det er ingen neste scene i produksjonen.", "There is no next scene in the production.");
+        return tk("app-scene-editor-scene-editor-workspace.carry-next.use-callback.30073f7c98b9");
       const opt = t.options.find((o) => o.occurrenceId === t.next);
       if (opt?.duplicates.length) {
         setCarry({ layerId: id, preselect: t.next });
@@ -392,15 +401,13 @@ function Editor({
       }
       const r = await runCarryOver(state, cmds, id, occurrenceId, [{ occurrenceId: t.next, mode: "add" }]);
       if (r.error) return r.error;
-      return L(
-        `Lagt til i scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
-        `Added to scene ${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() + ".",
-      );
+      return tk("app-scene-editor-scene-editor-workspace.added-to-scene", { scene: `${opt?.number ?? ""} ${opt?.heading ?? ""}`.trim() });
     },
     [occurrenceId, state, cmds],
   );
   /** Åpne bildet stort med «Oppskaler» fremme (advarselen om forstørrelse, DEC-0080). */
   const [upscaleOpen, setUpscaleOpen] = useState(false);
+  const [harmonizeOpen, setHarmonizeOpen] = useState(false);
   const openLayerImage = useCallback(
     (id: string) => {
       setSelectedLayerId(id);
@@ -454,8 +461,8 @@ function Editor({
           ],
         },
         selectedLayer.path
-          ? L("Tegn banen på nytt", "Redraw the path")
-          : L("Ny bevegelsesbane", "New motion path"),
+          ? tk("app-scene-editor-scene-editor-workspace.path-drawn.cmds-run.dec8783983a0")
+          : tk("app-scene-editor-scene-editor-workspace.path-drawn.cmds-run.671f6aaabff3"),
       ),
     );
   }
@@ -523,7 +530,7 @@ function Editor({
             },
           ],
         },
-        L(`Nytt lag «${f.name}»`, `New layer “${f.name}”`),
+        tk("app-scene-editor-scene-editor-workspace.err.cmds-run.4d683d6ca3aa", { name: String(f.name) }),
       );
       setError(err);
       if (!err) setSelectedLayerId(layerId);
@@ -550,7 +557,7 @@ function Editor({
     if (shared) {
       group = newId();
       for (const c of ownCopyCommands(state, occurrence.id) ?? []) {
-        const e = cmds.run(c, L("Egen versjon av scenen", "Own copy of the scene"), group);
+        const e = cmds.run(c, tk("app-scene-editor-scene-editor-workspace.e.cmds-run.ab974716bf79"), group);
         if (e) {
           setError(e);
           return;
@@ -571,7 +578,7 @@ function Editor({
             height: state.project.frameHeight,
           },
         },
-        L("Ny 2D-scene", "New 2D scene"),
+        tk("app-scene-editor-scene-editor-workspace.create.cmds-run.9a4e15ced040"),
         group,
       ),
     );
@@ -579,6 +586,19 @@ function Editor({
 
   const side = panelsUi.mode === "side";
   const filmClip = occurrence ? (film.find((c) => c.occurrenceId === occurrence.id) ?? null) : null;
+  // DV7/DV8: hopp til replikken eller bokmerket én gang etter åpning. Avspilling startes aldri automatisk.
+  const [entrySeek, setEntrySeek] = useState<string | null>(null);
+  const entryDone = useRef(false);
+  useEffect(() => {
+    if (entryDone.current || !occurrence || occurrence.id !== initialOccurrenceId) return;
+    entryDone.current = true;
+    if (initialLineId) {
+      const t = scriptSeekTarget(state, filmClip, initialLineId);
+      if (t.compFrame !== null) { playback.pause(); playback.setFrame(t.compFrame); setEntrySeek(null); }
+      else setEntrySeek(tk("app-scene-editor-scene-editor-workspace.editor.set-entry-seek.3bc01f2622c8"));
+    } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
+  }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, filmClip, state, playback]);
+  useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: tracksOpen ? "animation" : "scene" }); }, [projectId, occurrence?.id, playback.frame, tracksOpen]);
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
@@ -591,6 +611,21 @@ function Editor({
         playing={playback.playing}
         editable={roleEditable}
         onOpenEditor={(blockId) => setScriptEdit({ blockId })}
+        run={cmds.run}
+        authorName={myName}
+        projectId={projectId}
+        onSeek={(f) => {
+          playback.pause();
+          playback.setFrame(f);
+        }}
+        onOpenDialogue={
+          audioEditable
+            ? (blockId) => {
+                setRecordBlockId(blockId);
+                setRecordOpen(true);
+              }
+            : undefined
+        }
       />
     ) : null,
     assets: occurrence ? (
@@ -674,6 +709,10 @@ function Editor({
             setUpscaleOpen(true);
             openLayerImage(selectedLayer.id);
           }}
+          onHarmonize={() => {
+            setHarmonizeOpen(true);
+            openLayerImage(selectedLayer.id);
+          }}
           onSeek={playback.setFrame}
           durationFrames={duration}
           drawingPath={drawingPath}
@@ -688,7 +727,7 @@ function Editor({
           composition={composition}
           editable={editable}
           run={cmds.run}
-          onChangeDuration={() => setRetimeRequest((n) => n + 1)}
+          onChangeDuration={() => { setRetimeFrames(undefined); setRetimeRequest((n) => n + 1); }}
         />
       )
     ) : null,
@@ -715,7 +754,7 @@ function Editor({
       <Toolbar overflow="menu">
         <ToolbarGroup priority={9} className="[&>select]:max-w-[180px] [&>select]:truncate">
         <span className="text-chrome font-medium text-text-primary">
-          {L("Sceneeditor", "Scene editor")}
+          {tk("app-scene-editor-scene-editor-workspace.editor.span.2249b830c7b6")}
         </span>
         <ProductionPicker state={state} value={productionId} onChange={setProductionId} />
         </ToolbarGroup>
@@ -728,6 +767,7 @@ function Editor({
           hasComposition={hasComposition}
           onPick={pickScene}
           synced={contentSync}
+          lastChanged={lastChanges.data}
         />
         <ContentSyncFlag
           state={state}
@@ -747,13 +787,13 @@ function Editor({
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
-              : L("Angre (⌘Z)", "Undo (⌘Z)")
+              ? tk("app-scene-editor-scene-editor-workspace.editor.title.e806c9272ff8", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-scene-editor-scene-editor-workspace.editor.title.d4b1594b01d6")
           }
           label={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-              : L("Angre", "Undo")
+              ? tk("app-scene-editor-scene-editor-workspace.editor.label.99e804f17a71", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-scene-editor-scene-editor-workspace.editor.label.7e7750dbf9be")
           }
         >
           <Undo2 />
@@ -764,13 +804,13 @@ function Editor({
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
-              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+              ? tk("app-scene-editor-scene-editor-workspace.editor.title.e9e4b22177d6", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-scene-editor-scene-editor-workspace.editor.title.529ee1aa35be")
           }
           label={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-              : L("Gjør om", "Redo")
+              ? tk("app-scene-editor-scene-editor-workspace.editor.label.ecc4ac262fd0", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-scene-editor-scene-editor-workspace.editor.label.25ea55415f55")
           }
         >
           <Redo2 />
@@ -784,8 +824,8 @@ function Editor({
               params={{ projectId }}
               search={{ scene: occurrence.sceneId }}
               data-testid="scene-editor-storylab"
-              title={L("Utforsk dialogen i Story Lab", "Explore the dialogue in Story Lab")}
-              aria-label={L("Utforsk dialogen", "Explore the dialogue")}
+              title={tk("app-scene-editor-scene-editor-workspace.editor.title.52abdb98d1c3")}
+              aria-label={tk("app-scene-editor-scene-editor-workspace.editor.aria-label.4202ee21c2e3")}
             >
               <Drama />
             </Link>
@@ -794,7 +834,7 @@ function Editor({
         {editable && composition ? (
           <ToolbarButton variant="default" onClick={() => setAddOpen(true)}>
             <Plus />
-            {L("Legg til lag", "Add layer")}
+            {tk("app-scene-editor-scene-editor-workspace.editor.toolbar-button.c5dfcc6d6a55")}
           </ToolbarButton>
         ) : null}
         {editable && composition ? (
@@ -807,14 +847,12 @@ function Editor({
               playback.pause();
               setRecordOpen(true);
             }}
-            title={L(
-              "Ta opp en replikk eller lyd fra avspillingshodet",
-              "Record a line or sound from the playhead",
-            )}
+            title={tk("app-scene-editor-scene-editor-workspace.editor.title.8ac2c1b9be74")}
+            data-testid="scene-record-audio"
           >
             <Mic aria-hidden />
             {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
-            <span className="sr-only min-[1400px]:not-sr-only">{L("Opptak", "Recording")}</span>
+            <span className="sr-only min-[1400px]:not-sr-only">{tk("app-scene-editor-scene-editor-workspace.editor.span.afe8e346b772")}</span>
           </ToolbarButton>
         ) : null}
         {/* Bilder og video fra mobilen til denne scenen (DEC-0090): én QR-kode per scene */}
@@ -822,16 +860,14 @@ function Editor({
           <MobileCameraButton
             projectId={projectId}
             context={{ type: "occurrence", occurrenceId: occurrence.id }}
-            label={L(
-              `Scene ${sceneNumberOf(state, occurrence) ?? ""} · ${formatHeading(variant.heading)}`,
-              `Scene ${sceneNumberOf(state, occurrence) ?? ""} · ${formatHeading(variant.heading)}`,
-            )}
+            label={tk("app-scene-editor-scene-editor-workspace.editor.label.6667cd0c77de", { value1: String(sceneNumberOf(state, occurrence) ?? ""), value2: String(formatHeading(variant.heading)) })}
             actions={(row) => (
               <SceneMobileActions
                 state={state}
                 cmds={cmds}
                 occurrenceId={occurrence.id}
                 row={row}
+                atMs={Math.round((playback.frame / (state.project.fps.num / state.project.fps.den)) * 1000)}
               />
             )}
           />
@@ -843,14 +879,11 @@ function Editor({
               playback.pause();
               setAiVideoOpen(true);
             }}
-            title={L(
-              "Send 2D-scenen til AI og få den tegnet om til ferdig film. Bare bildet erstattes; lyden beholdes. Du velger selv hva som viser scenen.",
-              "Send the 2D scene to AI and have it redrawn as finished film. Only the picture is replaced; the sound is kept. You choose what shows the scene.",
-            )}
+            title={tk("app-scene-editor-scene-editor-workspace.editor.title.4491df52ab98")}
             data-testid="scene-ai-video"
           >
             <AiGlyph aria-hidden />
-            {L("AI-video …", "AI video …")}
+            {tk("app-scene-editor-scene-editor-workspace.editor.toolbar-button.8c25f8bf1c29")}
           </ToolbarButton>
         ) : null}
         </ToolbarGroup>
@@ -861,14 +894,11 @@ function Editor({
                 active={neighbours}
                 onClick={() => setNeighbours(!neighbours)}
                 aria-pressed={neighbours}
-                title={L(
-                  "Spill scenen før og etter som ferdig film, i sammenheng med denne",
-                  "Play the scene before and after as a finished film, in context with this one",
-                )}
+                title={tk("app-scene-editor-scene-editor-workspace.editor.title.3b3587ae10f7")}
               >
                 <Clapperboard aria-hidden />
                 <span className="sr-only min-[1400px]:not-sr-only">
-                  {L("Naboscener", "Neighbouring scenes")}
+                  {tk("app-scene-editor-scene-editor-workspace.editor.span.ebe0ce4c8f96")}
                 </span>
               </ToolbarButton>
               {/* Forhåndsvisning med valg i en liten meny, så verktøylinjen ikke bryter tekst (DEC-0076 funn 6) */}
@@ -877,15 +907,12 @@ function Editor({
                   active={previewOpen}
                   onClick={() => setPreviewOpen(!previewOpen)}
                   aria-pressed={previewOpen}
-                  title={L(
-                    "Vis det ferdige utsnittet (kamera og bevegelser) i et eget vindu",
-                    "Show the finished shot (camera and movement) in a separate window",
-                  )}
+                  title={tk("app-scene-editor-scene-editor-workspace.editor.title.2e07b83195bb")}
                   className="rounded-r-none"
                 >
                   <MonitorPlay aria-hidden />
                   <span className="sr-only min-[1400px]:not-sr-only">
-                    {L("Forhåndsvisning", "Preview")}
+                    {tk("app-scene-editor-scene-editor-workspace.editor.span.ec87bccdc2ea")}
                   </span>
                 </ToolbarButton>
                 <Popover>
@@ -893,14 +920,11 @@ function Editor({
                     <ToolbarButton
                       active={previewOpen}
                       className="w-6 rounded-l-none px-0"
-                      aria-label={L("Valg for forhåndsvisning", "Preview options")}
+                      aria-label={tk("app-scene-editor-scene-editor-workspace.editor.aria-label.e7ce1cd78f42")}
                       title={
                         autoPreview
-                          ? L(
-                              "Valg for forhåndsvisning: vises automatisk ved avspilling",
-                              "Preview options: shown automatically during playback",
-                            )
-                          : L("Valg for forhåndsvisning", "Preview options")
+                          ? tk("app-scene-editor-scene-editor-workspace.editor.title.01b7c41be3cc")
+                          : tk("app-scene-editor-scene-editor-workspace.editor.title.e7ce1cd78f42")
                       }
                     >
                       <ChevronDown className="size-3" aria-hidden />
@@ -909,10 +933,7 @@ function Editor({
                   <PopoverContent align="end" className="flex w-64 flex-col gap-1 p-3">
                     <label
                       className="flex items-start gap-2 text-xs text-text-secondary"
-                      title={L(
-                        "Det ferdige utsnittet vises mens scenen spilles, og lukkes når avspillingen stopper",
-                        "The finished shot is shown while the scene plays, and closes when playback stops",
-                      )}
+                      title={tk("app-scene-editor-scene-editor-workspace.editor.title.5a93217ad16a")}
                     >
                       <input
                         type="checkbox"
@@ -922,13 +943,10 @@ function Editor({
                       />
                       <span className="flex flex-col gap-0.5">
                         <span className="text-text-primary">
-                          {L("Automatisk visning", "Automatic preview")}
+                          {tk("app-scene-editor-scene-editor-workspace.editor.span.f49b32ec6483")}
                         </span>
                         <span className="text-[11px] text-text-tertiary">
-                          {L(
-                            "Vis det ferdige utsnittet mens scenen spilles av.",
-                            "Show the finished shot while the scene plays.",
-                          )}
+                          {tk("app-scene-editor-scene-editor-workspace.editor.span.95f187b65135")}
                         </span>
                       </span>
                     </label>
@@ -942,16 +960,10 @@ function Editor({
                       />
                       <span className="flex flex-col gap-0.5">
                         <span className="text-text-primary">
-                          {L(
-                            "Spill versjonen som brukes i filmen",
-                            "Play the version used in the film",
-                          )}
+                          {tk("app-scene-editor-scene-editor-workspace.editor.span.7c545b56fb78")}
                         </span>
                         <span className="text-[11px] text-text-tertiary">
-                          {L(
-                            "Vises scenen som AI-video eller film, spilles den i forhåndsvisningen. Av: alltid 2D-scenen. Velg versjon under «AI-video …».",
-                            "If the scene is shown as AI video or film, it plays in the preview. Off: always the 2D scene. Choose the version under “AI video …”.",
-                          )}
+                          {tk("app-scene-editor-scene-editor-workspace.editor.span.eb3fdde9ba7e")}
                         </span>
                       </span>
                     </label>
@@ -966,27 +978,11 @@ function Editor({
           <SaveIndicator cmds={cmds} />
           {roleKnown && !roleEditable ? (
             <span className="text-xs text-text-tertiary">
-              {L("Bare lesetilgang", "Read-only access")}
+              {tk("app-scene-editor-scene-editor-workspace.editor.span.c8853089711a")}
             </span>
           ) : null}
         </div>
       </Toolbar>
-      <Tabs value={sceneTab} onValueChange={setSceneTab}>
-        <TabsList className="h-8 w-full justify-start rounded-none border-b border-border bg-surface-2 p-0">
-          <TabsTrigger value="scene" data-testid="scene-tab-scene" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{L("Scene", "Scene")}</TabsTrigger>
-          <TabsTrigger value="animation" data-testid="scene-tab-animation" className="h-8 rounded-none border-b-2 border-transparent text-xs data-[state=active]:border-accent-brand data-[state=active]:bg-surface-2 data-[state=active]:shadow-none">{L("Animasjon", "Animation")}</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {sceneTab === "animation" && composition && occurrence ? (
-        <AnimationWorkspace key={composition.id} state={state} composition={composition} duration={duration}
-          playback={playback} range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
-          urls={urls.data ?? {}} tracks={animView => <>
-            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
-              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio} />
-            <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
-              view={animView} onOpen={setProfileId} />
-          </>} />
-      ) : (
       <div className="flex min-h-0 flex-1">
         {/* Ressursene i scenen (side om side står de sammen med de andre panelene til høyre) */}
         {side ? null : (
@@ -1000,11 +996,11 @@ function Editor({
               onSize={setLeftWidth}
               min={180}
               max={480}
-              label={L("Bredde på «I denne scenen»", "Width of “In this scene”")}
+              label={tk("app-scene-editor-scene-editor-workspace.editor.label.f81097ddcd9e")}
             />
             {occurrences.length === 0 ? (
               <p className="px-3 py-3 text-xs text-text-tertiary">
-                {L("Ingen scener. Importer manuset først.", "No scenes. Import the script first.")}
+                {tk("app-scene-editor-scene-editor-workspace.editor.p.d4f81c086c37")}
               </p>
             ) : null}
             {occurrence ? (
@@ -1024,6 +1020,7 @@ function Editor({
 
         {/* Arbeidsflaten */}
         <main
+          aria-label={tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.676cd3d0670d")}
           className={
             "flex flex-1 flex-col bg-surface-0 " +
             // Side om side: lerretet beholder en brukbar bredde; panelområdet ruller sidelengs
@@ -1033,18 +1030,15 @@ function Editor({
           {!occurrence || !variant ? (
             <p className="m-auto text-[13px] text-text-tertiary">
               {occurrences.length === 0
-                ? L("Ingen scener i prosjektet ennå.", "No scenes in the project yet.")
-                : L("Velg en scene.", "Choose a scene.")}
+                ? tk("app-scene-editor-scene-editor-workspace.editor.p.969df8128793")
+                : tk("app-scene-editor-scene-editor-workspace.editor.p.0d6cb3a369bf")}
             </p>
           ) : !composition ? (
             <EmptyScene
               title={formatHeading(variant.heading)}
               editable={roleEditable}
               onCreate={create}
-              format={L(
-                `${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} bilder/s`,
-                `${state.project.frameWidth} × ${state.project.frameHeight} px · ${formatFps(state.project.fps)} fps`,
-              )}
+              format={tk("app-scene-editor-scene-editor-workspace.editor.format.4c15e7a68aa4", { frameWidth: String(state.project.frameWidth), frameHeight: String(state.project.frameHeight), value3: String(formatFps(state.project.fps)) })}
               error={error}
             />
           ) : (
@@ -1055,34 +1049,35 @@ function Editor({
                   className="flex min-h-8 shrink-0 flex-wrap items-center gap-2 border-b border-border bg-surface-2 px-3 py-1 text-xs text-text-primary"
                 >
                   <Copy className="size-3.5 text-text-tertiary" aria-hidden />
-                  {L(
-                    "2D-scenen deles med hovedfilmen. Lag en egen versjon for å endre den her – hovedfilmen endres ikke.",
-                    "The 2D scene is shared with the main film. Make an own copy to change it here – the main film is not changed.",
-                  )}
+                  {tk("app-scene-editor-scene-editor-workspace.editor.div.2743259f00d0")}
                   <Button size="sm" variant="secondary" className="h-6" onClick={makeOwnCopy}>
-                    {L("Lag egen versjon for «", "Make an own copy for “")}
+                    {tk("app-scene-editor-scene-editor-workspace.editor.button.3df8bce7bb3c")}
                     {state.productions[productionId]?.name}
-                    {L("»", "”")}
+                    {tk("app-scene-editor-scene-editor-workspace.editor.button.e4566fdbafd5")}
                   </Button>
                   {copyError ? <span className="text-status-danger">{copyError}</span> : null}
                 </div>
               ) : null}
+              {entrySeek ? (
+                <div role="status" data-testid="scene-entry-seek" className="flex min-h-8 shrink-0 items-center gap-2 border-b border-border bg-status-uncertain-bg px-3 py-1 text-xs text-text-primary">
+                  {entrySeek}
+                  <Button size="sm" variant="ghost" className="h-6" onClick={() => setEntrySeek(null)}>{tk("app-scene-editor-scene-editor-workspace.editor.button.462670b432ce")}</Button>
+                </div>
+              ) : null}
+              {occurrence ? <div className="flex h-7 shrink-0 items-center gap-2 border-b border-border px-3 text-xs text-text-secondary"><NoteFlagControl state={state} kind="occurrence" targetId={occurrence.id} run={cmds.run} editable={roleEditable} />{tk("app-scene-editor-scene-editor-workspace.editor.div.b16b3f213ee9")}</div> : null}
               {found.length > 0 ? (
                 <div
                   role="status"
                   className="flex h-8 shrink-0 items-center gap-2 border-b border-status-danger/40 bg-status-danger-bg px-3 text-xs text-text-primary"
                 >
                   <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-                  {L(
-                    "Manuset er endret etter at materialet ble laget",
-                    "The script has changed since the material was made",
-                  )}{" "}
+                  {tk("app-scene-editor-scene-editor-workspace.editor.div.25c199e50762")}{" "}
                   (
                   {(() => {
                     const n = new Set(found.flatMap((d) => d.changes.map((c) => c.blockId))).size;
                     return n === 1
-                      ? L("1 endring", "1 change")
-                      : L(`${n} endringer`, `${n} changes`);
+                      ? tk("app-scene-editor-scene-editor-workspace.editor.const-n-new-set-found-flat-map-d-d-changes-map-c-c-block-id-size-return-n-1-l-1-endring-1-change-l-n-endringer-n-changes.ea7ccda45330")
+                      : tk("app-scene-editor-scene-editor-workspace.editor.const-n-new-set-found-flat-map-d-d-changes-map-c-c-block-id-size-return-n-1-l-1-endring-1-change-l-n-endringer-n-changes.81a678653c53", { n: String(n) });
                   })()}
                   ).
                   <Button
@@ -1091,7 +1086,7 @@ function Editor({
                     className="h-6"
                     onClick={() => setChangesOpen(true)}
                   >
-                    {L("Vis og velg …", "View and choose …")}
+                    {tk("app-scene-editor-scene-editor-workspace.editor.button.ffbcd021abf4")}
                   </Button>
                 </div>
               ) : null}
@@ -1104,10 +1099,12 @@ function Editor({
                 onSelectLayer={setSelectedLayerId}
                 onSelectShot={setSelectedShotId}
                 onSeek={playback.setFrame}
+                onExtend={(f) => { setRetimeFrames(f); setRetimeRequest((n) => n + 1); }}
               />
-              <div className="relative flex min-h-0 flex-1 flex-col">
+              <div className="relative flex min-h-[180px] flex-1 flex-col">
                 <Stage
-                  state={state}
+                  state={spacingPreview ?? state}
+                  spacingHover={spacingHover}
                   composition={composition}
                   editable={editable}
                   selectedLayerId={selectedLayer?.id ?? null}
@@ -1140,10 +1137,7 @@ function Editor({
                     onBlocked={() => {
                       setPopout(false);
                       setPreviewNote(
-                        L(
-                          "Nettleseren stoppet det egne vinduet",
-                          "The browser blocked its own window",
-                        ),
+                        tk("app-scene-editor-scene-editor-workspace.editor.set-preview-note.b5e1a42baaeb"),
                       );
                     }}
                     onTogglePlay={playback.toggle}
@@ -1189,6 +1183,7 @@ function Editor({
                 autoKey={autoKey}
                 onAutoKeyChange={setAutoKey}
                 run={cmds.run}
+                spacing={{ onHover: setSpacingHover, onPreview: setSpacingPreview }}
                 retime={{
                   occurrenceId: occurrence.id,
                   runAndWait: cmds.runAndWait,
@@ -1196,6 +1191,7 @@ function Editor({
                   audioOf: retimeAudioOf,
                   audioUrls: soundUrls.data ?? null,
                   request: retimeRequest,
+                  requestFrames: retimeFrames,
                 }}
                 audioRows={(g) => (
                   <SceneAudioRows
@@ -1231,6 +1227,25 @@ function Editor({
                   />
                 )}
               />
+              {occurrence ? (
+                <SceneTrackGroups key={composition.id} state={state} duration={duration} playback={playback}
+                  range={animationRange ?? { from: 0, to: duration - 1 }} onRange={setAnimationRange}
+                  selectedLayerId={selectedLayer?.id ?? null} selectedLayerName={selectedLayer?.name ?? null}
+                  title={tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.9161a95d0f51")}
+                  forceOpen={initialTab === "animation"} onOpenChange={setTracksOpen}
+                  tools={<RhythmPanel state={state} occurrenceId={occurrence.id} editable={editable} run={cmds.run} />}
+                  rhythm={{ state, occurrenceId: occurrence.id, editable, run: cmds.run }}
+                  tracks={animView => <>
+            <VariantTracks state={state} compositionId={composition.id} occurrenceId={occurrence.id} duration={duration} view={animView}
+              frame={playback.frame} editable={editable} run={cmds.run} onSeek={playback.setFrame} onStudio={openAssetStudio}
+              runGroup={(cs, label) => runGroup(cmds, cs, label)} onJump={pickScene} />
+            <DialogueTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} onOpen={setProfileId} />
+            <MouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue}
+              view={animView} frame={playback.frame} editable={editable} run={cmds.run} urls={urls.data ?? {}} />
+            <PatternStudio state={state} duration={duration} editable={editable} run={cmds.run} />
+          </>} />
+              ) : null}
             </>
           )}
         </main>
@@ -1247,7 +1262,7 @@ function Editor({
           />
         ) : composition ? (
           <aside
-            aria-label={L("Lag og egenskaper", "Layers and properties")}
+            aria-label={tk("app-scene-editor-scene-editor-workspace.editor.aria-label.fbb8fed39145")}
             style={{ width: rightWidth }}
             className="relative flex shrink-0 flex-col overflow-y-auto border-l border-border bg-surface-1"
           >
@@ -1257,7 +1272,7 @@ function Editor({
               onSize={setRightWidth}
               min={240}
               max={560}
-              label={L("Bredde på lag og egenskaper", "Width of layers and properties")}
+              label={tk("app-scene-editor-scene-editor-workspace.editor.label.b8136a3a9179")}
             />
             <PanelBar mode="stacked" onChange={panelsUi.setMode} />
             <StackedPanels
@@ -1271,7 +1286,6 @@ function Editor({
           </aside>
         ) : null}
       </div>
-      )}
       {occurrence ? (
         <SceneScriptDialog
           open={scriptEdit !== null}
@@ -1322,12 +1336,9 @@ function Editor({
       <Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
         <DialogContent className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
           <DialogHeader>
-            <DialogTitle>{L("Manusendringer i scenen", "Script changes in the scene")}</DialogTitle>
+            <DialogTitle>{tk("app-scene-editor-scene-editor-workspace.editor.dialog-title.71d5a70577f4")}</DialogTitle>
             <DialogDescription>
-              {L(
-                "Oppdater 2D-scenen her i editoren og godkjenn etterpå, godkjenn slik den er, eller angre manusendringen.",
-                "Update the 2D scene here in the editor and approve afterwards, approve it as it is, or undo the script change.",
-              )}
+              {tk("app-scene-editor-scene-editor-workspace.editor.dialog-description.150558d60e28")}
             </DialogDescription>
           </DialogHeader>
           {occurrenceId ? (
@@ -1349,6 +1360,7 @@ function Editor({
           if (!o) {
             setImageLayerId(null);
             setUpscaleOpen(false);
+            setHarmonizeOpen(false);
           }
         }}
         state={state}
@@ -1357,6 +1369,7 @@ function Editor({
         editable={editable}
         cmds={cmds}
         openUpscale={upscaleOpen}
+        openHarmonize={harmonizeOpen}
       />
       {carry && occurrenceId ? (
         <CarryOverDialog
@@ -1403,7 +1416,11 @@ function Editor({
       {occurrence && audioEditable ? (
         <RecordAudioDialog
           open={recordOpen}
-          onOpenChange={setRecordOpen}
+          onOpenChange={(o) => {
+            setRecordOpen(o);
+            if (!o) setRecordBlockId(null);
+          }}
+          initialBlockId={recordBlockId}
           state={state}
           projectId={projectId}
           cmds={cmds}
@@ -1447,20 +1464,17 @@ function EmptyScene({
       <Layers className="size-8 text-text-tertiary" aria-hidden />
       <p className="text-[13px] text-text-secondary">
         <span className="font-medium text-text-primary">{title}</span>{" "}
-        {L("har ingen 2D-scene ennå.", "has no 2D scene yet.")}
+        {tk("app-scene-editor-scene-editor-workspace.empty-scene.p.8f9d55023582")}
       </p>
       <p className="text-xs text-text-tertiary">
-        {L("Prosjektets format:", "Project format:")} {format}.{" "}
-        {L(
-          "Det endres på prosjektoversikten og gjelder alle scener.",
-          "It is changed on the project overview and applies to all scenes.",
-        )}
+        {tk("app-scene-editor-scene-editor-workspace.empty-scene.p.9ee061ca293a")} {format}.{" "}
+        {tk("app-scene-editor-scene-editor-workspace.empty-scene.p.fe57990443df")}
       </p>
       {editable ? (
-        <Button onClick={onCreate}>{L("Lag 2D-scene", "Create 2D scene")}</Button>
+        <Button onClick={onCreate}>{tk("app-scene-editor-scene-editor-workspace.empty-scene.button.5855c8d3e5cf")}</Button>
       ) : (
         <p className="text-xs text-text-tertiary">
-          {L("Du har bare lesetilgang.", "You have read-only access.")}
+          {tk("app-scene-editor-scene-editor-workspace.empty-scene.p.202428296275")}
         </p>
       )}
       {error ? (
@@ -1475,7 +1489,7 @@ function EmptyScene({
 /** «25», «23,976». */
 function formatFps(fps: { num: number; den: number }): string {
   const v = fps.num / fps.den;
-  return Number.isInteger(v) ? String(v) : v.toFixed(3).replace(".", L(",", "."));
+  return Number.isInteger(v) ? String(v) : v.toFixed(3).replace(".", tk("app-scene-editor-scene-editor-workspace.format-fps.v-to-fixed-3-replace.c0fa8edc6e8f"));
 }
 
 export type { Composition };

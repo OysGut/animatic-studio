@@ -52,12 +52,13 @@ await scenario("AL-eksport-er-ikke-destruktiv", M.sceneA, "nb", async (page) => 
   // Eksporten tegner med renderFrame og endrer aldri komposisjonen: ingen kommandoer sendes
   await page.goto(`${h.base}${h.P}/montering`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
-  await page.getByText("Eksporter", { exact: false }).first().click();
+  await page.getByTestId("assembly-export-open").click();
   await page.getByTestId("export-include-credits").waitFor({ timeout: 5000 });
   check(state.commands.length === 0, "AL: eksportdialogen endrer ingenting");
   await page.keyboard.press("Escape");
   await page.goto(`${h.base}${h.P}/scene?scene=${M.sceneA}`, { waitUntil: "networkidle" });
-  await page.waitForTimeout(2000);
+  // R7: fast pause på 2 s var for kort under last; vent på første lagrad (inntil 30 s).
+  await page.locator("[data-layer-row]").first().waitFor({ timeout: 30000 }).catch(() => {});
   check((await page.locator("[data-layer-row]").count()) > 0, "AL: komposisjonen er fortsatt redigerbar etter eksporten");
 });
 

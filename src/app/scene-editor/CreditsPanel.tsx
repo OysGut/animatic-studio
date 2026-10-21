@@ -4,35 +4,19 @@
  * adskilt fra malen; rekkefølge og skjuling endrer aldri malen. Alt skrives med kommandoer (angre/gjør om).
  */
 import { useMemo, useRef, useState } from "react";
-import {
-  CREDIT_PARTICIPANTS_MAX,
-  CREDIT_PRESENTATIONS,
-  L,
-  compareKeys,
-  creditSequenceOf,
-  keyBetween,
-  newId,
-  type Command,
-  type CreditParticipant,
-  type CreditPresentation,
-  type CreditSequence,
-  type ProjectState,
-} from "@/core";
+import { CREDIT_PARTICIPANTS_MAX, CREDIT_PRESENTATIONS, compareKeys, creditSequenceOf, keyBetween, newId, type Command, type CreditParticipant, type CreditPresentation, type CreditSequence, type ProjectState } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
 import { GlobalLibraryDialog } from "@/app/global/GlobalLibraryDialog";
 import type { Commands } from "@/app/project/use-commands";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 const input =
   "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-[12px] text-text-primary";
 const select =
   "h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-[12px] text-text-primary";
 
-const PRESENTATION_LABEL: Record<CreditPresentation, { nb: string; en: string }> = {
-  roll: { nb: "Rullende", en: "Rolling" },
-  one_at_a_time: { nb: "Én om gangen", en: "One at a time" },
-  positions: { nb: "Plassert i bildet", en: "Positioned in the frame" }, // i18n-ignore – vises via L() under
-};
+const PRESENTATION_LABEL: Record<CreditPresentation, string> = tLocalized({ roll: "app-scene-editor-credits-panel.presentation-roll", one_at_a_time: "app-scene-editor-credits-panel.presentation-one-at-a-time", positions: "app-scene-editor-credits-panel.presentation-positions" });
 
 const ROW_H = 34;
 const VIEW_H = 320;
@@ -69,12 +53,12 @@ function DesignTab({
           ...patch,
         },
       },
-      L("Endre rulleteksten", "Change the credits"),
+      t("app-scene-editor-credits-panel.set.run.8a500abc7f91"),
     );
   return (
     <div className="flex flex-col gap-2 p-2" data-testid="mts-credits-design">
       <label className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
-        {L("Presentasjonsform", "Presentation")}
+        {t("app-scene-editor-credits-panel.design-tab.label.6d8c5561a420")}
         <select
           className={select}
           data-testid="mts-credits-presentation"
@@ -84,13 +68,13 @@ function DesignTab({
         >
           {CREDIT_PRESENTATIONS.map((p) => (
             <option key={p} value={p}>
-              {L(PRESENTATION_LABEL[p].nb, PRESENTATION_LABEL[p].en)}
+              {PRESENTATION_LABEL[p]}
             </option>
           ))}
         </select>
       </label>
       <label className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
-        {L("Hastighet (linjer per sekund)", "Speed (lines per second)")}
+        {t("app-scene-editor-credits-panel.design-tab.label.4827019f5efb")}
         <input
           className={input}
           type="number"
@@ -103,7 +87,7 @@ function DesignTab({
         />
       </label>
       <label className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
-        {L("Varighet per deltaker (bilder)", "Duration per participant (frames)")}
+        {t("app-scene-editor-credits-panel.design-tab.label.23f186cbeeb8")}
         <input
           className={input}
           type="number"
@@ -115,7 +99,7 @@ function DesignTab({
         />
       </label>
       <label className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
-        {L("Pause mellom deltakerne (bilder)", "Pause between participants (frames)")}
+        {t("app-scene-editor-credits-panel.design-tab.label.57560f878f68")}
         <input
           className={input}
           type="number"
@@ -127,7 +111,7 @@ function DesignTab({
         />
       </label>
       <label className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
-        {L("Retning", "Direction")}
+        {t("app-scene-editor-credits-panel.design-tab.label.6c64f1b2c085")}
         <select
           className={select}
           data-testid="mts-credits-direction"
@@ -135,8 +119,8 @@ function DesignTab({
           value={seq.direction}
           onChange={(e) => set({ direction: e.target.value as "up" | "down" })}
         >
-          <option value="up">{L("Oppover", "Up")}</option>
-          <option value="down">{L("Nedover", "Down")}</option>
+          <option value="up">{t("app-scene-editor-credits-panel.design-tab.option.834a47afa340")}</option>
+          <option value="down">{t("app-scene-editor-credits-panel.design-tab.option.f65e8f256b8a")}</option>
         </select>
       </label>
     </div>
@@ -178,7 +162,7 @@ function ParticipantsTab({
           fields: { navn: "", rolle: "" },
         },
       },
-      L("Ny deltaker", "New participant"),
+      t("app-scene-editor-credits-panel.add.run.65a3f1d55f47"),
     );
   };
   const update = (p: CreditParticipant, patch: { navn?: string; rolle?: string; hidden?: boolean }) =>
@@ -190,10 +174,10 @@ function ParticipantsTab({
           ? { hidden: patch.hidden }
           : { fields: { ...p.fields, ...(patch.navn !== undefined ? { navn: patch.navn } : {}), ...(patch.rolle !== undefined ? { rolle: patch.rolle } : {}) } },
       },
-      L("Endre deltakeren", "Change the participant"),
+      t("app-scene-editor-credits-panel.update.run.84d6f02e42a3"),
     );
   const remove = (p: CreditParticipant) =>
-    run({ type: "RemoveCreditParticipant", participantId: p.id }, L("Fjern deltakeren", "Remove the participant"));
+    run({ type: "RemoveCreditParticipant", participantId: p.id }, t("app-scene-editor-credits-panel.remove.run.d2e55c53b751"));
   // Rekkefølgen endres med nye orderKey-er; malen røres aldri (H)
   const move = (p: CreditParticipant, delta: -1 | 1) => {
     const i = participants.findIndex((x) => x.id === p.id);
@@ -203,7 +187,7 @@ function ParticipantsTab({
     const after = participants[j + 1]?.orderKey ?? null;
     run(
       { type: "UpdateCreditParticipant", participantId: p.id, fields: { orderKey: keyBetween(before, after) } },
-      L("Flytt deltakeren", "Move the participant"),
+      t("app-scene-editor-credits-panel.move.run.0d70130edd7f"),
     );
   };
 
@@ -215,10 +199,7 @@ function ParticipantsTab({
   return (
     <div className="flex min-h-0 flex-col gap-1 p-2" data-testid="mts-credits-participants">
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          `${participants.length} av høyst ${CREDIT_PARTICIPANTS_MAX} deltakere`,
-          `${participants.length} of at most ${CREDIT_PARTICIPANTS_MAX} participants`,
-        )}
+        {t("app-scene-editor-credits-panel.participants-tab.p.57fd2ea31c46", { length: String(participants.length), CREDIT_PARTICIPANTS_MAX: String(CREDIT_PARTICIPANTS_MAX) })}
       </p>
       <div
         ref={viewRef}
@@ -239,8 +220,8 @@ function ParticipantsTab({
               <input
                 className={input}
                 style={{ flex: 1.4 }}
-                placeholder={L("Navn", "Name")}
-                aria-label={L("Navn", "Name")}
+                placeholder={t("app-scene-editor-credits-panel.participants-tab.placeholder.a95636c57b87")}
+                aria-label={t("app-scene-editor-credits-panel.participants-tab.aria-label.a95636c57b87")}
                 data-testid="mts-credit-name"
                 disabled={!editable}
                 defaultValue={p.fields["navn"] ?? ""}
@@ -249,8 +230,8 @@ function ParticipantsTab({
               <input
                 className={input}
                 style={{ flex: 1 }}
-                placeholder={L("Rolle", "Role")}
-                aria-label={L("Rolle", "Role")}
+                placeholder={t("app-scene-editor-credits-panel.participants-tab.placeholder.371c1cdfc2bf")}
+                aria-label={t("app-scene-editor-credits-panel.participants-tab.aria-label.371c1cdfc2bf")}
                 data-testid="mts-credit-role"
                 disabled={!editable}
                 defaultValue={p.fields["rolle"] ?? ""}
@@ -260,7 +241,7 @@ function ParticipantsTab({
                 size="sm"
                 variant="ghost"
                 data-testid="mts-credit-up"
-                aria-label={L("Flytt opp", "Move up")}
+                aria-label={t("app-scene-editor-credits-panel.participants-tab.aria-label.8d24bb37a6c2")}
                 disabled={!editable}
                 onClick={() => move(p, -1)}
               >
@@ -270,13 +251,13 @@ function ParticipantsTab({
                 size="sm"
                 variant="ghost"
                 data-testid="mts-credit-down"
-                aria-label={L("Flytt ned", "Move down")}
+                aria-label={t("app-scene-editor-credits-panel.participants-tab.aria-label.2d01c53271b2")}
                 disabled={!editable}
                 onClick={() => move(p, 1)}
               >
                 ↓
               </Button>
-              <label className="flex items-center gap-0.5 text-[11px] text-text-tertiary" title={L("Skjulte deltakere tegnes ikke", "Hidden participants are not drawn")}>
+              <label className="flex items-center gap-0.5 text-[11px] text-text-tertiary" title={t("app-scene-editor-credits-panel.participants-tab.title.fba86a683254")}>
                 <input
                   type="checkbox"
                   data-testid="mts-credit-hidden"
@@ -284,25 +265,22 @@ function ParticipantsTab({
                   checked={p.hidden}
                   onChange={(e) => update(p, { hidden: e.target.checked })}
                 />
-                {L("Skjul", "Hide")}
+                {t("app-scene-editor-credits-panel.participants-tab.label.9c1727a9c327")}
               </label>
               {editable && cmds ? (
                 <Button
                   size="sm"
                   variant="ghost"
                   data-testid="mts-credit-logo"
-                  title={L(
-                    "Logo fra det globale biblioteket ved siden av navnet (K)",
-                    "Logo from the global library next to the name (K)",
-                  )}
+                  title={t("app-scene-editor-credits-panel.participants-tab.title.8e4becbab568")}
                   onClick={() => setLogoFor(p.id)}
                 >
-                  {p.logoAssetId ? L("Bytt logo", "Change logo") : L("Logo …", "Logo …")}
+                  {p.logoAssetId ? t("app-scene-editor-credits-panel.participants-tab.button.e74409e6814a") : t("app-scene-editor-credits-panel.participants-tab.button.589666392ba2")}
                 </Button>
               ) : null}
               {editable ? (
                 <Button size="sm" variant="ghost" data-testid="mts-credit-remove" onClick={() => remove(p)}>
-                  {L("Fjern", "Remove")}
+                  {t("app-scene-editor-credits-panel.participants-tab.button.ac8d5fd92bed")}
                 </Button>
               ) : null}
             </div>
@@ -317,7 +295,7 @@ function ParticipantsTab({
           disabled={participants.length >= CREDIT_PARTICIPANTS_MAX}
           onClick={add}
         >
-          {L("Ny deltaker", "New participant")}
+          {t("app-scene-editor-credits-panel.participants-tab.button.fdfbed2b8e7d")}
         </Button>
       ) : null}
       {cmds ? (
@@ -341,7 +319,7 @@ function ParticipantsTab({
                 participantId: logoFor as never,
                 fields: { logoAssetId: assetId as never, logoVersionId: (version?.id ?? null) as never },
               },
-              L("Sett logo på deltakeren", "Set the participant's logo"),
+              t("app-scene-editor-credits-panel.participants-tab.run.42bea290e501"),
             );
             setLogoFor(null);
           }}
@@ -368,7 +346,7 @@ export function CreditsPanel({
   const seq = creditSequenceOf(state, occurrenceId);
   return (
     <section className="flex min-h-0 flex-col" data-testid="mts-credits-panel">
-      <PanelHeader title={L("Rulletekst", "Credits")} />
+      <PanelHeader title={t("app-scene-editor-credits-panel.credits-panel.title.08f1748714f1")} />
       <div role="tablist" className="flex gap-1 border-b border-border px-2">
         <button
           type="button"
@@ -378,7 +356,7 @@ export function CreditsPanel({
           className={`px-2 py-1 text-[12px] ${tab === "design" ? "border-b-2 border-accent-brand text-text-primary" : "text-text-tertiary"}`}
           onClick={() => setTab("design")}
         >
-          {L("Design", "Design")}
+          {t("app-scene-editor-credits-panel.credits-panel.button.aabc36b5a4bb")}
         </button>
         <button
           type="button"
@@ -388,7 +366,7 @@ export function CreditsPanel({
           className={`px-2 py-1 text-[12px] ${tab === "participants" ? "border-b-2 border-accent-brand text-text-primary" : "text-text-tertiary"}`}
           onClick={() => setTab("participants")}
         >
-          {L("Medvirkende", "Participants")}
+          {t("app-scene-editor-credits-panel.credits-panel.button.9dd6d709a240")}
         </button>
       </div>
       {tab === "design" ? (
@@ -396,7 +374,7 @@ export function CreditsPanel({
           <DesignTab seq={seq} editable={editable} run={run} occurrenceId={occurrenceId} />
         ) : (
           <p className="p-2 text-xs text-text-tertiary">
-            {L("Rulleteksten har ingen sekvens ennå.", "The credits have no sequence yet.")}
+            {t("app-scene-editor-credits-panel.credits-panel.p.2c236b6f5efc")}
           </p>
         )
       ) : (

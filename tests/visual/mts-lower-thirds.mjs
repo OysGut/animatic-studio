@@ -3,6 +3,7 @@
  * ENV_FILE=… node tests/visual/mts-lower-thirds.mjs <baseUrl> /tmp/claude-0/mts-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 
 const h = harness("/tmp/claude-0/mts-lower-thirds");
 const { M, state, check, scenario, selectLayer, waitHidden, menu, eventually } = h;
@@ -23,10 +24,11 @@ await scenario("X-lag-lower-third-mal", M.sceneA, "nb", async (page) => {
   await waitHidden(dialog);
   await eventually(() => state.commands.some((c) => c?.type === "AddAssetVersion"));
   const ver = state.commands.find((c) => c?.type === "AddAssetVersion");
-  check(ver?.template?.category === "lower_third" && ver.template.slots.map((s) => s.key).join(",") === "navn,rolle", "X: malen har feltene navn og rolle");
+  check(ver?.template?.category === "lower_third" && ver.template.slots.map((s) => s.key).join(",") === byLang("nb", "navn,rolle", "name,role"), "X: malen har feltene navn og rolle");
 });
 
 await scenario("Y-bruk-i-scene", M.sceneA, "nb", async (page) => {
+  await page.locator(`[data-layer-row="${M.instanceGroup}"]`).first().waitFor({ timeout: 15000 }).catch(() => {});
   check((await page.locator(`[data-layer-row="${M.instanceGroup}"]`).count()) > 0, "Y: malen er brukt i scene A (forekomsten vises som lag)");
   await selectLayer(page, M.instanceName);
   check(await page.getByTestId("mts-template-instance").isVisible(), "Y: egenskapspanelet viser malen og innholdet");

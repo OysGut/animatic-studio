@@ -11,6 +11,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   applyCommand,
+  newId,
   emptyStoryProfile,
   diffStates,
   keysEvenly,
@@ -35,6 +36,7 @@ import {
   blocksOfVariant,
   comparePromotion,
   keyBetween,
+  lineLinkStale,
   newMainVariantCommands,
   orderedOccurrences,
   promotionCommands,
@@ -49,6 +51,9 @@ import {
   planUpdateTemplateValues,
   templateFromLayers,
   textLayerFields,
+  dialogueMirrorViolations,
+  BACKUP_STATE_TABLES,
+  emptyStyleGuide,
 } from "../../src/core";
 
 const ADMIN_URL = process.env["DATABASE_URL"] ?? "postgres://postgres@localhost:54329/postgres";
@@ -130,6 +135,8 @@ async function loadState(projectId: string): Promise<ProjectState> {
     generation_prompts: await q("generation_prompts"),
     continuity_events: await q("continuity_events"),
     translations: await q("translations"),
+    translation_line_links: await q("translation_line_links"),
+    translation_lines: await q("translation_lines"),
     asset_relations: await q("asset_relations"),
     posters: await q("posters"),
     style_profiles: await q("style_profiles"),
@@ -142,6 +149,11 @@ async function loadState(projectId: string): Promise<ProjectState> {
     credit_participants: await q("credit_participants"),
     credit_sequences: await q("credit_sequences"),
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
+    lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
+    dialogue_versions: await q("dialogue_versions"),
+    style_harmonizations: await q("style_harmonizations"),
+    style_preferred_references: await q("style_preferred_references"),
+    language_versions: await q("language_versions"),
   };
   return stateFromRows(rows);
 }
@@ -3426,6 +3438,12 @@ try {
     );
     const [row] = await sql`select source from public.script_annotations where id = ${noteId}`;
     assert(row!["source"] === "system", "source-kolonnen er ikke 'system'");
+    const resolved = await runCommand(st, ALICE, { type: "SetAnnotationResolved", annotationId: noteId as never, resolved: true });
+    const readResolved = await loadState(projectId);
+    assert(readResolved.annotations[noteId as never]?.resolved === true && !readResolved.annotations[noteId as never]?.removed, "løst må lagres uten sletting");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.script_annotations set resolved = false where id = ${noteId}`), "42501");
+    const reopened = await runCommand(resolved, ALICE, { type: "SetAnnotationResolved", annotationId: noteId as never, resolved: false });
+    assert(reopened.annotations[noteId as never]?.resolved === false, "notatet kunne ikke åpnes igjen");
     await expectError(
       sql`update public.script_annotations set source = 'robot' where id = ${noteId}`,
       "23514",
@@ -3770,6 +3788,9 @@ try {
       asset_relations: await q("asset_relations"),
       posters: await q("posters"),
       style_profiles: await q("style_profiles"),
+      quality_profiles: await q("quality_profiles"),
+      // DV2 (0060): lydversjonene hører med når lydklippene er med
+      dialogue_versions: await q("dialogue_versions"),
     } as unknown as ProjectRows;
     const versions = await q("script_versions");
     const docs = await q("imported_documents");
@@ -5228,8 +5249,10 @@ try {
       (await tx`select public.activate_film_share(${r.id}, 1000) as t`)[0]!["t"] as string,
     );
     assert(/^[0-9a-f]{64}$/.test(token), "nøkkelen");
-    const row = (await sql`select token_hash, expires_at from public.film_shares where id = ${r.id}`)[0]!;
-    assert(row["token_hash"] === (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen");
+    const row = (await sql`select token, token_hash, token_digest, expires_at from public.film_shares where id = ${r.id}`)[0]!;
+    // 0070: bare pepret hash lagres, ingen klartekst
+    assert(row["token"] === null && row["token_digest"] === row["token_hash"], "bare hash lagres");
+    assert(row["token_hash"] !== (await sql`select encode(sha256(convert_to(${token}, 'UTF8')), 'hex') as h`)[0]!["h"], "hashen er pepret");
     assert(row["expires_at"] !== null, "30 dager gir utløp");
     // Klienten kan ikke lese nøkkelen eller hashen direkte
     await expectError(as("authenticated", ALICE, (tx) => tx`select token from public.film_shares where id = ${r.id}`), "42501");
@@ -5593,6 +5616,95 @@ try {
     assert(isDeepStrictEqual(back.animationRigVersions, before.animationRigVersions), "disable mutated rig");
     await expectError(sql`update public.animation_rig_versions set spec = '{"format":1,"anchors":{}}'::jsonb where id = ${CA(10)}`, "22023");
   });
+  await test("0055: rig parts save with mobile approval in one revision-checked transaction", async () => {
+    const context = { type: "rig", purpose: "mouth_shape", target: { assetId: CA(1), variantId: CA(2), sourceVersionId: CA(3), slot: "mouth:A" } };
+    await as("service_role", null, tx => tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,media_kinds,expires_at,max_files,max_bytes) values (${CA(20)},${caProject},${"5".repeat(64)},'personal',${ALICE},${tx.json(context)},array['image'],now()+interval '1 hour',10,100000)`);
+    await as("service_role", null, tx => tx`insert into public.mobile_imports(id,project_id,session_id,client_file_id,path,kind,mime_type,byte_size,status,context) values (${CA(21)},${caProject},${CA(20)},${CA(22)},${caProject+"/mouth.png"},'image','image/png',100,'done',${tx.json(context)})`);
+    const part = { versionId: CA(24), mobileImportId: CA(21), drawing: [], mask: [{mode:"subtract" as const,radius:.1,feather:.5,points:[{x:.5,y:.5}]}], x:0,y:0,width:.2,height:.1,rotation:0,adjustments:{brightness:1.5,contrast:.8,saturation:1.2,hue:20,opacity:.7} };
+    const spec = { format:1 as const,anchors:{mouth:{x:.5,y:.6}},parts:{"mouth:A":part} };
+    const before = await loadState(caProject);
+    caState = await runCommand(before,ALICE,{type:"UpdateSceneDraft",compositionId:CA(7),occurrenceId:CA(6),steps:[
+      {type:"CreateAssetVariant",assetId:CA(1),variantId:CA(23),fields:{name:"Mouth",style:"illustrated",appearance:""}},
+      {type:"AddAssetVersion",variantId:CA(23),versionId:CA(24),media:{path:caProject+"/mouth.png",mimeType:"image/png",width:320,height:320,byteSize:100,sha256:"5".repeat(64)},note:""},
+      {type:"SaveRigVersion",rigId:CA(9),versionId:CA(25),sourceVersionId:CA(3),spec},
+      {type:"AttachAnimationUse",useId:CA(11),layerId:CA(8),occurrenceId:CA(6),rigVersionId:CA(25)}]});
+    const loaded = await loadState(caProject);
+    assert(isDeepStrictEqual(loaded.animationRigVersions[CA(25)]?.spec,spec),"parts lost");
+    assert(loaded.animationRigs[CA(9)]?.revision === (before.animationRigs[CA(9)]?.revision??0)+1,"more than one rig revision");
+    const [row] = await sql`select * from public.mobile_imports where id=${CA(21)}`;
+    assert(row?.["approved_rig_version_id"]===CA(25)&&row?.["asset_version_id"]===CA(24)&&row?.["approved_at"],"not approved atomically");
+    assert(isDeepStrictEqual(loaded.assetVersions[CA(3)],before.assetVersions[CA(3)]),"source changed");
+    await expectError(sql`delete from public.asset_versions where id=${CA(24)}`,"23503");
+  });
+  await test("0055: RLS, anon and authenticated direct writes are denied",async()=>{
+    for(const table of ["animation_rigs","animation_rig_versions","animation_uses","mobile_imports","upload_sessions"]){
+      assert((await as("authenticated",BOB,tx=>tx.unsafe(`select id from public.${table} where project_id=$1`,[caProject]))).length===0,"nonmember read");
+      await expectError(as("anon",null,tx=>tx.unsafe(`select id from public.${table}`)),"42501");
+      await expectError(as("authenticated",ALICE,tx=>tx.unsafe(`delete from public.${table} where project_id=$1`,[caProject])),"42501");
+    }
+    assert((await as("authenticated",ALICE,tx=>tx`select id from public.animation_rig_versions where id=${CA(25)}`)).length===1,"member cannot read");
+  });
+  await test("0055: mismatched approval rolls back the entire patch; ordinary mobile context still works",async()=>{
+    const before=await loadState(caProject);
+    const spec={...before.animationRigVersions[CA(25)]?.spec,format:1 as const,anchors:{mouth:{x:.5,y:.6}},parts:{"mouth:B":before.animationRigVersions[CA(25)]?.spec.parts?.["mouth:A"] as never}};
+    await expectError(runCommand(before,ALICE,{type:"SaveRigVersion",rigId:CA(9),versionId:CA(26),sourceVersionId:CA(3),spec}),"22023");
+    const loaded=await loadState(caProject); assert(isDeepStrictEqual(loaded.animationRigs,before.animationRigs),"partial rig update"); assert(!loaded.animationRigVersions[CA(26)],"partial version insert");
+    await as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(27)},${caProject},${"6".repeat(64)},'personal',${ALICE},'{}',now()+interval '1 hour',10,100000)`);
+    await expectError(as("service_role",null,tx=>tx`insert into public.upload_sessions(id,project_id,token_hash,kind,created_by,context,expires_at,max_files,max_bytes) values (${CA(28)},${caProject},${"7".repeat(64)},'personal',${ALICE},${tx.json({type:"rig",purpose:"mouth_shape",target:{assetId:CA(1),variantId:CA(2),sourceVersionId:CA(3),slot:"mouth:Z"}})},now()+interval '1 hour',10,100000)`),"22023");
+  });
+
+  const C6 = (n: number) => `01900000-0000-7000-8000-0056${String(n).padStart(8, "0")}` as never;
+  let c6Project = "";
+  await test("0056: leppesynk og mønster rundtur via apply_changes, med validering", async () => {
+    const p = await as("authenticated", ALICE, tx => tx`select public.create_project('CA5') as id`);
+    c6Project = String(p[0]?.["id"]);
+    let st = await loadState(c6Project);
+    const production = Object.values(st.productions).find(p => p.kind === "main")!;
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: C6(1), fields: { kind: "character", name: "CA5", names: [], description: "", category: "", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", assetId: C6(1), variantId: C6(2), fields: { name: "Front", style: "illustrated", appearance: "" } });
+    st = await runCommand(st, ALICE, { type: "CreateScene", sceneId: C6(4), variantId: C6(5), occurrenceId: C6(6), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "", location: "CA5", time: "" }, blocks: [] });
+    // Opptak, dialogklipp og manuslinje settes opp direkte (testdata, ikke prosjektskriving via kommando).
+    await as("service_role", null, tx => tx`insert into public.takes(id,project_id,occurrence_id,kind,status,created_by) values (${C6(9)},${c6Project},${C6(6)},'audio_only','in_progress',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text,created_by) values (${C6(10)},${c6Project},${C6(5)},'dialogue','a1','Hei',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.script_block_revisions(project_id,block_id,rev,text,author) values (${c6Project},${C6(10)},1,'Hei',${ALICE})`);
+    await as("service_role", null, tx => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,block_id,offset_ms,length_ms,created_by) values (${C6(11)},${c6Project},${C6(6)},'dialogue',${C6(1)},${C6(10)},0,2000,${ALICE})`);
+    st = await loadState(c6Project);
+    const lipsync = { id: C6(12), revision: 1, clipId: C6(11), takeId: C6(9), blockId: C6(10), source: "rule" as const, algorithmVersion: 1, audioHash: "abc123", textHash: "def456", spans: [{ frame: 0, endFrame: 12, viseme: "A" as const }, { frame: 12, endFrame: 24, viseme: "B" as const }], overrides: [{ frame: 5, viseme: "C" as const }], enabled: true, removed: false };
+    const pattern = { id: C6(13), revision: 1, rigId: null, name: "Nervøs blinking", color: "#a1b2c3", spec: { format: 1 as const, target: "eyes" as const, intervalMinMs: 2000, intervalMaxMs: 5000, durationMinFrames: 2, durationMaxFrames: 4, intensity: 1, seed: 18427, vary: { interval: true, duration: false, intensity: false }, algorithmVersion: 1 as const }, removed: false };
+    st = await runCommand(st, ALICE, { type: "SaveLipsyncResult", result: lipsync });
+    st = await runCommand(st, ALICE, { type: "SaveAnimationPattern", pattern });
+    const loaded = await loadState(c6Project);
+    assert(isDeepStrictEqual(loaded.lipsyncResults, st.lipsyncResults), "lipsync mismatch");
+    assert(isDeepStrictEqual(loaded.animationPatterns, st.animationPatterns), "pattern mismatch");
+    // Duplikat per klipp+take avvises i kjernen; den unike indeksen er siste skanse.
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(14) } }), /allerede leppesynk/);
+    // Ugyldige verdier avvises: ukjent klipp, ukjent kilde, ugyldig farge.
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke/);
+    await expectError(as("service_role", null, tx => tx`insert into public.lipsync_results(id,project_id,clip_id,take_id,source,algorithm_version,audio_hash,created_by) values (${C6(16)},${c6Project},${C6(11)},${C6(9)},'ukjent',1,'x',${ALICE})`), "23514");
+    await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,name,color,spec,created_by) values (${C6(17)},${c6Project},'X','blå','{}',${ALICE})`), "23514");
+    await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,rig_id,name,color,spec,created_by) values (${C6(18)},${c6Project},${C6(91)},'X','#a1b2c3','{}',${ALICE})`), "23503");
+  });
+  await test("0056: grants og RLS nekter anon, ikke-medlemmer og direkte skriving", async () => {
+    for (const table of ["lipsync_results", "animation_patterns"]) {
+      assert((await as("authenticated", ALICE, tx => tx.unsafe(`select id from public.${table} where project_id = $1`, [c6Project]))).length === 1, `medlem leser ${table}`);
+      assert((await as("authenticated", CAROL, tx => tx.unsafe(`select id from public.${table} where project_id = $1`, [c6Project]))).length === 0, `RLS ${table}`);
+      await expectError(as("anon", null, tx => tx.unsafe(`select id from public.${table}`)), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`update public.${table} set removed = true where project_id = $1`, [c6Project])), "42501");
+      await expectError(as("authenticated", ALICE, tx => tx.unsafe(`delete from public.${table} where project_id = $1`, [c6Project])), "42501");
+    }
+  });
+  await test("0056: sletting av take/klipp i bruk blokkeres; delete_project rydder barn-først", async () => {
+    await expectError(sql`delete from public.takes where id = ${C6(9)}`, "P0001");
+    await expectError(sql`delete from public.audio_clips where id = ${C6(11)}`, "23503");
+    await expectError(sql`delete from public.script_blocks where id = ${C6(10)}`, "23503");
+    await as("service_role", null, tx => tx`select public.delete_project(${c6Project}, ${ALICE})`);
+    for (const table of ["lipsync_results", "animation_patterns"]) {
+      assert((await sql.unsafe(`select id from public.${table} where project_id = $1`, [c6Project])).length === 0, `${table} ikke slettet`);
+    }
+    await as("service_role", null, tx => tx`select public.purge_project_assets(${c6Project}, ${ALICE})`);
+    assert((await sql`select id from public.projects where id = ${c6Project}`).length === 0, "prosjekt ikke fjernet");
+  });
+
   await test("0053/0054: purge rejects referenced sources; delete_project and purge remove rigs child-first", async () => {
     await expectError(sql`select public.purge_removed_assets(${caProject}, ${ALICE}, '{}'::uuid[], array[${CA(3)}]::uuid[])`, "22023");
     await sql`update public.asset_versions set removed = true where id = ${CA(3)}`;
@@ -5603,6 +5715,1113 @@ try {
     }
     await as("service_role", null, tx => tx`select public.purge_project_assets(${caProject}, ${ALICE})`);
     assert((await sql`select id from public.projects where id = ${caProject}`).length === 0, "project not purged");
+  });
+
+  // ---------- CA7: globale animasjonsoppsett (migrasjon 0057) ----------
+  await test("0057: redaktør publiserer låste animasjonsversjoner; medlem, ikke-medlem og anon nektes", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Animasjon') as id`)[0]!["id"] as string);
+    const tEd = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string);
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tEd})`);
+    const ga = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_asset(${ws}, 'logo', 'Figur', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_variant(${ga}, 'Farge', 'reference', '') as id`)[0]!["id"] as string);
+    const rig = { format: 1, anchors: { mouth: { x: 0.5, y: 0.6 } }, sourceGlobalVersionId: gv };
+    const pats = [{ key: "p1", name: "Blink", color: "#fff", spec: { format: 1 } }];
+    // Medlem uten redaktørrolle og ikke-medlem kan ikke publisere
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, ${sql.json(pats)}, '')`), "42501");
+    // Ugyldig spesifikasjon avvises
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json({ format: 2, anchors: {} })}, '[]'::jsonb, '')`), "22023");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, '{}'::jsonb, '')`), "22023");
+    const a1 = await as("authenticated", BOB, async (tx) => (await tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, ${sql.json(pats)}, 'første') as id`)[0]!["id"] as string);
+    await as("authenticated", BOB, (tx) => tx`select public.global_publish_animation(${gv}, ${sql.json(rig)}, '[]'::jsonb, '')`);
+    const rows = await as("authenticated", ALICE, (tx) => tx`select number, workspace_id, global_asset_id from public.global_animation_specs where variant_id = ${gv} order by number`);
+    assert(rows.length === 2 && rows[0]!["number"] === 1 && rows[1]!["number"] === 2, "nummerering per variant");
+    assert(rows[0]!["workspace_id"] === ws && rows[0]!["global_asset_id"] === ga, "gruppe og ressurs fra varianten");
+    // Ikke-medlem ser ingenting; anon har ingen tilgang
+    const carol = await as("authenticated", CAROL, (tx) => tx`select id from public.global_animation_specs where variant_id = ${gv}`);
+    assert(carol.length === 0, "ikke-medlem ser oppsett");
+    await expectError(as("anon", null, (tx) => tx`select id from public.global_animation_specs`), "42501");
+    // Direkte skriving er stengt; publiserte versjoner er uforanderlige også for service role
+    await expectError(as("authenticated", BOB, (tx) => tx`insert into public.global_animation_specs (workspace_id, global_asset_id, variant_id, number, rig_spec, created_by) values (${ws}, ${ga}, ${gv}, 9, ${sql.json(rig)}, ${BOB})`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`update public.global_animation_specs set note = 'x' where id = ${a1}`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`update public.global_animation_specs set note = 'x' where id = ${a1}`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`delete from public.global_animation_specs where id = ${a1}`), "42501");
+    const version = await sql`select max(version) as v from public.schema_version`;
+    assert((await sql`select 1 from public.schema_version where version = 57`).length === 1, "skjemaversjon 57 registrert");
+  });
+
+  // ---------- Ø-11: sikkerhetsgjennomgang (migrasjon 0058) ----------
+  const SX = (n: number) => `01900000-0000-7000-8000-0058${String(n).padStart(8, "0")}` as never;
+  await test("0058: prosjektinvitasjon – feil e-post avvises, riktig e-post (trim/store bokstaver) godtas, brukt og utløpt avvises", async () => {
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Sikkerhet') as id`)[0]!["id"] as string);
+    const tok = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, '  Bob@Example.NO ', 'viewer') as t`)[0]!["t"] as string);
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_invitation(${tok})`), "AS403");
+    const carol = await sql`select 1 from public.project_members where project_id = ${p} and user_id = ${CAROL}`;
+    assert(carol.length === 0, "feil bruker ble medlem");
+    const [inv] = await sql`select accepted_at from public.project_invitations where project_id = ${p}`;
+    assert(inv!["accepted_at"] === null, "invitasjonen ble brukt opp av feil bruker");
+    const joined = await as("authenticated", BOB, async (tx) => (await tx`select public.accept_invitation(${tok}) as p`)[0]!["p"]);
+    assert(joined === p, "riktig e-post ble ikke godtatt");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.accept_invitation(${tok})`), "22023");
+    const old = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, 'carol@example.no', 'viewer') as t`)[0]!["t"] as string);
+    await sql`update public.project_invitations set expires_at = now() - interval '1 minute' where project_id = ${p} and email = 'carol@example.no'`;
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_invitation(${old})`), "22023");
+    // En eier blir aldri nedgradert av en invitasjon til sin egen adresse
+    const self = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_invitation(${p}, 'alice@example.no', 'viewer') as t`)[0]!["t"] as string);
+    await as("authenticated", ALICE, (tx) => tx`select public.accept_invitation(${self})`);
+    const [own] = await sql`select role from public.project_members where project_id = ${p} and user_id = ${ALICE}`;
+    assert(own!["role"] === "owner", `eieren ble ${own!["role"]}`);
+    // anon kan ikke godta
+    await expectError(as("anon", null, (tx) => tx`select public.accept_invitation(${tok})`), "42501");
+  });
+
+  await test("0058: gruppeinvitasjon – feil e-post avvises, riktig e-post godtas, brukt og utløpt avvises", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Sikker gruppe') as id`)[0]!["id"] as string);
+    const tok = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'BOB@example.no', 'member') as t`)[0]!["t"] as string);
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${tok})`), "AS403");
+    assert((await sql`select 1 from public.workspace_members where workspace_id = ${ws} and user_id = ${CAROL}`).length === 0, "feil bruker ble medlem");
+    const joined = await as("authenticated", BOB, async (tx) => (await tx`select public.accept_workspace_invitation(${tok}) as w`)[0]!["w"]);
+    assert(joined === ws, "riktig e-post ble ikke godtatt");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tok})`), "22023");
+    const old = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string);
+    await sql`update public.workspace_invitations set expires_at = now() - interval '1 minute' where workspace_id = ${ws} and email = 'carol@example.no'`;
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${old})`), "22023");
+  });
+
+  await test("0058: AI-nøkler og modellinnstillinger – anon, annen bruker og eier", async () => {
+    await as("service_role", null, (tx) => tx`insert into public.ai_provider_keys (id, user_id, provider, ciphertext, iv, key_hint) values (${SX(1)}, ${ALICE}, 'openai', ${"c".repeat(40)}, ${"i".repeat(16)}, '…abcd')`);
+    await as("service_role", null, (tx) => tx`insert into public.ai_model_settings (provider, model, enabled, updated_by) values ('openai', 'sikker-test', false, ${ALICE})`);
+    // anon: ingenting
+    for (const t of ["ai_provider_keys", "ai_model_settings", "ai_account_limits", "ai_spend", "ai_provider_requests", "generation_jobs"])
+      await expectError(as("anon", null, (tx) => tx.unsafe(`select 1 from public.${t}`)), "42501");
+    // Annen bruker: ser ikke Alices nøkkel, og ingen kan lese de hemmelige feltene
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.ai_provider_keys where id = ${SX(1)}`)).length === 0, "annen bruker ser nøkkelen");
+    for (const col of ["ciphertext", "iv", "key_version"]) {
+      await expectError(as("authenticated", BOB, (tx) => tx.unsafe(`select ${col} from public.ai_provider_keys`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`select ${col} from public.ai_provider_keys`)), "42501");
+    }
+    // Eieren ser hint og status for sin egen nøkkel
+    const own = await as("authenticated", ALICE, (tx) => tx`select key_hint, status from public.ai_provider_keys where id = ${SX(1)}`);
+    assert(own.length === 1 && own[0]!["key_hint"] === "…abcd", "eieren ser ikke sin nøkkel");
+    // Ingen klient kan skrive nøkler eller innstillinger direkte
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.ai_provider_keys set label = 'x' where id = ${SX(1)}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.ai_model_settings (provider, model) values ('openai', 'x')`), "42501");
+    // Modellinnstillingene: appens kolonner kan leses, administratorens ID ikke
+    const ms = await as("authenticated", BOB, (tx) => tx`select provider, model, enabled, custom, kind, label, price_usd, price_unit, note, updated_at from public.ai_model_settings where model = 'sikker-test'`);
+    assert(ms.length === 1 && ms[0]!["enabled"] === false, "innstillingen kan ikke leses");
+    await expectError(as("authenticated", BOB, (tx) => tx`select updated_by from public.ai_model_settings`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select * from public.ai_model_settings`), "42501");
+    // Andres forbruk og tak er skjult
+    await as("service_role", null, (tx) => tx`insert into public.ai_account_limits (user_id, monthly_cap_usd) values (${ALICE}, 10) on conflict do nothing`);
+    assert((await as("authenticated", BOB, (tx) => tx`select 1 from public.ai_account_limits where user_id = ${ALICE}`)).length === 0, "annen bruker ser kostnadstaket");
+  });
+
+  await test("0058: Story Lab-tabeller – RLS, ikke-medlem ser ingenting, ingen direkte skriving, anon nektes", async () => {
+    const tables = ["story_profiles", "story_profile_stages", "story_facts", "story_sessions", "story_suggestions", "story_canvas_nodes", "story_canvas_edges"];
+    const rls = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relname = any(${tables}) and relrowsecurity`;
+    assert(rls.length === tables.length, `RLS mangler på ${tables.filter((t) => !rls.some((r) => r["relname"] === t)).join(", ")}`);
+    for (const t of tables) {
+      await expectError(as("anon", null, (tx) => tx.unsafe(`select 1 from public.${t}`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`delete from public.${t}`)), "42501");
+      await expectError(as("authenticated", ALICE, (tx) => tx.unsafe(`update public.${t} set project_id = project_id`)), "42501");
+      const seen = await as("authenticated", CAROL, (tx) => tx.unsafe(`select distinct project_id from public.${t}`));
+      const mine = new Set((await sql`select project_id from public.project_members where user_id = ${CAROL} and removed_at is null`).map((r) => r["project_id"]));
+      assert(seen.every((r) => mine.has(r["project_id"])), `${t}: ikke-medlem ser andres rader`);
+    }
+  });
+
+  await test("0058: skjemaet – RLS overalt, security definer med search_path, ingen anon-kjøring eller anon-tabelltilgang", async () => {
+    const noRls = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p') and not relrowsecurity`;
+    assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
+    const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
+    assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status')`; // B-109: eneste unntak, gir bare {open, message}
+    assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
+    const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
+    assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
+    const authWrites = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind = 'r' and (has_table_privilege('authenticated', c.oid, 'insert') or has_table_privilege('authenticated', c.oid, 'update') or has_table_privilege('authenticated', c.oid, 'delete'))`;
+    assert(authWrites.length === 0, `innloggede kan skrive direkte i: ${authWrites.map((r) => r["relname"]).join(", ")}`);
+  });
+
+  await test("0058: mobilopplasting – tom fil avvises, tilbakekalt økt kan ikke bekrefte", async () => {
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Mobil sikkerhet') as id`)[0]!["id"] as string);
+    const hash = "8".repeat(64);
+    await as("service_role", null, (tx) => tx`insert into public.upload_sessions (id, project_id, token_hash, kind, created_by, context, media_kinds, expires_at, max_files, max_bytes) values (${SX(10)}, ${p}, ${hash}, 'personal', ${ALICE}, '{}', array['image'], now() + interval '1 hour', 10, 100000)`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(11)}, ${p + "/m/a.png"}, 'image', 'image/png', 0, 'a.png', '')`), "22023");
+    await as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(12)}, ${p + "/m/b.png"}, 'image', 'image/png', 100, 'b.png', '')`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_register_upload(${hash}, ${SX(13)}, ${"annet/m/c.png"}, 'image', 'image/png', 100, 'c.png', '')`), "22023");
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_upload_session(${SX(10)})`);
+    await expectError(as("service_role", null, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "28000");
+    const [row] = await sql`select status from public.mobile_imports where client_file_id = ${SX(12)}`;
+    assert(row!["status"] !== "done", "fil bekreftet etter tilbakekalling");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.mobile_confirm_upload(${hash}, ${SX(12)}, true, 100, null)`), "42501");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] >= 59, "skjemaversjon minst 59");
+  });
+
+  // ---------------------------------------------------------------- 0060 (DV2): lydversjoner per replikk
+  const DV = (n: number) => `01900000-0000-7000-8000-0060${String(n).padStart(8, "0")}` as never;
+  let dvProject = "";
+  let dvState: ProjectState | null = null;
+  const dvEdit = { sourceInMs: 300, lengthMs: 2400, gainDb: -4.5, fadeInMs: 120, fadeOutMs: 260, volumeKeys: [{ t: 0, db: 0 }, { t: 900, db: -9 }], speed: 1.5 };
+  await test("0060: ny replikk får en lydversjon med nøyaktig redigering via apply_changes; speilingen stemmer", async () => {
+    dvProject = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('DV2') as id`)[0]!["id"] as string);
+    let st = await loadState(dvProject);
+    const production = Object.values(st.productions).find((p) => p.kind === "main")!;
+    st = await runCommand(st, ALICE, { type: "CreateScene", sceneId: DV(1), variantId: DV(2), occurrenceId: DV(3), productionId: production.id, orderKey: keyBetween(null, null), heading: { intExt: "INT.", location: "KJØKKEN", time: "DAG" }, blocks: [] });
+    await as("service_role", null, (tx) => tx`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text,created_by) values (${DV(4)},${dvProject},${DV(2)},'dialogue','a1','Hei, Rolf.',${ALICE})`);
+    await as("service_role", null, (tx) => tx`insert into public.script_block_revisions(project_id,block_id,rev,text,author) values (${dvProject},${DV(4)},1,'Hei, Rolf.',${ALICE})`);
+    st = await loadState(dvProject);
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: DV(5), fields: { kind: "sound", name: "Maja", names: [], description: "", category: "", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", variantId: DV(6), assetId: DV(5), fields: { name: "Lyd", style: "other", appearance: "" } });
+    for (const [v, n] of [[DV(7), 1], [DV(8), 2]] as const)
+      st = await runCommand(st, ALICE, { type: "AddAssetVersion", versionId: v, variantId: DV(6), media: { path: `${dvProject}/${DV(5)}/${v}/take${n}.webm`, mimeType: "audio/webm", width: null, height: null, byteSize: 1000 + n, sha256: String(n).repeat(64), durationMs: 5000 }, note: "" });
+    st = await runCommand(st, ALICE, { type: "AddAudioClips", clips: [{ clipId: DV(9), fields: { occurrenceId: DV(3), kind: "dialogue", name: "Maja", assetId: DV(5), assetVariantId: DV(6), versionId: DV(7), blockId: DV(4), offsetMs: 1000, ...dvEdit, muted: false, continues: false } }] });
+    const loaded = await loadState(dvProject);
+    const clip = loaded.audioClips[DV(9)]!;
+    const v = loaded.dialogueVersions[clip.activeVersionId!]!;
+    assert(v && v.clipId === DV(9) && v.assetVersionId === DV(7), "første versjon mangler");
+    assert(v.sourceInMs === 300 && v.lengthMs === 2400 && v.gainDb === -4.5 && v.fadeInMs === 120 && v.fadeOutMs === 260 && v.speed === 1.5 && isDeepStrictEqual(v.volumeKeys, dvEdit.volumeKeys), `redigering avviker: ${JSON.stringify(v)}`);
+    assert(dialogueMirrorViolations(loaded).length === 0, "speilingen avviker etter lasting");
+    dvState = loaded;
+  });
+
+  await test("0060: bytte mellom versjoner bevarer hver versjons redigering og replikkens plassering (L7–L9)", async () => {
+    let st = dvState!;
+    const clip = st.audioClips[DV(9)]!;
+    const first = clip.activeVersionId!;
+    // Nytt take valgt (eksisterende lydflyt) → ny versjon; rediger den
+    st = await runCommand(st, ALICE, { type: "UpdateAudioClips", clips: [{ clipId: DV(9), fields: { ...audioClipFieldsOf(st.audioClips[DV(9)]!), versionId: DV(8) } }] });
+    const second = st.audioClips[DV(9)]!.activeVersionId!;
+    assert(second !== first, "ny versjon ble ikke laget");
+    st = await runCommand(st, ALICE, { type: "UpdateDialogueVersionEdit", dialogueVersionId: second, edit: { sourceInMs: 0, lengthMs: 1800, gainDb: 2, fadeInMs: 0, fadeOutMs: 50, volumeKeys: [], speed: 1, compositionId: null } });
+    st = await runCommand(st, ALICE, { type: "MoveDialogueLine", clipId: DV(9), offsetMs: 2500 });
+    st = await runCommand(st, ALICE, { type: "SetActiveDialogueVersion", clipId: DV(9), dialogueVersionId: first });
+    const loaded = await loadState(dvProject);
+    const a = loaded.audioClips[DV(9)]!;
+    const v1 = loaded.dialogueVersions[first]!;
+    const v2 = loaded.dialogueVersions[second]!;
+    assert(a.activeVersionId === first && a.offsetMs === 2500, "aktiv versjon eller plassering feil");
+    assert(v1.sourceInMs === 300 && v1.speed === 1.5 && isDeepStrictEqual(v1.volumeKeys, dvEdit.volumeKeys), "versjon A mistet redigering");
+    assert(v2.lengthMs === 1800 && v2.gainDb === 2 && v2.fadeOutMs === 50, "versjon B mistet redigering");
+    assert(a.lengthMs === 2400 && a.sourceInMs === 300 && a.versionId === DV(7), "speilingen følger ikke aktiv versjon");
+    assert(Object.values(loaded.dialogueVersions).filter((x) => x.clipId === DV(9)).length === 2, "en versjon gikk tapt");
+    dvState = loaded;
+  });
+
+  await test("0060: backfill av et eksisterende klipp gir en versjon med identiske verdier", async () => {
+    await as("service_role", null, (tx) => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,asset_variant_id,version_id,block_id,offset_ms,source_in_ms,length_ms,gain_db,fade_in_ms,fade_out_ms,volume_keys,speed,created_by) values (${DV(20)},${dvProject},${DV(3)},'dialogue',${DV(5)},${DV(6)},${DV(8)},${DV(4)},9000,450,3100,-6.5,80,640,${tx.json([{ t: 0, db: -3 }, { t: 1500, db: -18 }, { t: 3000, db: 0 }])},0.75,${ALICE})`);
+    await as("service_role", null, (tx) => tx`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,offset_ms,length_ms,created_by) values (${DV(21)},${dvProject},${DV(3)},'music',${DV(5)},0,1000,${ALICE})`);
+    const file = readFileSync(join(root, "db/migrations/0060_dialogue_versions.sql"), "utf8");
+    const block = file.slice(file.indexOf("-- Backfill:"), file.indexOf("-- Slutt på backfill"));
+    await sql.begin((tx) => tx.unsafe(block));
+    const [c] = await sql`select * from public.audio_clips where id = ${DV(20)}`;
+    const [v] = await sql`select * from public.dialogue_versions where clip_id = ${DV(20)}`;
+    assert(c && v && c["active_version_id"] === v["id"], "klippet fikk ikke aktiv versjon");
+    for (const [cc, vc] of <[string, string][]>[["asset_id", "asset_id"], ["asset_variant_id", "asset_variant_id"], ["version_id", "asset_version_id"], ["source_in_ms", "source_in_ms"], ["length_ms", "length_ms"], ["gain_db", "gain_db"], ["fade_in_ms", "fade_in_ms"], ["fade_out_ms", "fade_out_ms"], ["speed", "speed"]])
+      assert(String(c[cc]) === String(v[vc]), `${cc} avviker: ${c[cc]} / ${v[vc]}`);
+    assert(isDeepStrictEqual(c["volume_keys"], v["volume_keys"]), "volumkurven avviker");
+    assert(v["source"] === "legacy", "kilde");
+    assert((await sql`select 1 from public.dialogue_versions where clip_id = ${DV(21)}`).length === 0, "musikk fikk versjon");
+    const loaded = await loadState(dvProject);
+    assert(dialogueMirrorViolations(loaded).length === 0, "speilingen avviker etter backfill");
+    dvState = loaded;
+  });
+
+  await test("0060: grants og RLS nekter anon, ikke-medlemmer og direkte skriving; aktiv versjon må høre til klippet", async () => {
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.dialogue_versions where project_id = ${dvProject}`)).length >= 3, "medlem ser ikke versjonene");
+    assert((await as("authenticated", CAROL, (tx) => tx`select id from public.dialogue_versions where project_id = ${dvProject}`)).length === 0, "ikke-medlem ser versjoner");
+    await expectError(as("anon", null, (tx) => tx`select id from public.dialogue_versions`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`delete from public.dialogue_versions where project_id = ${dvProject}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.audio_clips set active_version_id = null where project_id = ${dvProject}`), "42501");
+    const other = Object.values(dvState!.dialogueVersions).find((x) => x.clipId === DV(20))!;
+    await expectError(as("service_role", null, (tx) => tx`update public.audio_clips set active_version_id = ${other.id} where id = ${DV(9)}`), "23503");
+    await expectError(sql`delete from public.dialogue_versions where project_id = ${dvProject}`, "23503");
+  });
+
+  await test("0060: purge_removed_assets blokkeres av en lydversjon (også inaktiv)", async () => {
+    let st = await loadState(dvProject);
+    st = await runCommand(st, ALICE, { type: "SetAssetVersionsRemoved", versionIds: [DV(8)], removed: true }).catch(() => st);
+    const [row] = await sql`select removed from public.asset_versions where id = ${DV(8)}`;
+    if (row?.["removed"] !== true) await as("service_role", null, (tx) => tx`update public.asset_versions set removed = true where id = ${DV(8)}`);
+    await expectError(as("service_role", null, (tx) => tx`select public.purge_removed_assets(${dvProject}, ${ALICE}, ${[]}::uuid[], ${[DV(8)]}::uuid[])`), "23503");
+    assert((await sql`select 1 from public.asset_versions where id = ${DV(8)}`).length === 1, "opptaket ble slettet");
+    assert((await sql`select 1 from public.dialogue_versions where asset_version_id = ${DV(8)}`).length >= 1, "versjonen forsvant");
+  });
+
+  await test("0060: zip-sikkerhetskopi tar med lydversjonene; gjenopprettet prosjekt har samme redigering og aktivt valg", async () => {
+    const old = await loadState(dvProject);
+    const q = (t: string) => sql.unsafe(`select * from public.${t} where project_id = $1`, [dvProject]);
+    const rows = { project: (await sql`select * from public.projects where id = ${dvProject}`)[0]!, productions: await q("productions"), scenes: await q("scenes"), scene_variants: await q("scene_variants"), script_blocks: await q("script_blocks"), script_block_revisions: await q("script_block_revisions"), scene_occurrences: await q("scene_occurrences"), production_segments: await q("production_segments"), takes: await q("takes"), assets: await q("assets"), asset_variants: await q("asset_variants"), asset_versions: await q("asset_versions"), audio_clips: await q("audio_clips"), dialogue_versions: await q("dialogue_versions") } as unknown as ProjectRows;
+    assert(!(BACKUP_STATE_TABLES as readonly string[]).includes("user_bookmarks"), "personlige bokmerker i sikkerhetskopien");
+    const backup = parseBackup(JSON.parse(JSON.stringify(makeBackup({ rows, scriptVersions: [], importedDocuments: [], changeLog: [], generationJobs: [], schemaVersion: 60, createdAt: new Date().toISOString(), include: new Set(["lyd"]) }))), 60);
+    assert((backup.tables["dialogue_versions"] ?? []).length === Object.keys(old.dialogueVersions).length, "versjonene mangler i filen");
+    const newId = await as("authenticated", BOB, async (tx) => (await tx`select public.create_project('DV2 gjenopprettet') as id`)[0]!["id"] as string);
+    const base = await loadState(newId);
+    const main = Object.values(base.productions).find((p) => p.kind === "main")!;
+    const map = await backupIdMap(backup, newId, main.id);
+    const target = restoredState(backup, map, base, BOB);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${newId}, ${BOB}, ${"55555555-5555-7555-8555-000000006001"}, ${tx.json({ type: "RestoreBackup" })}, ${null}, ${tx.json(diffStates(base, target) as never)})`);
+    const back = await loadState(newId);
+    const sig = (st: ProjectState) => Object.values(st.audioClips).filter((a) => a.activeVersionId).map((a) => {
+      const v = st.dialogueVersions[a.activeVersionId!]!;
+      const all = Object.values(st.dialogueVersions).filter((x) => x.clipId === a.id).map((x) => [x.lengthMs, x.sourceInMs, x.gainDb, x.speed, JSON.stringify(x.volumeKeys)].join("|")).sort();
+      return [a.offsetMs, v.lengthMs, v.sourceInMs, v.speed, all.join(";")].join("/");
+    }).sort();
+    assert(isDeepStrictEqual(sig(back), sig(old)), `rundtur avviker: ${JSON.stringify(sig(back))} / ${JSON.stringify(sig(old))}`);
+    assert(dialogueMirrorViolations(back).length === 0, "speilingen avviker etter gjenoppretting");
+  });
+
+  await test("0060: delete_project og purge_project_assets fjerner lydversjoner barn-først", async () => {
+    await as("service_role", null, (tx) => tx`select public.delete_project(${dvProject}, ${ALICE})`);
+    assert((await sql`select 1 from public.dialogue_versions where project_id = ${dvProject}`).length === 0, "versjoner igjen etter sletting");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${dvProject}, ${ALICE})`);
+    assert((await sql`select 1 from public.projects where id = ${dvProject}`).length === 0, "prosjektet ble ikke slettet");
+    assert((await sql`select max(version) as v from public.schema_version`)[0]!["v"] >= 65, "skjemaversjon minst 65");
+  });
+
+  await test("0061: batchtabeller har RLS og bare lesetilgang for medlemmer", async () => {
+    for (const table of ["dialogue_batches", "dialogue_batch_items"]) {
+      const rows = await sql`select relrowsecurity as rls from pg_class where oid=${`public.${table}`}::regclass`;
+      assert(rows[0]?.["rls"] === true, `${table}: RLS mangler`);
+      const grants = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as write,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
+      assert(grants[0]?.["anon"] === false && grants[0]?.["read"] === true && grants[0]?.["write"] === false && grants[0]?.["service"] === true, `${table}: grants avviker`);
+    }
+  });
+  await test("0061: jobbfunk­sjoner er server-only, transaksjonelle og beskytter lease og gjentak", async () => {
+    for (const signature of ["public.create_dialogue_batch(uuid,uuid,uuid,uuid,jsonb,jsonb,uuid,uuid)","public.claim_dialogue_batch(uuid,uuid)","public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb)","public.resume_dialogue_batch(uuid,uuid,uuid)"]) {
+      const rights = await sql`select has_function_privilege('authenticated',${signature},'EXECUTE') as client,has_function_privilege('anon',${signature},'EXECUTE') as anon,has_function_privilege('service_role',${signature},'EXECUTE') as service`;
+      assert(rights[0]?.["client"] === false && rights[0]?.["anon"] === false && rights[0]?.["service"] === true, `${signature}: tilgang avviker`);
+    }
+    const definitions = await sql`select pg_get_functiondef('public.complete_dialogue_batch_item(uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as body`;
+    assert(String(definitions[0]?.["body"]).includes("public.apply_changes"), "prosjektendringen er ikke transaksjonell");
+    assert(String(definitions[0]?.["body"]).includes("lease_token"), "leasevernet mangler");
+    const missing = await as("service_role", null, tx => tx`select public.claim_dialogue_batch('00000000-0000-7000-8000-000000006199','00000000-0000-7000-8000-000000006198') as item`);
+    assert(missing[0]?.["item"] === null, "manglende jobb ble startet");
+  });
+  await test("0061: uavhengige språkfelt og tom lydprompt finnes uten endring av gamle lydfiler", async () => {
+    for (const [table,column] of [["projects","script_language"],["scene_variants","script_language"],["script_blocks","script_language"],["script_blocks","speech_language"],["audio_clips","speech_language"],["audio_clips","placement_estimated"]]) {
+      if (!table || !column) throw new Error("Invalid language column fixture");
+      const found = await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${table} and column_name=${column}`;
+      assert(found.length === 1, `${table}.${column} mangler`);
+    }
+    const constraint = await sql`select pg_get_constraintdef(oid) as definition from pg_constraint where conname='generation_jobs_prompt_check' and conrelid='public.generation_jobs'::regclass`;
+    assert(String(constraint[0]?.["definition"]).includes("sound"), "lydprompt kan ikke utelate manusinnhold");
+  });
+
+  await test("0062: gjennomganger, huskelapper og bokmerker har RLS, standard grants og riktige funksjoner", async () => {
+    for (const table of ["dialogue_reviews", "note_flags", "user_bookmarks"]) {
+      const rows = await sql`select relrowsecurity as rls from pg_class where oid=${`public.${table}`}::regclass`;
+      assert(rows[0]?.["rls"] === true, `${table}: RLS mangler`);
+      const g = await sql`select has_table_privilege('anon',${`public.${table}`},'SELECT') as anon,has_table_privilege('authenticated',${`public.${table}`},'SELECT') as read,has_table_privilege('authenticated',${`public.${table}`},'INSERT') as ins,has_table_privilege('authenticated',${`public.${table}`},'DELETE') as del,has_table_privilege('service_role',${`public.${table}`},'INSERT') as service`;
+      assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, `${table}: grants avviker`);
+    }
+    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    assert(body.includes("'dialogue_reviews','note_flags'") && body.includes("'note_flags','dialogue_reviews','animation_patterns'"), "apply_changes kjenner ikke de nye tabellene i riktig rekkefølge");
+    for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
+      const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
+      assert(b.indexOf("note_flags") < b.indexOf("delete from public.dialogue_versions") && b.includes("user_bookmarks") && b.includes("dialogue_reviews"), `${fn}: rydder ikke barn først`);
+    }
+    for (const [sig, client] of [["public.set_my_bookmark(uuid,jsonb)", true], ["public.consume_my_bookmark(uuid,timestamptz)", true], ["public.reconfirm_dialogue_batch(uuid,uuid,uuid)", false]] as const) {
+      const r = await sql`select has_function_privilege('authenticated',${sig},'EXECUTE') as client,has_function_privilege('anon',${sig},'EXECUTE') as anon`;
+      assert(r[0]?.["client"] === client && r[0]?.["anon"] === false, `${sig}: tilgang avviker`);
+    }
+    const status = String((await sql`select pg_get_constraintdef(oid) as d from pg_constraint where conname='dialogue_batch_items_status_check'`)[0]?.["d"]);
+    assert(status.includes("undone"), "angret jobbelement mangler");
+  });
+
+  await test("0062: bokmerker er personlige, ett per prosjekt, og fjernes bare av eieren etter navigasjon (B1–B4)", async () => {
+    const bp = (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Bokmerker') as id`)[0]!["id"])) as string;
+    await sql`insert into public.project_members (project_id, user_id, role) values (${bp}, ${BOB}, 'editor')`;
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene", frame: 10 })})`);
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene", frame: 20 })})`);
+    await as("authenticated", BOB, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "manus" })})`);
+    const mine = await as("authenticated", ALICE, (tx) => tx`select target, updated_at from public.user_bookmarks where project_id = ${bp}`);
+    assert(mine.length === 1 && (mine[0]!["target"] as { frame: number }).frame === 20, "Alice ser ikke bare sitt ene bokmerke");
+    const consumedByBob = await as("authenticated", BOB, (tx) => tx`select public.consume_my_bookmark(${bp}, ${mine[0]!["updated_at"] as Date}) as ok`);
+    assert(consumedByBob[0]?.["ok"] === false, "Bob fjernet Alices bokmerke");
+    const consumed = await as("authenticated", ALICE, (tx) => tx`select public.consume_my_bookmark(${bp}, ${mine[0]!["updated_at"] as Date}) as ok`);
+    assert(consumed[0]?.["ok"] === true, "Alice kunne ikke fjerne sitt bokmerke");
+    const bobs = await as("authenticated", BOB, (tx) => tx`select 1 from public.user_bookmarks where project_id = ${bp}`);
+    assert(bobs.length === 1, "Bobs bokmerke ble påvirket");
+    let refused = false;
+    try { await as("authenticated", CAROL, (tx) => tx`select public.set_my_bookmark(${bp}, ${sql.json({ view: "scene" })})`); } catch { refused = true; }
+    assert(refused, "ikke-medlem kunne sette bokmerke");
+    // Huskelapp via apply_changes: delt (Bob ser den), revisjonskontroll, av/på beholder teksten
+    const flagId = "00000000-0000-7000-8000-000000006201";
+    const row = { id: flagId, project_id: bp, revision: 1, target_kind: "occurrence", target_id: "00000000-0000-7000-8000-000000006202", text: "Sjekk lyset", enabled: true, edited_by: null, edited_at: null, removed: false };
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006203"}, ${sql.json({ type: "AddNoteFlag" })}, ${sql.json({ type: "UndoAddNoteFlag" })}, ${sql.json({ inserts: { note_flags: [row] } })})`);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006204"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, enabled: false, edited_by: BOB, revision: 2, expected_revision: 1 }] } })})`);
+    const seen = await as("authenticated", BOB, (tx) => tx`select text, enabled, created_by, edited_by from public.note_flags where id = ${flagId}`);
+    assert(seen[0]?.["text"] === "Sjekk lyset" && seen[0]?.["enabled"] === false && seen[0]?.["created_by"] === ALICE && seen[0]?.["edited_by"] === BOB, "lappen er ikke delt eller mistet teksten");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${BOB}, ${"00000000-0000-7000-8000-000000006205"}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ type: "UpdateNoteFlag" })}, ${sql.json({ updates: { note_flags: [{ ...row, revision: 2, expected_revision: 1 }] } })})`), "P0409");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.note_flags where id = ${flagId}`)).length === 0, "ikke-medlem ser lappen");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
+    assert((await sql`select 1 from public.user_bookmarks where project_id = ${bp}`).length === 0, "bokmerker igjen etter sletting");
+  });
+
+  await test("0063: kvalitetsprofiler har RLS, standard grants og riktige funksjoner (M8)", async () => {
+    const rows = await sql`select relrowsecurity as rls from pg_class where oid='public.quality_profiles'::regclass`;
+    assert(rows[0]?.["rls"] === true, "quality_profiles: RLS mangler");
+    const g = await sql`select has_table_privilege('anon','public.quality_profiles','SELECT') as anon,has_table_privilege('authenticated','public.quality_profiles','SELECT') as read,has_table_privilege('authenticated','public.quality_profiles','INSERT') as ins,has_table_privilege('authenticated','public.quality_profiles','DELETE') as del,has_table_privilege('service_role','public.quality_profiles','INSERT') as service`;
+    assert(g[0]?.["anon"] === false && g[0]?.["read"] === true && g[0]?.["ins"] === false && g[0]?.["del"] === false && g[0]?.["service"] === true, "quality_profiles: grants avviker");
+    const col = await sql`select 1 from information_schema.columns where table_schema='public' and table_name='projects' and column_name='active_quality_profile_id'`;
+    assert(col.length === 1, "projects.active_quality_profile_id mangler");
+    const body = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) as b`)[0]?.["b"]);
+    assert(body.includes("'dialogue_reviews','note_flags','quality_profiles'"), "apply_changes kjenner ikke quality_profiles");
+    assert(body.includes("'quality_profiles','note_flags'"), "apply_changes sletter ikke profiler først");
+    assert(body.includes("active_quality_profile_id"), "apply_changes oppdaterer ikke aktiv profil");
+    for (const fn of ["delete_project(uuid,uuid)", "purge_project_assets(uuid,uuid)"]) {
+      const b = String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) as b`)[0]?.["b"]);
+      assert(b.indexOf("quality_profiles") < b.indexOf("delete from public.dialogue_versions"), `${fn}: rydder ikke profilene`);
+    }
+    const cp = String((await sql`select pg_get_functiondef('public.create_project(text,integer,integer)'::regprocedure) as b`)[0]?.["b"]);
+    assert(cp.includes("'Utkast'") && cp.includes("'Gjennomgang'") && cp.includes("'Endelig'"), "create_project lager ikke standardprofilene");
+  });
+
+  await test("0063: nye prosjekter får standardprofilene; eksisterende endres ikke; skriving via apply_changes", async () => {
+    const bp = (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Profiler') as id`)[0]!["id"])) as string;
+    const profiles = await as("authenticated", ALICE, (tx) => tx`select name, spec from public.quality_profiles where project_id = ${bp} order by name`);
+    assert(profiles.length === 3, "nytt prosjekt mangler de tre standardprofilene");
+    const active = await sql`select p.name as name from public.projects pr join public.quality_profiles p on p.id = pr.active_quality_profile_id where pr.id = ${bp}`;
+    assert(active[0]?.["name"] === "Utkast", "Utkast er ikke aktiv i nye prosjekter");
+    // Skriving via apply_changes med revisjonskontroll; medlem leser, ikke-medlem ser ingenting
+    const pid = "00000000-0000-7000-8000-000000006301";
+    const row = { id: pid, project_id: bp, revision: 1, name: "Kino", spec: { effort: "premium", variants: 2 }, edited_by: null, edited_at: null, removed: false };
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006302"}, ${sql.json({ type: "AddQualityProfile" })}, ${sql.json({ type: "UndoAddQualityProfile" })}, ${sql.json({ inserts: { quality_profiles: [row] } })})`);
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006303"}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ type: "SetActiveQualityProfile" })}, ${sql.json({ updates: { projects: [{ id: bp, revision: 2, expected_revision: 1, active_quality_profile_id: pid }] } })})`);
+    const seen = await as("authenticated", ALICE, (tx) => tx`select active_quality_profile_id from public.projects where id = ${bp}`);
+    assert(seen[0]?.["active_quality_profile_id"] === pid, "aktiv profil ble ikke satt");
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${"00000000-0000-7000-8000-000000006304"}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ type: "UpdateQualityProfile" })}, ${sql.json({ updates: { quality_profiles: [{ ...row, name: "Kino 2", revision: 6, expected_revision: 5 }] } })})`), "P0409");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.quality_profiles where project_id = ${bp}`)).length === 0, "ikke-medlem ser profilene");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp}, ${ALICE})`);
+    assert((await sql`select 1 from public.quality_profiles where project_id = ${bp}`).length === 0, "profiler igjen etter sletting");
+  });
+
+  await test("0063: profilbudsjett er atomisk, prosjektavgrenset og metadata uforanderlige", async () => {
+    const bp = String((await as("authenticated", ALICE, tx => tx`select public.create_project('Profile capacity',25,1) id`))[0]?.["id"]);
+    const profile = (await sql`select * from public.quality_profiles where project_id=${bp} and name='Utkast'`)[0];
+    assert(profile, "Missing profile");
+    await as("service_role",null,tx => tx`update public.quality_profiles set spec=spec || '{"budgetLimit":1}'::jsonb where id=${profile["id"]}`);
+    const q = (await sql`select * from public.quality_profiles where id=${profile["id"]}`)[0];
+    assert(q,"Missing profile");
+    const snapshot = {id:q["id"],name:q["name"],spec:q["spec"]};
+    const insert = (id:string, snap:typeof snapshot=snapshot) => as("service_role",null,tx => tx`insert into public.generation_jobs(id,project_id,kind,provider,model,prompt,status,created_by,params) values(${id},${bp},'image','lovable','google/gemini-2.5-flash-image','test prompt','queued',${ALICE},${sql.json({qualityProfile:snap})})`);
+    const j1="00000000-0000-7000-8000-000000006311", j2="00000000-0000-7000-8000-000000006312";
+    const results = await Promise.allSettled([insert(j1),insert(j2)]);
+    assert(results.filter(r=>r.status==='fulfilled').length===1,`Concurrent reservations exceeded cap: ${results.map(r => r.status === "rejected" ? String(r.reason) : "ok").join(" | ")}`);
+    const job=(await sql`select id,params from public.generation_jobs where project_id=${bp}`)[0];
+    assert(job,"Missing receipt");
+    assert(job["params"].qualityProfileId===q["id"],"Explicit profile ID missing");
+    await expectError(as("service_role",null,tx=>tx`update public.generation_jobs set params=${sql.json({qualityProfile:{...snapshot,name:"Forged"}})} where id=${job["id"]}`),"22023");
+    await expectError(insert("00000000-0000-7000-8000-000000006313",{...snapshot,id:"00000000-0000-7000-8000-000000000000"}),"42501");
+    await as("service_role",null,tx=>tx`update public.generation_jobs set status='failed' where id=${job["id"]}`);
+    await insert("00000000-0000-7000-8000-000000006314");
+    assert((await sql`select count(*)::int n from public.generation_jobs where project_id=${bp} and status<>'failed'`)[0]?.["n"]===1,"Failed reservation not released");
+    await expectError(insert("00000000-0000-7000-8000-000000006315",{...snapshot,spec:{budgetLimit:1000}}),"22023");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+  });
+
+  await test("0064: approved links persist via apply_changes, RLS, foreign scope and project deletion", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Line-link fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const sceneId=newId(),variantId=newId(),occurrenceId=newId(),b1=newId(),b2=newId(),b3=newId(),b4=newId();
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:sceneId as never,variantId:variantId as never,occurrenceId:occurrenceId as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"TEST",time:"DAG"},blocks:(()=>{let k:string|null=null;return [b1,b2,b3,b4].map((blockId,i)=>{k=keyBetween(k,null);return {blockId:blockId as never,kind:"action" as const,text:`Norsk linje ${i}`,orderKey:k};});})()});
+    const translationId=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslations",items:[{translationId:translationId as never,fields:{blockId:b1 as never,variantId:null,language:"en",text:"English line",basedOnRev:1,status:"uncertain"}}]});
+    // Unpaired imported lines are kept per scene and language (B-050).
+    const u1=newId(),u2=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:u1,fields:{variantId,language:"en",ord:2,kind:"action",text:"First half"}},{lineId:u2,fields:{variantId,language:"en",ord:3,kind:"action",text:"Second half"}}]});
+    assert((await sql`select id from public.translation_lines where project_id=${bp} and not removed`).length===2,"unpaired lines not kept");
+    const id=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:id,fields:{variantId,language:"en",sourceBlockIds:[b1],targetTranslationIds:[translationId],origin:"approved",confidence:0.9,reason:"Evidence"}});
+    const splitId=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:splitId,fields:{variantId,language:"en",sourceBlockIds:[b2],targetTranslationIds:[u1,u2],origin:"approved",confidence:0.8,reason:"Split"}});
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===2,"member cannot read");
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.translation_lines where project_id=${bp}`)).length===2,"member cannot read lines");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.translation_line_links where project_id=${bp}`)).length===0,"nonmember sees links");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.translation_lines where project_id=${bp}`)).length===0,"nonmember sees lines");
+    const row={id:newId(),project_id:bp,variant_id:variantId,language:"en",source_block_ids:[b3],target_translation_ids:[newId()],origin:"approved",confidence:0.9,reason:"",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[row]}})})`),"22023");
+    // A normal script edit removes a linked line: it succeeds, and later commands in the project still succeed.
+    st=await runCommand(st,ALICE,{type:"RemoveBlock",productionId:prod.id,blockId:b1 as never});
+    const link=st.translationLineLinks[id];assert(link && lineLinkStale(st,link),"removed source must make the link stale");
+    st=await runCommand(st,ALICE,{type:"EditBlockText",productionId:prod.id,blockId:b4 as never,text:"Endret senere"});
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[splitId],removed:true});
+    // Rejecting a stale link and bringing it back with unchanged references is never blocked.
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[id],removed:true});
+    st=await runCommand(st,ALICE,{type:"RejectLineLinks",linkIds:[id],removed:false});
+    assert((await sql`select text from public.script_blocks where id=${b4}`)[0]?.["text"]==="Endret senere","later command failed");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.translation_line_links where project_id=${bp}`).length===0,"line links left after delete");
+    assert((await sql`select id from public.translation_lines where project_id=${bp}`).length===0,"unpaired lines left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0064: line-link RLS/grants and deletion paths", async () => {
+    const grants=await sql`select has_table_privilege('anon','public.translation_line_links','SELECT') a, has_table_privilege('authenticated','public.translation_line_links','SELECT') r, has_table_privilege('authenticated','public.translation_line_links','INSERT') w, has_table_privilege('service_role','public.translation_line_links','INSERT') s`;
+    assert(grants[0]?.["a"]===false && grants[0]?.["r"]===true && grants[0]?.["w"]===false && grants[0]?.["s"]===true,"line-link grants");
+    const rls=await sql`select relrowsecurity from pg_class where oid='public.translation_line_links'::regclass`;
+    assert(rls[0]?.["relrowsecurity"]===true,"missing RLS");
+    for (const fn of ["delete_project(uuid,uuid)","purge_project_assets(uuid,uuid)"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.translation_line_links")<body.indexOf("delete from public.translations"),"line links must delete before translations");
+    }
+    const body=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(body.includes("'translation_line_links'") && body.includes("'translation_lines'") && body.includes("Invalid line link scope"),"scope validation absent");
+    assert(body.includes("p_changes -> 'inserts' -> 'translation_line_links'") && body.includes("v_link_check"),"validation must only cover links in this call");
+    for (const t of ["translation_lines"]) {
+      const g=await sql`select has_table_privilege('anon',${`public.${t}`},'SELECT') a, has_table_privilege('authenticated',${`public.${t}`},'SELECT') r, has_table_privilege('authenticated',${`public.${t}`},'INSERT') w, has_table_privilege('service_role',${`public.${t}`},'INSERT') s, (select relrowsecurity from pg_class where oid=${`public.${t}`}::regclass) rls`;
+      assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
+    }
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.translation_line_links(id,project_id,variant_id,language,source_block_ids,target_translation_ids,origin,confidence) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),'en','{}','{}','ai',0.5)`),"42501");
+  });
+
+  await test("0065: harmonisering og foretrukket referanse via apply_changes, RLS og validering", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Harmonize fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    let st=await loadState(bp);
+    const assetId=newId(),variantId=newId(),srcVersionId=newId(),profileId=newId();
+    st=await runCommand(st,ALICE,{type:"CreateAssets",assets:[{assetId:assetId as never,fields:{kind:"character",name:"Maja",names:[],description:"",category:"",tags:[]}}]});
+    st=await runCommand(st,ALICE,{type:"CreateAssetVariant",variantId:variantId as never,assetId:assetId as never,fields:{name:"Animatic",style:"animatic",appearance:""}});
+    st=await runCommand(st,ALICE,{type:"AddAssetVersion",versionId:srcVersionId as never,variantId:variantId as never,media:{path:`${bp}/${assetId}/${srcVersionId}/maja.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"d".repeat(64)},note:"Kilde"});
+    st=await runCommand(st,ALICE,{type:"CreateStyleProfile",profileId:profileId as never,fields:{name:"Filmens visuelle stil",isDefault:true,guide:{...emptyStyleGuide(),visualStyle:"Watercolour"}}});
+    // Harmonized image: new variant + new version + metadata in one undoable command; source untouched.
+    const harmId=newId(),newVarId=newId(),newVerId=newId();
+    st=await runCommand(st,ALICE,{type:"ApplyHarmonizedImage",harmonizationId:harmId,variantId:newVarId as never,versionId:newVerId as never,media:{path:`${bp}/${assetId}/${newVerId}/maja-h.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"e".repeat(64)},note:"Harmonisert",fields:{versionId:newVerId,sourceVersionId:srcVersionId,model:"google/gemini-3-pro-image",qualityProfile:null,styleProfileId:profileId,referenceVersionId:null,use:"variant",note:"Harmonisert"},newVariant:{assetId:assetId as never,fields:{name:"Harmonisert – Filmens visuelle stil",style:"illustrated",appearance:""}}});
+    assert((await sql`select id from public.style_harmonizations where project_id=${bp} and version_id=${newVerId} and source_version_id=${srcVersionId}`).length===1,"harmonization row missing");
+    assert((await sql`select id from public.asset_versions where id=${newVerId}`).length===1,"harmonized version missing");
+    assert((await sql`select id from public.asset_variants where id=${newVarId}`).length===1,"harmonized variant missing");
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.style_harmonizations where project_id=${bp}`)).length===1,"member cannot read");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.style_harmonizations where project_id=${bp}`)).length===0,"nonmember sees harmonizations");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.style_harmonizations(id,project_id,version_id,source_version_id,model,use) values(gen_random_uuid(),${bp},${newVerId},${srcVersionId},'x','variant')`),"42501");
+    // Invalid metadata (unknown style profile) is rejected by apply_changes.
+    const badRow={id:newId(),project_id:bp,version_id:newVerId,source_version_id:srcVersionId,model:"x",quality_profile:null,style_profile_id:newId(),reference_version_id:null,use:"variant",note:"",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetStyleHarmonization"})},null,${sql.json({inserts:{style_harmonizations:[badRow]}})})`),"23503");
+    // REQ-0144: exactly one active preferred reference per (asset, style profile); the swap is atomic.
+    const ref1=newId(),ref2=newId();
+    st=await runCommand(st,ALICE,{type:"SetPreferredStyleReference",referenceId:ref1,fields:{assetId,styleProfileId:profileId,variantId:variantId as never}});
+    st=await runCommand(st,ALICE,{type:"SetPreferredStyleReference",referenceId:ref2,fields:{assetId,styleProfileId:profileId,variantId:newVarId as never}});
+    const active=await sql`select id from public.style_preferred_references where project_id=${bp} and not removed`;
+    assert(active.length===1 && active[0]?.["id"]===ref2,"exactly one active preferred reference");
+    assert((await sql`select removed from public.style_preferred_references where id=${ref1}`)[0]?.["removed"]===true,"old reference not retired");
+    // A raw insert of a second active row for the same pair is rejected.
+    const dupRow={id:newId(),project_id:bp,asset_id:assetId,style_profile_id:profileId,variant_id:variantId,removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetPreferredStyleReference"})},null,${sql.json({inserts:{style_preferred_references:[dupRow]}})})`),"22023");
+    // Deletion paths remove the new tables; nothing is left behind.
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    for (const t of ["style_harmonizations","style_preferred_references","harmonize_batches"])
+      assert((await sql`select id from ${sql(t)} where project_id=${bp}`).length===0,`${t} left after delete`);
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0065: harmoniseringsbatch er idempotent, budsjett- og nøkkelvernet, med lease og tapsfri fullføring", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('Harmonize batch fixture') id`)[0]))?.["id"]);
+    let st=await loadState(bp);
+    const assetId=newId(),variantId=newId(),srcVersionId=newId(),profileId=newId();
+    st=await runCommand(st,ALICE,{type:"CreateAssets",assets:[{assetId:assetId as never,fields:{kind:"character",name:"Rev",names:[],description:"",category:"",tags:[]}}]});
+    st=await runCommand(st,ALICE,{type:"CreateAssetVariant",variantId:variantId as never,assetId:assetId as never,fields:{name:"Animatic",style:"animatic",appearance:""}});
+    st=await runCommand(st,ALICE,{type:"AddAssetVersion",versionId:srcVersionId as never,variantId:variantId as never,media:{path:`${bp}/${assetId}/${srcVersionId}/rev.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"f".repeat(64)},note:"Kilde"});
+    st=await runCommand(st,ALICE,{type:"CreateStyleProfile",profileId:profileId as never,fields:{name:"Filmens visuelle stil",isDefault:true,guide:{...emptyStyleGuide(),visualStyle:"Watercolour"}}});
+    const reqId=newId(),itemId=newId(),jobId=newId(),bVarId=newId(),bVerId=newId(),bHarmId=newId(),bCmdId=newId();
+    const items=()=>sql.json([{id:itemId,job_id:jobId,asset_id:assetId,source_version_id:srcVersionId,variant_id:bVarId,version_id:bVerId,harmonization_id:bHarmId,command_id:bCmdId,cost:0}]);
+    const create=(req:string)=>as("service_role",null,tx=>tx`select public.create_harmonize_batch(${bp},${ALICE},${req},${profileId},null,'lovable','google/gemini-3-pro-image','1K',null,${items()},null,${ALICE}) id`);
+    const b1=String((await create(reqId))[0]?.["id"]), b2=String((await create(reqId))[0]?.["id"]);
+    assert(b1===b2,"batch creation not idempotent");
+    assert((await sql`select count(*)::int n from public.harmonize_batches where project_id=${bp}`)[0]?.["n"]===1,"duplicate batch");
+    assert((await sql`select status from public.generation_jobs where id=${jobId}`)[0]?.["status"]==="queued","job receipt not reserved");
+    // A non-lovable provider without a valid key is rejected before anything is reserved.
+    await expectError(as("service_role",null,tx=>tx`select public.create_harmonize_batch(${bp},${ALICE},${newId()},${profileId},null,'openai','gpt-image','1K',null,${items()},null,${ALICE})`),"42501");
+    assert((await sql`select count(*)::int n from public.harmonize_batches where project_id=${bp}`)[0]?.["n"]===1,"rejected batch was created");
+    const lease=newId();
+    const claimed=(await as("service_role",null,tx=>tx`select public.claim_harmonize_batch(${b1},${lease}) b`))[0]?.["b"] as Record<string,unknown>;
+    assert(claimed && claimed["lease_token"]===lease,"lease not granted");
+    // A second claim while the lease is active returns nothing.
+    assert((await as("service_role",null,tx=>tx`select public.claim_harmonize_batch(${b1},${newId()}) b`))[0]?.["b"]===null,"double claim");
+    await as("service_role",null,tx=>tx`select public.transition_harmonize_batch_item(${itemId},${lease},${sql.json({status:"ready"})})`);
+    // Wrong command type is rejected.
+    await expectError(as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${sql.json({type:"AddAssetVersion"})},null,null)`),"22023");
+    // Completing applies the harmonized image through apply_changes in the same transaction.
+    const cmd: Command={type:"ApplyHarmonizedImage",harmonizationId:bHarmId,variantId:bVarId as never,versionId:bVerId as never,media:{path:`${bp}/${assetId}/${bVerId}/rev-h.png`,mimeType:"image/png",width:800,height:1200,byteSize:4096,sha256:"a".repeat(64)},note:"Harmonisert",fields:{versionId:bVerId,sourceVersionId:srcVersionId,model:"google/gemini-3-pro-image",qualityProfile:null,styleProfileId:profileId,referenceVersionId:null,use:"variant",note:"Harmonisert"},newVariant:{assetId:assetId as never,fields:{name:"Harmonisert",style:"illustrated",appearance:""}}};
+    const res=applyCommand(st,{id:bCmdId as never,actor:ALICE,at:new Date().toISOString(),command:cmd});
+    assert(res.ok,`Kjernen avviste ApplyHarmonizedImage: ${res.ok?"":res.error.message}`);
+    if(res.ok){
+      const changes=diffStates(st,res.state);
+      await as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${tx.json(cmd as never)},${tx.json(res.inverse as never)},${tx.json(changes as never)})`);
+      st=res.state;
+    }
+    assert((await sql`select status from public.harmonize_batch_items where id=${itemId}`)[0]?.["status"]==="done","item not done");
+    assert((await sql`select id from public.style_harmonizations where id=${bHarmId}`).length===1,"harmonization not applied");
+    // Completing again is idempotent: no duplicate command in the log.
+    await as("service_role",null,tx=>tx`select public.complete_harmonize_batch_item(${itemId},${lease},${sql.json({type:"ApplyHarmonizedImage"})},null,null)`);
+    assert((await sql`select count(*)::int n from public.change_log where id=${bCmdId}`)[0]?.["n"]===1,"command applied twice");
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.harmonize_batches where project_id=${bp}`).length===0,"batch left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0066: språkversjoner – RLS/grants, utvidede språkbegrensninger og slettingsrekkefølge", async () => {
+    const g=await sql`select has_table_privilege('anon','public.language_versions','SELECT') a, has_table_privilege('authenticated','public.language_versions','SELECT') r, has_table_privilege('authenticated','public.language_versions','INSERT') w, has_table_privilege('authenticated','public.language_versions','UPDATE') u, has_table_privilege('service_role','public.language_versions','INSERT') s, (select relrowsecurity from pg_class where oid='public.language_versions'::regclass) rls`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["u"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,"language_versions grants/RLS");
+    for (const t of ["translations","translation_lines","translation_line_links"]) {
+      const c=await sql`select is_nullable from information_schema.columns where table_schema='public' and table_name=${t} and column_name='language_version_id'`;
+      assert(c[0]?.["is_nullable"]==="YES",`${t}.language_version_id must be nullable`);
+      const old=await sql`select 1 from information_schema.columns where table_schema='public' and table_name=${t} and column_name='language'`;
+      assert(old.length===1,`${t}.language must be kept`);
+    }
+    // Historisk gyldige verdier og særverdiene beholdes; nye BCP-47-koder godtas; ugyldige avvises.
+    const defs=Object.fromEntries((await sql`select conname, pg_get_constraintdef(oid) d from pg_constraint where conname in ('translations_language_check','audio_clips_language_check','takes_audio_language_check')`).map(r=>[r["conname"],String(r["d"])]));
+    assert(defs["audio_clips_language_check"]?.includes("'*'") && defs["takes_audio_language_check"]?.includes("'none'"),"special audio values lost");
+    const probe=async(v:string)=>{ try { await sql.begin(async tx=>{ await tx`insert into public.translations(id,project_id,block_id,language,text) values(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),${v},'x')`; }); return "inserted"; } catch(e){ return String((e as {code?:string}).code); } };
+    // Foreign keys fail after the check passes (23503); the check fails first for invalid tags (23514).
+    for (const v of ["en","en-GB","de","pt-BR","sr-Latn","zh-Hant-TW","es-419"]) { const r=await probe(v); assert(r==="23503",`valid tag ${v} rejected by check (${r})`); }
+    for (const v of ["EN","en-us","en_US","x","nb","no"]) { const r=await probe(v); assert(r==="23514",`invalid tag ${v} accepted (${r})`); }
+    for (const name of ["delete_project","purge_project_assets"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${name}(uuid,uuid)`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.translations")>0 && body.indexOf("delete from public.translations")<body.indexOf("delete from public.language_versions") && (name==="delete_project" || body.indexOf("delete from public.language_versions")<body.indexOf("delete from public.projects")),`${name}: language versions must delete after translations (and before the project row)`);
+    }
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'") && ac.includes("Invalid language version scope"),"apply_changes lacks language versions");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=66,"schema version 66");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.language_versions(id,project_id,language,name) values(gen_random_uuid(),gen_random_uuid(),'de','Tysk')`),"42501");
+  });
+
+  await test("0066: tre målspråk via apply_changes – revisjoner, idempotens, angre/gjør om, kollisjoner, sceneisolasjon, 1:n/n:1 og historiske rader", async () => {
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('ML3 fixture') id`)[0]))?.["id"]);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${bp},${BOB},'editor')`;
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const mk=(n:number)=>{let k:string|null=null;return Array.from({length:n},(_,i)=>{k=keyBetween(k,null);return {blockId:newId() as never,kind:"action" as const,text:`Norsk ${i}`,orderKey:k};});};
+    const v1=newId(),v2=newId();const blocks1=mk(3),blocks2=mk(2);
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v1 as never,occurrenceId:newId() as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"A",time:"DAG"},blocks:blocks1});
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v2 as never,occurrenceId:newId() as never,orderKey:keyBetween(orderedOccurrences(st,prod.id).at(-1)?.orderKey ?? null,null),heading:{intExt:"INT.",location:"B",time:"DAG"},blocks:blocks2});
+    const norsk=async()=>Object.fromEntries((await sql`select id,text,revision from public.script_blocks where project_id=${bp}`).map(r=>[r["id"],`${r["text"]}#${r["revision"]}`]));
+    const before=await norsk();
+    // Historisk rad fra før 0066: ingen versjon, avledes fra prosjekt + språk
+    const legacyId=newId();
+    await sql`insert into public.translations(id,project_id,block_id,language,text,based_on_rev,status) values(${legacyId},${bp},${blocks1[2]!.blockId},'en','Old English',1,'approved')`;
+    st=await loadState(bp);
+    const ids:Record<string,string>={};
+    for (const language of ["de","pt-BR","sr-Latn"]) { ids[language]=newId(); st=await runCommand(st,ALICE,{type:"AddLanguageVersion",versionId:ids[language]!,language,name:`V ${language}`}); }
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.language_versions where project_id=${bp}`)).length===3,"member cannot read");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.language_versions where project_id=${bp}`)).length===0,"nonmember reads");
+    // Samme språk med annen skrivemåte stoppes av databasen også når kjernen omgås
+    const dup={id:newId(),project_id:bp,language:"pt-br",name:"Dup",status:"active",removed:false,revision:1};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddLanguageVersion"})},null,${sql.json({inserts:{language_versions:[dup]}})})`),/language|unique|check/i);
+    const dup2={...dup,id:newId(),language:"PT-BR"};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddLanguageVersion"})},null,${sql.json({inserts:{language_versions:[dup2]}})})`),/language|unique|check/i);
+    // Import (uncertain) i to språk, linjer i sr-Latn, 1:n og n:1
+    const tDe=newId(),tPt=newId(),u1=newId(),u2=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslations",items:[{translationId:tDe as never,fields:{blockId:blocks1[0]!.blockId,variantId:null,language:"de",text:"Deutsch",basedOnRev:1,status:"uncertain"}},{translationId:tPt as never,fields:{blockId:blocks1[0]!.blockId,variantId:null,language:"pt-BR",text:"Olá",basedOnRev:1,status:"uncertain"}}]});
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:u1,fields:{variantId:v1,language:"sr-Latn",ord:0,kind:"action",text:"Prva"}},{lineId:u2,fields:{variantId:v1,language:"sr-Latn",ord:1,kind:"action",text:"Druga"}}]});
+    const vrows=await sql`select id,language,language_version_id v from public.translations where project_id=${bp} union all select id,language,language_version_id from public.translation_lines where project_id=${bp}`;
+    assert(vrows.find(r=>r["id"]===tDe)?.["v"]===ids["de"] && vrows.find(r=>r["id"]===u1)?.["v"]===ids["sr-Latn"] && vrows.find(r=>r["id"]===legacyId)?.["v"]===null,"version ids not stored");
+    const split=newId(),merge=newId();
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:split,fields:{variantId:v1,language:"sr-Latn",sourceBlockIds:[blocks1[0]!.blockId],targetTranslationIds:[u1,u2],origin:"manual",confidence:1,reason:""}});
+    st=await runCommand(st,ALICE,{type:"ApproveLineLinks",linkIds:[],additions:[{linkId:merge,fields:{variantId:v1,language:"pt-BR",sourceBlockIds:[blocks1[0]!.blockId,blocks1[1]!.blockId],targetTranslationIds:[tPt],origin:"approved",confidence:0.9,reason:""}}]});
+    const lrows=await sql`select id,language_version_id v from public.translation_line_links where project_id=${bp}`;
+    assert(lrows.find(r=>r["id"]===split)?.["v"]===ids["sr-Latn"] && lrows.find(r=>r["id"]===merge)?.["v"]===ids["pt-BR"],"link versions");
+    // Feil scope: versjon fra et annet språk, mål fra en annen versjon, og annen scene
+    const wrongLang={id:newId(),project_id:bp,block_id:blocks1[1]!.blockId,variant_id:null,language:"pt-BR",text:"x",based_on_rev:1,status:"approved",removed:false,revision:1,language_version_id:ids["de"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"AddTranslations"})},null,${sql.json({inserts:{translations:[wrongLang]}})})`),"22023");
+    const wrongTarget={id:newId(),project_id:bp,variant_id:v1,language:"sr-Latn",source_block_ids:[blocks1[1]!.blockId],target_translation_ids:[u1],origin:"manual",confidence:1,reason:"",removed:false,revision:1,language_version_id:ids["de"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[wrongTarget]}})})`),"22023");
+    const otherScene={...wrongTarget,id:newId(),variant_id:v2,source_block_ids:[blocks2[0]!.blockId],language_version_id:ids["sr-Latn"]};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({inserts:{translation_line_links:[otherScene]}})})`),"22023");
+    // Revisjonskontroll
+    const stale={id:ids["de"],language:"de",name:"Gammel",status:"active",removed:false,revision:6,expected_revision:5};
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateLanguageVersion"})},null,${sql.json({updates:{language_versions:[stale]}})})`),"P0409");
+    // Idempotens: samme kommando-ID to ganger gir ingen ny endring
+    const cmdId=newId();const rename:Command={type:"UpdateLanguageVersion",versionId:ids["de"]!,name:"Tysk"};
+    const res=applyCommand(st,{id:cmdId as never,actor:ALICE,at:new Date().toISOString(),command:rename});assert(res.ok,"rename rejected");
+    if (!res.ok) return;
+    const ch=diffStates(st,res.state);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${cmdId},${tx.json(rename as never)},${tx.json(res.inverse as never)},${tx.json(ch as never)})`);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${cmdId},${tx.json(rename as never)},${tx.json(res.inverse as never)},${tx.json(ch as never)})`),/./);
+    assert((await sql`select revision from public.language_versions where id=${ids["de"]!}`)[0]?.["revision"]===2,"rename applied twice");
+    st=res.state;
+    // Angre og gjør om navnet
+    st=await runCommand(st,ALICE,res.inverse);
+    assert((await sql`select name from public.language_versions where id=${ids["de"]!}`)[0]?.["name"]==="V de","undo rename");
+    st=await runCommand(st,ALICE,rename);
+    assert((await sql`select name from public.language_versions where id=${ids["de"]!}`)[0]?.["name"]==="Tysk","redo rename");
+    // Godkjenning, angring og fjerning: norsk og andre språk uendret
+    const deBefore=await sql`select id,text,status,revision from public.translations where language='de' and project_id=${bp}`;
+    const approve:Command={type:"UpdateTranslations",items:[{translationId:tPt as never,fields:{blockId:blocks1[0]!.blockId as never,variantId:null,language:"pt-BR",text:"Olá",basedOnRev:1,status:"approved"}}]};
+    const appr=applyCommand(st,{id:newId() as never,actor:ALICE,at:new Date().toISOString(),command:approve});assert(appr.ok,"approve");
+    if (!appr.ok) return;
+    st=await runCommand(st,ALICE,approve);
+    assert((await sql`select status from public.translations where id=${tPt}`)[0]?.["status"]==="approved","approve not stored");
+    st=await runCommand(st,ALICE,appr.inverse);
+    assert((await sql`select status from public.translations where id=${tPt}`)[0]?.["status"]==="uncertain","undo approve");
+    st=await runCommand(st,ALICE,{type:"SetLanguageVersionRemoved",versionId:ids["sr-Latn"]!,removed:true});
+    assert((await sql`select count(*)::int n from public.translation_lines where project_id=${bp} and not removed`)[0]?.["n"]===2,"removing a version deleted lines");
+    st=await runCommand(st,ALICE,{type:"SetLanguageVersionRemoved",versionId:ids["sr-Latn"]!,removed:false});
+    const deAfter=await sql`select id,text,status,revision from public.translations where language='de' and project_id=${bp}`;
+    assert(isDeepStrictEqual([...deBefore],[...deAfter]),"other language changed");
+    assert(isDeepStrictEqual(before,await norsk()),"Norwegian source changed");
+    // Kollisjoner fra historiske data blir liggende urørt
+    await sql`insert into public.translation_lines(id,project_id,variant_id,language,ord,text) values(${newId()},${bp},${v2},'en-us',0,'a'),(${newId()},${bp},${v2},'en-US',1,'b')`;
+    st=await loadState(bp);
+    st=await runCommand(st,ALICE,{type:"EditBlockText",productionId:prod.id,blockId:blocks2[1]!.blockId as never,text:"Senere endring"});
+    assert((await sql`select count(*)::int n from public.translation_lines where project_id=${bp} and lower(language)='en-us'`)[0]?.["n"]===2,"collision rows changed");
+    assert((await sql`select text from public.translations where id=${legacyId}`)[0]?.["text"]==="Old English","legacy row changed");
+    // Sletting og purge
+    await as("service_role",null,tx=>tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.language_versions where project_id=${bp}`).length===0,"language versions left after delete");
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length===0,"project not purged");
+  });
+
+  await test("0065: RLS/grants, server-only batchfunksjoner og slettingsrekkefølge", async () => {
+    for (const t of ["style_harmonizations","style_preferred_references","harmonize_batches","harmonize_batch_items"]) {
+      const g=await sql`select has_table_privilege('anon',${`public.${t}`},'SELECT') a, has_table_privilege('authenticated',${`public.${t}`},'SELECT') r, has_table_privilege('authenticated',${`public.${t}`},'INSERT') w, has_table_privilege('service_role',${`public.${t}`},'INSERT') s, (select relrowsecurity from pg_class where oid=${`public.${t}`}::regclass) rls`;
+      assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,`${t} grants/RLS`);
+    }
+    for (const signature of ["public.create_harmonize_batch(uuid,uuid,uuid,uuid,uuid,text,text,text,jsonb,jsonb,uuid,uuid)","public.claim_harmonize_batch(uuid,uuid)","public.complete_harmonize_batch_item(uuid,uuid,jsonb,jsonb,jsonb)","public.transition_harmonize_batch_item(uuid,uuid,jsonb)","public.resume_harmonize_batch(uuid,uuid,uuid)","public.reconfirm_harmonize_batch(uuid,uuid,uuid)"]) {
+      const rights=await sql`select has_function_privilege('authenticated',${signature},'EXECUTE') c, has_function_privilege('anon',${signature},'EXECUTE') a, has_function_privilege('service_role',${signature},'EXECUTE') s`;
+      assert(rights[0]?.["c"]===false && rights[0]?.["a"]===false && rights[0]?.["s"]===true,`${signature}: tilgang avviker`);
+    }
+    const completeBody=String((await sql`select pg_get_functiondef('public.complete_harmonize_batch_item(uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(completeBody.includes("public.apply_changes") && completeBody.includes("lease_token") && completeBody.includes("ApplyHarmonizedImage"),"completion is not transactional/lease-guarded");
+    const claimBody=String((await sql`select pg_get_functiondef('public.claim_harmonize_batch(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(claimBody.includes("retryable = false"),"crashed generations must not be replayed");
+    for (const fn of ["delete_project(uuid,uuid)","purge_project_assets(uuid,uuid)"]) {
+      const body=String((await sql`select pg_get_functiondef(${`public.${fn}`}::regprocedure) b`)[0]?.["b"]);
+      assert(body.indexOf("delete from public.style_harmonizations")<body.indexOf("delete from public.style_profiles"),"harmonizations must delete before style profiles");
+      assert(body.includes("delete from public.harmonize_batches"),"harmonize batches not deleted");
+    }
+    const applyBody=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(applyBody.includes("'style_harmonizations'") && applyBody.includes("'style_preferred_references'"),"new tables missing from apply_changes");
+    assert(applyBody.includes("Invalid harmonization") && applyBody.includes("More than one preferred reference"),"validation absent");
+    const purgeBody=String((await sql`select pg_get_functiondef('public.purge_removed_assets(uuid,uuid,uuid[],uuid[])'::regprocedure) b`)[0]?.["b"]);
+    assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
+  });
+  await test("0067: R1 ProRes i «Endelig», R2 oppryddingslogg (grants/RLS) og strengere språkversjonssjekk", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=67,"schema version 67+");
+    // R1: nye prosjekter får ProRes i «Endelig»; øvrige standardprofiler er uendret
+    const np=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R1 fixture') id`)[0]))?.["id"]);
+    const qp=await sql`select name, spec from public.quality_profiles where project_id=${np} order by name`;
+    const spec=(n:string)=>qp.find(r=>r["name"]===n)?.["spec"] as {export?:{format?:string}}|undefined;
+    assert(spec("Endelig")?.export?.format==="prores" && spec("Utkast")?.export?.format==="mp4" && spec("Gjennomgang")?.export?.format==="mp4","create_project: Endelig must default to ProRes");
+    // R2: loggtabellen – bare serveren skriver, medlemmer leser, ikke-medlemmer ser ingenting
+    const g=await sql`select has_table_privilege('anon','public.storage_cleanups','SELECT') a, has_table_privilege('authenticated','public.storage_cleanups','SELECT') r, has_table_privilege('authenticated','public.storage_cleanups','INSERT') w, has_table_privilege('authenticated','public.storage_cleanups','DELETE') d, has_table_privilege('service_role','public.storage_cleanups','INSERT') s, (select relrowsecurity from pg_class where oid='public.storage_cleanups'::regclass) rls`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true,"storage_cleanups grants/RLS");
+    await expectError(as("authenticated",ALICE,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes) values(${np},${ALICE},1,1)`),"42501");
+    await as("service_role",null,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes,paths) values(${np},${ALICE},1,10,${tx.json([`${np}/generated/a/v/x.png`])})`);
+    await sql`insert into public.project_members(project_id,user_id,role) values(${np},${BOB},'editor')`;
+    assert((await as("authenticated",BOB,tx=>tx`select id from public.storage_cleanups where project_id=${np}`)).length===1,"member cannot read log");
+    assert((await as("authenticated",CAROL,tx=>tx`select id from public.storage_cleanups where project_id=${np}`)).length===0,"nonmember reads log");
+    await expectError(as("service_role",null,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes) values(${np},${ALICE},-1,0)`),"23514");
+    const purge=String((await sql`select pg_get_functiondef('public.purge_project_assets(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(purge.indexOf("delete from public.storage_cleanups")>0 && purge.indexOf("delete from public.storage_cleanups")<purge.indexOf("delete from public.projects"),"purge_project_assets must delete the cleanup log before the project");
+    await as("service_role",null,tx=>tx`select public.delete_project(${np},${ALICE})`);
+    await as("service_role",null,tx=>tx`select public.purge_project_assets(${np},${ALICE})`);
+    assert((await sql`select count(*)::int n from public.storage_cleanups where project_id=${np}`)[0]?.["n"]===0,"cleanup log survives purge");
+    // Språkversjonssjekken: lenker kontrolleres også når versjonen ikke sendes, og når en linje flyttes
+    const bp=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('0067 fixture') id`)[0]))?.["id"]);
+    let st=await loadState(bp);const prod=Object.values(st.productions).find(p=>p.kind==='main');assert(prod,"main missing");
+    const v1=newId();const b0=newId() as never;
+    st=await runCommand(st,ALICE,{type:"CreateScene",productionId:prod.id,sceneId:newId() as never,variantId:v1 as never,occurrenceId:newId() as never,orderKey:keyBetween(null,null),heading:{intExt:"INT.",location:"A",time:"DAG"},blocks:[{blockId:b0,kind:"action",text:"Norsk",orderKey:keyBetween(null,null)}]});
+    const ids:Record<string,string>={};
+    for (const language of ["de","pt-BR","sr-Latn"]) { ids[language]=newId(); st=await runCommand(st,ALICE,{type:"AddLanguageVersion",versionId:ids[language]!,language,name:`V ${language}`}); }
+    const uDe=newId(),uSr=newId(),uSr2=newId(),link=newId();
+    st=await runCommand(st,ALICE,{type:"AddTranslationLines",items:[{lineId:uDe,fields:{variantId:v1,language:"de",ord:0,kind:"action",text:"Eins"}},{lineId:uSr,fields:{variantId:v1,language:"sr-Latn",ord:0,kind:"action",text:"Prva"}},{lineId:uSr2,fields:{variantId:v1,language:"sr-Latn",ord:1,kind:"action",text:"Druga"}}]});
+    st=await runCommand(st,ALICE,{type:"SetLineLink",linkId:link,fields:{variantId:v1,language:"sr-Latn",sourceBlockIds:[b0],targetTranslationIds:[uSr],origin:"manual",confidence:1,reason:""}});
+    const rev=async(t:string,id:string)=>Number((await sql`select revision from ${sql(t)} where id=${id}`)[0]?.["revision"]);
+    // a) lenken får et mål fra en annen versjon uten å sende language_version_id
+    let r=await rev("translation_line_links",link);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"SetLineLink"})},null,${sql.json({updates:{translation_line_links:[{id:link,target_translation_ids:[uSr,uDe],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // b) en linje lenken peker på, flyttes til en annen versjon (samme språk er påkrevd, så også språket flyttes)
+    r=await rev("translation_lines",uSr);
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateTranslationLine"})},null,${sql.json({updates:{translation_lines:[{id:uSr,language:"de",language_version_id:ids["de"],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // c) feil versjon for språket avvises fortsatt
+    await expectError(as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${sql.json({type:"UpdateTranslationLine"})},null,${sql.json({updates:{translation_lines:[{id:uSr,language_version_id:ids["pt-BR"],revision:r+1,expected_revision:r}]}})})`),"22023");
+    // d) gyldige endringer går gjennom: nytt mål i samme versjon uten å sende versjonen, og tekstendring på målet
+    const lr=await rev("translation_line_links",link);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"SetLineLink"})},null,${tx.json({updates:{translation_line_links:[{id:link,target_translation_ids:[uSr,uSr2],revision:lr+1,expected_revision:lr}]}})})`);
+    await as("service_role",null,tx=>tx`select public.apply_changes(${bp},${ALICE},${newId()},${tx.json({type:"UpdateTranslationLine"})},null,${tx.json({updates:{translation_lines:[{id:uSr,text:"Prva!",revision:r+1,expected_revision:r}]}})})`);
+    assert((await sql`select target_translation_ids t from public.translation_line_links where id=${link}`)[0]?.["t"].length===2,"valid link update lost");
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.includes("v_link_scope") && ac.includes("target_translation_ids && v_lang_changed"),"apply_changes lacks the 0067 link scope");
+  });
+  await test("0068: R3 tilbaketrekking av globale versjoner – grants, rettigheter, angre/gjør om, andre prosjekter uendret", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=68,"schema version 68");
+    const g=await sql`select has_table_privilege('anon','public.global_version_withdrawals','SELECT') a, has_table_privilege('authenticated','public.global_version_withdrawals','SELECT') r, has_table_privilege('authenticated','public.global_version_withdrawals','INSERT') w, has_table_privilege('authenticated','public.global_version_withdrawals','DELETE') d, has_table_privilege('service_role','public.global_version_withdrawals','INSERT') s, (select relrowsecurity from pg_class where oid='public.global_version_withdrawals'::regclass) rls, has_function_privilege('anon','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fa, has_function_privilege('authenticated','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fu`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true && g[0]?.["fa"]===false && g[0]?.["fu"]===true,"global_version_withdrawals grants/RLS");
+    const DAVE="44444444-4444-7444-8444-444444444444";
+    await sql`insert into auth.users (id, email) values (${DAVE}, 'dave@example.no') on conflict do nothing`;
+    const ws=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace('R3') as id`)[0]!["id"] as string);
+    const tEd=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string);
+    await as("authenticated",BOB,tx=>tx`select public.accept_workspace_invitation(${tEd})`);
+    const tMem=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string);
+    await as("authenticated",CAROL,tx=>tx`select public.accept_workspace_invitation(${tMem})`);
+    const ga=await as("authenticated",ALICE,async tx=>(await tx`select public.global_create_asset(${ws}, 'character', 'Nisse', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv=await as("authenticated",ALICE,async tx=>(await tx`select public.global_create_variant(${ga}, 'Standard', 'reference', '') as id`)[0]!["id"] as string);
+    const sha="c".repeat(64), key=`global/${ws}/${ga}/${sha}.png`;
+    const v1=await as("authenticated",ALICE,async tx=>(await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, '') as id`)[0]!["id"] as string);
+    const v2=await as("authenticated",BOB,async tx=>(await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, 'harmonisert') as id`)[0]!["id"] as string);
+    // Et annet prosjekt har tatt v2 i bruk (kopi med kobling); radene skal aldri endres
+    const other=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R3 annet') id`)[0]))?.["id"]);
+    const snap=async()=>String((await sql`select md5(coalesce(string_agg(t::text, '|' order by t::text), '')) h from (select a::text t from public.assets a where project_id=${other} union all select v::text from public.asset_versions v where project_id=${other} union all select p::text from public.projects p where id=${other}) x`)[0]?.["h"]);
+    const before=await snap();
+    const vrow=await sql`select row_to_json(v)::text j from public.global_asset_versions v where id=${v2}`;
+    // Rettigheter: medlem, ikke-medlem og anonym kan ikke; direkte skriving stoppes
+    await expectError(as("authenticated",CAROL,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("authenticated",DAVE,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("anon",null,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("authenticated",BOB,tx=>tx`insert into public.global_version_withdrawals(version_id,workspace_id,withdrawn_by) values(${v2},${ws},${BOB})`),"42501");
+    await expectError(as("authenticated",BOB,tx=>tx`select public.global_set_version_withdrawn(${newId()}, true)`),"22023");
+    // Angre = trekk tilbake (redaktør), idempotent
+    const w1=await as("authenticated",BOB,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, true) as c`)[0]!["c"]);
+    const w2=await as("authenticated",BOB,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, true) as c`)[0]!["c"]);
+    assert(w1===true && w2===false,"withdraw must be idempotent");
+    assert((await as("authenticated",CAROL,tx=>tx`select version_id from public.global_version_withdrawals where version_id=${v2}`)).length===1,"member must see the withdrawal");
+    assert((await as("authenticated",DAVE,tx=>tx`select version_id from public.global_version_withdrawals`)).length===0,"nonmember sees withdrawals");
+    assert((await sql`select row_to_json(v)::text j from public.global_asset_versions v where id=${v2}`)[0]?.["j"]===vrow[0]?.["j"],"the global version row must stay unchanged");
+    assert((await sql`select count(*)::int n from public.global_asset_versions where id in (${v1},${v2})`)[0]?.["n"]===2,"versions must be kept");
+    assert((await sql`select version_id from public.global_version_withdrawals where version_id=${v1}`).length===0,"other versions untouched");
+    // Gjør om = publiser igjen (eier)
+    const r1=await as("authenticated",ALICE,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, false) as c`)[0]!["c"]);
+    assert(r1===true && (await sql`select version_id from public.global_version_withdrawals where version_id=${v2}`).length===0,"republish must remove the withdrawal");
+    await as("authenticated",ALICE,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`);
+    assert(await snap()===before,"other projects must never change");
+    // Ingen funksjon er erstattet av 0068
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("global_version_withdrawals"),"apply_changes must be unchanged");
+  });
+  await test("0069: opphavet til en versjon er en permanent ID (kontroll ved lagring, uforanderlig, ingen funksjon erstattet)", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=69,"schema version 69");
+    const col=await sql`select data_type, is_nullable from information_schema.columns where table_schema='public' and table_name='asset_versions' and column_name='derived_from_version_id'`;
+    assert(col[0]?.["data_type"]==="uuid" && col[0]?.["is_nullable"]==="YES","nullable uuid column");
+    const pid=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('ID3 opphav') id`)[0]))?.["id"]);
+    const asset=newId(), variant=newId();
+    let st=await loadState(pid);
+    st=await runCommand(st, ALICE, { type:"CreateAssets", assets:[{ assetId: asset as never, fields:{ kind:"character", name:"Maja", names:[], description:"", category:"", tags:[] } }] });
+    st=await runCommand(st, ALICE, { type:"CreateAssetVariant", variantId: variant as never, assetId: asset as never, fields:{ name:"Animatic", style:"animatic", appearance:"" } });
+    const from=newId();
+    st=await runCommand(st, ALICE, { type:"AddAssetVersion", versionId: from as never, variantId: variant as never,
+      media:{ path:`${pid}/id3/${from}/kilde.png`, mimeType:"image/png", width:10, height:10, byteSize:10, sha256:"c".repeat(64) }, note:"" });
+    const nv=newId();
+    st=await runCommand(st, ALICE, { type:"AddAssetVersion", versionId: nv as never, variantId: variant as never,
+      media:{ path:`${pid}/id3/${nv}/frilagt.png`, mimeType:"image/png", width:10, height:10, byteSize:10, sha256:"a".repeat(64) },
+      note:"Frilagt fra v1", derivedFromVersionId: from as never });
+    const back=await loadState(pid);
+    assert(back.assetVersions[nv]?.derivedFromVersionId===from,"derived_from_version_id round trip");
+    // Kilden må finnes i samme prosjekt og ressurs (sjekkes ved commit, uavhengig av rekkefølgen i kallet)
+    await expectError(sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_from_version_id)
+      values (gen_random_uuid(), ${pid}, ${variant}, 990, ${`${pid}/x/y/z.png`}, 'image/png', 1, ${"b".repeat(64)}, gen_random_uuid())`,"22023");
+    await expectError(sql`update public.asset_versions set derived_from_version_id=null where id=${nv}`,/INV-13/);
+    // Eldre rader er uendret (ingen tilbakefylling)
+    assert(Number((await sql`select count(*)::int n from public.asset_versions where derived_from_version_id is not null and id<>${nv}`)[0]?.["n"])===0,"no backfill");
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("derived_from"),"apply_changes must be unchanged");
+  });
+  await test("0070: delingsnøkkelen lagres bare som pepret hash; eldre lenker virker og fylles ved oppslag", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=70,"schema version 70");
+    const p = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('GP5 hash', 25, 1) as id`)[0]!["id"] as string);
+    const prod = (await sql`select id from public.productions where project_id = ${p} limit 1`)[0]!["id"] as string;
+    const rec = await as("authenticated", ALICE, async (tx) => (await tx`select public.record_export(${p}, ${prod}, 'film', 'film.mp4', '{}', '{}') as id`)[0]!["id"] as string);
+    const mk = async () => (await as("authenticated", ALICE, async (tx) => (await tx`select public.create_film_share(${p}, ${rec}, 'Film', 1000, 5000, 1920, 1080, null) as r`)[0]!["r"] as { id: string })).id;
+    // Ny deling: QR-nøkkelen kan vises igjen, slås opp via hash, og står ikke i klartekst noe sted
+    const a = await mk();
+    const ta = await as("authenticated", ALICE, async (tx) => (await tx`select public.activate_film_share(${a}, 1000) as t`)[0]!["t"] as string);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${a}) as t`)[0]!["t"])) === ta, "QR igjen");
+    const dump = JSON.stringify(await sql`select * from public.film_shares where id = ${a}`);
+    assert(!dump.includes(ta), "nøkkelen finnes ikke i raden");
+    assert((await sql`select public.film_share_lookup(${ta}) as id`)[0]!["id"] === a, "oppslag via hash");
+    assert((await sql`select public.film_share_lookup(${"0".repeat(64)}) as id`)[0]!["id"] === null, "ukjent nøkkel");
+    assert((await sql`select public.film_share_lookup('ikke-hex') as id`)[0]!["id"] === null, "ugyldig nøkkel");
+    // Bare service role kan slå opp; pepperen er utilgjengelig
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.film_share_lookup(${ta})`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select pepper from private.film_share_secret`), "42501");
+    // Eldre deling (slik 0047 lagret den): klartekst + usaltet hash, ingen digest
+    const b = await mk(); const tb = "ab".repeat(32);
+    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tb}, token_hash=encode(sha256(convert_to(${tb}, 'UTF8')), 'hex') where id = ${b}`;
+    assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker");
+    const filled = (await sql`select token_digest, token from public.film_shares where id = ${b}`)[0]!;
+    assert(typeof filled["token_digest"] === "string" && filled["token"] === tb, "fylt ved første oppslag, klartekst ikke fjernet");
+    assert((await sql`select public.film_share_lookup(${tb}) as id`)[0]!["id"] === b, "eldre lenke virker etter utfylling");
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${b}) as t`)[0]!["t"])) === tb, "QR for eldre deling");
+    // Eksplisitt utfylling
+    const c = await mk(); const tc = "cd".repeat(32);
+    await sql`update public.film_shares set status='ready', activated_at=now(), token=${tc}, token_hash=encode(sha256(convert_to(${tc}, 'UTF8')), 'hex') where id = ${c}`;
+    assert(Number((await sql`select private.film_share_backfill_digests() n`)[0]!["n"]) >= 1, "utfylling");
+    assert((await sql`select token_digest from public.film_shares where id = ${c}`)[0]!["token_digest"] !== null, "c fylt");
+    // Tilbakekalling stopper oppslaget i serveren (status), og QR forsvinner
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_film_share(${a})`);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select public.film_share_token(${a}) as t`)[0]!["t"])) === null, "ingen QR etter tilbakekalling");
+    // Ingen av de seks Cloud-funksjonene er erstattet
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("token_digest"),"apply_changes uendret");
+    await sql`select public.delete_project(${p}, ${ALICE})`;
+  });
+  await test("0071: riggmaler og rigger (B-087 runde 1): RLS, apply_changes, én standardrigg, globale maler, sletting", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 71, "schema version 71");
+    // RLS og grant-mønsteret
+    for (const tbl of ["rig_templates", "rig_setups", "global_rig_templates"]) {
+      assert((await sql`select relrowsecurity as rls from pg_class where relname = ${tbl}`)[0]?.["rls"] === true, `${tbl}: RLS på`);
+      const grants = (await sql`select grantee::text g, privilege_type::text p from information_schema.role_table_grants where table_name = ${tbl}`) as { g: string; p: string }[];
+      assert(grants.some((r) => r.g === "authenticated" && r.p === "SELECT"), `${tbl}: medlemmer leser`);
+      assert(grants.some((r) => r.g === "service_role" && r.p === "INSERT"), `${tbl}: service role skriver`);
+      assert(!grants.some((r) => r.g === "anon"), `${tbl}: ikke anon`);
+    }
+    // apply_changes kjenner tabellene, og riggene slettes før scenene og prosjektraden
+    const ac = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.includes("rig_templates") && ac.includes("rig_setups"), "apply_changes kjenner riggtabellene");
+    assert(ac.indexOf("'rig_setups'") < ac.indexOf("'scenes','rig_templates'") && ac.indexOf("'rig_templates','productions'") > 0, "sletterekkefølgen");
+    const dp = String((await sql`select pg_get_functiondef('public.delete_project(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(dp.includes("rig_setups") && dp.indexOf("rig_setups") < dp.indexOf("delete from public.scenes"), "delete_project sletter riggene før scenene");
+    // Lagkolonnene finnes
+    const cols = (await sql`select column_name::text c from information_schema.columns where table_name = 'composition_layers'`) as { c: string }[];
+    assert(cols.some((r) => r.c === "rig_plate_id") && cols.some((r) => r.c === "rig_plate_depth_mm"), "lagkolonner");
+    // Skriving går via apply_changes (service role), lesing for medlemmer
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Rigg') as id`)[0]!["id"])));
+    const spec = JSON.stringify({ format: "1", camera: { sensorWidthMm: 36, sensorHeightMm: 24, focalLengthMm: 50, cameraHeightMm: 900, mode: "fixed" }, plates: [{ id: "00000000-0000-4000-8000-000000000001", name: "Bord", heightMm: 0, glassThicknessMm: null }], calibration: null });
+    const tid1 = crypto.randomUUID();
+    const sid1 = crypto.randomUUID();
+    const changes = JSON.stringify({
+      inserts: {
+        rig_templates: [{ id: tid1, project_id: bp, name: "Studiorigg", spec: JSON.parse(spec), revision: 1 }],
+        rig_setups: [{ id: sid1, project_id: bp, scene_id: null, template_id: tid1, name: "Standard", spec: JSON.parse(spec), revision: 1 }],
+      },
+    });
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${crypto.randomUUID()}, ${tx.json({ type: "AddRigTemplate" })}, ${tx.json({})}, ${tx.json(JSON.parse(changes) as never)})`);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"])) === 1, "medlem leser malen");
+    assert((await as("authenticated", CAROL, async (tx) => (await tx`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"])) === 0, "ikke-medlem ser ingenting");
+    // Én aktiv standardrigg per prosjekt
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${crypto.randomUUID()}, ${tx.json({ type: "AddRigSetup" })}, ${tx.json({})}, ${tx.json({ inserts: { rig_setups: [{ id: crypto.randomUUID(), project_id: bp, scene_id: null, template_id: null, name: "Ekstra", spec: JSON.parse(spec), revision: 1 }] } } as never)})`),
+      "23505",
+    );
+    // Globale maler: publisering krever redaktørolle, radene er uforanderlige
+    const ws = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Rigggruppen') as id`)[0]!["id"])));
+    const gid = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, 'første') as id`)[0]!["id"])));
+    const gid2 = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, '') as id`)[0]!["id"])));
+    assert(gid !== gid2, "to publiseringer gir to versjoner");
+    const nums = (await sql`select number::int n from public.global_rig_templates where workspace_id = ${ws} order by number`) as { n: number }[];
+    assert(nums.map((r) => r.n).join() === "1,2", "nummerert per navn");
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_rig_template(${ws}, 'X', ${tx.json(JSON.parse(spec) as never)}, '')`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`update public.global_rig_templates set note = 'x' where id = ${gid}`), "42501");
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select count(*)::int n from public.global_rig_templates where workspace_id = ${ws}`)[0]!["n"])) === 2, "medlem leser globale maler");
+    // Sletting av prosjektet tar riggene med
+    await sql`select public.delete_project(${bp}, ${ALICE})`;
+    assert((await sql`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"] === 0, "maler slettet");
+    assert((await sql`select count(*)::int n from public.rig_setups where project_id = ${bp}`)[0]!["n"] === 0, "rigger slettet");
+  });
+  await test("0072: målesett – RLS, apply_changes, revisjon, invers, delete_project og purge", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 72, "schema version 72");
+    const bp = String((await as("authenticated", ALICE, async tx => (await tx`select public.create_project('Målesett') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const scene = crypto.randomUUID(), variant = crypto.randomUUID(), comp = crypto.randomUUID(), layer = crypto.randomUUID(), id = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${bp},${scene})`;
+    await sql`insert into public.compositions(id,project_id,variant_id) values(${comp},${bp},${variant})`;
+    await sql`insert into public.composition_layers(id,project_id,composition_id,order_key,kind,width,height,fill,transform) values(${layer},${bp},${comp},'a','character',100,100,'#ffffff','{}')`;
+    const row = {id, project_id: bp, layer_id: layer, frame: 0, name: "Høyde", markers: [{x: 0, y: 10}], revision: 1};
+    const inverse = {deletes: {measure_sets: [{id, expected_revision: 1}]}};
+    const apply = (changes: unknown, inv: unknown = {}) => as("service_role", null, tx => tx`select public.apply_changes(${bp},${ALICE},${crypto.randomUUID()},${tx.json({type: "MeasureSet"})},${tx.json(inv as never)},${tx.json(changes as never)})`);
+    await apply({inserts: {measure_sets: [row]}}, inverse);
+    assert((await as("authenticated", ALICE, tx => tx`select * from public.measure_sets where project_id=${bp}`)).length === 1, "medlem leser");
+    assert((await as("authenticated", CAROL, tx => tx`select * from public.measure_sets where project_id=${bp}`)).length === 0, "ikke-medlem nektes innsyn");
+    await expectError(as("authenticated", ALICE, tx => tx`update public.measure_sets set name='X' where id=${id}`), "42501");
+    await expectError(as("authenticated", ALICE, tx => tx`delete from public.measure_sets where id=${id}`), "42501");
+    await expectError(as("authenticated", ALICE, tx => tx`insert into public.measure_sets(id,project_id,layer_id,frame,name,markers) values(gen_random_uuid(),${bp},${layer},0,'X','[]')`), "42501");
+    const grants = (await sql`select relrowsecurity r from pg_class where oid='public.measure_sets'::regclass`)[0];
+    assert(grants?.["r"] === true, "RLS aktivert");
+    await apply({updates: {measure_sets: [{id, expected_revision: 1, revision: 2, name: "Bredde"}]}});
+    await expectError(apply({updates: {measure_sets: [{id, expected_revision: 1, revision: 2, name: "Foreldet"}]}}), "P0409");
+    await apply({updates: {measure_sets: [{id, expected_revision: 2, revision: 3, name: "Høyde"}]}});
+    assert((await sql`select name from public.measure_sets where id=${id}`)[0]?.["name"] === "Høyde", "angret oppdatering");
+    await apply({deletes: {measure_sets: [{id, expected_revision: 3}]}});
+    await apply({inserts: {measure_sets: [row]}}, inverse);
+    const saved = (await sql`select inverse from public.change_log where project_id=${bp} order by created_at desc limit 1`)[0]!["inverse"];
+    await apply(saved);
+    assert((await sql`select id from public.measure_sets where id=${id}`).length === 0, "lagret invers angrer opprettelse");
+    await apply({inserts: {measure_sets: [row]}});
+    for (const invalid of [{name: ""}, {name: "x".repeat(81)}, {markers: {}}, {markers: ["x".repeat(65536)]}, {frame: -1}]) {
+      await expectError(apply({inserts: {measure_sets: [{...row, ...invalid, id: crypto.randomUUID()}]}}), "23514");
+    }
+    await as("service_role", null, tx => tx`select public.purge_removed_assets(${bp},${ALICE},'{}'::uuid[],'{}'::uuid[])`);
+    assert((await sql`select id from public.measure_sets where id=${id}`).length === 1, "purge av ressurser beholder målesett");
+    await as("service_role", null, tx => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.measure_sets where project_id=${bp}`).length === 0, "delete_project sletter målesett før lag");
+    // Simuler innhold lagret samtidig med prosjektsletting: purge må også rydde dette.
+    await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values(${prod},${bp},'main','Hoved',24,1)`;
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${bp},${scene})`;
+    await sql`insert into public.compositions(id,project_id,variant_id) values(${comp},${bp},${variant})`;
+    await sql`insert into public.composition_layers(id,project_id,composition_id,order_key,kind,width,height,fill,transform) values(${layer},${bp},${comp},'a','character',100,100,'#ffffff','{}')`;
+    await sql`insert into public.measure_sets(id,project_id,layer_id,frame,name,markers) values(${id},${bp},${layer},0,'Purge','[]')`;
+    await as("service_role", null, tx => tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length === 0, "purge fjerner prosjekt og målesett");
+  });
+
+  await test("0073 (B-097): land på kontoen (egen rad, check, RLS), sist endret per scene og brukere per land", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 73, "schema version 73");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${OYSTEIN}, 'Oystein@gutu.no') on conflict do nothing`;
+    const acct = async (u: string) =>
+      (await as("authenticated", u, (tx) => tx`select public.my_account() as a`))[0]!["a"] as Record<string, unknown>;
+    // Eget land: settes og leses via funksjonene
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_country('NO')`);
+    assert((await acct(ALICE))["country"] === "NO", "my_account gir eget land");
+    assert("country" in (await acct(CAROL)), "my_account har feltet også uten land");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_country('no')`), "22023");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_country('NOR')`), "22023");
+    await expectError(as("anon", null, (tx) => tx`select public.set_my_country('NO')`), "42501");
+    // Check i tabellen
+    await expectError(sql`update public.profiles set country = 'xx' where user_id = ${ALICE}`, "23514");
+    // Ingen kan lese eller endre land direkte (heller ikke sitt eget); visningsnavn kan fortsatt leses
+    await expectError(as("authenticated", ALICE, (tx) => tx`select country from public.profiles`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select country from public.profiles where user_id = ${ALICE}`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select * from public.profiles`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.profiles set country = 'SE' where user_id = ${ALICE}`), "42501");
+    assert((await as("authenticated", ALICE, (tx) => tx`select display_name from public.profiles where user_id = ${ALICE}`)).length === 1, "visningsnavn kan leses");
+    assert((await acct(BOB))["country"] !== "NO" || BOB === ALICE, "Bob ser ikke Alices land");
+    // Brukere per land: bare administrator, bare antall
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.admin_country_counts()`), "42501");
+    const counts = await as("authenticated", OYSTEIN, (tx) => tx`select * from public.admin_country_counts()`);
+    assert(Object.keys(counts[0] ?? {}).sort().join(",") === "country,users", "bare land og antall");
+    assert(Number(counts.find((r) => r["country"] === "NO")?.["users"]) >= 1, "Norge telles");
+
+    // Sist endret per scene
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Sist endret') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const s1 = crypto.randomUUID(), s2 = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id,created_by,created_at) values(${s1},${bp},${prod},${ALICE},now() - interval '3 days'),(${s2},${bp},${prod},${ALICE},now() - interval '2 days')`;
+    const cmd = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${cmd},${tx.json({ type: "UpdateScene" })},${tx.json({})},${tx.json({} as never)})`);
+    await as("service_role", null, (tx) => tx`update public.change_log set scene_ids = array[${s1}]::uuid[] where id = ${cmd}`);
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.change_log set scene_ids = '{}' where id = ${cmd}`), "42501");
+    // scene_ids fylles bare én gang; resten av historikken er uforanderlig (INV-13)
+    await expectError(as("service_role", null, (tx) => tx`update public.change_log set scene_ids = array[${s2}]::uuid[] where id = ${cmd}`), "P0001");
+    await expectError(as("service_role", null, (tx) => tx`update public.change_log set command_type = 'X' where id = ${cmd}`), "P0001");
+    await expectError(as("service_role", null, (tx) => tx`delete from public.change_log where id = ${cmd}`), "P0001");
+    const rows = await as("authenticated", ALICE, (tx) => tx`select * from public.scene_last_changes(${bp})`);
+    const r1 = rows.find((r) => r["scene_id"] === s1), r2 = rows.find((r) => r["scene_id"] === s2);
+    const logAt = (await sql`select created_at from public.change_log where id = ${cmd}`)[0]!["created_at"] as Date;
+    assert(r1?.["logged"] === true && (r1["changed_at"] as Date).getTime() === logAt.getTime() && r1["actor"] === ALICE, "siste endring for scene 1");
+    assert(r2?.["logged"] === false && (r2["changed_at"] as Date).getTime() < logAt.getTime(), "scene uten endring får opprettelsestiden");
+    assert((await as("authenticated", CAROL, (tx) => tx`select * from public.scene_last_changes(${bp})`)).length === 0, "ikke-medlem får ingenting");
+    await expectError(as("anon", null, (tx) => tx`select * from public.scene_last_changes(${bp})`), "42501");
+    const cmd2 = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${cmd2},${tx.json({ type: "UpdateScene" })},${tx.json({})},${tx.json({} as never)})`);
+    await expectError(sql`update public.change_log set scene_ids = ${sql.array(Array.from({ length: 1001 }, () => s1))}::uuid[] where id = ${cmd2}`, "23514");
+    const idx = await sql`select indexdef from pg_indexes where indexname = 'change_log_scene_ids_idx'`;
+    assert(String(idx[0]?.["indexdef"] ?? "").includes("gin"), "GIN-indeks");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.change_log where project_id = ${bp}`).length === 0, "delete_project sletter loggen");
+  });
+
+  // ---------- B-098: fonter (0074) ----------
+  await test("0074 (B-098): fontressurs med font_spec via apply_changes, mime og kind-check, RLS og global font", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 74, "schema version 74");
+    const fp = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Fonter') as id`)[0]!["id"] as string);
+    const F = (n: number) => `abcdef00-0000-7000-8000-00000074${String(n).padStart(4, "0")}`;
+    let st = await loadState(fp);
+    const spec = {
+      family: "Lato", category: "sans", weights: [400], italics: [], subsets: ["latin"], license: "OFL-1.1",
+      sourceUrl: "https://fonts.google.com/specimen/Lato", version: "v24",
+      files: [{ name: "400-all-0.ttf", weight: 400, italic: false, format: "ttf", bytes: 10 }],
+    };
+    st = await runCommand(st, ALICE, { type: "CreateAssets", assets: [{ assetId: F(1) as never, fields: { kind: "font", name: "Lato", names: [], description: "", category: "sans", tags: [] } }] });
+    st = await runCommand(st, ALICE, { type: "CreateAssetVariant", variantId: F(2) as never, assetId: F(1) as never, fields: { name: "Standard", style: "other", appearance: "" } });
+    st = await runCommand(st, ALICE, {
+      type: "AddAssetVersion", versionId: F(3) as never, variantId: F(2) as never,
+      media: { path: `${fp}/source/${F(1)}/${F(3)}/Lato.ptgfont`, mimeType: "application/x-ptg-fontpack", width: null, height: null, byteSize: 100, sha256: "f".repeat(64), durationMs: null },
+      note: "", font: spec as never,
+    });
+    const row = await sql`select a.kind, v.mime_type, v.font_spec from public.asset_versions v join public.asset_variants va on va.id = v.variant_id join public.assets a on a.id = va.asset_id where v.id = ${F(3)}`;
+    assert(row[0]?.["kind"] === "font" && row[0]?.["mime_type"] === "application/x-ptg-fontpack", "fontressursen ble ikke lagret");
+    assert(isDeepStrictEqual(row[0]?.["font_spec"], spec), "font_spec ble ikke lagret uendret");
+    const back = await loadState(fp);
+    assert(isDeepStrictEqual(back.assetVersions[F(3) as never]?.font, spec), "font_spec leses ikke tilbake");
+    // Ukjent type og fremmed mime avvises fortsatt; for stor metadata avvises
+    await expectError(sql`update public.assets set kind = 'skrift' where id = ${F(1)}`, "23514");
+    await expectError(
+      sql.begin(async (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+        values (gen_random_uuid(), ${fp}, ${F(2)}, 50, ${`${fp}/x/a.exe`}, 'application/x-msdownload', 1, ${"e".repeat(64)})`),
+      "23514",
+    );
+    await expectError(
+      sql.begin(async (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, font_spec)
+        values (gen_random_uuid(), ${fp}, ${F(2)}, 51, ${`${fp}/x/b.ptgfont`}, 'application/x-ptg-fontpack', 1, ${"e".repeat(64)},
+                (select jsonb_build_object('x', string_agg(md5(random()::text), '')) from generate_series(1, 4000)))`),
+      "23514",
+    );
+    // RLS: medlem leser, utenforstående ser ingenting, klienten kan ikke skrive direkte
+    assert((await as("authenticated", ALICE, (tx) => tx`select font_spec from public.asset_versions where id = ${F(3)}`)).length === 1, "medlemmet ser fonten");
+    assert((await as("authenticated", BOB, (tx) => tx`select font_spec from public.asset_versions where id = ${F(3)}`)).length === 0, "utenforstående ser fonten");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.asset_versions set font_spec = '{}'::jsonb where id = ${F(3)}`), "42501");
+    // Globalt bibliotek: kind 'font' og font_spec via global_add_version
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Fontgruppe') as id`)[0]!["id"] as string);
+    const ga = await as("authenticated", ALICE, async (tx) => (await tx`select public.global_create_asset(${ws}, 'font', 'Lato', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv = await as("authenticated", ALICE, async (tx) => (await tx`select public.global_create_variant(${ga}, 'Standard', 'other', '') as id`)[0]!["id"] as string);
+    const sha = "d".repeat(64);
+    const gid = await as("authenticated", ALICE, async (tx) =>
+      (await tx`select public.global_add_version(${gv}, ${`global/${ws}/${ga}/${sha}.ptgfont`}, 'application/x-ptg-fontpack', null, null, 100, ${sha}, null, '', null, ${tx.json(spec as never)}) as id`)[0]!["id"] as string);
+    const g = await as("authenticated", ALICE, (tx) => tx`select font_spec from public.global_asset_versions where id = ${gid}`);
+    assert(isDeepStrictEqual(g[0]?.["font_spec"], spec), "global font_spec gikk tapt");
+    assert((await as("authenticated", CAROL, (tx) => tx`select font_spec from public.global_asset_versions where id = ${gid}`)).length === 0, "utenforstående ser global font");
+    await expectError(sql`update public.global_asset_versions set font_spec = '{}'::jsonb where id = ${gid}`, "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.global_add_version(${gv}, ${`global/${ws}/${ga}/${sha}.ptgfont`}, 'x', null, null, 1, ${sha}, null, '', null, null)`), "42501");
+    // Sletting av prosjektet virker som før med en fontressurs i prosjektet
+    await as("service_role", null, (tx) => tx`select public.delete_project(${fp},${ALICE})`);
+    assert((await sql`select deleted_at from public.projects where id = ${fp}`)[0]?.["deleted_at"] != null, "delete_project virker med fontressurs");
+  });
+
+  // ---------- B-109: stenge for nye registreringer (0075) ----------
+  await test("0075 (B-109): stengt registrering stopper nye kontoer, slipper inviterte, bare admin endrer, anon ser bare open", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 75, "schema version 75");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${OYSTEIN}, 'Oystein@gutu.no') on conflict do nothing`;
+    const status = async (role: "anon" | "authenticated", u: string | null) =>
+      (await as(role, u, (tx) => tx`select public.registration_status() as s`))[0]!["s"] as Record<string, unknown>;
+    // Standard: åpen, og anon ser bare open og melding
+    const s0 = await status("anon", null);
+    assert(s0["open"] === true && Object.keys(s0).sort().join(",") === "message,open", "anon ser bare open og melding");
+    // Ingen direkte tilgang til tabellen
+    await expectError(as("anon", null, (tx) => tx`select * from public.service_settings`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.service_settings`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.service_settings set registration_open = false`), "42501");
+    // Bare administrator kan endre og lese detaljer
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_registration_open(false, 'x')`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.set_registration_open(false, 'x')`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_registration_settings()`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.admin_registration_settings()`), "42501");
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, '  Stengt for vinteren  ')`);
+    const s1 = await status("anon", null);
+    assert(s1["open"] === false && s1["message"] === "Stengt for vinteren", "stengt med melding");
+    assert(!JSON.stringify(s1).includes("@") && Object.keys(s1).length === 2, "ingen e-post eller brukerdata i status");
+    const ad = (await as("authenticated", OYSTEIN, (tx) => tx`select public.admin_registration_settings() as a`))[0]!["a"] as Record<string, unknown>;
+    assert(ad["open"] === false && typeof ad["changed_at"] === "string" && "changed_by_name" in ad && !("changed_by" in ad), "admin ser når og hvem (navn, ikke e-post)");
+    // Stengt: ny konto stoppes (også det auth lager ved innloggingslenke er en INSERT i auth.users)
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'ny@example.no')`, "PTG01");
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, null)`, "PTG01");
+    // Eksisterende brukere påvirkes ikke
+    await sql`update auth.users set email = email where id = ${ALICE}`;
+    assert((await as("authenticated", ALICE, (tx) => tx`select public.my_account() as a`)).length === 1, "eksisterende bruker virker");
+    // Invitert e-post slipper inn (prosjekt og arbeidsgruppe); utløpt, trukket og akseptert gjør ikke
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Invitasjon B-109') id`)[0]!["id"])));
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by) values (${bp}, 'kollega@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE})`;
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by, expires_at) values (${bp}, 'utlopt@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE}, now() - interval '1 day')`;
+    await sql`insert into public.project_invitations (project_id, email, role, token_hash, invited_by, revoked_at) values (${bp}, 'trukket@example.no', 'viewer', ${"b109-" + crypto.randomUUID()}, ${ALICE}, now())`;
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, ' Kollega@Example.no ')`;
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'utlopt@example.no')`, "PTG01");
+    await expectError(sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'trukket@example.no')`, "PTG01");
+    const ws = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('B-109') id`)[0]!["id"])));
+    await sql`insert into public.workspace_invitations (workspace_id, email, role, token_hash, invited_by) values (${ws}, 'gruppe@example.no', 'member', ${"b109-" + crypto.randomUUID()}, ${ALICE})`;
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'gruppe@example.no')`;
+    // Åpnes igjen: nye kontoer går, meldingen skjules
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(true, null)`);
+    const s2 = await status("authenticated", ALICE);
+    assert(s2["open"] === true && s2["message"] === null, "åpen igjen");
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'apen@example.no')`;
+    await expectError(as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, ${"x".repeat(501)})`), "22023");
+    assert((await status("anon", null))["open"] === true, "for lang melding endrer ingenting");
   });
 
 } finally {

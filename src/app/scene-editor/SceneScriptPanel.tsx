@@ -6,19 +6,13 @@
  */
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { FileText, MessageSquare } from "lucide-react";
-import { memo, useEffect, useMemo, useRef } from "react";
-import {
-  L,
-  annotationsOfVariant,
-  blockAtCompositionFrame,
-  blockSpans,
-  blocksOfVariant,
-  formatHeading,
-  sceneNumberOf,
-  type BlockKind,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
+import { NotesPanel } from "@/app/script/NotesPanel";
+import { DriftBadge } from "@/app/dialogue/DriftBadge";
+import { Button } from "@/components/ui/button";
+import { annotationsOfVariant, blockAtCompositionFrame, blockSpans, blocksOfVariant, dialogueOwnerOf, scriptSeekTarget, SCRIPT_CLICK_DELAY_MS, type ScriptSeek, formatHeading, sceneNumberOf, type BlockKind, type FilmClip, type Command, type NewAnnotation, type ProjectState } from "@/core";
+import { useLanguage } from "@/app/i18n/language";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Innrykk og stil per elementtype, omtrent som på manusarket. */
 const KIND_CLASS: Record<BlockKind, string> = {
@@ -49,7 +43,18 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   onOpenEditor,
   highlightBlockIds,
   hideEditButton = false,
+  run,
+  authorName = "",
+  onSeek,
+  onOpenDialogue,
+  projectId,
 }: {
+  /** DV7: prosjektet (for avvikslenken). */
+  projectId?: string | undefined;
+  /** DV1: enkeltklikk flytter avspillingshodet hit (bildet i 2D-scenen). */
+  onSeek?: ((compFrame: number) => void) | undefined;
+  /** DV1: dobbeltklikk på en replikk åpner opptaks- og dialogvinduet med replikken valgt. */
+  onOpenDialogue?: ((blockId: string) => void) | undefined;
   /** Skjul «Rediger manus …» (Asset Studio: manuset endres der bare som forsøksvise redigeringer). */
   hideEditButton?: boolean;
   /** Replikkene som markeres (Asset Studio, C1: karakterens replikker). */
@@ -64,7 +69,14 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
   editable: boolean;
   /** Åpne redigeringen (med en linje valgt, eller scenen). */
   onOpenEditor: (blockId: string | null) => void;
+  run?: (command: Command, label: string) => string | null;
+  authorName?: string;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
+  const [noteTarget, setNoteTarget] = useState<Omit<NewAnnotation, "annotationId" | "text" | "authorName"> | null>(null);
+  const [seek, setSeek] = useState<ScriptSeek | null>(null);
+  const clickTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => { if (clickTimer.current) clearTimeout(clickTimer.current); }, []);
   const occ = state.occurrences[occurrenceId];
   const variant = occ ? state.variants[occ.variantId] : undefined;
   const blocks = useMemo(
@@ -92,23 +104,78 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
       ?.scrollIntoView({ block: "nearest" });
   }, [active, playing]);
   if (!occ || !variant) return null;
+  /** Tegnplassen klikket traff i blokkens tekst (for ordkoblingen), eller undefined. */
+  const caretOffset = (blockId: string, x: number, y: number): number | undefined => {
+    // Tegnet under musepekeren (ikke markeringen – et vanlig klikk på ikke-redigerbar tekst gir ingen markør)
+    const doc = document as Document & {
+      caretPositionFromPoint?: (x: number, y: number) => { offsetNode: Node; offset: number } | null;
+      caretRangeFromPoint?: (x: number, y: number) => Range | null;
+    };
+    let node: Node | null = null;
+    let offset = 0;
+    const pos = doc.caretPositionFromPoint?.(x, y);
+    if (pos) {
+      node = pos.offsetNode;
+      offset = pos.offset;
+    } else {
+      const r = doc.caretRangeFromPoint?.(x, y);
+      if (r) {
+        node = r.startContainer;
+        offset = r.startOffset;
+      }
+    }
+    if (!node) return undefined;
+    const host = node.nodeType === Node.ELEMENT_NODE ? (node as Element) : node.parentElement;
+    const el = host?.closest<HTMLElement>("[data-script-text]");
+    if (!el || el.dataset["scriptText"] !== blockId) return undefined;
+    const before = document.createRange();
+    before.selectNodeContents(el);
+    before.setEnd(node, offset);
+    return before.toString().length;
+  };
+  const singleClick = (blockId: string, x: number, y: number) => {
+    if (!onSeek) return;
+    const sel = window.getSelection();
+    // Markering av tekst (notat på ord) er ikke navigasjon
+    if (sel && !sel.isCollapsed) return;
+    const offset = caretOffset(blockId, x, y);
+    if (clickTimer.current) clearTimeout(clickTimer.current);
+    clickTimer.current = setTimeout(() => {
+      clickTimer.current = null;
+      const target = scriptSeekTarget(state, clip, blockId, offset);
+      setSeek(target);
+      if (target.compFrame !== null) onSeek(target.compFrame);
+    }, SCRIPT_CLICK_DELAY_MS);
+  };
+  const doubleClick = (blockId: string) => {
+    // Avlys enkeltklikket: dobbeltklikk utfører bare dobbeltklikkets handling (§7)
+    if (clickTimer.current) {
+      clearTimeout(clickTimer.current);
+      clickTimer.current = null;
+    }
+    const owner = dialogueOwnerOf(state, variant.id, blockId);
+    if (onOpenDialogue && state.blocks[owner]?.kind === "dialogue") onOpenDialogue(owner);
+    else onOpenEditor(blockId);
+  };
+  const SEEK_LABEL: Record<ScriptSeek["quality"], string> = {
+    exact: tk("app-scene-editor-scene-script-panel.exact.exact.cce8a64495c6"),
+    estimated: tk("app-scene-editor-scene-script-panel.estimated.estimated.336cd8482a62"),
+    missing: tk("app-scene-editor-scene-script-panel.missing.missing.f39b8ad14823"),
+  };
   const number = sceneNumberOf(state, occ);
   const open = editable
-    ? L("Rediger manus …", "Edit script …")
-    : L("Vis manuset …", "View the script …");
+    ? tk("app-scene-editor-scene-script-panel.open.memo.181eee19efab")
+    : tk("app-scene-editor-scene-script-panel.open.memo.72a8e5baf403");
   return (
-    <section aria-label={L("Manus", "Script")} className="flex min-h-0 flex-col">
-      <PanelHeader as="h2" title={L("Manus", "Script")} />
+    <section aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.c920515d4016")} className="flex min-h-0 flex-col">
+      <PanelHeader as="h2" title={tk("app-scene-editor-scene-script-panel.scene-script-panel.title.c920515d4016")} />
       <div className={"flex items-center gap-2 px-2 pb-1 pt-1" + (hideEditButton ? " hidden" : "")}>
         <button
           type="button"
           onClick={() => onOpenEditor(null)}
           data-testid="scene-script-edit"
           className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border-control px-2 py-1 text-xs text-text-secondary hover:border-accent-brand hover:text-text-primary"
-          title={L(
-            "Åpne manuset for scenen i et eget vindu med alle redigeringsmulighetene. Dobbeltklikk på en linje for å gå rett til den.",
-            "Open the script for the scene in a separate window with all the editing options. Double-click a line to go straight to it.",
-          )}
+          title={tk("app-scene-editor-scene-script-panel.scene-script-panel.title.6d79c6b3dcae")}
         >
           <FileText className="size-3.5" aria-hidden />
           {open}
@@ -117,6 +184,24 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
       <div
         ref={listRef}
         data-testid="scene-script"
+        onMouseUp={() => {
+          if (!editable || !run || hideEditButton) return;
+          const selection = window.getSelection();
+          if (!selection || selection.isCollapsed || selection.rangeCount !== 1) return;
+          const range = selection.getRangeAt(0);
+          const element = range.startContainer.parentElement?.closest<HTMLElement>("[data-script-text]");
+          if (!element || !element.contains(range.endContainer)) return;
+          const blockId = element.dataset["scriptText"];
+          const block = blockId ? state.blocks[blockId] : undefined;
+          if (!block) return;
+          const before = document.createRange();
+          before.selectNodeContents(element);
+          before.setEnd(range.startContainer, range.startOffset);
+          const start = before.toString().length;
+          const end = start + range.toString().length;
+          if (end > start && end <= block.text.length)
+            setNoteTarget({ blockId: block.id, variantId: null, start, end, quote: block.text.slice(start, end) });
+        }}
         className="px-3 pb-3 font-script text-[12px] leading-[1.35] text-text-primary"
       >
         <p className="font-bold uppercase" data-script-heading>
@@ -125,7 +210,7 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
         </p>
         {blocks.length === 0 ? (
           <p className="mt-2 font-sans text-xs text-text-tertiary">
-            {L("Scenen har ingen tekst ennå.", "The scene has no text yet.")}
+            {tk("app-scene-editor-scene-script-panel.scene-script-panel.p.86e4e609c93c")}
           </p>
         ) : null}
         {blocks.map((b, i) => {
@@ -138,22 +223,37 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
               data-script-block={b.id}
               data-active={isActive ? true : undefined}
               data-highlight={marked ? true : undefined}
-              onDoubleClick={() => onOpenEditor(b.id)}
-              title={L("Dobbeltklikk for å redigere", "Double-click to edit")}
+              data-selected={seek?.blockId === b.id ? true : undefined}
+              data-seek-quality={seek?.blockId === b.id ? seek.quality : undefined}
+              onClick={(e) => {
+                // Bare første klikk navigerer; klikk nummer to tilhører dobbeltklikket (§7)
+                if (e.detail > 1) return;
+                singleClick(b.id, e.clientX, e.clientY);
+              }}
+              onDoubleClick={() => doubleClick(b.id)}
+              title={
+                onOpenDialogue && (b.kind === "dialogue" || b.kind === "character")
+                  ? tk("app-scene-editor-scene-script-panel.scene-script-panel.title.b4d8bc9bdb42")
+                  : tk("app-scene-editor-scene-script-panel.scene-script-panel.title.5401d3d2e97c")
+              }
               className={
                 "relative cursor-default whitespace-pre-wrap rounded-sm " +
                 KIND_CLASS[b.kind] +
                 " " +
                 gapBefore(b.kind, i > 0 ? blocks[i - 1]!.kind : "heading") +
                 (isActive ? " bg-accent-selection outline outline-1 outline-accent-brand/60" : "") +
-                (marked && !isActive ? " bg-surface-3 font-semibold" : "")
+                (marked && !isActive ? " bg-surface-3 font-semibold" : "") +
+                (seek?.blockId === b.id && !isActive ? " outline outline-1 outline-dashed outline-accent-brand/50" : "")
               }
             >
-              {b.kind === "parenthetical" && !b.text.startsWith("(") ? `(${b.text})` : b.text}
+              {b.kind === "parenthetical" && !b.text.startsWith("(") ? "(" : null}
+              <span data-script-text={b.id}>{b.text}</span>
+              {b.kind === "parenthetical" && !b.text.startsWith("(") ? ")" : null}
+              {b.kind === "dialogue" && projectId ? <span className="ml-1 font-sans"><DriftBadge state={state} projectId={projectId} occurrenceId={occurrenceId} blockId={b.id} run={run} editable={editable} onGo={onSeek ? () => { const t = scriptSeekTarget(state, clip, b.id); setSeek(t); if (t.compFrame !== null) onSeek(t.compFrame); } : undefined} /></span> : null}
               {notes ? (
                 <span
                   className="absolute -right-2.5 top-0 text-note"
-                  aria-label={L(`${notes} notater`, `${notes} notes`)}
+                  aria-label={tk("app-scene-editor-scene-script-panel.scene-script-panel.aria-label.f8c627eda4f7", { notes: String(notes) })}
                 >
                   <MessageSquare className="size-2.5" aria-hidden />
                 </span>
@@ -162,6 +262,28 @@ export const SceneScriptPanel = memo(function SceneScriptPanel({
           );
         })}
       </div>
+      {seek ? (
+        <p
+          role="status"
+          aria-live="polite"
+          data-testid="script-seek-status"
+          data-quality={seek.quality}
+          data-source={seek.source}
+          className={
+            "border-t border-border px-3 py-1 text-[11px] " +
+            (seek.quality === "exact" ? "text-text-secondary" : seek.quality === "estimated" ? "text-accent-warm" : "text-destructive")
+          }
+        >
+          {SEEK_LABEL[seek.quality]}
+        </p>
+      ) : null}
+      {noteTarget && run ? (
+        <div className="border-t border-border px-3 py-2" data-testid="scene-word-note">
+          <NotesPanel state={state} notes={[]} editable={editable} run={run} authorName={authorName}
+            newTarget={noteTarget} newLabel={tk("app-scene-editor-scene-script-panel.scene-script-panel.new-label.52c69bb174ef")} />
+          <Button size="sm" variant="ghost" onClick={() => setNoteTarget(null)}>{tk("app-scene-editor-scene-script-panel.scene-script-panel.button.f40600c92751")}</Button>
+        </div>
+      ) : null}
     </section>
   );
 });

@@ -7,51 +7,7 @@
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
-import {
-  applyMatrix,
-  cameraAt,
-  groupMatrixAt,
-  groupOf,
-  pathPointAt,
-  pathProgress,
-  pathSegments,
-  translatePath,
-  type Matrix,
-  type MotionPath,
-  dragMaskRect,
-  fieldsWithMaskAt,
-  fieldsWithTransformAt,
-  isMaskProperty,
-  layerFieldsOf,
-  maskAt,
-  type MaskRect,
-  shotAt,
-  toggleCurve,
-  transformAt,
-  withShot,
-  type CameraShot,
-  type CompositionLayer,
-  hitTest,
-  invert,
-  itemCorners,
-  maskOutline,
-  multiply,
-  renderFrame,
-  rotate,
-  translate,
-  type Command,
-  type Composition,
-  type DrawItem,
-  type Frame,
-  type LayerId,
-  type LayerTransform,
-  type ProjectState,
-  defaultLayerFields,
-  newId,
-  sceneContinuityVariant,
-  stretchedTransform,
-  L,
-} from "@/core";
+import { valueAt, applyMatrix, cameraAt, groupMatrixAt, groupOf, pathPointAt, pathProgress, pathSegments, translatePath, type Matrix, type MotionPath, dragMaskRect, fieldsWithMaskAt, fieldsWithTransformAt, isMaskProperty, layerFieldsOf, maskAt, type MaskRect, shotAt, toggleCurve, transformAt, withShot, type CameraShot, type CompositionLayer, hitTest, invert, itemCorners, maskOutline, multiply, renderFrame, rotate, translate, type Command, type Composition, type DrawItem, type Frame, type LayerId, type LayerTransform, type ProjectState, defaultLayerFields, newId, sceneContinuityVariant, stretchedTransform } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { removeLayer } from "./layer-actions";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
@@ -65,9 +21,12 @@ import {
   updateCameraCommand,
   type CameraTarget,
 } from "./camera-overlay";
+import { t as tk } from "@/core/i18n/keyed";
 
 interface StageProps {
   state: ProjectState;
+  /** B-100: spacing-drag – banen til laget under pekeren, med berørt del og tidspunkt i oransje. */
+  spacingHover?: { readonly layerId: string; readonly frame: number; readonly whole: boolean } | null;
   composition: Composition;
   editable: boolean;
   selectedLayerId: string | null;
@@ -173,6 +132,7 @@ interface MaskDrag {
 interface Colors {
   border: string;
   accent: string;
+  warm?: string;
 }
 
 const PADDING = 32;
@@ -500,6 +460,90 @@ function drawPathOverlay(
   ctx.restore();
 }
 
+/** B-100: berørt del av banen og punktet ved pekerens tid i oransje (spacing-drag). */
+function drawSpacingOverlay(
+  ctx: CanvasRenderingContext2D,
+  path: MotionPath,
+  toScene: Matrix | null,
+  v: View,
+  colors: Colors,
+  frame: number,
+  whole: boolean,
+) {
+  const sc = (x: number, y: number) => toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
+  const at = (f: number) => { const p = pathPointAt(path, pathProgress(path, f)); return sc(p.x, p.y); };
+  const warm = colors.warm ?? colors.accent;
+  const from = whole ? path.startFrame : Math.max(path.startFrame, Math.min(path.endFrame, frame));
+  ctx.save();
+  ctx.strokeStyle = warm;
+  ctx.lineWidth = 3;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  const steps = Math.max(2, Math.min(200, path.endFrame - from));
+  for (let i = 0; i <= steps; i++) {
+    const q = at(from + ((path.endFrame - from) * i) / steps);
+    if (i === 0) ctx.moveTo(q.x, q.y);
+    else ctx.lineTo(q.x, q.y);
+  }
+  ctx.stroke();
+  const q = at(Math.max(path.startFrame, Math.min(path.endFrame, frame)));
+  ctx.fillStyle = warm;
+  ctx.beginPath();
+  ctx.arc(q.x, q.y, 5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+/**
+ * B-100: lag uten bevegelsesbane – posisjonene fra nøkkelbildene som punkter. De som berøres av draget (fra
+ * pekerens tid og ut, eller alle med Shift) er oransje; resten er dempet.
+ */
+function drawSpacingKeyPoints(
+  ctx: CanvasRenderingContext2D,
+  layer: CompositionLayer,
+  toScene: Matrix | null,
+  v: View,
+  colors: Colors,
+  frame: number,
+  whole: boolean,
+) {
+  const frames = [...new Set(layer.keyframes.map((k) => k.frame))].sort((a, b) => a - b);
+  if (!frames.length) return;
+  const sc = (f: number) => {
+    const x = valueAt(layer, "x", f), y = valueAt(layer, "y", f);
+    return toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
+  };
+  const warm = colors.warm ?? colors.accent;
+  ctx.save();
+  const touched = frames.filter((f) => whole || f >= frame);
+  if (touched.length > 1) {
+    ctx.strokeStyle = warm;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    touched.forEach((f, i) => { const q = sc(f); if (i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  for (const f of frames) {
+    const q = sc(f);
+    const on = whole || f >= frame;
+    ctx.globalAlpha = on ? 1 : 0.45;
+    ctx.fillStyle = on ? warm : colors.accent;
+    ctx.beginPath();
+    ctx.arc(q.x, q.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  const now = sc(frame);
+  ctx.strokeStyle = warm;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(now.x, now.y, 7, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
 /** Streken mens en bane tegnes (skjermkoordinater). */
 function drawStroke(ctx: CanvasRenderingContext2D, pts: readonly Pt[], colors: Colors) {
   if (pts.length < 2) return;
@@ -544,6 +588,7 @@ export function Stage({
   drawPath = false,
   onPathDrawn,
   onDrawCancel,
+  spacingHover = null,
 }: StageProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -617,6 +662,7 @@ export function Stage({
     colorsRef.current = {
       border: cs.getPropertyValue("--border-strong").trim() || FALLBACK.border,
       accent: cs.getPropertyValue("--accent-brand").trim() || FALLBACK.accent,
+      warm: cs.getPropertyValue("--accent-warm").trim() || FALLBACK.accent,
     };
     return () => ro.disconnect();
   }, []);
@@ -775,6 +821,15 @@ export function Stage({
         drawMaskHandles(ctx, selectedItem, view, colors);
       if (shownPath && !drawPath)
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
+      if (spacingHover) {
+        const hl = state.layers[spacingHover.layerId];
+        const g = hl ? groupOf(state, hl) : null;
+        if (hl?.path) {
+          drawSpacingOverlay(ctx, hl.path, g ? groupMatrixAt(g, time) : null, view, colors, spacingHover.frame, spacingHover.whole);
+        } else if (hl?.keyframes.length) {
+          drawSpacingKeyPoints(ctx, hl, g ? groupMatrixAt(g, time) : null, view, colors, spacingHover.frame, spacingHover.whole);
+        }
+      }
       if (stroke) drawStroke(ctx, stroke, colors);
       if (overlayShot)
         drawCameraOverlay(ctx, overlayShot, composition, view, {
@@ -801,6 +856,8 @@ export function Stage({
     stroke,
     drawPath,
     state.layers,
+    spacingHover,
+    time,
   ]);
 
   // Rullehjul: ⌘/Ctrl zoomer rundt pekeren, ellers panorerer
@@ -919,17 +976,17 @@ export function Stage({
     const labels =
       layer.kind === "group"
         ? {
-            move: L("Flytt gruppe", "Move group"),
-            scale: L("Skaler gruppe", "Scale group"),
-            stretch: L("Skvis eller strekk gruppe", "Squash or stretch group"),
-            rotate: L("Roter gruppe", "Rotate group"),
+            move: tk("app-scene-editor-stage.move.move.6b949d9ee4d7"),
+            scale: tk("app-scene-editor-stage.scale.scale.32143270316b"),
+            stretch: tk("app-scene-editor-stage.stretch.stretch.4da1cbcbba41"),
+            rotate: tk("app-scene-editor-stage.rotate.rotate.304e7974a828"),
             pan: "",
           }
         : {
-            move: L("Flytt lag", "Move layer"),
-            scale: L("Skaler lag", "Scale layer"),
-            stretch: L("Skvis eller strekk lag", "Squash or stretch layer"),
-            rotate: L("Roter lag", "Rotate layer"),
+            move: tk("app-scene-editor-stage.move.move.c498bf6d6b9a"),
+            scale: tk("app-scene-editor-stage.scale.scale.6b5fc4701bec"),
+            stretch: tk("app-scene-editor-stage.stretch.stretch.e7cf8e1a4ea7"),
+            rotate: tk("app-scene-editor-stage.rotate.rotate.9209737ec365"),
             pan: "",
           };
     const start = transformAt(layer, time);
@@ -1061,7 +1118,7 @@ export function Stage({
             commitPath(
               selectedLayerId,
               { ...shownPath, points: shownPath.points.filter((_, i) => i !== target.index) },
-              L("Fjern punkt i banen", "Remove point from the path"),
+              tk("app-scene-editor-stage.on-pointer-down.commit-path.e33934dc3442"),
             ),
           );
         return;
@@ -1234,8 +1291,8 @@ export function Stage({
             ],
           },
           md.handle < 0
-            ? L("Flytt maske", "Move mask")
-            : L("Endre størrelse på maske", "Resize mask"),
+            ? tk("app-scene-editor-stage.end-drag.run.e542b263256e")
+            : tk("app-scene-editor-stage.end-drag.run.e4c3964a07c7"),
         ),
       );
       return;
@@ -1246,7 +1303,7 @@ export function Stage({
       setPathDraft(null);
       if (commit && pd.moved)
         setError(
-          commitPath(pd.layerId, pd.latest, L("Flytt punkt i banen", "Move point in the path")),
+          commitPath(pd.layerId, pd.latest, tk("app-scene-editor-stage.end-drag.commit-path.cb65c03495ad")),
         );
       return;
     }
@@ -1337,8 +1394,8 @@ export function Stage({
             points: shownPath.points.map((x, i) => (i === pi ? { ...x, smooth: !x.smooth } : x)),
           },
           q.smooth
-            ? L("Hjørne i banen", "Corner in the path")
-            : L("Kurve i banen", "Curve in the path"),
+            ? tk("app-scene-editor-stage.on-double-click.commit-path.371fc58ba867")
+            : tk("app-scene-editor-stage.on-double-click.commit-path.b5cc916f4e50"),
         ),
       );
       return;
@@ -1364,8 +1421,8 @@ export function Stage({
       run(
         updateCameraCommand(composition, withShot(composition.camera, toggleCurve(overlayShot))),
         overlayShot.curve
-          ? L("Rett kamerabane", "Straight camera path")
-          : L("Kurvet kamerabane", "Curved camera path"),
+          ? tk("app-scene-editor-stage.on-double-click.run.4b5931723e23")
+          : tk("app-scene-editor-stage.on-double-click.run.ac2c7a7b49e5"),
       ),
     );
   }
@@ -1416,7 +1473,7 @@ export function Stage({
     if (!layer || layer.locked) return;
     if (e.key === "Delete" || e.key === "Backspace") {
       e.preventDefault();
-      setError(removeLayer(run, state, layer, time, L("Slett lag", "Delete layer")));
+      setError(removeLayer(run, state, layer, time, tk("app-scene-editor-stage.on-key-down.remove-layer.9a411c75055f")));
       return;
     }
     const step = e.shiftKey ? 10 : 1;
@@ -1428,7 +1485,7 @@ export function Stage({
     submit(
       layer,
       roundTransform({ ...t, x: t.x + dx, y: t.y + dy }),
-      L("Flytt lag", "Move layer"),
+      tk("app-scene-editor-stage.on-key-down.submit.4793b1c199e8"),
       layer.path ? translatePath(layer.path, dx, dy) : undefined,
     );
   }
@@ -1460,10 +1517,7 @@ export function Stage({
     zoomToLevel(next);
   }
 
-  const label = L(
-    `${cameraMode ? "Kameravisning" : "2D-scene"}: ${composition.name.trim() || "Uten navn"}, ${frame.items.length} lag`,
-    `${cameraMode ? "Camera view" : "2D scene"}: ${composition.name.trim() || "Untitled"}, ${frame.items.length} layers`,
-  );
+  const label = (cameraMode ? tk("app-scene-editor-stage.stage-label-camera", { name: composition.name.trim() || tk("app-scene-editor-stage.stage-label-unnamed"), layers: frame.items.length }) : tk("app-scene-editor-stage.stage-label", { name: composition.name.trim() || tk("app-scene-editor-stage.stage-label-unnamed"), layers: frame.items.length }));
   const shownCursor = panning ? "grabbing" : cursor;
 
   return (
@@ -1511,7 +1565,7 @@ export function Stage({
               },
             ],
           },
-          L(`Nytt lag «${f.name}»`, `New layer “${f.name}”`),
+          tk("app-scene-editor-stage.err.run.717945aca6d0", { name: String(f.name) }),
         );
         setError(err);
         if (!err) onSelect(layerId);
@@ -1521,6 +1575,7 @@ export function Stage({
       <canvas
         ref={canvasRef}
         data-testid="scene-stage"
+        data-spacing-overlay={spacingHover ? (state.layers[spacingHover.layerId]?.path ? "path" : state.layers[spacingHover.layerId]?.keyframes.length ? "points" : "none") : undefined}
         data-view-x={view.x}
         data-view-y={view.y}
         data-view-zoom={view.zoom}
@@ -1536,20 +1591,20 @@ export function Stage({
       />
       <div
         role="group"
-        aria-label={L("Visning", "View")}
+        aria-label={tk("app-scene-editor-stage.stage.aria-label.6e780463e36b")}
         className="absolute left-3 top-3 flex items-center rounded-md border border-border bg-surface-2 p-0.5"
       >
         {(
           [
             [
               "scene",
-              L("Scene", "Scene"),
-              L("Hele scenen med redigeringshjelp", "Whole scene with editing help"),
+              tk("app-scene-editor-stage.stage.scene-l-scene-scene-l-hele-scenen-med-redigeringshjelp-whole-scene-with-editing-help-camera-l-kamera-camera-l-kamera-det-filmen-viser-camera-what-the-film-shows-as-const-map.e8a8d27315e7"),
+              tk("app-scene-editor-stage.stage.scene-l-scene-scene-l-hele-scenen-med-redigeringshjelp-whole-scene-with-editing-help-camera-l-kamera-camera-l-kamera-det-filmen-viser-camera-what-the-film-shows-as-const-map.72269386048a"),
             ],
             [
               "camera",
-              L("Kamera", "Camera"),
-              L("Kamera: det filmen viser", "Camera: what the film shows"),
+              tk("app-scene-editor-stage.stage.scene-l-scene-scene-l-hele-scenen-med-redigeringshjelp-whole-scene-with-editing-help-camera-l-kamera-camera-l-kamera-det-filmen-viser-camera-what-the-film-shows-as-const-map.54d6b8e88eec"),
+              tk("app-scene-editor-stage.stage.scene-l-scene-scene-l-hele-scenen-med-redigeringshjelp-whole-scene-with-editing-help-camera-l-kamera-camera-l-kamera-det-filmen-viser-camera-what-the-film-shows-as-const-map.45e44ed0b134"),
             ],
           ] as const
         ).map(([id, text, title]) => (
@@ -1559,7 +1614,7 @@ export function Stage({
             variant={mode === id ? "secondary" : "ghost"}
             aria-pressed={mode === id}
             title={
-              id === "camera" ? L("Kamera: det filmen viser", "Camera: what the film shows") : title
+              id === "camera" ? tk("app-scene-editor-stage.stage.title.45e44ed0b134") : title
             }
             onClick={() => onViewChange(id)}
           >
@@ -1580,19 +1635,19 @@ export function Stage({
             size="sm"
             variant="ghost"
             onClick={() => zoomStep(-1)}
-            aria-label={L("Zoom ut", "Zoom out")}
-            title={L("Zoom ut (⌘/Ctrl + rullehjul)", "Zoom out (⌘/Ctrl + scroll wheel)")}
+            aria-label={tk("app-scene-editor-stage.stage.aria-label.1ea7c37443b7")}
+            title={tk("app-scene-editor-stage.stage.title.a8c6012bffac")}
           >
             <ZoomOut />
           </Button>
           <select
-            aria-label={L("Zoomnivå", "Zoom level")}
+            aria-label={tk("app-scene-editor-stage.stage.aria-label.57ff18ccaba9")}
             value=""
             onChange={(e) => {
               if (e.target.value) zoomToLevel(Number(e.target.value));
             }}
             className="h-7 min-w-[64px] rounded-sm border border-border-control bg-surface-3 px-1 text-right text-xs tabular-nums text-text-secondary"
-            title={L("Velg zoomnivå", "Choose zoom level")}
+            title={tk("app-scene-editor-stage.stage.title.1ce50f991996")}
           >
             <option value="">{Math.round(view.zoom * 100)} %</option>
             {ZOOM_LEVELS.map((z) => (
@@ -1605,13 +1660,13 @@ export function Stage({
             size="sm"
             variant="ghost"
             onClick={() => zoomStep(1)}
-            aria-label={L("Zoom inn", "Zoom in")}
-            title={L("Zoom inn (⌘/Ctrl + rullehjul)", "Zoom in (⌘/Ctrl + scroll wheel)")}
+            aria-label={tk("app-scene-editor-stage.stage.aria-label.9f923227f60e")}
+            title={tk("app-scene-editor-stage.stage.title.532a29c42c90")}
           >
             <ZoomIn />
           </Button>
           <Button size="sm" variant="ghost" onClick={() => commitView(null)}>
-            {L("Tilpass", "Fit")}
+            {tk("app-scene-editor-stage.stage.button.93d367b186a4")}
           </Button>
           <Button size="sm" variant="ghost" onClick={zoomTo100}>
             100 %

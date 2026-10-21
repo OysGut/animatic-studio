@@ -19,12 +19,10 @@ import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../view
 import { textAtRevision } from "../assembly/discrepancy";
 import { blockSpans, filmClips } from "../assembly/film";
 import { framesToSeconds } from "../time";
-import { getLanguage, localized } from "../i18n";
+import { getLanguage } from "../i18n";
+import { tLocalized } from "@/core/i18n/keyed";
 
-export const LANGUAGE_LABEL: Record<string, string> = localized({
-  nb: ["Norsk", "Norwegian"],
-  en: ["Engelsk", "English"],
-});
+export const LANGUAGE_LABEL: Record<string, string> = tLocalized({ nb: "core-translation-index.language-label.nb.ce9fb99403a7", en: "core-translation-index.language-label.en.6c5aa1625678" });
 
 /** Språknavnet midt i en setning: «norsk» på norsk, «Norwegian» på engelsk. */
 export function languageWord(l: string): string {
@@ -137,6 +135,18 @@ export function translatedState(s: ProjectState, lang: string): ProjectState {
       const v = variants[t.variantId]!;
       variants[t.variantId] = { ...v, heading: headingFromText(t.text, v.heading) };
     }
+  }
+  // B-050: approved correspondence affects translated projection only, never source state.
+  for (const link of Object.values(s.translationLineLinks ?? {})) {
+    if (link.removed || link.language !== lang || !["approved","manual"].includes(link.origin)) continue;
+    const texts=link.targetTranslationIds.flatMap(id=>{const t=s.translations[id]??s.translationLines?.[id];return t && !t.removed && t.language===lang ? [t.text] : [];});
+    if (!texts.length) continue;
+    link.sourceBlockIds.forEach((id,index)=> {
+      const b=blocks[id];
+      if (!b || b.variantId !== link.variantId) return;
+      // n:1 appears once instead of duplicating a merged translated line.
+      blocks[id]={...b,text:index===0 ? texts.join("\n") : ""};
+    });
   }
   const out = { ...s, blocks, variants };
   byLang.set(lang, out);
@@ -273,13 +283,48 @@ function sceneSimilarity(a: SceneSig, b: SceneSig): number {
 
 export type LinkCertainty = "sure" | "uncertain";
 
+/**
+ * Gir hver tolket scene en midlertidig ID én gang (REQ-0037): `ps-1`, `ps-2` … etter rekkefølgen i filen.
+ * Scener som allerede har ID, beholder den, så koblinger overlever at listen sorteres, filtreres eller
+ * tolkes på nytt i samme import.
+ */
+export function identifyParsedScenes(parsed: ParsedScreenplay): ParsedScreenplay {
+  if (parsed.scenes.every((p) => typeof p.id === "string")) return parsed;
+  const used = new Set(parsed.scenes.map((p) => p.id).filter((x): x is string => typeof x === "string"));
+  let n = 0;
+  const next = () => {
+    let id: string;
+    do id = `ps-${++n}`;
+    while (used.has(id));
+    used.add(id);
+    return id;
+  };
+  return { ...parsed, scenes: parsed.scenes.map((p) => (typeof p.id === "string" ? p : { ...p, id: next() })) };
+}
+
+/** Den importerte scenen en kobling peker på (slått opp på ID), eller undefined. */
+export function parsedSceneOf(
+  parsed: ParsedScreenplay,
+  link: { readonly parsedId?: string; readonly parsedIndex?: number },
+): ParsedScene | undefined {
+  // Et manus som ikke er identifisert ennå, får de samme ID-ene som alignTranslation gir det
+  const doc = identifyParsedScenes(parsed);
+  // Eldre kobling uten ID (bare plass): plassen oversettes én gang til scenens ID, deretter slås ID-en opp
+  const id =
+    link.parsedId ??
+    (typeof link.parsedIndex === "number" ? doc.scenes[link.parsedIndex]?.id : undefined);
+  return id === undefined ? undefined : doc.scenes.find((p) => p.id === id);
+}
+
 export interface LinePair {
   readonly blockId: string;
   readonly text: string;
 }
 
 export interface SceneLink {
-  /** Indeks i det importerte manuset. */
+  /** Den importerte scenen: midlertidig ID fra tolkingen (REQ-0037). Identiteten i importen. */
+  readonly parsedId: string;
+  /** Plassen i det importerte manuset (bare til visning og som etikett i én AI-forespørsel, aldri nøkkel). */
   readonly parsedIndex: number;
   readonly parsedHeading: string;
   readonly parsedNumber: string | null;
@@ -303,8 +348,10 @@ const MIN = 0.3;
 export function alignTranslation(
   s: ProjectState,
   productionId: string,
-  parsed: ParsedScreenplay,
+  input: ParsedScreenplay,
 ): SceneLink[] {
+  // Koblingene peker på scenenes ID; gi dem ID nå hvis kallet ikke har gjort det (samme ID-er som i dialogen)
+  const parsed = identifyParsedScenes(input);
   const occs = orderedOccurrences(s, productionId).filter(isScriptOccurrence);
   const P = parsed.scenes.filter((p) => !p.isContinuation || p.elements.length);
   const pSig = P.map(sigOfParsed);
@@ -364,6 +411,7 @@ export function alignTranslation(
       ? alignLines(p, blocksOfVariant(s, occ.variantId))
       : { lines: [], unmatched: p.elements.length };
     return {
+      parsedId: p.id!,
       parsedIndex: parsed.scenes.indexOf(p),
       parsedHeading: p.rawHeading || formatHeading(p.heading),
       parsedNumber: p.number,
@@ -380,7 +428,7 @@ export function alignTranslation(
 export function alignLines(
   p: ParsedScene,
   blocks: readonly ScriptBlock[],
-): { lines: LinePair[]; unmatched: number } {
+): { lines: LinePair[]; unmatched: number; unpaired: UnpairedLine[] } {
   const E = p.elements.filter((e) => e.kind !== "heading" && e.text.trim());
   const B = blocks.filter((b) => b.kind !== "heading");
   const n = E.length;
@@ -426,20 +474,59 @@ export function alignLines(
       }
     }
   const lines: LinePair[] = [];
+  const unpaired: UnpairedLine[] = [];
   let unmatched = 0;
+  const keep = (i: number) => unpaired.push({ ord: i, kind: E[i]!.kind, text: E[i]!.text });
   for (let i = n, j = m; i > 0 || j > 0;) {
     const mv = move[i]![j]!;
     if (i > 0 && j > 0 && mv === 0) {
       if (sim(i - 1, j - 1) > 0) lines.push({ blockId: B[j - 1]!.id, text: E[i - 1]!.text });
-      else unmatched++;
+      else {
+        unmatched++;
+        keep(i - 1);
+      }
       i--;
       j--;
     } else if (i > 0 && (j === 0 || mv === 1)) {
       unmatched++;
+      keep(i - 1);
       i--;
     } else j--;
   }
-  return { lines: lines.reverse(), unmatched };
+  return { lines: lines.reverse(), unmatched, unpaired: unpaired.reverse() };
+}
+
+/** B-050: an imported line the rules could not pair; kept so AI or the user can link it later. */
+export interface UnpairedLine {
+  readonly ord: number;
+  readonly kind: string;
+  readonly text: string;
+}
+
+/**
+ * B-050: imported lines without a rule pair for the linked scenes, as fields for AddTranslationLines.
+ * Older unpaired lines of the same scenes and language are listed for retirement (never hard-deleted).
+ */
+export function unpairedTranslationLines(
+  s: ProjectState,
+  lang: string,
+  links: readonly { readonly link: SceneLink }[],
+  parsed: ParsedScreenplay,
+): { items: { variantId: string; language: string; ord: number; kind: string; text: string }[]; retire: string[] } {
+  const items: { variantId: string; language: string; ord: number; kind: string; text: string }[] = [];
+  const variants = new Set<string>();
+  for (const { link } of links) {
+    const o = link.occurrenceId ? s.occurrences[link.occurrenceId] : undefined;
+    const p = parsedSceneOf(parsed, link);
+    if (!o || !p || variants.has(o.variantId)) continue;
+    variants.add(o.variantId);
+    for (const u of alignLines(p, blocksOfVariant(s, o.variantId)).unpaired)
+      if (u.text.trim()) items.push({ variantId: o.variantId, language: lang, ord: u.ord, kind: u.kind.slice(0, 30), text: u.text.slice(0, 5000) });
+  }
+  const retire = Object.values(s.translationLines ?? {})
+    .filter((u) => !u.removed && u.language === lang && variants.has(u.variantId))
+    .map((u) => u.id);
+  return { items, retire };
 }
 
 export interface TranslationItem {
@@ -468,7 +555,7 @@ export function translationItems(
     const o = s.occurrences[link.occurrenceId];
     if (!o) continue;
     const status = approved ? "approved" : "uncertain";
-    const p = parsed.scenes[link.parsedIndex];
+    const p = parsedSceneOf(parsed, link);
     // En oversettelse brukeren har godkjent, overskrives bare av en godkjent kobling
     const keep = (existing: Translation | null) =>
       !!existing && existing.status === "approved" && !approved;

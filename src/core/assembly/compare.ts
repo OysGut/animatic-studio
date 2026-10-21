@@ -4,7 +4,7 @@
  * Hver versjon får et eget klipp som bare viser den versjonen fra bilde 0, så samme tegning som i monteringen
  * (drawFilmFrame) kan brukes. Bare lesing: aktiv versjon endres ikke.
  */
-import { L, localized } from "../i18n";
+
 import type { ProjectState, Take } from "../model";
 import { msToFramesCeil, type Rational } from "../time";
 import { takeLabel } from "./edit";
@@ -15,16 +15,11 @@ import {
   type FilmClip,
   type ResolvedPart,
 } from "./film";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type VersionKind = "animatic" | "edit" | "imported_film" | "ai_video" | "still";
 
-export const VERSION_KIND_LABEL: Record<VersionKind, string> = localized({
-  animatic: ["2D-animatic", "2D animatic"],
-  edit: ["Klippet versjon", "Edited version"],
-  imported_film: ["Importert film", "Imported film"],
-  ai_video: ["AI-video", "AI video"],
-  still: ["Stillbilde", "Still image"],
-});
+export const VERSION_KIND_LABEL: Record<VersionKind, string> = tLocalized({ animatic: "core-assembly-compare.version-kind-label.animatic.826b15651cab", edit: "core-assembly-compare.version-kind-label.edit.57bb21f6fb50", imported_film: "core-assembly-compare.version-kind-label.imported-film.8637e910e31e", ai_video: "core-assembly-compare.version-kind-label.ai-video.f5100fb8170a", still: "core-assembly-compare.version-kind-label.still.8c10f7bdce78" });
 
 export interface ComparableVersion {
   /** Stabil nøkkel: «animatic», «edit» eller versjonens (take) id. */
@@ -99,8 +94,8 @@ export function comparableVersions(
     key: "animatic",
     kind: "animatic",
     label: comp
-      ? L("Animatic (2D-scene)", "Animatic (2D scene)")
-      : L("Animatic (tittelkort)", "Animatic (title card)"),
+      ? tk("core-assembly-compare.label.label.2920e4e484a2")
+      : tk("core-assembly-compare.label.label.3eeb41d9ec13"),
     takeId: null,
     durationFrames: animFrames,
     createdAt: comp ? idCreatedAt(comp.id) : null,
@@ -130,10 +125,7 @@ export function comparableVersions(
     out.push({
       key: "edit",
       kind: "edit",
-      label: L(
-        `Klippet versjon (${clip.parts.length} ${clip.parts.length === 1 ? "del" : "deler"})`,
-        `Edited version (${clip.parts.length} ${clip.parts.length === 1 ? "part" : "parts"})`,
-      ),
+      label: tk("core-assembly-compare.edited-version", { count: clip.parts.length }),
       takeId: null,
       durationFrames: clip.durationFrames,
       createdAt: times.at(-1) ?? null,

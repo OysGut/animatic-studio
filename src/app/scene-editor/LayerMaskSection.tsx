@@ -5,40 +5,13 @@
  * nøkkelbilder som lagets egne egenskaper (DEC-0072): tallene viser masken på gjeldende bilde.
  */
 import { Field, Hint, KeyMarker, NumberField, Section, inputClass } from "./inspector-fields";
-import {
-  BLEND_LABEL,
-  BLEND_MODES,
-  MASK_FIELD,
-  MAX_MASK_FEATHER,
-  fieldsWithMaskAt,
-  isAnimated,
-  layerFieldsOf,
-  layerSize,
-  L,
-  layersOf,
-  localized,
-  maskAt,
-  removeKeyframesAt,
-  setKeyframe,
-  type BlendMode,
-  type Composition,
-  type CompositionLayer,
-  type LayerFields,
-  type LayerMask,
-  type MaskProperty,
-  type MaskRect,
-  type ProjectState,
-} from "@/core";
+import { BLEND_LABEL, BLEND_MODES, MASK_FIELD, MAX_MASK_FEATHER, fieldsWithMaskAt, isAnimated, layerFieldsOf, layerSize, layersOf, maskAt, removeKeyframesAt, setKeyframe, type BlendMode, type Composition, type CompositionLayer, type LayerFields, type LayerMask, type MaskProperty, type MaskRect, type ProjectState } from "@/core";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 type MaskChoice = "none" | "rect" | "ellipse" | "layer";
 type ShapeMask = Exclude<LayerMask, { kind: "layer" }>;
 
-const MASK_LABEL: Record<MaskChoice, string> = localized({
-  none: ["Ingen", "None"],
-  rect: ["Rektangel", "Rectangle"],
-  ellipse: ["Ellipse", "Ellipse"],
-  layer: ["Bruk et annet lag", "Use another layer"],
-});
+const MASK_LABEL: Record<MaskChoice, string> = tLocalized({ none: "app-scene-editor-layer-mask-section.mask-label.none.5b5854e79a9c", rect: "app-scene-editor-layer-mask-section.mask-label.rect.d38f1a5c9698", ellipse: "app-scene-editor-layer-mask-section.mask-label.ellipse.4fcaaf762aa4", layer: "app-scene-editor-layer-mask-section.mask-label.layer.b0665d381c77" });
 
 export function LayerMaskSection({
   state,
@@ -74,12 +47,12 @@ export function LayerMaskSection({
 
   function changeKind(kind: MaskChoice) {
     if (kind === choice) return;
-    if (kind === "none") return setMask(L("Fjern maske", "Remove mask"), null);
+    if (kind === "none") return setMask(t("app-scene-editor-layer-mask-section.change-kind.set-mask.6b4a3280f2a6"), null);
     const invert = mask?.invert ?? false;
     if (kind === "layer") {
       const first = others[0];
       if (!first) return;
-      return setMask(L("Bruk lag som maske", "Use layer as mask"), {
+      return setMask(t("app-scene-editor-layer-mask-section.change-kind.set-mask.a944c6d7c8aa"), {
         kind: "layer",
         layerId: first.id,
         invert,
@@ -97,7 +70,7 @@ export function LayerMaskSection({
             feather: 0,
           };
     setMask(
-      kind === "rect" ? L("Rektangelmaske", "Rectangle mask") : L("Ellipsemaske", "Ellipse mask"),
+      kind === "rect" ? t("app-scene-editor-layer-mask-section.change-kind.set-mask.5bb0e4978d40") : t("app-scene-editor-layer-mask-section.change-kind.set-mask.cf83a0e4c7fa"),
       { kind, ...shape, invert },
     );
   }
@@ -130,8 +103,8 @@ export function LayerMaskSection({
       : setKeyframe(layer.keyframes, property, frame, now[MASK_FIELD[property]]);
     apply(
       has
-        ? L("Fjern nøkkelbilde for maske", "Remove keyframe for mask")
-        : L("Sett nøkkelbilde for maske", "Set keyframe for mask"),
+        ? t("app-scene-editor-layer-mask-section.toggle-key.apply.d60fc2cff470")
+        : t("app-scene-editor-layer-mask-section.toggle-key.apply.e28cc7c22f8a"),
       { keyframes },
     );
   }
@@ -146,10 +119,10 @@ export function LayerMaskSection({
   );
 
   return (
-    <Section title={L("Maske og blanding", "Mask and blend")}>
-      <Field label={L("Maske", "Mask")}>
+    <Section title={t("app-scene-editor-layer-mask-section.layer-mask-section.title.6ed7ad60aecf")}>
+      <Field label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.54780a40f896")}>
         <select
-          aria-label={L("Maske", "Mask")}
+          aria-label={t("app-scene-editor-layer-mask-section.layer-mask-section.aria-label.54780a40f896")}
           value={choice}
           disabled={off}
           onChange={(e) => changeKind(e.target.value as MaskChoice)}
@@ -164,13 +137,13 @@ export function LayerMaskSection({
       </Field>
       {mask?.kind === "layer" ? (
         <>
-          <Field label={L("Maskelag", "Mask layer")}>
+          <Field label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.26c444143440")}>
             <select
-              aria-label={L("Maskelag", "Mask layer")}
+              aria-label={t("app-scene-editor-layer-mask-section.layer-mask-section.aria-label.26c444143440")}
               value={mask.layerId}
               disabled={off}
               onChange={(e) =>
-                setMask(L("Bytt maskelag", "Change mask layer"), {
+                setMask(t("app-scene-editor-layer-mask-section.layer-mask-section.set-mask.7afcdb47a5e2"), {
                   ...mask,
                   layerId: e.target.value,
                 })
@@ -179,27 +152,24 @@ export function LayerMaskSection({
             >
               {state.layers[mask.layerId] && !others.some((l) => l.id === mask.layerId) ? (
                 <option value={mask.layerId}>
-                  {state.layers[mask.layerId]!.name || L("Uten navn", "Untitled")} (
-                  {L("slettet", "deleted")})
+                  {state.layers[mask.layerId]!.name || t("app-scene-editor-layer-mask-section.layer-mask-section.option.d33ad9d0215c")} (
+                  {t("app-scene-editor-layer-mask-section.layer-mask-section.option.325b8aebfae6")})
                 </option>
               ) : null}
               {!state.layers[mask.layerId] ? (
                 <option value={mask.layerId}>
-                  {L("Laget finnes ikke", "The layer does not exist")}
+                  {t("app-scene-editor-layer-mask-section.layer-mask-section.option.794abb4adb73")}
                 </option>
               ) : null}
               {others.map((l) => (
                 <option key={l.id} value={l.id}>
-                  {l.name || L("Uten navn", "Untitled")}
+                  {l.name || t("app-scene-editor-layer-mask-section.layer-mask-section.option.d33ad9d0215c.2")}
                 </option>
               ))}
             </select>
           </Field>
           <Hint>
-            {L(
-              "Laget vises bare der maskelaget dekker. Skjul maskelaget hvis det ikke skal synes selv.",
-              "The layer is shown only where the mask layer covers. Hide the mask layer if it should not show itself.",
-            )}
+            {t("app-scene-editor-layer-mask-section.layer-mask-section.hint.d83380fb2fc6")}
           </Hint>
         </>
       ) : null}
@@ -209,39 +179,39 @@ export function LayerMaskSection({
             label="X (px)"
             value={now.x}
             disabled={off}
-            marker={marker("maskX", L("Maske X (px)", "Mask X (px)"))}
-            onCommit={(x) => setRect(L("Flytt maske", "Move mask"), { x })}
+            marker={marker("maskX", t("app-scene-editor-layer-mask-section.layer-mask-section.marker.96619dad9b7f"))}
+            onCommit={(x) => setRect(t("app-scene-editor-layer-mask-section.layer-mask-section.set-rect.2e5db6787d89"), { x })}
           />
           <NumberField
             label="Y (px)"
             value={now.y}
             disabled={off}
-            marker={marker("maskY", L("Maske Y (px)", "Mask Y (px)"))}
-            onCommit={(y) => setRect(L("Flytt maske", "Move mask"), { y })}
+            marker={marker("maskY", t("app-scene-editor-layer-mask-section.layer-mask-section.marker.63b6e77d31af"))}
+            onCommit={(y) => setRect(t("app-scene-editor-layer-mask-section.layer-mask-section.set-rect.2e5db6787d89.2"), { y })}
           />
           <NumberField
-            label={L("Bredde (px)", "Width (px)")}
+            label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.8c35e7859bc9")}
             value={now.width}
             disabled={off}
             valid={(n) => n > 0}
-            marker={marker("maskWidth", L("Maskebredde (px)", "Mask width (px)"))}
-            onCommit={(width) => setRect(L("Endre størrelse på maske", "Resize mask"), { width })}
+            marker={marker("maskWidth", t("app-scene-editor-layer-mask-section.layer-mask-section.marker.75839cbf8c19"))}
+            onCommit={(width) => setRect(t("app-scene-editor-layer-mask-section.layer-mask-section.set-rect.477b61a3b09d"), { width })}
           />
           <NumberField
-            label={L("Høyde (px)", "Height (px)")}
+            label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.531d6ca01bd1")}
             value={now.height}
             disabled={off}
             valid={(n) => n > 0}
-            marker={marker("maskHeight", L("Maskehøyde (px)", "Mask height (px)"))}
-            onCommit={(height) => setRect(L("Endre størrelse på maske", "Resize mask"), { height })}
+            marker={marker("maskHeight", t("app-scene-editor-layer-mask-section.layer-mask-section.marker.36d62c6acd64"))}
+            onCommit={(height) => setRect(t("app-scene-editor-layer-mask-section.layer-mask-section.set-rect.477b61a3b09d.2"), { height })}
           />
           <NumberField
-            label={L("Myk kant (px)", "Feather (px)")}
+            label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.0e395c28826f")}
             value={shape.feather}
             disabled={off}
             min={0}
             max={MAX_MASK_FEATHER}
-            onCommit={(feather) => setShape(L("Endre myk kant", "Change feather"), { feather })}
+            onCommit={(feather) => setShape(t("app-scene-editor-layer-mask-section.layer-mask-section.set-shape.b647848d2291"), { feather })}
           />
         </div>
       ) : null}
@@ -254,8 +224,8 @@ export function LayerMaskSection({
             onChange={(e) =>
               setMask(
                 e.target.checked
-                  ? L("Snu masken", "Invert the mask")
-                  : L("Snu masken tilbake", "Revert the mask inversion"),
+                  ? t("app-scene-editor-layer-mask-section.layer-mask-section.set-mask.a11eb6e9b279")
+                  : t("app-scene-editor-layer-mask-section.layer-mask-section.set-mask.eb1c49b35641"),
                 {
                   ...mask,
                   invert: e.target.checked,
@@ -263,29 +233,26 @@ export function LayerMaskSection({
               )
             }
           />
-          {L("Snu masken", "Invert the mask")}
+          {t("app-scene-editor-layer-mask-section.layer-mask-section.label.a11eb6e9b279")}
         </label>
       ) : null}
       {shape ? (
         <Hint>
-          {L("Målt i lagets egne piksler", "Measured in the layer's own pixels")} (
+          {t("app-scene-editor-layer-mask-section.layer-mask-section.hint.283ccf1f1faf")} (
           {Math.round(size.width)} × {Math.round(size.height)}){" "}
-          {L("fra øverste venstre hjørne.", "from the top left corner.")}{" "}
-          {L(
-            "Masken følger laget. Dra midtpunktet eller hjørnene på masken i scenen, og sett nøkkelbilder for å animere den.",
-            "The mask follows the layer. Drag the midpoint or the corners of the mask in the scene, and set keyframes to animate it.",
-          )}
+          {t("app-scene-editor-layer-mask-section.layer-mask-section.hint.83ffbc5c204e")}{" "}
+          {t("app-scene-editor-layer-mask-section.layer-mask-section.hint.d1934ee63424")}
         </Hint>
       ) : null}
-      <Field label={L("Blanding", "Blend")}>
+      <Field label={t("app-scene-editor-layer-mask-section.layer-mask-section.label.4a1c475f64ff")}>
         <select
-          aria-label={L("Blanding", "Blend")}
+          aria-label={t("app-scene-editor-layer-mask-section.layer-mask-section.aria-label.4a1c475f64ff")}
           value={layer.blend ?? "normal"}
           disabled={off}
           onChange={(e) => {
             const b = BLEND_MODES.find((x) => x === e.target.value) as BlendMode | undefined;
             if (b && b !== (layer.blend ?? "normal"))
-              apply(L(`Blanding: ${BLEND_LABEL[b]}`, `Blend: ${BLEND_LABEL[b]}`), { blend: b });
+              apply(t("app-scene-editor-layer-mask-section.layer-mask-section.apply.8fbbd1fea987", { value1: String(BLEND_LABEL[b]) }), { blend: b });
           }}
           className={inputClass}
         >

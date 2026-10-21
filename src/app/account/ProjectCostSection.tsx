@@ -3,9 +3,10 @@
  * «Prosjektet totalt» for eieren, med kostnadsrapport og eksport.
  */
 import { useCallback, useState } from "react";
-import { L, formatHeading, type CostJobRow, type ProjectState } from "@/core";
+import { formatHeading, type CostJobRow, type ProjectState } from "@/core";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { CostReportView } from "./CostReportView";
+import { t } from "@/core/i18n/keyed";
 
 export function ProjectCostSection({
   state,
@@ -41,7 +42,7 @@ export function ProjectCostSection({
     <section aria-labelledby="cost-title" className="mt-10" data-testid="project-cost">
       <div className="mb-2 flex items-center gap-3">
         <h2 id="cost-title" className="text-base font-semibold text-text-primary">
-          {L("AI-forbruk og kostnadsrapport", "AI usage and cost report")}
+          {t("app-account-project-cost-section.project-cost-section.h2.6a56ead80637")}
         </h2>
         {isOwner ? (
           <div
@@ -54,7 +55,7 @@ export function ProjectCostSection({
               aria-pressed={scope === "mine"}
               onClick={() => setScope("mine")}
             >
-              {L("Mitt forbruk", "My usage")}
+              {t("app-account-project-cost-section.project-cost-section.button.d1d7e14bdfbc")}
             </button>
             <button
               type="button"
@@ -63,7 +64,7 @@ export function ProjectCostSection({
               onClick={() => setScope("project")}
               data-testid="cost-scope-project"
             >
-              {L("Prosjektet totalt", "The project in total")}
+              {t("app-account-project-cost-section.project-cost-section.button.d937301e7b73")}
             </button>
           </div>
         ) : null}

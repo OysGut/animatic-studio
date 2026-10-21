@@ -26,53 +26,14 @@ import {
   TriangleAlert,
   Upload,
 } from "lucide-react";
-import {
-  L,
-  tm,
-  adaptPromptForModel,
-  batchInUse,
-  batchSceneEdit,
-  buildSceneVideoPrompt,
-  estimateCostUsd,
-  filmAudio,
-  filmClips,
-  filmSelection,
-  filmTakeAudio,
-  formatUsd,
-  layersOf,
-  layerVersions,
-  locale,
-  newId,
-  planReferences,
-  planScenePieces,
-  providerModel,
-  providersFor,
-  referenceCount,
-  sceneBackground,
-  sceneCast,
-  sceneDescriptionFromScript,
-  sceneDescriptionUserText,
-  sceneVideoBatches,
-  sceneVideoRefPath,
-  sceneVideoSourcePath,
-  stateWithSource,
-  styleProfileFor,
-  styleText,
-  takeLabel,
-  MAX_SCENE_VIDEO_INSTRUCTIONS,
-  type FilmClip,
-  type ProjectState,
-  type SceneCastMember,
-  type SceneVideoBatch,
-  type SceneVideoSource,
-  type Take,
-} from "@/core";
+import { profileChoice, qualityProfileSnapshot, tm, adaptPromptForModel, batchInUse, batchSceneEdit, buildSceneVideoPrompt, estimateCostUsd, filmAudio, filmClips, filmSelection, filmTakeAudio, formatUsd, layersOf, layerVersions, locale, newId, planReferences, planScenePieces, providerModel, providersFor, referenceCount, sceneBackground, sceneCast, sceneDescriptionFromScript, sceneDescriptionUserText, sceneVideoBatches, sceneVideoRefPath, sceneVideoSourcePath, stateWithSource, styleProfileFor, styleText, takeLabel, MAX_SCENE_VIDEO_INSTRUCTIONS, type FilmClip, type ProjectState, type SceneCastMember, type SceneVideoBatch, type SceneVideoSource, type Take } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { RefetchVideoButton, canRefetchVideo } from "@/app/ai/RefetchVideoButton";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { signedUrls, useImageUrls } from "@/app/library/asset-images";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
@@ -90,6 +51,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 const heading = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
 const ctl =
@@ -154,7 +116,7 @@ async function makeSheet(
           ? ok(b)
           : fail(
               new Error(
-                L("Samlebildet kunne ikke lages.", "The reference sheet could not be made."),
+                tk("app-scene-editor-scene-to-video-dialog.make-sheet.fail.c662077d7c13"),
               ),
             ),
       "image/png",
@@ -242,16 +204,13 @@ export function SceneToVideoDialog({
   const sources = useMemo<SourceChoice[]>(() => {
     const out: SourceChoice[] = [];
     if (hasComposition)
-      out.push({ key: "2d", label: L("2D-scenen", "The 2D scene"), source: { kind: "animatic" } });
+      out.push({ key: "2d", label: tk("app-scene-editor-scene-to-video-dialog.label.label.f8cd1953e5af"), source: { kind: "animatic" } });
     for (const b of batches) {
       const edit = batchSceneEdit(state, b, () => newId());
       if (!edit) continue;
       out.push({
         key: `b:${b.batchId}`,
-        label: L(
-          `AI-video fra ${new Date(b.createdAt).toLocaleString(locale(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`,
-          `AI video from ${new Date(b.createdAt).toLocaleString(locale(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}`,
-        ),
+        label: tk("app-scene-editor-scene-to-video-dialog.label.label.1914121f8b6c", { value1: String(new Date(b.createdAt).toLocaleString(locale(), { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })) }),
         source: edit.parts.length
           ? { kind: "parts", parts: edit.parts }
           : { kind: "take", takeId: edit.activeTakeId! },
@@ -281,7 +240,9 @@ export function SceneToVideoDialog({
   const options = providersFor("video_edit", new Set(available.data?.providers ?? []));
   const flat = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
   const [pick, setPick] = useState("");
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? flat[0] ?? null;
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("video_edit", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id) : null) ?? flat[0] ?? null;
   const [withAudio, setWithAudio] = useState(false);
 
   // ------------------------------------------------ Beskrivelsene
@@ -380,13 +341,10 @@ export function SceneToVideoDialog({
   const credits = cost !== null && chosen ? creditsOf(chosen.provider.id, cost) : null;
   const priceText =
     cost === null
-      ? L("Prisen er ukjent.", "The price is unknown.")
+      ? tk("app-scene-editor-scene-to-video-dialog.price-text.message.cc4a7d5030ce")
       : credits !== null
-        ? L(
-            `Anslått pris: ${formatUsd(cost)} (ca. ${credits} kreditter).`,
-            `Estimated price: ${formatUsd(cost)} (about ${credits} credits).`,
-          )
-        : L(`Anslått pris: ${formatUsd(cost)}.`, `Estimated price: ${formatUsd(cost)}.`);
+        ? tk("app-scene-editor-scene-to-video-dialog.price-text.message.5a1a6c7beb4e", { value1: String(formatUsd(cost)), credits: String(credits) })
+        : tk("app-scene-editor-scene-to-video-dialog.price-text.message.9dfa84f98891", { value1: String(formatUsd(cost)) });
 
   const [phase, setPhase] = useState<Phase>({ kind: "idle" });
   const [error, setError] = useState<string | null>(null);
@@ -434,11 +392,11 @@ export function SceneToVideoDialog({
         applyEdit(
           null,
           [{ partId: newId(), source: "composition", takeId: null, inMs: 0, outMs: ms }],
-          L("Vis 2D-scenen", "Show the 2D scene"),
+          tk("app-scene-editor-scene-to-video-dialog.show-animatic.apply-edit.020992df8434"),
         );
       return;
     }
-    applyEdit(null, [], L("Vis 2D-scenen", "Show the 2D scene"));
+    applyEdit(null, [], tk("app-scene-editor-scene-to-video-dialog.show-animatic.apply-edit.020992df8434.2"));
   }
   function showBatch(b: SceneVideoBatch) {
     const edit = batchSceneEdit(state, b, () => newId());
@@ -446,11 +404,11 @@ export function SceneToVideoDialog({
       applyEdit(
         edit.activeTakeId,
         edit.parts,
-        L("Vis AI-video fra 2D-scenen", "Show AI video from the 2D scene"),
+        tk("app-scene-editor-scene-to-video-dialog.show-batch.apply-edit.39152cb38070"),
       );
   }
   function showTake(t: Take) {
-    applyEdit(t.id, [], L(`Vis ${takeLabel(state, t)}`, `Show ${takeLabel(state, t)}`));
+    applyEdit(t.id, [], tk("app-scene-editor-scene-to-video-dialog.show-take.apply-edit.b4190a2ba8ed", { value1: String(takeLabel(state, t)) }));
   }
 
   async function uploadVideo(file: File) {
@@ -459,7 +417,7 @@ export function SceneToVideoDialog({
     try {
       const f = await uploadFilm(projectId, file, fps);
       const group = newId();
-      const label = `${L("Last opp video", "Upload video")} «${f.media.fileName}»`;
+      const label = `${tk("app-scene-editor-scene-to-video-dialog.label.message.997376a3c707")} «${f.media.fileName}»`;
       const r = await cmds.runAndWait(
         {
           type: "AddTake",
@@ -492,7 +450,7 @@ export function SceneToVideoDialog({
       setError(
         tm(
           (e as Error).message ||
-            L("Videoen kunne ikke lastes opp.", "The video could not be uploaded."),
+            tk("app-scene-editor-scene-to-video-dialog.upload-video.set-error.62443f9a5977"),
         ),
       );
     } finally {
@@ -508,7 +466,7 @@ export function SceneToVideoDialog({
     if (next.trim() === saved.trim()) return true;
     const e = cmds.run(
       { type: "SetSceneVideoInstructions", occurrenceId: occurrenceId as never, text: next },
-      L("Scenebeskrivelse for AI-video", "Scene description for AI video"),
+      tk("app-scene-editor-scene-to-video-dialog.e.cmds-run.6c945294d111"),
     );
     setSaveError(e);
     return !e;
@@ -553,17 +511,11 @@ export function SceneToVideoDialog({
     try {
       if (!canExportVideo())
         throw new ExportError(
-          L(
-            "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge eller Safari.",
-            "The browser cannot make video. Use a newer version of Chrome, Edge or Safari.",
-          ),
+          tk("app-scene-editor-scene-to-video-dialog.send.message.7f9d622370e6"),
         );
       setPhase({
         kind: "working",
-        text: L(
-          "Henter bildene og lyden i scenen …",
-          "Loading the images and sound in the scene …",
-        ),
+        text: tk("app-scene-editor-scene-to-video-dialog.text.text.3465f1ae1894"),
       });
       // Bildene i 2D-scenen (også når en film sendes: 2D-delene av en klippet scene)
       const need = new Set<string>();
@@ -599,10 +551,7 @@ export function SceneToVideoDialog({
       for (const piece of pieces) {
         setPhase({
           kind: "working",
-          text: L(
-            `Lager videoen av scenen (del ${piece.index + 1} av ${pieces.length}) …`,
-            `Making the video of the scene (part ${piece.index + 1} of ${pieces.length}) …`,
-          ),
+          text: tk("app-scene-editor-scene-to-video-dialog.text.text.8c88b09d3b7a", { value1: String(piece.index + 1), length: String(pieces.length) }),
         });
         const file = await exportAnimatic({
           state: src.state,
@@ -620,10 +569,7 @@ export function SceneToVideoDialog({
         });
         if (!file.mimeType.includes("mp4"))
           throw new ExportError(
-            L(
-              "Nettleseren kan bare lage WebM-video, og modellen tar imot MP4. Bruk Chrome, Edge eller Safari.",
-              "The browser can only make WebM video, and the model accepts MP4. Use Chrome, Edge or Safari.",
-            ),
+            tk("app-scene-editor-scene-to-video-dialog.send.message.6bf9f5a4ca1d"),
           );
         const path = sceneVideoSourcePath(projectId, batch, piece.index);
         const up = await uploadFile(
@@ -634,10 +580,7 @@ export function SceneToVideoDialog({
         );
         if (up)
           throw new Error(
-            L(
-              `Videoen kunne ikke lastes opp: ${up.message}`,
-              `The video could not be uploaded: ${up.message}`,
-            ),
+            tk("app-scene-editor-scene-to-video-dialog.send.message.cc42e7ed1d17", { message: String(up.message) }),
           );
         paths.push(path);
       }
@@ -646,7 +589,7 @@ export function SceneToVideoDialog({
       if (refs.sheet.length) {
         setPhase({
           kind: "working",
-          text: L("Lager samlebildet av figurene …", "Making the reference sheet of the figures …"),
+          text: tk("app-scene-editor-scene-to-video-dialog.text.text.4e7fac0b8bd9"),
         });
         const urls = await signedUrls(
           refs.sheet.flatMap((m) => (m.imagePath ? [m.imagePath] : [])),
@@ -660,13 +603,10 @@ export function SceneToVideoDialog({
         });
         if (up)
           throw new Error(
-            L(
-              `Samlebildet kunne ikke lastes opp: ${up.message}`,
-              `The reference sheet could not be uploaded: ${up.message}`,
-            ),
+            tk("app-scene-editor-scene-to-video-dialog.send.message.baebe6b95e6d", { message: String(up.message) }),
           );
       }
-      setPhase({ kind: "working", text: L("Sender til AI …", "Sending to AI …") });
+      setPhase({ kind: "working", text: tk("app-scene-editor-scene-to-video-dialog.text.text.0d6d1ab55395") });
       const aspect = state.project.frameWidth >= state.project.frameHeight ? "16:9" : "9:16";
       const elementPaths = refs.elements.map((m) => m.imagePath!);
       const imagePaths = [
@@ -676,7 +616,8 @@ export function SceneToVideoDialog({
       const errors: string[] = [];
       let sent = 0;
       for (const piece of pieces) {
-        const r = await startVideoGeneration({
+        if (quality.budgetError) throw new Error(quality.budgetError);
+          const r = await startVideoGeneration({
           data: {
             projectId,
             occurrenceId,
@@ -687,7 +628,7 @@ export function SceneToVideoDialog({
             seconds: piece.billedSeconds,
             aspect,
             startImagePath: null,
-            approved: true,
+            approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
             sourceVideoPath: paths[piece.index]!,
             elementPaths,
             imagePaths,
@@ -710,7 +651,7 @@ export function SceneToVideoDialog({
       if (errors.length) setError([...new Set(errors)].join(" "));
     } catch (e) {
       setPhase({ kind: "idle" });
-      setError(tm((e as Error).message || L("Ukjent feil", "Unknown error")));
+      setError(tm((e as Error).message || tk("app-scene-editor-scene-to-video-dialog.send.set-error.b5831f293f6f")));
     }
   }
 
@@ -728,7 +669,7 @@ export function SceneToVideoDialog({
   const inUse = (
     <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-status-success">
       <Check className="size-3" aria-hidden />
-      {L("Vises", "Shown")}
+      {tk("app-scene-editor-scene-to-video-dialog.in-use.span.87f77a3a5372")}
     </span>
   );
   const choiceButton = (onClick: () => void, name: string) =>
@@ -737,9 +678,9 @@ export function SceneToVideoDialog({
         type="button"
         onClick={onClick}
         className="shrink-0 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-        aria-label={L(`Vis scenen som ${name}`, `Show the scene as ${name}`)}
+        aria-label={tk("app-scene-editor-scene-to-video-dialog.choice-button.aria-label.4b80db290314", { name: String(name) })}
       >
-        {L("Bruk denne", "Use this")}
+        {tk("app-scene-editor-scene-to-video-dialog.choice-button.button.78bcf563c8d6")}
       </button>
     ) : null;
   const working = phase.kind === "working";
@@ -750,23 +691,21 @@ export function SceneToVideoDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AiGlyph className="size-4" aria-hidden />
-            {L("AI-video av scenen", "AI video of the scene")}
+            {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.dialog-title.80acf064604b")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Det scenen viser i avspillingen, sendes til en AI-modell som tegner den om til ferdig film. Bevegelser, timing og kamera beholdes; utseendet følger den globale beskrivelsen, figurene og scenebeskrivelsen. Bare bildet erstattes. Ingenting slettes, og du velger selv hva som viser scenen.",
-              "What the scene shows in playback is sent to an AI model that redraws it as finished film. Movement, timing and camera are kept; the look follows the global description, the figures and the scene description. Only the picture is replaced. Nothing is deleted, and you choose what shows the scene.",
-            )}
+            {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.dialog-description.48b385e394c3")}
           </DialogDescription>
         </DialogHeader>
+        <QualityProfilePicker state={state} value={quality.choice} disabled={phase.kind === "working"} onChange={v => { quality.setChoice(v); setPick(""); setPhase({ kind: "idle" }); }} /><QualityProfileBudget error={quality.budgetError} />
 
         {/* Hva viser scenen */}
         <section
-          aria-label={L("Hva viser scenen", "What shows the scene")}
+          aria-label={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.aria-label.ab0e1b734464")}
           className="flex flex-col gap-1.5"
         >
           <div className="flex items-center gap-2">
-            <h3 className={heading}>{L("Scenen vises som", "The scene is shown as")}</h3>
+            <h3 className={heading}>{tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.h3.bb58fbe23bda")}</h3>
             <div className="ml-auto flex gap-1">
               {editable ? (
                 <>
@@ -785,13 +724,10 @@ export function SceneToVideoDialog({
                     variant="ghost"
                     disabled={busyUpload || working}
                     onClick={() => fileRef.current?.click()}
-                    title={L(
-                      "Last opp en video som skal gjelde for scenen (blir en ny versjon)",
-                      "Upload a video for the scene (becomes a new version)",
-                    )}
+                    title={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.title.e9b0e7fd4b32")}
                   >
                     {busyUpload ? <Loader2 className="animate-spin" /> : <Upload />}
-                    {L("Last opp video …", "Upload video …")}
+                    {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.71f421529256")}
                   </Button>
                 </>
               ) : null}
@@ -806,13 +742,10 @@ export function SceneToVideoDialog({
                     search: { scene: occurrenceId, lastned: "1" },
                   })
                 }
-                title={L(
-                  "Last ned scenen slik den spilles av – MP4 eller WebM, med valg for lyd og undertekster",
-                  "Download the scene as it plays – MP4 or WebM, with choices for sound and subtitles",
-                )}
+                title={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.title.621da7f3600b")}
               >
                 <Download />
-                {L("Last ned scenen …", "Download the scene …")}
+                {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.0179925e0a1a")}
               </Button>
             </div>
           </div>
@@ -820,9 +753,9 @@ export function SceneToVideoDialog({
             <div className={row(usesAnimatic)}>
               <Layers className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
               <span className="min-w-0 flex-1 truncate text-text-primary">
-                {L("2D-scenen (animatic)", "The 2D scene (animatic)")}
+                {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.65043cefa612")}
               </span>
-              {usesAnimatic ? inUse : choiceButton(showAnimatic, L("2D-scenen", "the 2D scene"))}
+              {usesAnimatic ? inUse : choiceButton(showAnimatic, tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.ccdac755ed35"))}
             </div>
           ) : null}
           {batches.map((b) => {
@@ -841,31 +774,28 @@ export function SceneToVideoDialog({
                 <div className={row(on)}>
                   <AiGlyph className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
                   <span className="min-w-0 flex-1 truncate text-text-primary">
-                    {L("AI-video", "AI video")}
+                    {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.17d8fc9e23a5")}
                     <span className="text-text-tertiary">
                       {" "}
                       · {fmtDate(b.createdAt)} · {modelName}
-                      {b.count > 1 ? L(` · ${b.count} deler`, ` · ${b.count} parts`) : ""}
+                      {b.count > 1 ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.9916a51fd08d", { count: String(b.count) }) : ""}
                     </span>
                   </span>
                   {b.status === "done" ? (
                     on ? (
                       inUse
                     ) : (
-                      choiceButton(() => showBatch(b), L("AI-videoen", "the AI video"))
+                      choiceButton(() => showBatch(b), tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.choice-button.28388feb592c"))
                     )
                   ) : b.status === "running" ? (
                     <span className="flex shrink-0 items-center gap-1 text-[11px] text-text-secondary">
                       <Loader2 className="size-3 animate-spin" aria-hidden />
-                      {L(
-                        `Lages … ${done} av ${b.count} ferdig`,
-                        `In progress … ${done} of ${b.count} done`,
-                      )}
+                      {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.4cd76e0f342e", { done: String(done), count: String(b.count) })}
                     </span>
                   ) : (
                     <span className="flex shrink-0 items-center gap-1 text-[11px] text-status-danger">
                       <TriangleAlert className="size-3" aria-hidden />
-                      {L("Feilet", "Failed")}
+                      {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.238d94bde2e0")}
                     </span>
                   )}
                 </div>
@@ -873,9 +803,9 @@ export function SceneToVideoDialog({
                   <div key={j!.id} className="flex flex-wrap items-center gap-2 pl-6">
                     <p className="text-[11px] text-status-danger">
                       {b.count > 1
-                        ? L(`Del ${b.jobs.indexOf(j) + 1}: `, `Part ${b.jobs.indexOf(j) + 1}: `)
+                        ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.9a0d008b0634", { value1: String(b.jobs.indexOf(j) + 1) })
                         : ""}
-                      {tm(j!.error ?? L("Ukjent feil", "Unknown error"))}
+                      {tm(j!.error ?? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.258576887209"))}
                     </p>
                     {editable && canRefetchVideo(j) ? (
                       <RefetchVideoButton projectId={projectId} job={j!} size="xs" />
@@ -901,50 +831,38 @@ export function SceneToVideoDialog({
           })}
           {ownParts && !batches.some((b) => batchInUse(state, b, material?.id ?? occurrenceId)) ? (
             <p className="text-[11px] text-text-tertiary">
-              {L(
-                "Scenen er klippet sammen i monteringen. «Bruk denne» erstatter klippingen (kan angres).",
-                "The scene is cut together in the assembly. “Use this” replaces the cut (can be undone).",
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.c2c6e5e09d51")}
             </p>
           ) : null}
         </section>
 
         {/* Ny AI-video */}
         <section
-          aria-label={L("Ny AI-video", "New AI video")}
+          aria-label={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.aria-label.7f840f37a0f4")}
           className="flex flex-col gap-2.5 border-t border-border pt-3"
         >
-          <h3 className={heading}>{L("Lag en ny AI-video", "Make a new AI video")}</h3>
+          <h3 className={heading}>{tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.h3.6385ef3f125b")}</h3>
           {!editable ? (
             <p className="text-xs text-text-tertiary">
-              {L(
-                "Bare redaktører og eiere kan lage AI-video.",
-                "Only editors and owners can make AI video.",
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.076492be1e3a")}
             </p>
           ) : !chosenSource ? (
             <p className="text-xs text-text-secondary">
-              {L(
-                "Scenen har ingen 2D-scene eller video å sende. Lag en 2D-scene eller last opp en video først.",
-                "The scene has no 2D scene or video to send. Make a 2D scene or upload a video first.",
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.348d30ca7a5e")}
             </p>
           ) : available.isLoading ? (
             <p className="text-xs text-text-tertiary">
-              {L("Henter leverandører …", "Loading providers …")}
+              {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.36d5674b5f0b")}
             </p>
           ) : !chosen ? (
             <p className="text-xs text-text-secondary">
-              {L(
-                "Ingen leverandør som kan lage video fra scenen er koblet til. En eier kan koble til fal.ai (Kling O3 Edit) eller Runway (Aleph 2) under «AI-leverandører» på prosjektlisten.",
-                "No provider that can make video from the scene is connected. An owner can connect fal.ai (Kling O3 Edit) or Runway (Aleph 2) under “AI providers” on the project list.",
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.0bf051dbd3bf")}
             </p>
           ) : (
             <>
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-text-secondary">
                 <label className="flex items-center gap-1.5">
-                  {L("Send", "Send")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.label.ef9e6c3b2508")}
                   <select
                     className={ctl}
                     value={chosenSource.key}
@@ -960,7 +878,7 @@ export function SceneToVideoDialog({
                   </select>
                 </label>
                 <label className="flex items-center gap-1.5">
-                  {L("Modell", "Model")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.label.a8220e4adc64")}
                   <select
                     className={ctl}
                     value={`${chosen.provider.id}|${chosen.model.id}`}
@@ -973,12 +891,9 @@ export function SceneToVideoDialog({
                         value={`${x.provider.id}|${x.model.id}`}
                       >
                         {x.model.label} – {x.provider.name} · {formatUsd(x.model.priceUsd)}
-                        {L("/sek", "/sec")}
+                        {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.option.3d038bbe4283")}
                         {x.provider.id === "runway"
-                          ? L(
-                              ` (${Math.round(x.model.priceUsd * 100)} kreditter/sek)`,
-                              ` (${Math.round(x.model.priceUsd * 100)} credits/sec)`,
-                            )
+                          ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.option.d711aee23f68", { value1: String(Math.round(x.model.priceUsd * 100)) })
                           : ""}
                       </option>
                     ))}
@@ -986,10 +901,7 @@ export function SceneToVideoDialog({
                 </label>
                 <label
                   className="flex items-center gap-1.5"
-                  title={L(
-                    "Scenens lyd (replikker, effekter, musikk) sendes med, så modellen kan bruke den til munnbevegelser og timing. Lyden i resultatet legges inn som eget, dempet lydspor.",
-                    "The scene's sound (lines, effects, music) is sent along, so the model can use it for lip movement and timing. The sound in the result is added as a separate, muted audio track.",
-                  )}
+                  title={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.title.93f45ff01c42")}
                 >
                   <input
                     type="checkbox"
@@ -998,10 +910,10 @@ export function SceneToVideoDialog({
                     onChange={(e) => setWithAudio(e.target.checked)}
                     className="size-3.5 accent-[var(--accent-brand)]"
                   />
-                  {L("Send scenens lyd med", "Send the scene's sound")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.label.4b0a6e82c94a")}
                 </label>
                 <span className="text-[11px] text-text-tertiary">
-                  {L("Undertekster sendes aldri.", "Subtitles are never sent.")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.3fcb930584c6")}
                 </span>
               </div>
 
@@ -1014,11 +926,11 @@ export function SceneToVideoDialog({
 
               <div className="flex flex-col gap-1 text-xs text-text-secondary">
                 <div className="flex items-center gap-2">
-                  <span>{L("Scenebeskrivelse", "Scene description")}</span>
+                  <span>{tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.c28c1300d06d")}</span>
                   <span className="text-[11px] text-text-tertiary">
                     {saved
-                      ? L("(redigert, lagret på scenen)", "(edited, saved on the scene)")
-                      : L("(laget fra manuset)", "(made from the screenplay)")}
+                      ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.cdf8dc043276")
+                      : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.8683223959e3")}
                   </span>
                   <div className="ml-auto flex gap-1">
                     <button
@@ -1030,30 +942,24 @@ export function SceneToVideoDialog({
                         saveDescription(generated);
                       }}
                       className="flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-50"
-                      title={L(
-                        "Lag beskrivelsen på nytt fra manuset (gratis)",
-                        "Make the description again from the screenplay (free)",
-                      )}
+                      title={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.title.53023f5edec2")}
                     >
                       <RotateCcw className="size-3" aria-hidden />
-                      {L("Fra manuset", "From the screenplay")}
+                      {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.a1f6812693bd")}
                     </button>
                     <button
                       type="button"
                       disabled={working || writing}
                       onClick={() => void writeWithAi()}
                       className="flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-50"
-                      title={L(
-                        "En språkmodell leser scenen og skriver beskrivelsen (koster litt, langt mindre enn et bilde)",
-                        "A language model reads the scene and writes the description (costs a little, far less than an image)",
-                      )}
+                      title={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.title.88cc225ceea7")}
                     >
                       {writing ? (
                         <Loader2 className="size-3 animate-spin" aria-hidden />
                       ) : (
                         <AiGlyph className="size-3" aria-hidden />
                       )}
-                      {L("Skriv med AI", "Write with AI")}
+                      {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.9671c947cd2e")}
                     </button>
                   </div>
                 </div>
@@ -1067,19 +973,13 @@ export function SceneToVideoDialog({
                     setDraft(e.target.value);
                   }}
                   onBlur={() => saveDescription(draft)}
-                  aria-label={L("Scenebeskrivelse", "Scene description")}
+                  aria-label={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.aria-label.c28c1300d06d")}
                   className="resize-y rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 font-mono text-[11px] text-text-primary"
                 />
                 <span className="text-[11px] text-text-tertiary">
                   {canSave
-                    ? L(
-                        "Sted, figurer, handling, kamera, lys og stemning – i formen videomodellene anbefaler. Endringer lagres på scenen.",
-                        "Place, figures, action, camera, light and mood – in the form the video models recommend. Changes are saved on the scene.",
-                      )
-                    : L(
-                        "Brukes nå, men lagres ikke før databasen er oppdatert (migrasjon 0032).",
-                        "Used now, but not saved until the database is updated (migration 0032).",
-                      )}
+                    ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.f3bc88bab554")
+                    : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.a2e0120d867b")}
                 </span>
                 {saveError ? (
                   <span className="text-[11px] text-status-danger">{tm(saveError)}</span>
@@ -1088,14 +988,11 @@ export function SceneToVideoDialog({
 
               <div className="flex flex-col gap-1">
                 <span className="text-xs text-text-secondary">
-                  {L("Referansebilder", "Reference images")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.0978d3048bd0")}
                 </span>
                 {(chosen.model.maxElements ?? 0) === 0 ? (
                   <p className="text-[11px] text-text-tertiary">
-                    {L(
-                      "Denne modellen tar ikke referansebilder; figurene og stedet beskrives med tekst.",
-                      "This model does not take reference images; the figures and the place are described in text.",
-                    )}
+                    {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.p.929153b44110")}
                   </p>
                 ) : (
                   <ul className="flex flex-col gap-1">
@@ -1106,10 +1003,7 @@ export function SceneToVideoDialog({
                           checked={useBackground}
                           disabled={working}
                           onChange={(e) => setUseBackground(e.target.checked)}
-                          aria-label={L(
-                            `Send bakgrunnen ${background.name}`,
-                            `Send the background ${background.name}`,
-                          )}
+                          aria-label={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.aria-label.f0c7a944ba7b", { name: String(background.name) })}
                           className="size-3.5 accent-[var(--accent-brand)]"
                         />
                         <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-surface-3">
@@ -1126,8 +1020,8 @@ export function SceneToVideoDialog({
                         </span>
                         <span className="shrink-0 text-[11px] text-text-tertiary">
                           {refs.background
-                            ? L("bakgrunn", "background")
-                            : L("ikke med", "not included")}
+                            ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.8389eec0fe67")
+                            : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.46b2c6a3ca20")}
                         </span>
                       </li>
                     ) : null}
@@ -1148,10 +1042,7 @@ export function SceneToVideoDialog({
                               else next.add(m.assetId);
                               setExcluded(next);
                             }}
-                            aria-label={L(
-                              `Send bildet av ${m.name}`,
-                              `Send the image of ${m.name}`,
-                            )}
+                            aria-label={tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.aria-label.ee82a54bba45", { name: String(m.name) })}
                             className="size-3.5 accent-[var(--accent-brand)]"
                           />
                           <span className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-sm bg-surface-3">
@@ -1164,19 +1055,16 @@ export function SceneToVideoDialog({
                           </span>
                           <span className="shrink-0 text-[11px] text-text-tertiary">
                             {!m.imagePath
-                              ? L(
-                                  "uten godkjent bilde – beskrives med tekst",
-                                  "no approved image – described in text",
-                                )
+                              ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.8fabcf19d388")
                               : off
-                                ? L("ikke med", "not included")
+                                ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.46b2c6a3ca20.2")
                                 : own
-                                  ? L("eget referansebilde", "own reference image")
+                                  ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.a49bc2c6f50f")
                                   : sheet
-                                    ? L("i samlebildet", "in the reference sheet")
+                                    ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.2e3e62c5c1c7")
                                     : ""}
                             {m.imagePath && !m.visualBrief
-                              ? L(" · uten visuelt faktaark", " · no visual fact sheet")
+                              ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.55b3b8e6b883")
                               : ""}
                           </span>
                         </li>
@@ -1186,10 +1074,7 @@ export function SceneToVideoDialog({
                 )}
                 {(chosen.model.maxElements ?? 0) > 0 ? (
                   <span className="text-[11px] text-text-tertiary">
-                    {L(
-                      `Modellen tar imot ${chosen.model.maxElements} referansebilder; ${referenceCount(refs)} sendes.${refs.sheet.length ? ` ${refs.sheet.length} figurer settes sammen i ett samlebilde med navn.` : ""}`,
-                      `The model accepts ${chosen.model.maxElements} reference images; ${referenceCount(refs)} are sent.${refs.sheet.length ? ` ${refs.sheet.length} figures are put together in one reference sheet with names.` : ""}`,
-                    )}
+                    {refs.sheet.length ? tk("app-scene-editor-scene-to-video-dialog.references-sheet", { max: String(chosen.model.maxElements), sent: referenceCount(refs), figures: refs.sheet.length }) : tk("app-scene-editor-scene-to-video-dialog.references", { max: String(chosen.model.maxElements), sent: referenceCount(refs) })}
                   </span>
                 ) : null}
               </div>
@@ -1200,28 +1085,19 @@ export function SceneToVideoDialog({
                 <div className="flex flex-col gap-1 text-xs text-text-secondary">
                   <span>
                     {plan.pieces.length === 1
-                      ? L(
-                          `Scenen sendes i én del (${((plan.pieces[0]!.endMs - plan.pieces[0]!.startMs) / 1000).toFixed(1)} s).`,
-                          `The scene is sent in one part (${((plan.pieces[0]!.endMs - plan.pieces[0]!.startMs) / 1000).toFixed(1)} s).`,
-                        )
-                      : L(
-                          `Scenen sendes i ${plan.pieces.length} like lange deler (anbefalt for modellen), som settes sømløst sammen igjen.`,
-                          `The scene is sent in ${plan.pieces.length} equal parts (recommended for the model), which are put back together seamlessly.`,
-                        )}{" "}
+                      ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.8bec29a12f21", { value1: String(((plan.pieces[0]!.endMs - plan.pieces[0]!.startMs) / 1000).toFixed(1)) })
+                      : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.71fc7c0fdaca", { length: String(plan.pieces.length) })}{" "}
                     {priceText}
                   </span>
                   <details>
                     <summary className="cursor-pointer text-text-tertiary">
-                      {L(
-                        "Se hele beskrivelsen som sendes",
-                        "See the whole description that is sent",
-                      )}
+                      {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.summary.e4e92a1e268c")}
                     </summary>
                     {prompts.map((p, i) => (
                       <div key={i} className="mt-1">
                         {prompts.length > 1 ? (
                           <span className="text-[11px] text-text-tertiary">
-                            {L(`Del ${i + 1}`, `Part ${i + 1}`)}
+                            {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.3b329b9e9b7b", { value1: String(i + 1) })}
                           </span>
                         ) : null}
                         <pre className="max-h-48 overflow-auto whitespace-pre-wrap rounded-sm border border-border bg-surface-1 p-2 font-mono text-[11px] text-text-secondary">
@@ -1246,10 +1122,7 @@ export function SceneToVideoDialog({
             </p>
           ) : phase.kind === "sent" ? (
             <p role="status" className="text-xs text-status-success">
-              {L(
-                `Sendt (${phase.count} ${phase.count === 1 ? "del" : "deler"}). Videoen lages hos leverandøren og legges inn som ny versjon når den er ferdig – følg med i statusen øverst til høyre. Du kan lukke vinduet og jobbe videre.`,
-                `Sent (${phase.count} ${phase.count === 1 ? "part" : "parts"}). The video is made by the provider and added as a new version when it is finished – follow the status at the top right. You can close the window and keep working.`,
-              )}
+              {tk("app-scene-editor-scene-to-video-dialog.sent-parts", { count: phase.count })}
             </p>
           ) : null}
           {error ? (
@@ -1265,33 +1138,27 @@ export function SceneToVideoDialog({
               <span className="mr-auto text-xs text-text-secondary">
                 {cost !== null
                   ? credits !== null
-                    ? L(
-                        `Dette koster ca. ${formatUsd(cost)} (${credits} kreditter) hos ${chosen?.provider.name ?? ""}. Sende?`,
-                        `This costs about ${formatUsd(cost)} (${credits} credits) with ${chosen?.provider.name ?? ""}. Send?`,
-                      )
-                    : L(
-                        `Dette koster ca. ${formatUsd(cost)} hos ${chosen?.provider.name ?? ""}. Sende?`,
-                        `This costs about ${formatUsd(cost)} with ${chosen?.provider.name ?? ""}. Send?`,
-                      )
-                  : L("Prisen er ukjent. Sende likevel?", "The price is unknown. Send anyway?")}
+                    ? tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.e5a4ab2bf41f", { value1: String(formatUsd(cost)), credits: String(credits), value3: String(chosen?.provider.name ?? "") })
+                    : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.37ea703a8c20", { value1: String(formatUsd(cost)), value2: String(chosen?.provider.name ?? "") })
+                  : tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.span.144ec15ec11c")}
               </span>
               <Button variant="ghost" onClick={() => setPhase({ kind: "idle" })}>
-                {L("Avbryt", "Cancel")}
+                {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.1f81b5dfb1f2")}
               </Button>
               <Button onClick={() => void send()}>
                 <AiGlyph />
-                {L("Ja, lag videoen", "Yes, make the video")}
+                {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.66d62ba26b37")}
               </Button>
             </>
           ) : (
             <>
               <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={working}>
-                {L("Lukk", "Close")}
+                {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.cf325d03a3ed")}
               </Button>
               {editable && chosen && plan?.ok && chosenSource ? (
                 <Button onClick={() => setPhase({ kind: "confirm" })} disabled={working}>
                   <AiGlyph />
-                  {L("Lag AI-video …", "Make AI video …")}
+                  {tk("app-scene-editor-scene-to-video-dialog.scene-to-video-dialog.button.7588e3e82429")}
                 </Button>
               ) : null}
             </>

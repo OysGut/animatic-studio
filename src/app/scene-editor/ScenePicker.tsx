@@ -12,17 +12,11 @@ import {
   Search,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import {
-  L,
-  collation,
-  contentSyncText,
-  formatHeading,
-  sceneNumberOf,
-  type ProjectState,
-  type SceneContentSync,
-  type SceneOccurrence,
-} from "@/core";
+import { collation, contentSyncText, formatHeading, sceneNumberOf, type ProjectState, type SceneContentSync, type SceneOccurrence } from "@/core";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { t } from "@/core/i18n/keyed";
+import type { SceneLastChange } from "@/adapters/browser/last-changed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 export function ScenePicker({
   state,
@@ -31,7 +25,10 @@ export function ScenePicker({
   hasComposition,
   onPick,
   synced,
+  lastChanged,
 }: {
+  /** B-097: siste lagrede endring per scene (scene-ID). Uten verdi vises ikke kolonnen. */
+  lastChanged?: ReadonlyMap<string, SceneLastChange> | null | undefined;
   /** Scener laget med en eldre ressursversjon (flagget «Ressurs oppdatert», REQ-0022). */
   synced?: ReadonlyMap<string, SceneContentSync>;
   state: ProjectState;
@@ -46,6 +43,7 @@ export function ScenePicker({
   const listRef = useRef<HTMLUListElement | null>(null);
   const listId = useId();
   const optionId = (id: string) => `${listId}-${id}`;
+  const time = useTimeFormat();
 
   const rows = useMemo(
     () =>
@@ -96,8 +94,8 @@ export function ScenePicker({
         className="rounded-sm p-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         onClick={() => rows[index - 1] && onPick(rows[index - 1]!.o.id)}
         disabled={index <= 0}
-        aria-label={L("Forrige scene", "Previous scene")}
-        title={L("Forrige scene", "Previous scene")}
+        aria-label={t("app-scene-editor-scene-picker.scene-picker.aria-label.5e04b407a9d7")}
+        title={t("app-scene-editor-scene-picker.scene-picker.title.5e04b407a9d7")}
       >
         <ChevronLeft className="size-4" aria-hidden />
       </button>
@@ -116,16 +114,11 @@ export function ScenePicker({
             className="flex h-7 min-w-[160px] max-w-[220px] flex-1 items-center gap-2 truncate rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary hover:bg-surface-2"
             aria-label={
               current
-                ? L(
-                    `Velg scene. Valgt: ${current.number} ${current.heading}`,
-                    `Choose scene. Selected: ${current.number} ${current.heading}`,
-                  )
-                : L("Velg scene", "Choose scene")
+                ? t("app-scene-editor-scene-picker.scene-picker.aria-label.f414f98573da", { number: String(current.number), heading: String(current.heading) })
+                : t("app-scene-editor-scene-picker.scene-picker.aria-label.b9b4cafeca5e")
             }
-            title={L(
-              "Velg scene (søk på nummer, sted eller tid)",
-              "Choose scene (search by number, location or time)",
-            )}
+            title={t("app-scene-editor-scene-picker.scene-picker.title.9be390561ab3")}
+            data-testid="scene-picker-trigger"
             disabled={rows.length === 0}
           >
             <span className="font-mono text-[11px] text-text-tertiary">
@@ -134,12 +127,12 @@ export function ScenePicker({
             <span className="min-w-0 truncate">
               {current?.heading ??
                 (rows.length === 0
-                  ? L("Ingen scener", "No scenes")
-                  : L("Velg en scene", "Choose a scene"))}
+                  ? t("app-scene-editor-scene-picker.scene-picker.span.068fd0d667cb")
+                  : t("app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1"))}
             </span>
             {current && !current.o.active ? (
               <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-chrome-label uppercase text-text-tertiary">
-                {L("Deaktivert", "Inactive")}
+                {t("app-scene-editor-scene-picker.scene-picker.span.a2f3918e8931")}
               </span>
             ) : null}
             <ChevronDown className="size-3.5 shrink-0 text-text-tertiary" aria-hidden />
@@ -147,7 +140,7 @@ export function ScenePicker({
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-[440px] border-border bg-surface-2 p-0"
+          className={(lastChanged ? "w-[540px]" : "w-[440px]") + " border-border bg-surface-2 p-0"}
           onOpenAutoFocus={(e) => {
             e.preventDefault();
             (e.currentTarget as HTMLElement).querySelector("input")?.focus();
@@ -174,11 +167,8 @@ export function ScenePicker({
                   if (r) pick(r.o.id);
                 }
               }}
-              placeholder={L(
-                "Søk på nummer, sted eller tid …",
-                "Search by number, location or time …",
-              )}
-              aria-label={L("Søk etter scene", "Search for scene")}
+              placeholder={t("app-scene-editor-scene-picker.scene-picker.placeholder.192fc4855574")}
+              aria-label={t("app-scene-editor-scene-picker.scene-picker.aria-label.34b0681cbe89")}
               role="combobox"
               aria-expanded
               aria-controls={listId}
@@ -187,14 +177,19 @@ export function ScenePicker({
               className="h-9 min-w-0 flex-1 bg-transparent text-[13px] text-text-primary outline-none placeholder:text-text-tertiary"
             />
             <span className="text-[11px] text-text-tertiary">
-              {shown.length} {L("av", "of")} {rows.length}
+              {shown.length} {t("app-scene-editor-scene-picker.scene-picker.span.8b381a607b6e")} {rows.length}
             </span>
           </div>
+          {lastChanged ? (
+            <div className="flex justify-end border-b border-border px-3 py-1 text-chrome-label uppercase text-text-tertiary" aria-hidden>
+              <span className="w-[104px] text-right">{t("b097.last-changed.column")}</span>
+            </div>
+          ) : null}
           <ul
             ref={listRef}
             id={listId}
             role="listbox"
-            aria-label={L("Scener", "Scenes")}
+            aria-label={t("app-scene-editor-scene-picker.scene-picker.aria-label.644d8fc84d9f")}
             className="max-h-[60vh] overflow-y-auto py-1"
           >
             {shown.map((r, i) => {
@@ -219,7 +214,7 @@ export function ScenePicker({
                   <span className="min-w-0 flex-1 truncate">
                     {r.heading}
                     {r.o.active ? null : (
-                      <span className="sr-only"> {L("(deaktivert)", "(inactive)")}</span>
+                      <span className="sr-only"> {t("app-scene-editor-scene-picker.scene-picker.span.e53812e40fcb")}</span>
                     )}
                   </span>
                   {synced?.has(r.o.id) ? (
@@ -228,17 +223,20 @@ export function ScenePicker({
                       title={contentSyncText(state, synced.get(r.o.id)!)}
                     >
                       <ListChecks className="size-3" aria-hidden />
-                      {L("Ressurs oppdatert", "Asset updated")}
+                      {t("app-scene-editor-scene-picker.scene-picker.span.27575113949a")}
                     </span>
                   ) : null}
                   {r.has ? (
                     <Layers
                       className="size-3 shrink-0 text-accent-brand"
-                      aria-label={L("Har 2D-scene", "Has 2D scene")}
+                      aria-label={t("app-scene-editor-scene-picker.scene-picker.aria-label.c429f0f2cff7")}
                     />
                   ) : null}
                   {on ? (
                     <Check className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
+                  ) : null}
+                  {lastChanged ? (
+                    <LastChangedCell change={lastChanged.get(r.o.sceneId)} time={time} />
                   ) : null}
                 </li>
               );
@@ -246,7 +244,7 @@ export function ScenePicker({
           </ul>
           {shown.length === 0 ? (
             <p role="status" className="px-3 py-2 text-xs text-text-tertiary">
-              {L("Ingen scener passer.", "No scenes match.")}
+              {t("app-scene-editor-scene-picker.scene-picker.p.480303437aa6")}
             </p>
           ) : null}
         </PopoverContent>
@@ -256,11 +254,33 @@ export function ScenePicker({
         className="rounded-sm p-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary disabled:opacity-40"
         onClick={() => rows[index + 1] && onPick(rows[index + 1]!.o.id)}
         disabled={index < 0 || index >= rows.length - 1}
-        aria-label={L("Neste scene", "Next scene")}
-        title={L("Neste scene", "Next scene")}
+        aria-label={t("app-scene-editor-scene-picker.scene-picker.aria-label.131d85cf515d")}
+        title={t("app-scene-editor-scene-picker.scene-picker.title.131d85cf515d")}
       >
         <ChevronRight className="size-4" aria-hidden />
       </button>
     </div>
+  );
+}
+
+/** B-097: «Sist endret» helt til høyre, med nøyaktig tidspunkt og hvem i verktøytipset. */
+function LastChangedCell({ change, time }: { change: SceneLastChange | undefined; time: ReturnType<typeof useTimeFormat> }) {
+  if (!change) return <span className="w-[104px] shrink-0" data-testid="scene-last-changed" />;
+  const exact = time.exact(change.at);
+  const title = change.logged
+    ? change.actorName
+      ? t("b097.last-changed.tip-by", { time: exact, name: change.actorName })
+      : t("b097.last-changed.tip", { time: exact })
+    : t("b097.last-changed.tip-created", { time: exact });
+  return (
+    <span
+      className="w-[104px] shrink-0 truncate text-right text-[11px] tabular-nums text-text-tertiary"
+      title={title}
+      aria-label={t("b097.last-changed.aria", { when: time.relative(change.at), tip: title })}
+      data-testid="scene-last-changed"
+      data-at={change.at}
+    >
+      {time.relative(change.at)}
+    </span>
   );
 }

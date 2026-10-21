@@ -3,15 +3,10 @@
  * Brukes av sceneeditoren og avspillingen; eksporten bruker samme funksjon på et OffscreenCanvas.
  * Bare på klienten (nettleser-API-er).
  */
-import {
-  L,
-  matrixScale,
-  multiply,
-  registerTextMeasurer,
-  type DrawItem,
-  type Frame,
-  type Matrix,
-} from "@/core";
+import { matrixScale, multiply, registerTextMeasurer, type DrawItem, type Frame, type Matrix } from "@/core";
+import { DEFAULT_ADJUSTMENTS } from "@/core/animation/parts";
+import { renderRigPart } from "./rig-parts";
+import { t as tk } from "@/core/i18n/keyed";
 
 /**
  * Tekstmåling for tekstlag (MTS §60–61): samme Canvas-måling i editoren, avspillingen og eksporten, så
@@ -50,12 +45,21 @@ if (typeof window !== "undefined") registerTextMeasurer((f, t) => canvasMeasureT
 export type ImageSource = CanvasImageSource & { readonly width: number; readonly height: number };
 
 export interface DrawOptions {
+  /** P4: omit only the background paint; all selected items use the usual compositor. */
+  readonly background?: "transparent";
+  readonly layerIds?: ReadonlySet<string>;
+  readonly effects?: boolean;
   /** Ekstra transformasjon fra scenekoordinater til lerretet (zoom og panorering i editoren). */
   readonly view?: Matrix;
   /** Bildene som er lastet, per mediesti (AssetVersion.mediaPath). */
   readonly images: ReadonlyMap<string, ImageSource>;
   /** Tegn en dempet ramme og navnet for bilder som ikke er lastet ennå. Standard: ja. */
   readonly placeholders?: boolean;
+  /**
+   * CA8: karakterlag med eksportvalget «eget lag». «all» (standard, forhåndsvisningen) tegner alt;
+   * «main» utelater dem fra hovedbildet; «separate» tegner bare dem (eget lag i eksporten).
+   */
+  readonly characterPass?: "all" | "main" | "separate";
 }
 
 /** Tegner hele bildet: bakgrunnsfarge innenfor formatet og lagene bakerst først. */
@@ -63,14 +67,27 @@ export function drawFrame(ctx: CanvasRenderingContext2D, frame: Frame, opts: Dra
   const v = opts.view ?? [1, 0, 0, 1, 0, 0];
   ctx.save();
   ctx.setTransform(v[0], v[1], v[2], v[3], v[4], v[5]);
-  ctx.fillStyle = frame.background;
-  ctx.fillRect(0, 0, frame.width, frame.height);
-  for (const it of frame.items) drawItem(ctx, it, v, opts);
+  if (opts.background !== "transparent") {
+    ctx.fillStyle = frame.background;
+    ctx.fillRect(0, 0, frame.width, frame.height);
+  }
+  for (const it of frame.items) {
+    // CA emits derived rig items with the permanent host ID as prefix.
+    if (opts.layerIds && !opts.layerIds.has(it.layerId) &&
+      ![...opts.layerIds].some(id => it.layerId.startsWith(`${id}:rig:`))) continue;
+    if (opts.effects === false) {
+      const { effects: _effects, ...plain } = it;
+      drawItem(ctx, plain, v, opts);
+    } else drawItem(ctx, it, v, opts);
+  }
   ctx.restore();
 }
 
 function drawItem(ctx: CanvasRenderingContext2D, it: DrawItem, v: Matrix, opts: DrawOptions) {
   if (it.opacity <= 0 || it.kind === "group") return;
+  const pass = opts.characterPass ?? "all";
+  const separate = it.character?.separate === true;
+  if ((pass === "main" && separate) || (pass === "separate" && !separate)) return;
   // Maske (REQ-0175): laget tegnes på et hjelpelerret, maskeres der og legges så på bildet
   if (it.mask) {
     const off = maskedItem(ctx, it, v, opts);
@@ -112,13 +129,35 @@ function paintItem(ctx: Ctx2D, it: DrawItem, v: Matrix, opts: DrawOptions, place
     paintFill(ctx, it, x, y);
   } else {
     const img = it.version ? opts.images.get(it.version.mediaPath) : undefined;
-    if (img) ctx.drawImage(img, x, y, it.width, it.height);
+    if (img && it.character) paintCharacterPart(ctx, it, img, x, y);
+    else if (img) ctx.drawImage(img, x, y, it.width, it.height);
     else {
       // Uten bilde ennå: ressursens symbol (fylt form i egen farge, DEC-0079) – også i animaticen
       if (it.symbol) drawSymbol(ctx, it, x, y);
       if (placeholders) drawPlaceholder(ctx as CanvasRenderingContext2D, it, x, y);
     }
   }
+}
+
+/** CA8: rigg-delen med justeringer og masker som eksportvalgene tar med (samme i visning og eksport). */
+const partCache = new WeakMap<object, WeakMap<object, CanvasImageSource>>();
+function paintCharacterPart(ctx: Ctx2D, it: DrawItem, img: ImageSource, x: number, y: number) {
+  const c = it.character!;
+  let src: CanvasImageSource = img as CanvasImageSource;
+  if (c.part && typeof document !== "undefined") {
+    let byImg = partCache.get(c.part);
+    if (!byImg) partCache.set(c.part, (byImg = new WeakMap()));
+    let cached = byImg.get(img as object);
+    if (!cached) {
+      cached = renderRigPart({ ...c.part, adjustments: { ...DEFAULT_ADJUSTMENTS } }, img as CanvasImageSource, Math.max(1, img.width), Math.max(1, img.height)) as CanvasImageSource;
+      byImg.set(img as object, cached);
+    }
+    src = cached;
+  }
+  const a = c.adjustments;
+  if (a) ctx.filter = `brightness(${a.brightness}) contrast(${a.contrast}) saturate(${a.saturation}) hue-rotate(${a.hue}deg)`;
+  ctx.drawImage(src, x, y, it.width, it.height);
+  if (a) ctx.filter = "none";
 }
 
 /**
@@ -266,7 +305,7 @@ function drawPlaceholder(ctx: CanvasRenderingContext2D, it: DrawItem, x: number,
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(
-    it.version ? it.name : `${it.name}${L(" (uten bilde)", " (no image)")}`,
+    it.version ? it.name : `${it.name}${tk("engine-compositor-canvas.draw-placeholder.ctx-fill-text.15b1faeec76c")}`,
     0,
     0,
     it.width * 0.9,

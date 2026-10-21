@@ -4,22 +4,14 @@
  * (REQ-0239/0240), med overganger mellom scenene. Brukes av monteringen og av eksporten, så det som
  * spilles av er det samme som eksporteres. Bare på klienten.
  */
-import {
-  formatHeading,
-  frameMix,
-  L,
-  partBlendAt,
-  renderFrame,
-  sourceAt,
-  type ClipFrame,
-  type FilmClip,
-  type ProjectState,
-  type SourceFrame,
-  type Take,
-} from "@/core";
+import { formatHeading, frameMix, partBlendAt, renderFrame, sourceAt, type ClipFrame, type FilmClip, type ProjectState, type SourceFrame, type Take } from "@/core";
 import { drawFrame, type ImageSource } from "./canvas";
+import { t } from "@/core/i18n/keyed";
 
 export interface FilmDrawOptions {
+  readonly background?: "transparent";
+  readonly layerIds?: ReadonlySet<string>;
+  readonly effects?: boolean;
   /** Lerretets størrelse i piksler. */
   readonly width: number;
   readonly height: number;
@@ -35,6 +27,8 @@ export interface FilmDrawOptions {
   readonly monochrome?: boolean;
   /** Undertekst som vises i bildet (DEC-0059, REQ-0352), eller null. */
   readonly subtitle?: string | null;
+  /** CA8: karakterlag som eksporteres som eget lag (se DrawOptions.characterPass). */
+  readonly characterPass?: "all" | "main" | "separate";
 }
 
 type Canvas2D = CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D;
@@ -72,7 +66,17 @@ function fill(ctx: Canvas2D, color: string, alpha: number, w: number, h: number)
 }
 
 /** Gjør det som er tegnet, svart-hvitt (fargemetning 0, lysstyrken beholdes). */
-export function desaturate(ctx: Canvas2D, w: number, h: number): void {
+export function desaturate(ctx: Canvas2D, w: number, h: number, preserveAlpha = false): void {
+  if (preserveAlpha) {
+    const image = ctx.getImageData(0, 0, w, h);
+    for (let i = 0; i < image.data.length; i += 4) {
+      const r = image.data[i] ?? 0, g = image.data[i + 1] ?? 0, b = image.data[i + 2] ?? 0;
+      const l = Math.round(.3 * r + .59 * g + .11 * b);
+      image.data[i] = l; image.data[i + 1] = l; image.data[i + 2] = l;
+    }
+    ctx.putImageData(image, 0, 0);
+    return;
+  }
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.globalAlpha = 1;
@@ -92,9 +96,10 @@ function clipLayer(
   const c = scratchCanvas(i, o.width, o.height);
   const cx = c.getContext("2d") as CanvasRenderingContext2D | null;
   if (!cx) return null;
-  fill(cx, "#000", 1, o.width, o.height);
+  if (o.background === "transparent") cx.clearRect(0, 0, o.width, o.height);
+  else fill(cx, "#000", 1, o.width, o.height);
   drawClipFrame(cx, state, at, o, i);
-  if (at.clip.monochrome) desaturate(cx, o.width, o.height);
+  if (at.clip.monochrome) desaturate(cx, o.width, o.height, o.background === "transparent");
   return c;
 }
 
@@ -141,12 +146,17 @@ export function drawFilmFrame(
 ): FilmClip | null {
   const W = o.width;
   const H = o.height;
-  fill(ctx, "#000", 1, W, H);
+  if (o.background === "transparent") {
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, W, H);
+    ctx.restore();
+  } else fill(ctx, "#000", 1, W, H);
   const m = frameMix(clips, frame);
   if (!m) return null;
   if (!m.b) {
     drawClipFrame(ctx, state, m.a, o);
-    if (m.a.clip.monochrome) desaturate(ctx, W, H);
+    if (m.a.clip.monochrome) desaturate(ctx, W, H, o.background === "transparent");
   } else {
     const A = clipLayer(0, state, m.a, o);
     const B = clipLayer(1, state, m.b, o);
@@ -175,7 +185,7 @@ export function drawFilmFrame(
   }
   if (m.black > 0) fill(ctx, "#000", Math.min(1, m.black), W, H);
   if (m.white > 0) fill(ctx, "#fff", Math.min(1, m.white), W, H);
-  if (o.monochrome) desaturate(ctx, W, H);
+  if (o.monochrome) desaturate(ctx, W, H, o.background === "transparent");
   if (o.subtitle) drawSubtitle(ctx, o.subtitle, W, H);
   return m.b && m.mix >= 0.5 ? m.b.clip : m.a.clip;
 }
@@ -236,7 +246,7 @@ function drawSource(
         at.clip,
         o.width,
         o.height,
-        src.take.media?.fileName ?? L("Ferdig film", "Finished film"),
+        src.take.media?.fileName ?? t("engine-compositor-film.draw-source.draw-title-card.ddbf843041c0"),
       );
     }
     return;
@@ -255,7 +265,11 @@ function drawSource(
     drawFrame(ctx, out, {
       view: [k, 0, 0, k, ox, oy],
       images: o.images,
+      ...(o.background ? { background: o.background } : {}),
+      ...(o.layerIds ? { layerIds: o.layerIds } : {}),
+      ...(o.effects !== undefined ? { effects: o.effects } : {}),
       placeholders: o.placeholders ?? false,
+      ...(o.characterPass ? { characterPass: o.characterPass } : {}),
     });
     ctx.restore();
   } else {
@@ -269,7 +283,7 @@ export function drawTitleCard(
   clip: FilmClip,
   width: number,
   height: number,
-  note = L("Ingen 2D-scene ennå", "No 2D scene yet"),
+  note = t("engine-compositor-film.draw-title-card.message.b687cba6a4c5"),
 ): void {
   ctx.save();
   ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -288,7 +302,7 @@ export function drawTitleCard(
   ctx.fillStyle = "rgba(255,255,255,0.92)";
   ctx.font = `600 ${Math.round(6.4 * u)}px "Courier Prime", "Courier New", monospace`;
   ctx.fillText(
-    formatHeading(clip.heading) || L("Uten overskrift", "Without heading"),
+    formatHeading(clip.heading) || t("engine-compositor-film.draw-title-card.ctx-fill-text.2500c7899415"),
     width / 2,
     height / 2,
     width * 0.9,

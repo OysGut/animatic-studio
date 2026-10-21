@@ -6,7 +6,8 @@
  */
 import { Zip, ZipPassThrough } from "fflate";
 import type { ZipEntry } from "@/core";
-import { L } from "@/core";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface ZipSink {
   write(chunk: Uint8Array): Promise<void>;
@@ -48,6 +49,10 @@ export async function openZipSink(fileName: string): Promise<ZipSink | null> {
       if ((e as DOMException).name === "AbortError") return null;
       // Ellers: last ned på vanlig måte
     }
+  }
+  if (typeof navigator.storage?.getDirectory === "function") {
+    const { openAlphaSink } = await import("./alpha");
+    return openAlphaSink(fileName, "application/zip");
   }
   const parts: Uint8Array[] = [];
   let link: { url: string; name: string } | null = null;
@@ -98,7 +103,7 @@ export async function writeZip(
     onProgress?: (p: ZipProgress) => void;
     signal?: AbortSignal;
     /** Filer laget i minnet (f.eks. sikkerhetskopiens data), skrives først. */
-    extra?: readonly { readonly path: string; readonly data: Uint8Array }[];
+    extra?: readonly { readonly path: string; readonly data: Uint8Array }[] | AsyncIterable<{ readonly path: string; readonly data: Uint8Array }>;
   } = {},
 ): Promise<{ missing: string[] }> {
   let chain = Promise.resolve();
@@ -113,10 +118,7 @@ export async function writeZip(
     written += data.byteLength;
     if (written > 4_200_000_000) {
       failure = new Error(
-        L(
-          "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
-          "The zip file grew larger than 4 GB. Include fewer files and try again.",
-        ),
+        tk("engine-export-zip.zip.message.d8988ee64a25"),
       );
       return;
     }
@@ -127,7 +129,8 @@ export async function writeZip(
   let bytes = 0;
   const missing: string[] = [];
   try {
-    for (const x of o.extra ?? []) {
+    for await (const x of o.extra ?? []) {
+      if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc"), "AbortError");
       const f = new ZipPassThrough(x.path);
       zip.add(f);
       f.push(x.data, true);
@@ -135,8 +138,9 @@ export async function writeZip(
       if (failure) throw failure;
     }
     for (let i = 0; i < entries.length; i++) {
-      if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
-      const e = entries[i]!;
+      if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc.2"), "AbortError");
+      const e = entries[i];
+      if (!e) continue;
       const url = urls[e.mediaPath];
       const res = url ? await fetch(url, { signal: o.signal ?? null }).catch(() => null) : null;
       if (!res?.ok || !res.body) {
@@ -166,14 +170,12 @@ export async function writeZip(
       zip.add(note);
       note.push(
         new TextEncoder().encode(
-          L(
-            `Disse filene kunne ikke hentes da zip-filen ble laget:\n\n${missing.join("\n")}\n`,
-            `These files could not be fetched when the zip file was made:\n\n${missing.join("\n")}\n`,
-          ),
+          tk("engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a", { value1: String(missing.join("\n")) }),
         ),
         true,
       );
     }
+    if (o.signal?.aborted) throw new DOMException(tk("engine-export-zip.write-zip.message.080bb98d06cc.3"), "AbortError");
     zip.end();
     await chain;
     if (failure) throw failure;

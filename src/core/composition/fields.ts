@@ -1,3 +1,4 @@
+import { isScriptLanguageTag } from "../translation/language-tags";
 /**
  * Felter og grenser for 2D-scener og lag (M3 del 2, mandat kap. 11). Ren logikk uten avhengigheter.
  * `normalize…` returnerer normaliserte felter eller en norsk feilmelding.
@@ -20,13 +21,14 @@ import type {
   TransformProperty,
 } from "../model";
 import type { CompositionFields, LayerFields } from "../commands/types";
-import { L, localized } from "../i18n";
+
 import {
   normalizeEffects,
   normalizeShape,
   normalizeTemplateRef,
   normalizeTextSpec,
 } from "../typography/validate";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export const LAYER_KINDS: readonly LayerKind[] = [
   "background",
@@ -41,18 +43,7 @@ export const LAYER_KINDS: readonly LayerKind[] = [
   "page",
 ];
 
-export const LAYER_KIND_LABEL: Record<LayerKind, string> = localized({
-  background: ["Bakgrunn", "Background"],
-  midground: ["Mellomgrunn", "Midground"],
-  foreground: ["Forgrunn", "Foreground"],
-  character: ["Karakter", "Character"],
-  object: ["Objekt", "Object"],
-  effect: ["Effekt", "Effect"],
-  other: ["Annet", "Other"],
-  group: ["Gruppe", "Group"],
-  text: ["Tekst", "Text"],
-  page: ["Side", "Page"],
-});
+export const LAYER_KIND_LABEL: Record<LayerKind, string> = tLocalized({ background: "core-composition-fields.layer-kind-label.background.6e4860fc7e26", midground: "core-composition-fields.layer-kind-label.midground.31b050e96f64", foreground: "core-composition-fields.layer-kind-label.foreground.6f7287418771", character: "core-composition-fields.layer-kind-label.character.4ad6ccb07769", object: "core-composition-fields.layer-kind-label.object.0cc9d5535e35", effect: "core-composition-fields.layer-kind-label.effect.e9a75c00a85f", other: "core-composition-fields.layer-kind-label.other.03f5066b9af7", group: "core-composition-fields.layer-kind-label.group.0cdb01acb892", text: "core-composition-fields.layer-kind-label.text.07732bbe6214", page: "core-composition-fields.layer-kind-label.page.1fb83e5a1234" });
 
 /** Standard parallakse per lagtype: bakgrunnen beveger seg minst, forgrunnen mest. */
 export const DEFAULT_PARALLAX: Record<LayerKind, number> = {
@@ -111,7 +102,7 @@ export const COMPOSITION_FORMATS = [
   { label: "4K 16:9 (3840 × 2160)", width: 3840, height: 2160 },
   {
     get label() {
-      return L("Kino 1.85:1 (1998 × 1080)", "Cinema 1.85:1 (1998 × 1080)");
+      return tk("core-composition-fields.composition-formats.message.a1a6c0f641b2");
     },
     width: 1998,
     height: 1080,
@@ -119,14 +110,14 @@ export const COMPOSITION_FORMATS = [
   { label: "Scope 2.39:1 (2048 × 858)", width: 2048, height: 858 },
   {
     get label() {
-      return L("Kvadrat 1:1 (1080 × 1080)", "Square 1:1 (1080 × 1080)");
+      return tk("core-composition-fields.composition-formats.message.1f180268ab0d");
     },
     width: 1080,
     height: 1080,
   },
   {
     get label() {
-      return L("Stående 9:16 (1080 × 1920)", "Portrait 9:16 (1080 × 1920)");
+      return tk("core-composition-fields.composition-formats.message.bb75e0995a61");
     },
     width: 1080,
     height: 1920,
@@ -178,43 +169,31 @@ export function normalizeCompositionFields(f: CompositionFields): Result<Composi
   if (!Number.isInteger(f.width) || f.width < MIN_SIZE || f.width > MAX_SIZE)
     return {
       ok: false,
-      error: L(
-        `Bredden må være et helt tall mellom ${MIN_SIZE} og ${MAX_SIZE}`,
-        `Width must be a whole number between ${MIN_SIZE} and ${MAX_SIZE}`,
-      ),
+      error: tk("core-composition-fields.error.error.2527917261cf", { MIN_SIZE: String(MIN_SIZE), MAX_SIZE: String(MAX_SIZE) }),
     };
   if (!Number.isInteger(f.height) || f.height < MIN_SIZE || f.height > MAX_SIZE)
     return {
       ok: false,
-      error: L(
-        `Høyden må være et helt tall mellom ${MIN_SIZE} og ${MAX_SIZE}`,
-        `Height must be a whole number between ${MIN_SIZE} and ${MAX_SIZE}`,
-      ),
+      error: tk("core-composition-fields.error.error.31898a13dfeb", { MIN_SIZE: String(MIN_SIZE), MAX_SIZE: String(MAX_SIZE) }),
     };
   if (!Number.isInteger(f.durationFrames) || f.durationFrames < 0 || f.durationFrames > 10_000_000)
-    return { ok: false, error: L("Ugyldig varighet", "Invalid duration") };
+    return { ok: false, error: tk("core-composition-fields.error.error.b38d50fa79ba") };
   const background = normalizeColor(f.background);
   if (!background)
     return {
       ok: false,
-      error: L(
-        "Bakgrunnsfargen må være på formen #rrggbb",
-        "The background colour must be in the form #rrggbb",
-      ),
+      error: tk("core-composition-fields.error.error.2f3f356fc3d3"),
     };
   const name = f.name.trim();
   if (name.length > 200)
     return {
       ok: false,
-      error: L(
-        "Navnet er for langt (maks 200 tegn)",
-        "The name is too long (maximum 200 characters)",
-      ),
+      error: tk("core-composition-fields.error.error.a1b730d3c93c"),
     };
   if (!validText(name))
     return {
       ok: false,
-      error: L("Navnet inneholder ugyldige tegn", "The name contains invalid characters"),
+      error: tk("core-composition-fields.error.error.bd227ec51d4c"),
     };
   return { ok: true, value: { ...f, name, background } };
 }
@@ -222,17 +201,14 @@ export function normalizeCompositionFields(f: CompositionFields): Result<Composi
 export function normalizeTransform(t: LayerTransform): Result<LayerTransform> {
   for (const k of ["x", "y", "scaleX", "scaleY", "rotation", "opacity"] as const)
     if (!finite(t[k]))
-      return { ok: false, error: L(`Ugyldig verdi for ${k}`, `Invalid value for ${k}`) };
+      return { ok: false, error: tk("core-composition-fields.error.error.848ae0f42a0a", { k: String(k) }) };
   if (Math.abs(t.x) > MAX_COORD || Math.abs(t.y) > MAX_COORD)
     return {
       ok: false,
-      error: L(
-        "Posisjonen er for langt utenfor scenen",
-        "The position is too far outside the scene",
-      ),
+      error: tk("core-composition-fields.error.error.12e4b2ec92df"),
     };
   if (Math.abs(t.scaleX) > MAX_SCALE || Math.abs(t.scaleY) > MAX_SCALE)
-    return { ok: false, error: L("Skaleringen er for stor", "The scale is too large") };
+    return { ok: false, error: tk("core-composition-fields.error.error.b1b26c07c31e") };
   return {
     ok: true,
     value: {
@@ -248,37 +224,31 @@ export function normalizeTransform(t: LayerTransform): Result<LayerTransform> {
 
 export function normalizeKeyframes(list: readonly Keyframe[]): Result<readonly Keyframe[]> {
   if (list.length > MAX_KEYFRAMES)
-    return { ok: false, error: L("For mange nøkkelbilder", "Too many keyframes") };
+    return { ok: false, error: tk("core-composition-fields.error.error.c2526fec210e") };
   const seen = new Set<string>();
   for (const k of list) {
     if (!Number.isInteger(k.frame) || k.frame < 0)
-      return { ok: false, error: L("Ugyldig nøkkelbilde", "Invalid keyframe") };
+      return { ok: false, error: tk("core-composition-fields.error.error.ce5ce821788e") };
     if (!KEYFRAME_PROPERTIES.includes(k.property))
       return {
         ok: false,
-        error: L("Ugyldig egenskap i nøkkelbilde", "Invalid property in keyframe"),
+        error: tk("core-composition-fields.error.error.fd4ce020fb64"),
       };
     if (!finite(k.value))
-      return { ok: false, error: L("Ugyldig verdi i nøkkelbilde", "Invalid value in keyframe") };
+      return { ok: false, error: tk("core-composition-fields.error.error.d55dfbdc25cb") };
     if (!EASINGS.includes(k.easing))
-      return { ok: false, error: L("Ugyldig hastighetskurve", "Invalid easing curve") };
+      return { ok: false, error: tk("core-composition-fields.error.error.27338a882356") };
     for (const v of [k.easeOut, k.easeIn])
       if (v !== undefined && (!finite(v) || v < 0 || v > 1))
         return {
           ok: false,
-          error: L(
-            "Styrken på ease må være mellom 0 og 100 %",
-            "The ease strength must be between 0 and 100 %",
-          ),
+          error: tk("core-composition-fields.error.error.6c622f15f0e0"),
         };
     const key = `${k.property}@${k.frame}`;
     if (seen.has(key))
       return {
         ok: false,
-        error: L(
-          "To nøkkelbilder på samme bilde og egenskap",
-          "Two keyframes on the same frame and property",
-        ),
+        error: tk("core-composition-fields.error.error.019feb331500"),
       };
     seen.add(key);
   }
@@ -302,33 +272,33 @@ const MAX_TEMPO_POINTS = 20;
 /** Bildeskifter: hele bilder fra 1, ett per bilde, sortert (DEC-0052). */
 export function normalizeSwaps(list: readonly ImageSwap[]): Result<readonly ImageSwap[]> {
   if (!Array.isArray(list))
-    return { ok: false, error: L("Ugyldige bildeskifter", "Invalid image swaps") };
+    return { ok: false, error: tk("core-composition-fields.error.error.67039a07f370") };
   if (list.length > MAX_SWAPS)
-    return { ok: false, error: L("For mange bildeskifter", "Too many image swaps") };
+    return { ok: false, error: tk("core-composition-fields.error.error.2490286dbee7") };
   const frames = new Set<number>();
   const out: ImageSwap[] = [];
   for (const w of list) {
     if (!w || !Number.isInteger(w.frame) || w.frame < 1)
-      return { ok: false, error: L("Ugyldig bildeskifte", "Invalid image swap") };
+      return { ok: false, error: tk("core-composition-fields.error.error.85332dbf18d8") };
     if (frames.has(w.frame))
       return {
         ok: false,
-        error: L("To bildeskifter på samme bilde", "Two image swaps on the same frame"),
+        error: tk("core-composition-fields.error.error.b9edd0bc2283"),
       };
     frames.add(w.frame);
     if (typeof w.assetId !== "string" || !w.assetId)
       return {
         ok: false,
-        error: L("Bildeskiftet mangler bilde", "The image swap is missing an image"),
+        error: tk("core-composition-fields.error.error.34d1e0ea261f"),
       };
     if (w.versionId !== null && w.assetVariantId === null)
-      return { ok: false, error: L("Versjon uten variant", "Version without a variant") };
+      return { ok: false, error: tk("core-composition-fields.error.error.9e78d5e817ab") };
     const tr = w.transition;
     if (tr !== undefined && tr !== null) {
       if (tr.kind !== "crossfade" || !Number.isInteger(tr.frames) || tr.frames < 1 || tr.frames > 10_000)
         return {
           ok: false,
-          error: L("Ugyldig overgang i bildeskiftet", "Invalid transition in the image swap"),
+          error: tk("core-composition-fields.error.error.96e56cd7a8f9"),
         };
     }
     out.push({
@@ -347,10 +317,7 @@ export function normalizeSwaps(list: readonly ImageSwap[]): Result<readonly Imag
     if (w.transition && w.transition.frames > gap)
       return {
         ok: false,
-        error: L(
-          "Krysstoningen er lengre enn bildet før",
-          "The crossfade is longer than the image before it",
-        ),
+        error: tk("core-composition-fields.error.error.b7a65cea0f1c"),
       };
   }
   return { ok: true, value: out };
@@ -360,46 +327,37 @@ export function normalizeSwaps(list: readonly ImageSwap[]): Result<readonly Imag
 export function normalizePath(p: MotionPath | null): Result<MotionPath | null> {
   if (p === null) return { ok: true, value: null };
   if (typeof p !== "object" || !Array.isArray(p.points))
-    return { ok: false, error: L("Ugyldig bevegelsesbane", "Invalid motion path") };
+    return { ok: false, error: tk("core-composition-fields.error.error.ba372c41650b") };
   if (p.points.length < 2 || p.points.length > MAX_PATH_POINTS)
     return {
       ok: false,
-      error: L(
-        `Banen må ha mellom 2 og ${MAX_PATH_POINTS} punkter`,
-        `The path must have between 2 and ${MAX_PATH_POINTS} points`,
-      ),
+      error: tk("core-composition-fields.error.error.4c0101356b82", { MAX_PATH_POINTS: String(MAX_PATH_POINTS) }),
     };
   for (const q of p.points)
     if (!finite(q.x) || !finite(q.y) || Math.abs(q.x) > MAX_COORD || Math.abs(q.y) > MAX_COORD)
-      return { ok: false, error: L("Ugyldig punkt i banen", "Invalid point in the path") };
+      return { ok: false, error: tk("core-composition-fields.error.error.1d822425770f") };
   if (!Number.isInteger(p.startFrame) || !Number.isInteger(p.endFrame) || p.startFrame < 0)
-    return { ok: false, error: L("Ugyldig tid for banen", "Invalid time for the path") };
+    return { ok: false, error: tk("core-composition-fields.error.error.27f42ab840d5") };
   if (p.endFrame <= p.startFrame)
     return {
       ok: false,
-      error: L("Banen må slutte etter at den starter", "The path must end after it starts"),
+      error: tk("core-composition-fields.error.error.bf97b53f71a2"),
     };
   for (const v of [p.easeOut, p.easeIn])
     if (!finite(v) || v < 0 || v > 1)
       return {
         ok: false,
-        error: L(
-          "Styrken på ease må være mellom 0 og 100 %",
-          "The ease strength must be between 0 and 100 %",
-        ),
+        error: tk("core-composition-fields.error.error.6c622f15f0e0.2"),
       };
   if (!Array.isArray(p.tempo) || p.tempo.length > MAX_TEMPO_POINTS)
-    return { ok: false, error: L("Ugyldig tempokurve", "Invalid tempo curve") };
+    return { ok: false, error: tk("core-composition-fields.error.error.7eff99a93d22") };
   let lastT = 0;
   let lastP = 0;
   for (const q of p.tempo) {
     if (!finite(q.t) || !finite(q.p) || q.t <= lastT || q.t >= 1 || q.p < lastP || q.p > 1)
       return {
         ok: false,
-        error: L(
-          "Punktene i tempokurven må stige fra start til slutt",
-          "The tempo curve points must rise from start to end",
-        ),
+        error: tk("core-composition-fields.error.error.e14a8b17490f"),
       };
     lastT = q.t;
     lastP = q.p;
@@ -419,26 +377,23 @@ export function normalizePath(p: MotionPath | null): Result<MotionPath | null> {
 
 export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (!LAYER_KINDS.includes(f.kind))
-    return { ok: false, error: L("Ugyldig lagtype", "Invalid layer type") };
+    return { ok: false, error: tk("core-composition-fields.error.error.6d388f9d2902") };
   const name = f.name.trim();
   if (name.length > 200)
     return {
       ok: false,
-      error: L(
-        "Navnet er for langt (maks 200 tegn)",
-        "The name is too long (maximum 200 characters)",
-      ),
+      error: tk("core-composition-fields.error.error.a1b730d3c93c.2"),
     };
   if (!validText(name))
     return {
       ok: false,
-      error: L("Navnet inneholder ugyldige tegn", "The name contains invalid characters"),
+      error: tk("core-composition-fields.error.error.bd227ec51d4c.2"),
     };
   const fill = f.fill === null ? null : normalizeColor(f.fill);
   if (f.fill !== null && !fill)
     return {
       ok: false,
-      error: L("Fargen må være på formen #rrggbb", "The colour must be in the form #rrggbb"),
+      error: tk("core-composition-fields.error.error.904ff8576383"),
     };
   // Sidelag (MTS MT6) oppfører seg som grupper: viser ikke noe selv, kan ikke ligge i en gruppe
   const group = f.kind === "group" || f.kind === "page";
@@ -447,55 +402,49 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
       ok: false,
       error:
         f.kind === "page"
-          ? L("En side viser ikke noe bilde selv", "A page does not show an image itself")
-          : L("En gruppe viser ikke noe bilde selv", "A group does not show an image itself"),
+          ? tk("core-composition-fields.error.error.3754542a313f")
+          : tk("core-composition-fields.error.error.af5507d36308"),
     };
   const textLayer = f.kind === "text";
   if (textLayer && (f.assetId !== null || fill !== null || !f.text || (f.swaps ?? []).length > 0))
     return {
       ok: false,
-      error: L(
-        "Et tekstlag viser tekst, ikke bilde eller fargeflate",
-        "A text layer shows text, not an image or colour fill",
-      ),
+      error: tk("core-composition-fields.error.error.9ce003dec334"),
     };
   if (!textLayer && f.text)
-    return { ok: false, error: L("Bare tekstlag kan ha tekst", "Only text layers can have text") };
+    return { ok: false, error: tk("core-composition-fields.error.error.b016677c4eb9") };
   if (!group && !textLayer && f.assetId === null && fill === null)
     return {
       ok: false,
-      error: L(
-        "Laget må vise et bilde fra biblioteket eller en fargeflate",
-        "The layer must show an image from the library or a colour fill",
-      ),
+      error: tk("core-composition-fields.error.error.93ee74e67b12"),
     };
   if (group && f.groupId !== null)
     return {
       ok: false,
-      error: L("En gruppe kan ikke ligge i en gruppe", "A group cannot be inside another group"),
+      error: tk("core-composition-fields.error.error.0649658150f2"),
     };
   if (f.assetId === null && (f.assetVariantId !== null || f.versionId !== null))
     return {
       ok: false,
-      error: L("Variant eller versjon uten ressurs", "Variant or version without an asset"),
+      error: tk("core-composition-fields.error.error.89a432c6df1e"),
     };
   if (f.versionId !== null && f.assetVariantId === null)
-    return { ok: false, error: L("Versjon uten variant", "Version without a variant") };
+    return { ok: false, error: tk("core-composition-fields.error.error.9e78d5e817ab.2") };
   if (!Number.isInteger(f.width) || f.width < 1 || f.width > MAX_SIZE)
-    return { ok: false, error: L("Ugyldig bredde", "Invalid width") };
+    return { ok: false, error: tk("core-composition-fields.error.error.96af0c80735e") };
   if (!Number.isInteger(f.height) || f.height < 1 || f.height > MAX_SIZE)
-    return { ok: false, error: L("Ugyldig høyde", "Invalid height") };
+    return { ok: false, error: tk("core-composition-fields.error.error.5cd644bf0d61") };
   if (!finite(f.parallax) || f.parallax < 0 || f.parallax > 4)
     return {
       ok: false,
-      error: L("Parallaksen må være mellom 0 og 4", "The parallax must be between 0 and 4"),
+      error: tk("core-composition-fields.error.error.967c355694b5"),
     };
   const t = normalizeTransform(f.transform);
   if (!t.ok) return t;
   const k = normalizeKeyframes(f.keyframes);
   if (!k.ok) return k;
   if (f.groupId !== null && f.groupId.length > 64)
-    return { ok: false, error: L("Ugyldig gruppe", "Invalid group") };
+    return { ok: false, error: tk("core-composition-fields.error.error.5484b6939b46") };
   const swaps = normalizeSwaps(f.swaps ?? []);
   if (!swaps.ok) return swaps;
   const path = normalizePath(f.path ?? null);
@@ -507,16 +456,13 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
         ? { x: f.anchor.x, y: f.anchor.y }
         : undefined;
   if (anchor === undefined)
-    return { ok: false, error: L("Ugyldig ankerpunkt", "Invalid anchor point") };
+    return { ok: false, error: tk("core-composition-fields.error.error.3475499a18da") };
   const langs = normalizeLanguageImages(f.languageImages ?? []);
   if (!langs.ok) return langs;
   if (langs.value.length > 0 && (group || f.assetId === null))
     return {
       ok: false,
-      error: L(
-        "Bare et lag med bilde kan ha et eget bilde per språk",
-        "Only a layer with an image can have its own image per language",
-      ),
+      error: tk("core-composition-fields.error.error.b8bf91def60e"),
     };
   // Maske og blandingsmodus (REQ-0175): kontroll mot andre lag skjer i kommandoen
   const mask = normalizeMask(f.mask ?? null);
@@ -526,10 +472,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (group && (mask.value !== null || blend.value !== "normal"))
     return {
       ok: false,
-      error: L(
-        "En gruppe kan ikke ha maske eller blandingsmodus",
-        "A group cannot have a mask or blend mode",
-      ),
+      error: tk("core-composition-fields.error.error.e3c0245908ea"),
     };
   const keyframes = maskKeyframes(k.value, mask.value);
   if (!keyframes.ok) return keyframes;
@@ -539,11 +482,11 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   const shape = normalizeShape(f.shape);
   if (!shape.ok) return shape;
   if (shape.value && (fill === null || f.assetId !== null))
-    return { ok: false, error: L("Bare fargeflater kan ha form", "Only colour fills can have a shape") };
+    return { ok: false, error: tk("core-composition-fields.error.error.0b4307721a01") };
   const effects = normalizeEffects(f.effects);
   if (!effects.ok) return effects;
   if (effects.value && group)
-    return { ok: false, error: L("En gruppe kan ikke ha effekter", "A group cannot have effects") };
+    return { ok: false, error: tk("core-composition-fields.error.error.0684da26635e") };
   const tpl = normalizeTemplateRef(f.template);
   if (!tpl.ok) return tpl;
   // Overgangen inn i siden (MTS MT6): bare sidelag; «cut» lagres ikke (mangler = kutt)
@@ -551,14 +494,14 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
   if (f.pageTransition !== undefined && f.pageTransition !== null) {
     const pt = f.pageTransition;
     if (f.kind !== "page")
-      return { ok: false, error: L("Bare sider kan ha en sideovergang", "Only pages can have a page transition") };
+      return { ok: false, error: tk("core-composition-fields.error.error.9f68d4ad33fc") };
     if (
       !TRANSITION_KINDS.includes(pt.kind) ||
       !Number.isInteger(pt.frames) ||
       pt.frames < 0 ||
       pt.frames > 10_000
     )
-      return { ok: false, error: L("Ugyldig sideovergang", "Invalid page transition") };
+      return { ok: false, error: tk("core-composition-fields.error.error.edb70213fe66") };
     if (pt.kind !== "cut" && pt.frames > 0) pageTransition = { kind: pt.kind, frames: pt.frames };
   }
   // Aktivt tidsområde (AS2, A3)
@@ -567,7 +510,7 @@ export function normalizeLayerFields(f: LayerFields): Result<LayerFields> {
     ar !== null &&
     (!Number.isInteger(ar.from) || !Number.isInteger(ar.to) || ar.from < 0 || ar.to < ar.from)
   )
-    return { ok: false, error: L("Ugyldig aktivt område", "Invalid active range") };
+    return { ok: false, error: tk("core-composition-fields.error.error.c53bf4239394") };
   return {
     ok: true,
     value: {
@@ -614,16 +557,7 @@ export const BLEND_MODES: readonly BlendMode[] = [
   "color",
 ];
 
-export const BLEND_LABEL: Record<BlendMode, string> = localized({
-  normal: ["Normal", "Normal"],
-  multiply: ["Multipliser", "Multiply"],
-  screen: ["Skjerm", "Screen"],
-  overlay: ["Overlegg", "Overlay"],
-  darken: ["Mørkere", "Darken"],
-  lighten: ["Lysere", "Lighten"],
-  "soft-light": ["Mykt lys", "Soft light"],
-  color: ["Farge", "Colour"],
-});
+export const BLEND_LABEL: Record<BlendMode, string> = tLocalized({ normal: "core-composition-fields.blend-label.normal.46f6b58cf0d2", multiply: "core-composition-fields.blend-label.multiply.9dde5bedc7ac", screen: "core-composition-fields.blend-label.screen.75d742ab12d6", overlay: "core-composition-fields.blend-label.overlay.cacb6a5bb7dc", darken: "core-composition-fields.blend-label.darken.df32ade13bc9", lighten: "core-composition-fields.blend-label.lighten.5b5d7b6aa6a4", "soft-light": "core-composition-fields.blend-label.soft-light.f2d19b35d47f", color: "core-composition-fields.blend-label.color.3db247d33699" });
 
 /** Største myke kant på en maske (piksler). */
 export const MAX_MASK_FEATHER = 200;
@@ -631,7 +565,7 @@ export const MAX_MASK_FEATHER = 200;
 export function normalizeBlend(b: BlendMode): Result<BlendMode> {
   return BLEND_MODES.includes(b)
     ? { ok: true, value: b }
-    : { ok: false, error: L("Ugyldig blandingsmodus", "Invalid blend mode") };
+    : { ok: false, error: tk("core-composition-fields.error.error.ff8cc66d7da0") };
 }
 
 /**
@@ -640,36 +574,30 @@ export function normalizeBlend(b: BlendMode): Result<BlendMode> {
  */
 export function normalizeMask(m: LayerMask | null): Result<LayerMask | null> {
   if (m === null) return { ok: true, value: null };
-  if (typeof m !== "object") return { ok: false, error: L("Ugyldig maske", "Invalid mask") };
+  if (typeof m !== "object") return { ok: false, error: tk("core-composition-fields.error.error.c75351cc5b56") };
   if (m.invert !== undefined && typeof m.invert !== "boolean")
-    return { ok: false, error: L("Ugyldig maske", "Invalid mask") };
+    return { ok: false, error: tk("core-composition-fields.error.error.c75351cc5b56.2") };
   const invert = m.invert === true;
   if (m.kind === "layer") {
     if (typeof m.layerId !== "string" || m.layerId.length === 0 || m.layerId.length > 64)
-      return { ok: false, error: L("Ugyldig lag for masken", "Invalid layer for the mask") };
+      return { ok: false, error: tk("core-composition-fields.error.error.1294e3c5e368") };
     return { ok: true, value: { kind: "layer", layerId: m.layerId, invert } };
   }
   if (m.kind !== "rect" && m.kind !== "ellipse")
-    return { ok: false, error: L("Ugyldig type maske", "Invalid mask type") };
+    return { ok: false, error: tk("core-composition-fields.error.error.758d808ebac0") };
   if (!finite(m.x) || !finite(m.y) || Math.abs(m.x) > MAX_COORD || Math.abs(m.y) > MAX_COORD)
-    return { ok: false, error: L("Ugyldig plassering av masken", "Invalid position of the mask") };
+    return { ok: false, error: tk("core-composition-fields.error.error.4ad15b3631e8") };
   if (!finite(m.width) || !finite(m.height) || m.width <= 0 || m.height <= 0)
     return {
       ok: false,
-      error: L(
-        "Masken må ha bredde og høyde over 0",
-        "The mask must have a width and height above 0",
-      ),
+      error: tk("core-composition-fields.error.error.a4f1b97641ca"),
     };
   if (m.width > MAX_COORD || m.height > MAX_COORD)
-    return { ok: false, error: L("Masken er for stor", "The mask is too large") };
+    return { ok: false, error: tk("core-composition-fields.error.error.76f016e9d457") };
   if (!finite(m.feather) || m.feather < 0 || m.feather > MAX_MASK_FEATHER)
     return {
       ok: false,
-      error: L(
-        `Myk kant må være mellom 0 og ${MAX_MASK_FEATHER} px`,
-        `The soft edge must be between 0 and ${MAX_MASK_FEATHER} px`,
-      ),
+      error: tk("core-composition-fields.error.error.b2f9ad3691b5", { MAX_MASK_FEATHER: String(MAX_MASK_FEATHER) }),
     };
   return {
     ok: true,
@@ -704,18 +632,12 @@ function maskKeyframes(
     if (Math.abs(k.value) > MAX_COORD)
       return {
         ok: false,
-        error: L(
-          "Ugyldig plassering eller størrelse på masken i nøkkelbilde",
-          "Invalid position or size of the mask in a keyframe",
-        ),
+        error: tk("core-composition-fields.error.error.5405cb447f1b"),
       };
     if ((k.property === "maskWidth" || k.property === "maskHeight") && k.value <= 0)
       return {
         ok: false,
-        error: L(
-          "Masken må ha bredde og høyde over 0",
-          "The mask must have a width and height above 0",
-        ),
+        error: tk("core-composition-fields.error.error.a4f1b97641ca.2"),
       };
   }
   return { ok: true, value: list };
@@ -726,30 +648,27 @@ export function normalizeLanguageImages(
   list: readonly LanguageImage[],
 ): Result<readonly LanguageImage[]> {
   if (!Array.isArray(list) || list.length > 20)
-    return { ok: false, error: L("Ugyldige bilder per språk", "Invalid images per language") };
+    return { ok: false, error: tk("core-composition-fields.error.error.0d2b9114f802") };
   const seen = new Set<string>();
   const out: LanguageImage[] = [];
   for (const li of list) {
-    if (!li || typeof li.language !== "string" || !/^[a-z]{2}(-[A-Z]{2})?$/.test(li.language))
-      return { ok: false, error: L("Ugyldig språk for bildet", "Invalid language for the image") };
+    if (!li || typeof li.language !== "string" || !isScriptLanguageTag(li.language))
+      return { ok: false, error: tk("core-composition-fields.error.error.09a2b9a18fb7") };
     if (li.language === "nb")
       return {
         ok: false,
-        error: L("Norsk bruker lagets eget bilde", "Norwegian uses the layer's own image"),
+        error: tk("core-composition-fields.error.error.ead44afb7c76"),
       };
     if (seen.has(li.language))
       return {
         ok: false,
-        error: L("To bilder for samme språk", "Two images for the same language"),
+        error: tk("core-composition-fields.error.error.a62138f1e5f3"),
       };
     seen.add(li.language);
     if (typeof li.assetVariantId !== "string" || !li.assetVariantId)
       return {
         ok: false,
-        error: L(
-          "Bildet for språket mangler variant",
-          "The image for the language is missing a variant",
-        ),
+        error: tk("core-composition-fields.error.error.f2b9e6a5c518"),
       };
     out.push({
       language: li.language,
@@ -773,14 +692,14 @@ function cameraFrame(f: CameraFrame): CameraFrame | null {
 /** Kamera med shots (mandat kap. 12). Shots sorteres etter start. */
 export function normalizeCamera(c: CompositionCamera): Result<CompositionCamera> {
   if (typeof c !== "object" || c === null || !Array.isArray(c.shots))
-    return { ok: false, error: L("Ugyldig kamera", "Invalid camera") };
+    return { ok: false, error: tk("core-composition-fields.error.error.29da565c9517") };
   if (c.shots.length > MAX_SHOTS)
-    return { ok: false, error: L("For mange kamerautsnitt", "Too many camera shots") };
+    return { ok: false, error: tk("core-composition-fields.error.error.65da5e8cda8d") };
   const ids = new Set<string>();
   const shots = [];
   for (const sh of c.shots) {
     if (typeof sh.id !== "string" || !sh.id || sh.id.length > 64 || ids.has(sh.id))
-      return { ok: false, error: L("Ugyldig kamerautsnitt", "Invalid camera shot") };
+      return { ok: false, error: tk("core-composition-fields.error.error.d26c2a33b316") };
     ids.add(sh.id);
     if (
       !Number.isInteger(sh.startFrame) ||
@@ -790,28 +709,25 @@ export function normalizeCamera(c: CompositionCamera): Result<CompositionCamera>
     )
       return {
         ok: false,
-        error: L(
-          "Kamerautsnittet må slutte etter at det starter",
-          "The camera shot must end after it starts",
-        ),
+        error: tk("core-composition-fields.error.error.8c32267612cd"),
       };
     const from = cameraFrame(sh.from);
     const to = cameraFrame(sh.to);
-    if (!from || !to) return { ok: false, error: L("Ugyldig kameraramme", "Invalid camera frame") };
+    if (!from || !to) return { ok: false, error: tk("core-composition-fields.error.error.070bbd8ae3c4") };
     if (!EASINGS.includes(sh.easing))
-      return { ok: false, error: L("Ugyldig hastighetskurve", "Invalid easing curve") };
+      return { ok: false, error: tk("core-composition-fields.error.error.27338a882356.2") };
     let curve = null;
     if (sh.curve !== null) {
       const k = sh.curve;
       if (![k.c1x, k.c1y, k.c2x, k.c2y].every(finite))
-        return { ok: false, error: L("Ugyldig kamerabane", "Invalid camera path") };
+        return { ok: false, error: tk("core-composition-fields.error.error.87b9ef0aae78") };
       curve = { c1x: k.c1x, c1y: k.c1y, c2x: k.c2x, c2y: k.c2y };
     }
     const name = typeof sh.name === "string" ? sh.name.trim().slice(0, 200) : "";
     if (!validText(name) || !validText(sh.id))
       return {
         ok: false,
-        error: L("Ugyldige tegn i kameraet", "Invalid characters in the camera"),
+        error: tk("core-composition-fields.error.error.3024617477db"),
       };
     shots.push({
       id: sh.id,
@@ -830,10 +746,7 @@ export function normalizeCamera(c: CompositionCamera): Result<CompositionCamera>
     if (shots[i]!.startFrame < shots[i - 1]!.endFrame)
       return {
         ok: false,
-        error: L(
-          "Kamerautsnittene overlapper. Flytt eller forkort ett av dem.",
-          "The camera shots overlap. Move or shorten one of them.",
-        ),
+        error: tk("core-composition-fields.error.error.cac38573239b"),
       };
   return { ok: true, value: { shots } };
 }

@@ -4,9 +4,10 @@
  * versjoner – med antall og størrelse der den er kjent. Grunnlag for sikkerhetskopi og senere flytting.
  */
 import type { ProjectState } from "../model";
-import { L } from "../i18n";
+
 import { versionsOf } from "./index";
 import { storedCategoryOf } from "./storage-paths";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type StorageCategory =
   "project" | "source" | "generated" | "temporary" | "export" | "history";
@@ -81,60 +82,45 @@ export function storageOverview(
   return [
     {
       category: "project",
-      label: L("Redigerbare prosjektdata", "Editable project data"),
+      label: tk("core-library-storage.label.label.4f9c479b6ba9"),
       count: projectObjects,
       bytes: null,
-      note: L(
-        "Manus, scener, 2D-scener, lag, lyd- og klippdeler, koblinger, notater og ressursbeskrivelser i databasen.",
-        "Script, scenes, 2D scenes, layers, audio and clip parts, links, notes and asset descriptions in the database.",
-      ),
+      note: tk("core-library-storage.note.note.fd1a9a99eba1"),
     },
     {
       category: "source",
-      label: L("Kildemedier", "Source media"),
+      label: tk("core-library-storage.label.label.98afaee3796a"),
       count: src.n,
       bytes: src.b,
-      note: L(
-        "Bilder og lyd som er lastet opp, og importert film. Importerte manusfiler ligger i egen lagring.",
-        "Images and audio that have been uploaded, and imported film. Imported script files are kept in separate storage.",
-      ),
+      note: tk("core-library-storage.note.note.c578417e9c94"),
     },
     {
       category: "generated",
-      label: L("Genererte mediefiler", "Generated media files"),
+      label: tk("core-library-storage.label.label.044d118681b1"),
       count: gen.n,
       bytes: gen.b,
-      note: L("Bilder, lyd og video laget med AI.", "Images, audio and video made with AI."),
+      note: tk("core-library-storage.note.note.35d84008772d"),
     },
     {
       category: "temporary",
-      label: L("Midlertidige renderingsfiler", "Temporary render files"),
+      label: tk("core-library-storage.label.label.761b9e2dcee5"),
       count: 0,
       bytes: 0,
-      note: L(
-        "Avspilling og eksport lages i nettleseren og lagres ikke. Videoer av 2D-scenen som sendes til AI, ligger i en egen mappe for midlertidige filer.",
-        "Playback and export are made in the browser and not saved. Videos of the 2D scene sent to AI are kept in a separate folder for temporary files.",
-      ),
+      note: tk("core-library-storage.note.note.9a7c9943d358"),
     },
     {
       category: "export",
-      label: L("Eksportfiler", "Export files"),
+      label: tk("core-library-storage.label.label.06e2a434bf50"),
       count: 0,
       bytes: 0,
-      note: L(
-        "Lastes ned til maskinen din og lagres ikke i prosjektet. Innstillingene huskes per produksjon.",
-        "Downloaded to your computer and not saved in the project. The settings are remembered per production.",
-      ),
+      note: tk("core-library-storage.note.note.f60c6db4789c"),
     },
     {
       category: "history",
-      label: L("Historiske versjoner", "Historical versions"),
+      label: tk("core-library-storage.label.label.aacc66a13c42"),
       count: hist.n,
       bytes: hist.b,
-      note: L(
-        "Eldre bildeversjoner som ikke brukes lenger. De slettes aldri automatisk. Manusversjoner og endringshistorikken ligger i databasen.",
-        "Older image versions that are no longer used. They are never deleted automatically. Script versions and the change history are kept in the database.",
-      ),
+      note: tk("core-library-storage.note.note.761d4dffb21a"),
     },
   ];
 }

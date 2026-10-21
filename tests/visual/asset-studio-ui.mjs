@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/asset-studio"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -40,6 +41,10 @@ const rows = {
   composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, image_swaps: [], locked: false, visible: true, group_id: null, motion_path: null, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: COMP.width / 2, easing: "linear" }, { frame: 48, property: "x", value: COMP.width / 2 + 200, easing: "linear" }] } : l.id === HIDDEN?.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, keyframes: [], motion_path: null } : l)),
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), clip(DLG, "dialogue", "Replikk", 500, LINE?.id ?? null), clip(MUSIC, "music", "Musikk", 0, null)],
 };
+// R7: fixturens lydversjoner (DV2) hørte til klippene som byttes ut over. Uten klipp er de foreldreløse, og
+// kjernen stopper med rette alle lydklippendringer («Replikken har lydversjoner som ikke kan fjernes»), så
+// «Lagre demping i scenen» sendte ingenting. Behold bare versjoner som har klippet sitt.
+rows.dialogue_versions = (fx.rows.dialogue_versions ?? []).filter((v) => rows.audio_clips.some((a) => a.id === v.clip_id));
 let commands = [];
 /** Neste UpdateSceneDraft svarer med revisjonskonflikt (kriterium 15). */
 let conflictNext = false;
@@ -159,7 +164,7 @@ async function save(page, studio) {
 async function scenario(name, lang, fn) {
   commands = [];
   conflictNext = false;
-  const { context, page, errors, studio } = await open(lang);
+  const { context, page, errors, studio } = await open(uiLang(lang));
   try {
     await openStudio(page, studio);
     await fn(page, studio);

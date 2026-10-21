@@ -7,8 +7,9 @@
  * Ren logikk uten avhengighet til katalogen (unngår sirkulær import): katalogen (providers.ts) bruker
  * funksjonene her, og sammenstillingen for adminsiden ligger i ai-catalog.ts.
  */
-import { L } from "../i18n";
+
 import type { Capability, ProviderId, ProviderModel } from "./providers";
+import { t } from "@/core/i18n/keyed";
 
 /** Typen administrator velger for en egen modell (tabellens `kind`). */
 export type ModelKind = "image" | "video" | "sound" | "text";
@@ -116,14 +117,8 @@ export function disabledReason(
 /** Forståelig melding (begge språk) når en avslått modell likevel bestilles. */
 export function disabledMessage(reason: "provider" | "model"): string {
   return reason === "provider"
-    ? L(
-        "Administrator har slått av denne AI-leverandøren for alle brukere. Velg en annen leverandør.",
-        "The administrator has switched off this AI provider for all users. Choose another provider.",
-      )
-    : L(
-        "Administrator har slått av denne AI-modellen for alle brukere. Velg en annen modell.",
-        "The administrator has switched off this AI model for all users. Choose another model.",
-      );
+    ? t("core-generation-model-settings.disabled-message.message.b704c2a7edea")
+    : t("core-generation-model-settings.disabled-message.message.4cb258ded509");
 }
 
 // ---------------------------------------------------------------- egne modeller
@@ -290,42 +285,30 @@ export function validateCustomModel(
   const x = (raw && typeof raw === "object" ? raw : {}) as Record<string, unknown>;
   const provider = x["provider"];
   if (typeof provider !== "string" || !PROVIDER_IDS.includes(provider as ProviderId))
-    return { ok: false, error: L("Ukjent leverandør.", "Unknown provider.") };
+    return { ok: false, error: t("core-generation-model-settings.error.error.315cfe58e815") };
   if (!customProviders().includes(provider as ProviderId))
     return {
       ok: false,
-      error: L(
-        "Denne leverandøren kan ikke få egne modeller uten ny kode.",
-        "This provider cannot get its own models without new code.",
-      ),
+      error: t("core-generation-model-settings.error.error.c786766a47f3"),
     };
   const kind = x["kind"];
   if (typeof kind !== "string" || !MODEL_KINDS.includes(kind as ModelKind))
-    return { ok: false, error: L("Velg type.", "Choose a type.") };
+    return { ok: false, error: t("core-generation-model-settings.error.error.0bf8ecd783b4") };
   if (!customKinds(provider).includes(kind as ModelKind))
     return {
       ok: false,
-      error: L(
-        "Programmet kan ikke bruke denne typen modell hos leverandøren uten ny kode.",
-        "The program cannot use this type of model with the provider without new code.",
-      ),
+      error: t("core-generation-model-settings.error.error.20edf9496074"),
     };
   const model = typeof x["model"] === "string" ? x["model"].trim() : "";
   if (!modelIdShapeOk(model))
     return {
       ok: false,
-      error: L(
-        `Modell-ID-en kan bare ha små bokstaver, tall og tegnene . _ / - (3–${MAX_MODEL_ID} tegn).`,
-        `The model ID can only contain lower-case letters, digits and the characters . _ / - (3–${MAX_MODEL_ID} characters).`,
-      ),
+      error: t("core-generation-model-settings.error.error.0a26b7ee6e8f", { MAX_MODEL_ID: String(MAX_MODEL_ID) }),
     };
   if (isBuiltIn(provider, model))
     return {
       ok: false,
-      error: L(
-        "Modellen finnes allerede i den innebygde katalogen.",
-        "The model is already in the built-in catalogue.",
-      ),
+      error: t("core-generation-model-settings.error.error.b10ecc9fd6bf"),
     };
   const rule = customRuleFor(provider, kind, model);
   if (!rule) {
@@ -334,30 +317,27 @@ export function validateCustomModel(
       .join(", ");
     return {
       ok: false,
-      error: L(
-        `Modell-ID-en passer ikke med det programmet kan sende til leverandøren. Eksempler som virker: ${examples}.`,
-        `The model ID does not match what the program can send to the provider. Examples that work: ${examples}.`,
-      ),
+      error: t("core-generation-model-settings.error.error.abe635a53f77", { examples: String(examples) }),
     };
   }
   const label = typeof x["label"] === "string" ? x["label"].trim() : "";
   if (!label || label.length > 120)
     return {
       ok: false,
-      error: L("Skriv et navn (høyst 120 tegn).", "Enter a name (120 characters at most)."),
+      error: t("core-generation-model-settings.error.error.aeca493671a4"),
     };
   const price = typeof x["priceUsd"] === "number" ? x["priceUsd"] : Number.NaN;
   if (!Number.isFinite(price) || price < 0 || price > 1000)
     return {
       ok: false,
-      error: L("Oppgi prisen i USD (0–1000).", "Enter the price in USD (0–1000)."),
+      error: t("core-generation-model-settings.error.error.3772d693926e"),
     };
   const unit = x["priceUnit"];
   if (unit !== priceUnitFor(kind as ModelKind))
-    return { ok: false, error: L("Feil prisenhet for typen.", "Wrong price unit for the type.") };
+    return { ok: false, error: t("core-generation-model-settings.error.error.96e8a66d2b02") };
   const note = typeof x["note"] === "string" ? x["note"].trim() : "";
   if (note.length > 500)
-    return { ok: false, error: L("Merknaden er for lang.", "The note is too long.") };
+    return { ok: false, error: t("core-generation-model-settings.error.error.d3d54a9e9919") };
   return {
     ok: true,
     value: {
@@ -389,7 +369,7 @@ export function customModelFrom(
   return {
     id: s.model,
     get label() {
-      return L(`${name} (lagt til av administrator)`, `${name} (added by administrator)`);
+      return t("core-generation-model-settings.custom-model-from.message.b5f43fc4ccf2", { name: String(name) });
     },
     capability,
     priceUsd: s.priceUsd ?? 0,

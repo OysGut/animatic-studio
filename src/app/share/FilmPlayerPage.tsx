@@ -4,8 +4,8 @@
  * spoling, fullskjerm og lyd (iPhone krever trykk på spill av for lyd).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { L } from "@/core/i18n";
 import { resolveFilmShare, type PublicFilm } from "@/adapters/share/film-share.functions";
+import { t } from "@/core/i18n/keyed";
 
 export function FilmPlayerPage({ token }: { token: string }) {
   const [film, setFilm] = useState<PublicFilm | null>(null);
@@ -28,16 +28,13 @@ export function FilmPlayerPage({ token }: { token: string }) {
   if (state === "loading")
     return (
       <main className="flex min-h-dvh items-center justify-center bg-surface-0 text-text-tertiary" data-testid="film-player-loading">
-        {L("Henter filmen …", "Loading the film …")}
+        {t("app-share-film-player-page.film-player-page.main.50aed27d9aaa")}
       </main>
     );
   if (state === "gone" || !film)
     return (
       <main className="flex min-h-dvh items-center justify-center bg-surface-0 p-6 text-center text-text-secondary" data-testid="film-player-gone">
-        {L(
-          "Denne filmen er ikke lenger delt, eller lenken er feil.",
-          "This film is no longer shared, or the link is wrong.",
-        )}
+        {t("app-share-film-player-page.film-player-page.main.385a941ea606")}
       </main>
     );
   return (

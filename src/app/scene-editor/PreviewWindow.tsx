@@ -13,9 +13,10 @@ import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { ExternalLink, PanelBottomClose, X } from "lucide-react";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { renderFrame, type Composition, type ProjectState, L } from "@/core";
+import { renderFrame, type Composition, type ProjectState } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
 import { storedNumber, usePaneSize, useStoredNumber } from "@/app/shell/pane-size";
+import { t as tk } from "@/core/i18n/keyed";
 
 const loadListeners = new Set<() => void>();
 const sharedCache = new ImageCache(() => {
@@ -31,7 +32,7 @@ function onImageLoad(l: () => void) {
 /** Zoomnivåer i prosent. 0 = «Tilpass». */
 const PREVIEW_ZOOMS = [0, 25, 50, 100, 200] as const;
 const zoomLabel = (z: number) =>
-  z === 0 ? L("Tilpass", "Fit") : z === 100 ? "1:1 (100 %)" : `${z} %`;
+  z === 0 ? tk("app-scene-editor-preview-window.zoom-label.message.b263ab1fdacc") : z === 100 ? "1:1 (100 %)" : `${z} %`;
 const HEADER = 28;
 const MARGIN = 8;
 const MIN_W = 160;
@@ -79,7 +80,7 @@ function PreviewVideo({
       muted
       playsInline
       preload="auto"
-      aria-label={L("Versjonen som brukes i filmen", "The version used in the film")}
+      aria-label={tk("app-scene-editor-preview-window.preview-video.aria-label.7f2058913b85")}
       style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
       className="bg-media object-contain"
     />
@@ -147,7 +148,7 @@ function PreviewCanvas({
     <canvas
       ref={canvasRef}
       role="img"
-      aria-label={L("Bildet slik det blir i filmen", "The image as it will be in the film")}
+      aria-label={tk("app-scene-editor-preview-window.preview-canvas.aria-label.82d95ee66dc3")}
       style={{ width: cssWidth, height: cssHeight, display: "block", flex: "none" }}
       className="bg-media"
     />
@@ -167,16 +168,13 @@ function ZoomSelect({
     <select
       value={zoom}
       onChange={(e) => onZoom(Number(e.target.value))}
-      aria-label={L("Zoom i forhåndsvisningen", "Zoom in the preview")}
-      title={L(
-        "Zoom: «Tilpass» følger vinduets størrelse, 1:1 viser ett bildepunkt per skjermpunkt",
-        "Zoom: “Fit” follows the window size, 1:1 shows one image pixel per screen pixel",
-      )}
+      aria-label={tk("app-scene-editor-preview-window.zoom-select.aria-label.522401c84413")}
+      title={tk("app-scene-editor-preview-window.zoom-select.title.f1f393dc12f8")}
       className="h-5 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-secondary"
     >
       {PREVIEW_ZOOMS.map((z) => (
         <option key={z} value={z}>
-          {z === 0 ? L(`Tilpass (${fitPercent} %)`, `Fit (${fitPercent} %)`) : zoomLabel(z)}
+          {z === 0 ? tk("app-scene-editor-preview-window.zoom-select.option.5c78357a1919", { fitPercent: String(fitPercent) }) : zoomLabel(z)}
         </option>
       ))}
     </select>
@@ -193,12 +191,12 @@ type Corner = "nw" | "ne" | "sw" | "se";
 
 const cornerName = (c: Corner) =>
   c === "nw"
-    ? L("oppe til venstre", "top left")
+    ? tk("app-scene-editor-preview-window.corner-name.message.1f2049cd14a8")
     : c === "ne"
-      ? L("oppe til høyre", "top right")
+      ? tk("app-scene-editor-preview-window.corner-name.message.06dfe2ac283c")
       : c === "sw"
-        ? L("nede til venstre", "bottom left")
-        : L("nede til høyre", "bottom right");
+        ? tk("app-scene-editor-preview-window.corner-name.message.6b2e126cd8ff")
+        : tk("app-scene-editor-preview-window.corner-name.message.edd8479ff87f");
 
 export function PreviewWindow({
   onPopOut,
@@ -293,16 +291,16 @@ export function PreviewWindow({
   const win = (
     <div
       role="region"
-      aria-label={L("Forhåndsvisning av ferdig utsnitt", "Preview of the finished shot")}
+      aria-label={tk("app-scene-editor-preview-window.win.aria-label.462a30da593a")}
       style={{ left: x, top: y, width: w, visibility: area ? "visible" : "hidden" }}
       className="fixed z-40 flex flex-col rounded-md border border-border bg-surface-1 shadow-[var(--shadow-float)]"
     >
       <div
         className="flex shrink-0 cursor-move touch-none select-none items-center gap-1.5 border-b border-border px-2"
         style={{ height: HEADER }}
-        title={L("Dra for å flytte forhåndsvisningen", "Drag to move the preview")}
+        title={tk("app-scene-editor-preview-window.win.title.6464c4e67a3e")}
         tabIndex={0}
-        aria-label={L("Flytt forhåndsvisningen (piltaster)", "Move the preview (arrow keys)")}
+        aria-label={tk("app-scene-editor-preview-window.win.aria-label.31a9f7e687be")}
         onPointerDown={(e) => {
           if ((e.target as HTMLElement).closest("button,select")) return;
           e.preventDefault();
@@ -341,7 +339,7 @@ export function PreviewWindow({
         }}
       >
         <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          {L("Ferdig utsnitt", "Finished shot")}
+          {tk("app-scene-editor-preview-window.win.span.0efae5805c77")}
         </span>
         {note ? (
           <span role="status" className="truncate text-[11px] text-text-secondary" title={note}>
@@ -354,11 +352,8 @@ export function PreviewWindow({
           type="button"
           onClick={onPopOut}
           className={iconButton}
-          aria-label={L("Åpne i eget vindu", "Open in own window")}
-          title={L(
-            "Åpne i eget vindu (kan flyttes til en annen skjerm)",
-            "Open in own window (can be moved to another screen)",
-          )}
+          aria-label={tk("app-scene-editor-preview-window.win.aria-label.c94bd4c89ace")}
+          title={tk("app-scene-editor-preview-window.win.title.12c055c689c8")}
         >
           <ExternalLink className="size-3.5" aria-hidden />
         </button>
@@ -366,8 +361,8 @@ export function PreviewWindow({
           type="button"
           onClick={p.onClose}
           className={iconButton}
-          aria-label={L("Lukk forhåndsvisningen", "Close the preview")}
-          title={L("Lukk forhåndsvisningen", "Close the preview")}
+          aria-label={tk("app-scene-editor-preview-window.win.aria-label.4ae640cd97bf")}
+          title={tk("app-scene-editor-preview-window.win.title.4ae640cd97bf")}
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -384,15 +379,12 @@ export function PreviewWindow({
         <div
           key={c}
           role="separator"
-          aria-label={`${L("Endre størrelse på forhåndsvisningen (hjørne", "Resize the preview (")} ${cornerName(c)})`}
+          aria-label={`${tk("app-scene-editor-preview-window.win.aria-label.d16c3ea009ad")} ${cornerName(c)})`}
           aria-valuenow={w}
           aria-valuemin={MIN_W}
           aria-valuemax={Math.round(maxW)}
           tabIndex={0}
-          title={L(
-            "Dra for å endre størrelse, dobbeltklikk for standard",
-            "Drag to resize, double-click for the default size",
-          )}
+          title={tk("app-scene-editor-preview-window.win.title.009cbe4bb447")}
           onPointerDown={(e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -491,7 +483,7 @@ function saveGeometry(w: Window) {
 }
 
 function copyStyles(to: Document) {
-  to.title = L("Forhåndsvisning – Animatic Studio", "Preview – Animatic Studio");
+  to.title = tk("app-scene-editor-preview-window.copy-styles.message.96877f1c395d");
   to.documentElement.className = document.documentElement.className;
   for (const a of Array.from(document.documentElement.attributes))
     if (a.name.startsWith("data-") || a.name === "style")
@@ -715,7 +707,7 @@ export function PopoutPreview({
         style={{ height: HEADER }}
       >
         <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          {L("Ferdig utsnitt", "Finished shot")}
+          {tk("app-scene-editor-preview-window.popout-preview.span.289608475142")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">
           {composition.width} × {composition.height}
@@ -726,11 +718,8 @@ export function PopoutPreview({
           type="button"
           onClick={onDock}
           className={iconButton}
-          aria-label={L("Tilbake til redigeringsvinduet", "Back to the scene editor window")}
-          title={L(
-            "Legg forhåndsvisningen tilbake i redigeringsvinduet",
-            "Put the preview back in the scene editor window",
-          )}
+          aria-label={tk("app-scene-editor-preview-window.popout-preview.aria-label.9bdb232a8642")}
+          title={tk("app-scene-editor-preview-window.popout-preview.title.5b8f494c4e10")}
         >
           <PanelBottomClose className="size-3.5" aria-hidden />
         </button>
@@ -738,8 +727,8 @@ export function PopoutPreview({
           type="button"
           onClick={p.onClose}
           className={iconButton}
-          aria-label={L("Lukk forhåndsvisningen", "Close the preview")}
-          title={L("Lukk forhåndsvisningen", "Close the preview")}
+          aria-label={tk("app-scene-editor-preview-window.popout-preview.aria-label.d8771782f7c7")}
+          title={tk("app-scene-editor-preview-window.popout-preview.title.d8771782f7c7")}
         >
           <X className="size-3.5" aria-hidden />
         </button>

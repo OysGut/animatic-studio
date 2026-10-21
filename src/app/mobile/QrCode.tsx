@@ -1,6 +1,7 @@
 /** QR-kode for en lenke (tegnes i nettleseren; ingen tjeneste utenfor appen ser lenken). */
 import { useEffect, useState } from "react";
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 export function QrCode({ value, size = 220 }: { value: string; size?: number }) {
   const [src, setSrc] = useState<string | null>(null);
@@ -27,7 +28,7 @@ export function QrCode({ value, size = 220 }: { value: string; size?: number }) 
       src={src}
       width={size}
       height={size}
-      alt={L("QR-kode – skann med kameraet på mobilen", "QR code – scan with your phone's camera")}
+      alt={t("app-mobile-qr-code.qr-code.alt.ca9cbae89f84")}
       data-testid="mobile-qr"
       className="rounded-sm bg-white"
     />
@@ -35,7 +36,7 @@ export function QrCode({ value, size = 220 }: { value: string; size?: number }) 
     <div
       style={{ width: size, height: size }}
       className="animate-pulse rounded-sm bg-surface-3"
-      aria-label={L("Lager QR-koden …", "Making the QR code …")}
+      aria-label={t("app-mobile-qr-code.qr-code.aria-label.c2588a248f23")}
       data-testid="mobile-qr-loading"
     />
   );

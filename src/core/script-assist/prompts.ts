@@ -7,13 +7,14 @@
  * `knowledgeAt` gir for karakteren med. Andres hemmeligheter, fakta bare regissøren kjenner og hendelser
  * senere i fortellingstid sendes aldri. Manustekst etter innsettingspunktet sendes aldri.
  */
-import { L } from "../i18n";
+
 import type { Asset, BlockKind, ProjectState, ScriptBlock, SceneOccurrence } from "../model";
 import { activeStructure, blocksOfVariant } from "../views";
 import { knowledgeAt } from "../storylab/facts";
 import { profileAt } from "../storylab/stages";
 import { profileText } from "../storylab/prompts";
 import { formatHeading } from "../screenplay";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type AssistKind = "rewrite" | "next_line" | "scene" | "polish" | "translate";
 export const ASSIST_KINDS: readonly AssistKind[] = ["rewrite", "next_line", "scene", "polish", "translate"];
@@ -57,21 +58,21 @@ const optStr = (v: unknown, max: number) => v === undefined || (typeof v === "st
 
 /** Kontroll av forespørselen (null = gyldig). */
 export function assistRequestError(r: unknown): string | null {
-  if (!r || typeof r !== "object") return L("Ugyldig forespørsel", "Invalid request");
+  if (!r || typeof r !== "object") return tk("core-script-assist-prompts.assist-request-error.message.2d26e640d40b");
   const x = r as Record<string, unknown>;
-  if (!(ASSIST_KINDS as readonly unknown[]).includes(x["kind"])) return L("Ukjent skrivehjelp", "Unknown writing aid");
-  if (!isId(x["productionId"])) return L("Ugyldig produksjon", "Invalid production");
-  if (x["occurrenceId"] !== null && !isId(x["occurrenceId"])) return L("Ugyldig scene", "Invalid scene");
+  if (!(ASSIST_KINDS as readonly unknown[]).includes(x["kind"])) return tk("core-script-assist-prompts.assist-request-error.message.04131f3a4bdc");
+  if (!isId(x["productionId"])) return tk("core-script-assist-prompts.assist-request-error.message.ab0959633482");
+  if (x["occurrenceId"] !== null && !isId(x["occurrenceId"])) return tk("core-script-assist-prompts.assist-request-error.message.8a5f2358c301");
   const ids = x["blockIds"];
   if (!Array.isArray(ids) || ids.length > MAX_ASSIST_BLOCKS || !ids.every(isId))
-    return L(`Velg høyst ${MAX_ASSIST_BLOCKS} linjer`, `Select at most ${MAX_ASSIST_BLOCKS} lines`);
+    return tk("core-script-assist-prompts.assist-request-error.message.dff95ed1d03b", { MAX_ASSIST_BLOCKS: String(MAX_ASSIST_BLOCKS) });
   for (const k of ["afterBlockId", "characterAssetId", "canvasNodeId"])
-    if (x[k] !== undefined && x[k] !== null && !isId(x[k])) return L("Ugyldig ID", "Invalid ID");
+    if (x[k] !== undefined && x[k] !== null && !isId(x[k])) return tk("core-script-assist-prompts.assist-request-error.message.c44f335ffde9");
   if (!optStr(x["description"], MAX_ASSIST_DESCRIPTION))
-    return L(`Beskrivelsen kan ha høyst ${MAX_ASSIST_DESCRIPTION} tegn`, `The description can have at most ${MAX_ASSIST_DESCRIPTION} characters`);
+    return tk("core-script-assist-prompts.assist-request-error.message.f921f59f465c", { MAX_ASSIST_DESCRIPTION: String(MAX_ASSIST_DESCRIPTION) });
   if (!optStr(x["instruction"], MAX_ASSIST_INSTRUCTION))
-    return L(`Ønsket kan ha høyst ${MAX_ASSIST_INSTRUCTION} tegn`, `The request can have at most ${MAX_ASSIST_INSTRUCTION} characters`);
-  if (x["mode"] !== undefined && !(REWRITE_MODES as readonly unknown[]).includes(x["mode"])) return L("Ukjent omskriving", "Unknown rewrite");
+    return tk("core-script-assist-prompts.assist-request-error.message.15588c449032", { MAX_ASSIST_INSTRUCTION: String(MAX_ASSIST_INSTRUCTION) });
+  if (x["mode"] !== undefined && !(REWRITE_MODES as readonly unknown[]).includes(x["mode"])) return tk("core-script-assist-prompts.assist-request-error.message.dbf58a7daef0");
   return null;
 }
 
@@ -144,14 +145,14 @@ const MODE_TEXT: Record<RewriteMode, string> = {
 };
 
 function selected(s: ProjectState, r: AssistRequest): ScriptBlock[] | string {
-  if (!r.occurrenceId) return L("Velg en scene", "Select a scene");
+  if (!r.occurrenceId) return tk("core-script-assist-prompts.selected.message.96bcf1358b06");
   const blocks = sceneBlocks(s, r.occurrenceId);
   const want = new Set(r.blockIds);
   const picked = blocks.filter((b) => want.has(b.id) && b.kind !== "heading");
-  if (picked.length === 0) return L("Velg minst én linje", "Select at least one line");
-  if (picked.length !== want.size) return L("Linjene må høre til scenen", "The lines must belong to the scene");
+  if (picked.length === 0) return tk("core-script-assist-prompts.selected.message.7c51b113f74e");
+  if (picked.length !== want.size) return tk("core-script-assist-prompts.selected.message.b3d4283e65eb");
   if (picked.some((b) => b.text.length > MAX_ASSIST_BLOCK_CHARS))
-    return L(`En linje er lengre enn ${MAX_ASSIST_BLOCK_CHARS} tegn`, `A line is longer than ${MAX_ASSIST_BLOCK_CHARS} characters`);
+    return tk("core-script-assist-prompts.selected.message.19d083cb145b", { MAX_ASSIST_BLOCK_CHARS: String(MAX_ASSIST_BLOCK_CHARS) });
   return picked;
 }
 
@@ -187,7 +188,7 @@ function editPrompt(s: ProjectState, r: AssistRequest, picked: ScriptBlock[], ta
     ]
       .filter(Boolean)
       .join("\n"),
-    maxTokens: Math.min(4000, 200 + picked.reduce((n, b) => n + Math.ceil(b.text.length / 2), 0)),
+    maxTokens: Math.max(2000, Math.min(4000, 200 + picked.reduce((n, b) => n + Math.ceil(b.text.length / 2), 0))),
     temperature: r.kind === "rewrite" ? 0.7 : 0.2,
     refs,
   };
@@ -207,15 +208,15 @@ export function knowledgeText(s: ProjectState, assetId: string, sceneId: string,
 
 function nextLinePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | string {
   const occ = occurrenceOf(s, r.occurrenceId);
-  if (!occ) return L("Velg en scene", "Select a scene");
+  if (!occ) return tk("core-script-assist-prompts.next-line-prompt.message.65b837273648");
   const asset = r.characterAssetId ? s.assets[r.characterAssetId] : undefined;
   if (!asset || asset.removed || (asset.kind !== "character" && asset.kind !== "animal"))
-    return L("Velg en karakter", "Select a character");
+    return tk("core-script-assist-prompts.next-line-prompt.message.a5fb4e581f9c");
   const blocks = sceneBlocks(s, occ.id);
   let upTo = blocks.length;
   if (r.afterBlockId) {
     const i = blocks.findIndex((b) => b.id === r.afterBlockId);
-    if (i < 0) return L("Linjen hører ikke til scenen", "The line does not belong to the scene");
+    if (i < 0) return tk("core-script-assist-prompts.next-line-prompt.message.913373249f2c");
     upTo = i + 1;
   }
   // Bare teksten fram til innsettingspunktet
@@ -241,7 +242,7 @@ function nextLinePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | strin
     ]
       .filter(Boolean)
       .join("\n"),
-    maxTokens: 600,
+    maxTokens: 2000,
     temperature: 0.8,
     refs: {},
   };
@@ -250,14 +251,14 @@ function nextLinePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | strin
 function scenePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | string {
   const structure = activeStructure(s, r.productionId);
   const after = r.occurrenceId ? occurrenceOf(s, r.occurrenceId) : (structure[structure.length - 1] ?? null);
-  if (r.occurrenceId && (!after || !after.active)) return L("Scenen finnes ikke", "The scene was not found");
+  if (r.occurrenceId && (!after || !after.active)) return tk("core-script-assist-prompts.scene-prompt.message.4c53b46ced58");
   let brief = r.description?.trim() ?? "";
   if (r.canvasNodeId) {
     const n = s.canvasNodes[r.canvasNodeId];
-    if (!n || n.removed || n.kind !== "scene") return L("Velg en scenenode", "Select a scene node");
+    if (!n || n.removed || n.kind !== "scene") return tk("core-script-assist-prompts.scene-prompt.message.6c5772efc8a0");
     brief = [n.title.trim(), n.body.trim(), brief].filter(Boolean).join("\n");
   }
-  if (!brief) return L("Skriv en kort beskrivelse", "Write a short description");
+  if (!brief) return tk("core-script-assist-prompts.scene-prompt.message.2517fe7e2fae");
   const prevBlocks = after ? sceneBlocks(s, after.id) : [];
   const haystack = `${brief}\n${prevBlocks.filter((b) => b.kind === "character").map((b) => b.text).join("\n")}`.toLowerCase();
   const cast = characterAssets(s).filter((a) =>
@@ -320,7 +321,7 @@ export function buildAssistPrompt(
     const picked = selected(s, r);
     if (typeof picked === "string") return { ok: false, message: picked };
     if (r.kind === "rewrite" && (r.mode === "free" || r.mode === "tone") && !r.instruction?.trim())
-      return { ok: false, message: L("Skriv hva du ønsker", "Write what you want") };
+      return { ok: false, message: tk("core-script-assist-prompts.message.message.8fb869f6ca32") };
     p = editPrompt(
       s,
       r,
@@ -330,10 +331,10 @@ export function buildAssistPrompt(
         : "Correct spelling, grammar and punctuation only. Keep the wording, style, dialect and meaning. Do not change capitalisation of character names.",
     );
   } else if (r.kind === "translate") {
-    if (!r.occurrenceId || !s.occurrences[r.occurrenceId]) return { ok: false, message: L("Velg en scene", "Select a scene") };
+    if (!r.occurrenceId || !s.occurrences[r.occurrenceId]) return { ok: false, message: tk("core-script-assist-prompts.message.message.49241b66fcc9") };
     const picked = untranslatedBlocks(s, r.occurrenceId, r.blockIds).slice(0, MAX_ASSIST_BLOCKS);
     if (picked.length === 0)
-      return { ok: false, message: L("Alle linjene har allerede engelsk oversettelse", "All lines already have an English translation") };
+      return { ok: false, message: tk("core-script-assist-prompts.message.message.975880aef759") };
     p = editPrompt(
       s,
       { ...r, blockIds: picked.map((b) => b.id) },

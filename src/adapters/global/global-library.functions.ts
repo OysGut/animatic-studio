@@ -7,21 +7,12 @@
  * - «Bruk i prosjekt» (§5, §7, G3/G4): kopierer den globale filen inn i prosjektet (én kopi per prosjekt og
  *   versjon); kommandoene som kobler den inn, kjøres i nettleseren gjennom den vanlige kommandostakken.
  */
+import type { FontSpec } from "@/core/typography/project-fonts";
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  assetFilePath,
-  extensionOf,
-  globalFilePath,
-  globalKindOf,
-  isGlobalPathOf,
-  isUuid,
-  templateError,
-  type AssetMedia,
-  type TemplateDefinition,
-} from "@/core";
+import { assetFilePath, extensionOf, globalFilePath, globalKindOf, isGlobalPathOf, isUuid, templateError, type AssetMedia, type TemplateDefinition } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t as tk } from "@/core/i18n/keyed";
 
 const BUCKET = "assets";
 const ROLE_RANK: Record<string, number> = { member: 1, editor: 2, owner: 3 };
@@ -33,7 +24,7 @@ async function admin(): Promise<AnyClient> {
 }
 
 function bad(): never {
-  throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  throw new Error(tk("adapters-global-global-library-functions.bad.message.a3b892b887e4"));
 }
 function obj(d: unknown): Record<string, unknown> {
   if (!d || typeof d !== "object") bad();
@@ -115,7 +106,7 @@ export const getGlobalFileUrls = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<Record<string, string>> => {
     const db = context.supabase as unknown as AnyClient;
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 1)
-      throw new Error(L("Ingen tilgang til gruppen", "No access to the workspace"));
+      throw new Error(tk("adapters-global-global-library-functions.get-global-file-urls.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-workspace-id-uuid-x-workspace-id-const-paths-x-paths-if-array-is-array-paths-paths-length-200-bad-for-const-p-of-paths-if-typeof-p-string-is-global-path-of-p-workspace-id-bad-return-workspace-id-paths-paths-as-string-handler.0f36e968a276"));
     if (!data.paths.length) return {};
     const { data: urls, error } = await storageOf(await admin())
       .from(BUCKET)
@@ -142,7 +133,7 @@ export const createGlobalUpload = createServerFn({ method: "POST" })
     const db = context.supabase as unknown as AnyClient;
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2)
       throw new Error(
-        L("Bare eier og redaktør kan laste opp", "Only owners and editors can upload"),
+        tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.2ef81d018d0e"),
       );
     const { data: ga } = await db
       .from("global_assets")
@@ -150,12 +141,12 @@ export const createGlobalUpload = createServerFn({ method: "POST" })
       .eq("id", data.globalAssetId)
       .eq("workspace_id", data.workspaceId)
       .maybeSingle();
-    if (!ga) throw new Error(L("Ressursen finnes ikke", "The asset does not exist"));
+    if (!ga) throw new Error(tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.88b0cfae5299"));
     const path = globalFilePath(data.workspaceId, data.globalAssetId, data.sha256, data.ext);
     const { data: up, error } = await storageOf(await admin())
       .from(BUCKET)
       .createSignedUploadUrl(path, { upsert: true });
-    if (error || !up) throw new Error(error?.message ?? L("Lagringen svarte ikke", "The storage did not respond"));
+    if (error || !up) throw new Error(error?.message ?? tk("adapters-global-global-library-functions.create-global-upload.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-sha256-x-sha256-const-ext-x-ext-if-typeof-sha256-string-0-9a-f-64-test-sha256-bad-if-typeof-ext-string-a-z0-9-1-8-i-test-ext-bad-return-workspace-id-uuid-x-workspace-id-global-asset-id-uuid-x-global-asset-id-sha256-ext-handler.ca2b638ccbcc"));
     return { path, token: up.token };
   });
 
@@ -222,9 +213,9 @@ export const registerGlobalVersion = createServerFn({ method: "POST" })
       .maybeSingle();
     const row = v as { workspace_id: string; global_asset_id: string } | null;
     if (!row || !isGlobalPathOf(data.path, row.workspace_id, row.global_asset_id))
-      throw new Error(L("Ugyldig lagringssti", "Invalid storage path"));
+      throw new Error(tk("adapters-global-global-library-functions.register-global-version.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-global-version-input-const-x-obj-d-const-s-k-string-max-number-const-v-x-k-if-typeof-v-string-v-length-max-bad-return-v-const-byte-size-x-byte-size-if-typeof-byte-size-number-number-is-integer-byte-size-byte-size-0-bad-const-template-x-template-null-if-template-null-const-error-template-error-template-if-error-throw-new-error-error-return-variant-id-uuid-x-variant-id-path-s-path-600-mime-type-s-mime-type-100-width-int-or-null-x-width-height-int-or-null-x-height-byte-size-sha256-s-sha256-64-duration-ms-int-or-null-x-duration-ms-note-s-note-2000-template-template-as-template-definition-null-handler.7ad1560b4c41"));
     if (!(await fileExists(await admin(), data.path)))
-      throw new Error(L("Filen ble ikke lastet opp", "The file was not uploaded"));
+      throw new Error(tk("adapters-global-global-library-functions.register-global-version.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-global-version-input-const-x-obj-d-const-s-k-string-max-number-const-v-x-k-if-typeof-v-string-v-length-max-bad-return-v-const-byte-size-x-byte-size-if-typeof-byte-size-number-number-is-integer-byte-size-byte-size-0-bad-const-template-x-template-null-if-template-null-const-error-template-error-template-if-error-throw-new-error-error-return-variant-id-uuid-x-variant-id-path-s-path-600-mime-type-s-mime-type-100-width-int-or-null-x-width-height-int-or-null-x-height-byte-size-sha256-s-sha256-64-duration-ms-int-or-null-x-duration-ms-note-s-note-2000-template-template-as-template-definition-null-handler.8a2981a00f8b"));
     const { data: id, error } = await db.rpc("global_add_version", {
       p_variant: data.variantId,
       p_storage_key: data.path,
@@ -256,13 +247,10 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<{ globalAssetId: string; versions: number }> => {
     const db = context.supabase as unknown as AnyClient;
     if ((await projectRank(db, data.projectId, context.userId)) < 3)
-      throw new Error(L("Du har ikke skriverett i prosjektet", "You cannot edit this project"));
+      throw new Error(tk("adapters-global-global-library-functions.save-asset-to-global.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-return-project-id-uuid-x-project-id-asset-id-uuid-x-asset-id-workspace-id-uuid-x-workspace-id-handler.dbc199e2c031"));
     if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2)
       throw new Error(
-        L(
-          "Bare eier og redaktør i gruppen kan legge til i det globale biblioteket",
-          "Only owners and editors in the workspace can add to the global library",
-        ),
+        tk("adapters-global-global-library-functions.save-asset-to-global.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-return-project-id-uuid-x-project-id-asset-id-uuid-x-asset-id-workspace-id-uuid-x-workspace-id-handler.388ed67c15e2"),
       );
     // Prosjektets egne rader, lest med brukerens tilgang (RLS)
     const { data: asset } = await db
@@ -278,7 +266,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       category: string;
       tags: string[];
     } | null;
-    if (!a) throw new Error(L("Ressursen finnes ikke", "The asset does not exist"));
+    if (!a) throw new Error(tk("adapters-global-global-library-functions.save-asset-to-global.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-return-project-id-uuid-x-project-id-asset-id-uuid-x-asset-id-workspace-id-uuid-x-workspace-id-handler.d555549b72ad"));
     const { data: variants } = await db
       .from("asset_variants")
       .select("id, name, style, appearance, archived")
@@ -293,7 +281,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
     }[]).filter((v) => !v.archived);
     const { data: versions } = await db
       .from("asset_versions")
-      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec")
+      .select("id, variant_id, number, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
       .in(
         "variant_id",
         vars.map((v) => v.id),
@@ -312,6 +300,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
       note: string;
       removed: boolean | null;
       template_spec: TemplateDefinition | null;
+      font_spec?: FontSpec | null;
     }[])
       .filter((v) => !v.removed && v.media_path.startsWith(`${data.projectId}/`))
       .sort((x, y) => x.number - y.number);
@@ -350,6 +339,7 @@ export const saveAssetToGlobal = createServerFn({ method: "POST" })
           p_duration_ms: ver.duration_ms,
           p_note: ver.note ?? "",
           p_template_spec: ver.template_spec ?? null,
+          ...(ver.font_spec ? { p_font_spec: ver.font_spec } : {}),
         });
         if (e3) throw new Error(e3.message);
         count++;
@@ -387,7 +377,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<Record<string, AssetMedia>> => {
     const db = context.supabase as unknown as AnyClient;
     if ((await projectRank(db, data.projectId, context.userId)) < 3)
-      throw new Error(L("Du har ikke skriverett i prosjektet", "You cannot edit this project"));
+      throw new Error(tk("adapters-global-global-library-functions.copy-global-to-project.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-items-x-items-if-array-is-array-items-items-length-0-items-length-50-bad-return-project-id-uuid-x-project-id-items-items-map-i-const-o-obj-i-return-global-version-id-uuid-o-global-version-id-project-asset-id-uuid-o-project-asset-id-project-version-id-uuid-o-project-version-id-handler.4d58d387b738"));
     const { data: project } = await db
       .from("projects")
       .select("workspace_id")
@@ -396,10 +386,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
     const ws = (project as { workspace_id?: string | null } | null)?.workspace_id ?? null;
     if (!ws)
       throw new Error(
-        L(
-          "Prosjektet er ikke koblet til en arbeidsgruppe. Eieren kan koble det på gruppesiden.",
-          "The project is not linked to a workspace. The owner can link it on the workspace page.",
-        ),
+        tk("adapters-global-global-library-functions.copy-global-to-project.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-items-x-items-if-array-is-array-items-items-length-0-items-length-50-bad-return-project-id-uuid-x-project-id-items-items-map-i-const-o-obj-i-return-global-version-id-uuid-o-global-version-id-project-asset-id-uuid-o-project-asset-id-project-version-id-uuid-o-project-version-id-handler.394d754dcfb0"),
       );
     // Lest med brukerens tilgang: bare versjoner i gruppen brukeren er med i
     const { data: rows } = await db
@@ -428,10 +415,7 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
       const g = byId.get(it.globalVersionId);
       if (!g || g.workspace_id !== ws)
         throw new Error(
-          L(
-            "Ressursen hører ikke til prosjektets arbeidsgruppe, eller du har ikke tilgang til den.",
-            "The asset does not belong to the project's workspace, or you do not have access to it.",
-          ),
+          tk("adapters-global-global-library-functions.copy-global-to-project.create-server-fn-method-post-middleware-require-supabase-auth-validator-d-unknown-const-x-obj-d-const-items-x-items-if-array-is-array-items-items-length-0-items-length-50-bad-return-project-id-uuid-x-project-id-items-items-map-i-const-o-obj-i-return-global-version-id-uuid-o-global-version-id-project-asset-id-uuid-o-project-asset-id-project-version-id-uuid-o-project-version-id-handler.8a9c9397f987"),
         );
       const path = assetFilePath(
         data.projectId,
@@ -453,4 +437,134 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
       };
     }
     return out;
+  });
+
+// ---------- R3: publisering til en ressurs som allerede er global (migrasjon 0068) ----------
+
+export interface PublishToGlobalResult {
+  readonly globalAssetId: string;
+  readonly globalVariantId: string;
+  readonly globalVersionId: string;
+  readonly number: number;
+  /** En ny global variant ble laget (prosjektvarianten var ikke koblet til noen). */
+  readonly newVariant: boolean;
+}
+
+/**
+ * R3 «Publiser globalt» for en stilharmonisert versjon når ressursen allerede er koblet til det globale
+ * biblioteket: ny global versjon på den koblede varianten (eller en ny variant), aldri en kopi av hele
+ * ressursen. Andre prosjekter endres ikke; de får varselet «Ny versjon finnes» og velger selv.
+ * Rettigheter: redaktør eller eier i prosjektet og i gruppen (databasefunksjonene sjekker gruppen igjen).
+ */
+export const publishVersionToGlobal = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = obj(d);
+    return { projectId: uuid(x["projectId"]), versionId: uuid(x["versionId"]), workspaceId: uuid(x["workspaceId"]) };
+  })
+  .handler(async ({ data, context }): Promise<PublishToGlobalResult> => {
+    const db = context.supabase as unknown as AnyClient;
+    if ((await projectRank(db, data.projectId, context.userId)) < 3) throw new Error(tk("r3-global.error.project-rights"));
+    if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
+    const { data: ver } = await db
+      .from("asset_versions")
+      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec, font_spec")
+      .eq("id", data.versionId)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const v = ver as {
+      variant_id: string; media_path: string; mime_type: string; width: number | null; height: number | null;
+      byte_size_big: number; sha256: string; duration_ms: number | null; note: string | null; removed: boolean | null;
+      template_spec: TemplateDefinition | null;
+      font_spec?: FontSpec | null;
+    } | null;
+    if (!v || v.removed || !v.media_path.startsWith(`${data.projectId}/`)) throw new Error(tk("r3-global.error.no-version"));
+    const { data: va } = await db
+      .from("asset_variants")
+      .select("id, asset_id, name, style, appearance")
+      .eq("id", v.variant_id)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const variant = va as { asset_id: string; name: string; style: string; appearance: string | null } | null;
+    if (!variant) throw new Error(tk("r3-global.error.no-version"));
+    const { data: as } = await db
+      .from("assets")
+      .select("source_global_asset_id, removed")
+      .eq("id", variant.asset_id)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const globalAssetId = (as as { source_global_asset_id: string | null } | null)?.source_global_asset_id ?? null;
+    if (!globalAssetId) throw new Error(tk("r3-global.error.not-global"));
+    const { data: ga } = await db
+      .from("global_assets")
+      .select("id, workspace_id, archived_at")
+      .eq("id", globalAssetId)
+      .maybeSingle();
+    const g = ga as { workspace_id: string; archived_at: string | null } | null;
+    if (!g || g.workspace_id !== data.workspaceId || g.archived_at) throw new Error(tk("r3-global.error.not-global"));
+    // Den koblede globale varianten: fra versjonene i prosjektvarianten som er kopiert fra den globale ressursen
+    const { data: links } = await db
+      .from("asset_versions")
+      .select("source_global_variant_id")
+      .eq("project_id", data.projectId)
+      .eq("variant_id", v.variant_id)
+      .eq("source_global_asset_id", globalAssetId)
+      .not("source_global_variant_id", "is", null)
+      .limit(20);
+    let globalVariantId: string | null = null;
+    for (const l of (links ?? []) as { source_global_variant_id: string }[]) {
+      const { data: gv } = await db
+        .from("global_asset_variants")
+        .select("id, archived_at")
+        .eq("id", l.source_global_variant_id)
+        .eq("global_asset_id", globalAssetId)
+        .maybeSingle();
+      if (gv && !(gv as { archived_at: string | null }).archived_at) { globalVariantId = l.source_global_variant_id; break; }
+    }
+    let newVariant = false;
+    if (!globalVariantId) {
+      const { data: id, error } = await db.rpc("global_create_variant", {
+        p_asset: globalAssetId, p_name: variant.name, p_style: variant.style, p_appearance: variant.appearance ?? "",
+      });
+      if (error) throw new Error(error.message);
+      globalVariantId = id as string;
+      newVariant = true;
+    }
+    const to = globalFilePath(data.workspaceId, globalAssetId, v.sha256, extensionOf(v.media_path));
+    const err = await copyFile(await admin(), v.media_path, to);
+    if (err) throw new Error(err);
+    const { data: gid, error: e2 } = await db.rpc("global_add_version", {
+      p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
+      p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
+      p_template_spec: v.template_spec ?? null,
+      ...(v.font_spec ? { p_font_spec: v.font_spec } : {}),
+    });
+    if (e2) throw new Error(e2.message);
+    const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();
+    return {
+      globalAssetId, globalVariantId, globalVersionId: gid as string,
+      number: Number((num as { number?: number } | null)?.number ?? 0), newVariant,
+    };
+  });
+
+/**
+ * R3: «Angre» trekker en publisert global versjon tilbake (skjules for ny bruk; raden og filen beholdes), og
+ * «gjør om» publiserer den igjen. Prosjekter som har kopiert versjonen, endres aldri.
+ * Rettigheter: redaktør eller eier i gruppen (sjekkes her og igjen i databasefunksjonen).
+ */
+export const setGlobalVersionWithdrawn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = obj(d);
+    if (typeof x["withdrawn"] !== "boolean") bad();
+    return { versionId: uuid(x["versionId"]), withdrawn: x["withdrawn"] as boolean };
+  })
+  .handler(async ({ data, context }): Promise<{ changed: boolean }> => {
+    const db = context.supabase as unknown as AnyClient;
+    const { data: row } = await db.from("global_asset_versions").select("workspace_id").eq("id", data.versionId).maybeSingle();
+    const ws = (row as { workspace_id?: string } | null)?.workspace_id;
+    if (!ws || (await workspaceRank(db, ws, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
+    const { data: changed, error } = await db.rpc("global_set_version_withdrawn", { p_version: data.versionId, p_withdrawn: data.withdrawn });
+    if (error) throw new Error(error.message);
+    return { changed: changed === true };
   });

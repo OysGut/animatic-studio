@@ -4,34 +4,7 @@
  */
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
-import {
-  FONT_CATALOG,
-  L,
-  MAX_TEXT_CHARS,
-  MOTION_PRESETS,
-  MOTION_PRESET_LABEL,
-  TEMPLATE_CATEGORIES,
-  applyMotionPreset,
-  letterAnimWith,
-  normalizeLetterAnim,
-  presetWindow,
-  fontById,
-  fpsToNumber,
-  layerFieldsOf,
-  newerTemplateVersion,
-  normalizeColor,
-  type Composition,
-  type CompositionLayer,
-  type LayerEffects,
-  type LayerFields,
-  type LetterAnimation,
-  type MotionPreset,
-  type PresetDirection,
-  type ProjectState,
-  type ShapeSpec,
-  type TemplateCategory,
-  type TextSpec,
-} from "@/core";
+import { FONT_CATALOG, projectFontEntries, projectFontId, MAX_TEXT_CHARS, MOTION_PRESETS, MOTION_PRESET_LABEL, TEMPLATE_CATEGORIES, applyMotionPreset, letterAnimWith, normalizeLetterAnim, presetWindow, fontById, fpsToNumber, layerFieldsOf, newerTemplateVersion, normalizeColor, type Composition, type CompositionLayer, type LayerEffects, type LayerFields, type LetterAnimation, type MotionPreset, type PresetDirection, type ProjectState, type ShapeSpec, type TemplateCategory, type TextSpec } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -43,6 +16,11 @@ import {
 } from "@/components/ui/dialog";
 import { Field, Hint, NumberField, Section, inputClass } from "./inspector-fields";
 import { useTextFonts } from "@/engine/typography/fonts";
+import { AddFontDialog } from "@/app/fonts/AddFontDialog";
+import { addFontToProject } from "@/app/fonts/project-fonts";
+
+/** Verdien i fontvelgeren som åpner «Legg til font …» (aldri lagret). */
+const ADD_FONT = "__add-font__";
 import {
   saveAsTemplate,
   updateInstanceValues,
@@ -50,22 +28,23 @@ import {
   type Run,
   type RunAndWait,
 } from "./mts-actions";
+import { t } from "@/core/i18n/keyed";
 
 const CATEGORY_LABEL: Record<TemplateCategory, string> = {
   get lower_third() {
-    return L("Lower third", "Lower third");
+    return t("app-scene-editor-text-inspector.category-label.message.20382ac35166");
   },
   get title() {
-    return L("Filmtittel", "Film title");
+    return t("app-scene-editor-text-inspector.category-label.message.f6c3b9aa603d");
   },
   get text_card() {
-    return L("Tekstscene", "Text scene");
+    return t("app-scene-editor-text-inspector.category-label.message.6ab90540dba7");
   },
   get text_object() {
-    return L("Tekstobjekt", "Text object");
+    return t("app-scene-editor-text-inspector.category-label.message.e42ec243a038");
   },
   get credits() {
-    return L("Rulletekst", "Credits");
+    return t("app-scene-editor-text-inspector.category-label.message.81e7744850ab");
   },
 };
 
@@ -137,7 +116,15 @@ export function TextInspector({
   const isFill = layer.kind !== "text" && layer.kind !== "group" && layer.fill !== null && layer.assetId === null;
   return (
     <>
-      {text ? <TextSection text={text} off={off} apply={apply} /> : null}
+      {text ? (
+        <TextSection
+          text={text}
+          off={off}
+          apply={apply}
+          state={state}
+          {...(projectId && runAndWait ? { projectId, runAndWait } : {})}
+        />
+      ) : null}
       {text ? <LetterSection text={text} off={off} apply={apply} /> : null}
       {isFill ? <ShapeSection shape={layer.shape ?? null} off={off} apply={apply} /> : null}
       {layer.kind !== "group" ? (
@@ -171,22 +158,34 @@ function TextSection({
   text,
   off,
   apply,
+  state,
+  projectId,
+  runAndWait,
 }: {
   text: TextSpec;
   off: boolean;
   apply: (label: string, patch: Partial<LayerFields>) => void;
+  state: ProjectState;
+  projectId?: string;
+  runAndWait?: RunAndWait;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  // B-098: prosjektets egne fonter (fjernede bare når laget bruker dem, så navnet beholdes)
+  const ownFonts = useMemo(
+    () => projectFontEntries(state).filter((f) => !f.removed || f.id === text.fontId),
+    [state, text.fontId],
+  );
   const fonts = useTextFonts([text]);
   const font = fontById(text.fontId);
   const set = (label: string, p: Partial<TextSpec>) => apply(label, { text: { ...text, ...p } });
   const value = draft ?? text.content;
   const tooLong = value.length > MAX_TEXT_CHARS;
-  const label = L("Endre tekst", "Edit text");
+  const label = t("app-scene-editor-text-inspector.label.message.5f575c69272d");
   return (
-    <Section title={L("Tekst", "Text")}>
+    <Section title={t("app-scene-editor-text-inspector.text-section.title.7976b553e93e")}>
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        <span>{L("Innhold", "Content")}</span>
+        <span>{t("app-scene-editor-text-inspector.text-section.span.3ea2ff1c5e24")}</span>
         <textarea
           data-testid="mts-text-content"
           className={inputClass + " h-20 py-1"}
@@ -204,58 +203,81 @@ function TextSection({
           role={tooLong ? "alert" : undefined}
         >
           {tooLong
-            ? L(
-                `For lang tekst: ${value.length} av høyst ${MAX_TEXT_CHARS} tegn. Ingenting er lagret; kort ned teksten.`,
-                `Text too long: ${value.length} of at most ${MAX_TEXT_CHARS} characters. Nothing is saved; shorten the text.`,
-              )
-            : L(`${value.length} / ${MAX_TEXT_CHARS} tegn`, `${value.length} / ${MAX_TEXT_CHARS} characters`)}
+            ? t("app-scene-editor-text-inspector.text-section.span.2124b4882462", { length: String(value.length), MAX_TEXT_CHARS: String(MAX_TEXT_CHARS) })
+            : t("app-scene-editor-text-inspector.text-section.span.23cd0dbe0dc7", { length: String(value.length), MAX_TEXT_CHARS: String(MAX_TEXT_CHARS) })}
         </span>
       </label>
-      <Field label={L("Font", "Font")}>
+      <Field label={t("app-scene-editor-text-inspector.text-section.label.0286fd399ac1")}>
         <select
           data-testid="mts-font"
           className={inputClass}
           value={text.fontId}
           disabled={off}
-          onChange={(e) => set(L("Endre font", "Change font"), { fontId: e.target.value })}
+          onChange={(e) => {
+            if (e.target.value === ADD_FONT) setAdding(true);
+            else set(t("app-scene-editor-text-inspector.text-section.set.368732226d08"), { fontId: e.target.value });
+          }}
         >
           {FONT_CATALOG.map((f) => (
             <option key={f.id} value={f.id}>
               {f.label}
             </option>
           ))}
+          {ownFonts.length > 0 ? (
+            <optgroup label={t("b098.picker.project-fonts")}>
+              {ownFonts.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.removed ? t("b098.picker.removed", { family: f.label }) : f.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : null}
+          {!fontById(text.fontId) ? <option value={text.fontId}>{text.fontId}</option> : null}
+          {projectId && runAndWait ? <option value={ADD_FONT}>{t("b098.picker.add")}</option> : null}
         </select>
       </Field>
+      {projectId && runAndWait ? (
+        <AddFontDialog
+          open={adding}
+          onOpenChange={setAdding}
+          onAdd={async (font, files, subsets) => {
+            try {
+              const assetId = await addFontToProject(runAndWait, projectId, font, files, subsets);
+              set(t("app-scene-editor-text-inspector.text-section.set.368732226d08"), { fontId: projectFontId(assetId) });
+              return null;
+            } catch (e) {
+              return e instanceof Error ? e.message : t("b098.unavailable");
+            }
+          }}
+        />
+      ) : null}
       {fonts.missing.length > 0 ? (
         <p role="alert" data-testid="mts-font-missing" className="flex items-start gap-1 text-xs text-status-discrepancy">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-          {L(
-            `Fonten «${fonts.missing.join(", ")}» kunne ikke lastes. Teksten vises med en reservefont, også i eksporten.`,
-            `The font “${fonts.missing.join(", ")}” could not be loaded. The text is shown with a fallback font, also in the export.`,
-          )}
+          {t("app-scene-editor-text-inspector.text-section.p.2cfcace8eeb3", { value1: String(fonts.missing.join(", ")) })}
         </p>
       ) : null}
       {font ? (
         <Hint>
-          {L(`Lisens ${font.license}, fra ${font.source}.`, `Licence ${font.license}, from ${font.source}.`)}
+          {t("app-scene-editor-text-inspector.text-section.hint.39ba46a10c55", { license: String(font.license), source: String(font.source) })}
         </Hint>
       ) : null}
       <div className="grid grid-cols-2 gap-2">
         <NumberField
-          label={L("Størrelse", "Size")}
+          label={t("app-scene-editor-text-inspector.text-section.label.6e2162a63710")}
           value={text.size}
           min={1}
           max={2000}
           disabled={off}
-          onCommit={(size) => set(L("Endre tekststørrelse", "Change text size"), { size })}
+          onCommit={(size) => set(t("app-scene-editor-text-inspector.text-section.set.e7ddb0a9a187"), { size })}
         />
-        <Field label={L("Vekt", "Weight")}>
+        <Field label={t("app-scene-editor-text-inspector.text-section.label.67a824460feb")}>
           <select
             data-testid="mts-weight"
             className={inputClass}
             value={text.weight}
             disabled={off}
-            onChange={(e) => set(L("Endre vekt", "Change weight"), { weight: Number(e.target.value) })}
+            onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.d34f87e78fbc"), { weight: Number(e.target.value) })}
           >
             {(font?.weights ?? [400, 700]).map((w) => (
               <option key={w} value={w}>
@@ -265,54 +287,54 @@ function TextSection({
           </select>
         </Field>
         <NumberField
-          label={L("Bokstavavstand", "Letter spacing")}
+          label={t("app-scene-editor-text-inspector.text-section.label.4d328e0d6426")}
           value={text.letterSpacing}
           min={-500}
           max={500}
           disabled={off}
-          onCommit={(letterSpacing) => set(L("Endre bokstavavstand", "Change letter spacing"), { letterSpacing })}
+          onCommit={(letterSpacing) => set(t("app-scene-editor-text-inspector.text-section.set.70f1045f1fe5"), { letterSpacing })}
         />
         <NumberField
-          label={L("Linjehøyde", "Line height")}
+          label={t("app-scene-editor-text-inspector.text-section.label.baeab00169d8")}
           value={text.lineHeight}
           step={0.05}
           min={0.5}
           max={4}
           disabled={off}
-          onCommit={(lineHeight) => set(L("Endre linjehøyde", "Change line height"), { lineHeight })}
+          onCommit={(lineHeight) => set(t("app-scene-editor-text-inspector.text-section.set.8df602791835"), { lineHeight })}
         />
       </div>
       <Color
-        label={L("Farge", "Colour")}
+        label={t("app-scene-editor-text-inspector.text-section.label.d824ce94cafe")}
         testId="mts-text-color"
         value={text.color}
         disabled={off}
-        onCommit={(color) => set(L("Endre tekstfarge", "Change text colour"), { color })}
+        onCommit={(color) => set(t("app-scene-editor-text-inspector.text-section.set.89424a182e1d"), { color })}
       />
       <div className="grid grid-cols-2 gap-2">
-        <Field label={L("Justering", "Alignment")}>
+        <Field label={t("app-scene-editor-text-inspector.text-section.label.760241859576")}>
           <select
             data-testid="mts-align"
             className={inputClass}
             value={text.align}
             disabled={off}
-            onChange={(e) => set(L("Endre justering", "Change alignment"), { align: e.target.value as TextSpec["align"] })}
+            onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.9c02eda8f51c"), { align: e.target.value as TextSpec["align"] })}
           >
-            <option value="left">{L("Venstre", "Left")}</option>
-            <option value="center">{L("Midten", "Centre")}</option>
-            <option value="right">{L("Høyre", "Right")}</option>
+            <option value="left">{t("app-scene-editor-text-inspector.text-section.option.dc5019a86592")}</option>
+            <option value="center">{t("app-scene-editor-text-inspector.text-section.option.5066ba20a778")}</option>
+            <option value="right">{t("app-scene-editor-text-inspector.text-section.option.dc2e3a16a480")}</option>
           </select>
         </Field>
-        <Field label={L("Loddrett", "Vertical")}>
+        <Field label={t("app-scene-editor-text-inspector.text-section.label.227941359fe2")}>
           <select
             className={inputClass}
             value={text.vAlign}
             disabled={off}
-            onChange={(e) => set(L("Endre justering", "Change alignment"), { vAlign: e.target.value as TextSpec["vAlign"] })}
+            onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.9c02eda8f51c.2"), { vAlign: e.target.value as TextSpec["vAlign"] })}
           >
-            <option value="top">{L("Topp", "Top")}</option>
-            <option value="middle">{L("Midten", "Middle")}</option>
-            <option value="bottom">{L("Bunn", "Bottom")}</option>
+            <option value="top">{t("app-scene-editor-text-inspector.text-section.option.4a9ef4e5a031")}</option>
+            <option value="middle">{t("app-scene-editor-text-inspector.text-section.option.51bf00f6e117")}</option>
+            <option value="bottom">{t("app-scene-editor-text-inspector.text-section.option.36df391b07fe")}</option>
           </select>
         </Field>
       </div>
@@ -322,18 +344,18 @@ function TextSection({
             type="checkbox"
             checked={text.italic}
             disabled={off}
-            onChange={(e) => set(L("Kursiv", "Italic"), { italic: e.target.checked })}
+            onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.d932624f2c61"), { italic: e.target.checked })}
           />
-          {L("Kursiv", "Italic")}
+          {t("app-scene-editor-text-inspector.text-section.label.d932624f2c61")}
         </label>
         <label className="flex items-center gap-1.5">
           <input
             type="checkbox"
             checked={text.wrap}
             disabled={off}
-            onChange={(e) => set(L("Linjebryting", "Line wrapping"), { wrap: e.target.checked })}
+            onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.06715f50e8ec"), { wrap: e.target.checked })}
           />
-          {L("Bryt linjer", "Wrap lines")}
+          {t("app-scene-editor-text-inspector.text-section.label.fecef2f2beb0")}
         </label>
       </div>
     </Section>
@@ -363,16 +385,16 @@ function LetterSection({
       return;
     }
     setErr(null);
-    apply(L("Endre bokstavanimasjon", "Change letter animation"), { text: { ...text, letterAnim: checked.value } });
+    apply(t("app-scene-editor-text-inspector.set.apply.a1c6dfc18e85"), { text: { ...text, letterAnim: checked.value } });
   };
   return (
-    <Section title={L("Bokstavanimasjon", "Letter animation")}>
+    <Section title={t("app-scene-editor-text-inspector.letter-section.title.f24ba95e9ad1")}>
       {err ? (
         <p role="alert" data-testid="mts-letter-error" className="text-xs text-status-discrepancy">
           {err}
         </p>
       ) : null}
-      <Field label={L("Effekt", "Effect")}>
+      <Field label={t("app-scene-editor-text-inspector.letter-section.label.116dc40a203c")}>
         <select
           data-testid="mts-letter-effect"
           className={inputClass}
@@ -382,16 +404,16 @@ function LetterSection({
             e.target.value === "none" ? set(null) : set({ effect: e.target.value as LetterAnimation["effect"] })
           }
         >
-          <option value="none">{L("Ingen", "None")}</option>
-          <option value="appear">{L("Kommer fram (F → FI → FIL)", "Appear (F → FI → FIL)")}</option>
-          <option value="fade">{L("Ton inn", "Fade in")}</option>
-          <option value="slide">{L("Skli inn", "Slide in")}</option>
-          <option value="scale">{L("Voks fram", "Scale up")}</option>
+          <option value="none">{t("app-scene-editor-text-inspector.letter-section.option.e260952cb446")}</option>
+          <option value="appear">{t("app-scene-editor-text-inspector.letter-section.option.c1d3537f209b")}</option>
+          <option value="fade">{t("app-scene-editor-text-inspector.letter-section.option.1e19ace0be4d")}</option>
+          <option value="slide">{t("app-scene-editor-text-inspector.letter-section.option.75d3f6f78f64")}</option>
+          <option value="scale">{t("app-scene-editor-text-inspector.letter-section.option.d5674df1f7a5")}</option>
         </select>
       </Field>
       {a ? (
         <div className="grid grid-cols-2 gap-2">
-          <Field label={L("Enhet", "Unit")}>
+          <Field label={t("app-scene-editor-text-inspector.letter-section.label.21d712a73c9f")}>
             <select
               data-testid="mts-letter-unit"
               className={inputClass}
@@ -399,26 +421,26 @@ function LetterSection({
               disabled={off}
               onChange={(e) => set({ unit: e.target.value as LetterAnimation["unit"] })}
             >
-              <option value="letter">{L("Bokstav", "Letter")}</option>
-              <option value="word">{L("Ord", "Word")}</option>
-              <option value="line">{L("Linje", "Line")}</option>
+              <option value="letter">{t("app-scene-editor-text-inspector.letter-section.option.a8f45b31b2bd")}</option>
+              <option value="word">{t("app-scene-editor-text-inspector.letter-section.option.a519beb728e3")}</option>
+              <option value="line">{t("app-scene-editor-text-inspector.letter-section.option.50a594e6b3cc")}</option>
             </select>
           </Field>
-          <Field label={L("Rekkefølge", "Order")}>
+          <Field label={t("app-scene-editor-text-inspector.letter-section.label.329318247726")}>
             <select
               className={inputClass}
               value={a.order}
               disabled={off}
               onChange={(e) => set({ order: e.target.value as LetterAnimation["order"] })}
             >
-              <option value="start">{L("Fra start", "From start")}</option>
-              <option value="end">{L("Fra slutt", "From end")}</option>
-              <option value="center">{L("Fra midten", "From centre")}</option>
-              <option value="random">{L("Tilfeldig", "Random")}</option>
+              <option value="start">{t("app-scene-editor-text-inspector.letter-section.option.6e4ff510b53f")}</option>
+              <option value="end">{t("app-scene-editor-text-inspector.letter-section.option.e07af7e4986e")}</option>
+              <option value="center">{t("app-scene-editor-text-inspector.letter-section.option.7db911814b35")}</option>
+              <option value="random">{t("app-scene-editor-text-inspector.letter-section.option.4ccfaee99bed")}</option>
             </select>
           </Field>
           <NumberField
-            label={L("Start (bilde)", "Start (frame)")}
+            label={t("app-scene-editor-text-inspector.letter-section.label.8ddb740ac2e6")}
             value={a.startFrame}
             integer
             min={0}
@@ -426,7 +448,7 @@ function LetterSection({
             onCommit={(startFrame) => set({ startFrame })}
           />
           <NumberField
-            label={L("Forsinkelse (bilder)", "Delay (frames)")}
+            label={t("app-scene-editor-text-inspector.letter-section.label.9173594af03f")}
             value={a.delayFrames}
             integer
             min={0}
@@ -434,7 +456,7 @@ function LetterSection({
             onCommit={(delayFrames) => set({ delayFrames })}
           />
           <NumberField
-            label={L("Varighet (bilder)", "Duration (frames)")}
+            label={t("app-scene-editor-text-inspector.letter-section.label.f7f2072642a1")}
             value={a.durationFrames}
             integer
             min={0}
@@ -459,10 +481,10 @@ function ShapeSection({
   apply: (label: string, patch: Partial<LayerFields>) => void;
 }) {
   const s: ShapeSpec = shape ?? { type: "rect", radius: 0, stroke: null };
-  const set = (p: Partial<ShapeSpec>) => apply(L("Endre form", "Change shape"), { shape: { ...s, ...p } });
+  const set = (p: Partial<ShapeSpec>) => apply(t("app-scene-editor-text-inspector.set.apply.bd7df46e43ac"), { shape: { ...s, ...p } });
   return (
-    <Section title={L("Form", "Shape")}>
-      <Field label={L("Form", "Shape")}>
+    <Section title={t("app-scene-editor-text-inspector.shape-section.title.cf0a3d225c6e")}>
+      <Field label={t("app-scene-editor-text-inspector.shape-section.label.cf0a3d225c6e")}>
         <select
           data-testid="mts-shape"
           className={inputClass}
@@ -470,19 +492,19 @@ function ShapeSection({
           disabled={off}
           onChange={(e) =>
             e.target.value === "none"
-              ? apply(L("Endre form", "Change shape"), { shape: null })
+              ? apply(t("app-scene-editor-text-inspector.shape-section.apply.dfe067ffe3ff"), { shape: null })
               : set({ type: e.target.value as ShapeSpec["type"] })
           }
         >
-          <option value="none">{L("Hel flate", "Full fill")}</option>
-          <option value="rect">{L("Rektangel", "Rectangle")}</option>
-          <option value="ellipse">{L("Ellipse", "Ellipse")}</option>
-          <option value="line">{L("Linje", "Line")}</option>
+          <option value="none">{t("app-scene-editor-text-inspector.shape-section.option.2e5b9375f9cf")}</option>
+          <option value="rect">{t("app-scene-editor-text-inspector.shape-section.option.e5bcf79231a1")}</option>
+          <option value="ellipse">{t("app-scene-editor-text-inspector.shape-section.option.4a06e493543f")}</option>
+          <option value="line">{t("app-scene-editor-text-inspector.shape-section.option.0c8dc1eccc12")}</option>
         </select>
       </Field>
       {shape?.type === "rect" ? (
         <NumberField
-          label={L("Avrunding", "Rounding")}
+          label={t("app-scene-editor-text-inspector.shape-section.label.66f1f1b45414")}
           value={s.radius}
           min={0}
           max={10000}
@@ -509,10 +531,10 @@ function EffectsSection({
   const set = (p: Partial<LayerEffects>) => {
     const next = { ...e, ...p };
     const empty = !next.shadow && !next.glow && !next.outline;
-    apply(L("Endre effekter", "Change effects"), { effects: empty ? null : next });
+    apply(t("app-scene-editor-text-inspector.set.apply.25faac387f73"), { effects: empty ? null : next });
   };
   return (
-    <Section title={L("Effekter", "Effects")}>
+    <Section title={t("app-scene-editor-text-inspector.effects-section.title.14c7f7d9ce89")}>
       <label className="flex items-center gap-1.5 text-xs text-text-secondary">
         <input
           type="checkbox"
@@ -523,12 +545,12 @@ function EffectsSection({
             set({ shadow: x.target.checked ? { color: "#000000", blur: 12, offsetX: 4, offsetY: 4 } : null })
           }
         />
-        {L("Skygge", "Shadow")}
+        {t("app-scene-editor-text-inspector.effects-section.label.2b1a9a7a805b")}
       </label>
       {e.shadow ? (
         <div className="grid grid-cols-2 gap-2 pl-5">
-          <Color label={L("Farge", "Colour")} value={e.shadow.color} disabled={off} onCommit={(color) => set({ shadow: { ...e.shadow!, color } })} />
-          <NumberField label={L("Uskarphet", "Blur")} value={e.shadow.blur} min={0} max={500} disabled={off} onCommit={(blur) => set({ shadow: { ...e.shadow!, blur } })} />
+          <Color label={t("app-scene-editor-text-inspector.effects-section.label.0b16e471cffa")} value={e.shadow.color} disabled={off} onCommit={(color) => set({ shadow: { ...e.shadow!, color } })} />
+          <NumberField label={t("app-scene-editor-text-inspector.effects-section.label.681d30682ecf")} value={e.shadow.blur} min={0} max={500} disabled={off} onCommit={(blur) => set({ shadow: { ...e.shadow!, blur } })} />
           <NumberField label="X" value={e.shadow.offsetX} min={-1000} max={1000} disabled={off} onCommit={(offsetX) => set({ shadow: { ...e.shadow!, offsetX } })} />
           <NumberField label="Y" value={e.shadow.offsetY} min={-1000} max={1000} disabled={off} onCommit={(offsetY) => set({ shadow: { ...e.shadow!, offsetY } })} />
         </div>
@@ -541,12 +563,12 @@ function EffectsSection({
           disabled={off}
           onChange={(x) => set({ glow: x.target.checked ? { color: "#ffffff", blur: 20 } : null })}
         />
-        {L("Glød", "Glow")}
+        {t("app-scene-editor-text-inspector.effects-section.label.255214464828")}
       </label>
       {e.glow ? (
         <div className="grid grid-cols-2 gap-2 pl-5">
-          <Color label={L("Farge", "Colour")} value={e.glow.color} disabled={off} onCommit={(color) => set({ glow: { ...e.glow!, color } })} />
-          <NumberField label={L("Uskarphet", "Blur")} value={e.glow.blur} min={0} max={500} disabled={off} onCommit={(blur) => set({ glow: { ...e.glow!, blur } })} />
+          <Color label={t("app-scene-editor-text-inspector.effects-section.label.0b16e471cffa.2")} value={e.glow.color} disabled={off} onCommit={(color) => set({ glow: { ...e.glow!, color } })} />
+          <NumberField label={t("app-scene-editor-text-inspector.effects-section.label.681d30682ecf.2")} value={e.glow.blur} min={0} max={500} disabled={off} onCommit={(blur) => set({ glow: { ...e.glow!, blur } })} />
         </div>
       ) : null}
       <label className="flex items-center gap-1.5 text-xs text-text-secondary">
@@ -557,12 +579,12 @@ function EffectsSection({
           disabled={off}
           onChange={(x) => set({ outline: x.target.checked ? { color: "#000000", width: 4 } : null })}
         />
-        {L("Kontur", "Outline")}
+        {t("app-scene-editor-text-inspector.effects-section.label.a5ad8ad2cc88")}
       </label>
       {e.outline ? (
         <div className="grid grid-cols-2 gap-2 pl-5">
-          <Color label={L("Farge", "Colour")} value={e.outline.color} disabled={off} onCommit={(color) => set({ outline: { ...e.outline!, color } })} />
-          <NumberField label={L("Bredde", "Width")} value={e.outline.width} min={0} max={200} disabled={off} onCommit={(width) => set({ outline: { ...e.outline!, width } })} />
+          <Color label={t("app-scene-editor-text-inspector.effects-section.label.0b16e471cffa.3")} value={e.outline.color} disabled={off} onCommit={(color) => set({ outline: { ...e.outline!, color } })} />
+          <NumberField label={t("app-scene-editor-text-inspector.effects-section.label.349e1b851a7c")} value={e.outline.width} min={0} max={200} disabled={off} onCommit={(width) => set({ outline: { ...e.outline!, width } })} />
         </div>
       ) : null}
     </Section>
@@ -608,15 +630,15 @@ function PresetSection({
     });
     apply(
       phase === "in"
-        ? L(`Inn-animasjon: ${MOTION_PRESET_LABEL[preset]}`, `In animation: ${MOTION_PRESET_LABEL[preset]}`)
-        : L(`Ut-animasjon: ${MOTION_PRESET_LABEL[preset]}`, `Out animation: ${MOTION_PRESET_LABEL[preset]}`),
+        ? t("app-scene-editor-text-inspector.add.apply.07ca9c795e69", { value1: String(MOTION_PRESET_LABEL[preset]) })
+        : t("app-scene-editor-text-inspector.add.apply.2df8d62721ef", { value1: String(MOTION_PRESET_LABEL[preset]) }),
       { keyframes },
     );
   }
   return (
-    <Section title={L("Inn og ut", "In and out")}>
+    <Section title={t("app-scene-editor-text-inspector.preset-section.title.2a04b08dd595")}>
       <div className="grid grid-cols-2 gap-2">
-        <Field label={L("Oppsett", "Preset")}>
+        <Field label={t("app-scene-editor-text-inspector.preset-section.label.2381622e5aa9")}>
           <select
             data-testid="mts-preset"
             className={inputClass}
@@ -632,7 +654,7 @@ function PresetSection({
           </select>
         </Field>
         <NumberField
-          label={L("Varighet (s)", "Duration (s)")}
+          label={t("app-scene-editor-text-inspector.preset-section.label.dd18230f23ab")}
           value={secs}
           step={0.1}
           min={0.04}
@@ -641,22 +663,22 @@ function PresetSection({
           onCommit={setSecs}
         />
         {preset === "slide" ? (
-          <Field label={L("Retning", "Direction")}>
+          <Field label={t("app-scene-editor-text-inspector.preset-section.label.f9ad5f1245fa")}>
             <select className={inputClass} value={dir} disabled={off} onChange={(e) => setDir(e.target.value as PresetDirection)}>
-              <option value="left">{L("Fra venstre", "From the left")}</option>
-              <option value="right">{L("Fra høyre", "From the right")}</option>
-              <option value="up">{L("Ovenfra", "From above")}</option>
-              <option value="down">{L("Nedenfra", "From below")}</option>
+              <option value="left">{t("app-scene-editor-text-inspector.preset-section.option.640dcf929a12")}</option>
+              <option value="right">{t("app-scene-editor-text-inspector.preset-section.option.64faaf30efbb")}</option>
+              <option value="up">{t("app-scene-editor-text-inspector.preset-section.option.ccafc0e7d10d")}</option>
+              <option value="down">{t("app-scene-editor-text-inspector.preset-section.option.71f6d2e43824")}</option>
             </select>
           </Field>
         ) : null}
       </div>
       <div className="flex gap-2">
         <Button size="sm" variant="secondary" data-testid="mts-preset-in" disabled={off} onClick={() => add("in")}>
-          {L("Legg til inn", "Add in")}
+          {t("app-scene-editor-text-inspector.preset-section.button.4a383fccde6e")}
         </Button>
         <Button size="sm" variant="secondary" data-testid="mts-preset-out" disabled={off} onClick={() => add("out")}>
-          {L("Legg til ut", "Add out")}
+          {t("app-scene-editor-text-inspector.preset-section.button.7b42f6b2d66f")}
         </Button>
       </div>
       {err ? (
@@ -665,10 +687,7 @@ function PresetSection({
         </p>
       ) : null}
       <Hint>
-        {L(
-          "Inn starter ved starten av laget (eller ved avspillingshodet når det står inne i laget), ut slutter ved slutten av laget. Nøkkelbildene kan endres i tidslinjen.",
-          "In starts at the start of the layer (or at the playhead when it is inside the layer), out ends at the end of the layer. The keyframes can be changed in the timeline.",
-        )}
+        {t("app-scene-editor-text-inspector.preset-section.hint.98d4e693e118")}
       </Hint>
     </Section>
   );
@@ -707,14 +726,11 @@ function TemplateSection({
   // Utvalget som lagres: gruppen laget ligger i, ellers laget selv
   const selection = layer.groupId ? [layer.groupId] : [layer.id];
   return (
-    <Section title={L("Mal", "Template")}>
+    <Section title={t("app-scene-editor-text-inspector.template-section.title.08cf8bfe5932")}>
       {inst && def ? (
         <div data-testid="mts-template-instance" className="flex flex-col gap-2">
           <Hint>
-            {L(
-              `${state.assets[inst.templateAssetId]?.name ?? "Mal"}, versjon ${ver?.number ?? "?"}. Innholdet her endrer ikke malen.`,
-              `${state.assets[inst.templateAssetId]?.name ?? "Template"}, version ${ver?.number ?? "?"}. The content here does not change the template.`,
-            )}
+            {t("app-scene-editor-text-inspector.template-info", { name: state.assets[inst.templateAssetId]?.name ?? t("app-scene-editor-text-inspector.template-info-template"), version: ver?.number ?? "?" })}
           </Hint>
           {def.slots
             .filter((s) => s.kind === "text")
@@ -748,10 +764,7 @@ function TemplateSection({
               data-testid="mts-template-newer"
               className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary"
             >
-              {L(
-                `Ny malversjon finnes (versjon ${newerNumber}). Scenen endres ikke før du velger å oppdatere.`,
-                `A new template version exists (version ${newerNumber}). The scene is not changed until you choose to update.`,
-              )}
+              {t("app-scene-editor-text-inspector.template-section.div.87d71bc95594", { newerNumber: String(newerNumber) })}
               <Button
                 size="sm"
                 variant="secondary"
@@ -759,7 +772,7 @@ function TemplateSection({
                 disabled={off}
                 onClick={() => onError(updateInstanceVersion(run, state, inst.id, newer))}
               >
-                {L("Oppdater til ny versjon", "Update to the new version")}
+                {t("app-scene-editor-text-inspector.template-section.button.acf425c5276a")}
               </Button>
             </div>
           ) : null}
@@ -773,7 +786,7 @@ function TemplateSection({
           disabled={off}
           onClick={() => setSaveOpen(true)}
         >
-          {L("Lagre som mal …", "Save as template …")}
+          {t("app-scene-editor-text-inspector.template-section.button.f52670cd8206")}
         </Button>
       ) : null}
       {saveOpen && projectId && runAndWait ? (
@@ -831,7 +844,7 @@ function SaveTemplateDialog({
       });
       onClose();
     } catch (e) {
-      setErr(e instanceof Error ? e.message : L("Kunne ikke lagre malen", "Could not save the template"));
+      setErr(e instanceof Error ? e.message : t("app-scene-editor-text-inspector.save.set-err.41e0363720ec"));
     } finally {
       setBusy(false);
     }
@@ -840,12 +853,9 @@ function SaveTemplateDialog({
     <Dialog open onOpenChange={(o) => (!o && !busy ? onClose() : undefined)}>
       <DialogContent data-testid="mts-save-template-dialog">
         <DialogHeader>
-          <DialogTitle>{L("Lagre som mal", "Save as template")}</DialogTitle>
+          <DialogTitle>{t("app-scene-editor-text-inspector.save-template-dialog.dialog-title.49ac0da87e9a")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "Designet, animasjonen og feltene lagres som en mal i biblioteket. Tekstlagene blir felt du fyller ut der malen brukes.",
-              "The design, animation and fields are saved as a template in the library. The text layers become fields you fill in where the template is used.",
-            )}
+            {t("app-scene-editor-text-inspector.save-template-dialog.dialog-description.10fce92ed74d")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
@@ -857,15 +867,12 @@ function SaveTemplateDialog({
                 checked={asNewVersion}
                 onChange={(e) => setAsNewVersion(e.target.checked)}
               />
-              {L(
-                `Ny versjon av «${existing.name}» (forekomster som finnes, endres ikke)`,
-                `New version of “${existing.name}” (existing uses are not changed)`,
-              )}
+              {t("app-scene-editor-text-inspector.save-template-dialog.label.98ad6af1a94c", { name: String(existing.name) })}
             </label>
           ) : null}
           {!asNewVersion ? (
             <>
-              <Field label={L("Navn", "Name")}>
+              <Field label={t("app-scene-editor-text-inspector.save-template-dialog.label.9cebefedbeda")}>
                 <input
                   data-testid="mts-save-template-name"
                   className={inputClass}
@@ -874,7 +881,7 @@ function SaveTemplateDialog({
                   onChange={(e) => setName(e.target.value)}
                 />
               </Field>
-              <Field label={L("Type", "Type")}>
+              <Field label={t("app-scene-editor-text-inspector.save-template-dialog.label.abc1278d570a")}>
                 <select
                   data-testid="mts-save-template-category"
                   className={inputClass}
@@ -898,10 +905,10 @@ function SaveTemplateDialog({
         </div>
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-scene-editor-text-inspector.save-template-dialog.button.f51c48dccfd4")}
           </Button>
           <Button data-testid="mts-save-template-confirm" onClick={() => void save()} disabled={busy}>
-            {busy ? L("Lagrer …", "Saving …") : L("Lagre mal", "Save template")}
+            {busy ? t("app-scene-editor-text-inspector.save-template-dialog.button.61a46eefd623") : t("app-scene-editor-text-inspector.save-template-dialog.button.c26874d027a3")}
           </Button>
         </DialogFooter>
       </DialogContent>

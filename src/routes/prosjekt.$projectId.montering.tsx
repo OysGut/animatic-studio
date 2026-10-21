@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSession } from "@/app/auth/use-session";
 import { AssemblyWorkspace } from "@/app/assembly/AssemblyWorkspace";
-import { L } from "@/core";
+
+import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 const UUID = /^[0-9a-f-]{36}$/;
 
@@ -11,10 +13,10 @@ const UUID = /^[0-9a-f-]{36}$/;
  */
 export const Route = createFileRoute("/prosjekt/$projectId/montering")({
   head: () => ({ meta: [
-    { title: L("Montering – Animatic Studio", "Assembly – Animatic Studio") },
-    { name: "description", content: L("Monter animatic, lyd og film i Animatic Studio.", "Assemble animatic, sound and film in Animatic Studio.") },
-    { property: "og:title", content: L("Montering – Animatic Studio", "Assembly – Animatic Studio") }, // i18n-ignore: metakode
-    { property: "og:description", content: L("Monter animatic, lyd og film i Animatic Studio.", "Assemble animatic, sound and film in Animatic Studio.") }, // i18n-ignore: metakode
+    { title: t("routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2") },
+    { name: "description", content: t("routes-prosjekt-project-id-montering.content.content.f41e7fb606ab") },
+    { property: "og:title", content: t("routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b") }, // i18n-ignore: metakode
+    { property: "og:description", content: t("routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2") }, // i18n-ignore: metakode
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
@@ -30,6 +32,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/montering")({
 });
 
 function AssemblyRoute() {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
   const { scene, blokk, lastned } = Route.useSearch();
   const session = useSession();

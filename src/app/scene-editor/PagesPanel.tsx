@@ -4,30 +4,12 @@
  * dupliseres og fjernes med de vanlige lagkommandoene, så alt kan angres.
  */
 import { useMemo } from "react";
-import {
-  L,
-  TRANSITION_KINDS,
-  compositionDuration,
-  layerFieldsOf,
-  layersOf,
-  newId,
-  type Command,
-  type Composition,
-  type ProjectState,
-  type TransitionKind,
-} from "@/core";
+import { TRANSITION_KINDS, compositionDuration, layerFieldsOf, layersOf, newId, type Command, type Composition, type ProjectState, type TransitionKind } from "@/core";
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Button } from "@/components/ui/button";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const TRANSITION_LABEL: Record<TransitionKind, { nb: string; en: string }> = {
-  cut: { nb: "Kutt", en: "Cut" },
-  dissolve: { nb: "Tone", en: "Dissolve" },
-  dip: { nb: "Via svart", en: "Dip to black" },
-  dipWhite: { nb: "Via hvitt", en: "Dip to white" },
-  wipe: { nb: "Visk", en: "Wipe" },
-  push: { nb: "Skyv", en: "Push" },
-  iris: { nb: "Irismaske", en: "Iris" },
-};
+const TRANSITION_LABEL: Record<TransitionKind, string> = tLocalized({ cut: "app-scene-editor-pages-panel.transition-cut", dissolve: "app-scene-editor-pages-panel.transition-dissolve", dip: "app-scene-editor-pages-panel.transition-dip", dipWhite: "app-scene-editor-pages-panel.transition-dipwhite", wipe: "app-scene-editor-pages-panel.transition-wipe", push: "app-scene-editor-pages-panel.transition-push", iris: "app-scene-editor-pages-panel.transition-iris" });
 
 export function PagesPanel({
   state,
@@ -61,7 +43,7 @@ export function PagesPanel({
             compositionId: composition.id,
             fields: {
               kind: "page",
-              name: L(`Side ${pages.length + 1}`, `Page ${pages.length + 1}`),
+              name: t("app-scene-editor-pages-panel.name.name.476d269b640a", { value1: String(pages.length + 1) }),
               assetId: null,
               assetVariantId: null,
               versionId: null,
@@ -87,7 +69,7 @@ export function PagesPanel({
           },
         ],
       },
-      L("Ny side", "New page"),
+      t("app-scene-editor-pages-panel.error.run.a0323c1e15b4"),
     );
     if (!error) onSelect(layerId);
   };
@@ -108,7 +90,7 @@ export function PagesPanel({
           },
         ],
       },
-      L("Endre sideovergang", "Change page transition"),
+      t("app-scene-editor-pages-panel.set-transition.run.923a5513653e"),
     );
   };
 
@@ -129,7 +111,7 @@ export function PagesPanel({
             compositionId: composition.id,
             fields: {
               ...layerFieldsOf(layer),
-              name: `${layer.name} (${L("kopi", "copy")})`,
+              name: `${layer.name} (${t("app-scene-editor-pages-panel.name.name.619c3ecea4f6")})`,
               activeRange: { from, to: Math.min(duration, from + span) },
             },
           },
@@ -140,20 +122,17 @@ export function PagesPanel({
           })),
         ],
       },
-      L("Dupliser siden", "Duplicate the page"),
+      t("app-scene-editor-pages-panel.duplicate.run.8d9e6e76d8d3"),
     );
   };
 
   return (
     <section className="flex min-h-0 flex-col" data-testid="mts-pages-panel">
-      <PanelHeader title={L("Sider", "Pages")} />
+      <PanelHeader title={t("app-scene-editor-pages-panel.pages-panel.title.650aa4bff1cb")} />
       <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto p-2">
         {pages.length === 0 ? (
           <p className="text-xs text-text-tertiary">
-            {L(
-              "Siden deler tittelen eller tekstscenen i trinn. Hver side har sitt tidsrom og sin overgang.",
-              "Pages divide the title or text scene into steps. Each page has its own time range and transition.",
-            )}
+            {t("app-scene-editor-pages-panel.pages-panel.p.5b2d7a7e97dc")}
           </p>
         ) : null}
         {pages.map((p, i) => (
@@ -168,14 +147,14 @@ export function PagesPanel({
               className="min-w-0 flex-1 truncate text-left text-[13px] text-text-primary hover:text-accent-brand"
               onClick={() => onSelect(p.id)}
             >
-              {p.name || `${L("Side", "Page")} ${i + 1}`}
+              {p.name || `${t("app-scene-editor-pages-panel.pages-panel.button.8b0952ce532b")} ${i + 1}`}
             </button>
             <span className="text-[11px] text-text-tertiary">
-              {p.activeRange ? `${p.activeRange.from}–${p.activeRange.to}` : L("hele", "all")}
+              {p.activeRange ? `${p.activeRange.from}–${p.activeRange.to}` : t("app-scene-editor-pages-panel.pages-panel.span.b201fd8902c6")}
             </span>
             <select
               className="h-7 rounded-sm border border-border-control bg-surface-3 px-1 text-[12px] text-text-primary"
-              aria-label={L("Overgang inn i siden", "Transition into the page")}
+              aria-label={t("app-scene-editor-pages-panel.pages-panel.aria-label.22df8d40d321")}
               data-testid="mts-page-transition"
               disabled={!editable}
               value={p.pageTransition?.kind ?? "cut"}
@@ -183,7 +162,7 @@ export function PagesPanel({
             >
               {TRANSITION_KINDS.map((k) => (
                 <option key={k} value={k}>
-                  {L(TRANSITION_LABEL[k].nb, TRANSITION_LABEL[k].en)}
+                  {TRANSITION_LABEL[k]}
                 </option>
               ))}
             </select>
@@ -192,25 +171,22 @@ export function PagesPanel({
                 size="sm"
                 variant="ghost"
                 data-testid="mts-page-duplicate"
-                title={L("Dupliser siden med innholdet", "Duplicate the page with its content")}
+                title={t("app-scene-editor-pages-panel.pages-panel.title.ace7a4250c6e")}
                 onClick={() => duplicate(p.id)}
               >
-                {L("Dupliser", "Duplicate")}
+                {t("app-scene-editor-pages-panel.pages-panel.button.6b4ee0b29749")}
               </Button>
             ) : null}
           </div>
         ))}
         {editable ? (
           <Button size="sm" variant="outline" data-testid="mts-add-page" onClick={addPage}>
-            {L("Ny side", "New page")}
+            {t("app-scene-editor-pages-panel.pages-panel.button.2111edecfebf")}
           </Button>
         ) : null}
       </div>
       <p className="px-2 pb-2 text-[11px] text-text-tertiary">
-        {L(
-          "Lagene i scenen legges inn i siden du velger. Tidsrommet dras i tidslinjen.",
-          "The layers in the scene are placed in the page you select. The time range is dragged in the timeline.",
-        )}
+        {t("app-scene-editor-pages-panel.pages-panel.p.deda5946ea31")}
       </p>
     </section>
   );

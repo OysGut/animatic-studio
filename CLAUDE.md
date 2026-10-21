@@ -1,6 +1,6 @@
-# CLAUDE.md – Animatic Studio
+# CLAUDE.md – From Pen to Glass
 
-**Produktnavn:** Animatic Studio (aldri «AI Animatic Studio»).
+**Produktnavn:** From Pen to Glass, kortform «Pen to Glass» der det er lite plass (B-104; tidligere «Animatic Studio», som ikke skal stå i tekst brukeren ser). Repo-, pakke-, database- og ID-navn beholdes. Eksportfunksjonen PTG (B-102) heter «Til produksjonen» / «To production».
 **Formål:** En profesjonell filmproduksjonsapplikasjon fra manus til ferdig film: manus, scener, ressurser, lagbasert 2D-animatic, kamera, lyd, filmtidslinje, valgfri AI-generering, versjonering, kontinuitet, språkversjoner, spinoffer, plakater og eksport. Første brukere er Trollfilm / Anita Killi (filmen «Jula på Dovre»).
 **Eier av produktbeslutningene:** Mars (mars@gutu.no). Mars er ikke utvikler. Claude bygger løsningen og tar tekniske valg selvstendig (DEC-0006), men endrer aldri vedtatte produktkrav uten Mars.
 

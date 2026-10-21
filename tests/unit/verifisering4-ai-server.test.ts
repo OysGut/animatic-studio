@@ -10,7 +10,7 @@
  *
  * Kriteriene om ekte kall (kreditter i Lovable) kan ikke prøves her; se VISUAL_QA_DEC-0076.md.
  */
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { fakeWriteDb, type FakeDb } from "../helpers/verifisering3-db";
 
 const h = vi.hoisted(() => ({ db: null as unknown }));
@@ -102,6 +102,13 @@ afterEach(() => {
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
 });
+
+// Under full vitest-last kan første import av serverkoden ta over 5 s. Den lastes én gang her, med egen
+// grense, så selve testene måler bare oppførselen og ikke importtiden (deterministisk, uten omkjøring).
+beforeAll(async () => {
+  await import("@/adapters/ai/generate-image.functions");
+  await import("@/adapters/ai/write-prompt.functions");
+}, 60_000);
 
 async function image() {
   return (await import("@/adapters/ai/generate-image.functions")).generateImage as unknown as Fn;
@@ -232,7 +239,7 @@ describe("REQ-0565 – AI-bilder gjennom Lovable AI Gateway (simulert)", () => {
     const r = await gen({ data: input(), context: ctx(EDITOR) });
     expect(r).toMatchObject({
       ok: false,
-      message: expect.stringMatching(/LOVABLE_API_KEY mangler/),
+      message: expect.stringMatching(/innebygde AI-en er ikke slått på/),
     });
     expect(sent).toEqual([]);
     expect(jobsOf(db)).toEqual([]);

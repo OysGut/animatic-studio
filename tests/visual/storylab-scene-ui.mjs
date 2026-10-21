@@ -6,6 +6,9 @@
  *   ENV_FILE=…/.env node storylab-scene-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+/** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
+const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -109,7 +112,7 @@ async function mock(ctx) {
     const table = path.replace("/rest/v1/", "");
     if (table === "rpc/my_account")
       return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
-    if (table === "schema_version") return json([{ version: 39 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
@@ -168,7 +171,7 @@ async function mock(ctx) {
     }
     if (/forkStorySession/.test(name)) {
       const p = S.sessions.get(d.sessionId);
-      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: d.fromTurn, turns: p.turns.slice(0, d.fromTurn + 1), status: "paused", updatedAt: now };
+      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: forkAt(p, d), turns: p.turns.slice(0, forkAt(p, d) + 1), status: "paused", updatedAt: now };
       S.sessions.set(s.id, s);
       return json({ ok: true, session: s });
     }

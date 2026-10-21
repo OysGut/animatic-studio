@@ -2,7 +2,8 @@
  * Før/etter-stripe for ny scenevarighet (SV1): to rader i samme målestokk med mellomrom (fleksibel tid),
  * låste tidsrom og den nye tiden. Bare visning.
  */
-import { L, type LockedRange, type RetimeReport } from "@/core";
+import { type LockedRange, type RetimeReport } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 export function RetimeStrip({
   report,
@@ -66,9 +67,9 @@ export function RetimeStrip({
         ? { from: report.beforeFrames, to: report.afterFrames }
         : null;
   return (
-    <div className="space-y-1" aria-label={L("Før og etter", "Before and after")}>
-      {row(L("Før", "Before"), report.beforeFrames, report.gapsBefore, "retime-strip-before")}
-      {row(L("Etter", "After"), report.afterFrames, report.gapsAfter, "retime-strip-after", added)}
+    <div className="space-y-1" aria-label={t("app-scene-editor-retime-strip.retime-strip.aria-label.b6cc61e4c670")}>
+      {row(t("app-scene-editor-retime-strip.retime-strip.row.7d2da0fb7e9b"), report.beforeFrames, report.gapsBefore, "retime-strip-before")}
+      {row(t("app-scene-editor-retime-strip.retime-strip.row.c05c0181828c"), report.afterFrames, report.gapsAfter, "retime-strip-after", added)}
     </div>
   );
 }

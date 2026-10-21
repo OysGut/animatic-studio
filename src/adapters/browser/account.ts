@@ -15,6 +15,8 @@ export interface MyAccount {
   readonly createdAt: string | null;
   /** Brukerens visningsvalg (migrasjon 0034, DEC-0088). Tom før migrasjonen. */
   readonly uiPrefs: Readonly<Record<string, unknown>>;
+  /** B-097 (migrasjon 0073): ISO 3166-1 alpha-2. null = ikke valgt; undefined = før migrasjonen. */
+  readonly country: string | null | undefined;
 }
 
 /** Min konto, eller null før migrasjon 0033. */
@@ -36,7 +38,28 @@ export async function fetchMyAccount(): Promise<MyAccount | null> {
       a["ui_prefs"] && typeof a["ui_prefs"] === "object" && !Array.isArray(a["ui_prefs"])
         ? (a["ui_prefs"] as Record<string, unknown>)
         : {},
+    country: !("country" in a)
+      ? undefined
+      : typeof a["country"] === "string" && /^[A-Z]{2}$/.test(a["country"])
+        ? a["country"]
+        : null,
   };
+}
+
+/** B-097: mitt land (ISO 3166-1 alpha-2). */
+export async function saveMyCountry(country: string): Promise<BackendError | null> {
+  const { error } = await db.rpc("set_my_country", { p_country: country });
+  return plainError(error);
+}
+
+/** B-097: antall brukere per land, bare for administrator. null = ikke tilgjengelig. */
+export async function fetchCountryCounts(): Promise<{ country: string | null; users: number }[] | null> {
+  const { data, error } = await db.rpc("admin_country_counts", {});
+  if (error || !Array.isArray(data)) return null;
+  return (data as Record<string, unknown>[]).map((r) => ({
+    country: typeof r["country"] === "string" ? r["country"] : null,
+    users: Number(r["users"] ?? 0),
+  }));
 }
 
 /** Sist aktiv (databasen oppdaterer høyst én gang i timen). Feiler stille. */

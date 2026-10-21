@@ -5,21 +5,13 @@
 import { useNavigate } from "@tanstack/react-router";
 import { CornerUpLeft, FileText, Film, Pencil, Plus } from "lucide-react";
 import { useState } from "react";
-import {
-  L,
-  PRODUCTION_KIND_LABEL,
-  locale,
-  activeStructure,
-  orderedOccurrences,
-  promotionCandidates,
-  sortedProductions,
-  type ProjectState,
-} from "@/core";
+import { PRODUCTION_KIND_LABEL, locale, activeStructure, orderedOccurrences, promotionCandidates, sortedProductions, type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
 import { Button } from "@/components/ui/button";
 import { ProductionDialog } from "./ProductionDialog";
 import { PromotionDialog } from "./PromotionDialog";
+import { t } from "@/core/i18n/keyed";
 
 export function ProductionList({
   state,
@@ -48,7 +40,7 @@ export function ProductionList({
     if (p && (p.note ?? "") !== editing.text.trim()) {
       const e = cmds.run(
         { type: "SetProductionNote", productionId: editing.id as never, note: editing.text },
-        L(`Notat for «${p.name}»`, `Note for “${p.name}”`),
+        t("app-projects-production-list.e.cmds-run.d195c6205e6c", { name: String(p.name) }),
       );
       if (e) {
         setNoteErr(e);
@@ -69,10 +61,10 @@ export function ProductionList({
     <>
       <div className="border border-border bg-surface-1">
         <div className="grid grid-cols-[1fr_140px_70px_70px_auto] border-b border-border px-4 py-2 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          <span>{L("Navn og notat", "Name and note")}</span>
-          <span>{L("Type", "Type")}</span>
-          <span className="text-right">{L("Scener", "Scenes")}</span>
-          <span className="text-right">{L("Aktive", "Active")}</span>
+          <span>{t("app-projects-production-list.production-list.span.968a2d180d71")}</span>
+          <span>{t("app-projects-production-list.production-list.span.8cf8bf3b36a1")}</span>
+          <span className="text-right">{t("app-projects-production-list.production-list.span.69edc139f15f")}</span>
+          <span className="text-right">{t("app-projects-production-list.production-list.span.6fee261a2d87")}</span>
           <span className="w-[340px]" />
         </div>
         {productions.map((p) => (
@@ -95,8 +87,8 @@ export function ProductionList({
                       setNoteErr(null);
                       setEditing({ id: p.id, text: p.note ?? "" });
                     }}
-                    title={L("Skriv hva denne produksjonen er", "Write what this production is")}
-                    aria-label={L(`Rediger notat for «${p.name}»`, `Edit note for “${p.name}”`)}
+                    title={t("app-projects-production-list.production-list.title.a55c354dc8c8")}
+                    aria-label={t("app-projects-production-list.production-list.aria-label.e51bd43db83d", { name: String(p.name) })}
                     className="shrink-0 rounded-sm p-0.5 text-text-tertiary hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     <Pencil className="size-3" />
@@ -110,8 +102,8 @@ export function ProductionList({
                     rows={2}
                     maxLength={2000}
                     value={editing.text}
-                    aria-label={L(`Notat for «${p.name}»`, `Note for “${p.name}”`)}
-                    placeholder={L("Hva er denne versjonen?", "What is this version?")}
+                    aria-label={t("app-projects-production-list.production-list.aria-label.5aa7d1769e4a", { name: String(p.name) })}
+                    placeholder={t("app-projects-production-list.production-list.placeholder.3c42b353d3ee")}
                     onChange={(e) => setEditing({ id: p.id, text: e.target.value })}
                     onKeyDown={(e) => {
                       if (e.key === "Escape") setEditing(null);
@@ -121,10 +113,10 @@ export function ProductionList({
                   />
                   <div className="flex gap-1">
                     <Button size="sm" onClick={saveNote}>
-                      {L("Lagre", "Save")}
+                      {t("app-projects-production-list.production-list.button.210b2c82ebf1")}
                     </Button>
                     <Button size="sm" variant="ghost" onClick={() => setEditing(null)}>
-                      {L("Avbryt", "Cancel")}
+                      {t("app-projects-production-list.production-list.button.12b16db9caae")}
                     </Button>
                   </div>
                   {noteErr ? (
@@ -150,13 +142,10 @@ export function ProductionList({
                   size="sm"
                   variant="ghost"
                   onClick={() => setPromote(p.id)}
-                  title={L(
-                    "Se hva produksjonen har endret, og før det du vil tilbake til hovedfilmen",
-                    "See what the production has changed, and bring back what you want to the main film",
-                  )}
+                  title={t("app-projects-production-list.production-list.title.32bbd282791d")}
                 >
                   <CornerUpLeft />
-                  {L("Tilbakefør", "Bring back")}
+                  {t("app-projects-production-list.production-list.button.1b1d9a055c41")}
                 </Button>
               ) : null}
               {editable && p.kind !== "main" ? (
@@ -164,13 +153,10 @@ export function ProductionList({
                   size="sm"
                   variant="ghost"
                   onClick={() => setDialog({ addTo: p.id })}
-                  title={L(
-                    "Gjenbruk flere scener fra en annen produksjon",
-                    "Reuse more scenes from another production",
-                  )}
+                  title={t("app-projects-production-list.production-list.title.1bb0355b716e")}
                 >
                   <Plus />
-                  {L("Scener", "Scenes")}
+                  {t("app-projects-production-list.production-list.button.69edc139f15f")}
                 </Button>
               ) : null}
               <Button
@@ -179,7 +165,7 @@ export function ProductionList({
                 onClick={() => open(p.id, "/prosjekt/$projectId/manus")}
               >
                 <FileText />
-                {L("Manus", "Script")}
+                {t("app-projects-production-list.production-list.button.54d322bcdcee")}
               </Button>
               <Button
                 size="sm"
@@ -187,7 +173,7 @@ export function ProductionList({
                 onClick={() => open(p.id, "/prosjekt/$projectId/montering")}
               >
                 <Film />
-                {L("Film", "Film")}
+                {t("app-projects-production-list.production-list.button.0de49086546c")}
               </Button>
             </span>
           </div>
@@ -201,7 +187,7 @@ export function ProductionList({
           onClick={() => setDialog({ addTo: null })}
         >
           <Plus />
-          {L("Ny produksjon …", "New production …")}
+          {t("app-projects-production-list.production-list.button.d17ecf1a77cc")}
         </Button>
       ) : null}
       <ProductionDialog

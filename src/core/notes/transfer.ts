@@ -9,8 +9,9 @@ import { newId as defaultNewId } from "../ids";
 import type { ProjectState } from "../model";
 import type { Page } from "../screenplay/paginate";
 import type { ParsedScreenplay } from "../screenplay/types";
-import { L } from "../i18n";
+
 import { alignBlockLines, annotationsByVariant, resolveRange } from "./index";
+import { t } from "@/core/i18n/keyed";
 
 /** Et notat lest fra en fil, festet til en posisjon i kildedokumentet. */
 export interface ImportedNote {
@@ -33,13 +34,13 @@ export interface ExportNote {
   readonly text: string;
   readonly author: string;
   readonly stampAt: string;
-  /** Systemmerknad (DEC-0088): kommer fra Animatic Studio, ikke fra en person. */
+  /** Systemmerknad (DEC-0088): kommer fra From Pen to Glass, ikke fra en person. */
   readonly system?: boolean;
 }
 
 /** Forfatternavnet systemmerknader får i eksportene (DEC-0088). */
 export function systemNoteAuthor(): string {
-  return L("Animatic Studio (systemmerknad)", "Animatic Studio (system note)");
+  return t("core-notes-transfer.system-note-author.message.5f697b6b55b9");
 }
 
 /** Notater per blokk og nåler per forekomst, for eksport (bare synlige notater). */

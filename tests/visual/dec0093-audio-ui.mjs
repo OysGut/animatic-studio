@@ -11,6 +11,9 @@
  *   ENV_FILE=…/.env node dec0090-mobile-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
+const EN = uiLang("nb") === "en";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -126,7 +129,7 @@ async function mock(ctx) {
       }
       return json(null);
     }
-    if (table === "schema_version") return json([{ version: 35 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (path.startsWith("/storage/v1/object/assets/") && req.method() === "POST") {
       PC.uploads++;
       return json({ Key: path.replace("/storage/v1/object/", "") });
@@ -211,7 +214,8 @@ const check = (ok, text) => {
 };
 
 /** Ny nettleser (tomt lokalt lager) som åpner sceneeditoren. */
-async function run(name, act, { lang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+async function run(name, act, { lang: askedLang = "nb", width = 1600, height = 900, path = "", mobile = false } = {}) {
+  const lang = uiLang(askedLang);
   const ctx = await browser.newContext({ viewport: { width, height }, colorScheme: "dark", ...(mobile ? { isMobile: true, hasTouch: true, permissions: ["camera", "microphone"] } : { permissions: ["microphone"] }) });
   await mock(ctx);
   const page = await ctx.newPage();
@@ -261,14 +265,14 @@ const sentCommands = () => COMMANDS;
 await run(
   "a01-lydressurs",
   async (page) => {
-    const mic = page.getByRole("button", { name: /Ta opp lyd: Opptak til «Vind i trærne»/ });
+    const mic = page.getByRole("button", { name: EN ? /Record audio: Recordings for “Vind i trærne”/ : /Ta opp lyd: Opptak til «Vind i trærne»/ });
     check(await mic.isVisible(), "mikrofonikonet står øverst i lydressursen (ikke kameraet)");
-    check(!(await page.getByRole("button", { name: /Importer fra mobil: Bilder av Vind/ }).isVisible().catch(() => false)), "ingen kameraikon for lyd");
+    check(!(await page.getByRole("button", { name: EN ? /Import from mobile: Pictures of Vind/ : /Importer fra mobil: Bilder av Vind/ }).isVisible().catch(() => false)), "ingen kameraikon for lyd");
     await mic.click();
     await page.waitForTimeout(900);
     const dlg = page.getByTestId("audio-takes-dialog");
     check(await dlg.isVisible(), "lydvinduet åpnes");
-    check(await dlg.getByText("Ta opp på denne datamaskinen").isVisible(), "L1: PC-opptak vises …");
+    check(await dlg.getByText(EN ? "Record on this computer" : "Ta opp på denne datamaskinen").isVisible(), "L1: PC-opptak vises …");
     check(await dlg.getByTestId("mobile-qr").isVisible(), "L1: … og QR-koden samtidig, uten ekstra klikk");
     check(await dlg.getByTestId("pc-rec-start").isVisible(), "L2: PC-opptak startes uten ekstra valg");
     check(await dlg.getByTestId("audio-takes-list").locator("li").count() >= 1, "eksisterende opptak vises som takes");
@@ -304,7 +308,7 @@ await run(
 await run(
   "a02-replikk-i-manus",
   async (page) => {
-    const mic = page.getByRole("button", { name: /Ta opp lyd: Scene/ }).first();
+    const mic = page.getByRole("button", { name: EN ? /Record audio: Scene/ : /Ta opp lyd: Scene/ }).first();
     check(await mic.isVisible(), "mikrofonikonet i inspektøren for en replikk");
     await mic.click();
     await page.waitForTimeout(900);
@@ -334,7 +338,7 @@ await run(
     check((await takes.count()) === 2, "L4: Take 01 og Take 02 er tatt opp");
     check((await page.locator("[data-testid=mobile-take] audio").count()) === 2, "L5: begge kan høres før opplasting");
     check(MOBILE.tickets === 0, "lyd lastes ikke opp når opptaket stopper");
-    check(/Take 02/.test(await takes.first().innerText()) && /Valgt/.test(await takes.first().innerText()), "nytt take er valgt, men ikke sendt");
+    check(/Take 02/.test(await takes.first().innerText()) && (EN ? /Chosen|Selected/ : /Valgt/).test(await takes.first().innerText()), "nytt take er valgt, men ikke sendt");
     await page.screenshot({ path: `${out}/a03a-takes.png` });
     // Bare Take 01: fjern valget på Take 02
     await takes.first().getByTestId("mobile-take-choose").uncheck();
@@ -351,7 +355,7 @@ await run(
     await page.waitForTimeout(1300);
     await page.getByTestId("mobile-rec-stop").click();
     await page.waitForTimeout(700);
-    check(/Romlyd 1/.test(await page.getByTestId("mobile-takes").innerText()), "romlyd tas opp for seg og merkes");
+    check((EN ? /Room tone 1/ : /Romlyd 1/).test(await page.getByTestId("mobile-takes").innerText()), "romlyd tas opp for seg og merkes");
     await page.screenshot({ path: `${out}/a03b-sendt.png`, fullPage: true });
   },
   { path: `/m/${TOKEN}`, mobile: true, width: 390, height: 844 },

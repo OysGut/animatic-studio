@@ -6,13 +6,13 @@
  */
 import { TrashDialog } from "./TrashDialog";
 import { AssetSymbolIcon } from "./AssetSymbolIcon";
+import { AssetThumb } from "./AssetThumb";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useNavigate } from "@tanstack/react-router";
 import {
   Archive,
   Download,
   Lightbulb,
-  Music,
   Plus,
   Redo2,
   Search,
@@ -20,35 +20,12 @@ import {
   Undo2,
   Upload,
   Globe,
+  LayoutGrid,
+  List,
 } from "lucide-react";
+import { useStoredFlag } from "@/app/shell/pane-size";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  collation,
-  ASSET_MIME_TYPES,
-  versionFromFileName,
-  ASSET_KIND_LABEL,
-  ASSET_KIND_PLURAL,
-  ASSET_KINDS,
-  assetNames,
-  assetSearchText,
-  soundCategories,
-  allAssetUsage,
-  coverVersion,
-  librarySuggestions,
-  newId,
-  sortedAssets,
-  trashContents,
-  VERSION_ORIGINS,
-  VERSION_ORIGIN_LABEL,
-  assetOrigins,
-  libraryStyleProfiles,
-  styleProfileMatches,
-  versionProvenances,
-  type AssetKind,
-  type ProjectState,
-  type VersionOrigin,
-} from "@/core";
+import { collation, ASSET_MIME_TYPES, versionFromFileName, ASSET_KIND_LABEL, ASSET_KIND_PLURAL, ASSET_KINDS, assetNames, assetSearchText, soundCategories, allAssetUsage, coverVersion, librarySuggestions, newId, sortedAssets, trashContents, VERSION_ORIGINS, VERSION_ORIGIN_LABEL, assetOrigins, libraryStyleProfiles, styleProfileMatches, versionProvenances, type AssetKind, type ProjectState, type VersionOrigin } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
@@ -68,6 +45,7 @@ import { ReuploadDialog, type ReuploadItem } from "./ReuploadDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import { LibraryStyleDialog, StyleProfileDetail, StyleProfileList } from "./StyleProfilesPanel";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function LibraryWorkspace({
   projectId,
@@ -86,16 +64,16 @@ export function LibraryWorkspace({
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter biblioteket …", "Loading the library …")}
+        {tk("app-library-library-workspace.library-workspace.p.f27dd2df9ebf")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Biblioteket kunne ikke hentes.", "The library could not be loaded.")}
+        {tk("app-library-library-workspace.library-workspace.div.01d5f9ff8f71")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
+            {tk("app-library-library-workspace.library-workspace.p.04bfaf0d222f")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -148,6 +126,8 @@ function Library({
   const [category, setCategory] = useState("");
   const [showArchived, setShowArchived] = useState(false);
   const [listWidth, setListWidth] = usePaneSize("library-list", 300, 220, 560);
+  // U5: rutenett eller liste, husket i nettleseren
+  const [grid, setGrid] = useStoredFlag("library-assets-grid", false);
   const [selected, setSelected] = useState<string | null>(() =>
     initialAssetId && state.assets[initialAssetId] ? initialAssetId : null,
   );
@@ -239,7 +219,7 @@ function Library({
           },
         ],
       },
-      L(`Ny ressurs «${name}»`, `New asset “${name}”`),
+      tk("app-library-library-workspace.err.cmds-run.b46182ed5bd4", { name: String(name) }),
     );
     setError(err);
     if (!err) {
@@ -266,7 +246,7 @@ function Library({
     <div className="flex min-h-0 flex-1 flex-col">
       <Toolbar overflow="menu">
         <span className="text-chrome font-medium text-text-primary">
-          {L("Ressursbibliotek", "Asset library")}
+          {tk("app-library-library-workspace.library.span.6025b8998b1b")}
         </span>
         <ToolbarSeparator />
         <ToolbarGroup priority={7}>
@@ -276,13 +256,13 @@ function Library({
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
-              : L("Angre (⌘Z)", "Undo (⌘Z)")
+              ? tk("app-library-library-workspace.library.title.e35759c47e4f", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-library-library-workspace.library.title.ca0a2e5c972a")
           }
           label={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-              : L("Angre", "Undo")
+              ? tk("app-library-library-workspace.library.label.a260dd6cd078", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-library-library-workspace.library.label.48caa80636d5")
           }
         >
           <Undo2 />
@@ -293,13 +273,13 @@ function Library({
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
-              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+              ? tk("app-library-library-workspace.library.title.84d8c1f28714", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-library-library-workspace.library.title.a7fec591843b")
           }
           label={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-              : L("Gjør om", "Redo")
+              ? tk("app-library-library-workspace.library.label.75e912ea5d1b", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-library-library-workspace.library.label.8c0de1564304")
           }
         >
           <Redo2 />
@@ -308,35 +288,30 @@ function Library({
         <ToolbarGroup priority={1}>
         <ToolbarButton
           onClick={() => setTrashOpen(true)}
-          title={L(
-            "Slettede ressurser og bilder: hent inn igjen eller slett for godt",
-            "Deleted assets and images: restore them or delete them for good",
-          )}
+          title={tk("app-library-library-workspace.library.title.6b6d4bce062b")}
         >
           <Trash2 />
-          {L("Slettede objekter", "Deleted items")}
+          {tk("app-library-library-workspace.library.toolbar-button.4758091a8bfe")}
           {trashCount ? ` (${trashCount})` : ""}
         </ToolbarButton>
         {editable ? (
           <ToolbarButton
+            data-testid="library-suggestions-open"
             active={suggestions.length > 0}
             onClick={() => setSuggestOpen(true)}
             disabled={suggestions.length === 0}
-            title={L(
-              "Karakterer og steder i manuset som ikke er i biblioteket ennå",
-              "Characters and locations in the script that are not in the library yet",
-            )}
+            title={tk("app-library-library-workspace.library.title.c6e0d220ff93")}
           >
             <Lightbulb />
-            {L("Forslag fra manuset", "Suggestions from the script")}
+            {tk("app-library-library-workspace.library.toolbar-button.5a8949c8780e")}
             {suggestions.length ? ` (${suggestions.length})` : ""}
             {analysis.kind === "running" ? (
               <span data-testid="library-analysis-status" className="text-text-tertiary">
-                {L(" · Analyserer manuset …", " · Analysing the script …")}
+                {tk("app-library-library-workspace.library.span.9e2d3f7cde9f")}
               </span>
             ) : analysis.kind === "done" && analysis.newSuggestions > 0 ? (
               <span data-testid="library-analysis-status" className="text-text-tertiary">
-                {L(` · ${analysis.newSuggestions} nye forslag`, ` · ${analysis.newSuggestions} new suggestions`)}
+                {tk("app-library-library-workspace.library.span.8ea825c6f57e", { newSuggestions: String(analysis.newSuggestions) })}
               </span>
             ) : null}
           </ToolbarButton>
@@ -365,67 +340,49 @@ function Library({
                 }
                 if (!items.length)
                   setError(
-                    L(
-                      "Kjenner ikke igjen navnene. Bilder lastet ned fra biblioteket heter «Ressurs - Variant - vN»; andre bilder lastes opp fra varianten de hører til.",
-                      "The names are not recognised. Images downloaded from the library are called “Asset - Variant - vN”; other images are uploaded from the variant they belong to.",
-                    ),
+                    tk("app-library-library-workspace.library.set-error.c5d9763042c4"),
                   );
                 else setReupload({ items, unknown });
               }}
             />
             <ToolbarButton
               onClick={() => reuploadInput.current?.click()}
-              title={L(
-                "Last opp bilder du har lastet ned og endret. De kjennes igjen på navnet («Ressurs - Variant - vN»).",
-                "Upload images you have downloaded and changed. They are recognised by their name (“Asset - Variant - vN”).",
-              )}
+              title={tk("app-library-library-workspace.library.title.4ff0e6a37602")}
             >
               <Upload />
-              {L("Last opp endrede bilder …", "Upload changed images …")}
+              {tk("app-library-library-workspace.library.toolbar-button.1688610f3296")}
             </ToolbarButton>
           </>
         ) : null}
         <ToolbarButton
           onClick={() => setGlobalOpen(true)}
           data-testid="open-global-library"
-          title={L(
-            "Ressurser som deles i arbeidsgruppen: logoer, figurer, lyd og maler",
-            "Assets shared in the workspace: logos, figures, sound and templates",
-          )}
+          title={tk("app-library-library-workspace.library.title.47d6040f76f4")}
         >
           <Globe />
-          {L("Globalt bibliotek", "Global library")}
+          {tk("app-library-library-workspace.library.toolbar-button.3bf626f47d18")}
         </ToolbarButton>
         <ToolbarButton
           onClick={() => setZipOpen(true)}
-          title={L(
-            "Last ned ressursene som zip, per kategori eller alt samlet",
-            "Download the assets as a zip, per category or all together",
-          )}
+          title={tk("app-library-library-workspace.library.title.6376b982ae11")}
         >
           <Download />
-          {L("Last ned som zip", "Download as zip")}
+          {tk("app-library-library-workspace.library.toolbar-button.403e2946e466")}
         </ToolbarButton>
         </ToolbarGroup>
         <div data-toolbar-fixed className="ml-auto flex items-center gap-3">
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
-              {L("Bare lesetilgang", "Read-only access")}
+              {tk("app-library-library-workspace.library.span.f3b713687829")}
             </span>
           ) : null}
           {productions.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              {L("Produksjon", "Production")}
+              {tk("app-library-library-workspace.library.label.9239d48ae2c9")}
               <select
-                aria-label={L(
-                  "Produksjon for bruk i scener og kontinuitet",
-                  "Production for use in scenes and continuity",
-                )}
-                title={L(
-                  "Bruk i scener og kontinuitet gjelder denne produksjonen",
-                  "Use in scenes and continuity applies to this production",
-                )}
+                aria-label={tk("app-library-library-workspace.library.aria-label.e82860dc407f")}
+                title={tk("app-library-library-workspace.library.title.2d28889aa63d")}
                 value={productionId}
                 onChange={(e) => setProductionId(e.target.value)}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
@@ -453,7 +410,7 @@ function Library({
             onSize={setListWidth}
             min={220}
             max={560}
-            label={L("Bredde på ressurslisten", "Width of the asset list")}
+            label={tk("app-library-library-workspace.library.label.72d50cda2209")}
           />
           <div className="flex shrink-0 flex-col gap-1.5 border-b border-border px-2 py-2">
             <div className="relative">
@@ -463,11 +420,8 @@ function Library({
               />
               <input
                 type="search"
-                aria-label={L("Søk i biblioteket", "Search the library")}
-                placeholder={L(
-                  "Søk (navn, stikkord, hva lyd er koblet til)",
-                  "Search (name, keywords, what sound is linked to)",
-                )}
+                aria-label={tk("app-library-library-workspace.library.aria-label.162b7ff202cc")}
+                placeholder={tk("app-library-library-workspace.library.placeholder.a05f5d82e583")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="h-7 w-full rounded-sm border border-border-control bg-surface-3 pl-7 pr-2 text-[13px] text-text-primary placeholder:text-text-tertiary"
@@ -481,7 +435,7 @@ function Library({
                 className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
               >
                 <option value="all">
-                  {L("Alle typer", "All types")} ({counts.get("all") ?? 0})
+                  {tk("app-library-library-workspace.library.option.059f794cdfdd")} ({counts.get("all") ?? 0})
                 </option>
                 {ASSET_KINDS.map((k) => (
                   <option key={k} value={k}>
@@ -489,19 +443,19 @@ function Library({
                   </option>
                 ))}
                 <option value="style">
-                  {L("Stilprofiler", "Style profiles")} ({styleProfiles.length})
+                  {tk("app-library-library-workspace.library.option.784e9884bbd0")} ({styleProfiles.length})
                 </option>
                 {/* Filer fra mobilen (DEC-0090, REQ-0676) */}
-                <option value="mobile">{L("Mobilimport", "Mobile import")}</option>
+                <option value="mobile">{tk("app-library-library-workspace.library.option.f8079c3f80bf")}</option>
               </select>
               {kind === "sound" && categories.length ? (
                 <select
-                  aria-label={L("Kategori", "Category")}
+                  aria-label={tk("app-library-library-workspace.library.aria-label.4f79a8292ae4")}
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
-                  <option value="">{L("Alle kategorier", "All categories")}</option>
+                  <option value="">{tk("app-library-library-workspace.library.option.7c234a45d5a6")}</option>
                   {categories.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -513,16 +467,13 @@ function Library({
             {kind !== "style" && kind !== "mobile" ? (
               <div className="flex items-center gap-1.5">
                 <select
-                  aria-label={L("Opphav", "Origin")}
-                  title={L(
-                    "Vis bare ressurser med versjoner som er lastet opp, laget med AI, frilagt eller harmonisert",
-                    "Show only assets with versions that are uploaded, made with AI, cut out or harmonised",
-                  )}
+                  aria-label={tk("app-library-library-workspace.library.aria-label.2b2cb74d92e1")}
+                  title={tk("app-library-library-workspace.library.title.950f3f9f7cc6")}
                   value={origin}
                   onChange={(e) => setOrigin(e.target.value as VersionOrigin | "all")}
                   className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                 >
-                  <option value="all">{L("Alle opphav", "All origins")}</option>
+                  <option value="all">{tk("app-library-library-workspace.library.option.6f1e2ae21936")}</option>
                   {VERSION_ORIGINS.map((o) => (
                     <option key={o} value={o}>
                       {VERSION_ORIGIN_LABEL[o]}
@@ -536,7 +487,7 @@ function Library({
                     onChange={(e) => setShowArchived(e.target.checked)}
                     className="size-3.5 accent-[var(--accent-brand)]"
                   />
-                  {L("Arkiverte", "Archived")}
+                  {tk("app-library-library-workspace.library.label.79e5c6814aa8")}
                 </label>
               </div>
             ) : null}
@@ -551,7 +502,7 @@ function Library({
             >
               <div className="flex gap-1.5">
                 <select
-                  aria-label={L("Type ny ressurs", "Type of new asset")}
+                  aria-label={tk("app-library-library-workspace.library.aria-label.9b0279529371")}
                   value={newKind}
                   onChange={(e) => setNewKind(e.target.value as AssetKind)}
                   className="h-7 w-[112px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -563,8 +514,8 @@ function Library({
                   ))}
                 </select>
                 <Input
-                  aria-label={L("Navn på ny ressurs", "Name of new asset")}
-                  placeholder={L("Navn", "Name")}
+                  aria-label={tk("app-library-library-workspace.library.aria-label.53efbd1a807f")}
+                  placeholder={tk("app-library-library-workspace.library.placeholder.b0a9d6007a22")}
                   value={newName}
                   maxLength={200}
                   onChange={(e) => setNewName(e.target.value)}
@@ -576,11 +527,8 @@ function Library({
                     context={{ type: "draft", draftKey, assetKind: newKind }}
                     label={
                       newName.trim()
-                        ? L(
-                            `Bilder av ${newName.trim()} (ny)`,
-                            `Pictures of ${newName.trim()} (new)`,
-                          )
-                        : L("Bilder til en ny ressurs", "Pictures for a new asset")
+                        ? tk("app-library-library-workspace.library.label.701f98b70bfb", { value1: String(newName.trim()) })
+                        : tk("app-library-library-workspace.library.label.942889a14db3")
                     }
                   />
                 ) : null}
@@ -589,8 +537,8 @@ function Library({
                   size="sm"
                   variant="secondary"
                   disabled={!newName.trim()}
-                  aria-label={L("Legg til ressurs", "Add asset")}
-                  title={L("Legg til ressurs", "Add asset")}
+                  aria-label={tk("app-library-library-workspace.library.aria-label.97cd5fd15268")}
+                  title={tk("app-library-library-workspace.library.title.97cd5fd15268")}
                 >
                   <Plus />
                 </Button>
@@ -604,10 +552,7 @@ function Library({
           ) : null}
           {kind === "mobile" ? (
             <p className="px-3 py-3 text-xs text-text-tertiary">
-              {L(
-                "Filene fra mobilen vises til høyre. Bilder tatt for en ressurs blir nye versjoner av den.",
-                "The files from the phone are shown on the right. Pictures taken for an asset become new versions of it.",
-              )}
+              {tk("app-library-library-workspace.library.p.2d48d5bcf6e4")}
             </p>
           ) : kind === "style" ? (
             <StyleProfileList
@@ -620,31 +565,37 @@ function Library({
               }
               emptyText={
                 styleProfiles.length
-                  ? L("Ingen stilprofiler passer med søket.", "No style profiles match the search.")
-                  : L(
-                      "Ingen stilprofiler ennå. Filmens visuelle stil beskriver stil, teknikk, farger og lys for alle bilder AI lager.",
-                      "No style profiles yet. The film's visual style describes style, technique, colours and light for all images that AI makes.",
-                    )
+                  ? tk("app-library-library-workspace.library.empty-text.1584aed53577")
+                  : tk("app-library-library-workspace.library.empty-text.db772fbcaf8d")
               }
             />
           ) : (
+            <>
+            <div className="flex h-7 shrink-0 items-center justify-end border-b border-border px-1">
+              <IconButton
+                data-testid="library-view-toggle"
+                aria-pressed={grid}
+                label={grid ? tk("app-library-library-workspace.library.label.cd3dff65bacf") : tk("app-library-library-workspace.library.label.9273ab8d6b80")}
+                onClick={() => setGrid(!grid)}
+              >
+                {grid ? <List /> : <LayoutGrid />}
+              </IconButton>
+            </div>
             <ul
-              aria-label={L("Ressurser", "Assets")}
-              className="min-h-0 flex-1 overflow-y-auto py-1"
+              aria-label={tk("app-library-library-workspace.library.aria-label.bac7695a5b26")}
+              data-view={grid ? "grid" : "list"}
+              className={
+                "min-h-0 flex-1 overflow-y-auto py-1" +
+                (grid ? " grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(96px,1fr))] gap-1 px-1" : "")
+              }
             >
               {shown.length === 0 ? (
                 <li className="px-3 py-4 text-[13px] text-text-tertiary">
                   {all.length === 0
-                    ? L(
-                        "Biblioteket er tomt. Legg til ressurser over, eller bruk «Forslag fra manuset».",
-                        "The library is empty. Add assets above, or use “Suggestions from the script”.",
-                      )
+                    ? tk("app-library-library-workspace.library.li.5d71942c524a")
                     : origin !== "all"
-                      ? L(
-                          `Ingen ressurser har versjoner som er «${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase(collation())}».`,
-                          `No assets have versions that are “${VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase(collation())}”.`,
-                        )
-                      : L("Ingen ressurser passer med søket.", "No assets match the search.")}
+                      ? tk("app-library-library-workspace.library.li.37c63eec73f1", { value1: String(VERSION_ORIGIN_LABEL[origin].toLocaleLowerCase(collation())) })
+                      : tk("app-library-library-workspace.library.li.9a3080a24e75")}
                 </li>
               ) : null}
               {shown.map((a) => {
@@ -659,20 +610,15 @@ function Library({
                       data-asset-row={a.id}
                       aria-current={a.id === selected ? "true" : undefined}
                       className={
-                        "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left " +
+                        (grid
+                          ? "flex w-full flex-col items-stretch gap-1 rounded-sm p-1 text-left "
+                          : "grid w-full grid-cols-[36px_1fr] items-center gap-2 px-2 py-1.5 text-left ") +
+                        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
                         (a.id === selected ? "bg-accent-selection" : "hover:bg-surface-3") +
                         (a.archived ? " opacity-60" : "")
                       }
                     >
-                      <span className="flex size-9 items-center justify-center overflow-hidden rounded-sm bg-surface-3 text-[11px] font-medium text-text-tertiary">
-                        {a.kind === "sound" ? (
-                          <Music className="size-4" aria-hidden />
-                        ) : url ? (
-                          <img src={url} alt="" className="size-full object-cover" />
-                        ) : (
-                          <AssetSymbolIcon state={state} assetId={a.id} className="size-7" />
-                        )}
-                      </span>
+                      <AssetThumb state={state} assetId={a.id} url={url} size={grid ? "lg" : "md"} />
                       <span className="min-w-0">
                         <span className="flex items-center gap-1 truncate text-[13px] text-text-primary">
                           {a.kind !== "sound" ? (
@@ -687,12 +633,12 @@ function Library({
                         <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                           {ASSET_KIND_LABEL[a.kind]}
                           <span className="tabular">
-                            · {n === 1 ? "1 scene" : L(`${n} scener`, `${n} scenes`)}
+                            · {n === 1 ? "1 scene" : tk("app-library-library-workspace.library.span.b968134af4b6", { n: String(n) })}
                           </span>
                           {a.archived ? (
                             <span className="flex items-center gap-0.5">
                               <Archive className="size-3" aria-hidden />
-                              {L("Arkivert", "Archived")}
+                              {tk("app-library-library-workspace.library.span.887241f39012")}
                             </span>
                           ) : null}
                         </span>
@@ -702,6 +648,7 @@ function Library({
                 );
               })}
             </ul>
+            </>
           )}
         </div>
 
@@ -730,13 +677,10 @@ function Library({
             ) : (
               <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
                 <p className="text-base font-medium text-text-primary">
-                  {L("Velg en stilprofil", "Choose a style profile")}
+                  {tk("app-library-library-workspace.library.p.dda7b1033a83")}
                 </p>
                 <p className="max-w-[460px] text-[13px] text-text-secondary">
-                  {L(
-                    "Stilprofilene beskriver hvordan filmen skal se ut – stil, teknikk, farger, lys og stemning – og sendes med i alle AI-beskrivelser. Standardprofilen gjelder alt; egne profiler kan gjelde plakater, steder, AI-video og andre bruk.",
-                    "Style profiles describe how the film should look – style, technique, colours, light and mood – and are sent with every AI description. The default profile applies to everything; your own profiles can apply to posters, locations, AI video and other uses.",
-                  )}
+                  {tk("app-library-library-workspace.library.p.fa7dc25ea847")}
                 </p>
               </div>
             )
@@ -763,13 +707,10 @@ function Library({
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-2 p-8 text-center">
               <p className="text-base font-medium text-text-primary">
-                {L("Velg en ressurs", "Choose an asset")}
+                {tk("app-library-library-workspace.library.p.4e747c850714")}
               </p>
               <p className="max-w-[460px] text-[13px] text-text-secondary">
-                {L(
-                  "Hver karakter, gjenstand og lokasjon finnes én gang i biblioteket og brukes i alle scener og produksjoner. Alternative navn (som «BESTEFAR» for «Halvard») gjør at den kjennes igjen i manuset.",
-                  "Each character, object and location exists once in the library and is used in all scenes and productions. Alternative names (such as “GRANDPA” for “Halvard”) let it be recognised in the script.",
-                )}
+                {tk("app-library-library-workspace.library.p.5f48e21eaafb")}
               </p>
             </div>
           )}

@@ -8,14 +8,17 @@ import { newId as defaultNewId } from "../ids";
 import { keysEvenly } from "../order-key";
 import type { ProjectState } from "../model";
 import { orderedOccurrences } from "../views";
-import { L } from "../i18n";
+
 import type { ParsedScreenplay } from "./types";
+import { t } from "@/core/i18n/keyed";
 
 export interface PlanOptions {
   readonly productionId: ProductionId;
   /** Hopp over tekst før første sceneoverskrift i stedet for å lage en fortsettelsesscene. */
   readonly skipContinuation?: boolean;
   readonly newId?: <K extends string>() => Id<K>;
+  /** Originaldokumentet (SHA-256 av filen): låste sider får eget sidenummerrom per dokument. */
+  readonly documentId?: string;
 }
 
 export function planImport(
@@ -38,16 +41,13 @@ export function planImport(
       kind: e.kind,
       text: e.text,
       orderKey: blockKeys[j]!,
-      sourceRef: e.source,
+      sourceRef: opts.documentId ? { ...e.source, documentId: opts.documentId } : e.source,
       uncertainty: e.uncertain ?? null,
     }));
     const headingNotes = [...ps.warnings];
     if (anyNumbered && ps.number === null && !ps.isContinuation)
       headingNotes.push(
-        L(
-          "Scenen har ikke scenenummer i originalen",
-          "The scene has no scene number in the original",
-        ),
+        t("core-screenplay-plan.scenes.heading-notes-push.ef8cd0344f4a"),
       );
     return {
       sceneId: mk<"scene">(),

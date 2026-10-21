@@ -25,15 +25,7 @@ import {
   listProjects,
   type ProductionSummary,
 } from "@/adapters/browser/projects";
-import {
-  L,
-  PRODUCTION_KIND_LABEL,
-  collation,
-  locale,
-  localized,
-  tm,
-  type ProductionKind,
-} from "@/core";
+import { PRODUCTION_KIND_LABEL, collation, tm, type ProductionKind } from "@/core";
 import { useProfiles } from "@/app/project/use-project";
 import { rememberProduction } from "@/app/project/use-production";
 import { LanguageSwitch } from "@/app/i18n/language";
@@ -55,6 +47,10 @@ import {
 } from "./ProjectDangerDialogs";
 import { BackupDialog, RestoreBackupDialog } from "./BackupDialogs";
 import { ProvidersDialog } from "@/app/ai/ProvidersDialog";
+import { EmptyState, ErrorState, LoadingState } from "@/app/shell/screen-states";
+import { Film } from "lucide-react";
+import { t, tLocalized } from "@/core/i18n/keyed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 interface ProjectRow {
   id: string;
@@ -65,20 +61,10 @@ interface ProjectRow {
   project_members: { role: string; user_id: string; removed_at?: string | null }[];
 }
 
-const ROLE_LABEL: Record<string, string> = localized({
-  owner: ["Eier", "Owner"],
-  editor: ["Redaktør", "Editor"],
-  commenter: ["Kommentator", "Commenter"],
-  viewer: ["Leser", "Viewer"],
-});
+const ROLE_LABEL: Record<string, string> = tLocalized({ owner: "app-projects-projects-screen.role-label.owner.3c69c8270508", editor: "app-projects-projects-screen.role-label.editor.f41247266ec1", commenter: "app-projects-projects-screen.role-label.commenter.be89d56414e9", viewer: "app-projects-projects-screen.role-label.viewer.1a2775cd37f9" });
 
 /** «Du er redaktør» – rollen din i et prosjekt du ikke eier. */
-const YOUR_ROLE: Record<string, string> = localized({
-  owner: ["Du eier prosjektet", "You own this project"],
-  editor: ["Du er redaktør", "You are an editor"],
-  commenter: ["Du kommenterer", "You are a commenter"],
-  viewer: ["Du kan lese", "You can view"],
-});
+const YOUR_ROLE: Record<string, string> = tLocalized({ owner: "app-projects-projects-screen.your-role.owner.54ba81a79c8f", editor: "app-projects-projects-screen.your-role.editor.7692a90b3fe7", commenter: "app-projects-projects-screen.your-role.commenter.98aabc5298fa", viewer: "app-projects-projects-screen.your-role.viewer.e40a6aa951dd" });
 
 export function useProjects(userId: string) {
   return useQuery({
@@ -112,17 +98,12 @@ function productionTree(
   return out;
 }
 
-const date = (iso: string | null | undefined) =>
-  iso
-    ? new Date(iso).toLocaleDateString(locale(), {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      })
-    : "";
 
 /** Prosjektoversikt: én boks per prosjekt, stablet i en liste (DEC-0082). */
 export function ProjectsScreen({ userId }: { userId: string }) {
+  // B-097: tider i listen med brukerens tidsformat
+  const time = useTimeFormat();
+  const date = (iso: string | null | undefined) => (iso ? time.relative(iso) : "");
   const projects = useProjects(userId);
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -172,8 +153,8 @@ export function ProjectsScreen({ userId }: { userId: string }) {
   }, [productions.data]);
   const personName = (id: string) =>
     id === userId
-      ? L("deg", "you")
-      : profiles.data?.[id]?.display_name?.trim() || L("ukjent bruker", "unknown user");
+      ? t("app-projects-projects-screen.person-name.message.5a45255f5d1b")
+      : profiles.data?.[id]?.display_name?.trim() || t("app-projects-projects-screen.person-name.message.ddcd5f5ef017");
   // Egne prosjekter først, så de du er invitert inn i; alfabetisk innenfor
   const sorted = [...live].sort(
     (a, b) =>
@@ -216,13 +197,10 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
-            {L("Prosjekter", "Projects")}
+            {t("app-projects-projects-screen.projects-screen.h1.a2ba9a0063a8")}
           </h1>
           <p className="mt-1 text-[13px] text-text-secondary">
-            {L(
-              "Filmer du eier eller er invitert inn i, med spinoffer og andre versjoner.",
-              "Films you own or have been invited to, with spin-offs and other versions.",
-            )}
+            {t("app-projects-projects-screen.projects-screen.p.4dc1f46d3b02")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -231,15 +209,15 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             <>
               <Button variant="secondary" onClick={() => setProviders(true)}>
                 <AiGlyph />
-                {L("AI-leverandører …", "AI providers …")}
+                {t("app-projects-projects-screen.projects-screen.button.f906b0863ecc")}
               </Button>
-              <Button variant="secondary" onClick={() => setRestoring(true)}>
+              <Button data-testid="restore-backup-open" variant="secondary" onClick={() => setRestoring(true)}>
                 <ArchiveRestore />
-                {L("Gjenopprett fra sikkerhetskopi …", "Restore from backup …")}
+                {t("app-projects-projects-screen.projects-screen.button.c36722de4cc3")}
               </Button>
               <Button onClick={() => setCreating(true)}>
                 <Plus />
-                {L("Nytt prosjekt", "New project")}
+                {t("app-projects-projects-screen.projects-screen.button.db5895b4c0f7")}
               </Button>
             </>
           ) : null}
@@ -252,15 +230,12 @@ export function ProjectsScreen({ userId }: { userId: string }) {
           className="mb-6 flex flex-wrap items-center gap-2 border border-border bg-surface-1 p-3"
         >
           <label htmlFor="new-project" className="sr-only">
-            {L("Prosjektnavn", "Project name")}
+            {t("app-projects-projects-screen.projects-screen.label.4ac8886a5cb6")}
           </label>
           <Input
             id="new-project"
             autoFocus
-            placeholder={L(
-              "Prosjektnavn, f.eks. filmens tittel",
-              "Project name, e.g. the film's title",
-            )}
+            placeholder={t("app-projects-projects-screen.projects-screen.placeholder.0cc91ba3adf2")}
             value={name}
             onChange={(e) => setName(e.target.value)}
             onKeyDown={(e) => e.key === "Escape" && setCreating(false)}
@@ -268,32 +243,29 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             maxLength={200}
           />
           <Button type="submit" disabled={!name.trim() || create.isPending} data-testid="new-project-create">
-            {L("Opprett", "Create")}
+            {t("app-projects-projects-screen.projects-screen.button.d47cbc393746")}
           </Button>
           <Button
             type="button"
             variant="secondary"
             disabled={!name.trim() || create.isPending}
             data-testid="new-project-assistant"
-            title={L(
-              "Opprett prosjektet og utvikle idéen i et intervju i Story Lab. Det du godkjenner, overføres til biblioteket og manuset.",
-              "Create the project and develop the idea in an interview in Story Lab. What you approve is transferred to the library and the script.",
-            )}
+            title={t("app-projects-projects-screen.projects-screen.title.622d83c45445")}
             onClick={() => name.trim() && create.mutate({ name: name.trim(), assistant: true })}
           >
             <AiGlyph />
-            {L("Utvikle nytt prosjekt med skriveassistent", "Develop a new project with the writing assistant")}
+            {t("app-projects-projects-screen.projects-screen.button.52e0ec6bee64")}
           </Button>
           <Button type="button" variant="ghost" onClick={() => setCreating(false)}>
-            {L("Avbryt", "Cancel")}
+            {t("app-projects-projects-screen.projects-screen.button.fd432d48ff10")}
           </Button>
           <label htmlFor="new-project-idea" className="sr-only">
-            {L("Kort idé", "Short idea")}
+            {t("app-projects-projects-screen.projects-screen.label.64a883d59754")}
           </label>
           <Input
             id="new-project-idea"
             data-testid="new-project-idea"
-            placeholder={L("Kort idé til skriveassistenten (valgfritt)", "Short idea for the writing assistant (optional)")}
+            placeholder={t("app-projects-projects-screen.projects-screen.placeholder.f03a2886b6d0")}
             value={idea}
             onChange={(e) => setIdea(e.target.value)}
             className="h-8 basis-full bg-surface-3"
@@ -303,9 +275,9 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       ) : null}
       {create.isError ? (
         <p role="alert" className="mb-4 text-xs text-status-danger">
-          {L("Prosjektet kunne ikke opprettes.", "The project could not be created.")}{" "}
+          {t("app-projects-projects-screen.projects-screen.p.07de4a3517ea")}{" "}
           {create.error.message.includes("schema") || create.error.message.includes("function")
-            ? L("Databasen er kanskje ikke satt opp ennå.", "The database may not be set up yet.")
+            ? t("app-projects-projects-screen.projects-screen.p.443cb9ea8879")
             : ""}
         </p>
       ) : null}
@@ -320,27 +292,27 @@ export function ProjectsScreen({ userId }: { userId: string }) {
       ) : null}
 
       {projects.isLoading ? (
-        <p className="border border-border bg-surface-1 px-4 py-6 text-[13px] text-text-tertiary">
-          {L("Henter prosjekter …", "Loading projects …")}
-        </p>
+        <LoadingState label={t("app-projects-projects-screen.projects-screen.label.9fe8335868e8")} rows={3} />
       ) : projects.isError ? (
-        <p className="border border-border bg-surface-1 px-4 py-6 text-[13px] text-status-danger">
-          {L("Prosjektene kunne ikke hentes.", "The projects could not be loaded.")}
-        </p>
+        <ErrorState
+          message={t("app-projects-projects-screen.projects-screen.message.8e11c986d83b")}
+          onRetry={() => void projects.refetch()}
+        />
       ) : live.length === 0 ? (
-        <div className="border border-border bg-surface-1 px-4 py-10 text-center">
-          <p className="text-[13px] text-text-secondary">
-            {L("Du har ingen prosjekter ennå.", "You have no projects yet.")}
-          </p>
-          <p className="mt-1 text-xs text-text-tertiary">
-            {L(
-              "Opprett et prosjekt, eller be en prosjekteier om en invitasjon.",
-              "Create a project, or ask a project owner for an invitation.",
-            )}
-          </p>
-        </div>
+        <EmptyState
+          title={t("app-projects-projects-screen.projects-screen.title.e72a69906d76")}
+          hint={t("app-projects-projects-screen.projects-screen.hint.0f7f0eb700b0")}
+          action={
+            !creating ? (
+              <Button onClick={() => setCreating(true)} data-testid="projects-empty-create">
+                <Plus />
+                {t("app-projects-projects-screen.projects-screen.button.81fb7f5ba35d")}
+              </Button>
+            ) : null
+          }
+        />
       ) : (
-        <ul className="flex flex-col gap-3" aria-label={L("Prosjekter", "Projects")}>
+        <ul className="flex flex-col gap-3" aria-label={t("app-projects-projects-screen.projects-screen.aria-label.a2ba9a0063a8")}>
           {sorted.map((p) => {
             const role = roleOf(p);
             const members = active(p);
@@ -348,15 +320,29 @@ export function ProjectsScreen({ userId }: { userId: string }) {
             const canLeave = role !== "" && (role !== "owner" || ownerIds.length > 1);
             const owners = ownerIds.length
               ? ownerIds.map(personName).join(", ")
-              : L("ukjent", "unknown");
+              : t("app-projects-projects-screen.owners.sorted-map.691f4e2d0597");
             const tree = productionTree(productionsOf.get(p.id) ?? []);
             return (
               <li
                 key={p.id}
                 data-testid="project-box"
-                className="border border-border bg-surface-1"
+                className="overflow-hidden rounded-sm border border-border bg-surface-1 transition-colors focus-within:border-border-strong hover:border-border-strong"
               >
                 <div className="flex items-start gap-3 border-b border-border px-4 py-3">
+                  {/* U5: miniatyr (filmrute med prosjektets forbokstav) og nøkkeltall */}
+                  <Link
+                    to="/prosjekt/$projectId"
+                    params={{ projectId: p.id }}
+                    tabIndex={-1}
+                    aria-hidden
+                    data-testid="project-thumb"
+                    className="relative flex h-14 w-24 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-border-control bg-surface-2"
+                  >
+                    <Film className="absolute left-1.5 top-1.5 size-3 text-text-tertiary" aria-hidden />
+                    <span className="text-xl font-semibold text-text-secondary">
+                      {p.name.trim().charAt(0).toUpperCase() || "·"}
+                    </span>
+                  </Link>
                   <div className="min-w-0 flex-1">
                     <Link
                       to="/prosjekt/$projectId"
@@ -369,8 +355,8 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                       <span className="flex items-center gap-1" data-testid="project-owner">
                         <Crown className="size-3 text-text-tertiary" aria-hidden />
                         {ownerIds.length > 1
-                          ? L(`Eiere: ${owners}`, `Owners: ${owners}`)
-                          : L(`Eier: ${owners}`, `Owner: ${owners}`)}
+                          ? t("app-projects-projects-screen.projects-screen.span.a41f483c3d2d", { owners: String(owners) })
+                          : t("app-projects-projects-screen.projects-screen.span.b5e505e15968", { owners: String(owners) })}
                       </span>
                       {role ? (
                         <span
@@ -388,11 +374,17 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                       <span className="flex items-center gap-1 text-text-tertiary">
                         <Users className="size-3" aria-hidden />
                         {members.length === 1
-                          ? L("1 medlem", "1 member")
-                          : L(`${members.length} medlemmer`, `${members.length} members`)}
+                          ? t("app-projects-projects-screen.projects-screen.span.dcd013ecb85b")
+                          : t("app-projects-projects-screen.projects-screen.span.69ddbf4e4534", { length: String(members.length) })}
                       </span>
+                      {tree.length ? (
+                        <span className="flex items-center gap-1 text-text-tertiary" data-testid="project-film-count">
+                          <Film className="size-3" aria-hidden />
+                          {tree.length === 1 ? t("app-projects-projects-screen.projects-screen.span.3607cfacb937") : t("app-projects-projects-screen.projects-screen.span.1be386492308", { length: String(tree.length) })}
+                        </span>
+                      ) : null}
                       <span className="tabular text-text-tertiary">
-                        {L(`Opprettet ${date(p.created_at)}`, `Created ${date(p.created_at)}`)}
+                        {t("app-projects-projects-screen.projects-screen.span.80a8cc750f16", { value1: String(date(p.created_at)) })}
                       </span>
                     </div>
                   </div>
@@ -400,7 +392,8 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        aria-label={L(`Handlinger for ${p.name}`, `Actions for ${p.name}`)}
+                        data-testid="project-menu"
+                        aria-label={t("app-projects-projects-screen.projects-screen.aria-label.20089e6afbf6", { name: String(p.name) })}
                         className="rounded-sm p-1 text-text-tertiary hover:bg-surface-2 hover:text-text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <MoreHorizontal className="size-4" />
@@ -410,12 +403,13 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                       <DropdownMenuItem
                         onSelect={() => setDialog({ kind: "zip", target: target(p) })}
                       >
-                        <Download /> {L("Last ned ressurser …", "Download assets …")}
+                        <Download /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.728534d50242")}
                       </DropdownMenuItem>
                       <DropdownMenuItem
+                        data-testid="project-menu-backup"
                         onSelect={() => setDialog({ kind: "backup", target: target(p) })}
                       >
-                        <DatabaseBackup /> {L("Sikkerhetskopi …", "Backup …")}
+                        <DatabaseBackup /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.c8a1abd0cec2")}
                       </DropdownMenuItem>
                       {canLeave || role === "owner" ? <DropdownMenuSeparator /> : null}
                       {canLeave ? (
@@ -423,7 +417,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                           onSelect={() => setDialog({ kind: "leave", target: target(p) })}
                           className="text-status-danger focus:text-status-danger"
                         >
-                          <LogOut /> {L("Forlat prosjekt …", "Leave project …")}
+                          <LogOut /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.ac48481c6e9a")}
                         </DropdownMenuItem>
                       ) : null}
                       {role === "owner" ? (
@@ -431,7 +425,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                           onSelect={() => setDialog({ kind: "delete", target: target(p) })}
                           className="text-status-danger focus:text-status-danger"
                         >
-                          <Trash2 /> {L("Slett prosjekt …", "Delete project …")}
+                          <Trash2 /> {t("app-projects-projects-screen.projects-screen.dropdown-menu-item.c18c43ad8b8a")}
                         </DropdownMenuItem>
                       ) : null}
                     </DropdownMenuContent>
@@ -439,10 +433,10 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                 </div>
                 {productions.isLoading ? (
                   <p className="px-4 py-2 text-xs text-text-tertiary">
-                    {L("Henter filmene …", "Loading the films …")}
+                    {t("app-projects-projects-screen.projects-screen.p.aac736a063bc")}
                   </p>
                 ) : tree.length ? (
-                  <ul aria-label={L(`Filmer i ${p.name}`, `Films in ${p.name}`)}>
+                  <ul aria-label={t("app-projects-projects-screen.projects-screen.aria-label.80782a130cdb", { name: String(p.name) })}>
                     {tree.map(({ p: f, depth }) => (
                       <li key={f.id} className="border-b border-border/60 last:border-b-0">
                         <button
@@ -489,17 +483,14 @@ export function ProjectsScreen({ userId }: { userId: string }) {
 
       {deleted.length > 0 ? (
         <section
-          aria-label={L("Ressurser fra slettede prosjekter", "Assets from deleted projects")}
+          aria-label={t("app-projects-projects-screen.projects-screen.aria-label.4e70b05e2758")}
           className="mt-8"
         >
           <h2 className="text-[13px] font-medium text-text-primary">
-            {L("Ressurser fra slettede prosjekter", "Assets from deleted projects")}
+            {t("app-projects-projects-screen.projects-screen.h2.4e70b05e2758")}
           </h2>
           <p className="mt-1 text-xs text-text-tertiary">
-            {L(
-              "Prosjektene er slettet, men bildene og lyden er tatt vare på. Last dem ned, eller slett dem for godt. Senere skal ressurser kunne gjøres globale og brukes i andre prosjekter.",
-              "The projects are deleted, but the images and sound have been kept. Download them, or delete them for good. Later, assets will be able to be made global and used in other projects.",
-            )}
+            {t("app-projects-projects-screen.projects-screen.p.526f9a47fbd8")}
           </p>
           <ul className="mt-3 border border-border bg-surface-1">
             {deleted.map((p) => (
@@ -509,14 +500,14 @@ export function ProjectsScreen({ userId }: { userId: string }) {
               >
                 <span className="min-w-0 flex-1 truncate text-text-secondary">{p.name}</span>
                 <span className="tabular text-xs text-text-tertiary">
-                  {L(`slettet ${date(p.deleted_at)}`, `deleted ${date(p.deleted_at)}`)}
+                  {t("app-projects-projects-screen.projects-screen.span.ff77d21acbe6", { value1: String(date(p.deleted_at)) })}
                 </span>
                 <Button
                   size="sm"
                   variant="secondary"
                   onClick={() => setDialog({ kind: "zip", target: target(p) })}
                 >
-                  <Download /> {L("Last ned …", "Download …")}
+                  <Download /> {t("app-projects-projects-screen.projects-screen.button.3c8b0a9d15f3")}
                 </Button>
                 {roleOf(p) === "owner" ? (
                   <Button
@@ -525,7 +516,7 @@ export function ProjectsScreen({ userId }: { userId: string }) {
                     className="text-status-danger hover:text-status-danger"
                     onClick={() => setDialog({ kind: "purge", target: target(p) })}
                   >
-                    <Trash2 /> {L("Slett for godt …", "Delete for good …")}
+                    <Trash2 /> {t("app-projects-projects-screen.projects-screen.button.d6a9b1452650")}
                   </Button>
                 ) : null}
               </li>

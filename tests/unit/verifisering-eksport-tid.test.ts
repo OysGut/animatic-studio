@@ -158,7 +158,7 @@ describe("REQ-0104 – teknisk metadata kommer ikke med i eksportert manus", () 
   });
 });
 
-describe("REQ-0479 – produktet heter Animatic Studio", () => {
+describe("REQ-0479 – produktnavnet (B-104: From Pen to Glass)", () => {
   const WRONG = /AI[\s_-]*Animatic[\s_-]*Studio/i;
   function files(dir: string): string[] {
     return readdirSync(dir).flatMap((f) => {
@@ -176,11 +176,11 @@ describe("REQ-0479 – produktet heter Animatic Studio", () => {
     expect(hits).toEqual([]);
     // Kontrollprøve: riktig navn finnes i sidetittelen
     expect(readFileSync(join(ROOT, "src/routes/__root.tsx"), "utf8")).toContain(
-      '{ title: "Animatic Studio" }',
+      '{ title: "From Pen to Glass" }',
     );
   });
 
-  it("REQ-0479: eksporterte manusfiler (PDF og Word) har produsent «Animatic Studio», aldri «AI Animatic Studio»", () => {
+  it("REQ-0479: eksporterte manusfiler (PDF og Word) har produsent «From Pen to Glass», aldri «AI Animatic Studio»", () => {
     const { state, mainId } = seedProject(2);
     const input = exportPaginationInput(state, mainId, {
       method: "continuous",
@@ -189,7 +189,7 @@ describe("REQ-0479 – produktet heter Animatic Studio", () => {
     const pdf = new TextDecoder("latin1").decode(
       screenplayPdf(paginate(input).pages, { title: "T" }),
     );
-    expect(pdf).toContain("/Producer (Animatic Studio)");
+    expect(pdf).toContain("/Producer (From Pen to Glass)");
     expect(pdf).not.toMatch(WRONG);
     const docx = new TextDecoder("latin1").decode(screenplayDocx(input, { title: "T" }));
     expect(docx).not.toMatch(WRONG);

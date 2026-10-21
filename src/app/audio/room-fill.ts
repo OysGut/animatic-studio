@@ -3,26 +3,8 @@
  * per opptak) og fyller pausene i komposisjonen. Kjernen (`src/core/audio/roomtone.ts`) gjør selve arbeidet; her
  * kobles den til AudioBuffer og prosjektets romlydressurser.
  */
-import {
-  L,
-  ROOM_TONE_TAG,
-  audioTakeLabel,
-  compositionToSource,
-  fillPauseGaps,
-  findRoomTone,
-  newId,
-  pauseGaps,
-  segmentRole,
-  soundTakes,
-  wholeFileCandidate,
-  type AlignmentSource,
-  type AudioComposition,
-  type PauseGap,
-  type ProjectState,
-  type RoomCandidate,
-  type RoomSource,
-  type WordAlignment,
-} from "@/core";
+import { ROOM_TONE_TAG, audioTakeLabel, compositionToSource, fillPauseGaps, findRoomTone, newId, pauseGaps, segmentRole, soundTakes, wholeFileCandidate, type AlignmentSource, type AudioComposition, type PauseGap, type ProjectState, type RoomCandidate, type RoomSource, type WordAlignment } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 const segId = () => newId<"audio_segment">();
 
@@ -115,10 +97,7 @@ export function fillRoom(
   return {
     composition: r.composition,
     messages: r.unfilled.map((u) =>
-      L(
-        `Pausen etter ord ${u.afterWord + 1}: ${u.message}`,
-        `The pause after word ${u.afterWord + 1}: ${u.message}`,
-      ),
+      tk("app-audio-room-fill.messages.r-unfilled-map.f34d6180911b", { value1: String(u.afterWord + 1), message: String(u.message) }),
     ),
   };
 }

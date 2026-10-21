@@ -9,8 +9,7 @@
  * lenkene og et anslag for prisen (i USD, fra leverandørenes prislister oktober 2026 – alltid merket som
  * anslag, REQ-0281). Selve kallene ligger i `src/adapters/ai/providers/`.
  */
-
-import { L, localized, locale } from "../i18n";
+import { locale } from "../i18n";
 import {
   customModelFrom,
   customRuleFor,
@@ -18,6 +17,7 @@ import {
   isProviderEnabled,
   type ModelSetting,
 } from "./model-settings";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 // Administratorens innstillinger (av/på og egne modeller) er en del av katalogens offentlige grensesnitt
 export * from "./model-settings";
@@ -28,27 +28,14 @@ export type ProviderId =
 export type Capability =
   "image" | "video" | "video_edit" | "sound" | "speech" | "text" | "upscale" | "alignment";
 
-export const CAPABILITY_LABEL: Record<Capability, string> = localized({
-  upscale: ["Oppskalering", "Upscaling"],
-  image: ["Bilder", "Images"],
-  video: ["Video", "Video"],
-  video_edit: ["Video fra 2D-scenen", "Video from the 2D scene"],
-  sound: ["Lyd", "Sound"],
-  speech: ["Tale", "Speech"],
-  text: ["Tekst", "Text"],
-  alignment: ["Ord-til-lyd", "Word alignment"],
-});
+export const CAPABILITY_LABEL: Record<Capability, string> = tLocalized({ upscale: "core-generation-providers.capability-label.upscale.9094c341367a", image: "core-generation-providers.capability-label.image.0b8183d2bc3f", video: "core-generation-providers.capability-label.video.1599c4fe017d", video_edit: "core-generation-providers.capability-label.video-edit.ec4b5af08091", sound: "core-generation-providers.capability-label.sound.9069d5bcf965", speech: "core-generation-providers.capability-label.speech.a4141d40b4d4", text: "core-generation-providers.capability-label.text.67d66f855964", alignment: "core-generation-providers.capability-label.alignment.315505b5841b" });
 
 /**
  * Bildestørrelse (Mars 2026-10-13: «størrelsen på bildet bør være et eget valg»). Sendes som tjenestens egen
  * parameter der den finnes (Google: image_size), ellers som tjenestens nærmeste faste størrelse.
  */
 export type ImageSize = "1K" | "2K" | "4K";
-export const IMAGE_SIZE_LABEL: Record<ImageSize, string> = localized({
-  "1K": ["Liten (ca. 1000 px)", "Small (about 1000 px)"],
-  "2K": ["Middels (ca. 2000 px)", "Medium (about 2000 px)"],
-  "4K": ["Stor (ca. 4000 px)", "Large (about 4000 px)"],
-});
+export const IMAGE_SIZE_LABEL: Record<ImageSize, string> = tLocalized({ "1K": "core-generation-providers.image-size-label.1k.77e63d3513b7", "2K": "core-generation-providers.image-size-label.2k.c6bbff2a5487", "4K": "core-generation-providers.image-size-label.4k.cbc35023da20" });
 
 export interface ProviderModel {
   readonly id: string;
@@ -103,23 +90,9 @@ export interface ProviderModel {
 /** Innsatsnivå per oppgave (mandat 19.3): rask/økonomisk, balansert, høy/premium. */
 export type EffortLevel = "fast" | "balanced" | "premium";
 
-export const EFFORT_LABEL: Record<EffortLevel, string> = localized({
-  fast: ["Rask / Økonomisk", "Fast / Economical"],
-  balanced: ["Balansert", "Balanced"],
-  premium: ["Høy / Premium", "High / Premium"],
-});
+export const EFFORT_LABEL: Record<EffortLevel, string> = tLocalized({ fast: "core-generation-providers.effort-label.fast.4e975a2b43b7", balanced: "core-generation-providers.effort-label.balanced.934d3da03e98", premium: "core-generation-providers.effort-label.premium.bae890684174" });
 
-export const EFFORT_HELP: Record<EffortLevel, string> = localized({
-  fast: ["Lavere kostnad og raske skisser.", "Lower cost and quick sketches."],
-  balanced: [
-    "En fornuftig kombinasjon av kvalitet, pris og tid.",
-    "A sensible mix of quality, price and time.",
-  ],
-  premium: [
-    "Den mest omfattende modellen, med forbildebilder og flere kandidater der det støttes.",
-    "The most comprehensive model, with reference images and several candidates where supported.",
-  ],
-});
+export const EFFORT_HELP: Record<EffortLevel, string> = tLocalized({ fast: "core-generation-providers.effort-help.fast.1acbf692ad79", balanced: "core-generation-providers.effort-help.balanced.ae4d0b0e8a3a", premium: "core-generation-providers.effort-help.premium.eb97211de851" });
 
 export interface ProviderInfo {
   readonly id: ProviderId;
@@ -151,18 +124,32 @@ export const LOVABLE_IMAGE_MODEL = "openai/gpt-image-2";
  */
 export const LOVABLE_CUTOUT_MODEL = "openai/gpt-image-2.5-sunburst";
 
+/**
+ * Den innebygde bildemodellen som faktisk brukes (P8-avvik 1): modellen brukeren valgte, når den finnes i den
+ * innebygde katalogen, ellers standardmodellen for formålet. Slik er modellen som vises i valget, alltid den
+ * samme som lagres i metadataen.
+ */
+export function builtInImageModel(
+  requested: string | null | undefined,
+  purpose: string | null | undefined,
+  defaults: { readonly image?: string | undefined; readonly cutout?: string | undefined } = {},
+): string {
+  const catalog = PROVIDERS.find((p) => p.id === "lovable")?.models ?? [];
+  if (requested && catalog.some((m) => m.id === requested && m.capability === "image")) return requested;
+  return purpose === "cutout"
+    ? defaults.cutout || LOVABLE_CUTOUT_MODEL
+    : defaults.image || LOVABLE_IMAGE_MODEL;
+}
+
 // Tekstfeltene under er getters: teksten velges når den leses, så språkbytte virker også for katalogen.
 export const PROVIDERS: readonly ProviderInfo[] = [
   {
     id: "lovable",
     get name() {
-      return L("Lovable AI (innebygd)", "Lovable AI (built in)");
+      return t("core-generation-providers.providers.message.fae659820e31");
     },
     get description() {
-      return L(
-        "Bruker kredittene i Lovable-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Lovable.",
-        "Uses the credits in your Lovable workspace. No key of your own – switched on for the project in Lovable.",
-      );
+      return t("r6-brand.builtin-provider");
     },
     capabilities: ["image", "text"],
     builtIn: true,
@@ -184,7 +171,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "openai/gpt-image-2.5-sunburst",
         get label() {
-          return L("GPT Image 2.5 Sunburst (frilagt)", "GPT Image 2.5 Sunburst (cut-out)");
+          return t("core-generation-providers.models.models.441f815ed440");
         },
         capability: "image",
         priceUsd: 0.08,
@@ -193,7 +180,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         transparent: true,
         tier: "premium",
         get extras() {
-          return [L("Gjennomsiktig bakgrunn", "Transparent background")];
+          return [t("core-generation-providers.models.models.639cd27f30a9")];
         },
         maxPromptChars: 32000,
         resolution: "1024–1536 px",
@@ -204,10 +191,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "openai",
     name: "OpenAI",
     get description() {
-      return L(
-        "Bilder med GPT Image og video med Sora. Betaling forhåndsbetales i OpenAI Platform.",
-        "Images with GPT Image and video with Sora. Payment is prepaid in the OpenAI Platform.",
-      );
+      return t("core-generation-providers.providers.message.87223e1b609a");
     },
     capabilities: ["image", "video", "text"],
     builtIn: false,
@@ -220,22 +204,10 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Opprett konto eller logg inn på platform.openai.com.",
-          "Create an account or sign in at platform.openai.com.",
-        ),
-        L(
-          "Legg inn betalingskort og kjøp kreditt under Billing (OpenAI tar ikke betalt uten forhåndsbetaling).",
-          "Add a payment card and buy credit under Billing (OpenAI does not charge without prepayment).",
-        ),
-        L(
-          "Verifiser organisasjonen hvis OpenAI ber om det (kreves for bildemodellene).",
-          "Verify your organisation if OpenAI asks you to (required for the image models).",
-        ),
-        L(
-          "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).",
-          "Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).",
-        ),
+        t("core-generation-providers.providers.message.5644cb6e0181"),
+        t("core-generation-providers.providers.message.395cf2ebad03"),
+        t("core-generation-providers.providers.message.953b4308cdb7"),
+        t("core-generation-providers.providers.message.478247762189"),
       ];
     },
     keyPattern: /^sk-[A-Za-z0-9_-]{20,}$/,
@@ -245,7 +217,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "gpt-image-2.5-flare",
         get label() {
-          return L("GPT Image 2.5 Flare (rask)", "GPT Image 2.5 Flare (fast)");
+          return t("core-generation-providers.models.models.2786815b0be6");
         },
         capability: "image",
         priceUsd: 0.05,
@@ -258,10 +230,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "gpt-image-2.5-sunburst",
         get label() {
-          return L(
-            "GPT Image 2.5 Sunburst (presis, frilagt)",
-            "GPT Image 2.5 Sunburst (precise, cut-out)",
-          );
+          return t("core-generation-providers.models.models.c3cbe6d08b4f");
         },
         capability: "image",
         priceUsd: 0.08,
@@ -271,8 +240,8 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         get extras() {
           return [
-            L("Gjennomsiktig bakgrunn", "Transparent background"),
-            L("Kvalitetsvalg hos leverandøren (høy)", "Quality setting at the provider (high)"),
+            t("core-generation-providers.models.models.639cd27f30a9.2"),
+            t("core-generation-providers.models.models.85b91cec5695"),
           ];
         },
         maxPromptChars: 32000,
@@ -288,12 +257,12 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         acceptsImage: true,
         tier: "balanced",
         get extras() {
-          return [L("Lyd i videoen", "Sound in the video")];
+          return [t("core-generation-providers.models.models.63ef8d72cc54")];
         },
         maxPromptChars: 4000,
         resolution: "1280×720",
         get audio() {
-          return [L("Lyd i videoen", "Sound in the video")];
+          return [t("core-generation-providers.models.models.63ef8d72cc54.2")];
         },
       },
     ],
@@ -302,10 +271,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "google",
     name: "Google Gemini",
     get description() {
-      return L(
-        "Bilder med Nano Banana og video med Veo 3.1. Nøkkel fra Google AI Studio.",
-        "Images with Nano Banana and video with Veo 3.1. Key from Google AI Studio.",
-      );
+      return t("core-generation-providers.providers.message.fbf31e640415");
     },
     capabilities: ["image", "video", "text"],
     builtIn: false,
@@ -318,18 +284,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Logg inn på aistudio.google.com med en Google-konto.",
-          "Sign in at aistudio.google.com with a Google account.",
-        ),
-        L(
-          "Slå på betaling (et Google Cloud-faktureringskonto) – video og de beste bildemodellene krever det.",
-          "Turn on billing (a Google Cloud billing account) – video and the best image models require it.",
-        ),
-        L(
-          "Gå til «Get API key» → «Create API key» og kopier nøkkelen (begynner med AIza).",
-          "Go to “Get API key” → “Create API key” and copy the key (it starts with AIza).",
-        ),
+        t("core-generation-providers.providers.message.35b34a9d4c48"),
+        t("core-generation-providers.providers.message.c15528e8ebee"),
+        t("core-generation-providers.providers.message.ba9a3debdc93"),
       ];
     },
     keyPattern: /^AIza[A-Za-z0-9_-]{30,}$/,
@@ -345,7 +302,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         acceptsImage: true,
         tier: "fast",
         get extras() {
-          return [L("Opptil 14 forbildebilder", "Up to 14 reference images")];
+          return [t("core-generation-providers.models.models.ef3f6478e1f6")];
         },
         maxPromptChars: 8000,
         resolution: "1024 px",
@@ -361,13 +318,13 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         get extras() {
           return [
-            L("Opptil 14 forbildebilder", "Up to 14 reference images"),
-            L("Tenker gjennom bildet før det lages", "Thinks through the image before it is made"),
+            t("core-generation-providers.models.models.ef3f6478e1f6.2"),
+            t("core-generation-providers.models.models.02de0748689f"),
           ];
         },
         maxPromptChars: 8000,
         get resolution() {
-          return L("opptil 4K", "up to 4K");
+          return t("core-generation-providers.models.models.a946c5ce40ba");
         },
         sizes: ["1K", "2K", "4K"],
         defaultSize: "2K",
@@ -384,14 +341,14 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         get extras() {
           return [
-            L("Lyd i videoen", "Sound in the video"),
-            L("Negativ beskrivelse", "Negative description"),
+            t("core-generation-providers.models.models.63ef8d72cc54.3"),
+            t("core-generation-providers.models.models.cc7927f1f52f"),
           ];
         },
         maxPromptChars: 3500,
         resolution: "720p/1080p",
         get audio() {
-          return [L("Lyd i videoen", "Sound in the video")];
+          return [t("core-generation-providers.models.models.63ef8d72cc54.4")];
         },
       },
     ],
@@ -400,10 +357,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "fal",
     name: "fal.ai",
     get description() {
-      return L(
-        "Én konto for mange modeller (Kling, Flux m.fl.). Betal per bruk; godt valg for video fra et startbilde.",
-        "One account for many models (Kling, Flux and others). Pay as you go; a good choice for video from a start image.",
-      );
+      return t("core-generation-providers.providers.message.492b50a8376f");
     },
     capabilities: ["image", "video", "video_edit", "upscale"],
     builtIn: false,
@@ -416,18 +370,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Opprett konto på fal.ai (logg inn med GitHub eller Google).",
-          "Create an account at fal.ai (sign in with GitHub or Google).",
-        ),
-        L(
-          "Legg inn betalingskort og kjøp kreditt under Billing.",
-          "Add a payment card and buy credit under Billing.",
-        ),
-        L(
-          "Gå til Dashboard → Keys → «Add key», velg rollen «API» og kopier nøkkelen (id:hemmelighet).",
-          "Go to Dashboard → Keys → “Add key”, choose the role “API” and copy the key (id:secret).",
-        ),
+        t("core-generation-providers.providers.message.2a67473eaff3"),
+        t("core-generation-providers.providers.message.0f15e81eb929"),
+        t("core-generation-providers.providers.message.9db345317264"),
       ];
     },
     keyPattern: /^[A-Za-z0-9-]{8,}:[A-Za-z0-9]{16,}$/,
@@ -442,7 +387,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "balanced",
         maxPromptChars: 2000,
         get resolution() {
-          return L("opptil 1440 px", "up to 1440 px");
+          return t("core-generation-providers.models.models.7f92abf8a5bc");
         },
       },
       // DEC-0080 (Mars 14.10.2026: «billige kinesiske modeller»). Priser fra fal.ai oktober 2026.
@@ -456,16 +401,13 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "balanced",
         get extras() {
           return [
-            L("Opptil 10 forbildebilder", "Up to 10 reference images"),
-            L(
-              "Holder en karakter lik på tvers av bilder",
-              "Keeps a character the same across images",
-            ),
+            t("core-generation-providers.models.models.0c16daca9ba0"),
+            t("core-generation-providers.models.models.685f5eeb64ba"),
           ];
         },
         maxPromptChars: 4000,
         get resolution() {
-          return L("ca. 2K", "about 2K");
+          return t("core-generation-providers.models.models.0263845aa8dd");
         },
       },
       {
@@ -480,27 +422,24 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "fast",
         get extras() {
           return [
-            L("Presise endringer i et bilde", "Precise changes to an image"),
-            L("Negativ beskrivelse", "Negative description"),
+            t("core-generation-providers.models.models.54b8f2f9331f"),
+            t("core-generation-providers.models.models.cc7927f1f52f.2"),
           ];
         },
         get limits() {
           return [
-            L(
-              "Må ha et forbildebilde – den endrer et bilde, lager ikke fra bare tekst",
-              "Needs a reference image – it changes an image, it does not create from text alone",
-            ),
+            t("core-generation-providers.models.models.140be2bf55a9"),
           ];
         },
         maxPromptChars: 2000,
         get resolution() {
-          return L("ca. 1 megapiksel", "about 1 megapixel");
+          return t("core-generation-providers.models.models.4a43fccf3184");
         },
       },
       {
         id: "fal-ai/seedvr/upscale/image",
         get label() {
-          return L("SeedVR2 – skarpere (rimelig)", "SeedVR2 – sharper (affordable)");
+          return t("core-generation-providers.models.models.558fec70e3d3");
         },
         capability: "upscale",
         priceUsd: 0.001,
@@ -508,22 +447,19 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "fast",
         get extras() {
           return [
-            L(
-              "Bevarer bildet slik det er, bare skarpere",
-              "Keeps the image as it is, just sharper",
-            ),
+            t("core-generation-providers.models.models.8ef474ee374b"),
           ];
         },
         // Ingen beskrivelse sendes; grensen gjelder bare teksten i loggen
         maxPromptChars: 2000,
         get resolution() {
-          return L("2× eller 4×", "2× or 4×");
+          return t("core-generation-providers.models.models.3f2a3533893c");
         },
       },
       {
         id: "fal-ai/clarity-upscaler",
         get label() {
-          return L("Clarity – med AI-detaljer", "Clarity – with AI detail");
+          return t("core-generation-providers.models.models.12328e5217d6");
         },
         capability: "upscale",
         priceUsd: 0.03,
@@ -531,21 +467,18 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         get extras() {
           return [
-            L(
-              "Legger til detaljer – kan endre små ting i bildet",
-              "Adds detail – may change small things in the image",
-            ),
+            t("core-generation-providers.models.models.e43597156ef3"),
           ];
         },
         maxPromptChars: 2000,
         get resolution() {
-          return L("2× eller 4×", "2× or 4×");
+          return t("core-generation-providers.models.models.3f2a3533893c.2");
         },
       },
       {
         id: "fal-ai/kling-video/v3/4k/image-to-video",
         get label() {
-          return L("Kling 3 (fra startbilde)", "Kling 3 (from start image)");
+          return t("core-generation-providers.models.models.6ae94317288c");
         },
         capability: "video",
         priceUsd: 0.42,
@@ -557,14 +490,14 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         resolution: "4K",
         requiresImage: true,
         get limits() {
-          return [L("Må ha startbilde", "Needs a start image")];
+          return [t("core-generation-providers.models.models.0120272a3729")];
         },
       },
       {
         // DEC-0083: tegner 2D-scenen om til ferdig film; bevegelse, timing og kamera følger videoen
         id: "fal-ai/kling-video/o3/pro/video-to-video/edit",
         get label() {
-          return L("Kling O3 Edit (fra 2D-scenen)", "Kling O3 Edit (from the 2D scene)");
+          return t("core-generation-providers.models.models.d406bfcf6278");
         },
         capability: "video_edit",
         priceUsd: 0.168,
@@ -575,12 +508,12 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         maxPromptChars: 2500,
         get resolution() {
-          return L("Som 2D-scenen (720–3840 px)", "As the 2D scene (720–3840 px)");
+          return t("core-generation-providers.models.models.7f5e13cfb0f4");
         },
         get limits() {
           return [
-            L("3–15 sekunder per bit", "3–15 seconds per piece"),
-            L("Høyst 4 figurer med referansebilde", "At most 4 figures with a reference image"),
+            t("core-generation-providers.models.models.e72a15589197"),
+            t("core-generation-providers.models.models.76872f5ba94f"),
           ];
         },
       },
@@ -590,10 +523,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "runway",
     name: "Runway",
     get description() {
-      return L(
-        "Video fra et startbilde med Gen-4 Turbo, og 2D-scenen tegnet om til film med Aleph 2. Kreditter kjøpes i utviklerportalen.",
-        "Video from a start image with Gen-4 Turbo, and the 2D scene redrawn as film with Aleph 2. Credits are bought in the developer portal.",
-      );
+      return t("core-generation-providers.providers.message.15e28b63ca2f");
     },
     capabilities: ["video", "video_edit"],
     builtIn: false,
@@ -606,18 +536,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Logg inn på dev.runwayml.com (utviklerportalen, egen fra vanlig Runway-abonnement).",
-          "Sign in at dev.runwayml.com (the developer portal, separate from a regular Runway subscription).",
-        ),
-        L(
-          "Opprett en organisasjon og kjøp kreditter under Billing.",
-          "Create an organisation and buy credits under Billing.",
-        ),
-        L(
-          "Gå til API Keys → «Create new key» og kopier nøkkelen (begynner med key_).",
-          "Go to API Keys → “Create new key” and copy the key (it starts with key_).",
-        ),
+        t("core-generation-providers.providers.message.3f6a75c4e842"),
+        t("core-generation-providers.providers.message.e4624ce04071"),
+        t("core-generation-providers.providers.message.f37a0bd9791d"),
       ];
     },
     keyPattern: /^key_[A-Za-z0-9]{20,}$/,
@@ -635,14 +556,14 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         resolution: "1280×720",
         requiresImage: true,
         get limits() {
-          return [L("Må ha startbilde", "Needs a start image")];
+          return [t("core-generation-providers.models.models.0120272a3729.2")];
         },
       },
       {
         // DEC-0083: Aleph 2 tegner om en video etter en tekst; tar ikke referansebilder av figurene
         id: "aleph2",
         get label() {
-          return L("Aleph 2 (fra 2D-scenen)", "Aleph 2 (from the 2D scene)");
+          return t("core-generation-providers.models.models.9797a7daa22c");
         },
         capability: "video_edit",
         priceUsd: 0.28,
@@ -652,15 +573,12 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         tier: "premium",
         maxPromptChars: 1000,
         get resolution() {
-          return L("Som 2D-scenen (opptil 1080p)", "As the 2D scene (up to 1080p)");
+          return t("core-generation-providers.models.models.a65a6abd888a");
         },
         get limits() {
           return [
-            L("2–30 sekunder per bit", "2–30 seconds per piece"),
-            L(
-              "Figurene beskrives bare med tekst (ingen referansebilder)",
-              "The figures are described in text only (no reference images)",
-            ),
+            t("core-generation-providers.models.models.7aa51f0bba63"),
+            t("core-generation-providers.models.models.b86c4402093a"),
           ];
         },
       },
@@ -670,10 +588,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "elevenlabs",
     name: "ElevenLabs",
     get description() {
-      return L(
-        "Lydeffekter og stemmer fra tekst. Abonnement med månedlige tegn/kreditter.",
-        "Sound effects and voices from text. Subscription with monthly characters/credits.",
-      );
+      return t("core-generation-providers.providers.message.e0ee4a58ed79");
     },
     capabilities: ["sound", "speech"],
     builtIn: false,
@@ -686,18 +601,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Opprett konto på elevenlabs.io og velg et abonnement (gratisnivået har få kreditter).",
-          "Create an account at elevenlabs.io and choose a subscription (the free tier has few credits).",
-        ),
-        L(
-          "Gå til Settings → API Keys → «Create API key».",
-          "Go to Settings → API Keys → “Create API key”.",
-        ),
-        L(
-          "Gi nøkkelen tilgang til «Sound Effects» (og «Text to Speech» om dere vil bruke stemmer), og kopier den.",
-          "Give the key access to “Sound Effects” (and “Text to Speech” if you want to use voices), and copy it.",
-        ),
+        t("core-generation-providers.providers.message.cb382fe23ea5"),
+        t("core-generation-providers.providers.message.58305044d7e4"),
+        t("core-generation-providers.providers.message.8c8224966290"),
       ];
     },
     keyPattern: /^(sk_)?[A-Za-z0-9]{32,}$/,
@@ -705,28 +611,28 @@ export const PROVIDERS: readonly ProviderInfo[] = [
       {
         id: "eleven_text_to_sound_v2",
         get label() {
-          return L("Lydeffekter v2", "Sound effects v2");
+          return t("core-generation-providers.models.models.54a213b395a1");
         },
         capability: "sound",
         priceUsd: 0.012,
         priceUnit: "second",
         tier: "balanced",
         get extras() {
-          return [L("Sømløs løkke", "Seamless loop")];
+          return [t("core-generation-providers.models.models.533d357f2dd8")];
         },
         maxPromptChars: 1000,
         soundSeconds: { min: 0.5, max: 30 },
         get audio() {
           return [
-            L("Lydeffekter fra beskrivelse", "Sound effects from a description"),
-            L("Sømløs løkke", "Seamless loop"),
+            t("core-generation-providers.models.models.d65ac0de7bcb"),
+            t("core-generation-providers.models.models.533d357f2dd8.2"),
           ];
         },
       },
       {
         id: "eleven_v3",
         get label() {
-          return L("Eleven v3 (norsk)", "Eleven v3 (Norwegian)");
+          return t("core-generation-providers.models.models.09e58f8380ff");
         },
         capability: "speech",
         priceUsd: 0.0003,
@@ -735,15 +641,15 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         maxPromptChars: 5000,
         get extras() {
           return [
-            L("Egen stemme per karakter", "Own voice per character"),
-            L("Norsk satt eksplisitt", "Norwegian set explicitly"),
+            t("core-generation-providers.models.models.7e6a0484f813"),
+            t("core-generation-providers.models.models.8a0825594c8c"),
           ];
         },
         get audio() {
           return [
-            L("Tale fra tekst", "Speech from text"),
-            L("Egen stemme per karakter", "Own voice per character"),
-            L("Norsk og 70+ språk", "Norwegian and 70+ languages"),
+            t("core-generation-providers.models.models.d9137a4dadc8"),
+            t("core-generation-providers.models.models.7e6a0484f813.2"),
+            t("core-generation-providers.models.models.0b47ec937e8c"),
           ];
         },
       },
@@ -751,7 +657,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         // Ord-til-lyd (DEC-0095): samme pris som tale-til-tekst, 0,22 USD per time lyd (oktober 2026)
         id: "forced-alignment",
         get label() {
-          return L("Ord-til-lyd (Forced Alignment)", "Word alignment (Forced Alignment)");
+          return t("core-generation-providers.models.models.93c7648e5047");
         },
         capability: "alignment",
         priceUsd: 0.22 / 3600,
@@ -761,10 +667,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         maxPromptChars: 20_000,
         get limits() {
           return [
-            L(
-              "Norsk står ikke på ElevenLabs' liste over språk – må prøves (KI-245)",
-              "Norwegian is not on ElevenLabs' list of languages – must be tried (KI-245)",
-            ),
+            t("core-generation-providers.models.models.5803710a68c5"),
           ];
         },
       },
@@ -772,7 +675,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         // Brukes ikke lenger (kan ikke norsk); står for å vise opphavet til eldre opptak
         id: "eleven_multilingual_v2",
         get label() {
-          return L("Flerspråklig tale v2 (uten norsk)", "Multilingual speech v2 (no Norwegian)");
+          return t("core-generation-providers.models.models.d1aaedac4f6d");
         },
         retired: true,
         capability: "speech",
@@ -782,15 +685,15 @@ export const PROVIDERS: readonly ProviderInfo[] = [
         maxPromptChars: 5000,
         get extras() {
           return [
-            L("Egen stemme per karakter", "Own voice per character"),
-            L("Norsk og engelsk", "Norwegian and English"),
+            t("core-generation-providers.models.models.7e6a0484f813.3"),
+            t("core-generation-providers.models.models.18ddb38254de"),
           ];
         },
         get audio() {
           return [
-            L("Tale fra tekst", "Speech from text"),
-            L("Egen stemme per karakter", "Own voice per character"),
-            L("Norsk og engelsk", "Norwegian and English"),
+            t("core-generation-providers.models.models.d9137a4dadc8.2"),
+            t("core-generation-providers.models.models.7e6a0484f813.4"),
+            t("core-generation-providers.models.models.18ddb38254de.2"),
           ];
         },
       },
@@ -800,10 +703,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "anthropic",
     name: "Anthropic Claude",
     get description() {
-      return L(
-        "Tekst med Claude: manusarbeid, karaktersamtaler og analyse. Forhåndsbetalt kreditt i Claude Console.",
-        "Text with Claude: script work, character conversations and analysis. Prepaid credit in the Claude Console.",
-      );
+      return t("core-generation-providers.providers.message.8e79364fc993");
     },
     capabilities: ["text"],
     builtIn: false,
@@ -816,18 +716,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Opprett konto eller logg inn på console.anthropic.com.",
-          "Create an account or sign in at console.anthropic.com.",
-        ),
-        L(
-          "Kjøp kreditt under Settings → Billing (API-et virker ikke uten kreditt).",
-          "Buy credit under Settings → Billing (the API does not work without credit).",
-        ),
-        L(
-          "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).",
-          "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
-        ),
+        t("core-generation-providers.providers.message.340d37018508"),
+        t("core-generation-providers.providers.message.cc6a980aa945"),
+        t("core-generation-providers.providers.message.5c712e78bf84"),
       ];
     },
     keyPattern: /^sk-ant-[A-Za-z0-9_-]{20,}$/,
@@ -841,10 +732,7 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     id: "xai",
     name: "xAI Grok",
     get description() {
-      return L(
-        "Tekst med Grok. Forhåndsbetalt kreditt i xAI Console.",
-        "Text with Grok. Prepaid credit in the xAI Console.",
-      );
+      return t("core-generation-providers.providers.message.d6c8579aceb7");
     },
     capabilities: ["text"],
     builtIn: false,
@@ -857,15 +745,9 @@ export const PROVIDERS: readonly ProviderInfo[] = [
     },
     get keySteps() {
       return [
-        L(
-          "Opprett konto eller logg inn på console.x.ai.",
-          "Create an account or sign in at console.x.ai.",
-        ),
-        L("Kjøp kreditt under Billing for teamet ditt.", "Buy credit under Billing for your team."),
-        L(
-          "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).",
-          "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
-        ),
+        t("core-generation-providers.providers.message.b3569009e306"),
+        t("core-generation-providers.providers.message.423e80cdaf9a"),
+        t("core-generation-providers.providers.message.e3bf20933260"),
       ];
     },
     keyPattern: /^xai-[A-Za-z0-9_-]{20,}$/,
@@ -1014,34 +896,28 @@ export function checkKeyFormat(
   key: string,
 ): { readonly error: string | null; readonly warning: string | null } {
   const k = key.trim();
-  if (!k) return { error: L("Lim inn nøkkelen.", "Paste the key."), warning: null };
+  if (!k) return { error: t("core-generation-providers.error.error.8bcda4f149e6"), warning: null };
   if (/\s/.test(k))
     return {
-      error: L(
-        "Nøkkelen kan ikke inneholde mellomrom eller linjeskift.",
-        "The key cannot contain spaces or line breaks.",
-      ),
+      error: t("core-generation-providers.error.error.1b3204ff58f8"),
       warning: null,
     };
   if (k.length < 16 || k.length > 512)
     return {
-      error: L("Nøkkelen har feil lengde.", "The key has the wrong length."),
+      error: t("core-generation-providers.error.error.267611fb2469"),
       warning: null,
     };
   const p = providerInfo(provider);
-  if (!p) return { error: L("Ukjent leverandør.", "Unknown provider."), warning: null };
+  if (!p) return { error: t("core-generation-providers.error.error.2280b978f1da"), warning: null };
   if (p.builtIn)
     return {
-      error: L("Denne leverandøren trenger ingen nøkkel.", "This provider does not need a key."),
+      error: t("core-generation-providers.error.error.22895e764383"),
       warning: null,
     };
   if (p.keyPattern && !p.keyPattern.test(k))
     return {
       error: null,
-      warning: L(
-        `Nøkkelen ser ikke ut som en ${p.name}-nøkkel. Sjekk at du kopierte hele nøkkelen.`,
-        `The key does not look like a ${p.name} key. Check that you copied the whole key.`,
-      ),
+      warning: t("core-generation-providers.warning.warning.114a04890e58", { name: String(p.name) }),
     };
   return { error: null, warning: null };
 }
@@ -1056,7 +932,7 @@ export function capRemaining(capUsd: number | null, usedUsd: number): number | n
 
 /** «$12.40» – leverandørene tar betalt i USD. */
 export function formatUsd(n: number): string {
-  if (!Number.isFinite(n)) return L("ukjent beløp", "unknown amount");
+  if (!Number.isFinite(n)) return t("core-generation-providers.format-usd.message.846590d9f5fb");
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
@@ -1104,46 +980,85 @@ export function effortOf(model: ProviderModel | undefined): EffortLevel {
   return model?.tier ?? "balanced";
 }
 
+// ---------------------------------------------------------------- M8 kvalitetsprofiler (REQ-0854–0862)
+
+/** AI-typen i kvalitetsprofilen som svarer til en oppgave (null: profilen styrer ikke denne oppgaven). */
+export function profileKindOf(
+  capability: Capability,
+): import("./quality-profile").QualityProfileModelKind | null {
+  switch (capability) {
+    case "image":
+    case "upscale":
+      return "image";
+    case "video":
+    case "video_edit":
+      return "video";
+    case "speech":
+      return "speech";
+    case "sound":
+      return "sound";
+    default:
+      return null;
+  }
+}
+
+/**
+ * Modellvalget en kvalitetsprofil gir for en oppgave (REQ-0856): en uttrykkelig modell i profilen brukes
+ * når den er tilgjengelig (leverandøren er koblet til, eller innebygd); ellers velger profilens
+ * innsatsnivå som i effortChoice. Uten profil (eller uten treff) er svaret null – oppførselen er da
+ * nøyaktig som før profilene fantes.
+ */
+export function profileChoice(
+  capability: Capability,
+  profile: Pick<import("./quality-profile").QualityProfile, "spec"> | null,
+  connected: ReadonlySet<string>,
+  settings: readonly ModelSetting[] = activeSettings,
+): ModelChoice | null {
+  if (!profile) return null;
+  const kind = profileKindOf(capability);
+  if (!kind) return null;
+  const modelId = profile.spec.models?.[kind];
+  if (modelId) {
+    for (const o of providersFor(capability, connected, settings)) {
+      const m = o.models.find((x) => x.id === modelId);
+      if (m) return { provider: o.provider, model: m };
+    }
+    // Modellen i profilen er ikke tilgjengelig lenger: fall tilbake på innsatsnivået
+  }
+  return effortChoice(capability, profile.spec.effort ?? "balanced", connected, settings);
+}
+
 /** Kvalitetsmekanismene modellen faktisk har (mandat 19.4), som korte tekster på norsk. */
 export function qualityMechanisms(model: ProviderModel): string[] {
   const out: string[] = [];
   if (model.resolution)
-    out.push(L(`Oppløsning ${model.resolution}`, `Resolution ${model.resolution}`));
+    out.push(t("core-generation-providers.quality-mechanisms.out-push.e66f441770d7", { resolution: String(model.resolution) }));
   if (model.durations?.length) {
     const d = model.durations;
     out.push(
       d.length > 3
-        ? L(`Lengde ${d[0]}–${d[d.length - 1]} s`, `Length ${d[0]}–${d[d.length - 1]} s`)
-        : L(
-            `Lengde ${d.slice(0, -1).join(", ")}${d.length > 1 ? " eller " : ""}${d[d.length - 1]} s`,
-            `Length ${d.slice(0, -1).join(", ")}${d.length > 1 ? " or " : ""}${d[d.length - 1]} s`,
-          ),
+        ? t("core-generation-providers.quality-mechanisms.out-push.af05c6a3b81a", { value1: String(d[0]), value2: String(d[d.length - 1]) })
+        : d.length > 1 ? t("core-generation-providers.lengths", { list: d.slice(0, -1).join(", "), last: d[d.length - 1]! }) : t("core-generation-providers.length", { last: d[d.length - 1]! }),
     );
   }
   if (model.acceptsImage)
     out.push(
       model.capability === "video"
-        ? L("Startbilde", "Start image")
-        : L("Forbildebilder (referansestyring)", "Reference images (style reference)"),
+        ? t("core-generation-providers.quality-mechanisms.out-push.872fedcca32c")
+        : t("core-generation-providers.quality-mechanisms.out-push.5a32879d280c"),
     );
   if (model.capability === "image")
     out.push(
-      L(
-        "Flere kandidater (hver koster som ett bilde)",
-        "Several candidates (each costs as one image)",
-      ),
+      t("core-generation-providers.quality-mechanisms.out-push.b0f78cf604ad"),
     );
-  if (model.transparent) out.push(L("Gjennomsiktig bakgrunn", "Transparent background"));
+  if (model.transparent) out.push(t("core-generation-providers.quality-mechanisms.out-push.fd17baccd39f"));
   for (const e of model.extras ?? []) if (!out.includes(e)) out.push(e);
   return out;
 }
 
 /** Programmet lover ikke at dyrere gir bedre (mandat 19.3, REQ-0277). */
 export function effortDisclaimer(): string {
-  return L(
-    "Høyere innsats koster mer, men er ingen garanti for et bedre resultat. Se på resultatet og velg selv.",
-    "Higher effort costs more, but is no guarantee of a better result. Look at the result and choose for yourself.",
-  );
+  return t("core-generation-providers.effort-disclaimer.message.ad77f3fea910");
 }
 
 /** En linje i kostnadsanslaget før bekreftelse (mandat 19.5, REQ-0280). */
@@ -1178,53 +1093,43 @@ export function costBreakdown(
   const fmt = (n: number) => n.toLocaleString(locale(), { maximumFractionDigits: 1 });
   const cand = Math.max(1, opts.candidates ?? 1);
   const targets = Math.max(1, opts.targets ?? 1);
-  const targetsWord = opts.targetsLabel ?? L("mål", "targets");
+  const targetsWord = opts.targetsLabel ?? t("core-generation-providers.targets-word.message.8006c8a2ee35");
   const out: CostLine[] = [
-    { label: L("Modell", "Model"), value: `${provider.name} – ${model.label}` },
-    { label: L("Innsatsnivå", "Effort level"), value: EFFORT_LABEL[effortOf(model)] },
+    { label: t("core-generation-providers.label.label.1590da4c130f"), value: `${provider.name} – ${model.label}` },
+    { label: t("core-generation-providers.label.label.feda3b15e97d"), value: EFFORT_LABEL[effortOf(model)] },
   ];
-  if (model.resolution) out.push({ label: L("Oppløsning", "Resolution"), value: model.resolution });
+  if (model.resolution) out.push({ label: t("core-generation-providers.label.label.c2f177847629"), value: model.resolution });
   const generations = cand * targets;
   out.push({
-    label: L("Antall", "Count"),
+    label: t("core-generation-providers.label.label.81c02fd12e52"),
     value:
       targets > 1 || cand > 1
-        ? L(
-            `${generations} genereringer` +
-              (targets > 1 ? ` (${targets} ${targetsWord}` : " (") +
-              (cand > 1 ? `${targets > 1 ? " × " : ""}${cand} kandidater)` : ")"),
-            `${generations} generations` +
-              (targets > 1 ? ` (${targets} ${targetsWord}` : " (") +
-              (cand > 1 ? `${targets > 1 ? " × " : ""}${cand} candidates)` : ")"),
-          )
-        : L("1 generering", "1 generation"),
+        ? t("core-generation-providers.generations", {
+  generations,
+  detail: (targets > 1 ? ` (${targets} ${targetsWord}` : " (") + (cand > 1 ? t("core-generation-providers.generations-candidates", { times: targets > 1 ? " × " : "", count: cand }) : ")"),
+})
+        : t("core-generation-providers.value.value.a8927c6f3176"),
   });
   const secs = (opts.seconds ?? []).filter((s) => s > 0);
   if (secs.length) {
     const lo = Math.min(...secs);
     const hi = Math.max(...secs);
     out.push({
-      label: L("Lengde", "Length"),
-      value: lo === hi ? L(`${fmt(lo)} s hver`, `${fmt(lo)} s each`) : `${fmt(lo)}–${fmt(hi)} s`,
+      label: t("core-generation-providers.label.label.a6dbd4fe6028"),
+      value: lo === hi ? t("core-generation-providers.value.value.8d18db3db6f5", { value1: String(fmt(lo)) }) : `${fmt(lo)}–${fmt(hi)} s`,
     });
   } else if (opts.assumedMaxSeconds)
     out.push({
-      label: L("Lengde", "Length"),
-      value: L(
-        `ikke valgt – regnet med lengste, ${fmt(opts.assumedMaxSeconds)} s`,
-        `not chosen – calculated with the longest, ${fmt(opts.assumedMaxSeconds)} s`,
-      ),
+      label: t("core-generation-providers.label.label.a6dbd4fe6028.2"),
+      value: t("core-generation-providers.value.value.ce0bbea6908b", { value1: String(fmt(opts.assumedMaxSeconds)) }),
     });
   out.push({
-    label: L("Ekstrarunder", "Extra rounds"),
-    value: L(
-      "ingen automatiske – nye forsøk startes bare av deg",
-      "none automatic – new attempts are only started by you",
-    ),
+    label: t("core-generation-providers.label.label.52938752bbdd"),
+    value: t("core-generation-providers.value.value.27cda8eca4c9"),
   });
   out.push({
-    label: L("Samlet anslag", "Estimated total"),
-    value: opts.total ?? L("ukjent pris", "price unknown"),
+    label: t("core-generation-providers.label.label.dafb278acd09"),
+    value: opts.total ?? t("core-generation-providers.value.value.b7021620a041"),
   });
   return out;
 }
@@ -1252,22 +1157,16 @@ export function modelCapabilities(model: ProviderModel): ModelCapabilities {
   const time: string[] = [];
   if (d.length)
     time.push(
-      L(`Videolengde ${d[0]}–${d[d.length - 1]} s`, `Video length ${d[0]}–${d[d.length - 1]} s`),
+      t("core-generation-providers.model-capabilities.time-push.e581a157b1cb", { value1: String(d[0]), value2: String(d[d.length - 1]) }),
     );
   if (model.soundSeconds)
     time.push(
-      L(
-        `Lydlengde ${model.soundSeconds.min.toLocaleString(locale())}–${model.soundSeconds.max} s`,
-        `Audio length ${model.soundSeconds.min.toLocaleString(locale())}–${model.soundSeconds.max} s`,
-      ),
+      t("core-generation-providers.model-capabilities.time-push.3088c3c141e0", { value1: String(model.soundSeconds.min.toLocaleString(locale())), max: String(model.soundSeconds.max) }),
     );
   const limits = [...(model.limits ?? [])];
   if (model.maxPromptChars)
     limits.push(
-      L(
-        `Beskrivelsen kortes ned til ${model.maxPromptChars.toLocaleString(locale())} tegn`,
-        `The description is cut to ${model.maxPromptChars.toLocaleString(locale())} characters`,
-      ),
+      t("core-generation-providers.model-capabilities.limits-push.66a8a9509c75", { value1: String(model.maxPromptChars.toLocaleString(locale())) }),
     );
   return {
     task: model.capability,
@@ -1357,12 +1256,7 @@ export const TASK_GROUP: Record<TextTask, TextTaskGroup> = {
   storylab_profile: "storylab_analysis",
   general: "general",
 };
-export const TEXT_TASK_GROUP_LABEL: Record<TextTaskGroup, string> = localized({
-  script: ["Manus", "Script"],
-  storylab_talk: ["Story Lab (samtaler)", "Story Lab (conversations)"],
-  storylab_analysis: ["Story Lab (analyse)", "Story Lab (analysis)"],
-  general: ["Annet", "Other"],
-});
+export const TEXT_TASK_GROUP_LABEL: Record<TextTaskGroup, string> = tLocalized({ script: "core-generation-providers.text-task-group-label.script.cddea2355733", storylab_talk: "core-generation-providers.text-task-group-label.storylab-talk.c09215cfaa29", storylab_analysis: "core-generation-providers.text-task-group-label.storylab-analysis.011a03c061a7", general: "core-generation-providers.text-task-group-label.general.95b26a644ca6" });
 
 /** Brukerens valg for én oppgavegruppe. */
 export interface TextChoice {
@@ -1441,14 +1335,11 @@ export function chooseTextModel(input: {
   if (ex && (ex.provider || ex.model)) {
     const provider = ex.provider ?? "";
     if (provider !== "lovable" && !isTextProviderId(provider))
-      return { error: L("Ukjent tekstleverandør.", "Unknown text provider.") };
+      return { error: t("core-generation-providers.error.error.11758911bc46") };
     const model = ex.model ?? firstModel(provider);
     if (!model || !usable(provider, model))
       return {
-        error: L(
-          "Den valgte tekstmodellen kan ikke brukes (ingen gyldig nøkkel, ukjent modell eller slått av).",
-          "The chosen text model cannot be used (no valid key, unknown model or switched off).",
-        ),
+        error: t("core-generation-providers.error.error.d30b0da81464"),
       };
     return { choice: { provider: provider as TextChoice["provider"], model }, reason: "explicit" };
   }
@@ -1465,10 +1356,7 @@ export function chooseTextModel(input: {
   if (input.isEnabled("lovable", input.lovableModel))
     return { choice: { provider: "lovable", model: input.lovableModel }, reason: "fallback" };
   return {
-    error: L(
-      "Ingen tekst-AI er tilgjengelig. Koble til en leverandør under «AI-leverandører».",
-      "No text AI is available. Connect a provider under “AI providers”.",
-    ),
+    error: t("core-generation-providers.error.error.943436f0735d"),
   };
 }
 

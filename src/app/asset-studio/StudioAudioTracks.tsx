@@ -3,18 +3,11 @@
  * (replikklyd og alternative takes). Avkrysningene demper bare forhåndslyttingen i studioet; de endrer ikke den
  * lagrede scenen. «Lagre demping i scenen» legger dempingen i utkastet som vanlige lydklippendringer.
  */
-import {
-  L,
-  audioClipFieldsOf,
-  framesToSeconds,
-  type AudioClip,
-  type Command,
-  type ProjectState,
-  type Rational,
-} from "@/core";
+import { audioClipFieldsOf, framesToSeconds, type AudioClip, type Command, type ProjectState, type Rational } from "@/core";
 import { Button } from "@/components/ui/button";
 import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import type { Commands } from "@/app/project/use-commands";
+import { t } from "@/core/i18n/keyed";
 
 export function muteDraftCommand(
   state: ProjectState,
@@ -87,17 +80,17 @@ export function StudioAudioTracks({
             disabled={!clips.length}
             data-testid={`${testId}-toggle`}
             onChange={(e) => setMuted(clips.map((c) => c.id), !e.target.checked)}
-            aria-label={L(`Spill av ${title} i forhåndslyttingen`, `Play ${title} in the preview`)}
+            aria-label={t("app-asset-studio-studio-audio-tracks.group.aria-label.b942383b2028", { title: String(title) })}
           />
           {title}
         </label>
         {clips.length === 0 ? (
-          <p className="pl-5 text-[11px] text-text-tertiary">{L("Ingen lyd.", "No sound.")}</p>
+          <p className="pl-5 text-[11px] text-text-tertiary">{t("app-asset-studio-studio-audio-tracks.group.p.f61e319dc2f5")}</p>
         ) : null}
         {clips.map((c) => {
           const start = c.offsetMs / 1000;
           const len = Math.max(0.05, c.lengthMs / 1000);
-          const name = c.name || state.assets[c.assetId]?.name || L("Lydklipp", "Audio clip");
+          const name = c.name || state.assets[c.assetId]?.name || t("app-asset-studio-studio-audio-tracks.name.clips-map.8b2450cbd42b");
           const on = !previewMuted.has(c.id);
           return (
             <div key={c.id} className="flex items-center gap-1.5" data-testid="asset-studio-audio-clip">
@@ -107,7 +100,7 @@ export function StudioAudioTracks({
                 data-testid="asset-studio-audio-preview-toggle"
                 data-clip-id={c.id}
                 onChange={(e) => setMuted([c.id], !e.target.checked)}
-                aria-label={L(`Spill av «${name}» i forhåndslyttingen`, `Play “${name}” in the preview`)}
+                aria-label={t("app-asset-studio-studio-audio-tracks.group.aria-label.68e501d187ea", { name: String(name) })}
               />
               <div className="relative h-4 flex-1 rounded-sm bg-surface-2">
                 <div
@@ -129,8 +122,8 @@ export function StudioAudioTracks({
                   projectId={projectId}
                   state={state}
                   cmds={cmds}
-                  target={{ kind: "line", occurrenceId, blockId: c.blockId }}
-                  label={L(`Takes for ${name}`, `Takes for ${name}`)}
+                  target={{ kind: "line", occurrenceId, blockId: c.blockId, clipId: c.id }}
+                  label={t("app-asset-studio-studio-audio-tracks.group.label.69f1b007dd55", { name: String(name) })}
                 />
               ) : null}
             </div>
@@ -142,10 +135,10 @@ export function StudioAudioTracks({
 
   return (
     <div className="flex flex-col gap-2 pt-2" data-testid="asset-studio-audio">
-      {group(L("Scenens lyd", "Scene sound"), "asset-studio-audio-scene", sceneClips)}
-      {group(L(`${assetName}s lyd`, `${assetName}'s sound`), "asset-studio-audio-asset", assetClips)}
+      {group(t("app-asset-studio-studio-audio-tracks.studio-audio-tracks.group.74dcb9e83def"), "asset-studio-audio-scene", sceneClips)}
+      {group(t("app-asset-studio-studio-audio-tracks.studio-audio-tracks.group.1541ae17795d", { assetName: String(assetName) }), "asset-studio-audio-asset", assetClips)}
       <p className="text-[11px] text-text-tertiary" data-testid="asset-studio-audio-direct-note">
-        {L("Lydopptak lagres i scenen med en gang", "Audio recordings are saved in the scene straight away")}
+        {t("app-asset-studio-studio-audio-tracks.studio-audio-tracks.p.35b1d8ef9a50")}
       </p>
       <div className="flex items-center gap-2">
         <Button
@@ -154,12 +147,9 @@ export function StudioAudioTracks({
           disabled={!editable || !dirty}
           onClick={onSaveMute}
           data-testid="asset-studio-save-mute"
-          title={L(
-            "Avkrysningene gjelder bare forhåndslyttingen. Denne knappen legger dempingen i scenen (lagres med «Oppdater scenen og lukk»).",
-            "The checkboxes only affect the preview. This button puts the muting in the scene (saved with “Update the scene and close”).",
-          )}
+          title={t("app-asset-studio-studio-audio-tracks.studio-audio-tracks.title.985c8836af1e")}
         >
-          {L("Lagre demping i scenen", "Save muting in the scene")}
+          {t("app-asset-studio-studio-audio-tracks.studio-audio-tracks.button.2a843c3edb62")}
         </Button>
       </div>
     </div>

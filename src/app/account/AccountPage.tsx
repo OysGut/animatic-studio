@@ -6,7 +6,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { L, locale, tm } from "@/core";
+import { locale, tm } from "@/core";
 import { changePassword, saveDisplayName } from "@/adapters/browser/account";
 import { signOut } from "@/adapters/browser/auth";
 import { requestMyDeletion } from "@/adapters/account/account.functions";
@@ -15,8 +15,10 @@ import { useCloseToPrevious } from "@/app/shell/back-navigation";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
 import { CostReportView } from "./CostReportView";
+import { RegionSettings } from "./RegionCard";
 import { WorkspacesCard } from "@/app/workspaces/WorkspacesCard";
 import { MY_ACCOUNT_KEY, PrivacyLink, useMyAccount } from "./use-account";
+import { t } from "@/core/i18n/keyed";
 
 function Card({ title, children, id }: { title: string; children: React.ReactNode; id?: string }) {
   return (
@@ -51,7 +53,7 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
   async function saveName() {
     if (name === null) return;
     const e = await saveDisplayName(name);
-    setNameMsg(e ? tm(e.message) : L("Lagret.", "Saved."));
+    setNameMsg(e ? tm(e.message) : t("app-account-account-page.save-name.set-name-msg.a4261bf49b5e"));
     if (!e) {
       setName(null);
       void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
@@ -61,12 +63,12 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
     if (pw.length < 8)
       return setPwMsg({
         ok: false,
-        text: L("Passordet må ha minst 8 tegn.", "The password must have at least 8 characters."),
+        text: t("app-account-account-page.text.text.329e2d824228"),
       });
     if (pw !== pw2)
       return setPwMsg({
         ok: false,
-        text: L("Passordene er ikke like.", "The passwords are not the same."),
+        text: t("app-account-account-page.text.text.03230ef58e96"),
       });
     setBusy(true);
     const e = await changePassword(pw);
@@ -74,7 +76,7 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
     setPwMsg(
       e
         ? { ok: false, text: tm(e.message) }
-        : { ok: true, text: L("Passordet er endret.", "The password is changed.") },
+        : { ok: true, text: t("app-account-account-page.text.text.7badb3057a9e") },
     );
     if (!e) {
       setPw("");
@@ -99,96 +101,91 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
       className="mx-auto flex w-full max-w-[860px] flex-col gap-4 px-6 py-6"
       data-testid="account-page"
     >
-      <h1 className="text-lg font-semibold text-text-primary">{L("Min konto", "My account")}</h1>
+      <h1 className="text-lg font-semibold text-text-primary">{t("app-account-account-page.account-page.h1.e6872b7b5c7f")}</h1>
       {!ready ? (
         <p className="rounded-sm border border-status-uncertain/50 bg-surface-2 p-3 text-xs text-text-secondary">
-          {L(
-            "Databasen må oppdateres (migrasjon 0033) før språkvalg på kontoen, forbruk, personvern og sletting virker.",
-            "The database must be updated (migration 0033) before account language, usage, privacy and deletion work.",
-          )}
+          {t("app-account-account-page.account-page.p.1add060cb67d")}
         </p>
       ) : null}
 
-      <Card title={L("Profil", "Profile")}>
+      <Card title={t("app-account-account-page.account-page.title.3a0de0ed891b")}>
         <dl className="grid grid-cols-[140px_1fr] gap-x-3 gap-y-1.5 text-[13px]">
-          <dt className="text-text-tertiary">{L("E-post", "Email")}</dt>
+          <dt className="text-text-tertiary">{t("app-account-account-page.account-page.dt.ade51be1b3f1")}</dt>
           <dd className="text-text-primary">{email}</dd>
-          <dt className="text-text-tertiary">{L("Konto laget", "Account created")}</dt>
+          <dt className="text-text-tertiary">{t("app-account-account-page.account-page.dt.4ccb2731bfab")}</dt>
           <dd className="text-text-primary">
             {a?.createdAt
               ? new Date(a.createdAt).toLocaleDateString(locale(), { dateStyle: "long" })
               : "–"}
           </dd>
-          <dt className="text-text-tertiary">{L("Rolle", "Role")}</dt>
+          <dt className="text-text-tertiary">{t("app-account-account-page.account-page.dt.56839a8af169")}</dt>
           <dd className="text-text-primary">
             {a?.isAdmin
               ? a.permanentAdmin
-                ? L("Fast administrator", "Permanent administrator")
-                : L("Administrator", "Administrator")
-              : L("Bruker", "User")}
+                ? t("app-account-account-page.account-page.dd.3ea157877add")
+                : t("app-account-account-page.account-page.dd.476e5871100c")
+              : t("app-account-account-page.account-page.dd.9818c358ed9c")}
             {a?.isAdmin ? (
               <Link
                 to="/admin"
                 className="ml-2 text-accent-brand underline-offset-2 hover:underline"
               >
-                {L("Til adminsiden", "To the admin page")}
+                {t("app-account-account-page.account-page.link.9f9ca7316e88")}
               </Link>
             ) : null}
           </dd>
-          <dt className="self-center text-text-tertiary">{L("Visningsnavn", "Display name")}</dt>
+          <dt className="self-center text-text-tertiary">{t("app-account-account-page.account-page.dt.3a881a93c577")}</dt>
           <dd className="flex items-center gap-2">
             <input
               className={input}
               value={name ?? a?.displayName ?? ""}
               maxLength={100}
               onChange={(e) => setName(e.target.value)}
-              aria-label={L("Visningsnavn", "Display name")}
+              aria-label={t("app-account-account-page.account-page.aria-label.3a881a93c577")}
             />
             <Button size="sm" disabled={name === null} onClick={() => void saveName()}>
-              {L("Lagre", "Save")}
+              {t("app-account-account-page.account-page.button.635df60f0182")}
             </Button>
           </dd>
         </dl>
         {nameMsg ? <p className="text-xs text-text-secondary">{nameMsg}</p> : null}
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Visningsnavnet ser de du deler prosjekter med. E-postadressen din vises ikke for dem.",
-            "The display name is seen by those you share projects with. Your email address is not shown to them.",
-          )}
+          {t("app-account-account-page.account-page.p.64f5d36e0990")}
         </p>
       </Card>
 
-      <Card title={L("Språk", "Language")}>
+      <Card title={t("app-account-account-page.account-page.title.f1e74b20ac0c")}>
         <div className="flex items-center gap-3">
           <LanguageSwitch />
           <span className="text-xs text-text-tertiary">
-            {L(
-              "Valget lagres på kontoen og gjelder neste gang du logger inn, også på andre maskiner.",
-              "The choice is saved on the account and applies the next time you sign in, also on other computers.",
-            )}
+            {t("app-account-account-page.account-page.span.7542584b77d7")}
           </span>
         </div>
       </Card>
 
-      <Card title={L("Passord", "Password")}>
+      <Card title={t("b097.region.title")} id="region">
+        <RegionSettings />
+      </Card>
+
+      <Card title={t("app-account-account-page.account-page.title.0a9bee9f065d")}>
         <div className="grid max-w-[420px] gap-2">
           <input
             className={input}
             type="password"
             autoComplete="new-password"
-            placeholder={L("Nytt passord (minst 8 tegn)", "New password (at least 8 characters)")}
+            placeholder={t("app-account-account-page.account-page.placeholder.11360c11e886")}
             value={pw}
             onChange={(e) => setPw(e.target.value)}
-            aria-label={L("Nytt passord", "New password")}
+            aria-label={t("app-account-account-page.account-page.aria-label.d5d00f5fe2cb")}
           />
           <input
             className={input}
             type="password"
             autoComplete="new-password"
-            placeholder={L("Gjenta passordet", "Repeat the password")}
+            placeholder={t("app-account-account-page.account-page.placeholder.9bfdde07b1d3")}
             value={pw2}
             onChange={(e) => setPw2(e.target.value)}
-            aria-label={L("Gjenta passordet", "Repeat the password")}
+            aria-label={t("app-account-account-page.account-page.aria-label.9bfdde07b1d3")}
           />
           <Button
             size="sm"
@@ -196,7 +193,7 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
             disabled={busy || !pw}
             onClick={() => void savePassword()}
           >
-            {L("Endre passord", "Change password")}
+            {t("app-account-account-page.account-page.button.ac2f177d767b")}
           </Button>
           {pwMsg ? (
             <p className={"text-xs " + (pwMsg.ok ? "text-status-success" : "text-status-danger")}>
@@ -206,17 +203,14 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
         </div>
       </Card>
 
-      <Card title={L("AI-forbruk", "AI usage")} id="forbruk">
+      <Card title={t("app-account-account-page.account-page.title.0ad0dd61ee8f")} id="forbruk">
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Det du selv har bestilt i alle prosjektene. Eieren av et prosjekt ser hva hele prosjektet har kostet på prosjektets oversikt.",
-            "What you have ordered yourself in all projects. The owner of a project sees what the whole project has cost on the project overview.",
-          )}
+          {t("app-account-account-page.account-page.p.04c6a66a7233")}
         </p>
         {ready ? (
           <CostReportView
             scope="account"
-            projectName={L("Alle prosjekter", "All projects")}
+            projectName={t("app-account-account-page.account-page.project-name.43fec7dcd962")}
             generatedBy={a?.displayName ? `${a.displayName} (${email})` : email}
           />
         ) : null}
@@ -224,46 +218,31 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
 
       {userId ? <WorkspacesCard userId={userId} /> : null}
 
-      <Card title={L("Personvern", "Privacy")}>
+      <Card title={t("app-account-account-page.account-page.title.2cb4e1640f71")}>
         <p className="text-[13px] text-text-secondary">
           {a?.acceptedVersion
-            ? L(
-                `Du har lest versjon ${a.acceptedVersion} av personvernerklæringen.`,
-                `You have read version ${a.acceptedVersion} of the privacy statement.`,
-              )
-            : L(
-                "Les hvordan vi behandler opplysningene dine.",
-                "Read how we process your information.",
-              )}{" "}
+            ? t("app-account-account-page.account-page.p.35d769cea95d", { acceptedVersion: String(a.acceptedVersion) })
+            : t("app-account-account-page.account-page.p.8aa03e8c03e8")}{" "}
           <PrivacyLink className="text-accent-brand underline-offset-2 hover:underline" />
         </p>
       </Card>
 
-      <Card title={L("Slett kontoen min", "Delete my account")}>
+      <Card title={t("app-account-account-page.account-page.title.f5964e6fad59")}>
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Kontoen låses med en gang og slettes for godt etter 30 dager. I mellomtiden kan bare administrator låse den opp. Prosjekter du eier, slettes ikke: de låses, og administrator kan gi dem en ny eier. Det du har gjort i andres prosjekter, står igjen som «Slettet bruker».",
-            "The account is locked at once and deleted for good after 30 days. Until then, only the administrator can unlock it. Projects you own are not deleted: they are locked, and the administrator can give them a new owner. What you have done in others' projects remains as “Deleted user”.",
-          )}
+          {t("app-account-account-page.account-page.p.fb52079cd767")}
         </p>
         {a?.permanentAdmin ? (
           <p className="text-xs text-text-tertiary">
-            {L(
-              "Den faste administratorkontoen kan ikke slettes.",
-              "The permanent administrator account cannot be deleted.",
-            )}
+            {t("app-account-account-page.account-page.p.3d5761b58054")}
           </p>
         ) : (
           <div className="flex max-w-[520px] flex-wrap items-center gap-2">
             <input
               className={input + " flex-1"}
-              placeholder={L(
-                "Skriv e-postadressen din for å bekrefte",
-                "Type your email address to confirm",
-              )}
+              placeholder={t("app-account-account-page.account-page.placeholder.143050c7df6d")}
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
-              aria-label={L("E-postadressen din", "Your email address")}
+              aria-label={t("app-account-account-page.account-page.aria-label.55d81f5ed2f6")}
               data-testid="delete-confirm"
             />
             <Button
@@ -273,7 +252,7 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
               onClick={() => void deleteMe()}
               data-testid="delete-me"
             >
-              {L("Slett kontoen min", "Delete my account")}
+              {t("app-account-account-page.account-page.button.f5964e6fad59")}
             </Button>
           </div>
         )}
@@ -285,7 +264,7 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
       </Card>
       <div className="flex justify-end pb-4">
         <Button variant="secondary" onClick={close} data-testid="account-close">
-          {L("Lukk", "Close")}
+          {t("app-account-account-page.account-page.button.6900b1be5d0a")}
         </Button>
       </div>
     </main>

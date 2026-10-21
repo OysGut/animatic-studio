@@ -6,27 +6,13 @@
 import { PanelHeader } from "@/app/shell/workspace-chrome";
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  blocksOfVariant,
-  localized,
-  locale,
-  mainProduction,
-  newId,
-  type Command,
-  type Composition,
-  type CompositionLayer,
-  type ProjectState,
-} from "@/core";
+import { blocksOfVariant, locale, mainProduction, newId, type Command, type Composition, type CompositionLayer, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string) => string | null;
 
-const KIND: Record<string, string> = localized({
-  action: ["Handling", "Action"],
-  dialogue: ["Replikk", "Line"],
-  shot: ["Bilde", "Shot"],
-});
+const KIND: Record<string, string> = tLocalized({ action: "app-scene-editor-layer-events.kind.action.e64ea10b7b2f", dialogue: "app-scene-editor-layer-events.kind.dialogue.c95ea972d0f7", shot: "app-scene-editor-layer-events.kind.shot.d3a47dd2bccc" });
 
 export function LayerEvents({
   state,
@@ -89,20 +75,17 @@ export function LayerEvents({
             },
           ],
         },
-        L("Koble manus til hendelse", "Link script to event"),
+        t("app-scene-editor-layer-events.add.run.e12744833915"),
       ),
     );
   }
 
   return (
-    <section aria-label={L("Hendelser i manuset", "Script events")} className="mb-4">
-      <PanelHeader as="h3" className="-mx-3 mb-1.5" title={L("Hendelser i manuset", "Script events")} />
+    <section aria-label={t("app-scene-editor-layer-events.layer-events.aria-label.930f91e65691")} className="mb-4">
+      <PanelHeader as="h3" className="-mx-3 mb-1.5" title={t("app-scene-editor-layer-events.layer-events.title.930f91e65691")} />
       {links.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Ingen ennå. Koble en handling eller replikk til det laget gjør på avspillingshodet.",
-            "None yet. Link an action or line to what the layer does at the playhead.",
-          )}
+          {t("app-scene-editor-layer-events.layer-events.p.650860773421")}
         </p>
       ) : (
         <ul className="flex flex-col gap-1">
@@ -117,24 +100,24 @@ export function LayerEvents({
                   type="button"
                   onClick={() => onSeek?.(Math.round((l.startMs / 1000) * fps))}
                   className="shrink-0 font-mono text-[11px] text-text-secondary hover:text-text-primary"
-                  title={L("Gå til hendelsen", "Go to the event")}
+                  title={t("app-scene-editor-layer-events.layer-events.title.ba8e885ef2b9")}
                 >
                   {seconds(l.startMs)}
                 </button>
                 <span className="min-w-0 flex-1 truncate text-text-primary" title={b?.text}>
                   {b
                     ? `${KIND[b.kind] ?? ""}: ${snippet(b.text)}`
-                    : L("Blokken er borte", "The block has been removed")}
+                    : t("app-scene-editor-layer-events.layer-events.span.d7bad2b14058")}
                 </span>
                 {editable ? (
                   <button
                     type="button"
-                    aria-label={L("Fjern hendelsen", "Remove the event")}
+                    aria-label={t("app-scene-editor-layer-events.layer-events.aria-label.25c5a29fd17d")}
                     onClick={() =>
                       setError(
                         run(
                           { type: "SetTimeLinksRemoved", linkIds: [l.id], removed: true },
-                          L("Fjern hendelse", "Remove event"),
+                          t("app-scene-editor-layer-events.layer-events.run.fd84ecf1cfe6"),
                         ),
                       )
                     }
@@ -151,13 +134,13 @@ export function LayerEvents({
       {editable && blocks.length > 0 ? (
         <div className="mt-1.5 flex items-center gap-1.5">
           <select
-            aria-label={L("Manusblokk for hendelsen", "Script block for the event")}
+            aria-label={t("app-scene-editor-layer-events.layer-events.aria-label.d95b6ea98816")}
             value={blockId}
             onChange={(e) => setBlockId(e.target.value)}
             className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1 text-xs text-text-primary"
           >
             <option value="">
-              {L("Velg handling eller replikk …", "Choose an action or line …")}
+              {t("app-scene-editor-layer-events.layer-events.option.7d8f8b82bd92")}
             </option>
             {blocks.map((b) => (
               <option key={b.id} value={b.id}>
@@ -170,13 +153,10 @@ export function LayerEvents({
             variant="secondary"
             disabled={!blockId}
             onClick={add}
-            title={L(
-              "Koble blokken til laget på avspillingshodet",
-              "Link the block to the layer at the playhead",
-            )}
+            title={t("app-scene-editor-layer-events.layer-events.title.aada8349175f")}
           >
             <Link2 className="size-3.5" />
-            {L("Koble her", "Link here")}
+            {t("app-scene-editor-layer-events.layer-events.button.0a688c48831e")}
           </Button>
         </div>
       ) : null}

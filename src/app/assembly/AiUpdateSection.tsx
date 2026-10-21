@@ -9,29 +9,14 @@ import { Loader2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  adaptPromptForModel,
-  aiUpdatePlan,
-  costBreakdown,
-  effortChoice,
-  estimateCostUsd,
-  filmClips,
-  formatUsd,
-  L,
-  providerInfo,
-  providerModel,
-  sceneVideoWork,
-  videoDurationFor,
-  videoStartImages,
-  type ProjectState,
-  type ScriptChange,
-} from "@/core";
+import { adaptPromptForModel, aiUpdatePlan, costBreakdown, effortChoice, estimateCostUsd, filmClips, formatUsd, providerInfo, providerModel, sceneVideoWork, videoDurationFor, videoStartImages, type ProjectState, type ScriptChange } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { SentPrompts } from "@/app/ai/SentPrompts";
 import { CostLines } from "@/app/ai/CostLines";
 import { Button } from "@/components/ui/button";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function AiUpdateSection({
   state,
@@ -105,10 +90,7 @@ export function AiUpdateSection({
     for (const i of plan.segments) {
       if (adaptPromptForModel(promptFor(i), chosen.model).blocked) {
         errors.push(
-          L(
-            `Segment ${i + 1}: replikkene er for lange for modellen – del segmentet`,
-            `Segment ${i + 1}: the lines are too long for the model – split the segment`,
-          ),
+          tk("app-assembly-ai-update-section.run.errors-push.b6d049c6fdbb", { value1: String(i + 1) }),
         );
         continue;
       }
@@ -144,10 +126,7 @@ export function AiUpdateSection({
         ? { kind: "error", text: errors.join(" · ") }
         : {
             kind: "ok",
-            text: L(
-              `${started} nye ${started === 1 ? "video er" : "videoer er"} lagt i kø med høy prioritet. De gamle beholdes; sammenlign og velg i «Generer scene», og sett sammen scenen på nytt.`,
-              `${started} new ${started === 1 ? "video is" : "videos are"} queued with high priority. The old ones are kept; compare and choose in “Generate scene”, and assemble the scene again.`,
-            ),
+            text: tk("app-assembly-ai-update-section.videos-queued-high-priority", { count: started }),
           },
     );
   }
@@ -155,38 +134,32 @@ export function AiUpdateSection({
   return (
     <div className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-1 p-2 text-xs">
       <p className="font-medium text-text-primary">
-        {L("Oppdater AI-videoen", "Update the AI video")}
+        {tk("app-assembly-ai-update-section.ai-update-section.p.2ca282bbc9af")}
       </p>
       <p className="text-text-secondary">{plan.reason}</p>
       {plan.localOnly || plan.segments.length === 0 ? null : !chosen ? (
         <p className="text-text-tertiary">
-          {L(
-            "Ingen videoleverandør er koblet til (AI-leverandører på prosjektlisten).",
-            "No video provider is connected (AI providers on the project list).",
-          )}
+          {tk("app-assembly-ai-update-section.ai-update-section.p.6f400fcd28e3")}
         </p>
       ) : confirm ? (
         <div
           role="alertdialog"
-          aria-label={L("Bekreft ny video", "Confirm new video")}
+          aria-label={tk("app-assembly-ai-update-section.ai-update-section.aria-label.cff5fd241cb5")}
           className="flex flex-col gap-1.5"
         >
           <p className="text-text-primary">
             {plan.segments.length}{" "}
             {plan.segments.length === 1
-              ? L("ny video", "new video")
-              : L("nye videoer", "new videos")}{" "}
-            {L("med", "with")} {chosen.provider.name} – {chosen.model.label}
-            {same ? L(" (samme som sist)", " (same as last time)") : ""}.{" "}
-            {L(
-              `Belastes prosjektets eier, anslått ${formatUsd(cost)} (et anslag). De gamle videoene beholdes.`,
-              `Charged to the project owner, estimated at ${formatUsd(cost)} (an estimate). The old videos are kept.`,
-            )}
+              ? tk("app-assembly-ai-update-section.ai-update-section.p.dfa7da92a486")
+              : tk("app-assembly-ai-update-section.ai-update-section.p.7a28a05bef70")}{" "}
+            {tk("app-assembly-ai-update-section.ai-update-section.p.20a41ec48ba1")} {chosen.provider.name} – {chosen.model.label}
+            {same ? tk("app-assembly-ai-update-section.ai-update-section.p.7ff7db948778") : ""}.{" "}
+            {tk("app-assembly-ai-update-section.ai-update-section.p.01b1591be1e6", { value1: String(formatUsd(cost)) })}
           </p>
           <CostLines
             lines={costBreakdown(chosen.provider, chosen.model, {
               targets: plan.segments.length,
-              targetsLabel: L("segmenter", "segments"),
+              targetsLabel: tk("app-assembly-ai-update-section.targets-label.targets-label.b1b0690eaf2a"),
               seconds: plan.segments.map(seconds),
               total: `ca. ${formatUsd(cost)}`,
             })}
@@ -195,7 +168,7 @@ export function AiUpdateSection({
             <div key={i} className="flex flex-col gap-0.5 text-[11px] text-text-tertiary">
               <span className="flex items-center gap-2">
                 <label htmlFor={`ai-update-${occurrenceId}-${i}`}>
-                  {L(`Beskrivelse for segment ${i + 1}`, `Description for segment ${i + 1}`)}
+                  {tk("app-assembly-ai-update-section.ai-update-section.label.497b477bfd08", { value1: String(i + 1) })}
                 </label>
                 {edited[editKey(i)] !== undefined ? (
                   <button
@@ -208,7 +181,7 @@ export function AiUpdateSection({
                       })
                     }
                   >
-                    {L("Tilbake til forslaget", "Back to the suggestion")}
+                    {tk("app-assembly-ai-update-section.ai-update-section.button.508577509caa")}
                   </button>
                 ) : null}
               </span>
@@ -233,7 +206,7 @@ export function AiUpdateSection({
               onClick={() => void run()}
               disabled={busy || plan.segments.some((i) => !promptFor(i).trim())}
             >
-              <AiGlyph /> {L("Ja, lag nye videoer", "Yes, make new videos")}
+              <AiGlyph /> {tk("app-assembly-ai-update-section.ai-update-section.button.0eae5369083a")}
             </Button>
             <Button
               size="sm"
@@ -243,7 +216,7 @@ export function AiUpdateSection({
                 setEdited({});
               }}
             >
-              {L("Avbryt", "Cancel")}
+              {tk("app-assembly-ai-update-section.ai-update-section.button.14e6b6f0ad02")}
             </Button>
           </div>
         </div>
@@ -256,8 +229,8 @@ export function AiUpdateSection({
           onClick={() => setConfirm(true)}
         >
           {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
-          {L("Oppdater med AI", "Update with AI")} ({plan.segments.length}{" "}
-          {plan.segments.length === 1 ? "segment" : L("segmenter", "segments")}, ~{formatUsd(cost)})
+          {tk("app-assembly-ai-update-section.ai-update-section.button.0213b3c41bdb")} ({plan.segments.length}{" "}
+          {plan.segments.length === 1 ? "segment" : tk("app-assembly-ai-update-section.ai-update-section.button.a7c27d70b9d1")}, ~{formatUsd(cost)})
           …
         </Button>
       )}

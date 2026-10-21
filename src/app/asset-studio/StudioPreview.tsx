@@ -4,8 +4,9 @@
  */
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { L, renderFrame, type Composition, type ProjectState } from "@/core";
+import { renderFrame, type Composition, type ProjectState } from "@/core";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type StudioPreviewMode = "object" | "scene";
 
@@ -126,8 +127,8 @@ export function StudioPreview({
         data-mode={mode}
         aria-label={
           mode === "object"
-            ? L("Bare objektet", "Object only")
-            : L("Hele scenen slik den blir i filmen", "The whole scene as it will be in the film")
+            ? tk("app-asset-studio-studio-preview.studio-preview.aria-label.8795c5f5b996")
+            : tk("app-asset-studio-studio-preview.studio-preview.aria-label.43132ec9ce2e")
         }
         style={{ width: size.w, height: size.h, display: "block" }}
       />

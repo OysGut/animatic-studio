@@ -17,7 +17,8 @@ import { estimateProduction, type ProductionEstimate } from "../screenplay/durat
 import { matchingOccurrences, type SceneFilter } from "../screenplay/filter";
 import { filmClips } from "./film";
 import { discrepancies } from "./discrepancy";
-import { collation, localized } from "../i18n";
+import { collation } from "../i18n";
+import { tLocalized } from "@/core/i18n/keyed";
 
 /** Hvor tallet for scenen kommer fra (mandat 7.2). */
 export type DurationSource = "film" | "ai" | "animatic" | "planned" | "estimate";
@@ -25,21 +26,9 @@ export type DurationSource = "film" | "ai" | "animatic" | "planned" | "estimate"
 /** Produksjonsstatus for en scene. */
 export type SceneStatus = "done" | "film" | "animatic" | "missing" | "inactive";
 
-export const SCENE_STATUS_LABEL: Record<SceneStatus, string> = localized({
-  done: ["Ferdig", "Done"],
-  film: ["Film, ikke godkjent", "Film, not approved"],
-  animatic: ["2D-animatic", "2D animatic"],
-  missing: ["Mangler produksjon", "Missing production"],
-  inactive: ["Deaktivert", "Inactive"],
-});
+export const SCENE_STATUS_LABEL: Record<SceneStatus, string> = tLocalized({ done: "core-assembly-status.scene-status-label.done.bc68a82f9b2f", film: "core-assembly-status.scene-status-label.film.5d25ca00d7fd", animatic: "core-assembly-status.scene-status-label.animatic.26e6a9884a5e", missing: "core-assembly-status.scene-status-label.missing.b14468c5587e", inactive: "core-assembly-status.scene-status-label.inactive.69a20aae2490" });
 
-export const DURATION_SOURCE_LABEL: Record<DurationSource, string> = localized({
-  film: ["film", "film"],
-  ai: ["AI-video", "AI video"],
-  animatic: ["2D-animatic", "2D animatic"],
-  planned: ["planlagt", "planned"],
-  estimate: ["estimat", "estimate"],
-});
+export const DURATION_SOURCE_LABEL: Record<DurationSource, string> = tLocalized({ film: "core-assembly-status.duration-source-label.film.a21a8b43b949", ai: "core-assembly-status.duration-source-label.ai.563c92714034", animatic: "core-assembly-status.duration-source-label.animatic.47e96a8b8bd5", planned: "core-assembly-status.duration-source-label.planned.6117e90d61f7", estimate: "core-assembly-status.duration-source-label.estimate.6bbfeb651821" });
 
 export interface SceneStatusRow {
   readonly occurrenceId: string;

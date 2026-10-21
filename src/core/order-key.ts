@@ -3,7 +3,8 @@
  * Gjør det mulig å flytte en scene ved å endre ÉN nøkkel – ingen omnummerering av andre (INV-02/03).
  * Nøkler slutter aldri på '0', slik at det alltid finnes plass foran.
  */
-import { L } from "./i18n";
+
+import { t } from "@/core/i18n/keyed";
 
 const DIGITS = "0123456789abcdefghijklmnopqrstuvwxyz";
 const BASE = DIGITS.length;
@@ -14,7 +15,7 @@ function digitAt(s: string, i: number): number {
   const d = DIGITS.indexOf(ch);
   if (d < 0)
     throw new Error(
-      L(`Ugyldig tegn i sorteringsnøkkel: ${s}`, `Invalid character in sort key: ${s}`),
+      t("core-order-key.digit-at.message.1f43a22004ab", { s: String(s) }),
     );
   return d;
 }
@@ -25,7 +26,7 @@ export function isValidOrderKey(key: string): boolean {
 
 function midpoint(a: string, b: string | null): string {
   if (b !== null && a >= b)
-    throw new Error(L(`Ugyldig intervall: ${a} >= ${b}`, `Invalid interval: ${a} >= ${b}`));
+    throw new Error(t("core-order-key.midpoint.message.242be3c6f083", { a: String(a), b: String(b) }));
   if (b !== null) {
     let n = 0;
     while (n < b.length && (a[n] ?? "0") === b[n]) n++;
@@ -43,15 +44,12 @@ function midpoint(a: string, b: string | null): string {
 /** Nøkkel strengt mellom `before` og `after` (null = åpen ende). */
 export function keyBetween(before: string | null, after: string | null): string {
   if (before !== null && !isValidOrderKey(before))
-    throw new Error(L(`Ugyldig nøkkel ${before}`, `Invalid key ${before}`));
+    throw new Error(t("core-order-key.key-between.message.435906716cec", { before: String(before) }));
   if (after !== null && !isValidOrderKey(after))
-    throw new Error(L(`Ugyldig nøkkel ${after}`, `Invalid key ${after}`));
+    throw new Error(t("core-order-key.key-between.message.5cf1443b4663", { after: String(after) }));
   if (before !== null && after !== null && before >= after) {
     throw new Error(
-      L(
-        `before (${before}) må være mindre enn after (${after})`,
-        `before (${before}) must be less than after (${after})`,
-      ),
+      t("core-order-key.key-between.message.584eb3096aff", { before: String(before), after: String(after) }),
     );
   }
   return midpoint(before ?? "", after);

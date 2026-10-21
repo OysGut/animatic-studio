@@ -5,10 +5,11 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Globe } from "lucide-react";
-import { L, tm, type Asset } from "@/core";
+import { tm, type Asset } from "@/core";
 import { saveAssetToGlobal } from "@/adapters/global/global-library.functions";
 import { Button } from "@/components/ui/button";
 import { globalBundlesKey, useProjectWorkspace } from "./use-global";
+import { t } from "@/core/i18n/keyed";
 
 export function SaveToGlobalButton({ projectId, asset }: { projectId: string; asset: Asset }) {
   const ws = useProjectWorkspace(projectId);
@@ -23,10 +24,7 @@ export function SaveToGlobalButton({ projectId, asset }: { projectId: string; as
         variant="ghost"
         disabled={busy}
         data-testid="save-to-global"
-        title={L(
-          `Kopier ressursen med varianter og bilder til det globale biblioteket i «${ws.workspaceName ?? ""}». Prosjektet endres ikke.`,
-          `Copy the asset with variants and images to the global library in “${ws.workspaceName ?? ""}”. The project does not change.`,
-        )}
+        title={t("app-global-save-to-global-button.save-to-global-button.title.07ff4fc8f41c", { value1: String(ws.workspaceName ?? "") })}
         onClick={() => {
           setBusy(true);
           setMsg(null);
@@ -35,10 +33,7 @@ export function SaveToGlobalButton({ projectId, asset }: { projectId: string; as
               void qc.invalidateQueries({ queryKey: globalBundlesKey(ws.workspaceId) });
               setMsg({
                 ok: true,
-                text: L(
-                  `Lagret i det globale biblioteket (${r.versions} ${r.versions === 1 ? "fil" : "filer"}).`,
-                  `Saved in the global library (${r.versions} ${r.versions === 1 ? "file" : "files"}).`,
-                ),
+                text: t("app-global-save-to-global-button.saved-global", { count: r.versions }),
               });
             })
             .catch((e: unknown) => setMsg({ ok: false, text: tm((e as Error).message) }))
@@ -46,7 +41,7 @@ export function SaveToGlobalButton({ projectId, asset }: { projectId: string; as
         }}
       >
         <Globe />
-        {L("Lagre i globalt bibliotek", "Save to global library")}
+        {t("app-global-save-to-global-button.save-to-global-button.button.dbeb4d2ecc86")}
       </Button>
       {msg ? (
         <span role={msg.ok ? "status" : "alert"} className={`text-xs ${msg.ok ? "text-text-secondary" : "text-status-danger"}`}>

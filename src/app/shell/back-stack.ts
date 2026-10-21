@@ -1,5 +1,6 @@
 /** Historikken for «Tilbake til …» (DEC-0063): rene funksjoner, testet i tests/unit/back-stack.test.ts. */
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 export interface Entry {
   readonly path: string;
@@ -26,17 +27,17 @@ export function recordVisit(
 
 /** Navnet på flaten adressen viser. */
 export function pageLabel(path: string): string {
-  if (path === "/" || path === "") return L("Prosjekter", "Projects");
-  if (path.startsWith("/invitasjon")) return L("Invitasjon", "Invitation");
+  if (path === "/" || path === "") return t("app-shell-back-stack.page-label.message.3fa7f2028d6f");
+  if (path.startsWith("/invitasjon")) return t("app-shell-back-stack.page-label.message.4470a8757b28");
   const m = /^\/prosjekt\/[^/]+(?:\/([^/]+))?/.exec(path);
-  if (!m) return L("Forrige side", "Previous page");
+  if (!m) return t("app-shell-back-stack.page-label.message.98aff45e9461");
   return (
     {
-      manus: L("Manus", "Script"),
-      bibliotek: L("Ressursbibliotek", "Asset library"),
-      scene: L("Sceneeditor", "Scene editor"),
-      montering: L("Montering", "Assembly"),
-      utgivelse: L("Utgivelse", "Release"),
-    }[m[1] ?? ""] ?? L("Prosjektoversikt", "Project overview")
+      manus: t("app-shell-back-stack.manus.manus.b8d7632aa7f9"),
+      bibliotek: t("app-shell-back-stack.bibliotek.bibliotek.e95e5b235aea"),
+      scene: t("app-shell-back-stack.scene.scene.e7e46819bc4f"),
+      montering: t("app-shell-back-stack.montering.montering.467da07f9011"),
+      utgivelse: t("app-shell-back-stack.utgivelse.utgivelse.286bd54a6b6e"),
+    }[m[1] ?? ""] ?? t("app-shell-back-stack.page-label.message.27767f2f11ed")
   );
 }

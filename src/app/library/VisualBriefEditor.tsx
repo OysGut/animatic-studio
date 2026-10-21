@@ -6,21 +6,12 @@
 import { Loader2, NotebookPen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  tm,
-  ASSET_KIND_LABEL,
-  coverVersion,
-  mainProduction,
-  scriptMentions,
-  visualBriefUserText,
-  type Asset,
-  type ProjectState,
-} from "@/core";
+import { tm, ASSET_KIND_LABEL, coverVersion, mainProduction, scriptMentions, visualBriefUserText, type Asset, type ProjectState } from "@/core";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 export function VisualBriefEditor({
   state,
@@ -92,16 +83,13 @@ export function VisualBriefEditor({
       setOpen(true);
       setMsg({
         kind: "ok",
-        text: L(
-          "Utkast laget. Les gjennom, rett det som ikke stemmer, og lagre.",
-          "Draft made. Read it through, correct anything that is wrong, and save.",
-        ),
+        text: t("app-library-visual-brief-editor.text.text.a12946bd1ab7"),
       });
     } catch (e) {
       setMsg({
         kind: "error",
         text:
-          (e as Error).message || L("Faktaarket ble ikke laget.", "The visual brief was not made."),
+          (e as Error).message || t("app-library-visual-brief-editor.text.text.5011a43d9907"),
       });
     } finally {
       setBusy(false);
@@ -112,12 +100,12 @@ export function VisualBriefEditor({
   function save() {
     const err = cmds.run(
       { type: "SetAssetVisualBrief", assetId: asset.id, text: text.trim() },
-      L(`Faktaark for «${asset.name}»`, `Visual brief for “${asset.name}”`),
+      t("app-library-visual-brief-editor.err.cmds-run.cb6354778352", { name: String(asset.name) }),
     );
     setMsg(
       err
         ? { kind: "error", text: err }
-        : { kind: "ok", text: L("Faktaarket er lagret.", "The visual brief is saved.") },
+        : { kind: "ok", text: t("app-library-visual-brief-editor.text.text.f85a5f54d28d") },
     );
   }
 
@@ -130,29 +118,26 @@ export function VisualBriefEditor({
       >
         <NotebookPen className="size-3" aria-hidden />
         {saved
-          ? L("Vis eller rett faktaarket …", "View or correct the visual brief …")
-          : L("Lag et visuelt faktaark (bedre treff) …", "Make a visual brief (better matches) …")}
+          ? t("app-library-visual-brief-editor.visual-brief-editor.button.cf5f2b835d36")
+          : t("app-library-visual-brief-editor.visual-brief-editor.button.b8daa3d0196e")}
       </button>
     );
 
   return (
     <section
-      aria-label={L(`Visuelt faktaark for ${asset.name}`, `Visual brief for ${asset.name}`)}
+      aria-label={t("app-library-visual-brief-editor.visual-brief-editor.aria-label.3cc045016ca3", { name: String(asset.name) })}
       className="flex flex-col gap-1.5 text-xs text-text-secondary"
     >
       <div className="flex items-center gap-2">
         <h4 className="flex items-center gap-1 font-medium text-text-primary">
-          <NotebookPen className="size-3.5" aria-hidden /> {L("Visuelt faktaark", "Visual brief")}
+          <NotebookPen className="size-3.5" aria-hidden /> {t("app-library-visual-brief-editor.visual-brief-editor.h4.1cff9f90ebf2")}
         </h4>
         <span className="text-[11px] text-text-tertiary">
-          {L("engelsk, ett kjennetegn per linje", "English, one feature per line")}
+          {t("app-library-visual-brief-editor.visual-brief-editor.span.5625b5f8c54a")}
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Det som synes: alder, kropp, ansikt, hår, klær, farger, kjennetegn. Brukes i alle bildebeskrivelser i stedet for manusutdrag.",
-          "What can be seen: age, body, face, hair, clothes, colours, distinguishing marks. Used in all image descriptions instead of script excerpts.",
-        )}
+        {t("app-library-visual-brief-editor.visual-brief-editor.p.92ad57e47d88")}
       </p>
       <textarea
         value={text}
@@ -166,33 +151,27 @@ export function VisualBriefEditor({
         placeholder={
           "- nine-year-old girl, slim, a bit small for her age\n- long dark-blond braid\n- fashionable winter coat with fur trim on the collar and cuffs"
         }
-        aria-label={L("Visuelt faktaark", "Visual brief")}
+        aria-label={t("app-library-visual-brief-editor.visual-brief-editor.aria-label.1cff9f90ebf2")}
         className="w-full rounded-sm border border-border-control bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary placeholder:text-text-tertiary"
       />
       {confirm ? (
         <div
           role="alertdialog"
-          aria-label={L("Bekreft faktaark med AI", "Confirm visual brief with AI")}
+          aria-label={t("app-library-visual-brief-editor.visual-brief-editor.aria-label.346a0c7c9ee9")}
           className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
         >
           <p>
-            {L(
-              `Manusets omtale av ${asset.name} (og forsidebildet) sendes til en språkmodell i Lovable AI, som lager et utkast. Det bruker litt kreditter (langt mindre enn et bilde).`,
-              `The script's mentions of ${asset.name} (and the cover image) are sent to a language model in Lovable AI, which makes a draft. It uses a few credits (far less than an image).`,
-            )}
+            {t("app-library-visual-brief-editor.visual-brief-editor.p.426532648c23", { name: String(asset.name) })}
             {text.trim()
-              ? L(
-                  " Utkastet erstatter teksten i feltet (ikke lagret før du lagrer).",
-                  " The draft replaces the text in the field (not saved until you save).",
-                )
+              ? t("app-library-visual-brief-editor.visual-brief-editor.p.5c1a3e670206")
               : ""}
           </p>
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void generate()}>
-              {L("Ja, lag utkast", "Yes, make a draft")}
+              {t("app-library-visual-brief-editor.visual-brief-editor.button.cfdadd9909c8")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-              {L("Avbryt", "Cancel")}
+              {t("app-library-visual-brief-editor.visual-brief-editor.button.fa309cd73b32")}
             </Button>
           </div>
         </div>
@@ -202,15 +181,15 @@ export function VisualBriefEditor({
           <Button size="sm" variant="secondary" disabled={busy} onClick={() => setConfirm(true)}>
             {busy ? <Loader2 className="animate-spin" /> : <NotebookPen />}
             {busy
-              ? L("Lager utkast …", "Making draft …")
-              : L("Lag utkast fra manuset med AI …", "Make draft from the script with AI …")}
+              ? t("app-library-visual-brief-editor.visual-brief-editor.button.b9844dfe3943")
+              : t("app-library-visual-brief-editor.visual-brief-editor.button.da460559f93a")}
           </Button>
           <Button size="sm" disabled={!dirty || busy} onClick={save}>
-            {L("Lagre faktaarket", "Save visual brief")}
+            {t("app-library-visual-brief-editor.visual-brief-editor.button.9e81bd81f145")}
           </Button>
           {dirty ? (
             <Button size="sm" variant="ghost" disabled={busy} onClick={() => setText(saved)}>
-              {L("Angre endringene", "Undo changes")}
+              {t("app-library-visual-brief-editor.visual-brief-editor.button.aef759f94131")}
             </Button>
           ) : null}
         </div>

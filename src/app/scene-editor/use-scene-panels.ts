@@ -1,6 +1,6 @@
 /** Visning og rekkefølge for panelene i sceneeditoren, lagret på brukeren (se ScenePanels.tsx). */
 import { useCallback, useMemo } from "react";
-import { L } from "@/core";
+
 import { useUiPref } from "@/app/account/ui-prefs";
 import {
   DEFAULT_PANEL_PREFS,
@@ -11,6 +11,7 @@ import {
   type PanelId,
   type PanelMode,
 } from "./panel-layout";
+import { t } from "@/core/i18n/keyed";
 
 /** Visning og rekkefølge for panelene, lagret på brukeren. */
 export function useScenePanels() {
@@ -41,18 +42,18 @@ const NONE: readonly string[] = [];
 export function panelTitle(id: PanelId): string {
   switch (id) {
     case "assets":
-      return L("I denne scenen", "In this scene");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.80a17ac78069");
     case "nearbyAudio":
-      return L("Lyd i scenene rundt", "Audio in the surrounding scenes");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.3acec9d7eb4f");
     case "layers":
-      return L("Lag", "Layers");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.7d584b8ff42e");
     case "properties":
-      return L("Egenskaper", "Properties");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.634d727d4eee");
     case "script":
-      return L("Manus", "Script");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.0a9cfc5643ea");
     case "pages":
-      return L("Sider", "Pages");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.b8b718aaeaf2");
     case "credits":
-      return L("Rulletekst", "Credits");
+      return t("app-scene-editor-use-scene-panels.panel-title.message.6e7ae7c45746");
   }
 }

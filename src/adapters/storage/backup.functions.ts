@@ -9,20 +9,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  BACKUP_MAX_JSON_BYTES,
-  backupDataKey,
-  backupIdMap,
-  diffStates,
-  isUuid,
-  newId,
-  parseBackup,
-  restoredExtras,
-  restoredState,
-  type ProjectState,
-} from "@/core";
+import { BACKUP_MAX_JSON_BYTES, backupDataKey, backupIdMap, diffStates, isUuid, newId, parseBackup, restoredExtras, restoredState, type ProjectState } from "@/core";
 import { checkSchema, loadProjectState, type AnyClient } from "./project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export interface RestoreBackupInput {
   readonly projectId: string;
@@ -40,18 +29,15 @@ export type RestoreBackupResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): RestoreBackupInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(t("adapters-storage-backup-functions.validate.message.75164a3f89f6"));
   const x = d as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-storage-backup-functions.validate.message.95ed644f1670"));
   if (!x["backup"] || typeof x["backup"] !== "object")
-    throw new Error(L("Mangler sikkerhetskopi", "The backup is missing"));
+    throw new Error(t("adapters-storage-backup-functions.validate.message.8aaf867ca7e1"));
   if (JSON.stringify(x["backup"]).length > BACKUP_MAX_JSON_BYTES)
     throw new Error(
-      L(
-        "Sikkerhetskopien er for stor til å gjenopprettes her",
-        "The backup is too large to be restored here",
-      ),
+      t("adapters-storage-backup-functions.validate.message.c590855ae32c"),
     );
   return { projectId: x["projectId"], backup: x["backup"] };
 }
@@ -85,10 +71,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
     if ((member as { role?: string } | null)?.role !== "owner")
       return {
         ok: false,
-        message: L(
-          "Bare eieren av det nye prosjektet kan gjenopprette til det.",
-          "Only the owner of the new project can restore to it.",
-        ),
+        message: t("adapters-storage-backup-functions.message.message.d534d843ce6e"),
       };
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -97,10 +80,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
     if (schema.kind === "missing" || schema.version < 12)
       return {
         ok: false,
-        message: L(
-          "Databasen er ikke oppdatert. Lim inn meldingen i LOVABLE_SYNC.md i Lovable før du gjenoppretter.",
-          "The database is not up to date. Paste the message in LOVABLE_SYNC.md into Lovable before you restore.",
-        ),
+        message: t("adapters-storage-backup-functions.message.message.7d38b49dd98d"),
       };
 
     let backup;
@@ -115,17 +95,14 @@ export const restoreBackup = createServerFn({ method: "POST" })
       .eq("id", data.projectId)
       .maybeSingle();
     if (!project || (project as { deleted_at: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet finnes ikke.", "The project does not exist.") };
+      return { ok: false, message: t("adapters-storage-backup-functions.message.message.8f3aa8a3ce3b") };
 
     const base = await loadProjectState(admin, data.projectId);
     const main = Object.values(base.productions).find((p) => p.kind === "main");
     if (!main)
       return {
         ok: false,
-        message: L(
-          "Det nye prosjektet mangler hovedfilm.",
-          "The new project is missing a main film.",
-        ),
+        message: t("adapters-storage-backup-functions.message.message.e1c1c181f593"),
       };
     const map = await backupIdMap(backup, data.projectId, main.id);
 
@@ -146,20 +123,14 @@ export const restoreBackup = createServerFn({ method: "POST" })
     if (previous && previous.command?.backupHash !== backupHash)
       return {
         ok: false,
-        message: L(
-          "Prosjektet er allerede gjenopprettet fra en annen sikkerhetskopi.",
-          "The project has already been restored from a different backup.",
-        ),
+        message: t("adapters-storage-backup-functions.message.message.06d079e66b23"),
       };
 
     if (!resumed) {
       if (!isEmpty(base))
         return {
           ok: false,
-          message: L(
-            "Prosjektet er ikke tomt. Gjenoppretting lager alltid et nytt prosjekt, og ingenting overskrives.",
-            "The project is not empty. Restoring always creates a new project, and nothing is overwritten.",
-          ),
+          message: t("adapters-storage-backup-functions.message.message.d680b761bb28"),
         };
       let target: ProjectState;
       try {
@@ -189,14 +160,8 @@ export const restoreBackup = createServerFn({ method: "POST" })
           ok: false,
           message:
             error.code === "42501"
-              ? L(
-                  "Du har ikke skriverett i det nye prosjektet.",
-                  "You do not have write access to the new project.",
-                )
-              : L(
-                  `Prosjektdataene kunne ikke lagres (${error.message}).`,
-                  `The project data could not be saved (${error.message}).`,
-                ),
+              ? t("adapters-storage-backup-functions.message.message.ec41a3b9c5a5")
+              : t("adapters-storage-backup-functions.message.message.ee4bf5ec4075", { message: String(error.message) }),
         };
       }
     }
@@ -210,10 +175,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
         console.error("[restore script_versions]", error.code, error.message);
         return {
           ok: false,
-          message: L(
-            `Prosjektet er gjenopprettet, men manusversjonene kunne ikke lagres (${error.message}). Prøv igjen.`,
-            `The project has been restored, but the script versions could not be saved (${error.message}). Try again.`,
-          ),
+          message: t("adapters-storage-backup-functions.message.message.157821ac305e", { message: String(error.message) }),
         };
       }
     }
@@ -225,10 +187,7 @@ export const restoreBackup = createServerFn({ method: "POST" })
         console.error("[restore imported_documents]", error.code, error.message);
         return {
           ok: false,
-          message: L(
-            `Prosjektet er gjenopprettet, men listen over importerte manusfiler kunne ikke lagres (${error.message}). Prøv igjen.`,
-            `The project has been restored, but the list of imported script files could not be saved (${error.message}). Try again.`,
-          ),
+          message: t("adapters-storage-backup-functions.message.message.a9387630d864", { message: String(error.message) }),
         };
       }
     }

@@ -4,7 +4,8 @@
  * slik PNG krever), og bare de komprimerte bytene samles opp som IDAT-biter. Fargetype 6 (RGBA, 8 bit),
  * uten interlacing. Filteret velges per rad (None/Sub/Up) med den vanlige «minste sum av avvik»-regelen.
  */
-import { L } from "@/core";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface PngOptions {
   readonly width: number;
@@ -138,15 +139,12 @@ export async function encodePngStrips(
   const { width, height } = opts;
   if (!Number.isInteger(width) || !Number.isInteger(height) || width < 1 || height < 1) {
     throw new Error(
-      L(
-        "Bildet må ha minst én piksel i hver retning.",
-        "The image must be at least one pixel in each direction.",
-      ),
+      tk("engine-export-png-writer.encode-png-strips.message.db1290b5a270"),
     );
   }
   if (width > PNG_MAX_WIDTH)
     throw new Error(
-      L("Bildet er for bredt for nettleseren.", "The image is too wide for the browser."),
+      tk("engine-export-png-writer.encode-png-strips.message.3d003dd2a29d"),
     );
   const rowBytes = width * 4;
   const stripRows = Math.max(1, Math.min(height, opts.stripRows ?? Math.floor(4_000_000 / width)));
@@ -189,7 +187,7 @@ export async function encodePngStrips(
       const rows = Math.min(stripRows, height - y0);
       const px = await readStrip(y0, rows);
       if (px.length < rows * rowBytes)
-        throw new Error(L("Stripen har for få piksler.", "The strip has too few pixels."));
+        throw new Error(tk("engine-export-png-writer.encode-png-strips.message.dcc9175584b0"));
       const filtered = new Uint8Array(rows * (rowBytes + 1));
       for (let r = 0; r < rows; r++)
         filterRow(px, r * rowBytes, prev, filtered, r * (rowBytes + 1));

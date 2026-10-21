@@ -6,35 +6,18 @@
 import type { Asset, AssetKind, AssetVariant, AssetVersion, ProjectState } from "../model";
 import { STILL_MIME_TYPES } from "../model";
 import { blocksOfVariant, orderedOccurrences } from "../views";
-import { collation, localized } from "../i18n";
+import { collation } from "../i18n";
 import {
   characterName,
   sceneHasWordPrefix,
   sceneMentions,
   sceneSpeakers,
 } from "../screenplay/filter";
+import { tLocalized } from "@/core/i18n/keyed";
 
-export const ASSET_KIND_LABEL: Record<AssetKind, string> = localized({
-  character: ["Karakter", "Character"],
-  object: ["Objekt / rekvisitt", "Object / prop"],
-  location: ["Lokasjon", "Location"],
-  animal: ["Dyr", "Animal"],
-  environment: ["Miljø / bakgrunn", "Environment / background"],
-  other: ["Annet", "Other"],
-  sound: ["Lyd", "Sound"],
-  template: ["Grafisk mal", "Graphic template"],
-});
+export const ASSET_KIND_LABEL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-label.character.49517a2ddd6e", object: "core-library-index.asset-kind-label.object.d93389b1439f", location: "core-library-index.asset-kind-label.location.2a35db2ba28b", animal: "core-library-index.asset-kind-label.animal.67ee55073576", environment: "core-library-index.asset-kind-label.environment.e49c88daabbe", other: "core-library-index.asset-kind-label.other.8160f8cedac7", sound: "core-library-index.asset-kind-label.sound.d0c8fe111b77", template: "core-library-index.asset-kind-label.template.baa6e4245283", font: "b098.global-kind.font" });
 
-export const ASSET_KIND_PLURAL: Record<AssetKind, string> = localized({
-  character: ["Karakterer", "Characters"],
-  object: ["Objekter", "Objects"],
-  location: ["Lokasjoner", "Locations"],
-  animal: ["Dyr", "Animals"],
-  environment: ["Miljøer", "Environments"],
-  other: ["Annet", "Other"],
-  sound: ["Lyd", "Sound"],
-  template: ["Grafiske maler", "Graphic templates"],
-});
+export const ASSET_KIND_PLURAL: Record<AssetKind, string> = tLocalized({ character: "core-library-index.asset-kind-plural.character.b640ce50cf83", object: "core-library-index.asset-kind-plural.object.0d09b30367e1", location: "core-library-index.asset-kind-plural.location.cb62899c72fa", animal: "core-library-index.asset-kind-plural.animal.0c120a77f5af", environment: "core-library-index.asset-kind-plural.environment.706f592feede", other: "core-library-index.asset-kind-plural.other.d18d4d6b32ae", sound: "core-library-index.asset-kind-plural.sound.cbc011f908a0", template: "core-library-index.asset-kind-plural.template.f33cf1e25c48", font: "b098.kind-plural.font" });
 
 /** Foretrukket navn og alle alternative navn (REQ-0126). */
 export function assetNames(a: Pick<Asset, "name" | "names">): string[] {
@@ -154,14 +137,7 @@ export interface AssetUsage {
   readonly matchedName: string;
 }
 
-export const USAGE_LABEL: Record<UsageHow, string> = localized({
-  speaks: ["har replikk", "has a line"],
-  mentioned: ["nevnes", "mentioned"],
-  location: ["sted i overskriften", "location in the heading"],
-  text: ["nevnes i teksten", "mentioned in the text"],
-  audio: ["lydklipp i scenen", "audio clip in the scene"],
-  layer: ["lag i 2D-scenen", "layer in the 2D scene"],
-});
+export const USAGE_LABEL: Record<UsageHow, string> = tLocalized({ speaks: "core-library-index.usage-label.speaks.50700dfc76c5", mentioned: "core-library-index.usage-label.mentioned.a334d300d228", location: "core-library-index.usage-label.location.e3aa3ea0aaa0", text: "core-library-index.usage-label.text.34f190186828", audio: "core-library-index.usage-label.audio.e8d440910aa3", layer: "core-library-index.usage-label.layer.6fc8e5a746e7" });
 
 function escapeRe(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -324,6 +300,7 @@ export function assetsInScene(
     other: 5,
     sound: 6,
     template: 7,
+    font: 8,
   };
   const out: { asset: Asset; how: UsageHow }[] = [];
   for (const [assetId, uses] of allAssetUsage(s, productionId)) {

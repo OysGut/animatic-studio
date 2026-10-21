@@ -4,18 +4,7 @@
  */
 import { Check, MessageSquarePlus, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  L,
-  formatEdited,
-  formatStamp,
-  newId,
-  resolveRange,
-  trialEditResult,
-  type Annotation,
-  type Command,
-  type NewAnnotation,
-  type ProjectState,
-} from "@/core";
+import { formatEdited, formatStamp, newId, resolveRange, trialEditResult, type Annotation, type Command, type NewAnnotation, type ProjectState } from "@/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -28,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { t } from "@/core/i18n/keyed";
 
 interface Props {
   readonly state: ProjectState;
@@ -73,7 +63,7 @@ export function NotesPanel({
           { ...newTarget, annotationId: newId<"annotation">(), text: draft, authorName },
         ],
       },
-      L("Nytt notat", "New note"),
+      t("app-script-notes-panel.e.run.c4d1f019e650"),
     );
     setErr(e);
     if (!e) {
@@ -85,7 +75,7 @@ export function NotesPanel({
   return (
     <div className="flex flex-col gap-2">
       {notes.length === 0 && !adding ? (
-        <p className="text-xs text-text-tertiary">{L("Ingen notater.", "No notes.")}</p>
+        <p className="text-xs text-text-tertiary">{t("app-script-notes-panel.notes-panel.p.5ea42d80dea6")}</p>
       ) : null}
       {notes.map((n) => (
         <NoteCard
@@ -108,7 +98,7 @@ export function NotesPanel({
               value={draft}
               maxLength={10000}
               rows={3}
-              placeholder={L("Skriv notatet …", "Write the note …")}
+              placeholder={t("app-script-notes-panel.notes-panel.placeholder.3fb2af2fb906")}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) add();
@@ -118,10 +108,10 @@ export function NotesPanel({
             />
             <div className="flex gap-1.5">
               <Button size="sm" onClick={add} disabled={!draft.trim()}>
-                {L("Lagre notat", "Save note")}
+                {t("app-script-notes-panel.notes-panel.button.81f9dc4b1fe8")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setAdding(false)}>
-                {L("Avbryt", "Cancel")}
+                {t("app-script-notes-panel.notes-panel.button.c41d1797f20e")}
               </Button>
             </div>
           </div>
@@ -180,6 +170,7 @@ function NoteCard({
   return (
     <div
       ref={ref}
+      data-note-resolved={note.resolved === true}
       className={
         "relative flex flex-col gap-1 border-l-2 bg-surface-2 py-1.5 pl-2 pr-2 " +
         (system ? "border-accent-warm " : "border-note ") +
@@ -195,9 +186,10 @@ function NoteCard({
           className="absolute left-2 top-1 text-[11px] font-medium text-accent-warm"
           data-testid="system-note"
         >
-          {L("Systemmerknad", "System note")}
+          {t("app-script-notes-panel.note-card.span.984b9307fcef")}
         </span>
       ) : null}
+      {note.resolved ? <span className="text-xs text-status-success">{t("app-script-notes-panel.note-card.span.ec8d8f232d0a")}</span> : null}
       <span className="absolute right-1.5 top-1 text-right text-[11px] leading-tight text-text-tertiary">
         {formatStamp(note)}
         {formatEdited(note) ? <span className="block">{formatEdited(note)}</span> : null}
@@ -211,18 +203,12 @@ function NoteCard({
         >
           {range?.found
             ? note.quote === ""
-              ? L("Hele elementet", "The whole element")
-              : L(
-                  `«${block.text.slice(range.start, range.end)}»`,
-                  `“${block.text.slice(range.start, range.end)}”`,
-                )
+              ? t("app-script-notes-panel.note-card.p.208d536e8791")
+              : t("app-script-notes-panel.note-card.p.7200848544ae", { value1: String(block.text.slice(range.start, range.end)) })
             : null}
           {range && !range.found ? (
             <span className="not-italic text-status-uncertain">
-              {L(
-                `Teksten er endret – «${note.quote}» finnes ikke lenger`,
-                `The text has changed – “${note.quote}” no longer exists`,
-              )}
+              {t("app-script-notes-panel.note-card.span.2a88fa005f7d", { quote: String(note.quote) })}
             </span>
           ) : null}
         </p>
@@ -232,14 +218,14 @@ function NoteCard({
       {trial ? (
         <div className="flex flex-col gap-0.5 text-[12px]" data-testid="trial-edit-note">
           <span className="text-[11px] font-medium text-note">
-            {L("Forsøksvis manusredigering", "Trial script edit")}
+            {t("app-script-notes-panel.note-card.span.18e99a9cfc19")}
           </span>
           <span className="text-text-tertiary">
-            {L("Original:", "Original:")}{" "}
+            {t("app-script-notes-panel.note-card.span.6ce84227139e")}{" "}
             <span className="line-through">{note.quote || block?.text || ""}</span>
           </span>
           <span className="text-text-primary">
-            {L("Forslag:", "Suggestion:")} {note.suggestedText}
+            {t("app-script-notes-panel.note-card.span.105234e4f594")} {note.suggestedText}
           </span>
         </div>
       ) : null}
@@ -260,16 +246,16 @@ function NoteCard({
               onClick={() => {
                 const e = run(
                   { type: "EditAnnotation", annotationId: note.id, text, editedByName: authorName },
-                  L("Endre notat", "Edit note"),
+                  t("app-script-notes-panel.e.run.6fea84673ef0"),
                 );
                 setErr(e);
                 if (!e) setEditing(false);
               }}
             >
-              {L("Lagre", "Save")}
+              {t("app-script-notes-panel.note-card.button.0b3bbe0059f1")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
-              {L("Avbryt", "Cancel")}
+              {t("app-script-notes-panel.note-card.button.30f24e17e633")}
             </Button>
           </div>
         </>
@@ -278,26 +264,32 @@ function NoteCard({
       )}
       {editable && !editing ? (
         <div className="flex gap-1">
+          {!system ? (
+            <Button size="sm" variant="ghost" data-testid="note-resolve" onClick={() => setErr(run(
+              { type: "SetAnnotationResolved", annotationId: note.id, resolved: !note.resolved },
+              note.resolved ? t("app-script-notes-panel.note-card.run.caaf2883248f") : t("app-script-notes-panel.note-card.run.7800971e9387"),
+            ))}>
+              <Check className="size-3" aria-hidden />
+              {note.resolved ? t("app-script-notes-panel.note-card.button.275d48310970") : t("app-script-notes-panel.note-card.button.bfb57b0e5c02")}
+            </Button>
+          ) : null}
           {system ? (
             <button
               type="button"
               data-testid="system-note-done"
               className="mr-2 flex items-center gap-1 rounded-sm bg-accent-warm/15 px-1.5 text-[11px] text-text-primary hover:bg-accent-warm/25"
-              title={L(
-                "Lagre merknaden som ferdig (den forsvinner, og kan angres)",
-                "Save the note as done (it disappears, and can be undone)",
-              )}
+              title={t("app-script-notes-panel.note-card.title.b85a4e84a652")}
               onClick={() =>
                 setErr(
                   run(
                     { type: "SetAnnotationRemoved", annotationId: note.id, removed: true },
-                    L("Merknad ferdig", "Note done"),
+                    t("app-script-notes-panel.note-card.run.9d60a9c3eabc"),
                   ),
                 )
               }
             >
               <Check className="size-3" aria-hidden />
-              {L("Ferdig", "Done")}
+              {t("app-script-notes-panel.note-card.button.36c18caddaa0")}
             </button>
           ) : null}
           {trial && productionId ? (
@@ -308,16 +300,13 @@ function NoteCard({
               className="mr-2 flex items-center gap-1 rounded-sm bg-note/15 px-1.5 text-[11px] text-text-primary hover:bg-note/25 disabled:opacity-50"
               title={
                 proposed === null
-                  ? L(
-                      "Teksten i manuset er endret, så forslaget kan ikke settes inn automatisk",
-                      "The text in the script has changed, so the suggestion cannot be inserted automatically",
-                    )
-                  : L("Sett forslaget inn i manuset (spør først)", "Insert the suggestion in the script (asks first)")
+                  ? t("app-script-notes-panel.note-card.title.a7b8a8485d2b")
+                  : t("app-script-notes-panel.note-card.title.bb8a2e9e1ab8")
               }
               onClick={() => setApplying(true)}
             >
               <Check className="size-3" aria-hidden />
-              {L("Bruk forslaget", "Use the suggestion")}
+              {t("app-script-notes-panel.note-card.button.7ca2df9c7794")}
             </button>
           ) : null}
           <button
@@ -329,7 +318,7 @@ function NoteCard({
             }}
           >
             <Pencil className="size-3" aria-hidden />
-            {L("Endre", "Edit")}
+            {t("app-script-notes-panel.note-card.button.5e705445b458")}
           </button>
           <button
             type="button"
@@ -337,7 +326,7 @@ function NoteCard({
             onClick={() => setConfirm(true)}
           >
             <Trash2 className="size-3" aria-hidden />
-            {L("Slett", "Delete")}
+            {t("app-script-notes-panel.note-card.button.b891c4285a33")}
           </button>
         </div>
       ) : null}
@@ -351,27 +340,24 @@ function NoteCard({
           <AlertDialogContent className="border-border bg-surface-2">
             <AlertDialogHeader>
               <AlertDialogTitle>
-                {L("Bruke forslaget i manuset?", "Use the suggestion in the script?")}
+                {t("app-script-notes-panel.note-card.alert-dialog-title.4e056f906029")}
               </AlertDialogTitle>
               <AlertDialogDescription asChild>
                 <div className="flex flex-col gap-1 text-[13px]">
                   <span>
-                    {L("Nå:", "Now:")} {block.text}
+                    {t("app-script-notes-panel.note-card.span.afe154a4b854")} {block.text}
                   </span>
                   <span className="text-text-primary">
-                    {L("Blir:", "Becomes:")} {proposed}
+                    {t("app-script-notes-panel.note-card.span.91d8807553d6")} {proposed}
                   </span>
                   <span>
-                    {L(
-                      "Endringen er en vanlig manusredigering og kan angres med ⌘/Ctrl + Z. Notatet blir stående til du sletter det.",
-                      "The change is an ordinary script edit and can be undone with ⌘/Ctrl + Z. The note stays until you delete it.",
-                    )}
+                    {t("app-script-notes-panel.note-card.span.b9f6aaa4a166")}
                   </span>
                 </div>
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>{L("Avbryt", "Cancel")}</AlertDialogCancel>
+              <AlertDialogCancel>{t("app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633")}</AlertDialogCancel>
               <AlertDialogAction
                 data-testid="trial-edit-confirm"
                 onClick={() => {
@@ -384,12 +370,12 @@ function NoteCard({
                         blockId: block.id,
                         text: proposed,
                       },
-                      L("Bruk forslaget", "Use the suggestion"),
+                      t("app-script-notes-panel.note-card.run.7ca2df9c7794"),
                     ),
                   );
                 }}
               >
-                {L("Bruk forslaget", "Use the suggestion")}
+                {t("app-script-notes-panel.note-card.alert-dialog-action.7ca2df9c7794")}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -398,31 +384,28 @@ function NoteCard({
       <AlertDialog open={confirm} onOpenChange={setConfirm}>
         <AlertDialogContent className="border-border bg-surface-2">
           <AlertDialogHeader>
-            <AlertDialogTitle>{L("Slette notatet?", "Delete the note?")}</AlertDialogTitle>
+            <AlertDialogTitle>{t("app-script-notes-panel.note-card.alert-dialog-title.ebbb81ea0efe")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {L("«", "“")}
+              {t("app-script-notes-panel.note-card.alert-dialog-description.1bb671203195")}
               {note.text.length > 120 ? `${note.text.slice(0, 120)} …` : note.text}
-              {L("»", "”")} – {formatStamp(note)}.{" "}
-              {L(
-                "Du kan angre slettingen med ⌘/Ctrl + Z.",
-                "You can undo the deletion with ⌘/Ctrl + Z.",
-              )}
+              {t("app-script-notes-panel.note-card.alert-dialog-description.49250bc79bc9")} – {formatStamp(note)}.{" "}
+              {t("app-script-notes-panel.note-card.alert-dialog-description.3c0e06882b2c")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{L("Avbryt", "Cancel")}</AlertDialogCancel>
+            <AlertDialogCancel>{t("app-script-notes-panel.note-card.alert-dialog-cancel.30f24e17e633.2")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-status-danger text-accent-fg hover:bg-status-danger/90"
               onClick={() =>
                 setErr(
                   run(
                     { type: "SetAnnotationRemoved", annotationId: note.id, removed: true },
-                    L("Slett notat", "Delete note"),
+                    t("app-script-notes-panel.note-card.run.db937f500520"),
                   ),
                 )
               }
             >
-              {L("Slett", "Delete")}
+              {t("app-script-notes-panel.note-card.alert-dialog-action.b891c4285a33")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -8,17 +8,7 @@
  */
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import {
-  L,
-  newId,
-  replaceVersionCommands,
-  reuploadNote,
-  versionFileBase,
-  versionUse,
-  allVersionsOf,
-  type AssetVersion,
-  type ProjectState,
-} from "@/core";
+import { newId, replaceVersionCommands, reuploadNote, versionFileBase, versionUse, allVersionsOf, type AssetVersion, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +20,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { uploadAssetImage } from "./asset-images";
+import { t } from "@/core/i18n/keyed";
 
 export interface ReuploadItem {
   readonly file: File;
@@ -79,8 +70,8 @@ export function ReuploadDialog({
       const group = newId();
       const label =
         c === "replace"
-          ? L(`Erstatt v${old.number} av «${va.name}»`, `Replace v${old.number} of “${va.name}”`)
-          : L(`Nytt bilde i «${va.name}»`, `New image in “${va.name}”`);
+          ? t("app-library-reupload-dialog.label.message.baa3974e3ad8", { number: String(old.number), name: String(va.name) })
+          : t("app-library-reupload-dialog.label.message.bd51b265b852", { name: String(va.name) });
       try {
         // Lastet opp tidligere (erstattingen feilet): bruk samme versjon, ikke en ny
         let versionId = next[i]?.versionId;
@@ -93,6 +84,8 @@ export function ReuploadDialog({
               variantId: va.id,
               media: up.media,
               note: reuploadNote(old, c),
+              // REQ-0037: versjonen som erstattes, som permanent ID
+              derivedFromVersionId: old.id,
             },
             label,
             group,
@@ -108,16 +101,13 @@ export function ReuploadDialog({
             const e = cmds.run(cmd, label, group);
             if (e)
               throw new Error(
-                L(
-                  `v${old.number} ble lagt til som ny versjon, men tok ikke over: ${e}`,
-                  `v${old.number} was added as a new version, but did not take over: ${e}`,
-                ),
+                t("app-library-reupload-dialog.run.message.9cb38d8ad01e", { number: String(old.number), e: String(e) }),
               );
           }
         }
         next[i] = { done: true, versionId };
         ok.push(
-          `${it.file.name}: ${c === "replace" ? L(`erstatter v${old.number}`, `replacing v${old.number}`) : L("lagt til", "added")}`,
+          `${it.file.name}: ${c === "replace" ? t("app-library-reupload-dialog.run.ok-push.fabe2150f9ba", { number: String(old.number) }) : t("app-library-reupload-dialog.run.ok-push.15da85a7d4b3")}`,
         );
       } catch (e) {
         bad.push(`${it.file.name}: ${e instanceof Error ? e.message : String(e)}`);
@@ -136,14 +126,11 @@ export function ReuploadDialog({
         <DialogHeader>
           <DialogTitle>
             {items.length === 1
-              ? L("Bildet finnes i prosjektet", "This image is in the project")
-              : L("Bildene finnes i prosjektet", "These images are in the project")}
+              ? t("app-library-reupload-dialog.reupload-dialog.dialog-title.f37e7d1477d3")
+              : t("app-library-reupload-dialog.reupload-dialog.dialog-title.0b2e6d46d9c6")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Navnet viser hvilket bilde filen kommer fra. «Erstatt» gjør filen til ny versjon som tar over overalt det gamle bildet er brukt; det gamle tas vare på. «Legg til» gjør den til en ny versjon med eget nummer.",
-              "The name shows which image the file comes from. “Replace” makes the file a new version that takes over everywhere the old image is used; the old one is kept. “Add” makes it a new version with its own number.",
-            )}
+            {t("app-library-reupload-dialog.reupload-dialog.dialog-description.664f811e51fe")}
           </DialogDescription>
         </DialogHeader>
         <ul className="flex max-h-[50vh] flex-col gap-2 overflow-y-auto">
@@ -153,18 +140,12 @@ export function ReuploadDialog({
             const next =
               Math.max(0, ...allVersionsOf(state, old.variantId).map((v) => v.number)) + 1;
             const where = [
-              use.approved ? L("godkjent", "approved") : "",
+              use.approved ? t("app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.393cfc4ff298") : "",
               use.layers
-                ? L(
-                    `vises i ${use.layers} lag i 2D-scener`,
-                    `shown in ${use.layers} layers in 2D scenes`,
-                  )
+                ? t("app-library-reupload-dialog.where.use-approved-l-godkjent-approved-use-layers-l-vises-i-use-layers-lag-i-2d-scener-shown-in-use-layers-layers-in-2d-scenes-use-posters-l-use-posters-use-posters-1-plakat-plakater-use-posters-use-posters-1-poster-posters-filter.3956706bd9af", { layers: String(use.layers) })
                 : "",
               use.posters
-                ? L(
-                    `${use.posters} ${use.posters === 1 ? "plakat" : "plakater"}`,
-                    `${use.posters} ${use.posters === 1 ? "poster" : "posters"}`,
-                  )
+                ? t("app-library-reupload-dialog.posters", { count: use.posters })
                 : "",
             ].filter(Boolean);
             return (
@@ -174,34 +155,25 @@ export function ReuploadDialog({
               >
                 <span className="text-[13px] text-text-primary">{it.file.name}</span>
                 <span className="text-xs text-text-tertiary">
-                  {L("Fra «", "From “")}
+                  {t("app-library-reupload-dialog.reupload-dialog.span.1ac1345cb768")}
                   {versionFileBase(state, old)}
-                  {L("» ·", "” ·")}{" "}
+                  {t("app-library-reupload-dialog.reupload-dialog.span.8c2e223d9167")}{" "}
                   {where.length
                     ? where.join(", ")
-                    : L(
-                        "vises ikke i scener eller på plakater nå",
-                        "not shown in scenes or on posters now",
-                      )}
+                    : t("app-library-reupload-dialog.reupload-dialog.span.d895e6189804")}
                 </span>
                 <fieldset
                   className="flex flex-wrap gap-3"
-                  aria-label={L(
-                    `Hva skal skje med ${it.file.name}?`,
-                    `What should happen to ${it.file.name}?`,
-                  )}
+                  aria-label={t("app-library-reupload-dialog.reupload-dialog.aria-label.cdd83739e2ad", { name: String(it.file.name) })}
                 >
                   {(
                     [
                       [
                         "replace",
-                        L(
-                          `Erstatt v${old.number} (blir v${next}, brukes overalt)`,
-                          `Replace v${old.number} (becomes v${next}, used everywhere)`,
-                        ),
+                        t("app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.e14e84a954cd", { number: String(old.number), next: String(next) }),
                       ],
-                      ["add", L(`Legg til som v${next}`, `Add as v${next}`)],
-                      ["skip", L("Hopp over", "Skip")],
+                      ["add", t("app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.bee71e072ad3", { next: String(next) })],
+                      ["skip", t("app-library-reupload-dialog.reupload-dialog.replace-l-erstatt-v-old-number-blir-v-next-brukes-overalt-replace-v-old-number-becomes-v-next-used-everywhere-add-l-legg-til-som-v-next-add-as-v-next-skip-l-hopp-over-skip-as-const-map.49041b5ce931")],
                     ] as const
                   ).map(([c, text]) => (
                     <label key={c} className="flex items-center gap-1.5 text-xs text-text-primary">
@@ -219,10 +191,7 @@ export function ReuploadDialog({
                 </fieldset>
                 {pick(i) === "add" && !state.assetVariants[old.variantId]?.approvedVersionId ? (
                   <span className="text-[11px] text-text-tertiary">
-                    {L(
-                      `Varianten har ingen godkjent versjon, så scener som følger den viser det nyeste bildet – også det du legger til. Godkjenn v${old.number} først hvis scenene skal beholde den.`,
-                      `The variant has no approved version, so scenes that follow it show the newest image – including the one you add. Approve v${old.number} first if the scenes should keep it.`,
-                    )}
+                    {t("app-library-reupload-dialog.reupload-dialog.span.0b10bd7992b3", { number: String(old.number) })}
                   </span>
                 ) : null}
               </li>
@@ -231,11 +200,11 @@ export function ReuploadDialog({
         </ul>
         {unknown.length ? (
           <p className="text-xs text-text-secondary">
-            {L("Kjenner ikke igjen", "Does not recognise")}{" "}
-            {unknown.length === 1 ? L("filen", "the file") : L("filene", "the files")}{" "}
-            {unknown.map((f) => L(`«${f.name}»`, `“${f.name}”`)).join(", ")}. {L("Last", "Upload")}{" "}
-            {unknown.length === 1 ? L("den", "it") : L("dem", "them")}{" "}
-            {L("opp fra varianten den hører til.", "from the variant it belongs to.")}
+            {t("app-library-reupload-dialog.reupload-dialog.p.078a77a07bb6")}{" "}
+            {unknown.length === 1 ? t("app-library-reupload-dialog.reupload-dialog.p.8bd50b34a65a") : t("app-library-reupload-dialog.reupload-dialog.p.787a23f07b8b")}{" "}
+            {unknown.map((f) => t("app-library-reupload-dialog.reupload-dialog.unknown-map.f736cf26e0c2", { name: String(f.name) })).join(", ")}. {t("app-library-reupload-dialog.reupload-dialog.p.2bc5414bfb8f")}{" "}
+            {unknown.length === 1 ? t("app-library-reupload-dialog.reupload-dialog.p.acce0ba63f8f") : t("app-library-reupload-dialog.reupload-dialog.p.1dd34831542e")}{" "}
+            {t("app-library-reupload-dialog.reupload-dialog.p.0f43beb5061f")}
           </p>
         ) : null}
         {done.length ? (
@@ -250,15 +219,15 @@ export function ReuploadDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
-            {errors.length ? L("Lukk", "Close") : L("Avbryt", "Cancel")}
+            {errors.length ? t("app-library-reupload-dialog.reupload-dialog.button.0add2e0fc14e") : t("app-library-reupload-dialog.reupload-dialog.button.04a9cab2334f")}
           </Button>
           <Button onClick={run} disabled={busy || items.length === 0}>
             {busy ? <Loader2 className="animate-spin" /> : null}
             {busy
-              ? L("Laster opp …", "Uploading …")
+              ? t("app-library-reupload-dialog.reupload-dialog.button.65fe2d2949bc")
               : errors.length
-                ? L("Prøv igjen for resten", "Try again for the rest")
-                : L("Last opp", "Upload")}
+                ? t("app-library-reupload-dialog.reupload-dialog.button.3a1262b5e2e8")
+                : t("app-library-reupload-dialog.reupload-dialog.button.db13cc4ddbb8")}
           </Button>
         </DialogFooter>
       </DialogContent>

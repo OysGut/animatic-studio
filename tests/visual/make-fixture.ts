@@ -73,6 +73,12 @@ const cs = diffStates(fixture.state, s);
 for (const t of ["asset_relations", "posters"])
   rows[t] = (cs.inserts as Record<string, unknown[]>)[t] ?? [];
 
+// DV3/DV4: a second preserved alternative and an account voice default, without auto-linking legacy lines.
+const dialogueRows = (rows["dialogue_versions"] ?? []) as Record<string, unknown>[];
+const firstDialogue = dialogueRows[0];
+if (firstDialogue) dialogueRows.push({ ...firstDialogue, id: "00000000-0000-7000-8000-00000000d300", source: "record", parent_version_id: firstDialogue["id"], created_at: "2026-10-19T20:00:00Z" });
+for (const a of (rows["assets"] ?? []) as Record<string, unknown>[]) if (a["kind"] === "character") a["voice"] = { provider: "elevenlabs", voiceId: "mock_voice", label: "Test voice", modelId: "eleven_v3", language: "no", settings: { stability: 0.5 } };
+
 writeFileSync(
   process.argv[2] ?? "/tmp/claude-0/visual-fixture.json",
   JSON.stringify({ project, rows }, null, 1),

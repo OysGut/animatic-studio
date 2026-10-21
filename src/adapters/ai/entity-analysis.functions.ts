@@ -6,7 +6,7 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, isUuid, librarySuggestions, mainProduction } from "@/core";
+import { isUuid, librarySuggestions, mainProduction } from "@/core";
 import {
   ENTITY_ANALYSIS_MAX_CANDIDATES,
   ENTITY_ANALYSIS_MAX_SCENES_PER_RUN,
@@ -18,6 +18,7 @@ import {
 } from "@/core/library/analysis-hash";
 import { classifyEntitiesPrompt, type AIClassification } from "@/core/library/classification-prompt";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export interface AnalyzeInput {
   readonly projectId: string;
@@ -37,14 +38,14 @@ export type AnalyzeResult =
 export function validateAnalyzeInput(d: unknown): AnalyzeInput {
   const x = (d ?? {}) as Record<string, unknown>;
   if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-ai-entity-analysis-functions.validate-analyze-input.message.cfa026a0c68f"));
   const scope = x["scope"];
   let s: AnalyzeInput["scope"];
   if (scope === "all") s = "all";
   else {
     const ids = (scope as { sceneIds?: unknown } | null)?.sceneIds;
     if (!Array.isArray(ids) || ids.length > 500 || !ids.every((v) => typeof v === "string" && isUuid(v)))
-      throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+      throw new Error(t("adapters-ai-entity-analysis-functions.validate-analyze-input.message.88cc30b04a23"));
     s = { sceneIds: ids as string[] };
   }
   return { projectId: x["projectId"], scope: s, language: x["language"] === "en" ? "en" : "nb" };
@@ -72,7 +73,7 @@ export const listEntityAnalysis = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["projectId"] !== "string" || !isUuid(x["projectId"]))
-      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+      throw new Error(t("adapters-ai-entity-analysis-functions.list-entity-analysis.create-server-fn-method-post-middleware-require-supabase-auth-validator.8df87b652a66"));
     return { projectId: x["projectId"] };
   })
   .handler(async ({ data, context }) => {
@@ -90,7 +91,7 @@ export const analyzeScriptEntities = createServerFn({ method: "POST" })
       return {
         ok: false,
         retryable: false,
-        message: L("Du har ikke tilgang til analysen i dette prosjektet.", "You do not have access to the analysis in this project."),
+        message: t("adapters-ai-entity-analysis-functions.message.message.3b81e2f9bbbd"),
       };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const admin = supabaseAdmin as unknown as AnyClient;
@@ -100,7 +101,7 @@ export const analyzeScriptEntities = createServerFn({ method: "POST" })
       return {
         ok: false,
         retryable: false,
-        message: L("Databasen er ikke oppdatert for automatisk analyse (migrasjon 0041).", "The database is not updated for automatic analysis (migration 0041)."),
+        message: t("adapters-ai-entity-analysis-functions.message.message.ffdd8e5d9d13"),
       };
     const state = await loadProjectState(admin, data.projectId);
     const prod = mainProduction(state);
@@ -155,7 +156,7 @@ export const analyzeScriptEntities = createServerFn({ method: "POST" })
     const { saveEntityAnalysis } = await import("@/adapters/storage/entity-analysis.server");
     const error = await saveEntityAnalysis(admin, upserts);
     if (error)
-      return { ok: false, retryable: false, message: L("Analysen kunne ikke lagres.", "The analysis could not be saved.") };
+      return { ok: false, retryable: false, message: t("adapters-ai-entity-analysis-functions.message.message.33f365d71838") };
     return {
       ok: true,
       analyzedScenes: batch.length,

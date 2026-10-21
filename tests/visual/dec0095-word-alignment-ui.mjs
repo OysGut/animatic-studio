@@ -21,6 +21,7 @@
  *   ENV_FILE=…/.env node dec0090-mobile-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -160,7 +161,7 @@ async function mock(ctx) {
       }
       return json(null);
     }
-    if (table === "schema_version") return json([{ version: 37 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (path.startsWith("/storage/v1/object/assets/") && req.method() === "POST") {
       PC.uploads++;
       uploaded.set(path.replace("/storage/v1/object/assets/", ""), req.postDataBuffer() ?? Buffer.alloc(0));

@@ -23,33 +23,8 @@ import { DurationHistory } from "./DurationHistory";
 import { HISTORY_SCHEMA, useSaveDurationEstimate } from "./use-history-records";
 import { versionDurationEstimate } from "@/app/project/use-versions";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
-import {
-  DEFAULT_DURATION_ASSUMPTIONS,
-  DURATION_ASSUMPTION_LIMITS,
-  normalizeDurationAssumptions,
-  projectDurationAssumptions,
-  sameDurationAssumptions,
-  FILM_LANGUAGES,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  DURATION_SOURCE_LABEL,
-  SCENE_STATUS_LABEL,
-  estimateProduction,
-  filterStatusRows,
-  formatDuration,
-  formatEighths,
-  formatHeading,
-  orderedOccurrences,
-  parsePlannedDuration,
-  productionStatus,
-  scriptPages,
-  type DurationAssumptions,
-  type ProjectState,
-  type SceneStatus,
-  L,
-  collation,
-  tm,
-} from "@/core";
+import { DEFAULT_DURATION_ASSUMPTIONS, DURATION_ASSUMPTION_LIMITS, normalizeDurationAssumptions, projectDurationAssumptions, sameDurationAssumptions, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, DURATION_SOURCE_LABEL, SCENE_STATUS_LABEL, estimateProduction, durationForecast, filterStatusRows, formatDuration, formatEighths, formatHeading, orderedOccurrences, parsePlannedDuration, productionStatus, scriptPages, type DurationAssumptions, type ProjectState, type SceneStatus, collation, tm } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const STATUS_CLASS: Record<SceneStatus, string> = {
   done: "text-status-success",
@@ -90,10 +65,7 @@ function PlannedInput({
       placeholder="–"
       aria-label={label}
       aria-invalid={invalid || undefined}
-      title={L(
-        "Planlagt lengde (m:ss eller sekunder). Tomt felt fjerner planen.",
-        "Planned length (m:ss or seconds). An empty field removes the plan.",
-      )}
+      title={t("app-projects-duration-overview.planned-input.title.4ae4ec2051c8")}
       onChange={(e) => setText(e.target.value)}
       onKeyDown={(e) => {
         if (e.key === "Enter") e.currentTarget.blur();
@@ -153,10 +125,7 @@ export function DurationOverview({
     const n = next === null ? null : normalizeDurationAssumptions(next);
     if (next !== null && n === null) {
       setAssumptionError(
-        L(
-          "Ugyldig verdi – antakelsene er ikke lagret.",
-          "Invalid value – the assumptions have not been saved.",
-        ),
+        t("app-projects-duration-overview.save-assumptions.set-assumption-error.ea6c6c7ffc13"),
       );
       return;
     }
@@ -177,7 +146,7 @@ export function DurationOverview({
     }
     const err = cmds.runSilent(
       { type: "SetDurationAssumptions", assumptions: value },
-      L("Antakelser for varighetsestimatet", "Assumptions for the duration estimate"),
+      t("app-projects-duration-overview.err.cmds-run-silent.859d1508b51c"),
     );
     if (err) setAssumptionError(err);
     else setDraft(null);
@@ -202,6 +171,8 @@ export function DurationOverview({
     const pagination = scriptPages(state, pid, { lockedPages: true });
     return estimateProduction(state, pid, assumptions, pagination);
   }, [state, pid, assumptions]);
+  // Prognose fra historikk (M6): beregnet ved visning, aldri lagret
+  const forecast = useMemo(() => (pid ? durationForecast(state, pid, assumptions) : null), [state, pid, assumptions]);
   const overview = useMemo(
     () => (pid && estimate ? productionStatus(state, pid, estimate) : null),
     [state, pid, estimate],
@@ -318,11 +289,11 @@ export function DurationOverview({
     <section aria-labelledby="dur-title" className="mt-10">
       <div className="mb-2 flex items-center justify-between">
         <h2 id="dur-title" className="text-base font-semibold text-text-primary">
-          {L("Varighet og produksjonsstatus", "Duration and production status")}
+          {t("app-projects-duration-overview.duration-overview.h2.032e43f1de26")}
         </h2>
         {productions.length > 1 ? (
           <select
-            aria-label={L("Produksjon", "Production")}
+            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.cfcb3947b799")}
             value={pid}
             onChange={(e) => setProductionId(e.target.value)}
             className={ctl}
@@ -338,101 +309,106 @@ export function DurationOverview({
       <div className="grid grid-cols-[1fr_300px] gap-4">
         <div className="border border-border bg-surface-1 p-4">
           <p className="text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            {L("Forventet lengde nå", "Expected length now")}
+            {t("app-projects-duration-overview.duration-overview.p.885059f12e51")}
           </p>
           <p className="tabular text-3xl font-semibold tracking-tight text-text-primary">
             {formatDuration(overview.expectedSeconds)}
           </p>
           <p className="mt-1 text-[13px] text-text-secondary">
-            {overview.rows.length - overview.counts.inactive} {L("aktive scener", "active scenes")}{" "}
+            {overview.rows.length - overview.counts.inactive} {t("app-projects-duration-overview.duration-overview.p.704f856e2c5a")}{" "}
             · <span className="tabular">{formatEighths(estimate.activeEighths)}</span>{" "}
-            {L("sider", "pages")}
+            {t("app-projects-duration-overview.duration-overview.p.c75714294bf6")}
             {overview.counts.inactive
-              ? L(
-                  ` · ${overview.counts.inactive} deaktiverte er ikke med`,
-                  ` · ${overview.counts.inactive} deactivated are not included`,
-                )
+              ? t("app-projects-duration-overview.duration-overview.p.3886da1e2d94", { inactive: String(overview.counts.inactive) })
               : ""}
           </p>
+          {forecast ? (
+            <p data-testid="duration-forecast" className="mt-3 text-xs text-text-secondary">
+              <span className="font-medium text-text-primary">{t("app-projects-duration-overview.duration-overview.span.0b4efbea045a")}</span>{" "}
+              <span className="tabular">
+                {formatDuration(forecast.lowSeconds)}–{formatDuration(forecast.highSeconds)}
+              </span>
+              {forecast.fallback
+                ? t("app-projects-duration-overview.duration-overview.p.0e1c518e21c6")
+                : t("app-projects-duration-overview.forecast-basis", {
+                    scenes: forecast.basedOnScenes,
+                    lines: t("app-projects-duration-overview.forecast-basis-lines", { count: forecast.basedOnLines }),
+                  })}
+              <span className="text-text-tertiary">
+                {t("app-projects-duration-overview.duration-overview.span.1be46ca01daf")}
+              </span>
+            </p>
+          ) : null}
           <div className="mt-4 grid grid-cols-3 gap-3">
             {stat(
-              L("Bekreftet", "Confirmed"),
+              t("app-projects-duration-overview.duration-overview.stat.6629c7135c2f"),
               formatDuration(overview.confirmedSeconds),
-              L("fra 2D-animatic og film", "from 2D animatic and film"),
+              t("app-projects-duration-overview.duration-overview.stat.15eec3bc22ef"),
             )}
             {stat(
-              L("Gjenstående", "Remaining"),
+              t("app-projects-duration-overview.duration-overview.stat.0226ed21e086"),
               `≈ ${formatDuration(overview.remainingEstimatedSeconds)}`,
-              L("estimat og plan for resten", "estimate and plan for the rest"),
+              t("app-projects-duration-overview.duration-overview.stat.00dfa39cfafe"),
             )}
             {stat(
-              L("Bare manusestimat", "Script estimate only"),
+              t("app-projects-duration-overview.duration-overview.stat.9a1c1c026ede"),
               `≈ ${formatDuration(overview.estimatedSeconds)}`,
               estimate.uncertainScenes
-                ? L(
-                    `alle aktive scener · ${estimate.uncertainScenes} usikre, spenn ${formatDuration(estimate.activeLowSeconds)}–${formatDuration(estimate.activeHighSeconds)}`,
-                    `all active scenes · ${estimate.uncertainScenes} uncertain, range ${formatDuration(estimate.activeLowSeconds)}–${formatDuration(estimate.activeHighSeconds)}`,
-                  )
-                : L("alle aktive scener", "all active scenes"),
+                ? t("app-projects-duration-overview.duration-overview.stat.890edb769c37", { uncertainScenes: String(estimate.uncertainScenes), value2: String(formatDuration(estimate.activeLowSeconds)), value3: String(formatDuration(estimate.activeHighSeconds)) })
+                : t("app-projects-duration-overview.duration-overview.stat.635f0ef0ae09"),
             )}
           </div>
           <div
             className="mt-4 flex h-2 overflow-hidden rounded-sm bg-surface-3"
             role="img"
-            aria-label={L(
-              `Ferdig ${pct(overview.doneShare)}, bekreftet ${pct(confirmedNotDone)}, estimert ${pct(overview.estimatedShare)}`,
-              `Done ${pct(overview.doneShare)}, confirmed ${pct(confirmedNotDone)}, estimated ${pct(overview.estimatedShare)}`,
-            )}
+            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.b95f6bd700f7", { value1: String(pct(overview.doneShare)), value2: String(pct(confirmedNotDone)), value3: String(pct(overview.estimatedShare)) })}
           >
             <span className="bg-status-success" style={{ width: `${overview.doneShare * 100}%` }} />
             <span className="bg-accent-brand" style={{ width: `${confirmedNotDone * 100}%` }} />
           </div>
           <p className="mt-1.5 flex flex-wrap gap-x-4 text-[11px] text-text-tertiary">
             <span>
-              <span className="text-status-success">■</span> {L("Ferdig film", "Finished film")}{" "}
+              <span className="text-status-success">■</span> {t("app-projects-duration-overview.duration-overview.span.a94792d60af1")}{" "}
               <span className="tabular text-text-secondary">{pct(overview.doneShare)}</span>
             </span>
             <span>
               <span className="text-accent-brand">■</span>{" "}
-              {L("Bekreftet ellers", "Otherwise confirmed")}{" "}
+              {t("app-projects-duration-overview.duration-overview.span.2c5d3f9f8ca3")}{" "}
               <span className="tabular text-text-secondary">{pct(confirmedNotDone)}</span>
             </span>
             <span>
               <span className="text-text-tertiary">■</span>{" "}
-              {L("Fortsatt estimert", "Still estimated")}{" "}
+              {t("app-projects-duration-overview.duration-overview.span.13ce142f412b")}{" "}
               <span className="tabular text-text-secondary">{pct(overview.estimatedShare)}</span>
             </span>
           </p>
           <p className="mt-3 text-xs text-text-tertiary">
-            {L(
-              "Estimatene er anslag ut fra mengden dialog og handling og er usikre. Du kan sette en planlagt lengde per scene (Per scene → Plan); den brukes også i monteringen. Begge erstattes av den faktiske lengden når 2D-scenen får satt lengde eller filmen er lagt inn. Hver scene telles én gang.",
-              "The estimates are rough figures based on the amount of dialogue and action, and are uncertain. You can set a planned length per scene (Per scene → Plan); it is also used in the assembly. Both are replaced by the actual length once the 2D scene has a length or the film is added. Each scene is counted once.",
-            )}
+            {t("app-projects-duration-overview.duration-overview.p.1c00218d593b")}
           </p>
         </div>
         <div className="flex flex-col gap-1.5 border border-border bg-surface-1 p-3">
           <p className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            {L("Antakelser for estimatet", "Assumptions for the estimate")}
+            {t("app-projects-duration-overview.duration-overview.p.2d8ad1b0b3f4")}
           </p>
           {num(
             "dialogueWordsPerMinute",
-            L("Taletempo", "Speech rate"),
+            t("app-projects-duration-overview.duration-overview.num.83fb305f54bb"),
             5,
-            L("ord/min", "words/min"),
+            t("app-projects-duration-overview.duration-overview.num.a4f7c9601ee3"),
           )}
           {num(
             "actionSecondsPerLine",
-            L("Handling per linje", "Action per line"),
+            t("app-projects-duration-overview.duration-overview.num.f71c2b061fe1"),
             0.5,
-            L("sek", "sec"),
+            t("app-projects-duration-overview.duration-overview.num.cc27c279cb12"),
           )}
           {num(
             "headingSeconds",
-            L("Per scene (etablering)", "Per scene (establishing)"),
+            t("app-projects-duration-overview.duration-overview.num.96f23c709476"),
             0.5,
-            L("sek", "sec"),
+            t("app-projects-duration-overview.duration-overview.num.cc27c279cb12.2"),
           )}
-          {num("minSceneSeconds", L("Korteste scene", "Shortest scene"), 1, L("sek", "sec"))}
+          {num("minSceneSeconds", t("app-projects-duration-overview.duration-overview.num.ae41f60ad450"), 1, t("app-projects-duration-overview.duration-overview.num.cc27c279cb12.3"))}
           <button
             type="button"
             onClick={() => {
@@ -441,7 +417,7 @@ export function DurationOverview({
             }}
             className="mt-1 self-start text-xs text-accent-brand hover:underline"
           >
-            {L("Tilbakestill", "Reset")}
+            {t("app-projects-duration-overview.duration-overview.button.0894f98c0165")}
           </button>
           {assumptionError ? (
             <p role="alert" className="text-[11px] text-status-danger">
@@ -450,19 +426,10 @@ export function DurationOverview({
           ) : null}
           <p className="text-[11px] text-text-tertiary">
             {canSaveAssumptions
-              ? L(
-                  "Lagres for hele prosjektet og gjelder for alle.",
-                  "Saved for the whole project and applies to everyone.",
-                )
+              ? t("app-projects-duration-overview.duration-overview.p.4f4199fb5fb1")
               : !schema28
-                ? L(
-                    "Lagres ikke før databasen er oppdatert (migrasjon 0028).",
-                    "Not saved until the database is updated (migration 0028).",
-                  )
-                : L(
-                    "Du har bare lesetilgang: endringene gjelder bare her og lagres ikke.",
-                    "You have read-only access: the changes apply here only and are not saved.",
-                  )}
+                ? t("app-projects-duration-overview.duration-overview.p.38145e4d4e98")
+                : t("app-projects-duration-overview.duration-overview.p.ac51ac4d2fb4")}
           </p>
         </div>
       </div>
@@ -487,7 +454,7 @@ export function DurationOverview({
             }
           >
             <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
-            {L("Manusendringer", "Script changes")}
+            {t("app-projects-duration-overview.duration-overview.button.e3f8dc1d3d8f")}
             <span className="tabular text-text-primary">{overview.discrepancies}</span>
           </button>
         ) : null}
@@ -504,7 +471,7 @@ export function DurationOverview({
         ) : (
           <ChevronRight className="size-4" aria-hidden />
         )}
-        {L("Utvikling over tid", "Trend over time")}
+        {t("app-projects-duration-overview.duration-overview.button.ed24c3eddc15")}
       </button>
       {editable && schema28 ? (
         <div className="mt-1.5 flex flex-wrap items-center gap-2">
@@ -535,30 +502,21 @@ export function DurationOverview({
                     setShowHistory(true);
                     setEstimateNote(
                       r.scriptVersionId
-                        ? L(
-                            "Estimatet er lagret og knyttet til den nyeste manusversjonen.",
-                            "The estimate is saved and linked to the newest script version.",
-                          )
-                        : L("Estimatet er lagret.", "The estimate is saved."),
+                        ? t("app-projects-duration-overview.on-success.set-estimate-note.3d3017f53675")
+                        : t("app-projects-duration-overview.on-success.set-estimate-note.6a6048a8e9b3"),
                     );
                   },
                   onError: (e) =>
                     setEstimateNote(
-                      L(
-                        `Estimatet ble ikke lagret: ${tm(e.message)}`,
-                        `The estimate was not saved: ${tm(e.message)}`,
-                      ),
+                      t("app-projects-duration-overview.on-error.set-estimate-note.6c3c6d6451ce", { value1: String(tm(e.message)) }),
                     ),
                 },
               );
             }}
-            title={L(
-              "Lagre dagens tall og antakelser, så de kan sammenlignes senere (de regnes aldri på nytt)",
-              "Save today's figures and assumptions so they can be compared later (they are never recalculated)",
-            )}
+            title={t("app-projects-duration-overview.duration-overview.title.e172b22a9146")}
             className="flex h-7 items-center rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary hover:bg-surface-2 disabled:opacity-50"
           >
-            {L("Lagre estimat", "Save estimate")}
+            {t("app-projects-duration-overview.duration-overview.button.88515c4f1e99")}
           </button>
           {estimateNote ? (
             <span role="status" className="text-xs text-text-secondary">
@@ -583,10 +541,10 @@ export function DurationOverview({
         ) : (
           <ChevronRight className="size-4" aria-hidden />
         )}
-        Per scene
+        {t("id3.duration.per-scene")}
         {filtered ? (
           <span className="text-text-tertiary">
-            ({rows.length} {L("av", "of")} {overview.rows.length})
+            ({rows.length} {t("app-projects-duration-overview.duration-overview.span.c0bc5cfc4d81")} {overview.rows.length})
           </span>
         ) : null}
       </button>
@@ -597,8 +555,8 @@ export function DurationOverview({
               type="search"
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder={L("Søk i scenehoder …", "Search scene headings …")}
-              aria-label={L("Søk i scenehoder", "Search scene headings")}
+              placeholder={t("app-projects-duration-overview.duration-overview.placeholder.4e17d46988e8")}
+              aria-label={t("app-projects-duration-overview.duration-overview.aria-label.a3d01af35e76")}
               className={ctl + " w-52"}
             />
             <select
@@ -607,7 +565,7 @@ export function DurationOverview({
               onChange={(e) => setStatus(e.target.value as SceneStatus | "")}
               className={ctl}
             >
-              <option value="">{L("Alle statuser", "All statuses")}</option>
+              <option value="">{t("app-projects-duration-overview.duration-overview.option.bd1830e08a24")}</option>
               {(Object.keys(SCENE_STATUS_LABEL) as SceneStatus[]).map((s) => (
                 <option key={s} value={s}>
                   {SCENE_STATUS_LABEL[s]}
@@ -615,13 +573,13 @@ export function DurationOverview({
               ))}
             </select>
             <select
-              aria-label={L("Karakter, objekt eller sted", "Character, object or location")}
+              aria-label={t("app-projects-duration-overview.duration-overview.aria-label.9a23f91f2271")}
               value={assetId}
               onChange={(e) => setAssetId(e.target.value)}
               className={ctl + " max-w-56"}
             >
               <option value="">
-                {L("Alle karakterer, objekter og steder", "All characters, objects and locations")}
+                {t("app-projects-duration-overview.duration-overview.option.2e237b6028d0")}
               </option>
               {assetsInRows.map((a) => (
                 <option key={a.id} value={a.id}>
@@ -635,33 +593,30 @@ export function DurationOverview({
                 checked={onlyDiscrepancies}
                 onChange={(e) => setOnlyDiscrepancies(e.target.checked)}
               />
-              {L("Bare med manusendringer", "Only with script changes")}
+              {t("app-projects-duration-overview.duration-overview.label.a9a667046098")}
             </label>
             <label
               className="flex items-center gap-1.5 text-xs text-text-secondary"
-              title={L(
-                "Scener der 2D-scenen viser eldre bilder enn de som nå er godkjent",
-                "Scenes where the 2D scene shows older images than the ones now approved",
-              )}
+              title={t("app-projects-duration-overview.duration-overview.title.69bf08e1d5d9")}
             >
               <input
                 type="checkbox"
                 checked={onlyResourceChanges}
                 onChange={(e) => setOnlyResourceChanges(e.target.checked)}
               />
-              {L("Bare med ressursendringer", "Only with asset changes")}
+              {t("app-projects-duration-overview.duration-overview.label.80689e368251")}
               {changedScenes ? ` (${changedScenes})` : ""}
             </label>
             <select
-              aria-label={L("Oversettelse", "Translation")}
+              aria-label={t("app-projects-duration-overview.duration-overview.aria-label.17efb8523bd6")}
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
               className={ctl}
             >
-              <option value="">{L("Alle språk", "All languages")}</option>
+              <option value="">{t("app-projects-duration-overview.duration-overview.option.76f97f9b88ea")}</option>
               {FILM_LANGUAGES.filter((l) => l !== MAIN_LANGUAGE).map((l) => (
                 <option key={l} value={l}>
-                  {LANGUAGE_LABEL[l] ?? l}: {L("ikke ferdig oversatt", "not yet translated")}
+                  {LANGUAGE_LABEL[l] ?? l}: {t("app-projects-duration-overview.duration-overview.option.4b8df452c048")}
                 </option>
               ))}
             </select>
@@ -678,7 +633,7 @@ export function DurationOverview({
                 }}
                 className="text-xs text-accent-brand hover:underline"
               >
-                {L("Nullstill filter", "Reset filter")}
+                {t("app-projects-duration-overview.duration-overview.button.c74fa45323b9")}
               </button>
             ) : null}
           </div>
@@ -686,17 +641,17 @@ export function DurationOverview({
             <table className="w-full text-[13px]">
               <thead className="sticky top-0 bg-surface-2 text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
                 <tr>
-                  <th className="w-14 px-3 py-1.5 font-medium">{L("Nr.", "No.")}</th>
+                  <th className="w-14 px-3 py-1.5 font-medium">{t("app-projects-duration-overview.duration-overview.th.83c9f8976374")}</th>
                   <th className="px-3 py-1.5 font-medium">Scene</th>
                   <th className="w-36 px-3 py-1.5 font-medium">Status</th>
-                  <th className="w-16 px-3 py-1.5 text-right font-medium">{L("Sider", "Pages")}</th>
+                  <th className="w-16 px-3 py-1.5 text-right font-medium">{t("app-projects-duration-overview.duration-overview.th.7fecce771d97")}</th>
                   <th className="w-20 px-3 py-1.5 text-right font-medium">
-                    {L("Estimat", "Estimate")}
+                    {t("app-projects-duration-overview.duration-overview.th.c7c1d8cef916")}
                   </th>
                   <th className="w-20 px-3 py-1.5 text-right font-medium">Plan</th>
-                  <th className="w-32 px-3 py-1.5 text-right font-medium">{L("Nå", "Now")}</th>
+                  <th className="w-32 px-3 py-1.5 text-right font-medium">{t("app-projects-duration-overview.duration-overview.th.ee4b9ebc1dc0")}</th>
                   <th className="w-24 px-3 py-1.5 font-medium">
-                    <span className="sr-only">{L("Åpne", "Open")}</span>
+                    <span className="sr-only">{t("app-projects-duration-overview.duration-overview.span.c5a06f2f294e")}</span>
                   </th>
                 </tr>
               </thead>
@@ -704,7 +659,7 @@ export function DurationOverview({
                 {rows.length === 0 ? (
                   <tr>
                     <td colSpan={8} className="px-3 py-3 text-xs text-text-tertiary">
-                      {L("Ingen scener passer filteret.", "No scenes match the filter.")}
+                      {t("app-projects-duration-overview.duration-overview.td.e659f6ee5595")}
                     </td>
                   </tr>
                 ) : null}
@@ -727,17 +682,14 @@ export function DurationOverview({
                           params={{ projectId }}
                           search={search}
                           className="hover:underline"
-                          title={L("Åpne scenen i manuset", "Open the scene in the script")}
+                          title={t("app-projects-duration-overview.duration-overview.title.46f425e77de1")}
                         >
                           {v ? formatHeading(v.heading) : ""}
                         </Link>
                         {r.discrepancy ? (
                           <AlertTriangle
                             className="ml-1.5 inline size-3.5 text-status-danger"
-                            aria-label={L(
-                              "Manusendringer etter at 2D-scene eller film ble laget",
-                              "Script changes made after the 2D scene or film was made",
-                            )}
+                            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.7ebd73a4eb1e")}
                           />
                         ) : null}
                       </td>
@@ -752,13 +704,10 @@ export function DurationOverview({
                           <span
                             className="text-status-uncertain"
                             data-testid="estimate-uncertain"
-                            title={L(
-                              `Usikkert estimat: scenen har lite eller ingen dialog, så lengden kan bli fra ${formatDuration(e.lowSeconds)} til ${formatDuration(e.highSeconds)}. Sett en planlagt lengde når du vet mer.`,
-                              `Uncertain estimate: the scene has little or no dialogue, so the length may be from ${formatDuration(e.lowSeconds)} to ${formatDuration(e.highSeconds)}. Set a planned length when you know more.`,
-                            )}
+                            title={t("app-projects-duration-overview.duration-overview.title.fd6465b4f96e", { value1: String(formatDuration(e.lowSeconds)), value2: String(formatDuration(e.highSeconds)) })}
                           >
                             {formatDuration(e.lowSeconds)}–{formatDuration(e.highSeconds)}
-                            <span className="ml-1 text-[11px]">{L("usikkert", "uncertain")}</span>
+                            <span className="ml-1 text-[11px]">{t("app-projects-duration-overview.duration-overview.span.dcdbf11ad01c")}</span>
                           </span>
                         ) : (
                           <>≈ {formatDuration(r.estimateSeconds)}</>
@@ -768,10 +717,7 @@ export function DurationOverview({
                         <PlannedInput
                           plannedSeconds={r.plannedSeconds}
                           disabled={!editable || !r.active}
-                          label={L(
-                            `Planlagt lengde for scene ${r.productionNumber ?? ""}`,
-                            `Planned length for scene ${r.productionNumber ?? ""}`,
-                          ).trim()}
+                          label={t("app-projects-duration-overview.duration-overview.l-planlagt-lengde-for-scene-r-production-number-planned-length-for-scene-r-production-number-trim.e19867526e18", { value1: String(r.productionNumber ?? "") }).trim()}
                           onSave={(ms) =>
                             cmds.run(
                               {
@@ -780,11 +726,8 @@ export function DurationOverview({
                                 plannedMs: ms,
                               },
                               ms === null
-                                ? L("Fjern planlagt lengde", "Remove planned length")
-                                : L(
-                                    `Planlagt lengde ${formatDuration(ms / 1000)}`,
-                                    `Planned length ${formatDuration(ms / 1000)}`,
-                                  ),
+                                ? t("app-projects-duration-overview.duration-overview.cmds-run.607f28aa589e")
+                                : t("app-projects-duration-overview.duration-overview.cmds-run.2d653a83fa04", { value1: String(formatDuration(ms / 1000)) }),
                             )
                           }
                         />
@@ -802,8 +745,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/manus"
                             params={{ projectId }}
                             search={search}
-                            aria-label={L("Åpne i manuset", "Open in script")}
-                            title={L("Manus", "Script")}
+                            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.097dc4d3fe39")}
+                            title={t("app-projects-duration-overview.duration-overview.title.2878323e34dd")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <FileText className="size-3.5" />
@@ -812,8 +755,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/scene"
                             params={{ projectId }}
                             search={search}
-                            aria-label={L("Åpne i sceneeditoren", "Open in scene editor")}
-                            title={L("Sceneeditor", "Scene editor")}
+                            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.510d15a17cf3")}
+                            title={t("app-projects-duration-overview.duration-overview.title.f779d2f4447e")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <Layers className="size-3.5" />
@@ -822,8 +765,8 @@ export function DurationOverview({
                             to="/prosjekt/$projectId/montering"
                             params={{ projectId }}
                             search={search}
-                            aria-label={L("Åpne i monteringen", "Open in assembly")}
-                            title={L("Montering", "Assembly")}
+                            aria-label={t("app-projects-duration-overview.duration-overview.aria-label.00cb23c5e696")}
+                            title={t("app-projects-duration-overview.duration-overview.title.780649703fc0")}
                             className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                           >
                             <Clapperboard className="size-3.5" />

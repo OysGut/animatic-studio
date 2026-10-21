@@ -7,18 +7,10 @@
  * Alt tåler at tabellene ikke finnes ennå (database før 0034): da gjelder den innebygde katalogen som før,
  * og ingenting skrives.
  */
-import {
-  ALL_MODELS,
-  L,
-  disabledMessage,
-  disabledReason,
-  isProviderId,
-  settingFromRow,
-  validateCustomModel,
-  type ModelSetting,
-} from "@/core";
+import { ALL_MODELS, disabledMessage, disabledReason, isProviderId, settingFromRow, validateCustomModel, type ModelSetting } from "@/core";
 import { builtInModel } from "@/core/generation/providers";
 import type { AnyClient } from "@/adapters/storage/project-rows";
+import { t } from "@/core/i18n/keyed";
 
 export const CRON_STATUS_KEY = "cron.ai-jobs";
 
@@ -27,7 +19,10 @@ export async function loadModelSettings(
   db: AnyClient,
 ): Promise<{ ready: boolean; settings: ModelSetting[] }> {
   try {
-    const { data, error } = await db.from("ai_model_settings").select("*");
+    // Ø-11 (0058): bare kolonnene appen bruker (updated_by kan ikke leses av vanlige brukere)
+    const { data, error } = await db
+      .from("ai_model_settings")
+      .select("id, provider, model, enabled, custom, kind, label, price_usd, price_unit, note, updated_at");
     if (error) return { ready: false, settings: [] };
     return {
       ready: true,
@@ -45,10 +40,7 @@ export async function loadModelSettings(
 type Result = { ok: boolean; message: string };
 
 const MISSING = () =>
-  L(
-    "Databasen må oppdateres (migrasjon 0034) før AI-tilkoblingene kan endres.",
-    "The database must be updated (migration 0034) before the AI connections can be changed.",
-  );
+  t("adapters-account-ai-models-server.missing.message.2d144866b5fe");
 
 /** Slå en leverandør ('*') eller en modell av eller på for alle brukere. */
 export async function setModelEnabled(
@@ -59,17 +51,14 @@ export async function setModelEnabled(
   enabled: boolean,
 ): Promise<Result> {
   if (!isProviderId(provider))
-    return { ok: false, message: L("Ukjent leverandør.", "Unknown provider.") };
+    return { ok: false, message: t("adapters-account-ai-models-server.message.message.b8cd38646823") };
   const { ready, settings } = await loadModelSettings(db);
   if (!ready) return { ok: false, message: MISSING() };
   const existing = settings.find((s) => s.provider === provider && s.model === model);
   if (model !== ALL_MODELS && !builtInModel(provider, model) && !existing?.custom)
     return {
       ok: false,
-      message: L(
-        "Modellen finnes ikke hos leverandøren.",
-        "The model does not exist at the provider.",
-      ),
+      message: t("adapters-account-ai-models-server.message.message.76614fd04fe8"),
     };
   const now = new Date().toISOString();
   const { error } = existing
@@ -90,8 +79,8 @@ export async function setModelEnabled(
   return {
     ok: true,
     message: enabled
-      ? L("Slått på for alle brukere.", "Switched on for all users.")
-      : L("Slått av for alle brukere.", "Switched off for all users."),
+      ? t("adapters-account-ai-models-server.message.message.7684f57d85ac")
+      : t("adapters-account-ai-models-server.message.message.2bfa06331a88"),
   };
 }
 
@@ -110,10 +99,7 @@ export async function saveCustomModel(
   if (existing && !existing.custom)
     return {
       ok: false,
-      message: L(
-        "Modellen finnes allerede i den innebygde katalogen.",
-        "The model is already in the built-in catalogue.",
-      ),
+      message: t("adapters-account-ai-models-server.message.message.49e83304ea05"),
     };
   const row = {
     kind: x.kind,
@@ -141,11 +127,8 @@ export async function saveCustomModel(
   return {
     ok: true,
     message: existing
-      ? L(`«${x.label}» er oppdatert.`, `“${x.label}” has been updated.`)
-      : L(
-          `«${x.label}» er lagt til og vises nå i valglistene for alle som har koblet til leverandøren.`,
-          `“${x.label}” has been added and now appears in the lists for everyone who has connected the provider.`,
-        ),
+      ? t("adapters-account-ai-models-server.message.message.a9d6682e618b", { label: String(x.label) })
+      : t("adapters-account-ai-models-server.message.message.bc0828c8cac1", { label: String(x.label) }),
   };
 }
 
@@ -161,10 +144,7 @@ export async function removeCustomModel(
   if (!existing?.custom)
     return {
       ok: false,
-      message: L(
-        "Bare modeller lagt til av administrator kan fjernes. De innebygde kan slås av.",
-        "Only models added by an administrator can be removed. The built-in ones can be switched off.",
-      ),
+      message: t("adapters-account-ai-models-server.message.message.26f9986be968"),
     };
   const { error } = await db
     .from("ai_model_settings")
@@ -173,7 +153,7 @@ export async function removeCustomModel(
     .eq("model", model)
     .eq("custom", true);
   if (error) return { ok: false, message: error.message };
-  return { ok: true, message: L("Modellen er fjernet.", "The model has been removed.") };
+  return { ok: true, message: t("adapters-account-ai-models-server.message.message.b1a12d7295df") };
 }
 
 // ---------------------------------------------------------------- ønsker om nye leverandører
@@ -253,10 +233,7 @@ export async function addProviderRequest(
   if (error) return { ok: false, message: MISSING() };
   return {
     ok: true,
-    message: L(
-      "Ønsket er lagret. Utvikleren lager koblingen i koden; status vises i listen.",
-      "The request has been saved. The developer builds the connection in the code; the status is shown in the list.",
-    ),
+    message: t("adapters-account-ai-models-server.message.message.301f57b4bdd4"),
   };
 }
 
@@ -271,13 +248,13 @@ export async function setProviderRequestStatus(
     .eq("id", id)
     .maybeSingle();
   if (error) return { ok: false, message: MISSING() };
-  if (!data) return { ok: false, message: L("Ønsket finnes ikke.", "The request does not exist.") };
+  if (!data) return { ok: false, message: t("adapters-account-ai-models-server.message.message.10322e88032a") };
   const { error: upErr } = await db
     .from("ai_provider_requests")
     .update({ status } as never)
     .eq("id", id);
   if (upErr) return { ok: false, message: upErr.message };
-  return { ok: true, message: L("Status er endret.", "The status has been changed.") };
+  return { ok: true, message: t("adapters-account-ai-models-server.message.message.9ea0b91f9b4c") };
 }
 
 // ---------------------------------------------------------------- bakgrunnsjobben

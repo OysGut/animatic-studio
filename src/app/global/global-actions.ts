@@ -1,22 +1,7 @@
 /**
  * Handlingene i det globale biblioteket (GP2) som går gjennom serveren og kommandostakken.
  */
-import {
-  L,
-  extensionOf,
-  latestGlobalVersions,
-  linkedProjectAsset,
-  linkedProjectVersion,
-  newId,
-  planUseGlobal,
-  type AssetId,
-  type AssetVariantId,
-  type AssetVersionId,
-  type GlobalAssetBundle,
-  type GlobalVersion,
-  type ProjectState,
-  type UseGlobalItem,
-} from "@/core";
+import { extensionOf, latestGlobalVersions, linkedProjectAsset, linkedProjectVersion, newId, planUseGlobal, type AssetId, type AssetVariantId, type AssetVersionId, type GlobalAssetBundle, type GlobalVersion, type ProjectState, type UseGlobalItem } from "@/core";
 import {
   copyGlobalToProject,
   createGlobalUpload,
@@ -26,6 +11,7 @@ import { uploadToSignedPath } from "@/adapters/browser/global-library";
 import { sha256Hex } from "@/engine/import/browser";
 import type { Commands } from "@/app/project/use-commands";
 import { runGroup } from "@/app/storylab/canvas/run-group";
+import { t } from "@/core/i18n/keyed";
 
 /**
  * «Bruk i prosjekt» (G3/G4): de valgte versjonene (standard: nyeste i hver variant som ikke er arkivert)
@@ -47,7 +33,7 @@ export async function useGlobalInProject(
       .filter((v): v is GlobalVersion => !!v);
   if (!versions.length)
     return {
-      error: L("Ressursen har ingen filer ennå.", "The asset has no files yet."),
+      error: t("app-global-global-actions.error.error.fb060232c8f2"),
       assetId: null,
       reused: false,
     };
@@ -91,7 +77,7 @@ export async function useGlobalInProject(
   const error = await runGroup(
     cmds,
     plan.commands,
-    L(`Bruk «${bundle.asset.name}» fra det globale biblioteket`, `Use “${bundle.asset.name}” from the global library`),
+    t("app-global-global-actions.error.run-group.dbd14e4d126f", { name: String(bundle.asset.name) }),
   );
   return { error, assetId: plan.assetId, reused: plan.reusedAsset };
 }

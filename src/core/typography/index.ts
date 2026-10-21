@@ -5,3 +5,5 @@ export * from "./validate";
 export * from "./presets";
 export * from "./template";
 export * from "./starters";
+export * from "./project-fonts";
+export * from "./google-catalog";

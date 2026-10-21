@@ -26,8 +26,13 @@ export interface Direction {
   /** null = alle. */
   readonly target: string | null;
   readonly scope: DirectionScope;
-  /** Antall turer da regien ble gitt. */
+  /** Antall turer da regien ble gitt (bare til visning). */
   readonly fromTurn: number;
+  /**
+   * Turen regien ble gitt etter (REQ-0037): permanent ID, null = før første tur. Mangler i eldre tilstand; da
+   * gjelder `fromTurn`.
+   */
+  readonly afterTurnId?: string | null;
 }
 
 export type EngineMode = "qa" | "improv";
@@ -80,7 +85,8 @@ export type EngineAction =
   | { readonly type: "pause" }
   | { readonly type: "resume" }
   | { readonly type: "stop" }
-  | { readonly type: "branchFrom"; readonly turnIndex: number }
+  /** Forgren etter turen med ID-en (REQ-0037); null = fra start (ingen turer beholdes). */
+  | { readonly type: "branchFrom"; readonly turnId: string | null }
   | { readonly type: "explain"; readonly assetId: string };
 
 export function newEngineState(input: {
@@ -148,6 +154,7 @@ export function reduceEngine(s: EngineState, a: EngineAction): EngineState {
             target: a.target,
             scope: a.scope,
             fromTurn: s.turns.length,
+            afterTurnId: s.turns.at(-1)?.id ?? null,
           },
         ],
       };
@@ -195,13 +202,19 @@ export function reduceEngine(s: EngineState, a: EngineAction): EngineState {
     case "stop":
       return { ...s, status: "stopped" };
     case "branchFrom": {
-      if (!Number.isInteger(a.turnIndex) || a.turnIndex < -1 || a.turnIndex >= s.turns.length)
-        return s;
-      const turns = s.turns.slice(0, a.turnIndex + 1);
+      const at = a.turnId === null ? -1 : s.turns.findIndex((t) => t.id === a.turnId);
+      if (a.turnId !== null && at < 0) return s;
+      const turns = s.turns.slice(0, at + 1);
+      const pos = new Map(turns.map((t, i) => [t.id, i] as const));
       return {
         ...s,
         turns,
-        directions: s.directions.filter((d) => d.fromTurn < turns.length),
+        // Regi som ble gitt før en tur som beholdes (slått opp på turens ID; eldre regi uten ID: antallet)
+        directions: s.directions.filter((d) => {
+          if (d.afterTurnId === undefined) return d.fromTurn < turns.length;
+          const i = d.afterTurnId === null ? -1 : (pos.get(d.afterTurnId) ?? Number.POSITIVE_INFINITY);
+          return i < turns.length - 1;
+        }),
         status: "paused",
         turnsThisRun: 0,
         nextSpeaker: null,

@@ -8,33 +8,26 @@ import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
-import {
-  JOB_STATE_LABEL,
-  L,
-  formatHeading,
-  jobState,
-  locale,
-  tm,
-  type GenerationJob,
-  type ProjectState,
-} from "@/core";
+import { AI_JOBS_READ_KEY, JOB_STATE_LABEL, formatHeading, isAiJobsReadPrefs, isJobRead, jobQualityProfile, jobState, locale, markAllJobsRead, markJobsRead, tm, unreadFailedJobs, type AiJobsReadPrefs, type GenerationJob, type ProjectState } from "@/core";
 import { useAiJobs } from "./use-ai-jobs";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { RefetchVideoButton, canRefetchVideo } from "./RefetchVideoButton";
 import { projectStateKey } from "@/app/project/use-project";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
+import { t } from "@/core/i18n/keyed";
 
 /** Hvor lenge en ferdig eller feilet jobb vises som «nylig» (ms). */
 const RECENT_MS = 30 * 60 * 1000;
 
 const KIND_LABEL = (k: GenerationJob["kind"]) =>
   k === "video"
-    ? L("Video", "Video")
+    ? t("app-ai-generation-status.kind-label.message.d951bb8fd767")
     : k === "image"
-      ? L("Bilde", "Image")
+      ? t("app-ai-generation-status.kind-label.message.61079e421e39")
       : k === "sound"
-        ? L("Lyd", "Sound")
-        : L("Tekst", "Text");
+        ? t("app-ai-generation-status.kind-label.message.7b8e15eae019")
+        : t("app-ai-generation-status.kind-label.message.3f5b26cf401f");
 
 /** Hva jobben gjelder, kort: scenen (nummer og overskrift) eller ressursen. */
 function jobSubject(s: ProjectState | undefined, j: GenerationJob): string {
@@ -66,22 +59,25 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
       (j.status === "done" || j.status === "failed" || j.status === "lost") &&
       now.getTime() - Date.parse(j.finishedAt ?? j.createdAt) < RECENT_MS,
   );
-  const failed = recent.filter((j) => j.status !== "done").length;
-  const done = recent.length - failed;
+  const [readPrefs, setReadPrefs] = useUiPref<AiJobsReadPrefs>(AI_JOBS_READ_KEY, {}, isAiJobsReadPrefs);
+  const allFailed = recent.filter((j) => j.status !== "done");
+  const failed = unreadFailedJobs(recent, readPrefs).length;
+  const done = recent.length - allFailed.length;
+  const hasUnread = list.some((j) => (j.status === "failed" || j.status === "lost") && !isJobRead(j, readPrefs));
   if (!list.length) return null;
   const busy = running + queued > 0;
   const summary = busy
     ? [
-        running ? L(`${running} lages`, `${running} in progress`) : "",
-        queued ? L(`${queued} i kø`, `${queued} queued`) : "",
+        running ? t("app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.e4f5fba2fca7", { running: String(running) }) : "",
+        queued ? t("app-ai-generation-status.summary.running-l-running-lages-running-in-progress-queued-l-queued-i-k-queued-queued-filter.f8adaa61ecf3", { queued: String(queued) }) : "",
       ]
         .filter(Boolean)
         .join(" · ")
     : failed
-      ? L(`${failed} feilet`, `${failed} failed`)
+      ? t("app-ai-generation-status.summary.message.656f23349e8a", { failed: String(failed) })
       : done
-        ? L(`${done} ferdig`, `${done} done`)
-        : L("AI", "AI");
+        ? t("app-ai-generation-status.summary.message.a286b0b6765e", { done: String(done) })
+        : t("app-ai-generation-status.summary.message.cd840264e782");
   const shown = list.slice(0, 20);
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -90,16 +86,13 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
           type="button"
           data-testid="generation-status"
           className="flex h-7 items-center gap-1.5 rounded-sm border border-border bg-surface-2 px-2 text-xs text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-          title={L(
-            "AI-genereringer i prosjektet: hva som lages, står i kø og nylig ble ferdig",
-            "AI generations in the project: what is being made, queued and recently finished",
-          )}
-          aria-label={L(`AI-genereringer: ${summary}`, `AI generations: ${summary}`)}
+          title={t("app-ai-generation-status.generation-status.title.4ad93883f8ee")}
+          aria-label={t("app-ai-generation-status.generation-status.aria-label.ad6a78d7509d", { summary: String(summary) })}
         >
           {busy ? (
             <Loader2 className="size-3.5 animate-spin text-accent-brand" aria-hidden />
           ) : failed ? (
-            <TriangleAlert className="size-3.5 text-status-danger" aria-hidden />
+            <TriangleAlert className="size-3.5 text-status-danger" aria-hidden data-testid="generation-status-warning" />
           ) : done ? (
             <CheckCircle2 className="size-3.5 text-status-success" aria-hidden />
           ) : (
@@ -109,8 +102,18 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[380px] p-0">
-        <div className="border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
-          {L("AI-genereringer", "AI generations")}
+        <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
+          {t("app-ai-generation-status.generation-status.div.df5170190148")}
+          {hasUnread ? (
+            <button
+              type="button"
+              data-testid="jobs-mark-all-read"
+              className="text-accent-brand hover:underline"
+              onClick={() => setReadPrefs(markAllJobsRead(new Date().toISOString()))}
+            >
+              {t("app-ai-generation-status.mark-all-read")}
+            </button>
+          ) : null}
         </div>
         <ul className="max-h-[60vh] overflow-y-auto">
           {shown.map((j) => {
@@ -119,15 +122,18 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
             const params = j.params ?? {};
             const part =
               typeof params["pieces"] === "number" && params["pieces"] > 1
-                ? L(
-                    ` · del ${Number(params["piece"] ?? 0) + 1} av ${params["pieces"]}`,
-                    ` · part ${Number(params["piece"] ?? 0) + 1} of ${params["pieces"]}`,
-                  )
+                ? t("app-ai-generation-status.part.shown-map.b693d0ae1f9b", { value1: String(Number(params["piece"] ?? 0) + 1), value2: String(params["pieces"]) })
                 : "";
+            const failedJob = j.status === "failed" || j.status === "lost";
+            const read = failedJob && isJobRead(j, readPrefs);
             return (
               <li
                 key={j.id}
-                className="border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0"
+                data-testid={`generation-job-${j.id}`}
+                className={
+                  `border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0` + // i18n-ignore: CSS-klasser
+                  (read ? " opacity-50" : "")
+                }
               >
                 <div className="flex items-center gap-2">
                   <span className="shrink-0 text-text-tertiary">{KIND_LABEL(j.kind)}</span>
@@ -140,7 +146,7 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                         onClick={() => setOpen(false)}
                         className="hover:underline"
                       >
-                        {subject || L("Scene", "Scene")}
+                        {subject || t("app-ai-generation-status.generation-status.link.6d0aecfbe617")}
                       </Link>
                     ) : (
                       subject || j.model
@@ -174,10 +180,21 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                   </span>
                   <span className="truncate">
                     {j.provider} · {j.model}
+                    {jobQualityProfile(j) ? t("app-ai-generation-status.generation-status.span.97306b01e2fb", { name: String(jobQualityProfile(j)?.name) }) : ""}
                   </span>
                 </div>
                 {j.error && st !== "done" ? (
                   <p className="text-[11px] text-status-danger">{tm(j.error).slice(0, 200)}</p>
+                ) : null}
+                {failedJob && !read ? (
+                  <button
+                    type="button"
+                    data-testid={`job-mark-read-${j.id}`}
+                    className="mt-0.5 text-[11px] text-accent-brand hover:underline"
+                    onClick={() => setReadPrefs(markJobsRead(readPrefs, [j.id]))}
+                  >
+                    {t("app-ai-generation-status.mark-read")}
+                  </button>
                 ) : null}
                 {canRefetchVideo(j) ? (
                   <div className="mt-1">
@@ -189,10 +206,7 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
           })}
         </ul>
         <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
-          {L(
-            "Videoer lages hos leverandøren og hentes inn automatisk når de er ferdige. De legges inn som ny versjon av scenen neste gang en redaktør har prosjektet åpent.",
-            "Videos are made by the provider and fetched automatically when finished. They are added as a new version of the scene the next time an editor has the project open.",
-          )}
+          {t("app-ai-generation-status.generation-status.p.9a7dec43aba7")}
         </p>
       </PopoverContent>
     </Popover>

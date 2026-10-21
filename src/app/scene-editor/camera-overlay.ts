@@ -3,16 +3,8 @@
  * med Bézier-håndtak. Rene funksjoner (tegning, treffsjekk, dra-utkast) uten React, slik at de kan testes.
  * Alt er redigeringshjelp og tegnes aldri i kameravisningen eller eksporten.
  */
-import {
-  L,
-  cameraCorners,
-  shotPath,
-  type CameraFrame,
-  type CameraShot,
-  type Command,
-  type Composition,
-  type CompositionCamera,
-} from "@/core";
+import { cameraCorners, shotPath, type CameraFrame, type CameraShot, type Command, type Composition, type CompositionCamera } from "@/core";
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface Pt {
   x: number;
@@ -161,10 +153,10 @@ export function cursorFor(t: CameraTarget | null): string | null {
 
 export const dragLabel = (t: CameraTarget): string =>
   t.kind === "corner"
-    ? L("Zoom kamera", "Zoom camera")
+    ? tk("app-scene-editor-camera-overlay.drag-label.message.f7d94853441e")
     : t.kind === "control"
-      ? L("Endre kamerabane", "Change camera path")
-      : L("Flytt kameraramme", "Move camera frame");
+      ? tk("app-scene-editor-camera-overlay.drag-label.message.ba857573feb0")
+      : tk("app-scene-editor-camera-overlay.drag-label.message.2487491b3939");
 
 /**
  * Utkast til kamerautsnittet mens pekeren dras fra `startScene` til `scene` (scenekoordinater).
@@ -309,7 +301,7 @@ export function drawCameraOverlay(
     ctx.lineWidth = 1;
   }
   label(ctx, qFrom, "Start", CAMERA_BLUE);
-  label(ctx, qTo, L("Slutt", "End"), CAMERA_RED);
+  label(ctx, qTo, tk("app-scene-editor-camera-overlay.draw-camera-overlay.label.df6d02623e7e"), CAMERA_RED);
   if (opts.selected) {
     for (const [q, color] of [
       [qFrom, CAMERA_BLUE],

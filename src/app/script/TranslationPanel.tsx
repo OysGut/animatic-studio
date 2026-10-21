@@ -1,22 +1,14 @@
+import { LineLinkReview } from "./LineLinkReview";
 /**
  * Oversettelse av valgt linje eller scenehode i inspektøren (M7 del 2, DEC-0058, REQ-0329–0331, REQ-0335).
  * Den norske teksten vises ved siden av og endres aldri herfra.
  */
 import { AlertTriangle, Check, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  L,
-  LANGUAGE_LABEL,
-  formatHeading,
-  needsReview,
-  newId,
-  textAtRevision,
-  translationOf,
-  type Command,
-  type ProjectState,
-} from "@/core";
+import { LANGUAGE_LABEL, languageLabel, reviewLanguagesForBlock, formatHeading, needsReview, newId, textAtRevision, translationOf, type Command, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function TranslationPanel({
   state,
@@ -67,14 +59,14 @@ export function TranslationPanel({
       t
         ? run(
             { type: "UpdateTranslations", items: [{ translationId: t.id, fields }] },
-            L(`Oversettelse (${langName})`, `Translation (${langName})`),
+            tk("app-script-translation-panel.save.run.3c8e90b789b8", { langName: String(langName) }),
           )
         : run(
             {
               type: "AddTranslations",
               items: [{ translationId: newId<"translation">(), fields }],
             },
-            L(`Oversettelse (${langName})`, `Translation (${langName})`),
+            tk("app-script-translation-panel.save.run.3c8e90b789b8.2", { langName: String(langName) }),
           ),
     );
   }
@@ -84,13 +76,13 @@ export function TranslationPanel({
   const canSave = editable && !!draft.trim() && (dirty || review || t?.status === "uncertain");
   return (
     <section
-      aria-label={L(`Oversettelse (${langName})`, `Translation (${langName})`)}
+      aria-label={tk("app-script-translation-panel.translation-panel.aria-label.d679587cc24e", { langName: String(langName) })}
       className="mb-4 flex flex-col gap-2"
     >
       <h3 className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
         {block
-          ? L("Norsk (hovedmanus)", "Norwegian (main script)")
-          : L("Scenehode – norsk", "Scene heading – Norwegian")}
+          ? tk("app-script-translation-panel.translation-panel.h3.483ff179da30")
+          : tk("app-script-translation-panel.translation-panel.h3.71328d6a925f")}
       </h3>
       <p className="whitespace-pre-wrap rounded-sm bg-surface-2 px-2 py-1.5 font-script text-[13px] text-text-secondary">
         {original || "—"}
@@ -99,10 +91,7 @@ export function TranslationPanel({
         <div className="flex flex-col gap-1 rounded-sm border border-status-moved/50 bg-status-uncertain-bg p-2 text-xs text-text-primary">
           <span className="flex items-center gap-1.5">
             <AlertTriangle className="size-3.5 text-status-moved" aria-hidden />
-            {L(
-              "Den norske teksten er endret etter oversettelsen.",
-              "The Norwegian text has changed since the translation.",
-            )}
+            {tk("app-script-translation-panel.translation-panel.span.20ea3adffe37")}
           </span>
           {oldText !== null ? (
             <span className="text-text-tertiary line-through">{oldText}</span>
@@ -111,10 +100,7 @@ export function TranslationPanel({
       ) : null}
       {t?.status === "uncertain" ? (
         <p className="text-xs text-status-uncertain">
-          {L(
-            "Koblet automatisk ved import – kontroller og godkjenn.",
-            "Linked automatically on import – check and approve.",
-          )}
+          {tk("app-script-translation-panel.translation-panel.p.3381de071f0d")}
         </p>
       ) : null}
       <h3 className="mt-1 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
@@ -130,7 +116,7 @@ export function TranslationPanel({
             if (canSave) save();
           }
         }}
-        placeholder={t ? "" : L("Ikke oversatt ennå", "Not translated yet")}
+        placeholder={t ? "" : tk("app-script-translation-panel.translation-panel.placeholder.1c6aaff3beaa")}
         className="min-h-[90px] bg-surface-3 font-script text-[13px]"
       />
       {editable ? (
@@ -138,10 +124,10 @@ export function TranslationPanel({
           <Button size="sm" onClick={() => save()} disabled={!canSave}>
             <Check />
             {dirty
-              ? L("Lagre", "Save")
+              ? tk("app-script-translation-panel.translation-panel.button.b26882f93e4e")
               : review || t?.status === "uncertain"
-                ? L("Godkjenn", "Approve")
-                : L("Lagret", "Saved")}
+                ? tk("app-script-translation-panel.translation-panel.button.fc04ba2adbff")
+                : tk("app-script-translation-panel.translation-panel.button.30e626e26439")}
           </Button>
           {t ? (
             <Button
@@ -151,23 +137,26 @@ export function TranslationPanel({
                 setErr(
                   run(
                     { type: "SetTranslationsRemoved", translationIds: [t.id], removed: true },
-                    L(`Fjern oversettelse (${langName})`, `Remove translation (${langName})`),
+                    tk("app-script-translation-panel.translation-panel.run.dff3e5573199", { langName: String(langName) }),
                   ),
                 )
               }
             >
               <Trash2 />
-              {L("Fjern", "Remove")}
+              {tk("app-script-translation-panel.translation-panel.button.5d893a9834d5")}
             </Button>
           ) : null}
         </div>
       ) : null}
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Oversettelsen endrer aldri det norske manuset. Bytt til «Norsk» øverst for å endre hovedmanuset.",
-          "The translation never changes the Norwegian script. Switch to “Norwegian” at the top to change the main script.",
-        )}
+        {tk("app-script-translation-panel.translation-panel.p.34959a2df1f2")}
       </p>
+      {block && reviewLanguagesForBlock(state, block.id).length ? (
+        <p data-testid="translation-review-languages" className="text-[11px] text-status-uncertain">
+          {tk("ml3-language-versions.review.languages", { languages: reviewLanguagesForBlock(state, block.id).map((l) => languageLabel(l)).join(", ") })}
+        </p>
+      ) : null}
+      {(block?.variantId ?? variant?.id) && language !== "nb" ? <LineLinkReview state={state} variantId={block?.variantId ?? variant?.id ?? ""} language={language} editable={editable} run={run} /> : null}
       {err ? (
         <p role="alert" className="text-xs text-status-danger">
           {err}

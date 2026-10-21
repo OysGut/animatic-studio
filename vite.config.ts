@@ -7,6 +7,20 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    plugins: [
+      {
+        // ML4 (B-049): releasekontroll – bygget stopper hvis norsk eller engelsk ikke er komplett
+        name: "animatic-i18n-release-check",
+        apply: "build",
+        async buildStart() {
+          // @ts-ignore – rent JavaScript-skript uten typer
+          const { assertReleaseCoverage } = await import("./scripts/i18n/release-check.mjs");
+          assertReleaseCoverage();
+        },
+      },
+    ],
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this

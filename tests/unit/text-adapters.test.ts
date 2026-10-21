@@ -3,6 +3,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ANTHROPIC_VERSION,
+  checkJson,
   ProviderError,
   TEXT_ADAPTERS,
   generateProviderText,
@@ -65,6 +66,7 @@ describe("Anthropic", () => {
       temperature: 0.7,
     });
     expect(r).toEqual({
+      stopReason: "end_turn",
       text: "Hei der",
       usage: { inputTokens: 12, outputTokens: 3 },
       model: "claude-sonnet-4-5-20250929",
@@ -205,5 +207,43 @@ describe("feil og modellister", () => {
     expect(await TEXT_ADAPTERS.google.listTextModels(KEY)).toEqual(["gemini-2.5-pro"]);
     mockFetch(200, { data: [{ id: "grok-4" }, { id: "grok-2-image" }] });
     expect(await TEXT_ADAPTERS.xai.listTextModels(KEY)).toEqual(["grok-4"]);
+  });
+});
+
+
+describe("B-094: avkorting og JSON-uttrekk", () => {
+  it.each([
+    ["anthropic", { stop_reason: "max_tokens", content: [], usage: { output_tokens: 500 } }, "max_tokens"],
+    ["openai", { choices: [{ finish_reason: "length", message: { content: '{' } }], usage: { completion_tokens: 500 } }, "length"],
+    ["xai", { choices: [{ finish_reason: "length", message: { content: '{}' } }], usage: { completion_tokens: 500 } }, "length"],
+    ["google", { candidates: [{ finishReason: "MAX_TOKENS" }], usageMetadata: { candidatesTokenCount: 500 } }, "MAX_TOKENS"],
+  ] as const)("%s avviser avkorting før JSON-tolking", async (provider, body, stopReason) => {
+    const f = mockFetch(200, body);
+    await expect(generateProviderText(provider, { ...base, model: "m", json: true })).rejects.toMatchObject({
+      code: "truncated",
+      message: "Svaret ble avkortet fordi det ble for langt. Prøv igjen med kortere utvalg.",
+      details: { stopReason, outputTokens: 500 },
+    });
+    expect(f).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([
+    ['Her er svaret: {"a":1} Ferdig.', { a: 1 }],
+    ['Forklaring før. ```json\n{"a":1}\n``` Etterpå.', { a: 1 }],
+    ['Svar: [{"a":{"b":"{tekst} og \\"sitat\\""}}] Slutt', [{ a: { b: '{tekst} og "sitat"' } }]],
+  ])("henter komplett JSON fra %s", (text, expected) => {
+    expect(JSON.parse(checkJson(text as string))).toEqual(expected);
+  });
+
+  it.each(['Svar: {"a":', '{"a":[1,2}', '{"a":1,}'])('reparerer ikke ugyldig JSON: %s', (text) => {
+    expect(() => checkJson(text)).toThrow(ProviderError);
+  });
+
+  it("Anthropic bruker verktøyinput og godtar tool_use som stoppårsak", async () => {
+    const f = mockFetch(200, { stop_reason: "tool_use", content: [{ type: "tool_use", input: { svar: "norsk" } }], usage: {} });
+    const r = await generateProviderText("anthropic", { ...base, model: "m", json: true });
+    expect(r.text).toBe('{"svar":"norsk"}');
+    expect(r.stopReason).toBe("tool_use");
+    expect(sent(f).body).toMatchObject({ tools: [{ name: "json_response", input_schema: { type: "object" } }], tool_choice: { type: "auto" } });
   });
 });

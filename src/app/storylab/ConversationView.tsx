@@ -8,24 +8,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Loader2, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  ANALYST,
-  L,
-  activeDirections,
-  analystSystemPrompt,
-  characterSystemPrompt,
-  emptyStoryProfile,
-  factsUntil,
-  groupTurnMessages,
-  knowledgeAt,
-  newId,
-  profileAt,
-  replayTurns,
-  type Asset,
-  type DirectionScope,
-  type ProjectState,
-  type StoryProfile,
-} from "@/core";
+import { ANALYST, activeDirections, analystSystemPrompt, characterSystemPrompt, emptyStoryProfile, factsUntil, groupTurnMessages, knowledgeAt, newId, profileAt, replayTurns, type Asset, type DirectionScope, type ProjectState, type StoryProfile } from "@/core";
 import { generateText } from "@/adapters/ai/text.functions";
 import { useLanguage } from "@/app/i18n/language";
 import {
@@ -44,6 +27,7 @@ import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-d
 import { GroupConversationView } from "./GroupConversationView";
 import { SceneLab } from "./SceneLab";
 import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
+import { t as tk } from "@/core/i18n/keyed";
 
 const OUT_TOKENS = 800;
 type Mode = "role" | "analysis";
@@ -93,7 +77,7 @@ export function NewSessionForm({
         data: {
           projectId,
           kind: "character",
-          title: L(`Samtale med ${asset.name}`, `Conversation with ${asset.name}`),
+          title: tk("app-storylab-conversation-view.title.title.3afbc6605b46", { name: String(asset.name) }),
           context: { assetId: asset.id, sceneId, situation, profile: profile as unknown as JsonValue },
         },
       });
@@ -108,12 +92,12 @@ export function NewSessionForm({
   };
   return (
     <div className="max-w-xl space-y-3 p-6 text-[13px]" data-testid="storylab-new-session-form">
-      <h2 className="text-sm font-medium text-text-primary">{L(`Ny samtale med ${asset.name}`, `New conversation with ${asset.name}`)}</h2>
+      <h2 className="text-sm font-medium text-text-primary">{tk("app-storylab-conversation-view.new-session-form.h2.985791a7101c", { name: String(asset.name) })}</h2>
       <p className="text-text-secondary">
-        {L("Tidspunkt", "Point in time")}: {sceneLabel(state, sceneId)}
+        {tk("app-storylab-conversation-view.new-session-form.p.8e052e034bd0")}: {sceneLabel(state, sceneId)}
       </p>
       <label className="block space-y-1">
-        <span className="text-text-secondary">{L("Situasjon (valgfritt)", "Situation (optional)")}</span>
+        <span className="text-text-secondary">{tk("app-storylab-conversation-view.new-session-form.span.f5994a12b307")}</span>
         <Textarea rows={3} value={situation} onChange={(e) => setSituation(e.target.value)} data-testid="storylab-situation" />
       </label>
       {err ? (
@@ -122,10 +106,10 @@ export function NewSessionForm({
         </p>
       ) : null}
       <div className="flex gap-2">
-        <ToolbarButton onClick={onCancel}>{L("Avbryt", "Cancel")}</ToolbarButton>
+        <ToolbarButton onClick={onCancel}>{tk("app-storylab-conversation-view.new-session-form.toolbar-button.d20e9c9b7a64")}</ToolbarButton>
         <ToolbarButton variant="primary" disabled={busy} onClick={go} data-testid="storylab-session-create">
           {busy ? <Loader2 className="animate-spin" /> : null}
-          {L("Start samtalen", "Start the conversation")}
+          {tk("app-storylab-conversation-view.new-session-form.toolbar-button.b2443a466c4b")}
         </ToolbarButton>
       </div>
     </div>
@@ -156,20 +140,20 @@ export function ConversationView({
     refetchOnMount: "always",
     refetchOnWindowFocus: false,
   });
-  if (q.isLoading || !q.isFetchedAfterMount) return <p className="p-6 text-[13px] text-text-tertiary">{L("Henter økten …", "Loading the session …")}</p>;
+  if (q.isLoading || !q.isFetchedAfterMount) return <p className="p-6 text-[13px] text-text-tertiary">{tk("app-storylab-conversation-view.conversation-view.p.4c9dabff88dc")}</p>;
   if (!q.data || !q.data.ok)
     return (
       <p role="alert" className="p-6 text-[13px] text-status-danger">
-        {q.data && !q.data.ok ? q.data.message : L("Økten kunne ikke hentes.", "The session could not be loaded.")}
+        {q.data && !q.data.ok ? q.data.message : tk("app-storylab-conversation-view.conversation-view.p.bb9968d17b09")}
       </p>
     );
   if (q.data.session.kind === "scene_analysis" || q.data.session.kind === "scene_improv") {
     const sceneId = q.data.session.context["sceneId"];
-    if (typeof sceneId !== "string") return <p role="alert">{L("Økten mangler en scene.", "The session has no scene.")}</p>;
+    if (typeof sceneId !== "string") return <p role="alert">{tk("app-storylab-conversation-view.conversation-view.p.473dcc9f3b3e")}</p>;
     return <SceneLab key={sessionId} state={state} projectId={projectId} sceneId={sceneId} initialSession={q.data.session} editable={editable} {...(onScene ? { onScene } : {})} {...(onProfile ? { onProfile } : {})} />;
   }
   if (q.data.session.kind === "interview")
-    return <p className="p-6 text-[13px] text-text-tertiary">{L("Intervjuet vises ved siden av canvaset. Åpne fanen «Canvas».", "The interview is shown next to the canvas. Open the “Canvas” tab.")}</p>;
+    return <p className="p-6 text-[13px] text-text-tertiary">{tk("app-storylab-conversation-view.conversation-view.p.486d166b9688")}</p>;
   if (q.data.session.kind === "group")
     return <GroupConversationView state={state} projectId={projectId} session={q.data.session} editable={editable} onOpen={onOpen} />;
   return (
@@ -225,7 +209,7 @@ function Conversation({
   const qc = useQueryClient();
 
   const asset = state.assets[ctx.assetId];
-  const name = asset?.name ?? L("Karakteren", "The character");
+  const name = asset?.name ?? tk("app-storylab-conversation-view.name.message.68e2cfa30686");
   const names = nameMap(state);
   const engine = useMemo(() => replayTurns(ctx.assetId, turns), [ctx.assetId, turns]);
   const directions = activeDirections(engine, ctx.assetId);
@@ -320,7 +304,7 @@ function Conversation({
       setText("");
       setFailed(null);
       if (r.usedFallback)
-        setNote(L("Den innebygde AI-en ble brukt fordi ingen egen tekstleverandør kunne brukes.", "The built-in AI was used because no own text provider could be used."));
+        setNote(tk("app-storylab-conversation-view.send.set-note.b096b9ad87ec"));
       void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });
     } catch (e) {
       setFailed(question);
@@ -356,20 +340,20 @@ function Conversation({
   };
 
   const scopeLabel = (s: DirectionScope) =>
-    s === "next" ? L("neste replikk", "next line") : s === "scene" ? L("scenen", "the scene") : L("økten", "the session");
+    s === "next" ? tk("app-storylab-conversation-view.scope-label.message.ae0272e14b8e") : s === "scene" ? tk("app-storylab-conversation-view.scope-label.message.634c50c5beda") : tk("app-storylab-conversation-view.scope-label.message.28a1cda93c2a");
 
   return (
     <div className="flex min-h-0 flex-1 flex-col" data-testid="storylab-conversation">
       <Toolbar
-        title={L(`Samtale med ${name}`, `Conversation with ${name}`)}
+        title={tk("app-storylab-conversation-view.conversation.title.e501d314de82", { name: String(name) })}
         status={
           <span className="text-xs text-text-tertiary" data-testid="storylab-cost">
-            {L(`Brukt i økten: ${usd(cost)}`, `Spent in the session: ${usd(cost)}`)}
+            {tk("app-storylab-conversation-view.conversation.span.79597ce15012", { value1: String(usd(cost)) })}
           </span>
         }
       >
         <ToolbarSeparator />
-        <div role="radiogroup" aria-label={L("Modus", "Mode")} className="flex">
+        <div role="radiogroup" aria-label={tk("app-storylab-conversation-view.conversation.aria-label.60ff4fe9447c")} className="flex">
           {(["role", "analysis"] as const).map((m) => (
             <ToolbarButton
               key={m}
@@ -379,7 +363,7 @@ function Conversation({
               onClick={() => setMode(m)}
               data-testid={`storylab-mode-${m}`}
             >
-              {m === "role" ? L("I rollen", "In character") : L("Analyse", "Analysis")}
+              {m === "role" ? tk("app-storylab-conversation-view.conversation.toolbar-button.95f3da9c02f2") : tk("app-storylab-conversation-view.conversation.toolbar-button.5ad3c407afcb")}
             </ToolbarButton>
           ))}
         </div>
@@ -388,7 +372,7 @@ function Conversation({
       <div className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
         {ctx.situation ? (
           <p className="text-[12px] text-text-tertiary">
-            {L("Situasjon", "Situation")}: {ctx.situation}
+            {tk("app-storylab-conversation-view.conversation.p.ae51eee9ebf9")}: {ctx.situation}
           </p>
         ) : null}
         {turns.map((t, i) =>
@@ -397,11 +381,11 @@ function Conversation({
               key={t.id}
               turn={t}
               mode={modeOf(i)}
-              speaker={t.speaker === "director" ? L("Regissør", "Director") : t.speaker === ANALYST ? L("Analyse", "Analysis") : (names[t.speaker] ?? name)}
+              speaker={t.speaker === "director" ? tk("app-storylab-conversation-view.conversation.speaker.91d2e9712bca") : t.speaker === ANALYST ? tk("app-storylab-conversation-view.conversation.speaker.5ad3c407afcb") : (names[t.speaker] ?? name)}
               editable={editable}
               scopeText={t.kind === "direction" ? scopeLabel((/^d:(next|scene|session):/.exec(t.id)?.[1] ?? "session") as DirectionScope) : null}
               onFork={async () => {
-                const r = await fork({ data: { projectId, sessionId, fromTurn: i } });
+                const r = await fork({ data: { projectId, sessionId, fromTurnId: t.id } });
                 if (!r.ok) return setErr(r.message);
                 qc.setQueryData(["story-session", projectId, r.session.id], r);
                 await qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });
@@ -417,16 +401,16 @@ function Conversation({
         {busy ? (
           <p className="flex items-center gap-2 text-[12px] text-text-tertiary">
             <Loader2 className="size-3.5 animate-spin" aria-hidden />
-            {mode === "role" ? L(`${name} svarer …`, `${name} is answering …`) : L("Analyserer …", "Analysing …")}
+            {mode === "role" ? tk("app-storylab-conversation-view.conversation.p.9188c532658b", { name: String(name) }) : tk("app-storylab-conversation-view.conversation.p.9a62cbfa4d26")}
           </p>
         ) : null}
         {err ? (
           <div role="alert" className="rounded-sm border border-status-danger/40 p-2 text-[13px] text-status-danger" data-testid="storylab-error">
-            <p>{L("Svaret kunne ikke hentes.", "The reply could not be fetched.")}</p>
+            <p>{tk("app-storylab-conversation-view.conversation.p.88c78bb999af")}</p>
             <p className="text-[12px]">{err}</p>
             {failed ? (
               <ToolbarButton onClick={() => void send(failed)} data-testid="storylab-retry">
-                {L("Prøv igjen", "Try again")}
+                {tk("app-storylab-conversation-view.conversation.toolbar-button.8c4ab6bd3294")}
               </ToolbarButton>
             ) : null}
           </div>
@@ -437,17 +421,17 @@ function Conversation({
       {editable ? (
         <div className="shrink-0 space-y-2 border-t border-border bg-surface-1 p-3">
           <details className="text-[12px]" data-testid="storylab-knowledge">
-            <summary className="cursor-pointer text-text-secondary">{L(`Hva vet ${name} nå?`, `What does ${name} know now?`)}</summary>
+            <summary className="cursor-pointer text-text-secondary">{tk("app-storylab-conversation-view.conversation.summary.97c2ee92c2cb", { name: String(name) })}</summary>
             <ul className="mt-1 space-y-0.5 text-text-secondary">
               {knowledge.facts.length + knowledge.ownSecrets.length === 0 ? (
-                <li className="text-text-tertiary">{L("Ingen registrerte fakta.", "No recorded facts.")}</li>
+                <li className="text-text-tertiary">{tk("app-storylab-conversation-view.conversation.li.e106bff78a8f")}</li>
               ) : null}
               {knowledge.facts.map((f) => (
                 <li key={f.id}>• {f.text}</li>
               ))}
               {knowledge.ownSecrets.map((f) => (
                 <li key={f.id}>
-                  <span className="mr-1 uppercase text-status-warning">{L("Egen hemmelighet", "Own secret")}</span>
+                  <span className="mr-1 uppercase text-status-warning">{tk("app-storylab-conversation-view.conversation.span.bfe0f05f07e9")}</span>
                   {f.text}
                 </li>
               ))}
@@ -459,7 +443,7 @@ function Conversation({
                 {d.text} <span className="text-text-tertiary">({scopeLabel(d.scope)})</span>
                 <button
                   type="button"
-                  aria-label={L(`Fjern regien «${d.text}»`, `Remove the direction “${d.text}”`)}
+                  aria-label={tk("app-storylab-conversation-view.conversation.aria-label.73c1c4f4499d", { text: String(d.text) })}
                   onClick={() => void persist({ id: `r:${d.id}`, speaker: "director", text: "", kind: "direction", at: new Date().toISOString() })}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-2 hover:text-text-primary"
                 >
@@ -472,8 +456,8 @@ function Conversation({
             <Input
               value={dirText}
               onChange={(e) => setDirText(e.target.value)}
-              placeholder={L("Regi / tilstand, f.eks. «er bakfull»", "Direction / state, e.g. “is hungover”")}
-              aria-label={L("Regi / tilstand", "Direction / state")}
+              placeholder={tk("app-storylab-conversation-view.conversation.placeholder.f9c51d91584e")}
+              aria-label={tk("app-storylab-conversation-view.conversation.aria-label.df02d08d4cfa")}
               data-testid="storylab-direction-text"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -485,7 +469,7 @@ function Conversation({
             <select
               value={dirScope}
               onChange={(e) => setDirScope(e.target.value as DirectionScope)}
-              aria-label={L("Gjelder", "Applies to")}
+              aria-label={tk("app-storylab-conversation-view.conversation.aria-label.7749d2366f27")}
               data-testid="storylab-direction-scope"
               className="h-9 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
             >
@@ -496,7 +480,7 @@ function Conversation({
               ))}
             </select>
             <ToolbarButton onClick={addDirection} disabled={!dirText.trim()} data-testid="storylab-direction-add">
-              {L("Legg til regi", "Add direction")}
+              {tk("app-storylab-conversation-view.conversation.toolbar-button.61d1dfb777e7")}
             </ToolbarButton>
           </div>
           <div className="flex items-end gap-2">
@@ -504,8 +488,8 @@ function Conversation({
               rows={2}
               value={text}
               onChange={(e) => setText(e.target.value)}
-              placeholder={mode === "role" ? L(`Si noe til ${name} …`, `Say something to ${name} …`) : L("Spør analytikeren …", "Ask the analyst …")}
-              aria-label={L("Melding", "Message")}
+              placeholder={mode === "role" ? tk("app-storylab-conversation-view.conversation.placeholder.50281de2cbc8", { name: String(name) }) : tk("app-storylab-conversation-view.conversation.placeholder.e2d2ae4e6137")}
+              aria-label={tk("app-storylab-conversation-view.conversation.aria-label.d7fd6fd88f2e")}
               data-testid="storylab-input"
             />
             <ToolbarButton
@@ -515,20 +499,20 @@ function Conversation({
               onClick={() => (replies === 0 && !confirming ? setConfirming(true) : void send(text))}
             >
               <Send />
-              {L("Send", "Send")}
+              {tk("app-storylab-conversation-view.conversation.toolbar-button.ec33bee30796")}
             </ToolbarButton>
           </div>
           {confirming ? (
             <div className="flex flex-wrap items-center gap-2 rounded-sm border border-border bg-surface-2 p-2 text-[12px]" data-testid="storylab-confirm">
               <span className="text-text-secondary">
                 {est.loading
-                  ? L("Finner tekst-AI …", "Finding text AI …")
-                  : L(`${est.label} · anslått ${usd(est.usd)} per melding`, `${est.label} · estimated ${usd(est.usd)} per message`)}
+                  ? tk("app-storylab-conversation-view.conversation.span.fc926b97a4e0")
+                  : tk("app-storylab-conversation-view.conversation.span.3e52466fbc58", { label: String(est.label), value2: String(usd(est.usd)) })}
               </span>
               <ToolbarButton variant="primary" onClick={() => void send(text)} data-testid="storylab-confirm-send">
-                {L("Godta og send", "Accept and send")}
+                {tk("app-storylab-conversation-view.conversation.toolbar-button.2127f3dc380c")}
               </ToolbarButton>
-              <ToolbarButton onClick={() => setConfirming(false)}>{L("Avbryt", "Cancel")}</ToolbarButton>
+              <ToolbarButton onClick={() => setConfirming(false)}>{tk("app-storylab-conversation-view.conversation.toolbar-button.0bbfca9ab3b6")}</ToolbarButton>
             </div>
           ) : null}
           {est.error ? <p className="text-[12px] text-status-danger">{est.error}</p> : null}
@@ -567,16 +551,16 @@ function TurnView({
     <div className={"rounded-sm px-3 py-2 text-[13px] " + tone} data-testid="storylab-turn" data-mode={mode} data-kind={turn.kind} data-turn-id={turn.id} tabIndex={-1}>
       <div className="mb-0.5 flex items-center gap-2 text-[11px] text-text-tertiary">
         <span className="font-medium uppercase tracking-wide">{speaker}</span>
-        {mode === "analysis" ? <span>{L("utenfor rollen", "out of character")}</span> : null}
-        {scopeText ? <span>({L("regi", "direction")}: {scopeText})</span> : null}
+        {mode === "analysis" ? <span>{tk("app-storylab-conversation-view.turn-view.span.32c5d0cbe679")}</span> : null}
+        {scopeText ? <span>({tk("app-storylab-conversation-view.turn-view.span.3a569fe0c09d")}: {scopeText})</span> : null}
         {editable ? (
           <span className="ml-auto flex items-center gap-1">
             <button
               type="button"
               onClick={onFork}
               data-testid="storylab-fork"
-              title={L("Forgren herfra (ny økt med turene til og med denne)", "Branch from here (new session with the turns up to this one)")}
-              aria-label={L("Forgren herfra", "Branch from here")}
+              title={tk("app-storylab-conversation-view.turn-view.title.5f07f1c5e5f8")}
+              aria-label={tk("app-storylab-conversation-view.turn-view.aria-label.e8c9466d0c31")}
               className="rounded-sm p-0.5 hover:bg-surface-3 hover:text-text-primary"
             >
               <GitBranch className="size-3.5" aria-hidden />
@@ -585,16 +569,16 @@ function TurnView({
               <select
                 value=""
                 data-testid="storylab-suggest"
-                aria-label={L("Lagre som forslag", "Save as suggestion")}
+                aria-label={tk("app-storylab-conversation-view.turn-view.aria-label.7e974fc2f6e3")}
                 onChange={(e) => {
                   if (e.target.value) onSuggest(e.target.value as "line");
                 }}
                 className="h-6 rounded-sm border border-border-control bg-surface-3 px-1 text-[11px] text-text-secondary"
               >
-                <option value="">{L("Lagre som forslag …", "Save as suggestion …")}</option>
-                <option value="line">{L("Replikk", "Line")}</option>
-                <option value="motivation">{L("Motivasjon", "Motivation")}</option>
-                <option value="profile_change">{L("Profilendring", "Profile change")}</option>
+                <option value="">{tk("app-storylab-conversation-view.turn-view.option.257da54dbe45")}</option>
+                <option value="line">{tk("app-storylab-conversation-view.turn-view.option.b1de0b645cf0")}</option>
+                <option value="motivation">{tk("app-storylab-conversation-view.turn-view.option.4133390abea1")}</option>
+                <option value="profile_change">{tk("app-storylab-conversation-view.turn-view.option.5b466c6c7c5f")}</option>
               </select>
             ) : null}
           </span>

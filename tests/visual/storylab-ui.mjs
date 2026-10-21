@@ -7,6 +7,9 @@
  *   ENV_FILE=…/.env node storylab-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+/** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
+const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -101,7 +104,7 @@ async function mock(ctx) {
     const table = path.replace("/rest/v1/", "");
     if (table === "rpc/my_account")
       return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
-    if (table === "schema_version") return json([{ version: 39 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
@@ -155,7 +158,7 @@ async function mock(ctx) {
     }
     if (/forkStorySession/.test(name)) {
       const p = S.sessions.get(d.sessionId);
-      const s = { ...p, id: sid(), parentSessionId: p.id, fromTurn: d.fromTurn, turns: p.turns.slice(0, d.fromTurn + 1), status: "paused", updatedAt: now };
+      const s = { ...p, id: sid(), parentSessionId: p.id, fromTurn: forkAt(p, d), turns: p.turns.slice(0, forkAt(p, d) + 1), status: "paused", updatedAt: now };
       S.sessions.set(s.id, s);
       return json({ ok: true, session: s });
     }
@@ -219,6 +222,14 @@ async function run(name, act, { lang = "nb", path = "" } = {}) {
 }
 
 const pick = (page, assetId) => page.locator(`[data-testid="storylab-character"][data-asset-id="${assetId}"]`).click();
+async function eventually(condition, timeout = 5000) {
+  const end = Date.now() + timeout;
+  do {
+    if (await condition()) return true;
+    await new Promise(resolve => setTimeout(resolve, 100));
+  } while (Date.now() < end);
+  return false;
+}
 async function newSession(page, assetId) {
   await pick(page, assetId);
   await page.getByTestId("storylab-talk").click();
@@ -235,7 +246,7 @@ async function say(page, text, first = false) {
 await run("fane og profil", async (page) => {
   const nav = page.getByRole("navigation", { name: "Arbeidsflater" });
   const links = (await nav.getByRole("link").allInnerTexts()).map((x) => x.trim());
-  check(links.join("|") === "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Montering|Utgivelse", "fanen Story Lab står etter Manus");
+  check(links.join("|") === "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Rigg|Montering|Utgivelse", "fanen Story Lab står etter Manus");
   await nav.getByRole("link", { name: "Story Lab" }).click();
   await page.getByTestId("storylab").waitFor();
   check((await page.getByTestId("storylab-character").count()) === 2, "to karakterer (Maja og Bestemor Anne)");
@@ -255,7 +266,7 @@ await run("fane og profil", async (page) => {
 
   // Lag profil med AI
   await page.getByTestId("storylab-generate").click();
-  check(/anslått/.test(await page.getByTestId("storylab-generate-cost").innerText()), "anslått kostnad og modell vises");
+  check(await eventually(async () => /anslått/.test(await page.getByTestId("storylab-generate-cost").innerText()), 5000), "anslått kostnad og modell vises");
   await page.getByTestId("storylab-generate-run").click();
   await page.getByTestId("storylab-generate-preview").waitFor();
   check(S.gen.at(-1)?.task === "storylab_profile", "generateText kalles med storylab_profile");

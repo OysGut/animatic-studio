@@ -8,17 +8,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Check, Clapperboard, Layers } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useMemo, useState } from "react";
-import {
-  assetWorklist,
-  filmClips,
-  keepWorkItemCommand,
-  L,
-  localized,
-  newId,
-  newVersionWorkItemCommands,
-  type ProjectState,
-  type WorkItem,
-} from "@/core";
+import { assetWorklist, filmClips, keepWorkItemCommand, newId, newVersionWorkItemCommands, type ProjectState, type WorkItem } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import { useImageUrls } from "./asset-images";
@@ -30,12 +20,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t, tLocalized } from "@/core/i18n/keyed";
 
-const KIND_LABEL: Record<WorkItem["kind"], string> = localized({
-  layer: ["2D-scene", "2D scene"],
-  still: ["Stillbilde", "Still image"],
-  ai: ["AI-video", "AI video"],
-});
+const KIND_LABEL: Record<WorkItem["kind"], string> = tLocalized({ layer: "app-library-asset-worklist-dialog.kind-label.layer.bd7ceeafaf98", still: "app-library-asset-worklist-dialog.kind-label.still.758a3b9fa8c2", ai: "app-library-asset-worklist-dialog.kind-label.ai.cfbffbe42ad7" });
 
 /** Antall poster i arbeidslisten (for knapper og varsler). */
 export function useWorklistCount(
@@ -131,8 +118,8 @@ export function AssetWorklistDialog({
   const sceneText = (x: WorkItem) => {
     const o = x.occurrenceId ? state.occurrences[x.occurrenceId] : undefined;
     return o
-      ? L(`Scene ${x.sceneNumber ?? "–"}`, `Scene ${x.sceneNumber ?? "–"}`)
-      : L("2D-scene uten scene i filmen", "2D scene with no scene in the film");
+      ? t("app-library-asset-worklist-dialog.scene-text.message.6cd9d9647af4", { value1: String(x.sceneNumber ?? "–") })
+      : t("app-library-asset-worklist-dialog.scene-text.message.2f16d5a47a67");
   };
 
   return (
@@ -140,28 +127,22 @@ export function AssetWorklistDialog({
       <DialogContent className="max-w-5xl">
         <DialogHeader>
           <DialogTitle>
-            {L("Arbeidsliste – oppdaterte ressurser", "Worklist – updated assets")}
+            {t("app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-title.74df3dde3e9c")}
             {assetId ? ` (${state.assets[assetId]?.name ?? ""})` : ""}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Scenene som fortsatt viser en eldre versjon. Gå gjennom én og én og velg om den nye versjonen skal brukes. Ingenting endres uten at du velger det, og AI-video lages aldri på nytt av seg selv.",
-              "The scenes that still show an older version. Go through them one by one and choose whether the new version should be used. Nothing changes unless you choose it, and AI video is never made again by itself.",
-            )}
+            {t("app-library-asset-worklist-dialog.asset-worklist-dialog.dialog-description.bc895287bfcd")}
           </DialogDescription>
         </DialogHeader>
         {items.length === 0 ? (
           <p className="flex items-center gap-2 text-[13px] text-text-secondary">
             <Check className="size-4 text-status-success" aria-hidden />{" "}
-            {L(
-              "Ingen scener står igjen – alt viser den godkjente versjonen, eller du har valgt å beholde.",
-              "No scenes are left – everything shows the approved version, or you have chosen to keep it.",
-            )}
+            {t("app-library-asset-worklist-dialog.asset-worklist-dialog.p.88938589a7a6")}
           </p>
         ) : (
           <div className="grid grid-cols-[minmax(220px,280px)_1fr] gap-4">
             <ol
-              aria-label={L("Berørte scener", "Affected scenes")}
+              aria-label={t("app-library-asset-worklist-dialog.asset-worklist-dialog.aria-label.252d479eee48")}
               className="max-h-[60vh] overflow-y-auto border border-border bg-surface-1"
             >
               {items.map((x, i) => (
@@ -176,7 +157,7 @@ export function AssetWorklistDialog({
                     }
                   >
                     <span className="text-text-primary">
-                      {sceneText(x)} · {state.assets[x.assetId]?.name ?? L("Ressurs", "Asset")}
+                      {sceneText(x)} · {state.assets[x.assetId]?.name ?? t("app-library-asset-worklist-dialog.asset-worklist-dialog.span.c2a3e9453200")}
                     </span>
                     <span className="text-[11px] text-text-tertiary">
                       {KIND_LABEL[x.kind]}: {x.label}
@@ -189,39 +170,33 @@ export function AssetWorklistDialog({
               <div className="flex min-w-0 flex-col gap-3">
                 <p className="text-[13px] text-text-primary">
                   <strong>{sceneText(item)}</strong> · {KIND_LABEL[item.kind]} «{item.label}»{" "}
-                  {L("viser", "shows")} {asset?.name ?? L("ressursen", "the asset")} v
-                  {oldV?.number ?? "?"}. {L("Godkjent nå: v", "Approved now: v")}
+                  {t("app-library-asset-worklist-dialog.asset-worklist-dialog.p.886aa844725b")} {asset?.name ?? t("app-library-asset-worklist-dialog.asset-worklist-dialog.p.4a0d1bc6b404")} v
+                  {oldV?.number ?? "?"}. {t("app-library-asset-worklist-dialog.asset-worklist-dialog.p.c6800fb4cb6c")}
                   {newV?.number ?? "?"}.
                   <span className="ml-2 text-xs text-text-tertiary">
-                    {index + 1} {L("av", "of")} {items.length}
+                    {index + 1} {t("app-library-asset-worklist-dialog.asset-worklist-dialog.span.eacc55c73d06")} {items.length}
                   </span>
                 </p>
                 <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
                   <figure className="flex flex-col gap-1">
                     <img
                       src={oldV ? urls.data?.[oldV.mediaPath] : undefined}
-                      alt={L(
-                        `Versjon ${oldV?.number ?? ""} nå i scenen`,
-                        `Version ${oldV?.number ?? ""} now in the scene`,
-                      )}
+                      alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.e259cc2e67bc", { value1: String(oldV?.number ?? "") })}
                       className="aspect-video w-full bg-media object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
-                      {L("Nå i scenen", "Now in the scene")} (v{oldV?.number})
+                      {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.b8549f730d8e")} (v{oldV?.number})
                     </figcaption>
                   </figure>
                   <ArrowRight className="size-4 text-text-tertiary" aria-hidden />
                   <figure className="flex flex-col gap-1">
                     <img
                       src={newV ? urls.data?.[newV.mediaPath] : undefined}
-                      alt={L(
-                        `Godkjent versjon ${newV?.number ?? ""}`,
-                        `Approved version ${newV?.number ?? ""}`,
-                      )}
+                      alt={t("app-library-asset-worklist-dialog.asset-worklist-dialog.alt.4c9b8b2ffea0", { value1: String(newV?.number ?? "") })}
                       className="aspect-video w-full bg-media object-contain"
                     />
                     <figcaption className="text-[11px] text-text-tertiary">
-                      {L("Godkjent", "Approved")} (v{newV?.number})
+                      {t("app-library-asset-worklist-dialog.asset-worklist-dialog.figcaption.e05d24939499")} (v{newV?.number})
                     </figcaption>
                   </figure>
                 </div>
@@ -232,14 +207,11 @@ export function AssetWorklistDialog({
                       onClick={() =>
                         runAll(
                           newVersionWorkItemCommands(state, item, clip, () => newId()),
-                          L(
-                            `Bruk ${asset?.name ?? "ressursen"} v${newV?.number ?? ""} i ${sceneText(item).toLowerCase()}`,
-                            `Use ${asset?.name ?? "the asset"} v${newV?.number ?? ""} in ${sceneText(item).toLowerCase()}`,
-                          ),
+                          t("app-library-asset-worklist-dialog.use-version-in", { asset: asset?.name ?? t("app-library-asset-worklist-dialog.use-version-in-asset"), version: newV?.number ?? "", scene: sceneText(item).toLowerCase() }),
                         )
                       }
                     >
-                      <Check /> {L("Bruk ny versjon her", "Use the new version here")}
+                      <Check /> {t("app-library-asset-worklist-dialog.asset-worklist-dialog.button.62f839c2a0f7")}
                     </Button>
                   ) : null}
                   {editable && item.kind === "ai" && item.occurrenceId ? (
@@ -248,12 +220,9 @@ export function AssetWorklistDialog({
                         to="/prosjekt/$projectId/montering"
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
-                        title={L(
-                          "Åpner scenen i monteringen. Der starter du genereringen selv, med pris først.",
-                          "Opens the scene in the assembly. There you start the generation yourself, with the price first.",
-                        )}
+                        title={t("app-library-asset-worklist-dialog.asset-worklist-dialog.title.55dd13100162")}
                       >
-                        <AiGlyph /> {L("Lag ny video …", "Make new video …")}
+                        <AiGlyph /> {t("app-library-asset-worklist-dialog.asset-worklist-dialog.link.50aa0146475a")}
                       </Link>
                     </Button>
                   ) : null}
@@ -265,18 +234,12 @@ export function AssetWorklistDialog({
                         const c = keepWorkItemCommand(state, item);
                         runAll(
                           c ? [c] : null,
-                          L(
-                            `Behold eldre versjon i ${sceneText(item).toLowerCase()}`,
-                            `Keep older version in ${sceneText(item).toLowerCase()}`,
-                          ),
+                          t("app-library-asset-worklist-dialog.asset-worklist-dialog.run-all.e66660ceb126", { value1: String(sceneText(item).toLowerCase()) }),
                         );
                       }}
-                      title={L(
-                        "Scenen beholder det gamle bildet og forsvinner fra listen til en ny versjon godkjennes",
-                        "The scene keeps the old image and disappears from the list until a new version is approved",
-                      )}
+                      title={t("app-library-asset-worklist-dialog.asset-worklist-dialog.title.da3cac579a30")}
                     >
-                      {L("Behold", "Keep")}
+                      {t("app-library-asset-worklist-dialog.asset-worklist-dialog.button.043cc60ba630")}
                     </Button>
                   ) : null}
                   {item.occurrenceId && item.kind === "layer" ? (
@@ -286,7 +249,7 @@ export function AssetWorklistDialog({
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
                       >
-                        <Layers /> {L("Åpne i sceneeditoren", "Open in the scene editor")}
+                        <Layers /> {t("app-library-asset-worklist-dialog.asset-worklist-dialog.link.a2a875090ae1")}
                       </Link>
                     </Button>
                   ) : null}
@@ -297,17 +260,14 @@ export function AssetWorklistDialog({
                         params={{ projectId }}
                         search={{ scene: item.occurrenceId }}
                       >
-                        <Clapperboard /> {L("Åpne i monteringen", "Open in the assembly")}
+                        <Clapperboard /> {t("app-library-asset-worklist-dialog.asset-worklist-dialog.link.d2f3644f103f")}
                       </Link>
                     </Button>
                   ) : null}
                 </div>
                 {item.kind === "ai" ? (
                   <p className="text-[11px] text-text-tertiary">
-                    {L(
-                      "Videoen ble laget med den eldre versjonen som referanse. En video kan ikke byttes ut automatisk; lag en ny i monteringen hvis du vil, eller behold den.",
-                      "The video was made with the older version as a reference. A video cannot be replaced automatically; make a new one in the assembly if you want, or keep it.",
-                    )}
+                    {t("app-library-asset-worklist-dialog.asset-worklist-dialog.p.a9778864a253")}
                   </p>
                 ) : null}
                 {err ? (

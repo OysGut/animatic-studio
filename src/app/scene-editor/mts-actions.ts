@@ -2,32 +2,13 @@
  * Handlinger for tekst og maler i sceneeditoren (MTS MT2/MT4/MT5). Bygger på kjernens planleggere og
  * vanlige kommandoer; skriving går via runCommand (samme angrestabel).
  */
-import {
-  L,
-  layersOf,
-  lowerThirdStarter,
-  mainProduction,
-  newId,
-  orderedOccurrences,
-  planApplyTemplate,
-  planTemplateVersionUpdate,
-  planUpdateTemplateValues,
-  renderFrame,
-  sceneNumberOf,
-  templateFromLayers,
-  templateError,
-  templateUses,
-  textLayerFields,
-  type Command,
-  type Composition,
-  type ProjectState,
-  type TemplateCategory,
-  type TemplateUse,
-  type TemplateValues,
-} from "@/core";
+import { layersOf, lowerThirdStarter, mainProduction, newId, orderedOccurrences, planApplyTemplate, planTemplateVersionUpdate, planUpdateTemplateValues, renderFrame, sceneNumberOf, templateFromLayers, templateError, templateUses, textLayerFields, type Command, type Composition, type ProjectState, type TemplateCategory, type TemplateUse, type TemplateValues } from "@/core";
 import { drawFrame } from "@/engine/compositor/canvas";
 import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
 import { uploadAssetImage } from "@/app/library/asset-images";
+import { ASSET_BUCKET, createSignedUrls } from "@/adapters/browser/storage-files";
+import type { ImageSource } from "@/engine/compositor/canvas";
+import { t } from "@/core/i18n/keyed";
 
 export type Run = (command: Command, label: string, group?: string) => string | null;
 export type RunAndWait = (
@@ -47,7 +28,7 @@ export function sceneLabelFor(state: ProjectState) {
     const num = occ ? sceneNumberOf(state, occ) : null;
     return {
       occurrenceId: occ?.id ?? null,
-      label: num ? L(`scene ${num}`, `scene ${num}`) : (comp?.name ?? ""),
+      label: num ? t("app-scene-editor-mts-actions.label.label.c25caff463b9", { num: String(num) }) : (comp?.name ?? ""),
       order: i >= 0 ? String(i).padStart(6, "0") : "999999",
     };
   };
@@ -67,11 +48,11 @@ export function addTextLayer(run: Run, comp: Composition): { layerId: string; er
         {
           layerId: layerId as never,
           compositionId: comp.id,
-          fields: textLayerFields(comp, L("Tekst", "Text"), L("Tekst", "Text")),
+          fields: textLayerFields(comp, t("app-scene-editor-mts-actions.fields.text-layer-fields.aca1bb1ddf04"), t("app-scene-editor-mts-actions.fields.text-layer-fields.aca1bb1ddf04.2")),
         },
       ],
     },
-    L("Legg til tekst", "Add text"),
+    t("app-scene-editor-mts-actions.error.run.aa7dcff09cf5"),
   );
   return { layerId, error };
 }
@@ -80,13 +61,13 @@ export function addTextLayer(run: Run, comp: Composition): { layerId: string; er
 export function addLowerThird(run: Run, comp: Composition): { layerId: string; error: string | null } {
   const layers = lowerThirdStarter(comp, {
     newLayerId: () => newId<"composition_layer">(),
-    groupName: L("Lower third", "Lower third"),
-    nameLabel: L("Navn", "Name"),
-    roleLabel: L("Rolle", "Role"),
-    name: L("Navn Navnesen", "Jane Doe"),
-    role: L("Rolle", "Role"),
+    groupName: t("app-scene-editor-mts-actions.group-name.group-name.51eb12439656"),
+    nameLabel: t("app-scene-editor-mts-actions.name-label.name-label.2d49b1d84a54"),
+    roleLabel: t("app-scene-editor-mts-actions.role-label.role-label.5bf4368d9bdb"),
+    name: t("app-scene-editor-mts-actions.name.name.33954feb5fdb"),
+    role: t("app-scene-editor-mts-actions.role.role.3469d44e961d"),
   });
-  const error = run({ type: "AddLayers", layers }, L("Ny lower third", "New lower third"));
+  const error = run({ type: "AddLayers", layers }, t("app-scene-editor-mts-actions.error.run.d06838e5866a"));
   return { layerId: layers[0]!.layerId, error };
 }
 
@@ -99,11 +80,8 @@ export function applySameDesign(
   values?: TemplateValues,
 ): { instanceId: string; error: string | null } {
   const src = state.templateInstances[use.instanceId];
-  if (!src) return { instanceId: "", error: L("Malforekomsten finnes ikke", "The template instance does not exist") };
-  return applyTemplateVersion(run, state, comp, src.templateVersionId, values, L(
-    `Bruk samme design som i ${use.sceneLabel}`,
-    `Use the same design as in ${use.sceneLabel}`,
-  ));
+  if (!src) return { instanceId: "", error: t("app-scene-editor-mts-actions.error.error.916df2c3e532") };
+  return applyTemplateVersion(run, state, comp, src.templateVersionId, values, t("app-scene-editor-mts-actions.apply-same-design.apply-template-version.f09aa0c420a0", { sceneLabel: String(use.sceneLabel) }));
 }
 
 export function applyTemplateVersion(
@@ -129,13 +107,13 @@ export function applyTemplateVersion(
 export function updateInstanceValues(run: Run, state: ProjectState, instanceId: string, values: TemplateValues) {
   const plan = planUpdateTemplateValues(state, instanceId, values);
   if (!plan.ok) return plan.reason;
-  return run(plan.command, L("Endre innholdet", "Change the content"));
+  return run(plan.command, t("app-scene-editor-mts-actions.update-instance-values.run.03e541a772ca"));
 }
 
 export function updateInstanceVersion(run: Run, state: ProjectState, instanceId: string, versionId: string) {
   const plan = planTemplateVersionUpdate(state, instanceId, versionId, () => newId<"composition_layer">());
   if (!plan.ok) return plan.reason;
-  return run(plan.command, L("Oppdater til ny malversjon", "Update to the new template version"));
+  return run(plan.command, t("app-scene-editor-mts-actions.update-instance-version.run.759c6025cae9"));
 }
 
 /** Miniatyr av utvalget som PNG (bare lagene i utvalget, på scenens format). */
@@ -152,16 +130,29 @@ export async function templateThumbnail(
     for (const l of layersOf(state, comp.id)) if (l.groupId === id) only.add(l.id);
   }
   const out = renderFrame(state, comp.id, frame, { view: "scene", onlyLayers: only });
+  const paths = [...new Set(out.items.flatMap(item => item.version ? [item.version.mediaPath] : []))];
+  const images = new Map<string, ImageSource>();
+  if (paths.length) {
+    const urls = await createSignedUrls(ASSET_BUCKET, paths, 600);
+    await Promise.all(urls.map(({ path, signedUrl }) => new Promise<void>((resolve, reject) => {
+      const image = new Image();
+      image.crossOrigin = "anonymous";
+      image.onload = () => { images.set(path, image); resolve(); };
+      image.onerror = () => reject(new Error(t("app-scene-editor-mts-actions.template-thumbnail.reject.2c7a3b230c77")));
+      image.src = signedUrl;
+    })));
+    if (images.size !== paths.length) throw new Error(t("app-scene-editor-mts-actions.template-thumbnail.message.2c7a3b230c77"));
+  }
   const W = 480;
   const k = W / comp.width;
   const canvas = document.createElement("canvas");
   canvas.width = W;
   canvas.height = Math.max(1, Math.round(comp.height * k));
   const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error(L("Kunne ikke lage miniatyren", "Could not make the thumbnail"));
-  drawFrame(ctx, out, { view: [k, 0, 0, k, 0, 0], images: new Map(), placeholders: false });
+  if (!ctx) throw new Error(t("app-scene-editor-mts-actions.template-thumbnail.message.65545a7c3c05"));
+  drawFrame(ctx, out, { view: [k, 0, 0, k, 0, 0], images, placeholders: false });
   const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/png"));
-  if (!blob) throw new Error(L("Kunne ikke lage miniatyren", "Could not make the thumbnail"));
+  if (!blob) throw new Error(t("app-scene-editor-mts-actions.template-thumbnail.message.65545a7c3c05.2"));
   return new File([blob], "mal.png", { type: "image/png" }); // i18n-ignore – filnavn
 }
 
@@ -192,11 +183,11 @@ export async function saveAsTemplate(
   if (o.existingVariantId) {
     variantId = o.existingVariantId;
     assetId = state.assetVariants[variantId]?.assetId ?? "";
-    if (!assetId) throw new Error(L("Malen finnes ikke", "The template does not exist"));
+    if (!assetId) throw new Error(t("app-scene-editor-mts-actions.save-as-template.message.75b9a2a791af"));
   } else {
     assetId = newId<"asset">();
     variantId = newId<"asset_variant">();
-    const name = o.name.trim().slice(0, 200) || L("Mal", "Template");
+    const name = o.name.trim().slice(0, 200) || t("app-scene-editor-mts-actions.name.message.eb5ac61b2cb5");
     const r1 = await runAndWait(
       {
         type: "CreateAssets",
@@ -207,7 +198,7 @@ export async function saveAsTemplate(
           },
         ],
       },
-      L("Lagre som mal", "Save as template"),
+      t("app-scene-editor-mts-actions.r1.run-and-wait.0a9ef878e3ba"),
       group,
     );
     if (r1.error) throw new Error(r1.error);
@@ -216,9 +207,9 @@ export async function saveAsTemplate(
         type: "CreateAssetVariant",
         variantId: variantId as never,
         assetId: assetId as never,
-        fields: { name: L("Standard", "Default"), style: "other", appearance: "" },
+        fields: { name: t("app-scene-editor-mts-actions.name.name.056953d7dfd9"), style: "other", appearance: "" },
       },
-      L("Lagre som mal", "Save as template"),
+      t("app-scene-editor-mts-actions.r2.run-and-wait.b9090017aeed"),
       group,
     );
     if (r2.error) throw new Error(r2.error);
@@ -234,7 +225,7 @@ export async function saveAsTemplate(
       note: "",
       template: def,
     },
-    L("Lagre som mal", "Save as template"),
+    t("app-scene-editor-mts-actions.r3.run-and-wait.bf54ee7b842f"),
     group,
   );
   if (r3.error) throw new Error(r3.error);

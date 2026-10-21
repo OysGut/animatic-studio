@@ -15,9 +15,10 @@ import {
   Share2,
   TriangleAlert,
   X,
+  Mic,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import { L, checkMobileFile, formatDate, type MobileMediaKind } from "@/core";
+import { checkMobileFile, formatDate, type MobileMediaKind } from "@/core";
 import {
   mobileConfirmUpload,
   mobileSession,
@@ -28,7 +29,9 @@ import {
 import { uploadWithTicket } from "@/adapters/browser/mobile-import";
 import { LanguageSwitch } from "@/app/i18n/language";
 import { UploadQueue, Uploader, type QueueItem } from "./upload-queue";
+import { MouthShapeCapture } from "./MouthShapeCapture";
 import { MobileAudio } from "./MobileAudio";
+import { t as tk } from "@/core/i18n/keyed";
 
 const NO_ITEMS: QueueItem[] = [];
 const serverItems = () => NO_ITEMS;
@@ -131,12 +134,14 @@ export function MobilePage({ token }: { token: string }) {
     [kinds, queue, uploader],
   );
   const [camera, setCamera] = useState(false);
+  /** B-099: «Ta opp lyd» for en scene (ved siden av bilde og video). */
+  const [recordAudio, setRecordAudio] = useState(false);
 
   if (!info)
     return (
       <Shell>
         <div className="flex flex-1 items-center justify-center text-text-tertiary">
-          <Loader2 className="size-6 animate-spin" aria-label={L("Henter …", "Loading …")} />
+          <Loader2 className="size-6 animate-spin" aria-label={tk("app-mobile-mobile-page.mobile-page.aria-label.6f75c5f9dc18")} />
         </div>
       </Shell>
     );
@@ -162,7 +167,7 @@ export function MobilePage({ token }: { token: string }) {
       {camera ? (
         <QuickCamera
           onShot={(blob, n) => {
-            queue.add(blob, L(`Bilde ${n}.jpg`, `Picture ${n}.jpg`));
+            queue.add(blob, tk("app-mobile-mobile-page.mobile-page.queue-add.c1fb4610e044", { n: String(n) }));
             uploader.pump();
           }}
           sent={sent}
@@ -174,23 +179,20 @@ export function MobilePage({ token }: { token: string }) {
         <div>
           <p className="text-xs uppercase tracking-[0.06em] text-text-tertiary">
             {info.kind === "shared"
-              ? L("Du er invitert til å sende inn", "You are invited to send in")
-              : L("Last opp til Animatic Studio", "Upload to Animatic Studio")}
+              ? tk("app-mobile-mobile-page.mobile-page.p.cfc6f3f6eaa9")
+              : tk("app-mobile-mobile-page.mobile-page.p.58407ddefbbc")}
           </p>
           <h1 className="mt-1 text-xl font-semibold text-text-primary" data-testid="mobile-label">
-            {info.label || L("Prosjektet", "The project")}
+            {info.label || tk("app-mobile-mobile-page.mobile-page.h1.c3aad59fb0f5")}
           </h1>
           <p className="mt-1 text-xs text-text-tertiary">
-            {info.from ? L(`Fra ${info.from} · `, `From ${info.from} · `) : ""}
-            {L(
-              `Lenken gjelder til ${formatDate(info.expiresAt ?? "")}`,
-              `The link is valid until ${formatDate(info.expiresAt ?? "")}`,
-            )}
+            {info.from ? tk("app-mobile-mobile-page.mobile-page.p.d344bf9b9045", { from: String(info.from) }) : ""}
+            {tk("app-mobile-mobile-page.mobile-page.p.3c59d68146da", { value1: String(formatDate(info.expiresAt ?? "")) })}
           </p>
         </div>
         {info.kind === "shared" ? (
           <label className="flex flex-col gap-1 text-sm text-text-secondary">
-            {L("Navnet ditt (valgfritt)", "Your name (optional)")}
+            {tk("app-mobile-mobile-page.mobile-page.label.2093f4055cfb")}
             <input
               value={name}
               maxLength={100}
@@ -207,25 +209,23 @@ export function MobilePage({ token }: { token: string }) {
             />
           </label>
         ) : null}
-        {audioOnly ? (
+        {info.rigCapture ? <MouthShapeCapture referenceUrl={info.rigCapture.referenceUrl} slot={info.rigCapture.slot} onConfirm={file => { queue.add(file, file.name); uploader.pump(); }} /> : null}
+        {audioOnly || recordAudio ? (
           <MobileAudio script={info.script} items={items} queue={queue} uploader={uploader} />
         ) : null}
         <div className="grid grid-cols-2 gap-3">
-          {can("image") ? (
+          {can("image") && !info.rigCapture ? (
             <>
               <BigButton
                 icon={<Camera className="size-7" aria-hidden />}
-                label={L("Ta bilder", "Take pictures")}
-                hint={L(
-                  "Bilde etter bilde – sendes automatisk",
-                  "One after another – sent automatically",
-                )}
+                label={tk("app-mobile-mobile-page.mobile-page.label.5788fd736553")}
+                hint={tk("app-mobile-mobile-page.mobile-page.hint.8b6416086462")}
                 onClick={() => setCamera(true)}
                 testId="mobile-take-photos"
               />
               <FileButton
                 icon={<Images className="size-7" aria-hidden />}
-                label={L("Velg bilder", "Choose pictures")}
+                label={tk("app-mobile-mobile-page.mobile-page.label.cc9bbe80a022")}
                 accept="image/*"
                 multiple
                 onFiles={addFiles}
@@ -237,7 +237,7 @@ export function MobilePage({ token }: { token: string }) {
             <>
               <FileButton
                 icon={<Film className="size-7" aria-hidden />}
-                label={L("Ta opp video", "Record video")}
+                label={tk("app-mobile-mobile-page.mobile-page.label.da08e380f532")}
                 accept="video/*"
                 capture="environment"
                 onFiles={addFiles}
@@ -245,7 +245,7 @@ export function MobilePage({ token }: { token: string }) {
               />
               <FileButton
                 icon={<Film className="size-7" aria-hidden />}
-                label={L("Velg video", "Choose video")}
+                label={tk("app-mobile-mobile-page.mobile-page.label.c3ce9f6e925d")}
                 accept="video/*"
                 multiple
                 onFiles={addFiles}
@@ -253,10 +253,19 @@ export function MobilePage({ token }: { token: string }) {
               />
             </>
           ) : null}
+          {can("audio") && !audioOnly && !recordAudio ? (
+            <BigButton
+              icon={<Mic className="size-7" aria-hidden />}
+              label={tk("b099.mobile.record-audio")}
+              hint={tk("b099.mobile.record-audio-hint")}
+              onClick={() => setRecordAudio(true)}
+              testId="mobile-record-audio"
+            />
+          ) : null}
           {can("audio") ? (
             <FileButton
               icon={<Music className="size-7" aria-hidden />}
-              label={L("Velg lydfiler", "Choose audio files")}
+              label={tk("app-mobile-mobile-page.mobile-page.label.e9269b3edefb")}
               accept="audio/*"
               multiple
               onFiles={addFiles}
@@ -275,10 +284,7 @@ export function MobilePage({ token }: { token: string }) {
         ) : null}
         {!queue.persistent && items.length ? (
           <p className="text-xs text-status-uncertain">
-            {L(
-              "Filene lagres ikke på telefonen i dette vinduet. Ikke lukk siden før alt er sendt.",
-              "The files are not kept on the phone in this window. Do not close the page until everything is sent.",
-            )}
+            {tk("app-mobile-mobile-page.mobile-page.p.d8a5dbfe574a")}
           </p>
         ) : null}
         {audioOnly ? null : <QueueList items={items} onRetry={(id) => uploader.retry(id)} />}
@@ -300,7 +306,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       data-testid="mobile-page"
     >
       <header className="flex h-11 items-center border-b border-border px-4 text-[13px] font-semibold">
-        Animatic Studio
+        Pen to Glass
       </header>
       {children}
     </div>
@@ -325,7 +331,7 @@ function BigButton({
       type="button"
       onClick={onClick}
       data-testid={testId}
-      className="flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 p-3 text-center text-base font-medium text-text-primary active:bg-surface-3"
+      className="flex min-h-[112px] flex-col items-center justify-center gap-2 rounded-lg border border-border bg-surface-2 p-3 text-center text-base font-medium text-text-primary active:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring"
     >
       {icon}
       {label}
@@ -381,10 +387,10 @@ function QueueList({
 }) {
   if (!items.length) return null;
   return (
-    <section aria-label={L("Dine filer", "Your files")} data-testid="mobile-queue">
+    <section aria-label={tk("app-mobile-mobile-page.queue-list.aria-label.f96134cf464a")} data-testid="mobile-queue">
       <h2 className="mb-2 text-sm font-medium text-text-secondary">
-        {L("Dine filer", "Your files")} ({items.filter((x) => x.status === "sent").length}/
-        {items.length} {L("sendt", "sent")})
+        {tk("app-mobile-mobile-page.queue-list.h2.f96134cf464a")} ({items.filter((x) => x.status === "sent").length}/
+        {items.length} {tk("app-mobile-mobile-page.queue-list.h2.42af69203fa2")})
       </h2>
       <ul className="grid grid-cols-3 gap-2">
         {[...items].reverse().map((it) => (
@@ -418,16 +424,16 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
       </div>
       <span className="absolute right-1 top-1 rounded-full bg-media/60 p-1">
         {it.status === "sent" ? (
-          <Check className="size-3.5 text-status-success" aria-label={L("Sendt", "Sent")} />
+          <Check className="size-3.5 text-status-success" aria-label={tk("app-mobile-mobile-page.queue-tile.aria-label.708b930cd1f8")} />
         ) : it.status === "failed" ? (
           <TriangleAlert
             className="size-3.5 text-status-danger"
-            aria-label={L("Feilet", "Failed")}
+            aria-label={tk("app-mobile-mobile-page.queue-tile.aria-label.23d0f8859898")}
           />
         ) : (
           <Loader2
             className="size-3.5 animate-spin text-on-media"
-            aria-label={it.status === "uploading" ? L("Sendes", "Sending") : L("I kø", "Queued")}
+            aria-label={it.status === "uploading" ? tk("app-mobile-mobile-page.queue-tile.aria-label.8676fe5a4c87") : tk("app-mobile-mobile-page.queue-tile.aria-label.6fec569fcf3e")}
           />
         )}
       </span>
@@ -435,11 +441,11 @@ function QueueTile({ it, onRetry }: { it: QueueItem; onRetry: (id: string) => vo
         <button
           type="button"
           onClick={() => onRetry(it.id)}
-          className="flex items-center justify-center gap-1 rounded-sm bg-surface-2 py-1 text-[11px] text-text-primary"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-sm bg-surface-2 py-2 text-xs text-text-primary focus-visible:ring-2 focus-visible:ring-focus-ring"
           title={it.error}
         >
           <RotateCw className="size-3" aria-hidden />
-          {L("Prøv igjen", "Try again")}
+          {tk("app-mobile-mobile-page.queue-tile.button.27aa076f0fdc")}
         </button>
       ) : null}
     </li>
@@ -467,14 +473,11 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
       setLink(url);
     }
     const text = audio
-      ? L(`Ta opp lyd til Animatic Studio: ${label}`, `Record audio for Animatic Studio: ${label}`)
-      : L(
-          `Send bilder og video til Animatic Studio: ${label}`,
-          `Send pictures and video to Animatic Studio: ${label}`,
-        );
+      ? tk("app-mobile-mobile-page.text.message.624aef06af2d", { label: String(label) })
+      : tk("app-mobile-mobile-page.text.message.9e50fa7f0f72", { label: String(label) });
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title: "Animatic Studio", text, url });
+        await navigator.share({ title: "Pen to Glass", text, url });
         return;
       } catch {
         /* avbrutt eller ikke tillatt: vis lenken til kopiering */
@@ -482,9 +485,9 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
     }
     try {
       await navigator.clipboard.writeText(url);
-      setMsg(L("Lenken er kopiert.", "The link has been copied."));
+      setMsg(tk("app-mobile-mobile-page.share.set-msg.5bd04ec339d2"));
     } catch {
-      setMsg(L("Kopier lenken under.", "Copy the link below."));
+      setMsg(tk("app-mobile-mobile-page.share.set-msg.a225248ddb7e"));
     }
   }
   return (
@@ -496,25 +499,19 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
         data-testid="mobile-share"
       >
         <Share2 className="size-5" aria-hidden />
-        {L("Del lenke", "Share link")}
+        {tk("app-mobile-mobile-page.share-button.button.99e3105dec94")}
       </button>
       <p className="text-xs text-text-tertiary">
         {audio
-          ? L(
-              "Andre kan ta opp og sende lyd hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
-              "Others can record and send audio here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
-            )
-          : L(
-              "Andre kan sende inn bilder og video hit uten konto. De ser bare det de selv sender, gjelder i 7 dager og kan stoppes fra prosjektet.",
-              "Others can send pictures and video here without an account. They only see what they send themselves; it is valid for 7 days and can be stopped from the project.",
-            )}
+          ? tk("app-mobile-mobile-page.share-button.p.1e0be1e60984")
+          : tk("app-mobile-mobile-page.share-button.p.62630d14dd8d")}
       </p>
       {link ? (
         <input
           readOnly
           value={link}
           onFocus={(e) => e.target.select()}
-          className="h-9 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
+          className="h-11 rounded-sm border border-border-control bg-surface-3 px-2 text-sm text-text-primary"
           data-testid="mobile-share-link"
         />
       ) : null}
@@ -547,10 +544,7 @@ function QuickCamera({
     let alive = true;
     if (!navigator.mediaDevices?.getUserMedia) {
       setError(
-        L(
-          "Nettleseren gir ikke tilgang til kameraet her. Bruk «Velg bilder» i stedet.",
-          "The browser does not give access to the camera here. Use “Choose pictures” instead.",
-        ),
+        tk("app-mobile-mobile-page.quick-camera.set-error.27dd10b8f10d"),
       );
       return;
     }
@@ -573,10 +567,7 @@ function QuickCamera({
       })
       .catch(() =>
         setError(
-          L(
-            "Fikk ikke bruke kameraet. Gi tillatelse i nettleseren, eller bruk «Velg bilder».",
-            "Could not use the camera. Allow it in the browser, or use “Choose pictures”.",
-          ),
+          tk("app-mobile-mobile-page.quick-camera.set-error.55678955401e"),
         ),
       );
     return () => {
@@ -621,20 +612,20 @@ function QuickCamera({
           data-testid="mobile-camera-done"
         >
           <X className="size-4" aria-hidden />
-          {L("Ferdig", "Done")}
+          {tk("app-mobile-mobile-page.quick-camera.button.8b143bc1fa2c")}
         </button>
         <button
           type="button"
           onClick={() => void shoot()}
           disabled={!!error}
-          aria-label={L("Ta bilde", "Take picture")}
+          aria-label={tk("app-mobile-mobile-page.quick-camera.aria-label.d2402c0a18ef")}
           className="size-20 rounded-full border-4 border-on-media bg-on-media/30 active:bg-on-media/70 disabled:opacity-40"
           data-testid="mobile-shutter"
         />
         <span className="min-w-[88px] text-right text-xs text-on-media/80" aria-live="polite">
-          {L(`${count} tatt`, `${count} taken`)}
+          {tk("app-mobile-mobile-page.quick-camera.span.9489a31f8b7b", { count: String(count) })}
           <br />
-          {busy ? L(`${busy} sendes`, `${busy} sending`) : L(`${sent} sendt`, `${sent} sent`)}
+          {busy ? tk("app-mobile-mobile-page.quick-camera.span.08ffddadb4d3", { busy: String(busy) }) : tk("app-mobile-mobile-page.quick-camera.span.130e0ae7ec9c", { sent: String(sent) })}
         </span>
       </div>
     </div>

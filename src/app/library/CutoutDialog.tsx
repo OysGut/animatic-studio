@@ -46,6 +46,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 type Backdrop = "checker" | "dark" | "light";
 
@@ -202,11 +203,8 @@ function Editor({
         if (!res.ok)
           throw new Error(
             res.status === 400 || res.status === 403
-              ? L(
-                  "lenken har gått ut – lukk og åpne vinduet igjen",
-                  "the link has expired – close and reopen the window",
-                )
-              : L(`feil ${res.status}`, `error ${res.status}`),
+              ? tk("app-library-cutout-dialog.editor.async-try-const-res-await-fetch-url-if-res-ok-throw-new-error-res-status-400-res-status-403-l-lenken-har-g-tt-ut-lukk-og-pne-vinduet-igjen-the-link-has-expired-close-and-reopen-the-window-l-feil-res-status-error-res-status-const-blob-await-res-blob-const-bmp-await-decode-image-blob-const-k-math-min-1-math-sqrt-cutout-max-pixels-bmp-width-bmp-height-const-w-math-max-1-math-round-bmp-width-k-const-h-math-max-1-math-round-bmp-height-k-const-c-document-create-element-canvas-c-width-w-c-height-h-const-ctx-c-get-context-2d-will-read-frequently-true-ctx-draw-image-bmp-source-0-0-w-h-bmp-close-const-img-ctx-get-image-data-0-0-w-h-if-cancelled-return-work-current-canvas-c-img-new-image-data-new-uint8clamped-array-img-data-w-h-set-src-w-h-pixels-img-data-scaled-k-1-catch-e-if-cancelled-set-load-error-l-bildet-kunne-ikke-hentes-e-as-error-message-the-image-could-not-be-fetched-e-as-error-message-finally-if-cancelled-set-busy-null.2c8e61fb3e8f")
+              : tk("app-library-cutout-dialog.editor.async-try-const-res-await-fetch-url-if-res-ok-throw-new-error-res-status-400-res-status-403-l-lenken-har-g-tt-ut-lukk-og-pne-vinduet-igjen-the-link-has-expired-close-and-reopen-the-window-l-feil-res-status-error-res-status-const-blob-await-res-blob-const-bmp-await-decode-image-blob-const-k-math-min-1-math-sqrt-cutout-max-pixels-bmp-width-bmp-height-const-w-math-max-1-math-round-bmp-width-k-const-h-math-max-1-math-round-bmp-height-k-const-c-document-create-element-canvas-c-width-w-c-height-h-const-ctx-c-get-context-2d-will-read-frequently-true-ctx-draw-image-bmp-source-0-0-w-h-bmp-close-const-img-ctx-get-image-data-0-0-w-h-if-cancelled-return-work-current-canvas-c-img-new-image-data-new-uint8clamped-array-img-data-w-h-set-src-w-h-pixels-img-data-scaled-k-1-catch-e-if-cancelled-set-load-error-l-bildet-kunne-ikke-hentes-e-as-error-message-the-image-could-not-be-fetched-e-as-error-message-finally-if-cancelled-set-busy-null.d1f68b901710", { status: String(res.status) }),
           );
         const blob = await res.blob();
         const bmp = await decodeImage(blob);
@@ -226,10 +224,7 @@ function Editor({
       } catch (e) {
         if (!cancelled)
           setLoadError(
-            L(
-              `Bildet kunne ikke hentes: ${(e as Error).message}`,
-              `The image could not be fetched: ${(e as Error).message}`,
-            ),
+            tk("app-library-cutout-dialog.editor.set-load-error.c6d0e5541b19", { message: String((e as Error).message) }),
           );
       } finally {
         if (!cancelled) setBusy(null);
@@ -587,7 +582,7 @@ function Editor({
           (b) =>
             b
               ? ok(b)
-              : fail(new Error(L("Bildet kunne ikke lages", "The image could not be made"))),
+              : fail(new Error(tk("app-library-cutout-dialog.blob.fail.7baa99e6f3b7"))),
           "image/png",
         ),
       );
@@ -600,6 +595,8 @@ function Editor({
           versionId: versionId as never,
           variantId: version.variantId,
           media,
+          // REQ-0037: kilden som permanent ID (nummeret i merknaden er bare tekst)
+          derivedFromVersionId: version.id,
           // i18n-ignore (merknaden leses av provenance.ts)
           note: `Frilagt fra v${version.number}${src.scaled ? " (skalert ned)" : ""}${
             flipped.x || flipped.y
@@ -609,7 +606,7 @@ function Editor({
             trimmed ? `, luften rundt fjernet (${trimmed.w} × ${trimmed.h} px)` : ""
           }`,
         },
-        L(`Frilagt bilde av «${asset.name}»`, `Cut out image of “${asset.name}”`),
+        tk("app-library-cutout-dialog.r.cmds-run-and-wait.82b2cc47596c", { name: String(asset.name) }),
       );
       if (r.error) throw new Error(r.error);
       onSaved?.(versionId, version.variantId);
@@ -630,22 +627,16 @@ function Editor({
     <>
       <DialogHeader>
         <DialogTitle>
-          {L(
-            `Frilegg «${asset.name}» (v${version.number})`,
-            `Cut out “${asset.name}” (v${version.number})`,
-          )}
+          {tk("app-library-cutout-dialog.editor.dialog-title.88bcec1459bc", { name: String(asset.name), number: String(version.number) })}
         </DialogTitle>
         <DialogDescription>
-          {L(
-            "Bakgrunnen fjernes ut fra fargen langs kanten av bildet. Rett med penselen, tegn med farge eller speilvend. Resultatet lagres som en ny versjon; originalen beholdes. Gratis – bildet sendes ingen steder. (For å speilvende bare i én scene: bruk «Speilvend» på laget.)",
-            "The background is removed based on the colour along the edge of the image. Correct with the brush, draw in colour or flip. The result is saved as a new version; the original is kept. Free – the image is not sent anywhere. (To flip only in one scene: use “Flip” on the layer.)",
-          )}
+          {tk("app-library-cutout-dialog.editor.dialog-description.1b177d85e268")}
         </DialogDescription>
       </DialogHeader>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <label className={label}>
-          {L("Toleranse", "Tolerance")}
+          {tk("app-library-cutout-dialog.editor.label.3c80dfcb2c4a")}
           <input
             type="range"
             min={0}
@@ -657,7 +648,7 @@ function Editor({
           <span className="w-7 tabular-nums">{tolerance}</span>
         </label>
         <label className={label}>
-          {L("Myk kant", "Soft edge")}
+          {tk("app-library-cutout-dialog.editor.label.8d994ccffbb7")}
           <input
             type="range"
             min={0}
@@ -674,10 +665,10 @@ function Editor({
           onClick={() => runAuto(true)}
         >
           <Wand2 />
-          {L("Nytt forslag", "New suggestion")}
+          {tk("app-library-cutout-dialog.editor.button.2da3b50c8d02")}
         </Button>
         <div className="h-5 w-px bg-border" aria-hidden />
-        <div role="group" aria-label={L("Pensel", "Brush")} className="flex items-center gap-0.5">
+        <div role="group" aria-label={tk("app-library-cutout-dialog.editor.aria-label.54fd552b7963")} className="flex items-center gap-0.5">
           <button
             type="button"
             aria-pressed={tool === "remove"}
@@ -685,7 +676,7 @@ function Editor({
             onClick={() => setTool("remove")}
           >
             <Eraser className="mr-1 inline size-3.5" aria-hidden />
-            {L("Fjern", "Remove")}
+            {tk("app-library-cutout-dialog.editor.button.c2829357228e")}
           </button>
           <button
             type="button"
@@ -694,29 +685,29 @@ function Editor({
             onClick={() => setTool("add")}
           >
             <Brush className="mr-1 inline size-3.5" aria-hidden />
-            {L("Legg til", "Add")}
+            {tk("app-library-cutout-dialog.editor.button.282f8c951060")}
           </button>
           <button
             type="button"
             aria-pressed={tool === "paint"}
             className={seg(tool === "paint")}
             onClick={() => setTool("paint")}
-            title={L("Tegn med farge i bildet", "Draw in colour on the image")}
+            title={tk("app-library-cutout-dialog.editor.title.c0fa2a3e9759")}
           >
             <Paintbrush className="mr-1 inline size-3.5" aria-hidden />
-            {L("Tegn", "Draw")}
+            {tk("app-library-cutout-dialog.editor.button.2d5158c89ade")}
           </button>
           {tool === "paint" ? (
             <input
               type="color"
               value={color}
               onChange={(e) => setColor(e.target.value)}
-              aria-label={L("Farge å tegne med", "Colour to draw with")}
+              aria-label={tk("app-library-cutout-dialog.editor.aria-label.4504bcd05ebb")}
               className="ml-1 h-7 w-8 cursor-pointer rounded-sm border border-border-control bg-surface-3"
             />
           ) : null}
         </div>
-        <div role="group" aria-label={L("Speilvend", "Flip")} className="flex items-center gap-0.5">
+        <div role="group" aria-label={tk("app-library-cutout-dialog.editor.aria-label.f595f6f1f54e")} className="flex items-center gap-0.5">
           <Button
             size="sm"
             variant="ghost"
@@ -725,29 +716,26 @@ function Editor({
               record({ kind: "flip", axis: "x" });
               flipAll("x");
             }}
-            title={L(
-              "Speilvend bildet vannrett (lagres i den nye versjonen)",
-              "Flip the image horizontally (saved in the new version)",
-            )}
+            title={tk("app-library-cutout-dialog.editor.title.06d5ca23b0df")}
           >
-            <FlipHorizontal2 /> {L("Speilvend", "Flip")}
+            <FlipHorizontal2 /> {tk("app-library-cutout-dialog.editor.button.f595f6f1f54e")}
           </Button>
           <Button
             size="sm"
             variant="ghost"
-            aria-label={L("Speilvend loddrett", "Flip vertically")}
+            aria-label={tk("app-library-cutout-dialog.editor.aria-label.1592ab60ea46")}
             disabled={!src || !!busy}
             onClick={() => {
               record({ kind: "flip", axis: "y" });
               flipAll("y");
             }}
-            title={L("Speilvend bildet loddrett", "Flip the image vertically")}
+            title={tk("app-library-cutout-dialog.editor.title.a6d22c27b02f")}
           >
             <FlipVertical2 />
           </Button>
         </div>
         <label className={label}>
-          {L("Størrelse", "Size")}
+          {tk("app-library-cutout-dialog.editor.label.d4cc3816922e")}
           <input
             type="range"
             min={2}
@@ -760,8 +748,8 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label={L("Angre", "Undo")}
-          title={L("Angre (⌘Z)", "Undo (⌘Z)")}
+          aria-label={tk("app-library-cutout-dialog.editor.aria-label.5e440908b18b")}
+          title={tk("app-library-cutout-dialog.editor.title.fc3b9294ef72")}
           disabled={!!busy}
           onClick={() => step(undo, redo)}
         >
@@ -770,8 +758,8 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label={L("Gjør om", "Redo")}
-          title={L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")}
+          aria-label={tk("app-library-cutout-dialog.editor.aria-label.a2e598242fea")}
+          title={tk("app-library-cutout-dialog.editor.title.b61904c034f4")}
           disabled={!!busy}
           onClick={() => step(redo, undo)}
         >
@@ -779,14 +767,14 @@ function Editor({
         </Button>
         <div
           role="group"
-          aria-label={L("Bakgrunn i visningen", "Background in the view")}
+          aria-label={tk("app-library-cutout-dialog.editor.aria-label.87cb6769faa2")}
           className="ml-auto flex items-center gap-0.5"
         >
           {(
             [
-              ["checker", L("Rutet", "Checkered")],
-              ["dark", L("Mørk", "Dark")],
-              ["light", L("Lys", "Light")],
+              ["checker", tk("app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.3d7c273c809d")],
+              ["dark", tk("app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.049acd949d04")],
+              ["light", tk("app-library-cutout-dialog.editor.checker-l-rutet-checkered-dark-l-m-rk-dark-light-l-lys-light-as-const-map.c462797af573")],
             ] as const
           ).map(([id, text]) => (
             <button
@@ -806,7 +794,7 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label={L("Zoom ut", "Zoom out")}
+          aria-label={tk("app-library-cutout-dialog.editor.aria-label.cfb5e40bad89")}
           onClick={() => zoomAt(v.z / 1.5)}
         >
           <Minus />
@@ -815,22 +803,19 @@ function Editor({
         <Button
           size="sm"
           variant="ghost"
-          aria-label={L("Zoom inn", "Zoom in")}
+          aria-label={tk("app-library-cutout-dialog.editor.aria-label.29435e6752c4")}
           onClick={() => zoomAt(v.z * 1.5)}
         >
           <Plus />
         </Button>
         <Button size="sm" variant="ghost" onClick={() => setZoomView(null)}>
-          <Maximize2 /> {L("Tilpass", "Fit")}
+          <Maximize2 /> {tk("app-library-cutout-dialog.editor.button.b913966d6787")}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => zoomAt(1)}>
           100 %
         </Button>
         <span className="text-text-tertiary">
-          {L(
-            "Rullehjul zoomer; hold mellomrom (eller midtre museknapp) og dra for å flytte.",
-            "The scroll wheel zooms; hold space (or the middle mouse button) and drag to move.",
-          )}
+          {tk("app-library-cutout-dialog.editor.span.576f4e6e04e3")}
         </span>
       </div>
       <div
@@ -845,7 +830,7 @@ function Editor({
           <canvas
             ref={view}
             role="img"
-            aria-label={L("Frilagt bilde", "Cut-out image")}
+            aria-label={tk("app-library-cutout-dialog.editor.aria-label.1a594b1c83ef")}
             style={{ width: box.w, height: box.h, cursor: pan.current ? "grabbing" : "none" }}
             className="touch-none"
             onWheel={(e) => {
@@ -918,33 +903,21 @@ function Editor({
           <span className="absolute inset-0 flex items-center justify-center gap-2 bg-surface-2/60 text-[13px] text-text-secondary">
             <Loader2 className="size-4 animate-spin" aria-hidden />
             {busy === "load"
-              ? L("Henter bildet …", "Fetching the image …")
+              ? tk("app-library-cutout-dialog.editor.span.f9bee35d3138")
               : busy === "auto"
-                ? L("Lager forslag …", "Making a suggestion …")
-                : L("Lagrer …", "Saving …")}
+                ? tk("app-library-cutout-dialog.editor.span.5ce40ba2449d")
+                : tk("app-library-cutout-dialog.editor.span.4058c2d03631")}
           </span>
         ) : null}
       </div>
       <p className="text-xs text-text-tertiary">
         {src
-          ? L(
-              `${src.w} × ${src.h} px${src.scaled ? " (skalert ned for frilegging)" : ""} · ${Math.round(kept * 100)} % av bildet beholdes. `,
-              `${src.w} × ${src.h} px${src.scaled ? " (scaled down for cut-out)" : ""} · ${Math.round(kept * 100)} % of the image is kept. `,
-            ) +
+          ? (src.scaled ? tk("app-library-cutout-dialog.size-kept-scaled", { w: src.w, h: src.h, percent: Math.round(kept * 100) }) : tk("app-library-cutout-dialog.size-kept", { w: src.w, h: src.h, percent: Math.round(kept * 100) })) +
             (kept > 0.97
-              ? L(
-                  "Nesten ingenting ble fjernet – øk toleransen, eller fjern bakgrunnen med penselen.",
-                  "Almost nothing was removed – increase the tolerance, or remove the background with the brush.",
-                )
+              ? tk("app-library-cutout-dialog.editor.p.134340f122e8")
               : kept < 0.03
-                ? L(
-                    "Nesten alt ble fjernet – senk toleransen.",
-                    "Almost everything was removed – lower the tolerance.",
-                  )
-                : L(
-                    "Fungerer best når bakgrunnen er rolig og ulik figuren.",
-                    "Works best when the background is plain and different from the figure.",
-                  ))
+                ? tk("app-library-cutout-dialog.editor.p.7d352c265cc6")
+                : tk("app-library-cutout-dialog.editor.p.e764cb259544"))
           : ""}
       </p>
       {error ? (
@@ -955,10 +928,7 @@ function Editor({
       <DialogFooter className="sm:items-center">
         <label
           className="mr-auto flex items-center gap-1.5 text-xs text-text-secondary"
-          title={L(
-            "Beskjær bildet tett rundt figuren, med litt luft, så den ikke får en stor tom ramme",
-            "Crop the image tightly around the figure, with a little space, so it does not get a large empty frame",
-          )}
+          title={tk("app-library-cutout-dialog.editor.title.4395dd79eb3c")}
         >
           <input
             type="checkbox"
@@ -966,14 +936,14 @@ function Editor({
             onChange={(e) => setTrim(e.target.checked)}
             className="size-3.5 accent-[var(--accent-brand)]"
           />
-          {L("Fjern luften rundt figuren", "Remove the space around the figure")}
+          {tk("app-library-cutout-dialog.editor.label.a6a3ad8b5149")}
         </label>
         <Button variant="secondary" disabled={busy === "save"} onClick={onClose}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-library-cutout-dialog.editor.button.c6da9add20d8")}
         </Button>
         <Button disabled={!src || !!busy} onClick={() => void save()}>
           <Scissors />
-          {L("Lagre som ny versjon", "Save as new version")}
+          {tk("app-library-cutout-dialog.editor.button.517baced0d51")}
         </Button>
       </DialogFooter>
     </>

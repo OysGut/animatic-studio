@@ -1,6 +1,7 @@
 /** Innlogging (Supabase Auth) bak et lite grensesnitt for nettleseren (KI-181). */
 import type { Session } from "@supabase/supabase-js";
 import { browserClient, plainError, type BackendError } from "./client";
+import { isCountryCode } from "@/core";
 
 export type { Session };
 
@@ -32,11 +33,16 @@ export async function signUp(
   email: string,
   password: string,
   redirect: string | undefined,
+  country?: string,
 ): Promise<AuthResult> {
+  // B-097: landet følger kontoen fra registreringen og lagres i profilen ved første innlogging
   const res = await browserClient.auth.signUp({
     email,
     password,
-    options: redirect ? { emailRedirectTo: redirect } : {},
+    options: {
+      ...(redirect ? { emailRedirectTo: redirect } : {}),
+      ...(country ? { data: { country } } : {}),
+    },
   });
   return { error: plainError(res.error), session: res.data.session };
 }
@@ -45,14 +51,50 @@ export async function signUp(
 export async function sendSignInLink(
   email: string,
   redirect: string | undefined,
+  createUser = true,
 ): Promise<AuthResult> {
+  // B-109: når registreringen er stengt, lages ingen ny konto via lenken (databasen stopper det uansett)
   const res = await browserClient.auth.signInWithOtp({
     email,
-    options: redirect ? { emailRedirectTo: redirect } : {},
+    options: { ...(redirect ? { emailRedirectTo: redirect } : {}), shouldCreateUser: createUser },
   });
   return { error: plainError(res.error), session: res.data.session };
 }
 
 export async function signOut(): Promise<void> {
   await browserClient.auth.signOut();
+}
+
+/** Samme svar uavhengig av om kontoen finnes; ikke eksponer backend-feil. */
+export async function sendPasswordReset(email: string): Promise<AuthResult> {
+  try {
+    await browserClient.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + "/tilbakestill-passord",
+    });
+  } catch {
+    // Også transportfeil skjules for å unngå å røpe kontostatus.
+  }
+  return { error: null, session: null };
+}
+
+/** Oppdater passordet med recovery-økten, uten current_password. */
+export async function updateRecoveryPassword(password: string): Promise<{ error: BackendError | null }> {
+  const result = await browserClient.auth.updateUser({ password });
+  return { error: plainError(result.error) };
+}
+
+/** Recovery-hendelsen beholdes separat fra vanlige innlogginger. */
+export function onPasswordRecovery(listener: () => void): () => void {
+  const { data } = browserClient.auth.onAuthStateChange((event) => {
+    if (event === "PASSWORD_RECOVERY") listener();
+  });
+  return () => data.subscription.unsubscribe();
+}
+
+/** B-097: landet brukeren valgte ved registreringen (fra kontoens metadata), eller null. */
+export async function signupCountry(): Promise<string | null> {
+  const { data } = await browserClient.auth.getUser();
+  const c = (data.user?.user_metadata as { country?: unknown } | undefined)?.country;
+  // Metadata kan endres av brukeren selv; bare kjente ISO-koder godtas
+  return typeof c === "string" && isCountryCode(c) ? c : null;
 }

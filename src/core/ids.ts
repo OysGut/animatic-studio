@@ -3,7 +3,7 @@
  * ID-er er uavhengige av navn, språk, plassering og synlige løpenumre.
  */
 
-import { L } from "./i18n";
+import { t as tk } from "@/core/i18n/keyed";
 
 declare const brand: unique symbol;
 export type Id<Kind extends string> = string & { readonly [brand]: Kind };
@@ -61,7 +61,7 @@ export function isUuid(value: string): boolean {
 
 /** Tolk en streng som ID av gitt type. Kaster ved ugyldig format. */
 export function asId<Kind extends string>(value: string): Id<Kind> {
-  if (!isUuid(value)) throw new Error(L(`Ugyldig ID: ${value}`, `Invalid ID: ${value}`));
+  if (!isUuid(value)) throw new Error(tk("core-ids.as-id.message.a709cc9c8d97", { value: String(value) }));
   return value as Id<Kind>;
 }
 

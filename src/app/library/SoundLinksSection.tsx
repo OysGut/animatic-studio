@@ -5,22 +5,10 @@
  */
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  SOUND_LINK_LABEL,
-  blocksOfVariant,
-  collation,
-  compareKeys,
-  formatHeading,
-  orderedOccurrences,
-  soundLinkLabel,
-  type Asset,
-  type ProjectState,
-  type SoundLink,
-  type SoundLinkKind,
-} from "@/core";
+import { SOUND_LINK_LABEL, blocksOfVariant, collation, compareKeys, formatHeading, orderedOccurrences, soundLinkLabel, type Asset, type ProjectState, type SoundLink, type SoundLinkKind } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
@@ -85,7 +73,7 @@ export function SoundLinksSection({
           ? Object.values(state.segments)
               .filter((g) => g.occurrenceId === occ.id)
               .sort((a, b) => compareKeys(a.orderKey, b.orderKey))
-              .map((g, i) => ({ id: g.id, label: L(`Delsekvens ${i + 1}`, `Segment ${i + 1}`) }))
+              .map((g, i) => ({ id: g.id, label: t("app-library-sound-links-section.label.label.6d185eb004d0", { value1: String(i + 1) }) }))
           : [];
       case "event":
         return Object.values(state.continuityEvents)
@@ -107,17 +95,14 @@ export function SoundLinksSection({
       className="flex flex-col gap-2 border border-border bg-surface-1 p-3"
     >
       <h3 id="sound-links-title" className="flex items-center gap-1.5 text-[13px] font-medium">
-        <Link2 className="size-4" aria-hidden /> {L("Hører til", "Belongs to")}
+        <Link2 className="size-4" aria-hidden /> {t("app-library-sound-links-section.sound-links-section.h3.b687389fdeb4")}
       </h3>
       {links.length === 0 ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Ingen koblinger. Koble lyden til en karakter, scene, replikk, delsekvens, hendelse eller produksjon, så finnes den igjen i søket.",
-            "No links. Link the sound to a character, scene, line, segment, event or production, so it can be found again in search.",
-          )}
+          {t("app-library-sound-links-section.sound-links-section.p.09a082330953")}
         </p>
       ) : (
-        <ul className="flex flex-col gap-1" aria-label={L("Koblinger", "Links")}>
+        <ul className="flex flex-col gap-1" aria-label={t("app-library-sound-links-section.sound-links-section.aria-label.8b7b5837212e")}>
           {links.map((l) => (
             <li key={`${l.kind}:${l.id}`} className="flex items-center gap-2 text-xs">
               <span className="w-28 shrink-0 text-text-tertiary">{SOUND_LINK_LABEL[l.kind]}</span>
@@ -127,15 +112,12 @@ export function SoundLinksSection({
               {editable ? (
                 <button
                   type="button"
-                  aria-label={L(
-                    `Fjern koblingen til ${soundLinkLabel(state, l)}`,
-                    `Remove the link to ${soundLinkLabel(state, l)}`,
-                  )}
+                  aria-label={t("app-library-sound-links-section.sound-links-section.aria-label.2836f138f416", { value1: String(soundLinkLabel(state, l)) })}
                   className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
                   onClick={() =>
                     save(
                       links.filter((x) => !(x.kind === l.kind && x.id === l.id)),
-                      L("Fjern kobling for lyd", "Remove sound link"),
+                      t("app-library-sound-links-section.sound-links-section.save.1865963d017d"),
                     )
                   }
                 >
@@ -149,7 +131,7 @@ export function SoundLinksSection({
       {editable ? (
         <div className="flex flex-wrap items-center gap-1.5">
           <select
-            aria-label={L("Type kobling", "Link type")}
+            aria-label={t("app-library-sound-links-section.sound-links-section.aria-label.d7a07bbf7108")}
             value={kind}
             onChange={(e) => {
               setKind(e.target.value as SoundLinkKind);
@@ -173,7 +155,7 @@ export function SoundLinksSection({
               }}
               className={ctl + " max-w-56"}
             >
-              <option value="">{L("Velg scene …", "Choose scene …")}</option>
+              <option value="">{t("app-library-sound-links-section.sound-links-section.option.8f78699d98ac")}</option>
               {occs.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.productionNumber ?? ""} {formatHeading(state.variants[o.variantId]!.heading)}
@@ -182,13 +164,13 @@ export function SoundLinksSection({
             </select>
           ) : null}
           <select
-            aria-label={L("Koble til", "Link to")}
+            aria-label={t("app-library-sound-links-section.sound-links-section.aria-label.6a5e1822543f")}
             value={target}
             onChange={(e) => setTarget(e.target.value)}
             className={ctl + " max-w-72 flex-1"}
             disabled={needsScene && !occ}
           >
-            <option value="">{L("Velg …", "Choose …")}</option>
+            <option value="">{t("app-library-sound-links-section.sound-links-section.option.d8614a6d1f1e")}</option>
             {options.map((o) => (
               <option key={o.id} value={o.id} disabled={links.some((l) => l.id === o.id)}>
                 {o.label}
@@ -200,11 +182,11 @@ export function SoundLinksSection({
             variant="secondary"
             disabled={!target}
             onClick={() => {
-              save([...links, { kind, id: target }], L("Koble lyd", "Link sound"));
+              save([...links, { kind, id: target }], t("app-library-sound-links-section.sound-links-section.save.f914152e2df6"));
               setTarget("");
             }}
           >
-            {L("Koble til", "Link to")}
+            {t("app-library-sound-links-section.sound-links-section.button.6a5e1822543f")}
           </Button>
         </div>
       ) : null}

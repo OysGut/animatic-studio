@@ -11,7 +11,8 @@ import {
   type DurationAssumptions,
   type DurationHistoryPoint,
 } from "./duration";
-import { L, localized } from "../i18n";
+
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 /** Én scene i et lagret estimat (sekunder). */
 export interface DurationSnapshotScene {
@@ -152,11 +153,7 @@ export function storedEstimateFromRow(
 /** Hvor et punkt i historikken kommer fra. */
 export type DurationHistoryBasis = "stored" | "recomputed" | "now";
 
-export const DURATION_BASIS_LABEL: Record<DurationHistoryBasis, string> = localized({
-  stored: ["lagret estimat", "saved estimate"],
-  recomputed: ["regnet på nytt med dagens antakelser", "recalculated with today's assumptions"],
-  now: ["nå", "now"],
-});
+export const DURATION_BASIS_LABEL: Record<DurationHistoryBasis, string> = tLocalized({ stored: "core-screenplay-duration-snapshot.duration-basis-label.stored.9a7496eb8264", recomputed: "core-screenplay-duration-snapshot.duration-basis-label.recomputed.ea851d01e648", now: "core-screenplay-duration-snapshot.duration-basis-label.now.8ef7a95f6b06" });
 
 export interface DurationHistoryRow extends DurationHistoryPoint {
   readonly basis: DurationHistoryBasis;
@@ -206,7 +203,7 @@ export function durationHistory(input: {
     rows.push({
       order: rows.length,
       row: {
-        label: v ? label(v) : L("Lagret estimat", "Saved estimate"),
+        label: v ? label(v) : tk("core-screenplay-duration-snapshot.label.label.4104e746c770"),
         at: e.createdAt,
         estimatedSeconds: e.snapshot.estimatedSeconds,
         expectedSeconds: e.snapshot.expectedSeconds,
@@ -246,7 +243,7 @@ export function durationHistory(input: {
   return [
     ...rows.map((x) => x.row),
     {
-      label: L("Nå", "Now"),
+      label: tk("core-screenplay-duration-snapshot.label.label.1efea326b6b2"),
       at: input.now.at,
       estimatedSeconds: input.now.estimatedSeconds,
       expectedSeconds: input.now.expectedSeconds,

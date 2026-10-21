@@ -5,10 +5,11 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, RotateCw } from "lucide-react";
-import { L, tm, type GenerationJob } from "@/core";
+import { tm, type GenerationJob } from "@/core";
 import { refetchVideoJob } from "@/adapters/ai/video.functions";
 import { aiJobsKey } from "./use-ai-jobs";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 /** Kan jobben hentes på nytt? */
 export function canRefetchVideo(j: GenerationJob | null | undefined): boolean {
@@ -35,10 +36,7 @@ export function RefetchVideoButton({
       if (r.state === "failed") setMsg(tm(r.message));
       else if (r.state === "running")
         setMsg(
-          L(
-            "Leverandøren lager den fortsatt; den hentes inn når den er ferdig.",
-            "The provider is still making it; it is fetched when finished.",
-          ),
+          t("app-ai-refetch-video-button.go.set-msg.0ed74b029be8"),
         );
     } catch (e) {
       setMsg(tm((e as Error).message));
@@ -56,13 +54,10 @@ export function RefetchVideoButton({
         disabled={busy}
         onClick={() => void go()}
         data-testid="refetch-video"
-        title={L(
-          "Spør leverandøren om den ferdige videoen på nytt. Ingenting bestilles på nytt, så det koster ikke noe.",
-          "Ask the provider for the finished video again. Nothing is ordered again, so it costs nothing.",
-        )}
+        title={t("app-ai-refetch-video-button.refetch-video-button.title.66b34691db69")}
       >
         {busy ? <Loader2 className="animate-spin" /> : <RotateCw />}
-        {L("Hent videoen igjen", "Fetch the video again")}
+        {t("app-ai-refetch-video-button.refetch-video-button.button.19b9fa1a5058")}
       </Button>
       {msg ? <span className="text-[11px] text-text-secondary">{msg}</span> : null}
     </span>

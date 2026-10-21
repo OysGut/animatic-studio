@@ -7,15 +7,11 @@ import type { AssetVersion, AudioClip, AudioKind, ProjectState } from "../model"
 import type { FilmClip } from "../assembly/film";
 import { coverVersion, versionsOf } from "../library";
 import { framesToSeconds, type Rational } from "../time";
-import { L, localized } from "../i18n";
 
-export const AUDIO_KIND_LABEL: Record<AudioKind, string> = localized({
-  dialogue: ["Dialog", "Dialogue"],
-  narration: ["Forteller", "Narration"],
-  sfx: ["Effekter", "Effects"],
-  ambience: ["Atmosfære", "Ambience"],
-  music: ["Musikk", "Music"],
-});
+import { clipEditOf, clipFileOf } from "../dialogue/versions";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
+
+export const AUDIO_KIND_LABEL: Record<AudioKind, string> = tLocalized({ dialogue: "core-audio-index.audio-kind-label.dialogue.496fc3ccd9d7", narration: "core-audio-index.audio-kind-label.narration.eac0d9233796", sfx: "core-audio-index.audio-kind-label.sfx.5417ddbee494", ambience: "core-audio-index.audio-kind-label.ambience.063ae2ad0777", music: "core-audio-index.audio-kind-label.music.887b04818ab4" });
 
 /** Sporenes rekkefølge i tidslinjen. */
 export const AUDIO_TRACK_ORDER: readonly AudioKind[] = [
@@ -52,13 +48,15 @@ export function playsIn(a: Pick<AudioClip, "kind" | "language">, lang: string): 
 
 /** Lydfilen klippet spiller: låst versjon, ellers variantens godkjente/nyeste, ellers ressursens nyeste. */
 export function audioVersion(s: ProjectState, a: AudioClip): AssetVersion | null {
-  if (a.versionId !== null) return s.assetVersions[a.versionId] ?? null;
-  if (a.assetVariantId !== null) {
-    const va = s.assetVariants[a.assetVariantId];
+  // DV2: en versjonert replikk spiller filen til sin aktive lydversjon
+  const f = clipFileOf(s, a);
+  if (f.assetVersionId !== null) return s.assetVersions[f.assetVersionId] ?? null;
+  if (f.assetVariantId !== null) {
+    const va = s.assetVariants[f.assetVariantId];
     if (va?.approvedVersionId) return s.assetVersions[va.approvedVersionId] ?? null;
-    return versionsOf(s, a.assetVariantId)[0] ?? null;
+    return versionsOf(s, f.assetVariantId)[0] ?? null;
   }
-  return coverVersion(s, a.assetId);
+  return coverVersion(s, f.assetId);
 }
 
 /** Lyden i én scene (ikke fjernet), etter start. Med språk: bare lyden som spilles i det språket. */
@@ -122,23 +120,26 @@ export interface FilmAudioItem {
 }
 
 function item(
+  s: ProjectState,
   clip: AudioClip,
   version: AssetVersion | null,
   start: number,
   maxLength = Infinity,
 ): FilmAudioItem {
+  // DV2: redigeringen kommer fra aktiv lydversjon (klippets egne felt for uversjonert lyd)
+  const e = clipEditOf(s, clip);
   return {
     clip,
     version,
     start,
-    length: Math.min(clip.lengthMs / 1000, maxLength),
-    fullLength: clip.lengthMs / 1000,
-    keys: clip.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
-    sourceIn: clip.sourceInMs / 1000,
-    ...(clip.speed !== undefined && clip.speed !== 1 ? { speed: clip.speed } : {}),
-    gain: Math.pow(10, clip.gainDb / 20),
-    fadeIn: clip.fadeInMs / 1000,
-    fadeOut: clip.fadeOutMs / 1000,
+    length: Math.min(e.lengthMs / 1000, maxLength),
+    fullLength: e.lengthMs / 1000,
+    keys: e.volumeKeys.map((k) => ({ t: k.t / 1000, db: k.db })),
+    sourceIn: e.sourceInMs / 1000,
+    ...(e.speed !== 1 ? { speed: e.speed } : {}),
+    gain: Math.pow(10, e.gainDb / 20),
+    fadeIn: e.fadeInMs / 1000,
+    fadeOut: e.fadeOutMs / 1000,
   };
 }
 
@@ -164,7 +165,7 @@ export function filmAudio(
       ? Infinity
       : framesToSeconds(scene.durationFrames, fps) - a.offsetMs / 1000;
     if (room <= 0) continue;
-    out.push(item(a, audioVersion(s, a), sceneStart + a.offsetMs / 1000, room));
+    out.push(item(s, a, audioVersion(s, a), sceneStart + a.offsetMs / 1000, room));
   }
   return out.sort((x, y) => x.start - y.start || x.clip.id.localeCompare(y.clip.id));
 }
@@ -180,7 +181,7 @@ export function sceneAudioItems(
   lang: string = MAIN_LANGUAGE,
 ): FilmAudioItem[] {
   return sceneAudio(s, occurrenceId, lang)
-    .map((a) => item(a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
+    .map((a) => item(s, a, audioVersion(s, a), a.offsetMs / 1000, sceneSeconds - a.offsetMs / 1000))
     .filter((it) => it.length > 0);
 }
 
@@ -257,7 +258,7 @@ export function filmTakeAudio(clips: readonly FilmClip[], fps: Rational): FilmAu
         revision: t.revision,
         occurrenceId: c.occurrenceId,
         kind: "dialogue",
-        name: t.media?.fileName ?? L("Filmlyd", "Film audio"),
+        name: t.media?.fileName ?? tk("core-audio-index.name.name.8b12358ce61a"),
         assetId: t.id,
         assetVariantId: null,
         versionId: null,

@@ -2,7 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
 import { EXPECTED_SCHEMA_VERSION } from "@/adapters/storage/project-rows";
 import { fetchSchemaStatus } from "@/adapters/browser/project-data";
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 /**
  * Viser et tydelig varsel hvis databasemigrasjonene ikke er kjørt i Lovable Cloud (KI-04, LOVABLE_SYNC.md B).
@@ -22,14 +23,9 @@ export function SchemaBanner() {
       <AlertTriangle className="mt-0.5 size-4 shrink-0 text-status-discrepancy" aria-hidden />
       <p>
         {data.kind === "missing"
-          ? L("Databasen er ikke satt opp ennå. ", "The database is not set up yet. ")
-          : L(
-              `Databasen har versjon ${data.version}, men appen trenger versjon ${data.expected}. `,
-              `The database is at version ${data.version}, but the app needs version ${data.expected}. `,
-            )}
-        {L("Send synkmeldingen i Lovable (se", "Send the sync message in Lovable (see")}{" "}
-        <span className="font-mono text-xs">docs/development/LOVABLE_SYNC.md</span>
-        {L(", del B) for å kjøre migrasjon", ", part B) to run migration")}{" "}
+          ? t("app-shell-schema-banner.schema-banner.p.4f37935f6a82")
+          : t("app-shell-schema-banner.schema-banner.p.ce6b8cbc90ba", { version: String(data.version), expected: String(data.expected) })}
+        {t("app-shell-schema-banner.schema-banner.p.93683cf75008")}{" "}
         <span className="font-mono text-xs tabular">
           {String(EXPECTED_SCHEMA_VERSION).padStart(4, "0")}
         </span>

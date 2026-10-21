@@ -6,20 +6,7 @@
  */
 import { Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
-import {
-  L,
-  locale,
-  clipFrameToComposition,
-  compositionFrameInClip,
-  filmAudio,
-  filmMediaPaths,
-  filmTakeAudio,
-  formatHeading,
-  framesToSeconds,
-  neighbourRange,
-  type FilmClip,
-  type ProjectState,
-} from "@/core";
+import { locale, clipFrameToComposition, compositionFrameInClip, filmAudio, filmMediaPaths, filmTakeAudio, formatHeading, framesToSeconds, neighbourRange, type FilmClip, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { useFilmImages } from "@/app/assembly/film-images";
@@ -27,6 +14,7 @@ import { useFilmVideo } from "@/app/assembly/film-video";
 import { FilmViewer } from "@/app/assembly/FilmViewer";
 import { Button } from "@/components/ui/button";
 import { usePlayback } from "./use-playback";
+import { t } from "@/core/i18n/keyed";
 
 export function NeighbourScenes({
   state,
@@ -125,10 +113,10 @@ export function NeighbourScenes({
   const showFilm = play.playing || (touched.current && compFrame === null);
   const where = !inCurrent
     ? filmFrame < current.startFrame
-      ? L("Forrige scene", "Previous scene")
-      : L("Neste scene", "Next scene")
+      ? t("app-scene-editor-neighbour-scenes.where.message.ad286f2b8d32")
+      : t("app-scene-editor-neighbour-scenes.where.message.ec9f77febae1")
     : compFrame === null
-      ? L("Denne scenen (importert film)", "This scene (imported film)")
+      ? t("app-scene-editor-neighbour-scenes.where.message.50350d989702")
       : null;
   const secs = (f: number) =>
     `${framesToSeconds(f, fps).toLocaleString(locale(), { maximumFractionDigits: 1, minimumFractionDigits: 1 })} s`;
@@ -139,7 +127,7 @@ export function NeighbourScenes({
         <div
           className="absolute inset-x-0 top-0 z-30 flex flex-col bg-background p-3"
           style={{ bottom: 48 }}
-          aria-label={L("Naboscener som film", "Neighbouring scenes as film")}
+          aria-label={t("app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.01d8f89e653a")}
         >
           <FilmViewer
             state={state}
@@ -151,23 +139,20 @@ export function NeighbourScenes({
           />
           {where ? (
             <p className="absolute left-4 top-4 rounded-sm bg-surface-2/90 px-2 py-1 text-xs text-text-secondary">
-              {where} · {L("bare visning", "view only")}
+              {where} · {t("app-scene-editor-neighbour-scenes.neighbour-scenes.p.cb50176467ee")}
             </p>
           ) : null}
         </div>
       ) : null}
       <div
         className="flex h-12 shrink-0 items-center gap-2 border-t border-border bg-surface-1 px-2"
-        aria-label={L("Naboscener", "Neighbouring scenes")}
+        aria-label={t("app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.d200877f274d")}
       >
         <Button
           size="sm"
           variant="secondary"
-          aria-label={play.playing ? "Pause" : L("Spill i sammenheng", "Play in sequence")}
-          title={L(
-            "Spill forrige scene, denne og neste i sammenheng",
-            "Play the previous scene, this one and the next in sequence",
-          )}
+          aria-label={play.playing ? "Pause" : t("app-scene-editor-neighbour-scenes.neighbour-scenes.aria-label.de15094e2a72")}
+          title={t("app-scene-editor-neighbour-scenes.neighbour-scenes.title.aeb189c8f4b0")}
           onClick={() => {
             touched.current = true;
             if (!play.playing) onPauseScene();
@@ -206,10 +191,10 @@ export function NeighbourScenes({
               >
                 <span className="truncate">
                   {mine
-                    ? L("Denne: ", "This: ")
+                    ? t("app-scene-editor-neighbour-scenes.neighbour-scenes.span.a3e86f6914bb")
                     : c.startFrame < current.startFrame
-                      ? L("Forrige: ", "Previous: ")
-                      : L("Neste: ", "Next: ")}
+                      ? t("app-scene-editor-neighbour-scenes.neighbour-scenes.span.4eb70268ccf9")
+                      : t("app-scene-editor-neighbour-scenes.neighbour-scenes.span.4417cdcaec5e")}
                   {c.productionNumber ? `${c.productionNumber} ` : ""}
                   {formatHeading(c.heading)}
                 </span>

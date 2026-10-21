@@ -18,6 +18,7 @@ export const IMAGE_PURPOSE_FOR_KIND: Record<AssetKind, ImagePurpose> = {
   other: "cutout",
   sound: "cutout",
   template: "cutout",
+  font: "cutout",
 };
 
 export const STYLE_TEXT: Record<VisualStyle, string> = {
@@ -38,6 +39,7 @@ const KIND_TEXT: Record<AssetKind, string> = {
   other: "an element",
   sound: "an element",
   template: "an element",
+  font: "an element",
 };
 
 export interface ImagePromptInput {

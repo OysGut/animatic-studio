@@ -2,9 +2,10 @@
  * Filmvisningen i monteringen: bildet i den samlede filmen på avspillingshodet, i prosjektets format.
  */
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { L, type FilmClip, type ProjectState } from "@/core";
+import { type FilmClip, type ProjectState } from "@/core";
 import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { filmImageCache } from "./film-images";
+import { t } from "@/core/i18n/keyed";
 
 export function FilmViewer({
   state,
@@ -76,13 +77,13 @@ export function FilmViewer({
     <div ref={boxRef} className="flex min-h-0 min-w-0 flex-1 items-center justify-center">
       {clips.length === 0 ? (
         <p className="text-[13px] text-text-tertiary">
-          {L("Ingen aktive scener i filmen.", "No active scenes in the film.")}
+          {t("app-assembly-film-viewer.film-viewer.p.5d03720f7de4")}
         </p>
       ) : (
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label={L("Filmen på avspillingshodet", "The film at the playhead")}
+          aria-label={t("app-assembly-film-viewer.film-viewer.aria-label.afc6d9cc6295")}
           style={{ width: cssW, height: cssH }}
           className="block bg-media shadow-[0_0_0_1px_var(--border)]"
         />

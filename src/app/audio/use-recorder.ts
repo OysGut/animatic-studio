@@ -4,19 +4,22 @@
  * opptaket stopper eller komponenten forsvinner.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
-import { L } from "@/core";
+import { RAW_AUDIO_DEFAULT, microphoneConstraints, pickRecordingFormat, type RecordingFormat } from "@/core";
 
-/** Formatet nettleseren kan ta opp i. */
-export function recordingType(): { mime: string; ext: string } | null {
+import { t as tk } from "@/core/i18n/keyed";
+
+/** Formatet nettleseren kan ta opp i (B-099: best mulig, høy bitrate). */
+export function recordingType(): RecordingFormat | null {
   if (typeof MediaRecorder === "undefined") return null;
-  for (const [mime, ext] of [
-    ["audio/webm;codecs=opus", "webm"],
-    ["audio/webm", "webm"],
-    ["audio/mp4", "m4a"],
-    ["audio/ogg;codecs=opus", "ogg"],
-  ] as const)
-    if (MediaRecorder.isTypeSupported(mime)) return { mime, ext };
-  return null;
+  return pickRecordingFormat((m) => MediaRecorder.isTypeSupported(m));
+}
+
+/** MediaRecorder med valgt format og bitrate. */
+export function newRecorder(stream: MediaStream, type: RecordingFormat): MediaRecorder {
+  return new MediaRecorder(stream, {
+    mimeType: type.mime,
+    ...(type.bitsPerSecond ? { audioBitsPerSecond: type.bitsPerSecond } : {}),
+  });
 }
 
 export interface Recording {
@@ -80,24 +83,18 @@ export function useRecorder() {
    * gang når mikrofonen ikke kan brukes (feilen står i `error`).
    */
   const start = useCallback(
-    async (opts: { roomTone?: boolean } = {}): Promise<Promise<Recording | null> | null> => {
+    async (opts: { roomTone?: boolean; raw?: boolean } = {}): Promise<Promise<Recording | null> | null> => {
       setError(null);
       const type = recordingType();
       if (!type) {
         setError(
-          L(
-            "Nettleseren kan ikke ta opp lyd. Prøv Chrome, Edge, Firefox eller Safari.",
-            "The browser cannot record audio. Try Chrome, Edge, Firefox or Safari.",
-          ),
+          tk("app-audio-use-recorder.start.set-error.c60a7cfee07e"),
         );
         return null;
       }
       if (!navigator.mediaDevices?.getUserMedia) {
         setError(
-          L(
-            "Mikrofonen kan bare brukes på en sikker adresse (https).",
-            "The microphone can only be used on a secure address (https).",
-          ),
+          tk("app-audio-use-recorder.start.set-error.be7eb7b9f805"),
         );
         return null;
       }
@@ -106,20 +103,14 @@ export function useRecorder() {
       let stream: MediaStream;
       try {
         stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+          audio: microphoneConstraints(opts.raw ?? RAW_AUDIO_DEFAULT),
         });
       } catch (e) {
         setPhase("idle");
         setError(
           (e as Error).name === "NotAllowedError"
-            ? L(
-                "Nettleseren fikk ikke bruke mikrofonen. Tillat mikrofon for siden og prøv igjen.",
-                "The browser was not allowed to use the microphone. Allow microphone access for the page and try again.",
-              )
-            : L(
-                `Fant ingen mikrofon (${(e as Error).message}).`,
-                `No microphone found (${(e as Error).message}).`,
-              ),
+            ? tk("app-audio-use-recorder.start.set-error.844a0a2d1efe")
+            : tk("app-audio-use-recorder.start.set-error.c370a016e8f1", { message: String((e as Error).message) }),
         );
         return null;
       }
@@ -128,7 +119,7 @@ export function useRecorder() {
         return null;
       }
       const chunks: Blob[] = [];
-      const recorder = new MediaRecorder(stream, { mimeType: type.mime });
+      const recorder = newRecorder(stream, type);
       const started = performance.now();
       const roomTone = !!opts.roomTone;
       const result = new Promise<Recording | null>((resolve) => {
@@ -142,7 +133,7 @@ export function useRecorder() {
           const mime = type.mime.split(";")[0] ?? type.mime;
           const blob = new Blob(chunks, { type: mime });
           if (blob.size === 0) {
-            setError(L("Opptaket ble tomt.", "The recording is empty."));
+            setError(tk("app-audio-use-recorder.result.set-error.153e096cf89f"));
             resolve(null);
             return;
           }

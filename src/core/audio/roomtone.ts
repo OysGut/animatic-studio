@@ -8,9 +8,10 @@
  * Plattformnøytralt: jobber på `Float32Array` (mono) og millisekunder. Resultatet er vanlige deler med rollen
  * «room» på dialogsporet, så lydmotoren spiller og eksporterer dem som alt annet.
  */
-import { L } from "../i18n";
+
 import type { AudioComposition, AudioSegment } from "./composition";
 import type { PauseGap } from "./pauses";
+import { t } from "@/core/i18n/keyed";
 
 type NewId = () => string;
 
@@ -200,14 +201,12 @@ export interface RoomSource {
 export interface FillResult {
   readonly composition: AudioComposition;
   /** Pauser som ikke kunne fylles (ingen egnet romlyd). */
+  /** `afterWord` er ordets plass nå (til visning). */
   readonly unfilled: readonly { readonly afterWord: number; readonly message: string }[];
 }
 
 export const NO_ROOM_TONE_MESSAGE = () =>
-  L(
-    "Fant ingen egnet romlyd for pausen. Velg stillhet eller en romlydfil.",
-    "No suitable room tone was found for the pause. Choose silence or a room tone file.",
-  );
+  t("core-audio-roomtone.no-room-tone-message.message.82980bb806dc");
 
 /**
  * Fyller hullene i pausene med romlyd (rollen «room», dialogsporet). Gammel romlyd i komposisjonen tas bort
@@ -224,12 +223,16 @@ export function fillPauseGaps(
 ): FillResult {
   const segments: AudioSegment[] = c.segments.filter((s) => s.role !== "room");
   const unfilled: { afterWord: number; message: string }[] = [];
+  const unfilledIds = new Set<string>();
   for (const g of gaps) {
     const src = sourceFor(g);
     const pieces = src ? buildRoomFill(src.candidates, g.toMs - g.fromMs, crossfadeMs) : [];
     if (!src || pieces.length === 0) {
-      if (!unfilled.some((u) => u.afterWord === g.pause.afterWord))
-        unfilled.push({ afterWord: g.pause.afterWord, message: NO_ROOM_TONE_MESSAGE() });
+      // Én melding per pause (pausens ID er nøkkelen; plassen vises bare)
+      if (!unfilledIds.has(g.pause.id)) {
+        unfilledIds.add(g.pause.id);
+        unfilled.push({ afterWord: g.wordIndex, message: NO_ROOM_TONE_MESSAGE() });
+      }
       continue;
     }
     for (const p of pieces)

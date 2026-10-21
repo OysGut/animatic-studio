@@ -7,17 +7,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Loader2 } from "lucide-react";
-import {
-  L,
-  locale,
-  formatDuration,
-  formatDurationAssumptions,
-  framesToSeconds,
-  snapshotDuration,
-  type DurationAssumptions,
-  type ProjectState,
-  type ScriptSnapshot,
-} from "@/core";
+import { locale, formatDuration, formatDurationAssumptions, framesToSeconds, snapshotDuration, type DurationAssumptions, type ProjectState, type ScriptSnapshot } from "@/core";
 import {
   DURATION_BASIS_LABEL,
   durationHistory,
@@ -25,6 +15,7 @@ import {
 } from "@/core/screenplay/duration-snapshot";
 import { listScriptVersionsWithSnapshots } from "@/adapters/browser/history-records";
 import { useStoredEstimates } from "./use-history-records";
+import { t as tk } from "@/core/i18n/keyed";
 
 const MAX_VERSIONS = 30;
 
@@ -92,26 +83,20 @@ export function DurationHistory({
     return (
       <p className="flex items-center gap-1.5 text-xs text-text-tertiary">
         <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
-        {L(
-          "Henter manusversjoner og lagrede estimater …",
-          "Loading script versions and saved estimates …",
-        )}
+        {tk("app-projects-duration-history.duration-history.p.b724613016f8")}
       </p>
     );
   if (versions.isError || stored.isError)
     return (
       <p role="alert" className="text-xs text-status-danger">
-        {L("Historikken kunne ikke hentes:", "The history could not be loaded:")}{" "}
+        {tk("app-projects-duration-history.duration-history.p.ec62413cc246")}{" "}
         {((versions.error ?? stored.error) as Error | null)?.message ?? ""}
       </p>
     );
   if (rows.length < 2)
     return (
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Ingen lagrede manusversjoner eller estimater ennå. Lagre en versjon i manuset («Versjoner») eller trykk «Lagre estimat», så vises utviklingen her.",
-          "No saved script versions or estimates yet. Save a version in the script (“Versions”) or press “Save estimate”, and the trend will appear here.",
-        )}
+        {tk("app-projects-duration-history.duration-history.p.801d84037dac")}
       </p>
     );
   const max = Math.max(...rows.map((p) => Math.max(p.expectedSeconds, p.estimatedSeconds)), 1);
@@ -120,26 +105,23 @@ export function DurationHistory({
     <div className="border border-border bg-surface-1">
       <table className="w-full text-[13px]">
         <caption className="sr-only">
-          {L(
-            "Forventet filmlengde over tid, per manusversjon og lagret estimat",
-            "Expected film length over time, per script version and saved estimate",
-          )}
+          {tk("app-projects-duration-history.duration-history.caption.9675669e0a72")}
         </caption>
         <thead className="bg-surface-2 text-left text-chrome-label uppercase tracking-[0.04em] text-text-tertiary">
           <tr>
-            <th className="px-3 py-1.5 font-medium">{L("Versjon", "Version")}</th>
-            <th className="w-28 px-3 py-1.5 font-medium">{L("Dato", "Date")}</th>
-            <th className="w-16 px-3 py-1.5 text-right font-medium">{L("Scener", "Scenes")}</th>
-            <th className="w-24 px-3 py-1.5 text-right font-medium">{L("Estimat", "Estimate")}</th>
+            <th className="px-3 py-1.5 font-medium">{tk("app-projects-duration-history.duration-history.th.912987706b55")}</th>
+            <th className="w-28 px-3 py-1.5 font-medium">{tk("app-projects-duration-history.duration-history.th.7bd92445b486")}</th>
+            <th className="w-16 px-3 py-1.5 text-right font-medium">{tk("app-projects-duration-history.duration-history.th.659b21e03544")}</th>
+            <th className="w-24 px-3 py-1.5 text-right font-medium">{tk("app-projects-duration-history.duration-history.th.adaa246f67aa")}</th>
             <th className="w-24 px-3 py-1.5 text-right font-medium">
-              {L("Bekreftet", "Confirmed")}
+              {tk("app-projects-duration-history.duration-history.th.ae756f92c960")}
             </th>
             <th className="w-24 px-3 py-1.5 text-right font-medium">
-              {L("Forventet", "Expected")}
+              {tk("app-projects-duration-history.duration-history.th.75490d69e079")}
             </th>
-            <th className="w-20 px-3 py-1.5 text-right font-medium">{L("Endring", "Change")}</th>
+            <th className="w-20 px-3 py-1.5 text-right font-medium">{tk("app-projects-duration-history.duration-history.th.727401ac6426")}</th>
             <th className="w-32 px-3 py-1.5 font-medium">
-              <span className="sr-only">{L("Lengde", "Length")}</span>
+              <span className="sr-only">{tk("app-projects-duration-history.duration-history.span.113593968a12")}</span>
             </th>
           </tr>
         </thead>
@@ -162,7 +144,7 @@ export function DurationHistory({
                     title={formatDurationAssumptions(p.assumptions)}
                   >
                     {p.basis === "now"
-                      ? L("dagens tall", "current figures")
+                      ? tk("app-projects-duration-history.duration-history.span.7782f9bd0835")
                       : DURATION_BASIS_LABEL[p.basis]}
                     {p.basis === "stored" ? ` · ${formatDurationAssumptions(p.assumptions)}` : ""}
                   </span>
@@ -205,15 +187,9 @@ export function DurationHistory({
         </tbody>
       </table>
       <p className="border-t border-border px-3 py-1.5 text-[11px] text-text-tertiary">
-        {L(
-          "Lagrede estimater viser tallene slik de var, med antakelsene som ble brukt da (2D-scenenes lengde, planlagt lengde og bekreftet lengde på den tiden).",
-          "Saved estimates show the figures as they were, with the assumptions used at the time (2D scene length, planned length and confirmed length at that time).",
-        )}
+        {tk("app-projects-duration-history.duration-history.p.e7634b57c2bd")}
         {anyRecomputed
-          ? L(
-              " Versjoner uten lagret estimat er regnet på nytt fra versjonens tekst med dagens antakelser; «Forventet» bruker da filmens lengde der versjonen hadde ferdig film, og bekreftet lengde er ukjent.",
-              " Versions without a saved estimate have been recalculated from the text of the version using today's assumptions. “Expected” then uses the film's length where that version had a finished film, and the confirmed length is unknown.",
-            )
+          ? tk("app-projects-duration-history.duration-history.p.e7e784c1b5c3")
           : ""}
       </p>
     </div>

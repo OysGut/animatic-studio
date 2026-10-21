@@ -1,0 +1,11 @@
+{
+  "keys": 10140,
+  "superseded": 141,
+  "coverage": {
+    "nb": 100,
+    "en": 100,
+    "en-XA": 100
+  },
+  "complete": true,
+  "problems": []
+}

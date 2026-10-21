@@ -6,6 +6,7 @@
  *   ENV_FILE=…/.env node ai-admin-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -104,7 +105,7 @@ async function mock(ctx, st) {
       return json(null);
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 34 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "privacy_policy") {
       const row = {
         version: 2,
@@ -302,7 +303,7 @@ await run("a01-admin-ai", "/admin", async (page) => {
   const sec = page.getByTestId("admin-ai");
   const text = await sec.innerText();
   for (const t of [
-    "Lovable AI (innebygd)",
+    "Innebygd AI",
     "OpenAI",
     "Google Gemini",
     "fal.ai",
@@ -403,7 +404,7 @@ await run(
     const w = page.getByTestId("admin-cron-warning");
     check(await w.isVisible(), "advarsel når jobben ikke har kjørt de siste 10 minuttene");
     check(
-      (await w.innerText()).includes("Sjekk at appen er publisert og jobben er satt opp i Lovable"),
+      (await w.innerText()).includes("Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren"),
       "advarselen sier hva som må sjekkes",
     );
     await page.screenshot({ path: `${out}/a02-advarsel.png` });

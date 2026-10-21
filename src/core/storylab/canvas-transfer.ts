@@ -6,12 +6,13 @@
  * - Scene: CreateScene i hovedproduksjonen etter valgt scene, med overskrift og en handlingsblokk, og kobling.
  */
 import type { Command } from "../commands/types";
-import { L } from "../i18n";
+
 import { newId } from "../ids";
 import { mainProduction, type CanvasNode, type ProjectState } from "../model";
 import { compareKeys, keyBetween } from "../order-key";
 import { parseHeading } from "../screenplay/parse";
 import { emptyStoryProfile } from "./profile";
+import { t } from "@/core/i18n/keyed";
 
 export type CanvasTransferTarget =
   | { readonly kind: "asset"; readonly assetKind: "character" | "animal" | "location"; readonly withProfile?: boolean }
@@ -48,16 +49,16 @@ export function canvasNodeToCommands(
   ids: IdMaker = defaultIds,
 ): CanvasTransfer {
   const n = state.canvasNodes[nodeId];
-  if (!n || n.removed) return { ok: false, message: L("Noden finnes ikke", "The node was not found") };
+  if (!n || n.removed) return { ok: false, message: t("core-storylab-canvas-transfer.message.message.7c429b6b9b98") };
   if (n.assetId || n.sceneId)
-    return { ok: false, message: L("Noden er allerede koblet", "The node is already linked") };
+    return { ok: false, message: t("core-storylab-canvas-transfer.message.message.f305644f6e77") };
   const name = n.title.trim();
-  if (!name) return { ok: false, message: L("Noden må ha en tittel", "The node needs a title") };
+  if (!name) return { ok: false, message: t("core-storylab-canvas-transfer.message.message.c9e7ded51821") };
 
   if (target.kind === "asset") {
     const allowed = canvasTransferKinds(n);
     if (!allowed.includes(target.assetKind))
-      return { ok: false, message: L("Noden passer ikke for denne ressurstypen", "The node does not fit this asset type") };
+      return { ok: false, message: t("core-storylab-canvas-transfer.message.message.69ed2900865c") };
     const assetId = ids("asset");
     const commands: Command[] = [
       {
@@ -82,9 +83,9 @@ export function canvasNodeToCommands(
   }
 
   if (n.kind !== "scene")
-    return { ok: false, message: L("Bare scenenoder kan bli scener", "Only scene nodes can become scenes") };
+    return { ok: false, message: t("core-storylab-canvas-transfer.message.message.4d676b0723ab") };
   const main = mainProduction(state);
-  if (!main) return { ok: false, message: L("Prosjektet har ingen hovedproduksjon", "The project has no main production") };
+  if (!main) return { ok: false, message: t("core-storylab-canvas-transfer.message.message.13d3f8f4ba0b") };
   const occ = Object.values(state.occurrences)
     .filter((o) => o.productionId === main.id)
     .sort((a, b) => compareKeys(a.orderKey, b.orderKey));
@@ -93,7 +94,7 @@ export function canvasNodeToCommands(
   if (target.afterOccurrenceId !== null) {
     const i = occ.findIndex((o) => o.id === target.afterOccurrenceId);
     if (i < 0 || !occ[i]!.active)
-      return { ok: false, message: L("Scenen å plassere etter finnes ikke", "The scene to place after was not found") };
+      return { ok: false, message: t("core-storylab-canvas-transfer.message.message.105cb913d896") };
     prev = occ[i]!.orderKey;
     next = occ[i + 1]?.orderKey ?? null;
   }

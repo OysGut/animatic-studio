@@ -3,10 +3,11 @@
  * Fungerer med både nettleserklienten (RLS – bare egne prosjekter) og serverens admin-klient.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { L, stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
+import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 54;
+export const EXPECTED_SCHEMA_VERSION = 75;
 
 const PAGE = 1000;
 
@@ -28,10 +29,7 @@ async function fetchAll(db: AnyClient, table: string, projectId: string): Promis
     const { data, error } = await query.range(from, from + PAGE - 1);
     if (error)
       throw new Error(
-        L(
-          `Kunne ikke lese ${table}: ${error.message}`,
-          `Could not read ${table}: ${error.message}`,
-        ),
+        t("adapters-storage-project-rows.fetch-all.message.516b76fc3c7f", { table: String(table), message: String(error.message) }),
       );
     out.push(...((data ?? []) as Row[]));
     if (!data || data.length < PAGE) return out;
@@ -66,17 +64,11 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     .maybeSingle();
   if (error)
     throw new Error(
-      L(
-        `Kunne ikke lese prosjektet: ${error.message}`,
-        `Could not read the project: ${error.message}`,
-      ),
+      t("adapters-storage-project-rows.load-project-rows.message.390061ee2e9e", { message: String(error.message) }),
     );
   if (!project)
     throw new Error(
-      L(
-        "Prosjektet finnes ikke, eller du har ikke tilgang",
-        "The project does not exist, or you do not have access",
-      ),
+      t("adapters-storage-project-rows.load-project-rows.message.e88457a4b9f7"),
     );
   const [
     productions,
@@ -109,7 +101,8 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     canvasEdges,
     templateInstances,
     creditParticipants,
-    creditSequences, animationRigs, animationRigVersions, animationUses,
+    creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines, styleHarmonizations, stylePreferredReferences, languageVersions,
+    rigTemplates, rigSetups, measureSets,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -145,6 +138,20 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "animation_rigs", projectId),
     fetchOptional(db, "animation_rig_versions", projectId),
     fetchOptional(db, "animation_uses", projectId),
+    fetchOptional(db, "lipsync_results", projectId),
+    fetchOptional(db, "animation_patterns", projectId),
+    fetchOptional(db, "dialogue_versions", projectId),
+    fetchOptional(db, "dialogue_reviews", projectId),
+    fetchOptional(db, "note_flags", projectId),
+    fetchOptional(db, "quality_profiles", projectId),
+    fetchOptional(db, "translation_line_links", projectId),
+    fetchOptional(db, "translation_lines", projectId),
+    fetchOptional(db, "style_harmonizations", projectId),
+    fetchOptional(db, "style_preferred_references", projectId),
+    fetchOptional(db, "language_versions", projectId),
+    fetchOptional(db, "rig_templates", projectId),
+    fetchOptional(db, "rig_setups", projectId),
+    fetchOptional(db, "measure_sets", projectId),
   ]);
   return {
     project: project as Row,
@@ -180,6 +187,19 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     credit_participants: creditParticipants,
     credit_sequences: creditSequences,
     animation_rigs: animationRigs, animation_rig_versions: animationRigVersions, animation_uses: animationUses,
+    lipsync_results: lipsyncResults, animation_patterns: animationPatterns,
+    dialogue_versions: dialogueVersions,
+    dialogue_reviews: dialogueReviews,
+    note_flags: noteFlags,
+    quality_profiles: qualityProfiles,
+    translation_line_links: translationLineLinks,
+    translation_lines: translationLines,
+    style_harmonizations: styleHarmonizations,
+    style_preferred_references: stylePreferredReferences,
+    language_versions: languageVersions,
+    measure_sets: measureSets,
+    rig_templates: rigTemplates,
+    rig_setups: rigSetups,
   };
 }
 

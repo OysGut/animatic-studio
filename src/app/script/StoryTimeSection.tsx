@@ -5,20 +5,8 @@
  * angres. Vises bare i inspektøren, ikke i selve manuset (REQ-0102).
  */
 import { useState } from "react";
-import {
-  L,
-  STORY_KIND_LABEL,
-  STORY_PLACEMENT_LABEL,
-  formatHeading,
-  mainProduction,
-  orderedOccurrences,
-  storyPlacementOf,
-  storyTimeFor,
-  type Command,
-  type ProjectState,
-  type StoryKind,
-  type StoryPlacement,
-} from "@/core";
+import { STORY_KIND_LABEL, STORY_PLACEMENT_LABEL, formatHeading, mainProduction, orderedOccurrences, storyPlacementOf, storyTimeFor, type Command, type ProjectState, type StoryKind, type StoryPlacement } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const ctl =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -70,11 +58,8 @@ export function StoryTimeSection({
       run(
         { type: "SetStoryTime", sceneId: sceneId as never, storyTime: next },
         kind === "linear"
-          ? L("Scenen følger rekkefølgen", "The scene follows the running order")
-          : L(
-              `Merk som ${STORY_KIND_LABEL[kind].toLowerCase()}`,
-              `Mark as ${STORY_KIND_LABEL[kind].toLowerCase()}`,
-            ),
+          ? t("app-script-story-time-section.save.run.217d7895857f")
+          : t("app-script-story-time-section.save.run.6e414cb1d8c3", { value1: String(STORY_KIND_LABEL[kind].toLowerCase()) }),
       ),
     );
   };
@@ -84,7 +69,7 @@ export function StoryTimeSection({
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
         Type
         <select
-          aria-label={L("Fortellingstid", "Story time")}
+          aria-label={t("app-script-story-time-section.story-time-section.aria-label.505b5a3a04ee")}
           value={st.kind}
           disabled={!canEdit}
           onChange={(e) => save(e.target.value as StoryKind, st.anchorSceneId, placement)}
@@ -100,7 +85,7 @@ export function StoryTimeSection({
       {st.kind !== "linear" ? (
         <div className="grid grid-cols-[112px_1fr] gap-1.5">
           <select
-            aria-label={L("Når i historien", "When in the story")}
+            aria-label={t("app-script-story-time-section.story-time-section.aria-label.00af75e9d420")}
             value={placement}
             disabled={!canEdit || !st.anchorSceneId}
             onChange={(e) => save(st.kind, st.anchorSceneId, e.target.value as StoryPlacement)}
@@ -108,12 +93,12 @@ export function StoryTimeSection({
           >
             {(Object.keys(STORY_PLACEMENT_LABEL) as StoryPlacement[]).map((p) => (
               <option key={p} value={p}>
-                {L("Skjer", "Happens")} {STORY_PLACEMENT_LABEL[p]}
+                {t("app-script-story-time-section.story-time-section.option.a59806a48647")} {STORY_PLACEMENT_LABEL[p]}
               </option>
             ))}
           </select>
           <select
-            aria-label={L("Scenen det skjer i forhold til", "The scene it happens in relation to")}
+            aria-label={t("app-script-story-time-section.story-time-section.aria-label.7f5b07ac218a")}
             value={st.anchorSceneId ?? ""}
             disabled={!canEdit}
             onChange={(e) =>
@@ -125,13 +110,13 @@ export function StoryTimeSection({
             }
             className={ctl}
           >
-            <option value="">{L("Velg scene …", "Choose a scene …")}</option>
+            <option value="">{t("app-script-story-time-section.story-time-section.option.76bcf4e55c84")}</option>
             {otherAnchor ? (
               <option value={otherAnchor}>
                 {(() => {
                   const v = Object.values(state.variants).find((x) => x.sceneId === otherAnchor);
                   const heading = v ? formatHeading(v.heading) : "Scene";
-                  return L(`${heading} (ikke i hovedfilmen)`, `${heading} (not in the main film)`);
+                  return t("app-script-story-time-section.story-time-section.const-v-object-values-state-variants-find-x-x-scene-id-other-anchor-const-heading-v-format-heading-v-heading-scene-return-l-heading-ikke-i-hovedfilmen-heading-not-in-the-main-film.9c10c76f625b", { heading: String(heading) });
                 })()}
               </option>
             ) : null}
@@ -149,27 +134,15 @@ export function StoryTimeSection({
       ) : null}
       {editable && !inMain ? (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Fortellingstiden gjelder scenen i alle produksjoner og endres i hovedfilmen.",
-            "Story time applies to the scene in all productions and is changed in the main film.",
-          )}
+          {t("app-script-story-time-section.story-time-section.p.5bb5fb6db2ba")}
         </p>
       ) : null}
       <p className="text-[11px] text-text-tertiary">
         {st.kind === "linear"
-          ? L(
-              "Scenen skjer i historien der den står i filmen.",
-              "The scene happens in the story where it sits in the film.",
-            )
+          ? t("app-script-story-time-section.story-time-section.p.dc33db7b4c6e")
           : st.anchorSceneId
-            ? L(
-                "Karakterenes utseende (kontinuitet) regnes ut fra når scenen skjer i historien, ikke hvor den står i filmen.",
-                "The characters' appearance (continuity) is worked out from when the scene happens in the story, not where it sits in the film.",
-              )
-            : L(
-                "Velg scenen dette skjer i forhold til, så regnes kontinuiteten riktig. Uten valg brukes plassen i filmen.",
-                "Choose the scene this happens in relation to, so continuity is worked out correctly. Without a choice, the place in the film is used.",
-              )}
+            ? t("app-script-story-time-section.story-time-section.p.774137dc39c3")
+            : t("app-script-story-time-section.story-time-section.p.e46f9d52c066")}
       </p>
       {err ? (
         <p role="alert" className="text-xs text-status-danger">

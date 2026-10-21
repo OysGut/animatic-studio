@@ -3,10 +3,11 @@
  * Tidspunktet er FORTELLINGSTID (samme ordning som kontinuiteten, storyTimesCached), ikke rekkefølgen i filmen:
  * et tilbakeblikk som kommer sent i filmen, kjenner ikke til det som skjer senere i fortellingen.
  */
-import { L } from "../i18n";
+
 import type { AssetId, SceneId } from "../ids";
 import type { ProjectState, StoryFact, StoryFactKind, StoryFactKnower } from "../model";
 import { storyTimesCached } from "../continuity";
+import { t as tk } from "@/core/i18n/keyed";
 
 export const MAX_FACT_CHARS = 4000;
 export const MAX_FACT_KNOWERS = 50;
@@ -20,18 +21,18 @@ export interface StoryFactFields {
 
 /** Formkontroll (referansene kontrolleres i kommandoene). */
 export function factError(f: unknown): string | null {
-  if (!f || typeof f !== "object") return L("Faktumet er ugyldig", "The fact is invalid");
+  if (!f || typeof f !== "object") return tk("core-storylab-facts.fact-error.message.4290c084fed9");
   const x = f as Record<string, unknown>;
   if (typeof x["text"] !== "string" || !x["text"].trim())
-    return L("Faktumet mangler tekst", "The fact has no text");
-  if (x["text"].length > MAX_FACT_CHARS) return L("Faktumet er for langt", "The fact is too long");
+    return tk("core-storylab-facts.fact-error.message.43505969a727");
+  if (x["text"].length > MAX_FACT_CHARS) return tk("core-storylab-facts.fact-error.message.3a501081a5a9");
   if (x["kind"] !== "fact" && x["kind"] !== "secret")
-    return L("Ugyldig type faktum", "Invalid kind of fact");
+    return tk("core-storylab-facts.fact-error.message.ba38d4b33896");
   if (x["atSceneId"] !== null && typeof x["atSceneId"] !== "string")
-    return L("Ugyldig scene for faktumet", "Invalid scene for the fact");
+    return tk("core-storylab-facts.fact-error.message.6d025d417478");
   const k = x["knownBy"];
   if (!Array.isArray(k) || k.length > MAX_FACT_KNOWERS)
-    return L("Ugyldig liste over hvem som vet", "Invalid list of who knows");
+    return tk("core-storylab-facts.fact-error.message.cc2906b15f7d");
   const seen = new Set<string>();
   for (const w of k as unknown[]) {
     const o = w as Record<string, unknown> | null;
@@ -40,9 +41,9 @@ export function factError(f: unknown): string | null {
       typeof o["assetId"] !== "string" ||
       (o["fromSceneId"] !== null && typeof o["fromSceneId"] !== "string")
     )
-      return L("Ugyldig liste over hvem som vet", "Invalid list of who knows");
+      return tk("core-storylab-facts.fact-error.message.cc2906b15f7d.2");
     if (seen.has(o["assetId"]))
-      return L("Samme karakter står flere ganger", "The same character is listed more than once");
+      return tk("core-storylab-facts.fact-error.message.40d66c6d8444");
     seen.add(o["assetId"]);
   }
   return null;

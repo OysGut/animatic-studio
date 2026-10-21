@@ -5,18 +5,7 @@
  */
 import { CircleHelp, Film, Layers } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  applyCommand,
-  approveWithImpactCommands,
-  assetVersionImpact,
-  formatHeading,
-  newId,
-  type AssetVariant,
-  type AssetVersion,
-  type ProjectState,
-  type SceneImpact,
-} from "@/core";
+import { applyCommand, approveWithImpactCommands, assetVersionImpact, formatHeading, newId, type AssetVariant, type AssetVersion, type ProjectState, type SceneImpact } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 /** Scenene der godkjenningen endrer noe (eller kan endre noe). Tom liste = godkjenn uten spørsmål. */
 export function useApproveImpact(
@@ -71,11 +61,11 @@ export function ApproveImpactDialog({
     const v = state.variants[o?.variantId ?? c?.variantId ?? ""];
     const prod =
       x.productionId && x.productionId !== productionId
-        ? ` · ${state.productions[x.productionId]?.name ?? L("annen produksjon", "another production")}`
+        ? ` · ${state.productions[x.productionId]?.name ?? t("app-library-approve-impact-dialog.prod.message.a3119ecda93c")}`
         : !x.occurrenceId
-          ? L(" · ikke i noen produksjon", " · not in any production")
+          ? t("app-library-approve-impact-dialog.prod.message.0640a91d3954")
           : "";
-    return `${x.number ? `${x.number}. ` : ""}${v ? formatHeading(v.heading) : "Scene"}${x.active || !x.occurrenceId ? "" : L(" (deaktivert)", " (inactive)")}${prod}`;
+    return `${x.number ? `${x.number}. ` : ""}${v ? formatHeading(v.heading) : "Scene"}${x.active || !x.occurrenceId ? "" : t("app-library-approve-impact-dialog.label.message.dd51b2af2f2d")}${prod}`;
   };
 
   function close() {
@@ -98,10 +88,7 @@ export function ApproveImpactDialog({
       });
       if (!r.ok) {
         setErr(
-          L(
-            `Godkjenningen kan ikke gjøres: ${r.error.message}`,
-            `The approval cannot be made: ${r.error.message}`,
-          ),
+          t("app-library-approve-impact-dialog.confirm.set-err.145c3611aee6", { message: String(r.error.message) }),
         );
         return;
       }
@@ -112,11 +99,8 @@ export function ApproveImpactDialog({
       const e = cmds.run(
         c,
         c.type === "ApproveAssetVersion"
-          ? L(
-              `Godkjenn v${version.number} av «${variant.name}»`,
-              `Approve v${version.number} of “${variant.name}”`,
-            )
-          : L("Bilder i valgte scener", "Images in the chosen scenes"),
+          ? t("app-library-approve-impact-dialog.e.cmds-run.45fc2d59bc59", { number: String(version.number), name: String(variant.name) })
+          : t("app-library-approve-impact-dialog.e.cmds-run.6a89a6a6537b"),
         group,
       );
       if (e) {
@@ -132,20 +116,17 @@ export function ApproveImpactDialog({
       <DialogContent className="max-h-[88vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
           <DialogTitle>
-            {L("Godkjenn", "Approve")} v{version?.number} {L("av «", "of “")}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.dad6f23eb142")} v{version?.number} {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.e5640f20eb11")}
             {variant.name}
-            {L("»", "”")}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-title.d7af7f578283")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Bildet brukes i scenene under. Velg hvilke som skal få det nye bildet – de andre beholder bildet de har nå.",
-              "The image is used in the scenes below. Choose which ones get the new image – the others keep the image they have now.",
-            )}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.dialog-description.4ca829724279")}
           </DialogDescription>
         </DialogHeader>
         {withLayers.length ? (
           <ul
-            aria-label={L("Scener med 2D-scene", "Scenes with a 2D scene")}
+            aria-label={t("app-library-approve-impact-dialog.approve-impact-dialog.aria-label.a4177310e1aa")}
             className="flex flex-col gap-1"
           >
             {withLayers.map((x) => {
@@ -176,25 +157,16 @@ export function ApproveImpactDialog({
                       </span>
                       <span className="block text-[11px] text-text-tertiary">
                         {on
-                          ? L("Får det nye bildet", "Gets the new image")
-                          : L("Beholder bildet den har nå", "Keeps the image it has now")}
+                          ? t("app-library-approve-impact-dialog.approve-impact-dialog.span.e6651dd3fa03")
+                          : t("app-library-approve-impact-dialog.approve-impact-dialog.span.6465b25bfacc")}
                         {locked && on
-                          ? L(
-                              ` (${locked} låst bilde oppdateres)`,
-                              ` (${locked} locked image updated)`,
-                            )
+                          ? t("app-library-approve-impact-dialog.approve-impact-dialog.span.b85e291e1099", { locked: String(locked) })
                           : ""}
                         {follows && !on
-                          ? L(
-                              ` (${follows} bilde låses til dagens versjon)`,
-                              ` (${follows} image locked to today's version)`,
-                            )
+                          ? t("app-library-approve-impact-dialog.approve-impact-dialog.span.2d2255817622", { follows: String(follows) })
                           : ""}
                         {newer
-                          ? L(
-                              ` · ${newer} bilde er låst til en nyere versjon og endres ikke`,
-                              ` · ${newer} image is locked to a newer version and is not changed`,
-                            )
+                          ? t("app-library-approve-impact-dialog.approve-impact-dialog.span.af5aa2d63731", { newer: String(newer) })
                           : ""}
                       </span>
                     </span>
@@ -205,25 +177,19 @@ export function ApproveImpactDialog({
           </ul>
         ) : (
           <p className="text-[13px] text-text-secondary">
-            {L("Ingen 2D-scener får et annet bilde.", "No 2D scenes get a different image.")}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.p.c5bbe94479c9")}
           </p>
         )}
         {otherProductions ? (
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Godkjenningen gjelder hele prosjektet, også andre produksjoner.",
-              "The approval applies to the whole project, including other productions.",
-            )}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.p.a64e1784ca11")}
           </p>
         ) : null}
         {films.length ? (
           <div className="flex flex-col gap-1 border-t border-border pt-2">
             <p className="flex items-center gap-1.5 text-xs text-text-secondary">
               <CircleHelp className="size-3.5 text-text-tertiary" aria-hidden />
-              {L(
-                "Ferdig film kan være påvirket (usikkert – filmen endres ikke, kontroller den selv):",
-                "A finished film may be affected (uncertain – the film is not changed, check it yourself):",
-              )}
+              {t("app-library-approve-impact-dialog.approve-impact-dialog.p.bb7f88302c69")}
             </p>
             <ul className="flex flex-col gap-0.5 pl-5 text-xs text-text-tertiary">
               {films.map((x) => (
@@ -242,9 +208,9 @@ export function ApproveImpactDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={close}>
-            {L("Avbryt", "Cancel")}
+            {t("app-library-approve-impact-dialog.approve-impact-dialog.button.519fccfaff95")}
           </Button>
-          <Button onClick={confirm}>{L("Godkjenn", "Approve")}</Button>
+          <Button onClick={confirm}>{t("app-library-approve-impact-dialog.approve-impact-dialog.button.dad6f23eb142")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -6,10 +6,11 @@
 import { X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { L, type FilmClip, type ProjectState } from "@/core";
+import { type FilmClip, type ProjectState } from "@/core";
 import { drawFilmFrame, type FilmDrawOptions } from "@/engine/compositor/film";
 import { previewPopup } from "@/app/scene-editor/PreviewWindow";
 import { filmImageCache } from "./film-images";
+import { t } from "@/core/i18n/keyed";
 
 export function FilmPopout({
   state,
@@ -50,7 +51,7 @@ export function FilmPopout({
       latest.current.onBlocked();
       return;
     }
-    w.document.title = L("Montering – Animatic Studio", "Assembly – Animatic Studio");
+    w.document.title = t("app-assembly-film-popout.film-popout.use-effect.f2c15c40663d");
     setWin(w);
     const measure = () => setSize({ w: w.innerWidth, h: w.innerHeight });
     measure();
@@ -128,22 +129,19 @@ export function FilmPopout({
         style={{ height: H }}
       >
         <span className="truncate text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-          {L("Montering", "Assembly")}
+          {t("app-assembly-film-popout.film-popout.span.d6a197d2ab21")}
         </span>
         <span className="truncate text-[11px] text-text-tertiary">
           {fw} × {fh}
-          {monochrome ? L(" · svart-hvitt", " · black and white") : ""}
+          {monochrome ? t("app-assembly-film-popout.film-popout.span.6c5cfd24e68b") : ""}
         </span>
         <span className="ml-auto" />
         <button
           type="button"
           onClick={onClose}
           className={previewPopup.iconButton}
-          aria-label={L("Lukk det egne vinduet", "Close this window")}
-          title={L(
-            "Lukk det egne vinduet (filmen vises fortsatt i monteringen)",
-            "Close this window (the film is still shown in the assembly)",
-          )}
+          aria-label={t("app-assembly-film-popout.film-popout.aria-label.24850d1b35ee")}
+          title={t("app-assembly-film-popout.film-popout.title.70def42dc1b7")}
         >
           <X className="size-3.5" aria-hidden />
         </button>
@@ -152,7 +150,7 @@ export function FilmPopout({
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label={L("Filmen på avspillingshodet", "The film at the playhead")}
+          aria-label={t("app-assembly-film-popout.film-popout.aria-label.493c081ca69f")}
           style={{ width: cssW, height: cssH }}
           className="block bg-media"
         />

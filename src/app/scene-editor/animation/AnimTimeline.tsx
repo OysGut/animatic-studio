@@ -1,11 +1,13 @@
 import { useLayoutEffect, useState, useRef, type ReactNode } from "react";
-import { L, type Rational } from "@/core";
+import { type Rational } from "@/core";
 import { animationRuler } from "@/core/animation/time-format";
 import type { Playback } from "../use-playback";
 import type { AnimWindow } from "./TimeNavigator";
 import { PlayRange, type AnimationRange } from "./PlayRange";
+import { RhythmDragLayer, type RhythmDragProps } from "./RhythmDrag";
+import { t as tk } from "@/core/i18n/keyed";
 
-export function AnimTimeline({ fps, duration, playback, view, range, onRange, children }: { fps: Rational; duration: number; playback: Playback; view: AnimWindow; range: AnimationRange; onRange: (r: AnimationRange) => void; children?: ReactNode }) {
+export function AnimTimeline({ fps, duration, playback, view, range, onRange, children, rhythm }: { fps: Rational; duration: number; playback: Playback; view: AnimWindow; range: AnimationRange; onRange: (r: AnimationRange) => void; children?: ReactNode; rhythm?: RhythmDragProps }) {
   const ref = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(1);
   useLayoutEffect(() => {
@@ -18,7 +20,7 @@ export function AnimTimeline({ fps, duration, playback, view, range, onRange, ch
   return <div data-testid="anim-timeline" className="relative flex min-h-0 flex-1 flex-col overflow-y-auto bg-surface-1">
     <div className="ml-40 shrink-0" ref={ref}>
       <PlayRange range={range} duration={duration} view={view} onChange={onRange} />
-      <div data-testid="anim-ruler" role="slider" tabIndex={0} aria-label={L("Avspillingshode", "Playhead")} aria-valuenow={playback.frame} aria-valuemin={0} aria-valuemax={duration - 1}
+      <div data-testid="anim-ruler" role="slider" tabIndex={0} aria-label={tk("app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162")} aria-valuenow={playback.frame} aria-valuemin={0} aria-valuemax={duration - 1}
         className="relative h-8 cursor-ew-resize border-b border-border bg-surface-2 focus-visible:ring-2 focus-visible:ring-focus-ring"
         onKeyDown={e => { if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return; e.preventDefault(); e.stopPropagation(); playback.pause(); playback.setFrame(playback.frame + (e.key === "ArrowRight" ? 1 : -1)); }}
         onPointerDown={e => { playback.pause(); e.currentTarget.setPointerCapture(e.pointerId); seek(e.clientX); }} onPointerMove={e => { if (e.currentTarget.hasPointerCapture(e.pointerId)) seek(e.clientX); }}>
@@ -27,6 +29,9 @@ export function AnimTimeline({ fps, duration, playback, view, range, onRange, ch
       </div>
     </div>
     {children}
+    {rhythm ? <div className="pointer-events-none absolute inset-y-0 ml-40" style={{ width: "calc(100% - 10rem)" }}>
+      <RhythmDragLayer {...rhythm} view={view} duration={duration} />
+    </div> : null}
     <div className="pointer-events-none absolute inset-y-0 ml-40" style={{ width: "calc(100% - 10rem)" }}>
       <div data-testid="anim-playhead" data-frame={playback.frame} className="absolute inset-y-0 w-px bg-accent-brand" style={{ left: `${(playback.frame - view.from) / view.span * 100}%` }} />
     </div>

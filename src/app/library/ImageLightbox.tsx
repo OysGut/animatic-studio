@@ -27,34 +27,14 @@ import {
   Rotate3d,
   Shuffle,
   ZoomIn,
+  Palette,
 } from "lucide-react";
 import { TurnaroundPanel, UpscalePanel, VariationPanel, ViewLabel } from "./ImageAiPanels";
+import { HarmonizePanel } from "./HarmonizePanel";
 import { PartsPanel, type PartsTab } from "./ImagePartsPanel";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  L,
-  ASSET_KIND_LABEL,
-  ASSET_KINDS,
-  cellAt,
-  cellsFromLines,
-  evenLines,
-  formatJobTime,
-  jobForResult,
-  jobFromRow,
-  moveLine,
-  newId,
-  polygonBounds,
-  sortedAssets,
-  stripAttachedSection,
-  tileName,
-  type Asset,
-  type AssetKind,
-  type AssetVersion,
-  type PartAnchor,
-  type PixelBox,
-  type ProjectState,
-} from "@/core";
+import { ASSET_KIND_LABEL, ASSET_KINDS, cellAt, cellsFromLines, evenLines, formatJobTime, jobForResult, jobFromRow, moveLine, newId, polygonBounds, sortedAssets, stripAttachedSection, tileName, type Asset, type AssetKind, type AssetVersion, type PartAnchor, type PixelBox, type ProjectState } from "@/core";
 import { fetchJobForResult } from "@/adapters/browser/ai";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
 import type { Commands } from "@/app/project/use-commands";
@@ -76,6 +56,7 @@ import {
   type ImageTarget,
   type Polygon,
 } from "./image-actions";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Beskrivelsen som laget filen (fra AI-jobbloggen), eller null når bildet ikke er laget med AI. */
 export function useImagePrompt(projectId: string, path: string | null) {
@@ -116,6 +97,11 @@ export interface LightboxTools {
   /** Et nytt bilde er lagret (f.eks. for å vise det eller ta det i bruk). */
   readonly onSaved?: (r: { versionId: string; variantId: string; assetId: string }) => void;
   /**
+   * P8 «Bruk bare her» (REQ-0141): det harmoniserte bildet brukes bare i plakaten eller scenen som åpnet
+   * visningen. Utelatt: valget vises ikke (biblioteket).
+   */
+  readonly onUseHere?: (versionId: string) => void;
+  /**
    * «Legg delene i scenen» (Mars 15.10.2026, «Deler …»): delene som er laget, med plassen i originalbildet
    * (`box`, i `source`-bildets piksler) og ankerpunktet. Utelatt: knappen vises ikke.
    */
@@ -136,7 +122,7 @@ export interface LightboxPart {
 }
 
 type Mode = "view" | "select" | "grid" | "parts";
-type AiPanel = "views" | "upscale" | "variations";
+export type AiPanel = "views" | "upscale" | "variations" | "harmonize";
 
 /** Rutenettet i «Del opp»: antall og delelinjene (brøkdeler 0–1), Mars 15.10.2026. */
 interface GridState {
@@ -342,7 +328,7 @@ export function ImageLightbox({
 
   async function trimNow() {
     if (!tools || !version || !url) return;
-    await job(L("Fjerner luften rundt …", "Removing the air around …"), async () => {
+    await job(tk("app-library-image-lightbox.trim-now.job.fe9d03eca4af"), async () => {
       const src = await loadImage(url);
       const info = trimCanvasInfo(src.canvas);
       if (!("canvas" in info)) throw new Error(noTrimMessage(info.reason));
@@ -354,27 +340,15 @@ export function ImageLightbox({
         projectId,
         { kind: "existing", assetId: tools.asset.id, variantId: version.variantId },
         file,
-        L(
-          `Luften rundt fjernet fra v${version.number} (${t.width} × ${t.height} px).`,
-          `Air removed around v${version.number} (${t.width} × ${t.height} px).`,
-        ),
-        L(
-          `Fjern luften rundt «${tools.asset.name}»`,
-          `Remove the air around “${tools.asset.name}”`,
-        ),
+        tk("app-library-image-lightbox.r.save-image-to.553398db5c84", { number: String(version.number), width: String(t.width), height: String(t.height) }),
+        tk("app-library-image-lightbox.r.save-image-to.10a3fd10fec5", { name: String(tools.asset.name) }),
       );
       if ("error" in r) throw new Error(r.error);
       tools.onSaved?.(r);
       return (
-        L(
-          `Lagret som ny versjon (${t.width} × ${t.height} px). Originalen er beholdt.`,
-          `Saved as a new version (${t.width} × ${t.height} px). The original is kept.`,
-        ) +
+        tk("app-library-image-lightbox.trim-now.job.d16df9bc2dac", { width: String(t.width), height: String(t.height) }) +
         (info.by === "color"
-          ? L(
-              " (Luften ble funnet ut fra den ensfargede bakgrunnen.)",
-              " (The air was found from the single-colour background.)",
-            )
+          ? tk("app-library-image-lightbox.trim-now.job.ac476c38ef1c")
           : "")
       );
     });
@@ -388,24 +362,12 @@ export function ImageLightbox({
           <DialogDescription>
             {imgW && imgH ? `${imgW} × ${imgH} px. ` : ""}
             {drawMode
-              ? L(
-                  "Tegn en fri ramme rundt det du vil ta ut – slipp for å lukke den. Hold mellomrom og dra for å flytte bildet.",
-                  "Draw a free frame around what you want to take out – release to close it. Hold space and drag to move the image.",
-                )
+              ? tk("app-library-image-lightbox.image-lightbox.dialog-description.2f024db283ed")
               : mode === "grid"
-                ? L(
-                    "Dra delelinjene for å flytte dem, hver for seg. Klikk på en rute for å gi den et navn i sidepanelet.",
-                    "Drag the dividing lines to move them, one at a time. Click a tile to name it in the side panel.",
-                  )
+                ? tk("app-library-image-lightbox.image-lightbox.dialog-description.d106631702ca")
                 : mode === "parts"
-                  ? L(
-                      "Skriv navnet på delene som skal lages med AI, og velg ankerpunkt for hver.",
-                      "Write the names of the parts to make with AI, and choose an anchor point for each.",
-                    )
-                  : L(
-                      "Rullehjul eller knappene zoomer, dra for å flytte rundt.",
-                      "The scroll wheel or buttons zoom, drag to move around.",
-                    )}
+                  ? tk("app-library-image-lightbox.image-lightbox.dialog-description.13eb9bb6f8f8")
+                  : tk("app-library-image-lightbox.image-lightbox.dialog-description.afe54a67be63")}
           </DialogDescription>
         </DialogHeader>
         <div className="flex min-h-0 flex-1 gap-3">
@@ -415,7 +377,7 @@ export function ImageLightbox({
                 size="sm"
                 variant="ghost"
                 onClick={() => zoomAt(v.z / 1.5)}
-                aria-label={L("Zoom ut", "Zoom out")}
+                aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.84fc5bc845d1")}
               >
                 <Minus />
               </Button>
@@ -426,12 +388,12 @@ export function ImageLightbox({
                 size="sm"
                 variant="ghost"
                 onClick={() => zoomAt(v.z * 1.5)}
-                aria-label={L("Zoom inn", "Zoom in")}
+                aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.83389ff73896")}
               >
                 <Plus />
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setView(null)}>
-                <Maximize2 /> {L("Tilpass", "Fit")}
+                <Maximize2 /> {tk("app-library-image-lightbox.image-lightbox.button.70a5a553290b")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => zoomAt(1)}>
                 100 %
@@ -515,7 +477,7 @@ export function ImageLightbox({
                 />
               ) : (
                 <p className="absolute inset-0 flex items-center justify-center text-xs text-text-tertiary">
-                  {L("Henter bildet …", "Loading the image …")}
+                  {tk("app-library-image-lightbox.image-lightbox.p.5a90f60107ec")}
                 </p>
               )}
               {/* Markering og ruter tegnes oppå bildet (skjermkoordinater) */}
@@ -603,13 +565,10 @@ export function ImageLightbox({
                           aria-valuenow={Math.round(f * 100)}
                           aria-label={
                             vertical
-                              ? L(`Loddrett delelinje ${i + 1}`, `Vertical dividing line ${i + 1}`)
-                              : L(
-                                  `Vannrett delelinje ${i + 1}`,
-                                  `Horizontal dividing line ${i + 1}`,
-                                )
+                              ? tk("app-library-image-lightbox.image-lightbox.aria-label.1fe63ef8ec35", { value1: String(i + 1) })
+                              : tk("app-library-image-lightbox.image-lightbox.aria-label.2a58853c65ce", { value1: String(i + 1) })
                           }
-                          title={L("Dra for å flytte delelinjen", "Drag to move the dividing line")}
+                          title={tk("app-library-image-lightbox.image-lightbox.title.724c71b03118")}
                           className={
                             "group absolute z-10 flex touch-none items-center justify-center outline-none " +
                             (vertical ? "w-3 cursor-col-resize" : "h-3 cursor-row-resize")
@@ -666,19 +625,16 @@ export function ImageLightbox({
             </div>
           </div>
           <aside
-            aria-label={L(
-              "Bildeverktøy og beskrivelsen som laget bildet",
-              "Image tools and the description that made the image",
-            )}
+            aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.b5ae59f68645")}
             className="flex w-[340px] shrink-0 flex-col gap-3 overflow-y-auto rounded-sm border border-border bg-surface-1 p-2"
           >
             {tools && canEdit ? (
               <section
-                aria-label={L("Bildeverktøy", "Image tools")}
+                aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.5750bf7d33c3")}
                 className="flex flex-col gap-2"
               >
                 <h3 className="text-[13px] font-medium text-text-primary">
-                  {L("Bildeverktøy", "Image tools")}
+                  {tk("app-library-image-lightbox.image-lightbox.h3.5750bf7d33c3")}
                 </h3>
                 {mode === "view" ? (
                   <>
@@ -689,12 +645,9 @@ export function ImageLightbox({
                           variant="secondary"
                           disabled={!!busy}
                           onClick={() => version && tools.onCutout!(version)}
-                          title={L(
-                            "Fjern bakgrunnen (gratis, ny versjon)",
-                            "Remove the background (free, new version)",
-                          )}
+                          title={tk("app-library-image-lightbox.image-lightbox.title.33e3bad6fa05")}
                         >
-                          <Scissors /> {L("Frilegg …", "Cut out …")}
+                          <Scissors /> {tk("app-library-image-lightbox.image-lightbox.button.408f557ce365")}
                         </Button>
                       ) : null}
                       <Button
@@ -702,12 +655,9 @@ export function ImageLightbox({
                         variant="secondary"
                         disabled={!!busy}
                         onClick={() => void trimNow()}
-                        title={L(
-                          "Beskjær tett rundt figuren i et frilagt bilde (gratis, ny versjon)",
-                          "Crop tightly around the figure in a cut-out image (free, new version)",
-                        )}
+                        title={tk("app-library-image-lightbox.image-lightbox.title.208a59a6af29")}
                       >
-                        <Shrink /> {L("Fjern luften rundt", "Remove the air around")}
+                        <Shrink /> {tk("app-library-image-lightbox.image-lightbox.button.282e98f92d24")}
                       </Button>
                       <Button
                         size="sm"
@@ -718,12 +668,9 @@ export function ImageLightbox({
                           setPoly(null);
                           setMsg(null);
                         }}
-                        title={L(
-                          "Tegn en fri ramme rundt et utsnitt og lagre det som eget bilde",
-                          "Draw a free frame around a crop and save it as its own image",
-                        )}
+                        title={tk("app-library-image-lightbox.image-lightbox.title.4908c379bdbc")}
                       >
-                        <Crop /> {L("Utsnitt …", "Crop …")}
+                        <Crop /> {tk("app-library-image-lightbox.image-lightbox.button.4c8db4438427")}
                       </Button>
                       <Button
                         size="sm"
@@ -733,12 +680,9 @@ export function ImageLightbox({
                           setMode("grid");
                           setMsg(null);
                         }}
-                        title={L(
-                          "Del et karakterark i like store ruter",
-                          "Split a character sheet into equal tiles",
-                        )}
+                        title={tk("app-library-image-lightbox.image-lightbox.title.694681aac8d3")}
                       >
-                        <Grid3x3 /> {L("Del opp i ruter …", "Split into tiles …")}
+                        <Grid3x3 /> {tk("app-library-image-lightbox.image-lightbox.button.ffd161fd3e71")}
                       </Button>
                       <Button
                         size="sm"
@@ -751,24 +695,18 @@ export function ImageLightbox({
                           setErased([]);
                           setMsg(null);
                         }}
-                        title={L(
-                          "Del bildet i egne objekter (f.eks. dørramme og dørblad) med ankerpunkt, så de kan animeres hver for seg",
-                          "Split the image into separate objects (e.g. door frame and door leaf) with an anchor point, so they can be animated separately",
-                        )}
+                        title={tk("app-library-image-lightbox.image-lightbox.title.936fa9fb8de7")}
                       >
-                        <Layers /> {L("Deler …", "Parts …")}
+                        <Layers /> {tk("app-library-image-lightbox.image-lightbox.button.d77d3407b95a")}
                       </Button>
                       <Button
                         size="sm"
                         variant={panel === "upscale" ? "default" : "secondary"}
                         disabled={!!busy}
                         onClick={() => setPanel((p) => (p === "upscale" ? null : "upscale"))}
-                        title={L(
-                          "Øk oppløsningen med AI (koster litt, bekreftes først)",
-                          "Increase the resolution with AI (costs a little, confirmed first)",
-                        )}
+                        title={tk("app-library-image-lightbox.image-lightbox.title.d5a8f1e2eb9e")}
                       >
-                        <ZoomIn /> {L("Oppskaler …", "Upscale …")}
+                        <ZoomIn /> {tk("app-library-image-lightbox.image-lightbox.button.d73b9919a037")}
                       </Button>
                     </div>
                     <ViewLabel tools={tools} version={version!} />
@@ -786,6 +724,13 @@ export function ImageLightbox({
                         projectId={projectId}
                         onClose={() => setPanel(null)}
                       />
+                    ) : panel === "harmonize" ? (
+                      <HarmonizePanel
+                        tools={tools}
+                        version={version!}
+                        projectId={projectId}
+                        onClose={() => setPanel(null)}
+                      />
                     ) : (
                       <div className="flex flex-wrap gap-1.5">
                         <Button
@@ -793,24 +738,28 @@ export function ImageLightbox({
                           variant="secondary"
                           disabled={!!busy}
                           onClick={() => setPanel("views")}
-                          title={L(
-                            "Lag front, side, bak … av samme karakter eller objekt med AI, så de henger sammen",
-                            "Make front, side, back … of the same character or object with AI, so they match",
-                          )}
+                          title={tk("app-library-image-lightbox.image-lightbox.title.f2be8be6af4c")}
                         >
-                          <Rotate3d /> {L("Lag andre vinkler …", "Make other angles …")}
+                          <Rotate3d /> {tk("app-library-image-lightbox.image-lightbox.button.5a973df63c8f")}
                         </Button>
                         <Button
                           size="sm"
                           variant="secondary"
                           disabled={!!busy}
                           onClick={() => setPanel("variations")}
-                          title={L(
-                            "Lag samme motiv med én ting forskjellig (f.eks. døren åpen) med AI",
-                            "Make the same subject with one thing different (e.g. the door open) with AI",
-                          )}
+                          title={tk("app-library-image-lightbox.image-lightbox.title.68d3e0b359ce")}
                         >
-                          <Shuffle /> {L("Lag variasjoner …", "Make variations …")}
+                          <Shuffle /> {tk("app-library-image-lightbox.image-lightbox.button.646da0c720fb")}
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={!!busy}
+                          data-testid="harmonize-open"
+                          onClick={() => setPanel("harmonize")}
+                          title={tk("app-library-image-lightbox.image-lightbox.title.189db72c5164")}
+                        >
+                          <Palette /> {tk("app-library-image-lightbox.image-lightbox.button.6015d99f816d")}
                         </Button>
                       </div>
                     )}
@@ -902,15 +851,15 @@ export function ImageLightbox({
               </section>
             ) : null}
             <section
-              aria-label={L("Beskrivelsen som laget bildet", "The description that made the image")}
+              aria-label={tk("app-library-image-lightbox.image-lightbox.aria-label.c543dfa37997")}
               className="flex flex-col gap-2"
             >
               <h3 className="flex items-center gap-1 text-[13px] font-medium text-text-primary">
                 <TextQuote className="size-4" aria-hidden />{" "}
-                {L("Beskrivelse (prompt)", "Description (prompt)")}
+                {tk("app-library-image-lightbox.image-lightbox.h3.5e432baf86dc")}
               </h3>
               {info.loading ? (
-                <p className="text-xs text-text-tertiary">{L("Henter …", "Loading …")}</p>
+                <p className="text-xs text-text-tertiary">{tk("app-library-image-lightbox.image-lightbox.p.20a91f3deb1e")}</p>
               ) : info.prompt ? (
                 <>
                   <p className="text-[11px] text-text-tertiary">
@@ -928,7 +877,7 @@ export function ImageLightbox({
                           onOpenChange(false);
                         }}
                       >
-                        <TextQuote /> {L("Sett inn denne beskrivelsen", "Insert this description")}
+                        <TextQuote /> {tk("app-library-image-lightbox.image-lightbox.button.15018526ca50")}
                       </Button>
                     ) : null}
                     <Button
@@ -940,17 +889,14 @@ export function ImageLightbox({
                           .then(() => setCopied(true));
                       }}
                     >
-                      <Copy /> {copied ? L("Kopiert", "Copied") : L("Kopier", "Copy")}
+                      <Copy /> {copied ? tk("app-library-image-lightbox.image-lightbox.button.901c339103c5") : tk("app-library-image-lightbox.image-lightbox.button.2714219c21bc")}
                     </Button>
                   </div>
                 </>
               ) : (
                 <p className="text-xs text-text-tertiary">
-                  {L(
-                    "Bildet er ikke laget med AI (lastet opp eller tegnet), så det har ingen beskrivelse.",
-                    "The image was not made with AI (uploaded or drawn), so it has no description.",
-                  )}
-                  {version?.note ? L(` Merknad: ${version.note}`, ` Note: ${version.note}`) : ""}
+                  {tk("app-library-image-lightbox.image-lightbox.p.1778bb211aa3")}
+                  {version?.note ? tk("app-library-image-lightbox.image-lightbox.p.45b657b30f51", { note: String(version.note) }) : ""}
                 </p>
               )}
             </section>
@@ -985,18 +931,18 @@ function TargetPicker({
   );
   return (
     <fieldset className="flex flex-col gap-1.5 text-xs text-text-secondary">
-      <legend className="mb-1">{L("Lagres i", "Saved in")}</legend>
+      <legend className="mb-1">{tk("app-library-image-lightbox.target-picker.legend.384804aaea00")}</legend>
       <label className="flex items-center gap-1.5">
         <input
           type="radio"
           checked={value.kind === "existing"}
           onChange={() => onChange({ ...value, kind: "existing" })}
         />
-        {L("Eksisterende objekt", "Existing object")}
+        {tk("app-library-image-lightbox.target-picker.label.38ffb1de03e1")}
       </label>
       {value.kind === "existing" ? (
         <select
-          aria-label={L("Objekt", "Object")}
+          aria-label={tk("app-library-image-lightbox.target-picker.aria-label.7c65528cbe6b")}
           value={value.assetId}
           onChange={(e) => onChange({ ...value, assetId: e.target.value })}
           className={field}
@@ -1004,7 +950,7 @@ function TargetPicker({
           {assets.map((a) => (
             <option key={a.id} value={a.id}>
               {a.name} ({ASSET_KIND_LABEL[a.kind]})
-              {a.id === asset.id ? L(" – dette", " – this one") : ""}
+              {a.id === asset.id ? tk("app-library-image-lightbox.target-picker.option.b6b823c4456e") : ""}
             </option>
           ))}
         </select>
@@ -1016,8 +962,8 @@ function TargetPicker({
           onChange={() => onChange({ ...value, kind: "new" })}
         />
         {allowEach
-          ? L("Ett nytt objekt per rute", "A new object per tile")
-          : L("Nytt objekt", "New object")}
+          ? tk("app-library-image-lightbox.target-picker.label.8b02d838cac1")
+          : tk("app-library-image-lightbox.target-picker.label.bc400b391679")}
       </label>
       {value.kind === "new" ? (
         <select
@@ -1080,7 +1026,7 @@ function SelectionPanel({
   onDone: () => void;
 }) {
   const [name, setName] = useState(
-    L(`${tools.asset.name} – utsnitt`, `${tools.asset.name} – crop`),
+    tk("app-library-image-lightbox.name-set-name.use-state.f0641eebdc00", { name: String(tools.asset.name) }),
   );
   const [target, setTarget] = useState<TargetChoice>({
     kind: "new",
@@ -1093,7 +1039,7 @@ function SelectionPanel({
   const [trim, setTrim] = useState(true);
   async function save() {
     if (!poly) return;
-    await onJob(L("Lagrer utsnittet …", "Saving the crop …"), async () => {
+    await onJob(tk("app-library-image-lightbox.save.on-job.d86e62c5cb47"), async () => {
       const src = await loadImage(url);
       // Markeringen er i bildets visningsmål; filen kan ha andre mål (skaler punktene)
       const k = { x: src.w / (version.width || src.w), y: src.h / (version.height || src.h) };
@@ -1101,10 +1047,7 @@ function SelectionPanel({
       const b = polygonBounds(pts, src.w, src.h);
       if (!b)
         throw new Error(
-          L(
-            "Markeringen er for liten. Tegn en større ramme.",
-            "The selection is too small. Draw a larger frame.",
-          ),
+          tk("app-library-image-lightbox.save.on-job.5bd7bbdd287e"),
         );
       const c = cropCanvas(src, b, pts, trim);
       const file = await canvasToPng(c, name);
@@ -1114,41 +1057,29 @@ function SelectionPanel({
         projectId,
         targetFor(target, name, version, tools.asset),
         file,
-        L(
-          `Utsnitt «${name.trim()}» fra ${tools.asset.name} v${version.number} (${c.width} × ${c.height} px).`,
-          `Crop “${name.trim()}” from ${tools.asset.name} v${version.number} (${c.width} × ${c.height} px).`,
-        ),
-        L(`Utsnitt «${name.trim()}»`, `Crop “${name.trim()}”`),
+        tk("app-library-image-lightbox.r.save-image-to.92a351401678", { value1: String(name.trim()), name: String(tools.asset.name), number: String(version.number), width: String(c.width), height: String(c.height) }),
+        tk("app-library-image-lightbox.r.save-image-to.f943d92d2010", { value1: String(name.trim()) }),
       );
       if ("error" in r) throw new Error(r.error);
       tools.onSaved?.(r);
       onDone();
       const where =
         target.kind === "new"
-          ? L(`det nye objektet «${name.trim()}»`, `the new object “${name.trim()}”`)
-          : L(
-              `«${tools.state.assets[target.assetId]?.name ?? ""}»`,
-              `“${tools.state.assets[target.assetId]?.name ?? ""}”`,
-            );
-      return L(
-        `Utsnittet er lagret som nytt bilde i ${where}.`,
-        `The crop is saved as a new image in ${where}.`,
-      );
+          ? tk("app-library-image-lightbox.where.on-job.617b13d90316", { value1: String(name.trim()) })
+          : tk("app-library-image-lightbox.where.on-job.2debdc89bd73", { value1: String(tools.state.assets[target.assetId]?.name ?? "") });
+      return tk("app-library-image-lightbox.save.on-job.b449aeec09e6", { where: String(where) });
     });
   }
   return (
     <div className="flex flex-col gap-2">
       {!poly ? (
         <p className="text-xs text-text-secondary">
-          {L(
-            "Hold museknappen nede og tegn rundt det du vil ta ut. Alt utenfor blir gjennomsiktig.",
-            "Hold the mouse button down and draw around what you want to take out. Everything outside becomes transparent.",
-          )}
+          {tk("app-library-image-lightbox.selection-panel.p.b0ad79651f44")}
         </p>
       ) : (
         <>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Navn på utsnittet", "Name of the crop")}
+            {tk("app-library-image-lightbox.selection-panel.label.222c695aa6b0")}
             <input
               value={name}
               maxLength={200}
@@ -1164,21 +1095,21 @@ function SelectionPanel({
           />
           <label className="flex items-center gap-1.5 text-xs text-text-secondary">
             <input type="checkbox" checked={trim} onChange={(e) => setTrim(e.target.checked)} />
-            {L("Fjern luften rundt", "Remove the air around")}
+            {tk("app-library-image-lightbox.selection-panel.label.30c8da238a5d")}
           </label>
         </>
       )}
       <div className="flex flex-wrap gap-1.5">
         <Button size="sm" disabled={!poly || !!busy || !name.trim()} onClick={() => void save()}>
-          <Crop /> {L("Lagre utsnittet", "Save crop")}
+          <Crop /> {tk("app-library-image-lightbox.selection-panel.button.dca0fda644f1")}
         </Button>
         {poly ? (
           <Button size="sm" variant="ghost" disabled={!!busy} onClick={onRedraw}>
-            {L("Tegn på nytt", "Draw again")}
+            {tk("app-library-image-lightbox.selection-panel.button.5cec689b9402")}
           </Button>
         ) : null}
         <Button size="sm" variant="ghost" disabled={!!busy} onClick={onDone}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-library-image-lightbox.selection-panel.button.2cafa3f9383a")}
         </Button>
       </div>
     </div>
@@ -1228,7 +1159,7 @@ function GridPanel({
   const n = grid.cols * grid.rows;
   const base = prefix.trim() || tools.asset.name;
   async function split() {
-    await onJob(L(`Deler opp i ${n} ruter …`, `Splitting into ${n} tiles …`), async () => {
+    await onJob(tk("app-library-image-lightbox.split.on-job.df0e9c6a4fd3", { n: String(n) }), async () => {
       const src = await loadImage(url);
       // Delelinjene er brøkdeler: de gjelder også når filen har andre mål enn visningen
       const cells = cellsFromLines(src.w, src.h, grid.xs, grid.ys);
@@ -1255,30 +1186,24 @@ function GridPanel({
           projectId,
           targetFor(target, label, version, tools.asset),
           file,
-          L(
-            `Rute ${i + 1} av ${cells.length} («${label}») fra ${tools.asset.name} v${version.number}.`,
-            `Tile ${i + 1} of ${cells.length} (“${label}”) from ${tools.asset.name} v${version.number}.`,
-          ),
-          L(`Del opp «${tools.asset.name}» i ruter`, `Split “${tools.asset.name}” into tiles`),
+          tk("app-library-image-lightbox.r.save-image-to.3a99853fee25", { value1: String(i + 1), length: String(cells.length), label: String(label), name: String(tools.asset.name), number: String(version.number) }),
+          tk("app-library-image-lightbox.r.save-image-to.2b14e6733108", { name: String(tools.asset.name) }),
           group,
         );
         if ("error" in r)
-          throw new Error(L(`Rute ${i + 1}: ${r.error}`, `Tile ${i + 1}: ${r.error}`));
+          throw new Error(tk("app-library-image-lightbox.split.on-job.8ae526ba5754", { value1: String(i + 1), error: String(r.error) }));
         saved++;
         if (i === cells.length - 1) tools.onSaved?.(r);
       }
       onDone();
-      return L(
-        `${saved} ruter er lagret som nye bilder${empty ? ` (${empty} tomme hoppet over)` : ""}. Sett vinkelen på hvert bilde i stor visning.`,
-        `${saved} tiles are saved as new images${empty ? ` (${empty} empty skipped)` : ""}. Set the angle on each image in the large view.`,
-      );
+      return empty ? tk("app-library-image-lightbox.tiles-saved-skipped", { saved, empty }) : tk("app-library-image-lightbox.tiles-saved", { saved });
     });
   }
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-end gap-2 text-xs text-text-secondary">
         <label className="flex flex-col gap-1">
-          {L("Kolonner", "Columns")}
+          {tk("app-library-image-lightbox.grid-panel.label.e8a814a178e6")}
           <input
             type="number"
             min={1}
@@ -1291,7 +1216,7 @@ function GridPanel({
           />
         </label>
         <label className="flex flex-col gap-1">
-          {L("Rader", "Rows")}
+          {tk("app-library-image-lightbox.grid-panel.label.b2e74fd75550")}
           <input
             type="number"
             min={1}
@@ -1304,18 +1229,15 @@ function GridPanel({
           />
         </label>
         <span className="pb-1.5">
-          = {n} {L("bilder", "images")}
+          = {n} {tk("app-library-image-lightbox.grid-panel.span.1de987a78e52")}
         </span>
       </div>
       <p className="text-[11px] text-text-tertiary">
-        {L(
-          "Dra delelinjene i bildet for å flytte dem. Endrer du antallet, fordeles linjene jevnt igjen.",
-          "Drag the dividing lines in the image to move them. If you change the number, the lines are spread evenly again.",
-        )}
+        {tk("app-library-image-lightbox.grid-panel.p.37259e891eec")}
       </p>
       <fieldset className="flex flex-col gap-1 text-xs text-text-secondary">
         <legend className="mb-1">
-          {L("Navn på rutene (tomt: navn + nummer)", "Names of the tiles (empty: name + number)")}
+          {tk("app-library-image-lightbox.grid-panel.legend.11eb638c07b3")}
         </legend>
         <div className="flex max-h-56 flex-col gap-1 overflow-y-auto pr-1">
           {Array.from({ length: n }, (_, i) => (
@@ -1334,7 +1256,7 @@ function GridPanel({
                 value={names[i] ?? ""}
                 maxLength={200}
                 placeholder={`${base} ${i + 1}`}
-                aria-label={L(`Navn på rute ${i + 1}`, `Name of tile ${i + 1}`)}
+                aria-label={tk("app-library-image-lightbox.grid-panel.aria-label.23fd5837ab7d", { value1: String(i + 1) })}
                 onFocus={() => onActive(i)}
                 onBlur={() => onActive(null)}
                 onChange={(e) => {
@@ -1359,19 +1281,19 @@ function GridPanel({
         allowEach
       />
       <label className="flex flex-col gap-1 text-xs text-text-secondary">
-        {L("Navn (får nummer 1, 2, 3 …)", "Name (numbered 1, 2, 3 …)")}
+        {tk("app-library-image-lightbox.grid-panel.label.58e45a32bed8")}
         <input value={prefix} onChange={(e) => setPrefix(e.target.value)} className={field} />
       </label>
       <label className="flex items-center gap-1.5 text-xs text-text-secondary">
         <input type="checkbox" checked={trim} onChange={(e) => setTrim(e.target.checked)} />
-        {L("Fjern luften rundt hver rute", "Remove the air around each tile")}
+        {tk("app-library-image-lightbox.grid-panel.label.8e9c244dd4b2")}
       </label>
       <div className="flex flex-wrap gap-1.5">
         <Button size="sm" disabled={!!busy || n < 2} onClick={() => void split()}>
-          <Grid3x3 /> {L("Del opp nå", "Make the split")}
+          <Grid3x3 /> {tk("app-library-image-lightbox.grid-panel.button.f45726c387aa")}
         </Button>
         <Button size="sm" variant="ghost" disabled={!!busy} onClick={onDone}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-library-image-lightbox.grid-panel.button.3e4ff7d040c9")}
         </Button>
       </div>
     </div>

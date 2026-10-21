@@ -5,10 +5,11 @@
  */
 import { ListChecks } from "lucide-react";
 import { useState } from "react";
-import { contentSyncText, L, type ProjectState, type SceneContentSync } from "@/core";
+import { contentSyncText, type ProjectState, type SceneContentSync } from "@/core";
 import { useSession } from "@/app/auth/use-session";
 import { AssetWorklistDialog } from "@/app/library/AssetWorklistDialog";
 import { useCommands, type Commands } from "@/app/project/use-commands";
+import { t } from "@/core/i18n/keyed";
 
 export function ContentSyncFlag({
   state,
@@ -38,17 +39,14 @@ export function ContentSyncFlag({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        title={L(`${text}. Åpne arbeidslisten …`, `${text}. Open the worklist …`)}
-        aria-label={L(
-          `Ressurs oppdatert: ${text}. Åpne arbeidslisten`,
-          `Asset updated: ${text}. Open the worklist`,
-        )}
+        title={t("app-assembly-content-sync-flag.content-sync-flag.title.29374ef3194f", { text: String(text) })}
+        aria-label={t("app-assembly-content-sync-flag.content-sync-flag.aria-label.eb0da6188e26", { text: String(text) })}
         data-testid="content-sync-flag"
         className="inline-flex h-5 shrink-0 items-center gap-1 whitespace-nowrap rounded-sm border border-status-uncertain/50 bg-surface-2 px-1.5 text-[11px] text-text-primary hover:bg-surface-3"
       >
         <ListChecks className="size-3 text-status-uncertain" aria-hidden />
         <span className={compact ? "hidden 2xl:inline" : undefined}>
-          {L("Ressurs oppdatert", "Asset updated")}
+          {t("app-assembly-content-sync-flag.content-sync-flag.span.a775e049bd65")}
         </span>
       </button>
       {open ? (

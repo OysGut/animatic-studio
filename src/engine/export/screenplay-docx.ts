@@ -4,9 +4,10 @@
  * øverst til høyre fra side 2. Word bryter selv sidene; (MORE)/(CONT'D) settes ikke inn automatisk i Word.
  */
 import { zipSync, strToU8 } from "fflate";
-import { L, type BlockKind } from "@/core";
+import { type BlockKind } from "@/core";
 import type { PaginationScene } from "@/core/screenplay";
 import type { ExportNote } from "@/core/notes";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Kommentar i dokumentet (notat, DEC-0031). */
 interface CommentMark {
@@ -158,10 +159,11 @@ function commentXml(id: number, n: ExportNote): string {
     .split("\n")
     .map((line) => `<w:p><w:r><w:t xml:space="preserve">${esc(line)}</w:t></w:r></w:p>`)
     .join("");
-  return `<w:comment w:id="${id}" w:author="${esc(n.author || L("Ukjent", "Unknown"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
+  return `<w:comment w:id="${id}" w:author="${esc(n.author || tk("engine-export-screenplay-docx.comment-xml.esc.e1c01748c122"))}"${date} w:initials="${esc(initials)}">${paras}</w:comment>`;
 }
 
-const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/><w:lang w:val="nb-NO"/>`;
+const RPR = `<w:rFonts w:ascii="Courier New" w:hAnsi="Courier New" w:cs="Courier New" w:eastAsia="Courier New"/><w:sz w:val="24"/><w:szCs w:val="24"/>`;
+const rpr = (lang: string) => `${RPR}<w:lang w:val="${lang.replace(/[^A-Za-z0-9-]/g, "")}"/>`;
 
 function sectPr(opts: { header: boolean; titlePg: boolean; start?: number }): string {
   return (
@@ -173,6 +175,8 @@ function sectPr(opts: { header: boolean; titlePg: boolean; start?: number }): st
 }
 
 export interface DocxOptions {
+  /** Språkmerket i dokumentet (BCP-47), for stavekontroll og orddeling. Standard «nb-NO». */
+  readonly language?: string;
   readonly title?: string;
   readonly titlePage?: readonly string[];
   /** Notater som Word-kommentarer (DEC-0031). Nøkler: blokk-ID og forekomst-ID. */
@@ -224,7 +228,7 @@ export function screenplayDocx(
   const styles =
     `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n` +
     `<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">` +
-    `<w:docDefaults><w:rPrDefault><w:rPr>${RPR}</w:rPr></w:rPrDefault>` +
+    `<w:docDefaults><w:rPrDefault><w:rPr>${rpr(opts.language ?? "nb-NO")}</w:rPr></w:rPrDefault>` +
     `<w:pPrDefault><w:pPr><w:spacing w:before="0" w:after="0" w:line="${LINE}" w:lineRule="exact"/><w:widowControl w:val="0"/></w:pPr></w:pPrDefault></w:docDefaults>` +
     `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>`;
 
@@ -277,7 +281,7 @@ export function screenplayDocx(
       : {}),
     "docProps/core.xml": strToU8(
       `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/">` +
-        `<dc:title>${esc(opts.title ?? "Manus")}</dc:title><dc:creator>Animatic Studio</dc:creator></cp:coreProperties>`,
+        `<dc:title>${esc(opts.title ?? "Manus")}</dc:title><dc:creator>From Pen to Glass</dc:creator></cp:coreProperties>`,
     ),
   };
   // Fast tidsstempel gir like filer for like manus

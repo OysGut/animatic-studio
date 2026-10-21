@@ -4,9 +4,10 @@
  */
 import { Redo2, Undo2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { L, COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
+import { COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/core";
 import { useCommands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -54,17 +55,14 @@ export function ProjectFormat({
   function apply() {
     if (!validSize(width) || !validSize(height)) {
       setErr(
-        L(
-          "Bredde og høyde må være hele tall mellom 16 og 16384.",
-          "Width and height must be whole numbers between 16 and 16384.",
-        ),
+        t("app-projects-project-format.apply.set-err.eb874e528d22"),
       );
       return;
     }
     setErr(
       cmds.run(
         { type: "SetProjectFormat", width, height, fps },
-        L("Endre prosjektets format", "Change the project format"),
+        t("app-projects-project-format.apply.cmds-run.64c007da8319"),
       ),
     );
   }
@@ -73,7 +71,7 @@ export function ProjectFormat({
     <section aria-labelledby="format-title" className="mt-8">
       <div className="mb-2 flex items-center gap-2">
         <h2 id="format-title" className="text-base font-semibold text-text-primary">
-          {L("Bildeformat og bildefrekvens", "Frame size and frame rate")}
+          {t("app-projects-project-format.project-format.h2.423e3164e1ea")}
         </h2>
         {editable ? (
           <span className="ml-auto flex">
@@ -84,13 +82,13 @@ export function ProjectFormat({
               disabled={!cmds.canUndo}
               aria-label={
                 cmds.undoLabel
-                  ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-                  : L("Angre", "Undo")
+                  ? t("app-projects-project-format.project-format.aria-label.7cab821dc958", { undoLabel: String(cmds.undoLabel) })
+                  : t("app-projects-project-format.project-format.aria-label.80c798f58696")
               }
               title={
                 cmds.undoLabel
-                  ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-                  : L("Angre", "Undo")
+                  ? t("app-projects-project-format.project-format.title.7cab821dc958", { undoLabel: String(cmds.undoLabel) })
+                  : t("app-projects-project-format.project-format.title.80c798f58696")
               }
             >
               <Undo2 />
@@ -102,13 +100,13 @@ export function ProjectFormat({
               disabled={!cmds.canRedo}
               aria-label={
                 cmds.redoLabel
-                  ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-                  : L("Gjør om", "Redo")
+                  ? t("app-projects-project-format.project-format.aria-label.bd9ba28e5ca5", { redoLabel: String(cmds.redoLabel) })
+                  : t("app-projects-project-format.project-format.aria-label.6f5176579e90")
               }
               title={
                 cmds.redoLabel
-                  ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-                  : L("Gjør om", "Redo")
+                  ? t("app-projects-project-format.project-format.title.bd9ba28e5ca5", { redoLabel: String(cmds.redoLabel) })
+                  : t("app-projects-project-format.project-format.title.6f5176579e90")
               }
             >
               <Redo2 />
@@ -118,14 +116,11 @@ export function ProjectFormat({
       </div>
       <div className="flex flex-col gap-3 border border-border bg-surface-1 p-4">
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Gjelder hele prosjektet: alle scener i sceneeditoren, avspilling og eksport.",
-            "Applies to the whole project: all scenes in the scene editor, playback and export.",
-          )}
+          {t("app-projects-project-format.project-format.p.6883f3682c39")}
         </p>
         <div className="flex flex-wrap items-end gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Bildeformat", "Frame size")}
+            {t("app-projects-project-format.project-format.label.3a661dd47897")}
             <select
               className={ctl}
               disabled={!editable}
@@ -142,11 +137,11 @@ export function ProjectFormat({
                   {f.label}
                 </option>
               ))}
-              <option value="custom">{L("Egendefinert", "Custom")}</option>
+              <option value="custom">{t("app-projects-project-format.project-format.option.86ba15a5ea61")}</option>
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Bredde (px)", "Width (px)")}
+            {t("app-projects-project-format.project-format.label.73444978f6aa")}
             <input
               type="number"
               className={ctl + " w-24"}
@@ -158,7 +153,7 @@ export function ProjectFormat({
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Høyde (px)", "Height (px)")}
+            {t("app-projects-project-format.project-format.label.b894d518d0e7")}
             <input
               type="number"
               className={ctl + " w-24"}
@@ -170,7 +165,7 @@ export function ProjectFormat({
             />
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            {L("Bilder per sekund", "Frames per second")}
+            {t("app-projects-project-format.project-format.label.a68cae0d2bd2")}
             <select
               className={ctl}
               disabled={!editable}
@@ -186,19 +181,16 @@ export function ProjectFormat({
           </label>
           {editable ? (
             <Button onClick={apply} disabled={!changed}>
-              {L("Bruk", "Apply")}
+              {t("app-projects-project-format.project-format.button.60ca46216cca")}
             </Button>
           ) : null}
         </div>
         {changed && scenes > 0 ? (
           <p className="text-xs text-status-uncertain">
             {scenes === 1
-              ? L("Én 2D-scene", "One 2D scene")
-              : L(`${scenes} 2D-scener`, `${scenes} 2D scenes`)}{" "}
-            {L(
-              "blir tilpasset: plassering og kamera skaleres slik at høyden i bildet beholdes og midten står fast, og nøkkelbilder og kamerautsnitt regnes om til ny bildefrekvens. Kan angres.",
-              "are adjusted: position and camera are scaled so the frame height is kept and the centre stays fixed, and keyframes and camera shots are recalculated for the new frame rate. Can be undone.",
-            )}
+              ? t("app-projects-project-format.project-format.p.a1048613d0c6")
+              : t("app-projects-project-format.project-format.p.3ccc868a7b52", { scenes: String(scenes) })}{" "}
+            {t("app-projects-project-format.project-format.p.180e72ac6416")}
           </p>
         ) : null}
         {err ? (

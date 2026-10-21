@@ -1,12 +1,15 @@
 /**
  * Språket i tjenesten (DEC-0081, REQ-0629/0630): norsk (standard) eller engelsk.
  *
- * Regler for all brukervendt tekst (også verktøytips, aria-label og feilmeldinger):
- * - Inne i funksjoner og komponenter: `L("Lagre", "Save")` – teksten velges når den brukes.
- * - Faste oppslag på modulnivå (etiketter per type o.l.): `localized({ a: ["Norsk", "English"], … })`.
- *   Gir et vanlig `Record<K, string>` som alltid svarer på gjeldende språk.
+ * Regler for all brukervendt tekst (også verktøytips, aria-label og feilmeldinger), etter ML2f:
+ * - Skriv teksten i katalogen og bruk `t("nøkkel", { … })` fra `@/core/i18n/keyed`; faste oppslag på
+ *   modulnivå med `tLocalized({ a: "nøkkel", … })`. Flertall, valg og datoer står i `authored.json`.
+ * - `L()` og `localized()` er ikke lenger en skrivevei: `scripts/i18n/check.mjs` stopper nye kall.
+ *   Funksjonene finnes bare for å lese gamle tekstpar i testene.
+ * - `tm(melding)` brukes bare for gamle, lagrede servermeldinger som ble laget på norsk (f.eks.
+ *   begrunnelser lagret i databasen før ML2). Nye servermeldinger bruker stabile feilkoder
+ *   (`server-errors.ts`) eller `t()`.
  * - Datoer og tall: `locale()` i stedet for "nb-NO".
- * - Meldinger fra serveren (som lages på norsk der): vis dem med `tm(melding)`.
  * Ren TypeScript uten avhengigheter (kjernen er plattformnøytral). Brukerens eget innhold (manus,
  * notater, navn) og AI-prompter oversettes ikke.
  */
@@ -14,16 +17,37 @@ import { CATALOG } from "./catalog.gen";
 
 export type Lang = "nb" | "en";
 export const LANGUAGES: readonly Lang[] = ["nb", "en"];
+/** Språkene brukerflaten kan vises på (ML2a): `en-XA` er et testspråk bygd fra engelsk. */
+export type UiLang = Lang | "en-XA";
+export const UI_LANGUAGES: readonly UiLang[] = ["nb", "en", "en-XA"];
+export function isUiLang(v: unknown): v is UiLang {
+  return v === "nb" || v === "en" || v === "en-XA";
+}
 
-let current: Lang = "nb";
+let current: UiLang = "nb";
 const listeners = new Set<() => void>();
 
+/** Grunnspråket (nb/en). Testspråket `en-XA` regnes som engelsk her, så eksisterende kode virker uendret. */
 export function getLanguage(): Lang {
+  return current === "nb" ? "nb" : "en";
+}
+
+/** Det valgte visningsspråket, også testspråket `en-XA`. */
+export function getUiLanguage(): UiLang {
   return current;
 }
 
-export function setLanguage(lang: Lang): void {
-  if (lang !== "nb" && lang !== "en") return;
+/** Pseudotekst for `en-XA`: aksenter, doble bokstaver og markører, plassholdere `{x}` urørt. Lik inventarets. */
+export function pseudoText(text: string): string {
+  const map: Record<string, string> = { a: "á", e: "ë", i: "ï", o: "ô", u: "ü", A: "Á", E: "Ë", I: "Ï", O: "Ô", U: "Ü" };
+  return `[!! ${text
+    .split(/(\{[^{}]+\})/g)
+    .map((part) => (part.startsWith("{") ? part : part.replace(/[aeiouAEIOU]/g, (c) => map[c] ?? c).replace(/([a-záëïôü])/gi, "$1$1")))
+    .join("")} !!]`;
+}
+
+export function setLanguage(lang: UiLang): void {
+  if (!isUiLang(lang)) return;
   if (lang === current) return;
   current = lang;
   for (const f of listeners) f();
@@ -37,15 +61,19 @@ export function onLanguageChange(f: () => void): () => void {
   };
 }
 
-/** Brukervendt tekst på begge språk; svarer på gjeldende språk. */
+/**
+ * Brukervendt tekst på begge språk; svarer på gjeldende språk.
+ * @deprecated ML2f: ikke en skrivevei lenger – bruk `t()` med en katalognøkkel. Stoppes av i18n-sjekken.
+ */
 export function L(nb: string, en: string): string {
-  return current === "en" ? en : nb;
+  return current === "nb" ? nb : current === "en" ? en : pseudoText(en);
 }
 
 /** Et tekstpar for faste oppslag (`localized`). */
 export type TextPair = readonly [nb: string, en: string];
 
 /**
+ * @deprecated ML2f: bruk `tLocalized()` med katalognøkler. Stoppes av i18n-sjekken.
  * Et fast oppslag (f.eks. etikett per type) som alltid svarer på gjeldende språk. Brukes på modulnivå,
  * der `L` ville blitt regnet ut én gang.
  */
@@ -56,13 +84,13 @@ export function localized<K extends string | number>(
     get(target, prop, receiver) {
       const v = Reflect.get(target, prop, receiver) as unknown;
       if (Array.isArray(v) && v.length === 2 && typeof v[0] === "string")
-        return current === "en" ? v[1] : v[0];
+        return L(v[0], v[1] as string);
       return v;
     },
     getOwnPropertyDescriptor(target, prop) {
       const d = Reflect.getOwnPropertyDescriptor(target, prop);
       if (d && Array.isArray(d.value) && d.value.length === 2)
-        return { ...d, value: current === "en" ? d.value[1] : d.value[0] };
+        return { ...d, value: L(d.value[0] as string, d.value[1] as string) };
       return d;
     },
   });
@@ -70,12 +98,12 @@ export function localized<K extends string | number>(
 
 /** Språkkoden for datoer og tall. */
 export function locale(): string {
-  return current === "en" ? "en-GB" : "nb-NO";
+  return current === "nb" ? "nb-NO" : "en-GB";
 }
 
 /** Sorteringsspråket (alfabetisk rekkefølge i lister). */
 export function collation(): string {
-  return current === "en" ? "en" : "nb";
+  return current === "nb" ? "nb" : "en";
 }
 
 // ---------------------------------------------------------------- Meldinger fra serveren
@@ -102,11 +130,20 @@ function compile(): Compiled[] {
 }
 
 /**
+ * Bare for gamle, lagrede servermeldinger (laget på norsk før ML2): viser dem på gjeldende språk.
  * En melding som er laget på norsk et annet sted (serveren), på gjeldende språk. Meldinger med flere
  * setninger oversettes setning for setning. Ukjent tekst vises som den er.
  */
 export function tm(message: string): string {
   if (current === "nb" || !message) return message;
+  if (current === "en-XA") {
+    const en = tmEn(message);
+    return en === message ? message : pseudoText(en);
+  }
+  return tmEn(message);
+}
+
+function tmEn(message: string): string {
   const one = (m: string): string | null => {
     // Samme tekst med punktum til slutt teller også («Ugyldig notat.» = «Ugyldig notat»)
     const end = /[.!?]$/.exec(m)?.[0] ?? "";

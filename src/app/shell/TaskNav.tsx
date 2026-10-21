@@ -8,10 +8,11 @@ import { useNavigate, useRouterState } from "@tanstack/react-router";
 import { Check, ChevronLeft, ChevronRight, ListTodo, StickyNote } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { assetTasks, L, stepTask, type AssetTask, type ProjectState } from "@/core";
+import { assetTasks, stepTask, type AssetTask, type ProjectState } from "@/core";
 import { projectStateKey } from "@/app/project/use-project";
 import { useActiveProduction } from "@/app/project/use-production";
 import { gotoScene, lastScene } from "./current-scene";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function TaskNav({ projectId }: { projectId: string }) {
   // Prosjektet fra hurtigbufferen (sidene henter det; her bare lyttes det)
@@ -57,8 +58,8 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
         type="button"
         className="flex h-full items-center px-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
         onClick={() => step(task, -1)}
-        title={L("Forrige scene som skal oppdateres", "Previous scene to update")}
-        aria-label={L("Forrige scene", "Previous scene")}
+        title={tk("app-shell-task-nav.task-nav-inner.title.d5c2c2e5285c")}
+        aria-label={tk("app-shell-task-nav.task-nav-inner.aria-label.ebb67d9d62af")}
         data-testid="task-prev"
       >
         <ChevronLeft className="size-3.5" aria-hidden />
@@ -68,16 +69,13 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
           <button
             type="button"
             className="flex h-full max-w-[220px] items-center gap-1.5 border-x border-border px-2 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Oppgaver: elementer som skal inn i flere scener",
-              "Tasks: elements that should go into more scenes",
-            )}
+            title={tk("app-shell-task-nav.task-nav-inner.title.00e38ae456bf")}
             data-testid="task-nav-open"
           >
             <ListTodo className="size-3.5 shrink-0 text-accent-warm" aria-hidden />
             <span className="truncate">
               {task.assetName}:{" "}
-              {L(`${task.remaining} av ${total}`, `${task.remaining} of ${total}`)}
+              {tk("app-shell-task-nav.task-nav-inner.span.7d649e825e33", { remaining: String(task.remaining), total: String(total) })}
             </span>
             {tasks.length > 1 ? (
               <span className="rounded-sm bg-surface-3 px-1 text-[11px] text-text-tertiary">
@@ -88,7 +86,7 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
         </PopoverTrigger>
         <PopoverContent align="end" className="w-[360px] p-0">
           <div className="border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
-            {L("Oppgaver", "Tasks")}
+            {tk("app-shell-task-nav.task-nav-inner.div.23deaaaf519f")}
           </div>
           <ul className="max-h-[60vh] overflow-y-auto" data-testid="task-nav-list">
             {tasks.map((t) => (
@@ -103,10 +101,7 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
                   }
                   onClick={() => setChosen(t.taskId)}
                 >
-                  {L(
-                    `«${t.assetName}» skal inn i ${t.scenes.length} scener – ${t.remaining} gjenstår`,
-                    `“${t.assetName}” goes into ${t.scenes.length} scenes – ${t.remaining} left`,
-                  )}
+                  {tk("app-shell-task-nav.task-nav-inner.button.37958c487e84", { assetName: String(t.assetName), length: String(t.scenes.length), remaining: String(t.remaining) })}
                 </button>
                 <div className="mt-1 flex flex-wrap gap-1">
                   {t.scenes.map((sc) => (
@@ -126,10 +121,10 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
                       }
                       title={
                         sc.done
-                          ? L("Ferdig", "Done")
+                          ? tk("app-shell-task-nav.task-nav-inner.title.c176e9fc35c5")
                           : [
-                              sc.placed ? "" : L("Ikke dratt inn ennå", "Not dragged in yet"),
-                              sc.noteId ? L("Merknad i manuset", "Note in the script") : "",
+                              sc.placed ? "" : tk("app-shell-task-nav.task-nav-inner.sc-placed-l-ikke-dratt-inn-enn-not-dragged-in-yet-sc-note-id-l-merknad-i-manuset-note-in-the-script-filter.643bd71b4799"),
+                              sc.noteId ? tk("app-shell-task-nav.task-nav-inner.sc-placed-l-ikke-dratt-inn-enn-not-dragged-in-yet-sc-note-id-l-merknad-i-manuset-note-in-the-script-filter.457b5371844a") : "",
                             ]
                               .filter(Boolean)
                               .join(" · ")
@@ -150,8 +145,8 @@ function TaskNavInner({ projectId, state }: { projectId: string; state: ProjectS
         type="button"
         className="flex h-full items-center px-1 text-text-secondary hover:bg-surface-3 hover:text-text-primary"
         onClick={() => step(task, 1)}
-        title={L("Neste scene som skal oppdateres", "Next scene to update")}
-        aria-label={L("Neste scene", "Next scene")}
+        title={tk("app-shell-task-nav.task-nav-inner.title.4ab2a1c98bc8")}
+        aria-label={tk("app-shell-task-nav.task-nav-inner.aria-label.2b4b6b3d7366")}
         data-testid="task-next"
       >
         <ChevronRight className="size-3.5" aria-hidden />

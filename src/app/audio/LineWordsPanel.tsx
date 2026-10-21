@@ -10,29 +10,13 @@
  */
 import { Clock, Loader2, Wand2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  compositionToSource,
-  estimateCostUsd,
-  formatUsd,
-  manualAlignment,
-  rangeForWords,
-  setWordTiming,
-  sourceToComposition,
-  suggestPlacement,
-  textChanges,
-  alignmentFromProvider,
-  wordUncertain,
-  type AlignmentSource,
-  type AudioComposition,
-  type ProjectState,
-  type WordAlignment,
-} from "@/core";
+import { compositionToSource, estimateCostUsd, formatUsd, manualAlignment, rangeForWords, setWordTiming, sourceToComposition, suggestPlacement, textChanges, alignmentFromProvider, wordUncertain, wordSpansInComposition, type AlignmentSource, type AudioComposition, type ProjectState, type WordAlignment } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useUiPref } from "@/app/account/ui-prefs";
 import { alignAudio } from "@/adapters/ai/alignment.functions";
 import { Button } from "@/components/ui/button";
 import { PauseTimingPanel } from "./PauseTimingPanel";
+import { t } from "@/core/i18n/keyed";
 
 export type AlignmentService = "elevenlabs" | "manual";
 const isService = (v: unknown): v is AlignmentService => v === "elevenlabs" || v === "manual";
@@ -133,11 +117,11 @@ export function LineWordsPanel({
       if (o === null || o === undefined) continue;
       const r = rangeForWords(al, o, o);
       if (!r) continue;
-      const a = toComp(r.startMs);
-      const b = toComp(r.endMs);
-      if (a === null || b === null) continue;
-      s = Math.min(s, a);
-      e = Math.max(e, b);
+      const span = wordSpansInComposition(comp, al, base?.composition
+        ? { kind: "composition", composition: initial } : { kind: "version", versionId: baseVersionId })[o];
+      if (!span) continue;
+      s = Math.min(s, span.startMs);
+      e = Math.max(e, span.endMs);
     }
     return Number.isFinite(s) ? { from: Math.round(s), to: Math.round(e) } : null;
   }
@@ -156,7 +140,7 @@ export function LineWordsPanel({
   const save = async (next: WordAlignment) => {
     const r = await cmds.runAndWait(
       { type: "SetVersionAlignment", versionId: baseVersionId as never, alignment: next },
-      L("Ord-til-lyd", "Word alignment"),
+      t("app-audio-line-words-panel.r.cmds-run-and-wait.cc1893d546cd"),
     );
     if (r.error) throw new Error(r.error);
   };
@@ -184,16 +168,15 @@ export function LineWordsPanel({
         r.model,
         r.loss,
         new Date().toISOString(),
+        // REQ-0037: uendrede ord beholder ID-en, så pauser følger ordet etter ny analyse
+        al,
       );
       await save(next);
       const missing = next.words.filter(wordUncertain).length;
       setMsg(
         missing
-          ? L(
-              `Ferdig. ${missing} ord er usikre og kan kobles for hånd.`,
-              `Done. ${missing} words are uncertain and can be linked by hand.`,
-            )
-          : L("Ferdig. Alle ordene er koblet.", "Done. All words are linked."),
+          ? t("app-audio-line-words-panel.analyse.set-msg.a7054b796e4e", { missing: String(missing) })
+          : t("app-audio-line-words-panel.analyse.set-msg.deb6a42aa826"),
       );
     } catch (e) {
       setMsg((e as Error).message);
@@ -211,10 +194,7 @@ export function LineWordsPanel({
     const b = fromComp(range.to);
     if (a === null || b === null) {
       setMsg(
-        L(
-          "Området må ligge i opptaket som analyseres.",
-          "The range must lie in the recording being analysed.",
-        ),
+        t("app-audio-line-words-panel.link-by-hand.set-msg.e1cc435540a9"),
       );
       return;
     }
@@ -225,11 +205,11 @@ export function LineWordsPanel({
       let cur =
         al && o !== null && o !== undefined
           ? al
-          : manualAlignment(blockId, text, new Date().toISOString());
+          : manualAlignment(blockId, text, new Date().toISOString(), al);
       const idx = cur === al ? (o as number) : sel.from;
       cur = setWordTiming(cur, idx, a, b);
       await save(cur);
-      setMsg(L("Ordet er koblet for hånd.", "The word is linked by hand."));
+      setMsg(t("app-audio-line-words-panel.link-by-hand.set-msg.2addd8ec03ae"));
     } catch (e) {
       setMsg((e as Error).message);
     } finally {
@@ -245,10 +225,10 @@ export function LineWordsPanel({
     <div className="mt-3 rounded-sm border border-border bg-surface-2 p-2" data-testid="line-words">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-[13px] font-semibold text-text-primary">
-          {L("Tekst og lyd", "Text and audio")}
+          {t("app-audio-line-words-panel.line-words-panel.span.bd5bcfad3afd")}
         </span>
         <label className="flex items-center gap-1 text-xs text-text-secondary">
-          {L("Ord-til-lyd", "Word alignment")}
+          {t("app-audio-line-words-panel.line-words-panel.label.384a8c42fefd")}
           <select
             value={service}
             onChange={(e) => {
@@ -259,17 +239,14 @@ export function LineWordsPanel({
             data-testid="line-words-service"
           >
             <option value="elevenlabs">ElevenLabs Forced Alignment</option>
-            <option value="manual">{L("Manuelt (ingen analyse)", "By hand (no analysis)")}</option>
+            <option value="manual">{t("app-audio-line-words-panel.line-words-panel.option.59ed2cb46994")}</option>
           </select>
         </label>
         {service === "elevenlabs" ? (
           confirm ? (
             <>
               <span className="text-xs text-text-secondary" data-testid="line-words-cost">
-                {L(
-                  `Anslått kostnad ${cost === null ? "ukjent" : formatUsd(cost)} med eiernes ElevenLabs-nøkkel.`,
-                  `Estimated cost ${cost === null ? "unknown" : formatUsd(cost)} with the owners' ElevenLabs key.`,
-                )}
+                {t("app-audio-line-words-panel.estimated-cost", { cost: cost === null ? t("app-audio-line-words-panel.estimated-cost-unknown") : formatUsd(cost) })}
               </span>
               <Button
                 size="sm"
@@ -278,10 +255,10 @@ export function LineWordsPanel({
                 data-testid="line-words-approve"
               >
                 {busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
-                {L("Godkjenn og analyser", "Approve and analyse")}
+                {t("app-audio-line-words-panel.line-words-panel.button.1883a7247e4f")}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setConfirm(false)} disabled={busy}>
-                {L("Avbryt", "Cancel")}
+                {t("app-audio-line-words-panel.line-words-panel.button.146090191852")}
               </Button>
             </>
           ) : (
@@ -293,14 +270,14 @@ export function LineWordsPanel({
             >
               <Wand2 className="size-3.5" aria-hidden />
               {al
-                ? L("Analyser på nytt", "Analyse again")
-                : L("Analyser opptaket", "Analyse the recording")}
+                ? t("app-audio-line-words-panel.line-words-panel.button.0dc98fca1fd6")
+                : t("app-audio-line-words-panel.line-words-panel.button.aa061aad4a30")}
             </Button>
           )
         ) : null}
         {al ? (
           <span className="text-[11px] text-text-tertiary">
-            {al.provider === "manual" ? L("Koblet for hånd", "Linked by hand") : al.model}
+            {al.provider === "manual" ? t("app-audio-line-words-panel.line-words-panel.span.ebecdd6d55b9") : al.model}
           </span>
         ) : null}
         <Button
@@ -312,19 +289,13 @@ export function LineWordsPanel({
           aria-pressed={timing}
           title={
             al
-              ? L(
-                  "Egen modus for å endre pausene mellom ordene. Manusteksten endres ikke.",
-                  "A separate mode for changing the pauses between the words. The script text is not changed.",
-                )
-              : L(
-                  "Analyser eller koble ordene først – pausene trenger tid for ordene.",
-                  "Analyse or link the words first – the pauses need timing for the words.",
-                )
+              ? t("app-audio-line-words-panel.line-words-panel.title.8be51b45758c")
+              : t("app-audio-line-words-panel.line-words-panel.title.42dbab6c1e50")
           }
           data-testid="line-words-timing"
         >
           <Clock className="size-3.5" aria-hidden />
-          {L("Tidsredigering", "Timing edit")}
+          {t("app-audio-line-words-panel.line-words-panel.button.c488182470c8")}
         </Button>
       </div>
 
@@ -387,21 +358,18 @@ export function LineWordsPanel({
                   data-state={state2}
                   title={
                     state2 === "new"
-                      ? L("Ny tekst uten lyd", "New text without audio")
+                      ? t("app-audio-line-words-panel.line-words-panel.title.4784a26fd1c6")
                       : state2 === "uncertain"
-                        ? L(
-                            "Usikker kobling – kan rettes for hånd",
-                            "Uncertain link – can be corrected by hand",
-                          )
+                        ? t("app-audio-line-words-panel.line-words-panel.title.4ca2c6540f2f")
                         : state2 === "none"
-                          ? L("Ikke analysert ennå", "Not analysed yet")
+                          ? t("app-audio-line-words-panel.line-words-panel.title.8fac353a81f2")
                           : undefined
                   }
                   data-testid="line-word"
                 >
                   {c.token.text}
                   {state2 === "new" ? (
-                    <span className="sr-only">{L(" (ny)", " (new)")}</span>
+                    <span className="sr-only">{t("app-audio-line-words-panel.line-words-panel.span.4a036462612c")}</span>
                   ) : null}
                   {state2 === "uncertain" ? (
                     <sup aria-hidden className="ml-0.5 text-status-uncertain">
@@ -413,17 +381,14 @@ export function LineWordsPanel({
             })}
           </p>
           <p className="text-[11px] text-text-tertiary">
-            {L(
-              "Klikk på et ord for å markere lyden, Shift-klikk for flere. Stiplet = ny tekst uten lyd, ≈ = usikker kobling.",
-              "Click a word to mark its audio, Shift-click for more. Dashed = new text without audio, ≈ = uncertain link.",
-            )}
+            {t("app-audio-line-words-panel.line-words-panel.p.1f9452ab100c")}
           </p>
         </>
       )}
 
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <label className="flex items-center gap-1 text-xs text-text-secondary">
-          {L("Kontekst", "Context")}
+          {t("app-audio-line-words-panel.line-words-panel.label.784e8c15406d")}
           <input
             type="range"
             min={0}
@@ -431,7 +396,7 @@ export function LineWordsPanel({
             step={100}
             value={contextMs}
             onChange={(e) => onContextMs(Number(e.target.value))}
-            aria-label={L("Lyd før og etter (ms)", "Audio before and after (ms)")}
+            aria-label={t("app-audio-line-words-panel.line-words-panel.aria-label.9c236bc4cb10")}
           />
           <span className="w-12 tabular-nums">{(contextMs / 1000).toFixed(1)} s</span>
         </label>
@@ -442,7 +407,7 @@ export function LineWordsPanel({
           onClick={() => range && onPlay(Math.max(0, range.from - contextMs), range.to + contextMs)}
           data-testid="line-words-play-context"
         >
-          {L("Spill med kontekst", "Play with context")}
+          {t("app-audio-line-words-panel.line-words-panel.button.81c4f015b6e5")}
         </Button>
         <Button
           size="sm"
@@ -450,20 +415,17 @@ export function LineWordsPanel({
           disabled={!range}
           onClick={() => range && onPlay(range.from, range.to)}
         >
-          {L("Bare markeringen", "Only the selection")}
+          {t("app-audio-line-words-panel.line-words-panel.button.a2baf7277d63")}
         </Button>
         <Button
           size="sm"
           variant="ghost"
           disabled={!sel || sel.from !== sel.to || !range || busy}
           onClick={() => void linkByHand()}
-          title={L(
-            "Marker ett ord og et område i linjalen: området blir ordets tid",
-            "Mark one word and a range in the ruler: the range becomes the word's time",
-          )}
+          title={t("app-audio-line-words-panel.line-words-panel.title.0f4bb3eff7c0")}
           data-testid="line-words-link"
         >
-          {L("Koble ordet til området", "Link the word to the range")}
+          {t("app-audio-line-words-panel.line-words-panel.button.4f8268474bcb")}
         </Button>
         {suggestion ? (
           <Button
@@ -479,16 +441,10 @@ export function LineWordsPanel({
             data-testid="line-words-suggest"
           >
             {suggestion.mode === "after"
-              ? L("Forslag: legg det nye opptaket etter", "Suggestion: put the new recording after")
+              ? t("app-audio-line-words-panel.line-words-panel.button.6c5795dc8ce1")
               : suggestion.mode === "before"
-                ? L(
-                    "Forslag: legg det nye opptaket før",
-                    "Suggestion: put the new recording before",
-                  )
-                : L(
-                    "Forslag: sett det nye opptaket inn mellom nabordene",
-                    "Suggestion: insert the new recording between the neighbouring words",
-                  )}
+                ? t("app-audio-line-words-panel.line-words-panel.button.1f85a4a8976e")
+                : t("app-audio-line-words-panel.line-words-panel.button.efd54eda25fc")}
           </Button>
         ) : null}
       </div>

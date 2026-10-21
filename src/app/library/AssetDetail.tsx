@@ -3,6 +3,7 @@
  * visuelle varianter med bildeversjoner og godkjenning (REQ-0135, REQ-0136, REQ-0146, REQ-0149)
  * og scenene der ressursen er brukt (REQ-0131). Kontinuitet (DEC-0055) i ContinuityPanel.
  */
+import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { Link } from "@tanstack/react-router";
 import {
   Archive,
@@ -26,41 +27,7 @@ import { ContinuityPanel } from "./ContinuityPanel";
 import { ApproveImpactDialog } from "./ApproveImpactDialog";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { SaveToGlobalButton } from "@/app/global/SaveToGlobalButton";
-import {
-  ASSET_KIND_LABEL,
-  ASSET_KINDS,
-  ASSET_MIME_TYPES,
-  USAGE_LABEL,
-  VISUAL_STYLES,
-  allAssetUsage,
-  assetVersionImpact,
-  contentSyncByScene,
-  contentSyncText,
-  provenanceDetail,
-  provenanceLabel,
-  formatHeading,
-  hasContinuity,
-  newId,
-  variantsOf,
-  versionsOf,
-  versionFromFileName,
-  type Asset,
-  type AssetFields,
-  type AssetNameKind,
-  type AssetVariant,
-  type AssetVersion,
-  type GenerationJob,
-  type ProjectState,
-  type SceneContentSync,
-  type VersionOrigin,
-  type VersionProvenance,
-  type VisualStyle,
-  workingImageMaxSide,
-  assetUsageCounts,
-  L,
-  locale,
-  localized,
-} from "@/core";
+import { ASSET_KIND_LABEL, ASSET_KINDS, ASSET_MIME_TYPES, USAGE_LABEL, VISUAL_STYLES, allAssetUsage, assetVersionImpact, contentSyncByScene, contentSyncText, provenanceDetail, provenanceLabel, formatHeading, hasContinuity, newId, variantsOf, versionsOf, versionFromFileName, type Asset, type AssetFields, type AssetNameKind, type AssetVariant, type AssetVersion, type GenerationJob, type ProjectState, type SceneContentSync, type VersionOrigin, type VersionProvenance, type VisualStyle, workingImageMaxSide, assetUsageCounts, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useProfiles } from "@/app/project/use-project";
 import { Button } from "@/components/ui/button";
@@ -75,25 +42,16 @@ import { ImageCompareDialog } from "./ImageCompareDialog";
 import { SoundLinksSection } from "./SoundLinksSection";
 import { MobileCameraButton } from "@/app/mobile/MobileImportDialog";
 import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
+import { CharacterVoiceSection } from "./CharacterVoiceSection";
 import { ContextNamesSection } from "./ContextNamesSection";
+import { ContextLinkSuggestions } from "./ContextLinkSuggestions";
 import { AssetWorklistDialog, useWorklistCount } from "./AssetWorklistDialog";
 import { PaneResizer, usePaneSize } from "@/app/shell/pane-size";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
-const NAME_KIND_LABEL: Record<AssetNameKind, string> = localized({
-  alias: ["Alternativt navn", "Alternative name"],
-  nickname: ["Kallenavn", "Nickname"],
-  former: ["Tidligere navn", "Former name"],
-  language: ["Annet språk", "Other language"],
-});
+const NAME_KIND_LABEL: Record<AssetNameKind, string> = tLocalized({ alias: "app-library-asset-detail.name-kind-label.alias.cac9be61c339", nickname: "app-library-asset-detail.name-kind-label.nickname.e5701b662546", former: "app-library-asset-detail.name-kind-label.former.9fc0ac08b353", language: "app-library-asset-detail.name-kind-label.language.995433f0237d" });
 
-const STYLE_LABEL: Record<VisualStyle, string> = localized({
-  reference: ["Originalt referansebilde", "Original reference image"],
-  illustrated: ["Illustrert", "Illustrated"],
-  realistic: ["Filmrealistisk", "Film-realistic"],
-  animatic: ["Animatic", "Animatic"],
-  poster: ["Plakat", "Poster"],
-  other: ["Annet", "Other"],
-});
+const STYLE_LABEL: Record<VisualStyle, string> = tLocalized({ reference: "app-library-asset-detail.style-label.reference.c54657cb5bf2", illustrated: "app-library-asset-detail.style-label.illustrated.505a87f8e201", realistic: "app-library-asset-detail.style-label.realistic.efa6eba6f907", animatic: "app-library-asset-detail.style-label.animatic.802b1cb19d83", poster: "app-library-asset-detail.style-label.poster.40ef2d563219", other: "app-library-asset-detail.style-label.other.346620e2dc3d" });
 
 interface Props {
   readonly state: ProjectState;
@@ -183,7 +141,7 @@ export function AssetDetail(props: Props) {
     setErr(
       cmds.run(
         { type: "UpdateAsset", assetId: asset.id, fields: withTags },
-        L(`Endre «${asset.name}»`, `Edit “${asset.name}”`),
+        tk("app-library-asset-detail.save.cmds-run.2326823c276c", { name: String(asset.name) }),
       ),
     );
   }
@@ -202,7 +160,7 @@ export function AssetDetail(props: Props) {
           <div className="flex items-start gap-3">
             <div className="flex min-w-0 flex-1 flex-col gap-1">
               <label htmlFor="a-name" className="text-xs text-text-tertiary">
-                {L("Foretrukket navn", "Preferred name")}
+                {tk("app-library-asset-detail.asset-detail.label.075c2e80f75b")}
               </label>
               <Input
                 id="a-name"
@@ -215,7 +173,7 @@ export function AssetDetail(props: Props) {
             </div>
             <div className="flex w-[180px] flex-col gap-1">
               <label htmlFor="a-kind" className="text-xs text-text-tertiary">
-                {L("Type", "Type")}
+                {tk("app-library-asset-detail.asset-detail.label.8ca55f16aea7")}
               </label>
               <select
                 id="a-kind"
@@ -238,13 +196,10 @@ export function AssetDetail(props: Props) {
                 search={{ karakter: asset.id }}
                 data-testid="asset-storylab"
                 className="mt-5 inline-flex h-9 shrink-0 items-center gap-1.5 rounded-sm px-2 text-[13px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                title={L(
-                  `Snakk med ${asset.name} i Story Lab`,
-                  `Talk to ${asset.name} in Story Lab`,
-                )}
+                title={tk("app-library-asset-detail.asset-detail.title.e40ad82c4f1d", { name: String(asset.name) })}
               >
                 <Drama className="size-4" aria-hidden />
-                {L(`Snakk med ${asset.name} i Story Lab`, `Talk to ${asset.name} in Story Lab`)}
+                {tk("app-library-asset-detail.asset-detail.link.e40ad82c4f1d", { name: String(asset.name) })}
               </Link>
             ) : null}
             {/* Kameraikonet øverst til høyre: bilder og video fra mobilen havner her (DEC-0090) */}
@@ -253,7 +208,7 @@ export function AssetDetail(props: Props) {
                 className="mt-5"
                 projectId={props.projectId}
                 context={{ type: "asset", assetId: asset.id }}
-                label={L(`Bilder av ${asset.name}`, `Pictures of ${asset.name}`)}
+                label={tk("app-library-asset-detail.asset-detail.label.c3b02881db89", { name: String(asset.name) })}
               />
             ) : editable ? (
               /* Mikrofonikonet for lyd (DEC-0093): opptak på datamaskinen og mobilen, som takes */
@@ -263,27 +218,24 @@ export function AssetDetail(props: Props) {
                 state={state}
                 cmds={cmds}
                 target={{ kind: "sound", assetId: asset.id }}
-                label={L(`Opptak til «${asset.name}»`, `Recordings for “${asset.name}”`)}
+                label={tk("app-library-asset-detail.asset-detail.label.506f5e544ce4", { name: String(asset.name) })}
               />
             ) : null}
           </div>
 
           <div className="flex flex-col gap-1.5">
             <span className="text-xs text-text-tertiary">
-              {L(
-                "Alternative navn – brukes for å kjenne igjen ressursen i manuset",
-                "Alternative names – used to recognise the asset in the script",
-              )}
+              {tk("app-library-asset-detail.asset-detail.span.43af31a1858e")}
             </span>
             {draft.names.length === 0 ? (
               <p className="text-xs text-text-tertiary">
-                {L("Ingen alternative navn.", "No alternative names.")}
+                {tk("app-library-asset-detail.asset-detail.p.bebf67b5d211")}
               </p>
             ) : null}
             {draft.names.map((n, i) => (
               <div key={i} className="flex items-center gap-1.5">
                 <Input
-                  aria-label={L(`Alternativt navn ${i + 1}`, `Alternative name ${i + 1}`)}
+                  aria-label={tk("app-library-asset-detail.asset-detail.aria-label.67f83ae3e22f", { value1: String(i + 1) })}
                   value={n.name}
                   maxLength={200}
                   disabled={!editable}
@@ -291,7 +243,7 @@ export function AssetDetail(props: Props) {
                   className="h-8 min-w-0 flex-1 bg-surface-3 text-[13px]"
                 />
                 <select
-                  aria-label={L(`Type navn ${i + 1}`, `Name type ${i + 1}`)}
+                  aria-label={tk("app-library-asset-detail.asset-detail.aria-label.45f8ba674b84", { value1: String(i + 1) })}
                   value={n.kind}
                   disabled={!editable}
                   onChange={(e) =>
@@ -310,11 +262,8 @@ export function AssetDetail(props: Props) {
                 </select>
                 {n.kind === "language" ? (
                   <Input
-                    aria-label={L(`Språkkode for navn ${i + 1}`, `Language code for name ${i + 1}`)}
-                    title={L(
-                      "Språkkode, f.eks. en for engelsk",
-                      "Language code, e.g. en for English",
-                    )}
+                    aria-label={tk("app-library-asset-detail.asset-detail.aria-label.da622ec81dfa", { value1: String(i + 1) })}
+                    title={tk("app-library-asset-detail.asset-detail.title.d34d9105bf66")}
                     value={n.language ?? ""}
                     maxLength={12}
                     disabled={!editable}
@@ -326,7 +275,7 @@ export function AssetDetail(props: Props) {
                   <Button
                     size="sm"
                     variant="ghost"
-                    aria-label={L(`Fjern navnet ${n.name}`, `Remove the name ${n.name}`)}
+                    aria-label={tk("app-library-asset-detail.asset-detail.aria-label.219d8b430a93", { name: String(n.name) })}
                     onClick={() =>
                       setDraft((d) => ({ ...d, names: d.names.filter((_, j) => j !== i) }))
                     }
@@ -349,7 +298,7 @@ export function AssetDetail(props: Props) {
                 }
               >
                 <Plus />
-                {L("Legg til navn", "Add name")}
+                {tk("app-library-asset-detail.asset-detail.button.996f073f4a91")}
               </Button>
             ) : null}
           </div>
@@ -362,31 +311,40 @@ export function AssetDetail(props: Props) {
               cmds={cmds}
             />
           ) : null}
+          {asset.kind !== "sound" ? (
+            <ContextLinkSuggestions
+              state={state}
+              asset={asset}
+              productionId={productionId}
+              editable={editable}
+              cmds={cmds}
+            />
+          ) : null}
 
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1">
               <label htmlFor="a-cat" className="text-xs text-text-tertiary">
-                {L("Kategori", "Category")}
+                {tk("app-library-asset-detail.asset-detail.label.46055f39de45")}
               </label>
               <Input
                 id="a-cat"
                 value={draft.category}
                 maxLength={100}
                 disabled={!editable}
-                placeholder={L("F.eks. Familie, Rekvisitt, Gården", "E.g. Family, Props, The farm")}
+                placeholder={tk("app-library-asset-detail.asset-detail.placeholder.b0a32a6006a8")}
                 onChange={(e) => setDraft({ ...draft, category: e.target.value })}
                 className="h-8 bg-surface-3 text-[13px]"
               />
             </div>
             <div className="flex flex-col gap-1">
               <label htmlFor="a-tags" className="text-xs text-text-tertiary">
-                {L("Stikkord (skill med komma)", "Keywords (separated by commas)")}
+                {tk("app-library-asset-detail.asset-detail.label.d696fb1ac9af")}
               </label>
               <Input
                 id="a-tags"
                 value={tagsText}
                 disabled={!editable}
-                placeholder={L("F.eks. hovedrolle, vinter", "E.g. lead role, winter")}
+                placeholder={tk("app-library-asset-detail.asset-detail.placeholder.e4da71a6752b")}
                 onChange={(e) => setTagsText(e.target.value)}
                 className="h-8 bg-surface-3 text-[13px]"
               />
@@ -394,7 +352,7 @@ export function AssetDetail(props: Props) {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="a-desc" className="text-xs text-text-tertiary">
-              {L("Beskrivelse", "Description")}
+              {tk("app-library-asset-detail.asset-detail.label.3efe11b63666")}
             </label>
             <Textarea
               id="a-desc"
@@ -410,7 +368,7 @@ export function AssetDetail(props: Props) {
             <div className="flex items-center gap-2">
               <Button size="sm" onClick={save} disabled={!dirty}>
                 <Check />
-                {L("Lagre endringer", "Save changes")}
+                {tk("app-library-asset-detail.asset-detail.button.e290da0f2adb")}
               </Button>
               {dirty ? (
                 <Button
@@ -421,7 +379,7 @@ export function AssetDetail(props: Props) {
                     setTagsText(asset.tags.join(", "));
                   }}
                 >
-                  {L("Forkast", "Discard")}
+                  {tk("app-library-asset-detail.asset-detail.button.1f0e12b0590b")}
                 </Button>
               ) : null}
               {editable ? <SaveToGlobalButton projectId={props.projectId} asset={asset} /> : null}
@@ -434,35 +392,29 @@ export function AssetDetail(props: Props) {
                     cmds.run(
                       { type: "SetAssetArchived", assetId: asset.id, archived: !asset.archived },
                       asset.archived
-                        ? L(`Hent fram «${asset.name}»`, `Restore “${asset.name}”`)
-                        : L(`Arkiver «${asset.name}»`, `Archive “${asset.name}”`),
+                        ? tk("app-library-asset-detail.asset-detail.cmds-run.91f8f799d264", { name: String(asset.name) })
+                        : tk("app-library-asset-detail.asset-detail.cmds-run.9f250eebb497", { name: String(asset.name) }),
                     ),
                   )
                 }
                 title={
                   asset.archived
-                    ? L("Vis ressursen i biblioteket igjen", "Show the asset in the library again")
-                    : L(
-                        "Skjul ressursen fra listen. Ingenting slettes, og scener som bruker den, påvirkes ikke.",
-                        "Hide the asset from the list. Nothing is deleted, and scenes that use it are not affected.",
-                      )
+                    ? tk("app-library-asset-detail.asset-detail.title.bb7f8eb3f520")
+                    : tk("app-library-asset-detail.asset-detail.title.1c3012b76027")
                 }
               >
                 {asset.archived ? <ArchiveRestore /> : <Archive />}
-                {asset.archived ? L("Hent fram", "Restore") : L("Arkiver", "Archive")}
+                {asset.archived ? tk("app-library-asset-detail.asset-detail.button.db5b5e70e536") : tk("app-library-asset-detail.asset-detail.button.4053891f330a")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setConfirmDelete(true)}
-                title={L(
-                  "Flytt ressursen til «Slettede objekter» (kan hentes inn igjen)",
-                  "Move the asset to “Deleted items” (it can be restored)",
-                )}
+                title={tk("app-library-asset-detail.asset-detail.title.4629da3ff13a")}
                 className="text-status-danger"
               >
                 <Trash2 />
-                {L("Slett …", "Delete …")}
+                {tk("app-library-asset-detail.asset-detail.button.4023b5954313")}
               </Button>
             </div>
           ) : null}
@@ -474,7 +426,7 @@ export function AssetDetail(props: Props) {
               onConfirm={() => {
                 const e = cmds.run(
                   { type: "SetAssetsRemoved", assetIds: [asset.id], removed: true },
-                  L(`Slett «${asset.name}»`, `Delete “${asset.name}”`),
+                  tk("app-library-asset-detail.e.cmds-run.2d765dbd6ed4", { name: String(asset.name) }),
                 );
                 setErr(e);
                 setConfirmDelete(false);
@@ -488,6 +440,7 @@ export function AssetDetail(props: Props) {
           ) : null}
         </section>
 
+        {["character", "animal", "other"].includes(asset.kind) ? <CharacterVoiceSection state={state} asset={asset} projectId={props.projectId} cmds={cmds} editable={editable} /> : null}
         {asset.kind !== "sound" ? (
           <section className="border border-border bg-surface-1 p-4">
             <VisualBriefEditor state={state} asset={asset} cmds={cmds} editable={editable} />
@@ -517,7 +470,7 @@ export function AssetDetail(props: Props) {
 
       {/* Bruk i manuset */}
       <aside
-        aria-label={L("Brukt i scener", "Used in scenes")}
+        aria-label={tk("app-library-asset-detail.asset-detail.aria-label.7310e816d7b2")}
         style={{ width: usedWidth }}
         className="relative shrink-0"
       >
@@ -527,19 +480,16 @@ export function AssetDetail(props: Props) {
           onSize={setUsedWidth}
           min={200}
           max={520}
-          label={L("Bredde på «Brukt i scener»", "Width of “Used in scenes”")}
+          label={tk("app-library-asset-detail.asset-detail.label.9c0585a0436d")}
         />
         <div className="border border-border bg-surface-1">
           <div className="flex h-8 items-center justify-between border-b border-border bg-surface-2 px-2 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-            <span>{L("Brukt i scener", "Used in scenes")}</span>
+            <span>{tk("app-library-asset-detail.asset-detail.span.7310e816d7b2")}</span>
             <span className="font-mono tabular-nums normal-case tracking-normal">{usage.length}</span>
           </div>
           {usage.length === 0 ? (
             <p className="px-3 py-3 text-xs text-text-tertiary">
-              {L(
-                "Ikke funnet i manuset under noen av navnene.",
-                "Not found in the script under any of the names.",
-              )}
+              {tk("app-library-asset-detail.asset-detail.p.c6bdef082565")}
             </p>
           ) : (
             <ul className="max-h-[70vh] overflow-y-auto py-1">
@@ -551,7 +501,7 @@ export function AssetDetail(props: Props) {
                     <button
                       type="button"
                       onClick={() => props.onGoToScene(u.occurrenceId)}
-                      title={L("Vis scenen i manus", "Show the scene in the script")}
+                      title={tk("app-library-asset-detail.asset-detail.title.7bbe30bef638")}
                       className={
                         "grid w-full grid-cols-[34px_1fr] gap-1.5 px-3 py-1 text-left hover:bg-surface-3" +
                         (u.active ? "" : " opacity-60")
@@ -567,9 +517,9 @@ export function AssetDetail(props: Props) {
                         <span className="block truncate text-[11px] text-text-tertiary">
                           {USAGE_LABEL[u.how]}
                           {u.matchedName !== asset.name
-                            ? L(` som «${u.matchedName}»`, ` as “${u.matchedName}”`)
+                            ? tk("app-library-asset-detail.asset-detail.span.4721799db868", { matchedName: String(u.matchedName) })
                             : ""}
-                          {u.active ? "" : L(" · deaktivert", " · inactive")}
+                          {u.active ? "" : tk("app-library-asset-detail.asset-detail.span.d016421103b8")}
                         </span>
                         <SyncFlag state={state} flag={syncFlags.get(u.occurrenceId)} />
                       </span>
@@ -581,7 +531,7 @@ export function AssetDetail(props: Props) {
           )}
           {flaggedOnly.length ? (
             <ul
-              aria-label={L("Scener med eldre versjon", "Scenes with an older version")}
+              aria-label={tk("app-library-asset-detail.asset-detail.aria-label.92a5eab98df3")}
               className="border-t border-border py-1"
             >
               {flaggedOnly.map((f) => {
@@ -592,7 +542,7 @@ export function AssetDetail(props: Props) {
                     <button
                       type="button"
                       onClick={() => props.onGoToScene(f.occurrenceId)}
-                      title={L("Vis scenen i manus", "Show the scene in the script")}
+                      title={tk("app-library-asset-detail.asset-detail.title.7bbe30bef638.2")}
                       className="grid w-full grid-cols-[34px_1fr] gap-1.5 px-3 py-1 text-left hover:bg-surface-3"
                     >
                       <span className="tabular truncate text-right font-mono text-xs text-text-secondary">
@@ -603,7 +553,7 @@ export function AssetDetail(props: Props) {
                           {v ? formatHeading(v.heading) : "—"}
                         </span>
                         <span className="block truncate text-[11px] text-text-tertiary">
-                          {L("brukt i scenens materiale", "used in the scene’s material")}
+                          {tk("app-library-asset-detail.asset-detail.span.9708afcf546f")}
                         </span>
                         <SyncFlag state={state} flag={f} />
                       </span>
@@ -615,10 +565,7 @@ export function AssetDetail(props: Props) {
           ) : null}
           {asset.kind !== "character" && asset.kind !== "location" && usage.length ? (
             <p className="border-t border-border px-3 py-2 text-[11px] text-text-tertiary">
-              {L(
-                "Mulige treff: ord i teksten som begynner med navnet. Sjekk at de stemmer.",
-                "Possible matches: words in the text that begin with the name. Check that they are right.",
-              )}
+              {tk("app-library-asset-detail.asset-detail.p.b8422fc38d18")}
             </p>
           ) : null}
         </div>
@@ -645,15 +592,9 @@ function SyncFlag({ state, flag }: { state: ProjectState; flag: SceneContentSync
   return (
     <span
       className="mt-0.5 block text-[11px] leading-snug text-status-uncertain"
-      title={L(
-        `${text}. Scenen er ikke endret; gå gjennom scenene for å bruke den nye versjonen.`,
-        `${text}. The scene has not changed; review the scenes to use the new version.`,
-      )}
+      title={tk("app-library-asset-detail.sync-flag.title.43bd508edfc5", { text: String(text) })}
     >
-      {L(
-        "Ressursen er oppdatert etter at scenen ble laget",
-        "The asset was updated after the scene was made",
-      )}
+      {tk("app-library-asset-detail.sync-flag.span.c00bb140fb6c")}
       {steps ? ` (${steps})` : ""}
     </span>
   );
@@ -695,9 +636,9 @@ function Variants({
           <span>
             {behind}{" "}
             {behind === 1
-              ? L("sted i filmen viser", "place in the film still shows")
-              : L("steder i filmen viser", "places in the film still show")}{" "}
-            {L("fortsatt en eldre versjon av", "an older version of")} {asset.name}.
+              ? tk("app-library-asset-detail.variants.span.0992ba5bae33")
+              : tk("app-library-asset-detail.variants.span.363469830023")}{" "}
+            {tk("app-library-asset-detail.variants.span.98f6f95cb137")} {asset.name}.
           </span>
           <Button
             size="sm"
@@ -705,7 +646,7 @@ function Variants({
             className="ml-auto"
             onClick={() => setWorklistOpen(true)}
           >
-            {L("Gå gjennom scenene …", "Review the scenes …")}
+            {tk("app-library-asset-detail.variants.button.527e1706f5c2")}
           </Button>
           {worklistOpen ? (
             <AssetWorklistDialog
@@ -724,19 +665,13 @@ function Variants({
       <div className="flex items-center gap-2">
         <h2 className="shrink-0 whitespace-nowrap text-sm font-medium text-text-primary">
           {asset.kind === "sound"
-            ? L("Varianter av lyden", "Sound variants")
-            : L("Visuelle varianter", "Visual variants")}
+            ? tk("app-library-asset-detail.variants.h2.f460b5b5c7d3")
+            : tk("app-library-asset-detail.variants.h2.03537eeb3e9c")}
         </h2>
         <span className="text-xs text-text-tertiary">
           {asset.kind === "sound"
-            ? L(
-                "Én lyd – flere utgaver. Hver variant har egne versjoner og egen godkjenning.",
-                "One sound – several versions. Each variant has its own versions and approval.",
-              )
-            : L(
-                "Én identitet – flere utseender og stiler. Hver variant har egne versjoner og egen godkjenning.",
-                "One identity – several looks and styles. Each variant has its own versions and approval.",
-              )}
+            ? tk("app-library-asset-detail.variants.span.fcdc36659688")
+            : tk("app-library-asset-detail.variants.span.2b4a38427761")}
         </span>
         {archivedCount ? (
           <label className="ml-auto flex items-center gap-1 text-xs text-text-secondary">
@@ -746,7 +681,7 @@ function Variants({
               onChange={(e) => setShowArchived(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            {L("Arkiverte", "Archived")} ({archivedCount})
+            {tk("app-library-asset-detail.variants.label.66219fb0ed5f")} ({archivedCount})
           </label>
         ) : null}
       </div>
@@ -767,10 +702,7 @@ function Variants({
       ))}
       {variants.length === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Ingen varianter ennå. En variant er for eksempel «Animatic», «Plakat» eller «Vinterklær». Last opp bilder til den – hvert bilde blir en versjon.",
-            "No variants yet. A variant is, for example, “Animatic”, “Poster” or “Winter clothes”. Upload images to it – each image becomes a version.",
-          )}
+          {tk("app-library-asset-detail.variants.p.9295e143c1f3")}
         </p>
       ) : null}
       {editable ? (
@@ -786,7 +718,7 @@ function Variants({
                 assetId: asset.id,
                 fields: { name: n, style, appearance },
               },
-              L(`Ny variant «${n}»`, `New variant “${n}”`),
+              tk("app-library-asset-detail.r.cmds-run.763e8f23e6fd", { n: String(n) }),
             );
             setErr(r);
             if (!r) {
@@ -795,7 +727,7 @@ function Variants({
             }
           }}
         >
-          <Field label={L("Navn på variant", "Variant name")}>
+          <Field label={tk("app-library-asset-detail.variants.label.c2624a75b433")}>
             <Input
               value={name}
               maxLength={200}
@@ -804,7 +736,7 @@ function Variants({
               className="h-8 w-[180px] bg-surface-3 text-[13px]"
             />
           </Field>
-          <Field label={L("Stil", "Style")}>
+          <Field label={tk("app-library-asset-detail.variants.label.661274bdd067")}>
             <select
               value={style}
               onChange={(e) => setStyle(e.target.value as VisualStyle)}
@@ -817,18 +749,18 @@ function Variants({
               ))}
             </select>
           </Field>
-          <Field label={L("Utseende (valgfritt)", "Appearance (optional)")}>
+          <Field label={tk("app-library-asset-detail.variants.label.f5ea4f263706")}>
             <Input
               value={appearance}
               maxLength={500}
-              placeholder={L("F.eks. kort hår, vinterklær", "E.g. short hair, winter clothes")}
+              placeholder={tk("app-library-asset-detail.variants.placeholder.09f52ed30bcd")}
               onChange={(e) => setAppearance(e.target.value)}
               className="h-8 w-[220px] bg-surface-3 text-[13px]"
             />
           </Field>
           <Button type="submit" size="sm" variant="secondary">
             <Plus />
-            {L("Ny variant", "New variant")}
+            {tk("app-library-asset-detail.variants.button.3c1dc4f7fee7")}
           </Button>
           {err ? (
             <p role="alert" className="w-full text-xs text-status-danger">
@@ -917,10 +849,7 @@ function VariantCard({
     setErr(
       cmds.run(
         { type: "ApproveAssetVersion", variantId: variant.id, versionId: ver.id },
-        L(
-          `Godkjenn v${ver.number} av «${variant.name}»`,
-          `Approve v${ver.number} of “${variant.name}”`,
-        ),
+        tk("app-library-asset-detail.approve.cmds-run.b7a861a8849b", { number: String(ver.number), name: String(variant.name) }),
       ),
     );
   }
@@ -947,7 +876,7 @@ function VariantCard({
             media,
             note: "",
           },
-          L(`Ny lyd i «${variant.name}»`, `New sound in “${variant.name}”`),
+          tk("app-library-asset-detail.r.cmds-run-and-wait.64b373c83b93", { name: String(variant.name) }),
         );
         if (r.error) setErr(r.error);
       } else {
@@ -962,7 +891,7 @@ function VariantCard({
           cmds.runAndWait,
           variant.id,
           up,
-          L(`Nytt bilde i «${variant.name}»`, `New image in “${variant.name}”`),
+          tk("app-library-asset-detail.e.add-uploaded-image.af8d6ad653c3", { name: String(variant.name) }),
         );
         if (e) setErr(e);
       }
@@ -993,13 +922,13 @@ function VariantCard({
                   variantId: variant.id,
                   fields: { name: vName, style: vStyle, appearance: vAppearance },
                 },
-                L(`Endre variant «${variant.name}»`, `Edit variant “${variant.name}”`),
+                tk("app-library-asset-detail.r.cmds-run.438fb9f5784f", { name: String(variant.name) }),
               );
               setErr(r);
               if (!r) setEditing(false);
             }}
           >
-            <Field label={L("Navn", "Name")}>
+            <Field label={tk("app-library-asset-detail.variant-card.label.3d6c88f64c0c")}>
               <Input
                 value={vName}
                 maxLength={200}
@@ -1007,7 +936,7 @@ function VariantCard({
                 className="h-8 w-[180px] bg-surface-3 text-[13px]"
               />
             </Field>
-            <Field label={L("Stil", "Style")}>
+            <Field label={tk("app-library-asset-detail.variant-card.label.73f742aea38f")}>
               <select
                 value={vStyle}
                 onChange={(e) => setVStyle(e.target.value as VisualStyle)}
@@ -1020,7 +949,7 @@ function VariantCard({
                 ))}
               </select>
             </Field>
-            <Field label={L("Utseende", "Appearance")}>
+            <Field label={tk("app-library-asset-detail.variant-card.label.59207152ae60")}>
               <Input
                 value={vAppearance}
                 maxLength={500}
@@ -1029,19 +958,20 @@ function VariantCard({
               />
             </Field>
             <Button type="submit" size="sm">
-              {L("Lagre", "Save")}
+              {tk("app-library-asset-detail.variant-card.button.c0f139e159f6")}
             </Button>
             <Button type="button" size="sm" variant="ghost" onClick={() => setEditing(false)}>
-              {L("Avbryt", "Cancel")}
+              {tk("app-library-asset-detail.variant-card.button.6214e4f3fc43")}
             </Button>
           </form>
         ) : (
           <div className="min-w-0 flex-1">
-            <p className="text-[13px] font-medium text-text-primary">
+            <p className="flex items-center gap-1 text-[13px] font-medium text-text-primary">
               {variant.name}
+              <NoteFlagControl state={state} kind="asset_variant" targetId={variant.id} run={cmds.run} editable={editable} />
               {variant.archived ? (
                 <span className="ml-2 text-xs font-normal text-text-tertiary">
-                  {L("Arkivert", "Archived")}
+                  {tk("app-library-asset-detail.variant-card.span.a3d0e9f090f0")}
                 </span>
               ) : null}
             </p>
@@ -1083,10 +1013,10 @@ function VariantCard({
                 <ImagePlus />
               )}
               {uploading
-                ? L("Laster opp …", "Uploading …")
+                ? tk("app-library-asset-detail.variant-card.button.58d7a798f223")
                 : asset.kind === "sound"
-                  ? L("Last opp lyd", "Upload sound")
-                  : L("Last opp bilde", "Upload image")}
+                  ? tk("app-library-asset-detail.variant-card.button.8d5f1eb48e4d")
+                  : tk("app-library-asset-detail.variant-card.button.62a4e4606338")}
             </Button>
             {asset.kind === "sound" ? (
               <Button
@@ -1095,7 +1025,7 @@ function VariantCard({
                 aria-expanded={soundAi}
                 onClick={() => setSoundAi((x) => !x)}
               >
-                <AiGlyph /> {L("Lag med AI", "Generate with AI")}
+                <AiGlyph /> {tk("app-library-asset-detail.variant-card.button.3eca50599a04")}
               </Button>
             ) : null}
             <Button
@@ -1108,20 +1038,20 @@ function VariantCard({
                 setEditing(true);
               }}
             >
-              {L("Endre", "Edit")}
+              {tk("app-library-asset-detail.variant-card.button.cb1547eeee81")}
             </Button>
             <Button
               size="sm"
               variant="ghost"
               aria-label={
                 variant.archived
-                  ? L("Hent fram varianten", "Restore the variant")
-                  : L("Arkiver varianten", "Archive the variant")
+                  ? tk("app-library-asset-detail.variant-card.aria-label.609d497c1f2e")
+                  : tk("app-library-asset-detail.variant-card.aria-label.d4f49e061073")
               }
               title={
                 variant.archived
-                  ? L("Hent fram", "Restore")
-                  : L("Arkiver (ingenting slettes)", "Archive (nothing is deleted)")
+                  ? tk("app-library-asset-detail.variant-card.title.fed0e3ebd92f")
+                  : tk("app-library-asset-detail.variant-card.title.c51dd4e56bb5")
               }
               onClick={() =>
                 setErr(
@@ -1132,8 +1062,8 @@ function VariantCard({
                       archived: !variant.archived,
                     },
                     variant.archived
-                      ? L("Hent fram variant", "Restore variant")
-                      : L("Arkiver variant", "Archive variant"),
+                      ? tk("app-library-asset-detail.variant-card.cmds-run.42942bd7d0c8")
+                      : tk("app-library-asset-detail.variant-card.cmds-run.72744cb221f3"),
                   ),
                 )
               }
@@ -1160,20 +1090,20 @@ function VariantCard({
           className="self-start"
           onClick={() => setComparing(true)}
         >
-          {L("Sammenlign", "Compare")} v{compareVersions[0]!.number} {L("og", "and")} v
+          {tk("app-library-asset-detail.variant-card.button.78487407b667")} v{compareVersions[0]!.number} {tk("app-library-asset-detail.variant-card.button.2f8b713cd5b3")} v
           {compareVersions[1]!.number}
         </Button>
       ) : null}
       {versions.length === 0 ? (
         <p className="text-xs text-text-tertiary">
           {asset.kind === "sound"
-            ? L("Ingen lyder ennå.", "No sounds yet.")
-            : L("Ingen bilder ennå.", "No images yet.")}
+            ? tk("app-library-asset-detail.variant-card.p.3999408ab611")
+            : tk("app-library-asset-detail.variant-card.p.c5a23afb4e26")}
         </p>
       ) : (
         <ul
           className="flex gap-2 overflow-x-auto pb-1"
-          aria-label={L(`Versjoner av ${variant.name}`, `Versions of ${variant.name}`)}
+          aria-label={tk("app-library-asset-detail.variant-card.aria-label.f94499f2a6b1", { name: String(variant.name) })}
         >
           {shownVersions.map((ver) => {
             const approved = variant.approvedVersionId === ver.id;
@@ -1187,6 +1117,7 @@ function VariantCard({
                   (approved ? "border-status-success bg-status-success-bg" : "border-border")
                 }
               >
+                <div className="flex justify-end"><NoteFlagControl state={state} kind="asset_version" targetId={ver.id} run={cmds.run} editable={editable} /></div>
                 {asset.kind === "sound" ? (
                   <div className="flex h-[120px] flex-col items-center justify-center gap-2 bg-surface-3 px-1">
                     <Music className="size-6 text-text-tertiary" aria-hidden />
@@ -1196,10 +1127,7 @@ function VariantCard({
                         controls
                         preload="none"
                         className="h-7 w-full"
-                        aria-label={L(
-                          `${asset.name}, versjon ${ver.number}`,
-                          `${asset.name}, version ${ver.number}`,
-                        )}
+                        aria-label={tk("app-library-asset-detail.variant-card.aria-label.91f3bc1bd842", { name: String(asset.name), number: String(ver.number) })}
                       />
                     ) : (
                       <Loader2 className="size-4 animate-spin text-text-tertiary" aria-hidden />
@@ -1216,22 +1144,13 @@ function VariantCard({
                       }
                     }}
                     className="flex h-[120px] cursor-zoom-in items-center justify-center overflow-hidden bg-surface-3 p-1.5 focus-visible:outline-2 focus-visible:outline-focus-ring"
-                    title={L(
-                      "Dobbeltklikk for fullskjerm, zoom og nedlasting",
-                      "Double-click for full screen, zoom and download",
-                    )}
-                    aria-label={L(
-                      `Vis ${asset.name} – ${variant.name}, versjon ${ver.number} i fullskjerm`,
-                      `Show ${asset.name} – ${variant.name}, version ${ver.number} in full screen`,
-                    )}
+                    title={tk("app-library-asset-detail.variant-card.title.846abe9e17f7")}
+                    aria-label={tk("app-library-asset-detail.variant-card.aria-label.f1e9196cc8ac", { name: String(asset.name), name2: String(variant.name), number: String(ver.number) })}
                   >
                     {url ? (
                       <img
                         src={url}
-                        alt={L(
-                          `${asset.name} – ${variant.name}, versjon ${ver.number}`,
-                          `${asset.name} – ${variant.name}, version ${ver.number}`,
-                        )}
+                        alt={tk("app-library-asset-detail.variant-card.alt.8a3a225c63c0", { name: String(asset.name), name2: String(variant.name), number: String(ver.number) })}
                         className="max-h-full max-w-full object-contain"
                       />
                     ) : (
@@ -1244,7 +1163,7 @@ function VariantCard({
                   {approved ? (
                     <span className="flex items-center gap-0.5 font-medium text-status-success">
                       <Check className="size-3" aria-hidden />
-                      {L("Godkjent", "Approved")}
+                      {tk("app-library-asset-detail.variant-card.span.e79d8716cb7d")}
                     </span>
                   ) : null}
                 </div>
@@ -1284,13 +1203,10 @@ function VariantCard({
                     type="button"
                     className="flex items-center gap-1 text-left text-[11px] text-text-tertiary hover:text-text-primary"
                     onClick={() => setCutoutId(ver.id)}
-                    title={L(
-                      "Fjern bakgrunnen (gratis, lagres som ny versjon)",
-                      "Remove the background (free, saved as a new version)",
-                    )}
+                    title={tk("app-library-asset-detail.variant-card.title.ecfdfb66fca2")}
                   >
                     <Scissors className="size-3" aria-hidden />
-                    {L("Frilegg …", "Cut out …")}
+                    {tk("app-library-asset-detail.variant-card.button.9353f50f023d")}
                   </button>
                 ) : null}
                 {asset.kind !== "sound" && ver.mimeType.startsWith("image/") ? (
@@ -1298,13 +1214,10 @@ function VariantCard({
                     type="button"
                     className="flex items-center gap-1 text-left text-[11px] text-text-tertiary hover:text-text-primary"
                     onClick={() => setToolsId(ver.id)}
-                    title={L(
-                      "Stor visning med beskrivelsen og bildeverktøy: utsnitt, del opp i ruter, vinkel, andre vinkler, oppskalering",
-                      "Large view with the description and image tools: crop, split into tiles, angle, other angles, upscale",
-                    )}
+                    title={tk("app-library-asset-detail.variant-card.title.23c7fb729258")}
                   >
                     <Crop className="size-3" aria-hidden />
-                    {L("Bildeverktøy …", "Image tools …")}
+                    {tk("app-library-asset-detail.variant-card.button.da6c5c6da990")}
                   </button>
                 ) : null}
                 {asset.kind !== "sound" && versions.length > 1 ? (
@@ -1320,7 +1233,7 @@ function VariantCard({
                         )
                       }
                     />
-                    {L("Sammenlign", "Compare")}
+                    {tk("app-library-asset-detail.variant-card.label.78487407b667")}
                   </label>
                 ) : null}
                 {editable ? (
@@ -1332,12 +1245,12 @@ function VariantCard({
                         setErr(
                           cmds.run(
                             { type: "ApproveAssetVersion", variantId: variant.id, versionId: null },
-                            L("Fjern godkjenning", "Remove approval"),
+                            tk("app-library-asset-detail.variant-card.cmds-run.133ed166ac52"),
                           ),
                         )
                       }
                     >
-                      {L("Fjern godkjenning", "Remove approval")}
+                      {tk("app-library-asset-detail.variant-card.button.133ed166ac52")}
                     </button>
                   ) : (
                     <Button
@@ -1346,7 +1259,7 @@ function VariantCard({
                       className="h-6 justify-start px-1 text-xs"
                       onClick={() => approve(ver)}
                     >
-                      {L("Godkjenn", "Approve")}
+                      {tk("app-library-asset-detail.variant-card.button.641237cfdd7d")}
                     </Button>
                   )
                 ) : null}
@@ -1358,22 +1271,13 @@ function VariantCard({
       {hiddenByFilter > 0 ? (
         <p className="text-[11px] text-text-tertiary">
           {hiddenByFilter === 1
-            ? L(
-                "1 versjon er skjult av filteret på opphav.",
-                "1 version is hidden by the origin filter.",
-              )
-            : L(
-                `${hiddenByFilter} versjoner er skjult av filteret på opphav.`,
-                `${hiddenByFilter} versions are hidden by the origin filter.`,
-              )}
+            ? tk("app-library-asset-detail.variant-card.p.5c02ded0c664")
+            : tk("app-library-asset-detail.variant-card.p.beaaec641337", { hiddenByFilter: String(hiddenByFilter) })}
         </p>
       ) : null}
       {versions.length > 1 ? (
         <p className="text-[11px] text-text-tertiary">
-          {L(
-            "Når du godkjenner et bilde, ser du hvilke scener som berøres, og velger selv hvilke som skal få det. Uten godkjent bilde viser scenene det nyeste.",
-            "When you approve an image, you see which scenes are affected and choose yourself which of them get it. Without an approved image, the scenes show the newest one.",
-          )}
+          {tk("app-library-asset-detail.variant-card.p.c16784746589")}
         </p>
       ) : null}
       {err ? (
@@ -1429,7 +1333,7 @@ function VariantCard({
         url={toolsVersion ? urls[toolsVersion.mediaPath] : undefined}
         title={
           toolsVersion
-            ? `${asset.name} – ${variant.name || L("Uten navn", "Untitled")} v${toolsVersion.number}`
+            ? `${asset.name} – ${variant.name || tk("app-library-asset-detail.variant-card.title.82f05d970b0a")} v${toolsVersion.number}`
             : ""
         }
         tools={{
@@ -1475,50 +1379,28 @@ function DeleteAssetConfirm({
   return (
     <div
       role="alertdialog"
-      aria-label={L(`Slett ${a.name}`, `Delete ${a.name}`)}
+      aria-label={tk("app-library-asset-detail.delete-asset-confirm.aria-label.56e2a7dbe5da", { name: String(a.name) })}
       className="flex flex-col gap-2 rounded-sm border border-status-danger/60 bg-surface-1 p-2 text-xs"
     >
       <p className="text-text-primary">
-        {L(
-          `«${a.name}» flyttes til «Slettede objekter» og forsvinner fra biblioteket og lagvalgene.`,
-          `“${a.name}” is moved to “Deleted items” and disappears from the library and layer choices.`,
-        )}
+        {tk("app-library-asset-detail.delete-asset-confirm.p.06dfebdebf71", { name: String(a.name) })}
         {use.layers || use.audio
           ? " " +
-            L(
-              `Den brukes i ${[
-                use.layers
-                  ? `${use.layers} lag i ${use.scenes} ${use.scenes === 1 ? "scene" : "scener"}`
-                  : "",
-                use.audio ? `${use.audio} lydklipp` : "",
-              ]
-                .filter(Boolean)
-                .join(
-                  " og ",
-                )}; de beholder bildet og lyden til ressursen slettes for godt, og den kan ikke slettes for godt før de er fjernet.`,
-              `It is used in ${[
-                use.layers
-                  ? `${use.layers} ${use.layers === 1 ? "layer" : "layers"} in ${use.scenes} ${use.scenes === 1 ? "scene" : "scenes"}`
-                  : "",
-                use.audio ? `${use.audio} audio ${use.audio === 1 ? "clip" : "clips"}` : "",
-              ]
-                .filter(Boolean)
-                .join(
-                  " and ",
-                )}; they keep the image and sound of the asset until it is deleted for good, and it cannot be deleted for good until they are removed.`,
-            )
-          : L(" Den brukes ikke i noen scene.", " It is not used in any scene.")}{" "}
-        {L(
-          "Du kan hente den inn igjen, og endringen kan angres.",
-          "You can restore it, and the change can be undone.",
-        )}
+            tk("app-library-asset-detail.in-use", {
+                uses: [
+                  use.layers ? tk("app-library-asset-detail.in-use-layers", { count: use.layers, scenes: tk("app-library-asset-detail.in-use-scenes", { count: use.scenes }) }) : "",
+                  use.audio ? tk("app-library-asset-detail.in-use-audio", { count: use.audio }) : "",
+                ].filter(Boolean).join(tk("app-library-asset-detail.in-use-and")),
+              })
+          : tk("app-library-asset-detail.delete-asset-confirm.p.839ad620f73d")}{" "}
+        {tk("app-library-asset-detail.delete-asset-confirm.p.b75f480fd5f0")}
       </p>
       <div className="flex gap-2">
         <Button size="sm" variant="destructive" onClick={onConfirm}>
-          <Trash2 /> {L("Slett", "Delete")}
+          <Trash2 /> {tk("app-library-asset-detail.delete-asset-confirm.button.9277c6792009")}
         </Button>
         <Button size="sm" variant="ghost" onClick={onCancel}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-library-asset-detail.delete-asset-confirm.button.5d261badec96")}
         </Button>
       </div>
     </div>

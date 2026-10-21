@@ -15,33 +15,7 @@
 import { Loader2, Rotate3d, Shuffle, ZoomIn } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  buildContextImageBrief,
-  buildVariationPrompt,
-  collation,
-  IMAGE_PURPOSE_FOR_KIND,
-  formatUsd,
-  imageSizesOf,
-  IMAGE_SIZE_LABEL,
-  locale,
-  mainProduction,
-  tm,
-  promptFamilyOf,
-  providerModel,
-  providersFor,
-  renderBrief,
-  turnaroundAttachments,
-  TURNAROUND_VIEWS,
-  VERSION_VIEW_LABEL,
-  VERSION_VIEWS,
-  withAttachedLegend,
-  estimateCostUsd,
-  type AssetVersion,
-  type ImageBrief,
-  type ImageSize,
-  type VersionView,
-} from "@/core";
+import { buildContextImageBrief, buildVariationPrompt, collation, IMAGE_PURPOSE_FOR_KIND, formatUsd, imageSizesOf, IMAGE_SIZE_LABEL, locale, mainProduction, tm, promptFamilyOf, providerModel, providersFor, renderBrief, turnaroundAttachments, TURNAROUND_VIEWS, VERSION_VIEW_LABEL, VERSION_VIEWS, withAttachedLegend, estimateCostUsd, type AssetVersion, type ImageBrief, type ImageSize, type VersionView } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
@@ -55,6 +29,7 @@ import {
   type ImageModelPick,
 } from "./image-model";
 import type { LightboxTools } from "./ImageLightbox";
+import { t } from "@/core/i18n/keyed";
 
 const field =
   "h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary";
@@ -65,9 +40,9 @@ export function ViewLabel({ tools, version }: { tools: LightboxTools; version: A
   const cur = tools.state.assetVersions[version.id]?.view ?? null;
   return (
     <label className="flex flex-col gap-1 text-xs text-text-secondary">
-      {L("Bildet viser", "The image shows")}
+      {t("app-library-image-ai-panels.view-label.label.226ae24f3dfd")}
       <select
-        aria-label={L("Vinkelen bildet viser", "The angle the image shows")}
+        aria-label={t("app-library-image-ai-panels.view-label.aria-label.4f5733562a29")}
         value={cur ?? ""}
         disabled={!tools.editable}
         onChange={(e) => {
@@ -76,14 +51,14 @@ export function ViewLabel({ tools, version }: { tools: LightboxTools; version: A
             tools.cmds.run(
               { type: "SetVersionView", versionId: version.id as never, view },
               view
-                ? L(`Vinkel: ${VERSION_VIEW_LABEL[view]}`, `View: ${VERSION_VIEW_LABEL[view]}`)
-                : L("Fjern vinkel", "Remove view"),
+                ? t("app-library-image-ai-panels.view-label.tools-cmds-run.a632e1989889", { value1: String(VERSION_VIEW_LABEL[view]) })
+                : t("app-library-image-ai-panels.view-label.tools-cmds-run.ff053684ab84"),
             ),
           );
         }}
         className={field}
       >
-        <option value="">{L("Ikke merket", "Not marked")}</option>
+        <option value="">{t("app-library-image-ai-panels.view-label.option.9528ce71f957")}</option>
         {VERSION_VIEWS.map((v) => (
           <option key={v} value={v}>
             {VERSION_VIEW_LABEL[v]}
@@ -192,19 +167,13 @@ export function TurnaroundPanel({
       for (const [i, view] of jobs.entries()) {
         setBusy(
           mode === "sheet"
-            ? L(
-                "Lager karakterarket … (kan ta opptil et par minutter)",
-                "Making the character sheet … (can take up to a few minutes)",
-              )
-            : L(
-                `Lager ${VERSION_VIEW_LABEL[view!].toLocaleLowerCase(collation())} (${i + 1} av ${jobs.length}) …`,
-                `Making ${VERSION_VIEW_LABEL[view!].toLocaleLowerCase(collation())} (${i + 1} of ${jobs.length}) …`,
-              ),
+            ? t("app-library-image-ai-panels.run.set-busy.07b6dccfb31a")
+            : t("app-library-image-ai-panels.run.set-busy.07437c0a99ae", { value1: String(VERSION_VIEW_LABEL[view!].toLocaleLowerCase(collation())), value2: String(i + 1), length: String(jobs.length) }),
         );
         const req = request(view, made);
         if (!req)
           throw new Error(
-            L("Beskrivelsen kunne ikke lages.", "The description could not be created."),
+            t("app-library-image-ai-panels.run.message.2db231af9756"),
           );
         const r = await generateImage({
           data: {
@@ -227,10 +196,10 @@ export function TurnaroundPanel({
         if (!r.ok)
           throw new Error(
             made.length
-              ? L(`${made.length} laget. ${tm(r.message)}`, `${made.length} made. ${tm(r.message)}`)
+              ? t("app-library-image-ai-panels.run.message.f8ce4dd249c9", { length: String(made.length), value2: String(tm(r.message)) })
               : tm(r.message),
           );
-        const label = view ? VERSION_VIEW_LABEL[view] : L("karakterark", "character sheet");
+        const label = view ? VERSION_VIEW_LABEL[view] : t("app-library-image-ai-panels.label.message.512ce45aaa2b");
         const group = `vinkel-${r.versionId}`;
         const a = await tools.cmds.runAndWait(
           {
@@ -238,28 +207,22 @@ export function TurnaroundPanel({
             versionId: r.versionId as never,
             variantId: version.variantId,
             media: r.media,
-            note: L(
-              `Generert vinkel: ${label}, fra v${version.number} (${r.model}).`,
-              `Generated angle: ${label}, from v${version.number} (${r.model}).`,
-            ),
+            note: t("app-library-image-ai-panels.note.note.8cf8399adeab", { label: String(label), number: String(version.number), model: String(r.model) }),
           },
-          L(`AI-vinkel av «${asset.name}»`, `AI angle of “${asset.name}”`),
+          t("app-library-image-ai-panels.a.tools-cmds-run-and-wait.3c713f4a9aa5", { name: String(asset.name) }),
           group,
         );
         if (a.error) throw new Error(a.error);
         const v = await tools.cmds.runAndWait(
           { type: "SetVersionView", versionId: r.versionId as never, view: view ?? "sheet" },
-          L(`Vinkel: ${label}`, `View: ${label}`),
+          t("app-library-image-ai-panels.v.tools-cmds-run-and-wait.2250f4d11d39", { label: String(label) }),
           group,
         );
         // Vinkelmerket krever migrasjon 0030; bildet er lagret uansett
         if (v.error)
           setMsg({
             kind: "error",
-            text: L(
-              `Bildet er lagret, men vinkelen ble ikke merket: ${v.error}`,
-              `The image was saved, but the angle was not marked: ${v.error}`,
-            ),
+            text: t("app-library-image-ai-panels.text.text.51252432b44a", { error: String(v.error) }),
           });
         made.push({ versionId: r.versionId, view: view ?? "sheet" });
         tools.onSaved?.({
@@ -272,14 +235,8 @@ export function TurnaroundPanel({
         kind: "ok",
         text:
           mode === "sheet"
-            ? L(
-                "Karakterarket er lagret som ny versjon. Åpne det og bruk «Del opp i ruter» for å dele vinklene.",
-                "The character sheet has been saved as a new version. Open it and use “Split into grid” to split the angles.",
-              )
-            : L(
-                `${made.length} vinkler er lagret som nye versjoner, merket med vinkel.`,
-                `${made.length} angles have been saved as new versions, marked with their angle.`,
-              ),
+            ? t("app-library-image-ai-panels.text.text.d697257a9d82")
+            : t("app-library-image-ai-panels.text.text.512a5a405c7d", { length: String(made.length) }),
       });
     } catch (e) {
       setMsg({ kind: "error", text: lostConnection((e as Error).message) });
@@ -292,16 +249,16 @@ export function TurnaroundPanel({
   if (!choices.length)
     return (
       <p className="text-xs text-text-tertiary">
-        {L("Ingen bildemodeller er tilgjengelige.", "No image models are available.")}
+        {t("app-library-image-ai-panels.turnaround-panel.p.33d32bc64426")}
       </p>
     );
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary">
       <h4 className="flex items-center gap-1 font-medium text-text-primary">
-        <Rotate3d className="size-3.5" aria-hidden /> {L("Lag andre vinkler", "Make other angles")}
+        <Rotate3d className="size-3.5" aria-hidden /> {t("app-library-image-ai-panels.turnaround-panel.h4.2f56719bcdd4")}
       </h4>
       <label className="flex flex-col gap-1">
-        {L("Modell", "Model")}
+        {t("app-library-image-ai-panels.turnaround-panel.label.7f20f344e2d6")}
         <select
           value={key}
           onChange={(e) => {
@@ -320,33 +277,24 @@ export function TurnaroundPanel({
         </select>
       </label>
       <fieldset className="flex flex-col gap-1">
-        <legend className="mb-0.5">{L("Slik", "How")}</legend>
+        <legend className="mb-0.5">{t("app-library-image-ai-panels.turnaround-panel.legend.5ad5af1cd039")}</legend>
         <label className="flex items-start gap-1.5">
           <input type="radio" checked={mode === "sheet"} onChange={() => setMode("sheet")} />
           <span>
-            {L(
-              "Ett ark med alle vinklene side om side – ",
-              "One sheet with all the angles side by side – ",
-            )}
-            <b>{L("mest sammenheng", "most coherence")}</b>
-            {L(
-              ", del opp med «Del opp i ruter» etterpå",
-              ", split it into grid cells afterwards with “Split into grid”",
-            )}
+            {t("app-library-image-ai-panels.turnaround-panel.span.e4ba3862b912")}
+            <b>{t("app-library-image-ai-panels.turnaround-panel.b.a3e1c1121472")}</b>
+            {t("app-library-image-ai-panels.turnaround-panel.span.6440b580ee46")}
           </span>
         </label>
         <label className="flex items-start gap-1.5">
           <input type="radio" checked={mode === "each"} onChange={() => setMode("each")} />
           <span>
-            {L(
-              "Ett bilde per vinkel – høyere oppløsning; hver ny vinkel sendes med til neste",
-              "One image per angle – higher resolution; each new angle is sent along to the next",
-            )}
+            {t("app-library-image-ai-panels.turnaround-panel.span.71b91e2c08dd")}
           </span>
         </label>
       </fieldset>
       <fieldset className="flex flex-col gap-1">
-        <legend className="mb-0.5">{L("Vinkler", "Angles")}</legend>
+        <legend className="mb-0.5">{t("app-library-image-ai-panels.turnaround-panel.legend.1c4c2fcb4bea")}</legend>
         <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
           {TURNAROUND_VIEWS.filter((v) => v !== own).map((v) => (
             <label key={v} className="flex items-center gap-1.5">
@@ -369,7 +317,7 @@ export function TurnaroundPanel({
       </fieldset>
       {sizes.sizes.length > 1 ? (
         <label className="flex flex-col gap-1">
-          {L("Størrelse", "Size")}
+          {t("app-library-image-ai-panels.turnaround-panel.label.350adb6bae41")}
           <select
             value={size ?? ""}
             onChange={(e) => setSizePick(e.target.value as ImageSize)}
@@ -389,14 +337,11 @@ export function TurnaroundPanel({
           checked={withStyle}
           onChange={(e) => setWithStyle(e.target.checked)}
         />
-        {L("Send med to stilforbilder fra filmen", "Send along two style references from the film")}
+        {t("app-library-image-ai-panels.turnaround-panel.label.f41dd10576f6")}
       </label>
       {!own ? (
         <p className="text-text-tertiary">
-          {L(
-            "Tips: merk først hvilken vinkel dette bildet viser (over), så vet modellen hva den har å gå ut fra.",
-            "Tip: first mark which angle this image shows (above), so the model knows what it has to work from.",
-          )}
+          {t("app-library-image-ai-panels.turnaround-panel.p.c1c8707d17a2")}
         </p>
       ) : null}
       {preview ? (
@@ -407,11 +352,11 @@ export function TurnaroundPanel({
             className="text-[11px] underline underline-offset-2 hover:text-text-primary"
           >
             {showPrompt
-              ? L("Skjul beskrivelsen", "Hide the description")
-              : L("Vis beskrivelsen som sendes", "Show the description being sent")}{" "}
+              ? t("app-library-image-ai-panels.turnaround-panel.button.4503ef35977b")
+              : t("app-library-image-ai-panels.turnaround-panel.button.aa45b84a2f68")}{" "}
             ({preview.attached.length}{" "}
-            {preview.attached.length === 1 ? L("bilde", "image") : L("bilder", "images")}{" "}
-            {L("med", "attached")})
+            {preview.attached.length === 1 ? t("app-library-image-ai-panels.turnaround-panel.button.a5e87c38896f") : t("app-library-image-ai-panels.turnaround-panel.button.40d3bd23c407")}{" "}
+            {t("app-library-image-ai-panels.turnaround-panel.button.af3302c367bc")})
           </button>
           {showPrompt ? (
             <pre className="mt-1 max-h-60 overflow-auto whitespace-pre-wrap break-words rounded-sm bg-surface-3 p-1.5 font-mono text-[11px] leading-snug text-text-primary">
@@ -423,40 +368,29 @@ export function TurnaroundPanel({
       ) : null}
       <p>
         {count === 0
-          ? L("Velg minst én vinkel.", "Choose at least one angle.")
-          : L(
-              `${count} ${count === 1 ? "bilde" : "bilder"}${
-                unit !== null
-                  ? ` · anslått ${formatUsd(unit * count)}`
-                  : " · bruker Lovable-kreditter"
-              }. Teller i prosjektets AI-budsjett.`,
-              `${count} ${count === 1 ? "image" : "images"}${
-                unit !== null
-                  ? ` · estimated ${formatUsd(unit * count)}`
-                  : " · uses Lovable credits"
-              }. Counts towards the project's AI budget.`,
-            )}
+          ? t("app-library-image-ai-panels.turnaround-panel.p.a2a2a5b8a0f8")
+          : unit !== null ? t("app-library-image-ai-panels.images-estimate", { count, cost: formatUsd(unit * count) }) : t("app-library-image-ai-panels.images-credits", { count })}
       </p>
       {confirm ? (
         <div
           role="alertdialog"
-          aria-label={L("Bekreft generering av vinkler", "Confirm generation of angles")}
+          aria-label={t("app-library-image-ai-panels.turnaround-panel.aria-label.8e29c168bb08")}
           className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
         >
           <p className="text-text-primary">
-            {count} {count === 1 ? L("generering", "generation") : L("genereringer", "generations")}{" "}
-            {L("med", "with")} {choice?.model.label}
+            {count} {count === 1 ? t("app-library-image-ai-panels.turnaround-panel.p.759ebaf60758") : t("app-library-image-ai-panels.turnaround-panel.p.06ea82e82e75")}{" "}
+            {t("app-library-image-ai-panels.turnaround-panel.p.71461a3ed071")} {choice?.model.label}
             {unit !== null
-              ? L(`, anslått ${formatUsd(unit * count)}`, `, estimated ${formatUsd(unit * count)}`)
+              ? t("app-library-image-ai-panels.turnaround-panel.p.df169e62a747", { value1: String(formatUsd(unit * count)) })
               : ""}
-            {L(". Vil du fortsette?", ". Do you want to continue?")}
+            {t("app-library-image-ai-panels.turnaround-panel.p.5d69342f703b")}
           </p>
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void run()}>
-              {L("Ja, generer", "Yes, generate")}
+              {t("app-library-image-ai-panels.turnaround-panel.button.08d61bf0b416")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-              {L("Avbryt", "Cancel")}
+              {t("app-library-image-ai-panels.turnaround-panel.button.e436478808c3")}
             </Button>
           </div>
         </div>
@@ -469,11 +403,11 @@ export function TurnaroundPanel({
           >
             <Rotate3d />{" "}
             {count === 1
-              ? L("Lag bildet …", "Make the image …")
-              : L(`Lag ${count} bilder …`, `Make ${count} images …`)}
+              ? t("app-library-image-ai-panels.turnaround-panel.button.a0b087dbb080")
+              : t("app-library-image-ai-panels.turnaround-panel.button.bec6ac9e71ac", { count: String(count) })}
           </Button>
           <Button size="sm" variant="ghost" disabled={!!busy} onClick={onClose}>
-            {L("Lukk", "Close")}
+            {t("app-library-image-ai-panels.turnaround-panel.button.8b380f08f40e")}
           </Button>
         </div>
       )}
@@ -559,12 +493,9 @@ export function UpscalePanel({
           versionId: r.versionId as never,
           variantId: version.variantId,
           media: r.media,
-          note: L(
-            `Oppskalert ${factor}× fra v${version.number} (${r.model}).`,
-            `Upscaled ${factor}× from v${version.number} (${r.model}).`,
-          ),
+          note: t("app-library-image-ai-panels.note.note.31d1e81bd571", { factor: String(factor), number: String(version.number), model: String(r.model) }),
         },
-        L(`Oppskaler «${tools.asset.name}»`, `Upscale “${tools.asset.name}”`),
+        t("app-library-image-ai-panels.a.tools-cmds-run-and-wait.9f30ec149a3f", { name: String(tools.asset.name) }),
         group,
       );
       if (a.error) throw new Error(a.error);
@@ -572,7 +503,7 @@ export function UpscalePanel({
       if (view)
         await tools.cmds.runAndWait(
           { type: "SetVersionView", versionId: r.versionId as never, view },
-          L(`Vinkel: ${VERSION_VIEW_LABEL[view]}`, `View: ${VERSION_VIEW_LABEL[view]}`),
+          t("app-library-image-ai-panels.run.tools-cmds-run-and-wait.3ed761d5bfd7", { value1: String(VERSION_VIEW_LABEL[view]) }),
           group,
         );
       tools.onSaved?.({
@@ -582,10 +513,7 @@ export function UpscalePanel({
       });
       setMsg({
         kind: "ok",
-        text: L(
-          `Lagret som ny versjon${r.media.width ? ` (${r.media.width} × ${r.media.height} px)` : ""}. Godkjenn den i biblioteket, eller velg den på laget.`,
-          `Saved as a new version${r.media.width ? ` (${r.media.width} × ${r.media.height} px)` : ""}. Approve it in the library, or choose it for the layer.`,
-        ),
+        text: t("app-library-image-ai-panels.text.text.07247108d225", { value1: String(r.media.width ? ` (${r.media.width} × ${r.media.height} px)` : "") }),
       });
     } catch (e) {
       setMsg({ kind: "error", text: lostConnection((e as Error).message) });
@@ -598,19 +526,16 @@ export function UpscalePanel({
   return (
     <div className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary">
       <h4 className="flex items-center gap-1 font-medium text-text-primary">
-        <ZoomIn className="size-3.5" aria-hidden /> {L("Oppskaler", "Upscale")}
+        <ZoomIn className="size-3.5" aria-hidden /> {t("app-library-image-ai-panels.upscale-panel.h4.cd444ecd55c2")}
       </h4>
       {!choices.length ? (
         <p>
-          {L(
-            "Oppskalering bruker fal.ai. Koble til fal.ai under «AI-leverandører» på prosjektlisten (eieren gjør det), så blir valget tilgjengelig her.",
-            "Upscaling uses fal.ai. Connect fal.ai under “AI providers” on the project list (the owner does this), and the option will be available here.",
-          )}
+          {t("app-library-image-ai-panels.upscale-panel.p.2d7c52068ac8")}
         </p>
       ) : (
         <>
           <label className="flex flex-col gap-1">
-            {L("Modell", "Model")}
+            {t("app-library-image-ai-panels.upscale-panel.label.02224be21eb8")}
             <select value={key} onChange={(e) => setPick(e.target.value)} className={field}>
               {choices.map((c) => (
                 <option key={c.key} value={c.key}>
@@ -632,38 +557,35 @@ export function UpscalePanel({
           </div>
           {tooBig ? (
             <p className="text-status-uncertain">
-              {L(
-                "Resultatet blir svært stort. Velg 2×, eller frilegg og fjern luften rundt først.",
-                "The result will be very large. Choose 2×, or cut out the subject and remove the surrounding space first.",
-              )}
+              {t("app-library-image-ai-panels.upscale-panel.p.2131ad13909f")}
             </p>
           ) : null}
           <p>
-            {L("Anslått", "Estimated")}{" "}
-            {cost !== null ? formatUsd(cost) : L("ukjent pris", "unknown price")} (
+            {t("app-library-image-ai-panels.upscale-panel.p.61797f690b0d")}{" "}
+            {cost !== null ? formatUsd(cost) : t("app-library-image-ai-panels.upscale-panel.p.4f0c9f2c6cf8")} (
             {mp.toLocaleString(locale(), { maximumFractionDigits: 1 })}{" "}
-            {L("megapiksler", "megapixels")}).{" "}
-            {L("Teller i prosjektets AI-budsjett.", "Counts towards the project's AI budget.")}
+            {t("app-library-image-ai-panels.upscale-panel.p.d15b327fb65c")}).{" "}
+            {t("app-library-image-ai-panels.upscale-panel.p.fee21458a0a4")}
           </p>
           {confirm ? (
             <div
               role="alertdialog"
-              aria-label={L("Bekreft oppskalering", "Confirm upscaling")}
+              aria-label={t("app-library-image-ai-panels.upscale-panel.aria-label.dd9477bdabe2")}
               className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
             >
               <p className="text-text-primary">
-                {L("Oppskaler", "Upscale")} {factor}× {L("med", "with")} {choice?.model.label}
+                {t("app-library-image-ai-panels.upscale-panel.p.cd444ecd55c2")} {factor}× {t("app-library-image-ai-panels.upscale-panel.p.e1a8e5c99d46")} {choice?.model.label}
                 {cost !== null
-                  ? L(`, anslått ${formatUsd(cost)}`, `, estimated ${formatUsd(cost)}`)
+                  ? t("app-library-image-ai-panels.upscale-panel.p.e55848dafdf3", { value1: String(formatUsd(cost)) })
                   : ""}
                 ?
               </p>
               <div className="flex gap-2">
                 <Button size="sm" onClick={() => void run()}>
-                  {L("Ja, oppskaler", "Yes, upscale")}
+                  {t("app-library-image-ai-panels.upscale-panel.button.224c2028272c")}
                 </Button>
                 <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                  {L("Avbryt", "Cancel")}
+                  {t("app-library-image-ai-panels.upscale-panel.button.a840b070fd19")}
                 </Button>
               </div>
             </div>
@@ -674,10 +596,10 @@ export function UpscalePanel({
                 disabled={!tools.editable || busy || !choice}
                 onClick={() => setConfirm(true)}
               >
-                <ZoomIn /> {L("Oppskaler …", "Upscale …")}
+                <ZoomIn /> {t("app-library-image-ai-panels.upscale-panel.button.cb22cd70f320")}
               </Button>
               <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>
-                {L("Lukk", "Close")}
+                {t("app-library-image-ai-panels.upscale-panel.button.7b75340334f1")}
               </Button>
             </div>
           )}
@@ -686,7 +608,7 @@ export function UpscalePanel({
       {busy ? (
         <p role="status" className="flex items-center gap-1.5">
           <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
-          {L("Oppskalerer … (kan ta et minutt)", "Upscaling … (can take a minute)")}
+          {t("app-library-image-ai-panels.upscale-panel.p.73d68d836c19")}
         </p>
       ) : msg ? (
         <p
@@ -713,7 +635,7 @@ export function ImageModelFields({
   return (
     <>
       <label className="flex flex-col gap-1">
-        {L("Modell", "Model")}
+        {t("app-library-image-ai-panels.image-model-fields.label.b8c823827d12")}
         <select
           value={m.key}
           onChange={(e) => {
@@ -733,7 +655,7 @@ export function ImageModelFields({
       </label>
       {m.sizes.sizes.length > 1 ? (
         <label className="flex flex-col gap-1">
-          {L("Størrelse", "Size")}
+          {t("app-library-image-ai-panels.image-model-fields.label.b68a61a9bb51")}
           <select
             value={m.size ?? ""}
             onChange={(e) => {
@@ -771,11 +693,11 @@ export function PromptPreview({
         className="text-[11px] underline underline-offset-2 hover:text-text-primary"
       >
         {show
-          ? L("Skjul beskrivelsen", "Hide the description")
-          : L("Vis beskrivelsen som sendes", "Show the description being sent")}{" "}
+          ? t("app-library-image-ai-panels.prompt-preview.button.77b138039c93")
+          : t("app-library-image-ai-panels.prompt-preview.button.1afe0209e54f")}{" "}
         ({preview.attached.length}{" "}
-        {preview.attached.length === 1 ? L("bilde", "image") : L("bilder", "images")}{" "}
-        {L("med", "attached")})
+        {preview.attached.length === 1 ? t("app-library-image-ai-panels.prompt-preview.button.f316e8036547") : t("app-library-image-ai-panels.prompt-preview.button.209273aef674")}{" "}
+        {t("app-library-image-ai-panels.prompt-preview.button.348794d72f82")})
       </button>
       {show ? (
         <pre
@@ -826,18 +748,7 @@ export function CostConfirm({
       <p>
         {count === 0
           ? emptyText
-          : L(
-              `${count} ${count === 1 ? "bilde" : "bilder"}${
-                unit !== null
-                  ? ` · anslått ${formatUsd(unit * count)}`
-                  : " · bruker Lovable-kreditter"
-              }. Teller i prosjektets AI-budsjett.`,
-              `${count} ${count === 1 ? "image" : "images"}${
-                unit !== null
-                  ? ` · estimated ${formatUsd(unit * count)}`
-                  : " · uses Lovable credits"
-              }. Counts towards the project's AI budget.`,
-            )}
+          : unit !== null ? t("app-library-image-ai-panels.images-estimate", { count, cost: formatUsd(unit * count) }) : t("app-library-image-ai-panels.images-credits", { count })}
       </p>
       {confirm ? (
         <div
@@ -846,19 +757,19 @@ export function CostConfirm({
           className="flex flex-col gap-1.5 rounded-sm border border-accent-warm/50 bg-surface-1 p-2"
         >
           <p className="text-text-primary">
-            {count} {count === 1 ? L("generering", "generation") : L("genereringer", "generations")}{" "}
-            {L("med", "with")} {m.choice?.model.label}
+            {count} {count === 1 ? t("app-library-image-ai-panels.cost-confirm.p.7ff37f5fab39") : t("app-library-image-ai-panels.cost-confirm.p.86b60bd56ab8")}{" "}
+            {t("app-library-image-ai-panels.cost-confirm.p.7f644122a14e")} {m.choice?.model.label}
             {unit !== null
-              ? L(`, anslått ${formatUsd(unit * count)}`, `, estimated ${formatUsd(unit * count)}`)
+              ? t("app-library-image-ai-panels.cost-confirm.p.c5d9188a907b", { value1: String(formatUsd(unit * count)) })
               : ""}
-            {L(". Vil du fortsette?", ". Do you want to continue?")}
+            {t("app-library-image-ai-panels.cost-confirm.p.f83230616852")}
           </p>
           <div className="flex gap-2">
             <Button size="sm" onClick={onRun}>
-              {L("Ja, generer", "Yes, generate")}
+              {t("app-library-image-ai-panels.cost-confirm.button.ffcd9a7b3032")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => onConfirm(false)}>
-              {L("Avbryt", "Cancel")}
+              {t("app-library-image-ai-panels.cost-confirm.button.eb5cf818161b")}
             </Button>
           </div>
         </div>
@@ -872,7 +783,7 @@ export function CostConfirm({
             {icon} {startLabel}
           </Button>
           <Button size="sm" variant="ghost" disabled={busy} onClick={onClose}>
-            {L("Lukk", "Close")}
+            {t("app-library-image-ai-panels.cost-confirm.button.7f9610c91e00")}
           </Button>
         </div>
       )}
@@ -955,15 +866,12 @@ export function VariationPanel({
     try {
       for (let i = 0; i < count; i++) {
         setBusy(
-          L(
-            `Lager variasjon ${i + 1} av ${count} … (kan ta et minutt)`,
-            `Making variation ${i + 1} of ${count} … (can take a minute)`,
-          ),
+          t("app-library-image-ai-panels.run.set-busy.c5650e6c1174", { value1: String(i + 1), count: String(count) }),
         );
         const req = request(i);
         if (!req)
           throw new Error(
-            L("Beskrivelsen kunne ikke lages.", "The description could not be created."),
+            t("app-library-image-ai-panels.run.message.2db231af9756.2"),
           );
         const r = await generateImage({
           data: {
@@ -985,7 +893,7 @@ export function VariationPanel({
         if (!r.ok)
           throw new Error(
             made
-              ? L(`${made} laget. ${tm(r.message)}`, `${made} made. ${tm(r.message)}`)
+              ? t("app-library-image-ai-panels.run.message.020200ad0736", { made: String(made), value2: String(tm(r.message)) })
               : tm(r.message),
           );
         const group = `variasjon-${r.versionId}`;
@@ -995,12 +903,9 @@ export function VariationPanel({
             versionId: r.versionId as never,
             variantId: version.variantId,
             media: r.media,
-            note: L(
-              `Variasjon ${i + 1} av ${count} fra v${version.number}: «${wanted}» (${r.model}).`,
-              `Variation ${i + 1} of ${count} from v${version.number}: “${wanted}” (${r.model}).`,
-            ).slice(0, 2000),
+            note: t("app-library-image-ai-panels.note.l-variasjon-i-1-av-count-fra-v-version-number-wanted-r-model-variation-i-1-of-count-from-v-version-number-wanted-r-model-slice.a5412144dbca", { value1: String(i + 1), count: String(count), number: String(version.number), wanted: String(wanted), model: String(r.model) }).slice(0, 2000),
           },
-          L(`AI-variasjon av «${asset.name}»`, `AI variation of “${asset.name}”`),
+          t("app-library-image-ai-panels.a.tools-cmds-run-and-wait.dd7b853571d6", { name: String(asset.name) }),
           group,
         );
         if (a.error) throw new Error(a.error);
@@ -1009,7 +914,7 @@ export function VariationPanel({
         if (view)
           await tools.cmds.runAndWait(
             { type: "SetVersionView", versionId: r.versionId as never, view },
-            L(`Vinkel: ${VERSION_VIEW_LABEL[view]}`, `View: ${VERSION_VIEW_LABEL[view]}`),
+            t("app-library-image-ai-panels.run.tools-cmds-run-and-wait.3ed761d5bfd7.2", { value1: String(VERSION_VIEW_LABEL[view]) }),
             group,
           );
         made++;
@@ -1021,10 +926,7 @@ export function VariationPanel({
       }
       setMsg({
         kind: "ok",
-        text: L(
-          `${made} ${made === 1 ? "variasjon er lagret som ny versjon" : "variasjoner er lagret som nye versjoner"}. Originalen er beholdt.`,
-          `${made} ${made === 1 ? "variation has been saved as a new version" : "variations have been saved as new versions"}. The original is kept.`,
-        ),
+        text: t("app-library-image-ai-panels.variations-saved", { count: made }),
       });
     } catch (e) {
       setMsg({ kind: "error", text: lostConnection((e as Error).message) });
@@ -1037,7 +939,7 @@ export function VariationPanel({
   if (!m.choices.length)
     return (
       <p className="text-xs text-text-tertiary">
-        {L("Ingen bildemodeller er tilgjengelige.", "No image models are available.")}
+        {t("app-library-image-ai-panels.variation-panel.p.fcfa59473ab2")}
       </p>
     );
   return (
@@ -1046,11 +948,11 @@ export function VariationPanel({
       className="flex flex-col gap-2 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-secondary"
     >
       <h4 className="flex items-center gap-1 font-medium text-text-primary">
-        <Shuffle className="size-3.5" aria-hidden /> {L("Lag variasjoner", "Make variations")}
+        <Shuffle className="size-3.5" aria-hidden /> {t("app-library-image-ai-panels.variation-panel.h4.f5ac2c24f865")}
       </h4>
       <label className="flex flex-col gap-1">
         <span>
-          {L("Hva ønsker du forskjellig?", "What do you want to be different?")}{" "}
+          {t("app-library-image-ai-panels.variation-panel.span.c8efa02f955a")}{" "}
           <span className="text-status-danger" aria-hidden>
             *
           </span>
@@ -1062,10 +964,7 @@ export function VariationPanel({
           rows={2}
           maxLength={500}
           disabled={!!busy}
-          placeholder={L(
-            "F.eks. «døren står åpen» eller «med snø på taket»",
-            "E.g. “the door is open” or “with snow on the roof”",
-          )}
+          placeholder={t("app-library-image-ai-panels.variation-panel.placeholder.c7ef4e7afdf2")}
           onChange={(e) => {
             setChange(e.target.value);
             setConfirm(false);
@@ -1075,7 +974,7 @@ export function VariationPanel({
       </label>
       <ImageModelFields m={m} disabled={!!busy} onChange={() => setConfirm(false)} />
       <label className="flex flex-col gap-1">
-        {L("Antall variasjoner", "Number of variations")}
+        {t("app-library-image-ai-panels.variation-panel.label.904c4b45ccac")}
         <select
           value={count}
           disabled={!!busy}
@@ -1098,7 +997,7 @@ export function VariationPanel({
           checked={withStyle}
           onChange={(e) => setWithStyle(e.target.checked)}
         />
-        {L("Send med to stilforbilder fra filmen", "Send along two style references from the film")}
+        {t("app-library-image-ai-panels.variation-panel.label.b648cf98f3f9")}
       </label>
       <PromptPreview preview={preview} />
       <CostConfirm
@@ -1110,13 +1009,13 @@ export function VariationPanel({
         onClose={onClose}
         disabled={!tools.editable}
         busy={!!busy}
-        emptyText={L("Skriv hva som skal være forskjellig.", "Write what should be different.")}
-        confirmLabel={L("Bekreft generering av variasjoner", "Confirm generation of variations")}
+        emptyText={t("app-library-image-ai-panels.variation-panel.empty-text.99e79973aecb")}
+        confirmLabel={t("app-library-image-ai-panels.variation-panel.confirm-label.1c2efd85a81c")}
         icon={<Shuffle />}
         startLabel={
           count === 1
-            ? L("Lag variasjonen …", "Make the variation …")
-            : L(`Lag ${count} variasjoner …`, `Make ${count} variations …`)
+            ? t("app-library-image-ai-panels.variation-panel.start-label.9fbc7d065b5d")
+            : t("app-library-image-ai-panels.variation-panel.start-label.477a4bc4dd53", { count: String(count) })
         }
       />
       {busy ? (

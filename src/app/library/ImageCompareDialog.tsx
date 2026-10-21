@@ -3,7 +3,7 @@
  * kandidater fra AI eller tidligere og nye versjoner. «Godkjenn» velger versjonen uten å slette den andre.
  */
 import { Check } from "lucide-react";
-import { L, locale, type AssetVersion } from "@/core";
+import { locale, type AssetVersion } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 export function ImageCompareDialog({
   open,
@@ -37,13 +38,10 @@ export function ImageCompareDialog({
       <DialogContent className="max-w-6xl">
         <DialogHeader>
           <DialogTitle>
-            {L("Sammenlign", "Compare")} – {title}
+            {t("app-library-image-compare-dialog.image-compare-dialog.dialog-title.f9e7d3b2bee4")} – {title}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Versjonene vises i samme størrelse. Godkjenn den du vil bruke; den andre beholdes.",
-              "The versions are shown at the same size. Approve the one you want to use; the other is kept.",
-            )}
+            {t("app-library-image-compare-dialog.image-compare-dialog.dialog-description.cf01154eb65a")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid grid-cols-2 gap-3">
@@ -53,7 +51,7 @@ export function ImageCompareDialog({
                 {urls[v.mediaPath] ? (
                   <img
                     src={urls[v.mediaPath]}
-                    alt={L(`Versjon ${v.number}`, `Version ${v.number}`)}
+                    alt={t("app-library-image-compare-dialog.image-compare-dialog.alt.adccf792faee", { number: String(v.number) })}
                     className="max-h-full max-w-full object-contain"
                   />
                 ) : null}
@@ -67,11 +65,11 @@ export function ImageCompareDialog({
                 </span>
                 {approvedId === v.id ? (
                   <span className="flex shrink-0 items-center gap-0.5 font-medium text-status-success">
-                    <Check className="size-3.5" aria-hidden /> {L("Godkjent", "Approved")}
+                    <Check className="size-3.5" aria-hidden /> {t("app-library-image-compare-dialog.image-compare-dialog.span.4be80a1e85fd")}
                   </span>
                 ) : editable ? (
                   <Button size="sm" variant="secondary" onClick={() => onApprove(v)}>
-                    {L("Godkjenn", "Approve")} v{v.number}
+                    {t("app-library-image-compare-dialog.image-compare-dialog.button.bdd65fca3e65")} v{v.number}
                   </Button>
                 ) : null}
               </figcaption>

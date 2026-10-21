@@ -20,8 +20,9 @@ import {
   type Rational,
 } from "@/core";
 import { Button } from "@/components/ui/button";
-import { L, localized } from "@/core";
+
 import { updateCameraCommand, MAX_CAMERA_ZOOM, MIN_CAMERA_ZOOM } from "./camera-overlay";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 interface CameraPanelProps {
   /** Utsnittet på slutten av scenen før, for «Bruk aktivt utsnitt». */
@@ -35,13 +36,7 @@ interface CameraPanelProps {
   onRemoved: () => void;
 }
 
-const EASING_LABEL: Record<Easing, string> = localized({
-  linear: ["Jevn", "Even"],
-  "ease-in": ["Myk start", "Ease in"],
-  "ease-out": ["Myk slutt", "Ease out"],
-  "ease-in-out": ["Myk start og slutt", "Ease in and out"],
-  hold: ["Hold", "Hold"],
-});
+const EASING_LABEL: Record<Easing, string> = tLocalized({ linear: "app-scene-editor-camera-panel.easing-label.linear.d1801edccdef", "ease-in": "app-scene-editor-camera-panel.easing-label.ease-in.2d772dc3edfd", "ease-out": "app-scene-editor-camera-panel.easing-label.ease-out.986bfc35b6a4", "ease-in-out": "app-scene-editor-camera-panel.easing-label.ease-in-out.9c97cd151cac", hold: "app-scene-editor-camera-panel.easing-label.hold.d4076f411bb6" });
 
 const inputClass =
   "h-7 w-full min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary placeholder:text-text-tertiary disabled:cursor-not-allowed disabled:opacity-50";
@@ -119,7 +114,7 @@ function TextField({
         value={d.draft ?? value}
         disabled={disabled}
         maxLength={200}
-        placeholder={L("Uten navn", "Untitled")}
+        placeholder={tk("app-scene-editor-camera-panel.text-field.placeholder.437b384b9d4c")}
         onFocus={() => d.start(value)}
         {...d.handlers}
         className={inputClass}
@@ -187,10 +182,7 @@ function FrameSection({
     const zoom = pct / 100;
     if (zoom < MIN_CAMERA_ZOOM || zoom > MAX_CAMERA_ZOOM)
       return setError(
-        L(
-          `Zoom må være mellom ${MIN_CAMERA_ZOOM * 100} og ${MAX_CAMERA_ZOOM * 100} %`,
-          `Zoom must be between ${MIN_CAMERA_ZOOM * 100} and ${MAX_CAMERA_ZOOM * 100} %`,
-        ),
+        tk("app-scene-editor-camera-panel.set-zoom.set-error.5d886ddbfb36", { value1: String(MIN_CAMERA_ZOOM * 100), value2: String(MAX_CAMERA_ZOOM * 100) }),
       );
     set({ zoom });
   };
@@ -206,14 +198,14 @@ function FrameSection({
           onCommit={setZoom}
         />
         <NumberField
-          label={L("Rotasjon (°)", "Rotation (°)")}
+          label={tk("app-scene-editor-camera-panel.frame-section.label.f915a28d629d")}
           value={frame.rotation}
           disabled={disabled}
           onCommit={(rotation) => set({ rotation })}
         />
       </div>
       <p className="text-xs text-text-tertiary">
-        {L("100 % = hele formatet", "100 % = the whole frame")}
+        {tk("app-scene-editor-camera-panel.frame-section.p.15d0963ddcb1")}
       </p>
       {error ? (
         <p role="alert" className="text-xs text-status-danger">
@@ -222,7 +214,7 @@ function FrameSection({
       ) : null}
       <div className="flex flex-wrap gap-1">
         <Button size="sm" variant="ghost" disabled={disabled} onClick={onFull}>
-          {L("Hele formatet", "Whole frame")}
+          {tk("app-scene-editor-camera-panel.frame-section.button.d3a8d9c07721")}
         </Button>
         <Button
           size="sm"
@@ -231,17 +223,11 @@ function FrameSection({
           onClick={() => previous && setError(onChange(previous))}
           title={
             previous
-              ? L(
-                  "Kopier utsnittet kameraet har når scenen før slutter",
-                  "Copy the shot the camera has when the previous scene ends",
-                )
-              : L(
-                  "Scenen før har ingen 2D-scene (eller dette er første scene)",
-                  "The previous scene has no 2D scene (or this is the first scene)",
-                )
+              ? tk("app-scene-editor-camera-panel.frame-section.title.ece6881754b4")
+              : tk("app-scene-editor-camera-panel.frame-section.title.010254f47a92")
           }
         >
-          {L("Bruk aktivt utsnitt", "Use active shot")}
+          {tk("app-scene-editor-camera-panel.frame-section.button.9d40e6d84771")}
         </Button>
       </div>
     </Section>
@@ -273,24 +259,18 @@ export function CameraPanel({
     const frame = secondsToFrames(seconds, fps);
     if (frame < 0 || frame > lastFrame)
       return setError(
-        L(
-          `Tiden må være mellom 0 og ${fmt(framesToSeconds(lastFrame, fps))} sekunder`,
-          `The time must be between 0 and ${fmt(framesToSeconds(lastFrame, fps))} seconds`,
-        ),
+        tk("app-scene-editor-camera-panel.set-time.set-error.84ba143006e8", { value1: String(fmt(framesToSeconds(lastFrame, fps))) }),
       );
     const next = { ...shot, [which]: frame };
     if (next.endFrame < next.startFrame)
       return setError(
-        L(
-          "Kamerautsnittet må slutte etter at det starter",
-          "The camera shot must end after it starts",
-        ),
+        tk("app-scene-editor-camera-panel.set-time.set-error.443f652b4062"),
       );
     commit(
       next,
       which === "startFrame"
-        ? L("Endre start for kamerautsnitt", "Change start of camera shot")
-        : L("Endre slutt for kamerautsnitt", "Change end of camera shot"),
+        ? tk("app-scene-editor-camera-panel.set-time.commit.4cdf540ca878")
+        : tk("app-scene-editor-camera-panel.set-time.commit.0b87d33d21f7"),
     );
   }
 
@@ -303,14 +283,14 @@ export function CameraPanel({
         to: shot.from,
         curve: c ? { c1x: c.c2x, c1y: c.c2y, c2x: c.c1x, c2y: c.c1y } : null,
       },
-      L("Bytt start og slutt", "Swap start and end"),
+      tk("app-scene-editor-camera-panel.swap.commit.7edc096b02dc"),
     );
   }
 
   function remove() {
     const err = run(
       updateCameraCommand(composition, withoutShot(composition.camera, shot.id)),
-      L("Slett kamerautsnitt", "Delete camera shot"),
+      tk("app-scene-editor-camera-panel.err.run.adf0569d05a8"),
     );
     setError(err);
     if (!err) onRemoved();
@@ -319,47 +299,47 @@ export function CameraPanel({
   const curved = shot.curve !== null;
   return (
     <div className="p-3">
-      <PanelHeader as="h2" className="-mx-3 mb-3" title={L("Kamerautsnitt", "Camera shot")} />
+      <PanelHeader as="h2" className="-mx-3 mb-3" title={tk("app-scene-editor-camera-panel.camera-panel.title.ae8a26378eba")} />
       {error ? (
         <p role="alert" className="mb-3 text-xs text-status-danger">
           {error}
         </p>
       ) : null}
-      <Section title={L("Kamerautsnitt", "Camera shot")}>
+      <Section title={tk("app-scene-editor-camera-panel.camera-panel.title.ae8a26378eba.2")}>
         <TextField
-          label={L("Navn", "Name")}
+          label={tk("app-scene-editor-camera-panel.camera-panel.label.0c3de49bba56")}
           value={shot.name}
           disabled={disabled}
           onCommit={(name) =>
-            commit({ ...shot, name }, L("Gi kamerautsnitt navn", "Name the camera shot"))
+            commit({ ...shot, name }, tk("app-scene-editor-camera-panel.camera-panel.commit.61abfdb6eab7"))
           }
         />
         <div className="grid grid-cols-2 gap-2">
           <NumberField
-            label={L("Start (s)", "Start (s)")}
+            label={tk("app-scene-editor-camera-panel.camera-panel.label.65af20133200")}
             value={framesToSeconds(shot.startFrame, fps)}
             step={0.04}
             disabled={disabled}
-            hint={L(`bilde ${shot.startFrame}`, `frame ${shot.startFrame}`)}
+            hint={tk("app-scene-editor-camera-panel.camera-panel.hint.6a17c12a763b", { startFrame: String(shot.startFrame) })}
             onCommit={(s) => setTime("startFrame", s)}
           />
           <NumberField
-            label={L("Slutt (s)", "End (s)")}
+            label={tk("app-scene-editor-camera-panel.camera-panel.label.5355707172e2")}
             value={framesToSeconds(shot.endFrame, fps)}
             step={0.04}
             disabled={disabled}
-            hint={L(`bilde ${shot.endFrame}`, `frame ${shot.endFrame}`)}
+            hint={tk("app-scene-editor-camera-panel.camera-panel.hint.7700d092bd65", { endFrame: String(shot.endFrame) })}
             onCommit={(s) => setTime("endFrame", s)}
           />
         </div>
-        <Field label={L("Hastighet", "Speed")}>
+        <Field label={tk("app-scene-editor-camera-panel.camera-panel.label.706f10d86d7a")}>
           <select
             value={shot.easing}
             disabled={disabled}
             onChange={(e) =>
               commit(
                 { ...shot, easing: e.target.value as Easing },
-                L("Endre hastighetskurve", "Change speed curve"),
+                tk("app-scene-editor-camera-panel.camera-panel.commit.54213bdbc4e7"),
               )
             }
             className={inputClass}
@@ -373,37 +353,37 @@ export function CameraPanel({
         </Field>
       </Section>
       <FrameSection
-        title={L("Startramme (blå)", "Start frame (blue)")}
+        title={tk("app-scene-editor-camera-panel.camera-panel.title.41b97ecad091")}
         frame={shot.from}
         disabled={disabled}
-        onChange={(from) => commit({ ...shot, from }, L("Endre startramme", "Change start frame"))}
+        onChange={(from) => commit({ ...shot, from }, tk("app-scene-editor-camera-panel.camera-panel.commit.a8ec73cd9d3e"))}
         previous={previousFrame}
         onFull={() =>
           commit(
             { ...shot, from: fullFrameCamera(composition) },
-            L("Startramme: hele formatet", "Start frame: whole frame"),
+            tk("app-scene-editor-camera-panel.camera-panel.commit.6ece8fe0473a"),
           )
         }
       />
       <FrameSection
-        title={L("Sluttramme (rød)", "End frame (red)")}
+        title={tk("app-scene-editor-camera-panel.camera-panel.title.ef9ac716d58f")}
         frame={shot.to}
         disabled={disabled}
-        onChange={(to) => commit({ ...shot, to }, L("Endre sluttramme", "Change end frame"))}
+        onChange={(to) => commit({ ...shot, to }, tk("app-scene-editor-camera-panel.camera-panel.commit.72a9f73fc228"))}
         previous={previousFrame}
         onFull={() =>
           commit(
             { ...shot, to: fullFrameCamera(composition) },
-            L("Sluttramme: hele formatet", "End frame: whole frame"),
+            tk("app-scene-editor-camera-panel.camera-panel.commit.9bcc7535c472"),
           )
         }
       />
-      <Section title={L("Bane", "Path")}>
-        <div role="group" aria-label={L("Banetype", "Path type")} className="flex gap-1">
+      <Section title={tk("app-scene-editor-camera-panel.camera-panel.title.6b59d9bb269e")}>
+        <div role="group" aria-label={tk("app-scene-editor-camera-panel.camera-panel.aria-label.c8ff09f56ac3")} className="flex gap-1">
           {(
             [
-              [L("Rett", "Straight"), false],
-              [L("Kurvet", "Curved"), true],
+              [tk("app-scene-editor-camera-panel.camera-panel.l-rett-straight-false-l-kurvet-curved-true-as-const-map.b0447116557b"), false],
+              [tk("app-scene-editor-camera-panel.camera-panel.l-rett-straight-false-l-kurvet-curved-true-as-const-map.cc04a45e5b01"), true],
             ] as const
           ).map(([text, isCurve]) => (
             <Button
@@ -417,8 +397,8 @@ export function CameraPanel({
                   commit(
                     toggleCurve(shot),
                     isCurve
-                      ? L("Kurvet kamerabane", "Curved camera path")
-                      : L("Rett kamerabane", "Straight camera path"),
+                      ? tk("app-scene-editor-camera-panel.camera-panel.commit.3d2a541d33db")
+                      : tk("app-scene-editor-camera-panel.camera-panel.commit.3750a798925f"),
                   );
               }}
             >
@@ -427,15 +407,12 @@ export function CameraPanel({
           ))}
         </div>
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Dra i håndtakene på banen i scenen, eller dobbeltklikk banen for å bytte.",
-            "Drag the handles on the path in the scene, or double-click the path to switch.",
-          )}
+          {tk("app-scene-editor-camera-panel.camera-panel.p.659aa1ab524c")}
         </p>
       </Section>
       <div className="flex flex-col items-start gap-1">
         <Button size="sm" variant="ghost" disabled={disabled} onClick={swap}>
-          {L("Bytt start og slutt", "Swap start and end")}
+          {tk("app-scene-editor-camera-panel.camera-panel.button.de1042f70af0")}
         </Button>
         <Button
           size="sm"
@@ -444,7 +421,7 @@ export function CameraPanel({
           onClick={remove}
           className="text-status-danger"
         >
-          {L("Slett kamerautsnitt", "Delete camera shot")}
+          {tk("app-scene-editor-camera-panel.camera-panel.button.1c6dd1e00aca")}
         </Button>
       </div>
     </div>

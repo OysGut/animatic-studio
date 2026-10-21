@@ -5,16 +5,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  L,
-  tm,
-  keepsAnOwner,
-  workspaceRights,
-  WORKSPACE_INVITE_ROLES,
-  WORKSPACE_ROLES,
-  WORKSPACE_ROLE_LABEL,
-  type WorkspaceRole,
-} from "@/core";
+import { tm, keepsAnOwner, workspaceRights, WORKSPACE_INVITE_ROLES, WORKSPACE_ROLES, WORKSPACE_ROLE_LABEL, type WorkspaceRole } from "@/core";
 import {
   createWorkspaceInvitation,
   getWorkspace,
@@ -32,6 +23,7 @@ import {
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
 import { MY_WORKSPACES_KEY } from "./WorkspacesCard";
+import { t } from "@/core/i18n/keyed";
 
 const input =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -100,19 +92,13 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
   if (!ready)
     return (
       <main className="mx-auto w-full max-w-2xl p-6 text-[13px] text-text-secondary">
-        {L(
-          "Arbeidsgrupper krever en nyere databaseversjon.",
-          "Workspaces require a newer database version.",
-        )}
+        {t("app-workspaces-workspace-page.workspace-page.main.1f9e86c7de4b")}
       </main>
     );
   if (ws.isSuccess && !ws.data)
     return (
       <main className="mx-auto w-full max-w-2xl p-6 text-[13px] text-text-secondary" role="alert">
-        {L(
-          "Gruppen finnes ikke, eller du er ikke medlem.",
-          "The workspace does not exist, or you are not a member.",
-        )}
+        {t("app-workspaces-workspace-page.workspace-page.main.f72e3be574fa")}
       </main>
     );
 
@@ -122,13 +108,13 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 p-6" data-testid="workspace-page">
-      <Card title={L("Arbeidsgruppe", "Workspace")}>
+      <Card title={t("app-workspaces-workspace-page.workspace-page.title.95ed620a6176")}>
         {rights.manage ? (
           <div className="flex gap-2">
             <input
               className={input}
               maxLength={200}
-              aria-label={L("Navn", "Name")}
+              aria-label={t("app-workspaces-workspace-page.workspace-page.aria-label.c319ca060dd3")}
               value={name ?? ws.data?.name ?? ""}
               onChange={(e) => setName(e.target.value)}
               data-testid="workspace-name"
@@ -143,7 +129,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                 })
               }
             >
-              {L("Lagre", "Save")}
+              {t("app-workspaces-workspace-page.workspace-page.button.ed23835d210c")}
             </Button>
           </div>
         ) : (
@@ -151,31 +137,31 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
         )}
         {myRole ? (
           <p className="text-xs text-text-tertiary">
-            {L("Din rolle:", "Your role:")} {WORKSPACE_ROLE_LABEL[myRole]}
+            {t("app-workspaces-workspace-page.workspace-page.p.171e1a352fcb")} {WORKSPACE_ROLE_LABEL[myRole]}
           </p>
         ) : null}
       </Card>
 
-      <Card title={L("Medlemmer", "Members")} testId="workspace-members">
+      <Card title={t("app-workspaces-workspace-page.workspace-page.title.fd2077d2b4bb")} testId="workspace-members">
         <ul className="flex flex-col gap-2">
           {memberList.map((m) => {
-            const label = m.displayName || L("Uten navn", "No name");
+            const label = m.displayName || t("app-workspaces-workspace-page.label.member-list-map.273905b2804b");
             return (
               <li key={m.userId} className="flex items-center justify-between gap-2 text-[13px]">
                 <span className="text-text-primary">
                   {label}
-                  {m.userId === myId ? ` (${L("deg", "you")})` : ""}
+                  {m.userId === myId ? ` (${t("app-workspaces-workspace-page.workspace-page.span.38114e021c7f")})` : ""}
                 </span>
                 {rights.manage ? (
                   <span className="flex items-center gap-2">
                     <select
                       className={select}
-                      aria-label={`${L("Rolle for", "Role for")} ${label}`}
+                      aria-label={`${t("app-workspaces-workspace-page.workspace-page.aria-label.1cdf3ef02328")} ${label}`}
                       value={m.role}
                       onChange={(e) => {
                         const r = e.target.value as WorkspaceRole;
                         if (!keepsAnOwner(memberList, m.userId, r)) {
-                          setMsg(L("Gruppen må ha minst én eier.", "The workspace must have at least one owner."));
+                          setMsg(t("app-workspaces-workspace-page.workspace-page.set-msg.cf0eb8ee16a9"));
                           return;
                         }
                         void run(() => setWorkspaceMemberRole(workspaceId, m.userId, r));
@@ -194,7 +180,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                         disabled={!keepsAnOwner(memberList, m.userId, null)}
                         onClick={() => void run(() => removeWorkspaceMember(workspaceId, m.userId))}
                       >
-                        {L("Fjern", "Remove")}
+                        {t("app-workspaces-workspace-page.workspace-page.button.95e7b5aab9b5")}
                       </Button>
                     ) : null}
                   </span>
@@ -219,27 +205,27 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
               }
               data-testid="workspace-leave"
             >
-              {L("Forlat gruppen", "Leave workspace")}
+              {t("app-workspaces-workspace-page.workspace-page.button.451213e18364")}
             </Button>
           </div>
         ) : null}
       </Card>
 
       {rights.manage ? (
-        <Card title={L("Inviter", "Invite")} testId="workspace-invite">
+        <Card title={t("app-workspaces-workspace-page.workspace-page.title.ec33b6806924")} testId="workspace-invite">
           <div className="flex gap-2">
             <input
               className={input}
               type="email"
-              aria-label={L("E-post", "Email")}
-              placeholder={L("E-post", "Email")}
+              aria-label={t("app-workspaces-workspace-page.workspace-page.aria-label.cf6d69dd8d47")}
+              placeholder={t("app-workspaces-workspace-page.workspace-page.placeholder.cf6d69dd8d47")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               data-testid="workspace-invite-email"
             />
             <select
               className={select}
-              aria-label={L("Rolle", "Role")}
+              aria-label={t("app-workspaces-workspace-page.workspace-page.aria-label.2071c9fb5d27")}
               value={role}
               onChange={(e) => setRole(e.target.value as WorkspaceRole)}
             >
@@ -261,12 +247,12 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
               }
               data-testid="workspace-invite-send"
             >
-              {L("Lag invitasjon", "Create invitation")}
+              {t("app-workspaces-workspace-page.workspace-page.button.41c727fa3333")}
             </Button>
           </div>
           {link ? (
             <p className="break-all text-xs text-text-secondary" data-testid="workspace-invite-link">
-              {L("Send denne lenken til personen (vises bare nå):", "Send this link to the person (shown only now):")}{" "}
+              {t("app-workspaces-workspace-page.workspace-page.p.9f351053c626")}{" "}
               {link}
             </p>
           ) : null}
@@ -282,7 +268,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                     variant="ghost"
                     onClick={() => void run(() => revokeWorkspaceInvitation(i.id))}
                   >
-                    {L("Trekk tilbake", "Revoke")}
+                    {t("app-workspaces-workspace-page.workspace-page.button.661942ee25fb")}
                   </Button>
                 </li>
               ))}
@@ -291,12 +277,9 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
         </Card>
       ) : null}
 
-      <Card title={L("Prosjekter i gruppen", "Projects in the workspace")} testId="workspace-projects">
+      <Card title={t("app-workspaces-workspace-page.workspace-page.title.3b4db312adaf")} testId="workspace-projects">
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Du ser bare prosjektene du selv er med i. Bare prosjektets eier kan koble det til eller fra.",
-            "You only see the projects you are in yourself. Only the project owner can link or unlink it.",
-          )}
+          {t("app-workspaces-workspace-page.workspace-page.p.236df4d88359")}
         </p>
         <ul className="flex flex-col gap-1">
           {(projects.data ?? []).map((p) => (
@@ -308,7 +291,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                   variant="ghost"
                   onClick={() => void run(() => setProjectWorkspace(p.id, null))}
                 >
-                  {L("Koble fra", "Unlink")}
+                  {t("app-workspaces-workspace-page.workspace-page.button.efcb91dad8b1")}
                 </Button>
               ) : null}
             </li>
@@ -318,12 +301,12 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
           <div className="flex gap-2">
             <select
               className={select}
-              aria-label={L("Prosjekt å koble til", "Project to link")}
+              aria-label={t("app-workspaces-workspace-page.workspace-page.aria-label.958b05b1bcef")}
               value={linkProject}
               onChange={(e) => setLinkProject(e.target.value)}
               data-testid="workspace-link-project"
             >
-              <option value="">{L("Velg et av dine prosjekter …", "Choose one of your projects …")}</option>
+              <option value="">{t("app-workspaces-workspace-page.workspace-page.option.529dfba33e11")}</option>
               {linkable.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -340,7 +323,7 @@ export function WorkspacePage({ workspaceId, myId }: { workspaceId: string; myId
                 })
               }
             >
-              {L("Koble til", "Link")}
+              {t("app-workspaces-workspace-page.workspace-page.button.11e3ad13d9af")}
             </Button>
           </div>
         ) : null}

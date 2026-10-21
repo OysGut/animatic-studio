@@ -14,24 +14,7 @@ import {
   Save,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  CHANGE_LABEL,
-  diffSnapshots,
-  L,
-  locale,
-  newId,
-  paginate,
-  snapshotFromState,
-  snapshotPaginationInput,
-  tm,
-  wordDiff,
-  type ChangeType,
-  type Command,
-  type LineChange,
-  type SceneChange,
-  type ProjectState,
-  type ScriptSnapshot,
-} from "@/core";
+import { CHANGE_LABEL, diffSnapshots, newId, paginate, snapshotFromState, snapshotPaginationInput, tm, wordDiff, type ChangeType, type Command, type LineChange, type SceneChange, type ProjectState, type ScriptSnapshot } from "@/core";
 import { previewRestore } from "@/core/screenplay/restore-version";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { prepareDownload, type ReadyFile } from "@/app/download";
@@ -55,6 +38,8 @@ import {
 } from "@/components/ui/dialog";
 import { ScriptPageView } from "./ScriptPageView";
 import { KIND_LABEL } from "./script-helpers";
+import { t as tk } from "@/core/i18n/keyed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 interface Props {
   readonly open: boolean;
@@ -115,11 +100,9 @@ const ORDER: ChangeType[] = [
   "take",
 ];
 
-function dateText(iso: string) {
-  return new Date(iso).toLocaleString(locale(), { dateStyle: "medium", timeStyle: "short" });
-}
 
 export function VersionsDialog(props: Props) {
+  const dateText = useTimeFormat().exact;
   const { open, onOpenChange, projectId, productionId, state, editable, saving } = props;
   const list = useVersionList(productionId, open);
   const versions = list.data ?? [];
@@ -164,22 +147,16 @@ export function VersionsDialog(props: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="size-4" aria-hidden />
-            {L("Manusversjoner", "Script versions")} – {production?.name}
+            {tk("app-script-versions-dialog.versions-dialog.dialog-title.69bba483a0a7")} – {production?.name}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "En versjon er et fast bilde av manuset slik det er lagret nå: rekkefølge, aktive scener, numre og tekst. Den kan aldri endres i ettertid.",
-              "A version is a fixed picture of the script as it is saved now: order, active scenes, numbers and text. It can never be changed afterwards.",
-            )}
+            {tk("app-script-versions-dialog.versions-dialog.dialog-description.27b08457ac4a")}
           </DialogDescription>
         </DialogHeader>
 
         {missingTable ? (
           <p role="alert" className="text-[13px] text-status-uncertain">
-            {L(
-              "Databasen mangler manusversjoner. Kjør migrasjon 0003 i Lovable (se LOVABLE_SYNC.md).",
-              "The database is missing script versions. Run migration 0003 in Lovable (see LOVABLE_SYNC.md).",
-            )}
+            {tk("app-script-versions-dialog.versions-dialog.p.a04beb457477")}
           </p>
         ) : view.kind === "list" ? (
           <>
@@ -191,7 +168,7 @@ export function VersionsDialog(props: Props) {
                   setNotice(null);
                   create.mutate(
                     {
-                      name: name.trim() || L(`Versjon ${nextNumber}`, `Version ${nextNumber}`),
+                      name: name.trim() || tk("app-script-versions-dialog.name.name.cdc6bc05bab6", { nextNumber: String(nextNumber) }),
                       note: note.trim(),
                       state,
                     },
@@ -202,10 +179,7 @@ export function VersionsDialog(props: Props) {
                         // Versjonen er lagret; bare estimatet mangler (vises stille, blokkerer ingenting)
                         if (r.estimateError)
                           setNotice(
-                            L(
-                              "Versjonen er lagret, men varighetsestimatet for den ble ikke lagret.",
-                              "The version is saved, but its duration estimate was not saved.",
-                            ),
+                            tk("app-script-versions-dialog.on-success.set-notice.60c831e46d69"),
                           );
                       },
                     },
@@ -214,11 +188,8 @@ export function VersionsDialog(props: Props) {
               >
                 <div className="flex gap-2">
                   <Input
-                    aria-label={L("Navn på versjonen", "Version name")}
-                    placeholder={L(
-                      `Versjon ${nextNumber} (f.eks. «Draft 9.4» eller «Etter møte med produsenten»)`,
-                      `Version ${nextNumber} (e.g. “Draft 9.4” or “After meeting with the producer”)`,
-                    )}
+                    aria-label={tk("app-script-versions-dialog.versions-dialog.aria-label.00b989f437d0")}
+                    placeholder={tk("app-script-versions-dialog.versions-dialog.placeholder.a0370e7926be", { nextNumber: String(nextNumber) })}
                     value={name}
                     maxLength={200}
                     onChange={(e) => setName(e.target.value)}
@@ -226,12 +197,12 @@ export function VersionsDialog(props: Props) {
                   />
                   <Button type="submit" disabled={create.isPending || saving}>
                     {create.isPending ? <Loader2 className="animate-spin" /> : <Save />}
-                    {L("Lagre versjon", "Save version")}
+                    {tk("app-script-versions-dialog.versions-dialog.button.9387faa510ff")}
                   </Button>
                 </div>
                 <Input
-                  aria-label={L("Merknad (valgfri)", "Note (optional)")}
-                  placeholder={L("Merknad (valgfri)", "Note (optional)")}
+                  aria-label={tk("app-script-versions-dialog.versions-dialog.aria-label.d8a80beb1675")}
+                  placeholder={tk("app-script-versions-dialog.versions-dialog.placeholder.d8a80beb1675")}
                   value={note}
                   maxLength={2000}
                   onChange={(e) => setNote(e.target.value)}
@@ -239,16 +210,13 @@ export function VersionsDialog(props: Props) {
                 />
                 {saving ? (
                   <p className="text-xs text-text-tertiary">
-                    {L(
-                      "Venter til endringene dine er lagret …",
-                      "Waiting for your changes to be saved …",
-                    )}
+                    {tk("app-script-versions-dialog.versions-dialog.p.f0e236b18ee4")}
                   </p>
                 ) : null}
                 {notice ? <p className="text-xs text-text-tertiary">{notice}</p> : null}
                 {create.isError ? (
                   <p role="alert" className="text-xs text-status-danger">
-                    {L("Versjonen ble ikke lagret:", "The version was not saved:")}{" "}
+                    {tk("app-script-versions-dialog.versions-dialog.p.6f7927ecccce")}{" "}
                     {create.error.message}
                   </p>
                 ) : null}
@@ -257,14 +225,11 @@ export function VersionsDialog(props: Props) {
 
             {list.isLoading ? (
               <p className="text-[13px] text-text-tertiary">
-                {L("Henter versjoner …", "Loading versions …")}
+                {tk("app-script-versions-dialog.versions-dialog.p.ec6f907a214f")}
               </p>
             ) : versions.length === 0 ? (
               <p className="text-[13px] text-text-secondary">
-                {L(
-                  "Ingen versjoner ennå. Lagre en versjon før store endringer, så kan du alltid se og eksportere manuset slik det var.",
-                  "No versions yet. Save a version before big changes, so you can always see and export the script as it was.",
-                )}
+                {tk("app-script-versions-dialog.versions-dialog.p.91a2313dd622")}
               </p>
             ) : (
               <ul className="border border-border bg-surface-1">
@@ -282,7 +247,7 @@ export function VersionsDialog(props: Props) {
                       </span>
                       <span className="block truncate text-xs text-text-tertiary">
                         {dateText(v.created_at)} ·{" "}
-                        {profiles.data?.[v.created_by]?.display_name ?? L("ukjent", "unknown")}
+                        {profiles.data?.[v.created_by]?.display_name ?? tk("app-script-versions-dialog.versions-dialog.span.1c6db041588a")}
                         {v.note ? ` · ${v.note}` : ""}
                       </span>
                     </span>
@@ -292,7 +257,7 @@ export function VersionsDialog(props: Props) {
                       onClick={() => setView({ kind: "show", id: v.id })}
                     >
                       <Eye />
-                      {L("Vis", "View")}
+                      {tk("app-script-versions-dialog.versions-dialog.button.b294bd06a0d2")}
                     </Button>
                     <Button
                       size="sm"
@@ -300,7 +265,7 @@ export function VersionsDialog(props: Props) {
                       onClick={() => setView({ kind: "compare", a: v.id, b: NOW })}
                     >
                       <GitCompare />
-                      {L("Mot nå", "vs now")}
+                      {tk("app-script-versions-dialog.versions-dialog.button.e635e8d9147e")}
                     </Button>
                     {versions[i + 1] ? (
                       <Button
@@ -310,7 +275,7 @@ export function VersionsDialog(props: Props) {
                           setView({ kind: "compare", a: versions[i + 1]!.id, b: v.id })
                         }
                       >
-                        {L(`Mot v${versions[i + 1]!.number}`, `vs v${versions[i + 1]!.number}`)}
+                        {tk("app-script-versions-dialog.versions-dialog.button.32ac29172e29", { number: String(versions[i + 1]!.number) })}
                       </Button>
                     ) : null}
                   </li>
@@ -337,17 +302,11 @@ export function VersionsDialog(props: Props) {
             onBack={() => setView({ kind: "show", id: view.id })}
             onDone={(v) => {
               setName(
-                L(
-                  `Gjenopprettet fra v${v.number} – ${v.name}`,
-                  `Restored from v${v.number} – ${v.name}`,
-                ).slice(0, 200),
+                tk("app-script-versions-dialog.versions-dialog.l-gjenopprettet-fra-v-v-number-v-name-restored-from-v-v-number-v-name-slice.d02d4cafbedd", { number: String(v.number), name: String(v.name) }).slice(0, 200),
               );
               setNote("");
               setNotice(
-                L(
-                  `Manuset er nå som v${v.number}. Lagre det som en ny versjon hvis du vil ta vare på det.`,
-                  `The script is now as v${v.number}. Save it as a new version if you want to keep it.`,
-                ),
+                tk("app-script-versions-dialog.versions-dialog.set-notice.ea1bb525ff46", { number: String(v.number) }),
               );
               setView({ kind: "list" });
             }}
@@ -416,7 +375,7 @@ function Compare({
       onChange={(e) => set(e.target.value)}
       className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
     >
-      <option value={NOW}>{L("Nå (lagret manus)", "Now (saved script)")}</option>
+      <option value={NOW}>{tk("app-script-versions-dialog.select.option.deacb04cdb8c")}</option>
       {versions.map((v) => (
         <option key={v.id} value={v.id}>
           v{v.number} – {v.name}
@@ -435,22 +394,22 @@ function Compare({
       <div className="flex flex-wrap items-center gap-2 text-[13px] text-text-secondary">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          {L("Tilbake", "Back")}
+          {tk("app-script-versions-dialog.compare.button.3b72c0bea3b0")}
         </Button>
-        {L("Fra", "From")} {select(a, (v) => onChange(v, b), L("Eldre versjon", "Older version"))}{" "}
-        {L("til", "to")} {select(b, (v) => onChange(a, v), L("Nyere versjon", "Newer version"))}
+        {tk("app-script-versions-dialog.compare.div.9b05046bb9d9")} {select(a, (v) => onChange(v, b), tk("app-script-versions-dialog.compare.select.5f11ea758846"))}{" "}
+        {tk("app-script-versions-dialog.compare.div.9aa2fc5177e5")} {select(b, (v) => onChange(a, v), tk("app-script-versions-dialog.compare.select.0770bffc7207"))}
       </div>
       {older.isLoading || newer.isLoading ? (
         <p className="text-[13px] text-text-tertiary">
-          {L("Henter versjoner …", "Loading versions …")}
+          {tk("app-script-versions-dialog.compare.p.5568b12d3fc6")}
         </p>
       ) : !changes ? (
         <p role="alert" className="text-[13px] text-status-danger">
-          {L("Kunne ikke hente versjonene.", "Could not load the versions.")}
+          {tk("app-script-versions-dialog.compare.p.fdaa3bf07b0e")}
         </p>
       ) : changes.length === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          {L("Ingen forskjeller.", "No differences.")}
+          {tk("app-script-versions-dialog.compare.p.cfa2159fa8de")}
         </p>
       ) : (
         <>
@@ -491,7 +450,7 @@ function Compare({
                         onOpenChange(false);
                       }}
                     >
-                      {L("Gå til", "Go to")}
+                      {tk("app-script-versions-dialog.compare.button.a6b55382c6e1")}
                     </Button>
                   ) : null}
                 </div>
@@ -549,7 +508,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           <span
             key={`+${n}`}
             className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-success"
-            aria-label={L(`${n} er kommet til`, `${n} added`)}
+            aria-label={tk("app-script-versions-dialog.change-detail.aria-label.631e8c5a9ad7", { n: String(n) })}
           >
             + {n}
           </span>
@@ -558,7 +517,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           <span
             key={`-${n}`}
             className="rounded-sm bg-surface-3 px-1.5 py-0.5 text-status-danger line-through"
-            aria-label={L(`${n} er borte`, `${n} removed`)}
+            aria-label={tk("app-script-versions-dialog.change-detail.aria-label.b9307241a002", { n: String(n) })}
           >
             − {n}
           </span>
@@ -586,7 +545,7 @@ function ChangeDetail({ change }: { change: SceneChange }) {
           onClick={() => setAll(true)}
           className="mt-1 text-accent-brand underline-offset-2 hover:underline"
         >
-          {L("Vis alle", "Show all")} {lines.length} {L("linjer", "lines")}
+          {tk("app-script-versions-dialog.change-detail.button.3a1bf836e6fd")} {lines.length} {tk("app-script-versions-dialog.change-detail.button.551c139a1a46")}
         </button>
       ) : null}
     </div>
@@ -616,10 +575,10 @@ function LineRow({ line }: { line: LineChange }) {
           {label}
           <span className="sr-only">
             {line.op === "added"
-              ? L(" (ny)", " (new)")
+              ? tk("app-script-versions-dialog.line-row.span.7b8313c835a9")
               : line.op === "removed"
-                ? L(" (fjernet)", " (removed)")
-                : L(" (endret)", " (changed)")}
+                ? tk("app-script-versions-dialog.line-row.span.50f1a48ac127")
+                : tk("app-script-versions-dialog.line-row.span.e6c3fc46eda4")}
           </span>
         </span>
         <span className="block whitespace-pre-wrap font-script text-[12px] text-text-primary">
@@ -665,6 +624,7 @@ function Show({
   setReady: (r: ReadyFile | null) => void;
   onBack: () => void;
 }) {
+  const dateText = useTimeFormat().exact;
   const snap = useVersionSnapshot(version.id);
   const pages = useMemo(
     () => (snap.data ? paginate(snapshotPaginationInput(snap.data as ScriptSnapshot)).pages : []),
@@ -675,13 +635,13 @@ function Show({
       <div className="flex items-center gap-2">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          {L("Tilbake", "Back")}
+          {tk("app-script-versions-dialog.show.button.1719fd006ff4")}
         </Button>
         <span className="text-[13px] text-text-primary">
           v{version.number} – {version.name}
         </span>
         <span className="text-xs text-text-tertiary">
-          {dateText(version.created_at)} · {L("bare lesing", "read only")}
+          {dateText(version.created_at)} · {tk("app-script-versions-dialog.show.span.bdd8b8a46fcd")}
         </span>
         <Button
           size="sm"
@@ -699,30 +659,30 @@ function Show({
           }}
         >
           <Download />
-          {L("Eksporter PDF", "Export PDF")}
+          {tk("app-script-versions-dialog.show.button.f190ce1c0305")}
         </Button>
         {onRestore ? (
           <Button size="sm" variant="secondary" disabled={!snap.data} onClick={onRestore}>
             <RotateCcw />
-            {L("Gjør denne versjonen gjeldende", "Make this version current")}
+            {tk("app-script-versions-dialog.show.button.74204ac6d936")}
           </Button>
         ) : null}
       </div>
       {ready ? (
         <p role="status" className="text-xs text-text-secondary">
-          {L("Filen er laget:", "The file is ready:")}{" "}
+          {tk("app-script-versions-dialog.show.p.31cf29d85e49")}{" "}
           <a
             href={ready.url}
             download={ready.name}
             className="text-accent-brand underline underline-offset-2"
           >
-            {L(`Last ned «${ready.name}»`, `Download “${ready.name}”`)}
+            {tk("app-script-versions-dialog.show.a.0673a15f1e03", { name: String(ready.name) })}
           </a>
         </p>
       ) : null}
       {snap.isLoading ? (
         <p className="text-[13px] text-text-tertiary">
-          {L("Henter versjonen …", "Loading the version …")}
+          {tk("app-script-versions-dialog.show.p.dc810f10ae03")}
         </p>
       ) : (
         <div className="max-h-[65vh] overflow-auto bg-bg-app">
@@ -768,7 +728,7 @@ function Restore({
     () => (snap.data ? previewRestore(state, productionId, snap.data) : null),
     [snap.data, state, productionId],
   );
-  const label = L(`Gjør v${version.number} gjeldende`, `Make v${version.number} current`);
+  const label = tk("app-script-versions-dialog.label.message.93ce529c6f7f", { number: String(version.number) });
 
   async function confirm() {
     if (!preview || preview.error || preview.commands.length === 0 || busy) return;
@@ -783,10 +743,7 @@ function Restore({
         if (r.error) {
           await Promise.all(pending);
           setError(
-            L(
-              `Stoppet underveis: ${r.error} Det som ble gjort, kan angres samlet med «Angre» (Ctrl+Z).`,
-              `Stopped partway: ${r.error} What was done can be undone together with “Undo” (Ctrl+Z).`,
-            ),
+            tk("app-script-versions-dialog.confirm.set-error.83694ff11e64", { error: String(r.error) }),
           );
           return;
         }
@@ -796,7 +753,7 @@ function Restore({
       const errors = await Promise.all(pending);
       if (errors.some((e) => e !== null)) {
         setError(
-          L(PARTIAL_RESTORE, "The restore was only partly completed – undo with ⌘/Ctrl + Z"),
+          tk("app-script-versions-dialog.partial-restore"),
         );
         return;
       }
@@ -811,39 +768,27 @@ function Restore({
       <div className="flex items-center gap-2">
         <Button size="sm" variant="ghost" onClick={onBack}>
           <ArrowLeft />
-          {L("Tilbake", "Back")}
+          {tk("app-script-versions-dialog.restore.button.5b0bdea5f10e")}
         </Button>
         <span className="text-[13px] text-text-primary">
-          {L(
-            `Gjør v${version.number} – ${version.name} gjeldende`,
-            `Make v${version.number} – ${version.name} current`,
-          )}
+          {tk("app-script-versions-dialog.restore.span.5dbe5eb3207e", { number: String(version.number), name: String(version.name) })}
         </span>
       </div>
       <p className="text-xs text-text-secondary">
-        {L(
-          "Manuset settes tilbake til teksten, rekkefølgen, synligheten og overskriftene i versjonen. Ingenting slettes: linjer og scener som er kommet til senere, tas ut av manuset og kan hentes tilbake, og alle versjoner beholdes. Materiale laget fra nyere tekst vil vises som avvik. Endringen kan angres samlet.",
-          "The script is set back to the text, order, visibility and headings in the version. Nothing is deleted: lines and scenes added later are taken out of the script and can be brought back, and all versions are kept. Material made from newer text will show as discrepancies. The change can be undone together.",
-        )}
+        {tk("app-script-versions-dialog.restore.p.aafc0c81078c")}
       </p>
       {snap.isLoading || !preview ? (
         <p className="text-[13px] text-text-tertiary">
-          {L("Henter versjonen …", "Loading the version …")}
+          {tk("app-script-versions-dialog.restore.p.2ddfbddaff73")}
         </p>
       ) : preview.error ? (
         <p role="alert" className="text-[13px] text-status-danger">
-          {L(
-            "Versjonen kan ikke gjøres gjeldende herfra:",
-            "This version cannot be made current from here:",
-          )}{" "}
+          {tk("app-script-versions-dialog.restore.p.54b102ce3f27")}{" "}
           {tm(preview.error)}
         </p>
       ) : preview.commands.length === 0 ? (
         <p className="text-[13px] text-text-secondary">
-          {L(
-            "Manuset er allerede likt versjonen. Ingenting å endre.",
-            "The script is already the same as the version. Nothing to change.",
-          )}
+          {tk("app-script-versions-dialog.restore.p.94d964d80e5e")}
         </p>
       ) : (
         <>
@@ -855,7 +800,7 @@ function Restore({
               .join(" · ")}
           </p>
           <ul
-            aria-label={L("Dette endres i manuset", "This changes in the script")}
+            aria-label={tk("app-script-versions-dialog.restore.aria-label.1ac8fcfa598e")}
             className="max-h-[45vh] overflow-y-auto border border-border bg-surface-1"
           >
             {groupByScene(preview.changes).map((g) => (
@@ -894,7 +839,7 @@ function Restore({
       {preview && preview.issues.length > 0 ? (
         <div className="border border-status-uncertain/40 bg-surface-1 p-2 text-xs">
           <p className="font-medium text-text-primary">
-            {L("Dette settes ikke tilbake:", "This is not set back:")}
+            {tk("app-script-versions-dialog.restore.p.30480d2a56af")}
           </p>
           <ul className="mt-1 flex flex-col gap-0.5 text-text-secondary">
             {preview.issues.map((i, n) => (
@@ -913,7 +858,7 @@ function Restore({
       ) : null}
       <div className="flex justify-end gap-2">
         <Button variant="ghost" onClick={onBack}>
-          {L("Avbryt", "Cancel")}
+          {tk("app-script-versions-dialog.restore.button.0beacee11e9c")}
         </Button>
         <Button
           onClick={() => void confirm()}

@@ -4,11 +4,12 @@
  */
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { L, factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
+import { factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { Textarea } from "@/components/ui/textarea";
 import { sceneLabel, scenesByStoryTime, storyCharacters } from "./storylab-data";
+import { t } from "@/core/i18n/keyed";
 
 const control =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -23,14 +24,14 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
   return (
     <div className="min-h-0 flex-1 overflow-y-auto" data-testid="storylab-facts">
       <PanelHeader
-        title={L("Fakta og hemmeligheter", "Facts and secrets")}
+        title={t("app-storylab-facts-panel.facts-panel.title.aad3e36edbda")}
         count={facts.length}
         actions={
           editable ? (
             <IconButton
               onClick={() => setAdding(true)}
-              label={L("Nytt faktum", "New fact")}
-              title={L("Nytt faktum", "New fact")}
+              label={t("app-storylab-facts-panel.facts-panel.label.7a17ca464c32")}
+              title={t("app-storylab-facts-panel.facts-panel.title.7a17ca464c32")}
               data-testid="storylab-fact-add"
             >
               <Plus />
@@ -44,7 +45,7 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
           initial={emptyFact()}
           onCancel={() => setAdding(false)}
           onSave={(fields) => {
-            const e = cmds.run({ type: "AddStoryFact", factId: newId<"story_fact">(), fields }, L("Nytt faktum", "New fact"));
+            const e = cmds.run({ type: "AddStoryFact", factId: newId<"story_fact">(), fields }, t("app-storylab-facts-panel.e.cmds-run.1bae1d9a4707"));
             setErr(e);
             if (!e) setAdding(false);
           }}
@@ -57,7 +58,7 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
       ) : null}
       <ul className="divide-y divide-border">
         {facts.length === 0 && !adding ? (
-          <li className="px-3 py-2 text-[13px] text-text-tertiary">{L("Ingen fakta ennå.", "No facts yet.")}</li>
+          <li className="px-3 py-2 text-[13px] text-text-tertiary">{t("app-storylab-facts-panel.facts-panel.li.d888710fc12f")}</li>
         ) : null}
         {facts.map((f) =>
           editing === f.id ? (
@@ -67,7 +68,7 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
                 initial={{ text: f.text, kind: f.kind, atSceneId: f.atSceneId, knownBy: f.knownBy }}
                 onCancel={() => setEditing(null)}
                 onSave={(fields) => {
-                  const e = cmds.run({ type: "UpdateStoryFact", factId: f.id, fields }, L("Endre faktum", "Change fact"));
+                  const e = cmds.run({ type: "UpdateStoryFact", factId: f.id, fields }, t("app-storylab-facts-panel.e.cmds-run.56d793695e92"));
                   setErr(e);
                   if (!e) setEditing(null);
                 }}
@@ -80,7 +81,7 @@ export function FactsPanel({ state, cmds, editable }: { state: ProjectState; cmd
               fact={f}
               editable={editable}
               onEdit={() => setEditing(f.id)}
-              onRemove={() => setErr(cmds.run({ type: "RemoveStoryFact", factId: f.id, removed: true }, L("Fjern faktum", "Remove fact")))}
+              onRemove={() => setErr(cmds.run({ type: "RemoveStoryFact", factId: f.id, removed: true }, t("app-storylab-facts-panel.facts-panel.cmds-run.0127681ec81d")))}
             />
           ),
         )}
@@ -111,30 +112,30 @@ function FactRow({
             (fact.kind === "secret" ? "bg-status-warning/15 text-status-warning" : "bg-surface-3 text-text-tertiary")
           }
         >
-          {fact.kind === "secret" ? L("Hemmelighet", "Secret") : L("Faktum", "Fact")}
+          {fact.kind === "secret" ? t("app-storylab-facts-panel.fact-row.span.c5d3eb2490f3") : t("app-storylab-facts-panel.fact-row.span.209aba8e7ce4")}
         </span>
         <span className="min-w-0 flex-1 text-text-primary">{fact.text}</span>
         {editable ? (
           <>
-            <button type="button" onClick={onEdit} aria-label={L("Endre", "Edit")} className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary">
+            <button type="button" onClick={onEdit} aria-label={t("app-storylab-facts-panel.fact-row.aria-label.44924fccc0c0")} className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary">
               <Pencil className="size-3.5" aria-hidden />
             </button>
-            <button type="button" onClick={onRemove} aria-label={L("Fjern", "Remove")} className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary">
+            <button type="button" onClick={onRemove} aria-label={t("app-storylab-facts-panel.fact-row.aria-label.15cad6df9fdd")} className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary">
               <Trash2 className="size-3.5" aria-hidden />
             </button>
           </>
         ) : null}
       </div>
       <p className="mt-1 text-[11px] text-text-tertiary">
-        {L("Skjer", "Happens")}: {sceneLabel(state, fact.atSceneId)}
+        {t("app-storylab-facts-panel.fact-row.p.68ddbf4e1e56")}: {sceneLabel(state, fact.atSceneId)}
       </p>
       <p className="text-[11px] text-text-tertiary">
-        {L("Vet det", "Known by")}:{" "}
+        {t("app-storylab-facts-panel.fact-row.p.785c83e50d06")}:{" "}
         {fact.knownBy.length
           ? fact.knownBy
-              .map((k) => `${state.assets[k.assetId]?.name ?? "?"}${k.fromSceneId ? ` (${L("fra", "from")} ${sceneLabel(state, k.fromSceneId)})` : ""}`)
+              .map((k) => `${state.assets[k.assetId]?.name ?? "?"}${k.fromSceneId ? ` (${t("app-storylab-facts-panel.fact-row.fact-known-by-map.34d823fecbff")} ${sceneLabel(state, k.fromSceneId)})` : ""}`)
               .join(", ")
-          : L("bare regissøren", "only the director")}
+          : t("app-storylab-facts-panel.fact-row.p.13c5f1b53943")}
       </p>
     </li>
   );
@@ -157,7 +158,7 @@ function FactForm({
   const err = f.text.trim() ? factError(f) : null;
   const sceneSelect = (value: string | null, onChange: (v: string | null) => void, label: string) => (
     <select value={value ?? ""} aria-label={label} onChange={(e) => onChange(e.target.value || null)} className={control + " min-w-0 flex-1"}>
-      <option value="">{L("Uten tidspunkt", "No point in time")}</option>
+      <option value="">{t("app-storylab-facts-panel.scene-select.option.f2ec70ebe653")}</option>
       {scenes.map((s) => (
         <option key={s.sceneId} value={s.sceneId}>
           {s.label}
@@ -170,23 +171,23 @@ function FactForm({
       <Textarea
         value={f.text}
         rows={2}
-        placeholder={L("Hva er sant i fortellingen?", "What is true in the story?")}
-        aria-label={L("Tekst", "Text")}
+        placeholder={t("app-storylab-facts-panel.fact-form.placeholder.320ba2c2d3b3")}
+        aria-label={t("app-storylab-facts-panel.fact-form.aria-label.8478e3e26812")}
         onChange={(e) => setF({ ...f, text: e.target.value })}
       />
       <div className="flex gap-2">
-        <select value={f.kind} aria-label={L("Type", "Kind")} onChange={(e) => setF({ ...f, kind: e.target.value as StoryFactFields["kind"] })} className={control}>
-          <option value="fact">{L("Faktum", "Fact")}</option>
-          <option value="secret">{L("Hemmelighet", "Secret")}</option>
+        <select value={f.kind} aria-label={t("app-storylab-facts-panel.fact-form.aria-label.ce207d5ef32e")} onChange={(e) => setF({ ...f, kind: e.target.value as StoryFactFields["kind"] })} className={control}>
+          <option value="fact">{t("app-storylab-facts-panel.fact-form.option.78e0b7ebf4a0")}</option>
+          <option value="secret">{t("app-storylab-facts-panel.fact-form.option.1a967b304787")}</option>
         </select>
-        {sceneSelect(f.atSceneId, (v) => setF({ ...f, atSceneId: v as never }), L("Skjer i scene", "Happens in scene"))}
+        {sceneSelect(f.atSceneId, (v) => setF({ ...f, atSceneId: v as never }), t("app-storylab-facts-panel.fact-form.scene-select.9ef18a508f12"))}
       </div>
-      <p className="text-[12px] text-text-secondary">{L("Hvem vet det, fra hvilken scene", "Who knows it, from which scene")}</p>
+      <p className="text-[12px] text-text-secondary">{t("app-storylab-facts-panel.fact-form.p.70023504f28e")}</p>
       {f.knownBy.map((k, i) => (
         <div key={i} className="flex gap-1" data-testid="storylab-fact-knower">
           <select
             value={k.assetId}
-            aria-label={L("Karakter", "Character")}
+            aria-label={t("app-storylab-facts-panel.fact-form.aria-label.a0e7e0e1cadc")}
             onChange={(e) => setF({ ...f, knownBy: f.knownBy.map((x, j) => (j === i ? { ...x, assetId: e.target.value as never } : x)) })}
             className={control + " w-32 shrink-0"}
           >
@@ -196,11 +197,11 @@ function FactForm({
               </option>
             ))}
           </select>
-          {sceneSelect(k.fromSceneId, (v) => setF({ ...f, knownBy: f.knownBy.map((x, j) => (j === i ? { ...x, fromSceneId: v as never } : x)) }), L("Vet det fra scene", "Knows it from scene"))}
+          {sceneSelect(k.fromSceneId, (v) => setF({ ...f, knownBy: f.knownBy.map((x, j) => (j === i ? { ...x, fromSceneId: v as never } : x)) }), t("app-storylab-facts-panel.fact-form.scene-select.cba69e381ea3"))}
           <button
             type="button"
             onClick={() => setF({ ...f, knownBy: f.knownBy.filter((_, j) => j !== i) })}
-            aria-label={L("Fjern", "Remove")}
+            aria-label={t("app-storylab-facts-panel.fact-form.aria-label.9f3bde5c9cbd")}
             className="rounded-sm px-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
           >
             <X className="size-3.5" aria-hidden />
@@ -217,7 +218,7 @@ function FactForm({
           }}
           className="h-7 rounded-sm px-2 text-[12px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
         >
-          {L("Legg til en som vet det", "Add someone who knows")}
+          {t("app-storylab-facts-panel.fact-form.button.a5ad7dfefc4d")}
         </button>
       ) : null}
       {err ? (
@@ -226,9 +227,9 @@ function FactForm({
         </p>
       ) : null}
       <div className="flex justify-end gap-2">
-        <ToolbarButton onClick={onCancel}>{L("Avbryt", "Cancel")}</ToolbarButton>
+        <ToolbarButton onClick={onCancel}>{t("app-storylab-facts-panel.fact-form.toolbar-button.c1828dc1df96")}</ToolbarButton>
         <ToolbarButton variant="primary" disabled={!f.text.trim() || !!err} onClick={() => onSave(f)} data-testid="storylab-fact-save">
-          {L("Lagre", "Save")}
+          {t("app-storylab-facts-panel.fact-form.toolbar-button.2b1eb07f4dc3")}
         </ToolbarButton>
       </div>
     </div>

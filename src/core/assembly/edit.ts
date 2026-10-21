@@ -2,12 +2,13 @@
  * Klipping i monteringen (DEC-0048, REQ-0220–0222): trimme, splitte og fjerne deler av et klipp. Rene
  * funksjoner som lager delelisten til kommandoen SetSceneEdit; kildemediet endres aldri.
  */
-import { L } from "../i18n";
+
 import type { ClipPartFields } from "../commands/types";
 import type { ClipPartId, TakeId } from "../ids";
 import type { Rational } from "../time";
 import type { ProjectState, Take } from "../model";
 import type { FilmClip } from "./film";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Korteste del (ms). */
 export const MIN_PART_MS = 40;
@@ -230,12 +231,9 @@ export function takeLabel(s: ProjectState, t: Take): string {
     const v = Object.values(s.assetVersions).find((x) => x.mediaPath === t.mediaRef);
     const variant = v ? s.assetVariants[v.variantId] : undefined;
     const a = variant ? s.assets[variant.assetId] : undefined;
-    return L(
-      `Stillbilde: ${a?.name ?? "bilde"}${v ? ` v${v.number}` : ""}`,
-      `Still image: ${a?.name ?? "image"}${v ? ` v${v.number}` : ""}`,
-    );
+    return tk("core-assembly-edit.still-image", { name: a?.name ?? tk("core-assembly-edit.still-image-image"), version: v ? ` v${v.number}` : "" });
   }
   return (
-    t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : L("Importert film", "Imported film"))
+    t.media?.fileName ?? (t.kind === "ai_video" ? "AI-video" : tk("core-assembly-edit.take-label.message.b98ad3f87ffa"))
   );
 }

@@ -22,7 +22,9 @@
  * Skjermbilder lagres i utmappen (standard /tmp/claude-0/qa75). Avslutter med kode 1 hvis en kontroll feiler.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
+import { uiLang } from "./ui-lang.mjs";
 
 const [
   base = "http://127.0.0.1:5173",
@@ -41,6 +43,29 @@ const STYLES = readFileSync(
     : new URL("../../src/styles.css", import.meta.url),
   "utf8",
 );
+// ID3: UI_LANG=en kjører hele suiten på engelsk. T slår opp den engelske teksten for en norsk grensesnitttekst i
+// språkkatalogene (samme nøkkel); R velger mellom to uttrykk. Brukerens eget innhold (Maja, Stua …) oversettes ikke.
+const LANG = uiLang("nb");
+const catalog = (l) =>
+  JSON.parse(
+    readFileSync(
+      process.env.ENV_FILE
+        ? process.env.ENV_FILE.replace(/[^/]*$/, `src/core/i18n/locales/${l}.json`)
+        : new URL(`../../src/core/i18n/locales/${l}.json`, import.meta.url),
+      "utf8",
+    ),
+  );
+const NB_CAT = LANG === "en" ? catalog("nb") : null;
+const EN_CAT = LANG === "en" ? catalog("en") : null;
+// Ord med flere engelske oversettelser: den som brukes på stedet testen ser på
+const EN_FIXED = { Pause: "Pause", Lag: "Layers", Spor: "Tracks", "Åpne i sceneeditoren": "Open in scene editor", Dialog: "Dialogue" };
+const T = (nb) => {
+  if (LANG !== "en") return nb;
+  if (nb in EN_FIXED) return EN_FIXED[nb];
+  for (const [k, v] of Object.entries(NB_CAT)) if (v?.text === nb && EN_CAT[k]?.text) return EN_CAT[k].text;
+  throw new Error(`Mangler engelsk tekst for «${nb}»`);
+};
+const R = (nb, en) => (LANG === "en" ? en : nb);
 const USER = {
   id: "00000000-0000-7000-8000-a11ce0000001",
   email: "mars@example.no",
@@ -88,7 +113,7 @@ async function mock(ctx) {
       return route.fulfill({ status: 200, contentType: "image/svg+xml", body: svg });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 30 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
@@ -123,7 +148,10 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
   );
   const exp = Math.floor(Date.now() / 1000) + 86400;
   await page.addInitScript(
-    ([k, v]) => localStorage.setItem(k, v),
+    ([k, v, l]) => {
+      localStorage.setItem(k, v);
+      localStorage.setItem("animatic:lang", l);
+    },
     [
       `sb-${ref}-auth-token`,
       JSON.stringify({
@@ -134,6 +162,7 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
         expires_at: exp,
         user: USER,
       }),
+      LANG,
     ],
   );
   // Lagringen henger (ingen svar): lokale endringer står igjen
@@ -157,10 +186,14 @@ const TOKEN_NAMES = [...new Set([...STYLES.matchAll(/(--[a-z0-9-]+)\s*:/g)].map(
 const ENGLISH =
   /\b(Close|Cancel|Save|Delete|Remove|Loading|Search|Settings|Submit|Next|Previous|Back|More|Edit|Upload|Download|Error|Untitled|Toggle|Select|Menu|Sidebar|Breadcrumb|Dismiss|Undo|Redo|Play|Pause|Open|Show|Hide|Add|New|Copy|Help|Yes|Done|Retry|Continue|Confirm|Apply|Reset|Clear|Rename|Duplicate|Preview|Go to|Toggle Sidebar|More pages|Previous slide|Next slide)\b/;
 
+// Med UI_LANG=en: norske grensesnittord som ikke skal stå igjen (samme kontroll, motsatt språk)
+const NORWEGIAN =
+  /(?<![\p{L}])(Lukk|Avbryt|Lagre|Slett|Fjern|Laster|Søk|Innstillinger|Neste|Forrige|Tilbake|Rediger|Last opp|Last ned|Feil|Uten tittel|Velg|Meny|Angre|Gjør om|Spill av|Åpne|Vis|Skjul|Legg til|Kopier|Hjelp|Ferdig|Prøv igjen|Fortsett|Bekreft|Tilbakestill|Gi nytt navn|Dupliser|Forhåndsvis)(?![\p{L}])/u;
+
 async function auditPage(page) {
   return page.evaluate(
     ({ tokenNames, english }) => {
-      const EN = new RegExp(english.source);
+      const EN = new RegExp(english.source, english.flags ?? "");
       const probe = document.createElement("span");
       document.body.appendChild(probe);
       const tokenRgb = new Set();
@@ -308,7 +341,7 @@ async function auditPage(page) {
         if (
           /gradient\(/.test(cs.backgroundImage) &&
           !/repeating-conic-gradient/.test(cs.backgroundImage) &&
-          !/^Kamerautsnitt /.test(el.getAttribute("aria-label") ?? "")
+          !/^(Kamerautsnitt|Camera shot) /.test(el.getAttribute("aria-label") ?? "")
         )
           out.gradients.push(`${describe(el)}: ${cs.backgroundImage.slice(0, 60)}`);
         const r = el.getBoundingClientRect();
@@ -348,7 +381,7 @@ async function auditPage(page) {
       );
       return out;
     },
-    { tokenNames: TOKEN_NAMES, english: { source: ENGLISH.source } },
+    { tokenNames: TOKEN_NAMES, english: { source: (LANG === "en" ? NORWEGIAN : ENGLISH).source, flags: LANG === "en" ? "u" : "" } },
   );
 }
 
@@ -368,13 +401,13 @@ const short = (list, n = 4) =>
 async function testAreas() {
   const { ctx, page, errors } = await openPage(P);
   try {
-    const nav = page.getByRole("navigation", { name: "Arbeidsflater" });
+    const nav = page.getByRole("navigation", { name: T("Arbeidsflater") });
     const links = await nav.getByRole("link").allInnerTexts();
     check(
       "REQ-0427",
       "hovedmenyen har sju arbeidsflater",
       links.map((x) => x.trim()).join("|") ===
-        "Prosjektoversikt|Manus|Story Lab|Ressursbibliotek|Sceneeditor|Montering|Utgivelse",
+        ["Prosjektoversikt", "Manus", "Story Lab", "Ressursbibliotek", "Sceneeditor", "Rigg", "Montering", "Utgivelse"].map(T).join("|"),
       links.join(", "),
     );
     check(
@@ -397,7 +430,7 @@ async function testAreas() {
     };
 
     // Prosjektoversikten (1, 2, 5, 9, 10, 14)
-    await go("Prosjektoversikt");
+    await go(T("Prosjektoversikt"));
     await shot(page, "v3-01-oversikt");
     await audited(page, "Prosjektoversikt");
     area(
@@ -409,23 +442,23 @@ async function testAreas() {
     area(
       2,
       "Produksjonsvelger",
-      await has(page.getByRole("heading", { name: "Produksjoner" })),
+      await has(page.getByRole("heading", { name: T("Produksjoner") })),
       "oversikten: «Produksjoner» med «Ny produksjon …»; velger i manus og montering",
     );
     area(
       5,
       "Karakterkontinuitet",
-      await has(page.getByRole("heading", { name: /Kontinuitetsanalyse/ })),
+      await has(page.getByRole("heading", { name: R(/Kontinuitetsanalyse/, /Continuity analysis/) })),
       "oversikten: «Kontinuitetsanalyse»; biblioteket: kontinuitet per ressurs",
     );
     area(
       14,
       "Prosjektinnstillinger",
-      (await has(page.getByRole("heading", { name: "Bildeformat og bildefrekvens" }))) &&
-        (await has(page.getByRole("heading", { name: "Medlemmer" }))),
+      (await has(page.getByRole("heading", { name: T("Bildeformat og bildefrekvens") }))) &&
+        (await has(page.getByRole("heading", { name: T("Medlemmer") }))),
       "oversikten: format, bildefrekvens, medlemmer",
     );
-    const jobs = page.getByRole("heading", { name: "AI-budsjett og jobber" });
+    const jobs = page.getByRole("heading", { name: T("AI-budsjett og jobber") });
     area(
       10,
       "Renderingskø",
@@ -441,14 +474,14 @@ async function testAreas() {
     }
 
     // Manus (3, 13)
-    await go("Manus");
+    await go(T("Manus"));
     await shot(page, "v3-03-manus");
     await audited(page, "Manus");
     area(3, "Manus", (await page.locator("[id^=nav-]").count()) > 0, "meny → Manus");
     const prodSelect = page
       .locator("select")
       .filter({ has: page.locator("option", { hasText: "Majas jul" }) });
-    const exportBtn = page.getByRole("button", { name: "Eksporter" }).first();
+    const exportBtn = page.getByRole("button", { name: T("Eksporter") }).first();
     area(
       13,
       "Eksport",
@@ -465,7 +498,7 @@ async function testAreas() {
     }
 
     // Ressursbibliotek (4)
-    await go("Ressursbibliotek");
+    await go(T("Ressursbibliotek"));
     await shot(page, "v3-05-bibliotek");
     await audited(page, "Ressursbibliotek");
     area(
@@ -476,25 +509,25 @@ async function testAreas() {
     );
 
     // Sceneeditor (6, 7)
-    await go("Sceneeditor");
+    await go(T("Sceneeditor"));
     await shot(page, "v3-06-sceneeditor");
     await audited(page, "Sceneeditor");
     area(
       6,
       "Sceneeditor",
-      await has(page.getByRole("region", { name: "Lag" })),
+      await has(page.getByRole("region", { name: T("Lag") })),
       "meny → Sceneeditor",
     );
     area(
       7,
       "Kamera og tidslinje",
-      (await has(page.getByRole("button", { name: "Kamera", exact: true }))) &&
-        (await has(page.getByText("Spor", { exact: true }))),
+      (await has(page.getByRole("button", { name: T("Kamera"), exact: true }))) &&
+        (await has(page.getByText(T("Spor"), { exact: true }))),
       "sceneeditoren: «Kamera» og tidslinjen med spor",
     );
 
     // Montering (8, 9, 11, 13)
-    await go("Montering");
+    await go(T("Montering"));
     area(11, "Overordnet filmmontering", page.url().includes("/montering"), "meny → Montering");
     area(
       2,
@@ -512,25 +545,25 @@ async function testAreas() {
     area(
       8,
       "Lyd og dialog",
-      (await has(page.getByText("Dialog", { exact: true }).first())) &&
-        (await has(page.getByRole("button", { name: /Dialog med AI-stemmer/ }))),
+      (await has(page.getByText(T("Dialog"), { exact: true }).first())) &&
+        (await has(page.getByRole("button", { name: R(/Dialog med AI-stemmer/, /Dialogue with AI voices/) }))),
       "monteringen: lydspor (Dialog, Forteller, Effekter …) og «Dialog med AI-stemmer …»",
     );
     area(
       9,
       "AI-generering",
-      await has(page.getByRole("button", { name: /Generer scene/ })),
+      await has(page.getByRole("button", { name: R(/Generer scene/, /Generate scene/) })),
       "monteringen: «Generer scene …», «Video for flere scener»; biblioteket: «Lag bilde/lyd med AI»",
     );
     area(
       13,
       "Eksport (i monteringen)",
-      await has(page.getByRole("button", { name: /Eksporter animatic/ })),
+      await has(page.getByRole("button", { name: R(/Eksporter animatic/, /Export animatic/) })),
       "«Eksporter animatic»",
     );
 
     // Utgivelse (12)
-    await go("Utgivelse");
+    await go(T("Utgivelse"));
     await shot(page, "v3-08-utgivelse");
     await audited(page, "Utgivelse");
     area(12, "Plakater og presentasjoner", page.url().includes("/utgivelse"), "meny → Utgivelse");
@@ -584,21 +617,22 @@ async function testKeyboard() {
       "Story Lab",
       "Ressursbibliotek",
       "Sceneeditor",
+      "Rigg",
       "Montering",
       "Utgivelse",
-    ];
+    ].map(T);
     check(
       "REQ-0427",
       "menyvalgene nås med Tab i riktig rekkefølge",
       order.every((x, i) => seen.indexOf(x) === seen.indexOf(order[0]) + i) &&
-        seen.includes("Utgivelse"),
+        seen.includes(T("Utgivelse")),
       seen.join(" → "),
     );
     check("REQ-0424", "fokus er synlig på menyvalgene (ring/omriss)", ring && seen.length > 0);
     // Enter på «Manus» åpner manuset
     await page
-      .getByRole("navigation", { name: "Arbeidsflater" })
-      .getByRole("link", { name: "Manus" })
+      .getByRole("navigation", { name: T("Arbeidsflater") })
+      .getByRole("link", { name: T("Manus") })
       .focus();
     await shot(page, "v3-09-fokus-meny");
     await page.keyboard.press("Enter");
@@ -621,7 +655,7 @@ async function testDialogs() {
     [
       "v3-10-ny-produksjon",
       P,
-      async (page) => page.getByRole("button", { name: /Ny produksjon/ }).click(),
+      async (page) => page.getByRole("button", { name: R(/Ny produksjon/, /New production/) }).click(),
     ],
     [
       "v3-11-generer-scene",
@@ -632,32 +666,32 @@ async function testDialogs() {
           .first()
           .click();
         await page.waitForTimeout(300);
-        await page.getByRole("button", { name: /Generer scene/ }).click();
+        await page.getByRole("button", { name: R(/Generer scene/, /Generate scene/) }).click();
       },
     ],
     [
       "v3-12-eksport-animatic",
       `${P}/montering`,
-      async (page) => page.getByRole("button", { name: /Eksporter animatic/ }).click(),
+      async (page) => page.getByRole("button", { name: R(/Eksporter animatic/, /Export animatic/) }).click(),
     ],
     [
       "v3-13-ai-leverandorer",
       "/",
       async (page) =>
         page
-          .getByRole("button", { name: /AI-leverandører/ })
+          .getByRole("button", { name: R(/AI-leverandører/, /AI providers/) })
           .first()
           .click(),
     ],
     [
       "v3-14-importer-manus",
       `${P}/manus`,
-      async (page) => page.getByRole("button", { name: "Importer manus" }).first().click(),
+      async (page) => page.getByRole("button", { name: T("Importer manus") }).first().click(),
     ],
     [
       "v3-15-versjoner",
       `${P}/manus`,
-      async (page) => page.getByRole("button", { name: "Versjoner" }).click(),
+      async (page) => page.getByRole("button", { name: T("Versjoner") }).click(),
     ],
   ];
   for (const [name, path, open] of cases) {
@@ -672,7 +706,7 @@ async function testDialogs() {
       const close = page.locator("[role=dialog] button:has(.sr-only)");
       if (await close.count()) {
         const t = await close.first().innerText();
-        check("REQ-0014", `${name}: lukkeknappen heter «Lukk»`, /Lukk/.test(t), t);
+        check("REQ-0014", `${name}: lukkeknappen heter «Lukk»`, R(/Lukk/, /Close/).test(t), t);
       }
     } catch (e) {
       check("REQ-0014", `${name}: dialogen kunne åpnes`, false, String(e).split("\n")[0]);
@@ -687,7 +721,7 @@ async function testDialogs() {
 async function testNavigation() {
   const { ctx, page } = await openPage(P);
   try {
-    await page.getByRole("button", { name: "Per scene" }).click();
+    await page.getByRole("button", { name: T("Per scene") }).click();
     await page.waitForTimeout(400);
     const link = page.getByRole("link", { name: /^INT\. STUA/ }).first();
     const heading = (await link.innerText()).trim();
@@ -707,13 +741,13 @@ async function testNavigation() {
     // Fra oversikten til sceneeditoren
     await page.goto(base + P, { waitUntil: "networkidle" });
     await page.waitForTimeout(1000);
-    await page.getByRole("button", { name: "Per scene" }).click();
+    await page.getByRole("button", { name: T("Per scene") }).click();
     await page.waitForTimeout(300);
-    await page.getByRole("link", { name: "Åpne i sceneeditoren" }).nth(2).click();
+    await page.getByRole("link", { name: T("Åpne i sceneeditoren") }).nth(2).click();
     await page.waitForTimeout(1500);
     const occ2 = new URL(page.url()).searchParams.get("scene");
     const picker = await page
-      .getByRole("button", { name: /^Velg scene\. Valgt:/ })
+      .getByRole("button", { name: R(/^Velg scene\. Valgt:/, /^Choose scene\. Selected:/) })
       .getAttribute("aria-label")
       .catch(() => null);
     check(
@@ -737,10 +771,10 @@ async function testNavigation() {
       .first()
       .click();
     await page.waitForTimeout(400);
-    await page.getByRole("link", { name: "Åpne i sceneeditoren" }).click();
+    await page.getByRole("link", { name: T("Åpne i sceneeditoren") }).click();
     await page.waitForTimeout(1500);
     const fromTimeline = await page
-      .getByRole("button", { name: /^Velg scene\. Valgt: 3 / })
+      .getByRole("button", { name: R(/^Velg scene\. Valgt: 3 /, /^Choose scene\. Selected: 3 /) })
       .count();
     await shot(page, "v3-17-montering-til-sceneeditor");
     check(
@@ -759,7 +793,7 @@ async function testNavigation() {
     await page.waitForTimeout(600);
     const chosenNumber = (await item.innerText()).trim().split(/\s+/)[0];
     const direct = await page
-      .getByRole("link", { name: /sceneeditor/i })
+      .getByRole("link", { name: R(/sceneeditor/i, /scene editor/i) })
       .filter({ hasNot: page.getByRole("navigation") })
       .evaluateAll((els) =>
         els.filter((e) => !e.closest("nav")).map((e) => e.getAttribute("href")),
@@ -772,19 +806,19 @@ async function testNavigation() {
       direct.join(", ") || "ingen lenke",
     );
     await page
-      .getByRole("navigation", { name: "Arbeidsflater" })
-      .getByRole("link", { name: "Sceneeditor" })
+      .getByRole("navigation", { name: T("Arbeidsflater") })
+      .getByRole("link", { name: T("Sceneeditor") })
       .click();
     await page.waitForTimeout(1500);
     const viaNav = await page
-      .getByRole("button", { name: /^Velg scene\. Valgt:/ })
+      .getByRole("button", { name: R(/^Velg scene\. Valgt:/, /^Choose scene\. Selected:/) })
       .getAttribute("aria-label")
       .catch(() => "");
     await shot(page, "v3-19-meny-til-sceneeditor");
     check(
       "REQ-0168",
       "hovedmenyen åpner sceneeditoren med scenen som var valgt i manuset",
-      viaNav.includes(`Valgt: ${chosenNumber} `),
+      viaNav.includes(`${R("Valgt", "Selected")}: ${chosenNumber} `),
       `valgt i manus: ${chosenNumber}; sceneeditoren: «${viaNav}»`,
     );
   } finally {
@@ -803,8 +837,8 @@ async function testFollow() {
       .first()
       .click();
     await page.waitForTimeout(500);
-    const region = page.getByRole("region", { name: "Manus for scenen" });
-    const follow = region.getByRole("checkbox", { name: /Følg avspillingen/ });
+    const region = page.getByRole("region", { name: T("Manus for scenen") });
+    const follow = region.getByRole("checkbox", { name: R(/Følg avspillingen/, /Follow playback/) });
     /** Rulleposisjonen til den nærmeste rullbare beholderen rundt manuset, og markert blokk. */
     const state = () =>
       region.evaluate((el) => {
@@ -871,7 +905,7 @@ async function testFollow() {
     await toTop();
     await page.waitForTimeout(300);
     const before = await state();
-    await page.getByRole("button", { name: "Spill av" }).click();
+    await page.getByRole("button", { name: T("Spill av"), exact: true }).click();
     const seenActive = new Set();
     let moved = false;
     for (let i = 0; i < 16; i++) {
@@ -880,7 +914,7 @@ async function testFollow() {
       if (st.active) seenActive.add(st.active);
       if (st.top !== before.top) moved = true;
     }
-    await page.getByRole("button", { name: "Pause" }).click();
+    await page.getByRole("button", { name: T("Pause") }).click();
     check(
       "REQ-0101",
       "av: under avspilling oppdateres markeringen uten at manuset ruller",
@@ -906,7 +940,7 @@ async function testFollow() {
     // På under avspilling: markert replikk holdes synlig hele tiden
     await seekTo(0);
     await page.waitForTimeout(300);
-    await page.getByRole("button", { name: "Spill av" }).click();
+    await page.getByRole("button", { name: T("Spill av"), exact: true }).click();
     let hidden = 0;
     const seenOn = new Set();
     for (let i = 0; i < 16; i++) {
@@ -917,7 +951,7 @@ async function testFollow() {
         if (!st.activeVisible) hidden++;
       }
     }
-    await page.getByRole("button", { name: "Pause" }).click();
+    await page.getByRole("button", { name: T("Pause") }).click();
     check(
       "REQ-0101",
       "på: under avspilling er markert replikk alltid synlig",
@@ -939,7 +973,7 @@ async function testGenerateScene() {
       .first()
       .click();
     await page.waitForTimeout(400);
-    const btn = page.getByRole("button", { name: /Generer scene/ });
+    const btn = page.getByRole("button", { name: R(/Generer scene/, /Generate scene/) });
     check(
       "REQ-0243",
       "«Generer scene …» finnes i scenepanelet i monteringen",
@@ -953,12 +987,12 @@ async function testGenerateScene() {
       .first()
       .innerText()
       .catch(() => "");
-    const segments = await dialog.getByRole("textbox", { name: /Beskrivelse for/ }).count();
+    const segments = await dialog.getByRole("textbox", { name: R(/Beskrivelse for/, /Description for/) }).count();
     await shot(page, "v3-22-generer-scene");
     check(
       "REQ-0243",
       "handlingen åpner genereringsflyten for scenen (inndeling og beskrivelser)",
-      /^Generer scene/.test(title.trim()) && segments > 0,
+      R(/^Generer scene/, /^Generate scene/).test(title.trim()) && segments > 0,
       `${title.trim()} · ${segments} beskrivelse(r)`,
     );
   } finally {
@@ -973,8 +1007,11 @@ async function testOverview() {
   try {
     const text = async () =>
       (await page.locator("main, body").first().innerText()).replace(/\s+/g, " ");
+    // 3b: vent til oversikten er tegnet (teksten ble lest før første tegning ved last, så alle ti tallene manglet)
+    await page.getByText("Majas jul").first().waitFor({ timeout: 30000 }).catch(() => undefined);
+    await page.waitForTimeout(500);
     const t = await text();
-    const figures = [
+    const figures = R([
       ["produksjoner i prosjektet", /Produksjoner.*Hovedfilm.*Majas jul/],
       ["antall scener", /\d+ aktive scener/],
       ["total estimert spilletid", /Bare manusestimat ≈ \d/i],
@@ -985,7 +1022,18 @@ async function testOverview() {
       ["renderingsjobber", /AI-budsjett og jobber.*Jobber/],
       ["synkroniseringsavvik", /manusendringer etter at 2D-scene eller film ble laget/i],
       ["API-kostnader", /Denne måneden: \d+.*anslått/],
-    ];
+    ], [
+      ["produksjoner i prosjektet", /Productions.*Hovedfilm.*Majas jul/],
+      ["antall scener", /\d+ active scenes/],
+      ["total estimert spilletid", /Script estimate only ≈ \d/i],
+      ["bekreftet spilletid", /Confirmed \d/i],
+      ["antall ferdige scener", /Done\s*\(?\d+/],
+      ["scener under arbeid", /(In progress|2D animatic)\s*\(?\d+/],
+      ["scener som mangler produksjon", /Missing production\s*\(?\d+/],
+      ["renderingsjobber", /AI budget and jobs.*Jobs/],
+      ["synkroniseringsavvik", /script changes since its 2D scene or film was made/i],
+      ["API-kostnader", /This month: \d+.*estimated/],
+    ]);
     for (const [name, re] of figures)
       check(
         "REQ-0405",
@@ -1001,11 +1049,11 @@ async function testOverview() {
       /\$\d/.test(t) ? "" : "bare kreditter (Lovable) og pris per jobb",
     );
     // Oppdateres når data endres: planlagt lengde for en scene
-    const expected = page.getByText("Forventet lengde nå").locator("xpath=following-sibling::*[1]");
+    const expected = page.getByText(T("Forventet lengde nå")).locator("xpath=following-sibling::*[1]");
     const before = (await expected.innerText()).trim();
-    await page.getByRole("button", { name: "Per scene" }).click();
+    await page.getByRole("button", { name: T("Per scene") }).click();
     await page.waitForTimeout(300);
-    const plan = page.getByRole("textbox", { name: /^Planlagt lengde for scene 3$/ });
+    const plan = page.getByRole("textbox", { name: R(/^Planlagt lengde for scene 3$/, /^Planned length for scene 3$/) });
     await plan.fill("2:00");
     await plan.press("Enter");
     await page.waitForTimeout(800);
@@ -1277,12 +1325,12 @@ if (audits.length) {
   const all = (k) => audits.flatMap((a) => a[k].map((x) => `${a.where}: ${x}`));
   check(
     "REQ-0014",
-    "<html lang> er «nb»",
-    audits.every((a) => a.lang === "nb"),
+    `<html lang> er «${LANG}»`,
+    audits.every((a) => a.lang === LANG),
   );
   check(
     "REQ-0014",
-    "ingen engelske grensesnittord i tekst, aria-label, title, placeholder eller alt",
+    R("ingen engelske grensesnittord i tekst, aria-label, title, placeholder eller alt", "ingen norske grensesnittord i tekst, aria-label, title, placeholder eller alt (engelsk visning)"),
     all("english").length === 0,
     short(all("english"), 8),
   );

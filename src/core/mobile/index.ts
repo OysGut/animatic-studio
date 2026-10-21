@@ -3,11 +3,15 @@
  * fra mobilen. Ren TypeScript: konteksten (hvor filene skal), grenser, filtyper, lagringssti og sjekk av
  * filinnholdet. Server og nettleser bruker de samme reglene.
  */
-import { L } from "../i18n";
+import { isPartSlot } from "../animation/parts";
+
 import { isUuid } from "../ids";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Hvor filene fra en økt skal (Mars: «for ulike scener genereres selvsagt ulike qr koder så alt havner rett»). */
 export type UploadContext =
+  | { readonly type: "rig"; readonly purpose: "mouth_shape" | "rig_part"; readonly target: { readonly assetId: string; readonly variantId: string; readonly sourceVersionId: string; readonly slot: string } }
+
   | { readonly type: "project" }
   | { readonly type: "asset"; readonly assetId: string; readonly variantId?: string | undefined }
   /** En ressurs under opprettelse (ikke lagret ennå). Knyttes til ressursen når den lagres. */
@@ -21,7 +25,12 @@ export type UploadContext =
   /** Opptak (takes) til en lydressurs (fase 2, bolk B, REQ-0684). */
   | { readonly type: "sound"; readonly assetId: string; readonly variantId?: string | undefined }
   /** Opptak av en replikk i en scene (bolk B, REQ-0685): mobilen viser hele replikken. */
-  | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string }
+  | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string; readonly clipId?: string }
+  /**
+   * B-099: lyd som ikke er en replikk, tatt opp på mobilen fra sceneeditorens opptaksvindu. Blir en ny
+   * lydressurs som legges i scenen der avspillingshodet stod da QR-koden ble åpnet (`atMs`).
+   */
+  | { readonly type: "scene_sound"; readonly occurrenceId: string; readonly atMs: number; readonly kind: SceneSoundKind }
   /** Bildeplassen til et lag i sceneeditoren: nytt bilde av lagets ressurs. */
   | {
       readonly type: "layer";
@@ -32,6 +41,12 @@ export type UploadContext =
 
 export type MobileMediaKind = "image" | "video" | "audio";
 
+/** Lydtypene et mobilopptak av «lyd i scenen» kan ha (replikker går via «line»). */
+export const SCENE_SOUND_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"] as const;
+export type SceneSoundKind = (typeof SCENE_SOUND_KINDS)[number];
+/** Øvre grense for `atMs` (24 timer): hindrer tull i konteksten. */
+export const SCENE_SOUND_MAX_MS = 24 * 60 * 60 * 1000;
+
 /** Egen QR-kode: ingen innlogging på telefonen, 2 timer (DEC-0090). */
 export const PERSONAL_SESSION_MS = 2 * 60 * 60 * 1000;
 /** Delt lenke: 7 dager, kan tilbakekalles (DEC-0090). */
@@ -41,10 +56,19 @@ export const PERSONAL_MAX_BYTES = 20 * 1024 ** 3;
 export const SHARED_MAX_FILES = 200;
 export const SHARED_MAX_BYTES = 5 * 1024 ** 3;
 /**
- * Største videofil i nettversjonen (DEC-0090, REQ-0679). NB: denne grensen skal fjernes uten å spørre Mars den
- * dagen en desktopversjon lages (står også i TODO.md).
+ * Største videofil i nettversjonen (DEC-0090, REQ-0679). Grensen gjelder bare nettversjonen (lagringen i
+ * skyen); i desktopversjonen er det ingen grense (R6, se `videoMaxBytes`).
  */
 export const MOBILE_VIDEO_MAX_BYTES = 500 * 1024 * 1024;
+
+/** R6 (REQ-0679): hvilken utgave av appen koden kjører i. Nettversjonen i dag; en desktopversjon setter «desktop». */
+export type AppTarget = "web" | "desktop";
+export const APP_TARGET: AppTarget = "web";
+
+/** R6 (REQ-0679): største videofil – 500 MB i nettversjonen, ingen grense (null) i desktopversjonen. */
+export function videoMaxBytes(target: AppTarget = APP_TARGET): number | null {
+  return target === "desktop" ? null : MOBILE_VIDEO_MAX_BYTES;
+}
 export const MOBILE_IMAGE_MAX_BYTES = 100 * 1024 * 1024;
 export const MOBILE_AUDIO_MAX_BYTES = 400 * 1024 * 1024;
 
@@ -77,9 +101,9 @@ export function mediaKindOf(mime: string): MobileMediaKind | null {
   return null;
 }
 
-export function maxBytesFor(kind: MobileMediaKind): number {
+export function maxBytesFor(kind: MobileMediaKind, target: AppTarget = APP_TARGET): number {
   return kind === "video"
-    ? MOBILE_VIDEO_MAX_BYTES
+    ? (videoMaxBytes(target) ?? Number.POSITIVE_INFINITY)
     : kind === "audio"
       ? MOBILE_AUDIO_MAX_BYTES
       : MOBILE_IMAGE_MAX_BYTES;
@@ -90,31 +114,23 @@ export function checkMobileFile(
   mime: string,
   bytes: number,
   allowed: readonly MobileMediaKind[],
+  target: AppTarget = APP_TARGET,
 ): string | null {
   const kind = mediaKindOf(mime);
   if (!kind)
-    return L(
-      "Filtypen tas ikke imot (bilder: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; lyd: MP3, WAV, M4A, OGG, WebM, FLAC).",
-      "This file type is not accepted (images: JPEG, PNG, WebP, GIF; video: MP4, MOV, WebM; audio: MP3, WAV, M4A, OGG, WebM, FLAC).",
-    );
+    return tk("core-mobile-index.check-mobile-file.message.70c465bdd29d");
   if (!allowed.includes(kind))
     return kind === "video"
-      ? L("Her kan du ikke laste opp video.", "You cannot upload video here.")
+      ? tk("core-mobile-index.check-mobile-file.message.e770eba5c6e8")
       : kind === "audio"
-        ? L("Her kan du ikke laste opp lyd.", "You cannot upload audio here.")
-        : L("Her kan du ikke laste opp bilder.", "You cannot upload images here.");
-  if (!Number.isFinite(bytes) || bytes <= 0) return L("Filen er tom.", "The file is empty.");
-  const max = maxBytesFor(kind);
+        ? tk("core-mobile-index.check-mobile-file.message.47b1ed91e3c0")
+        : tk("core-mobile-index.check-mobile-file.message.46b51e56c6dc");
+  if (!Number.isFinite(bytes) || bytes <= 0) return tk("core-mobile-index.check-mobile-file.message.4129d3a6024f");
+  const max = maxBytesFor(kind, target);
   if (bytes > max)
     return kind === "video"
-      ? L(
-          `Videoen er for stor (maks ${Math.round(max / 1024 ** 2)} MB). Del opp opptaket.`,
-          `The video is too large (max ${Math.round(max / 1024 ** 2)} MB). Split the recording.`,
-        )
-      : L(
-          `Filen er for stor (maks ${Math.round(max / 1024 ** 2)} MB).`,
-          `The file is too large (max ${Math.round(max / 1024 ** 2)} MB).`,
-        );
+      ? tk("core-mobile-index.check-mobile-file.message.e8bac3f52697", { value1: String(Math.round(max / 1024 ** 2)) })
+      : tk("core-mobile-index.check-mobile-file.message.0158cfbac0b7", { value1: String(Math.round(max / 1024 ** 2)) });
   return null;
 }
 
@@ -199,6 +215,11 @@ export function parseUploadContext(v: unknown): UploadContext | null {
     typeof o[k] === "string" && isUuid(o[k] as string) ? (o[k] as string) : null;
   const optId = (k: string) => (o[k] === undefined || o[k] === null ? undefined : (id(k) ?? false));
   switch (o["type"]) {
+    case "rig": {
+      const t = o["target"] as Record<string, unknown> | undefined;
+      if (!t || typeof t !== "object" || !["mouth_shape", "rig_part"].includes(String(o["purpose"])) || ![t["assetId"], t["variantId"], t["sourceVersionId"]].every(v => typeof v === "string" && isUuid(v)) || !isPartSlot(t["slot"]) || (o["purpose"] === "mouth_shape") !== String(t["slot"]).startsWith("mouth:")) return null;
+      return { type: "rig", purpose: o["purpose"] as "mouth_shape" | "rig_part", target: { assetId: String(t["assetId"]), variantId: String(t["variantId"]), sourceVersionId: String(t["sourceVersionId"]), slot: String(t["slot"]) } };
+    }
     case "project":
       return { type: "project" };
     case "asset": {
@@ -226,7 +247,16 @@ export function parseUploadContext(v: unknown): UploadContext | null {
     case "line": {
       const occurrenceId = id("occurrenceId");
       const blockId = id("blockId");
-      return occurrenceId && blockId ? { type: "line", occurrenceId, blockId } : null;
+      const clipId = optId("clipId");
+      return occurrenceId && blockId && clipId !== false ? { type: "line", occurrenceId, blockId, ...(clipId ? { clipId } : {}) } : null;
+    }
+    case "scene_sound": {
+      const occurrenceId = id("occurrenceId");
+      const atMs = o["atMs"];
+      const kind = o["kind"];
+      if (!occurrenceId || typeof atMs !== "number" || !Number.isInteger(atMs) || atMs < 0 || atMs > SCENE_SOUND_MAX_MS) return null;
+      if (!(SCENE_SOUND_KINDS as readonly unknown[]).includes(kind)) return null;
+      return { type: "scene_sound", occurrenceId, atMs, kind: kind as SceneSoundKind };
     }
     case "layer": {
       const layerId = id("layerId");
@@ -243,8 +273,11 @@ export function parseUploadContext(v: unknown): UploadContext | null {
 /** Filtypene en kontekst tar imot (bilder og video for ressurser; bare lyd for opptak, bolk B). */
 export function mediaKindsFor(c: UploadContext): MobileMediaKind[] {
   switch (c.type) {
+    case "rig":
+      return ["image"];
     case "sound":
     case "line":
+    case "scene_sound":
       return ["audio"];
     case "asset":
     case "draft":
@@ -343,3 +376,47 @@ export function scriptForLine(
     text: block.text.replace(/\s+/g, " ").trim().slice(0, 5000),
   };
 }
+
+// ---------------------------------------------------------------- opptaksformat (B-099)
+
+/** Valgt opptaksformat: MIME-type, filendelse og bitrate (null: ukomprimert, ingen bitrate). */
+export interface RecordingFormat {
+  readonly mime: string;
+  readonly ext: string;
+  readonly bitsPerSecond: number | null;
+}
+
+/** Høy bitrate for komprimert tale til film (Opus/AAC). */
+export const RECORDING_BITRATE = 256_000;
+
+/**
+ * Beste format nettleseren kan ta opp i (B-099): Opus eller AAC med høy bitrate. Ukomprimert PCM i WebM
+ * (bare Chrome) velges ikke, fordi Safari og Firefox ikke kan spille det av for resten av teamet.
+ * Ren funksjon: `isSupported` er `MediaRecorder.isTypeSupported`.
+ */
+export function pickRecordingFormat(isSupported: (mime: string) => boolean): RecordingFormat | null {
+  const order: readonly RecordingFormat[] = [
+    { mime: "audio/webm;codecs=opus", ext: "webm", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/mp4;codecs=mp4a.40.2", ext: "m4a", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/webm", ext: "webm", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/mp4", ext: "m4a", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/ogg;codecs=opus", ext: "ogg", bitsPerSecond: RECORDING_BITRATE },
+  ];
+  for (const f of order) if (isSupported(f.mime)) return f;
+  return null;
+}
+
+/**
+ * Mikrofoninnstillingene (B-099): «Rå lyd» skrur av ekkodemping, støydemping og automatisk nivå. Rå lyd er
+ * standard for tale til film.
+ */
+export function microphoneConstraints(raw: boolean): {
+  readonly echoCancellation: boolean;
+  readonly noiseSuppression: boolean;
+  readonly autoGainControl: boolean;
+} {
+  return { echoCancellation: !raw, noiseSuppression: !raw, autoGainControl: !raw };
+}
+
+/** Standardvalget for «Rå lyd» når brukeren ikke har valgt selv. */
+export const RAW_AUDIO_DEFAULT = true;

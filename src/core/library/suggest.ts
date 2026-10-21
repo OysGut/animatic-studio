@@ -14,9 +14,10 @@
 import type { Asset, AssetKind, ProjectState } from "../model";
 import { blocksOfVariant, isScriptOccurrence, orderedOccurrences } from "../views";
 import { characterName, sceneMentions } from "../screenplay/filter";
-import { L } from "../i18n";
+
 import { nounForms, LEXICON_FORMS } from "./lexicon";
 import { classifySuggestion, type Confidence } from "./classify";
+import { t as tk } from "@/core/i18n/keyed";
 
 export type SuggestionReason = "speaker" | "named" | "heading" | "object";
 
@@ -478,7 +479,7 @@ function numbersOf(scenes: readonly Scene[], idx: ReadonlySet<number>): string[]
   return [...idx]
     .sort((a, b) => a - b)
     .slice(0, 6)
-    .map((i) => scenes[i]!.number || L("uten nr.", "no no."));
+    .map((i) => scenes[i]!.number || tk("core-library-suggest.numbers-of.idx-sort-a-b-a-b-slice-0-6-map.e82fdf18af2f"));
 }
 
 function findSimilar(

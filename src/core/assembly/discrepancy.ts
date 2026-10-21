@@ -11,7 +11,8 @@ import type { BlockKind, ProjectState, ScriptBlock } from "../model";
 import { blocksOfVariant } from "../views";
 import { compareKeys } from "../order-key";
 import { blockSpans, type FilmClip } from "./film";
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export type ScriptChangeKind = "changed" | "added" | "removed";
 
@@ -140,7 +141,7 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       kind: "composition",
       id: comp.id,
       occurrenceId,
-      label: L("2D-scenen (animatic)", "2D scene (animatic)"),
+      label: tk("core-assembly-discrepancy.label.label.80e277b15d75"),
       baseline: comp.producedFrom?.blockRevisions ?? {},
       inUse: usesComposition,
     });
@@ -156,15 +157,12 @@ export function materialsOf(s: ProjectState, occurrenceId: string, clip?: FilmCl
       occurrenceId,
       label:
         t.kind === "imported_film"
-          ? L(
-              `Film: ${t.media?.fileName ?? "importert film"}`,
-              `Film: ${t.media?.fileName ?? "imported film"}`,
-            )
+          ? tk("core-assembly-discrepancy.film-take", { file: t.media?.fileName ?? tk("core-assembly-discrepancy.film-take-imported") })
           : t.kind === "ai_video"
             ? "AI-video"
             : t.kind === "still"
-              ? L("Stillbilde", "Still image")
-              : L("Versjon", "Version"),
+              ? tk("core-assembly-discrepancy.label.label.a31351d4cc24")
+              : tk("core-assembly-discrepancy.label.label.eabb354bd919"),
       baseline: (t.acceptedFrom ?? t.producedFrom).blockRevisions,
       inUse: usedTakes.has(t.id),
     });

@@ -8,20 +8,12 @@
  * Bare på klienten.
  */
 import { fontsReady, textSpecsOf } from "@/engine/typography/fonts";
-import {
-  L,
-  cueAt,
-  type AudioKind,
-  type FilmAudioItem,
-  type FilmClip,
-  type ProjectState,
-  type Rational,
-  type SubtitleCue,
-} from "@/core";
+import { cueAt, type AudioKind, type FilmAudioItem, type FilmClip, type ProjectState, type Rational, type SubtitleCue } from "@/core";
 import { type AudioBank, hasAudioIn, renderAudio } from "../audio/mixer";
 import type { ImageSource } from "../compositor/canvas";
 import { drawFilmFrame } from "../compositor/film";
 import { FilmVideoFrames } from "./film-video";
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface AnimaticExportOptions {
   readonly state: ProjectState;
@@ -55,6 +47,9 @@ export interface AnimaticExportOptions {
   readonly mp4?: boolean;
   /** Alltid WebM (VP9/AV1) – brukerens valg i nedlastingen (DEC-0085). */
   readonly webm?: boolean;
+  readonly bitrateKbps?: number | null;
+  /** CA8: «main» utelater karakterlag satt til eget lag; «separate» lager filen med bare dem. */
+  readonly characterPass?: "all" | "main" | "separate";
 }
 
 export interface AnimaticFile {
@@ -83,13 +78,10 @@ const even = (n: number) => Math.max(2, Math.round(n / 2) * 2);
 export async function exportAnimatic(o: AnimaticExportOptions): Promise<AnimaticFile> {
   if (!canExportVideo())
     throw new ExportError(
-      L(
-        "Nettleseren kan ikke lage video. Bruk en nyere utgave av Chrome, Edge, Safari eller Firefox.",
-        "The browser cannot make video. Use a newer version of Chrome, Edge, Safari or Firefox.",
-      ),
+      tk("engine-export-animatic.export-animatic.message.f12f66905cf1"),
     );
   const total = o.endFrame - o.startFrame;
-  if (total <= 0) throw new ExportError(L("Utvalget er tomt.", "The selection is empty."));
+  if (total <= 0) throw new ExportError(tk("engine-export-animatic.export-animatic.message.c17e79a74249"));
   const width = even(o.width);
   const height = even(o.height);
   const mb = await import("mediabunny");
@@ -104,10 +96,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   );
   if (!codec)
     throw new ExportError(
-      L(
-        `Nettleseren kan ikke kode video i ${width} × ${height}. Prøv halv størrelse, eller en annen nettleser.`,
-        `The browser cannot encode video at ${width} × ${height}. Try half the size, or another browser.`,
-      ),
+      tk("engine-export-animatic.export-animatic.message.a8cbd1798f03", { width: String(width), height: String(height) }),
     );
   const format =
     !o.webm && (codec === "avc" || o.mp4) ? new mb.Mp4OutputFormat() : new mb.WebMOutputFormat();
@@ -120,15 +109,12 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx)
     throw new ExportError(
-      L(
-        "Kunne ikke tegne bildene (lerretet er ikke tilgjengelig).",
-        "Could not draw the images (the canvas is not available).",
-      ),
+      tk("engine-export-animatic.export-animatic.message.aa9cad735d4d"),
     );
 
   // Fontene må være lastet før første bilde (MTS §61): samme filer som i forhåndsvisningen
   await fontsReady(textSpecsOf(o.state));
-  const source = new mb.CanvasSource(canvas, { codec, quality: mb.QUALITY_HIGH });
+  const source = new mb.CanvasSource(canvas, { codec, quality: o.bitrateKbps ? o.bitrateKbps * 1000 : mb.QUALITY_HIGH });
   const fps = o.fps.num / o.fps.den;
   output.addVideoTrack(source, { frameRate: fps });
   const step = o.fps.den / o.fps.num;
@@ -172,7 +158,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
   try {
     await output.start();
     for (let i = 0; i < total; i++) {
-      if (o.signal?.aborted) throw new DOMException(L("Avbrutt", "Cancelled"), "AbortError");
+      if (o.signal?.aborted) throw new DOMException(tk("engine-export-animatic.export-animatic.message.25b057ed803a"), "AbortError");
       // Lyden ligger litt foran bildet, så filen flettes jevnt
       if (i * step >= audioDone - 1) await addAudioUntil(i * step + AUDIO_CHUNK);
       if (video) await video.prepare(o.state, o.clips, o.startFrame + i);
@@ -182,6 +168,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
         images: o.images,
         placeholders: false,
         monochrome: o.monochrome ?? false,
+        ...(o.characterPass ? { characterPass: o.characterPass } : {}),
         ...(video ? { video: video.provider } : {}),
         ...(o.subtitles?.length
           ? { subtitle: cueAt(o.subtitles, (o.startFrame + i) * step * 1000)?.text ?? null }
@@ -203,7 +190,7 @@ export async function exportAnimatic(o: AnimaticExportOptions): Promise<Animatic
     await video?.close().catch(() => undefined);
   }
   const buffer = target.buffer;
-  if (!buffer) throw new ExportError(L("Videoen ble tom.", "The video came out empty."));
+  if (!buffer) throw new ExportError(tk("engine-export-animatic.export-animatic.message.5b6c6487795e"));
   return {
     bytes: new Uint8Array(buffer),
     mimeType: format.mimeType,

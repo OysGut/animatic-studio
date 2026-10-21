@@ -5,6 +5,7 @@
  * inn-/uttoning (lineært, også der delene overlapper – en enkel krysstoning). Bare på klienten (Web Audio).
  */
 import type { AudioComposition, AudioSegment } from "@/core";
+import { createClientOnlyFn } from "@tanstack/react-start";
 
 export interface RenderOptions {
   readonly sampleRate?: number;
@@ -91,7 +92,7 @@ export function channelsOf(buf: AudioBuffer): Float32Array[] {
 }
 
 /** Koder en miks som MP3 (LAME via mediabunny, bare når nettleseren ikke har en egen MP3-koder). */
-export async function encodeMp3(buf: AudioBuffer, bitrate = 192_000): Promise<Uint8Array> {
+export const encodeMp3 = createClientOnlyFn(async (buf: AudioBuffer, bitrate = 192_000): Promise<Uint8Array> => {
   const mb = await import("mediabunny");
   if (!(await mb.canEncodeAudio("mp3"))) {
     const { registerMp3Encoder } = await import("@mediabunny/mp3-encoder");
@@ -106,4 +107,4 @@ export async function encodeMp3(buf: AudioBuffer, bitrate = 192_000): Promise<Ui
   await output.finalize();
   if (!target.buffer) throw new Error("MP3");
   return new Uint8Array(target.buffer);
-}
+});

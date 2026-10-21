@@ -8,31 +8,11 @@
 import { CheckCircle2, Clapperboard, Loader2, TriangleAlert } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  tm,
-  adaptPromptForModel,
-  assembleSegments,
-  assemblyUsesChosen,
-  chainStartPath,
-  costBreakdown,
-  estimateCostUsd,
-  type FilmClip,
-  formatUsd,
-  latestVideoFor,
-  newId,
-  type ProductionSegment,
-  type ProjectState,
-  providerModel,
-  providersFor,
-  type SegmentPlan,
-  videoAttempts,
-  videoDurationFor,
-  videoStartImages,
-} from "@/core";
+import { profileChoice, qualityProfileSnapshot, tm, adaptPromptForModel, assembleSegments, assemblyUsesChosen, chainStartPath, costBreakdown, estimateCostUsd, type FilmClip, formatUsd, latestVideoFor, newId, type ProductionSegment, type ProjectState, providerModel, providersFor, type SegmentPlan, videoAttempts, videoDurationFor, videoStartImages } from "@/core";
 import { startVideoGeneration } from "@/adapters/ai/video.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey, useAiJobs } from "@/app/ai/use-ai-jobs";
+import { QualityProfilePicker, QualityProfileBudget, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { EffortPicker } from "@/app/ai/EffortPicker";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -43,6 +23,7 @@ import { claimVideo } from "@/app/ai/video-jobs";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { CostLines } from "@/app/ai/CostLines";
+import { t as tk } from "@/core/i18n/keyed";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50";
@@ -74,7 +55,9 @@ export function SceneVideoSection({
   const options = providersFor("video", new Set(available.data?.providers ?? []));
   const [pick, setPick] = useState("");
   const flat = options.flatMap((o) => o.models.map((m) => ({ provider: o.provider, model: m })));
-  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? flat[0] ?? null;
+  const quality = useQualityProfile(state);
+  const recommended = profileChoice("video", quality.profile, new Set(available.data?.providers ?? []));
+  const chosen = flat.find((x) => `${x.provider.id}|${x.model.id}` === pick) ?? (recommended ? flat.find(m => m.model.id === recommended.model.id) : null) ?? flat[0] ?? null;
   const [aspect, setAspect] = useState<"16:9" | "9:16">(
     state.project.frameWidth >= state.project.frameHeight ? "16:9" : "9:16",
   );
@@ -103,7 +86,8 @@ export function SceneVideoSection({
   );
   const chainUrls = useImageUrls(chainPaths);
   // Kandidater (mandat 19.7): flere videoer per segment å velge mellom
-  const [candidates, setCandidates] = useState(1);
+  const [candidateOverride, setCandidates] = useState<number | null>(null);
+  const candidates = candidateOverride ?? quality.profile?.spec.variants ?? 1;
   // Myk overgang (0,5 s) mellom segmentene når scenen settes sammen (DEC-0071)
   const [softChoice, setSoft] = useState(true);
   // Myke overganger krever migrasjon 0026; på eldre databaser settes scenen sammen med rene kutt
@@ -221,15 +205,13 @@ export function SceneVideoSection({
       const waits = waitsForPrev(i, idx);
       if (sent(i).blocked) {
         errors.push(
-          L(
-            `Segment ${i + 1}: replikkene er for lange for modellen – del segmentet`,
-            `Segment ${i + 1}: the lines are too long for the model – split the segment`,
-          ),
+          tk("app-assembly-scene-video-section.generate.errors-push.44ea52bbf39b", { value1: String(i + 1) }),
         );
         continue;
       }
       try {
         for (let c = 0; c < candidates; c++) {
+          if (quality.budgetError) throw new Error(quality.budgetError);
           const r = await startVideoGeneration({
             data: {
               projectId,
@@ -242,7 +224,7 @@ export function SceneVideoSection({
               aspect,
               startImagePath: waits ? null : startFor(i),
               candidates,
-              approved: true,
+              approved: true, qualityProfile: quality.profile ? qualityProfileSnapshot(quality.profile) : null,
               // Sammenheng i køen: venter på siste bilde fra segmentet før (DEC-0071)
               ...(waits ? { queue: true, chainAfter: stored[i - 1]!.id } : {}),
             },
@@ -262,10 +244,7 @@ export function SceneVideoSection({
         ? { kind: "error", text: errors.join(" · ") }
         : {
             kind: "ok",
-            text: L(
-              `${started} ${started === 1 ? "video er" : "videoer er"} startet hos ${chosen.provider.name}. De legges inn som nye versjoner når de er ferdige (vanligvis 1–6 minutter) – også om du lukker dialogen.`,
-              `${started} ${started === 1 ? "video has" : "videos have"} started with ${chosen.provider.name}. They are added as new versions when finished (usually 1–6 minutes) – even if you close the dialog.`,
-            ),
+            text: tk("app-assembly-scene-video-section.videos-started", { count: started, provider: chosen.provider.name }),
           },
     );
   }
@@ -284,14 +263,8 @@ export function SceneVideoSection({
       setMsg({
         kind: "error",
         text: fill
-          ? L(
-              "Scenen har ingen 2D-animatic å fylle med. Lag videoer for alle segmentene først.",
-              "The scene has no 2D animatic to fill with. Make videos for all the segments first.",
-            )
-          : L(
-              "Alle segmentene må ha en ferdig video først.",
-              "All the segments must have a finished video first.",
-            ),
+          ? tk("app-assembly-scene-video-section.text.text.94ea72126e20")
+          : tk("app-assembly-scene-video-section.text.text.72ea2c95785a"),
       });
       return;
     }
@@ -316,24 +289,15 @@ export function SceneVideoSection({
         parts,
       },
       fill
-        ? L(
-            "Sett sammen scenen av AI-video og 2D-animatic",
-            "Assemble the scene from AI video and 2D animatic",
-          )
-        : L("Sett sammen scenen av AI-videoene", "Assemble the scene from the AI videos"),
+        ? tk("app-assembly-scene-video-section.e.cmds-run.c01ae128539f")
+        : tk("app-assembly-scene-video-section.e.cmds-run.723a9d6602c3"),
     );
     const extra = [
       r.filledSegments
-        ? L(
-            `${r.filledSegments} segment(er) bruker 2D-animaticen`,
-            `${r.filledSegments} segment(s) use the 2D animatic`,
-          )
+        ? tk("app-assembly-scene-video-section.extra.r-filled-segments-l-r-filled-segments-segment-er-bruker-2d-animaticen-r-filled-segments-segment-s-use-the-2d-animatic-r-padded-segments-l-r-padded-segments-video-er-var-kortere-og-ble-fylt-ut-med-2d-r-padded-segments-video-s-were-shorter-and-were-filled-out-with-2d-filter.910105695fe6", { filledSegments: String(r.filledSegments) })
         : "",
       r.paddedSegments
-        ? L(
-            `${r.paddedSegments} video(er) var kortere og ble fylt ut med 2D`,
-            `${r.paddedSegments} video(s) were shorter and were filled out with 2D`,
-          )
+        ? tk("app-assembly-scene-video-section.extra.r-filled-segments-l-r-filled-segments-segment-er-bruker-2d-animaticen-r-filled-segments-segment-s-use-the-2d-animatic-r-padded-segments-l-r-padded-segments-video-er-var-kortere-og-ble-fylt-ut-med-2d-r-padded-segments-video-s-were-shorter-and-were-filled-out-with-2d-filter.488d76eb9804", { paddedSegments: String(r.paddedSegments) })
         : "",
     ].filter(Boolean);
     setMsg(
@@ -341,10 +305,7 @@ export function SceneVideoSection({
         ? { kind: "error", text: e }
         : {
             kind: "ok",
-            text: L(
-              `Scenen er satt sammen${extra.length ? ` (${extra.join("; ")})` : ""}. Angre for å gå tilbake.`,
-              `The scene has been assembled${extra.length ? ` (${extra.join("; ")})` : ""}. Undo to go back.`,
-            ),
+            text: tk("app-assembly-scene-video-section.text.text.05794d9f51cc", { value1: String(extra.length ? ` (${extra.join("; ")})` : "") }),
           },
     );
   }
@@ -359,10 +320,9 @@ export function SceneVideoSection({
   if (!flat.length)
     return (
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Ingen videoleverandør er koblet til. Prosjektets eier kan koble til en under «AI-leverandører» på prosjektlisten (f.eks. Google Veo, Runway, OpenAI Sora eller fal.ai/Kling).",
-          "No video provider is connected. The project owner can connect one under “AI providers” on the project list (e.g. Google Veo, Runway, OpenAI Sora or fal.ai/Kling).",
-        )}
+
+
+        {tk("app-assembly-scene-video-section.scene-video-section.p.0b3ea60d7e7a")}
       </p>
     );
 
@@ -373,8 +333,9 @@ export function SceneVideoSection({
     >
       <h3 id="video-title" className="flex items-center gap-1.5 text-[13px] font-medium">
         <Clapperboard className="size-4" aria-hidden />{" "}
-        {L("Lag video med AI", "Make video with AI")}
+        {tk("app-assembly-scene-video-section.scene-video-section.h3.f303f4425f6d")}
       </h3>
+      <QualityProfilePicker state={state} value={quality.choice} disabled={busy} onChange={v => { quality.setChoice(v); setPick(""); setConfirm(null); }} /><QualityProfileBudget error={quality.budgetError} />
       <EffortPicker
         capability="video"
         connected={new Set(available.data?.providers ?? [])}
@@ -386,7 +347,7 @@ export function SceneVideoSection({
       />
       <div className="flex flex-wrap items-center gap-2 text-xs text-text-secondary">
         <select
-          aria-label={L("Videomodell", "Video model")}
+          aria-label={tk("app-assembly-scene-video-section.scene-video-section.aria-label.8145170481ce")}
           value={chosen ? `${chosen.provider.id}|${chosen.model.id}` : ""}
           onChange={(e) => setPick(e.target.value)}
           className={ctl}
@@ -405,25 +366,25 @@ export function SceneVideoSection({
           className={ctl}
           disabled={busy}
         >
-          <option value="16:9">{L("16:9 liggende", "16:9 landscape")}</option>
-          <option value="9:16">{L("9:16 stående", "9:16 portrait")}</option>
+          <option value="16:9">{tk("app-assembly-scene-video-section.scene-video-section.option.2a27f7bab3f0")}</option>
+          <option value="9:16">{tk("app-assembly-scene-video-section.scene-video-section.option.98ebb45ac9c8")}</option>
         </select>
         <select
-          aria-label={L("Startbilde", "Start image")}
+          aria-label={tk("app-assembly-scene-video-section.scene-video-section.aria-label.5cb9955fc1ed")}
           value={start ? start.id : "none"}
           onChange={(e) => setStartId(e.target.value)}
           className={ctl + " max-w-64"}
           disabled={busy}
         >
           {needsStart ? null : (
-            <option value="none">{L("Uten startbilde", "No start image")}</option>
+            <option value="none">{tk("app-assembly-scene-video-section.scene-video-section.option.1a0b1d13c4bc")}</option>
           )}
           {starts.map((v) => {
             const va = state.assetVariants[v.variantId];
             const a = va ? state.assets[va.assetId] : undefined;
             return (
               <option key={v.id} value={v.id}>
-                {L("Startbilde", "Start image")}: {a?.name ?? L("bilde", "image")} –{" "}
+                {tk("app-assembly-scene-video-section.scene-video-section.option.5cb9955fc1ed")}: {a?.name ?? tk("app-assembly-scene-video-section.scene-video-section.option.0588f9489fa6")} –{" "}
                 {va?.name ?? ""} v{v.number}
               </option>
             );
@@ -431,9 +392,9 @@ export function SceneVideoSection({
         </select>
       </div>
       <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-        {L("Kandidater per segment", "Candidates per segment")}
+        {tk("app-assembly-scene-video-section.scene-video-section.label.d1e08caf7ee2")}
         <select
-          aria-label={L("Kandidater per segment", "Candidates per segment")}
+          aria-label={tk("app-assembly-scene-video-section.scene-video-section.aria-label.d1e08caf7ee2")}
           value={candidates}
           onChange={(e) => setCandidates(Number(e.target.value))}
           className={ctl}
@@ -447,10 +408,7 @@ export function SceneVideoSection({
         </select>
         <span className="text-text-tertiary">
           {candidates > 1
-            ? L(
-                `– ${candidates} videoer per segment (koster ${candidates} ganger så mye); sammenlign og velg etterpå`,
-                `– ${candidates} videos per segment (costs ${candidates} times as much); compare and choose afterwards`,
-              )
+            ? tk("app-assembly-scene-video-section.candidates-per-segment", { count: candidates })
             : ""}
         </span>
       </label>
@@ -462,27 +420,18 @@ export function SceneVideoSection({
             onChange={(e) => setChain(e.target.checked)}
             disabled={busy}
           />
-          {L(
-            "Sammenheng: start hvert segment fra siste bilde i videoen til segmentet før (de neste venter i køen til videoen før er ferdig og lagt inn)",
-            "Continuity: start each segment from the last frame of the video for the segment before (the next ones wait in the queue until the video before is finished and added)",
-          )}
+          {tk("app-assembly-scene-video-section.scene-video-section.label.ca4e42f48d75")}
         </label>
       ) : null}
       {needsStart && !start ? (
         <p className="flex items-center gap-1 text-xs text-status-uncertain">
           <TriangleAlert className="size-3.5" aria-hidden />{" "}
-          {L(
-            "Denne modellen trenger et startbilde, og scenen har ingen bilder ennå.",
-            "This model needs a start image, and the scene has no images yet.",
-          )}
+          {tk("app-assembly-scene-video-section.scene-video-section.p.0b2e5cbc6d7f")}
         </p>
       ) : null}
       {!ready ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Lagre inndelingen først (over), så kan segmentene genereres.",
-            "Save the division first (above), then the segments can be generated.",
-          )}
+          {tk("app-assembly-scene-video-section.scene-video-section.p.96b35a9e35f1")}
         </p>
       ) : (
         <ol className="flex flex-col gap-1">
@@ -498,27 +447,27 @@ export function SceneVideoSection({
                 className="flex flex-wrap items-center gap-2 text-xs text-text-secondary"
               >
                 <span className="w-24 text-text-primary">
-                  {L("Segment", "Segment")} {i + 1}
+                  {tk("app-assembly-scene-video-section.scene-video-section.span.cffbd5ee5bd9")} {i + 1}
                 </span>
                 <span className="tabular w-16">{seconds(i)} s</span>
                 {job ? (
                   <span className="flex items-center gap-1">
                     <Loader2 className="size-3.5 animate-spin" aria-hidden />{" "}
                     {job.status === "queued"
-                      ? L("I kø", "Queued")
-                      : L(`Lages hos ${job.provider} …`, `Making with ${job.provider} …`)}
+                      ? tk("app-assembly-scene-video-section.scene-video-section.span.2531a9ba81fc")
+                      : tk("app-assembly-scene-video-section.scene-video-section.span.89307867f849", { provider: String(job.provider) })}
                   </span>
                 ) : has ? (
                   <span className="flex items-center gap-1 text-status-success">
                     <CheckCircle2 className="size-3.5" aria-hidden />{" "}
-                    {L("Video ferdig", "Video finished")}
+                    {tk("app-assembly-scene-video-section.scene-video-section.span.3b6ac4165137")}
                   </span>
                 ) : failed ? (
                   <span className="line-clamp-1 text-status-danger" title={failed.error ?? ""}>
-                    {L("Feilet:", "Failed:")} {failed.error ?? L("ukjent", "unknown")}
+                    {tk("app-assembly-scene-video-section.scene-video-section.span.48194c4b1ac7")} {failed.error ?? tk("app-assembly-scene-video-section.scene-video-section.span.82cd5b1cffee")}
                   </span>
                 ) : (
-                  <span className="text-text-tertiary">{L("Ingen video", "No video")}</span>
+                  <span className="text-text-tertiary">{tk("app-assembly-scene-video-section.scene-video-section.span.03d0a4d4b739")}</span>
                 )}
                 {videoAttempts(state, clip.occurrenceId, g.id).length > 0 ? (
                   <Button
@@ -527,8 +476,8 @@ export function SceneVideoSection({
                     onClick={() => setCompare({ segmentId: g.id, title: `segment ${i + 1}` })}
                   >
                     {videoAttempts(state, clip.occurrenceId, g.id).length > 1
-                      ? L("Sammenlign", "Compare")
-                      : L("Kontroller", "Check")}{" "}
+                      ? tk("app-assembly-scene-video-section.scene-video-section.button.ae8ddf68c7a1")
+                      : tk("app-assembly-scene-video-section.scene-video-section.button.584a6aac1bf2")}{" "}
                     ({videoAttempts(state, clip.occurrenceId, g.id).length})
                   </Button>
                 ) : null}
@@ -539,15 +488,12 @@ export function SceneVideoSection({
                   disabled={busy || !!job || !canStart(i)}
                   title={
                     !canStart(i) && chain && i > 0
-                      ? L(
-                          "Venter på videoen til segmentet før (sammenheng)",
-                          "Waiting for the video of the segment before (continuity)",
-                        )
+                      ? tk("app-assembly-scene-video-section.scene-video-section.title.05f85757305f")
                       : undefined
                   }
                   onClick={() => setConfirm([i])}
                 >
-                  <AiGlyph /> {has ? L("Lag ny", "Make new") : L("Generer", "Generate")}
+                  <AiGlyph /> {has ? tk("app-assembly-scene-video-section.scene-video-section.button.a8313378becc") : tk("app-assembly-scene-video-section.scene-video-section.button.cb1c072d1eee")}
                 </Button>
               </li>
             );
@@ -557,20 +503,17 @@ export function SceneVideoSection({
       {confirm ? (
         <div
           role="alertdialog"
-          aria-label={L("Bekreft videogenerering", "Confirm video generation")}
+          aria-label={tk("app-assembly-scene-video-section.scene-video-section.aria-label.a385a74e532e")}
           className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
         >
           <p className="text-xs text-text-primary">
             {confirm.length === 1
               ? `Segment ${confirm[0]! + 1}`
-              : L(`${confirm.length} segmenter`, `${confirm.length} segments`)}{" "}
-            {L("med", "with")} {chosen?.provider.name} – {chosen?.model.label}.{" "}
-            {L(
-              "Belastes leverandørkontoen til prosjektets eier, anslått",
-              "Charged to the provider account of the project owner, estimated at",
-            )}{" "}
+              : tk("app-assembly-scene-video-section.scene-video-section.p.999308eb9c1f", { length: String(confirm.length) })}{" "}
+            {tk("app-assembly-scene-video-section.scene-video-section.p.db4e909de7b9")} {chosen?.provider.name} – {chosen?.model.label}.{" "}
+            {tk("app-assembly-scene-video-section.scene-video-section.p.cb13477a1344")}{" "}
             {formatUsd(cost(confirm))}{" "}
-            {L("(et anslag). Vil du generere nå?", "(an estimate). Do you want to generate now?")}
+            {tk("app-assembly-scene-video-section.scene-video-section.p.790a3010d03d")}
           </p>
           {chosen ? (
             <CostLines
@@ -586,10 +529,10 @@ export function SceneVideoSection({
           <SentPrompts items={confirm.map((i) => ({ label: `Segment ${i + 1}`, ...sent(i) }))} />
           <div className="flex gap-2">
             <Button size="sm" onClick={() => void generate(confirm)} disabled={busy}>
-              <AiGlyph /> {L("Ja, generer", "Yes, generate")}
+              <AiGlyph /> {tk("app-assembly-scene-video-section.scene-video-section.button.af0695a6d86d")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setConfirm(null)}>
-              {L("Avbryt", "Cancel")}
+              {tk("app-assembly-scene-video-section.scene-video-section.button.7fc2d9e2ed90")}
             </Button>
           </div>
         </div>
@@ -603,8 +546,8 @@ export function SceneVideoSection({
           >
             {busy ? <Loader2 className="animate-spin" /> : <AiGlyph />}
             {runningSeg.size
-              ? L("Generer resten", "Generate the rest")
-              : L("Generer alle segmentene", "Generate all the segments")}{" "}
+              ? tk("app-assembly-scene-video-section.scene-video-section.button.84d705ea910b")
+              : tk("app-assembly-scene-video-section.scene-video-section.button.5891dd344663")}{" "}
             (~
             {formatUsd(cost(chainPick()))})
           </Button>
@@ -614,18 +557,12 @@ export function SceneVideoSection({
             disabled={segmentsWithVideo.length !== stored.length}
             title={
               segmentsWithVideo.length === stored.length
-                ? L(
-                    "Bruk videoene etter hverandre som scenen (kan angres)",
-                    "Use the videos one after another as the scene (can be undone)",
-                  )
-                : L(
-                    "Alle segmentene må ha en ferdig video",
-                    "All the segments must have a finished video",
-                  )
+                ? tk("app-assembly-scene-video-section.scene-video-section.title.4b9733db548b")
+                : tk("app-assembly-scene-video-section.scene-video-section.title.82a2efbc3984")
             }
             onClick={() => assemble(false)}
           >
-            {L("Sett sammen scenen av videoene", "Assemble the scene from the videos")} (
+            {tk("app-assembly-scene-video-section.scene-video-section.button.f721d4e49642")} (
             {segmentsWithVideo.length}/{stored.length})
           </Button>
           <label
@@ -633,10 +570,7 @@ export function SceneVideoSection({
             title={
               canSoft
                 ? undefined
-                : L(
-                    "Krever det nyeste databasetillegget (migrasjon 0026)",
-                    "Requires the latest database update (migration 0026)",
-                  )
+                : tk("app-assembly-scene-video-section.scene-video-section.title.e85b3503fe5a")
             }
           >
             <input
@@ -645,22 +579,16 @@ export function SceneVideoSection({
               disabled={!canSoft}
               onChange={(e) => setSoft(e.target.checked)}
             />
-            {L(
-              "Myk overgang mellom videoene (0,5 s)",
-              "Soft transition between the videos (0.5 s)",
-            )}
+            {tk("app-assembly-scene-video-section.scene-video-section.label.c8f4aeff7ad6")}
           </label>
           {segmentsWithVideo.length > 0 ? (
             <Button
               size="sm"
               variant="ghost"
-              title={L(
-                "Segmenter uten video (og resten av for korte videoer) får 2D-animaticen for samme tid",
-                "Segments without video (and the rest of the too-short videos) get the 2D animatic for the same time",
-              )}
+              title={tk("app-assembly-scene-video-section.scene-video-section.title.efb9eed2b87e")}
               onClick={() => assemble(true)}
             >
-              {L("Sett sammen med 2D der video mangler", "Assemble with 2D where video is missing")}
+              {tk("app-assembly-scene-video-section.scene-video-section.button.2f10bbd25e22")}
             </Button>
           ) : null}
         </div>
@@ -668,10 +596,7 @@ export function SceneVideoSection({
       {outdatedAssembly ? (
         <p role="status" className="flex items-center gap-1 text-xs text-status-uncertain">
           <TriangleAlert className="size-3.5" aria-hidden />{" "}
-          {L(
-            "Scenen bruker ikke de valgte videoene lenger (et segment har fått et nytt valg). Sett sammen på nytt for å bruke dem.",
-            "The scene no longer uses the chosen videos (a segment has got a new choice). Assemble again to use them.",
-          )}
+          {tk("app-assembly-scene-video-section.scene-video-section.p.b4c88d4d6738")}
         </p>
       ) : null}
       {msg ? (
@@ -686,11 +611,8 @@ export function SceneVideoSection({
       ) : null}
       {chosen && providerModel(chosen.provider.id, chosen.model.id)?.durations ? (
         <p className="text-[11px] text-text-tertiary">
-          {chosen.model.label} {L("lager", "makes")} {chosen.model.durations!.join(", ")}{" "}
-          {L(
-            "sekunder; hvert segment får nærmeste lengde og klippes til segmentet når scenen settes sammen.",
-            "seconds; each segment gets the nearest length and is cut to the segment when the scene is assembled.",
-          )}
+          {chosen.model.label} {tk("app-assembly-scene-video-section.scene-video-section.p.2a96ad2eef06")} {chosen.model.durations!.join(", ")}{" "}
+          {tk("app-assembly-scene-video-section.scene-video-section.p.3f10efb16e6c")}
         </p>
       ) : null}
       <CompareTakesDialog

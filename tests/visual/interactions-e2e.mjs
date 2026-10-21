@@ -14,6 +14,7 @@
  * Avslutter med kode 1 hvis en kontroll feiler.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 
 const [
@@ -78,7 +79,7 @@ async function mock(ctx) {
       return route.fulfill({ status: 200, contentType: "image/svg+xml", body: svg });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 30 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);

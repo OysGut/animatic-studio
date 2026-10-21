@@ -1,0 +1,34 @@
+import { expect, it, vi } from "vitest";
+import { saveComposition } from "@/app/audio/composition-actions";
+import { fixture } from "../visual/fixture-state";
+import { compositionFromTake, manualAlignment, type Command } from "@/core";
+import { FakeAudioBuffer, decodeWav } from "../helpers/fake-web-audio";
+const h = vi.hoisted(() => ({ upload: vi.fn() }));
+vi.mock("@/app/library/asset-audio", () => ({ uploadAssetAudio: (...args: unknown[]) => h.upload(...args) }));
+it("KI-247/SV1: saving reuses the prepared buffer and persists alignment in the provided undo group", async () => {
+  const state = fixture.state;
+  const version = Object.values(state.assetVersions).find((v) => v.mimeType.startsWith("audio/"));
+  const variant = version ? state.assetVariants[version.variantId] : undefined;
+  if (!version || !variant) throw new Error("Missing fixture audio");
+  const prepared = new FakeAudioBuffer(1, 480, 48000); prepared.getChannelData(0).fill(.25);
+  const composition = compositionFromTake({ versionId: version.id, durationMs: 10 }, () => "part");
+  const alignment = manualAlignment("b", "Hei", "2026-10-19");
+  let uploaded: File | null = null;
+  h.upload.mockImplementation(async (_p: string, _a: string, file: File) => { uploaded = file; return { versionId: "new-version", media: { durationMs: 10 } }; });
+  const calls: { command: Command; group: string | undefined }[] = [];
+  const runAndWait = async (command: Command, _label: string, group?: string) => { calls.push({ command, group }); return { error: null, commandId: "saved" }; };
+  await saveComposition({ runAndWait }, state, state.project.id, variant.assetId, { variantId: variant.id }, composition, new Map(), "", { prepared: prepared as unknown as AudioBuffer, alignment, group: "one-undo" });
+  expect(calls).toHaveLength(1);
+  expect(calls[0]).toMatchObject({ group: "one-undo", command: { type: "AddAssetVersion", alignment, composition } });
+  const file = uploaded as File | null;
+  if (!file) throw new Error("Missing upload");
+  const bytes = await new Promise<ArrayBuffer>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("File read failed"));
+    reader.onload = () => reader.result instanceof ArrayBuffer ? resolve(reader.result) : reject(new Error("Invalid file"));
+    reader.readAsArrayBuffer(file);
+  });
+  const buffer = decodeWav(new Uint8Array(bytes));
+  expect(buffer.duration).toBe(.01);
+  expect(buffer.getChannelData(0)[200]).toBeCloseTo(.25, 4);
+});

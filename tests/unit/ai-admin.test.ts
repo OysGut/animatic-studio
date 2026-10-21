@@ -391,7 +391,7 @@ describe("DEC-0088 – status for bakgrunnsjobben", () => {
     expect(s.warning).toBeNull();
     const late = cronSummary(run, Date.parse(run.at) + 11 * 60_000);
     expect(late.stale).toBe(true);
-    expect(late.warning).toMatch(/Sjekk at appen er publisert og jobben er satt opp i Lovable/);
+    expect(late.warning).toMatch(/Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren/);
     const never = cronSummary(null);
     expect(never.stale).toBe(true);
     expect(never.text).toMatch(/har ikke kjørt ennå/);

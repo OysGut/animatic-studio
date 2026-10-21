@@ -3,22 +3,12 @@
  * automatisk eller ved siden av utvalget. Én AddCanvasNodes og kantkommandoene kjøres som én angregruppe.
  */
 import { useState } from "react";
-import {
-  CANVAS_DEFAULT_H,
-  CANVAS_DEFAULT_W,
-  L,
-  canvasEdgeKindLabel,
-  canvasNodeDefaults,
-  canvasNodeKindLabel,
-  newId,
-  type CanvasNode,
-  type Command,
-  type ProposedCanvas,
-} from "@/core";
+import { CANVAS_DEFAULT_H, CANVAS_DEFAULT_W, canvasEdgeKindLabel, canvasNodeDefaults, canvasNodeKindLabel, newId, type CanvasNode, type Command, type ProposedCanvas } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { runGroup } from "./canvas/run-group";
+import { t } from "@/core/i18n/keyed";
 
 const COLS = 4;
 const GAP = 40;
@@ -52,7 +42,7 @@ export function InterviewNodesPreview({ proposal, cmds, selection, origin, onClo
       if (edges.has(i) && a && b) commands.push({ type: "AddCanvasEdge", edgeId: newId(), fields: { fromNodeId: a as never, toNodeId: b as never, label: e.label, kind: e.kind } });
     });
     setBusy(true); setErr(null);
-    const e = await runGroup(cmds, commands, L("Noder fra intervjuet", "Nodes from the interview"));
+    const e = await runGroup(cmds, commands, t("app-storylab-interview-nodes-preview.e.run-group.2277f5c03bb0"));
     setBusy(false);
     if (e) return setErr(e);
     onAdded(add.map((n) => n.id));
@@ -63,8 +53,8 @@ export function InterviewNodesPreview({ proposal, cmds, selection, origin, onClo
     <Dialog open onOpenChange={(o) => { if (!o) onClose(); }}>
       <DialogContent data-testid="interview-preview" className="max-w-xl">
         <DialogHeader>
-          <DialogTitle>{L("Foreslåtte noder", "Proposed nodes")}</DialogTitle>
-          <DialogDescription>{L("Velg hva som skal legges på canvaset. Ingenting legges inn uten at du velger det.", "Choose what to add to the canvas. Nothing is added unless you choose it.")}</DialogDescription>
+          <DialogTitle>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-title.2af5e73b0f14")}</DialogTitle>
+          <DialogDescription>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.dialog-description.fe503670b8f4")}</DialogDescription>
         </DialogHeader>
         <ul className="max-h-64 space-y-1 overflow-y-auto text-[13px]">
           {proposal.nodes.map((n) => (
@@ -85,14 +75,14 @@ export function InterviewNodesPreview({ proposal, cmds, selection, origin, onClo
           </ul>
         ) : null}
         <fieldset className="flex gap-3 text-[12px]">
-          <legend className="sr-only">{L("Plassering", "Placement")}</legend>
-          <label className="flex items-center gap-1"><input type="radio" name="place" checked={place === "auto"} onChange={() => setPlace("auto")} />{L("Automatisk", "Automatic")}</label>
-          <label className="flex items-center gap-1"><input type="radio" name="place" disabled={!selection.length} checked={place === "selection"} onChange={() => setPlace("selection")} />{L("Ved siden av utvalget", "Next to the selection")}</label>
+          <legend className="sr-only">{t("app-storylab-interview-nodes-preview.interview-nodes-preview.legend.c00435ee2f82")}</legend>
+          <label className="flex items-center gap-1"><input type="radio" name="place" checked={place === "auto"} onChange={() => setPlace("auto")} />{t("app-storylab-interview-nodes-preview.interview-nodes-preview.label.0e787e8d899f")}</label>
+          <label className="flex items-center gap-1"><input type="radio" name="place" disabled={!selection.length} checked={place === "selection"} onChange={() => setPlace("selection")} />{t("app-storylab-interview-nodes-preview.interview-nodes-preview.label.ef92b4500c3f")}</label>
         </fieldset>
         {err ? <p role="alert" className="text-[13px] text-status-danger">{err}</p> : null}
         <DialogFooter>
-          <ToolbarButton onClick={onClose}>{L("Forkast", "Discard")}</ToolbarButton>
-          <ToolbarButton variant="primary" disabled={busy || !nodes.size} data-testid="interview-preview-confirm" onClick={() => void confirm()}>{L(`Legg til ${nodes.size} noder`, `Add ${nodes.size} nodes`)}</ToolbarButton>
+          <ToolbarButton onClick={onClose}>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.toolbar-button.cb52749bae90")}</ToolbarButton>
+          <ToolbarButton variant="primary" disabled={busy || !nodes.size} data-testid="interview-preview-confirm" onClick={() => void confirm()}>{t("app-storylab-interview-nodes-preview.interview-nodes-preview.toolbar-button.a5eceea6c575", { size: String(nodes.size) })}</ToolbarButton>
         </DialogFooter>
       </DialogContent>
     </Dialog>

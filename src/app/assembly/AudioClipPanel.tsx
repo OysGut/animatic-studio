@@ -7,32 +7,9 @@ import { TakesMicButton } from "@/app/audio/AudioTakesDialog";
 import { Link } from "@tanstack/react-router";
 import { AudioWaveform, Library, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  FILM_LANGUAGES,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  isVoiceKind,
-  AUDIO_MAX_MS,
-  AUDIO_TRACK_ORDER,
-  audioClipFieldsOf,
-  audioVersion,
-  blocksOfVariant,
-  formatHeading,
-  versionsOf,
-  variantsOf,
-  type AudioClip,
-  type AudioClipFields,
-  type AudioKind,
-  type ProjectState,
-  sceneNumberOf,
-  L,
-  locale,
-  languageWord,
-  lineInfo,
-  lineLabel,
-} from "@/core";
+import { AUDIO_KIND_LABEL, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, isVoiceKind, AUDIO_MAX_MS, AUDIO_TRACK_ORDER, audioClipFieldsOf, audioVersion, blocksOfVariant, formatHeading, versionsOf, variantsOf, type AudioClip, type AudioClipFields, type AudioKind, type ProjectState, sceneNumberOf, locale, languageWord, lineInfo, lineLabel } from "@/core";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const label = "text-[11px] font-medium uppercase tracking-[0.04em] text-text-tertiary";
 const ctl =
@@ -83,9 +60,9 @@ export function AudioClipPanel({
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3">
       <div className="flex items-baseline gap-2">
-        <span className={label}>{L("Lyd", "Audio")}</span>
+        <span className={label}>{t("app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d")}</span>
         <span className="min-w-0 truncate text-[13px] font-medium text-text-primary">
-          {clip.name || asset?.name || L("Lyd", "Audio")}
+          {clip.name || asset?.name || t("app-assembly-audio-clip-panel.audio-clip-panel.span.18b3b8aca44d.2")}
         </span>
         {/* Mikrofonikonet (DEC-0093): nye takes for replikken eller lydressursen */}
         {editable && cmds ? (
@@ -96,35 +73,32 @@ export function AudioClipPanel({
             cmds={cmds}
             target={
               clip.blockId
-                ? { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId }
+                ? { kind: "line", occurrenceId: clip.occurrenceId, blockId: clip.blockId, clipId: clip.id }
                 : { kind: "sound", assetId: clip.assetId }
             }
             label={
               clip.blockId
                 ? lineLabel(lineInfo(state, clip.occurrenceId, clip.blockId))
-                : L(
-                    `Opptak til «${asset?.name ?? clip.name}»`,
-                    `Recordings for “${asset?.name ?? clip.name}”`,
-                  )
+                : t("app-assembly-audio-clip-panel.audio-clip-panel.label.fab6626c6b62", { value1: String(asset?.name ?? clip.name) })
             }
           />
         ) : null}
       </div>
 
       <Text
-        label={L("Navn", "Name")}
+        label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.62fdc0100db4")}
         value={clip.name}
         disabled={off}
-        onCommit={(name) => onChange(L("Endre navn på lyd", "Rename audio"), { name })}
+        onCommit={(name) => onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.6fcc9002c60b"), { name })}
       />
 
       <div className="grid grid-cols-2 gap-2">
-        <Field label={L("Spor", "Track")}>
+        <Field label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.817d624f8f4b")}>
           <select
             value={clip.kind}
             disabled={off}
             onChange={(e) =>
-              onChange(L("Flytt lyd til annet spor", "Move audio to another track"), {
+              onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.754894fc979b"), {
                 kind: e.target.value as AudioKind,
               })
             }
@@ -137,21 +111,21 @@ export function AudioClipPanel({
             ))}
           </select>
         </Field>
-        <Field label={L("Versjon", "Version")}>
+        <Field label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.5d4d7e9d12cd")}>
           <select
             value={clip.versionId ?? ""}
             disabled={off || versions.length < 2}
             onChange={(e) => {
               const id = e.target.value;
               const hit = versions.find((x) => x.ver.id === id);
-              onChange(L("Bytt lydversjon", "Switch audio version"), {
+              onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.9e31a18ea68f"), {
                 assetVariantId: hit ? (hit.v.id as never) : null,
                 versionId: hit ? (hit.ver.id as never) : null,
               });
             }}
             className={ctl}
           >
-            <option value="">{L("Nyeste / godkjent", "Latest / approved")}</option>
+            <option value="">{t("app-assembly-audio-clip-panel.audio-clip-panel.option.bbdd4be476cf")}</option>
             {versions.map(({ v, ver }) => (
               <option key={ver.id} value={ver.id}>
                 {v.name} v{ver.number}
@@ -161,44 +135,41 @@ export function AudioClipPanel({
         </Field>
       </div>
 
-      <Field label={L("Språk", "Language")}>
+      <Field label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.f8f383421807")}>
         <select
-          aria-label={L("Språk", "Language")}
+          aria-label={t("app-assembly-audio-clip-panel.audio-clip-panel.aria-label.f8f383421807")}
           value={clip.language ?? ""}
           disabled={off}
           onChange={(e) =>
-            onChange(L("Endre språk for lyd", "Change language of audio"), {
+            onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.4d6641a36249"), {
               language: e.target.value || null,
             })
           }
           className={ctl}
-          title={L(
-            "Hvilken språkversjon lyden spilles i. Musikk og effekter er vanligvis felles.",
-            "Which language version the audio plays in. Music and effects are usually shared.",
-          )}
+          title={t("app-assembly-audio-clip-panel.audio-clip-panel.title.234575f8d899")}
         >
           <option value="">
-            {L("Standard", "Default")} (
+            {t("app-assembly-audio-clip-panel.audio-clip-panel.option.a23664d8ed77")} (
             {isVoiceKind(clip.kind)
               ? LANGUAGE_LABEL[MAIN_LANGUAGE]
-              : L("felles for alle språk", "shared across all languages")}
+              : t("app-assembly-audio-clip-panel.audio-clip-panel.option.218dd21c6610")}
             )
           </option>
-          <option value="*">{L("Felles for alle språk", "Shared across all languages")}</option>
+          <option value="*">{t("app-assembly-audio-clip-panel.audio-clip-panel.option.c10db5228315")}</option>
           {FILM_LANGUAGES.map((l) => (
             <option key={l} value={l}>
-              {L("Bare", "Only")} {languageWord(l)}
+              {t("app-assembly-audio-clip-panel.audio-clip-panel.option.5185a176094b")} {languageWord(l)}
             </option>
           ))}
         </select>
       </Field>
 
       <p className="text-xs text-text-tertiary">
-        {L("Fil:", "File:")} {asset?.name ?? L("ukjent", "unknown")}
+        {t("app-assembly-audio-clip-panel.audio-clip-panel.p.7ced37a6aab0")} {asset?.name ?? t("app-assembly-audio-clip-panel.audio-clip-panel.p.0118517e2706")}
         {fileMs
           ? ` · ${(fileMs / 1000).toLocaleString(locale(), { maximumFractionDigits: 1 })} s`
           : ""}
-        {version ? "" : L(" · mangler", " · missing")}
+        {version ? "" : t("app-assembly-audio-clip-panel.audio-clip-panel.p.724f7fe9ea91")}
         <br />
         Scene: {(occ ? sceneNumberOf(state, occ) : null) ?? "–"}{" "}
         {variant ? formatHeading(variant.heading) : ""}
@@ -206,15 +177,15 @@ export function AudioClipPanel({
 
       <div className="grid grid-cols-3 gap-2">
         <Seconds
-          label={L("Start i scenen", "Start in the scene")}
+          label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.6b56e15d6e61")}
           ms={clip.offsetMs}
           min={0}
           max={AUDIO_MAX_MS}
           disabled={off}
-          onCommit={(ms) => onChange(L("Flytt lyd", "Move audio"), { offsetMs: ms })}
+          onCommit={(ms) => onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.f2e17d93b49e"), { offsetMs: ms })}
         />
         <Seconds
-          label={L("Lengde", "Length")}
+          label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.4949c4800357")}
           ms={clip.lengthMs}
           min={1}
           max={
@@ -224,17 +195,17 @@ export function AudioClipPanel({
           }
           disabled={off}
           onCommit={(ms) =>
-            onChange(L("Endre lengde på lyd", "Change length of audio"), { lengthMs: ms })
+            onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.0fd56b62082c"), { lengthMs: ms })
           }
         />
         <Seconds
-          label={L("Start i filen", "Start in the file")}
+          label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.6a52050d9c07")}
           ms={clip.sourceInMs}
           min={0}
           max={fileMs !== null ? Math.max(0, fileMs - 1) : AUDIO_MAX_MS}
           disabled={off}
           onCommit={(ms) =>
-            onChange(L("Kutt starten av lyden", "Trim the start of the audio"), {
+            onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.607a6678cd5b"), {
               sourceInMs: ms,
               lengthMs:
                 fileMs !== null
@@ -251,34 +222,34 @@ export function AudioClipPanel({
       <Gain
         value={clip.gainDb}
         disabled={off}
-        onCommit={(gainDb) => onChange(L("Endre volum", "Change volume"), { gainDb })}
+        onCommit={(gainDb) => onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.708056c9c3a2"), { gainDb })}
       />
 
       <div className="grid grid-cols-2 gap-2">
         <Seconds
-          label={L("Inntoning", "Fade in")}
+          label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.31aaa16b8410")}
           ms={clip.fadeInMs}
           min={0}
           max={600_000}
           disabled={off}
-          onCommit={(ms) => onChange(L("Endre inntoning", "Change fade in"), { fadeInMs: ms })}
+          onCommit={(ms) => onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.d6bbf8ae6b25"), { fadeInMs: ms })}
         />
         <Seconds
-          label={L("Uttoning", "Fade out")}
+          label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.f99d0d312ea8")}
           ms={clip.fadeOutMs}
           min={0}
           max={600_000}
           disabled={off}
-          onCommit={(ms) => onChange(L("Endre uttoning", "Change fade out"), { fadeOutMs: ms })}
+          onCommit={(ms) => onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.6e92837e9731"), { fadeOutMs: ms })}
         />
       </div>
 
-      <Field label={L("Replikk", "Line")}>
+      <Field label={t("app-assembly-audio-clip-panel.audio-clip-panel.label.b8bf29af9ad8")}>
         <select
           value={clip.blockId ?? ""}
           disabled={off || lines.length === 0}
           onChange={(e) =>
-            onChange(L("Koble lyd til replikk", "Link audio to line"), {
+            onChange(t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.3e90b37b01e4"), {
               blockId: (e.target.value || null) as never,
             })
           }
@@ -286,8 +257,8 @@ export function AudioClipPanel({
         >
           <option value="">
             {lines.length
-              ? L("Ingen", "None")
-              : L("Ingen replikker i scenen", "No lines in the scene")}
+              ? t("app-assembly-audio-clip-panel.audio-clip-panel.option.0e50c37b3e5d")
+              : t("app-assembly-audio-clip-panel.audio-clip-panel.option.7435e0c31a92")}
           </option>
           {lines.map((l) => (
             <option key={l.id} value={l.id}>
@@ -304,24 +275,18 @@ export function AudioClipPanel({
           disabled={off}
           onChange={(e) =>
             onChange(
-              e.target.checked ? L("Demp lyd", "Mute audio") : L("Slå på lyd", "Unmute audio"),
+              e.target.checked ? t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.2fdfcaa699e7") : t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.bba6b10a3101"),
               { muted: e.target.checked },
             )
           }
           className="size-3.5 accent-[var(--accent-brand)]"
         />
-        {L(
-          "Dempet (spilles ikke og kommer ikke med i eksporten)",
-          "Muted (not played and not included in the export)",
-        )}
+        {t("app-assembly-audio-clip-panel.audio-clip-panel.label.616485ec8c77")}
       </label>
 
       <label
         className="flex items-center gap-2 text-xs text-text-secondary"
-        title={L(
-          "Starten er festet i denne scenen, men lyden fortsetter inn i de neste scenene",
-          "The start is fixed in this scene, but the audio continues into the next scenes",
-        )}
+        title={t("app-assembly-audio-clip-panel.audio-clip-panel.title.0c9793cbd3c1")}
       >
         <input
           type="checkbox"
@@ -330,35 +295,32 @@ export function AudioClipPanel({
           onChange={(e) =>
             onChange(
               e.target.checked
-                ? L("La lyden løpe videre", "Let the audio run on")
-                : L("Stopp lyden ved scenens slutt", "Stop the audio at the end of the scene"),
+                ? t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.b4e70ca6ac67")
+                : t("app-assembly-audio-clip-panel.audio-clip-panel.on-change.19adbb87ef5e"),
               { continues: e.target.checked },
             )
           }
           className="size-3.5 accent-[var(--accent-warm)]"
         />
         <span>
-          {L("Løper videre over flere scener", "Runs on across several scenes")}
+          {t("app-assembly-audio-clip-panel.audio-clip-panel.span.72f4668ba93c")}
           <span className="block text-[11px] text-text-tertiary">
-            {L(
-              "Ellers stopper lyden ved slutten av scenen",
-              "Otherwise the audio stops at the end of the scene",
-            )}
+            {t("app-assembly-audio-clip-panel.audio-clip-panel.span.e0f73aa1e830")}
           </span>
         </span>
       </label>
 
       <Button size="sm" variant="secondary" className="self-start" onClick={onOpenProfile}>
         <AudioWaveform />
-        {L("Lydprofil, hastighet og masker …", "Audio profile, speed and masks …")}
+        {t("app-assembly-audio-clip-panel.audio-clip-panel.button.672b2bf8e2db")}
         {clip.volumeKeys.length
-          ? L(` (${clip.volumeKeys.length} punkter)`, ` (${clip.volumeKeys.length} points)`)
+          ? t("app-assembly-audio-clip-panel.audio-clip-panel.button.a05605a8b15e", { length: String(clip.volumeKeys.length) })
           : ""}
       </Button>
       {(clip.speed ?? 1) !== 1 ? (
         <p className="text-xs text-text-secondary">
-          {L("Hastighet:", "Speed:")} {Math.round((clip.speed ?? 1) * 100)} %{" "}
-          {L("(endres i lydprofilen)", "(changed in the audio profile)")}
+          {t("app-assembly-audio-clip-panel.audio-clip-panel.p.deb335d71e47")} {Math.round((clip.speed ?? 1) * 100)} %{" "}
+          {t("app-assembly-audio-clip-panel.audio-clip-panel.p.36698fe36a15")}
         </p>
       ) : null}
 
@@ -371,7 +333,7 @@ export function AudioClipPanel({
               search={{ asset: asset.id }}
             >
               <Library />
-              {L("Åpne i biblioteket", "Open in library")}
+              {t("app-assembly-audio-clip-panel.audio-clip-panel.link.82cfbba22b37")}
             </Link>
           </Button>
         ) : null}
@@ -380,13 +342,10 @@ export function AudioClipPanel({
             size="sm"
             variant="ghost"
             onClick={onRemove}
-            title={L(
-              "Fjern lyden fra filmen (Delete). Kan angres.",
-              "Remove the audio from the film (Delete). Can be undone.",
-            )}
+            title={t("app-assembly-audio-clip-panel.audio-clip-panel.title.536acb9390ef")}
           >
             <Trash2 />
-            {L("Fjern fra filmen", "Remove from film")}
+            {t("app-assembly-audio-clip-panel.audio-clip-panel.button.feb6555ed576")}
           </Button>
         ) : null}
       </div>
@@ -416,10 +375,7 @@ function Gain({
   };
   return (
     <Field
-      label={L(
-        `Volum (${v > 0 ? "+" : ""}${v.toLocaleString(locale())} dB)`,
-        `Volume (${v > 0 ? "+" : ""}${v.toLocaleString(locale())} dB)`,
-      )}
+      label={t("app-assembly-audio-clip-panel.gain.label.b9d969d90bfa", { value1: String(v > 0 ? "+" : ""), value2: String(v.toLocaleString(locale())) })}
     >
       <input
         type="range"
@@ -428,13 +384,13 @@ function Gain({
         step={0.5}
         value={v}
         disabled={disabled}
-        aria-label={L("Volum i desibel", "Volume in decibels")}
+        aria-label={t("app-assembly-audio-clip-panel.gain.aria-label.617c9b36b481")}
         onChange={(e) => setDraft(Number(e.target.value))}
         onPointerUp={commit}
         onKeyUp={commit}
         onBlur={commit}
         onDoubleClick={() => onCommit(0)}
-        title={L("Dobbeltklikk for 0 dB", "Double-click for 0 dB")}
+        title={t("app-assembly-audio-clip-panel.gain.title.14a2b1c82862")}
         className="h-1 w-full accent-[var(--accent-brand)]"
       />
     </Field>

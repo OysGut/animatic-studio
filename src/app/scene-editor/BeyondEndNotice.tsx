@@ -5,19 +5,11 @@
  */
 import { AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  MAX_DURATION_SECONDS,
-  framesToSeconds,
-  locale,
-  secondsToFrames,
-  type Command,
-  type Composition,
-  type ProjectState,
-} from "@/core";
+import { MAX_DURATION_SECONDS, framesToSeconds, locale, secondsToFrames, type Command, type Composition, type ProjectState } from "@/core";
 import { Button } from "@/components/ui/button";
 import { beyondEnd } from "./beyond-end";
 import { compositionFieldsOf } from "./timeline-helpers";
+import { t } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -32,6 +24,7 @@ export function BeyondEndNotice({
   onSelectLayer,
   onSelectShot,
   onSeek,
+  onExtend,
 }: {
   state: ProjectState;
   composition: Composition;
@@ -41,6 +34,8 @@ export function BeyondEndNotice({
   onSelectLayer: (id: string) => void;
   onSelectShot: (id: string) => void;
   onSeek: (frame: number) => void;
+  /** B-100: åpne endring av scenevarighet (B-041) med foreslått lengde i stedet for å forlenge direkte. */
+  onExtend?: ((neededFrames: number) => void) | undefined;
 }) {
   const found = useMemo(
     () => beyondEnd(state, composition, durationFrames),
@@ -52,15 +47,15 @@ export function BeyondEndNotice({
   const fps = state.project.fps;
   const sec = (f: number) =>
     `${(Math.round(framesToSeconds(f, fps) * 10) / 10).toLocaleString(locale())} s`;
-  const and = L(" og ", " and ");
+  const and = t("app-scene-editor-beyond-end-notice.and.message.a0667ea2c151");
   const parts: string[] = [];
   if (found.keyframeCount)
     parts.push(
-      s(found.keyframeCount, L("nøkkelbilde", "keyframe"), L("nøkkelbilder", "keyframes")),
+      s(found.keyframeCount, t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.98a2f777b8fc"), t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.16d558dbbee5")),
     );
   if (found.shots.length)
     parts.push(
-      s(found.shots.length, L("kamerautsnitt", "camera shot"), L("kamerautsnitt", "camera shots")),
+      s(found.shots.length, t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.aeca7434adbc"), t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.acb81085b252")),
     );
   const last = Math.max(0, durationFrames - 1);
   const needed = Math.min(found.maxFrame + 1, secondsToFrames(MAX_DURATION_SECONDS, fps));
@@ -73,7 +68,7 @@ export function BeyondEndNotice({
           compositionId: composition.id,
           fields: { ...compositionFieldsOf(composition), durationFrames: needed },
         },
-        L("Forleng scenen", "Extend the scene"),
+        t("app-scene-editor-beyond-end-notice.extend.run.be5a1b7adc89"),
       ),
     );
   }
@@ -87,9 +82,9 @@ export function BeyondEndNotice({
       <div className="flex min-h-6 flex-wrap items-center gap-2">
         <AlertTriangle className="size-3.5 text-status-uncertain" aria-hidden />
         <span>
-          {parts.join(and)} {L("ligger etter scenens slutt", "are past the end of the scene")} (
-          {sec(durationFrames)}) {L("og vises ikke.", "and are not shown.")}{" "}
-          {L("Ingenting er slettet.", "Nothing has been deleted.")}
+          {parts.join(and)} {t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.f6dd4c364f3f")} (
+          {sec(durationFrames)}) {t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.44687372e49e")}{" "}
+          {t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.b087a24c7696")}
         </span>
         <Button
           size="sm"
@@ -98,11 +93,15 @@ export function BeyondEndNotice({
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
-          {open ? L("Skjul liste", "Hide list") : L("Vis og velg …", "Show and choose …")}
+          {open ? t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.d2597bb887f9") : t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.c90e2ec62c85")}
         </Button>
-        {editable ? (
+        {editable && onExtend ? (
+          <Button size="sm" variant="ghost" className="h-6" data-testid="beyond-end-extend" onClick={() => onExtend(needed)}>
+            {t("b100.beyond.extend")}
+          </Button>
+        ) : editable ? (
           <Button size="sm" variant="ghost" className="h-6" onClick={extend}>
-            {L("Forleng scenen til", "Extend the scene to")} {sec(needed)}
+            {t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.3198a54fbb13")} {sec(needed)}
           </Button>
         ) : null}
         {error ? <span className="text-status-danger">{error}</span> : null}
@@ -110,7 +109,7 @@ export function BeyondEndNotice({
       {open ? (
         <ul
           className="mb-1 mt-1 flex flex-col gap-0.5 pl-5"
-          aria-label={L("Etter scenens slutt", "After the end of the scene")}
+          aria-label={t("app-scene-editor-beyond-end-notice.beyond-end-notice.aria-label.cb2a59a3eac2")}
         >
           {found.layers.map((l) => (
             <li key={l.layerId} className="flex items-center gap-2">
@@ -122,11 +121,11 @@ export function BeyondEndNotice({
                   onSeek(last);
                 }}
               >
-                {L(`Lag «${l.name}»`, `Layer “${l.name}”`)}
+                {t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.4a3c5f9e2955", { name: String(l.name) })}
               </button>
               <span className="text-text-tertiary">
-                {s(l.frames.length, L("nøkkelbilde", "keyframe"), L("nøkkelbilder", "keyframes"))}{" "}
-                {L("ved", "at")}{" "}
+                {s(l.frames.length, t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.98a2f777b8fc.2"), t("app-scene-editor-beyond-end-notice.beyond-end-notice.s.16d558dbbee5.2"))}{" "}
+                {t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.c9ddeeca9650")}{" "}
                 {l.frames
                   .slice(0, 4)
                   .map((f) => sec(f))
@@ -145,13 +144,13 @@ export function BeyondEndNotice({
                   onSeek(Math.min(sh.startFrame, last));
                 }}
               >
-                {L(`Kamerautsnitt «${sh.name}»`, `Camera shot “${sh.name}”`)}
+                {t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.a3137824c3e7", { name: String(sh.name) })}
               </button>
               <span className="text-text-tertiary">
                 {sec(sh.startFrame)}–{sec(sh.endFrame)}
                 {sh.entirely
-                  ? L(" (helt etter slutten)", " (entirely after the end)")
-                  : L(" (går forbi slutten)", " (runs past the end)")}
+                  ? t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.d487d1e71169")
+                  : t("app-scene-editor-beyond-end-notice.beyond-end-notice.span.030acac20ee6")}
               </span>
             </li>
           ))}

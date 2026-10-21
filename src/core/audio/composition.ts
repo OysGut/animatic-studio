@@ -9,8 +9,9 @@
  */
 import type { AudioClip, ProjectState } from "../model";
 import { isUuid } from "../ids";
-import { L } from "../i18n";
+
 import { isVoiceKind } from "./index";
+import { t as tk } from "@/core/i18n/keyed";
 
 /**
  * Gjeldende format. Format 1 (bolk C) har bare deler; format 2 (bolk E, DEC-0096) kan i tillegg ha pauseendringer
@@ -59,12 +60,15 @@ export type PauseFill =
   | { readonly kind: "manual" };
 
 /**
- * En endret pause mellom to ord (REQ-0705/0706). `afterWord` er indeksen i ordkoblingen (pausen mellom ordet og
- * det neste). `deltaMs` er hvor mye lengre (eller kortere, negativ) pausen er enn i opptaket.
+ * En endret pause mellom to ord (REQ-0705/0706). `afterWordId` er den permanente ID-en til ordet før pausen
+ * (REQ-0037). `afterWord` er plassen ordet hadde da pausen ble lagret, bare til visning og for eldre pauser
+ * uten ID (de leses som `legacyWordId(afterWord)`, se `pauseWordId`). `deltaMs` er hvor mye lengre (eller
+ * kortere, negativ) pausen er enn i opptaket.
  */
 export interface PauseEdit {
   readonly id: string;
   readonly afterWord: number;
+  readonly afterWordId?: string;
   readonly deltaMs: number;
   readonly fill: PauseFill;
 }
@@ -274,8 +278,8 @@ export function sameComposition(a: AudioComposition, b: AudioComposition): boole
     JSON.stringify([
       sortedSegments(c).map(({ id: _id, role, ...rest }) => ({ ...rest, role: role ?? "speech" })),
       [...(c.pauses ?? [])]
-        .sort((x, y) => x.afterWord - y.afterWord)
-        .map(({ id: _id, ...rest }) => rest),
+        .map(({ id: _id, afterWord, afterWordId, ...rest }) => ({ word: afterWordId ?? `w${afterWord}`, ...rest }))
+        .sort((x, y) => x.word.localeCompare(y.word)),
     ]);
   return key(a) === key(b);
 }
@@ -288,7 +292,7 @@ export function compositionError(
   c: unknown,
   sourceMs: (versionId: string) => number | null,
 ): string | null {
-  const bad = L("Ugyldig lydkomposisjon", "Invalid audio composition");
+  const bad = tk("core-audio-composition.bad.message.b462ed57d183");
   if (!c || typeof c !== "object") return bad;
   const o = c as Record<string, unknown>;
   const format = o["format"];
@@ -296,9 +300,9 @@ export function compositionError(
   const allowed = format === 1 ? ["format", "segments"] : ["format", "pauses", "segments"];
   if (Object.keys(o).some((k) => !allowed.includes(k))) return bad;
   const segs = o["segments"] as unknown[];
-  if (segs.length === 0) return L("Komposisjonen er tom", "The composition is empty");
+  if (segs.length === 0) return tk("core-audio-composition.composition-error.message.ec2a6726b5b5");
   if (segs.length > COMPOSITION_MAX_SEGMENTS)
-    return L("Komposisjonen har for mange deler", "The composition has too many parts");
+    return tk("core-audio-composition.composition-error.message.2be77800c8b5");
   const ids = new Set<string>();
   const int = (v: unknown, lo: number, hi: number) =>
     typeof v === "number" && Number.isInteger(v) && v >= lo && v <= hi;
@@ -317,17 +321,14 @@ export function compositionError(
     if (typeof s["versionId"] !== "string" || !isUuid(s["versionId"])) return bad;
     const src = sourceMs(s["versionId"]);
     if (src === null)
-      return L(
-        "Komposisjonen bruker et opptak som ikke finnes eller ikke kan brukes",
-        "The composition uses a recording that does not exist or cannot be used",
-      );
+      return tk("core-audio-composition.composition-error.message.90eccd158e84");
     if (!int(s["track"], 0, COMPOSITION_TRACKS - 1)) return bad;
     if (!int(s["atMs"], 0, COMPOSITION_MAX_MS) || !int(s["sourceInMs"], 0, COMPOSITION_MAX_MS))
       return bad;
     if (!int(s["lengthMs"], 1, COMPOSITION_MAX_MS)) return bad;
     // Litt slingringsmonn: lengden på et opptak kan avvike noen millisekunder mellom nettlesere
     if ((s["sourceInMs"] as number) + (s["lengthMs"] as number) > src + 50)
-      return L("En del går forbi slutten av opptaket", "A part goes past the end of the recording");
+      return tk("core-audio-composition.composition-error.message.4fddd315733e");
     if (typeof s["gainDb"] !== "number" || !(s["gainDb"] >= -60 && s["gainDb"] <= 12)) return bad;
     if (
       !int(s["fadeInMs"], 0, s["lengthMs"] as number) ||
@@ -335,22 +336,25 @@ export function compositionError(
     )
       return bad;
     if ((s["atMs"] as number) + (s["lengthMs"] as number) > COMPOSITION_MAX_MS)
-      return L(
-        "Komposisjonen er for lang (maks 10 minutter)",
-        "The composition is too long (max 10 minutes)",
-      );
+      return tk("core-audio-composition.composition-error.message.920c764e2326");
   }
   if (o["pauses"] !== undefined) {
     if (!Array.isArray(o["pauses"]) || o["pauses"].length > COMPOSITION_MAX_PAUSES) return bad;
-    const words = new Set<number>();
+    const words = new Set<string>();
     for (const x of o["pauses"] as unknown[]) {
       if (!x || typeof x !== "object") return bad;
       const p = x as Record<string, unknown>;
-      if (Object.keys(p).sort().join(",") !== "afterWord,deltaMs,fill,id") return bad;
+      const keys = Object.keys(p).sort().join(",");
+      if (keys !== "afterWord,deltaMs,fill,id" && keys !== "afterWord,afterWordId,deltaMs,fill,id") return bad;
       if (typeof p["id"] !== "string" || !isUuid(p["id"]) || ids.has(p["id"])) return bad;
       ids.add(p["id"]);
-      if (!int(p["afterWord"], 0, 100_000) || words.has(p["afterWord"] as number)) return bad;
-      words.add(p["afterWord"] as number);
+      if (!int(p["afterWord"], 0, 100_000)) return bad;
+      if (p["afterWordId"] !== undefined && (typeof p["afterWordId"] !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(p["afterWordId"])))
+        return bad;
+      // Én pause per ord: nøkkelen er ordets ID (eldre pauser: ID-en utledet fra plassen)
+      const key = typeof p["afterWordId"] === "string" ? p["afterWordId"] : `w${p["afterWord"] as number}`;
+      if (words.has(key)) return bad;
+      words.add(key);
       if (!int(p["deltaMs"], -PAUSE_MAX_DELTA_MS, PAUSE_MAX_DELTA_MS)) return bad;
       if (pauseFillError(p["fill"], sourceMs)) return bad;
     }
@@ -460,6 +464,6 @@ export function audioExportName(name: string, ext: "wav" | "mp3"): string {
       .replace(/[^\p{L}\p{N} _-]+/gu, " ")
       .replace(/\s+/g, " ")
       .trim()
-      .slice(0, 120) || L("lyd", "audio");
+      .slice(0, 120) || tk("core-audio-composition.base.message.b144ce4b53bb");
   return `${base}.${ext}`;
 }

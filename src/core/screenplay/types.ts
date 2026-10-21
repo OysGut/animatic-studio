@@ -50,6 +50,11 @@ export interface ParsedElement {
 }
 
 export interface ParsedScene {
+  /**
+   * Midlertidig ID gitt én gang ved tolking (REQ-0037, `identifyParsedScenes`). Koblinger i importen peker på
+   * den, aldri på plassen i listen. Lagres ikke.
+   */
+  readonly id?: string;
   /** Scenenummer slik det står i manuset (visning, aldri identitet – INV-02). */
   readonly number: string | null;
   readonly rawHeading: string;

@@ -4,34 +4,10 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  L,
-  TEXT_PREFS_KEY,
-  activeProfileOf,
-  approxTokens,
-  assetNames,
-  blocksOfVariant,
-  canHaveStoryProfile,
-  catalogSettings,
-  chooseTextModel,
-  cleanSpeaker,
-  estimateTextCostUsd,
-  formatHeading,
-  isModelEnabled,
-  isTextPrefs,
-  mainProduction,
-  mainSceneNumbers,
-  nameKey,
-  orderedOccurrences,
-  providerInfo,
-  storyTimes,
-  type Asset,
-  type ProjectState,
-  type TextPrefs,
-  type TextTask,
-} from "@/core";
+import { TEXT_PREFS_KEY, activeProfileOf, approxTokens, assetNames, blocksOfVariant, canHaveStoryProfile, catalogSettings, chooseTextModel, cleanSpeaker, estimateTextCostUsd, formatHeading, isModelEnabled, isTextPrefs, mainProduction, mainSceneNumbers, nameKey, orderedOccurrences, providerInfo, storyTimes, type Asset, type ProjectState, type TextPrefs, type TextTask } from "@/core";
 import { listTextChoices } from "@/adapters/ai/provider-keys.functions";
 import { useUiPref } from "@/app/account/ui-prefs";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Karakterer og dyr (de eneste som kan ha profil), sortert etter navn. */
 export function storyCharacters(s: ProjectState): Asset[] {
@@ -75,9 +51,9 @@ export function scenesByStoryTime(s: ProjectState): StoryScene[] {
 }
 
 export function sceneLabel(s: ProjectState, sceneId: string | null): string {
-  if (!sceneId) return L("Uten tidspunkt", "No point in time");
+  if (!sceneId) return tk("app-storylab-storylab-data.scene-label.message.01d878b5988f");
   return (
-    scenesByStoryTime(s).find((x) => x.sceneId === sceneId)?.label ?? L("Ukjent scene", "Unknown scene")
+    scenesByStoryTime(s).find((x) => x.sceneId === sceneId)?.label ?? tk("app-storylab-storylab-data.scene-label.message.8df54761728a")
   );
 }
 
@@ -113,7 +89,7 @@ export function names(s: ProjectState): Record<string, string> {
 
 /** USD med opptil fire desimaler (små tekstkall). */
 export function usd(n: number): string {
-  if (!Number.isFinite(n)) return L("ukjent beløp", "unknown amount");
+  if (!Number.isFinite(n)) return tk("app-storylab-storylab-data.usd.message.fef5635bbc16");
   return `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
 }
 
@@ -149,7 +125,7 @@ export function useTextEstimate(task: TextTask, inputChars: number, outputTokens
     error: null,
     builtIn,
     label: builtIn
-      ? L("Innebygd AI (inkludert)", "Built-in AI (included)")
+      ? tk("app-storylab-storylab-data.label.label.6c13d1c763ca")
       : `${model?.label ?? r.choice.model} (${info?.name ?? r.choice.provider})`,
     usd: estimateTextCostUsd(r.choice.provider, r.choice.model, Math.ceil(inputChars / 4), outputTokens),
   };

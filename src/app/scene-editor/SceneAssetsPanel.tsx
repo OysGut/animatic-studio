@@ -11,27 +11,15 @@ import { useNavigate } from "@tanstack/react-router";
 import { BookPlus, Check, ListPlus, Plus, X } from "lucide-react";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
 import { memo, useMemo, useState } from "react";
-import {
-  L,
-  ASSET_KIND_LABEL,
-  REASON_LABEL,
-  USAGE_LABEL,
-  assetsInScene,
-  coverVersion,
-  librarySuggestions,
-  pendingPlansFor,
-  sceneContinuityVariant,
-  versionsOf,
-  type AssetVersion,
-  type LibrarySuggestion,
-  type ProjectState,
-} from "@/core";
+import { tm, ASSET_KIND_LABEL, REASON_LABEL, USAGE_LABEL, assetsInScene, coverVersion, librarySuggestions, pendingPlansFor, sceneContinuityVariant, versionsOf, type AssetVersion, type LibrarySuggestion, type ProjectState } from "@/core";
 import { useImageUrls } from "@/app/library/asset-images";
 import { SuggestionsDialog } from "@/app/library/SuggestionsDialog";
 import { useAnalysisRows } from "@/app/library/entity-analysis-store";
 import type { Commands } from "@/app/project/use-commands";
 import { sceneSuggestions } from "./scene-suggestions";
 import { AddElementDialog } from "./AddElementDialog";
+import { useLanguage } from "@/app/i18n/language";
+import { t } from "@/core/i18n/keyed";
 
 /** Datatype for dra-og-slipp fra panelet til lerretet (verdien er ressursens ID). */
 export const ASSET_DRAG_TYPE = "application/x-animatic-asset";
@@ -61,6 +49,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
   /** For «Legg til i biblioteket» (KI-49). Uten den vises navnene uten knapp. */
   cmds?: Commands;
 }) {
+  useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const navigate = useNavigate();
   const analysis = useAnalysisRows(projectId);
   // Elementer som skal inn i scenen fra en annen scene (DEC-0088): gul ramme til de er dratt inn
@@ -124,16 +113,16 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
         taskId,
         occurrenceIds: [occurrenceId],
       },
-      L("Fjern fra listen over det som skal inn", "Remove from the list of what should be added"),
+      t("app-scene-editor-scene-assets-panel.dismiss-plan.cmds-run.b0839a2c65bb"),
     );
   }
 
   return (
     <section
-      aria-label={L("I denne scenen", "In this scene")}
+      aria-label={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.c216e5855e18")}
       className="flex min-h-0 flex-col border-t border-border"
     >
-      <PanelHeader as="h2" title={<>{L("I denne scenen", "In this scene")} ({items.length})</>} />
+      <PanelHeader as="h2" title={<>{t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.c216e5855e18")} ({items.length})</>} />
       {canAdd ? (
         <div className="px-2 pb-1">
           <button
@@ -141,13 +130,10 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
             onClick={() => setAddOpen(true)}
             data-testid="add-element-open"
             className="flex w-full items-center justify-center gap-1.5 rounded-sm border border-dashed border-border-control px-2 py-1 text-xs text-text-secondary hover:border-accent-brand hover:text-text-primary"
-            title={L(
-              "Velg fra biblioteket, eller lag noe nytt som ikke står i manuset",
-              "Choose from the library, or make something new that is not in the script",
-            )}
+            title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.49a0015491c5")}
           >
             <ListPlus className="size-3.5" aria-hidden />
-            {L("Legg til element i scenen …", "Add element to the scene …")}
+            {t("app-scene-editor-scene-assets-panel.scene-assets-panel.button.c6f6d85cd670")}
           </button>
           {addOpen && cmds ? (
             <AddElementDialog
@@ -161,10 +147,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                 onAdd
                   ? onAdd(assetId)
                     ? null
-                    : L(
-                        "Elementet kunne ikke legges inn i scenen.",
-                        "The element could not be added to the scene.",
-                      )
+                    : t("app-scene-editor-scene-assets-panel.scene-assets-panel.on-place.dffcfe73d28e")
                   : null
               }
               onNeedsImage={(assetId) => onOpenImage?.(assetId)}
@@ -174,25 +157,16 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
       ) : null}
       {items.length === 0 ? (
         <p className="px-3 pb-2 text-xs text-text-tertiary">
-          {L(
-            "Ingen ressurser fra biblioteket er funnet i scenen.",
-            "No assets from the library were found in the scene.",
-          )}
+          {t("app-scene-editor-scene-assets-panel.scene-assets-panel.p.75d0195185b5")}
           {missing.length
-            ? L(
-                " Navnene fra manuset under kan legges til i biblioteket.",
-                " The names from the script below can be added to the library.",
-              )
-            : L(
-                " Legg dem til i Ressursbiblioteket (for eksempel med «Forslag fra manuset»).",
-                " Add them in the Asset library (for example with “Suggestions from the script”).",
-              )}
+            ? t("app-scene-editor-scene-assets-panel.scene-assets-panel.p.f120d7837393")
+            : t("app-scene-editor-scene-assets-panel.scene-assets-panel.p.9b456bec51ec")}
         </p>
       ) : (
         <>
           {onAdd && editable ? (
             <p className="px-3 pb-1 text-[11px] text-text-tertiary">
-              {L("Dra inn på lerretet.", "Drag onto the canvas.")}
+              {t("app-scene-editor-scene-assets-panel.scene-assets-panel.p.10f8674dcc1f")}
             </p>
           ) : null}
           <ul className="grid grid-cols-2 gap-1.5 overflow-y-auto px-2 pb-2">
@@ -216,10 +190,13 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     e.dataTransfer.setData(ASSET_DRAG_TYPE, asset.id);
                     e.dataTransfer.effectAllowed = "copy";
                   }}
-                  title={L(
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planlagt fra en annen scene" : USAGE_LABEL[how]}${lookName ? `. Utseende i denne scenen (kontinuitet): ${lookName}` : ""}${inScene ? `. Lagt inn i scenen${inScene > 1 ? ` (${inScene} lag)` : ""}` : ". Ikke lagt inn i scenen ennå"}.\nDobbeltklikk: velg eller generer bilde`,
-                    `${asset.name} – ${ASSET_KIND_LABEL[asset.kind]}, ${how === "planned" ? "planned from another scene" : USAGE_LABEL[how]}${lookName ? `. Look in this scene (continuity): ${lookName}` : ""}${inScene ? `. In the scene${inScene > 1 ? ` (${inScene} layers)` : ""}` : ". Not yet added to the scene"}.\nDouble-click: choose or generate an image`,
-                  )}
+                  title={t("app-scene-editor-scene-assets-panel.asset-tooltip", {
+  name: asset.name,
+  kind: ASSET_KIND_LABEL[asset.kind],
+  usage: how === "planned" ? t("app-scene-editor-scene-assets-panel.asset-tooltip-planned") : USAGE_LABEL[how],
+  look: lookName ? t("app-scene-editor-scene-assets-panel.asset-tooltip-look", { look: lookName }) : "",
+  scene: inScene ? (inScene > 1 ? t("app-scene-editor-scene-assets-panel.asset-tooltip-in-scene-layers", { count: inScene }) : t("app-scene-editor-scene-assets-panel.asset-tooltip-in-scene")) : t("app-scene-editor-scene-assets-panel.asset-tooltip-not-in-scene"),
+})}
                   data-planned={plan ? true : undefined}
                   className={
                     "group relative flex flex-col overflow-hidden rounded-sm border bg-surface-2 " +
@@ -234,25 +211,19 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   {inScene ? (
                     <span
                       className="absolute left-1 top-1 z-[1] inline-flex items-center gap-0.5 rounded-sm bg-accent-brand px-1 text-[11px] font-medium text-accent-fg"
-                      aria-label={L(
-                        `I scenen${inScene > 1 ? `, ${inScene} lag` : ""}`,
-                        `In the scene${inScene > 1 ? `, ${inScene} layers` : ""}`,
-                      )}
+                      aria-label={inScene > 1 ? t("app-scene-editor-scene-assets-panel.in-scene-layers", { count: inScene }) : t("app-scene-editor-scene-assets-panel.in-scene")}
                     >
                       <Check className="size-3" aria-hidden />
-                      {L("I scenen", "In the scene")}
+                      {t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.84081f3271ac")}
                       {inScene > 1 ? ` ×${inScene}` : ""}
                     </span>
                   ) : null}
                   {plan ? (
                     <span
                       className="absolute left-1 top-1 z-[1] rounded-sm bg-accent-warm px-1 text-[11px] font-medium text-accent-fg"
-                      title={L(
-                        `Skal inn i scenen: lagt til fra scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Dra det inn på lerretet.`,
-                        `Should be in the scene: added from scene ${plan.fromNumber ?? "?"} (${new Date(plan.plan.at).toLocaleDateString()}). Drag it onto the canvas.`,
-                      )}
+                      title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.501fbbe5c1d6", { value1: String(plan.fromNumber ?? "?"), value2: String(new Date(plan.plan.at).toLocaleDateString()) })}
                     >
-                      {L("Skal inn", "To add")}
+                      {t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.2e00be8d554d")}
                     </span>
                   ) : null}
                   <div className="flex h-16 items-center justify-center bg-surface-3">
@@ -277,10 +248,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                       })
                     }
                     className="truncate px-1.5 pt-1 text-left text-[12px] text-text-primary hover:text-accent-brand hover:underline"
-                    title={L(
-                      `Åpne «${asset.name}» i biblioteket (bilder og varianter)`,
-                      `Open “${asset.name}” in the library (images and variants)`,
-                    )}
+                    title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.2ba113735f61", { name: String(asset.name) })}
                   >
                     <AssetSymbolIcon
                       state={state}
@@ -291,25 +259,19 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   </button>
                   <span className="truncate px-1.5 pb-1 text-[11px] text-text-tertiary">
                     {lookName ? lookName : ASSET_KIND_LABEL[asset.kind]}
-                    {v ? "" : L(" · uten bilde", " · no image")}
+                    {v ? "" : t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.a8687a2115f9")}
                   </span>
                   {plan ? (
                     <span className="flex items-start gap-1 px-1.5 pb-1 text-[11px] leading-tight text-accent-warm">
                       <span className="min-w-0 flex-1">
-                        {L(
-                          `Skal inn fordi det ble lagt til i scene ${plan.fromNumber ?? "?"}`,
-                          `To be added because it was added in scene ${plan.fromNumber ?? "?"}`,
-                        )}
+                        {t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.c668abfe3087", { value1: String(plan.fromNumber ?? "?") })}
                       </span>
                       {canAdd ? (
                         <button
                           type="button"
                           onClick={() => dismissPlan(asset.id, plan.plan.taskId)}
-                          aria-label={L(
-                            `Skal ikke inn i denne scenen: fjern «${asset.name}» fra listen`,
-                            `Should not be in this scene: remove “${asset.name}” from the list`,
-                          )}
-                          title={L("Skal ikke inn her", "Should not be here")}
+                          aria-label={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.24e20a199d4b", { name: String(asset.name) })}
+                          title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.1e5e305b7c6c")}
                           className="shrink-0 rounded-sm text-text-tertiary hover:text-text-primary"
                         >
                           <X className="size-3" aria-hidden />
@@ -321,11 +283,8 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                     <button
                       type="button"
                       onClick={() => onAdd(asset.id)}
-                      aria-label={L(
-                        `Legg «${asset.name}» inn i scenen`,
-                        `Add “${asset.name}” to the scene`,
-                      )}
-                      title={L("Legg inn i scenen", "Add to the scene")}
+                      aria-label={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.43094da3ff38", { name: String(asset.name) })}
+                      title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.5ed0f640b38d")}
                       className="absolute right-1 top-1 hidden rounded-sm bg-surface-1/90 p-0.5 text-text-secondary hover:text-text-primary focus-visible:flex group-hover:flex [@media(hover:none)]:flex"
                     >
                       <Plus className="size-3.5" aria-hidden />
@@ -341,7 +300,7 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
         <div className="px-2 pb-2" data-testid="scene-missing-assets">
           <div className="flex items-center gap-1 px-1 pb-1">
             <h3 className="min-w-0 flex-1 text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-              {L("Fra manuset, ikke i biblioteket", "From the script, not in the library")} (
+              {t("app-scene-editor-scene-assets-panel.scene-assets-panel.h3.694c49902c4a")} (
               {missing.length})
             </h3>
             {canAdd && missing.length > 1 ? (
@@ -349,12 +308,9 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                 type="button"
                 onClick={() => setAdding(missing)}
                 className="shrink-0 rounded-sm px-1 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-                title={L(
-                  "Gå gjennom alle navnene fra denne scenen",
-                  "Go through all the names from this scene",
-                )}
+                title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.dc7d1cea43de")}
               >
-                {L("Alle …", "All …")}
+                {t("app-scene-editor-scene-assets-panel.scene-assets-panel.button.1ec1737703b3")}
               </button>
             ) : null}
           </div>
@@ -363,10 +319,14 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
               <li
                 key={`${x.reason}|${x.name}`}
                 className="flex flex-col rounded-sm border border-dashed border-border px-1.5 py-0.5"
-                title={L(
-                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (usikker type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Kanskje samme som «${x.possibleMatch.assetName}»` : ""}${x.uncertain ? ". Usikkert forslag" : ""}`,
-                  `${x.name} – ${ASSET_KIND_LABEL[x.kind]}${x.kindUncertain ? " (uncertain type)" : ""}, ${REASON_LABEL[x.reason]}${x.possibleMatch ? `. Possibly the same as “${x.possibleMatch.assetName}”` : ""}${x.uncertain ? ". Uncertain suggestion" : ""}`,
-                )}
+                title={t("app-scene-editor-scene-assets-panel.suggestion-tooltip", {
+  name: x.name,
+  kind: ASSET_KIND_LABEL[x.kind],
+  uncertainKind: x.kindUncertain ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain-kind") : "",
+  reason: REASON_LABEL[x.reason],
+  match: x.possibleMatch ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-match", { name: x.possibleMatch.assetName }) : "",
+  uncertain: x.uncertain ? t("app-scene-editor-scene-assets-panel.suggestion-tooltip-uncertain") : "",
+})}
               >
                 <span
                   className={
@@ -378,26 +338,23 @@ export const SceneAssetsPanel = memo(function SceneAssetsPanel({
                   <span className="text-[11px] text-text-tertiary">
                     {" "}
                     · {ASSET_KIND_LABEL[x.kind]}
-                    {x.possibleMatch ? L(" · mulig treff", " · possible match") : ""}
+                    {x.possibleMatch ? t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.de5c64015780") : ""}
                   </span>
                 </span>
                 <span className="text-[11px] text-text-tertiary">
-                  {x.confidence === "high" ? L("Sikker", "Confident") : x.confidence === "medium" ? L("Trolig", "Likely") : L("Usikker", "Uncertain")}
+                  {x.confidence === "high" ? t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.fd6c14246164") : x.confidence === "medium" ? t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.3b503adb6eba") : t("app-scene-editor-scene-assets-panel.scene-assets-panel.span.17379c38fb01")}
                 </span>
-                {x.evidence ? <p className="break-words text-xs text-text-secondary">{x.evidence}</p> : null}
+                {x.evidence ? <p className="break-words text-xs text-text-secondary">{tm(x.evidence)}</p> : null}
                 {canAdd ? (
                   <button
                     type="button"
                     onClick={() => setAdding([x])}
-                    aria-label={L(
-                      `Legg «${x.name}» til i biblioteket`,
-                      `Add “${x.name}” to the library`,
-                    )}
-                    title={L("Legg til i biblioteket", "Add to the library")}
+                    aria-label={t("app-scene-editor-scene-assets-panel.scene-assets-panel.aria-label.7de2fa32ce9f", { name: String(x.name) })}
+                    title={t("app-scene-editor-scene-assets-panel.scene-assets-panel.title.c66cc4a70eec")}
                     className="inline-flex items-center gap-1 self-start rounded-sm px-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
                   >
                     <BookPlus className="size-3.5" aria-hidden />
-                    {L("Legg til i biblioteket", "Add to the library")}
+                    {t("app-scene-editor-scene-assets-panel.scene-assets-panel.button.c66cc4a70eec")}
                   </button>
                 ) : null}
               </li>

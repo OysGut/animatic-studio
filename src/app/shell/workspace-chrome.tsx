@@ -20,9 +20,10 @@ import {
 import { createPortal, flushSync } from "react-dom";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { L } from "@/core";
+
 import { cn } from "@/lib/utils";
 import { countPrimary, planToolbarOverflow } from "./toolbar-overflow";
+import { t as tk } from "@/core/i18n/keyed";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -123,6 +124,9 @@ export function Toolbar({
     if (typeof ResizeObserver === "undefined") return;
     const ro = new ResizeObserver(measure);
     ro.observe(root);
+    // Groups and fixed items change width without the root resizing (e.g. a language switch without remount),
+    // so they are observed too; otherwise long labels push the toolbar out of the window.
+    for (const el of root.querySelectorAll<HTMLElement>("[data-toolbar-group], [data-toolbar-fixed]")) ro.observe(el);
     return () => ro.disconnect();
   }, [menu, tick]);
 
@@ -144,7 +148,7 @@ export function Toolbar({
           {...rest}
           className={cn(
             "flex min-h-toolbar shrink-0 items-center gap-x-2 border-b border-border bg-surface-2 px-3",
-            menu ? "flex-nowrap overflow-hidden" : "flex-wrap gap-y-0.5",
+            menu ? "relative flex-nowrap overflow-hidden" : "flex-wrap gap-y-0.5",
             className,
           )}
         >
@@ -163,8 +167,9 @@ export function Toolbar({
                 <ToolbarButton
                   variant="icon"
                   data-toolbar-fixed
-                  aria-label={moreLabel ?? L("Mer …", "More …")}
-                  title={moreLabel ?? L("Mer …", "More …")}
+                  data-testid="toolbar-more"
+                  aria-label={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.aria-label.1016500c135a")}
+                  title={moreLabel ?? tk("app-shell-workspace-chrome.toolbar.title.1016500c135a")}
                 >
                   <MoreHorizontal aria-hidden />
                 </ToolbarButton>
@@ -205,14 +210,21 @@ export function ToolbarGroup({
   const id = useId();
   const register = ctx?.register;
   useIsoLayoutEffect(() => (register ? register(id, priority) : undefined), [id, priority, !!register]);
+  const inMenu = !!(ctx && ctx.hidden.has(id) && ctx.target);
+  // R7: i «Mer …» brytes gruppen over flere rader, ellers havner knapper utenfor skjermen (smal popover).
   const node = (
     <div
       {...rest}
       data-toolbar-group={ctx ? id : undefined}
-      className={cn("flex h-toolbar shrink-0 items-center gap-toolbar-gap", className)}
+      className={cn(
+        inMenu
+          ? "flex min-h-toolbar max-w-full flex-wrap items-center gap-toolbar-gap"
+          : "flex h-toolbar shrink-0 items-center gap-toolbar-gap",
+        className,
+      )}
     />
   );
-  if (ctx && ctx.hidden.has(id) && ctx.target) return createPortal(node, ctx.target);
+  if (inMenu) return createPortal(node, ctx!.target!);
   return node;
 }
 

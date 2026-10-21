@@ -1,0 +1,22 @@
+import { act, renderHook } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { vi, it, expect } from 'vitest';
+import type { ReactNode } from 'react';
+import { useUiPref } from '@/app/account/ui-prefs';
+import { isAiJobsReadPrefs, markJobsRead, markAllJobsRead, unreadFailedJobs, type AiJobsReadPrefs } from '@/core/generation/read-status';
+vi.mock('@/adapters/browser/account', () => ({saveUiPrefs: vi.fn(async()=>undefined)}));
+vi.mock('@/app/account/use-account', () => ({MY_ACCOUNT_KEY:['ui-pref-test'],useMyAccount:()=>({data:{uiPrefs:{}}})}));
+it('enkeltmerking fulgt av alle lest synkroniseres mellom begge monterte visninger',()=>{
+  const client=new QueryClient();
+  const wrapper=({children}:{children:ReactNode})=><QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  const first=renderHook(()=>useUiPref<AiJobsReadPrefs>('aiJobsRead',{},isAiJobsReadPrefs),{wrapper});
+  const second=renderHook(()=>useUiPref<AiJobsReadPrefs>('aiJobsRead',{},isAiJobsReadPrefs),{wrapper});
+  const jobs=[{id:'one',status:'failed',createdAt:'2026-10-21T10:00:00Z',finishedAt:'2026-10-21T10:01:00Z'},{id:'two',status:'lost',createdAt:'2026-10-21T10:00:00Z',finishedAt:'2026-10-21T10:02:00Z'}];
+  act(()=>first.result.current[1](markJobsRead({},['one'])));
+  expect(unreadFailedJobs(jobs,second.result.current[0]).map(j=>j.id)).toEqual(['two']);
+  act(()=>second.result.current[1](markJobsRead(second.result.current[0],['two'])));
+  act(()=>first.result.current[1](markAllJobsRead('2026-10-21T10:03:00Z')));
+  expect(unreadFailedJobs(jobs,second.result.current[0])).toEqual([]);
+  expect(second.result.current[0].readIds).toEqual([]);
+  first.unmount();second.unmount();
+});

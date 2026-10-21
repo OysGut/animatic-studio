@@ -6,10 +6,11 @@
  * Forslagene lagres ikke før de godkjennes; et avvist forslag lagres som «dismissed» og foreslås ikke igjen.
  */
 import type { Asset, AssetRelation, ProjectState, RelationKind } from "../model";
-import { localized } from "../i18n";
+
 import { blocksOfVariant, orderedOccurrences } from "../views";
 import { allAssetUsage, assetNames, nameKey } from "../library";
 import { characterName, mentions } from "../screenplay/filter";
+import { tLocalized } from "@/core/i18n/keyed";
 
 export const RELATION_LABEL: Record<RelationKind, string> = {
   family: "Familie",
@@ -23,16 +24,7 @@ export const RELATION_LABEL: Record<RelationKind, string> = {
 };
 
 /** Navn på relasjonstypen i det språket brukeren har valgt (visning i appen). */
-export const RELATION_NAME: Record<RelationKind, string> = localized({
-  family: ["Familie", "Family"],
-  friendship: ["Vennskap", "Friendship"],
-  conflict: ["Konflikt", "Conflict"],
-  care: ["Omsorg", "Care"],
-  romance: ["Romantikk", "Romance"],
-  mentor: ["Mentor", "Mentor"],
-  hidden: ["Skjult forbindelse", "Hidden connection"],
-  other: ["Annen", "Other"],
-});
+export const RELATION_NAME: Record<RelationKind, string> = tLocalized({ family: "core-presentation-relations.relation-name.family.f255082f3e75", friendship: "core-presentation-relations.relation-name.friendship.fa09f3a467bb", conflict: "core-presentation-relations.relation-name.conflict.af8efcc91dc4", care: "core-presentation-relations.relation-name.care.02ba5a5d5572", romance: "core-presentation-relations.relation-name.romance.430df5ad42ed", mentor: "core-presentation-relations.relation-name.mentor.c0eae1dc0711", hidden: "core-presentation-relations.relation-name.hidden.b8a2c8a2b5fe", other: "core-presentation-relations.relation-name.other.fba6f9802500" });
 
 export const RELATION_LABEL_EN: Record<RelationKind, string> = {
   family: "Family",

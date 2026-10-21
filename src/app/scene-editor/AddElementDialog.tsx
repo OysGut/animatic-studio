@@ -6,20 +6,7 @@
  */
 import { useMemo, useState } from "react";
 import { Check, Search } from "lucide-react";
-import {
-  ASSET_KIND_LABEL,
-  L,
-  coverVersion,
-  formatHeading,
-  newId,
-  orderedOccurrences,
-  planNoteText,
-  sceneChoices,
-  sceneNumberOf,
-  sortedAssets,
-  type AssetKind,
-  type ProjectState,
-} from "@/core";
+import { ASSET_KIND_LABEL, coverVersion, formatHeading, newId, orderedOccurrences, planNoteText, sceneChoices, sceneNumberOf, sortedAssets, type AssetKind, type ProjectState } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
 import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
@@ -33,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 const KINDS: AssetKind[] = ["object", "character", "animal", "location", "environment", "other"];
 const field =
@@ -142,7 +130,7 @@ export function AddElementDialog({
           },
         ],
       },
-      L(`Nytt element «${n}»`, `New element “${n}”`),
+      tk("app-scene-editor-add-element-dialog.err.cmds-run.ad9d4f5ccd6b", { n: String(n) }),
     );
     if (err) return setError(err);
     // Setteren over gir ny tilstand først ved neste tegning; laget legges inn med samme ID
@@ -165,10 +153,7 @@ export function AddElementDialog({
     const ids = scenes.filter((o) => selected.has(o.id)).map((o) => o.id);
     const taskId = newId();
     const group = newId();
-    const label = L(
-      `«${asset?.name ?? ""}» skal inn i ${ids.length} scener`,
-      `“${asset?.name ?? ""}” should be in ${ids.length} scenes`,
-    );
+    const label = tk("app-scene-editor-add-element-dialog.should-be-in", { name: asset?.name ?? "", count: ids.length });
     let err = cmds.run(
       {
         type: "PlanAssetInScenes",
@@ -218,13 +203,10 @@ export function AddElementDialog({
           <>
             <DialogHeader>
               <DialogTitle>
-                {L("Legg til element i scenen", "Add element to the scene")}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.dialog-title.21e41779eba7")}
               </DialogTitle>
               <DialogDescription>
-                {L(
-                  "Velg fritt i biblioteket, eller lag en helt ny ting som ikke står i manuset.",
-                  "Choose freely from the library, or make something completely new that is not in the script.",
-                )}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.dialog-description.e0266ac2c131")}
               </DialogDescription>
             </DialogHeader>
             <div role="tablist" className="flex gap-1">
@@ -243,8 +225,8 @@ export function AddElementDialog({
                   }
                 >
                   {t === "library"
-                    ? L("Fra biblioteket", "From the library")
-                    : L("Lag ny", "Make new")}
+                    ? tk("app-scene-editor-add-element-dialog.add-element-dialog.button.7845792738d4")
+                    : tk("app-scene-editor-add-element-dialog.add-element-dialog.button.715202aa3c5f")}
                 </button>
               ))}
             </div>
@@ -256,8 +238,8 @@ export function AddElementDialog({
                     autoFocus
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder={L("Søk i biblioteket", "Search the library")}
-                    aria-label={L("Søk i biblioteket", "Search the library")}
+                    placeholder={tk("app-scene-editor-add-element-dialog.add-element-dialog.placeholder.28565d5f0cb2")}
+                    aria-label={tk("app-scene-editor-add-element-dialog.add-element-dialog.aria-label.28565d5f0cb2")}
                     className="h-8 flex-1 bg-transparent text-[13px] text-text-primary outline-none"
                   />
                 </label>
@@ -293,26 +275,26 @@ export function AddElementDialog({
                 </ul>
                 {!covers.length ? (
                   <p className="text-xs text-text-tertiary">
-                    {L("Ingenting i biblioteket passer.", "Nothing in the library matches.")}
+                    {tk("app-scene-editor-add-element-dialog.add-element-dialog.p.3556924e9db7")}
                   </p>
                 ) : null}
               </div>
             ) : (
               <div className="flex flex-col gap-2">
                 <label className="flex flex-col gap-1 text-xs text-text-secondary">
-                  {L("Navn", "Name")}
+                  {tk("app-scene-editor-add-element-dialog.add-element-dialog.label.b7df704af6a3")}
                   <input
                     autoFocus
                     value={name}
                     maxLength={200}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={L("f.eks. Teddybjørn", "e.g. Teddy bear")}
+                    placeholder={tk("app-scene-editor-add-element-dialog.add-element-dialog.placeholder.f11f9ccc04ea")}
                     className={field}
                     data-testid="add-element-name"
                   />
                 </label>
                 <label className="flex flex-col gap-1 text-xs text-text-secondary">
-                  {L("Type", "Type")}
+                  {tk("app-scene-editor-add-element-dialog.add-element-dialog.label.844b59ee8d8d")}
                   <select
                     value={kind}
                     onChange={(e) => setKind(e.target.value as AssetKind)}
@@ -326,10 +308,7 @@ export function AddElementDialog({
                   </select>
                 </label>
                 <p className="text-[11px] text-text-tertiary">
-                  {L(
-                    "Elementet legges i biblioteket og i scenen. Etterpå kan du laste opp et bilde eller lage det med AI.",
-                    "The element is added to the library and the scene. Afterwards you can upload an image or make one with AI.",
-                  )}
+                  {tk("app-scene-editor-add-element-dialog.add-element-dialog.p.2bfdeb81ee6f")}
                 </p>
                 <Button
                   size="sm"
@@ -338,7 +317,7 @@ export function AddElementDialog({
                   onClick={createNew}
                   data-testid="add-element-create"
                 >
-                  {L("Lag og legg i scenen", "Create and add to the scene")}
+                  {tk("app-scene-editor-add-element-dialog.add-element-dialog.button.324952ab3d21")}
                 </Button>
               </div>
             )}
@@ -347,24 +326,15 @@ export function AddElementDialog({
           <>
             <DialogHeader>
               <DialogTitle>
-                {L(
-                  `Skal «${asset?.name ?? ""}» også inn i andre scener?`,
-                  `Should “${asset?.name ?? ""}” also be in other scenes?`,
-                )}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.dialog-title.805e7b3aafaa", { value1: String(asset?.name ?? "") })}
               </DialogTitle>
               <DialogDescription>
-                {L(
-                  "Elementet er lagt inn i denne scenen. I scenene du velger, vises det med gul ramme i «I denne scenen» til du har dratt det inn på lerretet.",
-                  "The element has been added to this scene. In the scenes you choose, it is shown with a yellow frame in “In this scene” until you have dragged it onto the canvas.",
-                )}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.dialog-description.f350a4599790")}
               </DialogDescription>
             </DialogHeader>
             {!plansReady ? (
               <p className="text-xs text-status-uncertain">
-                {L(
-                  "Databasen må oppdateres (migrasjon 0034) før elementet kan planlegges i flere scener.",
-                  "The database must be updated (migration 0034) before the element can be planned in several scenes.",
-                )}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.p.2008d92f1b3d")}
               </p>
             ) : (
               <>
@@ -421,10 +391,7 @@ export function AddElementDialog({
                     onChange={(e) => setWithNote(e.target.checked)}
                     data-testid="add-element-note"
                   />
-                  {L(
-                    "Legg en merknad i manuset i disse scenene",
-                    "Put a note in the script in these scenes",
-                  )}
+                  {tk("app-scene-editor-add-element-dialog.add-element-dialog.label.a247b7645252")}
                 </label>
                 {withNote ? (
                   <textarea
@@ -432,7 +399,7 @@ export function AddElementDialog({
                     rows={3}
                     maxLength={2000}
                     onChange={(e) => setNote(e.target.value)}
-                    aria-label={L("Merknaden", "The note")}
+                    aria-label={tk("app-scene-editor-add-element-dialog.add-element-dialog.aria-label.a5a88d65524a")}
                     className="rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 text-xs text-text-primary"
                   />
                 ) : null}
@@ -441,7 +408,7 @@ export function AddElementDialog({
             {error ? <p className="text-xs text-status-danger">{error}</p> : null}
             <DialogFooter className="gap-2">
               <Button variant="ghost" size="sm" onClick={close}>
-                {L("Bare denne scenen", "Only this scene")}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.button.1aa321bb9f11")}
               </Button>
               <Button
                 size="sm"
@@ -449,7 +416,7 @@ export function AddElementDialog({
                 onClick={plan}
                 data-testid="add-element-plan"
               >
-                {L(`Legg til i ${selected.size} scener`, `Add to ${selected.size} scenes`)}
+                {tk("app-scene-editor-add-element-dialog.add-element-dialog.button.ac3336f2b0d6", { size: String(selected.size) })}
               </Button>
             </DialogFooter>
           </>

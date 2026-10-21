@@ -55,3 +55,21 @@ export function resizeAnimationWindow(from: number, span: number, delta: number,
   }
   return clampAnimationWindow(from, Math.max(1, Math.min(duration - from, Math.round(span + delta))), duration);
 }
+
+/**
+ * B-100: when the scene length changes (RetimeScene, rhythm tool), a window that
+ * covered the whole scene keeps covering it; other windows are only clamped.
+ */
+export function followWindowLength(view: { from: number; span: number }, prevDuration: number, nextDuration: number) {
+  if (view.from <= 0 && view.span >= prevDuration) return { from: 0, span: Math.max(1, nextDuration) };
+  return clampAnimationWindow(view.from, view.span, nextDuration);
+}
+
+/** B-100: a play range that ran to the old end follows the new end; null stays null. */
+export function followRangeLength(range: { from: number; to: number } | null, prevDuration: number, nextDuration: number) {
+  if (!range) return null;
+  const last = Math.max(0, nextDuration - 1);
+  const to = range.to >= prevDuration - 1 ? last : Math.min(range.to, last);
+  const from = Math.min(range.from, to);
+  return from === 0 && to === last ? null : { from, to };
+}

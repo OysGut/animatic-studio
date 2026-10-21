@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as InvitasjonRouteImport } from './routes/invitasjon'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as PersonvernRouteImport } from './routes/personvern'
+import { Route as TilbakestillPassordRouteImport } from './routes/tilbakestill-passord'
 import { Route as GruppeWorkspaceIdRouteImport } from './routes/gruppe.$workspaceId'
 import { Route as MTokenRouteImport } from './routes/m.$token'
 import { Route as ManusutforskerProjectIdRouteImport } from './routes/manusutforsker.$projectId'
@@ -23,6 +24,7 @@ import { Route as ProsjektProjectIdIndexRouteImport } from './routes/prosjekt.$p
 import { Route as ProsjektProjectIdBibliotekRouteImport } from './routes/prosjekt.$projectId.bibliotek'
 import { Route as ProsjektProjectIdManusRouteImport } from './routes/prosjekt.$projectId.manus'
 import { Route as ProsjektProjectIdMonteringRouteImport } from './routes/prosjekt.$projectId.montering'
+import { Route as ProsjektProjectIdRiggRouteImport } from './routes/prosjekt.$projectId.rigg'
 import { Route as ProsjektProjectIdSceneRouteImport } from './routes/prosjekt.$projectId.scene'
 import { Route as ProsjektProjectIdStorylabRouteImport } from './routes/prosjekt.$projectId.storylab'
 import { Route as ProsjektProjectIdUtgivelseRouteImport } from './routes/prosjekt.$projectId.utgivelse'
@@ -51,6 +53,11 @@ const KontoRoute = KontoRouteImport.update({
 const PersonvernRoute = PersonvernRouteImport.update({
   id: '/personvern',
   path: '/personvern',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TilbakestillPassordRoute = TilbakestillPassordRouteImport.update({
+  id: '/tilbakestill-passord',
+  path: '/tilbakestill-passord',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GruppeWorkspaceIdRoute = GruppeWorkspaceIdRouteImport.update({
@@ -100,6 +107,11 @@ const ProsjektProjectIdMonteringRoute =
     path: '/montering',
     getParentRoute: () => ProsjektProjectIdRoute,
   } as any)
+const ProsjektProjectIdRiggRoute = ProsjektProjectIdRiggRouteImport.update({
+  id: '/rigg',
+  path: '/rigg',
+  getParentRoute: () => ProsjektProjectIdRoute,
+} as any)
 const ProsjektProjectIdSceneRoute = ProsjektProjectIdSceneRouteImport.update({
   id: '/scene',
   path: '/scene',
@@ -129,6 +141,7 @@ export interface FileRoutesByFullPath {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
@@ -137,6 +150,7 @@ export interface FileRoutesByFullPath {
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
+  '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
@@ -149,6 +163,7 @@ export interface FileRoutesByTo {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
@@ -156,6 +171,7 @@ export interface FileRoutesByTo {
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
+  '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
@@ -169,6 +185,7 @@ export interface FileRoutesById {
   '/invitasjon': typeof InvitasjonRoute
   '/konto': typeof KontoRoute
   '/personvern': typeof PersonvernRoute
+  '/tilbakestill-passord': typeof TilbakestillPassordRoute
   '/gruppe/$workspaceId': typeof GruppeWorkspaceIdRoute
   '/m/$token': typeof MTokenRoute
   '/manusutforsker/$projectId': typeof ManusutforskerProjectIdRoute
@@ -177,6 +194,7 @@ export interface FileRoutesById {
   '/prosjekt/$projectId/bibliotek': typeof ProsjektProjectIdBibliotekRoute
   '/prosjekt/$projectId/manus': typeof ProsjektProjectIdManusRoute
   '/prosjekt/$projectId/montering': typeof ProsjektProjectIdMonteringRoute
+  '/prosjekt/$projectId/rigg': typeof ProsjektProjectIdRiggRoute
   '/prosjekt/$projectId/scene': typeof ProsjektProjectIdSceneRoute
   '/prosjekt/$projectId/storylab': typeof ProsjektProjectIdStorylabRoute
   '/prosjekt/$projectId/utgivelse': typeof ProsjektProjectIdUtgivelseRoute
@@ -191,6 +209,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
@@ -199,6 +218,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
+    | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
@@ -211,6 +231,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
@@ -218,6 +239,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
+    | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
@@ -230,6 +252,7 @@ export interface FileRouteTypes {
     | '/invitasjon'
     | '/konto'
     | '/personvern'
+    | '/tilbakestill-passord'
     | '/gruppe/$workspaceId'
     | '/m/$token'
     | '/manusutforsker/$projectId'
@@ -238,6 +261,7 @@ export interface FileRouteTypes {
     | '/prosjekt/$projectId/bibliotek'
     | '/prosjekt/$projectId/manus'
     | '/prosjekt/$projectId/montering'
+    | '/prosjekt/$projectId/rigg'
     | '/prosjekt/$projectId/scene'
     | '/prosjekt/$projectId/storylab'
     | '/prosjekt/$projectId/utgivelse'
@@ -251,6 +275,7 @@ export interface RootRouteChildren {
   InvitasjonRoute: typeof InvitasjonRoute
   KontoRoute: typeof KontoRoute
   PersonvernRoute: typeof PersonvernRoute
+  TilbakestillPassordRoute: typeof TilbakestillPassordRoute
   GruppeWorkspaceIdRoute: typeof GruppeWorkspaceIdRoute
   MTokenRoute: typeof MTokenRoute
   ManusutforskerProjectIdRoute: typeof ManusutforskerProjectIdRoute
@@ -294,6 +319,13 @@ declare module '@tanstack/react-router' {
       path: '/personvern'
       fullPath: '/personvern'
       preLoaderRoute: typeof PersonvernRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tilbakestill-passord': {
+      id: '/tilbakestill-passord'
+      path: '/tilbakestill-passord'
+      fullPath: '/tilbakestill-passord'
+      preLoaderRoute: typeof TilbakestillPassordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gruppe/$workspaceId': {
@@ -359,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProsjektProjectIdMonteringRouteImport
       parentRoute: typeof ProsjektProjectIdRoute
     }
+    '/prosjekt/$projectId/rigg': {
+      id: '/prosjekt/$projectId/rigg'
+      path: '/rigg'
+      fullPath: '/prosjekt/$projectId/rigg'
+      preLoaderRoute: typeof ProsjektProjectIdRiggRouteImport
+      parentRoute: typeof ProsjektProjectIdRoute
+    }
     '/prosjekt/$projectId/scene': {
       id: '/prosjekt/$projectId/scene'
       path: '/scene'
@@ -394,6 +433,7 @@ interface ProsjektProjectIdRouteChildren {
   ProsjektProjectIdBibliotekRoute: typeof ProsjektProjectIdBibliotekRoute
   ProsjektProjectIdManusRoute: typeof ProsjektProjectIdManusRoute
   ProsjektProjectIdMonteringRoute: typeof ProsjektProjectIdMonteringRoute
+  ProsjektProjectIdRiggRoute: typeof ProsjektProjectIdRiggRoute
   ProsjektProjectIdSceneRoute: typeof ProsjektProjectIdSceneRoute
   ProsjektProjectIdStorylabRoute: typeof ProsjektProjectIdStorylabRoute
   ProsjektProjectIdUtgivelseRoute: typeof ProsjektProjectIdUtgivelseRoute
@@ -404,6 +444,7 @@ const ProsjektProjectIdRouteChildren: ProsjektProjectIdRouteChildren = {
   ProsjektProjectIdBibliotekRoute: ProsjektProjectIdBibliotekRoute,
   ProsjektProjectIdManusRoute: ProsjektProjectIdManusRoute,
   ProsjektProjectIdMonteringRoute: ProsjektProjectIdMonteringRoute,
+  ProsjektProjectIdRiggRoute: ProsjektProjectIdRiggRoute,
   ProsjektProjectIdSceneRoute: ProsjektProjectIdSceneRoute,
   ProsjektProjectIdStorylabRoute: ProsjektProjectIdStorylabRoute,
   ProsjektProjectIdUtgivelseRoute: ProsjektProjectIdUtgivelseRoute,
@@ -419,6 +460,7 @@ const rootRouteChildren: RootRouteChildren = {
   InvitasjonRoute: InvitasjonRoute,
   KontoRoute: KontoRoute,
   PersonvernRoute: PersonvernRoute,
+  TilbakestillPassordRoute: TilbakestillPassordRoute,
   GruppeWorkspaceIdRoute: GruppeWorkspaceIdRoute,
   MTokenRoute: MTokenRoute,
   ManusutforskerProjectIdRoute: ManusutforskerProjectIdRoute,

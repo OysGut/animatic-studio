@@ -7,9 +7,10 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { L, isUuid } from "@/core";
+import { isUuid } from "@/core";
 import type { AnyClient } from "@/adapters/storage/project-rows";
 import { BAN_FOREVER, DELETE_AFTER_DAYS, type AuthAdmin, type AuthUser } from "./account.functions";
+import { t } from "@/core/i18n/keyed";
 
 async function service(): Promise<AnyClient> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -36,7 +37,7 @@ async function isAdmin(db: AnyClient, userId: string, email: string): Promise<bo
   return !error && !!data;
 }
 
-const NOT_ADMIN = () => L("Bare for administrator.", "Administrators only.");
+const NOT_ADMIN = () => t("adapters-account-admin-functions.not-admin.message.881bfe44c0cf");
 
 async function allAuthUsers(db: AnyClient): Promise<AuthUser[]> {
   const out: AuthUser[] = [];
@@ -66,7 +67,7 @@ export async function anonymizeAccount(db: AnyClient, userId: string): Promise<v
   });
   await db
     .from("profiles")
-    .update({ display_name: "", locale: null } as never)
+    .update({ display_name: "", locale: null, country: null } as never)
     .eq("user_id", userId);
   await db.from("ai_provider_keys").delete().eq("user_id", userId);
   await db.from("ai_account_limits").delete().eq("user_id", userId);
@@ -150,10 +151,7 @@ export const fetchAdminOverview = createServerFn({ method: "POST" })
     if (schemaErr)
       return {
         ok: false,
-        message: L(
-          "Databasen må oppdateres (migrasjon 0033) før adminsiden kan brukes.",
-          "The database must be updated (migration 0033) before the admin page can be used.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.cd2464c17c1b"),
         ...empty,
       };
     const purged = await purgeDueAccounts(db);
@@ -271,10 +269,10 @@ type Result = { ok: boolean; message: string };
 const userAction = (d: unknown) => {
   const x = (d ?? {}) as Record<string, unknown>;
   if (typeof x["userId"] !== "string" || !isUuid(x["userId"]))
-    throw new Error(L("Ugyldig bruker", "Invalid user"));
+    throw new Error(t("adapters-account-admin-functions.user-action.message.0ca77b8685de"));
   const action = x["action"];
   if (action !== "block" && action !== "unblock" && action !== "delete" && action !== "unlock")
-    throw new Error(L("Ukjent handling", "Unknown action"));
+    throw new Error(t("adapters-account-admin-functions.user-action.message.d8455c9ded87"));
   const reason = typeof x["reason"] === "string" ? x["reason"].slice(0, 500) : "";
   return { userId: x["userId"], action, reason } as const;
 };
@@ -289,10 +287,7 @@ export const adminSetUserStatus = createServerFn({ method: "POST" })
     if ((data.action === "block" || data.action === "delete") && data.userId === context.userId)
       return {
         ok: false,
-        message: L(
-          "Du kan ikke blokkere eller slette deg selv her.",
-          "You cannot block or delete yourself here.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.a6921920c684"),
       };
     const target = await emailById(db, data.userId);
     if (
@@ -301,10 +296,7 @@ export const adminSetUserStatus = createServerFn({ method: "POST" })
     )
       return {
         ok: false,
-        message: L(
-          "Den faste administratoren kan ikke blokkeres eller slettes.",
-          "The permanent administrator cannot be blocked or deleted.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.d158783ed587"),
       };
     const { data: cur } = await db
       .from("account_status")
@@ -314,10 +306,7 @@ export const adminSetUserStatus = createServerFn({ method: "POST" })
     if ((cur as { status?: string } | null)?.status === "deleted")
       return {
         ok: false,
-        message: L(
-          "Kontoen er allerede slettet for godt.",
-          "The account is already deleted for good.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.6aa96a7e3b9d"),
       };
     const now = new Date().toISOString();
     const row =
@@ -344,13 +333,10 @@ export const adminSetUserStatus = createServerFn({ method: "POST" })
       ok: true,
       message:
         data.action === "block"
-          ? L("Brukeren er blokkert.", "The user is blocked.")
+          ? t("adapters-account-admin-functions.message.message.e8b132577b86")
           : data.action === "delete"
-            ? L(
-                `Kontoen er låst og slettes for godt om ${DELETE_AFTER_DAYS} dager.`,
-                `The account is locked and will be deleted for good in ${DELETE_AFTER_DAYS} days.`,
-              )
-            : L("Kontoen er aktiv igjen.", "The account is active again."),
+            ? t("adapters-account-admin-functions.message.message.f35f131dccf8", { DELETE_AFTER_DAYS: String(DELETE_AFTER_DAYS) })
+            : t("adapters-account-admin-functions.message.message.63ae26f564a8"),
     };
   });
 
@@ -359,7 +345,7 @@ export const adminSetAdmin = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
     if (typeof x["userId"] !== "string" || !isUuid(x["userId"]) || typeof x["on"] !== "boolean")
-      throw new Error(L("Ugyldig bruker", "Invalid user"));
+      throw new Error(t("adapters-account-admin-functions.admin-set-admin.create-server-fn-method-post-middleware-require-supabase-auth-validator.c0f597d37713"));
     return { userId: x["userId"], on: x["on"] };
   })
   .handler(async ({ data, context }): Promise<Result> => {
@@ -369,10 +355,7 @@ export const adminSetAdmin = createServerFn({ method: "POST" })
     if ((await emailById(db, data.userId)) === (await permanentEmail()))
       return {
         ok: false,
-        message: L(
-          "Den faste administratoren kan ikke endres.",
-          "The permanent administrator cannot be changed.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.d6dc21ea03be"),
       };
     const { error } = data.on
       ? await db
@@ -385,8 +368,8 @@ export const adminSetAdmin = createServerFn({ method: "POST" })
     return {
       ok: true,
       message: data.on
-        ? L("Brukeren er administrator.", "The user is an administrator.")
-        : L("Brukeren er ikke lenger administrator.", "The user is no longer an administrator."),
+        ? t("adapters-account-admin-functions.message.message.d1ee8bd2ab01")
+        : t("adapters-account-admin-functions.message.message.be51da59f74c"),
     };
   });
 
@@ -404,7 +387,7 @@ export const adminReassignProject = createServerFn({ method: "POST" })
       typeof x["newOwnerId"] !== "string" ||
       !isUuid(x["newOwnerId"])
     )
-      throw new Error(L("Ugyldig prosjekt eller bruker", "Invalid project or user"));
+      throw new Error(t("adapters-account-admin-functions.admin-reassign-project.create-server-fn-method-post-middleware-require-supabase-auth-validator.256d9de38f08"));
     return { projectId: x["projectId"], newOwnerId: x["newOwnerId"] };
   })
   .handler(async ({ data, context }): Promise<Result> => {
@@ -415,10 +398,7 @@ export const adminReassignProject = createServerFn({ method: "POST" })
     if (!(await accountActive(db, data.newOwnerId)))
       return {
         ok: false,
-        message: L(
-          "Den nye eieren må ha en aktiv konto.",
-          "The new owner must have an active account.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.62aa1f822a26"),
       };
     const { data: owners } = await db
       .from("project_members")
@@ -462,7 +442,7 @@ export const adminReassignProject = createServerFn({ method: "POST" })
     }
     return {
       ok: true,
-      message: L("Prosjektet har fått ny eier.", "The project has a new owner."),
+      message: t("adapters-account-admin-functions.message.message.6604ddfd4638"),
     };
   });
 
@@ -473,7 +453,7 @@ export const adminSavePrivacy = createServerFn({ method: "POST" })
     const f = (k: string, max: number) => {
       const v = x[k];
       if (v !== undefined && typeof v !== "string")
-        throw new Error(L("Ugyldig felt", "Invalid field"));
+        throw new Error(t("adapters-account-admin-functions.f.create-server-fn-method-post-middleware-require-supabase-auth-validator.b81056541e0b"));
       return String(v ?? "").slice(0, max);
     };
     return {
@@ -503,10 +483,7 @@ export const adminSavePrivacy = createServerFn({ method: "POST" })
     return {
       ok: true,
       version,
-      message: L(
-        `Personvernerklæringen er lagret som versjon ${version}. Brukerne blir bedt om å lese den ved neste innlogging.`,
-        `The privacy statement is saved as version ${version}. Users are asked to read it at their next sign-in.`,
-      ),
+      message: t("adapters-account-admin-functions.message.message.d33f27570996", { version: String(version) }),
     };
   });
 
@@ -540,10 +517,7 @@ export const fetchAiAdmin = createServerFn({ method: "POST" })
     if (!s.ready || !r.ready)
       return {
         ok: true,
-        message: L(
-          "Databasen må oppdateres (migrasjon 0034) før AI-tilkoblingene kan administreres.",
-          "The database must be updated (migration 0034) before the AI connections can be managed.",
-        ),
+        message: t("adapters-account-admin-functions.message.message.e44a047f54e7"),
         ...empty,
       };
     return { ok: true, ready: true, settings: s.settings, requests: r.requests, cron };
@@ -560,7 +534,7 @@ export const adminSetModelEnabled = createServerFn({ method: "POST" })
       x["model"].length > 200 ||
       typeof x["enabled"] !== "boolean"
     )
-      throw new Error(L("Ugyldig modell", "Invalid model"));
+      throw new Error(t("adapters-account-admin-functions.admin-set-model-enabled.create-server-fn-method-post-middleware-require-supabase-auth-validator.6f5f33b90344"));
     return { provider: x["provider"], model: x["model"], enabled: x["enabled"] };
   })
   .handler(async ({ data, context }): Promise<Result> => {
@@ -604,7 +578,7 @@ export const adminRemoveCustomModel = createServerFn({ method: "POST" })
       typeof x["model"] !== "string" ||
       x["model"].length > 200
     )
-      throw new Error(L("Ugyldig modell", "Invalid model"));
+      throw new Error(t("adapters-account-admin-functions.admin-remove-custom-model.create-server-fn-method-post-middleware-require-supabase-auth-validator.7b69290fddd1"));
     return { provider: x["provider"], model: x["model"] };
   })
   .handler(async ({ data, context }): Promise<Result> => {
@@ -634,23 +608,17 @@ export const adminAddProviderRequest = createServerFn({ method: "POST" })
     if (!data.name || data.name.length > 120)
       return {
         ok: false,
-        message: L(
-          "Skriv navnet på leverandøren (høyst 120 tegn).",
-          "Enter the name of the provider (120 characters at most).",
-        ),
+        message: t("adapters-account-admin-functions.message.message.9bd5d0e964ff"),
       };
     const website = cleanUrl(data.website);
     const docsUrl = cleanUrl(data.docsUrl);
     if (website === null || docsUrl === null)
       return {
         ok: false,
-        message: L(
-          "Nettadressene må begynne med https:// (eller http://).",
-          "The web addresses must start with https:// (or http://).",
-        ),
+        message: t("adapters-account-admin-functions.message.message.8618bb64d9ca"),
       };
     if (data.note.length > 2000)
-      return { ok: false, message: L("Merknaden er for lang.", "The note is too long.") };
+      return { ok: false, message: t("adapters-account-admin-functions.message.message.c513e6007d05") };
     return addProviderRequest(db, context.userId, {
       name: data.name,
       website,
@@ -665,9 +633,9 @@ export const adminSetProviderRequestStatus = createServerFn({ method: "POST" })
     const x = (d ?? {}) as Record<string, unknown>;
     const status = x["status"];
     if (typeof x["id"] !== "string" || !isUuid(x["id"]))
-      throw new Error(L("Ugyldig ønske", "Invalid request"));
+      throw new Error(t("adapters-account-admin-functions.admin-set-provider-request-status.create-server-fn-method-post-middleware-require-supabase-auth-validator.91bbf35c0e8d"));
     if (status !== "open" && status !== "done" && status !== "rejected")
-      throw new Error(L("Ugyldig status", "Invalid status"));
+      throw new Error(t("adapters-account-admin-functions.admin-set-provider-request-status.create-server-fn-method-post-middleware-require-supabase-auth-validator.f43b07072704"));
     return { id: x["id"], status } as const;
   })
   .handler(async ({ data, context }): Promise<Result> => {

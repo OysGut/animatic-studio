@@ -10,35 +10,16 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  assetFilePath,
-  adaptPromptForModel,
-  type AssetMedia,
-  effortOf,
-  estimateCostUsd,
-  type ImageSize,
-  imageSizesOf,
-  isProviderId,
-  isUuid,
-  MAX_ATTACHED_IMAGES,
-  MAX_PROMPT_CHARS,
-  monthStartUtc,
-  newId,
-  providerModel,
-  stripAttachedSection,
-  L,
-} from "@/core";
-import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
-import { GATEWAY, ROLE_RANK, gatewayError, referenceImages, validReferencePath } from "./gateway";
+import { type AssetMedia, type ImageSize, isProviderId, isUuid, MAX_ATTACHED_IMAGES, MAX_PROMPT_CHARS, parseQualityProfileMeta, type QualityProfileSnapshot } from "@/core";
+import type { AnyClient } from "@/adapters/storage/project-rows";
+import { ROLE_RANK, validReferencePath } from "./gateway";
 import type { ImageAspect } from "./providers.server";
+import { t } from "@/core/i18n/keyed";
 
 // Modellene for innebygd bildegenerering står i kjernen (vises også i bekreftelsen, REQ-0280)
 export { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
-import { LOVABLE_CUTOUT_MODEL as CUTOUT_MODEL, LOVABLE_IMAGE_MODEL as IMAGE_MODEL } from "@/core";
-const BUCKET = "assets";
 /** Grenser som sikring mot løpske kostnader. */
-export const MAX_PER_USER_PER_HOUR = 30;
-export const MAX_PER_PROJECT_PER_DAY = 200;
+export { MAX_PER_USER_PER_HOUR, MAX_PER_PROJECT_PER_DAY } from "./image-limits";
 
 export interface GenerateImageInput {
   readonly projectId: string;
@@ -69,6 +50,8 @@ export interface GenerateImageInput {
   readonly upscaleFactor?: 2 | 4;
   /** Brukeren har bekreftet at genereringen bruker kreditter. */
   readonly approved: true;
+  /** Kvalitetsprofilen bildet lages med (M8, REQ-0859): øyeblikksbilde i jobbens metadata. */
+  readonly qualityProfile?: QualityProfileSnapshot | null;
 }
 
 export type GenerateImageResult =
@@ -82,19 +65,19 @@ export type GenerateImageResult =
   | { readonly ok: false; readonly message: string };
 
 function validate(d: unknown): GenerateImageInput {
-  if (!d || typeof d !== "object") throw new Error(L("Ugyldig forespørsel", "Invalid request"));
+  if (!d || typeof d !== "object") throw new Error(t("adapters-ai-generate-image-functions.validate.message.24c08eed08ff"));
   const x = d as Record<string, unknown>;
   const projectId = x["projectId"];
   const assetId = x["assetId"];
   const prompt = x["prompt"];
   const refs = x["referencePaths"];
   if (typeof projectId !== "string" || !isUuid(projectId))
-    throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+    throw new Error(t("adapters-ai-generate-image-functions.validate.message.945ebc1deb28"));
   if (typeof assetId !== "string" || !isUuid(assetId))
-    throw new Error(L("Ugyldig ressurs", "Invalid asset"));
+    throw new Error(t("adapters-ai-generate-image-functions.validate.message.cfa60d63843d"));
   if (typeof prompt !== "string" || !prompt.trim() || prompt.length > MAX_PROMPT_CHARS)
     throw new Error(
-      L("Beskrivelsen mangler eller er for lang", "The description is missing or too long"),
+      t("adapters-ai-generate-image-functions.validate.message.61920e7c8aa3"),
     );
   if (
     !Array.isArray(refs) ||
@@ -102,11 +85,11 @@ function validate(d: unknown): GenerateImageInput {
     new Set(refs).size !== refs.length ||
     !refs.every((r) => validReferencePath(projectId, r))
   )
-    throw new Error(L("Ugyldige forbildebilder", "Invalid reference images"));
+    throw new Error(t("adapters-ai-generate-image-functions.validate.message.5536a8eb7feb"));
   if (x["purpose"] !== "cutout" && x["purpose"] !== "background")
-    throw new Error(L("Ugyldig bruk", "Invalid use"));
+    throw new Error(t("adapters-ai-generate-image-functions.validate.message.8f0cad8cb879"));
   if (x["approved"] !== true)
-    throw new Error(L("Genereringen må bekreftes", "The generation must be confirmed"));
+    throw new Error(t("adapters-ai-generate-image-functions.validate.message.b947e66a1d8f"));
   return {
     projectId,
     assetId,
@@ -117,51 +100,38 @@ function validate(d: unknown): GenerateImageInput {
     variantId: typeof x["variantId"] === "string" && isUuid(x["variantId"]) ? x["variantId"] : null,
     provider: (() => {
       const p = x["provider"] ?? "lovable";
-      if (!isProviderId(p)) throw new Error(L("Ukjent leverandør", "Unknown provider"));
+      if (!isProviderId(p)) throw new Error(t("adapters-ai-generate-image-functions.provider.const-p-x-provider-lovable-if-is-provider-id-p-throw-new-error-l-ukjent-leverand-r-unknown-provider-return-p.23a7d4680ec5"));
       return p;
     })(),
     model: (() => {
       const m = x["model"] ?? null;
       if (m !== null && (typeof m !== "string" || m.length > 120))
-        throw new Error(L("Ugyldig modell", "Invalid model"));
+        throw new Error(t("adapters-ai-generate-image-functions.model.const-m-x-model-null-if-m-null-typeof-m-string-m-length-120-throw-new-error-l-ugyldig-modell-invalid-model-return-m-as-string-null.205cfe8019b1"));
       return m as string | null;
     })(),
     size: (() => {
       const z = x["size"] ?? null;
       if (z !== null && z !== "1K" && z !== "2K" && z !== "4K")
-        throw new Error(L("Ugyldig størrelse", "Invalid size"));
+        throw new Error(t("adapters-ai-generate-image-functions.size.const-z-x-size-null-if-z-null-z-1k-z-2k-z-4k-throw-new-error-l-ugyldig-st-rrelse-invalid-size-return-z-as-image-size-null.e38baf0dce9e"));
       return z as ImageSize | null;
     })(),
     aspect: (() => {
       const a = x["aspect"] ?? null;
       if (a !== null && a !== "2:3" && a !== "3:2" && a !== "1:1" && a !== "16:9")
-        throw new Error(L("Ugyldig sideforhold", "Invalid aspect ratio"));
+        throw new Error(t("adapters-ai-generate-image-functions.aspect.const-a-x-aspect-null-if-a-null-a-2-3-a-3-2-a-1-1-a-16-9-throw-new-error-l-ugyldig-sideforhold-invalid-aspect-ratio-return-a-as-image-aspect-null.d51d1fdb55af"));
       return a as ImageAspect | null;
     })(),
     negativePrompt: (() => {
       const n = x["negativePrompt"] ?? null;
       if (n !== null && (typeof n !== "string" || n.length > 2000))
-        throw new Error(L("Ugyldig negativ beskrivelse", "Invalid negative description"));
+        throw new Error(t("adapters-ai-generate-image-functions.negative-prompt.const-n-x-negative-prompt-null-if-n-null-typeof-n-string-n-length-2000-throw-new-error-l-ugyldig-negativ-beskrivelse-invalid-negative-description-return-n-as-string-null-trim-null.89827b70a08a"));
       return (n as string | null)?.trim() || null;
     })(),
     operation: x["operation"] === "upscale" ? "upscale" : "generate",
     upscaleFactor: x["upscaleFactor"] === 4 ? 4 : 2,
     approved: true,
+    qualityProfile: parseQualityProfileMeta(x["qualityProfile"]),
   };
-}
-
-/** Bredde og høyde fra PNG-hodet (IHDR), ellers null. */
-function pngSize(b: Uint8Array): { width: number | null; height: number | null } {
-  if (b.length > 24 && b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) {
-    const v = new DataView(b.buffer, b.byteOffset, b.byteLength);
-    return { width: v.getUint32(16), height: v.getUint32(20) };
-  }
-  return { width: null, height: null };
-}
-
-async function sha256(b: Uint8Array): Promise<string> {
-  const h = await crypto.subtle.digest("SHA-256", b as unknown as ArrayBuffer);
-  return [...new Uint8Array(h)].map((x) => x.toString(16).padStart(2, "0")).join("");
 }
 
 export const generateImage = createServerFn({ method: "POST" })
@@ -179,613 +149,9 @@ export const generateImage = createServerFn({ method: "POST" })
     if ((ROLE_RANK[(member as { role?: string } | null)?.role ?? ""] ?? 0) < ROLE_RANK["editor"]!)
       return {
         ok: false,
-        message: L(
-          "Du har ikke tilgang til å generere i dette prosjektet.",
-          "You do not have access to generate in this project.",
-        ),
+        message: t("adapters-ai-generate-image-functions.message.message.eec2e586f194"),
       };
 
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const admin = supabaseAdmin as unknown as AnyClient;
-    const schema = await checkSchema(admin);
-    if (schema.kind === "missing" || schema.version < 10)
-      return {
-        ok: false,
-        message: L(
-          "Databasen mangler loggen for AI-generering. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0010).",
-          "The database is missing the AI generation log. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0010).",
-        ),
-      };
-    const own = data.provider !== "lovable";
-    if (data.operation === "upscale" && !own)
-      return {
-        ok: false,
-        message: L(
-          "Oppskalering krever en tilkoblet leverandør (fal.ai).",
-          "Upscaling requires a connected provider (fal.ai).",
-        ),
-      };
-    const key = process.env["LOVABLE_API_KEY"];
-    if (!own && !key)
-      return {
-        ok: false,
-        message: L(
-          "AI er ikke slått på for prosjektet i Lovable (LOVABLE_API_KEY mangler). Se LOVABLE_SYNC.md.",
-          "AI is not switched on for the project in Lovable (LOVABLE_API_KEY is missing). See LOVABLE_SYNC.md.",
-        ),
-      };
-
-    // Et slettet prosjekt kan ikke få nye bilder (DEC-0046)
-    const { data: proj } = await admin
-      .from("projects")
-      .select("*")
-      .eq("id", data.projectId)
-      .maybeSingle();
-    if (!proj || (proj as { deleted_at?: string | null }).deleted_at)
-      return { ok: false, message: L("Prosjektet er slettet.", "The project has been deleted.") };
-
-    const { data: asset } = await admin
-      .from("assets")
-      .select("id, kind")
-      .eq("id", data.assetId)
-      .eq("project_id", data.projectId)
-      .maybeSingle();
-    if (!asset)
-      return {
-        ok: false,
-        message: L(
-          "Ressursen finnes ikke i prosjektet.",
-          "The asset does not exist in the project.",
-        ),
-      };
-    if ((asset as { kind: string }).kind === "sound")
-      return {
-        ok: false,
-        message: L("Lyd kan ikke genereres som bilde.", "Sound cannot be generated as an image."),
-      };
-    const refCheck = await referenceImages(admin, data.projectId, data.referencePaths);
-    if (!refCheck.ok) return { ok: false, message: refCheck.message };
-
-    // Grenser (sikring mot løpske kostnader)
-    const hourAgo = new Date(Date.now() - 3600_000).toISOString();
-    const dayAgo = new Date(Date.now() - 86_400_000).toISOString();
-    const { count: mine } = await admin
-      .from("generation_jobs")
-      .select("id", { count: "exact", head: true })
-      .eq("created_by", context.userId)
-      .neq("kind", "prompt")
-      .gte("created_at", hourAgo);
-    if ((mine ?? 0) >= MAX_PER_USER_PER_HOUR)
-      return {
-        ok: false,
-        message: L(
-          `Grensen på ${MAX_PER_USER_PER_HOUR} genereringer i timen er nådd. Prøv igjen senere.`,
-          `The limit of ${MAX_PER_USER_PER_HOUR} generations per hour has been reached. Try again later.`,
-        ),
-      };
-    const { count: project } = await admin
-      .from("generation_jobs")
-      .select("id", { count: "exact", head: true })
-      .eq("project_id", data.projectId)
-      .neq("kind", "prompt")
-      .gte("created_at", dayAgo);
-    if ((project ?? 0) >= MAX_PER_PROJECT_PER_DAY)
-      return {
-        ok: false,
-        message: L(
-          `Prosjektets grense på ${MAX_PER_PROJECT_PER_DAY} genereringer i døgnet er nådd.`,
-          `The project's limit of ${MAX_PER_PROJECT_PER_DAY} generations per day has been reached.`,
-        ),
-      };
-
-    // Prosjektets AI-budsjett (DEC-0053, REQ-0282/0284): kontrolleres etter at jobben er registrert
-    // (se under), så samtidige genereringer ikke kan gå forbi rammen
-    const budgeted = schema.version >= 14;
-    const pr = proj as {
-      ai_month_limit?: number | null;
-      ai_price_per_image?: number | string | null;
-    };
-    const price =
-      budgeted && pr.ai_price_per_image !== null && pr.ai_price_per_image !== undefined
-        ? Number(pr.ai_price_per_image)
-        : null;
-
-    const model = own
-      ? (data.model ?? "")
-      : data.purpose === "cutout"
-        ? process.env["ANIMATIC_CUTOUT_MODEL"] || CUTOUT_MODEL
-        : process.env["ANIMATIC_IMAGE_MODEL"] || IMAGE_MODEL;
-    // Administrator kan ha slått av leverandøren eller modellen for alle (DEC-0088, migrasjon 0034); egne
-    // modeller (lagt til av administrator) finnes bare i innstillingene, som sendes videre under
-    const aiGate = await (
-      await import("@/adapters/account/ai-models.server")
-    ).modelGate(admin, data.provider, model);
-    if (aiGate.message) return { ok: false, message: aiGate.message };
-    // Egen nøkkel (DEC-0069): modellen må finnes i katalogen, nøkkelen hos en av prosjektets eiere, og
-    // eierens kostnadstak må ha plass
-    const gate = own ? await import("./ai-gate.server") : null;
-    let ownKey: Awaited<ReturnType<NonNullable<typeof gate>["projectKey"]>> = null;
-    let costUsd: number | null = null;
-    let size: ImageSize | null = null;
-    if (own && gate) {
-      if (schema.version < 24)
-        return {
-          ok: false,
-          message: L(
-            "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-            "The database is not updated for own AI providers. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
-          ),
-        };
-      const m = providerModel(data.provider, model, aiGate.settings);
-      const want = data.operation === "upscale" ? "upscale" : "image";
-      if (!m || m.capability !== want)
-        return {
-          ok: false,
-          message: L(
-            "Modellen finnes ikke hos leverandøren.",
-            "The model does not exist at the provider.",
-          ),
-        };
-      if (want === "upscale" && data.referencePaths.length !== 1)
-        return {
-          ok: false,
-          message: L("Velg ett bilde å oppskalere.", "Choose one image to upscale."),
-        };
-      if (want === "image" && m.requiresImage && data.referencePaths.length === 0)
-        return {
-          ok: false,
-          message: L(
-            "Denne modellen trenger et forbildebilde.",
-            "This model needs a reference image.",
-          ),
-        };
-      ownKey = await gate.projectKey(admin, data.projectId, data.provider, context.userId);
-      if (!ownKey)
-        return {
-          ok: false,
-          message: L(
-            "Ingen av prosjektets eiere har koblet til denne leverandøren (AI-leverandører på prosjektlisten).",
-            "None of the project's owners has connected this provider (AI providers on the project list).",
-          ),
-        };
-      // Størrelsen modellen kan lage (ellers modellens standard)
-      const sz = imageSizesOf(providerModel(data.provider, model, aiGate.settings));
-      size = data.size && sz.sizes.includes(data.size) ? data.size : sz.standard;
-      if (want === "upscale") {
-        // Prisen følger størrelsen på resultatet (megapiksler): målene fra biblioteket
-        const { data: src } = await admin
-          .from("asset_versions")
-          .select("width, height")
-          .eq("project_id", data.projectId)
-          .eq("media_path", data.referencePaths[0]!)
-          .maybeSingle();
-        const w = Number((src as { width?: number | null } | null)?.width ?? 0);
-        const h = Number((src as { height?: number | null } | null)?.height ?? 0);
-        const f = data.upscaleFactor ?? 2;
-        // Ukjent størrelse: regnes som 2048 × 2048 (et øvre anslag for arbeidskopiene)
-        const mp = ((w > 0 && h > 0 ? w * h : 2048 * 2048) * f * f) / 1_000_000;
-        costUsd = estimateCostUsd(data.provider, model, { megapixels: mp }, aiGate.settings);
-      } else
-        costUsd = estimateCostUsd(
-          data.provider,
-          model,
-          { images: 1, ...(size ? { size } : {}) },
-          aiGate.settings,
-        );
-      const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, false);
-      if (capMsg) return { ok: false, message: capMsg };
-    }
-    const jobId = newId<"generation_job">();
-    // Sporbarhet (DEC-0072, REQ-0257): params finnes fra migrasjon 0024
-    const trace =
-      schema.version >= 24
-        ? await (
-            await import("./trace.server")
-          ).buildTrace(admin as AnyClient, data.projectId, {
-            modelParams: {
-              purpose: data.purpose,
-              identityFirst: data.identityFirst ?? null,
-              ...(size ? { size } : {}),
-              ...(data.aspect ? { aspect: data.aspect } : {}),
-              ...(data.negativePrompt ? { negativePrompt: data.negativePrompt } : {}),
-              ...(data.operation === "upscale"
-                ? { operation: "upscale", upscaleFactor: data.upscaleFactor ?? 2 }
-                : {}),
-            },
-            referencePaths: data.referencePaths,
-          })
-        : null;
-    const { error: logErr } = await admin.from("generation_jobs").insert({
-      id: jobId,
-      project_id: data.projectId,
-      kind: "image",
-      ...(trace
-        ? {
-            params: {
-              trace,
-              // Innsatsnivået jobben ble kjørt med (mandat 19.3, REQ-0275)
-              effort: effortOf(providerModel(data.provider, model, aiGate.settings)),
-              ...(data.variantId ? { variantId: data.variantId } : {}),
-            },
-          }
-        : {}),
-      provider: data.provider,
-      model,
-      ...(ownKey
-        ? { provider_key_id: ownKey.id, key_owner: ownKey.user_id, cost_usd: costUsd }
-        : {}),
-      prompt: data.prompt,
-      asset_id: data.assetId,
-      reference_path: data.referencePaths[0] ?? null,
-      ...(schema.version >= 22 ? { reference_paths: data.referencePaths } : {}),
-      status: "running",
-      created_by: context.userId,
-      ...(budgeted ? { estimated_cost: price } : {}),
-    } as never);
-    if (logErr)
-      return {
-        ok: false,
-        message: L(
-          `Genereringen kunne ikke logges: ${logErr.message}`,
-          `The generation could not be logged: ${logErr.message}`,
-        ),
-      };
-    // Samtidige forespørsler: tell på nytt med denne jobben registrert
-    {
-      const [{ count: mineNow }, { count: projectNow }] = await Promise.all([
-        admin
-          .from("generation_jobs")
-          .select("id", { count: "exact", head: true })
-          .eq("created_by", context.userId)
-          .neq("kind", "prompt")
-          .gte("created_at", hourAgo),
-        admin
-          .from("generation_jobs")
-          .select("id", { count: "exact", head: true })
-          .eq("project_id", data.projectId)
-          .neq("kind", "prompt")
-          .gte("created_at", dayAgo),
-      ]);
-      if ((mineNow ?? 0) > MAX_PER_USER_PER_HOUR || (projectNow ?? 0) > MAX_PER_PROJECT_PER_DAY) {
-        await admin.from("generation_jobs").delete().eq("id", jobId);
-        return {
-          ok: false,
-          message: L(
-            "Grensen for antall genereringer er nådd akkurat nå. Prøv igjen senere.",
-            "The limit on the number of generations has just been reached. Try again later.",
-          ),
-        };
-      }
-    }
-    if (budgeted && pr.ai_month_limit !== null && pr.ai_month_limit !== undefined) {
-      const { count: used } = await admin
-        .from("generation_jobs")
-        .select("id", { count: "exact", head: true })
-        .eq("project_id", data.projectId)
-        .neq("status", "failed")
-        .neq("kind", "prompt")
-        .gte("created_at", monthStartUtc(new Date()).toISOString());
-      if ((used ?? 0) > Number(pr.ai_month_limit)) {
-        // Denne jobben (og eventuelle samtidige) går over rammen: den fjernes igjen, ingenting sendes
-        await admin.from("generation_jobs").delete().eq("id", jobId);
-        return {
-          ok: false,
-          message: L(
-            `Prosjektets AI-budsjett for denne måneden (${pr.ai_month_limit} genereringer) er brukt opp. Eieren kan endre budsjettet på prosjektoversikten.`,
-            `The project's AI budget for this month (${pr.ai_month_limit} generations) has been used up. The owner can change the budget on the project overview.`,
-          ),
-        };
-      }
-    }
-
-    if (ownKey && gate) {
-      const capMsg = await gate.overAccountCap(admin, ownKey.user_id, costUsd ?? 0, true);
-      if (capMsg) {
-        await admin.from("generation_jobs").delete().eq("id", jobId);
-        return { ok: false, message: capMsg };
-      }
-    }
-
-    const finish = async (patch: Record<string, unknown>) => {
-      await admin
-        .from("generation_jobs")
-        .update({ ...patch, finished_at: new Date().toISOString() } as never)
-        .eq("id", jobId);
-    };
-
-    if (ownKey) {
-      // Egen leverandør: én forespørsel gjennom adapteren
-      let charged = false;
-      let secret: string | null = null;
-      const { ADAPTERS, scrubSecret } = await import("./providers.server");
-      try {
-        const { decryptKey } = await import("./key-vault.server");
-        secret = await decryptKey(ownKey, {
-          userId: ownKey.user_id,
-          provider: ownKey.provider,
-          rowId: ownKey.id,
-        });
-        // Oppskalering: tjenesten henter bildet selv (lenke), så det lastes ikke ned her
-        const references =
-          data.operation === "upscale"
-            ? []
-            : await Promise.all(
-                data.referencePaths.map(async (p) => {
-                  const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
-                  if (error || !blob)
-                    throw new Error(
-                      L(
-                        "Et forbildebilde kunne ikke hentes fra lagringen.",
-                        "A reference image could not be fetched from storage.",
-                      ),
-                    );
-                  return blob;
-                }),
-              );
-        // Modellens lengdegrense (DEC-0070): ellers avviser tjenesten beskrivelsen
-        const m = providerModel(data.provider, model, aiGate.settings);
-        const req = {
-          key: secret,
-          model,
-          prompt: m ? adaptPromptForModel(data.prompt, m).text : data.prompt,
-          references,
-          purpose: data.purpose,
-          ...(size ? { size } : {}),
-          ...(data.aspect ? { aspect: data.aspect } : {}),
-          ...(data.negativePrompt ? { negativePrompt: data.negativePrompt } : {}),
-        };
-        let out: { bytes: Uint8Array; mimeType: string };
-        if (data.operation === "upscale") {
-          if (data.provider !== "fal")
-            return {
-              ok: false,
-              message: L("Leverandøren kan ikke oppskalere.", "The provider cannot upscale."),
-            };
-          const { data: signed } = await admin.storage
-            .from(BUCKET)
-            .createSignedUrl(data.referencePaths[0]!, 600);
-          if (!signed?.signedUrl)
-            throw new Error(
-              L(
-                "Bildet kunne ikke hentes fra lagringen.",
-                "The image could not be fetched from storage.",
-              ),
-            );
-          out = await ADAPTERS.fal.upscale({
-            key: secret,
-            model,
-            imageUrl: signed.signedUrl,
-            factor: data.upscaleFactor ?? 2,
-          });
-        } else if (data.provider === "openai") out = await ADAPTERS.openai.image(req);
-        else if (data.provider === "google") out = await ADAPTERS.google.image(req);
-        else if (data.provider === "fal") {
-          // fal henter forbildet selv: midlertidige lenker (10 minutter)
-          const referenceUrls: string[] = [];
-          for (const p of data.referencePaths) {
-            const { data: signed } = await admin.storage.from(BUCKET).createSignedUrl(p, 600);
-            if (signed?.signedUrl) referenceUrls.push(signed.signedUrl);
-          }
-          out = await ADAPTERS.fal.image({ ...req, referenceUrls });
-        } else
-          return {
-            ok: false,
-            message: L("Leverandøren lager ikke bilder.", "The provider does not make images."),
-          };
-        charged = true;
-        const mimeType = ["image/png", "image/jpeg", "image/webp"].includes(out.mimeType)
-          ? out.mimeType
-          : "image/png";
-        const ext = mimeType === "image/jpeg" ? "jpg" : mimeType === "image/webp" ? "webp" : "png";
-        const versionId = newId<"asset_version">();
-        const path = assetFilePath(
-          data.projectId,
-          "generated",
-          data.assetId,
-          versionId,
-          `${data.operation === "upscale" ? "upscale" : "ai"}-${new Date().toISOString().slice(0, 10)}.${ext}`,
-        );
-        const { error: upErr } = await admin.storage
-          .from(BUCKET)
-          .upload(path, new Blob([out.bytes as unknown as ArrayBuffer], { type: mimeType }), {
-            contentType: mimeType,
-            upsert: false,
-          });
-        if (upErr)
-          throw new Error(
-            L(
-              `Bildet kunne ikke lagres: ${upErr.message}`,
-              `The image could not be saved: ${upErr.message}`,
-            ),
-          );
-        const dims = mimeType === "image/png" ? pngSize(out.bytes) : { width: null, height: null };
-        await finish({ status: "done", result_path: path });
-        return {
-          ok: true,
-          versionId,
-          model: `${data.provider}/${model}`,
-          jobId,
-          media: {
-            path,
-            mimeType,
-            width: dims.width,
-            height: dims.height,
-            byteSize: out.bytes.byteLength,
-            sha256: await sha256(out.bytes),
-          },
-        };
-      } catch (e) {
-        const message = scrubSecret(
-          (e as Error).message || L("Ukjent feil", "Unknown error"),
-          secret,
-        ).slice(0, 2000);
-        await finish({ status: charged ? "lost" : "failed", error: message });
-        return {
-          ok: false,
-          message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
-        };
-      }
-    }
-
-    /** Tjenesten har laget bildet (og tatt betalt): feiler lagringen etterpå, teller jobben likevel. */
-    let charged = false;
-    try {
-      const size = data.purpose === "cutout" ? "1024x1536" : "1536x1024";
-      const background = data.purpose === "cutout" ? "transparent" : "opaque";
-      const headers = { Authorization: `Bearer ${key!}`, "Lovable-API-Key": key! };
-      const references = await Promise.all(
-        data.referencePaths.map(async (p) => {
-          const { data: blob, error } = await admin.storage.from(BUCKET).download(p);
-          if (error || !blob)
-            throw new Error(
-              L(
-                "Et forbildebilde kunne ikke hentes fra lagringen.",
-                "A reference image could not be fetched from storage.",
-              ),
-            );
-          return blob;
-        }),
-      );
-      // Ikke alle modeller tar imot alle valg (f.eks. gjennomsiktig bakgrunn) eller flere bilder. Avviser
-      // tjenesten forespørselen (400), prøves den igjen med færre valg og til slutt bare det første bildet –
-      // hvert forsøk logges.
-      const full = {
-        size,
-        ...(model.startsWith("openai/") ? { background, output_format: "png" } : {}),
-      };
-      // Faller tjenesten tilbake til ett bilde, må det være dagens bilde (et stilforbilde alene ville bli
-      // redigert i stedet for brukt som stil); ellers lages bildet bare fra beskrivelsen
-      const fallback = data.identityFirst ? 1 : 0;
-      const attempts: { extra: Record<string, string>; images: number }[] = [
-        { extra: full, images: references.length },
-        { extra: { size }, images: references.length },
-        ...(references.length > 1
-          ? [
-              { extra: full, images: fallback },
-              { extra: { size }, images: fallback },
-            ]
-          : []),
-        { extra: {}, images: Math.min(fallback, references.length) },
-      ];
-      /** Beskrivelsen når færre bilder sendes enn den omtaler. */
-      const promptFor = (images: number) =>
-        images === references.length
-          ? data.prompt
-          : `${stripAttachedSection(data.prompt)}${
-              images === 1
-                ? "\n\nATTACHED IMAGES\nImage 1: the current design of the subject. Keep who it is."
-                : ""
-            }`;
-      const send = (extra: Record<string, string>, images: number) => {
-        if (images > 0) {
-          const form = new FormData();
-          form.append("model", model);
-          form.append("prompt", promptFor(images));
-          form.append("n", "1");
-          for (const [k, v] of Object.entries(extra)) form.append(k, v);
-          references.slice(0, images).forEach((ref, i) => {
-            const type = ref.type && ref.type.startsWith("image/") ? ref.type : "image/png";
-            const ext = type === "image/jpeg" ? "jpg" : type === "image/webp" ? "webp" : "png";
-            // Ett bilde: «image» (som før); flere: «image[]» (OpenAI-formatet for flere forbilder)
-            form.append(
-              images === 1 ? "image" : "image[]",
-              new File([ref], `reference-${i + 1}.${ext}`, { type }),
-            );
-          });
-          return fetch(`${GATEWAY}/images/edits`, {
-            method: "POST",
-            headers,
-            body: form,
-            signal: AbortSignal.timeout(150_000),
-          });
-        }
-        return fetch(`${GATEWAY}/images/generations`, {
-          method: "POST",
-          headers: { ...headers, "Content-Type": "application/json" },
-          body: JSON.stringify({ model, prompt: promptFor(0), n: 1, ...extra }),
-          signal: AbortSignal.timeout(150_000),
-        });
-      };
-      let res: Response | null = null;
-      const log: string[] = [];
-      for (const { extra, images } of attempts) {
-        res = await send(extra, images);
-        if (res.ok) break;
-        const body = await res.text().catch(() => "");
-        log.push(
-          // i18n-ignore: intern logg i databasen, vises ikke
-          `${res.status} [${Object.keys(extra).join(",") || "ingen valg"}; ${images} bilde(r)]: ${body.slice(0, 400)}`,
-        );
-        const retry = res.status === 400 && !/safety|policy|moderation/i.test(body);
-        if (!retry) break;
-      }
-      if (res?.ok) charged = true;
-      if (!res || !res.ok) {
-        const last = log[log.length - 1] ?? "";
-        const status = res?.status ?? 0;
-        await finish({ status: "failed", error: log.join("\n").slice(0, 2000) });
-        return { ok: false, message: gatewayError(status, last) };
-      }
-      if (log.length > 0)
-        // Vellykket etter færre valg: noter hvorfor, så det kan rettes
-        console.warn("[generateImage] lyktes etter nye forsøk:", log.join(" | ").slice(0, 600)); // i18n-ignore
-      const json = (await res.json()) as { data?: { b64_json?: string; url?: string }[] };
-      const first = json.data?.[0];
-      let bytes: Uint8Array;
-      if (first?.b64_json) bytes = (await import("./providers.server")).unb64(first.b64_json);
-      else if (first?.url) bytes = new Uint8Array(await (await fetch(first.url)).arrayBuffer());
-      else
-        throw new Error(
-          L("AI-tjenesten svarte uten bilde.", "The AI service replied without an image."),
-        );
-
-      const versionId = newId<"asset_version">();
-      const date = new Date().toISOString().slice(0, 10);
-      const path = assetFilePath(
-        data.projectId,
-        "generated",
-        data.assetId,
-        versionId,
-        `ai-${date}.png`,
-      );
-      const { error: upErr } = await admin.storage
-        .from(BUCKET)
-        .upload(path, new Blob([bytes as unknown as ArrayBuffer], { type: "image/png" }), {
-          contentType: "image/png",
-          upsert: false,
-        });
-      if (upErr)
-        throw new Error(
-          L(
-            `Bildet kunne ikke lagres: ${upErr.message}`,
-            `The image could not be saved: ${upErr.message}`,
-          ),
-        );
-      const dims = pngSize(bytes);
-      await finish({ status: "done", result_path: path });
-      return {
-        ok: true,
-        versionId,
-        model,
-        jobId,
-        media: {
-          path,
-          mimeType: "image/png",
-          width: dims.width,
-          height: dims.height,
-          byteSize: bytes.byteLength,
-          sha256: await sha256(bytes),
-        },
-      };
-    } catch (e) {
-      const message = (e as Error).message || L("Ukjent feil", "Unknown error");
-      await finish({
-        status: charged && budgeted ? "lost" : "failed",
-        error: message.slice(0, 2000),
-      });
-      return {
-        ok: false,
-        message: L(`Genereringen stoppet: ${message}`, `The generation stopped: ${message}`),
-      };
-    }
+    const { runImageGeneration } = await import("./image-run.server");
+    return runImageGeneration(data, { userId: context.userId, supabase: context.supabase });
   });

@@ -15,7 +15,7 @@
  *
  * Ren TypeScript: brukes både i nettleseren (lage og lese filen) og på serveren (gjenopprette).
  */
-import { L, localized } from "../i18n";
+
 import { checkInvariants } from "../invariants";
 import {
   emptyProjectState,
@@ -27,11 +27,15 @@ import { styleGuideError } from "../generation/style";
 import { posterAssetRefs, posterDocumentError } from "../presentation/document";
 import { stateFromRows, type ProjectRows, type Row } from "../patch";
 import { sameOptionalDurationAssumptions } from "../screenplay/duration";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export const BACKUP_FORMAT = "animatic-studio-backup";
 export const BACKUP_FORMAT_VERSION = 1;
 export const BACKUP_JSON = "animatic-backup.json";
 export const BACKUP_README = "LES-MEG.txt";
+/** Produktnavnet i nye sikkerhetskopier (B-104). Eldre kopier har «Animatic Studio» og leses like godt. */
+export const BACKUP_APP_NAME = "From Pen to Glass";
+export const BACKUP_APP_NAMES: readonly string[] = [BACKUP_APP_NAME, "Animatic Studio"];
 /**
  * Største datadel (prosjektdata uten historikk og mediefiler) som kan gjenopprettes. Serverfunksjonen har
  * begrenset minne; et manus på ~100 sider med full historikk er ~2–3 MB.
@@ -72,6 +76,19 @@ export const BACKUP_STATE_TABLES = [
   "credit_participants",
   "credit_sequences",
   "animation_rigs", "animation_rig_versions", "animation_uses",
+  "lipsync_results", "animation_patterns",
+  "dialogue_versions",
+  "dialogue_reviews",
+  "note_flags",
+  "quality_profiles",
+  "translation_lines",
+  "translation_line_links",
+  "style_harmonizations",
+  "style_preferred_references",
+  "language_versions",
+  "measure_sets",
+  "rig_templates",
+  "rig_setups",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -83,12 +100,7 @@ export const BACKUP_HISTORY_TABLES = ["change_log", "generation_jobs"] as const;
 export type BackupBucket = "assets" | "sources";
 export type BackupFileCategory = "bilde" | "lyd" | "film" | "manusfil";
 
-export const BACKUP_CATEGORY_LABEL: Record<BackupFileCategory, string> = localized({
-  bilde: ["Bilder", "Images"],
-  lyd: ["Lyd", "Sound"],
-  film: ["Importert film", "Imported film"],
-  manusfil: ["Importerte manusfiler", "Imported script files"],
-});
+export const BACKUP_CATEGORY_LABEL: Record<BackupFileCategory, string> = tLocalized({ bilde: "core-backup-index.backup-category-label.bilde.cfc8c57d9977", lyd: "core-backup-index.backup-category-label.lyd.effe8c1543ae", film: "core-backup-index.backup-category-label.film.d4953b381f91", manusfil: "core-backup-index.backup-category-label.manusfil.4767ebdbf51c" });
 
 export interface BackupFile {
   readonly bucket: BackupBucket;
@@ -200,6 +212,9 @@ export function makeBackup(input: BackupInput): BackupData {
   const tables: Record<string, readonly Row[]> = {};
   for (const t of BACKUP_STATE_TABLES)
     tables[t] = (rows as unknown as Record<string, Row[]>)[t] ?? [];
+  // The approval receipt belongs to the upload workflow, not to restored project data.
+  tables["animation_rig_versions"] = (tables["animation_rig_versions"] ?? []).map(withoutRigImportReceipts);
+  tables["translation_line_links"] = (tables["translation_line_links"] ?? []).filter(r => r["origin"] === "approved" || r["origin"] === "manual");
   tables["script_versions"] = input.scriptVersions;
   tables["imported_documents"] = input.importedDocuments;
   return {
@@ -207,7 +222,7 @@ export function makeBackup(input: BackupInput): BackupData {
     formatVersion: BACKUP_FORMAT_VERSION,
     schemaVersion: input.schemaVersion,
     createdAt: input.createdAt,
-    app: "Animatic Studio",
+    app: BACKUP_APP_NAME,
     project: rows.project,
     tables,
     history: { change_log: input.changeLog, generation_jobs: input.generationJobs },
@@ -220,47 +235,35 @@ export function parseBackup(raw: unknown, maxSchemaVersion: number): BackupData 
   const b = raw as Partial<BackupData> | null;
   if (!b || typeof b !== "object" || b.format !== BACKUP_FORMAT)
     throw new Error(
-      L(
-        "Filen er ikke en sikkerhetskopi fra Animatic Studio.",
-        "The file is not a backup from Animatic Studio.",
-      ),
+      tk("core-backup-index.parse-backup.message.9e11241c0bca"),
     );
   if (typeof b.formatVersion !== "number" || b.formatVersion > BACKUP_FORMAT_VERSION)
     throw new Error(
-      L(
-        "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.",
-        "The backup was made with a newer version of Animatic Studio and cannot be read here.",
-      ),
+      tk("core-backup-index.parse-backup.message.bc940e902884"),
     );
   if (typeof b.schemaVersion !== "number" || b.schemaVersion > maxSchemaVersion)
     throw new Error(
-      L(
-        `Sikkerhetskopien er laget med en nyere database (versjon ${String(b.schemaVersion)}). Oppdater databasen først.`,
-        `The backup was made with a newer database (version ${String(b.schemaVersion)}). Update the database first.`,
-      ),
+      tk("core-backup-index.parse-backup.message.c74afc7e8489", { value1: String(String(b.schemaVersion)) }),
     );
   if (!b.project || typeof b.project !== "object" || typeof b.project["id"] !== "string")
     throw new Error(
-      L("Sikkerhetskopien mangler prosjektet.", "The backup is missing the project."),
+      tk("core-backup-index.parse-backup.message.3da8211ffa03"),
     );
   if (!b.tables || typeof b.tables !== "object")
-    throw new Error(L("Sikkerhetskopien mangler data.", "The backup is missing data."));
+    throw new Error(tk("core-backup-index.parse-backup.message.970e50bda852"));
   for (const t of [...BACKUP_STATE_TABLES, ...BACKUP_EXTRA_TABLES]) {
     const list = (b.tables as Record<string, unknown>)[t];
     if (list !== undefined && !Array.isArray(list))
-      throw new Error(L(`Sikkerhetskopien er skadet (${t}).`, `The backup is damaged (${t}).`));
+      throw new Error(tk("core-backup-index.parse-backup.message.1da046813368", { t: String(t) }));
   }
   if (!Array.isArray(b.files))
     throw new Error(
-      L("Sikkerhetskopien mangler fillisten.", "The backup is missing the file list."),
+      tk("core-backup-index.parse-backup.message.6037216b6002"),
     );
   const mains = (b.tables["productions"] ?? []).filter((p) => p["kind"] === "main");
   if (mains.length !== 1)
     throw new Error(
-      L(
-        "Sikkerhetskopien må ha nøyaktig én hovedfilm.",
-        "The backup must have exactly one main film.",
-      ),
+      tk("core-backup-index.parse-backup.message.39b03ff14504"),
     );
   return b as BackupData;
 }
@@ -341,6 +344,15 @@ export async function backupIdMap(
 }
 
 /** Bytter alle kjente ID-er (også inne i tekst, som filstier og øyeblikksbilder). */
+function withoutRigImportReceipts(row: Row): Row {
+  const spec = row["spec"] as { parts?: Record<string, Record<string, unknown>> } | undefined;
+  if (!spec?.parts) return row;
+  return { ...row, spec: { ...spec, parts: Object.fromEntries(Object.entries(spec.parts).map(([slot, p]) => {
+    const { mobileImportId: _receipt, ...part } = p;
+    return [slot, part];
+  })) } };
+}
+
 export function remapValue<T>(v: T, map: ReadonlyMap<string, string>): T {
   if (typeof v === "string") return v.replace(UUID_G, (m) => map.get(m) ?? m) as T;
   if (Array.isArray(v)) return v.map((x) => remapValue(x, map)) as T;
@@ -367,6 +379,9 @@ const NON_REFERENCE = new Set([
   "source_global_asset_id",
   "source_global_variant_id",
   "source_global_version_id",
+  // Lydversjoner (DV2): leverandørens stemme- og modell-ID er ikke prosjektrader
+  "voice_id",
+  "model_id",
 ]);
 
 /**
@@ -381,12 +396,15 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
         if (!k.endsWith("_id") || NON_REFERENCE.has(k) || v === null || v === undefined) continue;
         if (typeof v !== "string" || !map.has(v))
           throw new Error(
-            L(
-              `Sikkerhetskopien viser til noe som ikke er med i den (${t}.${k}) og kan ikke brukes.`,
-              `The backup refers to something that is not in it (${t}.${k}) and cannot be used.`,
-            ),
+            tk("core-backup-index.assert-self-contained.message.72bee2145230", { t: String(t), k: String(k) }),
           );
       }
+  for (const r of b.tables["translation_line_links"] ?? [])
+    for (const key of ["source_block_ids","target_translation_ids"]) {
+      const ids=r[key];
+      if (!Array.isArray(ids) || ids.some(id=>typeof id !== "string" || !map.has(id)))
+        throw new Error(tk("core-backup-index.assert-self-contained.message.23f1008b1e80"));
+    }
   // Bildeskifter (DEC-0052) og bilder per språk (DEC-0059) i lag viser til ressurser inne i JSON
   for (const r of b.tables["composition_layers"] ?? [])
     for (const col of ["image_swaps", "language_images"]) {
@@ -398,10 +416,7 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
           if (v === null || v === undefined) continue;
           if (typeof v !== "string" || !map.has(v))
             throw new Error(
-              L(
-                `Sikkerhetskopien viser til noe som ikke er med i den (composition_layers.${col}) og kan ikke brukes.`,
-                `The backup refers to something that is not in it (composition_layers.${col}) and cannot be used.`,
-              ),
+              tk("core-backup-index.assert-self-contained.message.d0a638c27cb4", { col: String(col) }),
             );
         }
     }
@@ -411,20 +426,14 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
     const doc = (typeof d === "string" ? safeJson(d) : d) as PosterDocument | null;
     if (!doc || typeof doc !== "object" || posterDocumentError(doc))
       throw new Error(
-        L(
-          "Sikkerhetskopien har en ugyldig plakat og kan ikke brukes.",
-          "The backup has an invalid poster and cannot be used.",
-        ),
+        tk("core-backup-index.assert-self-contained.message.7522d88cabde"),
       );
     const refs = posterAssetRefs(doc);
     for (const set of [refs.assets, refs.variants, refs.versions, refs.relations])
       for (const v of set)
         if (!map.has(v))
           throw new Error(
-            L(
-              "Sikkerhetskopien viser til noe som ikke er med i den (posters.document) og kan ikke brukes.",
-              "The backup refers to something that is not in it (posters.document) and cannot be used.",
-            ),
+            tk("core-backup-index.assert-self-contained.message.d883eea976d1"),
           );
   }
   // Forbildebildene i stilprofilene (DEC-0065)
@@ -433,19 +442,19 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
     const guide = (typeof g === "string" ? safeJson(g) : g) as StyleGuide | null;
     if (!guide || typeof guide !== "object" || styleGuideError(guide))
       throw new Error(
-        L(
-          "Sikkerhetskopien har en ugyldig stilprofil og kan ikke brukes.",
-          "The backup has an invalid style profile and cannot be used.",
-        ),
+        tk("core-backup-index.assert-self-contained.message.cbc9438c182e"),
       );
     for (const v of guide.referenceVersionIds)
       if (!map.has(v))
         throw new Error(
-          L(
-            "Sikkerhetskopien viser til noe som ikke er med i den (style_profiles.guide) og kan ikke brukes.",
-            "The backup refers to something that is not in it (style_profiles.guide) and cannot be used.",
-          ),
+          tk("core-backup-index.assert-self-contained.message.532a1d4f3e40"),
         );
+  }
+  for (const row of b.tables["animation_rig_versions"] ?? []) {
+    const spec = row["spec"] as { parts?: Record<string, { versionId?: unknown }> } | undefined;
+    for (const part of Object.values(spec?.parts ?? {}))
+      if (part.versionId != null && (typeof part.versionId !== "string" || !map.has(part.versionId)))
+        throw new Error(tk("core-backup-index.assert-self-contained.message.10564ecb780b"));
   }
   assertStoryLabRefs(b, map);
 }
@@ -454,10 +463,7 @@ export function assertSelfContained(b: BackupData, map: ReadonlyMap<string, stri
 function assertStoryLabRefs(b: BackupData, map: ReadonlyMap<string, string>): void {
   const bad = (col: string) =>
     new Error(
-      L(
-        `Sikkerhetskopien viser til noe som ikke er med i den (${col}) og kan ikke brukes.`,
-        `The backup refers to something that is not in it (${col}) and cannot be used.`,
-      ),
+      tk("core-backup-index.bad.message.24989a3ae78a", { col: String(col) }),
     );
   const ref = (v: unknown, col: string, nullable: boolean) => {
     if ((v === null || v === undefined) && nullable) return;
@@ -528,12 +534,12 @@ export function restoredState(
 ): ProjectState {
   const pid = base.project.id;
   if (map.get(String(b.project["id"])) !== pid)
-    throw new Error(L("Feil prosjekt for gjenoppretting.", "Wrong project for restoring."));
+    throw new Error(tk("core-backup-index.restored-state.message.1874fc82dc1b"));
   assertSelfContained(b, map);
   const mains = Object.values(base.productions).filter((p) => p.kind === "main");
   if (mains.length !== 1)
     throw new Error(
-      L("Det nye prosjektet mangler hovedfilm.", "The new project is missing a main film."),
+      tk("core-backup-index.restored-state.message.24af47f88679"),
     );
   const main = mains[0]!;
   const t = (name: string): Row[] =>
@@ -555,6 +561,8 @@ export function restoredState(
       ai_price_per_image: p["ai_price_per_image"] ?? null,
       // Antakelsene for varighetsestimat (migrasjon 0028, KI-28) følger med sikkerhetskopien
       duration_assumptions: p["duration_assumptions"] ?? null,
+      // Aktiv kvalitetsprofil (M8, migrasjon 0063) følger med; ID-en omskrives til den nye profilen
+      active_quality_profile_id: remapValue(p["active_quality_profile_id"] ?? null, map),
     },
     productions: t("productions"),
     scenes: t("scenes"),
@@ -587,24 +595,34 @@ export function restoredState(
     template_instances: t("template_instances"),
     credit_participants: t("credit_participants"),
     credit_sequences: t("credit_sequences"),
-    animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions"), animation_uses: t("animation_uses"),
+    animation_rigs: t("animation_rigs"), animation_rig_versions: t("animation_rig_versions").map(withoutRigImportReceipts), animation_uses: t("animation_uses"),
+    lipsync_results: t("lipsync_results"), animation_patterns: t("animation_patterns"),
+    dialogue_versions: t("dialogue_versions"),
+    dialogue_reviews: t("dialogue_reviews"),
+    note_flags: t("note_flags"),
+    quality_profiles: t("quality_profiles"),
+    translation_line_links: t("translation_line_links"),
+    translation_lines: t("translation_lines"),
+    style_harmonizations: t("style_harmonizations"),
+    style_preferred_references: t("style_preferred_references"),
+    language_versions: t("language_versions"),
+    measure_sets: t("measure_sets"),
+    rig_templates: t("rig_templates"),
+    rig_setups: t("rig_setups"),
   };
   let state: ProjectState;
   try {
     state = stateFromRows(rows);
   } catch (e) {
     throw new Error(
-      L(
-        `Sikkerhetskopien er skadet: ${(e as Error).message}`,
-        `The backup is damaged: ${(e as Error).message}`,
-      ),
+      tk("core-backup-index.restored-state.message.b1f60ae5b347", { message: String((e as Error).message) }),
     );
   }
   // Hovedfilmen finnes allerede i det nye prosjektet: den oppdateres (revisjonen økes med én)
   const restoredMain = state.productions[main.id];
   if (!restoredMain)
     throw new Error(
-      L("Sikkerhetskopien mangler hovedfilmen.", "The backup is missing the main film."),
+      tk("core-backup-index.restored-state.message.556acedd8924"),
     );
   const project =
     state.project.fps.num === base.project.fps.num &&
@@ -638,10 +656,7 @@ export function restoredState(
   ].filter((x): x is string => typeof x === "string" && x !== "" && !x.startsWith(`${pid}/`));
   if (foreign.length > 0)
     throw new Error(
-      L(
-        "Sikkerhetskopien viser til filer utenfor prosjektet og kan ikke brukes.",
-        "The backup refers to files outside the project and cannot be used.",
-      ),
+      tk("core-backup-index.restored-state.message.fb87ab6b71ef"),
     );
   const violations = checkInvariants(state);
   if (violations.length > 0) {
@@ -650,10 +665,7 @@ export function restoredState(
       .map((v) => v.message)
       .join("; ");
     throw new Error(
-      L(
-        `Sikkerhetskopien gir et ugyldig prosjekt (${detail}).`,
-        `The backup gives an invalid project (${detail}).`,
-      ),
+      tk("core-backup-index.restored-state.message.745a06cf0ee3", { detail: String(detail) }),
     );
   }
   return state;
@@ -712,67 +724,28 @@ export function backupReadme(b: BackupData): string {
   const sum = backupSummary(b);
   const out = b.files.filter((f) => !f.included);
   return [
-    L(
-      `Sikkerhetskopi av «${sum.name}» fra Animatic Studio`,
-      `Backup of “${sum.name}” from Animatic Studio`,
-    ),
-    L(
-      `Laget ${b.createdAt} (formatversjon ${b.formatVersion}, databaseversjon ${b.schemaVersion}).`,
-      `Made ${b.createdAt} (format version ${b.formatVersion}, database version ${b.schemaVersion}).`,
-    ),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227", { name: String(sum.name) }),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.e2aa4e337bc6", { createdAt: String(b.createdAt), formatVersion: String(b.formatVersion), schemaVersion: String(b.schemaVersion) }),
     "",
-    L("Innhold:", "Contents:"),
-    L(
-      `- ${BACKUP_JSON}: alle prosjektdata som tabeller (samme kolonner som databasen):`,
-      `- ${BACKUP_JSON}: all project data as tables (the same columns as the database):`,
-    ),
-    L(
-      "  manus (scener, varianter, blokker med teksthistorikk), produksjoner og spinoffer,",
-      "  script (scenes, variants, blocks with text history), productions and spin-offs,",
-    ),
-    L(
-      "  sceneforekomster, ressursbibliotek, notater, 2D-scener med lag og kamera, lydklipp,",
-      "  scene occurrences, asset library, notes, 2D scenes with layers and camera, audio clips,",
-    ),
-    L(
-      "  importert film med deler og tidskoblinger, manusversjoner og importerte manusfiler.",
-      "  imported film with parts and time links, script versions and imported script files.",
-    ),
-    L(
-      "  «history» inneholder kommandologgen og loggen over AI-generering (bare til orientering).",
-      "  “history” contains the command log and the AI generation log (for information only).",
-    ),
-    L(
-      "  «files» er en liste over alle mediefilene, også de som ikke er tatt med.",
-      "  “files” is a list of all the media files, including those not included.",
-    ),
-    L(
-      "- filer/<bøtte>/<sti>: mediefilene, uendret.",
-      "- filer/<bøtte>/<sti>: the media files, unchanged.",
-    ),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.5b33f4c77b75"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.350511403787", { BACKUP_JSON: String(BACKUP_JSON) }),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.307bb9109748"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.458e2a5049e5"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.0e60fdcc65e7"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.d0abfdf8285b"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.19ab6bf26884"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.56c0c0b981d5"),
     "",
-    L(
-      "Gjenopprett: Prosjekter → «Gjenopprett fra sikkerhetskopi …». Det lages alltid et nytt prosjekt;",
-      "Restore: Projects → “Restore from backup …”. A new project is always made;",
-    ),
-    L("ingenting eksisterende overskrives.", "nothing existing is overwritten."),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.0b1007895dbb"),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.83e170294c2c"),
     "",
-    L(
-      `Scener: ${sum.scenes}. Manusblokker: ${sum.blocks}. Manusversjoner: ${sum.versions}.`,
-      `Scenes: ${sum.scenes}. Script blocks: ${sum.blocks}. Script versions: ${sum.versions}.`,
-    ),
-    L(
-      `Ressurser: ${sum.assets}. 2D-scener: ${sum.compositions}. Lydklipp: ${sum.audioClips}.`,
-      `Assets: ${sum.assets}. 2D scenes: ${sum.compositions}. Audio clips: ${sum.audioClips}.`,
-    ),
-    L(`Mediefiler med: ${sum.files}.`, `Media files included: ${sum.files}.`),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.5fc82ca70a93", { scenes: String(sum.scenes), blocks: String(sum.blocks), versions: String(sum.versions) }),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.9c499b1d728e", { assets: String(sum.assets), compositions: String(sum.compositions), audioClips: String(sum.audioClips) }),
+    tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.6b49b7313719", { files: String(sum.files) }),
     ...(out.length
       ? [
           "",
-          L(
-            `Disse ${out.length} filene er IKKE med (de ligger fortsatt i prosjektet):`,
-            `These ${out.length} files are NOT included (they are still in the project):`,
-          ),
+          tk("core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.37ae3941af04", { length: String(out.length) }),
           ...out.map((f) => `- ${BACKUP_CATEGORY_LABEL[f.category]}: ${f.path}`),
         ]
       : []),

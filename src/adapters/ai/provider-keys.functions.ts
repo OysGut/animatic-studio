@@ -9,17 +9,9 @@
  */
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import {
-  L,
-  checkKeyFormat,
-  isProviderId,
-  isTextProviderId,
-  keyHint,
-  newId,
-  MAX_ACCOUNT_CAP_USD,
-  type TextProviderId,
-} from "@/core";
+import { checkKeyFormat, isProviderId, isTextProviderId, keyHint, newId, MAX_ACCOUNT_CAP_USD, type TextProviderId } from "@/core";
 import { checkSchema, type AnyClient } from "@/adapters/storage/project-rows";
+import { t as tk } from "@/core/i18n/keyed";
 
 type Keyed = "openai" | "google" | "fal" | "runway" | "elevenlabs" | "anthropic" | "xai";
 
@@ -37,10 +29,7 @@ async function admin(): Promise<AnyClient> {
 async function schemaOk(db: AnyClient): Promise<string | null> {
   const s = await checkSchema(db);
   return s.kind === "missing" || s.version < 24
-    ? L(
-        "Databasen er ikke oppdatert for egne AI-leverandører. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0024).",
-        "The database is not updated for your own AI providers yet. Paste the message in LOVABLE_SYNC.md into Lovable (migration 0024).",
-      )
+    ? tk("adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35")
     : null;
 }
 
@@ -84,9 +73,9 @@ export const saveProviderKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = (d ?? {}) as Record<string, unknown>;
-    if (!isKeyed(x["provider"])) throw new Error(L("Ukjent leverandør", "Unknown provider"));
+    if (!isKeyed(x["provider"])) throw new Error(tk("adapters-ai-provider-keys-functions.save-provider-key.create-server-fn-method-post-middleware-require-supabase-auth-validator.dff2aecbcf39"));
     if (typeof x["key"] !== "string" || x["key"].length > 512)
-      throw new Error(L("Ugyldig nøkkel", "Invalid key"));
+      throw new Error(tk("adapters-ai-provider-keys-functions.save-provider-key.create-server-fn-method-post-middleware-require-supabase-auth-validator.992141553490"));
     const label = typeof x["label"] === "string" ? x["label"].trim().slice(0, 80) : "";
     return { provider: x["provider"], key: x["key"].trim(), label };
   })
@@ -96,10 +85,7 @@ export const saveProviderKey = createServerFn({ method: "POST" })
     if (throttled(context.userId))
       return {
         ok: false,
-        message: L(
-          "For mange forsøk. Vent litt og prøv igjen.",
-          "Too many attempts. Wait a little and try again.",
-        ),
+        message: tk("adapters-ai-provider-keys-functions.message.message.359542d5bb9b"),
       };
     const db = await admin();
     const bad = await schemaOk(db);
@@ -109,10 +95,7 @@ export const saveProviderKey = createServerFn({ method: "POST" })
     if (test.result === "rejected")
       return {
         ok: false,
-        message: `${test.message} ${L(
-          "Sjekk at du kopierte hele nøkkelen, og at den ikke er slettet hos leverandøren.",
-          "Check that you copied the whole key and that the provider has not deleted it.",
-        )}`,
+        message: `${test.message} ${tk("adapters-ai-provider-keys-functions.message.message.ee574a702c4e")}`,
       };
     const { encryptKey } = await import("./key-vault.server");
     const { data: existing } = await db
@@ -151,10 +134,7 @@ export const saveProviderKey = createServerFn({ method: "POST" })
     if (error)
       return {
         ok: false,
-        message: L(
-          `Nøkkelen kunne ikke lagres: ${error.message}`,
-          `The key could not be saved: ${error.message}`,
-        ),
+        message: tk("adapters-ai-provider-keys-functions.message.message.9b6c3ed1f5f7", { message: String(error.message) }),
       };
     if (test.result === "ok" || test.result === "limited")
       await storeTextModels(db, id, data.provider, data.key);
@@ -165,17 +145,14 @@ export const testSavedProviderKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const p = (d as Record<string, unknown> | null)?.["provider"];
-    if (!isKeyed(p)) throw new Error(L("Ukjent leverandør", "Unknown provider"));
+    if (!isKeyed(p)) throw new Error(tk("adapters-ai-provider-keys-functions.test-saved-provider-key.create-server-fn-method-post-middleware-require-supabase-auth-validator.ce3935f8c63d"));
     return { provider: p };
   })
   .handler(async ({ data, context }): Promise<KeyResult> => {
     if (throttled(context.userId))
       return {
         ok: false,
-        message: L(
-          "For mange forsøk. Vent litt og prøv igjen.",
-          "Too many attempts. Wait a little and try again.",
-        ),
+        message: tk("adapters-ai-provider-keys-functions.message.message.359542d5bb9b.2"),
       };
     const db = await admin();
     const bad = await schemaOk(db);
@@ -189,10 +166,7 @@ export const testSavedProviderKey = createServerFn({ method: "POST" })
     if (!row)
       return {
         ok: false,
-        message: L(
-          "Ingen nøkkel er lagt inn for denne leverandøren.",
-          "No key has been added for this provider.",
-        ),
+        message: tk("adapters-ai-provider-keys-functions.message.message.7559b11b5c62"),
       };
     const r = row as { id: string; ciphertext: string; iv: string; key_version: number };
     const { decryptKey } = await import("./key-vault.server");
@@ -224,7 +198,7 @@ export const testSavedProviderKey = createServerFn({ method: "POST" })
           ok: false,
           message:
             test.message ??
-            L("Tjenesten godtok ikke nøkkelen.", "The service did not accept the key."),
+            tk("adapters-ai-provider-keys-functions.message.message.94cfab19e590"),
         }
       : { ok: true, status, message: test.message };
   });
@@ -233,7 +207,7 @@ export const removeProviderKey = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const p = (d as Record<string, unknown> | null)?.["provider"];
-    if (!isKeyed(p)) throw new Error(L("Ukjent leverandør", "Unknown provider"));
+    if (!isKeyed(p)) throw new Error(tk("adapters-ai-provider-keys-functions.remove-provider-key.create-server-fn-method-post-middleware-require-supabase-auth-validator.2eba611988e2"));
     return { provider: p };
   })
   .handler(async ({ data, context }): Promise<{ ok: boolean; message: string | null }> => {
@@ -257,7 +231,7 @@ export const setAccountCap = createServerFn({ method: "POST" })
       c !== null &&
       (typeof c !== "number" || !Number.isFinite(c) || c < 0 || c > MAX_ACCOUNT_CAP_USD)
     )
-      throw new Error(L("Ugyldig tak", "Invalid limit"));
+      throw new Error(tk("adapters-ai-provider-keys-functions.set-account-cap.create-server-fn-method-post-middleware-require-supabase-auth-validator.196b744b677e"));
     return { capUsd: c === null ? null : Math.round((c as number) * 100) / 100 };
   })
   .handler(async ({ data, context }): Promise<{ ok: boolean; message: string | null }> => {
@@ -284,7 +258,7 @@ export const projectAiProviders = createServerFn({ method: "POST" })
   .validator((d: unknown) => {
     const p = (d as Record<string, unknown> | null)?.["projectId"];
     if (typeof p !== "string" || !/^[0-9a-f-]{36}$/i.test(p))
-      throw new Error(L("Ugyldig prosjekt", "Invalid project"));
+      throw new Error(tk("adapters-ai-provider-keys-functions.project-ai-providers.create-server-fn-method-post-middleware-require-supabase-auth-validator.131b75d842d4"));
     return { projectId: p };
   })
   .handler(async ({ data, context }): Promise<{ providers: string[]; missing: boolean }> => {

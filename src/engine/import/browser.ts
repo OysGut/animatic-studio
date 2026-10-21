@@ -5,7 +5,8 @@
  */
 import { parseFountain, parseScreenplayLines, type ParsedScreenplay } from "@/core/screenplay";
 import type { ImportedNote } from "@/core/notes";
-import { L } from "@/core";
+
+import { t } from "@/core/i18n/keyed";
 
 export const MAX_IMPORT_BYTES = 100 * 1024 * 1024;
 
@@ -53,10 +54,7 @@ export function decodeFountain(bytes: Uint8Array): string {
   const pdf = head[0] === 0x25 && head[1] === 0x50 && head[2] === 0x44 && head[3] === 0x46;
   if (zip || pdf || bytes.includes(0))
     throw new Error(
-      L(
-        "Filen er ikke en Fountain-tekstfil. Fountain-manus er ren tekst (.fountain, .spmd eller .txt).",
-        "The file is not a Fountain text file. Fountain scripts are plain text (.fountain, .spmd or .txt).",
-      ),
+      t("engine-import-browser.decode-fountain.message.af53ad05831d"),
     );
   try {
     return new TextDecoder("utf-8", { fatal: true }).decode(bytes);
@@ -81,20 +79,17 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
   const format = formatOf(file.name);
   if (!format)
     throw new Error(
-      L(
-        "Velg en PDF-, Word- eller Fountain-fil (.pdf, .docx eller .fountain). Final Draft-filer kan lagres som PDF.",
-        "Choose a PDF, Word or Fountain file (.pdf, .docx or .fountain). Final Draft files can be saved as PDF.",
-      ),
+      t("engine-import-browser.read-screenplay-file.message.d4aaf95bf60f"),
     );
   if (file.size > MAX_IMPORT_BYTES)
-    throw new Error(L("Filen er større enn 100 MB.", "The file is larger than 100 MB."));
+    throw new Error(t("engine-import-browser.read-screenplay-file.message.bd8815be4553"));
   const bytes = new Uint8Array(await file.arrayBuffer());
   const sha256 = await sha256Hex(bytes);
   if (format === "fountain") {
     const { parsed, notes } = parseFountain(decodeFountain(bytes));
     if (!parsed.scenes.some((sc) => sc.elements.length > 0 || !sc.isContinuation))
       throw new Error(
-        L("Fant ingen manustekst i Fountain-filen.", "No script text found in the Fountain file."),
+        t("engine-import-browser.read-screenplay-file.message.be31e7cdbed8"),
       );
     return { parsed, bytes, sha256, format, notes };
   }
@@ -111,11 +106,8 @@ export async function readScreenplayFile(file: File): Promise<ReadScreenplay> {
   if (lines.length === 0) {
     throw new Error(
       format === "pdf"
-        ? L(
-            "Fant ingen tekst i PDF-en. Er det en skannet PDF? Den må ha tekst som kan merkes.",
-            "No text found in the PDF. Is it a scanned PDF? It needs text that can be selected.",
-          )
-        : L("Fant ingen tekst i Word-filen.", "No text found in the Word file."),
+        ? t("engine-import-browser.read-screenplay-file.message.9a0ff2b5e05d")
+        : t("engine-import-browser.read-screenplay-file.message.dc9ed1cb5144"),
     );
   }
   return { parsed: parseScreenplayLines(lines, { format }), bytes, sha256, format, notes };

@@ -4,13 +4,10 @@
  * gått mot vanlig tid for leverandøren – og da sier teksten at det er et anslag (REQ-0110, REQ-0295).
  */
 import type { GenerationJob } from "./cost";
-import { L, localized } from "../i18n";
 
-export const PRIORITY_LABEL = localized({
-  1: ["Høy", "High"],
-  2: ["Normal", "Normal"],
-  3: ["Lav", "Low"],
-});
+import { t, tLocalized } from "@/core/i18n/keyed";
+
+export const PRIORITY_LABEL = tLocalized({ 1: "core-generation-queue.priority-label.1.54d429857915", 2: "core-generation-queue.priority-label.2.5719f22f0f42", 3: "core-generation-queue.priority-label.3.374c0dbd119b" });
 
 /** Vanlig tid hos leverandøren for én video (anslag, millisekunder). */
 const TYPICAL_VIDEO_MS: Record<string, number> = {
@@ -44,7 +41,7 @@ export interface JobProgress {
 
 function minutes(ms: number): string {
   const m = Math.round(ms / 60_000);
-  return m <= 1 ? L("under ett minutt", "less than a minute") : L(`${m} minutter`, `${m} minutes`);
+  return m <= 1 ? t("core-generation-queue.minutes.message.5ef032dbe94a") : t("core-generation-queue.minutes.message.419446e5f4ae", { m: String(m) });
 }
 
 export function jobProgress(
@@ -56,10 +53,7 @@ export function jobProgress(
     if (job.params && typeof job.params["chainAfter"] === "string")
       return {
         fraction: 0,
-        label: L(
-          "I kø – venter på videoen til segmentet før (sammenheng)",
-          "In queue – waiting for the video of the previous segment (continuity)",
-        ),
+        label: t("core-generation-queue.label.label.d5b28f7b1888"),
         reported: false,
       };
     const pos = queueOrder(queue).findIndex((j) => j.id === job.id);
@@ -67,8 +61,8 @@ export function jobProgress(
       fraction: 0,
       label:
         pos >= 0
-          ? L(`I kø – nummer ${pos + 1}`, `In queue – number ${pos + 1}`)
-          : L("I kø", "In queue"),
+          ? t("core-generation-queue.label.label.3f75e6d4faca", { value1: String(pos + 1) })
+          : t("core-generation-queue.label.label.2a9a29015402"),
       reported: false,
     };
   }
@@ -77,32 +71,23 @@ export function jobProgress(
   if (typeof job.progress === "number")
     return {
       fraction: job.progress,
-      label: L(
-        `${Math.round(job.progress * 100)} % (fra ${job.provider})`,
-        `${Math.round(job.progress * 100)} % (from ${job.provider})`,
-      ),
+      label: t("core-generation-queue.label.label.ac98afcbbdb1", { value1: String(Math.round(job.progress * 100)), provider: String(job.provider) }),
       reported: true,
     };
   const since = Date.parse(job.startedAt ?? job.createdAt);
   const elapsed = Math.max(0, now - since);
   const typical = TYPICAL_VIDEO_MS[job.provider] ?? 180_000;
   if (job.kind !== "video")
-    return { fraction: null, label: L("Lages …", "Generating …"), reported: false };
+    return { fraction: null, label: t("core-generation-queue.label.label.0f438bff92bc"), reported: false };
   if (elapsed > typical * 1.5)
     return {
       fraction: 0.95,
-      label: L(
-        `Tar lengre tid enn vanlig (${minutes(elapsed)} så langt)`,
-        `Taking longer than usual (${minutes(elapsed)} so far)`,
-      ),
+      label: t("core-generation-queue.label.label.2fe376f90ecf", { value1: String(minutes(elapsed)) }),
       reported: false,
     };
   return {
     fraction: Math.min(0.9, elapsed / typical),
-    label: L(
-      `Anslag: ca. ${minutes(Math.max(0, typical - elapsed))} igjen`,
-      `Estimate: about ${minutes(Math.max(0, typical - elapsed))} left`,
-    ),
+    label: t("core-generation-queue.label.label.3ea4155ca526", { value1: String(minutes(Math.max(0, typical - elapsed))) }),
     reported: false,
   };
 }

@@ -16,9 +16,10 @@ import {
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type PointerEvent } from "react";
 import { createPortal } from "react-dom";
-import { L, versionFileName, type AssetVersion, type ProjectState } from "@/core";
+import { versionFileName, type AssetVersion, type ProjectState } from "@/core";
 import { prepareDownload } from "@/app/download";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 const MIN = 0.05;
 const MAX = 16;
@@ -167,10 +168,7 @@ export function ImageViewer({
       const res = await fetch(url);
       if (!res.ok)
         throw new Error(
-          L(
-            `Bildet kunne ikke hentes (${res.status})`,
-            `The image could not be fetched (${res.status})`,
-          ),
+          t("app-library-image-viewer.download.message.143ad8d31eda", { status: String(res.status) }),
         );
       const bytes = new Uint8Array(await res.arrayBuffer());
       prepareDownload(bytes, versionFileName(state, v), v.mimeType || "image/png");
@@ -203,7 +201,7 @@ export function ImageViewer({
       ref={rootRef}
       role="dialog"
       aria-modal="true"
-      aria-label={L(`Bilde: ${name}`, `Image: ${name}`)}
+      aria-label={t("app-library-image-viewer.image-viewer.aria-label.f0b00396be40", { name: String(name) })}
       className="fixed inset-0 z-[100] flex flex-col text-on-media"
       style={{ background: "var(--media-bg)" }}
     >
@@ -225,8 +223,8 @@ export function ImageViewer({
               className="size-8 text-on-media hover:bg-on-media/10"
               disabled={index === 0}
               onClick={() => onIndex(index - 1)}
-              aria-label={L("Forrige versjon", "Previous version")}
-              title={L("Forrige versjon (←)", "Previous version (←)")}
+              aria-label={t("app-library-image-viewer.image-viewer.aria-label.c78da2df291c")}
+              title={t("app-library-image-viewer.image-viewer.title.d0e886576bb0")}
             >
               <ChevronLeft />
             </Button>
@@ -237,8 +235,8 @@ export function ImageViewer({
               className="size-8 text-on-media hover:bg-on-media/10"
               disabled={index === versions.length - 1}
               onClick={() => onIndex(index + 1)}
-              aria-label={L("Neste versjon", "Next version")}
-              title={L("Neste versjon (→)", "Next version (→)")}
+              aria-label={t("app-library-image-viewer.image-viewer.aria-label.549120b3c8ec")}
+              title={t("app-library-image-viewer.image-viewer.title.e02154d9478f")}
             >
               <ChevronRight />
             </Button>
@@ -250,8 +248,8 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-on-media hover:bg-on-media/10"
           onClick={() => zoomAt(0.8)}
-          aria-label={L("Zoom ut", "Zoom out")}
-          title={L("Zoom ut (−)", "Zoom out (−)")}
+          aria-label={t("app-library-image-viewer.image-viewer.aria-label.cb6c5b8e8f48")}
+          title={t("app-library-image-viewer.image-viewer.title.48a58951e745")}
         >
           <Minus />
         </Button>
@@ -266,8 +264,8 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-on-media hover:bg-on-media/10"
           onClick={() => zoomAt(1.25)}
-          aria-label={L("Zoom inn", "Zoom in")}
-          title={L("Zoom inn (+)", "Zoom in (+)")}
+          aria-label={t("app-library-image-viewer.image-viewer.aria-label.4a8af2dce4c6")}
+          title={t("app-library-image-viewer.image-viewer.title.8bb7f3f6f007")}
         >
           <Plus />
         </Button>
@@ -276,10 +274,10 @@ export function ImageViewer({
           variant="ghost"
           className="text-on-media hover:bg-on-media/10"
           onClick={fit}
-          title={L("Hele bildet (0)", "Whole image (0)")}
+          title={t("app-library-image-viewer.image-viewer.title.ad93ac37d18e")}
         >
           <Maximize />
-          {L("Tilpass", "Fit")}
+          {t("app-library-image-viewer.image-viewer.button.36daa946406e")}
         </Button>
         <Button
           size="sm"
@@ -299,10 +297,10 @@ export function ImageViewer({
           variant="secondary"
           onClick={download}
           disabled={busy || !url}
-          title={L(`Last ned som «${name}»`, `Download as “${name}”`)}
+          title={t("app-library-image-viewer.image-viewer.title.b1bf57268739", { name: String(name) })}
         >
           {busy ? <Loader2 className="animate-spin" /> : <Download />}
-          {L("Last ned", "Download")}
+          {t("app-library-image-viewer.image-viewer.button.da7b518df8f2")}
         </Button>
         <Button
           ref={closeRef}
@@ -310,14 +308,14 @@ export function ImageViewer({
           variant="ghost"
           className="size-8 text-on-media hover:bg-on-media/10"
           onClick={onClose}
-          aria-label={L("Lukk", "Close")}
-          title={L("Lukk (Esc)", "Close (Esc)")}
+          aria-label={t("app-library-image-viewer.image-viewer.aria-label.b3624adedc14")}
+          title={t("app-library-image-viewer.image-viewer.title.55c0fa02de20")}
         >
           <X />
         </Button>
       </div>
       {error ? (
-        <p role="alert" className="bg-red-950 px-3 py-1.5 text-xs text-red-200">
+        <p role="alert" className="bg-status-danger-bg px-3 py-1.5 text-xs text-status-danger">
           {error}
         </p>
       ) : null}
@@ -361,10 +359,7 @@ export function ImageViewer({
         )}
       </div>
       <p className="shrink-0 px-3 py-1.5 text-center text-[11px] text-on-media/50">
-        {L(
-          "Rullehjul zoomer · dra for å flytte · dobbeltklikk veksler mellom hele bildet og zoom · ← → bytter versjon · Esc lukker",
-          "Scroll wheel zooms · drag to move · double-click switches between the whole image and zoom · ← → changes version · Esc closes",
-        )}
+        {t("app-library-image-viewer.image-viewer.p.634ebdf70ecb")}
       </p>
     </div>,
     document.body,

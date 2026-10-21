@@ -6,6 +6,12 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { revealInToolbar } from "./toolbar.mjs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
+// R7/V1: språket scenarioet faktisk kjører på (UI_LANG=en overstyrer); tx velger forventet tekst etter det
+let CUR = "nb";
+const tx = (nb, en) => (CUR === "en" ? en : nb);
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -136,7 +142,7 @@ async function mock(ctx) {
       return route.fulfill({ status: 200, contentType: "image/svg+xml", body: svg });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 32 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       if (url.searchParams.get("id")?.startsWith("eq."))
@@ -298,7 +304,9 @@ async function shot(name, path, act, viewport = { width: 1440, height: 900 }) {
 
 
 const occ0 = fx.rows.scene_occurrences?.[0];
-async function run(name, act, lang = "nb") {
+async function run(name, act, wanted = "nb") {
+  const lang = uiLang(wanted);
+  CUR = lang;
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: "dark" });
   await mock(ctx);
   const page = await ctx.newPage();
@@ -320,6 +328,8 @@ async function run(name, act, lang = "nb") {
     errors.push("act: " + e.message);
   }
   console.log(name, errors.length ? "FEIL: " + errors.join(" | ").slice(0, 800) : "ok");
+  // R7: en feil i selve scenarioet (tidsavbrudd o.l.) telles som feil, ikke bare de enkelte kontrollene
+  if (errors.length) fail++;
   await ctx.close();
 }
 let pass = 0, fail = 0;
@@ -327,47 +337,49 @@ const check = (ok, text) => { console.log(`  ${ok ? "✓" : "✗"} ${text}`); ok
 
 await (process.env.ONLY_H && process.env.ONLY_H !== "h01" ? async () => {} : run)("h01-knapp-og-dialog", async (page) => {
   const btn = page.getByTestId("scene-ai-video");
+  // R7: ved 1440 px ligger «AI-video …» i «Mer …» (U2); åpne menyen først
+  await revealInToolbar(page, btn).catch(() => {});
   check(await btn.isVisible(), "knappen «AI-video …» står i verktøylinjen");
   await page.screenshot({ path: `${out}/h01a-verktoylinje.png` });
   await btn.click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
-  check(await dlg.getByText("Scenen vises som").isVisible(), "dialogen viser hva scenen vises som");
-  check(await dlg.getByText("2D-scenen (animatic)").isVisible(), "2D-scenen er et valg");
-  check(await dlg.getByRole("button", { name: /Last opp video/ }).isVisible(), "video kan lastes opp for scenen");
-  check(await dlg.getByRole("button", { name: /Last ned scenen/ }).isVisible(), "scenen kan lastes ned");
+  check(await dlg.getByText(tx("Scenen vises som", "The scene is shown as")).isVisible(), "dialogen viser hva scenen vises som");
+  check(await dlg.getByText(tx("2D-scenen (animatic)", "2D scene (animatic)")).isVisible(), "2D-scenen er et valg");
+  check(await dlg.getByRole("button", { name: tx(/Last opp video/, /Upload video/) }).isVisible(), "video kan lastes opp for scenen");
+  check(await dlg.getByRole("button", { name: tx(/Last ned scenen/, /Download the scene/) }).isVisible(), "scenen kan lastes ned");
   const opts = await dlg.locator("select option").allTextContents();
   check(opts.some((t) => t.includes("Kling O3 Edit")), "Kling O3 Edit kan velges");
-  check(opts.some((t) => t.includes("Aleph 2") && /kreditter\/sek/.test(t)), "Aleph 2 kan velges, med kreditter");
-  check(opts.some((t) => t === "2D-scenen"), "kilden kan velges (2D-scenen)");
-  check(await dlg.getByText("Generell beskrivelse for hele prosjektet").isVisible(), "den globale beskrivelsen vises med avkrysning");
-  const desc = dlg.getByRole("textbox", { name: "Scenebeskrivelse" });
+  check(opts.some((t) => t.includes("Aleph 2") && tx(/kreditter\/sek/, /credits\/sec/).test(t)), "Aleph 2 kan velges, med kreditter");
+  check(opts.some((t) => t === tx("2D-scenen", "The 2D scene")), "kilden kan velges (2D-scenen)");
+  check(await dlg.getByText(tx("Generell beskrivelse for hele prosjektet", "General description for the whole project")).isVisible(), "den globale beskrivelsen vises med avkrysning");
+  const desc = dlg.getByRole("textbox", { name: tx("Scenebeskrivelse", "Scene description") });
   check(/^Scene: /.test(await desc.inputValue()), "scenebeskrivelsen er laget fra manuset");
-  check(await dlg.getByText("Referansebilder", { exact: true }).isVisible(), "referansebildene vises");
-  check(await dlg.getByText(/Anslått pris: \$/).isVisible(), "anslått pris vises");
-  check(await dlg.getByText("Undertekster sendes aldri.").isVisible(), "undertekster sendes aldri");
+  check(await dlg.getByText(tx("Referansebilder", "Reference images"), { exact: true }).isVisible(), "referansebildene vises");
+  check(await dlg.getByText(tx(/Anslått pris: \$/, /Estimated price: \$/)).isVisible(), "anslått pris vises");
+  check(await dlg.getByText(tx("Undertekster sendes aldri.", "Subtitles are never sent.")).isVisible(), "undertekster sendes aldri");
   await desc.fill("Scene: Interior, Stua, dag.\nAction: Maja er redd, men nysgjerrig.");
-  await dlg.getByText("Se hele beskrivelsen som sendes").click();
+  await dlg.getByText(tx("Se hele beskrivelsen som sendes", "See the whole description that is sent")).click();
   await page.waitForTimeout(300);
   let pre = await dlg.locator("details pre").first().textContent();
   check(/redraw @Video1/.test(pre ?? ""), "beskrivelsen sender scenen som @Video1");
   check((pre ?? "").includes("Maja er redd, men nysgjerrig."), "scenebeskrivelsen kommer med");
   const globalShown = (await dlg.locator("[data-testid=global-style] pre").textContent()) ?? "";
-  const hasGlobal = !/ingen visuell stil ennå/.test(globalShown);
+  const hasGlobal = !tx(/ingen visuell stil ennå/, /no visual style yet/).test(globalShown);
   check(hasGlobal ? (pre ?? "").includes("Project style (applies to the whole film)") : !(pre ?? "").includes("Project style"), `den globale beskrivelsen er med som standard (${hasGlobal ? "prosjektet har stil" : "fiksturen har ingen stil: ingenting sendes"})`);
   await page.screenshot({ path: `${out}/h01b-dialog.png` });
-  await dlg.getByRole("checkbox", { name: /Generell beskrivelse/ }).uncheck();
+  await dlg.getByRole("checkbox", { name: tx(/Generell beskrivelse/, /General description/) }).uncheck();
   await page.waitForTimeout(200);
   pre = await dlg.locator("details pre").first().textContent();
   check(!(pre ?? "").includes("Project style"), "den globale beskrivelsen kan krysses vekk");
   check((await dlg.locator("[data-testid=global-style] pre").getAttribute("aria-disabled")) === "true", "den gråes ned når den er krysset vekk");
-  await dlg.getByRole("checkbox", { name: /Generell beskrivelse/ }).check();
-  await dlg.getByRole("button", { name: /Lag AI-video/ }).click();
+  await dlg.getByRole("checkbox", { name: tx(/Generell beskrivelse/, /General description/) }).check();
+  await dlg.getByRole("button", { name: tx(/Lag AI-video/, /Make AI video/) }).click();
   await page.waitForTimeout(300);
-  check(await dlg.getByText(/Dette koster ca\. \$/).isVisible(), "kostnaden må bekreftes før sending");
+  check(await dlg.getByText(tx(/Dette koster ca\. \$/, /This costs about \$/)).isVisible(), "kostnaden må bekreftes før sending");
   await page.screenshot({ path: `${out}/h01c-bekreft.png` });
-  await dlg.getByRole("button", { name: /Ja, lag videoen/ }).click();
-  await dlg.getByText(/^Sendt|Nettleseren kan|kunne ikke/).first().waitFor({ timeout: 60000 });
+  await dlg.getByRole("button", { name: tx(/Ja, lag videoen/, /Yes, make the video/) }).click();
+  await dlg.getByText(tx(/^Sendt|Nettleseren kan|kunne ikke/, /^Sent|The browser cannot|could not/)).first().waitFor({ timeout: 60000 });
   await page.screenshot({ path: `${out}/h01d-sendt.png` });
   const sentText = (await dlg.locator("[role=status],[role=alert]").allTextContents()).join(" | ");
   console.log("   status:", sentText.slice(0, 300));
@@ -400,15 +412,15 @@ for (const o of order.slice(0, 3))
       params: { source: "scene2d", batch: `b-${o.id}`, piece: i, pieces: 2, startMs: i * 2000, endMs: (i + 1) * 2000 },
     });
 await run("h02-under-arbeid", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   check(await dlg.getByTestId("scene-video-batch").first().isVisible(), "bunten vises som versjon av scenen");
-  check(await dlg.getByText(/Lages … 0 av 2 ferdig/).first().isVisible(), "bunten vises som under arbeid");
+  check(await dlg.getByText(tx(/Lages … 0 av 2 ferdig/, /In progress … 0 of 2 done/)).first().isVisible(), "bunten vises som under arbeid");
   await page.screenshot({ path: `${out}/h02-under-arbeid.png` });
 });
 await run("h03-engelsk", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   check(await dlg.getByText("AI video of the scene").isVisible(), "dialogen er på engelsk");
@@ -418,41 +430,41 @@ await run("h03-engelsk", async (page) => {
 await run("h04-status-og-lyd", async (page) => {
   const st = page.getByTestId("generation-status");
   check(await st.isVisible(), "statusen for genereringer står i toppfeltet");
-  check(/lages/.test((await st.textContent()) ?? ""), `statusen viser hva som lages (${(await st.textContent())?.trim()})`);
+  check(tx(/lages/, /in progress/).test((await st.textContent()) ?? ""), `statusen viser hva som lages (${(await st.textContent())?.trim()})`);
   await st.click();
   await page.waitForTimeout(500);
-  check(await page.getByText("AI-genereringer").first().isVisible(), "statusen åpner listen over genereringer");
+  check(await page.getByText(tx("AI-genereringer", "AI generations")).first().isVisible(), "statusen åpner listen over genereringer");
   await page.screenshot({ path: `${out}/h04a-status.png` });
   await page.keyboard.press("Escape");
   STARTS.length = 0;
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
-  await dlg.getByRole("checkbox", { name: /Send scenens lyd med/ }).check();
-  await dlg.getByRole("button", { name: /Lag AI-video/ }).click();
-  await dlg.getByRole("button", { name: /Ja, lag videoen/ }).click();
-  await dlg.getByText(/^Sendt|Nettleseren kan|kunne ikke/).first().waitFor({ timeout: 60000 });
+  await dlg.getByRole("checkbox", { name: tx(/Send scenens lyd med/, /Send the scene's sound/) }).check();
+  await dlg.getByRole("button", { name: tx(/Lag AI-video/, /Make AI video/) }).click();
+  await dlg.getByRole("button", { name: tx(/Ja, lag videoen/, /Yes, make the video/) }).click();
+  await dlg.getByText(tx(/^Sendt|Nettleseren kan|kunne ikke/, /^Sent|The browser cannot|could not/)).first().waitFor({ timeout: 60000 });
   check(/Use the sound in @Video1 for lip movement and timing/.test(STARTS[0] ?? ""), "lyden kan velges sendt med");
 });
 await run("h05-global-beskrivelse", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
-  await dlg.locator("[data-testid=global-style]").getByRole("button", { name: /Rediger/ }).click();
-  check(await dlg.getByText(/Endres globalt for hele prosjektet/).isVisible(), "redigering varsler at den endres globalt for hele prosjektet");
+  await dlg.locator("[data-testid=global-style]").getByRole("button", { name: tx(/Rediger/, /Edit/) }).click();
+  check(await dlg.getByText(tx(/Endres globalt for hele prosjektet/, /Changed globally for the whole project/)).isVisible(), "redigering varsler at den endres globalt for hele prosjektet");
   await page.screenshot({ path: `${out}/h05-global-rediger.png` });
 });
 await run("h06-nedlasting", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1200);
-  await page.getByRole("dialog").getByRole("button", { name: /Last ned scenen/ }).click();
+  await page.getByRole("dialog").getByRole("button", { name: tx(/Last ned scenen/, /Download the scene/) }).click();
   await page.waitForTimeout(5000);
   check(/\/montering/.test(page.url()), "«Last ned scenen» åpner monteringen");
   const exp = page.getByRole("dialog");
   check(await exp.getByTestId("export-format").isVisible(), "nedlastingen har valg av filformat");
   check((await exp.getByTestId("export-format").locator("option").allTextContents()).some((t) => t.includes("WebM")), "MP4 og WebM kan velges");
   check(await exp.getByTestId("export-subtitles").isVisible(), "nedlastingen har eget valg for undertekster");
-  check(await exp.getByRole("radio", { name: /Valgt scene/ }).isChecked().catch(() => false), "nedlastingen er satt til valgt scene");
+  check(await exp.getByRole("radio", { name: tx(/Valgt scene/, /^Selected scene(?!s)/) }).isChecked().catch(() => false), "nedlastingen er satt til valgt scene");
   await page.screenshot({ path: `${out}/h06-nedlasting.png` });
 });
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);

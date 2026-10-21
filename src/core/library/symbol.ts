@@ -19,6 +19,7 @@ export const SYMBOL_SHAPE: Record<AssetKind, SymbolShape> = {
   other: "other",
   sound: "sound",
   template: "other",
+  font: "other",
 };
 
 /**

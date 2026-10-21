@@ -4,22 +4,8 @@
  */
 import { Download } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import {
-  L,
-  numbersByOccurrence,
-  exportNumbering,
-  exportNotes,
-  exportPaginationInput,
-  fitTitlePage,
-  formatHeading,
-  placeNotes,
-  paginate,
-  screenplayFountain,
-  tm,
-  TITLE_PAGE_MAX_LINES,
-  type NumberingMethod,
-  type ProjectState,
-} from "@/core";
+import { numbersByOccurrence, exportNumbering, exportNotes, exportPaginationInput, fitTitlePage, formatHeading, placeNotes, paginate, screenplayFountain, tm, TITLE_PAGE_MAX_LINES, exportLanguageDecision, languageLabel, scriptExportFontCheck, scriptExportTexts, docxLanguageTag, type ExportFallbackChoice, type NumberingMethod, type ProjectState, type TranslationStatus } from "@/core";
+import { ScriptLanguageSelect } from "./ScriptLanguageSelect";
 import { savedTitlePage } from "@/core/commands/export-settings";
 import { screenplayDocx } from "@/engine/export/screenplay-docx";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
@@ -36,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 interface Props {
   readonly open: boolean;
@@ -50,6 +37,12 @@ interface Props {
    * endringen gjelder bare denne eksporten.
    */
   readonly onSaveTitlePage?: (lines: readonly string[]) => void;
+  /** ML3: den norske kildetilstanden (for språkvalget). Utelatt = `state`. */
+  readonly sourceState?: ProjectState;
+  /** ML3: oversettelsesstatus for valgt språk; ufullstendig krever eksplisitt valg (norsk reserve eller stopp). */
+  readonly languageStatus?: TranslationStatus | null;
+  /** ML3: bytt språkversjon fra eksporten. */
+  readonly onLanguageChange?: (language: string) => void;
 }
 
 type Format = "pdf" | "docx" | "fountain";
@@ -66,7 +59,15 @@ export function ExportDialog({
   lockedPages,
   language = "nb",
   onSaveTitlePage,
+  sourceState,
+  languageStatus = null,
+  onLanguageChange,
 }: Props) {
+  // ML3: ufullstendig oversettelse eksporteres bare etter et eksplisitt valg (norsk reserve eller stopp)
+  const [fallbackChoice, setFallbackChoice] = useState<ExportFallbackChoice | undefined>(undefined);
+  useEffect(() => setFallbackChoice(undefined), [language, open]);
+  const decision = language === "nb" || !languageStatus ? ({ kind: "complete" } as const) : exportLanguageDecision(languageStatus, fallbackChoice);
+  const languageBlocked = decision.kind === "needs-choice" || decision.kind === "stopped";
   const [format, setFormat] = useState<Format>("pdf");
   // Nummereringen huskes fra forrige eksport av prosjektet i denne nettleseren (KI-176, REQ-0482,
   // Mars 15.10.2026: «Husk forrige valg»). Første gang: produksjonsnummerering.
@@ -154,7 +155,19 @@ export function ExportDialog({
   );
   const changed = preview.filter((p) => p.exportNumber !== p.productionNumber).length;
 
+  // ML4: fontkontroll før filen lages. PDF stoppes hvis tegn ville blitt «?»; Word får en advarsel.
+  const fontCheck = useMemo(
+    () =>
+      open
+        ? scriptExportFontCheck(scriptExportTexts(exportPaginationInput(state, productionId, opts), titleLines), format)
+        : null,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [open, state, productionId, method, includeInactive, fillOriginal, historical, titleLines, format],
+  );
+  const fontBlocked = !!fontCheck?.blocking;
+
   function doExport() {
+    if (languageBlocked || fontBlocked) return;
     setBusy(true);
     setError(null);
     try {
@@ -204,6 +217,7 @@ export function ExportDialog({
       } else {
         const bytes = screenplayDocx(input, {
           title: state.project.name,
+          language: docxLanguageTag(language),
           titlePage,
           ...(notes ? { notes } : {}),
         });
@@ -225,6 +239,7 @@ export function ExportDialog({
           includeInactive,
           fillOriginal,
           language,
+          ...(decision.kind === "fallback" ? { languageFallback: "nb" } : {}),
           withNotes: !!notes,
           lockedPages: format === "pdf" && lockedPages,
         },
@@ -242,22 +257,19 @@ export function ExportDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[680px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("Eksporter manus", "Export script")}</DialogTitle>
+          <DialogTitle>{t("app-script-export-dialog.export-dialog.dialog-title.4798ad21711e")}</DialogTitle>
           <DialogDescription>
-            {L("«", "“")}
+            {t("app-script-export-dialog.export-dialog.dialog-description.b5e5a710b2bc")}
             {production?.name}
-            {L("»", "”")} – {preview.length}{" "}
-            {L(
-              "scener. Eksporten endrer ingenting i prosjektet.",
-              "scenes. The export does not change anything in the project.",
-            )}
+            {t("app-script-export-dialog.export-dialog.dialog-description.7c1fa74ceb76")} – {preview.length}{" "}
+            {t("app-script-export-dialog.export-dialog.dialog-description.b0505a9dcdb9")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-2 gap-5">
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              {L("Format", "Format")}
+              {t("app-script-export-dialog.export-dialog.legend.6fe6a7497744")}
             </legend>
             <label className={radio}>
               <input
@@ -270,10 +282,7 @@ export function ExportDialog({
               <span>
                 PDF
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Ferdige sider, nøyaktig som i manusvisningen",
-                    "Finished pages, exactly as in the script view",
-                  )}
+                  {t("app-script-export-dialog.export-dialog.span.8697abcfdce9")}
                 </span>
               </span>
             </label>
@@ -288,10 +297,7 @@ export function ExportDialog({
               <span>
                 Word (.docx)
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Redigerbar; Word bryter sidene selv",
-                    "Editable; Word breaks the pages itself",
-                  )}
+                  {t("app-script-export-dialog.export-dialog.span.140fdb55fa92")}
                 </span>
               </span>
             </label>
@@ -306,17 +312,14 @@ export function ExportDialog({
               <span>
                 Fountain (.fountain)
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Ren tekst for andre manusprogrammer; de bryter sidene selv",
-                    "Plain text for other script programs; they break the pages themselves",
-                  )}
+                  {t("app-script-export-dialog.export-dialog.span.ce980cf51696")}
                 </span>
               </span>
             </label>
           </fieldset>
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-              {L("Scenenummer", "Scene numbering")}
+              {t("app-script-export-dialog.export-dialog.legend.7de83198fb7f")}
             </legend>
             <label className={radio}>
               <input
@@ -327,12 +330,9 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                {L("Bevar produksjonsnummerering", "Keep production numbering")}
+                {t("app-script-export-dialog.export-dialog.span.0570cbae45fd")}
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Etablerte numre beholdes; nye scener får 42A, 42B …",
-                    "Established numbers are kept; new scenes get 42A, 42B …",
-                  )}
+                  {t("app-script-export-dialog.export-dialog.span.793f4e040a25")}
                 </span>
               </span>
             </label>
@@ -345,12 +345,9 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                {L("Fortløpende", "Continuous")}
+                {t("app-script-export-dialog.export-dialog.span.fb0bccb39106")}
                 <span className="block text-xs text-text-tertiary">
-                  {L(
-                    "Alle aktive scener nummereres 1, 2, 3 …",
-                    "All active scenes are numbered 1, 2, 3 …",
-                  )}
+                  {t("app-script-export-dialog.export-dialog.span.364dad201af9")}
                 </span>
               </span>
             </label>
@@ -364,21 +361,15 @@ export function ExportDialog({
                 className="mt-1"
               />
               <span>
-                {L("Bevar valgt historisk nummerering", "Keep the chosen historical numbering")}
+                {t("app-script-export-dialog.export-dialog.span.9c2f221ce712")}
                 <span className="block text-xs text-text-tertiary">
                   {versions.data?.length
-                    ? L(
-                        "Scener som fantes i versjonen får numrene derfra",
-                        "Scenes that existed in the version get their numbers from it",
-                      )
-                    : L(
-                        "Lagre en manusversjon først (Versjoner)",
-                        "Save a script version first (Versions)",
-                      )}
+                    ? t("app-script-export-dialog.export-dialog.span.7fde2e97a8b3")
+                    : t("app-script-export-dialog.export-dialog.span.02b21f503acd")}
                 </span>
                 {method === "historical" && versions.data?.length ? (
                   <select
-                    aria-label={L("Versjon", "Version")}
+                    aria-label={t("app-script-export-dialog.export-dialog.aria-label.c83247845f9a")}
                     value={histId ?? ""}
                     onChange={(e) => setHistoricalId(e.target.value)}
                     className="mt-1 h-7 max-w-[280px] rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
@@ -402,10 +393,10 @@ export function ExportDialog({
               checked={includeInactive}
               onChange={(e) => setIncludeInactive(e.target.checked)}
             />
-            {L("Ta med deaktiverte scener", "Include inactive scenes")} (
+            {t("app-script-export-dialog.export-dialog.label.031e7654d236")} (
             {method === "continuous"
-              ? L("tydelig merket, uten nummer", "clearly marked, without a number")
-              : L("som «UTGÅR»", "as “OMITTED”")}
+              ? t("app-script-export-dialog.export-dialog.label.162e1c74eb0b")
+              : t("app-script-export-dialog.export-dialog.label.196f6fde7370")}
             )
           </label>
           {method !== "continuous" ? (
@@ -415,10 +406,7 @@ export function ExportDialog({
                 checked={fillOriginal}
                 onChange={(e) => setFillOriginal(e.target.checked)}
               />
-              {L(
-                "Gi også scener som var unummerert i originalen et mellomnummer (f.eks. 1A). Nye scener får det alltid.",
-                "Also give scenes that were unnumbered in the original an in-between number (e.g. 1A). New scenes always get one.",
-              )}
+              {t("app-script-export-dialog.export-dialog.label.91aad564b1d0")}
             </label>
           ) : null}
           <label className="flex items-center gap-2">
@@ -428,36 +416,81 @@ export function ExportDialog({
               onChange={(e) => setWithNotes(e.target.checked)}
               disabled={noteCount === 0 || language !== "nb"}
             />
-            {L("Ta med notater", "Include notes")} ({noteCount}) –{" "}
+            {t("app-script-export-dialog.export-dialog.label.3913a86903d2")} ({noteCount}) –{" "}
             {format === "pdf"
-              ? L("som PDF-merknader, med navn og tidspunkt", "as PDF comments, with name and time")
+              ? t("app-script-export-dialog.export-dialog.label.d213245924c2")
               : format === "docx"
-                ? L(
-                    "som Word-kommentarer, med navn og tidspunkt",
-                    "as Word comments, with name and time",
-                  )
-                : L(
-                    "som Fountain-notater [[…]], med navn og dato",
-                    "as Fountain notes [[…]], with name and date",
-                  )}
+                ? t("app-script-export-dialog.export-dialog.label.94e82acca1d7")
+                : t("app-script-export-dialog.export-dialog.label.5d194335bf45")}
             .{" "}
-            {L(
-              "De gjenopprettes hvis filen importeres igjen.",
-              "They are restored if the file is imported again.",
-            )}
+            {t("app-script-export-dialog.export-dialog.label.2a13ae5f5af3")}
           </label>
+          {onLanguageChange ? (
+            <label className="flex items-center gap-2">
+              {t("ml3-language-versions.export.language")}
+              <ScriptLanguageSelect
+                state={sourceState ?? state}
+                value={language}
+                onChange={onLanguageChange}
+                label={t("ml3-language-versions.export.language")}
+                testId="export-language-select"
+              />
+            </label>
+          ) : null}
+          {fontCheck && fontCheck.font && fontCheck.unsupportedCount > 0 ? (
+            <p
+              role={fontCheck.blocking ? "alert" : "status"}
+              data-testid={fontCheck.blocking ? "export-font-blocked" : "export-font-warning"}
+              className={"rounded-sm border p-2 " + (fontCheck.blocking ? "border-status-danger text-status-danger" : "border-status-uncertain text-text-secondary")}
+            >
+              {fontCheck.blocking
+                ? t("ml4-export-fonts.pdf-blocked", {
+                    font: fontCheck.font,
+                    count: String(fontCheck.unsupportedCount),
+                    chars: fontCheck.unsupported.join(" "),
+                  })
+                : t("ml4-export-fonts.docx-warning", {
+                    font: fontCheck.font,
+                    count: String(fontCheck.unsupportedCount),
+                    chars: fontCheck.unsupported.join(" "),
+                  })}
+            </p>
+          ) : fontCheck?.font && language !== "nb" ? (
+            <p data-testid="export-font-ok" className="text-text-tertiary">
+              {t("ml4-export-fonts.ok", { font: fontCheck.font })}
+            </p>
+          ) : null}
+          {decision.kind !== "complete" ? (
+            <fieldset data-testid="export-language-incomplete" className="space-y-1 rounded-sm border border-status-uncertain p-2">
+              <legend className="px-1 text-text-primary">
+                {t("ml3-language-versions.export.incomplete", {
+                  language: languageLabel(language),
+                  missing: String(languageStatus?.missingIds.size ?? 0),
+                  uncertain: String(languageStatus?.uncertain ?? 0),
+                  review: String(languageStatus?.review ?? 0),
+                })}
+              </legend>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="export-language-fallback" data-testid="export-language-fallback" checked={fallbackChoice === "fallback"} onChange={() => setFallbackChoice("fallback")} />
+                {t("ml3-language-versions.export.fallback")}
+              </label>
+              <label className="flex items-center gap-2">
+                <input type="radio" name="export-language-fallback" data-testid="export-language-stop" checked={fallbackChoice === "stop"} onChange={() => setFallbackChoice("stop")} />
+                {t("ml3-language-versions.export.stop")}
+              </label>
+              {decision.kind === "needs-choice" ? <p className="text-text-tertiary">{t("ml3-language-versions.export.choose")}</p> : null}
+              {decision.kind === "stopped" ? <p role="status" data-testid="export-language-stopped" className="text-status-danger">{t("ml3-language-versions.export.stopped")}</p> : null}
+            </fieldset>
+          ) : null}
           {format === "pdf" && lockedPages ? (
             <p className="text-text-tertiary">
-              {L(
-                "Låste sider: sideskiftene følger originalen der teksten er uendret.",
-                "Locked pages: the page breaks follow the original where the text is unchanged.",
-              )}
+              {t("app-script-export-dialog.export-dialog.p.d7e1637f700f")}
             </p>
           ) : null}
         </div>
 
         <label className="flex flex-col gap-1 text-xs text-text-secondary">
-          {L("Tittelside (tom = ingen tittelside)", "Title page (empty = no title page)")}
+          {t("app-script-export-dialog.export-dialog.label.382e46a98e2e")}
           <textarea
             value={titleText}
             onChange={(e) => setTitleText(e.target.value)}
@@ -466,26 +499,14 @@ export function ExportDialog({
           />
           <span className="text-text-tertiary">
             {saved !== null
-              ? L(
-                  "Fylt ut fra den lagrede tittelsiden (fra importen eller forrige eksport). Endre fritt.",
-                  "Filled in from the saved title page (from the import or the previous export). Change freely.",
-                )
-              : L(
-                  "Fylt ut med prosjektnavnet. Endre fritt.",
-                  "Filled in with the project name. Change freely.",
-                )}
+              ? t("app-script-export-dialog.export-dialog.span.a8e053496f38")
+              : t("app-script-export-dialog.export-dialog.span.33e12df0c58b")}
           </span>
           {titleFit.truncated ? (
             <span role="alert" className="text-status-uncertain">
-              {L(
-                "Tittelsiden er lengre enn det som kan lagres for neste gang (om lag 3 kB, høyst",
-                "The title page is longer than can be saved for next time (about 3 kB, at most",
-              )}{" "}
+              {t("app-script-export-dialog.export-dialog.span.8d1f1240995d")}{" "}
               {TITLE_PAGE_MAX_LINES}{" "}
-              {L(
-                "linjer). Hele teksten kommer med i denne filen, men den lagrede kopien blir kortet.",
-                "lines). The whole text is included in this file, but the saved copy will be shortened.",
-              )}
+              {t("app-script-export-dialog.export-dialog.span.b1d66d194a22")}
             </span>
           ) : null}
         </label>
@@ -493,27 +514,24 @@ export function ExportDialog({
         {method === "historical" && !historical ? (
           <p role={histSnap.isError ? "alert" : "status"} className="text-xs text-text-secondary">
             {histSnap.isError
-              ? L(
-                  "Kunne ikke hente versjonen. Prøv igjen.",
-                  "Could not fetch the version. Try again.",
-                )
-              : L("Henter versjonen …", "Fetching the version …")}
+              ? t("app-script-export-dialog.export-dialog.p.6fad06d2fe3f")
+              : t("app-script-export-dialog.export-dialog.p.5b17c918b07b")}
           </p>
         ) : null}
         <div className={method === "historical" && !historical ? "hidden" : undefined}>
           <p className="mb-1 text-chrome-label font-medium uppercase tracking-[0.04em] text-text-tertiary">
-            {L("Forhåndsvisning av nummerering", "Numbering preview")}{" "}
+            {t("app-script-export-dialog.export-dialog.p.ba09db7f5f2c")}{" "}
             {changed
-              ? L(`· ${changed} endret`, `· ${changed} changed`)
-              : L("· ingen endringer", "· no changes")}
+              ? t("app-script-export-dialog.export-dialog.p.d77bf1eca951", { changed: String(changed) })
+              : t("app-script-export-dialog.export-dialog.p.56edf081c585")}
           </p>
           <div className="max-h-52 overflow-y-auto border border-border bg-surface-1">
             <table className="w-full text-xs">
               <thead className="sticky top-0 bg-surface-2 text-left text-text-tertiary">
                 <tr>
-                  <th className="w-16 px-2 py-1 font-medium">{L("I dag", "Today")}</th>
-                  <th className="w-16 px-2 py-1 font-medium">{L("Eksport", "Export")}</th>
-                  <th className="px-2 py-1 font-medium">{L("Overskrift", "Heading")}</th>
+                  <th className="w-16 px-2 py-1 font-medium">{t("app-script-export-dialog.export-dialog.th.94e6ca13971b")}</th>
+                  <th className="w-16 px-2 py-1 font-medium">{t("app-script-export-dialog.export-dialog.th.0f5266910982")}</th>
+                  <th className="px-2 py-1 font-medium">{t("app-script-export-dialog.export-dialog.th.47d07aa8f817")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -534,11 +552,11 @@ export function ExportDialog({
                     </td>
                     <td className="truncate px-2 py-0.5 text-text-primary">
                       {p.omitted ? (
-                        <span className="text-text-tertiary">{L("UTGÅR – ", "OMITTED – ")}</span>
+                        <span className="text-text-tertiary">{t("app-script-export-dialog.export-dialog.span.2e7f5a46f438")}</span>
                       ) : null}
                       {!p.active && !p.omitted ? (
                         <span className="text-text-tertiary">
-                          {L("Deaktivert – ", "Inactive – ")}
+                          {t("app-script-export-dialog.export-dialog.span.89e54cf8123b")}
                         </span>
                       ) : null}
                       {formatHeading(p.heading)}
@@ -552,7 +570,7 @@ export function ExportDialog({
 
         {error ? (
           <p role="alert" className="text-xs text-status-danger">
-            {L("Eksporten feilet", "The export failed")}: {tm(error)}
+            {t("app-script-export-dialog.export-dialog.p.892810a87a9e")}: {tm(error)}
           </p>
         ) : null}
 
@@ -562,7 +580,7 @@ export function ExportDialog({
             className="border border-status-success/40 bg-status-success-bg p-3 text-xs text-text-primary"
           >
             <p>
-              {L("Filen er laget:", "The file has been created:")}{" "}
+              {t("app-script-export-dialog.export-dialog.p.5bca912aefc4")}{" "}
               <a
                 href={ready.url}
                 download={ready.name}
@@ -570,15 +588,12 @@ export function ExportDialog({
                 rel="noopener"
                 className="font-medium text-accent-brand underline underline-offset-2"
               >
-                {L(`Last ned «${ready.name}»`, `Download “${ready.name}”`)}
+                {t("app-script-export-dialog.export-dialog.a.1ebd510d96a7", { name: String(ready.name) })}
               </a>
             </p>
             {isEmbedded() ? (
               <p className="mt-1.5 text-text-secondary">
-                {L(
-                  "Startet ikke nedlastingen? Forhåndsvisningen i Lovable kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
-                  "Did the download not start? The Lovable preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
-                )}
+                {t("r6-brand.download-blocked")}
               </p>
             ) : null}
           </div>
@@ -588,14 +603,15 @@ export function ExportDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)}>
-            {ready ? L("Lukk", "Close") : L("Avbryt", "Cancel")}
+            {ready ? t("app-script-export-dialog.export-dialog.button.eac96f6141a2") : t("app-script-export-dialog.export-dialog.button.1cf11cc3cf13")}
           </Button>
           <Button
             onClick={doExport}
-            disabled={busy || preview.length === 0 || (method === "historical" && !historical)}
+            data-testid="script-export-run"
+            disabled={busy || languageBlocked || fontBlocked || preview.length === 0 || (method === "historical" && !historical)}
           >
             <Download />
-            {L("Eksporter", "Export")}{" "}
+            {t("app-script-export-dialog.export-dialog.button.f614693c69c2")}{" "}
             {format === "pdf" ? "PDF" : format === "docx" ? "Word" : "Fountain"}
           </Button>
         </DialogFooter>

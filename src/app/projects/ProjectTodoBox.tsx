@@ -7,19 +7,13 @@
 import { Link } from "@tanstack/react-router";
 import { AlertTriangle, ListTodo, MessageSquare, TriangleAlert } from "lucide-react";
 import { useMemo, useState } from "react";
-import {
-  L,
-  discrepancies,
-  filmClips,
-  formatStamp,
-  projectTodo,
-  stepTask,
-  type ProjectState,
-} from "@/core";
+import { AI_JOBS_READ_KEY, discrepancies, filmClips, formatStamp, isAiJobsReadPrefs, isJobRead, markAllJobsRead, projectTodo, stepTask, type AiJobsReadPrefs, type ProjectState } from "@/core";
 import { useActiveProduction } from "@/app/project/use-production";
 import { useAiJobs } from "@/app/ai/use-ai-jobs";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { useWorklistCount } from "@/app/library/AssetWorklistDialog";
 import { WorklistNotice } from "./WorklistNotice";
+import { t as tk } from "@/core/i18n/keyed";
 
 const WEEK_MS = 7 * 24 * 3600 * 1000;
 const NOTES_SHOWN = 5;
@@ -53,14 +47,16 @@ export function ProjectTodoBox({
   );
   const worklist = useWorklistCount(state, projectId, productionId);
   const jobs = useAiJobs(projectId);
+  const [readPrefs, setReadPrefs] = useUiPref<AiJobsReadPrefs>(AI_JOBS_READ_KEY, {}, isAiJobsReadPrefs);
   const failedJobs = useMemo(() => {
     const now = Date.now();
     return (jobs.data?.jobs ?? []).filter(
       (j) =>
         (j.status === "failed" || j.status === "lost") &&
-        now - Date.parse(j.finishedAt ?? j.createdAt) < WEEK_MS,
+        now - Date.parse(j.finishedAt ?? j.createdAt) < WEEK_MS &&
+        !isJobRead(j, readPrefs),
     ).length;
-  }, [jobs.data]);
+  }, [jobs.data, readPrefs]);
   const [allNotes, setAllNotes] = useState(false);
   const empty =
     !todo.tasks.length &&
@@ -81,11 +77,11 @@ export function ProjectTodoBox({
         className="mb-2 flex items-center gap-2 text-base font-semibold text-text-primary"
       >
         <ListTodo className="size-4 text-accent-warm" aria-hidden />
-        {L("TODO", "TODO")}
+        {tk("app-projects-project-todo-box.project-todo-box.h2.c773fde750b7")}
       </h2>
       {empty ? (
         <p className="text-xs text-text-tertiary">
-          {L("Ingenting som venter akkurat nå.", "Nothing waiting right now.")}
+          {tk("app-projects-project-todo-box.project-todo-box.p.61e67abdc149")}
         </p>
       ) : null}
 
@@ -97,10 +93,7 @@ export function ProjectTodoBox({
               <li key={t.taskId} className="flex flex-wrap items-center gap-2 text-xs">
                 <span className="size-2 shrink-0 rounded-full bg-accent-warm" aria-hidden />
                 <span className="text-text-primary">
-                  {L(
-                    `«${t.assetName}» skal inn i ${t.scenes.length} scener – ${t.remaining} gjenstår`,
-                    `“${t.assetName}” goes into ${t.scenes.length} scenes – ${t.remaining} left`,
-                  )}
+                  {tk("app-projects-project-todo-box.project-todo-box.span.b976cf4d9c0d", { assetName: String(t.assetName), length: String(t.scenes.length), remaining: String(t.remaining) })}
                 </span>
                 {next ? (
                   <Link
@@ -109,7 +102,7 @@ export function ProjectTodoBox({
                     search={{ scene: next }}
                     className="text-accent-brand hover:underline"
                   >
-                    {L("Gå til første scene", "Go to the first scene")}
+                    {tk("app-projects-project-todo-box.project-todo-box.link.2c4d42ee9d02")}
                   </Link>
                 ) : null}
               </li>
@@ -123,11 +116,8 @@ export function ProjectTodoBox({
           <p className="flex items-center gap-2 text-xs text-text-secondary">
             <MessageSquare className="size-3.5 text-text-tertiary" aria-hidden />
             {todo.notesFromOthers.length === 1
-              ? L("Ett notat fra andre i manuset", "One note from others in the script")
-              : L(
-                  `${todo.notesFromOthers.length} notater fra andre i manuset`,
-                  `${todo.notesFromOthers.length} notes from others in the script`,
-                )}
+              ? tk("app-projects-project-todo-box.project-todo-box.p.4f991887329d")
+              : tk("app-projects-project-todo-box.project-todo-box.p.82edc7d1f313", { length: String(todo.notesFromOthers.length) })}
           </p>
           <ul className="mt-1 space-y-1 pl-5">
             {notes.map((n) => (
@@ -139,7 +129,7 @@ export function ProjectTodoBox({
                     search={{ scene: n.occurrenceId }}
                     className="shrink-0 text-accent-brand hover:underline"
                   >
-                    {L(`Scene ${n.number ?? "–"}`, `Scene ${n.number ?? "–"}`)}
+                    {tk("app-projects-project-todo-box.project-todo-box.link.99bb3b1415f1", { value1: String(n.number ?? "–") })}
                   </Link>
                 ) : null}
                 <span className="min-w-0 flex-1 truncate text-text-primary">
@@ -155,7 +145,7 @@ export function ProjectTodoBox({
               className="mt-1 pl-5 text-xs text-accent-brand hover:underline"
               onClick={() => setAllNotes((v) => !v)}
             >
-              {allNotes ? L("Vis færre", "Show fewer") : L("Vis alle", "Show all")}
+              {allNotes ? tk("app-projects-project-todo-box.project-todo-box.button.86a35ad92db8") : tk("app-projects-project-todo-box.project-todo-box.button.42d6bd7f3fa7")}
             </button>
           ) : null}
         </div>
@@ -165,18 +155,15 @@ export function ProjectTodoBox({
         <p className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
           <AlertTriangle className="size-3.5 text-status-danger" aria-hidden />
           {discrepancyScenes === 1
-            ? L("Én scene har", "One scene has")
-            : L(`${discrepancyScenes} scener har`, `${discrepancyScenes} scenes have`)}{" "}
-          {L(
-            "manusendringer etter at 2D-scene eller film ble laget.",
-            "script changes since its 2D scene or film was made.",
-          )}
+            ? tk("app-projects-project-todo-box.project-todo-box.p.3822f3cbeeef")
+            : tk("app-projects-project-todo-box.project-todo-box.p.2e1ba2b88d4d", { discrepancyScenes: String(discrepancyScenes) })}{" "}
+          {tk("app-projects-project-todo-box.project-todo-box.p.ec4f4f6d847e")}
           <Link
             to="/prosjekt/$projectId/montering"
             params={{ projectId }}
             className="text-accent-brand hover:underline"
           >
-            {L("Se i monteringen", "See in assembly")}
+            {tk("app-projects-project-todo-box.project-todo-box.link.c3d2e45ca772")}
           </Link>
         </p>
       ) : null}
@@ -193,14 +180,16 @@ export function ProjectTodoBox({
         <p className="mt-3 flex items-center gap-2 text-xs text-text-secondary">
           <TriangleAlert className="size-3.5 text-status-danger" aria-hidden />
           {failedJobs === 1
-            ? L(
-                "Én AI-generering feilet eller ble borte siste uke – se AI-statusen øverst.",
-                "One AI generation failed or was lost in the last week – see the AI status at the top.",
-              )
-            : L(
-                `${failedJobs} AI-genereringer feilet eller ble borte siste uke – se AI-statusen øverst.`,
-                `${failedJobs} AI generations failed or were lost in the last week – see the AI status at the top.`,
-              )}
+            ? tk("app-projects-project-todo-box.project-todo-box.p.8ebd7504c0a4")
+            : tk("app-projects-project-todo-box.project-todo-box.p.3470acb79010", { failedJobs: String(failedJobs) })}
+          <button
+            type="button"
+            data-testid="todo-jobs-mark-all-read"
+            className="text-accent-brand hover:underline"
+            onClick={() => setReadPrefs(markAllJobsRead(new Date().toISOString()))}
+          >
+            {tk("app-projects-project-todo-box.mark-all-read")}
+          </button>
         </p>
       ) : null}
     </section>

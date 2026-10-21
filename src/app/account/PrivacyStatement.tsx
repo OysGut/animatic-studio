@@ -4,10 +4,11 @@
  * innlogging og fra kontosiden etter. Behandlingsansvarlig, kontakt og lagringssted fylles ut av administrator;
  * hver lagring er en ny versjon. Teksten er et utkast etter vanlig praksis og bør leses av en jurist.
  */
-import { L, locale } from "@/core";
+import { locale } from "@/core";
 import type { PrivacyFields } from "@/adapters/browser/account";
+import { t } from "@/core/i18n/keyed";
 
-const missing = () => L("(ikke fylt ut ennå)", "(not filled in yet)");
+const missing = () => t("app-account-privacy-statement.missing.message.a2e081fb37e4");
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -33,37 +34,31 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
     <article className="flex flex-col gap-5" data-testid="privacy-statement">
       <header className="flex flex-col gap-1">
         <h1 className="text-xl font-semibold text-text-primary">
-          {L("Personvernerklæring for Animatic Studio", "Privacy statement for Animatic Studio")}
+          {t("app-account-privacy-statement.privacy-statement.h1.a6b063609bf0")}
         </h1>
         <p className="text-xs text-text-tertiary">
           {p
-            ? L(
-                `Versjon ${p.version}${date ? `, ${date}` : ""}`,
-                `Version ${p.version}${date ? `, ${date}` : ""}`,
-              )
-            : L("Utkast", "Draft")}
+            ? t("app-account-privacy-statement.privacy-statement.p.021c15bc5aae", { version: String(p.version), value2: String(date ? `, ${date}` : "") })
+            : t("app-account-privacy-statement.privacy-statement.p.c1f0a53d37c6")}
         </p>
       </header>
 
       <p className="rounded-sm border border-accent-brand/40 bg-surface-2 p-3 text-[13px] text-text-primary">
-        {L(
-          "Kort fortalt: Vi selger aldri opplysninger om deg, viser ikke reklame og deler ikke dataene dine med andre for markedsføring. Vi behandler personopplysninger etter personvernforordningen (GDPR) og norsk personopplysningslov.",
-          "In short: We never sell information about you, show no advertising and do not share your data with others for marketing. We process personal data under the General Data Protection Regulation (GDPR) and the Norwegian Personal Data Act.",
-        )}
+        {t("app-account-privacy-statement.privacy-statement.p.3aa9958e499c")}
       </p>
 
-      <Section title={L("1. Hvem som er ansvarlig", "1. Who is responsible")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.384c9e9e3a93")}>
         <p>
-          {L("Behandlingsansvarlig: ", "Controller: ")}
+          {t("app-account-privacy-statement.privacy-statement.p.7f99cf886105")}
           <strong className="text-text-primary">{p?.controllerName || missing()}</strong>
-          {p?.orgNumber ? L(`, org.nr. ${p.orgNumber}`, `, org. no. ${p.orgNumber}`) : ""}
+          {p?.orgNumber ? t("app-account-privacy-statement.privacy-statement.p.cc753e8bca5e", { orgNumber: String(p.orgNumber) }) : ""}
         </p>
         <p>
-          {L("Adresse: ", "Address: ")}
+          {t("app-account-privacy-statement.privacy-statement.p.bd944bafa6ac")}
           {p?.address || missing()}
         </p>
         <p>
-          {L("Kontakt om personvern: ", "Contact about privacy: ")}
+          {t("app-account-privacy-statement.privacy-statement.p.dff2f1c35777")}
           {p?.contactEmail ? (
             <a
               className="text-accent-brand underline-offset-2 hover:underline"
@@ -77,119 +72,80 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
         </p>
       </Section>
 
-      <Section title={L("2. Hva vi lagrer", "2. What we store")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.bcd0918fbc59")}>
         <ul className="list-disc pl-5">
           <li>
-            {L(
-              "Konto: e-postadresse, visningsnavn, språkvalg, når kontoen ble laget og når du sist var aktiv. Passordet lagres bare som en kryptografisk sjekksum hos innloggingstjenesten; vi kan ikke se det.",
-              "Account: email address, display name, language choice, when the account was created and when you were last active. The password is stored only as a cryptographic hash by the sign-in service; we cannot see it.",
-            )}
+            {t("app-account-privacy-statement.privacy-statement.li.d927ab5cb1ca")}
+          </li>
+          <li data-testid="privacy-country">
+            {t("b097.privacy.country")}
           </li>
           <li>
-            {L(
-              "Innholdet du og prosjektmedlemmene lager: manus, scener, bilder, lyd, video, kommentarer og historikken over endringer (hvem som endret hva og når).",
-              "The content you and the project members create: scripts, scenes, images, audio, video, comments and the history of changes (who changed what and when).",
-            )}
+            {t("app-account-privacy-statement.privacy-statement.li.adc27bbe251b")}
           </li>
           <li>
-            {L(
-              "AI-bruk: hvilke AI-jobber som er bestilt, beskrivelsene som ble sendt, leverandør, modell, tidspunkt og anslått kostnad.",
-              "AI usage: which AI jobs were ordered, the descriptions that were sent, provider, model, time and estimated cost.",
-            )}
+            {t("app-account-privacy-statement.privacy-statement.li.37f063f56774")}
           </li>
           <li>
-            {L(
-              "Dine API-nøkler til AI-leverandører, kryptert (AES-256-GCM). Nøklene kan ikke leses fra nettleseren, bare de fire siste tegnene vises.",
-              "Your API keys for AI providers, encrypted (AES-256-GCM). The keys cannot be read from the browser; only the last four characters are shown.",
-            )}
+            {t("app-account-privacy-statement.privacy-statement.li.1c17eeebd1c9")}
           </li>
           <li>
-            {L(
-              "I nettleseren lagres bare det som trengs for innloggingen og valgene dine (for eksempel språk). Vi bruker ingen sporings- eller reklamekapsler.",
-              "In the browser we store only what is needed for sign-in and your choices (for example language). We use no tracking or advertising cookies.",
-            )}
+            {t("app-account-privacy-statement.privacy-statement.li.c9ee2addaecf")}
           </li>
         </ul>
       </Section>
 
-      <Section title={L("3. Hvorfor, og med hvilket grunnlag", "3. Why, and on what basis")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.bb8134f59ff7")}>
         <p>
-          {L(
-            "For å levere tjenesten du har bedt om (avtale, GDPR art. 6 nr. 1 bokstav b); for sikkerhet, feilretting og for å hindre misbruk (berettiget interesse, bokstav f); og for å vise deg og prosjekteieren hva AI-bruken har kostet.",
-            "To provide the service you have asked for (contract, GDPR Art. 6(1)(b)); for security, troubleshooting and to prevent misuse (legitimate interest, point (f)); and to show you and the project owner what the AI usage has cost.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.cba960e48ca5")}
         </p>
       </Section>
 
-      <Section title={L("4. Vi selger ikke data", "4. We do not sell data")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.5dc63510b970")}>
         <p>
-          {L(
-            "Vi selger, leier ut eller bytter aldri bort opplysninger om deg eller innholdet ditt, og vi bruker dem ikke til reklame eller profilering.",
-            "We never sell, rent out or trade information about you or your content, and we do not use it for advertising or profiling.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.7f8c8d4d3739")}
         </p>
       </Section>
 
-      <Section title={L("5. Hvor dataene lagres", "5. Where the data is stored")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.6a7082391160")}>
         <p>
-          {L(
-            "Tjenesten driftes på Lovable Cloud (database, filer og innlogging levert av Supabase), som er vår databehandler. Lagringssted: ",
-            "The service runs on Lovable Cloud (database, files and sign-in provided by Supabase), which is our data processor. Storage location: ",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.4867f43d007c")}
           <strong className="text-text-primary">{p?.storageRegion || missing()}</strong>.
         </p>
       </Section>
 
-      <Section title={L("6. Når du bruker AI", "6. When you use AI")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.723f2a7e6fa3")}>
         <p>
-          {L(
-            "AI er valgfritt. Når du selv bestiller en AI-jobb, sendes de delene av manus, beskrivelser, bilder, lyd eller video som jobben trenger, til leverandøren du har valgt (for eksempel OpenAI, Google, fal.ai, Runway eller ElevenLabs). Flere av dem ligger i USA, så opplysningene kan bli overført utenfor EØS.",
-            "AI is optional. When you order an AI job yourself, the parts of the script, descriptions, images, audio or video the job needs are sent to the provider you have chosen (for example OpenAI, Google, fal.ai, Runway or ElevenLabs). Several of them are in the USA, so the information may be transferred outside the EEA.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.e05cd3a83ae4")}
         </p>
         <p>
-          {L(
-            "Bruker du dine egne API-nøkler, er du selv kunde hos leverandøren, og det er dine vilkår med leverandøren som gjelder for det som sendes. Du er selv ansvarlig for at du har rett til å sende innholdet, og for å ikke sende personopplysninger om andre uten grunnlag. Vi lagrer nøklene kryptert og sender dem bare til leverandøren de hører til. Videresending til AI er en risiko i seg selv: les leverandørens vilkår før du bruker den.",
-            "If you use your own API keys, you are the provider's customer, and your terms with the provider apply to what is sent. You are responsible for having the right to send the content, and for not sending personal data about others without a legal basis. We store the keys encrypted and send them only to the provider they belong to. Sending content to AI is a risk in itself: read the provider's terms before using it.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.d4051b2cd87a")}
         </p>
         <p>
-          {L(
-            "Automatisk gjenkjenning: når et manus lastes opp, importeres eller endres, og når en oversatt versjon kobles til det norske manuset, sendes korte manusutdrag (navn, sceneoverskrifter og noen setninger) til den innebygde AI-tjenesten. Den foreslår hvilke karakterer, dyr, objekter, steder, miljøer og lyder som finnes, og hvordan scenene i oversettelsen passer sammen. Dette skjer på tjenestens regning, uten dine API-nøkler. Utdragene og svarene lagres ikke i loggene; bare forslagene lagres i prosjektet, og ingenting tas i bruk før du godkjenner det.",
-            "Automatic recognition: when a script is uploaded, imported or changed, and when a translated version is linked to the Norwegian script, short script excerpts (names, scene headings and a few sentences) are sent to the built-in AI service. It suggests which characters, animals, objects, locations, environments and sounds appear, and how the scenes in the translation match. This is at the service's expense, without your API keys. The excerpts and replies are not stored in the logs; only the suggestions are stored in the project, and nothing is used until you approve it.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.0e88e53dce35")}
         </p>
       </Section>
 
-      <Section title={L("7. Hvor lenge", "7. How long")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.6147dc559ba7")}>
         <p>
-          {L(
-            "Så lenge du har konto. Sletter du kontoen, låses den i 30 dager (så den kan gjenopprettes ved en feil), og deretter fjernes e-post, navn, API-nøkler og innlogging. Endringer du har gjort i prosjekter andre er med i, står igjen merket «Slettet bruker», fordi de er en del av andres arbeid. Prosjekter du eier, slettes ikke automatisk; administrator kan gi dem en ny eier.",
-            "As long as you have an account. If you delete your account, it is locked for 30 days (so it can be restored after a mistake), and then the email, name, API keys and sign-in are removed. Changes you made in projects others are part of remain marked “Deleted user”, because they are part of others' work. Projects you own are not deleted automatically; the administrator can give them a new owner.",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.dbc1d18f53cb")}
         </p>
       </Section>
 
-      <Section title={L("8. Dine rettigheter", "8. Your rights")}>
+      <Section title={t("app-account-privacy-statement.privacy-statement.title.bc26684b55b8")}>
         <p>
-          {L(
-            "Du har rett til innsyn, retting, sletting, begrensning av behandlingen, dataportabilitet (du kan laste ned sikkerhetskopi av prosjektene dine) og til å protestere. Kontakt oss på adressen over. Du kan også klage til Datatilsynet (datatilsynet.no).",
-            "You have the right of access, rectification, erasure, restriction of processing, data portability (you can download a backup of your projects) and to object. Contact us at the address above. You can also complain to the Norwegian Data Protection Authority (datatilsynet.no).",
-          )}
+          {t("app-account-privacy-statement.privacy-statement.p.43f087b1a7d6")}
         </p>
       </Section>
 
       {p?.note ? (
-        <Section title={L("9. Mer informasjon", "9. More information")}>
+        <Section title={t("app-account-privacy-statement.privacy-statement.title.f124235c6ca5")}>
           <p className="whitespace-pre-wrap">{p.note}</p>
         </Section>
       ) : null}
 
       <p className="text-xs text-text-tertiary">
-        {L(
-          "Endres erklæringen, får den et nytt versjonsnummer, og du blir bedt om å lese den ved neste innlogging.",
-          "If the statement changes, it gets a new version number, and you are asked to read it at your next sign-in.",
-        )}
+        {t("app-account-privacy-statement.privacy-statement.p.71d277fd1a52")}
       </p>
     </article>
   );

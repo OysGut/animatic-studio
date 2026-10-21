@@ -22,6 +22,7 @@
  * Skjermbilder lagres i utmappen (standard /tmp/claude-0/qa76). Avslutter med kode 1 hvis en kontroll feiler.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { execFileSync } from "node:child_process";
 import { readFileSync, mkdirSync, existsSync, statSync } from "node:fs";
 
@@ -338,7 +339,7 @@ async function mock(ctx) {
       return json({ Key: path.replace("/storage/v1/object/", ""), Id: "x" });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 30 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
@@ -924,11 +925,26 @@ async function audioSession(page, since, itemsExpr) {
         `return (async () => { ${LOAD_STATE}
         const { audioBank } = await import("/src/app/audio/use-audio-playback.ts");
         const items = ${itemsExpr};
+        const { createSignedUrls, ASSET_BUCKET } = await import("/src/adapters/browser/storage-files.ts");
+        const paths = [...new Set(items.filter(x => x.version).map(x => x.version.mediaPath))];
+        const urls = await createSignedUrls(ASSET_BUCKET, paths, 600);
+        await audioBank.loadAll(Object.fromEntries(urls.map(x => [x.path, x.signedUrl])));
         const starts = window.__starts.slice(since);
+        // HMR can create another AudioBank for the unversioned dynamic import used by this probe.
+        // Compare every decoded sample, not object identity, so we still prove the exact source audio.
+        const sameAudio = (a, b) => {
+          if (!a || !b || a.sampleRate !== b.sampleRate || a.length !== b.length || a.numberOfChannels !== b.numberOfChannels) return false;
+          if (a === b) return true;
+          for (let channel = 0; channel < a.numberOfChannels; channel++) {
+            const x = a.getChannelData(channel), y = b.getChannelData(channel);
+            for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return false;
+          }
+          return true;
+        };
         // Samme lydfil kan brukes av flere klipp (f.eks. to deler av en film): alle kandidatene tas med
         return starts.map((st) => {
           const cands = items
-            .filter((x) => x.version && audioBank.get(x.version.mediaPath) === st.buffer)
+            .filter((x) => x.version && sameAudio(audioBank.get(x.version.mediaPath), st.buffer))
             .map((it) => ({ start: it.start, sourceIn: it.sourceIn, name: it.clip.name || it.clip.kind }));
           return { when: st.when, offset: st.offset, now: st.now, ctx: st.ctx, cands, item: cands[0] ?? null };
         });
@@ -973,10 +989,42 @@ const parseTc = (t, fps = 25) => {
   return m ? ((+m[1] * 60 + +m[2]) * 60 + +m[3]) * fps + +m[4] : null;
 };
 
+
+/**
+ * KI-SL-1: venter til lydfilene for scenen (og naboscenene) er hentet og dekodet før avspillingen startes.
+ * På en treg maskin startet testen avspillingen før dekodingen var ferdig; da ble lydkildene aldri startet i
+ * første økt, og kontrollene for REQ-0210/0578 feilet selv om appen var riktig.
+ */
+async function waitForAudio(page, occId, timeout = 20000) {
+  const t0 = Date.now();
+  while (Date.now() - t0 < timeout) {
+    const ready = await page
+      .evaluate(
+        async ({ occId, LOAD_STATE }) => {
+          const fn = new Function(
+            "occId",
+            `return (async () => { ${LOAD_STATE}
+            const { audioBank } = await import("/src/app/audio/use-audio-playback.ts");
+            const items = core.sceneWindowAudio(s, film, occId, s.project.fps, "nb").filter((x) => x.version);
+            return items.length > 0 && items.every((x) => audioBank.get(x.version.mediaPath));
+          })()`,
+          );
+          return fn(occId);
+        },
+        { occId, LOAD_STATE },
+      )
+      .catch(() => false);
+    if (ready) return true;
+    await page.waitForTimeout(250);
+  }
+  return false;
+}
+
 async function testPlayback() {
   const { ctx, page } = await openPage(`${P}/scene?scene=${OCC.s1}`);
   try {
     await page.waitForTimeout(1500);
+    await waitForAudio(page, OCC.s1);
     const tid = page.locator('[aria-label="Tid"]');
     const canvasHash = () =>
       page.evaluate(() =>
@@ -1062,6 +1110,7 @@ async function testNeighbours() {
   try {
     await page.getByRole("button", { name: "Naboscener" }).click();
     await page.waitForTimeout(800);
+    await waitForAudio(page, OCC.s2);
     const strip = page.locator('[aria-label="Naboscener"]');
     const parts = await strip.locator("div.flex.h-full").allInnerTexts();
     check(
@@ -1265,7 +1314,10 @@ async function testRecording() {
     await page.getByRole("button", { name: "Pause" }).first().click();
     const at = parseTc(await page.locator('[aria-label="Tid"]').innerText());
     const before = savedCommands.length;
-    await page.getByRole("button", { name: /^Opptak$/ }).click();
+    // Ved 1280 px kan opptaksknappen ligge i verktøylinjens «Mer …»-meny (U2)
+    const recBtn = () => page.getByRole("button", { name: /^(Opptak|Ta opp en replikk eller lyd fra avspillingshodet)$/ }).or(page.getByRole("menuitem", { name: /^(Opptak|Ta opp en replikk eller lyd fra avspillingshodet)$/ }));
+    if (!(await recBtn().count())) await page.getByRole("button", { name: "Mer …" }).first().click();
+    await recBtn().first().click();
     const dialog = page.getByRole("dialog");
     await dialog.getByPlaceholder("Opptak (dato og tid)").fill("Prøveopptak");
     await dialog
@@ -1362,7 +1414,7 @@ async function testRecording() {
     );
     await shot(page, "v4-17-opptak-trimmet");
   } catch (e) {
-    check("REQ-0583", "opptaket kunne gjennomføres", false, String(e).split("\n")[0]);
+    check("REQ-0583", "opptaket kunne gjennomføres", false, String(e).split("\n").slice(0, 3).join(" "));
   } finally {
     await ctx.close();
   }

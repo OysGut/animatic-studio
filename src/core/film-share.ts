@@ -2,7 +2,8 @@
  * QR-deling av en ferdig filmversjon (GP5, spes. §29–35). Plattformnøytral: hvilke filer som kan deles
  * (mp4 med H.264 og AAC, høyst 500 MB), varighetene og statusen som vises.
  */
-import { L } from "./i18n";
+
+import { t } from "@/core/i18n/keyed";
 
 /** Største fil som kan deles (§34). */
 export const MAX_SHARE_BYTES = 500 * 1024 * 1024;
@@ -37,22 +38,13 @@ export function shareIneligibleText(reason: ShareIneligible): string {
   switch (reason) {
     case "format":
     case "video_codec":
-      return L(
-        "Filmen må eksporteres som MP4 med H.264 for å kunne deles på mobil. Velg MP4 i eksporten. Hvis nettleseren ikke kan lage H.264, bruk Chrome, Edge eller Safari.",
-        "The film must be exported as MP4 with H.264 to be shared on mobile. Choose MP4 in the export. If the browser cannot make H.264, use Chrome, Edge or Safari.",
-      );
+      return t("core-film-share.share-ineligible-text.message.9688dad34837");
     case "audio_codec":
-      return L(
-        "Lyden må være AAC for at filmen skal spille på iPhone. Denne nettleseren laget en annen lydkodek; eksporter på nytt i Chrome, Edge eller Safari.",
-        "The sound must be AAC for the film to play on iPhone. This browser made another audio codec; export again in Chrome, Edge or Safari.",
-      );
+      return t("core-film-share.share-ineligible-text.message.ba69ffaeb8fb");
     case "too_large":
-      return L(
-        "Filen er større enn 500 MB. Eksporter i halv størrelse eller et kortere utvalg for å dele den.",
-        "The file is larger than 500 MB. Export at half size or a shorter selection to share it.",
-      );
+      return t("core-film-share.share-ineligible-text.message.0a62bcc9800d");
     case "empty":
-      return L("Filen er tom.", "The file is empty.");
+      return t("core-film-share.share-ineligible-text.message.6610dec83728");
   }
 }
 
@@ -74,13 +66,13 @@ export function shareStatus(
 export function shareStatusText(s: ShareStatus): string {
   switch (s) {
     case "uploading":
-      return L("Lastes opp – ikke delt ennå", "Uploading – not shared yet");
+      return t("core-film-share.share-status-text.message.1f725d557ca7");
     case "available":
-      return L("Tilgjengelig via QR", "Available via QR");
+      return t("core-film-share.share-status-text.message.b7c23fe8316a");
     case "expired":
-      return L("Utløpt – ikke lenger delt", "Expired – no longer shared");
+      return t("core-film-share.share-status-text.message.ba1800731bb6");
     case "revoked":
-      return L("Trukket tilbake – ikke lenger delt", "Revoked – no longer shared");
+      return t("core-film-share.share-status-text.message.61e0f8a61b44");
   }
 }
 

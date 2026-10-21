@@ -5,18 +5,9 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { PanelLeft, PanelRight, Plus } from "lucide-react";
+import { LayoutGrid, List, PanelLeft, PanelRight, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  RELATION_LABEL,
-  RELATION_LABEL_EN,
-  knowledgeAt,
-  mainProduction,
-  locale,
-  type Asset,
-  type ProjectState,
-} from "@/core";
+import { RELATION_LABEL, RELATION_LABEL_EN, knowledgeAt, mainProduction, locale, type Asset, type ProjectState } from "@/core";
 import { listStorySessions, setSuggestionStatus, type StorySuggestion } from "@/adapters/storylab/sessions.functions";
 import { SuggestionsPanel } from "./SuggestionsPanel";
 import { SuggestionsNavigation, suggestionKey, useStorySuggestions } from "./suggestions-data";
@@ -25,7 +16,7 @@ import { useCommands, type Commands } from "@/app/project/use-commands";
 import { SaveIndicator } from "@/app/script/ScriptWorkspace";
 import { PanelHeader, Toolbar, ToolbarButton, ToolbarSeparator, IconButton } from "@/app/shell/workspace-chrome";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
-import { AssetSymbolIcon } from "@/app/library/AssetSymbolIcon";
+import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { CharacterWorkspace } from "./CharacterWorkspace";
 import { ConversationView, NewSessionForm } from "./ConversationView";
 import { FactsPanel } from "./FactsPanel";
@@ -35,6 +26,7 @@ import { LazyCanvasView } from "./canvas/LazyCanvasView";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { profileStatus, sceneIdFrom, scenesByStoryTime, storyCharacters } from "./storylab-data";
 import { rememberScene } from "@/app/shell/current-scene";
+import { t } from "@/core/i18n/keyed";
 
 export function StoryLabWorkspace({
   projectId,
@@ -70,19 +62,19 @@ export function StoryLabWorkspace({
       qc.setQueryData<StorySuggestion[]>(suggestionKey(projectId), (old) => old?.map((s) => s.id === id ? { ...s, status: "open" } : s));
       qc.setQueryData<Record<string, unknown>>(["story-suggestion-transfers", projectId], (old) => Object.fromEntries(Object.entries(old ?? {}).filter(([key]) => key !== id)));
       void qc.invalidateQueries({ queryKey: suggestionKey(projectId) });
-    }).catch(() => setUndoError(L("Overføringen er angret, men forslaget kunne ikke gjenåpnes.", "The transfer was undone, but the suggestion could not be reopened.")));
+    }).catch(() => setUndoError(t("app-storylab-story-lab-workspace.on-undo.set-undo-error.22b868d4d3b0")));
   }, [projectId, qc, setStatus]);
   const cmds = useCommands(projectId, userId, editable, onUndo);
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter Story Lab …", "Loading Story Lab …")}
+        {t("app-storylab-story-lab-workspace.story-lab-workspace.p.08c966d820b5")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Story Lab kunne ikke hentes.", "Story Lab could not be loaded.")}
+        {t("app-storylab-story-lab-workspace.story-lab-workspace.div.8d6aee233cc4")}
       </div>
     );
   return (
@@ -130,6 +122,7 @@ function Lab({
   undoError: string | null;
 }) {
   const characters = storyCharacters(state);
+  const covers = useAssetCovers(state, characters.map((c) => c.id));
   const [assetId, setAssetId] = useState<string | null>(
     () =>
       (initialAssetId && characters.some((c) => c.id === initialAssetId) ? initialAssetId : null) ??
@@ -178,6 +171,8 @@ function Lab({
   const asset = assetId ? state.assets[assetId] : undefined;
 
   const [leftW, setLeftW] = usePaneSize("storylab-left", 240, 180, 420);
+  // U5: rutenett eller liste for karakterene, husket i nettleseren
+  const [charGrid, setCharGrid] = useStoredFlag("storylab-characters-grid", false);
   const [rightW, setRightW] = usePaneSize("storylab-right", 320, 240, 520);
   const [leftClosed, setLeftClosed] = useStoredFlag("storylab-left-closed", false);
   const [rightClosed, setRightClosed] = useStoredFlag("storylab-right-closed", false);
@@ -191,21 +186,21 @@ function Lab({
   return (
     <SuggestionsNavigation.Provider value={(id) => { setFocusedSuggestion(id); setSuggestionScene(null); setLeftTab("suggestions"); setLeftClosed(false); }}><div className="flex min-h-0 flex-1 flex-col" data-testid="storylab">
       {undoError ? <p role="alert" className="p-2 text-xs text-status-danger">{undoError}</p> : null}
-      <Toolbar title={L("Story Lab", "Story Lab")} status={<SaveIndicator cmds={cmds} />}>
+      <Toolbar title={t("app-storylab-story-lab-workspace.lab.title.1bac86c16bc1")} status={<SaveIndicator cmds={cmds} />}>
         <ToolbarSeparator />
         <IconButton
           active={!leftClosed}
           onClick={() => setLeftClosed(!leftClosed)}
-          label={leftClosed ? L("Vis karakterpanelet", "Show the character panel") : L("Skjul karakterpanelet", "Hide the character panel")}
-          title={leftClosed ? L("Vis karakterpanelet", "Show the character panel") : L("Skjul karakterpanelet", "Hide the character panel")}
+          label={leftClosed ? t("app-storylab-story-lab-workspace.lab.label.ac091583c03e") : t("app-storylab-story-lab-workspace.lab.label.40fd042d0c32")}
+          title={leftClosed ? t("app-storylab-story-lab-workspace.lab.title.ac091583c03e") : t("app-storylab-story-lab-workspace.lab.title.40fd042d0c32")}
         >
           <PanelLeft />
         </IconButton>
         <IconButton
           active={!rightClosed}
           onClick={() => setRightClosed(!rightClosed)}
-          label={rightClosed ? L("Vis kontekstpanelet", "Show the context panel") : L("Skjul kontekstpanelet", "Hide the context panel")}
-          title={rightClosed ? L("Vis kontekstpanelet", "Show the context panel") : L("Skjul kontekstpanelet", "Hide the context panel")}
+          label={rightClosed ? t("app-storylab-story-lab-workspace.lab.label.6e808c792db8") : t("app-storylab-story-lab-workspace.lab.label.b77acb5594ee")}
+          title={rightClosed ? t("app-storylab-story-lab-workspace.lab.title.6e808c792db8") : t("app-storylab-story-lab-workspace.lab.title.b77acb5594ee")}
         >
           <PanelRight />
         </IconButton>
@@ -216,16 +211,13 @@ function Lab({
             className="relative flex shrink-0 flex-col border-r border-border bg-surface-1"
             style={{ width: leftW }}
           >
-            <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={L("Bredde på karakterpanelet", "Width of the character panel")} />
-            <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{L("Karakterer", "Characters")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{L("Scener", "Scenes")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{L(`Forslag (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`, `Suggestions (${suggestions.data?.filter((s) => s.status === "open").length ?? 0})`)}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-canvas" aria-selected={leftTab === "canvas"} active={leftTab === "canvas"} onClick={() => openCanvas(view.kind === "canvas" ? view.interviewId : null)}>{L("Canvas", "Canvas")}</ToolbarButton></div>
-            {leftTab === "canvas" ? <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[12px] text-text-secondary" data-testid="storylab-canvas-tab"><p>{L("Canvaset er et visuelt arbeidsrom ved siden av manuset. Ingenting overføres til manuset eller biblioteket uten at du bekrefter.", "The canvas is a visual workspace next to the script. Nothing is transferred to the script or the library unless you confirm.")}</p>{editable ? <ToolbarButton className="mt-2" data-testid="storylab-new-interview-tab" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton> : null}</div> : leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={L("Karakterer", "Characters")} count={characters.length} />
-            <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-characters">
+            <PaneResizer edge="right" size={leftW} onSize={setLeftW} min={180} max={420} label={t("app-storylab-story-lab-workspace.lab.label.f17aee671d92")} />
+            <div role="tablist" className="flex flex-wrap border-b border-border"><ToolbarButton role="tab" aria-selected={leftTab === "characters"} active={leftTab === "characters"} onClick={() => setLeftTab("characters")}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.f2f4c763c8aa")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-scenes" aria-selected={leftTab === "scenes"} active={leftTab === "scenes"} onClick={() => setLeftTab("scenes")}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.249c91432f61")}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-suggestions" aria-selected={leftTab === "suggestions"} active={leftTab === "suggestions"} onClick={() => { setLeftTab("suggestions"); setSuggestionScene(null); }}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.d51198b5c9f6", { value1: String(suggestions.data?.filter((s) => s.status === "open").length ?? 0) })}</ToolbarButton><ToolbarButton role="tab" data-testid="storylab-tab-canvas" aria-selected={leftTab === "canvas"} active={leftTab === "canvas"} onClick={() => openCanvas(view.kind === "canvas" ? view.interviewId : null)}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.ededc41881b9")}</ToolbarButton></div>
+            {leftTab === "canvas" ? <div className="min-h-0 flex-1 overflow-y-auto p-3 text-[12px] text-text-secondary" data-testid="storylab-canvas-tab"><p>{t("app-storylab-story-lab-workspace.lab.p.b94805adb8ce")}</p>{editable ? <ToolbarButton className="mt-2" data-testid="storylab-new-interview-tab" onClick={() => openCanvas(null)}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.3851eb3c0d15")}</ToolbarButton> : null}</div> : leftTab === "suggestions" ? <SuggestionsPanel state={state} projectId={projectId} cmds={cmds} editable={editable} focusedId={focusedSuggestion} sceneFilter={suggestionScene} onSource={(id, turnId) => { setView({ kind: "session", id }); setSourceTurn(turnId); }} /> : leftTab === "scenes" ? <ul className="min-h-0 flex-1 overflow-y-auto py-1" data-testid="storylab-scenes">{scenesByStoryTime(state).map((s) => <li key={s.sceneId}><ToolbarButton className="w-full justify-start" active={view.kind === "scene" && view.id === s.sceneId} data-testid="storylab-scene" data-scene-id={s.sceneId} onClick={() => { setSceneId(s.sceneId); setView({ kind: "scene", id: s.sceneId }); }}>{s.label}</ToolbarButton></li>)}</ul> : <><PanelHeader title={t("app-storylab-story-lab-workspace.lab.title.f2f4c763c8aa")} count={characters.length} actions={<IconButton data-testid="storylab-view-toggle" aria-pressed={charGrid} label={charGrid ? t("app-storylab-story-lab-workspace.lab.label.ea191768e024") : t("app-storylab-story-lab-workspace.lab.label.704c241ec475")} onClick={() => setCharGrid(!charGrid)}>{charGrid ? <List /> : <LayoutGrid />}</IconButton>} />
+            <ul className={"min-h-0 flex-1 overflow-y-auto py-1" + (charGrid ? " grid auto-rows-min grid-cols-[repeat(auto-fill,minmax(88px,1fr))] gap-1 px-1" : "")} data-testid="storylab-characters" data-view={charGrid ? "grid" : "list"}>
               {characters.length === 0 ? (
                 <li className="px-3 py-2 text-xs text-text-tertiary">
-                  {L(
-                    "Ingen karakterer eller dyr i biblioteket ennå.",
-                    "No characters or animals in the library yet.",
-                  )}
+                  {t("app-storylab-story-lab-workspace.lab.li.bdf4893711b8")}
                 </li>
               ) : null}
               {characters.map((c) => (
@@ -234,6 +226,8 @@ function Lab({
                   state={state}
                   asset={c}
                   selected={c.id === assetId}
+                  url={covers[c.id]}
+                  grid={charGrid}
                   onPick={() => {
                     setAssetId(c.id);
                     setView({ kind: "character" });
@@ -242,23 +236,23 @@ function Lab({
               ))}
             </ul></>}
             <PanelHeader
-              title={L("Økter", "Sessions")}
+              title={t("app-storylab-story-lab-workspace.lab.title.7ac108fdeec0")}
               count={sessions.data && sessions.data.ok ? sessions.data.sessions.length : undefined}
               actions={
                 editable ? (
                   <DropdownMenu>
                   <DropdownMenuTrigger asChild><IconButton
-                    label={L("Ny økt", "New session")}
-                    title={L("Ny økt", "New session")}
+                    label={t("app-storylab-story-lab-workspace.lab.label.6c2f6a706ea6")}
+                    title={t("app-storylab-story-lab-workspace.lab.title.6c2f6a706ea6")}
                     data-testid="storylab-new-session"
                   >
                     <Plus data-testid="storylab-new-menu" />
                   </IconButton>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onSelect={() => openCanvas(null)} data-testid="storylab-new-interview">{L("Intervju – utvikle en idé", "Interview – develop an idea")}</DropdownMenuItem>
-                    {asset ? <DropdownMenuItem onSelect={() => setView({ kind: "new" })} data-testid="storylab-new-character">{L("Samtale med én karakter", "Conversation with one character")}</DropdownMenuItem> : null}
-                    <DropdownMenuItem onSelect={() => setNewGroup(true)} data-testid="storylab-new-group">{L("Gruppesamtale", "Group conversation")}</DropdownMenuItem>
+                    <DropdownMenuItem onSelect={() => openCanvas(null)} data-testid="storylab-new-interview">{t("app-storylab-story-lab-workspace.lab.dropdown-menu-item.3851eb3c0d15")}</DropdownMenuItem>
+                    {asset ? <DropdownMenuItem onSelect={() => setView({ kind: "new" })} data-testid="storylab-new-character">{t("app-storylab-story-lab-workspace.lab.dropdown-menu-item.6343c2cf3f24")}</DropdownMenuItem> : null}
+                    <DropdownMenuItem onSelect={() => setNewGroup(true)} data-testid="storylab-new-group">{t("app-storylab-story-lab-workspace.lab.dropdown-menu-item.862f5b244068")}</DropdownMenuItem>
                   </DropdownMenuContent>
                   </DropdownMenu>
                 ) : null
@@ -269,7 +263,7 @@ function Lab({
                 <li className="px-3 py-2 text-xs text-status-danger">{sessions.data.message}</li>
               ) : null}
               {sessions.data?.ok && sessions.data.sessions.length === 0 ? (
-                <li className="px-3 py-2 text-xs text-text-tertiary">{L("Ingen økter ennå.", "No sessions yet.")}</li>
+                <li className="px-3 py-2 text-xs text-text-tertiary">{t("app-storylab-story-lab-workspace.lab.li.3497120bae58")}</li>
               ) : null}
               {sessions.data?.ok
                 ? sessions.data.sessions.map((s) => (
@@ -284,10 +278,10 @@ function Lab({
                           ((view.kind === "session" && view.id === s.id) || (view.kind === "canvas" && view.interviewId === s.id) ? "bg-accent-selection text-text-primary" : "text-text-secondary")
                         }
                       >
-                        <span className="w-full truncate">{s.title || L("Uten navn", "Untitled")}</span>
+                        <span className="w-full truncate">{s.title || t("app-storylab-story-lab-workspace.lab.span.45e6c13282a2")}</span>
                         <span className="text-[11px] text-text-tertiary">
                           {new Date(s.updatedAt).toLocaleString()}
-                          {s.parentSessionId ? ` · ${L("forgrening", "branch")}` : ""}
+                          {s.parentSessionId ? ` · ${t("app-storylab-story-lab-workspace.lab.span.fab8322cdbca")}` : ""}
                         </span>
                       </button>
                     </li>
@@ -302,11 +296,11 @@ function Lab({
             onOpenAsset={(id) => { setAssetId(id); setLeftTab("characters"); setView({ kind: "character" }); }}
             onOpenScene={(id) => { setSceneId(id); setLeftTab("scenes"); setView({ kind: "scene", id }); }} /> : view.kind === "scene" ? <SceneLab key={view.id} state={state} projectId={projectId} sceneId={view.id} editable={editable} onScene={setSceneId} onProfile={(id) => { setAssetId(id); setView({ kind: "character" }); }} /> : !asset && view.kind !== "session" ? (
             <div className="space-y-3 p-6 text-[13px] text-text-tertiary">
-              <p>{L("Velg en karakter til venstre.", "Choose a character on the left.")}</p>
+              <p>{t("app-storylab-story-lab-workspace.lab.p.7c25342a96e1")}</p>
               {!hasScenes && editable ? (
                 <div className="max-w-md rounded-sm border border-border bg-surface-2 p-3 text-text-secondary" data-testid="storylab-interview-suggestion">
-                  <p>{L("Prosjektet har ingen scener ennå. Vil du utvikle idéen i et intervju?", "The project has no scenes yet. Would you like to develop the idea in an interview?")}</p>
-                  <ToolbarButton variant="primary" className="mt-2" onClick={() => openCanvas(null)}>{L("Intervju – utvikle en idé", "Interview – develop an idea")}</ToolbarButton>
+                  <p>{t("app-storylab-story-lab-workspace.lab.p.ab8137971870")}</p>
+                  <ToolbarButton variant="primary" className="mt-2" onClick={() => openCanvas(null)}>{t("app-storylab-story-lab-workspace.lab.toolbar-button.3851eb3c0d15.2")}</ToolbarButton>
                 </div>
               ) : null}
             </div>
@@ -347,7 +341,7 @@ function Lab({
             className="relative flex shrink-0 flex-col border-l border-border bg-surface-1"
             style={{ width: rightW }}
           >
-            <PaneResizer edge="left" size={rightW} onSize={setRightW} min={240} max={520} label={L("Bredde på kontekstpanelet", "Width of the context panel")} />
+            <PaneResizer edge="left" size={rightW} onSize={setRightW} min={240} max={520} label={t("app-storylab-story-lab-workspace.lab.label.2f237e0e5295")} />
             <ContextPanel
               state={state}
               asset={asset}
@@ -370,19 +364,23 @@ function CharacterRow({
   asset,
   selected,
   onPick,
+  url,
+  grid,
 }: {
   state: ProjectState;
   asset: Asset;
   selected: boolean;
   onPick: () => void;
+  url?: string | undefined;
+  grid?: boolean;
 }) {
   const st = profileStatus(state, asset.id);
   const mark =
     st === "active"
-      ? { sign: "●", text: L("Har profil", "Has a profile") }
+      ? { sign: "●", text: t("app-storylab-story-lab-workspace.text.text.b7a167e8dee0") }
       : st === "removed"
-        ? { sign: "⊘", text: L("Profilen er fjernet", "The profile has been removed") }
-        : { sign: "○", text: L("Mangler profil", "No profile yet") };
+        ? { sign: "⊘", text: t("app-storylab-story-lab-workspace.text.text.64c415bdd29a") }
+        : { sign: "○", text: t("app-storylab-story-lab-workspace.text.text.6a60ace15222") };
   return (
     <li>
       <button
@@ -393,14 +391,17 @@ function CharacterRow({
         aria-current={selected ? "true" : undefined}
         onClick={onPick}
         className={
-          "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] hover:bg-surface-3 " +
+          (grid
+            ? "relative flex w-full flex-col items-stretch gap-1 rounded-sm p-1 text-left text-[12px] hover:bg-surface-3 "
+            : "flex w-full items-center gap-2 px-3 py-1.5 text-left text-[13px] hover:bg-surface-3 ") +
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring " +
           (selected ? "bg-accent-selection text-text-primary" : "text-text-secondary")
         }
       >
-        <AssetSymbolIcon state={state} assetId={asset.id} className="size-6 shrink-0" />
-        <span className="min-w-0 flex-1 truncate">{asset.name}</span>
+        <AssetThumb state={state} assetId={asset.id} url={url} size={grid ? "lg" : "md"} />
+        <span className={grid ? "min-w-0 truncate pr-4" : "min-w-0 flex-1 truncate"}>{asset.name}</span>
         <span
-          className={st === "active" ? "text-accent-brand" : "text-text-tertiary"}
+          className={(grid ? "absolute right-1.5 top-1.5 " : "") + (st === "active" ? "text-accent-brand" : "text-text-tertiary")}
           title={mark.text}
           aria-label={mark.text}
         >
@@ -454,23 +455,23 @@ function ContextPanel({
   return (
     <>
       <div role="tablist" className="flex shrink-0 border-b border-border bg-surface-2">
-        {tabBtn("context", L("Kontekst", "Context"))}
-        {tabBtn("facts", L("Fakta og hemmeligheter", "Facts and secrets"))}
+        {tabBtn("context", t("app-storylab-story-lab-workspace.context-panel.tab-btn.2875f255e8ce"))}
+        {tabBtn("facts", t("app-storylab-story-lab-workspace.context-panel.tab-btn.4a2bf9410da2"))}
       </div>
       {tab === "facts" ? (
         <FactsPanel state={state} cmds={cmds} editable={editable} />
       ) : (
         <div className="min-h-0 flex-1 overflow-y-auto">
-          <PanelHeader title={L("Tidspunkt i fortellingen", "Point in the story")} />
+          <PanelHeader title={t("app-storylab-story-lab-workspace.context-panel.title.b24bdc22ae0b")} />
           <div className="p-3">
             <select
               data-testid="storylab-time"
-              aria-label={L("Tidspunkt i fortellingen", "Point in the story")}
+              aria-label={t("app-storylab-story-lab-workspace.context-panel.aria-label.b24bdc22ae0b")}
               value={sceneId ?? ""}
               onChange={(e) => onScene(e.target.value || null)}
               className="h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
             >
-              <option value="">{L("Uten tidspunkt", "No point in time")}</option>
+              <option value="">{t("app-storylab-story-lab-workspace.context-panel.option.985e5369a714")}</option>
               {scenes.map((s) => (
                 <option key={s.sceneId} value={s.sceneId}>
                   {s.label}
@@ -478,16 +479,16 @@ function ContextPanel({
               ))}
             </select>
             <p className="mt-1 text-[11px] text-text-tertiary">
-              {L("Sortert etter fortellingstid.", "Sorted by story time.")}
+              {t("app-storylab-story-lab-workspace.context-panel.p.65138ead728f")}
             </p>
           </div>
-          <PanelHeader title={asset ? L(`Hva ${asset.name} vet`, `What ${asset.name} knows`) : L("Kunnskap", "Knowledge")} />
+          <PanelHeader title={asset ? t("app-storylab-story-lab-workspace.context-panel.title.82579b9559bf", { name: String(asset.name) }) : t("app-storylab-story-lab-workspace.context-panel.title.22ca649fc97b")} />
           <div className="p-3 text-[13px]" data-testid="storylab-context-knowledge">
             {!asset || !knowledge ? (
-              <p className="text-text-tertiary">{L("Velg en karakter.", "Choose a character.")}</p>
+              <p className="text-text-tertiary">{t("app-storylab-story-lab-workspace.context-panel.p.c30dd57b4e9e")}</p>
             ) : knowledge.facts.length + knowledge.ownSecrets.length === 0 ? (
               <p className="text-text-tertiary">
-                {L("Ingen registrerte fakta på dette tidspunktet.", "No recorded facts at this point.")}
+                {t("app-storylab-story-lab-workspace.context-panel.p.3177f9ca1c14")}
               </p>
             ) : (
               <ul className="space-y-1">
@@ -496,17 +497,17 @@ function ContextPanel({
                 ))}
                 {knowledge.ownSecrets.map((f) => (
                   <li key={f.id} className="text-text-secondary">
-                    <span className="mr-1 text-chrome-label uppercase text-status-warning">{L("Hemmelighet", "Secret")}</span>
+                    <span className="mr-1 text-chrome-label uppercase text-status-warning">{t("app-storylab-story-lab-workspace.context-panel.span.d625352fcb0b")}</span>
                     {f.text}
                   </li>
                 ))}
               </ul>
             )}
           </div>
-          <PanelHeader title={L("Relasjoner", "Relationships")} count={relations.length} />
+          <PanelHeader title={t("app-storylab-story-lab-workspace.context-panel.title.1621e71bdd6a")} count={relations.length} />
           <ul className="space-y-1 p-3 text-[13px] text-text-secondary">
             {relations.length === 0 ? (
-              <li className="text-text-tertiary">{L("Ingen relasjoner.", "No relationships.")}</li>
+              <li className="text-text-tertiary">{t("app-storylab-story-lab-workspace.context-panel.li.1baf8ff22e81")}</li>
             ) : null}
             {relations.map((r) => {
               const other = state.assets[r.fromAssetId === asset!.id ? r.toAssetId : r.fromAssetId];

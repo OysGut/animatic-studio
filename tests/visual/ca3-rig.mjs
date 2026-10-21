@@ -1,5 +1,6 @@
 /** CA3: fixed services, relative marking, immutable rig versions and reversible per-scene disable. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/claude-0/ca3-rig");
 const layer = h.rows.composition_layers.find(l => !l.removed && l.asset_id && h.rows.asset_versions.some(v => h.rows.asset_variants.some(a => a.id === v.variant_id && a.asset_id === l.asset_id) && v.mime_type.startsWith("image/")));
@@ -14,7 +15,7 @@ h.rows.animation_rigs = [{ id: ID(1), project_id: h.fx.project.id, revision: 1, 
 h.rows.animation_rig_versions = [{ id: ID(2), project_id: h.fx.project.id, revision: 1, rig_id: ID(1), source_version_id: source.id, number: 1, spec: { format: 1, anchors }, algorithm_version: 1, removed: false }];
 h.rows.animation_uses = [{ id: ID(3), project_id: h.fx.project.id, revision: 1, layer_id: layer.id, occurrence_id: occ.id, rig_version_id: ID(2), enabled: true, removed: false }];
 await h.scenario("ca3-mark", occ.id, "nb", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca3-mark-face").click();
   await page.getByTestId("ca3-face-dialog").waitFor();
@@ -28,7 +29,7 @@ await h.scenario("ca3-mark", occ.id, "nb", async page => {
     await page.mouse.click(box.x + box.width * point.x, box.y + box.height * point.y);
     h.check(Math.abs(Number(await page.getByTestId(`ca3-point-${key}`).getAttribute("data-x")) - point.x) < .01, `relativt ${key}`);
   }
-  await page.getByRole("button", { name: "Panorer bildet", exact: true }).click();
+  await page.getByRole("button", { name: byLang("nb", "Panorer bildet", "Pan image"), exact: true }).click();
   const stage = await page.getByTestId("ca3-face-stage").boundingBox();
   const before = await page.getByTestId("ca3-face-image").boundingBox();
   await page.mouse.move(stage.x + 40, stage.y + 40); await page.mouse.down(); await page.mouse.move(stage.x + 65, stage.y + 55); await page.mouse.up();
@@ -50,7 +51,7 @@ await h.scenario("ca3-mark", occ.id, "nb", async page => {
   await page.screenshot({ path: `${h.out}/ca3-rig.png` });
 });
 await h.scenario("ca3-en", occ.id, "en", async page => {
-  await page.getByTestId("scene-tab-animation").click();
+  await (async () => { const g = page.getByTestId("scene-track-groups"); await g.waitFor(); if ((await g.getAttribute("data-open")) !== "true") await page.getByTestId("scene-track-groups-toggle").click(); await page.getByTestId("animation-workspace").waitFor(); })();
   await page.locator(`[data-anim-track="${layer.id}"]`).getByTestId("anim-segment").first().click();
   await page.getByTestId("ca3-mark-face").click();
   h.check(await page.getByRole("heading", { name: "Mark face", exact: true }).isVisible(), "engelsk dialog");

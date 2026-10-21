@@ -4,16 +4,7 @@
  * lagres ingenting.
  */
 import { useQuery } from "@tanstack/react-query";
-import {
-  assetFilePath,
-  ASSET_MAX_BYTES,
-  ASSET_MIME_TYPES,
-  newId,
-  type AssetMedia,
-  type AssetVariantId,
-  type Command,
-  L,
-} from "@/core";
+import { assetFilePath, ASSET_MAX_BYTES, ASSET_MIME_TYPES, newId, type AssetMedia, type AssetVariantId, type Command } from "@/core";
 import { isTiff, prepareImage } from "./image-prep";
 import { sha256Hex } from "@/engine/import/browser";
 import {
@@ -22,6 +13,7 @@ import {
   downloadFile,
   uploadFile,
 } from "@/adapters/browser/storage-files";
+import { t } from "@/core/i18n/keyed";
 
 export { ASSET_BUCKET };
 
@@ -56,18 +48,12 @@ export const IMAGE_ACCEPT = [...ASSET_MIME_TYPES, "image/tiff", ".tif", ".tiff"]
 
 export function checkImageFile(file: File): string | null {
   if (file.type.startsWith("video/") || /\.(mp4|mov|m4v|webm|mkv|avi)$/i.test(file.name))
-    return L(
-      "Dette er en film. Film legges inn i monteringen: velg scenen og «Importer film» (MP4, MOV eller WebM).",
-      "This is a film. Films are added in the assembly: choose the scene and “Import film” (MP4, MOV or WebM).",
-    );
+    return t("app-library-asset-images.check-image-file.message.8c338d328c16");
   if (!ASSET_MIME_TYPES.includes(file.type) && !isTiff(file))
-    return L(
-      "Bildet må være PNG, JPEG, WebP, GIF eller TIFF.",
-      "The image must be PNG, JPEG, WebP, GIF or TIFF.",
-    );
+    return t("app-library-asset-images.check-image-file.message.ebded7c85066");
   if (file.size > ASSET_MAX_BYTES)
-    return L("Bildet er større enn 2 GB.", "The image is larger than 2 GB.");
-  if (file.size === 0) return L("Filen er tom.", "The file is empty.");
+    return t("app-library-asset-images.check-image-file.message.578b4a2c9f82");
+  if (file.size === 0) return t("app-library-asset-images.check-image-file.message.c12865f50004");
   return null;
 }
 
@@ -165,16 +151,10 @@ async function uploadOne(
   if (error) {
     if (/bucket not found/i.test(error.message))
       throw new Error(
-        L(
-          "Lagringsbøtten for bilder mangler. Kjør migrasjon 0004 i Lovable (se LOVABLE_SYNC.md).",
-          "The image storage bucket is missing. Run migration 0004 in Lovable (see LOVABLE_SYNC.md).",
-        ),
+        t("app-library-asset-images.upload-one.message.0cb14e697856"),
       );
     throw new Error(
-      L(
-        `Bildet ble ikke lastet opp: ${error.message}`,
-        `The image was not uploaded: ${error.message}`,
-      ),
+      t("app-library-asset-images.upload-one.message.de961140f8b0", { message: String(error.message) }),
     );
   }
   return {
@@ -230,10 +210,7 @@ export async function mediaFromStoredFile(path: string): Promise<AssetMedia> {
   const { data, error } = await downloadFile(ASSET_BUCKET, path);
   if (error || !data)
     throw new Error(
-      L(
-        `Bildet kunne ikke hentes: ${error?.message ?? "ukjent feil"}`,
-        `The image could not be fetched: ${error?.message ?? "unknown error"}`,
-      ),
+      error?.message ? t("app-library-asset-images.image-fetch-failed", { error: error.message }) : t("app-library-asset-images.image-fetch-failed-unknown"),
     );
   const mimeType = ASSET_MIME_TYPES.includes(data.type) ? data.type : "image/png";
   const file = new File([data], path.split("/").pop() ?? "bilde.png", { type: mimeType });

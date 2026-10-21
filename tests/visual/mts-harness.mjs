@@ -8,6 +8,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 
 export function harness(defaultOut) {
   const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/mts-fixture.json", out = defaultOut] = process.argv.slice(2);
@@ -19,7 +20,9 @@ export function harness(defaultOut) {
   const USER = { id: "00000000-0000-7000-8000-a11ce0000001", email: "mars@example.no", aud: "authenticated", role: "authenticated" };
   const P = `/prosjekt/${fx.project.id}`;
   const rows = fx.rows;
-  const state = { commands: [], uploads: [] };
+  const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [], batches: [] };
+  /** B-099: valgfrie egne svar (rest(table, request) / serverFn(name, data)); undefined = vanlig svar. */
+  const hooks = { rest: null, serverFn: null, storage: null };
 
   function serverFnName(url) {
     try {
@@ -70,27 +73,86 @@ export function harness(defaultOut) {
       if (path.startsWith("/storage/v1/object/") && (request.method() === "POST" || request.method() === "PUT")) {
         const key = path.replace("/storage/v1/object/", "");
         state.uploads.push(key);
+        state.uploadBodies.push(request.postDataBuffer());
         return json({ Key: key, Id: "00000000-0000-7000-8000-0000a7999999" });
       }
-      if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", body: '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"/>' });
+      // B-098: en suite kan svare selv på nedlasting av enkelte filer (standard: ingen)
+      if (hooks.storage && path.startsWith("/storage/v1/")) {
+        const r = hooks.storage(path, request);
+        if (r) return route.fulfill({ status: 200, contentType: r.contentType, headers: { "Access-Control-Allow-Origin": "*" }, body: r.body });
+      }
+      if (path.startsWith("/storage/v1/") && /\.(wav|mp3|webm|m4a|ogg)/.test(path)) {
+        const rate = 8000, samples = rate * 6, wav = Buffer.alloc(44 + samples * 2);
+        wav.write("RIFF"); wav.writeUInt32LE(wav.length - 8, 4); wav.write("WAVEfmt ", 8); wav.writeUInt32LE(16, 16); wav.writeUInt16LE(1, 20); wav.writeUInt16LE(1, 22); wav.writeUInt32LE(rate, 24); wav.writeUInt32LE(rate * 2, 28); wav.writeUInt16LE(2, 32); wav.writeUInt16LE(16, 34); wav.write("data", 36); wav.writeUInt32LE(samples * 2, 40);
+        for (let i = 0; i < samples; i++) wav.writeInt16LE(Math.round(Math.sin(i / 8) * 5000), 44 + i * 2);
+        return route.fulfill({ status: 200, contentType: "audio/wav", headers: { "Access-Control-Allow-Origin": "*" }, body: wav });
+      }
+      if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", headers: { "Access-Control-Allow-Origin": "*" }, body: '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="320"><rect width="240" height="320" fill="#277b85"/><rect x="0" y="210" width="240" height="110" fill="#f3b84a"/><circle cx="120" cy="95" r="55" fill="#f4c9a0"/><path d="M45 210Q120 115 195 210" fill="#e86265"/><circle cx="102" cy="90" r="6"/><circle cx="138" cy="90" r="6"/></svg>' });
       const table = path.replace("/rest/v1/", "");
+      // B-099: en suite kan svare selv på enkelte kall (standard: ingen)
+      if (hooks.rest) { const r = hooks.rest(table, request); if (r !== undefined) return json(r); }
       if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
       if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
       if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
       if (table === "project_members") return json([{ user_id: USER.id, role, joined_at: "2026-10-08T10:00:00Z" }]);
       if (table === "profiles") return json([{ user_id: USER.id, display_name: "Mars" }]);
-      if (path.startsWith("/rest/v1/rpc/")) return json(null);
+      if (path.startsWith("/rest/v1/rpc/")) { let body = null; try { body = JSON.parse(request.postData() ?? "null"); } catch { body = null; } state.rpcs.push({ name: path.slice("/rest/v1/rpc/".length), body }); return json(null); }
       if (path.startsWith("/realtime/")) return route.abort();
       return json(single ? rows[table]?.[0] ?? null : Number(url.searchParams.get("offset") ?? 0) > 0 ? [] : rows[table] ?? []);
     });
     await context.route("**/_serverFn/**", async (route) => {
       const name = serverFnName(route.request().url()); const d = dataOf(route.request().postData() ?? "{}");
       const json = (result) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ result, context: {} }) });
+      if (hooks.serverFn) { const r = hooks.serverFn(name, d); if (r !== undefined) return json(r); }
       if (/runCommand/.test(name)) {
         state.commands.push(d.command ?? d.envelope?.command ?? d);
         return json({ ok: true, changeId: "mts", affected: [], inverse: null, revisions: {} });
       }
       if (/pumpProjectQueue/.test(name)) return json({ sent: 0 });
+      if (/^listDialogueBatches(?:_|$)/.test(name)) return json(state.batches);
+      if (/^createDialogueBatch(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "createDialogueBatch", body: d });
+        const existing = state.batches.find(b => b.requestId === d.requestId);
+        if (existing) return json({ id: existing.id });
+        const id = `00000000-0000-7000-8000-${String(610000 + state.batches.length).padStart(12,"0")}`;
+        state.batches.push({ id, requestId: d.requestId, status: "running", pause_reason: null, voice: d.voice, items: d.lines.map((l,i) => ({ id: `${id}:${i}`, block_id: l.key.split(":")[1], occurrence_id: l.key.split(":")[0], language: l.language, status: "waiting", error: null, retryable: true })) });
+        return json({ id });
+      }
+      if (/^advanceDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "advanceDialogueBatch", body:d }); const b=state.batches.find(b=>b.id===d.batchId); if(b){for(const item of b.items.slice(0,2))item.status="done";b.status=b.items.every(i=>i.status==="done")?"done":"running";} return json({processed:2}); }
+      if (/^undoDialogueBatchJob(?:_|$)/.test(name)) { state.rpcs.push({ name: "undoDialogueBatchJob", body: d }); return json({ undone: 1 }); }
+      if (/^reconfirmDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "reconfirmDialogueBatch", body: d }); return json({ ok: true }); }
+      if (/^resumeDialogueBatch(?:_|$)/.test(name)) { state.rpcs.push({name:"resumeDialogueBatch",body:d});return json({ok:true}); }
+      // P8: stilharmonisering (mock – ingen AI)
+      if (/^generateImage(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateImage", body: d }); const n = state.rpcs.filter(r => r.name === "generateImage").length; return json({ ok: true, versionId: `00000000-0000-7000-8000-${String(800000 + n).padStart(12, "0")}`, model: d.model || "openai/gpt-image-2", jobId: "00000000-0000-7000-8000-000000080000", media: { path: `${fx.project.id}/assets/generated/${d.assetId}/mock-${n}.png`, mimeType: "image/png", width: 1024, height: 1536, byteSize: 2048, sha256: "c".repeat(64) } }); }
+      // M6: tekst-AI (mock – ingen AI). Svarer med ID-ene som står i prompten.
+      if (/^generateText(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "generateText", body: d });
+        const user = d.messages?.[d.messages.length - 1]?.content ?? "";
+        let text = "{}";
+        if (/update animatic material/.test(d.system ?? "")) {
+          const images = [...user.matchAll(/assetId ([0-9a-f-]{36})/g)].map((m) => ({ assetId: m[1], prompt: "The character looks up at the snowy sky, same design as before." }));
+          const shots = [...user.matchAll(/blockId ([0-9a-f-]{36})/g)].map((m) => ({ blockId: m[1], text: "Close-up: she looks up as the snow begins." }));
+          text = JSON.stringify({ images, shots });
+        } else if (/resolve references/.test(d.system ?? "")) {
+          const links = [...user.matchAll(/ITEM key=(\S+)\nWORD: [^\n]*\nCANDIDATES: ([0-9a-f-]{36})/g)].map((m) => ({ key: m[1], assetId: m[2], confidence: 0.92 }));
+          text = JSON.stringify({ links });
+        }
+        return json({ ok: true, text, provider: "lovable", model: "built-in", usage: { inputTokens: 10, outputTokens: 10 }, costUsd: 0, usedFallback: false, reason: "pref", keyOwner: "lovable", jobId: "00000000-0000-7000-8000-000000090000" });
+      }
+      if (/^listHarmonizeBatches(?:_|$)/.test(name)) return json(state.batches);
+      if (/^createHarmonizeBatch(?:_|$)/.test(name)) {
+        state.rpcs.push({ name: "createHarmonizeBatch", body: d });
+        const existing = state.batches.find(b => b.requestId === d.requestId);
+        if (existing) return json({ id: existing.id });
+        const id = `00000000-0000-7000-8000-${String(650000 + state.batches.length).padStart(12, "0")}`;
+        state.batches.push({ id, requestId: d.requestId, status: "running", pause_reason: null, style_profile_id: d.styleProfileId, reference_version_id: d.referenceVersionId, model: "m", items: d.items.map((i, k) => ({ id: `${id}:${k}`, asset_id: i.assetId, source_version_id: i.sourceVersionId, version_id: `v${k}`, status: "waiting", error: null, retryable: true })) });
+        return json({ id });
+      }
+      if (/^advanceHarmonizeBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "advanceHarmonizeBatch", body: d }); const b = state.batches.find(b => b.id === d.batchId); if (b) { for (const item of b.items.slice(0, 2)) item.status = "done"; b.status = b.items.every(i => i.status === "done") ? "done" : "running"; } return json({ processed: 2 }); }
+      if (/^resumeHarmonizeBatch(?:_|$)/.test(name)) { state.rpcs.push({ name: "resumeHarmonizeBatch", body: d }); return json({ ok: true }); }
+      if (/^listVoices(?:_|$)/.test(name)) return json({ ok: true, voices: [{ voiceId: "mock_voice", name: "Test voice", description: "Custom voice", previewUrl: null }, { voiceId: "other_voice", name: "Alternative voice", description: "", previewUrl: null }] });
+      if (/^listSpeechModels(?:_|$)/.test(name)) return json({ ok: true, models: [{ modelId: "eleven_v3", name: "Eleven v3", languages: [{ code: "no", name: "Norwegian" }, { code: "es", name: "Spanish" }], maxCharacters: 5000, costMultiplier: 1 }] });
+      if (/^generateSpeech(?:_|$)/.test(name)) { state.rpcs.push({ name: "generateSpeech", body: d }); return json({ ok: true, assetId: "00000000-0000-7000-8000-00000000d401", versionId: "00000000-0000-7000-8000-00000000d402", text: "Mock dialogue", scriptRevision: d.scriptRevision, costUsd: 0.001, media: { path: `${fx.project.id}/mock-speech.wav`, mimeType: "audio/wav", width: null, height: null, byteSize: 96044, sha256: "a".repeat(64) } }); }
       if (/projectAiProviders|listTextChoices/.test(name)) return json({ providers: [], missing: false });
       if (/listStorySessions/.test(name)) return json({ ok: true, sessions: [] });
       if (/listStorySuggestions/.test(name)) return json({ ok: true, suggestions: [] });
@@ -105,16 +167,20 @@ export function harness(defaultOut) {
 
   /** Åpner sceneeditoren for sceneforekomsten (occurrenceId, som `?scene=` tar) på språket. */
   async function open(sceneId, lang = "nb", role = "owner") {
-    browser ??= await chromium.launch({ headless: true });
-    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
+    browser ??= await chromium.launch({ headless: true, args: ["--use-fake-ui-for-media-stream", "--use-fake-device-for-media-stream"] });
+    const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark", permissions: ["microphone"] });
     await mock(context, role);
     const page = await context.newPage();
+    // R7: under last (flere suiter samtidig, kald Vite-kompilering) tok første lasting over 30 s
+    page.setDefaultNavigationTimeout(90000);
     const errors = [];
     page.on("pageerror", (err) => errors.push(String(err)));
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
     await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
     await page.goto(`${base}${P}/scene?scene=${sceneId}`, { waitUntil: "networkidle" });
+    // R7: vent til sceneeditoren faktisk er tegnet (ikke bare en fast pause) før scenarioet starter
+    await page.getByTestId("scene-stage").first().waitFor({ timeout: 60000 }).catch(() => {});
     await page.waitForTimeout(2500);
     return { context, page, errors };
   }
@@ -122,9 +188,12 @@ export function harness(defaultOut) {
   async function scenario(name, sceneId, lang, fn) {
     state.commands = [];
     state.uploads = [];
+    state.uploadBodies = [];
+    state.rpcs = [];
+    state.batches = [];
     let ctx;
     try {
-      ctx = await open(sceneId, lang);
+      ctx = await open(sceneId, uiLang(lang));
       await fn(ctx.page);
       check(ctx.errors.length === 0, `${name}: ingen kjørefeil (${ctx.errors.join(" | ").slice(0, 200)})`);
     } catch (error) {
@@ -176,5 +245,10 @@ export function harness(defaultOut) {
     await browser?.close();
     process.exitCode = fail ? 1 : 0;
   }
-  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, out, base, P };
+  /** Lukker nettleseren og gir tallene uten RESULTAT-linje (for suiter som kjører flere fixturer, R3/R4). */
+  async function close() {
+    await browser?.close();
+    return { pass, fail };
+  }
+  return { fx, M: fx.mts, rows, state, hooks, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, close, out, base, P };
 }

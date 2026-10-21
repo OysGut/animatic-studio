@@ -3,20 +3,16 @@
  * redigeres etterpå i tidslinjen. Ingen egen animasjonsmodell.
  */
 import type { CompositionLayer, Keyframe, TransformProperty } from "../model";
-import { L, localized } from "../i18n";
+
 import type { LetterAnimation } from "./types";
+import { t as tk, tLocalized } from "@/core/i18n/keyed";
 
 export type MotionPreset = "fade" | "slide" | "zoom" | "rotate";
 export type PresetDirection = "up" | "down" | "left" | "right";
 
 export const MOTION_PRESETS: readonly MotionPreset[] = ["fade", "slide", "zoom", "rotate"];
 
-export const MOTION_PRESET_LABEL: Record<MotionPreset, string> = localized({
-  fade: ["Ton inn/ut", "Fade"],
-  slide: ["Skli", "Slide"],
-  zoom: ["Zoom", "Zoom"],
-  rotate: ["Roter", "Rotate"],
-});
+export const MOTION_PRESET_LABEL: Record<MotionPreset, string> = tLocalized({ fade: "core-typography-presets.motion-preset-label.fade.9ef937509d07", slide: "core-typography-presets.motion-preset-label.slide.211e29ea9c56", zoom: "core-typography-presets.motion-preset-label.zoom.50e32518bda9", rotate: "core-typography-presets.motion-preset-label.rotate.c07725549add" });
 
 export interface PresetOptions {
   readonly phase: "in" | "out";
@@ -103,10 +99,7 @@ export function presetWindow(
   if (to - from <= 2 * len)
     return {
       ok: false,
-      reason: L(
-        `Laget er for kort for både inn- og utanimasjon: ${to - from} bilder, men det trengs minst ${2 * len + 1}. Gjør animasjonen kortere eller laget lengre.`,
-        `The layer is too short for both an in and an out animation: ${to - from} frames, but at least ${2 * len + 1} are needed. Make the animation shorter or the layer longer.`,
-      ),
+      reason: tk("core-typography-presets.reason.reason.8364486eddca", { value1: String(to - from), value2: String(2 * len + 1) }),
     };
   const outStart = to - len;
   if (phase === "out") return { ok: true, startFrame: outStart };

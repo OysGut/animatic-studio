@@ -6,21 +6,10 @@
  */
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
-import {
-  L,
-  STYLE_TOTAL_LIMIT,
-  emptyStyleGuide,
-  newId,
-  styleProfileFor,
-  styleText,
-  styleTextEdited,
-  tm,
-  type ProjectState,
-  type StyleProfile,
-  type StyleUse,
-} from "@/core";
+import { STYLE_TOTAL_LIMIT, emptyStyleGuide, newId, styleProfileFor, styleText, styleTextEdited, tm, type ProjectState, type StyleProfile, type StyleUse } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
+import { t } from "@/core/i18n/keyed";
 
 export function GlobalStyleText({
   state,
@@ -60,11 +49,8 @@ export function GlobalStyleText({
             fields: { name: profile.name, isDefault: profile.isDefault, guide },
           },
           next
-            ? L("Endre den globale beskrivelsen", "Change the global description")
-            : L(
-                "Global beskrivelse satt sammen av feltene igjen",
-                "Global description put together from the fields again",
-              ),
+            ? t("app-projects-global-style-text.err.cmds-run.db04ed2474bc")
+            : t("app-projects-global-style-text.err.cmds-run.e78996ab910f"),
         )
       : cmds.run(
           {
@@ -73,7 +59,7 @@ export function GlobalStyleText({
             // i18n-ignore – lagret standardnavn (som i «Filmens visuelle stil»)
             fields: { name: "Filmens visuelle stil", isDefault: true, guide },
           },
-          L("Lag den globale beskrivelsen", "Make the global description"),
+          t("app-projects-global-style-text.err.cmds-run.725b6bc7ba81"),
         );
     setError(err);
     if (!err) setDraft(null);
@@ -90,64 +76,49 @@ export function GlobalStyleText({
               onChange={(e) => include.onChange(e.target.checked)}
               className="size-3.5 accent-[var(--accent-brand)]"
             />
-            {L(
-              "Generell beskrivelse for hele prosjektet",
-              "General description for the whole project",
-            )}
+            {t("app-projects-global-style-text.global-style-text.label.ec2563bc4ab8")}
           </label>
         ) : (
           <span>
-            {L("Samlet beskrivelse som sendes til AI", "Combined description sent to AI")}
+            {t("app-projects-global-style-text.global-style-text.span.f98d478e6a6c")}
           </span>
         )}
         <span className="text-[11px] text-text-tertiary">
           {edited
-            ? L("(redigert tekst)", "(edited text)")
-            : L(
-                "(satt sammen av filmens visuelle stil)",
-                "(put together from the film's visual style)",
-              )}
+            ? t("app-projects-global-style-text.global-style-text.span.68d55ce4d416")
+            : t("app-projects-global-style-text.global-style-text.span.4e49826f64ae")}
         </span>
         {editable && draft === null ? (
           <button
             type="button"
             onClick={() => setDraft(text)}
             className="ml-auto flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[11px] text-text-secondary hover:bg-surface-3 hover:text-text-primary"
-            title={L(
-              "Rediger teksten. Endringen gjelder hele prosjektet.",
-              "Edit the text. The change applies to the whole project.",
-            )}
+            title={t("app-projects-global-style-text.global-style-text.title.04e3a9bc65d8")}
           >
             <Pencil className="size-3" aria-hidden />
-            {L("Rediger …", "Edit …")}
+            {t("app-projects-global-style-text.global-style-text.button.4cc4a94131b4")}
           </button>
         ) : null}
       </div>
       {draft !== null ? (
         <div className="flex flex-col gap-1.5 rounded-sm border border-status-discrepancy/50 bg-surface-1 p-2">
           <p className="text-[11px] text-status-discrepancy">
-            {L(
-              "Endres globalt for hele prosjektet: alle AI-bilder og -videoer bruker denne teksten fra nå av.",
-              "Changed globally for the whole project: all AI images and videos use this text from now on.",
-            )}
+            {t("app-projects-global-style-text.global-style-text.p.d0e4e3b22454")}
           </p>
           <textarea
             value={draft}
             rows={8}
             maxLength={STYLE_TOTAL_LIMIT}
             onChange={(e) => setDraft(e.target.value)}
-            aria-label={L(
-              "Generell beskrivelse for hele prosjektet",
-              "General description for the whole project",
-            )}
+            aria-label={t("app-projects-global-style-text.global-style-text.aria-label.ec2563bc4ab8")}
             className="resize-y rounded-sm border border-border-control bg-surface-3 px-2 py-1.5 font-mono text-[11px] text-text-primary"
           />
           <div className="flex flex-wrap gap-1.5">
             <Button size="sm" onClick={() => save(draft)}>
-              {L("Lagre for hele prosjektet", "Save for the whole project")}
+              {t("app-projects-global-style-text.global-style-text.button.60beae1563f6")}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setDraft(null)}>
-              {L("Avbryt", "Cancel")}
+              {t("app-projects-global-style-text.global-style-text.button.f37f45af9edb")}
             </Button>
             {edited ? (
               <Button
@@ -155,12 +126,9 @@ export function GlobalStyleText({
                 variant="ghost"
                 className="ml-auto"
                 onClick={() => save(null)}
-                title={L(
-                  "Bruk teksten som settes sammen av feltene i «Filmens visuelle stil» igjen",
-                  "Use the text put together from the fields in “The film's visual style” again",
-                )}
+                title={t("app-projects-global-style-text.global-style-text.title.53e47c7e97cc")}
               >
-                {L("Tilbake til feltene", "Back to the fields")}
+                {t("app-projects-global-style-text.global-style-text.button.1b699d4efaea")}
               </Button>
             ) : null}
           </div>
@@ -174,10 +142,7 @@ export function GlobalStyleText({
           aria-disabled={off}
         >
           {text ||
-            L(
-              "Prosjektet har ingen visuell stil ennå. Fyll ut «Filmens visuelle stil» på prosjektoversikten, eller skriv en beskrivelse her.",
-              "The project has no visual style yet. Fill in “The film's visual style” on the project overview, or write a description here.",
-            )}
+            t("app-projects-global-style-text.global-style-text.pre.17a64c1afd9b")}
         </pre>
       )}
       {error ? <p className="text-[11px] text-status-danger">{tm(error)}</p> : null}

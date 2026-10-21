@@ -17,8 +17,7 @@ import {
   Image as ImageIcon,
   Ratio,
   Trash2,
-  ZoomIn,
-} from "lucide-react";
+  ZoomIn, Palette } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import {
   ErrorText,
@@ -30,38 +29,7 @@ import {
   TextField,
   inputClass,
 } from "./inspector-fields";
-import {
-  L,
-  COMPOSITION_FORMATS,
-  DEFAULT_PARALLAX,
-  LAYER_KINDS,
-  LAYER_KIND_LABEL,
-  keyBetween,
-  fieldsWithTransformAt,
-  isAnimated,
-  layersOf,
-  newId,
-  removeKeyframesAt,
-  setKeyframe,
-  transformAt,
-  normalizeColor,
-  variantsOf,
-  versionsOf,
-  type Command,
-  type Composition,
-  type CompositionFields,
-  type TransformProperty,
-  type CompositionLayer,
-  type LayerFields,
-  type LayerKind,
-  type LayerTransform,
-  type ProjectState,
-  assetWorklist,
-  layerContinuity,
-  mainProduction,
-  newVersionWorkItemCommands,
-  outdatedLayers,
-} from "@/core";
+import { COMPOSITION_FORMATS, DEFAULT_PARALLAX, LAYER_KINDS, LAYER_KIND_LABEL, keyBetween, fieldsWithTransformAt, isAnimated, layersOf, newId, removeKeyframesAt, setKeyframe, transformAt, normalizeColor, variantsOf, versionsOf, type Command, type Composition, type CompositionFields, type TransformProperty, type CompositionLayer, type LayerFields, type LayerKind, type LayerTransform, type ProjectState, assetWorklist, layerContinuity, mainProduction, newVersionWorkItemCommands, outdatedLayers } from "@/core";
 import {
   FLIP_MODE_LABEL,
   MAGNIFICATION_WARN,
@@ -78,6 +46,7 @@ import {
 } from "@/core";
 import { removeLayer } from "./layer-actions";
 import { Button } from "@/components/ui/button";
+import { t as tk } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string, group?: string) => string | null;
 
@@ -119,7 +88,7 @@ function ColorField({
       <div className="flex items-center gap-2" role="group" aria-labelledby={`color-${label}`}>
         <input
           type="color"
-          aria-label={`${label} ${L("(fargevelger)", "(colour picker)")}`}
+          aria-label={`${label} ${tk("app-scene-editor-layer-inspector.color-field.aria-label.3a66704c353e")}`}
           value={pick ?? normalizeColor(value) ?? "#000000"}
           disabled={disabled}
           onChange={(e) => setPick(e.target.value)}
@@ -174,6 +143,7 @@ export function LayerInspector({
   onCarryPick,
   onSeek,
   onUpscale,
+  onHarmonize,
   durationFrames,
   drawingPath = false,
   onDrawingPathChange,
@@ -206,6 +176,8 @@ export function LayerInspector({
   onSeek?: (frame: number) => void;
   /** Oppskaler bildet laget viser (advarselen om forstørrelse over 1:1). Utelatt: ingen knapp. */
   onUpscale?: () => void;
+  /** P8: «Harmoniser stil …» for bildet laget viser. Utelatt: ingen knapp. */
+  onHarmonize?: () => void;
 }) {
   const [error, setError] = useState<string | null>(null);
   const [carryMsg, setCarryMsg] = useState<string | null>(null);
@@ -219,14 +191,14 @@ export function LayerInspector({
   );
 
   function flip(axis: "x" | "y") {
-    const what = axis === "x" ? L("vannrett", "horizontally") : L("loddrett", "vertically");
+    const what = axis === "x" ? tk("app-scene-editor-layer-inspector.what.message.e077f11671a9") : tk("app-scene-editor-layer-inspector.what.message.52130d780cb4");
     if (flipMode !== "whole") {
       // Et halvt sekund når laget ikke har nøkkelbilder før avspillingshodet
       const span = Math.round(fpsToNumber(state.project.fps) / 2);
       const keys = flippedKeyframesFrom(layer, axis, frame, flipMode, span);
       if (keys) {
         apply(
-          L(`Speilvend ${what} fra bilde ${frame + 1}`, `Flip ${what} from frame ${frame + 1}`),
+          tk("app-scene-editor-layer-inspector.flip.apply.3b782138f916", { what: String(what), value2: String(frame + 1) }),
           {
             keyframes: keys,
           },
@@ -234,7 +206,7 @@ export function LayerInspector({
         return;
       }
     }
-    apply(L(`Speilvend ${what}`, `Flip ${what}`), flippedTransformPatch(layer, axis));
+    apply(tk("app-scene-editor-layer-inspector.flip.apply.e20c19dbc8c1", { what: String(what) }), flippedTransformPatch(layer, axis));
   }
 
   function apply(label: string, patch: Partial<LayerFields>) {
@@ -286,7 +258,7 @@ export function LayerInspector({
     const keyframes = has
       ? removeKeyframesAt(layer.keyframes, frame, [property])
       : setKeyframe(layer.keyframes, property, frame, t[property]);
-    apply(has ? L("Fjern nøkkelbilde", "Remove keyframe") : L("Sett nøkkelbilde", "Set keyframe"), {
+    apply(has ? tk("app-scene-editor-layer-inspector.toggle-key.apply.bf80aa84511d") : tk("app-scene-editor-layer-inspector.toggle-key.apply.4c77d7ef5c6a"), {
       keyframes,
     });
   }
@@ -307,7 +279,7 @@ export function LayerInspector({
       layer.parallax === DEFAULT_PARALLAX[layer.kind]
         ? { kind, parallax: DEFAULT_PARALLAX[kind] }
         : { kind };
-    apply(L("Endre lagtype", "Change layer type"), patch);
+    apply(tk("app-scene-editor-layer-inspector.change-kind.apply.358048d422a2"), patch);
   }
 
   function duplicate() {
@@ -334,7 +306,7 @@ export function LayerInspector({
               ...(orderKey !== undefined ? { orderKey } : {}),
               fields: {
                 ...f,
-                name: L(`${f.name} (kopi)`, `${f.name} (copy)`).slice(0, 200),
+                name: tk("app-scene-editor-layer-inspector.name.l-f-name-kopi-f-name-copy-slice.76ea7b2e479d", { name: String(f.name) }).slice(0, 200),
                 transform: { ...f.transform, x: f.transform.x + 40, y: f.transform.y + 40 },
                 // Animert posisjon flyttes også, ellers havner kopien oppå originalen
                 keyframes: f.keyframes.map((k) =>
@@ -345,7 +317,7 @@ export function LayerInspector({
             },
           ],
         },
-        L(`Dupliser lag «${layer.name}»`, `Duplicate layer “${layer.name}”`),
+        tk("app-scene-editor-layer-inspector.duplicate.run.607a76cf9da4", { name: String(layer.name) }),
       ),
     );
   }
@@ -357,7 +329,7 @@ export function LayerInspector({
         state,
         layer,
         frame,
-        L(`Slett lag «${layer.name}»`, `Delete layer “${layer.name}”`),
+        tk("app-scene-editor-layer-inspector.remove.remove-layer.6379d567d16c", { name: String(layer.name) }),
       ),
     );
   }
@@ -390,13 +362,13 @@ export function LayerInspector({
   const groups = isGroup ? [] : layersOf(state, composition.id).filter((l) => l.kind === "group");
 
   return (
-    <div aria-label={L("Egenskaper for lag", "Layer properties")} className="p-3">
-      <Section title={L("Lag", "Layer")}>
+    <div aria-label={tk("app-scene-editor-layer-inspector.layer-inspector.aria-label.390e4e1ae608")} className="p-3">
+      <Section title={tk("app-scene-editor-layer-inspector.layer-inspector.title.4a7464f2b6a1")}>
         <TextField
-          label={L("Navn", "Name")}
+          label={tk("app-scene-editor-layer-inspector.layer-inspector.label.9c13c3b3438d")}
           value={layer.name}
           disabled={off}
-          onCommit={(name) => apply(L("Endre navn på lag", "Rename layer"), { name })}
+          onCommit={(name) => apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.3d8c235b12ab"), { name })}
         />
         <Field label="Type">
           <select
@@ -416,7 +388,7 @@ export function LayerInspector({
           </select>
         </Field>
         {groups.length > 0 || layer.groupId ? (
-          <Field label={L("Gruppe", "Group")}>
+          <Field label={tk("app-scene-editor-layer-inspector.layer-inspector.label.42f20eddd552")}>
             <select
               value={layer.groupId ?? ""}
               disabled={off}
@@ -435,20 +407,17 @@ export function LayerInspector({
                       ],
                     },
                     g
-                      ? L(
-                          `Legg «${layer.name}» i «${g.name}»`,
-                          `Put “${layer.name}” in “${g.name}”`,
-                        )
-                      : L("Ta ut av gruppe", "Remove from group"),
+                      ? tk("app-scene-editor-layer-inspector.layer-inspector.run.1d9dede3b5f3", { name: String(layer.name), name2: String(g.name) })
+                      : tk("app-scene-editor-layer-inspector.layer-inspector.run.64ae7cdcbbf4"),
                   ),
                 );
               }}
               className={selectClass}
             >
-              <option value="">{L("Ingen gruppe", "No group")}</option>
+              <option value="">{tk("app-scene-editor-layer-inspector.layer-inspector.option.ca94c09b593d")}</option>
               {groups.map((g) => (
                 <option key={g.id} value={g.id}>
-                  {g.name || L("Gruppe", "Group")}
+                  {g.name || tk("app-scene-editor-layer-inspector.layer-inspector.option.42f20eddd552")}
                 </option>
               ))}
             </select>
@@ -456,41 +425,38 @@ export function LayerInspector({
         ) : null}
         {isGroup ? (
           <Hint>
-            {L(
-              "Lagene i gruppen flyttes, roteres og skaleres sammen rundt gruppens ankerpunkt. Velg gruppe for et lag under «Gruppe» i lagets egenskaper.",
-              "The layers in the group are moved, rotated and scaled together around the group's anchor point. Choose a group for a layer under “Group” in the layer's properties.",
-            )}
+            {tk("app-scene-editor-layer-inspector.layer-inspector.hint.194c562de84c")}
           </Hint>
         ) : null}
       </Section>
 
-      <Section title={L("Plassering", "Placement")}>
+      <Section title={tk("app-scene-editor-layer-inspector.layer-inspector.title.bc93a9762cff")}>
         <div className="grid grid-cols-2 gap-2">
           <NumberField
             label="X (px)"
             marker={marker("x", "X (px)")}
             value={t.x}
             disabled={off}
-            onCommit={(x) => setT(L("Flytt lag", "Move layer"), { x })}
+            onCommit={(x) => setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.24dce699d358"), { x })}
           />
           <NumberField
             label="Y (px)"
             marker={marker("y", "Y (px)")}
             value={t.y}
             disabled={off}
-            onCommit={(y) => setT(L("Flytt lag", "Move layer"), { y })}
+            onCommit={(y) => setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.24dce699d358.2"), { y })}
           />
           <NumberField
-            label={L("Skalering X (%)", "Scale X (%)")}
+            label={tk("app-scene-editor-layer-inspector.layer-inspector.label.8bb0a95c64c3")}
             marker={
               <>
-                {marker("scaleX", L("Skalering X (%)", "Scale X (%)"))}
+                {marker("scaleX", tk("app-scene-editor-layer-inspector.layer-inspector.marker.8bb0a95c64c3"))}
                 <ResetAspectButton
                   keep="x"
                   disabled={off || !isSquished(t)}
                   onClick={() =>
                     setT(
-                      L("Nullstill format (behold bredden)", "Reset aspect (keep width)"),
+                      tk("app-scene-editor-layer-inspector.layer-inspector.set-t.dcc9a737bccb"),
                       aspectResetScale(t, "x"),
                     )
                   }
@@ -500,19 +466,19 @@ export function LayerInspector({
             value={t.scaleX * 100}
             disabled={off}
             valid={(n) => n !== 0}
-            onCommit={(n) => setT(L("Skaler lag", "Scale layer"), { scaleX: n / 100 })}
+            onCommit={(n) => setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.05c5a96616b5"), { scaleX: n / 100 })}
           />
           <NumberField
-            label={L("Skalering Y (%)", "Scale Y (%)")}
+            label={tk("app-scene-editor-layer-inspector.layer-inspector.label.bce68472b3da")}
             marker={
               <>
-                {marker("scaleY", L("Skalering Y (%)", "Scale Y (%)"))}
+                {marker("scaleY", tk("app-scene-editor-layer-inspector.layer-inspector.marker.bce68472b3da"))}
                 <ResetAspectButton
                   keep="y"
                   disabled={off || !isSquished(t)}
                   onClick={() =>
                     setT(
-                      L("Nullstill format (behold høyden)", "Reset aspect (keep height)"),
+                      tk("app-scene-editor-layer-inspector.layer-inspector.set-t.255f1b31d935"),
                       aspectResetScale(t, "y"),
                     )
                   }
@@ -522,30 +488,30 @@ export function LayerInspector({
             value={t.scaleY * 100}
             disabled={off}
             valid={(n) => n !== 0}
-            onCommit={(n) => setT(L("Skaler lag", "Scale layer"), { scaleY: n / 100 })}
+            onCommit={(n) => setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.05c5a96616b5.2"), { scaleY: n / 100 })}
           />
           <NumberField
-            label={L("Rotasjon (°)", "Rotation (°)")}
-            marker={marker("rotation", L("Rotasjon (°)", "Rotation (°)"))}
+            label={tk("app-scene-editor-layer-inspector.layer-inspector.label.ff8164b6b52b")}
+            marker={marker("rotation", tk("app-scene-editor-layer-inspector.layer-inspector.marker.ff8164b6b52b"))}
             value={t.rotation}
             disabled={off}
-            onCommit={(rotation) => setT(L("Roter lag", "Rotate layer"), { rotation })}
+            onCommit={(rotation) => setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.ae6e6d268b85"), { rotation })}
           />
           <NumberField
-            label={L("Gjennomsiktighet (%)", "Opacity (%)")}
-            marker={marker("opacity", L("Gjennomsiktighet (%)", "Opacity (%)"))}
+            label={tk("app-scene-editor-layer-inspector.layer-inspector.label.9db1e6dc22e0")}
+            marker={marker("opacity", tk("app-scene-editor-layer-inspector.layer-inspector.marker.9db1e6dc22e0"))}
             value={t.opacity * 100}
             disabled={off}
             min={0}
             max={100}
             onCommit={(n) =>
-              setT(L("Endre gjennomsiktighet", "Change opacity"), { opacity: n / 100 })
+              setT(tk("app-scene-editor-layer-inspector.layer-inspector.set-t.b457e2d5f31f"), { opacity: n / 100 })
             }
           />
         </div>
         {/* Speilvend i denne scenen (DEC-0079); «fra her» tweenes mellom nøkkelbilder (DEC-0080) */}
         <div className="mt-2 flex flex-wrap items-center gap-1.5">
-          <span className="text-xs text-text-secondary">{L("Speilvend", "Flip")}</span>
+          <span className="text-xs text-text-secondary">{tk("app-scene-editor-layer-inspector.layer-inspector.span.3e0c500704b1")}</span>
           <Button
             size="sm"
             variant="ghost"
@@ -553,17 +519,11 @@ export function LayerInspector({
             onClick={() => flip("x")}
             title={
               flipMode === "whole"
-                ? L(
-                    "Speilvend laget vannrett i hele scenen (bildet i biblioteket endres ikke)",
-                    "Flip the layer horizontally throughout the scene (the image in the library is not changed)",
-                  )
-                : L(
-                    "Laget snur vannrett fram til avspillingshodet og er speilvendt resten av scenen",
-                    "The layer turns horizontally up to the playhead and stays flipped for the rest of the scene",
-                  )
+                ? tk("app-scene-editor-layer-inspector.layer-inspector.title.8b1a05309fa8")
+                : tk("app-scene-editor-layer-inspector.layer-inspector.title.59f320728f79")
             }
           >
-            <FlipHorizontal2 /> {L("Vannrett", "Horizontal")}
+            <FlipHorizontal2 /> {tk("app-scene-editor-layer-inspector.layer-inspector.button.cfb184335255")}
           </Button>
           <Button
             size="sm"
@@ -572,21 +532,15 @@ export function LayerInspector({
             onClick={() => flip("y")}
             title={
               flipMode === "whole"
-                ? L(
-                    "Speilvend laget loddrett i hele scenen",
-                    "Flip the layer vertically throughout the scene",
-                  )
-                : L(
-                    "Laget snur loddrett fram til avspillingshodet og er speilvendt resten av scenen",
-                    "The layer turns vertically up to the playhead and stays flipped for the rest of the scene",
-                  )
+                ? tk("app-scene-editor-layer-inspector.layer-inspector.title.10dae0c7f2bb")
+                : tk("app-scene-editor-layer-inspector.layer-inspector.title.90597bdab94a")
             }
           >
-            <FlipVertical2 /> {L("Loddrett", "Vertical")}
+            <FlipVertical2 /> {tk("app-scene-editor-layer-inspector.layer-inspector.button.068c0f24d469")}
           </Button>
         </div>
         <select
-          aria-label={L("Hvordan speilvendingen virker", "How the flip works")}
+          aria-label={tk("app-scene-editor-layer-inspector.layer-inspector.aria-label.dc0b215c5e27")}
           value={flipMode}
           disabled={off}
           onChange={(e) => setFlipMode(e.target.value as FlipMode)}
@@ -600,19 +554,10 @@ export function LayerInspector({
         </select>
         {flipMode !== "whole" ? (
           <Hint>
-            {L(
-              "Laget snur fra forrige nøkkelbilde (ellers et halvt sekund før) til avspillingshodet, og er speilvendt resten av scenen.",
-              "The layer turns from the previous keyframe (otherwise half a second earlier) up to the playhead, and stays flipped for the rest of the scene.",
-            )}{" "}
+            {tk("app-scene-editor-layer-inspector.layer-inspector.hint.d2d12f0c6c3a")}{" "}
             {flipMode === "smooth"
-              ? L(
-                  "Glidende: bildet klemmes smalt og vokser ut speilvendt, som et kort som snus.",
-                  "Smooth: the image is squeezed narrow and grows out flipped, like a card being turned.",
-                )
-              : L(
-                  "Brått: snur på ett bilde, som i stop motion.",
-                  "Abrupt: turns on a single frame, as in stop motion.",
-                )}
+              ? tk("app-scene-editor-layer-inspector.layer-inspector.hint.08bbbf89bd2f")
+              : tk("app-scene-editor-layer-inspector.layer-inspector.hint.da0ebc05b49d")}
           </Hint>
         ) : null}
         {magnification && magnification.value > MAGNIFICATION_WARN ? (
@@ -623,10 +568,7 @@ export function LayerInspector({
             <p className="flex items-start gap-1.5">
               <AlertTriangle className="mt-0.5 size-3.5 shrink-0 text-accent-warm" aria-hidden />
               <span>
-                {L(
-                  `Bildet vises i ${Math.round(magnification.value * 100)} % av sin egen størrelse${magnification.frame !== frame ? ` (bilde ${magnification.frame + 1})` : ""} – større enn pikslene i bildet, så det kan bli uskarpt.`,
-                  `The image is shown at ${Math.round(magnification.value * 100)} % of its own size${magnification.frame !== frame ? ` (frame ${magnification.frame + 1})` : ""} – larger than the image's pixels, so it may look blurred.`,
-                )}
+                {magnification.frame !== frame ? tk("app-scene-editor-layer-inspector.magnified-frame", { percent: Math.round(magnification.value * 100), frame: magnification.frame + 1 }) : tk("app-scene-editor-layer-inspector.magnified", { percent: Math.round(magnification.value * 100) })}
               </span>
             </p>
             {onUpscale ? (
@@ -637,7 +579,7 @@ export function LayerInspector({
                 disabled={off}
                 onClick={onUpscale}
               >
-                <ZoomIn /> {L("Oppskaler bildet …", "Upscale image …")}
+                <ZoomIn /> {tk("app-scene-editor-layer-inspector.layer-inspector.button.e0235f32dc81")}
               </Button>
             ) : null}
           </div>
@@ -645,21 +587,18 @@ export function LayerInspector({
       </Section>
 
       {isGroup ? null : (
-        <Section title={L("Dybde", "Depth")}>
+        <Section title={tk("app-scene-editor-layer-inspector.layer-inspector.title.1384397cdc14")}>
           <NumberField
-            label={L("Parallakse", "Parallax")}
+            label={tk("app-scene-editor-layer-inspector.layer-inspector.label.5931082eeac9")}
             value={layer.parallax}
             disabled={off}
             step={0.05}
             min={0}
             max={4}
-            onCommit={(parallax) => apply(L("Endre parallakse", "Change parallax"), { parallax })}
+            onCommit={(parallax) => apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.7bf050999a04"), { parallax })}
           />
           <Hint>
-            {L(
-              "0 = står stille når kameraet beveger seg · 1 = følger scenen · over 1 = nærmere enn scenen",
-              "0 = stays still when the camera moves · 1 = follows the scene · over 1 = closer than the scene",
-            )}
+            {tk("app-scene-editor-layer-inspector.layer-inspector.hint.9d5e5271497b")}
           </Hint>
         </Section>
       )}
@@ -677,7 +616,20 @@ export function LayerInspector({
       )}
 
       {isGroup ? null : (
-        <Section title={L("Bilde", "Image")}>
+        <Section title={tk("app-scene-editor-layer-inspector.layer-inspector.title.91a30bb4f563")}>
+          {onHarmonize && layer.assetId ? (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="self-start"
+              disabled={off}
+              onClick={onHarmonize}
+              data-testid="layer-harmonize"
+              title={tk("app-scene-editor-layer-inspector.layer-inspector.title.e861175e0c92")}
+            >
+              <Palette /> {tk("app-scene-editor-layer-inspector.layer-inspector.button.f86952a2be5b")}
+            </Button>
+          ) : null}
           {onOpenAssetStudio ? (
             <Button
               size="sm"
@@ -685,13 +637,10 @@ export function LayerInspector({
               className="self-start"
               onClick={onOpenAssetStudio}
               data-testid="open-asset-studio"
-              title={L(
-                "Arbeid med dette objektet alene: bilder, tid, lyd og manus (Alt + dobbeltklikk på laget)",
-                "Work on this object alone: images, timing, sound and script (Alt + double-click the layer)",
-              )}
+              title={tk("app-scene-editor-layer-inspector.layer-inspector.title.2b433b40fd23")}
             >
               <Clapperboard />
-              {L("Asset Studio", "Asset Studio")}
+              {tk("app-scene-editor-layer-inspector.layer-inspector.button.e628489fa299")}
             </Button>
           ) : null}
           {editable && (onCarryNext || onCarryPick) ? (
@@ -701,21 +650,18 @@ export function LayerInspector({
                   size="sm"
                   variant="ghost"
                   data-testid="carry-next"
-                  title={L(
-                    "Kopier laget til neste scene i produksjonen. Bevegelsen der blir lokal.",
-                    "Copy the layer to the next scene in the production. Its motion there is local.",
-                  )}
+                  title={tk("app-scene-editor-layer-inspector.layer-inspector.title.86b8b114bb9b")}
                   onClick={() => {
                     setCarryMsg(null);
                     void onCarryNext().then(setCarryMsg);
                   }}
                 >
-                  {L("Bruk videre i neste scene", "Use in next scene")}
+                  {tk("app-scene-editor-layer-inspector.layer-inspector.button.ba32a3db9d39")}
                 </Button>
               ) : null}
               {onCarryPick ? (
                 <Button size="sm" variant="ghost" data-testid="carry-pick" onClick={onCarryPick}>
-                  {L("Bruk også i …", "Also use in …")}
+                  {tk("app-scene-editor-layer-inspector.layer-inspector.button.348d9bec122d")}
                 </Button>
               ) : null}
             </div>
@@ -729,71 +675,65 @@ export function LayerInspector({
             <Button size="sm" variant="secondary" className="self-start" onClick={onOpenImage}>
               <ImageIcon />
               {layer.assetId
-                ? L("Velg eller last opp bilde …", "Choose or upload image …")
-                : L("Koble til ressurs …", "Connect to asset …")}
+                ? tk("app-scene-editor-layer-inspector.layer-inspector.button.c17406d80aac")
+                : tk("app-scene-editor-layer-inspector.layer-inspector.button.3d5ea4304fa6")}
             </Button>
           ) : null}
           {layer.assetId ? (
             <>
               <p className="truncate text-[13px] text-text-primary">
-                {asset?.name ?? L("Ukjent ressurs", "Unknown asset")}
+                {asset?.name ?? tk("app-scene-editor-layer-inspector.layer-inspector.p.63b13bf071c2")}
               </p>
               <Field label="Variant">
                 <select
                   value={layer.assetVariantId ?? ""}
                   disabled={off}
                   onChange={(e) =>
-                    apply(L("Bytt bilde", "Change image"), {
+                    apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.d3c8d15b735d"), {
                       assetVariantId: (e.target.value || null) as LayerFields["assetVariantId"],
                       versionId: null,
                     })
                   }
                   className={selectClass}
                 >
-                  <option value="">{L("Standard (forsidebildet)", "Default (cover image)")}</option>
+                  <option value="">{tk("app-scene-editor-layer-inspector.layer-inspector.option.16e77947ffff")}</option>
                   {variants.map((v) => (
                     <option key={v.id} value={v.id}>
-                      {v.name || L("Uten navn", "Untitled")}
-                      {v.archived ? L(" (arkivert)", " (archived)") : ""}
+                      {v.name || tk("app-scene-editor-layer-inspector.layer-inspector.option.f7795a80552d")}
+                      {v.archived ? tk("app-scene-editor-layer-inspector.layer-inspector.option.4641b429bab2") : ""}
                     </option>
                   ))}
                 </select>
               </Field>
-              <Field label={L("Versjon", "Version")}>
+              <Field label={tk("app-scene-editor-layer-inspector.layer-inspector.label.dc2613b27e2c")}>
                 <select
                   value={layer.versionId ?? ""}
                   disabled={off || layer.assetVariantId === null}
                   onChange={(e) =>
-                    apply(L("Bytt bilde", "Change image"), {
+                    apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.d3c8d15b735d.2"), {
                       versionId: (e.target.value || null) as LayerFields["versionId"],
                     })
                   }
                   className={selectClass}
                 >
-                  <option value="">{L("Godkjent / nyeste", "Approved / latest")}</option>
+                  <option value="">{tk("app-scene-editor-layer-inspector.layer-inspector.option.e4825dde3296")}</option>
                   {versions.map((v) => (
                     <option key={v.id} value={v.id}>
                       v{v.number}
-                      {v.id === approvedId ? L(" (godkjent)", " (approved)") : ""}
+                      {v.id === approvedId ? tk("app-scene-editor-layer-inspector.layer-inspector.option.2ab91b502eda") : ""}
                     </option>
                   ))}
                 </select>
               </Field>
               {layer.assetVariantId === null ? (
                 <Hint>
-                  {L(
-                    "Velg en variant for å låse en bestemt versjon.",
-                    "Choose a variant to lock a specific version.",
-                  )}
+                  {tk("app-scene-editor-layer-inspector.layer-inspector.hint.dd25a1bbba64")}
                 </Hint>
               ) : null}
               {outdated ? (
                 <div className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-primary">
                   <span>
-                    {L(
-                      `Laget viser v${state.assetVersions[outdated.versionId]?.number}, men v${state.assetVersions[outdated.approvedVersionId]?.number} er godkjent nå.`,
-                      `The layer shows v${state.assetVersions[outdated.versionId]?.number}, but v${state.assetVersions[outdated.approvedVersionId]?.number} is approved now.`,
-                    )}
+                    {tk("app-scene-editor-layer-inspector.layer-inspector.span.5432bea25aae", { number: String(state.assetVersions[outdated.versionId]?.number), number2: String(state.assetVersions[outdated.approvedVersionId]?.number) })}
                   </span>
                   {editable ? (
                     <Button
@@ -801,15 +741,12 @@ export function LayerInspector({
                       variant="secondary"
                       className="self-start"
                       onClick={() =>
-                        apply(L("Bruk den godkjente versjonen", "Use the approved version"), {
+                        apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.c2404005c950"), {
                           versionId: outdated.approvedVersionId as LayerFields["versionId"],
                         })
                       }
                     >
-                      {L(
-                        `Bruk v${state.assetVersions[outdated.approvedVersionId]?.number}`,
-                        `Use v${state.assetVersions[outdated.approvedVersionId]?.number}`,
-                      )}
+                      {tk("app-scene-editor-layer-inspector.layer-inspector.button.5dcb8daae385", { number: String(state.assetVersions[outdated.approvedVersionId]?.number) })}
                     </Button>
                   ) : null}
                 </div>
@@ -822,10 +759,7 @@ export function LayerInspector({
                     className="flex flex-col gap-1.5 rounded-sm border border-border bg-surface-2 p-2 text-xs text-text-primary"
                   >
                     <span>
-                      {L(
-                        `Et bildeskifte eller språkbilde viser ${a?.name ?? "ressursen"} v${state.assetVersions[x.oldVersionId]?.number}, men v${state.assetVersions[x.newVersionId]?.number} er godkjent nå.`,
-                        `An image swap or language image shows ${a?.name ?? "the asset"} v${state.assetVersions[x.oldVersionId]?.number}, but v${state.assetVersions[x.newVersionId]?.number} is approved now.`,
-                      )}
+                      {tk("app-scene-editor-layer-inspector.swap-outdated", { asset: a?.name ?? tk("app-scene-editor-layer-inspector.swap-outdated-asset"), old: state.assetVersions[x.oldVersionId]?.number ?? "", current: state.assetVersions[x.newVersionId]?.number ?? "" })}
                     </span>
                     {editable ? (
                       <Button
@@ -838,7 +772,7 @@ export function LayerInspector({
                           for (const c of cmds ?? []) {
                             const e = run(
                               c,
-                              L("Bruk den godkjente versjonen", "Use the approved version"),
+                              tk("app-scene-editor-layer-inspector.e.run.af96ba5b8433"),
                               group,
                             );
                             if (e) {
@@ -848,10 +782,7 @@ export function LayerInspector({
                           }
                         }}
                       >
-                        {L(
-                          `Bruk v${state.assetVersions[x.newVersionId]?.number}`,
-                          `Use v${state.assetVersions[x.newVersionId]?.number}`,
-                        )}
+                        {tk("app-scene-editor-layer-inspector.layer-inspector.button.04731a6db7dc", { number: String(state.assetVersions[x.newVersionId]?.number) })}
                       </Button>
                     ) : null}
                   </div>
@@ -868,10 +799,7 @@ export function LayerInspector({
                       aria-hidden
                     />
                     <span>
-                      {L(
-                        `Kontinuitet: i denne scenen skal ${asset?.name ?? "ressursen"} ha utseendet «${continuity.expected.name}».`,
-                        `Continuity: in this scene ${asset?.name ?? "the asset"} should look like “${continuity.expected.name}”.`,
-                      )}
+                      {tk("app-scene-editor-layer-inspector.continuity-look", { asset: asset?.name ?? tk("app-scene-editor-layer-inspector.continuity-look-asset"), look: continuity.expected.name })}
                     </span>
                   </span>
                   {editable ? (
@@ -881,7 +809,7 @@ export function LayerInspector({
                       className="self-start"
                       onClick={() =>
                         apply(
-                          L("Bruk utseendet fra kontinuiteten", "Use the look from continuity"),
+                          tk("app-scene-editor-layer-inspector.layer-inspector.apply.6ec4f8b2b65c"),
                           {
                             assetVariantId: continuity.expected!.id,
                             versionId: null,
@@ -889,16 +817,16 @@ export function LayerInspector({
                         )
                       }
                     >
-                      {L(`Bruk «${continuity.expected.name}»`, `Use “${continuity.expected.name}”`)}
+                      {tk("app-scene-editor-layer-inspector.layer-inspector.button.33c112803461", { name: String(continuity.expected.name) })}
                     </Button>
                   ) : null}
                 </div>
               ) : null}
               {variants.length > 0 ? (
                 // Språkavhengig bilde (DEC-0059, REQ-0337): f.eks. et skilt med engelsk tekst
-                <Field label={L("Bilde i engelsk versjon", "Image in English version")}>
+                <Field label={tk("app-scene-editor-layer-inspector.layer-inspector.label.4f123e87f87a")}>
                   <select
-                    aria-label={L("Bilde i engelsk versjon", "Image in English version")}
+                    aria-label={tk("app-scene-editor-layer-inspector.layer-inspector.aria-label.4f123e87f87a")}
                     value={
                       layer.languageImages?.find((x) => x.language === "en")?.assetVariantId ?? ""
                     }
@@ -908,8 +836,8 @@ export function LayerInspector({
                       const rest = (layer.languageImages ?? []).filter((x) => x.language !== "en");
                       apply(
                         id
-                          ? L("Eget bilde i engelsk versjon", "Own image in English version")
-                          : L("Samme bilde i engelsk versjon", "Same image in English version"),
+                          ? tk("app-scene-editor-layer-inspector.layer-inspector.apply.9609d9a7816d")
+                          : tk("app-scene-editor-layer-inspector.layer-inspector.apply.5c7249332234"),
                         {
                           languageImages: id
                             ? [
@@ -921,15 +849,12 @@ export function LayerInspector({
                       );
                     }}
                     className={selectClass}
-                    title={L(
-                      "Vis en annen variant av ressursen når filmen spilles eller eksporteres på engelsk. Den norske versjonen endres ikke.",
-                      "Show a different variant of the asset when the film is played or exported in English. The Norwegian version is not changed.",
-                    )}
+                    title={tk("app-scene-editor-layer-inspector.layer-inspector.title.8c9366dd218d")}
                   >
-                    <option value="">{L("Samme som norsk", "Same as Norwegian")}</option>
+                    <option value="">{tk("app-scene-editor-layer-inspector.layer-inspector.option.094e7f4ca86f")}</option>
                     {variants.map((v) => (
                       <option key={v.id} value={v.id}>
-                        {v.name || L("Uten navn", "Untitled")}
+                        {v.name || tk("app-scene-editor-layer-inspector.layer-inspector.option.f7795a80552d.2")}
                       </option>
                     ))}
                   </select>
@@ -939,29 +864,29 @@ export function LayerInspector({
           ) : (
             <>
               <ColorField
-                label={L("Farge", "Colour")}
+                label={tk("app-scene-editor-layer-inspector.layer-inspector.label.eb639ff25614")}
                 value={layer.fill ?? "#000000"}
                 disabled={off}
-                onCommit={(fill) => apply(L("Endre farge", "Change colour"), { fill })}
+                onCommit={(fill) => apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.b074722d6a6e"), { fill })}
               />
               <div className="grid grid-cols-2 gap-2">
                 <NumberField
-                  label={L("Bredde (px)", "Width (px)")}
+                  label={tk("app-scene-editor-layer-inspector.layer-inspector.label.9f00d829865e")}
                   value={layer.width}
                   disabled={off}
                   integer
                   min={1}
                   max={16384}
-                  onCommit={(width) => apply(L("Endre størrelse", "Change size"), { width })}
+                  onCommit={(width) => apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.f772058468ce"), { width })}
                 />
                 <NumberField
-                  label={L("Høyde (px)", "Height (px)")}
+                  label={tk("app-scene-editor-layer-inspector.layer-inspector.label.5216934aba3c")}
                   value={layer.height}
                   disabled={off}
                   integer
                   min={1}
                   max={16384}
-                  onCommit={(height) => apply(L("Endre størrelse", "Change size"), { height })}
+                  onCommit={(height) => apply(tk("app-scene-editor-layer-inspector.layer-inspector.apply.f772058468ce.2"), { height })}
                 />
               </div>
             </>
@@ -1001,20 +926,20 @@ export function LayerInspector({
         onError={setError}
         {...(projectId && runAndWait ? { projectId, runAndWait } : {})}
       />
-      <Section title={L("Synlighet", "Visibility")}>
+      <Section title={tk("app-scene-editor-layer-inspector.layer-inspector.title.f3de8b5b0fe5")}>
         <label className="flex items-center gap-2 text-[13px] text-text-primary">
           <input
             type="checkbox"
             checked={layer.visible}
             disabled={off}
             onChange={(e) =>
-              apply(e.target.checked ? L("Vis lag", "Show layer") : L("Skjul lag", "Hide layer"), {
+              apply(e.target.checked ? tk("app-scene-editor-layer-inspector.layer-inspector.apply.a9cefac8a4f0") : tk("app-scene-editor-layer-inspector.layer-inspector.apply.ff8aa20999f9"), {
                 visible: e.target.checked,
               })
             }
             className="size-3.5 accent-[var(--accent-brand)]"
           />
-          {L("Synlig", "Visible")}
+          {tk("app-scene-editor-layer-inspector.layer-inspector.label.2d2adcf7f65c")}
         </label>
         <label className="flex items-center gap-2 text-[13px] text-text-primary">
           <input
@@ -1023,13 +948,13 @@ export function LayerInspector({
             disabled={off}
             onChange={(e) =>
               apply(
-                e.target.checked ? L("Lås lag", "Lock layer") : L("Lås opp lag", "Unlock layer"),
+                e.target.checked ? tk("app-scene-editor-layer-inspector.layer-inspector.apply.7cca0a4e2f5e") : tk("app-scene-editor-layer-inspector.layer-inspector.apply.a8d3655e6307"),
                 { locked: e.target.checked },
               )
             }
             className="size-3.5 accent-[var(--accent-brand)]"
           />
-          {L("Låst", "Locked")}
+          {tk("app-scene-editor-layer-inspector.layer-inspector.label.59933de3f9c3")}
         </label>
       </Section>
 
@@ -1049,7 +974,7 @@ export function LayerInspector({
         <div className="flex items-center gap-2">
           <Button size="sm" variant="secondary" onClick={duplicate}>
             <Copy className="size-3.5" />
-            {L("Dupliser", "Duplicate")}
+            {tk("app-scene-editor-layer-inspector.layer-inspector.button.bf7b21871442")}
           </Button>
           <Button
             size="sm"
@@ -1058,7 +983,7 @@ export function LayerInspector({
             className="ml-auto text-status-danger hover:text-status-danger"
           >
             <Trash2 className="size-3.5" />
-            {L("Slett lag", "Delete layer")}
+            {tk("app-scene-editor-layer-inspector.layer-inspector.button.738292fc9af7")}
           </Button>
         </div>
       ) : null}
@@ -1070,7 +995,7 @@ export function LayerInspector({
 
 /** Etiketten for «på toere» osv. */
 const STEP_LABEL = (step: number): string =>
-  step === 2 ? L("toere", "twos") : step === 3 ? L("treere", "threes") : L("firere", "fours");
+  step === 2 ? tk("app-scene-editor-layer-inspector.step-label.message.1043d080b517") : step === 3 ? tk("app-scene-editor-layer-inspector.step-label.message.4bc8574b0759") : tk("app-scene-editor-layer-inspector.step-label.message.f57a43554f05");
 
 export function CompositionInspector({
   composition,
@@ -1101,18 +1026,18 @@ export function CompositionInspector({
   }
 
   return (
-    <div aria-label={L("Egenskaper for 2D-scenen", "Properties for the 2D scene")} className="p-3">
+    <div aria-label={tk("app-scene-editor-layer-inspector.composition-inspector.aria-label.39419b2e045b")} className="p-3">
       <h2 className="mb-3 text-[13px] font-medium text-text-primary">
-        {L("2D-scene", "2D scene")}
+        {tk("app-scene-editor-layer-inspector.composition-inspector.h2.1bf0b9ef1123")}
       </h2>
       <Section title="Scene">
         <TextField
-          label={L("Navn", "Name")}
+          label={tk("app-scene-editor-layer-inspector.composition-inspector.label.b5fb251149b2")}
           value={composition.name}
           disabled={off}
           allowEmpty
-          placeholder={L("Uten navn", "Untitled")}
-          onCommit={(name) => apply(L("Endre navn på 2D-scene", "Rename 2D scene"), { name })}
+          placeholder={tk("app-scene-editor-layer-inspector.composition-inspector.placeholder.a8d10a8d5461")}
+          onCommit={(name) => apply(tk("app-scene-editor-layer-inspector.composition-inspector.apply.77ddbc7d08dd"), { name })}
         />
         {onChangeDuration ? (
           <Button
@@ -1123,7 +1048,7 @@ export function CompositionInspector({
             data-testid="inspector-change-duration"
             onClick={onChangeDuration}
           >
-            {L("Endre scenevarighet …", "Change scene duration …")}
+            {tk("app-scene-editor-layer-inspector.composition-inspector.button.ad44769668f8")}
           </Button>
         ) : null}
       </Section>
@@ -1133,30 +1058,24 @@ export function CompositionInspector({
           {composition.width} × {composition.height} px
         </p>
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Bildeformat og bildefrekvens gjelder hele prosjektet og endres på prosjektoversikten.",
-            "Frame size and frame rate apply to the whole project and are changed on the project overview.",
-          )}
+          {tk("app-scene-editor-layer-inspector.composition-inspector.p.2823f27a855a")}
         </p>
       </Section>
 
-      <Section title={L("Bakgrunn", "Background")}>
+      <Section title={tk("app-scene-editor-layer-inspector.composition-inspector.title.3bd4ee136f7c")}>
         <ColorField
-          label={L("Bakgrunnsfarge", "Background colour")}
+          label={tk("app-scene-editor-layer-inspector.composition-inspector.label.dda7066c2362")}
           value={composition.background}
           disabled={off}
-          onCommit={(background) => apply(L("Endre bakgrunn", "Change background"), { background })}
+          onCommit={(background) => apply(tk("app-scene-editor-layer-inspector.composition-inspector.apply.52268fb302b5"), { background })}
         />
       </Section>
 
-      <Section title={L("Bevegelse", "Motion")}>
+      <Section title={tk("app-scene-editor-layer-inspector.composition-inspector.title.dfc893e77d34")}>
         <label className="flex items-center justify-between gap-2 text-xs text-text-secondary">
-          {L("Animer", "Animate")}
+          {tk("app-scene-editor-layer-inspector.composition-inspector.label.3481ff9cff92")}
           <select
-            aria-label={L(
-              "Animer på enere, toere, treere eller firere",
-              "Animate on ones, twos, threes or fours",
-            )}
+            aria-label={tk("app-scene-editor-layer-inspector.composition-inspector.aria-label.d1dda7dd0826")}
             value={composition.step ?? 1}
             disabled={off}
             onChange={(e) => {
@@ -1165,33 +1084,27 @@ export function CompositionInspector({
                 run(
                   { type: "SetCompositionStep", compositionId: composition.id, step },
                   step === 1
-                    ? L("Animer hvert bilde", "Animate every frame")
-                    : L(`Animer på ${STEP_LABEL(step)}`, `Animate on ${STEP_LABEL(step)}`),
+                    ? tk("app-scene-editor-layer-inspector.composition-inspector.run.ce1e0c9beba8")
+                    : tk("app-scene-editor-layer-inspector.composition-inspector.run.9a851b42c36e", { value1: String(STEP_LABEL(step)) }),
                 ),
               );
             }}
             className="h-7 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
           >
-            <option value={1}>{L("hvert bilde", "every frame")}</option>
-            <option value={2}>{L("på toere", "on twos")}</option>
-            <option value={3}>{L("på treere", "on threes")}</option>
-            <option value={4}>{L("på firere", "on fours")}</option>
+            <option value={1}>{tk("app-scene-editor-layer-inspector.composition-inspector.option.1da73b935fe1")}</option>
+            <option value={2}>{tk("app-scene-editor-layer-inspector.composition-inspector.option.b9378f8eba47")}</option>
+            <option value={3}>{tk("app-scene-editor-layer-inspector.composition-inspector.option.d675cba8e976")}</option>
+            <option value={4}>{tk("app-scene-editor-layer-inspector.composition-inspector.option.1727fcd237b8")}</option>
           </select>
         </label>
         <p className="text-xs text-text-tertiary">
-          {L(
-            "På toere oppdateres bevegelsen hvert annet bilde, som i stop motion. Filmen beholder bildefrekvensen sin.",
-            "On twos the motion updates every other frame, as in stop motion. The film keeps its frame rate.",
-          )}
+          {tk("app-scene-editor-layer-inspector.composition-inspector.p.2de8a183c94d")}
         </p>
       </Section>
 
       <ErrorText message={error} />
       <Hint>
-        {L(
-          "Velg et lag i scenen eller i listen for å endre det.",
-          "Choose a layer in the scene or in the list to change it.",
-        )}
+        {tk("app-scene-editor-layer-inspector.composition-inspector.hint.23e7bd554865")}
       </Hint>
     </div>
   );
@@ -1209,14 +1122,8 @@ function ResetAspectButton({
 }) {
   const label =
     keep === "x"
-      ? L(
-          "Nullstill format – behold bredden (høyden rettes til bildets proporsjoner)",
-          "Reset aspect – keep the width (the height is set to the image's proportions)",
-        )
-      : L(
-          "Nullstill format – behold høyden (bredden rettes til bildets proporsjoner)",
-          "Reset aspect – keep the height (the width is set to the image's proportions)",
-        );
+      ? tk("app-scene-editor-layer-inspector.label.message.8cfb5e8988fc")
+      : tk("app-scene-editor-layer-inspector.label.message.e16a78e21ae3");
   return (
     <button
       type="button"
@@ -1225,7 +1132,7 @@ function ResetAspectButton({
       aria-label={label}
       title={
         disabled
-          ? L("Laget har bildets egne proporsjoner", "The layer has the image's own proportions")
+          ? tk("app-scene-editor-layer-inspector.reset-aspect-button.title.f898b74b8a98")
           : label
       }
       className="rounded-sm p-0.5 text-text-tertiary hover:bg-surface-3 hover:text-text-primary disabled:pointer-events-none disabled:opacity-30"

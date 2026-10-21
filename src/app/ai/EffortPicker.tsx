@@ -4,18 +4,8 @@
  * kvalitetsmekanismer den modellen faktisk har. Modellen kan fortsatt velges direkte; da følger nivået med.
  * Programmet lover ikke at dyrere gir bedre resultat.
  */
-import {
-  L,
-  effortDisclaimer,
-  EFFORT_HELP,
-  EFFORT_LABEL,
-  effortChoice,
-  effortOf,
-  qualityMechanisms,
-  type Capability,
-  type EffortLevel,
-  type ModelChoice,
-} from "@/core";
+import { effortDisclaimer, EFFORT_HELP, EFFORT_LABEL, effortChoice, effortOf, qualityMechanisms, type Capability, type EffortLevel, type ModelChoice } from "@/core";
+import { t } from "@/core/i18n/keyed";
 
 const LEVELS: readonly EffortLevel[] = ["fast", "balanced", "premium"];
 
@@ -39,7 +29,7 @@ export function EffortPicker({
     <div className="flex flex-col gap-1">
       <div
         role="radiogroup"
-        aria-label={L("Innsatsnivå", "Effort level")}
+        aria-label={t("app-ai-effort-picker.effort-picker.aria-label.1963c68e41a4")}
         className="flex w-fit overflow-hidden rounded-sm border border-border-control"
       >
         {LEVELS.map((l) => {
@@ -70,7 +60,7 @@ export function EffortPicker({
         <p className="text-[11px] text-text-tertiary">
           {chosen.provider.name} – {chosen.model.label}
           {mechanisms.length
-            ? L(` · Kan: ${mechanisms.join(", ")}`, ` · Features: ${mechanisms.join(", ")}`)
+            ? t("app-ai-effort-picker.effort-picker.p.172bf9c50173", { value1: String(mechanisms.join(", ")) })
             : ""}
           . {effortDisclaimer()}
         </p>

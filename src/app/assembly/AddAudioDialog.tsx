@@ -4,25 +4,7 @@
  */
 import { Loader2, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  AUDIO_KIND_LABEL,
-  FILM_LANGUAGES,
-  LANGUAGE_LABEL,
-  MAIN_LANGUAGE,
-  isVoiceKind,
-  AUDIO_TRACK_ORDER,
-  blocksOfVariant,
-  coverVersion,
-  formatHeading,
-  newId,
-  sortedAssets,
-  L,
-  collation,
-  type AudioKind,
-  type FilmClip,
-  type ProjectState,
-  languageWord,
-} from "@/core";
+import { AUDIO_KIND_LABEL, FILM_LANGUAGES, LANGUAGE_LABEL, MAIN_LANGUAGE, isVoiceKind, AUDIO_TRACK_ORDER, blocksOfVariant, coverVersion, formatHeading, newId, sortedAssets, collation, type AudioKind, type FilmClip, type ProjectState, languageWord } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
 import { createSoundAsset, nameFromFile } from "@/app/library/asset-audio";
@@ -36,6 +18,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { formatSeconds } from "./FilmTimeline";
+import { t } from "@/core/i18n/keyed";
 
 export function AddAudioDialog({
   open,
@@ -165,10 +148,7 @@ export function AddAudioDialog({
             },
           ],
         },
-        L(
-          `Legg til ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase(collation())}`,
-          `Add ${AUDIO_KIND_LABEL[kind].toLocaleLowerCase(collation())}`,
-        ),
+        t("app-assembly-add-audio-dialog.r.cmds-run-and-wait.43344156a5fa", { value1: String(AUDIO_KIND_LABEL[kind].toLocaleLowerCase(collation())) }),
       );
       if (r.error) throw new Error(r.error);
       onAdded(clipId);
@@ -189,24 +169,19 @@ export function AddAudioDialog({
     <Dialog open={open} onOpenChange={(o) => !busy && onOpenChange(o)}>
       <DialogContent className="max-h-[86vh] max-w-[640px] overflow-y-auto border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("Legg til lyd", "Add audio")}</DialogTitle>
+          <DialogTitle>{t("app-assembly-add-audio-dialog.add-audio-dialog.dialog-title.f0fb31ee65ae")}</DialogTitle>
           <DialogDescription>
             {clip
-              ? L(
-                  `I scene ${clip.productionNumber ?? ""} ${formatHeading(clip.heading)}, ${formatSeconds(
+              ? t("app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.bd5742f43b46", { value1: String(clip.productionNumber ?? ""), value2: String(formatHeading(clip.heading)), value3: String(formatSeconds(
                     offsetMs / 1000,
-                  )} ut i scenen. Lyden følger scenen hvis den flyttes.`,
-                  `In scene ${clip.productionNumber ?? ""} ${formatHeading(clip.heading)}, ${formatSeconds(
-                    offsetMs / 1000,
-                  )} into the scene. The audio follows the scene if it is moved.`,
-                )
-              : L("Velg en scene i tidslinjen først.", "Choose a scene in the timeline first.")}
+                  )) })
+              : t("app-assembly-add-audio-dialog.add-audio-dialog.dialog-description.9ee3fe484e96")}
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid grid-cols-3 gap-3">
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Spor", "Track")}</span>
+            <span className={legend}>{t("app-assembly-add-audio-dialog.add-audio-dialog.span.43833b10a75e")}</span>
             <select
               value={kind}
               onChange={(e) => {
@@ -224,7 +199,7 @@ export function AddAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Replikk (valgfritt)", "Line (optional)")}</span>
+            <span className={legend}>{t("app-assembly-add-audio-dialog.add-audio-dialog.span.62623cb8ecbc")}</span>
             <select
               value={blockId}
               onChange={(e) => setBlockId(e.target.value)}
@@ -233,8 +208,8 @@ export function AddAudioDialog({
             >
               <option value="">
                 {lines.length
-                  ? L("Ingen", "None")
-                  : L("Ingen replikker i scenen", "No lines in the scene")}
+                  ? t("app-assembly-add-audio-dialog.add-audio-dialog.option.0148103611ae")
+                  : t("app-assembly-add-audio-dialog.add-audio-dialog.option.d62db98b151f")}
               </option>
               {lines.map((l) => (
                 <option key={l.id} value={l.id}>
@@ -244,9 +219,9 @@ export function AddAudioDialog({
             </select>
           </label>
           <label className="flex flex-col gap-1 text-xs text-text-secondary">
-            <span className={legend}>{L("Språk", "Language")}</span>
+            <span className={legend}>{t("app-assembly-add-audio-dialog.add-audio-dialog.span.b5365660c2ea")}</span>
             <select
-              aria-label={L("Språk", "Language")}
+              aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.b5365660c2ea")}
               value={lang}
               onChange={(e) => {
                 setLang(e.target.value);
@@ -255,13 +230,13 @@ export function AddAudioDialog({
               className={select}
             >
               <option value="">
-                {L("Standard", "Default")} (
-                {isVoiceKind(kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : L("felles", "shared")})
+                {t("app-assembly-add-audio-dialog.add-audio-dialog.option.6389426151ed")} (
+                {isVoiceKind(kind) ? LANGUAGE_LABEL[MAIN_LANGUAGE] : t("app-assembly-add-audio-dialog.add-audio-dialog.option.c106baa52e71")})
               </option>
-              <option value="*">{L("Felles for alle språk", "Shared for all languages")}</option>
+              <option value="*">{t("app-assembly-add-audio-dialog.add-audio-dialog.option.8d99699570cb")}</option>
               {FILM_LANGUAGES.map((l) => (
                 <option key={l} value={l}>
-                  {L("Bare", "Only")} {languageWord(l)}
+                  {t("app-assembly-add-audio-dialog.add-audio-dialog.option.09238fbb2350")} {languageWord(l)}
                 </option>
               ))}
             </select>
@@ -269,26 +244,26 @@ export function AddAudioDialog({
         </div>
 
         <section
-          aria-label={L("Fra biblioteket", "From the library")}
+          aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0d7f63fe7466")}
           className="flex flex-col gap-2"
         >
-          <h3 className={legend}>{L("Fra biblioteket", "From the library")}</h3>
+          <h3 className={legend}>{t("app-assembly-add-audio-dialog.add-audio-dialog.h3.0d7f63fe7466")}</h3>
           {sounds.length === 0 ? (
             <p className="text-xs text-text-tertiary">
-              {L("Ingen lydfiler i biblioteket ennå.", "No audio files in the library yet.")}
+              {t("app-assembly-add-audio-dialog.add-audio-dialog.p.04f3469c896a")}
             </p>
           ) : (
             <>
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={L("Søk etter lyd …", "Search for audio …")}
-                aria-label={L("Søk etter lyd", "Search for audio")}
+                placeholder={t("app-assembly-add-audio-dialog.add-audio-dialog.placeholder.1949ed8b780b")}
+                aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0f79a0193f87")}
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
               />
               <ul
                 role="listbox"
-                aria-label={L("Lydfiler", "Audio files")}
+                aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.a5ace96c2e19")}
                 className="flex max-h-[240px] flex-col overflow-y-auto"
               >
                 {shown.map((a) => {
@@ -330,22 +305,19 @@ export function AddAudioDialog({
         </section>
 
         <section
-          aria-label={L("Ny lydfil", "New audio file")}
+          aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.0285841312a7")}
           className="flex flex-col gap-1.5 border-t border-border pt-3"
         >
-          <h3 className={legend}>{L("Ny lydfil", "New audio file")}</h3>
+          <h3 className={legend}>{t("app-assembly-add-audio-dialog.add-audio-dialog.h3.0285841312a7")}</h3>
           <p className="text-xs text-text-tertiary">
-            {L(
-              "MP3, WAV, OGG, M4A eller FLAC. Lagres i ressursbiblioteket (type «Lyd») og legges inn her.",
-              "MP3, WAV, OGG, M4A or FLAC. Saved in the asset library (type “Audio”) and added here.",
-            )}
+            {t("app-assembly-add-audio-dialog.add-audio-dialog.p.43408234335d")}
           </p>
           <input
             ref={fileRef}
             type="file"
             accept="audio/*,.mp3,.wav,.ogg,.m4a,.aac,.flac,.webm"
             className="sr-only"
-            aria-label={L("Velg lydfil", "Choose audio file")}
+            aria-label={t("app-assembly-add-audio-dialog.add-audio-dialog.aria-label.6d6fa2c78164")}
             onChange={(e) => {
               const f = e.target.files?.[0];
               if (f) void add(null, f);
@@ -360,8 +332,8 @@ export function AddAudioDialog({
           >
             {busy ? <Loader2 className="animate-spin" /> : <Upload />}
             {busy
-              ? L("Laster opp …", "Uploading …")
-              : L("Last opp lydfil …", "Upload audio file …")}
+              ? t("app-assembly-add-audio-dialog.add-audio-dialog.button.3ccbd795d544")
+              : t("app-assembly-add-audio-dialog.add-audio-dialog.button.31bd12416461")}
           </Button>
         </section>
 
@@ -373,10 +345,10 @@ export function AddAudioDialog({
 
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={busy}>
-            {L("Avbryt", "Cancel")}
+            {t("app-assembly-add-audio-dialog.add-audio-dialog.button.64257128f0ee")}
           </Button>
           <Button onClick={() => void add(assetId, null)} disabled={busy || !assetId || !clip}>
-            {L("Legg til", "Add")}
+            {t("app-assembly-add-audio-dialog.add-audio-dialog.button.28106a7a4511")}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -3,18 +3,10 @@
  * med mediabunny, filen lastes opp uendret til den private bøtta «assets» (kildematerialet bevares), og
  * versjonen lagres med AddTake. Feiler opplastingen, lagres ingenting.
  */
-import {
-  filmFilePath,
-  ASSET_MAX_BYTES,
-  FILM_MIME_TYPES,
-  L,
-  newId,
-  secondsToFrames,
-  type Rational,
-  type TakeMedia,
-} from "@/core";
+import { filmFilePath, ASSET_MAX_BYTES, FILM_MIME_TYPES, newId, secondsToFrames, type Rational, type TakeMedia } from "@/core";
 import { ASSET_BUCKET, uploadFile } from "@/adapters/browser/storage-files";
 import { safeFileName } from "@/app/library/asset-images";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Filtypene filmvelgerne godtar (MP4 med varianter, QuickTime og WebM). */
 export const FILM_ACCEPT =
@@ -36,13 +28,10 @@ export function mimeOf(file: Pick<File, "type" | "name">): string {
 
 export function checkFilmFile(file: File): string | null {
   if (!FILM_MIME_TYPES.includes(mimeOf(file)))
-    return L(
-      "Filmen må være MP4 (også .m4v), MOV (QuickTime) eller WebM. Andre formater (AVI, MKV, MXF …) kan gjøres om til MP4 (H.264) i et klippeprogram eller med HandBrake.",
-      "The film must be MP4 (also .m4v), MOV (QuickTime) or WebM. Other formats (AVI, MKV, MXF …) can be converted to MP4 (H.264) in an editing program or with HandBrake.",
-    );
+    return tk("app-assembly-film-import.check-film-file.message.45169e5b6406");
   if (file.size > ASSET_MAX_BYTES)
-    return L("Filmen er større enn 2 GB.", "The film is larger than 2 GB.");
-  if (file.size === 0) return L("Filen er tom.", "The file is empty.");
+    return tk("app-assembly-film-import.check-film-file.message.093fd30458d6");
+  if (file.size === 0) return tk("app-assembly-film-import.check-film-file.message.a9ff3f3662ca");
   return null;
 }
 
@@ -75,21 +64,18 @@ async function readMeta(
   const input = new mb.Input({ source, formats: mb.ALL_FORMATS });
   try {
     const video = await input.getPrimaryVideoTrack();
-    if (!video) throw new FilmReadError(L("Filen har ingen video.", "The file has no video."));
+    if (!video) throw new FilmReadError(tk("app-assembly-film-import.read-meta.message.09b2442e1b5b"));
     // Kan nettleseren spille av bildene? (ProRes og HEVC kan ikke spilles i Chrome/Firefox)
     const playable = await video.canDecode().catch(() => true);
     if (!playable)
       throw new FilmReadError(
-        L(
-          `Filmen er kodet med ${codecName(video.codec)}, som denne nettleseren ikke kan spille av. Eksporter den som MP4 med H.264 (eller prøv Safari for HEVC).`,
-          `The film is encoded with ${codecName(video.codec)}, which this browser cannot play. Export it as MP4 with H.264 (or try Safari for HEVC).`,
-        ),
+        tk("app-assembly-film-import.read-meta.message.223210237229", { value1: String(codecName(video.codec)) }),
       );
     const audio = await input.getPrimaryAudioTrack();
     const seconds = await input.computeDuration();
     if (!Number.isFinite(seconds) || seconds <= 0)
       throw new FilmReadError(
-        L("Filmens lengde kunne ikke leses.", "The film's length could not be read."),
+        tk("app-assembly-film-import.read-meta.message.57854b823303"),
       );
     let fps: number | null = null;
     try {
@@ -112,10 +98,7 @@ async function readMeta(
   } catch (e) {
     if (e instanceof FilmReadError) throw e;
     throw new Error(
-      L(
-        "Filen kunne ikke leses som film. Prøv MP4 (H.264).",
-        "The file could not be read as a film. Try MP4 (H.264).",
-      ),
+      tk("app-assembly-film-import.read-meta.message.4e88816e7eb5"),
     );
   } finally {
     (input as unknown as { dispose?: () => void }).dispose?.();
@@ -146,10 +129,7 @@ export async function uploadFilm(
   });
   if (error)
     throw new Error(
-      L(
-        `Filmen kunne ikke lastes opp: ${error.message}`,
-        `The film could not be uploaded: ${error.message}`,
-      ),
+      tk("app-assembly-film-import.upload-film.message.8917e47b2aed", { message: String(error.message) }),
     );
   return {
     takeId,
@@ -172,7 +152,7 @@ function codecName(codec: string | null | undefined): string {
       return codec.toUpperCase();
     case null:
     case undefined:
-      return L("en ukjent kodek", "an unknown codec");
+      return tk("app-assembly-film-import.codec-name.message.9387128eafbc");
     default:
       return /prores|apch|apcn|ap4h/i.test(codec) ? "ProRes" : codec;
   }

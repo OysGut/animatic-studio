@@ -8,34 +8,7 @@ import { useMemo, useState } from "react";
 import { ClipboardList, Loader2, Palette, Plus, ScanSearch, Trash2 } from "lucide-react";
 import { writeImagePrompt } from "@/adapters/ai/write-prompt.functions";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
-import {
-  STYLE_USES,
-  STYLE_USE_LABEL,
-  type StyleUse,
-  STYLE_FIELD_LIMIT,
-  STYLE_TOTAL_LIMIT,
-  styleGuideLength,
-  buildContextImagePrompt,
-  defaultStyleProfile,
-  emptyStyleGuide,
-  newId,
-  sortedAssets,
-  suggestStyleGuide,
-  versionsOf,
-  type ProjectState,
-  type StyleGuide,
-  type StyleTextField,
-  STYLE_ANALYSIS_KEYS,
-  STYLE_ANALYSIS_LABEL,
-  applyStyleAnalysis,
-  parseStyleAnalysis,
-  styleAnalysisUserText,
-  type StyleAnalysis,
-  type StyleAnalysisKey,
-  L,
-  collation,
-  tm,
-} from "@/core";
+import { STYLE_USES, STYLE_USE_LABEL, type StyleUse, STYLE_FIELD_LIMIT, STYLE_TOTAL_LIMIT, styleGuideLength, buildContextImagePrompt, defaultStyleProfile, emptyStyleGuide, newId, sortedAssets, suggestStyleGuide, versionsOf, type ProjectState, type StyleGuide, type StyleTextField, STYLE_ANALYSIS_KEYS, STYLE_ANALYSIS_LABEL, applyStyleAnalysis, parseStyleAnalysis, styleAnalysisUserText, type StyleAnalysis, type StyleAnalysisKey, collation, tm } from "@/core";
 import { GlobalStyleText } from "./GlobalStyleText";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useImageUrls } from "@/app/library/asset-images";
@@ -48,6 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 const FIELDS: readonly {
   key: StyleTextField;
@@ -57,71 +31,71 @@ const FIELDS: readonly {
 }[] = [
   {
     key: "premise",
-    label: () => L("Hva filmen handler om", "What the film is about"),
+    label: () => tk("app-projects-style-guide-section.label.label.9432cb366cd9"),
     hint: "A ten-year-old girl spends the summer with her grandfather on a small island and discovers that the old lighthouse keeps a secret.",
     rows: 3,
   },
   {
     key: "world",
-    label: () => L("Verden: sted, tid og årstid", "The world: place, time and season"),
+    label: () => tk("app-projects-style-guide-section.label.label.5f40d76fba0c"),
     hint: "A small island on the Norwegian coast around 1950. Wind, grey sea, white wooden houses and a red lighthouse.",
     rows: 3,
   },
   {
     key: "audience",
-    label: () => L("Publikum og tone", "Audience and tone"),
+    label: () => tk("app-projects-style-guide-section.label.label.34deaa3bc540"),
     hint: "Family film for children 6–10; warm, gentle, a little spooky.",
   },
   {
     key: "visualStyle",
-    label: () => L("Visuell stil", "Visual style"),
+    label: () => tk("app-projects-style-guide-section.label.label.0eca2fdd7cac"),
     hint: "Hand-painted 2D animation inspired by Norwegian folk-tale illustration; simple, readable shapes.",
     rows: 2,
   },
   {
     key: "technique",
-    label: () => L("Teknikk og materialer", "Technique and materials"),
+    label: () => tk("app-projects-style-guide-section.label.label.3bade036daf6"),
     hint: "Watercolour and gouache on textured paper, soft edges, visible brush strokes, limited detail.",
     rows: 2,
   },
   {
     key: "lighting",
-    label: () => L("Lys", "Light"),
+    label: () => tk("app-projects-style-guide-section.label.label.e415871fd9d3"),
     hint: "Low winter sun by day; candles, oil lamps and fireplaces indoors; cold blue moonlight outside at night.",
     rows: 2,
   },
   {
     key: "mood",
-    label: () => L("Stemning og følelse", "Mood and feeling"),
+    label: () => tk("app-projects-style-guide-section.label.label.5a9451cf856f"),
     hint: "Cosy and safe indoors, mysterious and vast outdoors.",
   },
   {
     key: "characterDesign",
-    label: () => L("Figurer", "Characters"),
+    label: () => tk("app-projects-style-guide-section.label.label.c82839bfc8e2"),
     hint: "Round, soft shapes; large expressive eyes; simple faces; clothes in wool and knitted patterns.",
     rows: 2,
   },
   {
     key: "environmentDesign",
-    label: () => L("Omgivelser og bakgrunner", "Surroundings and backgrounds"),
+    label: () => tk("app-projects-style-guide-section.label.label.6bc0add9febe"),
     hint: "Old timber buildings, uneven floorboards, rag rugs; landscapes with soft snowdrifts and dark spruce forest.",
     rows: 2,
   },
   {
     key: "composition",
-    label: () => L("Bildeutsnitt og kameraspråk", "Framing and camera language"),
+    label: () => tk("app-projects-style-guide-section.label.label.aec341995498"),
     hint: "Mostly eye-level at a child's height; wide shots to show how small the child is in the landscape.",
     rows: 2,
   },
   {
     key: "avoid",
-    label: () => L("Unngå", "Avoid"),
+    label: () => tk("app-projects-style-guide-section.label.label.0dd5519d5394"),
     hint: "Photorealism, 3D rendering, anime style, modern objects, text, logos, watermarks.",
     rows: 2,
   },
   {
     key: "instructions",
-    label: () => L("Egne instrukser til AI-en", "Own instructions to the AI"),
+    label: () => tk("app-projects-style-guide-section.label.label.749aa4fdbfc2"),
     hint: "Anything else the AI should always follow in this project.",
     rows: 2,
   },
@@ -154,18 +128,18 @@ export function StyleGuideSection({
     <section aria-labelledby="style-title" className="mt-10">
       <div className="mb-2 flex items-center gap-2">
         <h2 id="style-title" className="text-base font-semibold text-text-primary">
-          {L("Filmens visuelle stil", "The film's visual style")}
+          {tk("app-projects-style-guide-section.style-guide-section.h2.cf3f3ca9b968")}
         </h2>
         <span className="text-xs text-text-tertiary">
-          {L("brukes i alle AI-beskrivelser", "used in all AI descriptions")}
+          {tk("app-projects-style-guide-section.style-guide-section.span.08f72f04f8b6")}
         </span>
         <Button size="sm" variant="secondary" className="ml-auto" onClick={() => setOpen(true)}>
           <Palette />
           {editable
             ? profile
-              ? L("Rediger …", "Edit …")
-              : L("Lag …", "Make …")
-            : L("Vis …", "View …")}
+              ? tk("app-projects-style-guide-section.style-guide-section.button.bafddd68a87e")
+              : tk("app-projects-style-guide-section.style-guide-section.button.f05e2e395adc")
+            : tk("app-projects-style-guide-section.style-guide-section.button.85b6aa7f6377")}
         </Button>
       </div>
       <div className="border border-border bg-surface-1 px-4 py-3 text-[13px] text-text-secondary">
@@ -173,8 +147,8 @@ export function StyleGuideSection({
           <>
             <p className="text-text-primary">{g.premise || g.visualStyle || g.world}</p>
             <p className="mt-1 text-xs text-text-tertiary">
-              {filled} {L("av", "of")} {FIELDS.length} {L("felt fylt ut", "fields filled in")} ·{" "}
-              {g.referenceVersionIds.length} {L("forbildebilder", "reference images")}
+              {filled} {tk("app-projects-style-guide-section.style-guide-section.p.ceb65a4ada96")} {FIELDS.length} {tk("app-projects-style-guide-section.style-guide-section.p.9db020a2af76")} ·{" "}
+              {g.referenceVersionIds.length} {tk("app-projects-style-guide-section.style-guide-section.p.034f7d03053b")}
               {g.palette.colors.length ? " · " : ""}
               {g.palette.colors.map((c) => (
                 <span
@@ -188,10 +162,7 @@ export function StyleGuideSection({
           </>
         ) : (
           <p>
-            {L(
-              "Ikke fylt ut. En bildemodell vet ingenting om filmen – her beskriver dere hva den handler om, stil, teknikk, farger, lys og stemning, så alle bilder AI lager, passer inn.",
-              "Not filled in. An image model knows nothing about the film – here you describe what it is about, style, technique, colours, light and mood, so that all the images the AI makes fit in.",
-            )}
+            {tk("app-projects-style-guide-section.style-guide-section.p.85775cfd3e37")}
           </p>
         )}
       </div>
@@ -214,7 +185,7 @@ export function StyleGuideSection({
             type="button"
             onClick={() => setOpenId(p.id)}
             className="rounded-sm border border-border bg-surface-1 px-2 py-1 text-left hover:bg-surface-2"
-            title={L("Åpne stilprofilen", "Open the style profile")}
+            title={tk("app-projects-style-guide-section.style-guide-section.title.7a07d463c76d")}
           >
             <span className="text-text-primary">{p.name}</span>
             <span className="text-text-tertiary">
@@ -222,17 +193,14 @@ export function StyleGuideSection({
               ·{" "}
               {(p.appliesTo ?? []).length
                 ? (p.appliesTo ?? []).map((u) => STYLE_USE_LABEL[u]).join(", ")
-                : L("ikke i bruk", "not in use")}
+                : tk("app-projects-style-guide-section.style-guide-section.span.24031cefee85")}
             </span>
           </button>
         ))}
         {editable && profile ? (
           <Button size="sm" variant="ghost" onClick={() => setOpenId("new")}>
             <Plus />{" "}
-            {L(
-              "Egen stil for plakater, steder, AI-video …",
-              "Own style for posters, places, AI video …",
-            )}
+            {tk("app-projects-style-guide-section.style-guide-section.button.026a1e5e5ff1")}
           </Button>
         ) : null}
       </div>
@@ -322,16 +290,13 @@ export function StyleGuideDialog({
       const a = parseStyleAnalysis(r.prompt);
       if (!a)
         return setError(
-          L(
-            "Svaret fra AI kunne ikke leses. Prøv igjen.",
-            "The reply from the AI could not be read. Try again.",
-          ),
+          tk("app-projects-style-guide-section.analyse.set-error.5a93579a5c17"),
         );
       setAnalysis(a);
       setPickedKeys(new Set(STYLE_ANALYSIS_KEYS.filter((k) => a.en[k])));
     } catch (e) {
       setError(
-        (e as Error).message || L("Stilen ble ikke analysert.", "The style was not analysed."),
+        (e as Error).message || tk("app-projects-style-guide-section.analyse.set-error.6322f6473941"),
       );
     } finally {
       setAnalysing(null);
@@ -375,7 +340,7 @@ export function StyleGuideDialog({
         [pid]: {
           id: pid as never,
           revision: 1,
-          name: L("Utkast", "Draft"),
+          name: tk("app-projects-style-guide-section.name.name.814846ecf119"),
           isDefault: true,
           guide: draft,
           removed: false,
@@ -417,21 +382,15 @@ export function StyleGuideDialog({
     const bad = colors.find((c) => !HEX.test(c));
     if (bad)
       return setError(
-        L(
-          `«${bad}» er ikke en farge på formen #rrggbb.`,
-          `“${bad}” is not a colour in the form #rrggbb.`,
-        ),
+        tk("app-projects-style-guide-section.save.set-error.fb2c09e808f7", { bad: String(bad) }),
       );
     const guide: StyleGuide = { ...draft, palette: { ...draft.palette, colors } };
     if ((profile?.revision ?? 0) !== openedRevision)
       return setError(
-        L(
-          "Noen andre har endret filmens visuelle stil mens du skrev. Kopier det du har skrevet, lukk og åpne på nytt.",
-          "Someone else changed the film's visual style while you were writing. Copy what you have written, close and open again.",
-        ),
+        tk("app-projects-style-guide-section.save.set-error.906ffb90e99d"),
       );
     if (own && !name.trim())
-      return setError(L("Gi stilprofilen et navn.", "Give the style profile a name."));
+      return setError(tk("app-projects-style-guide-section.save.set-error.12505857d166"));
     const group = newId();
     const id = profile?.id ?? newId<"style_profile">();
     let err = profile
@@ -442,8 +401,8 @@ export function StyleGuideDialog({
             fields: { name: own ? name.trim() : profile.name, isDefault: profile.isDefault, guide },
           },
           own
-            ? L(`Endre stilprofilen «${name.trim()}»`, `Change the style profile “${name.trim()}”`)
-            : L("Endre filmens visuelle stil", "Change the film's visual style"),
+            ? tk("app-projects-style-guide-section.err.cmds-run.a1217e819847", { value1: String(name.trim()) })
+            : tk("app-projects-style-guide-section.err.cmds-run.2d61cb1d67e0"),
           group,
         )
       : cmds.run(
@@ -455,15 +414,15 @@ export function StyleGuideDialog({
               : { name: "Filmens visuelle stil", isDefault: true, guide }, // i18n-ignore – lagret standardnavn
           },
           own
-            ? L(`Ny stilprofil «${name.trim()}»`, `New style profile “${name.trim()}”`)
-            : L("Lag filmens visuelle stil", "Make the film's visual style"),
+            ? tk("app-projects-style-guide-section.err.cmds-run.9a178c6a79c7", { value1: String(name.trim()) })
+            : tk("app-projects-style-guide-section.err.cmds-run.e3bd9e16d4a3"),
           group,
         );
     const before = profile?.appliesTo ?? [];
     if (!err && own && (before.length !== uses.length || before.some((u) => !uses.includes(u))))
       err = cmds.run(
         { type: "SetStyleAppliesTo", profileId: id as never, appliesTo: uses },
-        L("Hva stilprofilen gjelder for", "What the style profile applies to"),
+        tk("app-projects-style-guide-section.save.cmds-run.86f31c8bc895"),
         group,
       );
     setError(err);
@@ -474,7 +433,7 @@ export function StyleGuideDialog({
     if (!profile || profile.isDefault) return;
     const err = cmds.run(
       { type: "SetStyleProfileRemoved", profileId: profile.id, removed: true },
-      L(`Fjern stilprofilen «${profile.name}»`, `Remove the style profile “${profile.name}”`),
+      tk("app-projects-style-guide-section.err.cmds-run.bb6e2cd5f50f", { name: String(profile.name) }),
     );
     setError(err);
     if (!err) onClose();
@@ -489,15 +448,12 @@ export function StyleGuideDialog({
           <DialogTitle>
             {own
               ? isNew
-                ? L("Ny stilprofil", "New style profile")
-                : L(`Stilprofil: ${profile?.name}`, `Style profile: ${profile?.name}`)
-              : L("Filmens visuelle stil", "The film's visual style")}
+                ? tk("app-projects-style-guide-section.style-guide-dialog.dialog-title.d9b5eb79bfc3")
+                : tk("app-projects-style-guide-section.style-guide-dialog.dialog-title.3da8b3b612dc", { name: String(profile?.name) })
+              : tk("app-projects-style-guide-section.style-guide-dialog.dialog-title.4541d9ed708a")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Dette sendes med i alle bildebeskrivelser, sammen med det programmet vet om scenene (sted, tid på døgnet, lys, hvem som er der) og godkjente bilder. Skriv helst på engelsk – beskrivelsene som sendes, er på engelsk. Eksemplene i feltene viser hva som passer.",
-              "This is sent with every image description, together with what the app knows about the scenes (place, time of day, light, who is there) and approved images. Preferably write in English – the descriptions sent are in English. The examples in the fields show what fits.",
-            )}
+            {tk("app-projects-style-guide-section.style-guide-dialog.dialog-description.cefa937571fa")}
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,22rem)]">
@@ -506,10 +462,7 @@ export function StyleGuideDialog({
               <div className="flex flex-wrap items-center gap-2">
                 <Button size="sm" variant="ghost" onClick={suggest} disabled={!main}>
                   <ClipboardList />
-                  {L(
-                    "Foreslå utkast fra prosjektet (fyller bare tomme felt)",
-                    "Suggest a draft from the project (fills empty fields only)",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.button.9eb9c6c4709a")}
                 </Button>
                 <Button
                   size="sm"
@@ -518,68 +471,47 @@ export function StyleGuideDialog({
                   onClick={() => setAnalysing("confirm")}
                   title={
                     draft.referenceVersionIds.length === 0
-                      ? L(
-                          "Velg forbildebilder nederst først",
-                          "Choose reference images at the bottom first",
-                        )
-                      : L(
-                          "En bildeforstående AI ser på forbildebildene og beskriver stilen konkret",
-                          "An image-understanding AI looks at the reference images and describes the style concretely",
-                        )
+                      ? tk("app-projects-style-guide-section.style-guide-dialog.title.66352daa2446")
+                      : tk("app-projects-style-guide-section.style-guide-dialog.title.68c4b16aa462")
                   }
                 >
                   {analysing === "running" ? <Loader2 className="animate-spin" /> : <ScanSearch />}
                   {analysing === "running"
-                    ? L(
-                        "Analyserer … (opptil et halvt minutt)",
-                        "Analysing … (up to half a minute)",
-                      )
-                    : L(
-                        "Analyser stilen i forbildebildene …",
-                        "Analyse the style in the reference images …",
-                      )}
+                    ? tk("app-projects-style-guide-section.style-guide-dialog.button.e29a61452c4f")
+                    : tk("app-projects-style-guide-section.style-guide-dialog.button.5ce321fc54e0")}
                 </Button>
               </div>
             ) : null}
             {analysing === "confirm" ? (
               <div
                 role="alertdialog"
-                aria-label={L("Bekreft stilanalyse", "Confirm style analysis")}
+                aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.a8d3fe27c570")}
                 className="flex flex-col gap-2 rounded-sm border border-accent-warm/50 bg-surface-1 p-2 text-xs text-text-secondary"
               >
                 <p>
                   {Math.min(6, draft.referenceVersionIds.length)}{" "}
-                  {L(
-                    "forbildebilder sendes til en språkmodell i Lovable AI, som beskriver stilen. Det bruker litt kreditter (langt mindre enn et bilde) og endrer ingenting før du velger hva som skal inn.",
-                    "reference images are sent to a language model in Lovable AI, which describes the style. It uses a few credits (far less than an image) and changes nothing until you choose what goes in.",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.p.54f579561ac4")}
                 </p>
                 <div className="flex gap-2">
                   <Button size="sm" onClick={() => void analyse()}>
-                    {L("Ja, analyser", "Yes, analyse")}
+                    {tk("app-projects-style-guide-section.style-guide-dialog.button.8a243932d696")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setAnalysing(null)}>
-                    {L("Avbryt", "Cancel")}
+                    {tk("app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6")}
                   </Button>
                 </div>
               </div>
             ) : null}
             {analysis ? (
               <section
-                aria-label={L("Stilanalyse", "Style analysis")}
+                aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.9193fb91ffd8")}
                 className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-2 text-xs"
               >
                 <h3 className="text-[13px] font-medium text-text-primary">
-                  {L(
-                    "Stilanalyse – velg hva som skal inn i stilen",
-                    "Style analysis – choose what goes into the style",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.h3.707a3428a5cc")}
                 </h3>
                 <p className="text-text-tertiary">
-                  {L(
-                    "Norsk for deg å lese; den engelske teksten er den som havner i feltene og sendes med bildebeskrivelsene. Du kan rette feltene etterpå.",
-                    "Norwegian for you to read; the English text is what ends up in the fields and is sent with the image descriptions. You can correct the fields afterwards.",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.p.0d552a7c2ffb")}
                 </p>
                 <ul className="flex flex-col gap-1.5">
                   {STYLE_ANALYSIS_KEYS.filter((k) => analysis.en[k]).map((k) => (
@@ -621,7 +553,7 @@ export function StyleGuideDialog({
                           onChange={(e) => setPickColours(e.target.checked)}
                         />
                         <span className="font-medium text-text-primary">
-                          {L("Fargepaletten", "The colour palette")}
+                          {tk("app-projects-style-guide-section.style-guide-dialog.span.2eeb488d0500")}
                         </span>
                         {analysis.colours.map((c) => (
                           <span
@@ -646,17 +578,14 @@ export function StyleGuideDialog({
                       setAnalysis(null);
                     }}
                   >
-                    {L("Bruk det valgte i stilen", "Use the selection in the style")}
+                    {tk("app-projects-style-guide-section.style-guide-dialog.button.135d1e7ddee6")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setAnalysis(null)}>
-                    {L("Forkast", "Discard")}
+                    {tk("app-projects-style-guide-section.style-guide-dialog.button.8af3c4a6696c")}
                   </Button>
                 </div>
                 <p className="text-text-tertiary">
-                  {L(
-                    "Ingenting er lagret før du trykker «Lagre» nederst.",
-                    "Nothing is saved until you press “Save” at the bottom.",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.p.7201bcc3ee98")}
                 </p>
               </section>
             ) : null}
@@ -666,34 +595,25 @@ export function StyleGuideDialog({
                 (total > STYLE_TOTAL_LIMIT ? "text-status-danger" : "text-text-tertiary")
               }
             >
-              {total} {L("av", "of")} {STYLE_TOTAL_LIMIT}{" "}
-              {L(
-                "tegn til sammen (resten av beskrivelsen – bildet og scenene – må også få plass).",
-                "characters in total (the rest of the description – the image and the scenes – must also fit).",
-              )}
+              {total} {tk("app-projects-style-guide-section.style-guide-dialog.p.cff42ce71802")} {STYLE_TOTAL_LIMIT}{" "}
+              {tk("app-projects-style-guide-section.style-guide-dialog.p.c039b08da81e")}
             </p>
             {own ? (
               <fieldset className="flex flex-col gap-2 rounded-sm border border-border bg-surface-1 p-2 text-xs text-text-secondary">
                 <label className="flex flex-col gap-1">
-                  {L("Navn", "Name")}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.label.5ac3e301e8e4")}
                   <input
                     value={name}
                     maxLength={120}
                     disabled={ro}
-                    placeholder={L(
-                      "F.eks. Plakatstil, Nattscener",
-                      "E.g. Poster style, Night scenes",
-                    )}
+                    placeholder={tk("app-projects-style-guide-section.style-guide-dialog.placeholder.b7c235f5a147")}
                     onChange={(e) => setName(e.target.value)}
                     className={area}
                   />
                 </label>
-                <legend className="sr-only">{L("Gjelder for", "Applies to")}</legend>
+                <legend className="sr-only">{tk("app-projects-style-guide-section.style-guide-dialog.legend.6feae9bc1307")}</legend>
                 <p>
-                  {L(
-                    "Gjelder for (resten bruker filmens visuelle stil):",
-                    "Applies to (the rest use the film's visual style):",
-                  )}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.p.e413dff742c9")}
                 </p>
                 <div className="flex flex-wrap gap-x-3 gap-y-1">
                   {STYLE_USES.map((u) => {
@@ -702,7 +622,7 @@ export function StyleGuideDialog({
                       <label
                         key={u}
                         className="flex items-center gap-1"
-                        title={t ? L(`Brukes av «${t.name}»`, `Used by “${t.name}”`) : undefined}
+                        title={t ? tk("app-projects-style-guide-section.style-guide-dialog.title.539ef5aaea6f", { name: String(t.name) }) : undefined}
                       >
                         <input
                           type="checkbox"
@@ -737,13 +657,10 @@ export function StyleGuideDialog({
               </label>
             ))}
             <fieldset className="flex flex-col gap-1 text-xs text-text-secondary">
-              <legend className="mb-1">{L("Fargepalett", "Colour palette")}</legend>
+              <legend className="mb-1">{tk("app-projects-style-guide-section.style-guide-dialog.legend.18f6e3054789")}</legend>
               <div className="flex flex-wrap items-center gap-2">
                 <input
-                  aria-label={L(
-                    "Farger (#rrggbb, skilt med mellomrom)",
-                    "Colours (#rrggbb, separated by spaces)",
-                  )}
+                  aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.d051a1b89038")}
                   value={colorText}
                   placeholder="#0d1b2a #f4efe6 #d9a441"
                   disabled={ro}
@@ -763,7 +680,7 @@ export function StyleGuideDialog({
                   ))}
               </div>
               <textarea
-                aria-label={L("Beskrivelse av fargene", "Description of the colours")}
+                aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.01e2143ef77f")}
                 value={draft.palette.description}
                 placeholder="Muted winter blues and whites, warm amber and red accents from lamps and wool."
                 rows={2}
@@ -780,14 +697,11 @@ export function StyleGuideDialog({
             </fieldset>
             <fieldset className="flex flex-col gap-1 text-xs text-text-secondary">
               <legend className="mb-1">
-                {L(
-                  `Forbildebilder (${draft.referenceVersionIds.length} valgt, høyst 6) – bilder som viser stilen`,
-                  `Reference images (${draft.referenceVersionIds.length} selected, max 6) – images that show the style`,
-                )}
+                {tk("app-projects-style-guide-section.style-guide-dialog.legend.7887170bc913", { length: String(draft.referenceVersionIds.length) })}
               </legend>
               {candidates.length === 0 ? (
                 <p className="text-text-tertiary">
-                  {L("Ingen bilder i biblioteket ennå.", "No images in the library yet.")}
+                  {tk("app-projects-style-guide-section.style-guide-dialog.p.785fc5d738a7")}
                 </p>
               ) : (
                 <ul className="flex flex-wrap gap-2">
@@ -838,10 +752,7 @@ export function StyleGuideDialog({
                 .filter((id) => !candidates.some((c) => c.version.id === id))
                 .map((id) => (
                   <p key={id} className="flex items-center gap-2 text-[11px] text-text-tertiary">
-                    {L(
-                      "Et valgt forbilde er ikke lenger godkjent eller finnes ikke.",
-                      "A selected reference image is no longer approved or does not exist.",
-                    )}
+                    {tk("app-projects-style-guide-section.style-guide-dialog.p.8ef266ebc933")}
                     {editable ? (
                       <button
                         type="button"
@@ -853,16 +764,13 @@ export function StyleGuideDialog({
                           }))
                         }
                       >
-                        {L("Fjern", "Remove")}
+                        {tk("app-projects-style-guide-section.style-guide-dialog.button.1324834ef4c0")}
                       </button>
                     ) : null}
                   </p>
                 ))}
               <p className="text-[11px] text-text-tertiary">
-                {L(
-                  "Forbildebildene nevnes i beskrivelsen. Å sende dem med til bildemodellen koster mer og venter på ditt ja.",
-                  "The reference images are mentioned in the description. Sending them to the image model costs more and waits for your yes.",
-                )}
+                {tk("app-projects-style-guide-section.style-guide-dialog.p.79d8dd862d98")}
               </p>
             </fieldset>
           </div>
@@ -870,7 +778,7 @@ export function StyleGuideDialog({
             <label className="flex flex-col gap-1 text-xs text-text-secondary">
               <span className="flex items-center gap-1">
                 <AiGlyph className="size-3.5" aria-hidden />{" "}
-                {L("Slik blir en beskrivelse", "What a description looks like")}
+                {tk("app-projects-style-guide-section.style-guide-dialog.span.5be9d986168d")}
               </span>
               <select
                 value={previewAsset}
@@ -887,10 +795,10 @@ export function StyleGuideDialog({
               </select>
             </label>
             <pre
-              aria-label={L("Forhåndsvisning av beskrivelsen", "Preview of the description")}
+              aria-label={tk("app-projects-style-guide-section.style-guide-dialog.aria-label.6087ec44889e")}
               className="max-h-[60vh] min-h-40 overflow-auto whitespace-pre-wrap rounded-sm border border-border bg-surface-2 p-2 font-mono text-[11px] leading-snug text-text-secondary"
             >
-              {preview || L("Velg en ressurs.", "Choose an asset.")}
+              {preview || tk("app-projects-style-guide-section.style-guide-dialog.pre.41adfbf536f8")}
             </pre>
           </div>
         </div>
@@ -902,13 +810,13 @@ export function StyleGuideDialog({
         <DialogFooter>
           {editable && own && profile ? (
             <Button variant="ghost" className="mr-auto" onClick={remove}>
-              <Trash2 /> {L("Fjern stilprofilen", "Remove the style profile")}
+              <Trash2 /> {tk("app-projects-style-guide-section.style-guide-dialog.button.898762983e0d")}
             </Button>
           ) : null}
           <Button variant="ghost" onClick={onClose}>
-            {editable ? L("Avbryt", "Cancel") : L("Lukk", "Close")}
+            {editable ? tk("app-projects-style-guide-section.style-guide-dialog.button.0bd87cb51eb6.2") : tk("app-projects-style-guide-section.style-guide-dialog.button.4abb85b60887")}
           </Button>
-          {editable ? <Button onClick={save}>{L("Lagre", "Save")}</Button> : null}
+          {editable ? <Button onClick={save}>{tk("app-projects-style-guide-section.style-guide-dialog.button.ba969324d6d6")}</Button> : null}
         </DialogFooter>
       </DialogContent>
     </Dialog>

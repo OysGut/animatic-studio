@@ -212,6 +212,278 @@ export type Database = {
         }
         Relationships: []
       }
+      animation_patterns: {
+        Row: {
+          color: string
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_id: string | null
+          spec: Json
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          created_by: string
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string | null
+          spec: Json
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string | null
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_patterns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_patterns_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_patterns_rig_id_fkey"
+            columns: ["rig_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rigs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animation_rig_versions: {
+        Row: {
+          algorithm_version: number
+          created_at: string
+          created_by: string
+          id: string
+          number: number
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_id: string
+          source_version_id: string
+          spec: Json
+        }
+        Insert: {
+          algorithm_version?: number
+          created_at?: string
+          created_by: string
+          id: string
+          number: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_id: string
+          source_version_id: string
+          spec: Json
+        }
+        Update: {
+          algorithm_version?: number
+          created_at?: string
+          created_by?: string
+          id?: string
+          number?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_id?: string
+          source_version_id?: string
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_rig_versions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_rig_id_fkey"
+            columns: ["rig_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rigs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rig_versions_source_version_id_fkey"
+            columns: ["source_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animation_rigs: {
+        Row: {
+          created_at: string
+          created_by: string
+          current_version_id: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          current_version_id?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          current_version_id?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_rigs_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_current_version"
+            columns: ["current_version_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rig_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_rigs_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      animation_uses: {
+        Row: {
+          behavior: Json | null
+          created_at: string
+          created_by: string
+          enabled: boolean
+          id: string
+          layer_id: string
+          occurrence_id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          rig_version_id: string
+        }
+        Insert: {
+          behavior?: Json | null
+          created_at?: string
+          created_by: string
+          enabled?: boolean
+          id: string
+          layer_id: string
+          occurrence_id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          rig_version_id: string
+        }
+        Update: {
+          behavior?: Json | null
+          created_at?: string
+          created_by?: string
+          enabled?: boolean
+          id?: string
+          layer_id?: string
+          occurrence_id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          rig_version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "animation_uses_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "animation_uses_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_occurrence_id_fkey"
+            columns: ["occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "scene_occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "animation_uses_rig_version_id_fkey"
+            columns: ["rig_version_id"]
+            isOneToOne: false
+            referencedRelation: "animation_rig_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_admins: {
         Row: {
           added_at: string
@@ -387,6 +659,7 @@ export type Database = {
           composition: Json | null
           created_at: string
           created_by: string | null
+          derived_from_version_id: string | null
           duration_ms: number | null
           height: number | null
           id: string
@@ -413,6 +686,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_from_version_id?: string | null
           duration_ms?: number | null
           height?: number | null
           id: string
@@ -439,6 +713,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_from_version_id?: string | null
           duration_ms?: number | null
           height?: number | null
           id?: string
@@ -551,9 +826,11 @@ export type Database = {
       }
       audio_clips: {
         Row: {
+          active_version_id: string | null
           asset_id: string
           asset_variant_id: string | null
           block_id: string | null
+          character_asset_id: string | null
           continues: boolean
           created_at: string
           created_by: string | null
@@ -568,18 +845,22 @@ export type Database = {
           name: string
           occurrence_id: string
           offset_ms: number
+          placement_estimated: boolean
           project_id: string
           removed: boolean
           revision: number
           source_in_ms: number
+          speech_language: string | null
           speed: number
           version_id: string | null
           volume_keys: Json
         }
         Insert: {
+          active_version_id?: string | null
           asset_id: string
           asset_variant_id?: string | null
           block_id?: string | null
+          character_asset_id?: string | null
           continues?: boolean
           created_at?: string
           created_by?: string | null
@@ -594,18 +875,22 @@ export type Database = {
           name?: string
           occurrence_id: string
           offset_ms: number
+          placement_estimated?: boolean
           project_id: string
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speech_language?: string | null
           speed?: number
           version_id?: string | null
           volume_keys?: Json
         }
         Update: {
+          active_version_id?: string | null
           asset_id?: string
           asset_variant_id?: string | null
           block_id?: string | null
+          character_asset_id?: string | null
           continues?: boolean
           created_at?: string
           created_by?: string | null
@@ -620,15 +905,24 @@ export type Database = {
           name?: string
           occurrence_id?: string
           offset_ms?: number
+          placement_estimated?: boolean
           project_id?: string
           removed?: boolean
           revision?: number
           source_in_ms?: number
+          speech_language?: string | null
           speed?: number
           version_id?: string | null
           volume_keys?: Json
         }
         Relationships: [
+          {
+            foreignKeyName: "audio_clips_active_version_id_fkey"
+            columns: ["active_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "audio_clips_asset_id_fkey"
             columns: ["asset_id"]
@@ -648,6 +942,13 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audio_clips_character_asset_id_fkey"
+            columns: ["character_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
             referencedColumns: ["id"]
           },
           {
@@ -683,6 +984,7 @@ export type Database = {
           id: string
           inverse: Json | null
           project_id: string
+          scene_ids: string[] | null
           seq: number
         }
         Insert: {
@@ -694,6 +996,7 @@ export type Database = {
           id: string
           inverse?: Json | null
           project_id: string
+          scene_ids?: string[] | null
           seq?: never
         }
         Update: {
@@ -705,6 +1008,7 @@ export type Database = {
           id?: string
           inverse?: Json | null
           project_id?: string
+          scene_ids?: string[] | null
           seq?: never
         }
         Relationships: [
@@ -818,6 +1122,8 @@ export type Database = {
           removed: boolean
           reviewed_versions: Json
           revision: number
+          rig_plate_depth_mm: number
+          rig_plate_id: string | null
           shape: Json | null
           template_instance_id: string | null
           template_key: string | null
@@ -858,6 +1164,8 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          rig_plate_depth_mm?: number
+          rig_plate_id?: string | null
           shape?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
@@ -898,6 +1206,8 @@ export type Database = {
           removed?: boolean
           reviewed_versions?: Json
           revision?: number
+          rig_plate_depth_mm?: number
+          rig_plate_id?: string | null
           shape?: Json | null
           template_instance_id?: string | null
           template_key?: string | null
@@ -1301,6 +1611,351 @@ export type Database = {
           },
         ]
       }
+      dialogue_batch_items: {
+        Row: {
+          attempts: number
+          batch_id: string
+          block_id: string
+          clip_id: string
+          command_id: string
+          composition_id: string
+          created_at: string
+          created_by: string
+          dialogue_version_id: string
+          error: string | null
+          id: string
+          job_id: string
+          language: string
+          occurrence_id: string
+          position: number
+          project_id: string
+          result: Json | null
+          retryable: boolean
+          script_revision: number
+          status: string
+          variant_id: string
+          version_id: string
+        }
+        Insert: {
+          attempts?: number
+          batch_id: string
+          block_id: string
+          clip_id: string
+          command_id: string
+          composition_id: string
+          created_at?: string
+          created_by: string
+          dialogue_version_id: string
+          error?: string | null
+          id: string
+          job_id: string
+          language: string
+          occurrence_id: string
+          position?: number
+          project_id: string
+          result?: Json | null
+          retryable?: boolean
+          script_revision: number
+          status?: string
+          variant_id: string
+          version_id: string
+        }
+        Update: {
+          attempts?: number
+          batch_id?: string
+          block_id?: string
+          clip_id?: string
+          command_id?: string
+          composition_id?: string
+          created_at?: string
+          created_by?: string
+          dialogue_version_id?: string
+          error?: string | null
+          id?: string
+          job_id?: string
+          language?: string
+          occurrence_id?: string
+          position?: number
+          project_id?: string
+          result?: Json | null
+          retryable?: boolean
+          script_revision?: number
+          status?: string
+          variant_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_batch_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_batch_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: true
+            referencedRelation: "generation_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_batch_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_batches: {
+        Row: {
+          access_blocked: boolean
+          character_id: string
+          created_at: string
+          created_by: string
+          id: string
+          lease_token: string | null
+          lease_until: string | null
+          pause_reason: string | null
+          project_id: string
+          request_id: string
+          status: string
+          voice: Json
+        }
+        Insert: {
+          access_blocked?: boolean
+          character_id: string
+          created_at?: string
+          created_by: string
+          id: string
+          lease_token?: string | null
+          lease_until?: string | null
+          pause_reason?: string | null
+          project_id: string
+          request_id: string
+          status?: string
+          voice: Json
+        }
+        Update: {
+          access_blocked?: boolean
+          character_id?: string
+          created_at?: string
+          created_by?: string
+          id?: string
+          lease_token?: string | null
+          lease_until?: string | null
+          pause_reason?: string | null
+          project_id?: string
+          request_id?: string
+          status?: string
+          voice?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_batches_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_reviews: {
+        Row: {
+          basis: string
+          block_id: string
+          block_revision: number
+          created_at: string
+          created_by: string | null
+          dialogue_version_id: string
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          basis: string
+          block_id: string
+          block_revision: number
+          created_at?: string
+          created_by?: string | null
+          dialogue_version_id: string
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          basis?: string
+          block_id?: string
+          block_revision?: number
+          created_at?: string
+          created_by?: string | null
+          dialogue_version_id?: string
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_reviews_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_reviews_dialogue_version_id_fkey"
+            columns: ["dialogue_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_reviews_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dialogue_versions: {
+        Row: {
+          asset_id: string
+          asset_variant_id: string | null
+          asset_version_id: string | null
+          clip_id: string
+          composition_id: string | null
+          created_at: string
+          created_by: string | null
+          fade_in_ms: number
+          fade_out_ms: number
+          gain_db: number
+          id: string
+          length_ms: number
+          model_id: string | null
+          parent_version_id: string | null
+          project_id: string
+          provider: string | null
+          removed: boolean
+          revision: number
+          script_revision: number | null
+          settings: Json
+          source: string
+          source_in_ms: number
+          speed: number
+          voice_id: string | null
+          volume_keys: Json
+        }
+        Insert: {
+          asset_id: string
+          asset_variant_id?: string | null
+          asset_version_id?: string | null
+          clip_id: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id: string
+          length_ms: number
+          model_id?: string | null
+          parent_version_id?: string | null
+          project_id: string
+          provider?: string | null
+          removed?: boolean
+          revision?: number
+          script_revision?: number | null
+          settings?: Json
+          source?: string
+          source_in_ms?: number
+          speed?: number
+          voice_id?: string | null
+          volume_keys?: Json
+        }
+        Update: {
+          asset_id?: string
+          asset_variant_id?: string | null
+          asset_version_id?: string | null
+          clip_id?: string
+          composition_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          fade_in_ms?: number
+          fade_out_ms?: number
+          gain_db?: number
+          id?: string
+          length_ms?: number
+          model_id?: string | null
+          parent_version_id?: string | null
+          project_id?: string
+          provider?: string | null
+          removed?: boolean
+          revision?: number
+          script_revision?: number | null
+          settings?: Json
+          source?: string
+          source_in_ms?: number
+          speed?: number
+          voice_id?: string | null
+          volume_keys?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dialogue_versions_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_asset_variant_id_fkey"
+            columns: ["asset_variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_asset_version_id_fkey"
+            columns: ["asset_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "audio_clips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_composition_id_fkey"
+            columns: ["composition_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_parent_version_id_fkey"
+            columns: ["parent_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "dialogue_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       duration_estimates: {
         Row: {
           assumptions: Json
@@ -1428,6 +2083,7 @@ export type Database = {
           storage_key: string
           title: string
           token: string | null
+          token_digest: string | null
           token_hash: string | null
           width: number
         }
@@ -1451,6 +2107,7 @@ export type Database = {
           storage_key: string
           title: string
           token?: string | null
+          token_digest?: string | null
           token_hash?: string | null
           width: number
         }
@@ -1474,6 +2131,7 @@ export type Database = {
           storage_key?: string
           title?: string
           token?: string | null
+          token_digest?: string | null
           token_hash?: string | null
           width?: number
         }
@@ -1691,6 +2349,67 @@ export type Database = {
           },
         ]
       }
+      global_animation_specs: {
+        Row: {
+          created_at: string
+          created_by: string
+          global_asset_id: string
+          id: string
+          note: string
+          number: number
+          patterns: Json
+          rig_spec: Json
+          variant_id: string
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          global_asset_id: string
+          id?: string
+          note?: string
+          number: number
+          patterns?: Json
+          rig_spec: Json
+          variant_id: string
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          global_asset_id?: string
+          id?: string
+          note?: string
+          number?: number
+          patterns?: Json
+          rig_spec?: Json
+          variant_id?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_animation_specs_global_asset_id_fkey"
+            columns: ["global_asset_id"]
+            isOneToOne: false
+            referencedRelation: "global_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_animation_specs_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "global_asset_variants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_animation_specs_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       global_asset_variants: {
         Row: {
           appearance: string
@@ -1874,6 +2593,244 @@ export type Database = {
           },
         ]
       }
+      global_rig_templates: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          note: string
+          number: number
+          spec: Json
+          workspace_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          id?: string
+          name: string
+          note?: string
+          number: number
+          spec: Json
+          workspace_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          note?: string
+          number?: number
+          spec?: Json
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_rig_templates_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      global_version_withdrawals: {
+        Row: {
+          version_id: string
+          withdrawn_at: string
+          withdrawn_by: string
+          workspace_id: string
+        }
+        Insert: {
+          version_id: string
+          withdrawn_at?: string
+          withdrawn_by: string
+          workspace_id: string
+        }
+        Update: {
+          version_id?: string
+          withdrawn_at?: string
+          withdrawn_by?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "global_version_withdrawals_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: true
+            referencedRelation: "global_asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "global_version_withdrawals_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      harmonize_batch_items: {
+        Row: {
+          asset_id: string
+          attempts: number
+          batch_id: string
+          command_id: string
+          created_at: string
+          created_by: string
+          error: string | null
+          harmonization_id: string
+          id: string
+          job_id: string
+          position: number
+          project_id: string
+          result: Json | null
+          retryable: boolean
+          source_version_id: string
+          status: string
+          variant_id: string
+          version_id: string
+        }
+        Insert: {
+          asset_id: string
+          attempts?: number
+          batch_id: string
+          command_id: string
+          created_at?: string
+          created_by: string
+          error?: string | null
+          harmonization_id: string
+          id: string
+          job_id: string
+          position?: number
+          project_id: string
+          result?: Json | null
+          retryable?: boolean
+          source_version_id: string
+          status?: string
+          variant_id: string
+          version_id: string
+        }
+        Update: {
+          asset_id?: string
+          attempts?: number
+          batch_id?: string
+          command_id?: string
+          created_at?: string
+          created_by?: string
+          error?: string | null
+          harmonization_id?: string
+          id?: string
+          job_id?: string
+          position?: number
+          project_id?: string
+          result?: Json | null
+          retryable?: boolean
+          source_version_id?: string
+          status?: string
+          variant_id?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harmonize_batch_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "harmonize_batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batch_items_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: true
+            referencedRelation: "generation_jobs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batch_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      harmonize_batches: {
+        Row: {
+          access_blocked: boolean
+          created_at: string
+          created_by: string
+          id: string
+          lease_token: string | null
+          lease_until: string | null
+          model: string
+          pause_reason: string | null
+          project_id: string
+          provider: string
+          reference_version_id: string | null
+          request_id: string
+          size: string | null
+          status: string
+          style_profile_id: string | null
+        }
+        Insert: {
+          access_blocked?: boolean
+          created_at?: string
+          created_by: string
+          id: string
+          lease_token?: string | null
+          lease_until?: string | null
+          model: string
+          pause_reason?: string | null
+          project_id: string
+          provider: string
+          reference_version_id?: string | null
+          request_id: string
+          size?: string | null
+          status?: string
+          style_profile_id?: string | null
+        }
+        Update: {
+          access_blocked?: boolean
+          created_at?: string
+          created_by?: string
+          id?: string
+          lease_token?: string | null
+          lease_until?: string | null
+          model?: string
+          pause_reason?: string | null
+          project_id?: string
+          provider?: string
+          reference_version_id?: string | null
+          request_id?: string
+          size?: string | null
+          status?: string
+          style_profile_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "harmonize_batches_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batches_reference_version_id_fkey"
+            columns: ["reference_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "harmonize_batches_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       imported_documents: {
         Row: {
           byte_size: number
@@ -1937,8 +2894,214 @@ export type Database = {
           },
         ]
       }
+      language_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          source_language: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source_language?: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source_language?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "language_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lipsync_results: {
+        Row: {
+          algorithm_version: number
+          audio_hash: string
+          block_id: string | null
+          clip_id: string
+          created_at: string
+          created_by: string
+          dialogue_version_id: string | null
+          enabled: boolean
+          id: string
+          overrides: Json
+          project_id: string
+          removed: boolean
+          revision: number
+          source: string
+          spans: Json
+          take_id: string
+          text_hash: string
+        }
+        Insert: {
+          algorithm_version: number
+          audio_hash: string
+          block_id?: string | null
+          clip_id: string
+          created_at?: string
+          created_by: string
+          dialogue_version_id?: string | null
+          enabled?: boolean
+          id: string
+          overrides?: Json
+          project_id: string
+          removed?: boolean
+          revision?: number
+          source: string
+          spans?: Json
+          take_id: string
+          text_hash?: string
+        }
+        Update: {
+          algorithm_version?: number
+          audio_hash?: string
+          block_id?: string | null
+          clip_id?: string
+          created_at?: string
+          created_by?: string
+          dialogue_version_id?: string | null
+          enabled?: boolean
+          id?: string
+          overrides?: Json
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          source?: string
+          spans?: Json
+          take_id?: string
+          text_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lipsync_results_block_id_fkey"
+            columns: ["block_id"]
+            isOneToOne: false
+            referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_clip_id_fkey"
+            columns: ["clip_id"]
+            isOneToOne: false
+            referencedRelation: "audio_clips"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_dialogue_version_id_fkey"
+            columns: ["dialogue_version_id"]
+            isOneToOne: false
+            referencedRelation: "dialogue_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lipsync_results_take_id_fkey"
+            columns: ["take_id"]
+            isOneToOne: false
+            referencedRelation: "takes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      measure_sets: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          frame: number
+          id: string
+          layer_id: string
+          markers: Json
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          frame: number
+          id: string
+          layer_id: string
+          markers: Json
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          frame?: number
+          id?: string
+          layer_id?: string
+          markers?: Json
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "measure_sets_layer_id_fkey"
+            columns: ["layer_id"]
+            isOneToOne: false
+            referencedRelation: "composition_layers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "measure_sets_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mobile_imports: {
         Row: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number
@@ -1962,6 +3125,8 @@ export type Database = {
           take_id: string | null
         }
         Insert: {
+          approved_at?: string | null
+          approved_rig_version_id?: string | null
           asset_id?: string | null
           asset_version_id?: string | null
           byte_size: number
@@ -1985,6 +3150,8 @@ export type Database = {
           take_id?: string | null
         }
         Update: {
+          approved_at?: string | null
+          approved_rig_version_id?: string | null
           asset_id?: string | null
           asset_version_id?: string | null
           byte_size?: number
@@ -2020,6 +3187,59 @@ export type Database = {
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "upload_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      note_flags: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          edited_at: string | null
+          edited_by: string | null
+          enabled: boolean
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          target_id: string
+          target_kind: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          enabled?: boolean
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          target_id: string
+          target_kind: string
+          text?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          enabled?: boolean
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          target_id?: string
+          target_kind?: string
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "note_flags_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -2285,6 +3505,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country: string | null
           display_name: string
           locale: string | null
           ui_prefs: Json
@@ -2292,6 +3513,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          country?: string | null
           display_name?: string
           locale?: string | null
           ui_prefs?: Json
@@ -2299,6 +3521,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          country?: string | null
           display_name?: string
           locale?: string | null
           ui_prefs?: Json
@@ -2397,6 +3620,7 @@ export type Database = {
       }
       projects: {
         Row: {
+          active_quality_profile_id: string | null
           ai_month_limit: number | null
           ai_price_per_image: number | null
           created_at: string
@@ -2415,9 +3639,11 @@ export type Database = {
           name: string
           primary_language: string
           revision: number
+          script_language: string | null
           workspace_id: string | null
         }
         Insert: {
+          active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
           created_at?: string
@@ -2436,9 +3662,11 @@ export type Database = {
           name: string
           primary_language?: string
           revision?: number
+          script_language?: string | null
           workspace_id?: string | null
         }
         Update: {
+          active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
           created_at?: string
@@ -2457,6 +3685,7 @@ export type Database = {
           name?: string
           primary_language?: string
           revision?: number
+          script_language?: string | null
           workspace_id?: string | null
         }
         Relationships: [
@@ -2465,6 +3694,148 @@ export type Database = {
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quality_profiles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          edited_at: string | null
+          edited_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          spec: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          edited_at?: string | null
+          edited_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quality_profiles_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rig_setups: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          scene_id: string | null
+          spec: Json
+          template_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          spec: Json
+          template_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          scene_id?: string | null
+          spec?: Json
+          template_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rig_setups_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rig_setups_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rig_templates: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name: string
+          project_id: string
+          removed: boolean
+          revision: number
+          spec: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          name: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          spec: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          spec?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rig_templates_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -2593,6 +3964,7 @@ export type Database = {
           project_id: string
           revision: number
           scene_id: string
+          script_language: string | null
           uncertainty: string | null
         }
         Insert: {
@@ -2607,6 +3979,7 @@ export type Database = {
           project_id: string
           revision?: number
           scene_id: string
+          script_language?: string | null
           uncertainty?: string | null
         }
         Update: {
@@ -2621,6 +3994,7 @@ export type Database = {
           project_id?: string
           revision?: number
           scene_id?: string
+          script_language?: string | null
           uncertainty?: string | null
         }
         Relationships: [
@@ -2765,6 +4139,7 @@ export type Database = {
           range_end: number
           range_start: number
           removed: boolean
+          resolved: boolean
           revision: number
           source: string
           stamp_at: string
@@ -2787,6 +4162,7 @@ export type Database = {
           range_end?: number
           range_start?: number
           removed?: boolean
+          resolved?: boolean
           revision?: number
           source?: string
           stamp_at?: string
@@ -2809,6 +4185,7 @@ export type Database = {
           range_end?: number
           range_start?: number
           removed?: boolean
+          resolved?: boolean
           revision?: number
           source?: string
           stamp_at?: string
@@ -2895,7 +4272,9 @@ export type Database = {
           project_id: string
           removed: boolean
           revision: number
+          script_language: string | null
           source_ref: Json | null
+          speech_language: string | null
           text: string
           uncertainty: string | null
           variant_id: string
@@ -2911,7 +4290,9 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
+          script_language?: string | null
           source_ref?: Json | null
+          speech_language?: string | null
           text?: string
           uncertainty?: string | null
           variant_id: string
@@ -2927,7 +4308,9 @@ export type Database = {
           project_id?: string
           removed?: boolean
           revision?: number
+          script_language?: string | null
           source_ref?: Json | null
+          speech_language?: string | null
           text?: string
           uncertainty?: string | null
           variant_id?: string
@@ -3063,6 +4446,47 @@ export type Database = {
           },
           {
             foreignKeyName: "script_versions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storage_cleanups: {
+        Row: {
+          actor: string
+          created_at: string
+          file_count: number
+          id: string
+          paths: Json
+          project_id: string
+          skipped_count: number
+          total_bytes: number
+        }
+        Insert: {
+          actor: string
+          created_at?: string
+          file_count: number
+          id?: string
+          paths?: Json
+          project_id: string
+          skipped_count?: number
+          total_bytes: number
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          file_count?: number
+          id?: string
+          paths?: Json
+          project_id?: string
+          skipped_count?: number
+          total_bytes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storage_cleanups_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -3494,6 +4918,158 @@ export type Database = {
           },
         ]
       }
+      style_harmonizations: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          model: string
+          note: string
+          project_id: string
+          quality_profile: Json | null
+          reference_version_id: string | null
+          removed: boolean
+          revision: number
+          source_version_id: string
+          style_profile_id: string | null
+          use: string
+          version_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          model: string
+          note?: string
+          project_id: string
+          quality_profile?: Json | null
+          reference_version_id?: string | null
+          removed?: boolean
+          revision?: number
+          source_version_id: string
+          style_profile_id?: string | null
+          use: string
+          version_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          model?: string
+          note?: string
+          project_id?: string
+          quality_profile?: Json | null
+          reference_version_id?: string | null
+          removed?: boolean
+          revision?: number
+          source_version_id?: string
+          style_profile_id?: string | null
+          use?: string
+          version_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_harmonizations_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_reference_version_id_fkey"
+            columns: ["reference_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_source_version_id_fkey"
+            columns: ["source_version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_harmonizations_version_id_fkey"
+            columns: ["version_id"]
+            isOneToOne: false
+            referencedRelation: "asset_versions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      style_preferred_references: {
+        Row: {
+          asset_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          project_id: string
+          removed: boolean
+          revision: number
+          style_profile_id: string
+          variant_id: string
+        }
+        Insert: {
+          asset_id: string
+          created_at?: string
+          created_by?: string | null
+          id: string
+          project_id: string
+          removed?: boolean
+          revision?: number
+          style_profile_id: string
+          variant_id: string
+        }
+        Update: {
+          asset_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          style_profile_id?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "style_preferred_references_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_style_profile_id_fkey"
+            columns: ["style_profile_id"]
+            isOneToOne: false
+            referencedRelation: "style_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "style_preferred_references_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "asset_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       style_profiles: {
         Row: {
           applies_to: Json
@@ -3762,6 +5338,146 @@ export type Database = {
           },
         ]
       }
+      translation_line_links: {
+        Row: {
+          confidence: number
+          created_at: string
+          created_by: string | null
+          id: string
+          language: string
+          language_version_id: string | null
+          origin: string
+          project_id: string
+          reason: string
+          removed: boolean
+          revision: number
+          source_block_ids: string[]
+          target_translation_ids: string[]
+          variant_id: string
+        }
+        Insert: {
+          confidence: number
+          created_at?: string
+          created_by?: string | null
+          id: string
+          language: string
+          language_version_id?: string | null
+          origin: string
+          project_id: string
+          reason?: string
+          removed?: boolean
+          revision?: number
+          source_block_ids: string[]
+          target_translation_ids: string[]
+          variant_id: string
+        }
+        Update: {
+          confidence?: number
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          language?: string
+          language_version_id?: string | null
+          origin?: string
+          project_id?: string
+          reason?: string
+          removed?: boolean
+          revision?: number
+          source_block_ids?: string[]
+          target_translation_ids?: string[]
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_line_links_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_line_links_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_line_links_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      translation_lines: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          kind: string
+          language: string
+          language_version_id: string | null
+          ord: number
+          project_id: string
+          removed: boolean
+          revision: number
+          text: string
+          variant_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id: string
+          kind?: string
+          language: string
+          language_version_id?: string | null
+          ord: number
+          project_id: string
+          removed?: boolean
+          revision?: number
+          text: string
+          variant_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kind?: string
+          language?: string
+          language_version_id?: string | null
+          ord?: number
+          project_id?: string
+          removed?: boolean
+          revision?: number
+          text?: string
+          variant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "translation_lines_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_lines_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translation_lines_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "scene_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       translations: {
         Row: {
           based_on_rev: number
@@ -3770,6 +5486,7 @@ export type Database = {
           created_by: string | null
           id: string
           language: string
+          language_version_id: string | null
           project_id: string
           removed: boolean
           revision: number
@@ -3784,6 +5501,7 @@ export type Database = {
           created_by?: string | null
           id: string
           language: string
+          language_version_id?: string | null
           project_id: string
           removed?: boolean
           revision?: number
@@ -3798,6 +5516,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           language?: string
+          language_version_id?: string | null
           project_id?: string
           removed?: boolean
           revision?: number
@@ -3811,6 +5530,13 @@ export type Database = {
             columns: ["block_id"]
             isOneToOne: false
             referencedRelation: "script_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "translations_language_version_id_fkey"
+            columns: ["language_version_id"]
+            isOneToOne: false
+            referencedRelation: "language_versions"
             referencedColumns: ["id"]
           },
           {
@@ -3900,6 +5626,35 @@ export type Database = {
           },
           {
             foreignKeyName: "upload_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_bookmarks: {
+        Row: {
+          project_id: string
+          target: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          project_id: string
+          target: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          project_id?: string
+          target?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_bookmarks_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
@@ -4034,6 +5789,13 @@ export type Database = {
         Args: { p_byte_size: number; p_share: string }
         Returns: string
       }
+      admin_country_counts: {
+        Args: never
+        Returns: {
+          country: string
+          users: number
+        }[]
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -4049,7 +5811,52 @@ export type Database = {
         Args: { p_asset: string; p_draft: string; p_project: string }
         Returns: number
       }
+      claim_dialogue_batch: {
+        Args: { p_batch: string; p_lease: string }
+        Returns: Json
+      }
+      claim_harmonize_batch: {
+        Args: { p_batch: string; p_lease: string }
+        Returns: Json
+      }
       claim_mobile_import: { Args: { p_id: string }; Returns: boolean }
+      complete_dialogue_batch_item: {
+        Args: {
+          p_changes: Json
+          p_command: Json
+          p_inverse: Json
+          p_item: string
+          p_lease: string
+        }
+        Returns: Json
+      }
+      complete_harmonize_batch_item: {
+        Args: {
+          p_changes: Json
+          p_command: Json
+          p_inverse: Json
+          p_item: string
+          p_lease: string
+        }
+        Returns: Json
+      }
+      consume_my_bookmark: {
+        Args: { p_project: string; p_updated_at: string }
+        Returns: boolean
+      }
+      create_dialogue_batch: {
+        Args: {
+          p_actor: string
+          p_character: string
+          p_items: Json
+          p_key: string
+          p_key_owner: string
+          p_project: string
+          p_request: string
+          p_voice: Json
+        }
+        Returns: string
+      }
       create_film_share: {
         Args: {
           p_byte_size: number
@@ -4062,6 +5869,23 @@ export type Database = {
           p_width: number
         }
         Returns: Json
+      }
+      create_harmonize_batch: {
+        Args: {
+          p_actor: string
+          p_items: Json
+          p_key: string
+          p_key_owner: string
+          p_model: string
+          p_project: string
+          p_provider: string
+          p_quality_profile: Json
+          p_reference_version: string
+          p_request: string
+          p_size: string
+          p_style_profile: string
+        }
+        Returns: string
       }
       create_invitation: {
         Args: { p_email: string; p_project: string; p_role?: string }
@@ -4093,6 +5917,7 @@ export type Database = {
         Args: { p_dismissed: boolean; p_id: string }
         Returns: undefined
       }
+      film_share_lookup: { Args: { p_token: string }; Returns: string }
       film_share_token: { Args: { p_share: string }; Returns: string }
       global_add_version: {
         Args: {
@@ -4136,9 +5961,31 @@ export type Database = {
         }
         Returns: string
       }
+      global_publish_animation: {
+        Args: {
+          p_note: string
+          p_patterns: Json
+          p_rig_spec: Json
+          p_variant: string
+        }
+        Returns: string
+      }
+      global_publish_rig_template: {
+        Args: {
+          p_name: string
+          p_note: string
+          p_spec: Json
+          p_workspace: string
+        }
+        Returns: string
+      }
       global_set_asset_archived: {
         Args: { p_archived: boolean; p_asset: string }
         Returns: undefined
+      }
+      global_set_version_withdrawn: {
+        Args: { p_version: string; p_withdrawn: boolean }
+        Returns: boolean
       }
       global_update_asset: {
         Args: {
@@ -4180,6 +6027,8 @@ export type Database = {
           p_token_hash: string
         }
         Returns: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number
@@ -4221,6 +6070,8 @@ export type Database = {
           p_token_hash: string
         }
         Returns: {
+          approved_at: string | null
+          approved_rig_version_id: string | null
           asset_id: string | null
           asset_version_id: string | null
           byte_size: number
@@ -4294,6 +6145,14 @@ export type Database = {
         }
         Returns: Json
       }
+      reconfirm_dialogue_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
+      reconfirm_harmonize_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
       record_export: {
         Args: {
           p_file_name: string
@@ -4332,6 +6191,14 @@ export type Database = {
         Args: { p_name: string; p_workspace: string }
         Returns: undefined
       }
+      resume_dialogue_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
+      resume_harmonize_batch: {
+        Args: { p_actor: string; p_batch: string; p_project: string }
+        Returns: undefined
+      }
       revoke_film_share: { Args: { p_share: string }; Returns: undefined }
       revoke_invitation: { Args: { p_invitation: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
@@ -4349,6 +6216,16 @@ export type Database = {
         }
         Returns: Json
       }
+      scene_last_changes: {
+        Args: { p_project: string }
+        Returns: {
+          actor: string
+          actor_name: string
+          changed_at: string
+          logged: boolean
+          scene_id: string
+        }[]
+      }
       set_invitation_role: {
         Args: { p_invitation: string; p_role: string }
         Returns: undefined
@@ -4357,6 +6234,11 @@ export type Database = {
         Args: { p_project: string; p_role: string; p_user: string }
         Returns: undefined
       }
+      set_my_bookmark: {
+        Args: { p_project: string; p_target: Json }
+        Returns: undefined
+      }
+      set_my_country: { Args: { p_country: string }; Returns: undefined }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       set_project_workspace: {
@@ -4368,6 +6250,14 @@ export type Database = {
         Returns: undefined
       }
       touch_activity: { Args: never; Returns: undefined }
+      transition_dialogue_batch_item: {
+        Args: { p_item: string; p_lease: string; p_patch: Json }
+        Returns: undefined
+      }
+      transition_harmonize_batch_item: {
+        Args: { p_item: string; p_lease: string; p_patch: Json }
+        Returns: undefined
+      }
       upsert_my_profile: {
         Args: { p_display_name?: string }
         Returns: undefined

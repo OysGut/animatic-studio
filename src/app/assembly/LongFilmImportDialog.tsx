@@ -5,15 +5,7 @@
  */
 import { Film, Loader2, MapPin, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  cutsToRanges,
-  formatHeading,
-  newId,
-  proposeCuts,
-  type FilmClip,
-  type TakeMedia,
-  L,
-} from "@/core";
+import { cutsToRanges, formatHeading, newId, proposeCuts, type FilmClip, type TakeMedia } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +17,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FILM_ACCEPT, checkFilmFile, readFilmMetadata, uploadFilm } from "./film-import";
+import { t as tk } from "@/core/i18n/keyed";
 
 const fmt = (ms: number) => {
   const s = ms / 1000;
@@ -130,7 +123,7 @@ export function LongFilmImportDialog({
       setError(problem);
       return;
     }
-    setBusy(L("Leser filmen …", "Reading the film …"));
+    setBusy(tk("app-assembly-long-film-import-dialog.pick.set-busy.b905cc13d3b2"));
     try {
       const m = await readFilmMetadata(f);
       progress.current = { up: null, done: new Set(), takes: new Map(), group: newId() };
@@ -156,23 +149,17 @@ export function LongFilmImportDialog({
     try {
       const prog = progress.current;
       if (!prog.up) {
-        setBusy(L("Laster opp filmen …", "Uploading the film …"));
+        setBusy(tk("app-assembly-long-film-import-dialog.run.set-busy.6b8a233433fe"));
         prog.up = await uploadFilm(projectId, file, fps);
       }
       const up = prog.up;
-      const label = L(
-        `Importer lang film (${range.length} ${range.length === 1 ? "scene" : "scener"})`,
-        `Import long film (${range.length} ${range.length === 1 ? "scene" : "scenes"})`,
-      );
+      const label = tk("app-assembly-long-film-import-dialog.import-long-film", { count: range.length });
       for (let i = 0; i < range.length; i++) {
         const c = range[i]!;
         const r = ranges[i]!;
         if (prog.done.has(c.occurrenceId)) continue;
         setBusy(
-          L(
-            `Fordeler på scenene … (${i + 1} av ${range.length})`,
-            `Dividing into the scenes … (${i + 1} of ${range.length})`,
-          ),
+          tk("app-assembly-long-film-import-dialog.run.set-busy.ef739bdfca38", { value1: String(i + 1), length: String(range.length) }),
         );
         // Første scene får versjonen filen ble lastet opp med; de andre egne versjoner av samme fil.
         // Versjonen lages bare én gang, også om et nytt forsøk kommer etter en feil.
@@ -227,7 +214,7 @@ export function LongFilmImportDialog({
       setBusy(null);
       setError(
         (e as Error).message ||
-          L("Filmen kunne ikke importeres.", "The film could not be imported."),
+          tk("app-assembly-long-film-import-dialog.run.set-error.5dae08110e8e"),
       );
     }
   }
@@ -241,13 +228,10 @@ export function LongFilmImportDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Film className="size-5 text-accent-warm" aria-hidden />{" "}
-            {L("Importer lang film", "Import long film")}
+            {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.dialog-title.5180c4f99f3c")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Én filmfil som dekker flere scener. Filen lastes opp én gang og deles på scenene etter starttidene under. Hver scene får filmen som egen versjon, og animatic-versjonene beholdes.",
-              "One film file covering several scenes. The file is uploaded once and divided between the scenes by the start times below. Each scene gets the film as its own version, and the animatic versions are kept.",
-            )}
+            {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.dialog-description.66b5eca007ee")}
           </DialogDescription>
         </DialogHeader>
 
@@ -256,7 +240,7 @@ export function LongFilmImportDialog({
           type="file"
           accept={FILM_ACCEPT}
           className="sr-only"
-          aria-label={L("Velg lang filmfil", "Choose a long film file")}
+          aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.7c66ceb13047")}
           onChange={(e) => {
             const f = e.target.files?.[0];
             if (f) void pick(f);
@@ -270,10 +254,10 @@ export function LongFilmImportDialog({
               onClick={() => fileRef.current?.click()}
             >
               {busy ? <Loader2 className="animate-spin" /> : <Upload />}
-              {busy ?? L("Velg filmfil …", "Choose film file …")}
+              {busy ?? tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.68fb15bc8a30")}
             </Button>
             <p className="text-xs text-text-tertiary">
-              {L("MP4, MOV eller WebM, opptil 2 GB.", "MP4, MOV or WebM, up to 2 GB.")}
+              {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.p.6260126c0451")}
             </p>
           </div>
         ) : (
@@ -286,27 +270,24 @@ export function LongFilmImportDialog({
                   controls
                   muted
                   className="aspect-video w-full rounded-sm bg-media"
-                  aria-label={L("Forhåndsvisning av filmen", "Preview of the film")}
+                  aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.fad52a56a257")}
                 />
               ) : null}
               <p className="text-[11px] text-text-tertiary">
                 {media.fileName} · {fmt(media.durationMs)}
                 {media.width && media.height ? ` · ${media.width}×${media.height}` : ""}
-                {media.fps ? ` · ${Math.round(media.fps * 100) / 100} ${L("b/s", "fps")}` : ""}
+                {media.fps ? ` · ${Math.round(media.fps * 100) / 100} ${tk("app-assembly-long-film-import-dialog.long-film-import-dialog.p.09fae3fb4dc7")}` : ""}
               </p>
               <p className="text-[11px] text-text-tertiary">
-                {L(
-                  "Spol til der en scene begynner, og trykk",
-                  "Scrub to where a scene starts, and press",
-                )}{" "}
-                <MapPin className="inline size-3" /> {L("ved scenen.", "next to the scene.")}
+                {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.p.ac4b7ed24588")}{" "}
+                <MapPin className="inline size-3" /> {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.p.25403909d332")}
               </p>
             </div>
             <div className="flex min-w-0 flex-col gap-2">
               <div className="flex flex-wrap items-center gap-1.5 text-xs text-text-secondary">
-                {L("Fra", "From")}
+                {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.div.2b61e9f29719")}
                 <select
-                  aria-label={L("Første scene", "First scene")}
+                  aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.651f42bc7e1f")}
                   value={fromId}
                   onChange={(e) => setFromId(e.target.value)}
                   disabled={busy !== null}
@@ -318,9 +299,9 @@ export function LongFilmImportDialog({
                     </option>
                   ))}
                 </select>
-                {L("til", "to")}
+                {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.div.2325536f85e0")}
                 <select
-                  aria-label={L("Siste scene", "Last scene")}
+                  aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.1ca025d9c17f")}
                   value={toId}
                   onChange={(e) => setToId(e.target.value)}
                   disabled={busy !== null}
@@ -351,10 +332,7 @@ export function LongFilmImportDialog({
                           if (videoRef.current)
                             videoRef.current.currentTime = (starts[i] ?? 0) / 1000;
                         }}
-                        title={L(
-                          "Vis starten av scenen i filmen",
-                          "Show the start of the scene in the film",
-                        )}
+                        title={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.title.9b2c241dfd22")}
                       >
                         {formatHeading(c.heading)}
                       </button>
@@ -376,10 +354,7 @@ export function LongFilmImportDialog({
                         className={input + " w-20 font-mono"}
                         title={
                           i === 0
-                            ? L(
-                                "Første scene begynner der filmen begynner",
-                                "The first scene starts where the film starts",
-                              )
+                            ? tk("app-assembly-long-film-import-dialog.long-film-import-dialog.title.3f7ab5edbd82")
                             : "m:ss.ss"
                         }
                       />
@@ -389,14 +364,8 @@ export function LongFilmImportDialog({
                         onClick={() =>
                           setStart(i, Math.round((videoRef.current?.currentTime ?? 0) * 1000))
                         }
-                        aria-label={L(
-                          `Scene ${c.productionNumber ?? i + 1} begynner her i filmen`,
-                          `Scene ${c.productionNumber ?? i + 1} starts here in the film`,
-                        )}
-                        title={L(
-                          "Scenen begynner der filmen står nå",
-                          "The scene starts where the film is now",
-                        )}
+                        aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.f85939752011", { value1: String(c.productionNumber ?? i + 1) })}
+                        title={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.title.16b077370031")}
                         className="rounded-sm p-1 text-text-tertiary hover:bg-surface-3 hover:text-text-primary disabled:opacity-30"
                       >
                         <MapPin className="size-3.5" />
@@ -410,10 +379,7 @@ export function LongFilmImportDialog({
               </ol>
               {!ranges && range.length > 0 ? (
                 <p className="text-xs text-status-danger">
-                  {L(
-                    "Starttidene må komme etter hverandre og ligge innenfor filmen.",
-                    "The start times must follow each other and lie within the film.",
-                  )}
+                  {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.p.b024d0f4f87a")}
                 </p>
               ) : null}
             </div>
@@ -432,14 +398,14 @@ export function LongFilmImportDialog({
             </span>
           ) : null}
           <Button variant="ghost" disabled={busy !== null} onClick={() => onOpenChange(false)}>
-            {L("Avbryt", "Cancel")}
+            {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.d80d9fc4f7f9")}
           </Button>
           <Button
             disabled={!media || !ranges || range.length === 0 || busy !== null}
             onClick={() => void run()}
           >
-            <Film /> {L("Importer og fordel på", "Import and divide into")} {range.length}{" "}
-            {range.length === 1 ? L("scene", "scene") : L("scener", "scenes")}
+            <Film /> {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.805a98aa960a")} {range.length}{" "}
+            {range.length === 1 ? tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.65dca74acff7") : tk("app-assembly-long-film-import-dialog.long-film-import-dialog.button.4b293f9836fe")}
           </Button>
         </DialogFooter>
       </DialogContent>

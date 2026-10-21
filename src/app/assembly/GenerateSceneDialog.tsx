@@ -8,31 +8,7 @@
 import { AlertTriangle, Copy, Info, Loader2, RotateCcw, Save } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useState } from "react";
-import {
-  DEFAULT_SEGMENT_SECONDS,
-  MAX_PROMPT_CHARS,
-  SEGMENT_SECONDS,
-  blocksOfVariant,
-  buildScenePrompt,
-  formatHeading,
-  keysEvenly,
-  missingDialogue,
-  newId,
-  planSegments,
-  continuityCuts,
-  planFitsScene,
-  samePlan,
-  segmentDialogue,
-  segmentTimes,
-  compareKeys,
-  type FilmClip,
-  type GenerationPrompt,
-  type ProductionSegment,
-  type ProjectState,
-  type SegmentPlan,
-  L,
-  locale,
-} from "@/core";
+import { DEFAULT_SEGMENT_SECONDS, MAX_PROMPT_CHARS, SEGMENT_SECONDS, blocksOfVariant, buildScenePrompt, formatHeading, keysEvenly, missingDialogue, newId, planSegments, continuityCuts, planFitsScene, samePlan, segmentDialogue, segmentTimes, compareKeys, type FilmClip, type GenerationPrompt, type ProductionSegment, type ProjectState, type SegmentPlan, locale } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { SceneVideoSection } from "./SceneVideoSection";
 import { Button } from "@/components/ui/button";
@@ -44,6 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t as tk } from "@/core/i18n/keyed";
 
 export function GenerateSceneDialog({
   open,
@@ -156,10 +133,10 @@ function Body({
         segments,
       },
       next.length === 0
-        ? L("Fjern inndeling for generering", "Remove breakdown for generation")
+        ? tk("app-assembly-generate-scene-dialog.r.cmds-run-and-wait.7ff9f39763e5")
         : stored.length
-          ? L("Ny inndeling for generering", "New breakdown for generation")
-          : L("Inndeling for generering", "Breakdown for generation"),
+          ? tk("app-assembly-generate-scene-dialog.r.cmds-run-and-wait.9f1d77eb1780")
+          : tk("app-assembly-generate-scene-dialog.r.cmds-run-and-wait.895c9e3c34ca"),
       group,
     );
     if (r.error) {
@@ -196,8 +173,8 @@ function Body({
           basedOn: text === null ? "" : (autos[index] ?? ""),
         },
         text === null
-          ? L("Bruk automatisk beskrivelse", "Use automatic description")
-          : L("Lagre egen beskrivelse", "Save own description"),
+          ? tk("app-assembly-generate-scene-dialog.r.cmds-run-and-wait.4b627b7b3293")
+          : tk("app-assembly-generate-scene-dialog.r.cmds-run-and-wait.80364961a80e"),
         group,
       );
       if (r.error) setError(r.error);
@@ -221,10 +198,7 @@ function Body({
     const text = effective
       .map((t, i) =>
         plan.length > 1
-          ? L(
-              `### Segment ${i + 1} av ${plan.length}\n${t}`,
-              `### Segment ${i + 1} of ${plan.length}\n${t}`,
-            )
+          ? tk("app-assembly-generate-scene-dialog.text.effective-map.5b31fc96873d", { value1: String(i + 1), length: String(plan.length), t: String(t) })
           : t,
       )
       .join("\n\n");
@@ -233,7 +207,7 @@ function Body({
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      setError(L("Kunne ikke kopiere til utklippstavlen.", "Could not copy to the clipboard."));
+      setError(tk("app-assembly-generate-scene-dialog.copy-all.set-error.573b1e971e40"));
     }
   }
 
@@ -245,29 +219,23 @@ function Body({
       <DialogHeader>
         <DialogTitle>
           <AiGlyph className="mr-1 inline size-4" aria-hidden />
-          {L(
-            `Generer scene ${clip.productionNumber ?? ""} – ${formatHeading(clip.heading)}`,
-            `Generate scene ${clip.productionNumber ?? ""} – ${formatHeading(clip.heading)}`,
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.dialog-title.37e37222fad0", { value1: String(clip.productionNumber ?? ""), value2: String(formatHeading(clip.heading)) })}
         </DialogTitle>
         <DialogDescription>
-          {L(
-            "Scenen deles i segmenter som følger manuset. Hvert segment får en beskrivelse på engelsk med replikkene ordrett på norsk. Du kan lese og endre hver beskrivelse; det du skriver selv, lagres og overskrives aldri. Manuset endres ikke.",
-            "The scene is divided into segments that follow the script. Each segment gets a description in English with the dialogue word for word in Norwegian. You can read and change each description; what you write yourself is saved and never overwritten. The script is not changed.",
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.dialog-description.2d6dd5207e8e")}
         </DialogDescription>
       </DialogHeader>
 
       <div className="flex flex-wrap items-center gap-3 text-xs text-text-secondary">
         {storedPlan ? (
           <span>
-            {L("Lagret inndeling:", "Saved breakdown:")}{" "}
+            {tk("app-assembly-generate-scene-dialog.body.span.96f33ab8b694")}{" "}
             <strong className="text-text-primary">{plan.length}</strong>{" "}
-            {plan.length === 1 ? L("segment", "segment") : L("segmenter", "segments")}.
+            {plan.length === 1 ? tk("app-assembly-generate-scene-dialog.body.span.fd892f5e887b") : tk("app-assembly-generate-scene-dialog.body.span.ac87b29342ab")}.
           </span>
         ) : (
           <label className="flex items-center gap-1.5">
-            {L("Segmentlengde høyst", "Maximum segment length")}
+            {tk("app-assembly-generate-scene-dialog.body.label.1cb1f77a65d1")}
             <select
               value={seconds}
               onChange={(e) => setSeconds(Number(e.target.value))}
@@ -280,17 +248,14 @@ function Body({
               ))}
             </select>
             <span className="text-text-tertiary">
-              {L(
-                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segmenter"} (forslag)`,
-                `→ ${plan.length} ${plan.length === 1 ? "segment" : "segments"} (suggested)`,
-              )}
+              {tk("app-assembly-generate-scene-dialog.segments-suggested", { count: plan.length })}
             </span>
           </label>
         )}
         {storedPlan && editable ? (
           <>
             <label className="flex items-center gap-1.5">
-              {L("Ny lengde", "New length")}
+              {tk("app-assembly-generate-scene-dialog.body.label.247a3e174fa8")}
               <select
                 value={seconds}
                 onChange={(e) => setSeconds(Number(e.target.value))}
@@ -309,14 +274,8 @@ function Body({
               disabled={busy || !differs}
               title={
                 differs
-                  ? L(
-                      "Del scenen på nytt (går bare når ingen segmenter har egen beskrivelse)",
-                      "Split the scene again (only works when no segment has its own description)",
-                    )
-                  : L(
-                      "Den nye lengden gir samme inndeling",
-                      "The new length gives the same breakdown",
-                    )
+                  ? tk("app-assembly-generate-scene-dialog.body.title.9431792ed90e")
+                  : tk("app-assembly-generate-scene-dialog.body.title.851fa7a81802")
               }
               onClick={() => {
                 setError(null);
@@ -325,7 +284,7 @@ function Body({
               }}
             >
               <RotateCcw />
-              {L("Del på nytt", "Split again")}
+              {tk("app-assembly-generate-scene-dialog.body.button.8b736b9acefa")}
             </Button>
             <Button
               size="sm"
@@ -333,14 +292,8 @@ function Body({
               disabled={busy || prompts.size > 0}
               title={
                 prompts.size > 0
-                  ? L(
-                      "Tilbakestill de egne beskrivelsene først",
-                      "Reset the own descriptions first",
-                    )
-                  : L(
-                      "Fjern inndelingen (scenen kan da slås sammen eller splittes i manuset)",
-                      "Remove the breakdown (the scene can then be merged or split in the script)",
-                    )
+                  ? tk("app-assembly-generate-scene-dialog.body.title.df787748107d")
+                  : tk("app-assembly-generate-scene-dialog.body.title.458bbebde8e0")
               }
               onClick={() => {
                 setError(null);
@@ -348,7 +301,7 @@ function Body({
                 void savePlan([]).finally(() => setBusy(false));
               }}
             >
-              {L("Fjern inndelingen", "Remove the breakdown")}
+              {tk("app-assembly-generate-scene-dialog.body.button.23bb6c18b4b8")}
             </Button>
           </>
         ) : null}
@@ -364,38 +317,29 @@ function Body({
             }}
           >
             <Save />
-            {L("Lagre inndelingen", "Save the breakdown")}
+            {tk("app-assembly-generate-scene-dialog.body.button.49f6d9ec6e59")}
           </Button>
         ) : null}
         <Button size="sm" variant="ghost" className="ml-auto" onClick={() => void copyAll()}>
           <Copy />
-          {copied ? L("Kopiert", "Copied") : L("Kopier alle beskrivelser", "Copy all descriptions")}
+          {copied ? tk("app-assembly-generate-scene-dialog.body.button.61d5dc3f172e") : tk("app-assembly-generate-scene-dialog.body.button.c98481725b26")}
         </Button>
       </div>
 
       {storedPlan && !planFitsScene(state, clip, storedPlan) ? (
         <p className="flex items-start gap-1 text-xs text-status-uncertain">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-          {L(
-            "Scenen har fått en annen lengde siden inndelingen ble lagret. Del på nytt når det passer (segmenter med egen beskrivelse må tilbakestilles først).",
-            "The scene has got a different length since the breakdown was saved. Split again when it suits (segments with their own description must be reset first).",
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.p.5d0e58a72f20")}
         </p>
       ) : null}
       {continuityCuts(state, clip).length ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Utseendet til en karakter endres midt i scenen (kontinuitet). Forslaget deler segmentene der, så hvert segment får riktig utseende i beskrivelsen. Manuset og scenen endres ikke.",
-            "A character's appearance changes in the middle of the scene (continuity). The suggestion splits the segments there, so each segment gets the right appearance in the description. The script and scene are not changed.",
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.p.f795d61ca6b8")}
         </p>
       ) : null}
       {!hasBlocks ? (
         <p className="text-xs text-text-tertiary">
-          {L(
-            "Scenen har ingen tekst i manuset; beskrivelsen bygges bare fra scenehode, ressurser og kamera.",
-            "The scene has no text in the script; the description is built only from the scene heading, assets and camera.",
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.p.bd1277c13ec7")}
         </p>
       ) : null}
 
@@ -444,14 +388,11 @@ function Body({
       <DialogFooter className="sm:justify-between">
         <span className="flex items-center gap-1.5 text-xs text-text-tertiary">
           {busy ? <Loader2 className="size-3.5 animate-spin" aria-hidden /> : null}
-          {L(
-            "Generert video legges til som en ny versjon av scenen og erstatter aldri 2D-scenen.",
-            "Generated video is added as a new version of the scene and never replaces the 2D scene.",
-          )}
+          {tk("app-assembly-generate-scene-dialog.body.span.70e51df845f8")}
         </span>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={onClose}>
-            {L("Lukk", "Close")}
+            {tk("app-assembly-generate-scene-dialog.body.button.11401f4e30ac")}
           </Button>
         </div>
       </DialogFooter>
@@ -502,15 +443,12 @@ function SegmentCard({
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <span className="font-medium text-text-primary">
           {count > 1
-            ? L(`Segment ${index + 1} av ${count}`, `Segment ${index + 1} of ${count}`)
-            : L("Hele scenen", "Whole scene")}
+            ? tk("app-assembly-generate-scene-dialog.segment-card.span.44c0faab0806", { value1: String(index + 1), count: String(count) })
+            : tk("app-assembly-generate-scene-dialog.segment-card.span.172fbf6a273b")}
         </span>
         <span className="tabular text-text-tertiary">{span}</span>
         <span className="text-text-tertiary">
-          {L(
-            `· ${segment.blockIds.length} blokker i manuset`,
-            `· ${segment.blockIds.length} blocks in the script`,
-          )}
+          {tk("app-assembly-generate-scene-dialog.segment-card.span.630822edb65d", { length: String(segment.blockIds.length) })}
         </span>
         <span
           className={
@@ -518,20 +456,17 @@ function SegmentCard({
             (own ? "bg-accent-selection text-text-primary" : "bg-surface-3 text-text-secondary")
           }
         >
-          {own ? L("Egen beskrivelse", "Own description") : L("Automatisk", "Automatic")}
+          {own ? tk("app-assembly-generate-scene-dialog.segment-card.span.8787ee31a8d0") : tk("app-assembly-generate-scene-dialog.segment-card.span.b218c1adf036")}
         </span>
       </div>
       {changedBase ? (
         <p className="flex items-start gap-1 text-xs text-status-uncertain">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />
           <span>
-            {L(
-              "Manus, ressurser eller kamera er endret siden du skrev denne. Din beskrivelse brukes fortsatt.",
-              "The script, assets or camera have changed since you wrote this. Your description is still used.",
-            )}{" "}
+            {tk("app-assembly-generate-scene-dialog.segment-card.span.25290f0e163b")}{" "}
             <button type="button" className="underline" onClick={() => setShowAuto((v) => !v)}>
-              {showAuto ? L("Skjul", "Hide") : L("Vis", "Show")}{" "}
-              {L("den nye automatiske", "the new automatic one")}
+              {showAuto ? tk("app-assembly-generate-scene-dialog.segment-card.button.8a2de620a37d") : tk("app-assembly-generate-scene-dialog.segment-card.button.abf0945e28ef")}{" "}
+              {tk("app-assembly-generate-scene-dialog.segment-card.button.5c2f50bd5f8d")}
             </button>
           </span>
         </p>
@@ -548,28 +483,25 @@ function SegmentCard({
         rows={Math.min(16, Math.max(6, text.split("\n").length + 1))}
         aria-label={
           count > 1
-            ? L(`Beskrivelse for segment ${index + 1}`, `Description for segment ${index + 1}`)
-            : L("Beskrivelse for scenen", "Description for the scene")
+            ? tk("app-assembly-generate-scene-dialog.segment-card.aria-label.4b448bc4b614", { value1: String(index + 1) })
+            : tk("app-assembly-generate-scene-dialog.segment-card.aria-label.d447ceb13d3e")
         }
         className="resize-y rounded-sm border border-border-control bg-surface-3 p-2 font-mono text-[11px] leading-snug text-text-primary"
       />
       {missing.length ? (
         <p className="text-xs text-status-uncertain">
           {missing.length === 1
-            ? L("En replikk", "One line")
-            : L(`${missing.length} replikker`, `${missing.length} lines`)}{" "}
-          {L(
-            "står ikke ordrett i beskrivelsen:",
-            "are not quoted word for word in the description:",
-          )}{" "}
-          {missing.map((d) => L(`«${d}»`, `“${d}”`)).join(", ")}.{" "}
-          {L("Replikkene skal være med uendret.", "The lines must be kept unchanged.")}
+            ? tk("app-assembly-generate-scene-dialog.segment-card.p.fa2a87039620")
+            : tk("app-assembly-generate-scene-dialog.segment-card.p.0b90adeb3e51", { length: String(missing.length) })}{" "}
+          {tk("app-assembly-generate-scene-dialog.segment-card.p.025bdf937c2c")}{" "}
+          {missing.map((d) => tk("app-assembly-generate-scene-dialog.segment-card.missing-map.977efe6f133c", { d: String(d) })).join(", ")}.{" "}
+          {tk("app-assembly-generate-scene-dialog.segment-card.p.010185f7a14d")}
         </p>
       ) : null}
       {tooLong ? (
         <p className="text-xs text-status-danger">
-          {L("For lang", "Too long")} ({text.length} {L("av", "of")} {MAX_PROMPT_CHARS}{" "}
-          {L("tegn", "characters")}).
+          {tk("app-assembly-generate-scene-dialog.segment-card.p.b79c0819bcd7")} ({text.length} {tk("app-assembly-generate-scene-dialog.segment-card.p.84f550f9126d")} {MAX_PROMPT_CHARS}{" "}
+          {tk("app-assembly-generate-scene-dialog.segment-card.p.41e3021cb13d")}).
         </p>
       ) : null}
       {editable ? (
@@ -581,11 +513,11 @@ function SegmentCard({
             onClick={() => onSave(text)}
           >
             <Save />
-            {L("Lagre egen beskrivelse", "Save own description")}
+            {tk("app-assembly-generate-scene-dialog.segment-card.button.cf25d042a631")}
           </Button>
           {draft !== null ? (
             <Button size="sm" variant="ghost" onClick={() => setDraft(null)}>
-              {L("Forkast endringene", "Discard changes")}
+              {tk("app-assembly-generate-scene-dialog.segment-card.button.67f6f3aba09c")}
             </Button>
           ) : null}
           {own ? (
@@ -594,13 +526,10 @@ function SegmentCard({
               variant="ghost"
               className="ml-auto"
               onClick={() => onSave(null)}
-              title={L(
-                "Bruk den automatiske beskrivelsen igjen (kan angres)",
-                "Use the automatic description again (can be undone)",
-              )}
+              title={tk("app-assembly-generate-scene-dialog.segment-card.title.87c9b7e1e318")}
             >
               <RotateCcw />
-              {L("Bruk automatisk", "Use automatic")}
+              {tk("app-assembly-generate-scene-dialog.segment-card.button.19e535cd53bc")}
             </Button>
           ) : null}
         </div>

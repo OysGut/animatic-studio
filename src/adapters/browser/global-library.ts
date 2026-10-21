@@ -3,18 +3,11 @@
  * databasefunksjonene (rollen sjekkes der). Filer går gjennom serverfunksjonene i
  * `src/adapters/global/global-library.functions.ts`.
  */
-import {
-  L,
-  isGlobalKind,
-  type GlobalAsset,
-  type GlobalAssetBundle,
-  type GlobalKind,
-  type GlobalVariant,
-  type GlobalVersion,
-  type VisualStyle,
-  type TemplateDefinition,
-} from "@/core";
+import type { FontSpec } from "@/core/typography/project-fonts";
+import { isGlobalKind, type GlobalAsset, type GlobalAssetBundle, type GlobalKind, type GlobalVariant, type GlobalVersion, type VisualStyle, type TemplateDefinition } from "@/core";
+import type { GlobalAnimationSpec } from "@/core/animation/global-rig";
 import { browserClient, db } from "./client";
+import { t } from "@/core/i18n/keyed";
 
 function fail(e: { message: string } | null): void {
   if (e) throw new Error(e.message);
@@ -35,11 +28,14 @@ export async function getProjectWorkspace(projectId: string): Promise<string | n
 
 /** Alle globale ressurser i gruppen med varianter og versjoner. */
 export async function listGlobalBundles(workspaceId: string): Promise<GlobalAssetBundle[]> {
-  const [a, v, ver] = await Promise.all([
+  const [a, v, ver, wd] = await Promise.all([
     db.from("global_assets").select("*").eq("workspace_id", workspaceId),
     db.from("global_asset_variants").select("*").eq("workspace_id", workspaceId),
     db.from("global_asset_versions").select("*").eq("workspace_id", workspaceId),
+    // R3 (0068): tilbaketrukne versjoner. Før migrasjonen finnes ikke tabellen; da er ingen trukket tilbake.
+    db.from("global_version_withdrawals").select("version_id").eq("workspace_id", workspaceId),
   ]);
+  const withdrawn = new Set(wd.error ? [] : ((wd.data ?? []) as Row[]).map((r) => str(r["version_id"])));
   fail(a.error);
   fail(v.error);
   fail(ver.error);
@@ -79,6 +75,8 @@ export async function listGlobalBundles(workspaceId: string): Promise<GlobalAsse
     note: str(r["note"]),
     createdAt: str(r["created_at"]),
     template: (r["template_spec"] ?? null) as TemplateDefinition | null,
+    font: (r["font_spec"] ?? null) as FontSpec | null,
+    ...(withdrawn.has(str(r["id"])) ? { withdrawn: true } : {}),
   }));
   return assets.map((asset) => ({
     asset,
@@ -159,6 +157,85 @@ export async function uploadToSignedPath(path: string, token: string, file: Blob
     if (error || !data || typeof data.fullPath !== "string" || !data.fullPath)
       throw new Error("Invalid upload response");
   } catch {
-    throw new Error(L("Opplastingen av filen feilet. Prøv igjen.", "The file upload failed. Please try again."));
+    throw new Error(t("adapters-browser-global-library.upload-to-signed-path.message.465d07c915dc"));
   }
+}
+
+/** CA7 (migrasjon 0057): publiserte animasjonsoppsett i gruppen, nyeste først per variant. */
+export async function listGlobalAnimationSpecs(workspaceId: string): Promise<GlobalAnimationSpec[]> {
+  const { data, error } = await db.from("global_animation_specs").select("*").eq("workspace_id", workspaceId);
+  fail(error);
+  return ((data ?? []) as Row[])
+    .map((r) => ({
+      id: str(r["id"]),
+      workspaceId: str(r["workspace_id"]),
+      globalAssetId: str(r["global_asset_id"]),
+      variantId: str(r["variant_id"]),
+      number: num(r["number"]),
+      rig: r["rig_spec"] as GlobalAnimationSpec["rig"],
+      patterns: (Array.isArray(r["patterns"]) ? r["patterns"] : []) as GlobalAnimationSpec["patterns"],
+      note: str(r["note"]),
+      createdAt: str(r["created_at"]),
+    }))
+    .sort((a, b) => b.number - a.number);
+}
+
+/** Publiserer en ny, låst versjon av oppsettet (rollen sjekkes i databasen). */
+export async function publishGlobalAnimation(
+  variantId: string,
+  rig: GlobalAnimationSpec["rig"],
+  patterns: GlobalAnimationSpec["patterns"],
+  note: string,
+): Promise<string> {
+  const { data, error } = await db.rpc("global_publish_animation", {
+    p_variant: variantId,
+    p_rig_spec: rig as never,
+    p_patterns: patterns as never,
+    p_note: note,
+  });
+  fail(error);
+  return data as string;
+}
+
+export interface GlobalRigTemplate {
+  readonly id: string;
+  readonly name: string;
+  readonly number: number;
+  readonly note: string;
+  readonly createdAt: string;
+}
+
+/** Publiserte riggmaler i gruppen, nyeste versjon først per navn (migrasjon 0071). */
+export async function listGlobalRigTemplates(workspaceId: string): Promise<GlobalRigTemplate[]> {
+  const { data, error } = await db
+    .from("global_rig_templates")
+    .select("id, name, number, note, created_at")
+    .eq("workspace_id", workspaceId);
+  fail(error);
+  return ((data ?? []) as Row[])
+    .map((r) => ({
+      id: str(r["id"]),
+      name: str(r["name"]),
+      number: num(r["number"]),
+      note: str(r["note"]),
+      createdAt: str(r["created_at"]),
+    }))
+    .sort((a, b) => a.name.localeCompare(b.name) || b.number - a.number);
+}
+
+/** Publiserer riggmalen som en ny, låst versjon i gruppens bibliotek (rollen sjekkes i databasen). */
+export async function publishGlobalRigTemplate(
+  workspaceId: string,
+  name: string,
+  spec: unknown,
+  note: string,
+): Promise<string> {
+  const { data, error } = await db.rpc("global_publish_rig_template", {
+    p_workspace: workspaceId,
+    p_name: name,
+    p_spec: spec as never,
+    p_note: note,
+  });
+  fail(error);
+  return data as string;
 }

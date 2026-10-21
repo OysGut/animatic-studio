@@ -73,7 +73,7 @@ it("A B C forgrenes tomt, får øktregi og kjører 24 sekvensielle kall", async 
   await waitFor(() => expect(h.gen).toHaveBeenCalledTimes(24));
   await waitFor(() => expect(h.append).toHaveBeenCalledTimes(30));
   expect(maximum).toBe(1);
-  expect(h.fork.mock.calls.map(([arg]) => arg.data.fromTurn)).toEqual([-1, -1, -1]);
+  expect(h.fork.mock.calls.map(([arg]) => arg.data.fromTurnId)).toEqual([null, null, null]);
   expect(h.fork.mock.calls.map(([arg]) => arg.data.title.slice(-1))).toEqual(["A", "B", "C"]);
   expect(h.gen.mock.calls[0]?.[0].data.system).toContain("Direction a");
   expect(h.gen.mock.calls[8]?.[0].data.system).toContain("Direction b");

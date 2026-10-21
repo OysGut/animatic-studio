@@ -7,24 +7,7 @@
 import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  EMPTY_GLOBAL_FILTER,
-  GLOBAL_KINDS,
-  GLOBAL_KIND_LABEL,
-  L,
-  cleanLabels,
-  filterGlobalAssets,
-  globalFacets,
-  globalUpdates,
-  latestGlobalVersions,
-  linkedProjectAsset,
-  tm,
-  type GlobalAssetBundle,
-  type GlobalFilter,
-  type GlobalKind,
-  type GlobalVersion,
-  type ProjectState,
-} from "@/core";
+import { EMPTY_GLOBAL_FILTER, GLOBAL_KINDS, GLOBAL_KIND_LABEL, cleanLabels, filterGlobalAssets, globalFacets, globalUpdates, withdrawnInUse, latestGlobalVersions, linkedProjectAsset, tm, type GlobalAssetBundle, type GlobalFilter, type GlobalKind, type GlobalVersion, type ProjectState } from "@/core";
 import {
   createGlobalAsset,
   createGlobalVariant,
@@ -43,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { globalBundlesKey, useGlobalBundles, useProjectWorkspace } from "./use-global";
 import { uploadGlobalVersion, useGlobalInProject } from "./global-actions";
+import { t } from "@/core/i18n/keyed";
 
 const input =
   "h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary";
@@ -99,6 +83,8 @@ export function GlobalLibraryDialog({
   );
   const facets = useMemo(() => globalFacets(all.map((b) => b.asset)), [all]);
   const updates = useMemo(() => globalUpdates(state, all), [state, all]);
+  // R3: kopier av versjoner som senere er trukket tilbake globalt – bare et varsel, prosjektet endres ikke
+  const withdrawnHere = useMemo(() => withdrawnInUse(state, all), [state, all]);
   const current: GlobalAssetBundle | undefined = all.find((b) => b.asset.id === selected);
 
   const previewPaths = useMemo(() => {
@@ -147,8 +133,8 @@ export function GlobalLibraryDialog({
       void qc.invalidateQueries({ queryKey: ["global-used-in", b.asset.id] });
       if (r.assetId) onUsed?.(r.assetId);
       return r.reused
-        ? L("Ressursen fantes i prosjektet og er gjenbrukt.", "The asset was already in the project and has been reused.")
-        : L("Lagt til i prosjektet.", "Added to the project.");
+        ? t("app-global-global-library-dialog.use.act.d909b395d682")
+        : t("app-global-global-library-dialog.use.act.d78dd443e850");
     });
   }
 
@@ -165,7 +151,7 @@ export function GlobalLibraryDialog({
         tags: cleanLabels(newTags.split(",")),
       });
       const variant = await createGlobalVariant(id, {
-        name: L("Standard", "Standard"),
+        name: t("app-global-global-library-dialog.name.name.5ae7e3c71566"),
         style: "reference",
         appearance: "",
       });
@@ -176,14 +162,11 @@ export function GlobalLibraryDialog({
       try {
         await uploadGlobalVersion(workspaceId, id, variant, file);
       } catch {
-        throw new Error(L(
-          "Ressursen ble opprettet uten fil. Opplastingen av filen feilet. Prøv igjen fra ressursen med «Last opp fil …».",
-          "The asset was created without a file. The file upload failed. Please try again from the asset using “Upload file …”.",
-        ));
+        throw new Error(t("app-global-global-library-dialog.create.act.0d7b0489a1da"));
       } finally {
         refresh();
       }
-      return L("Den globale ressursen er laget.", "The global asset has been created.");
+      return t("app-global-global-library-dialog.create.act.2e30574da328");
     });
   }
 
@@ -191,38 +174,29 @@ export function GlobalLibraryDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl" data-testid="global-library-dialog">
         <DialogHeader>
-          <DialogTitle>{L("Globalt bibliotek", "Global library")}</DialogTitle>
+          <DialogTitle>{t("app-global-global-library-dialog.global-library-dialog.dialog-title.5633ef0a1f18")}</DialogTitle>
           <DialogDescription>
             {ws.workspaceName
-              ? L(
-                  `Ressurser som deles i arbeidsgruppen «${ws.workspaceName}». Det som hentes inn, blir en kopi i prosjektet; nye globale versjoner tas aldri inn av seg selv.`,
-                  `Assets shared in the workspace “${ws.workspaceName}”. What you bring in becomes a copy in the project; new global versions are never brought in by themselves.`,
-                )
-              : L("Ressurser som deles i en arbeidsgruppe.", "Assets shared in a workspace.")}
+              ? t("app-global-global-library-dialog.global-library-dialog.dialog-description.8ff55228021d", { workspaceName: String(ws.workspaceName) })
+              : t("app-global-global-library-dialog.global-library-dialog.dialog-description.d6cd863d4466")}
           </DialogDescription>
         </DialogHeader>
 
         {!ws.ready ? (
           <p className="text-[13px] text-text-secondary">
-            {L("Det globale biblioteket krever en nyere databaseversjon.", "The global library requires a newer database version.")}
+            {t("app-global-global-library-dialog.global-library-dialog.p.5a35bca2a060")}
           </p>
         ) : ws.loaded && !ws.workspaceId ? (
           <p className="text-[13px] text-text-secondary" data-testid="global-no-workspace">
-            {L(
-              "Prosjektet er ikke koblet til en arbeidsgruppe. Prosjektets eier kan koble det på gruppesiden under ",
-              "The project is not linked to a workspace. The project owner can link it on the workspace page under ",
-            )}
+            {t("app-global-global-library-dialog.global-library-dialog.p.cca1ebe58835")}
             <Link to="/konto" className="text-accent-brand underline-offset-2 hover:underline">
-              {L("Min konto", "My account")}
+              {t("app-global-global-library-dialog.global-library-dialog.link.b2b8bad32cc5")}
             </Link>
             .
           </p>
         ) : ws.loaded && !ws.rights.use ? (
           <p className="text-[13px] text-text-secondary" role="alert" data-testid="global-no-access">
-            {L(
-              "Du er ikke medlem av arbeidsgruppen prosjektet er koblet til.",
-              "You are not a member of the workspace the project is linked to.",
-            )}
+            {t("app-global-global-library-dialog.global-library-dialog.p.43e7196f3257")}
           </p>
         ) : (
           <div className="flex max-h-[70vh] flex-col gap-3 overflow-y-auto">
@@ -237,10 +211,7 @@ export function GlobalLibraryDialog({
                   return (
                     <div key={`${u.globalAssetId}:${u.globalVariantId}`} className="flex items-center justify-between gap-2 text-[13px]">
                       <span className="text-text-primary">
-                        {L(
-                          `Ny versjon finnes – oppdater? «${b.asset.name}» (${variant?.name ?? ""}): v${u.usedNumber} → v${u.newer.number}`,
-                          `A new version exists – update? “${b.asset.name}” (${variant?.name ?? ""}): v${u.usedNumber} → v${u.newer.number}`,
-                        )}
+                        {t("app-global-global-library-dialog.global-library-dialog.span.fea9485311d5", { name: String(b.asset.name), value2: String(variant?.name ?? ""), usedNumber: String(u.usedNumber), number: String(u.newer.number) })}
                       </span>
                       {editable ? (
                         <Button
@@ -249,12 +220,9 @@ export function GlobalLibraryDialog({
                           disabled={busy}
                           data-testid={`global-update-${u.globalVariantId}`}
                           onClick={() => void use(b, [u.newer])}
-                          title={L(
-                            "Legger den nye versjonen til i prosjektet. Den godkjente versjonen og scenene endres ikke før du velger det.",
-                            "Adds the new version to the project. The approved version and the scenes do not change until you choose so.",
-                          )}
+                          title={t("app-global-global-library-dialog.global-library-dialog.title.d7a035374701")}
                         >
-                          {L("Hent den nye versjonen", "Get the new version")}
+                          {t("app-global-global-library-dialog.global-library-dialog.button.b7c0895a7d9e")}
                         </Button>
                       ) : null}
                     </div>
@@ -263,23 +231,33 @@ export function GlobalLibraryDialog({
               </section>
             ) : null}
 
+            {withdrawnHere.length ? (
+              <section className="flex flex-col gap-1 rounded-md border border-border bg-surface-2 p-3 text-[13px] text-text-secondary" data-testid="global-withdrawn">
+                {withdrawnHere.map((w) => (
+                  <p key={w.projectVersionId}>
+                    {t("r3-global.withdrawn-in-use", { name: String(all.find((b) => b.asset.id === w.globalAssetId)?.asset.name ?? ""), number: w.version.number })}
+                  </p>
+                ))}
+              </section>
+            ) : null}
+
             <div className="flex flex-wrap gap-2">
               <input
                 className={`${input} max-w-xs`}
-                placeholder={L("Søk etter navn, merke, kategori …", "Search by name, tag, category …")}
-                aria-label={L("Søk", "Search")}
+                placeholder={t("app-global-global-library-dialog.global-library-dialog.placeholder.ca8b8a1af7de")}
+                aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.349309ebbcaa")}
                 value={filter.query}
                 onChange={(e) => setFilter({ ...filter, query: e.target.value })}
                 data-testid="global-search"
               />
               <select
                 className={select}
-                aria-label={L("Type", "Type")}
+                aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.faa62b3aa418")}
                 value={filter.kind}
                 onChange={(e) => setFilter({ ...filter, kind: e.target.value as GlobalKind | "all" })}
                 data-testid="global-filter-kind"
               >
-                <option value="all">{L("Alle typer", "All types")}</option>
+                <option value="all">{t("app-global-global-library-dialog.global-library-dialog.option.162186c63bf5")}</option>
                 {GLOBAL_KINDS.map((k) => (
                   <option key={k} value={k}>
                     {GLOBAL_KIND_LABEL[k]}
@@ -289,11 +267,11 @@ export function GlobalLibraryDialog({
               {facets.categories.length ? (
                 <select
                   className={select}
-                  aria-label={L("Kategori", "Category")}
+                  aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.12df3f2d1b6b")}
                   value={filter.category ?? ""}
                   onChange={(e) => setFilter({ ...filter, category: e.target.value || null })}
                 >
-                  <option value="">{L("Alle kategorier", "All categories")}</option>
+                  <option value="">{t("app-global-global-library-dialog.global-library-dialog.option.c6b0a80e85bf")}</option>
                   {facets.categories.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -304,12 +282,12 @@ export function GlobalLibraryDialog({
               {facets.tags.length ? (
                 <select
                   className={select}
-                  aria-label={L("Merke", "Tag")}
+                  aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.ab5260a2eb61")}
                   value={filter.tag ?? ""}
                   onChange={(e) => setFilter({ ...filter, tag: e.target.value || null })}
                   data-testid="global-filter-tag"
                 >
-                  <option value="">{L("Alle merker", "All tags")}</option>
+                  <option value="">{t("app-global-global-library-dialog.global-library-dialog.option.d6017618f2d9")}</option>
                   {facets.tags.map((c) => (
                     <option key={c} value={c}>
                       {c}
@@ -323,7 +301,7 @@ export function GlobalLibraryDialog({
                   checked={filter.includeArchived}
                   onChange={(e) => setFilter({ ...filter, includeArchived: e.target.checked })}
                 />
-                {L("Vis arkiverte", "Show archived")}
+                {t("app-global-global-library-dialog.global-library-dialog.label.25aa4c5a32c6")}
               </label>
             </div>
 
@@ -354,8 +332,8 @@ export function GlobalLibraryDialog({
                           <span className="truncate text-text-primary">{a.name}</span>
                           <span className="text-xs text-text-tertiary">
                             {GLOBAL_KIND_LABEL[a.kind]}
-                            {a.archived ? ` · ${L("arkivert", "archived")}` : ""}
-                            {inProject ? ` · ${L("i prosjektet", "in the project")}` : ""}
+                            {a.archived ? ` · ${t("app-global-global-library-dialog.global-library-dialog.span.cbe825799eed")}` : ""}
+                            {inProject ? ` · ${t("app-global-global-library-dialog.global-library-dialog.span.90a6a1b93385")}` : ""}
                           </span>
                         </span>
                       </button>
@@ -364,7 +342,7 @@ export function GlobalLibraryDialog({
                 })}
                 {bundles.isSuccess && !list.length ? (
                   <li className="text-xs text-text-tertiary" data-testid="global-empty">
-                    {L("Ingen treff.", "No matches.")}
+                    {t("app-global-global-library-dialog.global-library-dialog.li.843f4e50752a")}
                   </li>
                 ) : null}
               </ul>
@@ -390,7 +368,7 @@ export function GlobalLibraryDialog({
                         <div key={va.id} className="flex flex-col gap-1" data-global-variant={va.id}>
                           <div className="flex items-center justify-between text-xs">
                             <span className="font-medium text-text-primary">
-                              {va.name} {va.archived ? `(${L("arkivert", "archived")})` : ""}
+                              {va.name} {va.archived ? `(${t("app-global-global-library-dialog.global-library-dialog.span.cbe825799eed.2")})` : ""}
                             </span>
                             {ws.rights.publish && !current.asset.archived ? (
                               <Button
@@ -403,7 +381,7 @@ export function GlobalLibraryDialog({
                                   versionFile.current?.click();
                                 }}
                               >
-                                {vs.length ? L("Ny versjon …", "New version …") : L("Last opp fil …", "Upload file …")}
+                                {vs.length ? t("app-global-global-library-dialog.global-library-dialog.button.5c638abac4ad") : t("app-global-global-library-dialog.global-library-dialog.button.a64706d4c220")}
                               </Button>
                             ) : null}
                           </div>
@@ -411,7 +389,10 @@ export function GlobalLibraryDialog({
                             {vs.map((v) => (
                               <figure key={v.id} className="flex flex-col items-start gap-1" data-global-version={v.id}>
                                 <Preview v={v} url={urls.data?.[v.storageKey]} />
-                                <figcaption className="text-[11px] text-text-tertiary">v{v.number}</figcaption>
+                                <figcaption className="text-[11px] text-text-tertiary">
+                                  v{v.number}
+                                  {v.withdrawn ? <span data-testid={`global-withdrawn-${v.id}`}> · {t("r3-global.withdrawn-label")}</span> : null}
+                                </figcaption>
                               </figure>
                             ))}
                           </div>
@@ -419,10 +400,10 @@ export function GlobalLibraryDialog({
                       );
                     })}
                     <div className="text-xs text-text-secondary" data-testid="global-used-in">
-                      {L("Brukt i prosjekter:", "Used in projects:")}{" "}
+                      {t("app-global-global-library-dialog.global-library-dialog.div.dcd3b1266f5e")}{" "}
                       {usedIn.data?.length
                         ? usedIn.data.map((p) => p.name).join(", ")
-                        : L("ingen du har tilgang til", "none you have access to")}
+                        : t("app-global-global-library-dialog.global-library-dialog.div.c20f5e13b260")}
                     </div>
                     <div className="flex flex-wrap gap-2">
                       {editable && !current.asset.archived ? (
@@ -433,8 +414,8 @@ export function GlobalLibraryDialog({
                           data-testid="global-use-in-project"
                         >
                           {linkedProjectAsset(state, current.asset.id)
-                            ? L("Hent manglende varianter", "Get missing variants")
-                            : L("Bruk i prosjekt", "Use in project")}
+                            ? t("app-global-global-library-dialog.global-library-dialog.button.997ea58ee386")
+                            : t("app-global-global-library-dialog.global-library-dialog.button.9500da253b32")}
                         </Button>
                       ) : null}
                       {ws.rights.archive ? (
@@ -450,31 +431,28 @@ export function GlobalLibraryDialog({
                               return null;
                             })
                           }
-                          title={L(
-                            "Skjuler ressursen i det globale biblioteket. Prosjektene beholder sine kopier.",
-                            "Hides the asset in the global library. The projects keep their copies.",
-                          )}
+                          title={t("app-global-global-library-dialog.global-library-dialog.title.10ac6c847d34")}
                         >
-                          {current.asset.archived ? L("Hent fram", "Restore") : L("Arkiver", "Archive")}
+                          {current.asset.archived ? t("app-global-global-library-dialog.global-library-dialog.button.c8d7f62abff0") : t("app-global-global-library-dialog.global-library-dialog.button.80efebfb6ceb")}
                         </Button>
                       ) : null}
                     </div>
                   </section>
                 ) : (
                   <p className="text-xs text-text-tertiary">
-                    {L("Velg en ressurs for å se den.", "Choose an asset to see it.")}
+                    {t("app-global-global-library-dialog.global-library-dialog.p.b130b57448e3")}
                   </p>
                 )}
 
                 {ws.rights.publish ? (
                   <section className="flex flex-col gap-2 rounded-md border border-border p-3" data-testid="global-create">
                     <h3 className="text-xs font-semibold text-text-primary">
-                      {L("Ny global ressurs", "New global asset")}
+                      {t("app-global-global-library-dialog.global-library-dialog.h3.2dee9180574d")}
                     </h3>
                     <div className="flex gap-2">
                       <select
                         className={select}
-                        aria-label={L("Type", "Type")}
+                        aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.faa62b3aa418.2")}
                         value={newKind}
                         disabled={!!fixedKind}
                         onChange={(e) => setNewKind(e.target.value as GlobalKind)}
@@ -488,8 +466,8 @@ export function GlobalLibraryDialog({
                       </select>
                       <input
                         className={input}
-                        placeholder={L("Navn", "Name")}
-                        aria-label={L("Navn", "Name")}
+                        placeholder={t("app-global-global-library-dialog.global-library-dialog.placeholder.9e935e59aa41")}
+                        aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.9e935e59aa41")}
                         value={newName}
                         maxLength={200}
                         onChange={(e) => setNewName(e.target.value)}
@@ -498,8 +476,8 @@ export function GlobalLibraryDialog({
                     </div>
                     <input
                       className={input}
-                      placeholder={L("Merker, skilt med komma", "Tags, separated by commas")}
-                      aria-label={L("Merker", "Tags")}
+                      placeholder={t("app-global-global-library-dialog.global-library-dialog.placeholder.7bab8b693b9c")}
+                      aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.edd45b597b9a")}
                       value={newTags}
                       onChange={(e) => setNewTags(e.target.value)}
                       data-testid="global-create-tags"
@@ -508,13 +486,13 @@ export function GlobalLibraryDialog({
                       ref={newFile}
                       type="file"
                       accept="image/*,audio/*,video/*"
-                      aria-label={L("Fil", "File")}
+                      aria-label={t("app-global-global-library-dialog.global-library-dialog.aria-label.6fff7b5d855c")}
                       className="text-xs text-text-secondary"
                       data-testid="global-create-file"
                     />
                     <div>
                       <Button size="sm" disabled={busy || !newName.trim()} onClick={() => void create()} data-testid="global-create-submit">
-                        {L("Legg til i det globale biblioteket", "Add to the global library")}
+                        {t("app-global-global-library-dialog.global-library-dialog.button.e58cede1bdf5")}
                       </Button>
                     </div>
                   </section>
@@ -536,10 +514,7 @@ export function GlobalLibraryDialog({
                 void act(async () => {
                   await uploadGlobalVersion(ws.workspaceId!, current.asset.id, versionTarget, file);
                   refresh();
-                  return L(
-                    "Ny versjon publisert. Prosjektene som bruker ressursen, får et varsel og velger selv.",
-                    "New version published. Projects using the asset get a notice and choose for themselves.",
-                  );
+                  return t("app-global-global-library-dialog.global-library-dialog.act.980bc9268e45");
                 });
               }}
             />

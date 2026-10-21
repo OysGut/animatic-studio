@@ -1,83 +1,178 @@
 /**
- * Språket i tjenesten (DEC-0081): valget huskes i nettleseren. Serveren og første tegning er alltid på
- * norsk (lik tegning på server og klient); rett etter oppstart byttes det til valgt språk, og hele
- * visningen tegnes på nytt så alle tekster følger med.
+ * Språket i tjenesten (DEC-0081, ML2a). Valget huskes i nettleseren. Serveren og første tegning er alltid
+ * på norsk, så tegningen på server og klient er lik. Har brukeren valgt et annet språk, skjuler et lite
+ * skript i <head> siden til språket er satt, så norsk aldri vises først.
+ * Språkbytte tegner visningen på nytt uten å montere den på nytt, så åpne utkast og pågående arbeid
+ * beholdes. Sidene og de hurtigbufrede panelene abonnerer med `useLanguage()`.
+ * Valgbare språk hentes fra språkmanifestet; testspråk (`en-XA`) vises bare i utviklings- og testmodus.
  */
 import { Languages } from "lucide-react";
-import { Fragment, useEffect, useSyncExternalStore, type ReactNode } from "react";
-import { L, getLanguage, onLanguageChange, setLanguage, type Lang } from "@/core";
+import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
+import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
+import manifest from "@/core/i18n/manifest.json";
+import { t } from "@/core/i18n/keyed";
 
-const KEY = "animatic:lang";
+export const LANGUAGE_KEY = "animatic:lang";
+/** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
+export const LANGUAGE_PENDING_CLASS = "lang-pending";
 
-function stored(): Lang | null {
+/** Kjøres i <head> før første tegning. Skjuler siden til et ikke-norsk språk er satt (maks 3 s). */
+export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(${JSON.stringify(LANGUAGE_KEY)});if(v==="en"||v==="en-XA"){var d=document.documentElement;d.lang=v;d.classList.add(${JSON.stringify(LANGUAGE_PENDING_CLASS)});setTimeout(function(){d.classList.remove(${JSON.stringify(LANGUAGE_PENDING_CLASS)})},3000)}}catch(e){}})();`;
+
+const useIso = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/** Testspråk er bare valgbare i utviklings- og testmodus. */
+export function testLanguagesEnabled(): boolean {
+  if (import.meta.env.DEV || import.meta.env.MODE === "test") return true;
   try {
-    const v = window.localStorage.getItem(KEY);
-    return v === "en" || v === "nb" ? v : null;
+    return window.localStorage.getItem("animatic:test-languages") === "1";
+  } catch {
+    return false;
+  }
+}
+
+export interface LanguageOption {
+  readonly tag: UiLang;
+  readonly nativeName: string;
+  readonly testOnly: boolean;
+}
+
+/** Språkene i manifestet som brukerflaten kan vises på. */
+export function availableLanguages(includeTest = testLanguagesEnabled()): LanguageOption[] {
+  return manifest.languages
+    .filter((l) => isUiLang(l.tag) && (includeTest || !("testOnly" in l && l.testOnly)))
+    .map((l) => ({ tag: l.tag as UiLang, nativeName: l.nativeName, testOnly: "testOnly" in l && !!l.testOnly }));
+}
+
+function stored(): UiLang | null {
+  try {
+    const v = window.localStorage.getItem(LANGUAGE_KEY);
+    if (!isUiLang(v)) return null;
+    if (v === "en-XA" && !testLanguagesEnabled()) return "en";
+    return v;
   } catch {
     return null;
   }
 }
 
-/** Gjeldende språk (tegner komponenten på nytt når det endres). */
-export function useLanguage(): Lang {
-  return useSyncExternalStore(onLanguageChange, getLanguage, () => "nb");
+/** ML3: nettleserens foretrukne visningsspråk (nb for norsk, en for engelsk), ellers null. */
+export function browserUiLanguage(languages: readonly string[]): UiLang | null {
+  for (const l of languages) {
+    const p = l.toLowerCase().split("-")[0];
+    if (p === "nb" || p === "no" || p === "nn") return "nb";
+    if (p === "en") return "en";
+  }
+  return null;
 }
 
-/** Velg språk: huskes i nettleseren og gjelder med én gang. */
-export function chooseLanguage(lang: Lang) {
+/**
+ * ML3: språket feilsiden skal vises på, lest synkront før første tegning – lagret valg, ellers
+ * nettleserspråket, ellers gjeldende språk. Feilsiden kan vises før LanguageRoot har satt språket.
+ */
+export function bootUiLanguage(): UiLang {
+  if (typeof window === "undefined") return getUiLanguage();
+  let fromStore: string | null = null;
+  try { fromStore = window.localStorage.getItem(LANGUAGE_KEY); } catch { fromStore = null; }
+  if (isUiLang(fromStore)) return fromStore === "en-XA" && !testLanguagesEnabled() ? "en" : fromStore;
+  const nav = typeof navigator === "undefined" ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
+  return browserUiLanguage(nav.filter(Boolean)) ?? getUiLanguage();
+}
+
+/** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
+let rootSettled = false;
+const lateHydration = new Set<() => void>();
+
+/** Gjeldende visningsspråk (tegner komponenten på nytt når det endres). */
+export function useLanguage(): UiLang {
+  useEffect(() => {
+    if (rootSettled) for (const f of [...lateHydration]) f();
+  }, []);
+  return useSyncExternalStore(onLanguageChange, getUiLanguage, () => "nb");
+}
+
+/** Velg språk: huskes i nettleseren og gjelder med én gang, uten remontering. */
+export function chooseLanguage(lang: UiLang) {
+  if (lang === "en-XA" && !testLanguagesEnabled()) return;
   try {
-    window.localStorage.setItem(KEY, lang);
+    window.localStorage.setItem(LANGUAGE_KEY, lang);
   } catch {
     // privat vindu: gjelder bare denne økten
   }
   setLanguage(lang);
 }
 
-/** Rundt hele appen: henter lagret språk og tegner alt på nytt når språket endres. */
+/** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
   useEffect(() => {
+    // Lagret språk settes først når sidens egen del er hydrert: ruter ligger i egne kodebiter og
+    // hydreres etter roten, og ville ellers fått et annet språk enn serveren tegnet. Siden er skjult
+    // (lang-pending) til da; vakturet sørger for at den aldri blir stående skjult.
     const s = stored();
-    if (s) setLanguage(s);
+    rootSettled = true;
+    if (!s) return;
+    let done = false;
+    const apply = () => {
+      if (done) return;
+      done = true;
+      lateHydration.delete(onLate);
+      setLanguage(s);
+    };
+    // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
+    let quiet: number | undefined;
+    const onLate = () => {
+      window.clearTimeout(quiet);
+      quiet = window.setTimeout(() => window.requestAnimationFrame(() => window.requestAnimationFrame(apply)), 150);
+    };
+    lateHydration.add(onLate);
+    const guard = window.setTimeout(apply, 2800);
+    return () => {
+      lateHydration.delete(onLate);
+      window.clearTimeout(guard);
+      window.clearTimeout(quiet);
+    };
   }, []);
-  useEffect(() => {
-    document.documentElement.lang = lang === "en" ? "en" : "nb";
+  useIso(() => {
+    const d = document.documentElement;
+    d.lang = lang;
+    d.dir = "ltr";
+    if (lang === getUiLanguage()) d.classList.remove(LANGUAGE_PENDING_CLASS);
   }, [lang]);
-  return <Fragment key={lang}>{children}</Fragment>;
+  return <>{children}</>;
 }
 
-/** «Norsk | English» – på hovedsiden og i toppstripen. */
+/** Språkvelger fra manifestet – på hovedsiden og i toppstripen. */
 export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   const lang = useLanguage();
+  const options = availableLanguages();
   const seg = (on: boolean) =>
     "rounded-sm px-2 py-0.5 text-xs " +
     (on ? "bg-accent-selection text-text-primary" : "text-text-secondary hover:bg-surface-3");
+  const short = (tag: UiLang) => (tag === "nb" ? "NO" : tag === "en" ? "EN" : "XA");
+  const label = (o: LanguageOption) => (o.tag === "nb" ? "Norsk" : o.tag === "en" ? "English" : o.nativeName);
   return (
     <div
       role="group"
-      aria-label={L("Språk", "Language")}
-      title={L("Språk i tjenesten", "Language of the app")}
+      aria-label={t("app-i18n-language.language-switch.aria-label.a2595484506d")}
+      title={t("app-i18n-language.language-switch.title.691fad620f12")}
+      data-testid="language-switch"
       className="flex items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
     >
       {compact ? null : <Languages className="mx-1 size-3.5 text-text-tertiary" aria-hidden />}
-      <button
-        type="button"
-        aria-pressed={lang === "nb"}
-        className={seg(lang === "nb")}
-        onClick={() => chooseLanguage("nb")}
-        lang="nb"
-      >
-        {compact ? "NO" : "Norsk"}
-      </button>
-      <button
-        type="button"
-        aria-pressed={lang === "en"}
-        className={seg(lang === "en")}
-        onClick={() => chooseLanguage("en")}
-        lang="en"
-      >
-        {compact ? "EN" : "English"}
-      </button>
+      {options.map((o) => (
+        <button
+          key={o.tag}
+          type="button"
+          aria-pressed={lang === o.tag}
+          data-testid={`language-${o.tag}`}
+          title={o.testOnly ? t("app-i18n-language.language-switch.title.52f62cdf7cf1") : o.nativeName}
+          className={seg(lang === o.tag)}
+          onClick={() => chooseLanguage(o.tag)}
+          lang={o.tag}
+        >
+          {compact ? short(o.tag) : label(o)}
+        </button>
+      ))}
     </div>
   );
 }

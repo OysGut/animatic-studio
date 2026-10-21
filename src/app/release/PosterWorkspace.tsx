@@ -17,20 +17,7 @@ import {
   Type,
   Undo2,
 } from "lucide-react";
-import {
-  L,
-  collation,
-  POSTER_KIND_LABEL,
-  ROLE_LABEL,
-  posterDraft,
-  posterKindBase,
-  renderPoster,
-  sortedAssets,
-  type Poster,
-  type PosterDocument,
-  type PosterElement,
-  type ProjectState,
-} from "@/core";
+import { collation, POSTER_KIND_LABEL, ROLE_LABEL, posterDraft, posterKindBase, renderPoster, sortedAssets, type Poster, type PosterDocument, type PosterElement, type ProjectState } from "@/core";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { useActiveProduction } from "@/app/project/use-production";
@@ -42,6 +29,7 @@ import { PosterCanvas } from "./PosterCanvas";
 import { ElementInspector, PosterChecksList, PosterSettings } from "./PosterInspector";
 import { ExportPosterDialog, NewPosterDialog } from "./PosterDialogs";
 import { RelationsDialog } from "./RelationsDialog";
+import { PosterHarmonizeDialog } from "./PosterHarmonizeDialog";
 import {
   editElement,
   relayout,
@@ -50,6 +38,7 @@ import {
   scaleElements,
   withElement,
 } from "./poster-edit";
+import { t as tk } from "@/core/i18n/keyed";
 
 /** Navnet på et element i listen (øverst først): rolle, ressurs eller begynnelsen av teksten. */
 function elementLabel(state: ProjectState, e: PosterElement): string {
@@ -76,16 +65,16 @@ export function PosterWorkspace({ projectId, userId }: { projectId: string; user
   if (query.isLoading)
     return (
       <p className="p-6 text-[13px] text-text-tertiary">
-        {L("Henter prosjektet …", "Loading the project …")}
+        {tk("app-release-poster-workspace.poster-workspace.p.157c9664a3d1")}
       </p>
     );
   if (query.isError || !query.data)
     return (
       <div role="alert" className="p-6 text-[13px] text-status-danger">
-        {L("Prosjektet kunne ikke hentes.", "The project could not be loaded.")}
+        {tk("app-release-poster-workspace.poster-workspace.div.f000d65e1831")}
         {query.error ? (
           <p className="mt-2 font-mono text-xs text-text-tertiary">
-            {L("Teknisk detalj", "Technical detail")}: {query.error.message}
+            {tk("app-release-poster-workspace.poster-workspace.p.373f0ad179c9")}: {query.error.message}
           </p>
         ) : null}
       </div>
@@ -132,6 +121,8 @@ function Release({
     [state.posters, productionId],
   );
   const [posterId, setPosterId] = useState<string | null>(null);
+  /** P8: elementet som harmoniseres (stor visning med «Harmoniser stil» fremme). */
+  const [harmonize, setHarmonize] = useState<string | null>(null);
   const poster: Poster | undefined = (posterId ? state.posters[posterId] : undefined) ?? posters[0];
   const shownPoster =
     poster && !poster.removed && poster.productionId === productionId ? poster : posters[0];
@@ -225,7 +216,7 @@ function Release({
           tracking: 0,
           lineHeight: 1.2,
         },
-        L("Ny tekst", "New text"),
+        tk("app-release-poster-workspace.new-custom.add-element.cda2df5a0013"),
       );
     else if (kind === "rect")
       addElement(
@@ -242,16 +233,13 @@ function Release({
           opacity: 0.8,
           radius: 0,
         },
-        L("Ny flate", "New shape"),
+        tk("app-release-poster-workspace.new-custom.add-element.4c4cbdb804c9"),
       );
     else {
       const a = sortedAssets(state).find((x) => !x.archived && x.kind !== "sound");
       if (!a) {
         setError(
-          L(
-            "Biblioteket har ingen ressurser med bilder ennå.",
-            "The library has no assets with images yet.",
-          ),
+          tk("app-release-poster-workspace.new-custom.set-error.a1dff6d89f59"),
         );
         return;
       }
@@ -269,7 +257,7 @@ function Release({
           fit: "contain",
           opacity: 1,
         },
-        L("Nytt bilde", "New image"),
+        tk("app-release-poster-workspace.new-custom.add-element.0e158e6bff1d"),
       );
     }
   };
@@ -327,7 +315,7 @@ function Release({
       objects: d.objects,
       elements: [],
     });
-    save(shownPoster, { document: doc }, L("Lag utkastet på nytt", "Redraft the poster"));
+    save(shownPoster, { document: doc }, tk("app-release-poster-workspace.on-redraft.save.70f5b46eb2ac"));
     setSelected(null);
   };
 
@@ -346,7 +334,7 @@ function Release({
     save(
       shownPoster,
       { document: { ...shownPoster.document, elements } },
-      dir === "front" ? L("Flytt fram", "Bring forward") : L("Flytt bak", "Send back"),
+      dir === "front" ? tk("app-release-poster-workspace.order.save.a9339cab828f") : tk("app-release-poster-workspace.order.save.9f30e66093ba"),
     );
   };
 
@@ -361,7 +349,7 @@ function Release({
           elements: doc.elements.map((e) => (e.id === element.id ? resetElement(e) : e)),
         }),
       },
-      L("Tilbakestill element", "Reset element"),
+      tk("app-release-poster-workspace.reset.save.e63a3e554439"),
     );
   };
 
@@ -375,7 +363,7 @@ function Release({
           elements: shownPoster.document.elements.filter((e) => e.id !== element.id),
         },
       },
-      L("Fjern element", "Remove element"),
+      tk("app-release-poster-workspace.remove.save.61782ea14e37"),
     );
     setSelected(null);
   };
@@ -384,7 +372,7 @@ function Release({
     <div className="flex min-h-0 flex-1 flex-col">
       <Toolbar>
         <span className="text-[13px] font-medium text-text-primary">
-          {L("Utgivelse", "Release")}
+          {tk("app-release-poster-workspace.release.span.2250797ea93d")}
         </span>
         <ToolbarSeparator />
         <IconButton
@@ -393,13 +381,13 @@ function Release({
           disabled={!cmds.canUndo}
           title={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel} (⌘Z)`, `Undo: ${cmds.undoLabel} (⌘Z)`)
-              : L("Angre (⌘Z)", "Undo (⌘Z)")
+              ? tk("app-release-poster-workspace.release.title.fba85a87562d", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-release-poster-workspace.release.title.9e9c617110c6")
           }
           label={
             cmds.undoLabel
-              ? L(`Angre: ${cmds.undoLabel}`, `Undo: ${cmds.undoLabel}`)
-              : L("Angre", "Undo")
+              ? tk("app-release-poster-workspace.release.label.0884e98d32ef", { undoLabel: String(cmds.undoLabel) })
+              : tk("app-release-poster-workspace.release.label.e43f0316bc07")
           }
         >
           <Undo2 />
@@ -410,13 +398,13 @@ function Release({
           disabled={!cmds.canRedo}
           title={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel} (⇧⌘Z)`, `Redo: ${cmds.redoLabel} (⇧⌘Z)`)
-              : L("Gjør om (⇧⌘Z)", "Redo (⇧⌘Z)")
+              ? tk("app-release-poster-workspace.release.title.f9640d5db842", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-release-poster-workspace.release.title.f4052e8ed488")
           }
           label={
             cmds.redoLabel
-              ? L(`Gjør om: ${cmds.redoLabel}`, `Redo: ${cmds.redoLabel}`)
-              : L("Gjør om", "Redo")
+              ? tk("app-release-poster-workspace.release.label.0065aef473b7", { redoLabel: String(cmds.redoLabel) })
+              : tk("app-release-poster-workspace.release.label.5b58d96eb2d9")
           }
         >
           <Redo2 />
@@ -424,32 +412,32 @@ function Release({
         <ToolbarButton
           variant="default"
           onClick={() => setRelOpen(true)}
-          title={L("Relasjoner mellom karakterene", "Relations between the characters")}
+          title={tk("app-release-poster-workspace.release.title.54dae3e577b2")}
         >
           <GitFork />
-          <span className="hidden xl:inline">{L("Relasjoner", "Relations")}</span>
+          <span className="hidden xl:inline">{tk("app-release-poster-workspace.release.span.5380daa70605")}</span>
         </ToolbarButton>
         {shownPoster && editable ? (
           <>
             <ToolbarSeparator />
             <IconButton
               onClick={() => newCustom("text")}
-              label={L("Legg til tekst", "Add text")}
-              title={L("Legg til tekst", "Add text")}
+              label={tk("app-release-poster-workspace.release.label.bc5e159f3115")}
+              title={tk("app-release-poster-workspace.release.title.bc5e159f3115")}
             >
               <Type />
             </IconButton>
             <IconButton
               onClick={() => newCustom("image")}
-              label={L("Legg til bilde", "Add image")}
-              title={L("Legg til bilde", "Add image")}
+              label={tk("app-release-poster-workspace.release.label.b184f6f16bae")}
+              title={tk("app-release-poster-workspace.release.title.b184f6f16bae")}
             >
               <ImagePlus />
             </IconButton>
             <IconButton
               onClick={() => newCustom("rect")}
-              label={L("Legg til flate", "Add shape")}
-              title={L("Legg til flate", "Add shape")}
+              label={tk("app-release-poster-workspace.release.label.6d38691f9c43")}
+              title={tk("app-release-poster-workspace.release.title.6d38691f9c43")}
             >
               <Square />
             </IconButton>
@@ -459,20 +447,20 @@ function Release({
           <>
             <ToolbarSeparator />
             <label className="flex items-center gap-1.5 whitespace-nowrap text-xs text-text-secondary">
-              <span className="hidden xl:inline">{L("Vis på", "Show in")}</span>
+              <span className="hidden xl:inline">{tk("app-release-poster-workspace.release.span.557f279fecfa")}</span>
               <select
-                aria-label={L("Språk i forhåndsvisningen", "Language of the preview")}
+                aria-label={tk("app-release-poster-workspace.release.aria-label.616d74b4a361")}
                 value={lang}
                 onChange={(e) => setPreview(e.target.value as "nb" | "en")}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
               >
-                <option value="nb">{L("Norsk", "Norwegian")}</option>
-                <option value="en">{L("Engelsk", "English")}</option>
+                <option value="nb">{tk("app-release-poster-workspace.release.option.c8bb36bc83a1")}</option>
+                <option value="en">{tk("app-release-poster-workspace.release.option.cad6bb633625")}</option>
               </select>
             </label>
-            <ToolbarButton variant="primary" onClick={() => setExportOpen(true)}>
+            <ToolbarButton variant="primary" data-testid="poster-export-open" onClick={() => setExportOpen(true)}>
               <Download />
-              {L("Eksporter", "Export")}
+              {tk("app-release-poster-workspace.release.toolbar-button.9802b5d3d4f2")}
             </ToolbarButton>
           </>
         ) : null}
@@ -480,14 +468,14 @@ function Release({
           <SaveIndicator cmds={cmds} />
           {roleKnown && !editable ? (
             <span className="text-xs text-text-tertiary">
-              {L("Bare lesetilgang", "Read-only access")}
+              {tk("app-release-poster-workspace.release.span.0c4f34e87941")}
             </span>
           ) : null}
           {productions.length > 1 ? (
             <label className="flex items-center gap-1.5 text-xs text-text-secondary">
-              {L("Produksjon", "Production")}
+              {tk("app-release-poster-workspace.release.label.ce76d0602807")}
               <select
-                aria-label={L("Produksjon", "Production")}
+                aria-label={tk("app-release-poster-workspace.release.aria-label.ce76d0602807")}
                 value={productionId}
                 onChange={(e) => setProductionId(e.target.value)}
                 className="h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary"
@@ -509,7 +497,7 @@ function Release({
         >
           {error}
           <button type="button" className="ml-auto underline" onClick={() => setError(null)}>
-            {L("Lukk", "Close")}
+            {tk("app-release-poster-workspace.release.button.c8683396b684")}
           </button>
         </div>
       ) : null}
@@ -528,20 +516,20 @@ function Release({
             onSize={setListWidth}
             min={160}
             max={360}
-            label={L("Bredde på plakatlisten", "Width of the poster list")}
+            label={tk("app-release-poster-workspace.release.label.67d99d6e5d5c")}
           />
           <div className="group flex h-8 shrink-0 items-center justify-between gap-1.5 border-b border-border bg-surface-2 px-2">
             <span className="text-chrome-label font-medium uppercase tracking-label text-text-tertiary">
-              {L(`Plakater (${posters.length})`, `Posters (${posters.length})`)}
+              {tk("app-release-poster-workspace.release.span.c1d9e794dcc3", { length: String(posters.length) })}
             </span>
             {editable ? (
               <ToolbarButton className="opacity-60 group-hover:opacity-100 focus-visible:opacity-100" onClick={() => setNewOpen(true)}>
                 <Plus />
-                {L("Ny", "New")}
+                {tk("app-release-poster-workspace.release.toolbar-button.fc935ac5452b")}
               </ToolbarButton>
             ) : null}
           </div>
-          <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label={L("Plakater", "Posters")}>
+          <ul className="min-h-0 flex-1 overflow-y-auto p-1" aria-label={tk("app-release-poster-workspace.release.aria-label.47d18629b8d4")}>
             {posters.map((p) => (
               <li key={p.id} className="group flex items-center">
                 <button
@@ -556,7 +544,7 @@ function Release({
                   <span className="truncate text-[13px] text-text-primary">{p.name}</span>
                   <span className="truncate text-[11px] text-text-tertiary">
                     {POSTER_KIND_LABEL[p.kind]} · {p.widthMm / 10} × {p.heightMm / 10} cm ·{" "}
-                    {p.language === "en" ? L("engelsk", "English") : L("norsk", "Norwegian")}
+                    {p.language === "en" ? tk("app-release-poster-workspace.release.span.ae207c8e6671") : tk("app-release-poster-workspace.release.span.52832472a5b7")}
                   </span>
                 </button>
                 {editable ? (
@@ -564,13 +552,13 @@ function Release({
                     size="icon"
                     variant="ghost"
                     className="size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
-                    aria-label={L(`Fjern plakaten «${p.name}»`, `Remove the poster “${p.name}”`)}
-                    title={L("Fjern plakaten (kan angres)", "Remove the poster (can be undone)")}
+                    aria-label={tk("app-release-poster-workspace.release.aria-label.f0b64d62bbf2", { name: String(p.name) })}
+                    title={tk("app-release-poster-workspace.release.title.af69fc49c826")}
                     onClick={() =>
                       setError(
                         cmds.run(
                           { type: "SetPosterRemoved", posterId: p.id, removed: true },
-                          L(`Fjern plakaten «${p.name}»`, `Remove the poster “${p.name}”`),
+                          tk("app-release-poster-workspace.release.cmds-run.f0b64d62bbf2", { name: String(p.name) }),
                         ),
                       )
                     }
@@ -604,18 +592,15 @@ function Release({
           ) : (
             <div className="max-w-md text-center">
               <p className="text-base font-medium text-text-primary">
-                {L("Ingen plakater ennå", "No posters yet")}
+                {tk("app-release-poster-workspace.release.p.f21a622cb97b")}
               </p>
               <p className="mt-2 text-[13px] text-text-secondary">
-                {L(
-                  "Lag en kinopitch-plakat eller et karakter- og universkart. Programmet lager et førsteutkast fra manuset og biblioteket, som du kan endre fritt og eksportere til trykk.",
-                  "Make a cinema pitch poster or a character and universe map. The app makes a first draft from the script and the library, which you can change freely and export for print.",
-                )}
+                {tk("app-release-poster-workspace.release.p.619a05121915")}
               </p>
               {editable ? (
                 <Button className="mt-4" onClick={() => setNewOpen(true)}>
                   <Plus />
-                  {L("Ny plakat", "New poster")}
+                  {tk("app-release-poster-workspace.release.button.fbcb86b61afd")}
                 </Button>
               ) : null}
             </div>
@@ -626,7 +611,7 @@ function Release({
         {shownPoster ? (
           <aside
             className="relative flex min-h-0 flex-col border-l border-border bg-surface-1"
-            aria-label={L("Innstillinger for plakaten", "Settings for the poster")}
+            aria-label={tk("app-release-poster-workspace.release.aria-label.8e8faa1f0f31")}
           >
             <PaneResizer
               edge="left"
@@ -634,18 +619,18 @@ function Release({
               onSize={setSideWidth}
               min={260}
               max={520}
-              label={L("Bredde på innstillingene", "Width of the settings")}
+              label={tk("app-release-poster-workspace.release.label.757a61b1be69")}
             />
             <div
               role="tablist"
-              aria-label={L("Innstillinger", "Settings")}
+              aria-label={tk("app-release-poster-workspace.release.aria-label.cf3990f06b50")}
               className="flex shrink-0 border-b border-border"
             >
               {(
                 [
-                  ["poster", L("Plakat", "Poster")],
-                  ["element", L("Element", "Element")],
-                  ["checks", L("Kontroll", "Checks")],
+                  ["poster", tk("app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.92521107769a")],
+                  ["element", tk("app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.7c31d3b73122")],
+                  ["checks", tk("app-release-poster-workspace.release.poster-l-plakat-poster-element-l-element-element-checks-l-kontroll-checks-as-const-map.41201bd03653")],
                 ] as const
               ).map(([t, label]) => (
                 <button
@@ -691,8 +676,9 @@ function Release({
               {tab === "element" ? (
                 <div className="border-b border-border px-3 py-2">
                   <label className="flex flex-col gap-0.5 text-[11px] text-text-secondary">
-                    {L("Element", "Element")}
+                    {tk("app-release-poster-workspace.release.label.7c31d3b73122")}
                     <select
+                      data-testid="poster-element-select"
                       value={element?.id ?? ""}
                       onChange={(e) => {
                         setSelected(e.target.value || null);
@@ -700,11 +686,11 @@ function Release({
                       }}
                       className="h-7 w-full rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
                     >
-                      <option value="">{L("Velg et element …", "Choose an element …")}</option>
+                      <option value="">{tk("app-release-poster-workspace.release.option.125b57011f77")}</option>
                       {[...shownPoster.document.elements].reverse().map((el) => (
                         <option key={el.id} value={el.id}>
                           {elementLabel(state, el)}
-                          {el.visible ? "" : L(" (skjult)", " (hidden)")}
+                          {el.visible ? "" : tk("app-release-poster-workspace.release.option.7b256a3b37c8")}
                         </option>
                       ))}
                     </select>
@@ -735,13 +721,11 @@ function Release({
                     onReset={reset}
                     onRemove={remove}
                     onOrder={order}
+                    onHarmonize={() => setHarmonize(element.id)}
                   />
                 ) : (
                   <p className="px-3 py-4 text-xs text-text-tertiary">
-                    {L(
-                      "Klikk på noe i plakaten, eller velg i listen over. Piltastene flytter valgt element.",
-                      "Click something in the poster, or choose from the list above. The arrow keys move the selected element.",
-                    )}
+                    {tk("app-release-poster-workspace.release.p.f2100588b6d9")}
                   </p>
                 )
               ) : (
@@ -778,6 +762,17 @@ function Release({
           poster={shownPoster}
           open={exportOpen}
           onOpenChange={setExportOpen}
+        />
+      ) : null}
+      {harmonize && shownPoster ? (
+        <PosterHarmonizeDialog
+          state={state}
+          cmds={cmds}
+          projectId={projectId}
+          editable={editable}
+          element={shownPoster.document.elements.find((x) => x.id === harmonize) ?? null}
+          onUseHere={(patch) => changeElement(harmonize, patch, tk("app-release-poster-workspace.release.change-element.596dd3816a3b"))}
+          onClose={() => setHarmonize(null)}
         />
       ) : null}
       {relOpen ? (

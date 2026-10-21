@@ -18,6 +18,7 @@ import {
 } from "@/core";
 import { Button } from "@/components/ui/button";
 import { Hint, NumberField, Section } from "./inspector-fields";
+import { t as tk } from "@/core/i18n/keyed";
 
 type Run = (command: Command, label: string) => string | null;
 
@@ -59,13 +60,10 @@ export function LayerMotion({
   const frames = (s: number) => Math.max(0, Math.round(s * fps));
 
   return (
-    <Section title={L("Bevegelsesbane", "Motion path")}>
+    <Section title={tk("app-scene-editor-layer-motion.layer-motion.title.cee9be8fc4b5")}>
       {!path ? (
         <Hint>
-          {L(
-            "Tegn veien laget skal gå i scenen med musen. Banen starter der avspillingshodet står og varer i to sekunder; tidene kan endres etterpå.",
-            "Draw the route the layer should take in the scene with the mouse. The path starts where the playhead is and lasts two seconds; the times can be changed afterwards.",
-          )}
+          {tk("app-scene-editor-layer-motion.layer-motion.hint.e84cf4428949")}
         </Hint>
       ) : null}
       {editable ? (
@@ -75,17 +73,14 @@ export function LayerMotion({
             variant={drawing ? "default" : "secondary"}
             aria-pressed={drawing}
             onClick={() => onDrawingChange(!drawing)}
-            title={L(
-              "Tegn banen i scenen (Esc avbryter)",
-              "Draw the path in the scene (Esc cancels)",
-            )}
+            title={tk("app-scene-editor-layer-motion.layer-motion.title.67cadfe3cf96")}
           >
             <Pencil className="size-3.5" />
             {drawing
-              ? L("Tegner … (klikk for å avbryte)", "Drawing … (click to cancel)")
+              ? tk("app-scene-editor-layer-motion.layer-motion.button.35b1e010f00a")
               : path
-                ? L("Tegn på nytt", "Draw again")
-                : L("Tegn bane", "Draw path")}
+                ? tk("app-scene-editor-layer-motion.layer-motion.button.e8220b95ed51")
+                : tk("app-scene-editor-layer-motion.layer-motion.button.ff90f1d079cd")}
           </Button>
           {path ? (
             <>
@@ -93,38 +88,38 @@ export function LayerMotion({
                 size="sm"
                 variant="secondary"
                 onClick={() =>
-                  setPath(L("Glatt ut banen", "Smooth the path"), {
+                  setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.9fdba349a820"), {
                     ...path,
                     points: smoothPathPoints(path.points),
                   })
                 }
-                title={L("Færre punkter og myke kurver", "Fewer points and soft curves")}
+                title={tk("app-scene-editor-layer-motion.layer-motion.title.115b6507148a")}
               >
                 <Spline className="size-3.5" />
-                {L("Glatt ut", "Smooth")}
+                {tk("app-scene-editor-layer-motion.layer-motion.button.8c5a564ff457")}
               </Button>
               <Button
                 size="sm"
                 variant="secondary"
                 onClick={() =>
-                  setPath(L("Rett bane", "Straighten the path"), {
+                  setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.f035fede0014"), {
                     ...path,
                     points: straightPathPoints(path.points),
                   })
                 }
-                title={L("Rett linje fra start til slutt", "Straight line from start to end")}
+                title={tk("app-scene-editor-layer-motion.layer-motion.title.1cf190786fa3")}
               >
                 <Minus className="size-3.5" />
-                {L("Rett linje", "Straight line")}
+                {tk("app-scene-editor-layer-motion.layer-motion.button.1371c3f1c622")}
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => setPath(L("Fjern bane", "Remove path"), null)}
+                onClick={() => setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.5604a3c91c06"), null)}
                 className="text-status-danger hover:text-status-danger"
               >
                 <Trash2 className="size-3.5" />
-                {L("Fjern", "Remove")}
+                {tk("app-scene-editor-layer-motion.layer-motion.button.2f29036a41d6")}
               </Button>
             </>
           ) : null}
@@ -134,28 +129,28 @@ export function LayerMotion({
         <>
           <div className="grid grid-cols-2 gap-2">
             <NumberField
-              label={L("Start (s)", "Start (s)")}
+              label={tk("app-scene-editor-layer-motion.layer-motion.label.7fe17c12c0ab")}
               value={sec(path.startFrame)}
               step={0.1}
               min={0}
               disabled={off}
               valid={(s) => frames(s) < path.endFrame}
               onCommit={(s) =>
-                setPath(L("Endre start på banen", "Change path start"), {
+                setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.a205431575b2"), {
                   ...path,
                   startFrame: frames(s),
                 })
               }
             />
             <NumberField
-              label={L("Slutt (s)", "End (s)")}
+              label={tk("app-scene-editor-layer-motion.layer-motion.label.7d8ac379ddb6")}
               value={sec(path.endFrame)}
               step={0.1}
               min={0}
               disabled={off}
               valid={(s) => frames(s) > path.startFrame}
               onCommit={(s) =>
-                setPath(L("Endre slutt på banen", "Change path end"), {
+                setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.c608cc9d6a11"), {
                   ...path,
                   endFrame: frames(s),
                 })
@@ -164,25 +159,22 @@ export function LayerMotion({
           </div>
           {path.endFrame > durationFrames ? (
             <Hint>
-              {L(
-                "Banen slutter etter at scenen er ferdig.",
-                "The path ends after the scene has finished.",
-              )}
+              {tk("app-scene-editor-layer-motion.layer-motion.hint.c483e8bbbe7a")}
             </Hint>
           ) : null}
           <EaseSlider
-            label={L("Ease ut (start)", "Ease out (start)")}
+            label={tk("app-scene-editor-layer-motion.layer-motion.label.eeb8dbbda81a")}
             value={path.easeOut}
             disabled={off}
             onCommit={(v) =>
-              setPath(L("Endre ease ut", "Change ease out"), { ...path, easeOut: v })
+              setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.c4bde6952272"), { ...path, easeOut: v })
             }
           />
           <EaseSlider
-            label={L("Ease inn (slutt)", "Ease in (end)")}
+            label={tk("app-scene-editor-layer-motion.layer-motion.label.3c4785e843f8")}
             value={path.easeIn}
             disabled={off}
-            onCommit={(v) => setPath(L("Endre ease inn", "Change ease in"), { ...path, easeIn: v })}
+            onCommit={(v) => setPath(tk("app-scene-editor-layer-motion.layer-motion.set-path.786ec16053ee"), { ...path, easeIn: v })}
           />
           <TempoCurve
             tempo={path.tempo}
@@ -190,10 +182,7 @@ export function LayerMotion({
             onCommit={(tempo, label) => setPath(label, { ...path, tempo })}
           />
           <Hint>
-            {L(
-              "Dra punktene på banen i scenen. Dobbeltklikk et punkt: kurve eller hjørne. Alt-klikk: fjern punktet.",
-              "Drag the points on the path in the scene. Double-click a point: curve or corner. Alt-click: remove the point.",
-            )}
+            {tk("app-scene-editor-layer-motion.layer-motion.hint.795ae884dcfe")}
           </Hint>
         </>
       ) : null}
@@ -338,8 +327,8 @@ function TempoCurve({
       onCommit(
         list,
         list.length > tempo.length
-          ? L("Nytt punkt i tempokurven", "New point on the tempo curve")
-          : L("Endre tempokurven", "Change the tempo curve"),
+          ? tk("app-scene-editor-layer-motion.on-up.on-commit.0373a392b08c")
+          : tk("app-scene-editor-layer-motion.on-up.on-commit.3d99fc628fa5"),
       );
   }
   function onDouble(e: React.MouseEvent<SVGSVGElement>) {
@@ -349,21 +338,21 @@ function TempoCurve({
     if (i >= 0)
       onCommit(
         tempo.filter((_, k) => k !== i),
-        L("Fjern punkt i tempokurven", "Remove point from the tempo curve"),
+        tk("app-scene-editor-layer-motion.on-double.on-commit.ce9ebea7e307"),
       );
   }
 
   return (
     <div className="flex flex-col gap-1 text-xs text-text-secondary">
       <span className="flex items-center justify-between">
-        {L("Tempo", "Tempo")}
+        {tk("app-scene-editor-layer-motion.tempo-curve.span.5ebc5b4ede83")}
         {tempo.length > 0 && !disabled ? (
           <button
             type="button"
-            onClick={() => onCommit([], L("Jevnt tempo", "Even tempo"))}
+            onClick={() => onCommit([], tk("app-scene-editor-layer-motion.tempo-curve.on-commit.9aae06c8fa1c"))}
             className="rounded-sm px-1 text-[11px] text-text-tertiary hover:bg-surface-3 hover:text-text-primary"
           >
-            {L("Jevnt tempo", "Even tempo")}
+            {tk("app-scene-editor-layer-motion.tempo-curve.button.9aae06c8fa1c")}
           </button>
         ) : null}
       </span>
@@ -371,10 +360,7 @@ function TempoCurve({
         ref={svgRef}
         viewBox={`0 0 ${W} ${H}`}
         role="img"
-        aria-label={L(
-          `Tempokurve med ${tempo.length} punkter`,
-          `Tempo curve with ${tempo.length} points`,
-        )}
+        aria-label={tk("app-scene-editor-layer-motion.tempo-curve.aria-label.3b25381c21a9", { length: String(tempo.length) })}
         className={
           "w-full max-w-[240px] touch-none rounded-sm border border-border bg-surface-3 " +
           (disabled ? "opacity-60" : "cursor-crosshair")
@@ -411,10 +397,7 @@ function TempoCurve({
         ))}
       </svg>
       <span className="text-[11px] text-text-tertiary">
-        {L(
-          "Klikk for å legge til et punkt, dra for å endre farten, dobbeltklikk for å fjerne.",
-          "Click to add a point, drag to change the speed, double-click to remove.",
-        )}
+        {tk("app-scene-editor-layer-motion.tempo-curve.span.b4724b237996")}
       </span>
     </div>
   );

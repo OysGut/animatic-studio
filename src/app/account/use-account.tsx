@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { L, getLanguage, tm } from "@/core";
+import { getLanguage, tm } from "@/core";
 import {
   acceptPrivacy,
   fetchMyAccount,
@@ -13,7 +13,9 @@ import {
   saveMyLocale,
   touchActivity,
 } from "@/adapters/browser/account";
-import { signOut } from "@/adapters/browser/auth";
+import { signOut, signupCountry } from "@/adapters/browser/auth";
+import { saveMyCountry } from "@/adapters/browser/account";
+import { CountryPicker } from "./CountryPicker";
 import { chooseLanguage, useLanguage } from "@/app/i18n/language";
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +27,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PrivacyStatement } from "./PrivacyStatement";
+import { t } from "@/core/i18n/keyed";
 
 export const MY_ACCOUNT_KEY = ["my-account"] as const;
 export const PRIVACY_KEY = ["privacy-policy"] as const;
@@ -90,8 +93,10 @@ export function AccountWatcher() {
       else if (!a.locale) void saveMyLocale(getLanguage()).catch(() => undefined);
       return;
     }
-    if (a.locale !== lang)
-      void saveMyLocale(lang).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
+    // Testspråket en-XA lagres aldri på kontoen; det regnes som engelsk
+    const base = lang === "nb" ? "nb" : "en";
+    if (a.locale !== base)
+      void saveMyLocale(base).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
   }, [a, lang, qc]);
 
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
@@ -104,7 +109,7 @@ export function AccountWatcher() {
     a.status === "active" &&
     a.privacyVersion !== null &&
     (a.acceptedVersion ?? 0) < a.privacyVersion;
-  if (!mustRead) return null;
+  if (!mustRead) return a && a.status === "active" && a.country === null ? <CountryGate /> : null;
   async function accept() {
     if (!a?.privacyVersion) return;
     setBusy(true);
@@ -122,17 +127,11 @@ export function AccountWatcher() {
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="px-5 pt-5">
-          <DialogTitle>{L("Les personvernerklæringen", "Read the privacy statement")}</DialogTitle>
+          <DialogTitle>{t("app-account-use-account.account-watcher.dialog-title.249ff62113f5")}</DialogTitle>
           <DialogDescription>
             {(a.acceptedVersion ?? 0) > 0
-              ? L(
-                  "Personvernerklæringen er endret. Les den før du fortsetter.",
-                  "The privacy statement has changed. Read it before you continue.",
-                )
-              : L(
-                  "Før du bruker Animatic Studio, må du lese hvordan vi behandler opplysningene dine.",
-                  "Before you use Animatic Studio, read how we process your information.",
-                )}
+              ? t("app-account-use-account.account-watcher.dialog-description.af08127f81e4")
+              : t("app-account-use-account.account-watcher.dialog-description.4e07b85b3227")}
           </DialogDescription>
         </DialogHeader>
         <div className="max-h-[55vh] overflow-y-auto border-y border-border px-5 py-4">
@@ -147,19 +146,19 @@ export function AccountWatcher() {
               className="size-4 accent-[var(--accent-brand)]"
               data-testid="privacy-read"
             />
-            {L("Jeg har lest personvernerklæringen", "I have read the privacy statement")}
+            {t("app-account-use-account.account-watcher.label.1341c2d6b674")}
           </label>
           {error ? <p className="text-xs text-status-danger">{error}</p> : null}
           <div className="flex justify-between gap-2">
             <Button variant="ghost" onClick={() => void signOut()}>
-              {L("Logg ut", "Sign out")}
+              {t("app-account-use-account.account-watcher.button.87149e26bf0b")}
             </Button>
             <Button
               disabled={!readIt || busy}
               onClick={() => void accept()}
               data-testid="privacy-accept-button"
             >
-              {L("Fortsett", "Continue")}
+              {t("app-account-use-account.account-watcher.button.4f70a8b92cf4")}
             </Button>
           </div>
         </DialogFooter>
@@ -178,7 +177,70 @@ export function PrivacyLink({ className }: { className?: string }) {
         "text-xs text-text-tertiary underline-offset-2 hover:text-text-secondary hover:underline"
       }
     >
-      {L("Personvern", "Privacy")}
+      {t("app-account-use-account.privacy-link.link.ac42faff7b54")}
     </Link>
+  );
+}
+
+/**
+ * B-097: kontoen mangler land. Landet fra registreringen lagres uten spørsmål; ellers (eksisterende brukere)
+ * må landet velges før man går videre. Dialogen kan ikke lukkes uten valg; ingen data endres ellers.
+ */
+function CountryGate() {
+  const qc = useQueryClient();
+  const [checked, setChecked] = useState(false);
+  const [country, setCountry] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    void signupCountry()
+      .then(async (c) => {
+        if (!live) return;
+        if (c && !(await saveMyCountry(c))) {
+          void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+          return;
+        }
+        setChecked(true);
+      })
+      .catch(() => live && setChecked(true));
+    return () => {
+      live = false;
+    };
+  }, [qc]);
+  if (!checked) return null;
+  async function save() {
+    if (!country) return;
+    setBusy(true);
+    setError(null);
+    const e = await saveMyCountry(country);
+    setBusy(false);
+    if (e) setError(tm(e.message));
+    else void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+  }
+  return (
+    <Dialog open>
+      <DialogContent
+        className="max-w-[420px] [&>button]:hidden"
+        data-testid="country-gate"
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("b097.country.gate-title")}</DialogTitle>
+          <DialogDescription>{t("b097.country.gate-text")}</DialogDescription>
+        </DialogHeader>
+        <div>
+          <CountryPicker value={country} onChange={setCountry} testId="country-gate-picker" />
+        </div>
+        {error ? <p className="text-xs text-status-danger">{error}</p> : null}
+        <DialogFooter>
+          <Button disabled={!country || busy} onClick={() => void save()} data-testid="country-gate-save">
+            {t("b097.country.gate-save")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -2,18 +2,12 @@
  * Lydfiler i ressursbiblioteket (DEC-0044): opplasting til bøtta «assets» og ny ressurs av typen «Lyd».
  * Filen lastes opp først; deretter lagres versjonen som en kommando. Feiler opplastingen, lagres ingenting.
  */
-import {
-  assetFilePath,
-  ASSET_MAX_BYTES,
-  AUDIO_MIME_TYPES,
-  newId,
-  type AssetMedia,
-  L,
-} from "@/core";
+import { assetFilePath, ASSET_MAX_BYTES, AUDIO_MIME_TYPES, newId, type AssetMedia } from "@/core";
 import { sha256Hex } from "@/engine/import/browser";
 import { downloadFile, uploadFile } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
 import { ASSET_BUCKET, safeFileName } from "./asset-images";
+import { t } from "@/core/i18n/keyed";
 
 const BY_EXTENSION: Record<string, string> = {
   mp3: "audio/mpeg",
@@ -37,13 +31,10 @@ export function audioMime(file: File): string {
 
 export function checkAudioFile(file: File): string | null {
   if (!AUDIO_MIME_TYPES.includes(audioMime(file)))
-    return L(
-      "Lyden må være MP3, WAV, OGG, WebM, M4A/AAC eller FLAC.",
-      "The audio must be MP3, WAV, OGG, WebM, M4A/AAC or FLAC.",
-    );
+    return t("app-library-asset-audio.check-audio-file.message.a0e0a9c19850");
   if (file.size > ASSET_MAX_BYTES)
-    return L("Lydfilen er større enn 2 GB.", "The audio file is larger than 2 GB.");
-  if (file.size === 0) return L("Filen er tom.", "The file is empty.");
+    return t("app-library-asset-audio.check-audio-file.message.d2ba1e224a71");
+  if (file.size === 0) return t("app-library-asset-audio.check-audio-file.message.631a5483dbce");
   return null;
 }
 
@@ -75,10 +66,7 @@ export async function uploadAssetAudio(
   ]);
   if (durationMs === null)
     throw new Error(
-      L(
-        "Lydfilen kunne ikke leses av nettleseren. Prøv MP3 eller WAV.",
-        "The browser could not read the audio file. Try MP3 or WAV.",
-      ),
+      t("app-library-asset-audio.upload-asset-audio.message.6586274ecaad"),
     );
   const path = assetFilePath(projectId, "source", assetId, versionId, safeFileName(file.name));
   const error = await uploadFile(ASSET_BUCKET, path, file, {
@@ -88,16 +76,10 @@ export async function uploadAssetAudio(
   if (error) {
     if (/mime|type.*not.*(allowed|supported)/i.test(error.message))
       throw new Error(
-        L(
-          "Lagringen tar ikke imot lydfiler ennå. Lim inn meldingen i LOVABLE_SYNC.md i Lovable (migrasjon 0009).",
-          "The storage does not accept audio files yet. Paste the message into LOVABLE_SYNC.md in Lovable (migration 0009).",
-        ),
+        t("app-library-asset-audio.upload-asset-audio.message.47e939439144"),
       );
     throw new Error(
-      L(
-        `Lyden ble ikke lastet opp: ${error.message}`,
-        `The audio was not uploaded: ${error.message}`,
-      ),
+      t("app-library-asset-audio.upload-asset-audio.message.18b647a0d2a0", { message: String(error.message) }),
     );
   }
   return {
@@ -121,7 +103,7 @@ export function nameFromFile(file: File): string {
       .replace(/\.[^.]+$/, "")
       .replace(/[_-]+/g, " ")
       .trim()
-      .slice(0, 200) || L("Lyd", "Audio")
+      .slice(0, 200) || t("app-library-asset-audio.name-from-file.message.f686ff702b49")
   );
 }
 
@@ -159,16 +141,16 @@ export async function createSoundAsset(
           },
         ],
       },
-      label: L(`Ny lyd «${name}»`, `New audio “${name}”`),
+      label: t("app-library-asset-audio.label.label.f3e44f771b8a", { name: String(name) }),
     },
     {
       command: {
         type: "CreateAssetVariant" as const,
         variantId: variantId as never,
         assetId: assetId as never,
-        fields: { name: L("Lyd", "Audio"), style: "other" as const, appearance: "" },
+        fields: { name: t("app-library-asset-audio.name.name.03dbbf2ec6db"), style: "other" as const, appearance: "" },
       },
-      label: L("Ny lydvariant", "New audio variant"),
+      label: t("app-library-asset-audio.label.label.de5d3bcdbac8"),
     },
     {
       command: {
@@ -178,7 +160,7 @@ export async function createSoundAsset(
         media,
         note: "",
       },
-      label: L("Ny lydfil", "New audio file"),
+      label: t("app-library-asset-audio.label.label.e1d5622b9562"),
     },
   ];
   // Ett angresteg for hele den nye lyden (KI-56, DEC-0049): de tre endringene samles i samme gruppe
@@ -198,10 +180,7 @@ export async function audioMediaFromStoredFile(path: string, mime: string): Prom
   const { data, error } = await downloadFile(ASSET_BUCKET, path);
   if (error || !data)
     throw new Error(
-      L(
-        `Opptaket kunne ikke hentes: ${error?.message ?? "ukjent feil"}`,
-        `The recording could not be fetched: ${error?.message ?? "unknown error"}`,
-      ),
+      error?.message ? t("app-library-asset-audio.recording-fetch-failed", { error: error.message }) : t("app-library-asset-audio.recording-fetch-failed-unknown"),
     );
   const raw = await data.arrayBuffer();
   const [sha256, durationMs] = await Promise.all([

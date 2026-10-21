@@ -158,9 +158,11 @@ export async function createWorkspaceInvitation(
 }
 export async function acceptWorkspaceInvitation(
   token: string,
-): Promise<{ workspaceId: string | null; error: boolean }> {
+): Promise<{ workspaceId: string | null; error: boolean; wrongEmail?: boolean }> {
   const { data, error } = await db.rpc("accept_workspace_invitation", { p_token: token });
-  return { workspaceId: error ? null : (data as string), error: Boolean(error) };
+  // Ø-11 (0058): invitasjonen gjelder en annen e-postadresse enn den innloggede brukerens
+  const wrongEmail = (error as { code?: string } | null)?.code === "AS403";
+  return { workspaceId: error ? null : (data as string), error: Boolean(error), wrongEmail };
 }
 export async function revokeWorkspaceInvitation(invitationId: string): Promise<void> {
   const { error } = await db.rpc("revoke_workspace_invitation", { p_invitation: invitationId });

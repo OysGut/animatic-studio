@@ -4,18 +4,7 @@
  */
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import {
-  L,
-  locale,
-  newId,
-  orderedOccurrences,
-  planImport,
-  planImportNotes,
-  tm,
-  type Command,
-  type ProductionId,
-  type ProjectState,
-} from "@/core";
+import { locale, newId, orderedOccurrences, planImport, planImportNotes, tm, type Command, type ProductionId, type ProjectState } from "@/core";
 import { savedTitlePage, titlePageCommand } from "@/core/commands/export-settings";
 import {
   SCREENPLAY_ACCEPT,
@@ -39,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { t } from "@/core/i18n/keyed";
 
 type Step =
   | { kind: "choose" }
@@ -120,7 +110,7 @@ export function ImportDialog({
     try {
       setStep({
         kind: "importing",
-        progress: L("Lagrer originalfilen …", "Saving the original file …"),
+        progress: t("app-script-import-dialog.progress.progress.5960c4259ef9"),
       });
       const key = sourceStorageKey(projectId, read.sha256, file.name);
       const up = {
@@ -134,33 +124,25 @@ export function ImportDialog({
       if (up.error && !/exists|duplicate/i.test(up.error.message)) {
         if (read.format === "fountain" && /mime|type|415/i.test(up.error.message))
           throw new Error(
-            L(
-              `Originalfilen kunne ikke lagres: lagringen godtar ennå ikke Fountain-filer (ren tekst). Importen er stoppet – ingenting er endret. Databasen må oppdateres så «sources» tillater text/plain (${up.error.message}).`,
-              `The original file could not be saved: the storage does not yet accept Fountain files (plain text). The import has stopped – nothing has changed. The database must be updated so “sources” allows text/plain (${up.error.message}).`,
-            ),
+            t("app-script-import-dialog.do-import.message.7b0cfdb04220", { message: String(up.error.message) }),
           );
         throw new Error(
-          L(
-            `Originalfilen kunne ikke lagres (${up.error.message}). Importen er stoppet – ingenting er endret. Er databasemigrasjon 0002 kjørt?`,
-            `The original file could not be saved (${up.error.message}). The import has stopped – nothing has changed. Has database migration 0002 been run?`,
-          ),
+          t("app-script-import-dialog.do-import.message.7efee5915d7d", { message: String(up.error.message) }),
         );
       }
       setStep({
         kind: "importing",
-        progress: L(
-          `Oppretter ${read.parsed.scenes.length} scener …`,
-          `Creating ${read.parsed.scenes.length} scenes …`,
-        ),
+        progress: t("app-script-import-dialog.progress.progress.0d612b67aac3", { length: String(read.parsed.scenes.length) }),
       });
       const command = planImport(state, read.parsed, {
         productionId: productionId as ProductionId,
         skipContinuation: !includeContinuation,
+        documentId: read.sha256,
       });
       // Importen og tittelsiden angres som ett steg (KI-20)
       const group = newId<"command">();
       const hadScenes = existing > 0;
-      const res = await runAndWait(command, L("Import av manus", "Import script"), group);
+      const res = await runAndWait(command, t("app-script-import-dialog.res.run-and-wait.e7e1b0498f93"), group);
       if (res.error) throw new Error(res.error);
       // Tittelsiden fra filen lagres i eksportinnstillingene (KI-20), så manuseksporten kan bruke den.
       // En tittelside som allerede er satt for produksjonen, overskrives bare når produksjonen var tom.
@@ -174,7 +156,7 @@ export function ImportDialog({
         if (tp) {
           const r = await runAndWait(
             tp.command,
-            L("Tittelside fra importen", "Title page from the import"),
+            t("app-script-import-dialog.r.run-and-wait.fc95bbb03fc0"),
             group,
           );
           if (r.error) titlePageError = r.error;
@@ -183,7 +165,7 @@ export function ImportDialog({
       }
       setStep({
         kind: "importing",
-        progress: L("Registrerer originalen …", "Registering the original …"),
+        progress: t("app-script-import-dialog.progress.progress.780c1774fe18"),
       });
       const register = async () => ({
         error: await registerImportedDocument({
@@ -218,14 +200,14 @@ export function ImportDialog({
       if (planned.length) {
         setStep({
           kind: "importing",
-          progress: L(`Legger inn ${planned.length} notater …`, `Adding ${planned.length} notes …`),
+          progress: t("app-script-import-dialog.progress.progress.6074fa6e50fc", { length: String(planned.length) }),
         });
         // I biter, så ett stort dokument ikke overskrider grensen per endring
         for (let i = 0; i < planned.length && !notesError; i += 1000) {
           const part = planned.slice(i, i + 1000);
           const r = await runAndWait(
             { type: "AddAnnotations", annotations: part, imported: true },
-            L(`${part.length} notater fra importen`, `${part.length} notes from the import`),
+            t("app-script-import-dialog.r.run-and-wait.0827fde3f1a7", { length: String(part.length) }),
           );
           if (r.error) notesError = r.error;
           else notes += part.length;
@@ -246,26 +228,20 @@ export function ImportDialog({
     }
   }
 
-  const productionName = production?.name ?? L("produksjonen", "the production");
+  const productionName = production?.name ?? t("app-script-import-dialog.production-name.message.db14a5dcf3fb");
 
   return (
     <Dialog open={open} onOpenChange={reset}>
       <DialogContent className="max-w-[640px] border-border bg-surface-2">
         <DialogHeader>
-          <DialogTitle>{L("Importer manus", "Import script")}</DialogTitle>
+          <DialogTitle>{t("app-script-import-dialog.import-dialog.dialog-title.93cd6d89e3a4")}</DialogTitle>
           <DialogDescription>
-            {L(
-              "PDF (f.eks. fra Final Draft), Word (.docx) eller Fountain (.fountain). Scenene legges i",
-              "PDF (e.g. from Final Draft), Word (.docx) or Fountain (.fountain). The scenes are added to",
-            )}{" "}
+            {t("app-script-import-dialog.import-dialog.dialog-description.c95508206c3a")}{" "}
             «{productionName}»
             {existing > 0
-              ? L(
-                  ` etter de ${existing} scenene som finnes`,
-                  ` after the ${existing} existing scenes`,
-                )
+              ? t("app-script-import-dialog.import-dialog.dialog-description.337b3b78113c", { existing: String(existing) })
               : ""}
-            {L(". Originalfilen lagres uendret.", ". The original file is saved unchanged.")}
+            {t("app-script-import-dialog.import-dialog.dialog-description.ef2ed7648511")}
           </DialogDescription>
         </DialogHeader>
 
@@ -280,17 +256,17 @@ export function ImportDialog({
           >
             <FileUp className="size-6 text-text-tertiary" aria-hidden />
             <p className="text-[13px] text-text-secondary">
-              {L("Slipp filen her, eller", "Drop the file here, or")}
+              {t("app-script-import-dialog.import-dialog.p.e24ea975c4e3")}
             </p>
             <Button onClick={() => inputRef.current?.click()}>
-              {L("Velg fil …", "Choose file …")}
+              {t("app-script-import-dialog.import-dialog.button.7dc8880ce838")}
             </Button>
             <input
               ref={inputRef}
               type="file"
               accept={SCREENPLAY_ACCEPT}
               className="sr-only"
-              aria-label={L("Velg manusfil", "Choose script file")}
+              aria-label={t("app-script-import-dialog.import-dialog.aria-label.863961f76e60")}
               onChange={(e) => void onFile(e.target.files?.[0])}
             />
           </div>
@@ -299,7 +275,7 @@ export function ImportDialog({
         {step.kind === "reading" ? (
           <p className="flex items-center gap-2 py-6 text-[13px] text-text-secondary" role="status">
             <Loader2 className="size-4 animate-spin" aria-hidden />
-            {L(`Leser «${step.fileName}» …`, `Reading “${step.fileName}” …`)}
+            {t("app-script-import-dialog.import-dialog.p.1317e7c11eb1", { fileName: String(step.fileName) })}
           </p>
         ) : null}
 
@@ -321,20 +297,14 @@ export function ImportDialog({
         {step.kind === "done" ? (
           <p className="flex items-center gap-2 py-6 text-[13px] text-text-primary" role="status">
             <CheckCircle2 className="size-4 text-status-success" aria-hidden />
-            {step.scenes} {L("scener", "scenes")}
-            {step.notes ? L(` og ${step.notes} notater`, ` and ${step.notes} notes`) : ""}
-            {L(
-              " er importert. Hele importen kan angres med ⌘/Ctrl + Z.",
-              " have been imported. The whole import can be undone with ⌘/Ctrl + Z.",
-            )}
+            {step.scenes} {t("app-script-import-dialog.import-dialog.p.ec871e78dfae")}
+            {step.notes ? t("app-script-import-dialog.import-dialog.p.2f2c8d7d6c45", { notes: String(step.notes) }) : ""}
+            {t("app-script-import-dialog.import-dialog.p.81dc994ccac3")}
           </p>
         ) : null}
         {step.kind === "done" && step.registerError ? (
           <p role="alert" className="text-xs text-status-uncertain">
-            {L(
-              `Manuset er importert, men originalfilen ble ikke registrert med kontrollsum (${tm(step.registerError)}). Manuset er i orden og kan brukes. Originalen ligger lagret, men kan ikke kontrolleres eller lastes ned fra versjonene. Ikke importer på nytt (da blir scenene dobbelt) – prøv registreringen igjen, eller gi beskjed, så kan den gjøres for hånd.`,
-              `The script is imported, but the original file was not registered with a checksum (${tm(step.registerError)}). The script is fine and can be used. The original is stored, but it cannot be verified or downloaded from the versions. Do not import again (then the scenes would be doubled) – try the registration again, or let us know so it can be done by hand.`,
-            )}
+            {t("app-script-import-dialog.import-dialog.p.55bb6af99877", { value1: String(tm(step.registerError)) })}
             {step.retryRegister ? (
               <Button
                 size="sm"
@@ -351,49 +321,34 @@ export function ImportDialog({
                 }}
               >
                 {retrying ? <Loader2 className="animate-spin" /> : null}{" "}
-                {L("Prøv registreringen igjen", "Try the registration again")}
+                {t("app-script-import-dialog.import-dialog.button.9df095e2b803")}
               </Button>
             ) : null}
           </p>
         ) : null}
         {step.kind === "done" && step.retried && step.registerError === null ? (
           <p role="status" className="text-xs text-text-secondary">
-            {L(
-              "Originalen er registrert med kontrollsum.",
-              "The original is registered with a checksum.",
-            )}
+            {t("app-script-import-dialog.import-dialog.p.167095065673")}
           </p>
         ) : null}
         {step.kind === "done" && step.titlePage === "saved" ? (
           <p role="status" className="text-xs text-text-secondary">
-            {L(
-              "Tittelsiden fra filen er lagret og foreslås når manuset eksporteres.",
-              "The title page from the file is saved and suggested when the script is exported.",
-            )}
+            {t("app-script-import-dialog.import-dialog.p.6adda150e215")}
           </p>
         ) : null}
         {step.kind === "done" && step.titlePage === "truncated" ? (
           <p role="alert" className="text-xs text-status-uncertain">
-            {L(
-              "Tittelsiden fra filen er lagret, men den var for lang og er kortet ned. Se over den når du eksporterer manuset.",
-              "The title page from the file is saved, but it was too long and has been shortened. Check it when you export the script.",
-            )}
+            {t("app-script-import-dialog.import-dialog.p.a1b4bf968f16")}
           </p>
         ) : null}
         {step.kind === "done" && step.titlePageError ? (
           <p role="alert" className="text-xs text-status-uncertain">
-            {L(
-              `Tittelsiden fra filen ble ikke lagret (${tm(step.titlePageError)}). Manuset er importert; skriv tittelsiden i eksportdialogen.`,
-              `The title page from the file was not saved (${tm(step.titlePageError)}). The script is imported; write the title page in the export dialog.`,
-            )}
+            {t("app-script-import-dialog.import-dialog.p.47295aafdb5f", { value1: String(tm(step.titlePageError)) })}
           </p>
         ) : null}
         {step.kind === "done" && step.notesError ? (
           <p role="alert" className="text-xs text-status-danger">
-            {L(
-              `Notatene i filen ble ikke lagret: ${tm(step.notesError)}`,
-              `The notes in the file were not saved: ${tm(step.notesError)}`,
-            )}
+            {t("app-script-import-dialog.import-dialog.p.08e20e3a9a6e", { value1: String(tm(step.notesError)) })}
           </p>
         ) : null}
 
@@ -408,23 +363,23 @@ export function ImportDialog({
           {step.kind === "preview" ? (
             <>
               <Button variant="ghost" onClick={() => setStep({ kind: "choose" })}>
-                {L("Velg en annen fil", "Choose another file")}
+                {t("app-script-import-dialog.import-dialog.button.9697f3b03d0e")}
               </Button>
               <Button onClick={() => void doImport(step.file, step.read)}>
-                {L("Importer", "Import")}{" "}
+                {t("app-script-import-dialog.import-dialog.button.ab8bf2ee3d96")}{" "}
                 {
                   step.read.parsed.scenes.filter((s) => includeContinuation || !s.isContinuation)
                     .length
                 }{" "}
-                {L("scener", "scenes")}
+                {t("app-script-import-dialog.import-dialog.button.ec871e78dfae")}
               </Button>
             </>
           ) : step.kind === "error" ? (
             <Button variant="secondary" onClick={() => setStep({ kind: "choose" })}>
-              {L("Prøv igjen", "Try again")}
+              {t("app-script-import-dialog.import-dialog.button.eb2ecf1aa4cb")}
             </Button>
           ) : step.kind === "done" ? (
-            <Button onClick={() => reset(false)}>{L("Ferdig", "Done")}</Button>
+            <Button onClick={() => reset(false)}>{t("app-script-import-dialog.import-dialog.button.e00e46e21cdd")}</Button>
           ) : null}
         </DialogFooter>
       </DialogContent>
@@ -447,44 +402,38 @@ function Preview({
   return (
     <div className="flex flex-col gap-3 text-[13px]">
       <dl className="grid grid-cols-[1fr_auto] gap-y-1 border border-border bg-surface-1 p-3">
-        <dt className="text-text-secondary">{L("Fil", "File")}</dt>
+        <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.be567fb43bfb")}</dt>
         <dd className="truncate text-right text-text-primary">{step.file.name}</dd>
-        <dt className="text-text-secondary">{L("Sider", "Pages")}</dt>
+        <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.15766f518d67")}</dt>
         <dd className="tabular text-right text-text-primary">
           {p.format === "fountain"
-            ? L(
-                `ca. ${p.pageCount} (beregnet – Fountain har ikke faste sider)`,
-                `about ${p.pageCount} (estimated – Fountain has no fixed pages)`,
-              )
+            ? t("app-script-import-dialog.preview.dd.a856071b7964", { pageCount: String(p.pageCount) })
             : p.pageCount}
         </dd>
-        <dt className="text-text-secondary">{L("Scener", "Scenes")}</dt>
+        <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.b589862613ec")}</dt>
         <dd className="tabular text-right text-text-primary">
-          {p.scenes.length} ({p.stats.numbered} {L("med nummer", "numbered")}, {p.stats.unnumbered}{" "}
-          {L("uten", "unnumbered")})
+          {p.scenes.length} ({p.stats.numbered} {t("app-script-import-dialog.preview.dd.23aabba27c51")}, {p.stats.unnumbered}{" "}
+          {t("app-script-import-dialog.preview.dd.a086c349debf")})
         </dd>
         {step.read.notes.length ? (
           <>
-            <dt className="text-text-secondary">{L("Notater i filen", "Notes in the file")}</dt>
+            <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.ba5e2a3a70eb")}</dt>
             <dd className="tabular text-right text-text-primary">
               {step.read.notes.length}{" "}
-              {L(
-                "(legges inn på samme sted, med navn og tidspunkt)",
-                "(added in the same place, with name and time)",
-              )}
+              {t("app-script-import-dialog.preview.dd.5803635c5ff5")}
             </dd>
           </>
         ) : null}
         <dt className="text-text-secondary">
-          {L("Usikre tolkninger", "Uncertain interpretations")}
+          {t("app-script-import-dialog.preview.dt.ac937fe41f6a")}
         </dt>
         <dd className="tabular text-right text-text-primary">
-          {p.stats.uncertain} {L("elementer", "items")} · {uncertainScenes}{" "}
-          {L("overskrifter", "headings")}
+          {p.stats.uncertain} {t("app-script-import-dialog.preview.dd.7d9b7e84a91c")} · {uncertainScenes}{" "}
+          {t("app-script-import-dialog.preview.dd.3a9c1e80e215")}
         </dd>
         {p.titlePage.length ? (
           <>
-            <dt className="text-text-secondary">{L("Tittelside", "Title page")}</dt>
+            <dt className="text-text-secondary">{t("app-script-import-dialog.preview.dt.0cf85e2f6dc3")}</dt>
             <dd className="truncate text-right text-text-primary">
               {p.titlePage.slice(0, 2).join(" · ")}
             </dd>
@@ -494,19 +443,13 @@ function Preview({
       {step.previous ? (
         <p className="flex items-start gap-2 text-xs text-status-uncertain">
           <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
-          {L(
-            `Denne filen ble importert ${step.previous}. Importerer du igjen, får du scenene to ganger.`,
-            `This file was imported ${step.previous}. If you import it again, you get the scenes twice.`,
-          )}
+          {t("app-script-import-dialog.preview.p.6133ac56207c", { previous: String(step.previous) })}
         </p>
       ) : null}
       {p.stats.duplicateNumbers.length ? (
         <p className="flex items-start gap-2 text-xs text-status-uncertain">
           <AlertTriangle className="mt-px size-3.5 shrink-0" aria-hidden />
-          {L(
-            `Scenenumre som står flere ganger: ${p.stats.duplicateNumbers.join(", ")}. Scenene importeres hver for seg.`,
-            `Scene numbers that appear more than once: ${p.stats.duplicateNumbers.join(", ")}. The scenes are imported one by one.`,
-          )}
+          {t("app-script-import-dialog.preview.p.32489fdb4259", { value1: String(p.stats.duplicateNumbers.join(", ")) })}
         </p>
       ) : null}
       {hasContinuation ? (
@@ -517,16 +460,13 @@ function Preview({
             onChange={(e) => setIncludeContinuation(e.target.checked)}
             className="mt-0.5"
           />
-          {L(
-            "Manuset starter midt i en scene. Ta med teksten før første sceneoverskrift som egen scene (uten nummer).",
-            "The script starts in the middle of a scene. Include the text before the first scene heading as a scene of its own (without a number).",
-          )}
+          {t("app-script-import-dialog.preview.label.dcb383de81cf")}
         </label>
       ) : null}
       {p.warnings.length ? (
         <details className="text-xs text-text-secondary">
           <summary className="cursor-pointer">
-            {L("Merknader", "Notes")} ({p.warnings.length})
+            {t("app-script-import-dialog.preview.summary.bd90e385254d")} ({p.warnings.length})
           </summary>
           <ul className="mt-1 list-disc pl-5">
             {p.warnings.slice(0, 20).map((w, i) => (
@@ -539,9 +479,9 @@ function Preview({
         <table className="w-full text-xs">
           <thead className="sticky top-0 bg-surface-2 text-left text-text-tertiary">
             <tr>
-              <th className="w-12 px-2 py-1 font-medium">{L("Nr.", "No.")}</th>
-              <th className="px-2 py-1 font-medium">{L("Overskrift", "Heading")}</th>
-              <th className="w-12 px-2 py-1 text-right font-medium">{L("Side", "Page")}</th>
+              <th className="w-12 px-2 py-1 font-medium">{t("app-script-import-dialog.preview.th.c8a03fb8d166")}</th>
+              <th className="px-2 py-1 font-medium">{t("app-script-import-dialog.preview.th.488fdc54e745")}</th>
+              <th className="w-12 px-2 py-1 text-right font-medium">{t("app-script-import-dialog.preview.th.76710db68cd7")}</th>
             </tr>
           </thead>
           <tbody>
@@ -553,7 +493,7 @@ function Preview({
                 <td className="truncate px-2 py-0.5 text-text-primary">
                   {s.isContinuation ? (
                     <em className="text-text-tertiary">
-                      {L("Fortsettelse fra forrige del", "Continuation from the previous part")}
+                      {t("app-script-import-dialog.preview.em.782df97d66a6")}
                     </em>
                   ) : (
                     s.rawHeading
@@ -561,7 +501,7 @@ function Preview({
                   {s.warnings.length ? (
                     <AlertTriangle
                       className="ml-1 inline size-3 text-status-uncertain"
-                      aria-label={L("Usikker", "Uncertain")}
+                      aria-label={t("app-script-import-dialog.preview.aria-label.7d31b64b3fcd")}
                     />
                   ) : null}
                 </td>

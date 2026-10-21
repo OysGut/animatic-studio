@@ -9,7 +9,8 @@
  * Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt, uten merverdiavgift. Jobber som
  * feilet uten å koste, og jobber som venter i køen, er ikke med. Ren TypeScript (ingen nettleser).
  */
-import { L } from "../i18n";
+
+import { t as tk } from "@/core/i18n/keyed";
 
 export interface CostJobRow {
   readonly id: string;
@@ -83,19 +84,19 @@ export function billable(r: CostJobRow): boolean {
 
 const KIND_LABEL = (k: string) =>
   k === "video"
-    ? L("Video", "Video")
+    ? tk("core-generation-cost-report.kind-label.message.79675ce3b42c")
     : k === "image"
-      ? L("Bilde", "Image")
+      ? tk("core-generation-cost-report.kind-label.message.8444fe29d13e")
       : k === "sound"
-        ? L("Lyd", "Sound")
-        : L("Tekst", "Text");
+        ? tk("core-generation-cost-report.kind-label.message.eec5b22efdc9")
+        : tk("core-generation-cost-report.kind-label.message.d9e84cdaef1c");
 
 const STATUS_LABEL = (s: string) =>
   s === "done"
-    ? L("Ferdig", "Done")
+    ? tk("core-generation-cost-report.status-label.message.04a86e50e1ff")
     : s === "lost"
-      ? L("Betalt, ikke lagret", "Paid, not saved")
-      : L("Pågår", "Running");
+      ? tk("core-generation-cost-report.status-label.message.ec0ca1c9e2be")
+      : tk("core-generation-cost-report.status-label.message.7322ebca7b77");
 
 /** Mengde og enhet: sekunder video/lyd, ellers ett bilde eller én tekst. */
 export function jobQuantity(r: CostJobRow): { quantity: number; unit: string } {
@@ -105,16 +106,16 @@ export function jobQuantity(r: CostJobRow): { quantity: number; unit: string } {
     if (!Number.isFinite(s) && typeof p["startMs"] === "number" && typeof p["endMs"] === "number")
       s = ((p["endMs"] as number) - (p["startMs"] as number)) / 1000;
     if (Number.isFinite(s) && s > 0)
-      return { quantity: Math.round(s * 10) / 10, unit: L("sek", "sec") };
+      return { quantity: Math.round(s * 10) / 10, unit: tk("core-generation-cost-report.unit.unit.4cfc7caa7804") };
   }
   return {
     quantity: 1,
     unit:
       r.kind === "image"
-        ? L("bilde", "image")
+        ? tk("core-generation-cost-report.unit.unit.6812643b0d0f")
         : r.kind === "prompt"
-          ? L("tekst", "text")
-          : L("stk", "pcs"),
+          ? tk("core-generation-cost-report.unit.unit.f46774dcddd7")
+          : tk("core-generation-cost-report.unit.unit.d97f14767060"),
   };
 }
 
@@ -156,7 +157,7 @@ export function buildCostReport(i: CostReportInput): CostReport {
       jobId: r.id,
       date: r.createdAt,
       projectName: i.projectNames?.[r.projectId] ?? i.projectName,
-      user: i.userNames?.[r.createdBy] || L("Ukjent bruker", "Unknown user"),
+      user: i.userNames?.[r.createdBy] || tk("core-generation-cost-report.user.user.f7adb03339c0"),
       provider: r.provider,
       model: r.model,
       kind: KIND_LABEL(r.kind),
@@ -200,41 +201,23 @@ export function buildCostReport(i: CostReportInput): CostReport {
   const totalNok = nokMissing ? null : round2(lines.reduce((t, l) => t + (l.amountNok ?? 0), 0));
   const byMonth = group((l) => l.date.slice(0, 7)).sort((a, b) => a.key.localeCompare(b.key));
   const notes = [
-    L(
-      "Beløpene er anslått ut fra leverandørens prisliste da jobben ble bestilt. Den endelige fakturaen fra leverandøren kan avvike; bruk leverandørens jobb-ID til avstemming.",
-      "The amounts are estimated from the provider's price list when the job was ordered. The provider's final invoice may differ; use the provider's job ID for reconciliation.",
-    ),
-    L(
-      "Beløpene er uten merverdiavgift. Kjøp av slike tjenester fra utlandet har normalt omvendt avgiftsplikt.",
-      "The amounts are without VAT. Purchases of such services from abroad are normally subject to reverse charge.",
-    ),
-    L(
-      "Jobber som feilet uten å koste noe, og jobber som venter i køen, er ikke med. «Betalt, ikke lagret» er med fordi leverandøren kan ha tatt betalt.",
-      "Jobs that failed without cost, and jobs waiting in the queue, are not included. “Paid, not saved” is included because the provider may have charged for it.",
-    ),
+    tk("core-generation-cost-report.notes.message.82a7fced1fcf"),
+    tk("core-generation-cost-report.notes.message.f34a87af0299"),
+    tk("core-generation-cost-report.notes.message.20d9d4d7d68a"),
     ...(i.currency === "NOK"
       ? [
-          L(
-            "Kronebeløpene er regnet om med Norges Banks valutakurs (USD/NOK) for dagen jobben ble laget, eller siste noterte kurs før den.",
-            "The NOK amounts are converted with Norges Bank's exchange rate (USD/NOK) for the day the job was made, or the last rate quoted before it.",
-          ),
+          tk("core-generation-cost-report.notes.message.2abe86d011df"),
         ]
       : []),
     ...(unknown
       ? [
-          L(
-            `${unknown} jobb(er) mangler prisanslag og er regnet som 0.`,
-            `${unknown} job(s) have no price estimate and are counted as 0.`,
-          ),
+          tk("core-generation-cost-report.notes.message.dd9f4f5c6394", { unknown: String(unknown) }),
         ]
       : []),
-    L(
-      "Runway oppgir pris i kreditter: 1 kreditt = 0,01 USD.",
-      "Runway states prices in credits: 1 credit = 0.01 USD.",
-    ),
+    tk("core-generation-cost-report.notes.message.58fbf5353a7b"),
   ];
   return {
-    title: L("Kostnadsoversikt – AI-tjenester", "Cost statement – AI services"),
+    title: tk("core-generation-cost-report.title.title.e2031f987a1d"),
     projectName: i.projectName,
     scopeLabel: i.scopeLabel,
     periodLabel: i.periodLabel,

@@ -7,25 +7,7 @@
 import { CircleCheck, CircleDashed, Loader2, Mic, Pause, Play } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  costBreakdown,
-  type FilmClip,
-  formatUsd,
-  L,
-  locale,
-  newId,
-  type ProjectState,
-  providerInfo,
-  providerModel,
-  sceneDialogueLines,
-  speechCostUsd,
-  SPEECH_MODEL,
-  catalogSettings,
-  isModelEnabled,
-  tm,
-  audioVersion,
-  voiceUsers,
-} from "@/core";
+import { costBreakdown, type FilmClip, formatUsd, locale, newId, type ProjectState, providerInfo, providerModel, sceneDialogueLines, speechCostUsd, SPEECH_MODEL, catalogSettings, isModelEnabled, tm, audioVersion, voiceUsers } from "@/core";
 import { generateSpeech, listVoices } from "@/adapters/ai/speech.functions";
 import type { Commands } from "@/app/project/use-commands";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
@@ -42,6 +24,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { CostLines } from "@/app/ai/CostLines";
+import { t as tk } from "@/core/i18n/keyed";
 
 const ctl =
   "h-7 min-w-0 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary disabled:opacity-50";
@@ -124,7 +107,7 @@ export function AiDialogueDialog({
       setPlaying(null);
       setMsg({
         kind: "error",
-        text: L("Lyden kunne ikke spilles av.", "The audio could not be played."),
+        text: tk("app-assembly-ai-dialogue-dialog.text.text.88c0ff05514d"),
       });
     }
   }
@@ -132,7 +115,7 @@ export function AiDialogueDialog({
     const c = state.audioClips[clipId];
     const v = c ? audioVersion(state, c) : null;
     if (!v) {
-      setMsg({ kind: "error", text: L("Lydfilen mangler.", "The audio file is missing.") });
+      setMsg({ kind: "error", text: tk("app-assembly-ai-dialogue-dialog.text.text.4e568150b005") });
       return;
     }
     const url = (await signedUrls([v.mediaPath], 600))[v.mediaPath];
@@ -148,7 +131,7 @@ export function AiDialogueDialog({
         assetId,
         voice: v ? { provider: "elevenlabs", voiceId: v.voiceId, label: v.name } : null,
       } as never,
-      L("Stemme for karakteren", "Voice for the character"),
+      tk("app-assembly-ai-dialogue-dialog.e.cmds-run.83f6ced7c610"),
     );
     if (e) setMsg({ kind: "error", text: e });
   }
@@ -172,10 +155,7 @@ export function AiDialogueDialog({
     let made = 0;
     for (const [n, l] of runnable.entries()) {
       setBusy(
-        L(
-          `Leser inn … ${n + 1} av ${runnable.length}`,
-          `Reading in … ${n + 1} of ${runnable.length}`,
-        ),
+        tk("app-assembly-ai-dialogue-dialog.run-all.set-busy.c66b6321c670", { value1: String(n + 1), length: String(runnable.length) }),
       );
       try {
         const r = await generateSpeech({
@@ -204,6 +184,7 @@ export function AiDialogueDialog({
         }
         const name = `${l.speaker} – ${l.text.split(" ").slice(0, 5).join(" ")}`.slice(0, 120);
         const variantId = newId<"asset_variant">();
+        const dialogueClipId = newId<"audio_clip">();
         const group = newId();
         const steps = [
           {
@@ -215,10 +196,7 @@ export function AiDialogueDialog({
                   kind: "sound",
                   name,
                   names: [],
-                  description: L(
-                    `Lest inn med AI-stemmen «${l.character!.voice!.label}»: «${l.text}»`,
-                    `Read in with the AI voice “${l.character!.voice!.label}”: “${l.text}”`,
-                  ).slice(0, 2000),
+                  description: tk("app-assembly-ai-dialogue-dialog.description.l-lest-inn-med-ai-stemmen-l-character-voice-label-l-text-read-in-with-the-ai-voice-l-character-voice-label-l-text-slice.a711e60de6d4", { label: String(l.character!.voice!.label), text: String(l.text) }).slice(0, 2000),
                   category: "Dialog (AI)",
                   tags: ["AI-stemme"],
                 },
@@ -229,23 +207,21 @@ export function AiDialogueDialog({
             type: "CreateAssetVariant",
             variantId,
             assetId: r.assetId,
-            fields: { name: L("Lyd", "Sound"), style: "other", appearance: "" },
+            fields: { name: tk("app-assembly-ai-dialogue-dialog.name.name.21288548c6ec"), style: "other", appearance: "" },
           },
           {
             type: "AddAssetVersion",
             versionId: r.versionId,
             variantId,
             media: { ...r.media, durationMs },
-            note: L(
-              `Lest inn med AI (elevenlabs/${SPEECH_MODEL})`,
-              `Read in with AI (elevenlabs/${SPEECH_MODEL})`,
-            ),
+            note: tk("app-assembly-ai-dialogue-dialog.note.note.c44b36ed3e4f", { SPEECH_MODEL: String(SPEECH_MODEL) }),
           },
           {
             type: "AddAudioClips",
+            dialogueMeta: { source: "ai", provider: "elevenlabs", voiceId: l.character?.voice?.voiceId ?? null, modelId: SPEECH_MODEL, settings: { language: "no" }, scriptRevision: r.scriptRevision, parentVersionId: null },
             clips: [
               {
-                clipId: newId<"audio_clip">(),
+                clipId: dialogueClipId,
                 fields: {
                   occurrenceId: clip.occurrenceId,
                   kind: "dialogue",
@@ -267,12 +243,13 @@ export function AiDialogueDialog({
               },
             ],
           },
+          ...(l.character ? [{ type: "SetDialogueCharacter", clipIds: [dialogueClipId], characterAssetId: l.character.id }] : []),
         ];
         let err: string | null = null;
         for (const c of steps) {
           const res = await cmds.runAndWait(
             c as never,
-            L(`AI-stemme: ${name}`, `AI voice: ${name}`),
+            tk("app-assembly-ai-dialogue-dialog.res.cmds-run-and-wait.322a48f3e6d4", { name: String(name) }),
             group,
           );
           if (res.error) {
@@ -294,7 +271,7 @@ export function AiDialogueDialog({
               { kind: "asset", id: l.character!.id },
             ],
           } as never,
-          L(`AI-stemme: ${name}`, `AI voice: ${name}`),
+          tk("app-assembly-ai-dialogue-dialog.run-all.cmds-run-and-wait.c9fdf50ebd5e", { name: String(name) }),
           group,
         );
         made++;
@@ -309,17 +286,11 @@ export function AiDialogueDialog({
       errors.length
         ? {
             kind: "error",
-            text: L(
-              `${made} lest inn. ${errors.slice(0, 5).join(" · ")}`,
-              `${made} read in. ${errors.slice(0, 5).join(" · ")}`,
-            ),
+            text: tk("app-assembly-ai-dialogue-dialog.text.text.55b21ca2d050", { made: String(made), value2: String(errors.slice(0, 5).join(" · ")) }),
           }
         : {
             kind: "ok",
-            text: L(
-              `${made} ${made === 1 ? "replikk er" : "replikker er"} lest inn og lagt på dialogsporet. Hver kan angres.`,
-              `${made} ${made === 1 ? "line is" : "lines are"} read in and added to the dialogue track. Each can be undone.`,
-            ),
+            text: tk("app-assembly-ai-dialogue-dialog.lines-read-in", { count: made }),
           },
     );
   }
@@ -330,39 +301,33 @@ export function AiDialogueDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-1.5">
             <Mic className="size-4" aria-hidden />{" "}
-            {L("Dialog med AI-stemmer", "Dialogue with AI voices")}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-title.00f0c4e97559")}
           </DialogTitle>
           <DialogDescription>
-            {L(
-              "Replikkene leses inn med karakterens stemme og legges på dialogsporet der replikken skjer. Teksten er replikken slik den står i manuset. Opptak og importert dialog røres ikke.",
-              "The lines are read in with the character's voice and added to the dialogue track where the line happens. The text is the line as it stands in the script. Recordings and imported dialogue are not touched.",
-            )}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.dialog-description.4e82a8ff8da1")}
           </DialogDescription>
         </DialogHeader>
         {!clip ? null : providers.isLoading ? (
           <p className="text-xs text-text-tertiary">
-            {L("Henter leverandører …", "Loading providers …")}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.bb93ceb0b628")}
           </p>
         ) : !connected ? (
           <p className="text-[13px] text-text-secondary">
-            {L(
-              "ElevenLabs er ikke koblet til. Prosjektets eier kan koble det til under «AI-leverandører» på prosjektlisten.",
-              "ElevenLabs is not connected. The project owner can connect it under “AI providers” on the project list.",
-            )}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.63253e65c278")}
           </p>
         ) : lines.length === 0 ? (
           <p className="text-[13px] text-text-secondary">
-            {L("Scenen har ingen replikker.", "The scene has no lines.")}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.864affde88cc")}
           </p>
         ) : (
           <>
-            <section aria-label={L("Stemmer", "Voices")} className="flex flex-col gap-1">
+            <section aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.58e105143702")} className="flex flex-col gap-1">
               <p className="text-xs font-medium text-text-secondary">
-                {L("Stemme per karakter", "Voice per character")}
+                {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.04cd8630ea62")}
               </p>
               {voices.isLoading ? (
                 <p className="text-xs text-text-tertiary">
-                  {L("Henter stemmer …", "Loading voices …")}
+                  {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.80873a842fb8")}
                 </p>
               ) : voices.data && !voices.data.ok ? (
                 <p role="alert" className="text-xs text-status-danger">
@@ -379,13 +344,13 @@ export function AiDialogueDialog({
                     <label className="flex items-center gap-2 text-xs text-text-secondary">
                       <span className="w-40 truncate text-text-primary">{c.name}</span>
                       <select
-                        aria-label={L(`Stemme for ${c.name}`, `Voice for ${c.name}`)}
+                        aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.ec1b8aa253ef", { name: String(c.name) })}
                         value={c.voice?.voiceId ?? ""}
                         disabled={!!busy || !voices.data?.ok}
                         onChange={(e) => setVoice(c.id, e.target.value)}
                         className={ctl + " flex-1"}
                       >
-                        <option value="">{L("Ingen stemme", "No voice")}</option>
+                        <option value="">{tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.e5845bc6c891")}</option>
                         {c.voice && !voiceList.some((v) => v.voiceId === c.voice!.voiceId) ? (
                           <option value={c.voice.voiceId}>{c.voice.label}</option>
                         ) : null}
@@ -398,10 +363,7 @@ export function AiDialogueDialog({
                               {v.name}
                               {v.description ? ` – ${v.description}` : ""}
                               {used.length
-                                ? L(
-                                    ` (brukes av ${used.join(", ")})`,
-                                    ` (used by ${used.join(", ")})`,
-                                  )
+                                ? tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.option.18adfd59df61", { value1: String(used.join(", ")) })
                                 : ""}
                             </option>
                           );
@@ -412,35 +374,32 @@ export function AiDialogueDialog({
                         variant="ghost"
                         disabled={!preview}
                         onClick={() => void playUrl(`voice:${c.id}`, preview)}
-                        aria-label={L(
-                          `Hør stemmen til ${c.name}`,
-                          `Listen to the voice of ${c.name}`,
-                        )}
+                        aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.e6da7d599e00", { name: String(c.name) })}
                         title={
                           preview
-                            ? L("Hør en prøve av stemmen", "Listen to a sample of the voice")
-                            : L("Ingen prøve for stemmen", "No sample for the voice")
+                            ? tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.05954ad88fda")
+                            : tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.d77529e07479")
                         }
                       >
                         {playing === `voice:${c.id}` ? <Pause /> : <Play />}
-                        {L("Prøve", "Preview")}
+                        {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.c53a228ea155")}
                       </Button>
                     </label>
                     <p className="pl-[168px] text-[11px]">
                       {c.voice ? (
                         <span className="text-text-secondary">
-                          {L("Stemme:", "Voice:")}{" "}
+                          {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.3406f6c1b00a")}{" "}
                           <span className="text-text-primary">{c.voice.label}</span>
                           {others.length ? (
                             <span className="text-status-uncertain">
                               {" "}
-                              · {L("brukes også av", "also used by")} {others.join(", ")}
+                              · {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a4c8c2dc2f7e")} {others.join(", ")}
                             </span>
                           ) : null}
                         </span>
                       ) : (
                         <span className="text-status-uncertain">
-                          {L("Ingen stemme valgt", "No voice selected")}
+                          {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.709df47b4c98")}
                         </span>
                       )}
                     </p>
@@ -449,26 +408,23 @@ export function AiDialogueDialog({
               })}
               {lines.some((l) => !l.character) ? (
                 <p className="text-[11px] text-text-tertiary">
-                  {L(
-                    "Noen replikker har en karakter som ikke finnes i biblioteket; legg den til der for å gi den stemme.",
-                    "Some lines have a character that is not in the library; add it there to give it a voice.",
-                  )}
+                  {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.e15eb6c56a7b")}
                 </p>
               ) : null}
             </section>
             <p className="text-xs text-text-secondary" role="status">
               <span className="text-status-success">
-                {withAudio} {L("har lyd", "have audio")}
+                {withAudio} {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.f4cf1a3435e2")}
               </span>{" "}
               ·{" "}
               <span className={lines.length - withAudio ? "text-status-uncertain" : ""}>
-                {lines.length - withAudio} {L("mangler", "missing")}
+                {lines.length - withAudio} {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.68068f09d385")}
               </span>{" "}
-              {L("av", "of")} {lines.length} {L("replikker", "lines")}.{" "}
-              {L("Replikker uten lyd er valgt.", "Lines without audio are selected.")}
+              {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.0311ceb517d3")} {lines.length} {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a")}.{" "}
+              {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.826dd297a583")}
             </p>
             <ul
-              aria-label={L("Replikker", "Lines")}
+              aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.dac1bec0120e")}
               className="max-h-[40vh] overflow-y-auto border border-border bg-surface-1"
             >
               {lines.map((l) => (
@@ -498,26 +454,26 @@ export function AiDialogueDialog({
                         {l.audio ? (
                           <span className="inline-flex items-center gap-0.5 rounded-sm bg-status-success/15 px-1 font-medium text-status-success">
                             <CircleCheck className="size-3" aria-hidden />
-                            {L("Har lyd", "Has audio")}
-                            {l.audio.ai ? " (AI)" : L(" (opptak/import)", " (recording/import)")}
+                            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.436f8a785531")}
+                            {l.audio.ai ? " (AI)" : tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.a24dea879231")}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-0.5 rounded-sm bg-status-uncertain/15 px-1 font-medium text-status-uncertain">
                             <CircleDashed className="size-3" aria-hidden />
-                            {L("Mangler lyd", "Missing audio")}
+                            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.89523b6c75bc")}
                           </span>
                         )}
                         <span>
-                          {l.speaker || L("Uten navn", "No name")} · {(l.startMs / 1000).toFixed(1)}{" "}
+                          {l.speaker || tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.eca9b3c9f787")} · {(l.startMs / 1000).toFixed(1)}{" "}
                           s
                         </span>
                         {l.character?.voice ? (
                           <span>
-                            {L("· stemme:", "· voice:")} {l.character.voice.label}
+                            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.8b2bc28e1525")} {l.character.voice.label}
                           </span>
                         ) : (
                           <span className="text-status-uncertain">
-                            {L("· mangler stemme", "· missing voice")}
+                            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.span.b3d2460a4c9d")}
                           </span>
                         )}
                       </span>
@@ -530,11 +486,8 @@ export function AiDialogueDialog({
                       variant="ghost"
                       className="m-1"
                       onClick={() => void playLine(l.blockId, l.audio!.clipId)}
-                      aria-label={L(
-                        `Spill av replikken til ${l.speaker || "karakteren"}`,
-                        `Play the line of ${l.speaker || "the character"}`,
-                      )}
-                      title={L("Spill av lyden replikken har", "Play the audio the line has")}
+                      aria-label={l.speaker ? tk("app-assembly-ai-dialogue-dialog.play-line-of", { speaker: l.speaker }) : tk("app-assembly-ai-dialogue-dialog.play-line-of-character")}
+                      title={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.title.2c63aef5e695")}
                     >
                       {playing === `line:${l.blockId}` ? <Pause /> : <Play />}
                     </Button>
@@ -545,56 +498,50 @@ export function AiDialogueDialog({
             {confirm ? (
               <div
                 role="alertdialog"
-                aria-label={L("Bekreft innlesing", "Confirm reading in")}
+                aria-label={tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.aria-label.c43c89ca0d32")}
                 className="flex flex-col gap-2 rounded-sm border border-accent-warm/60 bg-surface-2 p-2"
               >
                 <p className="text-xs text-text-primary">
                   {runnable.length}{" "}
-                  {runnable.length === 1 ? L("replikk", "line") : L("replikker", "lines")} (
-                  {runnable.reduce((t, l) => t + l.text.length, 0)} {L("tegn", "characters")}){" "}
-                  {L(
-                    "med ElevenLabs. Belastes kontoen til prosjektets eier, anslått",
-                    "with ElevenLabs. Charged to the project owner's account, estimated at",
-                  )}{" "}
-                  {cost !== null ? formatUsd(cost) : L("ukjent pris", "unknown price")}{" "}
-                  {L(
-                    "(et anslag). Vil du lese dem inn nå?",
-                    "(an estimate). Do you want to read them in now?",
-                  )}
+                  {runnable.length === 1 ? tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.eb8657322dc9") : tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.f338fd22453a.2")} (
+                  {runnable.reduce((t, l) => t + l.text.length, 0)} {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.9de1d844099b")}){" "}
+                  {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.100ef4070f6f")}{" "}
+                  {cost !== null ? formatUsd(cost) : tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.4d53948d1ff4")}{" "}
+                  {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.p.c4e7c7d62f28")}
                 </p>
                 {speechModel && providerInfo("elevenlabs") ? (
                   <CostLines
                     lines={[
                       ...costBreakdown(providerInfo("elevenlabs")!, speechModel, {
                         targets: runnable.length,
-                        targetsLabel: L("replikker", "lines"),
+                        targetsLabel: tk("app-assembly-ai-dialogue-dialog.targets-label.targets-label.b9c7e2e02290"),
                         total:
                           cost !== null
-                            ? L(`ca. ${formatUsd(cost)}`, `approx. ${formatUsd(cost)}`)
+                            ? tk("app-assembly-ai-dialogue-dialog.total.total.81ac5d637ce2", { value1: String(formatUsd(cost)) })
                             : null,
                       }).slice(0, -1),
                       {
-                        label: L("Tegn", "Characters"),
+                        label: tk("app-assembly-ai-dialogue-dialog.label.label.22038e56bfbf"),
                         value: runnable
                           .reduce((t, l) => t + l.text.length, 0)
                           .toLocaleString(locale()),
                       },
                       {
-                        label: L("Samlet anslag", "Estimated total"),
+                        label: tk("app-assembly-ai-dialogue-dialog.label.label.fabf40c27ec9"),
                         value:
                           cost !== null
-                            ? L(`ca. ${formatUsd(cost)}`, `approx. ${formatUsd(cost)}`)
-                            : L("ukjent pris", "unknown price"),
+                            ? tk("app-assembly-ai-dialogue-dialog.value.value.98830544e254", { value1: String(formatUsd(cost)) })
+                            : tk("app-assembly-ai-dialogue-dialog.value.value.e18ba2e3a24a"),
                       },
                     ]}
                   />
                 ) : null}
                 <div className="flex gap-2">
                   <Button size="sm" onClick={() => void run()} disabled={!!busy}>
-                    <Mic /> {L("Ja, les inn", "Yes, read in")}
+                    <Mic /> {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.10121f7d6fca")}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={() => setConfirm(false)}>
-                    {L("Avbryt", "Cancel")}
+                    {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.398764189aa2")}
                   </Button>
                 </div>
               </div>
@@ -618,7 +565,7 @@ export function AiDialogueDialog({
         ) : null}
         <DialogFooter>
           <Button variant="ghost" onClick={() => onOpenChange(false)} disabled={!!busy}>
-            {L("Lukk", "Close")}
+            {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.3035c28f2a84")}
           </Button>
           {connected && lines.length ? (
             <Button
@@ -627,7 +574,7 @@ export function AiDialogueDialog({
               onClick={() => setConfirm(true)}
             >
               <Mic />
-              {L("Les inn", "Read in")} ({runnable.length}, ~{cost !== null ? formatUsd(cost) : "?"}
+              {tk("app-assembly-ai-dialogue-dialog.ai-dialogue-dialog.button.b4921661c2ab")} ({runnable.length}, ~{cost !== null ? formatUsd(cost) : "?"}
               ) …
             </Button>
           ) : null}

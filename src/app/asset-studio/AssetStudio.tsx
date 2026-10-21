@@ -12,32 +12,7 @@
  */
 import { Pause, Play, Redo2, Undo2, Unlock, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  L,
-  applyCommand,
-  assetAudioGroups,
-  assetLineIds,
-  compositionDuration,
-  draftCommand,
-  draftConflicts,
-  filmClips,
-  framesToSeconds,
-  imageSegmentsOf,
-  layerFieldsOf,
-  layerVersions,
-  rebaseDraft,
-  removeImageSegment,
-  replaceImageSegment,
-  insertImageSegment,
-  secondsToFrames,
-  setImageSegmentTransition,
-  variantsOf,
-  versionsOf,
-  type Composition,
-  type FilmAudioItem,
-  type LayerFields,
-  type ProjectState,
-} from "@/core";
+import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -69,6 +44,9 @@ import { ObjectTimeline } from "./ObjectTimeline";
 import { StudioAudioTracks, muteDraftCommand } from "./StudioAudioTracks";
 import { StudioScript } from "./StudioScript";
 import { CarryOverDialog } from "@/app/scene-editor/CarryOverDialog";
+import { AlphaExportDialog } from "@/app/assembly/AlphaExportDialog";
+import { Download } from "lucide-react";
+import { t as tk } from "@/core/i18n/keyed";
 
 const isTyping = (t: EventTarget | null) =>
   t instanceof HTMLElement &&
@@ -141,6 +119,7 @@ export function AssetStudio({
   const rootRef = useRef<HTMLDivElement | null>(null);
 
   const [mode, setMode] = useState<StudioPreviewMode>("object");
+  const [alphaOpen, setAlphaOpen] = useState(false);
   const [area, setArea] = useState<"object" | "scene">("object");
   const playback = usePlayback(
     duration,
@@ -158,6 +137,8 @@ export function AssetStudio({
   const [conflict, setConflict] = useState(false);
   const [saving, setSaving] = useState(false);
   const [imagesOpen, setImagesOpen] = useState(false);
+  /** P8: «Harmoniser stil …» åpner bildedialogen med harmoniseringen fremme. */
+  const [harmonizeOpen, setHarmonizeOpen] = useState(false);
 
   const canEdit = editable && !!layer && !layer.locked;
   const fields = layer ? layerFieldsOf(layer) : null;
@@ -230,11 +211,11 @@ export function AssetStudio({
 
   function pick(img: StripImage) {
     if (!fields || !canEdit) return;
-    if (seg) change(replaceImageSegment(fields, seg.index, img), L("Erstatt bilde", "Replace image"));
+    if (seg) change(replaceImageSegment(fields, seg.index, img), tk("app-asset-studio-asset-studio.pick.change.f1a8f1e518e5"));
     else
       change(
         insertImageSegment(fields, playback.frame, img),
-        L("Nytt bildesegment", "New image segment"),
+        tk("app-asset-studio-asset-studio.pick.change.7d5475d1f990"),
       );
   }
 
@@ -266,7 +247,7 @@ export function AssetStudio({
     setSaving(true);
     const r = await cmds.runAndWait(
       cmd,
-      L(`Asset Studio: ${layer?.name ?? ""}`, `Asset Studio: ${layer?.name ?? ""}`),
+      tk("app-asset-studio-asset-studio.r.cmds-run-and-wait.aec5f64d58bf", { value1: String(layer?.name ?? "") }),
     );
     setSaving(false);
     if (r.error) {
@@ -281,10 +262,7 @@ export function AssetStudio({
     const r = rebaseDraft(d.draft, cmds.current() ?? state);
     if (!r.ok) {
       setError(
-        L(
-          "Utkastet kan ikke legges oppå den nye versjonen. Forkast det, eller gjør endringene på nytt.",
-          "The draft cannot be laid on top of the new version. Discard it, or make the changes again.",
-        ),
+        tk("app-asset-studio-asset-studio.lay-on-top.set-error.aff794f3794b"),
       );
       setConflict(false);
       return;
@@ -293,10 +271,7 @@ export function AssetStudio({
     setConflict(false);
     setError(null);
     setNotice(
-      L(
-        "Utkastet ligger nå oppå den nyeste versjonen. Se over forhåndsvisningen og trykk «Oppdater scenen og lukk» igjen.",
-        "The draft is now on top of the latest version. Check the preview and press “Update the scene and close” again.",
-      ),
+      tk("app-asset-studio-asset-studio.lay-on-top.set-notice.eb075dd820b3"),
     );
   }
 
@@ -349,10 +324,10 @@ export function AssetStudio({
 
   const conflictNames = d.conflicts.map((id) => {
     const l = view.layers[id as never];
-    if (l) return L(`laget «${l.name}»`, `the layer “${l.name}”`);
+    if (l) return tk("app-asset-studio-asset-studio.conflict-names.d-conflicts-map.dd78d01e0b81", { name: String(l.name) });
     const c = view.audioClips[id as never];
-    if (c) return L(`lydklippet «${c.name}»`, `the audio clip “${c.name}”`);
-    return L("2D-scenen", "the 2D scene");
+    if (c) return tk("app-asset-studio-asset-studio.conflict-names.d-conflicts-map.f7b47ddf527d", { name: String(c.name) });
+    return tk("app-asset-studio-asset-studio.conflict-names.d-conflicts-map.23313fa29d09");
   });
 
   if (!layer || !fields) {
@@ -364,9 +339,9 @@ export function AssetStudio({
         data-testid="asset-studio"
       >
         <p className="text-sm text-text-secondary">
-          {L("Laget finnes ikke lenger.", "The layer no longer exists.")}
+          {tk("app-asset-studio-asset-studio.asset-studio.p.e5c62d866af9")}
         </p>
-        <Button onClick={onClose}>{L("Lukk", "Close")}</Button>
+        <Button onClick={onClose}>{tk("app-asset-studio-asset-studio.asset-studio.button.e2de23ff999f")}</Button>
       </div>
     );
   }
@@ -379,30 +354,28 @@ export function AssetStudio({
       ref={rootRef}
       role="dialog"
       aria-modal="true"
-      aria-label={L(`Asset Studio: ${layer.name}`, `Asset Studio: ${layer.name}`)}
+      aria-label={tk("app-asset-studio-asset-studio.asset-studio.aria-label.da9dafcb0106", { name: String(layer.name) })}
       tabIndex={-1}
       onKeyDown={onKeyDown}
       className="fixed inset-2 z-40 flex flex-col overflow-hidden border border-border bg-surface-1 shadow-lg focus:outline-none"
       data-testid="asset-studio"
       data-draft-steps={d.draft.steps.length}
     >
+      {alphaOpen ? <AlphaExportDialog state={view} composition={comp} initialLayerIds={[layerId]} open={alphaOpen} onOpenChange={setAlphaOpen} /> : null}
       <Toolbar
-        title={L(`Asset Studio – ${layer.name}`, `Asset Studio – ${layer.name}`)}
+        title={tk("app-asset-studio-asset-studio.asset-studio.title.f1e77f22dd48", { name: String(layer.name) })}
         status={
           d.empty
-            ? L("Ingen endringer i scenen", "No changes in the scene")
-            : L(
-                `${d.draft.steps.length} endringer i utkastet – ikke lagret i scenen`,
-                `${d.draft.steps.length} changes in the draft – not saved in the scene`,
-              )
+            ? tk("app-asset-studio-asset-studio.asset-studio.status.3c1b477a3069")
+            : tk("app-asset-studio-asset-studio.asset-studio.status.1c8b2027c94c", { length: String(d.draft.steps.length) })
         }
       >
         <ToolbarGroup>
           <IconButton
             onClick={d.undo}
             disabled={!d.canUndo}
-            label={L("Angre i utkastet", "Undo in the draft")}
-            title={L("Angre i utkastet (⌘/Ctrl + Z)", "Undo in the draft (⌘/Ctrl + Z)")}
+            label={tk("app-asset-studio-asset-studio.asset-studio.label.05398cf0bc92")}
+            title={tk("app-asset-studio-asset-studio.asset-studio.title.1adfc38ed448")}
             data-testid="asset-studio-undo"
           >
             <Undo2 className="size-4" />
@@ -410,36 +383,40 @@ export function AssetStudio({
           <IconButton
             onClick={d.redo}
             disabled={!d.canRedo}
-            label={L("Gjør om i utkastet", "Redo in the draft")}
-            title={L("Gjør om i utkastet (⇧ + ⌘/Ctrl + Z)", "Redo in the draft (⇧ + ⌘/Ctrl + Z)")}
+            label={tk("app-asset-studio-asset-studio.asset-studio.label.40c865783760")}
+            title={tk("app-asset-studio-asset-studio.asset-studio.title.612237f6be7e")}
             data-testid="asset-studio-redo"
           >
             <Redo2 className="size-4" />
           </IconButton>
         </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarButton data-testid="asset-studio-alpha-open" onClick={() => setAlphaOpen(true)}
+          title={tk("app-asset-studio-asset-studio.asset-studio.title.4e6b475444df")}>
+          <Download className="size-4" />{tk("app-asset-studio-asset-studio.asset-studio.toolbar-button.4e6b475444df")}
+        </ToolbarButton>
         <ToolbarGroup>
           <ToolbarButton
             active={mode === "object"}
             onClick={() => setMode("object")}
             data-testid="asset-studio-view-object"
           >
-            {L("Bare objektet", "Object only")}
+            {tk("app-asset-studio-asset-studio.asset-studio.toolbar-button.6918d85652af")}
           </ToolbarButton>
           <ToolbarButton
             active={mode === "scene"}
             onClick={() => setMode("scene")}
             data-testid="asset-studio-view-scene"
           >
-            {L("Hele scenen", "Whole scene")}
+            {tk("app-asset-studio-asset-studio.asset-studio.toolbar-button.bcffd38cddec")}
           </ToolbarButton>
         </ToolbarGroup>
         <ToolbarSeparator />
         <ToolbarGroup>
           <IconButton
             onClick={playback.toggle}
-            label={playback.playing ? L("Pause", "Pause") : L("Spill av", "Play")}
-            title={playback.playing ? L("Pause (mellomrom)", "Pause (space)") : L("Spill av (mellomrom)", "Play (space)")}
+            label={playback.playing ? tk("app-asset-studio-asset-studio.asset-studio.label.788ef0b685fc") : tk("app-asset-studio-asset-studio.asset-studio.label.80c8ecbf22c4")}
+            title={playback.playing ? tk("app-asset-studio-asset-studio.asset-studio.title.28581374a130") : tk("app-asset-studio-asset-studio.asset-studio.title.03e7a5badb5b")}
             data-testid="asset-studio-play"
           >
             {playback.playing ? <Pause className="size-4" /> : <Play className="size-4" />}
@@ -448,17 +425,17 @@ export function AssetStudio({
             active={area === "object"}
             onClick={() => setArea("object")}
             data-testid="asset-studio-play-object"
-            title={L("Spill objektets aktive område", "Play the object's active range")}
+            title={tk("app-asset-studio-asset-studio.asset-studio.title.db2924381614")}
           >
-            {L("Objektets område", "Object's range")}
+            {tk("app-asset-studio-asset-studio.asset-studio.toolbar-button.b5b20e146106")}
           </ToolbarButton>
           <ToolbarButton
             active={area === "scene"}
             onClick={() => setArea("scene")}
             data-testid="asset-studio-play-scene"
-            title={L("Spill hele scenen", "Play the whole scene")}
+            title={tk("app-asset-studio-asset-studio.asset-studio.title.ddaf60eb3c6a")}
           >
-            {L("Hele scenen", "Whole scene")}
+            {tk("app-asset-studio-asset-studio.asset-studio.toolbar-button.bcffd38cddec.2")}
           </ToolbarButton>
         </ToolbarGroup>
       </Toolbar>
@@ -473,13 +450,25 @@ export function AssetStudio({
               onClick={() => setImagesOpen(true)}
               disabled={!editable}
               data-testid="asset-studio-images"
-              title={L(
-                "Last opp, lag med AI, frilegg eller lag vinkler. Nye bilder lagres med en gang i biblioteket.",
-                "Upload, create with AI, cut out or create angles. New images are saved straight away in the library.",
-              )}
+              title={tk("app-asset-studio-asset-studio.asset-studio.title.335a9be8ac3f")}
             >
-              {L("Bilder og verktøy …", "Images and tools …")}
+              {tk("app-asset-studio-asset-studio.asset-studio.button.7b82afd0712e")}
             </Button>
+            {asset && asset.kind !== "sound" && layer.assetId ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => {
+                  setHarmonizeOpen(true);
+                  setImagesOpen(true);
+                }}
+                disabled={!editable}
+                data-testid="asset-studio-harmonize"
+                title={tk("app-asset-studio-asset-studio.asset-studio.title.2e3ef6ac48ed")}
+              >
+                {tk("app-asset-studio-asset-studio.asset-studio.button.d821476184ee")}
+              </Button>
+            ) : null}
             {editable && asset && asset.kind !== "sound" ? (
               <MobileCameraButton
                 projectId={projectId}
@@ -488,7 +477,7 @@ export function AssetStudio({
                   assetId: asset.id,
                   ...(layer.assetVariantId ? { variantId: layer.assetVariantId } : {}),
                 }}
-                label={L(`Bilder av ${asset.name}`, `Pictures of ${asset.name}`)}
+                label={tk("app-asset-studio-asset-studio.asset-studio.label.b36d69042fa0", { name: String(asset.name) })}
               />
             ) : null}
           </div>
@@ -550,7 +539,7 @@ export function AssetStudio({
 
         {/* Høyre: egenskaper og manus */}
         <aside className="flex min-h-0 flex-col border-l border-border">
-          <PanelHeader title={L("Egenskaper", "Properties")} />
+          <PanelHeader title={tk("app-asset-studio-asset-studio.asset-studio.title.0d8293736ec8")} />
           <div className="flex flex-col gap-2 p-2 text-[12px]" data-testid="asset-studio-properties">
             <p className="truncate text-text-primary">
               {layer.name}
@@ -559,28 +548,28 @@ export function AssetStudio({
             {layer.locked ? (
               <div className="flex items-center gap-2 text-text-secondary" data-testid="asset-studio-locked">
                 <span className="flex-1">
-                  {L("Laget er låst. Lås det opp for å endre.", "The layer is locked. Unlock it to make changes.")}
+                  {tk("app-asset-studio-asset-studio.asset-studio.span.ab2a329a0852")}
                 </span>
                 {editable ? (
                   <Button
                     size="sm"
                     variant="secondary"
-                    onClick={() => change({ ...fields, locked: false }, L("Lås opp lag", "Unlock layer"))}
+                    onClick={() => change({ ...fields, locked: false }, tk("app-asset-studio-asset-studio.asset-studio.change.b6905ac9439c"))}
                     data-testid="asset-studio-unlock"
                   >
                     <Unlock />
-                    {L("Lås opp", "Unlock")}
+                    {tk("app-asset-studio-asset-studio.asset-studio.button.0058e3e9a4d2")}
                   </Button>
                 ) : null}
               </div>
             ) : null}
             <fieldset className="flex flex-col gap-1" disabled={!canEdit}>
               <legend className="mb-1 text-[11px] font-medium text-text-secondary">
-                {L("Når objektet vises", "When the object is shown")}
+                {tk("app-asset-studio-asset-studio.asset-studio.legend.a61264741e9e")}
               </legend>
               <div className="flex items-center gap-1.5">
                 <label className="flex items-center gap-1">
-                  {L("Fra (s)", "From (s)")}
+                  {tk("app-asset-studio-asset-studio.asset-studio.label.5564ad94e299")}
                   <Input
                     type="number"
                     step={0.04}
@@ -591,12 +580,12 @@ export function AssetStudio({
                     onChange={(e) => {
                       const from = Math.max(0, secondsToFrames(Number(e.target.value) || 0, fps));
                       const to = Math.max(from, range?.to ?? duration - 1);
-                      change({ ...fields, activeRange: { from, to } }, L("Endre objektets tidsområde", "Change the object's time range"));
+                      change({ ...fields, activeRange: { from, to } }, tk("app-asset-studio-asset-studio.asset-studio.change.10e813998fa5"));
                     }}
                   />
                 </label>
                 <label className="flex items-center gap-1">
-                  {L("Til (s)", "To (s)")}
+                  {tk("app-asset-studio-asset-studio.asset-studio.label.4044169b1a8e")}
                   <Input
                     type="number"
                     step={0.04}
@@ -607,7 +596,7 @@ export function AssetStudio({
                     onChange={(e) => {
                       const to = Math.max(0, secondsToFrames(Number(e.target.value) || 0, fps));
                       const from = Math.min(range?.from ?? 0, to);
-                      change({ ...fields, activeRange: { from, to } }, L("Endre objektets tidsområde", "Change the object's time range"));
+                      change({ ...fields, activeRange: { from, to } }, tk("app-asset-studio-asset-studio.asset-studio.change.10e813998fa5.2"));
                     }}
                   />
                 </label>
@@ -617,29 +606,23 @@ export function AssetStudio({
                 variant="ghost"
                 className="self-start"
                 disabled={!range}
-                onClick={() => change({ ...fields, activeRange: null }, L("Objektet vises i hele scenen", "The object is shown in the whole scene"))}
+                onClick={() => change({ ...fields, activeRange: null }, tk("app-asset-studio-asset-studio.asset-studio.change.2a9019e7a20f"))}
                 data-testid="asset-studio-range-clear"
               >
-                {L("Vis i hele scenen", "Show in the whole scene")}
+                {tk("app-asset-studio-asset-studio.asset-studio.button.e095b19f78ab")}
               </Button>
               <p className="text-[11px] text-text-tertiary">
-                {L(
-                  "Endrer bare når objektet vises. Scenens lengde, andre lag og dialog flyttes ikke. Skjult lag og opasitet gjelder i tillegg.",
-                  "Only changes when the object is shown. The scene length, other layers and dialogue are not moved. Hidden layer and opacity apply in addition.",
-                )}
+                {tk("app-asset-studio-asset-studio.asset-studio.p.690f1d2288d2")}
               </p>
             </fieldset>
             {seg ? (
               <fieldset className="flex flex-col gap-1" disabled={!canEdit} data-testid="asset-studio-segment-props">
                 <legend className="mb-1 text-[11px] font-medium text-text-secondary">
-                  {L(
-                    `Bildesegment fra ${sec(seg.start)} s til ${sec(seg.end)} s`,
-                    `Image segment from ${sec(seg.start)} s to ${sec(seg.end)} s`,
-                  )}
+                  {tk("app-asset-studio-asset-studio.asset-studio.legend.709f2f6a0539", { value1: String(sec(seg.start)), value2: String(sec(seg.end)) })}
                 </legend>
                 {seg.index > 0 ? (
                   <label className="flex items-center gap-1.5">
-                    {L("Overgang inn", "Transition in")}
+                    {tk("app-asset-studio-asset-studio.asset-studio.label.b7fc8f241267")}
                     <select
                       className="h-7 rounded-sm border border-border-control bg-surface-2 px-1"
                       data-testid="asset-studio-transition"
@@ -651,25 +634,25 @@ export function AssetStudio({
                             seg.index,
                             e.target.value === "crossfade" ? Math.max(1, Math.round((fps.num / fps.den) / 2)) : null,
                           ),
-                          L("Endre overgang", "Change transition"),
+                          tk("app-asset-studio-asset-studio.asset-studio.change.3851eb61d2f5"),
                         )
                       }
                     >
-                      <option value="cut">{L("Kutt", "Cut")}</option>
-                      <option value="crossfade">{L("Krysstoning", "Crossfade")}</option>
+                      <option value="cut">{tk("app-asset-studio-asset-studio.asset-studio.option.4fc60c88e514")}</option>
+                      <option value="crossfade">{tk("app-asset-studio-asset-studio.asset-studio.option.e1ace1eb4f10")}</option>
                     </select>
                     {seg.transition ? (
                       <Input
                         type="number"
                         min={1}
                         className="h-7 w-16"
-                        aria-label={L("Krysstoningens lengde i bilder", "Crossfade length in frames")}
+                        aria-label={tk("app-asset-studio-asset-studio.asset-studio.aria-label.ce80dcdc3fab")}
                         data-testid="asset-studio-transition-frames"
                         value={seg.transition.frames}
                         onChange={(e) =>
                           change(
                             setImageSegmentTransition(fields, seg.index, Math.max(1, Math.round(Number(e.target.value) || 1))),
-                            L("Endre overgang", "Change transition"),
+                            tk("app-asset-studio-asset-studio.asset-studio.change.3851eb61d2f5.2"),
                           )
                         }
                       />
@@ -677,10 +660,7 @@ export function AssetStudio({
                   </label>
                 ) : null}
                 <p className="text-[11px] text-text-tertiary">
-                  {L(
-                    "Klikk et bilde til venstre for å erstatte bildet i segmentet.",
-                    "Click an image on the left to replace the image in the segment.",
-                  )}
+                  {tk("app-asset-studio-asset-studio.asset-studio.p.33323f5710fa")}
                 </p>
                 {seg.index > 0 ? (
                   <Button
@@ -691,13 +671,13 @@ export function AssetStudio({
                     onClick={() => {
                       const f = removeImageSegment(fields, seg.index);
                       if (f) {
-                        change(f, L("Fjern bildesegment", "Remove image segment"));
+                        change(f, tk("app-asset-studio-asset-studio.asset-studio.change.baa7d508fd9a"));
                         setSelected(null);
                       }
                     }}
                   >
                     <X />
-                    {L("Fjern segmentet (bildet blir i biblioteket)", "Remove the segment (the image stays in the library)")}
+                    {tk("app-asset-studio-asset-studio.asset-studio.button.d1b5fe476529")}
                   </Button>
                 ) : null}
               </fieldset>
@@ -730,10 +710,7 @@ export function AssetStudio({
       {/* Fast nederst: skal ikke forveksles med lukking av underdialoger */}
       <footer className="flex shrink-0 items-center justify-end gap-2 border-t border-border bg-surface-2 px-3 py-2">
         <p className="mr-auto text-[11px] text-text-tertiary">
-          {L(
-            "Nye bilder, lydopptak og notater er allerede lagret. Scenen endres først når du oppdaterer den.",
-            "New images, audio recordings and notes are already saved. The scene changes only when you update it.",
-          )}
+          {tk("app-asset-studio-asset-studio.asset-studio.p.6fc560acd9e9")}
         </p>
         {carryMsg ? (
           <span role="status" className="text-xs text-text-secondary" data-testid="asset-studio-carry-status">
@@ -745,23 +722,20 @@ export function AssetStudio({
             variant="ghost"
             onClick={() => setCarryOpen(true)}
             data-testid="asset-studio-carry"
-            title={L(
-              "Kopier laget slik det er lagret i scenen til andre scener. Utkastet her tas ikke med.",
-              "Copy the layer as it is saved in the scene to other scenes. The draft here is not included.",
-            )}
+            title={tk("app-asset-studio-asset-studio.asset-studio.title.2a820ba8be6c")}
           >
-            {L("Bruk også i …", "Also use in …")}
+            {tk("app-asset-studio-asset-studio.asset-studio.button.9db3d23bccf4")}
           </Button>
         ) : null}
         <Button variant="ghost" onClick={requestCancel} data-testid="asset-studio-cancel">
-          {L("Avbryt uten å oppdatere scenen", "Cancel without updating the scene")}
+          {tk("app-asset-studio-asset-studio.asset-studio.button.e35acb752cc7")}
         </Button>
         <Button
           onClick={() => void save()}
           disabled={saving || !editable}
           data-testid="asset-studio-save"
         >
-          {saving ? L("Oppdaterer …", "Updating …") : L("Oppdater scenen og lukk", "Update the scene and close")}
+          {saving ? tk("app-asset-studio-asset-studio.asset-studio.button.8c36dfa5465f") : tk("app-asset-studio-asset-studio.asset-studio.button.f289ae870cb1")}
         </Button>
       </footer>
 
@@ -779,18 +753,15 @@ export function AssetStudio({
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
         <AlertDialogContent className="border-border bg-surface-2" data-testid="asset-studio-cancel-confirm">
           <AlertDialogHeader>
-            <AlertDialogTitle>{L("Forkaste endringene i scenen?", "Discard the changes in the scene?")}</AlertDialogTitle>
+            <AlertDialogTitle>{tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-title.8c6aa4c5295a")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {L(
-                `Utkastet har ${d.draft.steps.length} endringer som ikke er lagret i scenen. Nye bilder, lydopptak og notater blir liggende i biblioteket.`,
-                `The draft has ${d.draft.steps.length} changes that are not saved in the scene. New images, audio recordings and notes stay in the library.`,
-              )}
+              {tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-description.e01cb528d7aa", { length: String(d.draft.steps.length) })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>{L("Fortsett å arbeide", "Keep working")}</AlertDialogCancel>
+            <AlertDialogCancel>{tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-cancel.4504ae6fae70")}</AlertDialogCancel>
             <AlertDialogAction onClick={onClose} data-testid="asset-studio-cancel-discard">
-              {L("Forkast og lukk", "Discard and close")}
+              {tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-action.fb9859bcb41b")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -799,35 +770,26 @@ export function AssetStudio({
       <AlertDialog open={conflict} onOpenChange={setConflict}>
         <AlertDialogContent className="border-border bg-surface-2" data-testid="asset-studio-conflict">
           <AlertDialogHeader>
-            <AlertDialogTitle>{L("Scenen er endret av andre", "The scene has been changed by others")}</AlertDialogTitle>
+            <AlertDialogTitle>{tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-title.b91c599cd1d0")}</AlertDialogTitle>
             <AlertDialogDescription asChild>
               <div className="flex flex-col gap-1 text-[13px]">
                 <span>
                   {conflictNames.length
-                    ? L(
-                        `Mens du arbeidet, ble ${conflictNames.join(", ")} endret i et annet vindu eller av en annen bruker.`,
-                        `While you were working, ${conflictNames.join(", ")} was changed in another window or by another user.`,
-                      )
-                    : L(
-                        "Scenen ble ikke oppdatert fordi noe er endret i et annet vindu eller av en annen bruker.",
-                        "The scene was not updated because something was changed in another window or by another user.",
-                      )}
+                    ? tk("app-asset-studio-asset-studio.asset-studio.span.fee998828c3e", { value1: String(conflictNames.join(", ")) })
+                    : tk("app-asset-studio-asset-studio.asset-studio.span.e2d9b4a43e6d")}
                 </span>
                 <span>
-                  {L(
-                    "Ingenting er overskrevet. Du kan legge utkastet oppå den nye versjonen og se resultatet før du oppdaterer, eller forkaste utkastet.",
-                    "Nothing has been overwritten. You can lay the draft on top of the new version and see the result before updating, or discard the draft.",
-                  )}
+                  {tk("app-asset-studio-asset-studio.asset-studio.span.8bea83d9c84f")}
                 </span>
               </div>
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel data-testid="asset-studio-conflict-discard" onClick={onClose}>
-              {L("Forkast utkastet", "Discard the draft")}
+              {tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-cancel.bd3daa5b01cf")}
             </AlertDialogCancel>
             <AlertDialogAction data-testid="asset-studio-conflict-rebase" onClick={layOnTop}>
-              {L("Legg utkastet oppå og forhåndsvis", "Lay the draft on top and preview")}
+              {tk("app-asset-studio-asset-studio.asset-studio.alert-dialog-action.549b260ef662")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -835,7 +797,11 @@ export function AssetStudio({
 
       <LayerImageDialog
         open={imagesOpen}
-        onOpenChange={setImagesOpen}
+        onOpenChange={(o) => {
+          setImagesOpen(o);
+          if (!o) setHarmonizeOpen(false);
+        }}
+        openHarmonize={harmonizeOpen}
         onCloseAutoFocus={(e) => {
           e.preventDefault();
           const opener = rootRef.current?.querySelector<HTMLElement>('[data-testid="asset-studio-images"]');
@@ -848,7 +814,7 @@ export function AssetStudio({
         cmds={directCmds}
         sceneWrite={(patch, label) =>
           layer.locked
-            ? L("Laget er låst. Lås det opp for å endre.", "The layer is locked. Unlock it to make changes.")
+            ? tk("app-asset-studio-asset-studio.asset-studio.scene-write.ab2a329a0852")
             : change({ ...fields, ...patch }, label)
         }
       />

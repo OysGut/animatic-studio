@@ -1,6 +1,73 @@
 # Handover – Animatic Studio
 
-**Sist oppdatert:** 2026-10-15 (økt 6, Claude i Cowork, DEC-0069–0084 – egne AI-leverandører, førti store bolker, arbeidslisten, kravverifisering runde 3–4, Mars' testrunde med 19 funn, bildeverktøy/vinkler/promptmotor, AI-video av scenen utvidet i DEC-0085, kontoer/admin/personvern/kostnadsrapport i DEC-0086, bildeverktøy, elementer i flere scener, TODO, paneler og AI-tilkoblinger i DEC-0088, og manuset i sceneeditoren med lukkbare paneler i DEC-0089). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
+## B-049 ML1 – 20.10.2026
+- Godkjent ML1 → ML2 → ML3 → ML4; bare ML1 kode levert. Inventar/mapping/kataloger, t og validering, en-XA, frozen baseline; gammel bro uendret. Ingen migrasjon.
+- Rapport: docs/development/ML1_REPORT.md. 9963 par, 266 konflikter beholdt; 13 nye tester, full Vitest 1926/0, lokal DB 140/0, U5 65/T2 69/DV3 48/paneler 39; build_docs/check_kb OK (878 krav).
+- Ikke fullt akseptert: verifisering4 fontmåling 6,439 em her, 57/58 med tilgjengelig Chromium/falsk mikrofon. Kontroller uendret suite hos Claude før ML2. ML2 skal bevare utkast/arbeid ved språkbytte; tredjespråk avgjøres senere av Mars.
+
+## C / B-050 – 20.10.2026, retterunde: klar for Cloud-gjennomgang
+- 0064_translation_line_links.sql skrevet, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet (create_project, create_dialogue_batch, guard_quality_profile_job, purge_removed_assets urørt). Skjemaversjon 64.
+- Nye tabeller: `translation_line_links` og `translation_lines` (engelske/oversatte linjer uten regelpar, per scenevariant og språk). Medlems-SELECT, ingen klientskriving, service_role ALL, RLS.
+- Retting 1: tvetydig `id` i valideringen (unnest-alias) rettet med `s(block_id)`/`tt(translation_id)`.
+- Retting 2: apply_changes validerer bare linjekoblinger som legges til, eller endres med nye referanser, i samme kall (`v_link_check`). Koblinger som peker på fjernede/flyttede linjer regnes som utdatert i kjernen (`lineLinkStale`), vises med merke i gjennomgangen og blokkerer aldri andre kommandoer; avvisning og angring av utdaterte koblinger er tillatt, godkjenning krever gyldige linjer.
+- Retting 3: importen lagrer linjer uten regelpar via `AddTranslationLines` (invers `UndoAddTranslationLines`) i samme angregruppe; ny import av samme scene/språk pensjonerer eldre uparrede linjer (removed=true). AI-scope per scene: usikre oversettelser + uparrede linjer mot norske linjer bak usikre par eller uten oversettelse. Norsk hovedmanus endres aldri.
+- Tester: Vitest full grønn, line-linking 12/12 (1:n, n:1 og AI-only uparret linje med mock), DB 137/137 lokalt (inkl. fjernet lenket replikk: kommandoen og neste kommando lykkes), P5 24/24 NO/EN med utdatert-merke og uparret linje.
+
+## D / M8 og P4-rester – 20.10.2026
+- 0063 er endelig lokalt, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0062; create_project fra 0001 (bare tre standardprofiler/aktivt valg); create_dialogue_batch fra 0061 (bare snapshot i jobbreservasjoner). purge_removed_assets urørt. Ny private.guard_quality_profile_job serialiserer månedskapasitet og beskytter metadata.
+- Profiler i prosjektinnstillinger og bilde/video/lyd/tale/DV-batch/eksport/alfa, lokale overstyringer, budsjettport, profilnavn og uforanderlige snapshots. Nye prosjekter får standardprofiler; eksisterende får bare tilbud. Backup inkluderer profilene.
+- Film/alfa deler seriell klientkø som fortsetter etter dialoglukking; fremdrift/avbryt globalt. OPFS strømmer PNG-ZIP. Uten OPFS beholdes minnebasert reserve for «PNG alltid»: rapportert avvik fra ubetinget strømming. Køen overlever ikke tabblukking/omlasting. WebM-alfa ikke støttet i testnettleseren.
+- Automatisk typekontroll/build OK. Vitest 1861 bestått, 0 feilet, 10 eksisterende hoppet over. Lokal DB 135/135. P6 18/18 NO/EN, P4 39/39, DV4 24/24, DV5 20/20, U5 65/65, CA8 22/22, MTS engine 42/42, scene panels 39/39. Verifisering4 51/54: Courier Prime og to falsk-mikrofonkontroller; hybrid-eksport og avspilling bestått på siste kjøring.
+- i18n/build_docs/check_kb OK; REQ-0854–0862 registrert, C-krav 0845–0853 utsatt, ingen implementasjon av C. Ingen ekte/betalte AI-kall. Kredittoversikt viser 1033 totalt i perioden 16.10–16.11, ikke et isolert tall for dette oppdraget.
+
+## DV7/DV8 – 20.10.2026, kode levert; Cloud 0062 gjenstår
+- Migrasjon 0062_drift_notes_bookmarks.sql: dialogue_reviews, note_flags, user_bookmarks (RLS user_id = auth.uid()), set_my_bookmark/consume_my_bookmark, reconfirm_dialogue_batch, item-status «undone». Erstatter apply_changes, delete_project og purge_project_assets (kopiert fra 0061 og utvidet); purge_removed_assets er uendret.
+- Avvik lagres aldri; status beregnes i src/core/dialogue/drift.ts. Backup tar med reviews og lapper, ikke bokmerker.
+- DV5/DV6-rester rettet: hele jobben kan angres via lagrede inverser, blokkert jobb gjenopptas etter ny bekreftelse uten å kjøre tvetydige/fakturerte elementer, «nb» i stedet for «no» (leverandørkode mappes ved kall), produksjon per scene, ett usikkert tidsanslag.
+- Lokalt: tsc ok, Vitest 1826/10 hoppet over, DB 132/132, dv1–dv8, CA1–CA8, U5 65, scene-panels 39, lyd 28/24, MTS 130. Verifisering4 51/54 her (mikrofon + Courier Prime, kjente miljøavvik).
+
+## DV5/DV6 – 19.10.2026, kode levert; Cloud-verifikasjon gjenstår
+- Doble forslag grupperes per permanent replikk/ressurs; bekreftelse kobler alle tilhørende klipp.
+- Massegenerering i karakterens Lyd/Stemme-seksjon: scene-/linjevalg, dekning, ordrett eksisterende-lyd-advarsel, eksplisitt kostnadsgodkjenning, separate språkjobber og varig fremdrift. Ukjent pris blokkerer start. Tidsanslag er uttrykkelig usikkert.
+- Språk: UiLocale er uavhengig; prosjekt/variant/blokk styrer scriptLanguage, replikk/karakter/genereringsvalg styrer speechLanguage. BCP-47 og Unicode Segmenter; levende modellkapabiliteter, ingen skjult språkbytte. Stemmens faktiske uttale er ikke verifisert.
+- Batcharbeid ligger i lagringsadapteren: lease-fencede overganger, to linjer per kjøring, varig leverandørkvittering før applyCommand/apply_changes, atomisk completion/change_log. Betalte tvetydige resultater gjentas ikke. 402/403 stopper batchen varig uten probes. Vanlig tidsavbruddsrydding ekskluderer batchjobber.
+- Migrasjon 0061 skrevet, IKKE kjørt mot Cloud eller lokal DB. Forventet skjema 61. Fire funksjoner basert på 0060; purge_removed_assets beholdt ordrett. Ny overgangsfunksjon har service-only execute. DB-testene har tre nye 0061-kontroller, men kjøring stoppet før første test: localhost:54329 ECONNREFUSED. Claude må kontrollere og kjøre migrasjonen.
+- Tester: automatisk typekontroll/build OK; Vitest 1804 bestått, 0 feilet, 10 eksisterende hoppet over. Nye DV5/DV6 unit 23, tapsfrihet 12; kø-/timegrensetester også grønne. DV5 20/20, DV6 16/16, DV1 15/15, DV2 7/7, DV3 48/48, DV4 24/24; CA1–CA8 155/155, U5 65/65, scene-panels 39/39, lydeditor 24/24, lyd-UI 28/28 på isolert gjentak (første 27/28, QR-race). Verifisering4 51/54: to falsk-mikrofonkontroller og Courier Prime-måling, ikke grønn i dette miljøet.
+- Krav REQ-0780–0800 (G1–G13/S1–S8) registrert som Implementert – ikke verifisert. build_docs/check_kb OK: 800 krav, ingen udekkede mandatlinjer. i18n OK. Ingen ekte/betalte ElevenLabs-kall eller publisering.
+- Åpne avvik: batchresultater har reversible kommandoer og serverhistorikk, men lokal bruker-angreliste er ikke koblet til bakgrunnsresultatene. Leverandørblokkede batcher krever ny brukerstart etter gjenopprettet tilgang; eksisterende blokkert batch kan ikke gjenopptas via API. Full database-/receipt-/retry-ende-til-ende-test gjenstår; UI-suitene bruker faste mockede svar. Automatisk videreføring krever eksisterende cron-plan; den ble ikke kontrollert i Cloud.
+
+
+## DV3/DV4 – 19.10.2026
+- DV1/DV2 og migrasjon 0060 er Cloud-verifisert/publisert av Øystein; skjemaversjon 60. Denne runden lager ingen 0061 og erstatter ingen databasefunksjoner: assets.voice er eksisterende størrelsesbegrenset JSONB; character_asset_id finnes fra 0060.
+- DV3 utvider RecordAudioDialog, ikke en konkurrerende editor: stor replikk/kontekst, karaktervalg og portrett, opptak, stablede versjoner, separat forhåndslytting, aktiv filmversjon, bekreftet reversibel sletting av inaktiv versjon. Karakterforslag krever bekreftelse; nye opptak kan få entydig karakterkobling. Begge tidslinjer projiserer karakterspor; overlapp varsles, andre linjer flyttes ikke.
+- DV4: standardstemme med modell, språk og innstillinger; kontoens stemmer/modeller via eksisterende serveradapter. Lokal generering går gjennom kostnadsport, sjekker manusrevisjon og språk, blir ny aktiv versjon og bevarer tidligere filer/redigering. Generert fil oppretter egen lydressurs; forelderversjon bevares. Jobblogg lagrer ikke manusreplikken. Ukjent modellpris blokkerer generering.
+- Egendefinert stemme: eksisterende kontostemme kan velges. Opprettelse skjer hos ElevenLabs via lenke; leverandøren håndhever kontoadgang/samtykke/rettigheter. Ingen innebygd stemmekloning eller verifikasjon av kontoens opprettelsesrettigheter. Dette er et eksplisitt avvik/avgrensning, ikke rapportert som full funksjon.
+- Krav M1–M5, D1–D8, L1–L10 og V1–V7 registrert som REQ-0750–0779 med original oppdragskilde og status «Implementert – ikke verifisert»; ingen nye beslutningsnumre oppfunnet. build_docs/check_kb OK: 779 krav, 12 skills, 0 udekkede mandatlinjer. PyYAML installert isolert i /tmp.
+- Tester: Vitest 1774 bestått, 0 feilet, 10 eksisterende hoppet over (227 filer bestått, 2 eksisterende hoppet over). Automatisk typekontroll/build OK; ingen manuell tsc-kjøring i dette miljøet. i18n 0 tekster uten engelsk.
+- Nettleser: DV3 48/48 (NO/EN, falsk mikrofon, kobling, preview uten aktivering, valg, bekreftet sletting og begge spor); DV4 24/24 (NO/EN, lokal overstyring, godkjent mockgenerering, metadata, bibliotekstandard). Ingen ekte ElevenLabs-kall.
+- Regresjon: DV1 15/15, DV2 7/7, CA1–CA8 17/17/20/25/13/15/26/22 (155/155), U5 65/65, scene-panels 39/39, dec0093-audio-ui 28/28, dec0094-audio-editor-ui 24/24.
+- Verifisering4 51/54: gammel suite har hardkodet nettlesersti og reserveoppstart uten falsk mikrofon, derfor to REQ-0583-feil; Courier Prime måles 6,439 em og gir én REQ-0050-feil. Forventninger beholdt. Ny DV3-suite prøver opptak med falsk mikrofon på begge språk og består. Første sideåpning i DV3 feilet sporadisk med ERR_ABORTED; siste fullkjøring 48/48. Gammel lydsuite fikk tidsavbrudd i lang samlet kjøring; separat fullkjøring 28/28.
+- DB-tester og ekte kontoflyt ikke kjørt i denne runden: lokal Postgres på 54329 er ikke tilgjengelig. Ingen databaseendring er gjort. Øysteins tidligere DB 127/127/backfill-verifikasjon beholdes som tidligere verifikasjon, ikke ny kjøring.
+- DV5–DV8 (massegenerering, avvik, gule lapper, bokmerker) utenfor denne leveransen. KI-167/KI-209/KI-243 er uendret.
+
+
+**Sist oppdatert:** 2026-10-19; eldre økter under er historikk fra 2026-10-15 (økt 6, Claude i Cowork, DEC-0069–0084 – egne AI-leverandører, førti store bolker, arbeidslisten, kravverifisering runde 3–4, Mars' testrunde med 19 funn, bildeverktøy/vinkler/promptmotor, AI-video av scenen utvidet i DEC-0085, kontoer/admin/personvern/kostnadsrapport i DEC-0086, bildeverktøy, elementer i flere scener, TODO, paneler og AI-tilkoblinger i DEC-0088, og manuset i sceneeditoren med lukkbare paneler i DEC-0089). Arbeidsstatus – mandatet og beslutningsloggen er fortsatt autoritative.
+
+## Gjeldende status – 19.10.2026
+- DV1/DV2 (Script-Driven Dialogue & Voice) er bygget lokalt. Migrasjon `db/migrations/0060_dialogue_versions.sql` er skrevet og kjørt i lokal Postgres, IKKE i Cloud (Claude kjører den; `EXPECTED_SCHEMA_VERSION` og visuell skjemaversjon er 60, så appen melder «utdatert database» til 0060 er kjørt). 0060 erstatter `apply_changes`, `delete_project`, `purge_project_assets` og `purge_removed_assets` kopiert ordrett fra 0056 og utvidet.
+- DV2-modell: `audio_clips` eier plassering og `active_version_id`; `dialogue_versions` eier fil og redigering; klippets gamle felt er speil (`mirrorDialogueClips`). Bare dialog med replikk får versjoner. Backfill kopierer trim, lengde, volum, volumkurve, fades og hastighet nøyaktig.
+- Egenskapstesten (`tests/invariants/dialogue-lossless.test.ts`) fant og fikk rettet to tapsfeil før levering: hastighet ble arvet fra feil versjon ved angring, og angring kunne aktivere feil versjon når flere versjoner hadde samme fil.
+- Tester DV1/DV2: tsgo rent; Vitest 1761/0 (10 hoppet over); DB 127/127; dv1 15/15; dv2 7/7; CA1–CA8 17/17/20/25/13/15/26/22; U5 65/65; lydeditor 24/24; lyd-UI 28/28; scene-panels 39/39; MTS 130/130.
+- Ikke bygget ennå (DV3+): versjonsliste med forhåndslytting i dialogeditoren, eksplisitt bekreftet sletting av versjon i UI (kommandoen `SetDialogueVersionRemoved` finnes), `character_asset_id` fylles ikke av backfill (ingen sikker kobling replikk→karakterressurs), note_flags, bokmerker, stemmer/generering.
+- Øystein har verifisert og publisert T1, Story Lab, Manusutforskeren, OG1/OG2, SV1, Asset Studio, GP1–GP5, MT1–MT9, T2, CA1–CA8, U5 og Ø-11. Cloud er på skjemaversjon 58; migrasjonene til og med 0058 er kjørt av Claude/Øystein og hashkontrollert. Ingen ny migrasjon i dokumentasjonsrunden.
+- A: gyldig men tom fixture-SVG var årsaken til grå karakterkort/sporhoder; tydelige testbilder og kontroll av naturalWidth/naturalHeight. Ingen komponentendring nødvendig.
+- C1: behold én eksisterende compareVersionCreation-regel: tidsstempel → lagret versjonsnummer → variant-ID → versjons-ID. Samtidige takes i samme variant sorteres ikke etter tilfeldig UUID; eksisterende konkrete tester beholdt.
+- C2/KI-255: performance.now og 1000 ms toleranse under full suite, med full innholdskontroll; fanger fortsatt sekundlang/kvadratisk regresjon.
+- C3/MT4: last bildelag før malminiatyren tegnes; pixeltest av faktisk opplastet PNG.
+- C4/KI-241: eksplisitt clipId følger lydvindu, studio, opptak og mobilkontekst; uten valg brukes første udempede klipp i tidsrekkefølge. Mobilserveren kontrollerer at valgt klipp tilhører replikk og prosjekt.
+- C5/KI-242: dra deler med lokal forhåndsvisning; ett angresteg ved slipp, ingen ved avbrudd. Lagres som tidligere via kommandoer, ikke direkte skriving.
+- DEC-0099 og REQ-0725–0739 registrerer tilgjengelige T1/Story Lab-, CA1–CA3-, U5- og sikkerhetskilder. Eksisterende CA4–CA8 REQ-0715–0724 beholdes. B2-kildene fra Øystein er levert: DEC-0099 er supplert og kap. 42–51 registrert som REQ-0740–0749 med ærlig deldekning.
+- Tester: Vitest 1723/0 to ganger, 10 eksisterende hoppet over; DB 120/120; U5 65/65; CA1–CA8 17/17/20/25/13/15/26/22; scene-panels 39/39; verifisering4 58/58; Story Lab 32/32; verifisering3 73/73; interactions 44/44; lydeditor 24/24; MTS 42/16/16/13/13/13/17 (130/130).
 
 ## Slik starter du en ny økt
 1. Les `CLAUDE.md`, denne fila og `CURRENT_WORK.md`.
@@ -9,7 +76,9 @@
 4. Lokalt testmiljø i skyen: `bun install`, Postgres 16 (port 54329), Playwright-Chromium i `/opt/pw-browsers` (Playwright-pakken ligger i `/tmp/claude-0/pw`). Referansemanus kopieres til `/tmp/claude-0/ref_no.pdf` og `ref_en.docx` for gyldne tester – aldri inn i repoet.
 5. Kontroller: `bun run test`, `bun tests/db/run-db-tests.ts`, `npx tsc --noEmit`, `python3 scripts/kb/check_kb.py`. Dev-server: `bunx vite dev --host 127.0.0.1`.
 
-## Hva er gjort
+## Historiske leveranser (tidligere ventestatuser er ikke gjeldende)
+- **Ø-11 sikkerhetsgjennomgang (2026-10-19, migrasjon 0058, skjemaversjon 58):** se `docs/development/SECURITY_REVIEW_2026-10.md`. Invitasjoner (prosjekt og gruppe) krever innlogget e-post lik invitasjonens (feilkode `AS403`, melding på /invitasjon); eier nedgraderes ikke; `ai_model_settings` uten `updated_by` for klienter; anon har ifølge Øysteins Cloud-kontroll bare tilgang til `schema_version`; mobilopplasting uten overskriving og uten bekreftelse etter tilbakekalling; serverloggen har ikke leverandørsvar; `overrides` for source-map-js/js-yaml/fflate. Seks nye DB-tester og `tests/unit/security-review.test.ts`. AssetThumb viser reserven mens bildet lastes og når det feiler (`data-has-image="false"`), testet med feilende lenker i u5-screens. 0058 er kjørt i Cloud og publisert, bekreftet av Øystein (appen forventer 58).
+- **U5 (2026-10-19, ingen migrasjon):** felles tilstander `src/app/shell/screen-states.tsx` (tom, lasting/skjelett, feil med «Prøv igjen»); prosjektkort med miniatyr og nøkkeltall; scenenavigatoren markerer variant/usikker/flyttet med tokenfarger; `AssetThumb` gir godkjent forsidebilde i Story Lab-lister, gruppedialoger og canvas (hentet samlet per canvas), rutenett/liste-bryter i Story Lab og biblioteket; animasjonsforhåndsvisningen har scenens format; munnformblokkene viser A–H/X med tokens `--viseme-*`; tidslinjalen har mellommerker; eksportdialogen har seksjoner og tydelig fremdrift/ferdig; mobil har større trykkflater og tydelig godkjenningskø. Del B: `rhythmDragShift`, `protectedRanges` og `RhythmDrag.tsx` (Cmd/Ctrl). Del C: KI-SL-1 lukket. Ny suite `tests/visual/u5-screens.mjs`.
 - **DEC-0091 (ingen migrasjon):** feilsiden (`src/routes/__root.tsx`) viser «Vis teknisk feilmelding» (`src/app/shell/ErrorDetails.tsx`, tekst fra `error-report.ts`: tid, side uten spørrestreng og med `/m/…` for mobillenker, feil og 8 stakklinjer) med «Kopier feilmeldingen». Nettfeil i QR-dialogen vises på brukerens språk. Feilen Mars så («Siden kunne ikke vises») var KI-237 (samme sanntidskanal to ganger), rettet. Produksjonsbygget kan prøves lokalt: `npx vite build`, så `wrangler dev --port 8082` fra repoet (wrangler installert i `/tmp/claude-0/wr`); merk at mockene i nettlesertestene ikke kjenner serverfunksjonene i produksjon (ID-ene er hasher).
 - **DEC-0090 bolk A (bygget, migrasjon 0035, pakke `qrcode`):** `db/migrations/0035_mobile_import.sql` (upload_sessions, mobile_imports, RPC-er for server og redaktør, purge tar med mobilimporten), kjerne `src/core/mobile/index.ts`, serverfunksjoner `src/adapters/mobile/mobile.functions.ts` (createUploadSession innlogget; mobileSession/mobileUploadTicket/mobileConfirmUpload/mobileShareLink uten innlogging, token som SHA-256), nettleser `src/adapters/browser/mobile-import.ts`, UI i `src/app/mobile/` (MobileImportDialog + MobileCameraButton, MobilePage + upload-queue, MobileImportLibrary, mobile-actions, use-mobile-imports med MobileImportWatcher montert i prosjektruten), rute `src/routes/m.$token.tsx`. Kameraikon i AssetDetail, ny ressurs (utkast), sceneeditoren og LayerImageDialog. Neste: bolk B (lydopptak og takes) når Mars sier OK.
 - **DEC-0090 (fase 2):** `docs/product/PHASE2_SPECIFICATION.md` (uforanderlig, kontrollsum i `PHASE2_MANIFEST.yaml`, sjekkes av `check_kb.py`), krav REQ-0668–0712 («Ikke startet»), plan i `docs/development/PHASE2_PLAN.md`. Bolk A (mobilbro) venter på Mars' OK.
@@ -63,3 +132,46 @@ KI-30 (foreldreløse bilder), KI-31 (notater fra fremmede PDF-er), KI-32 (meldin
 3. Mars: svar på KI-176/KI-178 (anbefalingene står i chatten 15.10) og hvem som skal kunne bruke felles ressurser (REQ-0571).
 4. Claude når Mars sier OK: «Lovable» ut av grensesnittet (REQ-0639), stilharmonisering (REQ-0137–0145), globale ressurser (REQ-0571).
 5. Siste testtilstand (DEC-0086): tsc rent, Vitest 133 filer / 1118 tester, DB 61/61, account-admin-ui 52/52, scene-video-ui 39/39, verifisering3 73/73, verifisering4 58/58, interactions 44/44, export-e2e, språkkontrollen 0 treff, ESLint 0 feil i `src/`. Se også `TODO.md`.
+
+
+## CA4 – 19.10.2026
+- CA1–CA3 er ifølge Øystein publisert og Cloud-skjemaversjon er 54. CA4 skriver 0055_animation_parts_mobile.sql, men kjører den ikke i Cloud.
+- Bygget: toppjustert forhåndsvisning, miniatyr/typeikon på bildespor og dialog/lyd rett under; Rhubarb A–H + X, rigg-deler/øyebilder, PNG-tegneark (960 × 1600), lokale vektormasker og fem bildejusteringer.
+- Munnformeditoren oppretter én SaveRigVersion og AttachAnimationUse i UpdateSceneDraft. Importerte bilder bruker CreateAssetVariant/AddAssetVersion i samme riggspesifikke transaksjon. Det vanlige Asset Studio-utkastet godtar fortsatt ikke bibliotekimport.
+- Mobilen gjenbruker upload_sessions/mobile_imports og opplastingskøen. Rigg-kontekst har purpose/target; mobilen viser referanse og bildejusteringer. Godkjenning er lokal til Lagre, og triggere på rigg-versjonen registrerer kvitteringen atomisk i mobile_imports. Ingen endringer i apply_changes-definisjonen. Privilegier følger revoke → grant select → grant service_role.
+- Backup kontrollerer og remapper delbilder, men fjerner mobileImportId (midlertidig arbeidslogg). Versjoner beskytter sine bildereferanser mot hard sletting.
+- CA5 er ikke med: munnformvalg er lokal forhåndsvisning, ingen automatisk tidsfesting eller Rhubarb/WASM installert. Ingen nye pakker eller betalte AI-kall.
+- Nye tester: tests/unit/ca4-parts.test.ts (11), tests/visual/ca4-mouth-mask.mjs (25), tre nye 0055-DB-tester (hele DB-suiten 110/110). CA1 17/17, CA2 17/17, CA3 20/20. Endelig Vitest-tall i chatten.
+- Neste: Claude kontrollerer SQL/diff, kjører 0055 i Cloud og verifiserer en ekte mobilinnsending før publisering.
+
+
+## CA5–CA8 – 19.10.2026
+- CA5/CA6 er verifisert og publisert (migrasjon 0056 er kjørt). I denne runden er CA5-meldingen gjort robust.
+- CA7: kjernen ligger i `src/core/animation/character.ts` (arv, overstyringer, bruk i andre scener, historikk og gjenoppretting) og `global-rig.ts` (publisering og innlesing). Den nye kommandoen er `AdoptRigVersion` («bare her» / «oppdater alle», med invers). Brukerflaten er `CharacterPanel.tsx`.
+- CA8: `src/core/animation/rhythm.ts` planlegger via `planRetime(gapChanges)` og gir én `RetimeScene`. Brukerflaten er `RhythmPanel.tsx`. Eksportvalgene ligger i `UseBehavior.export` og brukes i `evaluateCharacterFrame` og i `characterPass` i lerretsrendereren.
+- Migrasjon 0057 (skjemaversjon 57) er ikke kjørt i Cloud. Den erstatter ingen funksjoner (`apply_changes`, `delete_project` og purge er uendret).
+- Tester: tsc ok; vitest 1705 bestått, 10 hoppet over; DB 114/114; ca7 26/26; ca8 22/22; ca1–ca6 17/17/20/25/13/15; asset-studio 57/57; scene-panels 39/39.
+- Neste: Claude kjører 0057. Deretter skal Cmd/Ctrl-dragmodusen for rytme bygges (se KNOWN_ISSUES).
+
+## Endrede filer i dokumentasjons-/backloggrunden
+- `src/core/audio/takes.ts`, `src/app/audio/takes.ts`: valgt/aktivt klipp uten å endre felles versjonssortering.
+- `src/app/audio/AudioTakesDialog.tsx`, `src/app/audio/AudioCompositionEditor.tsx`, `src/app/assembly/AudioClipPanel.tsx`, `src/app/asset-studio/StudioAudioTracks.tsx`: valgt klipp følger opptak; segmentdrag med lokal forhåndsvisning og ett angresteg.
+- `src/core/mobile/index.ts`, `src/app/mobile/use-mobile-imports.ts`, `src/adapters/mobile/mobile.functions.ts`: validert klipp-ID bevares ved mobilopptak/import.
+- `src/app/scene-editor/mts-actions.ts`: bildene lastes før malminiatyren tegnes; ingen tom miniatyr ved bildehentingsfeil.
+- `tests/unit/audio-takes.test.ts`, `tests/unit/presentation.test.ts`: tre nye klipp-/konteksttester og robust tidsmåling.
+- `tests/visual/mts-harness.mjs`, `tests/visual/mts-engine.mjs`, `tests/visual/u5-screens.mjs`: tydelige fixturebilder, faktisk bildekontroll og pixelkontroll av opplastet PNG.
+- `tests/visual/dec0094-audio-editor-ui.mjs`, `tests/visual/verifisering4-ui.mjs`: segmentdrag/angre/gjør om og nøyaktig samplebasert lydidentifikasjon; eksisterende timinggrenser beholdt.
+- `docs/decisions/DECISION_LOG.md`, `docs/product/requirements.yaml`, `docs/product/REQUIREMENTS.md`, `docs/product/TRACEABILITY_MATRIX.md`: DEC-0099, 15 nye krav og regenerert sporbarhet.
+- `docs/development/KNOWN_ISSUES.md`, `docs/development/IMPLEMENTATION_STATUS.md`, `docs/development/SESSION_HANDOVER.md`, `docs/development/CURRENT_WORK.md`, `TODO.md`, `roadmap.md`: gjeldende status, løste punkter fjernet og kildeblokkering eksplisitt.
+- Språkkatalogen ble regenerert; ingen nye uoversatte tekster. Ingen prosjektavhengigheter, migrasjoner, AGENTS.md, autogenererte integrasjoner eller VennTing endret.
+- Automatisk kodekontroll viste build OK. Separat `npx tsc --noEmit` er ikke kjørt i denne agentrunden.
+
+## B2 / estimatliste – lokal leveranse 19.10.2026
+- DEC-0099 supplert fra Øysteins to kilder; REQ-0740–0749 kap. 42–51 med konkrete implementation/verification og deldekning, aldri oppdiktet full godkjenning. REQ-0639 apptekster/katalog nøytralisert. Plattformstyrte filer/konfigurasjon er urørt.
+- KI-224 løst-status via SetAnnotationResolved med invers/gjør om og DB-rundtur. KI-226 eksakt enkeltordmarkering → AddAnnotations i sceneeditor. KI-220 redigerbar kildeboks x/y/w/h før eksisterende partLayers-kommandoflyt.
+- KI-207 eierbekreftet liste/sletting av gamle ubrukte ai-source-MP4, serveren re-sjekker jobber/referanser. Ingen automatisk sletting; ikke prøvd mot ekte lagring. 30 dager er en konservativ teknisk kandidatgrense, ikke ny godkjent produktregel.
+- KI-247 ordtider projiseres og persisteres på ny lydversjon; gamle tider endres ikke. SV1 metode 4 lager ordmellomrommiksen i minnet før Bruk, og saveComposition bruker samme buffer og angregruppe som RetimeScene.
+- KI-243 encoder pakket i createClientOnlyFn; nettleser MP3 verifisert, produksjonsartefakt ikke kontrollert. KI-167/KI-209 fortsatt åpne: ingen godkjent servermedietjeneste; ingen ny konkurrerende mediemotor eller utrygg automatisk dataskriving introdusert.
+- Migrasjon 0059_annotation_resolved.sql: kun resolved på script_annotations, revoke/grant, schema 59. Ingen apply_changes/delete_project/purge-funksjoner erstattet; ikke kjørt i Cloud. Cloud står fortsatt på 58.
+- Tester: Vitest 1736 bestått/0 feilet, to fullførte kjøringer med maxWorkers=2; 10 eksisterende hoppet over. Første standardparallelle sluttkjøring hadde to 5 s import-timeouts; ingen forventninger/timeouts endret. Lokal DB 120/120. CA1–CA8 17/17/20/25/13/15/26/22 (155/155). U5 65/65, scene-panels 39/39, lydeditor 24/24, ny B2 NO/EN 14/14. Verifisering4 57/58: bare eksisterende Courier Prime-breddekrav feilet (6,439 em vs 6); REQ-0583 6/6 med riktig testmikrofon, REQ-0210 5/5, REQ-0578 7/7. Testen er ikke svekket.
+- Automatisk typekontroll: build OK. Separat tsc/typecheck ikke kjørt. i18n 0 manglende engelsk; build_docs/check_kb OK. VennTing urørt.

@@ -8,6 +8,9 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+/** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
+const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
+import { uiLang, byLang } from "./ui-lang.mjs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -179,7 +182,7 @@ async function mock(ctx) {
     }
     if (/forkStorySession/.test(name)) {
       const p = S.sessions.get(d.sessionId);
-      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: d.fromTurn, turns: p.turns.slice(0, d.fromTurn + 1), status: "paused", updatedAt: now };
+      const s = { ...p, title: d.title ?? p.title, id: sid(), parentSessionId: p.id, fromTurn: forkAt(p, d), turns: p.turns.slice(0, forkAt(p, d) + 1), status: "paused", updatedAt: now };
       S.sessions.set(s.id, s);
       return json({ ok: true, session: s });
     }
@@ -208,7 +211,9 @@ const check = (ok, text) => {
   ok ? pass++ : fail++;
 };
 
-async function run(name, act, { lang = "nb", path = "?visning=canvas", nodes = [] } = {}) {
+async function run(name, act, { lang: wanted = "nb", path = "?visning=canvas", nodes = [] } = {}) {
+  // V1: UI_LANG=en overstyrer scenarioets språk
+  const lang = uiLang(wanted);
   rows.story_canvas_nodes = nodes;
   reset();
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 1800 }, colorScheme: "dark" });
@@ -383,16 +388,26 @@ await run("tastaturnavigasjon", async (page) => {
 
 await run("engelsk", async (page) => {
   await page.getByTestId("canvas-add").waitFor();
-  check((await page.getByTestId("canvas-add").textContent()).includes("New node"), "engelsk verktøylinje");
+  check((await page.getByTestId("canvas-add").textContent()).includes(byLang("en", "Ny node", "New node")), "verktøylinjen på scenariospråket (UI_LANG overstyrer)");
   check((await page.getByTestId("storylab-tab-canvas").textContent()).includes("Canvas"), "engelsk fane");
 }, { lang: "en" });
 
 await run("500 noder", async (page) => {
   await page.getByTestId("storylab-canvas").waitFor();
   await nodeLoc(page).first().waitFor();
+  // R7: målingen startet før første navigering i en fersk nettleserkontekst og målte mest Vite-
+  // utviklingsserverens kalde modullasting (hundrevis av enkeltfiler, 20 s under last), ikke canvaset.
+  // Kravet gjelder canvaset etter at siden er lastet: last siden på nytt, start klokken når canvasflaten
+  // finnes, og stopp når første node er tegnet. Oppstartstiden logges bare som informasjon.
+  const boot = Date.now();
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.getByTestId("storylab-canvas").waitFor({ timeout: 60000 });
+  S.t0 = Date.now();
+  console.log(`  info: siden lastet på nytt på ${S.t0 - boot} ms (utviklingsserver)`);
+  await nodeLoc(page).first().waitFor({ timeout: 30000 });
   const ms = Date.now() - S.t0;
-  check((await page.getByText("500 noder").count()) === 1, "alle 500 noder er lastet");
-  check(ms < 3000 + 1500, `canvaset med 500 noder er klart på ${ms} ms (under 3 s etter lasting)`);
+  check((await page.getByText(byLang("nb", "500 noder", "500 nodes")).count()) === 1, "alle 500 noder er lastet");
+  check(ms < 3000, `canvaset med 500 noder er klart på ${ms} ms (under 3 s etter lasting)`);
 }, { nodes: Array.from({ length: 500 }, (_, i) => rowNode(100 + i)) });
 
 await browser.close();

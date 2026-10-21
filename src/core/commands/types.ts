@@ -34,6 +34,7 @@ import type {
   UserId,
   VariantId,
 } from "../ids";
+import type { LineLinkFields } from "../translation/line-align-prompt";
 import type { VersionView } from "../library/view";
 import type { StoryProfile, StoryProfilePatch } from "../storylab/profile";
 import type { StoryFactFields } from "../storylab/facts";
@@ -179,6 +180,7 @@ export interface AssetVariantFields {
 /** Et nytt notat (DEC-0031). Enten blockId med tegnområde, eller variantId (nål på scenen). */
 export interface NewAnnotation {
   readonly annotationId: AnnotationId;
+  readonly resolved?: boolean;
   readonly blockId: BlockId | null;
   readonly variantId: VariantId | null;
   readonly start: number;
@@ -214,7 +216,7 @@ export interface NewBlock {
   readonly kind: BlockKind;
   readonly text: string;
   readonly orderKey: string;
-  readonly sourceRef?: { readonly page: number; readonly y: number } | null;
+  readonly sourceRef?: { readonly page: number; readonly y: number; readonly documentId?: string } | null;
   readonly uncertainty?: string | null;
   readonly removed?: boolean;
 }
@@ -238,6 +240,9 @@ export interface BlockPlacement {
 }
 
 export type Command = import("../animation/rig-commands").RigCommand
+  | import("../print/measure/commands").MeasureSetCommand
+  | import("../rig/multiplane-commands").MultiplaneRigCommand
+  | import("../animation/behavior-commands").BehaviorCommand
   | {
       readonly type: "CreateProduction";
       readonly productionId: ProductionId;
@@ -685,10 +690,15 @@ export type Command = import("../animation/rig-commands").RigCommand
        * den; komposisjonen kan redigeres videre uten at kildeopptakene endres.
        */
       readonly composition?: import("../audio/composition").AudioComposition;
+      readonly alignment?: import("../audio/alignment").WordAlignment;
       /** Kopiert fra en global versjon (GP2). Bare metadata. */
       readonly globalSource?: import("../model").GlobalSource;
       /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
       readonly template?: import("../typography/template").TemplateDefinition;
+      /** Fontmetadata (B-098) når ressursen er en font; filen er fontpakken. */
+      readonly font?: import("../typography/project-fonts").FontSpec;
+      /** Versjonen den nye er frilagt fra eller erstatter (REQ-0037, migrasjon 0069). Samme ressurs. */
+      readonly derivedFromVersionId?: AssetVersionId;
     }
   | {
       /** Eksplisitt godkjenning (REQ-0136, REQ-0145). null = ingen godkjent versjon. */
@@ -830,6 +840,7 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly annotationId: AnnotationId;
       readonly removed: boolean;
     }
+  | { readonly type: "SetAnnotationResolved"; readonly annotationId: AnnotationId; readonly resolved: boolean }
   // ---------- Prosjektets format (DEC-0039) ----------
   | {
       /** Bildeformat og bildefrekvens for hele prosjektet. Alle 2D-scener tilpasses. */
@@ -958,11 +969,115 @@ export type Command = import("../animation/rig-commands").RigCommand
   | {
       readonly type: "AddAudioClips";
       readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+      readonly dialogueMeta?: import("../dialogue/versions").DialogueVersionMeta;
     }
   | { readonly type: "UndoAddAudioClips"; readonly clipIds: readonly AudioClipId[] }
   | {
       readonly type: "UpdateAudioClips";
       readonly clips: readonly { readonly clipId: AudioClipId; readonly fields: AudioClipFields }[];
+      /**
+       * DV2: lydversjoner kommandoen opprettet (ny fil på en versjonert replikk) og som inversen fjerner igjen.
+       * Settes bare av inversen; versjoner som er aktive eller brukt av leppesynk, fjernes aldri.
+       */
+      readonly dropDialogueVersions?: readonly string[];
+      /** DV2: slettede versjoner kommandoen hentet inn igjen (gammelt take valgt på nytt), som inversen sletter igjen. */
+      readonly reRemoveDialogueVersions?: readonly string[];
+      /** DV2: nøyaktig hvilken versjon som skal bli aktiv per klipp (brukes av inversen når flere versjoner har samme fil). */
+      readonly activeVersionIds?: Readonly<Record<string, string>>;
+    }
+  // ---------- Lydversjoner per replikk (DV2, migrasjon 0060) ----------
+  | {
+      readonly type: "SetDialogueLanguage";
+      readonly target: "project" | "variant" | "block" | "clip" | "blockSpeech";
+      readonly targetId: string;
+      readonly language: string | null;
+    }
+  | {
+      readonly type: "ApplyGeneratedDialogue";
+      readonly occurrenceId: string;
+      readonly blockId: string;
+      readonly characterId: string;
+      readonly assetId: string;
+      readonly variantId: string;
+      readonly versionId: string;
+      readonly clipId: string;
+      readonly dialogueVersionId: string;
+      readonly compositionId: string;
+      readonly media: AssetMedia;
+      readonly metadata: import("../dialogue/versions").DialogueVersionMeta;
+      readonly language: string;
+      /** DV7 (R6): gjennomgangen med grunnlaget «generated» for revisjonen lyden ble laget fra. */
+      readonly reviewId?: string;
+    }
+  | { readonly type: "UndoGeneratedDialogue"; readonly steps: readonly Command[] }
+  /** DV7 (A9): «Merk som gjennomgått» for aktiv versjon ved blokkens gjeldende revisjon. */
+  | { readonly type: "ReviewDialogueDrift"; readonly reviewId: string; readonly clipId: string; readonly basis?: "manual" | "generated" }
+  | { readonly type: "UndoReviewDialogueDrift"; readonly reviewId: string }
+  /** DV8: gule huskelapper. */
+  | { readonly type: "AddNoteFlag"; readonly flagId: string; readonly targetKind: import("../notes/flags").NoteFlagTargetKind; readonly targetId: string; readonly text: string }
+  | { readonly type: "UndoAddNoteFlag"; readonly flagId: string }
+  | { readonly type: "UpdateNoteFlag"; readonly flagId: string; readonly text?: string; readonly enabled?: boolean }
+  | { readonly type: "SetNoteFlagRemoved"; readonly flagId: string; readonly removed: boolean }
+  // M8 kvalitetsprofiler (REQ-0854–0862, migrasjon 0063)
+  // ML3: språkversjoner per prosjekt (migrasjon 0066). Fjerning sletter aldri oversettelser.
+  | { readonly type: "AddLanguageVersion"; readonly versionId: string; readonly language: string; readonly name: string; readonly status?: import("../translation/language-versions").LanguageVersionStatus }
+  | { readonly type: "UndoAddLanguageVersion"; readonly versionId: string }
+  | { readonly type: "UpdateLanguageVersion"; readonly versionId: string; readonly name?: string; readonly status?: import("../translation/language-versions").LanguageVersionStatus }
+  | { readonly type: "SetLanguageVersionRemoved"; readonly versionId: string; readonly removed: boolean }
+  | { readonly type: "AddQualityProfile"; readonly profileId: string; readonly name: string; readonly spec: import("../generation/quality-profile").QualityProfileSpec; readonly restoreActive?: boolean }
+  | { readonly type: "UndoAddQualityProfile"; readonly profileId: string; readonly restoreActive?: boolean }
+  | { readonly type: "UpdateQualityProfile"; readonly profileId: string; readonly name?: string; readonly spec?: import("../generation/quality-profile").QualityProfileSpec }
+  | { readonly type: "SetQualityProfileRemoved"; readonly profileId: string; readonly removed: boolean; readonly restoreActive?: boolean }
+  | { readonly type: "SetActiveQualityProfile"; readonly profileId: string | null }
+  | {
+      readonly type: "SetDialogueCharacter";
+      readonly clipIds: readonly AudioClipId[];
+      readonly characterAssetId: AssetId | null;
+    }
+  | {
+      readonly type: "RestoreDialogueCharacters";
+      readonly links: readonly { readonly clipId: AudioClipId; readonly characterAssetId: AssetId | null }[];
+    }
+  | {
+      /** Ny lydversjon for en replikkforekomst (opptak, AI, opplasting). Ingenting overskrives. */
+      readonly type: "AddDialogueVersion";
+      readonly dialogueVersionId: string;
+      readonly clipId: AudioClipId;
+      readonly fields: import("../dialogue/versions").DialogueVersionFields;
+      /** Gjør den nye versjonen aktiv. */
+      readonly activate: boolean;
+    }
+  | {
+      /** Bare som invers av AddDialogueVersion. `restoreActiveId`: aktiv versjon igjen hvis denne var aktiv. */
+      readonly type: "UndoAddDialogueVersion";
+      readonly dialogueVersionId: string;
+      readonly restoreActiveId: string | null;
+    }
+  | {
+      /** Velg hvilken versjon som spilles i scenen. Plasseringen og alle versjoners redigering er uendret. */
+      readonly type: "SetActiveDialogueVersion";
+      readonly clipId: AudioClipId;
+      readonly dialogueVersionId: string;
+    }
+  | {
+      /** Endre redigeringen i én lydversjon (trim, volum, fades, volumpunkter, hastighet, komposisjon). */
+      readonly type: "UpdateDialogueVersionEdit";
+      readonly dialogueVersionId: string;
+      readonly edit: import("../dialogue/versions").DialogueEdit;
+    }
+  | {
+      /** Flytt replikken i scenen. Versjonenes redigering endres ikke; andre replikker flyttes aldri. */
+      readonly type: "MoveDialogueLine";
+      readonly clipId: AudioClipId;
+      readonly offsetMs: number;
+      /** Tillat overlapp med samme taler (brukeren har bekreftet). */
+      readonly allowOverlap?: boolean;
+    }
+  | {
+      /** Eksplisitt «Slett versjon» (etter bekreftelse) eller angring av den. Aktiv versjon kan ikke slettes. */
+      readonly type: "SetDialogueVersionRemoved";
+      readonly dialogueVersionId: string;
+      readonly removed: boolean;
     }
   | {
       readonly type: "SetAudioClipsRemoved";
@@ -1100,6 +1215,34 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly translationIds: readonly TranslationId[];
       readonly removed: boolean;
     }
+  | { readonly type: "SetLineLink"; readonly linkId: string; readonly fields: LineLinkFields; readonly removed?: boolean }
+  | { readonly type: "UndoAddLineLink"; readonly linkId: string }
+  /** B-050: keep imported translated lines without a rule pair; older unpaired lines of the same scenes can be retired. */
+  | { readonly type: "AddTranslationLines"; readonly items: readonly { readonly lineId: string; readonly fields: import("../translation/line-align-prompt").TranslationLineFields }[]; readonly removeLineIds?: readonly string[] }
+  | { readonly type: "UndoAddTranslationLines"; readonly lineIds: readonly string[]; readonly restore: readonly import("../translation/line-align-prompt").TranslationLine[] }
+  | { readonly type: "ApproveLineLinks"; readonly linkIds: readonly string[]; readonly additions?: readonly { readonly linkId: string; readonly fields: LineLinkFields }[] }
+  | { readonly type: "RejectLineLinks"; readonly linkIds: readonly string[]; readonly removed: boolean }
+  | { readonly type: "RestoreLineLinks"; readonly items: readonly import("../translation/line-align-prompt").TranslationLineLink[] }
+  /** P8 (REQ-0137–0145): et harmonisert bilde lagret som ny versjon, med metadata om kilden. */
+  | {
+      readonly type: "ApplyHarmonizedImage";
+      readonly harmonizationId: string;
+      readonly variantId: AssetVariantId;
+      readonly versionId: AssetVersionId;
+      readonly media: AssetMedia;
+      readonly note: string;
+      readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields;
+      /** Ny variant («Harmonisert – …») når bildet ikke skal inn i en eksisterende variant. */
+      readonly newVariant?: { readonly assetId: AssetId; readonly fields: AssetVariantFields; /** «Bare her» (REQ-0141): varianten arkiveres, så ressursens bibliotek ikke endres. */ readonly archived?: boolean };
+    }
+  | { readonly type: "UndoApplyHarmonizedImage"; readonly harmonizationId: string; readonly variantId: AssetVariantId; readonly versionId: AssetVersionId; readonly createdVariant: boolean }
+  /** Endrer bruksvalget eller fjerner metadataen (removed). Originalbildet røres aldri. */
+  | { readonly type: "SetStyleHarmonization"; readonly harmonizationId: string; readonly fields: import("../generation/style-harmonize").StyleHarmonizationFields; readonly removed?: boolean }
+  | { readonly type: "UndoAddStyleHarmonization"; readonly harmonizationId: string }
+  | { readonly type: "RestoreStyleHarmonizations"; readonly items: readonly import("../generation/style-harmonize").StyleHarmonization[] }
+  /** REQ-0144: foretrukket referanse per (karakter, stilprofil) – bytter pekeren atomisk. */
+  | { readonly type: "SetPreferredStyleReference"; readonly referenceId: string; readonly fields: import("../generation/style-harmonize").StylePreferredReferenceFields }
+  | { readonly type: "UndoSetPreferredStyleReference"; readonly addedId: string | null; readonly restored: readonly import("../generation/style-harmonize").StylePreferredReference[] }
   /** Story Lab (SL1): karakterprofil – oppretter eller erstatter profilen for ressursen. */
   | {
       readonly type: "SetStoryProfile";

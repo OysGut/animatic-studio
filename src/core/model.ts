@@ -1,4 +1,6 @@
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
+import type { LipsyncResult } from "./animation/lipsync";
+import type { AnimationPattern } from "./animation/patterns";
 /**
  * Domenemodell (docs/architecture/DOMAIN_MODEL.md, DATA_RELATIONSHIPS.md).
  * Tilstanden speiler databasetabellene. Alle entiteter har permanent `id` og `revision`
@@ -75,6 +77,7 @@ export interface Project extends Entity<ProjectId> {
   readonly frameWidth: number;
   readonly frameHeight: number;
   readonly primaryLanguage: typeof PRIMARY_LANGUAGE;
+  readonly scriptLanguage?: string | null;
   /** Overgangen scener får når de ikke har en egen (DEC-0051, REQ-0577). Mangler = kutt. */
   readonly defaultTransition?: Transition;
   /**
@@ -86,6 +89,8 @@ export interface Project extends Entity<ProjectId> {
   readonly aiPricePerImage?: number;
   /** Antakelsene for varighetsestimatet, felles for prosjektet (KI-28, migrasjon 0028). Mangler = standard. */
   readonly durationAssumptions?: DurationAssumptions;
+  /** Aktiv kvalitetsprofil (M8, migrasjon 0063). Mangler/null = oppførselen er som før profilene fantes. */
+  readonly activeQualityProfileId?: string | null;
 }
 
 export interface Production extends Entity<ProductionId> {
@@ -215,6 +220,7 @@ export interface SceneHeading {
 }
 
 export interface SceneVariant extends Entity<VariantId> {
+  readonly scriptLanguage?: string | null;
   readonly sceneId: SceneId;
   /** null = delt hovedvariant; ellers eid av én produksjon (24.5). */
   readonly ownerProductionId: ProductionId | null;
@@ -225,6 +231,8 @@ export interface SceneVariant extends Entity<VariantId> {
 }
 
 export interface ScriptBlock extends Entity<BlockId> {
+  readonly scriptLanguage?: string | null;
+  readonly speechLanguage?: string | null;
   readonly variantId: VariantId;
   readonly kind: BlockKind;
   readonly orderKey: string;
@@ -232,7 +240,7 @@ export interface ScriptBlock extends Entity<BlockId> {
   readonly text: string; // tekst i gjeldende revisjon (current_rev)
   readonly language: typeof PRIMARY_LANGUAGE;
   /** Hvor blokken kom fra i originaldokumentet (side og høyde), for sammenligning med originalen (mandat 4.2). */
-  readonly sourceRef: { readonly page: number; readonly y: number } | null;
+  readonly sourceRef: { readonly page: number; readonly y: number; readonly documentId?: string } | null;
   /** Usikker tolkning ved import (mandat 4.3 punkt 9). null = avklart. */
   readonly uncertainty: string | null;
   /** Fjernet fra manuset (historikken beholdes; kan gjenopprettes). Fjernede blokker vises ikke. */
@@ -411,7 +419,9 @@ export type AssetKind =
   | "other"
   | "sound"
   /** Grafisk mal (MTS MT4, migrasjon 0049): versjonene bærer maldefinisjonen i `template`. */
-  | "template";
+  | "template"
+  /** Font lagt til fra Google Fonts (B-098, migrasjon 0074): versjonene bærer fontpakken og `font`. */
+  | "font";
 
 /** Type alternativt navn (REQ-0126). */
 export type AssetNameKind = "alias" | "nickname" | "former" | "language";
@@ -487,6 +497,9 @@ export interface AssetVoice {
   readonly voiceId: string;
   /** Navnet som vises (fra leverandørens liste). */
   readonly label: string;
+  readonly modelId?: string;
+  readonly language?: string;
+  readonly settings?: import("./dialogue/voice").SpeechSettings;
 }
 
 export type SoundLinkKind = "asset" | "block" | "scene" | "segment" | "event" | "production";
@@ -539,6 +552,8 @@ export interface AssetVersion extends Entity<AssetVersionId> {
    * Uforanderlig som resten av versjonen.
    */
   readonly template?: import("./typography/template").TemplateDefinition;
+  /** Fontmetadata (B-098, migrasjon 0074) når ressursen er en font. Filen er fontpakken. Uforanderlig. */
+  readonly font?: import("./typography/project-fonts").FontSpec;
   /** Slettet bilde (DEC-0079): vises bare i «Slettede objekter». Selve bildet endres aldri. */
   readonly removed?: boolean;
   /**
@@ -552,6 +567,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
   readonly composition?: import("./audio/composition").AudioComposition;
   /** Ord-til-lyd for replikken opptaket gjelder (DEC-0095, migrasjon 0037). Kan endres (manuelt eller ny analyse). */
   readonly alignment?: import("./audio/alignment").WordAlignment;
+  /**
+   * Versjonen denne er frilagt fra eller erstatter (REQ-0037, migrasjon 0069): permanent ID i stedet for
+   * versjonsnummeret i merknaden. Mangler for eldre versjoner (opphavet slås da opp fra merknaden ved lesing).
+   */
+  readonly derivedFromVersionId?: AssetVersionId;
 }
 
 /** Et element som skal inn i en scene (DEC-0088). */
@@ -586,6 +606,8 @@ export interface Annotation extends Entity<AnnotationId> {
   /** Sist endret av (navn) og når – vises som «endret av …» (DEC-0032). null = aldri endret. */
   readonly editedByName: string | null;
   readonly editedAt: string | null;
+  /** Løst er uavhengig av sletting; mangler på eldre sikkerhetskopier = åpent. */
+  readonly resolved?: boolean;
   /** Slettet (kan angres). Slettede notater vises og eksporteres ikke. */
   readonly removed: boolean;
   /**
@@ -802,6 +824,10 @@ export interface CompositionLayer extends Entity<LayerId> {
   readonly height: number;
   /** Parallakse: 0 står stille når kameraet beveger seg, 1 følger scenen, over 1 er nærmere enn scenen. */
   readonly parallax: number;
+  /** Rigg & 2D-utskrift (B-087, migrasjon 0071): platen laget ligger på i scenens multiplanrigg, eller null. */
+  readonly rigPlateId?: string | null;
+  /** Dybde/tykkelse på platen for laget i mm (B-090 pkt 6, standard 0; brukes av 3D-print senere). */
+  readonly rigPlateDepthMm?: number;
   readonly transform: LayerTransform;
   readonly keyframes: readonly Keyframe[];
   readonly visible: boolean;
@@ -894,6 +920,16 @@ export interface AudioClip extends Entity<AudioClipId> {
   readonly language?: string;
   /** Hastighet (DEC-0079): 0,25–4 (25–400 %). Tonehøyden følger hastigheten. Mangler = 1. */
   readonly speed?: number;
+  /**
+   * DV2 (migrasjon 0060): replikkens aktive lydversjon. Satt bare for dialog med replikk. Når satt, er
+   * versjonen eneste kilde for fil og redigering; klippets fil- og redigeringsfelt er en speiling som bare
+   * `mirrorDialogueClips` (src/core/dialogue) skriver. Mangler/null = vanlig lydklipp (musikk, effekter …).
+   */
+  readonly activeVersionId?: string | null;
+  /** DV2: karakteren (ressurs) som sier replikken. Mangler/null = ikke koblet ennå. */
+  readonly characterAssetId?: string | null;
+  readonly speechLanguage?: string | null;
+  readonly placementEstimated?: boolean;
   readonly removed: boolean;
 }
 
@@ -909,6 +945,29 @@ export interface ProjectState {
   readonly animationRigs: Readonly<Record<string, AnimationRig>>;
   readonly animationRigVersions: Readonly<Record<string, AnimationRigVersion>>;
   readonly animationUses: Readonly<Record<string, AnimationUse>>;
+  /** CA5: leppesynk per replikk og take (migrasjon 0056). */
+  readonly lipsyncResults: Readonly<Record<string, LipsyncResult>>;
+  /** CA6: navngitte minianimasjonsmønstre (migrasjon 0056). */
+  readonly animationPatterns: Readonly<Record<string, AnimationPattern>>;
+  /** DV2: lydversjoner per replikkforekomst (migrasjon 0060). */
+  readonly dialogueVersions: Readonly<Record<string, import("./dialogue/versions").DialogueVersion>>;
+  /** DV7: gjennomganger av avvik mellom manus og lyd (migrasjon 0062). */
+  readonly dialogueReviews: Readonly<Record<string, import("./dialogue/drift").DialogueReview>>;
+  /** DV8: gule huskelapper (migrasjon 0062). */
+  readonly noteFlags: Readonly<Record<string, import("./notes/flags").NoteFlag>>;
+  /** M8: navngitte kvalitetsprofiler (migrasjon 0063). */
+  readonly translationLineLinks: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLineLink>>;
+  /** B-050: imported translated lines without a rule pair (migration 0064). */
+  readonly translationLines: Readonly<Record<string, import("./translation/line-align-prompt").TranslationLine>>;
+  readonly qualityProfiles: Readonly<Record<string, import("./generation/quality-profile").QualityProfile>>;
+  /** P8: metadata om harmoniserte versjoner (migrasjon 0065). */
+  readonly styleHarmonizations: Readonly<Record<string, import("./generation/style-harmonize").StyleHarmonization>>;
+  /** P8: foretrukket referanse per (karakter, stilprofil) (REQ-0144, migrasjon 0065). */
+  readonly stylePreferredReferences: Readonly<Record<string, import("./generation/style-harmonize").StylePreferredReference>>;
+  /** Rigg & 2D-utskrift (B-087, migrasjon 0071): riggmaler og rigger (standardrigg og per scene). */
+  readonly measureSets?: Readonly<Record<string, import("./print/measure/commands").StoredMeasureSet>>;
+  readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
+  readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
   readonly project: Project;
   readonly productions: Readonly<Record<string, Production>>;
   readonly scenes: Readonly<Record<string, Scene>>;
@@ -931,6 +990,8 @@ export interface ProjectState {
   readonly continuityEvents: Readonly<Record<string, ContinuityEvent>>;
   /** Oversettelser av manuset (språkversjoner, DEC-0058). */
   readonly translations: Readonly<Record<string, Translation>>;
+  /** ML3: språkversjoner per prosjekt (migrasjon 0066). Tomt for eldre prosjekter. */
+  readonly languageVersions: Readonly<Record<string, import("./translation/language-versions").LanguageVersion>>;
   /** Relasjoner mellom karakterene (DEC-0061). */
   readonly assetRelations: Readonly<Record<string, AssetRelation>>;
   /** Plakater og karakterkart (DEC-0061). */
@@ -1113,6 +1174,8 @@ export interface Translation extends Entity<TranslationId> {
   /** «uncertain»: automatisk koblet ved import og ikke godkjent ennå (REQ-0335). */
   readonly status: "approved" | "uncertain";
   readonly removed: boolean;
+  /** ML3: språkversjonen raden hører til; mangler for eldre rader (avledes fra prosjekt + språk). */
+  readonly languageVersionId?: string;
 }
 
 export interface ContinuityEvent extends Entity<ContinuityEventId> {
@@ -1313,6 +1376,7 @@ export const COLLECTION_TABLES = {
   generationPrompts: "generation_prompts",
   continuityEvents: "continuity_events",
   translations: "translations",
+  languageVersions: "language_versions",
   assetRelations: "asset_relations",
   posters: "posters",
   styleProfiles: "style_profiles",
@@ -1327,6 +1391,19 @@ export const COLLECTION_TABLES = {
   animationRigs: "animation_rigs",
   animationRigVersions: "animation_rig_versions",
   animationUses: "animation_uses",
+  lipsyncResults: "lipsync_results",
+  animationPatterns: "animation_patterns",
+  dialogueVersions: "dialogue_versions",
+  dialogueReviews: "dialogue_reviews",
+  noteFlags: "note_flags",
+  qualityProfiles: "quality_profiles",
+  translationLines: "translation_lines",
+  translationLineLinks: "translation_line_links",
+  styleHarmonizations: "style_harmonizations",
+  stylePreferredReferences: "style_preferred_references",
+  measureSets: "measure_sets",
+  rigTemplates: "rig_templates",
+  rigSetups: "rig_setups",
 } as const;
 
 export type CollectionName = keyof typeof COLLECTION_TABLES;
@@ -1354,6 +1431,7 @@ export function emptyProjectState(project: Project): ProjectState {
     generationPrompts: {},
     continuityEvents: {},
     translations: {},
+    languageVersions: {},
     assetRelations: {},
     posters: {},
     styleProfiles: {},
@@ -1366,6 +1444,18 @@ export function emptyProjectState(project: Project): ProjectState {
     creditParticipants: {},
     creditSequences: {},
     animationRigs: {}, animationRigVersions: {}, animationUses: {},
+    lipsyncResults: {}, animationPatterns: {},
+    dialogueVersions: {},
+    dialogueReviews: {},
+    noteFlags: {},
+    qualityProfiles: {},
+    translationLineLinks: {},
+    translationLines: {},
+    styleHarmonizations: {},
+    stylePreferredReferences: {},
+    measureSets: {},
+    rigTemplates: {},
+    rigSetups: {},
   };
 }
 
