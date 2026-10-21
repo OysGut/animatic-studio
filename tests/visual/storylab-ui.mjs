@@ -8,6 +8,8 @@
  */
 import { chromium } from "playwright";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+/** REQ-0037: forgreiningen peker på turens ID (fromTurnId); null = fra start. */
+const forkAt = (p, d) => (d.fromTurnId === null || d.fromTurnId === undefined ? -1 : p.turns.findIndex((t) => t.id === d.fromTurnId));
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -156,7 +158,7 @@ async function mock(ctx) {
     }
     if (/forkStorySession/.test(name)) {
       const p = S.sessions.get(d.sessionId);
-      const s = { ...p, id: sid(), parentSessionId: p.id, fromTurn: d.fromTurn, turns: p.turns.slice(0, d.fromTurn + 1), status: "paused", updatedAt: now };
+      const s = { ...p, id: sid(), parentSessionId: p.id, fromTurn: forkAt(p, d), turns: p.turns.slice(0, forkAt(p, d) + 1), status: "paused", updatedAt: now };
       S.sessions.set(s.id, s);
       return json({ ok: true, session: s });
     }

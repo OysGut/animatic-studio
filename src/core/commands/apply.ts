@@ -6527,6 +6527,11 @@ function run(
           fail("invalid", tk("core-commands-apply.run.fail.ab33cacf5990.2"));
       if (c.note.length > 2000)
         fail("invalid", tk("core-commands-apply.run.fail.55b1d38c8fdc.2"));
+      if (c.derivedFromVersionId !== undefined) {
+        const from = s.assetVersions[c.derivedFromVersionId];
+        if (!from || from.id === c.versionId || s.assetVariants[from.variantId]?.assetId !== va.assetId)
+          fail("invalid", tk("id3.derived-from.invalid"));
+      }
       const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
       // Gjør om etter angre: behold det opprinnelige nummeret hvis det er ledig
       const number =
@@ -6559,6 +6564,7 @@ function run(
               ...(sound && c.composition ? { composition: c.composition } : {}),
               ...(c.alignment ? { alignment: c.alignment } : {}),
               ...(c.template !== undefined ? { template: c.template } : {}),
+              ...(c.derivedFromVersionId !== undefined ? { derivedFromVersionId: c.derivedFromVersionId } : {}),
               ...(c.globalSource !== undefined
                 ? {
                     globalSource: {
@@ -6663,6 +6669,7 @@ function run(
           ...(ver.alignment ? { alignment: ver.alignment } : {}),
           ...(ver.template ? { template: ver.template } : {}),
           ...(ver.globalSource ? { globalSource: ver.globalSource } : {}),
+          ...(ver.derivedFromVersionId ? { derivedFromVersionId: ver.derivedFromVersionId } : {}),
         },
         affected: [ver.id],
       };

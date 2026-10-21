@@ -6,7 +6,7 @@
  */
 import { type Rational } from "../time";
 
-import { clipAtFrame, partAt, type FilmClip } from "./film";
+import { clipAtFrame, partAt, type FilmClip, type ResolvedPart } from "./film";
 import { t } from "@/core/i18n/keyed";
 
 /** Tid i kilden: millisekunder i en filmfil (versjon), bilde i 2D-scenen, eller tittelkort (ingen kildetid). */
@@ -19,12 +19,15 @@ export type SourceTime =
 export interface TimeLevels {
   /** Absolutt bilde i den samlede filmen. */
   readonly filmFrame: number;
+  /** Scenen (forekomsten) – identiteten. */
   readonly occurrenceId: string;
-  /** Klippets plass i filmen (0 = første scene). */
+  /** Klippets plass i filmen (0 = første scene). Bare til visning, aldri nøkkel (REQ-0037). */
   readonly clipIndex: number;
   /** Bildet fra scenens start. */
   readonly sceneFrame: number;
-  /** Delen (0 = første) og bildet fra delens start. */
+  /** Delen bildet ligger i: permanent ID (`partKey`). */
+  readonly partId: string;
+  /** Delens plass (0 = første), bare til visning, og bildet fra delens start. */
   readonly partIndex: number;
   readonly partFrame: number;
   readonly source: SourceTime;
@@ -32,20 +35,32 @@ export interface TimeLevels {
 
 const rate = (fps: Rational) => fps.num / fps.den;
 
-/** Delen som viser bildet i scenen (samme regel som partAt) med nummeret. */
-function partIndexAt(clip: FilmClip, sceneFrame: number): number {
-  const { part } = partAt(clip, sceneFrame);
-  return clip.parts.indexOf(part);
+/**
+ * Permanent nøkkel for en del (REQ-0037): den lagrede delens ID, eller – for et klipp uten lagrede deler –
+ * en nøkkel avledet av scenen (det finnes da bare én del).
+ */
+export function partKey(clip: Pick<FilmClip, "occurrenceId">, part: Pick<ResolvedPart, "id">): string {
+  return part.id ?? `whole:${clip.occurrenceId}`;
 }
 
-/** Kildetid for bildet `partFrame` i del nr. `partIndex` (delen holdes på første/siste bilde utenfor). */
+/** Delen med nøkkelen, eller undefined (delen er fjernet eller hører til et annet klipp). */
+export function partById(clip: FilmClip, partId: string): ResolvedPart | undefined {
+  return clip.parts.find((p) => partKey(clip, p) === partId);
+}
+
+/** Delen som viser bildet i scenen (samme regel som partAt). */
+function partAtFrame(clip: FilmClip, sceneFrame: number): ResolvedPart {
+  return partAt(clip, sceneFrame).part;
+}
+
+/** Kildetid for bildet `partFrame` i delen `partId` (delen holdes på første/siste bilde utenfor). */
 export function partToSource(
   clip: FilmClip,
-  partIndex: number,
+  partId: string,
   partFrame: number,
   fps: Rational,
 ): SourceTime {
-  const p = clip.parts[partIndex];
+  const p = partById(clip, partId);
   if (!p) return { kind: "placeholder" };
   const o = Math.max(0, Math.min(p.durationFrames - 1, partFrame));
   if (p.source === "take" && p.take)
@@ -58,18 +73,18 @@ export function partToSource(
 export function sceneToPart(
   clip: FilmClip,
   sceneFrame: number,
-): { readonly partIndex: number; readonly partFrame: number } {
+): { readonly partId: string; readonly partIndex: number; readonly partFrame: number } {
   const f = Math.max(0, Math.min(clip.durationFrames - 1, sceneFrame));
-  const i = partIndexAt(clip, f);
-  return { partIndex: i, partFrame: f - clip.parts[i]!.startFrame };
+  const p = partAtFrame(clip, f);
+  return { partId: partKey(clip, p), partIndex: clip.parts.indexOf(p), partFrame: f - p.startFrame };
 }
 
 /** Del og bilde i delen → lokal tid i scenen. */
-export function partToScene(clip: FilmClip, partIndex: number, partFrame: number): number {
-  const p = clip.parts[partIndex];
+export function partToScene(clip: FilmClip, partId: string, partFrame: number): number {
+  const p = partById(clip, partId);
   if (!p)
     throw new Error(
-      t("core-assembly-time-levels.part-to-scene.message.ea6113e5d84e", { partIndex: String(partIndex) }),
+      t("core-assembly-time-levels.part-to-scene.message.ea6113e5d84e", { partIndex: String(partId) }),
     );
   return p.startFrame + partFrame;
 }
@@ -92,15 +107,16 @@ export function clipTimeLevels(
   fps: Rational,
 ): TimeLevels {
   const sceneFrame = Math.max(0, Math.min(clip.durationFrames - 1, filmFrame - clip.startFrame));
-  const { partIndex, partFrame } = sceneToPart(clip, sceneFrame);
+  const { partId, partIndex, partFrame } = sceneToPart(clip, sceneFrame);
   return {
     filmFrame,
     occurrenceId: clip.occurrenceId,
     clipIndex,
     sceneFrame,
+    partId,
     partIndex,
     partFrame,
-    source: partToSource(clip, partIndex, partFrame, fps),
+    source: partToSource(clip, partId, partFrame, fps),
   };
 }
 
@@ -122,11 +138,11 @@ export function filmToLevels(
 /** Scene, del og bilde i delen → absolutt filmtid. Null når scenen ikke er i filmen. */
 export function levelsToFilm(
   clips: readonly FilmClip[],
-  at: { readonly occurrenceId: string; readonly partIndex: number; readonly partFrame: number },
+  at: { readonly occurrenceId: string; readonly partId: string; readonly partFrame: number },
 ): number | null {
   const clip = clips.find((c) => c.occurrenceId === at.occurrenceId);
-  if (!clip || !clip.parts[at.partIndex]) return null;
-  return sceneToFilm(clip, partToScene(clip, at.partIndex, at.partFrame));
+  if (!clip || !partById(clip, at.partId)) return null;
+  return sceneToFilm(clip, partToScene(clip, at.partId, at.partFrame));
 }
 
 /**

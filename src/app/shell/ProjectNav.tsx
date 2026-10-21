@@ -77,7 +77,7 @@ export function ProjectNav({ projectId }: { projectId: string }) {
   const [collapsed, setCollapsed] = useStoredFlag("project-nav-collapsed", false);
   return (
     <nav
-      aria-label="Arbeidsflater"
+      aria-label={t("id3.nav.workspaces")}
       className="flex h-9 shrink-0 items-stretch overflow-x-auto overflow-y-hidden border-b border-border bg-surface-1"
     >
       {LINKS.map((l) => {

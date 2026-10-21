@@ -30466,6 +30466,28 @@
     "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
       "text": "Zip-filen er skadet ({name})."
     },
+    "id3.derived-from.invalid": {
+      "text": "Kildeversjonen finnes ikke i denne ressursen."
+    },
+    "id3.duration.per-scene": {
+      "text": "Per scene"
+    },
+    "id3.nav.workspaces": {
+      "text": "Arbeidsflater"
+    },
+    "id3.pauses.unresolved": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} lagret pause kan ikke knyttes til et ord i replikken (ordet er endret eller fjernet). Den brukes ikke før du setter pausen på nytt.",
+          "other": "{count} lagrede pauser kan ikke knyttes til et ord i replikken (ordene er endret eller fjernet). De brukes ikke før du setter pausene på nytt."
+        }
+      }
+    },
+    "id3.provenance.unresolved": {
+      "text": "kildeversjonen kan ikke bestemmes sikkert"
+    },
     "ml3-language-versions.button.add": {
       "text": "Legg til språkversjon"
     },
@@ -61499,6 +61521,28 @@
     },
     "engine-import-zip-read.zip-entry-blob.message.d7953441644d": {
       "text": "The zip file is damaged ({name})."
+    },
+    "id3.derived-from.invalid": {
+      "text": "The source version does not exist in this asset."
+    },
+    "id3.duration.per-scene": {
+      "text": "Per scene"
+    },
+    "id3.nav.workspaces": {
+      "text": "Workspaces"
+    },
+    "id3.pauses.unresolved": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} saved pause cannot be tied to a word in the line (the word was changed or removed). It is not used until you set the pause again.",
+          "other": "{count} saved pauses cannot be tied to a word in the line (the words were changed or removed). They are not used until you set the pauses again."
+        }
+      }
+    },
+    "id3.provenance.unresolved": {
+      "text": "the source version cannot be determined with certainty"
     },
     "ml3-language-versions.button.add": {
       "text": "Add language version"

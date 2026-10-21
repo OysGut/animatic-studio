@@ -176,7 +176,7 @@ describe("fylling av pauser (P6, P7)", () => {
   });
 
   it("digital stillhet kan velges: pausen står tom", () => {
-    const c = setPauseFill(setPause(base, al, srcA, 0, 600, id)!, 0, { kind: "silence" }, id);
+    const c = setPauseFill(setPause(base, al, srcA, 0, 600, id)!, al, 0, { kind: "silence" }, id);
     const r = fillPauseGaps(c, pauseGaps(c, al, srcA), () => null, id);
     expect(r.composition.segments.some((s) => s.role === "room")).toBe(false);
     expect(r.unfilled).toEqual([]);

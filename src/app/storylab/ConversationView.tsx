@@ -385,7 +385,7 @@ function Conversation({
               editable={editable}
               scopeText={t.kind === "direction" ? scopeLabel((/^d:(next|scene|session):/.exec(t.id)?.[1] ?? "session") as DirectionScope) : null}
               onFork={async () => {
-                const r = await fork({ data: { projectId, sessionId, fromTurn: i } });
+                const r = await fork({ data: { projectId, sessionId, fromTurnId: t.id } });
                 if (!r.ok) return setErr(r.message);
                 qc.setQueryData(["story-session", projectId, r.session.id], r);
                 await qc.invalidateQueries({ queryKey: ["story-sessions", projectId] });

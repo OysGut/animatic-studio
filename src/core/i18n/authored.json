@@ -4822,6 +4822,65 @@
       "en": {
         "text": "Target language: {language} ({tag})"
       }
+    },
+    "id3.pauses.unresolved": {
+      "replaces": [],
+      "nb": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} lagret pause kan ikke knyttes til et ord i replikken (ordet er endret eller fjernet). Den brukes ikke før du setter pausen på nytt.",
+            "other": "{count} lagrede pauser kan ikke knyttes til et ord i replikken (ordene er endret eller fjernet). De brukes ikke før du setter pausene på nytt."
+          }
+        }
+      },
+      "en": {
+        "text": null,
+        "plural": {
+          "parameter": "count",
+          "forms": {
+            "one": "{count} saved pause cannot be tied to a word in the line (the word was changed or removed). It is not used until you set the pause again.",
+            "other": "{count} saved pauses cannot be tied to a word in the line (the words were changed or removed). They are not used until you set the pauses again."
+          }
+        }
+      }
+    },
+    "id3.provenance.unresolved": {
+      "replaces": [],
+      "nb": {
+        "text": "kildeversjonen kan ikke bestemmes sikkert"
+      },
+      "en": {
+        "text": "the source version cannot be determined with certainty"
+      }
+    },
+    "id3.derived-from.invalid": {
+      "replaces": [],
+      "nb": {
+        "text": "Kildeversjonen finnes ikke i denne ressursen."
+      },
+      "en": {
+        "text": "The source version does not exist in this asset."
+      }
+    },
+    "id3.nav.workspaces": {
+      "replaces": [],
+      "nb": {
+        "text": "Arbeidsflater"
+      },
+      "en": {
+        "text": "Workspaces"
+      }
+    },
+    "id3.duration.per-scene": {
+      "replaces": [],
+      "nb": {
+        "text": "Per scene"
+      },
+      "en": {
+        "text": "Per scene"
+      }
     }
   }
 }

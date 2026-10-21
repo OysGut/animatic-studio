@@ -73420,5 +73420,27 @@
   },
   "r8-translation-import.target": {
     "text": "Målspråk: {language} ({tag})"
+  },
+  "id3.pauses.unresolved": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} lagret pause kan ikke knyttes til et ord i replikken (ordet er endret eller fjernet). Den brukes ikke før du setter pausen på nytt.",
+        "other": "{count} lagrede pauser kan ikke knyttes til et ord i replikken (ordene er endret eller fjernet). De brukes ikke før du setter pausene på nytt."
+      }
+    }
+  },
+  "id3.provenance.unresolved": {
+    "text": "kildeversjonen kan ikke bestemmes sikkert"
+  },
+  "id3.derived-from.invalid": {
+    "text": "Kildeversjonen finnes ikke i denne ressursen."
+  },
+  "id3.nav.workspaces": {
+    "text": "Arbeidsflater"
+  },
+  "id3.duration.per-scene": {
+    "text": "Per scene"
   }
 }

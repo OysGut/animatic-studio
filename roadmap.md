@@ -4,7 +4,7 @@
 - [x] Kravstatus, build_docs/check_kb, TODO og IMPLEMENTATION_STATUS.
 - [x] 21 suiter nb/en, p4–r3r4 og dec0094 med UI_LANG=en, «Mer …»-skjermbilder.
 - [x] ID_AUDIT.md (kartlegging), full vitest og DB.
-- [ ] verifisering3 med UI_LANG=en: suiten mangler språkstøtte – venter på oppdrag.
+- [x] verifisering3 med UI_LANG=en: 73/73 på begge språk (ID3).
 
 ## B-049 ML4 – ende-til-ende (20.10.2026)
 - [x] Eksport med N språkversjoner: fontkontroll (PDF stopper i stedet for «?», Word advarer), språkmerke i Word.
@@ -100,8 +100,9 @@
 
 ## V1 + småting + ID-kartlegging (21.10.2026)
 - [x] Statusrapport lagret med vedlegg (STATUS_2026-10-21.md)
-- [ ] V1: verifiser 54 P0/P1-krav med test + REQ-0503/0145; build_docs/check_kb; TODO.md og IMPLEMENTATION_STATUS.md
-- [ ] 22 suiter til VISUAL_SCHEMA_VERSION + kontroll mot faste versjoner
+- [x] V1: verifiser 54 P0/P1-krav med test + REQ-0503/0145; build_docs/check_kb; TODO.md og IMPLEMENTATION_STATUS.md
+- [x] 22 suiter til VISUAL_SCHEMA_VERSION + kontroll mot faste versjoner
 - [x] scene-video-ui full UI_LANG; storylab-canvas-ui og mts-global overstyres av UI_LANG
-- [ ] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
-- [ ] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
+- [x] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
+- [x] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
+- [x] ID3: stabile ID-er (REQ-0037/0022/0518), migrasjon 0069, verifisering3 engelsk – se docs/development/ID3_REPORT.md

@@ -213,7 +213,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
           {t.kind === "analysis" ? <span>{tk("app-storylab-group-conversation-view.group-conversation.span.a03f7558e27b")}</span> : null}
           {editable ? <div className="ml-auto flex flex-wrap gap-1">
             <IconButton disabled={busy} data-testid="storylab-fork" title={tk("app-storylab-group-conversation-view.group-conversation.title.0d285dc52a0f")} label={tk("app-storylab-group-conversation-view.group-conversation.label.0d285dc52a0f")}
-              onClick={async () => { try { const r = await fork({ data: { projectId, sessionId: session.id, fromTurn: turns.findIndex((x) => x.id === t.id) } });
+              onClick={async () => { try { const r = await fork({ data: { projectId, sessionId: session.id, fromTurnId: t.id } });
                 if (!r.ok) { setError(r.message); return; } qc.setQueryData(["story-session", projectId, r.session.id], r);
                 await qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); onOpen(r.session.id);
               } catch { setError(tk("app-storylab-group-conversation-view.group-conversation.set-error.7ebfb0a38660")); } }}><GitBranch /></IconButton>

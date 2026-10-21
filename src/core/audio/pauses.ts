@@ -19,7 +19,7 @@ import {
   type PauseEdit,
   type PauseFill,
 } from "./composition";
-import type { WordAlignment } from "./alignment";
+import { legacyWordId, wordIdAt, wordIndexOf, type WordAlignment } from "./alignment";
 
 type NewId = () => string;
 
@@ -178,23 +178,55 @@ function removeRange(
   return { ...cut, segments };
 }
 
-export function pauseFor(c: AudioComposition, afterWord: number): PauseEdit | undefined {
-  return c.pauses?.find((p) => p.afterWord === afterWord);
+/** ID-en til ordet pausen gjelder (eldre pauser uten ID: utledet fra den lagrede plassen). */
+export function pauseWordId(p: PauseEdit): string {
+  return p.afterWordId ?? legacyWordId(p.afterWord);
+}
+
+/**
+ * Plassen i ordkoblingen til ordet før pausen, eller -1 når ordet ikke finnes i koblingen (pausen er da
+ * uavklart og vises for brukeren, se `unresolvedPauses`). Plassen brukes bare til oppslag, aldri som nøkkel.
+ */
+export function pauseWordIndex(p: PauseEdit, a: WordAlignment): number {
+  const i = wordIndexOf(a, pauseWordId(p));
+  return i >= 0 && i < a.words.length - 1 ? i : -1;
+}
+
+/** Pausen etter ord nr. `afterWord` i koblingen `a` (slått opp på ordets ID). */
+export function pauseFor(c: AudioComposition, a: WordAlignment, afterWord: number): PauseEdit | undefined {
+  const id = wordIdAt(a, afterWord);
+  return id === null ? undefined : c.pauses?.find((p) => pauseWordId(p) === id);
+}
+
+/** Pauser som ikke kan knyttes til et ord i koblingen (ordet er borte, eller eldre data er uklare). */
+export function unresolvedPauses(c: AudioComposition, a: WordAlignment): readonly PauseEdit[] {
+  return (c.pauses ?? []).filter((p) => pauseWordIndex(p, a) < 0);
 }
 
 function withPause(
   c: AudioComposition,
+  a: WordAlignment,
   afterWord: number,
   deltaMs: number,
   fill: PauseFill,
   newId: NewId,
 ): AudioComposition {
-  const old = pauseFor(c, afterWord);
-  const rest = (c.pauses ?? []).filter((p) => p.afterWord !== afterWord);
+  const wordId = wordIdAt(a, afterWord);
+  if (wordId === null) return c;
+  const old = pauseFor(c, a, afterWord);
+  // Brukeren lagrer: eldre pauser som entydig peker på et ord i koblingen, får ordets ID (ingen stille omskriving
+  // av lagrede data – det skjer bare i den nye versjonen brukeren lagrer). Uavklarte pauser beholdes uendret.
+  const rest = (c.pauses ?? [])
+    .filter((p) => p !== old)
+    .map((p) => {
+      if (p.afterWordId !== undefined) return p;
+      const i = pauseWordIndex(p, a);
+      return i < 0 ? p : { ...p, afterWord: i, afterWordId: wordIdAt(a, i)! };
+    });
   const keep = deltaMs !== 0 || fill.kind !== "room";
   const pauses = keep
-    ? [...rest, { id: old?.id ?? newId(), afterWord, deltaMs, fill }].sort(
-        (x, y) => x.afterWord - y.afterWord,
+    ? [...rest, { id: old?.id ?? newId(), afterWord, afterWordId: wordId, deltaMs, fill }].sort(
+        (x, y) => x.afterWord - y.afterWord || x.id.localeCompare(y.id),
       )
     : rest;
   return { ...c, format: COMPOSITION_FORMAT, pauses };
@@ -216,7 +248,7 @@ export function setPause(
 ): AudioComposition | null {
   const gap = gapAfterWord(c, a, src, afterWord);
   if (!gap || gap.toMs < gap.fromMs) return null;
-  const rec = pauseFor(c, afterWord);
+  const rec = pauseFor(c, a, afterWord);
   const old = rec?.deltaMs ?? 0;
   const current = gap.toMs - gap.fromMs;
   const original = current - old;
@@ -244,7 +276,7 @@ export function setPause(
     const from = Math.max(gap.fromMs, Math.min(gap.toMs - x, Math.round(center - x / 2)));
     if (x > 0) out = removeRange(out, from, from + x, newId);
   }
-  return withPause(out, afterWord, want, f, newId);
+  return withPause(out, a, afterWord, want, f, newId);
 }
 
 /**
@@ -258,7 +290,7 @@ export function adjustPause(
   changeMs: number,
   newId: NewId,
 ): AudioComposition | null {
-  return setPause(c, a, src, afterWord, (pauseFor(c, afterWord)?.deltaMs ?? 0) + changeMs, newId);
+  return setPause(c, a, src, afterWord, (pauseFor(c, a, afterWord)?.deltaMs ?? 0) + changeMs, newId);
 }
 
 /**
@@ -299,15 +331,18 @@ export function spreadPause(
 /** Bytter hva pausen fylles med (REQ-0708). Lengden er uendret. */
 export function setPauseFill(
   c: AudioComposition,
+  a: WordAlignment,
   afterWord: number,
   fill: PauseFill,
   newId: NewId,
 ): AudioComposition {
-  return withPause(c, afterWord, pauseFor(c, afterWord)?.deltaMs ?? 0, fill, newId);
+  return withPause(c, a, afterWord, pauseFor(c, a, afterWord)?.deltaMs ?? 0, fill, newId);
 }
 
 export interface PauseGap {
   readonly pause: PauseEdit;
+  /** Plassen til ordet før pausen i koblingen nå (til visning). */
+  readonly wordIndex: number;
   readonly fromMs: number;
   readonly toMs: number;
 }
@@ -320,9 +355,11 @@ export function pauseGaps(c: AudioComposition, a: WordAlignment, src: AlignmentS
   const out: PauseGap[] = [];
   for (const p of c.pauses ?? []) {
     if (p.deltaMs <= 0 || (p.fill.kind !== "room" && p.fill.kind !== "asset")) continue;
-    const gap = gapAfterWord(c, a, src, p.afterWord);
+    const i = pauseWordIndex(p, a);
+    if (i < 0) continue;
+    const gap = gapAfterWord(c, a, src, i);
     if (!gap) continue;
-    for (const h of speechHoles(c, gap.fromMs, gap.toMs)) out.push({ pause: p, ...h });
+    for (const h of speechHoles(c, gap.fromMs, gap.toMs)) out.push({ pause: p, wordIndex: i, ...h });
   }
   return out;
 }

@@ -337,10 +337,15 @@ export const forkStorySession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .validator((d: unknown) => {
     const x = obj(d);
+    // REQ-0037: forgreiningspunktet er turens ID (null = fra start). Eldre klienter sender plassen (`fromTurn`);
+    // den oversettes til turens ID i den lagrede økten før kopien lages.
+    const id = x["fromTurnId"];
     const t = x["fromTurn"];
-    if (!Number.isInteger(t) || (t as number) < -1)
+    const hasId = id === null || (typeof id === "string" && id.length > 0 && id.length <= 200);
+    if (!hasId && (!Number.isInteger(t) || (t as number) < -1))
       throw new Error(tk("adapters-storylab-sessions-functions.fork-story-session.create-server-fn-method-post-middleware-require-supabase-auth-validator.2e9a297eec70"));
-    return { projectId: projectIdOf(x), sessionId: idOf(x, "sessionId"), fromTurn: t as number,
+    return { projectId: projectIdOf(x), sessionId: idOf(x, "sessionId"),
+      ...(hasId ? { fromTurnId: id as string | null } : { fromTurn: t as number }),
       ...(typeof x["title"] === "string" ? { title: x["title"].trim().slice(0, 200) } : {}) };
   })
   .handler(async ({ data, context }): Promise<{ ok: true; session: StorySession } | Fail> => {
@@ -353,7 +358,11 @@ export const forkStorySession = createServerFn({ method: "POST" })
     if ("ok" in g) return g;
     const s = await loadSession(g.admin, data.projectId, data.sessionId);
     if (!s) return fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.1a24d9b9ef7c"));
-    if (data.fromTurn >= s.turns.length) return fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.2e9a297eec70"));
+    const at =
+      "fromTurnId" in data
+        ? data.fromTurnId === null ? -1 : s.turns.findIndex((t) => t.id === data.fromTurnId)
+        : data.fromTurn;
+    if (at < -1 || at >= s.turns.length) return fail(tk("adapters-storylab-sessions-functions.fork-story-session.fail.2e9a297eec70"));
     const id = newId<"story_session">();
     const { error } = await g.admin.from("story_sessions").insert({
       id,
@@ -361,9 +370,10 @@ export const forkStorySession = createServerFn({ method: "POST" })
       kind: s.kind,
       title: data.title ?? s.title,
       context: s.context,
-      turns: s.turns.slice(0, data.fromTurn + 1),
+      turns: s.turns.slice(0, at + 1),
       parent_session_id: s.id,
-      from_turn: data.fromTurn,
+      // Antallet beholdte turer (visning); identiteten er den siste kopierte turen (samme ID i begge øktene)
+      from_turn: at,
       status: "paused",
       created_by: context.userId,
     } as never);

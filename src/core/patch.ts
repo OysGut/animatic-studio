@@ -334,6 +334,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         source_global_version_id: v.globalSource?.versionId ?? null,
         // Migrasjon 0049 (MTS MT4): maldefinisjonen
         template_spec: v.template ?? null,
+        // Migrasjon 0069 (REQ-0037): kildeversjonen som permanent ID
+        derived_from_version_id: v.derivedFromVersionId ?? null,
       };
     }
     case "annotations": {
@@ -1370,6 +1372,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
           ? { template: json(x["template_spec"]) as never }
           : {}),
         ...(isAlignment(x["alignment"]) ? { alignment: x["alignment"] } : {}),
+        ...(typeof x["derived_from_version_id"] === "string"
+          ? { derivedFromVersionId: x["derived_from_version_id"] as never }
+          : {}),
         ...(typeof x["source_global_version_id"] === "string" &&
         typeof x["source_global_asset_id"] === "string" &&
         typeof x["source_global_variant_id"] === "string"

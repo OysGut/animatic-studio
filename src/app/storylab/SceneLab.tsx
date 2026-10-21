@@ -38,7 +38,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const [compare, setCompare] = useState(false);
   const [chosenVariants, setChosenVariants] = useState<string[]>([]);
   const [chosenLines, setChosenLines] = useState<string[]>([]);
-  const [fromTurn, setFromTurn] = useState(-1);
+  const [fromTurnId, setFromTurnId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const lock = useRef(false);
   const stopped = useRef(false);
@@ -98,7 +98,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     before: data.blocks.slice(0, data.blocks.findIndex((b) => b.id === block.id)).filter((b) => b.kind === "dialogue").slice(-12).map((b) => b.text), line: block.text, language }) : null;
   const prompt = dialog === "check" && checkPrompt ? checkPrompt : analysisPrompt;
   const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language: "nb" }).length))
-    + (session?.turns.slice(0, fromTurn + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
+    + (session?.turns.slice(0, (fromTurnId === null ? -1 : session.turns.findIndex((t) => t.id === fromTurnId)) + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
     + Math.max(0, ...directions.map((d) => d.length)) + 8 * 800 * 4;
   const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 2000 : 800);
   const remember = (s: StorySession) => { qc.setQueryData(["story-session", projectId, s.id], { ok: true, session: s }); void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); };
@@ -153,7 +153,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     for (let i = 0; i < 3 && !stopped.current; i++) {
       const direction = directions[i]?.trim(); if (!direction) continue;
       const label = ["A", "B", "C"][i] ?? "A";
-      const r = await fork({ data: { projectId, sessionId: session.id, fromTurn, title: `${data.heading} · ${label}` } });
+      const r = await fork({ data: { projectId, sessionId: session.id, fromTurnId, title: `${data.heading} · ${label}` } });
       if (!r.ok) throw new Error(r.message);
       let branch = await save(r.session, [{ id: `d:session:all:${newId<"direction">()}`, speaker: "director", kind: "direction", text: direction, at: new Date().toISOString(), to: null }], 0, "active");
       added.push(branch); setVariants((old) => [...old, branch]);
@@ -224,7 +224,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
     </div>
     {dialog ? <Dialog open onOpenChange={(open) => { if (!open && !busy) setDialog(null); }}><DialogContent data-testid="storylab-scene-dialog"><DialogHeader><DialogTitle>{dialog === "analysis" ? tk("app-storylab-scene-lab.scene-lab.dialog-title.15f59547e798") : dialog === "check" ? tk("app-storylab-scene-lab.scene-lab.dialog-title.9d92952c97bf") : dialog === "variants" ? tk("app-storylab-scene-lab.scene-lab.dialog-title.8fa3f8d3c533") : tk("app-storylab-scene-lab.scene-lab.dialog-title.77cb309ea184")}</DialogTitle></DialogHeader>
       {dialog === "improv" ? <Textarea data-testid="storylab-scene-situation" aria-label={tk("app-storylab-scene-lab.scene-lab.aria-label.5abac0bc7ba8")} maxLength={8000} value={situation} onChange={(e) => setSituation(e.target.value)} /> : null}
-      {dialog === "variants" ? <><select aria-label={tk("app-storylab-scene-lab.scene-lab.aria-label.b81a2f33e19b")} value={fromTurn} onChange={(e) => setFromTurn(Number(e.target.value))}><option value={-1}>{tk("app-storylab-scene-lab.scene-lab.option.7a44fdeccb10")}</option>{session?.turns.map((t, i) => <option key={t.id} value={i}>{i + 1}: {t.text.slice(0, 60)}</option>)}</select>{directions.map((d, i) => <Textarea key={i} data-testid={`storylab-variant-${["a", "b", "c"][i]}`} aria-label={["A", "B", "C"][i]} maxLength={8000} value={d} onChange={(e) => setDirections((old) => old.map((v, n) => n === i ? e.target.value : v))} />)}</> : null}
+      {dialog === "variants" ? <><select aria-label={tk("app-storylab-scene-lab.scene-lab.aria-label.b81a2f33e19b")} value={fromTurnId ?? ""} onChange={(e) => setFromTurnId(e.target.value || null)}><option value="">{tk("app-storylab-scene-lab.scene-lab.option.7a44fdeccb10")}</option>{session?.turns.map((t, i) => <option key={t.id} value={t.id}>{i + 1}: {t.text.slice(0, 60)}</option>)}</select>{directions.map((d, i) => <Textarea key={i} data-testid={`storylab-variant-${["a", "b", "c"][i]}`} aria-label={["A", "B", "C"][i]} maxLength={8000} value={d} onChange={(e) => setDirections((old) => old.map((v, n) => n === i ? e.target.value : v))} />)}</> : null}
       <p className="text-sm text-text-secondary">{tk("app-storylab-scene-lab.scene-lab.p.3a246d42f794", { value1: String(usd(estimate.usd * (dialog === "variants" ? directions.filter((d) => d.trim()).length * 8 : dialog === "improv" ? 8 : 1))), label: String(estimate.label) })}</p>
       <ToolbarButton variant="primary" data-testid="storylab-scene-confirm" disabled={busy || estimate.loading || !!estimate.error || (dialog === "variants" && !directions.some((d) => d.trim()))} onClick={() => { const action = dialog; setDialog(null); if (action === "analysis") void analyze(); else if (action === "check") { setCheckApproved(true); void checkLine(); } else if (action === "variants") void runVariants(); else void perform(async () => {
         let s = await make("scene_improv"); setTab("improv");

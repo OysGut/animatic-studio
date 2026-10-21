@@ -60,12 +60,15 @@ export type PauseFill =
   | { readonly kind: "manual" };
 
 /**
- * En endret pause mellom to ord (REQ-0705/0706). `afterWord` er indeksen i ordkoblingen (pausen mellom ordet og
- * det neste). `deltaMs` er hvor mye lengre (eller kortere, negativ) pausen er enn i opptaket.
+ * En endret pause mellom to ord (REQ-0705/0706). `afterWordId` er den permanente ID-en til ordet før pausen
+ * (REQ-0037). `afterWord` er plassen ordet hadde da pausen ble lagret, bare til visning og for eldre pauser
+ * uten ID (de leses som `legacyWordId(afterWord)`, se `pauseWordId`). `deltaMs` er hvor mye lengre (eller
+ * kortere, negativ) pausen er enn i opptaket.
  */
 export interface PauseEdit {
   readonly id: string;
   readonly afterWord: number;
+  readonly afterWordId?: string;
   readonly deltaMs: number;
   readonly fill: PauseFill;
 }
@@ -275,8 +278,8 @@ export function sameComposition(a: AudioComposition, b: AudioComposition): boole
     JSON.stringify([
       sortedSegments(c).map(({ id: _id, role, ...rest }) => ({ ...rest, role: role ?? "speech" })),
       [...(c.pauses ?? [])]
-        .sort((x, y) => x.afterWord - y.afterWord)
-        .map(({ id: _id, ...rest }) => rest),
+        .map(({ id: _id, afterWord, afterWordId, ...rest }) => ({ word: afterWordId ?? `w${afterWord}`, ...rest }))
+        .sort((x, y) => x.word.localeCompare(y.word)),
     ]);
   return key(a) === key(b);
 }
@@ -337,15 +340,21 @@ export function compositionError(
   }
   if (o["pauses"] !== undefined) {
     if (!Array.isArray(o["pauses"]) || o["pauses"].length > COMPOSITION_MAX_PAUSES) return bad;
-    const words = new Set<number>();
+    const words = new Set<string>();
     for (const x of o["pauses"] as unknown[]) {
       if (!x || typeof x !== "object") return bad;
       const p = x as Record<string, unknown>;
-      if (Object.keys(p).sort().join(",") !== "afterWord,deltaMs,fill,id") return bad;
+      const keys = Object.keys(p).sort().join(",");
+      if (keys !== "afterWord,deltaMs,fill,id" && keys !== "afterWord,afterWordId,deltaMs,fill,id") return bad;
       if (typeof p["id"] !== "string" || !isUuid(p["id"]) || ids.has(p["id"])) return bad;
       ids.add(p["id"]);
-      if (!int(p["afterWord"], 0, 100_000) || words.has(p["afterWord"] as number)) return bad;
-      words.add(p["afterWord"] as number);
+      if (!int(p["afterWord"], 0, 100_000)) return bad;
+      if (p["afterWordId"] !== undefined && (typeof p["afterWordId"] !== "string" || !/^[A-Za-z0-9_-]{1,64}$/.test(p["afterWordId"])))
+        return bad;
+      // Én pause per ord: nøkkelen er ordets ID (eldre pauser: ID-en utledet fra plassen)
+      const key = typeof p["afterWordId"] === "string" ? p["afterWordId"] : `w${p["afterWord"] as number}`;
+      if (words.has(key)) return bad;
+      words.add(key);
       if (!int(p["deltaMs"], -PAUSE_MAX_DELTA_MS, PAUSE_MAX_DELTA_MS)) return bad;
       if (pauseFillError(p["fill"], sourceMs)) return bad;
     }

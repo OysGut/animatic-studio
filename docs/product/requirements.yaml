@@ -906,6 +906,7 @@ requirements:
   - "tests/unit/dec0078-bolge2-kjerne.test.ts"
   - "tests/unit/commands.test.ts – kjørt og bestått 2026-10-21 (V1)"
   - "tests/unit/verifisering4-kjerne.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/invariants/stable-ids.test.ts::versjonsopphav som permanent ID – kjørt og bestått 2026-10-22 (ID3)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -922,6 +923,9 @@ requirements:
   - date: '2026-10-21'
     decision: V1
     change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
+  - date: '2026-10-22'
+    decision: DEC-0076
+    change: "ID3: kildeversjonen til frilagte og erstattede bilder lagres som permanent ID (derived_from_version_id, migrasjon 0069), adskilt fra plasseringen; testet gjennom omnummerering, angre/gjør om og sikkerhetskopi."
   notes: ''
 - id: REQ-0023
   title: Strukturell synkronisering er automatisk
@@ -1490,16 +1494,25 @@ requirements:
   - Hver av de 21 entitetstypene har et uforanderlig ID-felt.
   tests:
   - 'enhet: skjemavalidering av ID-felt for alle 21 typer'
-  status: Under arbeid
+  status: Verifisert
   implementation:
   - "src/core/ids.ts"
   - "db/migrations/0028_duration_exports.sql"
   - "src/core/export-records.ts"
   - "docs/architecture/DOMAIN_MODEL.md"
+  - "src/core/audio/alignment.ts#assignWordIds (ord-ID-er), src/core/audio/pauses.ts#pauseWordId"
+  - "src/core/library/provenance.ts#versionProvenance + db/migrations/0069_version_derivation.sql (derived_from_version_id)"
+  - "src/core/assembly/time-levels.ts#partKey/partById"
+  - "src/core/translation/index.ts#identifyParsedScenes/parsedSceneOf"
+  - "src/core/storylab/engine.ts (branchFrom turnId), src/adapters/storylab/sessions.functions.ts#forkStorySession"
+  - "src/core/screenplay/script-pages.ts#lockedPageOffset/sceneSourcePage"
   verification:
   - "tests/unit/verifisering4-kjerne.test.ts::REQ-0037 – stabile identifikatorer for domeneobjektene"
   - "docs/development/VISUAL_QA_DEC-0076.md"
   - "tests/unit/duration-history-exports.test.ts"
+  - "tests/invariants/stable-ids.test.ts – kjørt og bestått 2026-10-22 (ID3)"
+  - "tests/unit/verifisering4-kjerne.test.ts – kjørt og bestått 2026-10-22 (ID3)"
+  - "tests/db/run-db-tests.ts::0069 – kjørt og bestått 2026-10-22 (ID3)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -1513,6 +1526,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0078
     change: "Eksportversjoner har egen ID (export_records, migrasjon 0028) og vises som «Tidligere eksporter» for manus, film, lyd, undertekster og plakater; filmmontering identifiseres med produksjons-ID (+ språk), se DOMAIN_MODEL.md. Gjenstår en samlet test av ID for alle domenetyper."
+  - date: '2026-10-22'
+    decision: DEC-0076
+    change: "ID3: de seks stedene i ID_AUDIT.md bruker permanent ID (ord, versjonsopphav, deler, importerte scener, Story Lab-forgreining, låste sider); eldre data oversettes ved lesing og uklare tilfeller flagges. Status Verifisert (tests/invariants/stable-ids.test.ts, verifisering4-kjerne, DB-test 0069)."
   notes: ''
 - id: REQ-0038
   title: ID-er uavhengige av navn, språk og plassering
@@ -19949,12 +19965,18 @@ requirements:
   tests:
   - 'manuell: gjennomgang av arbeidsleveranser'
   status: Ikke startet
-  implementation: []
-  verification: []
+  implementation:
+  - "src/core/library/provenance.ts + db/migrations/0069_version_derivation.sql (versjonsopphav som ID)"
+  - "src/core/assembly/time-levels.ts#partKey (deler i filmen spores til scene og del-ID)"
+  verification:
+  - "tests/invariants/stable-ids.test.ts – kjørt og bestått 2026-10-22 (ID3); dekker ID-sporingen, ikke hele prosessgjennomgangen"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-22'
+    decision: DEC-0076
+    change: "ID3: sporingen bruker permanente ID-er (ID_AUDIT.md). Status uendret: prosesskrav (REQ-0450–0530) som venter på Mars, og akseptansen er en manuell gjennomgang."
   notes: Gjentar kap. 2 / INV-01 som overordnet mål.
 - id: REQ-0519
   title: 'Overordnet mål: kreativ kontroll og teknisk automatisering'

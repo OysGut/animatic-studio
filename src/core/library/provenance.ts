@@ -29,8 +29,16 @@ export interface VersionProvenance {
   readonly model: string | null;
   /** AI-jobben som laget filen, om den er funnet. */
   readonly jobId: string | null;
-  /** Versjonsnummeret bildet er frilagt fra / erstatter (samme variant). */
+  /**
+   * Versjonen bildet er frilagt fra / erstatter (REQ-0037): permanent ID. Nye versjoner lagrer den
+   * (`derivedFromVersionId`, migrasjon 0069); for eldre versjoner slås nummeret i merknaden opp i samme variant
+   * ved lesing (merknaden skrives aldri om). Null når kilden er ukjent eller ikke kan bestemmes.
+   */
+  readonly fromVersionId: string | null;
+  /** Nummeret til kildeversjonen nå (bare til visning, aldri nøkkel). */
   readonly fromNumber: number | null;
+  /** Merknaden nevner en kilde som ikke kan bestemmes entydig (vises for brukeren). */
+  readonly sourceUnresolved: boolean;
   /** Lastet opp på nytt etter nedlasting (DEC-0064). */
   readonly reupload: boolean;
   /** Hvordan opphavet er funnet: jobben, merknaden, filnavnet eller ingenting (= lastet opp). */
@@ -64,10 +72,41 @@ export function jobsByResultPath(
 
 /** Opphavet til én versjon. */
 export function versionProvenance(
-  v: Pick<AssetVersion, "mediaPath" | "note">,
+  v: Pick<AssetVersion, "mediaPath" | "note"> &
+    Partial<Pick<AssetVersion, "id" | "variantId" | "derivedFromVersionId">>,
   jobByPath: ReadonlyMap<string, GenerationJob> = new Map(),
+  s?: ProjectState,
 ): VersionProvenance {
-  const none = { provider: null, model: null, jobId: null, fromNumber: null, reupload: false };
+  return withSource(noteProvenance(v, jobByPath), v, s);
+}
+
+/**
+ * Kilden som permanent ID: lagret ID først; ellers nummeret fra merknaden slått opp i samme variant (eldre
+ * versjoner). Ingen eller flere treff gir ukjent kilde og et flagg.
+ */
+function withSource(
+  p: VersionProvenance,
+  v: Partial<Pick<AssetVersion, "id" | "variantId" | "derivedFromVersionId">>,
+  s?: ProjectState,
+): VersionProvenance {
+  if (v.derivedFromVersionId) {
+    const src = s?.assetVersions[v.derivedFromVersionId];
+    return { ...p, fromVersionId: v.derivedFromVersionId, fromNumber: src ? src.number : s ? null : p.fromNumber, sourceUnresolved: false, reupload: p.reupload || p.origin === "upload" };
+  }
+  if (p.fromNumber === null || !s || !v.variantId) return p;
+  const hits = Object.values(s.assetVersions).filter(
+    (x) => x.variantId === v.variantId && x.id !== v.id && x.number === p.fromNumber,
+  );
+  return hits.length === 1
+    ? { ...p, fromVersionId: hits[0]!.id }
+    : { ...p, fromVersionId: null, sourceUnresolved: true };
+}
+
+function noteProvenance(
+  v: Pick<AssetVersion, "mediaPath" | "note">,
+  jobByPath: ReadonlyMap<string, GenerationJob>,
+): VersionProvenance {
+  const none = { provider: null, model: null, jobId: null, fromVersionId: null, fromNumber: null, sourceUnresolved: false, reupload: false };
   const note = v.note.trim();
   const job = jobByPath.get(v.mediaPath);
   if (job) {
@@ -109,7 +148,7 @@ export function versionProvenances(
 ): ReadonlyMap<string, VersionProvenance> {
   const byPath = jobsByResultPath(jobs);
   return new Map(
-    Object.values(s.assetVersions).map((v) => [v.id, versionProvenance(v, byPath)] as const),
+    Object.values(s.assetVersions).map((v) => [v.id, versionProvenance(v, byPath, s)] as const),
   );
 }
 
@@ -136,6 +175,7 @@ export function provenanceDetail(p: VersionProvenance): string {
     parts.push(tk("core-library-provenance.provenance-detail.parts-push.3800bc4a7e76", { fromNumber: String(p.fromNumber) }));
   if (p.reupload && p.fromNumber)
     parts.push(tk("core-library-provenance.provenance-detail.parts-push.b460391755c1", { fromNumber: String(p.fromNumber) }));
+  if (p.sourceUnresolved) parts.push(tk("id3.provenance.unresolved"));
   parts.push(
     p.basis === "job"
       ? tk("core-library-provenance.provenance-detail.parts-push.8f78701047ed")
