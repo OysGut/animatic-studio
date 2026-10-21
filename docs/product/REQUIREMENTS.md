@@ -2750,7 +2750,7 @@ Brukeren skal kunne generere lyd.
 - **Tester:**
   - integrasjon: lydgenerering via adapter med mock-leverandør
 - **Implementering:** src/adapters/ai/sound.functions.ts, src/app/library/GenerateSoundPanel.tsx, src/adapters/ai/speech.functions.ts, src/app/assembly/AiDialogueDialog.tsx, src/core/generation/speech.ts
-- **Merknad:** Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5.
+- **Merknad:** Ikke presisert om «generere» betyr AI-generering (TTS, musikk, effekter) – antatt AI, derfor fase 5. Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0204 – Koble lydfiler til produksjonsobjekter
 Lydfiler skal kunne knyttes til karakterer, replikker, scener, delsekvenser, hendelser og produksjoner.
@@ -3574,6 +3574,7 @@ Referansebilder eller andre støttede kontinuitetsmekanismer skal brukes når de
 - **Tester:**
   - integrasjon: adapter med referansestøtte mottar referanse fra forrige segment
 - **Implementering:** src/core/generation/video.ts, src/app/ai/last-frame.ts, src/app/assembly/SceneVideoSection.tsx, src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0264 – Sette segmenter sammen til én scene
 Etter generering skal segmentene kunne settes sammen til én scene.
@@ -3669,6 +3670,7 @@ Brukeren skal kunne koble egne API-kontoer der leverandøren støtter det.
 - **Tester:**
   - integrasjon: registrering og validering av nøkkel mot mock
 - **Implementering:** src/app/ai/ProvidersDialog.tsx, src/adapters/ai/provider-keys.functions.ts, db/migrations/0024_ai_providers.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0271 – Sikker nøkkelhåndtering
 API-nøkler skal håndteres sikkert.
@@ -6612,7 +6614,7 @@ AI-generering skal være modellagnostisk og basert på presise, synlige og redig
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
 - **Implementering:** src/app/ai/SentPrompts.tsx, src/app/assembly/AiUpdateSection.tsx
-- **Merknad:** Oppsummerer kap. 17.1, 17.3, 19.2.
+- **Merknad:** Oppsummerer kap. 17.1, 17.3, 19.2. Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0490 – Prinsipp 12: Engelske AI-instruksjoner og prompter
 AI-systeminstruksjoner og genereringsprompter skal som hovedregel være på engelsk.
@@ -7708,7 +7710,7 @@ Etter testfasen skal brukerne kunne koble Animatic Studio til ulike AI-tjenester
 - **Tester:**
   - planlagt
 - **Implementering:** src/core/generation/providers.ts, src/app/ai/ProvidersDialog.tsx, src/adapters/ai/provider-keys.functions.ts
-- **Merknad:** Adapterne er ikke prøvd mot de ekte tjenestene (KI-153).
+- **Merknad:** Adapterne er ikke prøvd mot de ekte tjenestene (KI-153). Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-153 er åpen).
 
 #### REQ-0567 – Slett prosjekt (bare eier)
 Eieren skal kunne slette et prosjekt fra prosjektlisten. Et alvorlig vindu sier at handlingen ikke kan angres, viser hva som slettes og hvor mange som mister tilgangen, og krever at prosjektnavnet skrives inn. Ressursene (bilder og lyd) slettes ikke sammen med prosjektet.
@@ -7944,6 +7946,7 @@ Brukeren skal kunne ta opp lyd direkte (mikrofon) i sceneeditoren. Opptaket blir
 - **Tester:**
   - planlagt
 - **Implementering:** src/app/scene-editor/RecordAudioDialog.tsx
+- **Merknad:** Verifisert med falsk mikrofon, prøving med ekte opptak og utstyr gjenstår.
 
 #### REQ-0584 – «Bruk aktivt utsnitt» i kamerautsnitt
 Start- og sluttrammen i et kamerautsnitt skal kunne hente utsnittet kameraet har når scenen rett før slutter (knappen «Bruk aktivt utsnitt»), så overgangen mellom scenene henger sammen.
@@ -8058,6 +8061,7 @@ Løsningen skal vise en liste over de mest brukte AI-leverandørene. Brukeren ka
   - tests/unit/ai-video.test.ts
   - tests/unit/ai-sound.test.ts
 - **Implementering:** src/core/generation/providers.ts, src/core/generation/video.ts, src/core/generation/sound.ts, src/app/ai/ProvidersDialog.tsx, src/app/assembly/SceneVideoSection.tsx, src/app/library/GenerateSoundPanel.tsx, src/adapters/ai/key-vault.server.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/provider-keys.functions.ts, src/adapters/ai/ai-gate.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/sound.functions.ts, db/migrations/0024_ai_providers.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0591 – Arbeidsliste for oppdaterte ressurser
 Når en ressurs er oppdatert, skal brukeren kunne få opp en arbeidsliste over scenene som er berørt, og scene for scene velge om den nye versjonen skal brukes i stedet for den gamle.
@@ -8318,6 +8322,7 @@ Replikker leses inn med en modell som kan norsk (Eleven v3), og språket settes 
 - **Tester:**
   - tests/unit/ai-speech.test.ts
 - **Implementering:** src/core/generation/speech.ts, src/adapters/ai/speech.functions.ts, src/adapters/ai/providers.server.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0610 – Bredere lagnavn i tidslinjen
 Skillet mellom lagnavnene og tidslinjen i sceneeditoren kan dras, så lange lagnavn kan leses. Bredden huskes i nettleseren; dobbeltklikk gir standard.
@@ -8505,6 +8510,7 @@ I stor visning kan brukeren velge modell og hvilke vinkler som skal lages av sam
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/ImageAiPanels.tsx, src/core/generation/brief.ts, src/core/generation/image-prompt.ts, src/adapters/ai/generate-image.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0624 – Promptmotor per modellfamilie
 Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen modellen forstår best: fortellende avsnitt for Nano Banana og GPT Image (referanser med roller, positive formuleringer), kort og presis med identiteten først og egen negativ beskrivelse for Seedream, Qwen og FLUX. Ingen filmtittel, ingen replikker, nøytralt lys for figurdesign, farger med navn og kode, flat hvit bakgrunn (frilegges etterpå) når modellen ikke kan lage gjennomsiktighet. En norsk oppsummering vises over den engelske beskrivelsen.
@@ -8533,6 +8539,7 @@ Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen mode
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/core/generation/style-analysis.ts, src/adapters/ai/write-prompt.functions.ts, src/app/projects/StyleGuideSection.tsx
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0626 – Visuelt faktaark per ressurs
 Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, hår, klær, farger, kjennetegn), ett per linje. Et utkast kan lages fra manuset og forsidebildet med AI (bekreftes), rettes og lagres (assets.visual_brief, migrasjon 0030). Faktaarket brukes i bildebeskrivelsene i stedet for manusutdrag.
@@ -8548,6 +8555,7 @@ Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, h�
   - tests/db/run-db-tests.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/VisualBriefEditor.tsx, src/core/generation/style-analysis.ts, src/core/commands/apply.ts, db/migrations/0030_views_visual_brief.sql
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0627 – Seedream 4.5 og Qwen-Image-Edit
 Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD per bilde) og Qwen-Image-Edit (endrer et bilde, negativ beskrivelse, ca. 0,03 USD per megapiksel). Qwen krever et forbilde; det sjekkes før noe betales.
@@ -8561,6 +8569,7 @@ Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD 
 - **Tester:**
   - tests/unit/funn-2026-10-14.test.ts
 - **Implementering:** src/core/generation/providers.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0628 – Oppskalering
 Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 USD per megapiksel) eller Clarity (med AI-detaljer, ca. 0,03 USD per megapiksel). Prisen regnes fra størrelsen på resultatet og vises før «Ja, oppskaler»; resultatet blir en ny versjon (med samme vinkel).
@@ -8575,6 +8584,7 @@ Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 
   - tests/unit/funn-2026-10-14.test.ts
   - docs/development/VISUAL_QA_DEC-0080.md
 - **Implementering:** src/app/library/ImageAiPanels.tsx, src/adapters/ai/providers.server.ts, src/adapters/ai/generate-image.functions.ts, src/core/generation/providers.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-193 er åpen).
 
 #### REQ-0629 – Tjenesten på norsk og engelsk
 Brukeren kan veksle mellom norsk og engelsk som språk i tjenesten. Valget gjøres på hovedsiden (prosjektlisten), huskes og gjelder alle tekster brukeren ser: knapper, menyer, dialoger, meldinger, feilmeldinger, hjelpetekster, verktøytips og skjermlesertekster, også datoer og tall. Norsk er standard. Brukerens eget innhold (manus, notater, navn) oversettes ikke.
@@ -8646,6 +8656,7 @@ En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering.
   - visuell: knapp, dialog og sending med mocket leverandør
   - enhet: forespørselen til fal.ai og Runway
 - **Implementering:** src/app/scene-editor/SceneToVideoDialog.tsx, src/core/generation/scene-to-video.ts, src/adapters/ai/providers.server.ts, src/adapters/ai/video.functions.ts, src/adapters/ai/video-followup.server.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0634 – Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser
 Beskrivelsen bygges automatisk av filmens visuelle stil, figurene i scenen (beskrivelse, visuelt faktaark og referansebilde for så mange som modellen tar imot, karakterer først), manusets handling og replikker i biten (bare for spill) og scenens egne instrukser. Den vises før sending. Er modellens grense for lengde nådd, tas stilnotater og manusdetaljer bort først; instruksene beholdes.
@@ -8791,6 +8802,7 @@ Figurkort, bakgrunn og objekter i scenen sendes som referansebilder. Overskrider
 - **Tester:**
   - tests/unit/scene-to-video.test.ts
 - **Implementering:** src/core/generation/scene-to-video.ts, src/app/scene-editor/SceneToVideoDialog.tsx, src/app/ai/video.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0644 – Kilden for AI-videoen kan være 2D-scenen, en AI-versjon eller en opplastet video
 Brukeren velger hva som sendes: 2D-scenen, en tidligere AI-video av scenen eller en opplastet/annen versjon. Videoen er lik det avspillingen viser, uten undertekster.
@@ -8871,6 +8883,7 @@ Leverandøren spørres alltid om videoen før en jobb regnes som tapt. En videoj
 - **Tester:**
   - tests/unit/verifisering3-ai-server.test.ts
 - **Implementering:** src/adapters/ai/video-followup.server.ts, src/adapters/ai/video.functions.ts, src/app/ai/RefetchVideoButton.tsx, src/core/generation/cost.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår (KI-204 er åpen).
 
 #### REQ-0650 – Adminside bare for administrator; oystein@gutu.no er fast administrator
 Adminsiden viser alle brukerne med navn, e-post, når kontoen ble laget, sist aktiv, status, prosjektene (bare navn og rolle) og AI-forbruk. Tilgangen kontrolleres på serveren. oystein@gutu.no er fast administrator og kan aldri blokkeres, slettes eller nedgraderes. Administrator kan gjøre andre til administrator. Administrator ser aldri innholdet i prosjektene.
@@ -9553,6 +9566,7 @@ Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med 
   - tests/db/run-db-tests.ts
   - tests/visual/dec0095-word-alignment-ui.mjs
 - **Implementering:** src/core/audio/alignment.ts, src/core/commands/apply.ts, db/migrations/0037_word_alignment.sql, src/adapters/ai/alignment.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0699 – Valg av analysetjeneste der brukeren er
 Brukeren velger selv analysetjeneste (først ElevenLabs Forced Alignment, deretter f.eks. WhisperX via en vertstjeneste) eller manuell kobling, direkte i dialogeditoren uten å gå til en innstillingsside. Valget huskes. Analysen bruker brukerens egen nøkkel og krever kostnadsgodkjenning som annen AI. Norsk bokmål, nynorsk, dialekter og egennavn prøves før tjenesten anbefales.
@@ -9921,6 +9935,7 @@ T1 bruker egne tekstleverandører, virkelige modellister og valg per oppgavegrup
   - tests/unit/text-providers.test.ts
   - tests/unit/text-adapters.test.ts
 - **Implementering:** src/core/generation/providers.ts, src/adapters/ai/text.functions.ts
+- **Merknad:** Verifisert med mock, prøving med ekte nøkkel gjenstår.
 
 #### REQ-0726 – Tekst-AI: autentisering, kvoter og trygge logger
 Bare autoriserte prosjektredaktører og eiere starter tekstkall; inndata har maksimal lengde og timegrense og prosjektbudsjett håndheves. Nøkler, prompter og svar logges ikke.

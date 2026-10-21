@@ -659,6 +659,7 @@ export type Database = {
           composition: Json | null
           created_at: string
           created_by: string | null
+          derived_from_version_id: string | null
           duration_ms: number | null
           height: number | null
           id: string
@@ -685,6 +686,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_from_version_id?: string | null
           duration_ms?: number | null
           height?: number | null
           id: string
@@ -711,6 +713,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_from_version_id?: string | null
           duration_ms?: number | null
           height?: number | null
           id?: string
