@@ -2,9 +2,18 @@
  * node tests/visual/b105a-ingest-adapter.mjs [baseUrl] [outputDirectory]
  * No upload, server function, or paid service call.
  */
-import { chromium } from 'playwright';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { mkdirSync } from 'node:fs';
 const [base = 'http://localhost:8080', out = '/tmp/browser/b105a-adapter'] = process.argv.slice(2);
+let chromium;
+try { ({ chromium } = await import('playwright')); }
+catch (error) {
+  if (error.code !== 'ERR_MODULE_NOT_FOUND') throw error;
+  // Sandbox already provides Python Playwright; do not install another npm package.
+  execFileSync('python3', [fileURLToPath(new URL('./b105a-ingest-adapter.py', import.meta.url)), base, out], { stdio: 'inherit' });
+  process.exit(0);
+}
 mkdirSync(out, { recursive: true });
 let pass = 0, fail = 0;
 const check = (ok, description) => {

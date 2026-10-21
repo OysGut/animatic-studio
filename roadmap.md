@@ -1,7 +1,8 @@
 # Veikart
 
 ## B-105a og KR-1 (21.10.2026)
-- [ ] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
+- [x] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
+- [x] Bildegrunnlag: ren størrelses-/filvalgplan, nettleseradapter og 64-elementers LRU; 2205 Vitest / 6 nettleseradapterkontroller bestått.
 - [ ] Felles ingestImage, avledede filer, bakgrunnsoppgradering og begrenset konturbuffer.
 - [ ] Flytt Story Lab- og bildepromptbygging til autoriserte serveroppgaver.
 - [ ] Enhets-/arkitekturtester, sekvensielle visuelle regresjoner, full Vitest og lokale DB-tester.
