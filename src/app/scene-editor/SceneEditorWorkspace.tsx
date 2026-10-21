@@ -472,7 +472,8 @@ function Editor({
     if (!composition) return [];
     const out: string[] = [];
     for (const l of layersOf(state, composition.id)) {
-      for (const v of layerVersions(state, l)) out.push(v.mediaPath);
+      // B-105a: scenevisningen bruker proxyn når den finnes (fallback: originalen)
+      for (const v of layerVersions(state, l)) out.push(versionImagePath(v, "playback"));
     }
     return out;
   }, [state, composition]);

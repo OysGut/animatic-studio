@@ -159,10 +159,10 @@ export function AssetStudio({
     const out: string[] = [];
     for (const l of Object.values(view.layers))
       if (l.compositionId === comp.id && !l.removed)
-        for (const v of layerVersions(view, l)) out.push(v.mediaPath);
+        for (const v of layerVersions(view, l)) out.push(versionImagePath(v, "playback"));
     if (asset)
       for (const v of variantsOf(view, asset.id))
-        for (const ver of versionsOf(view, v.id)) out.push(ver.mediaPath);
+        for (const ver of versionsOf(view, v.id)) out.push(versionImagePath(ver, "playback"));
     return out;
   }, [view, comp.id, asset]);
   const urls = useImageUrls(paths).data ?? {};

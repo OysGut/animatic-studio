@@ -3,7 +3,7 @@
  * bildebuffer for visningen og miniatyrene i monteringen.
  */
 import { useEffect, useMemo, useRef, useState } from "react";
-import { layerVersions, layersOf, type FilmClip, type ProjectState } from "@/core";
+import { layerVersions, layersOf, versionImagePath, type FilmClip, type ProjectState } from "@/core";
 import { ImageCache } from "@/engine/compositor/canvas";
 import { useImageUrls } from "@/app/library/asset-images";
 
@@ -18,7 +18,8 @@ export function filmImagePaths(state: ProjectState, clips: readonly FilmClip[]):
   for (const c of clips) {
     if (!c.compositionId) continue;
     for (const l of layersOf(state, c.compositionId)) {
-      for (const v of layerVersions(state, l)) out.add(v.mediaPath);
+      // B-105a: avspilling og miniatyrer bruker proxyn når den finnes (fallback: originalen)
+      for (const v of layerVersions(state, l)) out.add(versionImagePath(v, "playback"));
     }
   }
   return [...out];
