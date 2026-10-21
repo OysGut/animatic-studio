@@ -74426,5 +74426,8 @@
   },
   "app-i18n-language.language-switch.change-title": {
     "text": "Change language"
+  },
+  "app-library-derived-backfill.label": {
+    "text": "Saved derived image files"
   }
 }
