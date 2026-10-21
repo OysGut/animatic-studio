@@ -50245,33 +50245,33 @@
     "plural": {
       "parameter": "count",
       "forms": {
-        "other": "追加された{count}行は保持されます (バージョン内の別のシーンで使用されているか、プロダクションセグメントの境界として使用されています)。"
+        "other": "追加された{count}行は保持されます（このバージョンの別のシーンで使用されているか、制作セグメントの境界として使用されています）。"
       }
     },
-    "sourceHash": "504faec34502be8f93c4aa30aac278ba83da05fc255b3b186c6542ad145d4169",
-    "review": "user"
+    "sourceHash": "bcfa0f379bddaaeeaed4d123af5ac458199ef8aa57c5af72e94d0cce9c292802",
+    "review": "machine"
   },
   "core-screenplay-restore-version.lines-missing": {
     "text": null,
     "plural": {
       "parameter": "count",
       "forms": {
-        "other": "{count} 行は既に存在しません。"
+        "other": "{count}行はすでに存在しません。"
       }
     },
-    "sourceHash": "a7e9423616491283967d865003d64a647057ff2415cf119fc7d61905458a5a0d",
-    "review": "user"
+    "sourceHash": "7c712566ed63e64707cccbeba179e8b70454026a742a2f63a9ef3418b21113ad",
+    "review": "machine"
   },
   "core-screenplay-restore-version.lines-moved": {
     "text": null,
     "plural": {
       "parameter": "count",
       "forms": {
-        "other": "{count} 行は別のシーンに移動されたため（分割または結合）、ここでは復元されません。"
+        "other": "{count}行は分割または結合によって別のシーンに移動されているため、ここでは復元されません。"
       }
     },
-    "sourceHash": "75e38a49167c79f7063c57b785416d50f9877421dad701c44b28275fd8d7d04c",
-    "review": "user"
+    "sourceHash": "605f4bdc0795227ac242575b88078f9531ecbed359fe35cddaf632fb45a35142",
+    "review": "machine"
   },
   "core-screenplay-restore-version.restore-version-plan.issue.4aa9bec63821": {
     "text": "このシーンはバージョン作成後に（分割によって）作成され、そのバージョンのテキストを含んでいます。アクティブなまま保持されます。",
@@ -53261,6 +53261,421 @@
   "b097.sound-kind.music": {
     "text": "音楽",
     "sourceHash": "25fe89b95f6e4160b7d07ccaf5f13d9b402338e698ef08a9c6a11dc85c6a1c99",
+    "review": "machine"
+  },
+  "time.just-now": {
+    "text": "たった今",
+    "sourceHash": "4f9e5f9554cd7ed66cce3e8b4f6b6594784382e441c5a1c61ff1ad68971c6b5b",
+    "review": "machine"
+  },
+  "time.minutes-ago": {
+    "text": "{n}分前",
+    "sourceHash": "7fc5c94ae9d1aec009bca50a160cfed8746dcdfc398ab0f9a61f48418157d86e",
+    "review": "machine"
+  },
+  "time.hours-ago": {
+    "text": "{n}時間前",
+    "sourceHash": "31913dc8329a1f856eac0a2133d22caadc78e7790665a99ce1ea2cd01e2d0445",
+    "review": "machine"
+  },
+  "time.weekday-at": {
+    "text": "{weekday} {time}",
+    "sourceHash": "d677d9712719c3de3544d2cc9a624a20950aea5a9a8017bc4c126f1de2c11fb0",
+    "review": "machine"
+  },
+  "time.exact": {
+    "text": "{date} {weekday} {time}",
+    "sourceHash": "fede260d9d9a5bb05f6b5726c96bcb5deb2f1825aea154802be2cad184b68428",
+    "review": "machine"
+  },
+  "b098.command.font-mismatch": {
+    "text": "フォントデータはフォントアセットにのみ対応し、フォントアセットにはフォントパッケージが必要です。",
+    "sourceHash": "84f593af9003e0fe52d1332c73edba08d57a4b6b6636a73946ddd690a3c29c96",
+    "review": "machine"
+  },
+  "b098.global-kind.font": {
+    "text": "フォント",
+    "sourceHash": "dbd82d0d72af9d9315bf1cea68e7ee1ab65fd1413bec366c108b3027e9ac4e9d",
+    "review": "machine"
+  },
+  "b098.add.error.upload": {
+    "text": "フォントファイルを保存できませんでした。もう一度お試しください。",
+    "sourceHash": "0330de2566df8b82f64ad73748aa34224c2f31aaa838be7a5f602b6173ce82a5",
+    "review": "machine"
+  },
+  "b098.add.undo-label": {
+    "text": "フォント「{family}」を追加",
+    "sourceHash": "da0595385dceda8a48b11a6100047aea204abf6ce2b71b439ab00015e43aba0a",
+    "review": "machine"
+  },
+  "b098.add.variant-name": {
+    "text": "標準",
+    "sourceHash": "eb77bb0293ba80ac2411b6b97b7b69df165a4e07dca6cb95740c5ff04943d73b",
+    "review": "machine"
+  },
+  "b098.category.serif": {
+    "text": "セリフ",
+    "sourceHash": "22d08931ece148a8a7cf2946048899783721550cacb2411455d20d8d3cdd0e3d",
+    "review": "machine"
+  },
+  "b098.category.sans": {
+    "text": "サンセリフ",
+    "sourceHash": "f1347868f829482dd308cdc57f13bdf5a2747b2cf6e2c6f30cee0df7edb691ca",
+    "review": "machine"
+  },
+  "b098.category.display": {
+    "text": "ディスプレイ",
+    "sourceHash": "2751b0c7727a0997aa6f3c62fdc3c680f1509f0f1d2fd567c66ae93a60b77256",
+    "review": "machine"
+  },
+  "b098.category.handwriting": {
+    "text": "手書き",
+    "sourceHash": "8dfaf0b6eaf7306998803fa0e4a3ebccc7f18b67a1698e52427bd7239a6d85ce",
+    "review": "machine"
+  },
+  "b098.category.mono": {
+    "text": "等幅",
+    "sourceHash": "e12aa86962ecc0e73fae6d71058e7e32e6eefe8906d4938bad83217fa62d90cb",
+    "review": "machine"
+  },
+  "b098.variant.regular": {
+    "text": "{weight}",
+    "sourceHash": "2d85ae31b79eeab8a783b540fc9d6021be0b26d63360fc1a31c8f53bf7804432",
+    "review": "machine"
+  },
+  "b098.variant.italic": {
+    "text": "{weight} イタリック",
+    "sourceHash": "72bbdb86d395eca6044a65d6c0aad8259825f46b2eeb9863df6987cffebce5ae",
+    "review": "machine"
+  },
+  "b098.sample.default": {
+    "text": "ドヴレのブルーベリージャムとまっとうなビール",
+    "sourceHash": "9e01325ebdc6f09ae56ae4ed797970e7db39a91dc986427197115658687ab285",
+    "review": "machine"
+  },
+  "b098.unavailable": {
+    "text": "現在、Google Fontsのカタログを利用できません。追加済みのフォントはこれまでどおり使用できます。",
+    "sourceHash": "8b5f3a753dd86ff9f788ab5db684f449674fb83c71c700489308c19d88216434",
+    "review": "machine"
+  },
+  "b098.dialog.title": {
+    "text": "フォントを追加",
+    "sourceHash": "f96dd7b370d888269b4062e4af2faa3dbc9cc251c20b7a9440829bbe5f9a4272",
+    "review": "machine"
+  },
+  "b098.dialog.description": {
+    "text": "Google Fontsを検索します。フォントはプロジェクトに保存され、オフラインでも使用できます。すべてのデータは当社のサーバー経由で取得され、Googleから直接取得されることはありません。",
+    "sourceHash": "570acd9b547ff579b93a53e73dfaac030c3315d8be823ce3054ca71a8a972fc9",
+    "review": "machine"
+  },
+  "b098.search.label": {
+    "text": "名前で検索",
+    "sourceHash": "4e0b35a4f4aebd57387726559a760fe544fa70b236e70c3cba9dc0160af38433",
+    "review": "machine"
+  },
+  "b098.search.placeholder": {
+    "text": "例：Lato、または名前を貼り付け",
+    "sourceHash": "025a1565cc262b772e903a74e9390786911e696b195422babb0ccb3601c43124",
+    "review": "machine"
+  },
+  "b098.filter.category": {
+    "text": "カテゴリ",
+    "sourceHash": "375e9f59c64efe449443d8aa9a691bf219786c31b979b256c90df4d1e53dab1e",
+    "review": "machine"
+  },
+  "b098.filter.subset": {
+    "text": "文字体系",
+    "sourceHash": "b66ef7e1052a98fa58235776665284ae3510d514598b707f7908277d30330ea4",
+    "review": "machine"
+  },
+  "b098.filter.all": {
+    "text": "すべて",
+    "sourceHash": "c7ae6d8a864120f0e467f680f4eb9fbdea9562ab029bd21d1c92136b3ba4c568",
+    "review": "machine"
+  },
+  "b098.open-google": {
+    "text": "Google Fontsを開く",
+    "sourceHash": "dd0bde4f70d2456c33aa1bf46c331756f1f5399e5a2809a35129efe7653a74ed",
+    "review": "machine"
+  },
+  "b098.results.label": {
+    "text": "検索結果",
+    "sourceHash": "1a00c474a0479586d2d48e9813cf50167ff0890772dd7b7998cd318b861d48f9",
+    "review": "machine"
+  },
+  "b098.loading": {
+    "text": "カタログを読み込み中…",
+    "sourceHash": "1370ba9c62a4d554037a2815d6e7522db013f25c08cea592bd2925fe786cb0be",
+    "review": "machine"
+  },
+  "b098.results.none": {
+    "text": "検索条件に一致するフォントがありません。",
+    "sourceHash": "363298a514aa94344bb3b1f6eb7e7e20f99c2262692e34706573f4b8950f2fd0",
+    "review": "machine"
+  },
+  "b098.sample.label": {
+    "text": "サンプルテキスト",
+    "sourceHash": "d8a99711fbab9c39c3aaac5ab82f8b237bbb303a003caa644b16825ccacb2cf5",
+    "review": "machine"
+  },
+  "b098.variants.label": {
+    "text": "ウェイトとスタイル（最大{max}件）",
+    "sourceHash": "696d7c7da7e5a43884c37c8f378178312a2df5a013cd57e3649e2b9ba3db6ec8",
+    "review": "machine"
+  },
+  "b098.license": {
+    "text": "ライセンス：{license}",
+    "sourceHash": "36848ba33f0802d7288407e8a68af1ea897fd5731b304ec464b5661bfc4ed553",
+    "review": "machine"
+  },
+  "b098.license.notice": {
+    "text": "このフォントにはOFLやApacheではなく、Ubuntu Font Licence（UFL）が適用されます。使用できますが、映画やポスターを公開する前にライセンスをお読みください。",
+    "sourceHash": "4985a0331215bcc9ac0669015a71c72cb5e3d27c52e1cfb575dcc39e49f3f514",
+    "review": "machine"
+  },
+  "b098.pick-hint": {
+    "text": "一覧からフォントを選ぶと表示されます。",
+    "sourceHash": "d83c72f830a48a6f25cfac6ed79ed4744d93ee42997f4357fa53ab985c37bced",
+    "review": "machine"
+  },
+  "b098.cancel": {
+    "text": "キャンセル",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "b098.adding": {
+    "text": "追加中…",
+    "sourceHash": "58bdc7a2725e012e0666edc91138e0ff7fd6b0e7a33e13f89cd39a04355dc106",
+    "review": "machine"
+  },
+  "b098.add": {
+    "text": "追加",
+    "sourceHash": "9b9a04a34fdd529a28d54944b018c52e0b64f769ae4e32491134c6cb6545c560",
+    "review": "machine"
+  },
+  "b098.picker.project-fonts": {
+    "text": "プロジェクト内のフォント",
+    "sourceHash": "82e1eaffdec24fed186178aeb9f9c16585b888704fbe247223abd6289eeff12e",
+    "review": "machine"
+  },
+  "b098.picker.removed": {
+    "text": "{family}（削除済み — 代替フォントを使用）",
+    "sourceHash": "823ff4900729a60f21ba018ea59a2f883009c36cde991e757105cfce2026a893",
+    "review": "machine"
+  },
+  "b098.picker.add": {
+    "text": "フォントを追加…",
+    "sourceHash": "c3ad21eac97647cb37488b6bc6ab57d3b9452f0a5837cde93acc4d33b9d2c05a",
+    "review": "machine"
+  },
+  "b098.kind-plural.font": {
+    "text": "フォント",
+    "sourceHash": "8a8e447257ce7717ec9e7a9c74c608b6f8a01ac57d6e72245ea6269280f4c237",
+    "review": "machine"
+  },
+  "b109.auth.closed": {
+    "text": "現在、このサービスでは新規ユーザーを受け付けていません。",
+    "sourceHash": "46933a292e30360666ca145012b6b8b8e7da0f122aafdd98bca88f4f0e91ec89",
+    "review": "machine"
+  },
+  "b109.admin.title": {
+    "text": "新規登録",
+    "sourceHash": "687dceab708af64dcbfcd7cfd8eb0f67396fb73a2a2e319083e0a238781d6ccd",
+    "review": "machine"
+  },
+  "b109.admin.note": {
+    "text": "新規登録を停止すると、新しいアカウントを作成できなくなります。既存のユーザーはこれまでどおりログインでき、未使用の招待があるメールアドレスでは引き続きアカウントを作成できます。",
+    "sourceHash": "5c99ee18076a37291e2f45ab4fb445b05ebf842a2bac0d5b7d97fb0772664a75",
+    "review": "machine"
+  },
+  "b109.admin.label": {
+    "text": "新規登録：",
+    "sourceHash": "bfbc110d271d7cd60219f3c2152d164b9873fd00adbb10b59bbe7d0ea398afce",
+    "review": "machine"
+  },
+  "b109.admin.open": {
+    "text": "受付中",
+    "sourceHash": "8a0118d34ad287b3b1a23e190ac2e51d66dd70807322e44a7c92c52b59a95be9",
+    "review": "machine"
+  },
+  "b109.admin.closed": {
+    "text": "停止中",
+    "sourceHash": "526c51465f48b5b2d42bd8240fa8b65cec3a499b26b76998cf0646d5de64d5e3",
+    "review": "machine"
+  },
+  "b109.admin.message": {
+    "text": "新規登録停止中にログインページに表示するメッセージ（任意）",
+    "sourceHash": "b2c5d3fda17faf37a3b52984b980836edf71172df8b97cc5fa92dc1f535ea20d",
+    "review": "machine"
+  },
+  "b109.admin.save-message": {
+    "text": "メッセージを保存",
+    "sourceHash": "0b3cbfaf6aa6e769c8ffd5d169b0fe16624bd7766e002517df0ec0475901d871",
+    "review": "machine"
+  },
+  "b109.admin.changed": {
+    "text": "最終変更：{when}、変更者：{who}。",
+    "sourceHash": "435529f9ca18781e0cf0c5f14bd8d0e56faa99c854eab7c2c381f6663dbe8a9c",
+    "review": "machine"
+  },
+  "b109.admin.never-changed": {
+    "text": "まだ変更されていません（既定では受付中）。",
+    "sourceHash": "54d7ec57c2d535de77884698010ad61152e0c71b6a76a0af6a3f22dca9f8efbb",
+    "review": "machine"
+  },
+  "b109.admin.unknown-user": {
+    "text": "不明なユーザー",
+    "sourceHash": "5d8b493779635372a5a2992babfb4513f6433c4bd4a638341918be15dae3f7be",
+    "review": "machine"
+  },
+  "b109.admin.loading": {
+    "text": "読み込み中…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b109.admin.unavailable": {
+    "text": "この設定はまだ利用できません。",
+    "sourceHash": "e7c8738cd1eca6524df8decf77246f6847004c03aad6af8e9c76ebd230807dcd",
+    "review": "machine"
+  },
+  "b109.admin.failed": {
+    "text": "変更は保存されませんでした。もう一度お試しください。",
+    "sourceHash": "6388ae0e596f6f9513fb23a10c4fe87895f301a4ae54d8a0dbfb9ac9b01e2e49",
+    "review": "machine"
+  },
+  "b109.admin.confirm-close-title": {
+    "text": "新規登録を停止しますか？",
+    "sourceHash": "7d2edf8aaad1c1ca3867475fde5acac1b732122ca3edb8fefca8557ae8d1d9f5",
+    "review": "machine"
+  },
+  "b109.admin.confirm-close": {
+    "text": "受付を再開するまで、新しいアカウントを作成できなくなります。既存のユーザーと招待された方には影響しません。",
+    "sourceHash": "6224a3a173b41e6ea3d8f4663f22f179a51f65eaca73a9d582b6c7a5c25a8777",
+    "review": "machine"
+  },
+  "b109.admin.confirm-close-ok": {
+    "text": "停止",
+    "sourceHash": "e8b18396064c1a5f49e211a1cfca295a50ace87cebb16890ebb2c2fae97a4b95",
+    "review": "machine"
+  },
+  "b109.admin.confirm-open-title": {
+    "text": "新規登録を開始しますか？",
+    "sourceHash": "00cd14827768b584ba29442d7e2592b006b579474c1287e8b44b7780ba006fd0",
+    "review": "machine"
+  },
+  "b109.admin.confirm-open": {
+    "text": "誰でも再び新しいアカウントを作成できるようになります。",
+    "sourceHash": "8087911dc5c79075ed81281d4b5b7ff547a6d42d31e6aa901c58edc8978a7b83",
+    "review": "machine"
+  },
+  "b109.admin.confirm-open-ok": {
+    "text": "開始",
+    "sourceHash": "8a0118d34ad287b3b1a23e190ac2e51d66dd70807322e44a7c92c52b59a95be9",
+    "review": "machine"
+  },
+  "b109.admin.cancel": {
+    "text": "キャンセル",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "b110.captcha.failed": {
+    "text": "ロボットではないことを確認できませんでした。もう一度お試しください。",
+    "sourceHash": "3ab281be2008e93c9a3ed447663f90b8a77d74d66e8a7584112d996197bc1cae",
+    "review": "machine"
+  },
+  "b110.captcha.unavailable": {
+    "text": "現在、ロボット確認が応答していません。しばらくしてからもう一度お試しください。",
+    "sourceHash": "a51d58e008ef0f14c26b4edc909cc25a4932f780d923b641720cca69faf61dea",
+    "review": "machine"
+  },
+  "b110.captcha.retry": {
+    "text": "再試行",
+    "sourceHash": "d9e949c5c342cf66a13e8b0c74f61da560c11f6357a5a910ff650880c0e98647",
+    "review": "machine"
+  },
+  "b110.captcha.confirm": {
+    "text": "下の枠内でロボットではないことを確認してください。操作は自動的に続行されます。",
+    "sourceHash": "0801b3e5dd0d760c7ee70d0222313838b5c716237ea8f9bb2486d5b4f574f37b",
+    "review": "machine"
+  },
+  "b110.admin.on": {
+    "text": "ロボット確認（Cloudflare Turnstile）は有効です。",
+    "sourceHash": "b9091215a4d193fe348fed80cce9b2679dcc682bd0d5a9cefde32e472e7d980c",
+    "review": "machine"
+  },
+  "b110.admin.off-title": {
+    "text": "ロボット確認は無効です。",
+    "sourceHash": "9d01584fcd36bd7b0bb9576605d43fdc41550af9d07c40f14a6abf4ea0d78d82",
+    "review": "machine"
+  },
+  "b110.admin.off": {
+    "text": "サーバーにCloudflare Turnstileのキー（TURNSTILE_SITE_KEYとTURNSTILE_SECRET_KEY）がありません。新規登録、ログインリンク、「パスワードを忘れた場合」は機能しますが、CAPTCHAは使用されません。",
+    "sourceHash": "f8aadefca7243aa04709d34d1af63c4ef0de62bb0d07b8804bf460f9cf509bf3",
+    "review": "machine"
+  },
+  "b110.privacy.turnstile": {
+    "text": "ロボットによるアカウント作成やフォームの不正利用を防ぐため、新規登録、ログインリンク、「パスワードを忘れた場合」、およびログインに複数回失敗した後に、Cloudflare Turnstile（Cloudflare, Inc.）を使用します。Turnstileは、人とロボットを区別するために、ブラウザーと接続に関する技術情報（IPアドレスやブラウザーのシグナルを含む）を処理します。トラッキングCookieは設定せず、広告目的にも使用されません。確認が承認された際に、お客様のIPアドレスをCloudflareに送信します。法的根拠は、サービスを保護するための当社の正当な利益です（GDPR第6条第1項(f)）。",
+    "sourceHash": "9fb89ab0d9b4b5c8d63f593c88121cadfa723406d874c56f67874c80bc1a085e",
+    "review": "machine"
+  },
+  "server.error.invalid_request": {
+    "text": "無効なリクエスト",
+    "sourceHash": "1ae662cfa93bd623e75cba882daf07aded130ac2dfba1efe8f79b65fc04551c8",
+    "review": "machine"
+  },
+  "server.error.invalid_project_id": {
+    "text": "無効なプロジェクトID",
+    "sourceHash": "5ee52eeec0e4a51052a59225bb20355c7a469ca4da8fd8a52b802b8fea881d23",
+    "review": "machine"
+  },
+  "server.error.invalid_command": {
+    "text": "無効なコマンド",
+    "sourceHash": "4d9b874270b63b21e953820abf11a1966d8c0ce32e93b5a76b9600bb20b7d35a",
+    "review": "machine"
+  },
+  "server.error.invalid_revisions": {
+    "text": "無効なリビジョン",
+    "sourceHash": "7609af8c2dfff356dffa2bb185c4d273a83ad8219cffc0236bc47c011f0f8d3a",
+    "review": "machine"
+  },
+  "server.error.change_too_large": {
+    "text": "変更が大きすぎます",
+    "sourceHash": "c3b41ae6bc26fb489080d496d6043417f8d6826a30cb3f86bfaabb71f02ef64e",
+    "review": "machine"
+  },
+  "server.error.invalid_command_id": {
+    "text": "無効なコマンドID",
+    "sourceHash": "e4ac2db6368cf27d638dd1c785bdae49592b1b9848176952f20204546c13dcb2",
+    "review": "machine"
+  },
+  "server.error.no_workspace_access": {
+    "text": "ワークスペースへのアクセス権がありません",
+    "sourceHash": "c28c7004b0c9e07ec8d23f981afb11fde4e0b549f494a1e96b658cfc6e08525f",
+    "review": "machine"
+  },
+  "server.error.asset_missing": {
+    "text": "アセットが存在しません",
+    "sourceHash": "cc7b6a9b4701d905ff8c715c27247c8e432561bbdea1466a6d922cb8bc3f7721",
+    "review": "machine"
+  },
+  "server.error.storage_no_response": {
+    "text": "ストレージが応答しませんでした",
+    "sourceHash": "958b8b4d7e72acc78625c0a28ac695c4a7164bb1ca47163b47a238d8bb0ca409",
+    "review": "machine"
+  },
+  "server.error.invalid_storage_path": {
+    "text": "無効なストレージパス",
+    "sourceHash": "7166bac0d3080633cdfa5fc1643ee64a3445ed70d1e25380f273c3e1e74b4b8c",
+    "review": "machine"
+  },
+  "server.error.invalid_script_revision": {
+    "text": "無効な脚本リビジョン",
+    "sourceHash": "e705688b9548f42a8f74d60184c48018400383d62b25cb63c657967fb0a788b3",
+    "review": "machine"
+  },
+  "server.error.text_too_long": {
+    "text": "テキストが長すぎます（最大{max}文字）",
+    "sourceHash": "56b2301d54e20013e7ce0ea7eaf70c027a039f12bf6fc9d9a25270e933e328f9",
     "review": "machine"
   }
 }
