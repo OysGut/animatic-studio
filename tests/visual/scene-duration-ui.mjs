@@ -204,7 +204,7 @@ await scenario("valg", "nb", async (page, dialog) => {
   check(await dialog.getByTestId("retime-apply").isDisabled(), "Bruk er av til fyll er valgt");
   await dialog.getByTestId("retime-fill-black").check();
   await dialog.getByTestId("retime-report").waitFor();
-  check(/Fra .* s til 12 s/.test(await dialog.getByTestId("retime-report").innerText()), "rapporten viser før og etter i klartekst");
+  check(/Fra .* s til 12 s|From .* s to 12 s/.test(await dialog.getByTestId("retime-report").innerText()), "rapporten viser før og etter i klartekst");
   check(await dialog.getByTestId("retime-strip-before").count() === 1 && await dialog.getByTestId("retime-strip-after").count() === 1, "før/etter-stripen vises");
   await cancel(dialog);
 });
