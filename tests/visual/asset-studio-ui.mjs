@@ -256,6 +256,7 @@ await scenario("kriterium-5-6", "nb", async (page, studio) => {
   await save(page, studio);
   await waitHidden(studio);
   const st = (drafts().at(-1)?.steps ?? []).find((s) => s.type === "UpdateAudioClips");
+  if (process.env.DBG) console.log("DBG", JSON.stringify(drafts().map(d => (d.steps ?? []).map(s => s.type + ":" + JSON.stringify(s.clips ?? "").slice(0, 300)))), JSON.stringify(commands.map(c => c?.type)));
   check(st?.clips?.length === 1 && st.clips[0].clipId === MUSIC && st.clips[0].fields.muted === true, "6: «Lagre demping i scenen» lagrer bare det valgte klippet");
 });
 
