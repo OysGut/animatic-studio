@@ -28,7 +28,16 @@ describe('B-107 transactional locale import', () => {
   it('omits outdated translation and exports it for translation again', () => fixture((root, parts) => {
     writeFileSync(join(parts, 'fr_del_01_av_01.json'), JSON.stringify({ hello: { en: 'Old {name}', oversatt: 'Ancien {name}' } }));
     expect(importLocale('fr', parts, root).report.stale).toHaveLength(1);
-    expect(exportNew('fr', root)).toEqual({ hello: { nb: 'Hei {name}', en: 'Hello {name}', oversatt: '' } });
+    expect(exportNew('fr', root)).toEqual({ hello: { nb: 'Hei {name}', en: 'Hello {name}', sourceHash: sourceHash({ text: 'Hello {name}' }), oversatt: '' } });
+    expect(existsSync(join(root, 'src/core/i18n/locales/fr.json'))).toBe(false);
+  }));
+  it('rejects changed formatting metadata even when English words are unchanged', () => fixture((root, parts) => {
+    const original = { text: 'Hello {name}' };
+    writeFileSync(join(root, 'src/core/i18n/locales/en.json'), JSON.stringify({ hello: { ...original, formats: { name: 'number' } } }));
+    const path = join(root, 'src/core/i18n/locales/fr.json'); writeFileSync(path, 'KEEP');
+    writeFileSync(join(parts, 'fr_del_01_av_01.json'), JSON.stringify({ hello: { en: original.text, sourceHash: sourceHash(original), oversatt: 'Bonjour {name}' } }));
+    expect(importLocale('fr', parts, root).report.stale).toHaveLength(1);
+    expect(readFileSync(path, 'utf8')).toBe('KEEP');
   }));
   it.each(['{invalid', JSON.stringify({ unknown: { en: 'Unknown', oversatt: '?' } })])('rejects invalid JSON or unknown keys', data => fixture((root, parts) => {
     writeFileSync(join(parts, 'fr_del_01_av_01.json'), data);

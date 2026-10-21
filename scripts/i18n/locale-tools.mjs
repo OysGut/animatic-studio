@@ -51,7 +51,7 @@ export function importLocale(code, directory, root = ROOT, { write = true } = {}
       if (!source) { errors.push({ file, key, error: 'Unknown key' }); continue; }
       if (!entry || typeof entry !== 'object') { errors.push({ file, key, error: 'Expected translation entry' }); continue; }
       // Old English is not a translation of the current message: omit, never silently reuse it.
-      if (JSON.stringify(entry.en) !== JSON.stringify(sourceValue(source))) { stale.push({ file, key, error: 'English source changed' }); continue; }
+      if (JSON.stringify(entry.en) !== JSON.stringify(sourceValue(source)) || (entry.sourceHash !== undefined && entry.sourceHash !== sourceHash(source))) { stale.push({ file, key, error: 'English source changed' }); continue; }
       for (const error of validateTranslation(code, source, entry.oversatt)) errors.push({ file, key, error });
       catalog[key] = { text: source.plural ? null : entry.oversatt, ...(source.plural ? { plural: { ...source.plural, forms: entry.oversatt } } : {}), ...(source.formats ? { formats: source.formats } : {}), sourceHash: sourceHash(source), review: 'user' };
     }
@@ -61,14 +61,14 @@ export function importLocale(code, directory, root = ROOT, { write = true } = {}
   // Supplement imports preserve current reviewed entries; stale entries are never carried forward.
   for (const key of missing) if (existing[key]?.sourceHash === sourceHash(en[key])) catalog[key] = existing[key];
   const report = { code, files: files.length, imported: Object.keys(catalog).length, errors, stale, missing };
-  if (!errors.length && write) writeFileSync(join(root, `src/core/i18n/locales/${code}.json`), JSON.stringify(catalog, null, 2) + '\n');
+  if (!errors.length && !stale.length && write) writeFileSync(join(root, `src/core/i18n/locales/${code}.json`), JSON.stringify(catalog, null, 2) + '\n');
   return { catalog, report };
 }
 export function exportNew(code, root = ROOT, machine = false) {
   const en = read(join(root, 'src/core/i18n/locales/en.json')), nb = read(join(root, 'src/core/i18n/locales/nb.json'));
   let locale = {}; try { locale = read(join(root, `src/core/i18n/locales/${code}.json`)); } catch { /* new locale */ }
   const retired = retiredKeys(root);
-  return Object.fromEntries(Object.entries(en).filter(([key, message]) => !retired.has(key) && message.executable !== false && (machine ? locale[key]?.review === 'machine' : !locale[key] || locale[key].sourceHash !== sourceHash(message))).map(([key, message]) => [key, { nb: sourceValue(nb[key]), en: sourceValue(message), oversatt: machine && locale[key] ? sourceValue(locale[key]) : message.plural ? Object.fromEntries(new Intl.PluralRules(code).resolvedOptions().pluralCategories.map(c => [c, ''])) : '' }]));
+  return Object.fromEntries(Object.entries(en).filter(([key, message]) => !retired.has(key) && message.executable !== false && (machine ? locale[key]?.review === 'machine' : !locale[key] || locale[key].sourceHash !== sourceHash(message))).map(([key, message]) => [key, { nb: sourceValue(nb[key]), en: sourceValue(message), sourceHash: sourceHash(message), oversatt: machine && locale[key] ? sourceValue(locale[key]) : message.plural ? Object.fromEntries(new Intl.PluralRules(code).resolvedOptions().pluralCategories.map(c => [c, ''])) : '' }]));
 }
 export function localeFreshnessErrors(root = ROOT) {
   const manifest = read(join(root, 'src/core/i18n/manifest.json'));

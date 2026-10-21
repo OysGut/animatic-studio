@@ -523,7 +523,7 @@ await run(
     await page.waitForTimeout(2500);
     check((await page.getByTestId("account-page").innerText()).includes("My account"), "byttet til engelsk blir stående");
     check(RPC.includes("set_my_locale"), "språkvalget lagres på kontoen");
-    await page.getByRole("button", { name: "NO", exact: true }).click();
+    await page.getByTestId('language-nb').first().click();
     await page.waitForTimeout(2500);
     check((await page.getByTestId("account-page").innerText()).includes("Min konto"), "tilbake til norsk blir stående");
   },

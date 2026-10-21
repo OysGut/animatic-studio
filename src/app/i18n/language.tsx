@@ -1,7 +1,7 @@
 /**
- * Språket i tjenesten (DEC-0081, ML2a). Valget huskes i nettleseren. Serveren og første tegning er alltid
- * på norsk, så tegningen på server og klient er lik. Har brukeren valgt et annet språk, skjuler et lite
- * skript i <head> siden til språket er satt, så norsk aldri vises først.
+ * Språket i tjenesten (B-107/B-111). Serveren velger fra preferansekapsel og Accept-Language;
+ * routeren laster samme katalog før hydrering. Profilvalg vinner når kontoen er lest.
+ * Et eldre eksplisitt lokalt valg skjuler siden kort til den tilhørende katalogen er klar.
  * Språkbytte tegner visningen på nytt uten å montere den på nytt, så åpne utkast og pågående arbeid
  * beholdes. Sidene og de hurtigbufrede panelene abonnerer med `useLanguage()`.
  * Valgbare språk hentes fra språkmanifestet; testspråk (`en-XA`) vises bare i utviklings- og testmodus.
@@ -20,7 +20,7 @@ export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
 export const LANGUAGE_PENDING_CLASS = "lang-pending";
 
-/** Kjøres i <head> før første tegning. Skjuler siden til et ikke-norsk språk er satt (maks 3 s). */
+/** Kjøres før første tegning. Skjuler avvikende lokalt valg til katalogen er klar (maks 3 s). */
 export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(${JSON.stringify(LANGUAGE_KEY)}),d=document.documentElement;if(v&&v!==d.lang){d.classList.add(${JSON.stringify(LANGUAGE_PENDING_CLASS)});setTimeout(function(){d.classList.remove(${JSON.stringify(LANGUAGE_PENDING_CLASS)})},3000)}}catch(e){}})();`;
 
 const useIso = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -61,7 +61,7 @@ function stored(): UiLang | null {
   }
 }
 
-/** ML3: nettleserens foretrukne visningsspråk (nb for norsk, en for engelsk), ellers null. */
+/** Første komplette registrerte grensesnittspråk i nettleserens liste, ellers null. */
 export function browserUiLanguage(languages: readonly string[]): UiLang | null {
   return matchUiLanguage(languages);
 }
