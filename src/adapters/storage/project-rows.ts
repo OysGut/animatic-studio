@@ -7,7 +7,7 @@ import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/
 import { t } from "@/core/i18n/keyed";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 74;
+export const EXPECTED_SCHEMA_VERSION = 75;
 
 const PAGE = 1000;
 
