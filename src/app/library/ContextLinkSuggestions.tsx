@@ -6,8 +6,9 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Check, Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { contextLinkCommands, contextLinkPrompt, contextLinkSuggestions, contextLinkAssessmentsFromJson, contextLinkDefaultSelected, locale, formatHeading, newId, parseJsonLoose, tm, type Asset, type ContextLinkSuggestion, type ContextLinkAssessment, type ProjectState } from "@/core";
-import { generateText } from "@/adapters/ai/text.functions";
+import { contextLinkCommands, contextLinkSuggestions, contextLinkAssessmentsFromJson, contextLinkDefaultSelected, locale, formatHeading, newId, parseJsonLoose, tm, type Asset, type ContextLinkSuggestion, type ContextLinkAssessment, type ProjectState } from "@/core";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
+import { useStoryPromptChars } from "@/app/storylab/storylab-data";
 import type { Commands } from "@/app/project/use-commands";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { usd, useTextEstimate } from "@/app/storylab/storylab-data";
@@ -53,9 +54,11 @@ export function ContextLinkSuggestions({
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState<string | null>(null);
-  const prompt = useMemo(() => contextLinkPrompt(state, uncertain), [state, uncertain]);
-  const est = useTextEstimate("general", prompt.system.length + prompt.user.length, OUT_TOKENS);
-  const gen = useServerFn(generateText);
+  // B-105a: prompten bygges på serveren; vi sender bare de usikre forslagene.
+  const request = useMemo(() => ({ kind: "contextLink" as const, items: uncertain }), [uncertain]);
+  const promptChars = useStoryPromptChars(state.project.id, "general", request, uncertain.length > 0);
+  const est = useTextEstimate("general", promptChars, OUT_TOKENS);
+  const gen = useServerFn(generateStoryText);
   if (mine.length === 0 && uncertain.length === 0 && !done) return null;
 
   const scene = (occId: string) => {
@@ -78,7 +81,7 @@ export function ContextLinkSuggestions({
     setErr(null);
     try {
       const r = await gen({
-        data: { projectId: state.project.id, task: "general", json: true, system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: OUT_TOKENS },
+        data: { projectId: state.project.id, task: "general", json: true, request, maxTokens: OUT_TOKENS },
       });
       if (!r.ok) return setErr(tm(r.message));
       const m = contextLinkAssessmentsFromJson(parseJsonLoose(r.text), uncertain);

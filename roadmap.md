@@ -1,7 +1,7 @@
 # Veikart
 
 ## Neste i køen: B-087 Rigg runde 5
-- [ ] Start først når B-105a og KR-1 er helt ferdige og rapportert.
+- [x] B-105a og KR-1 rapportert (B105A_REPORT.md).
 - [ ] Utskriftsjobber, elementer og én rad per fysisk kopi; ingen deduplisering, felles innstillinger og gjenutskrift med samme koder.
 - [ ] Additiv migrasjon etter B-105a: peprede QR-/kortkoder, tilgangsbeskyttet oppslag, apply_changes, angring, backup og delete/purge; Claude kjører i Cloud.
 - [ ] Batch-PDF, QR-plassering og tosidig utskrift med testark og forskyvning per bruker/skriver.
@@ -11,11 +11,12 @@
 ## B-105a og KR-1 (21.10.2026)
 - [x] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
 - [x] Bildegrunnlag: ren størrelses-/filvalgplan, nettleseradapter og 64-elementers LRU; 2205 Vitest / 6 nettleseradapterkontroller bestått.
-- [ ] Felles ingestImage, avledede filer, bakgrunnsoppgradering og begrenset konturbuffer.
-- [ ] Flytt Story Lab- og bildepromptbygging til autoriserte serveroppgaver.
-- [ ] Enhets-/arkitekturtester, sekvensielle visuelle regresjoner, full Vitest og lokale DB-tester.
-- [ ] Kontroller produksjonsbunter/kildekart og skriv B105A_REPORT.md.
-- [ ] KR-1: oppdater kravregisteret etter testdekning og kjør build_docs/check_kb.
+- [x] Felles ingestImage, avledede filer, bakgrunnsoppgradering og begrenset konturbuffer.
+- [x] Flytt Story Lab- og bildepromptbygging til autoriserte serveroppgaver.
+- [x] Enhets-/arkitekturtester, sekvensielle visuelle regresjoner, full Vitest og lokale DB-tester.
+- [x] Kontroller produksjonsbunter/kildekart og skriv B105A_REPORT.md.
+- [x] KR-1: oppdater kravregisteret etter testdekning og kjør build_docs/check_kb.
+- [ ] Bildeprompter på serveren – venter på svar fra produkteier (redigerbar prompt).
 
 ## B-107 / B-111 – åpen språkliste (21.10.2026)
 - [x] Fjern .overforing og ignorer gamle øyeblikksbilder.

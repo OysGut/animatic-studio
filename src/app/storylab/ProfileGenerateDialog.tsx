@@ -5,13 +5,13 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useState } from "react";
-import { profileError, profileFromJson, profileGeneratorPrompt, type Asset, type ProjectState, type StoryProfile } from "@/core";
-import { generateText } from "@/adapters/ai/text.functions";
+import { profileError, profileFromJson, type Asset, type ProjectState, type StoryProfile } from "@/core";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { ToolbarButton } from "@/app/shell/workspace-chrome";
 import { fieldDefs, fieldId, fieldText, getField, sectionLabel, setField } from "./profile-fields";
-import { characterLines, names, usd, useTextEstimate } from "./storylab-data";
+import { characterLines, names, usd, useStoryPromptChars, useTextEstimate } from "./storylab-data";
 import { t } from "@/core/i18n/keyed";
 
 const OUT_TOKENS = 4000;
@@ -37,10 +37,12 @@ export function ProfileGenerateDialog({
   const [err, setErr] = useState<string | null>(null);
   const [result, setResult] = useState<{ profile: StoryProfile; fallback: boolean } | null>(null);
   const [picked, setPicked] = useState<Set<string>>(new Set());
-  const gen = useServerFn(generateText);
+  const gen = useServerFn(generateStoryText);
   const lines = useLines ? characterLines(state, asset) : [];
-  const prompt = profileGeneratorPrompt({ name: asset.name, description, lines, language: "nb" });
-  const est = useTextEstimate("storylab_profile", prompt.system.length + prompt.user.length, OUT_TOKENS);
+  // B-105a: profilprompten bygges på serveren; replikkene leses der fra manus.
+  const request = { kind: "profileGenerator" as const, assetId: asset.id, description, useLines, language: "nb" };
+  const promptChars = useStoryPromptChars(projectId, "storylab_profile", request);
+  const est = useTextEstimate("storylab_profile", promptChars || lines.join("\n").length, OUT_TOKENS);
   const defs = fieldDefs().filter((d) => d.type !== "beliefs");
   const nameMap = names(state);
   const diff = result
@@ -56,8 +58,7 @@ export function ProfileGenerateDialog({
           projectId,
           task: "storylab_profile",
           json: true,
-          system: prompt.system,
-          messages: [{ role: "user", content: prompt.user }],
+          request,
           maxTokens: OUT_TOKENS,
         },
       });

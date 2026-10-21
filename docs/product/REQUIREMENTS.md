@@ -5,10 +5,10 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 **ID-er er permanente. Aldri gjenbruk eller omnummerer. Nye krav får neste ledige nummer. Utgåtte krav beholdes med status Utgått.**
 
 ## Nøkkeltall
-- Antall krav: **915**
-- Prioritet: P0: 147, P1: 560, P2: 169, P3: 39
-- Opprinnelse: mandat: 520, brukerbeslutning: 388, teknisk-anbefaling: 7
-- Status: Verifisert: 710, Ikke startet: 81, Implementert – ikke verifisert: 112, Under arbeid: 12
+- Antall krav: **924**
+- Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
+- Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
+- Status: Verifisert: 729, Ikke startet: 69, Implementert – ikke verifisert: 113, Utgått: 1, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -77,8 +77,8 @@ Programmet skal ikke bare være et grensesnitt mot AI-tjenester, men et fullverd
   - e2e: full arbeidsflyt med alle AI-adaptere deaktivert
 - **Implementering:** src/engine/import/browser.ts, src/core/composition/render.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/engine/export/screenplay-pdf.ts, src/engine/export/screenplay-docx.ts
 
-#### REQ-0005 – Offisielt produktnavn er Animatic Studio
-Produktets eneste offisielle navn er «Animatic Studio». «AI Animatic Studio» skal ikke brukes som produktnavn. Betegnelser som AI-generering, AI-modeller, AI-integrasjoner og AI-kvalitetskontroll kan brukes når funksjonaliteten beskrives, men skal ikke være del av selve produktnavnet.
+#### REQ-0005 – Offisielt produktnavn er From Pen to Glass
+Produktets offisielle navn er «From Pen to Glass», med kortformen «Pen to Glass» der det er lite plass. Det tidligere navnet «Animatic Studio» skal ikke stå i tekst brukeren ser; repo-, pakke-, database- og ID-navn beholdes.
 
 - **Kilde:** Kap. 1.1 (l. 27-30) · **Opprinnelse:** mandat · **Type:** design · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** UI
@@ -87,7 +87,7 @@ Produktets eneste offisielle navn er «Animatic Studio». «AI Animatic Studio»
   - Ingen brukerflate, vindustittel, metadata, eksport eller dokumentasjon bruker «AI Animatic Studio» som navn.
 - **Tester:**
   - enhet: søk i kildekode/ressursfiler etter strengen «AI Animatic Studio» gir null treff
-- **Implementering:** src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx
+- **Implementering:** src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx, src/routes/__root.tsx
 - **Merknad:** Jf. kap. 34 pkt. 1.
 
 #### REQ-0006 – Første versjon utvikles i Lovable
@@ -5835,12 +5835,13 @@ Brukergrensesnittet skal kunne bruke norske funksjonsnavn som: Generer scene, Br
 
 - **Kilde:** Kap. 30.3 (l. 1288-1301) · **Opprinnelse:** mandat · **Type:** ux · **Prioritet:** P1 · **Fase:** 2
 - **Moduler:** UI, L10N
-- **Status:** Ikke startet
+- **Status:** Utgått
 - **Akseptansekriterier:**
   - Med norsk UI-språk vises de tolv angitte betegnelsene der funksjonene finnes.
 - **Tester:**
   - enhet: norsk språkfil inneholder betegnelsene
   - visuell: UI-tekster
+- **Merknad:** Erstattet av B-107/B-111 (REQ-0629/0630 og nye krav fra KR-1).
 
 #### REQ-0431 – Engelske tekniske betegnelser internt
 Engelske tekniske betegnelser kan brukes internt der det er hensiktsmessig.
@@ -7782,12 +7783,13 @@ Ressurser (alle typer) skal kunne gjøres globale, slik at de kan brukes i flere
 - **Kilde:** Beslutning DEC-0046 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 5
 - **Moduler:** LIBRARY, SECURITY
 - **Avhengigheter:** REQ-0570
-- **Status:** Ikke startet
+- **Status:** Implementert – ikke verifisert
 - **Akseptansekriterier:**
   - En ressurs kan gjøres global og brukes i et annet prosjekt uten kopiering av filer.
   - Tilgang og sletting av globale ressurser er tydelig og trygg.
 - **Tester:**
   - planlagt
+- **Implementering:** src/adapters/global/global-library.functions.ts, src/app/global/, src/routes/gruppe.$workspaceId.tsx, db/migrations/0052_global_template_spec.sql, db/migrations/0068_global_withdrawals.sql
 
 #### REQ-0572 – Forhåndsvisning av monteringen i eget vindu
 Forhåndsvisningen i monteringen (animatic) skal kunne åpnes i et eget nettleservindu, som i sceneeditoren.
@@ -12268,10 +12270,11 @@ A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
 - **Tester:**
+- **Implementering:** src/core/print/, src/engine/export/rig-pdf.ts, src/app/rig/PrintPanel.tsx
 - **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
 
 #### REQ-0883 – Rigg & 2D-utskrift A5: Konturen er figurens faktiske silhuett, ikke rektangelet
@@ -12279,10 +12282,11 @@ A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
 - **Tester:**
+- **Implementering:** src/core/print/contour.ts, src/app/rig/contour-client.ts
 - **Merknad:** Bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag).
 
 #### REQ-0884 – Rigg & 2D-utskrift A6: Inspeksjonsvinduet kan åpnes uten å skrive ut
@@ -12290,10 +12294,11 @@ A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
 - **Tester:**
+- **Implementering:** src/app/rig/InspectionWindow.tsx
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0885 – Rigg & 2D-utskrift A7: Bredde og høyde kan måles
@@ -12301,10 +12306,11 @@ A7: Bredde og høyde kan måles.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI, COMPOSE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A7: Bredde og høyde kan måles.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts, src/app/rig/InspectionWindow.tsx
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0886 – Rigg & 2D-utskrift A8: Avstand mellom valgfrie punkter kan måles
@@ -12312,10 +12318,11 @@ A8: Avstand mellom valgfrie punkter kan måles.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A8: Avstand mellom valgfrie punkter kan måles.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0887 – Rigg & 2D-utskrift A9: Vinkler kan måles
@@ -12323,10 +12330,11 @@ A9: Vinkler kan måles.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A9: Vinkler kan måles.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0888 – Rigg & 2D-utskrift A10: Forholdstall mellom valgte avstander kan måles
@@ -12334,10 +12342,11 @@ A10: Forholdstall mellom valgte avstander kan måles.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A10: Forholdstall mellom valgte avstander kan måles.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0889 – Rigg & 2D-utskrift A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom
@@ -12345,10 +12354,11 @@ A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI, CORE
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts
 - **Merknad:** Bygges i Runde 3 (inspeksjonsvindu og måleverktøy).
 
 #### REQ-0890 – Rigg & 2D-utskrift A12: Målelinjer skrives ikke automatisk ut
@@ -12356,10 +12366,11 @@ A12: Målelinjer skrives ikke automatisk ut.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A12: Målelinjer skrives ikke automatisk ut.
 - **Tester:**
+- **Implementering:** src/core/print/, src/engine/export/rig-pdf.ts
 - **Merknad:** Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling).
 
 #### REQ-0891 – Rigg & 2D-utskrift A13: mm eller inches
@@ -12367,10 +12378,11 @@ A13: mm eller inches.
 
 - **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A13: mm eller inches.
 - **Tester:**
+- **Implementering:** src/core/print/measure.ts, src/app/rig/
 - **Merknad:** Bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071).
 
 #### REQ-0892 – Rigg & 2D-utskrift A14: Felles utskriftsinnstillinger for en hel batch
@@ -12638,3 +12650,115 @@ Hver 3D-modell er en ny versjon; kildebilde, 2D-figur og aktiv versjon endres al
   - En ny 3D-modell endrer ikke 2D-figuren eller eksisterende versjoner; tidligere 3D-versjoner kan hentes fram.
 - **Tester:**
 - **Merknad:** Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-20).
+
+#### REQ-0916 – Animasjon i Scene og spacing-drag
+Animasjonsfanen er fjernet og animasjonsspor og -paneler ligger i Scene uten dataflytting. Spacing-drag på objektets bane tidsstrekker (Cmd/Ctrl) eller flytter hele animasjonen (Shift) i én kommando med angring; låste tidsrom flyttes ikke og scenens slutt forlenges aldri automatisk.
+
+- **Kilde:** Beslutning B-100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Animasjonsfanen er fjernet og animasjonsspor og -paneler ligger i Scene uten dataflytting. Spacing-drag på objektets bane tidsstrekker (Cmd/Ctrl) eller flytter hele animasjonen (Shift) i én kommando med angring; låste tidsrom flyttes ikke og scenens slutt forlenges aldri automatisk.
+- **Tester:**
+  - nettleser: tests/visual/b100-spacing.mjs 25/25 nb/en
+- **Implementering:** src/app/scene-editor/
+
+#### REQ-0917 – «Sist endret» i scenelisten og land, klokke og datoformat på kontoen
+Scenelisten viser når og av hvem hver scene sist ble endret. Kontoen har land, 12/24-timers klokke og datoformat.
+
+- **Kilde:** Beslutning B-097 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Scenelisten viser når og av hvem hver scene sist ble endret. Kontoen har land, 12/24-timers klokke og datoformat.
+- **Tester:**
+  - db: tests/db/run-db-tests.ts 0073
+- **Implementering:** db/migrations/0073_last_changed_country.sql
+
+#### REQ-0918 – Fonter fra Google Fonts i tekstlag
+Tekstlag kan bruke fonter lagt til fra Google Fonts som prosjektets fontressurser; de lastes lat, eksporten venter på fontene, og feil i katalogen hindrer ikke fonter som allerede er lagt til.
+
+- **Kilde:** Beslutning B-098 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** COMPOSE
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Tekstlag kan bruke fonter lagt til fra Google Fonts som prosjektets fontressurser; de lastes lat, eksporten venter på fontene, og feil i katalogen hindrer ikke fonter som allerede er lagt til.
+- **Tester:**
+  - db: tests/db/run-db-tests.ts 0074
+  - nettleser: tests/visual/fonts-google.mjs
+- **Implementering:** src/adapters/fonts/google-fonts.server.ts, db/migrations/0074_project_fonts.sql
+
+#### REQ-0919 – Mobilopptak med QR i sceneeditoren
+Lydopptaksvinduet i scenen har QR for opptak med mobil. Replikkopptak blir ny versjon uten automatisk aktivering; andre lydtyper blir ny lydressurs ved playheadet. Rå lyd slår av lydbehandling og huskes per bruker.
+
+- **Kilde:** Beslutning B-099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** AUDIO
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Lydopptaksvinduet i scenen har QR for opptak med mobil. Replikkopptak blir ny versjon uten automatisk aktivering; andre lydtyper blir ny lydressurs ved playheadet. Rå lyd slår av lydbehandling og huskes per bruker.
+- **Tester:**
+  - nettleser: tests/visual/scene-mobile-audio.mjs 23/23 nb/en
+- **Implementering:** src/app/audio/RecordAudioDialog.tsx
+
+#### REQ-0920 – Produktnavnet From Pen to Glass i all brukervendt tekst
+All tekst brukeren ser, metadata, eksportmetadata og e-postmaler bruker «From Pen to Glass». Gamle eksport- og backupfiler med det gamle navnet leses fortsatt. PTG-funksjonen heter «Til produksjonen» / «To production».
+
+- **Kilde:** Beslutning B-104 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI, EXPORT
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - All tekst brukeren ser, metadata, eksportmetadata og e-postmaler bruker «From Pen to Glass». Gamle eksport- og backupfiler med det gamle navnet leses fortsatt. PTG-funksjonen heter «Til produksjonen» / «To production».
+- **Tester:**
+  - enhet: tests/unit/b104-product-name.test.ts
+- **Implementering:** src/core/backup/index.ts
+
+#### REQ-0921 – Åpen språkliste i grensesnittet
+Grensesnittspråkene leses fra et register; et nytt språk legges inn med en språkfil og en registerlinje. Manglende tekst faller tilbake til engelsk og vises aldri som tom tekst eller nøkkel. Språkvelgeren viser bare språk med full dekning.
+
+- **Kilde:** Beslutning B-107 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Grensesnittspråkene leses fra et register; et nytt språk legges inn med en språkfil og en registerlinje. Manglende tekst faller tilbake til engelsk og vises aldri som tom tekst eller nøkkel. Språkvelgeren viser bare språk med full dekning.
+- **Tester:**
+  - enhet: i18n-testene i full Vitest
+  - db: tests/db/run-db-tests.ts 0077
+  - nettleser: tests/visual/b107-languages.mjs
+- **Implementering:** src/core/i18n/, db/migrations/0077_open_ui_languages.sql
+
+#### REQ-0922 – Stenge for nye registreringer
+Administrator kan stenge tjenesten for nye kontoer; inviterte slipper fortsatt inn og eksisterende kontoer påvirkes ikke.
+
+- **Kilde:** Beslutning B-109 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Administrator kan stenge tjenesten for nye kontoer; inviterte slipper fortsatt inn og eksisterende kontoer påvirkes ikke.
+- **Tester:**
+  - db: tests/db/run-db-tests.ts 0075
+- **Implementering:** src/routes/admin.tsx, db/migrations/0075_registration_closed.sql
+
+#### REQ-0923 – CAPTCHA mot roboter ved registrering og innlogging
+Registrering, innloggingslenke og «Glemt passord» krever bestått Cloudflare Turnstile; passordinnlogging krever det etter tre feilede forsøk. Registreringspasset gjelder 15 minutter og kan brukes én gang.
+
+- **Kilde:** Beslutning B-110 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** SECURITY
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Registrering, innloggingslenke og «Glemt passord» krever bestått Cloudflare Turnstile; passordinnlogging krever det etter tre feilede forsøk. Registreringspasset gjelder 15 minutter og kan brukes én gang.
+- **Tester:**
+  - enhet: tests/unit/b110-captcha.test.ts
+  - db: tests/db/run-db-tests.ts 0076
+- **Implementering:** src/adapters/auth/turnstile.server.ts, db/migrations/0076_signup_captcha_pass.sql
+
+#### REQ-0924 – Engelsk som standardspråk og språkprioritet
+Standardspråket er engelsk. Språket velges i rekkefølgen profilens språk, lokalt valg, nettleserens språk og engelsk. Ingen IP-oppslag.
+
+- **Kilde:** Beslutning B-111 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Moduler:** UI
+- **Status:** Verifisert
+- **Akseptansekriterier:**
+  - Standardspråket er engelsk. Språket velges i rekkefølgen profilens språk, lokalt valg, nettleserens språk og engelsk. Ingen IP-oppslag.
+- **Tester:**
+  - enhet: i18n-testene i full Vitest
+- **Implementering:** src/app/i18n/language.tsx

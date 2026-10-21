@@ -1,10 +1,21 @@
 /** SL5: variantbolker bruker SL4-motoren og lagrer hver tur før neste kall. */
-import { activeDirections, characterSystemPrompt, emptyStoryProfile, groupTurnMessages, knowledgeAt, newId, replayTurns, suggestSpeaker, type ProjectState, type StoryProfile } from "@/core";
+import { activeDirections, groupTurnMessages, newId, replayTurns, suggestSpeaker, type ProjectState, type StoryProfile } from "@/core";
 import type { StoredTurn, StorySession } from "@/adapters/storylab/sessions.functions";
+
+/** Parameterne for én replikk i rollen; systemteksten bygges på serveren (B-105a). */
+export interface StoryCharacterRequest {
+  readonly kind: "character";
+  readonly assetId: string;
+  readonly sceneId: string | null;
+  readonly situation: string;
+  readonly profile: StoryProfile | null;
+  readonly directions: readonly string[];
+  readonly language: string;
+}
 
 export async function runSceneBatch({ state, session, language, generate, save, shouldStop = () => false }: {
   state: ProjectState; session: StorySession; language: string;
-  generate: (input: { system: string; messages: { role: "user" | "assistant"; content: string }[] }) => Promise<{ text: string; costUsd: number; usedFallback: boolean }>;
+  generate: (input: { request: StoryCharacterRequest; messages: { role: "user" | "assistant"; content: string }[] }) => Promise<{ text: string; costUsd: number; usedFallback: boolean }>;
   save: (turn: StoredTurn, costUsd: number) => Promise<void>;
   shouldStop?: () => boolean;
 }) {
@@ -18,9 +29,9 @@ export async function runSceneBatch({ state, session, language, generate, save, 
     const speaker = suggestSpeaker(engine, names);
     if (!speaker) throw new Error("No speaker");
     const result = await generate({
-      system: characterSystemPrompt({ name: names[speaker] ?? "?", profile: profiles[speaker] ?? emptyStoryProfile(),
-        knowledge: knowledgeAt(state, speaker, sceneId as never), situation: String(session.context["situation"] ?? ""),
-        directions: activeDirections(engine, speaker), language, names }),
+      // B-105a: serveren bygger systemteksten; vi sender bare parametere.
+      request: { kind: "character", assetId: speaker, sceneId, situation: String(session.context["situation"] ?? ""),
+        profile: profiles[speaker] ?? null, directions: activeDirections(engine, speaker).map((d) => d.text), language },
       messages: groupTurnMessages(engine, speaker, names).messages,
     });
     const turn: StoredTurn = { id: newId<"turn">(), speaker, text: result.text, kind: "line", at: new Date().toISOString() };

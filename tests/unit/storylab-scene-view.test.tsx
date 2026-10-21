@@ -10,11 +10,11 @@ import { sceneLabData } from "@/app/storylab/scene-lab-data";
 import type { StorySession } from "@/adapters/storylab/sessions.functions";
 const h = vi.hoisted(() => ({ gen: vi.fn(), create: vi.fn(), append: vi.fn(), fork: vi.fn(), suggest: vi.fn(), list: vi.fn() }));
 vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
-vi.mock("@/adapters/ai/text.functions", () => ({ generateText: (arg: unknown) => h.gen(arg) }));
+vi.mock("@/adapters/ai/story-text.functions", () => ({ generateStoryText: (arg: unknown) => h.gen(arg), estimateStoryPrompt: vi.fn() }));
 vi.mock("@/adapters/storylab/sessions.functions", () => ({ createStorySession: (arg: unknown) => h.create(arg), appendStoryTurns: (arg: unknown) => h.append(arg), forkStorySession: (arg: unknown) => h.fork(arg), saveStorySuggestion: (arg: unknown) => h.suggest(arg), getStorySession: vi.fn(), listStorySessions: (arg: unknown) => h.list(arg) }));
 vi.mock("@/adapters/ai/provider-keys.functions", () => ({ listTextChoices: vi.fn() }));
 vi.mock("@/app/storylab/GroupConversationView", () => ({ GroupConversationView: () => null }));
-vi.mock("@/app/storylab/storylab-data", async (importOriginal) => ({ ...await importOriginal<Record<string, unknown>>(), useTextEstimate: () => ({ usd: 0.01, label: "Test model", loading: false, error: null }) }));
+vi.mock("@/app/storylab/storylab-data", async (importOriginal) => ({ ...await importOriginal<Record<string, unknown>>(), useTextEstimate: () => ({ usd: 0.01, label: "Test model", loading: false, error: null }), useStoryPromptChars: () => 0 }));
 afterEach(cleanup);
 beforeEach(() => { vi.clearAllMocks(); h.list.mockResolvedValue({ ok: true, sessions: [] }); });
 function setup(initial?: StorySession) {
@@ -75,7 +75,7 @@ it("A B C forgrenes tomt, får øktregi og kjører 24 sekvensielle kall", async 
   expect(maximum).toBe(1);
   expect(h.fork.mock.calls.map(([arg]) => arg.data.fromTurnId)).toEqual([null, null, null]);
   expect(h.fork.mock.calls.map(([arg]) => arg.data.title.slice(-1))).toEqual(["A", "B", "C"]);
-  expect(h.gen.mock.calls[0]?.[0].data.system).toContain("Direction a");
-  expect(h.gen.mock.calls[8]?.[0].data.system).toContain("Direction b");
-  expect(h.gen.mock.calls[16]?.[0].data.system).toContain("Direction c");
+  expect(h.gen.mock.calls[0]?.[0].data.request.directions).toContain("Direction a");
+  expect(h.gen.mock.calls[8]?.[0].data.request.directions).toContain("Direction b");
+  expect(h.gen.mock.calls[16]?.[0].data.request.directions).toContain("Direction c");
 });

@@ -3,7 +3,7 @@
  * «Lag profil med AI …» med forhåndsvisning og «Bruk valgte felt», fakta og hemmeligheter (en hemmelighet
  * bare Maja vet sendes aldri i prompten for Bestemor), samtale i rollen og i analyse, regi for neste replikk,
  * forgrening, forslag, åpne økten igjen og engelsk visning. Oppsettet er kopiert fra dec0096-pauses-ui.mjs:
- * Supabase og serverfunksjonene mockes (ingenting lagres eller betales), også generateText med faste svar.
+ * Supabase og serverfunksjonene mockes (ingenting lagres eller betales), også generateStoryText med faste svar.
  *   ENV_FILE=…/.env node storylab-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
@@ -133,8 +133,10 @@ async function mock(ctx) {
     }
     if (/projectAiProviders/.test(name)) return json({ providers: [], missing: false });
     if (/listTextChoices/.test(name)) return json({ providers: [], missing: false });
-    if (/generateText/.test(name)) {
-      S.gen.push({ body, task: d.task, system: d.system ?? "" });
+    // B-105a: promptene bygges på serveren; klienten sender bare oppgavetype og parametere (request).
+    if (/estimateStoryPrompt/.test(name)) return json({ ok: true, chars: 1000 });
+    if (/generateStoryText/.test(name)) {
+      S.gen.push({ body, task: d.task, request: d.request ?? {}, system: d.system ?? "" });
       const text =
         d.task === "storylab_profile"
           ? PROFILE_JSON
@@ -269,7 +271,7 @@ await run("fane og profil", async (page) => {
   check(await eventually(async () => /anslått/.test(await page.getByTestId("storylab-generate-cost").innerText()), 5000), "anslått kostnad og modell vises");
   await page.getByTestId("storylab-generate-run").click();
   await page.getByTestId("storylab-generate-preview").waitFor();
-  check(S.gen.at(-1)?.task === "storylab_profile", "generateText kalles med storylab_profile");
+  check(S.gen.at(-1)?.task === "storylab_profile", "generateStoryText kalles med storylab_profile");
   check(await page.getByTestId("storylab-fallback-note").isVisible(), "merknad om reserven");
   const before = S.commands.length;
   const fields = page.getByTestId("storylab-generate-field");
@@ -309,7 +311,7 @@ await run("hemmelighet, samtale, regi, forgrening, forslag", async (page) => {
   await say(page, "Hei, bestemor!", true);
   const anne = S.gen.at(-1);
   check(anne?.task === "storylab_character", "rollen bruker storylab_character");
-  check(anne && !anne.body.includes("MAJAS-HEMMELIGHET"), "prompten for Bestemor inneholder ikke Majas hemmelighet");
+  check(anne && anne.request.kind === "character" && anne.request.assetId === ANNE.id && !anne.body.includes("MAJAS-HEMMELIGHET") && !anne.system, "kallet for Bestemor har ingen systemtekst og ingen hemmelighet (serveren bygger prompten)");
 
   // Maja: hemmeligheten er med, regi for neste replikk
   await newSession(page, MAJA.id);
@@ -321,7 +323,7 @@ await run("hemmelighet, samtale, regi, forgrening, forslag", async (page) => {
   await page.waitForTimeout(300);
   check((await page.getByTestId("storylab-direction").count()) === 1, "regien vises som chip");
   await say(page, "Hva skjedde i går?", true);
-  check(S.gen.at(-1).body.includes("er bakfull") && S.gen.at(-1).body.includes("MAJAS-HEMMELIGHET"), "regi og egen hemmelighet i prompten for Maja");
+  check(S.gen.at(-1).request.assetId === MAJA.id && (S.gen.at(-1).request.directions ?? []).includes("er bakfull") && !S.gen.at(-1).system, "regien sendes som parameter for Maja (hemmeligheten legges til på serveren)");
   check((await page.getByTestId("storylab-direction").count()) === 0, "regi for neste replikk forsvinner etter én tur");
   await say(page, "Og nå?");
   check(!S.gen.at(-1).body.includes("er bakfull"), "regien sendes ikke i neste kall");

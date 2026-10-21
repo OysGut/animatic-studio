@@ -137,6 +137,8 @@ await ctx.route("**/*", async (route) => {
 // Lagringsvinduet (showSaveFilePicker) avbrytes i hodeløs Chromium: bruk vanlig nedlasting
 await page.addInitScript(() => {
   delete window.showSaveFilePicker;
+  // B-111: standardspråket er engelsk; suiten bruker norske navn på knappene.
+  try { localStorage.setItem("animatic:lang", "nb"); } catch { /* about:blank */ }
 });
 const exp = Math.floor(Date.now() / 1000) + 86400;
 await page.addInitScript(
