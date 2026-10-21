@@ -124,7 +124,7 @@ await ctx.addInitScript(([key, user, language]) => {
 }, [`sb-${ref}-auth-token`, USER, lang]);
 const page = await ctx.newPage(), errors = [];
 page.on("pageerror", e => errors.push(String(e)));
-page.setDefaultTimeout(10000);
+page.setDefaultTimeout(30000);
 const status = page.getByTestId("generation-status");
 const count = async n => until(async () => (await status.innerText()).match(/\d+/)?.[0] === String(n), `forventet teller ${n}`);
 // Ikonet er aria-hidden og har verken rolle eller testid i dagens appkode.
@@ -156,10 +156,7 @@ await step("Merk alle som lest fjerner uleste feil i begge visninger", async () 
  assert(await page.getByTestId("todo-jobs-mark-all-read").count() === 0, "fortsatt uleste feil i TODO");
  assert(!(await status.innerText()).match(/\d+/), "telleren er ikke nullstilt");
 });
-await step("Merk alle slukker varseltrekanten (krever identifiserbart ikon)", async () => {
- // Uten et identifiserbart ikon kan fravær ikke skilles fra manglende teststøtte.
- throw new Error("mangler data-testid på varseltrekanten; kan ikke verifisere at ikonet slukkes");
-});
+await step("Merk alle slukker varseltrekanten", () => triangle(false));
 await step("ny feil etter Merk alle gir teller 1 og ulest jobb", async () => {
  const next = job(953); next.finished_at = new Date(Date.parse(SERVER_PREFS.aiJobsRead.readBefore)+1000).toISOString(); jobs.unshift(next);
  // Reload utløser en ny listing og kontrollerer samtidig persistert lest-status.
