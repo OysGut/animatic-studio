@@ -14,7 +14,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { fetchCaptchaSettings } from "@/adapters/browser/captcha-auth";
 import { t } from "@/core/i18n/keyed";
+
+/** B-110: tydelig varsel når CAPTCHA er av fordi nøklene mangler på serveren. */
+export function CaptchaWarning() {
+  const q = useQuery({ queryKey: ["captcha-config"], queryFn: fetchCaptchaSettings, staleTime: 300_000 });
+  if (!q.data) return null;
+  return q.data.enabled ? (
+    <p className="text-xs text-status-success" data-testid="admin-captcha-on">{t("b110.admin.on")}</p>
+  ) : (
+    <div role="alert" className="rounded-md border border-status-discrepancy/60 bg-surface-1 p-3 text-xs text-text-primary" data-testid="admin-captcha-off">
+      <strong className="font-semibold">{t("b110.admin.off-title")}</strong> {t("b110.admin.off")}
+    </div>
+  );
+}
 
 export const REGISTRATION_KEY = ["admin-registration"] as const;
 

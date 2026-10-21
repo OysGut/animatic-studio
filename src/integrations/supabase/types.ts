@@ -661,6 +661,7 @@ export type Database = {
           created_by: string | null
           derived_from_version_id: string | null
           duration_ms: number | null
+          font_spec: Json | null
           height: number | null
           id: string
           media_path: string
@@ -688,6 +689,7 @@ export type Database = {
           created_by?: string | null
           derived_from_version_id?: string | null
           duration_ms?: number | null
+          font_spec?: Json | null
           height?: number | null
           id: string
           media_path: string
@@ -715,6 +717,7 @@ export type Database = {
           created_by?: string | null
           derived_from_version_id?: string | null
           duration_ms?: number | null
+          font_spec?: Json | null
           height?: number | null
           id?: string
           media_path?: string
@@ -2470,6 +2473,7 @@ export type Database = {
           created_at: string
           created_by: string
           duration_ms: number | null
+          font_spec: Json | null
           global_asset_id: string
           height: number | null
           id: string
@@ -2488,6 +2492,7 @@ export type Database = {
           created_at?: string
           created_by: string
           duration_ms?: number | null
+          font_spec?: Json | null
           global_asset_id: string
           height?: number | null
           id?: string
@@ -2506,6 +2511,7 @@ export type Database = {
           created_at?: string
           created_by?: string
           duration_ms?: number | null
+          font_spec?: Json | null
           global_asset_id?: string
           height?: number | null
           id?: string
@@ -5923,6 +5929,7 @@ export type Database = {
         Args: {
           p_bytes: number
           p_duration_ms: number
+          p_font_spec?: Json
           p_height: number
           p_mime: string
           p_note: string

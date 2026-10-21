@@ -6824,6 +6824,45 @@ try {
     assert((await status("anon", null))["open"] === true, "for lang melding endrer ingenting");
   });
 
+  // ---------- B-110: CAPTCHA-pass ved nye kontoer (0076) ----------
+  await test("0076 (B-110): innloggingstjenesten krever registreringspass; passet brukes én gang og overstyrer ikke stengt registrering", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 76, "schema version 76");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql.unsafe(`do $$ begin if not exists (select 1 from pg_roles where rolname = 'supabase_auth_admin') then create role supabase_auth_admin; end if; end $$`);
+    await sql.unsafe(`grant usage on schema auth to supabase_auth_admin; grant insert, select on auth.users to supabase_auth_admin`);
+    // Som innloggingstjenesten (session_user = supabase_auth_admin)
+    const gotrue = (email: string) =>
+      sql.begin(async (tx) => {
+        await tx.unsafe(`set local session authorization supabase_auth_admin`);
+        await tx`insert into auth.users (id, email) values (${crypto.randomUUID()}, ${email})`;
+      });
+    const issue = (email: string) => as("service_role", null, (tx) => tx`select public.issue_signup_pass(${email})`);
+    await expectError(gotrue("robot@example.no"), "PTG02");
+    await issue(" Menneske@Example.no ");
+    await gotrue("menneske@example.no");
+    await expectError(gotrue("menneske@example.no"), "PTG02");
+    // Utløpt pass gjelder ikke
+    await issue("sen@example.no");
+    await sql`update public.signup_passes set expires_at = now() - interval '1 minute' where email = 'sen@example.no'`;
+    await expectError(gotrue("sen@example.no"), "PTG02");
+    // Bare serveren kan utstede pass; ingen klient kan lese tabellen
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.issue_signup_pass('x@example.no')`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.issue_signup_pass('x@example.no')`), "42501");
+    await expectError(as("anon", null, (tx) => tx`select * from public.signup_passes`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.signup_passes`), "42501");
+    await expectError(issue("ikke-en-adresse"), "22023");
+    // Stengt registrering gjelder fortsatt: passet alene slipper ikke inn, og det beholdes
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(false, null)`);
+    await issue("stengt@example.no");
+    await expectError(gotrue("stengt@example.no"), "PTG01");
+    assert((await sql`select 1 from public.signup_passes where email = 'stengt@example.no'`).length === 1, "passet beholdes når kontoen ikke lages");
+    await as("authenticated", OYSTEIN, (tx) => tx`select public.set_registration_open(true, null)`);
+    await gotrue("stengt@example.no");
+    // Andre roller (migrasjoner, tester) påvirkes ikke av passkravet
+    await sql`insert into auth.users (id, email) values (${crypto.randomUUID()}, 'direkte@example.no')`;
+  });
+
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

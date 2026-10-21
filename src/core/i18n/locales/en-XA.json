@@ -74363,5 +74363,29 @@
   },
   "b109.admin.cancel": {
     "text": "[!! CCáánnccëëll !!]"
+  },
+  "b110.captcha.failed": {
+    "text": "[!! WWëë ccôôüülldd nnôôtt ccôônnffïïrrmm tthháátt yyôôüü áárrëë nnôôtt áá rrôôbbôôtt. PPllëëáássëë ttrryy áággááïïnn. !!]"
+  },
+  "b110.captcha.unavailable": {
+    "text": "[!! TThhëë rrôôbbôôtt cchhëëcckk ïïss nnôôtt rrëëssppôônnddïïnngg rrïïgghhtt nnôôww. PPllëëáássëë ttrryy áággááïïnn sshhôôrrttllyy. !!]"
+  },
+  "b110.captcha.retry": {
+    "text": "[!! TTrryy áággááïïnn !!]"
+  },
+  "b110.captcha.confirm": {
+    "text": "[!! CCôônnffïïrrmm tthháátt yyôôüü áárrëë nnôôtt áá rrôôbbôôtt ïïnn tthhëë bbôôxx bbëëllôôww. TThhëë ááccttïïôônn ccôônnttïïnnüüëëss bbyy ïïttssëëllff. !!]"
+  },
+  "b110.admin.on": {
+    "text": "[!! RRôôbbôôtt cchhëëcckk (CCllôôüüddfflláárrëë TTüürrnnssttïïllëë) ïïss ôônn. !!]"
+  },
+  "b110.admin.off-title": {
+    "text": "[!! RRôôbbôôtt cchhëëcckk ïïss ôôffff. !!]"
+  },
+  "b110.admin.off": {
+    "text": "[!! TThhëë CCllôôüüddfflláárrëë TTüürrnnssttïïllëë kkëëyyss (TTÜÜRRNNSSTTÏÏLLËË_SSÏÏTTËË_KKËËYY áánndd TTÜÜRRNNSSTTÏÏLLËË_SSËËCCRRËËTT_KKËËYY) áárrëë mmïïssssïïnngg ôônn tthhëë ssëërrvvëërr. SSïïggnn-üüpp, ssïïggnn-ïïnn llïïnnkkss áánndd “FFôôrrggôôtt ppáásssswwôôrrdd” wwôôrrkk, bbüütt wwïïtthhôôüütt CCÁÁPPTTCCHHÁÁ. !!]"
+  },
+  "b110.privacy.turnstile": {
+    "text": "[!! TTôô ssttôôpp rrôôbbôôttss ffrrôômm ccrrëëááttïïnngg ááccccôôüünnttss ôôrr mmïïssüüssïïnngg tthhëë ffôôrrmmss, wwëë üüssëë CCllôôüüddfflláárrëë TTüürrnnssttïïllëë (CCllôôüüddfflláárrëë, ÏÏnncc.) ffôôrr ssïïggnn-üüpp, ssïïggnn-ïïnn llïïnnkkss, “FFôôrrggôôtt ppáásssswwôôrrdd” áánndd ááffttëërr ssëëvvëërrááll ffááïïllëëdd ssïïggnn-ïïnnss. TTüürrnnssttïïllëë pprrôôccëëssssëëss ttëëcchhnnïïccááll ïïnnffôôrrmmááttïïôônn áábbôôüütt tthhëë bbrrôôwwssëërr áánndd ccôônnnnëëccttïïôônn (ïïnnccllüüddïïnngg ÏÏPP ááddddrrëëssss áánndd bbrrôôwwssëërr ssïïggnnáállss) ttôô ttëëllll ppëëôôppllëë ffrrôômm rrôôbbôôttss, ssëëttss nnôô ttrráácckkïïnngg ccôôôôkkïïëëss áánndd ïïss nnôôtt üüssëëdd ffôôrr ááddvvëërrttïïssïïnngg. WWëë ssëënndd yyôôüürr ÏÏPP ááddddrrëëssss ttôô CCllôôüüddfflláárrëë wwhhëënn tthhëë cchhëëcckk ïïss ccôônnffïïrrmmëëdd. TThhëë llëëggááll bbáássïïss ïïss ôôüürr llëëggïïttïïmmááttëë ïïnnttëërrëësstt ïïnn pprrôôttëëccttïïnngg tthhëë ssëërrvvïïccëë (GGDDPPRR ÁÁrrtt. 6(1)(ff)). !!]"
   }
 }

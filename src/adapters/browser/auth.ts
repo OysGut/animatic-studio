@@ -29,53 +29,13 @@ export async function signInWithPassword(email: string, password: string): Promi
   return { error: plainError(res.error), session: res.data.session };
 }
 
-export async function signUp(
-  email: string,
-  password: string,
-  redirect: string | undefined,
-  country?: string,
-): Promise<AuthResult> {
-  // B-097: landet følger kontoen fra registreringen og lagres i profilen ved første innlogging
-  const res = await browserClient.auth.signUp({
-    email,
-    password,
-    options: {
-      ...(redirect ? { emailRedirectTo: redirect } : {}),
-      ...(country ? { data: { country } } : {}),
-    },
-  });
-  return { error: plainError(res.error), session: res.data.session };
-}
-
-/** Innloggingslenke på e-post. */
-export async function sendSignInLink(
-  email: string,
-  redirect: string | undefined,
-  createUser = true,
-): Promise<AuthResult> {
-  // B-109: når registreringen er stengt, lages ingen ny konto via lenken (databasen stopper det uansett)
-  const res = await browserClient.auth.signInWithOtp({
-    email,
-    options: { ...(redirect ? { emailRedirectTo: redirect } : {}), shouldCreateUser: createUser },
-  });
-  return { error: plainError(res.error), session: res.data.session };
-}
+/* B-110: signUp og sendSignInLink ligger i captcha-auth.ts (CAPTCHA og registreringspass først). */
 
 export async function signOut(): Promise<void> {
   await browserClient.auth.signOut();
 }
 
-/** Samme svar uavhengig av om kontoen finnes; ikke eksponer backend-feil. */
-export async function sendPasswordReset(email: string): Promise<AuthResult> {
-  try {
-    await browserClient.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin + "/tilbakestill-passord",
-    });
-  } catch {
-    // Også transportfeil skjules for å unngå å røpe kontostatus.
-  }
-  return { error: null, session: null };
-}
+/* B-110: sendPasswordReset ligger i captcha-auth.ts. */
 
 /** Oppdater passordet med recovery-økten, uten current_password. */
 export async function updateRecoveryPassword(password: string): Promise<{ error: BackendError | null }> {
