@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **878**
 - Prioritet: P0: 147, P1: 543, P2: 149, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 351, teknisk-anbefaling: 7
-- Status: Verifisert: 666, Implementert – ikke verifisert: 153, Under arbeid: 13, Ikke startet: 46
+- Status: Verifisert: 708, Under arbeid: 13, Ikke startet: 45, Implementert – ikke verifisert: 112
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -308,7 +308,7 @@ Systemet skal skille mellom strukturell synkronisering (scener, delsekvenser, re
 
 - **Kilde:** Kap. 2.1 (l. 76-78) · **Opprinnelse:** mandat · **Type:** data · **Prioritet:** P0 · **Fase:** 1
 - **Moduler:** CORE, VERSION · **Invarianter:** INV-01, INV-07
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hvert produsert materiale lagrer referanse til manusversjon og ressursversjoner det er produsert fra, adskilt fra strukturell plassering.
 - **Tester:**
@@ -1954,7 +1954,7 @@ Publisering av en variant til det globale biblioteket skal være en eksplisitt b
 - **Kilde:** Kap. 9.3 (l. 420) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** LIBRARY · **Invarianter:** INV-13
 - **Avhengigheter:** REQ-0143
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ingen kodevei publiserer en variant uten eksplisitt brukerkommando.
 - **Tester:**
@@ -6788,11 +6788,12 @@ Harmoniserte karakterbilder skal kunne publiseres til globalt ressursbibliotek e
 
 - **Kilde:** Kap. 34 (l. 1536-1537) · **Opprinnelse:** mandat · **Type:** prinsipp · **Prioritet:** P0 · **Fase:** 8
 - **Moduler:** LIBRARY, PRESENT · **Invarianter:** INV-13
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Et harmonisert bilde publiseres kun etter godkjenning, som ny versjonert stilvariant.
 - **Tester:**
   - manuell: verifiseres mot underliggende funksjonskrav
+- **Implementering:** src/core/generation/style-harmonize.ts, db/migrations/0068_global_withdrawals.sql
 - **Merknad:** Oppsummerer kap. 9.2, 9.3, 26.7. Linje 1536/1537 duplikat.
 
 #### REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
@@ -8495,7 +8496,7 @@ I stor visning kan brukeren velge modell og hvilke vinkler som skal lages av sam
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROMPT, PROVIDER, LIBRARY
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Arket ber om vinklene i rekkefølge, samme høyde og grunnlinje, nøytral positur.
   - Hver vinkel får identitetsbildet først og tidligere vinkler som referanse.
@@ -8524,7 +8525,7 @@ Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen mode
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROMPT, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Analysen vises med avkrysning per del; valgte deler havner i riktige felt.
 - **Tester:**
@@ -8537,7 +8538,7 @@ Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, h�
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** LIBRARY, PROMPT
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Faktaarket lagres, angres og leses tilbake likt.
   - Beskrivelsen bruker faktaarket og tar ikke med manusutdrag.
@@ -8552,7 +8553,7 @@ Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD 
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Seedream sendes til /edit med image_urls når forbilder finnes.
   - Qwen uten forbilde avvises før kallet.
@@ -8565,7 +8566,7 @@ Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 
 
 - **Kilde:** Beslutning DEC-0080 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** PROVIDER, LIBRARY
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Anslaget følger megapikslene i resultatet.
   - Oppskalering uten tilkoblet fal.ai forklares; den innebygde tjenesten kan ikke oppskalere.
@@ -8636,7 +8637,7 @@ En knapp i sceneeditorens verktøylinje sender scenen i fokus til AI-generering.
 - **Kilde:** Beslutning DEC-0083 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 5
 - **Moduler:** UI, PROVIDER, COMPOSE
 - **Avhengigheter:** REQ-0180; REQ-0243
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Knappen finnes i sceneeditoren og åpner dialogen for scenen i fokus.
   - Det som sendes, er 2D-scenen også når en annen versjon vises i filmen.
@@ -9529,7 +9530,7 @@ Forhåndsavspilling og eksport bruker samme komposisjonsbeskrivelse og samme ber
 
 - **Kilde:** Beslutning DEC-0090 · **Opprinnelse:** brukerbeslutning · **Type:** arkitektur · **Prioritet:** P1 · **Fase:** –
 - **Moduler:** AUDIO
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksportert lyd er lik forhåndsavspillingen (test på samples).
 - **Tester:**
@@ -11614,7 +11615,7 @@ Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten ba
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ett eller flere lag eksporteres med scenens oppløsning og bildefrekvens uten bakgrunn.
 - **Tester:**
@@ -11628,7 +11629,7 @@ PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for b
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
 - **Tester:**
@@ -11656,7 +11657,7 @@ Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde ute
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
 - **Tester:**
@@ -11670,7 +11671,7 @@ Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer 
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
 - **Tester:**
@@ -11684,7 +11685,7 @@ Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten 
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
 - **Tester:**
@@ -11698,7 +11699,7 @@ Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomla
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
 - **Tester:**
@@ -11712,7 +11713,7 @@ Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, COMPOSE, EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
 - **Tester:**
@@ -11726,7 +11727,7 @@ Regelkobling først.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Regelkobling først
 - **Tester:**
@@ -11741,7 +11742,7 @@ AI bare for usikre linjer.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - AI bare for usikre linjer
 - **Tester:**
@@ -11756,7 +11757,7 @@ Kostnad og godkjenning av linjekobling.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Kostnad og godkjenning av linjekobling
 - **Tester:**
@@ -11771,7 +11772,7 @@ Forhåndsvisning av linjeforslag.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Forhåndsvisning av linjeforslag
 - **Tester:**
@@ -11786,7 +11787,7 @@ Godkjente linjekoblinger.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Godkjente linjekoblinger
 - **Tester:**
@@ -11801,7 +11802,7 @@ Reversible linjekommandoer.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Reversible linjekommandoer
 - **Tester:**
@@ -11816,7 +11817,7 @@ Norsk hovedmanus bevares.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Norsk hovedmanus bevares
 - **Tester:**
@@ -11831,7 +11832,7 @@ Backup av linjekoblinger.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Backup av linjekoblinger
 - **Tester:**
@@ -11846,7 +11847,7 @@ Språk og testdekning av linjekobling.
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, CORE · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Språk og testdekning av linjekobling
 - **Tester:**
@@ -11996,7 +11997,7 @@ Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrek
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Vanlig filmeksport kan lage ProRes 422 HQ (apch) i MOV med prosjektets bildefrekvens (også 24000/1001 og 30000/1001), oppløsning og Rec.709-merking.
 - **Tester:**
@@ -12010,7 +12011,7 @@ Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gje
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.
 - **Tester:**
@@ -12024,7 +12025,7 @@ Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.
 - **Tester:**
@@ -12038,7 +12039,7 @@ ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ing
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).
 - **Tester:**
@@ -12051,7 +12052,7 @@ ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS d
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).
 - **Tester:**
@@ -12065,7 +12066,7 @@ En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, l
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.
 - **Tester:**
@@ -12079,7 +12080,7 @@ Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig m
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.
 - **Tester:**
@@ -12092,7 +12093,7 @@ Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosen
 
 - **Kilde:** Beslutning DEC-0085 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).
 - **Tester:**
@@ -12106,7 +12107,7 @@ Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag o
 
 - **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** VERSION, PROMPT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.
 - **Tester:**
@@ -12120,7 +12121,7 @@ Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra oppta
 
 - **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** SCRIPT, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.
 - **Tester:**
@@ -12134,7 +12135,7 @@ Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregåe
 
 - **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** LIBRARY, SCRIPT · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.
 - **Tester:**
@@ -12148,7 +12149,7 @@ Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kont
 
 - **Kilde:** Beslutning DEC-0054 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** PROVIDER, QUALITYCOST, UI · **Invarianter:** INV-11
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.
 - **Tester:**
@@ -12163,7 +12164,7 @@ Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildepl
 - **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, UI
 - **Avhengigheter:** REQ-0629; REQ-0630
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Fullt AST-inventar av hele appen bevarer norsk og engelsk tekst ordrett, kildeplassering, maluttrykk og plassholderkontrakt. Versjonert mapping gir stabile semantiske nøkler. Konflikter beholdes separat for gjennomgang og løses aldri ved automatisk sammenslåing.
 - **Tester:**
@@ -12177,7 +12178,7 @@ Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke
 - **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, UI
 - **Avhengigheter:** REQ-0629; REQ-0630
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Språkmanifest validerer BCP-47 med Intl og eksplisitte reservekjeder med løkke- og dybdekontroll; nb er siste reserve. t(key, params) støtter navngitte plassholdere, Intl.PluralRules og språkstyrt tall- og datoformat.
 - **Tester:**
@@ -12191,7 +12192,7 @@ Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-X
 - **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, UI
 - **Avhengigheter:** REQ-0629; REQ-0630
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - Norske og engelske kataloger bevarer alle eksisterende tekstpar og uttrykk. en-XA genereres automatisk fra engelsk med utvidet og aksentuert tekst og er kun testdata. L, localized og tm fungerer uendret; ingen synlig endring i ML1.
 - **Tester:**
@@ -12205,7 +12206,7 @@ i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, uli
 - **Kilde:** Beslutning DEC-0081 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** L10N, UI
 - **Avhengigheter:** REQ-0629; REQ-0630
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, ulike parametere, ugyldige pluralformer og foreldet inventar. Eksisterende uttrykkskonflikter er versjonerte overgangsdata; nye katalogmeldinger valideres uten å svekke den eksisterende tospråklige kontrollen.
 - **Tester:**

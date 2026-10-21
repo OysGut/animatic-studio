@@ -1,5 +1,11 @@
 # Implementeringsstatus – Animatic Studio
 
+## V1 – status lik virkelighet – 21.10.2026
+- 42 av 55 P0/P1-krav med oppført test satt til Verifisert etter kjøring (3 P0: REQ-0022, 0145, 0503; 39 P1). 13 beholdt status med begrunnelse i history (se V1_REPORT.md).
+- Kravregister nå: 878 krav – 708 Verifisert, 112 Implementert – ikke verifisert, 13 Under arbeid, 45 Ikke startet. P0: 135/6/1/5, P1: 402/95/12/34.
+- build_docs/check_kb OK (PyYAML installert). REQUIREMENTS.md og TRACEABILITY_MATRIX.md generert på nytt.
+- Felles VISUAL_SCHEMA_VERSION i alle visuelle suiter, kontrollert av tests/unit/visual-schema-version.test.ts. Kartlegging av stabile ID-er i ID_AUDIT.md (ingen kode).
+
 ## C / B-050 – 20.10.2026, retterunde: klar for Cloud-gjennomgang
 - 0064_translation_line_links.sql skrevet, IKKE kjørt i Cloud. Erstatter apply_changes, delete_project og purge_project_assets fra 0063_quality_profiles.sql; ingen andre funksjoner erstattet (create_project, create_dialogue_batch, guard_quality_profile_job, purge_removed_assets urørt). Skjemaversjon 64.
 - Nye tabeller: `translation_line_links` og `translation_lines` (engelske/oversatte linjer uten regelpar, per scenevariant og språk). Medlems-SELECT, ingen klientskriving, service_role ALL, RLS.
