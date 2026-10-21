@@ -210,14 +210,21 @@ export function ToolbarGroup({
   const id = useId();
   const register = ctx?.register;
   useIsoLayoutEffect(() => (register ? register(id, priority) : undefined), [id, priority, !!register]);
+  const inMenu = !!(ctx && ctx.hidden.has(id) && ctx.target);
+  // R7: i «Mer …» brytes gruppen over flere rader, ellers havner knapper utenfor skjermen (smal popover).
   const node = (
     <div
       {...rest}
       data-toolbar-group={ctx ? id : undefined}
-      className={cn("flex h-toolbar shrink-0 items-center gap-toolbar-gap", className)}
+      className={cn(
+        inMenu
+          ? "flex min-h-toolbar max-w-full flex-wrap items-center gap-toolbar-gap"
+          : "flex h-toolbar shrink-0 items-center gap-toolbar-gap",
+        className,
+      )}
     />
   );
-  if (ctx && ctx.hidden.has(id) && ctx.target) return createPortal(node, ctx.target);
+  if (inMenu) return createPortal(node, ctx!.target!);
   return node;
 }
 
