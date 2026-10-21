@@ -21,3 +21,27 @@ describe("B-100: lengden følger omtiming", () => {
     expect(followRangeLength(null, 120, 180)).toBeNull();
   });
 });
+
+import { applyCommand, filmClips, type Command } from "@/core";
+import { compositionForOccurrence, planRetime } from "@/core/composition/retime";
+import { compositionDuration } from "@/core/composition/animate";
+import { envelope } from "../helpers/fixtures";
+import { fixture } from "../visual/fixture-state";
+
+describe("B-100: Scene og montering viser samme lengde etter omtiming", () => {
+  it("RetimeScene gir samme lengde i Scene og i monteringen", () => {
+    const s = fixture.state;
+    const occ = Object.values(s.occurrences).find((o) => !o.removed && compositionForOccurrence(s, o))!;
+    const comp = compositionForOccurrence(s, occ)!;
+    const target = compositionDuration(s, comp) + 30;
+    const plan = planRetime(s, occ.id, { targetFrames: target, method: "end", keepAmbience: true });
+    expect(plan.ok).toBe(true);
+    const r = applyCommand(s, envelope((plan as { command: Command }).command));
+    if (!r.ok) throw new Error(r.error.message);
+    const after = r.state;
+    const sceneLen = compositionDuration(after, after.compositions[comp.id]!);
+    const clip = filmClips(after, occ.productionId).find((c) => c.occurrenceId === occ.id)!;
+    expect(sceneLen).toBe(target);
+    expect(clip.durationFrames).toBe(target);
+  });
+});
