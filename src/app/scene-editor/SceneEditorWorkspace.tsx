@@ -19,6 +19,7 @@ import {
   Redo2,
   Undo2,
 } from "lucide-react";
+import { followRangeLength } from "@/core/animation/time-format";
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
@@ -269,6 +270,12 @@ function Editor({
   const [sceneTab, setSceneTab] = useState(initialTab ?? "scene");
   const [animationRange, setAnimationRange] = useState<{ from: number; to: number } | null>(null);
   useEffect(() => { setAnimationRange(null); }, [composition?.id]);
+  // B-100: avspillingsområdet følger ny lengde etter omtiming
+  const prevDurationRef = useRef(duration);
+  useEffect(() => {
+    const prev = prevDurationRef.current; prevDurationRef.current = duration;
+    if (prev !== duration) setAnimationRange(r => followRangeLength(r, prev, duration));
+  }, [duration]);
   const playback = usePlayback(duration, state.project.fps, true, sceneTab === "animation" ? animationRange : null);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)

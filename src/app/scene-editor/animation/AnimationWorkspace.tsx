@@ -23,6 +23,12 @@ export function AnimationWorkspace({ state, composition, duration, playback, ran
   rhythm?: RhythmDragProps;
 }) {
   const [window, setWindow] = useState<AnimWindow>({ from: 0, span: duration });
+  const prevDuration = useRef(duration);
+  useEffect(() => {
+    if (prevDuration.current === duration) return;
+    const prev = prevDuration.current; prevDuration.current = duration;
+    setWindow(w => followWindowLength(w, prev, duration));
+  }, [duration]);
   const view = clampAnimationWindow(window.from, window.span, duration);
   const [width, setWidth] = usePaneSize("animation-preview", 340, 200, 700, { viewportShare: 0.5 });
   useEffect(() => {
