@@ -6598,12 +6598,12 @@ try {
     );
     // Globale maler: publisering krever redaktørolle, radene er uforanderlige
     const ws = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Rigggruppen') as id`)[0]!["id"])));
-    const gid = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${spec}::jsonb, 'første') as id`)[0]!["id"])));
-    const gid2 = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${spec}::jsonb, '') as id`)[0]!["id"])));
+    const gid = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, 'første') as id`)[0]!["id"])));
+    const gid2 = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, '') as id`)[0]!["id"])));
     assert(gid !== gid2, "to publiseringer gir to versjoner");
     const nums = (await sql`select number::int n from public.global_rig_templates where workspace_id = ${ws} order by number`) as { n: number }[];
     assert(nums.map((r) => r.n).join() === "1,2", "nummerert per navn");
-    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_rig_template(${ws}, 'X', ${spec}::jsonb, '')`), "42501");
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_rig_template(${ws}, 'X', ${tx.json(JSON.parse(spec) as never)}, '')`), "42501");
     await expectError(as("service_role", null, (tx) => tx`update public.global_rig_templates set note = 'x' where id = ${gid}`), "P0001");
     assert((await as("authenticated", ALICE, async (tx) => (await tx`select count(*)::int n from public.global_rig_templates where workspace_id = ${ws}`)[0]!["n"])) === 2, "medlem leser globale maler");
     // Sletting av prosjektet tar riggene med
