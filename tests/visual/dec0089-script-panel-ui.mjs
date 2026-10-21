@@ -6,6 +6,7 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { byLang, uiLang } from "./ui-lang.mjs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -165,7 +166,7 @@ async function run(name, act, { lang = "nb", width = 1600 } = {}) {
         expires_at: exp,
         user: USER,
       }),
-      lang,
+      uiLang(lang),
     ],
   );
   await page.goto(base + P + "/scene?scene=00000000-0000-7000-8000-000000000006", { waitUntil: "networkidle" });
