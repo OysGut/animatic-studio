@@ -42,6 +42,10 @@ const rows = {
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), ...CLIPS],
   time_links: (fx.rows.time_links ?? []).filter((t) => t.occurrence_id !== OCC.id),
 };
+// R7: lydversjonene (DV2) til klippene som byttes ut over, ble liggende igjen uten klipp. Kjernen stopper da
+// med rette alle lydklippendringer («Replikken har lydversjoner som ikke kan fjernes»), så G, I, J og 13 – som
+// flytter lydklipp – fikk aldri lukket dialogen. Behold bare versjoner som har klippet sitt.
+rows.dialogue_versions = (fx.rows.dialogue_versions ?? []).filter((v) => rows.audio_clips.some((a) => a.id === v.clip_id));
 let commands = [], aiCalls = [], analysisRows = [];
 const hashes = {};
 /** Neste runCommand svarer med revisjonskonflikt (test 15). */
