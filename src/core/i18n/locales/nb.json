@@ -73880,5 +73880,23 @@
   },
   "app-projects-project-todo-box.mark-all-read": {
     "text": "Merk alle som lest"
+  },
+  "print-pdf.instruction": {
+    "text": "Skriv ut i 100 % / faktisk størrelse. Kontroller med linjal."
+  },
+  "print-pdf.tile": {
+    "text": "rad {row} / kolonne {column}"
+  },
+  "print-pdf.overview": {
+    "text": "Oversiktsark: {id}"
+  },
+  "print-pdf.qr": {
+    "text": "QR runde 5"
+  },
+  "print-pdf.invalid": {
+    "text": "Ugyldig utskriftsgeometri."
+  },
+  "print-pdf.image-required": {
+    "text": "Figurutskrift krever et kildebilde."
   }
 }

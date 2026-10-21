@@ -92,7 +92,7 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
           {busy ? (
             <Loader2 className="size-3.5 animate-spin text-accent-brand" aria-hidden />
           ) : failed ? (
-            <TriangleAlert className="size-3.5 text-status-danger" aria-hidden />
+            <TriangleAlert className="size-3.5 text-status-danger" aria-hidden data-testid="generation-status-warning" />
           ) : done ? (
             <CheckCircle2 className="size-3.5 text-status-success" aria-hidden />
           ) : (

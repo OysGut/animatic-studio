@@ -46,7 +46,9 @@ Rigg-fanen (`rig-contour`) og lagpanelet (`rig-contour-panel`) har en enkel SVG-
 
 ## Resultater (oppdatert etter testkjøring)
 
-_Fylles inn når rigg-r2.mjs og regresjonene er kjørt._
+- `tests/visual/rigg-r2.mjs`: 17/17 på nb og 17/17 med UI_LANG=en. Synlighetskontrollen for `rig-contour` ble rettet ved å avgrense oppslaget til `section[data-testid="rig-contour"]` (`.first()`), fordi `getByTestId` traff flere elementer.
+- Regresjon `rigg-r1.mjs`: 12/12. Regresjon `scene-panels-ui`: 39/39 (kjørt av Claude i parallell).
+- Full Vitest: grønn (i18n-feilen «Stale ML1 inventory/catalog» i full kjøring skyldtes et foreldet generert inventar; regenerering med `node scripts/i18n/inventory.mjs` løste det, og testene består både isolert og i full kjøring).
 
 ## Avvik
 

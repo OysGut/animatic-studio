@@ -100,7 +100,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   const batchChars = Math.max(0, ...data.participants.map((a) => characterSystemPrompt({ name: a.name, profile: profileAt(state, a.id, sceneId as never) ?? emptyStoryProfile(), knowledge: knowledgeAt(state, a.id, sceneId as never), situation, language: "nb" }).length))
     + (session?.turns.slice(0, (fromTurnId === null ? -1 : session.turns.findIndex((t) => t.id === fromTurnId)) + 1).reduce((n, t) => n + t.text.length + 100, 0) ?? 0)
     + Math.max(0, ...directions.map((d) => d.length)) + 8 * 800 * 4;
-  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 8000 : dialog === "check" ? 2000 : 800);
+  const estimate = useTextEstimate(dialog === "variants" || dialog === "improv" ? "storylab_group" : "storylab_analysis", dialog === "variants" || dialog === "improv" ? batchChars : prompt.system.length + prompt.user.length, dialog === "analysis" ? 8000 : dialog === "check" ? 2000 : 2000);
   const remember = (s: StorySession) => { qc.setQueryData(["story-session", projectId, s.id], { ok: true, session: s }); void qc.invalidateQueries({ queryKey: ["story-sessions", projectId] }); };
   const save = async (s: StorySession, turns: StoredTurn[], cost = 0, status: "active" | "paused" = "paused") => {
     const r = await append({ data: { projectId, sessionId: s.id, turns, addCostUsd: cost, status } });
@@ -158,7 +158,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       let branch = await save(r.session, [{ id: `d:session:all:${newId<"direction">()}`, speaker: "director", kind: "direction", text: direction, at: new Date().toISOString(), to: null }], 0, "active");
       added.push(branch); setVariants((old) => [...old, branch]);
       await runSceneBatch({ state, session: branch, language: "nb", shouldStop: () => stopped.current,
-        generate: async (input) => { const result = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!result.ok) throw new Error(result.message); if (result.usedFallback && mounted.current) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3")); return result; },
+        generate: async (input) => { const result = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 2000 } }); if (!result.ok) throw new Error(result.message); if (result.usedFallback && mounted.current) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3")); return result; },
         save: async (turn, cost) => {
           retrySave.current = async () => { branch = await save(branch, [turn], cost); setVariants((old) => old.map((s) => s.id === branch.id ? branch : s)); retrySave.current = null; };
           await retrySave.current();
@@ -229,7 +229,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
       <ToolbarButton variant="primary" data-testid="storylab-scene-confirm" disabled={busy || estimate.loading || !!estimate.error || (dialog === "variants" && !directions.some((d) => d.trim()))} onClick={() => { const action = dialog; setDialog(null); if (action === "analysis") void analyze(); else if (action === "check") { setCheckApproved(true); void checkLine(); } else if (action === "variants") void runVariants(); else void perform(async () => {
         let s = await make("scene_improv"); setTab("improv");
         await runSceneBatch({ state, session: s, language: "nb", shouldStop: () => stopped.current,
-          generate: async (input) => { const r = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 800 } }); if (!r.ok) throw new Error(r.message); if (r.usedFallback) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3.2")); return r; },
+          generate: async (input) => { const r = await gen({ data: { projectId, task: "storylab_group", ...input, maxTokens: 2000 } }); if (!r.ok) throw new Error(r.message); if (r.usedFallback) setNote(tk("app-storylab-scene-lab.generate.set-note.16319cc4cfd3.2")); return r; },
           save: async (turn, cost) => {
             retrySave.current = async () => { s = await save(s, [turn], cost); setSession(s); retrySave.current = null; };
             await retrySave.current();

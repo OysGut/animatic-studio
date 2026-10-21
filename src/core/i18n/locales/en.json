@@ -73862,5 +73862,23 @@
   },
   "app-projects-project-todo-box.mark-all-read": {
     "text": "Mark all as read"
+  },
+  "print-pdf.instruction": {
+    "text": "Print at 100 % / actual size. Check with a ruler."
+  },
+  "print-pdf.tile": {
+    "text": "row {row} / column {column}"
+  },
+  "print-pdf.overview": {
+    "text": "Overview: {id}"
+  },
+  "print-pdf.qr": {
+    "text": "QR round 5"
+  },
+  "print-pdf.invalid": {
+    "text": "Invalid print geometry."
+  },
+  "print-pdf.image-required": {
+    "text": "Figure printing requires a source image."
   }
 }

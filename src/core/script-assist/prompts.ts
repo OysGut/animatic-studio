@@ -188,7 +188,7 @@ function editPrompt(s: ProjectState, r: AssistRequest, picked: ScriptBlock[], ta
     ]
       .filter(Boolean)
       .join("\n"),
-    maxTokens: Math.min(4000, 200 + picked.reduce((n, b) => n + Math.ceil(b.text.length / 2), 0)),
+    maxTokens: Math.max(2000, Math.min(4000, 200 + picked.reduce((n, b) => n + Math.ceil(b.text.length / 2), 0))),
     temperature: r.kind === "rewrite" ? 0.7 : 0.2,
     refs,
   };
@@ -242,7 +242,7 @@ function nextLinePrompt(s: ProjectState, r: AssistRequest): AssistPrompt | strin
     ]
       .filter(Boolean)
       .join("\n"),
-    maxTokens: 600,
+    maxTokens: 2000,
     temperature: 0.8,
     refs: {},
   };

@@ -73862,5 +73862,23 @@
   },
   "app-projects-project-todo-box.mark-all-read": {
     "text": "[!! MMáárrkk áállll ááss rrëëáádd !!]"
+  },
+  "print-pdf.instruction": {
+    "text": "[!! PPrrïïnntt áátt 100 % / ááccttüüááll ssïïzzëë. CChhëëcckk wwïïtthh áá rrüüllëërr. !!]"
+  },
+  "print-pdf.tile": {
+    "text": "[!! rrôôww {row} / ccôôllüümmnn {column} !!]"
+  },
+  "print-pdf.overview": {
+    "text": "[!! ÔÔvvëërrvvïïëëww: {id} !!]"
+  },
+  "print-pdf.qr": {
+    "text": "[!! QQRR rrôôüünndd 5 !!]"
+  },
+  "print-pdf.invalid": {
+    "text": "[!! ÏÏnnvváállïïdd pprrïïnntt ggëëôômmëëttrryy. !!]"
+  },
+  "print-pdf.image-required": {
+    "text": "[!! FFïïggüürrëë pprrïïnnttïïnngg rrëëqqüüïïrrëëss áá ssôôüürrccëë ïïmmáággëë. !!]"
   }
 }

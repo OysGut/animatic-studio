@@ -14,7 +14,7 @@ import { fieldDefs, fieldId, fieldText, getField, sectionLabel, setField } from 
 import { characterLines, names, usd, useTextEstimate } from "./storylab-data";
 import { t } from "@/core/i18n/keyed";
 
-const OUT_TOKENS = 3000;
+const OUT_TOKENS = 4000;
 
 export function ProfileGenerateDialog({
   state,
