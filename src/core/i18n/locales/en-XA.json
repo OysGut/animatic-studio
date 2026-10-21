@@ -72114,7 +72114,7 @@
     }
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
-    "text": "[!! TThhëë ïïmmppôôrrttëëdd ffïïllmm hhááss {mixed} ddïïáállôôggüüëë mmïïxxëëdd ïïnnttôô tthhëë ááüüddïïôô. ÏÏtt ccáánnnnôôtt bbëë sswwááppppëëdd ôôüütt ccôômmppllëëttëëllyy: tthhëë ffïïllmm ááüüddïïôô ïïss ppllááyyëëdd ááss ïïtt ïïss, áánndd {language} ddïïáállôôggüüëë ïïss llááïïdd ôônn ttôôpp. ÏÏff tthhëë ááüüddïïôô ïïss ôônnllyy mmüüssïïcc áánndd ëëffffëëccttss, yyôôüü ccáánn ssááyy ssôô ïïnn tthhëë ssccëënnëë ppáánnëëll. !!]"
+    "text": "[!! TThhëë ïïmmppôôrrttëëdd ffïïllmm hhááss ddïïáállôôggüüëë ïïnn {mixed} mmïïxxëëdd ïïnnttôô ïïttss ááüüddïïôô. TThhïïss ddïïáállôôggüüëë ccáánnnnôôtt bbëë ccôômmppllëëttëëllyy rrëëppllááccëëdd: tthhëë ffïïllmm ááüüddïïôô ppllááyyss ááss ïïtt ïïss, wwïïtthh ddïïáállôôggüüëë ïïnn {language} llááyyëërrëëdd ôônn ttôôpp. ÏÏff tthhëë ááüüddïïôô ccôônnttááïïnnss ôônnllyy mmüüssïïcc áánndd ëëffffëëccttss, yyôôüü ccáánn ïïnnddïïccááttëë tthhïïss ïïnn tthhëë ssccëënnëë ppáánnëëll. !!]"
   },
   "app-assembly-language-version-dialog.lipsync-scenes": {
     "text": null,
@@ -72147,13 +72147,13 @@
     }
   },
   "app-assembly-language-version-dialog.voiced-lines": {
-    "text": "[!! {voiced} ôôff {lines} llïïnnëëss wwïïtthh {language} ááüüddïïôô !!]"
+    "text": "[!! LLïïnnëëss wwïïtthh ááüüddïïôô ïïnn {language}: {voiced} ôôff {lines} !!]"
   },
   "app-assembly-language-version-dialog.intro": {
-    "text": "[!! TThhëë ssáámmëë ffïïllmm, ssccëënnëëss áánndd ïïmmáággëëss ááss tthhëë NNôôrrwwëëggïïáánn ôônnëë. HHëërrëë yyôôüü ccáánn ssëëëë wwhháátt ïïss mmïïssssïïnngg ôôrr nnëëëëddss cchhëëcckkïïnngg ïïnn tthhëë {language} vvëërrssïïôônn. NNôôtthhïïnngg ïïss rrëëggëënnëërrááttëëdd ááüüttôômmááttïïccáállllyy, áánndd tthhëë ttïïmmïïnngg ôôff tthhëë mmááïïnn ffïïllmm ïïss nnôôtt cchháánnggëëdd. !!]"
+    "text": "[!! TThhïïss vvëërrssïïôônn üüssëëss tthhëë ssáámmëë ffïïllmm, ssccëënnëëss áánndd ïïmmáággëëss ááss tthhëë mmááïïnn vvëërrssïïôônn. HHëërrëë yyôôüü ccáánn ssëëëë wwhháátt ïïss mmïïssssïïnngg ôôrr nnëëëëddss cchhëëcckkïïnngg ïïnn tthhëë {language} vvëërrssïïôônn. NNôôtthhïïnngg ïïss rrëëggëënnëërrááttëëdd ááüüttôômmááttïïccáállllyy, áánndd tthhëë ttïïmmïïnngg ôôff tthhëë mmááïïnn ffïïllmm rrëëmmááïïnnss üünncchháánnggëëdd. !!]"
   },
   "app-assembly-language-version-dialog.move-line": {
-    "text": "[!! MMôôvvëë {language} llïïnnëë !!]"
+    "text": "[!! MMôôvvëë tthhëë llïïnnëë ïïnn {language} !!]"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
     "text": null,
@@ -73186,7 +73186,7 @@
     "text": "[!! LLáánnggüüáággëë vvëërrssïïôônn ïïnn tthhëë ëëxxppôôrrtt !!]"
   },
   "ml3-language-versions.export.incomplete": {
-    "text": "[!! TThhëë {language} ttrráánnssllááttïïôônn ïïss nnôôtt ccôômmppllëëttëë: {missing} llïïnnëëss áárrëë mmïïssssïïnngg, {uncertain} áárrëë üünnccëërrttááïïnn áánndd {review} nnëëëëdd rrëëvvïïëëww. CChhôôôôssëë wwhháátt tthhëë ëëxxppôôrrtt sshhôôüülldd ddôô. !!]"
+    "text": "[!! TThhëë ttrráánnssllááttïïôônn ïïnnttôô {language} ïïss ïïnnccôômmppllëëttëë. LLïïnnëëss mmïïssssïïnngg: {missing}; üünnccëërrttááïïnn: {uncertain}; nnëëëëddïïnngg rrëëvvïïëëww: {review}. CChhôôôôssëë hhôôww tthhëë ëëxxppôôrrtt sshhôôüülldd hháánnddllëë tthhïïss. !!]"
   },
   "ml3-language-versions.export.fallback": {
     "text": "[!! ÜÜssëë NNôôrrwwëëggïïáánn wwhhëërrëë tthhëë ttrráánnssllááttïïôônn ïïss mmïïssssïïnngg !!]"
@@ -74423,5 +74423,8 @@
   },
   "server.error.text_too_long": {
     "text": "[!! TThhëë ttëëxxtt ïïss ttôôôô llôônngg (mmááxx {max} cchháárrááccttëërrss) !!]"
+  },
+  "app-i18n-language.language-switch.change-title": {
+    "text": "[!! CChháánnggëë lláánnggüüáággëë !!]"
   }
 }
