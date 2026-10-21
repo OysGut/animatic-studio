@@ -8,8 +8,9 @@ import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { CheckCircle2, Loader2, TriangleAlert } from "lucide-react";
-import { JOB_STATE_LABEL, formatHeading, jobQualityProfile, jobState, locale, tm, type GenerationJob, type ProjectState } from "@/core";
+import { AI_JOBS_READ_KEY, JOB_STATE_LABEL, formatHeading, isAiJobsReadPrefs, isJobRead, jobQualityProfile, jobState, locale, markAllJobsRead, markJobsRead, tm, unreadFailedJobs, type AiJobsReadPrefs, type GenerationJob, type ProjectState } from "@/core";
 import { useAiJobs } from "./use-ai-jobs";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { RefetchVideoButton, canRefetchVideo } from "./RefetchVideoButton";
 import { projectStateKey } from "@/app/project/use-project";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -58,8 +59,11 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
       (j.status === "done" || j.status === "failed" || j.status === "lost") &&
       now.getTime() - Date.parse(j.finishedAt ?? j.createdAt) < RECENT_MS,
   );
-  const failed = recent.filter((j) => j.status !== "done").length;
-  const done = recent.length - failed;
+  const [readPrefs, setReadPrefs] = useUiPref<AiJobsReadPrefs>(AI_JOBS_READ_KEY, {}, isAiJobsReadPrefs);
+  const allFailed = recent.filter((j) => j.status !== "done");
+  const failed = unreadFailedJobs(recent, readPrefs).length;
+  const done = recent.length - allFailed.length;
+  const hasUnread = list.some((j) => (j.status === "failed" || j.status === "lost") && !isJobRead(j, readPrefs));
   if (!list.length) return null;
   const busy = running + queued > 0;
   const summary = busy
@@ -98,8 +102,18 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-[380px] p-0">
-        <div className="border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
+        <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 text-xs font-medium text-text-primary">
           {t("app-ai-generation-status.generation-status.div.df5170190148")}
+          {hasUnread ? (
+            <button
+              type="button"
+              data-testid="jobs-mark-all-read"
+              className="text-accent-brand hover:underline"
+              onClick={() => setReadPrefs(markAllJobsRead(new Date().toISOString()))}
+            >
+              {t("app-ai-generation-status.mark-all-read")}
+            </button>
+          ) : null}
         </div>
         <ul className="max-h-[60vh] overflow-y-auto">
           {shown.map((j) => {
