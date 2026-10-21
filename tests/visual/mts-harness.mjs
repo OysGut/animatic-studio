@@ -22,7 +22,7 @@ export function harness(defaultOut) {
   const rows = fx.rows;
   const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [], batches: [] };
   /** B-099: valgfrie egne svar (rest(table, request) / serverFn(name, data)); undefined = vanlig svar. */
-  const hooks = { rest: null, serverFn: null };
+  const hooks = { rest: null, serverFn: null, storage: null };
 
   function serverFnName(url) {
     try {
@@ -75,6 +75,11 @@ export function harness(defaultOut) {
         state.uploads.push(key);
         state.uploadBodies.push(request.postDataBuffer());
         return json({ Key: key, Id: "00000000-0000-7000-8000-0000a7999999" });
+      }
+      // B-098: en suite kan svare selv på nedlasting av enkelte filer (standard: ingen)
+      if (hooks.storage && path.startsWith("/storage/v1/")) {
+        const r = hooks.storage(path, request);
+        if (r) return route.fulfill({ status: 200, contentType: r.contentType, headers: { "Access-Control-Allow-Origin": "*" }, body: r.body });
       }
       if (path.startsWith("/storage/v1/") && /\.(wav|mp3|webm|m4a|ogg)/.test(path)) {
         const rate = 8000, samples = rate * 6, wav = Buffer.alloc(44 + samples * 2);
