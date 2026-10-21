@@ -252,7 +252,9 @@ await scenario("kriterium-5-6", "nb", async (page, studio) => {
   // Lagre demping eksplisitt
   await openStudio(page, studio);
   await page.locator(`[data-testid="asset-studio-audio-preview-toggle"][data-clip-id="${MUSIC}"]`).uncheck();
+  if (process.env.DBG) console.log("DBG1", await page.locator(`[data-testid="asset-studio-audio-preview-toggle"][data-clip-id="${MUSIC}"]`).isChecked(), await page.getByTestId("asset-studio-save-mute").isDisabled());
   await page.getByTestId("asset-studio-save-mute").click();
+  if (process.env.DBG) { await page.waitForTimeout(300); console.log("DBG2", await page.getByTestId("asset-studio-save").isDisabled(), await page.getByTestId("asset-studio-save-mute").isDisabled(), (await page.getByRole("alert").allInnerTexts()).join("|")); await page.screenshot({ path: "/tmp/browser/dbg/mute.png" }); }
   await save(page, studio);
   await waitHidden(studio);
   const st = (drafts().at(-1)?.steps ?? []).find((s) => s.type === "UpdateAudioClips");
