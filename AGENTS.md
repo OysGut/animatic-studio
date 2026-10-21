@@ -37,7 +37,7 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 19. Film shares (GP5): a token binds one exported mp4; new tokens derive from a DB-only pepper and are stored only as a peppered digest (film_share_lookup, service role), so /se/$token resolves only via a server function.†
 20. src/core/typography, src/core/animation and src/app/asset-studio have their own AGENTS.md; read it first.
 21. Asset versions sort via compareVersionCreation.
-23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so a leaked link grants nobody else access.
+23. Invitations bind to the invited email: acceptance compares it with the signed-in email, so leaked links grant nobody access.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
 25. MP3 encoding is client-only; owner-confirmed AI-source cleanup rechecks references server-side to protect used media.
