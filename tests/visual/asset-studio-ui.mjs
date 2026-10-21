@@ -40,6 +40,10 @@ const rows = {
   composition_layers: fx.rows.composition_layers.map((l) => (l.id === LAYER.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, image_swaps: [], locked: false, visible: true, group_id: null, motion_path: null, active_from: null, active_to: null, keyframes: [{ frame: 0, property: "x", value: COMP.width / 2, easing: "linear" }, { frame: 48, property: "x", value: COMP.width / 2 + 200, easing: "linear" }] } : l.id === HIDDEN?.id ? { ...l, transform: { ...l.transform, x: COMP.width / 2, y: COMP.height / 2 }, keyframes: [], motion_path: null } : l)),
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), clip(DLG, "dialogue", "Replikk", 500, LINE?.id ?? null), clip(MUSIC, "music", "Musikk", 0, null)],
 };
+// R7: fixturens lydversjoner (DV2) hørte til klippene som byttes ut over. Uten klipp er de foreldreløse, og
+// kjernen stopper med rette alle lydklippendringer («Replikken har lydversjoner som ikke kan fjernes»), så
+// «Lagre demping i scenen» sendte ingenting. Behold bare versjoner som har klippet sitt.
+rows.dialogue_versions = (fx.rows.dialogue_versions ?? []).filter((v) => rows.audio_clips.some((a) => a.id === v.clip_id));
 let commands = [];
 /** Neste UpdateSceneDraft svarer med revisjonskonflikt (kriterium 15). */
 let conflictNext = false;
@@ -252,13 +256,10 @@ await scenario("kriterium-5-6", "nb", async (page, studio) => {
   // Lagre demping eksplisitt
   await openStudio(page, studio);
   await page.locator(`[data-testid="asset-studio-audio-preview-toggle"][data-clip-id="${MUSIC}"]`).uncheck();
-  if (process.env.DBG) console.log("DBG1", await page.locator(`[data-testid="asset-studio-audio-preview-toggle"][data-clip-id="${MUSIC}"]`).isChecked(), await page.getByTestId("asset-studio-save-mute").isDisabled());
   await page.getByTestId("asset-studio-save-mute").click();
-  if (process.env.DBG) { await page.waitForTimeout(300); console.log("DBG2", await page.getByTestId("asset-studio-save").isDisabled(), await page.getByTestId("asset-studio-save-mute").isDisabled(), (await page.getByRole("alert").allInnerTexts()).join("|")); await page.screenshot({ path: "/tmp/browser/dbg/mute.png" }); }
   await save(page, studio);
   await waitHidden(studio);
   const st = (drafts().at(-1)?.steps ?? []).find((s) => s.type === "UpdateAudioClips");
-  if (process.env.DBG) console.log("DBG", JSON.stringify(drafts().map(d => (d.steps ?? []).map(s => s.type + ":" + JSON.stringify(s.clips ?? "").slice(0, 300)))), JSON.stringify(commands.map(c => c?.type)));
   check(st?.clips?.length === 1 && st.clips[0].clipId === MUSIC && st.clips[0].fields.muted === true, "6: «Lagre demping i scenen» lagrer bare det valgte klippet");
 });
 
