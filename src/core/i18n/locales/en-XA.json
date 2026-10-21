@@ -73490,5 +73490,227 @@
   },
   "core-rig-multiplane-commands.plate.invalid": {
     "text": "[!! TThhëë ppllááttëë ddôôëëss nnôôtt ëëxxïïsstt ïïnn tthhëë ssccëënnëë'ss rrïïgg !!]"
+  },
+  "app-shell-project-nav.nav-label.rig": {
+    "text": "[!! RRïïgg !!]"
+  },
+  "routes-prosjekt-rigg.head.title": {
+    "text": "[!! RRïïgg – ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]"
+  },
+  "routes-prosjekt-rigg.head.description": {
+    "text": "[!! MMüüllttïïpplláánnëë rrïïgg ffôôrr 2DD pprrïïnnttïïnngg: ccáámmëërráá, llëënnss, ppllááttëëss, ccáállïïbbrrááttïïôônn áánndd ttëëmmppllááttëëss. !!]"
+  },
+  "app-rig.loading": {
+    "text": "[!! LLôôááddïïnngg tthhëë rrïïgg … !!]"
+  },
+  "app-rig.load-error": {
+    "text": "[!! CCôôüülldd nnôôtt llôôáádd tthhëë pprrôôjjëëcctt. !!]"
+  },
+  "app-rig.scene-label": {
+    "text": "[!! SSccëënnëë !!]"
+  },
+  "app-rig.default-rig": {
+    "text": "[!! DDëëffááüülltt rrïïgg (wwhhôôllëë pprrôôjjëëcctt) !!]"
+  },
+  "app-rig.scene-option": {
+    "text": "[!! SSccëënnëë {number} !!]"
+  },
+  "app-rig.camera-heading": {
+    "text": "[!! CCáámmëërráá áánndd llëënnss !!]"
+  },
+  "app-rig.sensor-width": {
+    "text": "[!! SSëënnssôôrr wwïïddtthh !!]"
+  },
+  "app-rig.sensor-height": {
+    "text": "[!! SSëënnssôôrr hhëëïïgghhtt !!]"
+  },
+  "app-rig.focal-length": {
+    "text": "[!! FFôôccááll llëënnggtthh !!]"
+  },
+  "app-rig.camera-height": {
+    "text": "[!! CCáámmëërráá hhëëïïgghhtt áábbôôvvëë tthhëë ttáábbllëë !!]"
+  },
+  "app-rig.camera-mode": {
+    "text": "[!! CCáámmëërráá mmôôddëë !!]"
+  },
+  "app-rig.mode-fixed": {
+    "text": "[!! FFïïxxëëdd ccáámmëërráá (ddïïggïïttááll zzôôôômm) !!]"
+  },
+  "app-rig.mode-moving": {
+    "text": "[!! TThhëë ccáámmëërráá mmôôvvëëss pphhyyssïïccáállllyy !!]"
+  },
+  "app-rig.plates-heading": {
+    "text": "[!! PPllááttëëss !!]"
+  },
+  "app-rig.plate-name": {
+    "text": "[!! NNáámmëë !!]"
+  },
+  "app-rig.plate-height": {
+    "text": "[!! HHëëïïgghhtt áábbôôvvëë tthhëë ttáábbllëë !!]"
+  },
+  "app-rig.glass-thickness": {
+    "text": "[!! GGlláássss tthhïïcckknnëëssss !!]"
+  },
+  "app-rig.add-plate": {
+    "text": "[!! ÁÁdddd ppllááttëë !!]"
+  },
+  "app-rig.remove-plate": {
+    "text": "[!! RRëëmmôôvvëë tthhëë ppllááttëë !!]"
+  },
+  "app-rig.plate-in-use": {
+    "text": "[!! TThhëë ppllááttëë ccáánnnnôôtt bbëë rrëëmmôôvvëëdd: llááyyëërrss ïïnn tthhëë ssccëënnëë üüssëë ïïtt. !!]"
+  },
+  "app-rig.calibration-heading": {
+    "text": "[!! CCáállïïbbrrááttïïôônn !!]"
+  },
+  "app-rig.calibration-none": {
+    "text": "[!! NNôôtt ccáállïïbbrrááttëëdd – tthhëë tthhëëôôrrëëttïïccááll ccáállccüüllááttïïôônn ïïss üüssëëdd. !!]"
+  },
+  "app-rig.calibration-valid": {
+    "text": "[!! VVáállïïdd ccáállïïbbrrááttïïôônn ffrrôômm {date}. !!]"
+  },
+  "app-rig.calibration-invalid": {
+    "text": "[!! TThhëë ccáállïïbbrrááttïïôônn ïïss ïïnnvváállïïdd bbëëccááüüssëë tthhëë ccáámmëërráá vváállüüëëss cchháánnggëëdd. ÏÏtt ïïss kkëëpptt, bbüütt tthhëë tthhëëôôrrëëttïïccááll ccáállccüüllááttïïôônn ïïss üüssëëdd. !!]"
+  },
+  "app-rig.calibrate-button": {
+    "text": "[!! SSáávvëë mmëëáássüürrëëmmëënntt ááss ccáállïïbbrrááttïïôônn !!]"
+  },
+  "app-rig.calibration-px-per-mm": {
+    "text": "[!! MMëëáássüürrëëdd ppïïxxëëllss ppëërr mmmm !!]"
+  },
+  "app-rig.calibration-reference-plate": {
+    "text": "[!! RRëëffëërrëënnccëë ppllááttëë ffôôrr tthhëë mmëëáássüürrëëmmëënntt !!]"
+  },
+  "app-rig.templates-heading": {
+    "text": "[!! TTëëmmppllááttëëss !!]"
+  },
+  "app-rig.save-as-template": {
+    "text": "[!! SSáávvëë ááss ttëëmmppllááttëë !!]"
+  },
+  "app-rig.update-template": {
+    "text": "[!! ÜÜppddááttëë tthhëë ttëëmmppllááttëë !!]"
+  },
+  "app-rig.apply-template": {
+    "text": "[!! ÜÜssëë tthhëë ttëëmmppllááttëë !!]"
+  },
+  "app-rig.template-name-placeholder": {
+    "text": "[!! TTëëmmppllááttëë nnáámmëë !!]"
+  },
+  "app-rig.no-templates": {
+    "text": "[!! NNôô ttëëmmppllááttëëss yyëëtt. !!]"
+  },
+  "app-rig.publish-global": {
+    "text": "[!! PPüübbllïïsshh ttôô tthhëë wwôôrrkkssppááccëë llïïbbrráárryy !!]"
+  },
+  "app-rig.publish-done": {
+    "text": "[!! TThhëë ttëëmmppllááttëë ïïss ppüübbllïïsshhëëdd ïïnn tthhëë wwôôrrkkssppááccëë'ss ggllôôbbááll llïïbbrráárryy. !!]"
+  },
+  "app-rig.publish-error": {
+    "text": "[!! CCôôüülldd nnôôtt ppüübbllïïsshh tthhëë ttëëmmppllááttëë. !!]"
+  },
+  "app-rig.print-heading": {
+    "text": "[!! 3DD pprrïïnnttïïnngg !!]"
+  },
+  "app-rig.print-coming": {
+    "text": "[!! CCôômmïïnngg llááttëërr !!]"
+  },
+  "app-rig.units-label": {
+    "text": "[!! ÜÜnnïïttss !!]"
+  },
+  "app-rig.unit-mm": {
+    "text": "[!! mmmm !!]"
+  },
+  "app-rig.unit-in": {
+    "text": "[!! ïïnncchhëëss !!]"
+  },
+  "app-rig.save-rig": {
+    "text": "[!! SSáávvëë tthhëë rrïïgg !!]"
+  },
+  "app-rig.save-rig-label": {
+    "text": "[!! CChháánnggëëdd tthhëë rrïïgg !!]"
+  },
+  "app-rig.new-plate-name": {
+    "text": "[!! PPllááttëë {number} !!]"
+  },
+  "app-rig.side-view-aria": {
+    "text": "[!! SSïïddëë vvïïëëww ôôff tthhëë rrïïgg ttôô ssccáállëë: ccáámmëërráá, llëënnss áánndd ppllááttëëss !!]"
+  },
+  "app-rig.distance-label": {
+    "text": "[!! DDïïssttáánnccëë {distance} !!]"
+  },
+  "app-rig.field-of-view": {
+    "text": "[!! FFïïëëlldd ôôff vvïïëëww {size} !!]"
+  },
+  "app-rig.layers-panel.plate-label": {
+    "text": "[!! PPllááttëë !!]"
+  },
+  "app-rig.layers-panel.no-plate": {
+    "text": "[!! NNôô ppllááttëë !!]"
+  },
+  "app-rig.layers-panel.physical-size": {
+    "text": "[!! PPhhyyssïïccááll ssïïzzëë: {size} !!]"
+  },
+  "app-rig.layers-panel.depth-label": {
+    "text": "[!! DDëëpptthh !!]"
+  },
+  "app-rig.layers-panel.parallax-override": {
+    "text": "[!! TThhëë ppáárráállllááxx ïïss ôôvvëërrrrïïddddëënn ááwwááyy ffrrôômm tthhëë ppllááttëë llëëvvëëll !!]"
+  },
+  "app-rig.layers-panel.set-plate-label": {
+    "text": "[!! CChháánnggëëdd tthhëë llááyyëërr'ss ppllááttëë !!]"
+  },
+  "auth.password-reset.forgot": {
+    "text": "[!! FFôôrrggôôtt ppáásssswwôôrrdd? !!]"
+  },
+  "auth.password-reset.email-required": {
+    "text": "[!! ËËnnttëërr áá vváállïïdd ëëmmááïïll ááddddrrëëssss ffïïrrsstt. !!]"
+  },
+  "auth.password-reset.sent": {
+    "text": "[!! ÏÏff tthhëë ëëmmááïïll ááddddrrëëssss ëëxxïïssttss ïïnn ôôüürr ssyyssttëëmm, áánn ëëmmááïïll wwïïtthh áá ppáásssswwôôrrdd rrëëssëëtt llïïnnkk hhááss bbëëëënn ssëënntt. !!]"
+  },
+  "auth.password-reset.title": {
+    "text": "[!! RRëëssëëtt ppáásssswwôôrrdd | ÁÁnnïïmmááttïïcc SSttüüddïïôô !!]"
+  },
+  "auth.password-reset.description": {
+    "text": "[!! CChhôôôôssëë áá nnëëww ÁÁnnïïmmááttïïcc SSttüüddïïôô ppáásssswwôôrrdd üüssïïnngg tthhëë llïïnnkk ffrrôômm yyôôüürr ëëmmááïïll. !!]"
+  },
+  "auth.password-reset.og-type": {
+    "text": "[!! wwëëbbssïïttëë !!]"
+  },
+  "auth.password-reset.twitter-card": {
+    "text": "[!! ssüümmmmáárryy !!]"
+  },
+  "auth.password-reset.heading": {
+    "text": "[!! SSëëtt áá nnëëww ppáásssswwôôrrdd !!]"
+  },
+  "auth.password-reset.password": {
+    "text": "[!! NNëëww ppáásssswwôôrrdd !!]"
+  },
+  "auth.password-reset.confirm": {
+    "text": "[!! CCôônnffïïrrmm nnëëww ppáásssswwôôrrdd !!]"
+  },
+  "auth.password-reset.save": {
+    "text": "[!! SSáávvëë nnëëww ppáásssswwôôrrdd !!]"
+  },
+  "auth.password-reset.login": {
+    "text": "[!! BBáácckk ttôô ssïïggnn ïïnn !!]"
+  },
+  "auth.password-reset.success": {
+    "text": "[!! YYôôüürr ppáásssswwôôrrdd hhááss bbëëëënn cchháánnggëëdd. YYôôüü ccáánn nnôôww ggôô ttôô ssïïggnn ïïnn. !!]"
+  },
+  "auth.password-reset.checking": {
+    "text": "[!! CChhëëcckkïïnngg tthhëë rrëëssëëtt llïïnnkk … !!]"
+  },
+  "auth.password-reset.invalid": {
+    "text": "[!! TThhëë llïïnnkk ïïss ïïnnvváállïïdd ôôrr ëëxxppïïrrëëdd. RRëëqqüüëësstt áá nnëëww llïïnnkk ffrrôômm tthhëë ssïïggnn-ïïnn ppáággëë. !!]"
+  },
+  "auth.password-reset.too-short": {
+    "text": "[!! TThhëë ppáásssswwôôrrdd mmüüsstt ccôônnttááïïnn áátt llëëáásstt 8 cchháárrááccttëërrss. !!]"
+  },
+  "auth.password-reset.mismatch": {
+    "text": "[!! TThhëë ppáásssswwôôrrddss ddôô nnôôtt mmááttcchh. !!]"
+  },
+  "auth.password-reset.failed": {
+    "text": "[!! TThhëë ppáásssswwôôrrdd ccôôüülldd nnôôtt bbëë cchháánnggëëdd. TTrryy áággááïïnn ôôrr rrëëqqüüëësstt áá nnëëww rrëëssëëtt llïïnnkk. !!]"
   }
 }

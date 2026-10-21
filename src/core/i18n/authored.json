@@ -5057,6 +5057,598 @@
       "en": {
         "text": "The plate does not exist in the scene's rig"
       }
+    },
+    "app-shell-project-nav.nav-label.rig": {
+      "nb": {
+        "text": "Rigg"
+      },
+      "en": {
+        "text": "Rig"
+      }
+    },
+    "routes-prosjekt-rigg.head.title": {
+      "nb": {
+        "text": "Rigg – Animatic Studio"
+      },
+      "en": {
+        "text": "Rig – Animatic Studio"
+      }
+    },
+    "routes-prosjekt-rigg.head.description": {
+      "nb": {
+        "text": "Multiplanrigg for 2D-utskrift: kamera, objektiv, plater, kalibrering og maler."
+      },
+      "en": {
+        "text": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates."
+      }
+    },
+    "app-rig.loading": {
+      "nb": {
+        "text": "Laster riggen …"
+      },
+      "en": {
+        "text": "Loading the rig …"
+      }
+    },
+    "app-rig.load-error": {
+      "nb": {
+        "text": "Kunne ikke laste prosjektet."
+      },
+      "en": {
+        "text": "Could not load the project."
+      }
+    },
+    "app-rig.scene-label": {
+      "nb": {
+        "text": "Scene"
+      },
+      "en": {
+        "text": "Scene"
+      }
+    },
+    "app-rig.default-rig": {
+      "nb": {
+        "text": "Standardrigg (hele prosjektet)"
+      },
+      "en": {
+        "text": "Default rig (whole project)"
+      }
+    },
+    "app-rig.scene-option": {
+      "nb": {
+        "text": "Scene {number}"
+      },
+      "en": {
+        "text": "Scene {number}"
+      }
+    },
+    "app-rig.camera-heading": {
+      "nb": {
+        "text": "Kamera og objektiv"
+      },
+      "en": {
+        "text": "Camera and lens"
+      }
+    },
+    "app-rig.sensor-width": {
+      "nb": {
+        "text": "Sensorbredde"
+      },
+      "en": {
+        "text": "Sensor width"
+      }
+    },
+    "app-rig.sensor-height": {
+      "nb": {
+        "text": "Sensorhøyde"
+      },
+      "en": {
+        "text": "Sensor height"
+      }
+    },
+    "app-rig.focal-length": {
+      "nb": {
+        "text": "Brennvidde"
+      },
+      "en": {
+        "text": "Focal length"
+      }
+    },
+    "app-rig.camera-height": {
+      "nb": {
+        "text": "Kamerahøyde over bordet"
+      },
+      "en": {
+        "text": "Camera height above the table"
+      }
+    },
+    "app-rig.camera-mode": {
+      "nb": {
+        "text": "Kameramodus"
+      },
+      "en": {
+        "text": "Camera mode"
+      }
+    },
+    "app-rig.mode-fixed": {
+      "nb": {
+        "text": "Fast kamera (digital zoom)"
+      },
+      "en": {
+        "text": "Fixed camera (digital zoom)"
+      }
+    },
+    "app-rig.mode-moving": {
+      "nb": {
+        "text": "Kameraet beveger seg fysisk"
+      },
+      "en": {
+        "text": "The camera moves physically"
+      }
+    },
+    "app-rig.plates-heading": {
+      "nb": {
+        "text": "Plater"
+      },
+      "en": {
+        "text": "Plates"
+      }
+    },
+    "app-rig.plate-name": {
+      "nb": {
+        "text": "Navn"
+      },
+      "en": {
+        "text": "Name"
+      }
+    },
+    "app-rig.plate-height": {
+      "nb": {
+        "text": "Høyde over bordet"
+      },
+      "en": {
+        "text": "Height above the table"
+      }
+    },
+    "app-rig.glass-thickness": {
+      "nb": {
+        "text": "Glasstykkelse"
+      },
+      "en": {
+        "text": "Glass thickness"
+      }
+    },
+    "app-rig.add-plate": {
+      "nb": {
+        "text": "Legg til plate"
+      },
+      "en": {
+        "text": "Add plate"
+      }
+    },
+    "app-rig.remove-plate": {
+      "nb": {
+        "text": "Fjern platen"
+      },
+      "en": {
+        "text": "Remove the plate"
+      }
+    },
+    "app-rig.plate-in-use": {
+      "nb": {
+        "text": "Platen kan ikke fjernes: den brukes av lag i scenen."
+      },
+      "en": {
+        "text": "The plate cannot be removed: layers in the scene use it."
+      }
+    },
+    "app-rig.calibration-heading": {
+      "nb": {
+        "text": "Kalibrering"
+      },
+      "en": {
+        "text": "Calibration"
+      }
+    },
+    "app-rig.calibration-none": {
+      "nb": {
+        "text": "Ikke kalibrert – teoriberegning brukes."
+      },
+      "en": {
+        "text": "Not calibrated – the theoretical calculation is used."
+      }
+    },
+    "app-rig.calibration-valid": {
+      "nb": {
+        "text": "Gyldig kalibrering fra {date}."
+      },
+      "en": {
+        "text": "Valid calibration from {date}."
+      }
+    },
+    "app-rig.calibration-invalid": {
+      "nb": {
+        "text": "Kalibreringen er ugyldig fordi kameraverdiene er endret. Den er beholdt, men teoriberegningen brukes."
+      },
+      "en": {
+        "text": "The calibration is invalid because the camera values changed. It is kept, but the theoretical calculation is used."
+      }
+    },
+    "app-rig.calibrate-button": {
+      "nb": {
+        "text": "Lagre måling som kalibrering"
+      },
+      "en": {
+        "text": "Save measurement as calibration"
+      }
+    },
+    "app-rig.calibration-px-per-mm": {
+      "nb": {
+        "text": "Målte piksler per mm"
+      },
+      "en": {
+        "text": "Measured pixels per mm"
+      }
+    },
+    "app-rig.calibration-reference-plate": {
+      "nb": {
+        "text": "Referanseplate for målingen"
+      },
+      "en": {
+        "text": "Reference plate for the measurement"
+      }
+    },
+    "app-rig.templates-heading": {
+      "nb": {
+        "text": "Maler"
+      },
+      "en": {
+        "text": "Templates"
+      }
+    },
+    "app-rig.save-as-template": {
+      "nb": {
+        "text": "Lagre som mal"
+      },
+      "en": {
+        "text": "Save as template"
+      }
+    },
+    "app-rig.update-template": {
+      "nb": {
+        "text": "Oppdater malen"
+      },
+      "en": {
+        "text": "Update the template"
+      }
+    },
+    "app-rig.apply-template": {
+      "nb": {
+        "text": "Bruk malen"
+      },
+      "en": {
+        "text": "Use the template"
+      }
+    },
+    "app-rig.template-name-placeholder": {
+      "nb": {
+        "text": "Navn på malen"
+      },
+      "en": {
+        "text": "Template name"
+      }
+    },
+    "app-rig.no-templates": {
+      "nb": {
+        "text": "Ingen maler ennå."
+      },
+      "en": {
+        "text": "No templates yet."
+      }
+    },
+    "app-rig.publish-global": {
+      "nb": {
+        "text": "Publiser til gruppens bibliotek"
+      },
+      "en": {
+        "text": "Publish to the workspace library"
+      }
+    },
+    "app-rig.publish-done": {
+      "nb": {
+        "text": "Malen er publisert i gruppens globale bibliotek."
+      },
+      "en": {
+        "text": "The template is published in the workspace's global library."
+      }
+    },
+    "app-rig.publish-error": {
+      "nb": {
+        "text": "Kunne ikke publisere malen."
+      },
+      "en": {
+        "text": "Could not publish the template."
+      }
+    },
+    "app-rig.print-heading": {
+      "nb": {
+        "text": "3D-print"
+      },
+      "en": {
+        "text": "3D printing"
+      }
+    },
+    "app-rig.print-coming": {
+      "nb": {
+        "text": "Kommer senere"
+      },
+      "en": {
+        "text": "Coming later"
+      }
+    },
+    "app-rig.units-label": {
+      "nb": {
+        "text": "Enheter"
+      },
+      "en": {
+        "text": "Units"
+      }
+    },
+    "app-rig.unit-mm": {
+      "nb": {
+        "text": "mm"
+      },
+      "en": {
+        "text": "mm"
+      }
+    },
+    "app-rig.unit-in": {
+      "nb": {
+        "text": "tommer"
+      },
+      "en": {
+        "text": "inches"
+      }
+    },
+    "app-rig.save-rig": {
+      "nb": {
+        "text": "Lagre riggen"
+      },
+      "en": {
+        "text": "Save the rig"
+      }
+    },
+    "app-rig.save-rig-label": {
+      "nb": {
+        "text": "Endret riggen"
+      },
+      "en": {
+        "text": "Changed the rig"
+      }
+    },
+    "app-rig.new-plate-name": {
+      "nb": {
+        "text": "Plate {number}"
+      },
+      "en": {
+        "text": "Plate {number}"
+      }
+    },
+    "app-rig.side-view-aria": {
+      "nb": {
+        "text": "Sidesnitt av riggen i målestokk: kamera, objektiv og plater"
+      },
+      "en": {
+        "text": "Side view of the rig to scale: camera, lens and plates"
+      }
+    },
+    "app-rig.distance-label": {
+      "nb": {
+        "text": "Avstand {distance}"
+      },
+      "en": {
+        "text": "Distance {distance}"
+      }
+    },
+    "app-rig.field-of-view": {
+      "nb": {
+        "text": "Synsfelt {size}"
+      },
+      "en": {
+        "text": "Field of view {size}"
+      }
+    },
+    "app-rig.layers-panel.plate-label": {
+      "nb": {
+        "text": "Plate"
+      },
+      "en": {
+        "text": "Plate"
+      }
+    },
+    "app-rig.layers-panel.no-plate": {
+      "nb": {
+        "text": "Ingen plate"
+      },
+      "en": {
+        "text": "No plate"
+      }
+    },
+    "app-rig.layers-panel.physical-size": {
+      "nb": {
+        "text": "Fysisk størrelse: {size}"
+      },
+      "en": {
+        "text": "Physical size: {size}"
+      }
+    },
+    "app-rig.layers-panel.depth-label": {
+      "nb": {
+        "text": "Dybde"
+      },
+      "en": {
+        "text": "Depth"
+      }
+    },
+    "app-rig.layers-panel.parallax-override": {
+      "nb": {
+        "text": "Parallaksen er overstyrt bort fra platenivået"
+      },
+      "en": {
+        "text": "The parallax is overridden away from the plate level"
+      }
+    },
+    "app-rig.layers-panel.set-plate-label": {
+      "nb": {
+        "text": "Endret plate for laget"
+      },
+      "en": {
+        "text": "Changed the layer's plate"
+      }
+    },
+    "auth.password-reset.forgot": {
+      "nb": {
+        "text": "Glemt passord?"
+      },
+      "en": {
+        "text": "Forgot password?"
+      }
+    },
+    "auth.password-reset.email-required": {
+      "nb": {
+        "text": "Skriv inn en gyldig e-postadresse først."
+      },
+      "en": {
+        "text": "Enter a valid email address first."
+      }
+    },
+    "auth.password-reset.sent": {
+      "nb": {
+        "text": "Hvis e-postadressen finnes hos oss, er det sendt en e-post med lenke for å tilbakestille passordet."
+      },
+      "en": {
+        "text": "If the email address exists in our system, an email with a password reset link has been sent."
+      }
+    },
+    "auth.password-reset.title": {
+      "nb": {
+        "text": "Tilbakestill passord | Animatic Studio"
+      },
+      "en": {
+        "text": "Reset password | Animatic Studio"
+      }
+    },
+    "auth.password-reset.description": {
+      "nb": {
+        "text": "Velg et nytt passord for Animatic Studio med lenken fra e-posten din."
+      },
+      "en": {
+        "text": "Choose a new Animatic Studio password using the link from your email."
+      }
+    },
+    "auth.password-reset.og-type": {
+      "nb": {
+        "text": "website"
+      },
+      "en": {
+        "text": "website"
+      }
+    },
+    "auth.password-reset.twitter-card": {
+      "nb": {
+        "text": "summary"
+      },
+      "en": {
+        "text": "summary"
+      }
+    },
+    "auth.password-reset.heading": {
+      "nb": {
+        "text": "Sett nytt passord"
+      },
+      "en": {
+        "text": "Set a new password"
+      }
+    },
+    "auth.password-reset.password": {
+      "nb": {
+        "text": "Nytt passord"
+      },
+      "en": {
+        "text": "New password"
+      }
+    },
+    "auth.password-reset.confirm": {
+      "nb": {
+        "text": "Bekreft nytt passord"
+      },
+      "en": {
+        "text": "Confirm new password"
+      }
+    },
+    "auth.password-reset.save": {
+      "nb": {
+        "text": "Lagre nytt passord"
+      },
+      "en": {
+        "text": "Save new password"
+      }
+    },
+    "auth.password-reset.login": {
+      "nb": {
+        "text": "Til innlogging"
+      },
+      "en": {
+        "text": "Back to sign in"
+      }
+    },
+    "auth.password-reset.success": {
+      "nb": {
+        "text": "Passordet er endret. Du kan nå gå til innlogging."
+      },
+      "en": {
+        "text": "Your password has been changed. You can now go to sign in."
+      }
+    },
+    "auth.password-reset.checking": {
+      "nb": {
+        "text": "Kontrollerer tilbakestillingslenken …"
+      },
+      "en": {
+        "text": "Checking the reset link …"
+      }
+    },
+    "auth.password-reset.invalid": {
+      "nb": {
+        "text": "Lenken er ugyldig eller utløpt. Be om en ny lenke fra innloggingssiden."
+      },
+      "en": {
+        "text": "The link is invalid or expired. Request a new link from the sign-in page."
+      }
+    },
+    "auth.password-reset.too-short": {
+      "nb": {
+        "text": "Passordet må ha minst 8 tegn."
+      },
+      "en": {
+        "text": "The password must contain at least 8 characters."
+      }
+    },
+    "auth.password-reset.mismatch": {
+      "nb": {
+        "text": "Passordene er ikke like."
+      },
+      "en": {
+        "text": "The passwords do not match."
+      }
+    },
+    "auth.password-reset.failed": {
+      "nb": {
+        "text": "Passordet kunne ikke endres. Prøv igjen, eller be om en ny tilbakestillingslenke."
+      },
+      "en": {
+        "text": "The password could not be changed. Try again or request a new reset link."
+      }
     }
   }
 }

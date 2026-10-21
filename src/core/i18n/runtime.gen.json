@@ -14602,6 +14602,165 @@
     "app-release-relations-dialog.update.cmds-run.87f973d97d98": {
       "text": "Endre relasjon"
     },
+    "app-rig.add-plate": {
+      "text": "Legg til plate"
+    },
+    "app-rig.apply-template": {
+      "text": "Bruk malen"
+    },
+    "app-rig.calibrate-button": {
+      "text": "Lagre måling som kalibrering"
+    },
+    "app-rig.calibration-heading": {
+      "text": "Kalibrering"
+    },
+    "app-rig.calibration-invalid": {
+      "text": "Kalibreringen er ugyldig fordi kameraverdiene er endret. Den er beholdt, men teoriberegningen brukes."
+    },
+    "app-rig.calibration-none": {
+      "text": "Ikke kalibrert – teoriberegning brukes."
+    },
+    "app-rig.calibration-px-per-mm": {
+      "text": "Målte piksler per mm"
+    },
+    "app-rig.calibration-reference-plate": {
+      "text": "Referanseplate for målingen"
+    },
+    "app-rig.calibration-valid": {
+      "text": "Gyldig kalibrering fra {date}."
+    },
+    "app-rig.camera-heading": {
+      "text": "Kamera og objektiv"
+    },
+    "app-rig.camera-height": {
+      "text": "Kamerahøyde over bordet"
+    },
+    "app-rig.camera-mode": {
+      "text": "Kameramodus"
+    },
+    "app-rig.default-rig": {
+      "text": "Standardrigg (hele prosjektet)"
+    },
+    "app-rig.distance-label": {
+      "text": "Avstand {distance}"
+    },
+    "app-rig.field-of-view": {
+      "text": "Synsfelt {size}"
+    },
+    "app-rig.focal-length": {
+      "text": "Brennvidde"
+    },
+    "app-rig.glass-thickness": {
+      "text": "Glasstykkelse"
+    },
+    "app-rig.layers-panel.depth-label": {
+      "text": "Dybde"
+    },
+    "app-rig.layers-panel.no-plate": {
+      "text": "Ingen plate"
+    },
+    "app-rig.layers-panel.parallax-override": {
+      "text": "Parallaksen er overstyrt bort fra platenivået"
+    },
+    "app-rig.layers-panel.physical-size": {
+      "text": "Fysisk størrelse: {size}"
+    },
+    "app-rig.layers-panel.plate-label": {
+      "text": "Plate"
+    },
+    "app-rig.layers-panel.set-plate-label": {
+      "text": "Endret plate for laget"
+    },
+    "app-rig.load-error": {
+      "text": "Kunne ikke laste prosjektet."
+    },
+    "app-rig.loading": {
+      "text": "Laster riggen …"
+    },
+    "app-rig.mode-fixed": {
+      "text": "Fast kamera (digital zoom)"
+    },
+    "app-rig.mode-moving": {
+      "text": "Kameraet beveger seg fysisk"
+    },
+    "app-rig.new-plate-name": {
+      "text": "Plate {number}"
+    },
+    "app-rig.no-templates": {
+      "text": "Ingen maler ennå."
+    },
+    "app-rig.plate-height": {
+      "text": "Høyde over bordet"
+    },
+    "app-rig.plate-in-use": {
+      "text": "Platen kan ikke fjernes: den brukes av lag i scenen."
+    },
+    "app-rig.plate-name": {
+      "text": "Navn"
+    },
+    "app-rig.plates-heading": {
+      "text": "Plater"
+    },
+    "app-rig.print-coming": {
+      "text": "Kommer senere"
+    },
+    "app-rig.print-heading": {
+      "text": "3D-print"
+    },
+    "app-rig.publish-done": {
+      "text": "Malen er publisert i gruppens globale bibliotek."
+    },
+    "app-rig.publish-error": {
+      "text": "Kunne ikke publisere malen."
+    },
+    "app-rig.publish-global": {
+      "text": "Publiser til gruppens bibliotek"
+    },
+    "app-rig.remove-plate": {
+      "text": "Fjern platen"
+    },
+    "app-rig.save-as-template": {
+      "text": "Lagre som mal"
+    },
+    "app-rig.save-rig": {
+      "text": "Lagre riggen"
+    },
+    "app-rig.save-rig-label": {
+      "text": "Endret riggen"
+    },
+    "app-rig.scene-label": {
+      "text": "Scene"
+    },
+    "app-rig.scene-option": {
+      "text": "Scene {number}"
+    },
+    "app-rig.sensor-height": {
+      "text": "Sensorhøyde"
+    },
+    "app-rig.sensor-width": {
+      "text": "Sensorbredde"
+    },
+    "app-rig.side-view-aria": {
+      "text": "Sidesnitt av riggen i målestokk: kamera, objektiv og plater"
+    },
+    "app-rig.template-name-placeholder": {
+      "text": "Navn på malen"
+    },
+    "app-rig.templates-heading": {
+      "text": "Maler"
+    },
+    "app-rig.unit-in": {
+      "text": "tommer"
+    },
+    "app-rig.unit-mm": {
+      "text": "mm"
+    },
+    "app-rig.units-label": {
+      "text": "Enheter"
+    },
+    "app-rig.update-template": {
+      "text": "Oppdater malen"
+    },
     "app-scene-editor-add-element-dialog.add-element-dialog.aria-label.28565d5f0cb2": {
       "text": "Søk i biblioteket"
     },
@@ -21629,6 +21788,9 @@
     "app-shell-project-nav.nav-label.release.4e44a938bd23": {
       "text": "Utgivelse"
     },
+    "app-shell-project-nav.nav-label.rig": {
+      "text": "Rigg"
+    },
     "app-shell-project-nav.nav-label.scene.e526371b5224": {
       "text": "Sceneeditor"
     },
@@ -23605,6 +23767,54 @@
     },
     "app-workspaces-workspaces-card.workspaces-card.placeholder.ddc2b6b3f64a": {
       "text": "Navn på ny arbeidsgruppe"
+    },
+    "auth.password-reset.checking": {
+      "text": "Kontrollerer tilbakestillingslenken …"
+    },
+    "auth.password-reset.confirm": {
+      "text": "Bekreft nytt passord"
+    },
+    "auth.password-reset.description": {
+      "text": "Velg et nytt passord for Animatic Studio med lenken fra e-posten din."
+    },
+    "auth.password-reset.email-required": {
+      "text": "Skriv inn en gyldig e-postadresse først."
+    },
+    "auth.password-reset.failed": {
+      "text": "Passordet kunne ikke endres. Prøv igjen, eller be om en ny tilbakestillingslenke."
+    },
+    "auth.password-reset.forgot": {
+      "text": "Glemt passord?"
+    },
+    "auth.password-reset.heading": {
+      "text": "Sett nytt passord"
+    },
+    "auth.password-reset.invalid": {
+      "text": "Lenken er ugyldig eller utløpt. Be om en ny lenke fra innloggingssiden."
+    },
+    "auth.password-reset.login": {
+      "text": "Til innlogging"
+    },
+    "auth.password-reset.mismatch": {
+      "text": "Passordene er ikke like."
+    },
+    "auth.password-reset.password": {
+      "text": "Nytt passord"
+    },
+    "auth.password-reset.save": {
+      "text": "Lagre nytt passord"
+    },
+    "auth.password-reset.sent": {
+      "text": "Hvis e-postadressen finnes hos oss, er det sendt en e-post med lenke for å tilbakestille passordet."
+    },
+    "auth.password-reset.success": {
+      "text": "Passordet er endret. Du kan nå gå til innlogging."
+    },
+    "auth.password-reset.title": {
+      "text": "Tilbakestill passord | Animatic Studio"
+    },
+    "auth.password-reset.too-short": {
+      "text": "Passordet må ha minst 8 tegn."
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
@@ -31086,6 +31296,12 @@
     },
     "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
       "text": "Prosjekt – Animatic Studio"
+    },
+    "routes-prosjekt-rigg.head.description": {
+      "text": "Multiplanrigg for 2D-utskrift: kamera, objektiv, plater, kalibrering og maler."
+    },
+    "routes-prosjekt-rigg.head.title": {
+      "text": "Rigg – Animatic Studio"
     },
     "routes-root.error-component.a.6fdb78437197": {
       "text": "Til forsiden"
@@ -45724,6 +45940,165 @@
     "app-release-relations-dialog.update.cmds-run.87f973d97d98": {
       "text": "Change relation"
     },
+    "app-rig.add-plate": {
+      "text": "Add plate"
+    },
+    "app-rig.apply-template": {
+      "text": "Use the template"
+    },
+    "app-rig.calibrate-button": {
+      "text": "Save measurement as calibration"
+    },
+    "app-rig.calibration-heading": {
+      "text": "Calibration"
+    },
+    "app-rig.calibration-invalid": {
+      "text": "The calibration is invalid because the camera values changed. It is kept, but the theoretical calculation is used."
+    },
+    "app-rig.calibration-none": {
+      "text": "Not calibrated – the theoretical calculation is used."
+    },
+    "app-rig.calibration-px-per-mm": {
+      "text": "Measured pixels per mm"
+    },
+    "app-rig.calibration-reference-plate": {
+      "text": "Reference plate for the measurement"
+    },
+    "app-rig.calibration-valid": {
+      "text": "Valid calibration from {date}."
+    },
+    "app-rig.camera-heading": {
+      "text": "Camera and lens"
+    },
+    "app-rig.camera-height": {
+      "text": "Camera height above the table"
+    },
+    "app-rig.camera-mode": {
+      "text": "Camera mode"
+    },
+    "app-rig.default-rig": {
+      "text": "Default rig (whole project)"
+    },
+    "app-rig.distance-label": {
+      "text": "Distance {distance}"
+    },
+    "app-rig.field-of-view": {
+      "text": "Field of view {size}"
+    },
+    "app-rig.focal-length": {
+      "text": "Focal length"
+    },
+    "app-rig.glass-thickness": {
+      "text": "Glass thickness"
+    },
+    "app-rig.layers-panel.depth-label": {
+      "text": "Depth"
+    },
+    "app-rig.layers-panel.no-plate": {
+      "text": "No plate"
+    },
+    "app-rig.layers-panel.parallax-override": {
+      "text": "The parallax is overridden away from the plate level"
+    },
+    "app-rig.layers-panel.physical-size": {
+      "text": "Physical size: {size}"
+    },
+    "app-rig.layers-panel.plate-label": {
+      "text": "Plate"
+    },
+    "app-rig.layers-panel.set-plate-label": {
+      "text": "Changed the layer's plate"
+    },
+    "app-rig.load-error": {
+      "text": "Could not load the project."
+    },
+    "app-rig.loading": {
+      "text": "Loading the rig …"
+    },
+    "app-rig.mode-fixed": {
+      "text": "Fixed camera (digital zoom)"
+    },
+    "app-rig.mode-moving": {
+      "text": "The camera moves physically"
+    },
+    "app-rig.new-plate-name": {
+      "text": "Plate {number}"
+    },
+    "app-rig.no-templates": {
+      "text": "No templates yet."
+    },
+    "app-rig.plate-height": {
+      "text": "Height above the table"
+    },
+    "app-rig.plate-in-use": {
+      "text": "The plate cannot be removed: layers in the scene use it."
+    },
+    "app-rig.plate-name": {
+      "text": "Name"
+    },
+    "app-rig.plates-heading": {
+      "text": "Plates"
+    },
+    "app-rig.print-coming": {
+      "text": "Coming later"
+    },
+    "app-rig.print-heading": {
+      "text": "3D printing"
+    },
+    "app-rig.publish-done": {
+      "text": "The template is published in the workspace's global library."
+    },
+    "app-rig.publish-error": {
+      "text": "Could not publish the template."
+    },
+    "app-rig.publish-global": {
+      "text": "Publish to the workspace library"
+    },
+    "app-rig.remove-plate": {
+      "text": "Remove the plate"
+    },
+    "app-rig.save-as-template": {
+      "text": "Save as template"
+    },
+    "app-rig.save-rig": {
+      "text": "Save the rig"
+    },
+    "app-rig.save-rig-label": {
+      "text": "Changed the rig"
+    },
+    "app-rig.scene-label": {
+      "text": "Scene"
+    },
+    "app-rig.scene-option": {
+      "text": "Scene {number}"
+    },
+    "app-rig.sensor-height": {
+      "text": "Sensor height"
+    },
+    "app-rig.sensor-width": {
+      "text": "Sensor width"
+    },
+    "app-rig.side-view-aria": {
+      "text": "Side view of the rig to scale: camera, lens and plates"
+    },
+    "app-rig.template-name-placeholder": {
+      "text": "Template name"
+    },
+    "app-rig.templates-heading": {
+      "text": "Templates"
+    },
+    "app-rig.unit-in": {
+      "text": "inches"
+    },
+    "app-rig.unit-mm": {
+      "text": "mm"
+    },
+    "app-rig.units-label": {
+      "text": "Units"
+    },
+    "app-rig.update-template": {
+      "text": "Update the template"
+    },
     "app-scene-editor-add-element-dialog.add-element-dialog.aria-label.28565d5f0cb2": {
       "text": "Search the library"
     },
@@ -52751,6 +53126,9 @@
     "app-shell-project-nav.nav-label.release.4e44a938bd23": {
       "text": "Release"
     },
+    "app-shell-project-nav.nav-label.rig": {
+      "text": "Rig"
+    },
     "app-shell-project-nav.nav-label.scene.e526371b5224": {
       "text": "Scene editor"
     },
@@ -54727,6 +55105,54 @@
     },
     "app-workspaces-workspaces-card.workspaces-card.placeholder.ddc2b6b3f64a": {
       "text": "Name of new workspace"
+    },
+    "auth.password-reset.checking": {
+      "text": "Checking the reset link …"
+    },
+    "auth.password-reset.confirm": {
+      "text": "Confirm new password"
+    },
+    "auth.password-reset.description": {
+      "text": "Choose a new Animatic Studio password using the link from your email."
+    },
+    "auth.password-reset.email-required": {
+      "text": "Enter a valid email address first."
+    },
+    "auth.password-reset.failed": {
+      "text": "The password could not be changed. Try again or request a new reset link."
+    },
+    "auth.password-reset.forgot": {
+      "text": "Forgot password?"
+    },
+    "auth.password-reset.heading": {
+      "text": "Set a new password"
+    },
+    "auth.password-reset.invalid": {
+      "text": "The link is invalid or expired. Request a new link from the sign-in page."
+    },
+    "auth.password-reset.login": {
+      "text": "Back to sign in"
+    },
+    "auth.password-reset.mismatch": {
+      "text": "The passwords do not match."
+    },
+    "auth.password-reset.password": {
+      "text": "New password"
+    },
+    "auth.password-reset.save": {
+      "text": "Save new password"
+    },
+    "auth.password-reset.sent": {
+      "text": "If the email address exists in our system, an email with a password reset link has been sent."
+    },
+    "auth.password-reset.success": {
+      "text": "Your password has been changed. You can now go to sign in."
+    },
+    "auth.password-reset.title": {
+      "text": "Reset password | Animatic Studio"
+    },
+    "auth.password-reset.too-short": {
+      "text": "The password must contain at least 8 characters."
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"
@@ -62208,6 +62634,12 @@
     },
     "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
       "text": "Project – Animatic Studio"
+    },
+    "routes-prosjekt-rigg.head.description": {
+      "text": "Multiplane rig for 2D printing: camera, lens, plates, calibration and templates."
+    },
+    "routes-prosjekt-rigg.head.title": {
+      "text": "Rig – Animatic Studio"
     },
     "routes-root.error-component.a.6fdb78437197": {
       "text": "Go to the front page"
