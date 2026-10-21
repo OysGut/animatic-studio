@@ -200,7 +200,7 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
     <div
       role="group"
       aria-label={t("app-i18n-language.language-switch.aria-label.a2595484506d")}
-      title={t("app-i18n-language.language-switch.title.691fad620f12")}
+      title={t("app-i18n-language.language-switch.change-title")}
       data-testid="language-switch"
       className="flex max-w-full flex-wrap items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
     >
