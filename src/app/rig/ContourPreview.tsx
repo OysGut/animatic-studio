@@ -76,12 +76,14 @@ export function ContourPreview({ state, layer, spec, frame = 0, compact = false 
   const padding = Math.max(strokeWidthMm, .5);
   const d = result?.paths.map(p => p.points.map((q, i) => `${i ? 'L' : 'M'}${q.x},${q.y}`).join(' ') + ' Z').join(' ');
   return <div data-testid="rig-contour-preview" className="space-y-2 text-xs text-text-primary">
-    <p data-testid="rig-contour-source" className="text-text-secondary">{result ? t(SOURCE_KEY[result.source]) : t(failed ? 'app-rig.contour.failed' : 'app-rig.contour.computing')}</p>
+    <p data-testid="rig-contour-source" className="text-text-secondary">{!result ? (failed ? t('app-rig.contour.failed') : t('app-rig.contour.computing')) : result.source === 'mask' ? t('app-rig.contour.source-mask') : result.source === 'alpha' ? t('app-rig.contour.source-alpha') : result.source === 'suggestion' ? t('app-rig.contour.source-suggestion') : result.source === 'rectangle' ? t('app-rig.contour.source-rectangle') : t('app-rig.contour.source-none')}</p>
     {result && <><svg role="img" aria-label={t('app-rig.contour.preview-aria')} className={compact ? 'h-28 w-full' : 'h-56 w-full'} viewBox={`${minX-padding} ${minY-padding} ${Math.max(result.widthMm, 1)+2*padding} ${Math.max(result.heightMm, 1)+2*padding}`}>
       <path d={d} fillRule="evenodd" className={`${mode === 'outline' ? 'fill-none' : 'fill-text-tertiary'} ${mode === 'full' ? 'stroke-none' : 'stroke-text-secondary'}`} strokeWidth={strokeWidthMm} />
     </svg><p data-testid="rig-contour-size">{formatLength(result.widthMm, unit)} × {formatLength(result.heightMm, unit)}</p></>}
     <select data-testid="rig-contour-mode" aria-label={t('app-rig.contour.preview-aria')} value={mode} onChange={e => setMode(e.target.value)} className="rounded border border-border bg-surface-2 p-1">
-      {(['full', 'line', 'outline'] as const).map(m => <option key={m} value={m}>{t(MODE_KEY[m])}</option>)}
+      <option value="full">{t('app-rig.contour.mode-full')}</option>
+      <option value="line">{t('app-rig.contour.mode-line')}</option>
+      <option value="outline">{t('app-rig.contour.mode-outline')}</option>
     </select>
     <label className="flex items-center gap-2"><input data-testid="rig-contour-suggestion" type="checkbox" checked={suggestionEnabled} onChange={e => setSuggestion(e.target.checked)} />{t('app-rig.contour.suggestion-toggle')}</label>
     <label className="flex items-center gap-2"><input data-testid="rig-contour-holes" type="checkbox" checked={cutHoles} onChange={e => setHoles(e.target.checked)} />{t('app-rig.contour.cut-holes')}</label>

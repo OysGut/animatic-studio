@@ -8,9 +8,9 @@ export interface ContourRequest extends Omit<SourceOptions, 'rgba'> {
 const cache = new Map<string, ContourResult>();
 /** Each preview owns its worker; changing input terminates obsolete computation. */
 export class ContourClient {
-  private worker?: Worker;
+  private worker: Worker | undefined;
   private id = 0;
-  private reject?: (reason: Error) => void;
+  private reject: ((reason: Error) => void) | undefined;
   cancel() {
     this.id++;
     this.worker?.terminate();
