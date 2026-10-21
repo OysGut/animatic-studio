@@ -7,7 +7,8 @@ describe('B-087 PDF engine',()=>{
   const thin=planPrint({items:[item({strokeWidthMm:.05})]});
   const thick=planPrint({items:[item({strokeWidthMm:.3})]});
   expect(thin.sheets[0]?.placements[0]?.rect).toEqual(thick.sheets[0]?.placements[0]?.rect);
-  expect(renderPdf(thick).output()).toContain((.3*72/25.4).toFixed(16).replace(/0+$/,'')+' w');
+  const widths=[...renderPdf(thick).output().matchAll(/([\d.]+) w/g)].map(m=>Number(m[1]));
+  expect(widths.some(width=>Math.abs(width-.3*72/25.4)<1e-12)).toBe(true);
   expect(()=>planPrint({items:[item({strokeWidthMm:.31})]})).toThrow();
  });
  it('preserves mm and inch input without changing cut-line bounds',()=>{
