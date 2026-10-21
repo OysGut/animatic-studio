@@ -55,8 +55,8 @@ export function scenesOfChange(before: ProjectState, after: ProjectState, affect
   const b = indexOf(before);
   const out = new Set<string>();
   for (const id of affected) {
-    const s = sceneOf(id, a) ?? sceneOf(id, b);
-    if (s) out.add(s);
+    // Både gammel og ny scene teller når en rad flyttes mellom scener
+    for (const s of [sceneOf(id, a), sceneOf(id, b)]) if (s) out.add(s);
   }
   return [...out].sort();
 }
