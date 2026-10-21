@@ -6049,6 +6049,54 @@
       "en": {
         "text": "Mark all as read"
       }
+    },
+    "print-pdf.instruction": {
+      "nb": {
+        "text": "Skriv ut i 100 % / faktisk størrelse. Kontroller med linjal."
+      },
+      "en": {
+        "text": "Print at 100 % / actual size. Check with a ruler."
+      }
+    },
+    "print-pdf.tile": {
+      "nb": {
+        "text": "rad {row} / kolonne {column}"
+      },
+      "en": {
+        "text": "row {row} / column {column}"
+      }
+    },
+    "print-pdf.overview": {
+      "nb": {
+        "text": "Oversiktsark: {id}"
+      },
+      "en": {
+        "text": "Overview: {id}"
+      }
+    },
+    "print-pdf.qr": {
+      "nb": {
+        "text": "QR runde 5"
+      },
+      "en": {
+        "text": "QR round 5"
+      }
+    },
+    "print-pdf.invalid": {
+      "nb": {
+        "text": "Ugyldig utskriftsgeometri."
+      },
+      "en": {
+        "text": "Invalid print geometry."
+      }
+    },
+    "print-pdf.image-required": {
+      "nb": {
+        "text": "Figurutskrift krever et kildebilde."
+      },
+      "en": {
+        "text": "Figure printing requires a source image."
+      }
     }
   }
 }
