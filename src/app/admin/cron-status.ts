@@ -31,7 +31,7 @@ function ago(minutes: number): string {
 
 export function cronSummary(run: CronRun | null, now = Date.now()): CronSummary {
   const warning = () =>
-    tk("app-admin-cron-status.warning.message.1494cbf069ca", { CRON_STALE_MINUTES: String(CRON_STALE_MINUTES) });
+    tk("r6-brand.cron-warning", { CRON_STALE_MINUTES: String(CRON_STALE_MINUTES) });
   const t = run ? Date.parse(run.at) : Number.NaN;
   if (!run || !Number.isFinite(t))
     return {

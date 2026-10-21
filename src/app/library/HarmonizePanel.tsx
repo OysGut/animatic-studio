@@ -10,7 +10,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { tm, buildHarmonizePrompt, harmonizeAttachments, harmonizeNote, harmonizedVariantName, harmonizationOf, HARMONIZE_IDENTITY_WARNING, newId, preferredStyleReference, profileChoice, qualityProfileSnapshot, withAttachedLegend, type AssetMedia, type AssetVersion, type HarmonizationUse, type StyleHarmonizationFields } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
-import { saveAssetToGlobal } from "@/adapters/global/global-library.functions";
+import { publishVersionToGlobal, saveAssetToGlobal, setGlobalVersionWithdrawn } from "@/adapters/global/global-library.functions";
+import { registerHistoryEffect } from "@/app/project/use-commands";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
 import { QualityProfileBudget, QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
@@ -218,6 +219,27 @@ export function HarmonizePanel({
     if (!saved || !ws.workspaceId) return;
     setBusy(t("app-library-harmonize-panel.publish.set-busy.4c7f80318bb2"));
     try {
+      if (asset.globalAssetId) {
+        // R3: ressursen er allerede global – ny global versjon (eller variant) på den, ikke en ny ressurs.
+        // «Angre» trekker versjonen tilbake globalt; «gjør om» publiserer den igjen.
+        const r = await publishVersionToGlobal({ data: { projectId, versionId: saved.versionId, workspaceId: ws.workspaceId } });
+        const group = `r3-publish-${r.globalVersionId}`;
+        const effect = (withdrawn: boolean) => async () => {
+          try { await setGlobalVersionWithdrawn({ data: { versionId: r.globalVersionId, withdrawn } }); return null; }
+          catch (e) { return tm((e as Error).message); }
+        };
+        registerHistoryEffect(group, { undo: effect(true), redo: effect(false) });
+        const a = await tools.cmds.runAndWait(
+          { type: "SetStyleHarmonization", harmonizationId: saved.harmonizationId, fields: { ...saved.fields, use: "published" } },
+          t("r3-global.undo-label", { number: r.number }),
+          group,
+        );
+        // Lagres ikke markeringen, trekkes versjonen tilbake igjen, så ingen publisering står uten angring
+        if (a.error) { await effect(true)(); return setMsg({ kind: "error", text: a.error }); }
+        setSaved({ ...saved, use: "published", fields: { ...saved.fields, use: "published" } });
+        setMsg({ kind: "ok", text: r.newVariant ? t("r3-global.published-variant", { number: r.number }) : t("r3-global.published-version", { number: r.number }) });
+        return;
+      }
       await saveAssetToGlobal({ data: { projectId, assetId: asset.id, workspaceId: ws.workspaceId } });
       await tools.cmds.runAndWait(
         { type: "SetStyleHarmonization", harmonizationId: saved.harmonizationId, fields: { ...saved.fields, use: "published" } },
@@ -313,9 +335,9 @@ export function HarmonizePanel({
                 <Star /> {t("app-library-harmonize-panel.harmonize-panel.button.b25d79029c66")}
               </Button>
             ) : null}
-            {saved.use !== "local" && ws.ready && ws.workspaceId && ws.rights.publish && !asset.globalAssetId ? (
+            {saved.use !== "local" && ws.ready && ws.workspaceId && ws.rights.publish ? (
               <Button size="sm" variant="secondary" data-testid="harmonize-publish" disabled={!!busy || saved.use === "published"} onClick={() => void publish()}
-                title={t("app-library-harmonize-panel.harmonize-panel.title.adfe35737267")}>
+                title={asset.globalAssetId ? t("r3-global.publish-title") : t("app-library-harmonize-panel.harmonize-panel.title.adfe35737267")}>
                 <Globe /> {t("app-library-harmonize-panel.harmonize-panel.button.e7c31b69ff7a")}
               </Button>
             ) : null}

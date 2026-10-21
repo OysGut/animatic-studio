@@ -73348,5 +73348,59 @@
   },
   "r4-prores.estimate": {
     "text": "Estimated file size: up to {size}. Simple pictures give smaller files."
+  },
+  "r3-global.error.project-rights": {
+    "text": "Only editors and owners of the project can publish globally."
+  },
+  "r3-global.error.workspace-rights": {
+    "text": "Only editors and owners of the group can publish or withdraw global versions."
+  },
+  "r3-global.error.no-version": {
+    "text": "The version does not exist in the project."
+  },
+  "r3-global.error.not-global": {
+    "text": "The asset is not linked to a global asset in this group."
+  },
+  "r3-global.undo-label": {
+    "text": "Publish version {number} globally"
+  },
+  "r3-global.published-version": {
+    "text": "Published as global version {number}. Other projects get a notice and choose for themselves."
+  },
+  "r3-global.published-variant": {
+    "text": "Published as a new global variant (version {number}). Other projects get a notice and choose for themselves."
+  },
+  "r3-global.publish-title": {
+    "text": "Adds the harmonized version to the global asset. Other projects do not change. Undo withdraws it."
+  },
+  "r3-global.withdrawn-label": {
+    "text": "withdrawn"
+  },
+  "r3-global.withdrawn-in-use": {
+    "text": "Version {number} of {name} has been withdrawn globally. The copy in this project is unchanged."
+  },
+  "r6-brand.builtin-provider": {
+    "text": "Uses the service's built-in AI credits. No key of your own – switched on for the project."
+  },
+  "r6-brand.text-model": {
+    "text": "None of the language models was recognised. Set ANIMATIC_TEXT_MODEL in the server settings."
+  },
+  "r6-brand.provider-detail": {
+    "text": "This is always available and uses the service's built-in AI credits. The project's AI budget applies."
+  },
+  "r6-brand.image-credits": {
+    "text": "This uses the service's built-in AI credits ("
+  },
+  "r6-brand.download-blocked": {
+    "text": "Did the download not start? An embedded preview can block downloads. Open the app in a separate tab and export from there."
+  },
+  "r6-brand.cron-warning": {
+    "text": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and that the background job is set up on the server."
+  },
+  "r8-translation-import.button": {
+    "text": "Import translated script …"
+  },
+  "r8-translation-import.target": {
+    "text": "Target language: {language} ({tag})"
   }
 }

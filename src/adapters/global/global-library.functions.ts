@@ -435,3 +435,131 @@ export const copyGlobalToProject = createServerFn({ method: "POST" })
     }
     return out;
   });
+
+// ---------- R3: publisering til en ressurs som allerede er global (migrasjon 0068) ----------
+
+export interface PublishToGlobalResult {
+  readonly globalAssetId: string;
+  readonly globalVariantId: string;
+  readonly globalVersionId: string;
+  readonly number: number;
+  /** En ny global variant ble laget (prosjektvarianten var ikke koblet til noen). */
+  readonly newVariant: boolean;
+}
+
+/**
+ * R3 «Publiser globalt» for en stilharmonisert versjon når ressursen allerede er koblet til det globale
+ * biblioteket: ny global versjon på den koblede varianten (eller en ny variant), aldri en kopi av hele
+ * ressursen. Andre prosjekter endres ikke; de får varselet «Ny versjon finnes» og velger selv.
+ * Rettigheter: redaktør eller eier i prosjektet og i gruppen (databasefunksjonene sjekker gruppen igjen).
+ */
+export const publishVersionToGlobal = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = obj(d);
+    return { projectId: uuid(x["projectId"]), versionId: uuid(x["versionId"]), workspaceId: uuid(x["workspaceId"]) };
+  })
+  .handler(async ({ data, context }): Promise<PublishToGlobalResult> => {
+    const db = context.supabase as unknown as AnyClient;
+    if ((await projectRank(db, data.projectId, context.userId)) < 3) throw new Error(tk("r3-global.error.project-rights"));
+    if ((await workspaceRank(db, data.workspaceId, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
+    const { data: ver } = await db
+      .from("asset_versions")
+      .select("id, variant_id, media_path, mime_type, width, height, byte_size_big, sha256, duration_ms, note, removed, template_spec")
+      .eq("id", data.versionId)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const v = ver as {
+      variant_id: string; media_path: string; mime_type: string; width: number | null; height: number | null;
+      byte_size_big: number; sha256: string; duration_ms: number | null; note: string | null; removed: boolean | null;
+      template_spec: TemplateDefinition | null;
+    } | null;
+    if (!v || v.removed || !v.media_path.startsWith(`${data.projectId}/`)) throw new Error(tk("r3-global.error.no-version"));
+    const { data: va } = await db
+      .from("asset_variants")
+      .select("id, asset_id, name, style, appearance")
+      .eq("id", v.variant_id)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const variant = va as { asset_id: string; name: string; style: string; appearance: string | null } | null;
+    if (!variant) throw new Error(tk("r3-global.error.no-version"));
+    const { data: as } = await db
+      .from("assets")
+      .select("source_global_asset_id, removed")
+      .eq("id", variant.asset_id)
+      .eq("project_id", data.projectId)
+      .maybeSingle();
+    const globalAssetId = (as as { source_global_asset_id: string | null } | null)?.source_global_asset_id ?? null;
+    if (!globalAssetId) throw new Error(tk("r3-global.error.not-global"));
+    const { data: ga } = await db
+      .from("global_assets")
+      .select("id, workspace_id, archived_at")
+      .eq("id", globalAssetId)
+      .maybeSingle();
+    const g = ga as { workspace_id: string; archived_at: string | null } | null;
+    if (!g || g.workspace_id !== data.workspaceId || g.archived_at) throw new Error(tk("r3-global.error.not-global"));
+    // Den koblede globale varianten: fra versjonene i prosjektvarianten som er kopiert fra den globale ressursen
+    const { data: links } = await db
+      .from("asset_versions")
+      .select("source_global_variant_id")
+      .eq("project_id", data.projectId)
+      .eq("variant_id", v.variant_id)
+      .eq("source_global_asset_id", globalAssetId)
+      .not("source_global_variant_id", "is", null)
+      .limit(20);
+    let globalVariantId: string | null = null;
+    for (const l of (links ?? []) as { source_global_variant_id: string }[]) {
+      const { data: gv } = await db
+        .from("global_asset_variants")
+        .select("id, archived_at")
+        .eq("id", l.source_global_variant_id)
+        .eq("global_asset_id", globalAssetId)
+        .maybeSingle();
+      if (gv && !(gv as { archived_at: string | null }).archived_at) { globalVariantId = l.source_global_variant_id; break; }
+    }
+    let newVariant = false;
+    if (!globalVariantId) {
+      const { data: id, error } = await db.rpc("global_create_variant", {
+        p_asset: globalAssetId, p_name: variant.name, p_style: variant.style, p_appearance: variant.appearance ?? "",
+      });
+      if (error) throw new Error(error.message);
+      globalVariantId = id as string;
+      newVariant = true;
+    }
+    const to = globalFilePath(data.workspaceId, globalAssetId, v.sha256, extensionOf(v.media_path));
+    const err = await copyFile(await admin(), v.media_path, to);
+    if (err) throw new Error(err);
+    const { data: gid, error: e2 } = await db.rpc("global_add_version", {
+      p_variant: globalVariantId, p_storage_key: to, p_mime: v.mime_type, p_width: v.width, p_height: v.height,
+      p_bytes: v.byte_size_big, p_sha256: v.sha256, p_duration_ms: v.duration_ms, p_note: v.note ?? "",
+      p_template_spec: v.template_spec ?? null,
+    });
+    if (e2) throw new Error(e2.message);
+    const { data: num } = await db.from("global_asset_versions").select("number").eq("id", gid as string).maybeSingle();
+    return {
+      globalAssetId, globalVariantId, globalVersionId: gid as string,
+      number: Number((num as { number?: number } | null)?.number ?? 0), newVariant,
+    };
+  });
+
+/**
+ * R3: «Angre» trekker en publisert global versjon tilbake (skjules for ny bruk; raden og filen beholdes), og
+ * «gjør om» publiserer den igjen. Prosjekter som har kopiert versjonen, endres aldri.
+ * Rettigheter: redaktør eller eier i gruppen (sjekkes her og igjen i databasefunksjonen).
+ */
+export const setGlobalVersionWithdrawn = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .validator((d: unknown) => {
+    const x = obj(d);
+    if (typeof x["withdrawn"] !== "boolean") bad();
+    return { versionId: uuid(x["versionId"]), withdrawn: x["withdrawn"] as boolean };
+  })
+  .handler(async ({ data, context }): Promise<{ changed: boolean }> => {
+    const db = context.supabase as unknown as AnyClient;
+    const { data: row } = await db.from("global_asset_versions").select("workspace_id").eq("id", data.versionId).maybeSingle();
+    const ws = (row as { workspace_id?: string } | null)?.workspace_id;
+    if (!ws || (await workspaceRank(db, ws, context.userId)) < 2) throw new Error(tk("r3-global.error.workspace-rights"));
+    const { data: changed, error } = await db.rpc("global_set_version_withdrawn", { p_version: data.versionId, p_withdrawn: data.withdrawn });
+    if (error) throw new Error(error.message);
+    return { changed: changed === true };
+  });

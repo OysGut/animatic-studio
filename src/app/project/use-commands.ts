@@ -198,6 +198,20 @@ function addRejected(list: readonly RejectedEdit[], r: RejectedEdit): RejectedEd
   return [...list.filter((x) => x.id !== r.id), r];
 }
 
+/**
+ * R3: en virkning utenfor prosjektet som følger et angresteg (for eksempel å trekke en global versjon tilbake).
+ * Knyttes til stegets gruppe; kjøres etter at selve kommandoen er lagret ved angre og gjør om. Feil vises som
+ * lagringsfeil. Gjelder bare i økten, som resten av angrehistorikken.
+ */
+export interface HistoryEffect {
+  undo(): Promise<string | null>;
+  redo(): Promise<string | null>;
+}
+const historyEffects = new Map<string, HistoryEffect>();
+export function registerHistoryEffect(group: string, effect: HistoryEffect): void {
+  historyEffects.set(group, effect);
+}
+
 export function useCommands(projectId: string, actorId: string, enabled: boolean, onUndo?: (group: string | undefined) => void, keyboard = true) {
   const qc = useQueryClient();
   const [undoStack, setUndo] = useState<HistoryEntry[]>([]);
@@ -516,10 +530,15 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       setStatus({ kind: "error", message: conflictUndo() });
       return;
     }
-    const { back, rest, done } = replay(last, "undo");
+    const replayed = replay(last, "undo");
+    const { rest, done } = replayed;
+    // R3: gruppen følger med, så en ekstern effekt (registerHistoryEffect) også kjører ved «gjør om»
+    const back = replayed.back && last.group && !replayed.back.group ? { ...replayed.back, group: last.group } : replayed.back;
     if (back) setRedo((x) => [...x, back]);
     if (rest && back) setUndo((u) => [...u, rest]);
     if (back && !rest) void done.then((ok) => { if (ok) onUndo?.(last.group); });
+    const fx = back && !rest && last.group ? historyEffects.get(last.group) : undefined;
+    if (fx) void done.then(async (ok) => { if (!ok) return; const err = await fx.undo(); if (err) setStatus({ kind: "error", message: err }); });
   }, [undoStack, replay, onUndo]);
 
   const redo = useCallback(() => {
@@ -533,9 +552,13 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
       });
       return;
     }
-    const { back, rest } = replay(last, "redo");
+    const replayed = replay(last, "redo");
+    const { rest, done } = replayed;
+    const back = replayed.back && last.group && !replayed.back.group ? { ...replayed.back, group: last.group } : replayed.back;
     if (back) setUndo((u) => [...u, back]);
     if (rest && back) setRedo((x) => [...x, rest]);
+    const fx = back && !rest && last.group ? historyEffects.get(last.group) : undefined;
+    if (fx) void done.then(async (ok) => { if (!ok) return; const err = await fx.redo(); if (err) setStatus({ kind: "error", message: err }); });
   }, [redoStack, replay]);
 
   // Tastatur: Cmd/Ctrl+Z, Shift+Cmd/Ctrl+Z og Ctrl+Y. I tekstfelt gjelder feltets egen angre.

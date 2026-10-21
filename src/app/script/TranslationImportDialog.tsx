@@ -237,6 +237,9 @@ export function TranslationImportDialog({
             {t("app-script-translation-import-dialog.translation-import-dialog.dialog-description.02c0953ca29d")}
           </DialogDescription>
         </DialogHeader>
+        <p data-testid="translation-import-target" data-language={language} className="text-xs text-text-secondary">
+          {t("r8-translation-import.target", { language: langName, tag: language })}
+        </p>
         {!parsed ? (
           <div className="flex flex-col items-start gap-2">
             <input

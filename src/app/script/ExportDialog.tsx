@@ -593,7 +593,7 @@ export function ExportDialog({
             </p>
             {isEmbedded() ? (
               <p className="mt-1.5 text-text-secondary">
-                {t("app-script-export-dialog.export-dialog.p.ecb8e8d06d7f")}
+                {t("r6-brand.download-blocked")}
               </p>
             ) : null}
           </div>

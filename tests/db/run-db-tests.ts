@@ -6397,7 +6397,7 @@ try {
     assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
   });
   await test("0067: R1 ProRes i «Endelig», R2 oppryddingslogg (grants/RLS) og strengere språkversjonssjekk", async () => {
-    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===67,"schema version 67");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=67,"schema version 67+");
     // R1: nye prosjekter får ProRes i «Endelig»; øvrige standardprofiler er uendret
     const np=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R1 fixture') id`)[0]))?.["id"]);
     const qp=await sql`select name, spec from public.quality_profiles where project_id=${np} order by name`;
@@ -6443,6 +6443,51 @@ try {
     assert((await sql`select target_translation_ids t from public.translation_line_links where id=${link}`)[0]?.["t"].length===2,"valid link update lost");
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(ac.includes("v_link_scope") && ac.includes("target_translation_ids && v_lang_changed"),"apply_changes lacks the 0067 link scope");
+  });
+  await test("0068: R3 tilbaketrekking av globale versjoner – grants, rettigheter, angre/gjør om, andre prosjekter uendret", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])===68,"schema version 68");
+    const g=await sql`select has_table_privilege('anon','public.global_version_withdrawals','SELECT') a, has_table_privilege('authenticated','public.global_version_withdrawals','SELECT') r, has_table_privilege('authenticated','public.global_version_withdrawals','INSERT') w, has_table_privilege('authenticated','public.global_version_withdrawals','DELETE') d, has_table_privilege('service_role','public.global_version_withdrawals','INSERT') s, (select relrowsecurity from pg_class where oid='public.global_version_withdrawals'::regclass) rls, has_function_privilege('anon','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fa, has_function_privilege('authenticated','public.global_set_version_withdrawn(uuid,boolean)','EXECUTE') fu`;
+    assert(g[0]?.["a"]===false && g[0]?.["r"]===true && g[0]?.["w"]===false && g[0]?.["d"]===false && g[0]?.["s"]===true && g[0]?.["rls"]===true && g[0]?.["fa"]===false && g[0]?.["fu"]===true,"global_version_withdrawals grants/RLS");
+    const DAVE="44444444-4444-7444-8444-444444444444";
+    await sql`insert into auth.users (id, email) values (${DAVE}, 'dave@example.no') on conflict do nothing`;
+    const ws=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace('R3') as id`)[0]!["id"] as string);
+    const tEd=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string);
+    await as("authenticated",BOB,tx=>tx`select public.accept_workspace_invitation(${tEd})`);
+    const tMem=await as("authenticated",ALICE,async tx=>(await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string);
+    await as("authenticated",CAROL,tx=>tx`select public.accept_workspace_invitation(${tMem})`);
+    const ga=await as("authenticated",ALICE,async tx=>(await tx`select public.global_create_asset(${ws}, 'character', 'Nisse', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv=await as("authenticated",ALICE,async tx=>(await tx`select public.global_create_variant(${ga}, 'Standard', 'reference', '') as id`)[0]!["id"] as string);
+    const sha="c".repeat(64), key=`global/${ws}/${ga}/${sha}.png`;
+    const v1=await as("authenticated",ALICE,async tx=>(await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, '') as id`)[0]!["id"] as string);
+    const v2=await as("authenticated",BOB,async tx=>(await tx`select public.global_add_version(${gv}, ${key}, 'image/png', 10, 10, 100, ${sha}, null, 'harmonisert') as id`)[0]!["id"] as string);
+    // Et annet prosjekt har tatt v2 i bruk (kopi med kobling); radene skal aldri endres
+    const other=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R3 annet') id`)[0]))?.["id"]);
+    const snap=async()=>String((await sql`select md5(coalesce(string_agg(t::text, '|' order by t::text), '')) h from (select a::text t from public.assets a where project_id=${other} union all select v::text from public.asset_versions v where project_id=${other} union all select p::text from public.projects p where id=${other}) x`)[0]?.["h"]);
+    const before=await snap();
+    const vrow=await sql`select row_to_json(v)::text j from public.global_asset_versions v where id=${v2}`;
+    // Rettigheter: medlem, ikke-medlem og anonym kan ikke; direkte skriving stoppes
+    await expectError(as("authenticated",CAROL,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("authenticated",DAVE,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("anon",null,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`),"42501");
+    await expectError(as("authenticated",BOB,tx=>tx`insert into public.global_version_withdrawals(version_id,workspace_id,withdrawn_by) values(${v2},${ws},${BOB})`),"42501");
+    await expectError(as("authenticated",BOB,tx=>tx`select public.global_set_version_withdrawn(${newId()}, true)`),"22023");
+    // Angre = trekk tilbake (redaktør), idempotent
+    const w1=await as("authenticated",BOB,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, true) as c`)[0]!["c"]);
+    const w2=await as("authenticated",BOB,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, true) as c`)[0]!["c"]);
+    assert(w1===true && w2===false,"withdraw must be idempotent");
+    assert((await as("authenticated",CAROL,tx=>tx`select version_id from public.global_version_withdrawals where version_id=${v2}`)).length===1,"member must see the withdrawal");
+    assert((await as("authenticated",DAVE,tx=>tx`select version_id from public.global_version_withdrawals`)).length===0,"nonmember sees withdrawals");
+    assert((await sql`select row_to_json(v)::text j from public.global_asset_versions v where id=${v2}`)[0]?.["j"]===vrow[0]?.["j"],"the global version row must stay unchanged");
+    assert((await sql`select count(*)::int n from public.global_asset_versions where id in (${v1},${v2})`)[0]?.["n"]===2,"versions must be kept");
+    assert((await sql`select version_id from public.global_version_withdrawals where version_id=${v1}`).length===0,"other versions untouched");
+    // Gjør om = publiser igjen (eier)
+    const r1=await as("authenticated",ALICE,async tx=>(await tx`select public.global_set_version_withdrawn(${v2}, false) as c`)[0]!["c"]);
+    assert(r1===true && (await sql`select version_id from public.global_version_withdrawals where version_id=${v2}`).length===0,"republish must remove the withdrawal");
+    await as("authenticated",ALICE,tx=>tx`select public.global_set_version_withdrawn(${v2}, true)`);
+    assert(await snap()===before,"other projects must never change");
+    // Ingen funksjon er erstattet av 0068
+    const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(!ac.includes("global_version_withdrawals"),"apply_changes must be unchanged");
   });
 } finally {
   await sql.end();

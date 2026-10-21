@@ -231,5 +231,10 @@ export function harness(defaultOut) {
     await browser?.close();
     process.exitCode = fail ? 1 : 0;
   }
-  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, out, base, P };
+  /** Lukker nettleseren og gir tallene uten RESULTAT-linje (for suiter som kjører flere fixturer, R3/R4). */
+  async function close() {
+    await browser?.close();
+    return { pass, fail };
+  }
+  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, close, out, base, P };
 }

@@ -7,7 +7,7 @@
 import { Link } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { EMPTY_GLOBAL_FILTER, GLOBAL_KINDS, GLOBAL_KIND_LABEL, cleanLabels, filterGlobalAssets, globalFacets, globalUpdates, latestGlobalVersions, linkedProjectAsset, tm, type GlobalAssetBundle, type GlobalFilter, type GlobalKind, type GlobalVersion, type ProjectState } from "@/core";
+import { EMPTY_GLOBAL_FILTER, GLOBAL_KINDS, GLOBAL_KIND_LABEL, cleanLabels, filterGlobalAssets, globalFacets, globalUpdates, withdrawnInUse, latestGlobalVersions, linkedProjectAsset, tm, type GlobalAssetBundle, type GlobalFilter, type GlobalKind, type GlobalVersion, type ProjectState } from "@/core";
 import {
   createGlobalAsset,
   createGlobalVariant,
@@ -83,6 +83,8 @@ export function GlobalLibraryDialog({
   );
   const facets = useMemo(() => globalFacets(all.map((b) => b.asset)), [all]);
   const updates = useMemo(() => globalUpdates(state, all), [state, all]);
+  // R3: kopier av versjoner som senere er trukket tilbake globalt – bare et varsel, prosjektet endres ikke
+  const withdrawnHere = useMemo(() => withdrawnInUse(state, all), [state, all]);
   const current: GlobalAssetBundle | undefined = all.find((b) => b.asset.id === selected);
 
   const previewPaths = useMemo(() => {
@@ -226,6 +228,16 @@ export function GlobalLibraryDialog({
                     </div>
                   );
                 })}
+              </section>
+            ) : null}
+
+            {withdrawnHere.length ? (
+              <section className="flex flex-col gap-1 rounded-md border border-border bg-surface-2 p-3 text-[13px] text-text-secondary" data-testid="global-withdrawn">
+                {withdrawnHere.map((w) => (
+                  <p key={w.projectVersionId}>
+                    {t("r3-global.withdrawn-in-use", { name: String(all.find((b) => b.asset.id === w.globalAssetId)?.asset.name ?? ""), number: w.version.number })}
+                  </p>
+                ))}
               </section>
             ) : null}
 
@@ -377,7 +389,10 @@ export function GlobalLibraryDialog({
                             {vs.map((v) => (
                               <figure key={v.id} className="flex flex-col items-start gap-1" data-global-version={v.id}>
                                 <Preview v={v} url={urls.data?.[v.storageKey]} />
-                                <figcaption className="text-[11px] text-text-tertiary">v{v.number}</figcaption>
+                                <figcaption className="text-[11px] text-text-tertiary">
+                                  v{v.number}
+                                  {v.withdrawn ? <span data-testid={`global-withdrawn-${v.id}`}> · {t("r3-global.withdrawn-label")}</span> : null}
+                                </figcaption>
                               </figure>
                             ))}
                           </div>

@@ -302,7 +302,7 @@ await run("a01-admin-ai", "/admin", async (page) => {
   const sec = page.getByTestId("admin-ai");
   const text = await sec.innerText();
   for (const t of [
-    "Lovable AI (innebygd)",
+    "Innebygd AI",
     "OpenAI",
     "Google Gemini",
     "fal.ai",
@@ -403,7 +403,7 @@ await run(
     const w = page.getByTestId("admin-cron-warning");
     check(await w.isVisible(), "advarsel når jobben ikke har kjørt de siste 10 minuttene");
     check(
-      (await w.innerText()).includes("Sjekk at appen er publisert og jobben er satt opp i Lovable"),
+      (await w.innerText()).includes("Sjekk at appen er publisert og at bakgrunnsjobben er satt opp på serveren"),
       "advarselen sier hva som må sjekkes",
     );
     await page.screenshot({ path: `${out}/a02-advarsel.png` });

@@ -740,7 +740,7 @@ export function GenerateImagePanel({
               <p className="text-xs text-text-primary">
                 {choice.provider === "lovable" ? (
                   <>
-                    {t("app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1")}
+                    {t("r6-brand.image-credits")}
                     {candidates > 1
                       ? t("app-library-generate-image-panel.generate-image-panel.p.30915c9b7fc9", { candidates: String(candidates) })
                       : t("app-library-generate-image-panel.generate-image-panel.p.14451055cdf1")}

@@ -700,9 +700,9 @@ function Workspace({
         {/* ML4: import og fjerning av oversettelse går i «Mer» før språkvelgeren, så valgt språkversjon alltid vises */}
         <ToolbarGroup priority={3}>
         {langStatus && editable ? (
-          <ToolbarButton onClick={() => setImportLangOpen(true)}>
+          <ToolbarButton data-testid="translation-import-open" onClick={() => setImportLangOpen(true)}>
             <Languages />
-            {tk("app-script-script-workspace.workspace.toolbar-button.87153b7e849d")}
+            {tk("r8-translation-import.button")}
           </ToolbarButton>
         ) : null}
         {langStatus && editable && langStatus.translated > 0 ? (

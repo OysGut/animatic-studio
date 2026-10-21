@@ -211,7 +211,7 @@ function ProviderDetail({
       {!isProviderEnabled(catalogSettings(), p.id) ? <AdminOffNote /> : null}
       {p.builtIn ? (
         <p className="text-[13px] text-text-secondary">
-          {t("app-ai-providers-dialog.provider-detail.p.e74e02c953df")}
+          {t("r6-brand.provider-detail")}
         </p>
       ) : (
         <>

@@ -86,6 +86,8 @@ export interface GlobalVersion {
   readonly note: string;
   readonly createdAt: string;
   readonly template?: TemplateDefinition | null;
+  /** R3 (0068): trukket tilbake globalt – skjules for ny bruk; prosjekter som har kopien, beholder den. */
+  readonly withdrawn?: boolean;
 }
 
 export interface GlobalVariant {
@@ -185,12 +187,13 @@ export function cleanLabels(list: readonly string[]): string[] {
   return out.slice(0, 30);
 }
 
-/** Nyeste versjon per global variant. */
+/** Nyeste versjon per global variant. Tilbaketrukne versjoner (R3) regnes ikke med. */
 export function latestGlobalVersions(
   versions: readonly GlobalVersion[],
 ): ReadonlyMap<string, GlobalVersion> {
   const m = new Map<string, GlobalVersion>();
   for (const v of versions) {
+    if (v.withdrawn) continue;
     const cur = m.get(v.variantId);
     if (!cur || v.number > cur.number) m.set(v.variantId, v);
   }
@@ -368,7 +371,8 @@ export function globalUpdates(
     const latest = latestGlobalVersions(b.versions);
     for (const [variantId, used] of usedByVariant) {
       const l = latest.get(variantId);
-      if (l && l.number > used)
+      // R3: prosjektet som publiserte versjonen, har allerede filen (samme innhold) og varsles ikke
+      if (l && l.number > used && !hasSameFile(s, project.id, l.sha256))
         out.push({
           projectAssetId: project.id,
           globalAssetId: b.asset.id,
@@ -377,6 +381,44 @@ export function globalUpdates(
           newer: l,
         });
     }
+  }
+  return out;
+}
+
+function hasSameFile(s: ProjectState, projectAssetId: string, sha256: string): boolean {
+  return Object.values(s.assetVersions).some(
+    (v) => !v.removed && v.sha256 === sha256 && s.assetVariants[v.variantId]?.assetId === projectAssetId,
+  );
+}
+
+/**
+ * R3: den globale varianten en prosjektvariant er koblet til (via versjonene som er kopiert derfra), eller
+ * null. Publisering legger da en ny versjon på den; ellers lages en ny global variant.
+ */
+export function linkedGlobalVariant(s: ProjectState, projectVariantId: string, globalAssetId: string): string | null {
+  for (const v of Object.values(s.assetVersions))
+    if (v.variantId === projectVariantId && v.globalSource?.assetId === globalAssetId) return v.globalSource.variantId;
+  return null;
+}
+
+/** R3: en prosjektversjon som er kopiert fra en global versjon som senere er trukket tilbake. */
+export interface WithdrawnInUse {
+  readonly projectVersionId: AssetVersionId;
+  readonly projectAssetId: string;
+  readonly globalAssetId: string;
+  readonly version: GlobalVersion;
+}
+
+/** R3: prosjektets kopier av tilbaketrukne globale versjoner. Bare et varsel; prosjektet endres aldri. */
+export function withdrawnInUse(s: ProjectState, bundles: readonly GlobalAssetBundle[]): WithdrawnInUse[] {
+  const byId = new Map<string, GlobalVersion>();
+  for (const b of bundles) for (const v of b.versions) if (v.withdrawn) byId.set(v.id, v);
+  const out: WithdrawnInUse[] = [];
+  for (const v of Object.values(s.assetVersions)) {
+    if (v.removed || !v.globalSource) continue;
+    const g = byId.get(v.globalSource.versionId);
+    const va = s.assetVariants[v.variantId];
+    if (g && va) out.push({ projectVersionId: v.id, projectAssetId: va.assetId, globalAssetId: g.assetId, version: g });
   }
   return out;
 }

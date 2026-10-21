@@ -115,7 +115,7 @@ async function main(lang) {
     await page.goto(`${base}${P}/manus`, { waitUntil: "networkidle" });
     const langSelect = page.locator("select").filter({ has: page.locator('option[value="en"]') }).first();
     await langSelect.selectOption("en");
-    await page.getByRole("button", { name: /Importer engelsk manus|Import English script/ }).click();
+    await page.getByRole("button", { name: /Importer oversatt manus|Import translated script/ }).click();
     const chooser = page.waitForEvent("filechooser");
     await page.getByRole("button", { name: /Velg fil|Choose file/ }).click();
     await (await chooser).setFiles(fountain);
