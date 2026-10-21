@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchRegistrationStatus, isRegistrationClosedError } from "@/adapters/browser/registration";
 import { sendPasswordReset, sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,7 +12,9 @@ import { t } from "@/core/i18n/keyed";
 
 type Mode = "signin" | "signup";
 
-function norwegianAuthError(message: string): string {
+function norwegianAuthError(message: string, closedText?: string): string {
+  // B-109: stengt registrering gir alltid den rolige meldingen, aldri en databasefeil
+  if (isRegistrationClosedError(message)) return closedText ?? t("b109.auth.closed");
   const m = message.toLowerCase();
   if (m.includes("banned"))
     return t("app-auth-auth-screen.norwegian-auth-error.message.2c6406a859ea");
@@ -28,8 +32,13 @@ function norwegianAuthError(message: string): string {
 }
 
 /** Innlogging (e-post + passord eller innloggingslenke). Ingen markedsføringsflate – rett til arbeid. */
-export function AuthScreen() {
-  const [mode, setMode] = useState<Mode>("signin");
+export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
+  const [modeState, setMode] = useState<Mode>("signin");
+  // B-109: stengt registrering skjuler «Opprett konto» (unntak: invitasjonslenker, som databasen slipper inn)
+  const reg = useQuery({ queryKey: ["registration-status"], queryFn: fetchRegistrationStatus, staleTime: 60_000 });
+  const closed = reg.data?.open === false && !invited;
+  const closedText = reg.data?.message ?? t("b109.auth.closed");
+  const mode: Mode = closed ? "signin" : modeState;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -61,7 +70,7 @@ export function AuthScreen() {
         ? await signInWithPassword(email, password)
         : await signUp(email, password, redirect, country ?? undefined);
     setBusy(false);
-    if (res.error) setError(norwegianAuthError(res.error.message));
+    if (res.error) setError(norwegianAuthError(res.error.message, closed ? closedText : undefined));
     else if (mode === "signup" && !res.session)
       setNotice(
         t("app-auth-auth-screen.submit.set-notice.a389c2300257"),
@@ -76,9 +85,9 @@ export function AuthScreen() {
     setBusy(true);
     setError(null);
     const redirect = typeof window !== "undefined" ? window.location.href : undefined;
-    const res = await sendSignInLink(email, redirect);
+    const res = await sendSignInLink(email, redirect, !closed);
     setBusy(false);
-    if (res.error) setError(norwegianAuthError(res.error.message));
+    if (res.error) setError(norwegianAuthError(res.error.message, closed ? closedText : undefined));
     else
       setNotice(
         t("app-auth-auth-screen.send-link.set-notice.ff4036e3c48c", { email: String(email) }),
@@ -205,8 +214,13 @@ export function AuthScreen() {
           <Button type="submit" className="w-full" disabled={busy} data-testid="auth-submit">
             {mode === "signin" ? t("app-auth-auth-screen.auth-screen.button.852d2eee9390") : t("app-auth-auth-screen.auth-screen.button.a327ce9931d2")}
           </Button>
+          {closed ? (
+            <p role="status" data-testid="registration-closed-notice" className="text-xs text-text-secondary">
+              {closedText}
+            </p>
+          ) : null}
           <div className="flex items-center justify-between pt-1 text-xs">
-            <button
+            {closed ? <span /> : <button
               type="button"
               className="text-accent-brand hover:underline"
               data-testid="auth-mode-toggle"
@@ -215,7 +229,7 @@ export function AuthScreen() {
               {mode === "signin"
                 ? t("app-auth-auth-screen.auth-screen.button.22a66d43cb57")
                 : t("app-auth-auth-screen.auth-screen.button.0c501076b9f7")}
-            </button>
+            </button>}
             <button
               type="button"
               className="text-text-secondary hover:text-text-primary"

@@ -55,7 +55,7 @@ function AcceptInvitation() {
   }, [session.status, token, type, navigate]);
 
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
-  if (session.status === "signed-out") return <AuthScreen />;
+  if (session.status === "signed-out") return <AuthScreen invited />;
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <p

@@ -7361,6 +7361,174 @@
       "en": {
         "text": "Fonts"
       }
+    },
+    "b109.auth.closed": {
+      "nb": {
+        "text": "Tjenesten tar ikke imot nye brukere akkurat nå."
+      },
+      "en": {
+        "text": "The service is not accepting new users right now."
+      }
+    },
+    "b109.admin.title": {
+      "nb": {
+        "text": "Nye registreringer"
+      },
+      "en": {
+        "text": "New sign-ups"
+      }
+    },
+    "b109.admin.note": {
+      "nb": {
+        "text": "Når registreringen er stengt, kan ingen lage nye kontoer. Eksisterende brukere logger inn som før, og e-poster med en åpen invitasjon kan fortsatt opprette konto."
+      },
+      "en": {
+        "text": "When sign-ups are closed, nobody can create new accounts. Existing users sign in as before, and email addresses with an open invitation can still create an account."
+      }
+    },
+    "b109.admin.label": {
+      "nb": {
+        "text": "Nye registreringer:"
+      },
+      "en": {
+        "text": "New sign-ups:"
+      }
+    },
+    "b109.admin.open": {
+      "nb": {
+        "text": "Åpen"
+      },
+      "en": {
+        "text": "Open"
+      }
+    },
+    "b109.admin.closed": {
+      "nb": {
+        "text": "Stengt"
+      },
+      "en": {
+        "text": "Closed"
+      }
+    },
+    "b109.admin.message": {
+      "nb": {
+        "text": "Melding på innloggingssiden når registreringen er stengt (valgfri)"
+      },
+      "en": {
+        "text": "Message on the sign-in page when sign-ups are closed (optional)"
+      }
+    },
+    "b109.admin.save-message": {
+      "nb": {
+        "text": "Lagre meldingen"
+      },
+      "en": {
+        "text": "Save message"
+      }
+    },
+    "b109.admin.changed": {
+      "nb": {
+        "text": "Sist endret {when} av {who}."
+      },
+      "en": {
+        "text": "Last changed {when} by {who}."
+      }
+    },
+    "b109.admin.never-changed": {
+      "nb": {
+        "text": "Ikke endret ennå (åpen som standard)."
+      },
+      "en": {
+        "text": "Not changed yet (open by default)."
+      }
+    },
+    "b109.admin.unknown-user": {
+      "nb": {
+        "text": "ukjent bruker"
+      },
+      "en": {
+        "text": "unknown user"
+      }
+    },
+    "b109.admin.loading": {
+      "nb": {
+        "text": "Henter …"
+      },
+      "en": {
+        "text": "Loading …"
+      }
+    },
+    "b109.admin.unavailable": {
+      "nb": {
+        "text": "Innstillingen er ikke tilgjengelig ennå."
+      },
+      "en": {
+        "text": "The setting is not available yet."
+      }
+    },
+    "b109.admin.failed": {
+      "nb": {
+        "text": "Endringen ble ikke lagret. Prøv igjen."
+      },
+      "en": {
+        "text": "The change was not saved. Try again."
+      }
+    },
+    "b109.admin.confirm-close-title": {
+      "nb": {
+        "text": "Stenge for nye registreringer?"
+      },
+      "en": {
+        "text": "Close new sign-ups?"
+      }
+    },
+    "b109.admin.confirm-close": {
+      "nb": {
+        "text": "Ingen kan lage nye kontoer før du åpner igjen. Eksisterende brukere og inviterte påvirkes ikke."
+      },
+      "en": {
+        "text": "Nobody can create new accounts until you open again. Existing users and invited people are not affected."
+      }
+    },
+    "b109.admin.confirm-close-ok": {
+      "nb": {
+        "text": "Steng"
+      },
+      "en": {
+        "text": "Close"
+      }
+    },
+    "b109.admin.confirm-open-title": {
+      "nb": {
+        "text": "Åpne for nye registreringer?"
+      },
+      "en": {
+        "text": "Open new sign-ups?"
+      }
+    },
+    "b109.admin.confirm-open": {
+      "nb": {
+        "text": "Alle kan lage en ny konto igjen."
+      },
+      "en": {
+        "text": "Anyone can create a new account again."
+      }
+    },
+    "b109.admin.confirm-open-ok": {
+      "nb": {
+        "text": "Åpne"
+      },
+      "en": {
+        "text": "Open"
+      }
+    },
+    "b109.admin.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
     }
   }
 }
