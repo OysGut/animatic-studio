@@ -6,6 +6,7 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { byLang, uiLang } from "./ui-lang.mjs";
 const [
   base = "http://127.0.0.1:8080",
@@ -95,7 +96,7 @@ async function mock(ctx) {
       }
       return json(null);
     }
-    if (table === "schema_version") return json([{ version: 34 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
