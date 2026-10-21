@@ -194,7 +194,7 @@ export function screenplayPdf(pages: readonly Page[], opts: PdfOptions = {}): Ui
   objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";
   objs[2] = `<< /Type /Pages /Kids [${pageIds.map((id) => `${id} 0 R`).join(" ")}] /Count ${pageIds.length} >>`;
   objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>";
-  objs[4] = `<< /Producer (Animatic Studio)${opts.title ? ` /Title ${pdfString(opts.title)}` : ""} >>`;
+  objs[4] = `<< /Producer (From Pen to Glass)${opts.title ? ` /Title ${pdfString(opts.title)}` : ""} >>`;
 
   let out = "%PDF-1.4\n%âãÏÓ\n";
   const offsets: number[] = [];

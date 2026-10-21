@@ -94,10 +94,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Animatic Studio" },
-      { name: "description", content: "Animatic Studio" },
-      { property: "og:title", content: "Animatic Studio" }, // i18n-ignore: metakode
-      { property: "og:description", content: "Animatic Studio" }, // i18n-ignore: metakode
+      { title: "From Pen to Glass" },
+      { name: "description", content: "From Pen to Glass – from script to finished film." }, // i18n-ignore: metakode
+      { property: "og:title", content: "From Pen to Glass" }, // i18n-ignore: metakode
+      { property: "og:description", content: "From Pen to Glass – from script to finished film." }, // i18n-ignore: metakode
+      { property: "og:site_name", content: "From Pen to Glass" }, // i18n-ignore: metakode
+      { name: "twitter:title", content: "From Pen to Glass" }, // i18n-ignore: metakode
       { property: "og:type", content: "website" }, // i18n-ignore: metakode
       { name: "twitter:card", content: "summary_large_image" },
     ],

@@ -290,7 +290,7 @@ export async function posterPdf(
   );
   set(pages, `<< /Type /Pages /Kids [${page} 0 R] /Count 1 >>`);
   set(catalog, `<< /Type /Catalog /Pages ${pages} 0 R >>`);
-  set(info, `<< /Title ${pdfTextString(opts.title)} /Producer (Animatic Studio) >>`);
+  set(info, `<< /Title ${pdfTextString(opts.title)} /Producer (From Pen to Glass) >>`);
 
   // Filen med kryssreferanser
   // Binærkommentaren (bytes over 127) forteller at filen er binær

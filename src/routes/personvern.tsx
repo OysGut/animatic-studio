@@ -34,7 +34,7 @@ function PrivacyPage() {
             to="/"
             className="text-[13px] font-semibold text-text-primary hover:text-accent-brand"
           >
-            Animatic Studio
+            From Pen to Glass
           </Link>
           <div className="ml-auto">
             <LanguageSwitch compact />

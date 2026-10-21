@@ -1,7 +1,7 @@
 // @vitest-environment node
 /**
  * Fountain-markering manusmodellen ikke har egne felt for (DEC-0073, KI-164): dobbel dialog (^), sentrert tekst
- * (> <), sangtekst (~) og notater ([[ ]]) på riktig blokk og tegn. Rundtur Fountain → Animatic Studio → Fountain.
+ * (> <), sangtekst (~) og notater ([[ ]]) på riktig blokk og tegn. Rundtur Fountain → From Pen to Glass → Fountain.
  * Ingen ekte manus (DEC-0004).
  */
 import { describe, expect, it } from "vitest";
@@ -180,7 +180,7 @@ describe("Fountain-markering – import", () => {
   });
 });
 
-describe("Fountain-markering – rundtur Fountain → Animatic Studio → Fountain", () => {
+describe("Fountain-markering – rundtur Fountain → From Pen to Glass → Fountain", () => {
   it("dobbel dialog", () => {
     const src = ["INT. HUS - DAG #1#", "", "MAJA", "Ja!", "", "PER ^", "Nei!", ""].join("\n");
     expect(roundTrip(src)).toBe(src);

@@ -306,7 +306,7 @@ function Shell({ children }: { children: React.ReactNode }) {
       data-testid="mobile-page"
     >
       <header className="flex h-11 items-center border-b border-border px-4 text-[13px] font-semibold">
-        Animatic Studio
+        Pen to Glass
       </header>
       {children}
     </div>
@@ -477,7 +477,7 @@ function ShareButton({ token, label, audio }: { token: string; label: string; au
       : tk("app-mobile-mobile-page.text.message.9e50fa7f0f72", { label: String(label) });
     if (typeof navigator.share === "function") {
       try {
-        await navigator.share({ title: "Animatic Studio", text, url });
+        await navigator.share({ title: "Pen to Glass", text, url });
         return;
       } catch {
         /* avbrutt eller ikke tillatt: vis lenken til kopiering */

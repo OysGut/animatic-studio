@@ -9,7 +9,7 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-# AGENTS.md – instruksjoner for KI-agenter i Animatic Studio
+# AGENTS.md – instruksjoner for KI-agenter i From Pen to Glass
 
 Fra fase 3 (oktober 2026) er arbeidsdelingen slik:
 - Claude er dirigent. Claude lager spesifikasjonene, går gjennom koden, kjører testene og kjører databasemigrasjonene.
@@ -57,3 +57,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
 39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
+40. Product name is «From Pen to Glass» (short «Pen to Glass»); tests/unit/b104-product-name.test.ts fails on the old name in user-visible text, with an explicit exception list, while internal IDs, keys and file formats keep their old names.

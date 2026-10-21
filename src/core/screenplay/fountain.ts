@@ -12,7 +12,7 @@
  *   (`sourceRef.fountain`, se FountainMarks i types.ts). Valget er gjort fordi nye blokktyper eller kolonner
  *   krever migrasjon og berører visning, PDF/DOCX, oversettelse og karakterlister, mens tegn som `^` og `> <`
  *   i teksten ville blitt med i navn, PDF og DOCX. `sourceRef` er jsonb og kopieres uendret ved import,
- *   splitting og sammenslåing, så en rundtur Fountain → Animatic Studio → Fountain gir samme markering.
+ *   splitting og sammenslåing, så en rundtur Fountain → From Pen to Glass → Fountain gir samme markering.
  *   Manusvisningen og PDF/DOCX viser foreløpig ikke dobbel dialog side om side eller sentrering.
  * - Dobbel dialog merkes usikker bare når det ikke står en replikk rett foran (da er det uklart hvem som
  *   snakker samtidig); ellers er tolkningen sikker.

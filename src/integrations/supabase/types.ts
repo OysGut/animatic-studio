@@ -984,6 +984,7 @@ export type Database = {
           id: string
           inverse: Json | null
           project_id: string
+          scene_ids: string[] | null
           seq: number
         }
         Insert: {
@@ -995,6 +996,7 @@ export type Database = {
           id: string
           inverse?: Json | null
           project_id: string
+          scene_ids?: string[] | null
           seq?: never
         }
         Update: {
@@ -1006,6 +1008,7 @@ export type Database = {
           id?: string
           inverse?: Json | null
           project_id?: string
+          scene_ids?: string[] | null
           seq?: never
         }
         Relationships: [
@@ -3502,6 +3505,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          country: string | null
           display_name: string
           locale: string | null
           ui_prefs: Json
@@ -3509,6 +3513,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          country?: string | null
           display_name?: string
           locale?: string | null
           ui_prefs?: Json
@@ -3516,6 +3521,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          country?: string | null
           display_name?: string
           locale?: string | null
           ui_prefs?: Json
@@ -5783,6 +5789,13 @@ export type Database = {
         Args: { p_byte_size: number; p_share: string }
         Returns: string
       }
+      admin_country_counts: {
+        Args: never
+        Returns: {
+          country: string
+          users: number
+        }[]
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -6203,6 +6216,16 @@ export type Database = {
         }
         Returns: Json
       }
+      scene_last_changes: {
+        Args: { p_project: string }
+        Returns: {
+          actor: string
+          actor_name: string
+          changed_at: string
+          logged: boolean
+          scene_id: string
+        }[]
+      }
       set_invitation_role: {
         Args: { p_invitation: string; p_role: string }
         Returns: undefined
@@ -6215,6 +6238,7 @@ export type Database = {
         Args: { p_project: string; p_target: Json }
         Returns: undefined
       }
+      set_my_country: { Args: { p_country: string }; Returns: undefined }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       set_project_workspace: {

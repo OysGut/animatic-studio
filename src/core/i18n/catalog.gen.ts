@@ -174,9 +174,6 @@ export const CATALOG: Record<string, string> = {
   "Animasjonsbruken finnes ikke": "The animation use was not found",
   "Animatic (2D-scene)": "Animatic (2D scene)",
   "Animatic (tittelkort)": "Animatic (title card)",
-  "Animatic Studio (systemmerknad)": "Animatic Studio (system note)",
-  "Animatic Studio kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i Animatic Studio.":
-    "Animatic Studio did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in Animatic Studio.",
   "ANIMATIC_KEY_ENCRYPTION_KEY må være 32 byte (base64).":
     "ANIMATIC_KEY_ENCRYPTION_KEY must be 32 bytes (base64).",
   "Ankeret ville gitt en sirkel i fortellingstiden": "The anchor would create a loop in story time",
@@ -343,8 +340,8 @@ export const CATALOG: Record<string, string> = {
     "The width must be a whole number between 16 and 16384",
   "bruk korte beskrivelser i stedet for utfyllende": "use short descriptions instead of full ones",
   "Bruken hører ikke til oppsettet": "The use does not belong to the setup",
-  "Bruker kredittene i Animatic Studio-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i Animatic Studio.":
-    "Uses the credits in your Animatic Studio workspace. No key of your own – switched on for the project in Animatic Studio.",
+  "Bruker kredittene i From Pen to Glass-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i From Pen to Glass.":
+    "Uses the credits in your From Pen to Glass workspace. No key of your own – switched on for the project in From Pen to Glass.",
   "Brukeren er administrator.": "The user is an administrator.",
   "Brukeren er blokkert.": "The user is blocked.",
   "Brukeren er ikke lenger administrator.": "The user is no longer an administrator.",
@@ -355,26 +352,26 @@ export const CATALOG: Record<string, string> = {
   "ca. 1 megapiksel": "about 1 megapixel",
   "ca. 2K": "about 2K",
   "Clarity – med AI-detaljer": "Clarity – with AI detail",
-  "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not updated for AI sound. Contact the administrator to update Animatic Studio.",
-  "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not updated for AI-written descriptions. Contact the administrator to update Animatic Studio.",
-  "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not updated for AI speech. Contact the administrator to update Animatic Studio.",
-  'Databasen er ikke oppdatert for AI-video{0}. Kontakt administratoren for å oppdatere Animatic Studio."0025" : "0024"}).':
-    'The database is not up to date for AI video{0}. Contact the administrator to update Animatic Studio."0025" : "0024"}).',
+  "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not updated for AI sound. Contact the administrator to update From Pen to Glass.",
+  "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass.",
+  "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not updated for AI speech. Contact the administrator to update From Pen to Glass.",
+  'Databasen er ikke oppdatert for AI-video{0}. Kontakt administratoren for å oppdatere From Pen to Glass."0025" : "0024"}).':
+    'The database is not up to date for AI video{0}. Contact the administrator to update From Pen to Glass."0025" : "0024"}).',
   "Databasen er ikke oppdatert for automatisk analyse (migrasjon 0041).":
     "The database is not updated for automatic analysis (migration 0041).",
-  "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not updated for your own AI providers yet. Contact the administrator to update Animatic Studio.",
-  "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not up to date for deleted items. Contact the administrator to update Animatic Studio.",
-  "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not updated for deletion yet. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass.",
+  "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass.",
+  "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass.",
   "Databasen er ikke oppdatert for tekst-AI (migrasjon 0038).":
     "The database is not updated for text AI (migration 0038).",
-  "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is not up to date. Contact the administrator to update Animatic Studio.",
+  "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is not up to date. Contact the administrator to update From Pen to Glass.",
   "Databasen må oppdateres (migrasjon 0033) før adminsiden kan brukes.":
     "The database must be updated (migration 0033) before the admin page can be used.",
   "Databasen må oppdateres (migrasjon 0033) før kontoen kan slettes.":
@@ -383,78 +380,78 @@ export const CATALOG: Record<string, string> = {
     "The database must be updated (migration 0034) before the AI connections can be managed.",
   "Databasen må oppdateres (migrasjon 0034) før AI-tilkoblingene kan endres.":
     "The database must be updated (migration 0034) before the AI connections can be changed.",
-  "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the AI budget and generation descriptions. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler animasjonsoppsett. Kjør migrasjon 0053 og 0054 først.":
     "The database is missing animation setups. Run migrations 0053 and 0054 first.",
   "Databasen mangler avviksgjennomgang og huskelapper. Kjør migrasjon 0062 først.":
     "The database is missing drift reviews and note flags. Run migration 0062 first.",
   "Databasen mangler canvaset i Story Lab. Den må oppdateres (migrasjon 0040).":
     "The database is missing the Story Lab canvas. It must be updated (migration 0040).",
-  "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update Animatic Studio.",
-  "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update Animatic Studio.",
-  "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the film's visual style. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing imported film and transitions. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the film's visual style. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler instrukser for AI-video. Den må oppdateres (migrasjon 0032).":
     "The database is missing instructions for AI video. It must be updated (migration 0032).",
-  "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing clipping and time links. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing sound links. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing continuity for the characters. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing continuity for spin-offs. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing clipping and time links. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing sound links. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler leppesynk og mønstre. Kjør migrasjon 0056 først.":
     "The database is missing lip sync and patterns. Run migration 0056 first.",
-  "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the AI generation log. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing sound across several scenes and volume points. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler lyd. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing sound. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the AI generation log. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler lyd. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing sound. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler lydkomposisjoner. Den må oppdateres (migrasjon 0036).":
     "The database is missing audio compositions. It must be updated (migration 0036).",
   "Databasen mangler mobilimport. Den må oppdateres (migrasjon 0035).":
     "The database is missing mobile import. It must be updated (migration 0035).",
-  "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing notes on the productions. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing notes on the productions. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler oppgaver og systemmerknader. Den må oppdateres (migrasjon 0034).":
     "The database is missing tasks and system notes. It must be updated (migration 0034).",
   "Databasen mangler ord-til-lyd. Den må oppdateres (migrasjon 0037).":
     "The database is missing word alignment. It must be updated (migration 0037).",
-  "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing posters and relations. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing planned length per scene. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the project format. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the asset library and notes. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing posters and relations. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing planned length per scene. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the project format. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler rigg-deler. Kjør migrasjon 0055 først.":
     "The database is missing rig parts. Run migration 0055 first.",
-  "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the scene editor. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing language versions of the film (audio and images per language). Contact the administrator to update Animatic Studio.",
-  "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing language versions of the script. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the scene editor. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing language versions of the script. Contact the administrator to update From Pen to Glass.",
   "Databasen mangler Story Lab. Den må oppdateres (migrasjon 0039).":
     "The database is missing Story Lab. It must be updated (migration 0039).",
   "Databasen mangler tekstlag og maler. Den må oppdateres (migrasjon 00{0}).":
     "The database is missing text layers and templates. It must be updated (migration 00{0}).",
-  "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the addition for the worklist and export settings. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update Animatic Studio.",
-  "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere Animatic Studio.":
-    "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update Animatic Studio.",
+  "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass.",
+  "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass.":
+    "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass.",
   "Delen {0} finnes ikke i scenen": "Part {0} does not exist in the scene",
   "Delen må ha versjon bare når kilden er film":
     "The part may only have a version when the source is film",
@@ -688,8 +685,8 @@ export const CATALOG: Record<string, string> = {
   "Filen er for stor (maks {0} MB).": "The file is too large (max {0} MB).",
   "Filen er for stor til å hentes inn.": "The file is too large to fetch.",
   "Filen er ikke en MP4-video.": "The file is not an MP4 video.",
-  "Filen er ikke en sikkerhetskopi fra Animatic Studio.":
-    "The file is not a backup from Animatic Studio.",
+  "Filen er ikke en sikkerhetskopi fra From Pen to Glass.":
+    "The file is not a backup from From Pen to Glass.",
   "Filen er ikke kommet fram ennå. Prøv igjen.": "The file has not arrived yet. Try again.",
   "Filen er større enn 500 MB. Eksporter i halv størrelse eller et kortere utvalg for å dele den.":
     "The file is larger than 500 MB. Export at half size or a shorter selection to share it.",
@@ -809,21 +806,24 @@ export const CATALOG: Record<string, string> = {
   "Fra Story Lab, økt {0}, tur {1}.": "From Story Lab, session {0}, turn {1}.",
   "Frilagt fra v{0}": "Cut out from v{0}",
   "frilagt fra versjon {0}": "cut out from version {0}",
+  "From Pen to Glass (systemmerknad)": "From Pen to Glass (system note)",
+  "From Pen to Glass kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i From Pen to Glass.":
+    "From Pen to Glass did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in From Pen to Glass.",
   "full størrelse": "full size",
   "Fyller hele bildet, uten figurer.": "Fills the whole image, without figures.",
   "Gå til «Get API key» → «Create API key» og kopier nøkkelen (begynner med AIza).":
     "Go to “Get API key” → “Create API key” and copy the key (it starts with AIza).",
-  "Gå til API Keys → «Create API Key», gi den navnet «Animatic Studio» og kopier den (begynner med xai-).":
-    "Go to API Keys → “Create API Key”, name it “Animatic Studio” and copy it (it starts with xai-).",
+  "Gå til API Keys → «Create API Key», gi den navnet «Pen to Glass» og kopier den (begynner med xai-).":
+    "Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-).",
   "Gå til API Keys → «Create new key» og kopier nøkkelen (begynner med key_).":
     "Go to API Keys → “Create new key” and copy the key (it starts with key_).",
-  "Gå til API keys → «Create new secret key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-).":
-    "Go to API keys → “Create new secret key”, name it “Animatic Studio” and copy it (it starts with sk-).",
+  "Gå til API keys → «Create new secret key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-).":
+    "Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-).",
   "Gå til Dashboard → Keys → «Add key», velg rollen «API» og kopier nøkkelen (id:hemmelighet).":
     "Go to Dashboard → Keys → “Add key”, choose the role “API” and copy the key (id:secret).",
   "Gå til Settings → API Keys → «Create API key».": "Go to Settings → API Keys → “Create API key”.",
-  "Gå til Settings → API keys → «Create Key», gi den navnet «Animatic Studio» og kopier den (begynner med sk-ant-).":
-    "Go to Settings → API keys → “Create Key”, name it “Animatic Studio” and copy it (it starts with sk-ant-).",
+  "Gå til Settings → API keys → «Create Key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-ant-).":
+    "Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-).",
   "Genereringen kunne ikke logges: {0}": "The generation could not be logged: {0}",
   "Genereringen må bekreftes": "The generation must be confirmed",
   "Genereringen stoppet: {0}": "The generation stopped: {0}",
@@ -1727,13 +1727,13 @@ export const CATALOG: Record<string, string> = {
   sek: "sec",
   "Serverhemmeligheten mangler.": "The server secret is missing.",
   Sideplot: "Subplot",
-  "Sikkerhetskopi av «{0}» fra Animatic Studio": "Backup of “{0}” from Animatic Studio",
+  "Sikkerhetskopi av «{0}» fra From Pen to Glass": "Backup of “{0}” from From Pen to Glass",
   "Sikkerhetskopien er for stor til å gjenopprettes her":
     "The backup is too large to be restored here",
   "Sikkerhetskopien er laget med en nyere database (versjon {0}). Oppdater databasen først.":
     "The backup was made with a newer database (version {0}). Update the database first.",
-  "Sikkerhetskopien er laget med en nyere versjon av Animatic Studio og kan ikke leses her.":
-    "The backup was made with a newer version of Animatic Studio and cannot be read here.",
+  "Sikkerhetskopien er laget med en nyere versjon av From Pen to Glass og kan ikke leses her.":
+    "The backup was made with a newer version of From Pen to Glass and cannot be read here.",
   "Sikkerhetskopien er skadet ({0}).": "The backup is damaged ({0}).",
   "Sikkerhetskopien er skadet: {0}": "The backup is damaged: {0}",
   "Sikkerhetskopien gir et ugyldig prosjekt ({0}).": "The backup gives an invalid project ({0}).",

@@ -197,10 +197,10 @@
         "adapters-ai-video-functions.message.message.b49b7f3f602c"
       ],
       "nb": {
-        "text": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+        "text": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"})."
       },
       "en": {
-        "text": "The database is not up to date for AI video in the queue. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+        "text": "The database is not up to date for AI video in the queue. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
       }
     },
     "adapters-ai-video-functions.database-outdated": {
@@ -208,10 +208,10 @@
         "adapters-ai-video-functions.message.message.b49b7f3f602c"
       ],
       "nb": {
-        "text": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere Animatic Studio.\"0025\" : \"0024\"})."
+        "text": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"})."
       },
       "en": {
-        "text": "The database is not up to date for AI video. Contact the administrator to update Animatic Studio.\"0025\" : \"0024\"})."
+        "text": "The database is not up to date for AI video. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"})."
       }
     },
     "adapters-storage-commands-functions.undo-production-referenced": {
@@ -5068,10 +5068,10 @@
     },
     "routes-prosjekt-rigg.head.title": {
       "nb": {
-        "text": "Rigg – Animatic Studio"
+        "text": "Rigg – Pen to Glass"
       },
       "en": {
-        "text": "Rig – Animatic Studio"
+        "text": "Rig – Pen to Glass"
       }
     },
     "routes-prosjekt-rigg.head.description": {
@@ -5532,18 +5532,18 @@
     },
     "auth.password-reset.title": {
       "nb": {
-        "text": "Tilbakestill passord | Animatic Studio"
+        "text": "Tilbakestill passord | Pen to Glass"
       },
       "en": {
-        "text": "Reset password | Animatic Studio"
+        "text": "Reset password | Pen to Glass"
       }
     },
     "auth.password-reset.description": {
       "nb": {
-        "text": "Velg et nytt passord for Animatic Studio med lenken fra e-posten din."
+        "text": "Velg et nytt passord for From Pen to Glass med lenken fra e-posten din."
       },
       "en": {
-        "text": "Choose a new Animatic Studio password using the link from your email."
+        "text": "Choose a new From Pen to Glass password using the link from your email."
       }
     },
     "auth.password-reset.og-type": {

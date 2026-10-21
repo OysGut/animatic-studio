@@ -33,6 +33,9 @@ export const BACKUP_FORMAT = "animatic-studio-backup";
 export const BACKUP_FORMAT_VERSION = 1;
 export const BACKUP_JSON = "animatic-backup.json";
 export const BACKUP_README = "LES-MEG.txt";
+/** Produktnavnet i nye sikkerhetskopier (B-104). Eldre kopier har «Animatic Studio» og leses like godt. */
+export const BACKUP_APP_NAME = "From Pen to Glass";
+export const BACKUP_APP_NAMES: readonly string[] = [BACKUP_APP_NAME, "Animatic Studio"];
 /**
  * Største datadel (prosjektdata uten historikk og mediefiler) som kan gjenopprettes. Serverfunksjonen har
  * begrenset minne; et manus på ~100 sider med full historikk er ~2–3 MB.
@@ -219,7 +222,7 @@ export function makeBackup(input: BackupInput): BackupData {
     formatVersion: BACKUP_FORMAT_VERSION,
     schemaVersion: input.schemaVersion,
     createdAt: input.createdAt,
-    app: "Animatic Studio",
+    app: BACKUP_APP_NAME,
     project: rows.project,
     tables,
     history: { change_log: input.changeLog, generation_jobs: input.generationJobs },
