@@ -74318,5 +74318,68 @@
   },
   "b098.kind-plural.font": {
     "text": "Fonter"
+  },
+  "b109.auth.closed": {
+    "text": "Tjenesten tar ikke imot nye brukere akkurat nå."
+  },
+  "b109.admin.title": {
+    "text": "Nye registreringer"
+  },
+  "b109.admin.note": {
+    "text": "Når registreringen er stengt, kan ingen lage nye kontoer. Eksisterende brukere logger inn som før, og e-poster med en åpen invitasjon kan fortsatt opprette konto."
+  },
+  "b109.admin.label": {
+    "text": "Nye registreringer:"
+  },
+  "b109.admin.open": {
+    "text": "Åpen"
+  },
+  "b109.admin.closed": {
+    "text": "Stengt"
+  },
+  "b109.admin.message": {
+    "text": "Melding på innloggingssiden når registreringen er stengt (valgfri)"
+  },
+  "b109.admin.save-message": {
+    "text": "Lagre meldingen"
+  },
+  "b109.admin.changed": {
+    "text": "Sist endret {when} av {who}."
+  },
+  "b109.admin.never-changed": {
+    "text": "Ikke endret ennå (åpen som standard)."
+  },
+  "b109.admin.unknown-user": {
+    "text": "ukjent bruker"
+  },
+  "b109.admin.loading": {
+    "text": "Henter …"
+  },
+  "b109.admin.unavailable": {
+    "text": "Innstillingen er ikke tilgjengelig ennå."
+  },
+  "b109.admin.failed": {
+    "text": "Endringen ble ikke lagret. Prøv igjen."
+  },
+  "b109.admin.confirm-close-title": {
+    "text": "Stenge for nye registreringer?"
+  },
+  "b109.admin.confirm-close": {
+    "text": "Ingen kan lage nye kontoer før du åpner igjen. Eksisterende brukere og inviterte påvirkes ikke."
+  },
+  "b109.admin.confirm-close-ok": {
+    "text": "Steng"
+  },
+  "b109.admin.confirm-open-title": {
+    "text": "Åpne for nye registreringer?"
+  },
+  "b109.admin.confirm-open": {
+    "text": "Alle kan lage en ny konto igjen."
+  },
+  "b109.admin.confirm-open-ok": {
+    "text": "Åpne"
+  },
+  "b109.admin.cancel": {
+    "text": "Avbryt"
   }
 }
