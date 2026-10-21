@@ -6,4 +6,4 @@ if (!code || !directory) throw new Error('Usage: import-locale.mjs <code> <direc
 const { report } = importLocale(code, directory);
 writeFileSync(join(ROOT, `docs/development/SPRAK/${code}-import-report.json`), JSON.stringify(report, null, 2) + '\n');
 console.log(`${code}: ${report.imported} imported, ${report.errors.length} errors, ${report.stale.length} stale, ${report.missing.length} missing`);
-if (report.errors.length) process.exitCode = 1;
+if (report.errors.length || report.stale.length) process.exitCode = 1;
