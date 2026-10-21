@@ -6282,7 +6282,7 @@ try {
     }
     const ac=String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
     assert(ac.indexOf("'language_versions','translations'")>0 && ac.includes("'translations','language_versions'") && ac.includes("Invalid language version scope"),"apply_changes lacks language versions");
-    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===66,"schema version 66");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"])>=66,"schema version 66");
     await expectError(as("authenticated",ALICE,tx=>tx`insert into public.language_versions(id,project_id,language,name) values(gen_random_uuid(),gen_random_uuid(),'de','Tysk')`),"42501");
   });
 
@@ -6397,6 +6397,7 @@ try {
     assert(purgeBody.includes("delete from public.style_harmonizations") && purgeBody.includes("delete from public.style_preferred_references"),"purge_removed_assets misses the new tables");
   });
   await test("0067: R1 ProRes i «Endelig», R2 oppryddingslogg (grants/RLS) og strengere språkversjonssjekk", async () => {
+    assert((await sql`select max(version) v from public.schema_version`)[0]?.["v"]===67,"schema version 67");
     // R1: nye prosjekter får ProRes i «Endelig»; øvrige standardprofiler er uendret
     const np=String((await as("authenticated",ALICE,async tx=>(await tx`select public.create_project('R1 fixture') id`)[0]))?.["id"]);
     const qp=await sql`select name, spec from public.quality_profiles where project_id=${np} order by name`;
@@ -6413,6 +6414,7 @@ try {
     await expectError(as("service_role",null,tx=>tx`insert into public.storage_cleanups(project_id,actor,file_count,total_bytes) values(${np},${ALICE},-1,0)`),"23514");
     const purge=String((await sql`select pg_get_functiondef('public.purge_project_assets(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
     assert(purge.indexOf("delete from public.storage_cleanups")>0 && purge.indexOf("delete from public.storage_cleanups")<purge.indexOf("delete from public.projects"),"purge_project_assets must delete the cleanup log before the project");
+    await as("service_role",null,tx=>tx`select public.delete_project(${np},${ALICE})`);
     await as("service_role",null,tx=>tx`select public.purge_project_assets(${np},${ALICE})`);
     assert((await sql`select count(*)::int n from public.storage_cleanups where project_id=${np}`)[0]?.["n"]===0,"cleanup log survives purge");
     // Språkversjonssjekken: lenker kontrolleres også når versjonen ikke sendes, og når en linje flyttes
