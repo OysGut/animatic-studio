@@ -73265,5 +73265,73 @@
   },
   "ml4-export-fonts.ok": {
     "text": "The font ({font}) can show every character in the export."
+  },
+  "r1-prores-offer.question": {
+    "text": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo."
+  },
+  "r1-prores-offer.accept": {
+    "text": "Use ProRes"
+  },
+  "r1-prores-offer.dismiss": {
+    "text": "Not now"
+  },
+  "r1-prores-offer.undo-label": {
+    "text": "ProRes as default in {name}"
+  },
+  "r2-orphan-cleanup.open": {
+    "text": "Clean up unused AI files …"
+  },
+  "r2-orphan-cleanup.title": {
+    "text": "Delete unused AI files?"
+  },
+  "r2-orphan-cleanup.summary": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} AI file ({size} MB) is not used by anything in the project and is not in the undo history. It is older than one day. Deleting cannot be undone.",
+        "other": "{count} AI files ({size} MB) are not used by anything in the project and are not in the undo history. They are older than one day. Deleting cannot be undone."
+      }
+    }
+  },
+  "r2-orphan-cleanup.none": {
+    "text": "No unused AI files that can be deleted were found."
+  },
+  "r2-orphan-cleanup.done": {
+    "text": null,
+    "plural": {
+      "parameter": "count",
+      "forms": {
+        "one": "{count} file deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime.",
+        "other": "{count} files deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime."
+      }
+    }
+  },
+  "r2-orphan-cleanup.cancel": {
+    "text": "Cancel"
+  },
+  "r2-orphan-cleanup.confirm": {
+    "text": "Delete the files"
+  },
+  "r2-orphan-cleanup.error.owner": {
+    "text": "Only the project owner can clean up files."
+  },
+  "r2-orphan-cleanup.error.references": {
+    "text": "Could not check which files are in use. Nothing was deleted."
+  },
+  "r2-orphan-cleanup.error.too-many": {
+    "text": "The project has too many files to check right now. Nothing was deleted."
+  },
+  "r2-orphan-cleanup.error.input": {
+    "text": "Invalid clean-up request."
+  },
+  "r2-orphan-cleanup.error.confirm": {
+    "text": "Confirm the deletion first."
+  },
+  "r2-orphan-cleanup.error.remove": {
+    "text": "Could not delete the files. Try again."
+  },
+  "r2-orphan-cleanup.error.generic": {
+    "text": "The clean-up failed."
   }
 }

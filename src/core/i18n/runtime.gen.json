@@ -30628,6 +30628,74 @@
     "ml4-export-fonts.pdf-blocked": {
       "text": "PDF-fonten ({font}) kan ikke vise {count} tegn i denne språkversjonen: {chars}. De ville blitt «?» i filen, så PDF-eksporten er stoppet. Velg Word eller Fountain, som beholder alle tegn."
     },
+    "r1-prores-offer.accept": {
+      "text": "Bruk ProRes"
+    },
+    "r1-prores-offer.dismiss": {
+      "text": "Ikke nå"
+    },
+    "r1-prores-offer.question": {
+      "text": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre."
+    },
+    "r1-prores-offer.undo-label": {
+      "text": "ProRes som standard i {name}"
+    },
+    "r2-orphan-cleanup.cancel": {
+      "text": "Avbryt"
+    },
+    "r2-orphan-cleanup.confirm": {
+      "text": "Slett filene"
+    },
+    "r2-orphan-cleanup.done": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} fil slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden.",
+          "other": "{count} filer slettet ({size} MB). {skipped} ble beholdt fordi de var tatt i bruk i mellomtiden."
+        }
+      }
+    },
+    "r2-orphan-cleanup.error.confirm": {
+      "text": "Bekreft slettingen først."
+    },
+    "r2-orphan-cleanup.error.generic": {
+      "text": "Oppryddingen feilet."
+    },
+    "r2-orphan-cleanup.error.input": {
+      "text": "Ugyldig forespørsel om opprydding."
+    },
+    "r2-orphan-cleanup.error.owner": {
+      "text": "Bare prosjekteieren kan rydde opp i filer."
+    },
+    "r2-orphan-cleanup.error.references": {
+      "text": "Kunne ikke kontrollere hvilke filer som er i bruk. Ingenting er slettet."
+    },
+    "r2-orphan-cleanup.error.remove": {
+      "text": "Kunne ikke slette filene. Prøv igjen."
+    },
+    "r2-orphan-cleanup.error.too-many": {
+      "text": "Prosjektet har for mange filer til å kontrollere nå. Ingenting er slettet."
+    },
+    "r2-orphan-cleanup.none": {
+      "text": "Fant ingen ubrukte AI-filer som kan slettes."
+    },
+    "r2-orphan-cleanup.open": {
+      "text": "Rydd opp i ubrukte AI-filer …"
+    },
+    "r2-orphan-cleanup.summary": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} AI-fil ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. Den er eldre enn ett døgn. Sletting kan ikke angres.",
+          "other": "{count} AI-filer ({size} MB) brukes ikke av noe i prosjektet og står ikke i angrehistorikken. De er eldre enn ett døgn. Sletting kan ikke angres."
+        }
+      }
+    },
+    "r2-orphan-cleanup.title": {
+      "text": "Slette ubrukte AI-filer?"
+    },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administrasjon"
     },
@@ -61551,6 +61619,74 @@
     },
     "ml4-export-fonts.pdf-blocked": {
       "text": "The PDF font ({font}) cannot show {count} characters in this language version: {chars}. They would become \"?\" in the file, so the PDF export is stopped. Choose Word or Fountain, which keep every character."
+    },
+    "r1-prores-offer.accept": {
+      "text": "Use ProRes"
+    },
+    "r1-prores-offer.dismiss": {
+      "text": "Not now"
+    },
+    "r1-prores-offer.question": {
+      "text": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo."
+    },
+    "r1-prores-offer.undo-label": {
+      "text": "ProRes as default in {name}"
+    },
+    "r2-orphan-cleanup.cancel": {
+      "text": "Cancel"
+    },
+    "r2-orphan-cleanup.confirm": {
+      "text": "Delete the files"
+    },
+    "r2-orphan-cleanup.done": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} file deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime.",
+          "other": "{count} files deleted ({size} MB). {skipped} were kept because they had been put to use in the meantime."
+        }
+      }
+    },
+    "r2-orphan-cleanup.error.confirm": {
+      "text": "Confirm the deletion first."
+    },
+    "r2-orphan-cleanup.error.generic": {
+      "text": "The clean-up failed."
+    },
+    "r2-orphan-cleanup.error.input": {
+      "text": "Invalid clean-up request."
+    },
+    "r2-orphan-cleanup.error.owner": {
+      "text": "Only the project owner can clean up files."
+    },
+    "r2-orphan-cleanup.error.references": {
+      "text": "Could not check which files are in use. Nothing was deleted."
+    },
+    "r2-orphan-cleanup.error.remove": {
+      "text": "Could not delete the files. Try again."
+    },
+    "r2-orphan-cleanup.error.too-many": {
+      "text": "The project has too many files to check right now. Nothing was deleted."
+    },
+    "r2-orphan-cleanup.none": {
+      "text": "No unused AI files that can be deleted were found."
+    },
+    "r2-orphan-cleanup.open": {
+      "text": "Clean up unused AI files …"
+    },
+    "r2-orphan-cleanup.summary": {
+      "text": null,
+      "plural": {
+        "parameter": "count",
+        "forms": {
+          "one": "{count} AI file ({size} MB) is not used by anything in the project and is not in the undo history. It is older than one day. Deleting cannot be undone.",
+          "other": "{count} AI files ({size} MB) are not used by anything in the project and are not in the undo history. They are older than one day. Deleting cannot be undone."
+        }
+      }
+    },
+    "r2-orphan-cleanup.title": {
+      "text": "Delete unused AI files?"
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administration"
