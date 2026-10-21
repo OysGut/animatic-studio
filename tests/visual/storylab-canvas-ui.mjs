@@ -396,6 +396,7 @@ await run("500 noder", async (page) => {
   S.t0 = Date.now();
   await page.reload({ waitUntil: "domcontentloaded" });
   await page.getByTestId("storylab-canvas").waitFor({ timeout: 30000 });
+  if (process.env.DBG) console.log("DBG canvas", Date.now() - S.t0);
   await nodeLoc(page).first().waitFor({ timeout: 30000 });
   const ms = Date.now() - S.t0;
   check((await page.getByText("500 noder").count()) === 1, "alle 500 noder er lastet");
