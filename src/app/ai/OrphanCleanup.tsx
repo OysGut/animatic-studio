@@ -5,7 +5,7 @@
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Eraser } from "lucide-react";
-import { previewOrphanCleanup, confirmOrphanCleanup } from "@/adapters/ai/orphan-cleanup.functions";
+import { previewOrphanCleanup, confirmOrphanCleanup } from "@/adapters/storage/orphan-cleanup.functions";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from "@/components/ui/alert-dialog";
 import { locale } from "@/core";

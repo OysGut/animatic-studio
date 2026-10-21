@@ -12,7 +12,7 @@ vi.mock("@tanstack/react-start", async () => {
 });
 vi.mock("@/integrations/supabase/auth-middleware", () => ({ requireSupabaseAuth: {} }));
 vi.mock("@/integrations/supabase/client.server", () => ({ get supabaseAdmin() { return h.admin; } }));
-import { previewOrphanCleanup, confirmOrphanCleanup } from "@/adapters/ai/orphan-cleanup.functions";
+import { previewOrphanCleanup, confirmOrphanCleanup } from "@/adapters/storage/orphan-cleanup.functions";
 
 function apply(s: ProjectState, c: Command) {
   const r = applyCommand(s, envelope(c));
