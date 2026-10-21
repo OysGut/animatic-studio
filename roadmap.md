@@ -105,3 +105,4 @@
 - [x] scene-video-ui full UI_LANG; storylab-canvas-ui og mts-global overstyres av UI_LANG
 - [ ] Visuell kontroll av «Mer …» i alle verktøylinjer ved 1280/1024 px
 - [ ] ID_AUDIT.md (REQ-0037/0022/0518), bare kartlegging
+- [x] ID3: stabile ID-er (REQ-0037/0022/0518), migrasjon 0069, verifisering3 engelsk – se docs/development/ID3_REPORT.md
