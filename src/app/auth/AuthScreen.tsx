@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { PrivacyLink } from "@/app/account/use-account";
+import { CountryPicker } from "@/app/account/CountryPicker";
 import { t } from "@/core/i18n/keyed";
 
 type Mode = "signin" | "signup";
@@ -36,9 +37,17 @@ export function AuthScreen() {
   const [notice, setNotice] = useState<string | null>(null);
   // Ny konto: brukeren bekrefter at personvernerklæringen er lest (DEC-0086); den godkjennes også i appen
   const [readPrivacy, setReadPrivacy] = useState(false);
+  // B-097: land er påkrevd ved registrering
+  const [country, setCountry] = useState<string | null>(null);
+  const [countryMissing, setCountryMissing] = useState(false);
 
   async function submit(e: FormEvent) {
     e.preventDefault();
+    if (mode === "signup" && !country) {
+      setCountryMissing(true);
+      setError(t("b097.country.required"));
+      return;
+    }
     if (mode === "signup" && !readPrivacy) {
       setError(t("app-auth-auth-screen.submit.set-error.d5170069ebaf"));
       return;
@@ -50,7 +59,7 @@ export function AuthScreen() {
     const res =
       mode === "signin"
         ? await signInWithPassword(email, password)
-        : await signUp(email, password, redirect);
+        : await signUp(email, password, redirect, country ?? undefined);
     setBusy(false);
     if (res.error) setError(norwegianAuthError(res.error.message));
     else if (mode === "signup" && !res.session)
@@ -144,6 +153,24 @@ export function AuthScreen() {
             </button>
           ) : null}
           {mode === "signup" ? (
+            <div className="space-y-1.5">
+              <Label htmlFor="signup-country" className="text-xs text-text-secondary">
+                {t("b097.country.label")}
+              </Label>
+              <CountryPicker
+                id="signup-country"
+                value={country}
+                invalid={countryMissing && !country}
+                testId="signup-country"
+                onChange={(c) => {
+                  setCountry(c);
+                  setCountryMissing(false);
+                }}
+              />
+              <p className="text-[11px] text-text-tertiary">{t("b097.country.why")}</p>
+            </div>
+          ) : null}
+          {mode === "signup" ? (
             <label className="flex items-start gap-2 text-xs text-text-secondary">
               <input
                 type="checkbox"
@@ -175,13 +202,14 @@ export function AuthScreen() {
               {notice}
             </p>
           ) : null}
-          <Button type="submit" className="w-full" disabled={busy}>
+          <Button type="submit" className="w-full" disabled={busy} data-testid="auth-submit">
             {mode === "signin" ? t("app-auth-auth-screen.auth-screen.button.852d2eee9390") : t("app-auth-auth-screen.auth-screen.button.a327ce9931d2")}
           </Button>
           <div className="flex items-center justify-between pt-1 text-xs">
             <button
               type="button"
               className="text-accent-brand hover:underline"
+              data-testid="auth-mode-toggle"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             >
               {mode === "signin"

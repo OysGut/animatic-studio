@@ -54663,12 +54663,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16": {
-    "text": "[!! ëënn-GGBB !!]",
-    "source": "\"en-GB\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd": {
     "text": "[!! NNôôttëë fflláággss !!]",
     "source": "\"Note flags\"",
@@ -67563,12 +67557,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3": {
-    "text": "[!! ëënn-GGBB !!]",
-    "source": "\"en-GB\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-projects-production-dialog.submit.set-err.4347e9ee1ca3": {
     "text": "[!! CChhôôôôssëë áátt llëëáásstt ôônnëë ssccëënnëë. !!]",
     "source": "\"Choose at least one scene.\"",
@@ -74081,5 +74069,125 @@
   },
   "b100.beyond.text": {
     "text": "[!! TThhëë áánnïïmmááttïïôônn rrüünnss {n} ff ppáásstt tthhëë ëënndd ôôff tthhëë ssccëënnëë. NNôôtthhïïnngg hhááss bbëëëënn ëëxxttëënnddëëdd. !!]"
+  },
+  "time.just-now": {
+    "text": "[!! jjüüsstt nnôôww !!]"
+  },
+  "time.minutes-ago": {
+    "text": "[!! {n} mmïïnn áággôô !!]"
+  },
+  "time.hours-ago": {
+    "text": "[!! {n} hh áággôô !!]"
+  },
+  "time.weekday-at": {
+    "text": "[!! {weekday} áátt {time} !!]"
+  },
+  "time.exact": {
+    "text": "[!! {weekday} {date} áátt {time} !!]"
+  },
+  "b097.last-changed.column": {
+    "text": "[!! LLáásstt cchháánnggëëdd !!]"
+  },
+  "b097.last-changed.tip": {
+    "text": "[!! LLáásstt cchháánnggëëdd {time} !!]"
+  },
+  "b097.last-changed.tip-by": {
+    "text": "[!! LLáásstt cchháánnggëëdd {time} bbyy {name} !!]"
+  },
+  "b097.last-changed.tip-created": {
+    "text": "[!! CCrrëëááttëëdd {time} (nnôô ssáávvëëdd cchháánnggëëss ssïïnnccëë) !!]"
+  },
+  "b097.last-changed.aria": {
+    "text": "[!! LLáásstt cchháánnggëëdd {when}. {tip} !!]"
+  },
+  "b097.country.label": {
+    "text": "[!! CCôôüünnttrryy !!]"
+  },
+  "b097.country.choose": {
+    "text": "[!! CChhôôôôssëë ccôôüünnttrryy … !!]"
+  },
+  "b097.country.search": {
+    "text": "[!! SSëëáárrcchh ccôôüünnttrrïïëëss !!]"
+  },
+  "b097.country.none": {
+    "text": "[!! NNôô ccôôüünnttrryy ffôôüünndd !!]"
+  },
+  "b097.country.required": {
+    "text": "[!! CChhôôôôssëë yyôôüürr ccôôüünnttrryy. !!]"
+  },
+  "b097.country.why": {
+    "text": "[!! ÜÜssëëdd ttôô sshhôôww ttïïmmëëss áánndd ddááttëëss tthhëë wwááyy yyôôüü áárrëë üüssëëdd ttôô, áánndd ffôôrr áánnôônnyymmôôüüss ssttááttïïssttïïccss. !!]"
+  },
+  "b097.country.gate-title": {
+    "text": "[!! WWhhïïcchh ccôôüünnttrryy áárrëë yyôôüü ïïnn? !!]"
+  },
+  "b097.country.gate-text": {
+    "text": "[!! WWëë nnëëëëdd yyôôüürr ccôôüünnttrryy ttôô sshhôôww ttïïmmëëss áánndd ddááttëëss ccôôrrrrëëccttllyy. YYôôüü ccáánn cchháánnggëë ïïtt ôônn yyôôüürr ááccccôôüünntt ppáággëë llááttëërr. NNôôtthhïïnngg ëëllssëë ïïss cchháánnggëëdd. !!]"
+  },
+  "b097.country.gate-save": {
+    "text": "[!! SSáávvëë áánndd ccôônnttïïnnüüëë !!]"
+  },
+  "b097.region.title": {
+    "text": "[!! CCôôüünnttrryy, ccllôôcckk áánndd ddááttëë !!]"
+  },
+  "b097.region.clock": {
+    "text": "[!! CCllôôcckk !!]"
+  },
+  "b097.region.date-format": {
+    "text": "[!! DDááttëë ffôôrrmmáátt !!]"
+  },
+  "b097.region.as-country": {
+    "text": "[!! ÁÁss tthhëë ccôôüünnttrryy !!]"
+  },
+  "b097.region.clock-24": {
+    "text": "[!! 24-hhôôüürr !!]"
+  },
+  "b097.region.clock-12": {
+    "text": "[!! 12-hhôôüürr !!]"
+  },
+  "b097.region.preview": {
+    "text": "[!! TThhïïss ïïss hhôôww ttïïmmëëss áánndd ddááttëëss áárrëë sshhôôwwnn: !!]"
+  },
+  "b097.region.saved": {
+    "text": "[!! CCôôüünnttrryy ssáávvëëdd. !!]"
+  },
+  "b097.region.unavailable": {
+    "text": "[!! TThhëë ccôôüünnttrryy ccáánn bbëë cchhôôssëënn ôônnccëë tthhëë ddááttáábbáássëë hhááss bbëëëënn üüppddááttëëdd. !!]"
+  },
+  "b097.admin.title": {
+    "text": "[!! ÜÜssëërrss ppëërr ccôôüünnttrryy !!]"
+  },
+  "b097.admin.note": {
+    "text": "[!! CCôôüünnttss ôônnllyy – nnôô nnáámmëëss ôôrr ëëmmááïïll ááddddrrëëssssëëss. !!]"
+  },
+  "b097.admin.users": {
+    "text": "[!! ÜÜssëërrss !!]"
+  },
+  "b097.admin.total": {
+    "text": "[!! TTôôttááll !!]"
+  },
+  "b097.admin.no-country": {
+    "text": "[!! NNôôtt cchhôôssëënn yyëëtt !!]"
+  },
+  "b097.admin.loading": {
+    "text": "[!! LLôôááddïïnngg … !!]"
+  },
+  "b097.admin.unavailable": {
+    "text": "[!! TThhëë ôôvvëërrvvïïëëww wwïïllll bbëë áávvááïïlláábbllëë ôônnccëë tthhëë ddááttáábbáássëë hhááss bbëëëënn üüppddááttëëdd. !!]"
+  },
+  "b097.privacy.country": {
+    "text": "[!! CCôôüünnttrryy: tthhëë ccôôüünnttrryy yyôôüü cchhôôôôssëë wwhhëënn ssïïggnnïïnngg üüpp ôôrr ôônn yyôôüürr ááccccôôüünntt ppáággëë (áá ccôôüünnttrryy ccôôddëë, ffôôrr ëëxxáámmppllëë NNÔÔ). ÏÏtt ïïss üüssëëdd ttôô sshhôôww ttïïmmëëss áánndd ddááttëëss tthhëë wwááyy yyôôüü áárrëë üüssëëdd ttôô (ccllôôcckk áánndd ddááttëë ffôôrrmmáátt), áánndd ffôôrr áánnôônnyymmôôüüss ssttááttïïssttïïccss áábbôôüütt wwhhëërrëë üüssëërrss áárrëë. TThhëë ááddmmïïnnïïssttrrááttôôrr ôônnllyy ssëëëëss tthhëë nnüümmbbëërr ôôff üüssëërrss ppëërr ccôôüünnttrryy, nnëëvvëërr wwhhôô. ÔÔtthhëërr pprrôôjjëëcctt mmëëmmbbëërrss ccáánnnnôôtt ssëëëë yyôôüürr ccôôüünnttrryy. YYôôüü ccáánn cchháánnggëë ïïtt ôônn yyôôüürr ááccccôôüünntt ppáággëë áátt áánnyy ttïïmmëë. !!]"
+  },
+  "b097.sound-kind.ask": {
+    "text": "[!! WWhháátt kkïïnndd ôôff ssôôüünndd? !!]"
+  },
+  "b097.sound-kind.sfx": {
+    "text": "[!! ËËffffëëcctt !!]"
+  },
+  "b097.sound-kind.ambience": {
+    "text": "[!! ÁÁmmbbïïëënnccëë !!]"
+  },
+  "b097.sound-kind.music": {
+    "text": "[!! MMüüssïïcc !!]"
   }
 }

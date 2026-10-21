@@ -139,3 +139,13 @@
 ## B-099 QR-opptak med mobil i sceneeditoren
 - [x] QR i opptaksvinduet, status, ny versjon på replikk / ny lyd i scenen, PC-feil, rå lyd, «Ta opp lyd» på mobilsiden
 - [x] Tester: b099-enhetstester, scene-mobile-audio nb/en, regresjon, full vitest; rapport B099_REPORT.md
+
+## B-097 «Sist endret», land, klokke og datoformat
+- [x] «Legg i scenen» spør om lydtype (huskes per bruker)
+- [x] build-catalog.mjs kan ikke tømme catalog.gen.ts (+ test)
+- [x] formatRelativeTime i core/i18n + tester
+- [x] Migrasjon 0073 (scene_ids, profiles.country, RPC-er) – Claude kjører
+- [x] runCommand fyller scene_ids; «Sist endret» i scenevelgeren (minutt + sanntid)
+- [x] Land ved registrering, tvungen dialog, kontoside med klokke/datoformat og forhåndsvisning
+- [x] Admin: brukere per land; personvern nb/en; gjenbruk i lister
+- [x] DB-tester, account-locale.mjs nb/en, regresjon, full vitest, B097_REPORT.md

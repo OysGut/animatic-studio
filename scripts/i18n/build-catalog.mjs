@@ -9,6 +9,7 @@ import ts from "typescript";
 import { execFileSync } from "node:child_process";
 import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { mergeCatalog, parseCatalog } from "./catalog-merge.mjs";
 
 const ROOT = new URL("../../", import.meta.url).pathname;
 const DIRS = ["src/core", "src/adapters"];
@@ -42,12 +43,21 @@ for (const f of DIRS.flatMap((d) => files(join(ROOT, d)))) {
   };
   visit(sf);
 }
-const body = [...out]
+const CATALOG_FILE = join(ROOT, "src/core/i18n/catalog.gen.ts");
+// B-097: aldri en tom eller mindre fil – eksisterende par beholdes, og feil stopper skriptet med kode 1
+let merged;
+try {
+  merged = mergeCatalog(parseCatalog(readFileSync(CATALOG_FILE, "utf8")), out);
+} catch (e) {
+  console.error(String(e instanceof Error ? e.message : e));
+  process.exit(1);
+}
+const body = [...merged]
   .sort((a, b) => a[0].localeCompare(b[0]))
   .map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(v)},`)
   .join("\n");
 writeFileSync(
-  join(ROOT, "src/core/i18n/catalog.gen.ts"),
+  CATALOG_FILE,
   `// Generert av scripts/i18n/build-catalog.mjs – ikke rediger for hånd (DEC-0081).\n// Norske meldinger fra kjernen og serveren → engelsk, for visning i nettleseren (tm).\nexport const CATALOG: Record<string, string> = {\n${body}\n};\n`,
 );
 // Samme formatering som resten av koden (prettier), så lint ikke klager på den genererte filen
@@ -63,4 +73,4 @@ try {
 } catch {
   console.warn("prettier kunne ikke kjøres; filen er ikke formatert");
 }
-console.log(`${out.size} tekstpar`);
+console.log(`${merged.size} tekstpar (${out.size} funnet i L()-kall)`);

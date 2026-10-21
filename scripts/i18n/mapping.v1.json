@@ -221327,33 +221327,6 @@
     },
     {
       "file": "src/app/dialogue/NoteFlagControl.tsx",
-      "line": 32,
-      "column": 76,
-      "start": 1931,
-      "end": 1950,
-      "scope": "when",
-      "context": "new Date(iso).toLocaleString",
-      "kind": "L",
-      "semantic": "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string",
-      "nb": {
-        "kind": "literal",
-        "text": "nb-NO",
-        "raw": "\"nb-NO\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "en-GB",
-        "raw": "\"en-GB\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "160f3471de16",
-      "key": "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16",
-      "migrated": true
-    },
-    {
-      "file": "src/app/dialogue/NoteFlagControl.tsx",
       "line": 40,
       "column": 66,
       "start": 2708,
@@ -275877,33 +275850,6 @@
       "parameterConflict": false,
       "signature": "d97ed4a2b488",
       "key": "app-projects-note-flags-overview.body.span.d97ed4a2b488",
-      "migrated": true
-    },
-    {
-      "file": "src/app/projects/NoteFlagsOverview.tsx",
-      "line": 27,
-      "column": 499,
-      "start": 4354,
-      "end": 4373,
-      "scope": "body",
-      "context": "new Date(f.createdAt).toLocaleDateString",
-      "kind": "L",
-      "semantic": "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string",
-      "nb": {
-        "kind": "literal",
-        "text": "nb-NO",
-        "raw": "\"nb-NO\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "en-GB",
-        "raw": "\"en-GB\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "6fd9bf876cd3",
-      "key": "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3",
       "migrated": true
     },
     {

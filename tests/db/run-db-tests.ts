@@ -6612,7 +6612,7 @@ try {
     assert((await sql`select count(*)::int n from public.rig_setups where project_id = ${bp}`)[0]!["n"] === 0, "rigger slettet");
   });
   await test("0072: målesett – RLS, apply_changes, revisjon, invers, delete_project og purge", async () => {
-    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) === 72, "schema version 72");
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 72, "schema version 72");
     const bp = String((await as("authenticated", ALICE, async tx => (await tx`select public.create_project('Målesett') id`)[0]!["id"])));
     const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
     const scene = crypto.randomUUID(), variant = crypto.randomUUID(), comp = crypto.randomUUID(), layer = crypto.randomUUID(), id = crypto.randomUUID();
@@ -6657,6 +6657,63 @@ try {
     await sql`insert into public.measure_sets(id,project_id,layer_id,frame,name,markers) values(${id},${bp},${layer},0,'Purge','[]')`;
     await as("service_role", null, tx => tx`select public.purge_project_assets(${bp},${ALICE})`);
     assert((await sql`select id from public.projects where id=${bp}`).length === 0, "purge fjerner prosjekt og målesett");
+  });
+
+  await test("0073 (B-097): land på kontoen (egen rad, check, RLS), sist endret per scene og brukere per land", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 73, "schema version 73");
+    const OYSTEIN = "55555555-5555-7555-8555-555555555555";
+    await sql`insert into auth.users (id, email) values (${OYSTEIN}, 'Oystein@gutu.no') on conflict do nothing`;
+    const acct = async (u: string) =>
+      (await as("authenticated", u, (tx) => tx`select public.my_account() as a`))[0]!["a"] as Record<string, unknown>;
+    // Eget land: settes og leses via funksjonene
+    await as("authenticated", ALICE, (tx) => tx`select public.set_my_country('NO')`);
+    assert((await acct(ALICE))["country"] === "NO", "my_account gir eget land");
+    assert("country" in (await acct(CAROL)), "my_account har feltet også uten land");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_country('no')`), "22023");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_country('NOR')`), "22023");
+    await expectError(as("anon", null, (tx) => tx`select public.set_my_country('NO')`), "42501");
+    // Check i tabellen
+    await expectError(sql`update public.profiles set country = 'xx' where user_id = ${ALICE}`, "23514");
+    // Ingen kan lese eller endre land direkte (heller ikke sitt eget); visningsnavn kan fortsatt leses
+    await expectError(as("authenticated", ALICE, (tx) => tx`select country from public.profiles`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select country from public.profiles where user_id = ${ALICE}`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select * from public.profiles`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.profiles set country = 'SE' where user_id = ${ALICE}`), "42501");
+    assert((await as("authenticated", ALICE, (tx) => tx`select display_name from public.profiles where user_id = ${ALICE}`)).length === 1, "visningsnavn kan leses");
+    assert((await acct(BOB))["country"] !== "NO" || BOB === ALICE, "Bob ser ikke Alices land");
+    // Brukere per land: bare administrator, bare antall
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.admin_country_counts()`), "42501");
+    const counts = await as("authenticated", OYSTEIN, (tx) => tx`select * from public.admin_country_counts()`);
+    assert(Object.keys(counts[0] ?? {}).sort().join(",") === "country,users", "bare land og antall");
+    assert(Number(counts.find((r) => r["country"] === "NO")?.["users"]) >= 1, "Norge telles");
+
+    // Sist endret per scene
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Sist endret') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const s1 = crypto.randomUUID(), s2 = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id,created_by,created_at) values(${s1},${bp},${prod},${ALICE},now() - interval '3 days'),(${s2},${bp},${prod},${ALICE},now() - interval '2 days')`;
+    const cmd = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${cmd},${tx.json({ type: "UpdateScene" })},${tx.json({})},${tx.json({} as never)})`);
+    await as("service_role", null, (tx) => tx`update public.change_log set scene_ids = array[${s1}]::uuid[] where id = ${cmd}`);
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.change_log set scene_ids = '{}' where id = ${cmd}`), "42501");
+    // scene_ids fylles bare én gang; resten av historikken er uforanderlig (INV-13)
+    await expectError(as("service_role", null, (tx) => tx`update public.change_log set scene_ids = array[${s2}]::uuid[] where id = ${cmd}`), "P0001");
+    await expectError(as("service_role", null, (tx) => tx`update public.change_log set command_type = 'X' where id = ${cmd}`), "P0001");
+    await expectError(as("service_role", null, (tx) => tx`delete from public.change_log where id = ${cmd}`), "P0001");
+    const rows = await as("authenticated", ALICE, (tx) => tx`select * from public.scene_last_changes(${bp})`);
+    const r1 = rows.find((r) => r["scene_id"] === s1), r2 = rows.find((r) => r["scene_id"] === s2);
+    const logAt = (await sql`select created_at from public.change_log where id = ${cmd}`)[0]!["created_at"] as Date;
+    assert(r1?.["logged"] === true && (r1["changed_at"] as Date).getTime() === logAt.getTime() && r1["actor"] === ALICE, "siste endring for scene 1");
+    assert(r2?.["logged"] === false && (r2["changed_at"] as Date).getTime() < logAt.getTime(), "scene uten endring får opprettelsestiden");
+    assert((await as("authenticated", CAROL, (tx) => tx`select * from public.scene_last_changes(${bp})`)).length === 0, "ikke-medlem får ingenting");
+    await expectError(as("anon", null, (tx) => tx`select * from public.scene_last_changes(${bp})`), "42501");
+    const cmd2 = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${cmd2},${tx.json({ type: "UpdateScene" })},${tx.json({})},${tx.json({} as never)})`);
+    await expectError(sql`update public.change_log set scene_ids = ${sql.array(Array.from({ length: 1001 }, () => s1))}::uuid[] where id = ${cmd2}`, "23514");
+    const idx = await sql`select indexdef from pg_indexes where indexname = 'change_log_scene_ids_idx'`;
+    assert(String(idx[0]?.["indexdef"] ?? "").includes("gin"), "GIN-indeks");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.change_log where project_id = ${bp}`).length === 0, "delete_project sletter loggen");
   });
 
 } finally {

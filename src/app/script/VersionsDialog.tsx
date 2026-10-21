@@ -14,7 +14,7 @@ import {
   Save,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { CHANGE_LABEL, diffSnapshots, locale, newId, paginate, snapshotFromState, snapshotPaginationInput, tm, wordDiff, type ChangeType, type Command, type LineChange, type SceneChange, type ProjectState, type ScriptSnapshot } from "@/core";
+import { CHANGE_LABEL, diffSnapshots, newId, paginate, snapshotFromState, snapshotPaginationInput, tm, wordDiff, type ChangeType, type Command, type LineChange, type SceneChange, type ProjectState, type ScriptSnapshot } from "@/core";
 import { previewRestore } from "@/core/screenplay/restore-version";
 import { screenplayPdf } from "@/engine/export/screenplay-pdf";
 import { prepareDownload, type ReadyFile } from "@/app/download";
@@ -39,6 +39,7 @@ import {
 import { ScriptPageView } from "./ScriptPageView";
 import { KIND_LABEL } from "./script-helpers";
 import { t as tk } from "@/core/i18n/keyed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 interface Props {
   readonly open: boolean;
@@ -99,11 +100,9 @@ const ORDER: ChangeType[] = [
   "take",
 ];
 
-function dateText(iso: string) {
-  return new Date(iso).toLocaleString(locale(), { dateStyle: "medium", timeStyle: "short" });
-}
 
 export function VersionsDialog(props: Props) {
+  const dateText = useTimeFormat().exact;
   const { open, onOpenChange, projectId, productionId, state, editable, saving } = props;
   const list = useVersionList(productionId, open);
   const versions = list.data ?? [];
@@ -625,6 +624,7 @@ function Show({
   setReady: (r: ReadyFile | null) => void;
   onBack: () => void;
 }) {
+  const dateText = useTimeFormat().exact;
   const snap = useVersionSnapshot(version.id);
   const pages = useMemo(
     () => (snap.data ? paginate(snapshotPaginationInput(snap.data as ScriptSnapshot)).pages : []),

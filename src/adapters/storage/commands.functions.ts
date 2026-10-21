@@ -4,6 +4,7 @@
  * endringssettet lagres atomisk med revisjonskontroll via public.apply_changes (bare service_role).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { scenesOfChange } from "@/core/last-changed";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   L,
@@ -1023,6 +1024,19 @@ export const runCommand = createServerFn({ method: "POST" })
         code: "storage_error",
         message: tk("adapters-storage-commands-functions.message.message.30fa43b653a4"),
       };
+    }
+    // B-097: hvilke scener endringen gjelder («Sist endret»). Egen oppdatering etter apply_changes, så
+    // apply_changes ikke må endres; feiler den (f.eks. før migrasjon 0073), er bare visningen eldre.
+    {
+      const sceneIds = scenesOfChange(state, result.state, result.affected);
+      if (sceneIds.length) {
+        const { error: sceneError } = await admin
+          .from("change_log")
+          .update({ scene_ids: sceneIds } as never)
+          .eq("id", id)
+          .eq("project_id", data.projectId);
+        if (sceneError) console.warn("[change_log.scene_ids]", sceneError.code);
+      }
     }
     return {
       ok: true,

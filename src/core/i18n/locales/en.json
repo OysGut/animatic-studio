@@ -54663,12 +54663,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16": {
-    "text": "en-GB",
-    "source": "\"en-GB\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd": {
     "text": "Note flags",
     "source": "\"Note flags\"",
@@ -67563,12 +67557,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3": {
-    "text": "en-GB",
-    "source": "\"en-GB\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-projects-production-dialog.submit.set-err.4347e9ee1ca3": {
     "text": "Choose at least one scene.",
     "source": "\"Choose at least one scene.\"",
@@ -74081,5 +74069,125 @@
   },
   "b100.beyond.text": {
     "text": "The animation runs {n} f past the end of the scene. Nothing has been extended."
+  },
+  "time.just-now": {
+    "text": "just now"
+  },
+  "time.minutes-ago": {
+    "text": "{n} min ago"
+  },
+  "time.hours-ago": {
+    "text": "{n} h ago"
+  },
+  "time.weekday-at": {
+    "text": "{weekday} at {time}"
+  },
+  "time.exact": {
+    "text": "{weekday} {date} at {time}"
+  },
+  "b097.last-changed.column": {
+    "text": "Last changed"
+  },
+  "b097.last-changed.tip": {
+    "text": "Last changed {time}"
+  },
+  "b097.last-changed.tip-by": {
+    "text": "Last changed {time} by {name}"
+  },
+  "b097.last-changed.tip-created": {
+    "text": "Created {time} (no saved changes since)"
+  },
+  "b097.last-changed.aria": {
+    "text": "Last changed {when}. {tip}"
+  },
+  "b097.country.label": {
+    "text": "Country"
+  },
+  "b097.country.choose": {
+    "text": "Choose country …"
+  },
+  "b097.country.search": {
+    "text": "Search countries"
+  },
+  "b097.country.none": {
+    "text": "No country found"
+  },
+  "b097.country.required": {
+    "text": "Choose your country."
+  },
+  "b097.country.why": {
+    "text": "Used to show times and dates the way you are used to, and for anonymous statistics."
+  },
+  "b097.country.gate-title": {
+    "text": "Which country are you in?"
+  },
+  "b097.country.gate-text": {
+    "text": "We need your country to show times and dates correctly. You can change it on your account page later. Nothing else is changed."
+  },
+  "b097.country.gate-save": {
+    "text": "Save and continue"
+  },
+  "b097.region.title": {
+    "text": "Country, clock and date"
+  },
+  "b097.region.clock": {
+    "text": "Clock"
+  },
+  "b097.region.date-format": {
+    "text": "Date format"
+  },
+  "b097.region.as-country": {
+    "text": "As the country"
+  },
+  "b097.region.clock-24": {
+    "text": "24-hour"
+  },
+  "b097.region.clock-12": {
+    "text": "12-hour"
+  },
+  "b097.region.preview": {
+    "text": "This is how times and dates are shown:"
+  },
+  "b097.region.saved": {
+    "text": "Country saved."
+  },
+  "b097.region.unavailable": {
+    "text": "The country can be chosen once the database has been updated."
+  },
+  "b097.admin.title": {
+    "text": "Users per country"
+  },
+  "b097.admin.note": {
+    "text": "Counts only – no names or email addresses."
+  },
+  "b097.admin.users": {
+    "text": "Users"
+  },
+  "b097.admin.total": {
+    "text": "Total"
+  },
+  "b097.admin.no-country": {
+    "text": "Not chosen yet"
+  },
+  "b097.admin.loading": {
+    "text": "Loading …"
+  },
+  "b097.admin.unavailable": {
+    "text": "The overview will be available once the database has been updated."
+  },
+  "b097.privacy.country": {
+    "text": "Country: the country you choose when signing up or on your account page (a country code, for example NO). It is used to show times and dates the way you are used to (clock and date format), and for anonymous statistics about where users are. The administrator only sees the number of users per country, never who. Other project members cannot see your country. You can change it on your account page at any time."
+  },
+  "b097.sound-kind.ask": {
+    "text": "What kind of sound?"
+  },
+  "b097.sound-kind.sfx": {
+    "text": "Effect"
+  },
+  "b097.sound-kind.ambience": {
+    "text": "Ambience"
+  },
+  "b097.sound-kind.music": {
+    "text": "Music"
   }
 }
