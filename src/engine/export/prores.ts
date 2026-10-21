@@ -1,16 +1,23 @@
 /**
- * P7 (DEC-0085): Apple ProRes encoder in plain TypeScript – ProRes 422 HQ ("apch") and ProRes 4444 with
- * 16-bit alpha ("ap4h"). Own implementation of the public bitstream (SMPTE RDD 36), so the app carries no
- * GPL/LGPL code and no WebAssembly download. Fixed quantiser per profile (intra-only, progressive).
+ * P7 (DEC-0085) + R4: Apple ProRes encoder in plain TypeScript – ProRes 422 Proxy ("apco"), 422 LT ("apcs"),
+ * 422 ("apcn"), 422 HQ ("apch") and 4444 with 16-bit alpha ("ap4h"). Own implementation of the public bitstream
+ * (SMPTE RDD 36), so the app carries no GPL/LGPL code and no WebAssembly download. Intra-only, progressive.
+ * R4: rate control per slice towards Apple's target bitrate (a byte budget per frame from the caller); the
+ * quantiser is chosen per slice (1–128) so the frame stays within budget. Without a budget a fixed quantiser.
  * Pure: no DOM; the caller supplies RGBA pixels (straight alpha, as a 2D canvas returns them).
  * Colour: Rec.709 matrix, limited range 10-bit, tagged primaries/transfer/matrix = 1 (BT.709).
  */
 
-export type ProResProfile = "hq" | "4444";
-export const PRORES_FOURCC: Record<ProResProfile, string> = { hq: "apch", "4444": "ap4h" };
+import { PRORES_FOURCC, type ProResKind } from "@/core/prores-export";
 
-/** Quantiser per profile (1 = finest). Chosen so 1080p HQ lands near Apple's ~180 Mbit/s at 24 fps. */
-const QSCALE: Record<ProResProfile, number> = { hq: 4, "4444": 3 };
+export type ProResProfile = ProResKind;
+export { PRORES_FOURCC };
+
+/** Fixed quantiser when no budget is given (1 = finest). */
+const QSCALE: Record<ProResProfile, number> = { proxy: 8, lt: 6, "422": 5, hq: 4, "4444": 3 };
+/** Slice quantiser byte 1–224; above 128 the decoder scales it as (q - 96) × 4 (RDD 36). */
+const Q_MAX = 224;
+const qScale = (q: number) => (q > 128 ? (q - 96) << 2 : q);
 const MBS_PER_SLICE = 8;
 
 const SCAN = [
@@ -71,8 +78,8 @@ for (let u = 0; u < 8; u++)
     COS[u * 8 + x] = (u === 0 ? Math.SQRT1_2 : 1) * 0.5 * Math.cos(((2 * x + 1) * u * Math.PI) / 16);
 const tmp = new Float64Array(64);
 
-/** Forward DCT of a block (values already centred), result scaled ×4 like ProRes expects, then quantised. */
-function dctQuant(src: Float64Array, out: Int32Array, at: number, step: number) {
+/** Forward DCT of a block (values already centred), result scaled ×4 like ProRes expects (not quantised). */
+function dct(src: Float64Array, out: Float64Array, at: number) {
   for (let y = 0; y < 8; y++)
     for (let u = 0; u < 8; u++) {
       let s = 0;
@@ -83,7 +90,7 @@ function dctQuant(src: Float64Array, out: Int32Array, at: number, step: number) 
     for (let u = 0; u < 8; u++) {
       let s = 0;
       for (let y = 0; y < 8; y++) s += tmp[y * 8 + u]! * COS[v * 8 + y]!;
-      out[at + v * 8 + u] = Math.round((s * 4) / step);
+      out[at + v * 8 + u] = s * 4;
     }
 }
 
@@ -143,12 +150,20 @@ function encodeAlpha(w: BitWriter, a: Uint16Array) {
   if (run) putAlphaRun(w, run);
 }
 
+function quant(src: Float64Array, step: number): Int32Array {
+  const out = new Int32Array(src.length);
+  for (let i = 0; i < src.length; i++) out[i] = Math.round(src[i]! / step);
+  return out;
+}
+
 export interface ProResFrameInput {
   readonly width: number;
   readonly height: number;
   /** RGBA, straight alpha, width*height*4 bytes. */
   readonly rgba: Uint8Array | Uint8ClampedArray;
   readonly profile: ProResProfile;
+  /** R4: byte budget for the whole frame (Apple's target bitrate / fps). Without it a fixed quantiser. */
+  readonly targetBytes?: number;
 }
 
 /** Rec.709 limited-range 10-bit planes, edge-replicated to whole macroblocks. */
@@ -187,48 +202,78 @@ export function encodeProResFrame(i: ProResFrameInput): Uint8Array {
   const mbW = (width + 15) >> 4, mbH = (height + 15) >> 4;
   const cw = mbW * 16, ch = mbH * 16, chromaW = is444 ? cw : cw / 2;
   const { Y, U, V, A } = planes(i, cw, ch, chromaW);
-  const q = QSCALE[profile], step = 4 * q;
+  const fixedQ = QSCALE[profile];
   const slices: Uint8Array[] = [];
   const block = new Float64Array(64);
   const loadBlock = (P: Float64Array, pw: number, x0: number, y0: number) => {
     for (let y = 0; y < 8; y++) for (let x = 0; x < 8; x++) block[y * 8 + x] = P[(y0 + y) * pw + x0 + x]!;
   };
+  const per = is444 ? 4 : 2, cmw = is444 ? 16 : 8;
+  const hdr = is444 && A ? 8 : 6;
+  const totalMbs = mbW * mbH;
+  // R4: the budget left for slice data (frame and picture headers and the slice index come off first).
+  const sliceCount = mbH * (mbW >> 3) + mbH * [4, 2, 1].filter((c) => mbW & c).length;
+  let budget = i.targetBytes != null ? i.targetBytes - 8 - 20 - 8 - sliceCount * 2 : Infinity;
+  let mbsLeft = totalMbs, prevQ = fixedQ;
   for (let my = 0; my < mbH; my++) {
     let mx = 0, remaining = mbW, count = MBS_PER_SLICE;
     while (remaining > 0) {
       while (remaining < count) count >>= 1;
-      const parts: Uint8Array[] = [];
-      // Luma: TL, TR, BL, BR per macroblock.
-      const ly = new Int32Array(count * 4 * 64);
+      // DCT once; quantisation is repeated while searching for the quantiser.
+      const ly = new Float64Array(count * 4 * 64);
       for (let m = 0; m < count; m++)
         for (let k = 0; k < 4; k++) {
           loadBlock(Y, cw, (mx + m) * 16 + (k & 1) * 8, my * 16 + (k >> 1) * 8);
-          dctQuant(block, ly, (m * 4 + k) * 64, step);
+          dct(block, ly, (m * 4 + k) * 64);
         }
-      let w = new BitWriter(); encodeCoeffs(w, ly, count * 4); parts.push(w.flush().slice());
-      // Chroma: per macroblock column-major 8x8 blocks (2 for 4:2:2, 4 for 4:4:4).
-      const per = is444 ? 4 : 2, cmw = is444 ? 16 : 8;
+      const chroma: Float64Array[] = [];
       for (const P of [U, V]) {
-        const c = new Int32Array(count * per * 64);
+        const c = new Float64Array(count * per * 64);
         for (let m = 0; m < count; m++)
           for (let k = 0; k < per; k++) {
             loadBlock(P, chromaW, (mx + m) * cmw + (k >> 1) * 8, my * 16 + (k & 1) * 8);
-            dctQuant(block, c, (m * per + k) * 64, step);
+            dct(block, c, (m * per + k) * 64);
           }
-        w = new BitWriter(); encodeCoeffs(w, c, count * per); parts.push(w.flush().slice());
+        chroma.push(c);
       }
+      let alpha: Uint8Array | null = null;
       if (A) {
         const sw = count * 16, a = new Uint16Array(sw * 16);
         for (let y = 0; y < 16; y++) a.set(A.subarray((my * 16 + y) * cw + mx * 16, (my * 16 + y) * cw + mx * 16 + sw), y * sw);
-        w = new BitWriter(); encodeAlpha(w, a); parts.push(w.flush().slice());
+        const w = new BitWriter(); encodeAlpha(w, a); alpha = w.flush().slice();
       }
-      const hdr = is444 && A ? 8 : 6;
+      const encodeAt = (q: number): Uint8Array[] => {
+        const step = 4 * qScale(q), parts: Uint8Array[] = [];
+        let w = new BitWriter(); encodeCoeffs(w, quant(ly, step), count * 4); parts.push(w.flush().slice());
+        for (const c of chroma) { w = new BitWriter(); encodeCoeffs(w, quant(c, step), count * per); parts.push(w.flush().slice()); }
+        return parts;
+      };
+      // Alpha is lossless and outside the target (Apple's 4444 figures exclude alpha).
+      const sizeOf = (parts: Uint8Array[]) => hdr + parts.reduce((n, p) => n + p.length, 0);
+      let q = fixedQ, parts: Uint8Array[];
+      if (Number.isFinite(budget)) {
+        // Share of what is left of the frame budget, so savings in easy slices carry to busy ones.
+        const target = Math.max(hdr + 16, (budget * count) / mbsLeft);
+        q = prevQ; parts = encodeAt(q);
+        if (sizeOf(parts) > target) {
+          while (q < Q_MAX && sizeOf(parts) > target) { q = Math.min(Q_MAX, q + Math.max(1, q >> 2)); parts = encodeAt(q); }
+        } else {
+          for (let tries = 0; q > 1 && tries < 4; tries++) {
+            const nq = Math.max(1, q - Math.max(1, q >> 2)), np = encodeAt(nq);
+            if (sizeOf(np) > target) break;
+            q = nq; parts = np;
+          }
+        }
+        prevQ = q;
+      } else parts = encodeAt(q);
+      if (alpha) parts.push(alpha);
       const out = new Uint8Array(hdr + parts.reduce((n, p) => n + p.length, 0));
       out[0] = hdr << 3; out[1] = q;
       for (let k = 0; k < (hdr - 2) / 2; k++) { out[2 + k * 2] = parts[k]!.length >> 8; out[3 + k * 2] = parts[k]!.length & 0xff; }
       let at = hdr; for (const p of parts) { out.set(p, at); at += p.length; }
       if (out.length > 0xffff) throw new Error("ProRes slice too large");
       slices.push(out);
+      budget -= out.length - (alpha?.length ?? 0); mbsLeft -= count;
       mx += count; remaining -= count;
     }
   }

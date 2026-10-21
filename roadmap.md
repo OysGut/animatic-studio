@@ -79,3 +79,9 @@
 - [x] R1: «Endelig» foreslår ProRes i nye prosjekter; tilbud med angring i eksisterende
 - [x] R2: opprydding av foreldreløse AI-filer (valg C) med forhåndsvisning, bekreftelse og logg
 - [x] Strengere språkversjonssjekk i apply_changes
+
+## R3 + R4 (21.10.2026)
+- [ ] R3: global publisering til eksisterende global ressurs – venter på svar om hva «angrbart» betyr (A eller B)
+- [x] R4: ProRes med Apples målbitrate, 422/LT/Proxy, estimert filstørrelse, ffprobe-tester
+- [x] R1-rest: «Ikke nå» huskes per bruker og prosjekt; kan hentes fram igjen
+- [x] AGENTS.md regel 36 om referansesjekken for oppryddingen

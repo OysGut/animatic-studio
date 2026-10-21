@@ -5,7 +5,8 @@
  * Pure: no DOM APIs.
  */
 import type { Rational } from "@/core";
-import { PRORES_FOURCC, type ProResProfile } from "./prores";
+import { PRORES_FOURCC, PRORES_NAME } from "@/core/prores-export";
+import type { ProResProfile } from "./prores";
 
 export interface ByteSink { write(chunk: Uint8Array): Promise<void> }
 
@@ -38,7 +39,7 @@ class W {
   get b() { return new Uint8Array(this.a); }
 }
 
-const COMPRESSOR: Record<ProResProfile, string> = { hq: "Apple ProRes 422 HQ", "4444": "Apple ProRes 4444" };
+const COMPRESSOR: Record<ProResProfile, string> = PRORES_NAME;
 
 export class MovWriter {
   private pos = 0;

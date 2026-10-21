@@ -6,7 +6,7 @@ import { alphaExportError, alphaFileBase, alphaRange, DEFAULT_ALPHA_SETTINGS, is
 import { exportAlphaLayers, openAlphaSink, supportsVp9Alpha } from "@/engine/export/alpha";
 import { loadImages } from "@/engine/export/animatic";
 import { supportsProRes } from "@/engine/export/prores-support";
-import { PRORES_UNSUPPORTED } from "@/core/prores-export";
+import { PRORES_UNSUPPORTED, formatBytes, proresBytesEstimate } from "@/core/prores-export";
 import { signedUrls } from "@/app/library/asset-images";
 import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
@@ -153,6 +153,7 @@ export function AlphaExportDialog({ state, composition, initialLayerIds, open, o
         </label>
         {!proresOk ? <p role="status" data-testid="alpha-prores-unavailable">{PRORES_UNSUPPORTED()}</p> : null}
         {options.format === "mov-prores4444" ? <p data-testid="alpha-prores-note">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.27029199f02f")}</p> : null}
+        {options.format === "mov-prores4444" ? <p data-testid="alpha-prores-estimate">{t("r4-prores.estimate", { size: formatBytes(proresBytesEstimate(composition.width, composition.height, Math.max(0, range.end - range.start), "4444", state.project.fps, false, true)) })}</p> : null}
         {support !== true ? <p role="status" data-testid="alpha-webm-unavailable">{support === null ? t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.8203935ad45f") : t("app-assembly-alpha-export-dialog.alpha-export-dialog.p.8f788203b75b")}</p> : null}
         <label className="flex items-center justify-between gap-3">{t("app-assembly-alpha-export-dialog.alpha-export-dialog.label.55599ce69587")}
           <select className={control} data-testid="alpha-mode" value={options.alpha} onChange={e => patch({ alpha: e.target.value as AlphaExportSettings["alpha"] })}>

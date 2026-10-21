@@ -4209,6 +4209,47 @@ export type Database = {
           },
         ]
       }
+      storage_cleanups: {
+        Row: {
+          actor: string
+          created_at: string
+          file_count: number
+          id: string
+          paths: Json
+          project_id: string
+          skipped_count: number
+          total_bytes: number
+        }
+        Insert: {
+          actor: string
+          created_at?: string
+          file_count: number
+          id?: string
+          paths?: Json
+          project_id: string
+          skipped_count?: number
+          total_bytes: number
+        }
+        Update: {
+          actor?: string
+          created_at?: string
+          file_count?: number
+          id?: string
+          paths?: Json
+          project_id?: string
+          skipped_count?: number
+          total_bytes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storage_cleanups_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       story_canvas_edges: {
         Row: {
           created_at: string

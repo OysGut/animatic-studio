@@ -145,6 +145,7 @@ async function proresEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement, t
   const mov = new MovWriter(p.guardedSink(o.sink, !st.opfs), { width: canvas.width, height: canvas.height,
     fps: o.state.project.fps, profile: "4444", audioRate: null });
   await mov.start();
+  const budget = (await import("@/core/prores-export")).proresFrameBudget(canvas.width, canvas.height, o.state.project.fps, "4444");
   const pool = new p.ProResPool();
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error(t("engine-export-alpha.prores-encoder.message.4f544d8dc2c6"));
@@ -154,7 +155,7 @@ async function proresEncoder(o: AlphaExportOptions, canvas: HTMLCanvasElement, t
     encode: async () => {
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
       const px = o.settings.alpha === "premultiplied" ? new Uint8ClampedArray(alphaPixels(data, "premultiplied")) : data;
-      inFlight.push(pool.encode(px, canvas.width, canvas.height, "4444"));
+      inFlight.push(pool.encode(px, canvas.width, canvas.height, "4444", budget));
       await drain(pool.size * 2 - 1);
     },
     finish: async () => { try { await drain(0); await mov.finish(); checkAbort(o.signal); await o.sink.close(); } finally { pool.close(); } },

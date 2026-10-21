@@ -5068,9 +5068,6 @@
     "app-assembly-export-animatic-dialog.export-animatic-dialog.option.ba073253e1c7": {
       "text": "Prosjektformat"
     },
-    "app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391": {
-      "text": "MOV (ProRes 422 HQ – for videoredigering)"
-    },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.2fb3e37c871d": {
       "text": "Ferdig:"
     },
@@ -5079,9 +5076,6 @@
     },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.abc8b0f00b0f": {
       "text": "Scener som er satt til svart-hvitt, blir det uansett. Med lyden fra lydsporene (dempede spor er ikke med). Filformat og undertekster velges under."
-    },
-    "app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7": {
-      "text": "ProRes 422 HQ, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring."
     },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.cc610166b8e0": {
       "text": "av"
@@ -30637,6 +30631,9 @@
     "r1-prores-offer.question": {
       "text": "Bruk ProRes som standard i {name}-profilen? Eksporten foreslår da ProRes/MOV i stedet for MP4. Du kan angre."
     },
+    "r1-prores-offer.restore": {
+      "text": "Vis ProRes-tilbudet for {name} igjen"
+    },
     "r1-prores-offer.undo-label": {
       "text": "ProRes som standard i {name}"
     },
@@ -30695,6 +30692,18 @@
     },
     "r2-orphan-cleanup.title": {
       "text": "Slette ubrukte AI-filer?"
+    },
+    "r4-prores.estimate": {
+      "text": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer."
+    },
+    "r4-prores.film-note": {
+      "text": "{profile} med Apples målbitrate, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring."
+    },
+    "r4-prores.film-option": {
+      "text": "MOV (ProRes – for videoredigering)"
+    },
+    "r4-prores.profile-label": {
+      "text": "ProRes-profil"
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administrasjon"
@@ -36060,9 +36069,6 @@
     "app-assembly-export-animatic-dialog.export-animatic-dialog.option.ba073253e1c7": {
       "text": "Project format"
     },
-    "app-assembly-export-animatic-dialog.export-animatic-dialog.option.e9f321399391": {
-      "text": "MOV (ProRes 422 HQ – for editing)"
-    },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.2fb3e37c871d": {
       "text": "Done:"
     },
@@ -36071,9 +36077,6 @@
     },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.abc8b0f00b0f": {
       "text": "Scenes set to black and white stay that way. With the sound from the audio tracks (muted tracks are not included). File format and subtitles are chosen below."
-    },
-    "app-assembly-export-animatic-dialog.export-animatic-dialog.p.bc1109fa88f7": {
-      "text": "ProRes 422 HQ, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage."
     },
     "app-assembly-export-animatic-dialog.export-animatic-dialog.p.cc610166b8e0": {
       "text": "of"
@@ -61629,6 +61632,9 @@
     "r1-prores-offer.question": {
       "text": "Use ProRes as the default in the {name} profile? Exports will then suggest ProRes/MOV instead of MP4. You can undo."
     },
+    "r1-prores-offer.restore": {
+      "text": "Show the ProRes offer for {name} again"
+    },
     "r1-prores-offer.undo-label": {
       "text": "ProRes as default in {name}"
     },
@@ -61687,6 +61693,18 @@
     },
     "r2-orphan-cleanup.title": {
       "text": "Delete unused AI files?"
+    },
+    "r4-prores.estimate": {
+      "text": "Estimated file size: up to {size}. Simple pictures give smaller files."
+    },
+    "r4-prores.film-note": {
+      "text": "{profile} at Apple's target bitrate, Rec.709, audio as PCM 48 kHz. Large files are written straight to browser storage."
+    },
+    "r4-prores.film-option": {
+      "text": "MOV (ProRes – for editing)"
+    },
+    "r4-prores.profile-label": {
+      "text": "ProRes profile"
     },
     "routes-admin.admin-route.trail.a96adb8ff9c5": {
       "text": "Administration"

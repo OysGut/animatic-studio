@@ -73351,5 +73351,20 @@
   },
   "r2-orphan-cleanup.error.generic": {
     "text": "Oppryddingen feilet."
+  },
+  "r1-prores-offer.restore": {
+    "text": "Vis ProRes-tilbudet for {name} igjen"
+  },
+  "r4-prores.film-option": {
+    "text": "MOV (ProRes – for videoredigering)"
+  },
+  "r4-prores.film-note": {
+    "text": "{profile} med Apples målbitrate, Rec.709, lyd som PCM 48 kHz. Store filer lagres direkte i nettleserens lagring."
+  },
+  "r4-prores.profile-label": {
+    "text": "ProRes-profil"
+  },
+  "r4-prores.estimate": {
+    "text": "Estimert filstørrelse: opptil {size}. Enkle bilder gir mindre filer."
   }
 }
