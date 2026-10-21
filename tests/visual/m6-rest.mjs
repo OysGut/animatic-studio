@@ -19,7 +19,7 @@ block.text = NEW_ACTION;
 h.rows.script_block_revisions.push({ ...h.rows.script_block_revisions.find((r) => r.block_id === ACTION), rev: 2, text: NEW_ACTION });
 
 for (const lang of ["nb", "en"]) {
-  const nb = lang === "nb";
+  const nb = uiLang(lang) === "nb";
   await h.scenario(`m6-update-${lang}`, OCC, lang, async (page) => {
     await page.getByRole("button", { name: nb ? "Vis og velg …" : "View and choose …" }).first().click();
     const sec = page.getByTestId("material-update").first();
