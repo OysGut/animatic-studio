@@ -296,6 +296,7 @@ function Library({
         </ToolbarButton>
         {editable ? (
           <ToolbarButton
+            data-testid="library-suggestions-open"
             active={suggestions.length > 0}
             onClick={() => setSuggestOpen(true)}
             disabled={suggestions.length === 0}

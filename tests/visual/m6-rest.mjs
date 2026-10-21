@@ -5,6 +5,7 @@
  *   ENV_FILE=… node tests/visual/m6-rest.mjs <baseUrl> /tmp/claude-0/visual-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { uiLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/browser/m6");
 const MAJA = "00000000-0000-7000-8000-0000000000a2";
@@ -19,7 +20,7 @@ block.text = NEW_ACTION;
 h.rows.script_block_revisions.push({ ...h.rows.script_block_revisions.find((r) => r.block_id === ACTION), rev: 2, text: NEW_ACTION });
 
 for (const lang of ["nb", "en"]) {
-  const nb = lang === "nb";
+  const nb = uiLang(lang) === "nb";
   await h.scenario(`m6-update-${lang}`, OCC, lang, async (page) => {
     await page.getByRole("button", { name: nb ? "Vis og velg …" : "View and choose …" }).first().click();
     const sec = page.getByTestId("material-update").first();

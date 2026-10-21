@@ -1,5 +1,6 @@
 /** CA7: arvet karakteratferd, «brukes i N andre scener», bare her / oppdater alle, historikk og globalt bibliotek. Ingen betalte kall. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/claude-0/ca7-global");
 const ID = n => `01900000-0000-7000-8000-0057${String(n).padStart(8, "0")}`;
@@ -42,7 +43,7 @@ async function openCharacter(page) {
 }
 await h.scenario("ca7-inherit-adopt", occ.id, "nb", async page => {
   await openCharacter(page);
-  h.check((await page.getByTestId("ca7-other-count").textContent())?.includes("1 annen scene"), "«brukes i 1 annen scene» vises");
+  h.check((await page.getByTestId("ca7-other-count").textContent())?.includes(byLang("nb", "1 annen scene", "1 other scene")), "«brukes i 1 annen scene» vises");
   h.check(await page.getByTestId(`ca7-jump-${other.id}`).isVisible(), "listen har hopp til den andre scenen");
   h.check(await page.getByTestId("ca7-behavior-blinkEnabled").getAttribute("data-source") === "character", "blink arves fra karakteren");
   await page.getByTestId("ca7-breath").check();

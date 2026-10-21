@@ -1,5 +1,6 @@
 /** B2: exact word notes, reversible resolved state and owner-confirmed source cleanup; no real services. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 const h = harness("/tmp/claude-0/backlog-b2");
 const occ = h.rows.scene_occurrences.find(o => h.rows.script_blocks.some(b => b.variant_id === o.variant_id && b.kind === "dialogue" && b.text.length > 5));
 if (!occ) throw new Error("Missing scene");
@@ -15,10 +16,10 @@ for (const lang of ["nb", "en"]) await h.scenario(`b2-${lang}`, occ.id, lang, as
   });
   await page.getByTestId("scene-script").dispatchEvent("mouseup");
   const box = page.getByTestId("scene-word-note");
-  await box.getByRole("button", { name: lang === "nb" ? "Legg til notat på markeringen" : "Add note to selection" }).click();
+  await box.getByRole("button", { name: byLang(lang, "Legg til notat på markeringen", "Add note to selection") }).click();
   await box.getByRole("textbox").fill("B2 test");
   h.check(!h.state.commands.some(c => c.type === "AddAnnotations"), "selection alone never writes");
-  await box.getByRole("button", { name: lang === "nb" ? "Lagre notat" : "Save note" }).click();
+  await box.getByRole("button", { name: byLang(lang, "Lagre notat", "Save note") }).click();
   h.check(await h.eventually(() => h.state.commands.some(c => c.type === "AddAnnotations" && c.annotations?.some(a => a.blockId === line.id && a.start === 1 && a.end === 4 && a.quote === line.text.slice(1, 4)))), "word offsets and quote persist through UI command");
   await page.screenshot({ path: `${h.out}/word-note-${lang}.png` });
   h.check(!/Lovable/i.test(await page.locator("body").innerText()), "scene has no platform brand");
@@ -38,10 +39,10 @@ for (const lang of ["nb", "en"]) await h.scenario(`b2-${lang}`, occ.id, lang, as
   await cleanup.getByRole("button").click();
   await page.getByRole("alertdialog").waitFor();
   h.check(calls.length === 0, "preview does not delete");
-  await page.getByRole("button", { name: lang === "nb" ? "Avbryt" : "Cancel", exact: true }).click();
+  await page.getByRole("button", { name: byLang(lang, "Avbryt", "Cancel"), exact: true }).click();
   h.check(calls.length === 0, "cancel does not delete");
   await cleanup.getByRole("button").click();
-  await page.getByRole("button", { name: lang === "nb" ? "Slett for godt" : "Delete permanently" }).click();
+  await page.getByRole("button", { name: byLang(lang, "Slett for godt", "Delete permanently") }).click();
   h.check(await h.eventually(() => calls.length === 1), "confirmation deletes once");
   await page.screenshot({ path: `${h.out}/source-cleanup-${lang}.png` });
 });

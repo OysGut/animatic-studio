@@ -390,9 +390,19 @@ await run("engelsk", async (page) => {
 await run("500 noder", async (page) => {
   await page.getByTestId("storylab-canvas").waitFor();
   await nodeLoc(page).first().waitFor();
+  // R7: målingen startet før første navigering i en fersk nettleserkontekst og målte mest Vite-
+  // utviklingsserverens kalde modullasting (hundrevis av enkeltfiler, 20 s under last), ikke canvaset.
+  // Kravet gjelder canvaset etter at siden er lastet: last siden på nytt, start klokken når canvasflaten
+  // finnes, og stopp når første node er tegnet. Oppstartstiden logges bare som informasjon.
+  const boot = Date.now();
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await page.getByTestId("storylab-canvas").waitFor({ timeout: 60000 });
+  S.t0 = Date.now();
+  console.log(`  info: siden lastet på nytt på ${S.t0 - boot} ms (utviklingsserver)`);
+  await nodeLoc(page).first().waitFor({ timeout: 30000 });
   const ms = Date.now() - S.t0;
   check((await page.getByText("500 noder").count()) === 1, "alle 500 noder er lastet");
-  check(ms < 3000 + 1500, `canvaset med 500 noder er klart på ${ms} ms (under 3 s etter lasting)`);
+  check(ms < 3000, `canvaset med 500 noder er klart på ${ms} ms (under 3 s etter lasting)`);
 }, { nodes: Array.from({ length: 500 }, (_, i) => rowNode(100 + i)) });
 
 await browser.close();

@@ -66,7 +66,7 @@ await scenario("L-lydspor", M.creditsOcc, "nb", async (page) => {
 await scenario("M-eksport-med-og-uten", M.creditsOcc, "nb", async (page) => {
   await page.goto(`${h.base}${h.P}/montering`, { waitUntil: "networkidle" });
   await page.waitForTimeout(1500);
-  await page.getByText("Eksporter", { exact: false }).first().click();
+  await page.getByTestId("assembly-export-open").click();
   const box = page.getByTestId("export-include-credits");
   await box.waitFor({ timeout: 5000 });
   check(await box.isChecked(), "M: «Inkluder rulletekst» er på som standard");

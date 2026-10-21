@@ -5,6 +5,7 @@
  *   ENV_FILE=… node tests/visual/p8-style-harmonize.mjs <baseUrl> /tmp/claude-0/visual-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/browser/p8");
 const MAJA = "00000000-0000-7000-8000-0000000000a2";
@@ -20,10 +21,10 @@ async function harmonizeFlow(page, lang, where) {
   h.check(await page.getByTestId("harmonize-warning").isVisible(), `${where}: identitetsadvarsel vises`);
   h.check((await page.getByTestId("harmonize-profile").inputValue()) === PROFILE, `${where}: standard stilprofil valgt`);
   h.check(await page.getByTestId("harmonize-source-reference").isVisible(), `${where}: referansebilde kan velges`);
-  await panel.getByRole("button", { name: lang === "nb" ? "Harmoniser …" : "Harmonize …" }).click();
+  await panel.getByRole("button", { name: byLang(lang, "Harmoniser …", "Harmonize …") }).click();
   h.check(!h.state.rpcs.some((r) => r.name === "generateImage"), `${where}: ingen generering før bekreftelse`);
   h.check(await panel.getByRole("alertdialog").isVisible(), `${where}: eksplisitt kostnadsbekreftelse`);
-  await panel.getByRole("button", { name: lang === "nb" ? "Ja, generer" : "Yes, generate" }).click();
+  await panel.getByRole("button", { name: byLang(lang, "Ja, generer", "Yes, generate") }).click();
   h.check(await h.eventually(() => h.state.rpcs.some((r) => r.name === "generateImage"), 5000), `${where}: genereringen startet etter «Ja»`);
   const call = h.state.rpcs.find((r) => r.name === "generateImage")?.body;
   h.check(call?.approved === true && call?.identityFirst === true, `${where}: bekreftet og identiteten først`);
@@ -77,7 +78,7 @@ for (const lang of ["nb", "en"]) {
     const est = await bp.getByTestId("harmonize-batch-estimate").innerText();
     h.check(/\$/.test(est) && /\d+ (genereringer|generations)/.test(est), "batch: samlet kostnadsanslag med antall");
     await bp.screenshot({ path: `${h.out}/batch-confirm-${lang}.png` });
-    await bp.getByRole("button", { name: lang === "nb" ? "Ja, generer" : "Yes, generate" }).click();
+    await bp.getByRole("button", { name: byLang(lang, "Ja, generer", "Yes, generate") }).click();
     h.check(await h.eventually(() => h.state.rpcs.some((r) => r.name === "createHarmonizeBatch"), 5000), "batch: én godkjenning lager én jobb");
     const req = h.state.rpcs.find((r) => r.name === "createHarmonizeBatch")?.body;
     h.check(req?.approved === true && req?.styleProfileId === PROFILE && new Set(req.items.map((i) => i.assetId)).size === req.items.length, "batch: bekreftet, stilprofil og ett element per karakter");

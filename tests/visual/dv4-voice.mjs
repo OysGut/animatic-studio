@@ -1,9 +1,13 @@
 /** DV4: account-backed choices and local generation through explicit cost approval. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 const h = harness("/tmp/browser/dv4");
 const clip = h.rows.audio_clips.find(c => c.kind === "dialogue" && c.block_id && !c.removed);
 const character = h.rows.assets.find(a => a.kind === "character");
 if (!clip || !character) throw new Error("Missing fixture");
+// R7: fixturen har ingen standardstemme på karakteren, så «character default preselected» kunne aldri bestå.
+// Suiten setter standarden selv (bare i mocket data).
+character.voice = { provider: "elevenlabs", voiceId: "mock_voice", label: "Test voice" };
 for (const lang of ["nb", "en"]) await h.scenario(`dv4-${lang}`, clip.occurrence_id, lang, async page => {
   await page.getByTestId("scene-script").locator(`[data-script-block="${clip.block_id}"] [data-script-text]`).dblclick();
   await page.getByTestId("dialogue-character-select").selectOption(character.id);
@@ -22,7 +26,7 @@ for (const lang of ["nb", "en"]) await h.scenario(`dv4-${lang}`, clip.occurrence
   h.check(c?.activate === true, "new generation becomes active");
   h.check(!h.state.commands.some(c => /Removed|UndoAddDialogueVersion/.test(c.type)), "generation never deletes old versions");
   await page.getByTestId("record-audio-dialog").screenshot({ path: `${h.out}/generation-${lang}.png` });
-  await page.getByTestId("record-audio-dialog").getByRole("button", { name: lang === "nb" ? "Avbryt" : "Cancel", exact: true }).last().click();
+  await page.getByTestId("record-audio-dialog").getByRole("button", { name: byLang(lang, "Avbryt", "Cancel"), exact: true }).last().click();
   await page.goto(h.base + h.P + `/bibliotek?asset=${character.id}`);
   await page.getByTestId("character-voice-section").waitFor();
   h.check(await page.getByTestId("character-voice-section").isVisible(), "character library owns Audio / Voice section");

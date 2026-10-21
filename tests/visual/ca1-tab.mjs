@@ -1,5 +1,6 @@
 /** CA1 §113. Fixed project fixture and mocked services; no paid calls. */
 import { harness } from "./mts-harness.mjs";
+import { byLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/claude-0/ca1-tab");
 const comp = h.rows.compositions.find(c => !c.removed);
@@ -31,7 +32,7 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   const endValue = Number(await end.getAttribute("aria-valuenow"));
   for (let i = 0; i < endValue - 4; i++) await page.keyboard.press("ArrowLeft");
   await page.getByTestId("anim-play").click();
-  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Stopp"), "Spill blir Stopp");
+  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes(byLang("nb", "Stopp", "Stop")), "Spill blir Stopp");
   await page.waitForTimeout(500);
   h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) <= 4, "avspillingsområdet løkker");
   await page.getByTestId("anim-play").click();
@@ -41,7 +42,7 @@ await h.scenario("ca1", occ.id, "nb", async page => {
   await page.keyboard.press("ArrowLeft");
   h.check(Number(await page.getByTestId("anim-playhead").getAttribute("data-frame")) === keyFrame - 1, "piltaster flytter én frame");
   await page.keyboard.press("Space"); await page.keyboard.press("Space");
-  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes("Spill"), "mellomrom spiller og stopper");
+  h.check((await page.getByTestId("anim-play").getAttribute("aria-label")).includes(byLang("nb", "Spill", "Play")), "mellomrom spiller og stopper");
   await page.getByTestId("anim-preview-zoom").selectOption("2");
   const pan = await page.getByTestId("anim-preview-pan").boundingBox();
   await page.mouse.move(pan.x + 40, pan.y + 40); await page.mouse.down(); await page.mouse.move(pan.x + 70, pan.y + 60); await page.mouse.up();

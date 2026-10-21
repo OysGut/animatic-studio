@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/scene-duration"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -42,6 +43,10 @@ const rows = {
   audio_clips: [...fx.rows.audio_clips.filter((a) => a.occurrence_id !== OCC.id), ...CLIPS],
   time_links: (fx.rows.time_links ?? []).filter((t) => t.occurrence_id !== OCC.id),
 };
+// R7: lydversjonene (DV2) til klippene som byttes ut over, ble liggende igjen uten klipp. Kjernen stopper da
+// med rette alle lydklippendringer («Replikken har lydversjoner som ikke kan fjernes»), så G, I, J og 13 – som
+// flytter lydklipp – fikk aldri lukket dialogen. Behold bare versjoner som har klippet sitt.
+rows.dialogue_versions = (fx.rows.dialogue_versions ?? []).filter((v) => rows.audio_clips.some((a) => a.id === v.clip_id));
 let commands = [], aiCalls = [], analysisRows = [];
 const hashes = {};
 /** Neste runCommand svarer med revisjonskonflikt (test 15). */
@@ -176,7 +181,7 @@ async function applyRetime(page, dialog, seconds, method, fill) {
 
 /** Kjører ett steg i en fersk side, så hvert steg starter fra det faste oppsettet. */
 async function scenario(name, lang, fn) {
-  const { context, page, errors, dialog } = await open(lang);
+  const { context, page, errors, dialog } = await open(uiLang(lang));
   try {
     await fn(page, dialog);
     check(errors.length === 0, `${name}: ingen kjørefeil (${errors.join(" | ").slice(0, 200)})`);
@@ -199,7 +204,7 @@ await scenario("valg", "nb", async (page, dialog) => {
   check(await dialog.getByTestId("retime-apply").isDisabled(), "Bruk er av til fyll er valgt");
   await dialog.getByTestId("retime-fill-black").check();
   await dialog.getByTestId("retime-report").waitFor();
-  check(/Fra .* s til 12 s/.test(await dialog.getByTestId("retime-report").innerText()), "rapporten viser før og etter i klartekst");
+  check(/Fra .* s til 12 s|From .* s to 12 s/.test(await dialog.getByTestId("retime-report").innerText()), "rapporten viser før og etter i klartekst");
   check(await dialog.getByTestId("retime-strip-before").count() === 1 && await dialog.getByTestId("retime-strip-after").count() === 1, "før/etter-stripen vises");
   await cancel(dialog);
 });
@@ -222,7 +227,7 @@ await scenario("H", "nb", async (page, dialog) => {
   const { cmd, report } = await applyRetime(page, dialog, 8, "end");
   const keys = layerOf(cmd)?.keyframes ?? [];
   check(!keys.some((k) => k.frame >= fr(8)) && keys.length === KEYS.length - 1, "H: nøkkelbildet etter den nye slutten er trimmet");
-  check(/trimmes eller fjernes/.test(report), "H: trimmingen står i rapporten");
+  check(/trimmes eller fjernes|trimmed or removed/.test(report), "H: trimmingen står i rapporten");
   const removed = stepOf(cmd, "SetAudioClipsRemoved")?.clipIds ?? [];
   const c = clipsOf(cmd);
   const speech = CLIPS.filter((a) => a.kind === "dialogue");
@@ -281,7 +286,7 @@ await scenario("L", "nb", async (page, dialog) => {
   const { cmd } = await applyRetime(page, dialog, 12, "stretch_visual");
   check(cmd !== null, "L: Bruk sender RetimeScene");
   const n = retimes().length;
-  await page.getByRole("button", { name: /^Angre/ }).first().click();
+  await page.getByRole("button", { name: /^Angre|^Undo/ }).first().click();
   await page.waitForTimeout(800);
   const inv = retimes().length > n ? retimes().at(-1) : null;
   check(stepOf(inv, "UpdateComposition")?.fields?.durationFrames === BEFORE, "L: angre etter Bruk sender inversen (tilbake til 10 s)");
@@ -338,7 +343,7 @@ await scenario("tidslinje", "nb", async (page, dialog) => {
   await dialog.waitFor({ timeout: 5000 });
   check(await dialog.isVisible(), "dra i sluttpunktet åpner dialogen");
   await cancel(dialog);
-  const fromScript = page.getByRole("button", { name: /^Fra manus$/ });
+  const fromScript = page.getByRole("button", { name: /^Fra manus$|^From script$/ });
   if (await fromScript.count()) {
     const n = commands.length;
     await fromScript.click();

@@ -6,6 +6,8 @@
  */
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
+import { revealInToolbar } from "./toolbar.mjs";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 const [
   base = "http://127.0.0.1:8080",
   fixturePath = "/tmp/claude-0/visual-fixture.json",
@@ -136,7 +138,7 @@ async function mock(ctx) {
       return route.fulfill({ status: 200, contentType: "image/svg+xml", body: svg });
     }
     const table = path.replace("/rest/v1/", "");
-    if (table === "schema_version") return json([{ version: 32 }]);
+    if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") {
       if (single) return json(project);
       if (url.searchParams.get("id")?.startsWith("eq."))
@@ -320,6 +322,8 @@ async function run(name, act, lang = "nb") {
     errors.push("act: " + e.message);
   }
   console.log(name, errors.length ? "FEIL: " + errors.join(" | ").slice(0, 800) : "ok");
+  // R7: en feil i selve scenarioet (tidsavbrudd o.l.) telles som feil, ikke bare de enkelte kontrollene
+  if (errors.length) fail++;
   await ctx.close();
 }
 let pass = 0, fail = 0;
@@ -327,6 +331,8 @@ const check = (ok, text) => { console.log(`  ${ok ? "✓" : "✗"} ${text}`); ok
 
 await (process.env.ONLY_H && process.env.ONLY_H !== "h01" ? async () => {} : run)("h01-knapp-og-dialog", async (page) => {
   const btn = page.getByTestId("scene-ai-video");
+  // R7: ved 1440 px ligger «AI-video …» i «Mer …» (U2); åpne menyen først
+  await revealInToolbar(page, btn).catch(() => {});
   check(await btn.isVisible(), "knappen «AI-video …» står i verktøylinjen");
   await page.screenshot({ path: `${out}/h01a-verktoylinje.png` });
   await btn.click();
@@ -400,7 +406,7 @@ for (const o of order.slice(0, 3))
       params: { source: "scene2d", batch: `b-${o.id}`, piece: i, pieces: 2, startMs: i * 2000, endMs: (i + 1) * 2000 },
     });
 await run("h02-under-arbeid", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   check(await dlg.getByTestId("scene-video-batch").first().isVisible(), "bunten vises som versjon av scenen");
@@ -408,7 +414,7 @@ await run("h02-under-arbeid", async (page) => {
   await page.screenshot({ path: `${out}/h02-under-arbeid.png` });
 });
 await run("h03-engelsk", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   check(await dlg.getByText("AI video of the scene").isVisible(), "dialogen er på engelsk");
@@ -425,7 +431,7 @@ await run("h04-status-og-lyd", async (page) => {
   await page.screenshot({ path: `${out}/h04a-status.png` });
   await page.keyboard.press("Escape");
   STARTS.length = 0;
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   await dlg.getByRole("checkbox", { name: /Send scenens lyd med/ }).check();
@@ -435,7 +441,7 @@ await run("h04-status-og-lyd", async (page) => {
   check(/Use the sound in @Video1 for lip movement and timing/.test(STARTS[0] ?? ""), "lyden kan velges sendt med");
 });
 await run("h05-global-beskrivelse", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1500);
   const dlg = page.getByRole("dialog");
   await dlg.locator("[data-testid=global-style]").getByRole("button", { name: /Rediger/ }).click();
@@ -443,7 +449,7 @@ await run("h05-global-beskrivelse", async (page) => {
   await page.screenshot({ path: `${out}/h05-global-rediger.png` });
 });
 await run("h06-nedlasting", async (page) => {
-  await page.getByTestId("scene-ai-video").click();
+  await (await revealInToolbar(page, page.getByTestId("scene-ai-video"))).click();
   await page.waitForTimeout(1200);
   await page.getByRole("dialog").getByRole("button", { name: /Last ned scenen/ }).click();
   await page.waitForTimeout(5000);
