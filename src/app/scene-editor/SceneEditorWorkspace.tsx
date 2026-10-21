@@ -44,6 +44,7 @@ import { CompositionInspector, LayerInspector } from "./LayerInspector";
 import { LayersPanel } from "./LayersPanel";
 import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
+import { useSceneLastChanges } from "./use-scene-last-changes";
 import { ScenePicker } from "./ScenePicker";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
@@ -166,6 +167,7 @@ function Editor({
   initialOccurrenceId: string | null;
   projectId: string;
 }) {
+  const lastChanges = useSceneLastChanges(projectId);
   const [copyError, setCopyError] = useState<string | null>(null);
   // Valgt produksjon (DEC-0057)
   const [productionId, setProductionId] = useActiveProduction(
@@ -765,6 +767,7 @@ function Editor({
           hasComposition={hasComposition}
           onPick={pickScene}
           synced={contentSync}
+          lastChanged={lastChanges.data}
         />
         <ContentSyncFlag
           state={state}

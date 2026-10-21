@@ -54681,12 +54681,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16": {
-    "text": "nb-NO",
-    "source": "\"nb-NO\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd": {
     "text": "Huskelapper",
     "source": "\"Huskelapper\"",
@@ -67581,12 +67575,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3": {
-    "text": "nb-NO",
-    "source": "\"nb-NO\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-projects-production-dialog.submit.set-err.4347e9ee1ca3": {
     "text": "Velg minst én scene.",
     "source": "\"Velg minst én scene.\"",
@@ -74099,5 +74087,125 @@
   },
   "b100.beyond.text": {
     "text": "Animasjonen går {n} f forbi scenens slutt. Ingenting er forlenget."
+  },
+  "time.just-now": {
+    "text": "nå nettopp"
+  },
+  "time.minutes-ago": {
+    "text": "{n} min siden"
+  },
+  "time.hours-ago": {
+    "text": "{n} t siden"
+  },
+  "time.weekday-at": {
+    "text": "{weekday} kl. {time}"
+  },
+  "time.exact": {
+    "text": "{weekday} {date} kl. {time}"
+  },
+  "b097.last-changed.column": {
+    "text": "Sist endret"
+  },
+  "b097.last-changed.tip": {
+    "text": "Sist endret {time}"
+  },
+  "b097.last-changed.tip-by": {
+    "text": "Sist endret {time} av {name}"
+  },
+  "b097.last-changed.tip-created": {
+    "text": "Opprettet {time} (ingen lagrede endringer siden)"
+  },
+  "b097.last-changed.aria": {
+    "text": "Sist endret {when}. {tip}"
+  },
+  "b097.country.label": {
+    "text": "Land"
+  },
+  "b097.country.choose": {
+    "text": "Velg land …"
+  },
+  "b097.country.search": {
+    "text": "Søk etter land"
+  },
+  "b097.country.none": {
+    "text": "Fant ingen land"
+  },
+  "b097.country.required": {
+    "text": "Velg landet ditt."
+  },
+  "b097.country.why": {
+    "text": "Brukes til å vise tid og dato slik du er vant til, og til anonym statistikk."
+  },
+  "b097.country.gate-title": {
+    "text": "Hvilket land er du i?"
+  },
+  "b097.country.gate-text": {
+    "text": "Vi trenger landet ditt for å vise tid og dato riktig. Det kan endres på kontosiden senere. Ingenting annet endres."
+  },
+  "b097.country.gate-save": {
+    "text": "Lagre og fortsett"
+  },
+  "b097.region.title": {
+    "text": "Land, klokke og dato"
+  },
+  "b097.region.clock": {
+    "text": "Klokke"
+  },
+  "b097.region.date-format": {
+    "text": "Datoformat"
+  },
+  "b097.region.as-country": {
+    "text": "Som landet"
+  },
+  "b097.region.clock-24": {
+    "text": "24 timer"
+  },
+  "b097.region.clock-12": {
+    "text": "12 timer"
+  },
+  "b097.region.preview": {
+    "text": "Slik vises tider og datoer:"
+  },
+  "b097.region.saved": {
+    "text": "Landet er lagret."
+  },
+  "b097.region.unavailable": {
+    "text": "Land kan velges når databasen er oppdatert."
+  },
+  "b097.admin.title": {
+    "text": "Brukere per land"
+  },
+  "b097.admin.note": {
+    "text": "Bare antall – ingen navn eller e-postadresser."
+  },
+  "b097.admin.users": {
+    "text": "Brukere"
+  },
+  "b097.admin.total": {
+    "text": "Totalt"
+  },
+  "b097.admin.no-country": {
+    "text": "Ikke valgt ennå"
+  },
+  "b097.admin.loading": {
+    "text": "Henter …"
+  },
+  "b097.admin.unavailable": {
+    "text": "Oversikten kommer når databasen er oppdatert."
+  },
+  "b097.privacy.country": {
+    "text": "Land: landet du velger ved registrering eller på kontosiden (en landkode, for eksempel NO). Det brukes til å vise tid og dato slik du er vant til (klokke og datoformat), og til anonym statistikk over hvor brukerne er. Administrator ser bare antall brukere per land, aldri hvem. Andre prosjektmedlemmer ser ikke landet ditt. Du kan endre det på kontosiden når som helst."
+  },
+  "b097.sound-kind.ask": {
+    "text": "Hva slags lyd?"
+  },
+  "b097.sound-kind.sfx": {
+    "text": "Effekt"
+  },
+  "b097.sound-kind.ambience": {
+    "text": "Atmosfære"
+  },
+  "b097.sound-kind.music": {
+    "text": "Musikk"
   }
 }

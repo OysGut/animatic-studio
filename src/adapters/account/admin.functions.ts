@@ -67,7 +67,7 @@ export async function anonymizeAccount(db: AnyClient, userId: string): Promise<v
   });
   await db
     .from("profiles")
-    .update({ display_name: "", locale: null } as never)
+    .update({ display_name: "", locale: null, country: null } as never)
     .eq("user_id", userId);
   await db.from("ai_provider_keys").delete().eq("user_id", userId);
   await db.from("ai_account_limits").delete().eq("user_id", userId);

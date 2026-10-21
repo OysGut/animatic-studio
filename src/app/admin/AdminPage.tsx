@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PRIVACY_KEY, usePrivacyPolicy } from "@/app/account/use-account";
 import { AiConnectionsAdmin, CronStatusLine, useAiAdmin } from "./AiConnectionsAdmin";
+import { CountryStats } from "./CountryStats";
 import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_KEY = ["admin-overview"] as const;
@@ -202,6 +203,7 @@ export function AdminPage({ myId }: { myId: string }) {
         </div>
       </section>
 
+      <CountryStats />
       <AiConnectionsAdmin />
 
       <PrivacyAdmin

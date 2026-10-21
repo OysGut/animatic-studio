@@ -15,6 +15,7 @@ import { useCloseToPrevious } from "@/app/shell/back-navigation";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { Button } from "@/components/ui/button";
 import { CostReportView } from "./CostReportView";
+import { RegionSettings } from "./RegionCard";
 import { WorkspacesCard } from "@/app/workspaces/WorkspacesCard";
 import { MY_ACCOUNT_KEY, PrivacyLink, useMyAccount } from "./use-account";
 import { t } from "@/core/i18n/keyed";
@@ -160,6 +161,10 @@ export function AccountPage({ email, userId }: { email: string; userId?: string 
             {t("app-account-account-page.account-page.span.7542584b77d7")}
           </span>
         </div>
+      </Card>
+
+      <Card title={t("b097.region.title")} id="region">
+        <RegionSettings />
       </Card>
 
       <Card title={t("app-account-account-page.account-page.title.0a9bee9f065d")}>

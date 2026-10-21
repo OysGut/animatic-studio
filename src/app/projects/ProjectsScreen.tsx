@@ -25,7 +25,7 @@ import {
   listProjects,
   type ProductionSummary,
 } from "@/adapters/browser/projects";
-import { PRODUCTION_KIND_LABEL, collation, locale, tm, type ProductionKind } from "@/core";
+import { PRODUCTION_KIND_LABEL, collation, tm, type ProductionKind } from "@/core";
 import { useProfiles } from "@/app/project/use-project";
 import { rememberProduction } from "@/app/project/use-production";
 import { LanguageSwitch } from "@/app/i18n/language";
@@ -50,6 +50,7 @@ import { ProvidersDialog } from "@/app/ai/ProvidersDialog";
 import { EmptyState, ErrorState, LoadingState } from "@/app/shell/screen-states";
 import { Film } from "lucide-react";
 import { t, tLocalized } from "@/core/i18n/keyed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 interface ProjectRow {
   id: string;
@@ -97,17 +98,12 @@ function productionTree(
   return out;
 }
 
-const date = (iso: string | null | undefined) =>
-  iso
-    ? new Date(iso).toLocaleDateString(locale(), {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      })
-    : "";
 
 /** Prosjektoversikt: én boks per prosjekt, stablet i en liste (DEC-0082). */
 export function ProjectsScreen({ userId }: { userId: string }) {
+  // B-097: tider i listen med brukerens tidsformat
+  const time = useTimeFormat();
+  const date = (iso: string | null | undefined) => (iso ? time.relative(iso) : "");
   const projects = useProjects(userId);
   const qc = useQueryClient();
   const navigate = useNavigate();

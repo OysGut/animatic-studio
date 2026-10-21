@@ -77,6 +77,9 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
           <li>
             {t("app-account-privacy-statement.privacy-statement.li.d927ab5cb1ca")}
           </li>
+          <li data-testid="privacy-country">
+            {t("b097.privacy.country")}
+          </li>
           <li>
             {t("app-account-privacy-statement.privacy-statement.li.adc27bbe251b")}
           </li>

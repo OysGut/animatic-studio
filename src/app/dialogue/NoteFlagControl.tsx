@@ -2,6 +2,7 @@
  * DV8: gul huskelapp på et element (lydversjon, lydsegment, bilde, bildevariant eller sceneforekomst).
  * Av/på uten tekst, valgfri tekst, avslått lapp beholder teksten; sletting er en egen handling.
  */
+import { useTimeFormat } from "@/app/i18n/time-format";
 import { useState } from "react";
 import { StickyNote } from "lucide-react";
 import { flagsFor, newId, NOTE_FLAG_MAX_TEXT, type Command, type NoteFlagTargetKind, type ProjectState } from "@/core";
@@ -30,7 +31,8 @@ export function NoteFlagControl({ state, kind, targetId, run, editable, names }:
   const [drafts, setDrafts] = useState<Record<string, string>>({});
   const exec = (command: Command, label: string) => { const e = run?.(command, label) ?? null; setError(e); };
   const label = active ? t("app-dialogue-note-flag-control.label.message.de3a4a78fa01", { length: String(flags.filter(f => f.enabled).length) }) : t("app-dialogue-note-flag-control.label.message.1cfba46c53bd");
-  const when = (iso?: string | null) => iso ? new Date(iso).toLocaleString(t("app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16")) : "";
+  const time = useTimeFormat();
+  const when = (iso?: string | null) => (iso ? time.exact(iso) : "");
   return <Popover>
     <PopoverTrigger asChild>
       <button type="button" data-testid="note-flag-button" data-note-kind={kind} data-target-id={targetId} data-active={active} aria-label={label} title={label} onClick={e => e.stopPropagation()} className={"inline-flex size-6 shrink-0 items-center justify-center rounded-sm hover:bg-surface-3 focus-visible:outline focus-visible:outline-2 focus-visible:outline-accent-brand " + (active ? "bg-note-bg text-note" : "text-text-tertiary")}>

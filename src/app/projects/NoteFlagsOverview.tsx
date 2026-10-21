@@ -1,4 +1,5 @@
 /** DV8 (H9–H13): «Merknader og huskelapper» på prosjektsiden. Klikk åpner elementets nåværende plassering. */
+import { useTimeFormat } from "@/app/i18n/time-format";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { StickyNote } from "lucide-react";
@@ -6,6 +7,7 @@ import { NOTE_FLAG_KIND_LABEL, NOTE_FLAG_TARGETS, noteFlagLocation, noteFlagOver
 import { t } from "@/core/i18n/keyed";
 
 export function NoteFlagsOverview({ state, projectId, names }: { state: ProjectState; projectId: string; names: Readonly<Record<string, string>> }) {
+  const time = useTimeFormat();
   const [sort, setSort] = useState<NoteFlagSort>("date");
   const [creator, setCreator] = useState("");
   const [kind, setKind] = useState<"" | NoteFlagTargetKind>("");
@@ -25,7 +27,7 @@ export function NoteFlagsOverview({ state, projectId, names }: { state: ProjectS
       const loc = noteFlagLocation(state, f);
       const occ = loc.kind === "scene" ? state.occurrences[loc.occurrenceId] : undefined;
       const place = loc.kind === "scene" && occ ? `${sceneNumberOf(state, occ) ?? ""} ${state.variants[occ.variantId] ? formatHeading(state.variants[occ.variantId]!.heading) : ""}`.trim() : loc.kind === "library" ? state.assets[loc.assetId]?.name ?? "" : t("app-projects-note-flags-overview.place.list-map.2096487ab9b8");
-      const body = <><span className={"text-xs " + (f.enabled ? "text-note" : "text-text-tertiary")}>{NOTE_FLAG_KIND_LABEL(f.targetKind)}{f.enabled ? "" : t("app-projects-note-flags-overview.body.span.593b2184fc2d")}</span><span className="min-w-0 flex-1 truncate text-xs text-text-primary">{f.text || t("app-projects-note-flags-overview.body.span.d97ed4a2b488")}</span><span className="text-xs text-text-secondary">{place}</span><span className="text-[11px] text-text-tertiary">{names[f.createdBy ?? ""] ?? ""} {f.createdAt ? new Date(f.createdAt).toLocaleDateString(t("app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3")) : ""}</span></>;
+      const body = <><span className={"text-xs " + (f.enabled ? "text-note" : "text-text-tertiary")}>{NOTE_FLAG_KIND_LABEL(f.targetKind)}{f.enabled ? "" : t("app-projects-note-flags-overview.body.span.593b2184fc2d")}</span><span className="min-w-0 flex-1 truncate text-xs text-text-primary">{f.text || t("app-projects-note-flags-overview.body.span.d97ed4a2b488")}</span><span className="text-xs text-text-secondary">{place}</span><span className="text-[11px] text-text-tertiary">{names[f.createdBy ?? ""] ?? ""} {f.createdAt ? <span title={time.exact(f.createdAt)}>{time.relative(f.createdAt)}</span> : ""}</span></>;
       return <li key={f.id} data-testid="note-flags-row" data-flag-id={f.id} className="py-1.5">
         {loc.kind === "scene" ? <Link className="flex items-center gap-3 hover:bg-surface-2" to="/prosjekt/$projectId/scene" params={{ projectId }} search={{ scene: loc.occurrenceId, ...(loc.blockId ? { line: loc.blockId } : {}) }}>{body}</Link>
           : loc.kind === "library" ? <Link className="flex items-center gap-3 hover:bg-surface-2" to="/prosjekt/$projectId/bibliotek" params={{ projectId }} search={{ asset: loc.assetId }}>{body}</Link>

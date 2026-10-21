@@ -12218,11 +12218,6 @@
       "en": "a9eb52ff60fa5ad33f60bf4aa582cd6a6c3c7693c2275c9b56287319bddcddd2"
     },
     {
-      "key": "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16",
-      "nb": "981855cc9ce2cd8ca841ca7793b8ed477313d5ac87fc64cb2b821f0d19d7968a",
-      "en": "90a226349be02dcd67a75d4278554eeaaffa804f9658469601cf4e7ef36608ff"
-    },
-    {
       "key": "app-dialogue-note-flag-control.note-flag-control.p.6f557e80c9fd",
       "nb": "faf9d7b1d90fc7ab599f5fa749e2ede5ee59ff8ae426a7870503abacff6cf974",
       "en": "0deef41be1fb0077f48e28f16aa0efd1414a387dc552a7122845e017fd701995"
@@ -20111,11 +20106,6 @@
       "key": "app-projects-note-flags-overview.body.span.d97ed4a2b488",
       "nb": "eae20ee89b43c3639a634da00056973f4e52294d756bc90f00da3b850dc4cb75",
       "en": "95662e8fd9a9cc397027851502b6d40e14b1b58873a795ba67b3f2b738224a9d"
-    },
-    {
-      "key": "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3",
-      "nb": "981855cc9ce2cd8ca841ca7793b8ed477313d5ac87fc64cb2b821f0d19d7968a",
-      "en": "90a226349be02dcd67a75d4278554eeaaffa804f9658469601cf4e7ef36608ff"
     },
     {
       "key": "app-projects-production-dialog.submit.set-err.4347e9ee1ca3",

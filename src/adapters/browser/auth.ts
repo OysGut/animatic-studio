@@ -32,11 +32,16 @@ export async function signUp(
   email: string,
   password: string,
   redirect: string | undefined,
+  country?: string,
 ): Promise<AuthResult> {
+  // B-097: landet følger kontoen fra registreringen og lagres i profilen ved første innlogging
   const res = await browserClient.auth.signUp({
     email,
     password,
-    options: redirect ? { emailRedirectTo: redirect } : {},
+    options: {
+      ...(redirect ? { emailRedirectTo: redirect } : {}),
+      ...(country ? { data: { country } } : {}),
+    },
   });
   return { error: plainError(res.error), session: res.data.session };
 }
@@ -81,4 +86,11 @@ export function onPasswordRecovery(listener: () => void): () => void {
     if (event === "PASSWORD_RECOVERY") listener();
   });
   return () => data.subscription.unsubscribe();
+}
+
+/** B-097: landet brukeren valgte ved registreringen (fra kontoens metadata), eller null. */
+export async function signupCountry(): Promise<string | null> {
+  const { data } = await browserClient.auth.getUser();
+  const c = (data.user?.user_metadata as { country?: unknown } | undefined)?.country;
+  return typeof c === "string" && /^[A-Z]{2}$/.test(c) ? c : null;
 }

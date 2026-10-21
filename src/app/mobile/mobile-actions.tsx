@@ -4,6 +4,16 @@
  * Alt går gjennom vanlige kommandoer og kan angres.
  */
 import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useUiPref } from "@/app/account/ui-prefs";
 import { formatDate, newId, secondsToFrames, tm, type ProjectState } from "@/core";
 import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
 import { saveSceneSound } from "@/app/audio/takes";
@@ -111,16 +121,23 @@ export async function addImageAsNewAsset(
   return (await linkMobileImport(row.id, { assetId, versionId }))?.message ?? null;
 }
 
+/** B-097: lydtypene «Legg i scenen» spør om; sist valgte huskes på kontoen. */
+export type SceneSoundChoice = "sfx" | "ambience" | "music";
+const SCENE_SOUND_CHOICES: readonly SceneSoundChoice[] = ["sfx", "ambience", "music"];
+const isSceneSoundChoice = (v: unknown): v is SceneSoundChoice => SCENE_SOUND_CHOICES.includes(v as SceneSoundChoice);
+export const SCENE_SOUND_KIND_PREF = "audio.sceneSoundKind"; // i18n-ignore: nøkkel
+
 /** B-099: en lyd fra mobilen blir en ny lydressurs i scenen ved avspillingshodet. */
 export async function addAudioToScene(
   cmds: Commands,
   occurrenceId: string,
   row: MobileImportRow,
   atMs: number,
+  kind: SceneSoundChoice = "sfx",
 ): Promise<string | null> {
   const media = await audioMediaFromStoredFile(row.path, row.mime_type);
   const name = (row.file_name || "").replace(/\.[a-z0-9]+$/i, "").trim() || t("b099.scene.sound-name", { stamp: formatDate(row.created_at) });
-  const saved = await saveSceneSound(cmds, { occurrenceId, atMs, kind: "sfx" }, media, name, "");
+  const saved = await saveSceneSound(cmds, { occurrenceId, atMs, kind }, media, name, "");
   return (await linkMobileImport(row.id, { assetId: saved.assetId, versionId: saved.versionId }))?.message ?? null;
 }
 
@@ -141,6 +158,7 @@ export function SceneMobileActions({
 }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  const [soundKind, setSoundKind] = useUiPref<SceneSoundChoice>(SCENE_SOUND_KIND_PREF, "sfx", isSceneSoundChoice);
   if (row.take_id)
     return (
       <span className="text-[11px] text-status-success">{t("app-mobile-mobile-actions.scene-mobile-actions.span.d8591e22b250")}</span>
@@ -190,15 +208,37 @@ export function SceneMobileActions({
           {t("app-mobile-mobile-actions.scene-mobile-actions.button.91640d5780c0")}
         </button>
       ) : row.kind === "audio" ? (
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void go(() => addAudioToScene(cmds, occurrenceId, row, atMs))}
-          className="rounded-sm bg-surface-3 px-1 py-0.5 text-[11px] text-text-primary hover:bg-surface-4 disabled:opacity-50"
-          data-testid="mobile-add-sound"
-        >
-          {t("b099.scene.add-sound")}
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              disabled={busy}
+              className="inline-flex items-center gap-0.5 rounded-sm bg-surface-3 px-1 py-0.5 text-[11px] text-text-primary hover:bg-surface-4 disabled:opacity-50"
+              data-testid="mobile-add-sound"
+            >
+              {t("b099.scene.add-sound")}
+              <ChevronDown className="size-3" aria-hidden />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" data-testid="mobile-add-sound-menu">
+            <DropdownMenuLabel className="text-[11px] font-normal text-text-tertiary">{t("b097.sound-kind.ask")}</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={soundKind}>
+              {SCENE_SOUND_CHOICES.map((k) => (
+                <DropdownMenuRadioItem
+                  key={k}
+                  value={k}
+                  data-testid={`mobile-add-sound-${k}`}
+                  onSelect={() => {
+                    setSoundKind(k);
+                    void go(() => addAudioToScene(cmds, occurrenceId, row, atMs, k));
+                  }}
+                >
+                  {k === "sfx" ? t("b097.sound-kind.sfx") : k === "ambience" ? t("b097.sound-kind.ambience") : t("b097.sound-kind.music")}
+                </DropdownMenuRadioItem>
+              ))}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : null}
       {err ? <span className="text-[11px] text-status-danger">{err}</span> : null}
     </div>

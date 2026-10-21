@@ -13,7 +13,9 @@ import {
   saveMyLocale,
   touchActivity,
 } from "@/adapters/browser/account";
-import { signOut } from "@/adapters/browser/auth";
+import { signOut, signupCountry } from "@/adapters/browser/auth";
+import { saveMyCountry } from "@/adapters/browser/account";
+import { CountryPicker } from "./CountryPicker";
 import { chooseLanguage, useLanguage } from "@/app/i18n/language";
 import { Button } from "@/components/ui/button";
 import {
@@ -107,7 +109,7 @@ export function AccountWatcher() {
     a.status === "active" &&
     a.privacyVersion !== null &&
     (a.acceptedVersion ?? 0) < a.privacyVersion;
-  if (!mustRead) return null;
+  if (!mustRead) return a && a.status === "active" && a.country === null ? <CountryGate /> : null;
   async function accept() {
     if (!a?.privacyVersion) return;
     setBusy(true);
@@ -177,5 +179,68 @@ export function PrivacyLink({ className }: { className?: string }) {
     >
       {t("app-account-use-account.privacy-link.link.ac42faff7b54")}
     </Link>
+  );
+}
+
+/**
+ * B-097: kontoen mangler land. Landet fra registreringen lagres uten spørsmål; ellers (eksisterende brukere)
+ * må landet velges før man går videre. Dialogen kan ikke lukkes uten valg; ingen data endres ellers.
+ */
+function CountryGate() {
+  const qc = useQueryClient();
+  const [checked, setChecked] = useState(false);
+  const [country, setCountry] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    let live = true;
+    void signupCountry()
+      .then(async (c) => {
+        if (!live) return;
+        if (c && !(await saveMyCountry(c))) {
+          void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+          return;
+        }
+        setChecked(true);
+      })
+      .catch(() => live && setChecked(true));
+    return () => {
+      live = false;
+    };
+  }, [qc]);
+  if (!checked) return null;
+  async function save() {
+    if (!country) return;
+    setBusy(true);
+    setError(null);
+    const e = await saveMyCountry(country);
+    setBusy(false);
+    if (e) setError(tm(e.message));
+    else void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+  }
+  return (
+    <Dialog open>
+      <DialogContent
+        className="max-w-[420px] [&>button]:hidden"
+        data-testid="country-gate"
+        onEscapeKeyDown={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+        onInteractOutside={(e) => e.preventDefault()}
+      >
+        <DialogHeader>
+          <DialogTitle>{t("b097.country.gate-title")}</DialogTitle>
+          <DialogDescription>{t("b097.country.gate-text")}</DialogDescription>
+        </DialogHeader>
+        <div>
+          <CountryPicker value={country} onChange={setCountry} testId="country-gate-picker" />
+        </div>
+        {error ? <p className="text-xs text-status-danger">{error}</p> : null}
+        <DialogFooter>
+          <Button disabled={!country || busy} onClick={() => void save()} data-testid="country-gate-save">
+            {t("b097.country.gate-save")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

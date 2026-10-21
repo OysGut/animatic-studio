@@ -10,6 +10,8 @@ import { HIT_LABEL, STORY_KIND_LABEL, SCENE_STATUS_LABEL, collation, durationFor
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
 import { t, tLocalized } from "@/core/i18n/keyed";
+import type { SceneLastChange } from "@/adapters/browser/last-changed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 const ASSET_KIND_SHORT: Record<string, string> = tLocalized({ animal: "app-script-scene-navigator.asset-kind-short.animal.91c86fa488be", object: "app-script-scene-navigator.asset-kind-short.object.e3a47268765c", location: "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0", environment: "app-script-scene-navigator.asset-kind-short.environment.e2306110f3a0", other: "app-script-scene-navigator.asset-kind-short.other.6e0a697580d3" });
 
@@ -51,6 +53,8 @@ interface Props {
   readonly noteCounts: ReadonlyMap<string, number> | null;
   /** Scenen som vises øverst i manuset nå. */
   readonly inView: string | null;
+  /** B-097: siste lagrede endring per scene (scene-ID). */
+  readonly lastChanged?: ReadonlyMap<string, SceneLastChange> | null | undefined;
 }
 
 export function SceneNavigator({
@@ -74,7 +78,9 @@ export function SceneNavigator({
   hits,
   noteCounts,
   inView,
+  lastChanged,
 }: Props) {
+  const time = useTimeFormat();
   const allOccs = orderedOccurrences(state, productionId);
   const occs = visible ? allOccs.filter((o) => visible.has(o.id)) : allOccs;
   // Flytting krever hele listen synlig, ellers blir plasseringen uklar
@@ -444,6 +450,21 @@ export function SceneNavigator({
                       ) : null}
                       {v && v.ownerProductionId !== null ? (
                         <span data-testid="nav-variant-badge" className="rounded-sm bg-status-running-bg px-1 text-status-running">{t("app-script-scene-navigator.scene-navigator.span.f5061f26f348")}</span>
+                      ) : null}
+                      {lastChanged?.get(o.sceneId) ? (
+                        <span
+                          className="ml-auto shrink-0 tabular"
+                          data-testid="nav-last-changed"
+                          title={
+                            lastChanged.get(o.sceneId)!.logged && lastChanged.get(o.sceneId)!.actorName
+                              ? t("b097.last-changed.tip-by", { time: time.exact(lastChanged.get(o.sceneId)!.at), name: lastChanged.get(o.sceneId)!.actorName! })
+                              : lastChanged.get(o.sceneId)!.logged
+                                ? t("b097.last-changed.tip", { time: time.exact(lastChanged.get(o.sceneId)!.at) })
+                                : t("b097.last-changed.tip-created", { time: time.exact(lastChanged.get(o.sceneId)!.at) })
+                          }
+                        >
+                          {time.relative(lastChanged.get(o.sceneId)!.at)}
+                        </span>
                       ) : null}
                       {presence?.get(o.id)?.length ? (
                         <span

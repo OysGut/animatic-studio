@@ -2,6 +2,7 @@
  * Arbeidsflaten «Manus» (M2): import, sidevisning, scenenavigator, korrigering og redigering med angre.
  * Manus og film bygger på samme aktive struktur (INV-01); alt her er kommandoer mot domenekjernen.
  */
+import { useSceneLastChanges } from "@/app/scene-editor/use-scene-last-changes";
 import { ProductionPicker, useActiveProduction } from "@/app/project/use-production";
 import { ProductionDialog } from "@/app/projects/ProductionDialog";
 import { PromotionDialog } from "@/app/projects/PromotionDialog";
@@ -131,6 +132,7 @@ function Workspace({
   initialOccurrenceId: string | null;
   initialBlockId: string | null;
 }) {
+  const lastChanges = useSceneLastChanges(projectId);
   const [navWidth, setNavWidth] = usePaneSize("script-nav", 280, 200, 520);
   const [inspWidth, setInspWidth] = usePaneSize("script-inspector", 320, 240, 640);
   const productions = useMemo(
@@ -969,6 +971,7 @@ function Workspace({
               hits={hits}
               noteCounts={showNotes ? noteCounts : null}
               inView={inView}
+              lastChanged={lastChanges.data}
               structureEditing={structureEditing}
               onStructureEditingChange={setStructureEditing}
               moved={moved}

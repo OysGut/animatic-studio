@@ -15,6 +15,8 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { collation, contentSyncText, formatHeading, sceneNumberOf, type ProjectState, type SceneContentSync, type SceneOccurrence } from "@/core";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { t } from "@/core/i18n/keyed";
+import type { SceneLastChange } from "@/adapters/browser/last-changed";
+import { useTimeFormat } from "@/app/i18n/time-format";
 
 export function ScenePicker({
   state,
@@ -23,7 +25,10 @@ export function ScenePicker({
   hasComposition,
   onPick,
   synced,
+  lastChanged,
 }: {
+  /** B-097: siste lagrede endring per scene (scene-ID). Uten verdi vises ikke kolonnen. */
+  lastChanged?: ReadonlyMap<string, SceneLastChange> | null | undefined;
   /** Scener laget med en eldre ressursversjon (flagget «Ressurs oppdatert», REQ-0022). */
   synced?: ReadonlyMap<string, SceneContentSync>;
   state: ProjectState;
@@ -38,6 +43,7 @@ export function ScenePicker({
   const listRef = useRef<HTMLUListElement | null>(null);
   const listId = useId();
   const optionId = (id: string) => `${listId}-${id}`;
+  const time = useTimeFormat();
 
   const rows = useMemo(
     () =>
@@ -112,6 +118,7 @@ export function ScenePicker({
                 : t("app-scene-editor-scene-picker.scene-picker.aria-label.b9b4cafeca5e")
             }
             title={t("app-scene-editor-scene-picker.scene-picker.title.9be390561ab3")}
+            data-testid="scene-picker-trigger"
             disabled={rows.length === 0}
           >
             <span className="font-mono text-[11px] text-text-tertiary">
@@ -133,7 +140,7 @@ export function ScenePicker({
         </PopoverTrigger>
         <PopoverContent
           align="start"
-          className="w-[440px] border-border bg-surface-2 p-0"
+          className={(lastChanged ? "w-[540px]" : "w-[440px]") + " border-border bg-surface-2 p-0"}
           onOpenAutoFocus={(e) => {
             e.preventDefault();
             (e.currentTarget as HTMLElement).querySelector("input")?.focus();
@@ -173,6 +180,11 @@ export function ScenePicker({
               {shown.length} {t("app-scene-editor-scene-picker.scene-picker.span.8b381a607b6e")} {rows.length}
             </span>
           </div>
+          {lastChanged ? (
+            <div className="flex justify-end border-b border-border px-3 py-1 text-chrome-label uppercase text-text-tertiary" aria-hidden>
+              <span className="w-[104px] text-right">{t("b097.last-changed.column")}</span>
+            </div>
+          ) : null}
           <ul
             ref={listRef}
             id={listId}
@@ -223,6 +235,9 @@ export function ScenePicker({
                   {on ? (
                     <Check className="size-3.5 shrink-0 text-accent-brand" aria-hidden />
                   ) : null}
+                  {lastChanged ? (
+                    <LastChangedCell change={lastChanged.get(r.o.sceneId)} time={time} />
+                  ) : null}
                 </li>
               );
             })}
@@ -245,5 +260,27 @@ export function ScenePicker({
         <ChevronRight className="size-4" aria-hidden />
       </button>
     </div>
+  );
+}
+
+/** B-097: «Sist endret» helt til høyre, med nøyaktig tidspunkt og hvem i verktøytipset. */
+function LastChangedCell({ change, time }: { change: SceneLastChange | undefined; time: ReturnType<typeof useTimeFormat> }) {
+  if (!change) return <span className="w-[104px] shrink-0" data-testid="scene-last-changed" />;
+  const exact = time.exact(change.at);
+  const title = change.logged
+    ? change.actorName
+      ? t("b097.last-changed.tip-by", { time: exact, name: change.actorName })
+      : t("b097.last-changed.tip", { time: exact })
+    : t("b097.last-changed.tip-created", { time: exact });
+  return (
+    <span
+      className="w-[104px] shrink-0 truncate text-right text-[11px] tabular-nums text-text-tertiary"
+      title={title}
+      aria-label={t("b097.last-changed.aria", { when: time.relative(change.at), tip: title })}
+      data-testid="scene-last-changed"
+      data-at={change.at}
+    >
+      {time.relative(change.at)}
+    </span>
   );
 }
