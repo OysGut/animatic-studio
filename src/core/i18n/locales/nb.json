@@ -73898,5 +73898,101 @@
   },
   "print-pdf.image-required": {
     "text": "Figurutskrift krever et kildebilde."
+  },
+  "app-print.title": {
+    "text": "PDF-utskrift"
+  },
+  "app-print.paper": {
+    "text": "Papir"
+  },
+  "app-print.orientation": {
+    "text": "Retning"
+  },
+  "app-print.portrait": {
+    "text": "Stående"
+  },
+  "app-print.landscape": {
+    "text": "Liggende"
+  },
+  "app-print.custom": {
+    "text": "Egendefinert"
+  },
+  "app-print.width": {
+    "text": "Arkbredde (mm)"
+  },
+  "app-print.height": {
+    "text": "Arkhøyde (mm)"
+  },
+  "app-print.top": {
+    "text": "Toppmarg (mm)"
+  },
+  "app-print.right": {
+    "text": "Høyremarg (mm)"
+  },
+  "app-print.bottom": {
+    "text": "Bunnmarg (mm)"
+  },
+  "app-print.left": {
+    "text": "Venstremarg (mm)"
+  },
+  "app-print.calibration": {
+    "text": "Kalibreringsmålestokk"
+  },
+  "app-print.length": {
+    "text": "Målestokklengde"
+  },
+  "app-print.reference": {
+    "text": "Teknisk referanseutskrift"
+  },
+  "app-print.fields": {
+    "text": "Informasjonsfelt"
+  },
+  "app-print.film": {
+    "text": "Filmtittel og produksjon"
+  },
+  "app-print.scene": {
+    "text": "Scene"
+  },
+  "app-print.asset": {
+    "text": "Karakter eller objekt"
+  },
+  "app-print.time": {
+    "text": "Tid og absolutt frame"
+  },
+  "app-print.plate": {
+    "text": "Platenivå"
+  },
+  "app-print.size": {
+    "text": "Fysisk størrelse"
+  },
+  "app-print.date": {
+    "text": "Dato"
+  },
+  "app-print.arrow": {
+    "text": "Kameraets opp"
+  },
+  "app-print.qr": {
+    "text": "Plass til QR"
+  },
+  "app-print.create": {
+    "text": "Lag PDF"
+  },
+  "app-print.busy": {
+    "text": "Lager PDF …"
+  },
+  "app-print.warning": {
+    "text": "Skriv ut i 100 % / faktisk størrelse. «Tilpass til side» ødelegger kalibreringen."
+  },
+  "app-print.pages": {
+    "text": "{count} ark · 10 mm overlapp ved deling"
+  },
+  "app-print.failure": {
+    "text": "PDF-en kunne ikke lages. Kontroller utskriftsvalgene og prøv igjen."
+  },
+  "app-print.empty": {
+    "text": "Ingen målesett er lagret for denne figuren og framen."
+  },
+  "app-print.frame": {
+    "text": "{seconds} s + {frames} f · frame {absolute}"
   }
 }

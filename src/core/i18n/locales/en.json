@@ -73880,5 +73880,101 @@
   },
   "print-pdf.image-required": {
     "text": "Figure printing requires a source image."
+  },
+  "app-print.title": {
+    "text": "PDF printing"
+  },
+  "app-print.paper": {
+    "text": "Paper"
+  },
+  "app-print.orientation": {
+    "text": "Orientation"
+  },
+  "app-print.portrait": {
+    "text": "Portrait"
+  },
+  "app-print.landscape": {
+    "text": "Landscape"
+  },
+  "app-print.custom": {
+    "text": "Custom"
+  },
+  "app-print.width": {
+    "text": "Paper width (mm)"
+  },
+  "app-print.height": {
+    "text": "Paper height (mm)"
+  },
+  "app-print.top": {
+    "text": "Top margin (mm)"
+  },
+  "app-print.right": {
+    "text": "Right margin (mm)"
+  },
+  "app-print.bottom": {
+    "text": "Bottom margin (mm)"
+  },
+  "app-print.left": {
+    "text": "Left margin (mm)"
+  },
+  "app-print.calibration": {
+    "text": "Calibration ruler"
+  },
+  "app-print.length": {
+    "text": "Ruler length"
+  },
+  "app-print.reference": {
+    "text": "Technical reference print"
+  },
+  "app-print.fields": {
+    "text": "Information fields"
+  },
+  "app-print.film": {
+    "text": "Film title and production"
+  },
+  "app-print.scene": {
+    "text": "Scene"
+  },
+  "app-print.asset": {
+    "text": "Character or object"
+  },
+  "app-print.time": {
+    "text": "Time and absolute frame"
+  },
+  "app-print.plate": {
+    "text": "Plate level"
+  },
+  "app-print.size": {
+    "text": "Physical size"
+  },
+  "app-print.date": {
+    "text": "Date"
+  },
+  "app-print.arrow": {
+    "text": "Camera up"
+  },
+  "app-print.qr": {
+    "text": "Reserve QR space"
+  },
+  "app-print.create": {
+    "text": "Create PDF"
+  },
+  "app-print.busy": {
+    "text": "Creating PDF …"
+  },
+  "app-print.warning": {
+    "text": "Print at 100% / actual size. “Fit to page” invalidates calibration."
+  },
+  "app-print.pages": {
+    "text": "{count} sheets · 10 mm overlap when tiled"
+  },
+  "app-print.failure": {
+    "text": "The PDF could not be created. Check the print settings and try again."
+  },
+  "app-print.empty": {
+    "text": "No measurement sets are saved for this figure and frame."
+  },
+  "app-print.frame": {
+    "text": "{seconds} s + {frames} f · frame {absolute}"
   }
 }
