@@ -17,7 +17,7 @@ import { getUiLanguage, onLanguageChange } from "@/core";
 
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
-import { t } from "@/core/i18n/keyed";
+import { t, loadUiCatalog } from "@/core/i18n/keyed";
 
 function NotFoundComponent() {
   return (
@@ -90,6 +90,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: async () => { await loadUiCatalog(getUiLanguage()); },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -119,7 +120,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="nb" suppressHydrationWarning>
+    <html lang={getUiLanguage()} suppressHydrationWarning>
       <head>
         {/* ML2a: skjuler siden til lagret språk er satt, så første tegning ikke lekker norsk */}
         <script dangerouslySetInnerHTML={{ __html: LANGUAGE_BOOT_SCRIPT }} />

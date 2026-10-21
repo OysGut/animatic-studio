@@ -10,14 +10,16 @@ import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
 import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
-import { t } from "@/core/i18n/keyed";
+import { t, loadUiCatalog } from "@/core/i18n/keyed";
+import { matchUiLanguage } from '@/core/i18n/languages';
+import { Button } from '@/components/ui/button';
 
 export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
 export const LANGUAGE_PENDING_CLASS = "lang-pending";
 
 /** Kjøres i <head> før første tegning. Skjuler siden til et ikke-norsk språk er satt (maks 3 s). */
-export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(${JSON.stringify(LANGUAGE_KEY)});if(v==="en"||v==="en-XA"){var d=document.documentElement;d.lang=v;d.classList.add(${JSON.stringify(LANGUAGE_PENDING_CLASS)});setTimeout(function(){d.classList.remove(${JSON.stringify(LANGUAGE_PENDING_CLASS)})},3000)}}catch(e){}})();`;
+export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(${JSON.stringify(LANGUAGE_KEY)}),d=document.documentElement;if(v&&v!==d.lang){d.classList.add(${JSON.stringify(LANGUAGE_PENDING_CLASS)});setTimeout(function(){d.classList.remove(${JSON.stringify(LANGUAGE_PENDING_CLASS)})},3000)}}catch(e){}})();`;
 
 const useIso = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -39,8 +41,10 @@ export interface LanguageOption {
 
 /** Språkene i manifestet som brukerflaten kan vises på. */
 export function availableLanguages(includeTest = testLanguagesEnabled()): LanguageOption[] {
+  let incomplete = false;
+  try { incomplete = window.localStorage.getItem('animatic:incomplete-languages') === '1'; } catch { /* SSR */ }
   return manifest.languages
-    .filter((l) => isUiLang(l.tag) && (includeTest || !("testOnly" in l && l.testOnly)))
+    .filter((l) => isUiLang(l.tag) && (l.complete || incomplete) && (includeTest || !("testOnly" in l && l.testOnly)))
     .map((l) => ({ tag: l.tag as UiLang, nativeName: l.nativeName, testOnly: "testOnly" in l && !!l.testOnly }));
 }
 
@@ -57,12 +61,7 @@ function stored(): UiLang | null {
 
 /** ML3: nettleserens foretrukne visningsspråk (nb for norsk, en for engelsk), ellers null. */
 export function browserUiLanguage(languages: readonly string[]): UiLang | null {
-  for (const l of languages) {
-    const p = l.toLowerCase().split("-")[0];
-    if (p === "nb" || p === "no" || p === "nn") return "nb";
-    if (p === "en") return "en";
-  }
-  return null;
+  return matchUiLanguage(languages);
 }
 
 /**
@@ -75,7 +74,7 @@ export function bootUiLanguage(): UiLang {
   try { fromStore = window.localStorage.getItem(LANGUAGE_KEY); } catch { fromStore = null; }
   if (isUiLang(fromStore)) return fromStore === "en-XA" && !testLanguagesEnabled() ? "en" : fromStore;
   const nav = typeof navigator === "undefined" ? [] : navigator.languages?.length ? navigator.languages : [navigator.language];
-  return browserUiLanguage(nav.filter(Boolean)) ?? getUiLanguage();
+  return browserUiLanguage(nav.filter(Boolean)) ?? 'en';
 }
 
 /** Roten er hydrert; sider som hydreres etterpå (egne kodebiter) melder fra via useLanguage. */
@@ -87,14 +86,16 @@ export function useLanguage(): UiLang {
   useEffect(() => {
     if (rootSettled) for (const f of [...lateHydration]) f();
   }, []);
-  return useSyncExternalStore(onLanguageChange, getUiLanguage, () => "nb");
+  return useSyncExternalStore(onLanguageChange, getUiLanguage, getUiLanguage);
 }
 
 /** Velg språk: huskes i nettleseren og gjelder med én gang, uten remontering. */
-export function chooseLanguage(lang: UiLang) {
+export async function chooseLanguage(lang: UiLang) {
   if (lang === "en-XA" && !testLanguagesEnabled()) return;
+  await loadUiCatalog(lang);
   try {
     window.localStorage.setItem(LANGUAGE_KEY, lang);
+    document.cookie = `ptg-ui-language=${encodeURIComponent(lang)}; Path=/; SameSite=Lax; Max-Age=31536000${window.location.protocol === 'https:' ? '; Secure' : ''}`;
   } catch {
     // privat vindu: gjelder bare denne økten
   }
@@ -108,7 +109,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
     // Lagret språk settes først når sidens egen del er hydrert: ruter ligger i egne kodebiter og
     // hydreres etter roten, og ville ellers fått et annet språk enn serveren tegnet. Siden er skjult
     // (lang-pending) til da; vakturet sørger for at den aldri blir stående skjult.
-    const s = stored();
+    const s = stored() ?? browserUiLanguage(navigator.languages) ?? 'en';
     rootSettled = true;
     if (!s) return;
     let done = false;
@@ -116,7 +117,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       if (done) return;
       done = true;
       lateHydration.delete(onLate);
-      setLanguage(s);
+      void loadUiCatalog(s).then(() => setLanguage(s)).catch(() => setLanguage('en'));
     };
     // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
     let quiet: number | undefined;
@@ -148,30 +149,31 @@ export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   const seg = (on: boolean) =>
     "rounded-sm px-2 py-0.5 text-xs " +
     (on ? "bg-accent-selection text-text-primary" : "text-text-secondary hover:bg-surface-3");
-  const short = (tag: UiLang) => (tag === "nb" ? "NO" : tag === "en" ? "EN" : "XA");
-  const label = (o: LanguageOption) => (o.tag === "nb" ? "Norsk" : o.tag === "en" ? "English" : o.nativeName);
+  const short = (tag: UiLang) => tag.toUpperCase();
+  const label = (o: LanguageOption) => o.nativeName;
   return (
     <div
       role="group"
       aria-label={t("app-i18n-language.language-switch.aria-label.a2595484506d")}
       title={t("app-i18n-language.language-switch.title.691fad620f12")}
       data-testid="language-switch"
-      className="flex items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
+      className="flex max-w-full flex-wrap items-center gap-0.5 rounded-sm border border-border bg-surface-1 p-0.5"
     >
       {compact ? null : <Languages className="mx-1 size-3.5 text-text-tertiary" aria-hidden />}
       {options.map((o) => (
-        <button
+        <Button
           key={o.tag}
           type="button"
           aria-pressed={lang === o.tag}
           data-testid={`language-${o.tag}`}
           title={o.testOnly ? t("app-i18n-language.language-switch.title.52f62cdf7cf1") : o.nativeName}
           className={seg(lang === o.tag)}
-          onClick={() => chooseLanguage(o.tag)}
+          variant="ghost"
+          onClick={() => void chooseLanguage(o.tag)}
           lang={o.tag}
         >
           {compact ? short(o.tag) : label(o)}
-        </button>
+        </Button>
       ))}
     </div>
   );

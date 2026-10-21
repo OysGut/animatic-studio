@@ -1,10 +1,18 @@
 {
   "version": 1,
-  "defaultLocale": "nb",
+  "defaultLocale": "en",
   "maxFallbackDepth": 8,
   "languages": [
-    { "tag": "nb", "nativeName": "Norsk bokmål", "formatLocale": "nb-NO", "fallbacks": [], "direction": "ltr", "complete": true },
-    { "tag": "en", "nativeName": "English", "formatLocale": "en-GB", "fallbacks": ["nb"], "direction": "ltr", "complete": true },
+    { "tag": "nb", "nativeName": "Norsk bokmål", "formatLocale": "nb-NO", "fallbacks": ["en"], "direction": "ltr", "complete": true },
+    { "tag": "en", "nativeName": "English", "formatLocale": "en-GB", "fallbacks": [], "direction": "ltr", "complete": true },
+    { "tag": "fr", "nativeName": "Français", "formatLocale": "fr-FR", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "es", "nativeName": "Español", "formatLocale": "es-ES", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "ru", "nativeName": "Русский", "formatLocale": "ru-RU", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "ja", "nativeName": "日本語", "formatLocale": "ja-JP", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "pt-BR", "nativeName": "Português (Brasil)", "formatLocale": "pt-BR", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "de", "nativeName": "Deutsch", "formatLocale": "de-DE", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "it", "nativeName": "Italiano", "formatLocale": "it-IT", "fallbacks": ["en"], "direction": "ltr", "complete": false },
+    { "tag": "ko", "nativeName": "한국어", "formatLocale": "ko-KR", "fallbacks": ["en"], "direction": "ltr", "complete": false },
     { "tag": "en-XA", "nativeName": "Pseudo English", "formatLocale": "en-GB", "fallbacks": ["en"], "direction": "ltr", "complete": true, "testOnly": true }
   ]
 }
