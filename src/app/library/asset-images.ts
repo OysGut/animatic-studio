@@ -154,6 +154,17 @@ export async function addUploadedImage(
   return r.error;
 }
 
+/** Last opp en avledet fil (proxy, miniatyr, arbeidskopi) for en eksisterende versjon. */
+export async function uploadDerivedImage(
+  projectId: string,
+  assetId: string,
+  versionId: string,
+  file: File,
+  fileName: string,
+): Promise<import("@/core").DerivedImageFile> {
+  return uploadOne(projectId, assetId, versionId, file, fileName);
+}
+
 async function uploadOne(
   projectId: string,
   assetId: string,
