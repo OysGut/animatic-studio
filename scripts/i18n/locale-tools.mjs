@@ -6,6 +6,10 @@ export const read = (path) => JSON.parse(readFileSync(path, 'utf8'));
 export const sourceValue = (message) => message.plural?.forms ?? message.text;
 export const sourceHash = (message) => createHash('sha256').update(JSON.stringify({ text: message.text, plural: message.plural ?? null, formats: message.formats ?? null })).digest('hex');
 const names = (value) => [...new Set(Object.values(typeof value === 'object' && value ? value : { text: value }).flatMap(t => [...String(t).matchAll(/\{([A-Za-z_]\w*)\}/g)].map(m => m[1])))].sort();
+const retiredKeys = root => {
+  try { return new Set(read(join(root, 'scripts/i18n/mapping.v1.json')).entries.filter(e => e.supersededBy || e.en?.text === null).map(e => e.key)); }
+  catch { return new Set(); }
+};
 export function validateTranslation(code, source, value) {
   const errors = [];
   const plural = source.plural;
@@ -63,7 +67,8 @@ export function importLocale(code, directory, root = ROOT, { write = true } = {}
 export function exportNew(code, root = ROOT, machine = false) {
   const en = read(join(root, 'src/core/i18n/locales/en.json')), nb = read(join(root, 'src/core/i18n/locales/nb.json'));
   let locale = {}; try { locale = read(join(root, `src/core/i18n/locales/${code}.json`)); } catch { /* new locale */ }
-  return Object.fromEntries(Object.entries(en).filter(([key, message]) => machine ? locale[key]?.review === 'machine' : !locale[key] || locale[key].sourceHash !== sourceHash(message)).map(([key, message]) => [key, { nb: sourceValue(nb[key]), en: sourceValue(message), oversatt: machine && locale[key] ? sourceValue(locale[key]) : message.plural ? Object.fromEntries(new Intl.PluralRules(code).resolvedOptions().pluralCategories.map(c => [c, ''])) : '' }]));
+  const retired = retiredKeys(root);
+  return Object.fromEntries(Object.entries(en).filter(([key, message]) => !retired.has(key) && message.executable !== false && (machine ? locale[key]?.review === 'machine' : !locale[key] || locale[key].sourceHash !== sourceHash(message))).map(([key, message]) => [key, { nb: sourceValue(nb[key]), en: sourceValue(message), oversatt: machine && locale[key] ? sourceValue(locale[key]) : message.plural ? Object.fromEntries(new Intl.PluralRules(code).resolvedOptions().pluralCategories.map(c => [c, ''])) : '' }]));
 }
 export function localeFreshnessErrors(root = ROOT) {
   const manifest = read(join(root, 'src/core/i18n/manifest.json'));

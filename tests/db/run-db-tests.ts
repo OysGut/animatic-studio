@@ -6863,6 +6863,18 @@ try {
   });
 
 
+  await test('0077 (B-107): alle åtte UI-språk kan lagres uten å endre andre brukere; anon og testspråk avvises', async () => {
+    for (const language of ['fr', 'es', 'ru', 'ja', 'pt-BR', 'de', 'it', 'ko']) {
+      await as('authenticated', ALICE, tx => tx`select public.set_my_locale(${language})`);
+      const rows = await as('authenticated', ALICE, tx => tx`select public.my_account() as a`);
+      assert((rows[0]?.['a'] as Record<string, unknown>)['locale'] === language, `språk ${language} leses tilbake`);
+    }
+    await expectError(as('anon', null, tx => tx`select public.set_my_locale('fr')`), '42501');
+    await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en-XA')`), '22023');
+    await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en_US')`), '22023');
+    await as('authenticated', ALICE, tx => tx`select public.set_my_locale('nb')`);
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.['v']) === 77, 'skjemaversjon 77');
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
