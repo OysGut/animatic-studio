@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { calibrationStatus, layerVersion, newId, physicalLayerSizeMm, plateDistanceMm, type ProjectState, type CompositionLayer, type MultiplaneRigSpec, type Command } from '@/core';
-import { createMarkerHistory, editMarkers, undoMarkers, redoMarkers, markerValue, markerError, screenToFigureMm, snapToContour, type Marker, type MeasurePoint } from '@/core/print/measure';
+import { createMarkerHistory, editMarkers, undoMarkers, redoMarkers, markerValue, markerError, screenToFigureMm, snapToContour, type Marker, type MeasurePoint, type MeasureLine } from '@/core/print/measure';
 import type { ContourResult } from '@/core/print/contour';
 import { t } from '@/core/i18n/keyed';
 import { useLanguage } from '@/app/i18n/language';
