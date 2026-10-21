@@ -55,4 +55,5 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 35. i18n: all text uses t()/tLocalized with keyed catalogs; no new L()/localized(); builds stop unless nb/en are complete.†
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
-38. Locked script pages number each imported document separately (sourceRef.documentId = file SHA-256, import order); blocks without it form one legacy document, so old projects keep their pages.
+38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
+39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.

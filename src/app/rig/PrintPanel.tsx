@@ -13,7 +13,7 @@ export function PrintPanel({ state, layer, spec, frame, contour, url, mode, widt
   state: ProjectState; layer: CompositionLayer; spec: MultiplaneRigSpec; frame: number; contour: ContourResult | null;
   url: string | undefined | null; mode: string; width: number; height: number; pixels: {width:number;height:number}|null; unit:'mm'|'in';
 }) {
-  const { lang } = useLanguage();
+  const lang = useLanguage();
   const [fields, setFields] = useUiPref<Record<string, boolean>>('rigPrintFields', {}, validFields);
   const [paper,setPaper]=useState<Paper>('A4');
   const [orientation,setOrientation]=useState<'portrait'|'landscape'>('portrait');
@@ -41,21 +41,21 @@ export function PrintPanel({ state, layer, spec, frame, contour, url, mode, widt
   ];
   // Manusmerknader må ha en eksplisitt ressurskobling (oppgaven) eller tekstkobling
   // til en blokk som nevner ressursen. Generelle scenenotater er ikke figurnotater.
-  const tasks=Object.values(state.tasks).filter(task=>task.assetId===layer.assetId);
+  const tasks=asset?asset.scenePlans??[]:[];
   for(const note of Object.values(state.annotations)) {
     const block=note.blockId?state.blocks[note.blockId]:undefined;
     const inScene=note.variantId===variant?.id||block?.variantId===variant?.id;
-    const related=(note.taskId&&tasks.some(task=>task.id===note.taskId)) || (asset&&block?.text.toLocaleLowerCase().includes(asset.name.toLocaleLowerCase()));
+    const related=(note.taskId&&tasks.some(task=>task.taskId===note.taskId)) || (asset&&block?.text.toLocaleLowerCase().includes(asset.name.toLocaleLowerCase()));
     if(!note.removed&&inScene&&related) options.push({key:`note-${note.id}`,value:note.text,enabled:true,sceneId:variant?.sceneId??''});
   }
   for(const flag of Object.values(state.noteFlags)) {
     const block=Object.values(state.blocks).find(b=>b.id===state.audioClips[flag.targetId]?.blockId);
-    if(!flag.removed&&flag.enabled&&block?.variantId===variant?.id&&asset&&block.text.toLocaleLowerCase().includes(asset.name.toLocaleLowerCase())) options.push({key:`flag-${flag.id}`,value:flag.text,enabled:true,sceneId:variant?.sceneId??''});
+    if(!flag.removed&&flag.enabled&&block&&block.variantId===variant?.id&&asset&&block.text.toLocaleLowerCase().includes(asset.name.toLocaleLowerCase())) options.push({key:`flag-${flag.id}`,value:flag.text,enabled:true,sceneId:variant?.sceneId??''});
   }
   const savedSets=Object.values(state.measureSets??{}).filter(s=>!s.removed&&s.layerId===layer.id&&s.frame===frame);
   const printMode:PrintItem['mode']=mode==='outline'?'contour':mode==='full'?'figure':'figure-cut';
   const item:PrintItem={id:layer.id,sceneId:variant?.sceneId??'',size:{width,height},contour:contour??{source:'rectangle',widthMm:width,heightMm:height,pointCount:0,paths:[]},mode:printMode,
-    fields:options.map(f=>({...f,enabled:fields[f.key]!==false})),upArrow:fields.arrow!==false,reserveQr:fields.qr!==false,
+    fields:options.map(f=>({...f,enabled:fields[f.key]!==false})),upArrow:fields['arrow']!==false,reserveQr:fields['qr']!==false,
     rotationDeg:comp?transformAt(layer,frame).rotation-cameraAt(comp,frame).rotation:0,
     cutHoles:true,measureSets:savedSets.filter(s=>sets[s.id]),
     ...(printMode!=='contour'?{image:{data:'preview',format:'PNG' as const,widthPx:pixels?.width??1,heightPx:pixels?.height??1}}:{})};
