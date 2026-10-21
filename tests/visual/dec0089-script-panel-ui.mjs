@@ -185,6 +185,7 @@ const panel = (page, id) => page.locator(`[data-panel="${id}"]`).first();
 
 await run("s01-manuspanel", async (page) => {
   const sp = panel(page, "script");
+  await sp.waitFor({ timeout: 30000 }).catch(() => {});
   check(await sp.isVisible(), "panelet «Manus» står i sceneeditoren");
   const text = await page.getByTestId("scene-script").innerText();
   check(/INT\. STUA/.test(text), "sceneoverskriften står øverst");
@@ -192,7 +193,7 @@ await run("s01-manuspanel", async (page) => {
   check(await page.getByTestId("scene-script-edit").isVisible(), "knappen «Rediger manus …»");
   await page.screenshot({ path: `${out}/s01-manuspanel.png` });
   // Avspilling: linjen som spilles av, markeres
-  await page.getByRole("button", { name: "Spill av" }).first().click();
+  await page.getByRole("button", { name: byLang("nb", "Spill av", "Play") }).first().click();
   await page.waitForTimeout(1500);
   check((await page.locator("[data-script-block][data-active]").count()) === 1, "linjen som spilles av, er markert");
   await page.screenshot({ path: `${out}/s01b-markert.png` });
@@ -211,7 +212,7 @@ await run("s02-lukk-stablet", async (page) => {
     "lukkede paneler lagres på kontoen",
   );
   // Flytt «Manus» opp i kolonnen
-  await page.getByRole("button", { name: "Flytt «Manus» opp" }).click();
+  await page.getByRole("button", { name: byLang("nb", "Flytt «Manus» opp", "Move “Script” up") }).click();
   await page.waitForTimeout(300);
   await page.screenshot({ path: `${out}/s02-lukket.png` });
 });
@@ -253,16 +254,20 @@ await run("s04-side-om-side", async (page) => {
 });
 
 await run("s05-rediger-i-vindu", async (page) => {
-  const line = page.locator("[data-script-block]").nth(1);
+  // R7: siden DV3 åpner dobbeltklikk på en replikk lydredigeringen (dialogue editor), ikke manusvinduet.
+  // Manusvinduet åpnes fra linjer som ikke er replikk, så scenarioet velger første handlingslinje.
+  const actionIds = new Set(fx.rows.script_blocks.filter((b) => b.kind === "action").map((b) => b.id));
+  const ids = await page.locator("[data-script-block]").evaluateAll((els) => els.map((e) => e.getAttribute("data-script-block")));
+  const line = page.locator(`[data-script-block="${ids.find((id) => actionIds.has(id))}"]`);
   const lineText = (await line.innerText()).trim();
   await line.dblclick();
   await page.waitForTimeout(800);
   const dlg = page.getByTestId("scene-script-dialog");
   check(await dlg.isVisible(), "dobbeltklikk åpner manuset i eget vindu");
-  const field = dlg.getByRole("textbox", { name: "Tekst" });
+  const field = dlg.getByRole("textbox", { name: byLang("nb", "Tekst", "Text") });
   check(await field.isVisible(), "linjen kan redigeres (tekstfelt i inspektøren)");
   check((await field.inputValue()).trim() === lineText.replace(/^\(|\)$/g, "").trim() || (await field.inputValue()).length > 0, "tekstfeltet har linjens tekst");
-  check(await dlg.getByRole("combobox", { name: "Elementtype" }).isVisible(), "elementtype kan endres");
+  check(await dlg.getByRole("combobox", { name: byLang("nb", "Elementtype", "Element type") }).isVisible(), "elementtype kan endres");
   await field.fill((await field.inputValue()) + " Endret.");
   await field.press("Control+Enter");
   await page.waitForTimeout(500);
