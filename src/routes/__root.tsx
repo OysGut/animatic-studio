@@ -8,7 +8,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useReducer, useSyncExternalStore, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { useTrackNavigation } from "@/app/shell/back-navigation";
@@ -17,7 +17,7 @@ import { getUiLanguage, onLanguageChange } from "@/core";
 
 import { ErrorDetails } from "@/app/shell/ErrorDetails";
 import { ExportQueueStatus } from "@/app/assembly/ExportQueueStatus";
-import { t } from "@/core/i18n/keyed";
+import { t, loadUiCatalog } from "@/core/i18n/keyed";
 
 function NotFoundComponent() {
   return (
@@ -48,6 +48,12 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   const router = useRouter();
   // ML3: feilsiden kan vises før språket er satt ved første tegning; språket leses derfor synkront.
   const lang = useSyncExternalStore(onLanguageChange, bootUiLanguage, getUiLanguage);
+  const [, refreshCatalog] = useReducer((revision: number) => revision + 1, 0);
+  useEffect(() => {
+    let active = true;
+    void loadUiCatalog(lang).then(() => { if (active) refreshCatalog(); }).catch(() => { /* English reserve remains available. */ });
+    return () => { active = false; };
+  }, [lang]);
   useEffect(() => {
     const d = document.documentElement;
     d.lang = lang;
@@ -90,6 +96,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: async () => { await loadUiCatalog(getUiLanguage()); },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -119,7 +126,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="nb" suppressHydrationWarning>
+    <html lang={getUiLanguage()} suppressHydrationWarning>
       <head>
         {/* ML2a: skjuler siden til lagret språk er satt, så første tegning ikke lekker norsk */}
         <script dangerouslySetInnerHTML={{ __html: LANGUAGE_BOOT_SCRIPT }} />

@@ -1,10 +1,18 @@
 {
-  "keys": 10140,
-  "superseded": 141,
+  "keys": 10519,
+  "superseded": 151,
   "coverage": {
     "nb": 100,
     "en": 100,
-    "en-XA": 100
+    "en-XA": 100,
+    "fr": 100,
+    "es": 100,
+    "ru": 100,
+    "ja": 100,
+    "pt-BR": 100,
+    "de": 100,
+    "it": 100,
+    "ko": 100
   },
   "complete": true,
   "problems": []

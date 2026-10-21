@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { localeFreshnessErrors } from './locale-tools.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const read = (rel) => JSON.parse(readFileSync(join(ROOT, rel), "utf8"));
@@ -20,7 +21,7 @@ function entryTexts(entry) {
   if (!entry || typeof entry !== "object") return [];
   const out = [];
   if (typeof entry.text === "string") out.push(entry.text);
-  if (entry.plural && typeof entry.plural === "object") for (const v of Object.values(entry.plural)) if (typeof v === "string") out.push(v);
+  if (entry.plural && typeof entry.plural === "object") for (const v of Object.values(entry.plural.forms ?? {})) if (typeof v === "string") out.push(v);
   return out;
 }
 
@@ -68,14 +69,20 @@ export function coverageReport(catalogs, runtime, superseded = new Set()) {
 
 /** Leser katalogene fra disk og returnerer rapporten. */
 export function releaseCoverage() {
-  const catalogs = {
-    nb: read("src/core/i18n/locales/nb.json"),
-    en: read("src/core/i18n/locales/en.json"),
-    "en-XA": read("src/core/i18n/locales/en-XA.json"),
-  };
+  const manifest = read('src/core/i18n/manifest.json');
+  const catalogs = Object.fromEntries(manifest.languages.map(l => [l.tag, read(`src/core/i18n/locales/${l.tag}.json`)]));
   const mapping = read("scripts/i18n/mapping.v1.json");
   const superseded = new Set(mapping.entries.filter((e) => e.supersededBy).map((e) => e.key));
-  return coverageReport(catalogs, read("src/core/i18n/runtime.gen.json"), superseded);
+  const result = coverageReport(catalogs, read("src/core/i18n/runtime.gen.json"), superseded);
+  const freshness = localeFreshnessErrors();
+  for (const language of manifest.languages.filter(l => !l.testOnly && !['nb', 'en'].includes(l.tag))) {
+    const keys = Object.keys(catalogs.en).filter(k => !superseded.has(k) && catalogs.en[k].executable !== false);
+    const invalid = new Set(freshness.filter(e => e.includes(`${language.tag}:`)).map(e => e.slice(e.indexOf(`${language.tag}:`) + language.tag.length + 1)));
+    result.coverage[language.tag] = Math.floor((keys.length - invalid.size) / keys.length * 10000) / 100;
+  }
+  result.problems.push(...freshness.map(problem => ({key: 'locale', problem})));
+  result.complete = result.complete && freshness.length === 0;
+  return result;
 }
 
 /** Kaster en feil med en lesbar melding hvis nb eller en ikke er komplette (brukes av bygget). */

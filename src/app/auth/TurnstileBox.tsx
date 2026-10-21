@@ -74,7 +74,7 @@ export function TurnstileBox({
           sitekey: siteKey,
           action,
           theme,
-          language: String(lang).startsWith("en") ? "en" : "nb",
+          language: lang === 'en-XA' ? 'en' : lang,
           callback: (tok: string) => cb.current(tok),
           "error-callback": () => {
             cb.current(null);

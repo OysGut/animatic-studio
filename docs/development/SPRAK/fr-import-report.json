@@ -1,0 +1,803 @@
+{
+  "code": "fr",
+  "files": 18,
+  "imported": 10400,
+  "errors": [],
+  "stale": [
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-image-run-server.message.message.1fb2430caade",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-image-run-server.message.message.d132ffa15512",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-sound-functions.message.message.56b18dcfbf18",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-text-functions.message.message.2fd3b559a274",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-video-functions.database-outdated",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-video-functions.database-outdated-queue",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-video-functions.message.message.b49b7f3f602c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-ai-write-prompt-functions.message.message.9c28c20f674f",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-backup-functions.message.message.7d38b49dd98d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.01438c3c6b49",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.04b0cde81aaf",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.0e67cf134641",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.115702403951",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.16525acc1633",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.3cd9842f48f3",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.3d6e65936633",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.402d2c13486c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.736fdd526c7e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.855135ab45cb",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.94cbfeb1a92d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.9678261bea35",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.a351f6c20569",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.a70968a5bbb7",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.b305cd2f5e74",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.bb458d81609f",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.c5c2cbda311b",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.e1f8960f3a98",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.f3d36f381f8f",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.f770da01452c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.fda297080af9",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-commands-functions.message.message.fe59c3be6214",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_01_av_18.json",
+      "key": "adapters-storage-trash-functions.message.message.a1cfbf7a94e9",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-account-privacy-statement.privacy-statement.p.4867f43d007c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-account-use-account.account-watcher.dialog-description.4e07b85b3227",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-admin-cron-status.warning.message.1494cbf069ca",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-ai-ai-panel.budget.p.9eadccb8743b",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-ai-providers-dialog.provider-detail.p.e74e02c953df",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_02_av_18.json",
+      "key": "app-ai-providers-dialog.text.text.74fba41561c8",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_03_av_18.json",
+      "key": "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_05_av_18.json",
+      "key": "app-library-asset-audio.upload-asset-audio.message.47e939439144",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_05_av_18.json",
+      "key": "app-library-asset-images.upload-one.message.0cb14e697856",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_06_av_18.json",
+      "key": "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-mobile-mobile-page.mobile-page.p.58407ddefbbc",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-mobile-mobile-page.text.message.624aef06af2d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-mobile-mobile-page.text.message.9e50fa7f0f72",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-projects-backup.open-backup-file.message.23132bc02467",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-projects-members-section.message.message.9bf4e1d2979e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_07_av_18.json",
+      "key": "app-projects-members-section.message.message.f5b9e1478f2b",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_10_av_18.json",
+      "key": "app-scene-editor-preview-window.copy-styles.message.96877f1c395d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_12_av_18.json",
+      "key": "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_13_av_18.json",
+      "key": "app-script-versions-dialog.versions-dialog.p.a04beb457477",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_13_av_18.json",
+      "key": "app-shell-schema-banner.schema-banner.p.93683cf75008",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_14_av_18.json",
+      "key": "auth.password-reset.description",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_14_av_18.json",
+      "key": "auth.password-reset.title",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_14_av_18.json",
+      "key": "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_14_av_18.json",
+      "key": "core-backup-index.parse-backup.message.9e11241c0bca",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_14_av_18.json",
+      "key": "core-backup-index.parse-backup.message.bc940e902884",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_16_av_18.json",
+      "key": "core-generation-providers.providers.message.478247762189",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_16_av_18.json",
+      "key": "core-generation-providers.providers.message.5c712e78bf84",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_16_av_18.json",
+      "key": "core-generation-providers.providers.message.8ac7f045e797",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_16_av_18.json",
+      "key": "core-generation-providers.providers.message.e3bf20933260",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_17_av_18.json",
+      "key": "core-notes-transfer.system-note-author.message.5f697b6b55b9",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-admin.content.content.2838c73c64a0",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-admin.content.content.4a28312072cc",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-admin.content.content.4a28312072cc.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-admin.title.title.50274d57d4da",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-gruppe-workspace-id.content.content.d76669de2282",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-gruppe-workspace-id.title.title.73796e5fd612",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-index.content.content.75201acaab45",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-index.content.content.75201acaab45.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-index.content.content.d4c02791089e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-index.title.title.d34b816fe818",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-invitasjon.content.content.167a3d5e4f4c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-invitasjon.content.content.2b66322361d6",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-invitasjon.content.content.2b66322361d6.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-invitasjon.title.title.15d2852cc7b6",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-konto.content.content.b01c4654387c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-konto.content.content.b01c4654387c.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-konto.content.content.f63ad82751ab",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-konto.title.title.0ad1dbde485e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-m-token.content.content.0b31cbc4811d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-m-token.content.content.e9b3848a0c50",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-m-token.content.content.e9b3848a0c50.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-m-token.title.title.5c1d0ff564a2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-manusutforsker-project-id.content.content.4c3010f3f3fb",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-manusutforsker-project-id.content.content.8a248c24cf99",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-manusutforsker-project-id.title.title.2a8a985b7a16",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-personvern.content.content.87755ed805a8",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-personvern.content.content.c2cd1c6e5143",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-personvern.content.content.c2cd1c6e5143.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-personvern.title.title.c03602ed60a1",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-bibliotek.title.title.84464307719a",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-index.content.content.6d70b69e5f67",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-index.content.content.de4fc568159e",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-manus.content.content.6918ed5f9558",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-manus.title.title.fd507ce55a58",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-scene.content.content.65f619722830",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-scene.content.content.65f619722830.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-scene.content.content.867bd9fdb846",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-scene.title.title.e56d614cb23c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-storylab.content.content.01bee122f398",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-utgivelse.content.content.548965c72889",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id.content.content.05f369d5fe5c",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id.content.content.323705133be5",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id.content.content.323705133be5.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-project-id.title.title.d35e8c26f18a",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-prosjekt-rigg.head.title",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-se-token.content.content.0c933cbe6ab9",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-se-token.content.content.0c933cbe6ab9.2",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-se-token.content.content.450bbeb07eba",
+      "error": "English source changed"
+    },
+    {
+      "file": "fr_del_18_av_18.json",
+      "key": "routes-se-token.title.title.daa9a7b91a74",
+      "error": "English source changed"
+    }
+  ],
+  "missing": [
+    "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b",
+    "adapters-storage-commands-functions.message.message.d62f99d8026f",
+    "app-assembly-export-animatic-dialog.what.message.3af59fbe53ab",
+    "app-assembly-mts-occurrences.label.message.181e9b47f9dc",
+    "app-assembly-mts-occurrences.location.location.77bd3c5d608e",
+    "app-library-image-prep.note.note.d21f734c64e4",
+    "app-scene-editor-credits-panel.design-tab.option.c0137faa825d",
+    "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e",
+    "app-scene-editor-scene-editor-workspace.carry-next.use-callback.b76e19921b89",
+    "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.b1f81e305926",
+    "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.da4a34515891",
+    "app-script-scene-navigator.scene-navigator.title.5d843ae57d5d",
+    "core-generation-providers.value.value.d1d1e232b849",
+    "core-presentation-poster.get.get.670123440a05",
+    "app-projects-promotion-dialog.line-label.same.dcc7969186d9",
+    "app-assembly-use-film-language.language-name.message.666421b951b7",
+    "app-script-remove-translations-dialog.name.message.15d1b5cf63e3",
+    "time.just-now",
+    "time.minutes-ago",
+    "time.hours-ago",
+    "time.weekday-at",
+    "time.exact",
+    "b097.last-changed.column",
+    "b097.last-changed.tip",
+    "b097.last-changed.tip-by",
+    "b097.last-changed.tip-created",
+    "b097.last-changed.aria",
+    "b097.country.label",
+    "b097.country.choose",
+    "b097.country.search",
+    "b097.country.none",
+    "b097.country.required",
+    "b097.country.why",
+    "b097.country.gate-title",
+    "b097.country.gate-text",
+    "b097.country.gate-save",
+    "b097.region.title",
+    "b097.region.clock",
+    "b097.region.date-format",
+    "b097.region.as-country",
+    "b097.region.clock-24",
+    "b097.region.clock-12",
+    "b097.region.preview",
+    "b097.region.saved",
+    "b097.region.unavailable",
+    "b097.admin.title",
+    "b097.admin.note",
+    "b097.admin.users",
+    "b097.admin.total",
+    "b097.admin.no-country",
+    "b097.admin.loading",
+    "b097.admin.unavailable",
+    "b097.privacy.country",
+    "b097.sound-kind.ask",
+    "b097.sound-kind.sfx",
+    "b097.sound-kind.ambience",
+    "b097.sound-kind.music",
+    "b098.command.font-mismatch",
+    "b098.global-kind.font",
+    "b098.add.error.upload",
+    "b098.add.undo-label",
+    "b098.add.variant-name",
+    "b098.category.serif",
+    "b098.category.sans",
+    "b098.category.display",
+    "b098.category.handwriting",
+    "b098.category.mono",
+    "b098.variant.regular",
+    "b098.variant.italic",
+    "b098.sample.default",
+    "b098.unavailable",
+    "b098.dialog.title",
+    "b098.dialog.description",
+    "b098.search.label",
+    "b098.search.placeholder",
+    "b098.filter.category",
+    "b098.filter.subset",
+    "b098.filter.all",
+    "b098.open-google",
+    "b098.results.label",
+    "b098.loading",
+    "b098.results.none",
+    "b098.sample.label",
+    "b098.variants.label",
+    "b098.license",
+    "b098.license.notice",
+    "b098.pick-hint",
+    "b098.cancel",
+    "b098.adding",
+    "b098.add",
+    "b098.picker.project-fonts",
+    "b098.picker.removed",
+    "b098.picker.add",
+    "b098.kind-plural.font",
+    "b109.auth.closed",
+    "b109.admin.title",
+    "b109.admin.note",
+    "b109.admin.label",
+    "b109.admin.open",
+    "b109.admin.closed",
+    "b109.admin.message",
+    "b109.admin.save-message",
+    "b109.admin.changed",
+    "b109.admin.never-changed",
+    "b109.admin.unknown-user",
+    "b109.admin.loading",
+    "b109.admin.unavailable",
+    "b109.admin.failed",
+    "b109.admin.confirm-close-title",
+    "b109.admin.confirm-close",
+    "b109.admin.confirm-close-ok",
+    "b109.admin.confirm-open-title",
+    "b109.admin.confirm-open",
+    "b109.admin.confirm-open-ok",
+    "b109.admin.cancel",
+    "b110.captcha.failed",
+    "b110.captcha.unavailable",
+    "b110.captcha.retry",
+    "b110.captcha.confirm",
+    "b110.admin.on",
+    "b110.admin.off-title",
+    "b110.admin.off",
+    "b110.privacy.turnstile"
+  ]
+}

@@ -3233,7 +3233,7 @@ try {
     await as("authenticated", ALICE, (tx) => tx`select public.set_my_locale('en')`);
     assert((await acct(ALICE))["locale"] === "en", "språket ble ikke lagret");
     await expectError(
-      as("authenticated", ALICE, (tx) => tx`select public.set_my_locale('de')`),
+      as("authenticated", ALICE, (tx) => tx`select public.set_my_locale('en_US')`),
       /Ukjent språk/,
     );
     // Personvern: kan leses uten innlogging; godkjenning lagres per versjon
@@ -5677,9 +5677,9 @@ try {
     assert(isDeepStrictEqual(loaded.lipsyncResults, st.lipsyncResults), "lipsync mismatch");
     assert(isDeepStrictEqual(loaded.animationPatterns, st.animationPatterns), "pattern mismatch");
     // Duplikat per klipp+take avvises i kjernen; den unike indeksen er siste skanse.
-    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(14) } }), /allerede leppesynk/);
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(14) } }), /allerede leppesynk|already has lip sync/);
     // Ugyldige verdier avvises: ukjent klipp, ukjent kilde, ugyldig farge.
-    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke/);
+    await expectError(runCommand(st, ALICE, { type: "SaveLipsyncResult", result: { ...lipsync, id: C6(15), clipId: C6(90) } }), /Replikken finnes ikke|The line was not found/);
     await expectError(as("service_role", null, tx => tx`insert into public.lipsync_results(id,project_id,clip_id,take_id,source,algorithm_version,audio_hash,created_by) values (${C6(16)},${c6Project},${C6(11)},${C6(9)},'ukjent',1,'x',${ALICE})`), "23514");
     await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,name,color,spec,created_by) values (${C6(17)},${c6Project},'X','blå','{}',${ALICE})`), "23514");
     await expectError(as("service_role", null, tx => tx`insert into public.animation_patterns(id,project_id,rig_id,name,color,spec,created_by) values (${C6(18)},${c6Project},${C6(91)},'X','#a1b2c3','{}',${ALICE})`), "23503");
@@ -6863,6 +6863,18 @@ try {
   });
 
 
+  await test('0077 (B-107): alle åtte UI-språk kan lagres uten å endre andre brukere; anon og testspråk avvises', async () => {
+    for (const language of ['fr', 'es', 'ru', 'ja', 'pt-BR', 'de', 'it', 'ko']) {
+      await as('authenticated', ALICE, tx => tx`select public.set_my_locale(${language})`);
+      const rows = await as('authenticated', ALICE, tx => tx`select public.my_account() as a`);
+      assert((rows[0]?.['a'] as Record<string, unknown>)['locale'] === language, `språk ${language} leses tilbake`);
+    }
+    await expectError(as('anon', null, tx => tx`select public.set_my_locale('fr')`), '42501');
+    await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en-XA')`), '22023');
+    await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en_US')`), '22023');
+    await as('authenticated', ALICE, tx => tx`select public.set_my_locale('nb')`);
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.['v']) === 77, 'skjemaversjon 77');
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

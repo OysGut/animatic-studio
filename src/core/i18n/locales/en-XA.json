@@ -72114,7 +72114,7 @@
     }
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
-    "text": "[!! TThhëë ïïmmppôôrrttëëdd ffïïllmm hhááss {mixed} ddïïáállôôggüüëë mmïïxxëëdd ïïnnttôô tthhëë ááüüddïïôô. ÏÏtt ccáánnnnôôtt bbëë sswwááppppëëdd ôôüütt ccôômmppllëëttëëllyy: tthhëë ffïïllmm ááüüddïïôô ïïss ppllááyyëëdd ááss ïïtt ïïss, áánndd {language} ddïïáállôôggüüëë ïïss llááïïdd ôônn ttôôpp. ÏÏff tthhëë ááüüddïïôô ïïss ôônnllyy mmüüssïïcc áánndd ëëffffëëccttss, yyôôüü ccáánn ssááyy ssôô ïïnn tthhëë ssccëënnëë ppáánnëëll. !!]"
+    "text": "[!! TThhëë ïïmmppôôrrttëëdd ffïïllmm hhááss ddïïáállôôggüüëë ïïnn {mixed} mmïïxxëëdd ïïnnttôô ïïttss ááüüddïïôô. TThhïïss ddïïáállôôggüüëë ccáánnnnôôtt bbëë ccôômmppllëëttëëllyy rrëëppllááccëëdd: tthhëë ffïïllmm ááüüddïïôô ppllááyyss ááss ïïtt ïïss, wwïïtthh ddïïáállôôggüüëë ïïnn {language} llááyyëërrëëdd ôônn ttôôpp. ÏÏff tthhëë ááüüddïïôô ccôônnttááïïnnss ôônnllyy mmüüssïïcc áánndd ëëffffëëccttss, yyôôüü ccáánn ïïnnddïïccááttëë tthhïïss ïïnn tthhëë ssccëënnëë ppáánnëëll. !!]"
   },
   "app-assembly-language-version-dialog.lipsync-scenes": {
     "text": null,
@@ -72147,13 +72147,13 @@
     }
   },
   "app-assembly-language-version-dialog.voiced-lines": {
-    "text": "[!! {voiced} ôôff {lines} llïïnnëëss wwïïtthh {language} ááüüddïïôô !!]"
+    "text": "[!! LLïïnnëëss wwïïtthh ááüüddïïôô ïïnn {language}: {voiced} ôôff {lines} !!]"
   },
   "app-assembly-language-version-dialog.intro": {
-    "text": "[!! TThhëë ssáámmëë ffïïllmm, ssccëënnëëss áánndd ïïmmáággëëss ááss tthhëë NNôôrrwwëëggïïáánn ôônnëë. HHëërrëë yyôôüü ccáánn ssëëëë wwhháátt ïïss mmïïssssïïnngg ôôrr nnëëëëddss cchhëëcckkïïnngg ïïnn tthhëë {language} vvëërrssïïôônn. NNôôtthhïïnngg ïïss rrëëggëënnëërrááttëëdd ááüüttôômmááttïïccáállllyy, áánndd tthhëë ttïïmmïïnngg ôôff tthhëë mmááïïnn ffïïllmm ïïss nnôôtt cchháánnggëëdd. !!]"
+    "text": "[!! TThhïïss vvëërrssïïôônn üüssëëss tthhëë ssáámmëë ffïïllmm, ssccëënnëëss áánndd ïïmmáággëëss ááss tthhëë mmááïïnn vvëërrssïïôônn. HHëërrëë yyôôüü ccáánn ssëëëë wwhháátt ïïss mmïïssssïïnngg ôôrr nnëëëëddss cchhëëcckkïïnngg ïïnn tthhëë {language} vvëërrssïïôônn. NNôôtthhïïnngg ïïss rrëëggëënnëërrááttëëdd ááüüttôômmááttïïccáállllyy, áánndd tthhëë ttïïmmïïnngg ôôff tthhëë mmááïïnn ffïïllmm rrëëmmááïïnnss üünncchháánnggëëdd. !!]"
   },
   "app-assembly-language-version-dialog.move-line": {
-    "text": "[!! MMôôvvëë {language} llïïnnëë !!]"
+    "text": "[!! MMôôvvëë tthhëë llïïnnëë ïïnn {language} !!]"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
     "text": null,
@@ -72906,7 +72906,7 @@
     "plural": {
       "parameter": "count",
       "forms": {
-        "one": "[!! {count} llïïnnëë tthháátt hhááss bbëëëënn ááddddëëdd áárrëë kkëëpptt (tthhëëyy áárrëë üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]",
+        "one": "[!! {count} ááddddëëdd llïïnnëë ïïss kkëëpptt (ïïtt ïïss üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]",
         "other": "[!! {count} llïïnnëëss tthháátt hháávvëë bbëëëënn ááddddëëdd áárrëë kkëëpptt (tthhëëyy áárrëë üüssëëdd bbyy áánnôôtthhëërr ssccëënnëë ïïnn tthhëë vvëërrssïïôônn ôôrr ááss áá bbôôüünnddáárryy ffôôrr áá pprrôôddüüccttïïôônn ssëëggmmëënntt). !!]"
       }
     }
@@ -72916,7 +72916,7 @@
     "plural": {
       "parameter": "count",
       "forms": {
-        "one": "[!! {count} llïïnnëë nnôô llôônnggëërr ëëxxïïsstt. !!]",
+        "one": "[!! {count} llïïnnëë nnôô llôônnggëërr ëëxxïïssttss. !!]",
         "other": "[!! {count} llïïnnëëss nnôô llôônnggëërr ëëxxïïsstt. !!]"
       }
     }
@@ -72927,7 +72927,7 @@
       "parameter": "count",
       "forms": {
         "one": "[!! {count} llïïnnëë hhááss bbëëëënn mmôôvvëëdd ttôô áánnôôtthhëërr ssccëënnëë (ssppllïïtt ôôrr mmëërrggëë) áánndd ïïss nnôôtt rrëëssttôôrrëëdd hhëërrëë. !!]",
-        "other": "[!! {count} llïïnnëëss hháávvëë bbëëëënn mmôôvvëëdd ttôô áánnôôtthhëërr ssccëënnëë (ssppllïïtt ôôrr mmëërrggëë) áánndd ïïss nnôôtt rrëëssttôôrrëëdd hhëërrëë. !!]"
+        "other": "[!! {count} llïïnnëëss hháávvëë bbëëëënn mmôôvvëëdd ttôô áánnôôtthhëërr ssccëënnëë (ssppllïïtt ôôrr mmëërrggëë) áánndd áárrëë nnôôtt rrëëssttôôrrëëdd hhëërrëë. !!]"
       }
     }
   },
@@ -73186,7 +73186,7 @@
     "text": "[!! LLáánnggüüáággëë vvëërrssïïôônn ïïnn tthhëë ëëxxppôôrrtt !!]"
   },
   "ml3-language-versions.export.incomplete": {
-    "text": "[!! TThhëë {language} ttrráánnssllááttïïôônn ïïss nnôôtt ccôômmppllëëttëë: {missing} llïïnnëëss áárrëë mmïïssssïïnngg, {uncertain} áárrëë üünnccëërrttááïïnn áánndd {review} nnëëëëdd rrëëvvïïëëww. CChhôôôôssëë wwhháátt tthhëë ëëxxppôôrrtt sshhôôüülldd ddôô. !!]"
+    "text": "[!! TThhëë ttrráánnssllááttïïôônn ïïnnttôô {language} ïïss ïïnnccôômmppllëëttëë. LLïïnnëëss mmïïssssïïnngg: {missing}; üünnccëërrttááïïnn: {uncertain}; nnëëëëddïïnngg rrëëvvïïëëww: {review}. CChhôôôôssëë hhôôww tthhëë ëëxxppôôrrtt sshhôôüülldd hháánnddllëë tthhïïss. !!]"
   },
   "ml3-language-versions.export.fallback": {
     "text": "[!! ÜÜssëë NNôôrrwwëëggïïáánn wwhhëërrëë tthhëë ttrráánnssllááttïïôônn ïïss mmïïssssïïnngg !!]"
@@ -74387,5 +74387,44 @@
   },
   "b110.privacy.turnstile": {
     "text": "[!! TTôô ssttôôpp rrôôbbôôttss ffrrôômm ccrrëëááttïïnngg ááccccôôüünnttss ôôrr mmïïssüüssïïnngg tthhëë ffôôrrmmss, wwëë üüssëë CCllôôüüddfflláárrëë TTüürrnnssttïïllëë (CCllôôüüddfflláárrëë, ÏÏnncc.) ffôôrr ssïïggnn-üüpp, ssïïggnn-ïïnn llïïnnkkss, “FFôôrrggôôtt ppáásssswwôôrrdd” áánndd ááffttëërr ssëëvvëërrááll ffááïïllëëdd ssïïggnn-ïïnnss. TTüürrnnssttïïllëë pprrôôccëëssssëëss ttëëcchhnnïïccááll ïïnnffôôrrmmááttïïôônn áábbôôüütt tthhëë bbrrôôwwssëërr áánndd ccôônnnnëëccttïïôônn (ïïnnccllüüddïïnngg ÏÏPP ááddddrrëëssss áánndd bbrrôôwwssëërr ssïïggnnáállss) ttôô ttëëllll ppëëôôppllëë ffrrôômm rrôôbbôôttss, ssëëttss nnôô ttrráácckkïïnngg ccôôôôkkïïëëss áánndd ïïss nnôôtt üüssëëdd ffôôrr ááddvvëërrttïïssïïnngg. WWëë ssëënndd yyôôüürr ÏÏPP ááddddrrëëssss ttôô CCllôôüüddfflláárrëë wwhhëënn tthhëë cchhëëcckk ïïss ccôônnffïïrrmmëëdd. TThhëë llëëggááll bbáássïïss ïïss ôôüürr llëëggïïttïïmmááttëë ïïnnttëërrëësstt ïïnn pprrôôttëëccttïïnngg tthhëë ssëërrvvïïccëë (GGDDPPRR ÁÁrrtt. 6(1)(ff)). !!]"
+  },
+  "server.error.invalid_request": {
+    "text": "[!! ÏÏnnvváállïïdd rrëëqqüüëësstt !!]"
+  },
+  "server.error.invalid_project_id": {
+    "text": "[!! ÏÏnnvváállïïdd pprrôôjjëëcctt ÏÏDD !!]"
+  },
+  "server.error.invalid_command": {
+    "text": "[!! ÏÏnnvváállïïdd ccôômmmmáánndd !!]"
+  },
+  "server.error.invalid_revisions": {
+    "text": "[!! ÏÏnnvváállïïdd rrëëvvïïssïïôônnss !!]"
+  },
+  "server.error.change_too_large": {
+    "text": "[!! TThhëë cchháánnggëë ïïss ttôôôô lláárrggëë !!]"
+  },
+  "server.error.invalid_command_id": {
+    "text": "[!! ÏÏnnvváállïïdd ccôômmmmáánndd ÏÏDD !!]"
+  },
+  "server.error.no_workspace_access": {
+    "text": "[!! NNôô ááccccëëssss ttôô tthhëë wwôôrrkkssppááccëë !!]"
+  },
+  "server.error.asset_missing": {
+    "text": "[!! TThhëë áássssëëtt ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "server.error.storage_no_response": {
+    "text": "[!! TThhëë ssttôôrráággëë ddïïdd nnôôtt rrëëssppôônndd !!]"
+  },
+  "server.error.invalid_storage_path": {
+    "text": "[!! ÏÏnnvváállïïdd ssttôôrráággëë ppáátthh !!]"
+  },
+  "server.error.invalid_script_revision": {
+    "text": "[!! ÏÏnnvváállïïdd ssccrrïïpptt rrëëvvïïssïïôônn !!]"
+  },
+  "server.error.text_too_long": {
+    "text": "[!! TThhëë ttëëxxtt ïïss ttôôôô llôônngg (mmááxx {max} cchháárrááccttëërrss) !!]"
+  },
+  "app-i18n-language.language-switch.change-title": {
+    "text": "[!! CChháánnggëë lláánnggüüáággëë !!]"
   }
 }

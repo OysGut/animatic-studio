@@ -23,7 +23,7 @@ export function SceneLab({ state, projectId, sceneId, editable, initialSession, 
   initialSession?: StorySession; onProfile?: (id: string) => void; onScene?: (id: string) => void;
 }) {
   const data = sceneLabData(state, sceneId);
-  const language = useLanguage() === "en" ? "en" : "nb";
+  const language = useLanguage();
   const [tab, setTab] = useState<"analysis" | "improv" | "check">(initialSession?.kind === "scene_improv" ? "improv" : "analysis");
   const [session, setSession] = useState<StorySession | null>(initialSession ?? null);
   const [analysisSession, setAnalysisSession] = useState<StorySession | null>(initialSession?.kind === "scene_analysis" ? initialSession : null);

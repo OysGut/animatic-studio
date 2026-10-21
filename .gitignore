@@ -53,3 +53,5 @@ dist-ssr
 *.key
 # Python-cache fra kontrollskript
 __pycache__/
+
+.overforing/

@@ -3,6 +3,8 @@ export type MessageValue = string | number | boolean | Date;
 export type MessageParameters = Readonly<Record<string, MessageValue>>;
 export interface CatalogMessage {
   readonly text: string | null;
+  readonly sourceHash?: string;
+  readonly review?: 'user' | 'machine';
   readonly executable?: boolean;
   readonly source?: string;
   readonly parameters?: readonly { readonly name: string; readonly expression?: string; readonly conditional?: boolean }[];
@@ -33,7 +35,7 @@ export function canonicalLocale(tag: string): string {
   return first;
 }
 export function validateManifest(manifest: LanguageManifest): void {
-  if (manifest.version !== 1 || manifest.defaultLocale !== 'nb' || !Number.isInteger(manifest.maxFallbackDepth) || manifest.maxFallbackDepth < 1 || manifest.maxFallbackDepth > 32) throw new Error('Invalid language manifest');
+  if (manifest.version !== 1 || !['nb', 'en'].includes(manifest.defaultLocale) || !Number.isInteger(manifest.maxFallbackDepth) || manifest.maxFallbackDepth < 1 || manifest.maxFallbackDepth > 32) throw new Error('Invalid language manifest');
   const languages = new Map<string, CatalogLanguage>();
   for (const lang of manifest.languages) {
     const tag = canonicalLocale(lang.tag);
@@ -41,8 +43,8 @@ export function validateManifest(manifest: LanguageManifest): void {
     if (tag !== lang.tag || languages.has(tag)) throw new Error(`Duplicate or noncanonical language: ${lang.tag}`);
     languages.set(tag, lang);
   }
-  const base = languages.get('nb');
-  if (!base || base.fallbacks.length) throw new Error('Norwegian must be the final fallback');
+  const base = languages.get(manifest.defaultLocale);
+  if (!base || base.fallbacks.length) throw new Error('Default language must be the final fallback');
   const visit = (tag: string, stack: readonly string[]) => {
     if (stack.includes(tag)) throw new Error(`Fallback cycle: ${[...stack, tag].join(' -> ')}`);
     if (stack.length >= manifest.maxFallbackDepth) throw new Error('Fallback depth exceeded');
@@ -59,11 +61,11 @@ export function fallbackChain(manifest: LanguageManifest, requested: string): re
   const chain: string[] = [];
   const walk = (current: string) => {
     if (chain.includes(current)) return;
-    if (current !== 'nb') chain.push(current);
+    if (current !== manifest.defaultLocale) chain.push(current);
     for (const reserve of languages.get(current)?.fallbacks ?? []) walk(reserve);
   };
   if (languages.has(tag)) walk(tag);
-  return [...chain, 'nb'];
+  return [...chain, manifest.defaultLocale];
 }
 const namesIn = (text: string) => [...text.matchAll(/\{([A-Za-z_][\w]*)\}/g)].map((match) => match[1] ?? '').sort();
 const unique = (names: readonly string[]) => [...new Set(names)].sort();
@@ -77,12 +79,14 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
   const en = catalogs['en'];
   if (!nb || !en) return ['Missing nb/en catalog'];
   const allKeys = new Set([...Object.keys(nb), ...Object.keys(en)]);
+  // English is the reserve, but nb/en still have the same authored parameter contract.
+  for (const key of allKeys) if (nb[key] && en[key] && JSON.stringify(messageParameterNames(nb[key])) !== JSON.stringify(messageParameterNames(en[key]))) errors.push(`Parameter mismatch: en:${key}`);
   for (const lang of manifest.languages) {
     const catalog = catalogs[lang.tag];
     if (!catalog) { errors.push(`Missing catalog: ${lang.tag}`); continue; }
     for (const key of allKeys) {
       const message = catalog[key];
-      const base = nb[key];
+      const base = en[key];
       if (!base || !en[key] || (lang.complete && !message)) { errors.push(`Missing required message: ${lang.tag}:${key}`); continue; }
       if (!message) continue;
       if (message.executable === false) {
@@ -90,7 +94,7 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
         if (typeof message.source !== 'string' || !message.source) errors.push(`Missing legacy expression: ${lang.tag}:${key}`);
         continue;
       }
-      if (message.text === null && !message.plural) errors.push(`Missing text: ${lang.tag}:${key}`);
+      if ((message.text === null && !message.plural) || (message.text === '' && base.text !== '')) errors.push(`Missing text: ${lang.tag}:${key}`);
       if (JSON.stringify(messageParameterNames(message)) !== JSON.stringify(messageParameterNames(base))) errors.push(`Parameter mismatch: ${lang.tag}:${key}`);
       const declared = message.parameters?.map((p) => p.name);
       if (declared && (new Set(declared).size !== declared.length || declared.some((name) => !/^[A-Za-z_][\w]*$/.test(name)))) errors.push(`Invalid parameter declaration: ${lang.tag}:${key}`);
@@ -110,8 +114,8 @@ export function catalogErrors(manifest: LanguageManifest, catalogs: Readonly<Rec
   }
   return errors;
 }
-export function createTranslator(manifest: LanguageManifest, catalogs: Readonly<Record<string, MessageCatalog>>, onMissing?: (event: { readonly key: string; readonly locale: string; readonly fallback: string }) => void) {
-  const errors = catalogErrors(manifest, catalogs);
+export function createTranslator(manifest: LanguageManifest, catalogs: Readonly<Record<string, MessageCatalog>>, onMissing?: (event: { readonly key: string; readonly locale: string; readonly fallback: string }) => void, lazy = false) {
+  const errors = lazy ? [] : catalogErrors(manifest, catalogs);
   if (errors.length) throw new Error(errors.join('\n'));
   const languages = new Map(manifest.languages.map((lang) => [lang.tag, lang]));
   // Chains are pure per requested tag; cache them so render-time lookups do not revalidate the manifest.
@@ -125,17 +129,19 @@ export function createTranslator(manifest: LanguageManifest, catalogs: Readonly<
     }
     return hit;
   };
-  return (key: string, params: MessageParameters = {}, requested = 'nb'): string => {
+  return (key: string, params: MessageParameters = {}, requested = manifest.defaultLocale): string => {
     const { normalized, chain } = resolve(requested);
-    if (!catalogs['nb']?.[key]) throw new Error(`Unknown translation key: ${key}`);
+    if (!catalogs['en']?.[key]) throw new Error(`Unknown translation key: ${key}`);
     for (const tag of chain) {
       const message = catalogs[tag]?.[key];
       if (!message) continue;
+      if (message.text === '' && catalogs['en']?.[key]?.text !== '') continue;
+      if (message.text === null && !message.plural) continue;
       if (message.executable === false) throw new Error(`Legacy expression requires explicit migration: ${key}`);
       const expected = messageParameterNames(message);
       const supplied = Object.keys(params).sort();
       if (JSON.stringify(expected) !== JSON.stringify(supplied)) throw new Error(`Invalid parameters for key: ${key}`);
-      const formatLocale = languages.get(tag)?.formatLocale ?? 'nb-NO';
+      const formatLocale = languages.get(normalized)?.formatLocale ?? languages.get(tag)?.formatLocale ?? 'en-GB';
       let text = message.text;
       if (message.plural) {
         const count = params[message.plural.parameter];

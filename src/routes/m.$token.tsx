@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { MobilePage } from "@/app/mobile/MobilePage";
-import { useLanguage } from "@/app/i18n/language";
+import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { t } from "@/core/i18n/keyed";
 
 /**
@@ -25,5 +25,5 @@ export const Route = createFileRoute("/m/$token")({
 function MobileRoute() {
   useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { token } = Route.useParams();
-  return <MobilePage token={token} />;
+  return <><div className="flex justify-end bg-bg-app p-2"><LanguageSwitch compact /></div><MobilePage token={token} /></>;
 }

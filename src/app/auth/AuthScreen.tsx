@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label";
 import { PrivacyLink } from "@/app/account/use-account";
 import { CountryPicker } from "@/app/account/CountryPicker";
 import { t } from "@/core/i18n/keyed";
+import { LanguageSwitch, useLanguage } from '@/app/i18n/language';
 
 type Mode = "signin" | "signup";
 
@@ -65,6 +66,7 @@ function norwegianAuthError(message: string, closedText?: string): string {
 
 /** Innlogging (e-post + passord eller innloggingslenke). Ingen markedsføringsflate – rett til arbeid. */
 export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
+  useLanguage();
   const [modeState, setMode] = useState<Mode>("signin");
   // B-109: stengt registrering skjuler «Opprett konto» (unntak: invitasjonslenker, som databasen slipper inn)
   const reg = useQuery({ queryKey: ["registration-status"], queryFn: fetchRegistrationStatus, staleTime: 60_000 });
@@ -204,6 +206,7 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <div className="w-full max-w-[360px]">
         <div className="mb-8">
+          <div className="mb-3 flex justify-end"><LanguageSwitch compact /></div>
           <h1 className="text-2xl font-semibold tracking-tight text-text-primary">
             From Pen to Glass
           </h1>

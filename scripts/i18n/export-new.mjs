@@ -1,0 +1,10 @@
+import { exportNew, ROOT } from './locale-tools.mjs';
+import { writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+const code = process.argv[2];
+if (!code) throw new Error('Usage: export-new.mjs <code> [--machine]');
+const machine = process.argv.includes('--machine');
+const entries = exportNew(code, ROOT, machine);
+const path = join(ROOT, `docs/development/SPRAK/${code}_${machine ? 'review' : 'new'}_del_01_av_01.json`);
+writeFileSync(path, JSON.stringify(entries, null, 2) + '\n');
+console.log(`${Object.keys(entries).length} keys: ${path}`);

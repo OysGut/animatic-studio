@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { t } from "@/core/i18n/keyed";
+import { LanguageSwitch, useLanguage } from '@/app/i18n/language';
 
 // Fang fragmentet før Supabase fjerner det etter å ha lest recovery-tokenet.
 const recoveryHash = typeof window !== "undefined" &&
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/tilbakestill-passord")({
 });
 
 function ResetPasswordPage() {
+  useLanguage();
   const [ready, setReady] = useState(false);
   const [checking, setChecking] = useState(true);
   const [password, setPassword] = useState("");
@@ -63,6 +65,7 @@ function ResetPasswordPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
       <div className="w-full max-w-[360px] space-y-4 border border-border bg-surface-1 p-6 text-text-primary">
+        <LanguageSwitch compact />
         <h1 className="text-xl font-semibold">{t("auth.password-reset.heading")}</h1>
         {done ? <p role="status">{t("auth.password-reset.success")}</p> : checking ?
           <p role="status">{t("auth.password-reset.checking")}</p> : !ready ?

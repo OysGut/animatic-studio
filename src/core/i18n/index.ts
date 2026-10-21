@@ -14,27 +14,26 @@
  * notater, navn) og AI-prompter oversettes ikke.
  */
 import { CATALOG } from "./catalog.gen";
+import { isUiLang, languageFormatLocale, type UiLang } from './languages';
+export { isUiLang, UI_LANGUAGES, type UiLang } from './languages';
 
 export type Lang = "nb" | "en";
 export const LANGUAGES: readonly Lang[] = ["nb", "en"];
-/** Språkene brukerflaten kan vises på (ML2a): `en-XA` er et testspråk bygd fra engelsk. */
-export type UiLang = Lang | "en-XA";
-export const UI_LANGUAGES: readonly UiLang[] = ["nb", "en", "en-XA"];
-export function isUiLang(v: unknown): v is UiLang {
-  return v === "nb" || v === "en" || v === "en-XA";
-}
-
-let current: UiLang = "nb";
+let current: UiLang = "en";
+let requestLanguage: (() => UiLang | undefined) | undefined;
+/** Adapter injects request-local SSR state; the core never imports a platform API. */
+export function installRequestLanguageReader(reader: () => UiLang | undefined): void { requestLanguage = reader; }
 const listeners = new Set<() => void>();
 
 /** Grunnspråket (nb/en). Testspråket `en-XA` regnes som engelsk her, så eksisterende kode virker uendret. */
 export function getLanguage(): Lang {
-  return current === "nb" ? "nb" : "en";
+  // Legacy nb/en data/prompt contract, not the open interface-language type.
+  return getUiLanguage() === "nb" ? "nb" : "en";
 }
 
 /** Det valgte visningsspråket, også testspråket `en-XA`. */
 export function getUiLanguage(): UiLang {
-  return current;
+  return requestLanguage?.() ?? current;
 }
 
 /** Pseudotekst for `en-XA`: aksenter, doble bokstaver og markører, plassholdere `{x}` urørt. Lik inventarets. */
@@ -66,7 +65,8 @@ export function onLanguageChange(f: () => void): () => void {
  * @deprecated ML2f: ikke en skrivevei lenger – bruk `t()` med en katalognøkkel. Stoppes av i18n-sjekken.
  */
 export function L(nb: string, en: string): string {
-  return current === "nb" ? nb : current === "en" ? en : pseudoText(en);
+  const language = getUiLanguage();
+  return language === "nb" ? nb : language === "en-XA" ? pseudoText(en) : en;
 }
 
 /** Et tekstpar for faste oppslag (`localized`). */
@@ -98,12 +98,14 @@ export function localized<K extends string | number>(
 
 /** Språkkoden for datoer og tall. */
 export function locale(): string {
-  return current === "nb" ? "nb-NO" : "en-GB";
+  return languageFormatLocale(getUiLanguage());
 }
 
 /** Sorteringsspråket (alfabetisk rekkefølge i lister). */
 export function collation(): string {
-  return current === "nb" ? "nb" : "en";
+  // Preserve the established nb/en collation tags; new interfaces use their registered locale.
+  const language = getUiLanguage();
+  return language === 'nb' || language === 'en' ? language : languageFormatLocale(language);
 }
 
 // ---------------------------------------------------------------- Meldinger fra serveren

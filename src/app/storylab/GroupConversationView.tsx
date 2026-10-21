@@ -39,7 +39,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const seed = typeof session.context["seed"] === "number" ? session.context["seed"] : 1;
   const profiles = (session.context["profiles"] ?? {}) as Record<string, StoryProfile | null>;
   const names = nameMap(state);
-  const uiLang = useLanguage() === "en" ? "en" : "nb";
+  const uiLang = useLanguage();
   const [mode, setMode] = useState<EngineMode>(session.context["mode"] === "improv" ? "improv" : "qa");
   const [turns, setTurns] = useState<StoredTurn[]>(session.turns);
   const turnsRef = useRef(turns);

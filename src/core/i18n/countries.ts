@@ -18,7 +18,7 @@ export const isCountryCode = (v: unknown): v is string => typeof v === "string" 
 /** Landets navn på gitt språk (faller tilbake til koden). */
 export function countryName(code: string, language: string): string {
   try {
-    return new Intl.DisplayNames([language === "nb" ? "nb" : "en"], { type: "region" }).of(code) ?? code;
+    return new Intl.DisplayNames([language === 'en-XA' ? 'en' : language, 'en'], { type: "region" }).of(code) ?? code;
   } catch {
     return code;
   }

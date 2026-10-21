@@ -245,6 +245,7 @@ export function generatedFiles(inventory) {
   for (const [key, msg] of Object.entries(locales.en)) locales['en-XA'][key] = { ...msg, text: msg.text === null ? null : pseudoText(msg.text), ...(msg.plural ? { plural: { ...msg.plural, forms: Object.fromEntries(Object.entries(msg.plural.forms).map(([c, f]) => [c, pseudoText(f)])) } } : {}) };
   // Runtime ships only keys referenced by t()/tLocalized; the full catalogs stay build-time artifacts.
   const runtimeKeys = [...new Set(inventory.references.filter((r) => r.kind === 't' && r.key).map((r) => r.key))].filter((k) => locales.nb[k]).sort();
+  for (const key of Object.keys(locales.en).filter(k => k.startsWith('server.error.'))) if (!runtimeKeys.includes(key)) runtimeKeys.push(key);
   const runtime = { nb: {}, en: {} };
   for (const key of runtimeKeys) for (const lang of ['nb', 'en']) {
     const { text, plural, formats } = locales[lang][key];

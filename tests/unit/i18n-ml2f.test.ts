@@ -73,8 +73,8 @@ describe("ML2f – flertall og valg gir de gamle tekstene ordrett", () => {
   it("språkversjonen bruker språkordet og tidskonflikter i flertall", () => {
     expect(t("app-assembly-language-version-dialog.timing-conflicts", { count: 1 })).toBe("1 timingkonflikt");
     expect(t("app-assembly-language-version-dialog.timing-conflicts", { count: 2 })).toBe("2 timingkonflikter");
-    expect(t("app-assembly-language-version-dialog.voiced-lines", { voiced: 3, lines: 5, language: "engelsk" })).toBe("3 av 5 replikker med engelsk lyd");
-    expect(at("en", () => t("app-assembly-language-version-dialog.voiced-lines", { voiced: 3, lines: 5, language: "English" }))).toBe("3 of 5 lines with English audio");
+    expect(t("app-assembly-language-version-dialog.voiced-lines", { voiced: 3, lines: 5, language: "engelsk" })).toBe("Replikker med lyd på engelsk: 3 av 5");
+    expect(at("en", () => t("app-assembly-language-version-dialog.voiced-lines", { voiced: 3, lines: 5, language: "English" }))).toBe("Lines with audio in English: 3 of 5"); // B-107: grammar no longer depends on an adjective.
   });
 
   it("manustekstene fra ML2c: notater og scener uten nummer", () => {

@@ -5,9 +5,9 @@
  * kjennes igjen mot de norske malene, og ellers brukes `tm` som før.
  * Ren TypeScript uten avhengigheter.
  */
-import { createTranslator, type MessageCatalog, type MessageParameters, type LanguageManifest } from "./messages";
-import manifest from "./manifest.json";
-import { getUiLanguage, pseudoText, tm } from "./index";
+import { type MessageParameters } from "./messages";
+import { getUiLanguage, tm } from "./index";
+import { t } from './keyed';
 
 /** Kode → [norsk mal, engelsk mal]. Koder endres eller gjenbrukes aldri. */
 export const SERVER_ERRORS = {
@@ -28,24 +28,18 @@ export const SERVER_ERRORS = {
 export type ServerErrorCode = keyof typeof SERVER_ERRORS;
 
 export const serverErrorKey = (code: ServerErrorCode) => `server.error.${code}`;
+const ERROR_KEYS = {
+  invalid_request: 'server.error.invalid_request', invalid_project_id: 'server.error.invalid_project_id',
+  invalid_command: 'server.error.invalid_command', invalid_revisions: 'server.error.invalid_revisions',
+  change_too_large: 'server.error.change_too_large', invalid_command_id: 'server.error.invalid_command_id',
+  no_workspace_access: 'server.error.no_workspace_access', asset_missing: 'server.error.asset_missing',
+  storage_no_response: 'server.error.storage_no_response', invalid_storage_path: 'server.error.invalid_storage_path',
+  invalid_script_revision: 'server.error.invalid_script_revision', text_too_long: 'server.error.text_too_long',
+} as const satisfies Record<ServerErrorCode, string>;
 
-function catalogs(): Record<string, MessageCatalog> {
-  const nb: Record<string, { text: string }> = {};
-  const en: Record<string, { text: string }> = {};
-  const xa: Record<string, { text: string }> = {};
-  for (const [code, [n, e]] of Object.entries(SERVER_ERRORS)) {
-    const key = serverErrorKey(code as ServerErrorCode);
-    nb[key] = { text: n };
-    en[key] = { text: e };
-    xa[key] = { text: pseudoText(e) };
-  }
-  return { nb, en, "en-XA": xa };
-}
-
-let translate: ReturnType<typeof createTranslator> | undefined;
 function tr(code: ServerErrorCode, params: MessageParameters, lang: string) {
-  translate ??= createTranslator(manifest as LanguageManifest, catalogs());
-  return translate(serverErrorKey(code), params, lang);
+  const key = ERROR_KEYS[code];
+  return t(key, params, lang);
 }
 
 /** Feil med stabil kode. `message` er norsk, slik serveren alltid har svart. */

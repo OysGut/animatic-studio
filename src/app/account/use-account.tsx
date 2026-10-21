@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { getLanguage, tm } from "@/core";
+import { tm } from "@/core";
 import {
   acceptPrivacy,
   fetchMyAccount,
@@ -16,7 +16,7 @@ import {
 import { signOut, signupCountry } from "@/adapters/browser/auth";
 import { saveMyCountry } from "@/adapters/browser/account";
 import { CountryPicker } from "./CountryPicker";
-import { chooseLanguage, useLanguage } from "@/app/i18n/language";
+import { applyProfileLanguage, onExplicitLanguageChoice, useLanguage } from "@/app/i18n/language";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -45,8 +45,6 @@ export function usePrivacyPolicy() {
   return useQuery({ queryKey: PRIVACY_KEY, queryFn: fetchPrivacyPolicy, staleTime: 5 * 60_000 });
 }
 
-let localeSynced = false;
-
 // i18n-ignore: nøkkel i nettleserens lager
 const TOUCH_KEY = "animatic:last-touch";
 
@@ -55,18 +53,7 @@ export function AccountWatcher() {
   const qc = useQueryClient();
   const account = useMyAccount();
   const policy = usePrivacyPolicy();
-  const lang = useLanguage();
-  // Språkvalget på kontoen tas i bruk én gang per innlasting. Flagget ligger utenfor komponenten fordi
-  // språkbytte tegner hele appen på nytt (LanguageRoot), og da ville et ref ha nullstilt seg og satt
-  // tilbake det gamle språket (feil funnet av Mars 15.10.2026: språkvelgeren «hang seg opp»).
-  const synced = {
-    get current() {
-      return localeSynced;
-    },
-    set current(v: boolean) {
-      localeSynced = v;
-    },
-  };
+  useLanguage();
   const [readIt, setReadIt] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,22 +70,19 @@ export function AccountWatcher() {
     void touchActivity().catch(() => undefined);
   }, []);
 
-  // Språket på kontoen gjelder ved innlogging; senere valg lagres på kontoen
+  // Profile wins once per sign-in. Only explicit user choices are persisted, never browser detection.
   const a = account.data;
   useEffect(() => {
     if (!a) return;
-    if (!synced.current) {
-      synced.current = true;
-      if (a.locale && a.locale !== getLanguage()) chooseLanguage(a.locale);
-      else if (!a.locale) void saveMyLocale(getLanguage()).catch(() => undefined);
-      return;
-    }
-    // Testspråket en-XA lagres aldri på kontoen; det regnes som engelsk
-    const base = lang === "nb" ? "nb" : "en";
-    if (a.locale !== base)
-      void saveMyLocale(base).then(() => qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY }));
-  }, [a, lang, qc]);
-
+    void applyProfileLanguage(a.locale);
+    const off = onExplicitLanguageChoice(language => {
+      if (language === 'en-XA') return;
+      void saveMyLocale(language).then(error => {
+        if (!error) void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+      });
+    });
+    return off;
+  }, [a?.locale, !!a, qc]);
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
   useEffect(() => {
     if (a && a.status !== "active") void signOut();

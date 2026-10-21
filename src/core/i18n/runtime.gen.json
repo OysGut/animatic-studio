@@ -5634,7 +5634,7 @@
       "text": "Gå til replikken"
     },
     "app-assembly-language-version-dialog.intro": {
-      "text": "Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den {language}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
+      "text": "Samme film, scener og bilder som hovedversjonen. Her ser du hva som mangler eller må sjekkes i versjonen på {language}. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
     },
     "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
       "text": "Scener"
@@ -5674,7 +5674,7 @@
       }
     },
     "app-assembly-language-version-dialog.mixed-dialogue": {
-      "text": "Den importerte filmen har {mixed} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og {language} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
+      "text": "Den importerte filmen har dialog på {mixed} blandet inn i lyden. Dialogen kan ikke byttes helt ut: filmlyden spilles som den er, og dialog på {language} legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
     },
     "app-assembly-language-version-dialog.mixed-scenes": {
       "text": null,
@@ -5687,7 +5687,7 @@
       }
     },
     "app-assembly-language-version-dialog.move-line": {
-      "text": "Flytt {language} replikk"
+      "text": "Flytt replikken på {language}"
     },
     "app-assembly-language-version-dialog.timing-conflicts": {
       "text": null,
@@ -5700,7 +5700,7 @@
       }
     },
     "app-assembly-language-version-dialog.voiced-lines": {
-      "text": "{voiced} av {lines} replikker med {language} lyd"
+      "text": "Replikker med lyd på {language}: {voiced} av {lines}"
     },
     "app-assembly-long-film-import-dialog.import-long-film": {
       "text": null,
@@ -7813,11 +7813,11 @@
     "app-i18n-language.language-switch.aria-label.a2595484506d": {
       "text": "Språk"
     },
+    "app-i18n-language.language-switch.change-title": {
+      "text": "Bytt språk"
+    },
     "app-i18n-language.language-switch.title.52f62cdf7cf1": {
       "text": "Testspråk (bare i utvikling)"
-    },
-    "app-i18n-language.language-switch.title.691fad620f12": {
-      "text": "Språk i tjenesten"
     },
     "app-inspect.angle": {
       "text": "Vinkel"
@@ -31434,7 +31434,7 @@
       "text": "Bruk norsk der oversettelsen mangler"
     },
     "ml3-language-versions.export.incomplete": {
-      "text": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre."
+      "text": "Oversettelsen til {language} er ikke ferdig. Linjer som mangler: {missing}; usikre: {uncertain}; til gjennomgang: {review}. Velg hva eksporten skal gjøre."
     },
     "ml3-language-versions.export.language": {
       "text": "Språkversjon i eksporten"
@@ -32028,6 +32028,42 @@
     },
     "time.weekday-at": {
       "text": "{weekday} kl. {time}"
+    },
+    "server.error.invalid_request": {
+      "text": "Ugyldig forespørsel"
+    },
+    "server.error.invalid_project_id": {
+      "text": "Ugyldig prosjekt-ID"
+    },
+    "server.error.invalid_command": {
+      "text": "Ugyldig kommando"
+    },
+    "server.error.invalid_revisions": {
+      "text": "Ugyldige revisjoner"
+    },
+    "server.error.change_too_large": {
+      "text": "Endringen er for stor"
+    },
+    "server.error.invalid_command_id": {
+      "text": "Ugyldig kommando-ID"
+    },
+    "server.error.no_workspace_access": {
+      "text": "Ingen tilgang til gruppen"
+    },
+    "server.error.asset_missing": {
+      "text": "Ressursen finnes ikke"
+    },
+    "server.error.storage_no_response": {
+      "text": "Lagringen svarte ikke"
+    },
+    "server.error.invalid_storage_path": {
+      "text": "Ugyldig lagringssti"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Ugyldig manusrevisjon"
+    },
+    "server.error.text_too_long": {
+      "text": "Teksten er for lang (maks {max} tegn)"
     }
   },
   "en": {
@@ -37665,7 +37701,7 @@
       "text": "Go to the line"
     },
     "app-assembly-language-version-dialog.intro": {
-      "text": "The same film, scenes and images as the Norwegian one. Here you can see what is missing or needs checking in the {language} version. Nothing is regenerated automatically, and the timing of the main film is not changed."
+      "text": "This version uses the same film, scenes and images as the main version. Here you can see what is missing or needs checking in the {language} version. Nothing is regenerated automatically, and the timing of the main film remains unchanged."
     },
     "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
       "text": "Scenes"
@@ -37705,7 +37741,7 @@
       }
     },
     "app-assembly-language-version-dialog.mixed-dialogue": {
-      "text": "The imported film has {mixed} dialogue mixed into the audio. It cannot be swapped out completely: the film audio is played as it is, and {language} dialogue is laid on top. If the audio is only music and effects, you can say so in the scene panel."
+      "text": "The imported film has dialogue in {mixed} mixed into its audio. This dialogue cannot be completely replaced: the film audio plays as it is, with dialogue in {language} layered on top. If the audio contains only music and effects, you can indicate this in the scene panel."
     },
     "app-assembly-language-version-dialog.mixed-scenes": {
       "text": null,
@@ -37718,7 +37754,7 @@
       }
     },
     "app-assembly-language-version-dialog.move-line": {
-      "text": "Move {language} line"
+      "text": "Move the line in {language}"
     },
     "app-assembly-language-version-dialog.timing-conflicts": {
       "text": null,
@@ -37731,7 +37767,7 @@
       }
     },
     "app-assembly-language-version-dialog.voiced-lines": {
-      "text": "{voiced} of {lines} lines with {language} audio"
+      "text": "Lines with audio in {language}: {voiced} of {lines}"
     },
     "app-assembly-long-film-import-dialog.import-long-film": {
       "text": null,
@@ -39844,11 +39880,11 @@
     "app-i18n-language.language-switch.aria-label.a2595484506d": {
       "text": "Language"
     },
+    "app-i18n-language.language-switch.change-title": {
+      "text": "Change language"
+    },
     "app-i18n-language.language-switch.title.52f62cdf7cf1": {
       "text": "Test language (development only)"
-    },
-    "app-i18n-language.language-switch.title.691fad620f12": {
-      "text": "Language of the app"
     },
     "app-inspect.angle": {
       "text": "Angle"
@@ -62521,7 +62557,7 @@
       "plural": {
         "parameter": "count",
         "forms": {
-          "one": "{count} line that has been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+          "one": "{count} added line is kept (it is used by another scene in the version or as a boundary for a production segment).",
           "other": "{count} lines that have been added are kept (they are used by another scene in the version or as a boundary for a production segment)."
         }
       }
@@ -62531,7 +62567,7 @@
       "plural": {
         "parameter": "count",
         "forms": {
-          "one": "{count} line no longer exist.",
+          "one": "{count} line no longer exists.",
           "other": "{count} lines no longer exist."
         }
       }
@@ -62542,7 +62578,7 @@
         "parameter": "count",
         "forms": {
           "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
-          "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+          "other": "{count} lines have been moved to another scene (split or merge) and are not restored here."
         }
       }
     },
@@ -63465,7 +63501,7 @@
       "text": "Use Norwegian where the translation is missing"
     },
     "ml3-language-versions.export.incomplete": {
-      "text": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do."
+      "text": "The translation into {language} is incomplete. Lines missing: {missing}; uncertain: {uncertain}; needing review: {review}. Choose how the export should handle this."
     },
     "ml3-language-versions.export.language": {
       "text": "Language version in the export"
@@ -64059,6 +64095,42 @@
     },
     "time.weekday-at": {
       "text": "{weekday} at {time}"
+    },
+    "server.error.invalid_request": {
+      "text": "Invalid request"
+    },
+    "server.error.invalid_project_id": {
+      "text": "Invalid project ID"
+    },
+    "server.error.invalid_command": {
+      "text": "Invalid command"
+    },
+    "server.error.invalid_revisions": {
+      "text": "Invalid revisions"
+    },
+    "server.error.change_too_large": {
+      "text": "The change is too large"
+    },
+    "server.error.invalid_command_id": {
+      "text": "Invalid command ID"
+    },
+    "server.error.no_workspace_access": {
+      "text": "No access to the workspace"
+    },
+    "server.error.asset_missing": {
+      "text": "The asset does not exist"
+    },
+    "server.error.storage_no_response": {
+      "text": "The storage did not respond"
+    },
+    "server.error.invalid_storage_path": {
+      "text": "Invalid storage path"
+    },
+    "server.error.invalid_script_revision": {
+      "text": "Invalid script revision"
+    },
+    "server.error.text_too_long": {
+      "text": "The text is too long (max {max} characters)"
     }
   }
 }

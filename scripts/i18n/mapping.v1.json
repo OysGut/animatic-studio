@@ -268822,7 +268822,10 @@
       "parameterConflict": false,
       "signature": "691fad620f12",
       "key": "app-i18n-language.language-switch.title.691fad620f12",
-      "migrated": true
+      "migrated": true,
+      "supersededBy": [
+        "app-i18n-language.language-switch.change-title"
+      ]
     },
     {
       "file": "src/app/i18n/language.tsx",

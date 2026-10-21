@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { LayoutGrid, List, PanelLeft, PanelRight, Plus } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { RELATION_LABEL, RELATION_LABEL_EN, knowledgeAt, mainProduction, locale, type Asset, type ProjectState } from "@/core";
+import { RELATION_NAME, knowledgeAt, mainProduction, type Asset, type ProjectState } from "@/core";
 import { listStorySessions, setSuggestionStatus, type StorySuggestion } from "@/adapters/storylab/sessions.functions";
 import { SuggestionsPanel } from "./SuggestionsPanel";
 import { SuggestionsNavigation, suggestionKey, useStorySuggestions } from "./suggestions-data";
@@ -514,7 +514,7 @@ function ContextPanel({
               return (
                 <li key={r.id}>
                   <span className="text-text-primary">{other?.name ?? "?"}</span>
-                  {` – ${r.label.trim() || (locale() === "en" ? RELATION_LABEL_EN : RELATION_LABEL)[r.kind]}`}
+                  {` – ${r.label.trim() || RELATION_NAME[r.kind]}`}
                   {r.description ? <p className="text-[12px] text-text-tertiary">{r.description}</p> : null}
                 </li>
               );

@@ -72132,7 +72132,7 @@
     }
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
-    "text": "Den importerte filmen har {mixed} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og {language} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
+    "text": "Den importerte filmen har dialog på {mixed} blandet inn i lyden. Dialogen kan ikke byttes helt ut: filmlyden spilles som den er, og dialog på {language} legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
   },
   "app-assembly-language-version-dialog.lipsync-scenes": {
     "text": null,
@@ -72165,13 +72165,13 @@
     }
   },
   "app-assembly-language-version-dialog.voiced-lines": {
-    "text": "{voiced} av {lines} replikker med {language} lyd"
+    "text": "Replikker med lyd på {language}: {voiced} av {lines}"
   },
   "app-assembly-language-version-dialog.intro": {
-    "text": "Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den {language}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
+    "text": "Samme film, scener og bilder som hovedversjonen. Her ser du hva som mangler eller må sjekkes i versjonen på {language}. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
   },
   "app-assembly-language-version-dialog.move-line": {
-    "text": "Flytt {language} replikk"
+    "text": "Flytt replikken på {language}"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
     "text": null,
@@ -73204,7 +73204,7 @@
     "text": "Språkversjon i eksporten"
   },
   "ml3-language-versions.export.incomplete": {
-    "text": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre."
+    "text": "Oversettelsen til {language} er ikke ferdig. Linjer som mangler: {missing}; usikre: {uncertain}; til gjennomgang: {review}. Velg hva eksporten skal gjøre."
   },
   "ml3-language-versions.export.fallback": {
     "text": "Bruk norsk der oversettelsen mangler"
@@ -74405,5 +74405,44 @@
   },
   "b110.privacy.turnstile": {
     "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
+  },
+  "server.error.invalid_request": {
+    "text": "Ugyldig forespørsel"
+  },
+  "server.error.invalid_project_id": {
+    "text": "Ugyldig prosjekt-ID"
+  },
+  "server.error.invalid_command": {
+    "text": "Ugyldig kommando"
+  },
+  "server.error.invalid_revisions": {
+    "text": "Ugyldige revisjoner"
+  },
+  "server.error.change_too_large": {
+    "text": "Endringen er for stor"
+  },
+  "server.error.invalid_command_id": {
+    "text": "Ugyldig kommando-ID"
+  },
+  "server.error.no_workspace_access": {
+    "text": "Ingen tilgang til gruppen"
+  },
+  "server.error.asset_missing": {
+    "text": "Ressursen finnes ikke"
+  },
+  "server.error.storage_no_response": {
+    "text": "Lagringen svarte ikke"
+  },
+  "server.error.invalid_storage_path": {
+    "text": "Ugyldig lagringssti"
+  },
+  "server.error.invalid_script_revision": {
+    "text": "Ugyldig manusrevisjon"
+  },
+  "server.error.text_too_long": {
+    "text": "Teksten er for lang (maks {max} tegn)"
+  },
+  "app-i18n-language.language-switch.change-title": {
+    "text": "Bytt språk"
   }
 }

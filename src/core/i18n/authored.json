@@ -1005,10 +1005,10 @@
         "app-assembly-language-version-dialog.language-version-dialog.span.c525ecf09f07"
       ],
       "nb": {
-        "text": "Den importerte filmen har {mixed} dialog blandet inn i lyden. Den kan ikke byttes helt ut: filmlyden spilles som den er, og {language} dialog legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
+        "text": "Den importerte filmen har dialog på {mixed} blandet inn i lyden. Dialogen kan ikke byttes helt ut: filmlyden spilles som den er, og dialog på {language} legges oppå. Er lyden bare musikk og effekter, kan du angi det i scenepanelet."
       },
       "en": {
-        "text": "The imported film has {mixed} dialogue mixed into the audio. It cannot be swapped out completely: the film audio is played as it is, and {language} dialogue is laid on top. If the audio is only music and effects, you can say so in the scene panel."
+        "text": "The imported film has dialogue in {mixed} mixed into its audio. This dialogue cannot be completely replaced: the film audio plays as it is, with dialogue in {language} layered on top. If the audio contains only music and effects, you can indicate this in the scene panel."
       }
     },
     "app-assembly-language-version-dialog.lipsync-scenes": {
@@ -1091,10 +1091,10 @@
         "app-assembly-language-version-dialog.language-version-dialog.text.eb53e390e8e2"
       ],
       "nb": {
-        "text": "{voiced} av {lines} replikker med {language} lyd"
+        "text": "Replikker med lyd på {language}: {voiced} av {lines}"
       },
       "en": {
-        "text": "{voiced} of {lines} lines with {language} audio"
+        "text": "Lines with audio in {language}: {voiced} of {lines}"
       }
     },
     "app-assembly-language-version-dialog.intro": {
@@ -1102,10 +1102,10 @@
         "app-assembly-language-version-dialog.language-version-dialog.dialog-description.9b87f05b421f"
       ],
       "nb": {
-        "text": "Samme film, scener og bilder som den norske. Her ser du hva som mangler eller må sjekkes i den {language}e versjonen. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
+        "text": "Samme film, scener og bilder som hovedversjonen. Her ser du hva som mangler eller må sjekkes i versjonen på {language}. Ingenting lages på nytt automatisk, og hovedfilmens timing endres ikke."
       },
       "en": {
-        "text": "The same film, scenes and images as the Norwegian one. Here you can see what is missing or needs checking in the {language} version. Nothing is regenerated automatically, and the timing of the main film is not changed."
+        "text": "This version uses the same film, scenes and images as the main version. Here you can see what is missing or needs checking in the {language} version. Nothing is regenerated automatically, and the timing of the main film remains unchanged."
       }
     },
     "app-assembly-language-version-dialog.move-line": {
@@ -1113,10 +1113,10 @@
         "app-assembly-language-version-dialog.apply-earlier.run.87c264b2db4f"
       ],
       "nb": {
-        "text": "Flytt {language} replikk"
+        "text": "Flytt replikken på {language}"
       },
       "en": {
-        "text": "Move {language} line"
+        "text": "Move the line in {language}"
       }
     },
     "app-assembly-long-film-import-dialog.import-long-film": {
@@ -3434,7 +3434,7 @@
         "plural": {
           "parameter": "count",
           "forms": {
-            "one": "{count} line that has been added are kept (they are used by another scene in the version or as a boundary for a production segment).",
+            "one": "{count} added line is kept (it is used by another scene in the version or as a boundary for a production segment).",
             "other": "{count} lines that have been added are kept (they are used by another scene in the version or as a boundary for a production segment)."
           }
         }
@@ -3459,7 +3459,7 @@
         "plural": {
           "parameter": "count",
           "forms": {
-            "one": "{count} line no longer exist.",
+            "one": "{count} line no longer exists.",
             "other": "{count} lines no longer exist."
           }
         }
@@ -3485,7 +3485,7 @@
           "parameter": "count",
           "forms": {
             "one": "{count} line has been moved to another scene (split or merge) and is not restored here.",
-            "other": "{count} lines have been moved to another scene (split or merge) and is not restored here."
+            "other": "{count} lines have been moved to another scene (split or merge) and are not restored here."
           }
         }
       }
@@ -4330,10 +4330,10 @@
     "ml3-language-versions.export.incomplete": {
       "replaces": [],
       "nb": {
-        "text": "Oversettelsen til {language} er ikke ferdig: {missing} linjer mangler, {uncertain} er usikre og {review} må gjennomgås. Velg hva eksporten skal gjøre."
+        "text": "Oversettelsen til {language} er ikke ferdig. Linjer som mangler: {missing}; usikre: {uncertain}; til gjennomgang: {review}. Velg hva eksporten skal gjøre."
       },
       "en": {
-        "text": "The {language} translation is not complete: {missing} lines are missing, {uncertain} are uncertain and {review} need review. Choose what the export should do."
+        "text": "The translation into {language} is incomplete. Lines missing: {missing}; uncertain: {uncertain}; needing review: {review}. Choose how the export should handle this."
       }
     },
     "ml3-language-versions.export.fallback": {
@@ -7592,6 +7592,113 @@
       },
       "en": {
         "text": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f))."
+      }
+    },
+    "server.error.invalid_request": {
+      "nb": {
+        "text": "Ugyldig forespørsel"
+      },
+      "en": {
+        "text": "Invalid request"
+      }
+    },
+    "server.error.invalid_project_id": {
+      "nb": {
+        "text": "Ugyldig prosjekt-ID"
+      },
+      "en": {
+        "text": "Invalid project ID"
+      }
+    },
+    "server.error.invalid_command": {
+      "nb": {
+        "text": "Ugyldig kommando"
+      },
+      "en": {
+        "text": "Invalid command"
+      }
+    },
+    "server.error.invalid_revisions": {
+      "nb": {
+        "text": "Ugyldige revisjoner"
+      },
+      "en": {
+        "text": "Invalid revisions"
+      }
+    },
+    "server.error.change_too_large": {
+      "nb": {
+        "text": "Endringen er for stor"
+      },
+      "en": {
+        "text": "The change is too large"
+      }
+    },
+    "server.error.invalid_command_id": {
+      "nb": {
+        "text": "Ugyldig kommando-ID"
+      },
+      "en": {
+        "text": "Invalid command ID"
+      }
+    },
+    "server.error.no_workspace_access": {
+      "nb": {
+        "text": "Ingen tilgang til gruppen"
+      },
+      "en": {
+        "text": "No access to the workspace"
+      }
+    },
+    "server.error.asset_missing": {
+      "nb": {
+        "text": "Ressursen finnes ikke"
+      },
+      "en": {
+        "text": "The asset does not exist"
+      }
+    },
+    "server.error.storage_no_response": {
+      "nb": {
+        "text": "Lagringen svarte ikke"
+      },
+      "en": {
+        "text": "The storage did not respond"
+      }
+    },
+    "server.error.invalid_storage_path": {
+      "nb": {
+        "text": "Ugyldig lagringssti"
+      },
+      "en": {
+        "text": "Invalid storage path"
+      }
+    },
+    "server.error.invalid_script_revision": {
+      "nb": {
+        "text": "Ugyldig manusrevisjon"
+      },
+      "en": {
+        "text": "Invalid script revision"
+      }
+    },
+    "server.error.text_too_long": {
+      "nb": {
+        "text": "Teksten er for lang (maks {max} tegn)"
+      },
+      "en": {
+        "text": "The text is too long (max {max} characters)"
+      }
+    },
+    "app-i18n-language.language-switch.change-title": {
+      "replaces": [
+        "app-i18n-language.language-switch.title.691fad620f12"
+      ],
+      "nb": {
+        "text": "Bytt språk"
+      },
+      "en": {
+        "text": "Change language"
       }
     }
   }
