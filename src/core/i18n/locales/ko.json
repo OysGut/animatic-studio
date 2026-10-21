@@ -9216,7 +9216,7 @@
   },
   "app-assembly-language-version-dialog.intro": {
     "text": "이 버전은 기본 버전과 동일한 영화, 장면 및 이미지를 사용합니다. 여기에서 {language} 버전에 누락된 항목이나 확인이 필요한 항목을 볼 수 있습니다. 어떤 항목도 자동으로 다시 생성되지 않으며, 기본 영화의 타이밍은 변경되지 않습니다.",
-    "sourceHash": "23ff1f283ba476c1db823352f99cf8325d50c88cf6a52bbe04534adc3ba35c21",
+    "sourceHash": "64cc160e4633949fe332e31999c6c397018153b479d0e088b5a94eda1aad187b",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
@@ -9307,7 +9307,7 @@
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
     "text": "가져온 영화의 오디오에는 {mixed} 대사가 섞여 있습니다. 이 대사를 완전히 교체할 수는 없습니다. 영화의 오디오는 그대로 재생되고 그 위에 {language} 대사가 겹쳐집니다. 오디오에 음악과 효과음만 들어 있다면 장면 패널에서 이를 표시할 수 있습니다.",
-    "sourceHash": "563a380e1b21f9eda37984d2f65d834ba96e43fdcf7aac87004422cecbcbcc64",
+    "sourceHash": "cb6be7fcf73beb98c181e3bb5ee620f6063d8e64ed85122f14d9dd5d4015520e",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.mixed-scenes": {
@@ -9323,7 +9323,7 @@
   },
   "app-assembly-language-version-dialog.move-line": {
     "text": "{language} 대사 이동",
-    "sourceHash": "cf795ff92d384e8cf8dcb6520b8b7617e1e4baa3ca5929b2b184f472a68c9d1c",
+    "sourceHash": "c7124a3e8eccf7d997fcb7b1a8697c28310b434f8ee6bf8bdfa889f007093f92",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.timing-conflicts": {
@@ -9339,7 +9339,7 @@
   },
   "app-assembly-language-version-dialog.voiced-lines": {
     "text": "{language} 음성이 있는 대사: {lines}개 중 {voiced}개",
-    "sourceHash": "06dcb0a09b77b929232dc0a05fea696fc539ace3e38756bfb514675c9eafd85f",
+    "sourceHash": "d650af667fbd27066f085e2793faa7101d9f14b51539aab35bae922fbf520683",
     "review": "machine"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
@@ -51808,7 +51808,7 @@
   },
   "ml3-language-versions.export.incomplete": {
     "text": "{language} 번역이 완료되지 않았습니다. 누락된 대사: {missing}개, 불확실한 대사: {uncertain}개, 검토가 필요한 대사: {review}개. 내보낼 때 이를 어떻게 처리할지 선택하세요.",
-    "sourceHash": "a7bc82834ccdf3fa0c211eafb88156b1dbe1e6e1012a500e437c967be9e89bb9",
+    "sourceHash": "e2170f091973cb213d6365e18a885f0979bcfae0cb929954210ea7057ee09ef8",
     "review": "machine"
   },
   "ml3-language-versions.export.language": {
@@ -53680,7 +53680,7 @@
   },
   "app-i18n-language.language-switch.change-title": {
     "text": "언어 변경",
-    "sourceHash": "6ef020fba3007c1c6d8f2daf97a0dbccc5cd6813c6e9f140ce7c17d916792bf1",
+    "sourceHash": "5d11e2a3e1d1cbbcde92b403750055ee0b34535ff4d610c15f16500c6153e2f2",
     "review": "machine"
   }
 }

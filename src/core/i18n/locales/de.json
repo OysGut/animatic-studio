@@ -9236,7 +9236,7 @@
   },
   "app-assembly-language-version-dialog.intro": {
     "text": "Diese Version verwendet denselben Film, dieselben Szenen und dieselben Bilder wie die Hauptversion. Hier siehst du, was in der Sprachversion „{language}“ fehlt oder geprüft werden muss. Nichts wird automatisch neu generiert, und das Timing des Hauptfilms bleibt unverändert.",
-    "sourceHash": "23ff1f283ba476c1db823352f99cf8325d50c88cf6a52bbe04534adc3ba35c21",
+    "sourceHash": "64cc160e4633949fe332e31999c6c397018153b479d0e088b5a94eda1aad187b",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.language-version-dialog.aria-label.0e5b60dc4403": {
@@ -9328,7 +9328,7 @@
   },
   "app-assembly-language-version-dialog.mixed-dialogue": {
     "text": "Der importierte Film enthält Dialoge in „{mixed}“, die in die Tonspur eingemischt sind. Diese Dialoge lassen sich nicht vollständig ersetzen: Der Filmton wird unverändert abgespielt, und Dialoge in „{language}“ werden darübergelegt. Wenn die Tonspur nur Musik und Effekte enthält, kannst du dies im Szenenbereich angeben.",
-    "sourceHash": "563a380e1b21f9eda37984d2f65d834ba96e43fdcf7aac87004422cecbcbcc64",
+    "sourceHash": "cb6be7fcf73beb98c181e3bb5ee620f6063d8e64ed85122f14d9dd5d4015520e",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.mixed-scenes": {
@@ -9345,7 +9345,7 @@
   },
   "app-assembly-language-version-dialog.move-line": {
     "text": "Die Zeile in „{language}“ verschieben",
-    "sourceHash": "cf795ff92d384e8cf8dcb6520b8b7617e1e4baa3ca5929b2b184f472a68c9d1c",
+    "sourceHash": "c7124a3e8eccf7d997fcb7b1a8697c28310b434f8ee6bf8bdfa889f007093f92",
     "review": "machine"
   },
   "app-assembly-language-version-dialog.timing-conflicts": {
@@ -9362,7 +9362,7 @@
   },
   "app-assembly-language-version-dialog.voiced-lines": {
     "text": "Zeilen mit Audio in „{language}“: {voiced} von {lines}",
-    "sourceHash": "06dcb0a09b77b929232dc0a05fea696fc539ace3e38756bfb514675c9eafd85f",
+    "sourceHash": "d650af667fbd27066f085e2793faa7101d9f14b51539aab35bae922fbf520683",
     "review": "machine"
   },
   "app-assembly-long-film-import-dialog.import-long-film": {
@@ -51880,7 +51880,7 @@
   },
   "ml3-language-versions.export.incomplete": {
     "text": "Die Übersetzung in „{language}“ ist unvollständig. Fehlende Zeilen: {missing}; unsichere Zeilen: {uncertain}; zu prüfende Zeilen: {review}. Wähle, wie beim Export damit umgegangen werden soll.",
-    "sourceHash": "a7bc82834ccdf3fa0c211eafb88156b1dbe1e6e1012a500e437c967be9e89bb9",
+    "sourceHash": "e2170f091973cb213d6365e18a885f0979bcfae0cb929954210ea7057ee09ef8",
     "review": "machine"
   },
   "ml3-language-versions.export.language": {
@@ -53754,7 +53754,7 @@
   },
   "app-i18n-language.language-switch.change-title": {
     "text": "Sprache ändern",
-    "sourceHash": "6ef020fba3007c1c6d8f2daf97a0dbccc5cd6813c6e9f140ce7c17d916792bf1",
+    "sourceHash": "5d11e2a3e1d1cbbcde92b403750055ee0b34535ff4d610c15f16500c6153e2f2",
     "review": "machine"
   }
 }
