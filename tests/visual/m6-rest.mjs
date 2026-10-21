@@ -5,6 +5,7 @@
  *   ENV_FILE=… node tests/visual/m6-rest.mjs <baseUrl> /tmp/claude-0/visual-fixture.json [out]
  */
 import { harness } from "./mts-harness.mjs";
+import { uiLang } from "./ui-lang.mjs";
 if (!process.argv[3]) process.argv[3] = "/tmp/claude-0/visual-fixture.json";
 const h = harness("/tmp/browser/m6");
 const MAJA = "00000000-0000-7000-8000-0000000000a2";
