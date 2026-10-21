@@ -3,6 +3,7 @@ import { getUiLanguage, isUiLang, setLanguage } from '@/core/i18n';
 import { acceptLanguagePreferences, matchUiLanguage } from '@/core/i18n/languages';
 import { createTranslator, type LanguageManifest } from '@/core/i18n/messages';
 import { loadUiCatalog, t } from '@/core/i18n/keyed';
+import '@/adapters/i18n/catalog-loader';
 
 afterEach(() => setLanguage('nb'));
 describe('B-107/B-111 open interface languages', () => {

@@ -3,6 +3,7 @@ import { createRouter } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { isUiLang, setLanguage } from './core/i18n';
 import { loadUiCatalog } from './core/i18n/keyed';
+import './adapters/i18n/catalog-loader';
 
 export const getRouter = async () => {
   // Bootstrap before hydration, never a render-time browser read.

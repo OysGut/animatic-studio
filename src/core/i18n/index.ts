@@ -103,7 +103,9 @@ export function locale(): string {
 
 /** Sorteringsspråket (alfabetisk rekkefølge i lister). */
 export function collation(): string {
-  return languageFormatLocale(getUiLanguage());
+  // Preserve the established nb/en collation tags; new interfaces use their registered locale.
+  const language = getUiLanguage();
+  return language === 'nb' || language === 'en' ? language : languageFormatLocale(language);
 }
 
 // ---------------------------------------------------------------- Meldinger fra serveren
