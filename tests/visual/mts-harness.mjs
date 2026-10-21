@@ -21,6 +21,8 @@ export function harness(defaultOut) {
   const P = `/prosjekt/${fx.project.id}`;
   const rows = fx.rows;
   const state = { commands: [], uploads: [], uploadBodies: [], rpcs: [], batches: [] };
+  /** B-099: valgfrie egne svar (rest(table, request) / serverFn(name, data)); undefined = vanlig svar. */
+  const hooks = { rest: null, serverFn: null };
 
   function serverFnName(url) {
     try {
@@ -82,6 +84,8 @@ export function harness(defaultOut) {
       }
       if (path.startsWith("/storage/v1/")) return route.fulfill({ status: 200, contentType: "image/svg+xml", headers: { "Access-Control-Allow-Origin": "*" }, body: '<svg xmlns="http://www.w3.org/2000/svg" width="240" height="320"><rect width="240" height="320" fill="#277b85"/><rect x="0" y="210" width="240" height="110" fill="#f3b84a"/><circle cx="120" cy="95" r="55" fill="#f4c9a0"/><path d="M45 210Q120 115 195 210" fill="#e86265"/><circle cx="102" cy="90" r="6"/><circle cx="138" cy="90" r="6"/></svg>' });
       const table = path.replace("/rest/v1/", "");
+      // B-099: en suite kan svare selv på enkelte kall (standard: ingen)
+      if (hooks.rest) { const r = hooks.rest(table, request); if (r !== undefined) return json(r); }
       if (table === "rpc/my_account") return json({ status: "active", is_admin: false, permanent_admin: false, locale: null, display_name: "Mars", privacy_version: 1, accepted_version: 1, created_at: "2026-10-01T10:00:00Z", ui_prefs: {} });
       if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
       if (table === "projects") return json(single ? fx.project : [{ ...fx.project, project_members: [{ user_id: USER.id, role }] }]);
@@ -94,6 +98,7 @@ export function harness(defaultOut) {
     await context.route("**/_serverFn/**", async (route) => {
       const name = serverFnName(route.request().url()); const d = dataOf(route.request().postData() ?? "{}");
       const json = (result) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ result, context: {} }) });
+      if (hooks.serverFn) { const r = hooks.serverFn(name, d); if (r !== undefined) return json(r); }
       if (/runCommand/.test(name)) {
         state.commands.push(d.command ?? d.envelope?.command ?? d);
         return json({ ok: true, changeId: "mts", affected: [], inverse: null, revisions: {} });
@@ -240,5 +245,5 @@ export function harness(defaultOut) {
     await browser?.close();
     return { pass, fail };
   }
-  return { fx, M: fx.mts, rows, state, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, close, out, base, P };
+  return { fx, M: fx.mts, rows, state, hooks, check, scenario, selectLayer, waitHidden, menu, lastFields, eventually, finish, close, out, base, P };
 }

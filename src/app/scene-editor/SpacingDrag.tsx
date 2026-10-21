@@ -61,7 +61,7 @@ export function SpacingRow({ state, layer, ppf, trackLeft, durationFrames, edita
           const p = planSpacingDrag(state, layer.id, d.anchor, delta, { whole: e.shiftKey });
           setDrag({ ...d, plan: p });
           setHover({ frame: d.anchor, whole: e.shiftKey });
-          setMessage(p.limit ? limitText(p.limit) : p.newEnd > durationFrames - 1 ? t("b100.spacing.beyond") : null);
+          setMessage(p.limit ? limitText(p.limit) : p.newEnd > durationFrames - 1 ? t("b100.beyond.text", { n: String(p.newEnd - (durationFrames - 1)) }) : null);
           onPreview?.(p.command ? spacingPreviewState(state, p) : null);
           onHover?.({ layerId: layer.id, frame: d.anchor, whole: e.shiftKey, dragging: true });
           return;

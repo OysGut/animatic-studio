@@ -4,7 +4,9 @@
  * Alt går gjennom vanlige kommandoer og kan angres.
  */
 import { useState } from "react";
-import { newId, secondsToFrames, tm, type ProjectState } from "@/core";
+import { formatDate, newId, secondsToFrames, tm, type ProjectState } from "@/core";
+import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
+import { saveSceneSound } from "@/app/audio/takes";
 import { linkMobileImport, type MobileImportRow } from "@/adapters/browser/mobile-import";
 import { createSignedUrls, ASSET_BUCKET } from "@/adapters/browser/storage-files";
 import type { Commands } from "@/app/project/use-commands";
@@ -109,17 +111,33 @@ export async function addImageAsNewAsset(
   return (await linkMobileImport(row.id, { assetId, versionId }))?.message ?? null;
 }
 
+/** B-099: en lyd fra mobilen blir en ny lydressurs i scenen ved avspillingshodet. */
+export async function addAudioToScene(
+  cmds: Commands,
+  occurrenceId: string,
+  row: MobileImportRow,
+  atMs: number,
+): Promise<string | null> {
+  const media = await audioMediaFromStoredFile(row.path, row.mime_type);
+  const name = (row.file_name || "").replace(/\.[a-z0-9]+$/i, "").trim() || t("b099.scene.sound-name", { stamp: formatDate(row.created_at) });
+  const saved = await saveSceneSound(cmds, { occurrenceId, atMs, kind: "sfx" }, media, name, "");
+  return (await linkMobileImport(row.id, { assetId: saved.assetId, versionId: saved.versionId }))?.message ?? null;
+}
+
 /** Knappene for en mottatt fil i scenens mobilvindu. */
 export function SceneMobileActions({
   state,
   cmds,
   occurrenceId,
   row,
+  atMs = 0,
 }: {
   state: ProjectState;
   cmds: Commands;
   occurrenceId: string;
   row: MobileImportRow;
+  /** B-099: avspillingshodet – der en lyd fra mobilen legges i scenen. */
+  atMs?: number;
 }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -170,6 +188,16 @@ export function SceneMobileActions({
           data-testid="mobile-new-element"
         >
           {t("app-mobile-mobile-actions.scene-mobile-actions.button.91640d5780c0")}
+        </button>
+      ) : row.kind === "audio" ? (
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void go(() => addAudioToScene(cmds, occurrenceId, row, atMs))}
+          className="rounded-sm bg-surface-3 px-1 py-0.5 text-[11px] text-text-primary hover:bg-surface-4 disabled:opacity-50"
+          data-testid="mobile-add-sound"
+        >
+          {t("b099.scene.add-sound")}
         </button>
       ) : null}
       {err ? <span className="text-[11px] text-status-danger">{err}</span> : null}

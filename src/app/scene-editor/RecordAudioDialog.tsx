@@ -3,9 +3,9 @@
  * spilles av fra avspillingshodet. Opptaket lagres som en ny lydressurs i biblioteket og legges i scenen der
  * opptaket startet. Det kan trimmes etterpå uten at opptaket endres (klippets inn- og utpunkt).
  */
-import { Circle, Loader2, Mic, Square } from "lucide-react";
+import { Circle, Loader2, Mic, Smartphone, Square } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, blocksOfVariant, locale, newId, type AudioKind, dialogueSpeaker, suggestedDialogueCharacter, type ProjectState, lineDrift } from "@/core";
+import { AUDIO_KIND_LABEL, AUDIO_TRACK_ORDER, lineInfo, lineLabel, microphoneConstraints, sceneNumberOf, type UploadContext, blocksOfVariant, locale, newId, type AudioKind, dialogueSpeaker, suggestedDialogueCharacter, type ProjectState, lineDrift } from "@/core";
 import type { Commands } from "@/app/project/use-commands";
 import { DialogueVersions } from "./DialogueVersions";
 import { DriftBadge, DriftDiffView } from "@/app/dialogue/DriftBadge";
@@ -15,6 +15,9 @@ import { GenerateDialogue } from "./GenerateDialogue";
 import { DialogueLanguageControls } from "./DialogueLanguageControls";
 import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { saveTake } from "@/app/audio/takes";
+import { newRecorder, recordingType } from "@/app/audio/use-recorder";
+import { useRawAudioPref } from "@/app/audio/raw-audio-pref";
+import { MobileQr, useMobileSession } from "@/app/mobile/MobileImportDialog";
 import { uploadAssetAudio } from "@/app/library/asset-audio";
 import { createSoundAsset } from "@/app/library/asset-audio";
 import { useFilmLanguage } from "@/app/assembly/use-film-language";
@@ -28,19 +31,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { t as tk } from "@/core/i18n/keyed";
-
-/** Formatet nettleseren kan ta opp i (Chrome/Firefox: WebM, Safari: MP4). */
-function recordingType(): { mime: string; ext: string } | null {
-  if (typeof MediaRecorder === "undefined") return null;
-  for (const [mime, ext] of [
-    ["audio/webm;codecs=opus", "webm"],
-    ["audio/webm", "webm"],
-    ["audio/mp4", "m4a"],
-    ["audio/ogg;codecs=opus", "ogg"],
-  ] as const)
-    if (MediaRecorder.isTypeSupported(mime)) return { mime, ext };
-  return null;
-}
 
 type Phase = "idle" | "starting" | "recording" | "done" | "saving";
 
@@ -80,6 +70,11 @@ export function RecordAudioDialog({
   const [blockId, setBlockId] = useState("");
   const [name, setName] = useState("");
   const [playAlong, setPlayAlong] = useState(true);
+  const [raw, setRaw] = useRawAudioPref();
+  /** B-099: PC-mikrofonen virker ikke – QR-koden fremheves som alternativ. */
+  const [micFailed, setMicFailed] = useState(false);
+  /** B-099: avspillingshodet da vinduet (og QR-koden) ble åpnet – der mobillyd legges i scenen. */
+  const [openedAtMs, setOpenedAtMs] = useState(0);
   const [generating, setGenerating] = useState(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +136,11 @@ export function RecordAudioDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, initialBlockId]);
   useEffect(() => {
-    if (open) return;
+    if (open) {
+      setOpenedAtMs(startMs);
+      return;
+    }
+    setMicFailed(false);
     cleanup();
     setPhase("idle");
     setError(null);
@@ -173,6 +172,7 @@ export function RecordAudioDialog({
     setError(null);
     const type = recordingType();
     if (!type) {
+      setMicFailed(true);
       setError(
         tk("app-scene-editor-record-audio-dialog.start.set-error.aff4b707fbc5"),
       );
@@ -183,10 +183,11 @@ export function RecordAudioDialog({
     let stream: MediaStream;
     try {
       stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false },
+        audio: microphoneConstraints(raw),
       });
     } catch (e) {
       setPhase("idle");
+      setMicFailed(true);
       setError(
         (e as Error).name === "NotAllowedError"
           ? tk("app-scene-editor-record-audio-dialog.start.set-error.df0e4825b0da")
@@ -200,7 +201,8 @@ export function RecordAudioDialog({
       return;
     }
     const chunks: Blob[] = [];
-    const recorder = new MediaRecorder(stream, { mimeType: type.mime });
+    const recorder = newRecorder(stream, type);
+    setMicFailed(false);
     const atMs = startMs;
     recorder.ondataavailable = (ev) => {
       if (ev.data.size > 0) chunks.push(ev.data);
@@ -320,6 +322,15 @@ export function RecordAudioDialog({
     }
   }
 
+  const mobileLine = kind === "dialogue" && !!blockId;
+  const mobileContext: UploadContext = mobileLine
+    ? { type: "line", occurrenceId, blockId, ...(selectedClip ? { clipId: selectedClip.id } : {}) }
+    : { type: "scene_sound", occurrenceId, atMs: openedAtMs, kind };
+  const occ = state.occurrences[occurrenceId];
+  const mobileLabel = mobileLine
+    ? lineLabel(lineInfo(state, occurrenceId, blockId, selectedClip?.id))
+    : tk("b099.qr.label-sound", { scene: String((occ ? sceneNumberOf(state, occ) : null) ?? ""), kind: AUDIO_KIND_LABEL[kind] });
+
   const busy = generating || phase === "starting" || phase === "recording" || phase === "saving";
   const select =
     "h-8 min-w-0 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -408,32 +419,66 @@ export function RecordAudioDialog({
         </div>
 
         {playAlong ? <p role="status" data-testid="dialogue-headphones" className="text-xs text-status-uncertain">{tk("app-scene-editor-record-audio-dialog.record-audio-dialog.p.dadb79d04045")}</p> : null}
+        <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
+        <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3 rounded-sm border border-border bg-surface-1 p-3">
-          {phase === "recording" ? (
-            <>
-              <Button variant="destructive" onClick={stop}>
-                <Square className="fill-current" />
-                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.0105f189ee3b")}
+            {phase === "recording" ? (
+              <>
+                <Button variant="destructive" onClick={stop}>
+                  <Square className="fill-current" />
+                  {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.0105f189ee3b")}
+                </Button>
+                <span className="flex items-center gap-1.5 text-[13px] tabular-nums text-status-danger">
+                  <Circle className="size-3 animate-pulse fill-current" aria-hidden />
+                  {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.dbfce3788f71")} {Math.floor(seconds / 60)}:
+                  {String(seconds % 60).padStart(2, "0")}
+                </span>
+              </>
+            ) : take ? (
+              <>
+                <audio src={take.url} controls className="h-8 min-w-0 flex-1" />
+                <Button variant="ghost" size="sm" disabled={busy} onClick={discard}>
+                  {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.459663350e6a")}
+                </Button>
+              </>
+            ) : (
+              <Button onClick={() => void start()} disabled={busy}>
+                {phase === "starting" ? <Loader2 className="animate-spin" /> : <Mic />}
+                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.ae4c0e1df207")}
               </Button>
-              <span className="flex items-center gap-1.5 text-[13px] tabular-nums text-status-danger">
-                <Circle className="size-3 animate-pulse fill-current" aria-hidden />
-                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.span.dbfce3788f71")} {Math.floor(seconds / 60)}:
-                {String(seconds % 60).padStart(2, "0")}
-              </span>
-            </>
-          ) : take ? (
-            <>
-              <audio src={take.url} controls className="h-8 min-w-0 flex-1" />
-              <Button variant="ghost" size="sm" disabled={busy} onClick={discard}>
-                {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.459663350e6a")}
-              </Button>
-            </>
-          ) : (
-            <Button onClick={() => void start()} disabled={busy}>
-              {phase === "starting" ? <Loader2 className="animate-spin" /> : <Mic />}
-              {tk("app-scene-editor-record-audio-dialog.record-audio-dialog.button.ae4c0e1df207")}
-            </Button>
-          )}
+            )}
+          </div>
+          <label className="flex items-start gap-2 text-[13px] text-text-primary">
+            <input
+              type="checkbox"
+              checked={raw}
+              disabled={busy}
+              onChange={(e) => setRaw(e.target.checked)}
+              className="mt-0.5 size-3.5 accent-[var(--accent-brand)]"
+              data-testid="record-raw-audio"
+            />
+            <span>
+              {tk("b099.raw.label")}
+              <span className="block text-xs text-text-tertiary">{tk("b099.raw.hint")}</span>
+            </span>
+          </label>
+          {micFailed ? (
+            <p role="alert" data-testid="record-mic-failed" className="flex items-center gap-2 rounded-sm border border-accent-warm/60 bg-accent-warm/10 p-2 text-[13px] text-text-primary">
+              <Smartphone className="size-4 shrink-0 text-accent-warm" aria-hidden />
+              {tk("b099.mic.failed")}
+            </p>
+          ) : null}
+        </div>
+        {open ? (
+          <RecordMobilePanel
+            key={JSON.stringify(mobileContext)}
+            projectId={projectId}
+            context={mobileContext}
+            label={mobileLabel}
+            highlight={micFailed}
+            hint={mobileLine ? tk("b099.qr.hint-line") : tk("b099.qr.hint-sound", { at: at(openedAtMs) })}
+          />
+        ) : null}
         </div>
 
         {error ? (
@@ -459,5 +504,57 @@ export function RecordAudioDialog({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+/** B-099: QR-koden for opptak på mobilen, med status (samme økt og komponent som i lydvinduet). */
+function RecordMobilePanel({
+  projectId,
+  context,
+  label,
+  hint,
+  highlight,
+}: {
+  projectId: string;
+  context: UploadContext;
+  label: string;
+  hint: string;
+  highlight: boolean;
+}) {
+  const m = useMobileSession(projectId, context, label);
+  return (
+    <section
+      aria-labelledby="record-mobile-h"
+      data-testid="record-mobile"
+      data-highlight={highlight || undefined}
+      className={
+        "flex w-[200px] flex-col items-center gap-2 rounded-sm border p-2 " +
+        (highlight ? "border-accent-warm ring-2 ring-accent-warm/60" : "border-border")
+      }
+    >
+      <h3 id="record-mobile-h" className="self-start text-[13px] font-semibold text-text-primary">
+        {tk("b099.qr.title")}
+      </h3>
+      <MobileQr m={m} size={150} />
+      <p className="text-[11px] text-text-tertiary">{hint}</p>
+      <p
+        className={"flex items-center gap-1.5 text-xs " + (m.connected ? "text-status-success" : "text-text-tertiary")}
+        data-testid="record-mobile-connected"
+        data-connected={m.connected || undefined}
+      >
+        <Smartphone className="size-3.5" aria-hidden />
+        {m.connected ? tk("b099.qr.connected") : tk("b099.qr.waiting")}
+      </p>
+      {m.pending.length ? (
+        <p className="text-xs text-text-secondary" data-testid="record-mobile-pending">
+          {tk("b099.qr.pending", { n: String(m.pending.length) })}
+        </p>
+      ) : null}
+      {m.received.length ? (
+        <p className="text-xs text-text-secondary" data-testid="record-mobile-received">
+          {tk("b099.qr.received", { n: String(m.received.length) })}
+        </p>
+      ) : null}
+    </section>
   );
 }

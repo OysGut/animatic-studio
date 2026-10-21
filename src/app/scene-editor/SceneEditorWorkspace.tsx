@@ -262,6 +262,8 @@ function Editor({
   // «Ressurs oppdatert» (REQ-0022): scener laget med en eldre ressursversjon
   const contentSync = useContentSync(state, projectId, productionId);
   const [retimeRequest, setRetimeRequest] = useState(0);
+  /** B-100: foreslått lengde når endringen åpnes fra varselet om tid etter slutten. */
+  const [retimeFrames, setRetimeFrames] = useState<number | undefined>(undefined);
   const duration = useMemo(
     () => (composition ? compositionDuration(state, composition) : 1),
     [state, composition],
@@ -723,7 +725,7 @@ function Editor({
           composition={composition}
           editable={editable}
           run={cmds.run}
-          onChangeDuration={() => setRetimeRequest((n) => n + 1)}
+          onChangeDuration={() => { setRetimeFrames(undefined); setRetimeRequest((n) => n + 1); }}
         />
       )
     ) : null,
@@ -843,6 +845,7 @@ function Editor({
               setRecordOpen(true);
             }}
             title={tk("app-scene-editor-scene-editor-workspace.editor.title.8ac2c1b9be74")}
+            data-testid="scene-record-audio"
           >
             <Mic aria-hidden />
             {/* Under 1400 px bare ikon (med verktøytips), så scenevelgeren får plass */}
@@ -861,6 +864,7 @@ function Editor({
                 cmds={cmds}
                 occurrenceId={occurrence.id}
                 row={row}
+                atMs={Math.round((playback.frame / (state.project.fps.num / state.project.fps.den)) * 1000)}
               />
             )}
           />
@@ -1092,6 +1096,7 @@ function Editor({
                 onSelectLayer={setSelectedLayerId}
                 onSelectShot={setSelectedShotId}
                 onSeek={playback.setFrame}
+                onExtend={(f) => { setRetimeFrames(f); setRetimeRequest((n) => n + 1); }}
               />
               <div className="relative flex min-h-[180px] flex-1 flex-col">
                 <Stage
@@ -1183,6 +1188,7 @@ function Editor({
                   audioOf: retimeAudioOf,
                   audioUrls: soundUrls.data ?? null,
                   request: retimeRequest,
+                  requestFrames: retimeFrames,
                 }}
                 audioRows={(g) => (
                   <SceneAudioRows

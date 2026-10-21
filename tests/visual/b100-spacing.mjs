@@ -29,6 +29,7 @@ await h.scenario("b100-hover-og-drag", occ.id, lang, async (page) => {
   await page.getByTestId("spacing-highlight").waitFor();
   h.check((await page.getByTestId("spacing-highlight").getAttribute("data-whole")) === "false", "hover: fra punktet og ut uthevet (oransje)");
   h.check((await b.row.getAttribute("data-spacing-mode")) === "hover", "pekeren viser spacing-modus over laget");
+  h.check((await page.getByTestId("scene-stage").first().getAttribute("data-spacing-overlay")) === "points", "lag uten bevegelsesbane: nøkkelbildenes posisjoner vises som punkter");
   await page.keyboard.down("Shift");
   await page.mouse.move(b.xAt(21), b.y);
   h.check(await h.eventually(async () => (await page.getByTestId("spacing-highlight").getAttribute("data-whole")) === "true"), "hover med Shift: hele animasjonen uthevet");
@@ -69,6 +70,27 @@ await h.scenario("b100-hover-og-drag", occ.id, lang, async (page) => {
   await page.keyboard.up("Control");
   h.check(updates().length === 2, "Shift-drag gir én ny kommando");
   await page.screenshot({ path: `${h.out}/b100-${lang}.png` });
+});
+
+await h.scenario("b100-forbi-slutten", occ.id, lang, async (page) => {
+  const b = await blob(page);
+  await page.mouse.move(b.xAt(20), b.y);
+  await page.getByTestId("spacing-highlight").waitFor();
+  await page.keyboard.down("Control");
+  await page.mouse.down();
+  await page.mouse.move(b.xAt(20) + 70 * b.ppf, b.y, { steps: 8 });
+  const okMsg = await h.eventually(async () => /f/.test(await page.getByTestId("spacing-message").first().textContent()));
+  h.check(okMsg, "draget viser at animasjonen går forbi slutten");
+  await page.mouse.up();
+  await page.keyboard.up("Control");
+  h.check(await h.eventually(async () => page.getByTestId("beyond-end-notice").first().isVisible(), 4000), "varselet om tid etter scenens slutt vises");
+  h.check(!h.state.commands.some((c) => c.type === "UpdateComposition" || c.type === "RetimeScene"), "ingenting forlenges automatisk");
+  await page.getByTestId("beyond-end-extend").click();
+  h.check(await h.eventually(async () => page.getByTestId("retime-dialog").isVisible()), "«Forleng scenen …» åpner endring av scenevarighet (B-041)");
+  const secs = Number((await page.getByTestId("retime-seconds").inputValue()).replace(",", "."));
+  h.check(secs * h.fx.project.fps_num / (h.fx.project.fps_den || 1) > comp.duration_frames, `foreslått lengde dekker animasjonen (${secs} s)`);
+  h.check(!h.state.commands.some((c) => c.type === "UpdateComposition" || c.type === "RetimeScene"), "dialogen skriver ingenting før brukeren bekrefter");
+  await page.screenshot({ path: `${h.out}/b100-forbi-${lang}.png` });
 });
 
 await h.scenario("b100-lenke-og-lengde", occ.id, lang, async (page) => {

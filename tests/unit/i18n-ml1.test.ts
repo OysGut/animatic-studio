@@ -119,7 +119,7 @@ describe('ML1 AST/exact preservation', () => {
     const baseline = JSON.parse(readFileSync('scripts/i18n/baseline.v1.json', 'utf8'));
     const mapping = JSON.parse(readFileSync('scripts/i18n/mapping.v1.json', 'utf8'));
     const byKey = new Map<string, { nb: { raw: string }; en: { raw: string } }>(mapping.entries.map((e: { key: string; nb: { raw: string }; en: { raw: string } }) => [e.key, e]));
-    expect(baseline.entries).toHaveLength(9963);
+    expect(baseline.entries).toHaveLength(9956); // B-100: 7 nøkler fra den slettede Animasjon-fanen (AnimPreview/AnimationWorkspace)
     for (const entry of baseline.entries) {
       const current = byKey.get(entry.key);
       expect(current).toBeDefined();

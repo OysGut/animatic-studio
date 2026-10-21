@@ -7,7 +7,7 @@
 import { ZoomIn, ZoomOut } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { textSpecsOf, useTextFonts } from "@/engine/typography/fonts";
-import { applyMatrix, cameraAt, groupMatrixAt, groupOf, pathPointAt, pathProgress, pathSegments, translatePath, type Matrix, type MotionPath, dragMaskRect, fieldsWithMaskAt, fieldsWithTransformAt, isMaskProperty, layerFieldsOf, maskAt, type MaskRect, shotAt, toggleCurve, transformAt, withShot, type CameraShot, type CompositionLayer, hitTest, invert, itemCorners, maskOutline, multiply, renderFrame, rotate, translate, type Command, type Composition, type DrawItem, type Frame, type LayerId, type LayerTransform, type ProjectState, defaultLayerFields, newId, sceneContinuityVariant, stretchedTransform } from "@/core";
+import { valueAt, applyMatrix, cameraAt, groupMatrixAt, groupOf, pathPointAt, pathProgress, pathSegments, translatePath, type Matrix, type MotionPath, dragMaskRect, fieldsWithMaskAt, fieldsWithTransformAt, isMaskProperty, layerFieldsOf, maskAt, type MaskRect, shotAt, toggleCurve, transformAt, withShot, type CameraShot, type CompositionLayer, hitTest, invert, itemCorners, maskOutline, multiply, renderFrame, rotate, translate, type Command, type Composition, type DrawItem, type Frame, type LayerId, type LayerTransform, type ProjectState, defaultLayerFields, newId, sceneContinuityVariant, stretchedTransform } from "@/core";
 import { ASSET_DRAG_TYPE } from "./SceneAssetsPanel";
 import { removeLayer } from "./layer-actions";
 import { ImageCache, drawFrame } from "@/engine/compositor/canvas";
@@ -494,6 +494,56 @@ function drawSpacingOverlay(
   ctx.restore();
 }
 
+/**
+ * B-100: lag uten bevegelsesbane – posisjonene fra nøkkelbildene som punkter. De som berøres av draget (fra
+ * pekerens tid og ut, eller alle med Shift) er oransje; resten er dempet.
+ */
+function drawSpacingKeyPoints(
+  ctx: CanvasRenderingContext2D,
+  layer: CompositionLayer,
+  toScene: Matrix | null,
+  v: View,
+  colors: Colors,
+  frame: number,
+  whole: boolean,
+) {
+  const frames = [...new Set(layer.keyframes.map((k) => k.frame))].sort((a, b) => a - b);
+  if (!frames.length) return;
+  const sc = (f: number) => {
+    const x = valueAt(layer, "x", f), y = valueAt(layer, "y", f);
+    return toScreen(v, toScene ? applyMatrix(toScene, x, y) : { x, y });
+  };
+  const warm = colors.warm ?? colors.accent;
+  ctx.save();
+  const touched = frames.filter((f) => whole || f >= frame);
+  if (touched.length > 1) {
+    ctx.strokeStyle = warm;
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    touched.forEach((f, i) => { const q = sc(f); if (i === 0) ctx.moveTo(q.x, q.y); else ctx.lineTo(q.x, q.y); });
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  for (const f of frames) {
+    const q = sc(f);
+    const on = whole || f >= frame;
+    ctx.globalAlpha = on ? 1 : 0.45;
+    ctx.fillStyle = on ? warm : colors.accent;
+    ctx.beginPath();
+    ctx.arc(q.x, q.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+  const now = sc(frame);
+  ctx.strokeStyle = warm;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(now.x, now.y, 7, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+}
+
 /** Streken mens en bane tegnes (skjermkoordinater). */
 function drawStroke(ctx: CanvasRenderingContext2D, pts: readonly Pt[], colors: Colors) {
   if (pts.length < 2) return;
@@ -773,9 +823,11 @@ export function Stage({
         drawPathOverlay(ctx, shownPath, pathToScene, view, colors, pathNow);
       if (spacingHover) {
         const hl = state.layers[spacingHover.layerId];
+        const g = hl ? groupOf(state, hl) : null;
         if (hl?.path) {
-          const g = groupOf(state, hl);
           drawSpacingOverlay(ctx, hl.path, g ? groupMatrixAt(g, time) : null, view, colors, spacingHover.frame, spacingHover.whole);
+        } else if (hl?.keyframes.length) {
+          drawSpacingKeyPoints(ctx, hl, g ? groupMatrixAt(g, time) : null, view, colors, spacingHover.frame, spacingHover.whole);
         }
       }
       if (stroke) drawStroke(ctx, stroke, colors);
@@ -1523,6 +1575,7 @@ export function Stage({
       <canvas
         ref={canvasRef}
         data-testid="scene-stage"
+        data-spacing-overlay={spacingHover ? (state.layers[spacingHover.layerId]?.path ? "path" : state.layers[spacingHover.layerId]?.keyframes.length ? "points" : "none") : undefined}
         data-view-x={view.x}
         data-view-y={view.y}
         data-view-zoom={view.zoom}

@@ -295,3 +295,53 @@ export async function chooseTake(
     group,
   );
 }
+
+/**
+ * B-099: et opptak (fra mobilen) av en lyd som ikke er en replikk. Blir en ny lydressurs med én versjon og et
+ * lydklipp i scenen ved `atMs`, som ved PC-opptak. Ett angresteg; ingenting eksisterende endres.
+ */
+export async function saveSceneSound(
+  cmds: Run,
+  target: { readonly occurrenceId: string; readonly atMs: number; readonly kind: "dialogue" | "narration" | "sfx" | "ambience" | "music"; readonly language?: string | undefined },
+  media: AssetMedia,
+  name: string,
+  note: string,
+): Promise<SavedTake> {
+  const group = newId<"command">();
+  const made = await newSoundAsset(cmds, name, t("app-audio-takes.made.new-sound-asset.4aa46207f4ef"), group);
+  const versionId = await addVersion(cmds, made.variantId, media, note, group);
+  const clipId = newId<"audio_clip">();
+  await run(
+    cmds,
+    {
+      type: "AddAudioClips",
+      clips: [
+        {
+          clipId: clipId as never,
+          fields: {
+            occurrenceId: target.occurrenceId as never,
+            kind: target.kind,
+            name: name.slice(0, 200),
+            assetId: made.assetId as never,
+            assetVariantId: null,
+            versionId: null,
+            blockId: null,
+            offsetMs: Math.max(0, Math.round(target.atMs)),
+            sourceInMs: 0,
+            lengthMs: Math.max(1, media.durationMs ?? 1000),
+            gainDb: 0,
+            fadeInMs: 0,
+            fadeOutMs: 0,
+            muted: false,
+            continues: false,
+            volumeKeys: [],
+            ...(target.language && target.language !== "nb" && (target.kind === "dialogue" || target.kind === "narration") ? { language: target.language } : {}),
+          },
+        },
+      ],
+    },
+    t("b099.scene.sound-label"),
+    group,
+  );
+  return { ...made, versionId, clipId };
+}

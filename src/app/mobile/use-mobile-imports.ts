@@ -5,7 +5,7 @@
  */
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef } from "react";
-import { roomToneSceneName, isRoomToneFile, lineInfo, newId, parseUploadContext, targetAssetOf, variantsOf, type ProjectState } from "@/core";
+import { formatDate, sceneNumberOf, roomToneSceneName, isRoomToneFile, lineInfo, newId, parseUploadContext, targetAssetOf, variantsOf, type ProjectState } from "@/core";
 import {
   claimMobileImport,
   fetchMobileImports,
@@ -20,7 +20,7 @@ import { projectStateKey } from "@/app/project/use-project";
 import { useCommands, type Commands } from "@/app/project/use-commands";
 import { mediaFromStoredFile } from "@/app/library/asset-images";
 import { audioMediaFromStoredFile } from "@/app/library/asset-audio";
-import { saveRoomTone, saveTake } from "@/app/audio/takes";
+import { saveRoomTone, saveSceneSound, saveTake } from "@/app/audio/takes";
 import { t } from "@/core/i18n/keyed";
 
 export const mobileImportsKey = (projectId: string) => ["mobile-imports", projectId] as const;
@@ -134,7 +134,7 @@ export async function importImage(
 /** Kan filen bli et take automatisk (lyd til en lydressurs eller en replikk, bolk B)? */
 function isTakeRow(r: MobileImportRow): boolean {
   const c = parseUploadContext(r.context);
-  return r.kind === "audio" && (c?.type === "sound" || c?.type === "line");
+  return r.kind === "audio" && (c?.type === "sound" || c?.type === "line" || c?.type === "scene_sound");
 }
 
 /** Stedet romlyd fra en økt hører til: scenen for en replikk, ellers lydressursens navn. */
@@ -144,6 +144,10 @@ function roomToneWhere(state: ProjectState, row: MobileImportRow): string | null
     return roomToneSceneName(lineInfo(state, c.occurrenceId, c.blockId));
   }
   if (c?.type === "sound") return state.assets[c.assetId]?.name ?? null;
+  if (c?.type === "scene_sound") {
+    const occ = state.occurrences[c.occurrenceId];
+    return occ ? roomToneSceneName({ sceneNumber: sceneNumberOf(state, occ) ?? null, heading: "" }) : null;
+  }
   return null;
 }
 
@@ -154,7 +158,9 @@ export async function importAudio(
   row: MobileImportRow,
 ): Promise<string | null> {
   const c = parseUploadContext(row.context);
-  if (!c || (c.type !== "sound" && c.type !== "line")) return null;
+  if (!c || (c.type !== "sound" && c.type !== "line" && c.type !== "scene_sound")) return null;
+  if (c.type === "scene_sound" && !state.occurrences[c.occurrenceId])
+    return null;
   if (c.type === "sound" && (!state.assets[c.assetId] || state.assets[c.assetId]!.removed))
     return null;
   if (!(await claimMobileImport(row.id))) return null;
@@ -163,15 +169,17 @@ export async function importAudio(
   const note = t("app-mobile-use-mobile-imports.note.message.fcb453aa7747", { who: String(who) });
   const saved = isRoomToneFile(row.file_name)
     ? await saveRoomTone(cmds, state, roomToneWhere(state, row) ?? t("app-mobile-use-mobile-imports.saved.save-room-tone.a23826be7c1a"), media, note)
-    : await saveTake(
-        cmds,
-        state,
-        c.type === "sound"
-          ? { kind: "sound", assetId: c.assetId, variantId: c.variantId }
-          : { kind: "line", occurrenceId: c.occurrenceId, blockId: c.blockId, ...(c.clipId ? { clipId: c.clipId } : {}) },
-        media,
-        note,
-      );
+    : c.type === "scene_sound"
+      ? await saveSceneSound(cmds, c, media, t("b099.scene.sound-name", { stamp: formatDate(row.created_at) }), note)
+      : await saveTake(
+          cmds,
+          state,
+          c.type === "sound"
+            ? { kind: "sound", assetId: c.assetId, variantId: c.variantId }
+            : { kind: "line", occurrenceId: c.occurrenceId, blockId: c.blockId, ...(c.clipId ? { clipId: c.clipId } : {}) },
+          media,
+          note,
+        );
   const e = await linkMobileImport(row.id, { assetId: saved.assetId, versionId: saved.versionId });
   return e?.message ?? null;
 }

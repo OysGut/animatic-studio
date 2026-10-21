@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from "react";
 import { audioTakeLabel, formatTakeLength, takeFileName, type MobileScript } from "@/core";
 import { useRecorder } from "@/app/audio/use-recorder";
+import { useDeviceRawAudioPref } from "@/app/audio/raw-audio-pref";
 import type { QueueItem, UploadQueue, Uploader } from "./upload-queue";
 import { t } from "@/core/i18n/keyed";
 
@@ -33,12 +34,13 @@ export function MobileAudio({
   uploader: Uploader;
 }) {
   const rec = useRecorder();
+  const [raw, setRaw] = useDeviceRawAudioPref();
   const [chosen, setChosen] = useState<ReadonlySet<string>>(new Set());
   const takes = items.filter((x) => !x.roomTone);
   const room = items.filter((x) => x.roomTone);
 
   async function record(roomTone: boolean) {
-    const done = await rec.start({ roomTone });
+    const done = await rec.start({ roomTone, raw });
     if (!done) return;
     const r = await done;
     if (!r) return;
@@ -133,6 +135,20 @@ export function MobileAudio({
           <Waves className="size-4" aria-hidden />
           {t("app-mobile-mobile-audio.mobile-audio.button.b38aa2f26552")}
         </button>
+        <label className="flex items-start gap-2 text-sm text-text-secondary">
+          <input
+            type="checkbox"
+            checked={raw}
+            disabled={recording || rec.phase === "starting"}
+            onChange={(e) => setRaw(e.target.checked)}
+            className="mt-0.5 size-4 accent-[var(--accent-brand)]"
+            data-testid="mobile-raw-audio"
+          />
+          <span>
+            {t("b099.raw.label")}
+            <span className="block text-xs text-text-tertiary">{t("b099.raw.hint")}</span>
+          </span>
+        </label>
       </div>
 
       {items.length ? (

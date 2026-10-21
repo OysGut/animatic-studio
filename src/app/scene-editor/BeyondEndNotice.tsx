@@ -24,6 +24,7 @@ export function BeyondEndNotice({
   onSelectLayer,
   onSelectShot,
   onSeek,
+  onExtend,
 }: {
   state: ProjectState;
   composition: Composition;
@@ -33,6 +34,8 @@ export function BeyondEndNotice({
   onSelectLayer: (id: string) => void;
   onSelectShot: (id: string) => void;
   onSeek: (frame: number) => void;
+  /** B-100: åpne endring av scenevarighet (B-041) med foreslått lengde i stedet for å forlenge direkte. */
+  onExtend?: ((neededFrames: number) => void) | undefined;
 }) {
   const found = useMemo(
     () => beyondEnd(state, composition, durationFrames),
@@ -92,7 +95,11 @@ export function BeyondEndNotice({
         >
           {open ? t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.d2597bb887f9") : t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.c90e2ec62c85")}
         </Button>
-        {editable ? (
+        {editable && onExtend ? (
+          <Button size="sm" variant="ghost" className="h-6" data-testid="beyond-end-extend" onClick={() => onExtend(needed)}>
+            {t("b100.beyond.extend")}
+          </Button>
+        ) : editable ? (
           <Button size="sm" variant="ghost" className="h-6" onClick={extend}>
             {t("app-scene-editor-beyond-end-notice.beyond-end-notice.button.3198a54fbb13")} {sec(needed)}
           </Button>

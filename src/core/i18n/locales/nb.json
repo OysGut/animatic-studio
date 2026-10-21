@@ -50401,42 +50401,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c": {
-    "text": "Forhåndsvisning",
-    "source": "\"Forhåndsvisning\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314": {
-    "text": "Zoom i forhåndsvisningen",
-    "source": "\"Zoom i forhåndsvisningen\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c": {
-    "text": "Tilpass",
-    "source": "\"Tilpass\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad": {
-    "text": "Tilbakestill visningen",
-    "source": "\"Tilbakestill visningen\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2": {
-    "text": "Forhåndsvisning av scenen",
-    "source": "\"Forhåndsvisning av scenen\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a": {
-    "text": "Lag",
-    "source": "\"Lag\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162": {
     "text": "Avspillingshode",
     "source": "\"Avspillingshode\"",
@@ -50476,12 +50440,6 @@
   "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76": {
     "text": "Zoom i tidslinjen",
     "source": "\"Zoom i tidslinjen\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-animation-workspace.animation-workspace.label.5d50a665cb4e": {
-    "text": "Bredde på forhåndsvisningen",
-    "source": "\"Bredde på forhåndsvisningen\"",
     "parameters": [],
     "executable": true
   },
@@ -74085,7 +74043,61 @@
   "b100.spacing.command": {
     "text": "Spacing-drag"
   },
-  "b100.spacing.beyond": {
-    "text": "Animasjonen går forbi scenens slutt. Bruk «Endre lengde» for å forlenge scenen."
+  "b099.qr.title": {
+    "text": "Ta opp på mobilen"
+  },
+  "b099.qr.hint-line": {
+    "text": "Skann koden. Mobilen viser replikken. Opptaket blir en ny versjon av replikken."
+  },
+  "b099.qr.hint-sound": {
+    "text": "Skann koden. Opptaket blir en ny lyd i scenen ved {at}."
+  },
+  "b099.qr.connected": {
+    "text": "Mobilen er tilkoblet"
+  },
+  "b099.qr.waiting": {
+    "text": "Venter på mobilen"
+  },
+  "b099.qr.pending": {
+    "text": "{n} opptak venter"
+  },
+  "b099.qr.received": {
+    "text": "{n} opptak mottatt"
+  },
+  "b099.qr.label-sound": {
+    "text": "Scene {scene} · {kind}"
+  },
+  "b099.mic.failed": {
+    "text": "PC-mikrofonen virker ikke. Ta opp på mobilen i stedet: skann QR-koden."
+  },
+  "b099.raw.label": {
+    "text": "Rå lyd (uten støydemping og automatisk nivå)"
+  },
+  "b099.raw.hint": {
+    "text": "Anbefalt for tale til film. Valget huskes."
+  },
+  "b099.mobile.record-audio": {
+    "text": "Ta opp lyd"
+  },
+  "b099.mobile.record-audio-hint": {
+    "text": "Med mikrofonen på telefonen"
+  },
+  "b099.scene.add-sound": {
+    "text": "Legg i scenen"
+  },
+  "b099.scene.sound-added": {
+    "text": "Lagt i scenen"
+  },
+  "b099.scene.sound-name": {
+    "text": "Opptak fra mobil {stamp}"
+  },
+  "b099.scene.sound-label": {
+    "text": "Lyd fra mobilen i scenen"
+  },
+  "b100.beyond.extend": {
+    "text": "Forleng scenen …"
+  },
+  "b100.beyond.text": {
+    "text": "Animasjonen går {n} f forbi scenens slutt. Ingenting er forlenget."
   }
 }

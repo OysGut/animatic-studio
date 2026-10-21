@@ -26,6 +26,11 @@ export type UploadContext =
   | { readonly type: "sound"; readonly assetId: string; readonly variantId?: string | undefined }
   /** Opptak av en replikk i en scene (bolk B, REQ-0685): mobilen viser hele replikken. */
   | { readonly type: "line"; readonly occurrenceId: string; readonly blockId: string; readonly clipId?: string }
+  /**
+   * B-099: lyd som ikke er en replikk, tatt opp på mobilen fra sceneeditorens opptaksvindu. Blir en ny
+   * lydressurs som legges i scenen der avspillingshodet stod da QR-koden ble åpnet (`atMs`).
+   */
+  | { readonly type: "scene_sound"; readonly occurrenceId: string; readonly atMs: number; readonly kind: SceneSoundKind }
   /** Bildeplassen til et lag i sceneeditoren: nytt bilde av lagets ressurs. */
   | {
       readonly type: "layer";
@@ -35,6 +40,12 @@ export type UploadContext =
     };
 
 export type MobileMediaKind = "image" | "video" | "audio";
+
+/** Lydtypene et mobilopptak av «lyd i scenen» kan ha (replikker går via «line»). */
+export const SCENE_SOUND_KINDS = ["dialogue", "narration", "sfx", "ambience", "music"] as const;
+export type SceneSoundKind = (typeof SCENE_SOUND_KINDS)[number];
+/** Øvre grense for `atMs` (24 timer): hindrer tull i konteksten. */
+export const SCENE_SOUND_MAX_MS = 24 * 60 * 60 * 1000;
 
 /** Egen QR-kode: ingen innlogging på telefonen, 2 timer (DEC-0090). */
 export const PERSONAL_SESSION_MS = 2 * 60 * 60 * 1000;
@@ -239,6 +250,14 @@ export function parseUploadContext(v: unknown): UploadContext | null {
       const clipId = optId("clipId");
       return occurrenceId && blockId && clipId !== false ? { type: "line", occurrenceId, blockId, ...(clipId ? { clipId } : {}) } : null;
     }
+    case "scene_sound": {
+      const occurrenceId = id("occurrenceId");
+      const atMs = o["atMs"];
+      const kind = o["kind"];
+      if (!occurrenceId || typeof atMs !== "number" || !Number.isInteger(atMs) || atMs < 0 || atMs > SCENE_SOUND_MAX_MS) return null;
+      if (!(SCENE_SOUND_KINDS as readonly unknown[]).includes(kind)) return null;
+      return { type: "scene_sound", occurrenceId, atMs, kind: kind as SceneSoundKind };
+    }
     case "layer": {
       const layerId = id("layerId");
       const assetId = id("assetId");
@@ -258,6 +277,7 @@ export function mediaKindsFor(c: UploadContext): MobileMediaKind[] {
       return ["image"];
     case "sound":
     case "line":
+    case "scene_sound":
       return ["audio"];
     case "asset":
     case "draft":
@@ -356,3 +376,47 @@ export function scriptForLine(
     text: block.text.replace(/\s+/g, " ").trim().slice(0, 5000),
   };
 }
+
+// ---------------------------------------------------------------- opptaksformat (B-099)
+
+/** Valgt opptaksformat: MIME-type, filendelse og bitrate (null: ukomprimert, ingen bitrate). */
+export interface RecordingFormat {
+  readonly mime: string;
+  readonly ext: string;
+  readonly bitsPerSecond: number | null;
+}
+
+/** Høy bitrate for komprimert tale til film (Opus/AAC). */
+export const RECORDING_BITRATE = 256_000;
+
+/**
+ * Beste format nettleseren kan ta opp i (B-099): Opus eller AAC med høy bitrate. Ukomprimert PCM i WebM
+ * (bare Chrome) velges ikke, fordi Safari og Firefox ikke kan spille det av for resten av teamet.
+ * Ren funksjon: `isSupported` er `MediaRecorder.isTypeSupported`.
+ */
+export function pickRecordingFormat(isSupported: (mime: string) => boolean): RecordingFormat | null {
+  const order: readonly RecordingFormat[] = [
+    { mime: "audio/webm;codecs=opus", ext: "webm", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/mp4;codecs=mp4a.40.2", ext: "m4a", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/webm", ext: "webm", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/mp4", ext: "m4a", bitsPerSecond: RECORDING_BITRATE },
+    { mime: "audio/ogg;codecs=opus", ext: "ogg", bitsPerSecond: RECORDING_BITRATE },
+  ];
+  for (const f of order) if (isSupported(f.mime)) return f;
+  return null;
+}
+
+/**
+ * Mikrofoninnstillingene (B-099): «Rå lyd» skrur av ekkodemping, støydemping og automatisk nivå. Rå lyd er
+ * standard for tale til film.
+ */
+export function microphoneConstraints(raw: boolean): {
+  readonly echoCancellation: boolean;
+  readonly noiseSuppression: boolean;
+  readonly autoGainControl: boolean;
+} {
+  return { echoCancellation: !raw, noiseSuppression: !raw, autoGainControl: !raw };
+}
+
+/** Standardvalget for «Rå lyd» når brukeren ikke har valgt selv. */
+export const RAW_AUDIO_DEFAULT = true;

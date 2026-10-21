@@ -1,13 +1,13 @@
 {
   "version": 1,
-  "entries": 9964,
-  "migrated": 9964,
-  "files": 448,
-  "literalPairs": 8674,
+  "entries": 9957,
+  "migrated": 9957,
+  "files": 447,
+  "literalPairs": 8667,
   "templatePairs": 1272,
   "dynamicPairs": 18,
-  "references": 10575,
-  "candidates": 30707,
+  "references": 10583,
+  "candidates": 30723,
   "conflicts": [
     {
       "kind": "parameter-contract",
@@ -1646,7 +1646,6 @@
         "app-scene-editor-layer-inspector.layer-inspector.title.4a7464f2b6a1",
         "app-scene-editor-layers-panel.layers-panel.aria-label.697f7c407fae",
         "app-scene-editor-layers-panel.layers-panel.h2.697f7c407fae",
-        "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a",
         "app-scene-editor-use-scene-panels.panel-title.message.7d584b8ff42e",
         "app-projects-promotion-dialog.compare.span.cdff22eef7af"
       ]
@@ -1891,14 +1890,6 @@
         "app-scene-editor-layers-panel.label.memo.96be501e2dd5",
         "app-scene-editor-layers-panel.leave-group.exec.68e9421339ac",
         "app-scene-editor-layers-panel.layers-panel.aria-label.94acff154dc6"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Zoom i forhåndsvisningen",
-      "keys": [
-        "app-scene-editor-preview-window.zoom-select.aria-label.522401c84413",
-        "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314"
       ]
     },
     {

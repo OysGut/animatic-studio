@@ -29603,36 +29603,6 @@
       "en": "f152775dedebf1abdd74f76a191b7ad3d12608788d9462a4d3c643b0ac83caf4"
     },
     {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c",
-      "nb": "4665ffc2dd60bcae2bbbda4f3c4d469856ea4b4914b0941e855765518b39921e",
-      "en": "20226b68d54670727a768ad51f756d4cc770655f1d0fac2311d6342739b8a9b0"
-    },
-    {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314",
-      "nb": "7422f457e7e747ad0ed4205ee3e91495329f67c9fe40ee2896e172ef29ee3b5c",
-      "en": "561dd1ecf83d7344bbe8574c58c40a24806750066b55a2da541d70a1639b30ff"
-    },
-    {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c",
-      "nb": "8d1df8090787f3576f7100e0ddd178ed4bad2b56f69beb33e30b491b42495393",
-      "en": "8e5c71905dfa8a54fb115fc7150296f0b047873d24e9a6cbdc685bfad9e1d297"
-    },
-    {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad",
-      "nb": "8b6e169eddd8cb4d7ca85ff310b46b175d680178825580f042bf61bab827a2af",
-      "en": "3a786119d2000d62f9d6ea797e54b5154e0fc852d7acc89f9a0ea566f63ad8ce"
-    },
-    {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2",
-      "nb": "40da68e9fc192d6f9c7e330075a79e6d4fc2715a90646a58ca31509967505fea",
-      "en": "2a7fa68f59400150309abb16c52c89e7487ac93d278b860be10c5a8c5aed5e70"
-    },
-    {
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a",
-      "nb": "a458abb0b2901685f55df504cd36621ba0513300cebcf2a036a11dee3f27065c",
-      "en": "4ccd2fc1a471fca539d8cf49b29b11a63ad420e57e000098fa1c7af244e8f075"
-    },
-    {
       "key": "app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162",
       "nb": "0f0395499cd1b0c59cc41af9e81651c8392f81fcd2e7cc470b84735efbef119e",
       "en": "bdbe5c21a309ce694a7bea95691ce1193bf66a6df1a839bf79d1a7067a301a5e"
@@ -29666,11 +29636,6 @@
       "key": "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76",
       "nb": "2a1244b5e73325e642ef8b9e2c82cc9896e0a230aaed5bd135089039ff32e923",
       "en": "0de0f6a8da48a4fc289bf8bdd07dc2728a9d5f9003147aef5339aea88889c5a1"
-    },
-    {
-      "key": "app-scene-editor-animation-animation-workspace.animation-workspace.label.5d50a665cb4e",
-      "nb": "d0a945c0c4edf053e56241af987e228841e4d51f06ffa04429892a68d67b8e4e",
-      "en": "57312087855bd0e069f463daf431aaa2cb77cbcadf61ccac1693f2644fa97371"
     },
     {
       "key": "app-scene-editor-animation-blink-panel.eye-row.aria-label.185a57aeb9e9",
