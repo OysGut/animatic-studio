@@ -478,6 +478,15 @@ function Editor({
     return out;
   }, [state, composition]);
   const urls = useImageUrls(paths);
+  // B-105a: eldre bilder får proxy og miniatyr i bakgrunnen første gang de vises (uten å blokkere)
+  useEffect(() => {
+    if (!composition) return;
+    const versions = layersOf(state, composition.id).flatMap((l) => layerVersions(state, l));
+    ensureDerivedFiles(cmds.runAndWait, state, projectId, versions, {
+      width: state.project.frameWidth,
+      height: state.project.frameHeight,
+    });
+  }, [state, composition, projectId, cmds]);
 
   const hasComposition = useMemo(() => {
     const set = new Set<string>();

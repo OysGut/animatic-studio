@@ -217,6 +217,16 @@ function Assembly({
   const fps = state.project.fps;
   const playback = usePlayback(duration, fps, false);
   const images = useFilmImages(view, clips);
+  // B-105a: eldre bilder får proxy og miniatyr i bakgrunnen første gang de vises (uten å blokkere)
+  useEffect(() => {
+    const versions = clips.flatMap((c) =>
+      c.compositionId ? layersOf(view, c.compositionId).flatMap((l) => layerVersions(view, l)) : [],
+    );
+    ensureDerivedFiles(cmds.runAndWait, view, projectId, versions, {
+      width: view.project.frameWidth,
+      height: view.project.frameHeight,
+    });
+  }, [view, clips, projectId, cmds]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   useEffect(() => rememberScene(projectId, selectedId, state.occurrences[selectedId ?? ""]?.sceneId ?? null), [projectId, selectedId, state.occurrences]);
   const [follow, setFollow] = useStoredFlag("assembly-follow", true);
