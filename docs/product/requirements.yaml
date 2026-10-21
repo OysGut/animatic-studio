@@ -892,7 +892,7 @@ requirements:
     fra strukturell plassering.
   tests:
   - 'enhet: datamodell har separate felt for struktur og kildeversjon'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/views.ts#outdatedTakes"
   - "src/core/library/content-sync.ts"
@@ -904,6 +904,8 @@ requirements:
   - "docs/development/VISUAL_QA_DEC-0076.md"
   - "tests/unit/bibliotek-opphav-synk.test.ts"
   - "tests/unit/dec0078-bolge2-kjerne.test.ts"
+  - "tests/unit/commands.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/unit/verifisering4-kjerne.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -917,6 +919,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0078
     change: "Strukturell plassering og innholdsmessig grunnlag holdes adskilt (takeMaterialBasis/compositionMaterialBasis); ressursversjonene lagres i produced_from.assetVersions for 2D-scener og versjoner av scenen (også importert film), og scener flagges «Ressurs oppdatert» i bibliotek, montering og sceneeditor. Gjenstår: lag lagt til etter siste godkjenning (KI-185)."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
   notes: ''
 - id: REQ-0023
   title: Strukturell synkronisering er automatisk
@@ -4667,6 +4672,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0078
     change: "Stilprofiler vises og redigeres i biblioteket; hver ressursversjon viser opphav (lastet opp, AI med leverandør/modell, frilagt, harmonisert) med filter. Opphavet utledes (KI-184); harmonisering finnes ikke ennå."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Bibliotekvisningen mangler UI-test etter at screens.mjs ble avviklet (R5)."
   notes: ''
 - id: REQ-0122
   title: Ressurser gjenbrukes på tvers av scener og produksjoner
@@ -5538,7 +5546,7 @@ requirements:
   - Ingen kodevei publiserer en variant uten eksplisitt brukerkommando.
   tests:
   - 'integrasjon: ingen automatisk publisering'
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/app/library/HarmonizePanel.tsx
   verification:
@@ -5546,6 +5554,8 @@ requirements:
   - tests/unit/harmonize-batch.test.ts
   - tests/db/run-db-tests.ts
   - tests/visual/p8-style-harmonize.mjs
+  - "tests/visual/p8-style-harmonize.mjs (110/110) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/r3r4-global-prores.mjs (58/58) – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-20'
     decision: DEC-0001
@@ -5553,6 +5563,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
   notes: Jf. kap. 34 pkt. 25. P0 som prinsipp, selv om funksjonen er fase 8.
 - id: REQ-0146
   title: Scener bytter ikke automatisk variant
@@ -10549,6 +10562,9 @@ requirements:
   - date: '2026-10-12'
     decision: DEC-0073
     change: "IKKE OPPFYLT bokstavelig: en ny leverandør krever endring i kjernen – ProviderId-typen og PROVIDERS-katalogen ligger i src/core/generation/providers.ts (l. 13 og 85), i tillegg til ADAPTERS i providers.server.ts."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Ny leverandør krever fortsatt endring i src/core/generation/providers.ts (historikken sier IKKE OPPFYLT)."
   notes: Ufravikelig prinsipp nr. 11 (modellagnostisk) i kap. 34.
 - id: REQ-0270
   title: Koble egne API-kontoer
@@ -11429,6 +11445,9 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0087
     change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Krever at bakgrunnsjobben kjører i publisert Cloud; ikke prøvd med lukket fane."
   notes: "Genereringen er fortsatt et kall som nettleseren venter på; ekte kø gjenstår (M5)."
 
 - id: REQ-0292
@@ -11507,6 +11526,9 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0087
     change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Krever at bakgrunnsjobben kjører i publisert Cloud; bare enhetstestet."
   notes: Ufravikelig prinsipp nr. 26 i kap. 34; kap. 1.2 sier at Lovable alene ikke kan antas å håndtere dette.
 
 - id: REQ-0294
@@ -19477,13 +19499,19 @@ requirements:
   - Et harmonisert bilde publiseres kun etter godkjenning, som ny versjonert stilvariant.
   tests:
   - 'manuell: verifiseres mot underliggende funksjonskrav'
-  status: Ikke startet
+  status: Verifisert
   implementation: []
-  verification: []
+  verification:
+  - "tests/unit/style-harmonize.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p8-style-harmonize.mjs (110/110) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/r3r4-global-prores.mjs (58/58) – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
   notes: Oppsummerer kap. 9.2, 9.3, 26.7. Linje 1536/1537 duplikat.
 - id: REQ-0504
   title: 'Prinsipp 26: Jobber og status bevares mellom økter'
@@ -19522,6 +19550,9 @@ requirements:
   - date: '2026-10-15'
     decision: DEC-0087
     change: "Bakgrunnsjobben tillates (DEC-0087); verifiseres når Lovable har satt opp det planlagte kallet"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Gjenopptak etter lukking er ikke prøvd mot Cloud."
   notes: Oppsummerer kap. 20.2, 20.4, 27.3. Linje 1538/1539 duplikat.
 
 - id: REQ-0505
@@ -23604,7 +23635,7 @@ requirements:
   tests:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/app/library/ImageAiPanels.tsx"
   - "src/core/generation/brief.ts"
@@ -23613,10 +23644,14 @@ requirements:
   verification:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
+  - "tests/unit/funn-2026-10-14.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-14'
     decision: DEC-0080
     change: "Opprettet etter Mars' ønsker 13.–14.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0624
   title: "Promptmotor per modellfamilie"
   text: "Bildebeskrivelsen bygges som én strukturert bestilling og skrives i formen modellen forstår best: fortellende avsnitt for Nano Banana og GPT Image (referanser med roller, positive formuleringer), kort og presis med identiteten først og egen negativ beskrivelse for Seedream, Qwen og FLUX. Ingen filmtittel, ingen replikker, nøytralt lys for figurdesign, farger med navn og kode, flat hvit bakgrunn (frilegges etterpå) når modellen ikke kan lage gjennomsiktighet. En norsk oppsummering vises over den engelske beskrivelsen."
@@ -23670,7 +23705,7 @@ requirements:
   tests:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/generation/style-analysis.ts"
   - "src/adapters/ai/write-prompt.functions.ts"
@@ -23678,10 +23713,14 @@ requirements:
   verification:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
+  - "tests/unit/funn-2026-10-14.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-14'
     decision: DEC-0080
     change: "Opprettet etter Mars' ønsker 13.–14.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0626
   title: "Visuelt faktaark per ressurs"
   text: "Hver ressurs kan ha et kort engelsk faktaark med det som synes (alder, kropp, hår, klær, farger, kjennetegn), ett per linje. Et utkast kan lages fra manuset og forsidebildet med AI (bekreftes), rettes og lagres (assets.visual_brief, migrasjon 0030). Faktaarket brukes i bildebeskrivelsene i stedet for manusutdrag."
@@ -23703,7 +23742,7 @@ requirements:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "tests/db/run-db-tests.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/app/library/VisualBriefEditor.tsx"
   - "src/core/generation/style-analysis.ts"
@@ -23713,10 +23752,14 @@ requirements:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "tests/db/run-db-tests.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
+  - "tests/unit/funn-2026-10-14.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-14'
     decision: DEC-0080
     change: "Opprettet etter Mars' ønsker 13.–14.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0627
   title: "Seedream 4.5 og Qwen-Image-Edit"
   text: "Via fal.ai kan bilder lages med Seedream 4.5 (opptil 10 forbilder, ca. 0,04 USD per bilde) og Qwen-Image-Edit (endrer et bilde, negativ beskrivelse, ca. 0,03 USD per megapiksel). Qwen krever et forbilde; det sjekkes før noe betales."
@@ -23735,17 +23778,21 @@ requirements:
   - "Qwen uten forbilde avvises før kallet."
   tests:
   - "tests/unit/funn-2026-10-14.test.ts"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/core/generation/providers.ts"
   - "src/adapters/ai/providers.server.ts"
   - "src/adapters/ai/generate-image.functions.ts"
   verification:
   - "tests/unit/funn-2026-10-14.test.ts"
+  - "tests/unit/funn-2026-10-14.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-14'
     decision: DEC-0080
     change: "Opprettet etter Mars' ønsker 13.–14.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0628
   title: "Oppskalering"
   text: "Et bilde kan oppskaleres 2× eller 4× via fal.ai: SeedVR2 (skarpere, ca. 0,001 USD per megapiksel) eller Clarity (med AI-detaljer, ca. 0,03 USD per megapiksel). Prisen regnes fra størrelsen på resultatet og vises før «Ja, oppskaler»; resultatet blir en ny versjon (med samme vinkel)."
@@ -23766,7 +23813,7 @@ requirements:
   tests:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/app/library/ImageAiPanels.tsx"
   - "src/adapters/ai/providers.server.ts"
@@ -23775,10 +23822,14 @@ requirements:
   verification:
   - "tests/unit/funn-2026-10-14.test.ts"
   - "docs/development/VISUAL_QA_DEC-0080.md"
+  - "tests/unit/funn-2026-10-14.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-14'
     decision: DEC-0080
     change: "Opprettet etter Mars' ønsker 13.–14.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0629
   title: "Tjenesten på norsk og engelsk"
   text: "Brukeren kan veksle mellom norsk og engelsk som språk i tjenesten. Valget gjøres på hovedsiden (prosjektlisten), huskes og gjelder alle tekster brukeren ser: knapper, menyer, dialoger, meldinger, feilmeldinger, hjelpetekster, verktøytips og skjermlesertekster, også datoer og tall. Norsk er standard. Brukerens eget innhold (manus, notater, navn) oversettes ikke."
@@ -23939,7 +23990,7 @@ requirements:
   tests:
   - "visuell: knapp, dialog og sending med mocket leverandør"
   - "enhet: forespørselen til fal.ai og Runway"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/app/scene-editor/SceneToVideoDialog.tsx"
   - "src/core/generation/scene-to-video.ts"
@@ -23950,10 +24001,14 @@ requirements:
   - "tests/unit/scene-to-video.test.ts"
   - "tests/visual/scene-video-ui.mjs"
   - "docs/development/VISUAL_QA_DEC-0083.md"
+  - "tests/visual/scene-video-ui.mjs (39/39 nb og UI_LANG=en) – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-15'
     decision: DEC-0083
     change: "Opprettet etter Mars' ønske 15.10.2026"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 
 - id: REQ-0634
   title: "Beskrivelsen for AI-video fra 2D-scenen bygges av stil, figurer og instrukser"
@@ -25757,6 +25812,9 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0093
     change: "Bygget i bolk B"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Må prøves på ekte telefoner (KI-235/239)."
 - id: REQ-0686
   title: "Lydopptak på PC med flere takes"
   text: "PC-opptak har start, stopp, spill av, ta opp på nytt, behold og velg. Mikrofontillatelse håndteres. Et nytt take overskriver aldri et tidligere."
@@ -25827,6 +25885,9 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0093
     change: "Bygget i bolk B"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Må prøves på ekte telefoner (KI-235/239)."
 - id: REQ-0688
   title: "Flere takes bevares"
   text: "Alle opptak bevares som egne takes med nummer og lengde. Et nytt take sletter aldri et tidligere. Et take kan velges som aktivt, eller deler brukes i en lydkomposisjon."
@@ -25898,6 +25959,9 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0093
     change: "Bygget i bolk B"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Må prøves på ekte telefoner (KI-235/239)."
 - id: REQ-0690
   title: "Opptak av ren romlyd"
   text: "I opptaksvinduet (PC og mobil) kan brukeren ta opp noen sekunder ren romlyd, merket som romlyd, til bruk i dialogredigering og sammenklipping."
@@ -26169,12 +26233,14 @@ requirements:
   tests:
   - "tests/unit/audio-composition.test.ts"
   - "tests/visual/dec0094-audio-editor-ui.mjs"
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - "src/engine/audio/composition.ts"
   verification:
   - "tests/unit/audio-composition.test.ts"
   - "tests/visual/dec0094-audio-editor-ui.mjs"
+  - "tests/unit/audio-composition.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/dec0094-audio-editor-ui.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-16'
     decision: DEC-0090
@@ -26182,6 +26248,9 @@ requirements:
   - date: '2026-10-16'
     decision: DEC-0094
     change: "Bygget i bolk C"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0698
   title: "Ord-til-lyd-kobling med utskiftbar analysetjeneste"
   text: "Programmet kobler ordene i replikken til tidsrom i lyden (forced alignment) med manusteksten som utgangspunkt. Tjenesten er utskiftbar. Resultatet lagrer lyd-ID, replikk-ID, manusversjon, ord, start, slutt, usikkerhet, manuelle overstyringer og modell med versjon. Et nytt opptak analyseres uten å analysere alt på nytt; feiler analysen, virker manuell redigering."
@@ -26260,6 +26329,9 @@ requirements:
   - date: '2026-10-17'
     decision: DEC-0095
     change: "Bygget i bolk D"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Venter på prøving med ekte norsk opptak (bolk D)."
 - id: REQ-0700
   title: "Klikk og markér ord i teksten for å velge lyd"
   text: "Dialogeditoren viser replikken som en aktiv del av redigeringen. Klikk på et ord markerer lyden for ordet; markering av flere ord, en setning eller hele replikken markerer det samlede tidsrommet. Grensene kan justeres manuelt, usikre koblinger vises tydelig, og markeringen brukes til avspilling, opptak, trim og erstatning."
@@ -26436,6 +26508,9 @@ requirements:
   - date: '2026-10-17'
     decision: DEC-0095
     change: "Bygget i bolk D"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Venter på prøving med ekte norsk opptak (bolk D)."
 - id: REQ-0705
   title: "Endre pauser mellom ord"
   text: "I en egen tidsredigeringsmodus kan avstanden mellom to ord økes eller reduseres ved å dra dem fra hverandre, uten nytt opptak og uten å endre ordenes lyd. Vanlig markering og redigering av tekst endrer aldri timingen."
@@ -26577,6 +26652,9 @@ requirements:
   - date: '2026-10-17'
     decision: DEC-0096
     change: "Bygget i bolk E; må prøves med ekte opptak (KI-248)"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Må prøves med ekte opptak (KI-248)."
 - id: REQ-0709
   title: "Romlyd i overganger mellom takes"
   text: "Romlyd kan brukes til å myke opp overganger mellom ulike takes. Overgangene kan forhåndshøres og justeres; romlyd fra ulike opptak antas ikke å være lik."
@@ -26610,6 +26688,9 @@ requirements:
   - date: '2026-10-17'
     decision: DEC-0096
     change: "Bygget i bolk E; må prøves med ekte opptak (KI-248)"
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Må prøves med ekte opptak (KI-248)."
 - id: REQ-0710
   title: "«Spill av automatisk etter endring»"
   text: "Dialogeditoren har avkrysningen «Spill av automatisk etter endring». Når den er på, spilles det endrede området med justerbar kontekst når en endring er fullført (ikke mens man drar), og nye avspillinger legges ikke oppå tidligere. Av: ingen automatisk avspilling."
@@ -31182,7 +31263,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31192,6 +31273,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31199,6 +31282,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0838
   title: 'P4: PNG-sekvens i ZIP'
   text: PNG med alfa er tilgjengelig også uten WebM-støtte; ZIP produseres bilde for bilde.
@@ -31223,7 +31309,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31233,6 +31319,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31240,6 +31328,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0839
   title: 'P4: WebM VP9 med eksplisitt alfastøtte'
   text: WebM kan bare velges ved positiv alpha keep-støtte. Svart bakgrunn brukes aldri som reserve.
@@ -31281,6 +31372,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Ikke verifisert: Faktisk WebM-alfa i nettleseren er ikke verifisert; testen dekker bare valgsperren."
 - id: REQ-0840
   title: 'P4: Tidsområde for lageksport'
   text: Hele scenen eller gyldig inn/ut-område kan eksporteres; ut er første bilde utenfor området.
@@ -31305,7 +31399,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31315,6 +31409,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31322,6 +31418,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0841
   title: 'P4: Effekter og alfatolkning'
   text: Effekter kan slås av. Rett alfa er PNG-standard; premultiplisert multipliserer RGB, ikke alfa.
@@ -31346,7 +31445,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31356,6 +31455,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31363,6 +31464,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0842
   title: 'P4: Samme compositor og formatadapter'
   text: Lageksport bruker drawFilmFrame og AlphaEncoder; MOV/ProRes kan legges til uten egen renderer.
@@ -31387,7 +31491,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31397,6 +31501,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31404,6 +31510,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0843
   title: 'P4: Fremdrift og avbryt uten halv fil'
   text: Eksporten viser fremdrift; avbryt publiserer ikke en halv fil og rydder mellomlagringen.
@@ -31428,7 +31537,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31438,6 +31547,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31445,6 +31556,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0844
   title: 'P4: Pikselkvalitet, språk og ikke-destruktivitet'
   text: Nedlastede PNG-filer har alfa 0 i hjørner og 255 i figuren; eksport endrer ikke scenedata og finnes på norsk/engelsk.
@@ -31469,7 +31583,7 @@ requirements:
   tests:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/layer-alpha.ts
   - src/engine/export/alpha.ts
@@ -31479,6 +31593,8 @@ requirements:
   verification:
   - tests/unit/layer-alpha.test.ts
   - tests/visual/p4-alpha-export.mjs
+  - "tests/unit/layer-alpha.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p4-alpha-export.mjs (39/39) – kjørt og bestått 2026-10-21 (V1)"
   notes: 'Kilde: bekreftet P4–P6-oppdrag 20.10.2026. DEC-0099 er konsolideringsreferanse; DEC-0085 gjelder framtidig
     formatutvidelse. PNG testet lokalt; faktisk WebM-alfa og generell bakgrunnseksportkø er ikke verifisert. Ingen
     migrasjon for P4.'
@@ -31486,6 +31602,9 @@ requirements:
   - date: '2026-10-20'
     decision: DEC-0099
     change: Registrert fra brukerens P4-oppdrag, uten ny produktbeslutning.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0845
   title: 'P5: Regelkobling først'
   text: Regelkobling først.
@@ -31509,7 +31628,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31517,11 +31636,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0846
   title: 'P5: AI bare for usikre linjer'
   text: AI bare for usikre linjer.
@@ -31545,7 +31670,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31553,11 +31678,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0847
   title: 'P5: Kostnad og godkjenning av linjekobling'
   text: Kostnad og godkjenning av linjekobling.
@@ -31581,7 +31712,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31589,11 +31720,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0848
   title: 'P5: Forhåndsvisning av linjeforslag'
   text: Forhåndsvisning av linjeforslag.
@@ -31617,7 +31754,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31625,11 +31762,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0849
   title: 'P5: Godkjente linjekoblinger'
   text: Godkjente linjekoblinger.
@@ -31653,7 +31796,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31661,11 +31804,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0850
   title: 'P5: Reversible linjekommandoer'
   text: Reversible linjekommandoer.
@@ -31689,7 +31838,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31697,11 +31846,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0851
   title: 'P5: Norsk hovedmanus bevares'
   text: Norsk hovedmanus bevares.
@@ -31725,7 +31880,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31733,11 +31888,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0852
   title: 'P5: Backup av linjekoblinger'
   text: Backup av linjekoblinger.
@@ -31761,7 +31922,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31769,11 +31930,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0853
   title: 'P5: Språk og testdekning av linjekobling'
   text: Språk og testdekning av linjekobling.
@@ -31797,7 +31964,7 @@ requirements:
   - tests/unit/line-linking.test.ts
   - tests/visual/p5-line-linking.mjs
   - tests/db/run-db-tests.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-align-prompt.ts
   - src/adapters/ai/line-align.functions.ts
@@ -31805,11 +31972,17 @@ requirements:
   - db/migrations/0064_translation_line_links.sql
   verification:
   - Unit-tester og mocket gjennomgang på norsk/engelsk; Cloud og DB-kjøring gjenstår.
+  - "tests/unit/line-linking.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p5-line-linking.mjs (24/24) – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/db/run-db-tests.ts (0066/0067) – kjørt og bestått 2026-10-21 (V1)"
   notes: C bestilt 20.10.2026. Gjennomgang av lagrede oversettelseslinjer; importerte linjer uten regelpar bevares ikke av eksisterende importmodell.
   history:
   - date: '2026-10-20'
     decision: DEC-0099
     change: C implementert med sceneavgrensede forslag, bevarte uparrede importlinjer (translation_lines), utdaterte koblinger som flagges uten blokkering, eksplisitt bekreftelse og reversible linjekoblinger; DB 137/137 lokalt, Cloud-kjøring gjenstår.
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0854
   title: 'M8: Navngitte prosjektprofiler'
   text: Prosjektprofiler samler navn, modeller per AI-type, oppløsning, innsatsnivå, varianter og eksportvalg.
@@ -32197,7 +32370,7 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/engine/export/prores.ts
   - src/engine/export/mov.ts
@@ -32206,11 +32379,16 @@ requirements:
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0864
   title: 'P7: ProRes 4444 med alfa for lageksport'
   text: 'Lageksporten kan lage ProRes 4444 (ap4h) med 16-biters alfa i MOV, uten lyd; gjennomsiktige områder har alfa 0.'
@@ -32233,7 +32411,7 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/engine/export/alpha.ts
   - src/core/layer-alpha.ts
@@ -32241,11 +32419,16 @@ requirements:
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0865
   title: 'P7: PCM-lyd i MOV'
   text: 'Vanlig ProRes-eksport tar med miksen som stereo PCM 16 bit 48 kHz (sowt) flettet bilde for bilde; lageksporten er uten lyd.'
@@ -32268,18 +32451,23 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/engine/export/mov.ts
   - src/engine/export/prores-export.ts
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0866
   title: 'P7: Koder uten GPL, lastes ved behov'
   text: 'ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).'
@@ -32301,18 +32489,23 @@ requirements:
   - 'ProRes kodes av en egen TypeScript-koder i Web Workers (ingen GPL/LGPL-kode, ingen nedlasting). Koden lastes bare når ProRes velges (ADR-0011).'
   tests:
   - tests/unit/prores-mov.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/engine/export/prores.ts
   - src/engine/export/prores.worker.ts
   - docs/decisions/adr/ADR-0011-prores-mov.md
   verification:
   - tests/unit/prores-mov.test.ts
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0867
   title: 'P7: Bakgrunnskø, strømming og minnegrense'
   text: 'ProRes-eksport går i eksportkøen med fremdrift og avbryt, strømmes til OPFS der det støttes, og stoppes med tydelig melding når filen ville overskride trygg grense (1 GiB i minnet, 80 % av ledig lagring med OPFS).'
@@ -32335,18 +32528,23 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/prores-export.ts
   - src/engine/export/prores-export.ts
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0868
   title: 'P7: Kvalitetsprofil kan foreslå ProRes'
   text: 'En kvalitetsprofil kan foreslå ProRes som eksportformat (film: ProRes 422 HQ, lag: ProRes 4444); eksportdialogene viser profilen som i P6.'
@@ -32369,18 +32567,23 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/generation/quality-profile.ts
   - src/app/projects/QualityProfilesSection.tsx
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0869
   title: 'P7: Ingen stille fallback'
   text: 'Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.'
@@ -32402,18 +32605,23 @@ requirements:
   - 'Når nettleseren ikke kan kjøre ProRes-koderen, sperres valget med en tydelig melding; det byttes aldri stille til et annet format.'
   tests:
   - tests/visual/p7-prores.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/engine/export/prores-support.ts
   - src/app/assembly/AlphaExportDialog.tsx
   - src/app/assembly/ExportAnimaticDialog.tsx
   verification:
   - tests/visual/p7-prores.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0870
   title: 'P7: Polering av linjekoblingen'
   text: 'Gjennomgangen viser «1 ugyldig forslag forkastet» i entall, sikkerhet i prosent («50 %») og verktøytips for n:m («én norsk linje mot to oversatte»).'
@@ -32436,18 +32644,23 @@ requirements:
   tests:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p5-line-linking.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/translation/line-link-labels.ts
   - src/app/script/LineLinkReview.tsx
   verification:
   - tests/unit/prores-mov.test.ts
   - tests/visual/p5-line-linking.mjs
+  - "tests/unit/prores-mov.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p7-prores.mjs (45/45) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, p7-prores med ffmpeg/ffprobe-dekoding). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0085
     change: Registrert fra P7-oppdraget (ProRes/MOV).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0871
   title: 'M6: Oppdatering med AI ved manusavvik (valg B)'
   text: 'Ved manusavvik kan «Oppdater» foreslå ny bildebeskrivelse, nytt shotforslag og ny tale for røde replikker (DV7). Tekst- og bildekall går gjennom kostnadsporten med anslag, eksplisitt bekreftelse og kvalitetsprofil; nye bilder blir nye versjoner som bare tas i bruk med et eget klikk, shotforslag blir notater, og manus, ferdig film og godkjente ressurser endres aldri automatisk.'
@@ -32471,7 +32684,7 @@ requirements:
   tests:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/assembly/material-update.ts
   - src/app/assembly/MaterialUpdateSection.tsx
@@ -32479,11 +32692,16 @@ requirements:
   verification:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
+  - "tests/unit/m6-rest.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/m6-rest.mjs (74/74) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0054
     change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0872
   title: 'M6: Varighetsprognose fra prosjektets historikk'
   text: 'Varighetsprognosen bruker faktisk talehastighet per karakter og språk fra opptak og genererte replikker og forholdet mellom ferdige scener og manusanslaget, viser et spenn med grunnlag (f.eks. «basert på 14 scener») i scenenavigatoren og prosjektoversikten, faller tilbake på standardantakelsene ved lite data og lagres aldri som fasit.'
@@ -32506,7 +32724,7 @@ requirements:
   tests:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/screenplay/forecast.ts
   - src/app/projects/DurationOverview.tsx
@@ -32514,11 +32732,16 @@ requirements:
   verification:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
+  - "tests/unit/m6-rest.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/m6-rest.mjs (74/74) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0054
     change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0873
   title: 'M6: Forslag til kontekstuell kobling av betegnelser'
   text: 'Kjernen foreslår koblinger av betegnelser til ressurser ut fra scenen, foregående replikker og hvem som er til stede (regler først). Bare usikre forslag kan vurderes av AI etter anslag og bekreftelse; brukeren godkjenner forslagene, som lagres som kontekstnavn i én angregruppe.'
@@ -32541,18 +32764,23 @@ requirements:
   tests:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/library/context-links.ts
   - src/app/library/ContextLinkSuggestions.tsx
   verification:
   - tests/unit/m6-rest.test.ts
   - tests/visual/m6-rest.mjs
+  - "tests/unit/m6-rest.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/m6-rest.mjs (74/74) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0054
     change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 - id: REQ-0874
   title: 'P8-retting: Vist bildemodell er brukt modell, og samlet anslag i massemodus'
   text: 'Den innebygde bildemodellen brukeren velger, sendes til serveren og brukes (kontrollert mot katalogen); metadataen viser samme modell. Massemodus viser samlet kostnadsanslag med antall, pris per bilde, størrelse og kvalitetsprofil, og profilens budsjett kontrolleres for hele antallet.'
@@ -32576,7 +32804,7 @@ requirements:
   tests:
   - tests/unit/builtin-image-model.test.ts
   - tests/visual/p8-style-harmonize.mjs
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/generation/providers.ts
   - src/adapters/ai/image-run.server.ts
@@ -32586,11 +32814,16 @@ requirements:
   verification:
   - tests/unit/builtin-image-model.test.ts
   - tests/visual/p8-style-harmonize.mjs
+  - "tests/unit/builtin-image-model.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/visual/p8-style-harmonize.mjs (110/110) – kjørt og bestått 2026-10-21 (V1)"
   notes: Testet lokalt (vitest, m6-rest NO/EN, DB-suite). Ingen migrasjon.
   history:
   - date: '2026-10-20'
     decision: DEC-0054
     change: Registrert fra M6-oppdraget (resten av produksjonskontrollen).
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 
 - id: REQ-0875
   title: "ML1: tapsfritt AST-inventar og stabile tekstnøkler"
@@ -32615,7 +32848,7 @@ requirements:
   tests:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - scripts/i18n/inventory.mjs
   - scripts/i18n/mapping.v1.json
@@ -32624,10 +32857,15 @@ requirements:
   verification:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
+  - "tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-20'
     decision: DEC-0081
     change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 
 - id: REQ-0876
   title: "ML1: N-språkkatalog og nøkkelbasert oversettelse"
@@ -32652,7 +32890,7 @@ requirements:
   tests:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/i18n/messages.ts
   - src/core/i18n/keyed.ts
@@ -32660,10 +32898,15 @@ requirements:
   verification:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
+  - "tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-20'
     decision: DEC-0081
     change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 
 - id: REQ-0877
   title: "ML1: komplette tekstfiler, kompatibel bro og pseudospråk"
@@ -32688,7 +32931,7 @@ requirements:
   tests:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - src/core/i18n/locales/nb.json
   - src/core/i18n/locales/en.json
@@ -32696,10 +32939,15 @@ requirements:
   verification:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
+  - "tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-20'
     decision: DEC-0081
     change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
 
 - id: REQ-0878
   title: "ML1: streng språk- og katalogkontroll"
@@ -32724,14 +32972,19 @@ requirements:
   tests:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
-  status: Implementert – ikke verifisert
+  status: Verifisert
   implementation:
   - scripts/i18n/check.mjs
   - scripts/i18n/validate.mjs
   verification:
   - tests/unit/i18n-ml1.test.ts
   - tests/unit/i18n.test.ts
+  - "tests/unit/i18n-ml1.test.ts – kjørt og bestått 2026-10-21 (V1)"
+  - "tests/unit/i18n.test.ts – kjørt og bestått 2026-10-21 (V1)"
   history:
   - date: '2026-10-20'
     decision: DEC-0081
     change: "Registrert fra godkjent B-049 ML1-oppdrag; ingen migrasjon eller endring av eksisterende brukerflate."
+  - date: '2026-10-21'
+    decision: V1
+    change: "Verifisert: testene dekker akseptansekriteriet og besto 2026-10-21."
