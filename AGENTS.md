@@ -57,4 +57,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
 39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
-40. Product name is «From Pen to Glass» (short «Pen to Glass»); tests/unit/b104-product-name.test.ts fails on the old name in user-visible text, with an explicit exception list, while internal IDs, keys and file formats keep their old names.
+40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats keep old names.
