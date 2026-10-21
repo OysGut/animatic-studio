@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from "vitest";
-import { latestGlobalVersions, withdrawnInUse, linkedGlobalVariant, type GlobalVersion, type ProjectState, setLanguage, t } from "@/core";
+import { latestGlobalVersions, withdrawnInUse, linkedGlobalVariant, type GlobalVersion, type ProjectState } from "@/core";
+import { t } from "@/core/i18n/keyed";
 import { checkMobileFile, maxBytesFor, MOBILE_VIDEO_MAX_BYTES, videoMaxBytes } from "@/core/mobile";
 // @ts-expect-error -- .mjs uten typer
 import { coverageReport } from "../../scripts/i18n/release-check.mjs";
@@ -49,12 +50,10 @@ describe("R6: plattformnavn og videogrense", () => {
   });
   it("de rettede tekstene nevner ikke plattformen på nb og en", () => {
     for (const lang of ["nb", "en"] as const) {
-      setLanguage(lang);
       for (const k of ["r6-brand.builtin-provider", "r6-brand.text-model", "r6-brand.provider-detail", "r6-brand.download-blocked"])
-        expect(t(k)).not.toMatch(/lovable|Animatic Studio-arbeidsområdet|in Animatic Studio\./i);
-      expect(t("r6-brand.cron-warning", { CRON_STALE_MINUTES: "10" })).toMatch(lang === "nb" ? /satt opp på serveren/ : /set up on the server/);
+        expect(t(k, {}, lang)).not.toMatch(/lovable|Animatic Studio-arbeidsområdet|in Animatic Studio\./i);
+      expect(t("r6-brand.cron-warning", { CRON_STALE_MINUTES: "10" }, lang)).toMatch(lang === "nb" ? /satt opp på serveren/ : /set up on the server/);
     }
-    setLanguage("nb");
   });
   it("500 MB-grensen gjelder bare nettversjonen", () => {
     expect(videoMaxBytes("web")).toBe(500 * 1024 * 1024);
@@ -68,12 +67,9 @@ describe("R6: plattformnavn og videogrense", () => {
 
 describe("R8: språknøytral import av oversatt manus", () => {
   it("knappen og målspråket på nb og en", () => {
-    setLanguage("nb");
-    expect(t("r8-translation-import.button")).toBe("Importer oversatt manus …");
-    expect(t("r8-translation-import.target", { language: "Tysk", tag: "de" })).toBe("Målspråk: Tysk (de)");
-    setLanguage("en");
-    expect(t("r8-translation-import.button")).toBe("Import translated script …");
-    expect(t("r8-translation-import.target", { language: "German", tag: "de" })).toBe("Target language: German (de)");
-    setLanguage("nb");
+    expect(t("r8-translation-import.button", {}, "nb")).toBe("Importer oversatt manus …");
+    expect(t("r8-translation-import.target", { language: "Tysk", tag: "de" }, "nb")).toBe("Målspråk: Tysk (de)");
+    expect(t("r8-translation-import.button", {}, "en")).toBe("Import translated script …");
+    expect(t("r8-translation-import.target", { language: "German", tag: "de" }, "en")).toBe("Target language: German (de)");
   });
 });
