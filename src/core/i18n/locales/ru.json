@@ -52671,7 +52671,7 @@
     "review": "user"
   },
   "adapters-ai-image-run-server.message.message.1fb2430caade": {
-    "text": "База данных не обновлена для собственных провайдеров ИИ. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "База данных не обновлена для собственных поставщиков ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "62990e7784ab2c158d966e3cec76ed705e134fa7f50a838d99fe3f7a1ebb4ca7",
     "review": "machine"
   },
@@ -52681,37 +52681,37 @@
     "review": "machine"
   },
   "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-    "text": "База данных ещё не обновлена для использования собственных ИИ-провайдеров. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных ещё не обновлена для ваших собственных поставщиков ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "b753c6d4f0ba72e4843b545e879d8aeb991a9d2fc806fd2b680f480f0d9e3d44",
     "review": "machine"
   },
   "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-    "text": "База данных не обновлена для звукового ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных не обновлена для звука, создаваемого ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "737b19cac2053fecc2cdd274a55a79bbdc0d1632ad74d3e127c1008bac2b044b",
     "review": "machine"
   },
   "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-    "text": "База данных не обновлена для синтеза речи ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных не обновлена для речи, создаваемой ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "1605867cd8a75a619a7fc962947bd557b43e7d8b0d99006e5997d7dd95ebc69e",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated": {
-    "text": "База данных не обновлена для ИИ-видео. Обратитесь к администратору для обновления From Pen to Glass.\"0025\" : \"0024\"}).",
+    "text": "База данных не обновлена для видео, создаваемого ИИ. Обратитесь к администратору для обновления From Pen to Glass.\"0025\" : \"0024\"}).",
     "sourceHash": "76e6a63159590de5dfe45713d8a89243c8590e34f2c26594717a8051567d1357",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated-queue": {
-    "text": "База данных не обновлена для очереди ИИ-видео. Обратитесь к администратору для обновления From Pen to Glass.\"0025\" : \"0024\"}).",
+    "text": "База данных не обновлена для видео ИИ в очереди. Обратитесь к администратору для обновления From Pen to Glass.\"0025\" : \"0024\"}).",
     "sourceHash": "13e88865091cd73e9d6da59ed7174ab7ac999cb5e3ee5da2059fad0e32486606",
     "review": "machine"
   },
   "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-    "text": "База данных не обновлена для описаний от ИИ. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "База данных не обновлена для описаний, написанных ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "0ba778c3d83c1e026c839a04397ad33e959841bbe08ce57b7ac12c425016974a",
     "review": "machine"
   },
   "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-    "text": "База данных устарела. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных не обновлена. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "55329f42746643a57e0b2cf93ce95db9de6425c9cf2705fc93e88ec15bb0cd00",
     "review": "machine"
   },
@@ -52736,27 +52736,27 @@
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.16525acc1633": {
-    "text": "В базе данных отсутствуют аудиосвязи. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют связи для звука. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "e3b9cae1fd5c0b65e10223645d6227fec54fa17a96f19aaefea922ad86faf010",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-    "text": "В базе данных отсутствует непрерывность персонажей. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует поддержка непрерывности персонажей. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "d8f1f87bb040f3c5ec4a93df4b7c0b4063d8ad245cfd1c372eda644d7a78e79d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3d6e65936633": {
-    "text": "В базе данных отсутствуют кадрирование и временные связи. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют обрезка и временные связи. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "e4da7a1ff6d5b90569537d1bb48a692bbf2e7d812eef4ada98d72fd52fdfd078",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.402d2c13486c": {
-    "text": "В базе данных отсутствуют новые функции (переходы, черно-белый режим, группы, смена изображений и траектории движения). Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют новые функции (переходы, чёрно-белый режим, группы, смена изображений и траектории движения). Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "7222c7f3c98bf44d38b25e0e9401979b3ee6b42e258ebc7813a5de8275e86d57",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-    "text": "В базе данных отсутствуют бюджет на ИИ и описания генерации. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют бюджет ИИ и описания генерации. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "2a1b77864b98682d4aef44602b97ef3d4fd198fe0bcacc6c438116597d1247ba",
     "review": "machine"
   },
@@ -52766,7 +52766,7 @@
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-    "text": "В базе данных отсутствует дополнение для сохраненных оценок длительности и журнала экспорта. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует дополнение для сохранённых оценок длительности и журнала экспорта. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "79ac5d0e22f807f2a2da04e41562fe93d0fbdc09d79a55b8907403ef7c461f9a",
     "review": "machine"
   },
@@ -52776,7 +52776,7 @@
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.a351f6c20569": {
-    "text": "В базе данных отсутствует дополнение для списка задач и настроек экспорта. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует дополнение для рабочего списка и настроек экспорта. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "ba148fb0a67dc8cbc17782ae74fd732eebe6aa3ca14fe86eef6ab45ab18dd113",
     "review": "machine"
   },
@@ -52791,72 +52791,72 @@
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bb458d81609f": {
-    "text": "В базе данных отсутствует плановая длительность для каждой сцены. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует плановая длительность каждой сцены. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "81a6c707f8a5b8711f8b0145e2f85c7b3ab85cdbd11f9732bc6cbe86ffae252d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-    "text": "В базе данных отсутствуют дополнения для удаленных объектов, скорости звука и режима «анимация двойками». Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует дополнение для удалённых объектов, скорости звука и анимации на двойках. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "cf1365062aef39dd1b09944c6c44ab10eb8982b3a5ea71390d64938e6d88d19a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-    "text": "В базе данных отсутствует поддержка звука на несколько сцен и точек громкости. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют звук для нескольких сцен и точки громкости. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "c0fb2acea0f0421c5c84a6f3f74ae1b40d69d8e0658ef28809e37bd78d0f2a8b",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
-    "text": "В базе данных отсутствуют заметки к продакшнам. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют заметки к постановкам. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "5d57544df2e2abad6660df9d2fbe121d21eb41a81f8c578c916e15fd38dbb601",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-    "text": "В базе данных отсутствует непрерывность (continuity) для спин-оффов. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует поддержка непрерывности спин-оффов. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "71cad715bf44048d2ccead536bf45d015067a6d045f20a49e536a74d9576de49",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f770da01452c": {
-    "text": "В базе данных отсутствует последнее дополнение (маски, переходы, голоса, профили стилей). Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует последнее дополнение (маски, переходы, голоса, профили стиля). Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "2c29104a011f243dca825e0aa56b13bfc10b096ca05b5dde613af6cbc8847206",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fda297080af9": {
-    "text": "В базе данных отсутствуют языковые версии фильма (аудио и изображения для каждого языка). Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствуют языковые версии фильма (звук и изображения для каждого языка). Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "44da448e4963e002f33234b030709770750f999b4202d5819ecb3a05aa244bf1",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-    "text": "В базе данных отсутствуют дополнения для ракурсов изображений и визуальных фактологических листов. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "В базе данных отсутствует дополнение для ракурсов изображений и визуальных справочных карточек. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "ef30d67b13b5cbc2ae4a53e8e18a96e4834ad9f1159aeee6e9fbb4507ec30c7e",
     "review": "machine"
   },
   "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-    "text": "База данных еще не обновлена для удаления. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных ещё не обновлена для удаления. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "c170aaf782a07441bbd8035838a5728d2f3f539f930e3526c4374bc70a706cfa",
     "review": "machine"
   },
   "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-    "text": "База данных не обновлена для удаленных объектов. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных не обновлена для удалённых объектов. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "d5e79e7c78905c143e54e090d0ee21ff14c9e8711144796de48a9046ab18aab5",
     "review": "machine"
   },
   "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
-    "text": "Политика конфиденциальности From Pen to Glass",
+    "text": "Заявление о конфиденциальности From Pen to Glass",
     "sourceHash": "419b7b040c0093e032a357afb69bba1fed23fb1092e1253f671a8ea120cf84ef",
     "review": "machine"
   },
   "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
-    "text": "From Pen to Glass использует облачную платформу для базы данных, файлов и аутентификации. Место хранения: ",
+    "text": "From Pen to Glass использует облачную платформу для базы данных, файлов и входа в систему. Место хранения: ",
     "sourceHash": "628bfc45dbe793dbf4309571e9d0e24cc38daf5c497b6af7690a8b3dadcfbe99",
     "review": "machine"
   },
   "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-    "text": "Перед использованием From Pen to Glass ознакомьтесь с тем, как мы обрабатываем ваши данные.",
+    "text": "Прежде чем использовать From Pen to Glass, ознакомьтесь с тем, как мы обрабатываем ваши данные.",
     "sourceHash": "1970f55205bb969accdb064ae72b8dde1989193c3df50bc0e7b10573b03d55cb",
     "review": "machine"
   },
   "app-ai-ai-panel.budget.p.9eadccb8743b": {
-    "text": "При достижении лимита сервер блокирует новые генерации до следующего месяца. Стоимость задается вами приблизительно (From Pen to Glass показывает расход в рабочей области) и используется только для отображения расчетных затрат.",
+    "text": "При достижении лимита сервер останавливает новые генерации до следующего месяца. Цена — это ваша собственная оценка (From Pen to Glass показывает использование в рабочем пространстве), которая служит только для отображения примерной стоимости.",
     "sourceHash": "0a6c73c32f6d349107d3a1baf38c0a3148f81b82e239b9ca72d6d99ecf104fe3",
     "review": "machine"
   },
@@ -52866,27 +52866,27 @@
     "review": "machine"
   },
   "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-    "text": "База данных еще не обновлена для поддержки собственных ИИ-провайдеров. Обратитесь к администратору для обновления From Pen to Glass.",
+    "text": "База данных ещё не обновлена для ваших собственных поставщиков ИИ. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "a573836eca4f4f0ad598b47484bb4e39f0d5467d4371f98195174cbe411ce83c",
     "review": "machine"
   },
   "app-ai-providers-dialog.text.text.74fba41561c8": {
-    "text": "Ключ удален из From Pen to Glass.",
+    "text": "Ключ удалён из From Pen to Glass.",
     "sourceHash": "2c87ee445d815bb0e4509a5cf4e3b4301c709d3a6b8ad59fa984cc4c5ca0b818",
     "review": "machine"
   },
   "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
-    "text": "Монтаж – Pen to Glass",
+    "text": "Монтаж — Pen to Glass",
     "sourceHash": "67764d40491c15519fa6670fcd11fc96e4052b4ba2fb40639df8e2e2c129f5f4",
     "review": "machine"
   },
   "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-    "text": "Хранилище пока не принимает аудиофайлы. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "Хранилище пока не принимает аудиофайлы. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "c9c0a314a9a412df7fe2c8088fd29f3ede9b0996283b5c7e35e04f97f07a410c",
     "review": "machine"
   },
   "app-library-asset-images.upload-one.message.0cb14e697856": {
-    "text": "Хранилище изображений (bucket) отсутствует. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "Отсутствует бакет для хранения изображений. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "575222670779006a72639736d5d8973fb185f43dd1daaf6ac65496cc355ba7a8",
     "review": "machine"
   },
@@ -52896,27 +52896,27 @@
     "review": "machine"
   },
   "app-mobile-mobile-page.text.message.624aef06af2d": {
-    "text": "Запись аудио для From Pen to Glass: {label}",
+    "text": "Записать звук для From Pen to Glass: {label}",
     "sourceHash": "ecfba7679c8a17f4c836e09db218b365ac38bb74a519beb5adc6bef3c333a239",
     "review": "machine"
   },
   "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-    "text": "Отправка изображений и видео в From Pen to Glass: {label}",
+    "text": "Отправить изображения и видео в From Pen to Glass: {label}",
     "sourceHash": "24b7c7f2274ce31e433e8dc3535d39331ada02c960a77666e7e403de7c50893a",
     "review": "machine"
   },
   "app-projects-backup.open-backup-file.message.23132bc02467": {
-    "text": "Zip-файл не является резервной копией From Pen to Glass.",
+    "text": "ZIP-файл не является резервной копией From Pen to Glass.",
     "sourceHash": "ce1f60c855b3648f722694c78f4fdf656f476e753cd862a1a53d650fae1e0992",
     "review": "machine"
   },
   "app-projects-members-section.message.message.9bf4e1d2979e": {
-    "text": "База данных пока не поддерживает изменение ролей. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "База данных пока не поддерживает изменение ролей. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "45a0009abe965f8550cee18fcb8f55e81461ea70b6647da8203d90bde2c6cbc8",
     "review": "machine"
   },
   "app-projects-members-section.message.message.f5b9e1478f2b": {
-    "text": "База данных пока не поддерживает удаление участников. Свяжитесь с администратором для обновления From Pen to Glass.",
+    "text": "База данных пока не поддерживает удаление участников. Обратитесь к администратору для обновления From Pen to Glass.",
     "sourceHash": "face852fe215e97a89f258eea0abd9d4efa6375c34f949760d597c54ddee4ac5",
     "review": "machine"
   },
@@ -52931,12 +52931,12 @@
     "review": "machine"
   },
   "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-    "text": "Свяжитесь с администратором для обновления From Pen to Glass до версии",
+    "text": "Обратитесь к администратору для обновления From Pen to Glass до версии",
     "sourceHash": "fe5db6538e5392ccb51f694c33d7abd77ca22fb09b0c7e334a4f08348460cf24",
     "review": "machine"
   },
   "auth.password-reset.description": {
-    "text": "Задайте новый пароль для From Pen to Glass по ссылке из электронного письма.",
+    "text": "Задайте новый пароль From Pen to Glass по ссылке из электронного письма.",
     "sourceHash": "28abd930cd854bdc930f44655f6334517780bc9618492875d6d2a22f35509119",
     "review": "machine"
   },
@@ -53303,6 +53303,31 @@
   "routes-se-token.title.title.daa9a7b91a74": {
     "text": "Фильм – Pen to Glass",
     "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
+    "review": "machine"
+  },
+  "app-projects-promotion-dialog.line-label.same.dcc7969186d9": {
+    "text": "",
+    "sourceHash": "d9b0b0e2c86805d398fe694deceabebb3ea4c07eef6a591e6a9b5d1e93535d9b",
+    "review": "machine"
+  },
+  "b097.admin.loading": {
+    "text": "Загрузка…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b097.admin.no-country": {
+    "text": "Ещё не выбрано",
+    "sourceHash": "959ac76cb9bcd2c336a0f9204bead6994a3fbc1e43c58711fa055afd8748ffa3",
+    "review": "machine"
+  },
+  "b097.admin.note": {
+    "text": "Только количество — без имён и адресов электронной почты.",
+    "sourceHash": "199b20321a08ab9d56934efac54f200de3c07b050db3659497a2b78e49e9b905",
+    "review": "machine"
+  },
+  "b097.admin.title": {
+    "text": "Пользователи по странам",
+    "sourceHash": "2820c025a4a8a428b21432064ec2e69795a5aeceba9289aa0f8ea2f77f7302fe",
     "review": "machine"
   }
 }

@@ -52449,137 +52449,137 @@
     "review": "user"
   },
   "adapters-ai-image-run-server.message.message.1fb2430caade": {
-    "text": "データベースが独自のAIプロバイダー向けに更新されていません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "独自のAIプロバイダーに対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "62990e7784ab2c158d966e3cec76ed705e134fa7f50a838d99fe3f7a1ebb4ca7",
     "review": "machine"
   },
   "adapters-ai-image-run-server.message.message.d132ffa15512": {
-    "text": "データベースにAI生成ログが見つかりません。管理者に連絡してFrom Pen to Glassをアップデートしてください。",
+    "text": "データベースにAI生成ログがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "fe2f6a030ef5bab595495998d82c7361b20b964facff34cb6805218305f3ac49",
     "review": "machine"
   },
   "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-    "text": "データベースがカスタムAIプロバイダーに対応していません。管理者に連絡してFrom Pen to Glassをアップデートしてください。",
+    "text": "独自のAIプロバイダーに対応するデータベースの更新がまだ行われていません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "b753c6d4f0ba72e4843b545e879d8aeb991a9d2fc806fd2b680f480f0d9e3d44",
     "review": "machine"
   },
   "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-    "text": "データベースがAI音声向けに更新されていません。管理者に連絡して From Pen to Glass を更新してください。",
+    "text": "AI音声に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "737b19cac2053fecc2cdd274a55a79bbdc0d1632ad74d3e127c1008bac2b044b",
     "review": "machine"
   },
   "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-    "text": "データベースがAI音声向けに更新されていません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "AI音声合成に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "1605867cd8a75a619a7fc962947bd557b43e7d8b0d99006e5997d7dd95ebc69e",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated": {
-    "text": "データベースがAI動画用に更新されていません。From Pen to Glassを更新するには管理者にお問い合わせください。\"0025\" : \"0024\"}）。",
+    "text": "AI動画に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。\"0025\" : \"0024\"}).",
     "sourceHash": "76e6a63159590de5dfe45713d8a89243c8590e34f2c26594717a8051567d1357",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated-queue": {
-    "text": "データベースがキュー内のAI動画用に更新されていません。From Pen to Glassを更新するには管理者にお問い合わせください。\"0025\" : \"0024\"}）。",
+    "text": "キュー内のAI動画に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。\"0025\" : \"0024\"}).",
     "sourceHash": "13e88865091cd73e9d6da59ed7174ab7ac999cb5e3ee5da2059fad0e32486606",
     "review": "machine"
   },
   "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-    "text": "データベースがAI生成の説明に対応して更新されていません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "AIが作成する説明に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "0ba778c3d83c1e026c839a04397ad33e959841bbe08ce57b7ac12c425016974a",
     "review": "machine"
   },
   "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-    "text": "データベースが最新ではありません。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースが最新ではありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "55329f42746643a57e0b2cf93ce95db9de6425c9cf2705fc93e88ec15bb0cd00",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.01438c3c6b49": {
-    "text": "データベースにプロジェクト形式が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにプロジェクト形式がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "3fb371cc72a8f69b9afefa57b072356df2241c6493b97d976d497858518dd810",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
-    "text": "データベースにアセットライブラリと注記が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにアセットライブラリとメモがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "8ded54917a41d42d5b4a26e91faaf74bb94da839ec52cc1c71dda21c5cdb91fa",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.0e67cf134641": {
-    "text": "データベースにシーンエディタが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにシーンエディターがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "056489422cf76b97d88e50992f4ad67f588d07bc83fa35d111c721fd1c8afc7e",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.115702403951": {
-    "text": "データベースに音声が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに音声がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "195bd25399709c44a7bf5a5dbaea9d60e954890e8645f04a695464b511ecb48f",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.16525acc1633": {
-    "text": "データベースに音声リンクが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに音声のリンクがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "e3b9cae1fd5c0b65e10223645d6227fec54fa17a96f19aaefea922ad86faf010",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-    "text": "データベースにキャラクターのコンティニュイティが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにキャラクターの連続性情報がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "d8f1f87bb040f3c5ec4a93df4b7c0b4063d8ad245cfd1c372eda644d7a78e79d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3d6e65936633": {
-    "text": "データベースにクリッピングとタイムリンクが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにクリッピングと時間リンクがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "e4da7a1ff6d5b90569537d1bb48a692bbf2e7d812eef4ada98d72fd52fdfd078",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.402d2c13486c": {
-    "text": "データベースに新機能（トランジション、白黒、グループ、画像切り替え、モーションパス）が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに新機能（トランジション、白黒、グループ、画像切り替え、モーションパス）がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "7222c7f3c98bf44d38b25e0e9401979b3ee6b42e258ebc7813a5de8275e86d57",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-    "text": "データベースにAI予算と生成の説明が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにAI予算と生成用の説明がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "2a1b77864b98682d4aef44602b97ef3d4fd198fe0bcacc6c438116597d1247ba",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.855135ab45cb": {
-    "text": "データベースに作品のビジュアルスタイルが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに映画のビジュアルスタイルがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "f3e955afcaffca83dec974d0b3dacbcf2caee5ac2bdcba537e9b51ba62a3cace",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-    "text": "データベースに保存された推定尺と書き出しログの追加機能が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに保存済みの推定時間とエクスポートログ用の拡張機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "79ac5d0e22f807f2a2da04e41562fe93d0fbdc09d79a55b8907403ef7c461f9a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.9678261bea35": {
-    "text": "データベースにインポートしたフィルムとトランジションが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに読み込んだ映画とトランジションがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "76a7be09a739956553c730c5afb54642b080e8a8f60de9e417dae450a371305a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.a351f6c20569": {
-    "text": "データベースに作業リストと書き出し設定の追加機能が不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに作業リストとエクスポート設定用の拡張機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "ba148fb0a67dc8cbc17782ae74fd732eebe6aa3ca14fe86eef6ab45ab18dd113",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
-    "text": "データベースにポスターとリレーションが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースにポスターと関連情報がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "7e05ebadef9e763eb4460f18836d598174d6c1cefdff44b66749222233b2b11e",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
-    "text": "データベースに脚本の言語バージョンが不足しています。管理者に連絡して From Pen to Glass をアップデートしてください。",
+    "text": "データベースに脚本の言語別バージョンがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "855886a9a0e24e33457bf071dba69f38e515d58a99cf23b006d9cb526384703f",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bb458d81609f": {
-    "text": "データベースにシーンごとの予定された長さがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースにシーンごとの予定時間がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "81a6c707f8a5b8711f8b0145e2f85c7b3ab85cdbd11f9732bc6cbe86ffae252d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-    "text": "データベースに削除済みアイテム、音声速度、「2コマ打ちアニメーション」用の追加機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースに削除済み項目、音声速度、2コマ打ちアニメーション用の拡張機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "cf1365062aef39dd1b09944c6c44ab10eb8982b3a5ea71390d64938e6d88d19a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-    "text": "データベースに複数シーンにまたがるオーディオと音量ポイントがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースに複数シーンにまたがる音声と音量ポイントがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "c0fb2acea0f0421c5c84a6f3f74ae1b40d69d8e0658ef28809e37bd78d0f2a8b",
     "review": "machine"
   },
@@ -52589,97 +52589,97 @@
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-    "text": "データベースにスピンオフの継続性がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースにスピンオフの連続性情報がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "71cad715bf44048d2ccead536bf45d015067a6d045f20a49e536a74d9576de49",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f770da01452c": {
-    "text": "データベースに最新の追加機能（マスク、トランジション、音声、スタイルプロファイル）がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースに最新の拡張機能（マスク、トランジション、音声、スタイルプロファイル）がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "2c29104a011f243dca825e0aa56b13bfc10b096ca05b5dde613af6cbc8847206",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fda297080af9": {
-    "text": "データベースに作品の言語バージョン（言語ごとの音声と画像）がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースに映画の言語別バージョン（言語ごとの音声と画像）がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "44da448e4963e002f33234b030709770750f999b4202d5819ecb3a05aa244bf1",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-    "text": "データベースに画像のアングルとビジュアルファクトシート用の追加機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
+    "text": "データベースに画像のアングルとビジュアル資料シート用の拡張機能がありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "ef30d67b13b5cbc2ae4a53e8e18a96e4834ad9f1159aeee6e9fbb4507ec30c7e",
     "review": "machine"
   },
   "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-    "text": "データベースが削除用にまだ更新されていません。From Pen to Glass を更新するには管理者に連絡してください。",
+    "text": "削除に対応するデータベースの更新がまだ行われていません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "c170aaf782a07441bbd8035838a5728d2f3f539f930e3526c4374bc70a706cfa",
     "review": "machine"
   },
   "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-    "text": "データベースが削除されたアイテムに対応していません。管理者にお問い合わせのうえ、From Pen to Glassを更新してください。",
+    "text": "削除済み項目に対応するデータベースの更新が必要です。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "d5e79e7c78905c143e54e090d0ee21ff14c9e8711144796de48a9046ab18aab5",
     "review": "machine"
   },
   "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
-    "text": "From Pen to Glass プライバシーポリシー",
+    "text": "From Pen to Glassのプライバシーステートメント",
     "sourceHash": "419b7b040c0093e032a357afb69bba1fed23fb1092e1253f671a8ea120cf84ef",
     "review": "machine"
   },
   "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
-    "text": "From Pen to Glassは、データベース、ファイル、サインインにクラウドプラットフォームを利用しています。保管場所: ",
+    "text": "From Pen to Glassは、データベース、ファイル、ログインにクラウドプラットフォームを使用しています。保存場所: ",
     "sourceHash": "628bfc45dbe793dbf4309571e9d0e24cc38daf5c497b6af7690a8b3dadcfbe99",
     "review": "machine"
   },
   "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-    "text": "From Pen to Glassをご利用になる前に、個人情報の取り扱いについてご確認ください。",
+    "text": "From Pen to Glassをご利用になる前に、お客様の情報の取り扱いについてお読みください。",
     "sourceHash": "1970f55205bb969accdb064ae72b8dde1989193c3df50bc0e7b10573b03d55cb",
     "review": "machine"
   },
   "app-ai-ai-panel.budget.p.9eadccb8743b": {
-    "text": "上限に達すると、サーバーは翌月まで新規生成を停止します。価格はご自身による見積もりであり（From Pen to Glass はワークスペース内に使用量を表示します）、推定コストの表示にのみ使用されます。",
+    "text": "上限に達すると、サーバーは翌月まで新しい生成を停止します。料金はご自身による見積もりであり（From Pen to Glassではワークスペースの使用量を表示します）、推定費用の表示にのみ使用されます。",
     "sourceHash": "0a6c73c32f6d349107d3a1baf38c0a3148f81b82e239b9ca72d6d99ecf104fe3",
     "review": "machine"
   },
   "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
-    "text": "From Pen to Glass からキーを削除しますか？",
+    "text": "From Pen to Glassからキーを削除しますか？",
     "sourceHash": "eac9426af2131e0b626cc891c00c43c978c55d177f9d13737df45367d792d023",
     "review": "machine"
   },
   "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-    "text": "データベースがまだ独自のAIプロバイダーに対応するよう更新されていません。From Pen to Glass を更新するには管理者に問い合わせてください。",
+    "text": "独自のAIプロバイダーに対応するデータベースの更新がまだ行われていません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "a573836eca4f4f0ad598b47484bb4e39f0d5467d4371f98195174cbe411ce83c",
     "review": "machine"
   },
   "app-ai-providers-dialog.text.text.74fba41561c8": {
-    "text": "キーが From Pen to Glass から削除されました。",
+    "text": "From Pen to Glassからキーを削除しました。",
     "sourceHash": "2c87ee445d815bb0e4509a5cf4e3b4301c709d3a6b8ad59fa984cc4c5ca0b818",
     "review": "machine"
   },
   "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
-    "text": "アセンブリ – Pen to Glass",
+    "text": "編集 – Pen to Glass",
     "sourceHash": "67764d40491c15519fa6670fcd11fc96e4052b4ba2fb40639df8e2e2c129f5f4",
     "review": "machine"
   },
   "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-    "text": "ストレージはまだ音声ファイルを受け付けていません。From Pen to Glass を更新するには管理者に問い合わせてください。",
+    "text": "ストレージはまだ音声ファイルに対応していません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "c9c0a314a9a412df7fe2c8088fd29f3ede9b0996283b5c7e35e04f97f07a410c",
     "review": "machine"
   },
   "app-library-asset-images.upload-one.message.0cb14e697856": {
-    "text": "画像ストレージバケットが見つかりません。From Pen to Glassのアップデートについて管理者に問い合わせてください。",
+    "text": "画像用のストレージバケットがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "575222670779006a72639736d5d8973fb185f43dd1daaf6ac65496cc355ba7a8",
     "review": "machine"
   },
   "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
-    "text": "From Pen to Glass にアップロード",
+    "text": "From Pen to Glassにアップロード",
     "sourceHash": "c7a4b6a359c98ec7c8f351ba37d29d46df05aaa0b60afc62ee48af42607fdba7",
     "review": "machine"
   },
   "app-mobile-mobile-page.text.message.624aef06af2d": {
-    "text": "From Pen to Glass 用の音声を録音: {label}",
+    "text": "From Pen to Glass用の音声を録音: {label}",
     "sourceHash": "ecfba7679c8a17f4c836e09db218b365ac38bb74a519beb5adc6bef3c333a239",
     "review": "machine"
   },
   "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-    "text": "From Pen to Glass に画像と動画を送信: {label}",
+    "text": "From Pen to Glassに画像と動画を送信: {label}",
     "sourceHash": "24b7c7f2274ce31e433e8dc3535d39331ada02c960a77666e7e403de7c50893a",
     "review": "machine"
   },
@@ -52689,12 +52689,12 @@
     "review": "machine"
   },
   "app-projects-members-section.message.message.9bf4e1d2979e": {
-    "text": "データベースでロールの変更がサポートされていません。From Pen to Glass を更新するには管理者に問い合わせてください。",
+    "text": "データベースはまだロールの変更に対応していません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "45a0009abe965f8550cee18fcb8f55e81461ea70b6647da8203d90bde2c6cbc8",
     "review": "machine"
   },
   "app-projects-members-section.message.message.f5b9e1478f2b": {
-    "text": "データベースでメンバーの削除がサポートされていません。From Pen to Glass を更新するには管理者に問い合わせてください。",
+    "text": "データベースはまだメンバーの削除に対応していません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "face852fe215e97a89f258eea0abd9d4efa6375c34f949760d597c54ddee4ac5",
     "review": "machine"
   },
@@ -52704,22 +52704,22 @@
     "review": "machine"
   },
   "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
-    "text": "データベースに脚本バージョンがありません。From Pen to Glass を更新するには管理者に連絡してください。",
+    "text": "データベースに脚本のバージョンがありません。管理者に連絡してFrom Pen to Glassを更新してください。",
     "sourceHash": "b69e2ee4da58d5125f535762606c00c434fe88ab18a5e636de27717eae2af736",
     "review": "machine"
   },
   "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-    "text": "管理者にお問い合わせの上、From Pen to Glassを次のバージョンに更新してください：",
+    "text": "管理者に連絡してFrom Pen to Glassを次のバージョンに更新してください：",
     "sourceHash": "fe5db6538e5392ccb51f694c33d7abd77ca22fb09b0c7e334a4f08348460cf24",
     "review": "machine"
   },
   "auth.password-reset.description": {
-    "text": "メールに記載されたリンクから、新しいFrom Pen to Glassのパスワードを設定してください。",
+    "text": "メール内のリンクからFrom Pen to Glassの新しいパスワードを設定してください。",
     "sourceHash": "28abd930cd854bdc930f44655f6334517780bc9618492875d6d2a22f35509119",
     "review": "machine"
   },
   "auth.password-reset.title": {
-    "text": "パスワードをリセット | Pen to Glass",
+    "text": "パスワードのリセット | Pen to Glass",
     "sourceHash": "bd4af07cb862d54a306125f5fc71ecca313bfad8752f0ffb057c1697a99d80a3",
     "review": "machine"
   },
@@ -53081,6 +53081,31 @@
   "routes-se-token.title.title.daa9a7b91a74": {
     "text": "動画 – Pen to Glass",
     "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
+    "review": "machine"
+  },
+  "app-projects-promotion-dialog.line-label.same.dcc7969186d9": {
+    "text": "",
+    "sourceHash": "d9b0b0e2c86805d398fe694deceabebb3ea4c07eef6a591e6a9b5d1e93535d9b",
+    "review": "machine"
+  },
+  "b097.admin.loading": {
+    "text": "読み込み中…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b097.admin.no-country": {
+    "text": "未選択",
+    "sourceHash": "959ac76cb9bcd2c336a0f9204bead6994a3fbc1e43c58711fa055afd8748ffa3",
+    "review": "machine"
+  },
+  "b097.admin.note": {
+    "text": "集計値のみで、氏名やメールアドレスは含まれません。",
+    "sourceHash": "199b20321a08ab9d56934efac54f200de3c07b050db3659497a2b78e49e9b905",
+    "review": "machine"
+  },
+  "b097.admin.title": {
+    "text": "国別ユーザー数",
+    "sourceHash": "2820c025a4a8a428b21432064ec2e69795a5aeceba9289aa0f8ea2f77f7302fe",
     "review": "machine"
   }
 }

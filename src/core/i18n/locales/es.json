@@ -52597,172 +52597,172 @@
     "review": "user"
   },
   "adapters-ai-image-run-server.message.message.1fb2430caade": {
-    "text": "La base de datos no está actualizada para proveedores de IA propios. Contacte al administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada para tus propios proveedores de IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "62990e7784ab2c158d966e3cec76ed705e134fa7f50a838d99fe3f7a1ebb4ca7",
     "review": "machine"
   },
   "adapters-ai-image-run-server.message.message.d132ffa15512": {
-    "text": "Falta el registro de generación por IA en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el registro de generación con IA en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "fe2f6a030ef5bab595495998d82c7361b20b964facff34cb6805218305f3ac49",
     "review": "machine"
   },
   "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
-    "text": "La base de datos aún no está actualizada para proveedores de IA propios. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos aún no está actualizada para tus propios proveedores de IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "b753c6d4f0ba72e4843b545e879d8aeb991a9d2fc806fd2b680f480f0d9e3d44",
     "review": "machine"
   },
   "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
-    "text": "La base de datos no está actualizada para sonido con IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada para el audio generado con IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "737b19cac2053fecc2cdd274a55a79bbdc0d1632ad74d3e127c1008bac2b044b",
     "review": "machine"
   },
   "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
-    "text": "La base de datos no está actualizada para voz por IA. Contacte con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada para la voz generada con IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "1605867cd8a75a619a7fc962947bd557b43e7d8b0d99006e5997d7dd95ebc69e",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated": {
-    "text": "La base de datos no está actualizada para vídeo por IA. Contacte con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
+    "text": "La base de datos no está actualizada para el vídeo generado con IA. Contacta con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
     "sourceHash": "76e6a63159590de5dfe45713d8a89243c8590e34f2c26594717a8051567d1357",
     "review": "machine"
   },
   "adapters-ai-video-functions.database-outdated-queue": {
-    "text": "La base de datos no está actualizada para vídeo por IA en cola. Contacte con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
+    "text": "La base de datos no está actualizada para el vídeo generado con IA en cola. Contacta con el administrador para actualizar From Pen to Glass.\"0025\" : \"0024\"}).",
     "sourceHash": "13e88865091cd73e9d6da59ed7174ab7ac999cb5e3ee5da2059fad0e32486606",
     "review": "machine"
   },
   "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
-    "text": "La base de datos no está actualizada para descripciones generadas por IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada para las descripciones escritas con IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "0ba778c3d83c1e026c839a04397ad33e959841bbe08ce57b7ac12c425016974a",
     "review": "machine"
   },
   "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
-    "text": "La base de datos no está actualizada. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "55329f42746643a57e0b2cf93ce95db9de6425c9cf2705fc93e88ec15bb0cd00",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.01438c3c6b49": {
-    "text": "Falta el formato del proyecto en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el formato del proyecto en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "3fb371cc72a8f69b9afefa57b072356df2241c6493b97d976d497858518dd810",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
-    "text": "Faltan la biblioteca de recursos y las notas en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan la biblioteca de recursos y las notas en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "8ded54917a41d42d5b4a26e91faaf74bb94da839ec52cc1c71dda21c5cdb91fa",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.0e67cf134641": {
-    "text": "Falta el editor de escenas en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el editor de escenas en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "056489422cf76b97d88e50992f4ad67f588d07bc83fa35d111c721fd1c8afc7e",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.115702403951": {
-    "text": "Falta el audio en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el audio en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "195bd25399709c44a7bf5a5dbaea9d60e954890e8645f04a695464b511ecb48f",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.16525acc1633": {
-    "text": "Faltan los enlaces de audio en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan los vínculos de audio en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "e3b9cae1fd5c0b65e10223645d6227fec54fa17a96f19aaefea922ad86faf010",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
-    "text": "Falta la continuidad de los personajes en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la continuidad de los personajes en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "d8f1f87bb040f3c5ec4a93df4b7c0b4063d8ad245cfd1c372eda644d7a78e79d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.3d6e65936633": {
-    "text": "Faltan el recorte y los enlaces de tiempo en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan el recorte y los vínculos temporales en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "e4da7a1ff6d5b90569537d1bb48a692bbf2e7d812eef4ada98d72fd52fdfd078",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.402d2c13486c": {
-    "text": "Faltan las nuevas funciones en la base de datos (transiciones, blanco y negro, grupos, cambios de imagen y trayectorias de movimiento). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan las nuevas funciones (transiciones, blanco y negro, grupos, cambios de imagen y trayectorias de movimiento) en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "7222c7f3c98bf44d38b25e0e9401979b3ee6b42e258ebc7813a5de8275e86d57",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.736fdd526c7e": {
-    "text": "Faltan el presupuesto de IA y las descripciones de generación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan el presupuesto de IA y las descripciones de generación en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "2a1b77864b98682d4aef44602b97ef3d4fd198fe0bcacc6c438116597d1247ba",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.855135ab45cb": {
-    "text": "Falta el estilo visual de la película en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el estilo visual de la película en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "f3e955afcaffca83dec974d0b3dacbcf2caee5ac2bdcba537e9b51ba62a3cace",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
-    "text": "Falta la extensión para estimaciones de duración guardadas y el registro de exportación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la ampliación para las estimaciones de duración guardadas y el registro de exportación en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "79ac5d0e22f807f2a2da04e41562fe93d0fbdc09d79a55b8907403ef7c461f9a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.9678261bea35": {
-    "text": "Faltan la película importada y las transiciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan la película importada y las transiciones en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "76a7be09a739956553c730c5afb54642b080e8a8f60de9e417dae450a371305a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.a351f6c20569": {
-    "text": "Falta la extensión para la lista de trabajo y los ajustes de exportación en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la ampliación para la lista de trabajo y los ajustes de exportación en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "ba148fb0a67dc8cbc17782ae74fd732eebe6aa3ca14fe86eef6ab45ab18dd113",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
-    "text": "Faltan los carteles y las relaciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan los carteles y las relaciones en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "7e05ebadef9e763eb4460f18836d598174d6c1cefdff44b66749222233b2b11e",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
-    "text": "Faltan las versiones de idioma del guion en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan las versiones del guion en otros idiomas en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "855886a9a0e24e33457bf071dba69f38e515d58a99cf23b006d9cb526384703f",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bb458d81609f": {
-    "text": "Falta la duración planificada por escena en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la duración prevista por escena en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "81a6c707f8a5b8711f8b0145e2f85c7b3ab85cdbd11f9732bc6cbe86ffae252d",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
-    "text": "Falta la adición para elementos eliminados, velocidad de audio y «animar en doses» en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la ampliación para los elementos eliminados, la velocidad del audio y la animación a dos fotogramas en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "cf1365062aef39dd1b09944c6c44ab10eb8982b3a5ea71390d64938e6d88d19a",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
-    "text": "Falta el audio a través de varias escenas y los puntos de volumen en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan el audio en varias escenas y los puntos de volumen en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "c0fb2acea0f0421c5c84a6f3f74ae1b40d69d8e0658ef28809e37bd78d0f2a8b",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
-    "text": "Faltan las notas de las producciones en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan las notas de las producciones en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "5d57544df2e2abad6660df9d2fbe121d21eb41a81f8c578c916e15fd38dbb601",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
-    "text": "Falta la continuidad para spin-offs en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la continuidad de las obras derivadas en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "71cad715bf44048d2ccead536bf45d015067a6d045f20a49e536a74d9576de49",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.f770da01452c": {
-    "text": "Falta la adición más reciente en la base de datos (máscaras, transiciones, voces, perfiles de estilo). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la última ampliación (máscaras, transiciones, voces, perfiles de estilo) en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "2c29104a011f243dca825e0aa56b13bfc10b096ca05b5dde613af6cbc8847206",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fda297080af9": {
-    "text": "Faltan las versiones de idioma de la película en la base de datos (audio e imágenes por idioma). Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan las versiones de la película en otros idiomas (audio e imágenes por idioma) en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "44da448e4963e002f33234b030709770750f999b4202d5819ecb3a05aa244bf1",
     "review": "machine"
   },
   "adapters-storage-commands-functions.message.message.fe59c3be6214": {
-    "text": "Falta la adición para ángulos en imágenes y hojas informativas visuales en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta la ampliación para los ángulos de las imágenes y las fichas visuales en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "ef30d67b13b5cbc2ae4a53e8e18a96e4834ad9f1159aeee6e9fbb4507ec30c7e",
     "review": "machine"
   },
   "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
-    "text": "La base de datos aún no está actualizada para la eliminación. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos aún no está actualizada para la eliminación. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "c170aaf782a07441bbd8035838a5728d2f3f539f930e3526c4374bc70a706cfa",
     "review": "machine"
   },
   "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
-    "text": "La base de datos no está actualizada para elementos eliminados. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos no está actualizada para los elementos eliminados. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "d5e79e7c78905c143e54e090d0ee21ff14c9e8711144796de48a9046ab18aab5",
     "review": "machine"
   },
@@ -52777,12 +52777,12 @@
     "review": "machine"
   },
   "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
-    "text": "Antes de usar From Pen to Glass, lea cómo procesamos su información.",
+    "text": "Antes de usar From Pen to Glass, lee cómo tratamos tus datos.",
     "sourceHash": "1970f55205bb969accdb064ae72b8dde1989193c3df50bc0e7b10573b03d55cb",
     "review": "machine"
   },
   "app-ai-ai-panel.budget.p.9eadccb8743b": {
-    "text": "Al alcanzar el límite, el servidor detendrá las nuevas generaciones hasta el próximo mes. El precio es su propia estimación (From Pen to Glass muestra el consumo en el espacio de trabajo) y solo se utiliza para mostrar el coste estimado.",
+    "text": "Cuando se alcanza el límite, el servidor detiene las nuevas generaciones hasta el mes siguiente. El precio es tu propia estimación (From Pen to Glass muestra el uso en el espacio de trabajo) y solo se utiliza para mostrar el coste estimado.",
     "sourceHash": "0a6c73c32f6d349107d3a1baf38c0a3148f81b82e239b9ca72d6d99ecf104fe3",
     "review": "machine"
   },
@@ -52792,7 +52792,7 @@
     "review": "machine"
   },
   "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
-    "text": "La base de datos aún no está actualizada para proveedores propios de IA. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos aún no está actualizada para tus propios proveedores de IA. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "a573836eca4f4f0ad598b47484bb4e39f0d5467d4371f98195174cbe411ce83c",
     "review": "machine"
   },
@@ -52807,12 +52807,12 @@
     "review": "machine"
   },
   "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
-    "text": "El almacenamiento aún no acepta archivos de audio. Contacte al administrador para actualizar From Pen to Glass.",
+    "text": "El almacenamiento aún no acepta archivos de audio. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "c9c0a314a9a412df7fe2c8088fd29f3ede9b0996283b5c7e35e04f97f07a410c",
     "review": "machine"
   },
   "app-library-asset-images.upload-one.message.0cb14e697856": {
-    "text": "Falta el depósito de almacenamiento de imágenes. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Falta el contenedor de almacenamiento de imágenes. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "575222670779006a72639736d5d8973fb185f43dd1daaf6ac65496cc355ba7a8",
     "review": "machine"
   },
@@ -52827,7 +52827,7 @@
     "review": "machine"
   },
   "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
-    "text": "Enviar imágenes y video a From Pen to Glass: {label}",
+    "text": "Enviar imágenes y vídeo a From Pen to Glass: {label}",
     "sourceHash": "24b7c7f2274ce31e433e8dc3535d39331ada02c960a77666e7e403de7c50893a",
     "review": "machine"
   },
@@ -52837,32 +52837,32 @@
     "review": "machine"
   },
   "app-projects-members-section.message.message.9bf4e1d2979e": {
-    "text": "La base de datos aún no admite cambiar roles. Contacte con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos aún no permite cambiar los roles. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "45a0009abe965f8550cee18fcb8f55e81461ea70b6647da8203d90bde2c6cbc8",
     "review": "machine"
   },
   "app-projects-members-section.message.message.f5b9e1478f2b": {
-    "text": "La base de datos aún no admite eliminar miembros. Contacte con el administrador para actualizar From Pen to Glass.",
+    "text": "La base de datos aún no permite eliminar miembros. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "face852fe215e97a89f258eea0abd9d4efa6375c34f949760d597c54ddee4ac5",
     "review": "machine"
   },
   "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
-    "text": "Previsualización – Pen to Glass",
+    "text": "Vista previa – Pen to Glass",
     "sourceHash": "548529227ec155bbf2418063e8e530bee44136af20561bb9d9f998f4e857581b",
     "review": "machine"
   },
   "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
-    "text": "Faltan versiones del guion en la base de datos. Póngase en contacto con el administrador para actualizar From Pen to Glass.",
+    "text": "Faltan las versiones del guion en la base de datos. Contacta con el administrador para actualizar From Pen to Glass.",
     "sourceHash": "b69e2ee4da58d5125f535762606c00c434fe88ab18a5e636de27717eae2af736",
     "review": "machine"
   },
   "app-shell-schema-banner.schema-banner.p.93683cf75008": {
-    "text": "Contacte al administrador para actualizar From Pen to Glass a la versión",
+    "text": "Contacta con el administrador para actualizar From Pen to Glass a la versión",
     "sourceHash": "fe5db6538e5392ccb51f694c33d7abd77ca22fb09b0c7e334a4f08348460cf24",
     "review": "machine"
   },
   "auth.password-reset.description": {
-    "text": "Elija una nueva contraseña para From Pen to Glass usando el enlace de su correo electrónico.",
+    "text": "Elige una nueva contraseña de From Pen to Glass mediante el enlace de tu correo electrónico.",
     "sourceHash": "28abd930cd854bdc930f44655f6334517780bc9618492875d6d2a22f35509119",
     "review": "machine"
   },
@@ -53229,6 +53229,31 @@
   "routes-se-token.title.title.daa9a7b91a74": {
     "text": "Película – Pen to Glass",
     "sourceHash": "658e6084bab6c50dc247bd5cb1e0d7725fb46f3bb7a83ef31e68dace9802a753",
+    "review": "machine"
+  },
+  "app-projects-promotion-dialog.line-label.same.dcc7969186d9": {
+    "text": "",
+    "sourceHash": "d9b0b0e2c86805d398fe694deceabebb3ea4c07eef6a591e6a9b5d1e93535d9b",
+    "review": "machine"
+  },
+  "b097.admin.loading": {
+    "text": "Cargando…",
+    "sourceHash": "9afa6b4550a416f8b1bf9a4d708a82a427e1f6ff70e25ef9d52769b406cf65ef",
+    "review": "machine"
+  },
+  "b097.admin.no-country": {
+    "text": "Aún sin elegir",
+    "sourceHash": "959ac76cb9bcd2c336a0f9204bead6994a3fbc1e43c58711fa055afd8748ffa3",
+    "review": "machine"
+  },
+  "b097.admin.note": {
+    "text": "Solo recuentos, sin nombres ni direcciones de correo electrónico.",
+    "sourceHash": "199b20321a08ab9d56934efac54f200de3c07b050db3659497a2b78e49e9b905",
+    "review": "machine"
+  },
+  "b097.admin.title": {
+    "text": "Usuarios por país",
+    "sourceHash": "2820c025a4a8a428b21432064ec2e69795a5aeceba9289aa0f8ea2f77f7302fe",
     "review": "machine"
   }
 }
