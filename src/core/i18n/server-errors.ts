@@ -28,9 +28,18 @@ export const SERVER_ERRORS = {
 export type ServerErrorCode = keyof typeof SERVER_ERRORS;
 
 export const serverErrorKey = (code: ServerErrorCode) => `server.error.${code}`;
+const ERROR_KEYS = {
+  invalid_request: 'server.error.invalid_request', invalid_project_id: 'server.error.invalid_project_id',
+  invalid_command: 'server.error.invalid_command', invalid_revisions: 'server.error.invalid_revisions',
+  change_too_large: 'server.error.change_too_large', invalid_command_id: 'server.error.invalid_command_id',
+  no_workspace_access: 'server.error.no_workspace_access', asset_missing: 'server.error.asset_missing',
+  storage_no_response: 'server.error.storage_no_response', invalid_storage_path: 'server.error.invalid_storage_path',
+  invalid_script_revision: 'server.error.invalid_script_revision', text_too_long: 'server.error.text_too_long',
+} as const satisfies Record<ServerErrorCode, string>;
 
 function tr(code: ServerErrorCode, params: MessageParameters, lang: string) {
-  return t(serverErrorKey(code), params, lang);
+  const key = ERROR_KEYS[code];
+  return t(key, params, lang);
 }
 
 /** Feil med stabil kode. `message` er norsk, slik serveren alltid har svart. */
