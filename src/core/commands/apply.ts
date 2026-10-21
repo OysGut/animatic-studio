@@ -6552,7 +6552,7 @@ function run(
       }
       if (m.derivedFiles !== undefined) {
         const derr = derivedFilesError(m.derivedFiles);
-        if (derr) fail("invalid", tk(derr));
+        if (derr) fail("invalid", derr);
       }
       const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
       // Gjør om etter angre: behold det opprinnelige nummeret hvis det er ledig
@@ -6710,7 +6710,7 @@ function run(
         fail("invalid", tk("core-commands-apply.run.fail.bf6e905ff6b8.2"));
       if (c.derived !== null) {
         const derr = derivedFilesError(c.derived);
-        if (derr) fail("invalid", tk(derr));
+        if (derr) fail("invalid", derr);
       }
       const { derivedFiles: _previous, ...withoutDerived } = ver;
       return {
