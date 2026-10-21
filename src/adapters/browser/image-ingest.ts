@@ -27,6 +27,16 @@ export async function ingestImage(file: File, context: ImageIngestContext) {
     // Sequential encoding keeps peak memory lower for large sources.
     const proxy = await encode(plan.proxy, 'proxy');
     const thumbnail = await encode(plan.thumbnail, 'thumbnail');
-    return { original: file, working: prepared.working, proxy, thumbnail, dimensions, plan };
+    return {
+      original: file,
+      /** Renderbar original i full størrelse (TIFF dekodet til PNG, ellers filen selv). */
+      decoded,
+      working: prepared.working,
+      workingNote: prepared.workingNote,
+      proxy,
+      thumbnail,
+      dimensions,
+      plan,
+    };
   } finally { bitmap.close(); }
 }
