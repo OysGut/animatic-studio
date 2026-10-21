@@ -74189,5 +74189,116 @@
   },
   "b097.sound-kind.music": {
     "text": "Music"
+  },
+  "b098.command.font-mismatch": {
+    "text": "Font data only fits font assets, and a font asset needs a font package."
+  },
+  "b098.global-kind.font": {
+    "text": "Font"
+  },
+  "b098.add.error.upload": {
+    "text": "The font file could not be saved. Please try again."
+  },
+  "b098.add.undo-label": {
+    "text": "Add the font “{family}”"
+  },
+  "b098.add.variant-name": {
+    "text": "Standard"
+  },
+  "b098.category.serif": {
+    "text": "Serif"
+  },
+  "b098.category.sans": {
+    "text": "Sans serif"
+  },
+  "b098.category.display": {
+    "text": "Display"
+  },
+  "b098.category.handwriting": {
+    "text": "Handwriting"
+  },
+  "b098.category.mono": {
+    "text": "Monospace"
+  },
+  "b098.variant.regular": {
+    "text": "{weight}"
+  },
+  "b098.variant.italic": {
+    "text": "{weight} italic"
+  },
+  "b098.sample.default": {
+    "text": "Blåbærsyltetøy og ærlig øl på Dovre"
+  },
+  "b098.unavailable": {
+    "text": "The Google Fonts catalogue is not available right now. Fonts you have already added work as before."
+  },
+  "b098.dialog.title": {
+    "text": "Add font"
+  },
+  "b098.dialog.description": {
+    "text": "Search Google Fonts. The font is saved in the project and also works offline. Everything is fetched via our server, never directly from Google."
+  },
+  "b098.search.label": {
+    "text": "Search by name"
+  },
+  "b098.search.placeholder": {
+    "text": "For example Lato, or paste a name"
+  },
+  "b098.filter.category": {
+    "text": "Category"
+  },
+  "b098.filter.subset": {
+    "text": "Script"
+  },
+  "b098.filter.all": {
+    "text": "All"
+  },
+  "b098.open-google": {
+    "text": "Open Google Fonts"
+  },
+  "b098.results.label": {
+    "text": "Results"
+  },
+  "b098.loading": {
+    "text": "Loading the catalogue …"
+  },
+  "b098.results.none": {
+    "text": "No fonts match the search."
+  },
+  "b098.sample.label": {
+    "text": "Sample text"
+  },
+  "b098.variants.label": {
+    "text": "Weights and styles (at most {max})"
+  },
+  "b098.license": {
+    "text": "Licence: {license}"
+  },
+  "b098.license.notice": {
+    "text": "This font uses the Ubuntu Font Licence (UFL), not OFL or Apache. It can be used, but read the licence before releasing a film or poster."
+  },
+  "b098.pick-hint": {
+    "text": "Choose a font in the list to see it."
+  },
+  "b098.cancel": {
+    "text": "Cancel"
+  },
+  "b098.adding": {
+    "text": "Adding …"
+  },
+  "b098.add": {
+    "text": "Add"
+  },
+  "b098.picker.project-fonts": {
+    "text": "Fonts in the project"
+  },
+  "b098.picker.removed": {
+    "text": "{family} (removed – fallback font used)"
+  },
+  "b098.picker.add": {
+    "text": "Add font …"
+  },
+  "b098.kind-plural.font": {
+    "text": "Fonts"
   }
 }

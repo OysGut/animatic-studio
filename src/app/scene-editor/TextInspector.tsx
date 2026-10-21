@@ -4,7 +4,7 @@
  */
 import { useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
-import { FONT_CATALOG, MAX_TEXT_CHARS, MOTION_PRESETS, MOTION_PRESET_LABEL, TEMPLATE_CATEGORIES, applyMotionPreset, letterAnimWith, normalizeLetterAnim, presetWindow, fontById, fpsToNumber, layerFieldsOf, newerTemplateVersion, normalizeColor, type Composition, type CompositionLayer, type LayerEffects, type LayerFields, type LetterAnimation, type MotionPreset, type PresetDirection, type ProjectState, type ShapeSpec, type TemplateCategory, type TextSpec } from "@/core";
+import { FONT_CATALOG, projectFontEntries, projectFontId, MAX_TEXT_CHARS, MOTION_PRESETS, MOTION_PRESET_LABEL, TEMPLATE_CATEGORIES, applyMotionPreset, letterAnimWith, normalizeLetterAnim, presetWindow, fontById, fpsToNumber, layerFieldsOf, newerTemplateVersion, normalizeColor, type Composition, type CompositionLayer, type LayerEffects, type LayerFields, type LetterAnimation, type MotionPreset, type PresetDirection, type ProjectState, type ShapeSpec, type TemplateCategory, type TextSpec } from "@/core";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +16,11 @@ import {
 } from "@/components/ui/dialog";
 import { Field, Hint, NumberField, Section, inputClass } from "./inspector-fields";
 import { useTextFonts } from "@/engine/typography/fonts";
+import { AddFontDialog } from "@/app/fonts/AddFontDialog";
+import { addFontToProject } from "@/app/fonts/project-fonts";
+
+/** Verdien i fontvelgeren som åpner «Legg til font …» (aldri lagret). */
+const ADD_FONT = "__add-font__";
 import {
   saveAsTemplate,
   updateInstanceValues,
@@ -111,7 +116,15 @@ export function TextInspector({
   const isFill = layer.kind !== "text" && layer.kind !== "group" && layer.fill !== null && layer.assetId === null;
   return (
     <>
-      {text ? <TextSection text={text} off={off} apply={apply} /> : null}
+      {text ? (
+        <TextSection
+          text={text}
+          off={off}
+          apply={apply}
+          state={state}
+          {...(projectId && runAndWait ? { projectId, runAndWait } : {})}
+        />
+      ) : null}
       {text ? <LetterSection text={text} off={off} apply={apply} /> : null}
       {isFill ? <ShapeSection shape={layer.shape ?? null} off={off} apply={apply} /> : null}
       {layer.kind !== "group" ? (
@@ -145,12 +158,24 @@ function TextSection({
   text,
   off,
   apply,
+  state,
+  projectId,
+  runAndWait,
 }: {
   text: TextSpec;
   off: boolean;
   apply: (label: string, patch: Partial<LayerFields>) => void;
+  state: ProjectState;
+  projectId?: string;
+  runAndWait?: RunAndWait;
 }) {
   const [draft, setDraft] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
+  // B-098: prosjektets egne fonter (fjernede bare når laget bruker dem, så navnet beholdes)
+  const ownFonts = useMemo(
+    () => projectFontEntries(state).filter((f) => !f.removed || f.id === text.fontId),
+    [state, text.fontId],
+  );
   const fonts = useTextFonts([text]);
   const font = fontById(text.fontId);
   const set = (label: string, p: Partial<TextSpec>) => apply(label, { text: { ...text, ...p } });
@@ -188,15 +213,44 @@ function TextSection({
           className={inputClass}
           value={text.fontId}
           disabled={off}
-          onChange={(e) => set(t("app-scene-editor-text-inspector.text-section.set.368732226d08"), { fontId: e.target.value })}
+          onChange={(e) => {
+            if (e.target.value === ADD_FONT) setAdding(true);
+            else set(t("app-scene-editor-text-inspector.text-section.set.368732226d08"), { fontId: e.target.value });
+          }}
         >
           {FONT_CATALOG.map((f) => (
             <option key={f.id} value={f.id}>
               {f.label}
             </option>
           ))}
+          {ownFonts.length > 0 ? (
+            <optgroup label={t("b098.picker.project-fonts")}>
+              {ownFonts.map((f) => (
+                <option key={f.id} value={f.id}>
+                  {f.removed ? t("b098.picker.removed", { family: f.label }) : f.label}
+                </option>
+              ))}
+            </optgroup>
+          ) : null}
+          {!fontById(text.fontId) ? <option value={text.fontId}>{text.fontId}</option> : null}
+          {projectId && runAndWait ? <option value={ADD_FONT}>{t("b098.picker.add")}</option> : null}
         </select>
       </Field>
+      {projectId && runAndWait ? (
+        <AddFontDialog
+          open={adding}
+          onOpenChange={setAdding}
+          onAdd={async (font, files, subsets) => {
+            try {
+              const assetId = await addFontToProject(runAndWait, projectId, font, files, subsets);
+              set(t("app-scene-editor-text-inspector.text-section.set.368732226d08"), { fontId: projectFontId(assetId) });
+              return null;
+            } catch (e) {
+              return e instanceof Error ? e.message : t("b098.unavailable");
+            }
+          }}
+        />
+      ) : null}
       {fonts.missing.length > 0 ? (
         <p role="alert" data-testid="mts-font-missing" className="flex items-start gap-1 text-xs text-status-discrepancy">
           <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden />

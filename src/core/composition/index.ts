@@ -30,6 +30,7 @@ export const LAYER_KIND_FOR_ASSET: Record<AssetKind, LayerKind> = {
   sound: "other",
   // Maler brukes gjennom «Bruk mal», aldri som bilde
   template: "other",
+  font: "other",
 };
 
 /**

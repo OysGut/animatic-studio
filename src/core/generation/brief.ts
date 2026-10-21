@@ -181,6 +181,7 @@ const KIND_NOUN: Record<AssetKind, string> = {
   other: "element",
   sound: "element",
   template: "element",
+  font: "element",
 };
 
 const sentence = (t: string) => {

@@ -7065,6 +7065,302 @@
       "en": {
         "text": "Music"
       }
+    },
+    "b098.command.font-mismatch": {
+      "nb": {
+        "text": "Fontdata passer bare til fontressurser, og en fontressurs må ha en fontpakke."
+      },
+      "en": {
+        "text": "Font data only fits font assets, and a font asset needs a font package."
+      }
+    },
+    "b098.global-kind.font": {
+      "nb": {
+        "text": "Font"
+      },
+      "en": {
+        "text": "Font"
+      }
+    },
+    "b098.add.error.upload": {
+      "nb": {
+        "text": "Fontfilen kunne ikke lagres. Prøv igjen."
+      },
+      "en": {
+        "text": "The font file could not be saved. Please try again."
+      }
+    },
+    "b098.add.undo-label": {
+      "nb": {
+        "text": "Legg til fonten «{family}»"
+      },
+      "en": {
+        "text": "Add the font “{family}”"
+      }
+    },
+    "b098.add.variant-name": {
+      "nb": {
+        "text": "Standard"
+      },
+      "en": {
+        "text": "Standard"
+      }
+    },
+    "b098.category.serif": {
+      "nb": {
+        "text": "Serif"
+      },
+      "en": {
+        "text": "Serif"
+      }
+    },
+    "b098.category.sans": {
+      "nb": {
+        "text": "Sans-serif"
+      },
+      "en": {
+        "text": "Sans serif"
+      }
+    },
+    "b098.category.display": {
+      "nb": {
+        "text": "Display"
+      },
+      "en": {
+        "text": "Display"
+      }
+    },
+    "b098.category.handwriting": {
+      "nb": {
+        "text": "Håndskrift"
+      },
+      "en": {
+        "text": "Handwriting"
+      }
+    },
+    "b098.category.mono": {
+      "nb": {
+        "text": "Monospace"
+      },
+      "en": {
+        "text": "Monospace"
+      }
+    },
+    "b098.variant.regular": {
+      "nb": {
+        "text": "{weight}"
+      },
+      "en": {
+        "text": "{weight}"
+      }
+    },
+    "b098.variant.italic": {
+      "nb": {
+        "text": "{weight} kursiv"
+      },
+      "en": {
+        "text": "{weight} italic"
+      }
+    },
+    "b098.sample.default": {
+      "nb": {
+        "text": "Blåbærsyltetøy og ærlig øl på Dovre"
+      },
+      "en": {
+        "text": "Blåbærsyltetøy og ærlig øl på Dovre"
+      }
+    },
+    "b098.unavailable": {
+      "nb": {
+        "text": "Google Fonts-katalogen er ikke tilgjengelig nå. Fonter som allerede er lagt til, virker som før."
+      },
+      "en": {
+        "text": "The Google Fonts catalogue is not available right now. Fonts you have already added work as before."
+      }
+    },
+    "b098.dialog.title": {
+      "nb": {
+        "text": "Legg til font"
+      },
+      "en": {
+        "text": "Add font"
+      }
+    },
+    "b098.dialog.description": {
+      "nb": {
+        "text": "Søk i Google Fonts. Fonten lagres i prosjektet og virker også uten nett. Alt hentes via vår server, aldri direkte fra Google."
+      },
+      "en": {
+        "text": "Search Google Fonts. The font is saved in the project and also works offline. Everything is fetched via our server, never directly from Google."
+      }
+    },
+    "b098.search.label": {
+      "nb": {
+        "text": "Søk etter navn"
+      },
+      "en": {
+        "text": "Search by name"
+      }
+    },
+    "b098.search.placeholder": {
+      "nb": {
+        "text": "For eksempel Lato, eller lim inn et navn"
+      },
+      "en": {
+        "text": "For example Lato, or paste a name"
+      }
+    },
+    "b098.filter.category": {
+      "nb": {
+        "text": "Kategori"
+      },
+      "en": {
+        "text": "Category"
+      }
+    },
+    "b098.filter.subset": {
+      "nb": {
+        "text": "Skriftsystem"
+      },
+      "en": {
+        "text": "Script"
+      }
+    },
+    "b098.filter.all": {
+      "nb": {
+        "text": "Alle"
+      },
+      "en": {
+        "text": "All"
+      }
+    },
+    "b098.open-google": {
+      "nb": {
+        "text": "Åpne Google Fonts"
+      },
+      "en": {
+        "text": "Open Google Fonts"
+      }
+    },
+    "b098.results.label": {
+      "nb": {
+        "text": "Treff"
+      },
+      "en": {
+        "text": "Results"
+      }
+    },
+    "b098.loading": {
+      "nb": {
+        "text": "Henter katalogen …"
+      },
+      "en": {
+        "text": "Loading the catalogue …"
+      }
+    },
+    "b098.results.none": {
+      "nb": {
+        "text": "Ingen fonter passer søket."
+      },
+      "en": {
+        "text": "No fonts match the search."
+      }
+    },
+    "b098.sample.label": {
+      "nb": {
+        "text": "Prøvetekst"
+      },
+      "en": {
+        "text": "Sample text"
+      }
+    },
+    "b098.variants.label": {
+      "nb": {
+        "text": "Vekter og stiler (høyst {max})"
+      },
+      "en": {
+        "text": "Weights and styles (at most {max})"
+      }
+    },
+    "b098.license": {
+      "nb": {
+        "text": "Lisens: {license}"
+      },
+      "en": {
+        "text": "Licence: {license}"
+      }
+    },
+    "b098.license.notice": {
+      "nb": {
+        "text": "Denne fonten har Ubuntu Font Licence (UFL), ikke OFL eller Apache. Den kan brukes, men les lisensen før film eller plakat gis ut."
+      },
+      "en": {
+        "text": "This font uses the Ubuntu Font Licence (UFL), not OFL or Apache. It can be used, but read the licence before releasing a film or poster."
+      }
+    },
+    "b098.pick-hint": {
+      "nb": {
+        "text": "Velg en font i listen for å se den."
+      },
+      "en": {
+        "text": "Choose a font in the list to see it."
+      }
+    },
+    "b098.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "b098.adding": {
+      "nb": {
+        "text": "Legger til …"
+      },
+      "en": {
+        "text": "Adding …"
+      }
+    },
+    "b098.add": {
+      "nb": {
+        "text": "Legg til"
+      },
+      "en": {
+        "text": "Add"
+      }
+    },
+    "b098.picker.project-fonts": {
+      "nb": {
+        "text": "Fonter i prosjektet"
+      },
+      "en": {
+        "text": "Fonts in the project"
+      }
+    },
+    "b098.picker.removed": {
+      "nb": {
+        "text": "{family} (fjernet – reservefont brukes)"
+      },
+      "en": {
+        "text": "{family} (removed – fallback font used)"
+      }
+    },
+    "b098.picker.add": {
+      "nb": {
+        "text": "Legg til font …"
+      },
+      "en": {
+        "text": "Add font …"
+      }
+    },
+    "b098.kind-plural.font": {
+      "nb": {
+        "text": "Fonter"
+      },
+      "en": {
+        "text": "Fonts"
+      }
     }
   }
 }

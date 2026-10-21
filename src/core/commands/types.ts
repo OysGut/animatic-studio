@@ -695,6 +695,8 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly globalSource?: import("../model").GlobalSource;
       /** Maldefinisjonen (MTS MT4) når ressursen er en mal; filen er malens miniatyr. */
       readonly template?: import("../typography/template").TemplateDefinition;
+      /** Fontmetadata (B-098) når ressursen er en font; filen er fontpakken. */
+      readonly font?: import("../typography/project-fonts").FontSpec;
       /** Versjonen den nye er frilagt fra eller erstatter (REQ-0037, migrasjon 0069). Samme ressurs. */
       readonly derivedFromVersionId?: AssetVersionId;
     }
