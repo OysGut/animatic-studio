@@ -11,7 +11,7 @@ import { ContourClient } from './contour-client';
 import { formatLength, useRigUnits } from './units';
 
 type Tool = 'point' | 'line' | 'distance' | 'angle' | 'ratio';
-const tools: readonly [Tool, 'app-inspect.point' | 'app-inspect.line' | 'app-inspect.distance' | 'app-inspect.angle' | 'app-inspect.ratio'][] = [['point','app-inspect.point'],['line','app-inspect.line'],['distance','app-inspect.distance'],['angle','app-inspect.angle'],['ratio','app-inspect.ratio']];
+const tools: readonly Tool[] = ['point','line','distance','angle','ratio'];
 function pointsOf(m: Marker): readonly MeasurePoint[] {
   switch (m.kind) {
     case 'point': return [m.point];
@@ -108,7 +108,7 @@ export function InspectionWindow({state,layer,spec,frame=0,onClose,onSave,editab
     <label className="text-xs">{t('app-inspect.ruler')}<input aria-label={t('app-inspect.ruler')} type="range" min={1} max={12} step={.01} value={pxMm} onChange={e=>setPxMm(Number(e.target.value))}/><span data-testid="inspect-screen-ruler" style={{width:50*pxMm}} className="block h-3 border-x border-b border-text-primary" /></label>
     <div className="flex flex-wrap gap-4 text-sm"><span data-testid="inspect-measure-width">{t('app-inspect.width')}: {formatLength(w,unit)}</span><span data-testid="inspect-measure-height">{t('app-inspect.height')}: {formatLength(h,unit)}</span><span data-testid="inspect-plate-level">{t('app-inspect.plate')}: {plate?`${formatLength(plate.heightMm,unit)} / ${formatLength(plateDistanceMm(spec,plate.id)??0,unit)}`:t('app-inspect.invalid')}</span><span data-testid="inspect-calibration-status">{calibrationStatus(spec)==='valid'?t('app-inspect.valid'):t('app-inspect.invalid')}</span></div>
     {mode!=='outline'&&dpi!==null&&dpi<150&&<p role="status" data-testid="inspect-dpi-warning">{t('app-inspect.dpi')} ({dpi.toFixed(0)})</p>}
-    <div className="flex flex-wrap gap-2">{tools.map(([kind,key])=><Button key={kind} data-testid={`inspect-tool-${kind}`} aria-pressed={tool===kind} onClick={()=>{setTool(kind);setPending([]);}}>{t(key)}</Button>)}<Button disabled={!history.undoStack.length} onClick={()=>setHistory(undoMarkers)}>{t('app-inspect.undo')}</Button><Button disabled={!history.redoStack.length} onClick={()=>setHistory(redoMarkers)}>{t('app-inspect.redo')}</Button></div>
+    <div className="flex flex-wrap gap-2">{tools.map((kind)=><Button key={kind} data-testid={`inspect-tool-${kind}`} aria-pressed={tool===kind} onClick={()=>{setTool(kind);setPending([]);}}>{({point:t('app-inspect.point'),line:t('app-inspect.line'),distance:t('app-inspect.distance'),angle:t('app-inspect.angle'),ratio:t('app-inspect.ratio')} as Record<Tool,string>)[kind]}</Button>)}<Button disabled={!history.undoStack.length} onClick={()=>setHistory(undoMarkers)}>{t('app-inspect.undo')}</Button><Button disabled={!history.redoStack.length} onClick={()=>setHistory(redoMarkers)}>{t('app-inspect.redo')}</Button></div>
     <svg ref={svg} className="h-[45vh] min-h-64 w-full touch-none border border-border bg-surface-1" aria-label={t('app-rig.contour.preview-aria')} onPointerDown={e=>{
       if(space.current||e.pointerType==='touch'||e.button===1){e.preventDefault();e.currentTarget.setPointerCapture(e.pointerId);gesture.current={x:e.clientX,y:e.clientY,pan,start:eventPoint(e)};return;}
       if(e.button===0)addPoint(eventPoint(e));
