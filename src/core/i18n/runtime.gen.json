@@ -14638,6 +14638,27 @@
     "app-rig.camera-mode": {
       "text": "Kameramodus"
     },
+    "app-rig.contour.cut-holes": {
+      "text": "Skjær ut hull"
+    },
+    "app-rig.contour.edit": {
+      "text": "Rett konturen"
+    },
+    "app-rig.contour.failed": {
+      "text": "Konturen kunne ikke beregnes"
+    },
+    "app-rig.contour.heading": {
+      "text": "Kontur for utskrift"
+    },
+    "app-rig.contour.preview-aria": {
+      "text": "Forhåndsvisning av konturen"
+    },
+    "app-rig.contour.stroke-width": {
+      "text": "Klippelinje"
+    },
+    "app-rig.contour.suggestion-toggle": {
+      "text": "Automatisk forslag"
+    },
     "app-rig.default-rig": {
       "text": "Standardrigg (hele prosjektet)"
     },
@@ -14652,6 +14673,9 @@
     },
     "app-rig.glass-thickness": {
       "text": "Glasstykkelse"
+    },
+    "app-rig.layers-panel.contour-heading": {
+      "text": "Kontur"
     },
     "app-rig.layers-panel.depth-label": {
       "text": "Dybde"
@@ -45976,6 +46000,27 @@
     "app-rig.camera-mode": {
       "text": "Camera mode"
     },
+    "app-rig.contour.cut-holes": {
+      "text": "Cut out holes"
+    },
+    "app-rig.contour.edit": {
+      "text": "Edit the contour"
+    },
+    "app-rig.contour.failed": {
+      "text": "The contour could not be computed"
+    },
+    "app-rig.contour.heading": {
+      "text": "Print contour"
+    },
+    "app-rig.contour.preview-aria": {
+      "text": "Preview of the contour"
+    },
+    "app-rig.contour.stroke-width": {
+      "text": "Cut line"
+    },
+    "app-rig.contour.suggestion-toggle": {
+      "text": "Automatic suggestion"
+    },
     "app-rig.default-rig": {
       "text": "Default rig (whole project)"
     },
@@ -45990,6 +46035,9 @@
     },
     "app-rig.glass-thickness": {
       "text": "Glass thickness"
+    },
+    "app-rig.layers-panel.contour-heading": {
+      "text": "Contour"
     },
     "app-rig.layers-panel.depth-label": {
       "text": "Depth"

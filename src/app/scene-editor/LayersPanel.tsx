@@ -1,3 +1,4 @@
+import { ContourPreview } from "@/app/rig/ContourPreview";
 /**
  * Lagliste for 2D-scenen: forreste lag øverst. Valg, synlighet, lås, rekkefølge (knapper og dra-og-slipp),
  * grupper (dra et lag inn på en gruppe for å legge det i gruppen, eller ut ved siden av et lag utenfor) og
@@ -779,6 +780,12 @@ export const LayersPanel = memo(function LayersPanel({
               })()}
             </>
           ) : null}
+        </div>
+      ) : null}
+      {selected && selectedRig && selected.rigPlateId && layerVersion(state, selected, frame) ? (
+        <div data-testid="rig-contour-panel" className="space-y-2 border-t border-border px-3 py-2">
+          <h3 className="text-xs font-semibold text-text-primary">{tk("app-rig.layers-panel.contour-heading")}</h3>
+          <ContourPreview state={state} layer={selected} spec={selectedRig.spec} frame={frame} compact />
         </div>
       ) : null}
       {error ? (

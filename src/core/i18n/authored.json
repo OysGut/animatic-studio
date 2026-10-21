@@ -5649,6 +5649,150 @@
       "en": {
         "text": "The password could not be changed. Try again or request a new reset link."
       }
+    },
+    "app-rig.contour.heading": {
+      "nb": {
+        "text": "Kontur for utskrift"
+      },
+      "en": {
+        "text": "Print contour"
+      }
+    },
+    "app-rig.contour.source-label": {
+      "nb": {
+        "text": "Konturkilde: {source}"
+      },
+      "en": {
+        "text": "Contour source: {source}"
+      }
+    },
+    "app-rig.contour.source-mask": {
+      "nb": {
+        "text": "Din maske"
+      },
+      "en": {
+        "text": "Your mask"
+      }
+    },
+    "app-rig.contour.source-alpha": {
+      "nb": {
+        "text": "Bildets gjennomsiktighet"
+      },
+      "en": {
+        "text": "The image's transparency"
+      }
+    },
+    "app-rig.contour.source-suggestion": {
+      "nb": {
+        "text": "Forslag"
+      },
+      "en": {
+        "text": "Suggestion"
+      }
+    },
+    "app-rig.contour.source-rectangle": {
+      "nb": {
+        "text": "Bildets rektangel (forslaget er slått av)"
+      },
+      "en": {
+        "text": "The image rectangle (suggestion is off)"
+      }
+    },
+    "app-rig.contour.source-none": {
+      "nb": {
+        "text": "Ingen kontur – bildet skrives ut som det er"
+      },
+      "en": {
+        "text": "No contour – the image is printed as is"
+      }
+    },
+    "app-rig.contour.edit": {
+      "nb": {
+        "text": "Rett konturen"
+      },
+      "en": {
+        "text": "Edit the contour"
+      }
+    },
+    "app-rig.contour.suggestion-toggle": {
+      "nb": {
+        "text": "Automatisk forslag"
+      },
+      "en": {
+        "text": "Automatic suggestion"
+      }
+    },
+    "app-rig.contour.cut-holes": {
+      "nb": {
+        "text": "Skjær ut hull"
+      },
+      "en": {
+        "text": "Cut out holes"
+      }
+    },
+    "app-rig.contour.stroke-width": {
+      "nb": {
+        "text": "Klippelinje"
+      },
+      "en": {
+        "text": "Cut line"
+      }
+    },
+    "app-rig.contour.mode-full": {
+      "nb": {
+        "text": "Full figur"
+      },
+      "en": {
+        "text": "Full figure"
+      }
+    },
+    "app-rig.contour.mode-line": {
+      "nb": {
+        "text": "Med klippelinje"
+      },
+      "en": {
+        "text": "With cut line"
+      }
+    },
+    "app-rig.contour.mode-outline": {
+      "nb": {
+        "text": "Kun kontur"
+      },
+      "en": {
+        "text": "Contour only"
+      }
+    },
+    "app-rig.contour.preview-aria": {
+      "nb": {
+        "text": "Forhåndsvisning av konturen"
+      },
+      "en": {
+        "text": "Preview of the contour"
+      }
+    },
+    "app-rig.contour.computing": {
+      "nb": {
+        "text": "Beregner konturen …"
+      },
+      "en": {
+        "text": "Computing the contour …"
+      }
+    },
+    "app-rig.contour.failed": {
+      "nb": {
+        "text": "Konturen kunne ikke beregnes"
+      },
+      "en": {
+        "text": "The contour could not be computed"
+      }
+    },
+    "app-rig.layers-panel.contour-heading": {
+      "nb": {
+        "text": "Kontur"
+      },
+      "en": {
+        "text": "Contour"
+      }
     }
   }
 }

@@ -73712,5 +73712,59 @@
   },
   "auth.password-reset.failed": {
     "text": "The password could not be changed. Try again or request a new reset link."
+  },
+  "app-rig.contour.heading": {
+    "text": "Print contour"
+  },
+  "app-rig.contour.source-label": {
+    "text": "Contour source: {source}"
+  },
+  "app-rig.contour.source-mask": {
+    "text": "Your mask"
+  },
+  "app-rig.contour.source-alpha": {
+    "text": "The image's transparency"
+  },
+  "app-rig.contour.source-suggestion": {
+    "text": "Suggestion"
+  },
+  "app-rig.contour.source-rectangle": {
+    "text": "The image rectangle (suggestion is off)"
+  },
+  "app-rig.contour.source-none": {
+    "text": "No contour – the image is printed as is"
+  },
+  "app-rig.contour.edit": {
+    "text": "Edit the contour"
+  },
+  "app-rig.contour.suggestion-toggle": {
+    "text": "Automatic suggestion"
+  },
+  "app-rig.contour.cut-holes": {
+    "text": "Cut out holes"
+  },
+  "app-rig.contour.stroke-width": {
+    "text": "Cut line"
+  },
+  "app-rig.contour.mode-full": {
+    "text": "Full figure"
+  },
+  "app-rig.contour.mode-line": {
+    "text": "With cut line"
+  },
+  "app-rig.contour.mode-outline": {
+    "text": "Contour only"
+  },
+  "app-rig.contour.preview-aria": {
+    "text": "Preview of the contour"
+  },
+  "app-rig.contour.computing": {
+    "text": "Computing the contour …"
+  },
+  "app-rig.contour.failed": {
+    "text": "The contour could not be computed"
+  },
+  "app-rig.layers-panel.contour-heading": {
+    "text": "Contour"
   }
 }

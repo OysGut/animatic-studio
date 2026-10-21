@@ -106,7 +106,7 @@ begin
     raise exception 'Bare eier og redaktør kan publisere riggmaler' using errcode = '42501';
   end if;
   if p_name is null or char_length(btrim(p_name)) < 1 or char_length(p_name) > 80 then
-    raise exception 'Ugyldigt malnavn' using errcode = '22023';
+    raise exception 'Ugyldig malnavn' using errcode = '22023';
   end if;
   if p_spec is null or jsonb_typeof(p_spec) <> 'object' or p_spec ->> 'format' is distinct from '1'
      or jsonb_typeof(p_spec -> 'camera') is distinct from 'object'
@@ -129,7 +129,7 @@ create or replace function public.apply_changes(
 language plpgsql security definer set search_path = '' as $$
 declare
   v_tables text[] := array['productions','rig_templates','scenes','rig_setups','scene_variants','script_blocks','scene_occurrences','production_segments','takes',
-                            'assets','asset_variants','asset_versions','animation_rigs','animation_rig_versions','script_annotations',
+                           'assets','asset_variants','asset_versions','animation_rigs','animation_rig_versions','script_annotations',
                            'compositions','template_instances','credit_participants','credit_sequences','composition_layers','animation_uses','audio_clips','dialogue_versions','clip_parts','time_links','generation_prompts',
                            'continuity_events','language_versions','translations','asset_relations','posters','style_profiles',
                            'story_profiles','story_profile_stages','story_facts','story_canvas_nodes','story_canvas_edges',
@@ -259,7 +259,7 @@ begin
       v_set := (select string_agg(format('%1$I = r.%1$I', c), ', ') from unnest(v_cols) c);
       execute format('update public.%I t set %s from jsonb_populate_record(null::public.%I, $1) r
                       where t.id = ($1 ->> ''id'')::uuid and t.project_id = $2 and t.revision = ($1 ->> ''expected_revision'')::int',
-                      v_t, v_set, v_t) using v_row, p_project;
+                     v_t, v_set, v_t) using v_row, p_project;
       get diagnostics v_count = row_count;
       if v_count = 0 then
         raise exception 'Revisjonskonflikt' using errcode = 'P0409', detail = v_row ->> 'id';
@@ -288,8 +288,8 @@ begin
   -- 4) Ny teksthistorikk
   v_rows := coalesce(p_changes -> 'blockRevisions', '[]'::jsonb);
   if jsonb_array_length(v_rows) > 0 then
-    if exists(select 1 from jsonb_array_elements(v_rows) r
-                where (r ->> 'project_id')::uuid is distinct from p_project or (r ->> 'author')::uuid is distinct from p_actor) then
+    if exists (select 1 from jsonb_array_elements(v_rows) r
+               where (r ->> 'project_id')::uuid is distinct from p_project or (r ->> 'author')::uuid is distinct from p_actor) then
       raise exception 'Ugyldig historikkrad' using errcode = '42501';
     end if;
     insert into public.script_block_revisions (project_id, block_id, rev, text, author, created_at)
@@ -321,7 +321,7 @@ begin
     where r.project_id=p_project and not r.removed and r.id = any(v_pref_check)
       and (not exists(select 1 from public.assets a where a.id=r.asset_id and a.project_id=p_project and not a.removed)
         or not exists(select 1 from public.style_profiles p where p.id=r.style_profile_id and p.project_id=p_project and not p.removed)
-        or (r.variant_id is not null and not exists(select 1 from public.asset_variants va where va.id=r.variant_id and va.project_id=p_project and va.asset_id=r.asset_id)))) then
+        or not exists(select 1 from public.asset_variants va where va.id=r.variant_id and va.project_id=p_project and va.asset_id=r.asset_id))) then
     raise exception 'Invalid preferred reference' using errcode='22023'; end if;
   -- 0066 (ML3) / 0067: every translation, line and link written in this call that has a language version must stay in
   -- the same project and use the version's target language. 0067: the link check covers every link changed in the
@@ -349,7 +349,7 @@ begin
     where l.project_id=p_project and not l.removed and l.id = any(v_link_scope)
       and exists(select 1 from unnest(l.target_translation_ids) as tt(target_id)
         where exists(select 1 from public.translations t where t.id=tt.target_id and t.language_version_id is not null and t.language_version_id <> l.language_version_id)
-            or exists(select 1 from public.translation_lines u where u.id=tt.target_id and u.language_version_id is not null and u.language_version_id <> l.language_version_id))) then
+           or exists(select 1 from public.translation_lines u where u.id=tt.target_id and u.language_version_id is not null and u.language_version_id <> l.language_version_id))) then
     raise exception 'Invalid line link scope' using errcode='22023'; end if;
   -- REQ-0144: nøyaktig én aktiv foretrukket referanse per (ressurs, stilprofil)
   if exists(select r.asset_id, r.style_profile_id from public.style_preferred_references r
