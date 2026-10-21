@@ -8,6 +8,8 @@
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
+import { onSessionChange } from '@/adapters/browser/auth';
+import { useQueryClient } from '@tanstack/react-query';
 import { getUiLanguage, isUiLang, onLanguageChange, setLanguage, type UiLang } from "@/core";
 import manifest from "@/core/i18n/manifest.json";
 import { t, loadUiCatalog } from "@/core/i18n/keyed";
@@ -70,6 +72,7 @@ export function browserUiLanguage(languages: readonly string[]): UiLang | null {
  */
 export function bootUiLanguage(): UiLang {
   if (typeof window === "undefined") return getUiLanguage();
+  if (rootSettled || profileLanguage !== null) return getUiLanguage();
   let fromStore: string | null = null;
   try { fromStore = window.localStorage.getItem(LANGUAGE_KEY); } catch { fromStore = null; }
   if (isUiLang(fromStore)) return fromStore === "en-XA" && !testLanguagesEnabled() ? "en" : fromStore;
@@ -81,6 +84,8 @@ export function bootUiLanguage(): UiLang {
 let rootSettled = false;
 const lateHydration = new Set<() => void>();
 let profileLanguage: UiLang | null = null;
+let selectionRevision = 0;
+let selectionSettled = false;
 const explicitChoices = new Set<(lang: UiLang) => void>();
 export function onExplicitLanguageChoice(listener: (lang: UiLang) => void) {
   explicitChoices.add(listener);
@@ -88,12 +93,18 @@ export function onExplicitLanguageChoice(listener: (lang: UiLang) => void) {
 }
 /** Profile wins over browser/local choices at sign-in; never rewrites the explicit local choice. */
 export async function applyProfileLanguage(lang: UiLang | null) {
+  const revision = ++selectionRevision;
   profileLanguage = lang;
   const next = lang ?? stored() ?? browserUiLanguage(navigator.languages) ?? 'en';
-  await loadUiCatalog(next);
-  if (profileLanguage !== lang) return;
+  await commitSelection(next, revision);
+}
+async function commitSelection(next: UiLang, revision: number) {
+  try { await loadUiCatalog(next); } catch { next = 'en'; }
+  if (selectionRevision !== revision) return;
+  selectionSettled = true;
   setLanguage(next);
   document.cookie = `ptg-ui-language=${encodeURIComponent(next)}; Path=/; SameSite=Lax; Max-Age=31536000${window.location.protocol === 'https:' ? '; Secure' : ''}`;
+  document.documentElement.classList.remove(LANGUAGE_PENDING_CLASS);
 }
 
 /** Gjeldende visningsspråk (tegner komponenten på nytt når det endres). */
@@ -107,26 +118,42 @@ export function useLanguage(): UiLang {
 /** Velg språk: huskes i nettleseren og gjelder med én gang, uten remontering. */
 export async function chooseLanguage(lang: UiLang) {
   if (lang === "en-XA" && !testLanguagesEnabled()) return;
-  await loadUiCatalog(lang);
+  const revision = ++selectionRevision;
   try {
     window.localStorage.setItem(LANGUAGE_KEY, lang);
-    document.cookie = `ptg-ui-language=${encodeURIComponent(lang)}; Path=/; SameSite=Lax; Max-Age=31536000${window.location.protocol === 'https:' ? '; Secure' : ''}`;
   } catch {
     // privat vindu: gjelder bare denne økten
   }
-  setLanguage(lang);
   if (profileLanguage !== null) profileLanguage = lang;
   for (const listener of explicitChoices) listener(lang);
+  await commitSelection(lang, revision);
 }
 
 /** Rundt hele appen: henter lagret språk før skjermen males, og oppdaterer <html lang>. */
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    let identity: string | null | undefined;
+    return onSessionChange(session => {
+      const next = session?.user.id ?? null;
+      if (identity === next) return;
+      const previous = identity;
+      identity = next;
+      if (previous !== undefined) {
+        void queryClient.cancelQueries({ queryKey: ['my-account'] }).then(() => {
+          queryClient.removeQueries({ queryKey: ['my-account'] });
+          void applyProfileLanguage(null);
+        });
+      }
+    });
+  }, [queryClient]);
   useEffect(() => {
     // Lagret språk settes først når sidens egen del er hydrert: ruter ligger i egne kodebiter og
     // hydreres etter roten, og ville ellers fått et annet språk enn serveren tegnet. Siden er skjult
     // (lang-pending) til da; vakturet sørger for at den aldri blir stående skjult.
     const s = stored() ?? browserUiLanguage(navigator.languages) ?? 'en';
+    const revision = selectionRevision;
     rootSettled = true;
     if (!s) return;
     let done = false;
@@ -135,7 +162,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
       done = true;
       lateHydration.delete(onLate);
       const next = profileLanguage ?? s;
-      void loadUiCatalog(next).then(() => { if (profileLanguage === null || profileLanguage === next) setLanguage(next); }).catch(() => setLanguage('en'));
+      void commitSelection(next, revision);
     };
     // Flere deler kan hydreres etter hverandre: vent til det har vært stille en kort stund.
     let quiet: number | undefined;
@@ -154,8 +181,8 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
   useIso(() => {
     const d = document.documentElement;
     d.lang = lang;
-    d.dir = "ltr";
-    if (lang === getUiLanguage()) d.classList.remove(LANGUAGE_PENDING_CLASS);
+    d.dir = manifest.languages.find(l => l.tag === lang)?.direction ?? 'ltr';
+    if (selectionSettled) d.classList.remove(LANGUAGE_PENDING_CLASS);
   }, [lang]);
   return <>{children}</>;
 }

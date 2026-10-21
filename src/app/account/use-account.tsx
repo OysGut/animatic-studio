@@ -83,8 +83,6 @@ export function AccountWatcher() {
     });
     return off;
   }, [a?.locale, !!a, qc]);
-  useEffect(() => () => { void applyProfileLanguage(null); }, []);
-
   // En konto som er blokkert eller låst for sletting, logges ut (innloggingen er også sperret)
   useEffect(() => {
     if (a && a.status !== "active") void signOut();
