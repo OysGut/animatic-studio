@@ -124,10 +124,15 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
               typeof params["pieces"] === "number" && params["pieces"] > 1
                 ? t("app-ai-generation-status.part.shown-map.b693d0ae1f9b", { value1: String(Number(params["piece"] ?? 0) + 1), value2: String(params["pieces"]) })
                 : "";
+            const failedJob = j.status === "failed" || j.status === "lost";
+            const read = failedJob && isJobRead(j, readPrefs);
             return (
               <li
                 key={j.id}
-                className="border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0"
+                className={
+                  "border-b border-border/60 px-3 py-1.5 text-xs last:border-b-0" +
+                  (read ? " opacity-50" : "")
+                }
               >
                 <div className="flex items-center gap-2">
                   <span className="shrink-0 text-text-tertiary">{KIND_LABEL(j.kind)}</span>
@@ -179,6 +184,16 @@ export function GenerationStatus({ projectId }: { projectId: string }) {
                 </div>
                 {j.error && st !== "done" ? (
                   <p className="text-[11px] text-status-danger">{tm(j.error).slice(0, 200)}</p>
+                ) : null}
+                {failedJob && !read ? (
+                  <button
+                    type="button"
+                    data-testid={`job-mark-read-${j.id}`}
+                    className="mt-0.5 text-[11px] text-accent-brand hover:underline"
+                    onClick={() => setReadPrefs(markJobsRead(readPrefs, [j.id]))}
+                  >
+                    {t("app-ai-generation-status.mark-read")}
+                  </button>
                 ) : null}
                 {canRefetchVideo(j) ? (
                   <div className="mt-1">
