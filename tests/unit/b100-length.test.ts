@@ -35,7 +35,7 @@ describe("B-100: Scene og montering viser samme lengde etter omtiming", () => {
     const compositionId = tid<"composition">();
     const s = mustApply(seed.state, { type: "CreateComposition", compositionId, variantId: occ.variantId, fields: { ...DEFAULT_COMPOSITION, durationFrames: 120, background: "#101114" } });
     const plan = planRetime(s, occId, { targetFrames: 180, method: "end", keepAmbience: true });
-    expect(plan.ok).toBe(true);
+    expect(plan.ok ? "ok" : JSON.stringify(plan).slice(0, 300)).toBe("ok");
     const r = applyCommand(s, envelope((plan as { command: Command }).command));
     if (!r.ok) throw new Error(r.error.message);
     const sceneLen = compositionDuration(r.state, r.state.compositions[compositionId]!);
