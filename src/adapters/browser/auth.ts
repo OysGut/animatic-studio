@@ -1,6 +1,7 @@
 /** Innlogging (Supabase Auth) bak et lite grensesnitt for nettleseren (KI-181). */
 import type { Session } from "@supabase/supabase-js";
 import { browserClient, plainError, type BackendError } from "./client";
+import { isCountryCode } from "@/core";
 
 export type { Session };
 
