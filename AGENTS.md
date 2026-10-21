@@ -11,11 +11,7 @@
 
 # AGENTS.md – instruksjoner for KI-agenter i From Pen to Glass
 
-Fra fase 3 (oktober 2026) er arbeidsdelingen slik:
-- Claude er dirigent. Claude lager spesifikasjonene, går gjennom koden, kjører testene og kjører databasemigrasjonene.
-- Lovable skriver koden etter Claudes oppdrag.
-
-Arbeidsreglene står i workspace-skills `animatic-*`; skillene og oppdraget går foran eldre repotekst.
+Claude specifies, reviews, tests and runs migrations; Lovable implements. Active animatic skills and assignments override older repo text.
 
 Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 1. Endre bare det oppdraget ber om. Spør hvis noe er uklart.
@@ -52,9 +48,10 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 32. ProRes: own worker encoder, append-only MOV (moov last), so exports stream to OPFS without GPL code.
 33. Harmonization (P8): one image runner; "only here" is an archived variant; batches keep receipts so billed work never replays.
 34. M6: additive updates, computed forecasts.
-35. i18n: all text uses t()/tLocalized with keyed catalogs; no new L()/localized(); builds stop unless nb/en are complete.†
+35. i18n: new/changed text ships all registered languages, source hashes and machine-review markers. Missing/stale translations fail checks. Only t()/tLocalized, never new L()/localized().†
 36. New file-path tables/columns join ORPHAN_REFERENCE_TABLES in the same change, with a test, so cleanup keeps used files.
 37. R3: global publish undo/redo is a group-bound history effect (withdraw/republish via security-definer RPC); global rows/files never change.
 38. Locked pages use document SHA-256 and import order; blocks without documentId form one legacy document.
 39. Rig printing previews a pure mm layout plan; PDF rendering is separate and never writes project data.
 40. Product name «From Pen to Glass»; b104-product-name.test.ts bans the old name in user text (explicit exceptions); IDs/keys/formats unchanged.
+41. UI locales use the manifest and lazy catalogs; SSR language is request-scoped. Script/data Lang stays separate.
