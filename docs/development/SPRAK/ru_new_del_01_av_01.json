@@ -1,0 +1,1287 @@
+{
+  "adapters-ai-video-functions.message.message.b49b7f3f602c": {
+    "nb": "Databasen er ikke oppdatert for AI-video{value1}. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"}).",
+    "en": "The database is not up to date for AI video{value1}. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.8d1fcaf3dc8b": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.d62f99d8026f": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-assembly-export-animatic-dialog.what.message.3af59fbe53ab": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-assembly-mts-occurrences.label.message.181e9b47f9dc": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-assembly-mts-occurrences.location.location.77bd3c5d608e": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-library-image-prep.note.note.d21f734c64e4": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-scene-editor-credits-panel.design-tab.option.c0137faa825d": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-scene-editor-pages-panel.pages-panel.option.78a0e3cf188e": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-scene-editor-scene-editor-workspace.carry-next.use-callback.b76e19921b89": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.b1f81e305926": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-scene-editor-animation-mouth-shape-editor.mouth-shape-editor.option.da4a34515891": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-script-scene-navigator.scene-navigator.title.5d843ae57d5d": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "core-generation-providers.value.value.d1d1e232b849": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "core-presentation-poster.get.get.670123440a05": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "core-backup-index.parse-backup.message.9e11241c0bca": {
+    "nb": "Filen er ikke en sikkerhetskopi fra From Pen to Glass.",
+    "en": "The file is not a backup from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "core-backup-index.parse-backup.message.bc940e902884": {
+    "nb": "Sikkerhetskopien er laget med en nyere versjon av From Pen to Glass og kan ikke leses her.",
+    "en": "The backup was made with a newer version of From Pen to Glass and cannot be read here.",
+    "oversatt": ""
+  },
+  "core-backup-index.backup-readme.l-sikkerhetskopi-av-sum-name-fra-animatic-studio-backup-of-sum-name-from-animatic-studio-l-laget-b-created-at-formatversjon-b-format-version-databaseversjon-b-schema-version-made-b-created-at-format-version-b-format-version-database-version-b-schema-version-l-innhold-contents-l-backup-json-alle-prosjektdata-som-tabeller-samme-kolonner-som-databasen-backup-json-all-project-data-as-tables-the-same-columns-as-the-database-l-manus-scener-varianter-blokker-med-teksthistorikk-produksjoner-og-spinoffer-script-scenes-variants-blocks-with-text-history-productions-and-spin-offs-l-sceneforekomster-ressursbibliotek-notater-2d-scener-med-lag-og-kamera-lydklipp-scene-occurrences-asset-library-notes-2d-scenes-with-layers-and-camera-audio-clips-l-importert-film-med-deler-og-tidskoblinger-manusversjoner-og-importerte-manusfiler-imported-film-with-parts-and-time-links-script-versions-and-imported-script-files-l-history-inneholder-kommandologgen-og-loggen-over-ai-generering-bare-til-orientering-history-contains-the-command-log-and-the-ai-generation-log-for-information-only-l-files-er-en-liste-over-alle-mediefilene-ogs-de-som-ikke-er-tatt-med-files-is-a-list-of-all-the-media-files-including-those-not-included-l-filer-b-tte-sti-mediefilene-uendret-filer-b-tte-sti-the-media-files-unchanged-l-gjenopprett-prosjekter-gjenopprett-fra-sikkerhetskopi-det-lages-alltid-et-nytt-prosjekt-restore-projects-restore-from-backup-a-new-project-is-always-made-l-ingenting-eksisterende-overskrives-nothing-existing-is-overwritten-l-scener-sum-scenes-manusblokker-sum-blocks-manusversjoner-sum-versions-scenes-sum-scenes-script-blocks-sum-blocks-script-versions-sum-versions-l-ressurser-sum-assets-2d-scener-sum-compositions-lydklipp-sum-audio-clips-assets-sum-assets-2d-scenes-sum-compositions-audio-clips-sum-audio-clips-l-mediefiler-med-sum-files-media-files-included-sum-files-out-length-l-disse-out-length-filene-er-ikke-med-de-ligger-fortsatt-i-prosjektet-these-out-length-files-are-not-included-they-are-still-in-the-project-out-map-f-backup-category-label-f-category-f-path-join.c4431ee3e227": {
+    "nb": "Sikkerhetskopi av «{name}» fra From Pen to Glass",
+    "en": "Backup of “{name}” from From Pen to Glass",
+    "oversatt": ""
+  },
+  "core-generation-providers.providers.message.8ac7f045e797": {
+    "nb": "Bruker kredittene i From Pen to Glass-arbeidsområdet. Ingen egen nøkkel – slått på for prosjektet i From Pen to Glass.",
+    "en": "Uses the credits in your From Pen to Glass workspace. No key of your own – switched on for the project in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "core-generation-providers.providers.message.478247762189": {
+    "nb": "Gå til API keys → «Create new secret key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-).",
+    "en": "Go to API keys → “Create new secret key”, name it “Pen to Glass” and copy it (it starts with sk-).",
+    "oversatt": ""
+  },
+  "core-generation-providers.providers.message.5c712e78bf84": {
+    "nb": "Gå til Settings → API keys → «Create Key», gi den navnet «Pen to Glass» og kopier den (begynner med sk-ant-).",
+    "en": "Go to Settings → API keys → “Create Key”, name it “Pen to Glass” and copy it (it starts with sk-ant-).",
+    "oversatt": ""
+  },
+  "core-generation-providers.providers.message.e3bf20933260": {
+    "nb": "Gå til API Keys → «Create API Key», gi den navnet «Pen to Glass» og kopier den (begynner med xai-).",
+    "en": "Go to API Keys → “Create API Key”, name it “Pen to Glass” and copy it (it starts with xai-).",
+    "oversatt": ""
+  },
+  "core-notes-transfer.system-note-author.message.5f697b6b55b9": {
+    "nb": "From Pen to Glass (systemmerknad)",
+    "en": "From Pen to Glass (system note)",
+    "oversatt": ""
+  },
+  "engine-import-zip-read.zip-entry-blob.message.5f2329b4c57a": {
+    "nb": "{value1} er komprimert og for stor til å pakkes ut her. Bruk zip-filen slik den ble lastet ned fra From Pen to Glass.",
+    "en": "{value1} is compressed and too large to unpack here. Use the zip file as it was downloaded from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-image-run-server.message.message.d132ffa15512": {
+    "nb": "Databasen mangler loggen for AI-generering. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the AI generation log. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-image-run-server.message.message.1fb2430caade": {
+    "nb": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for own AI providers. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-provider-keys-functions.schema-ok.message.cf6f4a308b35": {
+    "nb": "Databasen er ikke oppdatert for egne AI-leverandører. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for your own AI providers yet. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-sound-functions.message.message.56b18dcfbf18": {
+    "nb": "Databasen er ikke oppdatert for AI-lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for AI sound. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-speech-run-server.message.message.6cd37d7dc0b9": {
+    "nb": "Databasen er ikke oppdatert for AI-tale. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for AI speech. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-text-functions.message.message.2fd3b559a274": {
+    "nb": "From Pen to Glass kjente ikke igjen noen av språkmodellene. Sett ANIMATIC_TEXT_MODEL i From Pen to Glass.",
+    "en": "From Pen to Glass did not recognise any of the language models. Set ANIMATIC_TEXT_MODEL in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-ai-write-prompt-functions.message.message.9c28c20f674f": {
+    "nb": "Databasen er ikke oppdatert for AI-skrevne beskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for AI-written descriptions. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-backup-functions.message.message.7d38b49dd98d": {
+    "nb": "Databasen er ikke oppdatert. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not up to date. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.04b0cde81aaf": {
+    "nb": "Databasen mangler ressursbiblioteket og notatene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the asset library and notes. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.01438c3c6b49": {
+    "nb": "Databasen mangler prosjektformatet. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the project format. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.115702403951": {
+    "nb": "Databasen mangler lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing sound. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.3d6e65936633": {
+    "nb": "Databasen mangler klipping og tidskoblinger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing clipping and time links. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.402d2c13486c": {
+    "nb": "Databasen mangler de nye funksjonene (overganger, svart-hvitt, grupper, bildeskifter og bevegelsesbaner). Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the new features (transitions, black and white, groups, image swaps and motion paths). Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.736fdd526c7e": {
+    "nb": "Databasen mangler AI-budsjett og genereringsbeskrivelser. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the AI budget and generation descriptions. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.3cd9842f48f3": {
+    "nb": "Databasen mangler kontinuitet for karakterene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing continuity for the characters. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.b305cd2f5e74": {
+    "nb": "Databasen mangler språkversjoner av manuset. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing language versions of the script. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.fda297080af9": {
+    "nb": "Databasen mangler språkversjoner av filmen (lyd og bilder per språk). Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing language versions of the film (audio and images per language). Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.f3d36f381f8f": {
+    "nb": "Databasen mangler kontinuitet for spinoffer. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing continuity for spin-offs. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.e1f8960f3a98": {
+    "nb": "Databasen mangler notater på produksjonene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing notes on the productions. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.fe59c3be6214": {
+    "nb": "Databasen mangler tillegget for vinkler på bilder og visuelle faktaark. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the addition for angles on images and visual fact sheets. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.bd0f5f4a9cf4": {
+    "nb": "Databasen mangler tillegget for slettede objekter, lydhastighet og «animer på toere». Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the addition for deleted items, sound speed and “animate on twos”. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.94cbfeb1a92d": {
+    "nb": "Databasen mangler tillegget for lagrede varighetsestimater og eksportlogg. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the addition for saved duration estimates and the export log. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.a351f6c20569": {
+    "nb": "Databasen mangler tillegget for arbeidslisten og eksportinnstillinger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the addition for the worklist and export settings. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.f770da01452c": {
+    "nb": "Databasen mangler det nyeste tillegget (masker, overganger, stemmer, stilprofiler). Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the newest addition (masks, transitions, voices, style profiles). Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.16525acc1633": {
+    "nb": "Databasen mangler koblinger for lyd. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing sound links. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.bb458d81609f": {
+    "nb": "Databasen mangler planlagt lengde per scene. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing planned length per scene. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.855135ab45cb": {
+    "nb": "Databasen mangler filmens visuelle stil. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the film's visual style. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.a70968a5bbb7": {
+    "nb": "Databasen mangler plakater og relasjoner. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing posters and relations. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.9678261bea35": {
+    "nb": "Databasen mangler importert film og overganger. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing imported film and transitions. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.c5c2cbda311b": {
+    "nb": "Databasen mangler lyd over flere scener og volumpunkter. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing sound across several scenes and volume points. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-commands-functions.message.message.0e67cf134641": {
+    "nb": "Databasen mangler sceneeditoren. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing the scene editor. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-project-admin-functions.owner-context.message.83fee78e7f06": {
+    "nb": "Databasen er ikke oppdatert for sletting ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not updated for deletion yet. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "adapters-storage-trash-functions.message.message.a1cfbf7a94e9": {
+    "nb": "Databasen er ikke oppdatert for slettede objekter. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not up to date for deleted items. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-ai-ai-panel.budget.p.9eadccb8743b": {
+    "nb": "Når rammen er nådd, stopper serveren nye genereringer til neste måned. Prisen er ditt eget anslag (From Pen to Glass viser forbruket i arbeidsområdet) og brukes bare til å vise anslått kostnad.",
+    "en": "When the limit is reached, the server stops new generations until next month. The price is your own estimate (From Pen to Glass shows the usage in the workspace) and is only used to show the estimated cost.",
+    "oversatt": ""
+  },
+  "app-ai-providers-dialog.text.text.74fba41561c8": {
+    "nb": "Nøkkelen er slettet fra From Pen to Glass.",
+    "en": "The key has been deleted from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-ai-providers-dialog.provider-detail.p.e74e02c953df": {
+    "nb": "Denne er alltid tilgjengelig og bruker kredittene i From Pen to Glass-arbeidsområdet. Prosjektets AI-budsjett gjelder.",
+    "en": "This is always available and uses the credits in the From Pen to Glass workspace. The project's AI budget applies.",
+    "oversatt": ""
+  },
+  "app-ai-providers-dialog.provider-detail.span.2a522c3a0c1e": {
+    "nb": "Slette nøkkelen fra From Pen to Glass?",
+    "en": "Delete the key from From Pen to Glass?",
+    "oversatt": ""
+  },
+  "app-ai-providers-dialog.providers-dialog.p.208bfd9a66c1": {
+    "nb": "Databasen er ikke oppdatert for egne AI-leverandører ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is not yet updated for your own AI providers. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-library-generate-image-panel.generate-image-panel.p.c5c202e03cf1": {
+    "nb": "Dette bruker kreditter i From Pen to Glass-arbeidsområdet (",
+    "en": "This uses credits in the From Pen to Glass workspace (",
+    "oversatt": ""
+  },
+  "app-library-asset-images.upload-one.message.0cb14e697856": {
+    "nb": "Lagringsbøtten for bilder mangler. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The image storage bucket is missing. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-mobile-mobile-page.mobile-page.p.58407ddefbbc": {
+    "nb": "Last opp til From Pen to Glass",
+    "en": "Upload to From Pen to Glass",
+    "oversatt": ""
+  },
+  "app-mobile-mobile-page.text.message.624aef06af2d": {
+    "nb": "Ta opp lyd til From Pen to Glass: {label}",
+    "en": "Record audio for From Pen to Glass: {label}",
+    "oversatt": ""
+  },
+  "app-mobile-mobile-page.text.message.9e50fa7f0f72": {
+    "nb": "Send bilder og video til From Pen to Glass: {label}",
+    "en": "Send pictures and video to From Pen to Glass: {label}",
+    "oversatt": ""
+  },
+  "app-assembly-film-popout.film-popout.use-effect.f2c15c40663d": {
+    "nb": "Montering – Pen to Glass",
+    "en": "Assembly – Pen to Glass",
+    "oversatt": ""
+  },
+  "app-library-asset-audio.upload-asset-audio.message.47e939439144": {
+    "nb": "Lagringen tar ikke imot lydfiler ennå. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The storage does not accept audio files yet. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-scene-editor-preview-window.copy-styles.message.96877f1c395d": {
+    "nb": "Forhåndsvisning – Pen to Glass",
+    "en": "Preview – Pen to Glass",
+    "oversatt": ""
+  },
+  "app-script-export-dialog.export-dialog.p.ecb8e8d06d7f": {
+    "nb": "Startet ikke nedlastingen? Forhåndsvisningen i From Pen to Glass kan blokkere nedlastinger. Åpne appen i en egen fane (knappen for ny fane øverst i forhåndsvisningen) og eksporter derfra.",
+    "en": "Did the download not start? The From Pen to Glass preview can block downloads. Open the app in a separate tab (the new-tab button at the top of the preview) and export from there.",
+    "oversatt": ""
+  },
+  "app-script-versions-dialog.versions-dialog.p.a04beb457477": {
+    "nb": "Databasen mangler manusversjoner. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database is missing script versions. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-account-privacy-statement.privacy-statement.h1.a6b063609bf0": {
+    "nb": "Personvernerklæring for From Pen to Glass",
+    "en": "Privacy statement for From Pen to Glass",
+    "oversatt": ""
+  },
+  "app-account-privacy-statement.privacy-statement.p.4867f43d007c": {
+    "nb": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+    "en": "From Pen to Glass bruker en skyplattform for database, filer og innlogging. Lagringssted: ",
+    "oversatt": ""
+  },
+  "app-account-use-account.account-watcher.dialog-description.4e07b85b3227": {
+    "nb": "Før du bruker From Pen to Glass, må du lese hvordan vi behandler opplysningene dine.",
+    "en": "Before you use From Pen to Glass, read how we process your information.",
+    "oversatt": ""
+  },
+  "app-admin-cron-status.warning.message.1494cbf069ca": {
+    "nb": "Bakgrunnsjobben har ikke kjørt de siste {CRON_STALE_MINUTES} minuttene. Sjekk at appen er publisert og jobben er satt opp i From Pen to Glass.",
+    "en": "The background job has not run in the last {CRON_STALE_MINUTES} minutes. Check that the app is published and the job is set up in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-projects-members-section.message.message.f5b9e1478f2b": {
+    "nb": "Databasen mangler fjerning av medlemmer. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database cannot remove members yet. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-projects-members-section.message.message.9bf4e1d2979e": {
+    "nb": "Databasen mangler endring av roller. Kontakt administratoren for å oppdatere From Pen to Glass.",
+    "en": "The database cannot change roles yet. Contact the administrator to update From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-projects-promotion-dialog.line-label.same.dcc7969186d9": {
+    "nb": "",
+    "en": "",
+    "oversatt": ""
+  },
+  "app-projects-backup.open-backup-file.message.23132bc02467": {
+    "nb": "Zip-filen er ikke en sikkerhetskopi fra From Pen to Glass.",
+    "en": "The zip file is not a backup from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-shell-schema-banner.schema-banner.p.93683cf75008": {
+    "nb": "Kontakt administratoren for å oppdatere From Pen to Glass til versjon",
+    "en": "Contact the administrator to update From Pen to Glass to version",
+    "oversatt": ""
+  },
+  "routes-admin.title.title.50274d57d4da": {
+    "nb": "Administrasjon – Pen to Glass",
+    "en": "Administration – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-admin.content.content.4a28312072cc": {
+    "nb": "Administrer brukere og tjenesten i From Pen to Glass.",
+    "en": "Manage users and the service in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-admin.content.content.2838c73c64a0": {
+    "nb": "Administrasjon – Pen to Glass",
+    "en": "Administration – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-admin.content.content.4a28312072cc.2": {
+    "nb": "Administrer brukere og tjenesten i From Pen to Glass.",
+    "en": "Manage users and the service in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-gruppe-workspace-id.title.title.73796e5fd612": {
+    "nb": "Arbeidsgruppe – Pen to Glass",
+    "en": "Workspace – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-gruppe-workspace-id.content.content.d76669de2282": {
+    "nb": "Arbeidsgruppe – Pen to Glass",
+    "en": "Workspace – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-index.title.title.d34b816fe818": {
+    "nb": "From Pen to Glass – Prosjekter",
+    "en": "From Pen to Glass – Projects",
+    "oversatt": ""
+  },
+  "routes-index.content.content.75201acaab45": {
+    "nb": "From Pen to Glass – fra manus til ferdig film.",
+    "en": "From Pen to Glass – from script to finished film.",
+    "oversatt": ""
+  },
+  "routes-index.content.content.d4c02791089e": {
+    "nb": "From Pen to Glass – Prosjekter",
+    "en": "From Pen to Glass – Projects",
+    "oversatt": ""
+  },
+  "routes-index.content.content.75201acaab45.2": {
+    "nb": "From Pen to Glass – fra manus til ferdig film.",
+    "en": "From Pen to Glass – from script to finished film.",
+    "oversatt": ""
+  },
+  "routes-invitasjon.title.title.15d2852cc7b6": {
+    "nb": "Invitasjon – Pen to Glass",
+    "en": "Invitation – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-invitasjon.content.content.2b66322361d6": {
+    "nb": "Godta en prosjektinvitasjon i From Pen to Glass.",
+    "en": "Accept a project invitation in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-invitasjon.content.content.167a3d5e4f4c": {
+    "nb": "Invitasjon – Pen to Glass",
+    "en": "Invitation – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-invitasjon.content.content.2b66322361d6.2": {
+    "nb": "Godta en prosjektinvitasjon i From Pen to Glass.",
+    "en": "Accept a project invitation in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-konto.title.title.0ad1dbde485e": {
+    "nb": "Min konto – Pen to Glass",
+    "en": "My account – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-konto.content.content.b01c4654387c": {
+    "nb": "Administrer kontoen, språk og AI-valg i From Pen to Glass.",
+    "en": "Manage your account, language and AI preferences in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-konto.content.content.f63ad82751ab": {
+    "nb": "Min konto – Pen to Glass",
+    "en": "My account – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-konto.content.content.b01c4654387c.2": {
+    "nb": "Administrer kontoen, språk og AI-valg i From Pen to Glass.",
+    "en": "Manage your account, language and AI preferences in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-m-token.title.title.5c1d0ff564a2": {
+    "nb": "Last opp – Pen to Glass",
+    "en": "Upload – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-m-token.content.content.e9b3848a0c50": {
+    "nb": "Last opp materiale til et prosjekt i From Pen to Glass.",
+    "en": "Upload material to an From Pen to Glass project.",
+    "oversatt": ""
+  },
+  "routes-m-token.content.content.0b31cbc4811d": {
+    "nb": "Last opp – Pen to Glass",
+    "en": "Upload – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-m-token.content.content.e9b3848a0c50.2": {
+    "nb": "Last opp materiale til et prosjekt i From Pen to Glass.",
+    "en": "Upload material to an From Pen to Glass project.",
+    "oversatt": ""
+  },
+  "routes-manusutforsker-project-id.title.title.2a8a985b7a16": {
+    "nb": "Manusutforskeren – Pen to Glass",
+    "en": "Script explorer – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-manusutforsker-project-id.content.content.4c3010f3f3fb": {
+    "nb": "Manusutforskeren – Pen to Glass",
+    "en": "Script explorer – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-manusutforsker-project-id.content.content.8a248c24cf99": {
+    "nb": "Søk i manuset og legg til notater i From Pen to Glass.",
+    "en": "Search the screenplay and add notes in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-personvern.title.title.c03602ed60a1": {
+    "nb": "Personvern – Pen to Glass",
+    "en": "Privacy – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-personvern.content.content.c2cd1c6e5143": {
+    "nb": "Les personvernerklæringen for From Pen to Glass.",
+    "en": "Read the privacy statement for From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-personvern.content.content.87755ed805a8": {
+    "nb": "Personvern – Pen to Glass",
+    "en": "Privacy – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-personvern.content.content.c2cd1c6e5143.2": {
+    "nb": "Les personvernerklæringen for From Pen to Glass.",
+    "en": "Read the privacy statement for From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-bibliotek.title.title.84464307719a": {
+    "nb": "Ressursbibliotek – Pen to Glass",
+    "en": "Asset library – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c": {
+    "nb": "Arbeid med karakterer og ressurser i From Pen to Glass.",
+    "en": "Work with characters and assets in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.ec20bfd8489a": {
+    "nb": "Ressursbibliotek – Pen to Glass",
+    "en": "Asset library – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-bibliotek.content.content.3f4837976c3c.2": {
+    "nb": "Arbeid med karakterer og ressurser i From Pen to Glass.",
+    "en": "Work with characters and assets in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-index.title.title.bc4dd593f1d1": {
+    "nb": "Prosjektoversikt – Pen to Glass",
+    "en": "Project overview – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-index.content.content.6d70b69e5f67": {
+    "nb": "Se filmprosjektets produksjoner i From Pen to Glass.",
+    "en": "View your film project productions in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-index.content.content.de4fc568159e": {
+    "nb": "Prosjektoversikt – Pen to Glass",
+    "en": "Project overview – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-index.content.content.6d70b69e5f67.2": {
+    "nb": "Se filmprosjektets produksjoner i From Pen to Glass.",
+    "en": "View your film project productions in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-manus.title.title.fd507ce55a58": {
+    "nb": "Manus – Pen to Glass",
+    "en": "Script – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-manus.content.content.6918ed5f9558": {
+    "nb": "Rediger filmmanuset og scenene i From Pen to Glass.",
+    "en": "Edit your screenplay and scenes in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-manus.content.content.a5f21f0482ff": {
+    "nb": "Manus – Pen to Glass",
+    "en": "Script – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-manus.content.content.6918ed5f9558.2": {
+    "nb": "Rediger filmmanuset og scenene i From Pen to Glass.",
+    "en": "Edit your screenplay and scenes in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-montering.title.title.2bb3f430d9e2": {
+    "nb": "Montering – Pen to Glass",
+    "en": "Assembly – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab": {
+    "nb": "Monter animatic, lyd og film i From Pen to Glass.",
+    "en": "Assemble animatic, sound and film in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-montering.content.content.d52ffc12ab1b": {
+    "nb": "Montering – Pen to Glass",
+    "en": "Assembly – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-montering.content.content.f41e7fb606ab.2": {
+    "nb": "Monter animatic, lyd og film i From Pen to Glass.",
+    "en": "Assemble animatic, sound and film in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-scene.title.title.e56d614cb23c": {
+    "nb": "Sceneeditor – Pen to Glass",
+    "en": "Scene editor – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-scene.content.content.65f619722830": {
+    "nb": "Rediger scenekomposisjoner og animatic i From Pen to Glass.",
+    "en": "Edit scene compositions and animatic in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-scene.content.content.867bd9fdb846": {
+    "nb": "Sceneeditor – Pen to Glass",
+    "en": "Scene editor – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-scene.content.content.65f619722830.2": {
+    "nb": "Rediger scenekomposisjoner og animatic i From Pen to Glass.",
+    "en": "Edit scene compositions and animatic in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-storylab.content.content.01bee122f398": {
+    "nb": "Karakterarbeid, scenelaboratorium og dialoganalyse i From Pen to Glass.",
+    "en": "Character work, scene laboratory and dialogue analysis in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-storylab.content.content.bb77d3e1ff88": {
+    "nb": "Utforsk karakterer, analyser scener og prøv dialogvarianter i From Pen to Glass.",
+    "en": "Explore characters, analyze scenes and try dialogue variants in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id.title.title.d35e8c26f18a": {
+    "nb": "Prosjekt – Pen to Glass",
+    "en": "Project – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id.content.content.323705133be5": {
+    "nb": "Arbeidsflater for filmprosjektet i From Pen to Glass.",
+    "en": "Workspaces for your film project in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id.content.content.05f369d5fe5c": {
+    "nb": "Prosjekt – Pen to Glass",
+    "en": "Project – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id.content.content.323705133be5.2": {
+    "nb": "Arbeidsflater for filmprosjektet i From Pen to Glass.",
+    "en": "Workspaces for your film project in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-utgivelse.title.title.a5e29f16a42d": {
+    "nb": "Utgivelse – Pen to Glass",
+    "en": "Release – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a": {
+    "nb": "Arbeid med plakater og utgivelse i From Pen to Glass.",
+    "en": "Work with posters and release in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.548965c72889": {
+    "nb": "Utgivelse – Pen to Glass",
+    "en": "Release – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-prosjekt-project-id-utgivelse.content.content.5b4e0564c64a.2": {
+    "nb": "Arbeid med plakater og utgivelse i From Pen to Glass.",
+    "en": "Work with posters and release in From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-se-token.title.title.daa9a7b91a74": {
+    "nb": "Film – Pen to Glass",
+    "en": "Film – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-se-token.content.content.0c933cbe6ab9": {
+    "nb": "Se en film som er delt fra From Pen to Glass.",
+    "en": "Watch a film shared from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "routes-se-token.content.content.450bbeb07eba": {
+    "nb": "Film – Pen to Glass",
+    "en": "Film – Pen to Glass",
+    "oversatt": ""
+  },
+  "routes-se-token.content.content.0c933cbe6ab9.2": {
+    "nb": "Se en film som er delt fra From Pen to Glass.",
+    "en": "Watch a film shared from From Pen to Glass.",
+    "oversatt": ""
+  },
+  "app-assembly-use-film-language.language-name.message.666421b951b7": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "app-script-remove-translations-dialog.name.message.15d1b5cf63e3": {
+    "nb": null,
+    "en": null,
+    "oversatt": ""
+  },
+  "adapters-ai-video-functions.database-outdated-queue": {
+    "nb": "Databasen er ikke oppdatert for AI-video i kø. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"}).",
+    "en": "The database is not up to date for AI video in the queue. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).",
+    "oversatt": ""
+  },
+  "adapters-ai-video-functions.database-outdated": {
+    "nb": "Databasen er ikke oppdatert for AI-video. Kontakt administratoren for å oppdatere From Pen to Glass.\"0025\" : \"0024\"}).",
+    "en": "The database is not up to date for AI video. Contact the administrator to update From Pen to Glass.\"0025\" : \"0024\"}).",
+    "oversatt": ""
+  },
+  "routes-prosjekt-rigg.head.title": {
+    "nb": "Rigg – Pen to Glass",
+    "en": "Rig – Pen to Glass",
+    "oversatt": ""
+  },
+  "auth.password-reset.title": {
+    "nb": "Tilbakestill passord | Pen to Glass",
+    "en": "Reset password | Pen to Glass",
+    "oversatt": ""
+  },
+  "auth.password-reset.description": {
+    "nb": "Velg et nytt passord for From Pen to Glass med lenken fra e-posten din.",
+    "en": "Choose a new From Pen to Glass password using the link from your email.",
+    "oversatt": ""
+  },
+  "time.just-now": {
+    "nb": "nå nettopp",
+    "en": "just now",
+    "oversatt": ""
+  },
+  "time.minutes-ago": {
+    "nb": "{n} min siden",
+    "en": "{n} min ago",
+    "oversatt": ""
+  },
+  "time.hours-ago": {
+    "nb": "{n} t siden",
+    "en": "{n} h ago",
+    "oversatt": ""
+  },
+  "time.weekday-at": {
+    "nb": "{weekday} kl. {time}",
+    "en": "{weekday} at {time}",
+    "oversatt": ""
+  },
+  "time.exact": {
+    "nb": "{weekday} {date} kl. {time}",
+    "en": "{weekday} {date} at {time}",
+    "oversatt": ""
+  },
+  "b097.last-changed.column": {
+    "nb": "Sist endret",
+    "en": "Last changed",
+    "oversatt": ""
+  },
+  "b097.last-changed.tip": {
+    "nb": "Sist endret {time}",
+    "en": "Last changed {time}",
+    "oversatt": ""
+  },
+  "b097.last-changed.tip-by": {
+    "nb": "Sist endret {time} av {name}",
+    "en": "Last changed {time} by {name}",
+    "oversatt": ""
+  },
+  "b097.last-changed.tip-created": {
+    "nb": "Opprettet {time} (ingen lagrede endringer siden)",
+    "en": "Created {time} (no saved changes since)",
+    "oversatt": ""
+  },
+  "b097.last-changed.aria": {
+    "nb": "Sist endret {when}. {tip}",
+    "en": "Last changed {when}. {tip}",
+    "oversatt": ""
+  },
+  "b097.country.label": {
+    "nb": "Land",
+    "en": "Country",
+    "oversatt": ""
+  },
+  "b097.country.choose": {
+    "nb": "Velg land …",
+    "en": "Choose country …",
+    "oversatt": ""
+  },
+  "b097.country.search": {
+    "nb": "Søk etter land",
+    "en": "Search countries",
+    "oversatt": ""
+  },
+  "b097.country.none": {
+    "nb": "Fant ingen land",
+    "en": "No country found",
+    "oversatt": ""
+  },
+  "b097.country.required": {
+    "nb": "Velg landet ditt.",
+    "en": "Choose your country.",
+    "oversatt": ""
+  },
+  "b097.country.why": {
+    "nb": "Brukes til å vise tid og dato slik du er vant til, og til anonym statistikk.",
+    "en": "Used to show times and dates the way you are used to, and for anonymous statistics.",
+    "oversatt": ""
+  },
+  "b097.country.gate-title": {
+    "nb": "Hvilket land er du i?",
+    "en": "Which country are you in?",
+    "oversatt": ""
+  },
+  "b097.country.gate-text": {
+    "nb": "Vi trenger landet ditt for å vise tid og dato riktig. Det kan endres på kontosiden senere. Ingenting annet endres.",
+    "en": "We need your country to show times and dates correctly. You can change it on your account page later. Nothing else is changed.",
+    "oversatt": ""
+  },
+  "b097.country.gate-save": {
+    "nb": "Lagre og fortsett",
+    "en": "Save and continue",
+    "oversatt": ""
+  },
+  "b097.region.title": {
+    "nb": "Land, klokke og dato",
+    "en": "Country, clock and date",
+    "oversatt": ""
+  },
+  "b097.region.clock": {
+    "nb": "Klokke",
+    "en": "Clock",
+    "oversatt": ""
+  },
+  "b097.region.date-format": {
+    "nb": "Datoformat",
+    "en": "Date format",
+    "oversatt": ""
+  },
+  "b097.region.as-country": {
+    "nb": "Som landet",
+    "en": "As the country",
+    "oversatt": ""
+  },
+  "b097.region.clock-24": {
+    "nb": "24 timer",
+    "en": "24-hour",
+    "oversatt": ""
+  },
+  "b097.region.clock-12": {
+    "nb": "12 timer",
+    "en": "12-hour",
+    "oversatt": ""
+  },
+  "b097.region.preview": {
+    "nb": "Slik vises tider og datoer:",
+    "en": "This is how times and dates are shown:",
+    "oversatt": ""
+  },
+  "b097.region.saved": {
+    "nb": "Landet er lagret.",
+    "en": "Country saved.",
+    "oversatt": ""
+  },
+  "b097.region.unavailable": {
+    "nb": "Land kan velges når databasen er oppdatert.",
+    "en": "The country can be chosen once the database has been updated.",
+    "oversatt": ""
+  },
+  "b097.admin.title": {
+    "nb": "Brukere per land",
+    "en": "Users per country",
+    "oversatt": ""
+  },
+  "b097.admin.note": {
+    "nb": "Bare antall – ingen navn eller e-postadresser.",
+    "en": "Counts only – no names or email addresses.",
+    "oversatt": ""
+  },
+  "b097.admin.users": {
+    "nb": "Brukere",
+    "en": "Users",
+    "oversatt": ""
+  },
+  "b097.admin.total": {
+    "nb": "Totalt",
+    "en": "Total",
+    "oversatt": ""
+  },
+  "b097.admin.no-country": {
+    "nb": "Ikke valgt ennå",
+    "en": "Not chosen yet",
+    "oversatt": ""
+  },
+  "b097.admin.loading": {
+    "nb": "Henter …",
+    "en": "Loading …",
+    "oversatt": ""
+  },
+  "b097.admin.unavailable": {
+    "nb": "Oversikten kommer når databasen er oppdatert.",
+    "en": "The overview will be available once the database has been updated.",
+    "oversatt": ""
+  },
+  "b097.privacy.country": {
+    "nb": "Land: landet du velger ved registrering eller på kontosiden (en landkode, for eksempel NO). Det brukes til å vise tid og dato slik du er vant til (klokke og datoformat), og til anonym statistikk over hvor brukerne er. Administrator ser bare antall brukere per land, aldri hvem. Andre prosjektmedlemmer ser ikke landet ditt. Du kan endre det på kontosiden når som helst.",
+    "en": "Country: the country you choose when signing up or on your account page (a country code, for example NO). It is used to show times and dates the way you are used to (clock and date format), and for anonymous statistics about where users are. The administrator only sees the number of users per country, never who. Other project members cannot see your country. You can change it on your account page at any time.",
+    "oversatt": ""
+  },
+  "b097.sound-kind.ask": {
+    "nb": "Hva slags lyd?",
+    "en": "What kind of sound?",
+    "oversatt": ""
+  },
+  "b097.sound-kind.sfx": {
+    "nb": "Effekt",
+    "en": "Effect",
+    "oversatt": ""
+  },
+  "b097.sound-kind.ambience": {
+    "nb": "Atmosfære",
+    "en": "Ambience",
+    "oversatt": ""
+  },
+  "b097.sound-kind.music": {
+    "nb": "Musikk",
+    "en": "Music",
+    "oversatt": ""
+  },
+  "b098.command.font-mismatch": {
+    "nb": "Fontdata passer bare til fontressurser, og en fontressurs må ha en fontpakke.",
+    "en": "Font data only fits font assets, and a font asset needs a font package.",
+    "oversatt": ""
+  },
+  "b098.global-kind.font": {
+    "nb": "Font",
+    "en": "Font",
+    "oversatt": ""
+  },
+  "b098.add.error.upload": {
+    "nb": "Fontfilen kunne ikke lagres. Prøv igjen.",
+    "en": "The font file could not be saved. Please try again.",
+    "oversatt": ""
+  },
+  "b098.add.undo-label": {
+    "nb": "Legg til fonten «{family}»",
+    "en": "Add the font “{family}”",
+    "oversatt": ""
+  },
+  "b098.add.variant-name": {
+    "nb": "Standard",
+    "en": "Standard",
+    "oversatt": ""
+  },
+  "b098.category.serif": {
+    "nb": "Serif",
+    "en": "Serif",
+    "oversatt": ""
+  },
+  "b098.category.sans": {
+    "nb": "Sans-serif",
+    "en": "Sans serif",
+    "oversatt": ""
+  },
+  "b098.category.display": {
+    "nb": "Display",
+    "en": "Display",
+    "oversatt": ""
+  },
+  "b098.category.handwriting": {
+    "nb": "Håndskrift",
+    "en": "Handwriting",
+    "oversatt": ""
+  },
+  "b098.category.mono": {
+    "nb": "Monospace",
+    "en": "Monospace",
+    "oversatt": ""
+  },
+  "b098.variant.regular": {
+    "nb": "{weight}",
+    "en": "{weight}",
+    "oversatt": ""
+  },
+  "b098.variant.italic": {
+    "nb": "{weight} kursiv",
+    "en": "{weight} italic",
+    "oversatt": ""
+  },
+  "b098.sample.default": {
+    "nb": "Blåbærsyltetøy og ærlig øl på Dovre",
+    "en": "Blåbærsyltetøy og ærlig øl på Dovre",
+    "oversatt": ""
+  },
+  "b098.unavailable": {
+    "nb": "Google Fonts-katalogen er ikke tilgjengelig nå. Fonter som allerede er lagt til, virker som før.",
+    "en": "The Google Fonts catalogue is not available right now. Fonts you have already added work as before.",
+    "oversatt": ""
+  },
+  "b098.dialog.title": {
+    "nb": "Legg til font",
+    "en": "Add font",
+    "oversatt": ""
+  },
+  "b098.dialog.description": {
+    "nb": "Søk i Google Fonts. Fonten lagres i prosjektet og virker også uten nett. Alt hentes via vår server, aldri direkte fra Google.",
+    "en": "Search Google Fonts. The font is saved in the project and also works offline. Everything is fetched via our server, never directly from Google.",
+    "oversatt": ""
+  },
+  "b098.search.label": {
+    "nb": "Søk etter navn",
+    "en": "Search by name",
+    "oversatt": ""
+  },
+  "b098.search.placeholder": {
+    "nb": "For eksempel Lato, eller lim inn et navn",
+    "en": "For example Lato, or paste a name",
+    "oversatt": ""
+  },
+  "b098.filter.category": {
+    "nb": "Kategori",
+    "en": "Category",
+    "oversatt": ""
+  },
+  "b098.filter.subset": {
+    "nb": "Skriftsystem",
+    "en": "Script",
+    "oversatt": ""
+  },
+  "b098.filter.all": {
+    "nb": "Alle",
+    "en": "All",
+    "oversatt": ""
+  },
+  "b098.open-google": {
+    "nb": "Åpne Google Fonts",
+    "en": "Open Google Fonts",
+    "oversatt": ""
+  },
+  "b098.results.label": {
+    "nb": "Treff",
+    "en": "Results",
+    "oversatt": ""
+  },
+  "b098.loading": {
+    "nb": "Henter katalogen …",
+    "en": "Loading the catalogue …",
+    "oversatt": ""
+  },
+  "b098.results.none": {
+    "nb": "Ingen fonter passer søket.",
+    "en": "No fonts match the search.",
+    "oversatt": ""
+  },
+  "b098.sample.label": {
+    "nb": "Prøvetekst",
+    "en": "Sample text",
+    "oversatt": ""
+  },
+  "b098.variants.label": {
+    "nb": "Vekter og stiler (høyst {max})",
+    "en": "Weights and styles (at most {max})",
+    "oversatt": ""
+  },
+  "b098.license": {
+    "nb": "Lisens: {license}",
+    "en": "Licence: {license}",
+    "oversatt": ""
+  },
+  "b098.license.notice": {
+    "nb": "Denne fonten har Ubuntu Font Licence (UFL), ikke OFL eller Apache. Den kan brukes, men les lisensen før film eller plakat gis ut.",
+    "en": "This font uses the Ubuntu Font Licence (UFL), not OFL or Apache. It can be used, but read the licence before releasing a film or poster.",
+    "oversatt": ""
+  },
+  "b098.pick-hint": {
+    "nb": "Velg en font i listen for å se den.",
+    "en": "Choose a font in the list to see it.",
+    "oversatt": ""
+  },
+  "b098.cancel": {
+    "nb": "Avbryt",
+    "en": "Cancel",
+    "oversatt": ""
+  },
+  "b098.adding": {
+    "nb": "Legger til …",
+    "en": "Adding …",
+    "oversatt": ""
+  },
+  "b098.add": {
+    "nb": "Legg til",
+    "en": "Add",
+    "oversatt": ""
+  },
+  "b098.picker.project-fonts": {
+    "nb": "Fonter i prosjektet",
+    "en": "Fonts in the project",
+    "oversatt": ""
+  },
+  "b098.picker.removed": {
+    "nb": "{family} (fjernet – reservefont brukes)",
+    "en": "{family} (removed – fallback font used)",
+    "oversatt": ""
+  },
+  "b098.picker.add": {
+    "nb": "Legg til font …",
+    "en": "Add font …",
+    "oversatt": ""
+  },
+  "b098.kind-plural.font": {
+    "nb": "Fonter",
+    "en": "Fonts",
+    "oversatt": ""
+  },
+  "b109.auth.closed": {
+    "nb": "Tjenesten tar ikke imot nye brukere akkurat nå.",
+    "en": "The service is not accepting new users right now.",
+    "oversatt": ""
+  },
+  "b109.admin.title": {
+    "nb": "Nye registreringer",
+    "en": "New sign-ups",
+    "oversatt": ""
+  },
+  "b109.admin.note": {
+    "nb": "Når registreringen er stengt, kan ingen lage nye kontoer. Eksisterende brukere logger inn som før, og e-poster med en åpen invitasjon kan fortsatt opprette konto.",
+    "en": "When sign-ups are closed, nobody can create new accounts. Existing users sign in as before, and email addresses with an open invitation can still create an account.",
+    "oversatt": ""
+  },
+  "b109.admin.label": {
+    "nb": "Nye registreringer:",
+    "en": "New sign-ups:",
+    "oversatt": ""
+  },
+  "b109.admin.open": {
+    "nb": "Åpen",
+    "en": "Open",
+    "oversatt": ""
+  },
+  "b109.admin.closed": {
+    "nb": "Stengt",
+    "en": "Closed",
+    "oversatt": ""
+  },
+  "b109.admin.message": {
+    "nb": "Melding på innloggingssiden når registreringen er stengt (valgfri)",
+    "en": "Message on the sign-in page when sign-ups are closed (optional)",
+    "oversatt": ""
+  },
+  "b109.admin.save-message": {
+    "nb": "Lagre meldingen",
+    "en": "Save message",
+    "oversatt": ""
+  },
+  "b109.admin.changed": {
+    "nb": "Sist endret {when} av {who}.",
+    "en": "Last changed {when} by {who}.",
+    "oversatt": ""
+  },
+  "b109.admin.never-changed": {
+    "nb": "Ikke endret ennå (åpen som standard).",
+    "en": "Not changed yet (open by default).",
+    "oversatt": ""
+  },
+  "b109.admin.unknown-user": {
+    "nb": "ukjent bruker",
+    "en": "unknown user",
+    "oversatt": ""
+  },
+  "b109.admin.loading": {
+    "nb": "Henter …",
+    "en": "Loading …",
+    "oversatt": ""
+  },
+  "b109.admin.unavailable": {
+    "nb": "Innstillingen er ikke tilgjengelig ennå.",
+    "en": "The setting is not available yet.",
+    "oversatt": ""
+  },
+  "b109.admin.failed": {
+    "nb": "Endringen ble ikke lagret. Prøv igjen.",
+    "en": "The change was not saved. Try again.",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-close-title": {
+    "nb": "Stenge for nye registreringer?",
+    "en": "Close new sign-ups?",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-close": {
+    "nb": "Ingen kan lage nye kontoer før du åpner igjen. Eksisterende brukere og inviterte påvirkes ikke.",
+    "en": "Nobody can create new accounts until you open again. Existing users and invited people are not affected.",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-close-ok": {
+    "nb": "Steng",
+    "en": "Close",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-open-title": {
+    "nb": "Åpne for nye registreringer?",
+    "en": "Open new sign-ups?",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-open": {
+    "nb": "Alle kan lage en ny konto igjen.",
+    "en": "Anyone can create a new account again.",
+    "oversatt": ""
+  },
+  "b109.admin.confirm-open-ok": {
+    "nb": "Åpne",
+    "en": "Open",
+    "oversatt": ""
+  },
+  "b109.admin.cancel": {
+    "nb": "Avbryt",
+    "en": "Cancel",
+    "oversatt": ""
+  },
+  "b110.captcha.failed": {
+    "nb": "Vi fikk ikke bekreftet at du ikke er en robot. Prøv igjen.",
+    "en": "We could not confirm that you are not a robot. Please try again.",
+    "oversatt": ""
+  },
+  "b110.captcha.unavailable": {
+    "nb": "Robotkontrollen svarer ikke akkurat nå. Prøv igjen om litt.",
+    "en": "The robot check is not responding right now. Please try again shortly.",
+    "oversatt": ""
+  },
+  "b110.captcha.retry": {
+    "nb": "Prøv igjen",
+    "en": "Try again",
+    "oversatt": ""
+  },
+  "b110.captcha.confirm": {
+    "nb": "Bekreft at du ikke er en robot i boksen under. Handlingen fortsetter av seg selv.",
+    "en": "Confirm that you are not a robot in the box below. The action continues by itself.",
+    "oversatt": ""
+  },
+  "b110.admin.on": {
+    "nb": "Robotkontroll (Cloudflare Turnstile) er på.",
+    "en": "Robot check (Cloudflare Turnstile) is on.",
+    "oversatt": ""
+  },
+  "b110.admin.off-title": {
+    "nb": "Robotkontroll er av.",
+    "en": "Robot check is off.",
+    "oversatt": ""
+  },
+  "b110.admin.off": {
+    "nb": "Nøklene for Cloudflare Turnstile (TURNSTILE_SITE_KEY og TURNSTILE_SECRET_KEY) mangler på serveren. Registrering, innloggingslenke og «Glemt passord» virker, men uten CAPTCHA.",
+    "en": "The Cloudflare Turnstile keys (TURNSTILE_SITE_KEY and TURNSTILE_SECRET_KEY) are missing on the server. Sign-up, sign-in links and “Forgot password” work, but without CAPTCHA.",
+    "oversatt": ""
+  },
+  "b110.privacy.turnstile": {
+    "nb": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f).",
+    "en": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f)).",
+    "oversatt": ""
+  }
+}

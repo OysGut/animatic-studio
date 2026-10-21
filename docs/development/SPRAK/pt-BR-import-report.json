@@ -2,23 +2,7 @@
   "code": "pt-BR",
   "files": 18,
   "imported": 10400,
-  "errors": [
-    {
-      "file": "pt-BR_del_05_av_18.json",
-      "key": "app-dialogue-note-flag-control.when.new-date-iso-to-locale-string.160f3471de16",
-      "error": "Unknown key"
-    },
-    {
-      "file": "pt-BR_del_07_av_18.json",
-      "key": "app-library-reupload-dialog.posters",
-      "error": "Missing plural form many"
-    },
-    {
-      "file": "pt-BR_del_08_av_18.json",
-      "key": "app-projects-note-flags-overview.body.new-date-f-created-at-to-locale-date-string.6fd9bf876cd3",
-      "error": "Unknown key"
-    }
-  ],
+  "errors": [],
   "stale": [
     {
       "file": "pt-BR_del_01_av_18.json",
