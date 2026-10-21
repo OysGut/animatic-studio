@@ -24,7 +24,7 @@ import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type React
 import { BeyondEndNotice } from "./BeyondEndNotice";
 import { ContentSyncFlag } from "@/app/assembly/ContentSyncFlag";
 import { useContentSync } from "@/app/assembly/use-content-sync";
-import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
+import { DEFAULT_COMPOSITION, compositionDuration, defaultLayerFields, compositionOfVariant, formatHeading, sceneNumberOf, framesToSeconds, layerVersion, layerVersions, layerFieldsOf, layersOf, newMotionPath, pathPointsFromDrawing, isSharedIn, newId, ownCopyCommands, occurrenceKind, orderedOccurrences, audioClipFieldsOf, audioVersion, filmClips, sceneWindowAudio, versionImagePath, type Composition, type ProjectState, sceneContinuityVariant, previousSceneCamera, sourceAt, carryTargets, scriptSeekTarget } from "@/core";
 import { NoteFlagControl } from "@/app/dialogue/NoteFlagControl";
 import { publishSceneBookmark } from "@/app/shell/bookmark-context";
 import { canEdit, useMembers, useProjectState } from "@/app/project/use-project";

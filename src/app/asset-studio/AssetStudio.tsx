@@ -12,7 +12,7 @@
  */
 import { Pause, Play, Redo2, Undo2, Unlock, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
+import { applyCommand, assetAudioGroups, assetLineIds, compositionDuration, draftCommand, draftConflicts, filmClips, framesToSeconds, imageSegmentsOf, layerFieldsOf, layerVersions, rebaseDraft, removeImageSegment, replaceImageSegment, insertImageSegment, secondsToFrames, setImageSegmentTransition, variantsOf, versionsOf, versionImagePath, type Composition, type FilmAudioItem, type LayerFields, type ProjectState } from "@/core";
 import {
   AlertDialog,
   AlertDialogAction,
