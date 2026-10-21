@@ -24,7 +24,7 @@ export interface PrintInput {
 export interface Rect { x: number; y: number; width: number; height: number }
 export interface Placement {
   item: PrintItem; rect: Rect; source: Rect; row: number; column: number;
-  rows: number; columns: number; effectiveDpi?: number;
+  rows: number; columns: number; effectiveDpi?: number | undefined;
   info: { lines: string[]; rect: Rect }; measurements: readonly MeasureSet[];
   arrowAngle: number; registration: Point[];
 }
@@ -32,7 +32,7 @@ export interface Sheet { kind: 'figures' | 'overview'; placements: Placement[]; 
 export interface Tick { mm: number; major: boolean; label?: string }
 export interface PrintPlan {
   width: number; height: number; sheets: Sheet[]; content: Rect;
-  calibration?: { ticks: Tick[]; lengthMm: number }; instruction: string; language?: string;
+  calibration?: { ticks: Tick[]; lengthMm: number } | undefined; instruction: string; language?: string | undefined;
 }
 const papers = { A4: [210,297], A3: [297,420], A5: [148,210], Letter: [215.9,279.4], Legal: [215.9,355.6] } as const;
 const positive = (v: number) => { if (!Number.isFinite(v) || v <= 0) throw new RangeError(t('print-pdf.invalid')); return v; };
@@ -87,8 +87,8 @@ export function planPrint(input: PrintInput): PrintPlan {
       const rect={ x:content.x+x,y:content.y+y,width:w,height:h };
       const registration: Point[]=[];
       // Crosses at corners of each shared 10 mm overlap strip.
-      if (columns>1) for (const xx of [column>0 ? 0 : w-10, column>0 ? 10 : w]) for (const yy of [0,h]) registration.push({x:rect.x+xx,y:rect.y+yy});
-      if (rows>1) for (const yy of [row>0 ? 0 : h-10,row>0 ? 10 : h]) for (const xx of [0,w]) registration.push({x:rect.x+xx,y:rect.y+yy});
+      if (columns>1) for (const xx of [...(column>0 ? [0,10] : []),...(column<columns-1 ? [w-10,w] : [])]) for (const yy of [0,h]) registration.push({x:rect.x+xx,y:rect.y+yy});
+      if (rows>1) for (const yy of [...(row>0 ? [0,10] : []),...(row<rows-1 ? [h-10,h] : [])]) for (const xx of [0,w]) registration.push({x:rect.x+xx,y:rect.y+yy});
       shelf!.placements.push({ item,rect,source:{x:sx,y:sy,width:w,height:h},row,column,rows,columns,effectiveDpi:dpi,info:{lines,rect:{x:rect.x,y:rect.y+h+3,width:w,height:infoHeight}},measurements: input.technicalReference ? item.measureSets ?? [] : [], arrowAngle:-(item.rotationDeg ?? 0),registration });
       x+=w+5; shelfHeight=Math.max(shelfHeight,blockH);
       if (rows*columns>1) shelf=undefined;
