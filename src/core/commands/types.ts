@@ -209,6 +209,8 @@ export interface AssetMedia {
   readonly sha256: string;
   /** Lengde i millisekunder (bare lydfiler). */
   readonly durationMs?: number | null;
+  /** Avledede filer (arbeidskopi, proxy, miniatyr, rå TIFF) for bildeversjoner (B-105a, migrasjon 0078). */
+  readonly derivedFiles?: import("../library/image-ingest").DerivedImageFiles;
 }
 
 export interface NewBlock {
@@ -817,6 +819,15 @@ export type Command = import("../animation/rig-commands").RigCommand
   | { readonly type: "UndoCreateAssets"; readonly assetIds: readonly AssetId[] }
   | { readonly type: "UndoCreateAssetVariant"; readonly variantId: AssetVariantId }
   | { readonly type: "UndoAddAssetVersion"; readonly versionId: AssetVersionId }
+  | {
+      /**
+       * Setter eller erstatter de avledede filene til en bildeversjon (B-105a): brukes av opplastingen og
+       * av bakgrunnsoppgraderingen av eldre bilder. null fjerner merkingen (bare i angre).
+       */
+      readonly type: "SetAssetVersionDerived";
+      readonly versionId: AssetVersionId;
+      readonly derived: import("../library/image-ingest").DerivedImageFiles | null;
+    }
   // ---------- Notater i manus (DEC-0031) ----------
   | {
       readonly type: "AddAnnotations";
