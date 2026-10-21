@@ -10,6 +10,7 @@
  * Avslutter med kode 1 hvis eksporten ikke gir en videofil > 0 byte.
  */
 import { chromium } from "playwright";
+import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { readFileSync, statSync } from "node:fs";
 
 const [
@@ -115,7 +116,7 @@ await ctx.route("**/*", async (route) => {
     return route.fulfill({ status: 200, contentType: "image/svg+xml", headers: cors, body: svg });
   }
   const table = path.replace("/rest/v1/", "");
-  if (table === "schema_version") return json([{ version: 26 }]);
+  if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
   if (table === "projects") {
     if (single) return json(project);
     return json([{ ...project, project_members: [{ role: "owner", user_id: USER.id }] }]);
