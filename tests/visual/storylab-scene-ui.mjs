@@ -2,7 +2,7 @@
  * Nettlesertest SL4: grupper, kunnskapsgrenser, målrettet regi, analyse, forklaring,
  * forgrening, stopp, gjenåpning, åtte sekvensielle kall, pause og engelsk visning.
  * Oppsett og seroval-dekoding er kopiert fra storylab-ui.mjs:
- * Supabase og serverfunksjonene mockes (ingenting lagres eller betales), også generateText med faste svar.
+ * Supabase og serverfunksjonene mockes (ingenting lagres eller betales), også generateStoryText med faste svar.
  *   ENV_FILE=…/.env node storylab-scene-ui.mjs <baseUrl> <fixture.json> [utmappe]
  */
 import { chromium } from "playwright";
@@ -141,14 +141,16 @@ async function mock(ctx) {
     }
     if (/projectAiProviders/.test(name)) return json({ providers: [], missing: false });
     if (/listTextChoices/.test(name)) return json({ providers: [], missing: false });
-    if (/generateText/.test(name)) {
-      S.gen.push({ task: d.task, system: d.system ?? "", messages: d.messages }); S.active++; S.maxActive = Math.max(S.maxActive, S.active);
+    // B-105a: promptene bygges på serveren; klienten sender bare oppgavetype og parametere (request).
+    if (/estimateStoryPrompt/.test(name)) return json({ ok: true, chars: 1000 });
+    if (/generateStoryText/.test(name)) {
+      S.gen.push({ task: d.task, request: d.request ?? {}, system: d.system ?? "", messages: d.messages, body }); S.active++; S.maxActive = Math.max(S.maxActive, S.active);
       if (S.delay) await new Promise((resolve) => setTimeout(resolve, S.delay));
       const text =
         d.task === "storylab_profile"
           ? PROFILE_JSON
           : d.task === "storylab_analysis"
-            ? (String(d.system).includes("Line to assess") || String(d.system).includes("supplied line")
+            ? (d.request?.kind === "lineCheck"
               ? JSON.stringify({ verdict: "no", reasons: [{ text: "Replikken passer ikke", evidence: ["profile.speech.level", "knowledge"] }], rewrite: "Kanskje vi skal vente?" })
               : JSON.stringify({ points: ["credibility", "motivation", "conflict", "subtext", "relationships", "emotional_arc", "knowledge", "consequence", "rhythm", "weaknesses"].map((aspect) => ({ aspect, finding: "Et konkret funn", evidence: [SCENE_BLOCKS.find((b) => b.kind === "dialogue").id], suggestion: "Et forslag", uncertain: aspect === "knowledge" })) }))
             : `Svar ${S.gen.length}`;
@@ -252,8 +254,8 @@ await run("sceneanalyse, improvisasjon, varianter og replikksjekk", async (page)
   await waitUntil(() => [...S.sessions.values()].some((s) => s.kind === "scene_improv" && s.turns.filter((t) => t.kind === "line").length === 8 && s.status === "paused"), "improvisasjon");
   const improv = [...S.sessions.values()].find((s) => s.kind === "scene_improv");
   check(improv.context.mode === "improv" && improv.context.sceneId === SCENE_ID, "scene_improv lagrer scene og gruppemodus");
-  const anneCalls = S.gen.filter((g) => g.task === "storylab_group" && g.system.startsWith(`You are ${ANNE.name},`));
-  check(anneCalls.length > 0 && anneCalls.every((g) => !g.system.includes(SECRET) && !JSON.stringify(g.messages).includes(SECRET)), "Bestemor mottar ikke Majas hemmelighet");
+  const anneCalls = S.gen.filter((g) => g.task === "storylab_group" && g.request.assetId === ANNE.id);
+  check(anneCalls.length > 0 && anneCalls.every((g) => !g.system && !g.body.includes(SECRET)), "Bestemor-kallet har ingen systemtekst og ingen hemmelighet");
   await page.getByTestId("storylab-variants").click();
   for (const [id, text] of [["a", "Mer konflikt"], ["b", "Bestemor skjuler sykdommen bedre"], ["c", "Maja tar styringen"]]) await page.getByTestId(`storylab-variant-${id}`).fill(text);
   const calls = S.gen.length; await confirm(page);
@@ -282,7 +284,7 @@ await run("engelsk scenelab", async (page) => {
   check(await page.getByRole("button", { name: "Analyze scene …", exact: true }).count() === 1, "engelsk analysehandling");
   await page.getByTestId("storylab-analyze").click(); await confirm(page);
   await page.getByTestId("storylab-analysis-card").first().waitFor();
-  check(S.gen.at(-1).system.includes("English"), "analysen følger engelsk grensesnitt");
+  check(S.gen.at(-1).request.language === "en" && !S.gen.at(-1).system, "analysen følger engelsk grensesnitt");
 }, { lang: "en", path: `?scene=${SCENE_ID}` });
 await browser.close();
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);

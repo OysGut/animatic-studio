@@ -31,14 +31,14 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 
 | Modul | Navn | Krav | P0 | Implementert | Verifisert |
 |---|---|---|---|---|---|
-| CORE | Project Core | 247 | 59 | 245 | 146 |
+| CORE | Project Core | 247 | 59 | 247 | 148 |
 | SCRIPT | Screenplay Engine | 138 | 32 | 138 | 136 |
 | TIMELINE | Timeline & Assembly Engine | 110 | 29 | 109 | 109 |
-| LIBRARY | Resource Library | 97 | 10 | 96 | 87 |
+| LIBRARY | Resource Library | 97 | 10 | 97 | 87 |
 | CONTINUITY | Continuity Engine | 39 | 11 | 39 | 39 |
-| COMPOSE | 2D Composition Engine | 114 | 14 | 97 | 96 |
+| COMPOSE | 2D Composition Engine | 116 | 14 | 101 | 100 |
 | CAMERA | Camera & Motion Engine | 32 | 2 | 32 | 32 |
-| AUDIO | Audio Engine | 69 | 2 | 69 | 63 |
+| AUDIO | Audio Engine | 70 | 2 | 70 | 64 |
 | PROMPT | Prompt Orchestration Engine | 59 | 15 | 59 | 54 |
 | PROVIDER | Provider Adapters | 55 | 6 | 50 | 46 |
 | QUALITYCOST | Quality & Cost Engine | 41 | 7 | 41 | 39 |
@@ -46,10 +46,10 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | VERSION | Version & Dependency Engine | 98 | 38 | 98 | 96 |
 | L10N | Localization Engine | 54 | 4 | 53 | 53 |
 | PRESENT | Presentation Engine | 31 | 3 | 30 | 26 |
-| EXPORT | Export Engine | 106 | 12 | 77 | 76 |
-| SECURITY | Security & Storage | 50 | 5 | 48 | 47 |
+| EXPORT | Export Engine | 107 | 12 | 81 | 80 |
+| SECURITY | Security & Storage | 52 | 5 | 51 | 49 |
 | COLLAB | Collaboration & Access | 21 | 0 | 21 | 21 |
-| UI | Brukergrensesnitt og designsystem | 356 | 23 | 344 | 242 |
+| UI | Brukergrensesnitt og designsystem | 360 | 23 | 356 | 254 |
 | PROCESS | Arbeidsmåte og utviklingsprosess | 51 | 6 | 9 | 6 |
 
 ## Dekning per fase
@@ -58,7 +58,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 |---|---|---|
 | 1 | 72 | 69 |
 | 2 | 97 | 93 |
-| 3 | 271 | 135 |
+| 3 | 280 | 154 |
 | 4 | 85 | 84 |
 | 5 | 152 | 148 |
 | 6 | 49 | 48 |
@@ -74,7 +74,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0002 | Kap. 1 (l. 8-23) | CORE, SCRIPT, LIBRARY, COMPOSE, CAMERA, TIMELINE, AUDIO, PROMPT, PROVIDER, VERSION, CONTINUITY, QUEUE, L10N, PRESENT, EXPORT | src/core/, src/app/, docs/development/IMPLEMENTATION_STATUS.md | 1 | tests/unit/verifisering4-kjerne.test.ts::REQ-0002: hvert av de 15 punktene spores til minst ett gjeldende detaljkrav med fase i utviklingsplanen, docs/development/VISUAL_QA_DEC-0076.md | Verifisert | 2026-10-12 DEC-0076: Implementeringsreferanse lagt til. |
 | REQ-0003 | Kap. 1 (l. 24) | TIMELINE, LIBRARY | src/app/assembly/film-import.ts, src/app/assembly/LongFilmImportDialog.tsx, src/core/assembly/edit.ts | 1 | tests/unit/clip-edit.test.ts::foreslår delinger etter scenenes lengde og kontrollerer starttidene, tests/visual/screens.mjs::65-lang-film | Verifisert | 2026-10-10 DEC-0048: Ferdig film importeres per scene eller som én lang film fordelt på flere scener |
 | REQ-0004 | Kap. 1 (l. 25) | CORE, COMPOSE, TIMELINE, EXPORT | src/engine/import/browser.ts, src/core/composition/render.ts, src/engine/compositor/canvas.ts, src/engine/export/animatic.ts, src/engine/export/screenplay-pdf.ts, src/engine/export/screenplay-docx.ts | 1 | tests/architecture/eksport-uten-ai.test.ts, tests/integration/manus-til-eksport.test.ts | Verifisert | 2026-10-12 DEC-0072: Arkitekturtest: avspilling og eksport importerer ingenting fra AI-adapterne; ende-til-ende-testen kjører uten AI og nettverk. |
-| REQ-0005 | Kap. 1.1 (l. 27-30) | UI | src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx | 1 | manuell: 2026-10-08 visuell QA av M1-skjermbilder (tests/visual/screens.mjs) | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
+| REQ-0005 | Kap. 1.1 (l. 27-30) | UI | src/app/shell/AppHeader.tsx, src/app/auth/AuthScreen.tsx, src/routes/__root.tsx | 1 | enhet: tests/unit/b104-product-name.test.ts (2026-10-21, grønn i full Vitest) | Verifisert | 2026-10-21 B-104: KR-1: produktnavnet er nå From Pen to Glass (B-104); verifisering knyttet til b104-product-name.test.ts. |
 | REQ-0006 | Kap. 1.2 (l. 32) | PROCESS, CORE | package.json | 1 | tests/unit/verifisering4-kjerne.test.ts::REQ-0006: byggeoppsettet er Lovables (TanStack Start), med Lovable Cloud (Supabase) som backend, docs/development/VISUAL_QA_DEC-0076.md | Verifisert | 2026-10-12 DEC-0076: Første versjon er et Lovable-prosjekt: Lovables byggeoppsett (@lovable.dev/vite-tanstack-config i vite.config.ts), Lovable Cloud (supabase/config.toml, generert klient) og migrasjoner i db/migrations som ifølge SESSION_HANDOVER.md er kjørt i Lovable. |
 | REQ-0007 | Kap. 1.2 (l. 33-34) | CORE, PROMPT, COMPOSE, TIMELINE | src/core/, src/core/generation/, src/core/assembly/ | 1 | tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er | Verifisert | 2026-10-12 : Revisjon natt til 12.10.2026: domene-, data-, generering- og produksjonslogikk ligger i src/core, håndhevet av arkitekturtest |
 | REQ-0008 | Kap. 1.2 (l. 35) | CORE | docs/architecture/ARCHITECTURE.md, src/adapters/, src/adapters/browser/ | 1 | docs/architecture/ARCHITECTURE.md, tests/architecture/app-uten-supabase.test.ts | Verifisert | 2026-10-12 DEC-0078: All Supabase-bruk i nettleseren går via src/adapters/browser/; src/app og rutene importerer ikke klienten. Arkitekturtest med tom unntaksliste. |
@@ -499,7 +499,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0427 | Kap. 30.2 (l. 1270-1285) | UI | src/app/shell/ProjectNav.tsx, src/app/projects/ProjectOverview.tsx, src/app/project/use-production.tsx | 1 | tests/visual/verifisering3-ui.mjs, docs/development/VISUAL_QA_DEC-0075.md | Verifisert | 2026-10-12 DEC-0075: I nettleseren nås alle 14 områdene fra hovedmenyen eller en logisk overordnet visning; menyen kan brukes med Tab/Enter og har synlig fokus. |
 | REQ-0428 | Kap. 30.2 (l. 1286) | UI | src/app/shell/ProjectNav.tsx, src/app/projects/ProjectOverview.tsx | 1 | tests/visual/verifisering3-ui.mjs, docs/development/VISUAL_QA_DEC-0075.md | Verifisert | 2026-10-12 DEC-0075: Dokumentert IA-gjennomgang: 14 områder samlet i 6 arbeidsflater uten at noe blir utilgjengelig. |
 | REQ-0429 | Kap. 30.2 (l. 1287) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
-| REQ-0430 | Kap. 30.3 (l. 1288-1301) | UI, L10N | – | 2 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
+| REQ-0430 | Kap. 30.3 (l. 1288-1301) | UI, L10N | – | 2 | – | Utgått | 2026-10-21 B-111, DEC-0081: KR-1: erstattet av B-111 (engelsk standardspråk, åpen språkliste B-107). Norske funksjonsnavn finnes fortsatt i norsk grensesnitt via språkkatalogen. |
 | REQ-0431 | Kap. 30.3 (l. 1302) | UI, PROCESS | – | 1 | – | Ikke startet | 2026-10-08 DEC-0001: Opprettet |
 | REQ-0432 | Kap. 31 (l. 1304-1306, 1351) | CORE, SCRIPT, TIMELINE, LIBRARY, CONTINUITY, COMPOSE, CAMERA, AUDIO, PROMPT, PROVIDER, QUALITYCOST, QUEUE, VERSION, L10N, PRESENT, EXPORT, SECURITY | src/core/, src/adapters/, src/app/ | 2 | tests/architecture/core-purity.test.ts::importerer ikke rammeverk, backend eller plattform-API-er | Verifisert | 2026-10-08 DEC-0022: M1: status Verifisert |
 | REQ-0433 | Kap. 31 (l. 1307-1309) | CORE | src/core/, docs/architecture/ARCHITECTURE.md, src/core/model.ts, src/core/ids.ts, src/core/commands/apply.ts, src/core/invariants.ts | 1 | tests/unit/commands.test.ts, tests/unit/core-basics.test.ts, tests/unit/production.test.ts, tests/invariants/random-sequences.test.ts | Verifisert | 2026-10-12 DEC-0071: ARCHITECTURE.md knytter Project Core til core/model, core/commands og core/invariants, som har ansvaret for prosjekter, produksjoner, permanente ID-er og relasjoner, dekket av enhets- og invarianttester. |
@@ -640,7 +640,7 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0568 | Beslutning DEC-0046 | UI, COLLAB, SECURITY | db/migrations/0011_project_delete_film.sql, src/app/projects/ProjectDangerDialogs.tsx | 2 | tests/db/run-db-tests.ts::0011 forlat, tests/visual/screens.mjs::58-forlat-prosjekt | Verifisert | 2026-10-10 DEC-0046: Opprettet etter beslutning fra Mars |
 | REQ-0569 | Beslutning DEC-0046 | LIBRARY, EXPORT, UI | src/core/library/zip.ts, src/engine/export/zip.ts, src/app/library/AssetZip.tsx | 2 | tests/unit/film-and-delete.test.ts::zip med ressurser, tests/visual/screens.mjs::62-bibliotek-zip | Verifisert | 2026-10-10 DEC-0046: Opprettet etter beslutning fra Mars |
 | REQ-0570 | Beslutning DEC-0046 | LIBRARY, SECURITY, UI | db/migrations/0011_project_delete_film.sql, src/adapters/storage/project-admin.functions.ts, src/app/projects/ProjectDangerDialogs.tsx | 2 | tests/db/run-db-tests.ts::0011 ressursene slettes for godt, tests/visual/screens.mjs::59-slettede-prosjekter | Verifisert | 2026-10-10 DEC-0046: Opprettet etter beslutning fra Mars |
-| REQ-0571 | Beslutning DEC-0046 | LIBRARY, SECURITY | – | 1 | – | Ikke startet | 2026-10-10 DEC-0046: Opprettet etter beslutning fra Mars (begrunnelse for at ressurser slettes i egen operasjon) |
+| REQ-0571 | Beslutning DEC-0046 | LIBRARY, SECURITY | src/adapters/global/global-library.functions.ts, src/app/global/, src/routes/gruppe.$workspaceId.tsx, db/migrations/0052_global_template_spec.sql, db/migrations/0068_global_withdrawals.sql | 1 | – | Implementert – ikke verifisert | 2026-10-21 GP1–GP5: KR-1: globale ressurser er bygget (GP1–GP5). Status Implementert til kravets egen akseptansetest er knyttet. |
 | REQ-0572 | Beslutning DEC-0050 | TIMELINE, UI | src/app/assembly/FilmPopout.tsx, src/app/scene-editor/PreviewWindow.tsx | 1 | tests/visual/screens.mjs::71-svart-hvitt (knappen i verktøylinjen); egne vinduer kan ikke tas skjermbilde av i testmiljøet | Verifisert | 2026-10-11 DEC-0051: «Eget vindu» i monteringen |
 | REQ-0573 | Beslutning DEC-0050 | TIMELINE, EXPORT, UI | src/engine/compositor/film.ts, src/app/assembly/AssemblyWorkspace.tsx, src/app/assembly/ExportAnimaticDialog.tsx, src/engine/export/animatic.ts | 1 | tests/visual/screens.mjs::71-svart-hvitt | Verifisert | 2026-10-11 DEC-0051: Global svart-hvitt i visningen og som valg i eksporten |
 | REQ-0574 | Beslutning DEC-0050 | TIMELINE, COMPOSE, EXPORT | src/core/commands/apply.ts, src/app/assembly/ClipPanel.tsx, src/engine/compositor/film.ts | 1 | tests/unit/transitions.test.ts::settes og angres, tests/db/run-db-tests.ts::0013 | Verifisert | 2026-10-11 DEC-0051: Svart-hvitt per scene, også i eksporten |
@@ -951,16 +951,16 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0879 | Beslutning B-087, DEC-0100 | EXPORT, PRESENT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
 | REQ-0880 | Beslutning B-087, DEC-0100 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
 | REQ-0881 | Beslutning B-087, DEC-0100 | EXPORT, TIMELINE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
-| REQ-0882 | Beslutning B-087, DEC-0100 | EXPORT, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
-| REQ-0883 | Beslutning B-087, DEC-0100 | COMPOSE, EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag). |
-| REQ-0884 | Beslutning B-087, DEC-0100 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0885 | Beslutning B-087, DEC-0100 | UI, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0886 | Beslutning B-087, DEC-0100 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0887 | Beslutning B-087, DEC-0100 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0888 | Beslutning B-087, DEC-0100 | UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0889 | Beslutning B-087, DEC-0100 | UI, CORE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy). |
-| REQ-0890 | Beslutning B-087, DEC-0100 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
-| REQ-0891 | Beslutning B-087, DEC-0100 | CORE, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071). |
+| REQ-0882 | Beslutning B-087, DEC-0100 | EXPORT, UI | src/core/print/, src/engine/export/rig-pdf.ts, src/app/rig/PrintPanel.tsx | 0 | enhet: tests/unit/print-pdf.test.ts, nettleser: tests/visual/rigg-r4.mjs 12/12 (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 4; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0883 | Beslutning B-087, DEC-0100 | COMPOSE, EXPORT | src/core/print/contour.ts, src/app/rig/contour-client.ts | 0 | enhet: tests/unit/print-contour.test.ts (ikke rektangel ved jevnt dekkende bilde), nettleser: tests/visual/rigg-r2.mjs 17/17 (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 2; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0884 | Beslutning B-087, DEC-0100 | UI | src/app/rig/InspectionWindow.tsx | 0 | nettleser: tests/visual/rigg-r3.mjs 15/15 – inspeksjon uten lagring/utskrift (2026-10-21) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0885 | Beslutning B-087, DEC-0100 | UI, COMPOSE | src/core/print/measure.ts, src/app/rig/InspectionWindow.tsx | 0 | enhet: tests/unit/print-measure.test.ts (kjente avstander), nettleser: tests/visual/rigg-r3.mjs 15/15 | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0886 | Beslutning B-087, DEC-0100 | UI | src/core/print/measure.ts | 0 | enhet: tests/unit/print-measure.test.ts (avstander, snap), nettleser: tests/visual/rigg-r3.mjs 15/15 | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0887 | Beslutning B-087, DEC-0100 | UI | src/core/print/measure.ts | 0 | enhet: tests/unit/print-measure.test.ts (vinkler) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0888 | Beslutning B-087, DEC-0100 | UI | src/core/print/measure.ts | 0 | enhet: tests/unit/print-measure.test.ts (forhold) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0889 | Beslutning B-087, DEC-0100 | UI, CORE | src/core/print/measure.ts | 0 | enhet: tests/unit/print-measure.test.ts (zoomuavhengig over 100 tilfeldige zoom/pan) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0890 | Beslutning B-087, DEC-0100 | EXPORT | src/core/print/, src/engine/export/rig-pdf.ts | 0 | enhet: tests/unit/print-pdf.test.ts (målinger utelatt som standard), nettleser: tests/visual/rigg-r3.mjs (ingen utskrift) | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 3–4; status satt etter eksisterende tester (alle grønne 21.10). |
+| REQ-0891 | Beslutning B-087, DEC-0100 | CORE, UI | src/core/print/measure.ts, src/app/rig/ | 0 | enhet: tests/unit/print-measure.test.ts (mm og tommer), enhet: tests/unit/print-pdf.test.ts (mm/tommer bevares), nettleser: tests/visual/rigg-r1.mjs 12/12 | Verifisert | 2026-10-21 B-087: KR-1: bygget i rigg runde 1–4; status satt etter eksisterende tester (alle grønne 21.10). |
 | REQ-0892 | Beslutning B-087, DEC-0100 | EXPORT, UI | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
 | REQ-0893 | Beslutning B-087, DEC-0100 | EXPORT, SECURITY | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072). |
 | REQ-0894 | Beslutning B-087, DEC-0100 | EXPORT | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling). |
@@ -985,3 +985,12 @@ Svarer på: hvor kravet kommer fra, hvilken modul som oppfyller det, hvilke file
 | REQ-0913 | Beslutning B-087, DEC-0100 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
 | REQ-0914 | Beslutning B-087, DEC-0100 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
 | REQ-0915 | Beslutning B-087, DEC-0100 | EXPORT, COMPOSE | – | 0 | – | Ikke startet | 2026-10-21 B-087, DEC-0100: Registrert fra B-087 runde 0 som utsatt 3D-arbeid. |
+| REQ-0916 | Beslutning B-100 | COMPOSE | src/app/scene-editor/ | 1 | nettleser: tests/visual/b100-spacing.mjs 25/25 nb/en | Verifisert | 2026-10-21 B-100: KR-1: registrert etter B-100. |
+| REQ-0917 | Beslutning B-097 | UI | db/migrations/0073_last_changed_country.sql | 1 | db: tests/db/run-db-tests.ts 0073 | Verifisert | 2026-10-21 B-097: KR-1: registrert etter B-097. |
+| REQ-0918 | Beslutning B-098 | COMPOSE | src/adapters/fonts/google-fonts.server.ts, db/migrations/0074_project_fonts.sql | 2 | db: tests/db/run-db-tests.ts 0074, nettleser: tests/visual/fonts-google.mjs | Verifisert | 2026-10-21 B-098: KR-1: registrert etter B-098. |
+| REQ-0919 | Beslutning B-099 | AUDIO | src/app/audio/RecordAudioDialog.tsx | 1 | nettleser: tests/visual/scene-mobile-audio.mjs 23/23 nb/en | Verifisert | 2026-10-21 B-099: KR-1: registrert etter B-099. |
+| REQ-0920 | Beslutning B-104 | UI, EXPORT | src/core/backup/index.ts | 1 | enhet: tests/unit/b104-product-name.test.ts | Verifisert | 2026-10-21 B-104: KR-1: registrert etter B-104. |
+| REQ-0921 | Beslutning B-107 | UI | src/core/i18n/, db/migrations/0077_open_ui_languages.sql | 3 | enhet: i18n-testene i full Vitest, db: tests/db/run-db-tests.ts 0077, nettleser: tests/visual/b107-languages.mjs | Verifisert | 2026-10-21 B-107: KR-1: registrert etter B-107. |
+| REQ-0922 | Beslutning B-109 | SECURITY | src/routes/admin.tsx, db/migrations/0075_registration_closed.sql | 1 | db: tests/db/run-db-tests.ts 0075 | Verifisert | 2026-10-21 B-109: KR-1: registrert etter B-109. |
+| REQ-0923 | Beslutning B-110 | SECURITY | src/adapters/auth/turnstile.server.ts, db/migrations/0076_signup_captcha_pass.sql | 2 | enhet: tests/unit/b110-captcha.test.ts, db: tests/db/run-db-tests.ts 0076 | Verifisert | 2026-10-21 B-110: KR-1: registrert etter B-110. |
+| REQ-0924 | Beslutning B-111 | UI | src/app/i18n/language.tsx | 1 | enhet: i18n-testene i full Vitest | Verifisert | 2026-10-21 B-111: KR-1: registrert etter B-111. |

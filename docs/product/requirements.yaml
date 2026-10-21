@@ -196,10 +196,8 @@ requirements:
     change: "Arkitekturtest: avspilling og eksport importerer ingenting fra AI-adapterne; ende-til-ende-testen kjører uten AI og nettverk."
   notes: ''
 - id: REQ-0005
-  title: Offisielt produktnavn er Animatic Studio
-  text: Produktets eneste offisielle navn er «Animatic Studio». «AI Animatic Studio» skal ikke brukes som produktnavn.
-    Betegnelser som AI-generering, AI-modeller, AI-integrasjoner og AI-kvalitetskontroll kan brukes når funksjonaliteten
-    beskrives, men skal ikke være del av selve produktnavnet.
+  title: "Offisielt produktnavn er From Pen to Glass"
+  text: "Produktets offisielle navn er «From Pen to Glass», med kortformen «Pen to Glass» der det er lite plass. Det tidligere navnet «Animatic Studio» skal ikke stå i tekst brukeren ser; repo-, pakke-, database- og ID-navn beholdes."
   origin: mandat
   source:
     section: '1.1'
@@ -217,10 +215,11 @@ requirements:
   - 'enhet: søk i kildekode/ressursfiler etter strengen «AI Animatic Studio» gir null treff'
   status: Verifisert
   implementation:
-  - src/app/shell/AppHeader.tsx
-  - src/app/auth/AuthScreen.tsx
+  - "src/app/shell/AppHeader.tsx"
+  - "src/app/auth/AuthScreen.tsx"
+  - "src/routes/__root.tsx"
   verification:
-  - 'manuell: 2026-10-08 visuell QA av M1-skjermbilder (tests/visual/screens.mjs)'
+  - "enhet: tests/unit/b104-product-name.test.ts (2026-10-21, grønn i full Vitest)"
   history:
   - date: '2026-10-08'
     decision: DEC-0001
@@ -228,6 +227,9 @@ requirements:
   - date: '2026-10-08'
     decision: DEC-0022
     change: 'M1: status Verifisert'
+  - date: '2026-10-21'
+    decision: "B-104"
+    change: "KR-1: produktnavnet er nå From Pen to Glass (B-104); verifisering knyttet til b104-product-name.test.ts."
   notes: Jf. kap. 34 pkt. 1.
 - id: REQ-0006
   title: Første versjon utvikles i Lovable
@@ -16984,14 +16986,17 @@ requirements:
   tests:
   - 'enhet: norsk språkfil inneholder betegnelsene'
   - 'visuell: UI-tekster'
-  status: Ikke startet
+  status: Utgått
   implementation: []
   verification: []
   history:
   - date: '2026-10-08'
     decision: DEC-0001
     change: Opprettet
-  notes: ''
+  - date: '2026-10-21'
+    decision: "B-111, DEC-0081"
+    change: "KR-1: erstattet av B-111 (engelsk standardspråk, åpen språkliste B-107). Norske funksjonsnavn finnes fortsatt i norsk grensesnitt via språkkatalogen."
+  notes: "Erstattet av B-107/B-111 (REQ-0629/0630 og nye krav fra KR-1)."
 - id: REQ-0431
   title: Engelske tekniske betegnelser internt
   text: Engelske tekniske betegnelser kan brukes internt der det er hensiktsmessig.
@@ -21895,13 +21900,21 @@ requirements:
   - "Tilgang og sletting av globale ressurser er tydelig og trygg."
   tests:
   - "planlagt"
-  status: Ikke startet
-  implementation: []
+  status: Implementert – ikke verifisert
+  implementation:
+  - "src/adapters/global/global-library.functions.ts"
+  - "src/app/global/"
+  - "src/routes/gruppe.$workspaceId.tsx"
+  - "db/migrations/0052_global_template_spec.sql"
+  - "db/migrations/0068_global_withdrawals.sql"
   verification: []
   history:
   - date: '2026-10-10'
     decision: DEC-0046
     change: "Opprettet etter beslutning fra Mars (begrunnelse for at ressurser slettes i egen operasjon)"
+  - date: '2026-10-21'
+    decision: "GP1–GP5"
+    change: "KR-1: globale ressurser er bygget (GP1–GP5). Status Implementert til kravets egen akseptansetest er knyttet."
 - id: REQ-0572
   title: "Forhåndsvisning av monteringen i eget vindu"
   text: "Forhåndsvisningen i monteringen (animatic) skal kunne åpnes i et eget nettleservindu, som i sceneeditoren."
@@ -33182,13 +33195,21 @@ requirements:
   acceptance:
   - "A4: Valg mellom full farge, full figur med klippelinje og bare kontur."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintPanel.tsx"
+  verification:
+  - "enhet: tests/unit/print-pdf.test.ts"
+  - "nettleser: tests/visual/rigg-r4.mjs 12/12 (2026-10-21)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 4; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
 - id: REQ-0883
@@ -33210,13 +33231,20 @@ requirements:
   acceptance:
   - "A5: Konturen er figurens faktiske silhuett, ikke rektangelet."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/contour.ts"
+  - "src/app/rig/contour-client.ts"
+  verification:
+  - "enhet: tests/unit/print-contour.test.ts (ikke rektangel ved jevnt dekkende bilde)"
+  - "nettleser: tests/visual/rigg-r2.mjs 17/17 (2026-10-21)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 2; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
 
 - id: REQ-0884
@@ -33237,13 +33265,18 @@ requirements:
   acceptance:
   - "A6: Inspeksjonsvinduet kan åpnes uten å skrive ut."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/app/rig/InspectionWindow.tsx"
+  verification:
+  - "nettleser: tests/visual/rigg-r3.mjs 15/15 – inspeksjon uten lagring/utskrift (2026-10-21)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0885
@@ -33265,13 +33298,20 @@ requirements:
   acceptance:
   - "A7: Bredde og høyde kan måles."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  - "src/app/rig/InspectionWindow.tsx"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (kjente avstander)"
+  - "nettleser: tests/visual/rigg-r3.mjs 15/15"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0886
@@ -33292,13 +33332,19 @@ requirements:
   acceptance:
   - "A8: Avstand mellom valgfrie punkter kan måles."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (avstander, snap)"
+  - "nettleser: tests/visual/rigg-r3.mjs 15/15"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0887
@@ -33319,13 +33365,18 @@ requirements:
   acceptance:
   - "A9: Vinkler kan måles."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (vinkler)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0888
@@ -33346,13 +33397,18 @@ requirements:
   acceptance:
   - "A10: Forholdstall mellom valgte avstander kan måles."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (forhold)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0889
@@ -33374,13 +33430,18 @@ requirements:
   acceptance:
   - "A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (zoomuavhengig over 100 tilfeldige zoom/pan)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
 - id: REQ-0890
@@ -33401,13 +33462,20 @@ requirements:
   acceptance:
   - "A12: Målelinjer skrives ikke automatisk ut."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/"
+  - "src/engine/export/rig-pdf.ts"
+  verification:
+  - "enhet: tests/unit/print-pdf.test.ts (målinger utelatt som standard)"
+  - "nettleser: tests/visual/rigg-r3.mjs (ingen utskrift)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 3–4; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
 - id: REQ-0891
@@ -33429,13 +33497,21 @@ requirements:
   acceptance:
   - "A13: mm eller inches."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/measure.ts"
+  - "src/app/rig/"
+  verification:
+  - "enhet: tests/unit/print-measure.test.ts (mm og tommer)"
+  - "enhet: tests/unit/print-pdf.test.ts (mm/tommer bevares)"
+  - "nettleser: tests/visual/rigg-r1.mjs 12/12"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
+  - date: '2026-10-21'
+    decision: "B-087"
+    change: "KR-1: bygget i rigg runde 1–4; status satt etter eksisterende tester (alle grønne 21.10)."
   notes: "Bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
 
 - id: REQ-0892
@@ -34110,3 +34186,259 @@ requirements:
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-20)."
+- id: REQ-0916
+  title: "Animasjon i Scene og spacing-drag"
+  text: "Animasjonsfanen er fjernet og animasjonsspor og -paneler ligger i Scene uten dataflytting. Spacing-drag på objektets bane tidsstrekker (Cmd/Ctrl) eller flytter hele animasjonen (Shift) i én kommando med angring; låste tidsrom flyttes ikke og scenens slutt forlenges aldri automatisk."
+  origin: brukerbeslutning
+  source:
+    decision: B-100
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Animasjonsfanen er fjernet og animasjonsspor og -paneler ligger i Scene uten dataflytting. Spacing-drag på objektets bane tidsstrekker (Cmd/Ctrl) eller flytter hele animasjonen (Shift) i én kommando med angring; låste tidsrom flyttes ikke og scenens slutt forlenges aldri automatisk."
+  tests:
+  - "nettleser: tests/visual/b100-spacing.mjs 25/25 nb/en"
+  status: Verifisert
+  implementation:
+  - "src/app/scene-editor/"
+  verification:
+  - "nettleser: tests/visual/b100-spacing.mjs 25/25 nb/en"
+  history:
+  - date: '2026-10-21'
+    decision: B-100
+    change: "KR-1: registrert etter B-100."
+  notes: ''
+- id: REQ-0917
+  title: "«Sist endret» i scenelisten og land, klokke og datoformat på kontoen"
+  text: "Scenelisten viser når og av hvem hver scene sist ble endret. Kontoen har land, 12/24-timers klokke og datoformat."
+  origin: brukerbeslutning
+  source:
+    decision: B-097
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Scenelisten viser når og av hvem hver scene sist ble endret. Kontoen har land, 12/24-timers klokke og datoformat."
+  tests:
+  - "db: tests/db/run-db-tests.ts 0073"
+  status: Verifisert
+  implementation:
+  - "db/migrations/0073_last_changed_country.sql"
+  verification:
+  - "db: tests/db/run-db-tests.ts 0073"
+  history:
+  - date: '2026-10-21'
+    decision: B-097
+    change: "KR-1: registrert etter B-097."
+  notes: ''
+- id: REQ-0918
+  title: "Fonter fra Google Fonts i tekstlag"
+  text: "Tekstlag kan bruke fonter lagt til fra Google Fonts som prosjektets fontressurser; de lastes lat, eksporten venter på fontene, og feil i katalogen hindrer ikke fonter som allerede er lagt til."
+  origin: brukerbeslutning
+  source:
+    decision: B-098
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - COMPOSE
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Tekstlag kan bruke fonter lagt til fra Google Fonts som prosjektets fontressurser; de lastes lat, eksporten venter på fontene, og feil i katalogen hindrer ikke fonter som allerede er lagt til."
+  tests:
+  - "db: tests/db/run-db-tests.ts 0074"
+  - "nettleser: tests/visual/fonts-google.mjs"
+  status: Verifisert
+  implementation:
+  - "src/adapters/fonts/google-fonts.server.ts"
+  - "db/migrations/0074_project_fonts.sql"
+  verification:
+  - "db: tests/db/run-db-tests.ts 0074"
+  - "nettleser: tests/visual/fonts-google.mjs"
+  history:
+  - date: '2026-10-21'
+    decision: B-098
+    change: "KR-1: registrert etter B-098."
+  notes: ''
+- id: REQ-0919
+  title: "Mobilopptak med QR i sceneeditoren"
+  text: "Lydopptaksvinduet i scenen har QR for opptak med mobil. Replikkopptak blir ny versjon uten automatisk aktivering; andre lydtyper blir ny lydressurs ved playheadet. Rå lyd slår av lydbehandling og huskes per bruker."
+  origin: brukerbeslutning
+  source:
+    decision: B-099
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - AUDIO
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Lydopptaksvinduet i scenen har QR for opptak med mobil. Replikkopptak blir ny versjon uten automatisk aktivering; andre lydtyper blir ny lydressurs ved playheadet. Rå lyd slår av lydbehandling og huskes per bruker."
+  tests:
+  - "nettleser: tests/visual/scene-mobile-audio.mjs 23/23 nb/en"
+  status: Verifisert
+  implementation:
+  - "src/app/audio/RecordAudioDialog.tsx"
+  verification:
+  - "nettleser: tests/visual/scene-mobile-audio.mjs 23/23 nb/en"
+  history:
+  - date: '2026-10-21'
+    decision: B-099
+    change: "KR-1: registrert etter B-099."
+  notes: ''
+- id: REQ-0920
+  title: "Produktnavnet From Pen to Glass i all brukervendt tekst"
+  text: "All tekst brukeren ser, metadata, eksportmetadata og e-postmaler bruker «From Pen to Glass». Gamle eksport- og backupfiler med det gamle navnet leses fortsatt. PTG-funksjonen heter «Til produksjonen» / «To production»."
+  origin: brukerbeslutning
+  source:
+    decision: B-104
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  - EXPORT
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "All tekst brukeren ser, metadata, eksportmetadata og e-postmaler bruker «From Pen to Glass». Gamle eksport- og backupfiler med det gamle navnet leses fortsatt. PTG-funksjonen heter «Til produksjonen» / «To production»."
+  tests:
+  - "enhet: tests/unit/b104-product-name.test.ts"
+  status: Verifisert
+  implementation:
+  - "src/core/backup/index.ts"
+  verification:
+  - "enhet: tests/unit/b104-product-name.test.ts"
+  history:
+  - date: '2026-10-21'
+    decision: B-104
+    change: "KR-1: registrert etter B-104."
+  notes: ''
+- id: REQ-0921
+  title: "Åpen språkliste i grensesnittet"
+  text: "Grensesnittspråkene leses fra et register; et nytt språk legges inn med en språkfil og en registerlinje. Manglende tekst faller tilbake til engelsk og vises aldri som tom tekst eller nøkkel. Språkvelgeren viser bare språk med full dekning."
+  origin: brukerbeslutning
+  source:
+    decision: B-107
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Grensesnittspråkene leses fra et register; et nytt språk legges inn med en språkfil og en registerlinje. Manglende tekst faller tilbake til engelsk og vises aldri som tom tekst eller nøkkel. Språkvelgeren viser bare språk med full dekning."
+  tests:
+  - "enhet: i18n-testene i full Vitest"
+  - "db: tests/db/run-db-tests.ts 0077"
+  - "nettleser: tests/visual/b107-languages.mjs"
+  status: Verifisert
+  implementation:
+  - "src/core/i18n/"
+  - "db/migrations/0077_open_ui_languages.sql"
+  verification:
+  - "enhet: i18n-testene i full Vitest"
+  - "db: tests/db/run-db-tests.ts 0077"
+  - "nettleser: tests/visual/b107-languages.mjs"
+  history:
+  - date: '2026-10-21'
+    decision: B-107
+    change: "KR-1: registrert etter B-107."
+  notes: ''
+- id: REQ-0922
+  title: "Stenge for nye registreringer"
+  text: "Administrator kan stenge tjenesten for nye kontoer; inviterte slipper fortsatt inn og eksisterende kontoer påvirkes ikke."
+  origin: brukerbeslutning
+  source:
+    decision: B-109
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Administrator kan stenge tjenesten for nye kontoer; inviterte slipper fortsatt inn og eksisterende kontoer påvirkes ikke."
+  tests:
+  - "db: tests/db/run-db-tests.ts 0075"
+  status: Verifisert
+  implementation:
+  - "src/routes/admin.tsx"
+  - "db/migrations/0075_registration_closed.sql"
+  verification:
+  - "db: tests/db/run-db-tests.ts 0075"
+  history:
+  - date: '2026-10-21'
+    decision: B-109
+    change: "KR-1: registrert etter B-109."
+  notes: ''
+- id: REQ-0923
+  title: "CAPTCHA mot roboter ved registrering og innlogging"
+  text: "Registrering, innloggingslenke og «Glemt passord» krever bestått Cloudflare Turnstile; passordinnlogging krever det etter tre feilede forsøk. Registreringspasset gjelder 15 minutter og kan brukes én gang."
+  origin: brukerbeslutning
+  source:
+    decision: B-110
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - SECURITY
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Registrering, innloggingslenke og «Glemt passord» krever bestått Cloudflare Turnstile; passordinnlogging krever det etter tre feilede forsøk. Registreringspasset gjelder 15 minutter og kan brukes én gang."
+  tests:
+  - "enhet: tests/unit/b110-captcha.test.ts"
+  - "db: tests/db/run-db-tests.ts 0076"
+  status: Verifisert
+  implementation:
+  - "src/adapters/auth/turnstile.server.ts"
+  - "db/migrations/0076_signup_captcha_pass.sql"
+  verification:
+  - "enhet: tests/unit/b110-captcha.test.ts"
+  - "db: tests/db/run-db-tests.ts 0076"
+  history:
+  - date: '2026-10-21'
+    decision: B-110
+    change: "KR-1: registrert etter B-110."
+  notes: ''
+- id: REQ-0924
+  title: "Engelsk som standardspråk og språkprioritet"
+  text: "Standardspråket er engelsk. Språket velges i rekkefølgen profilens språk, lokalt valg, nettleserens språk og engelsk. Ingen IP-oppslag."
+  origin: brukerbeslutning
+  source:
+    decision: B-111
+  type: funksjonell
+  priority: P1
+  phase: 3
+  modules:
+  - UI
+  invariants: []
+  dependencies: []
+  acceptance:
+  - "Standardspråket er engelsk. Språket velges i rekkefølgen profilens språk, lokalt valg, nettleserens språk og engelsk. Ingen IP-oppslag."
+  tests:
+  - "enhet: i18n-testene i full Vitest"
+  status: Verifisert
+  implementation:
+  - "src/app/i18n/language.tsx"
+  verification:
+  - "enhet: i18n-testene i full Vitest"
+  history:
+  - date: '2026-10-21'
+    decision: B-111
+    change: "KR-1: registrert etter B-111."
+  notes: ''

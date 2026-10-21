@@ -3,16 +3,16 @@ import { useEffect, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Pause, Play, Square, X } from "lucide-react";
-import { ANALYST, activeDirections, analystSystemPrompt, characterSystemPrompt, emptyStoryProfile, factsUntil, groupTurnMessages, knowledgeAt, newId, reduceEngine, replayTurns, suggestSpeaker, type DirectionScope, type EngineMode, type ProjectState, type StoryProfile } from "@/core";
+import { ANALYST, activeDirections, groupTurnMessages, knowledgeAt, newId, reduceEngine, replayTurns, suggestSpeaker, type DirectionScope, type EngineMode, type ProjectState, type StoryProfile } from "@/core";
 import { useLanguage } from "@/app/i18n/language";
-import { generateText } from "@/adapters/ai/text.functions";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
 import { appendStoryTurns, forkStorySession, getStorySession, saveStorySuggestion,
   type StoredTurn, type StorySession, type StorySessionStatus } from "@/adapters/storylab/sessions.functions";
 import { Toolbar, ToolbarButton, IconButton } from "@/app/shell/workspace-chrome";
 import { AssetThumb, useAssetCovers } from "@/app/library/AssetThumb";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
+import { names as nameMap, sceneLabel, usd, useStoryPromptChars, useTextEstimate } from "./storylab-data";
 import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
 import { t as tk } from "@/core/i18n/keyed";
 
@@ -66,7 +66,7 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const serviceError = useRef<string | null>(null);
   const [confirm, setConfirm] = useState<null | { kind: "qa" | "batch" | "analysis"; question?: string; focus?: string }>(null);
   const append = useServerFn(appendStoryTurns);
-  const gen = useServerFn(generateText);
+  const gen = useServerFn(generateStoryText);
   const fork = useServerFn(forkStorySession);
   const suggest = useServerFn(saveStorySuggestion);
   const saved = useSuggestionSaved(projectId);
@@ -79,25 +79,25 @@ function GroupConversation({ state, projectId, session, participants, editable, 
   const directions = engine.directions;
   const locked = !editable || status === "stopped" || status === "archived";
 
+  // B-105a: promptene bygges på serveren; her samles bare parametere og samtalen.
   const characterInput = (id: string, ts: readonly StoredTurn[]) => {
     const e = engineOf(ts);
     return {
-      system: characterSystemPrompt({ name: names[id] ?? "?", profile: profiles[id] ?? emptyStoryProfile(),
-        knowledge: knowledgeAt(state, id, sceneId as never), situation, directions: activeDirections(e, id), language: "nb", names }),
+      request: { kind: "character" as const, assetId: id, sceneId, situation, profile: profiles[id] ?? null,
+        directions: activeDirections(e, id).map((d) => d.text), language: "nb" },
       messages: groupTurnMessages(e, id, names).messages,
     };
   };
   const analysisInput = (question: string, focus?: string) => ({
-    system: analystSystemPrompt({ characters: participants.map((id) => ({ name: names[id] ?? "?", profile: profiles[id] ?? null })),
-      facts: factsUntil(state, sceneId).map((f) => ({ text: f.text, kind: f.kind, knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?") })),
-      sceneContext: situation, language: uiLang, ...(focus ? { focus: names[focus] ?? "?" } : {}) }) +
-      (focus ? "\nExplain this character's motivation from the profile, in the third person. Separate interpretation from established facts." : ""),
+    request: { kind: "analyst" as const, characters: participants.map((id) => ({ assetId: id, profile: profiles[id] ?? null })),
+      sceneId, sceneContext: situation, language: uiLang, ...(focus ? { focusId: focus, explain: true } : {}) },
     messages: [{ role: "user" as const, content: turnsRef.current.filter((t) => t.kind === "line" || t.kind === "question")
       .map((t) => `${names[t.speaker] ?? "Director"}: ${t.text}`).join("\n") + `\nDirector's question: ${question}` }],
   });
   const p = confirm?.kind === "analysis" || analysis ? analysisInput(confirm?.question ?? text, confirm?.focus) : characterInput(speaker, turns);
+  const promptChars = useStoryPromptChars(projectId, confirm?.kind === "analysis" || analysis ? "storylab_analysis" : "storylab_group", p.request);
   const est = useTextEstimate(confirm?.kind === "analysis" || analysis ? "storylab_analysis" : "storylab_group",
-    p.system.length + p.messages.reduce((n, m) => n + m.content.length, 0) + text.length, OUT_TOKENS);
+    promptChars + p.messages.reduce((n, m) => n + m.content.length, 0) + text.length, OUT_TOKENS);
 
   const save = async (added: StoredTurn[], addCostUsd = 0, newStatus?: StorySessionStatus) => {
     const r = await append({ data: { projectId, sessionId: session.id, turns: added, addCostUsd, ...(newStatus ? { status: newStatus } : {}) } });

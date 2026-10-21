@@ -6873,7 +6873,35 @@ try {
     await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en-XA')`), '22023');
     await expectError(as('authenticated', ALICE, tx => tx`select public.set_my_locale('en_US')`), '22023');
     await as('authenticated', ALICE, tx => tx`select public.set_my_locale('nb')`);
-    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.['v']) === 77, 'skjemaversjon 77');
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.['v']) >= 77, 'skjemaversjon 77');
+  });
+
+  // ---------- B-105a: avledede bildefiler (0078) ----------
+  await test("0078 (B-105a): derived_files valideres, RLS som versjonen, og purge sletter avledede filer", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 78, "skjemaversjon 78");
+    const dp = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Avledet') as id`)[0]!["id"] as string);
+    const a = crypto.randomUUID(), v = crypto.randomUUID(), ver = crypto.randomUUID();
+    await sql`insert into public.assets (id, project_id, kind, name) values (${a}, ${dp}, 'object', 'Vase')`;
+    await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${v}, ${dp}, ${a}, 'Standard', 'reference')`;
+    const file = (path: string) => ({ path, width: 10, height: 10, byteSize: 1, sha256: "a".repeat(64) });
+    const good = { proxy: file(`${dp}/p.webp`), thumbnail: file(`${dp}/t.webp`), originalRaw: file(`${dp}/r.tiff`) };
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_files)
+      values (${ver}, ${dp}, ${v}, 1, ${`${dp}/o.png`}, 'image/png', 1, ${"b".repeat(64)}, ${sql.json(good)})`;
+    for (const bad of [{ ukjent: file("x") }, { proxy: { width: 1 } }, { proxy: file("") }, ["x"]])
+      await expectError(sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, derived_files)
+        values (gen_random_uuid(), ${dp}, ${v}, 9, ${`${dp}/x.png`}, 'image/png', 1, ${"d".repeat(64)}, ${sql.json(bad as never)})`, /check|violates/);
+    // Eldre versjoner uten avledede filer er gyldige
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+      values (gen_random_uuid(), ${dp}, ${v}, 2, ${`${dp}/o2.png`}, 'image/png', 1, ${"c".repeat(64)})`;
+    const seen = await as("authenticated", ALICE, (tx) => tx`select derived_files from public.asset_versions where id = ${ver}`);
+    assert((seen[0]?.["derived_files"] as { proxy?: { path: string } })?.proxy?.path === `${dp}/p.webp`, "medlem leser avledede filer");
+    assert((await as("authenticated", CAROL, (tx) => tx`select 1 from public.asset_versions where id = ${ver}`)).length === 0, "ikke-medlem ser ingenting");
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+      values (gen_random_uuid(), ${dp}, ${v}, 3, ${`${dp}/k.png`}, 'image/png', 1, ${"e".repeat(64)})`), /42501|permission|row-level/);
+    await as("service_role", null, (tx) => tx`select public.delete_project(${dp}, ${ALICE})`);
+    const r = (await as("service_role", null, async (tx) => (await tx`select public.purge_project_assets(${dp}, ${ALICE}) as r`)[0]!["r"])) as { paths: string[] };
+    for (const path of ["o.png", "p.webp", "t.webp", "r.tiff", "o2.png"])
+      assert(r.paths.includes(`${dp}/${path}`), `purge tar med ${path}`);
   });
 } finally {
   await sql.end();

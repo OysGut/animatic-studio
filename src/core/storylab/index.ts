@@ -9,3 +9,4 @@ export * from "./transfer";
 export * from "./canvas";
 export * from "./interview";
 export * from "./canvas-transfer";
+export * from "./scene-data";

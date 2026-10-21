@@ -10,7 +10,7 @@ import { fixture } from "../visual/fixture-state";
 
 const h = vi.hoisted(() => ({ gen: vi.fn(), append: vi.fn(), fork: vi.fn(), suggest: vi.fn() }));
 vi.mock("@tanstack/react-start", () => ({ useServerFn: (fn: unknown) => fn }));
-vi.mock("@/adapters/ai/text.functions", () => ({ generateText: (arg: unknown) => h.gen(arg) }));
+vi.mock("@/adapters/ai/story-text.functions", () => ({ generateStoryText: (arg: unknown) => h.gen(arg), estimateStoryPrompt: vi.fn() }));
 vi.mock("@/adapters/storylab/sessions.functions", () => ({
   appendStoryTurns: (arg: unknown) => h.append(arg), forkStorySession: (arg: unknown) => h.fork(arg),
   getStorySession: vi.fn(), saveStorySuggestion: (arg: unknown) => h.suggest(arg),
@@ -19,6 +19,7 @@ vi.mock("@/app/storylab/storylab-data", () => ({
   names: (s: typeof fixture.state) => Object.fromEntries(Object.values(s.assets).map((a) => [a.id, a.name])),
   sceneLabel: () => "", usd: (cost: number) => `$${cost.toFixed(2)}`,
   useTextEstimate: () => ({ usd: 0.01, label: "Test model", loading: false, error: null, builtIn: false }),
+  useStoryPromptChars: () => 0,
 }));
 vi.mock("@/app/library/AssetSymbolIcon", () => ({ AssetSymbolIcon: () => null }));
 

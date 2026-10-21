@@ -8,8 +8,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { GitBranch, Loader2, Send, X } from "lucide-react";
 import { useMemo, useState } from "react";
-import { ANALYST, activeDirections, analystSystemPrompt, characterSystemPrompt, emptyStoryProfile, factsUntil, groupTurnMessages, knowledgeAt, newId, profileAt, replayTurns, type Asset, type DirectionScope, type ProjectState, type StoryProfile } from "@/core";
-import { generateText } from "@/adapters/ai/text.functions";
+import { ANALYST, activeDirections, emptyStoryProfile, groupTurnMessages, knowledgeAt, newId, profileAt, replayTurns, type Asset, type DirectionScope, type ProjectState, type StoryProfile } from "@/core";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
 import { useLanguage } from "@/app/i18n/language";
 import {
   appendStoryTurns,
@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Toolbar, ToolbarButton, ToolbarSeparator } from "@/app/shell/workspace-chrome";
-import { names as nameMap, sceneLabel, usd, useTextEstimate } from "./storylab-data";
+import { names as nameMap, sceneLabel, usd, useStoryPromptChars, useTextEstimate } from "./storylab-data";
 import { GroupConversationView } from "./GroupConversationView";
 import { SceneLab } from "./SceneLab";
 import { SavedSuggestion, useSuggestionSaved } from "./suggestions-data";
@@ -200,7 +200,7 @@ function Conversation({
   const [failed, setFailed] = useState<string | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [note, setNote] = useState<string | null>(null);
-  const gen = useServerFn(generateText);
+  const gen = useServerFn(generateStoryText);
   const append = useServerFn(appendStoryTurns);
   const fork = useServerFn(forkStorySession);
   const suggest = useServerFn(saveStorySuggestion);
@@ -224,42 +224,41 @@ function Conversation({
     const qTurn: StoredTurn = { id: newId<"turn">(), speaker: "director", text: question, kind: "question", at, to: ctx.assetId };
     const next = replayTurns(ctx.assetId, [...turns, qTurn]);
     if (m === "role") {
-      const system = characterSystemPrompt({
-        name,
-        profile,
-        knowledge,
+      // B-105a: serveren bygger rollespillprompten fra prosjektet; vi sender bare parametere.
+      const request = {
+        kind: "character" as const,
+        assetId: ctx.assetId,
+        sceneId: ctx.sceneId,
         situation: ctx.situation,
-        directions: activeDirections(next, ctx.assetId),
+        directions: activeDirections(next, ctx.assetId).map((d) => d.text),
+        ...(ctx.profile ? { profile: ctx.profile } : {}),
         language,
-        names,
-      });
-      return { qTurn, system, messages: groupTurnMessages(next, ctx.assetId, names).messages };
+      };
+      return { qTurn, request, messages: groupTurnMessages(next, ctx.assetId, names).messages };
     }
     const transcript = turns
       .filter((t) => t.kind === "line" || t.kind === "question")
       .map((t) => `${t.kind === "question" ? "Director" : (names[t.speaker] ?? name)}: ${t.text}`)
       .join("\n");
-    const system = analystSystemPrompt({
-      characters: [{ name, profile }],
-      facts: factsUntil(state, ctx.sceneId).map((f) => ({
-        text: f.text,
-        kind: f.kind,
-        knownBy: f.knownBy.map((k) => names[k.assetId] ?? "?"),
-      })),
+    const request = {
+      kind: "analyst" as const,
+      characters: [{ assetId: ctx.assetId, profile }],
+      sceneId: ctx.sceneId,
       sceneContext: ctx.situation,
       language: uiLang,
-    });
+    };
     return {
       qTurn,
-      system,
+      request,
       messages: [{ role: "user" as const, content: `${transcript ? `# Conversation so far\n${transcript}\n\n` : ""}# Director's question\n${question}` }],
     };
   };
 
   const preview = build(text || "…", mode);
+  const promptChars = useStoryPromptChars(projectId, mode === "role" ? "storylab_character" : "storylab_analysis", preview.request);
   const est = useTextEstimate(
     mode === "role" ? "storylab_character" : "storylab_analysis",
-    preview.system.length + preview.messages.reduce((n, m) => n + m.content.length, 0),
+    promptChars + preview.messages.reduce((n, m) => n + m.content.length, 0),
     OUT_TOKENS,
   );
 
@@ -275,7 +274,7 @@ function Conversation({
         data: {
           projectId,
           task: m === "role" ? "storylab_character" : "storylab_analysis",
-          system: b.system,
+          request: b.request,
           messages: b.messages,
           maxTokens: OUT_TOKENS,
         },

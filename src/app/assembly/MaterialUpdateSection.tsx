@@ -11,8 +11,9 @@
 import { useServerFn } from "@tanstack/react-start";
 import { Loader2 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { materialUpdateFromJson, materialUpdatePrompt, materialUpdateTargets, newId, parseJsonLoose, qualityProfileSnapshot, shotSuggestionNote, tm, useVersionOnLayerCommand, type Command, type MaterialUpdateSuggestions, type ProjectState, type ScriptChange } from "@/core";
-import { generateText } from "@/adapters/ai/text.functions";
+import { materialUpdateFromJson, materialUpdateTargets, newId, parseJsonLoose, qualityProfileSnapshot, shotSuggestionNote, tm, useVersionOnLayerCommand, type Command, type MaterialUpdateSuggestions, type ProjectState, type ScriptChange } from "@/core";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
+import { useStoryPromptChars } from "@/app/storylab/storylab-data";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { QualityProfileBudget, QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
@@ -39,9 +40,11 @@ export function MaterialUpdateSection({
 }) {
   const projectId = state.project.id;
   const targets = useMemo(() => materialUpdateTargets(state, occurrenceId, changes), [state, occurrenceId, changes]);
-  const prompt = useMemo(() => materialUpdatePrompt(state, targets, changes), [state, targets, changes]);
-  const est = useTextEstimate("general", prompt.system.length + prompt.user.length, OUT_TOKENS);
-  const gen = useServerFn(generateText);
+  // B-105a: prompten bygges på serveren fra forekomsten og endringene.
+  const request = useMemo(() => ({ kind: "materialUpdate" as const, occurrenceId, changes }), [occurrenceId, changes]);
+  const promptChars = useStoryPromptChars(projectId, "general", request, changes.length > 0);
+  const est = useTextEstimate("general", promptChars, OUT_TOKENS);
+  const gen = useServerFn(generateStoryText);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -55,7 +58,7 @@ export function MaterialUpdateSection({
     setErr(null);
     try {
       const r = await gen({
-        data: { projectId, task: "general", json: true, system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: OUT_TOKENS },
+        data: { projectId, task: "general", json: true, request, maxTokens: OUT_TOKENS },
       });
       if (!r.ok) return setErr(tm(r.message));
       const parsed = materialUpdateFromJson(parseJsonLoose(r.text), targets);

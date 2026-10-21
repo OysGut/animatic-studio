@@ -10,14 +10,14 @@ import { Loader2, Send } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useRef, useState } from "react";
 import { takeIdea } from "./new-project-idea";
-import { canvasSummary, interviewNodesFromJson, interviewSystemPrompt, interviewToNodesPrompt, newId, unreadableReplyMessage, type CanvasNode, type InterviewMessage, type ProjectState, type ProposedCanvas } from "@/core";
-import { generateText } from "@/adapters/ai/text.functions";
+import { interviewNodesFromJson, newId, unreadableReplyMessage, type CanvasNode, type InterviewMessage, type ProjectState, type ProposedCanvas } from "@/core";
+import { generateStoryText } from "@/adapters/ai/story-text.functions";
 import { appendStoryTurns, createStorySession, getStorySession, type StoredTurn } from "@/adapters/storylab/sessions.functions";
 import { useLanguage } from "@/app/i18n/language";
 import type { Commands } from "@/app/project/use-commands";
 import { PanelHeader, ToolbarButton } from "@/app/shell/workspace-chrome";
 import { Textarea } from "@/components/ui/textarea";
-import { usd, useTextEstimate } from "./storylab-data";
+import { usd, useStoryPromptChars, useTextEstimate } from "./storylab-data";
 import { InterviewNodesPreview } from "./InterviewNodesPreview";
 import { t as tk } from "@/core/i18n/keyed";
 
@@ -95,17 +95,18 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
   const [confirming, setConfirming] = useState<"send" | "nodes" | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [proposal, setProposal] = useState<ProposedCanvas | null>(null);
-  const gen = useServerFn(generateText);
+  const gen = useServerFn(generateStoryText);
   const append = useServerFn(appendStoryTurns);
   const qc = useQueryClient();
   const language = useLanguage();
-  const summary = canvasSummary(state);
-  const system = interviewSystemPrompt({ language, canvasSummary: summary, projectTitle: state.project.name });
+  // B-105a: intervjuprompten bygges på serveren fra prosjektets lerret.
+  const request = { kind: "interview" as const, language };
+  const promptChars = useStoryPromptChars(projectId, "storylab_interview", request);
   const messages = (extra?: string): InterviewMessage[] => [
     ...turns.filter((t) => t.kind === "question" || t.kind === "line").map((t): InterviewMessage => ({ role: t.speaker === INTERVIEWER ? "assistant" : "user", content: t.text })),
     ...(extra !== undefined ? [{ role: "user" as const, content: extra }] : []),
   ];
-  const est = useTextEstimate("storylab_interview", system.length + messages(text).reduce((n, m) => n + m.content.length, 0), OUT_TOKENS);
+  const est = useTextEstimate("storylab_interview", promptChars + messages(text).reduce((n, m) => n + m.content.length, 0), OUT_TOKENS);
   const asked = turns.some((t) => t.speaker === INTERVIEWER);
 
   const cache = (added: StoredTurn[], costUsd: number) =>
@@ -116,7 +117,7 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
     if (!message.trim()) return;
     setBusy(true); setErr(null); setConfirming(null);
     try {
-      const r = await gen({ data: { projectId, task: "storylab_interview", system, messages: messages(message), maxTokens: OUT_TOKENS } });
+      const r = await gen({ data: { projectId, task: "storylab_interview", request, messages: messages(message), maxTokens: OUT_TOKENS } });
       if (!r.ok) { setFailed(message); return setErr(r.message); }
       const at = new Date().toISOString();
       const mine: StoredTurn = { id: newId<"turn">(), speaker: "director", text: message, kind: "question", at };
@@ -135,8 +136,7 @@ function Interview({ state, projectId, cmds, editable, sessionId, selection, ori
   const propose = async () => {
     setBusy(true); setErr(null); setConfirming(null); setFailed(null);
     try {
-      const prompt = interviewToNodesPrompt({ language, canvasSummary: summary, transcript: messages() });
-      const r = await gen({ data: { projectId, task: "storylab_interview", system: prompt.system, messages: [{ role: "user", content: prompt.user }], maxTokens: NODES_OUT_TOKENS } });
+      const r = await gen({ data: { projectId, task: "storylab_interview", request: { kind: "interviewNodes", language, transcript: messages() }, maxTokens: NODES_OUT_TOKENS } });
       if (!r.ok) return setErr(r.message);
       const saved = await append({ data: { projectId, sessionId, turns: [], addCostUsd: r.costUsd } });
       if (saved.ok) { setCost(saved.costUsd); cache([], saved.costUsd); }

@@ -12,6 +12,7 @@
 -- 4. global_add_version (0074): kopiert ordrett, med bare p_derived_files lagt til
 --    (default null) og derived_files i insert. Den gamle signaturen slettes, som i 0052 og 0074.
 --    GRANT som før (bare authenticated).
+-- Ny hjelpefunksjon: private.derived_files_ok(jsonb) (formsjekken; delspørringer er ikke lov i check).
 -- Erstatter:
 --   * purge_project_assets (0072)
 --   * purge_removed_assets (0072)
@@ -24,29 +25,33 @@
 -- Skrevet for gjennomgang; kjøres ikke i Cloud av Lovable. Kjøres ÉN gang etter 0077.
 -- =====================================================================================
 
-alter table public.asset_versions add column if not exists derived_files jsonb
-  check (derived_files is null or (jsonb_typeof(derived_files) = 'object'
-    and pg_column_size(derived_files) <= 65536
-    and not exists (select 1 from jsonb_object_keys(derived_files) k
+-- Formsjekken ligger i en egen immutable funksjon: Postgres tillater ikke delspørringer direkte
+-- i en check-constraint (rettet etter lokal DB-test 21.10; ny funksjon, ingen erstattes).
+create or replace function private.derived_files_ok(d jsonb)
+returns boolean
+language sql
+immutable
+set search_path = ''
+as $$
+  select d is null or (jsonb_typeof(d) = 'object'
+    and pg_column_size(d) <= 65536
+    and not exists (select 1 from jsonb_object_keys(d) k
       where k not in ('working','proxy','thumbnail','originalRaw'))
-    and not exists (select 1 from jsonb_each(derived_files) f
+    and not exists (select 1 from jsonb_each(d) f
       where jsonb_typeof(f.value) <> 'object'
          or not (f.value ? 'path')
          or jsonb_typeof(f.value -> 'path') <> 'string'
          or length(f.value ->> 'path') = 0
-         or length(f.value ->> 'path') > 1024)));
+         or length(f.value ->> 'path') > 1024))
+$$;
+revoke all on function private.derived_files_ok(jsonb) from public;
+grant execute on function private.derived_files_ok(jsonb) to authenticated, service_role;
+
+alter table public.asset_versions add column if not exists derived_files jsonb
+  check (private.derived_files_ok(derived_files));
 
 alter table public.global_asset_versions add column if not exists derived_files jsonb
-  check (derived_files is null or (jsonb_typeof(derived_files) = 'object'
-    and pg_column_size(derived_files) <= 65536
-    and not exists (select 1 from jsonb_object_keys(derived_files) k
-      where k not in ('working','proxy','thumbnail','originalRaw'))
-    and not exists (select 1 from jsonb_each(derived_files) f
-      where jsonb_typeof(f.value) <> 'object'
-         or not (f.value ? 'path')
-         or jsonb_typeof(f.value -> 'path') <> 'string'
-         or length(f.value ->> 'path') = 0
-         or length(f.value ->> 'path') > 1024)));
+  check (private.derived_files_ok(derived_files));
 
 create or replace function public.purge_project_assets(p_project uuid, p_actor uuid)
 returns jsonb
