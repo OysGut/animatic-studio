@@ -7690,8 +7690,10 @@
         "text": "The text is too long (max {max} characters)"
       }
     },
-    "app-i18n-language.language-switch.title.691fad620f12": {
-      "replaces": [],
+    "app-i18n-language.language-switch.change-title": {
+      "replaces": [
+        "app-i18n-language.language-switch.title.691fad620f12"
+      ],
       "nb": {
         "text": "Bytt språk"
       },

@@ -53825,5 +53825,10 @@
     "text": "El texto es demasiado largo (máximo {max} caracteres)",
     "sourceHash": "56b2301d54e20013e7ce0ea7eaf70c027a039f12bf6fc9d9a25270e933e328f9",
     "review": "machine"
+  },
+  "app-i18n-language.language-switch.change-title": {
+    "text": "Cambiar idioma",
+    "sourceHash": "6ef020fba3007c1c6d8f2daf97a0dbccc5cd6813c6e9f140ce7c17d916792bf1",
+    "review": "machine"
   }
 }
