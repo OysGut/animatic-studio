@@ -7,6 +7,7 @@
 import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { uiLang } from "./ui-lang.mjs";
 const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/scene-duration"] = process.argv.slice(2);
 mkdirSync(out, { recursive: true });
 const fx = JSON.parse(readFileSync(fixturePath, "utf8"));
@@ -180,7 +181,7 @@ async function applyRetime(page, dialog, seconds, method, fill) {
 
 /** Kjører ett steg i en fersk side, så hvert steg starter fra det faste oppsettet. */
 async function scenario(name, lang, fn) {
-  const { context, page, errors, dialog } = await open(lang);
+  const { context, page, errors, dialog } = await open(uiLang(lang));
   try {
     await fn(page, dialog);
     check(errors.length === 0, `${name}: ingen kjørefeil (${errors.join(" | ").slice(0, 200)})`);
@@ -226,7 +227,7 @@ await scenario("H", "nb", async (page, dialog) => {
   const { cmd, report } = await applyRetime(page, dialog, 8, "end");
   const keys = layerOf(cmd)?.keyframes ?? [];
   check(!keys.some((k) => k.frame >= fr(8)) && keys.length === KEYS.length - 1, "H: nøkkelbildet etter den nye slutten er trimmet");
-  check(/trimmes eller fjernes/.test(report), "H: trimmingen står i rapporten");
+  check(/trimmes eller fjernes|trimmed or removed/.test(report), "H: trimmingen står i rapporten");
   const removed = stepOf(cmd, "SetAudioClipsRemoved")?.clipIds ?? [];
   const c = clipsOf(cmd);
   const speech = CLIPS.filter((a) => a.kind === "dialogue");
@@ -285,7 +286,7 @@ await scenario("L", "nb", async (page, dialog) => {
   const { cmd } = await applyRetime(page, dialog, 12, "stretch_visual");
   check(cmd !== null, "L: Bruk sender RetimeScene");
   const n = retimes().length;
-  await page.getByRole("button", { name: /^Angre/ }).first().click();
+  await page.getByRole("button", { name: /^Angre|^Undo/ }).first().click();
   await page.waitForTimeout(800);
   const inv = retimes().length > n ? retimes().at(-1) : null;
   check(stepOf(inv, "UpdateComposition")?.fields?.durationFrames === BEFORE, "L: angre etter Bruk sender inversen (tilbake til 10 s)");
@@ -342,7 +343,7 @@ await scenario("tidslinje", "nb", async (page, dialog) => {
   await dialog.waitFor({ timeout: 5000 });
   check(await dialog.isVisible(), "dra i sluttpunktet åpner dialogen");
   await cancel(dialog);
-  const fromScript = page.getByRole("button", { name: /^Fra manus$/ });
+  const fromScript = page.getByRole("button", { name: /^Fra manus$|^From script$/ });
   if (await fromScript.count()) {
     const n = commands.length;
     await fromScript.click();
