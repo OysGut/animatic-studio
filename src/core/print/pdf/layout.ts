@@ -11,6 +11,7 @@ export interface PrintItem {
   image?: { data: string | Uint8Array; format: 'PNG' | 'JPEG'; widthPx: number; heightPx: number };
   measureSets?: readonly MeasureSet[]; fields?: readonly InfoField[];
   upArrow?: boolean; rotationDeg?: number; reserveQr?: boolean;
+  strokeWidthMm?: number;
 }
 export interface PrintInput {
   items: readonly PrintItem[];
@@ -64,6 +65,7 @@ export function planPrint(input: PrintInput): PrintPlan {
   const sheets: Sheet[] = []; let shelf: Sheet | undefined; let x=0, y=0, shelfHeight=0;
   const newSheet = () => { shelf = { kind:'figures', placements:[] }; sheets.push(shelf); x=0; y=0; shelfHeight=0; };
   for (const item of input.items) {
+    if (item.strokeWidthMm !== undefined && (!Number.isFinite(item.strokeWidthMm) || item.strokeWidthMm < .05 || item.strokeWidthMm > .3)) throw new RangeError(t('print-pdf.invalid'));
     const size = sizeMm(item.size);
     const lines = (item.fields ?? []).filter(f => f.enabled && (f.sceneId === undefined || f.sceneId === item.sceneId)).flatMap(f => wrap(f.value, Math.min(size.width,content.width)));
     const infoHeight = lines.length*4 + (item.upArrow || item.reserveQr ? 16 : 0) + (lines.length ? 3 : 0);
@@ -89,8 +91,10 @@ export function planPrint(input: PrintInput): PrintPlan {
       // Crosses at corners of each shared 10 mm overlap strip.
       if (columns>1) for (const xx of [...(column>0 ? [0,10] : []),...(column<columns-1 ? [w-10,w] : [])]) for (const yy of [0,h]) registration.push({x:rect.x+xx,y:rect.y+yy});
       if (rows>1) for (const yy of [...(row>0 ? [0,10] : []),...(row<rows-1 ? [h-10,h] : [])]) for (const xx of [0,w]) registration.push({x:rect.x+xx,y:rect.y+yy});
-      shelf!.placements.push({ item,rect,source:{x:sx,y:sy,width:w,height:h},row,column,rows,columns,effectiveDpi:dpi,info:{lines,rect:{x:rect.x,y:rect.y+h+3,width:w,height:infoHeight}},measurements: input.technicalReference ? item.measureSets ?? [] : [], arrowAngle:-(item.rotationDeg ?? 0),registration });
-      x+=w+5; shelfHeight=Math.max(shelfHeight,blockH);
+      const current = shelf;
+      if (!current) throw new RangeError(t('print-pdf.invalid'));
+      current.placements.push({ item,rect,source:{x:sx,y:sy,width:w,height:h},row,column,rows,columns,effectiveDpi:dpi,info:{lines,rect:{x:rect.x,y:rect.y+h+3,width:w,height:infoHeight}},measurements: input.technicalReference ? item.measureSets ?? [] : [], arrowAngle:-(item.rotationDeg ?? 0),registration });
+      x+=Math.max(w,item.reserveQr?(item.upArrow?32:14):item.upArrow?14:0)+5; shelfHeight=Math.max(shelfHeight,blockH);
       if (rows*columns>1) shelf=undefined;
     }
   }

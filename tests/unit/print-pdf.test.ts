@@ -3,6 +3,13 @@ import { calibrationTicks, planPrint, type PrintItem } from '../../src/core/prin
 import { renderPdf } from '../../src/engine/export/rig-pdf';
 const item = (extra: Partial<PrintItem> = {}):PrintItem => ({id:'a',size:{width:87.3,height:142.6},mode:'contour',contour:{source:'rectangle',widthMm:87.3,heightMm:142.6,pointCount:5,paths:[{isHole:false,orientation:'clockwise',points:[{x:0,y:0},{x:87.3,y:0},{x:87.3,y:142.6},{x:0,y:142.6},{x:0,y:0}]}]},...extra});
 describe('B-087 PDF engine',()=>{
+ it('selectable cut-line width preserves physical bounds and rejects out-of-range widths',()=>{
+  const thin=planPrint({items:[item({strokeWidthMm:.05})]});
+  const thick=planPrint({items:[item({strokeWidthMm:.3})]});
+  expect(thin.sheets[0]?.placements[0]?.rect).toEqual(thick.sheets[0]?.placements[0]?.rect);
+  expect(renderPdf(thick).output()).toContain((.3*72/25.4).toFixed(16).replace(/0+$/,'')+' w');
+  expect(()=>planPrint({items:[item({strokeWidthMm:.31})]})).toThrow();
+ });
  it('preserves mm and inch input without changing cut-line bounds',()=>{
   const a=planPrint({items:[item()]}),b=planPrint({items:[item({size:{width:87.3/25.4,height:142.6/25.4,unit:'in'}})]});
   expect(b.sheets[0]!.placements[0]!.rect.width).toBeCloseTo(87.3,12);
