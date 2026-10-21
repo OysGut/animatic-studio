@@ -36,7 +36,7 @@ Kortversjonen:
 18. Carry-over between scenes (GP3) is planned by the pure planCarryOver and run as one undo group of existing commands; it never targets the source 2D scene, so it cannot mix with an open Asset Studio draft.
 19. Film shares (GP5) bind a hashed token to one exported film version uploaded as mp4; the public /se/$token page resolves only through a server function that returns title, format, duration and a short-lived signed URL.
 20. Subdirectories have their own AGENTS.md (src/core/typography, src/core/animation, src/app/asset-studio); read it before changing files there.
-21. Asset-version order uses compareVersionCreation so same-millisecond recordings stay deterministic.
+21. Asset-version order uses compareVersionCreation (deterministic within one millisecond).
 23. Invitations bind to the invited email: acceptance functions compare it with the signed-in auth email, so a leaked invitation link never grants access to someone else.
 
 24. Note resolution is reversible, not removal; audio edits persist projected alignment without changing sources.
