@@ -464,7 +464,7 @@ await run("h06-nedlasting", async (page) => {
   check(await exp.getByTestId("export-format").isVisible(), "nedlastingen har valg av filformat");
   check((await exp.getByTestId("export-format").locator("option").allTextContents()).some((t) => t.includes("WebM")), "MP4 og WebM kan velges");
   check(await exp.getByTestId("export-subtitles").isVisible(), "nedlastingen har eget valg for undertekster");
-  check(await exp.getByRole("radio", { name: tx(/Valgt scene/, /Selected scene/) }).isChecked().catch(() => false), "nedlastingen er satt til valgt scene");
+  check(await exp.getByRole("radio", { name: tx(/Valgt scene/, /^Selected scene(?!s)/) }).isChecked().catch(() => false), "nedlastingen er satt til valgt scene");
   await page.screenshot({ path: `${out}/h06-nedlasting.png` });
 });
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);
