@@ -1,5 +1,13 @@
 # Veikart
 
+## Neste i køen: B-087 Rigg runde 5
+- [ ] Start først når B-105a og KR-1 er helt ferdige og rapportert.
+- [ ] Utskriftsjobber, elementer og én rad per fysisk kopi; ingen deduplisering, felles innstillinger og gjenutskrift med samme koder.
+- [ ] Additiv migrasjon etter B-105a: peprede QR-/kortkoder, tilgangsbeskyttet oppslag, apply_changes, angring, backup og delete/purge; Claude kjører i Cloud.
+- [ ] Batch-PDF, QR-plassering og tosidig utskrift med testark og forskyvning per bruker/skriver.
+- [ ] Mobilrute og manuell kode, riktig scene/frame/lag og nøytrale tilgangsfeil.
+- [ ] rigg-r5 nb/en og regresjoner én om gangen, full Vitest/lokale DB-tester, alle språk og RIGG_R5_REPORT.md; A1–A16 verifiseres bare med bestått dekning.
+
 ## B-105a og KR-1 (21.10.2026)
 - [x] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
 - [x] Bildegrunnlag: ren størrelses-/filvalgplan, nettleseradapter og 64-elementers LRU; 2205 Vitest / 6 nettleseradapterkontroller bestått.
