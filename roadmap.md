@@ -1,5 +1,11 @@
 # Veikart
 
+## Aktivt oppdrag: runde 4 og B-095 (21.10.2026)
+- [ ] A: skjemaversjon 72, regenerert i18n og full Vitest.
+- [ ] B: synkron lest-status og job-read 8/8 nb/en.
+- [ ] C: PDF-brukerflate, rigg-r4 nb/en, sekvensiell regresjon og DB-tester.
+- [ ] Rapport RIGG_R4_REPORT.md med faktiske resultater og fysisk prøve som ekstern kontroll.
+
 ## B-087 Rigg & 2D-utskrift (21.10.2026)
 - [x] Runde 0: spesifikasjon v3, TODO_3D_PRINT.md, REQ-0879–REQ-0915, TODO/ROADMAP.
 - [ ] Runde 1 (pågår): B-090-avklaringer (REQ-0895 verifisert, DEC-0100), riggmodell i src/core/rig, størrelsesmatematikk, parallakse, maler og arv, migrasjon 0071, Rigg-fane, platenivå i lagpanelet, tester.

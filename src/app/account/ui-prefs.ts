@@ -9,6 +9,7 @@ import { saveUiPrefs, type MyAccount } from "@/adapters/browser/account";
 import { MY_ACCOUNT_KEY, useMyAccount } from "./use-account";
 
 const LOCAL = (key: string) => `animatic:ui:${key}`; // i18n-ignore: nøkkel i nettleserens lager
+const PREF_CHANGED = "animatic:ui-pref-changed";
 
 function readLocal(key: string): unknown {
   try {
@@ -46,6 +47,18 @@ export function useUiPref<T>(
   const fromAccount = account.data?.uiPrefs?.[key];
   const [value, setValue] = useState<T>(fallback);
   const touched = useRef(false);
+  // Alle monterte visninger får også senere lokale endringer. `touched` beskytter bare mot
+  // eldre kontosvar; det må ikke blokkere andre visningers optimistiske oppdateringer.
+  useEffect(() => {
+    const changed = (event: Event) => {
+      const detail = (event as CustomEvent<{ key: string; value: unknown }>).detail;
+      if (detail?.key !== key || !valid(detail.value)) return;
+      touched.current = true;
+      setValue(detail.value);
+    };
+    window.addEventListener(PREF_CHANGED, changed);
+    return () => window.removeEventListener(PREF_CHANGED, changed);
+  }, [key, valid]);
   // Første verdi: kontoen, ellers nettleseren, ellers standard
   useEffect(() => {
     if (touched.current) return;
@@ -60,6 +73,7 @@ export function useUiPref<T>(
       touched.current = true;
       setValue(next);
       writeLocal(key, next);
+      window.dispatchEvent(new CustomEvent(PREF_CHANGED, { detail: { key, value: next } }));
       // Oppdater hurtigbufferen, så andre visninger ser valget med én gang
       qc.setQueryData<MyAccount | null>(MY_ACCOUNT_KEY, (a) =>
         a ? { ...a, uiPrefs: { ...a.uiPrefs, [key]: next } } : a,
