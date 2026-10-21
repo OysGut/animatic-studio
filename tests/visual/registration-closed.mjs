@@ -74,6 +74,20 @@ async function mock(ctx, st) {
   await ctx.route("**/_serverFn/**", (route) => {
     const name = serverFnName(route.request().url());
     const json = (result) => route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ result, context: {} }) });
+    // B-110: innloggingslenken sendes nå av serveren (etter CAPTCHA); registreringspass hentes før signUp
+    const body = route.request().postData() ?? "";
+    if (/^captchaConfig/.test(name)) return json({ enabled: false, siteKey: null });
+    if (/^requestSignupPass/.test(name)) return json({ ok: true });
+    if (/^sendSignInLinkCaptcha/.test(name)) {
+      // Seroval: {t:2, s:2} = true, {t:2, s:3} = false
+      let create_user = true;
+      try {
+        const inner = JSON.parse(body).t.p.v[0].p;
+        create_user = inner.v[inner.k.indexOf("createUser")]?.s !== 3;
+      } catch { /* standard: true */ }
+      st.otp.push({ create_user });
+      return json(create_user ? { ok: true } : { ok: false, code: "auth", message: "Signups not allowed for otp" });
+    }
     if (/fetchAdminOverview/.test(name))
       return json({ ok: true, purged: 0, permanentEmail: "oystein@gutu.no", users: [], projects: [] });
     return json({ ok: false });

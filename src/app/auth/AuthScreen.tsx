@@ -1,7 +1,16 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchRegistrationStatus, isRegistrationClosedError } from "@/adapters/browser/registration";
-import { sendPasswordReset, sendSignInLink, signInWithPassword, signUp } from "@/adapters/browser/auth";
+import { signInWithPassword } from "@/adapters/browser/auth";
+import {
+  CAPTCHA_ERROR,
+  fetchCaptchaSettings,
+  sendPasswordReset,
+  sendSignInLink,
+  signInWithPasswordChecked,
+  signUp,
+} from "@/adapters/browser/captcha-auth";
+import { TurnstileBox } from "./TurnstileBox";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +21,30 @@ import { t } from "@/core/i18n/keyed";
 
 type Mode = "signin" | "signup";
 
+/** B-110: innlogging med passord får CAPTCHA etter så mange feil fra samme nettleser. */
+export const LOGIN_CAPTCHA_AFTER = 3;
+const FAILURES_KEY = "ptg:login-failures";
+function readFailures(): number {
+  try {
+    return Number(localStorage.getItem(FAILURES_KEY) ?? 0) || 0;
+  } catch {
+    return 0;
+  }
+}
+function writeFailures(n: number) {
+  try {
+    if (n > 0) localStorage.setItem(FAILURES_KEY, String(n));
+    else localStorage.removeItem(FAILURES_KEY);
+  } catch {
+    // privat modus o.l.: telleren gjelder bare denne økten
+  }
+}
+
+type Action = "signup" | "link" | "reset" | "login";
+
 function norwegianAuthError(message: string, closedText?: string): string {
+  if (message.startsWith(CAPTCHA_ERROR))
+    return message.endsWith("unavailable") ? t("b110.captcha.unavailable") : t("b110.captcha.failed");
   // B-109: stengt registrering gir alltid den rolige meldingen, aldri en databasefeil
   if (isRegistrationClosedError(message)) return closedText ?? t("b109.auth.closed");
   const m = message.toLowerCase();
@@ -50,8 +82,39 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
   const [country, setCountry] = useState<string | null>(null);
   const [countryMissing, setCountryMissing] = useState(false);
 
-  async function submit(e: FormEvent) {
-    e.preventDefault();
+  // B-110: CAPTCHA (Cloudflare Turnstile) når nøklene er satt opp på serveren
+  const cfg = useQuery({ queryKey: ["captcha-config"], queryFn: fetchCaptchaSettings, staleTime: 300_000 });
+  const captchaOn = cfg.data?.enabled === true && !!cfg.data.siteKey;
+  const [failures, setFailures] = useState(0);
+  useEffect(() => setFailures(readFailures()), []);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [captchaKey, setCaptchaKey] = useState(0);
+  const [captchaFor, setCaptchaFor] = useState<"link" | "reset" | null>(null);
+  const [pending, setPending] = useState<Action | null>(null);
+  const loginNeedsCaptcha = captchaOn && failures >= LOGIN_CAPTCHA_AFTER;
+  const captchaAction: Action | null = !captchaOn
+    ? null
+    : mode === "signup"
+      ? "signup"
+      : captchaFor ?? (loginNeedsCaptcha ? "login" : null);
+  const needs = (a: Action) => captchaOn && (a !== "login" || loginNeedsCaptcha);
+  /** Tokenet kan brukes én gang; etter hvert kall lages en ny boks. */
+  const consumeCaptcha = () => {
+    setCaptchaToken(null);
+    setCaptchaKey((k) => k + 1);
+  };
+  /** Mangler tokenet, vises boksen, og handlingen kjøres når den er godkjent. */
+  const waitForCaptcha = (a: Action): boolean => {
+    if (!needs(a) || (captchaToken && captchaAction === a)) return false;
+    if (a === "link" || a === "reset") setCaptchaFor(a);
+    setPending(a);
+    setError(null);
+    setNotice(t("b110.captcha.confirm"));
+    return true;
+  };
+
+  async function submit(e?: FormEvent) {
+    e?.preventDefault();
     if (mode === "signup" && !country) {
       setCountryMissing(true);
       setError(t("b097.country.required"));
@@ -61,15 +124,28 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
       setError(t("app-auth-auth-screen.submit.set-error.d5170069ebaf"));
       return;
     }
+    const action: Action = mode === "signup" ? "signup" : "login";
+    if (mode === "signin" && captchaFor) setCaptchaFor(null);
+    if (waitForCaptcha(action)) return;
     setBusy(true);
     setError(null);
     setNotice(null);
     const redirect = typeof window !== "undefined" ? window.location.href : undefined;
+    const token = needs(action) ? captchaToken : null;
     const res =
       mode === "signin"
-        ? await signInWithPassword(email, password)
-        : await signUp(email, password, redirect, country ?? undefined);
+        ? token
+          ? await signInWithPasswordChecked(email, password, token)
+          : await signInWithPassword(email, password)
+        : await signUp(email, password, redirect, country ?? undefined, token);
     setBusy(false);
+    if (needs(action)) consumeCaptcha();
+    if (mode === "signin") {
+      const invalid = !!res.error && res.error.message.toLowerCase().includes("invalid login");
+      const n = res.error ? (invalid ? failures + 1 : failures) : 0;
+      setFailures(n);
+      writeFailures(n);
+    }
     if (res.error) setError(norwegianAuthError(res.error.message, closed ? closedText : undefined));
     else if (mode === "signup" && !res.session)
       setNotice(
@@ -82,11 +158,14 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
       setError(t("app-auth-auth-screen.send-link.set-error.7166e0585ba7"));
       return;
     }
+    if (waitForCaptcha("link")) return;
     setBusy(true);
     setError(null);
+    setNotice(null);
     const redirect = typeof window !== "undefined" ? window.location.href : undefined;
-    const res = await sendSignInLink(email, redirect, !closed);
+    const res = await sendSignInLink(email, redirect, !closed, needs("link") ? captchaToken : null);
     setBusy(false);
+    if (needs("link")) consumeCaptcha();
     if (res.error) setError(norwegianAuthError(res.error.message, closed ? closedText : undefined));
     else
       setNotice(
@@ -99,13 +178,27 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
       setError(t("auth.password-reset.email-required"));
       return;
     }
+    if (waitForCaptcha("reset")) return;
     setBusy(true);
     setError(null);
     setNotice(null);
-    await sendPasswordReset(email);
+    const res = await sendPasswordReset(email, needs("reset") ? captchaToken : null);
     setBusy(false);
-    setNotice(t("auth.password-reset.sent"));
+    if (needs("reset")) consumeCaptcha();
+    if (res.error) setError(norwegianAuthError(res.error.message));
+    else setNotice(t("auth.password-reset.sent"));
   }
+
+  // Når boksen er godkjent, kjøres handlingen brukeren ba om
+  const run = useRef({ submit, sendLink, resetPassword });
+  run.current = { submit, sendLink, resetPassword };
+  useEffect(() => {
+    if (!captchaToken || !pending || pending !== captchaAction) return;
+    setPending(null);
+    if (pending === "link") void run.current.sendLink();
+    else if (pending === "reset") void run.current.resetPassword();
+    else void run.current.submit();
+  }, [captchaToken, pending, captchaAction]);
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg-app px-4">
@@ -200,6 +293,14 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
                 </a>
               </span>
             </label>
+          ) : null}
+          {captchaAction && cfg.data?.siteKey ? (
+            <TurnstileBox
+              key={`${captchaAction}-${captchaKey}`}
+              siteKey={cfg.data.siteKey}
+              action={captchaAction}
+              onToken={setCaptchaToken}
+            />
           ) : null}
           {error ? (
             <p role="alert" className="text-xs text-status-danger">

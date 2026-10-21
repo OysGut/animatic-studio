@@ -74381,5 +74381,29 @@
   },
   "b109.admin.cancel": {
     "text": "Avbryt"
+  },
+  "b110.captcha.failed": {
+    "text": "Vi fikk ikke bekreftet at du ikke er en robot. Prøv igjen."
+  },
+  "b110.captcha.unavailable": {
+    "text": "Robotkontrollen svarer ikke akkurat nå. Prøv igjen om litt."
+  },
+  "b110.captcha.retry": {
+    "text": "Prøv igjen"
+  },
+  "b110.captcha.confirm": {
+    "text": "Bekreft at du ikke er en robot i boksen under. Handlingen fortsetter av seg selv."
+  },
+  "b110.admin.on": {
+    "text": "Robotkontroll (Cloudflare Turnstile) er på."
+  },
+  "b110.admin.off-title": {
+    "text": "Robotkontroll er av."
+  },
+  "b110.admin.off": {
+    "text": "Nøklene for Cloudflare Turnstile (TURNSTILE_SITE_KEY og TURNSTILE_SECRET_KEY) mangler på serveren. Registrering, innloggingslenke og «Glemt passord» virker, men uten CAPTCHA."
+  },
+  "b110.privacy.turnstile": {
+    "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
   }
 }

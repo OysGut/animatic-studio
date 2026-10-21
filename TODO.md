@@ -26,6 +26,11 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 - Lisens fra kilden: verken katalogen uten nøkkel eller Developer API oppgir lisens; den bestemmes nå fra kjente Apache-/UFL-lister (resten OFL). Bør kontrolleres mot METADATA.pb når det er tid.
 - Kontroller i Cloud at lagringsbøtta godtar fontpakken (opplasting som application/octet-stream; gjenoppretting fra sikkerhetskopi sender application/x-ptg-fontpack).
 
+## B-110 – CAPTCHA, rester
+- Innloggingstjenestens innebygde CAPTCHA kan ikke slås på i Lovable Cloud; direkte kall kan fortsatt be om lenke/passordlenke for eksisterende kontoer og prøve passord (begrenses av tjenestens hastighetsgrenser). Nye kontoer krever pass (0076).
+- Øystein: lag Turnstile-widget hos Cloudflare og legg TURNSTILE_SITE_KEY og TURNSTILE_SECRET_KEY i Project Settings → Secrets.
+- Rigg runde 5 får migrasjon 0077.
+
 ## Neste gang `apply_changes` endres
 - B-097: skriv `change_log.scene_ids` i samme transaksjon i `apply_changes` i stedet for i et eget kall etter (`runCommand`). Godkjent som midlertidig løsning 21.10.
 
