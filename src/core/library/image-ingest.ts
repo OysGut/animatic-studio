@@ -70,10 +70,10 @@ export function versionImagePath(v: VersionImageRef, use: ImageUse, zoom = 1): s
 }
 
 /**
- * Validerer avledede filer før lagring. Returnerer en eksisterende i18n-nøkkel ved feil, ellers null
+ * Validerer avledede filer før lagring. `prefix` (for eksempel `<prosjekt-id>/`) kreves for hver sti. Returnerer en eksisterende i18n-nøkkel ved feil, ellers null
  * (gjenbruker meldingene for versjonsmedia, så ingen nye tekster trengs).
  */
-export function derivedFilesError(d: unknown): string | null {
+export function derivedFilesError(d: unknown, prefix?: string): string | null {
   if (d === null || typeof d !== 'object' || Array.isArray(d)) return 'core-commands-apply.run.fail.bf6e905ff6b8.2';
   for (const [key, value] of Object.entries(d as Record<string, unknown>)) {
     if (!(DERIVED_KEYS as readonly string[]).includes(key)) return 'core-commands-apply.run.fail.bf6e905ff6b8.2';
@@ -81,6 +81,9 @@ export function derivedFilesError(d: unknown): string | null {
     if (value === null || typeof value !== 'object' || Array.isArray(value)) return 'core-commands-apply.run.fail.bf6e905ff6b8.2';
     const f = value as Record<string, unknown>;
     if (typeof f['path'] !== 'string' || f['path'].length < 1 || f['path'].length > 500) return 'core-commands-apply.run.fail.bf6e905ff6b8.2';
+    // B-105a/0078: stien må ligge under eget prosjekt og ikke gå opp i mappetreet (opprydding sletter den)
+    if (f['path'].includes('..') || (prefix !== undefined && !f['path'].startsWith(prefix)))
+      return 'core-commands-apply.run.fail.bf6e905ff6b8.2';
     if (typeof f['sha256'] !== 'string' || !/^[0-9a-f]{64}$/.test(f['sha256'])) return 'core-commands-apply.run.fail.bacfc2e4bb12.2';
     if (typeof f['byteSize'] !== 'number' || !Number.isInteger(f['byteSize']) || f['byteSize'] <= 0) return 'core-commands-apply.run.fail.f79f89233d6b.2';
     for (const dim of [f['width'], f['height']])

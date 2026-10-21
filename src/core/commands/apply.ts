@@ -6551,7 +6551,7 @@ function run(
           fail("invalid", tk("id3.derived-from.invalid"));
       }
       if (m.derivedFiles !== undefined) {
-        const derr = derivedFilesError(m.derivedFiles);
+        const derr = derivedFilesError(m.derivedFiles, `${s.project.id}/`);
         if (derr) fail("invalid", derr);
       }
       const siblings = Object.values(s.assetVersions).filter((x) => x.variantId === va.id);
@@ -6709,7 +6709,7 @@ function run(
       if (!ver.mimeType.startsWith("image/"))
         fail("invalid", tk("core-commands-apply.run.fail.bf6e905ff6b8.2"));
       if (c.derived !== null) {
-        const derr = derivedFilesError(c.derived);
+        const derr = derivedFilesError(c.derived, `${s.project.id}/`);
         if (derr) fail("invalid", derr);
       }
       const { derivedFiles: _previous, ...withoutDerived } = ver;
