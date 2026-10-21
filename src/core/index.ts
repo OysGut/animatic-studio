@@ -86,6 +86,8 @@ export * from "./script-assist";
 export * from "./credits";
 
 export * from "./animation/rig";
+export * from "./rig/multiplane";
+export * from "./rig/multiplane-commands";
 export * from "./animation/evaluate";
 export * from "./dialogue/versions";
 export * from "./dialogue/navigation";

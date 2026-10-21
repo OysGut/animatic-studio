@@ -240,6 +240,7 @@ export interface BlockPlacement {
 }
 
 export type Command = import("../animation/rig-commands").RigCommand
+  | import("../rig/multiplane-commands").MultiplaneRigCommand
   | import("../animation/behavior-commands").BehaviorCommand
   | {
       readonly type: "CreateProduction";

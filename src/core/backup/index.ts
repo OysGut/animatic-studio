@@ -83,6 +83,8 @@ export const BACKUP_STATE_TABLES = [
   "style_harmonizations",
   "style_preferred_references",
   "language_versions",
+  "rig_templates",
+  "rig_setups",
 ] as const;
 export type BackupStateTable = (typeof BACKUP_STATE_TABLES)[number];
 
@@ -600,6 +602,8 @@ export function restoredState(
     style_harmonizations: t("style_harmonizations"),
     style_preferred_references: t("style_preferred_references"),
     language_versions: t("language_versions"),
+    rig_templates: t("rig_templates"),
+    rig_setups: t("rig_setups"),
   };
   let state: ProjectState;
   try {

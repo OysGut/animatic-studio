@@ -33085,7 +33085,7 @@ requirements:
   text: "A1: Én figur kan skrives ut i 20 identiske eksemplarer."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§2, §3"
   type: funksjonell
@@ -33104,7 +33104,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
@@ -33113,7 +33113,7 @@ requirements:
   text: "A2: Identiske utskrifter fjernes ikke automatisk."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§2, B-087 (ingen deduplisering)"
   type: funksjonell
@@ -33131,7 +33131,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
@@ -33140,7 +33140,7 @@ requirements:
   text: "A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§3"
   type: funksjonell
@@ -33159,7 +33159,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
@@ -33168,7 +33168,7 @@ requirements:
   text: "A4: Valg mellom full farge, full figur med klippelinje og bare kontur."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§4, §6"
   type: funksjonell
@@ -33187,7 +33187,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
@@ -33196,7 +33196,7 @@ requirements:
   text: "A5: Konturen er figurens faktiske silhuett, ikke rektangelet."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§5, B-087 (masker)"
   type: funksjonell
@@ -33215,7 +33215,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
   notes: "Bygges i Runde 2 (kontur fra maske, alfa eller avslåbart forslag)."
 
@@ -33224,7 +33224,7 @@ requirements:
   text: "A6: Inspeksjonsvinduet kan åpnes uten å skrive ut."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§7, §10"
   type: funksjonell
@@ -33242,7 +33242,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33251,7 +33251,7 @@ requirements:
   text: "A7: Bredde og høyde kan måles."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§8"
   type: funksjonell
@@ -33270,7 +33270,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33279,7 +33279,7 @@ requirements:
   text: "A8: Avstand mellom valgfrie punkter kan måles."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§8, §9"
   type: funksjonell
@@ -33297,7 +33297,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33306,7 +33306,7 @@ requirements:
   text: "A9: Vinkler kan måles."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§8, §9"
   type: funksjonell
@@ -33324,7 +33324,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33333,7 +33333,7 @@ requirements:
   text: "A10: Forholdstall mellom valgte avstander kan måles."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§8"
   type: funksjonell
@@ -33351,7 +33351,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33360,7 +33360,7 @@ requirements:
   text: "A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§9"
   type: funksjonell
@@ -33379,7 +33379,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
   notes: "Bygges i Runde 3 (inspeksjonsvindu og måleverktøy)."
 
@@ -33388,7 +33388,7 @@ requirements:
   text: "A12: Målelinjer skrives ikke automatisk ut."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§10, §11 (målingene lages i runde 3)"
   type: funksjonell
@@ -33406,7 +33406,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
@@ -33415,7 +33415,7 @@ requirements:
   text: "A13: mm eller inches."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§8, §12, B-087 (mm internt, inches bare visning; brukes også i runde 3 og 4)"
   type: funksjonell
@@ -33434,7 +33434,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
   notes: "Bygges i Runde 1 (riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå; migrasjon 0071)."
 
@@ -33443,7 +33443,7 @@ requirements:
   text: "A14: Felles utskriftsinnstillinger for en hel batch."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§13"
   type: funksjonell
@@ -33462,7 +33462,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
@@ -33471,7 +33471,7 @@ requirements:
   text: "A15: QR og konturmodus fungerer også i batch."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§13, §14"
   type: funksjonell
@@ -33490,7 +33490,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
@@ -33499,7 +33499,7 @@ requirements:
   text: "A16: 2D-utskrift kan leveres uten 3D-generering."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§1, §15, endelig instruksjon (første leverbare 2D-utskrift er runde 4)"
   type: funksjonell
@@ -33517,7 +33517,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
@@ -33526,7 +33526,7 @@ requirements:
   text: "A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§15, §16"
   type: funksjonell
@@ -33538,22 +33538,25 @@ requirements:
   dependencies: []
   acceptance:
   - "A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO."
-  tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  tests:
+  - "tests/unit/todo-3d-print.test.ts"
+  status: Verifisert
+  implementation:
+  - "docs/development/TODO_3D_PRINT.md"
+  verification:
+  - "tests/unit/todo-3d-print.test.ts: kontrollerer 3D-01–3D-20 og de fire påkrevde feltene"
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md)."
-  notes: "Bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md)."
+  notes: "Dokumentasjon verifisert av tests/unit/todo-3d-print.test.ts."
 
 - id: REQ-0896
   title: "3D-print 3D-01: Generering av 3D-modell fra bilde"
   text: "Lage en 3D-modell av en figur fra et valgt bilde (frame eller ressursversjon) via en ekstern bilde-til-3D-tjeneste."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33572,7 +33575,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-01)."
 
@@ -33581,7 +33584,7 @@ requirements:
   text: "Brukeren velger mellom en figur med flat bakside (ligger på glassplaten) og en full 3D-figur."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33600,7 +33603,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-02)."
 
@@ -33609,7 +33612,7 @@ requirements:
   text: "Relieff der dybden følger bildet innenfor silhuetten, uten full 3D-rekonstruksjon."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33628,7 +33631,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-03)."
 
@@ -33637,7 +33640,7 @@ requirements:
   text: "Brukeren setter figurens fysiske dybde i mm med en slider."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33656,7 +33659,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-04)."
 
@@ -33665,7 +33668,7 @@ requirements:
   text: "Dybden kan skrives inn som tall i stedet for slider."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33684,7 +33687,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-05)."
 
@@ -33693,7 +33696,7 @@ requirements:
   text: "Siste brukte dybdeverdier kan velges raskt."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33712,7 +33715,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-06)."
 
@@ -33721,7 +33724,7 @@ requirements:
   text: "En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bildet. Størrelsen korrigeres med samme linseformel som i 2D."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33740,7 +33743,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-07)."
 
@@ -33749,7 +33752,7 @@ requirements:
   text: "3D-modeller plasseres i det samme riggkoordinatsystemet (mm, platenivåer, kameraakse) som 2D-figurene."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33768,7 +33771,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-08)."
 
@@ -33777,7 +33780,7 @@ requirements:
   text: "Brukeren velger leverandør og modell for bilde-til-3D."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33796,7 +33799,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-09)."
 
@@ -33805,7 +33808,7 @@ requirements:
   text: "Bilde-til-3D bygges som en ny adapter i den eksisterende adaptermodellen, ikke som et eget system."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33824,7 +33827,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-10)."
 
@@ -33833,7 +33836,7 @@ requirements:
   text: "Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor budsjettet."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33852,7 +33855,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-11)."
 
@@ -33861,7 +33864,7 @@ requirements:
   text: "3D-jobber vises i den samme jobblisten med status, fremdrift, feilmelding og nytt forsøk."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33880,7 +33883,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-12)."
 
@@ -33889,7 +33892,7 @@ requirements:
   text: "Et 3D-inspeksjonsvindu (rotere, zoome, panorere) som motstykke til 2D-inspeksjonen."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33908,7 +33911,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-13)."
 
@@ -33917,7 +33920,7 @@ requirements:
   text: "Vis modellens fysiske mål (bredde, høyde, dybde) og sammenlign med 2D-figurens beregnede størrelse."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33936,7 +33939,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-14)."
 
@@ -33945,7 +33948,7 @@ requirements:
   text: "Kontroll av at modellen kan printes: lukket nett (manifold), minste veggtykkelse, overheng og byggevolum."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33964,7 +33967,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-15)."
 
@@ -33973,7 +33976,7 @@ requirements:
   text: "Eksport av modellen som STL og 3MF i mm."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -33992,7 +33995,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-16)."
 
@@ -34001,7 +34004,7 @@ requirements:
   text: "En kort ID-kode (samme ordning som QR i runde 5) preges eller trykkes på en flate som ikke synes i kamera (for eksempel undersiden)."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -34020,7 +34023,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-17)."
 
@@ -34029,7 +34032,7 @@ requirements:
   text: "Koden kan tastes inn for hånd når den ikke kan skannes."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -34048,7 +34051,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-18)."
 
@@ -34057,7 +34060,7 @@ requirements:
   text: "Oppslag på koden åpner riktig scene, frame og modellversjon."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -34076,7 +34079,7 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-19)."
 
@@ -34085,7 +34088,7 @@ requirements:
   text: "Hver 3D-modell er en ny versjon; kildebilde, 2D-figur og aktiv versjon endres aldri automatisk."
   origin: brukerbeslutning
   source:
-    decision: B-087
+    decision: B-087, DEC-0100
     document: docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md
     section: "§16"
   type: funksjonell
@@ -34104,6 +34107,6 @@ requirements:
   verification: []
   history:
   - date: '2026-10-21'
-    decision: B-087
+    decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 som utsatt 3D-arbeid."
   notes: "Utsatt, blokkerer ikke 2D. Se docs/development/TODO_3D_PRINT.md (3D-20)."

@@ -39,9 +39,9 @@ Hver milepæl avsluttes med milepælsrevisjon (`requirements-traceability/refere
 | 0 ✅ | Spesifikasjon v3, TODO for 3D-print, kravregister | – | REQ-0879–REQ-0915 registrert |
 | 1 | Riggmodell, maler, størrelsesmatematikk, Rigg-fane og platenivå | 0071 | A13 |
 | 2 | Kontur fra maske, alfa eller avslåbart forslag | – | A5 |
-| 3 | Inspeksjonsvindu og måleverktøy | – | A6–A11 |
+| 3 | Inspeksjonsvindu og måleverktøy | 0072 | A6–A11 |
 | 4 | PDF-motor i mm, tre moduser, kalibrering og tiling | – | A4, A12, A16 |
-| 5 | Batch, kopier, QR, tosidig utskrift og mobiloppslag | 0072 | A1–A3, A14, A15 |
+| 5 | Batch, kopier, QR, tosidig utskrift og mobiloppslag | 0073 | A1–A3, A14, A15 |
 | 3D | 3D-print (3D-01 … 3D-20), utsatt og blokkerer ikke 2D | – | REQ-0896–REQ-0915 |
 
 ## Mars' ønsker 2026-10-11 (DEC-0050) – plassert i leveransene

@@ -9,6 +9,7 @@ import { languageVersionError, versionIdFor, type LanguageVersion, type Language
 import { lineInfo } from "../audio/takes";
 import { DEFAULT_COMPOSITION } from "../composition/fields";
 import { applyRigCommand } from "../animation/rig-commands";
+import { applyMultiplaneRigCommand } from "../rig/multiplane-commands";
 import { applyBehaviorCommand } from "../animation/behavior-commands";
 import {
   DIALOGUE_VERSION_SOURCES,
@@ -1902,6 +1903,9 @@ function run(
     }
     case "CreateRig": case "SaveRigVersion": case "SetRigAnchors": case "AttachAnimationUse": case "SetAnimationLayerEnabled": case "SetAnimationBehavior": case "AdoptRigVersion": case "UndoAnimationChange": {
       try { return applyRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("core-commands-apply.run.fail.20f599eed294")); }
+    }
+    case "AddRigTemplate": case "UpdateRigTemplate": case "SetRigTemplateRemoved": case "AddRigSetup": case "UpdateRigSetup": case "SetRigSetupRemoved": case "ApplySceneRig": case "SetLayerRigPlate": case "UndoMultiplaneRigChange": {
+      try { return applyMultiplaneRigCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("core-commands-apply.run.fail.20f599eed294")); }
     }
     case "SaveLipsyncResult": case "SetLipsyncEnabled": case "SetLipsyncOverrides": case "SaveAnimationPattern": case "RemoveAnimationPattern": case "UndoBehaviorChange": {
       try { return applyBehaviorCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("core-commands-apply.run.fail.84f506950452")); }

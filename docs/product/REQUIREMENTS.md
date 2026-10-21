@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **915**
 - Prioritet: P0: 147, P1: 560, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 388, teknisk-anbefaling: 7
-- Status: Verifisert: 709, Ikke startet: 82, Implementert – ikke verifisert: 112, Under arbeid: 12
+- Status: Verifisert: 710, Ikke startet: 81, Implementert – ikke verifisert: 112, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -12233,7 +12233,7 @@ i18n-sjekken stopper ukjente statiske oversettelsesnøkler, manglende nb/en, uli
 #### REQ-0879 – Rigg & 2D-utskrift A1: Én figur kan skrives ut i 20 identiske eksemplarer
 A1: Én figur kan skrives ut i 20 identiske eksemplarer.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, PRESENT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12244,7 +12244,7 @@ A1: Én figur kan skrives ut i 20 identiske eksemplarer.
 #### REQ-0880 – Rigg & 2D-utskrift A2: Identiske utskrifter fjernes ikke automatisk
 A2: Identiske utskrifter fjernes ikke automatisk.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12255,7 +12255,7 @@ A2: Identiske utskrifter fjernes ikke automatisk.
 #### REQ-0881 – Rigg & 2D-utskrift A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske
 A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, TIMELINE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12266,7 +12266,7 @@ A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske.
 #### REQ-0882 – Rigg & 2D-utskrift A4: Valg mellom full farge, full figur med klippelinje og bare kontur
 A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12277,7 +12277,7 @@ A4: Valg mellom full farge, full figur med klippelinje og bare kontur.
 #### REQ-0883 – Rigg & 2D-utskrift A5: Konturen er figurens faktiske silhuett, ikke rektangelet
 A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** COMPOSE, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12288,7 +12288,7 @@ A5: Konturen er figurens faktiske silhuett, ikke rektangelet.
 #### REQ-0884 – Rigg & 2D-utskrift A6: Inspeksjonsvinduet kan åpnes uten å skrive ut
 A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12299,7 +12299,7 @@ A6: Inspeksjonsvinduet kan åpnes uten å skrive ut.
 #### REQ-0885 – Rigg & 2D-utskrift A7: Bredde og høyde kan måles
 A7: Bredde og høyde kan måles.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12310,7 +12310,7 @@ A7: Bredde og høyde kan måles.
 #### REQ-0886 – Rigg & 2D-utskrift A8: Avstand mellom valgfrie punkter kan måles
 A8: Avstand mellom valgfrie punkter kan måles.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12321,7 +12321,7 @@ A8: Avstand mellom valgfrie punkter kan måles.
 #### REQ-0887 – Rigg & 2D-utskrift A9: Vinkler kan måles
 A9: Vinkler kan måles.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12332,7 +12332,7 @@ A9: Vinkler kan måles.
 #### REQ-0888 – Rigg & 2D-utskrift A10: Forholdstall mellom valgte avstander kan måles
 A10: Forholdstall mellom valgte avstander kan måles.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12343,7 +12343,7 @@ A10: Forholdstall mellom valgte avstander kan måles.
 #### REQ-0889 – Rigg & 2D-utskrift A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom
 A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** UI, CORE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12354,7 +12354,7 @@ A11: Måleverktøyene bruker fysisk målestokk uavhengig av skjermzoom.
 #### REQ-0890 – Rigg & 2D-utskrift A12: Målelinjer skrives ikke automatisk ut
 A12: Målelinjer skrives ikke automatisk ut.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12365,7 +12365,7 @@ A12: Målelinjer skrives ikke automatisk ut.
 #### REQ-0891 – Rigg & 2D-utskrift A13: mm eller inches
 A13: mm eller inches.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12376,7 +12376,7 @@ A13: mm eller inches.
 #### REQ-0892 – Rigg & 2D-utskrift A14: Felles utskriftsinnstillinger for en hel batch
 A14: Felles utskriftsinnstillinger for en hel batch.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, UI
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12387,7 +12387,7 @@ A14: Felles utskriftsinnstillinger for en hel batch.
 #### REQ-0893 – Rigg & 2D-utskrift A15: QR og konturmodus fungerer også i batch
 A15: QR og konturmodus fungerer også i batch.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT, SECURITY
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12398,7 +12398,7 @@ A15: QR og konturmodus fungerer også i batch.
 #### REQ-0894 – Rigg & 2D-utskrift A16: 2D-utskrift kan leveres uten 3D-generering
 A16: 2D-utskrift kan leveres uten 3D-generering.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12409,18 +12409,20 @@ A16: 2D-utskrift kan leveres uten 3D-generering.
 #### REQ-0895 – Rigg & 2D-utskrift A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO
 A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** PROCESS
-- **Status:** Ikke startet
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - A17: Hele 3D-omfanget er dokumentert i en egen fremtidig TODO.
 - **Tester:**
-- **Merknad:** Bygges i Runde 0 (dokumentasjon: docs/development/TODO_3D_PRINT.md).
+  - tests/unit/todo-3d-print.test.ts
+- **Implementering:** docs/development/TODO_3D_PRINT.md
+- **Merknad:** Dokumentasjon verifisert av tests/unit/todo-3d-print.test.ts.
 
 #### REQ-0896 – 3D-print 3D-01: Generering av 3D-modell fra bilde
 Lage en 3D-modell av en figur fra et valgt bilde (frame eller ressursversjon) via en ekstern bilde-til-3D-tjeneste.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** PROVIDER, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12431,7 +12433,7 @@ Lage en 3D-modell av en figur fra et valgt bilde (frame eller ressursversjon) vi
 #### REQ-0897 – 3D-print 3D-02: Flat underside eller full tredimensjonal figur
 Brukeren velger mellom en figur med flat bakside (ligger på glassplaten) og en full 3D-figur.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12442,7 +12444,7 @@ Brukeren velger mellom en figur med flat bakside (ligger på glassplaten) og en 
 #### REQ-0898 – 3D-print 3D-03: 2,5D-relieff og silhuetteffekter
 Relieff der dybden følger bildet innenfor silhuetten, uten full 3D-rekonstruksjon.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12453,7 +12455,7 @@ Relieff der dybden følger bildet innenfor silhuetten, uten full 3D-rekonstruksj
 #### REQ-0899 – 3D-print 3D-04: Fysisk dybde med slider
 Brukeren setter figurens fysiske dybde i mm med en slider.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12464,7 +12466,7 @@ Brukeren setter figurens fysiske dybde i mm med en slider.
 #### REQ-0900 – 3D-print 3D-05: Direkte numerisk dybdeverdi
 Dybden kan skrives inn som tall i stedet for slider.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12475,7 +12477,7 @@ Dybden kan skrives inn som tall i stedet for slider.
 #### REQ-0901 – 3D-print 3D-06: Gjenbruk av nylig brukte dybdemål
 Siste brukte dybdeverdier kan velges raskt.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12486,7 +12488,7 @@ Siste brukte dybdeverdier kan velges raskt.
 #### REQ-0902 – 3D-print 3D-07: Skalakorreksjon når volumet bringer deler nærmere kameraet
 En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bildet. Størrelsen korrigeres med samme linseformel som i 2D.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12497,7 +12499,7 @@ En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bi
 #### REQ-0903 – 3D-print 3D-08: Samme riggkoordinatsystem som 2D
 3D-modeller plasseres i det samme riggkoordinatsystemet (mm, platenivåer, kameraakse) som 2D-figurene.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12508,7 +12510,7 @@ En 3D-figur har deler som stikker ut mot kameraet; de ville blitt for store i bi
 #### REQ-0904 – 3D-print 3D-09: Leverandørvalg for eksterne bilde-til-3D-jobber
 Brukeren velger leverandør og modell for bilde-til-3D.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** PROVIDER, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12519,7 +12521,7 @@ Brukeren velger leverandør og modell for bilde-til-3D.
 #### REQ-0905 – 3D-print 3D-10: Integrasjon gjennom eksisterende AI-leverandørgrensesnitt
 Bilde-til-3D bygges som en ny adapter i den eksisterende adaptermodellen, ikke som et eget system.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** PROVIDER, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12530,7 +12532,7 @@ Bilde-til-3D bygges som en ny adapter i den eksisterende adaptermodellen, ikke s
 #### REQ-0906 – 3D-print 3D-11: Kostnadsinformasjon før generering (kostnadsport)
 Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor budsjettet.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** PROVIDER, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12541,7 +12543,7 @@ Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor bu
 #### REQ-0907 – 3D-print 3D-12: Jobbstatus og feilhåndtering
 3D-jobber vises i den samme jobblisten med status, fremdrift, feilmelding og nytt forsøk.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** PROVIDER, EXPORT
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12552,7 +12554,7 @@ Anslått kostnad vises, og ingenting starter før brukeren bekrefter innenfor bu
 #### REQ-0908 – 3D-print 3D-13: Interaktiv 3D-inspeksjon
 Et 3D-inspeksjonsvindu (rotere, zoome, panorere) som motstykke til 2D-inspeksjonen.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12563,7 +12565,7 @@ Et 3D-inspeksjonsvindu (rotere, zoome, panorere) som motstykke til 2D-inspeksjon
 #### REQ-0909 – 3D-print 3D-14: Kontroll av fysisk størrelse og modellgeometri
 Vis modellens fysiske mål (bredde, høyde, dybde) og sammenlign med 2D-figurens beregnede størrelse.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12574,7 +12576,7 @@ Vis modellens fysiske mål (bredde, høyde, dybde) og sammenlign med 2D-figurens
 #### REQ-0910 – 3D-print 3D-15: Printbarhetskontroll
 Kontroll av at modellen kan printes: lukket nett (manifold), minste veggtykkelse, overheng og byggevolum.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12585,7 +12587,7 @@ Kontroll av at modellen kan printes: lukket nett (manifold), minste veggtykkelse
 #### REQ-0911 – 3D-print 3D-16: STL- og 3MF-eksport
 Eksport av modellen som STL og 3MF i mm.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12596,7 +12598,7 @@ Eksport av modellen som STL og 3MF i mm.
 #### REQ-0912 – 3D-print 3D-17: Identifikasjonskode på egnet fysisk overflate
 En kort ID-kode (samme ordning som QR i runde 5) preges eller trykkes på en flate som ikke synes i kamera (for eksempel undersiden).
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12607,7 +12609,7 @@ En kort ID-kode (samme ordning som QR i runde 5) preges eller trykkes på en fla
 #### REQ-0913 – 3D-print 3D-18: Manuell inntasting av identifikasjonskode
 Koden kan tastes inn for hånd når den ikke kan skannes.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12618,7 +12620,7 @@ Koden kan tastes inn for hånd når den ikke kan skannes.
 #### REQ-0914 – 3D-print 3D-19: Navigasjon fra fysisk figur tilbake til digital scene
 Oppslag på koden åpner riktig scene, frame og modellversjon.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**
@@ -12629,7 +12631,7 @@ Oppslag på koden åpner riktig scene, frame og modellversjon.
 #### REQ-0915 – 3D-print 3D-20: Versjonering og ikke-destruktiv håndtering
 Hver 3D-modell er en ny versjon; kildebilde, 2D-figur og aktiv versjon endres aldri automatisk.
 
-- **Kilde:** Beslutning B-087 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
+- **Kilde:** Beslutning B-087, DEC-0100 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P2 · **Fase:** 3
 - **Moduler:** EXPORT, COMPOSE
 - **Status:** Ikke startet
 - **Akseptansekriterier:**

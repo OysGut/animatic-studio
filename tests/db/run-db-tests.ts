@@ -6558,6 +6558,59 @@ try {
     assert(!ac.includes("token_digest"),"apply_changes uendret");
     await sql`select public.delete_project(${p}, ${ALICE})`;
   });
+  await test("0071: riggmaler og rigger (B-087 runde 1): RLS, apply_changes, én standardrigg, globale maler, sletting", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 71, "schema version 71");
+    // RLS og grant-mønsteret
+    for (const tbl of ["rig_templates", "rig_setups", "global_rig_templates"]) {
+      assert((await sql`select relrowsecurity as rls from pg_class where relname = ${tbl}`)[0]?.["rls"] === true, `${tbl}: RLS på`);
+      const grants = (await sql`select grantee::text g, privilege_type::text p from information_schema.role_table_grants where table_name = ${tbl}`) as { g: string; p: string }[];
+      assert(grants.some((r) => r.g === "authenticated" && r.p === "SELECT"), `${tbl}: medlemmer leser`);
+      assert(grants.some((r) => r.g === "service_role" && r.p === "INSERT"), `${tbl}: service role skriver`);
+      assert(!grants.some((r) => r.g === "anon"), `${tbl}: ikke anon`);
+    }
+    // apply_changes kjenner tabellene, og riggene slettes før scenene og prosjektraden
+    const ac = String((await sql`select pg_get_functiondef('public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure) b`)[0]?.["b"]);
+    assert(ac.includes("rig_templates") && ac.includes("rig_setups"), "apply_changes kjenner riggtabellene");
+    assert(ac.indexOf("'rig_setups'") < ac.indexOf("'scenes','rig_templates'") && ac.indexOf("'rig_templates','productions'") > 0, "sletterekkefølgen");
+    const dp = String((await sql`select pg_get_functiondef('public.delete_project(uuid,uuid)'::regprocedure) b`)[0]?.["b"]);
+    assert(dp.includes("rig_setups") && dp.indexOf("rig_setups") < dp.indexOf("delete from public.scenes"), "delete_project sletter riggene før scenene");
+    // Lagkolonnene finnes
+    const cols = (await sql`select column_name::text c from information_schema.columns where table_name = 'composition_layers'`) as { c: string }[];
+    assert(cols.some((r) => r.c === "rig_plate_id") && cols.some((r) => r.c === "rig_plate_depth_mm"), "lagkolonner");
+    // Skriving går via apply_changes (service role), lesing for medlemmer
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Rigg') as id`)[0]!["id"])));
+    const spec = JSON.stringify({ format: "1", camera: { sensorWidthMm: 36, sensorHeightMm: 24, focalLengthMm: 50, cameraHeightMm: 900, mode: "fixed" }, plates: [{ id: "00000000-0000-4000-8000-000000000001", name: "Bord", heightMm: 0, glassThicknessMm: null }], calibration: null });
+    const tid1 = crypto.randomUUID();
+    const sid1 = crypto.randomUUID();
+    const changes = JSON.stringify({
+      inserts: {
+        rig_templates: [{ id: tid1, project_id: bp, name: "Studiorigg", spec: JSON.parse(spec), revision: 1 }],
+        rig_setups: [{ id: sid1, project_id: bp, scene_id: null, template_id: tid1, name: "Standard", spec: JSON.parse(spec), revision: 1 }],
+      },
+    });
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${crypto.randomUUID()}, ${tx.json({ type: "AddRigTemplate" })}, ${tx.json({})}, ${tx.json(JSON.parse(changes) as never)})`);
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"])) === 1, "medlem leser malen");
+    assert((await as("authenticated", CAROL, async (tx) => (await tx`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"])) === 0, "ikke-medlem ser ingenting");
+    // Én aktiv standardrigg per prosjekt
+    await expectError(
+      as("service_role", null, (tx) => tx`select public.apply_changes(${bp}, ${ALICE}, ${crypto.randomUUID()}, ${tx.json({ type: "AddRigSetup" })}, ${tx.json({})}, ${tx.json({ inserts: { rig_setups: [{ id: crypto.randomUUID(), project_id: bp, scene_id: null, template_id: null, name: "Ekstra", spec: JSON.parse(spec), revision: 1 }] } } as never)})`),
+      "23505",
+    );
+    // Globale maler: publisering krever redaktørolle, radene er uforanderlige
+    const ws = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('Rigggruppen') as id`)[0]!["id"])));
+    const gid = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, 'første') as id`)[0]!["id"])));
+    const gid2 = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.global_publish_rig_template(${ws}, 'Studiorigg', ${tx.json(JSON.parse(spec) as never)}, '') as id`)[0]!["id"])));
+    assert(gid !== gid2, "to publiseringer gir to versjoner");
+    const nums = (await sql`select number::int n from public.global_rig_templates where workspace_id = ${ws} order by number`) as { n: number }[];
+    assert(nums.map((r) => r.n).join() === "1,2", "nummerert per navn");
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.global_publish_rig_template(${ws}, 'X', ${tx.json(JSON.parse(spec) as never)}, '')`), "42501");
+    await expectError(as("service_role", null, (tx) => tx`update public.global_rig_templates set note = 'x' where id = ${gid}`), "42501");
+    assert((await as("authenticated", ALICE, async (tx) => (await tx`select count(*)::int n from public.global_rig_templates where workspace_id = ${ws}`)[0]!["n"])) === 2, "medlem leser globale maler");
+    // Sletting av prosjektet tar riggene med
+    await sql`select public.delete_project(${bp}, ${ALICE})`;
+    assert((await sql`select count(*)::int n from public.rig_templates where project_id = ${bp}`)[0]!["n"] === 0, "maler slettet");
+    assert((await sql`select count(*)::int n from public.rig_setups where project_id = ${bp}`)[0]!["n"] === 0, "rigger slettet");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

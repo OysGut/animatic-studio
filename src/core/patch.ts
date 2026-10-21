@@ -425,6 +425,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         template_slot: l.template ? l.template.slot : null,
         // Migrasjon 0050 (MTS MT6): overgangen inn i siden (bare sidelag)
         page_transition: l.pageTransition ?? null,
+        // Migrasjon 0071 (B-087): platen laget ligger på i scenens rigg, med dybde i mm
+        rig_plate_id: l.rigPlateId ?? null,
+        rig_plate_depth_mm: l.rigPlateDepthMm ?? 0,
         removed: l.removed,
       };
     }
@@ -498,6 +501,14 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     case "qualityProfiles": {
       const q = e as unknown as QualityProfile;
       return { ...base, name: q.name, spec: q.spec ?? {}, edited_by: q.editedBy ?? null, edited_at: q.editedAt ?? null, removed: q.removed };
+    }
+    case "rigTemplates": {
+      const r = e as unknown as import("./rig/multiplane").RigTemplate;
+      return { ...base, name: r.name, spec: r.spec, removed: r.removed };
+    }
+    case "rigSetups": {
+      const r = e as unknown as import("./rig/multiplane").RigSetup;
+      return { ...base, scene_id: r.sceneId, template_id: r.templateId, name: r.name, spec: r.spec, removed: r.removed };
     }
     case "clipParts": {
       const c = e as ClipPart;
@@ -758,7 +769,9 @@ const COLLECTIONS = Object.keys(COLLECTION_TABLES) as CollectionName[];
  */
 export const TABLE_ORDER: readonly string[] = [
   "productions",
+  "rig_templates",
   "scenes",
+  "rig_setups",
   "scene_variants",
   "script_blocks",
   "scene_occurrences",
@@ -943,6 +956,9 @@ export interface ProjectRows {
   /** P8 stilharmonisering (migrasjon 0065). Tomt hvis migrasjonen ikke er kjørt ennå. */
   readonly style_harmonizations?: readonly Row[];
   readonly style_preferred_references?: readonly Row[];
+  /** Rigg & 2D-utskrift (B-087, migrasjon 0071). Tomt hvis migrasjonen ikke er kjørt ennå. */
+  readonly rig_templates?: readonly Row[];
+  readonly rig_setups?: readonly Row[];
 }
 
 const str = (v: unknown) => String(v);
@@ -1454,6 +1470,11 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         anchor: (json(x["anchor"]) ?? null) as never,
         ...languageImagesFromRow(x["language_images"]),
         ...maskBlendFromRow(x["mask"], x["blend"]),
+        // Migrasjon 0071 (B-087): platekobling og dybde i scenens rigg
+        ...(x["rig_plate_id"] ? { rigPlateId: str(x["rig_plate_id"]) } : {}),
+        ...(typeof x["rig_plate_depth_mm"] === "number" && x["rig_plate_depth_mm"] !== 0
+          ? { rigPlateDepthMm: Number(x["rig_plate_depth_mm"]) }
+          : {}),
         ...reviewedFromRow(x["reviewed_versions"]),
         ...(typeof x["active_from"] === "number" && typeof x["active_to"] === "number"
           ? { activeRange: { from: x["active_from"], to: x["active_to"] } }
@@ -1638,6 +1659,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
     languageVersions: byId((r.language_versions ?? []).map((x): LanguageVersion => ({id:str(x["id"]),revision:num(x["revision"]),language:str(x["language"]),name:str(x["name"] ?? ""),status:(x["status"]==="archived"?"archived":"active"),removed:x["removed"]===true,...(x["created_by"]?{createdBy:str(x["created_by"])}:{}),...(x["created_at"]?{createdAt:iso(x["created_at"])}:{})}))),
     styleHarmonizations: byId((r.style_harmonizations ?? []).map((x): StyleHarmonization => ({id:str(x["id"]),revision:num(x["revision"]),versionId:str(x["version_id"]),sourceVersionId:str(x["source_version_id"]),model:str(x["model"]),qualityProfile:(x["quality_profile"] ?? null) as StyleHarmonization["qualityProfile"],styleProfileId:optStr(x["style_profile_id"]),referenceVersionId:optStr(x["reference_version_id"]),use:str(x["use"]) as StyleHarmonization["use"],note:str(x["note"]),removed:x["removed"]===true}))),
     stylePreferredReferences: byId((r.style_preferred_references ?? []).map((x): StylePreferredReference => ({id:str(x["id"]),revision:num(x["revision"]),assetId:str(x["asset_id"]),styleProfileId:str(x["style_profile_id"]),variantId:str(x["variant_id"]),removed:x["removed"]===true}))),
+    rigTemplates: byId((r.rig_templates ?? []).map((x): import("./rig/multiplane").RigTemplate => ({id:str(x["id"]) as never,revision:num(x["revision"]),name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
+    rigSetups: byId((r.rig_setups ?? []).map((x): import("./rig/multiplane").RigSetup => ({id:str(x["id"]) as never,revision:num(x["revision"]),sceneId:optStr(x["scene_id"]) as never,templateId:optStr(x["template_id"]) as never,name:str(x["name"] ?? ""),spec:(json(x["spec"]) ?? {}) as never,removed:x["removed"]===true}))),
     translations: byId(
       (r.translations ?? []).map((x) => ({
         id: str(x["id"]) as never,

@@ -6,7 +6,7 @@ Ingenting her bygges før Rigg og 2D-utskrift er levert og verifisert. Betalte k
 ## Felles forutsetninger fra runde 1–5
 - **Riggmodellen (runde 1, migrasjon 0071)** er grunnlaget. Den må definere ett riggkoordinatsystem i mm (platenivåer, kameraakse, linse) som kan utvides med dybde uten migrasjon av 2D-data.
 - **Størrelsesmatematikken (runde 1):** m = f / (d − f), kalibreringsfelt per plate, mm internt og inches bare som visning.
-- **Kontur og maske (runde 2), inspeksjon og måling (runde 3), kode og mobiloppslag (runde 5, migrasjon 0072).**
+- **Kontur og maske (runde 2), inspeksjon og måling (runde 3, migrasjon 0072), kode og mobiloppslag (runde 5, migrasjon 0073).**
 - **AI-leverandører:** eksisterende adaptermodell, nøkler bare på serveren, kostnadsport, generation_jobs og jobbstatus.
 
 ## Arbeidspunkter
