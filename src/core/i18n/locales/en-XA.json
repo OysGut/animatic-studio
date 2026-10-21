@@ -50383,42 +50383,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c": {
-    "text": "[!! PPrrëëvvïïëëww !!]",
-    "source": "\"Preview\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314": {
-    "text": "[!! PPrrëëvvïïëëww zzôôôômm !!]",
-    "source": "\"Preview zoom\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c": {
-    "text": "[!! FFïïtt !!]",
-    "source": "\"Fit\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad": {
-    "text": "[!! RRëëssëëtt vvïïëëww !!]",
-    "source": "\"Reset view\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2": {
-    "text": "[!! SSccëënnëë pprrëëvvïïëëww !!]",
-    "source": "\"Scene preview\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a": {
-    "text": "[!! LLááyyëërrss !!]",
-    "source": "\"Layers\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162": {
     "text": "[!! PPllááyyhhëëáádd !!]",
     "source": "\"Playhead\"",
@@ -50458,12 +50422,6 @@
   "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76": {
     "text": "[!! TTïïmmëëllïïnnëë zzôôôômm !!]",
     "source": "\"Timeline zoom\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-animation-workspace.animation-workspace.label.5d50a665cb4e": {
-    "text": "[!! PPrrëëvvïïëëww wwïïddtthh !!]",
-    "source": "\"Preview width\"",
     "parameters": [],
     "executable": true
   },
@@ -74067,7 +74025,61 @@
   "b100.spacing.command": {
     "text": "[!! SSppááccïïnngg ddrráágg !!]"
   },
-  "b100.spacing.beyond": {
-    "text": "[!! TThhëë áánnïïmmááttïïôônn rrüünnss ppáásstt tthhëë ëënndd ôôff tthhëë ssccëënnëë. ÜÜssëë “CChháánnggëë llëënnggtthh” ttôô ëëxxttëënndd tthhëë ssccëënnëë. !!]"
+  "b099.qr.title": {
+    "text": "[!! RRëëccôôrrdd ôônn yyôôüürr pphhôônnëë !!]"
+  },
+  "b099.qr.hint-line": {
+    "text": "[!! SSccáánn tthhëë ccôôddëë. TThhëë pphhôônnëë sshhôôwwss tthhëë llïïnnëë. TThhëë rrëëccôôrrddïïnngg bbëëccôômmëëss áá nnëëww vvëërrssïïôônn ôôff tthhëë llïïnnëë. !!]"
+  },
+  "b099.qr.hint-sound": {
+    "text": "[!! SSccáánn tthhëë ccôôddëë. TThhëë rrëëccôôrrddïïnngg bbëëccôômmëëss áá nnëëww ssôôüünndd ïïnn tthhëë ssccëënnëë áátt {at}. !!]"
+  },
+  "b099.qr.connected": {
+    "text": "[!! TThhëë pphhôônnëë ïïss ccôônnnnëëccttëëdd !!]"
+  },
+  "b099.qr.waiting": {
+    "text": "[!! WWááïïttïïnngg ffôôrr tthhëë pphhôônnëë !!]"
+  },
+  "b099.qr.pending": {
+    "text": "[!! {n} rrëëccôôrrddïïnnggss wwááïïttïïnngg !!]"
+  },
+  "b099.qr.received": {
+    "text": "[!! {n} rrëëccôôrrddïïnnggss rrëëccëëïïvvëëdd !!]"
+  },
+  "b099.qr.label-sound": {
+    "text": "[!! SSccëënnëë {scene} · {kind} !!]"
+  },
+  "b099.mic.failed": {
+    "text": "[!! TThhëë ccôômmppüüttëërr mmïïccrrôôpphhôônnëë ïïss nnôôtt wwôôrrkkïïnngg. RRëëccôôrrdd ôônn yyôôüürr pphhôônnëë ïïnnssttëëáádd: ssccáánn tthhëë QQRR ccôôddëë. !!]"
+  },
+  "b099.raw.label": {
+    "text": "[!! RRááww ááüüddïïôô (nnôô nnôôïïssëë ssüüpppprrëëssssïïôônn ôôrr ááüüttôômmááttïïcc llëëvvëëll) !!]"
+  },
+  "b099.raw.hint": {
+    "text": "[!! RRëëccôômmmmëënnddëëdd ffôôrr ffïïllmm ddïïáállôôggüüëë. YYôôüürr cchhôôïïccëë ïïss rrëëmmëëmmbbëërrëëdd. !!]"
+  },
+  "b099.mobile.record-audio": {
+    "text": "[!! RRëëccôôrrdd ááüüddïïôô !!]"
+  },
+  "b099.mobile.record-audio-hint": {
+    "text": "[!! WWïïtthh tthhëë pphhôônnëë mmïïccrrôôpphhôônnëë !!]"
+  },
+  "b099.scene.add-sound": {
+    "text": "[!! ÁÁdddd ttôô ssccëënnëë !!]"
+  },
+  "b099.scene.sound-added": {
+    "text": "[!! ÁÁddddëëdd ttôô tthhëë ssccëënnëë !!]"
+  },
+  "b099.scene.sound-name": {
+    "text": "[!! PPhhôônnëë rrëëccôôrrddïïnngg {stamp} !!]"
+  },
+  "b099.scene.sound-label": {
+    "text": "[!! SSôôüünndd ffrrôômm tthhëë pphhôônnëë ïïnn tthhëë ssccëënnëë !!]"
+  },
+  "b100.beyond.extend": {
+    "text": "[!! ËËxxttëënndd tthhëë ssccëënnëë … !!]"
+  },
+  "b100.beyond.text": {
+    "text": "[!! TThhëë áánnïïmmááttïïôônn rrüünnss {n} ff ppáásstt tthhëë ëënndd ôôff tthhëë ssccëënnëë. NNôôtthhïïnngg hhááss bbëëëënn ëëxxttëënnddëëdd. !!]"
   }
 }

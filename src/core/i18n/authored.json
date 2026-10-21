@@ -6594,12 +6594,156 @@
         "text": "Spacing drag"
       }
     },
-    "b100.spacing.beyond": {
+    "b099.qr.title": {
       "nb": {
-        "text": "Animasjonen går forbi scenens slutt. Bruk «Endre lengde» for å forlenge scenen."
+        "text": "Ta opp på mobilen"
       },
       "en": {
-        "text": "The animation runs past the end of the scene. Use “Change length” to extend the scene."
+        "text": "Record on your phone"
+      }
+    },
+    "b099.qr.hint-line": {
+      "nb": {
+        "text": "Skann koden. Mobilen viser replikken. Opptaket blir en ny versjon av replikken."
+      },
+      "en": {
+        "text": "Scan the code. The phone shows the line. The recording becomes a new version of the line."
+      }
+    },
+    "b099.qr.hint-sound": {
+      "nb": {
+        "text": "Skann koden. Opptaket blir en ny lyd i scenen ved {at}."
+      },
+      "en": {
+        "text": "Scan the code. The recording becomes a new sound in the scene at {at}."
+      }
+    },
+    "b099.qr.connected": {
+      "nb": {
+        "text": "Mobilen er tilkoblet"
+      },
+      "en": {
+        "text": "The phone is connected"
+      }
+    },
+    "b099.qr.waiting": {
+      "nb": {
+        "text": "Venter på mobilen"
+      },
+      "en": {
+        "text": "Waiting for the phone"
+      }
+    },
+    "b099.qr.pending": {
+      "nb": {
+        "text": "{n} opptak venter"
+      },
+      "en": {
+        "text": "{n} recordings waiting"
+      }
+    },
+    "b099.qr.received": {
+      "nb": {
+        "text": "{n} opptak mottatt"
+      },
+      "en": {
+        "text": "{n} recordings received"
+      }
+    },
+    "b099.qr.label-sound": {
+      "nb": {
+        "text": "Scene {scene} · {kind}"
+      },
+      "en": {
+        "text": "Scene {scene} · {kind}"
+      }
+    },
+    "b099.mic.failed": {
+      "nb": {
+        "text": "PC-mikrofonen virker ikke. Ta opp på mobilen i stedet: skann QR-koden."
+      },
+      "en": {
+        "text": "The computer microphone is not working. Record on your phone instead: scan the QR code."
+      }
+    },
+    "b099.raw.label": {
+      "nb": {
+        "text": "Rå lyd (uten støydemping og automatisk nivå)"
+      },
+      "en": {
+        "text": "Raw audio (no noise suppression or automatic level)"
+      }
+    },
+    "b099.raw.hint": {
+      "nb": {
+        "text": "Anbefalt for tale til film. Valget huskes."
+      },
+      "en": {
+        "text": "Recommended for film dialogue. Your choice is remembered."
+      }
+    },
+    "b099.mobile.record-audio": {
+      "nb": {
+        "text": "Ta opp lyd"
+      },
+      "en": {
+        "text": "Record audio"
+      }
+    },
+    "b099.mobile.record-audio-hint": {
+      "nb": {
+        "text": "Med mikrofonen på telefonen"
+      },
+      "en": {
+        "text": "With the phone microphone"
+      }
+    },
+    "b099.scene.add-sound": {
+      "nb": {
+        "text": "Legg i scenen"
+      },
+      "en": {
+        "text": "Add to scene"
+      }
+    },
+    "b099.scene.sound-added": {
+      "nb": {
+        "text": "Lagt i scenen"
+      },
+      "en": {
+        "text": "Added to the scene"
+      }
+    },
+    "b099.scene.sound-name": {
+      "nb": {
+        "text": "Opptak fra mobil {stamp}"
+      },
+      "en": {
+        "text": "Phone recording {stamp}"
+      }
+    },
+    "b099.scene.sound-label": {
+      "nb": {
+        "text": "Lyd fra mobilen i scenen"
+      },
+      "en": {
+        "text": "Sound from the phone in the scene"
+      }
+    },
+    "b100.beyond.extend": {
+      "nb": {
+        "text": "Forleng scenen …"
+      },
+      "en": {
+        "text": "Extend the scene …"
+      }
+    },
+    "b100.beyond.text": {
+      "nb": {
+        "text": "Animasjonen går {n} f forbi scenens slutt. Ingenting er forlenget."
+      },
+      "en": {
+        "text": "The animation runs {n} f past the end of the scene. Nothing has been extended."
       }
     }
   }

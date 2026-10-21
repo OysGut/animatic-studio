@@ -202896,168 +202896,6 @@
       "migrated": true
     },
     {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 39,
-      "column": 25,
-      "start": 2781,
-      "end": 2812,
-      "scope": "anim-preview",
-      "context": "title",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.title",
-      "nb": {
-        "kind": "literal",
-        "text": "Forhåndsvisning",
-        "raw": "\"Forhåndsvisning\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Preview",
-        "raw": "\"Preview\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "92e5e6e4947c",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 41,
-      "column": 59,
-      "start": 2903,
-      "end": 2948,
-      "scope": "anim-preview",
-      "context": "aria-label",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.aria-label",
-      "nb": {
-        "kind": "literal",
-        "text": "Zoom i forhåndsvisningen",
-        "raw": "\"Zoom i forhåndsvisningen\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Preview zoom",
-        "raw": "\"Preview zoom\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "84dd1e0b5314",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 42,
-      "column": 30,
-      "start": 3200,
-      "end": 3219,
-      "scope": "anim-preview",
-      "context": "option",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.option",
-      "nb": {
-        "kind": "literal",
-        "text": "Tilpass",
-        "raw": "\"Tilpass\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Fit",
-        "raw": "\"Fit\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "4dbd8598c83c",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 45,
-      "column": 26,
-      "start": 3353,
-      "end": 3394,
-      "scope": "anim-preview",
-      "context": "label",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.label",
-      "nb": {
-        "kind": "literal",
-        "text": "Tilbakestill visningen",
-        "raw": "\"Tilbakestill visningen\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Reset view",
-        "raw": "\"Reset view\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "3358c1aba7ad",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 47,
-      "column": 126,
-      "start": 3638,
-      "end": 3685,
-      "scope": "anim-preview",
-      "context": "aria-label",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.aria-label",
-      "nb": {
-        "kind": "literal",
-        "text": "Forhåndsvisning av scenen",
-        "raw": "\"Forhåndsvisning av scenen\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Scene preview",
-        "raw": "\"Scene preview\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "a483be00c0b2",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimPreview.tsx",
-      "line": 57,
-      "column": 27,
-      "start": 4808,
-      "end": 4826,
-      "scope": "anim-preview",
-      "context": "title",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-anim-preview.anim-preview.title",
-      "nb": {
-        "kind": "literal",
-        "text": "Lag",
-        "raw": "\"Lag\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Layers",
-        "raw": "\"Layers\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "3b951a0b177a",
-      "key": "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a",
-      "migrated": true
-    },
-    {
       "file": "src/app/scene-editor/animation/AnimTimeline.tsx",
       "line": 22,
       "column": 76,
@@ -203244,33 +203082,6 @@
       "parameterConflict": false,
       "signature": "b94421a53d76",
       "key": "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76",
-      "migrated": true
-    },
-    {
-      "file": "src/app/scene-editor/animation/AnimationWorkspace.tsx",
-      "line": 51,
-      "column": 92,
-      "start": 4514,
-      "end": 4563,
-      "scope": "animation-workspace",
-      "context": "label",
-      "kind": "L",
-      "semantic": "app-scene-editor-animation-animation-workspace.animation-workspace.label",
-      "nb": {
-        "kind": "literal",
-        "text": "Bredde på forhåndsvisningen",
-        "raw": "\"Bredde på forhåndsvisningen\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "Preview width",
-        "raw": "\"Preview width\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "5d50a665cb4e",
-      "key": "app-scene-editor-animation-animation-workspace.animation-workspace.label.5d50a665cb4e",
       "migrated": true
     },
     {
@@ -295422,7 +295233,6 @@
         "app-scene-editor-layer-inspector.layer-inspector.title.4a7464f2b6a1",
         "app-scene-editor-layers-panel.layers-panel.aria-label.697f7c407fae",
         "app-scene-editor-layers-panel.layers-panel.h2.697f7c407fae",
-        "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a",
         "app-scene-editor-use-scene-panels.panel-title.message.7d584b8ff42e",
         "app-projects-promotion-dialog.compare.span.cdff22eef7af"
       ]
@@ -295667,14 +295477,6 @@
         "app-scene-editor-layers-panel.label.memo.96be501e2dd5",
         "app-scene-editor-layers-panel.leave-group.exec.68e9421339ac",
         "app-scene-editor-layers-panel.layers-panel.aria-label.94acff154dc6"
-      ]
-    },
-    {
-      "kind": "same-source-different-translation",
-      "text": "Zoom i forhåndsvisningen",
-      "keys": [
-        "app-scene-editor-preview-window.zoom-select.aria-label.522401c84413",
-        "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314"
       ]
     },
     {

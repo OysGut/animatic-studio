@@ -15,6 +15,7 @@ import {
   Share2,
   TriangleAlert,
   X,
+  Mic,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { checkMobileFile, formatDate, type MobileMediaKind } from "@/core";
@@ -133,6 +134,8 @@ export function MobilePage({ token }: { token: string }) {
     [kinds, queue, uploader],
   );
   const [camera, setCamera] = useState(false);
+  /** B-099: «Ta opp lyd» for en scene (ved siden av bilde og video). */
+  const [recordAudio, setRecordAudio] = useState(false);
 
   if (!info)
     return (
@@ -207,7 +210,7 @@ export function MobilePage({ token }: { token: string }) {
           </label>
         ) : null}
         {info.rigCapture ? <MouthShapeCapture referenceUrl={info.rigCapture.referenceUrl} slot={info.rigCapture.slot} onConfirm={file => { queue.add(file, file.name); uploader.pump(); }} /> : null}
-        {audioOnly ? (
+        {audioOnly || recordAudio ? (
           <MobileAudio script={info.script} items={items} queue={queue} uploader={uploader} />
         ) : null}
         <div className="grid grid-cols-2 gap-3">
@@ -249,6 +252,15 @@ export function MobilePage({ token }: { token: string }) {
                 testId="mobile-pick-video"
               />
             </>
+          ) : null}
+          {can("audio") && !audioOnly && !recordAudio ? (
+            <BigButton
+              icon={<Mic className="size-7" aria-hidden />}
+              label={tk("b099.mobile.record-audio")}
+              hint={tk("b099.mobile.record-audio-hint")}
+              onClick={() => setRecordAudio(true)}
+              testId="mobile-record-audio"
+            />
           ) : null}
           {can("audio") ? (
             <FileButton

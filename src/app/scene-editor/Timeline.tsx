@@ -79,6 +79,8 @@ interface Props {
     readonly audioUrls?: Readonly<Record<string, string>> | null;
     /** Øker når egenskapspanelet ber om dialogen. */
     readonly request?: number;
+    /** B-100: foreslått ny lengde (frames) når dialogen åpnes fra varselet om tid etter scenens slutt. */
+    readonly requestFrames?: number | undefined;
   };
   /** B-100: spacing-drag på lagets felt (Cmd/Ctrl + dra). Forhåndsvisning og utheving på lerretet. */
   readonly spacing?: {
@@ -495,7 +497,7 @@ export function Timeline({
   const [endDrag, setEndDrag] = useState<{ x0: number; frames: number } | null>(null);
   const retimeRequest = retime?.request ?? 0;
   useEffect(() => {
-    if (retimeRequest > 0) setRetimeTarget(durationFrames);
+    if (retimeRequest > 0) setRetimeTarget(retime?.requestFrames ?? durationFrames);
     // Bare når egenskapspanelet ber om det, ikke når varigheten endres
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [retimeRequest]);

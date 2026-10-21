@@ -50383,42 +50383,6 @@
     "parameters": [],
     "executable": true
   },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.92e5e6e4947c": {
-    "text": "Preview",
-    "source": "\"Preview\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.84dd1e0b5314": {
-    "text": "Preview zoom",
-    "source": "\"Preview zoom\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.option.4dbd8598c83c": {
-    "text": "Fit",
-    "source": "\"Fit\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.label.3358c1aba7ad": {
-    "text": "Reset view",
-    "source": "\"Reset view\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.aria-label.a483be00c0b2": {
-    "text": "Scene preview",
-    "source": "\"Scene preview\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-anim-preview.anim-preview.title.3b951a0b177a": {
-    "text": "Layers",
-    "source": "\"Layers\"",
-    "parameters": [],
-    "executable": true
-  },
   "app-scene-editor-animation-anim-timeline.anim-timeline.aria-label.c6712cbb4162": {
     "text": "Playhead",
     "source": "\"Playhead\"",
@@ -50458,12 +50422,6 @@
   "app-scene-editor-animation-animation-workspace.animation-workspace.aria-label.b94421a53d76": {
     "text": "Timeline zoom",
     "source": "\"Timeline zoom\"",
-    "parameters": [],
-    "executable": true
-  },
-  "app-scene-editor-animation-animation-workspace.animation-workspace.label.5d50a665cb4e": {
-    "text": "Preview width",
-    "source": "\"Preview width\"",
     "parameters": [],
     "executable": true
   },
@@ -74067,7 +74025,61 @@
   "b100.spacing.command": {
     "text": "Spacing drag"
   },
-  "b100.spacing.beyond": {
-    "text": "The animation runs past the end of the scene. Use “Change length” to extend the scene."
+  "b099.qr.title": {
+    "text": "Record on your phone"
+  },
+  "b099.qr.hint-line": {
+    "text": "Scan the code. The phone shows the line. The recording becomes a new version of the line."
+  },
+  "b099.qr.hint-sound": {
+    "text": "Scan the code. The recording becomes a new sound in the scene at {at}."
+  },
+  "b099.qr.connected": {
+    "text": "The phone is connected"
+  },
+  "b099.qr.waiting": {
+    "text": "Waiting for the phone"
+  },
+  "b099.qr.pending": {
+    "text": "{n} recordings waiting"
+  },
+  "b099.qr.received": {
+    "text": "{n} recordings received"
+  },
+  "b099.qr.label-sound": {
+    "text": "Scene {scene} · {kind}"
+  },
+  "b099.mic.failed": {
+    "text": "The computer microphone is not working. Record on your phone instead: scan the QR code."
+  },
+  "b099.raw.label": {
+    "text": "Raw audio (no noise suppression or automatic level)"
+  },
+  "b099.raw.hint": {
+    "text": "Recommended for film dialogue. Your choice is remembered."
+  },
+  "b099.mobile.record-audio": {
+    "text": "Record audio"
+  },
+  "b099.mobile.record-audio-hint": {
+    "text": "With the phone microphone"
+  },
+  "b099.scene.add-sound": {
+    "text": "Add to scene"
+  },
+  "b099.scene.sound-added": {
+    "text": "Added to the scene"
+  },
+  "b099.scene.sound-name": {
+    "text": "Phone recording {stamp}"
+  },
+  "b099.scene.sound-label": {
+    "text": "Sound from the phone in the scene"
+  },
+  "b100.beyond.extend": {
+    "text": "Extend the scene …"
+  },
+  "b100.beyond.text": {
+    "text": "The animation runs {n} f past the end of the scene. Nothing has been extended."
   }
 }

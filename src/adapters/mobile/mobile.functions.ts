@@ -90,6 +90,7 @@ async function contextBelongs(
         (!c.variantId || (await one("asset_variants", c.variantId)))
       );
     case "occurrence":
+    case "scene_sound":
       return one("scene_occurrences", c.occurrenceId);
     case "sound": {
       const { data: a } = await db
