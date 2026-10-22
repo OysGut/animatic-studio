@@ -1,0 +1,34 @@
+/**
+ * PTG3 (B-102 §4): kamerapakke med én FBX ASCII 7.4-fil per skudd som har en rigg. Eksportøren
+ * regner ingenting ut selv – kamerasporet kommer fra InterchangeDoc. Merkes «eksperimentell»
+ * (spesifikasjonen §10) i LESMEG. Virker uten AI.
+ */
+import type { InterchangeDoc } from "@/core/interchange";
+import { buildShotFbx } from "@/core/interchange/fbx";
+import { interchangeReadme } from "@/core/interchange/readme";
+import { writeZip, type ZipSink } from "./zip";
+import { t } from "@/core/i18n/keyed";
+
+export async function exportCameraFbx(o: { doc: InterchangeDoc; sink: ZipSink; signal: AbortSignal }): Promise<void> {
+  const { doc, signal } = o;
+  const skipped: string[] = [];
+  async function* files() {
+    for (const shot of doc.shots) {
+      if (signal.aborted) throw new DOMException(t("ptg1.cancelled"), "AbortError");
+      const fbx = buildShotFbx(shot, doc.fps);
+      if (!fbx) { skipped.push(shot.name); continue; }
+      yield { path: `camera/${shot.name}.fbx`, data: new TextEncoder().encode(fbx) };
+    }
+    yield {
+      path: "LESMEG.txt",
+      data: interchangeReadme([
+        "",
+        t("ptg3.readme-camera", {}, "nb"),
+        "",
+        t("ptg3.readme-camera", {}, "en"),
+        ...(skipped.length ? ["", t("ptg3.readme-no-rig", { value1: skipped.join(", ") }, "nb"), t("ptg3.readme-no-rig", { value1: skipped.join(", ") }, "en")] : []),
+      ].join("\n")),
+    };
+  }
+  await writeZip(o.sink, [], {}, { extra: files(), signal });
+}
