@@ -75,6 +75,7 @@ import type {
 import { isVersionView } from "./library/view";
 import { fontSpecError } from "./typography/project-fonts";
 import { derivedFilesError } from "./library/image-ingest";
+import { assetRightsValid } from "./community";
 import { isAudioComposition, type AudioComposition } from "./audio/composition";
 import { ALIGNMENT_FORMAT, type WordAlignment } from "./audio/alignment";
 
@@ -343,6 +344,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         derived_from_version_id: v.derivedFromVersionId ?? null,
         // Migrasjon 0078 (B-105a): avledede filer (arbeidskopi, proxy, miniatyr, rå TIFF)
         derived_files: v.derivedFiles ?? null,
+        // Migrasjon 0080 (B-114 C0): rettigheter; null = privat/forbeholdt
+        rights: v.rights ?? null,
       };
     }
     case "annotations": {
@@ -1423,6 +1426,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(json(x["derived_files"]) && typeof json(x["derived_files"]) === "object" &&
         !derivedFilesError(json(x["derived_files"]))
           ? { derivedFiles: json(x["derived_files"]) as never }
+          : {}),
+        ...(json(x["rights"]) && typeof json(x["rights"]) === "object" && assetRightsValid(json(x["rights"]))
+          ? { rights: json(x["rights"]) as never }
           : {}),
         ...(typeof x["source_global_version_id"] === "string" &&
         typeof x["source_global_asset_id"] === "string" &&

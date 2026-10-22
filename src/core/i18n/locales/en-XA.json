@@ -74600,5 +74600,83 @@
   },
   "print-job.route-description": {
     "text": "[!! ÔÔppëënnss tthhëë ffïïggüürrëë ffrrôômm áá pprrïïnnttôôüütt ïïnn tthhëë rrïïgghhtt ssccëënnëë áánndd ffrráámmëë. !!]"
+  },
+  "b114.admin.title": {
+    "text": "[!! FFëëááttüürrëëss !!]"
+  },
+  "b114.admin.note": {
+    "text": "[!! CCôômmmmüünnïïttyy ffëëááttüürrëëss áárrëë bbüüïïlltt bbëëhhïïnndd tthhëë ssccëënnëëss. ÔÔffff: nnôôbbôôddyy ssëëëëss tthhëëmm. BBëëttáá: ôônnllyy tthhëë ttëëssttëërrss yyôôüü cchhôôôôssëë. ÔÔnn: áállll ssïïggnnëëdd-ïïnn üüssëërrss. !!]"
+  },
+  "b114.admin.unavailable": {
+    "text": "[!! FFëëááttüürrëë sswwïïttcchhëëss áárrëë nnôôtt áávvááïïlláábbllëë yyëëtt. !!]"
+  },
+  "b114.admin.testers": {
+    "text": "[!! TTëëssttëërrss !!]"
+  },
+  "b114.admin.no-testers": {
+    "text": "[!! NNôô ttëëssttëërrss yyëëtt. !!]"
+  },
+  "b114.admin.search": {
+    "text": "[!! SSëëáárrcchh bbyy ëëmmááïïll !!]"
+  },
+  "b114.admin.add": {
+    "text": "[!! ÁÁdddd {email} !!]"
+  },
+  "b114.admin.remove": {
+    "text": "[!! RRëëmmôôvvëë ttëëssttëërr !!]"
+  },
+  "b114.admin.save": {
+    "text": "[!! SSáávvëë ttëëssttëërrss !!]"
+  },
+  "b114.admin.failed": {
+    "text": "[!! CCôôüülldd nnôôtt ssáávvëë. TTrryy áággááïïnn. !!]"
+  },
+  "b114.state.off": {
+    "text": "[!! ÔÔffff !!]"
+  },
+  "b114.state.beta": {
+    "text": "[!! BBëëttáá !!]"
+  },
+  "b114.state.on": {
+    "text": "[!! ÔÔnn !!]"
+  },
+  "b114.feature.sharing": {
+    "text": "[!! SShháárrïïnngg !!]"
+  },
+  "b114.feature.review": {
+    "text": "[!! RRëëvvïïëëww áánndd ccôômmmmëënnttss !!]"
+  },
+  "b114.feature.abtest": {
+    "text": "[!! ÁÁ/BB ttëësstt !!]"
+  },
+  "b114.feature.profiles": {
+    "text": "[!! PPrrôôffïïllëëss !!]"
+  },
+  "b114.feature.public": {
+    "text": "[!! PPüübbllïïcc sshháárrïïnngg !!]"
+  },
+  "b114.rights.none": {
+    "text": "[!! NNôô rrïïgghhttss ggïïvvëënn – pprrïïvvááttëë, áállll rrïïgghhttss rrëëssëërrvvëëdd. !!]"
+  },
+  "b114.rights.license": {
+    "text": "[!! LLïïccëënnssëë !!]"
+  },
+  "b114.rights.source": {
+    "text": "[!! SSôôüürrccëë !!]"
+  },
+  "b114.rights.attribution": {
+    "text": "[!! ÁÁttttrrïïbbüüttïïôônn !!]"
+  },
+  "b114.rights.shareable": {
+    "text": "[!! CCáánn bbëë sshháárrëëdd !!]"
+  },
+  "b114.rights.adaptable": {
+    "text": "[!! CCáánn bbëë ááddááppttëëdd !!]"
+  },
+  "b114.rights.yes": {
+    "text": "[!! YYëëss !!]"
+  },
+  "b114.rights.no": {
+    "text": "[!! NNôô !!]"
   }
 }

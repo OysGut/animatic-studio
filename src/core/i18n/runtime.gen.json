@@ -24422,6 +24422,84 @@
     "b110.privacy.turnstile": {
       "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
     },
+    "b114.admin.add": {
+      "text": "Legg til {email}"
+    },
+    "b114.admin.failed": {
+      "text": "Kunne ikke lagre. Prøv igjen."
+    },
+    "b114.admin.no-testers": {
+      "text": "Ingen testere ennå."
+    },
+    "b114.admin.note": {
+      "text": "Community-funksjonene bygges skjult. Av: ingen ser dem. Beta: bare testerne du velger. På: alle innloggede brukere."
+    },
+    "b114.admin.remove": {
+      "text": "Fjern tester"
+    },
+    "b114.admin.save": {
+      "text": "Lagre testere"
+    },
+    "b114.admin.search": {
+      "text": "Søk etter e-post"
+    },
+    "b114.admin.testers": {
+      "text": "Testere"
+    },
+    "b114.admin.title": {
+      "text": "Funksjoner"
+    },
+    "b114.admin.unavailable": {
+      "text": "Funksjonsbryterne er ikke tilgjengelige ennå."
+    },
+    "b114.feature.abtest": {
+      "text": "A/B-test"
+    },
+    "b114.feature.profiles": {
+      "text": "Profiler"
+    },
+    "b114.feature.public": {
+      "text": "Offentlig deling"
+    },
+    "b114.feature.review": {
+      "text": "Gjennomgang og kommentarer"
+    },
+    "b114.feature.sharing": {
+      "text": "Deling"
+    },
+    "b114.rights.adaptable": {
+      "text": "Kan bearbeides"
+    },
+    "b114.rights.attribution": {
+      "text": "Kreditering"
+    },
+    "b114.rights.license": {
+      "text": "Lisens"
+    },
+    "b114.rights.no": {
+      "text": "Nei"
+    },
+    "b114.rights.none": {
+      "text": "Ingen rettigheter oppgitt – privat, alle rettigheter forbeholdt."
+    },
+    "b114.rights.shareable": {
+      "text": "Kan deles"
+    },
+    "b114.rights.source": {
+      "text": "Kilde"
+    },
+    "b114.rights.yes": {
+      "text": "Ja"
+    },
+    "b114.state.beta": {
+      "text": "Beta"
+    },
+    "b114.state.off": {
+      "text": "Av"
+    },
+    "b114.state.on": {
+      "text": "På"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -56662,6 +56740,84 @@
     },
     "b110.privacy.turnstile": {
       "text": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f))."
+    },
+    "b114.admin.add": {
+      "text": "Add {email}"
+    },
+    "b114.admin.failed": {
+      "text": "Could not save. Try again."
+    },
+    "b114.admin.no-testers": {
+      "text": "No testers yet."
+    },
+    "b114.admin.note": {
+      "text": "Community features are built behind the scenes. Off: nobody sees them. Beta: only the testers you choose. On: all signed-in users."
+    },
+    "b114.admin.remove": {
+      "text": "Remove tester"
+    },
+    "b114.admin.save": {
+      "text": "Save testers"
+    },
+    "b114.admin.search": {
+      "text": "Search by email"
+    },
+    "b114.admin.testers": {
+      "text": "Testers"
+    },
+    "b114.admin.title": {
+      "text": "Features"
+    },
+    "b114.admin.unavailable": {
+      "text": "Feature switches are not available yet."
+    },
+    "b114.feature.abtest": {
+      "text": "A/B test"
+    },
+    "b114.feature.profiles": {
+      "text": "Profiles"
+    },
+    "b114.feature.public": {
+      "text": "Public sharing"
+    },
+    "b114.feature.review": {
+      "text": "Review and comments"
+    },
+    "b114.feature.sharing": {
+      "text": "Sharing"
+    },
+    "b114.rights.adaptable": {
+      "text": "Can be adapted"
+    },
+    "b114.rights.attribution": {
+      "text": "Attribution"
+    },
+    "b114.rights.license": {
+      "text": "License"
+    },
+    "b114.rights.no": {
+      "text": "No"
+    },
+    "b114.rights.none": {
+      "text": "No rights given – private, all rights reserved."
+    },
+    "b114.rights.shareable": {
+      "text": "Can be shared"
+    },
+    "b114.rights.source": {
+      "text": "Source"
+    },
+    "b114.rights.yes": {
+      "text": "Yes"
+    },
+    "b114.state.beta": {
+      "text": "Beta"
+    },
+    "b114.state.off": {
+      "text": "Off"
+    },
+    "b114.state.on": {
+      "text": "On"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

@@ -74618,5 +74618,83 @@
   },
   "print-job.route-description": {
     "text": "Åpner figuren fra en utskrift i riktig scene og frame."
+  },
+  "b114.admin.title": {
+    "text": "Funksjoner"
+  },
+  "b114.admin.note": {
+    "text": "Community-funksjonene bygges skjult. Av: ingen ser dem. Beta: bare testerne du velger. På: alle innloggede brukere."
+  },
+  "b114.admin.unavailable": {
+    "text": "Funksjonsbryterne er ikke tilgjengelige ennå."
+  },
+  "b114.admin.testers": {
+    "text": "Testere"
+  },
+  "b114.admin.no-testers": {
+    "text": "Ingen testere ennå."
+  },
+  "b114.admin.search": {
+    "text": "Søk etter e-post"
+  },
+  "b114.admin.add": {
+    "text": "Legg til {email}"
+  },
+  "b114.admin.remove": {
+    "text": "Fjern tester"
+  },
+  "b114.admin.save": {
+    "text": "Lagre testere"
+  },
+  "b114.admin.failed": {
+    "text": "Kunne ikke lagre. Prøv igjen."
+  },
+  "b114.state.off": {
+    "text": "Av"
+  },
+  "b114.state.beta": {
+    "text": "Beta"
+  },
+  "b114.state.on": {
+    "text": "På"
+  },
+  "b114.feature.sharing": {
+    "text": "Deling"
+  },
+  "b114.feature.review": {
+    "text": "Gjennomgang og kommentarer"
+  },
+  "b114.feature.abtest": {
+    "text": "A/B-test"
+  },
+  "b114.feature.profiles": {
+    "text": "Profiler"
+  },
+  "b114.feature.public": {
+    "text": "Offentlig deling"
+  },
+  "b114.rights.none": {
+    "text": "Ingen rettigheter oppgitt – privat, alle rettigheter forbeholdt."
+  },
+  "b114.rights.license": {
+    "text": "Lisens"
+  },
+  "b114.rights.source": {
+    "text": "Kilde"
+  },
+  "b114.rights.attribution": {
+    "text": "Kreditering"
+  },
+  "b114.rights.shareable": {
+    "text": "Kan deles"
+  },
+  "b114.rights.adaptable": {
+    "text": "Kan bearbeides"
+  },
+  "b114.rights.yes": {
+    "text": "Ja"
+  },
+  "b114.rights.no": {
+    "text": "Nei"
   }
 }

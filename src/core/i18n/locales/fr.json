@@ -54120,5 +54120,135 @@
     "text": "Ouvre la figurine d'une impression dans la bonne scène et la bonne image.",
     "sourceHash": "8f4c22cf2eac23efe9a70fd09983bab9eca6c91bf637c38703aacd9eac5a521b",
     "review": "machine"
+  },
+  "b114.admin.title": {
+    "text": "Fonctionnalités",
+    "sourceHash": "69ff2f9a493b7c8e52e39533fb363b5a2fe89ab6be796875e58cfd709d99a32d",
+    "review": "machine"
+  },
+  "b114.admin.note": {
+    "text": "Les fonctionnalités Community sont développées en coulisses. Désactivé : personne ne les voit. Bêta : seulement les testeurs que vous choisissez. Activé : tous les utilisateurs connectés.",
+    "sourceHash": "58258c64a36b0687a8e260d5679f7f746b60933c79346f81a11dd1d1ab0ab8be",
+    "review": "machine"
+  },
+  "b114.admin.unavailable": {
+    "text": "Les commutateurs de fonctionnalités ne sont pas encore disponibles.",
+    "sourceHash": "a997fe78db4b0bab687026bdd1d272409459b519868ec4d2b767f454703840e4",
+    "review": "machine"
+  },
+  "b114.admin.testers": {
+    "text": "Testeurs",
+    "sourceHash": "d27477f01362c422a939a469c0108f0baa9dbfd1bd28f981f93bd02b7cc27fc9",
+    "review": "machine"
+  },
+  "b114.admin.no-testers": {
+    "text": "Aucun testeur pour l’instant.",
+    "sourceHash": "feff78c9a75ece56e0780f74f9e6532c706f8f83e3e9f8d4f56514a19c28c8d7",
+    "review": "machine"
+  },
+  "b114.admin.search": {
+    "text": "Rechercher par e-mail",
+    "sourceHash": "779e5a14671796edb99e606a66400e61a2a93b9daa595d21da3e6a4c5e885e2c",
+    "review": "machine"
+  },
+  "b114.admin.add": {
+    "text": "Ajouter {email}",
+    "sourceHash": "c5f8727f86f8087e4c1486ed3dc32de52c5d71cbfdc2d9ee6d0ab3efd5fc600f",
+    "review": "machine"
+  },
+  "b114.admin.remove": {
+    "text": "Retirer le testeur",
+    "sourceHash": "5c5c9da3526d62ba711dcfa6dedd5bc2f04c5e8376291cfcaad3d5f61d9552c2",
+    "review": "machine"
+  },
+  "b114.admin.save": {
+    "text": "Enregistrer les testeurs",
+    "sourceHash": "ba006aef443c2dced6637a9fa17446118b73d1aacddb3606e0cb101ef7c14c5f",
+    "review": "machine"
+  },
+  "b114.admin.failed": {
+    "text": "Impossible d’enregistrer. Réessayez.",
+    "sourceHash": "6ff3fbea1fae35ea3ce6b8d27b56cfdd9e6d2fb5730157ef7f3f3b6ed9ce4a03",
+    "review": "machine"
+  },
+  "b114.state.off": {
+    "text": "Désactivé",
+    "sourceHash": "edb188f8a3da52262a7452f5db3abe316a6c3b272309b0334a753a443e8dfed4",
+    "review": "machine"
+  },
+  "b114.state.beta": {
+    "text": "Bêta",
+    "sourceHash": "f9d5205df6c3d746faa1a02f752b098d8a6e51631354bb9aa4feb804ca5dee0c",
+    "review": "machine"
+  },
+  "b114.state.on": {
+    "text": "Activé",
+    "sourceHash": "a07d533bfd499ebc73d929a557cf2e6f8e8ed60cab398384ad6f3eaee0d980f0",
+    "review": "machine"
+  },
+  "b114.feature.sharing": {
+    "text": "Partage",
+    "sourceHash": "de07e0d917957f3614d78dd3b55d32e6773313ad1fa1df8f2052e3ae4dc6864a",
+    "review": "machine"
+  },
+  "b114.feature.review": {
+    "text": "Révision et commentaires",
+    "sourceHash": "e4ad14de6d0023cd26df6ee73cf7338643c8f7235cc473f7a87626eb1068711b",
+    "review": "machine"
+  },
+  "b114.feature.abtest": {
+    "text": "Test A/B",
+    "sourceHash": "5ddea1ba29a663b68664ef0e364c617d0ce16efa3505ef5b1a1e29cf85028c33",
+    "review": "machine"
+  },
+  "b114.feature.profiles": {
+    "text": "Profils",
+    "sourceHash": "c1970924e09804dee269f627ee5946c06f3b24d9f4fc244b46d3727523b70eba",
+    "review": "machine"
+  },
+  "b114.feature.public": {
+    "text": "Partage public",
+    "sourceHash": "8e14052fd6c474854825b79969b015888cfd1a91decc458f66b64c8e2640b5f3",
+    "review": "machine"
+  },
+  "b114.rights.none": {
+    "text": "Aucun droit indiqué – privé, tous droits réservés.",
+    "sourceHash": "abc72954efec2c0633c01282a96b089561ef1a7b177f2c26e103d6dc024c9e50",
+    "review": "machine"
+  },
+  "b114.rights.license": {
+    "text": "Licence",
+    "sourceHash": "b337e9a7ee6a7cdb95646422bc1ace3a0de67d0ec6c5b3e8a15c90e8eb5ab965",
+    "review": "machine"
+  },
+  "b114.rights.source": {
+    "text": "Source",
+    "sourceHash": "f2893369294f3cb1ecce9305148ade5b4d449b474aca901cee2a2a94985e0792",
+    "review": "machine"
+  },
+  "b114.rights.attribution": {
+    "text": "Attribution",
+    "sourceHash": "89eb6b97bcf64a61c1c99fcab15d77861dcd7524f2b9a0ce61912aad7d482140",
+    "review": "machine"
+  },
+  "b114.rights.shareable": {
+    "text": "Partageable",
+    "sourceHash": "7f22fbc0140141d4ccebecc085c7bd529d06e3ed8d95246bfc1bcd0c76e2e2d6",
+    "review": "machine"
+  },
+  "b114.rights.adaptable": {
+    "text": "Adaptable",
+    "sourceHash": "9480232af1a3fa2660e88c573244fe021ab02be5d54177343f95675415b429da",
+    "review": "machine"
+  },
+  "b114.rights.yes": {
+    "text": "Oui",
+    "sourceHash": "8f36926ac0f298ce31176f92dbb6a651edfed78efb77cd47cdd9a48c04843ad5",
+    "review": "machine"
+  },
+  "b114.rights.no": {
+    "text": "Non",
+    "sourceHash": "527ff54fdce9ccb32ae2b89b9a729a99a567d29d6d91c3e47d41450e01c20f92",
+    "review": "machine"
   }
 }

@@ -8165,6 +8165,214 @@
       "en": {
         "text": "Opens the figure from a printout in the right scene and frame."
       }
+    },
+    "b114.admin.title": {
+      "nb": {
+        "text": "Funksjoner"
+      },
+      "en": {
+        "text": "Features"
+      }
+    },
+    "b114.admin.note": {
+      "nb": {
+        "text": "Community-funksjonene bygges skjult. Av: ingen ser dem. Beta: bare testerne du velger. På: alle innloggede brukere."
+      },
+      "en": {
+        "text": "Community features are built behind the scenes. Off: nobody sees them. Beta: only the testers you choose. On: all signed-in users."
+      }
+    },
+    "b114.admin.unavailable": {
+      "nb": {
+        "text": "Funksjonsbryterne er ikke tilgjengelige ennå."
+      },
+      "en": {
+        "text": "Feature switches are not available yet."
+      }
+    },
+    "b114.admin.testers": {
+      "nb": {
+        "text": "Testere"
+      },
+      "en": {
+        "text": "Testers"
+      }
+    },
+    "b114.admin.no-testers": {
+      "nb": {
+        "text": "Ingen testere ennå."
+      },
+      "en": {
+        "text": "No testers yet."
+      }
+    },
+    "b114.admin.search": {
+      "nb": {
+        "text": "Søk etter e-post"
+      },
+      "en": {
+        "text": "Search by email"
+      }
+    },
+    "b114.admin.add": {
+      "nb": {
+        "text": "Legg til {email}"
+      },
+      "en": {
+        "text": "Add {email}"
+      }
+    },
+    "b114.admin.remove": {
+      "nb": {
+        "text": "Fjern tester"
+      },
+      "en": {
+        "text": "Remove tester"
+      }
+    },
+    "b114.admin.save": {
+      "nb": {
+        "text": "Lagre testere"
+      },
+      "en": {
+        "text": "Save testers"
+      }
+    },
+    "b114.admin.failed": {
+      "nb": {
+        "text": "Kunne ikke lagre. Prøv igjen."
+      },
+      "en": {
+        "text": "Could not save. Try again."
+      }
+    },
+    "b114.state.off": {
+      "nb": {
+        "text": "Av"
+      },
+      "en": {
+        "text": "Off"
+      }
+    },
+    "b114.state.beta": {
+      "nb": {
+        "text": "Beta"
+      },
+      "en": {
+        "text": "Beta"
+      }
+    },
+    "b114.state.on": {
+      "nb": {
+        "text": "På"
+      },
+      "en": {
+        "text": "On"
+      }
+    },
+    "b114.feature.sharing": {
+      "nb": {
+        "text": "Deling"
+      },
+      "en": {
+        "text": "Sharing"
+      }
+    },
+    "b114.feature.review": {
+      "nb": {
+        "text": "Gjennomgang og kommentarer"
+      },
+      "en": {
+        "text": "Review and comments"
+      }
+    },
+    "b114.feature.abtest": {
+      "nb": {
+        "text": "A/B-test"
+      },
+      "en": {
+        "text": "A/B test"
+      }
+    },
+    "b114.feature.profiles": {
+      "nb": {
+        "text": "Profiler"
+      },
+      "en": {
+        "text": "Profiles"
+      }
+    },
+    "b114.feature.public": {
+      "nb": {
+        "text": "Offentlig deling"
+      },
+      "en": {
+        "text": "Public sharing"
+      }
+    },
+    "b114.rights.none": {
+      "nb": {
+        "text": "Ingen rettigheter oppgitt – privat, alle rettigheter forbeholdt."
+      },
+      "en": {
+        "text": "No rights given – private, all rights reserved."
+      }
+    },
+    "b114.rights.license": {
+      "nb": {
+        "text": "Lisens"
+      },
+      "en": {
+        "text": "License"
+      }
+    },
+    "b114.rights.source": {
+      "nb": {
+        "text": "Kilde"
+      },
+      "en": {
+        "text": "Source"
+      }
+    },
+    "b114.rights.attribution": {
+      "nb": {
+        "text": "Kreditering"
+      },
+      "en": {
+        "text": "Attribution"
+      }
+    },
+    "b114.rights.shareable": {
+      "nb": {
+        "text": "Kan deles"
+      },
+      "en": {
+        "text": "Can be shared"
+      }
+    },
+    "b114.rights.adaptable": {
+      "nb": {
+        "text": "Kan bearbeides"
+      },
+      "en": {
+        "text": "Can be adapted"
+      }
+    },
+    "b114.rights.yes": {
+      "nb": {
+        "text": "Ja"
+      },
+      "en": {
+        "text": "Yes"
+      }
+    },
+    "b114.rights.no": {
+      "nb": {
+        "text": "Nei"
+      },
+      "en": {
+        "text": "No"
+      }
     }
   }
 }

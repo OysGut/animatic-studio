@@ -5834,7 +5834,7 @@ try {
     assert(noRls.length === 0, `uten RLS: ${noRls.map((r) => r["relname"]).join(", ")}`);
     const noPath = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname in ('public', 'private') and p.prosecdef and not exists (select 1 from unnest(coalesce(p.proconfig, '{}')) c where c like 'search_path=%')`;
     assert(noPath.length === 0, `security definer uten search_path: ${noPath.map((r) => r["proname"]).join(", ")}`);
-    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status')`; // B-109: eneste unntak, gir bare {open, message}
+    const anonFns = await sql`select p.proname from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'public' and p.prosecdef and has_function_privilege('anon', p.oid, 'execute') and p.proname not in ('registration_status', 'public_profile')`; // B-109: gir bare {open, message}; B-114 C0: public_profile gir bare offentlige felt og bare når community.profiles og profilen er offentlig
     assert(anonFns.length === 0, `anon kan kjøre: ${anonFns.map((r) => r["proname"]).join(", ")}`);
     const anonTables = await sql`select relname from pg_class c join pg_namespace n on n.oid = c.relnamespace where n.nspname = 'public' and relkind in ('r', 'p', 'v', 'm') and relname not in ('schema_version', 'privacy_policy') and (has_table_privilege('anon', c.oid, 'select') or has_table_privilege('anon', c.oid, 'insert') or has_table_privilege('anon', c.oid, 'update') or has_table_privilege('anon', c.oid, 'delete'))`;
     assert(anonTables.length === 0, `anon har tabelltilgang: ${anonTables.map((r) => r["relname"]).join(", ")}`);
@@ -7007,6 +7007,156 @@ try {
     assert((await sql`select 1 from public.print_copies where project_id=${bp} union all select 1 from public.print_jobs where project_id=${bp}`).length === 0, "delete_project sletter utskriftsrader");
     await as("service_role", null, (tx) => tx`select public.purge_project_assets(${bp},${ALICE})`);
     assert((await sql`select id from public.projects where id=${bp}`).length === 0, "purge fjerner prosjektet");
+  });
+  // ---------- Community-grunnmur bak funksjonsbrytere (B-114 C0, 0080) ----------
+  await test("0080 (B-114 C0): brytere av gir ingenting; beta bare testere; publiseringer, kommentarer, profil, blokkering", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 80, "skjemaversjon 80");
+    const ADM = "55555555-5555-7555-8555-555555555555", EVE = "66666666-6666-7666-8666-666666666666";
+    await sql`insert into auth.users (id, email) values (${ADM}, 'admin@example.no'), (${EVE}, 'Eve@Example.no') on conflict do nothing`;
+    await sql`insert into public.app_admins (user_id) values (${ADM}) on conflict do nothing`;
+    for (const u of [ALICE, BOB, CAROL, EVE]) await sql`insert into public.profiles (user_id, display_name) values (${u}, 'X') on conflict (user_id) do nothing`;
+    const tables = ["features", "feature_testers", "publications", "publication_recipients", "publication_media", "review_comments", "content_reports", "user_blocks"];
+    for (const t of tables) {
+      assert((await sql`select relrowsecurity r from pg_class where oid=${`public.${t}`}::regclass`)[0]?.["r"] === true, `RLS på ${t}`);
+      for (const priv of ["select", "insert", "update", "delete"])
+        assert((await sql`select has_table_privilege('anon', ${`public.${t}`}, ${priv}) p`)[0]?.["p"] === false, `anon ${priv} ${t}`);
+      for (const priv of ["insert", "update", "delete"])
+        assert((await sql`select has_table_privilege('authenticated', ${`public.${t}`}, ${priv}) p`)[0]?.["p"] === false, `ingen direkte ${priv} på ${t}`);
+    }
+    const keys = (await sql`select key, state from public.features order by key`).map((r) => `${r["key"]}=${r["state"]}`);
+    assert(keys.join() === "community.abtest=off,community.profiles=off,community.public=off,community.review=off,community.sharing=off", `alle av: ${keys}`);
+    for (const c of ["handle", "bio", "avatar_key", "is_public", "profile_fields"])
+      assert((await sql`select has_column_privilege('authenticated', 'public.profiles', ${c}, 'select') p`)[0]?.["p"] === false, `${c} kan ikke leses direkte`);
+    // my_features
+    await expectError(as("anon", null, (tx) => tx`select public.my_features()`), "42501");
+    const mine = (await as("authenticated", ALICE, (tx) => tx`select public.my_features() f`))[0]!["f"] as Record<string, boolean>;
+    assert(Object.values(mine).length === 5 && Object.values(mine).every((v) => v === false), "my_features: alle av");
+    // Bare administrator
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature('community.sharing', 'on', null)`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}]::uuid[])`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select * from public.admin_find_users('example')`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_list_features()`), "42501");
+    await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.sharing', 'maybe', null)`), "22023");
+    const found = await as("authenticated", ADM, (tx) => tx`select * from public.admin_find_users('eve@')`);
+    assert(found.length === 1 && found[0]!["user_id"] === EVE, "admin finner bruker på e-post");
+    assert((await as("authenticated", ADM, (tx) => tx`select * from public.admin_find_users('e_')`)).length === 0, "for kort søk gir ingen treff");
+    // Av: publisering avvises, ingen rader
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Community') id`)[0]!["id"])));
+    await sql`insert into public.project_members (project_id, user_id, role) values (${bp}, ${CAROL}, 'viewer')`;
+    const create = (u: string, audience = "selected", rights: Record<string, boolean> = { comment: true }) =>
+      as("authenticated", u, async (tx) => String((await tx`select public.create_publication(${bp}, 'range', ${tx.json({ from: 0, to: 48 })}, ${audience}, ${tx.json(rights)}, null, 'Scene 4', '', null, null) id`)[0]!["id"]));
+    await expectError(create(ALICE), "42501");
+    await expectError(as("anon", null, (tx) => tx`select public.create_publication(${bp}, 'range', '{}'::jsonb, 'selected', '{}'::jsonb, null, 'X', '', null, null)`), "42501");
+    // Beta: bare testere
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.sharing', 'beta', null)`);
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.review', 'beta', null)`);
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}, ${BOB}]::uuid[])`);
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature_testers('community.review', array[${ALICE}, ${BOB}]::uuid[])`);
+    const list = (await as("authenticated", ADM, (tx) => tx`select public.admin_list_features() f`))[0]!["f"] as { key: string; state: string; testers: unknown[] }[];
+    assert(list.find((f) => f.key === "community.sharing")?.testers.length === 2, "testerlisten vises for admin");
+    await expectError(create(CAROL), "42501");
+    const pub = await create(ALICE);
+    assert((await as("authenticated", ALICE, (tx) => tx`select public.my_features() f`))[0]!["f"]["community.sharing"] === true, "tester ser bryteren som på");
+    assert((await as("authenticated", CAROL, (tx) => tx`select public.my_features() f`))[0]!["f"]["community.sharing"] === false, "ikke-tester ser den som av");
+    assert((await as("authenticated", CAROL, (tx) => tx`select id from public.publications where id=${pub}`)).length === 0, "medlem som ikke er tester ser ingenting");
+    // Mottakere
+    await as("authenticated", ALICE, (tx) => tx`select public.set_publication_recipients(${pub}, array[${BOB}]::uuid[], array['EVE@example.no']::text[])`);
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.set_publication_recipients(${pub}, array[]::uuid[], array[]::text[])`), "42501");
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.publications where id=${pub}`)).length === 0, "utkast er skjult for mottaker");
+    await as("authenticated", ALICE, (tx) => tx`select public.update_publication(${pub}, ${tx.json({ status: "live" })})`);
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.publications where id=${pub}`)).length === 1, "mottaker ser publiseringen");
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.publication_recipients where publication_id=${pub}`)).length === 1, "mottaker ser bare sin egen mottakerrad");
+    assert((await as("authenticated", EVE, (tx) => tx`select public.publication_for_me(${pub}) p`))[0]!["p"] === null, "e-postmottaker uten beta ser ingenting");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}, ${BOB}, ${EVE}]::uuid[])`);
+    assert((await as("authenticated", EVE, (tx) => tx`select public.publication_for_me(${pub}) p`))[0]!["p"] !== null, "e-postmottaker (store/små bokstaver) ser den som tester");
+    assert((await sql`select seen_at from public.publication_recipients where publication_id=${pub} and email='eve@example.no'`)[0]!["seen_at"] !== null, "sett registreres");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}, ${BOB}]::uuid[])`);
+    // Medier
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.add_publication_media(${pub}, ${`${bp}/source/x.mp4`}, 'video/mp4', 1000, 1920, 1080)`), "23514");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.add_publication_media(${pub}, ${`${bp}/shares/../x.mp4`}, 'video/mp4', 1000, 1920, 1080)`), "23514");
+    await as("authenticated", ALICE, (tx) => tx`select public.add_publication_media(${pub}, ${`${bp}/shares/${pub}/film.mp4`}, 'video/mp4', 1000, 1920, 1080)`);
+    const forBob = (await as("authenticated", BOB, (tx) => tx`select public.publication_for_me(${pub}) p`))[0]!["p"] as { media: unknown[] };
+    assert(forBob.media.length === 1, "mottaker får mediefilen");
+    // Kommentarer
+    const cid = String((await as("authenticated", BOB, (tx) => tx`select public.add_review_comment(${pub}, null, 1200, 30, ${tx.json({ x: 0.1, y: 0.1, width: 0.2, height: 0.2 })}, 'timing', 'For kort') id`))[0]!["id"]);
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.add_review_comment(${pub}, null, 0, null, ${tx.json({ x: 0.9, y: 0, width: 0.5, height: 0.1 })}, 'timing', 'x')`), "23514");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.edit_review_comment(${cid}, 'Endret', null)`), "42501");
+    await as("authenticated", BOB, (tx) => tx`select public.edit_review_comment(${cid}, 'Litt for kort', null)`);
+    await as("authenticated", ALICE, (tx) => tx`select public.add_review_comment(${pub}, ${cid}, 1200, 30, null, 'timing', 'Enig')`);
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.review_comments where publication_id=${pub}`)).length === 2, "tråd med svar");
+    await as("authenticated", ALICE, (tx) => tx`select public.update_publication(${pub}, ${tx.json({ comment: false })})`);
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.add_review_comment(${pub}, null, 0, null, null, 'general', 'Uten rett')`), "42501");
+    await as("authenticated", ALICE, (tx) => tx`select public.add_review_comment(${pub}, null, 0, null, null, 'general', 'Redaktør kan alltid')`);
+    await as("authenticated", BOB, (tx) => tx`select public.remove_review_comment(${cid})`);
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.review_comments where id=${cid}`)).length === 0, "fjernet kommentar er skjult");
+    // Review av: ingen kommentarer synlige
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.review', 'off', null)`);
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.review_comments where publication_id=${pub}`)).length === 0, "review av: ingen kommentarer");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.add_review_comment(${pub}, null, 0, null, null, 'general', 'x')`), "42501");
+    // Blokkering
+    await as("authenticated", ALICE, (tx) => tx`select public.block_user(${BOB})`);
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.publications where id=${pub}`)).length === 0, "blokkert mottaker ser ikke publiseringen");
+    assert((await as("authenticated", BOB, (tx) => tx`select * from public.user_blocks`)).length === 0, "den blokkerte ser ikke blokkeringen");
+    assert((await as("authenticated", ALICE, (tx) => tx`select * from public.user_blocks`)).length === 1, "egen blokkering synlig");
+    await as("authenticated", ALICE, (tx) => tx`select public.unblock_user(${BOB})`);
+    assert((await as("authenticated", BOB, (tx) => tx`select id from public.publications where id=${pub}`)).length === 1, "etter opphevet blokkering ser mottakeren igjen");
+    // Utløp og tilbaketrekking
+    await sql`update public.publications set expires_at = now() - interval '1 second', publish_at = now() - interval '1 day' where id=${pub}`;
+    assert((await as("authenticated", BOB, (tx) => tx`select public.publication_for_me(${pub}) p`))[0]!["p"] === null, "utløpt: ingenting");
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.publications where id=${pub}`)).length === 1, "redaktøren ser fortsatt sin utløpte publisering");
+    await sql`update public.publications set expires_at = null where id=${pub}`;
+    await as("authenticated", ALICE, (tx) => tx`select public.revoke_publication(${pub})`);
+    assert((await as("authenticated", BOB, (tx) => tx`select public.publication_for_me(${pub}) p`))[0]!["p"] === null, "tilbaketrukket: ingenting");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.update_publication(${pub}, ${tx.json({ status: "live" })})`), "22023");
+    // Offentlig krever community.public
+    await expectError(create(ALICE, "public"), "42501");
+    // Sharing av: alt borte, også for redaktøren
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.sharing', 'off', null)`);
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.publications where project_id=${bp}`)).length === 0, "sharing av: null rader for redaktøren");
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.publication_media where project_id=${bp}`)).length === 0, "sharing av: ingen medier");
+    // Profil: privat som standard, offentlig bare med community.profiles
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('alice', 'Bio', null, true, '{}'::jsonb)`), "42501");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.profiles', 'on', null)`);
+    assert((await sql`select is_public from public.profiles where user_id=${BOB}`)[0]!["is_public"] === false, "profilen er privat som standard");
+    await as("authenticated", BOB, (tx) => tx`select public.set_my_public_profile('Bob_Animator', 'Hei', null, false, '{}'::jsonb)`);
+    assert((await as("anon", null, (tx) => tx`select public.public_profile('bob_animator') p`))[0]!["p"] === null, "privat profil gir ingenting");
+    await as("authenticated", BOB, (tx) => tx`select public.set_my_public_profile('bob_animator', 'Hei', null, true, '{}'::jsonb)`);
+    const prof = (await as("anon", null, (tx) => tx`select public.public_profile('bob_animator') p`))[0]!["p"] as Record<string, unknown>;
+    assert(prof?.["handle"] === "bob_animator" && !("user_id" in prof) && !("country" in prof), "offentlig profil gir bare offentlige felt");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('bob_animator', '', null, false, '{}'::jsonb)`), "23505");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('a!', '', null, false, '{}'::jsonb)`), "23514");
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('alice', '', ${`avatars/${BOB}/a.png`}, false, '{}'::jsonb)`), "22023");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.profiles', 'off', null)`);
+    assert((await as("anon", null, (tx) => tx`select public.public_profile('bob_animator') p`))[0]!["p"] === null, "profiles av: ingenting");
+    // Rettigheter på ressursversjoner
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    void prod;
+    const a = crypto.randomUUID(), av = crypto.randomUUID();
+    await sql`insert into public.assets (id, project_id, kind, name) values (${a}, ${bp}, 'character', 'Maja')`;
+    await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${av}, ${bp}, ${a}, 'Standard', 'reference')`;
+    const ver = (rights: unknown) => sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256, rights)
+      values (${crypto.randomUUID()}, ${bp}, ${av}, ${Math.floor(Math.random() * 1e6) + 2}, ${`${bp}/r.png`}, 'image/png', 1, ${"c".repeat(64)}, ${rights === null ? null : sql.json(rights as never)})`;
+    await ver(null);
+    await ver({ license: "CC BY 4.0", shareable: true, adaptable: false });
+    await expectError(ver({ owner: "x" }), "23514");
+    await expectError(ver({ shareable: "ja" }), "23514");
+    // Rapportering: av gir avvisning; admin-kø bak community.review
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.report_content('profile', ${BOB}, 'spam', '')`), "42501");
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.block_user(${ALICE})`), "42501");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.review', 'on', null)`);
+    await as("authenticated", BOB, (tx) => tx`select public.report_content('profile', ${ALICE}, 'spam', 'Reklame')`);
+    await expectError(as("authenticated", BOB, (tx) => tx`select public.admin_report_queue()`), "42501");
+    const queue = (await as("authenticated", ADM, (tx) => tx`select public.admin_report_queue() q`))[0]!["q"] as { id: string }[];
+    assert(queue.length === 1, "rapporten står i køen");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_handle_report(${queue[0]!.id}, 'dismissed')`);
+    assert(((await as("authenticated", ADM, (tx) => tx`select public.admin_report_queue() q`))[0]!["q"] as unknown[]).length === 0, "behandlet rapport er ute av køen");
+    await as("authenticated", ADM, (tx) => tx`select public.admin_set_feature('community.review', 'off', null)`);
+    await expectError(as("authenticated", ADM, (tx) => tx`select public.admin_report_queue()`), "42501");
+    // delete_project sletter publiseringene og returnerer mediefilene
+    const r = (await as("service_role", null, async (tx) => (await tx`select public.delete_project(${bp},${ALICE}) r`)[0]!["r"])) as { films: string[] };
+    assert(r.films.includes(`${bp}/shares/${pub}/film.mp4`), "mediefilen slettes med prosjektet");
+    assert((await sql`select 1 from public.publications where project_id=${bp} union all select 1 from public.review_comments where project_id=${bp}`).length === 0, "delete_project sletter publiseringer og kommentarer");
+    await sql`delete from public.app_admins where user_id = ${ADM}`;
   });
 } finally {
   await sql.end();

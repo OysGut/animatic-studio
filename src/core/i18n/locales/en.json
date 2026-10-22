@@ -74600,5 +74600,83 @@
   },
   "print-job.route-description": {
     "text": "Opens the figure from a printout in the right scene and frame."
+  },
+  "b114.admin.title": {
+    "text": "Features"
+  },
+  "b114.admin.note": {
+    "text": "Community features are built behind the scenes. Off: nobody sees them. Beta: only the testers you choose. On: all signed-in users."
+  },
+  "b114.admin.unavailable": {
+    "text": "Feature switches are not available yet."
+  },
+  "b114.admin.testers": {
+    "text": "Testers"
+  },
+  "b114.admin.no-testers": {
+    "text": "No testers yet."
+  },
+  "b114.admin.search": {
+    "text": "Search by email"
+  },
+  "b114.admin.add": {
+    "text": "Add {email}"
+  },
+  "b114.admin.remove": {
+    "text": "Remove tester"
+  },
+  "b114.admin.save": {
+    "text": "Save testers"
+  },
+  "b114.admin.failed": {
+    "text": "Could not save. Try again."
+  },
+  "b114.state.off": {
+    "text": "Off"
+  },
+  "b114.state.beta": {
+    "text": "Beta"
+  },
+  "b114.state.on": {
+    "text": "On"
+  },
+  "b114.feature.sharing": {
+    "text": "Sharing"
+  },
+  "b114.feature.review": {
+    "text": "Review and comments"
+  },
+  "b114.feature.abtest": {
+    "text": "A/B test"
+  },
+  "b114.feature.profiles": {
+    "text": "Profiles"
+  },
+  "b114.feature.public": {
+    "text": "Public sharing"
+  },
+  "b114.rights.none": {
+    "text": "No rights given – private, all rights reserved."
+  },
+  "b114.rights.license": {
+    "text": "License"
+  },
+  "b114.rights.source": {
+    "text": "Source"
+  },
+  "b114.rights.attribution": {
+    "text": "Attribution"
+  },
+  "b114.rights.shareable": {
+    "text": "Can be shared"
+  },
+  "b114.rights.adaptable": {
+    "text": "Can be adapted"
+  },
+  "b114.rights.yes": {
+    "text": "Yes"
+  },
+  "b114.rights.no": {
+    "text": "No"
   }
 }

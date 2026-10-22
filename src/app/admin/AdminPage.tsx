@@ -25,6 +25,7 @@ import { PRIVACY_KEY, usePrivacyPolicy } from "@/app/account/use-account";
 import { AiConnectionsAdmin, CronStatusLine, useAiAdmin } from "./AiConnectionsAdmin";
 import { CountryStats } from "./CountryStats";
 import { CaptchaWarning, RegistrationAdmin } from "./RegistrationAdmin";
+import { FeaturesAdmin } from "./FeaturesAdmin";
 import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_KEY = ["admin-overview"] as const;
@@ -206,6 +207,7 @@ export function AdminPage({ myId }: { myId: string }) {
 
       <CaptchaWarning />
       <RegistrationAdmin />
+      <FeaturesAdmin />
       <CountryStats />
       <AiConnectionsAdmin />
 
