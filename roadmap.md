@@ -1,6 +1,7 @@
 # Veikart
 
 ## PTG1 (B-102) – aktivt oppdrag
+- [ ] Klipp midt i overlapp avrundet langs filmen; handleIn/handleOut og overgangsdata i modell/kolonner; lyd/ord eies av startskuddet med absolutt/relativ tid og crossesCut, oddetalls gyllen test og LESMEG-regel.
 - [ ] Ren utvekslingsmodell, felles avrunding, toere og versjonerte skuddnavn.
 - [ ] Additiv 0081 fra 0080: prosjektkode og opptaksinnstillinger, kommando/angring og lagring; ingen kjøring i Cloud.
 - [ ] CSV/JSON-profiler, PNG-miniatyrer, strømmet ZIP64 og tospråklig LESMEG.

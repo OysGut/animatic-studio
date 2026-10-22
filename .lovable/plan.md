@@ -8,8 +8,8 @@
 - «Til produksjonen» i eksportdialogen; prosjektkode og opptaksinnstillinger kan endres med angring i prosjektinnstillingene.
 - Strømmet ZIP64 og norsk/engelsk `LESMEG.txt` i pakkene, uten nye pakker eller AI-kall.
 
-## Avklaring før kode
-Dagens film tillater overlappende overganger, mens PTG1 krever at summen av skuddlengdene er lik filmens lengde. Skal hvert skudd slutte ved neste skudds start ved en overlapp (overlappen regnes da til det innkommende skuddet), eller skal overlapp fordeles annerledes? Dette påvirker også hvilke lyd- og ordtider som tilhører skuddet.
+## Bekreftet regel for overlapp
+Klippunktet er `secondsToFrames(midten av overgangen)`, avrundet langs filmen. Utgående og innkommende skudd deler samme grense. `handleIn` og `handleOut` er den delen av overlappen som ligger på naboens side; overgangstype og overgangslengde følger modellen. Håndtak vises etter lengde i skuddlisten. Lyd- og ordhendelser eies av skuddet der de starter, med både absolutt og relativ tid. Hele lengden bevares ved kryssing av klippunktet og merkes `crossesCut: true`. Uten overlapp er håndtakene null. Regelen dokumenteres i LESMEG og rapporten og får en gyllen oddetallstest.
 
 ## Teknisk gjennomføring
 - Legg modell, navngivning, frekvenskonvertering og skuddlisteverdier i `src/core/interchange/`; eksportøren pakker og gjengir miniatyrer uten egne tids-/navneberegninger.
