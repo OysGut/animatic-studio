@@ -193,3 +193,12 @@
 - [x] Admin: brukere per land; personvern nb/en; gjenbruk i lister
 - [x] DB-tester, account-locale.mjs nb/en, regresjon, full vitest, B097_REPORT.md
 
+
+## PTG3: Kamera i fysiske enheter, FBX og AE-pakke (B-102)
+- [ ] CameraTrack i InterchangeDoc (core/interchange/camera.ts), begge moduser, gyldne tester
+- [ ] FBX ASCII 7.4 (core/interchange/fbx.ts) + parser-test
+- [ ] AE-pakke bygg.jsx ES3 (core/interchange/ae-jsx.ts) + syntakstest + AE-mock-test
+- [ ] Eksportdialog: «Kamera (FBX, eksperimentell)» og «After Effects-pakke» med kameramodusvalg
+- [ ] LESMEG forklarer null-kamera; eksempel-FBX i tests/fixtures/ptg3/
+- [ ] Suite ptg3-camera.mjs nb/en; regresjon ptg1-shotlist, export-e2e, p4; full vitest/DB/i18n
+- [ ] Rapport docs/development/PTG3_REPORT.md
