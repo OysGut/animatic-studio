@@ -54302,5 +54302,85 @@
     "text": "이 샷에는 리그가 없으므로 카메라가 없습니다: {value1}",
     "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
     "review": "machine"
+  },
+  "ptg3b.card-explain": {
+    "text": "이 QR 코드는 완성된 After Effects 필름을 가져오는 데 사용됩니다. 필름은 이 장면을 내보낸 위치에 배치됩니다.",
+    "sourceHash": "185c27d2dda6792794089275f849a7cd1f1c12c65529829fbd74297b0f17e284",
+    "review": "machine"
+  },
+  "ptg3b.card-footer": {
+    "text": "From Pen to Glass에서 내보냄",
+    "sourceHash": "38be25d7859fc680bab42c070b2a750df525af034bc9b32bfb93d05f7ee735ef",
+    "review": "machine"
+  },
+  "ptg3b.option": {
+    "text": "QR 포함 타이틀 카드",
+    "sourceHash": "f748d07c410819ae4f8c4bd0b9849eefff25d13e910302138ec0cb3e2d2dffdf",
+    "review": "machine"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "타이틀 카드: 각 샷에는 QR 코드가 있는 1초짜리 컴포지션 <샷>_TITTEL이 있습니다. <샷>_RENDER는 카드를 샷 앞에 두고 타임코드 −00:00:01:00에서 시작하므로, 샷의 0번 프레임은 샷 목록 및 FBX 파일과 같은 00:00:00:00입니다. 샷 컴포지션과 메인 컴포지션은 바뀌지 않습니다. <샷>_RENDER를 렌더링하고 QR 코드로 필름을 가져오세요. 타이틀 카드는 가져올 때 잘려 나갑니다.",
+    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "review": "machine"
+  },
+  "ptg3b.route-title": {
+    "text": "After Effects에서 필름 가져오기 – From Pen to Glass",
+    "sourceHash": "de50f7331ecec27d9ee5189b99d48b73eca0d046a00ab9066133f6985a7162f4",
+    "review": "machine"
+  },
+  "ptg3b.route-description": {
+    "text": "완성된 필름을 내보낸 샷에 업로드합니다.",
+    "sourceHash": "246b4b64ca6bc02f391525e763e6bb224149f5ff1397f8653a463cbe806bc45d",
+    "review": "machine"
+  },
+  "ptg3b.import-heading": {
+    "text": "완성된 필름 가져오기",
+    "sourceHash": "9b4e60b1594ae41b319b35cd008d244216126ae6591e060efbb89a9c144c74b3",
+    "review": "machine"
+  },
+  "ptg3b.import-shot": {
+    "text": "샷 {value1} · {value2}프레임",
+    "sourceHash": "a8a51f18107550811bb9c0877456d27eecfb5abaf529838921c59fc0c1957c9e",
+    "review": "machine"
+  },
+  "ptg3b.import-hint": {
+    "text": "필름은 장면의 새 버전이 되며 자동으로 사용되지 않습니다. 첫 1초의 타이틀 카드는 잘려 나갑니다.",
+    "sourceHash": "61766f26960b820a20c319a187b486cb288c65f50e14f2c49bb70fe2d62963f3",
+    "review": "machine"
+  },
+  "ptg3b.import-choose": {
+    "text": "필름 선택",
+    "sourceHash": "a46db7274c32416b42cb6385a263025a2bde9d46af2880b3f8b9b3eb3a2dfa48",
+    "review": "machine"
+  },
+  "ptg3b.import-working": {
+    "text": "가져오는 중…",
+    "sourceHash": "8f80118eafcd945e51a9bc110a59bcf8328e82b188136b8a92e2a427995f2a1f",
+    "review": "machine"
+  },
+  "ptg3b.import-done": {
+    "text": "필름이 장면의 새 버전으로 추가되었습니다. 사용하려면 편집에서 선택하세요.",
+    "sourceHash": "7a43ec974e37fd229f58fed2bad93729674d41eddc27d8774c582a4a656b9382",
+    "review": "machine"
+  },
+  "ptg3b.import-trimmed": {
+    "text": "타이틀 카드(첫 1초)를 잘라냈습니다.",
+    "sourceHash": "3f732f53e4220d0b5b68b48c7bf0e22f3ea691898e784bc1194a490f01c92290",
+    "review": "machine"
+  },
+  "ptg3b.import-mismatch": {
+    "text": "경고: 필름은 {value1}프레임이지만 샷은 {value2}프레임입니다.",
+    "sourceHash": "6d945a2f7829837c01a83a9ff607cd55de20ba25cae3578080576e1bf2504f42",
+    "review": "machine"
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "편집 열기",
+    "sourceHash": "d361c00300ed7ef3e18ddd38d1af16cebf0e9d1e177df6c8eb07907fd8daf1ee",
+    "review": "machine"
+  },
+  "ptg3b.import-failed": {
+    "text": "가져오기 실패: {value1}",
+    "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
+    "review": "machine"
   }
 }

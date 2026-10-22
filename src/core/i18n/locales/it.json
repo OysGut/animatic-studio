@@ -54450,5 +54450,85 @@
     "text": "Queste inquadrature non hanno un rig, quindi manca la fotocamera: {value1}",
     "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
     "review": "machine"
+  },
+  "ptg3b.card-explain": {
+    "text": "Questo codice QR serve per importare il film finito di After Effects. Il film viene collocato dove questa scena è stata esportata.",
+    "sourceHash": "185c27d2dda6792794089275f849a7cd1f1c12c65529829fbd74297b0f17e284",
+    "review": "machine"
+  },
+  "ptg3b.card-footer": {
+    "text": "Esportato da From Pen to Glass",
+    "sourceHash": "38be25d7859fc680bab42c070b2a750df525af034bc9b32bfb93d05f7ee735ef",
+    "review": "machine"
+  },
+  "ptg3b.option": {
+    "text": "Cartello del titolo con QR",
+    "sourceHash": "f748d07c410819ae4f8c4bd0b9849eefff25d13e910302138ec0cb3e2d2dffdf",
+    "review": "machine"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "Cartelli del titolo: ogni inquadratura ha una propria composizione <inquadratura>_TITTEL di 1 secondo con un codice QR. <inquadratura>_RENDER mette il cartello prima dell’inquadratura e parte dal timecode −00:00:01:00, quindi il fotogramma 0 dell’inquadratura è 00:00:00:00 come nella lista inquadrature e nel file FBX. La composizione dell’inquadratura e quella principale restano invariate. Renderizza <inquadratura>_RENDER e importa il film tramite il codice QR; il cartello viene tagliato all’importazione.",
+    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "review": "machine"
+  },
+  "ptg3b.route-title": {
+    "text": "Importa film da After Effects – From Pen to Glass",
+    "sourceHash": "de50f7331ecec27d9ee5189b99d48b73eca0d046a00ab9066133f6985a7162f4",
+    "review": "machine"
+  },
+  "ptg3b.route-description": {
+    "text": "Carica il film finito nell’inquadratura da cui è stato esportato.",
+    "sourceHash": "246b4b64ca6bc02f391525e763e6bb224149f5ff1397f8653a463cbe806bc45d",
+    "review": "machine"
+  },
+  "ptg3b.import-heading": {
+    "text": "Importa film finito",
+    "sourceHash": "9b4e60b1594ae41b319b35cd008d244216126ae6591e060efbb89a9c144c74b3",
+    "review": "machine"
+  },
+  "ptg3b.import-shot": {
+    "text": "Inquadratura {value1} · {value2} fotogrammi",
+    "sourceHash": "a8a51f18107550811bb9c0877456d27eecfb5abaf529838921c59fc0c1957c9e",
+    "review": "machine"
+  },
+  "ptg3b.import-hint": {
+    "text": "Il film diventa una nuova versione della scena e non viene usato automaticamente. Il cartello del titolo nel primo secondo viene tagliato.",
+    "sourceHash": "61766f26960b820a20c319a187b486cb288c65f50e14f2c49bb70fe2d62963f3",
+    "review": "machine"
+  },
+  "ptg3b.import-choose": {
+    "text": "Scegli film",
+    "sourceHash": "a46db7274c32416b42cb6385a263025a2bde9d46af2880b3f8b9b3eb3a2dfa48",
+    "review": "machine"
+  },
+  "ptg3b.import-working": {
+    "text": "Importazione…",
+    "sourceHash": "8f80118eafcd945e51a9bc110a59bcf8328e82b188136b8a92e2a427995f2a1f",
+    "review": "machine"
+  },
+  "ptg3b.import-done": {
+    "text": "Il film è stato aggiunto come nuova versione della scena. Sceglilo nel montaggio quando vuoi usarlo.",
+    "sourceHash": "7a43ec974e37fd229f58fed2bad93729674d41eddc27d8774c582a4a656b9382",
+    "review": "machine"
+  },
+  "ptg3b.import-trimmed": {
+    "text": "Il cartello del titolo (primo secondo) è stato tagliato.",
+    "sourceHash": "3f732f53e4220d0b5b68b48c7bf0e22f3ea691898e784bc1194a490f01c92290",
+    "review": "machine"
+  },
+  "ptg3b.import-mismatch": {
+    "text": "Attenzione: il film ha {value1} fotogrammi, ma l’inquadratura ne ha {value2}.",
+    "sourceHash": "6d945a2f7829837c01a83a9ff607cd55de20ba25cae3578080576e1bf2504f42",
+    "review": "machine"
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "Apri il montaggio",
+    "sourceHash": "d361c00300ed7ef3e18ddd38d1af16cebf0e9d1e177df6c8eb07907fd8daf1ee",
+    "review": "machine"
+  },
+  "ptg3b.import-failed": {
+    "text": "Importazione non riuscita: {value1}",
+    "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
+    "review": "machine"
   }
 }

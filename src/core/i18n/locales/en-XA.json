@@ -74798,5 +74798,53 @@
   },
   "ptg3.readme-no-rig": {
     "text": "[!! TThhëëssëë sshhôôttss hháávvëë nnôô rrïïgg, ssôô tthhëë ccáámmëërráá ïïss mmïïssssïïnngg: {value1} !!]"
+  },
+  "ptg3b.card-explain": {
+    "text": "[!! TThhïïss QQRR ccôôddëë ïïss üüssëëdd ttôô ïïmmppôôrrtt tthhëë ffïïnnïïsshhëëdd ÁÁffttëërr ËËffffëëccttss ffïïllmm. TThhëë ffïïllmm ïïss ppllááccëëdd wwhhëërrëë tthhïïss ssccëënnëë wwááss ëëxxppôôrrttëëdd ffrrôômm. !!]"
+  },
+  "ptg3b.card-footer": {
+    "text": "[!! ËËxxppôôrrttëëdd ffrrôômm FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "ptg3b.option": {
+    "text": "[!! TTïïttllëë ccáárrdd wwïïtthh QQRR !!]"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "[!! TTïïttllëë ccáárrddss: ëëáácchh sshhôôtt hhááss ïïttss ôôwwnn 1-ssëëccôônndd ccôômmppôôssïïttïïôônn <sshhôôtt>_TTÏÏTTTTËËLL wwïïtthh áá QQRR ccôôddëë. <sshhôôtt>_RRËËNNDDËËRR ppllááccëëss tthhëë ttïïttllëë ccáárrdd bbëëffôôrrëë tthhëë sshhôôtt áánndd ssttáárrttss áátt ttïïmmëëccôôddëë −00:00:01:00, ssôô ffrráámmëë 0 ôôff tthhëë sshhôôtt ïïss 00:00:00:00 ááss ïïnn tthhëë sshhôôtt llïïsstt áánndd tthhëë FFBBXX ffïïllëë. TThhëë sshhôôtt ccôômmppôôssïïttïïôônn ïïttssëëllff áánndd tthhëë mmááïïnn ccôômmppôôssïïttïïôônn áárrëë üünncchháánnggëëdd. RRëënnddëërr <sshhôôtt>_RRËËNNDDËËRR áánndd ïïmmppôôrrtt tthhëë ffïïllmm wwïïtthh tthhëë QQRR ccôôddëë; tthhëë ttïïttllëë ccáárrdd ïïss ttrrïïmmmmëëdd ôôffff ôônn ïïmmppôôrrtt. !!]"
+  },
+  "ptg3b.route-title": {
+    "text": "[!! ÏÏmmppôôrrtt ffïïllmm ffrrôômm ÁÁffttëërr ËËffffëëccttss – FFrrôômm PPëënn ttôô GGlláássss !!]"
+  },
+  "ptg3b.route-description": {
+    "text": "[!! ÜÜppllôôáádd tthhëë ffïïnnïïsshhëëdd ffïïllmm ttôô tthhëë sshhôôtt ïïtt wwááss ëëxxppôôrrttëëdd ffrrôômm. !!]"
+  },
+  "ptg3b.import-heading": {
+    "text": "[!! ÏÏmmppôôrrtt ffïïnnïïsshhëëdd ffïïllmm !!]"
+  },
+  "ptg3b.import-shot": {
+    "text": "[!! SShhôôtt {value1} · {value2} ffrráámmëëss !!]"
+  },
+  "ptg3b.import-hint": {
+    "text": "[!! TThhëë ffïïllmm bbëëccôômmëëss áá nnëëww vvëërrssïïôônn ôôff tthhëë ssccëënnëë áánndd ïïss nnôôtt üüssëëdd ááüüttôômmááttïïccáállllyy. TThhëë ttïïttllëë ccáárrdd ïïnn tthhëë ffïïrrsstt ssëëccôônndd ïïss ttrrïïmmmmëëdd ôôffff. !!]"
+  },
+  "ptg3b.import-choose": {
+    "text": "[!! CChhôôôôssëë ffïïllmm !!]"
+  },
+  "ptg3b.import-working": {
+    "text": "[!! ÏÏmmppôôrrttïïnngg… !!]"
+  },
+  "ptg3b.import-done": {
+    "text": "[!! TThhëë ffïïllmm wwááss ááddddëëdd ááss áá nnëëww vvëërrssïïôônn ôôff tthhëë ssccëënnëë. CChhôôôôssëë ïïtt ïïnn tthhëë áássssëëmmbbllyy wwhhëënn yyôôüü wwáánntt ttôô üüssëë ïïtt. !!]"
+  },
+  "ptg3b.import-trimmed": {
+    "text": "[!! TThhëë ttïïttllëë ccáárrdd (ffïïrrsstt ssëëccôônndd) wwááss ttrrïïmmmmëëdd ôôffff. !!]"
+  },
+  "ptg3b.import-mismatch": {
+    "text": "[!! WWáárrnnïïnngg: tthhëë ffïïllmm ïïss {value1} ffrráámmëëss, bbüütt tthhëë sshhôôtt ïïss {value2} ffrráámmëëss. !!]"
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "[!! ÔÔppëënn tthhëë áássssëëmmbbllyy !!]"
+  },
+  "ptg3b.import-failed": {
+    "text": "[!! ÏÏmmppôôrrtt ffááïïllëëdd: {value1} !!]"
   }
 }

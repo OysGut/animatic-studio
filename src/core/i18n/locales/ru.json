@@ -54524,5 +54524,85 @@
     "text": "У этих кадров нет установки, поэтому камера отсутствует: {value1}",
     "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
     "review": "machine"
+  },
+  "ptg3b.card-explain": {
+    "text": "Этот QR-код используется для импорта готового фильма из After Effects. Фильм встанет туда, откуда была экспортирована эта сцена.",
+    "sourceHash": "185c27d2dda6792794089275f849a7cd1f1c12c65529829fbd74297b0f17e284",
+    "review": "machine"
+  },
+  "ptg3b.card-footer": {
+    "text": "Экспортировано из From Pen to Glass",
+    "sourceHash": "38be25d7859fc680bab42c070b2a750df525af034bc9b32bfb93d05f7ee735ef",
+    "review": "machine"
+  },
+  "ptg3b.option": {
+    "text": "Титульная карточка с QR",
+    "sourceHash": "f748d07c410819ae4f8c4bd0b9849eefff25d13e910302138ec0cb3e2d2dffdf",
+    "review": "machine"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "Титульные карточки: у каждого плана есть своя композиция <план>_TITTEL длиной 1 секунда с QR-кодом. <план>_RENDER ставит карточку перед планом и начинается с таймкода −00:00:01:00, поэтому кадр 0 плана — 00:00:00:00, как в списке планов и FBX-файле. Сама композиция плана и главная композиция не меняются. Отрендерите <план>_RENDER и импортируйте фильм через QR-код; карточка обрезается при импорте.",
+    "sourceHash": "a7bc3e23e848d2e856dae2df2faae9e0957b6f5de65ef2edccfb98bb3afe4645",
+    "review": "machine"
+  },
+  "ptg3b.route-title": {
+    "text": "Импорт фильма из After Effects – From Pen to Glass",
+    "sourceHash": "de50f7331ecec27d9ee5189b99d48b73eca0d046a00ab9066133f6985a7162f4",
+    "review": "machine"
+  },
+  "ptg3b.route-description": {
+    "text": "Загрузите готовый фильм в план, из которого он был экспортирован.",
+    "sourceHash": "246b4b64ca6bc02f391525e763e6bb224149f5ff1397f8653a463cbe806bc45d",
+    "review": "machine"
+  },
+  "ptg3b.import-heading": {
+    "text": "Импорт готового фильма",
+    "sourceHash": "9b4e60b1594ae41b319b35cd008d244216126ae6591e060efbb89a9c144c74b3",
+    "review": "machine"
+  },
+  "ptg3b.import-shot": {
+    "text": "План {value1} · кадров: {value2}",
+    "sourceHash": "a8a51f18107550811bb9c0877456d27eecfb5abaf529838921c59fc0c1957c9e",
+    "review": "machine"
+  },
+  "ptg3b.import-hint": {
+    "text": "Фильм станет новой версией сцены и не будет использован автоматически. Титульная карточка в первой секунде обрезается.",
+    "sourceHash": "61766f26960b820a20c319a187b486cb288c65f50e14f2c49bb70fe2d62963f3",
+    "review": "machine"
+  },
+  "ptg3b.import-choose": {
+    "text": "Выбрать фильм",
+    "sourceHash": "a46db7274c32416b42cb6385a263025a2bde9d46af2880b3f8b9b3eb3a2dfa48",
+    "review": "machine"
+  },
+  "ptg3b.import-working": {
+    "text": "Импорт…",
+    "sourceHash": "8f80118eafcd945e51a9bc110a59bcf8328e82b188136b8a92e2a427995f2a1f",
+    "review": "machine"
+  },
+  "ptg3b.import-done": {
+    "text": "Фильм добавлен как новая версия сцены. Выберите его в монтаже, когда захотите использовать.",
+    "sourceHash": "7a43ec974e37fd229f58fed2bad93729674d41eddc27d8774c582a4a656b9382",
+    "review": "machine"
+  },
+  "ptg3b.import-trimmed": {
+    "text": "Титульная карточка (первая секунда) обрезана.",
+    "sourceHash": "3f732f53e4220d0b5b68b48c7bf0e22f3ea691898e784bc1194a490f01c92290",
+    "review": "machine"
+  },
+  "ptg3b.import-mismatch": {
+    "text": "Внимание: в фильме {value1} кадров, а в плане {value2}.",
+    "sourceHash": "6d945a2f7829837c01a83a9ff607cd55de20ba25cae3578080576e1bf2504f42",
+    "review": "machine"
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "Открыть монтаж",
+    "sourceHash": "d361c00300ed7ef3e18ddd38d1af16cebf0e9d1e177df6c8eb07907fd8daf1ee",
+    "review": "machine"
+  },
+  "ptg3b.import-failed": {
+    "text": "Импорт не удался: {value1}",
+    "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
+    "review": "machine"
   }
 }
