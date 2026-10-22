@@ -1,5 +1,12 @@
 # Veikart
 
+## N1 – gjeld (natt 22.–23.10.2026)
+- [x] B-097: scene_ids skrives i apply_changes i samme transaksjon (0088); etterkallet i runCommand er fjernet
+- [x] GP2–GP5: global versjon via reservasjon → fil → kontroll → commit, opprydding ved feil og sweep i orphan-cleanup
+- [x] B-116: «Kort scene» → «Scenebilde» / «Scene still» i alle språk
+- [x] Tester: DB 180/0, Vitest grønn, tsc 0, i18n grønn, b116-showcase og global-library nb/en; rapport docs/development/N1_REPORT.md
+- [ ] Claude kjører 0088 i Cloud før publisering
+
 ## B-116 – Utstillingsvindu (22.10.2026)
 - [x] Fullfør 19:04-oppdraget: statusoppslag ved tegning, b116-showcase 37/37 nb/en, Vitest 2422/0, DB 170/0, i18n alle språk 100 % og B116_REPORT.md; ingen Cloud-kjøring.
 - [x] Migrasjon 0087 (additiv oppå 0086): showcase_items, showcase_comments, godkjenningsbryter, RPC-er, delete_project; Claude kjører i Cloud.

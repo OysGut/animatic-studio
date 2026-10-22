@@ -50,16 +50,15 @@ Sist oppdatert: 2026-10-21 (V1: kravstatus avstemt mot testene).
 - Øystein: lag Turnstile-widget hos Cloudflare og legg TURNSTILE_SITE_KEY og TURNSTILE_SECRET_KEY i Project Settings → Secrets.
 - Rigg runde 5 får migrasjon 0077.
 
-## Neste gang `apply_changes` endres
-- B-097: skriv `change_log.scene_ids` i samme transaksjon i `apply_changes` i stedet for i et eget kall etter (`runCommand`). Godkjent som midlertidig løsning 21.10.
-
 ## Sikkerhet
 - **GP5 delingslenker:** nøkkelen lagres i klartekst i `film_shares.token` (bare lesbar for redaktører og eiere via `film_share_token`) så QR-koden kan vises igjen. Vurder kryptering.
 
 ## Backlogg fra den globale pakken (GP2–GP5)
 - Omkoding på serveren for deling når nettleseren ikke kan lage H.264/AAC (f.eks. Firefox). Ikke bygget; QR-dialogen forklarer i stedet.
 - Lagring av globale filer i egen bøtte per arbeidsgruppe (nå: «assets» med prefikset `global/`, bare service role).
-- Atomisk lagring av globale versjoner (nå flere kall; delvis feil kan etterlate en versjon uten fil).
+
+## Venter på Cloud (N1, 22.–23.10)
+- Migrasjon 0088 (scene_ids i apply_changes, atomiske globale versjoner) er skrevet og testet lokalt, ikke kjørt. Appen forventer versjon 88; ikke publiser før 0088 er kjørt.
 
 ## Bestilt av Mars, ikke bygget ennå
 - **OG2 (Øystein 18.10.2026):** AI-kobling linje for linje legges i backloggen. Scenekobling er tilstrekkelig nå; ingen implementering i retterunde 1.
