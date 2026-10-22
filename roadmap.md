@@ -306,3 +306,10 @@
 
 - [x] PTG2 «Send til Dragonframe» (B-102): pakke, referansefilm, lydstemmer, X-sheet, LESMEG – rapport i docs/development/PTG2_REPORT.md. Ekte Dragonframe-import gjenstår (ekstern kontroll).
 - [x] B-118 scenestatus og scenefarge (migrasjon 0083 venter på kjøring i Cloud)
+
+## N4: Verifiseringsrunde for uverifiserte krav
+- [x] P0/P1 gjennomgått; 48 krav flyttet til Verifisert (113 → 65)
+- [x] Ny arkitekturtest for REQ-0269; avvik i AssetVoice.provider rapportert
+- [x] build_docs, check_kb, tsc, Vitest og DB grønne; rapport docs/development/N4_REPORT.md
+- [ ] Resterende 65 krav (mest UI-punkter i DV og P3) i neste runde
+- [ ] Ekstern prøving: telefoner, ekte opptak og lukket fane mot ekte bakgrunnsjobb

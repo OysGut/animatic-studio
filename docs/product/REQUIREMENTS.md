@@ -8,7 +8,7 @@ Autoritativ kilde for krav-ID-er. Mandatkrav er utledet fra `MASTER_SPECIFICATIO
 - Antall krav: **924**
 - Prioritet: P0: 147, P1: 569, P2: 169, P3: 39
 - Opprinnelse: mandat: 520, brukerbeslutning: 397, teknisk-anbefaling: 7
-- Status: Verifisert: 735, Ikke startet: 63, Implementert – ikke verifisert: 113, Utgått: 1, Under arbeid: 12
+- Status: Verifisert: 783, Ikke startet: 63, Implementert – ikke verifisert: 65, Utgått: 1, Under arbeid: 12
 
 ## Prioritetsdefinisjoner
 - **P0** Kritisk – ufravikelig prinsipp/systeminvariant. Gjelder fra første kodelinje som berører området, også når selve funksjonen bygges i en senere fase (feltet `phase`).
@@ -10276,7 +10276,7 @@ enkeltklikk på tidsplassert replikk flytter avspillingshodet
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - enkeltklikk på tidsplassert replikk flytter avspillingshodet
 - **Tester:**
@@ -10332,7 +10332,7 @@ manglende timing uten falsk presisjon
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - manglende timing uten falsk presisjon
 - **Tester:**
@@ -10436,7 +10436,7 @@ flere takes uten overskriving
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - flere takes uten overskriving
 - **Tester:**
@@ -10466,7 +10466,7 @@ ett felles spor per karakter
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ett felles spor per karakter
 - **Tester:**
@@ -10496,7 +10496,7 @@ replikker er separate segmenter
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - replikker er separate segmenter
 - **Tester:**
@@ -10541,7 +10541,7 @@ bare aktiv versjon spilles i scenen
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - bare aktiv versjon spilles i scenen
 - **Tester:**
@@ -10556,7 +10556,7 @@ tidligere versjoner bevares
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - tidligere versjoner bevares
 - **Tester:**
@@ -10571,7 +10571,7 @@ volumkurver, klipping, hastighet og fades bevares ved bytte
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P0 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - volumkurver, klipping, hastighet og fades bevares ved bytte
 - **Tester:**
@@ -10586,7 +10586,7 @@ gjenvalgt versjon arver gjeldende plassering
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - gjenvalgt versjon arver gjeldende plassering
 - **Tester:**
@@ -10601,7 +10601,7 @@ ulik varighet uten utilsiktet overlapp
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ulik varighet uten utilsiktet overlapp
 - **Tester:**
@@ -10646,7 +10646,7 @@ lokale overstyringer
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - lokale overstyringer
 - **Tester:**
@@ -10661,7 +10661,7 @@ nye genereringer som separate versjoner
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - nye genereringer som separate versjoner
 - **Tester:**
@@ -10706,7 +10706,7 @@ endret standardstemme endrer ikke tidligere filer
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - endret standardstemme endrer ikke tidligere filer
 - **Tester:**
@@ -10785,7 +10785,7 @@ ny generering blir aktiv versjon
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ny generering blir aktiv versjon
 - **Tester:**
@@ -10801,7 +10801,7 @@ ingen eksisterende lyd eller redigering slettes
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ingen eksisterende lyd eller redigering slettes
 - **Tester:**
@@ -10817,7 +10817,7 @@ feil lar tidligere aktiv versjon stå
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - feil lar tidligere aktiv versjon stå
 - **Tester:**
@@ -10833,7 +10833,7 @@ kostnadsestimat og eksplisitt bekreftelse før betalte kall
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - kostnadsestimat og eksplisitt bekreftelse før betalte kall
 - **Tester:**
@@ -10849,7 +10849,7 @@ usikkert tidsestimat når forsvarlig
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - usikkert tidsestimat når forsvarlig
 - **Tester:**
@@ -10897,7 +10897,7 @@ minimal gyldig 2D-scene opprettes ved behov
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - minimal gyldig 2D-scene opprettes ved behov
 - **Tester:**
@@ -10913,7 +10913,7 @@ tekniske gjentak oppretter ingen duplikater
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - tekniske gjentak oppretter ingen duplikater
 - **Tester:**
@@ -10961,7 +10961,7 @@ talespråk kan overstyres per replikk
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - talespråk kan overstyres per replikk
 - **Tester:**
@@ -10977,7 +10977,7 @@ støtte kontrolleres mot modellens levende språkdata
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - støtte kontrolleres mot modellens levende språkdata
 - **Tester:**
@@ -11057,7 +11057,7 @@ manusendring gir rød status
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - manusendring gir rød status
 - **Tester:**
@@ -11073,7 +11073,7 @@ aktiv versjon bestemmer status
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - aktiv versjon bestemmer status
 - **Tester:**
@@ -11089,7 +11089,7 @@ endrede og fjernede passasjer identifiseres
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - endrede og fjernede passasjer identifiseres
 - **Tester:**
@@ -11185,7 +11185,7 @@ endringer vises i rødt i dialogeditoren
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - «Merk som gjennomgått» krever eksplisitt handling
 - **Tester:**
@@ -11201,7 +11201,7 @@ historikken bevares
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - historikken bevares
 - **Tester:**
@@ -11217,7 +11217,7 @@ ny manusendring gir rødt igjen
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - ny manusendring gir rødt igjen
 - **Tester:**
@@ -11233,7 +11233,7 @@ eldre versjon kan gi avvik igjen
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - eldre versjon kan gi avvik igjen
 - **Tester:**
@@ -11313,7 +11313,7 @@ nye filer blir aktive, gamle bevares
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - nye filer blir aktive, gamle bevares
 - **Tester:**
@@ -11329,7 +11329,7 @@ riktig manusrevisjon registreres
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - riktig manusrevisjon registreres
 - **Tester:**
@@ -11345,7 +11345,7 @@ sette personlig bokmerke
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - sette personlig bokmerke
 - **Tester:**
@@ -11361,7 +11361,7 @@ sette personlig bokmerke
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - «Fortsett ved bokmerke» åpner riktig sted
 - **Tester:**
@@ -11377,7 +11377,7 @@ bokmerket fjernes etter vellykket navigasjon
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - bokmerket fjernes etter vellykket navigasjon
 - **Tester:**
@@ -11393,7 +11393,7 @@ andres bokmerker påvirkes ikke
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - andres bokmerker påvirkes ikke
 - **Tester:**
@@ -11409,7 +11409,7 @@ merke lyd
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - merke lyd
 - **Tester:**
@@ -11425,7 +11425,7 @@ merke bilde
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - merke bilde
 - **Tester:**
@@ -11441,7 +11441,7 @@ valgfri tekst
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - valgfri tekst
 - **Tester:**
@@ -11457,7 +11457,7 @@ av/på
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - av/på
 - **Tester:**
@@ -11473,7 +11473,7 @@ avmarkering sletter ikke tekst
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - avmarkering sletter ikke tekst
 - **Tester:**
@@ -11489,7 +11489,7 @@ andre autoriserte ser lappen
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - andre autoriserte ser lappen
 - **Tester:**
@@ -11505,7 +11505,7 @@ synkronisering
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - synkronisering
 - **Tester:**
@@ -11521,7 +11521,7 @@ oppretter og dato
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - oppretter og dato
 - **Tester:**
@@ -11553,7 +11553,7 @@ sortering etter dato og manusplassering
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - sortering etter dato og manusplassering
 - **Tester:**
@@ -11569,7 +11569,7 @@ filter på oppretter
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - filter på oppretter
 - **Tester:**
@@ -11585,7 +11585,7 @@ klikk åpner riktig sted
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - klikk åpner riktig sted
 - **Tester:**
@@ -11601,7 +11601,7 @@ virker selv om elementet er flyttet
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - virker selv om elementet er flyttet
 - **Tester:**
@@ -11617,7 +11617,7 @@ rettigheter følger samarbeidsmodellen
 
 - **Kilde:** Beslutning DEC-0099 · **Opprinnelse:** brukerbeslutning · **Type:** funksjonell · **Prioritet:** P1 · **Fase:** 3
 - **Moduler:** CORE, UI
-- **Status:** Implementert – ikke verifisert
+- **Status:** Verifisert
 - **Akseptansekriterier:**
   - rettigheter følger samarbeidsmodellen
 - **Tester:**
