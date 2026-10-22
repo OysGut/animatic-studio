@@ -9511,16 +9511,28 @@
       }
     },
     "ptg7.export": {
-      "nb": { "text": "Nuke og Fusion" },
-      "en": { "text": "Nuke and Fusion" }
+      "nb": {
+        "text": "Nuke og Fusion"
+      },
+      "en": {
+        "text": "Nuke and Fusion"
+      }
     },
     "ptg7.readme": {
-      "nb": { "text": "Nuke og Fusion: pakk ut hele ZIP-filen og åpne skuddets .nk eller .comp. Mediestier er relative til skuddmappen. Sett arbeidsmappen til skuddmappen dersom programmet ikke løser relative stier. Verdensenheter er millimeter, Y opp, kamera mot negativ Z. Card2 er Nukes klassiske 3D-kort (Card), ikke 2D-projeksjonsnoden Card3D. Kameraets synsfelt og posisjon følger modellen per bilde; toere holdes. Fusion bruker ImagePlane3D. Ingen KI brukes. Ekte import må kontrolleres i Nuke og Fusion før produksjon." },
-      "en": { "text": "Nuke and Fusion: extract the entire ZIP and open the shot's .nk or .comp. Media paths are relative to the shot folder. Set the working directory to the shot folder if the application does not resolve relative paths. World units are millimetres, Y up, camera facing negative Z. Card2 is Nuke's classic 3D card (Card), not the 2D projection node Card3D. Camera field of view and position follow the model per frame; twos are held. Fusion uses ImagePlane3D. No AI is used. Real import must be checked in Nuke and Fusion before production." }
+      "nb": {
+        "text": "Nuke og Fusion: pakk ut hele ZIP-filen og åpne skuddets .nk eller .comp. Mediestier er relative til skuddmappen. Sett arbeidsmappen til skuddmappen dersom programmet ikke løser relative stier. Verdensenheter er millimeter, Y opp, kamera mot negativ Z. Card2 er Nukes klassiske 3D-kort (Card), ikke 2D-projeksjonsnoden Card3D. Kameraets synsfelt og posisjon følger modellen per bilde; toere holdes. Fusion bruker ImagePlane3D. Ingen KI brukes. Ekte import må kontrolleres i Nuke og Fusion før produksjon."
+      },
+      "en": {
+        "text": "Nuke and Fusion: extract the entire ZIP and open the shot's .nk or .comp. Media paths are relative to the shot folder. Set the working directory to the shot folder if the application does not resolve relative paths. World units are millimetres, Y up, camera facing negative Z. Card2 is Nuke's classic 3D card (Card), not the 2D projection node Card3D. Camera field of view and position follow the model per frame; twos are held. Fusion uses ImagePlane3D. No AI is used. Real import must be checked in Nuke and Fusion before production."
+      }
     },
     "ptg7.no-rig": {
-      "nb": { "text": "{shot}: ingen gyldig rigg; 2D-oppsett med Transform-noder, uten 3D-kamera." },
-      "en": { "text": "{shot}: no valid rig; 2D setup with Transform nodes, without a 3D camera." }
+      "nb": {
+        "text": "{shot}: ingen gyldig rigg; 2D-oppsett med Transform-noder, uten 3D-kamera."
+      },
+      "en": {
+        "text": "{shot}: no valid rig; 2D setup with Transform nodes, without a 3D camera."
+      }
     },
     "ptg6.export": {
       "nb": {
@@ -9832,6 +9844,78 @@
       },
       "en": {
         "text": "Without a city you are shown at the capital. City data: GeoNames (CC BY 4.0)."
+      }
+    },
+    "k1.presence.one": {
+      "nb": {
+        "text": "{name} redigerer også denne scenen"
+      },
+      "en": {
+        "text": "{name} is also editing this scene"
+      }
+    },
+    "k1.presence.many": {
+      "nb": {
+        "text": "{names} redigerer også denne scenen"
+      },
+      "en": {
+        "text": "{names} are also editing this scene"
+      }
+    },
+    "k1.presence.dot": {
+      "nb": {
+        "text": "Andre i scenen nå: {names}"
+      },
+      "en": {
+        "text": "Others in this scene now: {names}"
+      }
+    },
+    "k1.conflict.aria": {
+      "nb": {
+        "text": "Lagringskonflikt"
+      },
+      "en": {
+        "text": "Save conflict"
+      }
+    },
+    "k1.conflict.title": {
+      "nb": {
+        "text": "Noen andre endret det samme samtidig, så endringen din ble ikke lagret. Velg hva som skal skje."
+      },
+      "en": {
+        "text": "Someone else changed the same thing at the same time, so your change was not saved. Choose what happens next."
+      }
+    },
+    "k1.conflict.by": {
+      "nb": {
+        "text": "Sist endret av {name}, {time}."
+      },
+      "en": {
+        "text": "Last changed by {name}, {time}."
+      }
+    },
+    "k1.conflict.by-unknown": {
+      "nb": {
+        "text": "Sist endret {time}."
+      },
+      "en": {
+        "text": "Last changed {time}."
+      }
+    },
+    "k1.conflict.rebase": {
+      "nb": {
+        "text": "Legg min endring oppå"
+      },
+      "en": {
+        "text": "Apply my change on top"
+      }
+    },
+    "k1.conflict.discard": {
+      "nb": {
+        "text": "Forkast min endring"
+      },
+      "en": {
+        "text": "Discard my change"
       }
     }
   }

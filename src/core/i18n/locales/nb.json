@@ -75248,5 +75248,32 @@
   },
   "b117.city.credit": {
     "text": "Uten by vises du ved hovedstaden. Bydata: GeoNames (CC BY 4.0)."
+  },
+  "k1.presence.one": {
+    "text": "{name} redigerer også denne scenen"
+  },
+  "k1.presence.many": {
+    "text": "{names} redigerer også denne scenen"
+  },
+  "k1.presence.dot": {
+    "text": "Andre i scenen nå: {names}"
+  },
+  "k1.conflict.aria": {
+    "text": "Lagringskonflikt"
+  },
+  "k1.conflict.title": {
+    "text": "Noen andre endret det samme samtidig, så endringen din ble ikke lagret. Velg hva som skal skje."
+  },
+  "k1.conflict.by": {
+    "text": "Sist endret av {name}, {time}."
+  },
+  "k1.conflict.by-unknown": {
+    "text": "Sist endret {time}."
+  },
+  "k1.conflict.rebase": {
+    "text": "Legg min endring oppå"
+  },
+  "k1.conflict.discard": {
+    "text": "Forkast min endring"
   }
 }

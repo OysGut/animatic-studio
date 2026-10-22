@@ -55170,5 +55170,50 @@
     "text": "{weekday} alle {time}",
     "sourceHash": "d677d9712719c3de3544d2cc9a624a20950aea5a9a8017bc4c126f1de2c11fb0",
     "review": "machine"
+  },
+  "k1.presence.one": {
+    "text": "Anche {name} sta modificando questa scena",
+    "sourceHash": "a2bc60c8c31f357908fdc17b824d3cf08611dd52076dbe07608e8f2feb30f2c4",
+    "review": "machine"
+  },
+  "k1.presence.many": {
+    "text": "Anche {names} stanno modificando questa scena",
+    "sourceHash": "e84f548d6cb13304be8740ffb9b0c46914d8ed5975e4b3fd6f4e4b9aa6083f3c",
+    "review": "machine"
+  },
+  "k1.presence.dot": {
+    "text": "Altre persone in questa scena ora: {names}",
+    "sourceHash": "1717037ba7fd0f2f1f487eda4eb8e04225f2ef9025b63b10a0b9b21f75ea567b",
+    "review": "machine"
+  },
+  "k1.conflict.aria": {
+    "text": "Conflitto di salvataggio",
+    "sourceHash": "196a0c5b09ad9412e0aedd0ea0f5733b44de5daad883c2ebf4985c26a32fc4a6",
+    "review": "machine"
+  },
+  "k1.conflict.title": {
+    "text": "Qualcun altro ha modificato la stessa cosa nello stesso momento, quindi la tua modifica non è stata salvata. Scegli cosa fare.",
+    "sourceHash": "06f2c382bf5bfd4585864660f61f5a12f6abf5b9dc118c14cbbee1372db9db51",
+    "review": "machine"
+  },
+  "k1.conflict.by": {
+    "text": "Ultima modifica di {name}, {time}.",
+    "sourceHash": "7f4cc39b20b3e74e2c04e42364d41edb3fe90da314f4f1b07957aa4761297198",
+    "review": "machine"
+  },
+  "k1.conflict.by-unknown": {
+    "text": "Ultima modifica: {time}.",
+    "sourceHash": "d9101e86a2b91d29cdb5ca675fe24c7d7725a692253712db952a6c55ec58419d",
+    "review": "machine"
+  },
+  "k1.conflict.rebase": {
+    "text": "Applica la mia modifica sopra",
+    "sourceHash": "c7c866cdb5f3c041b564b7d559e1477435eb8c2de8a4e145aafd697684ef55f7",
+    "review": "machine"
+  },
+  "k1.conflict.discard": {
+    "text": "Scarta la mia modifica",
+    "sourceHash": "f7e2c71634e2d0d104e7eaaa57f3766e4b4e6db7d2a618d6a670780fd6721877",
+    "review": "machine"
   }
 }

@@ -55022,5 +55022,50 @@
     "text": "{weekday} {time}",
     "sourceHash": "d677d9712719c3de3544d2cc9a624a20950aea5a9a8017bc4c126f1de2c11fb0",
     "review": "machine"
+  },
+  "k1.presence.one": {
+    "text": "{name}님도 이 장면을 편집하고 있습니다",
+    "sourceHash": "a2bc60c8c31f357908fdc17b824d3cf08611dd52076dbe07608e8f2feb30f2c4",
+    "review": "machine"
+  },
+  "k1.presence.many": {
+    "text": "{names}님도 이 장면을 편집하고 있습니다",
+    "sourceHash": "e84f548d6cb13304be8740ffb9b0c46914d8ed5975e4b3fd6f4e4b9aa6083f3c",
+    "review": "machine"
+  },
+  "k1.presence.dot": {
+    "text": "지금 이 장면에 있는 사람: {names}",
+    "sourceHash": "1717037ba7fd0f2f1f487eda4eb8e04225f2ef9025b63b10a0b9b21f75ea567b",
+    "review": "machine"
+  },
+  "k1.conflict.aria": {
+    "text": "저장 충돌",
+    "sourceHash": "196a0c5b09ad9412e0aedd0ea0f5733b44de5daad883c2ebf4985c26a32fc4a6",
+    "review": "machine"
+  },
+  "k1.conflict.title": {
+    "text": "다른 사람이 같은 부분을 동시에 변경해서 변경 내용이 저장되지 않았습니다. 다음 작업을 선택하세요.",
+    "sourceHash": "06f2c382bf5bfd4585864660f61f5a12f6abf5b9dc118c14cbbee1372db9db51",
+    "review": "machine"
+  },
+  "k1.conflict.by": {
+    "text": "마지막 변경: {name}, {time}.",
+    "sourceHash": "7f4cc39b20b3e74e2c04e42364d41edb3fe90da314f4f1b07957aa4761297198",
+    "review": "machine"
+  },
+  "k1.conflict.by-unknown": {
+    "text": "마지막 변경: {time}.",
+    "sourceHash": "d9101e86a2b91d29cdb5ca675fe24c7d7725a692253712db952a6c55ec58419d",
+    "review": "machine"
+  },
+  "k1.conflict.rebase": {
+    "text": "내 변경 내용을 위에 적용",
+    "sourceHash": "c7c866cdb5f3c041b564b7d559e1477435eb8c2de8a4e145aafd697684ef55f7",
+    "review": "machine"
+  },
+  "k1.conflict.discard": {
+    "text": "내 변경 내용 버리기",
+    "sourceHash": "f7e2c71634e2d0d104e7eaaa57f3766e4b4e6db7d2a618d6a670780fd6721877",
+    "review": "machine"
   }
 }

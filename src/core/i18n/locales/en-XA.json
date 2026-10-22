@@ -75230,5 +75230,32 @@
   },
   "b117.city.credit": {
     "text": "[!! WWïïtthhôôüütt áá ccïïttyy yyôôüü áárrëë sshhôôwwnn áátt tthhëë ccááppïïttááll. CCïïttyy ddááttáá: GGëëôôNNáámmëëss (CCCC BBYY 4.0). !!]"
+  },
+  "k1.presence.one": {
+    "text": "[!! {name} ïïss áállssôô ëëddïïttïïnngg tthhïïss ssccëënnëë !!]"
+  },
+  "k1.presence.many": {
+    "text": "[!! {names} áárrëë áállssôô ëëddïïttïïnngg tthhïïss ssccëënnëë !!]"
+  },
+  "k1.presence.dot": {
+    "text": "[!! ÔÔtthhëërrss ïïnn tthhïïss ssccëënnëë nnôôww: {names} !!]"
+  },
+  "k1.conflict.aria": {
+    "text": "[!! SSáávvëë ccôônnffllïïcctt !!]"
+  },
+  "k1.conflict.title": {
+    "text": "[!! SSôômmëëôônnëë ëëllssëë cchháánnggëëdd tthhëë ssáámmëë tthhïïnngg áátt tthhëë ssáámmëë ttïïmmëë, ssôô yyôôüürr cchháánnggëë wwááss nnôôtt ssáávvëëdd. CChhôôôôssëë wwhháátt hhááppppëënnss nnëëxxtt. !!]"
+  },
+  "k1.conflict.by": {
+    "text": "[!! LLáásstt cchháánnggëëdd bbyy {name}, {time}. !!]"
+  },
+  "k1.conflict.by-unknown": {
+    "text": "[!! LLáásstt cchháánnggëëdd {time}. !!]"
+  },
+  "k1.conflict.rebase": {
+    "text": "[!! ÁÁppppllyy mmyy cchháánnggëë ôônn ttôôpp !!]"
+  },
+  "k1.conflict.discard": {
+    "text": "[!! DDïïssccáárrdd mmyy cchháánnggëë !!]"
   }
 }
