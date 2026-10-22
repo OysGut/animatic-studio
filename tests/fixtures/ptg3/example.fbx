@@ -1,0 +1,226 @@
+; FBX 7.4.0 project file
+; From Pen to Glass (PTG3, eksperimentell): DEMO_SC001_SH001_v001
+; Enheter: cm. Tid: KTime (46186158000/s). Kameraet ser ned (PreRotation -90 om X), rull om Z.
+
+FBXHeaderExtension:  {
+    FBXHeaderVersion: 1003
+    FBXVersion: 7400
+    Creator: "From Pen to Glass"
+}
+GlobalSettings:  {
+    Version: 1000
+    Properties70:  {
+        P: "UpAxis", "int", "Integer", "",1
+        P: "UpAxisSign", "int", "Integer", "",1
+        P: "FrontAxis", "int", "Integer", "",2
+        P: "FrontAxisSign", "int", "Integer", "",1
+        P: "CoordAxis", "int", "Integer", "",0
+        P: "CoordAxisSign", "int", "Integer", "",1
+        P: "UnitScaleFactor", "double", "Number", "",1
+        P: "OriginalUnitScaleFactor", "double", "Number", "",1
+        P: "TimeMode", "enum", "", "",30
+        P: "CustomFrameRate", "double", "Number", "",24
+        P: "TimeSpanStart", "KTime", "Time", "",0
+        P: "TimeSpanStop", "KTime", "Time", "",46186158000
+    }
+}
+Definitions:  {
+    Version: 100
+    Count: 4
+    ObjectType: "Model" {
+        Count: 3
+    }
+    ObjectType: "NodeAttribute" {
+        Count: 1
+    }
+}
+Objects:  {
+    NodeAttribute: 1000000001, "NodeAttribute::DEMO_SC001_SH001_v001_CAM", "Camera" {
+        TypeFlags: "Camera"
+        Properties70:  {
+            P: "FilmWidth", "double", "Number", "",1.417323
+            P: "FilmHeight", "double", "Number", "",0.944882
+            P: "FocalLength", "double", "Number", "",50
+            P: "FieldOfViewMode", "enum", "", "",0
+        }
+    }
+    Model: 2000000001, "Model::DEMO_SC001_SH001_v001_CAM", "Camera" {
+        Version: 232
+        Properties70:  {
+            P: "Lcl Translation", "Lcl Translation", "", "A",0,0,0
+            P: "Lcl Rotation", "Lcl Rotation", "", "A",0,0,0
+            P: "PreRotation", "Vector3D", "Vector", "",-90,0,0
+        }
+        Shading: T
+        Culling: "CullingOff"
+    }
+    Model: 2000000100, "Model::DEMO_SC001_SH001_v001_Bunn", "Null" {
+        Version: 232
+        Properties70:  {
+            P: "Lcl Translation", "Lcl Translation", "", "A",0,0,0
+        }
+        Shading: T
+        Culling: "CullingOff"
+    }
+    Model: 2000000101, "Model::DEMO_SC001_SH001_v001_Topp", "Null" {
+        Version: 232
+        Properties70:  {
+            P: "Lcl Translation", "Lcl Translation", "", "A",0,10,0
+        }
+        Shading: T
+        Culling: "CullingOff"
+    }
+    AnimationStack: 5000000001, "AnimStack::DEMO_SC001_SH001_v001", "" {
+        Properties70:  {
+            P: "LocalStart", "KTime", "Time", "",0
+            P: "LocalStop", "KTime", "Time", "",46186158000
+        }
+    }
+    AnimationLayer: 5000000002, "AnimLayer::BaseLayer", "" {
+    }
+    AnimationCurveNode: 3000000001, "AnimCurveNode::Lcl Translation", "" {
+        Properties70:  {
+            P: "d|X", "Number", "", "A",0
+            P: "d|Y", "Number", "", "A",90
+            P: "d|Z", "Number", "", "A",0
+        }
+    }
+    AnimationCurveNode: 3000000002, "AnimCurveNode::Lcl Rotation", "" {
+        Properties70:  {
+            P: "d|X", "Number", "", "A",0
+            P: "d|Y", "Number", "", "A",0
+            P: "d|Z", "Number", "", "A",0
+        }
+    }
+    AnimationCurve: 4000000001, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 0,4,8
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+    AnimationCurve: 4000000002, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 90,80,70
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+    AnimationCurve: 4000000003, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 0,2,4
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+    AnimationCurve: 4000000004, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 0,0,0
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+    AnimationCurve: 4000000005, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 0,0,0
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+    AnimationCurve: 4000000006, "AnimCurve::", "" {
+        Default: 0
+        KeyVer: 4008
+        KeyTime: *3 {
+            a: 0,23093079000,46186158000
+        }
+        KeyValueFloat: *3 {
+            a: 0,5,10
+        }
+        KeyAttrFlags: *3 {
+            a: 24840,24840,24840
+        }
+        KeyAttrDataFloat: *3 {
+            a: 0,0,0,0,0,0,0,0,0,0,0,0
+        }
+        KeyAttrRefCount: *3 {
+            a: 1,1,1
+        }
+    }
+}
+Connections:  {
+    C: "OO",1000000001,2000000001
+    C: "OO",2000000001,0
+    C: "OO",2000000100,0
+    C: "OO",2000000101,0
+    C: "OP",3000000001,2000000001, "Lcl Translation"
+    C: "OP",3000000002,2000000001, "Lcl Rotation"
+    C: "OP",4000000001,3000000001, "d|X"
+    C: "OP",4000000002,3000000001, "d|Y"
+    C: "OP",4000000003,3000000001, "d|Z"
+    C: "OP",4000000004,3000000002, "d|X"
+    C: "OP",4000000005,3000000002, "d|Y"
+    C: "OP",4000000006,3000000002, "d|Z"
+    C: "OO",3000000001,5000000002
+    C: "OO",3000000002,5000000002
+    C: "OO",5000000002,5000000001
+}
