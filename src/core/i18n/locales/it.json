@@ -54340,5 +54340,75 @@
     "text": "Il taglio è al punto medio della sovrapposizione, arrotondato lungo il film. Le durate sono differenze fra limiti arrotondati. handleIn e handleOut sono la sovrapposizione sul lato vicino; riprendere anche questi margini. Senza sovrapposizione sono 0. Audio e parole appartengono all’inquadratura in cui iniziano, conservano la durata intera e tempi assoluti e relativi; crossesCut=true indica un attraversamento. Su due: 12 esposizioni/s su una timeline a 24 fotogrammi/s. L’uscita è esclusiva. Un film vuoto ha 0 fotogrammi; un’inquadratura molto breve può avere 0 e resta nell’elenco. La camera è null in PTG1.",
     "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
     "review": "machine"
+  },
+  "b115.privacy.terms.heading": {
+    "text": "Condizioni d'uso ed esclusione di responsabilità",
+    "sourceHash": "da1928e529438e2f72252eb3ad6ceb274aa56d4678373c5619ff5920367b1192",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.title": {
+    "text": "Proprietà e diritto d'autore",
+    "sourceHash": "cb68209029ea0cd2ae6b391ac9965e00a1176238972b0548a8e92a64b60905cf",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.text": {
+    "text": "Tutto ciò che crei o carichi nel servizio – sceneggiature, scene, disegni, immagini, audio, montaggio e film finito – appartiene a te o alla tua produzione. From Pen to Glass non rivendica alcun diritto d'autore sui tuoi contenuti. Ci serve solo l'autorizzazione tecnica necessaria per archiviare e mostrare i contenuti a te e ai membri del tuo progetto. Sei responsabile di detenere i diritti su qualsiasi materiale che carichi, ad esempio musica, voci e immagini di riferimento di terzi.",
+    "sourceHash": "209f62511d06f378a6c31793ec73ceef9be37c9a6e10eb4372e781b5ed1f9f7a",
+    "review": "machine"
+  },
+  "b115.privacy.ai.title": {
+    "text": "Contenuti generati con intelligenza artificiale",
+    "sourceHash": "b9326e1e74ecd74e7119f6fd800f1e1e43d739e3514113bd7c9db93876dfe6ff",
+    "review": "machine"
+  },
+  "b115.privacy.ai.text": {
+    "text": "I suggerimenti dell'intelligenza artificiale – testi, analisi, voci e immagini – sono forniti così come sono, senza garanzia che siano corretti, completi o privi di diritti di terzi. Sei responsabile di valutare se il materiale generato dall'IA può essere utilizzato nella tua produzione e di rispettare le condizioni di ciascun fornitore di IA.",
+    "sourceHash": "3fec0e9b8d8cf2baee5a012542d7879ef428bb2b01b70b50b5b7950a2b69a0f0",
+    "review": "machine"
+  },
+  "b115.privacy.liability.title": {
+    "text": "Limitazione di responsabilità e copie di sicurezza",
+    "sourceHash": "389fc30a48458dc457e15c5e214858c7c3121f26291824a74ab330f2e2a7aa42",
+    "review": "machine"
+  },
+  "b115.privacy.liability.text": {
+    "text": "Il servizio è fornito così com'è, senza garanzia di funzionamento ininterrotto o di assenza di errori. Ti consigliamo di scaricare regolarmente copie di sicurezza dei tuoi progetti. From Pen to Glass non è responsabile per perdite indirette, come perdita di tempo di produzione, scadenze mancate o costi verso terzi, in caso di interruzioni, guasti o perdita di dati.",
+    "sourceHash": "79f2e4804a0d8e99952629b2bc48d73384f17dd3ef77af0d0301c3cab18b816c",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.title": {
+    "text": "Caratteri tipografici e licenze",
+    "sourceHash": "13f98a00d2834e4fec701f1bccc51c7f8de035cb277a55007c49a4aed3862b6e",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.text": {
+    "text": "Quando usi caratteri tipografici in un progetto, siano essi caricati da te o provenienti da un catalogo esterno come Google Fonts, sei responsabile di verificare che la licenza ne consenta l'uso, ad esempio la visualizzazione su schermo, l'incorporazione in PDF e la stampa.",
+    "sourceHash": "494d23fc4b315bc1bafb638f292b65d8439fb2fa0dc5ba127d38ab26c58a08c1",
+    "review": "machine"
+  },
+  "b115.privacy.links.title": {
+    "text": "Collegamenti di condivisione e accesso",
+    "sourceHash": "62ba24171b44ae418462c55bf5b6c4c703c03d6aec12ff7432a6904c3013567c",
+    "review": "machine"
+  },
+  "b115.privacy.links.text": {
+    "text": "I collegamenti di condivisione, ad esempio per la revisione di un film, sono protetti, ma chiunque disponga di un collegamento valido può vedere ciò che è stato condiviso. Sei responsabile delle persone a cui invii tali collegamenti e puoi ritirare una condivisione in qualsiasi momento.",
+    "sourceHash": "fd4ded571900830a5d2a6e1fb7eb9ec963a56e9e2f2607f6f6831587ddec5550",
+    "review": "machine"
+  },
+  "b115.privacy.law.title": {
+    "text": "Lingua e legge applicabile",
+    "sourceHash": "0a94b0a028d2710e2b28e770e66ef96ce5d29dc392d7bc5f321656206716911d",
+    "review": "machine"
+  },
+  "b115.privacy.law.text": {
+    "text": "Questa informativa è tradotta in più lingue per essere accessibile ai nostri utenti. In caso di discrepanza tra le versioni linguistiche, prevale il testo norvegese, con il testo inglese come riferimento secondario. Questa informativa e l'uso del servizio sono regolati dal diritto norvegese.",
+    "sourceHash": "8c55d1527dac6e92ec81ee9f4e1f2ccaa182ea093bed3686c73aa0b949196edb",
+    "review": "machine"
+  },
+  "b115.feature.test-languages": {
+    "text": "Lingua di test (en-XA)",
+    "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
+    "review": "machine"
   }
 }

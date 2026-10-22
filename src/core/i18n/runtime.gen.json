@@ -24500,6 +24500,48 @@
     "b114.state.on": {
       "text": "På"
     },
+    "b115.feature.test-languages": {
+      "text": "Testspråk (en-XA)"
+    },
+    "b115.privacy.ai.text": {
+      "text": "Forslag fra kunstig intelligens – tekst, analyser, tale og bilder – leveres slik de er, uten garanti for at de er riktige, fullstendige eller frie for tredjeparts rettigheter. Du er selv ansvarlig for å vurdere om KI-generert materiale kan brukes i din produksjon, og for å følge vilkårene til den enkelte KI-leverandøren."
+    },
+    "b115.privacy.ai.title": {
+      "text": "Innhold laget med kunstig intelligens"
+    },
+    "b115.privacy.fonts.text": {
+      "text": "Når du bruker skrifttyper i prosjektet, enten egne opplastede eller fra en ekstern katalog som Google Fonts, er du selv ansvarlig for at lisensen tillater bruken, for eksempel visning på skjerm, innbygging i PDF og trykk."
+    },
+    "b115.privacy.fonts.title": {
+      "text": "Skrifttyper og lisenser"
+    },
+    "b115.privacy.law.text": {
+      "text": "Denne erklæringen er oversatt til flere språk for å være tilgjengelig for brukerne våre. Ved uoverensstemmelse mellom språkversjonene er den norske teksten styrende, med den engelske som sekundær referanse. Erklæringen og bruken av tjenesten er underlagt norsk rett."
+    },
+    "b115.privacy.law.title": {
+      "text": "Språk og gjeldende rett"
+    },
+    "b115.privacy.liability.text": {
+      "text": "Tjenesten leveres slik den er, uten garanti for uavbrutt drift eller feilfrihet. Vi anbefaler at du jevnlig laster ned sikkerhetskopier av prosjektene dine. From Pen to Glass er ikke ansvarlig for indirekte tap, som tapt produksjonstid, forfalte frister eller kostnader hos tredjepart, ved eventuell nedetid, feil eller tap av data."
+    },
+    "b115.privacy.liability.title": {
+      "text": "Ansvarsbegrensning og sikkerhetskopier"
+    },
+    "b115.privacy.links.text": {
+      "text": "Delingslenker, for eksempel for gjennomgang av film, er beskyttet, men alle som har en gyldig lenke får innsyn i det som er delt. Du er selv ansvarlig for hvem du sender slike lenker til, og kan når som helst trekke tilbake en deling."
+    },
+    "b115.privacy.links.title": {
+      "text": "Delingslenker og tilgang"
+    },
+    "b115.privacy.ownership.text": {
+      "text": "Alt innhold du lager eller laster opp i tjenesten – manus, scener, tegninger, bilder, lyd, montering og ferdig film – tilhører deg eller produksjonen din. From Pen to Glass gjør ikke krav på opphavsretten til innholdet ditt. Vi trenger bare den tekniske tillatelsen som kreves for å lagre og vise innholdet til deg og prosjektmedlemmene dine. Du er selv ansvarlig for at du har rettighetene til materiale du laster opp, for eksempel musikk, stemmer og referansebilder fra andre."
+    },
+    "b115.privacy.ownership.title": {
+      "text": "Eierskap og opphavsrett"
+    },
+    "b115.privacy.terms.heading": {
+      "text": "Vilkår for bruk og ansvarsfraskrivelse"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -56869,6 +56911,48 @@
     },
     "b114.state.on": {
       "text": "On"
+    },
+    "b115.feature.test-languages": {
+      "text": "Test language (en-XA)"
+    },
+    "b115.privacy.ai.text": {
+      "text": "Suggestions from artificial intelligence – text, analyses, speech and images – are provided as they are, with no guarantee that they are correct, complete or free of third-party rights. You are responsible for assessing whether AI-generated material can be used in your production, and for following the terms of each AI provider."
+    },
+    "b115.privacy.ai.title": {
+      "text": "AI-generated content"
+    },
+    "b115.privacy.fonts.text": {
+      "text": "When you use typefaces in a project, whether your own uploads or from an external catalogue such as Google Fonts, you are responsible for ensuring the licence permits the use, for example on-screen display, embedding in PDF and printing."
+    },
+    "b115.privacy.fonts.title": {
+      "text": "Typefaces and licences"
+    },
+    "b115.privacy.law.text": {
+      "text": "This statement is translated into several languages to be accessible to our users. If the language versions disagree, the Norwegian text prevails, with the English text as a secondary reference. This statement and the use of the service are governed by Norwegian law."
+    },
+    "b115.privacy.law.title": {
+      "text": "Language and governing law"
+    },
+    "b115.privacy.liability.text": {
+      "text": "The service is provided as it is, with no guarantee of uninterrupted operation or freedom from faults. We recommend that you regularly download backups of your projects. From Pen to Glass is not liable for indirect losses, such as lost production time, missed deadlines or costs incurred with third parties, in the event of downtime, faults or loss of data."
+    },
+    "b115.privacy.liability.title": {
+      "text": "Limitation of liability and backups"
+    },
+    "b115.privacy.links.text": {
+      "text": "Sharing links, for example for film review, are protected, but anyone holding a valid link can view what has been shared. You are responsible for whom you send such links to, and you can withdraw a share at any time."
+    },
+    "b115.privacy.links.title": {
+      "text": "Sharing links and access"
+    },
+    "b115.privacy.ownership.text": {
+      "text": "Everything you create or upload to the service – scripts, scenes, drawings, images, sound, editing and finished film – belongs to you or your production. From Pen to Glass claims no copyright to your content. We only need the technical permission required to store and show the content to you and your project members. You are responsible for holding the rights to any material you upload, such as music, voices and reference images from others."
+    },
+    "b115.privacy.ownership.title": {
+      "text": "Ownership and copyright"
+    },
+    "b115.privacy.terms.heading": {
+      "text": "Terms of use and disclaimer"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

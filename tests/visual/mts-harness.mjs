@@ -193,7 +193,8 @@ export function harness(defaultOut) {
     page.on("pageerror", (err) => errors.push(String(err)));
     await page.goto(base, { waitUntil: "domcontentloaded" });
     const exp = Math.floor(Date.now() / 1000) + 86400;
-    await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
+    // Testspråk (en-XA) er av som standard; suitene slår dem på med den lokale utviklerinnstillingen.
+    await page.evaluate(([key, value, l]) => { localStorage.setItem(key, value); localStorage.setItem("animatic:lang", l); localStorage.setItem("animatic:test-languages", "1"); }, [`sb-${ref}-auth-token`, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: exp, user: USER }), lang]);
     await page.goto(`${base}${P}/scene?scene=${sceneId}`, { waitUntil: "networkidle" });
     // R7: vent til sceneeditoren faktisk er tegnet (ikke bare en fast pause) før scenarioet starter
     await page.getByTestId("scene-stage").first().waitFor({ timeout: 60000 }).catch(() => {});

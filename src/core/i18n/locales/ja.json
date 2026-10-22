@@ -54192,5 +54192,75 @@
     "text": "カットはフィルム全体で丸めた重なりの中点です。ショットの長さは丸めた境界の差です。handleInとhandleOutは隣のショット側の重なりで、ハンドルを含めて撮影します。重なりがなければ0です。音声と単語は開始したショットに属し、全長と絶対・相対時間を保持します。crossesCut=trueはカットをまたぐことを示します。2コマ撮りは24fpsのタイムラインで毎秒12露光、1フレームおきです。終了境界は含みません。空のフィルムは0フレームです。非常に短いショットは0フレームになっても一覧に残ります。PTG1のカメラはnullです。",
     "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
     "review": "machine"
+  },
+  "b115.privacy.terms.heading": {
+    "text": "利用条件および免責事項",
+    "sourceHash": "da1928e529438e2f72252eb3ad6ceb274aa56d4678373c5619ff5920367b1192",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.title": {
+    "text": "所有権と著作権",
+    "sourceHash": "cb68209029ea0cd2ae6b391ac9965e00a1176238972b0548a8e92a64b60905cf",
+    "review": "machine"
+  },
+  "b115.privacy.ownership.text": {
+    "text": "サービス内で作成またはアップロードしたすべてのコンテンツ（脚本、シーン、絵、画像、音声、編集、完成した映画）は、あなたまたはあなたの制作に帰属します。From Pen to Glass はあなたのコンテンツの著作権を主張しません。当社は、あなたとプロジェクトメンバーにコンテンツを保存・表示するために必要な技術的許可のみを必要とします。アップロードする素材（音楽、声、他者の参考画像など）の権利を保有していることは、あなた自身の責任です。",
+    "sourceHash": "209f62511d06f378a6c31793ec73ceef9be37c9a6e10eb4372e781b5ed1f9f7a",
+    "review": "machine"
+  },
+  "b115.privacy.ai.title": {
+    "text": "AIで生成されたコンテンツ",
+    "sourceHash": "b9326e1e74ecd74e7119f6fd800f1e1e43d739e3514113bd7c9db93876dfe6ff",
+    "review": "machine"
+  },
+  "b115.privacy.ai.text": {
+    "text": "人工知能による提案（テキスト、分析、音声、画像）は現状のまま提供され、正確性、完全性、第三者の権利を侵害しないことは保証されません。AIで生成された素材を制作に使用できるかどうかの判断、および各AIプロバイダーの利用条件の遵守は、あなた自身の責任です。",
+    "sourceHash": "3fec0e9b8d8cf2baee5a012542d7879ef428bb2b01b70b50b5b7950a2b69a0f0",
+    "review": "machine"
+  },
+  "b115.privacy.liability.title": {
+    "text": "責任の制限とバックアップ",
+    "sourceHash": "389fc30a48458dc457e15c5e214858c7c3121f26291824a74ab330f2e2a7aa42",
+    "review": "machine"
+  },
+  "b115.privacy.liability.text": {
+    "text": "本サービスは現状のまま提供され、中断のない動作やエラーがないことは保証されません。プロジェクトのバックアップを定期的にダウンロードすることをお勧めします。From Pen to Glass は、ダウンタイム、障害、データ損失に起因する制作時間の損失、納期の遅延、第三者に対する費用などの間接的損害について責任を負いません。",
+    "sourceHash": "79f2e4804a0d8e99952629b2bc48d73384f17dd3ef77af0d0301c3cab18b816c",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.title": {
+    "text": "書体とライセンス",
+    "sourceHash": "13f98a00d2834e4fec701f1bccc51c7f8de035cb277a55007c49a4aed3862b6e",
+    "review": "machine"
+  },
+  "b115.privacy.fonts.text": {
+    "text": "プロジェクトで書体を使用する場合（自身でアップロードしたもの、または Google Fonts などの外部カタログのもの）、画面表示、PDF への埋め込み、印刷などの使用がライセンスで許可されていることを確認する責任はあなたにあります。",
+    "sourceHash": "494d23fc4b315bc1bafb638f292b65d8439fb2fa0dc5ba127d38ab26c58a08c1",
+    "review": "machine"
+  },
+  "b115.privacy.links.title": {
+    "text": "共有リンクとアクセス",
+    "sourceHash": "62ba24171b44ae418462c55bf5b6c4c703c03d6aec12ff7432a6904c3013567c",
+    "review": "machine"
+  },
+  "b115.privacy.links.text": {
+    "text": "映画のレビュー用などの共有リンクは保護されていますが、有効なリンクを持つ人は誰でも共有された内容を閲覧できます。リンクの送信先についてはあなた自身が責任を負い、共有はいつでも取り消すことができます。",
+    "sourceHash": "fd4ded571900830a5d2a6e1fb7eb9ec963a56e9e2f2607f6f6831587ddec5550",
+    "review": "machine"
+  },
+  "b115.privacy.law.title": {
+    "text": "言語と準拠法",
+    "sourceHash": "0a94b0a028d2710e2b28e770e66ef96ce5d29dc392d7bc5f321656206716911d",
+    "review": "machine"
+  },
+  "b115.privacy.law.text": {
+    "text": "この声明は、ユーザーがアクセスしやすいよう複数の言語に翻訳されています。言語版間に相違がある場合はノルウェー語のテキストが優先され、英語のテキストが二次的な参照となります。この声明および本サービスの利用は、ノルウェー法に準拠します。",
+    "sourceHash": "8c55d1527dac6e92ec81ee9f4e1f2ccaa182ea093bed3686c73aa0b949196edb",
+    "review": "machine"
+  },
+  "b115.feature.test-languages": {
+    "text": "テスト言語 (en-XA)",
+    "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
+    "review": "machine"
   }
 }

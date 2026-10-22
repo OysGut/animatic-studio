@@ -4,7 +4,8 @@
  * Et eldre eksplisitt lokalt valg skjuler siden kort til den tilhørende katalogen er klar.
  * Språkbytte tegner visningen på nytt uten å montere den på nytt, så åpne utkast og pågående arbeid
  * beholdes. Sidene og de hurtigbufrede panelene abonnerer med `useLanguage()`.
- * Valgbare språk hentes fra språkmanifestet; testspråk (`en-XA`) vises bare i utviklings- og testmodus.
+ * Valgbare språk hentes fra språkmanifestet; testspråk (`en-XA`) er av som standard og slås på
+ * med funksjonsbryteren «ui.test-languages» i Admin, eller med lokal utviklerinnstilling.
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
@@ -15,6 +16,7 @@ import manifest from "@/core/i18n/manifest.json";
 import { t, loadUiCatalog } from "@/core/i18n/keyed";
 import { matchUiLanguage } from '@/core/i18n/languages';
 import { Button } from '@/components/ui/button';
+import { useFeature } from '@/app/community/use-feature';
 
 export const LANGUAGE_KEY = "animatic:lang";
 /** Klasse på <html> mens lagret språk settes (skjuler siden, se `LANGUAGE_BOOT_SCRIPT`). */
@@ -25,9 +27,13 @@ export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(
 
 const useIso = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-/** Testspråk er bare valgbare i utviklings- og testmodus. */
+/** Settes fra funksjonsbryteren «ui.test-languages» (Admin) når svaret er lest. Standard er av. */
+let adminTestLanguages = false;
+
+/** Testspråk er av som standard; Admin slår dem på for alle, testmodus og lokal innstilling for utviklere. */
 export function testLanguagesEnabled(): boolean {
-  if (import.meta.env.DEV || import.meta.env.MODE === "test") return true;
+  if (import.meta.env.MODE === "test") return true;
+  if (adminTestLanguages) return true;
   try {
     return window.localStorage.getItem("animatic:test-languages") === "1";
   } catch {
@@ -133,6 +139,9 @@ export async function chooseLanguage(lang: UiLang) {
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
   const queryClient = useQueryClient();
+  // Funksjonsbryteren «ui.test-languages» (Admin): standard av; påvirker bare hvilke språk som tilbys.
+  const testLangs = useFeature("ui.test-languages");
+  useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
   useEffect(() => {
     let identity: string | null | undefined;
     return onSessionChange(session => {
@@ -190,6 +199,9 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
 /** Språkvelger fra manifestet – på hovedsiden og i toppstripen. */
 export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   const lang = useLanguage();
+  // Tegnes på nytt når funksjonsbryteren er lest eller endret, så testspråket dukker opp/forsvinner.
+  const testLangs = useFeature("ui.test-languages");
+  useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
   const options = availableLanguages();
   const seg = (on: boolean) =>
     "rounded-sm px-2 py-0.5 text-xs " +
