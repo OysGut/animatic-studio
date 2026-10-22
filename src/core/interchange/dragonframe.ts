@@ -12,6 +12,7 @@ import { annotationsOfVariant } from "../notes";
 import { blocksOfVariant } from "../views";
 import { formatTimecode, framesToSeconds, secondsToFrames, type Rational } from "../time";
 import type { InterchangeDoc, Shot } from "./types";
+import { mouthLabelAt, shotMouthTracks } from "./mouth-export";
 
 /** Skuddets vindu på opptakstidslinjen, med håndtak: [frameIn, frameOut). */
 export function shotWindow(shot: Pick<Shot, "frameIn" | "frameOut">): { readonly from: number; readonly to: number; readonly length: number } {
@@ -150,6 +151,7 @@ export function buildXsheets(state: ProjectState, doc: InterchangeDoc, labels: X
   const moves = doc.shots.flatMap(layerMoves);
   const out = new Map<string, XsheetRow[]>();
   for (const shot of doc.shots) {
+    const mouthTracks = shotMouthTracks(state, doc, shot);
     const exposures = shotExposures(doc, shot);
     const rows: XsheetRow[] = exposures.map((e, i) => {
       const next = exposures[i + 1] ?? shot.frameOut;
@@ -162,7 +164,7 @@ export function buildXsheets(state: ProjectState, doc: InterchangeDoc, labels: X
         timecode: formatTimecode(e, doc.fps),
         character: join([...ws.map(w => characterOfBlock.get(w.blockId) ?? ""), ...ls.map(l => l.character)]),
         dialogue: [...ws.map(w => w.text), ...ls.map(l => l.text)].join(" "),
-        mouth: "",
+        mouth: mouthLabelAt(mouthTracks, e - shot.frameIn),
         action: join(actions.filter(a => inside(a.at)).map(a => a.text)),
         layers: join([...moves.filter(m => inside(m.start)).map(m => labels.layerStart(m.name)),
           ...moves.filter(m => inside(m.end)).map(m => labels.layerEnd(m.name))]),

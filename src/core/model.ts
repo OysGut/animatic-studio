@@ -958,6 +958,8 @@ export interface VolumeKey {
 }
 
 export interface ProjectState {
+  readonly mouthSets: Readonly<Record<string, import("./interchange/mouth-types").MouthSet>>;
+  readonly mouthTracks: Readonly<Record<string, import("./interchange/mouth-types").MouthTrack>>;
   readonly animationRigs: Readonly<Record<string, AnimationRig>>;
   readonly animationRigVersions: Readonly<Record<string, AnimationRigVersion>>;
   readonly animationUses: Readonly<Record<string, AnimationUse>>;
@@ -1411,6 +1413,8 @@ export const COLLECTION_TABLES = {
   animationRigVersions: "animation_rig_versions",
   animationUses: "animation_uses",
   lipsyncResults: "lipsync_results",
+  mouthSets: "mouth_sets",
+  mouthTracks: "mouth_tracks",
   animationPatterns: "animation_patterns",
   dialogueVersions: "dialogue_versions",
   dialogueReviews: "dialogue_reviews",
@@ -1466,6 +1470,7 @@ export function emptyProjectState(project: Project): ProjectState {
     creditSequences: {},
     animationRigs: {}, animationRigVersions: {}, animationUses: {},
     lipsyncResults: {}, animationPatterns: {},
+    mouthSets: {}, mouthTracks: {},
     dialogueVersions: {},
     dialogueReviews: {},
     noteFlags: {},

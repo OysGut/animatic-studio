@@ -61,3 +61,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 45. All scene choices use `SceneSelect`/`SceneMark`; never use native `<select>` for scenes, so accessibility and scene-mark alignment stay consistent.
 46. Dragonframe import keeps EDL/name/time policy in core/interchange and decoding/encoding in the browser; it adds an inactive existing Take so import never replaces finished scene material.
 47. Editorial serializers and reel allocation live in core/interchange; browser exports render isolated shot media with handles, so editor transitions are not baked twice.
+48. PTG4 mouth sets and tracks use reversible project commands; immutable source receipts compute drift, while core/interchange owns pronunciation, exposure rounding and exports to keep all deliverables aligned.

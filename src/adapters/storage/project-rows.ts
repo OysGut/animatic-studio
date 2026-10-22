@@ -7,7 +7,7 @@ import { stateFromRows, type ProjectRows, type ProjectState, type Row } from "@/
 import { t } from "@/core/i18n/keyed";
 
 /** Skjemaversjonen denne koden forventer (db/migrations). Øk ved hver ny migrasjon. */
-export const EXPECTED_SCHEMA_VERSION = 83;
+export const EXPECTED_SCHEMA_VERSION = 84;
 
 const PAGE = 1000;
 
@@ -103,6 +103,7 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     creditParticipants,
     creditSequences, animationRigs, animationRigVersions, animationUses, lipsyncResults, animationPatterns, dialogueVersions, dialogueReviews, noteFlags, qualityProfiles, translationLineLinks, translationLines, styleHarmonizations, stylePreferredReferences, languageVersions,
     rigTemplates, rigSetups, measureSets, printJobs, printJobElements,
+    mouthSets, mouthTracks,
   ] = await Promise.all([
     fetchAll(db, "productions", projectId),
     fetchAll(db, "scenes", projectId),
@@ -154,9 +155,12 @@ export async function loadProjectRows(db: AnyClient, projectId: string): Promise
     fetchOptional(db, "measure_sets", projectId),
     fetchOptional(db, "print_jobs", projectId),
     fetchOptional(db, "print_job_elements", projectId),
+    fetchOptional(db, "mouth_sets", projectId),
+    fetchOptional(db, "mouth_tracks", projectId),
   ]);
   return {
     project: project as Row,
+    mouth_sets: mouthSets, mouth_tracks: mouthTracks,
     productions,
     scenes,
     scene_variants: variants,

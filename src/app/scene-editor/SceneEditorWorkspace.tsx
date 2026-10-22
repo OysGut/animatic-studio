@@ -86,6 +86,7 @@ import { isTypingTarget } from "./Timeline";
 import { VariantTracks } from "./animation/VariantTracks";
 import { DialogueTrack } from "./animation/DialogueTrack";
 import { MouthTrack } from "./animation/MouthTrack";
+import { TextMouthTrack } from "./animation/TextMouthTrack";
 import { PatternStudio } from "./animation/PatternStudio";
 import { SceneTrackGroups } from "./animation/SceneTrackGroups";
 import { RhythmPanel } from "./animation/RhythmPanel";
@@ -1219,6 +1220,7 @@ function Editor({
                   requestFrames: retimeFrames,
                 }}
                 audioRows={(g) => (
+                  <>
                   <SceneAudioRows
                     state={state}
                     occurrenceId={occurrence.id}
@@ -1250,6 +1252,8 @@ function Editor({
                         : null
                     }
                   />
+                  <TextMouthTrack state={state} occurrenceId={occurrence.id} language={filmLang.dialogue} g={g} editable={editable} run={cmds.run} />
+                  </>
                 )}
               />
               {occurrence ? (

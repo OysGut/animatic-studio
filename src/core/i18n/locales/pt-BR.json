@@ -54995,5 +54995,130 @@
     "text": "As mídias não estão incluídas. Coloque filmes de referência e áudio MIX nos caminhos relativos indicados ou revincule no editor.",
     "sourceHash": "14497b40a48f46ad9145a7d2cbcab34354b9aa78490083d62fcae24bd1a603d3",
     "review": "machine"
+  },
+  "ptg4.invalid": {
+    "text": "Conjunto ou faixa de bocas inválido",
+    "sourceHash": "18733e2dcce87d74607d7900e5b59ae616bf0a139aa82d77737c29e8d8abe0dd",
+    "review": "machine"
+  },
+  "ptg4.schema": {
+    "text": "As faixas exigem a atualização 0084.",
+    "sourceHash": "becc24dd54674a2c5a974829ce3a416b69a73227cd304fd1aa7e4b83fb936b82",
+    "review": "machine"
+  },
+  "ptg4.title": {
+    "text": "Faixas de bocas",
+    "sourceHash": "3ccf7c06d853eed266bb23c895710838b704ca26ee06318549cb8eb73dbbd839",
+    "review": "machine"
+  },
+  "ptg4.set": {
+    "text": "Conjunto de bocas",
+    "sourceHash": "04e26452aa867ae906a311c36ec958c082ea3206d35c6dce2e3978983b743fed",
+    "review": "machine"
+  },
+  "ptg4.system": {
+    "text": "Sistema de bocas",
+    "sourceHash": "d5bff69688fc6c1ae26c0d74082587decd2e5299b6a0d67b310024aee80a5d34",
+    "review": "machine"
+  },
+  "ptg4.draft": {
+    "text": "Criar rascunho de texto",
+    "sourceHash": "23395bed7628d3e2c7ad54b56c8e335c6fe8033a89f5a721eaaa403dc115fad0",
+    "review": "machine"
+  },
+  "ptg4.apply": {
+    "text": "Aplicar",
+    "sourceHash": "c53d84b7ab1094f5e61b3716bf866f93a17b7694e3fd3a55ddb964652de22caf",
+    "review": "machine"
+  },
+  "ptg4.discard": {
+    "text": "Descartar",
+    "sourceHash": "70d987db0446c114a5b3105e55ddd3cba83ef725ec555c62eb4a53fd1e8a144f",
+    "review": "machine"
+  },
+  "ptg4.no-times": {
+    "text": "A fala não tem tempos de palavras conhecidos.",
+    "sourceHash": "deb6d943cd803b79738e83cdc8e5108275cdb36b4450d0148db117721350a373",
+    "review": "machine"
+  },
+  "ptg4.stale": {
+    "text": "A faixa está desatualizada. A fonte mudou; a faixa é preservada.",
+    "sourceHash": "b18fb4e9e6f8d44f8e436bedda0e44dd42b2dbf3085d065a3e6dfe687c7c7dce",
+    "review": "machine"
+  },
+  "ptg4.edit": {
+    "text": "Editar faixa de bocas",
+    "sourceHash": "9e97311be956589d7516fc70b07883c2eccd4edcf7f8be138433013c94637853",
+    "review": "machine"
+  },
+  "ptg4.shape": {
+    "text": "Forma de boca",
+    "sourceHash": "08323988cb28d5e99ea19ec70b4dd13c60055f8deefe6b1d82ceb918f88b7ed7",
+    "review": "machine"
+  },
+  "ptg4.variant": {
+    "text": "Variante",
+    "sourceHash": "a4bb9f4c9ebe16d02c1ce87156e0bfd1e7f35070d0afb2aa9c37448560783ca1",
+    "review": "machine"
+  },
+  "ptg4.none": {
+    "text": "Sem variante",
+    "sourceHash": "7ce045bf412ccd722ade8cf26833e75c04837b7a7f5652f35549aaa3a85a966a",
+    "review": "machine"
+  },
+  "ptg4.save": {
+    "text": "Salvar",
+    "sourceHash": "17313c395ac9f722f10ded2a46d31ffa3f63252c66b890b61a904160c55f034b",
+    "review": "machine"
+  },
+  "ptg4.span": {
+    "text": "Boca {shape}, quadro {start} a {end}",
+    "sourceHash": "2c08fc85e63e3c637d1d75ed687d095e4a0abc4213b1369951065ba4d0d69c6f",
+    "review": "machine"
+  },
+  "ptg4.start": {
+    "text": "Quadro inicial",
+    "sourceHash": "3b66f99d99c168d872d53020926f16462adf2afbcef3da27de984a72701e6b3e",
+    "review": "machine"
+  },
+  "ptg4.end": {
+    "text": "Quadro final",
+    "sourceHash": "5a36755f93ae9e4949b9fe814f4c27db5bb372fa96688d0a9d2e82a3bffe6807",
+    "review": "machine"
+  },
+  "ptg4.split": {
+    "text": "Dividir",
+    "sourceHash": "c29653ee990fb9fc1fe5a66c3f16ced874c96dfba16f89fea31044f61b9be146",
+    "review": "machine"
+  },
+  "ptg4.merge": {
+    "text": "Mesclar",
+    "sourceHash": "a6c1eb98ced09f9515afe6ea69ceb7430c8ef68342d055013438064228f1fe8b",
+    "review": "machine"
+  },
+  "ptg4.character": {
+    "text": "Personagem",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "ptg4.count": {
+    "text": "Exposições",
+    "sourceHash": "fcfbef9bb67e4b183dfd310a073e83a43c389815b117fe3d8425d13e52a6477a",
+    "review": "machine"
+  },
+  "ptg4.shots": {
+    "text": "Planos",
+    "sourceHash": "ec3bd02228b29b86bde1f853966978b73b73d88cd101124d211be46fa9c53284",
+    "review": "machine"
+  },
+  "ptg4.export": {
+    "text": "Lista de bocas e sincronização labial",
+    "sourceHash": "45e5aa9e9ecbe3b91cd7d0b75461ad982443e83b480d40dc4dbcfd3df1ed7d7a",
+    "review": "machine"
+  },
+  "ptg4.readme": {
+    "text": "PDF e CSV mostram exposições por personagem e boca. JSON numera a partir de 0, incluindo alças. Moho DAT usa bocas Papagayo e quadros a partir de 1 na taxa de captura; exposições duplas se repetem. Faixas desatualizadas são exportadas sem alterações e marcadas no JSON. NB Uttale (CC0) e CMUdict (BSD) funcionam localmente. Sem IA nem chamadas pagas.",
+    "sourceHash": "1c3cf65983733b2abb484a4f3672509e6bc2f0ad9b3dd49c3360f1d86c6caaf0",
+    "review": "machine"
   }
 }
