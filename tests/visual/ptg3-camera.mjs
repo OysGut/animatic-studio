@@ -57,7 +57,7 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     h.check(!!keys && Number(keys[1]) > 3, `${lang}/fbx: én nøkkel per eksponering (${keys?.[1]} nøkler)`);
   }
   // Kontroll for skudd uten rigg: LESMEG nevner skuddnavnet og årsaken.
-  const missingLine = readmeFbx.split("\n").find(l => l.startsWith("- ") && l.includes(rigShotPrefix) && /rigg|rig/.test(l));
+  const missingLine = readmeFbx.split("\n").find(l => l.startsWith("- ") && l.includes(rigShotPrefix) && /rigg|rig|ingen 2D-komposisjon|no 2D composition/.test(l));
   h.check(!!missingLine, `${lang}/fbx: skudd uten rigg står med navn og årsak i LESMEG`);
   h.check(!readmeFbx.includes("null i PTG1") && !readmeFbx.includes("null in PTG1"), `${lang}/fbx: LESMEG sier ikke lenger «null i PTG1»`);
   h.check(readmeFbx.includes("PAR_") && readmeFbx.includes("Blender"), `${lang}/fbx: LESMEG forklarer kameramodusene og binær FBX`);

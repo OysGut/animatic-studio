@@ -74,6 +74,7 @@ await h.run("q6-player", `/se/${TOKEN}`, async (page) => {
   h.check(scripts.length === 0, "Q7 ingen tredjepartsskript");
   const sent = h.log.serverFns.filter((f) => !/resolveFilmShare/.test(f.name));
   h.check(sent.length === 0, "Q7 siden henter ingen prosjektdata");
+  console.log("RPC-er i oppsett og spiller:", JSON.stringify(h.log.rpcs.map((r) => r.name)));
   h.check(!h.log.rpcs.some((r) => r.name !== "my_account"), "Q7 ingen databasekall fra siden");
 }, { viewport: { width: 390, height: 844 }, signedIn: false });
 

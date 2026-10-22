@@ -1,5 +1,11 @@
 # Veikart
 
+## D-1 – Demoklar gjennomgang
+- [ ] Kjør aktive visuelle suiter én om gangen på nb og på en der det støttes; dokumenter hver suite i D1_REPORT.md.
+- [ ] Kontroller hovedflyten og rett dokumenterte, trygge feil uten å røre sperrede filer.
+- [ ] Kjør full Vitest og i18n; DB-testene krever isolert lokal testdatabase, aldri Cloud.
+- [ ] Lever norsk rapport med avvik og nøyaktig filliste; ingen publisering.
+
 ## K-1 – Varsel når en annen redigerer samme scene (22.10.2026)
 - [x] Merke «{name} redigerer også denne scenen» og prikk i scenelisten (presence, lagres ikke).
 - [x] Konfliktvalg «Legg min endring oppå» / «Forkast min endring» med «Sist endret av».

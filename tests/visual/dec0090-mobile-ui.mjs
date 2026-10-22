@@ -7,6 +7,7 @@
  */
 import { chromium } from "playwright";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 import { readFileSync, mkdirSync } from "node:fs";
 const [
   base = "http://127.0.0.1:8080",
@@ -294,6 +295,7 @@ await run(
   "m03-sceneeditor",
   async (page) => {
     const cam = page.getByTestId("mobile-camera-button").first();
+    await revealInToolbar(page, cam);
     check(await cam.isVisible(), "kameraikonet står i sceneeditoren (egen kode for scenen)");
     await cam.click();
     await page.waitForTimeout(600);
@@ -399,3 +401,4 @@ await run(
 
 console.log(`RESULTAT: ${pass} bestått, ${fail} feilet`);
 await browser.close();
+process.exitCode = fail ? 1 : 0;

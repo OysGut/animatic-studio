@@ -9,6 +9,7 @@ import { chromium } from "playwright";
 import { readFileSync, mkdirSync } from "node:fs";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { uiLang } from "./ui-lang.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 export function harness(defaultOut) {
   const [base = "http://127.0.0.1:8080", fixturePath = "/tmp/claude-0/mts-fixture.json", out = defaultOut] = process.argv.slice(2);
@@ -232,6 +233,7 @@ export function harness(defaultOut) {
   const waitHidden = (loc) => loc.waitFor({ state: "hidden", timeout: 5000 });
   /** Åpner «Tekst»-menyen og velger et punkt; venter til menyen er lukket. */
   async function menu(page, testId) {
+    await revealInToolbar(page, page.getByTestId("mts-text-menu"));
     await page.getByTestId("mts-text-menu").click();
     await page.getByTestId(testId).click();
     await waitHidden(page.getByTestId(testId));

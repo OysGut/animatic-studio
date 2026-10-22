@@ -5,6 +5,7 @@
  */
 import { setup } from "./global-harness.mjs";
 import { uiLang } from "./ui-lang.mjs";
+import { revealInToolbar } from "./toolbar.mjs";
 
 const WS = "00000000-0000-4000-8000-00000000aaaa";
 const GT = "00000000-0000-4000-8000-00000000a010"; // global lower third-mal
@@ -63,6 +64,7 @@ if (!g.versions[0].template_spec) throw new Error("Fixture mangler maldefinisjon
 const run = (label, path, fn, opts = {}) => h.run(label, path, fn, { ...opts, lang: uiLang(opts.lang) });
 await run("M1-AC-global-mal-i-bruk", `$P/scene?scene=${M.occB}`, async (page) => {
   // AC/M1: den globale malen nås fra Tekst-menyen og brukes i prosjektet
+  await revealInToolbar(page, page.getByTestId("mts-text-menu"));
   await page.getByTestId("mts-text-menu").click();
   await page.getByTestId("mts-global-templates").click();
   const dialog = page.getByTestId("global-library-dialog");
@@ -93,6 +95,7 @@ await run("M3-lokalt-innhold-endrer-ikke-malen", `$P/scene?scene=${M.occA}`, asy
 
 await run("M4-global-logo-i-tittel", `$P/scene?scene=${M.titleOcc}`, async (page) => {
   await page.getByTestId("mts-pages-panel").waitFor({ timeout: 5000 });
+  await revealInToolbar(page, page.getByTestId("mts-text-menu"));
   await page.getByTestId("mts-text-menu").click();
   h.check(await page.getByTestId("mts-global-templates").isVisible(), "M4: globale ressurser nås også fra tittelen");
   await page.keyboard.press("Escape");
