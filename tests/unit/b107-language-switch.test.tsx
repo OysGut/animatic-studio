@@ -46,7 +46,9 @@ describe('B-107: ordinary languages never depend on login or the test-language f
         const mount = () => render(<QueryClientProvider client={client}><LanguageSwitch /><TranslatedText /></QueryClientProvider>);
         let view = mount();
         fireEvent.click(view.getByTestId(`language-${language}`));
-        await waitFor(() => expect(view.getByTestId('translated-text')).toHaveTextContent(expected));
+        // N3: the first load of a 2–3 MB locale takes ~0.8 s alone and longer in a full parallel run, so the
+        // default 1 s waitFor timed out. Wait for the real catalog with an explicit bound; nothing is preloaded.
+        await waitFor(() => expect(view.getByTestId('translated-text')).toHaveTextContent(expected), { timeout: 20_000 });
         expect(view.getByTestId('translated-text').textContent).not.toBe(t(changeKey, {}, 'en'));
         view.unmount();
         await chooseLanguage('en');

@@ -103,3 +103,14 @@ export const reconfirmDialogueBatch = createServerFn({ method: "POST" }).middlew
   if (error) throw new Error(error.message);
   return { ok: true };
 });
+
+/**
+ * DV5-rest (N3): serverhistorikken for ferdige bakgrunnsresultater i jobben, så klienten kan legge dem på
+ * brukerens angreliste. Bare egne resultater (actor = brukeren) med lagret invers; leser bare data, ingen
+ * leverandørkall.
+ */
+export const dialogueBatchHistory = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).validator(batchInput).handler(async ({ data, context }) => {
+  const db = await access(context.supabase, data.projectId, context.userId);
+  const { loadDialogueBatchHistory } = await import("./dialogue-batch.server");
+  return loadDialogueBatchHistory(db, context.supabase as AnyClient, data.projectId, data.batchId, context.userId);
+});

@@ -3,6 +3,7 @@
  * med nøkkel: Developer API v1), filtrerer og bestemmer lisensen. Ingen nettverk her – serverfunksjonen henter.
  */
 import type { FontCategory, FontLicense } from "./fonts";
+import { GOOGLE_FONT_LICENSES } from "./google-font-licenses.gen";
 
 export interface CatalogVariant {
   readonly weight: number;
@@ -28,19 +29,24 @@ export const CATALOG_SUBSETS: readonly string[] = [
   "devanagari", "thai", "japanese", "korean", "chinese-simplified",
 ];
 
-/** Kjente Google-fonter med Apache- eller UFL-lisens (resten er OFL). Brukes når kilden ikke oppgir lisens. */
-const APACHE = /^(roboto( (condensed|flex|mono|serif|slab))?|arimo|tinos|cousine|droid (sans|serif)( mono)?|permanent marker|rancho|special elite|walter turncoat|calligraffitti|cherry cream soda|chewy|coming soon|crafty girls|crushed|fontdiner swanky|homemade apple|irish grover|just another hand|kranky|luckiest guy|mountains of christmas|rock salt|schoolbell|slackey|sunshiney|syncopate|unkempt|yellowtail|aclonica|smokum|maiden orange|satisfy|montez|redressed|nokora|opensans hebrew)$/i;
-const UFL = /^ubuntu( (mono|condensed|sans mono))?$/i;
+const FROM_TABLE: Readonly<Record<"O" | "A" | "U", FontLicense>> = { O: "OFL-1.1", A: "Apache-2.0", U: "UFL-1.0" };
 
-/** Lisensen: fra kilden hvis den oppgis, ellers fra listene over. */
+/**
+ * Lisensen: fra kilden hvis den oppgis, ellers fra den innebygde tabellen generert fra METADATA.pb i
+ * google/fonts (B-098, N3). Bare familier som ikke finnes i tabellen, faller tilbake til OFL.
+ */
 export function licenseOf(raw: unknown, family: string): FontLicense {
   const r = typeof raw === "string" ? raw.toLowerCase() : "";
   if (r.includes("apache")) return "Apache-2.0";
   if (r.includes("ufl") || r.includes("ubuntu")) return "UFL-1.0";
   if (r.includes("ofl") || r.includes("open font")) return "OFL-1.1";
-  if (UFL.test(family.trim())) return "UFL-1.0";
-  if (APACHE.test(family.trim())) return "Apache-2.0";
-  return "OFL-1.1";
+  const code = GOOGLE_FONT_LICENSES[family.trim().toLowerCase()];
+  return code ? FROM_TABLE[code] : "OFL-1.1";
+}
+
+/** Sann når lisensen er bekreftet av kilden eller METADATA.pb-tabellen (ikke bare antatt OFL). */
+export function licenseIsKnown(family: string): boolean {
+  return Object.prototype.hasOwnProperty.call(GOOGLE_FONT_LICENSES, family.trim().toLowerCase());
 }
 
 /** UFL er ikke OFL eller Apache: fonten kan legges til, men brukeren får et varsel. */

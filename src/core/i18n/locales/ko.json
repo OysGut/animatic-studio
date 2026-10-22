@@ -55437,5 +55437,10 @@
     "text": "쇼케이스에 공유한 모든 게시물과 상태.",
     "sourceHash": "4a22ff8440fa388050502107d2707327ae9f2a04e4947f2c6c4040d0e1211f20",
     "review": "machine"
+  },
+  "dv5.background-result.undo-label": {
+    "text": "백그라운드 결과 추가",
+    "sourceHash": "cc9d0f8aac5f7bd2996299a8c27fe27694c08472b6f6bd7d298a28e40e1b99a7",
+    "review": "machine"
   }
 }
