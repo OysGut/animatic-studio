@@ -31535,6 +31535,21 @@
     "print-job.copy-number": {
       "text": "Skriv kopinummeret på arket"
     },
+    "print-job.corner-bottom-left": {
+      "text": "Nederst til venstre"
+    },
+    "print-job.corner-bottom-right": {
+      "text": "Nederst til høyre"
+    },
+    "print-job.corner-center": {
+      "text": "Midt på flaten"
+    },
+    "print-job.corner-top-left": {
+      "text": "Øverst til venstre"
+    },
+    "print-job.corner-top-right": {
+      "text": "Øverst til høyre"
+    },
     "print-job.create": {
       "text": "Lag PDF"
     },
@@ -31553,6 +31568,9 @@
     "print-job.element": {
       "text": "Frame {frame}"
     },
+    "print-job.empty": {
+      "text": "Legg til minst ett element"
+    },
     "print-job.failed": {
       "text": "Utskriftsjobben kunne ikke lages. Prøv igjen."
     },
@@ -31564,6 +31582,9 @@
     },
     "print-job.flip-short": {
       "text": "Kort kant"
+    },
+    "print-job.frame": {
+      "text": "Ugyldig frame"
     },
     "print-job.frame-label": {
       "text": "Frame {frame} · {time}"
@@ -31582,6 +31603,12 @@
     },
     "print-job.note": {
       "text": "Merknad"
+    },
+    "print-job.offset-x": {
+      "text": "Forskyvning x (mm)"
+    },
+    "print-job.offset-y": {
+      "text": "Forskyvning y (mm)"
     },
     "print-job.printer": {
       "text": "Skriver"
@@ -31622,11 +31649,17 @@
     "print-job.save-label": {
       "text": "Lagre utskriftsjobb"
     },
+    "print-job.scale": {
+      "text": "Ugyldig målestokk"
+    },
     "print-job.shared": {
       "text": "Felles for hele jobben"
     },
     "print-job.sheet": {
       "text": "Ark {number}"
+    },
+    "print-job.stroke": {
+      "text": "Klippelinjen må være mellom 0,05 og 0,3 mm"
     },
     "print-job.test-sheet": {
       "text": "Testark for tosidig utskrift"
@@ -31636,6 +31669,9 @@
     },
     "print-job.to": {
       "text": "Til frame"
+    },
+    "print-job.too-many": {
+      "text": "For mange elementer eller kopier i én jobb"
     },
     "print-job.totals": {
       "text": "{elements} elementer · {copies} kopier · {sheets} ark"
@@ -63740,6 +63776,21 @@
     "print-job.copy-number": {
       "text": "Print the copy number on the sheet"
     },
+    "print-job.corner-bottom-left": {
+      "text": "Bottom left"
+    },
+    "print-job.corner-bottom-right": {
+      "text": "Bottom right"
+    },
+    "print-job.corner-center": {
+      "text": "Centre of the surface"
+    },
+    "print-job.corner-top-left": {
+      "text": "Top left"
+    },
+    "print-job.corner-top-right": {
+      "text": "Top right"
+    },
     "print-job.create": {
       "text": "Create PDF"
     },
@@ -63758,6 +63809,9 @@
     "print-job.element": {
       "text": "Frame {frame}"
     },
+    "print-job.empty": {
+      "text": "Add at least one item"
+    },
     "print-job.failed": {
       "text": "The print job could not be created. Try again."
     },
@@ -63769,6 +63823,9 @@
     },
     "print-job.flip-short": {
       "text": "Short edge"
+    },
+    "print-job.frame": {
+      "text": "Invalid frame"
     },
     "print-job.frame-label": {
       "text": "Frame {frame} · {time}"
@@ -63787,6 +63844,12 @@
     },
     "print-job.note": {
       "text": "Note"
+    },
+    "print-job.offset-x": {
+      "text": "Offset x (mm)"
+    },
+    "print-job.offset-y": {
+      "text": "Offset y (mm)"
     },
     "print-job.printer": {
       "text": "Printer"
@@ -63827,11 +63890,17 @@
     "print-job.save-label": {
       "text": "Save print job"
     },
+    "print-job.scale": {
+      "text": "Invalid scale"
+    },
     "print-job.shared": {
       "text": "Shared by the whole job"
     },
     "print-job.sheet": {
       "text": "Sheet {number}"
+    },
+    "print-job.stroke": {
+      "text": "The cut line must be between 0.05 and 0.3 mm"
     },
     "print-job.test-sheet": {
       "text": "Two-sided test sheet"
@@ -63841,6 +63910,9 @@
     },
     "print-job.to": {
       "text": "To frame"
+    },
+    "print-job.too-many": {
+      "text": "Too many items or copies in one job"
     },
     "print-job.totals": {
       "text": "{elements} items · {copies} copies · {sheets} sheets"
