@@ -7384,6 +7384,123 @@ try {
     await expectError(as('authenticated', ALICE, tx => tx`select private.valid_asset_rights(null)`), '42501');
     assert((await sql`select has_table_privilege('authenticated', 'public.asset_versions', 'insert') p`)[0]?.['p'] === false, 'ingen direkte klientskriving som trenger CHECK-hjelperen');
   });
+  // ---------- B-116: utstillingsvindu (0087) ----------
+  async function b116Fixture() {
+    const owner = crypto.randomUUID(), other = crypto.randomUUID();
+    await sql`insert into auth.users (id, email) values (${owner}, ${`${owner}@example.no`}), (${other}, ${`${other}@example.no`})`;
+    await sql`insert into public.profiles (user_id, display_name) values (${owner}, 'Anita'), (${other}, 'Bo') on conflict (user_id) do nothing`;
+    await sql`update public.features set state = 'on' where key = 'community.public'`;
+    const project = String((await as('authenticated', owner, tx => tx`select public.create_project('B-116') id`))[0]?.['id']);
+    return { owner, other, project };
+  }
+  const createItem = (user: string, project: string, expires: string | null = null) =>
+    as('authenticated', user, tx => tx`select public.create_showcase_item(${project}, 'character', 'Reven', 'Om filmen', null,
+      ${`${project}/shares/showcase/rev.png`}, 'image/png', null, 800, 600, ${expires}::timestamptz) id`);
+  await test('0087 B-116: avslått bryter gir ingenting', async () => {
+    await sql`update public.features set state = 'off' where key = 'community.public'`;
+    const { owner, project } = await b116Fixture();
+    await sql`update public.features set state = 'off' where key = 'community.public'`;
+    assert((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f'] !== null, 'feed svarer');
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'anon får tom karusell');
+    await expectError(createItem(owner, project), '42501');
+    assert(JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']) === '[]', 'mine delinger er tomme');
+  });
+  await test('0087 B-116: ventende bidrag vises ikke, godkjent vises uten identitet', async () => {
+    const { owner, other, project } = await b116Fixture();
+    const id = String((await createItem(owner, project))[0]?.['id']);
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'pending vises ikke i karusellen');
+    const mine = JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']);
+    assert(mine.includes('"status":"pending"') && mine.includes('Reven'), 'eieren ser sitt ventende bidrag');
+    assert(JSON.stringify((await as('authenticated', other, tx => tx`select public.my_showcase_items() m`))[0]?.['m']) === '[]', 'andre ser ikke bidraget');
+    // Admin godkjenner
+    await sql`insert into public.app_admins (user_id) values (${other}) on conflict do nothing`;
+    await as('authenticated', other, tx => tx`select public.admin_review_showcase_item(${id}, true)`);
+    const feed = (await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f'] as Record<string, unknown>[];
+    assert(feed.length === 1 && feed[0]!['id'] === id, 'godkjent bidrag i karusellen for anon');
+    assert(feed[0]!['author_name'] === 'Anita', 'visningsnavn med');
+    const text = JSON.stringify(feed);
+    for (const bad of [owner, 'example.no', 'user_id', 'email', 'created_by', 'project_id']) assert(!text.includes(bad), `ingen identitet/prosjekt-ID i karusellen (${bad})`);
+    // Utløpt forsvinner
+    await sql`update public.showcase_items set expires_at = now() - interval '1 hour' where id = ${id}`;
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'utløpt vises ikke');
+    await sql`update public.showcase_items set expires_at = now() + interval '7 days', status = 'revoked', revoked_at = now() where id = ${id}`;
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'tilbaketrukket vises ikke');
+    await sql`update public.showcase_items set status = 'rejected', revoked_at = null where id = ${id}`;
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'avvist vises ikke');
+    await sql`delete from public.app_admins where user_id = ${other}`;
+  });
+  await test('0087 B-116: kommentarer og rapportering', async () => {
+    const { owner, other, project } = await b116Fixture();
+    const id = String((await createItem(owner, project))[0]?.['id']);
+    await sql`update public.showcase_items set status = 'live', approved_at = now() where id = ${id}`;
+    const cid = String((await as('authenticated', other, tx => tx`select public.add_showcase_comment(${id}, 'Fin rev!') id`))[0]?.['id']);
+    const comments = (await as('anon', null, tx => tx`select public.showcase_comments(${id}) c`))[0]?.['c'] as Record<string, unknown>[];
+    assert(comments.length === 1 && comments[0]!['text'] === 'Fin rev!' && comments[0]!['author_name'] === 'Bo', 'anon leser kommentarer');
+    assert(!JSON.stringify(comments).includes(other), 'ingen bruker-ID i kommentarene');
+    const own = (await as('authenticated', other, tx => tx`select public.showcase_comments(${id}) c`))[0]?.['c'] as Record<string, unknown>[];
+    assert(own[0]!['mine'] === true, 'eieren ser sitt flagg');
+    await expectError(as('anon', null, tx => tx`select public.add_showcase_comment(${id}, 'x')`), '42501');
+    await as('authenticated', other, tx => tx`select public.report_content('showcase', ${id}, 'other', 'Test')`);
+    assert((await sql`select count(*) n from public.content_reports where target_kind = 'showcase' and target_id = ${id}`)[0]?.['n'] == 1, 'rapporten lagres');
+    await as('authenticated', other, tx => tx`select public.remove_showcase_comment(${cid})`);
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_comments(${id}) c`))[0]?.['c']) === '[]', 'fjernet kommentar forsvinner');
+  });
+  await test('0087 B-116: endring, tilbaketrekking og bryter for godkjenning', async () => {
+    const { owner, other, project } = await b116Fixture();
+    // Uten godkjenningskrav blir nye bidrag synlige med en gang
+    await sql`insert into public.app_admins (user_id) values (${other}) on conflict do nothing`;
+    await as('authenticated', other, tx => tx`select public.admin_set_showcase_approval(false)`);
+    const id = String((await createItem(owner, project))[0]?.['id']);
+    assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']).includes(id), 'live med en gang uten krav');
+    await as('authenticated', other, tx => tx`select public.admin_set_showcase_approval(true)`);
+    // Endring av innholdet sender bidraget tilbake til «venter»
+    await as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ title: 'Gaupa' })}::jsonb)`);
+    const mine = JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']);
+    assert(mine.includes('"status":"pending"') && mine.includes('Gaupa'), 'tilbake til ventende ved endring');
+    await expectError(as('authenticated', other, tx => tx`select public.update_showcase_item(${id}, '{}'::jsonb)`), '42501');
+    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ status: 'live' })}::jsonb)`), '22023');
+    // Tilbaketrekking når som helst, bare eier/admin; kan ikke endres etterpå
+    await expectError(as('authenticated', other, tx => tx`select public.revoke_showcase_item(${id})`), '42501');
+    await as('authenticated', owner, tx => tx`select public.revoke_showcase_item(${id})`);
+    await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${JSON.stringify({ title: 'X' })}::jsonb)`), '22023');
+    assert(JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']).includes('"status":"revoked"'), 'trukket tilbake i listen');
+    await sql`delete from public.app_admins where user_id = ${other}`;
+  });
+  await test('0087 B-116: admin-kø, profiler og sletting av prosjektet', async () => {
+    const { owner, other, project } = await b116Fixture();
+    const id = String((await createItem(owner, project))[0]?.['id']);
+    // Ikke-admin får ikke køen
+    await expectError(as('authenticated', owner, tx => tx`select public.admin_showcase_queue() q`), '42501');
+    await sql`insert into public.app_admins (user_id) values (${other}) on conflict do nothing`;
+    const queue = (await as('authenticated', other, tx => tx`select public.admin_showcase_queue() q`))[0]?.['q'] as { require_approval: boolean; items: Record<string, unknown>[] };
+    assert(queue.require_approval === true && queue.items.some((i) => i['id'] === id && i['author_name'] === 'Anita'), 'køen viser ventende');
+    await as('authenticated', other, tx => tx`select public.admin_review_showcase_item(${id}, false)`);
+    assert(JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']).includes('"status":"rejected"'), 'avvist hos eieren');
+    // Egen profil: ingenting uten profilbryteren, egen rad med den
+    await sql`update public.features set state = 'off' where key = 'community.profiles'`;
+    assert((await as('authenticated', owner, tx => tx`select public.my_public_profile() p`))[0]?.['p'] === null, 'ingen profil uten bryter');
+    await sql`update public.features set state = 'on' where key = 'community.profiles'`;
+    const profile = (await as('authenticated', owner, tx => tx`select public.my_public_profile() p`))[0]?.['p'] as Record<string, unknown>;
+    assert(profile?.['display_name'] === 'Anita' && profile?.['is_public'] === false, 'egen profil leses');
+    // Sletting av prosjektet fjerner bidrag, kommentarer og rapporterer filene
+    await sql`update public.showcase_items set status = 'live' where id = ${id}`;
+    const cid2 = String((await as('authenticated', other, tx => tx`select public.add_showcase_comment(${id}, 'x') id`))[0]?.['id']);
+    const res = (await as('service_role', null, tx => tx`select public.delete_project(${project}, ${owner}) r`))[0]?.['r'] as { films: string[] };
+    assert(res.films.includes(`${project}/shares/showcase/rev.png`), 'bidragsfilen returneres til sletting');
+    assert((await sql`select count(*) n from public.showcase_items where project_id = ${project}`)[0]?.['n'] == 0, 'bidraget slettet');
+    assert((await sql`select count(*) n from public.showcase_comments where id = ${cid2}`)[0]?.['n'] == 0, 'kommentaren slettet');
+    await sql`delete from public.app_admins where user_id = ${other}`;
+  });
+  await test('0087 B-116: ingen direkte tabelltilgang fra klientroller', async () => {
+    for (const table of ['public.showcase_items', 'public.showcase_comments']) {
+      for (const priv of ['select', 'insert', 'update', 'delete'])
+        assert((await sql`select has_table_privilege('authenticated', ${table}, ${priv}) p`)[0]?.['p'] === false, `${table}: ingen authenticated ${priv}`);
+      assert((await sql`select has_table_privilege('anon', ${table}, 'select') p`)[0]?.['p'] === false, `${table}: ingen anon`);
+      assert((await sql`select relrowsecurity from pg_class where oid = ${table}::regclass`)[0]?.['relrowsecurity'] === true, `${table}: RLS på`);
+    }
+    await expectError(as('authenticated', ALICE, tx => tx`select * from public.showcase_items`), '42501');
+    await expectError(as('anon', null, tx => tx`select private.showcase_require_approval()`), '42501');
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
