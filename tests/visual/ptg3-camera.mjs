@@ -31,7 +31,7 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
   const fbxNames = Object.keys(fbxZip);
   h.check(fbxNames.includes("LESMEG.txt"), `${lang}/fbx: LESMEG.txt i pakken`);
   const readmeFbx = new TextDecoder().decode(fbxZip["LESMEG.txt"]);
-  h.check(readmeFbx.includes("KTime") && readmeFbx.includes("kseperimentell") || readmeFbx.includes("experimental"), `${lang}/fbx: LESMEG beskriver FBX-formatet`);
+  h.check(readmeFbx.includes("KTime") && (readmeFbx.includes("eksperimentell") || readmeFbx.includes("experimental")), `${lang}/fbx: LESMEG beskriver FBX-formatet`);
   const fbxFiles = fbxNames.filter(n => n.startsWith("camera/") && n.endsWith(".fbx"));
   if (fbxFiles.length) {
     const text = new TextDecoder().decode(fbxZip[fbxFiles[0]]);
