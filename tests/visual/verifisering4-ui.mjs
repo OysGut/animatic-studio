@@ -413,6 +413,28 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
       localStorage.setItem("animatic:lang", "nb");
       // Lagringsvinduet avbrytes i hodeløs Chromium: bruk vanlig nedlasting (som export-e2e.mjs)
       delete window.showSaveFilePicker;
+      // N5: teller React-commits og rendrede komponenter per navn mens window.__countOn er sann
+      window.__commits = 0; window.__renders = {};
+      const seen = new WeakSet();
+      const walk = (f) => {
+        for (let n = f; n; n = n.sibling) {
+          const ty = n.type;
+          const fresh = (o) => o !== null && typeof o === "object" && !seen.has(o);
+          const rendered = fresh(n.memoizedProps) || fresh(n.memoizedState);
+          if (n.memoizedProps && typeof n.memoizedProps === "object") seen.add(n.memoizedProps);
+          if (n.memoizedState && typeof n.memoizedState === "object") seen.add(n.memoizedState);
+          if (ty && typeof ty !== "string" && rendered && window.__countOn) {
+            const name = ty.displayName || ty.name || ty.type?.displayName || ty.type?.name || ty.render?.name;
+            if (name) window.__renders[name] = (window.__renders[name] ?? 0) + 1;
+          }
+          if (n.child) walk(n.child);
+        }
+      };
+      window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+        isDisabled: false, supportsFiber: true, renderers: new Map(),
+        inject() { return 1; }, checkDCE() {}, onCommitFiberUnmount() {}, onPostCommitFiberRoot() {},
+        onCommitFiberRoot(_id, root) { if (window.__countOn) window.__commits++; walk(root.current.child); },
+      };
       // Lydmålinger (REQ-0210/0578): hver lydkilde som startes, med kontekstens klokke
       window.__ctxs = [];
       window.__starts = [];
@@ -1048,6 +1070,7 @@ async function testPlayback() {
       if (el) new MutationObserver(() => window.__tcLog.push({ t: performance.now(), a: ac(), tc: el.textContent })).observe(el, { subtree: true, characterData: true, childList: true });
       try { new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__long.push(Math.round(e.duration)); }).observe({ type: "longtask" }); } catch {}
       window.__heap0 = performance.memory?.usedJSHeapSize ?? null;
+      window.__commits = 0; window.__renders = {}; window.__countOn = true;
     });
     const hash0 = await canvasHash();
     await page.getByRole("button", { name: "Spill av" }).first().click();
@@ -1067,6 +1090,16 @@ async function testPlayback() {
       hashes.add(await canvasHash());
     }
     const diag = await page.evaluate(() => ({ n: window.__tcLog.length, long: window.__long, heap: [window.__heap0, performance.memory?.usedJSHeapSize ?? null], ctxs: window.__ctxs.length, log: window.__tcLog.slice(0, 80) }));
+    const perf = await page.evaluate(() => { window.__countOn = false; return { commits: window.__commits, renders: window.__renders }; });
+    const ticks = Math.max(1, diag.n);
+    const perFrame = (name) => (perf.renders[name] ?? 0) / ticks;
+    const top = Object.entries(perf.renders).sort((a, b) => b[1] - a[1]).slice(0, 60).map(([k, v]) => `${k}:${(v / ticks).toFixed(2)}`);
+    console.log("  N5-perf", JSON.stringify({ ticks, commits: perf.commits, longtasks: diag.long.length, longMax: Math.max(0, ...diag.long), top }));
+    // N5: tunge paneler som ikke avhenger av bildet, skal ikke tegnes på nytt for hvert bilde under avspilling
+    const HEAVY = ["LayersPanel", "SceneAssetsPanel", "NearbyAudioPanel", "Toolbar", "ScenePicker", "SceneMarkControls"];
+    check("REQ-0210", "tunge paneler tegnes ikke på nytt per bilde (N5, tak 0,2 per bilde)", HEAVY.every((n) => perFrame(n) <= 0.2), HEAVY.map((n) => `${n} ${perFrame(n).toFixed(2)}`).join(" · "));
+    // N5: lukkede dialogvinduer tegnes ikke per bilde (før: 10,2 Dialog per bilde, etter: 3,2)
+    check("REQ-0210", "lukkede dialogvinduer tegnes ikke på nytt per bilde (N5, tak 4 per bilde)", perFrame("Dialog") <= 4, `Dialog ${perFrame("Dialog").toFixed(2)} per bilde · lange oppgaver ${diag.long.length}`);
     console.log("  N2-diag", JSON.stringify({ ...diag, log: undefined }));
     console.log("  N2-tc", JSON.stringify(diag.log.map((x) => [Math.round(x.t), x.a === null ? null : +x.a.toFixed(3), x.tc.slice(0, 11)])));
     await shot(page, "v4-08-sceneeditor-avspilling");

@@ -1,6 +1,7 @@
 /** DV4: live provider capabilities, separate speech language and immutable generation settings. */
 
 import type { AssetVoice } from "../model";
+import { providerInfo } from "../generation/providers";
 import { languageTagError, normalizeLanguageTag } from "./languages";
 import { t } from "@/core/i18n/keyed";
 
@@ -24,7 +25,7 @@ export function speechSettingsError(settings: unknown): string | null {
 }
 export function assetVoiceError(voice: AssetVoice | null): string | null {
   if (voice === null) return null;
-  if (voice.provider !== "elevenlabs" || !/^[A-Za-z0-9_-]{1,64}$/.test(voice.voiceId) ||
+  if (!providerInfo(voice.provider)?.capabilities.includes("speech") || !/^[A-Za-z0-9_-]{1,64}$/.test(voice.voiceId) ||
       typeof voice.label !== "string" || voice.label.length > 120 ||
       (voice.modelId !== undefined && !/^[A-Za-z0-9_-]{1,100}$/.test(voice.modelId)) ||
       (voice.language !== undefined && languageTagError(voice.language)))

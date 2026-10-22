@@ -26,8 +26,17 @@ describe("REQ-0269 leverandøruavhengig AI-arkitektur", () => {
     const ids = PROVIDERS.map((p) => p.id).filter((id) => id.length > 3);
     expect(ids.length).toBeGreaterThan(2);
     const hits = sources.flatMap(([f, src]) => ids.filter((id) => new RegExp(`["'\`]${id}["'\`]`).test(src)).map((id) => `${f}: ${id}`));
-    // Kjent avvik (N4, rapportert i TODO.md): AssetVoice.provider er låst til «elevenlabs»
-    // i datamodellen, så en ny taleleverandør krever endring i model.ts. Listen skal bare krympe.
-    expect(hits).toEqual(["src/core/model.ts: elevenlabs"]);
+    // N5: avviket i AssetVoice.provider er rettet; listen skal være tom.
+    expect(hits).toEqual([]);
+  });
+});
+
+describe("REQ-0269 stemmeleverandør fra katalogen (N5)", () => {
+  it("eksisterende «elevenlabs»-stemmer godtas uendret; ukjente eller ikke-tale-leverandører avvises", async () => {
+    const { assetVoiceError } = await import("@/core/dialogue/voice");
+    expect(assetVoiceError({ provider: "elevenlabs", voiceId: "abc_1", label: "Mor" })).toBeNull();
+    expect(assetVoiceError({ provider: "ukjent", voiceId: "abc_1", label: "Mor" })).not.toBeNull();
+    const nonSpeech = PROVIDERS.find((p) => !p.capabilities.includes("speech"))!;
+    expect(assetVoiceError({ provider: nonSpeech.id, voiceId: "abc_1", label: "Mor" })).not.toBeNull();
   });
 });

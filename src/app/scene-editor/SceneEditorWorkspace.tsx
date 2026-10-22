@@ -81,6 +81,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { usePlayback } from "./use-playback";
+import { FrameFrozen } from "./frame-frozen";
 import { lastScene, onGotoScene, rememberScene } from "@/app/shell/current-scene";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ShortcutsButton, ShortcutsDialog } from "@/app/shortcuts/ShortcutsDialog";
@@ -629,6 +630,11 @@ function Editor({
     if (initialLayerId && state.layers[initialLayerId] && !state.layers[initialLayerId]!.removed) setSelectedLayerId(initialLayerId);
   }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, initialLayerId, filmClip, state, playback, setSelectedLayerId]);
   useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: tracksOpen ? "animation" : "scene" }); }, [projectId, occurrence?.id, playback.frame, tracksOpen]);
+  // N5: gjeldende bilde for tilbakekall i deler som ikke tegnes på nytt per bilde under avspilling
+  const frameNow = useRef(playback.frame);
+  frameNow.current = playback.frame;
+  const frozen = playback.playing;
+  const cmdDeps = [cmds.status, cmds.canUndo, cmds.undoLabel, cmds.canRedo, cmds.redoLabel, cmds.rejected, cmds.conflicts] as const;
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {
     // Manuset for scenen (DEC-0089); redigeres i eget vindu
@@ -659,6 +665,7 @@ function Editor({
       />
     ) : null,
     assets: occurrence ? (
+      <FrameFrozen frozen={frozen} deps={[state, projectId, productionId, occurrence.id, editable, composition, layersByAsset, ...cmdDeps]}>
       <SceneAssetsPanel
         state={state}
         projectId={projectId}
@@ -674,9 +681,11 @@ function Editor({
           if (id) openLayerImage(id);
         }}
       />
+      </FrameFrozen>
     ) : null,
     nearbyAudio:
       occurrence && film.length > 1 && film.some((c) => c.occurrenceId === occurrence.id) ? (
+        <FrameFrozen frozen={frozen} deps={[state, film, occurrence.id, audioEditable]}>
         <NearbyAudioPanel
           state={state}
           clips={film}
@@ -684,8 +693,10 @@ function Editor({
           editable={audioEditable}
           run={cmds.run}
         />
+        </FrameFrozen>
       ) : null,
     layers: composition ? (
+      <FrameFrozen frozen={frozen} deps={[state, composition, editable, selectedLayer?.id ?? null]}>
       <LayersPanel
         hideHeading
         state={state}
@@ -697,6 +708,7 @@ function Editor({
         onOpenImage={openLayerImage}
         frame={playback.playing ? 0 : playback.frame}
       />
+      </FrameFrozen>
     ) : null,
     properties: composition ? (
       selectedShot ? (
@@ -781,6 +793,7 @@ function Editor({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      <FrameFrozen frozen={frozen} deps={[state, projectId, productionId, occurrences, occurrenceId, occurrence, variant, composition, hasComposition, contentSync, lastChanges.data, presence, editable, roleEditable, roleKnown, audioEditable, neighbours, previewOpen, autoPreview, previewVersion, ...cmdDeps]}>
       <Toolbar overflow="menu">
         <ToolbarGroup priority={9} className="[&>select]:max-w-[180px] [&>select]:truncate">
         <span className="text-chrome font-medium text-text-primary">
@@ -902,7 +915,7 @@ function Editor({
                 cmds={cmds}
                 occurrenceId={occurrence.id}
                 row={row}
-                atMs={Math.round((playback.frame / (state.project.fps.num / state.project.fps.den)) * 1000)}
+                atMs={Math.round((frameNow.current / (state.project.fps.num / state.project.fps.den)) * 1000)}
               />
             )}
           />
@@ -1018,6 +1031,7 @@ function Editor({
           ) : null}
         </div>
       </Toolbar>
+      </FrameFrozen>
       <ScenePresenceBadge names={occurrenceId ? presence.get(occurrenceId) : undefined} />
       <SceneConflictNotice cmds={cmds} lastChange={occurrence ? lastChanges.data?.get(occurrence.sceneId) : undefined} />
       <div className="flex min-h-0 flex-1">
@@ -1328,7 +1342,8 @@ function Editor({
         ) : null}
       </div>
       {occurrence ? (
-        <SceneScriptDialog
+        <FrameFrozen frozen={frozen && !(scriptEdit !== null)} deps={[scriptEdit]}>
+<SceneScriptDialog
           open={scriptEdit !== null}
           onOpenChange={(o) => {
             if (!o) setScriptEdit(null);
@@ -1342,9 +1357,11 @@ function Editor({
           cmds={cmds}
           authorName={myName}
         />
+      </FrameFrozen>
       ) : null}
 
-      <AudioClipEditor
+      <FrameFrozen frozen={frozen && !(profileClip !== null)} deps={[profileClip]}>
+<AudioClipEditor
         open={profileClip !== null}
         onOpenChange={(o) => {
           if (!o) setProfileId(null);
@@ -1374,7 +1391,9 @@ function Editor({
           );
         }}
       />
-      <Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
+      </FrameFrozen>
+      <FrameFrozen frozen={frozen && !(changesOpen && found.length > 0)} deps={[changesOpen, found.length]}>
+<Dialog open={changesOpen && found.length > 0} onOpenChange={setChangesOpen}>
         <DialogContent className="max-h-[86vh] max-w-[620px] overflow-y-auto border-border bg-surface-2">
           <DialogHeader>
             <DialogTitle>{tk("app-scene-editor-scene-editor-workspace.editor.dialog-title.71d5a70577f4")}</DialogTitle>
@@ -1395,7 +1414,9 @@ function Editor({
           ) : null}
         </DialogContent>
       </Dialog>
-      <LayerImageDialog
+      </FrameFrozen>
+      <FrameFrozen frozen={frozen && !(imageLayerId !== null)} deps={[imageLayerId, upscaleOpen, harmonizeOpen]}>
+<LayerImageDialog
         open={imageLayerId !== null}
         onOpenChange={(o) => {
           if (!o) {
@@ -1412,6 +1433,7 @@ function Editor({
         openUpscale={upscaleOpen}
         openHarmonize={harmonizeOpen}
       />
+      </FrameFrozen>
       {carry && occurrenceId ? (
         <CarryOverDialog
           open
@@ -1441,7 +1463,9 @@ function Editor({
           onClose={() => setStudioLayerId(null)}
         />
       ) : null}
-      <ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
+      <FrameFrozen frozen={frozen && !(shortcutsOpen)} deps={[shortcutsOpen]}>
+<ShortcutsDialog open={shortcutsOpen} onOpenChange={setShortcutsOpen} current="sceneeditor" />
+      </FrameFrozen>
       {occurrence && aiVideoOpen ? (
         <SceneToVideoDialog
           open
@@ -1455,7 +1479,8 @@ function Editor({
         />
       ) : null}
       {occurrence && audioEditable ? (
-        <RecordAudioDialog
+        <FrameFrozen frozen={frozen && !(recordOpen)} deps={[recordOpen, recordBlockId]}>
+<RecordAudioDialog
           open={recordOpen}
           onOpenChange={(o) => {
             setRecordOpen(o);
@@ -1472,9 +1497,11 @@ function Editor({
           onStop={playback.pause}
           onAdded={(id) => setProfileId(id)}
         />
+      </FrameFrozen>
       ) : null}
       {composition && editable ? (
-        <AddLayerDialog
+        <FrameFrozen frozen={frozen && !(addOpen)} deps={[addOpen]}>
+<AddLayerDialog
           open={addOpen}
           onOpenChange={setAddOpen}
           state={state}
@@ -1482,6 +1509,7 @@ function Editor({
           run={cmds.run}
           onAdded={setSelectedLayerId}
         />
+      </FrameFrozen>
       ) : null}
     </div>
   );
