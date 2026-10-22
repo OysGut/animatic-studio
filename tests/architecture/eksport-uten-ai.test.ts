@@ -32,6 +32,12 @@ const AI_DIR = join(SRC, "adapters", "ai") + "/";
 /** Filer som avspillingen og eksporten av animatic består av (utenom src/core og src/engine). */
 const APP_ENTRIES = [
   "src/app/assembly/ExportAnimaticDialog.tsx",
+  "src/app/assembly/ShotlistExport.tsx",
+  "src/app/projects/InterchangeSettings.tsx",
+  "src/core/interchange/index.ts",
+  "src/core/interchange/shotlist.ts",
+  "src/engine/export/shotlist.ts",
+  "src/engine/export/zip64.ts",
   "src/app/assembly/FilmViewer.tsx",
   "src/app/assembly/FilmPopout.tsx",
   "src/app/assembly/film-images.ts",

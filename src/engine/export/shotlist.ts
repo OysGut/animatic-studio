@@ -19,8 +19,9 @@ export async function exportShotlist(o: {
   const width = 320;
   const height = Math.max(1, Math.round(width * o.state.project.frameHeight / o.state.project.frameWidth));
   const canvas = document.createElement("canvas"); canvas.width = width; canvas.height = height;
-  const ctx = canvas.getContext("2d");
-  if (!ctx) throw new Error(t("ptg1.export-failed"));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error(t("ptg1.export-failed"));
+  const ctx: CanvasRenderingContext2D = context;
   await fontsReady(doc.shots.flatMap(s => s.layers.flatMap(l => l.source.text ? [l.source.text] : [])));
   const video = new FilmVideoFrames(await import("mediabunny"), o.filmUrls);
   async function* files() {

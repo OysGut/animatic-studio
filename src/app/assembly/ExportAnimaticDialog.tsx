@@ -42,6 +42,7 @@ import { hasSeparateCharacterLayers } from "@/core/animation/character";
 import { exportQueue } from "./export-queue";
 import { QualityProfilePicker, useQualityProfile } from "@/app/ai/QualityProfilePicker";
 import { AlphaExportDialog } from "./AlphaExportDialog";
+import { ShotlistExport } from "./ShotlistExport";
 import { t } from "@/core/i18n/keyed";
 
 type Scope = ExportScope;
@@ -1088,6 +1089,7 @@ export function ExportAnimaticDialog({
         ) : null}
 
         <ExportHistory productionId={productionId} kinds={["film", "audio"]} />
+        <ShotlistExport state={state} productionId={productionId} clips={sel.clips} language={language} disabled={busy} />
         <Button variant="outline" size="sm" data-testid="export-alpha-open" disabled={busy || !alphaComposition} onClick={() => setAlphaOpen(true)} title={t("app-assembly-export-animatic-dialog.export-animatic-dialog.title.d2997bee334d")}>
           <Download />{t("app-assembly-export-animatic-dialog.export-animatic-dialog.button.4ca3b34859ad")}
         </Button>
