@@ -12,14 +12,18 @@ import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_FEATURES_KEY = ["admin-features"] as const;
 
-const NAME: Record<FeatureKey, string> = {
-  "community.sharing": "b114.feature.sharing",
-  "community.review": "b114.feature.review",
-  "community.abtest": "b114.feature.abtest",
-  "community.profiles": "b114.feature.profiles",
-  "community.public": "b114.feature.public",
-};
-const STATE: Record<FeatureState, string> = { off: "b114.state.off", beta: "b114.state.beta", on: "b114.state.on" };
+function featureName(k: FeatureKey): string {
+  switch (k) {
+    case "community.sharing": return t("b114.feature.sharing");
+    case "community.review": return t("b114.feature.review");
+    case "community.abtest": return t("b114.feature.abtest");
+    case "community.profiles": return t("b114.feature.profiles");
+    case "community.public": return t("b114.feature.public");
+  }
+}
+function stateName(s: FeatureState): string {
+  return s === "off" ? t("b114.state.off") : s === "beta" ? t("b114.state.beta") : t("b114.state.on");
+}
 
 export function FeaturesAdmin() {
   const q = useQuery({ queryKey: ADMIN_FEATURES_KEY, queryFn: fetchAdminFeatures });
@@ -62,7 +66,7 @@ function FeatureRow({ feature }: { feature: AdminFeature }) {
     setBusy(false); if (!ok) setFailed(true); else setDirty(false);
     await refresh();
   }
-  const label = t(NAME[feature.key]);
+  const label = featureName(feature.key);
   return (
     <li className="flex flex-col gap-2 rounded-sm border border-border p-3" data-testid={`feature-${feature.key}`}>
       <div className="flex flex-wrap items-center gap-3">
@@ -72,7 +76,7 @@ function FeatureRow({ feature }: { feature: AdminFeature }) {
             <button key={s} type="button" role="radio" aria-checked={feature.state === s} data-testid={`feature-${feature.key}-${s}`}
               disabled={busy || feature.state === s} onClick={() => void changeState(s)}
               className={"px-3 py-1 text-xs " + (feature.state === s ? "bg-surface-3 font-semibold text-text-primary" : "text-text-secondary hover:bg-surface-2")}>
-              {t(STATE[s])}
+              {stateName(s)}
             </button>
           ))}
         </div>
