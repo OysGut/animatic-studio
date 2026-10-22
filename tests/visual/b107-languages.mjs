@@ -130,7 +130,6 @@ try {
     if (result.error) throw new Error(result.error.message);
   }, currentUser);
   await page.waitForTimeout(2000);
-  console.log('Observed fixture name after switch:', await nameField.inputValue());
   check(await nameField.inputValue() === 'Bob', 'B sees Bob, not Alice name or unfinished draft');
   check(!(await page.getByTestId('account-page').innerText()).includes('Alice'), 'B account contains no Alice data');
   await checkTranslatedText(page, 'ja', true);

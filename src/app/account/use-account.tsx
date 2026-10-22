@@ -13,7 +13,7 @@ import {
   saveMyLocale,
   touchActivity,
 } from "@/adapters/browser/account";
-import { signOut, signupCountry } from "@/adapters/browser/auth";
+import { getSessionUserId, signOut, signupCountry } from "@/adapters/browser/auth";
 import { saveMyCountry } from "@/adapters/browser/account";
 import { CountryPicker } from "./CountryPicker";
 import { applyProfileLanguage, onExplicitLanguageChoice, useLanguage } from "@/app/i18n/language";
@@ -86,9 +86,9 @@ export function AccountWatcher() {
     if (!a) return;
     void applyProfileLanguage(a.locale);
     const off = onExplicitLanguageChoice(language => {
-      if (language === 'en-XA') return;
+      if (language === 'en-XA' || getSessionUserId() !== userId) return;
       void saveMyLocale(language).then(error => {
-        if (!error) void qc.invalidateQueries({ queryKey: MY_ACCOUNT_KEY });
+        if (!error && getSessionUserId() === userId) void qc.invalidateQueries({ queryKey: myAccountKey(userId) });
       });
     });
     return off;

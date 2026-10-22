@@ -34,6 +34,7 @@ function writeLocal(key: string, value: unknown) {
 /** Ventende lagringer på kontoen, slått sammen (få kall når brukeren drar og slipper mye). */
 const pending: Record<string, unknown> = {};
 let timer: ReturnType<typeof setTimeout> | null = null;
+let pendingOwner: string | null = null;
 
 /**
  * Et visningsvalg. `valid` sjekker en lagret verdi (gamle eller ødelagte verdier gir standardverdien).
@@ -85,6 +86,7 @@ export function useUiPref<T>(
   }, [fromAccount, key, valid, userId]);
   const set = useCallback(
     (next: T) => {
+      if (getSessionUserId() !== userId) return;
       touched.current = true;
       setValue(next);
       writeLocal(key, next);
@@ -93,6 +95,10 @@ export function useUiPref<T>(
       qc.setQueryData<MyAccount | null>(myAccountKey(userId), (a) =>
         a ? { ...a, uiPrefs: { ...a.uiPrefs, [key]: next } } : a,
       );
+      if (pendingOwner !== userId) {
+        for (const k of Object.keys(pending)) delete pending[k];
+      }
+      pendingOwner = userId;
       pending[key] = next;
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
