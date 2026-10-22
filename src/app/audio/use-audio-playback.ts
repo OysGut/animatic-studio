@@ -45,6 +45,7 @@ export function useAudioPlayback({
   mutedKinds,
   mutedClipIds,
   previewBuffers,
+  clock,
 }: {
   items: readonly FilmAudioItem[];
   /** Mediesti → lenke for lydfilene. */
@@ -57,6 +58,8 @@ export function useAudioPlayback({
   mutedClipIds?: ReadonlySet<string>;
   /** Lokale, ferdige mikser for forhåndslytting. Ingen opplasting eller deling via audioBank. */
   previewBuffers?: ReadonlyMap<string, AudioBuffer> | undefined;
+  /** REQ-0210 (N2): fylles med avspillingshodet etter lydklokken, så bildet kan følge lyden. */
+  clock?: { current: (() => number | null) | null };
 }) {
   const ctxRef = useRef<AudioContext | null>(null);
   const masterRef = useRef<GainNode | null>(null);
@@ -64,6 +67,15 @@ export function useAudioPlayback({
   const loaded = useAudioLoaded();
   const latest = useRef({ items, mutedKinds, mutedClipIds, time });
   latest.current = { items, mutedKinds, mutedClipIds, time };
+
+  if (clock)
+    clock.current = () => {
+      const s = session.current;
+      const ctx = ctxRef.current;
+      // Bare når lyden faktisk spilles: konteksten går, og minst én kilde er lagt inn
+      if (!s || !ctx || ctx.state !== "running" || s.sources.length === 0) return null;
+      return s.from + Math.max(0, ctx.currentTime - s.startAt);
+    };
 
   // Last lydfilene på forhånd
   useEffect(() => {

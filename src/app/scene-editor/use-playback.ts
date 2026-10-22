@@ -2,6 +2,8 @@
  * Avspilling i sceneeditoren (mandat 14.1, DEC-0036): gjeldende bilde, spill/pause og løkke.
  * Tiden styres av klokka (performance.now), så avspillingen holder takten selv om tegningen er treg.
  * Med `range` spilles bare et område (Asset Studio AS2: objektets aktive område), med løkke innenfor.
+ * Med `clock` (REQ-0210, N2) følger bildet lydklokken når lyd spilles, så bilde og lyd ikke får hver sin
+ * startforsinkelse. Uten lyd (klokken gir null) brukes performance.now som før.
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Rational } from "@/core";
@@ -33,6 +35,8 @@ export function usePlayback(
   fps: Rational,
   initialLoop = true,
   range?: { readonly from: number; readonly to: number } | null,
+  /** Avspillingshodet i sekunder etter lydklokken, eller null når ingen lyd spilles. */
+  clock?: { readonly current: (() => number | null) | null },
 ): Playback {
   const [frame, setFrameState] = useState(0);
   const [playing, setPlaying] = useState(false);
@@ -72,7 +76,11 @@ export function usePlayback(
     const tick = (now: number) => {
       const s = start.current;
       if (s) {
-        let f = s.frame + Math.floor((now - s.t) * perMs);
+        const ext = clock?.current?.() ?? null;
+        // Lydklokken bestemmer bildet; perioden følger med, så overgangen tilbake til klokka er sømløs
+        if (ext !== null) start.current = { t: now - ext * 1000, frame: 0 };
+        const c = start.current ?? s;
+        let f = c.frame + Math.floor((now - c.t) * perMs + 1e-6);
         if (f > rangeLast) {
           if (loop && span > 1) {
             f = first + ((f - first) % span);
@@ -89,7 +97,7 @@ export function usePlayback(
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [playing, first, rangeLast, loop, fps.num, fps.den]);
+  }, [playing, first, rangeLast, loop, fps.num, fps.den, clock]);
 
   const play = useCallback(() => setPlaying(true), []);
   const pause = useCallback(() => setPlaying(false), []);

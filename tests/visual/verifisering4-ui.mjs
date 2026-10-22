@@ -1040,6 +1040,15 @@ async function testPlayback() {
           .join(","),
       );
     const since = await page.evaluate(() => window.__starts.length);
+    // N2-diagnostikk: hver endring av tidskoden med lydklokke, og lange oppgaver på hovedtråden
+    await page.evaluate(() => {
+      window.__tcLog = []; window.__long = [];
+      const el = document.querySelector('[aria-label="Tid"]');
+      const ac = () => (window.__ctxs.length ? window.__ctxs[window.__ctxs.length - 1].currentTime : null);
+      if (el) new MutationObserver(() => window.__tcLog.push({ t: performance.now(), a: ac(), tc: el.textContent })).observe(el, { subtree: true, characterData: true, childList: true });
+      try { new PerformanceObserver((l) => { for (const e of l.getEntries()) window.__long.push(Math.round(e.duration)); }).observe({ type: "longtask" }); } catch {}
+      window.__heap0 = performance.memory?.usedJSHeapSize ?? null;
+    });
     const hash0 = await canvasHash();
     await page.getByRole("button", { name: "Spill av" }).first().click();
     const samples = [];
@@ -1057,6 +1066,9 @@ async function testPlayback() {
       samples.push(s);
       hashes.add(await canvasHash());
     }
+    const diag = await page.evaluate(() => ({ n: window.__tcLog.length, long: window.__long, heap: [window.__heap0, performance.memory?.usedJSHeapSize ?? null], ctxs: window.__ctxs.length, log: window.__tcLog.slice(0, 80) }));
+    console.log("  N2-diag", JSON.stringify({ ...diag, log: undefined }));
+    console.log("  N2-tc", JSON.stringify(diag.log.map((x) => [Math.round(x.t), x.a === null ? null : +x.a.toFixed(3), x.tc.slice(0, 11)])));
     await shot(page, "v4-08-sceneeditor-avspilling");
     await page.getByRole("button", { name: "Pause" }).first().click();
     const starts = await audioSession(
@@ -1702,8 +1714,10 @@ const tests = [
 for (const [name, fn] of tests) {
   if (ONLY && !ONLY.includes(name)) continue;
   console.log(`\n== ${name} ==`);
+  const stepT0 = Date.now();
   try {
     await fn();
+    console.log(`  tid for steget: ${((Date.now() - stepT0) / 1000).toFixed(1)} s`);
   } catch (e) {
     check(name, "uventet feil", false, String(e).split("\n")[0]);
   }
