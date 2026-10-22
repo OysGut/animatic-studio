@@ -24452,6 +24452,21 @@
     "b114.admin.unavailable": {
       "text": "Funksjonsbryterne er ikke tilgjengelige ennå."
     },
+    "b114.feature.abtest": {
+      "text": "A/B-test"
+    },
+    "b114.feature.profiles": {
+      "text": "Profiler"
+    },
+    "b114.feature.public": {
+      "text": "Offentlig deling"
+    },
+    "b114.feature.review": {
+      "text": "Gjennomgang og kommentarer"
+    },
+    "b114.feature.sharing": {
+      "text": "Deling"
+    },
     "b114.rights.adaptable": {
       "text": "Kan bearbeides"
     },
@@ -24475,6 +24490,15 @@
     },
     "b114.rights.yes": {
       "text": "Ja"
+    },
+    "b114.state.beta": {
+      "text": "Beta"
+    },
+    "b114.state.off": {
+      "text": "Av"
+    },
+    "b114.state.on": {
+      "text": "På"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
@@ -56747,6 +56771,21 @@
     "b114.admin.unavailable": {
       "text": "Feature switches are not available yet."
     },
+    "b114.feature.abtest": {
+      "text": "A/B test"
+    },
+    "b114.feature.profiles": {
+      "text": "Profiles"
+    },
+    "b114.feature.public": {
+      "text": "Public sharing"
+    },
+    "b114.feature.review": {
+      "text": "Review and comments"
+    },
+    "b114.feature.sharing": {
+      "text": "Sharing"
+    },
     "b114.rights.adaptable": {
       "text": "Can be adapted"
     },
@@ -56770,6 +56809,15 @@
     },
     "b114.rights.yes": {
       "text": "Yes"
+    },
+    "b114.state.beta": {
+      "text": "Beta"
+    },
+    "b114.state.off": {
+      "text": "Off"
+    },
+    "b114.state.on": {
+      "text": "On"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"
