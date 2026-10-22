@@ -828,5 +828,11 @@ end $$;
 revoke all on function public.delete_project(uuid, uuid) from public, anon, authenticated;
 grant execute on function public.delete_project(uuid, uuid) to service_role;
 
+-- ---------- 8. Hjelpefunksjoner brukt i RLS og CHECK (samme mønster som private.is_project_member) ----------
+grant execute on function private.feature_enabled(text, uuid), private.any_community(uuid), private.blocked_between(uuid, uuid),
+  private.publication_open(text, timestamptz, timestamptz), private.can_see_publication(uuid, uuid),
+  private.is_project_editor(uuid, uuid), private.valid_region(jsonb), private.valid_asset_rights(jsonb)
+  to authenticated, service_role;
+
 insert into public.schema_version (version, description)
   values (80, '0080_community_foundation: B-114 C0 – funksjonsbrytere, publiseringer, kommentarer, profil, rettigheter, rapportering');
