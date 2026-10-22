@@ -26,8 +26,8 @@ async function checkLanguageSwitches(page, label) {
   }
 }
 const translated = {
-  fr: { signIn: 'Se connecter', change: 'Changer de langue' },
-  ja: { signIn: 'ログイン', change: '言語を変更' },
+  fr: { signIn: 'Se connecter', change: 'Changer de langue', description: 'From Pen to Glass – du scénario au film terminé.' },
+  ja: { signIn: 'ログイン', change: '言語を変更', description: 'From Pen to Glass – 脚本から完成した映画まで。' },
 };
 async function checkTranslatedText(page, language, account = false) {
   const expected = translated[language];
@@ -44,7 +44,8 @@ try {
     await page.getByTestId(`language-${language}`).first().click(); await page.waitForTimeout(1500);
     await checkTranslatedText(page, language);
     const response = await page.reload({ waitUntil: 'networkidle' }); await page.waitForTimeout(3200);
-    check((await response.text()).includes(translated[language].signIn), `${language}: SSR renders translated sign-in text`);
+    // Auth state is browser-only: SSR renders a busy shell, but its description must be translated.
+    check((await response.text()).includes(translated[language].description), `${language}: SSR renders translated description`);
     await checkTranslatedText(page, language);
     await page.screenshot({ path: `${out}/selected-${language}.png` });
     await context.close();
