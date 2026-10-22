@@ -1,0 +1,76 @@
+version 13.0 v1
+Root {
+ first_frame 0
+ last_frame 3
+ fps 24
+ format "1000 600 0 0 1000 600 1 PTG"
+}
+Read {
+ file "../media/back.png"
+ first 0
+ last 3
+ name Read_1
+ label "back"
+}
+set read_0 [stack 0]
+Multiply {
+ value {curve x0 1 x1 1 x2 1 x3 1}
+ name Opacity_1
+}
+Card2 {
+ inputs 1
+ translate {{curve x0 0 x1 0 x2 0 x3 0} {curve x0 0 x1 0 x2 0 x3 0} {curve x0 0 x1 0 x2 0 x3 0}}
+ rotate {0 0 {curve x0 0 x1 0 x2 0 x3 0}}
+ scaling {{curve x0 25 x1 25 x2 25 x3 25} {curve x0 15 x1 15 x2 15 x3 15} 1}
+ image_aspect false
+ name Plate_1
+}
+set plate_0 [stack 0]
+Read {
+ file "../media/front.png"
+ first 0
+ last 3
+ name Read_2
+ label "front"
+}
+set read_1 [stack 0]
+Multiply {
+ value {curve x0 1 x1 1 x2 1 x3 1}
+ name Opacity_2
+}
+Card2 {
+ inputs 1
+ translate {{curve x0 0 x1 0 x2 0 x3 0} {curve x0 0 x1 0 x2 0 x3 0} {curve x0 100 x1 100 x2 100 x3 100}}
+ rotate {0 0 {curve x0 0 x1 0 x2 0 x3 0}}
+ scaling {{curve x0 22.22222222 x1 22.22222222 x2 22.22222222 x3 22.22222222} {curve x0 13.33333333 x1 13.33333333 x2 13.33333333 x3 13.33333333} 1}
+ image_aspect false
+ name Plate_2
+}
+set plate_1 [stack 0]
+push 0
+Camera2 {
+ inputs 0
+ translate {{curve x0 0 x1 10 x2 20 x3 30} {curve x0 0 x1 5 x2 10 x3 15} {curve x0 900 x1 850 x2 800 x3 750}}
+ rotate {0 0 {curve x0 0 x1 -2 x2 -4 x3 -6}}
+ focal {curve x0 64.8 x1 63.75 x2 62.60869565 x3 61.36363636}
+ haperture 36
+ vaperture 21.6
+ name Camera
+}
+set camera [stack 0]
+push 0
+push $plate_0
+push $plate_1
+Scene {
+ inputs 2
+ name Scene
+}
+set scene [stack 0]
+push 0
+push $camera
+push $scene
+push 0
+ScanlineRender {
+ inputs 3
+ name Render
+}

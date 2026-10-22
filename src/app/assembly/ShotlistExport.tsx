@@ -17,6 +17,7 @@ import { exportCameraFbx } from "@/engine/export/camera-export";
 import { exportAePackage } from "@/engine/export/ae-export";
 import { exportDragonframe } from "@/engine/export/dragonframe";
 import { exportEditorial } from "@/engine/export/editorial";
+import { exportCompositing } from "@/engine/export/compositing";
 import { filmAudio } from "@/core/audio";
 import { audioBank } from "@/app/audio/use-audio-playback";
 import type { AeCameraMode } from "@/core/interchange/ae-jsx";
@@ -76,9 +77,9 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
-  async function startPackage(kind: "fbx" | "ae" | "mouth") {
+  async function startPackage(kind: "fbx" | "ae" | "mouth" | "compositing") {
     const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
-    const fileName = `${initial.project.code}-${kind === "fbx" ? "camera" : kind === "mouth" ? "mouth" : "after-effects"}.zip`;
+    const fileName = `${initial.project.code}-${kind === "fbx" ? "camera" : kind === "mouth" ? "mouth" : kind === "compositing" ? "compositing" : "after-effects"}.zip`;
     // Picker must be opened synchronously from the click, before waiting for commands.
     const sinkPromise = openZipSink(fileName);
     const ctrl = new AbortController(); abort.current = ctrl;
@@ -101,7 +102,8 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
           for (const a of s.audio) if (a.fileId) used.add(a.fileId);
         }
         const paths = doc.references.filter(r => used.has(r.id)).map(r => r.mediaPath);
-        await exportAePackage({ doc, cameraMode, sink, titleCard: titleCard ? { origin: window.location.origin } : null, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600),
+        if (kind === "compositing") await exportCompositing({ doc, sink, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600) });
+        else await exportAePackage({ doc, cameraMode, sink, titleCard: titleCard ? { origin: window.location.origin } : null, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600),
           onProgress: p => setProgress({ done: p.files, total: p.totalFiles }) });
       }
       setReady(sink.link?.() ?? null);
@@ -181,6 +183,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         {t("ptg6.include-media")}
       </label>
       <Button data-testid="ptg-export-editorial" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe(true)}><Download />{t("ptg6.export")}</Button>
+      <Button data-testid="ptg-export-compositing" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("compositing")}><Download />{t("ptg7.export")}</Button>
       <Button data-testid="ptg4-export" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("mouth")}><Download />{t("ptg4.export")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>

@@ -1,5 +1,8 @@
 # TODO – From Pen to Glass
 
+## PTG7 – ekte Nuke- og Fusion-import
+- Importer tests/fixtures/ptg7 og en eksportert pakke i Nuke og Fusion Studio. Kontroller relative mediestier, Card2/ImagePlane3D, plater i riktig dybde, aksene, synsfelt og kamerakurver i begge riggmoduser og på toere. Syntaks- og modelltall er ikke bevis for ekte programimport. Resolve kan kreve MediaIn/MediaOut i stedet for Loader.
+
 ## PTG4 – lydfinjustering og ekte import
 - Rhubarb-finjustering av tekststyrte munnspor fra lyd bygges ikke i PTG4. Ingen lyd sendes til tjenester.
 - Claude kjører 0084 etter kontroll. Trollfilm prøver Moho DAT/Papagayo, Dragonframe JSON og munnkolonnen med ekte materiale.

@@ -1,5 +1,13 @@
 # Veikart
 
+## PTG7 – Nuke og Fusion (22.10.2026)
+- [x] Rene nodeoppsett og kamerakurver fra utvekslingsmodellen; 2D uten rigg.
+- [x] Strømmet ZIP med medier, nb/en LESMEG og knapp i Til produksjonen.
+- [x] Gyldne tester 6/6; visuell suite nb 17/17 og en 17/17; full Vitest 2382/0 (10 eksisterende hoppet over); i18n grønn.
+- [x] Norsk PTG7-rapport og TODO for ekte import.
+- [ ] Ekte import i Nuke og Fusion: krever programmene og manuell kontroll av eksportert pakke; se TODO.md.
+- Språk- og kontofiler som venter på sammenslåing røres ikke; midlertidig importunntak beholdes.
+
 ## Oppfølging – eksplisitt feilregistrering (22.10.2026)
 - [x] Avslutt lekkasjesporet: lagret språkvalg uten oversatt tekst forklares av katalogfeilen, ikke påvist lekkasje.
 - [x] Gjør feilregistreringen eksplisitt og idempotent før serveroppstart.

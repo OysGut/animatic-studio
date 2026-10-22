@@ -75105,6 +75105,15 @@
   "ptg5.compare": {
     "text": "Compare takes"
   },
+  "ptg7.export": {
+    "text": "Nuke and Fusion"
+  },
+  "ptg7.readme": {
+    "text": "Nuke and Fusion: extract the entire ZIP and open the shot's .nk or .comp. Media paths are relative to the shot folder. Set the working directory to the shot folder if the application does not resolve relative paths. World units are millimetres, Y up, camera facing negative Z. Card2 is Nuke's classic 3D card (Card), not the 2D projection node Card3D. Camera field of view and position follow the model per frame; twos are held. Fusion uses ImagePlane3D. No AI is used. Real import must be checked in Nuke and Fusion before production."
+  },
+  "ptg7.no-rig": {
+    "text": "{shot}: no valid rig; 2D setup with Transform nodes, without a 3D camera."
+  },
   "ptg6.export": {
     "text": "Editorial files (OTIO, XML, EDL)"
   },

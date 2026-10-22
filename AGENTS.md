@@ -64,3 +64,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 48. PTG4 mouth sets and tracks use reversible project commands; immutable source receipts compute drift, while core/interchange owns pronunciation, exposure rounding and exports to keep all deliverables aligned.
 49. Login globe (B-117): public globe_points returns only server-offset lat/lon and active, never identity; city/last_seen_at follow column-level grants, so new profile/status columns stay unreadable directly.
 50. Runtime initialization uses explicitly called exports, never bare imports: sideEffects:false can remove registration code; error capture initializes idempotently before the server handler loads.
+51. Nuke/Fusion graph serialization and physical camera mapping live in core/interchange; the browser only streams media and ZIP files, keeping exports aligned with the shared shot model.
