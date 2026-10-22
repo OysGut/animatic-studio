@@ -13,6 +13,9 @@ import { InterchangeSettings } from "@/app/projects/InterchangeSettings";
 import { reserveInterchangeExport, completeInterchangeExport } from "@/adapters/browser/interchange";
 import { openZipSink } from "@/engine/export/zip";
 import { exportShotlist } from "@/engine/export/shotlist";
+import { exportCameraFbx } from "@/engine/export/camera-export";
+import { exportAePackage } from "@/engine/export/ae-export";
+import type { AeCameraMode } from "@/core/interchange/ae-jsx";
 import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
 import { t } from "@/core/i18n/keyed";
@@ -31,6 +34,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
   const editable = canEdit(members.data?.find(m => m.user_id === userId)?.role);
   const commands = useCommands(state.project.id, userId, editable);
   const [profile, setProfile] = useState<ShotlistProfile>("standard");
+  const [cameraMode, setCameraMode] = useState<AeCameraMode>("ae");
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
@@ -63,6 +67,40 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
+  async function startPackage(kind: "fbx" | "ae") {
+    const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
+    const fileName = `${initial.project.code}-${kind === "fbx" ? "camera" : "after-effects"}.zip`;
+    // Picker must be opened synchronously from the click, before waiting for commands.
+    const sinkPromise = openZipSink(fileName);
+    const ctrl = new AbortController(); abort.current = ctrl;
+    setError(null); setReady(null); setProgress({ done: 0, total: 1 });
+    const sink = await sinkPromise;
+    if (!sink) { setProgress(null); return; }
+    try {
+      await commands.whenIdle();
+      const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
+        settings: { format: kind, language: language.dialogue, cameraMode, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
+      const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
+      if (kind === "fbx") {
+        await exportCameraFbx({ doc, sink, signal: ctrl.signal });
+      } else {
+        const used = new Set<string>();
+        for (const s of doc.shots) {
+          for (const l of s.layers) { if (l.fileId) used.add(l.fileId); for (const w of l.swaps) if (w.fileId) used.add(w.fileId); }
+          for (const a of s.audio) if (a.fileId) used.add(a.fileId);
+        }
+        const paths = doc.references.filter(r => used.has(r.id)).map(r => r.mediaPath);
+        await exportAePackage({ doc, cameraMode, sink, signal: ctrl.signal, urls: await signedUrls([...new Set(paths)], 600),
+          onProgress: p => setProgress({ done: p.files, total: p.totalFiles }) });
+      }
+      setReady(sink.link?.() ?? null);
+      await completeInterchangeExport(state.project.id, reservation.batchId);
+      void qc.invalidateQueries({ queryKey: exportRecordsKey(productionId) });
+    } catch {
+      await sink.abort().catch(() => undefined);
+      if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
+    } finally { abort.current = null; setProgress(null); }
+  }
   return <section data-testid="ptg-export-section" className="border-t border-border pt-3">
     <h3 className="mb-3 text-sm font-semibold text-text-primary">{t("ptg1.to-production")}</h3>
     <InterchangeSettings state={state} userId={userId} editable={editable} disabled={disabled || !!progress} />
@@ -73,6 +111,13 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         </select>
       </label>
       <Button data-testid="ptg-export-shotlist" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void start()}><Download />{t("ptg1.shotlist")}</Button>
+      <label className="flex items-center gap-2 text-xs text-text-secondary">{t("ptg3.camera-mode")}
+        <select data-testid="ptg-camera-mode" disabled={disabled || !!progress} value={cameraMode} onChange={e => setCameraMode(e.target.value as AeCameraMode)} className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-text-primary">
+          <option value="ae">{t("ptg3.mode-ae")}</option><option value="parallax">{t("ptg3.mode-parallax")}</option>
+        </select>
+      </label>
+      <Button data-testid="ptg-export-fbx" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("fbx")}><Download />{t("ptg3.camera-fbx")}</Button>
+      <Button data-testid="ptg-export-ae" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("ae")}><Download />{t("ptg3.ae-package")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
     {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}

@@ -3927,6 +3927,10 @@ export type Database = {
           active_quality_profile_id: string | null
           ai_month_limit: number | null
           ai_price_per_image: number | null
+          capture_fps_den: number
+          capture_fps_num: number
+          capture_mode: string
+          code: string | null
           created_at: string
           created_by: string
           default_transition_frames: number
@@ -3950,6 +3954,10 @@ export type Database = {
           active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
+          capture_fps_den?: number
+          capture_fps_num?: number
+          capture_mode?: string
+          code?: string | null
           created_at?: string
           created_by: string
           default_transition_frames?: number
@@ -3973,6 +3981,10 @@ export type Database = {
           active_quality_profile_id?: string | null
           ai_month_limit?: number | null
           ai_price_per_image?: number | null
+          capture_fps_den?: number
+          capture_fps_num?: number
+          capture_mode?: string
+          code?: string | null
           created_at?: string
           created_by?: string
           default_transition_frames?: number
@@ -6494,6 +6506,10 @@ export type Database = {
         }
         Returns: Json
       }
+      complete_interchange_export: {
+        Args: { p_batch: string; p_project: string }
+        Returns: string
+      }
       consume_my_bookmark: {
         Args: { p_project: string; p_updated_at: string }
         Returns: boolean
@@ -6904,6 +6920,16 @@ export type Database = {
           p_text: string
         }
         Returns: string
+      }
+      reserve_interchange_export: {
+        Args: {
+          p_file_name: string
+          p_occurrence_ids: string[]
+          p_production: string
+          p_project: string
+          p_settings: Json
+        }
+        Returns: Json
       }
       resume_dialogue_batch: {
         Args: { p_actor: string; p_batch: string; p_project: string }

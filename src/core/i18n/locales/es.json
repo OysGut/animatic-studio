@@ -54410,5 +54410,45 @@
     "text": "Idioma de prueba (en-XA)",
     "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
     "review": "machine"
+  },
+  "ptg3.camera-fbx": {
+    "text": "Cámara (FBX)",
+    "sourceHash": "93ed6bfff66b84aa7c59b430f70aa0ff556294f26e95cc1f94ae30defdd495ee",
+    "review": "machine"
+  },
+  "ptg3.ae-package": {
+    "text": "Paquete de After Effects",
+    "sourceHash": "0557114dec7da306f83a2d19fc6fbe921b59cacc01f754d1cbb37039387cb6b8",
+    "review": "machine"
+  },
+  "ptg3.camera-mode": {
+    "text": "Modo de cámara",
+    "sourceHash": "dc4ef8cb58d7c0ed46f90e5aaa839a65be3d3d1698ac605f17bfe62950e0b355",
+    "review": "machine"
+  },
+  "ptg3.mode-ae": {
+    "text": "Cámara AE (3D)",
+    "sourceHash": "ec25921caf667e6321075142e59a12fe02201f2bbe177df707e3984338d336e8",
+    "review": "machine"
+  },
+  "ptg3.mode-parallax": {
+    "text": "Paralaje 2D",
+    "sourceHash": "627ffc92928972a9ce454f5a91eeb8d49fdec0ae7341a4d71d9c16dce2d721f1",
+    "review": "machine"
+  },
+  "ptg3.readme-camera": {
+    "text": "Este paquete contiene un archivo FBX (ASCII 7.4) por plano con el movimiento de cámara en unidades físicas: tiempo en KTime (46 186 158 000 por segundo), FilmWidth en pulgadas, FocalLength en mm y las placas como objetos nulos. La exportación FBX es experimental: pruébela en su rig e informe cualquier discrepancia.",
+    "sourceHash": "77bd41f505361e3390c39cf91dbd85ca218df66856049512a74af31234ad60ee",
+    "review": "machine"
+  },
+  "ptg3.readme-ae": {
+    "text": "Abra After Effects, elija File > Scripts > Run Script File y ejecute bygg.jsx desde esta carpeta. El script crea una composición por plano y una composición principal con capas, fotogramas clave, cambios de imagen, máscaras y audio. Las transiciones entre escenas no están incluidas. Las capas de texto no se recrean.",
+    "sourceHash": "a59acf40a6874c00ae5fa771104398edc097bea8db3e884a2c5bb6c9a06df334",
+    "review": "machine"
+  },
+  "ptg3.readme-no-rig": {
+    "text": "Estos planos no tienen rig, por lo que falta la cámara: {value1}",
+    "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
+    "review": "machine"
   }
 }

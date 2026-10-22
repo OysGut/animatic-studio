@@ -15,11 +15,14 @@ import { formatTimecode, framesToSeconds, secondsToFrames, validateFps, type Rat
 import { DEFAULT_CAPTURE, captureSettingsValid, captureTimeline, suggestProjectCode, type CaptureSettings } from "./settings";
 import { t } from "../i18n/keyed";
 import { sceneCode, shotName } from "./naming";
+import { buildCameraTrack } from "./camera";
+import { multiplaneRigSpecError, resolveSceneRig } from "../rig/multiplane";
 import type { EventTime, FileRef, InterchangeDoc, Shot } from "./types";
 
 export * from "./types";
 export * from "./settings";
 export * from "./naming";
+export * from "./camera";
 
 /** Absolute boundaries are rounded once; never round a duration independently. */
 export function eventTime(startSeconds: number, endSeconds: number, shot: Pick<Shot, "startFrame" | "lengthFrames">, fps: Rational): EventTime {
@@ -100,7 +103,15 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
             ...(w.transition ? { transition: { ...w.transition, frames: frame(c.startFrame + w.frame + w.transition.frames) - frame(c.startFrame + w.frame) } } : {}) })),
           activeRange: l.activeRange ? { startFrame: local(l.activeRange.from), endFrame: local(l.activeRange.to + 1) } : null,
           path: l.path ? { ...l.path, startFrame: local(l.path.startFrame), endFrame: local(l.path.endFrame) } : null };
-      }), camera: null, audio: [], dialogue: [], words: [] };
+      }), camera: (() => {
+        // PTG3: kameraet avledes alltid fra scenens rigg; uten rigg eller 2D-scene er det null (LESMEG forklarer).
+        const composition = c.compositionId ? s.compositions[c.compositionId] : null;
+        const rigSetup = resolveSceneRig(s, occurrence?.sceneId ?? c.sceneId);
+        return composition && rigSetup && multiplaneRigSpecError(rigSetup.spec) === null
+          ? buildCameraTrack(rigSetup, composition, { startFrame, lengthFrames: endFrame - startFrame,
+              exposureStep, fps, sourceFps, sourceStartFrame: c.startFrame })
+          : null;
+      })(), audio: [], dialogue: [], words: [] };
   });
   // Ownership is determined by the rounded absolute start, including events from a neighbour's handle.
   const owner = (seconds: number) => {
@@ -154,5 +165,6 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
     }
   }
   return { project: { id: s.project.id, code, name: s.project.name }, production: { id: o.productionId, name: s.productions[o.productionId]?.name ?? "" },
-    language: lang, fps, sourceFps, captureFps: capture.fps, exposureStep, lengthFrames, shots, references: [...refs.values()], namingVersion: "1" };
+    language: lang, fps, sourceFps, captureFps: capture.fps, frameSize: { width: s.project.frameWidth, height: s.project.frameHeight },
+    exposureStep, lengthFrames, shots, references: [...refs.values()], namingVersion: "1" };
 }
