@@ -74406,6 +74406,45 @@
   "b110.privacy.turnstile": {
     "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
   },
+  "b115.privacy.terms.heading": {
+    "text": "Vilkår for bruk og ansvarsfraskrivelse"
+  },
+  "b115.privacy.ownership.title": {
+    "text": "Eierskap og opphavsrett"
+  },
+  "b115.privacy.ownership.text": {
+    "text": "Alt innhold du lager eller laster opp i tjenesten – manus, scener, tegninger, bilder, lyd, montering og ferdig film – tilhører deg eller produksjonen din. From Pen to Glass gjør ikke krav på opphavsretten til innholdet ditt. Vi trenger bare den tekniske tillatelsen som kreves for å lagre og vise innholdet til deg og prosjektmedlemmene dine. Du er selv ansvarlig for at du har rettighetene til materiale du laster opp, for eksempel musikk, stemmer og referansebilder fra andre."
+  },
+  "b115.privacy.ai.title": {
+    "text": "Innhold laget med kunstig intelligens"
+  },
+  "b115.privacy.ai.text": {
+    "text": "Forslag fra kunstig intelligens – tekst, analyser, tale og bilder – leveres slik de er, uten garanti for at de er riktige, fullstendige eller frie for tredjeparts rettigheter. Du er selv ansvarlig for å vurdere om KI-generert materiale kan brukes i din produksjon, og for å følge vilkårene til den enkelte KI-leverandøren."
+  },
+  "b115.privacy.liability.title": {
+    "text": "Ansvarsbegrensning og sikkerhetskopier"
+  },
+  "b115.privacy.liability.text": {
+    "text": "Tjenesten leveres slik den er, uten garanti for uavbrutt drift eller feilfrihet. Vi anbefaler at du jevnlig laster ned sikkerhetskopier av prosjektene dine. From Pen to Glass er ikke ansvarlig for indirekte tap, som tapt produksjonstid, forfalte frister eller kostnader hos tredjepart, ved eventuell nedetid, feil eller tap av data."
+  },
+  "b115.privacy.fonts.title": {
+    "text": "Skrifttyper og lisenser"
+  },
+  "b115.privacy.fonts.text": {
+    "text": "Når du bruker skrifttyper i prosjektet, enten egne opplastede eller fra en ekstern katalog som Google Fonts, er du selv ansvarlig for at lisensen tillater bruken, for eksempel visning på skjerm, innbygging i PDF og trykk."
+  },
+  "b115.privacy.links.title": {
+    "text": "Delingslenker og tilgang"
+  },
+  "b115.privacy.links.text": {
+    "text": "Delingslenker, for eksempel for gjennomgang av film, er beskyttet, men alle som har en gyldig lenke får innsyn i det som er delt. Du er selv ansvarlig for hvem du sender slike lenker til, og kan når som helst trekke tilbake en deling."
+  },
+  "b115.privacy.law.title": {
+    "text": "Språk og gjeldende rett"
+  },
+  "b115.privacy.law.text": {
+    "text": "Denne erklæringen er oversatt til flere språk for å være tilgjengelig for brukerne våre. Ved uoverensstemmelse mellom språkversjonene er den norske teksten styrende, med den engelske som sekundær referanse. Erklæringen og bruken av tjenesten er underlagt norsk rett."
+  },
   "server.error.invalid_request": {
     "text": "Ugyldig forespørsel"
   },
