@@ -140,7 +140,7 @@ function EditDialog({ item, onClose, onSaved }: { item: MyShowcaseItem | null; o
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="showcase-edit-text" className="text-xs text-text-secondary">{t("b116.create.textLabel")}</Label>
-            <textarea id="showcase-edit-text" data-testid="showcase-edit-text" rows={3} maxLength={2000} value={text}
+            <textarea id="showcase-edit-text" data-testid="showcase-edit-text" rows={3} maxLength={280} value={text}
               onChange={(e) => setText(e.target.value)}
               className="rounded-sm border border-border-control bg-surface-3 px-2 py-1 text-xs text-text-primary" />
           </div>

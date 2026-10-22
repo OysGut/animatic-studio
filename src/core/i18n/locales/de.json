@@ -55218,8 +55218,8 @@
     "review": "machine"
   },
   "b116.create.excerptLabel": {
-    "text": "Drehbuchauszug (ein paar Zeilen)",
-    "sourceHash": "ce78d5efb8dda7b1033570b83d1890076e583a2a2a13594f65be1a0e8dce140e",
+    "text": "Dialogzeilen auswählen (max. 12)",
+    "sourceHash": "993fa4c562e7702433655edd9b537303d6954a717e9888dad659ab91fb22716f",
     "review": "machine"
   },
   "b116.create.excerptWarning": {
@@ -55233,8 +55233,8 @@
     "review": "machine"
   },
   "b116.create.textLabel": {
-    "text": "Über das Filmprojekt und dich (optional)",
-    "sourceHash": "9585cd96141feb85b14f0e69ddc043e6e2fb69ca7198a4fa710e8b362e723b2a",
+    "text": "Über das Filmprojekt und dich (optional, max. 280 Zeichen)",
+    "sourceHash": "139b6792641d6433cc3fbf7fde3b07b62f4d5c024f3342775f72c88c31ee3359",
     "review": "machine"
   },
   "b116.create.expires": {

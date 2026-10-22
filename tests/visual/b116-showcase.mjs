@@ -51,7 +51,8 @@ async function mock(ctx, st) {
     const table = path.replace("/rest/v1/", "").split("?")[0];
     if (table === "schema_version") return json([{ version: VISUAL_SCHEMA_VERSION }]);
     if (table === "projects") return json([PROJECT]);
-    if (table === "assets") return json([{ id: "asset-1", kind: "character", name: "Reven", asset_variants: [{ asset_versions: [{ media_path: `${PROJECT.id}/source/rev.png`, mime_type: "image/png", number: 1, removed: false, duration_ms: null, width: 800, height: 600 }] }] }]);
+    if (table === "script_blocks") return json([{ id: "55555555-5555-4555-8555-555555555555", text: "REVEN: God jul!" }]);
+    if (table === "assets") return json([{ id: "asset-1", kind: "character", name: "Reven", asset_variants: [{ asset_versions: [{ id: "33333333-3333-4333-8333-333333333333", created_at: "2026-10-22T10:00:00Z", media_path: `${PROJECT.id}/source/rev.png`, mime_type: "image/png", number: 1, removed: false, duration_ms: null, width: 800, height: 600 }] }] }]);
     return json([]);
   });
   await ctx.route("**/_serverFn/**", (route) => {
@@ -116,7 +117,7 @@ await run("b116-boks-og-oppretting", "/", async (page, st) => {
   check((await box.innerText()).includes(byLang("nb", "Vil du vise frem litt av hva du jobber med?", "Want to show a little of what you're working on?")), "tittel på valgt språk");
   await page.getByTestId("showcase-share-open").click();
   await page.getByTestId("showcase-kind-character").click();
-  await page.getByTestId("showcase-candidate-asset-1").click();
+  await page.getByTestId("showcase-candidate-33333333-3333-4333-8333-333333333333").click();
   await page.getByTestId("showcase-title").fill("Reven");
   check(await page.getByTestId("showcase-preview").isEnabled(), "forhåndsvisning aktiveres når utkastet er gyldig");
   await page.getByTestId("showcase-preview").click();
@@ -134,7 +135,7 @@ await run("b116-manusutdrag-advarsel", "/", async (page) => {
   await page.getByTestId("showcase-kind-script").click();
   check(await page.getByTestId("showcase-excerpt").isVisible(), "utdragsfelt for manus");
   check(!(await page.getByTestId("showcase-preview").isEnabled()), "kan ikke gå videre uten utdrag");
-  await page.getByTestId("showcase-excerpt").fill("REVEN: God jul!");
+  await page.getByTestId("showcase-line-55555555-5555-4555-8555-555555555555").check();
   await page.getByTestId("showcase-title").fill("Åpningen");
   await page.getByTestId("showcase-preview").click();
   check(await page.getByTestId("showcase-script-warning").isVisible(), "ekstra advarsel om offentlig tekst ved forhåndsvisning");
@@ -190,7 +191,7 @@ await run("b116-en", "/", async (page) => {
   for (const s of [byLang("en", "Vil du vise frem litt av hva du jobber med?", "Want to show a little of what you're working on?"), byLang("en", "Del noe", "Share something"), byLang("en", "Mine delinger", "My shares")]) check(t.includes(s), `språk: «${s}»`);
   await page.getByTestId("showcase-share-open").click();
   await page.getByTestId("showcase-kind-script").click();
-  await page.getByTestId("showcase-excerpt").fill("FOX: Merry Christmas!");
+  await page.getByTestId("showcase-line-55555555-5555-4555-8555-555555555555").check();
   await page.getByTestId("showcase-title").fill("Opening");
   await page.getByTestId("showcase-preview").click();
   check((await page.getByTestId("showcase-script-warning").innerText()).includes(byLang("en", "blir offentlig", "becomes public")), "advarsel om offentlig tekst på valgt språk");

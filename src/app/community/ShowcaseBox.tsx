@@ -12,10 +12,12 @@ import { ShowcaseCard } from "./ShowcaseCard";
 import {
   listAssetCandidates,
   listSceneCandidates,
+  listDialogueCandidates,
   saveMyPublicProfile,
   uploadAvatar,
   type ShowcaseCandidate,
 } from "@/adapters/browser/showcase";
+import { useServerFn } from "@tanstack/react-start";
 import { createShowcaseItem, getMyShowcaseProfile, prepareAvatarUpload } from "@/adapters/community/showcase.functions";
 import { createSignedUrls, ASSET_BUCKET } from "@/adapters/browser/storage-files";
 import {
@@ -92,7 +94,10 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
   const [candidate, setCandidate] = useState<ShowcaseCandidate | null>(null);
   const [title, setTitle] = useState("");
   const [text, setText] = useState("");
-  const [excerpt, setExcerpt] = useState("");
+  const [lineIds, setLineIds] = useState<string[]>([]);
+  const createItem = useServerFn(createShowcaseItem);
+  const dialogue = useQuery({ queryKey: ["showcase-dialogue", projectId], enabled: open && !!projectId && kind === "script", queryFn: () => listDialogueCandidates(projectId) });
+  const excerpt = lineIds.map(id => dialogue.data?.find(line => line.id === id)?.text ?? "").join("\n\n");
   const [days, setDays] = useState<number>(7);
   const [preview, setPreview] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -113,14 +118,14 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
   useEffect(() => {
     if (open) {
       setProjectId(projects[0]?.id ?? "");
-      setKind("character"); setCandidate(null); setTitle(""); setText(""); setExcerpt("");
+      setKind("character"); setCandidate(null); setTitle(""); setText(""); setLineIds([]);
       setDays(7); setPreview(false); setNotice(null); setFailed(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const expiresAt = useMemo(() => new Date(Date.now() + days * 86_400_000).toISOString(), [days]);
-  const draft = { kind, title, text, excerpt, hasMedia: candidate !== null, expiresAt };
+  const draft = { kind, title, text, lineIds, hasMedia: candidate !== null, expiresAt };
   const error = showcaseDraftError(draft, Date.now());
 
   async function openPreview() {
@@ -140,12 +145,11 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
     setBusy(true);
     setFailed(false);
     try {
-      const res = await createShowcaseItem({
+      const res = await createItem({
         data: {
-          projectId, kind, title: title.trim(), text, excerpt: excerpt.trim(),
+          projectId, kind, title: title.trim(), text, lineIds,
           hasMedia: candidate !== null, expiresAt,
-          sourceKey: candidate?.sourceKey ?? "", mime: candidate?.mime ?? null,
-          durationMs: candidate?.durationMs ?? null, width: candidate?.width ?? null, height: candidate?.height ?? null,
+          sourceId: candidate?.id ?? null,
         },
       });
       setNotice(res.status === "live" ? t("b116.create.liveNotice") : t("b116.create.pendingNotice"));
@@ -191,7 +195,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="showcase-project" className="text-xs text-text-secondary">{t("b116.create.project")}</Label>
               <select id="showcase-project" data-testid="showcase-project" value={projectId}
-                onChange={(e) => { setProjectId(e.target.value); setCandidate(null); }}
+                onChange={(e) => { setProjectId(e.target.value); setCandidate(null); setLineIds([]); }}
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary">
                 {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
@@ -201,7 +205,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
               <div role="radiogroup" aria-label={t("b116.create.kind")} className="flex flex-wrap gap-1">
                 {SHOWCASE_KINDS.map((k) => (
                   <button key={k} type="button" role="radio" aria-checked={kind === k} data-testid={`showcase-kind-${k}`}
-                    onClick={() => { setKind(k); setCandidate(null); }}
+                    onClick={() => { setKind(k); setCandidate(null); setLineIds([]); }}
                     className={"rounded-sm border px-2.5 py-1 text-xs " + (kind === k ? "border-accent-brand bg-accent-selection text-text-primary" : "border-border-control text-text-secondary hover:bg-surface-2")}>
                     {kindLabel(k)}
                   </button>
@@ -211,9 +215,16 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
             {kind === "script" ? (
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="showcase-excerpt" className="text-xs text-text-secondary">{t("b116.create.excerptLabel")}</Label>
-                <textarea id="showcase-excerpt" data-testid="showcase-excerpt" rows={4} maxLength={1000}
-                  value={excerpt} onChange={(e) => setExcerpt(e.target.value)}
-                  className="rounded-sm border border-border-control bg-surface-3 px-2 py-1 text-xs text-text-primary" />
+                <div id="showcase-excerpt" data-testid="showcase-excerpt" className="flex max-h-48 flex-col gap-2 overflow-y-auto">
+                  {(dialogue.data ?? []).map(line => (
+                    <label key={line.id} className="flex items-start gap-2 text-xs text-text-primary">
+                      <input type="checkbox" data-testid={`showcase-line-${line.id}`} checked={lineIds.includes(line.id)}
+                        disabled={!lineIds.includes(line.id) && lineIds.length >= 12}
+                        onChange={e => setLineIds(ids => e.target.checked ? [...ids, line.id] : ids.filter(id => id !== line.id))} />
+                      <span>{line.text}</span>
+                    </label>
+                  ))}
+                </div>
                 <p className="text-[11px] text-status-discrepancy">{t("b116.create.excerptWarning")}</p>
               </div>
             ) : (
@@ -245,7 +256,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
             </div>
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="showcase-text" className="text-xs text-text-secondary">{t("b116.create.textLabel")}</Label>
-              <textarea id="showcase-text" data-testid="showcase-text" rows={3} maxLength={2000} value={text}
+              <textarea id="showcase-text" data-testid="showcase-text" rows={3} maxLength={280} value={text}
                 onChange={(e) => setText(e.target.value)}
                 className="rounded-sm border border-border-control bg-surface-3 px-2 py-1 text-xs text-text-primary" />
             </div>

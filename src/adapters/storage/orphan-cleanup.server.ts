@@ -22,7 +22,7 @@ export const ORPHAN_REFERENCE_TABLES: readonly string[] = [
   // B-114 C0 (0080): mediefilene til publiseringer
   "publication_media",
   // B-116 (0087): kopierte bidragsfiler under <prosjekt>/shares/
-  "showcase_items",
+  "showcase_items", "showcase_reservations",
 ];
 
 /** Tabeller der en jobb som ikke er avsluttet, sperrer hele oppryddingen. */

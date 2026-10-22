@@ -10040,10 +10040,10 @@
     },
     "b116.create.excerptLabel": {
       "nb": {
-        "text": "Manusutdrag (noen få replikker)"
+        "text": "Velg replikker (maks 12)"
       },
       "en": {
-        "text": "Script excerpt (a few lines)"
+        "text": "Select dialogue lines (max 12)"
       }
     },
     "b116.create.excerptWarning": {
@@ -10064,10 +10064,10 @@
     },
     "b116.create.textLabel": {
       "nb": {
-        "text": "Om filmprosjektet og deg selv (valgfritt)"
+        "text": "Om filmprosjektet og deg selv (valgfritt, maks 280 tegn)"
       },
       "en": {
-        "text": "About the film project and yourself (optional)"
+        "text": "About the film project and yourself (optional, max 280 characters)"
       }
     },
     "b116.create.expires": {

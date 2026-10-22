@@ -24621,7 +24621,7 @@
       "text": "Ingenting å velge her ennå."
     },
     "b116.create.excerptLabel": {
-      "text": "Manusutdrag (noen få replikker)"
+      "text": "Velg replikker (maks 12)"
     },
     "b116.create.excerptWarning": {
       "text": "Teksten blir offentlig. Del bare det du vil at alle skal kunne lese."
@@ -24654,7 +24654,7 @@
       "text": "Del"
     },
     "b116.create.textLabel": {
-      "text": "Om filmprosjektet og deg selv (valgfritt)"
+      "text": "Om filmprosjektet og deg selv (valgfritt, maks 280 tegn)"
     },
     "b116.create.title": {
       "text": "Del i utstillingsvinduet"
@@ -57738,7 +57738,7 @@
       "text": "Nothing to choose here yet."
     },
     "b116.create.excerptLabel": {
-      "text": "Script excerpt (a few lines)"
+      "text": "Select dialogue lines (max 12)"
     },
     "b116.create.excerptWarning": {
       "text": "The text becomes public. Share only what you want everyone to be able to read."
@@ -57771,7 +57771,7 @@
       "text": "Share"
     },
     "b116.create.textLabel": {
-      "text": "About the film project and yourself (optional)"
+      "text": "About the film project and yourself (optional, max 280 characters)"
     },
     "b116.create.title": {
       "text": "Share in the showcase"

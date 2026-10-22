@@ -1,6 +1,7 @@
 -- =====================================================================================
 -- From Pen to Glass – migrasjon 0087: B-116 Utstillingsvindu, oppå 0086. Bare additiv,
--- bortsett fra utvidet CHECK på content_reports.target_kind og erstattet delete_project.
+-- bortsett fra utvidet CHECK på content_reports.target_kind, erstattet delete_project
+-- og smalere offentlig public_profile (uten avatarsti og vilkårlig jsonb).
 -- Alt ligger bak bryteren community.public (profildelen bak community.profiles): når bryteren
 -- er av, gir hver RPC ingenting. Ingen direkte tabelltilgang; all lesing og skriving går via
 -- security-definer-RPC-er (RLS er på, uten policyer). Offentlig lesing (showcase_feed og
@@ -26,8 +27,8 @@ create table public.showcase_items (
   project_id uuid not null references public.projects (id) on delete restrict,
   kind text not null check (kind in ('character', 'asset', 'scene', 'script', 'audio')),
   title text not null check (char_length(btrim(title)) between 1 and 200),
-  text text not null default '' check (char_length(text) <= 2000),
-  excerpt text check (excerpt is null or char_length(btrim(excerpt)) between 1 and 1000),
+  text text not null default '' check (char_length(text) <= 280),
+  excerpt text check (excerpt is null or char_length(btrim(excerpt)) between 1 and 120000),
   storage_key text check (storage_key is null or (
     char_length(storage_key) <= 500
     and left(storage_key, char_length(project_id::text) + 8) = project_id::text || '/shares/'
@@ -45,8 +46,12 @@ create table public.showcase_items (
   revoked_at timestamptz,
   updated_at timestamptz not null default now(),
   check (kind = 'script' or (storage_key is not null and mime is not null)),
-  check (kind <> 'script' or excerpt is not null)
+  check (kind <> 'script' or excerpt is not null),
+  check (kind <> 'scene' or (mime like 'image/%' or (mime like 'video/%' and duration_ms is not null and duration_ms between 1 and 15000)))
 );
+grant all on public.showcase_items to service_role;
+alter table public.showcase_items enable row level security;
+
 create index showcase_items_feed on public.showcase_items (status, expires_at);
 create index showcase_items_creator on public.showcase_items (created_by);
 
@@ -58,6 +63,9 @@ create table public.showcase_comments (
   created_at timestamptz not null default now(),
   removed boolean not null default false
 );
+grant all on public.showcase_comments to service_role;
+alter table public.showcase_comments enable row level security;
+
 create index showcase_comments_item on public.showcase_comments (item_id, created_at);
 
 revoke all on public.showcase_items, public.showcase_comments from public, anon, authenticated;
@@ -65,6 +73,21 @@ grant all on public.showcase_items, public.showcase_comments to service_role;
 alter table public.showcase_items enable row level security;
 alter table public.showcase_comments enable row level security;
 -- Ingen policyer: all lesing og skriving går via RPC-ene under.
+
+-- Reservasjoner er serverarbeidslogg, ikke prosjektdata/kommandoer. Ingen direkte klienttilgang.
+create table public.showcase_reservations (
+  id uuid primary key,
+  project_id uuid not null references public.projects(id) on delete restrict,
+  created_by uuid not null,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null default (now() + interval '10 minutes'),
+  source_key text,
+  storage_key text,
+  payload jsonb not null check (octet_length(payload::text) <= 500000)
+);
+grant all on public.showcase_reservations to service_role;
+alter table public.showcase_reservations enable row level security;
+revoke all on public.showcase_reservations from public, anon, authenticated;
 
 -- ---------- 3. Godkjenningsbryter ----------
 alter table public.service_settings add column if not exists showcase_require_approval boolean not null default true;
@@ -81,7 +104,8 @@ create function private.showcase_visible(p_item uuid, p_user uuid) returns boole
 language sql stable security definer set search_path = '' as $$
   select private.feature_enabled('community.public', p_user) and exists (
     select 1 from public.showcase_items i
-    where i.id = p_item and i.status = 'live' and i.expires_at > now()
+    where i.id = p_item and i.status = 'live' and i.approved_at is not null and i.revoked_at is null and i.expires_at > now()
+      and exists (select 1 from public.projects p where p.id = i.project_id and p.deleted_at is null)
       and not private.blocked_between(i.created_by, p_user))
 $$;
 revoke all on function private.showcase_visible(uuid, uuid) from public, anon, authenticated;
@@ -96,49 +120,151 @@ begin
   end if;
   return coalesce((select jsonb_agg(jsonb_build_object(
       'id', i.id, 'kind', i.kind, 'title', i.title, 'text', i.text, 'excerpt', i.excerpt,
-      'storage_key', i.storage_key, 'mime', i.mime, 'duration_ms', i.duration_ms,
+      'mime', i.mime, 'duration_ms', i.duration_ms,
       'width', i.width, 'height', i.height, 'created_at', i.created_at,
-      'author_name', (select p.display_name from public.profiles p where p.user_id = i.created_by))
+      'author_name', (select p.handle from public.profiles p where p.user_id = i.created_by and p.is_public))
       order by i.created_at desc)
     from (select * from public.showcase_items i
-      where i.status = 'live' and i.expires_at > now()
+      where private.showcase_visible(i.id, (select auth.uid()))
         and not private.blocked_between(i.created_by, (select auth.uid()))
       order by i.created_at desc limit 50) i), '[]'::jsonb);
 end $$;
 revoke all on function public.showcase_feed() from public;
 grant execute on function public.showcase_feed() to anon, authenticated, service_role;
 
--- Oppretting: redaktør i prosjektet, bryter på. Utløp standard 1 uke, maks 90 dager.
-create function public.create_showcase_item(
-  p_project uuid, p_kind text, p_title text, p_text text, p_excerpt text,
-  p_storage_key text, p_mime text, p_duration_ms integer, p_width integer, p_height integer,
-  p_expires_at timestamptz
-) returns uuid
+-- Bare serveren får nøkkelen til et synlig bidrag, etter fersk kontroll via item-ID.
+create function public.showcase_media(p_item uuid) returns jsonb
+language sql stable security definer set search_path = '' as $$
+  select jsonb_build_object('storage_key', i.storage_key)
+  from public.showcase_items i where i.id = p_item and private.showcase_visible(i.id, null)
+$$;
+revoke all on function public.showcase_media(uuid) from public, anon, authenticated;
+grant execute on function public.showcase_media(uuid) to service_role;
+
+-- Autorisasjon og kildeoppslag skjer FØR privilegert kopiering. Klienten sender bare rad-ID-er.
+create function public.prepare_showcase_item(
+  p_project uuid, p_kind text, p_title text, p_text text, p_source uuid,
+  p_lines uuid[], p_expires_at timestamptz
+) returns jsonb
 language plpgsql security definer set search_path = '' as $$
-declare v uuid; v_expires timestamptz;
+declare
+  v_id uuid := gen_random_uuid(); v_user uuid := (select auth.uid()); v_expires timestamptz;
+  v_key text; v_target text; v_mime text; v_duration integer; v_width integer; v_height integer;
+  v_excerpt text; v_count integer; v_ext text;
 begin
-  if (select auth.uid()) is null or not private.feature_enabled('community.public', (select auth.uid())) then
-    raise exception 'Ikke tilgjengelig' using errcode = '42501';
+  if v_user is null or not private.feature_enabled('community.public', v_user)
+    or not private.is_project_editor(p_project, v_user)
+    or not exists (select 1 from public.projects where id = p_project and deleted_at is null) then
+    raise exception 'showcase.error.media' using errcode = '42501';
   end if;
-  if not private.is_project_editor(p_project, (select auth.uid())) then
-    raise exception 'Krever redaktør' using errcode = '42501';
+  if p_kind not in ('character','asset','scene','script','audio') or p_kind is null then
+    raise exception 'showcase.error.kind' using errcode = '22023';
+  end if;
+  if p_title is null or char_length(btrim(p_title)) not between 1 and 200 then
+    raise exception 'showcase.error.title' using errcode = '22023';
+  end if;
+  if char_length(coalesce(p_text, '')) > 280 then
+    raise exception 'showcase.error.text' using errcode = '22023';
   end if;
   v_expires := coalesce(p_expires_at, now() + interval '7 days');
   if v_expires <= now() or v_expires > now() + interval '90 days' then
-    raise exception 'Ugyldig utløp' using errcode = '22023';
+    raise exception 'showcase.error.expires' using errcode = '22023';
   end if;
-  insert into public.showcase_items (project_id, kind, title, text, excerpt, storage_key, mime,
-    duration_ms, width, height, status, expires_at, created_by, approved_at)
-  values (p_project, p_kind, btrim(p_title), coalesce(p_text, ''), nullif(btrim(coalesce(p_excerpt, '')), ''),
-    p_storage_key, p_mime, p_duration_ms, p_width, p_height,
-    case when private.showcase_require_approval() then 'pending' else 'live' end,
-    v_expires, (select auth.uid()),
-    case when private.showcase_require_approval() then null else now() end)
-  returning id into v;
-  return v;
+  if p_kind = 'script' then
+    if p_source is not null or cardinality(p_lines) is null or cardinality(p_lines) not between 1 and 12
+      or (select count(distinct x) from unnest(p_lines) x) <> cardinality(p_lines) then
+      raise exception 'showcase.error.excerpt' using errcode = '22023';
+    end if;
+    select count(*), string_agg(b.text, E'\n\n' order by l.n) into v_count, v_excerpt
+      from unnest(p_lines) with ordinality l(id,n)
+      join public.script_blocks b on b.id = l.id and b.project_id = p_project and b.kind = 'dialogue' and not b.removed
+      join public.scene_variants sv on sv.id = b.variant_id and sv.project_id = p_project;
+    if v_count <> cardinality(p_lines) or char_length(btrim(coalesce(v_excerpt,''))) not between 1 and 120000 then
+      raise exception 'showcase.error.excerpt' using errcode = '22023';
+    end if;
+  else
+    if coalesce(cardinality(p_lines),0) <> 0 then raise exception 'showcase.error.excerpt' using errcode = '22023'; end if;
+    select av.media_path, av.mime_type, av.duration_ms, av.width, av.height
+      into v_key, v_mime, v_duration, v_width, v_height
+      from public.asset_versions av
+      join public.asset_variants var on var.id = av.variant_id and var.project_id = p_project and not var.archived
+      join public.assets a on a.id = var.asset_id and a.project_id = p_project and not a.removed
+      where av.id = p_source and av.project_id = p_project and not av.removed
+        and ((p_kind in ('character','asset','scene') and av.mime_type like 'image/%'
+          and (p_kind <> 'character' or a.kind = 'character')) or (p_kind = 'audio' and av.mime_type like 'audio/%'));
+    if v_key is null and p_kind = 'scene' then
+      select tk.media_ref, case when tk.kind = 'still' then 'image/png' else 'video/mp4' end,
+        case when tk.kind = 'still' then null else ceil(tk.duration_frames::numeric * pr.fps_den * 1000 / pr.fps_num)::integer end
+        into v_key, v_mime, v_duration
+        from public.takes tk
+        join public.scene_occurrences occ on occ.id = tk.occurrence_id and occ.project_id = p_project and occ.active
+        join public.productions pr on pr.id = occ.production_id and pr.project_id = p_project
+        where tk.id = p_source and tk.project_id = p_project
+          and tk.kind in ('still','imported_film','ai_video');
+    end if;
+    if v_key is null or split_part(v_key,'/',1) <> p_project::text or position('..' in v_key) > 0 then
+      raise exception 'showcase.error.media' using errcode = '42501';
+    end if;
+    if p_kind = 'scene' and v_mime like 'video/%' and (v_duration is null or v_duration not between 1 and 15000) then
+      raise exception 'showcase.error.media' using errcode = '22023';
+    end if;
+    -- Fast filnavn: ingen klientsti eller filnavn i målet. Mime fra registrert kilde.
+    v_ext := case when v_mime = 'image/jpeg' then 'jpg' when v_mime = 'image/webp' then 'webp'
+      when v_mime = 'image/gif' then 'gif' when v_mime like 'image/%' then 'png'
+      when v_mime like 'video/%' then 'mp4' when v_mime = 'audio/mpeg' then 'mp3'
+      when v_mime = 'audio/ogg' then 'ogg' else 'wav' end;
+    v_target := p_project::text || '/shares/' || v_id::text || '/media.' || v_ext;
+  end if;
+  insert into public.showcase_reservations(id, project_id, created_by, source_key, storage_key, payload)
+    values(v_id, p_project, v_user, v_key, v_target, jsonb_build_object(
+      'kind',p_kind,'title',btrim(p_title),'text',coalesce(p_text,''),'excerpt',v_excerpt,
+      'mime',v_mime,'duration_ms',v_duration,'width',v_width,'height',v_height,'expires_at',v_expires));
+  return jsonb_build_object('id',v_id,'source_key',v_key,'storage_key',v_target);
 end $$;
-revoke all on function public.create_showcase_item(uuid, text, text, text, text, text, text, integer, integer, integer, timestamptz) from public, anon;
-grant execute on function public.create_showcase_item(uuid, text, text, text, text, text, text, integer, integer, integer, timestamptz) to authenticated;
+revoke all on function public.prepare_showcase_item(uuid,text,text,text,uuid,uuid[],timestamptz) from public, anon;
+grant execute on function public.prepare_showcase_item(uuid,text,text,text,uuid,uuid[],timestamptz) to authenticated;
+
+-- Kun serveren kan sluttføre, og kun reserverte verdier brukes. Ny redaktørkontroll under lås.
+create function public.create_showcase_item(p_reservation uuid, p_actor uuid) returns uuid
+language plpgsql security definer set search_path = '' as $$
+declare v public.showcase_reservations; d jsonb; v_approval boolean;
+begin
+  if exists(select 1 from public.showcase_items where id = p_reservation and created_by = p_actor) then return p_reservation; end if;
+  select * into v from public.showcase_reservations where id = p_reservation for update;
+  if not found or v.created_by <> p_actor or v.expires_at <= now()
+    or not private.feature_enabled('community.public', p_actor)
+    or not private.is_project_editor(v.project_id, p_actor)
+    or not exists(select 1 from public.projects where id = v.project_id and deleted_at is null) then
+    raise exception 'showcase.error.media' using errcode = '42501';
+  end if;
+  d := v.payload;
+  if (d->>'expires_at')::timestamptz <= now() then raise exception 'showcase.error.expires' using errcode = '22023'; end if;
+  v_approval := private.showcase_require_approval();
+  insert into public.showcase_items(id,project_id,kind,title,text,excerpt,storage_key,mime,duration_ms,width,height,status,expires_at,created_by,approved_at)
+    values(v.id,v.project_id,d->>'kind',d->>'title',d->>'text',d->>'excerpt',v.storage_key,d->>'mime',
+      (d->>'duration_ms')::integer,(d->>'width')::integer,(d->>'height')::integer,
+      case when v_approval then 'pending' else 'live' end,(d->>'expires_at')::timestamptz,p_actor,
+      case when v_approval then null else now() end);
+  delete from public.showcase_reservations where id = v.id;
+  return v.id;
+end $$;
+revoke all on function public.create_showcase_item(uuid,uuid) from public, anon, authenticated;
+grant execute on function public.create_showcase_item(uuid,uuid) to service_role;
+
+-- Avklar tvetydig sluttføring før noen fil slettes (tapt RPC-svar etter commit).
+create function public.showcase_item_outcome(p_item uuid, p_actor uuid) returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists(select 1 from public.showcase_items where id = p_item and created_by = p_actor)
+$$;
+revoke all on function public.showcase_item_outcome(uuid,uuid) from public, anon, authenticated;
+grant execute on function public.showcase_item_outcome(uuid,uuid) to service_role;
+
+create function public.cancel_showcase_item(p_reservation uuid, p_actor uuid) returns void
+language sql security definer set search_path = '' as $$
+  delete from public.showcase_reservations where id = p_reservation and created_by = p_actor
+$$;
+revoke all on function public.cancel_showcase_item(uuid,uuid) from public, anon, authenticated;
+grant execute on function public.cancel_showcase_item(uuid,uuid) to service_role;
 
 -- Egne bidrag, alle statuser, for «Mine delinger».
 create function public.my_showcase_items() returns jsonb
@@ -171,7 +297,7 @@ begin
   end if;
   if v.status = 'revoked' then raise exception 'Bidraget er trukket tilbake' using errcode = '22023'; end if;
   if jsonb_typeof(p_patch) <> 'object' or exists (select 1 from jsonb_object_keys(p_patch) k
-      where k not in ('title', 'text', 'excerpt', 'expires_at')) then
+      where k not in ('title', 'text', 'expires_at')) then
     raise exception 'Ukjent felt' using errcode = '22023';
   end if;
   v_expires := case when p_patch ? 'expires_at' then (p_patch ->> 'expires_at')::timestamptz else v.expires_at end;
@@ -180,11 +306,10 @@ begin
   end if;
   v_content := (p_patch ? 'title' and btrim(p_patch ->> 'title') is distinct from v.title)
     or (p_patch ? 'text' and coalesce(p_patch ->> 'text', '') is distinct from v.text)
-    or (p_patch ? 'excerpt' and nullif(btrim(coalesce(p_patch ->> 'excerpt', '')), '') is distinct from v.excerpt);
+;
   update public.showcase_items set
     title = coalesce(btrim(p_patch ->> 'title'), title),
     text = coalesce(p_patch ->> 'text', text),
-    excerpt = case when p_patch ? 'excerpt' then nullif(btrim(coalesce(p_patch ->> 'excerpt', '')), '') else excerpt end,
     expires_at = v_expires,
     status = case when v_content and private.showcase_require_approval() then 'pending' else status end,
     approved_by = case when v_content and private.showcase_require_approval() then null else approved_by end,
@@ -220,9 +345,9 @@ begin
   end if;
   return coalesce((select jsonb_agg(jsonb_build_object(
       'id', c.id, 'text', c.text, 'created_at', c.created_at,
-      'author_name', (select p.display_name from public.profiles p where p.user_id = c.author),
+      'author_name', (select p.handle from public.profiles p where p.user_id = c.author and p.is_public),
       'mine', c.author = (select auth.uid())) order by c.created_at)
-    from public.showcase_comments c where c.item_id = p_item and not c.removed), '[]'::jsonb);
+    from public.showcase_comments c where c.item_id = p_item and not c.removed and not private.blocked_between(c.author, (select auth.uid()))), '[]'::jsonb);
 end $$;
 revoke all on function public.showcase_comments(uuid) from public;
 grant execute on function public.showcase_comments(uuid) to anon, authenticated;
@@ -270,6 +395,18 @@ begin
 end $$;
 revoke all on function public.my_public_profile() from public, anon;
 grant execute on function public.my_public_profile() to authenticated;
+
+-- Anon-profilen fra 0080 må heller ikke røpe avatarsti, handle eller vilkårlig jsonb.
+create or replace function public.public_profile(p_handle text) returns jsonb
+language sql stable security definer set search_path = '' as $$
+  select jsonb_build_object('display_name', p.handle, 'bio', p.bio)
+  from public.profiles p
+  where p.handle = lower(btrim(p_handle)) and p.is_public
+    and private.feature_enabled('community.profiles', (select auth.uid()))
+    and not private.blocked_between(p.user_id, (select auth.uid()))
+$$;
+revoke all on function public.public_profile(text) from public;
+grant execute on function public.public_profile(text) to anon, authenticated;
 
 -- ---------- 5. Rapportering av bidrag (samme kø som 0080) ----------
 alter table public.content_reports drop constraint content_reports_target_kind_check;
@@ -359,6 +496,8 @@ begin
   -- Utstillingsvindu (B-116, 0087): kopierte bidragsfiler under <prosjekt>/shares/
   v_films := v_films || coalesce((select array_agg(storage_key) from public.showcase_items
     where project_id = p_project and storage_key is not null and split_part(storage_key, '/', 1) = p_project::text), '{}');
+  v_films := v_films || coalesce((select array_agg(storage_key) from public.showcase_reservations
+    where project_id = p_project and storage_key is not null), '{}');
 
   perform set_config('animatic.purge_project', p_project::text, true);
   -- Rekkefølge etter fremmednøkler (barn først)
@@ -376,6 +515,7 @@ begin
   delete from public.publication_recipients where project_id = p_project;
   delete from public.publications where project_id = p_project;
   -- Utstillingsvindu (B-116, 0087): kommentarene forsvinner med bidraget (on delete cascade)
+  delete from public.showcase_reservations where project_id = p_project;
   delete from public.showcase_items where project_id = p_project;
   -- Delte filmer (GP5): før eksportloggen og produksjonene
   delete from public.film_shares where project_id = p_project;

@@ -13,8 +13,10 @@ export const SHOWCASE_STATUSES = ["pending", "live", "rejected", "revoked"] as c
 export type ShowcaseStatus = (typeof SHOWCASE_STATUSES)[number];
 
 export const SHOWCASE_TITLE_MAX = 200;
-export const SHOWCASE_TEXT_MAX = 2000;
-export const SHOWCASE_EXCERPT_MAX = 1000;
+export const SHOWCASE_TEXT_MAX = 280;
+export const SHOWCASE_EXCERPT_MAX = 120000;
+export const SHOWCASE_LINES_MAX = 12;
+export const SHOWCASE_SCENE_MAX_MS = 15000;
 export const SHOWCASE_DEFAULT_DAYS = 7;
 export const SHOWCASE_MAX_DAYS = 90;
 
@@ -22,7 +24,7 @@ export interface ShowcaseDraft {
   readonly kind: string;
   readonly title: string;
   readonly text: string;
-  readonly excerpt: string;
+  readonly lineIds: readonly string[];
   /** Om bidraget har en mediefil (alt unntatt manusutdrag krever det). */
   readonly hasMedia: boolean;
   readonly expiresAt: string | null;
@@ -39,8 +41,7 @@ export function showcaseDraftError(d: ShowcaseDraft, now: number): string | null
   const title = d.title.trim();
   if (title.length < 1 || title.length > SHOWCASE_TITLE_MAX) return "showcase.error.title";
   if (d.text.length > SHOWCASE_TEXT_MAX) return "showcase.error.text";
-  const excerpt = d.excerpt.trim();
-  if (d.kind === "script" && (excerpt.length < 1 || excerpt.length > SHOWCASE_EXCERPT_MAX))
+  if (d.kind === "script" && (!Array.isArray(d.lineIds) || d.lineIds.length < 1 || d.lineIds.length > SHOWCASE_LINES_MAX || new Set(d.lineIds).size !== d.lineIds.length))
     return "showcase.error.excerpt";
   if (d.kind !== "script" && !d.hasMedia) return "showcase.error.media";
   if (d.expiresAt !== null) {
@@ -57,7 +58,7 @@ export interface ShowcaseItem {
   readonly title: string;
   readonly text: string;
   readonly excerpt: string | null;
-  readonly storageKey: string | null;
+  readonly storageKey?: string | null;
   readonly mime: string | null;
   readonly durationMs: number | null;
   readonly width: number | null;

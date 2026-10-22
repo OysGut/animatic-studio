@@ -5,6 +5,7 @@
  * kommentarer, admin) går gjennom RPC-ene med brukerens egen tilkobling (RLS).
  */
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isUuid } from "@/core";
 import { showcaseDraftError, showcaseMediaKeyValid, parseShowcaseFeed, type ShowcaseItem, type ShowcaseDraft } from "@/core/community";
@@ -18,80 +19,78 @@ async function admin(): Promise<AnyClient> {
   return supabaseAdmin as unknown as AnyClient;
 }
 
-/** Signerer mediefilen til ett bidrag; bare nøkler under <prosjekt>/shares/ signeres. */
-async function signItem(a: AnyClient, item: ShowcaseItem): Promise<ShowcaseItem> {
-  if (!item.storageKey || !shareKeyAllowed(item.storageKey)) return item;
-  const s = await (a as unknown as {
-    storage: { from: (b: string) => { createSignedUrl: (k: string, s: number) => Promise<{ data: { signedUrl?: string } | null }> } };
-  }).storage.from(BUCKET).createSignedUrl(item.storageKey, PUBLICATION_SIGNED_SECONDS);
-  return { ...item, url: s.data?.signedUrl ?? null };
-}
-
-/** Karusellen er offentlig: godkjente, aktive bidrag fra showcase_feed, med signerte medielenker. */
+/** Offentlig feed: visningsfelter fra RPC; nøkkelen slås opp separat kun på serveren. */
 export const getShowcaseFeed = createServerFn({ method: "POST" }).handler(
   async (): Promise<readonly ShowcaseItem[]> => {
-    const a = await admin();
-    const { data, error } = await a.rpc("showcase_feed", {});
+    const key = process.env['SUPABASE_PUBLISHABLE_KEY'];
+    const address = process.env['SUPABASE_URL'];
+    if (!key || !address) return [];
+    const publicDb = createClient(address, key, {
+      auth: { persistSession: false, autoRefreshToken: false },
+      global: { fetch: (input, init) => {
+        const headers = new Headers(init?.headers);
+        if (key.startsWith("sb_") && headers.get("Authorization") === `Bearer ${key}`) headers.delete("Authorization");
+        headers.set("apikey", key);
+        return fetch(input, { ...init, headers });
+      } },
+    });
+    const { data, error } = await publicDb.rpc("showcase_feed", {});
     if (error || !Array.isArray(data)) return [];
-    const items = parseShowcaseFeed(data);
+    const a = await admin();
     const out: ShowcaseItem[] = [];
-    for (const item of items) out.push(await signItem(a, item));
+    for (const item of parseShowcaseFeed(data)) {
+      const { storageKey: _privateKey, ...safe } = item;
+      const { data: media, error: mediaError } = await a.rpc("showcase_media", { p_item: item.id });
+      const key = media && typeof media === "object" ? (media as Record<string, unknown>)["storage_key"] : null;
+      let url: string | null = null;
+      if (!mediaError && shareKeyAllowed(key)) {
+        const signed = await a.storage.from(BUCKET).createSignedUrl(key, PUBLICATION_SIGNED_SECONDS);
+        url = (signed.data as { signedUrl?: string } | null)?.signedUrl ?? null;
+      }
+      out.push({ ...safe, url });
+    }
     return out;
   },
 );
 
 export interface CreateShowcaseInput extends ShowcaseDraft {
   readonly projectId: string;
-  /** Kildefilen i prosjektet (kopieres til shares/); tom for manusutdrag. */
-  readonly sourceKey: string;
-  readonly mime: string | null;
-  readonly durationMs: number | null;
-  readonly width: number | null;
-  readonly height: number | null;
+  /** Registrert ressursversjon eller take. Ingen klientoppgitt filsti. */
+  readonly sourceId: string | null;
 }
 
-/** Nytt bidrag: validerer, kopierer filen til <prosjekt>/shares/ og oppretter raden via RPC-en. */
 export const createShowcaseItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: CreateShowcaseInput) => {
     if (!d || !isUuid(d.projectId)) throw new Error("invalid");
     const err = showcaseDraftError(d, Date.now());
     if (err) throw new Error(err);
-    if (d.kind !== "script" && (typeof d.sourceKey !== "string" || !d.sourceKey.startsWith(`${d.projectId}/`) || d.sourceKey.includes("..")))
-      throw new Error("showcase.error.media");
-    return d;
+    if (d.kind !== "script" && (typeof d.sourceId !== "string" || !isUuid(d.sourceId))) throw new Error("showcase.error.media");
+    if (!Array.isArray(d.lineIds) || d.lineIds.some(id => !isUuid(id))) throw new Error("showcase.error.excerpt");
+    // Velg feltene uttrykkelig: ukjente klientfelter (inkludert stier) når aldri RPC.
+    return { projectId: d.projectId, kind: d.kind, title: d.title, text: d.text,
+      expiresAt: d.expiresAt, sourceId: d.sourceId, lineIds: d.lineIds };
   })
   .handler(async ({ data, context }): Promise<{ id: string; status: string }> => {
     const db = context.supabase as unknown as AnyClient;
+    const { data: prepared, error } = await db.rpc("prepare_showcase_item", {
+      p_project: data.projectId, p_kind: data.kind, p_title: data.title, p_text: data.text,
+      p_source: data.sourceId, p_lines: data.lineIds, p_expires_at: data.expiresAt,
+    });
+    if (error || !prepared || typeof prepared !== "object") throw new Error("showcase.error.media");
+    const r = prepared as Record<string, unknown>;
+    if (typeof r["id"] !== "string" || !isUuid(r["id"])) throw new Error("showcase.error.media");
+    // Privilegert klient lastes først ETTER autorisasjon/kildekontroll.
     const a = await admin();
-    let storageKey: string | null = null;
-    if (data.kind !== "script") {
-      const ext = data.sourceKey.includes(".") ? data.sourceKey.slice(data.sourceKey.lastIndexOf(".")) : "";
-      storageKey = `${data.projectId}/shares/showcase/${crypto.randomUUID()}${ext.slice(0, 12)}`;
-      const { error } = await (a as unknown as {
-        storage: { from: (b: string) => { copy: (f: string, t: string) => Promise<{ error: { message: string } | null }> } };
-      }).storage.from(BUCKET).copy(data.sourceKey, storageKey);
-      if (error) throw new Error(error.message);
-    }
-    const { data: id, error } = await db.rpc("create_showcase_item", {
-      p_project: data.projectId,
-      p_kind: data.kind,
-      p_title: data.title,
-      p_text: data.text,
-      p_excerpt: data.kind === "script" ? data.excerpt : null,
-      p_storage_key: storageKey,
-      p_mime: data.kind === "script" ? null : data.mime,
-      p_duration_ms: data.durationMs,
-      p_width: data.width,
-      p_height: data.height,
-      p_expires_at: data.expiresAt,
-    } as never);
-    if (error || typeof id !== "string") throw new Error(error?.message ?? "invalid");
-    const mine = await db.rpc("my_showcase_items", {} as never);
+    const { completeShowcaseCopy } = await import("./showcase-copy.server");
+    await completeShowcaseCopy(a, context.userId, data.projectId, {
+      id: r["id"], sourceKey: typeof r["source_key"] === "string" ? r["source_key"] : null,
+      storageKey: typeof r["storage_key"] === "string" ? r["storage_key"] : null,
+    });
+    const mine = await db.rpc("my_showcase_items", {});
     const row = Array.isArray(mine.data)
-      ? (mine.data as Record<string, unknown>[]).find((r) => r["id"] === id)
-      : null;
-    return { id, status: typeof row?.["status"] === "string" ? row["status"] : "pending" };
+      ? (mine.data as Record<string, unknown>[]).find(row => row["id"] === r["id"]) : null;
+    return { id: r["id"], status: typeof row?.["status"] === "string" ? row["status"] : "pending" };
   });
 
 /** Opplasting av avatar: signert opplastingslenke under avatars/<bruker>/ (samme regel som 0080). */

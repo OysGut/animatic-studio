@@ -7125,7 +7125,7 @@ try {
     assert((await as("anon", null, (tx) => tx`select public.public_profile('bob_animator') p`))[0]!["p"] === null, "privat profil gir ingenting");
     await as("authenticated", BOB, (tx) => tx`select public.set_my_public_profile('bob_animator', 'Hei', null, true, '{}'::jsonb)`);
     const prof = (await as("anon", null, (tx) => tx`select public.public_profile('bob_animator') p`))[0]!["p"] as Record<string, unknown>;
-    assert(prof?.["handle"] === "bob_animator" && !("user_id" in prof) && !("country" in prof), "offentlig profil gir bare offentlige felt");
+    assert(prof?.["bio"] === "Hei" && Object.keys(prof).sort().join(",") === "bio,display_name", "offentlig profil gir bare offentlige felt");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('bob_animator', '', null, false, '{}'::jsonb)`), "23505");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('a!', '', null, false, '{}'::jsonb)`), "23514");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.set_my_public_profile('alice', '', ${`avatars/${BOB}/a.png`}, false, '{}'::jsonb)`), "22023");
@@ -7393,9 +7393,22 @@ try {
     const project = String((await as('authenticated', owner, tx => tx`select public.create_project('B-116') id`))[0]?.['id']);
     return { owner, other, project };
   }
-  const createItem = (user: string, project: string, expires: string | null = null) =>
-    as('authenticated', user, tx => tx`select public.create_showcase_item(${project}, 'character', 'Reven', 'Om filmen', null,
-      ${`${project}/shares/showcase/rev.png`}, 'image/png', null, 800, 600, ${expires}::timestamptz) id`);
+  async function b116Version(project: string, kind = 'character', mime = 'image/png') {
+    const asset = crypto.randomUUID(), variant = crypto.randomUUID(), version = crypto.randomUUID();
+    await sql`insert into public.assets(id,project_id,kind,name) values(${asset},${project},${kind},'Reven')`;
+    await sql`insert into public.asset_variants(id,project_id,asset_id,name,style) values(${variant},${project},${asset},'Original','reference')`;
+    await sql`insert into public.asset_versions(id,project_id,variant_id,number,media_path,mime_type,byte_size_big,sha256,width,height)
+      values(${version},${project},${variant},1,${`${project}/source/${version}.png`},${mime},100,${'a'.repeat(64)},800,600)`;
+    return version;
+  }
+  async function prepareItem(user: string, project: string, source: string | null, kind = 'character', lines: string[] = [], text = 'Om filmen', expires: string | null = null) {
+    return as('authenticated', user, tx => tx`select public.prepare_showcase_item(${project},${kind},'Reven',${text},${source}::uuid,${tx.array(lines)}::uuid[],${expires}::timestamptz) r`);
+  }
+  async function createItem(user: string, project: string, expires: string | null = null) {
+    const source = await b116Version(project);
+    const r = (await prepareItem(user,project,source,'character',[],'Om filmen',expires))[0]?.['r'] as {id:string};
+    return as('service_role', null, tx => tx`select public.create_showcase_item(${r.id},${user}) id`);
+  }
   await test('0087 B-116: avslått bryter gir ingenting', async () => {
     await sql`update public.features set state = 'off' where key = 'community.public'`;
     const { owner, project } = await b116Fixture();
@@ -7417,9 +7430,13 @@ try {
     await as('authenticated', other, tx => tx`select public.admin_review_showcase_item(${id}, true)`);
     const feed = (await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f'] as Record<string, unknown>[];
     assert(feed.length === 1 && feed[0]!['id'] === id, 'godkjent bidrag i karusellen for anon');
-    assert(feed[0]!['author_name'] === 'Anita', 'visningsnavn med');
+    assert(feed[0]!['author_name'] === null, 'privat kontoavledet navn skjules');
+    await sql`update public.profiles set handle='anita_public',is_public=true,avatar_key=${`avatars/${owner}/a.png`} where user_id=${owner}`;
+    const chosen=(await as('anon',null,tx=>tx`select public.showcase_feed() f`))[0]?.['f'] as Record<string,unknown>[];
+    assert(chosen[0]?.['author_name']==='anita_public','bare eksplisitt offentlig valgt navn');
+    assert(!JSON.stringify(chosen).includes(owner),'avatarsti røpes ikke');
     const text = JSON.stringify(feed);
-    for (const bad of [owner, 'example.no', 'user_id', 'email', 'created_by', 'project_id']) assert(!text.includes(bad), `ingen identitet/prosjekt-ID i karusellen (${bad})`);
+    for (const bad of [owner, project, 'example.no', 'user_id', 'email', 'created_by', 'project_id', 'storage_key', 'production_id']) assert(!text.includes(bad), `ingen identitet/prosjekt-ID i karusellen (${bad})`);
     // Utløpt forsvinner
     await sql`update public.showcase_items set expires_at = now() - interval '1 hour' where id = ${id}`;
     assert(JSON.stringify((await as('anon', null, tx => tx`select public.showcase_feed() f`))[0]?.['f']) === '[]', 'utløpt vises ikke');
@@ -7435,7 +7452,7 @@ try {
     await sql`update public.showcase_items set status = 'live', approved_at = now() where id = ${id}`;
     const cid = String((await as('authenticated', other, tx => tx`select public.add_showcase_comment(${id}, 'Fin rev!') id`))[0]?.['id']);
     const comments = (await as('anon', null, tx => tx`select public.showcase_comments(${id}) c`))[0]?.['c'] as Record<string, unknown>[];
-    assert(comments.length === 1 && comments[0]!['text'] === 'Fin rev!' && comments[0]!['author_name'] === 'Bo', 'anon leser kommentarer');
+    assert(comments.length === 1 && comments[0]!['text'] === 'Fin rev!' && comments[0]!['author_name'] === null, 'anon leser kommentarer');
     assert(!JSON.stringify(comments).includes(other), 'ingen bruker-ID i kommentarene');
     const own = (await as('authenticated', other, tx => tx`select public.showcase_comments(${id}) c`))[0]?.['c'] as Record<string, unknown>[];
     assert(own[0]!['mine'] === true, 'eieren ser sitt flagg');
@@ -7485,16 +7502,16 @@ try {
     const profile = (await as('authenticated', owner, tx => tx`select public.my_public_profile() p`))[0]?.['p'] as Record<string, unknown>;
     assert(profile?.['display_name'] === 'Anita' && profile?.['is_public'] === false, 'egen profil leses');
     // Sletting av prosjektet fjerner bidrag, kommentarer og rapporterer filene
-    await sql`update public.showcase_items set status = 'live' where id = ${id}`;
+    await sql`update public.showcase_items set status = 'live', approved_at = now() where id = ${id}`;
     const cid2 = String((await as('authenticated', other, tx => tx`select public.add_showcase_comment(${id}, 'x') id`))[0]?.['id']);
     const res = (await as('service_role', null, tx => tx`select public.delete_project(${project}, ${owner}) r`))[0]?.['r'] as { films: string[] };
-    assert(res.films.includes(`${project}/shares/showcase/rev.png`), 'bidragsfilen returneres til sletting');
+    assert(res.films.includes(`${project}/shares/${id}/media.png`), 'bidragsfilen returneres til sletting');
     assert((await sql`select count(*) n from public.showcase_items where project_id = ${project}`)[0]?.['n'] == 0, 'bidraget slettet');
     assert((await sql`select count(*) n from public.showcase_comments where id = ${cid2}`)[0]?.['n'] == 0, 'kommentaren slettet');
     await sql`delete from public.app_admins where user_id = ${other}`;
   });
   await test('0087 B-116: ingen direkte tabelltilgang fra klientroller', async () => {
-    for (const table of ['public.showcase_items', 'public.showcase_comments']) {
+    for (const table of ['public.showcase_items', 'public.showcase_comments', 'public.showcase_reservations']) {
       for (const priv of ['select', 'insert', 'update', 'delete'])
         assert((await sql`select has_table_privilege('authenticated', ${table}, ${priv}) p`)[0]?.['p'] === false, `${table}: ingen authenticated ${priv}`);
       assert((await sql`select has_table_privilege('anon', ${table}, 'select') p`)[0]?.['p'] === false, `${table}: ingen anon`);
@@ -7503,6 +7520,101 @@ try {
     await expectError(as('authenticated', ALICE, tx => tx`select * from public.showcase_items`), '42501');
     await expectError(as('anon', null, tx => tx`select private.showcase_require_approval()`), '42501');
   });
+  await test('0087 B-116: autorisasjon før reservasjon, fremmed og uregistrert kilde avvises', async () => {
+    const {owner,other,project}=await b116Fixture();
+    const source=await b116Version(project);
+    await expectError(prepareItem(other,project,source),'42501');
+    await sql`insert into public.project_members(project_id,user_id,role) values(${project},${other},'viewer')`;
+    await expectError(prepareItem(other,project,source),'42501');
+    await expectError(prepareItem(owner,project,crypto.randomUUID()),'42501');
+    const foreign=await b116Fixture(); const foreignSource=await b116Version(foreign.project);
+    await expectError(prepareItem(owner,project,foreignSource),'42501');
+    assert((await sql`select count(*) n from public.showcase_reservations where project_id=${project}`)[0]?.['n']==0,'ingen reservasjon etter avvisning');
+    const r=(await prepareItem(owner,project,source))[0]?.['r'] as {id:string;source_key:string;storage_key:string};
+    assert(r.source_key===`${project}/source/${source}.png`,'registrert kilde returneres');
+    assert(r.storage_key===`${project}/shares/${r.id}/media.png`,'item-ID eier målmappe');
+    await expectError(as('authenticated',owner,tx=>tx`select public.create_showcase_item(${r.id},${owner})`),'42501');
+    await as('service_role',null,tx=>tx`select public.cancel_showcase_item(${r.id},${owner})`);
+    assert((await sql`select count(*) n from public.showcase_reservations where id=${r.id}`)[0]?.['n']==0,'reservasjon frigjort');
+  });
+  await test('0087 B-116: idempotent sluttføring, privat utfallsoppslag og tapt svar',async()=>{
+    const {owner,other,project}=await b116Fixture(); const source=await b116Version(project);
+    const r=(await prepareItem(owner,project,source))[0]?.['r'] as {id:string};
+    await as('service_role',null,tx=>tx`select public.create_showcase_item(${r.id},${owner})`);
+    assert((await as('service_role',null,tx=>tx`select public.create_showcase_item(${r.id},${owner}) id`))[0]?.['id']===r.id,'gjentakelse returnerer samme ID');
+    assert((await as('service_role',null,tx=>tx`select public.showcase_item_outcome(${r.id},${owner}) ok`))[0]?.['ok']===true,'commit kan leses tilbake');
+    assert((await as('service_role',null,tx=>tx`select public.showcase_item_outcome(${r.id},${other}) ok`))[0]?.['ok']===false,'annen aktør får ikke utfallet');
+    await expectError(as('anon',null,tx=>tx`select public.showcase_item_outcome(${r.id},${owner})`),'42501');
+    await expectError(as('authenticated',owner,tx=>tx`select public.showcase_item_outcome(${r.id},${owner})`),'42501');
+  });
+  async function b116Scene(project:string) {
+    const scene=crypto.randomUUID(),variant=crypto.randomUUID(),occ=crypto.randomUUID();
+    const production=String((await sql`select id from public.productions where project_id=${project} limit 1`)[0]?.['id']);
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${project},${production})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${project},${scene})`;
+    await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values(${occ},${project},${production},${scene},${variant},'a')`;
+    return {variant,occ};
+  }
+  await test('0087 B-116: scene 15000 ms tillates, 15040 ms og ukjent varighet avvises', async()=>{
+    const {owner,project}=await b116Fixture(); const {occ}=await b116Scene(project);
+    const short=crypto.randomUUID(),long=crypto.randomUUID(),unknown=crypto.randomUUID(),still=crypto.randomUUID();
+    for(const [id,frames,kind] of [[short,375,'imported_film'],[long,376,'imported_film'],[unknown,null,'imported_film'],[still,null,'still']] as const)
+      await sql`insert into public.takes(id,project_id,occurrence_id,kind,status,duration_frames,media_ref)
+        values(${id},${project},${occ},${kind},'approved',${frames},${`${project}/source/${id}.mp4`})`;
+    const r=(await prepareItem(owner,project,short,'scene'))[0]?.['r'] as {id:string};
+    await as('service_role',null,tx=>tx`select public.create_showcase_item(${r.id},${owner})`);
+    assert((await sql`select duration_ms from public.showcase_items where id=${r.id}`)[0]?.['duration_ms']===15000,'15 sekunder nøyaktig');
+    await expectError(prepareItem(owner,project,long,'scene'),'22023');
+    await expectError(prepareItem(owner,project,unknown,'scene'),'22023');
+    const image=(await prepareItem(owner,project,still,'scene'))[0]?.['r'] as {id:string};
+    await as('service_role',null,tx=>tx`select public.create_showcase_item(${image.id},${owner})`);
+    assert((await sql`select mime from public.showcase_items where id=${image.id}`)[0]?.['mime']==='image/png','stillbilde tillatt');
+    await expectError(sql`update public.showcase_items set duration_ms=15001 where id=${r.id}`,'23514');
+    await expectError(sql`update public.showcase_items set duration_ms=null where id=${r.id}`,'23514');
+  });
+  await test('0087 B-116: 12 valgte replikker snapshots, 13/fremmede/duplikater avvises', async()=>{
+    const {owner,project}=await b116Fixture(); const {variant}=await b116Scene(project);
+    const lines=Array.from({length:13},()=>crypto.randomUUID());
+    for(let i=0;i<lines.length;i++) await sql`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text)
+      values(${lines[i] ?? ""},${project},${variant},'dialogue',${'a'+String.fromCharCode(98+i)},${'Replikk '+i})`;
+    const r=(await prepareItem(owner,project,null,'script',lines.slice(0,12)))[0]?.['r'] as {id:string};
+    await sql`update public.script_blocks set text='Endret etter reservasjon' where id=${lines[0] ?? ""}`;
+    await as('service_role',null,tx=>tx`select public.create_showcase_item(${r.id},${owner})`);
+    assert((await sql`select excerpt from public.showcase_items where id=${r.id}`)[0]?.['excerpt']===Array.from({length:12},(_,i)=>'Replikk '+i).join('\n\n'),'snapshot av valgte replikktekster');
+    await expectError(prepareItem(owner,project,null,'script',lines),'22023');
+    await expectError(prepareItem(owner,project,null,'script',[lines[0] ?? '',lines[0] ?? '']),'22023');
+    const foreign=await b116Fixture(); const fscene=await b116Scene(foreign.project); const fid=crypto.randomUUID();
+    await sql`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text) values(${fid},${foreign.project},${fscene.variant},'dialogue','a','Fremmed')`;
+    await expectError(prepareItem(owner,project,null,'script',[fid]),'22023');
+    await expectError(as('authenticated',owner,tx=>tx`select public.update_showcase_item(${r.id},${tx.json({excerpt:'fri tekst'})})`),'22023');
+  });
+  await test('0087 B-116: beskrivelse 280 tegn tillatt, 281 avvises ved oppretting og endring',async()=>{
+    const {owner,project}=await b116Fixture();const source=await b116Version(project);
+    const r=(await prepareItem(owner,project,source,'character',[],'x'.repeat(280)))[0]?.['r'] as {id:string};
+    await as('service_role',null,tx=>tx`select public.create_showcase_item(${r.id},${owner})`);
+    assert((await sql`select length(text) n from public.showcase_items where id=${r.id}`)[0]?.['n']===280,'280 lagret');
+    await expectError(prepareItem(owner,project,source,'character',[],'x'.repeat(281)),'22023');
+    await expectError(as('authenticated',owner,tx=>tx`select public.update_showcase_item(${r.id},${tx.json({text:'x'.repeat(281)})})`),'23514');
+  });
+  await test('0087 B-116: medienøkler kun service, fersk synlighetskontroll på item-ID',async()=>{
+    const {owner,project}=await b116Fixture();const id=String((await createItem(owner,project))[0]?.['id']);
+    await expectError(as('anon',null,tx=>tx`select public.showcase_media(${id})`),'42501');
+    await expectError(as('authenticated',owner,tx=>tx`select public.showcase_media(${id})`),'42501');
+    assert((await as('service_role',null,tx=>tx`select public.showcase_media(${id}) m`))[0]?.['m']===null,'pending gir ingen nøkkel');
+    await sql`update public.showcase_items set status='live',approved_at=now() where id=${id}`;
+    const m=(await as('service_role',null,tx=>tx`select public.showcase_media(${id}) m`))[0]?.['m'] as {storage_key:string};
+    assert(m.storage_key===`${project}/shares/${id}/media.png`,'godkjent nøkkel kun til server');
+    for(const state of ['expired','revoked','unapproved']) {
+      await sql`update public.showcase_items set expires_at=now()+interval '7 days',revoked_at=null,approved_at=now() where id=${id}`;
+      if(state==='expired')await sql`update public.showcase_items set expires_at=now()-interval '1 second' where id=${id}`;
+      if(state==='revoked')await sql`update public.showcase_items set revoked_at=now() where id=${id}`;
+      if(state==='unapproved')await sql`update public.showcase_items set approved_at=null where id=${id}`;
+      assert((await as('service_role',null,tx=>tx`select public.showcase_media(${id}) m`))[0]?.['m']===null,'ingen medier '+state);
+      const feed=(await as('anon',null,tx=>tx`select public.showcase_feed() f`))[0]?.['f'] as {id:string}[];
+      assert(!feed.some(item=>item.id===id),'ingen feed '+state);
+    }
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

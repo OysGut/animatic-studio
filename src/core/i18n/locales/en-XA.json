@@ -75304,7 +75304,7 @@
     "text": "[!! ÁÁüüddïïôô ccllïïpp !!]"
   },
   "b116.create.excerptLabel": {
-    "text": "[!! SSccrrïïpptt ëëxxccëërrpptt (áá ffëëww llïïnnëëss) !!]"
+    "text": "[!! SSëëllëëcctt ddïïáállôôggüüëë llïïnnëëss (mmááxx 12) !!]"
   },
   "b116.create.excerptWarning": {
     "text": "[!! TThhëë ttëëxxtt bbëëccôômmëëss ppüübbllïïcc. SShháárrëë ôônnllyy wwhháátt yyôôüü wwáánntt ëëvvëërryyôônnëë ttôô bbëë áábbllëë ttôô rrëëáádd. !!]"
@@ -75313,7 +75313,7 @@
     "text": "[!! TTïïttllëë !!]"
   },
   "b116.create.textLabel": {
-    "text": "[!! ÁÁbbôôüütt tthhëë ffïïllmm pprrôôjjëëcctt áánndd yyôôüürrssëëllff (ôôppttïïôônnááll) !!]"
+    "text": "[!! ÁÁbbôôüütt tthhëë ffïïllmm pprrôôjjëëcctt áánndd yyôôüürrssëëllff (ôôppttïïôônnááll, mmááxx 280 cchháárrááccttëërrss) !!]"
   },
   "b116.create.expires": {
     "text": "[!! VVïïssïïbbllëë ffôôrr !!]"

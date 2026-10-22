@@ -13,16 +13,17 @@ import {
   showcaseDraftError,
   showcaseMediaKeyValid,
 } from "@/core/community";
+import { ORPHAN_REFERENCE_TABLES } from "@/adapters/storage/orphan-cleanup.server";
 import { showcaseCopyTarget } from "@/adapters/community/showcase.functions";
 
 const P = "11111111-1111-4111-8111-111111111111";
 const now = Date.parse("2026-10-22T12:00:00Z");
-const base = { kind: "character", title: "Reven", text: "", excerpt: "", hasMedia: true, expiresAt: null };
+const base = { kind: "character", title: "Reven", text: "", lineIds: [], hasMedia: true, expiresAt: null };
 
 describe("utkastvalidering (samme regler som create_showcase_item)", () => {
   it("gyldige utkast av hvert slag", () => {
     for (const kind of SHOWCASE_KINDS) {
-      const d = kind === "script" ? { ...base, kind, hasMedia: false, excerpt: "REVEN: Hei." } : { ...base, kind };
+      const d = kind === "script" ? { ...base, kind, hasMedia: false, lineIds: ["line-1"] } : { ...base, kind };
       expect(showcaseDraftError(d, now)).toBeNull();
     }
     expect(showcaseDraftError({ ...base, expiresAt: showcaseDefaultExpires(now) }, now)).toBeNull();
@@ -31,9 +32,9 @@ describe("utkastvalidering (samme regler som create_showcase_item)", () => {
     expect(showcaseDraftError({ ...base, kind: "film" }, now)).toBe("showcase.error.kind");
     expect(showcaseDraftError({ ...base, title: "  " }, now)).toBe("showcase.error.title");
     expect(showcaseDraftError({ ...base, title: "x".repeat(201) }, now)).toBe("showcase.error.title");
-    expect(showcaseDraftError({ ...base, text: "x".repeat(2001) }, now)).toBe("showcase.error.text");
+    expect(showcaseDraftError({ ...base, text: "x".repeat(281) }, now)).toBe("showcase.error.text");
     expect(showcaseDraftError({ ...base, kind: "script", hasMedia: false }, now)).toBe("showcase.error.excerpt");
-    expect(showcaseDraftError({ ...base, kind: "script", hasMedia: false, excerpt: "x".repeat(1001) }, now)).toBe("showcase.error.excerpt");
+    expect(showcaseDraftError({ ...base, kind: "script", hasMedia: false, lineIds: Array.from({length:13}, (_, i) => `line-${i}`) }, now)).toBe("showcase.error.excerpt");
     expect(showcaseDraftError({ ...base, hasMedia: false }, now)).toBe("showcase.error.media");
   });
   it("utløp: standard én uke, aldri i fortiden, maks 90 dager", () => {
@@ -103,4 +104,18 @@ describe("admin og filnøkler", () => {
     expect(showcaseCopyTarget(P, `${P}/shares/showcase/a.png`)).toBe(`${P}/shares/showcase/a.png`);
     expect(showcaseCopyTarget(P, `${P}/source/a.png`)).toBeNull();
   });
+});
+
+it("reservasjoner er med i filreferansekontrollen", () => {
+  expect(ORPHAN_REFERENCE_TABLES).toContain("showcase_reservations");
+});
+it("beskrivelse tillater 280 tegn og avviser 281", () => {
+  expect(showcaseDraftError({...base, text: "x".repeat(280)}, now)).toBeNull();
+  expect(showcaseDraftError({...base, text: "x".repeat(281)}, now)).toBe("showcase.error.text");
+});
+it("12 ulike replikker tillates, duplikater og 13 avvises", () => {
+  const draft = {...base, kind:"script", hasMedia:false, lineIds:Array.from({length:12},(_,i)=>String(i))};
+  expect(showcaseDraftError(draft, now)).toBeNull();
+  expect(showcaseDraftError({...draft,lineIds:[...draft.lineIds,"13"]},now)).toBe("showcase.error.excerpt");
+  expect(showcaseDraftError({...draft,lineIds:["a","a"]},now)).toBe("showcase.error.excerpt");
 });

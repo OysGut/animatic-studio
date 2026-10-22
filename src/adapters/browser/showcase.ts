@@ -27,12 +27,12 @@ export async function fetchMyShowcaseItems(now: number): Promise<readonly MyShow
   } catch {
     return items;
   }
-  return items.map((i) => (i.storageKey && urls[i.storageKey] ? { ...i, url: urls[i.storageKey]! } : i));
+  return items.map((i) => (i.storageKey && urls[i.storageKey] ? { ...i, url: urls[i.storageKey] ?? i.url } : i));
 }
 
 export async function updateShowcaseItem(
   id: string,
-  patch: { title?: string; text?: string; excerpt?: string; expires_at?: string },
+  patch: { title?: string; text?: string; expires_at?: string },
 ): Promise<BackendError | null> {
   const { error } = await db.rpc("update_showcase_item" as never, { p_id: id, p_patch: patch } as never);
   return plainError(error);
@@ -79,6 +79,8 @@ export interface ShowcaseCandidate {
 }
 
 interface VersionRow {
+  id: string;
+  created_at: string;
   media_path: string | null;
   mime_type: string | null;
   number: number;
@@ -90,7 +92,7 @@ interface VersionRow {
 
 function newest(rows: readonly VersionRow[], mimePrefix: string): VersionRow | null {
   const ok = rows.filter((v) => !v.removed && v.media_path && v.mime_type?.startsWith(mimePrefix));
-  ok.sort((a, b) => b.number - a.number);
+  ok.sort((a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id));
   return ok[0] ?? null;
 }
 
@@ -98,7 +100,7 @@ function newest(rows: readonly VersionRow[], mimePrefix: string): VersionRow | n
 export async function listAssetCandidates(projectId: string): Promise<{ images: ShowcaseCandidate[]; audio: ShowcaseCandidate[] }> {
   const { data, error } = await db
     .from("assets")
-    .select("id,kind,name,asset_variants(asset_versions(media_path,mime_type,number,removed,duration_ms,width,height))")
+    .select("id,kind,name,asset_variants(asset_versions(id,created_at,media_path,mime_type,number,removed,duration_ms,width,height))")
     .eq("project_id", projectId)
     .eq("removed", false);
   if (error || !Array.isArray(data)) return { images: [], audio: [] };
@@ -110,10 +112,10 @@ export async function listAssetCandidates(projectId: string): Promise<{ images: 
     );
     const img = newest(versions, "image/");
     if (img?.media_path && img.mime_type)
-      images.push({ id: String(a["id"]), name: String(a["name"] ?? ""), sourceKey: img.media_path, mime: img.mime_type, durationMs: img.duration_ms, width: img.width, height: img.height });
+      images.push({ id: img.id, name: String(a["name"] ?? ""), sourceKey: img.media_path, mime: img.mime_type, durationMs: img.duration_ms, width: img.width, height: img.height });
     const snd = newest(versions, "audio/");
     if (snd?.media_path && snd.mime_type)
-      audio.push({ id: String(a["id"]), name: String(a["name"] ?? ""), sourceKey: snd.media_path, mime: snd.mime_type, durationMs: snd.duration_ms, width: null, height: null });
+      audio.push({ id: snd.id, name: String(a["name"] ?? ""), sourceKey: snd.media_path, mime: snd.mime_type, durationMs: snd.duration_ms, width: null, height: null });
   }
   return { images, audio };
 }
@@ -122,7 +124,7 @@ export async function listAssetCandidates(projectId: string): Promise<{ images: 
 export async function listSceneCandidates(projectId: string): Promise<ShowcaseCandidate[]> {
   const { data, error } = await db
     .from("takes")
-    .select("id,media_ref,created_at,scene_occurrences(production_number)")
+    .select("id,kind,duration_frames,media_ref,created_at,scene_occurrences(production_number,productions(fps_num,fps_den))")
     .eq("project_id", projectId)
     .not("media_ref", "is", null)
     .order("created_at", { ascending: false })
@@ -132,11 +134,26 @@ export async function listSceneCandidates(projectId: string): Promise<ShowcaseCa
   for (const t of data as Record<string, unknown>[]) {
     const key = typeof t["media_ref"] === "string" ? t["media_ref"] : null;
     if (!key || !key.startsWith(`${projectId}/`)) continue;
-    const occ = t["scene_occurrences"] as { production_number?: string | null } | null;
+    const occ = t["scene_occurrences"] as { production_number?: string | null; productions?: { fps_num: number; fps_den: number } | null } | null;
+    const still = t["kind"] === "still";
+    const fps = occ?.productions;
+    const frames = t["duration_frames"];
+    const durationMs = !still && typeof frames === "number" && fps && fps.fps_num > 0
+      ? Math.ceil(frames * fps.fps_den * 1000 / fps.fps_num) : null;
+    if (!still && (durationMs === null || durationMs < 1 || durationMs > 15000)) continue;
     const num = occ?.production_number ? ` ${occ.production_number}` : "";
-    out.push({ id: String(t["id"]), name: `${num}`.trim() ? `Scene${num}` : String(t["id"]).slice(0, 8), sourceKey: key, mime: "video/mp4", durationMs: null, width: null, height: null });
+    out.push({ id: String(t["id"]), name: `${num}`.trim() ? `Scene${num}` : String(t["id"]).slice(0, 8), sourceKey: key, mime: still ? "image/png" : "video/mp4", durationMs, width: null, height: null });
   }
   return out;
+}
+
+/** Kun valgbare replikker fra prosjektet; teksten er lokal forhåndsvisning, aldri skriveinput. */
+export async function listDialogueCandidates(projectId: string): Promise<readonly { id: string; text: string }[]> {
+  const { data, error } = await db.from("script_blocks").select("id,text")
+    .eq("project_id", projectId).eq("kind", "dialogue").eq("removed", false).order("order_key");
+  if (error || !Array.isArray(data)) return [];
+  return data.flatMap(row => typeof row.id === "string" && typeof row.text === "string"
+    ? [{ id: row.id, text: row.text }] : []);
 }
 
 /* ---------- profil og avatar ---------- */
