@@ -19,7 +19,7 @@ function featureName(k: FeatureKey): string {
     case "community.abtest": return t("b114.feature.abtest");
     case "community.profiles": return t("b114.feature.profiles");
     case "community.public": return t("b114.feature.public");
-    case "ui.test-languages": return t("b115.feature.test-languages");
+    case "ui.test_languages": return t("b115.feature.test-languages");
   }
 }
 function stateName(s: FeatureState): string {

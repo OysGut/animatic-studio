@@ -7023,14 +7023,14 @@ try {
       for (const priv of ["insert", "update", "delete"])
         assert((await sql`select has_table_privilege('authenticated', ${`public.${t}`}, ${priv}) p`)[0]?.["p"] === false, `ingen direkte ${priv} på ${t}`);
     }
-    const keys = (await sql`select key, state from public.features order by key`).map((r) => `${r["key"]}=${r["state"]}`);
+    const keys = (await sql`select key, state from public.features where key like 'community.%' order by key`).map((r) => `${r["key"]}=${r["state"]}`);
     assert(keys.join() === "community.abtest=off,community.profiles=off,community.public=off,community.review=off,community.sharing=off", `alle av: ${keys}`);
     for (const c of ["handle", "bio", "avatar_key", "is_public", "profile_fields"])
       assert((await sql`select has_column_privilege('authenticated', 'public.profiles', ${c}, 'select') p`)[0]?.["p"] === false, `${c} kan ikke leses direkte`);
     // my_features
     await expectError(as("anon", null, (tx) => tx`select public.my_features()`), "42501");
     const mine = (await as("authenticated", ALICE, (tx) => tx`select public.my_features() f`))[0]!["f"] as Record<string, boolean>;
-    assert(Object.values(mine).length === 5 && Object.values(mine).every((v) => v === false), "my_features: alle av");
+    assert(Object.keys(mine).filter((k) => k.startsWith('community.')).length === 5 && Object.values(mine).every((v) => v === false), "my_features: alle av");
     // Bare administrator
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature('community.sharing', 'on', null)`), "42501");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}]::uuid[])`), "42501");
@@ -7160,10 +7160,10 @@ try {
   });
   await test("PTG1: prosjektkode/opptak og irreversible skuddreservasjoner", async () => {
     const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
-    await sql`insert into public.projects(id,name) values (${bp},'PTG test')`;
+    await sql`insert into public.projects(id,name,created_by) values (${bp},'PTG test',${ALICE})`;
     await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner')`;
-    await sql`insert into public.productions(id,project_id,kind,name) values (${prod},${bp},'main','Main')`;
-    await sql`insert into public.scenes(id,project_id) values (${scene},${bp})`;
+    await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values (${prod},${bp},'main','Main',24,1)`;
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${bp},${prod})`;
     await sql`insert into public.scene_variants(id,project_id,scene_id,owner_production_id) values (${variant},${bp},${scene},${prod})`;
     await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values (${occ},${bp},${prod},${scene},${variant},'a')`;
     await expectError(sql`update public.projects set code='bad code' where id=${bp}`, '23514');
@@ -7181,9 +7181,12 @@ try {
     assert(second?.versions[occ] === 2, 'etter fullføring v002');
     const third = (await reserve(ALICE))[0]?.['r'] as { versions: Record<string, number> };
     assert(third?.versions[occ] === 3, 'avbrutt reservasjon gjenbrukes ikke');
-    await sql`update public.export_records set settings=jsonb_set(settings,'{batchSize}','2'::jsonb)
-      where project_id=${bp} and settings->>'batchId'=${second.batchId}`;
-    await expectError(as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${second.batchId})`), '22023');
+    // Eksportloggen er uforanderlig (INV-13): lag en ufullstendig batch med lovlig insert (batchSize 2, én rad).
+    const partial = crypto.randomUUID();
+    await sql`insert into public.export_records(id,project_id,production_id,kind,file_name,settings,occurrence_ids,created_by)
+      values (${crypto.randomUUID()},${bp},${prod},'script','shotlist.zip',
+        ${sql.json({ interchange: true, phase: 'reserved', batchId: partial, shotVersion: 4, batchSize: 2 })},array[${occ}::uuid],${ALICE})`;
+    await expectError(as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${partial}::uuid)`), '22023');
     await as('service_role', null, tx => tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.export_records where project_id=${bp}`).length === 0,'eksportlogg slettet med prosjekt');
   });

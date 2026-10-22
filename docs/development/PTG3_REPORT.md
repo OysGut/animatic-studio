@@ -35,6 +35,9 @@ Dato: 22.10.2026. Grunnlag: `docs/development/PHASE3_PTG_SPEC.md` §4 og PTG-F1,
 
 - **Visuell suite `tests/visual/ptg3-camera.mjs` (nb/en)** og regresjonene ptg1-shotlist, export-e2e og p4: ikke kjørt her fordi `playwright` ikke er en prosjektavhengighet i dette miljøet (mts-harness importerer `playwright` fra node_modules). Suiten er skrevet etter samme mønster som ptg1-shotlist og bør kjøres i Claudes miljø.
 - **DB-tester:** ingen databaseendring i PTG3; ingen ny migrasjon (punkt 6 i oppdraget: migrasjon bare om nødvendig — ikke nødvendig, kameramodus er et eksportvalg, ikke prosjektdata).
+- **PTG1-rettinger (etter Claudes verifisering):** 0081 sin siste linje setter nå `description` (ordrett som kjørt i Cloud). DB-testen for PTG1 har `created_by`, `fps_num/fps_den` og `origin_production_id`, og lager den ufullstendige batchen med en lovlig insert (batchSize 2, én rad) i stedet for `update` på den uforanderlige eksportloggen; `complete_interchange_export` gir 22023.
+- **0082 rettet:** nøkkelen `ui.test-languages` brøt `features_key_check` (bindestrek ikke tillatt) og er endret til `ui.test_languages` i migrasjon og kode; 0082 setter nå skjemaversjon 82. C0-testen sjekker bare `community.*`-nøkler.
+- **Lokal Postgres satt opp på nytt** (PostgreSQL 17, port 54329, egen ikke-root-bruker). DB-suiten: **157 bestått, 0 feilet**. Full Vitest 2300 bestått/10 hoppet over; i18n-sjekk grønn.
 - Ekte import av `example.fbx` i Blender/Maya og kjøring av `bygg.jsx` i After Effects er ikke verifisert; FBX-eksporten er derfor merket eksperimentell.
 
 ## Avvik

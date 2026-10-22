@@ -11,7 +11,7 @@ export const FEATURE_KEYS = [
   "community.abtest",
   "community.profiles",
   "community.public",
-  "ui.test-languages",
+  "ui.test_languages",
 ] as const;
 export type FeatureKey = (typeof FEATURE_KEYS)[number];
 export type FeatureState = "off" | "beta" | "on";

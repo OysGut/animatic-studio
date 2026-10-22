@@ -340,4 +340,4 @@ end $$;
 revoke all on function public.complete_interchange_export(uuid,uuid) from public,anon;
 grant execute on function public.complete_interchange_export(uuid,uuid) to authenticated;
 
-insert into public.schema_version(version) values (81);
+insert into public.schema_version(version, description) values (81, '0081_ptg_interchange: B-102 PTG1 – prosjektkode, opptaksfrekvens og utvekslingsversjoner');

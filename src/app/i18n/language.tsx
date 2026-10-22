@@ -5,7 +5,7 @@
  * Språkbytte tegner visningen på nytt uten å montere den på nytt, så åpne utkast og pågående arbeid
  * beholdes. Sidene og de hurtigbufrede panelene abonnerer med `useLanguage()`.
  * Valgbare språk hentes fra språkmanifestet; testspråk (`en-XA`) er av som standard og slås på
- * med funksjonsbryteren «ui.test-languages» i Admin, eller med lokal utviklerinnstilling.
+ * med funksjonsbryteren «ui.test_languages» i Admin, eller med lokal utviklerinnstilling.
  */
 import { Languages } from "lucide-react";
 import { useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from "react";
@@ -27,7 +27,7 @@ export const LANGUAGE_BOOT_SCRIPT = `(function(){try{var v=localStorage.getItem(
 
 const useIso = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-/** Settes fra funksjonsbryteren «ui.test-languages» (Admin) når svaret er lest. Standard er av. */
+/** Settes fra funksjonsbryteren «ui.test_languages» (Admin) når svaret er lest. Standard er av. */
 let adminTestLanguages = false;
 
 /** Testspråk er av som standard; Admin slår dem på for alle, testmodus og lokal innstilling for utviklere. */
@@ -139,8 +139,8 @@ export async function chooseLanguage(lang: UiLang) {
 export function LanguageRoot({ children }: { children: ReactNode }) {
   const lang = useLanguage();
   const queryClient = useQueryClient();
-  // Funksjonsbryteren «ui.test-languages» (Admin): standard av; påvirker bare hvilke språk som tilbys.
-  const testLangs = useFeature("ui.test-languages");
+  // Funksjonsbryteren «ui.test_languages» (Admin): standard av; påvirker bare hvilke språk som tilbys.
+  const testLangs = useFeature("ui.test_languages");
   useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
   useEffect(() => {
     let identity: string | null | undefined;
@@ -200,7 +200,7 @@ export function LanguageRoot({ children }: { children: ReactNode }) {
 export function LanguageSwitch({ compact = false }: { compact?: boolean }) {
   const lang = useLanguage();
   // Tegnes på nytt når funksjonsbryteren er lest eller endret, så testspråket dukker opp/forsvinner.
-  const testLangs = useFeature("ui.test-languages");
+  const testLangs = useFeature("ui.test_languages");
   useEffect(() => { adminTestLanguages = testLangs; }, [testLangs]);
   const options = availableLanguages();
   const seg = (on: boolean) =>
