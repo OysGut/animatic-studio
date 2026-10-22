@@ -160,6 +160,7 @@ export async function writeZip(
       o.onProgress?.({ files: i + 1, totalFiles: entries.length, bytes, totalBytes });
     }
     if (missing.length > 0) {
+      // i18n-ignore: fast filnavn i pakkeformatet
       await add("MANGLER.txt", one(
         new TextEncoder().encode(
           tk("engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a", { value1: String(missing.join("\n")) }),
