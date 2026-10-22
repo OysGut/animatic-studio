@@ -25,7 +25,7 @@
 
 ## DV5/DV6 – rester før full verifikasjon
 - Claude: lokal DB og migrasjon 0061, nye RLS/grant/lease-tester og ende-til-ende med faste lydresultater.
-- DV5 (etter N3): angring av ett bakgrunnsresultat fra angrelisten merker ikke elementet som «angret»; «Angre hele jobben» stopper da med konflikt på det elementet. Resultater som blir ferdige mens panelet er lukket, kommer ikke på angrelisten.
+- DV5 (N5 rettet): et resultat angret fra angrelisten merkes «angret» av «Angre hele jobben», som hopper over det. Gjenstår: resultater ferdige mens panelet er lukket kommer fortsatt ikke på angrelisten.
 - Avklar gjenopprettet leverandørtilgang for varig blokkerte batcher uten automatiske probes.
 - Kontroller eksisterende cron-plan i Cloud og verifisering4-mikrofon/font i Claudes miljø.
 
@@ -135,8 +135,7 @@ N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md.
 
 **P0 (4)**
 
-- REQ-0269 – Leverandøruavhengig AI-arkitektur
-- REQ-0291 – Jobber uavhengige av nettleserfane
+- - REQ-0291 – Jobber uavhengige av nettleserfane
 - REQ-0293 – Vedvarende backend-jobbarkitektur
 - REQ-0504 – Prinsipp 26: Jobber og status bevares mellom økter
 
@@ -212,7 +211,7 @@ N4 (22.10) flyttet 48 krav til Verifisert; se docs/development/N4_REPORT.md.
 
 **N4-avvik og ekstern prøving**
 
-- AVVIK REQ-0269: AssetVoice.provider i src/core/model.ts er låst til «elevenlabs»; en ny taleleverandør krever endring i datamodellen. Låst av tests/architecture/n4-provider-agnostic.test.ts (listen skal bare krympe).
+- REQ-0269 (N5 rettet): AssetVoice.provider er leverandør-ID fra katalogen; kravet er Verifisert.
 - Krever ekstern prøving: REQ-0291, REQ-0293, REQ-0504 (lukket fane og gjenåpning mot ekte bakgrunnsjobb og leverandør), REQ-0685, REQ-0687, REQ-0689, REQ-0711 (ekte telefoner og opptak).
 
 ### Ikke startet (82)
