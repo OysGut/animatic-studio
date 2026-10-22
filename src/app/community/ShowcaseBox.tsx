@@ -39,6 +39,12 @@ const KIND_LABEL: Record<ShowcaseKind, string> = {
 };
 
 const EXPIRES_CHOICES = [7, 14, 30, 90] as const;
+const EXPIRES_LABEL: Record<number, string> = {
+  7: t("b116.expires.7"),
+  14: t("b116.expires.14"),
+  30: t("b116.expires.30"),
+  90: t("b116.expires.90"),
+};
 
 export interface ShowcaseProject {
   readonly id: string;
@@ -247,7 +253,7 @@ function CreateDialog({ projects, open, onOpenChange }: { projects: readonly Sho
               <Label htmlFor="showcase-expires" className="text-xs text-text-secondary">{t("b116.create.expires")}</Label>
               <select id="showcase-expires" data-testid="showcase-expires" value={days} onChange={(e) => setDays(Number(e.target.value))}
                 className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary">
-                {EXPIRES_CHOICES.map((d) => <option key={d} value={d}>{t(`b116.expires.${d}`)}</option>)}
+                {EXPIRES_CHOICES.map((d) => <option key={d} value={d}>{EXPIRES_LABEL[d]}</option>)}
               </select>
             </div>
             <div className="flex justify-end gap-2">

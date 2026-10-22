@@ -10,6 +10,14 @@ import { t } from "@/core/i18n/keyed";
 
 export const ADMIN_SHOWCASE_KEY = ["admin-showcase"] as const;
 
+const KIND_LABEL = {
+  character: t("b116.kind.character"),
+  asset: t("b116.kind.asset"),
+  scene: t("b116.kind.scene"),
+  script: t("b116.kind.script"),
+  audio: t("b116.kind.audio"),
+} as const;
+
 export function ShowcaseAdmin() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ADMIN_SHOWCASE_KEY, queryFn: fetchAdminShowcaseQueue });
@@ -51,7 +59,7 @@ export function ShowcaseAdmin() {
             <li key={item.id} data-testid={`admin-showcase-item-${item.id}`} className="flex flex-col gap-2 rounded-sm border border-border p-3">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-xs">
                 <span className="font-semibold text-text-primary">{item.title}</span>
-                <span className="text-text-tertiary">{t(`b116.kind.${item.kind}`)}</span>
+                <span className="text-text-tertiary">{KIND_LABEL[item.kind]}</span>
                 <span className="text-text-secondary">{item.authorName || "–"}</span>
                 <span className="text-text-tertiary">{item.projectName}</span>
               </div>

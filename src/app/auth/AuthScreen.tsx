@@ -12,6 +12,7 @@ import {
 } from "@/adapters/browser/captcha-auth";
 import { TurnstileBox } from "./TurnstileBox";
 import { LoginGlobe } from "./LoginGlobe";
+import { ShowcaseCarousel } from "@/app/community/ShowcaseCarousel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -350,6 +351,8 @@ export function AuthScreen({ invited = false }: { invited?: boolean } = {}) {
           <PrivacyLink />
         </div>
       </div>
+      {/* B-116: karusellen er festet nederst og flytter verken innloggingsboksen eller globusen */}
+      <ShowcaseCarousel signedIn={false} fixed />
     </main>
   );
 }

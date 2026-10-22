@@ -16,6 +16,13 @@ import { useTimeFormat } from "@/app/i18n/time-format";
 
 export const MY_SHOWCASE_KEY = ["showcase-mine"] as const;
 
+const EDIT_EXPIRES = [
+  { days: 7, label: t("b116.expires.7") },
+  { days: 14, label: t("b116.expires.14") },
+  { days: 30, label: t("b116.expires.30") },
+  { days: 90, label: t("b116.expires.90") },
+] as const;
+
 const STATUS_LABEL: Record<ShowcaseDisplayStatus, string> = {
   pending: t("b116.status.pending"),
   live: t("b116.status.live"),
@@ -60,7 +67,7 @@ export function MyShowcasePage() {
                   {STATUS_LABEL[item.status]}
                 </span>
                 {item.expiresAt && item.status !== "revoked" ? (
-                  <span className="tabular text-text-tertiary">{t("b116.mine.expiresAt", { date: time.date(item.expiresAt) })}</span>
+                  <span className="tabular text-text-tertiary">{t("b116.mine.expiresAt", { date: time.exact(item.expiresAt) })}</span>
                 ) : null}
                 <span className="text-text-tertiary">{item.projectName}</span>
               </div>
@@ -143,7 +150,7 @@ function EditDialog({ item, onClose, onSaved }: { item: MyShowcaseItem | null; o
             <Label htmlFor="showcase-edit-expires" className="text-xs text-text-secondary">{t("b116.create.expires")}</Label>
             <select id="showcase-edit-expires" data-testid="showcase-edit-expires" value={days} onChange={(e) => setDays(Number(e.target.value))}
               className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary">
-              {[7, 14, 30, 90].map((d) => <option key={d} value={d}>{t(`b116.expires.${d}`)}</option>)}
+              {EDIT_EXPIRES.map((d) => <option key={d.days} value={d.days}>{d.label}</option>)}
             </select>
           </div>
           {failed ? <p role="alert" className="text-xs text-status-danger">{t("b116.create.failed")}</p> : null}
