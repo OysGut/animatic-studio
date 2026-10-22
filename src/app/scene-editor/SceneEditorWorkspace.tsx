@@ -298,7 +298,9 @@ function Editor({
     const prev = prevDurationRef.current; prevDurationRef.current = duration;
     if (prev !== duration) setAnimationRange(r => followRangeLength(r, prev, duration));
   }, [duration]);
-  const playback = usePlayback(duration, state.project.fps, true, tracksOpen ? animationRange : null);
+  // REQ-0210 (N2): bildet følger lydklokken når scenen har lyd
+  const audioClock = useRef<(() => number | null) | null>(null);
+  const playback = usePlayback(duration, state.project.fps, true, tracksOpen ? animationRange : null, audioClock);
   // Lyden i scenen spilles med (DEC-0044)
   // Filmens scener (for lyd som løper inn fra tidligere scener og lyd i scenene rundt, DEC-0045)
   // Språkversjonen som er valgt i monteringen (DEC-0059): bare den lyden spilles
@@ -341,6 +343,7 @@ function Editor({
     urls: soundUrls.data ?? null,
     playing: playback.playing,
     time: framesToSeconds(playback.frame, state.project.fps),
+    clock: audioClock,
   });
   // I kameravisningen viser lerretet allerede det ferdige utsnittet
   const showPreview = view === "scene" && (previewOpen || (autoPreview && playback.playing));
