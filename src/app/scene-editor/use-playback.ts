@@ -79,7 +79,7 @@ export function usePlayback(
         const ext = clock?.current?.() ?? null;
         // Lydklokken bestemmer bildet; perioden følger med, så overgangen tilbake til klokka er sømløs
         if (ext !== null) start.current = { t: now - ext * 1000, frame: 0 };
-        const c = start.current;
+        const c = start.current ?? s;
         let f = c.frame + Math.floor((now - c.t) * perMs + 1e-6);
         if (f > rangeLast) {
           if (loop && span > 1) {
