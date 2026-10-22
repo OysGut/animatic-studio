@@ -312,6 +312,10 @@ export interface SceneOccurrence extends Entity<OccurrenceId> {
   readonly videoInstructions?: string;
   /** Scenetypen (MTS MT6). Mangler = «scene». */
   readonly kind?: OccurrenceKind;
+  /** Arbeidsstatus (B-118, migrasjon 0083). Mangler = ingen status. */
+  readonly workStatus?: import("./assembly/scene-marks").WorkStatus;
+  /** Scenefarge som palettnøkkel (B-118, migrasjon 0083). Mangler = ingen farge. */
+  readonly color?: import("./assembly/scene-marks").SceneColor;
 }
 
 /**

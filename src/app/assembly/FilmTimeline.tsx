@@ -3,6 +3,7 @@
  * manuset. Dra et klipp for å flytte scenen (samme kommando som i manuset, REQ-0228), dra i høyre kant av en
  * 2D-scene for å endre lengden (REQ-0224). Å endre lengden sletter aldri manus (REQ-0230).
  */
+import { SceneColorStripe } from "@/app/shell/SceneMark";
 import { TRANSITION_LABEL, transitionMarkBackground } from "./transitions";
 import { AlertTriangle, Clapperboard, Film, Layers } from "lucide-react";
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -476,6 +477,7 @@ const ClipBlock = memo(function ClipBlock({
         (dragging ? "z-20 opacity-80 shadow-[var(--shadow-float)] " : "")
       }
     >
+      <SceneColorStripe color={state.occurrences[clip.occurrenceId]?.color} />
       {clip.transition.kind !== "cut" ? (
         <span
           aria-hidden

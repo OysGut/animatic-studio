@@ -6,12 +6,13 @@
  */
 import { AlertTriangle, GripVertical, MessageSquare, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
-import { HIT_LABEL, STORY_KIND_LABEL, SCENE_STATUS_LABEL, collation, durationForecast, formatDuration, formatHeading, projectDurationAssumptions, keyBetween, type HitKind, orderedOccurrences, type ProjectState, type SceneStatus, type SceneFilter, type SceneOccurrence, sceneNumberOf } from "@/core";
+import { MARK_FILTER_NONE, SCENE_COLORS, WORK_STATUSES, HIT_LABEL, STORY_KIND_LABEL, SCENE_STATUS_LABEL, collation, durationForecast, formatDuration, formatHeading, projectDurationAssumptions, keyBetween, type HitKind, orderedOccurrences, type ProjectState, type SceneStatus, type SceneFilter, type SceneOccurrence, sceneNumberOf } from "@/core";
 import { Switch } from "@/components/ui/switch";
 import { uncertainVariants } from "./script-helpers";
 import { t, tLocalized } from "@/core/i18n/keyed";
 import type { SceneLastChange } from "@/adapters/browser/last-changed";
 import { useTimeFormat } from "@/app/i18n/time-format";
+import { SceneMark, sceneColorLabel, workStatusLabel } from "@/app/shell/SceneMark";
 
 const ASSET_KIND_SHORT: Record<string, string> = tLocalized({ animal: "app-script-scene-navigator.asset-kind-short.animal.91c86fa488be", object: "app-script-scene-navigator.asset-kind-short.object.e3a47268765c", location: "app-script-scene-navigator.asset-kind-short.location.8ad662addcf0", environment: "app-script-scene-navigator.asset-kind-short.environment.e2306110f3a0", other: "app-script-scene-navigator.asset-kind-short.other.6e0a697580d3" });
 
@@ -299,6 +300,44 @@ export function SceneNavigator({
             ))}
           </select>
         </div>
+        <div className="flex items-center gap-1.5">
+          <select
+            data-testid="nav-filter-work-status"
+            aria-label={t("b118.filter-status")}
+            value={filter.workStatus ?? ""}
+            onChange={(e) => {
+              const { workStatus: _w, ...rest } = filter;
+              onFilterChange(e.target.value ? { ...rest, workStatus: e.target.value } : rest);
+            }}
+            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value="">{t("b118.filter-status-all")}</option>
+            <option value={MARK_FILTER_NONE}>{t("b118.status.none")}</option>
+            {WORK_STATUSES.map((st) => (
+              <option key={st} value={st}>
+                {workStatusLabel(st)}
+              </option>
+            ))}
+          </select>
+          <select
+            data-testid="nav-filter-color"
+            aria-label={t("b118.filter-color")}
+            value={filter.color ?? ""}
+            onChange={(e) => {
+              const { color: _c, ...rest } = filter;
+              onFilterChange(e.target.value ? { ...rest, color: e.target.value } : rest);
+            }}
+            className="h-7 min-w-0 flex-1 rounded-sm border border-border-control bg-surface-3 px-1.5 text-xs text-text-primary"
+          >
+            <option value="">{t("b118.filter-color-all")}</option>
+            <option value={MARK_FILTER_NONE}>{t("b118.color.none")}</option>
+            {SCENE_COLORS.map((c) => (
+              <option key={c} value={c}>
+                {sceneColorLabel(c)}
+              </option>
+            ))}
+          </select>
+        </div>
         <label className="flex items-center gap-1.5 text-xs text-text-secondary">
           <input
             type="checkbox"
@@ -396,9 +435,9 @@ export function SceneNavigator({
                     {sceneNumberOf(state, o) ?? "–"}
                   </span>
                   <span className="min-w-0">
-                    <span className="block truncate text-text-primary">
+                    <SceneMark occurrence={o} className="flex w-full text-text-primary">
                       {v ? formatHeading(v.heading) : "—"}
-                    </span>
+                    </SceneMark>
                     <span className="flex items-center gap-1.5 text-[11px] text-text-tertiary">
                       {o.active ? (
                         <span className="tabular">

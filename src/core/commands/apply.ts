@@ -161,6 +161,7 @@ import type {
   CommandErrorCode,
 } from "./types";
 import { t as tk } from "@/core/i18n/keyed";
+import { isSceneColor, isWorkStatus } from "../assembly/scene-marks";
 
 export type ApplyResult =
   | {
@@ -3655,6 +3656,30 @@ function run(
           occurrenceId: o.id,
           monochrome: o.monochrome === true,
         },
+        affected: [o.id],
+      };
+    }
+
+    case "SetOccurrenceWorkStatus": {
+      const o = need(s.occurrences[c.occurrenceId], tk("b118.err-scene-missing"));
+      if (c.workStatus !== null && !isWorkStatus(c.workStatus)) fail("invalid", tk("b118.err-status"));
+      const { workStatus: _old, ...rest } = o;
+      const next = c.workStatus !== null ? { ...rest, workStatus: c.workStatus } : rest;
+      return {
+        state: { ...s, occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } } },
+        inverse: { type: "SetOccurrenceWorkStatus", occurrenceId: o.id, workStatus: o.workStatus ?? null },
+        affected: [o.id],
+      };
+    }
+
+    case "SetOccurrenceColor": {
+      const o = need(s.occurrences[c.occurrenceId], tk("b118.err-scene-missing"));
+      if (c.color !== null && !isSceneColor(c.color)) fail("invalid", tk("b118.err-color"));
+      const { color: _old, ...rest } = o;
+      const next = c.color !== null ? { ...rest, color: c.color } : rest;
+      return {
+        state: { ...s, occurrences: { ...s.occurrences, [o.id]: { ...next, revision: rev(o) } } },
+        inverse: { type: "SetOccurrenceColor", occurrenceId: o.id, color: o.color ?? null },
         affected: [o.id],
       };
     }

@@ -104,6 +104,16 @@
   --color-status-discrepancy-bg: var(--status-discrepancy-bg);
   --color-status-uncertain-bg: var(--status-uncertain-bg);
   --color-status-moved: var(--status-moved);
+  --color-scene-red: var(--scene-red);
+  --color-scene-orange: var(--scene-orange);
+  --color-scene-yellow: var(--scene-yellow);
+  --color-scene-green: var(--scene-green);
+  --color-scene-teal: var(--scene-teal);
+  --color-scene-blue: var(--scene-blue);
+  --color-scene-indigo: var(--scene-indigo);
+  --color-scene-purple: var(--scene-purple);
+  --color-scene-pink: var(--scene-pink);
+  --color-scene-gray: var(--scene-gray);
   --color-status-moved-bg: var(--status-moved-bg);
   --color-note: var(--note);
   --color-note-bg: var(--note-bg);
@@ -177,6 +187,17 @@
   --status-uncertain: oklch(0.797 0.134 84.3);
   /* Flyttet siden siste lagrede versjon (REQ-0533) */
   --status-moved: oklch(0.74 0.12 300);
+  /* Scenefarger (B-118): mellomlyse og mettede, så de synes på lys og mørk bakgrunn */
+  --scene-red: oklch(0.63 0.21 27);
+  --scene-orange: oklch(0.72 0.17 55);
+  --scene-yellow: oklch(0.84 0.16 92);
+  --scene-green: oklch(0.68 0.17 145);
+  --scene-teal: oklch(0.7 0.12 190);
+  --scene-blue: oklch(0.62 0.17 255);
+  --scene-indigo: oklch(0.55 0.19 280);
+  --scene-purple: oklch(0.6 0.2 310);
+  --scene-pink: oklch(0.7 0.18 355);
+  --scene-gray: oklch(0.62 0.01 260);
   --camera-start: oklch(0.648 0.189 258.5);
   --camera-end: oklch(0.665 0.222 25.7);
   --script-paper: oklch(0.222 0.006 271.1);

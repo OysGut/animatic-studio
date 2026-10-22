@@ -40,3 +40,34 @@ export function subscribeChangeLog(projectId: string, onChange: () => void): () 
     void browserClient.removeChannel(channel);
   };
 }
+
+/** B-118: siste endring av arbeidsstatus og farge per sceneforekomst (fra endringsloggen). */
+export interface SceneMarkChange {
+  readonly at: string;
+  readonly actor: string;
+}
+export interface SceneMarkChanges {
+  readonly status: ReadonlyMap<string, SceneMarkChange>;
+  readonly color: ReadonlyMap<string, SceneMarkChange>;
+}
+
+export async function fetchSceneMarkChanges(projectId: string): Promise<SceneMarkChanges> {
+  const { data, error } = await db
+    .from("change_log") // i18n-ignore: tabellnavn
+    .select("command_type,command,actor,created_at") // i18n-ignore: kolonner
+    .eq("project_id", projectId)
+    .in("command_type", ["SetOccurrenceWorkStatus", "SetOccurrenceColor"]) // i18n-ignore: kommandonavn
+    .order("created_at", { ascending: false })
+    .limit(1000);
+  const status = new Map<string, SceneMarkChange>();
+  const color = new Map<string, SceneMarkChange>();
+  if (error || !Array.isArray(data)) return { status, color };
+  for (const r of data as Record<string, unknown>[]) {
+    const cmd = r["command"] as { occurrenceId?: unknown } | null;
+    const occ = typeof cmd?.occurrenceId === "string" ? cmd.occurrenceId : null;
+    if (!occ || typeof r["created_at"] !== "string" || typeof r["actor"] !== "string") continue;
+    const target = r["command_type"] === "SetOccurrenceColor" ? color : status;
+    if (!target.has(occ)) target.set(occ, { at: r["created_at"], actor: r["actor"] });
+  }
+  return { status, color };
+}

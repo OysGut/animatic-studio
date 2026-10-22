@@ -529,6 +529,18 @@ export type Command = import("../animation/rig-commands").RigCommand
       readonly monochrome: boolean;
     }
   | {
+      /** Arbeidsstatus for scenen i produksjonen (B-118); null fjerner statusen. */
+      readonly type: "SetOccurrenceWorkStatus";
+      readonly occurrenceId: OccurrenceId;
+      readonly workStatus: string | null;
+    }
+  | {
+      /** Scenefarge som palettnøkkel (B-118); null fjerner fargen. */
+      readonly type: "SetOccurrenceColor";
+      readonly occurrenceId: OccurrenceId;
+      readonly color: string | null;
+    }
+  | {
       readonly type: "SetActiveTake";
       readonly occurrenceId: OccurrenceId;
       readonly takeId: TakeId | null;

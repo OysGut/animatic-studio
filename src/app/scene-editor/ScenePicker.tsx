@@ -17,6 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { t } from "@/core/i18n/keyed";
 import type { SceneLastChange } from "@/adapters/browser/last-changed";
 import { useTimeFormat } from "@/app/i18n/time-format";
+import { SceneMark } from "@/app/shell/SceneMark";
 
 export function ScenePicker({
   state,
@@ -124,12 +125,12 @@ export function ScenePicker({
             <span className="font-mono text-[11px] text-text-tertiary">
               {current?.number ?? "–"}
             </span>
-            <span className="min-w-0 truncate">
+            <SceneMark occurrence={current?.o} className="flex-1">
               {current?.heading ??
                 (rows.length === 0
                   ? t("app-scene-editor-scene-picker.scene-picker.span.068fd0d667cb")
                   : t("app-scene-editor-scene-picker.scene-picker.span.8ed6c0bbf4c1"))}
-            </span>
+            </SceneMark>
             {current && !current.o.active ? (
               <span className="shrink-0 rounded-sm bg-surface-1 px-1 text-chrome-label uppercase text-text-tertiary">
                 {t("app-scene-editor-scene-picker.scene-picker.span.a2f3918e8931")}
@@ -211,12 +212,12 @@ export function ScenePicker({
                   <span className="w-8 shrink-0 font-mono text-[11px] text-text-tertiary">
                     {r.number}
                   </span>
-                  <span className="min-w-0 flex-1 truncate">
+                  <SceneMark occurrence={r.o} className="flex-1 self-center">
                     {r.heading}
                     {r.o.active ? null : (
                       <span className="sr-only"> {t("app-scene-editor-scene-picker.scene-picker.span.e53812e40fcb")}</span>
                     )}
-                  </span>
+                  </SceneMark>
                   {synced?.has(r.o.id) ? (
                     <span
                       className="inline-flex shrink-0 items-center gap-0.5 text-[11px] text-status-uncertain"

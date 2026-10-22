@@ -693,6 +693,12 @@ export const runCommand = createServerFn({ method: "POST" })
           message: tk("adapters-storage-commands-functions.message.message.04b0cde81aaf"),
         };
     }
+    // Scenestatus og scenefarge (B-118) krever migrasjon 0083
+    if (data.command.type === "SetOccurrenceWorkStatus" || data.command.type === "SetOccurrenceColor") {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 83)
+        return { ok: false, code: "schema", message: tk("b118.err-schema") };
+    }
     // Prosjektets format krever migrasjon 0008
     if (data.command.type === "SetProjectFormat" || data.command.type === "UndoSetProjectFormat") {
       const schema = await checkSchema(admin);

@@ -7,6 +7,7 @@
  * oversiktens varighetsestimat (med brukerens antakelser), så tallene henger sammen. Deaktiverte scener er
  * med i listen, men ikke i summene (mandat 7.2).
  */
+import { markMatches } from "./scene-marks";
 import type { ProjectState } from "../model";
 import { framesToSeconds } from "../time";
 import { assetsInScene } from "../library";
@@ -264,7 +265,17 @@ export function matchingScenes(
   /** Statusradene (kan regnes ut én gang og gjenbrukes mens brukeren skriver). */
   rows?: readonly SceneStatusRow[],
 ): Set<string> {
-  const base = matchingOccurrences(s, productionId, f);
+  const marked = matchingOccurrences(s, productionId, f);
+  // B-118: arbeidsstatus og farge ligger på forekomsten selv
+  const base =
+    f.workStatus || f.color
+      ? new Set(
+          [...marked].filter((id) => {
+            const o = s.occurrences[id];
+            return !!o && markMatches(o.workStatus, f.workStatus) && markMatches(o.color, f.color);
+          }),
+        )
+      : marked;
   if (!f.assetId && !f.status && !f.discrepancy) return base;
   const list = rows ?? productionStatus(s, productionId, estimateProduction(s, productionId)).rows;
   const out = new Set<string>();

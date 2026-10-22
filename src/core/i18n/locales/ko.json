@@ -54497,5 +54497,195 @@
     "text": "Dragonframe 패키지: 샷마다 폴더 하나이며, 샷 목록과 같은 이름입니다. 각 폴더에는 촬영 프레임 레이트의 참조 영상(_ref.mp4, H.264)이 있으며, 프레임 단위로 정확하고 핸들을 포함합니다. 투스에서는 각 노출이 두 프레임 동안 표시됩니다. 선택 사항인 PNG 시퀀스(png/)는 정확히 같은 프레임입니다. 오디오(audio/)는 WAV 48 kHz 24비트로, 핸들을 포함한 샷과 같은 길이이며 볼륨 포인트와 페이드가 적용되어 있습니다. 캐릭터별 스템(DIA_), 앰비언스(AMB), 음악(MUS), 효과음(SFX), 전체 믹스(MIX)가 선택한 언어 버전으로 들어 있습니다. X-시트는 노출마다 한 행인 CSV와 PDF(A4 및 Letter)로 제공되며, 입 열은 입 모양 이름이 추가될 때까지 비어 있습니다. Dragonframe으로 가져오기: 1) 장면을 열고 Video Assist / 참조 레이어를 선택한 뒤 _ref.mp4(또는 PNG 시퀀스)를 참조로 가져옵니다. 2) Audio 창에서 MIX 파일 또는 대사 스템을 가져오고 시작을 프레임 1로 설정합니다. 3) X-Sheet를 열고 xsheet.csv를 가져오거나 PDF를 인쇄해 리그 옆에 둡니다. 대사 트랙 읽기에는 AI를 사용할 수 있지만, 패키지는 AI 없이 만들어집니다.",
     "sourceHash": "be35d9f12482b38d49a6fac8da96aa3ab5fec543fb0cbad73622e6e3bbfdaaa6",
     "review": "machine"
+  },
+  "b118.err-scene-missing": {
+    "text": "장면이 존재하지 않습니다",
+    "sourceHash": "1991f9bd6cdf9759e0b6b0e4434323eb2075a0abfde31f627b13991a07e0293c",
+    "review": "machine"
+  },
+  "b118.err-status": {
+    "text": "알 수 없는 장면 상태",
+    "sourceHash": "33ac554791b0878f48c910deb4242f825a1af6ff567cc2dfc418348f2594acd8",
+    "review": "machine"
+  },
+  "b118.err-color": {
+    "text": "알 수 없는 장면 색상",
+    "sourceHash": "365c07d97f5c30670f9f306a2cf26310b53524a08848f8c9427f364f7563c47c",
+    "review": "machine"
+  },
+  "b118.err-schema": {
+    "text": "장면 상태와 장면 색상을 사용하려면 데이터베이스 업데이트(마이그레이션 0083)가 필요합니다.",
+    "sourceHash": "4648c8484b23335da4876a115c1aab456ee0b272928a538e022d65c817c9f681",
+    "review": "machine"
+  },
+  "b118.status.none": {
+    "text": "상태 없음",
+    "sourceHash": "991e67df024919b5225f2e65ff51e0ec78c20183001498636c955913b6e56af3",
+    "review": "machine"
+  },
+  "b118.status.setup": {
+    "text": "셋업 준비 완료",
+    "sourceHash": "0be762548d3461069879c8924c509204ad297fe5460b4fe0480cad56b2011faa",
+    "review": "machine"
+  },
+  "b118.status.animating": {
+    "text": "애니메이션 중",
+    "sourceHash": "32f6a25b1ba4d72f20aec747fb2c953c04af772f17808b0076d0b647dc0e8490",
+    "review": "machine"
+  },
+  "b118.status.review": {
+    "text": "검토 대기",
+    "sourceHash": "04c22dc12c9ad7e4eb26197c597d999401347ca1f1df1f969b109b36cf5034c6",
+    "review": "machine"
+  },
+  "b118.status.retake": {
+    "text": "리테이크",
+    "sourceHash": "8d2cb94f02843089f48a882575a8184326b81b0d29b19bf91b3cf9b309714272",
+    "review": "machine"
+  },
+  "b118.status.approved": {
+    "text": "승인됨",
+    "sourceHash": "4e2e9aabb013a5b255ba34f58e88b4a4d31be0fdcbe6839209cd046896989044",
+    "review": "machine"
+  },
+  "b118.status.post": {
+    "text": "후반 작업 중",
+    "sourceHash": "6a3fea847969a2631730f4b0b7ef54498dea48d53c2086907e3ea3be6d855207",
+    "review": "machine"
+  },
+  "b118.status.done": {
+    "text": "완료",
+    "sourceHash": "753e9175ccd285a256cadfbab21272e42d7b85ea4f65229806ba31d891a16f46",
+    "review": "machine"
+  },
+  "b118.color.none": {
+    "text": "색상 없음",
+    "sourceHash": "211785032ae01153e26c9c4bf0db7a727519e9c2be750b6b2161fca9d43d8eb9",
+    "review": "machine"
+  },
+  "b118.color.red": {
+    "text": "빨강",
+    "sourceHash": "d3d81e59865de7c6b4f741cf82e43ffcff2246f962158d0b3865d552a4f6ded4",
+    "review": "machine"
+  },
+  "b118.color.orange": {
+    "text": "주황",
+    "sourceHash": "4eddeaca4fa5edf2c677a61da2bf4c492536d3f36806323f222d4966deaa40a3",
+    "review": "machine"
+  },
+  "b118.color.yellow": {
+    "text": "노랑",
+    "sourceHash": "e767125379661349ccde77f3f1e6dc70a0ad21983dc558137e5c021cd86a37a5",
+    "review": "machine"
+  },
+  "b118.color.green": {
+    "text": "초록",
+    "sourceHash": "19c49c91092abad455b36be268b92f73509555e03ca208b0f5f43374e8685b62",
+    "review": "machine"
+  },
+  "b118.color.teal": {
+    "text": "청록",
+    "sourceHash": "bd5bf81ce1c6ae45ac633fd81cf880cd0af0000eccef5dedec962c5a93b4be45",
+    "review": "machine"
+  },
+  "b118.color.blue": {
+    "text": "파랑",
+    "sourceHash": "0e75c7f75eed426eaa6ca1585db97e79f329d411675eb21df2b05db27f7ddbb2",
+    "review": "machine"
+  },
+  "b118.color.indigo": {
+    "text": "남색",
+    "sourceHash": "7ea07fa004f179de169ea086c9c4b4cca3460bbfab282014c10728a61c328404",
+    "review": "machine"
+  },
+  "b118.color.purple": {
+    "text": "보라",
+    "sourceHash": "ff16fc8b251aacdedfae1890b345d83fc8e5d6852c59f4561a2f88135a2630f6",
+    "review": "machine"
+  },
+  "b118.color.pink": {
+    "text": "분홍",
+    "sourceHash": "3792217f0eaca0fa643266ab82b506256ee5f05d146deebfb11a5e68a272cec5",
+    "review": "machine"
+  },
+  "b118.color.gray": {
+    "text": "회색",
+    "sourceHash": "d27006e7394d3199dc71d90b05e598b9dc00427f0cab816e1d9aae0b368a33d1",
+    "review": "machine"
+  },
+  "b118.tip": {
+    "text": "{label} · {time}에 변경",
+    "sourceHash": "6025c816e63545be071c9f273bece19ae025111acaff8d71f70a6f0490f20d61",
+    "review": "machine"
+  },
+  "b118.tip-by": {
+    "text": "{label} · {time}에 {name}님이 변경",
+    "sourceHash": "afb977aeda22d731b9418e8f45edf73683f716979b8f6f0d1ab3e61bfde722c7",
+    "review": "machine"
+  },
+  "b118.status-aria": {
+    "text": "장면 상태: {value}",
+    "sourceHash": "a336599437f469bd204ead329dab94a4ca37bd7222ea049849ca06cada86dc1a",
+    "review": "machine"
+  },
+  "b118.color-aria": {
+    "text": "장면 색상: {value}",
+    "sourceHash": "05e2f7ed427950255f0aa999b7b80288bbfb1771ea5f26cd496e2da2f59fea8f",
+    "review": "machine"
+  },
+  "b118.status-menu": {
+    "text": "장면 상태 선택",
+    "sourceHash": "0974e5de9201b0e7a317c048a0d28ee91c722fa86c58d4eda46ed6defad9d10c",
+    "review": "machine"
+  },
+  "b118.color-menu": {
+    "text": "장면 색상 선택",
+    "sourceHash": "a2718979dafb74e43b4ee8b5a24e50237bbad5b53f93d8259601d059ffe3e645",
+    "review": "machine"
+  },
+  "b118.color-label": {
+    "text": "색상",
+    "sourceHash": "114f0bd79a563f876e6a52bcc8ae89aceb266e1ace66c1df5b1b9ad4b924a294",
+    "review": "machine"
+  },
+  "b118.show-status": {
+    "text": "상태 표시",
+    "sourceHash": "360a553a4b4c1d9556e4a2495e0d513050658bf87da9d858f83914142747cee6",
+    "review": "machine"
+  },
+  "b118.show-colors": {
+    "text": "색상 표시",
+    "sourceHash": "29422662df56b06b434d61af7abe33d551c281775db1952c4934ea2e303088fd",
+    "review": "machine"
+  },
+  "b118.undo-status": {
+    "text": "장면 상태 변경",
+    "sourceHash": "141a0a64bd816d8e3ec20ced636af260e83a12495bb499c3a066074b5b782d4f",
+    "review": "machine"
+  },
+  "b118.undo-color": {
+    "text": "장면 색상 변경",
+    "sourceHash": "e0320316f7fda7617cfe07517183496cad868a77a87159cec642706e2ae2f059",
+    "review": "machine"
+  },
+  "b118.filter-status": {
+    "text": "장면 상태로 필터",
+    "sourceHash": "30a4b11692be714a891e22e9d48b9faf939a96a0446bbb8366dfef51d2086ac3",
+    "review": "machine"
+  },
+  "b118.filter-status-all": {
+    "text": "모든 상태",
+    "sourceHash": "4b3cec735fe5a5b46509f0d658a8e74cad12cdc12572266c73e10457ceef7b09",
+    "review": "machine"
+  },
+  "b118.filter-color": {
+    "text": "장면 색상으로 필터",
+    "sourceHash": "d841d839ba9cf938cbb5ea0f44640644318d6989108f16e814ff32cd6b33d32a",
+    "review": "machine"
+  },
+  "b118.filter-color-all": {
+    "text": "모든 색상",
+    "sourceHash": "8d6fa2d86201154290b110b775ce74315dd120645d906b788e714445ffc1f8e8",
+    "review": "machine"
   }
 }

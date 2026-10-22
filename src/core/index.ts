@@ -113,3 +113,4 @@ export * from "./screenplay/forecast";
 export * from "./library/context-links";
 export * from "./assembly/material-update";
 export * from "./interchange";
+export * from "./assembly/scene-marks";
