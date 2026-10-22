@@ -2,7 +2,7 @@
 
 ## Status 21.10.2026
 
-B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story Lab-prompter på serveren) er ferdige og testet. KR-1 er utført. **Ett avvik:** bildepromptene er ikke flyttet til serveren (se «Avvik»). Migrasjon 0078 ble rettet etter lokal DB-test (se «Migrasjon»).
+B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story Lab-prompter på serveren) er ferdige og testet. KR-1 er utført. Bildepromptene er flyttet til serveren etter avklaringen 21.10 (del 3). Migrasjon 0078 ble rettet etter lokal DB-test (se «Migrasjon»).
 
 ## Del 1 – én felles vei for bilder
 
@@ -21,6 +21,15 @@ B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story L
 - Klienten sender bare oppgavetype og ID-er/parametere, aldri systemtekst.
 - Arkitekturvakt: `tests/architecture/server-prompts.test.ts` (ingen promptbyggere, `system:` eller rå tekstkall i klientkode).
 
+## Del 3 – bildeprompter på serveren (avklart 21.10)
+
+Brukerens egen prompttekst er brukerinnhold og blir i klienten. Systemtekst, maler, stilregler og vedleggsinstruksjoner settes sammen på serveren.
+- `src/adapters/ai/image-prompts.server.ts`: zod-validert `imagePromptRequest` (asset, turnaround, variation, part, harmonize, styleDraft). `composeImagePrompt` bygger mal, stilregler og vedlegg fra prosjektdata; `finalImagePrompt` legger en fersk vedleggsliste på brukerens tekst (en innsendt liste fra klienten fjernes).
+- `generateImage` tar `promptRequest`: serveren leser prosjektet med brukerens tilgang (RLS), bygger sluttprompten og velger referansebildene selv. Innsendte stier styrer ikke vedleggene.
+- `previewImagePrompt` (ny, krever innlogging): returnerer den redigerbare teksten, negativ prompt, sammendrag og vedleggsmetadata – uten systemdel og uten filstier.
+- Panelene GenerateImagePanel, ImageAiPanels (turnaround, variasjon), ImagePartsPanel, HarmonizePanel og stilguiden (ulagret utkast) bruker forhåndsvisningen fra serveren.
+- Arkitekturvakten omfatter bildemalene og serverbyggeren. Video-/scenepromptene (GenerateSceneDialog, SceneToVideoDialog) er ikke bildeprompter og er ikke flyttet.
+
 ## Migrasjon 0078
 
 `db/migrations/0078_b105a_derived_files.sql`, additiv, med 0077 som utgangspunkt:
@@ -36,11 +45,12 @@ B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story L
 
 ## Tester (kjørt én om gangen)
 
-- Full Vitest: **2225 bestått, 10 hoppet over, 0 feilet** etter rettingen (ny enhetstest for prefiks og «..»).
+- Full Vitest etter del 3: **2233 bestått, 10 hoppet over, 0 feilet** (ny `b105a-image-prompts` 5/5; `verifisering4-ai-ui` venter nå på serverforhåndsvisningen).
 - DB lokalt: **154/154**. 0078-testen dekker avvist ukjent nøkkel, avvist sti til et annet prosjekt, avvist «..», avvist sti uten prefiks, global CHECK med gruppeprefiks, RLS, ingen direkte klientskriving, at purge tar med egne avledede stier, og at purge ikke tar med en fremmed sti selv om CHECK er fjernet (i en transaksjon som rulles tilbake). 0077-testen sjekket `=== 77` og ble endret til `>= 77`, som de andre versjonstestene.
 - i18n: `check.mjs` 0 tekster uten engelsk; ingen nye språkstrenger.
 - Nye enhetstester: `b105a-image-ingest` 10/10, `b105a-image-use` 8/8, `b105a-server-prompts` 6/6, arkitekturvakt grønn.
 - Regresjon: export-e2e film og scene (videofil > 0 byte), rigg-r4 12/12, u5-screens 63/63, scene-panels-ui 39/39, storylab-ui 32/32, storylab-scene-ui 18/18, t2-writing-ui 69/69, job-read 8/8. Også rigg-r1 12/12, rigg-r2 17/17, rigg-r3 15/15.
+- Etter del 3 også: image-tools-ui 48/48, p8-style-harmonize 110/110, m6-rest 74/74 (mocker de serverbygde oppgavene og sjekker oppgaven i stedet for malteksten), verifisering4-ui 57/58. Den ene feilen (REQ-0050, Courier Prime-bredde 6,44 em) skyldes at fonten ikke lastes i testmiljøet, ikke denne endringen. verifisering4-ui mistet de falske mediene når fast Chromium-sti manglet; rettet.
 - Testendringer: export-e2e velger norsk eksplisitt (standardspråket er engelsk etter B-111); storylab-suitene mocker de nye serverfunksjonene; `schema-version.mjs` er 78.
 - Tidligere feil i t2/u5 skyldtes testkjøreren min, som tvang `UI_LANG=nb` også på de engelske scenarioene. Uten den er begge grønne.
 
@@ -48,7 +58,7 @@ B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story L
 
 - `.map`-filer: **0**.
 - Klientbunter: 175 JS-filer; hver av de 19 rutefilene har egen bunt (18 navngitte + index).
-- Promptsignaturer i klientbunten: 0 (prompttekst finnes bare i serverbunten).
+- Kjørt på nytt etter del 3: 0 `.map`, 175 JS-filer, 19 rutebunter. Promptsignaturer i klientbunten: 0 (bare et regulært uttrykk som fjerner overskriften «ATTACHED IMAGES» fra brukerens tekst).
 
 ## KR-1
 
@@ -62,4 +72,5 @@ B-105a del 1 (bildeopplasting, avledede filer, proxy/original) og del 2 (Story L
 
 ## Avvik / åpne spørsmål
 
-- **Bildeprompter er ikke flyttet til serveren.** I GenerateImagePanel og de andre bildepanelene er prompten en tekst brukeren ser og kan redigere, og den forrige prompten huskes (Mars 13.10). Det finnes ingen skjult systemtekst. Hvis prompten bygges på serveren, kan brukeren ikke lenger se og redigere den før kjøringen. Det er en produktendring, så jeg har ikke valgt den selv. **Spørsmål:** skal bildepromptene bygges på serveren, med en forhåndsvisning hentet derfra?
+- Ingen åpne spørsmål om bildepromptene (avklart 21.10).
+- REQ-0050-målingen i verifisering4-ui krever at Courier Prime lastes i testmiljøet.

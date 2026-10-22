@@ -659,6 +659,7 @@ export type Database = {
           composition: Json | null
           created_at: string
           created_by: string | null
+          derived_files: Json | null
           derived_from_version_id: string | null
           duration_ms: number | null
           font_spec: Json | null
@@ -687,6 +688,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_files?: Json | null
           derived_from_version_id?: string | null
           duration_ms?: number | null
           font_spec?: Json | null
@@ -715,6 +717,7 @@ export type Database = {
           composition?: Json | null
           created_at?: string
           created_by?: string | null
+          derived_files?: Json | null
           derived_from_version_id?: string | null
           duration_ms?: number | null
           font_spec?: Json | null
@@ -2472,6 +2475,7 @@ export type Database = {
           byte_size: number
           created_at: string
           created_by: string
+          derived_files: Json | null
           duration_ms: number | null
           font_spec: Json | null
           global_asset_id: string
@@ -2491,6 +2495,7 @@ export type Database = {
           byte_size: number
           created_at?: string
           created_by: string
+          derived_files?: Json | null
           duration_ms?: number | null
           font_spec?: Json | null
           global_asset_id: string
@@ -2510,6 +2515,7 @@ export type Database = {
           byte_size?: number
           created_at?: string
           created_by?: string
+          derived_files?: Json | null
           duration_ms?: number | null
           font_spec?: Json | null
           global_asset_id?: string
@@ -5971,6 +5977,7 @@ export type Database = {
       global_add_version: {
         Args: {
           p_bytes: number
+          p_derived_files?: Json
           p_duration_ms: number
           p_font_spec?: Json
           p_height: number

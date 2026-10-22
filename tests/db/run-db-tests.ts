@@ -6931,6 +6931,83 @@ try {
     for (const path of ["o.png", "p.webp", "t.webp", "r.tiff", "o2.png"])
       assert(r.paths.includes(`${dp}/${path}`), `purge tar med ${path}`);
   });
+  // ---------- Rigg runde 5: utskriftsjobber, kopier og koder (0079) ----------
+  await test("0079 (B-087 R5): jobber via apply_changes, én kopi per rad, pepret QR/kortkode, oppslag krever tilgang", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 79, "skjemaversjon 79");
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('Utskrift') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const scene = crypto.randomUUID(), variant = crypto.randomUUID(), comp = crypto.randomUUID(), layer = crypto.randomUUID();
+    const a = crypto.randomUUID(), av = crypto.randomUUID(), ver = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values(${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id) values(${variant},${bp},${scene})`;
+    await sql`insert into public.compositions(id,project_id,variant_id) values(${comp},${bp},${variant})`;
+    await sql`insert into public.composition_layers(id,project_id,composition_id,order_key,kind,width,height,fill,transform) values(${layer},${bp},${comp},'a','character',100,100,'#ffffff','{}')`;
+    await sql`insert into public.assets (id, project_id, kind, name) values (${a}, ${bp}, 'character', 'Maja')`;
+    await sql`insert into public.asset_variants (id, project_id, asset_id, name, style) values (${av}, ${bp}, ${a}, 'Standard', 'reference')`;
+    await sql`insert into public.asset_versions (id, project_id, variant_id, number, media_path, mime_type, byte_size_big, sha256)
+      values (${ver}, ${bp}, ${av}, 1, ${`${bp}/o.png`}, 'image/png', 1, ${"b".repeat(64)})`;
+    const job = crypto.randomUUID(), e1 = crypto.randomUUID(), e2 = crypto.randomUUID();
+    const el = (id: string, frame: number, copies: number, position: number) => ({ id, project_id: bp, job_id: job, position, layer_id: layer, version_id: ver, scene_id: scene, frame, copies, note: "", up_arrow: false, revision: 1 });
+    const apply = (changes: unknown, inv: unknown = {}) => as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${crypto.randomUUID()},${tx.json({ type: "SavePrintJob" })},${tx.json(inv as never)},${tx.json(changes as never)})`);
+    // To identiske elementer (A2/A3): begge lagres
+    await apply({ inserts: { print_jobs: [{ id: job, project_id: bp, name: "Maja", settings: { qr: "outside" }, revision: 1 }], print_job_elements: [el(e1, 5, 20, 0), el(e2, 5, 1, 1)] } },
+      { deletes: { print_job_elements: [{ id: e1, expected_revision: 1 }, { id: e2, expected_revision: 1 }], print_jobs: [{ id: job, expected_revision: 1 }] } });
+    for (const t of ["print_jobs", "print_job_elements", "print_copies"]) {
+      const rls = (await sql`select relrowsecurity r from pg_class where oid=${`public.${t}`}::regclass`)[0];
+      assert(rls?.["r"] === true, `RLS på ${t}`);
+      const anon = await sql`select has_table_privilege('anon', ${`public.${t}`}, 'select') p`;
+      assert(anon[0]?.["p"] === false, `anon har ingen tilgang til ${t}`);
+    }
+    assert((await sql`select has_column_privilege('authenticated', 'public.print_copies', 'code_digest', 'select') p`)[0]?.["p"] === false, "klienten kan ikke lese code_digest");
+    assert((await as("authenticated", ALICE, (tx) => tx`select id from public.print_job_elements where job_id=${job}`)).length === 2, "medlem leser elementene; ingen sammenslåing");
+    assert((await as("authenticated", CAROL, (tx) => tx`select id from public.print_jobs where project_id=${bp}`)).length === 0, "ikke-medlem ser ingen jobber");
+    await expectError(as("authenticated", ALICE, (tx) => tx`update public.print_jobs set name='X' where id=${job}`), "42501");
+    await expectError(as("authenticated", ALICE, (tx) => tx`insert into public.print_copies(project_id,element_id,copy_number,code_digest,short_digest) values(${bp},${e1},99,${"a".repeat(64)},${"b".repeat(64)})`), "42501");
+    for (const bad of [{ copies: 0 }, { copies: 201 }, { frame: -1 }, { note: "x".repeat(501) }])
+      await expectError(apply({ inserts: { print_job_elements: [{ ...el(crypto.randomUUID(), 1, 1, 9), ...bad }] } }), "23514");
+    // Én rad per fysisk kopi (A1): 20 + 1
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.issue_print_copies(${bp}, ${job})`), "42501");
+    const n = Number((await as("authenticated", ALICE, (tx) => tx`select public.issue_print_copies(${bp}, ${job}) n`))[0]!["n"]);
+    assert(n === 21, `21 kopier (fikk ${n})`);
+    const codes = await as("authenticated", ALICE, (tx) => tx`select * from public.print_copy_codes(${bp}, ${job})`);
+    assert(codes.length === 21 && new Set(codes.map((c) => c["key"])).size === 21 && new Set(codes.map((c) => c["short_code"])).size === 21, "unike nøkler og korte koder");
+    assert(codes.every((c) => /^[A-Za-z0-9_-]{43}$/.test(String(c["key"])) && /^[0-9ABCDEFGHJKMNPQRSTVWXYZ]{8}$/.test(String(c["short_code"]))), "nøkkel 43 tegn, kort kode 8 tegn Crockford");
+    const stored = await sql`select code_digest, short_digest from public.print_copies where project_id=${bp}`;
+    assert(!stored.some((r) => codes.some((c) => String(r["code_digest"]).includes(String(c["key"])) || String(r["short_digest"]).includes(String(c["short_code"])))), "koden lagres ikke i klartekst");
+    // Ny utskrift: samme koder
+    assert(Number((await as("authenticated", ALICE, (tx) => tx`select public.issue_print_copies(${bp}, ${job}) n`))[0]!["n"]) === 0, "ny utskrift lager ingen nye kopier");
+    const again = await as("authenticated", ALICE, (tx) => tx`select key from public.print_copy_codes(${bp}, ${job})`);
+    assert(again.map((r) => r["key"]).join() === codes.map((c) => c["key"]).join(), "ny utskrift gir samme koder");
+    // Oppslag
+    const k = String(codes[3]!["key"]), sc = String(codes[3]!["short_code"]);
+    const hit = await as("authenticated", ALICE, (tx) => tx`select * from public.lookup_print_copy(${k})`);
+    assert(hit.length === 1 && hit[0]!["scene_id"] === scene && hit[0]!["frame"] === 5 && hit[0]!["layer_id"] === layer && Object.keys(hit[0]!).sort().join() === "copy_number,frame,layer_id,project_id,scene_id", "oppslag gir bare prosjekt, scene, frame, lag og kopinummer");
+    const typed = `${sc.slice(0, 4).toLowerCase()} - ${sc.slice(4)}`.replace(/0/g, "o").replace(/1/g, "l");
+    assert((await as("authenticated", ALICE, (tx) => tx`select * from public.lookup_print_copy(${typed}, ${bp})`)).length === 1, "kort kode normaliseres (O/0, I/L/1, mellomrom, bindestrek)");
+    assert((await as("authenticated", CAROL, (tx) => tx`select * from public.lookup_print_copy(${k})`)).length === 0, "uten tilgang: tomt svar");
+    assert((await as("authenticated", CAROL, (tx) => tx`select * from public.lookup_print_copy(${sc})`)).length === 0, "kort kode uten tilgang: tomt svar");
+    await expectError(as("anon", null, (tx) => tx`select * from public.lookup_print_copy(${k})`), "42501");
+    assert((await as("authenticated", ALICE, (tx) => tx`select * from public.lookup_print_copy(${"x".repeat(43)})`)).length === 0, "ukjent kode: tomt svar");
+    // Tilbaketrekking
+    await expectError(as("authenticated", CAROL, (tx) => tx`select public.revoke_print_copies(${bp}, ${job})`), "42501");
+    assert(Number((await as("authenticated", ALICE, (tx) => tx`select public.revoke_print_copies(${bp}, ${job}) n`))[0]!["n"]) === 21, "alle kopiene trekkes tilbake");
+    assert((await as("authenticated", ALICE, (tx) => tx`select * from public.lookup_print_copy(${k})`)).length === 0, "tilbaketrukket kode: tomt svar");
+    // Vern: versjonen som skrives ut, kan ikke slettes for godt
+    await sql`update public.asset_versions set removed = true where id = ${ver}`;
+    await expectError(as("service_role", null, (tx) => tx`select public.purge_removed_assets(${bp},${ALICE},'{}'::uuid[],array[${ver}]::uuid[])`), /23503|utskriftsjobb/);
+    await sql`update public.asset_versions set removed = false where id = ${ver}`;
+    // Angre opprettelse (lagret invers) fjerner jobben, elementene og kopiene
+    const saved = (await sql`select inverse from public.change_log where project_id=${bp} and inverse ? 'deletes' order by created_at desc limit 1`)[0]!["inverse"];
+    await apply(saved);
+    assert((await sql`select id from public.print_job_elements where job_id=${job}`).length === 0 && (await sql`select id from public.print_copies where project_id=${bp}`).length === 0, "angring av opprettelse fjerner elementer og kopier");
+    // delete_project og purge rydder utskriftsrader
+    await apply({ inserts: { print_jobs: [{ id: job, project_id: bp, name: "Maja", settings: {}, revision: 1 }], print_job_elements: [el(e1, 5, 2, 0)] } });
+    await as("authenticated", ALICE, (tx) => tx`select public.issue_print_copies(${bp}, ${job})`);
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select 1 from public.print_copies where project_id=${bp} union all select 1 from public.print_jobs where project_id=${bp}`).length === 0, "delete_project sletter utskriftsrader");
+    await as("service_role", null, (tx) => tx`select public.purge_project_assets(${bp},${ALICE})`);
+    assert((await sql`select id from public.projects where id=${bp}`).length === 0, "purge fjerner prosjektet");
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

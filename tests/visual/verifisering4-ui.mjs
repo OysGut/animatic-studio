@@ -383,16 +383,15 @@ async function mock(ctx) {
   });
 }
 
+const LAUNCH_ARGS = [
+  "--use-fake-ui-for-media-stream",
+  "--use-fake-device-for-media-stream",
+  "--autoplay-policy=no-user-gesture-required",
+];
+// Reserve uten fast sti beholder de falske mediene (ellers feiler opptaket i andre miljøer)
 const browser = await chromium
-  .launch({
-    executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome",
-    args: [
-      "--use-fake-ui-for-media-stream",
-      "--use-fake-device-for-media-stream",
-      "--autoplay-policy=no-user-gesture-required",
-    ],
-  })
-  .catch(() => chromium.launch());
+  .launch({ executablePath: "/opt/pw-browsers/chromium-1194/chrome-linux/chrome", args: LAUNCH_ARGS })
+  .catch(() => chromium.launch({ args: LAUNCH_ARGS }));
 
 async function openPage(path, viewport = { width: 1440, height: 900 }) {
   const ctx = await browser.newContext({
@@ -410,6 +409,8 @@ async function openPage(path, viewport = { width: 1440, height: 900 }) {
   await page.addInitScript(
     ([k, v]) => {
       localStorage.setItem(k, v);
+      // B-111: engelsk er standard; suiten sjekker de norske tekstene
+      localStorage.setItem("animatic:lang", "nb");
       // Lagringsvinduet avbrytes i hodeløs Chromium: bruk vanlig nedlasting (som export-e2e.mjs)
       delete window.showSaveFilePicker;
       // Lydmålinger (REQ-0210/0578): hver lydkilde som startes, med kontekstens klokke

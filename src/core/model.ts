@@ -971,6 +971,9 @@ export interface ProjectState {
   readonly stylePreferredReferences: Readonly<Record<string, import("./generation/style-harmonize").StylePreferredReference>>;
   /** Rigg & 2D-utskrift (B-087, migrasjon 0071): riggmaler og rigger (standardrigg og per scene). */
   readonly measureSets?: Readonly<Record<string, import("./print/measure/commands").StoredMeasureSet>>;
+  /** Rigg runde 5 (B-087, migrasjon 0079): utskriftsjobber og elementene deres. */
+  readonly printJobs?: Readonly<Record<string, import("./print/job/commands").StoredPrintJob>>;
+  readonly printJobElements?: Readonly<Record<string, import("./print/job/commands").StoredPrintJobElement>>;
   readonly rigTemplates: Readonly<Record<string, import("./rig/multiplane").RigTemplate>>;
   readonly rigSetups: Readonly<Record<string, import("./rig/multiplane").RigSetup>>;
   readonly project: Project;
@@ -1407,6 +1410,8 @@ export const COLLECTION_TABLES = {
   styleHarmonizations: "style_harmonizations",
   stylePreferredReferences: "style_preferred_references",
   measureSets: "measure_sets",
+  printJobs: "print_jobs",
+  printJobElements: "print_job_elements",
   rigTemplates: "rig_templates",
   rigSetups: "rig_setups",
 } as const;
@@ -1459,6 +1464,8 @@ export function emptyProjectState(project: Project): ProjectState {
     styleHarmonizations: {},
     stylePreferredReferences: {},
     measureSets: {},
+    printJobs: {},
+    printJobElements: {},
     rigTemplates: {},
     rigSetups: {},
   };

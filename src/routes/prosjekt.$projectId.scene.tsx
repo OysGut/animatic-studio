@@ -15,7 +15,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/scene")({
     { property: "og:type", content: "website" }, // i18n-ignore: metakode
     { name: "twitter:card", content: "summary" }, // i18n-ignore: metakode
   ] }),
-  validateSearch: (s: Record<string, unknown>): { scene?: string; line?: string; at?: number; fane?: string } => {
+  validateSearch: (s: Record<string, unknown>): { scene?: string; line?: string; at?: number; fane?: string; lag?: string } => {
     const id = (v: unknown) => typeof v === "string" && /^[0-9a-f-]{36}$/i.test(v);
     if (!id(s["scene"])) return {};
     const at = Number(s["at"]);
@@ -24,6 +24,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/scene")({
       ...(id(s["line"]) ? { line: s["line"] as string } : {}),
       ...(Number.isInteger(at) && at >= 0 && at < 1e9 ? { at } : {}),
       ...(s["fane"] === "animation" || s["fane"] === "scene" ? { fane: s["fane"] } : {}),
+      ...(id(s["lag"]) ? { lag: s["lag"] as string } : {}),
     };
   },
   component: SceneEditorRoute,
@@ -32,7 +33,7 @@ export const Route = createFileRoute("/prosjekt/$projectId/scene")({
 function SceneEditorRoute() {
   useLanguage(); // ML2a: tegnes på nytt ved språkbytte uten remontering
   const { projectId } = Route.useParams();
-  const { scene, line, at, fane } = Route.useSearch();
+  const { scene, line, at, fane, lag } = Route.useSearch();
   const session = useSession();
   if (session.status !== "signed-in") return null;
   return (
@@ -43,6 +44,7 @@ function SceneEditorRoute() {
       initialLineId={line ?? null}
       initialFrame={at ?? null}
       initialTab={fane ?? null}
+      initialLayerId={lag ?? null}
     />
   );
 }

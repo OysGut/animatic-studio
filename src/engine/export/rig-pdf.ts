@@ -3,9 +3,26 @@ import { t } from '@/core/i18n/keyed';
 import type { Point } from '@/core/print/contour';
 import type { PrintPlan } from '@/core/print/pdf/layout';
 import { markerValue, formatMeasurement } from '@/core/print/measure';
+import { backQrRect, backsideRect, duplexTestMarks, formatShortCode, qrRect, type DuplexOffset, type PrintJobSettings } from '@/core/print/job';
+import type { Rect } from '@/core/print/pdf/layout';
+
+/** Rigg runde 5: QR per kopi. Modulene er ferdig beregnet (ingen nettverk); nøkkelen står bare i QR-en. */
+export interface CopyQr { readonly modules: readonly (readonly boolean[])[]; readonly shortCode: string }
+export interface JobPdfOptions {
+  readonly settings: PrintJobSettings;
+  /** Per PrintItem.id (kopi-ID). */
+  readonly qr: ReadonlyMap<string, CopyQr>;
+  readonly offset: DuplexOffset;
+}
+function drawQr(doc: jsPDF, q: CopyQr, r: Rect) {
+  const n = q.modules.length; if (!n) return;
+  const cell = r.width / n;
+  doc.setFillColor(255, 255, 255); doc.rect(r.x, r.y, r.width, r.height, 'F'); doc.setFillColor(0, 0, 0);
+  q.modules.forEach((row, y) => row.forEach((on, x) => { if (on) doc.rect(r.x + x * cell, r.y + y * cell, cell, cell, 'F'); }));
+}
 
 /** No DOM, canvas, resampling or file I/O. Encoded images are embedded at source resolution. */
-export function renderPdf(plan: PrintPlan): jsPDF {
+export function renderPdf(plan: PrintPlan, job?: JobPdfOptions): jsPDF {
   const doc = new jsPDF({ unit:'mm', format:[plan.width,plan.height], orientation:plan.width>plan.height?'landscape':'portrait', floatPrecision:16, compress:false });
   doc.viewerPreferences({ PrintScaling:'None' });
   const line = (a:Point,b:Point) => doc.line(a.x,a.y,b.x,b.y);
@@ -56,7 +73,13 @@ export function renderPdf(plan: PrintPlan): jsPDF {
         const rotate=(x:number,y:number)=>({x:origin.x+x*Math.cos(a)-y*Math.sin(a),y:origin.y+x*Math.sin(a)+y*Math.cos(a)});
         line(origin,rotate(0,-8)); line(rotate(0,-8),rotate(-2,-5)); line(rotate(0,-8),rotate(2,-5));
       }
-      if (item.reserveQr) { doc.rect(r.x+(item.upArrow?18:0),iy,14,14); doc.text(t('print-pdf.qr',{},plan.language),r.x+(item.upArrow?19:1),iy+6); }
+      const code = job?.qr.get(item.id);
+      if (code && job && job.settings.qr !== 'back') {
+        const q = qrRect(r, job.settings, iy)!;
+        const at = job.settings.qr === 'outside' ? { ...q, x: r.x + (item.upArrow ? 18 : 0) } : q;
+        drawQr(doc, code, at);
+        doc.setFontSize(6); doc.text(formatShortCode(code.shortCode), at.x, at.y + at.height + 2.5); doc.setFontSize(8);
+      } else if (item.reserveQr && !job) { doc.rect(r.x+(item.upArrow?18:0),iy,14,14); doc.text(t('print-pdf.qr',{},plan.language),r.x+(item.upArrow?19:1),iy+6); }
       if (p.rows*p.columns>1) doc.text(t('print-pdf.tile',{row:p.row+1,column:p.column+1},plan.language),r.x,plan.height-12);
     }
     if (plan.calibration) {
@@ -65,6 +88,35 @@ export function renderPdf(plan: PrintPlan): jsPDF {
       for (const tick of plan.calibration.ticks) { doc.line(x+tick.mm,y,x+tick.mm,y-(tick.major?4:2)); if (tick.label) doc.text(tick.label,x+tick.mm,y+4); }
     }
     doc.text(plan.instruction,plan.content.x,plan.height-6);
+    // Baksiden (tosidig): QR bak hver figur, plassert speilvendt etter vendingen og forskjøvet etter testarket
+    if (job?.settings.qr === 'back' && job.settings.duplex && sheet.kind === 'figures') {
+      doc.addPage([plan.width,plan.height],plan.width>plan.height?'landscape':'portrait');
+      for (const p of sheet.placements) {
+        const code = job.qr.get(p.item.id); if (!code) continue;
+        const q = backQrRect(p.rect, plan, job.settings.flip, job.offset);
+        drawQr(doc, code, q);
+        doc.setFontSize(6); doc.text(formatShortCode(code.shortCode), q.x, q.y + q.height + 2.5); doc.setFontSize(8);
+      }
+    }
   });
+  return doc;
+}
+
+/** Testark for tosidig utskrift: kryss på forsiden, de samme speilet på baksiden. Forskyvningen måles i mm. */
+export function renderDuplexTestSheet(paper: { width: number; height: number }, flip: 'long' | 'short', language?: string): jsPDF {
+  const doc = new jsPDF({ unit:'mm', format:[paper.width,paper.height], orientation:paper.width>paper.height?'landscape':'portrait', compress:false });
+  doc.viewerPreferences({ PrintScaling:'None' });
+  const cross = (x: number, y: number, size: number) => { doc.line(x-size,y,x+size,y); doc.line(x,y-size,x,y+size); };
+  doc.setLineWidth(.2); doc.setFontSize(8);
+  for (const m of duplexTestMarks(paper)) cross(m.x, m.y, 8);
+  doc.text(t('print-job.duplex-front', {}, language), 20, 12);
+  doc.addPage([paper.width,paper.height],paper.width>paper.height?'landscape':'portrait');
+  doc.setLineWidth(.1);
+  for (const m of duplexTestMarks(paper)) {
+    const b = backsideRect({ x: m.x, y: m.y, width: 0, height: 0 }, paper, flip, { x: 0, y: 0 });
+    cross(b.x, b.y, 8);
+    for (let i = -5; i <= 5; i++) { doc.line(b.x + i, b.y + 9, b.x + i, b.y + (i % 5 === 0 ? 12 : 10.5)); doc.line(b.x + 9, b.y + i, b.x + (i % 5 === 0 ? 12 : 10.5), b.y + i); }
+  }
+  doc.text(t('print-job.duplex-back', {}, language), 20, 12);
   return doc;
 }

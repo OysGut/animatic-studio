@@ -74447,5 +74447,176 @@
   },
   "app-library-derived-backfill.label": {
     "text": "Lagret avledede bildefiler"
+  },
+  "print-job.invalid": {
+    "text": "Ugyldig utskriftsjobb"
+  },
+  "print-job.empty": {
+    "text": "Legg til minst ett element"
+  },
+  "print-job.too-many": {
+    "text": "For mange elementer eller kopier i én jobb"
+  },
+  "print-job.copies": {
+    "text": "Antall kopier"
+  },
+  "print-job.frame": {
+    "text": "Ugyldig frame"
+  },
+  "print-job.note": {
+    "text": "Merknad"
+  },
+  "print-job.stroke": {
+    "text": "Klippelinjen må være mellom 0,05 og 0,3 mm"
+  },
+  "print-job.scale": {
+    "text": "Ugyldig målestokk"
+  },
+  "print-job.title": {
+    "text": "Utskriftsjobb"
+  },
+  "print-job.name": {
+    "text": "Navn på jobben"
+  },
+  "print-job.reopen": {
+    "text": "Åpne «{name}»"
+  },
+  "print-job.add-frame": {
+    "text": "Denne framen ({frame}) × {count}"
+  },
+  "print-job.from": {
+    "text": "Fra frame"
+  },
+  "print-job.to": {
+    "text": "Til frame"
+  },
+  "print-job.add-range": {
+    "text": "Frame X–Y"
+  },
+  "print-job.add-range-n": {
+    "text": "Frame X–Y × {count} kopier hver"
+  },
+  "print-job.element": {
+    "text": "Frame {frame}"
+  },
+  "print-job.remove": {
+    "text": "Fjern elementet"
+  },
+  "print-job.shared": {
+    "text": "Felles for hele jobben"
+  },
+  "print-job.qr": {
+    "text": "QR-kode"
+  },
+  "print-job.qr-outside": {
+    "text": "Utenfor figuren"
+  },
+  "print-job.qr-figure": {
+    "text": "På figuren"
+  },
+  "print-job.qr-back": {
+    "text": "På baksiden"
+  },
+  "print-job.qr-corner": {
+    "text": "Plassering på figuren"
+  },
+  "print-job.corner-top-left": {
+    "text": "Øverst til venstre"
+  },
+  "print-job.corner-top-right": {
+    "text": "Øverst til høyre"
+  },
+  "print-job.corner-bottom-left": {
+    "text": "Nederst til venstre"
+  },
+  "print-job.corner-bottom-right": {
+    "text": "Nederst til høyre"
+  },
+  "print-job.corner-center": {
+    "text": "Midt på flaten"
+  },
+  "print-job.qr-visible": {
+    "text": "QR-koden på figuren blir synlig i opptak."
+  },
+  "print-job.copy-number": {
+    "text": "Skriv kopinummeret på arket"
+  },
+  "print-job.id-text": {
+    "text": "ID-tekst"
+  },
+  "print-job.duplex": {
+    "text": "Tosidig utskrift"
+  },
+  "print-job.flip": {
+    "text": "Vend langs"
+  },
+  "print-job.flip-long": {
+    "text": "Lang kant"
+  },
+  "print-job.flip-short": {
+    "text": "Kort kant"
+  },
+  "print-job.printer": {
+    "text": "Skriver"
+  },
+  "print-job.offset-x": {
+    "text": "Forskyvning x (mm)"
+  },
+  "print-job.offset-y": {
+    "text": "Forskyvning y (mm)"
+  },
+  "print-job.test-sheet": {
+    "text": "Testark for tosidig utskrift"
+  },
+  "print-job.duplex-front": {
+    "text": "Forside: skriv ut tosidig og hold arket mot lyset. Mål hvor mye kryssene på baksiden er forskjøvet."
+  },
+  "print-job.duplex-back": {
+    "text": "Bakside: skalaen ved hvert kryss er i mm."
+  },
+  "print-job.totals": {
+    "text": "{elements} elementer · {copies} kopier · {sheets} ark"
+  },
+  "print-job.sheet": {
+    "text": "Ark {number}"
+  },
+  "print-job.save-label": {
+    "text": "Lagre utskriftsjobb"
+  },
+  "print-job.done": {
+    "text": "PDF-en er laget med {count} kopier."
+  },
+  "print-job.failed": {
+    "text": "Utskriftsjobben kunne ikke lages. Prøv igjen."
+  },
+  "print-job.create": {
+    "text": "Lag PDF"
+  },
+  "print-job.reprint": {
+    "text": "Skriv ut på nytt (samme koder)"
+  },
+  "print-job.frame-label": {
+    "text": "Frame {frame} · {time}"
+  },
+  "print-job.code-label": {
+    "text": "Kode fra utskrift"
+  },
+  "print-job.code-open": {
+    "text": "Åpne"
+  },
+  "print-job.code-unknown": {
+    "text": "Koden kunne ikke åpnes. Den er ukjent, trukket tilbake, eller du har ikke tilgang."
+  },
+  "print-job.code-opening": {
+    "text": "Åpner figuren …"
+  },
+  "print-job.code-section": {
+    "text": "Åpne en utskrevet figur"
+  },
+  "print-job.route-title": {
+    "text": "Utskrevet figur – Pen to Glass"
+  },
+  "print-job.route-description": {
+    "text": "Åpner figuren fra en utskrift i riktig scene og frame."
   }
 }

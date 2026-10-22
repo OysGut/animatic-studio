@@ -38,6 +38,7 @@ function serverFnName(url) {
 /** Hvit bakgrunn med en rød figur i midten (AI-bilder og vinkelark har som regel hvit bakgrunn). */
 const WHITE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1600" viewBox="0 0 1200 1600"><rect width="1200" height="1600" fill="#ffffff"/><rect x="420" y="500" width="360" height="620" fill="#b8322a"/><rect x="460" y="560" width="120" height="500" fill="#e8a33a"/></svg>`;
 const UPLOADS = [];
+const PREVIEWS = [];
 const RUNS = [];
 const GENS = [];
 let genN = 0;
@@ -100,6 +101,9 @@ async function mock(ctx) {
       });
     if (/projectAiProviders/.test(name))
       return json({ providers: ["lovable", "google", "openai", "fal"], missing: false });
+    // B-105a: prompten settes sammen på serveren; forhåndsvisningen mockes
+    if (/previewImagePrompt/.test(name)) PREVIEWS.push(body);
+    if (/previewImagePrompt/.test(name)) return json({ ok: true, preview: { prompt: "Drawing style: mocked. Keep the identity of image 1.", negative: null, summary: null, legendChars: 0, attached: [{ versionId: "00000000-0000-7000-8000-000000000001", role: "identity", label: "image 1" }] } });
     if (/generateImage/.test(name)) {
       GENS.push(body);
       genN++;
@@ -363,11 +367,9 @@ await run("i03-variasjoner", async (page) => {
   );
   await panel.getByRole("button", { name: /Vis beskrivelsen som sendes/ }).click();
   const pre = (await panel.getByTestId("prompt-preview").textContent()) ?? "";
-  check(pre.includes('"the door stands open"'), "teksten står i beskrivelsen");
-  check(
-    /Keep everything else exactly as in the original/.test(pre),
-    "beskrivelsen ber om å beholde resten",
-  );
+  // B-105a: malen settes sammen på serveren; forhåndsvisningen ber serveren om oppgaven med brukerens tekst
+  check(PREVIEWS.some((b) => b.includes("the door stands open") && b.includes("variation")), "teksten sendes til serveren som oppgave");
+  check(pre.length > 0 && !/Keep everything else exactly as in the original/.test(pre) || /mocked/.test(pre), "beskrivelsen vises fra serveren");
   await page.screenshot({ path: `${out}/i03a-variasjoner.png` });
   await panel.getByRole("button", { name: /Lag 2 variasjoner/ }).click();
   check(
@@ -387,7 +389,7 @@ await run("i03-variasjoner", async (page) => {
     GENS.every((g) => g.includes("the door stands open")),
     "teksten sendes i prompten",
   );
-  check(/variation 2 of 2/.test(GENS[1] ?? ""), "variasjon 2 av 2 er merket i prompten");
+  check(/"variation"/.test(GENS[1] ?? "") && (GENS[1] ?? "").includes('{"t":0,"s":1},{"t":0,"s":2}'), "variasjon 2 av 2 sendes i oppgaven (index 1, count 2)");
   check(
     RUNS.filter((r) => /AddAssetVersion/.test(r)).length === 2 &&
       RUNS.some((r) => /the door stands open/.test(r)),
@@ -436,12 +438,15 @@ await run("i04-deler", async (page) => {
     .first()
     .waitFor({ timeout: 30000 });
   console.log("   status:", (await status(dlg).textContent())?.slice(0, 250));
+  console.log("   uploads:", UPLOADS.map((u) => u.path).join(" "));
   const all = RUNS.join("\n");
   check(
     /CreateAssets/.test(all) && /Dørblad|D\\u00f8rblad/.test(all),
     "delen er lagret som nytt objekt med navn",
   );
-  check(UPLOADS.length === 2, `delen og originalen uten delen er lastet opp (${UPLOADS.length})`);
+  // B-105a: avledede miniatyrer/proxyer lastes opp ved siden av originalene
+  const originals = UPLOADS.filter((u) => !/-(miniatyr|proxy)\.webp$/.test(u.path));
+  check(originals.length === 2, `delen og originalen uten delen er lastet opp (${originals.length})`);
   check(
     RUNS.filter((r) => /AddAssetVersion/.test(r)).length === 2,
     "ny versjon av originalen der delen er fjernet",

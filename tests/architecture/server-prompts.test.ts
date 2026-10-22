@@ -21,6 +21,19 @@ const BUILDERS = [
   "contextLinkPrompt",
   "materialUpdatePrompt",
 ];
+/** Bildemalene og stilreglene (B-105a): brukerens egen prompttekst kan stå i klienten, malene ikke. */
+const IMAGE_TEMPLATES = [
+  "buildImagePrompt",
+  "buildContextImagePrompt",
+  "buildContextImageBrief",
+  "renderBrief",
+  "buildPartPrompt",
+  "buildVariationPrompt",
+  "buildHarmonizePrompt",
+  "withAttachedLegend",
+  "describeAttached",
+  "briefSummaryNb",
+];
 
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((f) => {
@@ -41,6 +54,27 @@ describe("B-105a – promptene bygges på serveren", () => {
       BUILDERS.filter((b) => new RegExp(`\\b${b}\\b`).test(src)).map((b) => `${f}: ${b}`),
     );
     expect(hits).toEqual([]);
+  });
+  it("ingen klientfil bruker bildemalene eller stilreglene", () => {
+    const hits = files.flatMap(({ f, src }) =>
+      IMAGE_TEMPLATES.filter((b) => new RegExp(`\\b${b}\\b`).test(src)).map((b) => `${f}: ${b}`),
+    );
+    expect(hits).toEqual([]);
+  });
+  it("ingen klientfil importerer bildemalbyggeren på serveren", () => {
+    expect(files.filter(({ src }) => /image-prompts\.server/.test(src)).map(({ f }) => f)).toEqual([]);
+  });
+  it("bildegenereringen setter sammen prompten på serveren med zod og brukerens tilgang", () => {
+    const gen = readFileSync(join(ROOT, "src/adapters/ai/generate-image.functions.ts"), "utf8");
+    expect(gen).toMatch(/imagePromptRequest\.safeParse/);
+    expect(gen).toMatch(/loadProjectState\(userDb/);
+    const pre = readFileSync(join(ROOT, "src/adapters/ai/image-prompt.functions.ts"), "utf8");
+    expect(pre).toMatch(/requireSupabaseAuth/);
+    expect(pre).toMatch(/loadProjectState\(context\.supabase/);
+    expect(pre).not.toMatch(/console\./);
+    const b = readFileSync(join(ROOT, "src/adapters/ai/image-prompts.server.ts"), "utf8");
+    expect(b).toMatch(/from "zod"/);
+    expect(b).not.toMatch(/console\./);
   });
   it("ingen klientfil sender ferdig systemtekst (`system:`)", () => {
     const hits = files.filter(({ src }) => /\bsystem\s*:/.test(src)).map(({ f }) => f);

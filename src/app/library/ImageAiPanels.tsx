@@ -15,7 +15,7 @@
 import { Loader2, Rotate3d, Shuffle, ZoomIn } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { buildContextImageBrief, buildVariationPrompt, collation, IMAGE_PURPOSE_FOR_KIND, formatUsd, imageSizesOf, IMAGE_SIZE_LABEL, locale, mainProduction, tm, promptFamilyOf, providerModel, providersFor, renderBrief, turnaroundAttachments, TURNAROUND_VIEWS, VERSION_VIEW_LABEL, VERSION_VIEWS, withAttachedLegend, estimateCostUsd, type AssetVersion, type ImageBrief, type ImageSize, type VersionView } from "@/core";
+import { collation, IMAGE_PURPOSE_FOR_KIND, formatUsd, imageSizesOf, IMAGE_SIZE_LABEL, locale, mainProduction, tm, promptFamilyOf, providerModel, providersFor, TURNAROUND_VIEWS, VERSION_VIEW_LABEL, VERSION_VIEWS, estimateCostUsd, type AssetVersion, type ImageSize, type VersionView } from "@/core";
 import { generateImage } from "@/adapters/ai/generate-image.functions";
 import { aiJobsKey } from "@/app/ai/use-ai-jobs";
 import { useProjectProviders } from "@/app/ai/use-project-providers";
@@ -29,6 +29,7 @@ import {
   type ImageModelPick,
 } from "./image-model";
 import type { LightboxTools } from "./ImageLightbox";
+import { useImagePromptPreview } from "./image-prompt-preview";
 import { t } from "@/core/i18n/keyed";
 
 const field =
@@ -121,41 +122,26 @@ export function TurnaroundPanel({
       : null;
   const family = promptFamilyOf(choice?.provider.id ?? "lovable", choice?.model.id);
 
-  /** Beskrivelse og bilder for én generering. */
-  function request(view: VersionView | null, extra: { versionId: string; view: VersionView }[]) {
-    if (!main) return null;
-    const attached = turnaroundAttachments(state, {
+  /** B-105a: innstillingene prompten og vedleggene bygges fra på serveren. */
+  function promptRequest(view: VersionView | null, extra: { versionId: string; view: VersionView }[]) {
+    return {
+      kind: "turnaround" as const,
       assetId: asset.id,
-      productionId: main.id,
-      identityVersionId: version.id,
+      versionId: version.id,
+      view,
+      views: [...sheetViews],
       extraViews: extra,
       style: withStyle,
-    });
-    const brief = buildContextImageBrief(state, {
-      assetId: asset.id,
-      variantId: version.variantId,
-      productionId: main.id,
-      occurrenceId: null,
-      withReference: true,
-      attached,
       family,
       transparent: !!model?.transparent && mode !== "sheet",
-      task: view ? "view" : "sheet",
-      views: view ? [view] : sheetViews,
-    });
-    if (!brief) return null;
-    const r = renderBrief(brief, family);
-    return {
-      attached,
-      prompt: withAttachedLegend(r.prompt, asset.name, attached),
-      negative: r.negative,
     };
   }
-  const preview = useMemo(
-    () => (ordered.length ? request(mode === "sheet" ? null : ordered[0]!, []) : null),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state, mode, views, withStyle, key],
-  );
+  const preview =
+    useImagePromptPreview(
+      projectId,
+      main && ordered.length ? promptRequest(mode === "sheet" ? null : ordered[0]!, []) : null,
+      state,
+    ).data ?? null;
 
   async function run() {
     if (!choice) return;
@@ -170,8 +156,7 @@ export function TurnaroundPanel({
             ? t("app-library-image-ai-panels.run.set-busy.07b6dccfb31a")
             : t("app-library-image-ai-panels.run.set-busy.07437c0a99ae", { value1: String(VERSION_VIEW_LABEL[view!].toLocaleLowerCase(collation())), value2: String(i + 1), length: String(jobs.length) }),
         );
-        const req = request(view, made);
-        if (!req)
+        if (!main)
           throw new Error(
             t("app-library-image-ai-panels.run.message.2db231af9756"),
           );
@@ -179,8 +164,9 @@ export function TurnaroundPanel({
           data: {
             projectId,
             assetId: asset.id,
-            prompt: req.prompt,
-            referencePaths: req.attached.map((a) => a.path),
+            prompt: "",
+            referencePaths: [],
+            promptRequest: promptRequest(view, made),
             identityFirst: true,
             // Arket er bredt: den innebygde tjenesten lager da et liggende bilde
             purpose: mode === "sheet" ? "background" : "cutout",
@@ -189,7 +175,6 @@ export function TurnaroundPanel({
             model: choice.provider.id === "lovable" ? null : choice.model.id,
             size,
             aspect: mode === "sheet" ? "16:9" : view === "portrait" ? "1:1" : "2:3",
-            ...(req.negative ? { negativePrompt: req.negative } : {}),
             approved: true,
           },
         });
@@ -823,39 +808,19 @@ export function VariationPanel({
   const purpose = IMAGE_PURPOSE_FOR_KIND[asset.kind];
   const wanted = change.trim();
 
-  /** Beskrivelse og bilder for variasjon nr. `index`. */
-  function request(index: number) {
-    if (!main) return null;
-    // Bildet du står i (identitet) og stilforbilder – ikke andre vinkler (de kan dra motivet bort)
-    const attached = turnaroundAttachments(state, {
-      assetId: asset.id,
-      productionId: main.id,
-      identityVersionId: version.id,
-      style: withStyle,
-    }).filter((a) => a.role !== "view");
-    const brief: ImageBrief | null = buildContextImageBrief(state, {
-      assetId: asset.id,
-      variantId: version.variantId,
-      productionId: main.id,
-      occurrenceId: null,
-      withReference: true,
-      attached,
-      family: m.family,
-      transparent: !!m.model?.transparent,
-    });
-    if (!brief) return null;
-    const r = buildVariationPrompt(brief, wanted || "…", { index, count, family: m.family });
-    return {
-      attached,
-      prompt: withAttachedLegend(r.prompt, asset.name, attached),
-      negative: r.negative,
-    };
-  }
-  const preview = useMemo(
-    () => request(0),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [state, wanted, count, withStyle, m.key],
-  );
+  /** B-105a: innstillingene for variasjon nr. `index`; prompten bygges på serveren. */
+  const promptRequest = (index: number) => ({
+    kind: "variation" as const,
+    assetId: asset.id,
+    versionId: version.id,
+    change: wanted,
+    index,
+    count,
+    style: withStyle,
+    family: m.family,
+    transparent: !!m.model?.transparent,
+  });
+  const preview = useImagePromptPreview(projectId, main ? promptRequest(0) : null, state).data ?? null;
 
   async function run() {
     if (!m.choice || !wanted) return;
@@ -868,8 +833,7 @@ export function VariationPanel({
         setBusy(
           t("app-library-image-ai-panels.run.set-busy.c5650e6c1174", { value1: String(i + 1), count: String(count) }),
         );
-        const req = request(i);
-        if (!req)
+        if (!main)
           throw new Error(
             t("app-library-image-ai-panels.run.message.2db231af9756.2"),
           );
@@ -877,8 +841,9 @@ export function VariationPanel({
           data: {
             projectId,
             assetId: asset.id,
-            prompt: req.prompt,
-            referencePaths: req.attached.map((a) => a.path),
+            prompt: "",
+            referencePaths: [],
+            promptRequest: promptRequest(i),
             identityFirst: true,
             purpose,
             variantId: version.variantId,
@@ -886,7 +851,6 @@ export function VariationPanel({
             model: choice.provider.id === "lovable" ? null : choice.model.id,
             size: m.size,
             aspect: nearestAspect(version.width, version.height),
-            ...(req.negative ? { negativePrompt: req.negative } : {}),
             approved: true,
           },
         });

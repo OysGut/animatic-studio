@@ -97,8 +97,11 @@ export function SceneEditorWorkspace({
   initialLineId = null,
   initialFrame = null,
   initialTab = null,
+  initialLayerId = null,
 }: {
   initialTab?: string | null;
+  /** Rigg R5: kopikode fra utskrift – laget velges ved åpning. */
+  initialLayerId?: string | null;
   projectId: string;
   userId: string;
   initialOccurrenceId: string | null;
@@ -140,6 +143,7 @@ export function SceneEditorWorkspace({
       initialLineId={initialLineId}
       initialFrame={initialFrame}
       initialTab={initialTab}
+      initialLayerId={initialLayerId}
       userId={userId}
     />
   );
@@ -155,9 +159,11 @@ function Editor({
   initialLineId = null,
   initialFrame = null,
   initialTab = null,
+  initialLayerId = null,
   userId,
 }: {
   initialTab?: string | null;
+  initialLayerId?: string | null;
   initialLineId?: string | null;
   initialFrame?: number | null;
   userId: string;
@@ -608,7 +614,8 @@ function Editor({
       if (t.compFrame !== null) { playback.pause(); playback.setFrame(t.compFrame); setEntrySeek(null); }
       else setEntrySeek(tk("app-scene-editor-scene-editor-workspace.editor.set-entry-seek.3bc01f2622c8"));
     } else if (initialFrame !== null && initialFrame >= 0) { playback.pause(); playback.setFrame(initialFrame); }
-  }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, filmClip, state, playback]);
+    if (initialLayerId && state.layers[initialLayerId] && !state.layers[initialLayerId]!.removed) setSelectedLayerId(initialLayerId);
+  }, [occurrence, initialOccurrenceId, initialLineId, initialFrame, initialLayerId, filmClip, state, playback, setSelectedLayerId]);
   useEffect(() => { publishSceneBookmark({ projectId, occurrenceId: occurrence?.id ?? null, frame: playback.frame, tab: tracksOpen ? "animation" : "scene" }); }, [projectId, occurrence?.id, playback.frame, tracksOpen]);
   /** Innholdet i hvert panel (null = vises ikke nå). Plasseringen bestemmes av brukerens valg over. */
   const panelContent: Record<PanelId, ReactNode | null> = {

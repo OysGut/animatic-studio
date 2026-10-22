@@ -74429,5 +74429,176 @@
   },
   "app-library-derived-backfill.label": {
     "text": "Saved derived image files"
+  },
+  "print-job.invalid": {
+    "text": "Invalid print job"
+  },
+  "print-job.empty": {
+    "text": "Add at least one item"
+  },
+  "print-job.too-many": {
+    "text": "Too many items or copies in one job"
+  },
+  "print-job.copies": {
+    "text": "Number of copies"
+  },
+  "print-job.frame": {
+    "text": "Invalid frame"
+  },
+  "print-job.note": {
+    "text": "Note"
+  },
+  "print-job.stroke": {
+    "text": "The cut line must be between 0.05 and 0.3 mm"
+  },
+  "print-job.scale": {
+    "text": "Invalid scale"
+  },
+  "print-job.title": {
+    "text": "Print job"
+  },
+  "print-job.name": {
+    "text": "Job name"
+  },
+  "print-job.reopen": {
+    "text": "Open “{name}”"
+  },
+  "print-job.add-frame": {
+    "text": "This frame ({frame}) × {count}"
+  },
+  "print-job.from": {
+    "text": "From frame"
+  },
+  "print-job.to": {
+    "text": "To frame"
+  },
+  "print-job.add-range": {
+    "text": "Frames X–Y"
+  },
+  "print-job.add-range-n": {
+    "text": "Frames X–Y × {count} copies each"
+  },
+  "print-job.element": {
+    "text": "Frame {frame}"
+  },
+  "print-job.remove": {
+    "text": "Remove item"
+  },
+  "print-job.shared": {
+    "text": "Shared by the whole job"
+  },
+  "print-job.qr": {
+    "text": "QR code"
+  },
+  "print-job.qr-outside": {
+    "text": "Outside the figure"
+  },
+  "print-job.qr-figure": {
+    "text": "On the figure"
+  },
+  "print-job.qr-back": {
+    "text": "On the back"
+  },
+  "print-job.qr-corner": {
+    "text": "Position on the figure"
+  },
+  "print-job.corner-top-left": {
+    "text": "Top left"
+  },
+  "print-job.corner-top-right": {
+    "text": "Top right"
+  },
+  "print-job.corner-bottom-left": {
+    "text": "Bottom left"
+  },
+  "print-job.corner-bottom-right": {
+    "text": "Bottom right"
+  },
+  "print-job.corner-center": {
+    "text": "Centre of the surface"
+  },
+  "print-job.qr-visible": {
+    "text": "The QR code on the figure will be visible in recordings."
+  },
+  "print-job.copy-number": {
+    "text": "Print the copy number on the sheet"
+  },
+  "print-job.id-text": {
+    "text": "ID text"
+  },
+  "print-job.duplex": {
+    "text": "Two-sided printing"
+  },
+  "print-job.flip": {
+    "text": "Flip on"
+  },
+  "print-job.flip-long": {
+    "text": "Long edge"
+  },
+  "print-job.flip-short": {
+    "text": "Short edge"
+  },
+  "print-job.printer": {
+    "text": "Printer"
+  },
+  "print-job.offset-x": {
+    "text": "Offset x (mm)"
+  },
+  "print-job.offset-y": {
+    "text": "Offset y (mm)"
+  },
+  "print-job.test-sheet": {
+    "text": "Two-sided test sheet"
+  },
+  "print-job.duplex-front": {
+    "text": "Front: print two-sided and hold the sheet up to the light. Measure how far the crosses on the back are offset."
+  },
+  "print-job.duplex-back": {
+    "text": "Back: the scale at each cross is in mm."
+  },
+  "print-job.totals": {
+    "text": "{elements} items · {copies} copies · {sheets} sheets"
+  },
+  "print-job.sheet": {
+    "text": "Sheet {number}"
+  },
+  "print-job.save-label": {
+    "text": "Save print job"
+  },
+  "print-job.done": {
+    "text": "The PDF was created with {count} copies."
+  },
+  "print-job.failed": {
+    "text": "The print job could not be created. Try again."
+  },
+  "print-job.create": {
+    "text": "Create PDF"
+  },
+  "print-job.reprint": {
+    "text": "Print again (same codes)"
+  },
+  "print-job.frame-label": {
+    "text": "Frame {frame} · {time}"
+  },
+  "print-job.code-label": {
+    "text": "Code from a printout"
+  },
+  "print-job.code-open": {
+    "text": "Open"
+  },
+  "print-job.code-unknown": {
+    "text": "The code could not be opened. It is unknown, revoked, or you do not have access."
+  },
+  "print-job.code-opening": {
+    "text": "Opening the figure …"
+  },
+  "print-job.code-section": {
+    "text": "Open a printed figure"
+  },
+  "print-job.route-title": {
+    "text": "Printed figure – Pen to Glass"
+  },
+  "print-job.route-description": {
+    "text": "Opens the figure from a printout in the right scene and frame."
   }
 }

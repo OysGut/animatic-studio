@@ -131,7 +131,7 @@ export function InspectionWindow({state,layer,spec,frame=0,onClose,onSave,editab
       </g>
     </svg>
     <div data-testid="inspect-marker-list" aria-label={t('app-inspect.markers')} className="flex flex-wrap gap-2">{markers.map(m=><div key={m.id} className="flex gap-1"><button onClick={()=>setSelected(m.id)} className="rounded border border-border p-1" aria-pressed={selected===m.id}>{label(m)}</button><button aria-label={t('app-inspect.delete')} onClick={()=>{setHistory(s=>editMarkers(s,{type:'delete',id:m.id}));setSelected(null);}}>×</button></div>)}</div>
-    <PrintPanel state={state} layer={layer} spec={spec} frame={frame} contour={contour} url={url} mode={mode} width={w} height={h} pixels={pixels} unit={unit}/>
+    <PrintPanel state={state} layer={layer} spec={spec} frame={frame} contour={contour} url={url} mode={mode} width={w} height={h} pixels={pixels} unit={unit} onSave={onSave} editable={editable}/>
     {error&&<p role="alert">{error}</p>}
     <div className="flex gap-2"><input aria-label={t('app-inspect.name')} placeholder={t('app-inspect.name')} value={name} maxLength={80} onChange={e=>setName(e.target.value)} className="rounded border border-border bg-surface-3 p-2"/><Button data-testid="inspect-save-set" disabled={!editable||!name.trim()} onClick={()=>{const result=onSave({type:'SaveMeasureSet',set:{id:newId(),name:name.trim(),layerId:layer.id,frame,markers:history.markers,createdAt:new Date().toISOString()}},t('app-inspect.save'));if(result)setError(result);else onClose();}}>{t('app-inspect.save')}</Button><Button data-testid="inspect-discard" onClick={onClose}>{t('app-inspect.discard')}</Button></div>
   </DialogContent></Dialog>;
