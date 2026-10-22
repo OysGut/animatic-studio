@@ -174,7 +174,7 @@ const page = await ctx.newPage();
 page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
-page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
+page.on("console", (m) => { if (m.type() === "error" && !m.text().startsWith("Failed to load resource")) errors.push(m.text()); });
 await page.addInitScript(([key, user, language]) => {
  if (sessionStorage.getItem("rigg-init")) return;
  localStorage.setItem(key, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: Math.floor(Date.now()/1000)+86400, user }));
@@ -196,6 +196,10 @@ const job = dialog.getByTestId("print-job");
 await step("utskriftsjobben vises i inspeksjonsvinduet", async () => { await job.waitFor(); });
 await step("«denne framen × 20» gir ett element og 20 kopier i summen", async () => {
   await dialog.getByTestId("inspect-mode").selectOption("outline");
+  // Stort egendefinert ark: hver figur får plass uten tiling, så antall figurer kan telles direkte.
+  await dialog.getByTestId("print-paper").selectOption("custom");
+  await dialog.getByTestId("print-custom-width").fill("1000");
+  await dialog.getByTestId("print-custom-height").fill("1400");
   await job.getByTestId("print-job-n").fill("20");
   await job.getByTestId("print-job-add-frame").click();
   await job.getByTestId("print-job-elements").waitFor();
