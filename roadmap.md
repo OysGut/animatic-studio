@@ -1,11 +1,16 @@
 # Veikart
 
+## K-1 – Varsel når en annen redigerer samme scene (22.10.2026)
+- [x] Merke «{name} redigerer også denne scenen» og prikk i scenelisten (presence, lagres ikke).
+- [x] Konfliktvalg «Legg min endring oppå» / «Forkast min endring» med «Sist endret av».
+- [x] Tester: k1-presence.test.tsx 8/8; k1-presence.mjs nb 16/16 og en 16/16; i18n grønn; rapport K1_REPORT.md.
+
 ## S-1 – Community-sikkerhet (22.10.2026)
 - [x] Migrasjon 0086: bekreftet e-post ved mottakertreff og minste nødvendige EXECUTE-rettigheter.
 - [x] Fire DB-regresjoner; full DB 164/0. Private avvist av Cloud-API (406/PGRST106).
-- [ ] Full Vitest: 2380/2, ytelsesfeilen bestod separat 2/2; kontrakttesten blokkeres av EXPECTED_SCHEMA_VERSION=85. Oppdatering til 86 i lagringsadapteren trenger tillatelse utenfor «bare database og tester».
+- [x] EXPECTED_SCHEMA_VERSION og VISUAL_SCHEMA_VERSION satt til 86 (godkjent 22.10).
 - [x] Norsk S1-rapport. Sperrede filer urørt; ingen Cloud-endringer eller publisering.
-- [ ] Claude kjører migrasjonen i Cloud etter gjennomgang.
+- [x] Claude har kjørt migrasjonen i Cloud.
 
 ## PTG7 – Nuke og Fusion (22.10.2026)
 - [x] Rene nodeoppsett og kamerakurver fra utvekslingsmodellen; 2D uten rigg.
