@@ -174,6 +174,7 @@ const page = await ctx.newPage();
 page.setDefaultTimeout(15000);
 const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
+page.on("console", (m) => { if (m.type() === "error") errors.push(m.text()); });
 await page.addInitScript(([key, user, language]) => {
  if (sessionStorage.getItem("rigg-init")) return;
  localStorage.setItem(key, JSON.stringify({ access_token: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ4In0.sig", refresh_token: "r", token_type: "bearer", expires_in: 86400, expires_at: Math.floor(Date.now()/1000)+86400, user }));
