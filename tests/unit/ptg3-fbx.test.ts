@@ -112,7 +112,7 @@ describe("PTG3 FBX 7.4", () => {
     });
     const src = buildShotFbx(shot({ camera: track({ frames }) }), fps)!;
     const path = "tests/fixtures/ptg3/example.fbx";
-    if (process.env.UPDATE_FBX_EXAMPLE) writeFileSync(path, src);
+    if (process.env["UPDATE_FBX_EXAMPLE"]) writeFileSync(path, src);
     const p = parseFbx(src);
     const times = p.curveTimes(4000000001);
     expect(times).toHaveLength(25);
