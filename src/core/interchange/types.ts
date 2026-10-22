@@ -137,6 +137,8 @@ export interface InterchangeDoc {
   readonly language: { readonly dialogue: string; readonly subtitles: string | null };
   readonly fps: Rational;
   readonly captureFps: Rational;
+  /** Prosjektets billedformat i piksler (leveranseformatet pakkene bygger mot). */
+  readonly frameSize: { readonly width: number; readonly height: number };
   readonly sourceFps: Rational;
   readonly exposureStep: number;
   readonly lengthFrames: number;
