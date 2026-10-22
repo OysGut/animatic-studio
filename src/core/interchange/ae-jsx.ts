@@ -24,6 +24,7 @@ const r6 = (v: number): number => Math.round(v * 1e6) / 1e6;
 const STD = 100 / 3;
 
 interface Key3 { readonly t: number; readonly inn: number; readonly ut: number; readonly hold: boolean }
+
 /** Mykingen for en egenskapsgruppe: easeOut/easeIn (0–1) × 100, ellers navngitt easing; «hold» er egen. */
 function easeAt(keys: readonly Kf[], frame: number, previous: Kf | null): Key3 {
   const here = keys.find(k => k.frame === frame) ?? previous;
@@ -37,7 +38,7 @@ function easeAt(keys: readonly Kf[], frame: number, previous: Kf | null): Key3 {
 
 /** Verdien av en egenskap på et bilde: nøkkelbildet selv, ellers lineært mellom naboene (tilnærming). */
 function valueOf(keys: readonly Kf[], frame: number, base: number): number {
-  const sorted = keys.filter(k => k.property === keys[0]?.property).length ? keys : keys;
+  const sorted = [...keys].sort((a, b) => a.frame - b.frame);
   let prev: Kf | null = null; let next: Kf | null = null;
   for (const k of sorted) {
     if (k.frame === frame) return k.value;
@@ -48,10 +49,10 @@ function valueOf(keys: readonly Kf[], frame: number, base: number): number {
   return prev?.value ?? next?.value ?? base;
 }
 
-interface Prop { readonly name: string; readonly frames: readonly number[]; readonly keys: readonly Kf[]; readonly dims: number }
+interface Sampled { readonly times: number[]; readonly values: number[][]; readonly ease: readonly Key3[] }
 
 /** Samler nøkkelbilder for en AE-egenskap (én eller to animerte verdier deler tidspunkter). */
-function propKeys(layer: LayerTrack, props: readonly string[], base: readonly number[], dims: number): { prop: Prop; values: number[][]; ease: Key3[] } | null {
+function sampleProps(layer: LayerTrack, props: readonly string[], base: readonly number[]): Sampled | null {
   const keys = layer.keyframes.filter(k => props.includes(k.property));
   if (keys.length === 0) return null;
   const frames = [...new Set(keys.map(k => k.frame))].sort((a, b) => a - b);
@@ -62,21 +63,18 @@ function propKeys(layer: LayerTrack, props: readonly string[], base: readonly nu
     previous = keys.filter(k => k.frame === f).pop() ?? previous;
   }
   const values = frames.map(f => props.map((p, i) => r6(valueOf(keys.filter(k => k.property === p), f, base[i] ?? 0))));
-  return { prop: { name: "", frames, keys, dims }, values, ease };
+  return { times: frames.map(f => r6(f)), values, ease };
 }
 
-/** ES3-hjelper som setter nøkkelbilder med myking (KeyframEase influence × 100) og «hold». */
-function emitKeys(out: string[], target: string, doc: InterchangeDoc, values: number[][], ease: readonly Key3[], dims: number): void {
-  if (values.length === 0) return;
-  out.push(`${target} = ${js(values.map((v, i) => dims === 1 ? v[0] : v))};`);
-  out.push(`${target.replace("V", "T")} = ${js(ease.map(e => r6(sec(doc, e.t))))};`);
-  out.push(`${target.replace("V", "U")} = ${js(ease.map(e => e.ut))};`);
-  out.push(`${target.replace("V", "I")} = ${js(ease.map(e => e.inn))};`);
-  out.push(`${target.replace("V", "H")} = ${js(ease.map(e => e.hold))};`);
+/** ES3-hjelperkall som setter nøkkelbilder med myking (KeyframeEase influence × 100) og «hold». */
+function emitKeys(out: string[], doc: InterchangeDoc, target: string, s: Sampled, map: (v: number[]) => number | number[]): void {
+  const tider = s.times.map(f => r6(sec(doc, f)));
+  const verdier = s.values.map(v => map(v));
+  out.push(`ptgNokkler(${target}, ${js(tider)}, ${js(verdier)}, ${js(s.ease.map(e => e.inn))}, ${js(s.ease.map(e => e.ut))}, ${js(s.ease.map(e => e.hold))});`);
 }
 
 /** Banens posisjoner og romlige tangenter, fra samme spline som transformAt (pathPointAt/pathProgress). */
-function pathSamples(layer: LayerTrack, doc: InterchangeDoc): { times: number[]; values: number[][]; tangents: number[][][] } | null {
+function pathSamples(layer: LayerTrack, doc: InterchangeDoc): { times: number[]; values: number[][]; inn: number[][]; ut: number[][] } | null {
   const path = layer.path;
   if (!path) return null;
   const span = Math.max(1, path.endFrame - path.startFrame);
@@ -87,10 +85,8 @@ function pathSamples(layer: LayerTrack, doc: InterchangeDoc): { times: number[];
   return {
     times: frames.map(f => r6(sec(doc, f))),
     values: frames.map(f => { const p = at(f); return [r6(p.x), r6(p.y)]; }),
-    tangents: frames.map(f => {
-      const a = at(Math.max(path.startFrame, f - d)); const b = at(Math.min(path.endFrame, f + d));
-      return [[r6((a.x - b.x) / 3), r6((a.y - b.y) / 3)], [r6((b.x - a.x) / 3), r6((b.y - a.y) / 3)]];
-    }),
+    inn: frames.map(f => { const a = at(Math.max(path.startFrame, f - d)); const b = at(Math.min(path.endFrame, f + d)); return [r6((a.x - b.x) / 3), r6((a.y - b.y) / 3)]; }),
+    ut: frames.map(f => { const a = at(Math.max(path.startFrame, f - d)); const b = at(Math.min(path.endFrame, f + d)); return [r6((b.x - a.x) / 3), (b.y - a.y) / 3].map(r6); }),
   };
 }
 
@@ -136,41 +132,35 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
     return;
   }
   out.push(`${v}.name = ${js(navn)};`);
-  if (src.kind !== "group") { out.push(`${v}.inPoint = 0; ${v}.outPoint = ${len};`); }
   if (layer.activeRange) {
     out.push(`${v}.inPoint = ${r6(sec(doc, layer.activeRange.startFrame))}; ${v}.outPoint = ${r6(sec(doc, layer.activeRange.endFrame))};`);
+  } else if (src.kind !== "group") {
+    out.push(`${v}.inPoint = 0; ${v}.outPoint = ${len};`);
   }
   // Transformasjoner: posisjon fra bane (romlige tangenter) eller x/y-nøkler; skala, rotasjon, dekning
   const path = pathSamples(layer, doc);
-  const posKeys = path ? null : propKeys(layer, ["x", "y"], [base.x, base.y], 2);
   const zSuffix = ctx.threeD ? `, ${r6(ctx.zPx)}` : "";
   if (path) {
-    out.push(`var PV${i} = ${js(path.values.map(p => ctx.threeD ? [...p, r6(ctx.zPx)] : p))};`);
-    out.push(`var PT${i} = ${js(path.times)}; var PTI${i} = ${js(path.tangents.map(t => t[0]))}; var PTO${i} = ${js(path.tangents.map(t => t[1]))};`);
-    out.push(`ptgBane(${v}.property("Position"), PT${i}, PV${i}, PTI${i}, PTO${i});`);
-  } else if (posKeys) {
-    out.push(`var V${i}p;`);
-    emitKeys(out, `V${i}p`, doc, posKeys.values.map(p => ctx.threeD ? [...p, r6(ctx.zPx)] : p), posKeys.ease, 2);
-    out.push(`ptgNokkler(${v}.property("Position"), V${i}pT, V${i}p, V${i}pI, V${i}pU, V${i}pH);`);
+    const values = path.values.map(p => ctx.threeD ? [...p, r6(ctx.zPx)] : p);
+    out.push(`ptgBane(${v}.property("Position"), ${js(path.times)}, ${js(values)}, ${js(path.inn)}, ${js(path.ut)});`);
   } else {
-    out.push(`${v}.property("Position").setValue([${r6(base.x)}, ${r6(base.y)}${zSuffix}]);`);
+    const pos = sampleProps(layer, ["x", "y"], [base.x, base.y]);
+    if (pos) {
+      emitKeys(out, doc, `${v}.property("Position")`, pos, p => ctx.threeD ? [p[0]!, p[1]!, r6(ctx.zPx)] : [p[0]!, p[1]!]);
+    } else {
+      out.push(`${v}.property("Position").setValue([${r6(base.x)}, ${r6(base.y)}${zSuffix}]);`);
+    }
   }
-  const scale = propKeys(layer, ["scaleX", "scaleY"], [base.scaleX * 100, base.scaleY * 100], 2);
-  if (scale) {
-    out.push(`var V${i}s;`); emitKeys(out, `V${i}s`, doc, scale.values.map(p => [p[0]! * 100 === p[0] ? p[0]! : p[0]!, p[1]!]), scale.ease, 2);
-    out.push(`ptgNokkler(${v}.property("Scale"), V${i}sT, V${i}s, V${i}sI, V${i}sU, V${i}sH);`);
-  } else out.push(`${v}.property("Scale").setValue([${r6(base.scaleX * 100)}, ${r6(base.scaleY * 100)}]);`);
-  const rot = propKeys(layer, ["rotation"], [base.rotation], 1);
+  const scale = sampleProps(layer, ["scaleX", "scaleY"], [base.scaleX, base.scaleY]);
+  if (scale) emitKeys(out, doc, `${v}.property("Scale")`, scale, p => [r6(p[0]! * 100), r6(p[1]! * 100)]);
+  else out.push(`${v}.property("Scale").setValue([${r6(base.scaleX * 100)}, ${r6(base.scaleY * 100)}]);`);
   const rotProp = ctx.threeD ? "Z Rotation" : "Rotation";
-  if (rot) {
-    out.push(`var V${i}r;`); emitKeys(out, `V${i}r`, doc, rot.values, rot.ease, 1);
-    out.push(`ptgNokkler(${v}.property(${js(rotProp)}), V${i}rT, V${i}r, V${i}rI, V${i}rU, V${i}rH);`);
-  } else out.push(`${v}.property(${js(rotProp)}).setValue(${r6(base.rotation)});`);
-  const opa = propKeys(layer, ["opacity"], [base.opacity * 100], 1);
-  if (opa) {
-    out.push(`var V${i}o;`); emitKeys(out, `V${i}o`, doc, opa.values.map(p => [p[0]! * 100]), opa.ease, 1);
-    out.push(`ptgNokkler(${v}.property("Opacity"), V${i}oT, V${i}o, V${i}oI, V${i}oU, V${i}oH);`);
-  } else out.push(`${v}.property("Opacity").setValue(${r6(base.opacity * 100)});`);
+  const rot = sampleProps(layer, ["rotation"], [base.rotation]);
+  if (rot) emitKeys(out, doc, `${v}.property(${js(rotProp)})`, rot, p => p[0]!);
+  else out.push(`${v}.property(${js(rotProp)}).setValue(${r6(base.rotation)});`);
+  const opa = sampleProps(layer, ["opacity"], [base.opacity]);
+  if (opa) emitKeys(out, doc, `${v}.property("Opacity")`, opa, p => r6(p[0]! * 100));
+  else out.push(`${v}.property("Opacity").setValue(${r6(base.opacity * 100)});`);
   if (ctx.threeD) out.push(`${v}.threeDLayer = true;`);
   // Grupper: null-foreldre med anker; barna peker på foreldren
   if (src.kind === "group" && src.anchor) {
@@ -183,14 +173,19 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
   // Masker som Shape (rektangel/ellipse; klippelag bruker det refererte laget som alfa-matte)
   const mask = src.mask;
   if (mask && mask.kind !== "layer") {
-    const mx = layer.keyframes.filter(k => k.property.startsWith("mask"));
-    const val = (p: string, b: number) => r6(valueOf(mx.filter(k => k.property === p), mx.length ? Math.max(...mx.map(k => k.frame)) : -1, b));
+    const mk = (p: string) => layer.keyframes.filter(k => k.property === p);
+    const lastFrame = layer.keyframes.filter(k => k.property.startsWith("mask")).map(k => k.frame);
+    const f = lastFrame.length ? Math.max(...lastFrame) : -1;
+    const val = (p: string, b: number) => r6(valueOf(mk(p), f, b));
+    const shapeProp = mask.kind === "ellipse" ? "ADBE Vector Shape - Ellipse" : "ADBE Vector Shape - Rect";
+    const sizeProp = mask.kind === "ellipse" ? "ADBE Vector Ellipse Size" : "ADBE Vector Rect Size";
+    const posProp = mask.kind === "ellipse" ? "ADBE Vector Ellipse Position" : "ADBE Vector Rect Position";
     out.push(`var maske${i} = comp.layers.addShape(); maske${i}.name = ${js(navn + "_maske")};`);
     out.push(`var mg${i} = maske${i}.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");`);
     out.push(`var mv${i} = mg${i}.property("ADBE Vectors Group");`);
-    out.push(`var mf${i} = mv${i}.addProperty(${js(mask.kind === "ellipse" ? "ADBE Vector Shape - Ellipse" : "ADBE Vector Shape - Rect")});`);
-    out.push(`mf${i}.property(${js(mask.kind === "ellipse" ? "ADBE Vector Ellipse Size" : "ADBE Vector Rect Size")}).setValue([${val("maskWidth", mask.width)}, ${val("maskHeight", mask.height)}]);`);
-    out.push(`mf${i}.property(${js(mask.kind === "ellipse" ? "ADBE Vector Ellipse Position" : "ADBE Vector Rect Position")}).setValue([${val("maskX", mask.x) + val("maskWidth", mask.width) / 2}, ${val("maskY", mask.y) + val("maskHeight", mask.height) / 2}]);`);
+    out.push(`var mf${i} = mv${i}.addProperty(${js(shapeProp)});`);
+    out.push(`mf${i}.property(${js(sizeProp)}).setValue([${val("maskWidth", mask.width)}, ${val("maskHeight", mask.height)}]);`);
+    out.push(`mf${i}.property(${js(posProp)}).setValue([${val("maskX", mask.x) + val("maskWidth", mask.width) / 2}, ${val("maskY", mask.y) + val("maskHeight", mask.height) / 2}]);`);
     out.push(`var mfill${i} = mv${i}.addProperty("ADBE Vector Graphic - Fill");`);
     out.push(`mfill${i}.property("ADBE Vector Fill Color").setValue([1, 1, 1, 1]);`);
     out.push(`maske${i}.moveBefore(${v});`);
@@ -205,14 +200,14 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
     const par = src.rigPlateId ? (cam.plates.find(p => p.id === src.rigPlateId)?.parallax ?? src.parallax) : src.parallax;
     const cx = doc.frameSize.width / 2; const cy = doc.frameSize.height / 2;
     const times = cam.frames.map(f => r6(sec(doc, f.frame)));
-    const xs = cam.frames.map(f => r6(cx - f.panXMm * cam.pxPerMm * par * ctx.scale));
-    const ys = cam.frames.map(f => r6(cy - f.panYMm * cam.pxPerMm * par * ctx.scale));
-    const sc = cam.frames.map(f => r6((1 + (f.zoom - 1) * par) * 100));
+    const zeros = times.map(() => 0); const falses = times.map(() => false);
+    const pos = cam.frames.map(f => [r6(cx - f.panXMm * cam.pxPerMm * par * ctx.scale), r6(cy - f.panYMm * cam.pxPerMm * par * ctx.scale)]);
+    const sc = cam.frames.map(f => { const s = r6((1 + (f.zoom - 1) * par) * 100); return [s, s]; });
     const ro = cam.frames.map(f => r6(-f.rollDeg));
     out.push(`var par${i} = comp.layers.addNull(); par${i}.name = ${js("PAR_" + navn)};`);
-    out.push(`ptgNokkler(par${i}.property("Position"), ${js(times)}, ${js(xs.map((x, k) => [x, ys[k]!]))}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
-    out.push(`ptgNokkler(par${i}.property("Scale"), ${js(times)}, ${js(sc.map(x => [x, x]))}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
-    out.push(`ptgNokkler(par${i}.property("Rotation"), ${js(times)}, ${js(ro)}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
+    out.push(`ptgNokkler(par${i}.property("Position"), ${js(times)}, ${js(pos)}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
+    out.push(`ptgNokkler(par${i}.property("Scale"), ${js(times)}, ${js(sc)}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
+    out.push(`ptgNokkler(par${i}.property("Rotation"), ${js(times)}, ${js(ro)}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
     out.push(`${v}.parent = par${i};`);
   }
 }
@@ -254,26 +249,27 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
       out.push(`plate${i}.property("Position").setValue([${r6(doc.frameSize.width / 2)}, ${r6(doc.frameSize.height / 2)}, ${r6(zOf(p.id))}]);`);
     });
     const times = cam.frames.map(f => r6(sec(doc, f.frame)));
+    const zeros = times.map(() => 0); const falses = times.map(() => false);
     const cx = doc.frameSize.width / 2; const cy = doc.frameSize.height / 2;
     const pos = cam.frames.map(f => [r6(cx - f.panXMm * cam.pxPerMm * scale), r6(cy - f.panYMm * cam.pxPerMm * scale),
       r6(-(f.cameraHeightMm - refH) * cam.pxPerMm * scale)]);
     out.push(`kam.property("Point of Interest").setValue([${r6(cx)}, ${r6(cy)}, 0]);`);
-    out.push(`ptgNokkler(kam.property("Position"), ${js(times)}, ${js(pos)}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
-    out.push(`ptgNokkler(kam.property("Z Rotation"), ${js(times)}, ${js(cam.frames.map(f => r6(-f.rollDeg)))}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
+    out.push(`ptgNokkler(kam.property("Position"), ${js(times)}, ${js(pos)}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
+    out.push(`ptgNokkler(kam.property("Z Rotation"), ${js(times)}, ${js(cam.frames.map(f => r6(-f.rollDeg)))}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
     if (cam.mode === "fixed") {
       // «Fast kamera»: høyden står fast, og zoomen ligger i feltet (linsezoom × digital zoom)
-      out.push(`ptgNokkler(kam.property("Zoom"), ${js(times)}, ${js(cam.frames.map(f => r6(zoomPx * f.zoom)))}, ${js(times.map(() => 0))}, ${js(times.map(() => 0))}, ${js(times.map(() => false))});`);
+      out.push(`ptgNokkler(kam.property("Zoom"), ${js(times)}, ${js(cam.frames.map(f => r6(zoomPx * f.zoom)))}, ${js(zeros)}, ${js(zeros)}, ${js(falses)});`);
     } else {
       out.push(`kam.property("Zoom").setValue(${zoomPx});`);
     }
   } else if (mode === "ae" && !cam) {
     out.push(`// skuddet har ingen rigg – kamera utelates (se LESMEG.txt)`);
   }
-  out.push(`var hoved${"_"}lag = hoved.layers.add(comp); hoved_lag.startTime = ${r6(sec(doc, shot.startFrame))};`);
+  out.push(`var hovedLag = hoved.layers.add(comp); hovedLag.startTime = ${r6(sec(doc, shot.startFrame))};`);
 }
 
 /**
- * Hele bygg.jsx (ES3). `refs` er fil-ID → relativ sti i pakken (fra InterchangeDoc.references).
+ * Hele bygg.jsx (ES3). `doc.references` gir fil-ID → relativ sti i pakken; bare media som brukes importeres.
  */
 export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode }): string {
   const refs = new Map(doc.references.map(r => [r.id, r.path]));
