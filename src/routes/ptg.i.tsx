@@ -43,7 +43,8 @@ function PtgImportRoute() {
   useLanguage(); // ML2a
   const s = Route.useSearch();
   const session = useSession();
-  const ref = s.p && s.o && s.n && s.f !== undefined ? { projectId: s.p, occurrenceId: s.o, name: s.n, lengthFrames: s.f } : null;
+  // Valideres også her: søkeparametre kan nå siden uten validateSearch-resultatet (f.eks. ved SSR).
+  const ref = parsePtgImport(s as Record<string, unknown>);
   if (session.status === "loading") return <div className="min-h-screen bg-bg-app" aria-busy />;
   if (session.status === "signed-out") return <AuthScreen />;
   return (
