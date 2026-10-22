@@ -34,7 +34,7 @@ function TranslatedText() {
 
 describe('B-107: ordinary languages never depend on login or the test-language feature', () => {
   for (const signedIn of [false, true]) {
-    for (const [language, expected] of [['fr', 'Changer de langue'], ['ja', '言語を変更']]) {
+    for (const [language, expected] of [['fr', 'Changer de langue'], ['ja', '言語を変更']] as const) {
       it(`uses actual ${language} catalog after selection and restoring ${signedIn ? 'account' : 'local'} choice`, async () => {
         fixture.signedIn = signedIn;
         fixture.feature = false;
