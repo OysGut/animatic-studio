@@ -50,7 +50,8 @@ await h.scenario(`ptg3b-${lang}`, occ.id, lang, async page => {
   h.check((await page.getByTestId("ptg-import-shot").innerText()).includes("PTG-TEST_SC001_SH010_v001"), `${lang}: importsiden viser skuddet`);
   await page.screenshot({ path: `${h.out}/${lang}-import.png` });
   await page.goto(`${h.base}/ptg/i?p=bad&o=${occ.id}&n=x&f=1`, { waitUntil: "networkidle" });
-  await page.getByTestId("ptg-import-failed").waitFor();
+  await page.screenshot({ path: `${h.out}/${lang}-bad.png` });
+  await page.getByTestId("ptg-import-failed").waitFor({ timeout: 8000 }).catch(async e => { await page.screenshot({ path: `${h.out}/${lang}-bad2.png` }); throw e; });
   h.check(true, `${lang}: ugyldig lenke gir nøytral melding`);
 });
 await h.finish();
