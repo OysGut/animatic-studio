@@ -1,12 +1,12 @@
 # Veikart
 
-## Neste i køen: B-087 Rigg runde 5
+## B-087 Rigg runde 5 (22.10.2026) – ferdig lokalt; 0079 venter på Claude i Cloud
 - [x] B-105a og KR-1 rapportert (B105A_REPORT.md).
-- [ ] Utskriftsjobber, elementer og én rad per fysisk kopi; ingen deduplisering, felles innstillinger og gjenutskrift med samme koder.
-- [ ] Additiv migrasjon etter B-105a: peprede QR-/kortkoder, tilgangsbeskyttet oppslag, apply_changes, angring, backup og delete/purge; Claude kjører i Cloud.
-- [ ] Batch-PDF, QR-plassering og tosidig utskrift med testark og forskyvning per bruker/skriver.
-- [ ] Mobilrute og manuell kode, riktig scene/frame/lag og nøytrale tilgangsfeil.
-- [ ] rigg-r5 nb/en og regresjoner én om gangen, full Vitest/lokale DB-tester, alle språk og RIGG_R5_REPORT.md; A1–A16 verifiseres bare med bestått dekning.
+- [x] Utskriftsjobber, elementer og én rad per fysisk kopi; ingen deduplisering, felles innstillinger og gjenutskrift med samme koder.
+- [x] Additiv migrasjon etter B-105a: peprede QR-/kortkoder, tilgangsbeskyttet oppslag, apply_changes, angring, backup og delete/purge; Claude kjører i Cloud.
+- [x] Batch-PDF, QR-plassering og tosidig utskrift med testark og forskyvning per bruker/skriver.
+- [x] Mobilrute og manuell kode, riktig scene/frame/lag og nøytrale tilgangsfeil.
+- [x] rigg-r5 nb/en og regresjoner én om gangen, full Vitest/lokale DB-tester, alle språk og RIGG_R5_REPORT.md; A1–A16 verifiseres bare med bestått dekning.
 
 ## B-105a og KR-1 (21.10.2026)
 - [x] Kartlegg alle bildeinnganger, modell, opprydding og original/proxy-bruk.
