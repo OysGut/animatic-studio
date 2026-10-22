@@ -7460,7 +7460,9 @@ try {
     await expectError(as('authenticated', other, tx => tx`select public.update_showcase_item(${id}, ${tx.json({})})`), '42501');
     await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${tx.json({ status: 'live' })})`), '22023');
     // Tilbaketrekking når som helst, bare eier/admin; kan ikke endres etterpå
-    await expectError(as('authenticated', other, tx => tx`select public.revoke_showcase_item(${id})`), '42501');
+    const stranger = crypto.randomUUID();
+    await sql`insert into auth.users (id, email) values (${stranger}, ${`${stranger}@example.no`})`;
+    await expectError(as('authenticated', stranger, tx => tx`select public.revoke_showcase_item(${id})`), '42501');
     await as('authenticated', owner, tx => tx`select public.revoke_showcase_item(${id})`);
     await expectError(as('authenticated', owner, tx => tx`select public.update_showcase_item(${id}, ${tx.json({ title: 'X' })})`), '22023');
     assert(JSON.stringify((await as('authenticated', owner, tx => tx`select public.my_showcase_items() m`))[0]?.['m']).includes('"status":"revoked"'), 'trukket tilbake i listen');
