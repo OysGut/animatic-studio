@@ -33112,13 +33112,23 @@ requirements:
   acceptance:
   - "A1: Én figur kan skrives ut i 20 identiske eksemplarer."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A1)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
 - id: REQ-0880
@@ -33139,13 +33149,23 @@ requirements:
   acceptance:
   - "A2: Identiske utskrifter fjernes ikke automatisk."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A2)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
 - id: REQ-0881
@@ -33167,13 +33187,23 @@ requirements:
   acceptance:
   - "A3: 20 etterfølgende frames gir 20 utskrifter selv om enkelte er identiske."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A3)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
 - id: REQ-0882
@@ -33533,13 +33563,23 @@ requirements:
   acceptance:
   - "A14: Felles utskriftsinnstillinger for en hel batch."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A14)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
 - id: REQ-0893
@@ -33561,13 +33601,23 @@ requirements:
   acceptance:
   - "A15: QR og konturmodus fungerer også i batch."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A15)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 5 (batch, kopier, QR, tosidig utskrift og mobiloppslag; migrasjon 0072)."
 
 - id: REQ-0894
@@ -33588,13 +33638,24 @@ requirements:
   acceptance:
   - "A16: 2D-utskrift kan leveres uten 3D-generering."
   tests: []
-  status: Ikke startet
-  implementation: []
-  verification: []
+  status: Verifisert
+  implementation:
+  - "src/core/print/job/"
+  - "src/engine/export/rig-pdf.ts"
+  - "src/app/rig/PrintJobSection.tsx"
+  - "db/migrations/0079_rig_print_jobs.sql"
+  verification:
+  - "enhet: tests/unit/rigg-r5-job.test.ts 13/13 (A16)"
+  - "DB: tests/db/run-db-tests.ts 0079 (155/155, 2026-10-22)"
+  - "nettleser: tests/visual/rigg-r5.mjs 12/12 nb og en (2026-10-22)"
+  - "nettleser: tests/visual/rigg-r1.mjs 12/12 (3D-print er deaktivert plassholder)"
   history:
   - date: '2026-10-21'
     decision: B-087, DEC-0100
     change: "Registrert fra B-087 runde 0 (dokumentasjon); bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
+  - date: '2026-10-22'
+    decision: "B-087"
+    change: "Bygget i rigg runde 5 (migrasjon 0079, ikke 0072 som planlagt); verifisert med enhets-, DB- og nettlesertester."
   notes: "Bygges i Runde 4 (PDF-motor i mm, tre moduser, kalibrering og tiling)."
 
 - id: REQ-0895
