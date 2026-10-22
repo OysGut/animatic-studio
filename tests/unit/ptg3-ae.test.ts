@@ -175,6 +175,6 @@ describe("PTG3 After Effects bygg.jsx", () => {
     const noRig = buildAeJsx({ ...doc, shots: [{ ...shot, camera: null }] }, { cameraMode: "ae" });
     const { log } = runJsx(noRig);
     expect(log.cameras).toBe(0);
-    expect(noRig).toContain("kamera utelates");
+    expect(noRig).toContain("camera omitted");
   });
 });
