@@ -109,6 +109,23 @@ export function rejectedText(command: Command): string | null {
   }
 }
 
+/**
+ * K-1: en endring som ble avvist fordi noen andre endret det samme (revision_conflict). Brukeren velger selv
+ * «Legg min endring oppå» eller «Forkast min endring»; ingenting skjer automatisk.
+ */
+export interface ConflictedEdit {
+  readonly id: string;
+  readonly label: string;
+  readonly command: Command;
+  /** Entitetene endringen gjaldt (for å finne scenen). */
+  readonly affected: readonly string[];
+}
+
+/** Legger til en konflikt i listen (samme kommando bare én gang). */
+export function addConflict(list: readonly ConflictedEdit[], c: ConflictedEdit): ConflictedEdit[] {
+  return [...list.filter((x) => x.id !== c.id), c];
+}
+
 /** Beskrivelsen av en avvist endring for varselet, eller null når det ikke er tekst å ta vare på. */
 export function rejectedEdit(
   id: string,
@@ -219,6 +236,8 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
   const [status, setStatus] = useState<SaveStatus>({ kind: "idle" });
   /** Tekstendringer som ble avvist (KI-182); hver vises til brukeren lukker den eller prøver igjen. */
   const [rejected, setRejected] = useState<readonly RejectedEdit[]>([]);
+  /** K-1: endringer avvist ved revisjonskonflikt; venter på brukerens valg. */
+  const [conflicts, setConflicts] = useState<readonly ConflictedEdit[]>([]);
   const queue = useRef<Promise<unknown>>(Promise.resolve());
   const generation = useRef(0);
   const reloadWhenIdle = useRef(false);
@@ -319,6 +338,8 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
 
       const fail = (message: string, conflict: boolean) => {
         keep(conflict, false);
+        if (conflict && opts.mode === "do" && opts.keepText !== false)
+          setConflicts((list) => addConflict(list, { id: commandId, label: opts.label, command, affected: local.affected }));
         setStatus({ kind: "error", message });
         dropEntry(commandId);
         generation.current++;
@@ -642,6 +663,28 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     [rejected, reload, whenIdle, qc, projectId, run],
   );
 
+  /**
+   * K-1: brukerens valg etter en revisjonskonflikt. «rebase» henter siste versjon og legger samme endring oppå
+   * den som en ny endring (med de nye revisjonene, så den kan angres); «discard» forkaster den (siste versjon
+   * er allerede hentet). Gir feilmelding eller null.
+   */
+  const resolveConflict = useCallback(
+    async (id: string, choice: "rebase" | "discard"): Promise<string | null> => {
+      const c = conflicts.find((x) => x.id === id);
+      if (!c) return null;
+      setConflicts((list) => list.filter((x) => x.id !== id));
+      setRejected((list) => list.filter((x) => x.id !== id));
+      setStatus((s) => (s.kind === "error" ? { kind: "idle" } : s));
+      if (choice === "discard") return null;
+      await whenIdle();
+      await reload();
+      const error = run(c.command, c.label);
+      if (error) setConflicts((list) => addConflict(list, c));
+      return error;
+    },
+    [conflicts, whenIdle, reload, run],
+  );
+
   return {
     run,
     runSilent,
@@ -662,6 +705,9 @@ export function useCommands(projectId: string, actorId: string, enabled: boolean
     dismissRejected,
     currentTextOf,
     retryRejected,
+    /** K-1: endringer avvist ved revisjonskonflikt, eldste først. */
+    conflicts,
+    resolveConflict,
     /** Tilstanden slik den er nå (med egne endringer som ikke er lagret ennå), for kjeder av kommandoer. */
     current: () => qc.getQueryData<ProjectState>(projectStateKey(projectId)) ?? null,
   };
