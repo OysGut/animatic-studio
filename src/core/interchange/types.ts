@@ -126,7 +126,7 @@ export interface Shot {
   readonly props: readonly string[];
   readonly status: string;
   readonly layers: readonly LayerTrack[];
-  readonly camera: null;
+  readonly camera: CameraTrack | null;
   readonly audio: AudioTrack[];
   readonly dialogue: InterchangeDialogueLine[];
   readonly words: WordEvent[];
