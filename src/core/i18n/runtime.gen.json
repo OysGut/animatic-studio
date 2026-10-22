@@ -31372,9 +31372,6 @@
     "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
       "text": "Disse filene kunne ikke hentes da zip-filen ble laget:\n\n{value1}\n"
     },
-    "engine-export-zip.zip.message.d8988ee64a25": {
-      "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen."
-    },
     "engine-import-browser.decode-fountain.message.af53ad05831d": {
       "text": "Filen er ikke en Fountain-tekstfil. Fountain-manus er ren tekst (.fountain, .spmd eller .txt)."
     },
@@ -31828,6 +31825,60 @@
     },
     "print-pdf.tile": {
       "text": "rad {row} / kolonne {column}"
+    },
+    "ptg1.cancel": {
+      "text": "Avbryt"
+    },
+    "ptg1.cancelled": {
+      "text": "Avbrutt"
+    },
+    "ptg1.capture-rate": {
+      "text": "Opptaksfrekvens"
+    },
+    "ptg1.custom": {
+      "text": "Egendefinert"
+    },
+    "ptg1.denominator": {
+      "text": "Nevner"
+    },
+    "ptg1.duplicate-file": {
+      "text": "Pakken inneholder to filer med samme navn."
+    },
+    "ptg1.export-failed": {
+      "text": "Skuddlisten kunne ikke eksporteres."
+    },
+    "ptg1.invalid-settings": {
+      "text": "Ugyldig prosjektkode eller opptaksfrekvens."
+    },
+    "ptg1.numerator": {
+      "text": "Teller"
+    },
+    "ptg1.ones": {
+      "text": "Enere (24)"
+    },
+    "ptg1.profile": {
+      "text": "Profil"
+    },
+    "ptg1.project-code": {
+      "text": "Prosjektkode"
+    },
+    "ptg1.readme": {
+      "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
+    },
+    "ptg1.save-settings": {
+      "text": "Lagre innstillinger"
+    },
+    "ptg1.shotlist": {
+      "text": "Skuddliste (CSV/JSON)"
+    },
+    "ptg1.standard": {
+      "text": "Standard"
+    },
+    "ptg1.to-production": {
+      "text": "Til produksjonen"
+    },
+    "ptg1.twos": {
+      "text": "Toere (12 × 2)"
     },
     "r1-prores-offer.accept": {
       "text": "Bruk ProRes"
@@ -63691,9 +63742,6 @@
     "engine-export-zip.write-zip.new-text-encoder-encode.d311a09da39a": {
       "text": "These files could not be fetched when the zip file was made:\n\n{value1}\n"
     },
-    "engine-export-zip.zip.message.d8988ee64a25": {
-      "text": "The zip file grew larger than 4 GB. Include fewer files and try again."
-    },
     "engine-import-browser.decode-fountain.message.af53ad05831d": {
       "text": "The file is not a Fountain text file. Fountain scripts are plain text (.fountain, .spmd or .txt)."
     },
@@ -64147,6 +64195,60 @@
     },
     "print-pdf.tile": {
       "text": "row {row} / column {column}"
+    },
+    "ptg1.cancel": {
+      "text": "Cancel"
+    },
+    "ptg1.cancelled": {
+      "text": "Cancelled"
+    },
+    "ptg1.capture-rate": {
+      "text": "Capture rate"
+    },
+    "ptg1.custom": {
+      "text": "Custom"
+    },
+    "ptg1.denominator": {
+      "text": "Denominator"
+    },
+    "ptg1.duplicate-file": {
+      "text": "The package contains two files with the same name."
+    },
+    "ptg1.export-failed": {
+      "text": "The shotlist could not be exported."
+    },
+    "ptg1.invalid-settings": {
+      "text": "Invalid project code or capture rate."
+    },
+    "ptg1.numerator": {
+      "text": "Numerator"
+    },
+    "ptg1.ones": {
+      "text": "Ones (24)"
+    },
+    "ptg1.profile": {
+      "text": "Profile"
+    },
+    "ptg1.project-code": {
+      "text": "Project code"
+    },
+    "ptg1.readme": {
+      "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+    },
+    "ptg1.save-settings": {
+      "text": "Save settings"
+    },
+    "ptg1.shotlist": {
+      "text": "Shotlist (CSV/JSON)"
+    },
+    "ptg1.standard": {
+      "text": "Standard"
+    },
+    "ptg1.to-production": {
+      "text": "To production"
+    },
+    "ptg1.twos": {
+      "text": "Twos (12 × 2)"
     },
     "r1-prores-offer.accept": {
       "text": "Use ProRes"

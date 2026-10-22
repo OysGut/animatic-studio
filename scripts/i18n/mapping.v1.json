@@ -171063,33 +171063,6 @@
     },
     {
       "file": "src/engine/export/zip.ts",
-      "line": 120,
-      "column": 9,
-      "start": 4165,
-      "end": 4339,
-      "scope": "zip",
-      "context": "message",
-      "kind": "L",
-      "semantic": "engine-export-zip.zip.message",
-      "nb": {
-        "kind": "literal",
-        "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
-        "raw": "\"Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.\"",
-        "parameters": []
-      },
-      "en": {
-        "kind": "literal",
-        "text": "The zip file grew larger than 4 GB. Include fewer files and try again.",
-        "raw": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
-        "parameters": []
-      },
-      "parameterConflict": false,
-      "signature": "d8988ee64a25",
-      "key": "engine-export-zip.zip.message.d8988ee64a25",
-      "migrated": true
-    },
-    {
-      "file": "src/engine/export/zip.ts",
       "line": 135,
       "column": 53,
       "start": 4697,
