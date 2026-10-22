@@ -1,7 +1,8 @@
 import { useRef, useState } from "react";
 import { Download, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { FilmClip, ProjectState } from "@/core/model";
+import type { ProjectState } from "@/core/model";
+import type { FilmClip } from "@/core/assembly/film";
 import { buildInterchange } from "@/core/interchange";
 import type { ShotlistProfile } from "@/core/interchange/shotlist";
 import { languageState } from "@/core/language";

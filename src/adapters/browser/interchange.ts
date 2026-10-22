@@ -1,4 +1,5 @@
 import { db } from "./client";
+import { t } from "@/core/i18n/keyed";
 
 export async function reserveInterchangeExport(input: {
   projectId: string; productionId: string; occurrenceIds: readonly string[]; fileName: string;
@@ -10,7 +11,7 @@ export async function reserveInterchangeExport(input: {
   });
   if (error) throw new Error(error.message);
   const r = data as { batchId?: string; versions?: Record<string, number> } | null;
-  if (!r?.batchId || !r.versions || input.occurrenceIds.some(id => !Number.isInteger(r.versions?.[id]))) throw new Error("Invalid interchange reservation");
+  if (!r?.batchId || !r.versions || input.occurrenceIds.some(id => !Number.isInteger(r.versions?.[id]))) throw new Error(t("ptg1.export-failed"));
   return { batchId: r.batchId, versions: r.versions };
 }
 export async function completeInterchangeExport(projectId: string, batchId: string): Promise<void> {
