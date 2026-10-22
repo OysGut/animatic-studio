@@ -65,11 +65,7 @@ function runJsx(script: string) {
   class Prop {
     constructor(public name: string) {}
     setValue(v: unknown) { log.keys.push({ prop: this.name, times: [], values: [v] }); }
-    setValueAtTime(t: number, v: unknown) {
-      const cur = log.keys.find(k => k.prop === this.name && k.times.length < 100 && this.name.includes("Levels") || k.prop === this.name);
-      void cur;
-      log.keys.push({ prop: this.name, times: [t], values: [v] });
-    }
+    setValueAtTime(t: number, v: unknown) { log.keys.push({ prop: this.name, times: [t], values: [v] }); }
     setTemporalEaseAtKey() {}
     setInterpolationTypeAtKey() {}
     setSpatialTangentsAtKey() {}
@@ -86,8 +82,8 @@ function runJsx(script: string) {
   }
   class Layers {
     constructor(public comp: Comp) {}
-    add(item: unknown) { if (item instanceof Comp) log.comps.push({ name: item.name + "@used", w: 0, h: 0, dur: 0, fps: 0 }); if (item instanceof Layer && item.kind === "media-audio") log.audio++; return new Layer("av"); }
-    addNull() { const l = new Layer("null"); queueMicrotask(() => {}); nullNames.push(l); return l; }
+    add(item: unknown) { if (item instanceof Comp) log.comps.push({ name: item.name + "@used", w: 0, h: 0, dur: 0, fps: 0 }); return new Layer("av"); }
+    addNull() { const l = new Layer("null"); nullNames.push(l); return l; }
     addSolid() { return new Layer("solid"); }
     addShape() { return new Layer("shape"); }
     addCamera() { log.cameras++; return new Layer("camera"); }
@@ -113,8 +109,7 @@ function runJsx(script: string) {
   const TrackMatteType = { ALPHA: 1, ALPHA_INVERTED: 2 };
   const fn = new Function("app", "File", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", script);
   fn(app, File, ImportOptions, KeyframeEase, KeyframeInterpolationType, TrackMatteType);
-  // Null-lagenes navn settes etter addNull; samle dem fra scriptkjøringen via Layer-forekomster
-  return { log, nullNames };
+  return { log };
 }
 
 describe("PTG3 After Effects bygg.jsx", () => {
