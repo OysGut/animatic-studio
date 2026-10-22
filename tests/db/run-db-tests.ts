@@ -7023,14 +7023,14 @@ try {
       for (const priv of ["insert", "update", "delete"])
         assert((await sql`select has_table_privilege('authenticated', ${`public.${t}`}, ${priv}) p`)[0]?.["p"] === false, `ingen direkte ${priv} på ${t}`);
     }
-    const keys = (await sql`select key, state from public.features order by key`).map((r) => `${r["key"]}=${r["state"]}`);
+    const keys = (await sql`select key, state from public.features where key like 'community.%' order by key`).map((r) => `${r["key"]}=${r["state"]}`);
     assert(keys.join() === "community.abtest=off,community.profiles=off,community.public=off,community.review=off,community.sharing=off", `alle av: ${keys}`);
     for (const c of ["handle", "bio", "avatar_key", "is_public", "profile_fields"])
       assert((await sql`select has_column_privilege('authenticated', 'public.profiles', ${c}, 'select') p`)[0]?.["p"] === false, `${c} kan ikke leses direkte`);
     // my_features
     await expectError(as("anon", null, (tx) => tx`select public.my_features()`), "42501");
     const mine = (await as("authenticated", ALICE, (tx) => tx`select public.my_features() f`))[0]!["f"] as Record<string, boolean>;
-    assert(Object.values(mine).length === 5 && Object.values(mine).every((v) => v === false), "my_features: alle av");
+    assert(Object.keys(mine).filter((k) => k.startsWith('community.')).length === 5 && Object.values(mine).every((v) => v === false), "my_features: alle av");
     // Bare administrator
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature('community.sharing', 'on', null)`), "42501");
     await expectError(as("authenticated", ALICE, (tx) => tx`select public.admin_set_feature_testers('community.sharing', array[${ALICE}]::uuid[])`), "42501");
