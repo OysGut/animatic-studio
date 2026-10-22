@@ -21,7 +21,7 @@ De største kildene var lukkede dialogvinduer som likevel ble rendret for hvert 
 - Ny `src/app/scene-editor/frame-frozen.tsx` (`FrameFrozen`): mens avspillingen går, brukes forrige rendring av en del så lenge delens avhengigheter er de samme. Endres en avhengighet, eller avspillingen stopper, rendres delen som før. Komponentenes egen tilstand virker som vanlig.
 - I `SceneEditorWorkspace.tsx` er disse delene pakket inn:
   - verktøylinjen
-  - ressurspanelet, lydpanelet for nabosceneer og lagpanelet (det viser bilde 0 under avspilling også før)
+  - ressurspanelet, lydpanelet for naboscener og lagpanelet (det viser bilde 0 under avspilling også før)
   - de lukkede dialogvinduene (manus, lydklipp, endringer, lagbilde, snarveier, opptak og nytt lag), bare mens de er lukket
 - Mobilknappens tidspunkt leses fra gjeldende bilde når knappen brukes, så den viser riktig tid også under avspilling.
 - Deler som følger bildet (lerretet, tidslinjen, manuspanelet, laginspektøren og sporgruppene), rendres som før.
