@@ -3,6 +3,7 @@ import { applyCommand, orderedOccurrences, filmClips, filmDurationFrames, second
 import { buildInterchange, eventTime, projectCodeValid, suggestProjectCode, sceneCode, shotName, nextShotVersion } from "@/core/interchange";
 import { shotlistCsv, shotlistRows } from "@/core/interchange/shotlist";
 import { seedProject, envelope } from "../helpers/fixtures";
+import type { AudioClip } from "@/core/model";
 
 describe("PTG1 utveksling", () => {
   for (const rate of [12, 24, 25, 30]) it(`bevarer avrundede grenser ved ${rate} opptak/s`, () => {
@@ -40,6 +41,32 @@ describe("PTG1 utveksling", () => {
       absoluteStartFrame: 9, absoluteEndFrame: 14, startFrame: 9, endFrame: 14, lengthFrames: 5, crossesCut: true,
     });
     expect(eventTime(13 / 24, 14 / 24, { startFrame: 12, lengthFrames: 12 }, { num: 24, den: 1 }).startFrame).toBe(1);
+  });
+  it("lyd som begynner i utgående skudd beholder hele lengden over klippunktet", () => {
+    const { state, mainId } = seedProject(2);
+    const occ = orderedOccurrences(state, mainId)[0]; if (!occ) throw new Error("fixture");
+    const clip: AudioClip = { id: "audio" as never, revision: 1, occurrenceId: occ.id, kind: "sfx", name: "test", assetId: "missing" as never,
+      assetVariantId: null, versionId: null, blockId: null, offsetMs: 9000, sourceInMs: 0, lengthMs: 3000, gainDb: 0,
+      fadeInMs: 0, fadeOutMs: 0, muted: false, continues: true, volumeKeys: [], removed: false };
+    const s = { ...state, project: { ...state.project, fps: { num: 24, den: 1 } },
+      occurrences: Object.fromEntries(Object.entries(state.occurrences).map(([id,o])=>[id,{...o,plannedMs:10000}])), audioClips: { audio: clip } };
+    const doc = buildInterchange(s, { productionId: mainId, language: "nb" });
+    expect(doc.shots[0]?.audio[0]?.absoluteStartFrame).toBe(216);
+    expect(doc.shots[0]?.audio[0]?.absoluteEndFrame).toBe(288);
+    expect(doc.shots[0]?.audio[0]?.lengthFrames).toBe(72);
+    expect(doc.shots[0]?.audio[0]?.crossesCut).toBe(true);
+    expect(doc.shots[1]?.audio.length).toBe(0);
+  });
+  it("gyllen avrunding ved 24 → 25 og oddetalls overlapp", () => {
+    const { state, mainId } = seedProject(2); const occs = orderedOccurrences(state, mainId);
+    const a = occs[0], b = occs[1]; if (!a || !b) throw new Error("fixture");
+    const s = { ...state, project: { ...state.project, fps: { num: 24, den: 1 } }, occurrences: {
+      ...state.occurrences, [a.id]: {...a, plannedMs: 1000}, [b.id]: {...b, plannedMs: 1000, transition: {kind:"dissolve" as const, frames:5, overlap:true}},
+    }};
+    const doc = buildInterchange(s,{productionId:mainId,language:"nb",captureFps:{num:25,den:1}});
+    expect(doc.shots.map(x=>[x.startFrame,x.lengthFrames,x.handleIn,x.handleOut])).toEqual([[0,22,0,3],[22,23,2,0]]);
+    expect(doc.lengthFrames).toBe(45);
+    expect(doc.shots.map(x=>[x.timecodeIn,x.timecodeOut])).toEqual([["00:00:00:00","00:00:00:22"],["00:00:00:22","00:00:01:20"]]);
   });
   it("tom film og scene under ett opptaksbilde gir ikke negativ lengde", () => {
     const { state, mainId } = seedProject(1);

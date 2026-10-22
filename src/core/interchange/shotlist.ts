@@ -10,7 +10,7 @@ const aliases: Record<ShotlistProfile, Readonly<Record<string, string>>> = {
 };
 export function shotlistRows(doc: InterchangeDoc, profile: ShotlistProfile = "standard"): Record<string, string | number>[] {
   return doc.shots.map(s => {
-    const values = [doc.production.name, s.name, s.description, s.startFrame - s.handleIn, s.startFrame + s.lengthFrames + s.handleOut, s.startFrame, s.startFrame + s.lengthFrames,
+    const values = [doc.production.name, s.name, s.description, s.frameIn, s.frameOut, s.startFrame, s.startFrame + s.lengthFrames,
       s.lengthFrames, s.handleIn, s.handleOut, framesToSeconds(s.lengthFrames, doc.fps), s.characters.join("; "), s.sets.join("; "), s.props.join("; "),
       s.dialogue.map(d => `${d.character}: ${d.text}`).join("\n"), s.status, s.thumbnail.path, s.transition.type, s.transition.lengthFrames];
     return Object.fromEntries(SHOTLIST_COLUMNS.map((c, i) => [aliases[profile][c] ?? c, values[i] ?? ""]));

@@ -65,6 +65,8 @@ export interface Shot {
   readonly timecodeOut: string;
   readonly handleIn: number;
   readonly handleOut: number;
+  readonly frameIn: number;
+  readonly frameOut: number;
   readonly transition: { readonly type: TransitionKind; readonly lengthFrames: number; readonly overlap: boolean };
   readonly sourceStartFrame: number;
   readonly sourceLengthFrames: number;

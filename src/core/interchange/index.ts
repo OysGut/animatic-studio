@@ -10,7 +10,8 @@ import { languageState } from "../language";
 import { translationOf } from "../translation";
 import { blocksOfVariant, sceneNumberOf } from "../views";
 import { formatTimecode, framesToSeconds, secondsToFrames, validateFps, type Rational } from "../time";
-import { DEFAULT_CAPTURE, captureTimeline, suggestProjectCode, type CaptureSettings } from "./settings";
+import { DEFAULT_CAPTURE, captureSettingsValid, captureTimeline, suggestProjectCode, type CaptureSettings } from "./settings";
+import { t } from "../i18n/keyed";
 import { sceneCode, shotName } from "./naming";
 import type { EventTime, FileRef, InterchangeDoc, Shot } from "./types";
 
@@ -41,6 +42,7 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
   const s = languageState(state, lang.dialogue);
   const capture = o.capture ?? (o.captureFps ? { mode: o.captureFps.num / o.captureFps.den === 12 ? "twos" as const : "custom" as const, fps: o.captureFps } : state.project.capture ?? DEFAULT_CAPTURE);
   validateFps(capture.fps);
+  if (!captureSettingsValid(capture)) throw new Error(t("ptg1.invalid-settings"));
   const { fps, exposureStep } = captureTimeline(capture);
   const sourceFps = s.project.fps;
   const all = filmClips(s, o.productionId);
@@ -79,6 +81,7 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
       timecodeIn: formatTimecode(startFrame, fps), timecodeOut: formatTimecode(endFrame, fps),
       handleIn: Math.max(0, startFrame - frame(c.startFrame)),
       handleOut: Math.max(0, frame(c.startFrame + c.durationFrames) - endFrame),
+      frameIn: frame(c.startFrame), frameOut: frame(c.startFrame + c.durationFrames),
       transition: { type: c.transition.kind, lengthFrames: c.transition.kind === "cut" ? 0 : frame(c.startFrame + (c.overlapFrames || c.transition.frames)) - frame(c.startFrame), overlap: c.overlapFrames > 0 },
       sourceStartFrame: c.startFrame, sourceLengthFrames: c.durationFrames, compositionId: c.compositionId,
       thumbnail: { path: `thumbnails/${name}.png`, sourceFrame: Math.max(0, Math.floor(c.durationFrames / 2)) },
