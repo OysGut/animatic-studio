@@ -1,5 +1,13 @@
 # Veikart
 
+## PTG4 – leppesynk og munnliste (22.10.2026)
+- [ ] Munnsett/munnspor, additive 0084, kommando/angring, lasting og sikkerhetskopi.
+- [ ] Uttaleutvalg og regelreserve, fonemtabeller, ordtider og opptaksavrunding uten AI.
+- [ ] Redigerbare spor i Scene, variantkobling, utdatert-merking og munnliste PDF/CSV.
+- [ ] Moho DAT/JSON, Dragonframe X-sheet/påskrift og selvstendig eksport.
+- [ ] Gyldne tester, DB/i18n/full Vitest, ptg4 nb/en og sekvensielle PTG-regresjoner; norsk rapport.
+- [ ] Claude kjører 0084 i Cloud; Rhubarb-finjustering fra lyd er utsatt.
+
 ## PTG6 – klippefiler (22.10.2026)
 - [x] Ren OTIO/FCP7-XML/CMX 3600-modell med PTG1-navn, midtpunktklipp og håndtak.
 - [x] Til produksjonen: klippepakke med valgfrie referansefilmer/lyd, aktiv take ellers animatic, ZIP64 og tospråklig LESMEG/reeltabell.

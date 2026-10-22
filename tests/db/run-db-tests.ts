@@ -150,6 +150,7 @@ async function loadState(projectId: string): Promise<ProjectState> {
     credit_sequences: await q("credit_sequences"),
     animation_rigs: await q("animation_rigs"), animation_rig_versions: await q("animation_rig_versions"), animation_uses: await q("animation_uses"),
     lipsync_results: await q("lipsync_results"), animation_patterns: await q("animation_patterns"),
+    mouth_sets: await q("mouth_sets"), mouth_tracks: await q("mouth_tracks"),
     dialogue_versions: await q("dialogue_versions"),
     style_harmonizations: await q("style_harmonizations"),
     style_preferred_references: await q("style_preferred_references"),
@@ -7222,6 +7223,48 @@ try {
     back = await loadState(bp);
     assert(back.occurrences[occ]?.color === undefined, "farge ble ikke fjernet");
     await as("service_role", null, (tx) => tx`select public.delete_project(${bp},${ALICE})`);
+  });
+  await test("0084 PTG4: munnsett/spor, RLS, kommando/angring, backup og sletting", async () => {
+    projectId=await as('authenticated',ALICE,async tx=>(await tx`select public.create_project('PTG4 test') id`)[0]?.['id']);
+    const prod=(await sql`select id from public.productions where project_id=${projectId}`)[0]?.['id'];
+    const scene=crypto.randomUUID(),variant=crypto.randomUUID(),occ=crypto.randomUUID(),blockId=crypto.randomUUID(),clipId=crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${projectId},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id,owner_production_id) values (${variant},${projectId},${scene},${prod})`;
+    await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values (${occ},${projectId},${prod},${scene},${variant},'a')`;
+    await sql`insert into public.script_blocks(id,project_id,variant_id,kind,order_key,text) values (${blockId},${projectId},${variant},'dialogue','a','pappa')`;
+    await sql`insert into public.script_block_revisions(project_id,block_id,rev,text,author) values (${projectId},${blockId},1,'pappa',${ALICE})`;
+    const character = crypto.randomUUID(), setId = crypto.randomUUID(), trackId = crypto.randomUUID();
+    await sql`insert into public.assets(id,project_id,kind,name) values (${character},${projectId},'character','PTG4 karakter')`;
+    const sound=crypto.randomUUID();await sql`insert into public.assets(id,project_id,kind,name) values (${sound},${projectId},'sound','PTG4 lyd')`;
+    await sql`insert into public.audio_clips(id,project_id,occurrence_id,kind,asset_id,block_id,offset_ms,length_ms) values (${clipId},${projectId},${occ},'dialogue',${sound},${blockId},0,1000)`;
+    const clip = (await sql`select id,block_id from public.audio_clips where project_id=${projectId} and block_id is not null and not removed limit 1`)[0];
+    assert(clip, 'mangler dialogfixtur');
+    await sql`update public.audio_clips set character_asset_id=${character} where id=${clip['id']}`;
+    await sql`insert into public.project_members(project_id,user_id,role) values (${projectId},${BOB},'viewer') on conflict(project_id,user_id) do update set role='viewer'`;
+    let st=await loadState(projectId);
+    const set={id:setId,revision:0,characterId:character,system:'rhubarb' as const,variants:{},removed:false};
+    st=await runCommand(st,ALICE,{type:'SaveMouthSet',set});
+    assert((await loadState(projectId)).mouthSets[setId]?.system==='rhubarb','sett leses tilbake');
+    const audio=st.audioClips[String(clip['id'])],block=st.blocks[String(clip['block_id'])];
+    assert(audio&&block,'mangler kjernedata');
+    const track={id:trackId,revision:0,characterId:character,setId,clipId:audio.id,blockId:block.id,occurrenceId:audio.occurrenceId,language:'nb',spans:[{startFrame:0,endFrame:12,shape:'A' as const}],source:{text:block.text,blockRevision:block.revision,audioSignature:'fixture',setSystem:'rhubarb' as const,algorithm:'ptg4-text-1' as const},removed:false};
+    st=await runCommand(st,ALICE,{type:'SaveMouthTrack',track});
+    const back=await loadState(projectId);
+    assert(back.mouthTracks[trackId]?.spans[0]?.endFrame===12,'spor leses tilbake');
+    const edit={type:'SaveMouthTrack' as const,track:{...track,spans:[{startFrame:0,endFrame:16,shape:'D' as const}]}};
+    const result=applyCommand(back,{id:newId(),actor:ALICE,at:new Date().toISOString(),command:edit});
+    assert(result.ok,'redigering');
+    st=await runCommand(back,ALICE,edit);st=await runCommand(st,ALICE,result.inverse);
+    assert((await loadState(projectId)).mouthTracks[trackId]?.spans[0]?.endFrame===12,'angring');
+    await expectError(runCommand(st,BOB,edit),'42501');
+    const seen=await as('authenticated',BOB,tx=>tx`select id from public.mouth_tracks where id=${trackId}`);
+    assert(seen.length===1,'leser ser spor');
+    await expectError(as('authenticated',BOB,tx=>tx`update public.mouth_sets set system='preston-blair' where id=${setId}`),'42501');
+    await expectError(as('authenticated',ALICE,tx=>tx`update public.mouth_tracks set spans='[]' where id=${trackId}`),'42501');
+    await expectError(sql`update public.mouth_sets set system='invalid' where id=${setId}`,'23514');
+    assert(BACKUP_STATE_TABLES.includes('mouth_sets')&&BACKUP_STATE_TABLES.includes('mouth_tracks'),'backup tar med begge tabeller');
+    await as('service_role',null,tx=>tx`select public.delete_project(${projectId},${ALICE})`);
+    assert((await sql`select id from public.mouth_tracks where project_id=${projectId} union all select id from public.mouth_sets where project_id=${projectId}`).length===0,'delete_project sletter spor før sett');
   });
 } finally {
   await sql.end();

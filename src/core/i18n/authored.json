@@ -9565,6 +9565,206 @@
       "en": {
         "text": "Media files are not included. Place reference films and MIX audio at the listed relative paths, or relink them in your editor."
       }
+    },
+    "ptg4.invalid": {
+      "nb": {
+        "text": "Ugyldig munnsett eller munnspor"
+      },
+      "en": {
+        "text": "Invalid mouth set or track"
+      }
+    },
+    "ptg4.schema": {
+      "nb": {
+        "text": "Munnspor krever databaseoppdatering 0084."
+      },
+      "en": {
+        "text": "Mouth tracks require database update 0084."
+      }
+    },
+    "ptg4.title": {
+      "nb": {
+        "text": "Munnspor"
+      },
+      "en": {
+        "text": "Mouth tracks"
+      }
+    },
+    "ptg4.set": {
+      "nb": {
+        "text": "Munnsett"
+      },
+      "en": {
+        "text": "Mouth set"
+      }
+    },
+    "ptg4.system": {
+      "nb": {
+        "text": "Munnsystem"
+      },
+      "en": {
+        "text": "Mouth system"
+      }
+    },
+    "ptg4.draft": {
+      "nb": {
+        "text": "Lag tekstutkast"
+      },
+      "en": {
+        "text": "Create text draft"
+      }
+    },
+    "ptg4.apply": {
+      "nb": {
+        "text": "Bruk"
+      },
+      "en": {
+        "text": "Apply"
+      }
+    },
+    "ptg4.discard": {
+      "nb": {
+        "text": "Forkast"
+      },
+      "en": {
+        "text": "Discard"
+      }
+    },
+    "ptg4.no-times": {
+      "nb": {
+        "text": "Replikken mangler kjente ordtider."
+      },
+      "en": {
+        "text": "The line has no known word timings."
+      }
+    },
+    "ptg4.stale": {
+      "nb": {
+        "text": "Munnsporet er utdatert. Kilden er endret; sporet beholdes."
+      },
+      "en": {
+        "text": "The mouth track is outdated. Its source changed; the track is preserved."
+      }
+    },
+    "ptg4.edit": {
+      "nb": {
+        "text": "Rediger munnspor"
+      },
+      "en": {
+        "text": "Edit mouth track"
+      }
+    },
+    "ptg4.shape": {
+      "nb": {
+        "text": "Munnform"
+      },
+      "en": {
+        "text": "Mouth shape"
+      }
+    },
+    "ptg4.variant": {
+      "nb": {
+        "text": "Variant"
+      },
+      "en": {
+        "text": "Variant"
+      }
+    },
+    "ptg4.none": {
+      "nb": {
+        "text": "Ingen variant"
+      },
+      "en": {
+        "text": "No variant"
+      }
+    },
+    "ptg4.save": {
+      "nb": {
+        "text": "Lagre"
+      },
+      "en": {
+        "text": "Save"
+      }
+    },
+    "ptg4.span": {
+      "nb": {
+        "text": "Munn {shape}, bilde {start} til {end}"
+      },
+      "en": {
+        "text": "Mouth {shape}, frame {start} to {end}"
+      }
+    },
+    "ptg4.start": {
+      "nb": {
+        "text": "Startbilde"
+      },
+      "en": {
+        "text": "Start frame"
+      }
+    },
+    "ptg4.end": {
+      "nb": {
+        "text": "Sluttbilde"
+      },
+      "en": {
+        "text": "End frame"
+      }
+    },
+    "ptg4.split": {
+      "nb": {
+        "text": "Del"
+      },
+      "en": {
+        "text": "Split"
+      }
+    },
+    "ptg4.merge": {
+      "nb": {
+        "text": "Slå sammen"
+      },
+      "en": {
+        "text": "Merge"
+      }
+    },
+    "ptg4.character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "ptg4.count": {
+      "nb": {
+        "text": "Eksponeringer"
+      },
+      "en": {
+        "text": "Exposures"
+      }
+    },
+    "ptg4.shots": {
+      "nb": {
+        "text": "Skudd"
+      },
+      "en": {
+        "text": "Shots"
+      }
+    },
+    "ptg4.export": {
+      "nb": {
+        "text": "Munnliste og leppesynk"
+      },
+      "en": {
+        "text": "Mouth list and lip sync"
+      }
+    },
+    "ptg4.readme": {
+      "nb": {
+        "text": "Munnliste: PDF og CSV viser eksponeringer per karakter og munn. JSON bruker bilder fra 0, med håndtak. Moho DAT bruker Papagayo-munner og bilder fra 1, i opptakets bildefrekvens; toere gjentas. Utdaterte spor eksporteres uendret og merkes i JSON. NB Uttale (CC0) og CMUdict (BSD) brukes lokalt. Ingen KI eller betalte kall."
+      },
+      "en": {
+        "text": "Mouth list: PDF and CSV show exposures per character and mouth. JSON uses zero-based frames, including handles. Moho DAT uses Papagayo mouths and one-based frames at capture fps; twos repeat. Outdated tracks are exported unchanged and marked in JSON. NB Uttale (CC0) and CMUdict (BSD) run locally. No AI or paid calls."
+      }
     }
   }
 }

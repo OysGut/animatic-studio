@@ -92,6 +92,7 @@ const MAX_COMMAND_CHARS = 6_000_000;
  * vilkårlig innhold.
  */
 const INVERSE_ONLY = new Set<string>([
+  "UndoMouthChange",
   "UndoReviewDialogueDrift",
   "UndoAddLineLink",
   "UndoAddTranslationLines",
@@ -635,6 +636,10 @@ export const runCommand = createServerFn({ method: "POST" })
         };
     }
     const animationSteps = data.command.type === "UpdateSceneDraft" ? data.command.steps : [data.command];
+    if (["SaveMouthSet", "SaveMouthTrack", "UndoMouthChange"].includes(data.command.type)) {
+      const schema = await checkSchema(admin);
+      if (schema.kind === "missing" || schema.version < 84) return { ok: false, code: "schema", message: tk("ptg4.schema") };
+    }
     if (animationSteps.some(step => ["CreateRig", "SaveRigVersion", "SetRigAnchors", "AttachAnimationUse", "SetAnimationLayerEnabled", "UndoAnimationChange"].includes(step.type))) {
       const schema = await checkSchema(admin);
       if (schema.kind === "missing" || schema.version < 54) return { ok: false, code: "schema", message: tk("adapters-storage-commands-functions.message.message.d351befc7495") };

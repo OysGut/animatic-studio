@@ -1,4 +1,5 @@
 import { applyMeasureSetCommand } from "../print/measure/commands";
+import { applyMouthCommand } from "../interchange/mouth-commands";
 import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../interchange/settings";
 import { applyPrintJobCommand } from "../print/job/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
@@ -234,7 +235,7 @@ function assertNewId(s: ProjectState, id: string) {
     s.canvasNodes,
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
-    s.lipsyncResults, s.animationPatterns,
+    s.lipsyncResults, s.animationPatterns, s.mouthSets, s.mouthTracks,
     s.dialogueVersions,
     s.dialogueReviews ?? {}, s.noteFlags ?? {},
     s.templateInstances ?? {},
@@ -589,7 +590,7 @@ export function revisionOf(s: ProjectState, id: string): number | undefined {
     s.canvasNodes,
     s.canvasEdges,
     s.animationRigs, s.animationRigVersions, s.animationUses,
-    s.lipsyncResults, s.animationPatterns,
+    s.lipsyncResults, s.animationPatterns, s.mouthSets, s.mouthTracks,
     s.dialogueVersions,
     s.dialogueReviews ?? {}, s.noteFlags ?? {},
   ]) {
@@ -1855,6 +1856,9 @@ function run(
   });
 
   switch (c.type) {
+    case "SaveMouthSet": case "SaveMouthTrack": case "UndoMouthChange": {
+      try { return applyMouthCommand(s, c); } catch (error) { fail("invalid", error instanceof Error ? error.message : tk("ptg4.invalid")); }
+    }
     case "SetDialogueLanguage": {
       if (c.language !== null && languageTagError(c.language)) fail("invalid", languageTagError(c.language) ?? "");
       if (c.target === "project") {

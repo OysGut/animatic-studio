@@ -20,6 +20,8 @@ import type { ImageSource } from "../compositor/canvas";
 import { exportAnimatic } from "./animatic";
 import { writeZip, type ZipSink } from "./zip";
 import { t } from "@/core/i18n/keyed";
+import { mouthJson, mohoDat, mouthLabelAt, shotMouthTracks } from "@/core/interchange/mouth-export";
+import cmuLicense from "@/core/interchange/CMUDICT-LICENSE.txt?raw";
 
 export interface DragonframeOptions {
   readonly doc: InterchangeDoc;
@@ -144,14 +146,18 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
   for (const rows of xsheets.values()) for (const r of rows) texts.push(r.character, r.dialogue, r.action, r.layers, r.notes);
   const fonts = await loadPdfFonts(pdfScriptsNeeded(texts));
   async function* files() {
+    yield { path: "CMUDICT-LICENSE.txt", data: new TextEncoder().encode(cmuLicense) };
     yield {
       path: "LESMEG.txt",
-      data: interchangeReadme(["", t("ptg2.readme", {}, "nb"), "", t("ptg2.readme", {}, "en"), ...cameraReadmeLines(doc)].join("\n")),
+      data: interchangeReadme(["", t("ptg2.readme", {}, "nb"), "", t("ptg2.readme", {}, "en"), t("ptg4.readme", {}, "nb"), t("ptg4.readme", {}, "en"), ...cameraReadmeLines(doc)].join("\n")),
     };
     let done = 0;
     for (const shot of doc.shots) {
       if (signal.aborted) throw new DOMException(t("ptg1.cancelled"), "AbortError");
       const paths = dragonframePaths(shot);
+      const mouths = shotMouthTracks(o.state, doc, shot);
+      yield { path: `${shot.name}/${shot.name}_mouth.json`, data: new TextEncoder().encode(mouthJson(doc, shot, mouths)) };
+      for (const mouth of mouths) yield { path: `${shot.name}/${shot.name}_${mouth.characterId}.dat`, data: new TextEncoder().encode(mohoDat(mouth, shot.frameOut - shot.frameIn)) };
       const frames = referenceFrames(doc, shot);
       const pngs: Uint8Array[] = [];
       // PNG: én fil per eksponering (stemmer med X-sheet-radene); videoen beholder alle bilder.
@@ -162,7 +168,7 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
           state: o.state, clips: o.clips, startFrame: 0, endFrame: frames.length, frames,
           width: doc.frameSize.width, height: doc.frameSize.height, fps: doc.fps, images: o.images,
           filmUrls: o.filmUrls, mp4: true, signal,
-          ...(o.burnIn ? { overlay: (ctx: CanvasRenderingContext2D, i: number, width: number, height: number) => burnIn(ctx, shot, w.from + i, i, doc, width, height) } : {}),
+          ...(o.burnIn ? { overlay: (ctx: CanvasRenderingContext2D, i: number, width: number, height: number) => burnIn(ctx, shot, w.from + i, i, doc, width, height, mouthLabelAt(mouths, i)) } : {}),
           ...(o.png ? { onFrame: async (canvas: HTMLCanvasElement, i: number) => { if (pngAt.has(i)) pngs.push(await canvasPng(canvas)); } } : {}),
         });
         yield { path: paths.video, data: video.bytes };
@@ -181,7 +187,7 @@ export async function exportDragonframe(o: DragonframeOptions): Promise<void> {
 }
 
 /** Påskrift: skuddnavn, bildenummer og tidskode, og en plass til munnavn (PTG4). */
-function burnIn(ctx: CanvasRenderingContext2D, shot: Shot, absolute: number, i: number, doc: InterchangeDoc, width: number, height: number) {
+function burnIn(ctx: CanvasRenderingContext2D, shot: Shot, absolute: number, i: number, doc: InterchangeDoc, width: number, height: number, mouth: string) {
   const size = Math.max(12, Math.round(height / 30));
   const pad = Math.round(size / 2);
   const band = size + pad * 2;
@@ -195,6 +201,6 @@ function burnIn(ctx: CanvasRenderingContext2D, shot: Shot, absolute: number, i: 
   ctx.textAlign = "left"; ctx.fillText(shot.name, pad, y);
   ctx.textAlign = "center"; ctx.fillText(`${t("ptg2.burn-frame")} ${i + 1}  ${formatTimecode(absolute, doc.fps)}`, width / 2, y);
   // Plass til munnavn (fylles i PTG4)
-  ctx.textAlign = "right"; ctx.fillText(`${t("ptg2.burn-mouth")} –`, width - pad, y);
+  ctx.textAlign = "right"; ctx.fillText(`${t("ptg2.burn-mouth")} ${mouth || "–"}`, width - pad, y);
   ctx.restore();
 }

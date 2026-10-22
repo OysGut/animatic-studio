@@ -32177,6 +32177,81 @@
     "ptg3b.route-title": {
       "text": "Importer film fra After Effects – From Pen to Glass"
     },
+    "ptg4.apply": {
+      "text": "Bruk"
+    },
+    "ptg4.character": {
+      "text": "Karakter"
+    },
+    "ptg4.count": {
+      "text": "Eksponeringer"
+    },
+    "ptg4.discard": {
+      "text": "Forkast"
+    },
+    "ptg4.draft": {
+      "text": "Lag tekstutkast"
+    },
+    "ptg4.edit": {
+      "text": "Rediger munnspor"
+    },
+    "ptg4.end": {
+      "text": "Sluttbilde"
+    },
+    "ptg4.export": {
+      "text": "Munnliste og leppesynk"
+    },
+    "ptg4.invalid": {
+      "text": "Ugyldig munnsett eller munnspor"
+    },
+    "ptg4.merge": {
+      "text": "Slå sammen"
+    },
+    "ptg4.no-times": {
+      "text": "Replikken mangler kjente ordtider."
+    },
+    "ptg4.none": {
+      "text": "Ingen variant"
+    },
+    "ptg4.readme": {
+      "text": "Munnliste: PDF og CSV viser eksponeringer per karakter og munn. JSON bruker bilder fra 0, med håndtak. Moho DAT bruker Papagayo-munner og bilder fra 1, i opptakets bildefrekvens; toere gjentas. Utdaterte spor eksporteres uendret og merkes i JSON. NB Uttale (CC0) og CMUdict (BSD) brukes lokalt. Ingen KI eller betalte kall."
+    },
+    "ptg4.save": {
+      "text": "Lagre"
+    },
+    "ptg4.schema": {
+      "text": "Munnspor krever databaseoppdatering 0084."
+    },
+    "ptg4.set": {
+      "text": "Munnsett"
+    },
+    "ptg4.shape": {
+      "text": "Munnform"
+    },
+    "ptg4.shots": {
+      "text": "Skudd"
+    },
+    "ptg4.span": {
+      "text": "Munn {shape}, bilde {start} til {end}"
+    },
+    "ptg4.split": {
+      "text": "Del"
+    },
+    "ptg4.stale": {
+      "text": "Munnsporet er utdatert. Kilden er endret; sporet beholdes."
+    },
+    "ptg4.start": {
+      "text": "Startbilde"
+    },
+    "ptg4.system": {
+      "text": "Munnsystem"
+    },
+    "ptg4.title": {
+      "text": "Munnspor"
+    },
+    "ptg4.variant": {
+      "text": "Variant"
+    },
     "ptg5.compare": {
       "text": "Sammenlign takes"
     },
@@ -64939,6 +65014,81 @@
     },
     "ptg3b.route-title": {
       "text": "Import film from After Effects – From Pen to Glass"
+    },
+    "ptg4.apply": {
+      "text": "Apply"
+    },
+    "ptg4.character": {
+      "text": "Character"
+    },
+    "ptg4.count": {
+      "text": "Exposures"
+    },
+    "ptg4.discard": {
+      "text": "Discard"
+    },
+    "ptg4.draft": {
+      "text": "Create text draft"
+    },
+    "ptg4.edit": {
+      "text": "Edit mouth track"
+    },
+    "ptg4.end": {
+      "text": "End frame"
+    },
+    "ptg4.export": {
+      "text": "Mouth list and lip sync"
+    },
+    "ptg4.invalid": {
+      "text": "Invalid mouth set or track"
+    },
+    "ptg4.merge": {
+      "text": "Merge"
+    },
+    "ptg4.no-times": {
+      "text": "The line has no known word timings."
+    },
+    "ptg4.none": {
+      "text": "No variant"
+    },
+    "ptg4.readme": {
+      "text": "Mouth list: PDF and CSV show exposures per character and mouth. JSON uses zero-based frames, including handles. Moho DAT uses Papagayo mouths and one-based frames at capture fps; twos repeat. Outdated tracks are exported unchanged and marked in JSON. NB Uttale (CC0) and CMUdict (BSD) run locally. No AI or paid calls."
+    },
+    "ptg4.save": {
+      "text": "Save"
+    },
+    "ptg4.schema": {
+      "text": "Mouth tracks require database update 0084."
+    },
+    "ptg4.set": {
+      "text": "Mouth set"
+    },
+    "ptg4.shape": {
+      "text": "Mouth shape"
+    },
+    "ptg4.shots": {
+      "text": "Shots"
+    },
+    "ptg4.span": {
+      "text": "Mouth {shape}, frame {start} to {end}"
+    },
+    "ptg4.split": {
+      "text": "Split"
+    },
+    "ptg4.stale": {
+      "text": "The mouth track is outdated. Its source changed; the track is preserved."
+    },
+    "ptg4.start": {
+      "text": "Start frame"
+    },
+    "ptg4.system": {
+      "text": "Mouth system"
+    },
+    "ptg4.title": {
+      "text": "Mouth tracks"
+    },
+    "ptg4.variant": {
+      "text": "Variant"
     },
     "ptg5.compare": {
       "text": "Compare takes"

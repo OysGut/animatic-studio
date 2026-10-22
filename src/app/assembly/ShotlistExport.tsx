@@ -26,6 +26,7 @@ import { t } from "@/core/i18n/keyed";
 import { useQueryClient } from "@tanstack/react-query";
 import { exportRecordsKey } from "@/app/projects/use-history-records";
 import { ExportHistory } from "@/app/projects/ExportHistory";
+import { exportMouthPackage } from "@/engine/export/mouth-list";
 
 export function ShotlistExport({ state, productionId, clips, language, disabled }: {
   state: ProjectState; productionId: string; clips: readonly FilmClip[];
@@ -75,9 +76,9 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
-  async function startPackage(kind: "fbx" | "ae") {
+  async function startPackage(kind: "fbx" | "ae" | "mouth") {
     const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
-    const fileName = `${initial.project.code}-${kind === "fbx" ? "camera" : "after-effects"}.zip`;
+    const fileName = `${initial.project.code}-${kind === "fbx" ? "camera" : kind === "mouth" ? "mouth" : "after-effects"}.zip`;
     // Picker must be opened synchronously from the click, before waiting for commands.
     const sinkPromise = openZipSink(fileName);
     const ctrl = new AbortController(); abort.current = ctrl;
@@ -89,7 +90,9 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
         settings: { format: kind, language: language.dialogue, cameraMode, ...(kind === "ae" ? { titleCard } : {}), captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
       const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
-      if (kind === "fbx") {
+      if (kind === "mouth") {
+        await exportMouthPackage(state, doc, sink, ctrl.signal);
+      } else if (kind === "fbx") {
         await exportCameraFbx({ doc, sink, signal: ctrl.signal });
       } else {
         const used = new Set<string>();
@@ -178,6 +181,7 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         {t("ptg6.include-media")}
       </label>
       <Button data-testid="ptg-export-editorial" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe(true)}><Download />{t("ptg6.export")}</Button>
+      <Button data-testid="ptg4-export" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("mouth")}><Download />{t("ptg4.export")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
     {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}

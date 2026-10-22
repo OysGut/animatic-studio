@@ -1,5 +1,9 @@
 # TODO – From Pen to Glass
 
+## PTG4 – lydfinjustering og ekte import
+- Rhubarb-finjustering av tekststyrte munnspor fra lyd bygges ikke i PTG4. Ingen lyd sendes til tjenester.
+- Claude kjører 0084 etter kontroll. Trollfilm prøver Moho DAT/Papagayo, Dragonframe JSON og munnkolonnen med ekte materiale.
+
 ## PTG6 – manuell klippeimport
 - Prøv OTIO, FCP7-XML og CMX 3600 i Resolve, Premiere og Avid med og uten mediefiler. Kontroller relative stier, reel-tabell, håndtak, oddetallsoverlapp, lyd og aktiv Dragonframe-take. Claude kan lese eksemplene i tests/fixtures/ptg6 med OpenTimelineIO og adapterne. Ekte programimport må bekreftes av brukerne.
 

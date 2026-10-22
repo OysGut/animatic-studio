@@ -5,6 +5,7 @@ import type { LanguageVersion } from "./translation/language-versions";
 import type { StyleHarmonization, StylePreferredReference } from "./generation/style-harmonize";
 import type { AnimationRig, AnimationRigVersion, AnimationUse } from "./animation/rig";
 import type { LipsyncResult } from "./animation/lipsync";
+import type { MouthSet, MouthTrack } from "./interchange/mouth-types";
 import type { DialogueVersion } from "./dialogue/versions";
 import type { DialogueReview } from "./dialogue/drift";
 import type { NoteFlag } from "./notes/flags";
@@ -116,6 +117,7 @@ export interface ChangeSet {
 }
 
 type AnyEntity = AnimationRig | AnimationRigVersion | AnimationUse
+  | MouthSet | MouthTrack
   | TemplateInstance
   | CreditParticipant
   | CreditSequence
@@ -740,6 +742,8 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
     case "animationRigVersions": { const x = e as AnimationRigVersion; return { ...base, rig_id: x.rigId, source_version_id: x.sourceVersionId, number: x.number, spec: x.spec, algorithm_version: x.algorithmVersion, removed: x.removed }; }
     case "animationUses": { const x = e as AnimationUse; return { ...base, layer_id: x.layerId, occurrence_id: x.occurrenceId, rig_version_id: x.rigVersionId, enabled: x.enabled, behavior: x.behavior ?? null, removed: x.removed }; }
     case "lipsyncResults": { const x = e as unknown as LipsyncResult; return { ...base, clip_id: x.clipId, take_id: x.takeId, block_id: x.blockId, source: x.source, algorithm_version: x.algorithmVersion, audio_hash: x.audioHash, text_hash: x.textHash, spans: x.spans, overrides: x.overrides, enabled: x.enabled, dialogue_version_id: x.dialogueVersionId ?? null, removed: x.removed }; }
+    case "mouthSets": { const x = e as unknown as MouthSet; return { ...base, character_id: x.characterId, system: x.system, variants: x.variants, removed: x.removed }; }
+    case "mouthTracks": { const x = e as unknown as MouthTrack; return { ...base, occurrence_id: x.occurrenceId, character_id: x.characterId, set_id: x.setId, clip_id: x.clipId, block_id: x.blockId, language: x.language, spans: x.spans, source: x.source, removed: x.removed }; }
     case "animationPatterns": { const x = e as unknown as AnimationPattern; return { ...base, rig_id: x.rigId, name: x.name, color: x.color, spec: x.spec, removed: x.removed }; }
     case "creditParticipants": {
       const x = e as CreditParticipant;
@@ -822,6 +826,8 @@ export const TABLE_ORDER: readonly string[] = [
   "animation_patterns",
   "audio_clips",
   "dialogue_versions",
+  "mouth_sets",
+  "mouth_tracks",
   "dialogue_reviews",
   "clip_parts",
   "time_links",
@@ -973,6 +979,8 @@ export interface ProjectRows {
   readonly animation_rig_versions?: readonly Row[];
   readonly animation_uses?: readonly Row[];
   readonly lipsync_results?: readonly Row[];
+  readonly mouth_sets?: readonly Row[];
+  readonly mouth_tracks?: readonly Row[];
   readonly animation_patterns?: readonly Row[];
   readonly dialogue_versions?: readonly Row[];
   /** DV7/DV8 (migrasjon 0062). Tomt hvis migrasjonen ikke er kjørt ennå. */
@@ -1846,6 +1854,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       })),
     ),
     animationRigs: byId((r.animation_rigs ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), variantId: str(x["variant_id"]), currentVersionId: optStr(x["current_version_id"]), removed: x["removed"] === true }))),
+    mouthSets: byId((r.mouth_sets ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), characterId: str(x["character_id"]), system: str(x["system"]) as MouthSet["system"], variants: (json(x["variants"]) ?? {}) as MouthSet["variants"], removed: x["removed"] === true }))),
+    mouthTracks: byId((r.mouth_tracks ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), occurrenceId: str(x["occurrence_id"]), characterId: str(x["character_id"]), setId: str(x["set_id"]), clipId: str(x["clip_id"]), blockId: str(x["block_id"]), language: str(x["language"]), spans: (json(x["spans"]) ?? []) as MouthTrack["spans"], source: json(x["source"]) as MouthTrack["source"], removed: x["removed"] === true }))),
     animationRigVersions: byId((r.animation_rig_versions ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), rigId: str(x["rig_id"]), sourceVersionId: str(x["source_version_id"]), number: num(x["number"]), spec: json(x["spec"]) as AnimationRigVersion["spec"], algorithmVersion: 1 as const, removed: x["removed"] === true }))),
     animationUses: byId((r.animation_uses ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), layerId: str(x["layer_id"]), occurrenceId: str(x["occurrence_id"]), rigVersionId: str(x["rig_version_id"]), enabled: x["enabled"] === true, ...(json(x["behavior"]) ? { behavior: json(x["behavior"]) as NonNullable<AnimationUse["behavior"]> } : {}), removed: x["removed"] === true }))),
     lipsyncResults: byId((r.lipsync_results ?? []).map(x => ({ id: str(x["id"]), revision: num(x["revision"]), clipId: str(x["clip_id"]), takeId: str(x["take_id"]), blockId: optStr(x["block_id"]), source: str(x["source"]) as LipsyncResult["source"], algorithmVersion: num(x["algorithm_version"]), audioHash: str(x["audio_hash"]), textHash: str(x["text_hash"] ?? ""), spans: (json(x["spans"]) as LipsyncResult["spans"] | null) ?? [], overrides: (json(x["overrides"]) as LipsyncResult["overrides"] | null) ?? [], enabled: x["enabled"] === true, ...(x["dialogue_version_id"] ? { dialogueVersionId: str(x["dialogue_version_id"]) } : {}), removed: x["removed"] === true }))),

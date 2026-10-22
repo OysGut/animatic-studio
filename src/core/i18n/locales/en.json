@@ -75125,5 +75125,80 @@
   },
   "ptg6.media-linked": {
     "text": "Media files are not included. Place reference films and MIX audio at the listed relative paths, or relink them in your editor."
+  },
+  "ptg4.invalid": {
+    "text": "Invalid mouth set or track"
+  },
+  "ptg4.schema": {
+    "text": "Mouth tracks require database update 0084."
+  },
+  "ptg4.title": {
+    "text": "Mouth tracks"
+  },
+  "ptg4.set": {
+    "text": "Mouth set"
+  },
+  "ptg4.system": {
+    "text": "Mouth system"
+  },
+  "ptg4.draft": {
+    "text": "Create text draft"
+  },
+  "ptg4.apply": {
+    "text": "Apply"
+  },
+  "ptg4.discard": {
+    "text": "Discard"
+  },
+  "ptg4.no-times": {
+    "text": "The line has no known word timings."
+  },
+  "ptg4.stale": {
+    "text": "The mouth track is outdated. Its source changed; the track is preserved."
+  },
+  "ptg4.edit": {
+    "text": "Edit mouth track"
+  },
+  "ptg4.shape": {
+    "text": "Mouth shape"
+  },
+  "ptg4.variant": {
+    "text": "Variant"
+  },
+  "ptg4.none": {
+    "text": "No variant"
+  },
+  "ptg4.save": {
+    "text": "Save"
+  },
+  "ptg4.span": {
+    "text": "Mouth {shape}, frame {start} to {end}"
+  },
+  "ptg4.start": {
+    "text": "Start frame"
+  },
+  "ptg4.end": {
+    "text": "End frame"
+  },
+  "ptg4.split": {
+    "text": "Split"
+  },
+  "ptg4.merge": {
+    "text": "Merge"
+  },
+  "ptg4.character": {
+    "text": "Character"
+  },
+  "ptg4.count": {
+    "text": "Exposures"
+  },
+  "ptg4.shots": {
+    "text": "Shots"
+  },
+  "ptg4.export": {
+    "text": "Mouth list and lip sync"
+  },
+  "ptg4.readme": {
+    "text": "Mouth list: PDF and CSV show exposures per character and mouth. JSON uses zero-based frames, including handles. Moho DAT uses Papagayo mouths and one-based frames at capture fps; twos repeat. Outdated tracks are exported unchanged and marked in JSON. NB Uttale (CC0) and CMUdict (BSD) run locally. No AI or paid calls."
   }
 }

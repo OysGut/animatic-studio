@@ -75143,5 +75143,80 @@
   },
   "ptg6.media-linked": {
     "text": "Mediefilene følger ikke med. Legg referansefilmer og MIX-lydfiler på de oppgitte relative stiene, eller koble dem på nytt i klippeprogrammet."
+  },
+  "ptg4.invalid": {
+    "text": "Ugyldig munnsett eller munnspor"
+  },
+  "ptg4.schema": {
+    "text": "Munnspor krever databaseoppdatering 0084."
+  },
+  "ptg4.title": {
+    "text": "Munnspor"
+  },
+  "ptg4.set": {
+    "text": "Munnsett"
+  },
+  "ptg4.system": {
+    "text": "Munnsystem"
+  },
+  "ptg4.draft": {
+    "text": "Lag tekstutkast"
+  },
+  "ptg4.apply": {
+    "text": "Bruk"
+  },
+  "ptg4.discard": {
+    "text": "Forkast"
+  },
+  "ptg4.no-times": {
+    "text": "Replikken mangler kjente ordtider."
+  },
+  "ptg4.stale": {
+    "text": "Munnsporet er utdatert. Kilden er endret; sporet beholdes."
+  },
+  "ptg4.edit": {
+    "text": "Rediger munnspor"
+  },
+  "ptg4.shape": {
+    "text": "Munnform"
+  },
+  "ptg4.variant": {
+    "text": "Variant"
+  },
+  "ptg4.none": {
+    "text": "Ingen variant"
+  },
+  "ptg4.save": {
+    "text": "Lagre"
+  },
+  "ptg4.span": {
+    "text": "Munn {shape}, bilde {start} til {end}"
+  },
+  "ptg4.start": {
+    "text": "Startbilde"
+  },
+  "ptg4.end": {
+    "text": "Sluttbilde"
+  },
+  "ptg4.split": {
+    "text": "Del"
+  },
+  "ptg4.merge": {
+    "text": "Slå sammen"
+  },
+  "ptg4.character": {
+    "text": "Karakter"
+  },
+  "ptg4.count": {
+    "text": "Eksponeringer"
+  },
+  "ptg4.shots": {
+    "text": "Skudd"
+  },
+  "ptg4.export": {
+    "text": "Munnliste og leppesynk"
+  },
+  "ptg4.readme": {
+    "text": "Munnliste: PDF og CSV viser eksponeringer per karakter og munn. JSON bruker bilder fra 0, med håndtak. Moho DAT bruker Papagayo-munner og bilder fra 1, i opptakets bildefrekvens; toere gjentas. Utdaterte spor eksporteres uendret og merkes i JSON. NB Uttale (CC0) og CMUdict (BSD) brukes lokalt. Ingen KI eller betalte kall."
   }
 }
