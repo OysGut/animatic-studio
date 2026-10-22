@@ -7,7 +7,7 @@ const { chromium } = createRequire(`${process.env.NODE_PATH ?? "/tmp/pw/node_mod
 import { deflateSync } from "node:zlib";
 import { VISUAL_SCHEMA_VERSION } from "./schema-version.mjs";
 import { uiLang } from "./ui-lang.mjs";
-import { readFileSync, mkdirSync } from "node:fs";
+import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
 const [base = "http://localhost:8080", fixturePath = "/tmp/claude-0/visual-fixture.json", out = "/tmp/claude-0/rigg-r5"] = process.argv.slice(2);
 let pass = 0, fail = 0;
 const check = (ok, description) => {
@@ -156,7 +156,7 @@ async function mock(ctx) {
         contentType: "application/json",
         body: JSON.stringify({ result, context: {} }),
       });
-    if (/runCommand/.test(name)) {
+    if (/runCommand/.test(name)) { if ((route.request().postData() ?? "").includes("SavePrintJob")) writeFileSync(`${out}/save.json`, route.request().postData() ?? "");
       COMMANDS.push(route.request().postData() ?? "");
       return json({ ok: true, changeId: "x", affected: [], inverse: null, revisions: {} });
     }
