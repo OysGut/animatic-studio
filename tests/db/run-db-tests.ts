@@ -7181,6 +7181,9 @@ try {
     assert(second?.versions[occ] === 2, 'etter fullføring v002');
     const third = (await reserve(ALICE))[0]?.['r'] as { versions: Record<string, number> };
     assert(third?.versions[occ] === 3, 'avbrutt reservasjon gjenbrukes ikke');
+    await sql`update public.export_records set settings=jsonb_set(settings,'{batchSize}','2'::jsonb)
+      where project_id=${bp} and settings->>'batchId'=${second.batchId}`;
+    await expectError(as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${second.batchId})`), '22023');
     await as('service_role', null, tx => tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.export_records where project_id=${bp}`).length === 0,'eksportlogg slettet med prosjekt');
   });

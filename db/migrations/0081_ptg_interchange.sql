@@ -294,11 +294,12 @@ begin
   for v_occ in select distinct x from unnest(p_occurrence_ids) x loop
     select coalesce(max((r.settings->>'shotVersion')::int),0)+1 into v_version
       from public.export_records r where r.project_id=p_project and r.occurrence_ids @> array[v_occ]
-      and r.settings->>'interchange'='true' and r.settings->>'phase'='reserved';
+      and r.settings->>'interchange'='true' and r.settings ? 'shotVersion';
     v_id := gen_random_uuid();
     insert into public.export_records(id,project_id,production_id,kind,file_name,settings,occurrence_ids,created_by)
       values(v_id,p_project,p_production,'script',btrim(p_file_name),p_settings || jsonb_build_object(
-        'interchange',true,'phase','reserved','batchId',v_batch::text,'shotVersion',v_version),array[v_occ],auth.uid());
+        'interchange',true,'phase','reserved','batchId',v_batch::text,'shotVersion',v_version,
+        'batchSize',(select count(distinct x) from unnest(p_occurrence_ids) x)),array[v_occ],auth.uid());
     v_result := v_result || jsonb_build_object(v_occ::text,v_version);
   end loop;
   return jsonb_build_object('batchId',v_batch,'versions',v_result);
@@ -316,6 +317,15 @@ begin
   select * into v_row from public.export_records where project_id=p_project and created_by=auth.uid()
     and settings->>'batchId'=p_batch::text and settings->>'phase'='reserved' limit 1;
   if not found then raise exception 'Forbidden' using errcode='42501'; end if;
+  if exists(select 1 from public.export_records where project_id=p_project
+      and settings->>'batchId'=p_batch::text and created_by is distinct from auth.uid()) then
+    raise exception 'Forbidden' using errcode='42501';
+  end if;
+  if (select count(*) from public.export_records where project_id=p_project
+      and settings->>'batchId'=p_batch::text and settings->>'phase'='reserved')
+      is distinct from (v_row.settings->>'batchSize')::bigint then
+    raise exception 'Incomplete interchange export' using errcode='22023';
+  end if;
   select id into v_id from public.export_records where project_id=p_project and settings->>'batchId'=p_batch::text
     and settings->>'phase'='completed' limit 1;
   if v_id is not null then return v_id; end if;

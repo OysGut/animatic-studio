@@ -4,6 +4,8 @@ import { productionStatus } from "../assembly/status";
 import { estimateProduction } from "../screenplay/duration";
 import { audioVersion, filmAudio } from "../audio";
 import { wordIds } from "../audio/alignment";
+import { wordSpansInComposition } from "../audio/pauses";
+import { clipEditOf } from "../dialogue/versions";
 import { layersOf, layerVersion, layerVersions } from "../composition/render";
 import { assetsInScene } from "../library";
 import { languageState } from "../language";
@@ -105,7 +107,8 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
     const at = secondsToFrames(seconds, fps);
     return shots.find(x => at >= x.startFrame && at < x.startFrame + x.lengthFrames);
   };
-  for (const it of filmAudio(s, clips, sourceFps, lang.dialogue)) {
+  const audioItems = filmAudio(s, clips, sourceFps, lang.dialogue);
+  for (const it of audioItems) {
     const shot = owner(it.start);
     if (!shot) continue;
     const fullEnd = it.start + it.fullLength;
@@ -114,13 +117,19 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
       fadeInFrames: secondsToFrames(it.start + it.fadeIn, fps) - secondsToFrames(it.start, fps),
       fadeOutFrames: secondsToFrames(fullEnd, fps) - secondsToFrames(fullEnd - it.fadeOut, fps),
       volumeKeys: it.keys.map(k => ({ frame: secondsToFrames(it.start + k.t, fps) - shot.startFrame, db: k.db })) });
-    const alignment = audioVersion(s, it.clip)?.alignment;
+    const version = audioVersion(s, it.clip);
+    const alignment = version?.alignment;
     if (!alignment) continue;
     const ids = wordIds(alignment);
+    const edit = clipEditOf(s, it.clip);
+    const composition = (edit.compositionId ? s.assetVersions[edit.compositionId]?.composition : null) ?? version?.composition;
+    const spans = composition && version ? wordSpansInComposition(composition, alignment,
+      version.composition ? { kind: "composition", composition: version.composition } : { kind: "version", versionId: version.id }) : alignment.words;
     alignment.words.forEach((w, i) => {
-      if (w.startMs === null || w.endMs === null) return;
-      const start = it.start + (w.startMs / 1000 - it.sourceIn) / (it.speed ?? 1);
-      const end = it.start + (w.endMs / 1000 - it.sourceIn) / (it.speed ?? 1);
+      const span = spans[i];
+      if (!span || span.startMs === null || span.endMs === null) return;
+      const start = it.start + (span.startMs / 1000 - it.sourceIn) / (it.speed ?? 1);
+      const end = it.start + (span.endMs / 1000 - it.sourceIn) / (it.speed ?? 1);
       if (start < it.start || start >= fullEnd) return;
       const target = owner(start);
       if (target) target.words.push({ id: ids[i] ?? `${it.clip.id}:${i}`, audioId: it.clip.id, blockId: alignment.blockId,
@@ -136,8 +145,9 @@ export function buildInterchange(state: ProjectState, o: InterchangeOptions): In
       if (b.kind !== "dialogue") continue;
       const audio = shots.flatMap(x => x.audio).find(x => x.source.blockId === b.id && x.sourceOccurrenceId === c.occurrenceId);
       const span = spans.get(b.id);
-      const start = audio ? framesToSeconds(audio.absoluteStartFrame, fps) : framesToSeconds(span?.startFrame ?? c.startFrame, sourceFps);
-      const end = audio ? framesToSeconds(audio.absoluteEndFrame, fps) : framesToSeconds(span?.endFrame ?? c.startFrame, sourceFps);
+      const original = audioItems.find(x => x.clip.blockId === b.id && x.clip.occurrenceId === c.occurrenceId);
+      const start = original ? original.start : framesToSeconds(span?.startFrame ?? c.startFrame, sourceFps);
+      const end = original ? original.start + original.fullLength : framesToSeconds(span?.endFrame ?? c.startFrame, sourceFps);
       const shot = owner(start);
       if (shot) shot.dialogue.push({ id: b.id, sourceOccurrenceId: c.occurrenceId, text, character,
         characterAssetId: audio?.source.characterAssetId ?? null, estimated: !audio, ...eventTime(start, end, shot, fps) });
