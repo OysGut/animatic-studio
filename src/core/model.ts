@@ -577,6 +577,11 @@ export interface AssetVersion extends Entity<AssetVersionId> {
    * versjonen er en renderbar konvertering. Uforanderlig som resten av versjonen; eldre versjoner mangler den.
    */
   readonly derivedFiles?: import("./library/image-ingest").DerivedImageFiles;
+  /**
+   * Rettigheter (B-114 C0, migrasjon 0080): kilde, lisens, kreditering, deling og bearbeiding.
+   * Mangler = privat, alle rettigheter forbeholdt.
+   */
+  readonly rights?: import("./community").AssetRights;
 }
 
 /** Et element som skal inn i en scene (DEC-0088). */
