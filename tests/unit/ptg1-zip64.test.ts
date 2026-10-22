@@ -1,3 +1,4 @@
+// @vitest-environment node
 import { expect, it } from "vitest";
 import { zipCentralHeader, zipEndRecords } from "@/engine/export/zip64";
 import { writeZip } from "@/engine/export/zip";

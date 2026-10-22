@@ -7158,6 +7158,32 @@ try {
     assert((await sql`select 1 from public.publications where project_id=${bp} union all select 1 from public.review_comments where project_id=${bp}`).length === 0, "delete_project sletter publiseringer og kommentarer");
     await sql`delete from public.app_admins where user_id = ${ADM}`;
   });
+  await test("PTG1: prosjektkode/opptak og irreversible skuddreservasjoner", async () => {
+    const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
+    await sql`insert into public.projects(id,name) values (${bp},'PTG test')`;
+    await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner')`;
+    await sql`insert into public.productions(id,project_id,kind,name) values (${prod},${bp},'main','Main')`;
+    await sql`insert into public.scenes(id,project_id) values (${scene},${bp})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id,owner_production_id) values (${variant},${bp},${scene},${prod})`;
+    await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values (${occ},${bp},${prod},${scene},${variant},'a')`;
+    await expectError(sql`update public.projects set code='bad code' where id=${bp}`, '23514');
+    await sql`update public.projects set code=${'A'.repeat(32)} where id=${bp}`;
+    await expectError(sql`update public.projects set code=${'A'.repeat(33)} where id=${bp}`, '23514');
+    await expectError(sql`update public.projects set capture_mode='twos' where id=${bp}`, '23514');
+    await sql`update public.projects set capture_mode='twos',capture_fps_num=12 where id=${bp}`;
+    const reserve = (user: UserId) => as('authenticated', user, tx => tx`select public.reserve_interchange_export(${bp},${prod},array[${occ}::uuid],'shotlist.zip','{}'::jsonb) r`);
+    await expectError(reserve(BOB), '42501');
+    const first = (await reserve(ALICE))[0]?.['r'] as { batchId: string; versions: Record<string, number> };
+    assert(first?.versions[occ] === 1, 'første eksport v001');
+    await expectError(as('authenticated', BOB, tx => tx`select public.complete_interchange_export(${bp},${first.batchId})`), '42501');
+    await as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${first.batchId})`);
+    const second = (await reserve(ALICE))[0]?.['r'] as { batchId: string; versions: Record<string, number> };
+    assert(second?.versions[occ] === 2, 'etter fullføring v002');
+    const third = (await reserve(ALICE))[0]?.['r'] as { versions: Record<string, number> };
+    assert(third?.versions[occ] === 3, 'avbrutt reservasjon gjenbrukes ikke');
+    await as('service_role', null, tx => tx`select public.delete_project(${bp},${ALICE})`);
+    assert((await sql`select id from public.export_records where project_id=${bp}`).length === 0,'eksportlogg slettet med prosjekt');
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
