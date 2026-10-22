@@ -230,7 +230,7 @@ let pdfText = "";
 await step("«Lag PDF» lagrer jobben som én kommando og gir én PDF med 20 figurer og QR", async () => {
   await job.screenshot({ path: `${out}/before-create-${lang}.png` });
   const dl = page.waitForEvent("download", { timeout: 30000 });
-  await job.getByTestId("print-job-create").click({ timeout: 5000 }).catch(async (e) => { dl.catch(() => {}); throw new Error(`${e.message.split("\n")[0]} | ${await job.getByTestId("print-job-create").evaluate((b) => [...b.attributes].map((a) => a.name + "=" + a.value.slice(0, 20)).join(" "))}`); });
+  await job.getByTestId("print-job-create").click({ timeout: 5000 }).catch(async (e) => { dl.catch(() => {}); throw new Error(`${e.message.split("\n")[0]} | ${await job.getByTestId("print-job-create").evaluate((b) => b.getAttributeNames().join(","))}`); });
   const d = await dl; const p = await d.path();
   pdfText = readFileSync(p).toString("latin1");
   assert(pdfText.startsWith("%PDF-"), "ikke PDF");
