@@ -119,7 +119,7 @@ export function buildShotFbx(shot: Shot, fps: Rational): string | null {
   return [
     "; FBX 7.4.0 project file",
     "; From Pen to Glass (PTG3, eksperimentell): " + shot.name,
-    "; Enheter: cm. Tid: KTime (46186158000/s). Kameraet ser ned (PreRotation -90 om X), rull om Z.",
+    "; Units: cm. Time: KTime (46186158000/s). The camera looks down (PreRotation -90 about X), roll about Z.",
     "",
     "FBXHeaderExtension:  {",
     "    FBXHeaderVersion: 1003",

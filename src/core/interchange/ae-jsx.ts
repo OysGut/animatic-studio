@@ -100,7 +100,7 @@ interface LayerCtx { readonly zPx: number; readonly threeD: boolean; readonly sc
 function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerTrack, i: number, refs: ReadonlyMap<string, string>, ctx: LayerCtx, mode: AeCameraMode): void {
   const src = layer.source;
   const navn = `${shot.name}_${src.name}`.slice(0, 120);
-  const v = `lag${i}`;
+  const v = `L${i}`;
   const len = r6(sec(doc, shot.lengthFrames));
   const base = src.transform;
   // Bildeskifter: sekvens i en underkomposisjon (ett bilde per skifte, krysstoning som opacity-ramp)
@@ -111,7 +111,7 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
     const ends = [...layer.swaps.map(w => w.frame), shot.lengthFrames];
     frames.forEach((f, k) => {
       const ref = files[k] ? refs.get(files[k]!) : null;
-      if (!ref) { out.push(`// mangler medium for skifte ${k} i ${js(navn)}`); return; }
+      if (!ref) { out.push(`// missing media for swap ${k} in ${js(navn)}`); return; }
       out.push(`var e${i}_${k} = skift${i}.layers.add(media[${js(ref)}]);`);
       out.push(`e${i}_${k}.startTime = ${r6(sec(doc, f))}; e${i}_${k}.inPoint = ${r6(sec(doc, f))}; e${i}_${k}.outPoint = ${r6(sec(doc, ends[k] ?? shot.lengthFrames))};`);
       const tr = layer.swaps[k - 1]?.transition;
@@ -128,7 +128,7 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
   } else if (src.fill) {
     out.push(`var ${v} = comp.layers.addSolid(${js(color(src.fill))}, ${js(navn)}, ${Math.max(1, Math.round(src.width))}, ${Math.max(1, Math.round(src.height))}, 1, ${len});`);
   } else {
-    out.push(`// hoppet over ${js(navn)}: ingen fil (tekst og uferdige lag gjenskapes ikke)`);
+    out.push(`// skipped ${js(navn)}: no file (text and unfinished layers are not recreated)`);
     return;
   }
   out.push(`${v}.name = ${js(navn)};`);
@@ -168,7 +168,7 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
   }
   if (src.groupId) {
     const parent = shot.layers.findIndex(l => l.id === src.groupId);
-    if (parent >= 0) out.push(`${v}.parent = lag${parent};`);
+    if (parent >= 0) out.push(`${v}.parent = L${parent};`);
   }
   // Masker som Shape (rektangel/ellipse; klippelag bruker det refererte laget som alfa-matte)
   const mask = src.mask;
@@ -180,19 +180,19 @@ function emitLayer(out: string[], doc: InterchangeDoc, shot: Shot, layer: LayerT
     const shapeProp = mask.kind === "ellipse" ? "ADBE Vector Shape - Ellipse" : "ADBE Vector Shape - Rect";
     const sizeProp = mask.kind === "ellipse" ? "ADBE Vector Ellipse Size" : "ADBE Vector Rect Size";
     const posProp = mask.kind === "ellipse" ? "ADBE Vector Ellipse Position" : "ADBE Vector Rect Position";
-    out.push(`var maske${i} = comp.layers.addShape(); maske${i}.name = ${js(navn + "_maske")};`);
-    out.push(`var mg${i} = maske${i}.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");`);
+    out.push(`var msk${i} = comp.layers.addShape(); msk${i}.name = ${js(navn + "_maske")};`);
+    out.push(`var mg${i} = msk${i}.property("ADBE Root Vectors Group").addProperty("ADBE Vector Group");`);
     out.push(`var mv${i} = mg${i}.property("ADBE Vectors Group");`);
     out.push(`var mf${i} = mv${i}.addProperty(${js(shapeProp)});`);
     out.push(`mf${i}.property(${js(sizeProp)}).setValue([${val("maskWidth", mask.width)}, ${val("maskHeight", mask.height)}]);`);
     out.push(`mf${i}.property(${js(posProp)}).setValue([${val("maskX", mask.x) + val("maskWidth", mask.width) / 2}, ${val("maskY", mask.y) + val("maskHeight", mask.height) / 2}]);`);
     out.push(`var mfill${i} = mv${i}.addProperty("ADBE Vector Graphic - Fill");`);
     out.push(`mfill${i}.property("ADBE Vector Fill Color").setValue([1, 1, 1, 1]);`);
-    out.push(`maske${i}.moveBefore(${v});`);
+    out.push(`msk${i}.moveBefore(${v});`);
     out.push(`${v}.trackMatteType = TrackMatteType.${mask.invert ? "ALPHA_INVERTED" : "ALPHA"};`);
   } else if (mask && mask.kind === "layer") {
     const holder = shot.layers.findIndex(l => l.id === mask.layerId);
-    if (holder >= 0) out.push(`${v}.trackMatteType = TrackMatteType.${mask.invert ? "ALPHA_INVERTED" : "ALPHA"}; // matte: lag${holder}`);
+    if (holder >= 0) out.push(`${v}.trackMatteType = TrackMatteType.${mask.invert ? "ALPHA_INVERTED" : "ALPHA"}; // matte: L${holder}`);
   }
   // 2D-parallakse: null-lag som fører kameraets bevegelse skalert med platenes parallakse
   if (mode === "parallax" && shot.camera) {
@@ -234,11 +234,11 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
   // Lyd med volumpunkter (nivå i dB, som i AE)
   shot.audio.forEach((a, i) => {
     const ref = a.fileId ? refs.get(a.fileId) : null;
-    if (!ref) { out.push(`// lyd ${js(a.source.name)} mangler fil`); return; }
-    out.push(`var lyd${i} = comp.layers.add(media[${js(ref)}]); lyd${i}.name = ${js(shot.name + "_" + a.source.name)};`);
-    out.push(`lyd${i}.startTime = ${r6(sec(doc, a.startFrame))};`);
+    if (!ref) { out.push(`// audio ${js(a.source.name)} has no file`); return; }
+    out.push(`var aud${i} = comp.layers.add(media[${js(ref)}]); aud${i}.name = ${js(shot.name + "_" + a.source.name)};`);
+    out.push(`aud${i}.startTime = ${r6(sec(doc, a.startFrame))};`);
     const keys = a.volumeKeys.length > 0 ? a.volumeKeys : [{ frame: 0, db: 0 }];
-    out.push(`ptgNokkler(lyd${i}.property("Audio Levels"), ${js(keys.map(k => r6(sec(doc, a.startFrame + k.frame))))}, ${js(keys.map(k => [r6(k.db + a.gain), r6(k.db + a.gain)]))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => false))});`);
+    out.push(`ptgNokkler(aud${i}.property("Audio Levels"), ${js(keys.map(k => r6(sec(doc, a.startFrame + k.frame))))}, ${js(keys.map(k => [r6(k.db + a.gain), r6(k.db + a.gain)]))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => 0))}, ${js(keys.map(() => false))});`);
   });
   // Kamera: AE-kamera (3D, plater på z, zoom = bredde × f / filmbredde) eller 2D-parallakse (null-lag over)
   if (mode === "ae" && cam) {
@@ -263,7 +263,7 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
       out.push(`kam.property("Zoom").setValue(${zoomPx});`);
     }
   } else if (mode === "ae" && !cam) {
-    out.push(`// skuddet har ingen rigg – kamera utelates (se LESMEG.txt)`);
+    out.push(`// shot has no rig - camera omitted (see LESMEG.txt)`);
   }
   out.push(`var hovedLag = hoved.layers.add(comp); hovedLag.startTime = ${r6(sec(doc, shot.startFrame))};`);
 }
@@ -279,8 +279,8 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     for (const a of s.audio) if (a.fileId) used.add(a.fileId);
   }
   const out: string[] = [
-    "// bygg.jsx – From Pen to Glass (PTG3). ES3/ExtendScript. Kjøres i After Effects fra pakkens mappe.",
-    "// Overganger mellom scener er utenfor (PTG-F1). Tekstlag og uferdige lag gjenskapes ikke.",
+    "// bygg.jsx - From Pen to Glass (PTG3). ES3/ExtendScript. Run in After Effects from the package folder.",
+    "// Transitions between scenes are out of scope (PTG-F1). Text and unfinished layers are not recreated.",
     "function ptgNokkler(p, tider, verdier, inn, ut, hold) {",
     "  var i;",
     "  for (i = 0; i < tider.length; i++) p.setValueAtTime(tider[i], verdier[i]);",
