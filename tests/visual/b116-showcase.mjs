@@ -60,6 +60,9 @@ async function mock(ctx, st) {
       if (/getShowcaseFeed/.test(name)) return json(st.feed);
       if (/createShowcaseItem/.test(name)) { st.created = true; return json({ id: "new-1", status: "pending" }); }
       if (/getMyShowcaseProfile/.test(name)) return json({ handle: "oystein", displayName: "Øystein", bio: "", avatarUrl: null, isPublic: false });
+      if (/fetchAdminOverview/.test(name)) return json({ ok: true, purged: 0, permanentEmail: USER.email, users: [], projects: [] });
+      if (/fetchAiUsage/.test(name)) return json({ ok: true, rows: [], projectNames: {}, userNames: {} });
+      if (/fetchUsdNokRates/.test(name)) return json({ ok: true, rates: [] });
     } catch { /* ukjent */ }
     return route.abort();
   });
