@@ -7262,6 +7262,9 @@ try {
     await expectError(as('authenticated',BOB,tx=>tx`update public.mouth_sets set system='preston-blair' where id=${setId}`),'42501');
     await expectError(as('authenticated',ALICE,tx=>tx`update public.mouth_tracks set spans='[]' where id=${trackId}`),'42501');
     await expectError(sql`update public.mouth_sets set system='invalid' where id=${setId}`,'23514');
+    await sql`update public.assets set removed=true where id=${character}`;
+    await expectError(as('service_role',null,tx=>tx`select public.purge_removed_assets(${projectId},${ALICE},array[${character}::uuid],array[]::uuid[])`),'23503');
+    await sql`update public.assets set removed=false where id=${character}`;
     assert(BACKUP_STATE_TABLES.includes('mouth_sets')&&BACKUP_STATE_TABLES.includes('mouth_tracks'),'backup tar med begge tabeller');
     await as('service_role',null,tx=>tx`select public.delete_project(${projectId},${ALICE})`);
     assert((await sql`select id from public.mouth_tracks where project_id=${projectId} union all select id from public.mouth_sets where project_id=${projectId}`).length===0,'delete_project sletter spor før sett');

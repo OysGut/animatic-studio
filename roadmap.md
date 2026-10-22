@@ -1,11 +1,11 @@
 # Veikart
 
 ## PTG4 – leppesynk og munnliste (22.10.2026)
-- [ ] Munnsett/munnspor, additive 0084, kommando/angring, lasting og sikkerhetskopi.
-- [ ] Uttaleutvalg og regelreserve, fonemtabeller, ordtider og opptaksavrunding uten AI.
-- [ ] Redigerbare spor i Scene, variantkobling, utdatert-merking og munnliste PDF/CSV.
-- [ ] Moho DAT/JSON, Dragonframe X-sheet/påskrift og selvstendig eksport.
-- [ ] Gyldne tester, DB/i18n/full Vitest, ptg4 nb/en og sekvensielle PTG-regresjoner; norsk rapport.
+- [x] Munnsett/munnspor, additive 0084, kommando/angring, lasting og sikkerhetskopi.
+- [x] Uttaleutvalg og regelreserve, fonemtabeller, ordtider og opptaksavrunding uten AI.
+- [x] Redigerbare spor i Scene, variantkobling, utdatert-merking og munnliste PDF/CSV.
+- [x] Moho DAT/JSON, Dragonframe X-sheet/påskrift og selvstendig eksport.
+- [x] Full Vitest 2361/0, DB 159/0, i18n, ptg4 nb/en 15/15 og sekvensielle PTG2/5/6-regresjoner; norsk rapport.
 - [ ] Claude kjører 0084 i Cloud; Rhubarb-finjustering fra lyd er utsatt.
 
 ## PTG6 – klippefiler (22.10.2026)
