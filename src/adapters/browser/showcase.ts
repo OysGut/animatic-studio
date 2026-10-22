@@ -120,12 +120,13 @@ export async function listAssetCandidates(projectId: string): Promise<{ images: 
   return { images, audio };
 }
 
-/** Scener med en eksportert klippfil (takes med media_ref), til «en kort scene». */
+/** Scener som stillbilde (takes av typen still med media_ref). Klipp deles ikke før en server-laget kort eksport finnes. */
 export async function listSceneCandidates(projectId: string): Promise<ShowcaseCandidate[]> {
   const { data, error } = await db
     .from("takes")
-    .select("id,kind,duration_frames,media_ref,created_at,scene_occurrences(production_number,productions(fps_num,fps_den))")
+    .select("id,kind,media_ref,created_at,scene_occurrences(production_number)")
     .eq("project_id", projectId)
+    .eq("kind", "still")
     .not("media_ref", "is", null)
     .order("created_at", { ascending: false })
     .limit(50);
@@ -133,16 +134,10 @@ export async function listSceneCandidates(projectId: string): Promise<ShowcaseCa
   const out: ShowcaseCandidate[] = [];
   for (const t of data as Record<string, unknown>[]) {
     const key = typeof t["media_ref"] === "string" ? t["media_ref"] : null;
-    if (!key || !key.startsWith(`${projectId}/`)) continue;
-    const occ = t["scene_occurrences"] as { production_number?: string | null; productions?: { fps_num: number; fps_den: number } | null } | null;
-    const still = t["kind"] === "still";
-    const fps = occ?.productions;
-    const frames = t["duration_frames"];
-    const durationMs = !still && typeof frames === "number" && fps && fps.fps_num > 0
-      ? Math.ceil(frames * fps.fps_den * 1000 / fps.fps_num) : null;
-    if (!still && (durationMs === null || durationMs < 1 || durationMs > 15000)) continue;
+    if (t["kind"] !== "still" || !key || !key.startsWith(`${projectId}/`)) continue;
+    const occ = t["scene_occurrences"] as { production_number?: string | null } | null;
     const num = occ?.production_number ? ` ${occ.production_number}` : "";
-    out.push({ id: String(t["id"]), name: `${num}`.trim() ? `Scene${num}` : String(t["id"]).slice(0, 8), sourceKey: key, mime: still ? "image/png" : "video/mp4", durationMs, width: null, height: null });
+    out.push({ id: String(t["id"]), name: `${num}`.trim() ? `Scene${num}` : String(t["id"]).slice(0, 8), sourceKey: key, mime: "image/png", durationMs: null, width: null, height: null });
   }
   return out;
 }
