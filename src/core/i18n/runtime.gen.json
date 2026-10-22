@@ -31841,9 +31841,6 @@
     "ptg1.denominator": {
       "text": "Nevner"
     },
-    "ptg1.duplicate-file": {
-      "text": "Pakken inneholder to filer med samme navn."
-    },
     "ptg1.export-failed": {
       "text": "Skuddlisten kunne ikke eksporteres."
     },
@@ -64210,9 +64207,6 @@
     },
     "ptg1.denominator": {
       "text": "Denominator"
-    },
-    "ptg1.duplicate-file": {
-      "text": "The package contains two files with the same name."
     },
     "ptg1.export-failed": {
       "text": "The shotlist could not be exported."
