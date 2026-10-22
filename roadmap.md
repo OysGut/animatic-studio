@@ -1,5 +1,10 @@
 # Veikart
 
+## Hastekontroll – språkvelger (22.10.2026)
+- [x] Publisert innloggingsside og lokal forhåndsvisning viser alle ti vanlige språk; feilen er ikke gjenskapt.
+- [ ] Regresjonskontroll for språkvelgeren ved utlogget/innlogget økt og utilgjengelig testspråkbryter.
+- [ ] Nettleserkontroll og kort norsk rapport; ekte innlogget kontroll krever tilgjengelig testøkt.
+
 ## B-117 – globus ved innloggingen (22.10.2026)
 - [x] Wireframe-globus bak innloggingen (Natural Earth 50m), prikker med puls, dra med etterslep, selvrotasjon, redusert bevegelse
 - [x] Valgfri by på kontoen (GeoNames cities15000, CC BY 4.0), migrasjon 0085 skrevet (Claude kjører i Cloud)
