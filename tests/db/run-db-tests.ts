@@ -7014,6 +7014,8 @@ try {
     assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 80, "skjemaversjon 80");
     const ADM = "55555555-5555-7555-8555-555555555555", EVE = "66666666-6666-7666-8666-666666666666";
     await sql`insert into auth.users (id, email) values (${ADM}, 'admin@example.no'), (${EVE}, 'Eve@Example.no') on conflict do nothing`;
+    // Denne eksisterende testen gjelder en bekreftet e-postmottaker; S-1 tester ubekreftet separat.
+    await sql`update auth.users set email_confirmed_at = now() where id = ${EVE}`;
     await sql`insert into public.app_admins (user_id) values (${ADM}) on conflict do nothing`;
     for (const u of [ALICE, BOB, CAROL, EVE]) await sql`insert into public.profiles (user_id, display_name) values (${u}, 'X') on conflict (user_id) do nothing`;
     const tables = ["features", "feature_testers", "publications", "publication_recipients", "publication_media", "review_comments", "content_reports", "user_blocks"];
@@ -7318,6 +7320,69 @@ try {
     await sql`update public.account_status set status='active' where user_id=${ids[3]!}`;
     assert(Number((await sql`select count(*) n from public.globe_points()`)[0]!["n"]) === before + 1, "sperret konto telles først når den er aktiv igjen");
     await expectError(as("anon", null, (tx) => tx`select * from private.globe_places`), "42501");
+  });
+  // ---------- S-1: bekreftet mottakerepost og minste EXECUTE (0086) ----------
+  async function s1Fixture() {
+    const owner = crypto.randomUUID(), recipient = crypto.randomUUID(), email = `${recipient}@example.no`;
+    await sql`insert into auth.users (id, email) values (${owner}, ${`${owner}@example.no`}), (${recipient}, ${email})`;
+    await sql`update public.features set state = 'on' where key in ('community.sharing', 'community.review')`;
+    const project = String((await as('authenticated', owner, tx => tx`select public.create_project('S-1') id`))[0]?.['id']);
+    const publication = String((await as('authenticated', owner, tx => tx`select public.create_publication(${project}, 'range', '{}'::jsonb, 'selected', '{"view":true,"comment":true}'::jsonb, null, 'S-1', '', null, null) id`))[0]?.['id']);
+    await as('authenticated', owner, tx => tx`select public.set_publication_recipients(${publication}, array[]::uuid[], array[${email.toUpperCase()}]::text[])`);
+    await as('authenticated', owner, tx => tx`select public.update_publication(${publication}, '{"status":"live"}'::jsonb)`);
+    await as('authenticated', owner, tx => tx`select public.add_publication_media(${publication}, ${`${project}/shares/film.mp4`}, 'video/mp4', 1000, 1920, 1080)`);
+    await as('authenticated', owner, tx => tx`select public.add_review_comment(${publication}, null, 0, null, '{"x":0,"y":0,"width":1,"height":1}'::jsonb, 'general', 'S-1')`);
+    return { owner, recipient, project, publication };
+  }
+  await test('0086 S-1: ubekreftet e-post gir verken RPC- eller RLS-tilgang', async () => {
+    const f = await s1Fixture();
+    assert((await sql`select email_confirmed_at from auth.users where id=${f.recipient}`)[0]?.['email_confirmed_at'] === null, 'mottakeren er ubekreftet');
+    assert((await as('authenticated', f.recipient, tx => tx`select public.publication_for_me(${f.publication}) p`))[0]?.['p'] === null, 'RPC avviser ubekreftet e-post');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publications where id=${f.publication}`)).length === 0, 'RLS skjuler publiseringen');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publication_media where publication_id=${f.publication}`)).length === 0, 'RLS skjuler mediene');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.review_comments where publication_id=${f.publication}`)).length === 0, 'RLS skjuler kommentarer');
+    assert((await sql`select seen_at from public.publication_recipients where publication_id=${f.publication}`)[0]?.['seen_at'] === null, 'ingen sett-markering');
+    await expectError(as('authenticated', f.recipient, tx => tx`select public.add_review_comment(${f.publication}, null, 0, null, null, 'general', 'Avvist')`), '42501');
+  });
+  await test('0086 S-1: bekreftet e-post gir RPC, medier og kommentarer gjennom RLS', async () => {
+    const f = await s1Fixture();
+    await sql`update auth.users set email_confirmed_at=now() where id=${f.recipient}`;
+    const result = (await as('authenticated', f.recipient, tx => tx`select public.publication_for_me(${f.publication}) p`))[0]?.['p'] as { id?: string } | null;
+    assert(result?.id === f.publication, 'bekreftet mottaker får riktig publisering');
+    assert((await sql`select seen_at from public.publication_recipients where publication_id=${f.publication}`)[0]?.['seen_at'] != null, 'bekreftet e-post markeres sett');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publications where id=${f.publication}`)).length === 1, 'RLS viser publiseringen');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publication_media where publication_id=${f.publication}`)).length === 1, 'RLS viser mediet');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.review_comments where publication_id=${f.publication}`)).length === 1, 'RLS viser kommentaren');
+    await as('authenticated', f.recipient, tx => tx`select public.add_review_comment(${f.publication}, null, 0, null, '{"x":0,"y":0,"width":1,"height":1}'::jsonb, 'general', 'Tillatt')`);
+    // Blokkeringens direkte RLS-kall virker fortsatt med innstrammede rettigheter.
+    await as('authenticated', f.owner, tx => tx`select public.block_user(${f.recipient})`);
+    assert((await as('authenticated', f.owner, tx => tx`select * from public.user_blocks where blocked=${f.recipient}`)).length === 1, 'egen blokkering synlig');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publications where id=${f.publication}`)).length === 0, 'blokkering skjuler publiseringen');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.review_comments where publication_id=${f.publication}`)).length === 0, 'blokkering skjuler kommentarer');
+  });
+  await test('0086 S-1: bruker-ID-treff beholdes uten e-postbekreftelse; e-postrad markeres ikke sett', async () => {
+    const f = await s1Fixture();
+    const emailRow = String((await sql`select id from public.publication_recipients where publication_id=${f.publication}`)[0]?.['id']);
+    await as('authenticated', f.owner, tx => tx`select public.set_publication_recipients(${f.publication}, array[${f.recipient}]::uuid[], array[${`${f.recipient}@example.no`}]::text[])`);
+    assert((await as('authenticated', f.recipient, tx => tx`select public.publication_for_me(${f.publication}) p`))[0]?.['p'] != null, 'bruker-ID gir tilgang');
+    assert((await sql`select seen_at from public.publication_recipients where id=${emailRow}`)[0]?.['seen_at'] === null, 'ubekreftet e-postrad forblir usett');
+    assert((await sql`select seen_at from public.publication_recipients where publication_id=${f.publication} and user_id=${f.recipient}`)[0]?.['seen_at'] != null, 'bruker-ID-rad markeres sett');
+    assert((await as('authenticated', f.owner, tx => tx`select id from public.publication_recipients where publication_id=${f.publication}`)).length === 2, 'redaktør ser hele mottakerlisten');
+    assert((await as('authenticated', f.recipient, tx => tx`select id from public.publication_recipients where publication_id=${f.publication}`)).length === 1, 'ID-mottaker ser egen rad');
+  });
+  await test('0086 S-1: authenticated har bare de fem direkte RLS-hjelperne', async () => {
+    const retained = ['private.feature_enabled(text,uuid)', 'private.any_community(uuid)', 'private.blocked_between(uuid,uuid)', 'private.can_see_publication(uuid,uuid)', 'private.is_project_editor(uuid,uuid)'];
+    const revoked = ['private.publication_open(text,timestamp with time zone,timestamp with time zone)', 'private.valid_region(jsonb)', 'private.valid_asset_rights(jsonb)'];
+    for (const name of retained) assert((await sql`select has_function_privilege('authenticated', ${name}, 'execute') p`)[0]?.['p'] === true, `${name}: RLS-rettighet beholdt`);
+    for (const name of revoked) assert((await sql`select has_function_privilege('authenticated', ${name}, 'execute') p`)[0]?.['p'] === false, `${name}: EXECUTE fjernet`);
+    for (const name of [...retained, ...revoked]) {
+      assert((await sql`select has_function_privilege('anon', ${name}, 'execute') p`)[0]?.['p'] === false, `${name}: ingen anon EXECUTE`);
+      assert((await sql`select has_function_privilege('service_role', ${name}, 'execute') p`)[0]?.['p'] === true, `${name}: service_role beholdt`);
+    }
+    await expectError(as('authenticated', ALICE, tx => tx`select private.publication_open('live', null, null)`), '42501');
+    await expectError(as('authenticated', ALICE, tx => tx`select private.valid_region(null)`), '42501');
+    await expectError(as('authenticated', ALICE, tx => tx`select private.valid_asset_rights(null)`), '42501');
+    assert((await sql`select has_table_privilege('authenticated', 'public.asset_versions', 'insert') p`)[0]?.['p'] === false, 'ingen direkte klientskriving som trenger CHECK-hjelperen');
   });
 } finally {
   await sql.end();
