@@ -52,13 +52,15 @@ function setup() {
   };
   const db = fakeDb(tables);
   const copy = vi.fn(async () => ({ error: null }));
+  let reserved = "";
   const rpc = vi.fn(async (name: string, args: Record<string, unknown>) => {
     if (name === "global_create_asset") tables.global_assets.push({ id: GA, workspace_id: WS, kind: args["p_kind"], name: "LT", revision: 1 });
     if (name === "global_create_variant") tables.global_asset_variants.push({ id: GV, workspace_id: WS, global_asset_id: GA, name: "Standard", style: "other" });
-    if (name === "global_add_version") tables.global_asset_versions.push({ id: GVER, workspace_id: WS, global_asset_id: GA, variant_id: GV, number: 1, storage_key: args["p_storage_key"], mime_type: args["p_mime"], width: args["p_width"], height: args["p_height"], byte_size: args["p_bytes"], sha256: args["p_sha256"], template_spec: args["p_template_spec"] });
-    return { data: name === "global_create_asset" ? GA : name === "global_create_variant" ? GV : GVER, error: null };
+    if (name === "global_reserve_version") reserved = (args["p_storage_keys"] as string[])[0] ?? "";
+    if (name === "global_commit_version") tables.global_asset_versions.push({ id: GVER, workspace_id: WS, global_asset_id: GA, variant_id: GV, number: 1, storage_key: reserved, mime_type: args["p_mime"], width: args["p_width"], height: args["p_height"], byte_size: args["p_bytes"], sha256: args["p_sha256"], template_spec: args["p_template_spec"] });
+    return { data: name === "global_create_asset" ? GA : name === "global_create_variant" ? GV : name === "global_reserve_version" ? "00000000-0000-4000-8000-00000000d010" : GVER, error: null };
   });
-  h.db = { ...db, rpc, storage: { from: () => ({ copy }) } };
+  h.db = { ...db, rpc, storage: { from: () => ({ copy, list: async (_f: string, o: { search: string }) => ({ data: [{ name: o.search }], error: null }) }) } };
   return { s, comp, def, assetId, rpc, copy };
 }
 
@@ -72,7 +74,7 @@ describe("MT9 globale maler", () => {
   it("lagrer definisjonen globalt, leser den tilbake og bygger lag i et annet prosjekt", async () => {
     const x = setup();
     await saveAssetToGlobal({ data: { projectId: x.s.project.id, assetId: x.assetId, workspaceId: WS }, context: { supabase: h.db, userId: USER } } as never);
-    expect(x.rpc).toHaveBeenCalledWith("global_add_version", expect.objectContaining({ p_template_spec: x.def }));
+    expect(x.rpc).toHaveBeenCalledWith("global_commit_version", expect.objectContaining({ p_template_spec: x.def }));
     expect(x.copy).toHaveBeenCalledTimes(1);
     const [bundle] = await listGlobalBundles(WS);
     if (!bundle) throw new Error("Global mal mangler");

@@ -1004,13 +1004,15 @@ export const runCommand = createServerFn({ method: "POST" })
     if (isEmptyChangeSet(changes))
       return { ok: true, changeId: id, affected: [], inverse: null, revisions: {} };
 
+    // B-097 (0088): scenene endringen gjelder («Sist endret») skrives av apply_changes i samme transaksjon.
+    const sceneIds = scenesOfChange(state, result.state, result.affected);
     const { error } = await admin.rpc("apply_changes", {
       p_project: data.projectId,
       p_actor: context.userId,
       p_command_id: id,
       p_command: data.command,
       p_inverse: result.inverse,
-      p_changes: changes,
+      p_changes: sceneIds.length ? { ...changes, sceneIds } : changes,
     });
     if (error) {
       const known = applyChangesErrorMessage(data.command, error);
@@ -1052,19 +1054,6 @@ export const runCommand = createServerFn({ method: "POST" })
         code: "storage_error",
         message: tk("adapters-storage-commands-functions.message.message.30fa43b653a4"),
       };
-    }
-    // B-097: hvilke scener endringen gjelder («Sist endret»). Egen oppdatering etter apply_changes, så
-    // apply_changes ikke må endres; feiler den (f.eks. før migrasjon 0073), er bare visningen eldre.
-    {
-      const sceneIds = scenesOfChange(state, result.state, result.affected);
-      if (sceneIds.length) {
-        const { error: sceneError } = await admin
-          .from("change_log")
-          .update({ scene_ids: sceneIds } as never)
-          .eq("id", id)
-          .eq("project_id", data.projectId);
-        if (sceneError) console.warn("[change_log.scene_ids]", sceneError.code);
-      }
     }
     return {
       ok: true,

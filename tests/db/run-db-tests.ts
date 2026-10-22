@@ -7648,6 +7648,94 @@ try {
     }
   });
 
+  await test("0088 (N1): apply_changes skriver scene_ids i samme transaksjon; feil etterlater ingen loggrad", async () => {
+    assert(Number((await sql`select max(version) v from public.schema_version`)[0]?.["v"]) >= 88, "schema version 88");
+    const overloads = await sql`select count(*)::int n from pg_proc p join pg_namespace ns on ns.oid=p.pronamespace where ns.nspname='public' and p.proname='apply_changes'`;
+    assert(overloads[0]?.["n"] === 1, "signaturen til apply_changes er uendret (én funksjon)");
+    await sql`select 'public.apply_changes(uuid,uuid,uuid,jsonb,jsonb,jsonb)'::regprocedure`;
+    const bp = String((await as("authenticated", ALICE, async (tx) => (await tx`select public.create_project('N1 sist endret') id`)[0]!["id"])));
+    const prod = (await sql`select id from public.productions where project_id=${bp} and kind='main'`)[0]!["id"];
+    const s1 = crypto.randomUUID(), s2 = crypto.randomUUID();
+    await sql`insert into public.scenes(id,project_id,origin_production_id,created_by) values(${s1},${bp},${prod},${ALICE}),(${s2},${bp},${prod},${ALICE})`;
+    const ok = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${ok},${tx.json({ type: "UpdateScene" })},${tx.json({})},${tx.json({ sceneIds: [s2, s1, s1] } as never)})`);
+    const row = (await sql`select scene_ids from public.change_log where id=${ok}`)[0];
+    assert(JSON.stringify([...(row?.["scene_ids"] as string[])].sort()) === JSON.stringify([s1, s2].sort()), "scene_ids skrevet sammen med loggraden");
+    const plain = crypto.randomUUID();
+    await as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${plain},${tx.json({ type: "X" })},${tx.json({})},${tx.json({} as never)})`);
+    assert((await sql`select scene_ids from public.change_log where id=${plain}`)[0]?.["scene_ids"] === null, "uten sceneIds er scene_ids null som før");
+    // Feil i apply_changes: ingen loggrad, heller ikke scene_ids
+    const bad = crypto.randomUUID();
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${bad},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: [s1], inserts: { ukjent: [{ id: "x" }] } } as never)})`), /./);
+    const badIds = crypto.randomUUID();
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${badIds},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: ["ikke-en-id"] } as never)})`), "22P02");
+    const badShape = crypto.randomUUID();
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${badShape},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: s1 } as never)})`), "22023");
+    const left = await sql`select id from public.change_log where id in (${bad},${badIds},${badShape})`;
+    assert(left.length === 0, "feilet apply_changes etterlot en loggrad");
+    // Klienten kan fortsatt ikke kalle funksjonen
+    await expectError(as("authenticated", ALICE, (tx) => tx`select public.apply_changes(${bp},${ALICE},gen_random_uuid(),'{}'::jsonb,null,'{}'::jsonb)`), "42501");
+  });
+
+  await test("0088 (N1): globale versjoner lagres via reservasjon og commit; feil og utløp ryddes", async () => {
+    const ws = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace('N1 bibliotek') as id`)[0]!["id"] as string);
+    const tEd = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'bob@example.no', 'editor') as t`)[0]!["t"] as string);
+    await as("authenticated", BOB, (tx) => tx`select public.accept_workspace_invitation(${tEd})`);
+    const tMem = await as("authenticated", ALICE, async (tx) => (await tx`select public.create_workspace_invitation(${ws}, 'carol@example.no', 'member') as t`)[0]!["t"] as string);
+    await as("authenticated", CAROL, (tx) => tx`select public.accept_workspace_invitation(${tMem})`);
+    const ga = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_asset(${ws}, 'logo', 'N1-logo', '', '{}', '{}') as id`)[0]!["id"] as string);
+    const gv = await as("authenticated", BOB, async (tx) => (await tx`select public.global_create_variant(${ga}, 'Farge', 'reference', '') as id`)[0]!["id"] as string);
+    const k = (c: string) => `global/${ws}/${ga}/${c.repeat(64)}.png`;
+    const reserve = (u: string, keys: string[]) => as("authenticated", u, async (tx) => (await tx`select public.global_reserve_version(${gv}, ${keys}::text[]) as id`)[0]!["id"] as string);
+    const commit = (u: string, r: string, derived: unknown = null) => as("authenticated", u, async (tx) =>
+      (await tx`select public.global_commit_version(${r}, 'image/png', 10, 10, 100, ${"a".repeat(64)}, null, '', null, null, ${derived === null ? null : tx.json(derived as never)}) as id`)[0]!["id"] as string);
+    // Rettigheter og stier
+    await expectError(as("anon", null, (tx) => tx`select public.global_reserve_version(${gv}, ${[k("a")]}::text[])`), "42501");
+    await expectError(reserve(CAROL, [k("a")]), "42501");
+    await expectError(reserve(BOB, [`global/${ws}/x/${"a".repeat(64)}.png`]), "22023");
+    await expectError(reserve(BOB, []), "22023");
+    await expectError(as("authenticated", BOB, (tx) => tx`select * from public.global_version_reservations`), "42501");
+    // Reservasjon → commit; samme nøkkel kan ikke reserveres samtidig
+    const r1 = await reserve(BOB, [k("a"), k("d")]);
+    await expectError(reserve(BOB, [k("a")]), "P0409");
+    await expectError(commit(ALICE, r1), "42501");
+    await expectError(commit(BOB, r1, { proxy: { path: k("e"), width: 1, height: 1, byteSize: 1, sha256: "e".repeat(64) } }), "22023");
+    assert((await sql`select count(*)::int n from public.global_asset_versions where global_asset_id=${ga}`)[0]?.["n"] === 0, "feilet commit lagde en versjon");
+    const v1 = await commit(BOB, r1, { proxy: { path: k("d"), width: 1, height: 1, byteSize: 1, sha256: "d".repeat(64) } });
+    assert((await commit(BOB, r1)) === v1, "commit er idempotent");
+    const ver = (await sql`select storage_key, created_by from public.global_asset_versions where id=${v1}`)[0];
+    assert(ver?.["storage_key"] === k("a") && ver?.["created_by"] === BOB, "versjonen bruker den reserverte nøkkelen");
+    const committed = await as("service_role", null, (tx) => tx`select * from public.global_reservation_safe_keys(${r1}, ${BOB})`);
+    assert(committed.length === 1 && committed[0]?.["committed"] === true && committed[0]?.["storage_key"] === null, "sluttført reservasjon gir ingen nøkler å slette");
+    assert((await as("service_role", null, async (tx) => (await tx`select public.global_cancel_reservation(${r1}, ${BOB}) c`)[0]!["c"])) === false, "sluttført reservasjon frigjøres ikke");
+    // Feil før commit: bare ubrukte filer kan slettes, og reservasjonen frigjøres
+    const r2 = await reserve(BOB, [k("b"), k("d")]);
+    const safe = (await as("service_role", null, (tx) => tx`select * from public.global_reservation_safe_keys(${r2}, ${BOB})`)).map((r) => r["storage_key"]);
+    assert(JSON.stringify(safe) === JSON.stringify([k("b")]), "filen som versjonen bruker (avledet), skal ikke slettes");
+    assert((await as("service_role", null, async (tx) => (await tx`select * from public.global_reservation_safe_keys(${r2}, ${ALICE})`))).length === 0, "annen aktør får ingen nøkler");
+    assert((await as("service_role", null, async (tx) => (await tx`select public.global_cancel_reservation(${r2}, ${BOB}) c`)[0]!["c"])) === true, "reservasjonen frigjøres");
+    assert((await sql`select id from public.global_version_reservations where id=${r2}`).length === 0, "reservasjonen er borte");
+    const r3 = await reserve(BOB, [k("a")]);
+    assert((await as("service_role", null, (tx) => tx`select * from public.global_reservation_safe_keys(${r3}, ${BOB})`)).length === 0, "filen til en eksisterende versjon slettes aldri");
+    await as("service_role", null, (tx) => tx`select public.global_cancel_reservation(${r3}, ${BOB})`);
+    // Utløpt: commit avvises; sweepen finner den og frigjør den
+    const r4 = await reserve(BOB, [k("c")]);
+    await sql`update public.global_version_reservations set expires_at = now() - interval '2 hours' where id=${r4}`;
+    await expectError(commit(BOB, r4), "22023");
+    const r5 = await reserve(BOB, [k("f")]);
+    const stale = await as("service_role", null, (tx) => tx`select * from public.stale_global_reservations(${ws})`);
+    assert(stale.length === 1 && stale[0]?.["id"] === r4 && JSON.stringify(stale[0]?.["storage_keys"]) === JSON.stringify([k("c")]), "sweepen ser bare den utløpte");
+    assert((await as("service_role", null, async (tx) => (await tx`select public.release_stale_global_reservation(${r5}) r`)[0]!["r"])) === false, "åpen reservasjon frigjøres ikke av sweepen");
+    assert((await as("service_role", null, async (tx) => (await tx`select public.release_stale_global_reservation(${r4}) r`)[0]!["r"])) === true, "utløpt reservasjon frigjøres");
+    // Bare serveren kan rydde
+    for (const q of [
+      (tx: never) => (tx as typeof sql)`select * from public.global_reservation_safe_keys(${r5}, ${BOB})`,
+      (tx: never) => (tx as typeof sql)`select public.global_cancel_reservation(${r5}, ${BOB})`,
+      (tx: never) => (tx as typeof sql)`select * from public.stale_global_reservations(${ws})`,
+      (tx: never) => (tx as typeof sql)`select public.release_stale_global_reservation(${r5})`,
+    ]) await expectError(as("authenticated", BOB, q as never), "42501");
+  });
+
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);
