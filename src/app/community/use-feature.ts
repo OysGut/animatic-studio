@@ -5,10 +5,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyFeatures } from "@/adapters/browser/features";
 import type { FeatureKey } from "@/core/community";
+import { useSessionUserId } from '@/app/auth/use-session';
 
 export const MY_FEATURES_KEY = ["my-features"] as const;
 
 export function useFeature(key: FeatureKey): boolean {
-  const q = useQuery({ queryKey: MY_FEATURES_KEY, queryFn: fetchMyFeatures, staleTime: 60_000 });
+  const userId = useSessionUserId();
+  const q = useQuery({ queryKey: [...MY_FEATURES_KEY, userId], queryFn: fetchMyFeatures, enabled: userId !== null, staleTime: 60_000 });
   return q.data?.[key] === true;
 }

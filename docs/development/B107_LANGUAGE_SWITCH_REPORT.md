@@ -1,5 +1,50 @@
 # Hastekontroll: språkvelgeren – 22.10.2026
 
+## Mulig brukertilstandslekkasje – oppfølging kl. 10:09 UTC
+
+### Årsak og avgrensning
+- Kontodata/navn brukte én React Query-nøkkel (`my-account`) for alle brukere. Oppryddingen ved brukerbytte ventet på asynkron kansellering; språk kunne nullstilles av en eldre fortsettelse. Funksjonsbrytere (`my-features`) ble ikke ryddet.
+- Kontoens navneutkast kunne overleve direkte A→B-bytte. Visningsvalg brukte brukeruavhengige lokale nøkler og en global 800 ms lagringskø; verdier skrevet av A kunne dermed bli sendt under Bs økt. Dette er en konkret skrivefare, ikke bare feil fremheving av språkknappen.
+- Normal SSR brukte allerede TanStacks forespørselslokale headerleser, og routeren setter ikke globalt språk på serveren. Ingen lekkasje av profiler mellom serverforespørsler er påvist. `keyed.ts` deler bare statiske kataloger og språkavgrensede oppslagskjeder, ikke brukernavn eller ferdig interpolert tekst. Profil-RPCene avgrenser lesing/skriving med `auth.uid()` i repoets migrasjoner; ingen databaseendringer er gjort.
+- SSR og serverfunksjoner manglet eksplisitt `private, no-store`. Publisert innlogging svarte `no-cache, must-revalidate, max-age=0`, uten `Vary`; dette beviser ikke en lekkasje, men er ikke det bestilte private mellomlagringsvernet.
+- Den separate FR/JA-feilen skyldtes fjernet sideeffektregistrering av katalogadapteren, som beskrevet nedenfor. Den eksplisitte initialiseringen er beholdt; også forespørselsspråkleseren initialiseres nå eksplisitt i Start-konfigurasjonen.
+
+### Retting
+- Konto- og funksjonsbryterbufre har bruker-ID i nøkkelen; uten innlogging hentes ikke private kontodata/brytere. Identitetsbytte kansellerer og tømmer QueryClient umiddelbart og ugyldiggjør eldre språkvalg før kataloglasting kan fullføres.
+- Lokale innloggede språkvalg og visningsvalg er brukeravgrenset. Gamle, eierløse visningsvalg brukes ikke. Kontoens lagrede verdier beholdes. Ved brukerbytte fjernes det eierløse lokale språkvalget, men brukerens egne nye nøkler beholdes.
+- Kontoformular remonteres ved ny identitet; navne- og passordutkast følger ikke neste bruker. Ventende visningsvalg forkastes ved identitetsbytte, og lagringskøen sjekker opprinnelig identitet før sending. Touched-status resettes, og aktivitetstid er brukeravgrenset.
+- Dynamiske Start-svar får `Cache-Control: private, no-store`, også feil; katastrofale SSR-feilsvar har samme vern. Statiske filer går ikke gjennom denne dynamiske forespørselskjeden. `tm()` leser nå forespørselsspråket, ikke den globale reserveverdien. Språkcookie skrives kun fra nettleserens valg, aldri via en delt servervariabel.
+
+### Verifisering og begrensninger
+- Ny `user-isolation.test.tsx`: A/B-navn med sent A-svar; faktisk fransk/japansk tekst og brukeravgrenset gjenoppretting; forkastet 800 ms-lagring og nullstilt lokalt/touched visningsvalg.
+- Ny `ssr-language-isolation.test.ts`: 20 overlappende forespørselskontekster med fransk/japansk og Alice/Bob-parametere; norsk og tom cookie etterpå. Headerleseren er ekte adapter med simulert forespørselskontekst i enhetstesten.
+- `b107-languages.mjs`: **157 bestått, 0 feilet**. Tolv samtidige HTTP-forespørsler mot forhåndsvisningen gir riktig språk, oversatt beskrivelse og `private, no-store`. Simulerte Alice→Bob-økter byttes direkte uten omlasting; Bob ser bare Bob, JA fremheves og japansk tekst/navn beholdes ved omlasting. Skjermbilde kontrollert. FR/JA etter valg og omlasting fortsatt grønne.
+- Full Vitest: **2388 bestått, 0 feilet, 10 eksisterende hoppet over**. i18n grønn: **0 tekster uten engelsk**. Ingen nye grensesnitttekster/oversettelser. Genererte referanse-/kandidatfiler oppdateres mekanisk. Siste byggsignal grønt.
+- Ekte egen konto kunne ikke åpnes (`auth-session --self` fant ingen samsvarende konto). Innlogget ende-til-ende-kontroll er derfor **simulert, ikke verifisert med ekte konto**. Brukeren må logge inn i forhåndsvisningen for slik kontroll. Ingen betalte kall, databaseendringer eller publisering. Publisert retting/Worker-artefakt er ikke verifisert.
+
+### Endrede filer i denne oppfølgingen
+- `src/adapters/browser/auth.ts`
+- `src/app/auth/use-session.ts`
+- `src/app/account/use-account.tsx`
+- `src/app/account/ui-prefs.ts`
+- `src/app/account/AccountPage.tsx`
+- `src/app/community/use-feature.ts`
+- `src/app/i18n/language.tsx`
+- `src/core/i18n/index.ts`
+- `src/start.ts`
+- `src/server.ts`
+- `tests/unit/b107-language-switch.test.tsx`
+- `tests/unit/ui-prefs-sync.test.tsx`
+- `tests/unit/user-isolation.test.tsx`
+- `tests/unit/ssr-language-isolation.test.ts`
+- `tests/visual/b107-languages.mjs`
+- `scripts/i18n/references.v1.json`
+- `scripts/i18n/candidates.v1.json`
+- `scripts/i18n/inventory-report.json`
+- `AGENTS.md`
+- `roadmap.md`
+- `docs/development/B107_LANGUAGE_SWITCH_REPORT.md`
+
 ## Presisering og årsak – oppfølging kl. 09:49 UTC
 Den første kontrollen nedenfor gjaldt bare synlige språkvalg og bekreftet ikke oversatt tekst. Etter Øysteins presisering er den faktiske feilen gjenskapt på publisert side: FR og JA velges og `<html lang>` endres riktig, men innloggingsknappene står fortsatt på engelsk, også etter omlasting. Ingen fransk eller japansk katalog ble forespurt. Lokal utviklingsvisning lastet katalogene og viste oversettelsene.
 

@@ -64,3 +64,4 @@ Kortversjonen († = detaljer i `docs/development/AGENTS_DETAILS.md`):
 48. PTG4 mouth sets and tracks use reversible project commands; immutable source receipts compute drift, while core/interchange owns pronunciation, exposure rounding and exports to keep all deliverables aligned.
 49. Login globe (B-117): public globe_points returns only server-offset lat/lon and active, never identity; city/last_seen_at follow column-level grants, so new profile/status columns stay unreadable directly.
 50. UI catalog loading is explicitly initialized by router startup and language selection; never rely on a side-effect-only import, because production tree shaking may remove it.
+51. Browser account/features caches and persisted preferences are identity-scoped; identity transitions cancel old work and reset forms, while dynamic server responses are private/no-store and SSR locale readers are explicitly initialized per Start configuration.

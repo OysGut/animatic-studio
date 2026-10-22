@@ -1,5 +1,11 @@
 # Veikart
 
+## Hastekontroll – brukerisolasjon (22.10.2026)
+- [x] Isoler navn, språk, kontobuffer og ventende visningsvalg ved brukerbytte.
+- [x] Kontroller forespørselslokalt SSR-språk og hindre delt mellomlagring av personlige svar.
+- [x] To brukere etter hverandre og samtidige SSR-forespørsler: 157 nettleserkontroller; full Vitest 2388/0, i18n grønn. FR/JA oversettes. Ingen publisering.
+- [ ] Ekte innlogget kontroll: egen testøkt kunne ikke opprettes; krever innlogging i forhåndsvisningen. Publisert retting kontrolleres etter publisering av Øystein/Claude.
+
 ## Hastekontroll – språkvelger (22.10.2026)
 - [x] Presisering: FR/JA-valg gir engelsk på publisert side, mens lokal utviklingsvisning oversetter; ingen katalogforespørsler i publisert økt.
 - [x] Erstatt registrering via sideeffektimport med eksplisitt initialisering i router og språkvalg.

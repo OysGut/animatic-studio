@@ -8,6 +8,8 @@ import { t } from '@/core/i18n/keyed';
 
 const fixture = vi.hoisted(() => ({ signedIn: false, feature: false, failure: false }));
 vi.mock('@/adapters/browser/auth', () => ({
+  getSessionUserId: () => fixture.signedIn ? 'language-test-user' : null,
+  onSessionIdentityChange: () => () => {},
   onSessionChange: (listener: (session: unknown) => void) => {
     listener(fixture.signedIn ? { user: { id: 'language-test-user' } } : null);
     return () => {};
@@ -84,7 +86,8 @@ describe('B-107: ordinary languages never depend on login or the test-language f
           }
         };
         assertOptions(); // Also covers the initial pending feature read.
-        await waitFor(() => expect(client.getQueryState(['my-features'])?.status).toBe(fixture.failure ? 'error' : 'success'));
+        if (signedIn) await waitFor(() => expect(client.getQueryState(['my-features', 'language-test-user'])?.status).toBe(fixture.failure ? 'error' : 'success'));
+        else expect(client.getQueryState(['my-features', null])?.fetchStatus).toBe('idle');
         assertOptions();
         view.unmount();
         client.clear();

@@ -5,7 +5,7 @@ import type { ReactNode } from 'react';
 import { useUiPref } from '@/app/account/ui-prefs';
 import { isAiJobsReadPrefs, markJobsRead, markAllJobsRead, unreadFailedJobs, type AiJobsReadPrefs } from '@/core/generation/read-status';
 vi.mock('@/adapters/browser/account', () => ({saveUiPrefs: vi.fn(async()=>undefined)}));
-vi.mock('@/app/account/use-account', () => ({MY_ACCOUNT_KEY:['ui-pref-test'],useMyAccount:()=>({data:{uiPrefs:{}}})}));
+vi.mock('@/app/account/use-account', () => ({myAccountKey:(id:string|null)=>['ui-pref-test',id],useMyAccount:()=>({data:{uiPrefs:{}}})}));
 it('enkeltmerking fulgt av alle lest synkroniseres mellom begge monterte visninger',()=>{
   const client=new QueryClient();
   const wrapper=({children}:{children:ReactNode})=><QueryClientProvider client={client}>{children}</QueryClientProvider>;
