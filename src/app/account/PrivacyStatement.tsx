@@ -139,6 +139,34 @@ export function PrivacyStatement({ policy }: { policy: PrivacyFields | null }) {
         </p>
       </Section>
 
+      <h2 className="mt-2 text-lg font-semibold text-text-primary" data-testid="privacy-terms-heading">
+        {t("b115.privacy.terms.heading")}
+      </h2>
+
+      <Section title={t("b115.privacy.ownership.title")}>
+        <p>{t("b115.privacy.ownership.text")}</p>
+      </Section>
+
+      <Section title={t("b115.privacy.ai.title")}>
+        <p>{t("b115.privacy.ai.text")}</p>
+      </Section>
+
+      <Section title={t("b115.privacy.liability.title")}>
+        <p>{t("b115.privacy.liability.text")}</p>
+      </Section>
+
+      <Section title={t("b115.privacy.fonts.title")}>
+        <p>{t("b115.privacy.fonts.text")}</p>
+      </Section>
+
+      <Section title={t("b115.privacy.links.title")}>
+        <p>{t("b115.privacy.links.text")}</p>
+      </Section>
+
+      <Section title={t("b115.privacy.law.title")}>
+        <p>{t("b115.privacy.law.text")}</p>
+      </Section>
+
       {p?.note ? (
         <Section title={t("app-account-privacy-statement.privacy-statement.title.f124235c6ca5")}>
           <p className="whitespace-pre-wrap">{p.note}</p>
