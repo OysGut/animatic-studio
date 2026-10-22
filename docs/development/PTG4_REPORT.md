@@ -27,7 +27,7 @@ Lasting, patch, inverser, skjemakontroll og sikkerhetskopi tar med begge tabelle
 ## Verifisering
 - Automatisk TypeScript-/forhåndsvisningskontroll: siste signal **build OK**, ingen rapporterte typefeil. Manuell tsc/build er ikke kjørt, i tråd med miljøreglene.
 - Full `bunx vitest run --maxWorkers=3`: **2361 bestått, 0 feilet, 10 eksisterende hoppet over**, 290 grønne testfiler. Ny `tests/unit/ptg4-lipsync.test.ts`: 15 tester, inkludert 24/25 fps/toere, oppslag, fonemtabell, grenser, kommando/invers/redo, drift, Moho og X-sheet.
-- Lokal DB-suite: **159 bestått, 0 feilet** før siste utvidelse med eksplisitt purge-vern. Endelig kjøring av dette tillegget er oppført nedenfor når kontrollen er ferdig.
+- Endelig lokal DB-suite: **159 bestått, 0 feilet**, inkludert eksplisitt purge-vern for karakter brukt i munnsett.
 - i18n inventory/check: **0 tekster uten engelsk**. Releasekontroll og alle-språk-dekning kontrolleres av full Vitest.
 - `ptg4-lipsync.mjs`: **nb 15/15, en 15/15**, ingen kjørefeil. Brukerflyt: sett → utkast → godkjenning → del/sammenslå/grense → lagringsmock → monteringen → faktisk ZIP/PDF/CSV/DAT/JSON. Noto-font og tospråklig kilde/lisensinfo kontrollert.
 - Sekvensielle regresjoner: `ptg2-dragonframe` **nb/en 21/21**, `ptg5-roundtrip` **nb/en 18/18**, `ptg6-editorial` **nb/en 23/23**. PTG2 kjørt igjen etter at full BSD-lisens ble lagt i pakken.
