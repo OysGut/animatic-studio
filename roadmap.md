@@ -1,5 +1,13 @@
 # Veikart
 
+## PTG1 (B-102) – aktivt oppdrag
+- [ ] Ren utvekslingsmodell, felles avrunding, toere og versjonerte skuddnavn.
+- [ ] Additiv 0081 fra 0080: prosjektkode og opptaksinnstillinger, kommando/angring og lagring; ingen kjøring i Cloud.
+- [ ] CSV/JSON-profiler, PNG-miniatyrer, strømmet ZIP64 og tospråklig LESMEG.
+- [ ] Til produksjonen i eksportdialog og prosjektinnstillinger, alle grensesnittspråk.
+- [ ] Gyldne tester, ZIP64-hoder, arkitekturvakt, ptg1-shotlist og regresjoner én om gangen; full Vitest, DB og i18n.
+- [ ] PTG1_REPORT.md med faktisk verifisering og erstattede funksjoner.
+
 ## B-087 Rigg runde 5 (22.10.2026) – ferdig lokalt; 0079 venter på Claude i Cloud
 - [x] B-105a og KR-1 rapportert (B105A_REPORT.md).
 - [x] Utskriftsjobber, elementer og én rad per fysisk kopi; ingen deduplisering, felles innstillinger og gjenutskrift med samme koder.
