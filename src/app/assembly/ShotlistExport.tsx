@@ -15,6 +15,9 @@ import { openZipSink } from "@/engine/export/zip";
 import { exportShotlist } from "@/engine/export/shotlist";
 import { exportCameraFbx } from "@/engine/export/camera-export";
 import { exportAePackage } from "@/engine/export/ae-export";
+import { exportDragonframe } from "@/engine/export/dragonframe";
+import { filmAudio } from "@/core/audio";
+import { audioBank } from "@/app/audio/use-audio-playback";
 import type { AeCameraMode } from "@/core/interchange/ae-jsx";
 import { loadImages } from "@/engine/export/animatic";
 import { signedUrls } from "@/app/library/asset-images";
@@ -36,6 +39,8 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
   const [profile, setProfile] = useState<ShotlistProfile>("standard");
   const [cameraMode, setCameraMode] = useState<AeCameraMode>("ae");
   const [titleCard, setTitleCard] = useState(true); // PTG3b: på som standard
+  const [dfPng, setDfPng] = useState(false); // PTG2: PNG-sekvens er valgfri
+  const [dfBurnIn, setDfBurnIn] = useState(true);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ready, setReady] = useState<{ url: string; name: string } | null>(null);
@@ -102,6 +107,38 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
       if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
     } finally { abort.current = null; setProgress(null); }
   }
+  async function startDragonframe() {
+    const initial = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId) });
+    const fileName = `${initial.project.code}-dragonframe.zip`;
+    // Picker must be opened synchronously from the click, before waiting for commands.
+    const sinkPromise = openZipSink(fileName);
+    const ctrl = new AbortController(); abort.current = ctrl;
+    setError(null); setReady(null); setProgress({ done: 0, total: initial.shots.length });
+    const sink = await sinkPromise;
+    if (!sink) { setProgress(null); return; }
+    try {
+      await commands.whenIdle();
+      const reservation = await reserveInterchangeExport({ projectId: state.project.id, productionId, occurrenceIds: clips.map(c => c.occurrenceId), fileName,
+        settings: { format: "dragonframe", language: language.dialogue, png: dfPng, burnIn: dfBurnIn, captureFpsNum: initial.captureFps.num, captureFpsDen: initial.captureFps.den } });
+      const doc = buildInterchange(state, { productionId, language, occurrenceIds: clips.map(c => c.occurrenceId), versions: reservation.versions });
+      const ls = languageState(state, language.dialogue);
+      const imagePaths = doc.references.filter(r => r.mimeType.startsWith("image/")).map(r => r.mediaPath);
+      const { images } = await loadImages(await signedUrls(imagePaths, 600));
+      const filmPaths = clips.flatMap(c => c.parts.flatMap(p => p.take?.mediaRef ? [p.take.mediaRef] : []));
+      const items = filmAudio(ls, clips, ls.project.fps, language.dialogue);
+      const audioPaths = [...new Set(items.flatMap(it => it.version ? [it.version.mediaPath] : []))];
+      await audioBank.loadAll(await signedUrls(audioPaths, 600));
+      await exportDragonframe({ doc, state: ls, clips, images, filmUrls: await signedUrls([...new Set(filmPaths)], 600),
+        audio: { items, bank: audioBank }, png: dfPng, burnIn: dfBurnIn, sink, signal: ctrl.signal,
+        onProgress: (done, total) => setProgress({ done, total }) });
+      setReady(sink.link?.() ?? null);
+      await completeInterchangeExport(state.project.id, reservation.batchId);
+      void qc.invalidateQueries({ queryKey: exportRecordsKey(productionId) });
+    } catch {
+      await sink.abort().catch(() => undefined);
+      if (!ctrl.signal.aborted) setError(t("ptg1.export-failed"));
+    } finally { abort.current = null; setProgress(null); }
+  }
   return <section data-testid="ptg-export-section" className="border-t border-border pt-3">
     <h3 className="mb-3 text-sm font-semibold text-text-primary">{t("ptg1.to-production")}</h3>
     <InterchangeSettings state={state} userId={userId} editable={editable} disabled={disabled || !!progress} />
@@ -123,6 +160,15 @@ export function ShotlistExport({ state, productionId, clips, language, disabled 
         {t("ptg3b.option")}
       </label>
       <Button data-testid="ptg-export-ae" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startPackage("ae")}><Download />{t("ptg3.ae-package")}</Button>
+      <label className="flex items-center gap-2 text-xs text-text-secondary">
+        <input type="checkbox" data-testid="ptg-df-png" disabled={disabled || !!progress} checked={dfPng} onChange={e => setDfPng(e.target.checked)} />
+        {t("ptg2.option-png")}
+      </label>
+      <label className="flex items-center gap-2 text-xs text-text-secondary">
+        <input type="checkbox" data-testid="ptg-df-burnin" disabled={disabled || !!progress} checked={dfBurnIn} onChange={e => setDfBurnIn(e.target.checked)} />
+        {t("ptg2.option-burnin")}
+      </label>
+      <Button data-testid="ptg-export-dragonframe" size="sm" variant="outline" disabled={disabled || !!progress || clips.length === 0 || !userId} onClick={() => void startDragonframe()}><Download />{t("ptg2.send")}</Button>
       {progress ? <><span role="status" className="text-xs text-text-secondary">{progress.done} / {progress.total}</span><Button size="icon" variant="ghost" aria-label={t("ptg1.cancel")} onClick={() => abort.current?.abort()}><X /></Button></> : null}
     </div>
     {ready ? <a data-testid="ptg-download" href={ready.url} download={ready.name} className="mt-2 block text-xs text-text-primary">{ready.name}</a> : null}
