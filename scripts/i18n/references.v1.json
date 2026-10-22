@@ -28557,10 +28557,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 58,
+    "line": 63,
     "column": 42,
-    "start": 3812,
-    "end": 3835,
+    "start": 4111,
+    "end": 4134,
     "scope": "start",
     "context": "setError",
     "kind": "t",
@@ -28570,10 +28570,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 62,
+    "line": 67,
     "column": 67,
-    "start": 4059,
-    "end": 4082,
+    "start": 4358,
+    "end": 4381,
     "scope": "shotlist-export",
     "context": "h3",
     "kind": "t",
@@ -28583,10 +28583,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 65,
+    "line": 70,
     "column": 79,
-    "start": 4340,
-    "end": 4357,
+    "start": 4639,
+    "end": 4656,
     "scope": "shotlist-export",
     "context": "label",
     "kind": "t",
@@ -28596,10 +28596,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 67,
+    "line": 72,
     "column": 37,
-    "start": 4642,
-    "end": 4660,
+    "start": 4941,
+    "end": 4959,
     "scope": "shotlist-export",
     "context": "option",
     "kind": "t",
@@ -28609,10 +28609,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 70,
+    "line": 75,
     "column": 186,
-    "start": 4997,
-    "end": 5015,
+    "start": 5296,
+    "end": 5314,
     "scope": "shotlist-export",
     "context": "Button",
     "kind": "t",
@@ -28622,10 +28622,10 @@
   },
   {
     "file": "src/app/assembly/ShotlistExport.tsx",
-    "line": 71,
+    "line": 76,
     "column": 170,
-    "start": 5195,
-    "end": 5211,
+    "start": 5494,
+    "end": 5510,
     "scope": "shotlist-export",
     "context": "aria-label",
     "kind": "t",
@@ -57106,6 +57106,19 @@
     "kind": "t",
     "raw": "t(\"app-projects-export-history.export-history.p.74fb6ed988a6\")",
     "key": "app-projects-export-history.export-history.p.74fb6ed988a6",
+    "parameterNames": []
+  },
+  {
+    "file": "src/app/projects/ExportHistory.tsx",
+    "line": 62,
+    "column": 104,
+    "start": 2698,
+    "end": 2716,
+    "scope": "export-history",
+    "context": "span",
+    "kind": "t",
+    "raw": "t(\"ptg1.shotlist\")",
+    "key": "ptg1.shotlist",
     "parameterNames": []
   },
   {
@@ -132990,6 +133003,19 @@
     "parameterNames": [
       "value"
     ]
+  },
+  {
+    "file": "src/core/interchange/index.ts",
+    "line": 47,
+    "column": 55,
+    "start": 2679,
+    "end": 2705,
+    "scope": "build-interchange",
+    "context": "message",
+    "kind": "t",
+    "raw": "t(\"ptg1.invalid-settings\")",
+    "key": "ptg1.invalid-settings",
+    "parameterNames": []
   },
   {
     "file": "src/core/interchange/readme.ts",
