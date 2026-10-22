@@ -55351,8 +55351,8 @@
     "review": "machine"
   },
   "b116.kind.scene": {
-    "text": "Короткая сцена",
-    "sourceHash": "dbd73889f2af6f7efe81449b38d24ac3c5ec30cafb3e62861456808b91a27f80",
+    "text": "Кадр сцены",
+    "sourceHash": "cc4f4dd83170540e4f2a354a0b0fb0fc8d0d570ee3d3ec45c7500d5282e8e915",
     "review": "machine"
   },
   "b116.kind.script": {
