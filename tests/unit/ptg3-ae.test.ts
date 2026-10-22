@@ -3,7 +3,7 @@
  * prosjektstrukturen når det kjøres mot en mock av After Effects sitt objektmodell.
  */
 import { describe, expect, it } from "vitest";
-import { buildAeJsx } from "@/core/interchange/ae-jsx";
+import { buildAeJsx, type AeTitleCards } from "@/core/interchange/ae-jsx";
 import type { CameraTrack, InterchangeDoc, Shot } from "@/core/interchange/types";
 import type { AudioClip, CompositionLayer } from "@/core/model";
 
@@ -61,7 +61,7 @@ const doc: InterchangeDoc = {
 
 /** Minimal mock av AE sitt ES3-objektmodell; registrerer alt scriptet gjør. */
 function runJsx(script: string) {
-  const log = { comps: [] as { name: string; w: number; h: number; dur: number; fps: number }[], cameras: 0, nulls: [] as string[], imports: [] as string[], folders: [] as string[], keys: [] as { prop: string; times: number[]; values: unknown[] }[], parents: 0, audio: 0 };
+  const log = { comps: [] as { name: string; w: number; h: number; dur: number; fps: number }[], cameras: 0, nulls: [] as string[], imports: [] as string[], folders: [] as string[], keys: [] as { prop: string; times: number[]; values: unknown[] }[], parents: 0, audio: 0, texts: [] as string[], adds: [] as { comp: string; item: string; layer: Layer }[] };
   class Prop {
     constructor(public name: string) {}
     setValue(v: unknown) { log.keys.push({ prop: this.name, times: [], values: [v] }); }
@@ -72,7 +72,7 @@ function runJsx(script: string) {
     addProperty(n: string) { return new Prop(this.name + "/" + n); }
   }
   class Layer {
-    name = ""; threeDLayer = false; trackMatteType = 0; startTime = 0; inPoint = 0; outPoint = 0;
+    name = ""; source = { height: 410 }; threeDLayer = false; trackMatteType = 0; startTime = 0; inPoint = 0; outPoint = 0;
     props = new Map<string, Prop>();
     constructor(public kind: string) {}
     property(n: string) { if (!this.props.has(n)) this.props.set(n, new Prop(n)); return this.props.get(n)!; }
@@ -82,15 +82,23 @@ function runJsx(script: string) {
   }
   class Layers {
     constructor(public comp: Comp) {}
-    add(item: unknown) { if (item instanceof Comp) log.comps.push({ name: item.name + "@used", w: 0, h: 0, dur: 0, fps: 0 }); return new Layer("av"); }
+    add(item: unknown) {
+      if (item instanceof Comp) log.comps.push({ name: item.name + "@used", w: 0, h: 0, dur: 0, fps: 0 });
+      const l = new Layer("av");
+      log.adds.push({ comp: this.comp.name, item: item instanceof Comp ? item.name : "media", layer: l });
+      return l;
+    }
     addNull() { const l = new Layer("null"); nullNames.push(l); return l; }
     addSolid() { return new Layer("solid"); }
+    addText(t: string) { log.texts.push(t); return this.textLayer(); }
+    addBoxText(_b: unknown, t: string) { log.texts.push(t); return this.textLayer(); }
+    textLayer() { const l = new Layer("text"); const p = l.property("Source Text"); (p as unknown as { value: object }).value = {}; return l; }
     addShape() { return new Layer("shape"); }
     addCamera() { log.cameras++; return new Layer("camera"); }
   }
   const nullNames: Layer[] = [];
   class Comp {
-    layers = new Layers(this); parentFolder: unknown = null;
+    layers = new Layers(this); parentFolder: unknown = null; displayStartTime = 0;
     constructor(public name: string, public w: number, public h: number, public px: number, public dur: number, public fps: number) {
       log.comps.push({ name, w, h, dur, fps });
     }
@@ -107,9 +115,13 @@ function runJsx(script: string) {
   class KeyframeEase { constructor(public speed: number, public influence: number) {} }
   const KeyframeInterpolationType = { LINEAR: 1, HOLD: 2 };
   const TrackMatteType = { ALPHA: 1, ALPHA_INVERTED: 2 };
-  const fn = new Function("app", "File", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", script);
-  fn(app, File, ImportOptions, KeyframeEase, KeyframeInterpolationType, TrackMatteType);
-  return { log };
+  const comps: Comp[] = [];
+  const addComp = app.project.items.addComp;
+  app.project.items.addComp = (...a: [string, number, number, number, number, number]) => { const c = addComp(...a); comps.push(c); return c; };
+  const ParagraphJustification = { CENTER_JUSTIFY: 1 };
+  const fn = new Function("app", "File", "ImportOptions", "KeyframeEase", "KeyframeInterpolationType", "TrackMatteType", "ParagraphJustification", script);
+  fn(app, File, ImportOptions, KeyframeEase, KeyframeInterpolationType, TrackMatteType, ParagraphJustification);
+  return { log, comps };
 }
 
 describe("PTG3 After Effects bygg.jsx", () => {
@@ -176,5 +188,42 @@ describe("PTG3 After Effects bygg.jsx", () => {
     const { log } = runJsx(noRig);
     expect(log.cameras).toBe(0);
     expect(noRig).toContain("camera omitted");
+  });
+
+  describe("PTG3b tittelkort (B-115)", () => {
+    const tc: AeTitleCards = {
+      filmTitle: "Jula på Dovre", explain: "Forklaring", footer: "Eksportert fra From Pen to Glass",
+      sceneLine: (s) => `SC001 – Scene – ${s.name}`, qrPath: (s) => `tittelkort/${s.name}_qr.png`,
+    };
+    const withCard = buildAeJsx(doc, { cameraMode: "ae", titleCards: tc });
+
+    it("skuddkomposisjonen og tidskodene er uendret med og uten tittelkort", () => {
+      const a = runJsx(jsxAe); const b = runJsx(withCard);
+      const shotOf = (l: typeof a.log) => l.comps.find(c => c.name === "TEST_SC001_SH001_v001")!;
+      expect(shotOf(b.log)).toEqual(shotOf(a.log));
+      expect(b.log.keys.filter(k => k.prop === "Position" && k.times.length).map(k => k.times))
+        .toEqual(a.log.keys.filter(k => k.prop === "Position" && k.times.length).map(k => k.times));
+      const inMain = (l: typeof a.log) => l.adds.filter(x => x.comp === "TEST_hoved").map(x => [x.item, x.layer.startTime]);
+      expect(inMain(b.log)).toEqual(inMain(a.log)); // hovedkomposisjonen forskyves ikke
+      expect(withCard.startsWith(jsxAe.split("app.beginUndoGroup")[0]!.split("function ptgTekst")[0]!)).toBe(true);
+    });
+
+    it("tittelkort på 1 s i egen komp foran skuddet; RENDER starter på −1 s", () => {
+      const { log, comps } = runJsx(withCard);
+      expect(log.comps.find(c => c.name === "TEST_SC001_SH001_v001_TITLE")!.dur).toBe(1);
+      const render = comps.find(c => c.name === "TEST_SC001_SH001_v001_RENDER")!;
+      expect(render.dur).toBe(2);
+      expect(render.displayStartTime).toBe(-1);
+      const inRender = log.adds.filter(x => x.comp === render.name).map(x => [x.item, x.layer.startTime]);
+      expect(inRender).toEqual([["TEST_SC001_SH001_v001", 1], ["TEST_SC001_SH001_v001_TITLE", 0]]);
+      expect(comps.find(c => c.name === "TEST_hoved_RENDER")!.displayStartTime).toBe(-1);
+      expect(log.texts).toEqual(expect.arrayContaining(["Jula på Dovre", "SC001 – Scene – TEST_SC001_SH001_v001", "Forklaring", "Eksportert fra From Pen to Glass"]));
+      expect(log.imports).toContain("tittelkort/TEST_SC001_SH001_v001_qr.png");
+    });
+
+    it("er fortsatt ES3", () => {
+      expect(withCard).not.toMatch(/(^|\s)(let|const)\s/);
+      expect(withCard).not.toContain("=>");
+    });
   });
 });

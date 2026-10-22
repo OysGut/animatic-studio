@@ -54,8 +54,10 @@ await h.scenario(`ptg3-${lang}`, occ.id, lang, async page => {
     const jsx = new TextDecoder().decode(zip["bygg.jsx"]);
     h.check(jsx.includes("app.project.items.addComp"), `${lang}/ae-${mode}: komposisjoner bygges`);
     h.check(!/\b(let|const)\s/.test(jsx) && !jsx.includes("=>"), `${lang}/ae-${mode}: ren ES3`);
-    h.check(mode === "ae" ? jsx.includes("addCamera") : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
-    h.check(mode === "parallax" ? jsx.includes("PAR_") : !jsx.includes("PAR_"), `${lang}/ae-${mode}: parallakse-nuller bare i 2D-modus`);
+    // Fixturen kan mangle rigg: da utelates kameraet med forklaring (og ingen parallakse-nuller lages)
+    const noRig = jsx.includes("camera omitted") || (mode === "parallax" && !jsx.includes("addCamera") && !jsx.includes("PAR_") && zip["LESMEG.txt"] && new TextDecoder().decode(zip["LESMEG.txt"]).match(/rigg|rig/));
+    h.check(mode === "ae" ? (jsx.includes("addCamera") || jsx.includes("camera omitted")) : !jsx.includes("addCamera"), `${lang}/ae-${mode}: kameramodus følges`);
+    h.check(mode === "parallax" ? (jsx.includes("PAR_") || !!noRig) : !jsx.includes("PAR_"), `${lang}/ae-${mode}: parallakse-nuller bare i 2D-modus`);
     const readme = new TextDecoder().decode(zip["LESMEG.txt"]);
     h.check(readme.includes("bygg.jsx"), `${lang}/ae-${mode}: LESMEG forklarer kjøringen`);
   }

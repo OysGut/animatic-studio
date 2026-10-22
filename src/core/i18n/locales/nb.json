@@ -74816,5 +74816,53 @@
   },
   "ptg3.readme-no-rig": {
     "text": "Disse skuddene har ingen rigg, så kameraet mangler: {value1}"
+  },
+  "ptg3b.card-explain": {
+    "text": "Denne QR-koden brukes til å importere den ferdige After Effects-filmen. Filmen legger seg der denne scenen ble eksportert fra."
+  },
+  "ptg3b.card-footer": {
+    "text": "Eksportert fra From Pen to Glass"
+  },
+  "ptg3b.option": {
+    "text": "Tittelkort med QR"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "Tittelkort: hvert skudd har en egen komposisjon <skudd>_TITLE på 1 sekund med QR-kode. <skudd>_RENDER legger tittelkortet foran skuddet og starter på tidskode −00:00:01:00, så skuddets bilde 0 er 00:00:00:00 som i skuddlisten og FBX-filen. Selve skuddkomposisjonen og hovedkomposisjonen er uendret. Render <skudd>_RENDER og les inn filmen med QR-koden; tittelkortet klippes bort ved importen."
+  },
+  "ptg3b.route-title": {
+    "text": "Importer film fra After Effects – From Pen to Glass"
+  },
+  "ptg3b.route-description": {
+    "text": "Last opp den ferdige filmen til skuddet den ble eksportert fra."
+  },
+  "ptg3b.import-heading": {
+    "text": "Importer ferdig film"
+  },
+  "ptg3b.import-shot": {
+    "text": "Skudd {value1} · {value2} bilder"
+  },
+  "ptg3b.import-hint": {
+    "text": "Filmen blir en ny versjon av scenen og tas ikke i bruk automatisk. Tittelkortet i første sekund klippes bort."
+  },
+  "ptg3b.import-choose": {
+    "text": "Velg film"
+  },
+  "ptg3b.import-working": {
+    "text": "Importerer …"
+  },
+  "ptg3b.import-done": {
+    "text": "Filmen er lagt til som ny versjon av scenen. Velg den i monteringen når du vil bruke den."
+  },
+  "ptg3b.import-trimmed": {
+    "text": "Tittelkortet (første sekund) ble klippet bort."
+  },
+  "ptg3b.import-mismatch": {
+    "text": "Advarsel: filmen er {value1} bilder, men skuddet er {value2} bilder."
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "Åpne monteringen"
+  },
+  "ptg3b.import-failed": {
+    "text": "Importen mislyktes: {value1}"
   }
 }

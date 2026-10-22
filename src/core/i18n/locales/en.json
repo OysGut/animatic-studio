@@ -74798,5 +74798,53 @@
   },
   "ptg3.readme-no-rig": {
     "text": "These shots have no rig, so the camera is missing: {value1}"
+  },
+  "ptg3b.card-explain": {
+    "text": "This QR code is used to import the finished After Effects film. The film is placed where this scene was exported from."
+  },
+  "ptg3b.card-footer": {
+    "text": "Exported from From Pen to Glass"
+  },
+  "ptg3b.option": {
+    "text": "Title card with QR"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "Title cards: each shot has its own 1-second composition <shot>_TITLE with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
+  },
+  "ptg3b.route-title": {
+    "text": "Import film from After Effects – From Pen to Glass"
+  },
+  "ptg3b.route-description": {
+    "text": "Upload the finished film to the shot it was exported from."
+  },
+  "ptg3b.import-heading": {
+    "text": "Import finished film"
+  },
+  "ptg3b.import-shot": {
+    "text": "Shot {value1} · {value2} frames"
+  },
+  "ptg3b.import-hint": {
+    "text": "The film becomes a new version of the scene and is not used automatically. The title card in the first second is trimmed off."
+  },
+  "ptg3b.import-choose": {
+    "text": "Choose film"
+  },
+  "ptg3b.import-working": {
+    "text": "Importing…"
+  },
+  "ptg3b.import-done": {
+    "text": "The film was added as a new version of the scene. Choose it in the assembly when you want to use it."
+  },
+  "ptg3b.import-trimmed": {
+    "text": "The title card (first second) was trimmed off."
+  },
+  "ptg3b.import-mismatch": {
+    "text": "Warning: the film is {value1} frames, but the shot is {value2} frames."
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "Open the assembly"
+  },
+  "ptg3b.import-failed": {
+    "text": "Import failed: {value1}"
   }
 }

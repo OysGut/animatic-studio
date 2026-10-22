@@ -8693,6 +8693,134 @@
       "en": {
         "text": "These shots have no rig, so the camera is missing: {value1}"
       }
+    },
+    "ptg3b.card-explain": {
+      "nb": {
+        "text": "Denne QR-koden brukes til å importere den ferdige After Effects-filmen. Filmen legger seg der denne scenen ble eksportert fra."
+      },
+      "en": {
+        "text": "This QR code is used to import the finished After Effects film. The film is placed where this scene was exported from."
+      }
+    },
+    "ptg3b.card-footer": {
+      "nb": {
+        "text": "Eksportert fra From Pen to Glass"
+      },
+      "en": {
+        "text": "Exported from From Pen to Glass"
+      }
+    },
+    "ptg3b.option": {
+      "nb": {
+        "text": "Tittelkort med QR"
+      },
+      "en": {
+        "text": "Title card with QR"
+      }
+    },
+    "ptg3b.readme-titlecard": {
+      "nb": {
+        "text": "Tittelkort: hvert skudd har en egen komposisjon <skudd>_TITLE på 1 sekund med QR-kode. <skudd>_RENDER legger tittelkortet foran skuddet og starter på tidskode −00:00:01:00, så skuddets bilde 0 er 00:00:00:00 som i skuddlisten og FBX-filen. Selve skuddkomposisjonen og hovedkomposisjonen er uendret. Render <skudd>_RENDER og les inn filmen med QR-koden; tittelkortet klippes bort ved importen."
+      },
+      "en": {
+        "text": "Title cards: each shot has its own 1-second composition <shot>_TITLE with a QR code. <shot>_RENDER places the title card before the shot and starts at timecode −00:00:01:00, so frame 0 of the shot is 00:00:00:00 as in the shot list and the FBX file. The shot composition itself and the main composition are unchanged. Render <shot>_RENDER and import the film with the QR code; the title card is trimmed off on import."
+      }
+    },
+    "ptg3b.route-title": {
+      "nb": {
+        "text": "Importer film fra After Effects – From Pen to Glass"
+      },
+      "en": {
+        "text": "Import film from After Effects – From Pen to Glass"
+      }
+    },
+    "ptg3b.route-description": {
+      "nb": {
+        "text": "Last opp den ferdige filmen til skuddet den ble eksportert fra."
+      },
+      "en": {
+        "text": "Upload the finished film to the shot it was exported from."
+      }
+    },
+    "ptg3b.import-heading": {
+      "nb": {
+        "text": "Importer ferdig film"
+      },
+      "en": {
+        "text": "Import finished film"
+      }
+    },
+    "ptg3b.import-shot": {
+      "nb": {
+        "text": "Skudd {value1} · {value2} bilder"
+      },
+      "en": {
+        "text": "Shot {value1} · {value2} frames"
+      }
+    },
+    "ptg3b.import-hint": {
+      "nb": {
+        "text": "Filmen blir en ny versjon av scenen og tas ikke i bruk automatisk. Tittelkortet i første sekund klippes bort."
+      },
+      "en": {
+        "text": "The film becomes a new version of the scene and is not used automatically. The title card in the first second is trimmed off."
+      }
+    },
+    "ptg3b.import-choose": {
+      "nb": {
+        "text": "Velg film"
+      },
+      "en": {
+        "text": "Choose film"
+      }
+    },
+    "ptg3b.import-working": {
+      "nb": {
+        "text": "Importerer …"
+      },
+      "en": {
+        "text": "Importing…"
+      }
+    },
+    "ptg3b.import-done": {
+      "nb": {
+        "text": "Filmen er lagt til som ny versjon av scenen. Velg den i monteringen når du vil bruke den."
+      },
+      "en": {
+        "text": "The film was added as a new version of the scene. Choose it in the assembly when you want to use it."
+      }
+    },
+    "ptg3b.import-trimmed": {
+      "nb": {
+        "text": "Tittelkortet (første sekund) ble klippet bort."
+      },
+      "en": {
+        "text": "The title card (first second) was trimmed off."
+      }
+    },
+    "ptg3b.import-mismatch": {
+      "nb": {
+        "text": "Advarsel: filmen er {value1} bilder, men skuddet er {value2} bilder."
+      },
+      "en": {
+        "text": "Warning: the film is {value1} frames, but the shot is {value2} frames."
+      }
+    },
+    "ptg3b.import-open-assembly": {
+      "nb": {
+        "text": "Åpne monteringen"
+      },
+      "en": {
+        "text": "Open the assembly"
+      }
+    },
+    "ptg3b.import-failed": {
+      "nb": {
+        "text": "Importen mislyktes: {value1}"
+      },
+      "en": {
+        "text": "Import failed: {value1}"
+      }
     }
   }
 }

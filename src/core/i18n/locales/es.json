@@ -54450,5 +54450,85 @@
     "text": "Estos planos no tienen rig, por lo que falta la cámara: {value1}",
     "sourceHash": "ed7970a28bcc3404f732ec9af9a5bece24034d09861f8acb2ab346c93e9fe4af",
     "review": "machine"
+  },
+  "ptg3b.card-explain": {
+    "text": "Este código QR se usa para importar la película terminada de After Effects. La película se coloca donde se exportó esta escena.",
+    "sourceHash": "185c27d2dda6792794089275f849a7cd1f1c12c65529829fbd74297b0f17e284",
+    "review": "machine"
+  },
+  "ptg3b.card-footer": {
+    "text": "Exportado desde From Pen to Glass",
+    "sourceHash": "38be25d7859fc680bab42c070b2a750df525af034bc9b32bfb93d05f7ee735ef",
+    "review": "machine"
+  },
+  "ptg3b.option": {
+    "text": "Rótulo de título con QR",
+    "sourceHash": "f748d07c410819ae4f8c4bd0b9849eefff25d13e910302138ec0cb3e2d2dffdf",
+    "review": "machine"
+  },
+  "ptg3b.readme-titlecard": {
+    "text": "Rótulos de título: cada plano tiene su propia composición <plano>_TITLE de 1 segundo con un código QR. <plano>_RENDER coloca el rótulo antes del plano y empieza en el código de tiempo −00:00:01:00, así que el fotograma 0 del plano es 00:00:00:00 como en la lista de planos y el archivo FBX. La composición del plano y la principal no cambian. Renderiza <plano>_RENDER e importa la película con el código QR; el rótulo se recorta al importar.",
+    "sourceHash": "2c06ced2714140605e4c45af4cc095285ff8bea203b5436e3dc808a03f464bce",
+    "review": "machine"
+  },
+  "ptg3b.route-title": {
+    "text": "Importar película desde After Effects – From Pen to Glass",
+    "sourceHash": "de50f7331ecec27d9ee5189b99d48b73eca0d046a00ab9066133f6985a7162f4",
+    "review": "machine"
+  },
+  "ptg3b.route-description": {
+    "text": "Sube la película terminada al plano desde el que se exportó.",
+    "sourceHash": "246b4b64ca6bc02f391525e763e6bb224149f5ff1397f8653a463cbe806bc45d",
+    "review": "machine"
+  },
+  "ptg3b.import-heading": {
+    "text": "Importar película terminada",
+    "sourceHash": "9b4e60b1594ae41b319b35cd008d244216126ae6591e060efbb89a9c144c74b3",
+    "review": "machine"
+  },
+  "ptg3b.import-shot": {
+    "text": "Plano {value1} · {value2} fotogramas",
+    "sourceHash": "a8a51f18107550811bb9c0877456d27eecfb5abaf529838921c59fc0c1957c9e",
+    "review": "machine"
+  },
+  "ptg3b.import-hint": {
+    "text": "La película se convierte en una nueva versión de la escena y no se usa automáticamente. El rótulo del primer segundo se recorta.",
+    "sourceHash": "61766f26960b820a20c319a187b486cb288c65f50e14f2c49bb70fe2d62963f3",
+    "review": "machine"
+  },
+  "ptg3b.import-choose": {
+    "text": "Elegir película",
+    "sourceHash": "a46db7274c32416b42cb6385a263025a2bde9d46af2880b3f8b9b3eb3a2dfa48",
+    "review": "machine"
+  },
+  "ptg3b.import-working": {
+    "text": "Importando…",
+    "sourceHash": "8f80118eafcd945e51a9bc110a59bcf8328e82b188136b8a92e2a427995f2a1f",
+    "review": "machine"
+  },
+  "ptg3b.import-done": {
+    "text": "La película se añadió como nueva versión de la escena. Elígela en el montaje cuando quieras usarla.",
+    "sourceHash": "7a43ec974e37fd229f58fed2bad93729674d41eddc27d8774c582a4a656b9382",
+    "review": "machine"
+  },
+  "ptg3b.import-trimmed": {
+    "text": "Se recortó el rótulo de título (primer segundo).",
+    "sourceHash": "3f732f53e4220d0b5b68b48c7bf0e22f3ea691898e784bc1194a490f01c92290",
+    "review": "machine"
+  },
+  "ptg3b.import-mismatch": {
+    "text": "Aviso: la película tiene {value1} fotogramas, pero el plano tiene {value2}.",
+    "sourceHash": "6d945a2f7829837c01a83a9ff607cd55de20ba25cae3578080576e1bf2504f42",
+    "review": "machine"
+  },
+  "ptg3b.import-open-assembly": {
+    "text": "Abrir el montaje",
+    "sourceHash": "d361c00300ed7ef3e18ddd38d1af16cebf0e9d1e177df6c8eb07907fd8daf1ee",
+    "review": "machine"
+  },
+  "ptg3b.import-failed": {
+    "text": "La importación falló: {value1}",
+    "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
+    "review": "machine"
   }
 }

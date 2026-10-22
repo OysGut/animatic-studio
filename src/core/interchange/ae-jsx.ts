@@ -10,8 +10,29 @@
  */
 import { pathPointAt, pathProgress } from "../composition/render";
 import type { InterchangeDoc, LayerTrack, Shot } from "./types";
+import { TITLE_CARD_SECONDS } from "./titlecard";
 
 export type AeCameraMode = "ae" | "parallax";
+
+/**
+ * PTG3b (B-115): tittelkort på TITLE_CARD_SECONDS foran hvert skudd. Kortet er en egen komposisjon
+ * `<skudd>_TITLE`; `<skudd>_RENDER` legger kortet før skuddkomposisjonen (start-tidskode −1 s), så
+ * skuddkomposisjonen selv er uendret: bilde 0 og tidskode som i skuddlisten og FBX-filen.
+ * Tekstene kommer ferdig oversatt fra eksportøren; `qrPath` er QR-bildets relative sti i pakken.
+ */
+export interface AeTitleCards {
+  readonly filmTitle: string;
+  readonly explain: string;
+  readonly footer: string;
+  readonly sceneLine: (shot: Shot) => string;
+  readonly qrPath: (shot: Shot) => string;
+}
+
+/** Appens farger (mørk bakgrunn, lys tekst, turkis aksent), i AE sitt 0–1-format. */
+const CARD_BG = [0.102, 0.106, 0.118];
+const CARD_FG = [0.906, 0.91, 0.922];
+const CARD_ACCENT = [0.38, 0.718, 0.788];
+const CARD_MUTED = [0.6, 0.61, 0.64];
 
 type Kf = LayerTrack["keyframes"][number];
 const fpsFloat = (doc: InterchangeDoc): number => doc.fps.num / doc.fps.den;
@@ -268,11 +289,31 @@ function emitShot(out: string[], doc: InterchangeDoc, shot: Shot, refs: Readonly
   out.push(`var hovedLag = hoved.layers.add(comp); hovedLag.startTime = ${r6(sec(doc, shot.startFrame))};`);
 }
 
+function emitTitleCard(out: string[], doc: InterchangeDoc, name: string, lenFrames: number, contentVar: string, tc: AeTitleCards, scene: string | null, qr: string | null): void {
+  const w = doc.frameSize.width; const h = doc.frameSize.height; const f = r6(fpsFloat(doc));
+  const card = TITLE_CARD_SECONDS;
+  out.push(`var tk = app.project.items.addComp(${js(name + "_TITLE")}, ${w}, ${h}, 1, ${card}, ${f}); tk.parentFolder = rot;`);
+  out.push(`tk.layers.addSolid(${js(CARD_BG)}, "BG", ${w}, ${h}, 1, ${card});`);
+  out.push(`ptgTekst(tk, ${js(tc.filmTitle)}, ${r6(h * 0.06)}, [${r6(w / 2)}, ${r6(h * 0.13)}], ${js(CARD_FG)}, null);`);
+  if (scene) out.push(`ptgTekst(tk, ${js(scene)}, ${r6(h * 0.038)}, [${r6(w / 2)}, ${r6(h * 0.2)}], ${js(CARD_ACCENT)}, null);`);
+  if (qr) {
+    out.push(`var qr = tk.layers.add(media[${js(qr)}]); qr.property("Position").setValue([${r6(w / 2)}, ${r6(h * 0.48)}]);`);
+    out.push(`var qs = 100 * ${r6(h * 0.44)} / qr.source.height; qr.property("Scale").setValue([qs, qs]);`);
+    out.push(`ptgTekst(tk, ${js(tc.explain)}, ${r6(h * 0.026)}, [${r6(w / 2)}, ${r6(h * 0.8)}], ${js(CARD_FG)}, [${r6(w * 0.7)}, ${r6(h * 0.1)}]);`);
+  }
+  out.push(`ptgTekst(tk, ${js(tc.footer)}, ${r6(h * 0.02)}, [${r6(w / 2)}, ${r6(h * 0.95)}], ${js(CARD_MUTED)}, null);`);
+  out.push(`var rk = app.project.items.addComp(${js(name + "_RENDER")}, ${w}, ${h}, 1, ${r6(card + sec(doc, lenFrames))}, ${f}); rk.parentFolder = rot;`);
+  out.push(`try { rk.displayStartTime = -${card}; } catch (e) {}`);
+  out.push(`var rkBody = rk.layers.add(${contentVar}); rkBody.startTime = ${card};`);
+  out.push(`var rkCard = rk.layers.add(tk); rkCard.startTime = 0;`);
+}
+
 /**
  * Hele bygg.jsx (ES3). `doc.references` gir fil-ID → relativ sti i pakken; bare media som brukes importeres.
  */
-export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode }): string {
+export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCameraMode; readonly titleCards?: AeTitleCards | null }): string {
   const refs = new Map(doc.references.map(r => [r.id, r.path]));
+  const tc = o.titleCards ?? null;
   const used = new Set<string>();
   for (const s of doc.shots) {
     for (const l of s.layers) { if (l.fileId) used.add(l.fileId); for (const w of l.swaps) if (w.fileId) used.add(w.fileId); }
@@ -294,17 +335,28 @@ export function buildAeJsx(doc: InterchangeDoc, o: { readonly cameraMode: AeCame
     "  for (i = 0; i < tider.length; i++) p.setValueAtTime(tider[i], verdier[i]);",
     "  for (i = 1; i <= tider.length; i++) p.setSpatialTangentsAtKey(i, innT[i - 1], utT[i - 1]);",
     "}",
+    "function ptgTekst(c, s, size, pos, col, box) {",
+    "  var l = box ? c.layers.addBoxText(box, s) : c.layers.addText(s);",
+    "  var p = l.property(\"Source Text\"); var d = p.value;",
+    "  d.fontSize = size; d.applyFill = true; d.fillColor = col; d.justification = ParagraphJustification.CENTER_JUSTIFY;",
+    "  try { d.font = \"Inter-Regular\"; } catch (e) {}",
+    "  p.setValue(d); l.property(\"Position\").setValue(pos); return l;",
+    "}",
     "app.beginUndoGroup(\"From Pen to Glass\");",
     `var rot = app.project.items.addFolder(${js(doc.project.code)});`,
     "var media = {};",
-    ...[...used].filter(id => refs.has(id)).map(id => {
-      const p = js(refs.get(id)!);
+    ...[...[...used].filter(id => refs.has(id)).map(id => refs.get(id)!), ...(tc ? doc.shots.map(s => tc.qrPath(s)) : [])].map(path => {
+      const p = js(path);
       return `media[${p}] = app.project.importFile(new ImportOptions(new File(${p})));`;
     }),
     `var hoved = app.project.items.addComp(${js(doc.project.code + "_hoved")}, ${doc.frameSize.width}, ${doc.frameSize.height}, 1, ${r6(sec(doc, doc.lengthFrames))}, ${r6(fpsFloat(doc))});`,
     "hoved.parentFolder = rot;",
   ];
-  for (const shot of doc.shots) emitShot(out, doc, shot, refs, o.cameraMode);
+  for (const shot of doc.shots) {
+    emitShot(out, doc, shot, refs, o.cameraMode);
+    if (tc) emitTitleCard(out, doc, shot.name, shot.lengthFrames, "comp", tc, tc.sceneLine(shot), tc.qrPath(shot));
+  }
+  if (tc) emitTitleCard(out, doc, doc.project.code + "_hoved", doc.lengthFrames, "hoved", tc, null, null);
   out.push("app.endUndoGroup();");
   return out.join("\n") + "\n";
 }
