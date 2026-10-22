@@ -11,7 +11,7 @@ const layer = (over: Partial<CompositionLayer> = {}): CompositionLayer => ({
   id: "l1", kind: "draw", name: "Figur", width: 1000, height: 700, orderKey: 10, opacity: 1,
   parallax: 1, transform: { x: 500, y: 350, scaleX: 1, scaleY: 1, rotation: 0, opacity: 1 },
   keyframes: [], ...over,
-} as CompositionLayer);
+} as unknown as CompositionLayer);
 
 const track = (over: Partial<CameraTrack> = {}): CameraTrack => ({
   mode: "moving", rigName: "Rigg A", sensorWidthMm: 36, sensorHeightMm: 24, focalLengthMm: 50,

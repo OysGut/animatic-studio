@@ -36,5 +36,5 @@ export async function exportAePackage(o: {
       ].join("\n")),
     };
   }
-  return writeZip(o.sink, entries, o.urls, { extra: files(), signal, onProgress: o.onProgress });
+  return writeZip(o.sink, entries, o.urls, { extra: files(), signal, ...(o.onProgress ? { onProgress: o.onProgress } : {}) });
 }

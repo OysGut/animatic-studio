@@ -17,7 +17,7 @@ const layer = (over: Partial<CompositionLayer> = {}): CompositionLayer => ({
     { id: "k4", frame: 24, property: "y", value: 300, easing: "ease-out" },
   ],
   swaps: [], ...over,
-} as CompositionLayer);
+} as unknown as CompositionLayer);
 
 const camera: CameraTrack = {
   mode: "moving", rigName: "Rigg A", sensorWidthMm: 36, sensorHeightMm: 24, focalLengthMm: 50,
