@@ -43,7 +43,7 @@ export interface WordEvent extends EventTime {
   readonly audioId: string;
   readonly text: string;
 }
-export interface DialogueLine extends EventTime {
+export interface InterchangeDialogueLine extends EventTime {
   readonly id: string;
   readonly sourceOccurrenceId: string;
   readonly text: string;
@@ -78,7 +78,7 @@ export interface Shot {
   readonly layers: readonly LayerTrack[];
   readonly camera: null;
   readonly audio: AudioTrack[];
-  readonly dialogue: DialogueLine[];
+  readonly dialogue: InterchangeDialogueLine[];
   readonly words: WordEvent[];
 }
 export interface InterchangeDoc {
