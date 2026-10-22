@@ -125,3 +125,39 @@ describe("PTG2 Dragonframe-modell", () => {
     expect(p.audio("MIX")).toBe("PTG_SC001_SH010_v001/audio/PTG_SC001_SH010_v001_MIX.wav");
   });
 });
+
+describe("PTG2-svar: PNG per eksponering og PDF-fonter", () => {
+  it("PNG-sekvensen på toere har én fil per eksponering, lik X-sheet-radene", async () => {
+    const { pngExposureIndices } = await import("@/core/interchange/dragonframe");
+    const shot = { startFrame: 10, frameIn: 7, frameOut: 20 };
+    const idx = pngExposureIndices({ exposureStep: 2 }, shot);
+    expect(idx.length).toBe(shotExposures({ exposureStep: 2 }, shot).length);
+    // Håndtaket foran: 7 (eksp. 6), 8–9 (eksp. 8), 10–11 (eksp. 10) …
+    expect(idx).toEqual([0, 1, 3, 5, 7, 9, 11]);
+    expect(pngExposureIndices({ exposureStep: 1 }, shot)).toHaveLength(13);
+  });
+  it("velger Noto Sans, JP eller KR etter tegnsett", async () => {
+    const { pdfScriptOf, pdfScriptsNeeded } = await import("@/core/interchange/dragonframe");
+    expect(pdfScriptOf("Jula på Dovre")).toBe("latin");
+    expect(pdfScriptOf("Привет")).toBe("latin");
+    expect(pdfScriptOf("こんにちは")).toBe("jp");
+    expect(pdfScriptOf("日本")).toBe("jp");
+    expect(pdfScriptOf("안녕하세요")).toBe("kr");
+    expect(pdfScriptsNeeded(["Hei", "안녕"])).toEqual(["latin", "kr"]);
+  });
+});
+
+describe("PTG2-svar: X-sheet-PDF med innebygde fonter", () => {
+  it("bygger inn Noto Sans og Noto Sans JP/KR når teksten trenger dem", async () => {
+    const fs = await import("node:fs");
+    const { xsheetPdf } = await import("@/engine/export/dragonframe");
+    const b64 = (f: string) => fs.readFileSync(`public/fonts/pdf/${f}`).toString("base64");
+    const row = (dialogue: string) => ({ frame: 1, shotFrame: 0, timecode: "00:00:00:00", character: "Ola", dialogue, mouth: "", action: "", layers: "", notes: "" });
+    const pdf = xsheetPdf({ name: "PTG_SC001_SH010_v001" } as never, [row("Привет æøå"), row("こんにちは"), row("안녕하세요")], "a4", "Jula",
+      { latin: b64("NotoSans-Regular.ttf"), jp: b64("NotoSansJP.ttf"), kr: b64("NotoSansKR.ttf") });
+    const text = new TextDecoder("latin1").decode(pdf);
+    expect(text.match(/\/FontFile2/g)?.length).toBe(3);
+    for (const n of ["PTG-latin", "PTG-jp", "PTG-kr"]) expect(text).toContain(n);
+    expect(pdf.length).toBeLessThan(3_000_000); // delsett, ikke hele CJK-fontene (≈ 20 MB)
+  }, 60_000);
+});

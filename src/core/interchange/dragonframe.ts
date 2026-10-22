@@ -51,6 +51,21 @@ export function referenceFrames(doc: Pick<InterchangeDoc, "exposureStep" | "fps"
   return out;
 }
 
+/**
+ * PNG-sekvensen: én fil per eksponering (samme antall og rekkefølge som X-sheet-radene). Verdien er
+ * indeksen i referansefilmen (første videobilde i eksponeringen). Fil i+1 hører til X-sheet-rad i+1.
+ */
+export function pngExposureIndices(doc: Pick<InterchangeDoc, "exposureStep">, shot: Pick<Shot, "startFrame" | "frameIn" | "frameOut">): number[] {
+  const w = shotWindow(shot);
+  const out: number[] = [];
+  let last: number | undefined;
+  for (let f = w.from; f < w.to; f++) {
+    const e = exposureOf(f, shot, doc.exposureStep);
+    if (e !== last) { out.push(f - w.from); last = e; }
+  }
+  return out;
+}
+
 export interface XsheetRow {
   /** Bildenummer i pakken (1 = første bilde i vinduet, også i håndtaket). */
   readonly frame: number;
@@ -273,3 +288,17 @@ export const dragonframePaths = (shot: Pick<Shot, "name">) => ({
   xsheetPdf: (paper: XsheetPaper) => `${shot.name}/${shot.name}_xsheet_${paper === "a4" ? "A4" : "Letter"}.pdf`,
   fbx: `${shot.name}/${shot.name}_camera.fbx`,
 });
+
+/** Skrifttype for PDF-tekst: Noto Sans (latin/kyrillisk), Noto Sans JP (kana/kanji) eller KR (hangul). */
+export type PdfScript = "latin" | "jp" | "kr";
+export function pdfScriptOf(text: string): PdfScript {
+  if (/[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/.test(text)) return "kr";
+  if (/[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uff00-\uffef\u3000-\u303f]/.test(text)) return "jp";
+  return "latin";
+}
+/** Hvilke fonter pakken trenger, slik at store CJK-fonter bare lastes når teksten bruker dem. */
+export function pdfScriptsNeeded(texts: readonly string[]): PdfScript[] {
+  const s = new Set<PdfScript>(["latin"]);
+  for (const x of texts) s.add(pdfScriptOf(x));
+  return (["latin", "jp", "kr"] as const).filter(k => s.has(k));
+}
