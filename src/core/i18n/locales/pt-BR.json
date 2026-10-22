@@ -54405,5 +54405,10 @@
     "text": "Esta declaração está traduzida em vários idiomas para ser acessível aos nossos usuários. Em caso de divergência entre as versões linguísticas, prevalece o texto em norueguês, com o texto em inglês como referência secundária. Esta declaração e o uso do serviço são regidos pela legislação norueguesa.",
     "sourceHash": "8c55d1527dac6e92ec81ee9f4e1f2ccaa182ea093bed3686c73aa0b949196edb",
     "review": "machine"
+  },
+  "b115.feature.test-languages": {
+    "text": "Idioma de teste (en-XA)",
+    "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
+    "review": "machine"
   }
 }

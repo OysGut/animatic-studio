@@ -54257,5 +54257,10 @@
     "text": "이 선언문은 사용자의 접근성을 위해 여러 언어로 번역되어 있습니다. 언어 버전 간에 불일치가 있는 경우 노르웨이어 원문이 우선하며, 영어 텍스트는 보조 참고 자료입니다. 이 선언문과 서비스 이용에는 노르웨이 법이 적용됩니다.",
     "sourceHash": "8c55d1527dac6e92ec81ee9f4e1f2ccaa182ea093bed3686c73aa0b949196edb",
     "review": "machine"
+  },
+  "b115.feature.test-languages": {
+    "text": "테스트 언어 (en-XA)",
+    "sourceHash": "3f3982ad23d2d48e9b8dd0d71ef768d65c1702834235e0e1d0f596ac6b6e80d4",
+    "review": "machine"
   }
 }

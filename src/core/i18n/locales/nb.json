@@ -74406,6 +74406,9 @@
   "b110.privacy.turnstile": {
     "text": "For å hindre at roboter lager kontoer eller misbruker skjemaene, bruker vi Cloudflare Turnstile (Cloudflare, Inc.) ved registrering, innloggingslenke, «Glemt passord» og etter flere feilede innlogginger. Turnstile behandler tekniske opplysninger om nettleseren og forbindelsen (blant annet IP-adresse og nettlesersignaler) for å skille mennesker fra roboter, setter ingen sporingscookies og brukes ikke til reklame. Vi sender IP-adressen din til Cloudflare når kontrollen bekreftes. Grunnlaget er berettiget interesse i å beskytte tjenesten (GDPR art. 6 nr. 1 bokstav f)."
   },
+  "b115.feature.test-languages": {
+    "text": "Testspråk (en-XA)"
+  },
   "b115.privacy.terms.heading": {
     "text": "Vilkår for bruk og ansvarsfraskrivelse"
   },

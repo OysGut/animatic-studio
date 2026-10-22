@@ -24500,6 +24500,9 @@
     "b114.state.on": {
       "text": "På"
     },
+    "b115.feature.test-languages": {
+      "text": "Testspråk (en-XA)"
+    },
     "b115.privacy.ai.text": {
       "text": "Forslag fra kunstig intelligens – tekst, analyser, tale og bilder – leveres slik de er, uten garanti for at de er riktige, fullstendige eller frie for tredjeparts rettigheter. Du er selv ansvarlig for å vurdere om KI-generert materiale kan brukes i din produksjon, og for å følge vilkårene til den enkelte KI-leverandøren."
     },
@@ -56908,6 +56911,9 @@
     },
     "b114.state.on": {
       "text": "On"
+    },
+    "b115.feature.test-languages": {
+      "text": "Test language (en-XA)"
     },
     "b115.privacy.ai.text": {
       "text": "Suggestions from artificial intelligence – text, analyses, speech and images – are provided as they are, with no guarantee that they are correct, complete or free of third-party rights. You are responsible for assessing whether AI-generated material can be used in your production, and for following the terms of each AI provider."

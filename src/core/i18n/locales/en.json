@@ -74388,6 +74388,9 @@
   "b110.privacy.turnstile": {
     "text": "To stop robots from creating accounts or misusing the forms, we use Cloudflare Turnstile (Cloudflare, Inc.) for sign-up, sign-in links, “Forgot password” and after several failed sign-ins. Turnstile processes technical information about the browser and connection (including IP address and browser signals) to tell people from robots, sets no tracking cookies and is not used for advertising. We send your IP address to Cloudflare when the check is confirmed. The legal basis is our legitimate interest in protecting the service (GDPR Art. 6(1)(f))."
   },
+  "b115.feature.test-languages": {
+    "text": "Test language (en-XA)"
+  },
   "b115.privacy.terms.heading": {
     "text": "Terms of use and disclaimer"
   },
