@@ -3,6 +3,7 @@
  * Høyre: kontekst (tidspunkt i fortellingen, hva karakteren vet, relasjoner) og fakta. Panelene kan lukkes
  * og endre bredde. All skriving i prosjektdata går via kommandoene (runCommand → apply_changes).
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { LayoutGrid, List, PanelLeft, PanelRight, Plus } from "lucide-react";
@@ -464,20 +465,15 @@ function ContextPanel({
         <div className="min-h-0 flex-1 overflow-y-auto">
           <PanelHeader title={t("app-storylab-story-lab-workspace.context-panel.title.b24bdc22ae0b")} />
           <div className="p-3">
-            <select
-              data-testid="storylab-time"
-              aria-label={t("app-storylab-story-lab-workspace.context-panel.aria-label.b24bdc22ae0b")}
+            <SceneSelect
+              testId="storylab-time"
+              ariaLabel={t("app-storylab-story-lab-workspace.context-panel.aria-label.b24bdc22ae0b")}
               value={sceneId ?? ""}
-              onChange={(e) => onScene(e.target.value || null)}
-              className="h-8 w-full rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
-            >
-              <option value="">{t("app-storylab-story-lab-workspace.context-panel.option.985e5369a714")}</option>
-              {scenes.map((s) => (
-                <option key={s.sceneId} value={s.sceneId}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
+              onChange={(v) => onScene(v || null)}
+              className="w-full"
+              emptyLabel={t("app-storylab-story-lab-workspace.context-panel.option.985e5369a714")}
+              options={scenes.map((s) => ({ value: s.sceneId, label: s.label, occurrence: mainOccurrenceOfScene(state, s.sceneId) }))}
+            />
             <p className="mt-1 text-[11px] text-text-tertiary">
               {t("app-storylab-story-lab-workspace.context-panel.p.65138ead728f")}
             </p>

@@ -2,6 +2,7 @@
  * Inspektøren for skrivecanvaset (SL7): type, tittel, brødtekst, farge, kobling til bibliotek eller scene,
  * kantene med etikett og type, og overføring til prosjektet. Tekst lagres med debounce som UpdateCanvasNode.
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { useEffect, useRef, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { CANVAS_BODY_MAX, CANVAS_EDGE_KINDS, CANVAS_LABEL_MAX, CANVAS_NODE_KINDS, CANVAS_TITLE_MAX, canvasEdgeKindLabel, canvasNodeKindLabel, canvasTransferKinds, scenesInStoryTime, type CanvasEdgeKind, type CanvasNode, type CanvasNodeKind, type ProjectState } from "@/core";
@@ -157,11 +158,10 @@ function NodeForm({
       {node.kind === "scene" || node.kind === "event" || node.kind === "plot_point" || node.kind === "turning_point" ? (
         <label className="block space-y-1">
           <span className="text-[12px] text-text-secondary">{tk("app-storylab-canvas-canvas-inspector.node-form.span.c04cb7ce4c65")}</span>
-          <select className={field} disabled={!editable} value={node.sceneId ?? ""} data-testid="canvas-inspector-scene"
-            onChange={(e) => update({ sceneId: e.target.value || null }, tk("app-storylab-canvas-canvas-inspector.node-form.update.3bcc663172a5"))}>
-            <option value="">{tk("app-storylab-canvas-canvas-inspector.node-form.option.cb0b50044448.2")}</option>
-            {scenes.map((s) => <option key={s.sceneId} value={s.sceneId}>{s.heading || s.sceneId}</option>)}
-          </select>
+          <SceneSelect className={field} disabled={!editable} value={node.sceneId ?? ""} testId="canvas-inspector-scene" ariaLabel={tk("app-storylab-canvas-canvas-inspector.node-form.span.c04cb7ce4c65")}
+            onChange={(v) => update({ sceneId: (v || null) as never }, tk("app-storylab-canvas-canvas-inspector.node-form.update.3bcc663172a5"))}
+            emptyLabel={tk("app-storylab-canvas-canvas-inspector.node-form.option.cb0b50044448.2")}
+            options={scenes.map((s) => ({ value: s.sceneId, label: s.heading || s.sceneId, occurrence: state.occurrences[s.occurrenceId] }))} />
         </label>
       ) : null}
       {node.assetId || node.sceneId ? (

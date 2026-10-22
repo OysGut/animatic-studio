@@ -3,6 +3,8 @@
  * lastes opp én gang og deles på scenene etter starttider brukeren justerer (med forslag etter scenenes
  * lengde). Hver scene får sin egen versjon (samme fil) med utsnittet sitt, og den tas i bruk.
  */
+import type { ProjectState } from "@/core";
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { Film, Loader2, MapPin, Upload } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { cutsToRanges, formatHeading, newId, proposeCuts, type FilmClip, type TakeMedia } from "@/core";
@@ -40,6 +42,7 @@ export function LongFilmImportDialog({
   firstOccurrenceId,
   cmds,
   fps,
+  occurrences,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -48,6 +51,8 @@ export function LongFilmImportDialog({
   firstOccurrenceId: string | null;
   cmds: Commands;
   fps: { num: number; den: number };
+  /** B-118: forekomstene, så scenevelgerne kan vise farge og status. */
+  occurrences?: ProjectState["occurrences"];
 }) {
   const [file, setFile] = useState<File | null>(null);
   const [media, setMedia] = useState<TakeMedia | null>(null);
@@ -286,33 +291,23 @@ export function LongFilmImportDialog({
             <div className="flex min-w-0 flex-col gap-2">
               <div className="flex flex-wrap items-center gap-1.5 text-xs text-text-secondary">
                 {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.div.2b61e9f29719")}
-                <select
-                  aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.651f42bc7e1f")}
+                <SceneSelect
+                  ariaLabel={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.651f42bc7e1f")}
                   value={fromId}
-                  onChange={(e) => setFromId(e.target.value)}
+                  onChange={setFromId}
                   disabled={busy !== null}
-                  className={input + " max-w-[160px]"}
-                >
-                  {clips.map((c) => (
-                    <option key={c.occurrenceId} value={c.occurrenceId}>
-                      {c.productionNumber ?? ""} {formatHeading(c.heading)}
-                    </option>
-                  ))}
-                </select>
+                  className={input + " max-w-[200px]"}
+                  options={clips.map((c) => ({ value: c.occurrenceId, number: c.productionNumber ?? undefined, label: formatHeading(c.heading), occurrence: occurrences?.[c.occurrenceId] }))}
+                />
                 {tk("app-assembly-long-film-import-dialog.long-film-import-dialog.div.2325536f85e0")}
-                <select
-                  aria-label={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.1ca025d9c17f")}
+                <SceneSelect
+                  ariaLabel={tk("app-assembly-long-film-import-dialog.long-film-import-dialog.aria-label.1ca025d9c17f")}
                   value={toId}
-                  onChange={(e) => setToId(e.target.value)}
+                  onChange={setToId}
                   disabled={busy !== null}
-                  className={input + " max-w-[160px]"}
-                >
-                  {clips.map((c) => (
-                    <option key={c.occurrenceId} value={c.occurrenceId}>
-                      {c.productionNumber ?? ""} {formatHeading(c.heading)}
-                    </option>
-                  ))}
-                </select>
+                  className={input + " max-w-[200px]"}
+                  options={clips.map((c) => ({ value: c.occurrenceId, number: c.productionNumber ?? undefined, label: formatHeading(c.heading), occurrence: occurrences?.[c.occurrenceId] }))}
+                />
               </div>
               <ol className="flex max-h-[44vh] flex-col gap-1 overflow-y-auto pr-1">
                 {range.map((c, i) => {

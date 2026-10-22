@@ -225,14 +225,16 @@ describe("REQ-0327 – forslag påvirker ikke manuset før brukeren godkjenner",
       run: r.run,
       runAndWait: async (c: Command) => ({ error: r.run(c), commandId: "x" }),
     };
+    // B-118: skjemaets scenevelger viser scenemerket, som leser visningsvalg via QueryClient
     render(
-      createElement(ContinuityPanel, {
-        state: s,
-        asset: maja,
-        editable: true,
-        cmds: cmds as never,
-        onGoToScene: () => undefined,
-      }),
+      createElement(QueryClientProvider, { client: new QueryClient() },
+        createElement(ContinuityPanel, {
+          state: s,
+          asset: maja,
+          editable: true,
+          cmds: cmds as never,
+          onGoToScene: () => undefined,
+        })),
     );
     expect(screen.getByText(/Ingenting brukes før du\s+godkjenner/)).toBeInTheDocument();
     expect(r.ran).toEqual([]);

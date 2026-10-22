@@ -3,6 +3,7 @@
  * hendelser som endrer utseendet (hårklipp, kostyme, skade …), forslag fra manuset som må godkjennes
  * eller avvises, og en tidslinje over scenene i fortellingsrekkefølge med utseendet i hver scene.
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { ArrowRight, Check, Clock, Lightbulb, Pencil, Plus, Trash2, Undo2, X } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
 import { CONTINUITY_DURATION_LABEL, CONTINUITY_KIND_LABEL, CONTINUITY_KINDS, appearanceAt, eventApplies, eventMidScene, eventSceneId, blocksOfVariant, continuityEventsOf, continuityFor, continuitySuggestions, continuityTimeline, excerpt, formatHeading, newId, orderedOccurrences, variantsOf, versionsOf, type Asset, type ContinuityDuration, type ContinuityEvent, type ContinuityEventFields, type ContinuityKind, type ContinuitySuggestion, type ProjectState } from "@/core";
@@ -605,13 +606,12 @@ function EventForm({
     ? blocksOfVariant(state, variantId).filter((b) => b.kind !== "heading")
     : [];
   const set = (p: Partial<ContinuityEventFields>) => onChange({ ...fields, ...p });
-  const sceneOptions = occs.map((o) => (
-    <option key={o.id} value={o.sceneId}>
-      {o.productionNumber ? `${o.productionNumber}. ` : ""}
-      {formatHeading(state.variants[o.variantId]!.heading)}
-      {o.active ? "" : t("app-library-continuity-panel.scene-options.option.f0b8db8fd1be")}
-    </option>
-  ));
+  const sceneOptions = occs.map((o) => ({
+    value: o.sceneId as string,
+    number: o.productionNumber ?? undefined,
+    label: formatHeading(state.variants[o.variantId]!.heading) + (o.active ? "" : t("app-library-continuity-panel.scene-options.option.f0b8db8fd1be")),
+    occurrence: o,
+  }));
   return (
     <form
       aria-label={
@@ -651,18 +651,13 @@ function EventForm({
       </div>
       <div className="flex flex-wrap gap-2">
         <Label text={t("app-library-continuity-panel.event-form.text.db03614ef542")}>
-          <select
+          <SceneSelect
+            ariaLabel={t("app-library-continuity-panel.event-form.text.db03614ef542")}
             value={fields.sceneId}
-            onChange={(e) => set({ sceneId: e.target.value as never, blockId: null })}
+            onChange={(v) => set({ sceneId: v as never, blockId: null })}
             className={`${selectCls} max-w-[280px]`}
-          >
-            {occ ? null : (
-              <option value={fields.sceneId}>
-                {t("app-library-continuity-panel.event-form.option.ce2524bfc27e")}
-              </option>
-            )}
-            {sceneOptions}
-          </select>
+            options={occ ? sceneOptions : [{ value: fields.sceneId, label: t("app-library-continuity-panel.event-form.option.ce2524bfc27e") }, ...sceneOptions]}
+          />
         </Label>
         <Label text={t("app-library-continuity-panel.event-form.text.71345582b956")} grow>
           <select
@@ -726,14 +721,14 @@ function EventForm({
         </Label>
         {fields.duration === "temporary" ? (
           <Label text={t("app-library-continuity-panel.event-form.text.ca435491c8fe")}>
-            <select
+            <SceneSelect
+              ariaLabel={t("app-library-continuity-panel.event-form.text.ca435491c8fe")}
               value={fields.untilSceneId ?? ""}
-              onChange={(e) => set({ untilSceneId: (e.target.value || null) as never })}
+              onChange={(v) => set({ untilSceneId: (v || null) as never })}
               className={`${selectCls} max-w-[240px]`}
-            >
-              <option value="">{t("app-library-continuity-panel.event-form.option.e3e5e0b263d9")}</option>
-              {sceneOptions}
-            </select>
+              emptyLabel={t("app-library-continuity-panel.event-form.option.e3e5e0b263d9")}
+              options={sceneOptions}
+            />
           </Label>
         ) : null}
       </div>

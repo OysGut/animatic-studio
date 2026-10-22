@@ -34,3 +34,10 @@
 ## Åpne spørsmål
 1. Skal de vanlige nedtrekkslistene for scener bygges om, så de også viser scenemerket?
 2. Claude kjører 0083 i Cloud.
+
+## Oppfølging: felles scenevelger (Øystein 22.10)
+
+- Ny `src/app/shell/SceneSelect.tsx`: knapp og liste med søk, piltaster, Home/End, Enter og Escape. Listen er bygd for skjermleser (combobox/listbox og aktivt valg). Hvert valg viser `SceneMark`, og valg uten farge får tom plass med samme bredde.
+- Vanlige nedtrekkslister for scener er byttet ut i: rigg, eksport av animatic (første/siste scene), langfilmimport (fra/til), oversettelsesimport, fortellingstid i manus, lydkoblinger, kontinuitetsskjemaet (scene og «til scene»), Story Lab (tidspunkt, ny gruppe, fakta, karakterscene, forslag og plassering), lerretets inspektør og overføring fra lerretet.
+- Lageksporten og opptaksdialogen har ingen scenevalg (scenen er gitt av konteksten), så de har ingen scenevelger å bytte. Påstanden i forrige rapport var feil.
+- `b118-scene-status.mjs` sjekker nå også rigg og eksport: firkant foran navnet, lik venstre x, statusikon, aktivt valg for skjermleser og valg med End+Enter. nb 32/32 og en 32/32.

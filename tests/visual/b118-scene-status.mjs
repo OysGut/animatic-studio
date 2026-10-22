@@ -76,5 +76,49 @@ await h.scenario(`b118-${lang}`, occ.id, lang, async (page) => {
   const prefs = await page.evaluate(() => [localStorage.getItem("animatic:ui:scenes.showStatus"), localStorage.getItem("animatic:ui:scenes.showColors")]);
   h.check(prefs[0] === "false" && prefs[1] === "false", `${lang}: bryterne lagres som visningsvalg`);
   await page.screenshot({ path: `${h.out}/${lang}-hidden.png` });
+  // Slå merkene på igjen før de andre scenevelgerne kontrolleres
+  await page.getByTestId("scene-show-colors").click();
+  await page.getByTestId("scene-show-status").click();
+
+  // Felles scenevelger (SceneSelect) andre steder: firkant foran navnet, lik venstre x, tastatur og søk
+  async function checkSelect(where, trigger) {
+    await trigger.waitFor();
+    h.check((await trigger.getAttribute("aria-haspopup")) === "listbox", `${where}: scenevelgeren er en tilgjengelig liste`);
+    await trigger.click();
+    const list = page.locator('[role="listbox"]').last();
+    const o = list.locator('[role="option"]');
+    await o.first().waitFor(); await page.waitForTimeout(600);
+    const k = await o.count();
+    const xs = [], cs = []; let first = true;
+    for (let i = 0; i < k; i++) {
+      const mark = o.nth(i).getByTestId("scene-mark");
+      const sq = await mark.getByTestId("scene-mark-square").boundingBox();
+      const nm = await mark.getByTestId("scene-mark-name").boundingBox();
+      if (!sq || !nm || sq.x >= nm.x) first = false;
+      xs.push(nm?.x ?? -1);
+      cs.push(await mark.getByTestId("scene-mark-square").getAttribute("data-color"));
+    }
+    h.check(k > 1 && first, `${where}: firkanten står foran navnet i alle ${k} valg`);
+    h.check(cs.includes("pink") && cs.includes(""), `${where}: valg med og uten farge (${cs.join(",")})`);
+    h.check(xs.every((x) => Math.abs(x - xs[0]) < 0.5), `${where}: navnene har samme venstre x (${xs.map((x) => x.toFixed(1)).join(",")})`);
+    h.check((await o.locator('[data-testid="scene-mark-status"][data-status="done"]').count()) >= 1, `${where}: statusikonet vises`);
+    const search = page.locator('[role="combobox"][aria-controls]').last();
+    h.check((await search.getAttribute("aria-activedescendant")) !== null, `${where}: aktivt valg meldes til skjermleser`);
+    const before = await trigger.getAttribute("data-value");
+    await page.keyboard.press("End");
+    const lastValue = await o.nth(k - 1).getAttribute("data-value");
+    await page.keyboard.press("Enter");
+    h.check(await h.eventually(async () => (await trigger.getAttribute("data-value")) === lastValue && lastValue !== before), `${where}: End + Enter velger siste scene med tastaturet`);
+    await page.screenshot({ path: `${h.out}/${lang}-${where}.png` });
+  }
+
+  await page.goto(`${h.base}${h.P}/rigg`, { waitUntil: "networkidle" });
+  await checkSelect("rigg", page.getByTestId("rig-scene"));
+
+  await page.goto(`${h.base}${h.P}/montering`, { waitUntil: "networkidle" });
+  await page.getByRole("button", { name: lang === "en" ? "Export animatic" : "Eksporter animatic" }).first().click();
+  const dialog = page.getByRole("dialog");
+  await dialog.waitFor();
+  await checkSelect("eksport", dialog.getByRole("button", { name: lang === "en" ? /^First scene/ : /^Første scene/ }));
 });
 await h.finish();

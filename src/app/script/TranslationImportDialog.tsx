@@ -3,6 +3,7 @@
  * norske automatisk; brukeren ser koblingene, kan velge en annen norsk scene og godkjenner. Ikke-godkjente
  * koblinger lagres som usikre og kan godkjennes senere i inspektøren. Det norske manuset endres ikke.
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { AlertTriangle, CheckCircle2, FileUp, Loader2 } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { alignTranslationWithAi } from "@/adapters/ai/translation-align.functions";
@@ -338,20 +339,14 @@ export function TranslationImportDialog({
                           : null}
                       </span>
                     </span>
-                    <select
-                      aria-label={t("app-script-translation-import-dialog.translation-import-dialog.aria-label.2aeb56f5c4f7")}
+                    <SceneSelect
+                      ariaLabel={t("app-script-translation-import-dialog.translation-import-dialog.aria-label.2aeb56f5c4f7")}
                       value={r.link.occurrenceId ?? ""}
-                      onChange={(e) => relink(i, e.target.value || null)}
+                      onChange={(v) => relink(i, v || null)}
                       className={control}
-                    >
-                      <option value="">{t("app-script-translation-import-dialog.translation-import-dialog.option.2ea52a3c1b68")}</option>
-                      {occs.map((x) => (
-                        <option key={x.id} value={x.id}>
-                          {x.productionNumber ? `${x.productionNumber}. ` : ""}
-                          {formatHeading(state.variants[x.variantId]!.heading)}
-                        </option>
-                      ))}
-                    </select>
+                      emptyLabel={t("app-script-translation-import-dialog.translation-import-dialog.option.2ea52a3c1b68")}
+                      options={occs.map((x) => ({ value: x.id, number: x.productionNumber ?? undefined, label: formatHeading(state.variants[x.variantId]!.heading), occurrence: x }))}
+                    />
                   </li>
                 );
               })}

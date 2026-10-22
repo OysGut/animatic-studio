@@ -4,6 +4,7 @@
  * (karakterenes utseende) følger dette, ikke rekkefølgen scenene vises i. Lagres med SetStoryTime og kan
  * angres. Vises bare i inspektøren, ikke i selve manuset (REQ-0102).
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { useState } from "react";
 import { STORY_KIND_LABEL, STORY_PLACEMENT_LABEL, formatHeading, mainProduction, orderedOccurrences, storyPlacementOf, storyTimeFor, type Command, type ProjectState, type StoryKind, type StoryPlacement } from "@/core";
 import { t } from "@/core/i18n/keyed";
@@ -97,39 +98,33 @@ export function StoryTimeSection({
               </option>
             ))}
           </select>
-          <select
-            aria-label={t("app-script-story-time-section.story-time-section.aria-label.7f5b07ac218a")}
+          <SceneSelect
+            ariaLabel={t("app-script-story-time-section.story-time-section.aria-label.7f5b07ac218a")}
             value={st.anchorSceneId ?? ""}
             disabled={!canEdit}
-            onChange={(e) =>
+            onChange={(v) =>
               save(
                 st.kind,
-                e.target.value || null,
+                v || null,
                 st.anchorSceneId ? placement : defaultPlacement(st.kind),
               )
             }
             className={ctl}
-          >
-            <option value="">{t("app-script-story-time-section.story-time-section.option.76bcf4e55c84")}</option>
-            {otherAnchor ? (
-              <option value={otherAnchor}>
-                {(() => {
-                  const v = Object.values(state.variants).find((x) => x.sceneId === otherAnchor);
-                  const heading = v ? formatHeading(v.heading) : "Scene";
-                  return t("app-script-story-time-section.story-time-section.const-v-object-values-state-variants-find-x-x-scene-id-other-anchor-const-heading-v-format-heading-v-heading-scene-return-l-heading-ikke-i-hovedfilmen-heading-not-in-the-main-film.9c10c76f625b", { heading: String(heading) });
-                })()}
-              </option>
-            ) : null}
-            {anchors.map((o) => {
-              const v = state.variants[o.variantId];
-              return (
-                <option key={o.sceneId} value={o.sceneId}>
-                  {o.productionNumber ? `${o.productionNumber}. ` : ""}
-                  {v ? formatHeading(v.heading) : ""}
-                </option>
-              );
-            })}
-          </select>
+            emptyLabel={t("app-script-story-time-section.story-time-section.option.76bcf4e55c84")}
+            options={[
+              ...(otherAnchor
+                ? [{ value: otherAnchor, occurrence: mainOccurrenceOfScene(state, otherAnchor), label: (() => {
+                    const v = Object.values(state.variants).find((x) => x.sceneId === otherAnchor);
+                    const heading = v ? formatHeading(v.heading) : "Scene";
+                    return t("app-script-story-time-section.story-time-section.const-v-object-values-state-variants-find-x-x-scene-id-other-anchor-const-heading-v-format-heading-v-heading-scene-return-l-heading-ikke-i-hovedfilmen-heading-not-in-the-main-film.9c10c76f625b", { heading: String(heading) });
+                  })() }]
+                : []),
+              ...anchors.map((o) => {
+                const v = state.variants[o.variantId];
+                return { value: o.sceneId, number: o.productionNumber ?? undefined, label: v ? formatHeading(v.heading) : "", occurrence: o };
+              }),
+            ]}
+          />
         </div>
       ) : null}
       {editable && !inMain ? (

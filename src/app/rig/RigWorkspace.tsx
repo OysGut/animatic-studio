@@ -1,4 +1,5 @@
 import { InspectionWindow } from "./InspectionWindow";
+import { SceneSelect } from "@/app/shell/SceneSelect";
 import { ContourPreview } from "./ContourPreview";
 import { CutoutDialog } from "@/app/library/CutoutDialog";
 import { layerVersion, type CompositionLayer } from "@/core";
@@ -187,7 +188,7 @@ function Rig({
       .filter((o) => o.active && o.productionId === main?.id)
       .sort((a, b) => a.orderKey.localeCompare(b.orderKey))
       .filter((o) => (seen.has(o.sceneId) ? false : (seen.add(o.sceneId), true)))
-      .map((o) => ({ sceneId: o.sceneId, number: sceneNumberOf(state, o) ?? "–" }));
+      .map((o) => ({ sceneId: o.sceneId, number: sceneNumberOf(state, o) ?? "–", occurrence: o }));
   }, [state]);
 
   const current: RigSetup | null =
@@ -279,19 +280,16 @@ function Rig({
         <Label htmlFor="rig-scene" className={fieldLabel}>
           {t("app-rig.scene-label")}
         </Label>
-        <select
+        <SceneSelect
           id="rig-scene"
+          testId="rig-scene"
+          ariaLabel={t("app-rig.scene-label")}
           value={sceneId}
-          onChange={(e) => setSceneId(e.target.value)}
-          className="h-8 rounded-sm border border-border bg-surface-3 px-2 text-[13px] text-text-primary"
-        >
-          <option value="">{t("app-rig.default-rig")}</option>
-          {sceneOptions.map((o) => (
-            <option key={o.sceneId} value={o.sceneId}>
-              {t("app-rig.scene-option", { number: o.number })}
-            </option>
-          ))}
-        </select>
+          onChange={setSceneId}
+          emptyLabel={t("app-rig.default-rig")}
+          options={sceneOptions.map((o) => ({ value: o.sceneId, label: t("app-rig.scene-option", { number: o.number }), occurrence: o.occurrence }))}
+          className="w-56"
+        />
         <span className="ml-auto flex items-center gap-2">
           <Label htmlFor="rig-units" className={fieldLabel}>
             {t("app-rig.units-label")}

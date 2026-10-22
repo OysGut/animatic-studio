@@ -1,4 +1,5 @@
 /** SL4: ny gruppeøkt med profiløyeblikksbilder og en lagret, tilfeldig seed. */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -58,10 +59,9 @@ export function NewGroupDialog({ state, projectId, initialSceneId, onClose, onCr
       </div>
       {!valid ? <p className="text-xs text-text-tertiary">{t("app-storylab-new-group-dialog.new-group-dialog.p.a52f5280d71b")}</p> : null}
       <label className="space-y-1 text-sm">{t("app-storylab-new-group-dialog.new-group-dialog.label.8945d234f786")}
-        <select className="h-8 w-full" data-testid="storylab-group-time" value={sceneId ?? ""} disabled={busy} onChange={(e) => setSceneId(e.target.value || null)}>
-          <option value="">{t("app-storylab-new-group-dialog.new-group-dialog.option.68793ca3a761")}</option>
-          {scenesByStoryTime(state).map((s) => <option key={s.sceneId} value={s.sceneId}>{s.label}</option>)}
-        </select>
+        <SceneSelect className="h-8 w-full" testId="storylab-group-time" ariaLabel={t("app-storylab-new-group-dialog.new-group-dialog.label.8945d234f786")} value={sceneId ?? ""} disabled={busy} onChange={(v) => setSceneId(v || null)}
+          emptyLabel={t("app-storylab-new-group-dialog.new-group-dialog.option.68793ca3a761")}
+          options={scenesByStoryTime(state).map((s) => ({ value: s.sceneId, label: s.label, occurrence: mainOccurrenceOfScene(state, s.sceneId) }))} />
       </label>
       <label className="space-y-1 text-sm">{t("app-storylab-new-group-dialog.new-group-dialog.label.8652b857c08a")}
         <Textarea value={situation} disabled={busy} onChange={(e) => setSituation(e.target.value)} data-testid="storylab-situation" />

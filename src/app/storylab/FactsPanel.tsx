@@ -2,6 +2,7 @@
  * Story Lab (SL2): fakta og hemmeligheter – tekst, type, når det skjer og hvem som vet det fra hvilken scene.
  * Lagres med AddStoryFact / UpdateStoryFact / RemoveStoryFact (med angring).
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { Pencil, Plus, Trash2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { factError, newId, type ProjectState, type StoryFact, type StoryFactFields } from "@/core";
@@ -157,14 +158,9 @@ function FactForm({
   const chars = storyCharacters(state);
   const err = f.text.trim() ? factError(f) : null;
   const sceneSelect = (value: string | null, onChange: (v: string | null) => void, label: string) => (
-    <select value={value ?? ""} aria-label={label} onChange={(e) => onChange(e.target.value || null)} className={control + " min-w-0 flex-1"}>
-      <option value="">{t("app-storylab-facts-panel.scene-select.option.f2ec70ebe653")}</option>
-      {scenes.map((s) => (
-        <option key={s.sceneId} value={s.sceneId}>
-          {s.label}
-        </option>
-      ))}
-    </select>
+    <SceneSelect value={value ?? ""} ariaLabel={label} onChange={(v) => onChange(v || null)} className={control + " min-w-0 flex-1"}
+      emptyLabel={t("app-storylab-facts-panel.scene-select.option.f2ec70ebe653")}
+      options={scenes.map((s) => ({ value: s.sceneId, label: s.label, occurrence: mainOccurrenceOfScene(state, s.sceneId) }))} />
   );
   return (
     <div className="space-y-2 border-b border-border bg-surface-2 p-3 text-[13px]" data-testid="storylab-fact-form">
