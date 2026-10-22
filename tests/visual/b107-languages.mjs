@@ -13,6 +13,18 @@ const user = { id: '00000000-0000-7000-8000-a11ce0000001', email: 'fixture@examp
 const browser = await chromium.launch({ headless: true });
 let passed = 0;
 const check = (value, label) => { if (!value) throw Error(label); passed++; console.log(` ok ${label}`); };
+const manifest = JSON.parse(readFileSync(new URL('../../src/core/i18n/manifest.json', import.meta.url), 'utf8'));
+const regularLanguages = manifest.languages.filter(language => !language.testOnly).map(language => language.tag);
+async function checkLanguageSwitches(page, label) {
+  const switches = page.getByTestId('language-switch');
+  check(await switches.count() > 0, `${label}: language switch exists`);
+  for (let index = 0; index < await switches.count(); index++) {
+    const group = switches.nth(index);
+    const offered = await group.locator('button').evaluateAll(buttons => buttons.map(button => button.dataset.testid?.slice('language-'.length)));
+    check(regularLanguages.every(tag => offered.includes(tag)), `${label}: switch ${index + 1} offers all ${regularLanguages.length} ordinary languages`);
+    for (const tag of regularLanguages) check(await group.getByTestId(`language-${tag}`).isVisible(), `${label}: ${tag} visible`);
+  }
+}
 try {
   for (const [locale, expected] of [['nb-NO','nb'],['fr-FR','fr'],['ja-JP','ja'],['zz-ZZ','en']]) {
     const context = await browser.newContext({ viewport: { width: 1280, height: 1800 }, locale });
@@ -23,6 +35,7 @@ try {
     check((await response.text()).includes(`<html lang="${expected}"`), `${locale}: server language`);
     await page.waitForTimeout(3200);
     check(await page.locator('html').getAttribute('lang') === expected, `${locale}: browser language`);
+    await checkLanguageSwitches(page, `${locale}: signed out`);
     await page.getByTestId('language-nb').first().click();
     await page.waitForTimeout(300);
     await page.reload({ waitUntil: 'networkidle' });
@@ -52,6 +65,7 @@ try {
   await page.evaluate(([key, session]) => { localStorage.setItem(key, session); localStorage.setItem('animatic:lang','nb'); }, [storageKey, JSON.stringify({ access_token: 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmaXh0dXJlIn0.signature', refresh_token: 'fixture', token_type: 'bearer', expires_at: Math.floor(Date.now()/1000)+86400, user })]);
   await page.goto(`${base}/konto`, { waitUntil: 'networkidle' });
   await page.getByTestId('account-page').waitFor(); await page.waitForTimeout(3500);
+  await checkLanguageSwitches(page, 'mocked signed-in header and account');
   check(await page.locator('html').getAttribute('lang') === 'fr', 'profile beats local nb and browser ja');
   check(await page.evaluate(() => localStorage.getItem('animatic:lang')) === 'nb', 'profile does not rewrite explicit local choice');
   check(saved.length === 0, 'automatic detection never saves profile');

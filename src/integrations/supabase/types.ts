@@ -20,6 +20,7 @@ export type Database = {
           changed_by: string | null
           delete_after: string | null
           last_active_at: string | null
+          last_seen_at: string | null
           reason: string
           status: string
           user_id: string
@@ -29,6 +30,7 @@ export type Database = {
           changed_by?: string | null
           delete_after?: string | null
           last_active_at?: string | null
+          last_seen_at?: string | null
           reason?: string
           status?: string
           user_id: string
@@ -38,6 +40,7 @@ export type Database = {
           changed_by?: string | null
           delete_after?: string | null
           last_active_at?: string | null
+          last_seen_at?: string | null
           reason?: string
           status?: string
           user_id?: string
@@ -3941,6 +3944,7 @@ export type Database = {
         Row: {
           avatar_key: string | null
           bio: string | null
+          city: number | null
           country: string | null
           display_name: string
           handle: string | null
@@ -3954,6 +3958,7 @@ export type Database = {
         Insert: {
           avatar_key?: string | null
           bio?: string | null
+          city?: number | null
           country?: string | null
           display_name?: string
           handle?: string | null
@@ -3967,6 +3972,7 @@ export type Database = {
         Update: {
           avatar_key?: string | null
           bio?: string | null
+          city?: number | null
           country?: string | null
           display_name?: string
           handle?: string | null
@@ -6840,6 +6846,14 @@ export type Database = {
         }
         Returns: number
       }
+      globe_points: {
+        Args: never
+        Returns: {
+          active: boolean
+          lat: number
+          lon: number
+        }[]
+      }
       issue_print_copies: {
         Args: { p_job: string; p_project: string }
         Returns: number
@@ -7134,6 +7148,7 @@ export type Database = {
         Args: { p_project: string; p_target: Json }
         Returns: undefined
       }
+      set_my_city: { Args: { p_city: number }; Returns: undefined }
       set_my_country: { Args: { p_country: string }; Returns: undefined }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
       set_my_public_profile: {
