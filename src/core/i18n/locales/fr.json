@@ -54645,5 +54645,195 @@
     "text": "Paquet Dragonframe : un dossier par plan, nommé comme dans la liste des plans. Chaque dossier contient un film de référence (_ref.mp4, H.264) à la cadence de prise de vue, précis à l'image près et avec les poignées ; en deux, chaque exposition est affichée sur deux images. La séquence PNG facultative (png/) contient exactement les mêmes images. Le son (audio/) est en WAV 48 kHz 24 bits, de la même durée que le plan avec poignées, avec points de volume et fondus intégrés : une piste par personnage (DIA_), ambiance (AMB), musique (MUS), effets (SFX) et un mixage complet (MIX), dans la version linguistique choisie. La feuille d'exposition est fournie en CSV et PDF (A4 et Letter), avec une ligne par exposition ; la colonne bouche reste vide jusqu'à l'ajout des noms de bouche. Import dans Dragonframe : 1) Ouvrez la scène, choisissez Video Assist / calque de référence et importez _ref.mp4 (ou la séquence PNG) comme référence. 2) Importez le fichier MIX, ou la piste de dialogue, dans la fenêtre Audio et placez son début à l'image 1. 3) Ouvrez le X-Sheet et importez xsheet.csv, ou imprimez le PDF à côté du banc. L'IA peut servir à la lecture de piste du dialogue, mais le paquet est créé entièrement sans IA.",
     "sourceHash": "be35d9f12482b38d49a6fac8da96aa3ab5fec543fb0cbad73622e6e3bbfdaaa6",
     "review": "machine"
+  },
+  "b118.err-scene-missing": {
+    "text": "La scène n’existe pas",
+    "sourceHash": "1991f9bd6cdf9759e0b6b0e4434323eb2075a0abfde31f627b13991a07e0293c",
+    "review": "machine"
+  },
+  "b118.err-status": {
+    "text": "Statut de scène inconnu",
+    "sourceHash": "33ac554791b0878f48c910deb4242f825a1af6ff567cc2dfc418348f2594acd8",
+    "review": "machine"
+  },
+  "b118.err-color": {
+    "text": "Couleur de scène inconnue",
+    "sourceHash": "365c07d97f5c30670f9f306a2cf26310b53524a08848f8c9427f364f7563c47c",
+    "review": "machine"
+  },
+  "b118.err-schema": {
+    "text": "Le statut et la couleur de scène nécessitent une mise à jour de la base de données (migration 0083).",
+    "sourceHash": "4648c8484b23335da4876a115c1aab456ee0b272928a538e022d65c817c9f681",
+    "review": "machine"
+  },
+  "b118.status.none": {
+    "text": "Aucun statut",
+    "sourceHash": "991e67df024919b5225f2e65ff51e0ec78c20183001498636c955913b6e56af3",
+    "review": "machine"
+  },
+  "b118.status.setup": {
+    "text": "Prêt pour l’installation",
+    "sourceHash": "0be762548d3461069879c8924c509204ad297fe5460b4fe0480cad56b2011faa",
+    "review": "machine"
+  },
+  "b118.status.animating": {
+    "text": "En animation",
+    "sourceHash": "32f6a25b1ba4d72f20aec747fb2c953c04af772f17808b0076d0b647dc0e8490",
+    "review": "machine"
+  },
+  "b118.status.review": {
+    "text": "À vérifier",
+    "sourceHash": "04c22dc12c9ad7e4eb26197c597d999401347ca1f1df1f969b109b36cf5034c6",
+    "review": "machine"
+  },
+  "b118.status.retake": {
+    "text": "Retake",
+    "sourceHash": "8d2cb94f02843089f48a882575a8184326b81b0d29b19bf91b3cf9b309714272",
+    "review": "machine"
+  },
+  "b118.status.approved": {
+    "text": "Approuvé",
+    "sourceHash": "4e2e9aabb013a5b255ba34f58e88b4a4d31be0fdcbe6839209cd046896989044",
+    "review": "machine"
+  },
+  "b118.status.post": {
+    "text": "En postproduction",
+    "sourceHash": "6a3fea847969a2631730f4b0b7ef54498dea48d53c2086907e3ea3be6d855207",
+    "review": "machine"
+  },
+  "b118.status.done": {
+    "text": "Terminé",
+    "sourceHash": "753e9175ccd285a256cadfbab21272e42d7b85ea4f65229806ba31d891a16f46",
+    "review": "machine"
+  },
+  "b118.color.none": {
+    "text": "Aucune couleur",
+    "sourceHash": "211785032ae01153e26c9c4bf0db7a727519e9c2be750b6b2161fca9d43d8eb9",
+    "review": "machine"
+  },
+  "b118.color.red": {
+    "text": "Rouge",
+    "sourceHash": "d3d81e59865de7c6b4f741cf82e43ffcff2246f962158d0b3865d552a4f6ded4",
+    "review": "machine"
+  },
+  "b118.color.orange": {
+    "text": "Orange",
+    "sourceHash": "4eddeaca4fa5edf2c677a61da2bf4c492536d3f36806323f222d4966deaa40a3",
+    "review": "machine"
+  },
+  "b118.color.yellow": {
+    "text": "Jaune",
+    "sourceHash": "e767125379661349ccde77f3f1e6dc70a0ad21983dc558137e5c021cd86a37a5",
+    "review": "machine"
+  },
+  "b118.color.green": {
+    "text": "Vert",
+    "sourceHash": "19c49c91092abad455b36be268b92f73509555e03ca208b0f5f43374e8685b62",
+    "review": "machine"
+  },
+  "b118.color.teal": {
+    "text": "Turquoise",
+    "sourceHash": "bd5bf81ce1c6ae45ac633fd81cf880cd0af0000eccef5dedec962c5a93b4be45",
+    "review": "machine"
+  },
+  "b118.color.blue": {
+    "text": "Bleu",
+    "sourceHash": "0e75c7f75eed426eaa6ca1585db97e79f329d411675eb21df2b05db27f7ddbb2",
+    "review": "machine"
+  },
+  "b118.color.indigo": {
+    "text": "Indigo",
+    "sourceHash": "7ea07fa004f179de169ea086c9c4b4cca3460bbfab282014c10728a61c328404",
+    "review": "machine"
+  },
+  "b118.color.purple": {
+    "text": "Violet",
+    "sourceHash": "ff16fc8b251aacdedfae1890b345d83fc8e5d6852c59f4561a2f88135a2630f6",
+    "review": "machine"
+  },
+  "b118.color.pink": {
+    "text": "Rose",
+    "sourceHash": "3792217f0eaca0fa643266ab82b506256ee5f05d146deebfb11a5e68a272cec5",
+    "review": "machine"
+  },
+  "b118.color.gray": {
+    "text": "Gris",
+    "sourceHash": "d27006e7394d3199dc71d90b05e598b9dc00427f0cab816e1d9aae0b368a33d1",
+    "review": "machine"
+  },
+  "b118.tip": {
+    "text": "{label} · modifié {time}",
+    "sourceHash": "6025c816e63545be071c9f273bece19ae025111acaff8d71f70a6f0490f20d61",
+    "review": "machine"
+  },
+  "b118.tip-by": {
+    "text": "{label} · modifié {time} par {name}",
+    "sourceHash": "afb977aeda22d731b9418e8f45edf73683f716979b8f6f0d1ab3e61bfde722c7",
+    "review": "machine"
+  },
+  "b118.status-aria": {
+    "text": "Statut de la scène : {value}",
+    "sourceHash": "a336599437f469bd204ead329dab94a4ca37bd7222ea049849ca06cada86dc1a",
+    "review": "machine"
+  },
+  "b118.color-aria": {
+    "text": "Couleur de la scène : {value}",
+    "sourceHash": "05e2f7ed427950255f0aa999b7b80288bbfb1771ea5f26cd496e2da2f59fea8f",
+    "review": "machine"
+  },
+  "b118.status-menu": {
+    "text": "Choisir le statut de la scène",
+    "sourceHash": "0974e5de9201b0e7a317c048a0d28ee91c722fa86c58d4eda46ed6defad9d10c",
+    "review": "machine"
+  },
+  "b118.color-menu": {
+    "text": "Choisir la couleur de la scène",
+    "sourceHash": "a2718979dafb74e43b4ee8b5a24e50237bbad5b53f93d8259601d059ffe3e645",
+    "review": "machine"
+  },
+  "b118.color-label": {
+    "text": "Couleur",
+    "sourceHash": "114f0bd79a563f876e6a52bcc8ae89aceb266e1ace66c1df5b1b9ad4b924a294",
+    "review": "machine"
+  },
+  "b118.show-status": {
+    "text": "Afficher le statut",
+    "sourceHash": "360a553a4b4c1d9556e4a2495e0d513050658bf87da9d858f83914142747cee6",
+    "review": "machine"
+  },
+  "b118.show-colors": {
+    "text": "Afficher les couleurs",
+    "sourceHash": "29422662df56b06b434d61af7abe33d551c281775db1952c4934ea2e303088fd",
+    "review": "machine"
+  },
+  "b118.undo-status": {
+    "text": "Modifier le statut de la scène",
+    "sourceHash": "141a0a64bd816d8e3ec20ced636af260e83a12495bb499c3a066074b5b782d4f",
+    "review": "machine"
+  },
+  "b118.undo-color": {
+    "text": "Modifier la couleur de la scène",
+    "sourceHash": "e0320316f7fda7617cfe07517183496cad868a77a87159cec642706e2ae2f059",
+    "review": "machine"
+  },
+  "b118.filter-status": {
+    "text": "Filtrer par statut de scène",
+    "sourceHash": "30a4b11692be714a891e22e9d48b9faf939a96a0446bbb8366dfef51d2086ac3",
+    "review": "machine"
+  },
+  "b118.filter-status-all": {
+    "text": "Tous les statuts",
+    "sourceHash": "4b3cec735fe5a5b46509f0d658a8e74cad12cdc12572266c73e10457ceef7b09",
+    "review": "machine"
+  },
+  "b118.filter-color": {
+    "text": "Filtrer par couleur de scène",
+    "sourceHash": "d841d839ba9cf938cbb5ea0f44640644318d6989108f16e814ff32cd6b33d32a",
+    "review": "machine"
+  },
+  "b118.filter-color-all": {
+    "text": "Toutes les couleurs",
+    "sourceHash": "8d6fa2d86201154290b110b775ce74315dd120645d906b788e714445ffc1f8e8",
+    "review": "machine"
   }
 }

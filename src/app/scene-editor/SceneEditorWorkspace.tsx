@@ -47,6 +47,8 @@ import { Stage } from "./Stage";
 import { SceneAssetsPanel } from "./SceneAssetsPanel";
 import { useSceneLastChanges } from "./use-scene-last-changes";
 import { ScenePicker } from "./ScenePicker";
+import { SceneMarkControls } from "./SceneMarkControls";
+import { SceneColorStripe } from "@/app/shell/SceneMark";
 import { PaneResizer, usePaneSize, useStoredFlag } from "@/app/shell/pane-size";
 import { PopoutPreview, PreviewWindow } from "./PreviewWindow";
 import { CameraPanel } from "./CameraPanel";
@@ -798,6 +800,10 @@ function Editor({
         />
         </ToolbarGroup>
         <ToolbarSeparator />
+        <ToolbarGroup priority={8}>
+          <SceneMarkControls state={state} occurrence={occurrence ?? undefined} editable={editable} run={cmds.run} />
+        </ToolbarGroup>
+        <ToolbarSeparator />
         <ToolbarGroup priority={7}>
         <IconButton
           onClick={cmds.undo}
@@ -1040,11 +1046,12 @@ function Editor({
         <main
           aria-label={tk("app-scene-editor-scene-editor-workspace.editor.tabs-trigger.676cd3d0670d")}
           className={
-            "flex flex-1 flex-col bg-surface-0 " +
+            "relative flex flex-1 flex-col bg-surface-0 " +
             // Side om side: lerretet beholder en brukbar bredde; panelområdet ruller sidelengs
             (side ? "min-w-[480px]" : "min-w-0")
           }
         >
+          <SceneColorStripe color={occurrence?.color} />
           {!occurrence || !variant ? (
             <p className="m-auto text-[13px] text-text-tertiary">
               {occurrences.length === 0

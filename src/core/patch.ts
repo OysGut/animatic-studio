@@ -1,4 +1,5 @@
 import { DEFAULT_JOB_SETTINGS as DEFAULT_JOB_SETTINGS_FOR_ROWS } from "./print/job";
+import { isSceneColor, isWorkStatus } from "./assembly/scene-marks";
 import type { TranslationLineLink, TranslationLine } from "./translation/line-align-prompt";
 import type { LanguageVersion } from "./translation/language-versions";
 import type { StyleHarmonization, StylePreferredReference } from "./generation/style-harmonize";
@@ -232,6 +233,9 @@ export function toRow(collection: CollectionName, e: AnyEntity, projectId: strin
         video_instructions: o.videoInstructions ?? "",
         // Migrasjon 0050 (MTS MT6); ukjente kolonner hoppes over av apply_changes før den er kjørt
         kind: o.kind ?? "scene",
+        // Migrasjon 0083 (B-118); ukjente kolonner hoppes over av apply_changes før den er kjørt
+        work_status: o.workStatus ?? null,
+        color: o.color ?? null,
       };
     }
     case "segments": {
@@ -1294,6 +1298,9 @@ export function stateFromRows(r: ProjectRows): ProjectState {
         ...(typeof x["kind"] === "string" && x["kind"] !== "scene"
           ? { kind: x["kind"] as OccurrenceKind }
           : {}),
+        // Migrasjon 0083 (B-118): arbeidsstatus og farge (mangler/ukjent = ingen)
+        ...(isWorkStatus(x["work_status"]) ? { workStatus: x["work_status"] } : {}),
+        ...(isSceneColor(x["color"]) ? { color: x["color"] } : {}),
       })),
     ),
     segments: byId(

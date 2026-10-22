@@ -7190,6 +7190,39 @@ try {
     await as('service_role', null, tx => tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.export_records where project_id=${bp}`).length === 0,'eksportlogg slettet med prosjekt');
   });
+  await test("0083 (B-118): scenestatus og scenefarge – check-verdier, skriving via apply_changes og bare redaktør", async () => {
+    const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
+    await sql`insert into public.projects(id,name,created_by) values (${bp},'B118 test',${ALICE})`;
+    await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner'),(${bp},${BOB},'viewer'),(${bp},${CAROL},'editor')`;
+    await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values (${prod},${bp},'main','Main',24,1)`;
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${bp},${prod})`;
+    await sql`insert into public.scene_variants(id,project_id,scene_id,owner_production_id) values (${variant},${bp},${scene},${prod})`;
+    await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values (${occ},${bp},${prod},${scene},${variant},'a')`;
+    // Check-verdiene: bare nøklene i listene, null er lov
+    await expectError(sql`update public.scene_occurrences set work_status='finished' where id=${occ}`, "23514");
+    await expectError(sql`update public.scene_occurrences set color='#ff0000' where id=${occ}`, "23514");
+    for (const w of ["setup", "animating", "review", "retake", "approved", "post", "done"]) await sql`update public.scene_occurrences set work_status=${w} where id=${occ}`;
+    for (const c of ["red", "orange", "yellow", "green", "teal", "blue", "indigo", "purple", "pink", "gray"]) await sql`update public.scene_occurrences set color=${c} where id=${occ}`;
+    await sql`update public.scene_occurrences set work_status=null, color=null where id=${occ}`;
+    // Redaktør skriver via kommando → apply_changes; leses tilbake
+    let st = await loadState(bp);
+    st = await runCommand(st, CAROL, { type: "SetOccurrenceWorkStatus", occurrenceId: occ as never, workStatus: "review" });
+    st = await runCommand(st, CAROL, { type: "SetOccurrenceColor", occurrenceId: occ as never, color: "teal" });
+    let back = await loadState(bp);
+    assert(back.occurrences[occ]?.workStatus === "review" && back.occurrences[occ]?.color === "teal", "status og farge ble ikke lagret");
+    const log = await sql`select command_type, actor from public.change_log where project_id=${bp} and command_type in ('SetOccurrenceWorkStatus','SetOccurrenceColor')`;
+    assert(log.length === 2 && log.every((r) => r["actor"] === CAROL), "endringsloggen har hvem som endret");
+    // Leser kan ikke endre
+    await expectError(runCommand(back, BOB, { type: "SetOccurrenceColor", occurrenceId: occ as never, color: "red" }), "42501");
+    // Leser ser verdiene (RLS)
+    const seen = await as("authenticated", BOB, (tx) => tx`select work_status, color from public.scene_occurrences where id=${occ}`);
+    assert(seen[0]?.["work_status"] === "review" && seen[0]?.["color"] === "teal", "leser ser ikke status og farge");
+    // Angring via kommando
+    st = await runCommand(back, CAROL, { type: "SetOccurrenceColor", occurrenceId: occ as never, color: null });
+    back = await loadState(bp);
+    assert(back.occurrences[occ]?.color === undefined, "farge ble ikke fjernet");
+    await as("service_role", null, (tx) => tx`select public.delete_project(${bp},${ALICE})`);
+  });
 } finally {
   await sql.end();
   await admin.unsafe(`drop database if exists ${DB} with (force)`);

@@ -186,10 +186,14 @@ export interface SceneFilter {
   readonly status?: string;
   /** Bare scener med manusendringer etter at 2D-scene eller film ble laget (REQ-0073). */
   readonly discrepancy?: boolean;
+  /** B-118: bare scener med denne arbeidsstatusen («none» = uten status). */
+  readonly workStatus?: string;
+  /** B-118: bare scener med denne fargen («none» = uten farge). */
+  readonly color?: string;
 }
 
 export function isFilterActive(f: SceneFilter): boolean {
-  return Boolean(f.text?.trim() || f.character || f.assetId || f.status || f.discrepancy);
+  return Boolean(f.text?.trim() || f.character || f.assetId || f.status || f.discrepancy || f.workStatus || f.color);
 }
 
 /** Forekomstene i produksjonen som matcher filteret (alle hvis filteret er tomt). */

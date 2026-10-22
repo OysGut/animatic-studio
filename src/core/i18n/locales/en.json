@@ -74915,5 +74915,119 @@
   },
   "ptg2.readme": {
     "text": "Dragonframe package: one folder per shot, named as in the shot list. Each folder has a reference film (_ref.mp4, H.264) at the capture frame rate, frame-accurate and including the handles; on twos each exposure is shown for two frames. The optional PNG sequence (png/) has exactly the same frames. Audio (audio/) is WAV 48 kHz 24-bit, as long as the shot including handles, with volume points and fades baked in: one stem per character (DIA_), ambience (AMB), music (MUS), effects (SFX) and a full mix (MIX), in the selected language version. The X-sheet is provided as CSV and PDF (A4 and Letter), with one row per exposure; the mouth column stays empty until mouth names are added. Importing into Dragonframe: 1) Open the scene, choose Video Assist / reference layer and import _ref.mp4 (or the PNG sequence) as reference. 2) Import the MIX file, or the dialogue stem, in the Audio window and set its start to frame 1. 3) Open the X-Sheet and import xsheet.csv, or print the PDF next to the rig. AI can be used for track reading of the dialogue, but the package is made entirely without AI."
+  },
+  "b118.err-scene-missing": {
+    "text": "The scene does not exist"
+  },
+  "b118.err-status": {
+    "text": "Unknown scene status"
+  },
+  "b118.err-color": {
+    "text": "Unknown scene colour"
+  },
+  "b118.err-schema": {
+    "text": "Scene status and scene colour require a database update (migration 0083)."
+  },
+  "b118.status.none": {
+    "text": "No status"
+  },
+  "b118.status.setup": {
+    "text": "Ready for setup"
+  },
+  "b118.status.animating": {
+    "text": "Animating"
+  },
+  "b118.status.review": {
+    "text": "For review"
+  },
+  "b118.status.retake": {
+    "text": "Retake"
+  },
+  "b118.status.approved": {
+    "text": "Approved"
+  },
+  "b118.status.post": {
+    "text": "In post-production"
+  },
+  "b118.status.done": {
+    "text": "Done"
+  },
+  "b118.color.none": {
+    "text": "No colour"
+  },
+  "b118.color.red": {
+    "text": "Red"
+  },
+  "b118.color.orange": {
+    "text": "Orange"
+  },
+  "b118.color.yellow": {
+    "text": "Yellow"
+  },
+  "b118.color.green": {
+    "text": "Green"
+  },
+  "b118.color.teal": {
+    "text": "Teal"
+  },
+  "b118.color.blue": {
+    "text": "Blue"
+  },
+  "b118.color.indigo": {
+    "text": "Indigo"
+  },
+  "b118.color.purple": {
+    "text": "Purple"
+  },
+  "b118.color.pink": {
+    "text": "Pink"
+  },
+  "b118.color.gray": {
+    "text": "Grey"
+  },
+  "b118.tip": {
+    "text": "{label} · changed {time}"
+  },
+  "b118.tip-by": {
+    "text": "{label} · changed {time} by {name}"
+  },
+  "b118.status-aria": {
+    "text": "Scene status: {value}"
+  },
+  "b118.color-aria": {
+    "text": "Scene colour: {value}"
+  },
+  "b118.status-menu": {
+    "text": "Choose scene status"
+  },
+  "b118.color-menu": {
+    "text": "Choose scene colour"
+  },
+  "b118.color-label": {
+    "text": "Colour"
+  },
+  "b118.show-status": {
+    "text": "Show status"
+  },
+  "b118.show-colors": {
+    "text": "Show colours"
+  },
+  "b118.undo-status": {
+    "text": "Change scene status"
+  },
+  "b118.undo-color": {
+    "text": "Change scene colour"
+  },
+  "b118.filter-status": {
+    "text": "Filter by scene status"
+  },
+  "b118.filter-status-all": {
+    "text": "All statuses"
+  },
+  "b118.filter-color": {
+    "text": "Filter by scene colour"
+  },
+  "b118.filter-color-all": {
+    "text": "All colours"
   }
 }

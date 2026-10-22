@@ -9005,6 +9005,310 @@
       "en": {
         "text": "Dragonframe package: one folder per shot, named as in the shot list. Each folder has a reference film (_ref.mp4, H.264) at the capture frame rate, frame-accurate and including the handles; on twos each exposure is shown for two frames. The optional PNG sequence (png/) has exactly the same frames. Audio (audio/) is WAV 48 kHz 24-bit, as long as the shot including handles, with volume points and fades baked in: one stem per character (DIA_), ambience (AMB), music (MUS), effects (SFX) and a full mix (MIX), in the selected language version. The X-sheet is provided as CSV and PDF (A4 and Letter), with one row per exposure; the mouth column stays empty until mouth names are added. Importing into Dragonframe: 1) Open the scene, choose Video Assist / reference layer and import _ref.mp4 (or the PNG sequence) as reference. 2) Import the MIX file, or the dialogue stem, in the Audio window and set its start to frame 1. 3) Open the X-Sheet and import xsheet.csv, or print the PDF next to the rig. AI can be used for track reading of the dialogue, but the package is made entirely without AI."
       }
+    },
+    "b118.err-scene-missing": {
+      "nb": {
+        "text": "Scenen finnes ikke"
+      },
+      "en": {
+        "text": "The scene does not exist"
+      }
+    },
+    "b118.err-status": {
+      "nb": {
+        "text": "Ukjent scenestatus"
+      },
+      "en": {
+        "text": "Unknown scene status"
+      }
+    },
+    "b118.err-color": {
+      "nb": {
+        "text": "Ukjent scenefarge"
+      },
+      "en": {
+        "text": "Unknown scene colour"
+      }
+    },
+    "b118.err-schema": {
+      "nb": {
+        "text": "Scenestatus og scenefarge krever en oppdatering av databasen (migrasjon 0083)."
+      },
+      "en": {
+        "text": "Scene status and scene colour require a database update (migration 0083)."
+      }
+    },
+    "b118.status.none": {
+      "nb": {
+        "text": "Ingen status"
+      },
+      "en": {
+        "text": "No status"
+      }
+    },
+    "b118.status.setup": {
+      "nb": {
+        "text": "Klar til oppsett"
+      },
+      "en": {
+        "text": "Ready for setup"
+      }
+    },
+    "b118.status.animating": {
+      "nb": {
+        "text": "Under animasjon"
+      },
+      "en": {
+        "text": "Animating"
+      }
+    },
+    "b118.status.review": {
+      "nb": {
+        "text": "Til kontroll"
+      },
+      "en": {
+        "text": "For review"
+      }
+    },
+    "b118.status.retake": {
+      "nb": {
+        "text": "Retake"
+      },
+      "en": {
+        "text": "Retake"
+      }
+    },
+    "b118.status.approved": {
+      "nb": {
+        "text": "Godkjent"
+      },
+      "en": {
+        "text": "Approved"
+      }
+    },
+    "b118.status.post": {
+      "nb": {
+        "text": "I etterarbeid"
+      },
+      "en": {
+        "text": "In post-production"
+      }
+    },
+    "b118.status.done": {
+      "nb": {
+        "text": "Ferdig"
+      },
+      "en": {
+        "text": "Done"
+      }
+    },
+    "b118.color.none": {
+      "nb": {
+        "text": "Ingen farge"
+      },
+      "en": {
+        "text": "No colour"
+      }
+    },
+    "b118.color.red": {
+      "nb": {
+        "text": "Rød"
+      },
+      "en": {
+        "text": "Red"
+      }
+    },
+    "b118.color.orange": {
+      "nb": {
+        "text": "Oransje"
+      },
+      "en": {
+        "text": "Orange"
+      }
+    },
+    "b118.color.yellow": {
+      "nb": {
+        "text": "Gul"
+      },
+      "en": {
+        "text": "Yellow"
+      }
+    },
+    "b118.color.green": {
+      "nb": {
+        "text": "Grønn"
+      },
+      "en": {
+        "text": "Green"
+      }
+    },
+    "b118.color.teal": {
+      "nb": {
+        "text": "Turkis"
+      },
+      "en": {
+        "text": "Teal"
+      }
+    },
+    "b118.color.blue": {
+      "nb": {
+        "text": "Blå"
+      },
+      "en": {
+        "text": "Blue"
+      }
+    },
+    "b118.color.indigo": {
+      "nb": {
+        "text": "Indigo"
+      },
+      "en": {
+        "text": "Indigo"
+      }
+    },
+    "b118.color.purple": {
+      "nb": {
+        "text": "Lilla"
+      },
+      "en": {
+        "text": "Purple"
+      }
+    },
+    "b118.color.pink": {
+      "nb": {
+        "text": "Rosa"
+      },
+      "en": {
+        "text": "Pink"
+      }
+    },
+    "b118.color.gray": {
+      "nb": {
+        "text": "Grå"
+      },
+      "en": {
+        "text": "Grey"
+      }
+    },
+    "b118.tip": {
+      "nb": {
+        "text": "{label} · endret {time}"
+      },
+      "en": {
+        "text": "{label} · changed {time}"
+      }
+    },
+    "b118.tip-by": {
+      "nb": {
+        "text": "{label} · endret {time} av {name}"
+      },
+      "en": {
+        "text": "{label} · changed {time} by {name}"
+      }
+    },
+    "b118.status-aria": {
+      "nb": {
+        "text": "Scenestatus: {value}"
+      },
+      "en": {
+        "text": "Scene status: {value}"
+      }
+    },
+    "b118.color-aria": {
+      "nb": {
+        "text": "Scenefarge: {value}"
+      },
+      "en": {
+        "text": "Scene colour: {value}"
+      }
+    },
+    "b118.status-menu": {
+      "nb": {
+        "text": "Velg scenestatus"
+      },
+      "en": {
+        "text": "Choose scene status"
+      }
+    },
+    "b118.color-menu": {
+      "nb": {
+        "text": "Velg scenefarge"
+      },
+      "en": {
+        "text": "Choose scene colour"
+      }
+    },
+    "b118.color-label": {
+      "nb": {
+        "text": "Farge"
+      },
+      "en": {
+        "text": "Colour"
+      }
+    },
+    "b118.show-status": {
+      "nb": {
+        "text": "Vis status"
+      },
+      "en": {
+        "text": "Show status"
+      }
+    },
+    "b118.show-colors": {
+      "nb": {
+        "text": "Vis farger"
+      },
+      "en": {
+        "text": "Show colours"
+      }
+    },
+    "b118.undo-status": {
+      "nb": {
+        "text": "Endre scenestatus"
+      },
+      "en": {
+        "text": "Change scene status"
+      }
+    },
+    "b118.undo-color": {
+      "nb": {
+        "text": "Endre scenefarge"
+      },
+      "en": {
+        "text": "Change scene colour"
+      }
+    },
+    "b118.filter-status": {
+      "nb": {
+        "text": "Filtrer på scenestatus"
+      },
+      "en": {
+        "text": "Filter by scene status"
+      }
+    },
+    "b118.filter-status-all": {
+      "nb": {
+        "text": "Alle statuser"
+      },
+      "en": {
+        "text": "All statuses"
+      }
+    },
+    "b118.filter-color": {
+      "nb": {
+        "text": "Filtrer på scenefarge"
+      },
+      "en": {
+        "text": "Filter by scene colour"
+      }
+    },
+    "b118.filter-color-all": {
+      "nb": {
+        "text": "Alle farger"
+      },
+      "en": {
+        "text": "All colours"
+      }
     }
   }
 }

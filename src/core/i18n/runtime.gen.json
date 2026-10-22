@@ -24542,6 +24542,120 @@
     "b115.privacy.terms.heading": {
       "text": "Vilkår for bruk og ansvarsfraskrivelse"
     },
+    "b118.color-aria": {
+      "text": "Scenefarge: {value}"
+    },
+    "b118.color-label": {
+      "text": "Farge"
+    },
+    "b118.color-menu": {
+      "text": "Velg scenefarge"
+    },
+    "b118.color.blue": {
+      "text": "Blå"
+    },
+    "b118.color.gray": {
+      "text": "Grå"
+    },
+    "b118.color.green": {
+      "text": "Grønn"
+    },
+    "b118.color.indigo": {
+      "text": "Indigo"
+    },
+    "b118.color.none": {
+      "text": "Ingen farge"
+    },
+    "b118.color.orange": {
+      "text": "Oransje"
+    },
+    "b118.color.pink": {
+      "text": "Rosa"
+    },
+    "b118.color.purple": {
+      "text": "Lilla"
+    },
+    "b118.color.red": {
+      "text": "Rød"
+    },
+    "b118.color.teal": {
+      "text": "Turkis"
+    },
+    "b118.color.yellow": {
+      "text": "Gul"
+    },
+    "b118.err-color": {
+      "text": "Ukjent scenefarge"
+    },
+    "b118.err-scene-missing": {
+      "text": "Scenen finnes ikke"
+    },
+    "b118.err-schema": {
+      "text": "Scenestatus og scenefarge krever en oppdatering av databasen (migrasjon 0083)."
+    },
+    "b118.err-status": {
+      "text": "Ukjent scenestatus"
+    },
+    "b118.filter-color": {
+      "text": "Filtrer på scenefarge"
+    },
+    "b118.filter-color-all": {
+      "text": "Alle farger"
+    },
+    "b118.filter-status": {
+      "text": "Filtrer på scenestatus"
+    },
+    "b118.filter-status-all": {
+      "text": "Alle statuser"
+    },
+    "b118.show-colors": {
+      "text": "Vis farger"
+    },
+    "b118.show-status": {
+      "text": "Vis status"
+    },
+    "b118.status-aria": {
+      "text": "Scenestatus: {value}"
+    },
+    "b118.status-menu": {
+      "text": "Velg scenestatus"
+    },
+    "b118.status.animating": {
+      "text": "Under animasjon"
+    },
+    "b118.status.approved": {
+      "text": "Godkjent"
+    },
+    "b118.status.done": {
+      "text": "Ferdig"
+    },
+    "b118.status.none": {
+      "text": "Ingen status"
+    },
+    "b118.status.post": {
+      "text": "I etterarbeid"
+    },
+    "b118.status.retake": {
+      "text": "Retake"
+    },
+    "b118.status.review": {
+      "text": "Til kontroll"
+    },
+    "b118.status.setup": {
+      "text": "Klar til oppsett"
+    },
+    "b118.tip": {
+      "text": "{label} · endret {time}"
+    },
+    "b118.tip-by": {
+      "text": "{label} · endret {time} av {name}"
+    },
+    "b118.undo-color": {
+      "text": "Endre scenefarge"
+    },
+    "b118.undo-status": {
+      "text": "Endre scenestatus"
+    },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Lukk"
     },
@@ -57094,6 +57208,120 @@
     },
     "b115.privacy.terms.heading": {
       "text": "Terms of use and disclaimer"
+    },
+    "b118.color-aria": {
+      "text": "Scene colour: {value}"
+    },
+    "b118.color-label": {
+      "text": "Colour"
+    },
+    "b118.color-menu": {
+      "text": "Choose scene colour"
+    },
+    "b118.color.blue": {
+      "text": "Blue"
+    },
+    "b118.color.gray": {
+      "text": "Grey"
+    },
+    "b118.color.green": {
+      "text": "Green"
+    },
+    "b118.color.indigo": {
+      "text": "Indigo"
+    },
+    "b118.color.none": {
+      "text": "No colour"
+    },
+    "b118.color.orange": {
+      "text": "Orange"
+    },
+    "b118.color.pink": {
+      "text": "Pink"
+    },
+    "b118.color.purple": {
+      "text": "Purple"
+    },
+    "b118.color.red": {
+      "text": "Red"
+    },
+    "b118.color.teal": {
+      "text": "Teal"
+    },
+    "b118.color.yellow": {
+      "text": "Yellow"
+    },
+    "b118.err-color": {
+      "text": "Unknown scene colour"
+    },
+    "b118.err-scene-missing": {
+      "text": "The scene does not exist"
+    },
+    "b118.err-schema": {
+      "text": "Scene status and scene colour require a database update (migration 0083)."
+    },
+    "b118.err-status": {
+      "text": "Unknown scene status"
+    },
+    "b118.filter-color": {
+      "text": "Filter by scene colour"
+    },
+    "b118.filter-color-all": {
+      "text": "All colours"
+    },
+    "b118.filter-status": {
+      "text": "Filter by scene status"
+    },
+    "b118.filter-status-all": {
+      "text": "All statuses"
+    },
+    "b118.show-colors": {
+      "text": "Show colours"
+    },
+    "b118.show-status": {
+      "text": "Show status"
+    },
+    "b118.status-aria": {
+      "text": "Scene status: {value}"
+    },
+    "b118.status-menu": {
+      "text": "Choose scene status"
+    },
+    "b118.status.animating": {
+      "text": "Animating"
+    },
+    "b118.status.approved": {
+      "text": "Approved"
+    },
+    "b118.status.done": {
+      "text": "Done"
+    },
+    "b118.status.none": {
+      "text": "No status"
+    },
+    "b118.status.post": {
+      "text": "In post-production"
+    },
+    "b118.status.retake": {
+      "text": "Retake"
+    },
+    "b118.status.review": {
+      "text": "For review"
+    },
+    "b118.status.setup": {
+      "text": "Ready for setup"
+    },
+    "b118.tip": {
+      "text": "{label} · changed {time}"
+    },
+    "b118.tip-by": {
+      "text": "{label} · changed {time} by {name}"
+    },
+    "b118.undo-color": {
+      "text": "Change scene colour"
+    },
+    "b118.undo-status": {
+      "text": "Change scene status"
     },
     "components-ui-dialog.dialog-content.span.4e9257a0bdea": {
       "text": "Close"

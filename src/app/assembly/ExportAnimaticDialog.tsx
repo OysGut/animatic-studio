@@ -4,6 +4,7 @@
  * Før eksporten vises en kontroll (REQ-0422); man kan eksportere selv om noe mangler (REQ-0423).
  * Eksporten endrer ingenting i prosjektet.
  */
+import { SceneMark } from "@/app/shell/SceneMark";
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { filmMediaPaths, filmRange, shiftAudioItems, shiftCues, formatHeading, formatTimecode, framesToSeconds, layerVersion, layerVersions, layersOf, orderedOccurrences, LANGUAGE_LABEL, MAIN_LANGUAGE, type SubtitleCue, type AudioKind, type FilmAudioItem, type ExportSettings, type FilmClip, type ProjectState, qualityProfileSnapshot, locale, languageWord, toSrt, toVtt } from "@/core";
@@ -774,9 +775,9 @@ export function ExportAnimaticDialog({
                             setPicked(next);
                           }}
                         />
-                        <span className="truncate">
+                        <SceneMark occurrence={state.occurrences[c.occurrenceId]}>
                           {c.productionNumber ?? "–"} {formatHeading(c.heading)}
-                        </span>
+                        </SceneMark>
                       </label>
                     </li>
                   ))}

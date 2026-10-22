@@ -74915,5 +74915,119 @@
   },
   "ptg2.readme": {
     "text": "[!! DDrráággôônnffrráámmëë ppáácckkáággëë: ôônnëë ffôôllddëërr ppëërr sshhôôtt, nnáámmëëdd ááss ïïnn tthhëë sshhôôtt llïïsstt. ËËáácchh ffôôllddëërr hhááss áá rrëëffëërrëënnccëë ffïïllmm (_rrëëff.mmpp4, HH.264) áátt tthhëë ccááppttüürrëë ffrráámmëë rrááttëë, ffrráámmëë-ááccccüürrááttëë áánndd ïïnnccllüüddïïnngg tthhëë hháánnddllëëss; ôônn ttwwôôss ëëáácchh ëëxxppôôssüürrëë ïïss sshhôôwwnn ffôôrr ttwwôô ffrráámmëëss. TThhëë ôôppttïïôônnááll PPNNGG ssëëqqüüëënnccëë (ppnngg/) hhááss ëëxxááccttllyy tthhëë ssáámmëë ffrráámmëëss. ÁÁüüddïïôô (ááüüddïïôô/) ïïss WWÁÁVV 48 kkHHzz 24-bbïïtt, ááss llôônngg ááss tthhëë sshhôôtt ïïnnccllüüddïïnngg hháánnddllëëss, wwïïtthh vvôôllüümmëë ppôôïïnnttss áánndd ffááddëëss bbáákkëëdd ïïnn: ôônnëë ssttëëmm ppëërr cchháárrááccttëërr (DDÏÏÁÁ_), áámmbbïïëënnccëë (ÁÁMMBB), mmüüssïïcc (MMÜÜSS), ëëffffëëccttss (SSFFXX) áánndd áá ffüüllll mmïïxx (MMÏÏXX), ïïnn tthhëë ssëëllëëccttëëdd lláánnggüüáággëë vvëërrssïïôônn. TThhëë XX-sshhëëëëtt ïïss pprrôôvvïïddëëdd ááss CCSSVV áánndd PPDDFF (ÁÁ4 áánndd LLëëttttëërr), wwïïtthh ôônnëë rrôôww ppëërr ëëxxppôôssüürrëë; tthhëë mmôôüütthh ccôôllüümmnn ssttááyyss ëëmmppttyy üünnttïïll mmôôüütthh nnáámmëëss áárrëë ááddddëëdd. ÏÏmmppôôrrttïïnngg ïïnnttôô DDrráággôônnffrráámmëë: 1) ÔÔppëënn tthhëë ssccëënnëë, cchhôôôôssëë VVïïddëëôô ÁÁssssïïsstt / rrëëffëërrëënnccëë llááyyëërr áánndd ïïmmppôôrrtt _rrëëff.mmpp4 (ôôrr tthhëë PPNNGG ssëëqqüüëënnccëë) ááss rrëëffëërrëënnccëë. 2) ÏÏmmppôôrrtt tthhëë MMÏÏXX ffïïllëë, ôôrr tthhëë ddïïáállôôggüüëë ssttëëmm, ïïnn tthhëë ÁÁüüddïïôô wwïïnnddôôww áánndd ssëëtt ïïttss ssttáárrtt ttôô ffrráámmëë 1. 3) ÔÔppëënn tthhëë XX-SShhëëëëtt áánndd ïïmmppôôrrtt xxsshhëëëëtt.ccssvv, ôôrr pprrïïnntt tthhëë PPDDFF nnëëxxtt ttôô tthhëë rrïïgg. ÁÁÏÏ ccáánn bbëë üüssëëdd ffôôrr ttrráácckk rrëëááddïïnngg ôôff tthhëë ddïïáállôôggüüëë, bbüütt tthhëë ppáácckkáággëë ïïss mmááddëë ëënnttïïrrëëllyy wwïïtthhôôüütt ÁÁÏÏ. !!]"
+  },
+  "b118.err-scene-missing": {
+    "text": "[!! TThhëë ssccëënnëë ddôôëëss nnôôtt ëëxxïïsstt !!]"
+  },
+  "b118.err-status": {
+    "text": "[!! ÜÜnnkknnôôwwnn ssccëënnëë ssttááttüüss !!]"
+  },
+  "b118.err-color": {
+    "text": "[!! ÜÜnnkknnôôwwnn ssccëënnëë ccôôllôôüürr !!]"
+  },
+  "b118.err-schema": {
+    "text": "[!! SSccëënnëë ssttááttüüss áánndd ssccëënnëë ccôôllôôüürr rrëëqqüüïïrrëë áá ddááttáábbáássëë üüppddááttëë (mmïïggrrááttïïôônn 0083). !!]"
+  },
+  "b118.status.none": {
+    "text": "[!! NNôô ssttááttüüss !!]"
+  },
+  "b118.status.setup": {
+    "text": "[!! RRëëááddyy ffôôrr ssëëttüüpp !!]"
+  },
+  "b118.status.animating": {
+    "text": "[!! ÁÁnnïïmmááttïïnngg !!]"
+  },
+  "b118.status.review": {
+    "text": "[!! FFôôrr rrëëvvïïëëww !!]"
+  },
+  "b118.status.retake": {
+    "text": "[!! RRëëttáákkëë !!]"
+  },
+  "b118.status.approved": {
+    "text": "[!! ÁÁpppprrôôvvëëdd !!]"
+  },
+  "b118.status.post": {
+    "text": "[!! ÏÏnn ppôôsstt-pprrôôddüüccttïïôônn !!]"
+  },
+  "b118.status.done": {
+    "text": "[!! DDôônnëë !!]"
+  },
+  "b118.color.none": {
+    "text": "[!! NNôô ccôôllôôüürr !!]"
+  },
+  "b118.color.red": {
+    "text": "[!! RRëëdd !!]"
+  },
+  "b118.color.orange": {
+    "text": "[!! ÔÔrráánnggëë !!]"
+  },
+  "b118.color.yellow": {
+    "text": "[!! YYëëllllôôww !!]"
+  },
+  "b118.color.green": {
+    "text": "[!! GGrrëëëënn !!]"
+  },
+  "b118.color.teal": {
+    "text": "[!! TTëëááll !!]"
+  },
+  "b118.color.blue": {
+    "text": "[!! BBllüüëë !!]"
+  },
+  "b118.color.indigo": {
+    "text": "[!! ÏÏnnddïïggôô !!]"
+  },
+  "b118.color.purple": {
+    "text": "[!! PPüürrppllëë !!]"
+  },
+  "b118.color.pink": {
+    "text": "[!! PPïïnnkk !!]"
+  },
+  "b118.color.gray": {
+    "text": "[!! GGrrëëyy !!]"
+  },
+  "b118.tip": {
+    "text": "[!! {label} · cchháánnggëëdd {time} !!]"
+  },
+  "b118.tip-by": {
+    "text": "[!! {label} · cchháánnggëëdd {time} bbyy {name} !!]"
+  },
+  "b118.status-aria": {
+    "text": "[!! SSccëënnëë ssttááttüüss: {value} !!]"
+  },
+  "b118.color-aria": {
+    "text": "[!! SSccëënnëë ccôôllôôüürr: {value} !!]"
+  },
+  "b118.status-menu": {
+    "text": "[!! CChhôôôôssëë ssccëënnëë ssttááttüüss !!]"
+  },
+  "b118.color-menu": {
+    "text": "[!! CChhôôôôssëë ssccëënnëë ccôôllôôüürr !!]"
+  },
+  "b118.color-label": {
+    "text": "[!! CCôôllôôüürr !!]"
+  },
+  "b118.show-status": {
+    "text": "[!! SShhôôww ssttááttüüss !!]"
+  },
+  "b118.show-colors": {
+    "text": "[!! SShhôôww ccôôllôôüürrss !!]"
+  },
+  "b118.undo-status": {
+    "text": "[!! CChháánnggëë ssccëënnëë ssttááttüüss !!]"
+  },
+  "b118.undo-color": {
+    "text": "[!! CChháánnggëë ssccëënnëë ccôôllôôüürr !!]"
+  },
+  "b118.filter-status": {
+    "text": "[!! FFïïllttëërr bbyy ssccëënnëë ssttááttüüss !!]"
+  },
+  "b118.filter-status-all": {
+    "text": "[!! ÁÁllll ssttááttüüssëëss !!]"
+  },
+  "b118.filter-color": {
+    "text": "[!! FFïïllttëërr bbyy ssccëënnëë ccôôllôôüürr !!]"
+  },
+  "b118.filter-color-all": {
+    "text": "[!! ÁÁllll ccôôllôôüürrss !!]"
   }
 }
