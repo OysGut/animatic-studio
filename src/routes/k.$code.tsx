@@ -5,7 +5,7 @@ import { useSession } from "@/app/auth/use-session";
 import { AuthScreen } from "@/app/auth/AuthScreen";
 import { LanguageSwitch, useLanguage } from "@/app/i18n/language";
 import { CopyCodeEntry } from "@/app/print/CopyCodeEntry";
-import { resolveCopyCode } from "@/app/print/copy-lookup";
+import { resolveCopyCode } from "@/adapters/browser/copy-lookup";
 import { t } from "@/core/i18n/keyed";
 
 /**

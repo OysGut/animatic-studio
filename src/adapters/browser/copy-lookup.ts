@@ -1,6 +1,6 @@
 /** Rigg R5: fra kopikode til sceneeditoren (riktig scene, frame og lag). Bare data via RLS. */
-import { db } from "@/adapters/browser/client";
-import { lookupPrintCopy } from "@/adapters/browser/print-copies";
+import { db } from "./client";
+import { lookupPrintCopy } from "./print-copies";
 
 export interface CopyDestination {
   readonly projectId: string;
