@@ -75047,5 +75047,80 @@
   },
   "b118.filter-color-all": {
     "text": "Alle farger"
+  },
+  "ptg5.heading": {
+    "text": "Importer fra Dragonframe"
+  },
+  "ptg5.description": {
+    "text": "Velg én take. Den lagres som en ny versjon; aktiv versjon beholdes."
+  },
+  "ptg5.folder": {
+    "text": "Velg mappe"
+  },
+  "ptg5.file": {
+    "text": "Velg ZIP eller film"
+  },
+  "ptg5.invalid": {
+    "text": "Opptaket kunne ikke leses. Kontroller XML og bildefiler."
+  },
+  "ptg5.single-take": {
+    "text": "Velg én take om gangen; mappen inneholder flere take.xml-filer."
+  },
+  "ptg5.empty": {
+    "text": "Ingen hovedeksponeringer (X1) kunne leses."
+  },
+  "ptg5.encoder": {
+    "text": "Nettleseren kan ikke lage H.264 i dette bildeformatet."
+  },
+  "ptg5.recognized": {
+    "text": "Gjenkjent: {name} · eksportversjon {version}"
+  },
+  "ptg5.unmatched": {
+    "text": "Skuddet kunne ikke gjenkjennes entydig. Velg skudd."
+  },
+  "ptg5.shot": {
+    "text": "Velg skudd"
+  },
+  "ptg5.rate-missing": {
+    "text": "Bildefrekvens mangler i take.xml. Angi opptakets bilder/s:"
+  },
+  "ptg5.length": {
+    "text": "{frames} bilder ved {fps} bilder/s. Forventet: {expected} bilder inkludert håndtak."
+  },
+  "ptg5.twos": {
+    "text": "Gjentatte eksponeringer (toere/hold) beholdes i filmen."
+  },
+  "ptg5.short": {
+    "text": "Opptaket er kortere enn skuddet inkludert håndtak."
+  },
+  "ptg5.long": {
+    "text": "Opptaket er lengre enn skuddet inkludert håndtak. Ingenting klippes bort."
+  },
+  "ptg5.partial": {
+    "text": "Opptaket er delvis ferdig eller mangler bildefiler."
+  },
+  "ptg5.hidden": {
+    "text": "Skjulte bilder i take.xml utelates."
+  },
+  "ptg5.deleted": {
+    "text": "Bildefiler som ikke er med i take.xml, er utelatt som slettede bilder."
+  },
+  "ptg5.fps-warning": {
+    "text": "Bildefrekvensen avviker fra skuddets opptaksfrekvens."
+  },
+  "ptg5.no-edl": {
+    "text": "EDL mangler. X1-bildene sorteres etter filnummer; skjulte bilder og hold er ukjent."
+  },
+  "ptg5.save": {
+    "text": "Lagre ny take"
+  },
+  "ptg5.working": {
+    "text": "Behandler opptaket … {progress} %"
+  },
+  "ptg5.saved": {
+    "text": "Ny take er lagret og ikke aktivert. Du kan velge den i monteringen."
+  },
+  "ptg5.compare": {
+    "text": "Sammenlign takes"
   }
 }

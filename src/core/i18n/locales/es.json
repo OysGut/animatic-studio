@@ -54835,5 +54835,130 @@
     "text": "Todos los colores",
     "sourceHash": "8d6fa2d86201154290b110b775ce74315dd120645d906b788e714445ffc1f8e8",
     "review": "machine"
+  },
+  "ptg5.heading": {
+    "text": "Importar desde Dragonframe",
+    "sourceHash": "e298987b26cc301c316dd64c075bbf3fc2ab8db5bfa748d15d6a2a93ff307310",
+    "review": "machine"
+  },
+  "ptg5.description": {
+    "text": "Elige una toma. Se guarda como nueva versión; se conserva la versión activa.",
+    "sourceHash": "5cadacc19f81e7959670ec3f959136a7a56a8fc90f467682b45db35ffb777604",
+    "review": "machine"
+  },
+  "ptg5.folder": {
+    "text": "Elegir carpeta",
+    "sourceHash": "709a23b629249cc94099f41cb921e19bb0de4393cf25ccdabecbd088770f51af",
+    "review": "machine"
+  },
+  "ptg5.file": {
+    "text": "Elegir ZIP o película",
+    "sourceHash": "45ef0a74b04bbf6614a1fcabf8903f5d44bb2b88d20c4d36b2010b61f137b008",
+    "review": "machine"
+  },
+  "ptg5.invalid": {
+    "text": "No se pudo leer la toma. Comprueba el XML y las imágenes.",
+    "sourceHash": "a48913993ef6db7ea0a5d3555ded017649cdd2803b913d356916032f8cb19fa6",
+    "review": "machine"
+  },
+  "ptg5.single-take": {
+    "text": "Elige una toma cada vez; la carpeta contiene varios archivos take.xml.",
+    "sourceHash": "a51f378844b6789dc4934b161926635ed016dca67fd10bf62d6fbe9fcb333209",
+    "review": "machine"
+  },
+  "ptg5.empty": {
+    "text": "No se pudieron leer exposiciones principales (X1).",
+    "sourceHash": "42d49bcced67a9f28f1a5e4e2397fda833da67e5252a66850e93023bcd3112da",
+    "review": "machine"
+  },
+  "ptg5.encoder": {
+    "text": "El navegador no puede codificar H.264 con este tamaño.",
+    "sourceHash": "35ae8cc4471f261279abaecb6c80d0e57f0ff91b221e85a226f802aecc768dfa",
+    "review": "machine"
+  },
+  "ptg5.recognized": {
+    "text": "Reconocido: {name} · versión exportada {version}",
+    "sourceHash": "18a115657383be573eee37df426acd00fe278ba78d18a5181f84f52bf1e7a1a0",
+    "review": "machine"
+  },
+  "ptg5.unmatched": {
+    "text": "No se identificó el plano de forma única. Elige un plano.",
+    "sourceHash": "c18aebcb262ac1570e9bb641319f03a1cb674328741b55b2fcfd9b086a061520",
+    "review": "machine"
+  },
+  "ptg5.shot": {
+    "text": "Elegir plano",
+    "sourceHash": "28c160f5fdadbabf9dbd83f528a1a4675b8acbb3f3fe5b61cf8bbdddb6733bd7",
+    "review": "machine"
+  },
+  "ptg5.rate-missing": {
+    "text": "Falta la frecuencia en take.xml. Indica los fotogramas/s de captura:",
+    "sourceHash": "a912cad27a6c24ff97d0769af4bf8e5e097577e5059580d8a882e45210e7bd9e",
+    "review": "machine"
+  },
+  "ptg5.length": {
+    "text": "{frames} fotogramas a {fps} fotogramas/s. Esperados: {expected} incluidos los márgenes.",
+    "sourceHash": "30bf91b1e0e12169401b7c06f7fe6fd1c32d2f18ef99fd95ac61786fd460b51a",
+    "review": "machine"
+  },
+  "ptg5.twos": {
+    "text": "Las exposiciones repetidas (a doses/mantenidas) se conservan en la película.",
+    "sourceHash": "87772675228921ede7c7c11b63310cf8672319aa23622c997e13d89521674bd4",
+    "review": "machine"
+  },
+  "ptg5.short": {
+    "text": "La toma es más corta que el plano incluidos los márgenes.",
+    "sourceHash": "f70a83f384c0015cfa70f206215dfe021bc4233a72caa567181fb1b6f14cf3d2",
+    "review": "machine"
+  },
+  "ptg5.long": {
+    "text": "La toma es más larga que el plano incluidos los márgenes. No se recorta nada.",
+    "sourceHash": "7193829d7e9744d4240b1fe5eb6ee8c89ec280ce5a7c7100f7a71145ee7084cf",
+    "review": "machine"
+  },
+  "ptg5.partial": {
+    "text": "La toma está parcialmente terminada o faltan imágenes.",
+    "sourceHash": "c7d8b3b12864fa47b6dc571eec16b7707f61a2b47d8a10e3f84197e498af2aae",
+    "review": "machine"
+  },
+  "ptg5.hidden": {
+    "text": "Se omiten los fotogramas ocultos de take.xml.",
+    "sourceHash": "bd002d663b031f09e343ead8c0fc4714ea5a72ab725b966179b4009b7f570a32",
+    "review": "machine"
+  },
+  "ptg5.deleted": {
+    "text": "Las imágenes ausentes de take.xml se omiten como fotogramas eliminados.",
+    "sourceHash": "a6a695d5f330185b8b4e85b3104c1a817e8ede7370684dda66972aae0460eff8",
+    "review": "machine"
+  },
+  "ptg5.fps-warning": {
+    "text": "La frecuencia difiere de la frecuencia de captura del plano.",
+    "sourceHash": "ae8dbcd083b9dac3ec52a82317e08f78d4d056c046c84103a746e0ff118333e5",
+    "review": "machine"
+  },
+  "ptg5.no-edl": {
+    "text": "Sin EDL. Las imágenes X1 se ordenan por número de archivo; se desconocen los fotogramas ocultos y mantenidos.",
+    "sourceHash": "946fefff8250a091002f498f5347a0bdcda10a4cd4d7e29f8fd381950c6ac5e0",
+    "review": "machine"
+  },
+  "ptg5.save": {
+    "text": "Guardar nueva toma",
+    "sourceHash": "168b6552c83500cc813c6407ebac5e58a028f5efb0ff465d46d1d8e5deedb8ad",
+    "review": "machine"
+  },
+  "ptg5.working": {
+    "text": "Procesando toma … {progress} %",
+    "sourceHash": "ad0ad64325842a8eecc81ef0c41292c20dcb76459114c16ac066d4c9d3dde0d2",
+    "review": "machine"
+  },
+  "ptg5.saved": {
+    "text": "Nueva toma guardada, no activada. Puedes seleccionarla en montaje.",
+    "sourceHash": "c45fa10180a1690c0c0dfaf82c02fc1b6863c415bbf22c30d33c937b9942185e",
+    "review": "machine"
+  },
+  "ptg5.compare": {
+    "text": "Comparar tomas",
+    "sourceHash": "d9f7566df61531c4d52691ea0a0a2d0ef48934d468d79b8b1c67d45a87c7658c",
+    "review": "machine"
   }
 }

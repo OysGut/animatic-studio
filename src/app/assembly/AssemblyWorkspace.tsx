@@ -25,6 +25,7 @@ import {
   SkipBack,
   SkipForward,
   Undo2,
+  Upload,
 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -75,6 +76,7 @@ import { useFilmVideo } from "./film-video";
 import { useSchemaAtLeast } from "@/app/shell/use-schema";
 import { uploadFilm } from "./film-import";
 import { LongFilmImportDialog } from "./LongFilmImportDialog";
+import { DragonframeImportDialog } from "./DragonframeImportDialog";
 import { useAudioLoaded, useAudioPlayback } from "@/app/audio/use-audio-playback";
 import { AudioTracks, type AudioChange } from "./AudioTracks";
 import { AudioClipPanel } from "./AudioClipPanel";
@@ -281,6 +283,7 @@ function Assembly({
   });
   const [addAudio, setAddAudio] = useState<AudioKind | null>(null);
   const [longFilm, setLongFilm] = useState(false);
+  const [dragonframeOpen, setDragonframeOpen] = useState(false);
   /** «Generer scene» (DEC-0053). */
   const [generateOpen, setGenerateOpen] = useState(false);
   /** Video for flere scener (DEC-0070). */
@@ -988,6 +991,7 @@ function Assembly({
             onLanguage={() => setLanguageOpen(true)}
             onSubtitles={() => setSubtitlesOpen(true)}
           />
+          {editable ? <ToolbarButton onClick={() => setDragonframeOpen(true)} data-testid="ptg5-open" aria-label={tk("ptg5.heading")} title={tk("ptg5.heading")}><Upload aria-hidden /><span className="sr-only min-[1400px]:not-sr-only">Dragonframe</span></ToolbarButton> : null}
           {editable ? (
             <AssemblyTextMenu
               onCreate={(kind) => {
@@ -1403,6 +1407,7 @@ function Assembly({
         cmds={cmds}
         fps={fps}
       />
+      {dragonframeOpen ? <DragonframeImportDialog open onOpenChange={setDragonframeOpen} state={state} productionId={productionId} cmds={cmds} /> : null}
       <AddAudioDialog
         open={addAudio !== null}
         onOpenChange={(o) => {
