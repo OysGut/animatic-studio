@@ -53,7 +53,7 @@ const h = setup({
   },
   serverFn(name, d) {
     if (/getGlobalFileUrls/.test(name)) return Object.fromEntries((d.paths ?? []).map((p) => [p, `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'/>`]));
-    if (/createGlobalUpload/.test(name)) return { path: key(d.globalAssetId), token: "t" };
+    if (/createGlobalUpload/.test(name)) return { path: key(d.globalAssetId), token: "t", reservationId: "00000000-0000-4000-8000-00000000d099" };
     if (/registerGlobalVersion/.test(name)) return "00000000-0000-4000-8000-00000000c099";
     if (/saveAssetToGlobal/.test(name)) return { globalAssetId: "00000000-0000-4000-8000-00000000a098", versions: 2 };
     if (/copyGlobalToProject/.test(name))
@@ -94,6 +94,7 @@ await h.run("g1-g7", "$P/bibliotek", async (page) => {
   await page.waitForTimeout(800);
   h.check(h.log.rpcs.some((r) => r.name === "global_create_asset" && r.body.p_name === "Ny logo"), "G1 ny global ressurs opprettes");
   h.check(h.log.serverFns.some((f) => /registerGlobalVersion/.test(f.name)), "G1 filen registreres som versjon");
+  h.check(h.log.serverFns.some((f) => /registerGlobalVersion/.test(f.name) && JSON.stringify(f.data ?? f).includes("00000000-0000-4000-8000-00000000d099")), "N1 registreringen bruker reservasjonen");
 });
 
 await h.run("g3-g4-use", "$P/bibliotek", async (page) => {
