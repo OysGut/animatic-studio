@@ -8,6 +8,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { isUuid } from "@/core";
 import { orphanBytes } from "@/core/generation/orphan-files";
 import { t } from "@/core/i18n/keyed";
+import type { AnyClient } from "@/adapters/storage/project-rows";
 
 function validate(input: unknown) {
   const data = input as { projectId?: unknown; paths?: unknown; confirmed?: unknown } | null;
@@ -33,8 +34,15 @@ export const previewOrphanCleanup = createServerFn({ method: "POST" }).middlewar
 
 export const confirmOrphanCleanup = createServerFn({ method: "POST" }).middleware([requireSupabaseAuth]).inputValidator(validate)
   .handler(async ({ data, context }) => {
-    if (!data.confirmed || !data.paths?.length) throw new Error(t("r2-orphan-cleanup.error.confirm"));
-    const { orphanCandidates } = await import("./orphan-cleanup.server");
+    if (!data.confirmed) throw new Error(t("r2-orphan-cleanup.error.confirm"));
+    const { orphanCandidates, requireOwner, sweepShowcaseReservations } = await import("./orphan-cleanup.server");
+    // B-116: utløpte delingsreservasjoner og filene deres under shares/ ryddes i samme bekreftede jobb.
+    await requireOwner(context, data.projectId);
+    {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      await sweepShowcaseReservations(supabaseAdmin as unknown as AnyClient, data.projectId);
+    }
+    if (!data.paths?.length) throw new Error(t("r2-orphan-cleanup.error.confirm"));
     const fresh = await orphanCandidates(context, data.projectId);
     const still = new Map(fresh.map((f) => [f.path, f]));
     const remove = [...new Set(data.paths)].filter((p) => still.has(p));

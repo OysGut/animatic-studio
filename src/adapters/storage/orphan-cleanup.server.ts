@@ -74,3 +74,35 @@ export async function orphanCandidates(
   await scan(generatedFolder(projectId), 0);
   return found.sort((a, b) => a.path.localeCompare(b.path)).slice(0, ORPHAN_MAX_LIST);
 }
+
+/**
+ * B-116: utløpte delingsreservasjoner (eldre enn TTL + 1 time, uten bidrag) og filene deres under
+ * <prosjekt>/shares/<id>/. Filen slettes først; reservasjonen frigjøres bare når slettingen lyktes.
+ * Ved feil beholdes reservasjonen til neste kjøring, og feilen logges uten lagringsnøkler.
+ */
+export async function sweepShowcaseReservations(
+  admin: AnyClient, projectId: string, log: (msg: string, meta: Record<string, unknown>) => void = (m, meta) => console.error(m, meta),
+): Promise<{ released: number; kept: number }> {
+  const listed = await admin.rpc("stale_showcase_reservations", { p_project: projectId });
+  if (listed.error || !Array.isArray(listed.data)) {
+    log("[showcase-sweep] list failed", { projectId });
+    return { released: 0, kept: 0 };
+  }
+  let released = 0, kept = 0;
+  for (const row of listed.data as { id?: unknown; storage_key?: unknown }[]) {
+    const id = typeof row.id === "string" ? row.id : null;
+    if (!id) continue;
+    const key = typeof row.storage_key === "string" ? row.storage_key : null;
+    if (key !== null) {
+      const valid = key.startsWith(`${projectId}/shares/${id}/`) && !key.includes("..") && key.length <= 500;
+      if (!valid) { kept++; log("[showcase-sweep] invalid target kept", { projectId, reservation: id }); continue; }
+      let ok = false;
+      try { ok = !(await admin.storage.from("assets").remove([key])).error; } catch { ok = false; }
+      if (!ok) { kept++; log("[showcase-sweep] remove failed, kept for next run", { projectId, reservation: id }); continue; }
+    }
+    const rel = await admin.rpc("release_stale_showcase_reservation", { p_reservation: id });
+    if (rel.error) { kept++; log("[showcase-sweep] release failed", { projectId, reservation: id }); continue; }
+    released++;
+  }
+  return { released, kept };
+}
