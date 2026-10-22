@@ -43,8 +43,8 @@ Ingen ny migrasjon nødvendig. Ingen databasefunksjoner erstattet. Takes og filr
 - `src/app/assembly/dragonframe-import.ts`, `DragonframeImportDialog.tsx`, `AssemblyWorkspace.tsx`, `CompareTakesDialog.tsx`.
 - `tests/unit/ptg5-roundtrip.test.ts`, `tests/visual/ptg5-roundtrip.mjs`, `tests/visual/interactions-e2e.mjs`.
 - `tests/fixtures/ptg5/{twos,short,long}/take.xml` og fire syntetiske `PTG-TEST_SC001_SH010_v003_X1_0001.png`–`0004.png` i hver mappe.
-- `src/core/i18n/authored.json`, regenerert `catalog.gen.ts`, `locales/{nb,en,en-XA,fr,es,ru,ja,ko,de,it,pt-BR}.json`.
-- Regenererte inventarfiler `scripts/i18n/{references.v1.json,candidates.v1.json}`.
+- `src/core/i18n/authored.json`, regenerert `catalog.gen.ts`, `runtime.gen.json`, `locales/{nb,en,en-XA,fr,es,ru,ja,ko,de,it,pt-BR}.json`.
+- Regenererte inventarfiler `scripts/i18n/{references.v1.json,candidates.v1.json,inventory-report.json}`.
 - Denne rapporten: `docs/development/PTG5_REPORT.md`.
 
 ## Åpne spørsmål
