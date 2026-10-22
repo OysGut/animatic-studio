@@ -8861,6 +8861,150 @@
       "en": {
         "text": "Import failed: {value1}"
       }
+    },
+    "ptg2.col-frame": {
+      "nb": {
+        "text": "Bilde"
+      },
+      "en": {
+        "text": "Frame"
+      }
+    },
+    "ptg2.col-shot-frame": {
+      "nb": {
+        "text": "Skuddbilde"
+      },
+      "en": {
+        "text": "Shot frame"
+      }
+    },
+    "ptg2.col-timecode": {
+      "nb": {
+        "text": "Tidskode"
+      },
+      "en": {
+        "text": "Timecode"
+      }
+    },
+    "ptg2.col-character": {
+      "nb": {
+        "text": "Karakter"
+      },
+      "en": {
+        "text": "Character"
+      }
+    },
+    "ptg2.col-dialogue": {
+      "nb": {
+        "text": "Replikk"
+      },
+      "en": {
+        "text": "Dialogue"
+      }
+    },
+    "ptg2.col-mouth": {
+      "nb": {
+        "text": "Munn"
+      },
+      "en": {
+        "text": "Mouth"
+      }
+    },
+    "ptg2.col-action": {
+      "nb": {
+        "text": "Handling"
+      },
+      "en": {
+        "text": "Action"
+      }
+    },
+    "ptg2.col-layers": {
+      "nb": {
+        "text": "Lag"
+      },
+      "en": {
+        "text": "Layers"
+      }
+    },
+    "ptg2.col-notes": {
+      "nb": {
+        "text": "Notater"
+      },
+      "en": {
+        "text": "Notes"
+      }
+    },
+    "ptg2.page": {
+      "nb": {
+        "text": "Side {value1} av {value2}"
+      },
+      "en": {
+        "text": "Page {value1} of {value2}"
+      }
+    },
+    "ptg2.layer-start": {
+      "nb": {
+        "text": "start: {value1}"
+      },
+      "en": {
+        "text": "start: {value1}"
+      }
+    },
+    "ptg2.layer-end": {
+      "nb": {
+        "text": "slutt: {value1}"
+      },
+      "en": {
+        "text": "end: {value1}"
+      }
+    },
+    "ptg2.burn-frame": {
+      "nb": {
+        "text": "Bilde"
+      },
+      "en": {
+        "text": "Frame"
+      }
+    },
+    "ptg2.burn-mouth": {
+      "nb": {
+        "text": "Munn"
+      },
+      "en": {
+        "text": "Mouth"
+      }
+    },
+    "ptg2.option-png": {
+      "nb": {
+        "text": "PNG-sekvens"
+      },
+      "en": {
+        "text": "PNG sequence"
+      }
+    },
+    "ptg2.option-burnin": {
+      "nb": {
+        "text": "Påskrift"
+      },
+      "en": {
+        "text": "Burn-in"
+      }
+    },
+    "ptg2.send": {
+      "nb": {
+        "text": "Send til Dragonframe"
+      },
+      "en": {
+        "text": "Send to Dragonframe"
+      }
+    },
+    "ptg2.readme": {
+      "nb": {
+        "text": "Dragonframe-pakke: én mappe per skudd, navngitt som i skuddlisten. Hver mappe har referansefilm (_ref.mp4, H.264) i opptakets bildefrekvens, bildenøyaktig og med håndtakene; på toere vises hver eksponering to bilder. Valgfri PNG-sekvens (png/) har nøyaktig de samme bildene. Lyd (audio/) er WAV 48 kHz 24 bit, like lange som skuddet med håndtak, med volumpunkter og fade bakt inn: én stem per karakter (DIA_), atmosfære (AMB), musikk (MUS), effekter (SFX) og samlet miks (MIX), i språkversjonen som ble valgt. X-sheet finnes som CSV og PDF (A4 og Letter), med én rad per eksponering; munn-kolonnen er tom til munnavn kommer. Import i Dragonframe: 1) Åpne scenen, velg Video Assist / referanselag og importer _ref.mp4 (eller PNG-sekvensen) som referanse. 2) Importer MIX-filen, eller dialogstemmen, i lydvinduet (Audio) og sett start til bilde 1. 3) Åpne X-Sheet og importer xsheet.csv, eller skriv ut PDF-en ved siden av riggen. KI kan brukes til sporlesing av dialogen, men pakken lages helt uten KI."
+      },
+      "en": {
+        "text": "Dragonframe package: one folder per shot, named as in the shot list. Each folder has a reference film (_ref.mp4, H.264) at the capture frame rate, frame-accurate and including the handles; on twos each exposure is shown for two frames. The optional PNG sequence (png/) has exactly the same frames. Audio (audio/) is WAV 48 kHz 24-bit, as long as the shot including handles, with volume points and fades baked in: one stem per character (DIA_), ambience (AMB), music (MUS), effects (SFX) and a full mix (MIX), in the selected language version. The X-sheet is provided as CSV and PDF (A4 and Letter), with one row per exposure; the mouth column stays empty until mouth names are added. Importing into Dragonframe: 1) Open the scene, choose Video Assist / reference layer and import _ref.mp4 (or the PNG sequence) as reference. 2) Import the MIX file, or the dialogue stem, in the Audio window and set its start to frame 1. 3) Open the X-Sheet and import xsheet.csv, or print the PDF next to the rig. AI can be used for track reading of the dialogue, but the package is made entirely without AI."
+      }
     }
   }
 }

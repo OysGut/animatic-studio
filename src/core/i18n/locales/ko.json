@@ -54407,5 +54407,95 @@
     "text": "가져오기 실패: {value1}",
     "sourceHash": "2c2567bb25a599f10c58fd8640fe8d53f3eb86491fbaed7152c9b25ae4eda848",
     "review": "machine"
+  },
+  "ptg2.col-frame": {
+    "text": "프레임",
+    "sourceHash": "b84078f055f70f479b3f44ac6fceafd41586c1fe9ae989e2f854692710e49ef6",
+    "review": "machine"
+  },
+  "ptg2.col-shot-frame": {
+    "text": "샷 프레임",
+    "sourceHash": "dd29f93e7e5ebc401fc21ac4def84a05e1d639a137fd440b0887a4a7a4e8c2b3",
+    "review": "machine"
+  },
+  "ptg2.col-timecode": {
+    "text": "타임코드",
+    "sourceHash": "fbfb8d0b35684e11aecfd9589411a05f3f34cf18d5e08b09bd0004791a0b22bb",
+    "review": "machine"
+  },
+  "ptg2.col-character": {
+    "text": "캐릭터",
+    "sourceHash": "4f4a650cdc41931d714685042197b87c9411b38002e220232a5f1eb512514500",
+    "review": "machine"
+  },
+  "ptg2.col-dialogue": {
+    "text": "대사",
+    "sourceHash": "d74f5425eb9a0ab831a15a4fbfeaf912fc4c959eecea292514df0aeffc73bb92",
+    "review": "machine"
+  },
+  "ptg2.col-mouth": {
+    "text": "입",
+    "sourceHash": "b54b142805da5be382e89257990d5de6b002e7f4f612212249798171d5bc25fe",
+    "review": "machine"
+  },
+  "ptg2.col-action": {
+    "text": "액션",
+    "sourceHash": "c511f75d7319d2d785bdd0ab6a1a82143b9750a56875623e96ae2d046a656e2b",
+    "review": "machine"
+  },
+  "ptg2.col-layers": {
+    "text": "레이어",
+    "sourceHash": "96c5cd64d83640d54a9be8f2141b82be537d2c6f8266ebee12e2b1382bca6bb2",
+    "review": "machine"
+  },
+  "ptg2.col-notes": {
+    "text": "메모",
+    "sourceHash": "066c61b12326fabc5e195c15c5170d23909cadafaaa99d8ca22f9c9c5068d6ad",
+    "review": "machine"
+  },
+  "ptg2.page": {
+    "text": "{value1} / {value2} 페이지",
+    "sourceHash": "d087805548c6c481543e2fb98e8f86b2a5fcf1b97f80bbc15007157a6d7e43bb",
+    "review": "machine"
+  },
+  "ptg2.layer-start": {
+    "text": "시작: {value1}",
+    "sourceHash": "395a5ee8f1ed2edb963e66a7f04bb21228f495c7fc7eafe47f60fef7fb2666d9",
+    "review": "machine"
+  },
+  "ptg2.layer-end": {
+    "text": "끝: {value1}",
+    "sourceHash": "121799ec0daf3e847d87e49ea788cf2c50ab96a446d92e4c6ca73b8439bc7c38",
+    "review": "machine"
+  },
+  "ptg2.burn-frame": {
+    "text": "프레임",
+    "sourceHash": "b84078f055f70f479b3f44ac6fceafd41586c1fe9ae989e2f854692710e49ef6",
+    "review": "machine"
+  },
+  "ptg2.burn-mouth": {
+    "text": "입",
+    "sourceHash": "b54b142805da5be382e89257990d5de6b002e7f4f612212249798171d5bc25fe",
+    "review": "machine"
+  },
+  "ptg2.option-png": {
+    "text": "PNG 시퀀스",
+    "sourceHash": "9c25df7349b12db272ec755dcc1942ce9fe47e2fe1d393469107d2d5b73cc2e0",
+    "review": "machine"
+  },
+  "ptg2.option-burnin": {
+    "text": "번인 표시",
+    "sourceHash": "7ca96be31501fd07f2391e03880239acb0d33d9b2e0582cb10bfbb91449636bc",
+    "review": "machine"
+  },
+  "ptg2.send": {
+    "text": "Dragonframe으로 보내기",
+    "sourceHash": "3d894b39a6a4c9ee8004092a2c7d821fef2d25a83f5444fd26c082061d37a992",
+    "review": "machine"
+  },
+  "ptg2.readme": {
+    "text": "Dragonframe 패키지: 샷마다 폴더 하나이며, 샷 목록과 같은 이름입니다. 각 폴더에는 촬영 프레임 레이트의 참조 영상(_ref.mp4, H.264)이 있으며, 프레임 단위로 정확하고 핸들을 포함합니다. 투스에서는 각 노출이 두 프레임 동안 표시됩니다. 선택 사항인 PNG 시퀀스(png/)는 정확히 같은 프레임입니다. 오디오(audio/)는 WAV 48 kHz 24비트로, 핸들을 포함한 샷과 같은 길이이며 볼륨 포인트와 페이드가 적용되어 있습니다. 캐릭터별 스템(DIA_), 앰비언스(AMB), 음악(MUS), 효과음(SFX), 전체 믹스(MIX)가 선택한 언어 버전으로 들어 있습니다. X-시트는 노출마다 한 행인 CSV와 PDF(A4 및 Letter)로 제공되며, 입 열은 입 모양 이름이 추가될 때까지 비어 있습니다. Dragonframe으로 가져오기: 1) 장면을 열고 Video Assist / 참조 레이어를 선택한 뒤 _ref.mp4(또는 PNG 시퀀스)를 참조로 가져옵니다. 2) Audio 창에서 MIX 파일 또는 대사 스템을 가져오고 시작을 프레임 1로 설정합니다. 3) X-Sheet를 열고 xsheet.csv를 가져오거나 PDF를 인쇄해 리그 옆에 둡니다. 대사 트랙 읽기에는 AI를 사용할 수 있지만, 패키지는 AI 없이 만들어집니다.",
+    "sourceHash": "be35d9f12482b38d49a6fac8da96aa3ab5fec543fb0cbad73622e6e3bbfdaaa6",
+    "review": "machine"
   }
 }

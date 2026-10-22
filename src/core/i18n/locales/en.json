@@ -74861,5 +74861,59 @@
   },
   "ptg3b.import-failed": {
     "text": "Import failed: {value1}"
+  },
+  "ptg2.col-frame": {
+    "text": "Frame"
+  },
+  "ptg2.col-shot-frame": {
+    "text": "Shot frame"
+  },
+  "ptg2.col-timecode": {
+    "text": "Timecode"
+  },
+  "ptg2.col-character": {
+    "text": "Character"
+  },
+  "ptg2.col-dialogue": {
+    "text": "Dialogue"
+  },
+  "ptg2.col-mouth": {
+    "text": "Mouth"
+  },
+  "ptg2.col-action": {
+    "text": "Action"
+  },
+  "ptg2.col-layers": {
+    "text": "Layers"
+  },
+  "ptg2.col-notes": {
+    "text": "Notes"
+  },
+  "ptg2.page": {
+    "text": "Page {value1} of {value2}"
+  },
+  "ptg2.layer-start": {
+    "text": "start: {value1}"
+  },
+  "ptg2.layer-end": {
+    "text": "end: {value1}"
+  },
+  "ptg2.burn-frame": {
+    "text": "Frame"
+  },
+  "ptg2.burn-mouth": {
+    "text": "Mouth"
+  },
+  "ptg2.option-png": {
+    "text": "PNG sequence"
+  },
+  "ptg2.option-burnin": {
+    "text": "Burn-in"
+  },
+  "ptg2.send": {
+    "text": "Send to Dragonframe"
+  },
+  "ptg2.readme": {
+    "text": "Dragonframe package: one folder per shot, named as in the shot list. Each folder has a reference film (_ref.mp4, H.264) at the capture frame rate, frame-accurate and including the handles; on twos each exposure is shown for two frames. The optional PNG sequence (png/) has exactly the same frames. Audio (audio/) is WAV 48 kHz 24-bit, as long as the shot including handles, with volume points and fades baked in: one stem per character (DIA_), ambience (AMB), music (MUS), effects (SFX) and a full mix (MIX), in the selected language version. The X-sheet is provided as CSV and PDF (A4 and Letter), with one row per exposure; the mouth column stays empty until mouth names are added. Importing into Dragonframe: 1) Open the scene, choose Video Assist / reference layer and import _ref.mp4 (or the PNG sequence) as reference. 2) Import the MIX file, or the dialogue stem, in the Audio window and set its start to frame 1. 3) Open the X-Sheet and import xsheet.csv, or print the PDF next to the rig. AI can be used for track reading of the dialogue, but the package is made entirely without AI."
   }
 }
