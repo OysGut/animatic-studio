@@ -871,6 +871,8 @@ export function diffStates(before: ProjectState, after: ProjectState): ChangeSet
         revision: after.project.revision,
         expected_revision: before.project.revision,
         name: after.project.name,
+        ...(after.project.code !== before.project.code ? { code: after.project.code ?? null } : {}),
+        ...(after.project.capture !== before.project.capture ? { capture_mode: after.project.capture?.mode ?? "ones", capture_fps_num: after.project.capture?.fps.num ?? 24, capture_fps_den: after.project.capture?.fps.den ?? 1 } : {}),
         ...(after.project.scriptLanguage !== before.project.scriptLanguage ? { script_language: after.project.scriptLanguage ?? null } : {}),
         fps_num: after.project.fps.num,
         fps_den: after.project.fps.den,
@@ -1173,6 +1175,8 @@ export function stateFromRows(r: ProjectRows): ProjectState {
       id: str(p["id"]) as never,
       revision: num(p["revision"]),
       name: str(p["name"]),
+      code: typeof p["code"] === "string" ? p["code"] : null,
+      capture: { mode: (p["capture_mode"] ?? "ones") as import("./interchange/settings").CaptureMode, fps: { num: num(p["capture_fps_num"] ?? 24), den: num(p["capture_fps_den"] ?? 1) } },
       fps: { num: num(p["fps_num"]), den: num(p["fps_den"]) },
       // Før migrasjon 0008 finnes ikke kolonnene: HD 16:9
       frameWidth: num(p["frame_width"] ?? 1920),

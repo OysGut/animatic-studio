@@ -854,6 +854,7 @@ export type Command = import("../animation/rig-commands").RigCommand
     }
   | { readonly type: "SetAnnotationResolved"; readonly annotationId: AnnotationId; readonly resolved: boolean }
   // ---------- Prosjektets format (DEC-0039) ----------
+  | { readonly type: "SetInterchangeSettings"; readonly code: string | null; readonly capture: import("../interchange/settings").CaptureSettings }
   | {
       /** Bildeformat og bildefrekvens for hele prosjektet. Alle 2D-scener tilpasses. */
       readonly type: "SetProjectFormat";

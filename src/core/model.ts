@@ -71,6 +71,8 @@ export interface Entity<I> {
 
 export interface Project extends Entity<ProjectId> {
   readonly name: string;
+  readonly code?: string | null;
+  readonly capture?: import("./interchange/settings").CaptureSettings;
   /** Bildefrekvens for hele prosjektet (DEC-0039). */
   readonly fps: Rational;
   /** Bildeformat for hele prosjektet i piksler (DEC-0039); alle 2D-scener følger det. */
