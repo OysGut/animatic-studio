@@ -7666,9 +7666,9 @@ try {
     assert((await sql`select scene_ids from public.change_log where id=${plain}`)[0]?.["scene_ids"] === null, "uten sceneIds er scene_ids null som før");
     // Feil i apply_changes: ingen loggrad, heller ikke scene_ids
     const bad = crypto.randomUUID();
-    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${bad},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: [s1], inserts: { ukjent: [{ id: "x" }] } } as never)})`));
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${bad},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: [s1], inserts: { ukjent: [{ id: "x" }] } } as never)})`), /./);
     const badIds = crypto.randomUUID();
-    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${badIds},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: ["ikke-en-id"] } as never)})`));
+    await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${badIds},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: ["ikke-en-id"] } as never)})`), "22P02");
     const badShape = crypto.randomUUID();
     await expectError(as("service_role", null, (tx) => tx`select public.apply_changes(${bp},${ALICE},${badShape},${tx.json({ type: "X" })},${tx.json({})},${tx.json({ sceneIds: s1 } as never)})`), "22023");
     const left = await sql`select id from public.change_log where id in (${bad},${badIds},${badShape})`;
