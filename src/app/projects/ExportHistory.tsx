@@ -59,7 +59,7 @@ export function ExportHistory({
                       timeStyle: "short",
                     })}
                   </span>
-                  <span className="shrink-0 text-text-secondary">{r.settings["interchange"] === true ? t("ptg1.shotlist") : EXPORT_KIND_LABEL[r.kind]}</span>
+                  <span className="shrink-0 text-text-secondary">{r.settings["interchange"] === true ? (r.settings["format"] === "fbx" ? t("ptg3.camera-fbx") : r.settings["format"] === "ae" ? t("ptg3.ae-package") : t("ptg1.shotlist")) : EXPORT_KIND_LABEL[r.kind]}</span>
                   <span className="min-w-0 truncate text-text-primary" title={r.fileName}>
                     {r.fileName}
                   </span>
