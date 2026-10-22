@@ -63,7 +63,7 @@ export function MyShowcasePage() {
               <div className="flex flex-wrap items-center gap-2 text-xs">
                 <span data-testid={`showcase-status-${item.id}`}
                   className={"rounded-sm px-1.5 py-px " + (item.status === "live" ? "bg-status-success/20 text-status-success" : item.status === "pending" ? "bg-status-discrepancy/20 text-status-discrepancy" : "bg-surface-3 text-text-secondary")}>
-                  {STATUS_LABEL[item.status]}
+                  {statusLabel(item.status)}
                 </span>
                 {item.expiresAt && item.status !== "revoked" ? (
                   <span className="tabular text-text-tertiary">{t("b116.mine.expiresAt", { date: time.exact(item.expiresAt) })}</span>
@@ -149,7 +149,7 @@ function EditDialog({ item, onClose, onSaved }: { item: MyShowcaseItem | null; o
             <Label htmlFor="showcase-edit-expires" className="text-xs text-text-secondary">{t("b116.create.expires")}</Label>
             <select id="showcase-edit-expires" data-testid="showcase-edit-expires" value={days} onChange={(e) => setDays(Number(e.target.value))}
               className="h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-xs text-text-primary">
-              {EDIT_EXPIRES.map((d) => <option key={d.days} value={d.days}>{d.label}</option>)}
+              {[7, 14, 30, 90].map((d) => <option key={d} value={d}>{editExpiresLabel(d)}</option>)}
             </select>
           </div>
           {failed ? <p role="alert" className="text-xs text-status-danger">{t("b116.create.failed")}</p> : null}
