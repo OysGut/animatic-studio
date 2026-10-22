@@ -8,6 +8,7 @@ import { COMPOSITION_FORMATS, FRAME_RATES, sameFps, type ProjectState } from "@/
 import { useCommands } from "@/app/project/use-commands";
 import { Button } from "@/components/ui/button";
 import { t } from "@/core/i18n/keyed";
+import { InterchangeSettings } from "./InterchangeSettings";
 
 const ctl =
   "h-8 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary disabled:opacity-50";
@@ -198,6 +199,7 @@ export function ProjectFormat({
             {err}
           </p>
         ) : null}
+        <InterchangeSettings state={state} userId={userId} editable={editable} />
       </div>
     </section>
   );

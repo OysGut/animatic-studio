@@ -672,6 +672,7 @@ export type Database = {
           project_id: string
           removed: boolean
           revision: number
+          rights: Json | null
           sha256: string
           source_global_asset_id: string | null
           source_global_variant_id: string | null
@@ -701,6 +702,7 @@ export type Database = {
           project_id: string
           removed?: boolean
           revision?: number
+          rights?: Json | null
           sha256: string
           source_global_asset_id?: string | null
           source_global_variant_id?: string | null
@@ -730,6 +732,7 @@ export type Database = {
           project_id?: string
           removed?: boolean
           revision?: number
+          rights?: Json | null
           sha256?: string
           source_global_asset_id?: string | null
           source_global_variant_id?: string | null
@@ -1340,6 +1343,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      content_reports: {
+        Row: {
+          created_at: string
+          handled_at: string | null
+          handled_by: string | null
+          id: string
+          reason: string
+          reporter: string
+          status: string
+          target_id: string
+          target_kind: string
+          text: string
+        }
+        Insert: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          reason: string
+          reporter: string
+          status?: string
+          target_id: string
+          target_kind: string
+          text?: string
+        }
+        Update: {
+          created_at?: string
+          handled_at?: string | null
+          handled_by?: string | null
+          id?: string
+          reason?: string
+          reporter?: string
+          status?: string
+          target_id?: string
+          target_kind?: string
+          text?: string
+        }
+        Relationships: []
       }
       continuity_events: {
         Row: {
@@ -2067,6 +2109,56 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      feature_testers: {
+        Row: {
+          added_at: string
+          key: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          key: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          key?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "feature_testers_key_fkey"
+            columns: ["key"]
+            isOneToOne: false
+            referencedRelation: "features"
+            referencedColumns: ["key"]
+          },
+        ]
+      }
+      features: {
+        Row: {
+          changed_at: string | null
+          changed_by: string | null
+          key: string
+          message: string | null
+          state: string
+        }
+        Insert: {
+          changed_at?: string | null
+          changed_by?: string | null
+          key: string
+          message?: string | null
+          state?: string
+        }
+        Update: {
+          changed_at?: string | null
+          changed_by?: string | null
+          key?: string
+          message?: string | null
+          state?: string
+        }
+        Relationships: []
       }
       film_shares: {
         Row: {
@@ -3702,25 +3794,40 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar_key: string | null
+          bio: string | null
           country: string | null
           display_name: string
+          handle: string | null
+          is_public: boolean
           locale: string | null
+          profile_fields: Json
           ui_prefs: Json
           updated_at: string
           user_id: string
         }
         Insert: {
+          avatar_key?: string | null
+          bio?: string | null
           country?: string | null
           display_name?: string
+          handle?: string | null
+          is_public?: boolean
           locale?: string | null
+          profile_fields?: Json
           ui_prefs?: Json
           updated_at?: string
           user_id: string
         }
         Update: {
+          avatar_key?: string | null
+          bio?: string | null
           country?: string | null
           display_name?: string
+          handle?: string | null
+          is_public?: boolean
           locale?: string | null
+          profile_fields?: Json
           ui_prefs?: Json
           updated_at?: string
           user_id?: string
@@ -3895,6 +4002,179 @@ export type Database = {
           },
         ]
       }
+      publication_media: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          height: number | null
+          id: string
+          mime: string
+          position: number
+          project_id: string
+          publication_id: string
+          storage_key: string
+          width: number | null
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          height?: number | null
+          id?: string
+          mime: string
+          position?: number
+          project_id: string
+          publication_id: string
+          storage_key: string
+          width?: number | null
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          height?: number | null
+          id?: string
+          mime?: string
+          position?: number
+          project_id?: string
+          publication_id?: string
+          storage_key?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publication_media_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publication_media_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      publication_recipients: {
+        Row: {
+          email: string | null
+          id: string
+          invited_at: string
+          project_id: string
+          publication_id: string
+          seen_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          email?: string | null
+          id?: string
+          invited_at?: string
+          project_id: string
+          publication_id: string
+          seen_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          email?: string | null
+          id?: string
+          invited_at?: string
+          project_id?: string
+          publication_id?: string
+          seen_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publication_recipients_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "publication_recipients_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      publications: {
+        Row: {
+          audience: string
+          can_comment: boolean
+          can_download: boolean
+          can_remix: boolean
+          can_view: boolean
+          created_at: string
+          created_by: string
+          description: string
+          expires_at: string | null
+          id: string
+          license: string | null
+          project_id: string
+          publish_at: string | null
+          revoked_at: string | null
+          scope_kind: string
+          scope_ref: Json
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience?: string
+          can_comment?: boolean
+          can_download?: boolean
+          can_remix?: boolean
+          can_view?: boolean
+          created_at?: string
+          created_by: string
+          description?: string
+          expires_at?: string | null
+          id?: string
+          license?: string | null
+          project_id: string
+          publish_at?: string | null
+          revoked_at?: string | null
+          scope_kind: string
+          scope_ref?: Json
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience?: string
+          can_comment?: boolean
+          can_download?: boolean
+          can_remix?: boolean
+          can_view?: boolean
+          created_at?: string
+          created_by?: string
+          description?: string
+          expires_at?: string | null
+          id?: string
+          license?: string | null
+          project_id?: string
+          publish_at?: string | null
+          revoked_at?: string | null
+          scope_kind?: string
+          scope_ref?: Json
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "publications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quality_profiles: {
         Row: {
           created_at: string
@@ -3938,6 +4218,76 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_comments: {
+        Row: {
+          at_ms: number
+          author: string
+          category: string
+          created_at: string
+          edited_at: string | null
+          frame: number | null
+          id: string
+          parent_id: string | null
+          project_id: string
+          publication_id: string
+          region: Json | null
+          removed: boolean
+          text: string
+        }
+        Insert: {
+          at_ms: number
+          author: string
+          category?: string
+          created_at?: string
+          edited_at?: string | null
+          frame?: number | null
+          id?: string
+          parent_id?: string | null
+          project_id: string
+          publication_id: string
+          region?: Json | null
+          removed?: boolean
+          text: string
+        }
+        Update: {
+          at_ms?: number
+          author?: string
+          category?: string
+          created_at?: string
+          edited_at?: string | null
+          frame?: number | null
+          id?: string
+          parent_id?: string | null
+          project_id?: string
+          publication_id?: string
+          region?: Json | null
+          removed?: boolean
+          text?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "review_comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_comments_publication_id_fkey"
+            columns: ["publication_id"]
+            isOneToOne: false
+            referencedRelation: "publications"
             referencedColumns: ["id"]
           },
         ]
@@ -5872,6 +6222,24 @@ export type Database = {
           },
         ]
       }
+      user_blocks: {
+        Row: {
+          blocked: string
+          blocker: string
+          created_at: string
+        }
+        Insert: {
+          blocked: string
+          blocker: string
+          created_at?: string
+        }
+        Update: {
+          blocked?: string
+          blocker?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       user_bookmarks: {
         Row: {
           project_id: string
@@ -6028,6 +6396,29 @@ export type Database = {
         Args: { p_byte_size: number; p_share: string }
         Returns: string
       }
+      add_publication_media: {
+        Args: {
+          p_duration_ms: number
+          p_height: number
+          p_id: string
+          p_mime: string
+          p_storage_key: string
+          p_width: number
+        }
+        Returns: string
+      }
+      add_review_comment: {
+        Args: {
+          p_at_ms: number
+          p_category: string
+          p_frame: number
+          p_parent: string
+          p_pub: string
+          p_region: Json
+          p_text: string
+        }
+        Returns: string
+      }
       admin_country_counts: {
         Args: never
         Returns: {
@@ -6035,7 +6426,29 @@ export type Database = {
           users: number
         }[]
       }
+      admin_find_users: {
+        Args: { p_query: string }
+        Returns: {
+          display_name: string
+          email: string
+          user_id: string
+        }[]
+      }
+      admin_handle_report: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
+      }
+      admin_list_features: { Args: never; Returns: Json }
       admin_registration_settings: { Args: never; Returns: Json }
+      admin_report_queue: { Args: never; Returns: Json }
+      admin_set_feature: {
+        Args: { p_key: string; p_message?: string; p_state: string }
+        Returns: undefined
+      }
+      admin_set_feature_testers: {
+        Args: { p_key: string; p_users: string[] }
+        Returns: number
+      }
       apply_changes: {
         Args: {
           p_actor: string
@@ -6051,6 +6464,7 @@ export type Database = {
         Args: { p_asset: string; p_draft: string; p_project: string }
         Returns: number
       }
+      block_user: { Args: { p_user: string }; Returns: undefined }
       claim_dialogue_batch: {
         Args: { p_batch: string; p_lease: string }
         Returns: Json
@@ -6135,6 +6549,21 @@ export type Database = {
         Args: { p_fps_den?: number; p_fps_num?: number; p_name: string }
         Returns: string
       }
+      create_publication: {
+        Args: {
+          p_audience: string
+          p_description: string
+          p_expires_at: string
+          p_license: string
+          p_project: string
+          p_publish_at: string
+          p_rights: Json
+          p_scope_kind: string
+          p_scope_ref: Json
+          p_title: string
+        }
+        Returns: string
+      }
       create_script_version: {
         Args: {
           p_name: string
@@ -6155,6 +6584,10 @@ export type Database = {
       }
       dismiss_mobile_import: {
         Args: { p_dismissed: boolean; p_id: string }
+        Returns: undefined
+      }
+      edit_review_comment: {
+        Args: { p_category: string; p_id: string; p_text: string }
         Returns: undefined
       }
       film_share_lookup: { Args: { p_token: string }; Returns: string }
@@ -6388,6 +6821,7 @@ export type Database = {
         }
       }
       my_account: { Args: never; Returns: Json }
+      my_features: { Args: never; Returns: Json }
       print_copy_codes: {
         Args: { p_job: string; p_project: string }
         Returns: {
@@ -6399,6 +6833,8 @@ export type Database = {
         }[]
       }
       project_lock_info: { Args: { p_project: string }; Returns: Json }
+      public_profile: { Args: { p_handle: string }; Returns: Json }
+      publication_for_me: { Args: { p_id: string }; Returns: Json }
       purge_project_assets: {
         Args: { p_actor: string; p_project: string }
         Returns: Json
@@ -6451,6 +6887,7 @@ export type Database = {
         Args: { p_project: string; p_user: string }
         Returns: undefined
       }
+      remove_review_comment: { Args: { p_id: string }; Returns: undefined }
       remove_workspace_member: {
         Args: { p_user: string; p_workspace: string }
         Returns: undefined
@@ -6458,6 +6895,15 @@ export type Database = {
       rename_workspace: {
         Args: { p_name: string; p_workspace: string }
         Returns: undefined
+      }
+      report_content: {
+        Args: {
+          p_kind: string
+          p_reason: string
+          p_target: string
+          p_text: string
+        }
+        Returns: string
       }
       resume_dialogue_batch: {
         Args: { p_actor: string; p_batch: string; p_project: string }
@@ -6473,6 +6919,7 @@ export type Database = {
         Args: { p_job: string; p_project: string }
         Returns: number
       }
+      revoke_publication: { Args: { p_id: string }; Returns: undefined }
       revoke_upload_session: { Args: { p_id: string }; Returns: undefined }
       revoke_workspace_invitation: {
         Args: { p_invitation: string }
@@ -6512,10 +6959,24 @@ export type Database = {
       }
       set_my_country: { Args: { p_country: string }; Returns: undefined }
       set_my_locale: { Args: { p_locale: string }; Returns: undefined }
+      set_my_public_profile: {
+        Args: {
+          p_avatar_key: string
+          p_bio: string
+          p_fields: Json
+          p_handle: string
+          p_is_public: boolean
+        }
+        Returns: undefined
+      }
       set_my_ui_prefs: { Args: { p_prefs: Json }; Returns: undefined }
       set_project_workspace: {
         Args: { p_project: string; p_workspace: string }
         Returns: undefined
+      }
+      set_publication_recipients: {
+        Args: { p_emails: string[]; p_id: string; p_users: string[] }
+        Returns: number
       }
       set_registration_open: {
         Args: { p_message?: string; p_open: boolean }
@@ -6532,6 +6993,11 @@ export type Database = {
       }
       transition_harmonize_batch_item: {
         Args: { p_item: string; p_lease: string; p_patch: Json }
+        Returns: undefined
+      }
+      unblock_user: { Args: { p_user: string }; Returns: undefined }
+      update_publication: {
+        Args: { p_id: string; p_patch: Json }
         Returns: undefined
       }
       upsert_my_profile: {

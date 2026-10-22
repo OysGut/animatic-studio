@@ -42731,12 +42731,6 @@
     "parameters": [],
     "executable": true
   },
-  "engine-export-zip.zip.message.d8988ee64a25": {
-    "text": "[!! TThhëë zzïïpp ffïïllëë ggrrëëww lláárrggëërr tthháánn 4 GGBB. ÏÏnnccllüüddëë ffëëwwëërr ffïïllëëss áánndd ttrryy áággááïïnn. !!]",
-    "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
-    "parameters": [],
-    "executable": true
-  },
   "engine-export-zip.write-zip.message.080bb98d06cc": {
     "text": "[!! CCáánnccëëllllëëdd !!]",
     "source": "\"Cancelled\"",
@@ -71759,6 +71753,12 @@
     "parameters": [],
     "executable": false
   },
+  "engine-export-zip.zip.message.d8988ee64a25": {
+    "text": "[!! TThhëë zzïïpp ffïïllëë ggrrëëww lláárrggëërr tthháánn 4 GGBB. ÏÏnnccllüüddëë ffëëwwëërr ffïïllëëss áánndd ttrryy áággááïïnn. !!]",
+    "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-projects-backup-dialogs.missing-files": {
     "text": null,
     "plural": {
@@ -74678,5 +74678,59 @@
   },
   "b114.rights.no": {
     "text": "[!! NNôô !!]"
+  },
+  "ptg1.to-production": {
+    "text": "[!! TTôô pprrôôddüüccttïïôônn !!]"
+  },
+  "ptg1.project-code": {
+    "text": "[!! PPrrôôjjëëcctt ccôôddëë !!]"
+  },
+  "ptg1.capture-rate": {
+    "text": "[!! CCááppttüürrëë rrááttëë !!]"
+  },
+  "ptg1.ones": {
+    "text": "[!! ÔÔnnëëss (24) !!]"
+  },
+  "ptg1.twos": {
+    "text": "[!! TTwwôôss (12 × 2) !!]"
+  },
+  "ptg1.custom": {
+    "text": "[!! CCüüssttôômm !!]"
+  },
+  "ptg1.numerator": {
+    "text": "[!! NNüümmëërrááttôôrr !!]"
+  },
+  "ptg1.denominator": {
+    "text": "[!! DDëënnôômmïïnnááttôôrr !!]"
+  },
+  "ptg1.save-settings": {
+    "text": "[!! SSáávvëë ssëëttttïïnnggss !!]"
+  },
+  "ptg1.invalid-settings": {
+    "text": "[!! ÏÏnnvváállïïdd pprrôôjjëëcctt ccôôddëë ôôrr ccááppttüürrëë rrááttëë. !!]"
+  },
+  "ptg1.profile": {
+    "text": "[!! PPrrôôffïïllëë !!]"
+  },
+  "ptg1.standard": {
+    "text": "[!! SSttáánnddáárrdd !!]"
+  },
+  "ptg1.shotlist": {
+    "text": "[!! SShhôôttllïïsstt (CCSSVV/JJSSÔÔNN) !!]"
+  },
+  "ptg1.cancel": {
+    "text": "[!! CCáánnccëëll !!]"
+  },
+  "ptg1.cancelled": {
+    "text": "[!! CCáánnccëëllllëëdd !!]"
+  },
+  "ptg1.export-failed": {
+    "text": "[!! TThhëë sshhôôttllïïsstt ccôôüülldd nnôôtt bbëë ëëxxppôôrrttëëdd. !!]"
+  },
+  "ptg1.duplicate-file": {
+    "text": "[!! TThhëë ppáácckkáággëë ccôônnttááïïnnss ttwwôô ffïïllëëss wwïïtthh tthhëë ssáámmëë nnáámmëë. !!]"
+  },
+  "ptg1.readme": {
+    "text": "[!! TThhëë ccüütt ïïss áátt tthhëë mmïïddppôôïïnntt ôôff tthhëë ôôvvëërrlláápp, rrôôüünnddëëdd áállôônngg tthhëë ffïïllmm. SShhôôtt llëënnggtthhss áárrëë ddïïffffëërrëënnccëëss bbëëttwwëëëënn rrôôüünnddëëdd bbôôüünnddáárrïïëëss. hháánnddllëëÏÏnn áánndd hháánnddllëëÔÔüütt áárrëë ôôvvëërrlláápp ôônn tthhëë nnëëïïgghhbbôôüürr’ss ssïïddëë; sshhôôôôtt ïïnnccllüüddïïnngg tthhëë hháánnddllëëss. WWïïtthhôôüütt ôôvvëërrlláápp, hháánnddllëëss áárrëë 0. ÁÁüüddïïôô áánndd wwôôrrddss bbëëllôônngg ttôô tthhëë sshhôôtt wwhhëërrëë tthhëë ëëvvëënntt ssttáárrttss, rrëëttááïïnn tthhëëïïrr ffüüllll llëënnggtthh áánndd ïïnnccllüüddëë áábbssôôllüüttëë áánndd rrëëllááttïïvvëë ttïïmmëëss; ccrrôôssssëëssCCüütt=ttrrüüëë mmáárrkkss áá ccrrôôssssïïnngg. TTwwôôss áárrëë 12 ëëxxppôôssüürrëëss/ss ôônn áá 24 ffppss ttïïmmëëllïïnnëë, ëëvvëërryy ôôtthhëërr ffrráámmëë. ÔÔüütt ttïïmmëëccôôddëë áánndd FFrráámmëë ÔÔüütt áárrëë ëëxxccllüüssïïvvëë. ÁÁnn ëëmmppttyy ffïïllmm hhááss 0 ffrráámmëëss; áá ssccëënnëë sshhôôrrttëërr tthháánn ôônnëë ccááppttüürrëë ffrráámmëë mmááyy hháávvëë 0 ffrráámmëëss áánndd rrëëmmááïïnnss llïïssttëëdd. CCáámmëërráá ïïss nnüüllll ïïnn PPTTGG1. !!]"
   }
 }

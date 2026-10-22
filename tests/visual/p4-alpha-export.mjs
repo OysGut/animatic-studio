@@ -46,7 +46,8 @@ for (const lang of ["nb", "en"]) await h.scenario(`p4-${lang}`, occ.id, lang, as
   await dialog.screenshot({ path: `${h.out}/dialog-${lang}.png` });
   const dl = page.waitForEvent("download"); await page.getByTestId("alpha-start").click();
   const download = await dl; const path = `${h.out}/${lang}.zip`; await download.saveAs(path);
-  const files = unzipSync(readFileSync(path)), names = Object.keys(files);
+  const files = unzipSync(readFileSync(path)), names = Object.keys(files).filter(n => n.endsWith(".png"));
+  h.check(!!files["LESMEG.txt"], `${lang}: tospråklig LESMEG i pakken`);
   h.check(names.length === 2, `${lang}: inn/ut eksporterer akkurat to bilder`);
   h.check(names.every(n => n.includes("Solid + Edge") && n.includes("f1-3") && n.endsWith(".png")), `${lang}: filnavn med scene, lag og tidsrom`);
   const png = decode(Buffer.from(files[names[0]]));
@@ -127,7 +128,7 @@ await h.scenario("p4-background", occ.id, "en", async page => {
   await page.keyboard.press("Escape");
   await h.waitHidden(page.getByTestId("alpha-export-dialog"));
   const file=await download; await file.saveAs(`${h.out}/background.zip`);
-  h.check(Object.keys(unzipSync(readFileSync(`${h.out}/background.zip`))).length===20,"alpha queue continues after dialog closes");
+  h.check(Object.keys(unzipSync(readFileSync(`${h.out}/background.zip`))).filter(n=>n.endsWith(".png")).length===20,"alpha queue continues after dialog closes");
   await page.locator('[data-testid="export-queue-task"][data-status="done"]').waitFor();
   h.check(await page.getByTestId("export-queue-task").getAttribute("data-status")==="done","shared queue reports completed alpha");
   await page.getByTestId("export-queue").screenshot({path:`${h.out}/background.png`});

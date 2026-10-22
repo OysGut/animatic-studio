@@ -54324,5 +54324,95 @@
     "text": "Нет",
     "sourceHash": "527ff54fdce9ccb32ae2b89b9a729a99a567d29d6d91c3e47d41450e01c20f92",
     "review": "machine"
+  },
+  "ptg1.to-production": {
+    "text": "В производство",
+    "sourceHash": "11361c34d97912a8cc6d1ea4c169f3200a8789a3b9551374238204e4280bec83",
+    "review": "machine"
+  },
+  "ptg1.project-code": {
+    "text": "Код проекта",
+    "sourceHash": "84d6fb9c1723cbe9c04b05603680b21830df29a713d0e135deb685d12ffc3e5b",
+    "review": "machine"
+  },
+  "ptg1.capture-rate": {
+    "text": "Частота съёмки",
+    "sourceHash": "0be258afacb1db9997252e8b5581c342d6dba06981f3003316bcc8eb9bdb8282",
+    "review": "machine"
+  },
+  "ptg1.ones": {
+    "text": "На единицах (24)",
+    "sourceHash": "4abbf65d1de5c962201403b2b780bb5c48dd850f1e69f23caca7cdc8fb0e77c7",
+    "review": "machine"
+  },
+  "ptg1.twos": {
+    "text": "На двойках (12 × 2)",
+    "sourceHash": "dd9f3b98dd27e90b78ed239d19d639804f0b49ec055e5700af9d9c34b4539a0a",
+    "review": "machine"
+  },
+  "ptg1.custom": {
+    "text": "Настраиваемая",
+    "sourceHash": "a556143eff003b25fa0e13d557d48ec00518d4e0fe8ea8dd7057a744d069f39a",
+    "review": "machine"
+  },
+  "ptg1.numerator": {
+    "text": "Числитель",
+    "sourceHash": "3cef677dd40a98c7ceac099c71985600e10cb78c7fdd1ab93cf23c9955d41e57",
+    "review": "machine"
+  },
+  "ptg1.denominator": {
+    "text": "Знаменатель",
+    "sourceHash": "e5dadd59e45e0fc1672594cf4606ac8958c9356f5020e4fa67a720f1e877b10d",
+    "review": "machine"
+  },
+  "ptg1.save-settings": {
+    "text": "Сохранить настройки",
+    "sourceHash": "1203d7869714e30024838159677d55dbdaeddad178a565e769529f5c8ac1c783",
+    "review": "machine"
+  },
+  "ptg1.invalid-settings": {
+    "text": "Недопустимый код проекта или частота съёмки.",
+    "sourceHash": "29c121bf32414af14ce1597294802c73596c9faba1fa5c2867615718df344bb0",
+    "review": "machine"
+  },
+  "ptg1.profile": {
+    "text": "Профиль",
+    "sourceHash": "fd9089b83458efd208a932fcd503d697c6c9ca04f9b8109526d616302947aaf1",
+    "review": "machine"
+  },
+  "ptg1.standard": {
+    "text": "Стандартный",
+    "sourceHash": "eb77bb0293ba80ac2411b6b97b7b69df165a4e07dca6cb95740c5ff04943d73b",
+    "review": "machine"
+  },
+  "ptg1.shotlist": {
+    "text": "Список планов (CSV/JSON)",
+    "sourceHash": "f609ead65dbc415316172498a2c1ebdb901d88f668da7761799ccf9c11dbafd6",
+    "review": "machine"
+  },
+  "ptg1.cancel": {
+    "text": "Отмена",
+    "sourceHash": "a69ea29ae854ab93e4967572b360e5a50e1c854ae20c4ae9b47ee3b1368bab86",
+    "review": "machine"
+  },
+  "ptg1.cancelled": {
+    "text": "Отменено",
+    "sourceHash": "87c415f2bdf84e1a214fa178451b7b20236882d3fb1195c13a1ba30bd6cc4e74",
+    "review": "machine"
+  },
+  "ptg1.export-failed": {
+    "text": "Не удалось экспортировать список планов.",
+    "sourceHash": "12672f3d4e0728ac538e2f792a3f7c0ec607b02706a4f7e6210ef99ececc3b95",
+    "review": "machine"
+  },
+  "ptg1.duplicate-file": {
+    "text": "Пакет содержит два файла с одинаковым именем.",
+    "sourceHash": "d65b7dbd6c5aeb3d05f984f3924cadc0db6c85225c6ecc06519367e761e0d605",
+    "review": "machine"
+  },
+  "ptg1.readme": {
+    "text": "Склейка находится в середине перекрытия с округлением по фильму. Длительности равны разности округлённых границ. handleIn и handleOut — перекрытие на стороне соседнего плана; снимайте с этими запасами. Без перекрытия они равны 0. Звук и слова принадлежат плану начала события, сохраняют полную длительность и абсолютное и относительное время; crossesCut=true отмечает пересечение. На двойках: 12 экспозиций/с на шкале 24 кадра/с. Конечная граница исключается. Пустой фильм имеет 0 кадров; очень короткий план может иметь 0 и остаётся в списке. Камера в PTG1 — null.",
+    "sourceHash": "c2bc23ed4767d9ef2f64d31a3495aef22dc03598c58430e55f3ca528c1171661",
+    "review": "machine"
   }
 }

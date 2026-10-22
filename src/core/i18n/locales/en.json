@@ -42731,12 +42731,6 @@
     "parameters": [],
     "executable": true
   },
-  "engine-export-zip.zip.message.d8988ee64a25": {
-    "text": "The zip file grew larger than 4 GB. Include fewer files and try again.",
-    "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
-    "parameters": [],
-    "executable": true
-  },
   "engine-export-zip.write-zip.message.080bb98d06cc": {
     "text": "Cancelled",
     "source": "\"Cancelled\"",
@@ -71759,6 +71753,12 @@
     "parameters": [],
     "executable": false
   },
+  "engine-export-zip.zip.message.d8988ee64a25": {
+    "text": "The zip file grew larger than 4 GB. Include fewer files and try again.",
+    "source": "\"The zip file grew larger than 4 GB. Include fewer files and try again.\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-projects-backup-dialogs.missing-files": {
     "text": null,
     "plural": {
@@ -74678,5 +74678,59 @@
   },
   "b114.rights.no": {
     "text": "No"
+  },
+  "ptg1.to-production": {
+    "text": "To production"
+  },
+  "ptg1.project-code": {
+    "text": "Project code"
+  },
+  "ptg1.capture-rate": {
+    "text": "Capture rate"
+  },
+  "ptg1.ones": {
+    "text": "Ones (24)"
+  },
+  "ptg1.twos": {
+    "text": "Twos (12 × 2)"
+  },
+  "ptg1.custom": {
+    "text": "Custom"
+  },
+  "ptg1.numerator": {
+    "text": "Numerator"
+  },
+  "ptg1.denominator": {
+    "text": "Denominator"
+  },
+  "ptg1.save-settings": {
+    "text": "Save settings"
+  },
+  "ptg1.invalid-settings": {
+    "text": "Invalid project code or capture rate."
+  },
+  "ptg1.profile": {
+    "text": "Profile"
+  },
+  "ptg1.standard": {
+    "text": "Standard"
+  },
+  "ptg1.shotlist": {
+    "text": "Shotlist (CSV/JSON)"
+  },
+  "ptg1.cancel": {
+    "text": "Cancel"
+  },
+  "ptg1.cancelled": {
+    "text": "Cancelled"
+  },
+  "ptg1.export-failed": {
+    "text": "The shotlist could not be exported."
+  },
+  "ptg1.duplicate-file": {
+    "text": "The package contains two files with the same name."
+  },
+  "ptg1.readme": {
+    "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
   }
 }

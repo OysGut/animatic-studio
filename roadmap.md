@@ -1,12 +1,14 @@
 # Veikart
 
-## PTG1 (B-102) – aktivt oppdrag
-- [ ] Ren utvekslingsmodell, felles avrunding, toere og versjonerte skuddnavn.
-- [ ] Additiv 0081 fra 0080: prosjektkode og opptaksinnstillinger, kommando/angring og lagring; ingen kjøring i Cloud.
-- [ ] CSV/JSON-profiler, PNG-miniatyrer, strømmet ZIP64 og tospråklig LESMEG.
-- [ ] Til produksjonen i eksportdialog og prosjektinnstillinger, alle grensesnittspråk.
-- [ ] Gyldne tester, ZIP64-hoder, arkitekturvakt, ptg1-shotlist og regresjoner én om gangen; full Vitest, DB og i18n.
-- [ ] PTG1_REPORT.md med faktisk verifisering og erstattede funksjoner.
+## PTG1 (B-102) – implementert, databaseverifisering gjenstår
+- [x] Klipp midt i overlapp; håndtak og overgangsdata; hele lyd-/ordhendelser, gyllen oddetallstest og LESMEG-regel.
+- [x] Ren utvekslingsmodell, felles avrunding, toere og versjonerte skuddnavn.
+- [x] Additiv 0081 fra 0080: prosjektkode og opptaksinnstillinger, kommando/angring og lagring; ikke kjørt i Cloud.
+- [x] CSV/JSON-profiler, PNG-miniatyrer, strømmet ZIP64 og tospråklig LESMEG.
+- [x] Til produksjonen i eksportdialog og prosjektinnstillinger, alle grensesnittspråk.
+- [x] Gyldne tester, ZIP64-hoder, arkitekturvakt, ptg1-shotlist nb/en, export-e2e og p4; full Vitest 2280/0, i18n grønn.
+- [ ] DB-suite og ekte lagring/eksport etter 0081: lokal Postgres på port 54329 mangler; Claude må verifisere og kjøre migrasjonen.
+- [x] PTG1_REPORT.md med faktisk verifisering og erstattede funksjoner.
 
 ## B-087 Rigg runde 5 (22.10.2026) – ferdig lokalt; 0079 venter på Claude i Cloud
 - [x] B-105a og KR-1 rapportert (B105A_REPORT.md).

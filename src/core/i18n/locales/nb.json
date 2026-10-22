@@ -42749,12 +42749,6 @@
     "parameters": [],
     "executable": true
   },
-  "engine-export-zip.zip.message.d8988ee64a25": {
-    "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
-    "source": "\"Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.\"",
-    "parameters": [],
-    "executable": true
-  },
   "engine-export-zip.write-zip.message.080bb98d06cc": {
     "text": "Avbrutt",
     "source": "\"Avbrutt\"",
@@ -71777,6 +71771,12 @@
     "parameters": [],
     "executable": false
   },
+  "engine-export-zip.zip.message.d8988ee64a25": {
+    "text": "Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.",
+    "source": "\"Zip-filen ble større enn 4 GB. Ta med færre filer og prøv igjen.\"",
+    "parameters": [],
+    "executable": true
+  },
   "app-projects-backup-dialogs.missing-files": {
     "text": null,
     "plural": {
@@ -74696,5 +74696,59 @@
   },
   "b114.rights.no": {
     "text": "Nei"
+  },
+  "ptg1.to-production": {
+    "text": "Til produksjonen"
+  },
+  "ptg1.project-code": {
+    "text": "Prosjektkode"
+  },
+  "ptg1.capture-rate": {
+    "text": "Opptaksfrekvens"
+  },
+  "ptg1.ones": {
+    "text": "Enere (24)"
+  },
+  "ptg1.twos": {
+    "text": "Toere (12 × 2)"
+  },
+  "ptg1.custom": {
+    "text": "Egendefinert"
+  },
+  "ptg1.numerator": {
+    "text": "Teller"
+  },
+  "ptg1.denominator": {
+    "text": "Nevner"
+  },
+  "ptg1.save-settings": {
+    "text": "Lagre innstillinger"
+  },
+  "ptg1.invalid-settings": {
+    "text": "Ugyldig prosjektkode eller opptaksfrekvens."
+  },
+  "ptg1.profile": {
+    "text": "Profil"
+  },
+  "ptg1.standard": {
+    "text": "Standard"
+  },
+  "ptg1.shotlist": {
+    "text": "Skuddliste (CSV/JSON)"
+  },
+  "ptg1.cancel": {
+    "text": "Avbryt"
+  },
+  "ptg1.cancelled": {
+    "text": "Avbrutt"
+  },
+  "ptg1.export-failed": {
+    "text": "Skuddlisten kunne ikke eksporteres."
+  },
+  "ptg1.duplicate-file": {
+    "text": "Pakken inneholder to filer med samme navn."
+  },
+  "ptg1.readme": {
+    "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
   }
 }

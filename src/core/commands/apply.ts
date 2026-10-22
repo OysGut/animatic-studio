@@ -1,4 +1,5 @@
 import { applyMeasureSetCommand } from "../print/measure/commands";
+import { DEFAULT_CAPTURE, captureSettingsValid, projectCodeValid } from "../interchange/settings";
 import { applyPrintJobCommand } from "../print/job/commands";
 import { lineLinkError, translationLineError, type TranslationLineLink, type TranslationLine } from "../translation/line-align-prompt";
 import { assetVoiceError } from "../dialogue/voice";
@@ -3203,6 +3204,12 @@ function run(
         inverse: { type: "SetDefaultTransition", transition: prev },
         affected: [s.project.id],
       };
+    }
+
+    case "SetInterchangeSettings": {
+      if (!projectCodeValid(c.code) || !captureSettingsValid(c.capture)) fail("invalid", tk("ptg1.invalid-settings"));
+      return { state: { ...s, project: { ...s.project, code: c.code, capture: c.capture, revision: rev(s.project) } },
+        inverse: { type: "SetInterchangeSettings", code: s.project.code ?? null, capture: s.project.capture ?? DEFAULT_CAPTURE }, affected: [s.project.id] };
     }
 
     case "SetAiBudget": {

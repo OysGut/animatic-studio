@@ -67,7 +67,8 @@ export async function listExportRecords(
   let q = db
     .from("export_records")
     .select("id, production_id, kind, file_name, settings, occurrence_ids, created_at, created_by")
-    .eq("production_id", productionId);
+    .eq("production_id", productionId)
+    .or("settings->>phase.is.null,settings->>phase.neq.reserved");
   if (kinds?.length) q = q.in("kind", [...kinds]);
   const { data, error } = await q.order("created_at", { ascending: false }).limit(limit);
   if (error) throw new Error(error.message);

@@ -2,7 +2,7 @@
  * Leser en zip-fil uten å laste hele filen inn i minnet (sikkerhetskopi, DEC-0049): innholdsfortegnelsen
  * leses fra slutten av filen, og hver fil hentes som en del (Blob.slice) av originalen. Filer som er lagret
  * uten komprimering (slik sikkerhetskopien lager dem), kopieres aldri; komprimerte filer pakkes ut i minnet.
- * Zip64 (filer over 4 GB) støttes ikke – sikkerhetskopien lager aldri slike.
+ * ZIP64-størrelser leses med BigInt og valideres før Blob.slice.
  */
 import { inflateSync } from "fflate";
 
@@ -32,13 +32,22 @@ export async function readZipIndex(file: Blob): Promise<Map<string, ZipIndexEntr
     }
   }
   if (eocd < 0) throw new Error(t("engine-import-zip-read.read-zip-index.message.377a90f2e29b"));
-  const count = end.getUint16(eocd + 10, true);
-  const cdSize = end.getUint32(eocd + 12, true);
-  const cdOffset = end.getUint32(eocd + 16, true);
-  if (count === 0xffff || cdSize === 0xffffffff || cdOffset === 0xffffffff)
-    throw new Error(
-      t("engine-import-zip-read.read-zip-index.message.508d578599e5"),
-    );
+  const safe64 = (v: DataView, at: number) => {
+    const n = v.getBigUint64(at, true);
+    if (n > BigInt(Number.MAX_SAFE_INTEGER)) throw new Error(t("engine-import-zip-read.read-zip-index.message.0cf2daef7956"));
+    return Number(n);
+  };
+  let count = end.getUint16(eocd + 10, true);
+  let cdSize = end.getUint32(eocd + 12, true);
+  let cdOffset = end.getUint32(eocd + 16, true);
+  if (eocd >= 20 && end.getUint32(eocd - 20, true) === 0x07064b50) {
+    const offset = safe64(end, eocd - 12);
+    const z = await bytes(file, offset, offset + 56);
+    if (z.byteLength !== 56 || z.getUint32(0, true) !== 0x06064b50) throw new Error(t("engine-import-zip-read.read-zip-index.message.0cf2daef7956"));
+    count = safe64(z, 32); cdSize = safe64(z, 40); cdOffset = safe64(z, 48);
+  } else if (count === 0xffff || cdSize === 0xffffffff || cdOffset === 0xffffffff) {
+    throw new Error(t("engine-import-zip-read.read-zip-index.message.508d578599e5"));
+  }
   if (cdOffset + cdSize > file.size)
     throw new Error(
       t("engine-import-zip-read.read-zip-index.message.0cf2daef7956"),
@@ -53,12 +62,27 @@ export async function readZipIndex(file: Blob): Promise<Map<string, ZipIndexEntr
         t("engine-import-zip-read.read-zip-index.message.6fc57fbaa34f"),
       );
     const method = cd.getUint16(p + 10, true);
-    const compressedSize = cd.getUint32(p + 20, true);
-    const size = cd.getUint32(p + 24, true);
+    let compressedSize = cd.getUint32(p + 20, true);
+    let size = cd.getUint32(p + 24, true);
     const nameLen = cd.getUint16(p + 28, true);
     const extraLen = cd.getUint16(p + 30, true);
     const commentLen = cd.getUint16(p + 32, true);
-    const localOffset = cd.getUint32(p + 42, true);
+    let localOffset = cd.getUint32(p + 42, true);
+    if (p + 46 + nameLen + extraLen + commentLen > cd.byteLength) throw new Error(t("engine-import-zip-read.read-zip-index.message.6fc57fbaa34f"));
+    let q = p + 46 + nameLen;
+    const extraEnd = q + extraLen;
+    while (q + 4 <= extraEnd) {
+      const id = cd.getUint16(q, true), len = cd.getUint16(q + 2, true);
+      if (q + 4 + len > extraEnd) throw new Error(t("engine-import-zip-read.read-zip-index.message.6fc57fbaa34f"));
+      if (id === 1) {
+        let at = q + 4;
+        const read = () => { if (at + 8 > q + 4 + len) throw new Error(t("engine-import-zip-read.read-zip-index.message.6fc57fbaa34f")); const n = safe64(cd, at); at += 8; return n; };
+        if (size === 0xffffffff) size = read();
+        if (compressedSize === 0xffffffff) compressedSize = read();
+        if (localOffset === 0xffffffff) localOffset = read();
+      }
+      q += 4 + len;
+    }
     const name = dec.decode(
       new Uint8Array(cd.buffer, cd.byteOffset + p + 46, Math.min(nameLen, cd.byteLength - p - 46)),
     );
