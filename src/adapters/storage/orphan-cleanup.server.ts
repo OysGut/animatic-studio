@@ -83,7 +83,9 @@ export async function orphanCandidates(
 export async function sweepShowcaseReservations(
   admin: AnyClient, projectId: string, log: (msg: string, meta: Record<string, unknown>) => void = (m, meta) => console.error(m, meta),
 ): Promise<{ released: number; kept: number }> {
-  const listed = await admin.rpc("stale_showcase_reservations", { p_project: projectId });
+  let listed: { data: unknown; error: unknown };
+  try { listed = await admin.rpc("stale_showcase_reservations", { p_project: projectId }); }
+  catch { listed = { data: null, error: true }; }
   if (listed.error || !Array.isArray(listed.data)) {
     log("[showcase-sweep] list failed", { projectId });
     return { released: 0, kept: 0 };
@@ -100,8 +102,9 @@ export async function sweepShowcaseReservations(
       try { ok = !(await admin.storage.from("assets").remove([key])).error; } catch { ok = false; }
       if (!ok) { kept++; log("[showcase-sweep] remove failed, kept for next run", { projectId, reservation: id }); continue; }
     }
-    const rel = await admin.rpc("release_stale_showcase_reservation", { p_reservation: id });
-    if (rel.error) { kept++; log("[showcase-sweep] release failed", { projectId, reservation: id }); continue; }
+    let relError: unknown = null;
+    try { relError = (await admin.rpc("release_stale_showcase_reservation", { p_reservation: id })).error; } catch { relError = true; }
+    if (relError) { kept++; log("[showcase-sweep] release failed", { projectId, reservation: id }); continue; }
     released++;
   }
   return { released, kept };
