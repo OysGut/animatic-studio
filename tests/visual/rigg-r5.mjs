@@ -222,14 +222,15 @@ await step("tosidig: testark kan lastes ned og forskyvning lagres per skriver", 
   await job.getByTestId("print-job-test-sheet").click();
   const d = await dl; const p = await d.path();
   assert(p && readFileSync(p).subarray(0, 5).toString() === "%PDF-", "testark er ikke PDF");
-  await page.waitForTimeout(600);
+  for (let i = 0; i < 30 && !SERVER_PREFS.rigDuplexOffsets; i++) await page.waitForTimeout(200);
   assert(SERVER_PREFS.rigDuplexOffsets?.Kontor?.x === 1.5, `forskyvning ikke lagret: ${JSON.stringify(SERVER_PREFS.rigDuplexOffsets)}`);
   await job.getByTestId("print-job-duplex").uncheck();
 });
 let pdfText = "";
 await step("«Lag PDF» lagrer jobben som én kommando og gir én PDF med 20 figurer og QR", async () => {
+  await job.screenshot({ path: `${out}/before-create-${lang}.png` });
   const dl = page.waitForEvent("download", { timeout: 30000 });
-  await job.getByTestId("print-job-create").click();
+  await job.getByTestId("print-job-create").click({ timeout: 5000 }).catch(async (e) => { dl.catch(() => {}); throw new Error(`${e.message.split("\n")[0]} | ${await job.innerText()}`); });
   const d = await dl; const p = await d.path();
   pdfText = readFileSync(p).toString("latin1");
   assert(pdfText.startsWith("%PDF-"), "ikke PDF");
