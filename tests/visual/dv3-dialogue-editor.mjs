@@ -17,6 +17,24 @@ for (const lang of ["nb", "en"]) await h.scenario(`dv3-${lang}`, clip.occurrence
   h.check(await page.getByTestId("dialogue-active-text").isVisible(), "active text remains readable");
   h.check(await page.getByTestId("dialogue-character-name").isVisible(), "speaker name visible");
   h.check(await page.getByTestId("dialogue-headphones").isVisible(), "headphone warning visible");
+  // N6 (REQ-0756, D2): konteksten rundt replikken vises i ca. 70 % styrke, den aktive i full styrke.
+  const ctx = page.locator('[data-testid="dialogue-context-before"], [data-testid="dialogue-context-after"]');
+  const ctxOpacity = await ctx.evaluateAll(els => els.map(e => Number(getComputedStyle(e).opacity)));
+  h.check(ctxOpacity.length > 0 && ctxOpacity.every(o => Math.abs(o - 0.7) < 0.01), `context shown at about 70 % (${ctxOpacity.join(",")})`);
+  h.check(Number(await page.getByTestId("dialogue-active-text").evaluate(e => getComputedStyle(e).opacity)) === 1, "active line at full strength");
+  // N6 (REQ-0759, D5): en annen replikk kan velges i nedtrekkslisten, og den aktive teksten følger valget. Ingenting lagres.
+  const lineSelect = page.getByTestId("record-line-select");
+  const otherLine = await lineSelect.locator("option").evaluateAll((os, cur) => os.map(o => o.value).find(v => v && v !== cur) ?? null, clip.block_id);
+  if (otherLine) {
+    const before = h.state.commands.length;
+    const otherText = h.rows.blocks?.find(b => b.id === otherLine)?.text;
+    await lineSelect.selectOption(otherLine);
+    h.check(await h.eventually(async () => (await lineSelect.inputValue()) === otherLine, 3000), "another line can be chosen in the dropdown");
+    if (otherText) h.check(await h.eventually(async () => (await page.getByTestId("dialogue-active-text").innerText()).trim() === otherText.trim(), 3000), "active text follows the chosen line");
+    h.check(h.state.commands.length === before, "choosing a line writes nothing");
+    await lineSelect.selectOption(clip.block_id);
+    h.check(await h.eventually(async () => (await lineSelect.inputValue()) === clip.block_id, 3000), "original line can be chosen again");
+  } else h.check(false, "fixture has a second line to choose");
   const versions = page.getByTestId("dialogue-version");
   h.check(await versions.count() >= 2, "preserved versions stacked");
   h.check(await page.getByTestId("dialogue-version-wave").count() === await versions.count(), "one waveform for every version");
