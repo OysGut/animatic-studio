@@ -287,7 +287,7 @@ export function PrintJobSection({
       )}
       {error && <p role="alert">{errorLabel(error)}</p>}
       {message && <p role="status" data-testid="print-job-message">{message}</p>}
-      <Button data-testid="print-job-create" data-missing-version={elements.some((e) => !e.versionId) || undefined} data-readonly={!editable || undefined} data-busy={busy || undefined} data-error={error ?? undefined} data-count={elements.length} disabled={!editable || busy || !elements.length || !!error || elements.some((e) => !e.versionId)} onClick={() => void create()}>
+      <Button data-testid="print-job-create" disabled={!editable || busy || !elements.length || !!error || elements.some((e) => !e.versionId)} onClick={() => void create()}>
         {busy ? t("app-print.busy") : jobId ? t("print-job.reprint") : t("print-job.create")}
       </Button>
     </section>

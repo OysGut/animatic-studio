@@ -156,7 +156,7 @@ async function mock(ctx) {
         contentType: "application/json",
         body: JSON.stringify({ result, context: {} }),
       });
-    if (/runCommand/.test(name)) { if ((route.request().postData() ?? "").includes("SavePrintJob")) writeFileSync(`${out}/save.json`, route.request().postData() ?? "");
+    if (/runCommand/.test(name)) {
       COMMANDS.push(route.request().postData() ?? "");
       return json({ ok: true, changeId: "x", affected: [], inverse: null, revisions: {} });
     }
@@ -214,7 +214,6 @@ await step("forhåndsvisningen viser de første arkene med figurer og QR-felt", 
 });
 await step("QR på figuren varsler om synlighet i opptak", async () => {
   await job.getByTestId("print-job-qr").selectOption("figure");
-  await page.waitForTimeout(500); await page.screenshot({ path: `${out}/qr-figure-${lang}.png` }); console.log("ERR", errors.join(" | ").slice(0, 1500));
   await job.getByTestId("print-job-qr-visible").waitFor();
   await job.getByTestId("print-job-qr").selectOption("outside");
 });
