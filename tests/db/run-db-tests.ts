@@ -7160,10 +7160,10 @@ try {
   });
   await test("PTG1: prosjektkode/opptak og irreversible skuddreservasjoner", async () => {
     const bp = crypto.randomUUID(), prod = crypto.randomUUID(), scene = crypto.randomUUID(), variant = crypto.randomUUID(), occ = crypto.randomUUID();
-    await sql`insert into public.projects(id,name) values (${bp},'PTG test')`;
+    await sql`insert into public.projects(id,name,created_by) values (${bp},'PTG test',${ALICE})`;
     await sql`insert into public.project_members(project_id,user_id,role) values (${bp},${ALICE},'owner')`;
-    await sql`insert into public.productions(id,project_id,kind,name) values (${prod},${bp},'main','Main')`;
-    await sql`insert into public.scenes(id,project_id) values (${scene},${bp})`;
+    await sql`insert into public.productions(id,project_id,kind,name,fps_num,fps_den) values (${prod},${bp},'main','Main',24,1)`;
+    await sql`insert into public.scenes(id,project_id,origin_production_id) values (${scene},${bp},${prod})`;
     await sql`insert into public.scene_variants(id,project_id,scene_id,owner_production_id) values (${variant},${bp},${scene},${prod})`;
     await sql`insert into public.scene_occurrences(id,project_id,production_id,scene_id,variant_id,order_key) values (${occ},${bp},${prod},${scene},${variant},'a')`;
     await expectError(sql`update public.projects set code='bad code' where id=${bp}`, '23514');
@@ -7181,9 +7181,12 @@ try {
     assert(second?.versions[occ] === 2, 'etter fullføring v002');
     const third = (await reserve(ALICE))[0]?.['r'] as { versions: Record<string, number> };
     assert(third?.versions[occ] === 3, 'avbrutt reservasjon gjenbrukes ikke');
-    await sql`update public.export_records set settings=jsonb_set(settings,'{batchSize}','2'::jsonb)
-      where project_id=${bp} and settings->>'batchId'=${second.batchId}`;
-    await expectError(as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${second.batchId})`), '22023');
+    // Eksportloggen er uforanderlig (INV-13): lag en ufullstendig batch med lovlig insert (batchSize 2, én rad).
+    const partial = crypto.randomUUID();
+    await sql`insert into public.export_records(id,project_id,production_id,kind,file_name,settings,occurrence_ids,created_by)
+      values (${crypto.randomUUID()},${bp},${prod},'script','shotlist.zip',
+        ${sql.json({ interchange: true, phase: 'reserved', batchId: partial, shotVersion: 4, batchSize: 2 })},array[${occ}::uuid],${ALICE})`;
+    await expectError(as('authenticated', ALICE, tx => tx`select public.complete_interchange_export(${bp},${partial}::uuid)`), '22023');
     await as('service_role', null, tx => tx`select public.delete_project(${bp},${ALICE})`);
     assert((await sql`select id from public.export_records where project_id=${bp}`).length === 0,'eksportlogg slettet med prosjekt');
   });
