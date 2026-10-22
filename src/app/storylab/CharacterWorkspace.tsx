@@ -2,6 +2,7 @@
  * Story Lab (SL2): karakterflaten – profilen felt for felt (lagres automatisk med SetStoryProfile),
  * karakterbuen (stadier fra en scene) og «Lag profil med AI …».
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { MessageSquare, Plus, Trash2, Undo2 } from "lucide-react";
 import { AiGlyph } from "@/app/design/icons/AiGlyph";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -352,18 +353,14 @@ function StageEditor({
       <div className="flex flex-wrap items-center gap-2">
         <label className="text-[12px] text-text-secondary">
           {tk("app-storylab-character-workspace.stage-editor.label.a159496ebbd1")}{" "}
-          <select
+          <SceneSelect
             value={fromSceneId}
             disabled={!editable}
-            onChange={(e) => setFrom(e.target.value)}
-            className="ml-1 h-7 rounded-sm border border-border-control bg-surface-3 px-2 text-[13px] text-text-primary"
-          >
-            {scenes.map((s) => (
-              <option key={s.sceneId} value={s.sceneId}>
-                {s.label}
-              </option>
-            ))}
-          </select>
+            onChange={setFrom}
+            ariaLabel={tk("app-storylab-character-workspace.stage-editor.label.a159496ebbd1")}
+            className="ml-1 h-7"
+            options={scenes.map((s) => ({ value: s.sceneId, label: s.label, occurrence: mainOccurrenceOfScene(state, s.sceneId) }))}
+          />
         </label>
         {editable ? (
           <select

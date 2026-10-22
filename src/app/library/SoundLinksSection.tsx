@@ -3,6 +3,7 @@
  * delsekvenser, hendelser og produksjoner. Koblingene bruker permanente ID-er og følger med når scener flyttes
  * eller får nye numre. Endringer kan angres.
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { Link2, X } from "lucide-react";
 import { useMemo, useState } from "react";
 import { SOUND_LINK_LABEL, blocksOfVariant, collation, compareKeys, formatHeading, orderedOccurrences, soundLinkLabel, type Asset, type ProjectState, type SoundLink, type SoundLinkKind } from "@/core";
@@ -146,22 +147,17 @@ export function SoundLinksSection({
             ))}
           </select>
           {needsScene ? (
-            <select
-              aria-label="Scene"
+            <SceneSelect
+              ariaLabel="Scene"
               value={scene}
-              onChange={(e) => {
-                setScene(e.target.value);
+              onChange={(v) => {
+                setScene(v);
                 setTarget("");
               }}
               className={ctl + " max-w-56"}
-            >
-              <option value="">{t("app-library-sound-links-section.sound-links-section.option.8f78699d98ac")}</option>
-              {occs.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.productionNumber ?? ""} {formatHeading(state.variants[o.variantId]!.heading)}
-                </option>
-              ))}
-            </select>
+              emptyLabel={t("app-library-sound-links-section.sound-links-section.option.8f78699d98ac")}
+              options={occs.map((o) => ({ value: o.id, number: o.productionNumber ?? undefined, label: formatHeading(state.variants[o.variantId]!.heading), occurrence: o }))}
+            />
           ) : null}
           <select
             aria-label={t("app-library-sound-links-section.sound-links-section.aria-label.6a5e1822543f")}

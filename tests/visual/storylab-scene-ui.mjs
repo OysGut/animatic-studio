@@ -235,7 +235,7 @@ async function confirm(page) { await page.getByTestId("storylab-scene-confirm").
 await run("sceneanalyse, improvisasjon, varianter og replikksjekk", async (page) => {
   const lab = page.getByTestId("storylab-scenelab"); await lab.waitFor();
   check(await lab.getByTestId("storylab-scene-block").count() === SCENE_BLOCKS.length, "sceneparameter åpner scenelaben med blokkene");
-  check(await page.getByTestId("storylab-time").inputValue() === SCENE_ID, "høyre panel bruker scenens tidspunkt");
+  check(await page.getByTestId("storylab-time").getAttribute("data-value") === SCENE_ID, "høyre panel bruker scenens tidspunkt");
   await lab.getByTestId("storylab-analyze").click();
   check(S.gen.length === 0, "analyse venter på kostnadsbekreftelse");
   await confirm(page);

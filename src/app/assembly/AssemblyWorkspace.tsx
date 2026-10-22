@@ -1398,6 +1398,7 @@ function Assembly({
         onOpenChange={setLongFilm}
         projectId={projectId}
         clips={clips}
+        occurrences={state.occurrences}
         firstOccurrenceId={selected?.occurrenceId ?? null}
         cmds={cmds}
         fps={fps}

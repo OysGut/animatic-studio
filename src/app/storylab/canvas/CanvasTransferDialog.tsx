@@ -2,6 +2,7 @@
  * Overføring fra en canvasnode til prosjektet (SL7 §5): forhåndsvisning, bekreftelse, én angregruppe og en
  * lenke til resultatet. Kommandoene planlegges i kjernen (canvasNodeToCommands).
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { requestAnalysisNow } from "@/app/library/entity-analysis-store";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -75,10 +76,9 @@ export function CanvasTransferDialog({ state, projectId, cmds, node, onClose }: 
               <>
                 <label className="block space-y-1">
                   <span className="text-[12px] text-text-secondary">{t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.span.ed14a5640f8d")}</span>
-                  <select className={field} value={after} data-testid="canvas-transfer-after" onChange={(e) => setAfter(e.target.value)}>
-                    <option value="">{t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.cf09e178e567")}</option>
-                    {occs.map((o) => { const v = state.variants[o.variantId]; return <option key={o.id} value={o.id}>{t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.6dd1765c83e0", { value1: String(v ? formatHeading(v.heading) : o.id) })}</option>; })}
-                  </select>
+                  <SceneSelect className={field} value={after} testId="canvas-transfer-after" onChange={setAfter} ariaLabel={t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.span.ed14a5640f8d")}
+                    emptyLabel={t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.cf09e178e567")}
+                    options={occs.map((o) => { const v = state.variants[o.variantId]; return { value: o.id, label: t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.option.6dd1765c83e0", { value1: String(v ? formatHeading(v.heading) : o.id) }), occurrence: o }; })} />
                 </label>
                 <div className="rounded-sm border border-border bg-surface-2 p-2" data-testid="canvas-transfer-preview">
                   <p className="text-[12px] text-text-tertiary">{t("app-storylab-canvas-canvas-transfer-dialog.canvas-transfer-dialog.p.491cd1d6736a", { value1: String(main?.name ?? "–") })}</p>

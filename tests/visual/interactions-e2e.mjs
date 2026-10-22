@@ -687,19 +687,26 @@ async function testPick() {
     const summary = async () =>
       parseSummary(await dialog.locator('section[aria-label="Kontroll før eksport"]').innerText());
     // Lengden på hver scene alene: «Fra scene til scene» med samme første og siste scene
-    const from = dialog.getByLabel("Første scene");
-    const to = dialog.getByLabel("Siste scene");
-    const options = await from
-      .locator("option")
-      .evaluateAll((os) => os.map((o) => ({ value: o.value, label: o.textContent.trim() })));
+    // B-118: scenevelgeren er en knapp med liste (role=option), ikke en vanlig nedtrekksliste
+    const from = dialog.getByRole("button", { name: /^Første scene/ });
+    const to = dialog.getByRole("button", { name: /^Siste scene/ });
+    const pickScene = async (btn, value) => {
+      await btn.click();
+      await page.locator(`[role="listbox"] [role="option"][data-value="${value}"]`).click();
+    };
+    await from.click();
+    const options = await page
+      .locator('[role="listbox"] [role="option"]')
+      .evaluateAll((os) => os.map((o) => ({ value: o.dataset.value, label: o.textContent.trim() })));
+    await page.keyboard.press("Escape");
     console.log("  scener i filmen:", options.map((o) => o.label).join(" | "));
     check(G, "filmen har minst tre scener", options.length >= 3, String(options.length));
     const A = 0;
     const B = 2; // ikke naboer
     const single = [];
     for (const i of [A, B]) {
-      await from.selectOption(options[i].value);
-      await to.selectOption(options[i].value);
+      await pickScene(from, options[i].value);
+      await pickScene(to, options[i].value);
       await page.waitForTimeout(150);
       single.push(await summary());
     }

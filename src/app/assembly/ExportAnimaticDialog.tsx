@@ -4,6 +4,7 @@
  * Før eksporten vises en kontroll (REQ-0422); man kan eksportere selv om noe mangler (REQ-0423).
  * Eksporten endrer ingenting i prosjektet.
  */
+import { SceneSelect, mainOccurrenceOfScene } from "@/app/shell/SceneSelect";
 import { SceneMark } from "@/app/shell/SceneMark";
 import { AlertTriangle, CheckCircle2, Download, Info } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -708,36 +709,26 @@ export function ExportAnimaticDialog({
                 {t("app-assembly-export-animatic-dialog.export-animatic-dialog.span.f85957df67da")}
                 {/* Lange scenehoder skal ikke presse valgene ut av kolonnen */}
                 <span className="flex min-w-0 flex-col gap-1 overflow-hidden text-xs text-text-tertiary">
-                  <select
-                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.b9d371cb37dc")}
+                  <SceneSelect
+                    ariaLabel={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.b9d371cb37dc")}
                     value={fromId}
-                    onChange={(e) => {
-                      setFromId(e.target.value);
+                    onChange={(v) => {
+                      setFromId(v);
                       setScope("range");
                     }}
-                    className={select + " w-full max-w-full truncate"}
-                  >
-                    {clips.map((c) => (
-                      <option key={c.occurrenceId} value={c.occurrenceId}>
-                        {c.productionNumber ?? "–"} {formatHeading(c.heading)}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    aria-label={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.35a8e5049bbd")}
+                    className={select + " w-full max-w-full"}
+                    options={clips.map((c) => ({ value: c.occurrenceId, number: c.productionNumber ?? "–", label: formatHeading(c.heading), occurrence: state.occurrences[c.occurrenceId] }))}
+                  />
+                  <SceneSelect
+                    ariaLabel={t("app-assembly-export-animatic-dialog.export-animatic-dialog.aria-label.35a8e5049bbd")}
                     value={toId}
-                    onChange={(e) => {
-                      setToId(e.target.value);
+                    onChange={(v) => {
+                      setToId(v);
                       setScope("range");
                     }}
-                    className={select + " w-full max-w-full truncate"}
-                  >
-                    {clips.map((c) => (
-                      <option key={c.occurrenceId} value={c.occurrenceId}>
-                        {c.productionNumber ?? "–"} {formatHeading(c.heading)}
-                      </option>
-                    ))}
-                  </select>
+                    className={select + " w-full max-w-full"}
+                    options={clips.map((c) => ({ value: c.occurrenceId, number: c.productionNumber ?? "–", label: formatHeading(c.heading), occurrence: state.occurrences[c.occurrenceId] }))}
+                  />
                 </span>
               </span>
             </label>

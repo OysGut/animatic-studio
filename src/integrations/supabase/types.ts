@@ -4403,6 +4403,7 @@ export type Database = {
         Row: {
           active: boolean
           active_take_id: string | null
+          color: string | null
           created_at: string
           created_by: string | null
           excerpt_in: number | null
@@ -4423,10 +4424,12 @@ export type Database = {
           transition_overlap: boolean
           variant_id: string
           video_instructions: string
+          work_status: string | null
         }
         Insert: {
           active?: boolean
           active_take_id?: string | null
+          color?: string | null
           created_at?: string
           created_by?: string | null
           excerpt_in?: number | null
@@ -4447,10 +4450,12 @@ export type Database = {
           transition_overlap?: boolean
           variant_id: string
           video_instructions?: string
+          work_status?: string | null
         }
         Update: {
           active?: boolean
           active_take_id?: string | null
+          color?: string | null
           created_at?: string
           created_by?: string | null
           excerpt_in?: number | null
@@ -4471,6 +4476,7 @@ export type Database = {
           transition_overlap?: boolean
           variant_id?: string
           video_instructions?: string
+          work_status?: string | null
         }
         Relationships: [
           {
