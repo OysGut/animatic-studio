@@ -16,20 +16,19 @@ import { useTimeFormat } from "@/app/i18n/time-format";
 
 export const MY_SHOWCASE_KEY = ["showcase-mine"] as const;
 
-const EDIT_EXPIRES = [
-  { days: 7, label: t("b116.expires.7") },
-  { days: 14, label: t("b116.expires.14") },
-  { days: 30, label: t("b116.expires.30") },
-  { days: 90, label: t("b116.expires.90") },
-] as const;
+const statusLabel = (s: ShowcaseDisplayStatus): string =>
+  s === "pending"
+    ? t("b116.status.pending")
+    : s === "live"
+      ? t("b116.status.live")
+      : s === "expired"
+        ? t("b116.status.expired")
+        : s === "revoked"
+          ? t("b116.status.revoked")
+          : t("b116.status.rejected");
 
-const STATUS_LABEL: Record<ShowcaseDisplayStatus, string> = {
-  pending: t("b116.status.pending"),
-  live: t("b116.status.live"),
-  expired: t("b116.status.expired"),
-  revoked: t("b116.status.revoked"),
-  rejected: t("b116.status.rejected"),
-};
+const editExpiresLabel = (days: number): string =>
+  days === 7 ? t("b116.expires.7") : days === 14 ? t("b116.expires.14") : days === 30 ? t("b116.expires.30") : t("b116.expires.90");
 
 export function MyShowcasePage() {
   const time = useTimeFormat();
