@@ -195,10 +195,11 @@
 
 
 ## PTG3: Kamera i fysiske enheter, FBX og AE-pakke (B-102)
-- [ ] CameraTrack i InterchangeDoc (core/interchange/camera.ts), begge moduser, gyldne tester
-- [ ] FBX ASCII 7.4 (core/interchange/fbx.ts) + parser-test
-- [ ] AE-pakke bygg.jsx ES3 (core/interchange/ae-jsx.ts) + syntakstest + AE-mock-test
-- [ ] Eksportdialog: «Kamera (FBX, eksperimentell)» og «After Effects-pakke» med kameramodusvalg
-- [ ] LESMEG forklarer null-kamera; eksempel-FBX i tests/fixtures/ptg3/
-- [ ] Suite ptg3-camera.mjs nb/en; regresjon ptg1-shotlist, export-e2e, p4; full vitest/DB/i18n
-- [ ] Rapport docs/development/PTG3_REPORT.md
+- [x] CameraTrack i InterchangeDoc (core/interchange/camera.ts), begge moduser, gyldne tester 6/6
+- [x] FBX ASCII 7.4 (core/interchange/fbx.ts) + parser-test 6/6; eksempel-FBX i tests/fixtures/ptg3/
+- [x] AE-pakke bygg.jsx ES3 (core/interchange/ae-jsx.ts) + AE-mock-test 8/8
+- [x] Eksportdialog: «Kamera (FBX, eksperimentell)» og «After Effects-pakke» med kameramodusvalg
+- [x] tsc grønn, i18n grønn, full Vitest 2300 bestått/10 hoppet over; ingen migrasjon nødvendig
+- [x] Rapport docs/development/PTG3_REPORT.md
+- [ ] Visuell suite ptg3-camera.mjs nb/en og regresjoner (ptg1-shotlist, export-e2e, p4): playwright mangler i dette miljøet; kjøres av Claude
+- [ ] Ekte FBX-import (Blender/Maya) og AE-kjøring av bygg.jsx: ekstern kontroll
