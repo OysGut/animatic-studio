@@ -74,7 +74,7 @@
 - [x] Redigerbare spor i Scene, variantkobling, utdatert-merking og munnliste PDF/CSV.
 - [x] Moho DAT/JSON, Dragonframe X-sheet/påskrift og selvstendig eksport.
 - [x] Full Vitest 2361/0, DB 159/0, i18n, ptg4 nb/en 15/15 og sekvensielle PTG2/5/6-regresjoner; norsk rapport.
-- [ ] Claude kjører 0084 i Cloud; Rhubarb-finjustering fra lyd er utsatt.
+- [x] 0084 kjørt i Cloud (N7: Cloud på versjon 88). Rhubarb-finjustering er utsatt – se TODO «Teknisk gjeld».
 
 ## PTG6 – klippefiler (22.10.2026)
 - [x] Ren OTIO/FCP7-XML/CMX 3600-modell med PTG1-navn, midtpunktklipp og håndtak.
@@ -96,7 +96,7 @@
 - [x] Personvernerklæringen utvidet med vilkår/ansvarsfraskrivelse (seksjoner 10–15, b115.privacy.*) på alle språk.
 - [x] Språkvelgeren på forsiden flyttet under «Logg inn»-boksen, over Personvern-lenken (verifisert i nettleser).
 - [x] Admin-bryter for testspråket EN-XA (funksjonsnøkkel ui.test_languages, av som standard); migrasjon 0082 skrevet.
-- [ ] 0082 må kjøres i Cloud av Claude før bryteren dukker opp i Admin.
+- [x] 0082 kjørt i Cloud (N7: Cloud på versjon 88).
 
 ## PTG1 (B-102) – implementert, databaseverifisering gjenstår
 - [x] Klipp midt i overlapp; håndtak og overgangsdata; hele lyd-/ordhendelser, gyllen oddetallstest og LESMEG-regel.
@@ -105,7 +105,7 @@
 - [x] CSV/JSON-profiler, PNG-miniatyrer, strømmet ZIP64 og tospråklig LESMEG.
 - [x] Til produksjonen i eksportdialog og prosjektinnstillinger, alle grensesnittspråk.
 - [x] Gyldne tester, ZIP64-hoder, arkitekturvakt, ptg1-shotlist nb/en, export-e2e og p4; full Vitest 2280/0, i18n grønn.
-- [ ] DB-suite og ekte lagring/eksport etter 0081: lokal Postgres på port 54329 mangler; Claude må verifisere og kjøre migrasjonen.
+- [x] 0081 kjørt i Cloud; DB-suiten kjøres lokalt på port 54329 (180/0 i N6). Ekte eksport: se TODO «Krever ekstern prøving».
 - [x] PTG1_REPORT.md med faktisk verifisering og erstattede funksjoner.
 
 ## B-087 Rigg runde 5 (22.10.2026) – ferdig lokalt; 0079 venter på Claude i Cloud
@@ -133,7 +133,7 @@
 - [x] Importer åtte språk, oppdater utdaterte tekster og grammatikk med kildehash/review.
 - [x] Vakt mot etterslep, 2195 beståtte enhetstester, sekvensielle kontoregresjoner nb/en og fr/ja-stikkprøver.
 - [x] Rapport docs/development/B107_REPORT.md og kontroll av profiles.locale; lokale DB-tester 153/153.
-- [ ] Claude må kjøre 0077 og publisere sammen med skjemaversjon 77; Cloud står på 76 fra før oppdraget.
+- [x] 0077 kjørt i Cloud (N7: Cloud på versjon 88).
 
 ## Aktivt oppdrag: runde 4 og B-095 (21.10.2026)
 - [x] A: skjemaversjon 72, regenerert i18n og full Vitest (2102 bestått / 10 eksisterende hoppet over).
@@ -150,7 +150,7 @@
 ## Oppgave 3b (21.10.2026)
 - [x] Mock-merknad på 18 krav med historikk; KI-193/KI-204 åpne.
 - [x] Migrasjon 0070: delingsnøkkelen bare som pepret hash, eldre lenker virker; DB 146/146.
-- [ ] Kjøring av 0070 i Cloud og utfylling: venter på Claude.
+- [x] 0070 kjørt i Cloud (N7: Cloud på versjon 88).
 - [x] Canvas 500 noder i produksjonsbygg: under 3 s.
 - [x] Låste sider per dokument-ID med fallback og tester.
 
@@ -175,13 +175,13 @@
 - [x] Brukerflate: språkversjoner, valg i manus/utforsker/linjekoblinger/eksport, eksplisitt norsk reserve eller stopp.
 - [x] Feilsiden følger valgt språk fra første tegning (test).
 - [x] Tester: vitest, ml3-script-languages.mjs, regresjon nb og UI_LANG=en.
-- [ ] Kjøring av 0066 i Cloud: venter på Claude (hasher må kontrolleres, se ML3_REPORT.md).
+- [x] 0066 kjørt i Cloud med kontrollerte hasher (N7: Cloud på versjon 88).
 
 ## B-049 ML1 (20.10.2026)
 - [x] Fullt AST-inventar, stabile nøkler, tapsfrie nb/en-filer og konfliktliste.
 - [x] Språkmanifest, validerte reserver, t/parametere/plural og automatisk en-XA; eksisterende bro uendret.
 - [x] Utvidet sjekk, 13 ML1-tester, null-tap, full vitest 1926/0 og DB 140/0; U5/T2/DV3/paneler grønne.
-- [ ] Verifisering4 helt grønn: venter på kontroll i Claudes miljø (Courier Prime 6,439 em her; 57/58 med portabel falsk mikrofon).
+- [x] Verifisering4 grønn (D-2 rettet REQ-0050; 60/60 to ganger i N5, se N5_REPORT.md).
 - [x] Kravregister 0875–0878, build_docs/check_kb og ML1_REPORT; ingen migrasjon.
 
 ## Kontekstkoblinger og B-049-plan (20.10.2026)
@@ -220,8 +220,8 @@
 - [x] ML2a: språkvelger fra manifestet, en-XA i utvikling, språkbytte uten remontering, ingen lekkasje ved første tegning, stabile serverfeilkoder, ml2-languages-suite
 - [x] ML2b: skall og konto (1 193 av 1 199 par flyttet; 6 flertallstekster på broen)
 - [x] ML2c: manus (1 444 av 1 457 par flyttet; 13 på broen), seks flertallstekster fra skallet, språkkoder i en-XA
-- [ ] ML2d: sceneeditor (inkl. en-XA-overløp på 64 px, som ligger i sceneeditoren, ikke i skallet)
-- [ ] ML2e: montering og lyd, bibliotek og Asset Studio
+- [x] ML2d: sceneeditor (se «B-049 ML2d» under og ML2_REPORT.md). en-XA-overløpet er ført under TODO «Teknisk gjeld».
+- [x] ML2e: montering og lyd (se «B-049 ML2e» under); broen tom etter ML2f (tests/unit/i18n-ml2f.test.ts).
 - [x] ML2f: bibliotek, M6, AI/admin, kjerne og server – broen tom (9 964/9 964), L()-kall stoppes, rapport i ML2_REPORT.md
 
 ## B-049 ML2d – sceneeditor (20.10.2026)
@@ -266,7 +266,7 @@
 - [x] Runde 2: én skjerm, sporgrupper i Scene, autoutfelling i ui_prefs, gamle fane=animation-lenker
 - [x] Runde 3: spacing-drag (UpdateLayers, én angring, ingen migrasjon)
 - [x] Runde 4: CA1–CA8, regresjon og full vitest; rapport B100_REPORT.md
-- [ ] DB-testene: kjøres av Claude (ingen DB-endring)
+- [x] DB-testene kjøres lokalt (180/0 i N6).
 - [x] BeyondEndNotice med «Forleng scenen …» via RetimeDialog (B-099-oppdraget)
 - [x] Slettet AnimationWorkspace/AnimPreview, ML1-baseline oppdatert (7 nøkler)
 - [x] Hover uten MotionPath: nøkkelbildenes posisjoner som punkter
@@ -311,8 +311,8 @@
 - [x] P0/P1 gjennomgått; 48 krav flyttet til Verifisert (113 → 65)
 - [x] Ny arkitekturtest for REQ-0269; avvik i AssetVoice.provider rapportert
 - [x] build_docs, check_kb, tsc, Vitest og DB grønne; rapport docs/development/N4_REPORT.md
-- [ ] Resterende 65 krav (mest UI-punkter i DV og P3) i neste runde
-- [ ] Ekstern prøving: telefoner, ekte opptak og lukket fane mot ekte bakgrunnsjobb
+- [x] Fortsatt i N6 (64 → 34), se N6_REPORT.md
+- [x] Flyttet til TODO «Krever ekstern prøving»
 
 ## N5: Ytelse i sceneeditoren, REQ-0269 og DV5
 - [x] Målt rendringer, commits og lange oppgaver under avspilling; frosset verktøylinje, paneler og lukkede dialoger
@@ -323,4 +323,9 @@
 
 ## N6: Verifiseringsrunde 2
 - [x] 30 krav flyttet til Verifisert (64 → 34), nye kontroller for D2 og D5 i dv3-dialogue-editor
-- [ ] 33 krav mangler målrettet test; REQ-0139 krever ekstern prøving (se TODO.md)
+- [ ] 33 krav mangler målrettet test (TODO «Teknisk gjeld»); REQ-0139 under «Krever ekstern prøving»
+
+## N7: Dokumentasjonsavstemming
+- [x] roadmap/TODO avstemt mot Cloud versjon 88; åpne punkter samlet i TODO.md
+- [x] KNOWN_ISSUES: KI-57, KI-128, KI-203 lukket, KI-46 delvis
+- [x] 12 krav «Under arbeid» → «Implementert – ikke verifisert»; rapport N7_REPORT.md

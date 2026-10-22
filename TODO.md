@@ -8,7 +8,7 @@
 
 ## PTG4 – lydfinjustering og ekte import
 - Rhubarb-finjustering av tekststyrte munnspor fra lyd bygges ikke i PTG4. Ingen lyd sendes til tjenester.
-- Claude kjører 0084 etter kontroll. Trollfilm prøver Moho DAT/Papagayo, Dragonframe JSON og munnkolonnen med ekte materiale.
+- (0084 er kjørt i Cloud, N7.) Trollfilm prøver Moho DAT/Papagayo, Dragonframe JSON og munnkolonnen med ekte materiale.
 
 ## PTG6 – manuell klippeimport
 - Prøv OTIO, FCP7-XML og CMX 3600 i Resolve, Premiere og Avid med og uten mediefiler. Kontroller relative stier, reel-tabell, håndtak, oddetallsoverlapp, lyd og aktiv Dragonframe-take. Claude kan lese eksemplene i tests/fixtures/ptg6 med OpenTimelineIO og adapterne. Ekte programimport må bekreftes av brukerne.
@@ -20,11 +20,9 @@
 - PTG5: Trollfilm må prøve en ekte Dragonframe-mappe/ZIP og en eksportert MOV/MP4. Kontroller versjonsspesifikke XML-felt, X1-filnavn, TIFF-støtte i nettleseren og sammenligning/aktiv avspilling med ekte opplastede filmer. Kunstige rundturer er grønne; ekte Cloud-opplasting er ikke verifisert i denne leveransen.
 
 ## B-049
-- ML1 akseptanse: kontroller verifisering4 i Claudes miljø; Courier Prime måles 6,439 em her (57/58 med portabel falsk mikrofon). Se ML1_REPORT.md.
 - ML2–ML4 følger senere oppdrag. Gå gjennom 266 inventarkonflikter eksplisitt, ikke slå sammen automatisk. Mars avgjør tredjespråk/kvalitetssikrere senere; bruk en-XA i ML2-testene.
 
 ## DV5/DV6 – rester før full verifikasjon
-- Claude: lokal DB og migrasjon 0061, nye RLS/grant/lease-tester og ende-til-ende med faste lydresultater.
 - DV5 (N5 rettet): et resultat angret fra angrelisten merkes «angret» av «Angre hele jobben», som hopper over det. Gjenstår: resultater ferdige mens panelet er lukket kommer fortsatt ikke på angrelisten.
 - Avklar gjenopprettet leverandørtilgang for varig blokkerte batcher uten automatiske probes.
 - Kontroller eksisterende cron-plan i Cloud og verifisering4-mikrofon/font i Claudes miljø.
@@ -95,7 +93,6 @@ Spesifikasjon: `docs/product/phase3/RIGG_3DPRINT_SPEC_v3.md`. Runde 0 (dokumenta
 ## Mindre ting
 - KI-167: serveruttak av siste videobilde krever en tilgjengelig, godkjent medietjeneste eller kompatibel decoder. Ingen slik tjeneste er konfigurert; nettleseruttak beholdes.
 - KI-243: MP3 ligger i createClientOnlyFn; produksjonsartefakt må kontrolleres av Claude før punktet lukkes.
-- Verifisering4: 57/58 her; REQ-0050 målte 6,439 em i stedet for 6 em. Testen er ikke svekket.
 
 - KI-207: owner-bekreftet rydding er bygget/testet med falsk lagring; prøv mot ekte Cloud-lagring før produksjonsbruk. Ingen automatisk sletting.
 - Legge inn ferdige AI-videoer i scenen uten at prosjektet er åpent (KI-209; hentingen gjøres nå av bakgrunnsjobben), henger sammen med varsling. Videoer tapes ikke lenger: de hentes når prosjektet åpnes (inntil sju dager), og «Hent videoen igjen» finnes (DEC-0086).
@@ -275,3 +272,25 @@ B-087: REQ-0879–REQ-0895 (Rigg & 2D-utskrift, A1–A17) og REQ-0896–REQ-0915
 
 - REQ-0431 – Engelske tekniske betegnelser internt
 - REQ-0459 – Fase 8: Presentasjonsmodul og videre kvalitetssystem
+
+## Samlet åpent (N7, 22.10.2026)
+
+### Krever Øystein
+- Avklaringer: «tilt» i 2D (KI-45), hendelser i deaktiverte scener (KI-100), deling av scener brukt i spinoff (KI-107), navn i REQ-0430 (KI-171), redaktør med eierens nøkkel (KI-157), varsel ved ferdig generering (DEC-0085, satt på vent), redigerbare bildeprompter.
+- Prosesskravene REQ-0450–0530 og språkvask av engelsk (KI-198) og maskinoversatte språk.
+- Personvernerklæring og juridisk gjennomgang (KI-214); region/databehandleravtale.
+- Delt klipp (B-116) som egen sak.
+
+### Krever ekstern prøving
+- Lukket fane mot ekte bakgrunnsjobb: REQ-0291, REQ-0293, REQ-0504.
+- Ekte telefoner og opptak: REQ-0685, REQ-0687, REQ-0689, REQ-0711, KI-235, KI-239, KI-245, KI-248.
+- Menneskelig vurdering av harmoniserte bilder: REQ-0139. VP9 med alfa i ekte nettleser: REQ-0839.
+- Ekte nøkler mot leverandørene (KI-153, KI-193, KI-204, KI-213), sperring/sletting av konto (KI-215), opprydding mot ekte lagring (KI-207).
+- Ekte programimport: Dragonframe (PTG2/PTG5), Resolve/Premiere/Avid (PTG6), Nuke/Fusion (PTG7), After Effects/FBX (PTG3), Moho/Papagayo (PTG4), fysisk riggutskrift.
+
+### Teknisk gjeld
+- REQ-0210: tidslinjen, tegnetrinnet og knappene tegnes fortsatt per bilde (KI-46 delvis).
+- DV5: resultater ferdige mens panelet er lukket kommer ikke på angrelisten; angring forsvinner ved omlasting (KI-22).
+- en-XA-overløp på 64 px i sceneeditorens verktøyrad (ML2_REPORT.md) – ikke bekreftet rettet.
+- 33 krav uten målrettet test (liste i N6_REPORT.md) og 12 Story Lab-/prosesskrav uten samlet akseptansetest (N7_REPORT.md).
+- Rhubarb-finjustering av munnspor fra lyd (PTG4), ZIP64 (KI-66/KI-80), lydstrømming ved import (KI-67), KI-12, KI-30, KI-92, KI-243, KI-250.
