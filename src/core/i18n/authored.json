@@ -8373,6 +8373,150 @@
       "en": {
         "text": "No"
       }
+    },
+    "ptg1.to-production": {
+      "nb": {
+        "text": "Til produksjonen"
+      },
+      "en": {
+        "text": "To production"
+      }
+    },
+    "ptg1.project-code": {
+      "nb": {
+        "text": "Prosjektkode"
+      },
+      "en": {
+        "text": "Project code"
+      }
+    },
+    "ptg1.capture-rate": {
+      "nb": {
+        "text": "Opptaksfrekvens"
+      },
+      "en": {
+        "text": "Capture rate"
+      }
+    },
+    "ptg1.ones": {
+      "nb": {
+        "text": "Enere (24)"
+      },
+      "en": {
+        "text": "Ones (24)"
+      }
+    },
+    "ptg1.twos": {
+      "nb": {
+        "text": "Toere (12 × 2)"
+      },
+      "en": {
+        "text": "Twos (12 × 2)"
+      }
+    },
+    "ptg1.custom": {
+      "nb": {
+        "text": "Egendefinert"
+      },
+      "en": {
+        "text": "Custom"
+      }
+    },
+    "ptg1.numerator": {
+      "nb": {
+        "text": "Teller"
+      },
+      "en": {
+        "text": "Numerator"
+      }
+    },
+    "ptg1.denominator": {
+      "nb": {
+        "text": "Nevner"
+      },
+      "en": {
+        "text": "Denominator"
+      }
+    },
+    "ptg1.save-settings": {
+      "nb": {
+        "text": "Lagre innstillinger"
+      },
+      "en": {
+        "text": "Save settings"
+      }
+    },
+    "ptg1.invalid-settings": {
+      "nb": {
+        "text": "Ugyldig prosjektkode eller opptaksfrekvens."
+      },
+      "en": {
+        "text": "Invalid project code or capture rate."
+      }
+    },
+    "ptg1.profile": {
+      "nb": {
+        "text": "Profil"
+      },
+      "en": {
+        "text": "Profile"
+      }
+    },
+    "ptg1.standard": {
+      "nb": {
+        "text": "Standard"
+      },
+      "en": {
+        "text": "Standard"
+      }
+    },
+    "ptg1.shotlist": {
+      "nb": {
+        "text": "Skuddliste (CSV/JSON)"
+      },
+      "en": {
+        "text": "Shotlist (CSV/JSON)"
+      }
+    },
+    "ptg1.cancel": {
+      "nb": {
+        "text": "Avbryt"
+      },
+      "en": {
+        "text": "Cancel"
+      }
+    },
+    "ptg1.cancelled": {
+      "nb": {
+        "text": "Avbrutt"
+      },
+      "en": {
+        "text": "Cancelled"
+      }
+    },
+    "ptg1.export-failed": {
+      "nb": {
+        "text": "Skuddlisten kunne ikke eksporteres."
+      },
+      "en": {
+        "text": "The shotlist could not be exported."
+      }
+    },
+    "ptg1.duplicate-file": {
+      "nb": {
+        "text": "Pakken inneholder to filer med samme navn."
+      },
+      "en": {
+        "text": "The package contains two files with the same name."
+      }
+    },
+    "ptg1.readme": {
+      "nb": {
+        "text": "Klippunktet ligger midt i overlappen, avrundet langs filmen. Skuddlengder er differansen mellom avrundede grenser. handleIn og handleOut er overlapp på naboens side; skyt inkludert håndtakene. Uten overlapp er håndtakene 0. Lyd og ord tilhører skuddet der hendelsen starter, beholder hele lengden og har absolutte og relative tider; crossesCut=true markerer kryssing. Toere er 12 eksponeringer/s på en 24 bilder/s-tidslinje, hvert andre bilde. Tidskode ut og Frame Out er eksklusive. Tom film har 0 bilder; en scene kortere enn ett opptaksbilde kan få 0 bilder og beholdes i listen. Kamera er null i PTG1."
+      },
+      "en": {
+        "text": "The cut is at the midpoint of the overlap, rounded along the film. Shot lengths are differences between rounded boundaries. handleIn and handleOut are overlap on the neighbour’s side; shoot including the handles. Without overlap, handles are 0. Audio and words belong to the shot where the event starts, retain their full length and include absolute and relative times; crossesCut=true marks a crossing. Twos are 12 exposures/s on a 24 fps timeline, every other frame. Out timecode and Frame Out are exclusive. An empty film has 0 frames; a scene shorter than one capture frame may have 0 frames and remains listed. Camera is null in PTG1."
+      }
     }
   }
 }
